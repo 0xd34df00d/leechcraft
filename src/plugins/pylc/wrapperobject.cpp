@@ -29,11 +29,9 @@ namespace LeechCraft
 			void* WrapperObject::qt_metacast (const char *_clname)
 			{
 				if (!_clname) return 0;
-				if (!strcmp(_clname, "IInfo") &&
-						Implements (_clname))
+				if (!strcmp(_clname, "IInfo"))
 					return static_cast< IInfo*>(const_cast< WrapperObject*>(this));
-				if (!strcmp(_clname, "org.Deviant.LeechCraft.IInfo/1.0") &&
-						Implements (_clname))
+				if (!strcmp(_clname, "org.Deviant.LeechCraft.IInfo/1.0"))
 					return static_cast< IInfo*>(const_cast< WrapperObject*>(this));
 				return QObject::qt_metacast(_clname);
 			}
@@ -51,27 +49,69 @@ namespace LeechCraft
 				PythonQt::self ()->registerClass (&CoreProxyWrapper::staticMetaObject);
 				QVariantList args;
 				args << QVariant::fromValue<QObject*> (new CoreProxyWrapper (proxy));
-				Call ("Init", args);
+				try
+				{
+					Call ("Init", args);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				}
 			}
 
 			void WrapperObject::SecondInit ()
 			{
-				Call ("SecondInit");
+				try
+				{
+					Call ("SecondInit");
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				}
 			}
 
 			void WrapperObject::Release ()
 			{
-				Call ("Release");
+				try
+				{
+					Call ("Release");
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				}
 			}
 
 			QString WrapperObject::GetName () const
 			{
-				return Call ("GetName").toString ();
+				try
+				{
+					return Call ("GetName").toString ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return QString ();
+				}
 			}
 
 			QString WrapperObject::GetInfo () const
 			{
-				return Call ("GetInfo").toString ();
+				try
+				{
+					return Call ("GetInfo").toString ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return QString ();
+				}
 			}
 
 			QIcon WrapperObject::GetIcon () const
@@ -81,17 +121,44 @@ namespace LeechCraft
 
 			QStringList WrapperObject::Provides () const
 			{
-				return Call ("Provides").toStringList ();
+				try
+				{
+					return Call ("Provides").toStringList ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return QStringList ();
+				}
 			}
 
 			QStringList WrapperObject::Needs () const
 			{
-				return Call ("Needs").toStringList ();
+				try
+				{
+					return Call ("Needs").toStringList ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return QStringList ();
+				}
 			}
 
 			QStringList WrapperObject::Uses () const
 			{
-				return Call ("Uses").toStringList ();
+				try
+				{
+					return Call ("Uses").toStringList ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return QStringList ();
+				}
 			}
 
 			void WrapperObject::SetProvider (QObject*, const QString&)
@@ -100,12 +167,34 @@ namespace LeechCraft
 
 			QVariant WrapperObject::Call (const QString& name, const QVariantList& args) const
 			{
-				return PythonQt::self ()->call (Module_, name, args);
+				if (Module_.isNull ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "Module_ is null"
+						<< name
+						<< args;
+					throw std::runtime_error ("module is null");
+				}
+
+				PythonQtObjectPtr instance =
+					PythonQt::self ()->lookupObject (Module_, "instance");
+				QVariant result = PythonQt::self ()->call (instance, name, args);
+				if (PythonQt::self ()->handleError ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "Py error occured"
+						<< name
+						<< args;
+					throw std::runtime_error ("Py error occured");
+				}
+				else
+					return result;
 			}
 
-			bool WrapperObject::Implements (const char *interface)
+			bool WrapperObject::Implements (const char *cstr)
 			{
-				return true;
+				QStringList implemented = Call ("Implements", QVariantList ()).toStringList (); 
+				return implemented.count (QString (cstr));
 			}
 		};
 	};
