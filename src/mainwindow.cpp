@@ -643,5 +643,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 			Ui_.MenuTools_->insertMenu (Ui_.ActionLogger_, menu);
 		Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
 	}
+
+	on_MainTabWidget__currentChanged (0);
 }
 
