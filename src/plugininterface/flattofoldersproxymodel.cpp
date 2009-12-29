@@ -358,6 +358,26 @@ namespace LeechCraft
 
 			QSet<QString> added = QSet<QString> (newTags).subtract (oldTags);
 			QSet<QString> removed = QSet<QString> (oldTags).subtract (newTags);
+			QSet<QString> changed = QSet<QString> (newTags).intersect (oldTags);
+
+			Q_FOREACH (QString ch, changed)
+			{
+				FlatTreeItem_ptr folder = GetFolder (ch);
+
+				QList<FlatTreeItem_ptr>& c = folder->C_;
+				int findex = Root_->C_.indexOf (folder);
+				QModelIndex fmi = index (findex, 0);
+				for (int i = 0, size = c.size ();
+						i < size; ++i)
+				{
+					if (c.at (i)->Index_ != pidx)
+						continue;
+
+					emit dataChanged (index (i, 0, fmi),
+							index (i, columnCount () - 1, fmi));
+					break;
+				}
+			}
 
 			Q_FOREACH (QString rem, removed)
 				RemoveFromTag (rem, pidx);
