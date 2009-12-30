@@ -57,6 +57,7 @@ ADD_LIBRARY (leechcraft_pylc SHARED
 	${RCCS}
 	${DUMMY_WROBJ_MOCCED}
 	)
+MESSAGE (STATUS "${PYTHON_LIBRARIES}")
 TARGET_LINK_LIBRARIES (leechcraft_pylc
 	${QT_LIBRARIES}
 	plugininterface

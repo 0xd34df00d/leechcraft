@@ -18,6 +18,7 @@
 
 #include "wrapperobject.h"
 #include <QIcon>
+#include <QFile>
 #include "coreproxywrapper.h"
 
 namespace LeechCraft
@@ -45,7 +46,13 @@ namespace LeechCraft
 			: QObject (parent)
 			, Filename_ (filename)
 			{
-				Module_ = PythonQt::self ()->createModuleFromFile (filename, filename);
+				Module_ = PythonQt::self ()->getMainModule ();
+				QStringList classes;
+				classes << "QWidget"
+					<< "QMainWindow"
+					<< "QTabWidget";
+				PythonQt::self ()->registerQObjectClassNames (classes);
+				PythonQt::self ()->evalFile (Module_, filename);
 			}
 
 			void WrapperObject::Init (ICoreProxy_ptr proxy)

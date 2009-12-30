@@ -19,6 +19,10 @@
 #ifndef PLUGINS_PYLC_COREPROXYWRAPPER_H
 #define PLUGINS_PYLC_COREPROXYWRAPPER_H
 #include <QObject>
+#include <QModelIndex>
+#include <QIcon>
+#include <QMainWindow>
+#include <QTabWidget>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft
@@ -38,19 +42,23 @@ namespace LeechCraft
 				QNetworkAccessManager* GetNetworkAccessManager () const;
 				/*
 				const IShortcutProxy* GetShortcutProxy () const;
+				*/
 				QTreeView* GetCurrentView () const;
 				QModelIndex MapToSource (const QModelIndex&) const;
+				/*
 				Util::BaseSettingsManager* GetSettingsManager () const;
+				*/
 				QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
 				QMainWindow* GetMainWindow () const;
 				QTabWidget* GetTabWidget () const;
+				/*
 				ITagsManager* GetTagsManager () const;
 				*/
 				QStringList GetSearchCategories () const;
-				/*
 				int GetID ();
 				void FreeID (int);
 				QObject* GetTreeViewReemitter () const;
+				/*
 				IPluginsManager* GetPluginsManager () const;
 				QObject* GetSelf ();
 				*/

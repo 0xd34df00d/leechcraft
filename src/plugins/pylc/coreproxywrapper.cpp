@@ -34,9 +34,49 @@ namespace LeechCraft
 				return W_->GetNetworkAccessManager ();
 			}
 
+			QTreeView* CoreProxyWrapper::GetCurrentView () const
+			{
+				return W_->GetCurrentView ();
+			}
+
+			QModelIndex CoreProxyWrapper::MapToSource (const QModelIndex& i) const
+			{
+				return W_->MapToSource (i);
+			}
+
+			QIcon CoreProxyWrapper::GetIcon (const QString& on, const QString& off) const
+			{
+				return W_->GetIcon (on, off);
+			}
+
+			QMainWindow* CoreProxyWrapper::GetMainWindow () const
+			{
+				return W_->GetMainWindow ();
+			}
+
+			QTabWidget* CoreProxyWrapper::GetTabWidget () const
+			{
+				return W_->GetTabWidget ();
+			}
+
 			QStringList CoreProxyWrapper::GetSearchCategories () const
 			{
 				return W_->GetSearchCategories ();
+			}
+
+			int CoreProxyWrapper::GetID ()
+			{
+				return W_->GetID ();
+			}
+
+			void CoreProxyWrapper::FreeID (int id)
+			{
+				W_->FreeID (id);
+			}
+
+			QObject* CoreProxyWrapper::GetTreeViewReemitter () const
+			{
+				return W_->GetTreeViewReemitter ();
 			}
 		};
 	};
