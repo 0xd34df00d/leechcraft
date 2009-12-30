@@ -210,35 +210,19 @@ namespace LeechCraft
 			void SummaryWidget::updatePanes (const QModelIndex& newIndex,
 					const QModelIndex& oldIndex)
 			{
-#ifdef QT_DEBUG
-				qDebug () << Q_FUNC_INFO << this << newIndex << oldIndex;
-#endif
+				QToolBar *controls = Core::Instance ()
+							.GetControls (newIndex);
+
+
+				QWidget *addiInfo = Core::Instance ()
+							.GetAdditionalInfo (newIndex);
 
 				if (oldIndex.isValid () &&
-						Core::Instance ().SameModel (newIndex, oldIndex))
+						addiInfo != Ui_.ControlsDockWidget_->widget ())
+					Ui_.ControlsDockWidget_->hide ();
+
+				if (newIndex.isValid ())
 				{
-				}
-				else
-				{
-					if (oldIndex.isValid ())
-					{
-#ifdef QT_DEBUG
-						qDebug () << "erasing older stuff";
-#endif
-						Ui_.ControlsDockWidget_->hide ();
-					}
-
-
-					QToolBar *controls = Core::Instance ()
-								.GetControls (newIndex);
-
-					QWidget *addiInfo = Core::Instance ()
-								.GetAdditionalInfo (newIndex);
-
-#ifdef QT_DEBUG
-					qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
-#endif
-
 					Toolbar_->clear ();
 					if (controls)
 					{
@@ -251,7 +235,8 @@ namespace LeechCraft
 						}
 						Toolbar_->addActions (controls->actions ());
 					}
-					if (addiInfo)
+					if (addiInfo &&
+							addiInfo != Ui_.ControlsDockWidget_->widget ())
 					{
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);
 						Ui_.ControlsDockWidget_->show ();
