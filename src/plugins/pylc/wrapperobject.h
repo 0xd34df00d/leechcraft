@@ -21,6 +21,7 @@
 #include <QObject>
 #include <PythonQt/PythonQt.h>
 #include <interfaces/iinfo.h>
+#include <interfaces/idownload.h>
 
 namespace LeechCraft
 {
@@ -30,9 +31,10 @@ namespace LeechCraft
 		{
 			class WrapperObject : public QObject
 								, public IInfo
+								, public IDownload
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
+				Q_INTERFACES (IInfo IDownload)
 
 				QString Filename_;
 				mutable PythonQtObjectPtr Module_;
@@ -49,6 +51,14 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+
+				qint64 GetDownloadSpeed () const;
+				qint64 GetUploadSpeed () const;
+				void StartAll ();
+				void StopAll ();
+				bool CouldDownload (const LeechCraft::DownloadEntity&) const;
+				int AddJob (LeechCraft::DownloadEntity);
+				void KillTask (int);
 			private:
 				void* qt_metacast_dummy (const char*);
 				QVariant Call (const QString&, QVariantList = QVariantList ()) const;

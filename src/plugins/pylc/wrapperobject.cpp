@@ -33,6 +33,10 @@ namespace LeechCraft
 					return static_cast< IInfo*>(const_cast< WrapperObject*>(this));
 				if (!strcmp(_clname, "org.Deviant.LeechCraft.IInfo/1.0"))
 					return static_cast< IInfo*>(const_cast< WrapperObject*>(this));
+				if ((!strcmp(_clname, "IDownload") ||
+							!strcmp(_clname, "org.Deviant.LeechCraft.IDownload/1.0")) &&
+						Implements (_clname))
+					return static_cast< IDownload*>(const_cast< WrapperObject*>(this));
 				return QObject::qt_metacast(_clname);
 			}
 
@@ -191,7 +195,86 @@ namespace LeechCraft
 				{
 					Call ("SetProvider", args);
 				}
-				catch (std::exception& e)
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				}
+			}
+
+			qint64 WrapperObject::GetDownloadSpeed () const
+			{
+				try
+				{
+					return Call ("GetDownloadSpeed").toLongLong ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return 0;
+				}
+			}
+
+			qint64 WrapperObject::GetUploadSpeed () const
+			{
+				try
+				{
+					return Call ("GetUploadSpeed").toLongLong ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return 0;
+				}
+			}
+
+			void WrapperObject::StartAll ()
+			{
+				try
+				{
+					Call ("StartAll");
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				}
+			}
+
+			void WrapperObject::StopAll ()
+			{
+				try
+				{
+					Call ("StopAll");
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				}
+			}
+
+			bool WrapperObject::CouldDownload (const DownloadEntity&) const
+			{
+				// TODO
+			}
+
+			int WrapperObject::AddJob (DownloadEntity)
+			{
+				// TODO
+			}
+
+			void WrapperObject::KillTask (int id)
+			{
+				try
+				{
+					QVariantList args;
+					args << id;
+					Call ("StopAll", args);
+				}
+				catch (const std::exception& e)
 				{
 					qWarning () << Q_FUNC_INFO
 						<< e.what ();
