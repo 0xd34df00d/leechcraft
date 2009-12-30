@@ -78,6 +78,11 @@ namespace LeechCraft
 			{
 				return W_->GetTreeViewReemitter ();
 			}
+
+			QObject* CoreProxyWrapper::GetSelf ()
+			{
+				return W_->GetSelf ();
+			}
 		};
 	};
 };

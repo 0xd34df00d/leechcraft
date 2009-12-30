@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_PYLC_GENERALDECORATOR_H
 #define PLUGINS_PYLC_GENERALDECORATOR_H
-#include <QTabWidget>
+#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -30,6 +30,11 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 			public slots:
+				void static_QMessageBox_information (QWidget *p,
+						const QString& title, const QString& text)
+				{
+					QMessageBox::information (p, title, text);
+				}
 			};
 		};
 	};

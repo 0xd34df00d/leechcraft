@@ -48,18 +48,23 @@ namespace LeechCraft
 			, Filename_ (filename)
 			{
 				Module_ = PythonQt::self ()->getMainModule ();
+
+				PythonQt::self ()->addDecorators (new GeneralDecorator);
+				QStringList classes;
+				classes << "QWidget"
+					<< "QMainWindow"
+					<< "QTabWidget"
+					<< "QDialog"
+					<< "QMessageBox";
+				PythonQt::self ()->registerQObjectClassNames (classes);
+				PythonQt::self ()->registerClass (&QMessageBox::staticMetaObject);
+				PythonQt::self ()->registerClass (&CoreProxyWrapper::staticMetaObject);
+
 				PythonQt::self ()->evalFile (Module_, filename);
 			}
 
 			void WrapperObject::Init (ICoreProxy_ptr proxy)
 			{
-				QStringList classes;
-				classes << "QWidget"
-					<< "QMainWindow"
-					<< "QTabWidget";
-				PythonQt::self ()->registerQObjectClassNames (classes);
-				PythonQt::self ()->addDecorators (new GeneralDecorator);
-				PythonQt::self ()->registerClass (&CoreProxyWrapper::staticMetaObject);
 				PythonQt::self ()->registerClass (&proxy->GetTabWidget ()->staticMetaObject);
 				QVariantList args;
 				args << QVariant::fromValue<QObject*> (new CoreProxyWrapper (proxy));

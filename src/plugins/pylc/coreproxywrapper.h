@@ -60,8 +60,8 @@ namespace LeechCraft
 				QObject* GetTreeViewReemitter () const;
 				/*
 				IPluginsManager* GetPluginsManager () const;
-				QObject* GetSelf ();
 				*/
+				QObject* GetSelf ();
 			};
 		};
 	};
