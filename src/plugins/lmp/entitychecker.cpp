@@ -55,14 +55,13 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 	if (e.Entity_.canConvert<QUrl> ())
 	{
 		QUrl url = e.Entity_.toUrl ();
-		QString extension = QFileInfo (url.toLocalFile ()).suffix ();
+		QString extension = QFileInfo (url.path ()).suffix ();
 
 		QStringList goodExt = XmlSettingsManager::Instance ()->
 			property ("TestExtensions").toString ()
 			.split (' ', QString::SkipEmptyParts);
 
 		Result_ = goodExt.contains (extension);
-
 		return;
 	}
 
