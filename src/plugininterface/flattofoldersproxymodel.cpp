@@ -133,6 +133,9 @@ namespace LeechCraft
 		QModelIndex FlatToFoldersProxyModel::index (int row, int column,
 				const QModelIndex& parent) const
 		{
+			if (!hasIndex (row, column, parent))
+				return QModelIndex ();
+
 			FlatTreeItem *fti = 0;
 			if (parent.isValid ())
 				fti = ToFlat (parent);
