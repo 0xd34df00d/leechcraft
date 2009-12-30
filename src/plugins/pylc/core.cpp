@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <PythonQt/PythonQt.h>
+#include <PythonQt/PythonQtGui.h>
 #include "wrapperobject.h"
 
 namespace LeechCraft
@@ -31,6 +32,7 @@ namespace LeechCraft
 			Core::Core ()
 			{
 				PythonQt::init (PythonQt::RedirectStdOut);
+				PythonQtGui::init ();
 				connect (PythonQt::self (),
 						SIGNAL (pythonStdOut (const QString&)),
 						this,

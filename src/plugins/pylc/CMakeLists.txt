@@ -10,12 +10,14 @@ SET (SRCS
 	pylc.cpp
 	core.cpp
 	coreproxywrapper.cpp
+	generaldecorator.cpp
 	)
 SET (HEADERS
 	wrapperobject.h
 	pylc.h
 	core.h
 	coreproxywrapper.h
+	generaldecorator.h
 	)
 SET (TRANSLATIONS
 	leechcraft_pylc_ru_RU.ts
