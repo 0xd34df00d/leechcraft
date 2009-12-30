@@ -77,6 +77,8 @@ void TagsLineEdit::insertTag (const QString& completion)
 	wtext.append (completion);
 	wtext = wtext.simplified ();
 	setText (wtext);
+
+	emit tagsChosen ();
 }
 
 void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
@@ -87,6 +89,8 @@ void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
 void TagsLineEdit::handleSelectionChanged (const QStringList& tags)
 {
 	setText (tags.join ("; "));
+
+	emit tagsChosen ();
 }
 
 void TagsLineEdit::keyPressEvent (QKeyEvent *e)
