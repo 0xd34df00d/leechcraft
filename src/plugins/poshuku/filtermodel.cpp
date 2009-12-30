@@ -20,6 +20,7 @@
 #include <QStringList>
 #include <interfaces/structures.h>
 #include "favoritesmodel.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -38,8 +39,13 @@ namespace LeechCraft
 			
 			QStringList FilterModel::GetTagsForIndex (int row) const
 			{
-				return sourceModel ()->data (sourceModel ()->index (row, 0),
+				QStringList ids = sourceModel ()->data (sourceModel ()->index (row, 0),
 						LeechCraft::RoleTags).toStringList ();
+				QStringList tags;
+				Q_FOREACH (QString id, ids)
+					tags.append (Core::Instance ().GetProxy ()->
+							GetTagsManager ()->GetTag (id));
+				return tags;
 			}
 		};
 	};

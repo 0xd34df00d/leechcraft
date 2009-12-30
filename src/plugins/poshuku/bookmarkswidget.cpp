@@ -60,6 +60,10 @@ namespace LeechCraft
 						);
 				Ui_.FavoritesFilterLine_->AddSelector ();
 				connect (Ui_.FavoritesFilterLine_,
+						SIGNAL (tagsChosen ()),
+						this,
+						SLOT (selectTagsMode ()));
+				connect (Ui_.FavoritesFilterLine_,
 						SIGNAL (textChanged (const QString&)),
 						this,
 						SLOT (updateFavoritesFilter ()));
@@ -179,18 +183,8 @@ namespace LeechCraft
 						FavoritesFilterModel_->setFilterRegExp (text);
 						break;
 					case 3:
-						{
-							FavoritesFilterModel_->setTagsMode (true);
-							QStringList tags = Core::Instance ().GetProxy ()->
-								GetTagsManager ()->Split (text);
-							QStringList ids;
-							Q_FOREACH (QString tag, tags)
-								ids.append (Core::Instance ().GetProxy ()->
-										GetTagsManager ()->GetID (tag));
-							QString joined = Core::Instance ().GetProxy ()->
-								GetTagsManager ()->Join (ids);
-							FavoritesFilterModel_->setFilterFixedString (joined);
-						}
+						FavoritesFilterModel_->setTagsMode (true);
+						FavoritesFilterModel_->setFilterFixedString (text);
 						break;
 					default:
 						FavoritesFilterModel_->setTagsMode (false);
@@ -234,6 +228,12 @@ namespace LeechCraft
 						i < size; ++i)
 					Core::Instance ().NewURL (FavoritesFilterModel_->
 							index (i, FavoritesModel::ColumnURL).data ().toString ());
+			}
+
+			void BookmarksWidget::selectTagsMode ()
+			{
+				Ui_.FavoritesFilterType_->setCurrentIndex (3);
+				updateFavoritesFilter ();
 			}
 		};
 	};

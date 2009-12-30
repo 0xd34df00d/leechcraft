@@ -54,6 +54,7 @@ namespace LeechCraft
 				void updateFavoritesFilter ();
 				void on_FavoritesView__activated (const QModelIndex&);
 				void on_OpenInTabs__released ();
+				void selectTagsMode ();
 			};
 		};
 	};
