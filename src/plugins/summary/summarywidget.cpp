@@ -241,7 +241,16 @@ namespace LeechCraft
 
 					Toolbar_->clear ();
 					if (controls)
+					{
+						Q_FOREACH (QAction *action, controls->actions ())
+						{
+							QString ai = action->property ("ActionIcon").toString ();
+							if (! ai.isEmpty () &&
+									action->icon ().isNull ())
+								action->setIcon (Core::Instance ().GetProxy ()->GetIcon (ai));
+						}
 						Toolbar_->addActions (controls->actions ());
+					}
 					if (addiInfo)
 					{
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);
