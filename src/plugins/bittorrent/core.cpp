@@ -384,7 +384,7 @@ namespace LeechCraft
 							Handles_.at (CurrentTorrent_).Handle_.url_seeds ())
 					{
 						QList<QStandardItem*> items;
-						items << new QStandardItem (QString::fromStdString (url));
+						items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
 						items << new QStandardItem ("BEP 19");
 						WebSeedsModel_->appendRow (items);
 					}
@@ -392,7 +392,7 @@ namespace LeechCraft
 							Handles_.at (CurrentTorrent_).Handle_.http_seeds ())
 					{
 						QList<QStandardItem*> items;
-						items << new QStandardItem (QString::fromStdString (url));
+						items << new QStandardItem (QString::fromUtf8 (url.c_str ()));
 						items << new QStandardItem ("BEP 17");
 						WebSeedsModel_->appendRow (items);
 					}
@@ -1977,7 +1977,7 @@ namespace LeechCraft
 				libtorrent::torrent_info info = torrent.Handle_
 					.get_torrent_info ();
 			
-				QString name = QString::fromStdString (info.name ());
+				QString name = QString::fromUtf8 (info.name ().c_str ());
 				QString string = tr ("Torrent finished: %1").arg (name);
 				emit torrentFinished (string);
 			
@@ -2439,7 +2439,7 @@ namespace LeechCraft
 			
 					try
 					{
-						QString logmsg = QString::fromStdString (a->message ());
+						QString logmsg = QString::fromUtf8 (a->message ().c_str ());
 						Core::Instance ()->LogMessage (QDateTime::currentDateTime ().toString () + " " + logmsg);
 			
 						qDebug () << "<libtorrent>" << logmsg;
