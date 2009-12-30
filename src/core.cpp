@@ -726,7 +726,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		bool ask = true;
 		if (XmlSettingsManager::Instance ()->
 				property ("DontAskWhenSingle").toBool ())
-			ask = numDownloaders;
+			ask = (numDownloaders || numHandlers != 1);
 
 		IDownload *sd = 0;
 		IEntityHandler *sh = 0;
