@@ -57,7 +57,7 @@ FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signa
 FIND_PACKAGE (Qt4 REQUIRED)
 FIND_PACKAGE (Phonon)
 FIND_PACKAGE (RBTorrent)
-FIND_PACKAGE (PythonLibs)
+FIND_PACKAGE (PythonVer 2.5)
 #FIND_PACKAGE (Wt)
 
 ADD_SUBDIRECTORY (plugininterface)
