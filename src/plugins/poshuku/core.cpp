@@ -810,6 +810,7 @@ namespace LeechCraft
 			void Core::handleTitleChanged (const QString& newTitle)
 			{
 				emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
+				HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
 			
 				saveSingleSession ();
 			}
