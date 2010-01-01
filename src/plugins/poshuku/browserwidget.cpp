@@ -361,6 +361,10 @@ namespace LeechCraft
 						this,
 						SLOT (notifyLoadFinished (bool)));
 				connect (Ui_.WebView_,
+						SIGNAL (loadFinished ()),
+						this,
+						SLOT (handleIconChanged ()));
+				connect (Ui_.WebView_,
 						SIGNAL (loadStarted ()),
 						this,
 						SLOT (enableActions ()));
@@ -659,11 +663,10 @@ namespace LeechCraft
 			
 			void BrowserWidget::handleIconChanged ()
 			{
-				int progress = Ui_.Progress_->value ();
-				if (progress == 100)
-					emit iconChanged (Ui_.WebView_->icon ());
-				else
-					emit iconChanged (QIcon ());
+				QIcon icon = Ui_.WebView_->icon ();
+				if (icon.isNull ())
+					icon = Core::Instance ().GetIcon (Ui_.WebView_->url ());
+				emit iconChanged (icon);
 			}
 			
 			void BrowserWidget::handleStatusBarMessage (const QString& msg)
