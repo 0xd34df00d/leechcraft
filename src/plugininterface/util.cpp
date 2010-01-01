@@ -164,11 +164,12 @@ QString LeechCraft::Util::GetLocaleName ()
 
 	if (localeName.size () == 2)
 	{
-		QList<QLocale::Country> cs = QLocale::countriesForLanguage (QLocale (localeName).language ());
+		QLocale::Language lang = QLocale (localeName).language ();
+		QList<QLocale::Country> cs = QLocale::countriesForLanguage (lang);
 		if (cs.isEmpty ())
 			localeName += "_00";
 		else
-			localeName += QLocale::countryToString (cs.at (0));
+			localeName = QLocale (lang, cs.at (0)).name ();
 	}
 
 	return localeName;
