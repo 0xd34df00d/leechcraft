@@ -39,6 +39,7 @@
 #include <QScrollArea>
 #include <QDomNodeList>
 #include <QtScript>
+#include <plugininterface/util.h>
 #include "rangewidget.h"
 #include "filepicker.h"
 #include "radiogroup.h"
@@ -342,13 +343,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 {
-	QString locale = QString(::getenv ("LANG")).left (2);
-	if (locale.isNull () || locale.isEmpty ())
-		locale = QLocale::system ().name ().toLower ();
-	if (locale == "c")
-		locale = "en";
-
-	locale = locale.left (2);
+	QString locale = Util::GetLanguage ();
 
 	QString result = "<no label>";
 	QDomElement label = item.firstChildElement ("label");
