@@ -6,7 +6,7 @@
 		<label lang="ru" value="Общие" />
 		<label lang="ua" value="Загальні" />
 		<tab>
-			<label lang="en" value="VYFW" />
+			<label lang="en" value="WYFV" />
 			<groupbox>
 				<label lang="en" value="Enable for these sites:" />
 				<label lang="ru" value="Включить для этих сайтов:" />
