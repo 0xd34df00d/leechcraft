@@ -793,9 +793,9 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 		return DoDownload (sd, p, id, pr);
 	}
 	else if (((p.Parameters_ & LeechCraft::AutoAccept) ||
-				numHandlers == 1 &&
-				XmlSettingsManager::Instance ()->
-					property ("DontAskWhenSingle").toBool ()) &&
+				(numHandlers == 1 &&
+				 XmlSettingsManager::Instance ()->
+					property ("DontAskWhenSingle").toBool ())) &&
 			dia->GetFirstEntityHandler ())
 		return DoHandle (dia->GetFirstEntityHandler (), p);
 	else
