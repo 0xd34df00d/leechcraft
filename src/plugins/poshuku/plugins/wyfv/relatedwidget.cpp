@@ -50,7 +50,8 @@ namespace LeechCraft
 								SLOT (handleAnimationFinished ()));
 
 						setWindowTitle (tr ("Related videos"));
-						setWindowFlags (Qt::WindowStaysOnTopHint);
+						setWindowFlags (Qt::WindowStaysOnTopHint |
+								Qt::FramelessWindowHint);
 
 						Form_ = new QGraphicsWidget;
 						Form_->setLayout (Layout_);
