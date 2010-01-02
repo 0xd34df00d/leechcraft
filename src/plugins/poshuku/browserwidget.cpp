@@ -334,6 +334,10 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (Ui_.WebView_,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (Ui_.WebView_->page (),
 						SIGNAL (linkHovered (const QString&,
 								const QString&,
@@ -971,33 +975,11 @@ namespace LeechCraft
 						entity = entity.toUpper ();
 					}
 			
-					QString hrefUrl (attributes.value ("href").toString ());
-					if (hrefUrl.indexOf ("://") < 0)
-					{
-						QUrl originalUrl = Ui_.WebView_->page ()->mainFrame ()->url ();
-						originalUrl.setQueryItems (QList<QPair<QString, QString> > ());
-						if (hrefUrl.size () &&
-								hrefUrl.at (0) == '/')
-							originalUrl.setEncodedPath (hrefUrl.toUtf8 ());
-						else
-						{
-							QString originalPath = originalUrl.path ();
-							if (!originalPath.endsWith ('/'))
-							{
-								int slashIndex = originalPath.lastIndexOf ('/');
-								originalPath = originalPath.left (slashIndex + 1);
-							}
-							originalPath += hrefUrl;
-							originalUrl.setEncodedPath (originalPath.toUtf8 ());
-						}
-						e.Entity_ = originalUrl;
-						e.Additional_ ["SourceURL"] = originalUrl;
-					}
-					else
-					{
-						e.Entity_ = QUrl::fromEncoded (hrefUrl.toUtf8 ());
-						e.Additional_ ["SourceURL"] = QUrl::fromEncoded (hrefUrl.toUtf8 ());
-					}
+					QUrl entityUrl = Util::MakeAbsoluteUrl (Ui_.WebView_->
+								page ()->mainFrame ()->url (),
+							attributes.value ("href").toString ());
+					e.Entity_ = entityUrl;
+					e.Additional_ ["SourceURL"] = entityUrl;
 					e.Parameters_ = LeechCraft::FromUserInitiated |
 						LeechCraft::OnlyHandle;
 					e.Additional_ ["UserVisibleName"] = entity;

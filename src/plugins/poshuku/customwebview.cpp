@@ -24,6 +24,7 @@
 #include <QClipboard>
 #include <QFile>
 #include <QtDebug>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "customwebpage.h"
 #include "browserwidget.h"
@@ -63,9 +64,9 @@ namespace LeechCraft
 						SLOT (remakeURL (const QUrl&)));
 			
 				connect (page,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (page,
 						SIGNAL (loadingURL (const QUrl&)),
 						this,
@@ -206,8 +207,46 @@ namespace LeechCraft
 			
 				if (!r.linkUrl ().isEmpty ())
 				{
+					QUrl url = r.linkUrl ();
+					QString text = r.linkText ();
+
+					bool hasAtom = text.contains ("Atom");
+					bool hasRSS = text.contains ("RSS");
+
+					if (hasAtom || hasRSS)
+					{
+						LeechCraft::DownloadEntity e;
+						if (hasAtom)
+						{
+							e.Additional_ ["UserVisibleName"] = "Atom";
+							e.Mime_ = "application/atom+xml";
+						}
+						else
+						{
+							e.Additional_ ["UserVisibleName"] = "RSS";
+							e.Mime_ = "application/rss+xml";
+						}
+
+						e.Entity_ = url;
+						e.Parameters_ = LeechCraft::FromUserInitiated |
+							LeechCraft::OnlyHandle;
+
+						bool ch = false;
+						emit couldHandle (e, &ch);
+						if (ch)
+						{
+							QList<QVariant> datalist;
+							datalist << url
+								<< e.Mime_;
+							menu->addAction (tr ("Subscribe"),
+									this,
+									SLOT (subscribeToLink ()))->setData (datalist);
+							menu->addSeparator ();
+						}
+					}
+
 					menu->addAction (tr ("Open &here"),
-							this, SLOT (openLinkHere ()))->setData (r.linkUrl ());
+							this, SLOT (openLinkHere ()))->setData (url);
 					menu->addAction (tr ("Open in new &tab"),
 							this, SLOT (openLinkInNewTab ()));
 					menu->addSeparator ();
@@ -215,8 +254,8 @@ namespace LeechCraft
 							this, SLOT (saveLink ()));
 			
 					QList<QVariant> datalist;
-					datalist << r.linkUrl ()
-						<< r.linkText ();
+					datalist << url
+						<< text;
 					menu->addAction (tr ("&Bookmark link..."),
 							this, SLOT (bookmarkLink ()))->setData (datalist);
 			
@@ -354,7 +393,7 @@ namespace LeechCraft
 			{
 				emit urlChanged (url.toString ());
 			}
-			
+
 			void CustomWebView::openLinkHere ()
 			{
 				Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
@@ -368,6 +407,16 @@ namespace LeechCraft
 			void CustomWebView::saveLink ()
 			{
 				pageAction (QWebPage::DownloadLinkToDisk)->trigger ();
+			}
+			
+			void CustomWebView::subscribeToLink ()
+			{
+				QList<QVariant> list = qobject_cast<QAction*> (sender ())->data ().toList ();
+				DownloadEntity e = Util::MakeEntity (list.at (0),
+						QString (),
+						FromUserInitiated | OnlyHandle,
+						list.at (1).toString ());
+				emit gotEntity (e);
 			}
 			
 			void CustomWebView::bookmarkLink ()

@@ -62,6 +62,7 @@ namespace LeechCraft
 				void openLinkHere ();
 				void openLinkInNewTab ();
 				void saveLink ();
+				void subscribeToLink ();
 				void bookmarkLink ();
 				void copyLink ();
 				void openImageHere ();
@@ -74,6 +75,7 @@ namespace LeechCraft
 			signals:
 				void urlChanged (const QString&);
 				void gotEntity (const LeechCraft::DownloadEntity&);
+				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 				void addToFavorites (const QString&, const QString&);
 				void printRequested (QWebFrame*);
 				void closeRequested ();
