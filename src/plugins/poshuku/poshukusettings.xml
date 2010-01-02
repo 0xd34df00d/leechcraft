@@ -23,6 +23,10 @@
 				<label lang="en" value="Differ download locations by file extension" />
 				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
 			</item>
+			<item type="checkbox" property="TryToDetectRSSLinks" state="on">
+				<label lang="en" value="Try to detect links to RSS/Atom feeds" />
+				<label lang="ru" value="Пытаться обнаруживать ссылки на RSS/Atom-ленты" />
+			</item>
 			<item type="checkbox" property="GenerateTooltips" state="on">
 				<label lang="en" value="Generate tooltips" />
 				<label lang="ru" value="Создавать образ страниц" />

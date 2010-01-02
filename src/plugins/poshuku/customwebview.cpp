@@ -210,38 +210,42 @@ namespace LeechCraft
 					QUrl url = r.linkUrl ();
 					QString text = r.linkText ();
 
-					bool hasAtom = text.contains ("Atom");
-					bool hasRSS = text.contains ("RSS");
-
-					if (hasAtom || hasRSS)
+					if (XmlSettingsManager::Instance ()->
+							property ("TryToDetectRSSLinks").toBool ())
 					{
-						LeechCraft::DownloadEntity e;
-						if (hasAtom)
-						{
-							e.Additional_ ["UserVisibleName"] = "Atom";
-							e.Mime_ = "application/atom+xml";
-						}
-						else
-						{
-							e.Additional_ ["UserVisibleName"] = "RSS";
-							e.Mime_ = "application/rss+xml";
-						}
+						bool hasAtom = text.contains ("Atom");
+						bool hasRSS = text.contains ("RSS");
 
-						e.Entity_ = url;
-						e.Parameters_ = LeechCraft::FromUserInitiated |
-							LeechCraft::OnlyHandle;
-
-						bool ch = false;
-						emit couldHandle (e, &ch);
-						if (ch)
+						if (hasAtom || hasRSS)
 						{
-							QList<QVariant> datalist;
-							datalist << url
-								<< e.Mime_;
-							menu->addAction (tr ("Subscribe"),
-									this,
-									SLOT (subscribeToLink ()))->setData (datalist);
-							menu->addSeparator ();
+							LeechCraft::DownloadEntity e;
+							if (hasAtom)
+							{
+								e.Additional_ ["UserVisibleName"] = "Atom";
+								e.Mime_ = "application/atom+xml";
+							}
+							else
+							{
+								e.Additional_ ["UserVisibleName"] = "RSS";
+								e.Mime_ = "application/rss+xml";
+							}
+
+							e.Entity_ = url;
+							e.Parameters_ = LeechCraft::FromUserInitiated |
+								LeechCraft::OnlyHandle;
+
+							bool ch = false;
+							emit couldHandle (e, &ch);
+							if (ch)
+							{
+								QList<QVariant> datalist;
+								datalist << url
+									<< e.Mime_;
+								menu->addAction (tr ("Subscribe"),
+										this,
+										SLOT (subscribeToLink ()))->setData (datalist);
+								menu->addSeparator ();
+							}
 						}
 					}
 
