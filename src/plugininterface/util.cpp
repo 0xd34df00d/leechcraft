@@ -226,3 +226,28 @@ LeechCraft::DownloadEntity LeechCraft::Util::MakeEntity (const QVariant& entity,
 	return result;
 }
 
+QUrl LeechCraft::Util::MakeAbsoluteUrl (QUrl originalUrl, const QString& hrefUrl)
+{
+	if (hrefUrl.indexOf ("://") < 0)
+	{
+		originalUrl.setQueryItems (QList<QPair<QString, QString> > ());
+		if (hrefUrl.size () &&
+				hrefUrl.at (0) == '/')
+			originalUrl.setEncodedPath (hrefUrl.toUtf8 ());
+		else
+		{
+			QString originalPath = originalUrl.path ();
+			if (!originalPath.endsWith ('/'))
+			{
+				int slashIndex = originalPath.lastIndexOf ('/');
+				originalPath = originalPath.left (slashIndex + 1);
+			}
+			originalPath += hrefUrl;
+			originalUrl.setEncodedPath (originalPath.toUtf8 ());
+		}
+		return originalUrl;
+	}
+	else
+		return QUrl::fromEncoded (hrefUrl.toUtf8 ());
+}
+
