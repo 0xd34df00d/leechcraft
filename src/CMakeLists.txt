@@ -233,6 +233,8 @@ SET (SRCS
 	localsockethandler.cpp
 	toolbarguard.cpp
 	clipboardwatcher.cpp
+	glanceshower.cpp
+	glanceitem.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -272,6 +274,8 @@ SET (HEADERS
 	localsockethandler.h
 	toolbarguard.h
 	clipboardwatcher.h
+	glanceshower.h
+	glanceitem.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

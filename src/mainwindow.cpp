@@ -46,6 +46,7 @@
 #include "startupwizard.h"
 #include "aboutdialog.h"
 #include "toolbarguard.h"
+#include "glanceshower.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -349,6 +350,13 @@ void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 	else
 		pos = Ui_.MainTabWidget_->currentIndex ();
 	Core::Instance ().GetTabContainer ()->remove (pos);
+}
+
+void LeechCraft::MainWindow::on_ActionGlance__triggered ()
+{
+	Glance_ = new GlanceShower;
+	Glance_->SetTabWidget (Ui_.MainTabWidget_);
+	Glance_->Start ();
 }
 
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()

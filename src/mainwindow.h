@@ -48,6 +48,7 @@ namespace LeechCraft
 	class ShortcutManager;
 	class LogToolBox;
 	class ToolbarGuard;
+	class GlanceShower;
 
 	class MainWindow : public QMainWindow
 	{
@@ -70,6 +71,7 @@ namespace LeechCraft
 		QString LanguageOnLoad_;
 		ToolbarGuard *Guard_;
 		QToolBar *PluginsActionsBar_;
+		GlanceShower *Glance_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
@@ -90,6 +92,7 @@ namespace LeechCraft
 		void on_ActionAddTask__triggered ();
 		void on_ActionNewTab__triggered ();
 		void on_ActionCloseTab__triggered ();
+		void on_ActionGlance__triggered ();
 		void on_ActionSettings__triggered ();
 		void on_ActionAboutLeechCraft__triggered ();
 		void on_ActionQuit__triggered ();
