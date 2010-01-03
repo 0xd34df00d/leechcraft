@@ -365,7 +365,7 @@ namespace LeechCraft
 						this,
 						SLOT (notifyLoadFinished (bool)));
 				connect (Ui_.WebView_,
-						SIGNAL (loadFinished ()),
+						SIGNAL (loadFinished (bool)),
 						this,
 						SLOT (handleIconChanged ()));
 				connect (Ui_.WebView_,

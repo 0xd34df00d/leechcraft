@@ -68,6 +68,10 @@ namespace LeechCraft
 						this,
 						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (page,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (page,
 						SIGNAL (loadingURL (const QUrl&)),
 						this,
 						SLOT (remakeURL (const QUrl&)));
