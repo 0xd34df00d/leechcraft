@@ -213,7 +213,6 @@ namespace LeechCraft
 				QToolBar *controls = Core::Instance ()
 							.GetControls (newIndex);
 
-
 				QWidget *addiInfo = Core::Instance ()
 							.GetAdditionalInfo (newIndex);
 
@@ -235,12 +234,11 @@ namespace LeechCraft
 						}
 						Toolbar_->addActions (controls->actions ());
 					}
-					if (addiInfo &&
-							addiInfo != Ui_.ControlsDockWidget_->widget ())
-					{
+					if (addiInfo != Ui_.ControlsDockWidget_->widget ())
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);
+
+					if (addiInfo)
 						Ui_.ControlsDockWidget_->show ();
-					}
 				}
 			}
 
@@ -375,8 +373,11 @@ namespace LeechCraft
 				if (current != now ||
 						(now.isValid () &&
 						 !selm->rowIntersectsSelection (now.row (), QModelIndex ())))
+				{
 					selm->select (now, QItemSelectionModel::ClearAndSelect |
 							QItemSelectionModel::Rows);
+					updatePanes (now, current);
+				}
 			}
 		};
 	};
