@@ -10,13 +10,6 @@ using namespace LeechCraft;
 void Plugin::Init (ICoreProxy_ptr)
 {
 	poc = new Editor();
-	QAction *showAction = new QAction (GetName (),
-			this);
-	connect (showAction,
-			SIGNAL (triggered ()),
-			poc,
-			SLOT (show ()));
-	Actions_.push_back (showAction);
 }
 
 void Plugin::SecondInit ()
