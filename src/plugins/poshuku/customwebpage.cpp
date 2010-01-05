@@ -359,7 +359,6 @@ namespace LeechCraft
 						HandleUnsupportedContent (this, reply))
 					return;
 
-			
 				switch (reply->error ())
 				{
 					case QNetworkReply::ProtocolUnknownError:
@@ -426,12 +425,13 @@ namespace LeechCraft
 								.arg (reply->url ().toString ());
 							QString contents = QString (errorPage.readAll ())
 								.arg (title)
+								.arg (reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ())
 								.arg (reply->errorString ())
 								.arg (reply->url ().toString ());
 			
 							QBuffer iconBuffer;
 							iconBuffer.open (QIODevice::ReadWrite);
-							QPixmap pixmap (":/resources/images/poshuku.png");
+							QPixmap pixmap (":/resources/images/poshuku.svg");
 							pixmap.save (&iconBuffer, "PNG");
 							contents.replace ("POSHUKU_LOGO", iconBuffer.buffer ().toBase64 ());
 			

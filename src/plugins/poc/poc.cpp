@@ -71,5 +71,5 @@ QToolBar* Plugin::GetToolBar () const
 	return 0;
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_chatter, Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_poc, Plugin);
 
