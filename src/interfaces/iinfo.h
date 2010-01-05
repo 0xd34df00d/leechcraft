@@ -266,6 +266,12 @@ public:
 	 */
 	virtual QString GetTag (tag_id id) const = 0;
 
+	/** Returns all tags existing in LeechCraft now.
+	 *
+	 * @return List of all tags.
+	 */
+	virtual QStringList GetAllTags () const = 0;
+
 	/** @brief Splits the given string with tags to the list of the tags.
 	 *
 	 * @param[in] string String with tags.

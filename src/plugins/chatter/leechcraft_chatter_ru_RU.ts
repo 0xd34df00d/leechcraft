@@ -2,19 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name></name>
-    <message>
-        <location filename="config.h" line="6"/>
-        <source>VERSION leechcraft::chatter</source>
-        <translation>VERSION leechcraft::chatter</translation>
-    </message>
-    <message>
-        <location filename="config.h" line="7"/>
-        <source>leech well</source>
-        <translation>грузите хорошо</translation>
-    </message>
-</context>
-<context>
     <name>FsIrcView</name>
     <message>
         <location filename="fsircview.cpp" line="207"/>
@@ -119,11 +106,6 @@
         <source>Invalid IRC URI</source>
         <translation>Неправильный IRC URI</translation>
     </message>
-    <message>
-        <location filename="irc.h" line="47"/>
-        <source>See ya in hell!</source>
-        <translation>Увидимся в аду!</translation>
-    </message>
 </context>
 <context>
     <name>IrcServer</name>
@@ -144,9 +126,9 @@
     </message>
 </context>
 <context>
-    <name>Plugin</name>
+    <name>LeechCraft::Plugins::Chatter::Plugin</name>
     <message>
-        <location filename="chatter.cpp" line="45"/>
+        <location filename="chatter.cpp" line="49"/>
         <source>Allows to chat in IRC</source>
         <translation>Позволяет чатиться в IRC</translation>
     </message>

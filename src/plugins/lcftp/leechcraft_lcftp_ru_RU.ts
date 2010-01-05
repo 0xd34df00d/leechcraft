@@ -2,41 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>Core</name>
-    <message>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
-        <source>%1 already exists. What do you want to do?</source>
-        <translation>%1 уже сущестует. Что Вы хотите сделать?</translation>
-    </message>
-    <message>
-        <source>Resume</source>
-        <translation>Продолжить</translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation>Начать заново</translation>
-    </message>
-    <message>
-        <source>Rename</source>
-        <translation>Переименовать</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Отменить</translation>
-    </message>
-    <message>
-        <source>Error removing %1</source>
-        <translation>Ошибка удаления %1</translation>
-    </message>
-    <message>
-        <source>Choose new file name</source>
-        <translation>Выберите новое имя файла</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::LCFTP::Core</name>
     <message>
         <source>Downloading at %1</source>
@@ -85,6 +50,30 @@
     <message>
         <source>Delete</source>
         <translation>Удалить</translation>
+    </message>
+    <message>
+        <source>%1 already exists. What do you want to do?</source>
+        <translation>%1 уже существует. Что вы хотите сделать?</translation>
+    </message>
+    <message>
+        <source>Overwrite</source>
+        <translation>Перезаписать</translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation>Переименовать</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Отменить</translation>
+    </message>
+    <message>
+        <source>Error removing %1</source>
+        <translation>Ошибка удаления %1</translation>
+    </message>
+    <message>
+        <source>Choose new file name</source>
+        <translation>Выберите новое имя файла</translation>
     </message>
 </context>
 <context>

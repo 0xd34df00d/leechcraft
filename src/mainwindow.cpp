@@ -46,6 +46,7 @@
 #include "startupwizard.h"
 #include "aboutdialog.h"
 #include "toolbarguard.h"
+#include "glanceshower.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -58,6 +59,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , PluginsActionsBar_ (0)
 {
 	Guard_ = new ToolbarGuard (this);
+	setUpdatesEnabled (false);
 	InitializeInterface ();
 
 	connect (qApp,
@@ -115,6 +117,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	updateIconSet ();
 
+	setUpdatesEnabled (true);
 	show ();
 
 	WasMaximized_ = isMaximized ();
@@ -349,6 +352,13 @@ void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 	Core::Instance ().GetTabContainer ()->remove (pos);
 }
 
+void LeechCraft::MainWindow::on_ActionGlance__triggered ()
+{
+	Glance_ = new GlanceShower;
+	Glance_->SetTabWidget (Ui_.MainTabWidget_);
+	Glance_->Start ();
+}
+
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 {
 	SettingsSink_->show ();
@@ -552,7 +562,6 @@ void LeechCraft::MainWindow::updateIconSet ()
 void LeechCraft::MainWindow::doDelayedInit ()
 {
 	PluginManagerDialog *pm = new PluginManagerDialog ();
-	pm->setWindowFlags (Qt::Widget);
 	XmlSettingsDialog_->SetCustomWidget ("PluginManager", pm);
 
 	QObjectList settable = Core::Instance ().GetSettables ();
@@ -642,5 +651,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 			Ui_.MenuTools_->insertMenu (Ui_.ActionLogger_, menu);
 		Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
 	}
+
+	on_MainTabWidget__currentChanged (0);
 }
 

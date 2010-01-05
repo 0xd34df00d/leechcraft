@@ -75,9 +75,7 @@ namespace LeechCraft
 					MergeModel_->AddModel (plugin->GetRepresentation ());
 
 				Default_ = CreateSummaryWidget ();
-
-				emit addNewTab (tr ("Summary"), Default_);
-				emit changeTabIcon (Default_, QIcon (":/resources/images/summary.svg"));
+				Default_->setProperty ("IsUnremoveable", true);
 			}
 
 			TreeViewReemitter* Core::GetTreeViewReemitter () const

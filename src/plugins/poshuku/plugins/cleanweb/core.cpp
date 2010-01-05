@@ -31,11 +31,14 @@
 #include <QWebPage>
 #include <QWebElementCollection>
 #include <QCoreApplication>
+#include <QWebHitTestResult>
+#include <QMenu>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
 #include "blockednetworkreply.h"
+#include "userfiltersmodel.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
@@ -153,7 +156,7 @@ namespace
 					actualLine.endsWith ('/'))
 			{
 				actualLine = actualLine.mid (1, actualLine.size () - 2);
-				f.MatchType_ = FilterOption::MTRegexp_;
+				f.MatchType_ = FilterOption::MTRegexp;
 			}
 			else
 			{
@@ -183,34 +186,16 @@ namespace
 			if (FilterOption () != f)
 				Filter_->Options_ [actualLine] = f;
 
-			if (f.MatchType_ == FilterOption::MTRegexp_)
+			if (f.MatchType_ == FilterOption::MTRegexp)
 				Filter_->RegExps_ [actualLine] = QRegExp (actualLine, f.Case_, QRegExp::RegExp);
 		}
 	};
 };
 
-FilterOption::FilterOption ()
-: Case_ (Qt::CaseInsensitive)
-, MatchType_ (MTWildcard_)
-{
-}
-
-bool LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::operator== (const FilterOption& f1, const FilterOption& f2)
-{
-	return f1.Case_ == f2.Case_ &&
-		f1.MatchType_ == f2.MatchType_ &&
-		f1.Domains_ == f2.Domains_ &&
-		f1.NotDomains_ == f2.NotDomains_;
-}
-
-bool LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::operator!= (const FilterOption& f1, const FilterOption& f2)
-{
-	return !(f1 == f2);
-}
-
 LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core::Core ()
 : FlashOnClickPlugin_ (0)
 , FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
+, UserFilters_ (new UserFiltersModel (this))
 {
 	HeaderLabels_ << tr ("Name")
 		<< tr ("Last updated")
@@ -250,6 +235,16 @@ void Core::Release ()
 {
 	delete FlashOnClickWhitelist_;
 	delete FlashOnClickPlugin_;
+}
+
+void Core::SetProxy (ICoreProxy_ptr proxy)
+{
+	Proxy_ = proxy;
+}
+
+ICoreProxy_ptr Core::GetProxy () const
+{
+	return Proxy_;
 }
 
 int Core::columnCount (const QModelIndex&) const
@@ -389,6 +384,22 @@ void Core::HandleLoadFinished (QWebPage *page)
 	}
 }
 
+void Core::HandleContextMenu (const QWebHitTestResult& r,
+		QMenu *menu, PluginBase::WebViewCtxMenuStage stage)
+{
+	QUrl iurl = r.imageUrl ();
+	if (stage == PluginBase::WVSAfterImage &&
+			!iurl.isEmpty ())
+		menu->addAction (tr ("Block image..."),
+				UserFilters_,
+				SLOT (blockImage ()))->setData (iurl);
+}
+
+UserFiltersModel* Core::GetUserFiltersModel () const
+{
+	return UserFilters_;
+}
+
 FlashOnClickPlugin* Core::GetFlashOnClick ()
 {
 	if (!FlashOnClickPlugin_)
@@ -429,7 +440,10 @@ bool Core::ShouldReject (const QNetworkRequest& req, QString *matchedFilter) con
 	QString cinUrlStr = urlStr.toLower ();
 	QString domain = url.host ();
 	
-	Q_FOREACH (Filter filter, Filters_)
+	QList<Filter> allFilters;
+	allFilters << UserFilters_->GetFilter ();
+	allFilters += Filters_;
+	Q_FOREACH (Filter filter, allFilters)
 	{
 		Q_FOREACH (QString exception, filter.ExceptionStrings_)
 		{
@@ -544,10 +558,10 @@ bool Core::Matches (const QString& exception, const Filter& filter,
 			return false;
 	}
 
-	if (opt.MatchType_ == FilterOption::MTRegexp_ &&
+	if (opt.MatchType_ == FilterOption::MTRegexp &&
 			filter.RegExps_ [exception].exactMatch (urlStr))
 		return true;
-	else if (opt.MatchType_ == FilterOption::MTWildcard_)
+	else if (opt.MatchType_ == FilterOption::MTWildcard)
 	{
 		if (WildcardMatches (qPrintable (exception),
 					qPrintable (urlStr)))

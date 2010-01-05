@@ -14,6 +14,8 @@ SET (SRCS
 	firstpage.cpp
 	lifereaimportpage.cpp
 	lifereaimporter.cpp
+	ktorrentimportpage.cpp
+	ktorrentimporter.cpp
 	)
 SET (HEADERS
 	newlife.h
@@ -23,6 +25,8 @@ SET (HEADERS
 	firstpage.h
 	lifereaimportpage.h
 	lifereaimporter.h
+	ktorrentimportpage.h
+	ktorrentimporter.h
 	abstractimporter.h
 	)
 SET (FORMS

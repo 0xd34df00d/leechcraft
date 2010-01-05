@@ -117,15 +117,21 @@ namespace LeechCraft
 			BE (HandleToolBarVisibilityChangeRequested, (QWebPage*)(bool));
 			BE (HandleUnsupportedContent, (QWebPage*)(QNetworkReply*));
 			BE (HandleWindowCloseRequested, (QWebPage*));
-			BE (OnAcceptNavigationRequest, (QWebPage*)(QWebFrame*)(const QNetworkRequest&)(QWebPage::NavigationType));
+			BE (OnAcceptNavigationRequest,
+					(QWebPage*)(QWebFrame*)(const QNetworkRequest&)(QWebPage::NavigationType));
 			CE (OnChooseFile, (QWebPage*)(QWebFrame*)(const QString&), QString);
-			CE (OnCreatePlugin, (QWebPage*)(const QString&)(const QUrl&)(const QStringList&)(const QStringList&), QObject*);
+			CE (OnCreatePlugin,
+					(QWebPage*)(const QString&)(const QUrl&)(const QStringList&)(const QStringList&),
+					QObject*);
 			CE (OnCreateWindow, (QWebPage*)(QWebPage::WebWindowType), QWebPage*);
 			BE (OnJavaScriptAlert, (QWebPage*)(QWebFrame*)(const QString&));
 			CE (OnJavaScriptConfirm, (QWebPage*)(QWebFrame*)(const QString&), bool);
 			BE (OnJavaScriptConsoleMessage, (QWebPage*)(const QString&)(int)(const QString&));
-			CE (OnJavaScriptPrompt, (QWebPage*)(QWebFrame*)(const QString&)(const QString&)(QString*), bool);
+			CE (OnJavaScriptPrompt, (QWebPage*)(QWebFrame*)(const QString&)(const QString&)(QString*),
+					bool);
 			CE (OnUserAgentForUrl, (const QWebPage*)(const QUrl&), QString);
+			BE (OnWebViewCtxMenu,
+					(QWebView*)(QContextMenuEvent*)(const QWebHitTestResult&)(QMenu*)(WebViewCtxMenuStage));
 		};
 	};
 };

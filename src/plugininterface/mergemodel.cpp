@@ -410,6 +410,9 @@ bool MergeModel::AcceptsRow (QAbstractItemModel*, int) const
 
 int MergeModel::RowCount (QAbstractItemModel *model) const
 {
+	if (!model)
+		return 0;
+
 	int orig = model->rowCount ();
 	if (DefaultAcceptsRowImpl_)
 		return orig;

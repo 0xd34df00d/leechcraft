@@ -102,6 +102,7 @@ namespace LeechCraft
 				{
 					QUrl URL_;
 					QPoint SPoint_;
+					QByteArray History_;
 				};
 
 				static Core& Instance ();

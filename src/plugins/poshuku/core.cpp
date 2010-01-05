@@ -261,7 +261,7 @@ namespace LeechCraft
 								.arg (QLocale::system ().name ().replace ('_', '-')));
 					}
 				}
-			
+
 				return result;
 			}
 			
@@ -610,10 +610,16 @@ namespace LeechCraft
 						title = title.left (50) + "...";
 					QAction *action = new QAction (widget->GetView ()->icon (),
 							title, this);
+
+					QByteArray ba;
+					QDataStream out (&ba, QIODevice::WriteOnly);
+					out << *widget->GetView ()->page ()->history ();
+
 					UncloseData ud =
 					{
 						widget->GetView ()->url (),
-						widget->GetView ()->page ()->mainFrame ()->scrollPosition ()
+						widget->GetView ()->page ()->mainFrame ()->scrollPosition (),
+						ba
 					};
 					action->setData (QVariant::fromValue (ud));
 			
@@ -790,14 +796,21 @@ namespace LeechCraft
 				QAction *action = qobject_cast<QAction*> (sender ());
 				UncloseData ud = action->data ().value<UncloseData> ();
 				BrowserWidget *bw = NewURL (ud.URL_);
+
+				QDataStream str (ud.History_);
+				str >> *bw->GetView ()->page ()->history ();
+
 				bw->SetOnLoadScrollPoint (ud.SPoint_);
+
 				Unclosers_.removeAll (action);
+
 				action->deleteLater ();
 			}
 			
 			void Core::handleTitleChanged (const QString& newTitle)
 			{
 				emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
+				HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
 			
 				saveSingleSession ();
 			}

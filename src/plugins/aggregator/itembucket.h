@@ -36,11 +36,13 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				ItemModel *Model_;
+				ItemModel *ItemModel_;
 				Ui::ItemBucket Ui_;
 			public:
 				ItemBucket (QWidget* = 0);
 				virtual ~ItemBucket ();
+
+				ItemModel* GetItemModel () const;
 			private slots:
 				void on_Items__activated (const QModelIndex&);
 				void on_ActionDeleteItem__triggered ();

@@ -169,8 +169,12 @@ namespace LeechCraft
 							Player_.get (),
 							SLOT (show ()));
 				}
-				Player_->show ();
 				Player_->Enqueue (source);
+				if (e.Parameters_ & FromUserInitiated)
+				{
+					Player_->show ();
+					Player_->Play ();
+				}
 			}
 		};
 	};

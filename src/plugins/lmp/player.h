@@ -60,6 +60,7 @@ namespace LeechCraft
 				void handleError (const QString&);
 			private slots:
 				void handleSourceChanged (const Phonon::MediaSource&);
+				void handleMetadataChanged ();
 				void on_Queue__activated (const QModelIndex&);
 			};
 		};

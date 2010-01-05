@@ -85,6 +85,9 @@ namespace LeechCraft
 				bool OnJavaScriptPrompt (QWebPage*, QWebFrame*, const QString&,
 						const QString&, QString*);
 				QString OnUserAgentForUrl (const QWebPage*, const QUrl&);
+				bool OnWebViewCtxMenu (QWebView*, QContextMenuEvent*,
+						const QWebHitTestResult&, QMenu*,
+						WebViewCtxMenuStage);
 			};
 		};
 	};

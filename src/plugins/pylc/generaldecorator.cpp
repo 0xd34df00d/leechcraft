@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,44 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_DBUSMANAGER_ADAPTOR_H
-#define PLUGINS_DBUSMANAGER_ADAPTOR_H
-#include <QDBusAbstractAdaptor>
-#include <QStringList>
+#include "generaldecorator.h"
 
 namespace LeechCraft
 {
 	namespace Plugins
 	{
-		namespace DBusManager
+		namespace PyLC
 		{
-			class Core;
-			class QDBusMessage;
-
-			class Adaptor : public QDBusAbstractAdaptor
-			{
-				Q_OBJECT
-
-				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.Manager");
-				Q_PROPERTY (QString OrganizationName READ GetOrganizationName);
-				Q_PROPERTY (QString ApplicationName READ GetApplicationName);
-
-				Core *Core_;
-			public:
-				Adaptor (Core*);
-
-				QString GetOrganizationName () const;
-				QString GetApplicationName () const;
-			public slots:
-				QString Greeter (const QString&, const QDBusMessage&);
-				QStringList GetLoadedPlugins ();
-			signals:
-				void aboutToQuit ();
-				void someEventHappened (const QString&);
-			};
 		};
 	};
 };
-
-#endif
 

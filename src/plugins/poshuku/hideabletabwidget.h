@@ -36,16 +36,10 @@ namespace LeechCraft
 
 				Ui::HideableTabWidget Ui_;
 
-				QAction *Hider_;
 				QTabBar *TabBar_;
-				bool Hidden_;
 			public:
 				HideableTabWidget (QWidget* = 0);
 				void AddPage (const QString&, QWidget*);
-			private:
-				void Hide (bool);
-			public slots:
-				void handleToggleHide ();
 			};
 		};
 	};

@@ -46,8 +46,9 @@ namespace LeechCraft
 				layout ()->addWidget (StatusBar_);
 
 				QueueModel_.reset (new QStandardItemModel);
-				QueueModel_->setHorizontalHeaderLabels (QStringList (tr ("Media source"))
-						<< tr ("Source type"));
+				QueueModel_->setHorizontalHeaderLabels (QStringList ("Media")
+						<< tr ("Source")
+						<< tr ("Type"));
 				Ui_.Queue_->setModel (QueueModel_.get ());
 
 				connect (Ui_.Player_->GetMediaObject (),
@@ -74,6 +75,11 @@ namespace LeechCraft
 						SIGNAL (error (const QString&)),
 						this,
 						SLOT (handleError (const QString&)));
+
+				connect (Ui_.Player_->GetMediaObject (),
+						SIGNAL (metaDataChanged ()),
+						this,
+						SLOT (handleMetadataChanged ()));
 			}
 
 			void Player::Play ()
@@ -105,6 +111,7 @@ namespace LeechCraft
 			void Player::Enqueue (MediaSource *source)
 			{
 				QList<QStandardItem*> items;
+				items << new QStandardItem (tr ("No metadata"));
 				switch (source->type ())
 				{
 					case MediaSource::LocalFile:
@@ -148,6 +155,18 @@ namespace LeechCraft
 
 				QueueModel_->appendRow (items);
 				Ui_.Player_->Enqueue (*source);
+
+				if (source->type () == MediaSource::LocalFile ||
+						source->type () == MediaSource::Disc)
+				{
+					MediaObject *object = new MediaObject;
+					connect (object,
+							SIGNAL (metaDataChanged ()),
+							this,
+							SLOT (handleMetadataChanged ()));
+					object->enqueue (*source);
+					object->play ();
+				}
 			}
 
 			void Player::FillQueue (int start) const
@@ -179,6 +198,60 @@ namespace LeechCraft
 					else
 						item->setIcon (QIcon ());
 				}
+			}
+
+			void Player::handleMetadataChanged ()
+			{
+				MediaObject *object = qobject_cast<MediaObject*> (sender ());
+				if (!object)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "not a MediaObject"
+						<< object;
+					return;
+				}
+
+				MediaSource source = object->currentSource ();
+				for (int i = 0; i < QueueModel_->rowCount (); ++i)
+				{
+					QStandardItem *item = QueueModel_->item (i);
+					if (source == *item->data (SourceRole).value<MediaSource*> ())
+					{
+						QStringList title = object->metaData (TitleMetaData);
+						QStringList album = object->metaData (AlbumMetaData);
+						QStringList artist = object->metaData (ArtistMetaData);
+
+						QString text;
+
+						if (!title.isEmpty () &&
+								!title.at (0).isEmpty ())
+						{
+							text += title.at (0);
+							text += " - ";
+						}
+						if (!album.isEmpty () &&
+								!album.at (0).isEmpty ())
+						{
+							text += album.at (0);
+							text += " - ";
+						}
+						if (!artist.isEmpty () &&
+								!artist.at (0).isEmpty ())
+						{
+							text += artist.at (0);
+							text += " - ";
+						}
+						
+						text = text.left (text.size () - 3);
+
+						if (!text.isEmpty ())
+							item->setText (text);
+						break;
+					}
+				}
+
+				if (object != Ui_.Player_->GetMediaObject ())
+					object->deleteLater ();
 			}
 
 			void Player::on_Queue__activated (const QModelIndex& si)

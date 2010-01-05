@@ -78,6 +78,16 @@ namespace LeechCraft
 				filterParametersChanged ();
 			}
 
+			SummaryWidget::~SummaryWidget ()
+			{
+				Toolbar_->clear ();
+
+				QWidget *widget = Ui_.ControlsDockWidget_->widget ();
+				Ui_.ControlsDockWidget_->setWidget (0);
+				if (widget)
+					widget->setParent (0);
+			}
+
 			void SummaryWidget::Remove ()
 			{
 				emit needToClose ();
@@ -200,45 +210,35 @@ namespace LeechCraft
 			void SummaryWidget::updatePanes (const QModelIndex& newIndex,
 					const QModelIndex& oldIndex)
 			{
-#ifdef QT_DEBUG
-				qDebug () << Q_FUNC_INFO << this << newIndex << oldIndex;
-#endif
+				QToolBar *controls = Core::Instance ()
+							.GetControls (newIndex);
+
+				QWidget *addiInfo = Core::Instance ()
+							.GetAdditionalInfo (newIndex);
 
 				if (oldIndex.isValid () &&
-						Core::Instance ().SameModel (newIndex, oldIndex))
+						addiInfo != Ui_.ControlsDockWidget_->widget ())
+					Ui_.ControlsDockWidget_->hide ();
+
+				if (newIndex.isValid ())
 				{
-				}
-				else
-				{
-					if (oldIndex.isValid ())
-					{
-#ifdef QT_DEBUG
-						qDebug () << "erasing older stuff";
-#endif
-						Ui_.ControlsDockWidget_->hide ();
-					}
-
-
-					QToolBar *controls = Core::Instance ()
-								.GetControls (newIndex);
-
-					QWidget *addiInfo = Core::Instance ()
-								.GetAdditionalInfo (newIndex);
-
-#ifdef QT_DEBUG
-					qDebug () << "inserting newer stuff" << newIndex << controls << addiInfo;
-#endif
-
 					Toolbar_->clear ();
 					if (controls)
-						Toolbar_->addActions (controls->actions ());
-					if (addiInfo)
 					{
-						if (addiInfo->parent () != this)
-							addiInfo->setParent (this);
-						Ui_.ControlsDockWidget_->setWidget (addiInfo);
-						Ui_.ControlsDockWidget_->show ();
+						Q_FOREACH (QAction *action, controls->actions ())
+						{
+							QString ai = action->property ("ActionIcon").toString ();
+							if (! ai.isEmpty () &&
+									action->icon ().isNull ())
+								action->setIcon (Core::Instance ().GetProxy ()->GetIcon (ai));
+						}
+						Toolbar_->addActions (controls->actions ());
 					}
+					if (addiInfo != Ui_.ControlsDockWidget_->widget ())
+						Ui_.ControlsDockWidget_->setWidget (addiInfo);
+
+					if (addiInfo)
+						Ui_.ControlsDockWidget_->show ();
 				}
 			}
 
@@ -373,8 +373,11 @@ namespace LeechCraft
 				if (current != now ||
 						(now.isValid () &&
 						 !selm->rowIntersectsSelection (now.row (), QModelIndex ())))
+				{
 					selm->select (now, QItemSelectionModel::ClearAndSelect |
 							QItemSelectionModel::Rows);
+					updatePanes (now, current);
+				}
 			}
 		};
 	};

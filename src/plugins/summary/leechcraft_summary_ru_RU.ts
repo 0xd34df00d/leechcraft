@@ -4,9 +4,9 @@
 <context>
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
-        <location filename="core.cpp" line="79"/>
-        <location filename="core.cpp" line="122"/>
-        <location filename="core.cpp" line="230"/>
+        <location filename="core.cpp" line="80"/>
+        <location filename="core.cpp" line="123"/>
+        <location filename="core.cpp" line="231"/>
         <source>Summary</source>
         <translation type="unfinished"></translation>
     </message>
@@ -81,27 +81,27 @@
 <context>
     <name>SummaryWidget</name>
     <message>
-        <location filename="summarywidget.ui" line="48"/>
+        <location filename="summarywidget.ui" line="51"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="56"/>
+        <location filename="summarywidget.ui" line="59"/>
         <source>String</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="61"/>
+        <location filename="summarywidget.ui" line="64"/>
         <source>Wildcard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="66"/>
+        <location filename="summarywidget.ui" line="69"/>
         <source>Regexp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="71"/>
+        <location filename="summarywidget.ui" line="74"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>

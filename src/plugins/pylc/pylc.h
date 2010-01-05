@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_HIDEABLETABWIDGET_H
-#define PLUGINS_POSHUKU_HIDEABLETABWIDGET_H
-#include <QWidget>
-#include "ui_favoriteswidget.h"
-
-class QPushButton;
-class QTabBar;
+#ifndef PLUGINS_PYLC_PYLC_H
+#define PLUGINS_PYLC_PYLC_H
+#include <memory>
+#include <QObject>
+#include <QStringList>
+#include <QTranslator>
+#include <interfaces/iinfo.h>
+#include <interfaces/ipluginadaptor.h>
 
 namespace LeechCraft
 {
 	namespace Plugins
 	{
-		namespace Poshuku
+		namespace PyLC
 		{
+			class Plugin : public QObject
+						 , public IInfo
+						 , public IPluginAdaptor
+			{
+				Q_OBJECT
+				Q_INTERFACES (IInfo IPluginAdaptor)
+
+				std::auto_ptr<QTranslator> Translator_;
+			public:
+				void Init (ICoreProxy_ptr);
+				void SecondInit ();
+				void Release ();
+				QString GetName () const;
+				QString GetInfo () const;
+				QIcon GetIcon () const;
+				QStringList Provides () const;
+				QStringList Needs () const;
+				QStringList Uses () const;
+				void SetProvider (QObject*, const QString&);
+
+				QList<QObject*> GetPlugins ();
+			};
+		};
+	};
+};
+
+#endif
+

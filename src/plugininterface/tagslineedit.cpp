@@ -71,10 +71,16 @@ void TagsLineEdit::insertTag (const QString& completion)
 	QString wtext = text ();
 	if (completion.startsWith (wtext))
 		wtext.clear ();
-	int pos = wtext.lastIndexOf (' ');
-	wtext = wtext.left (pos).append (' ').append (completion);
+	int pos = wtext.lastIndexOf ("; ");
+	if (pos >= 0)
+		wtext = wtext.left (pos).append ("; ");
+	else
+		wtext.clear ();
+	wtext.append (completion);
 	wtext = wtext.simplified ();
 	setText (wtext);
+
+	emit tagsChosen ();
 }
 
 void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
@@ -85,6 +91,8 @@ void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
 void TagsLineEdit::handleSelectionChanged (const QStringList& tags)
 {
 	setText (tags.join ("; "));
+
+	emit tagsChosen ();
 }
 
 void TagsLineEdit::keyPressEvent (QKeyEvent *e)
@@ -105,8 +113,16 @@ void TagsLineEdit::keyPressEvent (QKeyEvent *e)
 
 	QLineEdit::keyPressEvent (e);
 
-	bool cos = e->modifiers () & (Qt::ControlModifier | Qt::ShiftModifier);
-	if (!Completer_ || (cos && e->text ().isEmpty ()))
+	bool cos = e->modifiers () & (Qt::ControlModifier |
+			Qt::ShiftModifier |
+			Qt::AltModifier |
+			Qt::MetaModifier);
+	bool isShortcut = e->modifiers () & (Qt::ControlModifier |
+			Qt::AltModifier |
+			Qt::ShiftModifier);
+	if (!Completer_ ||
+			(cos && e->text ().isEmpty ()) ||
+			isShortcut)
 		return;
 
 	QString completionPrefix = textUnderCursor ();

@@ -35,15 +35,16 @@ namespace LeechCraft
 
 		QStringList Arguments_;
 
+		std::auto_ptr<QTranslator> Translator_;
+	public:
 		enum Errors
 		{
 			EAlreadyRunning = 1,
 			EPaths = 2,
-			EHelpRequested = 3
+			EHelpRequested = 3,
+			EGeneralSocketError = 4
 		};
 
-		std::auto_ptr<QTranslator> Translator_;
-	public:
 		/** Constructs the Application, parses the command line,
 		 * installs Qt-wide translations, performs some basic checks
 		 * and registers commonly used meta types.
@@ -73,6 +74,10 @@ namespace LeechCraft
 		 */
 		void InitiateRestart ();
 
+		/** Checks whether another instance of LeechCraft is running.
+		 */
+		bool IsAlreadyRunning () const;
+
 		/** Overloaded QApplication::notify() provided to catch exceptions
 		 * in slots.
 		 */
@@ -94,10 +99,6 @@ namespace LeechCraft
 		 */
 		void checkStillRunning ();
 	private:
-		/** Checks whether another instance of LeechCraft is running.
-		 */
-		bool IsAlreadyRunning () const;
-
 		/** Parses command line and sets corresponding application-wide
 		 * options.
 		 */

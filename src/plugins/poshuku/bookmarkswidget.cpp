@@ -19,6 +19,7 @@
 #include "bookmarkswidget.h"
 #include <QInputDialog>
 #include <QMessageBox>
+#include <plugininterface/flattofoldersproxymodel.h>
 #include "core.h"
 #include "favoritesdelegate.h"
 #include "favoritesmodel.h"
@@ -38,7 +39,13 @@ namespace LeechCraft
 				FavoritesFilterModel_.reset (new FilterModel (this));
 				FavoritesFilterModel_->setSourceModel (Core::Instance ().GetFavoritesModel ());
 				FavoritesFilterModel_->setDynamicSortFilter (true);
-				Ui_.FavoritesView_->setModel (FavoritesFilterModel_.get ());
+
+				FlatToFolders_.reset (new Util::FlatToFoldersProxyModel (this));
+				FlatToFolders_->SetTagsManager (Core::Instance ()
+						.GetProxy ()->GetTagsManager ());
+				FlatToFolders_->SetSourceModel (FavoritesFilterModel_.get ());
+
+				Ui_.FavoritesView_->setModel (FlatToFolders_.get ());
 				Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
 				Ui_.FavoritesView_->addAction (Ui_.ActionEditBookmark_);
 				Ui_.FavoritesView_->addAction (Ui_.ActionChangeURL_);
@@ -52,6 +59,10 @@ namespace LeechCraft
 						new Util::TagsCompleter (Ui_.FavoritesFilterLine_, this)
 						);
 				Ui_.FavoritesFilterLine_->AddSelector ();
+				connect (Ui_.FavoritesFilterLine_,
+						SIGNAL (tagsChosen ()),
+						this,
+						SLOT (selectTagsMode ()));
 				connect (Ui_.FavoritesFilterLine_,
 						SIGNAL (textChanged (const QString&)),
 						this,
@@ -80,8 +91,11 @@ namespace LeechCraft
 			{
 				QModelIndex current = Ui_.FavoritesView_->
 					selectionModel ()->currentIndex ();
+				if (FlatToFolders_)
+					current = FlatToFolders_->MapToSource (current);
 				if (!current.isValid ())
 					return;
+
 				QModelIndex source = FavoritesFilterModel_->mapToSource (current);
 
 				EditBookmarkDialog dia (source, this);
@@ -101,8 +115,11 @@ namespace LeechCraft
 			{
 				QModelIndex current = Ui_.FavoritesView_->
 					selectionModel ()->currentIndex ();
+				if (FlatToFolders_)
+					current = FlatToFolders_->MapToSource (current);
 				if (!current.isValid ())
 					return;
+
 				QModelIndex source = FavoritesFilterModel_->mapToSource (current);
 
 				QString title = source.sibling (source.row (),
@@ -136,6 +153,8 @@ namespace LeechCraft
 			{
 				QModelIndex current = Ui_.FavoritesView_->
 					selectionModel ()->currentIndex ();
+				if (FlatToFolders_)
+					current = FlatToFolders_->MapToSource (current);
 				if (!current.isValid ())
 					return;
 
@@ -179,13 +198,28 @@ namespace LeechCraft
 							Qt::CaseInsensitive);
 			}
 			
-			void BookmarksWidget::on_FavoritesView__activated (const QModelIndex& index)
+			void BookmarksWidget::on_FavoritesView__activated (const QModelIndex& act)
 			{
+				QModelIndex index;
+				if (FlatToFolders_)
+					index = FlatToFolders_->MapToSource (act);
+
 				Ui_.ActionEditBookmark_->setEnabled (index.isValid ());
 				Ui_.ActionChangeURL_->setEnabled (index.isValid ());
 				Ui_.ActionDeleteBookmark_->setEnabled (index.isValid ());
-				Core::Instance ().NewURL (index.sibling (index.row (),
-							FavoritesModel::ColumnURL).data ().toString ());
+
+				if (index.isValid ())
+					Core::Instance ().NewURL (index.sibling (index.row (),
+								FavoritesModel::ColumnURL).data ().toString ());
+				else if (act.isValid ())
+					for (int i = 0, size = FlatToFolders_->rowCount (act);
+							i < size; ++i)
+					{
+						QModelIndex idx = FlatToFolders_->
+							index (i, FavoritesModel::ColumnURL, act);
+						Core::Instance ().NewURL (FlatToFolders_->
+								MapToSource (idx).data ().toString ());
+					}
 			}
 			
 			void BookmarksWidget::on_OpenInTabs__released ()
@@ -194,6 +228,12 @@ namespace LeechCraft
 						i < size; ++i)
 					Core::Instance ().NewURL (FavoritesFilterModel_->
 							index (i, FavoritesModel::ColumnURL).data ().toString ());
+			}
+
+			void BookmarksWidget::selectTagsMode ()
+			{
+				Ui_.FavoritesFilterType_->setCurrentIndex (3);
+				updateFavoritesFilter ();
 			}
 		};
 	};

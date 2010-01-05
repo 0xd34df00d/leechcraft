@@ -2,128 +2,64 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>CleanWeb</name>
+    <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::Player</name>
     <message>
-        <location filename="cleanweb.cpp" line="76"/>
-        <source>Blocks unwanted ads.</source>
-        <translation>Блокирует нежелательную рекламу.</translation>
+        <location filename="player.cpp" line="106"/>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
     </message>
 </context>
 <context>
-    <name>Core</name>
+    <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::RelatedItem</name>
     <message>
-        <location filename="core.cpp" line="612"/>
-        <source>Error</source>
-        <translation>Ошибка</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="613"/>
-        <source>The subscription wasn&apos;t delegated.</source>
-        <oldsource>Job the subscription wasn&apos;t delegated.</oldsource>
-        <translation>Файл с фильтрами не был делегирован.</translation>
+        <location filename="relateditem.cpp" line="108"/>
+        <source>Failed to load</source>
+        <translation>Ошибка загрузки</translation>
     </message>
 </context>
 <context>
-    <name>FlashOnClickWhitelist</name>
+    <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::RelatedWidget</name>
     <message>
-        <location filename="flashonclickwhitelist.ui" line="25"/>
-        <source>Add...</source>
-        <translation>Добавить...</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.ui" line="32"/>
-        <source>Modify...</source>
-        <translation>Изменить...</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.ui" line="39"/>
-        <source>Remove</source>
-        <translation>Удалить</translation>
+        <location filename="relatedwidget.cpp" line="52"/>
+        <source>Related videos</source>
+        <translation>Похожие видео</translation>
     </message>
 </context>
 <context>
-    <name>FlashPlaceHolder</name>
+    <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::WYFV</name>
     <message>
-        <location filename="flashplaceholder.ui" line="46"/>
-        <source>Load Flash</source>
-        <translation>Загрузить Flash</translation>
+        <location filename="wyfv.cpp" line="66"/>
+        <source>Replaces Flash-based video player to play video without Flash installed.</source>
+        <translation>Заменяет Flash-проигрыватели видео для проигрывания без установленного Flash.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
+    <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::YoutubePlayer</name>
     <message>
-        <location filename="core.cpp" line="211"/>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="212"/>
-        <source>Last updated</source>
-        <translation>Последнее обновление</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="213"/>
-        <source>URL</source>
-        <translation>URL</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashOnClickWhitelist</name>
-    <message>
-        <location filename="flashonclickwhitelist.cpp" line="41"/>
-        <source>Whitelist</source>
-        <translation>Белый список</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.cpp" line="113"/>
-        <source>Add URL to whitelist</source>
-        <translation>Добавить URL в белый список</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.cpp" line="114"/>
-        <source>Please enter the URL to add to the FlashOnClick&apos;s whitelist</source>
-        <translation>Введите URL для добавления в белый список FlashOnClick</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.cpp" line="128"/>
+        <location filename="youtubeplayer.cpp" line="220"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="129"/>
-        <source>This URL is already matched by another whitelist entry.</source>
-        <translation>Этот URL уже соответствует другой записи в белом списке.</translation>
+        <location filename="youtubeplayer.cpp" line="221"/>
+        <source>This format is unavailable, please select another one.</source>
+        <translation>Этот формат недоступен. Пожалуйста, выберитте другой.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashPlaceHolder</name>
+    <name>Player</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="88"/>
-        <source>Load</source>
-        <translation>Загрузить</translation>
-    </message>
-    <message>
-        <location filename="flashplaceholder.cpp" line="93"/>
-        <source>Add URL to whitelist...</source>
-        <translation>Добавить URL в белый список...</translation>
-    </message>
-    <message>
-        <location filename="flashplaceholder.cpp" line="98"/>
-        <source>Add host to whitelist...</source>
-        <translation>Добавить хост в белый список...</translation>
+        <location filename="player.ui" line="28"/>
+        <source>Related...</source>
+        <translation>Похожие...</translation>
     </message>
 </context>
 <context>
-    <name>SubscriptionsManager</name>
+    <name>RelatedItem</name>
     <message>
-        <location filename="subscriptionsmanager.ui" line="14"/>
-        <source>Form</source>
-        <translation>Ыа</translation>
-    </message>
-    <message>
-        <location filename="subscriptionsmanager.ui" line="30"/>
-        <source>Remove</source>
-        <translation>Удалить</translation>
+        <location filename="relateditem.ui" line="130"/>
+        <source>%v</source>
+        <translation>%v</translation>
     </message>
 </context>
 </TS>

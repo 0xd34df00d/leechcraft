@@ -247,6 +247,15 @@ namespace LeechCraft
 						RelatedWidget_->ToggleVisibility ();
 					}
 
+					bool YoutubePlayerCreator::WouldRatherPlay (const QUrl& url) const
+					{
+						if (!XmlSettingsManager::Instance ()->
+								property ("YouTube").toBool ())
+							return false;
+
+						return url.host () == "s.ytimg.com";
+					}
+
 					Player* YoutubePlayerCreator::Create (const QUrl& url,
 							const QStringList& args, const QStringList& values) const
 					{

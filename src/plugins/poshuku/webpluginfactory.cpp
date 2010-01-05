@@ -53,7 +53,17 @@ namespace LeechCraft
 			{
 				QList<Plugin> result;
 				Q_FOREACH (IWebPlugin *plugin, Plugins_)
-					result << plugin->Plugin ();
+				{
+					try
+					{
+						result << plugin->Plugin (true);
+					}
+					catch (...)
+					{
+						// It's ok to do a plain catch(...) {},
+						// plugins refuse to add themselves to the list with this.
+					}
+				}
 				return result;
 			}
 
@@ -74,7 +84,7 @@ namespace LeechCraft
 
 				Q_FOREACH (IWebPlugin *plugin, Plugins_)
 					Q_FOREACH (const QWebPluginFactory::MimeType mime,
-							plugin->Plugin ().mimeTypes)
+							plugin->Plugin (false).mimeTypes)
 						MIME2Plugin_.insertMulti (mime.name, plugin);
 			}
 		};

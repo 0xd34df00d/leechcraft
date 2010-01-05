@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,44 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "adaptor.h"
-#include <QCoreApplication>
-#include "core.h"
+#ifndef PLUGINS_NEWLIFE_KTORRENTIMPORTER_H
+#define PLUGINS_NEWLIFE_KTORRENTIMPORTER_H
+#include "abstractimporter.h"
 
-using namespace LeechCraft::Plugins::DBusManager;
-
-Adaptor::Adaptor (Core *parent)
-: QDBusAbstractAdaptor (parent)
-, Core_ (parent)
+namespace LeechCraft
 {
-	connect (parent,
-			SIGNAL (aboutToQuit ()),
-			this,
-			SIGNAL (aboutToQuit ()));
-	connect (parent,
-			SIGNAL (someEventHappened (const QString&)),
-			this,
-			SIGNAL (someEventHappened (const QString&)));
-}
+	namespace Plugins
+	{
+		namespace NewLife
+		{
+			class KTorrentImportPage;
 
-QString Adaptor::GetOrganizationName () const
-{
-	return QCoreApplication::organizationName ();
-}
+			class KTorrentImporter : public AbstractImporter
+			{
+				Q_OBJECT
 
-QString Adaptor::GetApplicationName () const
-{
-	return QCoreApplication::applicationName ();
-}
+				KTorrentImportPage *ImportPage_;
+			public:
+				KTorrentImporter (QWidget* = 0);
+				virtual QStringList GetNames () const;
+				virtual QList<QWizardPage*> GetWizardPages () const;
+			};
+		};
+	};
+};
 
-QString Adaptor::Greeter (const QString& msg,
-		const QDBusMessage&)
-{
-	return Core_->Greeter (msg);
-}
-
-QStringList Adaptor::GetLoadedPlugins ()
-{
-	return Core_->GetLoadedPlugins ();
-}
+#endif
 

@@ -115,7 +115,7 @@
 <context>
     <name>LeechCraft::Plugins::DCminator::Plugin</name>
     <message>
-        <location filename="dcminator.cpp" line="49"/>
+        <location filename="dcminator.cpp" line="53"/>
         <source>DirectConnect client</source>
         <translation>Клиент сетей DirectConnect</translation>
     </message>

@@ -17,6 +17,11 @@
 			</item>
 		</tab>
 		<tab>
+			<label lang="en" value="User filters" />
+			<label lang="ru" value="Пользовательские фильтры" />
+			<item type="customwidget" name="UserFilters" label="own" />
+		</tab>
+		<tab>
 			<label lang="en" value="Subscriptions" />
 			<label lang="ru" value="Подписки" />
 			<item type="customwidget" name="SubscriptionsManager" label="own" />

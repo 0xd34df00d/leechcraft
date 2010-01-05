@@ -46,6 +46,7 @@ namespace LeechCraft
 				void handleFinished ();
 				void setClear (bool);
 				void handleCurrentChanged (const QModelIndex&);
+				void handleGonnaDestroy (QObject*);
 			};
 		};
 	};

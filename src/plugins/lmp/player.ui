@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>574</width>
-    <height>296</height>
+    <width>755</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,12 +18,22 @@
     <normaloff>:/plugins/lmp/resources/images/lmp.svg</normaloff>:/plugins/lmp/resources/images/lmp.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>2</number>
+   </property>
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="LeechCraft::Plugins::LMP::PlayerWidget" name="Player_" native="true"/>
+     <widget class="LeechCraft::Plugins::LMP::PlayerWidget" name="Player_" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
      <widget class="QTreeView" name="Queue_">
       <property name="rootIsDecorated">
        <bool>false</bool>

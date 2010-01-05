@@ -37,8 +37,10 @@ namespace LeechCraft
 						PlayerFactory::Init ();
 					}
 
-					QWebPluginFactory::Plugin WYFVPlugin::Plugin () const
+					QWebPluginFactory::Plugin WYFVPlugin::Plugin (bool isq) const
 					{
+						if (isq)
+							throw "I want to be anonymous too";
 						QWebPluginFactory::Plugin result;
 						result.name = "WYFVPlugin";
 						QWebPluginFactory::MimeType mime;

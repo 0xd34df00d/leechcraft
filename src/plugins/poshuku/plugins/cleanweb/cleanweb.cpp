@@ -29,6 +29,7 @@
 #include "subscriptionsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
+#include "userfilters.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -44,6 +45,8 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 					int*, QObject**)));
 
+	Core::Instance ().SetProxy (proxy);
+
 	proxy->RegisterHook (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t (
 				boost::bind (&Core::Hook,
 					&Core::Instance (),
@@ -58,6 +61,8 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 			"poshukucleanwebsettings.xml");
 	SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 			new SubscriptionsManager ());
+	SettingsDialog_->SetCustomWidget ("UserFilters",
+			new UserFilters ());
 	SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",
 			Core::Instance ().GetFlashOnClickWhitelist ());
 }
@@ -137,6 +142,14 @@ bool CleanWeb::HandleWebPluginFactoryReload (QList<LeechCraft::Plugins::Poshuku:
 bool CleanWeb::HandleLoadFinished (QWebPage *page, bool)
 {
 	Core::Instance ().HandleLoadFinished (page);
+	return false;
+}
+
+bool CleanWeb::OnWebViewCtxMenu (QWebView*, QContextMenuEvent*,
+		const QWebHitTestResult& r, QMenu *menu,
+		WebViewCtxMenuStage stage)
+{
+	Core::Instance ().HandleContextMenu (r, menu, stage);
 	return false;
 }
 

@@ -148,5 +148,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_yasd, LeechCraft::Plugins::Summary::Summary);
+Q_EXPORT_PLUGIN2 (leechcraft_summary, LeechCraft::Plugins::Summary::Summary);
 

@@ -96,6 +96,11 @@ namespace LeechCraft
 			{
 				return Destination_->text ();
 			}
+
+			bool AddTorrent::GetTryLive () const
+			{
+				return TryLive_->checkState () == Qt::Checked;
+			}
 			
 			QVector<bool> AddTorrent::GetSelectedFiles () const
 			{

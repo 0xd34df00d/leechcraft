@@ -24,6 +24,8 @@
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include "notificationmanager.h"
+#include "general.h"
+#include "tasks.h"
 
 namespace LeechCraft
 {
@@ -37,6 +39,8 @@ namespace LeechCraft
 
 				std::auto_ptr<QDBusConnection> Connection_;
 				std::auto_ptr<NotificationManager> NotificationManager_;
+				std::auto_ptr<General> General_;
+				std::auto_ptr<Tasks> Tasks_;
 
 				ICoreProxy_ptr Proxy_;
 
@@ -47,14 +51,10 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 				QString Greeter (const QString&);
-				QStringList GetLoadedPlugins ();
 			private:
 				void DumpError ();
 			private slots:
 				void doDelayedInit ();
-			signals:
-				void aboutToQuit ();
-				void someEventHappened (const QString&);
 			};
 		};
 	};

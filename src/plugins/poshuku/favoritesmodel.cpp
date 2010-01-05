@@ -82,9 +82,8 @@ namespace LeechCraft
 							return QVariant ();
 					case Qt::ToolTipRole:
 						return CheckResults_ [Items_ [index.row ()].URL_];
-					case TagsRole:
-						return Core::Instance ().GetProxy ()->
-							GetTagsManager ()->Join (GetVisibleTags (index.row ()));
+					case RoleTags:
+						return Items_ [index.row ()].Tags_;
 					default:
 						return QVariant ();
 				}
@@ -264,7 +263,7 @@ namespace LeechCraft
 			
 				int n = std::distance (Items_.begin (), pos);
 			
-				emit dataChanged (index (n, 2), index (n, 2));
+				emit dataChanged (index (n, 0), index (n, 2));
 			}
 			
 			void FavoritesModel::handleItemRemoved (const FavoritesModel::FavoritesItem& item)
@@ -292,9 +291,19 @@ namespace LeechCraft
 					return;
 			
 				beginInsertRows (QModelIndex (), 0, items.size () - 1);
-				for (items_t::const_reverse_iterator i = items.rbegin (),
+				for (items_t::reverse_iterator i = items.rbegin (),
 						end = items.rend (); i != end; ++i)
+				{
+					Q_FOREACH (QString tag, i->Tags_)
+					{
+						QString ut = Core::Instance ().GetProxy ()->
+							GetTagsManager ()->GetTag (tag);
+						if (ut.isEmpty ())
+							i->Tags_.removeAll (tag);
+					}
+
 					Items_.push_back (*i);
+				}
 				endInsertRows ();
 			}
 		};

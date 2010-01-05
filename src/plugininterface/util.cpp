@@ -163,7 +163,14 @@ QString LeechCraft::Util::GetLocaleName ()
 	}
 
 	if (localeName.size () == 2)
-		localeName += "_00";
+	{
+		QLocale::Language lang = QLocale (localeName).language ();
+		QList<QLocale::Country> cs = QLocale::countriesForLanguage (lang);
+		if (cs.isEmpty ())
+			localeName += "_00";
+		else
+			localeName = QLocale (lang, cs.at (0)).name ();
+	}
 
 	return localeName;
 }
@@ -217,5 +224,30 @@ LeechCraft::DownloadEntity LeechCraft::Util::MakeEntity (const QVariant& entity,
 	result.Parameters_ = tp;
 	result.Mime_ = mime;
 	return result;
+}
+
+QUrl LeechCraft::Util::MakeAbsoluteUrl (QUrl originalUrl, const QString& hrefUrl)
+{
+	if (hrefUrl.indexOf ("://") < 0)
+	{
+		originalUrl.setQueryItems (QList<QPair<QString, QString> > ());
+		if (hrefUrl.size () &&
+				hrefUrl.at (0) == '/')
+			originalUrl.setEncodedPath (hrefUrl.toUtf8 ());
+		else
+		{
+			QString originalPath = originalUrl.path ();
+			if (!originalPath.endsWith ('/'))
+			{
+				int slashIndex = originalPath.lastIndexOf ('/');
+				originalPath = originalPath.left (slashIndex + 1);
+			}
+			originalPath += hrefUrl;
+			originalUrl.setEncodedPath (originalPath.toUtf8 ());
+		}
+		return originalUrl;
+	}
+	else
+		return QUrl::fromEncoded (hrefUrl.toUtf8 ());
 }
 

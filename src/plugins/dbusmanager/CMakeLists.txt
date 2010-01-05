@@ -8,18 +8,24 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
 SET (SRCS
 	dbusmanager.cpp
 	core.cpp
-	adaptor.cpp
 	iinfoadaptor.cpp
 	notificationmanager.cpp
 	xmlsettingsmanager.cpp
+	general.cpp
+	generaladaptor.cpp
+	tasks.cpp
+	tasksadaptor.cpp
 	)
 SET (HEADERS
 	dbusmanager.h
 	core.h
-	adaptor.h
 	iinfoadaptor.h
 	notificationmanager.h
 	xmlsettingsmanager.h
+	general.h
+	generaladaptor.h
+	tasks.h
+	tasksadaptor.h
 	)
 SET (FORMS
 	)

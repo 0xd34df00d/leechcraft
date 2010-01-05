@@ -39,6 +39,7 @@
 #include <QScrollArea>
 #include <QDomNodeList>
 #include <QtScript>
+#include <plugininterface/util.h>
 #include "rangewidget.h"
 #include "filepicker.h"
 #include "radiogroup.h"
@@ -55,6 +56,7 @@ XmlSettingsDialog::XmlSettingsDialog ()
 	Pages_ = new QStackedWidget (this);
 
 	QHBoxLayout *mainLay = new QHBoxLayout (this);
+	mainLay->setContentsMargins (0, 0, 0, 0);
 	mainLay->addWidget (Pages_);
 	setLayout (mainLay);
 
@@ -169,7 +171,7 @@ void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 		throw std::runtime_error (qPrintable (QString ("Widget %1 "
 						"appears to exist more than once").arg (name)));
 
-	widgets [0]->layout ()->addWidget (widget);
+	widgets.at (0)->layout ()->addWidget (widget);
 	Customs_ << widget;
 	connect (widget,
 			SIGNAL (destroyed (QObject*)),
@@ -203,7 +205,9 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 	QFormLayout *lay = new QFormLayout;
 	lay->setRowWrapPolicy (QFormLayout::DontWrapRows);
 	lay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+	lay->setContentsMargins (0, 0, 0, 0);
 	baseWidget->setLayout (lay);
+	baseWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	ParseEntity (page, baseWidget);
 }
@@ -224,7 +228,9 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		QFormLayout *groupLayout = new QFormLayout ();
 		groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
 		groupLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
+		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 		ParseEntity (gbox, box);
 		
 		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
@@ -282,7 +288,9 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 			QFormLayout *widgetLay = new QFormLayout;
 			widgetLay->setRowWrapPolicy (QFormLayout::DontWrapRows);
 			widgetLay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+			widgetLay->setContentsMargins (0, 0, 0, 0);
 			page->setLayout (widgetLay);
+			page->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 			tabs->addTab (page, GetLabel (tab));
 			ParseEntity (tab, page);
 			tab = tab.nextSiblingElement ("tab");
@@ -335,13 +343,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 {
-	QString locale = QString(::getenv ("LANG")).left (2);
-	if (locale.isNull () || locale.isEmpty ())
-		locale = QLocale::system ().name ().toLower ();
-	if (locale == "c")
-		locale = "en";
-
-	locale = locale.left (2);
+	QString locale = Util::GetLanguage ();
 
 	QString result = "<no label>";
 	QDomElement label = item.firstChildElement ("label");
@@ -662,7 +664,9 @@ void XmlSettingsDialog::DoGroupbox (const QDomElement& item, QFormLayout *lay)
 	QFormLayout *groupLayout = new QFormLayout ();
 	groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
 	groupLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+	groupLayout->setContentsMargins (2, 2, 2, 2);
 	box->setLayout (groupLayout);
+	box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 	box->setCheckable (true);
 
 	QVariant value = GetValue (item);
@@ -866,6 +870,7 @@ void XmlSettingsDialog::DoCustomWidget (const QDomElement& item, QFormLayout *la
 	QVBoxLayout *layout = new QVBoxLayout ();
 	layout->setContentsMargins (0, 0, 0, 0);
 	widget->setLayout (layout);
+	widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	if (item.attribute ("label") == "own")
 		lay->addRow (widget);

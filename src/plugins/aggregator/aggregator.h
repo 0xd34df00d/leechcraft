@@ -97,8 +97,6 @@ namespace LeechCraft
 			protected:
 				virtual void keyPressEvent (QKeyEvent*);
 			private:
-				QToolBar* SetupMenuBar ();
-				void SetupActions ();
 				void ScheduleShowError ();
 				bool IsRepr () const;
 				QModelIndex GetRelevantIndex () const;
@@ -108,18 +106,17 @@ namespace LeechCraft
 				void handleItemSelected (const QModelIndex&);
 				void on_ActionAddFeed__triggered ();
 				void on_ActionRemoveFeed__triggered ();
-				void on_ActionMarkChannelAsRead__triggered ();
-				void on_ActionMarkChannelAsUnread__triggered ();
-				void on_ActionChannelSettings__triggered ();
 				void on_ActionUpdateSelectedFeed__triggered ();
 				void on_ActionItemBucket__triggered ();
 				void on_ActionRegexpMatcher__triggered ();
-				void on_ActionHideReadItems__triggered ();
 				void on_ActionImportOPML__triggered ();
 				void on_ActionExportOPML__triggered ();
 				void on_ActionImportBinary__triggered ();
 				void on_ActionExportBinary__triggered ();
 				void on_ActionExportFB2__triggered ();
+				void on_ActionMarkChannelAsRead__triggered ();
+				void on_ActionMarkChannelAsUnread__triggered ();
+				void on_ActionChannelSettings__triggered ();
 				void on_MergeItems__toggled (bool);
 				void on_ShowAsTape__toggled (bool);
 				void currentChannelChanged ();

@@ -22,7 +22,9 @@
 #include <QMenu>
 #include <QApplication>
 #include <QClipboard>
+#include <QFile>
 #include <QtDebug>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "customwebpage.h"
 #include "browserwidget.h"
@@ -61,6 +63,10 @@ namespace LeechCraft
 						this,
 						SLOT (remakeURL (const QUrl&)));
 			
+				connect (page,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (page,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,
@@ -115,6 +121,26 @@ namespace LeechCraft
 					if (result.canConvert (QVariant::String))
 						setHtml (result.toString ());
 					return;
+				}
+				if (url.scheme () == "about")
+				{
+					if (url.path () == "plugins")
+					{
+						QFile pef (":/resources/html/pluginsenum.html");
+						pef.open (QIODevice::ReadOnly);
+						QString contents = QString (pef.readAll ())
+							.replace ("INSTALLEDPLUGINS", tr ("Installed plugins"))
+							.replace ("NOPLUGINS", tr ("No plugins installed"))
+							.replace ("FILENAME", tr ("File name"))
+							.replace ("MIME", tr ("MIME type"))
+							.replace ("DESCR", tr ("Description"))
+							.replace ("SUFFIXES", tr ("Suffixes"))
+							.replace ("ENABLED", tr ("Enabled"))
+							.replace ("NO", tr ("No"))
+							.replace ("YES", tr ("Yes"));
+						setHtml (contents);
+						return;
+					}
 				}
 				if (title.isEmpty ())
 					title = tr ("Loading...");
@@ -178,11 +204,57 @@ namespace LeechCraft
 				std::auto_ptr<QMenu> menu (new QMenu (this));
 				QWebHitTestResult r = page ()->
 					mainFrame ()->hitTestContent (e->pos ());
+
+				Core::Instance ().GetPluginManager ()->
+					OnWebViewCtxMenu (this, e, r, menu.get (),
+							PluginManager::WVSStart);
 			
 				if (!r.linkUrl ().isEmpty ())
 				{
+					QUrl url = r.linkUrl ();
+					QString text = r.linkText ();
+
+					if (XmlSettingsManager::Instance ()->
+							property ("TryToDetectRSSLinks").toBool ())
+					{
+						bool hasAtom = text.contains ("Atom");
+						bool hasRSS = text.contains ("RSS");
+
+						if (hasAtom || hasRSS)
+						{
+							LeechCraft::DownloadEntity e;
+							if (hasAtom)
+							{
+								e.Additional_ ["UserVisibleName"] = "Atom";
+								e.Mime_ = "application/atom+xml";
+							}
+							else
+							{
+								e.Additional_ ["UserVisibleName"] = "RSS";
+								e.Mime_ = "application/rss+xml";
+							}
+
+							e.Entity_ = url;
+							e.Parameters_ = LeechCraft::FromUserInitiated |
+								LeechCraft::OnlyHandle;
+
+							bool ch = false;
+							emit couldHandle (e, &ch);
+							if (ch)
+							{
+								QList<QVariant> datalist;
+								datalist << url
+									<< e.Mime_;
+								menu->addAction (tr ("Subscribe"),
+										this,
+										SLOT (subscribeToLink ()))->setData (datalist);
+								menu->addSeparator ();
+							}
+						}
+					}
+
 					menu->addAction (tr ("Open &here"),
-							this, SLOT (openLinkHere ()))->setData (r.linkUrl ());
+							this, SLOT (openLinkHere ()))->setData (url);
 					menu->addAction (tr ("Open in new &tab"),
 							this, SLOT (openLinkInNewTab ()));
 					menu->addSeparator ();
@@ -190,8 +262,8 @@ namespace LeechCraft
 							this, SLOT (saveLink ()));
 			
 					QList<QVariant> datalist;
-					datalist << r.linkUrl ()
-						<< r.linkText ();
+					datalist << url
+						<< text;
 					menu->addAction (tr ("&Bookmark link..."),
 							this, SLOT (bookmarkLink ()))->setData (datalist);
 			
@@ -203,6 +275,10 @@ namespace LeechCraft
 					if (page ()->settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
 						menu->addAction (pageAction (QWebPage::InspectElement));
 				}
+			
+				Core::Instance ().GetPluginManager ()->
+					OnWebViewCtxMenu (this, e, r, menu.get (),
+							PluginManager::WVSAfterLink);
 			
 				if (!r.imageUrl ().isEmpty ())
 				{
@@ -221,6 +297,10 @@ namespace LeechCraft
 							this, SLOT (copyImageLocation ()))->setData (r.imageUrl ());
 				}
 
+				Core::Instance ().GetPluginManager ()->
+					OnWebViewCtxMenu (this, e, r, menu.get (),
+							PluginManager::WVSAfterImage);
+
 				if (!page ()->selectedText ().isEmpty ())
 				{
 					if (!menu->isEmpty ())
@@ -232,6 +312,10 @@ namespace LeechCraft
 					menu->addAction (tr ("Search..."),
 							this, SLOT (searchSelectedText ()));
 				}
+
+				Core::Instance ().GetPluginManager ()->
+					OnWebViewCtxMenu (this, e, r, menu.get (),
+							PluginManager::WVSAfterSelectedText);
 			
 				if (menu->isEmpty ())
 					menu.reset (page ()->createStandardContextMenu ());
@@ -249,6 +333,10 @@ namespace LeechCraft
 				menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
 				menu->addAction (Browser_->ReloadPeriodically_);
 				menu->addAction (Browser_->NotifyWhenFinished_);
+
+				Core::Instance ().GetPluginManager ()->
+					OnWebViewCtxMenu (this, e, r, menu.get (),
+							PluginManager::WVSAfterFinish);
 			
 				if (!menu->isEmpty ())
 				{
@@ -313,7 +401,7 @@ namespace LeechCraft
 			{
 				emit urlChanged (url.toString ());
 			}
-			
+
 			void CustomWebView::openLinkHere ()
 			{
 				Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
@@ -327,6 +415,16 @@ namespace LeechCraft
 			void CustomWebView::saveLink ()
 			{
 				pageAction (QWebPage::DownloadLinkToDisk)->trigger ();
+			}
+			
+			void CustomWebView::subscribeToLink ()
+			{
+				QList<QVariant> list = qobject_cast<QAction*> (sender ())->data ().toList ();
+				DownloadEntity e = Util::MakeEntity (list.at (0),
+						QString (),
+						FromUserInitiated | OnlyHandle,
+						list.at (1).toString ());
+				emit gotEntity (e);
 			}
 			
 			void CustomWebView::bookmarkLink ()

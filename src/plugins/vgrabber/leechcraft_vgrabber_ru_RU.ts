@@ -89,17 +89,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::vGrabber::Plugin</name>
-    <message>
-        <source>vkontakte.ru music/video grabber.</source>
-        <translation type="obsolete">Граббер музыки/видео vkontakte.ru.</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::vGrabber::VideoFindProxy</name>
     <message>
         <location filename="videofindproxy.cpp" line="34"/>
@@ -130,12 +119,12 @@
 <context>
     <name>LeechCraft::Plugins::vGrabber::vGrabber</name>
     <message>
-        <location filename="vgrabber.cpp" line="80"/>
+        <location filename="vgrabber.cpp" line="84"/>
         <source>vkontakte.ru audio/video grabber.</source>
         <translation>Скачивание и проигрывание медиа-файлов В Контакте.</translation>
     </message>
     <message>
-        <location filename="vgrabber.cpp" line="163"/>
+        <location filename="vgrabber.cpp" line="167"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>

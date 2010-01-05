@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::YASD::Plugin</name>
     <message>
-        <location filename="yasd.cpp" line="44"/>
+        <location filename="yasd.cpp" line="51"/>
         <source>Yet Another Site Downloader</source>
         <translation type="unfinished"></translation>
     </message>

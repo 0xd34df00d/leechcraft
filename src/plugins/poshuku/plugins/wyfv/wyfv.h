@@ -24,6 +24,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/iflashoverrider.h>
 #include <interfaces/pluginbase.h>
 
 namespace LeechCraft
@@ -41,9 +42,12 @@ namespace LeechCraft
 							   , public IHaveSettings
 							   , public IPlugin2
 							   , public PluginBase
+							   , public IFlashOverrider
 					{
 						Q_OBJECT
-						Q_INTERFACES (IInfo IHaveSettings IPlugin2 LeechCraft::Plugins::Poshuku::PluginBase)
+						Q_INTERFACES (IInfo IHaveSettings IPlugin2
+								LeechCraft::Plugins::Poshuku::PluginBase
+								LeechCraft::Plugins::Poshuku::IFlashOverrider)
 
 						boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 						std::auto_ptr<QTranslator> Translator_;
@@ -65,6 +69,8 @@ namespace LeechCraft
 
 						void Init (IProxyObject*);
 						bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
+
+						bool WouldOverrideFlash (const QUrl&) const;
 					};
 				};
 			};

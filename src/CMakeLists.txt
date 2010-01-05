@@ -27,6 +27,17 @@ IF (WIN32 AND NOT MSVC)
 	SET (CMAKE_CXX_FLAGS "-Wall")
 ENDIF (WIN32 AND NOT MSVC)
 
+IF (GPTOOLS_MEM)
+	MESSAGE (STATUS "Enabled memory profiling via Google perftools")
+	SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc")
+	SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ltcmalloc")
+ENDIF (GPTOOLS_MEM)
+IF (GPTOOLS_CPU)
+	MESSAGE (STATUS "Enabled CPU profiling via Google perftools")
+	SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lprofiler")
+	SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lprofiler")
+ENDIF (GPTOOLS_CPU)
+
 STRING (COMPARE EQUAL ${CMAKE_SIZEOF_VOID_P} "8" IS64BITS)
 
 IF (IS64BITS AND RESPECTLIB64)
@@ -46,6 +57,7 @@ FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signa
 FIND_PACKAGE (Qt4 REQUIRED)
 FIND_PACKAGE (Phonon)
 FIND_PACKAGE (RBTorrent)
+FIND_PACKAGE (PythonVer 2.5)
 #FIND_PACKAGE (Wt)
 
 ADD_SUBDIRECTORY (plugininterface)
@@ -74,6 +86,8 @@ OPTION (ENABLE_REMOTER "Build Remoter, the remote access manager" OFF)
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
 OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
 OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
+OPTION (ENABLE_PYLC "Build PyLC, Python support for LeechCraft" ON)
+OPTION (ENABLE_POC "Build PoC, text editor" ON)
 
 if (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -163,6 +177,18 @@ IF (ENABLE_VGRABBER)
 	ADD_SUBDIRECTORY (plugins/vgrabber)
 ENDIF (ENABLE_VGRABBER)
 
+IF (ENABLE_POC)
+	ADD_SUBDIRECTORY (plugins/poc)
+ENDIF (ENABLE_POC)
+
+IF (ENABLE_PYLC)
+	IF (PYTHONLIBS_FOUND)
+		ADD_SUBDIRECTORY (plugins/pylc)
+	ELSE (PYTHONLIBS_FOUND)
+		MESSAGE (ERROR "Python libs weren't found, not building PyLC")
+	ENDIF (PYTHONLIBS_FOUND)
+ENDIF (ENABLE_PYLC)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTSQL TRUE)
@@ -212,6 +238,8 @@ SET (SRCS
 	localsockethandler.cpp
 	toolbarguard.cpp
 	clipboardwatcher.cpp
+	glanceshower.cpp
+	glanceitem.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -251,6 +279,8 @@ SET (HEADERS
 	localsockethandler.h
 	toolbarguard.h
 	clipboardwatcher.h
+	glanceshower.h
+	glanceitem.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

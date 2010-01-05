@@ -21,9 +21,12 @@
 #include <QWidget>
 #include "ui_itemswidget.h"
 #include "item.h"
+#include "channel.h"
 
 class QModelIndex;
+class QToolBar;
 class IWebBrowser;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -32,26 +35,49 @@ namespace LeechCraft
 		namespace Aggregator
 		{
 			struct ItemsWidget_Impl;
+			struct ChannelActions;
+			class Aggregator;
+			class ItemsFilterModel;
 
 			class ItemsWidget : public QWidget
 			{
 				Q_OBJECT
 
+				friend class Aggregator;
 				ItemsWidget_Impl *Impl_;
 			public:
 				ItemsWidget (QWidget* = 0);
 				virtual ~ItemsWidget ();
 
+				void SetChannelActions (const ChannelActions&);
+				void SetChannelsFilter (QSortFilterProxyModel*);
+
+				Item_ptr GetItem (const QModelIndex&) const;
+				QToolBar* GetToolBar () const;
 				void SetTapeMode (bool);
+				void SetMergeMode (bool);
 				void SetHideRead (bool);
+				bool IsItemCurrent (int) const;
+				void Selected (const QModelIndex&);
+				void MarkItemAsUnread (const QModelIndex&);
+				bool IsItemRead (int) const;
+				QStringList GetItemCategories (int) const;
+				void AddToItemBucket (const QModelIndex&) const;
+				void SubscribeToComments (const QModelIndex&) const;
+				void CurrentChannelChanged (const QModelIndex&);
 			private:
-				void Construct (bool);
+				void SetupActions ();
+				QToolBar* SetupToolBar ();
 				QString GetHex (QPalette::ColorRole,
 						QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 				QString ToHtml (const Item_ptr&);
 				void RestoreSplitter ();
+			public slots:
+				void handleItemDataUpdated (Item_ptr, Channel_ptr);
 			private slots:
+				void invalidateMergeMode ();
 				void channelChanged (const QModelIndex&);
+				void on_ActionHideReadItems__triggered ();
 				void on_ActionMarkItemAsUnread__triggered ();
 				void on_CaseSensitiveSearch__stateChanged (int);
 				void on_ActionAddToItemBucket__triggered ();
@@ -61,6 +87,8 @@ namespace LeechCraft
 				void makeCurrentItemVisible ();
 				void updateItemsFilter ();
 				void selectorVisiblityChanged ();
+			signals:
+				void currentChannelChanged (const QModelIndex&);
 			};
 		};
 	};

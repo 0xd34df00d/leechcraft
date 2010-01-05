@@ -219,6 +219,7 @@ namespace LeechCraft
 				QStringList tags = e.Additional_ [" Tags"].toStringList ();
 				QVector<bool> files;
 				QString fname;
+				bool tryLive = e.Additional_ ["TryToStreamLive"].toBool ();
 				if (e.Parameters_ & FromUserInitiated)
 				{
 					if (!tags.isEmpty ())
@@ -229,6 +230,7 @@ namespace LeechCraft
 			
 					fname = AddTorrentDialog_->GetFilename (),
 					path = AddTorrentDialog_->GetSavePath ();
+					tryLive = AddTorrentDialog_->GetTryLive ();
 					files = AddTorrentDialog_->GetSelectedFiles ();
 					tags = AddTorrentDialog_->GetTags ();
 					if (AddTorrentDialog_->GetAddType () == Core::Started)
@@ -250,6 +252,7 @@ namespace LeechCraft
 				int result = Core::Instance ()->AddFile (fname,
 						path,
 						tags,
+						tryLive,
 						files,
 						e.Parameters_);
 				setActionsEnabled ();
@@ -399,12 +402,18 @@ namespace LeechCraft
 			
 				QString filename = AddTorrentDialog_->GetFilename (),
 						path = AddTorrentDialog_->GetSavePath ();
+				bool tryLive = AddTorrentDialog_->GetTryLive ();
 				QVector<bool> files = AddTorrentDialog_->GetSelectedFiles ();
 				QStringList tags = AddTorrentDialog_->GetTags ();
 				TaskParameters tp = FromUserInitiated;
 				if (AddTorrentDialog_->GetAddType () != Core::Started)
 					tp |= NoAutostart;
-				Core::Instance ()->AddFile (filename, path, tags, files, tp);
+				Core::Instance ()->AddFile (filename,
+						path,
+						tags,
+						tryLive,
+						files,
+						tp);
 				setActionsEnabled ();
 			}
 			
@@ -432,7 +441,7 @@ namespace LeechCraft
 					if (!name.endsWith ('/'))
 						name += '/';
 					name += names.at (i);
-					Core::Instance ()->AddFile (name, savePath, tags);
+					Core::Instance ()->AddFile (name, savePath, tags, false);
 				}
 				setActionsEnabled ();
 			}
@@ -848,7 +857,7 @@ namespace LeechCraft
 						this,
 						SIGNAL (downloadFinished (const QString&)));
 				connect (Core::Instance (),
-						SIGNAL (fileFinished (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 				connect (Core::Instance (),

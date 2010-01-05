@@ -25,6 +25,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "wyfvplugin.h"
+#include "playerfactory.h"
 
 namespace LeechCraft
 {
@@ -107,6 +108,11 @@ namespace LeechCraft
 					{
 						plugins << Core::Instance ().GetWYFVPlugin ();
 						return false;
+					}
+
+					bool WYFV::WouldOverrideFlash (const QUrl& url) const
+					{
+						return PlayerFactory::HasPlayerFor (url);
 					}
 				};
 			};

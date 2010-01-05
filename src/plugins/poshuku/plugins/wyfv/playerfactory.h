@@ -36,7 +36,11 @@ namespace LeechCraft
 					{
 						typedef boost::function<Player*
 							(const QUrl&, const QStringList&, const QStringList&)> PlayerCreator_f;
-						static QList<PlayerCreator_f> Players_;
+						static QList<PlayerCreator_f> Creators_;
+
+						typedef boost::function<bool (const QUrl&)> SuitablePlayerChecker_f;
+						static QList<SuitablePlayerChecker_f> Checkers_;
+
 						static QList<AbstractPlayerCreator*> AllocatedCreators_;
 
 						PlayerFactory ();
@@ -45,6 +49,7 @@ namespace LeechCraft
 						static Player* Create (const QUrl&,
 								const QStringList&,
 								const QStringList&);
+						static bool HasPlayerFor (const QUrl&);
 					};
 				};
 			};

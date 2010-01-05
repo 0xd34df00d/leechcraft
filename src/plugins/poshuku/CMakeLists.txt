@@ -101,6 +101,7 @@ SET (HEADERS
 	historywidget.h
 	interfaces/pluginbase.h
 	interfaces/iwebplugin.h
+	interfaces/iflashoverrider.h
 	)
 SET (FORMS
 	poshuku.ui

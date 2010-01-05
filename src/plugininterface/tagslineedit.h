@@ -79,6 +79,8 @@ namespace LeechCraft
 			void SetCompleter (TagsCompleter*);
 		private:
 			QString textUnderCursor () const;
+		signals:
+			PLUGININTERFACE_API void tagsChosen ();
 		};
 	};
 };

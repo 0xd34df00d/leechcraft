@@ -61,6 +61,7 @@ namespace LeechCraft
 					class YoutubePlayerCreator : public AbstractPlayerCreator
 					{
 					public:
+						virtual bool WouldRatherPlay (const QUrl&) const;
 						virtual Player* Create (const QUrl&,
 								const QStringList&,
 								const QStringList&) const;

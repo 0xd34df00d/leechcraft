@@ -185,7 +185,7 @@ namespace LeechCraft
 			
 			QString Poshuku::GetName () const
 			{
-				return "Poshuku";
+				return tr ("Poshuku Browser");
 			}
 			
 			QString Poshuku::GetInfo () const

@@ -41,9 +41,7 @@ namespace LeechCraft
 				virtual ~KeyInterceptor ();
 			protected:
 				virtual bool eventFilter (QObject*, QEvent*);
-
 				void keyPressEvent (QKeyEvent*);
-				void keyReleaseEvent (QKeyEvent*);
 			};
 		};
 	};

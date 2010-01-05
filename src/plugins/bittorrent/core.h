@@ -21,12 +21,11 @@
 #include <map>
 #include <list>
 #include <deque>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QPair>
 #include <QList>
 #include <QVector>
-#include <QStandardItemModel>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
@@ -42,6 +41,7 @@
 class QTimer;
 class QDomElement;
 class QToolBar;
+class QStandardItemModel;
 
 namespace libtorrent
 {
@@ -59,6 +59,7 @@ namespace LeechCraft
 			class PeersModel;
 			class TorrentFilesModel;
 			class RepresentationModel;
+			class LiveStreamManager;
 
 			class Core : public QAbstractItemModel
 			{
@@ -120,10 +121,11 @@ namespace LeechCraft
 				QList<QString> Headers_;
 				mutable int CurrentTorrent_;
 				std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
-				std::auto_ptr<PiecesModel> PiecesModel_;
-				std::auto_ptr<PeersModel> PeersModel_;
-				std::auto_ptr<TorrentFilesModel> TorrentFilesModel_;
-				std::auto_ptr<QStandardItemModel> WebSeedsModel_;
+				boost::shared_ptr<PiecesModel> PiecesModel_;
+				boost::shared_ptr<PeersModel> PeersModel_;
+				boost::shared_ptr<TorrentFilesModel> TorrentFilesModel_;
+				boost::shared_ptr<QStandardItemModel> WebSeedsModel_;
+				boost::shared_ptr<LiveStreamManager> LiveStreamManager_;
 				QString ExternalAddress_;
 				bool SaveScheduled_;
 				QToolBar *Toolbar_;
@@ -220,6 +222,7 @@ namespace LeechCraft
 				 * @param[in] filename The file name of the torrent.
 				 * @param[in] path The save path.
 				 * @param[in] tags The IDs of the tags of the torrent.
+				 * @param[in] tryLive Try to play this torrent live.
 				 * @param[in] files The list of initial file selections.
 				 * @param[in] params Task parameters.
 				 * @return The ID of the task.
@@ -227,6 +230,7 @@ namespace LeechCraft
 				int AddFile (const QString& filename,
 						const QString& path,
 						const QStringList& tags,
+						bool tryLive,
 						const QVector<bool>& files = QVector<bool> (),
 						LeechCraft::TaskParameters params = LeechCraft::NoParameters);
 				void KillTask (int);
@@ -286,6 +290,7 @@ namespace LeechCraft
 				void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
 				void HandleMetadata (const libtorrent::metadata_received_alert&);
 				void FileFinished (const libtorrent::torrent_handle&, int);
+				void PieceRead (const libtorrent::read_piece_alert&);
 
 				void MoveUp (const std::deque<int>&);
 				void MoveDown (const std::deque<int>&);
@@ -345,7 +350,7 @@ namespace LeechCraft
 				void error (QString) const;
 				void logMessage (const QString&) const;
 				void torrentFinished (const QString&);
-				void fileFinished (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::DownloadEntity&);
 				void addToHistory (const QString&, const QString&, quint64,
 						const QDateTime&, const QStringList&);
 				void taskFinished (int);

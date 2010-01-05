@@ -19,6 +19,7 @@
 #include "playerfactory.h"
 #include <boost/bind.hpp>
 #include "youtubeplayer.h"
+#include "vkontakteruplayer.h"
 
 namespace LeechCraft
 {
@@ -30,32 +31,50 @@ namespace LeechCraft
 			{
 				namespace WYFV
 				{
-					QList<PlayerFactory::PlayerCreator_f> PlayerFactory::Players_;
+					QList<PlayerFactory::PlayerCreator_f> PlayerFactory::Creators_;
+					QList<PlayerFactory::SuitablePlayerChecker_f> PlayerFactory::Checkers_;
 					QList<AbstractPlayerCreator*> PlayerFactory::AllocatedCreators_;
 
 					void PlayerFactory::Init ()
 					{
-						Players_.clear ();
+						Creators_.clear ();
 						qDeleteAll (AllocatedCreators_);
 						AllocatedCreators_.clear ();
 
 						AllocatedCreators_ << new YoutubePlayerCreator;
+						AllocatedCreators_ << new VkontakteruPlayerCreator;
+
 						Q_FOREACH (AbstractPlayerCreator *apc, AllocatedCreators_)
-							Players_ << PlayerCreator_f (boost::bind (&AbstractPlayerCreator::Create,
+						{
+							Creators_ << PlayerCreator_f (boost::bind (&AbstractPlayerCreator::Create,
 										apc,
 										_1,
 										_2,
 										_3));
+							Checkers_ << SuitablePlayerChecker_f (
+									boost::bind (&AbstractPlayerCreator::WouldRatherPlay,
+										apc,
+										_1)
+									);
+						}
 					}
 
 					Player* PlayerFactory::Create (const QUrl& url,
 							const QStringList& args, const QStringList& values)
 					{
 						Player *result = 0;
-						Q_FOREACH (PlayerCreator_f c, Players_)
+						Q_FOREACH (PlayerCreator_f c, Creators_)
 							if ((result = c (url, args, values)))
 								break;
 						return result;
+					}
+
+					bool PlayerFactory::HasPlayerFor (const QUrl& url)
+					{
+						Q_FOREACH (SuitablePlayerChecker_f c, Checkers_)
+							if (c (url))
+								return true;
+						return false;
 					}
 				};
 			};

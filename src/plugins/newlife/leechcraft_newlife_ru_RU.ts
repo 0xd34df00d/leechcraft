@@ -106,6 +106,45 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Plugins::NewLife::KTorrentImportPage</name>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="41"/>
+        <source>KTorrent&apos;s torrents import</source>
+        <translation>Импорт торрентов из KTorrent</translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="42"/>
+        <source>Select KTorrent&apos;s torrents</source>
+        <translation>Выберите торренты KTorrent</translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="85"/>
+        <source>Select KTorrent&apos;s configuration file</source>
+        <translation>Выберите конфигурационный файл KTorrent</translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="94"/>
+        <location filename="ktorrentimportpage.cpp" line="186"/>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="95"/>
+        <source>Can&apos;t read KTorrent&apos;s configuration file</source>
+        <translation>Невозможно прочитать конфигурационный файл KTorrent</translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="182"/>
+        <source>KTorrent settings</source>
+        <translation>Настройки KTorrent</translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="187"/>
+        <source>Could not access or parse KTorrent settings.</source>
+        <translation>Невозможно прочесть настройки KTorrent.</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Plugins::NewLife::LifereaImportPage</name>
     <message>
         <location filename="lifereaimportpage.cpp" line="40"/>
@@ -136,12 +175,12 @@
 <context>
     <name>LeechCraft::Plugins::NewLife::Plugin</name>
     <message>
-        <location filename="newlife.cpp" line="49"/>
+        <location filename="newlife.cpp" line="53"/>
         <source>The settings importer.</source>
         <translation>Импортер настроек.</translation>
     </message>
     <message>
-        <location filename="newlife.cpp" line="83"/>
+        <location filename="newlife.cpp" line="87"/>
         <source>Import settings...</source>
         <translation>Импортировать настройки...</translation>
     </message>

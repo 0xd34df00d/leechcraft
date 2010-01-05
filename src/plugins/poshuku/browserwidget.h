@@ -78,6 +78,7 @@ namespace LeechCraft
 				// TODO move out to the common menu
 				QAction *RecentlyClosedAction_;
 				QPoint OnLoadPos_;
+				QMenu *ChangeEncoding_;
 				QMenu *RecentlyClosed_;
 				QMenu *ExternalLinks_;
 				FindDialog *FindDialog_;
@@ -165,6 +166,8 @@ namespace LeechCraft
 				void pageFocus ();
 				void handleLoadProgress (int);
 				void notifyLoadFinished (bool);
+				void handleChangeEncodingAboutToShow ();
+				void handleChangeEncodingTriggered (QAction*);
 			signals:
 				void titleChanged (const QString&);
 				void urlChanged (const QString&);

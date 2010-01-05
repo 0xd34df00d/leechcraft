@@ -30,9 +30,10 @@ namespace LeechCraft
 			ItemBucket::ItemBucket (QWidget *parent)
 			: QDialog (parent)
 			{
+				ItemModel_ = new ItemModel ();
+
 				Ui_.setupUi (this);
-				Model_ = Core::Instance ().GetItemModel ();
-				Ui_.Items_->setModel (Model_);
+				Ui_.Items_->setModel (ItemModel_);
 				Ui_.Items_->addAction (Ui_.ActionDeleteItem_);
 				Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 				Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
@@ -45,23 +46,31 @@ namespace LeechCraft
 			
 			ItemBucket::~ItemBucket ()
 			{
+				if (ItemModel_)
+					ItemModel_->saveSettings ();
+				delete ItemModel_;
+			}
+
+			ItemModel* ItemBucket::GetItemModel () const
+			{
+				return ItemModel_;
 			}
 			
 			void ItemBucket::on_Items__activated (const QModelIndex& index)
 			{
-				Model_->Activated (index);
+				ItemModel_->Activated (index);
 			}
 			
 			void ItemBucket::on_ActionDeleteItem__triggered ()
 			{
 				QModelIndexList indexes = Ui_.Items_->selectionModel ()->selectedRows ();
 				for (int i = 0; i < indexes.size (); ++i)
-					Model_->RemoveItem (indexes.at (i));
+					ItemModel_->RemoveItem (indexes.at (i));
 			}
 			
 			void ItemBucket::currentItemChanged (const QModelIndex& index)
 			{
-				Ui_.ItemView_->SetHtml (Model_->GetDescription (index));
+				Ui_.ItemView_->SetHtml (ItemModel_->GetDescription (index));
 			}
 		};
 	};

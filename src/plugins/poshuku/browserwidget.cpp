@@ -72,8 +72,7 @@ namespace LeechCraft
 				Ui_.setupUi (this);
 				Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
 				Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
-				Ui_.Splitter_->setSizes (QList<int> () << 1 << 1000);
-				Ui_.Sidebar_->handleToggleHide ();
+				Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
 				Ui_.Progress_->hide ();
 
 				Ui_.WebView_->SetBrowserWidget (this);
@@ -214,6 +213,16 @@ namespace LeechCraft
 				moreMenu->addAction (ImportXbel_);
 				moreMenu->addAction (ExportXbel_);
 				moreMenu->addSeparator ();
+
+				ChangeEncoding_ = moreMenu->addMenu (tr ("Change encoding"));
+				connect (ChangeEncoding_,
+						SIGNAL (aboutToShow ()),
+						this,
+						SLOT (handleChangeEncodingAboutToShow ()));
+				connect (ChangeEncoding_,
+						SIGNAL (triggered (QAction*)),
+						this,
+						SLOT (handleChangeEncodingTriggered (QAction*)));
 			
 				RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 				RecentlyClosed_->setEnabled (false);
@@ -325,6 +334,10 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (Ui_.WebView_,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (Ui_.WebView_->page (),
 						SIGNAL (linkHovered (const QString&,
 								const QString&,
@@ -351,6 +364,10 @@ namespace LeechCraft
 						SIGNAL (loadFinished (bool)),
 						this,
 						SLOT (notifyLoadFinished (bool)));
+				connect (Ui_.WebView_,
+						SIGNAL (loadFinished (bool)),
+						this,
+						SLOT (handleIconChanged ()));
 				connect (Ui_.WebView_,
 						SIGNAL (loadStarted ()),
 						this,
@@ -650,11 +667,10 @@ namespace LeechCraft
 			
 			void BrowserWidget::handleIconChanged ()
 			{
-				int progress = Ui_.Progress_->value ();
-				if (progress == 100)
-					emit iconChanged (Ui_.WebView_->icon ());
-				else
-					emit iconChanged (QIcon ());
+				QIcon icon = Ui_.WebView_->icon ();
+				if (icon.isNull ())
+					icon = Core::Instance ().GetIcon (Ui_.WebView_->url ());
+				emit iconChanged (icon);
 			}
 			
 			void BrowserWidget::handleStatusBarMessage (const QString& msg)
@@ -959,33 +975,11 @@ namespace LeechCraft
 						entity = entity.toUpper ();
 					}
 			
-					QString hrefUrl (attributes.value ("href").toString ());
-					if (hrefUrl.indexOf ("://") < 0)
-					{
-						QUrl originalUrl = Ui_.WebView_->page ()->mainFrame ()->url ();
-						originalUrl.setQueryItems (QList<QPair<QString, QString> > ());
-						if (hrefUrl.size () &&
-								hrefUrl.at (0) == '/')
-							originalUrl.setEncodedPath (hrefUrl.toUtf8 ());
-						else
-						{
-							QString originalPath = originalUrl.path ();
-							if (!originalPath.endsWith ('/'))
-							{
-								int slashIndex = originalPath.lastIndexOf ('/');
-								originalPath = originalPath.left (slashIndex + 1);
-							}
-							originalPath += hrefUrl;
-							originalUrl.setEncodedPath (originalPath.toUtf8 ());
-						}
-						e.Entity_ = originalUrl;
-						e.Additional_ ["SourceURL"] = originalUrl;
-					}
-					else
-					{
-						e.Entity_ = QUrl::fromEncoded (hrefUrl.toUtf8 ());
-						e.Additional_ ["SourceURL"] = QUrl::fromEncoded (hrefUrl.toUtf8 ());
-					}
+					QUrl entityUrl = Util::MakeAbsoluteUrl (Ui_.WebView_->
+								page ()->mainFrame ()->url (),
+							attributes.value ("href").toString ());
+					e.Entity_ = entityUrl;
+					e.Additional_ ["SourceURL"] = entityUrl;
 					e.Parameters_ = LeechCraft::FromUserInitiated |
 						LeechCraft::OnlyHandle;
 					e.Additional_ ["UserVisibleName"] = entity;
@@ -1072,6 +1066,59 @@ namespace LeechCraft
 				else
 					emit downloadFinished (tr ("Page load failed: %1")
 							.arg (Ui_.WebView_->title ()));
+			}
+
+			void BrowserWidget::handleChangeEncodingAboutToShow ()
+			{
+				ChangeEncoding_->clear ();
+
+				QStringList codecs;
+				QList<int> mibs = QTextCodec::availableMibs ();
+				QMap<QString, int> name2mib;
+				Q_FOREACH (int mib, mibs)
+				{
+					QString name = QTextCodec::codecForMib (mib)->name ();
+					codecs << name;
+					name2mib [name] = mib;
+				}
+				codecs.sort ();
+
+				QString defaultEncoding = Ui_.WebView_->
+					settings ()->defaultTextEncoding ();
+				const int currentCodec = codecs.indexOf (defaultEncoding);
+
+				QAction *def = ChangeEncoding_->addAction (tr ("Default"));
+				def->setData (-1);
+				def->setCheckable (true);
+				if (currentCodec == -1)
+					def->setChecked (true);
+				ChangeEncoding_->addSeparator ();
+
+				for (int i = 0; i < codecs.count (); ++i)
+				{
+					QAction *cdc = ChangeEncoding_->addAction (codecs.at (i));
+					cdc->setData (name2mib [codecs.at (i)]);
+					cdc->setCheckable (true);
+					if (currentCodec == i)
+						cdc->setChecked (true);
+				}
+			}
+
+			void BrowserWidget::handleChangeEncodingTriggered (QAction *action)
+			{
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "action is null";
+					return;
+				}
+
+				int mib = action->data ().toInt ();
+				QString encoding;
+				if (mib >= 0)
+					encoding = QTextCodec::codecForMib (mib)->name ();
+				Ui_.WebView_->settings ()->setDefaultTextEncoding (encoding);
+				Reload_->trigger ();
 			}
 		};
 	};

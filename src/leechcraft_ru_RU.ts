@@ -304,6 +304,53 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>BackendSelector</name>
+    <message>
+        <source>SQLite</source>
+        <translation>SQLite</translation>
+    </message>
+    <message>
+        <source>PostgreSQL</source>
+        <translation>PostgreSQL</translation>
+    </message>
+    <message>
+        <source>Journal mode:</source>
+        <translation>Режим журналирования:</translation>
+    </message>
+    <message>
+        <source>Temp store:</source>
+        <translation>Временное хранилище:</translation>
+    </message>
+    <message>
+        <source>Synchronous:</source>
+        <translation>Синхронная работа:</translation>
+    </message>
+    <message>
+        <source>VACUUM on exit</source>
+        <translation>Оптимизация при выходе</translation>
+    </message>
+    <message>
+        <source>Hostname:</source>
+        <translation>Хост:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <source>Username:</source>
+        <translation>Логин:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Пароль:</translation>
+    </message>
+    <message>
+        <source>Database name:</source>
+        <translation>Имя БД:</translation>
+    </message>
+</context>
+<context>
     <name>CommonJobAdder</name>
     <message>
         <source>Add task</source>
@@ -402,10 +449,6 @@ p, li { white-space: pre-wrap; }
         <translation>Лог</translation>
     </message>
     <message>
-        <source>Summary</source>
-        <translation>Сводка</translation>
-    </message>
-    <message>
         <source>F11</source>
         <translation>F11</translation>
     </message>
@@ -497,6 +540,17 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>LeechCraft::ColorPicker</name>
+    <message>
+        <source>Choose color</source>
+        <translation>Выберите цвет</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Выбрать...</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::CommonJobAdder</name>
     <message>
         <source>Select file</source>
@@ -546,6 +600,52 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>LeechCraft::FilePicker</name>
+    <message>
+        <source>Browse...</source>
+        <translation>Обзор...</translation>
+    </message>
+    <message>
+        <source>Select directory</source>
+        <translation>Выберите директорию</translation>
+    </message>
+    <message>
+        <source>Select file</source>
+        <translation>Выберите файл</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::FontPicker</name>
+    <message>
+        <source>Choose font</source>
+        <translation>Выберите шрифт</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Выбрать...</translation>
+    </message>
+    <message>
+        <source>, %1 pt</source>
+        <translation>, %1 pt</translation>
+    </message>
+    <message>
+        <source>, bold</source>
+        <translation>, жирный</translation>
+    </message>
+    <message>
+        <source>, italic</source>
+        <translation>, курсив</translation>
+    </message>
+    <message>
+        <source>, underlined</source>
+        <translation>, подчеркнутый</translation>
+    </message>
+    <message>
+        <source>, striken out</source>
+        <translation>, перечеркнутый</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::HandlerChoiceDialog</name>
     <message>
         <source>Select save location</source>
@@ -586,6 +686,10 @@ p, li { white-space: pre-wrap; }
         <source>LeechCraft menu</source>
         <translation>Меню LeechCraft</translation>
     </message>
+    <message>
+        <source>Actions</source>
+        <translation>Действия</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -607,21 +711,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>LeechCraft::OperationalModel</name>
-    <message>
-        <source>Entity</source>
-        <translation>Объект</translation>
-    </message>
-    <message>
-        <source>Category</source>
-        <translation>Категория</translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation>Информация</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::PluginManager</name>
     <message>
         <source>Name</source>
@@ -638,33 +727,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::RequestNormalizer</name>
-    <message>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-    <message>
-        <source>State</source>
-        <translation>Состояние</translation>
-    </message>
-    <message>
-        <source>Request validation error: %1</source>
-        <translation>Ошибка проверки запроса: %1</translation>
-    </message>
-    <message>
-        <source>Request parsing error: %1</source>
-        <translation>Ошибка обработки запроса: %1</translation>
-    </message>
-    <message>
-        <source>Open/close braces mismatch: %1</source>
-        <translation>Несовпадение открывающих и закрывающих скобок: %1</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation>Статус</translation>
     </message>
 </context>
 <context>
@@ -754,17 +816,17 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabContents</name>
+    <name>LeechCraft::TabContainer</name>
     <message>
-        <source>Remove this category</source>
-        <translation>Удалить эту категорию</translation>
+        <source>Close all but this</source>
+        <translation>Закрыть все кроме этой</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabContentsManager</name>
+    <name>LeechCraft::TagsManager</name>
     <message>
-        <source>Summary</source>
-        <translation>Сводка</translation>
+        <source>untagged</source>
+        <translation>неотмеченное</translation>
     </message>
 </context>
 <context>
@@ -776,6 +838,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Enter new tag name</source>
         <translation>Введите новое имя тега</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::CategorySelector</name>
+    <message>
+        <source>Tags selector</source>
+        <translation>Выбор тегов</translation>
+    </message>
+    <message>
+        <source>Select all</source>
+        <translation>Выбрать все</translation>
+    </message>
+    <message>
+        <source>Select none</source>
+        <translation>Снять отметку со всех</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
+    <message>
+        <source>untagged</source>
+        <translation>неотмеченное</translation>
+    </message>
+    <message>
+        <source>&lt;unknown tag&gt;</source>
+        <translation>&lt;неизвестный тег&gt;</translation>
     </message>
 </context>
 <context>
@@ -794,6 +882,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Plugin Manager</source>
         <translation>Менеджер плагинов</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Too long to show</source>
+        <translation>Слишком длинное для показа</translation>
+    </message>
+    <message>
+        <source>Binary entity</source>
+        <translation>Двоичный объект</translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation>&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;from %1</source>
+        <translation>&lt;br /&gt;от %1</translation>
+    </message>
+    <message>
+        <source> b</source>
+        <translation>б</translation>
+    </message>
+    <message>
+        <source> KiB</source>
+        <translation> КиБ</translation>
+    </message>
+    <message>
+        <source> MiB</source>
+        <translation> МиБ</translation>
+    </message>
+    <message>
+        <source> GiB</source>
+        <translation> ГиБ</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n день</numerusform>
+            <numerusform>%n дня</numerusform>
+            <numerusform>%n дней</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Could not cd into %1</source>
+        <translation>Невозможно перейти в директорию %1</translation>
+    </message>
+    <message>
+        <source>Could not create %1</source>
+        <translation>Невозможно создать %1</translation>
     </message>
 </context>
 <context>
@@ -847,47 +986,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Remember my choice for the resource</source>
         <translation>Запомнить мой выбор для ресурса</translation>
-    </message>
-</context>
-<context>
-    <name>TabContainer</name>
-    <message>
-        <source>Close all but this</source>
-        <translation>Закрыть все кроме этого</translation>
-    </message>
-</context>
-<context>
-    <name>TabContents</name>
-    <message>
-        <source>Form</source>
-        <translation>Форма</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation>Добавить</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation>Строка</translation>
-    </message>
-    <message>
-        <source>Wildcard</source>
-        <translation>Маска</translation>
-    </message>
-    <message>
-        <source>Regexp</source>
-        <translation>Regexp</translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation>Теги</translation>
-    </message>
-</context>
-<context>
-    <name>TagsManager</name>
-    <message>
-        <source>untagged</source>
-        <translation>без тегов</translation>
     </message>
 </context>
 <context>

@@ -141,6 +141,8 @@ namespace LeechCraft
 				LeechCraft::TaskParameters tp,
 				const QString& mime = QString ());
 
+		PLUGININTERFACE_API QUrl MakeAbsoluteUrl (QUrl, const QString& hrefUrl);
+
 		/** @brief Returns an element for a given tags list.
 		 *
 		 * This function tries to implement projection from tags to a

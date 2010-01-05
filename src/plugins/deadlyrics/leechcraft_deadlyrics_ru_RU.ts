@@ -23,17 +23,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DeadLyrics::LyricWikiSearcher</name>
-    <message>
-        <source>Lyrics fetch error</source>
-        <translation>Ошибка загрузки текстов</translation>
-    </message>
-    <message>
-        <source>No lyrics found</source>
-        <translation>Ничего не найдено</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Unknown %1 %2</source>

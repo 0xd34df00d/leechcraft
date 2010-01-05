@@ -33,7 +33,8 @@ namespace LeechCraft
 		std::auto_ptr<QLocalServer> Server_;
 		MainWindow *Window_;
 	public:
-		LocalSocketHandler (MainWindow* = 0);
+		LocalSocketHandler ();
+		void SetMainWindow (MainWindow*);
 	private slots:
 		void handleNewLocalServerConnection ();
 		void pullCommandLine ();

@@ -35,10 +35,12 @@ namespace LeechCraft
 									 , public IWebPlugin
 					{
 						Q_OBJECT
+
+						Q_INTERFACES (LeechCraft::Plugins::Poshuku::IWebPlugin)
 					public:
 						WYFVPlugin (QObject* = 0);
 
-						QWebPluginFactory::Plugin Plugin () const;
+						QWebPluginFactory::Plugin Plugin (bool) const;
 						QWidget* Create (const QString&,
 								const QUrl&,
 								const QStringList&,

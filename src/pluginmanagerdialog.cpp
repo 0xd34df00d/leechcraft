@@ -22,7 +22,7 @@
 using namespace LeechCraft;
 
 LeechCraft::PluginManagerDialog::PluginManagerDialog (QWidget *parent)
-: QDialog (parent)
+: QWidget (parent)
 {
 	Ui_.setupUi (this);
 	Ui_.PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());

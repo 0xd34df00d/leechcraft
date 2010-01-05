@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include "akregatorimporter.h"
 #include "lifereaimporter.h"
+#include "ktorrentimporter.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,7 @@ namespace LeechCraft
 
 				Importers_ << new AkregatorImporter (this);
 				Importers_ << new LifereaImporter (this);
+				Importers_ << new KTorrentImporter (this);
 				
 				connect (this,
 						SIGNAL (accepted ()),

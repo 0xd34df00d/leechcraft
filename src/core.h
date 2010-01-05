@@ -72,6 +72,7 @@ namespace LeechCraft
 		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
 		std::auto_ptr<ClipboardWatcher> ClipboardWatcher_;
 		std::auto_ptr<LocalSocketHandler> LocalSocketHandler_;
+		QList<DownloadEntity> QueuedEntities_;
 
 		Core ();
 	public:
@@ -248,6 +249,10 @@ namespace LeechCraft
 		 */
 		void handleCouldHandle (const LeechCraft::DownloadEntity& entity,
 				bool *could);
+
+		void queueEntity (LeechCraft::DownloadEntity);
+
+		void pullEntityQueue ();
 
 		/** Handles requests to show a tab above others.
 		 */

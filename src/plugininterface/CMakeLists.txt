@@ -22,6 +22,7 @@ SET (SRCS
 	structuresops.cpp
 	listmodel.cpp
 	selectablebrowser.cpp
+	flattofoldersproxymodel.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -39,6 +40,7 @@ SET (HEADERS
 	structuresops.h
 	listmodel.h
 	selectablebrowser.h
+	flattofoldersproxymodel.h
 	)
 SET (FORMS
 	backendselector.ui

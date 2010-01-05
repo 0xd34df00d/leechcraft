@@ -11,13 +11,16 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWidget</string>
+   <string/>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
     <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QSplitter" name="MainSplitter_">
      <property name="orientation">
@@ -52,12 +55,6 @@
            <width>16</width>
            <height>16</height>
           </size>
-         </property>
-         <property name="rootIsDecorated">
-          <bool>false</bool>
-         </property>
-         <property name="itemsExpandable">
-          <bool>false</bool>
          </property>
         </widget>
        </item>
