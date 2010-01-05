@@ -33,7 +33,7 @@ namespace LeechCraft
 			{
 				namespace WYFV
 				{
-					class Related;
+					struct Related;
 
 					class RelatedItem : public QWidget
 					{

@@ -6,7 +6,7 @@ set BOOST_VERSION="1_40"
 set LIBTORRENT_BIN_DIR="F:\X-Files\Projects\Lib\libtorrent\bin\msvc-9.0\release\boost-link-shared\boost-source\threading-multi"
 set LIBCURL_BIN_DIR="F:\X-Files\Projects\Lib\curl-7.19.6\lib\DLL-Release"
 set OPENSSL_BIN_DIR="F:\X-Files\Projects\Lib\openssl-0.9.8k\out32dll"
-set QT_BIN_DIR="c:\Programs\qt-win-opensource-src-4.5.3\lib\"
+set QT_BIN_DIR="c:\Programs\qt-everywhere-opensource-src-4.6.0-rc1\lib\"
 
 set LEECHCRAFT_ROOT_DIR="..\.."
 set LEECHCRAFT_BUILD_DIR="build32"
@@ -46,6 +46,7 @@ copy %QT_BIN_DIR%\QtSql4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtSvg4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtWebKit4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtXml4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtXmlPatterns4.dll %TARGET_DIR%
 
 copy %QT_BIN_DIR%\..\plugins\imageformats\qgif4.dll %TARGET_DIR%\plugins\imageformats
 copy %QT_BIN_DIR%\..\plugins\imageformats\qico4.dll %TARGET_DIR%\plugins\imageformats
@@ -86,6 +87,7 @@ copy %LEECHCRAFT_BUILD_DIR%\plugins\networkmonitor\%BUILD_TYPE%\leechcraft_netwo
 copy %LEECHCRAFT_BUILD_DIR%\plugins\newlife\%BUILD_TYPE%\leechcraft_newlife.dll %TARGET_DIR%\plugins\bin
 copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\%BUILD_TYPE%\leechcraft_poshuku.dll %TARGET_DIR%\plugins\bin
 copy %LEECHCRAFT_BUILD_DIR%\plugins\seekthru\%BUILD_TYPE%\leechcraft_seekthru.dll %TARGET_DIR%\plugins\bin
+copy %LEECHCRAFT_BUILD_DIR%\plugins\summary\%BUILD_TYPE%\leechcraft_summary.dll %TARGET_DIR%\plugins\bin
 copy %LEECHCRAFT_BUILD_DIR%\plugins\vgrabber\%BUILD_TYPE%\leechcraft_vgrabber.dll %TARGET_DIR%\plugins\bin
 rem copy %LEECHCRAFT_BUILD_DIR%\plugins\yasd\%BUILD_TYPE%\leechcraft_yasd.dll %TARGET_DIR%\plugins\bin
 
@@ -93,6 +95,7 @@ rem - Poshuku sub-plugins -
 copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\plugins\cleanweb\%BUILD_TYPE%\leechcraft_poshuku_cleanweb.dll %TARGET_DIR%\plugins\bin
 copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\plugins\filescheme\%BUILD_TYPE%\leechcraft_poshuku_filescheme.dll %TARGET_DIR%\plugins\bin
 copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\plugins\fua\%BUILD_TYPE%\leechcraft_poshuku_fua.dll %TARGET_DIR%\plugins\bin
+copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\plugins\wyfv\%BUILD_TYPE%\leechcraft_poshuku_wyfv.dll %TARGET_DIR%\plugins\bin
 
 rem - Settings -
 copy %LEECHCRAFT_ROOT_DIR%\src\coresettings.xml %TARGET_DIR%\settings
@@ -107,6 +110,7 @@ copy %LEECHCRAFT_ROOT_DIR%\src\plugins\vgrabber\vgrabbersettings.xml %TARGET_DIR
 
 copy %LEECHCRAFT_ROOT_DIR%\src\plugins\poshuku\plugins\cleanweb\poshukucleanwebsettings.xml %TARGET_DIR%\settings
 copy %LEECHCRAFT_ROOT_DIR%\src\plugins\poshuku\plugins\fua\poshukufuasettings.xml %TARGET_DIR%\settings
+copy %LEECHCRAFT_ROOT_DIR%\src\plugins\poshuku\plugins\wyfv\poshukuwyfvsettings.xml %TARGET_DIR%\settings
 
 rem - Translations -
 for /r %LEECHCRAFT_ROOT_DIR%\src %%f in (*.qm) do copy %%f %TARGET_DIR%\translations
@@ -117,5 +121,5 @@ xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\iconsets\oxygen\icons %TARGET_DIR%\icons\o
 copy nul %TARGET_DIR%\leechcraft\themes\oxygen
 
 rem - Other stuff -
-copy %LEECHCRAFT_ROOT_DIR%\tools\win32installer\qt.conf %TARGET_DIR%
+copy %LEECHCRAFT_ROOT_DIR%\tools\win32\installer\qt.conf %TARGET_DIR%
 pause

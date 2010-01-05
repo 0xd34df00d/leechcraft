@@ -2,7 +2,7 @@
 rem === Set all these variables to proper paths of your system:
 call "C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
-set QTDIR=c:\Programs\qt-win-opensource-src-4.5.3
+set QTDIR=c:\Programs\qt-everywhere-opensource-src-4.6.0-rc1
 set BOOST_ROOT=f:\X-Files\Projects\Lib\boost_1_40_0
 
 set TORRENT_DIR=F:/X-Files/Projects/Lib/libtorrent

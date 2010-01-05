@@ -76,6 +76,7 @@ SectionGroup "Core"
 		File QtSvg4.dll
 		File QtWebkit4.dll
 		File QtXml4.dll
+        File QtXmlPatterns4.dll
 		File qt.conf
 		File phonon4.dll
 #		File phonon_ds94.dll
@@ -188,6 +189,11 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_poshuku_filescheme.dll
 		SectionIn 1
 	SectionEnd
+    Section "Poshuku WYFV" POSHUKUWYFVPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_poshuku_wyfv.dll
+		SectionIn 1
+	SectionEnd
 	Section "Poshuku FUA" POSHUKUFUAPLUGIN
 		SetOutPath $INSTDIR\settings
 		File settings\poshukufuasettings.xml
@@ -200,6 +206,11 @@ SectionGroup "Plugins"
 		File settings\seekthrusettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_seekthru.dll
+		SectionIn 1
+	SectionEnd
+    Section "Summary" SUMMARYPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_summary.dll
 		SectionIn 1
 	SectionEnd
     Section "VGrabber" VGRABBERPLUGIN
@@ -282,8 +293,10 @@ LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Full-featured web browser."
 LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker for the Poshuku compatible with Firefox's AdBlock lists."
 LangString DESC_POSHUKUFILESCHEMEPLUGIN ${LANG_ENGLISH} "Support of the file:// scheme for the Poshuku."
 LangString DESC_POSHUKUFUAPLUGIN ${LANG_ENGLISH} "Fake User Agent plugin for the Poshuku."
+LangString DESC_POSHUKUWYFVPLUGIN ${LANG_ENGLISH} "Alternate media player for YouTube."
 LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "Fetches lyrics from LyricWiki.org."
 LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-aware search engines."
+LangString DESC_SUMMARYPLUGIN ${LANG_ENGLISH} "Summary tab."
 LangString DESC_VGRABBERPLUGIN ${LANG_ENGLISH} "VKontakte.ru stuff grabber."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
@@ -306,6 +319,7 @@ LangString DESC_POSHUKUFUAPLUGIN ${LANG_RUSSIAN} "Плагин для Poshuku, подделываю
 LangString DESC_DEADLYRICSPLUGIN ${LANG_RUSSIAN} "Поиск песен на LyricWiki.org."
 LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддерживающих OpenSearch."
 LangString DESC_VGRABBERPLUGIN ${LANG_RUSSIAN} "Плагин для скачивания и проигрывания музыки и видео из социальной сети В Контакте."
+#TODO: впилить описания DESC_POSHUKUWYFVPLUGIN и DESC_SUMMARYPLUGIN, сейчас мне лениво.
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
