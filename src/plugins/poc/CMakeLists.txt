@@ -1,0 +1,34 @@
+INCLUDE (${QT_USE_FILE})
+INCLUDE_DIRECTORIES (
+	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	)
+
+SET (SRCS
+	poc.cpp
+	editor.cpp
+	)
+
+SET (HEADERS
+	poc.h
+	editor.h
+	)
+
+SET (UIS
+	poc.ui
+	)
+
+QT4_WRAP_UI (C_UIS ${UIS})
+QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+
+ADD_LIBRARY (leechcraft_poc SHARED
+	${SRCS}
+	${UIS}
+	${MOC_SRCS}
+	)
+TARGET_LINK_LIBRARIES (leechcraft_poc
+	${QT_LIBRARIES}
+	plugininterface
+	)
+INSTALL (TARGETS leechcraft_poc DESTINATION ${LC_PLUGINS_DEST})

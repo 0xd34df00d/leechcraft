@@ -87,6 +87,7 @@ OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
 OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
 OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
 OPTION (ENABLE_PYLC "Build PyLC, Python support for LeechCraft" ON)
+OPTION (ENABLE_POC "Build PoC, text editor" ON)
 
 if (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -175,6 +176,10 @@ ENDIF (ENABLE_ANHERO)
 IF (ENABLE_VGRABBER)
 	ADD_SUBDIRECTORY (plugins/vgrabber)
 ENDIF (ENABLE_VGRABBER)
+
+IF (ENABLE_POC)
+	ADD_SUBDIRECTORY (plugins/poc)
+ENDIF (ENABLE_POC)
 
 IF (ENABLE_PYLC)
 	IF (PYTHONLIBS_FOUND)
