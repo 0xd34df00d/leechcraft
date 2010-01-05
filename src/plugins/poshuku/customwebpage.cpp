@@ -425,7 +425,7 @@ namespace LeechCraft
 								.arg (reply->url ().toString ());
 							QString contents = QString (errorPage.readAll ())
 								.arg (title)
-								.arg (reply->attribute (QNetworkReply::HttpStatusCodeAttribute).toInt ())
+								.arg (reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ())
 								.arg (reply->errorString ())
 								.arg (reply->url ().toString ());
 			
