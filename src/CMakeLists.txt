@@ -359,6 +359,7 @@ IF (NOT DEFINED LEECHCRAFT_VERSION)
 ENDIF (NOT DEFINED LEECHCRAFT_VERSION)
 
 CONFIGURE_FILE (config.h.in config.h)
+CONFIGURE_FILE (LeechCraft.cmake.in LeechCraft.cmake)
 
 IF (UNIX)
 	ADD_CUSTOM_COMMAND (OUTPUT
@@ -394,6 +395,12 @@ TARGET_LINK_LIBRARIES(leechcraft
 INSTALL (TARGETS leechcraft DESTINATION bin)
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+INSTALL (DIRECTORY plugininterface/ DESTINATION include/leechcraft/plugininterface/
+	PATTERN ".h")
+INSTALL (FILES xmlsettingsdialog/xmlsettingsdialog.h DESTINATION include/leechcraft/xmlsettingsdialog/)
+INSTALL (FILES xmlsettingsdialog/basesettingsmanager.h DESTINATION include/leechcraft/xmlsettingsdialog/)
+INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
