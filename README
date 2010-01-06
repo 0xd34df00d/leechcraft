@@ -1,10 +1,13 @@
-LeechCraft is a full-featured modular "Internet client" application,
-currently including plugins for a web browser, news feed reader,
-BitTorrent client, FTP client and many more. Plugins are easily added
-and integrated with each other with no effort.
+LeechCraft is a free open source cross-platform modular internet-client.
+LeechCraft allows to browse the web, read RSS/Atom feeds, download files
+via BitTorrent, FTP, HTTP and DC, automatically download, play or stream
+podcasts (and other media files) and much more.
+
+Plugins are easily added and integrated with each other with no effort.
 
 Currently it includes following plugins:
 * Aggregator, news feed reader
+* AnHero, crash handler
 * BitTorrent, the BitTorrent client
 * Chatter, the IRC client
 * CSTP, simple HTTP implementation
@@ -14,15 +17,30 @@ Currently it includes following plugins:
 * LCFTP, FTP implementation and two-panel client
 * LMP, simple media player with streaming support
 * NetworkMonitor, which monitors for HTTP requests
+* New Life, settings importer from other applications
 * Poshuku, the web browser
 * Poshuku CleanWeb, AdBlock+-compatible ad blocker
 * Poshuku FileScheme, support for the file:// browsing
 * Poshuku FUA, which allows to set fake user agents per domain
+* Poshuku WYFV, which allows to play flash video on some sites without
+  Flash installed
 * SeekThru, client for OpenSearch-aware web sites
+* Summary, a plugin which shows all the downloads, tasks, events and
+  statuses and allows to perform searches.
+* vGrabber, vkontakte.ru audio/video player/downloader.
+
+Following plugins are in development:
+* DCminator, DirectConnect client.
+* Nufella, Gnutella client.
+* PoC, text editor.
+* PyLC, which adds Python support and allows to load plugins in Python.
+* Remoter, which turns LeechCraft into a server to which thin clients
+  can connect.
+* YASD, Yet Another Site Downloader.
 
 == Getting LeechCraft ==
 Getting precompiled LeechCraft for various OS is documented here:
-http://leechcraft.org/wiki/GetLeechCraft
+http://leechcraft.org/wiki/leechcraft/Download
 
 == Building LeechCraft ==
-http://leechcraft.org/wiki/BuildingFromSource
+http://leechcraft.org/wiki/leechcraft/Building_from_source
