@@ -44,6 +44,7 @@ SET (SRCS
 	livestreammanager.cpp
 	livestreamplugin.cpp
 	livestreamdevice.cpp
+	speedselectoraction.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -78,6 +79,7 @@ SET (HEADERS
 	livestreammanager.h
 	livestreamplugin.h
 	livestreamdevice.h
+	speedselectoraction.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h

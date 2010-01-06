@@ -46,6 +46,7 @@
 #include "wizardgenerator.h"
 #include "fastspeedcontrolwidget.h"
 #include "ipfilterdialog.h"
+#include "speedselectoraction.h"
 
 #ifdef AddJob
 #undef AddJob
@@ -390,7 +391,6 @@ namespace LeechCraft
 				QList<QAction*> result;
 				result += CreateTorrent_.get ();
 				result += OpenMultipleTorrents_.get ();
-				result += IPFilter_.get ();
 				return result;
 			}
 			
@@ -758,50 +758,12 @@ namespace LeechCraft
 				Core::Instance ()->Export (where, settings, active);
 			}
 
-			void TorrentPlugin::handleSpeedsChanged ()
-			{
-				DownSelector_->clear ();
-				UpSelector_->clear ();
-
-				if (!XmlSettingsManager::Instance ()->
-						property ("EnableFastSpeedControl").toBool ())
-				{
-					DownSelectorAction_->setVisible (false);
-					UpSelectorAction_->setVisible (false);
-					return;
-				}
-
-				QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Torrent");
-				settings.beginGroup ("FastSpeedControl");
-				int num = settings.beginReadArray ("Values");
-				for (int i = 0; i < num; ++i)
-				{
-					settings.setArrayIndex (i);
-					int dv = settings.value ("DownValue").toInt ();
-					int uv = settings.value ("UpValue").toInt ();
-					DownSelector_->addItem (tr ("%1 KiB/s").arg (dv), dv);
-					UpSelector_->addItem (tr ("%1 KiB/s").arg (uv), uv);
-				}
-				settings.endArray ();
-				settings.endGroup ();
-
-				DownSelector_->addItem (QString::fromUtf8 ("\u221E"), 0);
-				UpSelector_->addItem (QString::fromUtf8 ("\u221E"), 0);
-
-				DownSelectorAction_->setVisible (true);
-				UpSelectorAction_->setVisible (true);
-
-				DownSelector_->setCurrentIndex (DownSelector_->count () - 1);
-				UpSelector_->setCurrentIndex (UpSelector_->count () - 1);
-			}
-
 			void TorrentPlugin::handleFastSpeedComboboxes ()
 			{
-				int down = DownSelector_->itemData (DownSelector_->currentIndex ()).toInt ();
+				int down = DownSelectorAction_->CurrentData ();
 				TabWidget_->SetOverallDownloadRateController (down);
 
-				int up = UpSelector_->itemData (UpSelector_->currentIndex ()).toInt ();
+				int up = UpSelectorAction_->CurrentData ();
 				TabWidget_->SetOverallUploadRateController (up);
 			}
 			
@@ -903,12 +865,18 @@ namespace LeechCraft
 				XmlSettingsDialog_->SetCustomWidget ("FastSpeedControl", fsc);
 				connect (fsc,
 						SIGNAL (speedsChanged ()),
-						this,
+						DownSelectorAction_,
+						SLOT (handleSpeedsChanged ()));
+				connect (fsc,
+						SIGNAL (speedsChanged ()),
+						UpSelectorAction_,
 						SLOT (handleSpeedsChanged ()));
 				XmlSettingsManager::Instance ()->
 					RegisterObject ("EnableFastSpeedControl",
-						this, "handleSpeedsChanged");
-				handleSpeedsChanged ();
+						DownSelectorAction_, "handleSpeedsChanged");
+				XmlSettingsManager::Instance ()->
+					RegisterObject ("EnableFastSpeedControl",
+						UpSelectorAction_, "handleSpeedsChanged");
 			}
 			
 			void TorrentPlugin::SetupActions ()
@@ -1072,17 +1040,6 @@ namespace LeechCraft
 						SLOT (on_Export__triggered ()));
 				Export_->setProperty ("ActionIcon", "torrent_export");
 
-				DownSelector_ = new QComboBox (Toolbar_.get ());
-				UpSelector_ = new QComboBox (Toolbar_.get ());
-				connect (DownSelector_,
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (handleFastSpeedComboboxes ()));
-				connect (UpSelector_,
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (handleFastSpeedComboboxes ()));
-			
 				Toolbar_->addAction (OpenTorrent_.get ());
 				Toolbar_->addAction (RemoveTorrent_.get ());
 				Toolbar_->addSeparator ();
@@ -1103,9 +1060,22 @@ namespace LeechCraft
 				Toolbar_->addAction (Import_.get ());
 				Toolbar_->addAction (Export_.get ());
 				Toolbar_->addSeparator ();
-				DownSelectorAction_ = Toolbar_->addWidget (DownSelector_);
-				UpSelectorAction_ = Toolbar_->addWidget (UpSelector_);
+				DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
+				DownSelectorAction_->handleSpeedsChanged ();
+				Toolbar_->addAction (DownSelectorAction_);
+				UpSelectorAction_ = new SpeedSelectorAction ("Up", this);
+				UpSelectorAction_->handleSpeedsChanged ();
+				Toolbar_->addAction (UpSelectorAction_);
 
+				connect (DownSelectorAction_,
+						SIGNAL (currentIndexChanged (int)),
+						this,
+						SLOT (handleFastSpeedComboboxes ()));
+				connect (UpSelectorAction_,
+						SIGNAL (currentIndexChanged (int)),
+						this,
+						SLOT (handleFastSpeedComboboxes ()));
+			
 				QMenu *contextMenu = new QMenu (tr ("Torrents actions"));
 				contextMenu->addAction (RemoveTorrent_.get ());
 				contextMenu->addSeparator ();

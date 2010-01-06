@@ -50,6 +50,7 @@ namespace LeechCraft
 		{
 			class AddTorrent;
 			class RepresentationModel;
+			class SpeedSelectorAction;
 
 			class TorrentPlugin : public QObject
 								, public IInfo
@@ -95,9 +96,7 @@ namespace LeechCraft
 					Export_;
 				std::auto_ptr<QTranslator> Translator_;
 
-				QComboBox *DownSelector_,
-						  *UpSelector_;
-				QAction *DownSelectorAction_,
+				SpeedSelectorAction *DownSelectorAction_,
 						*UpSelectorAction_;
 
 				enum
@@ -187,7 +186,6 @@ namespace LeechCraft
 				void on_MakeMagnetLink__triggered ();
 				void on_Import__triggered ();
 				void on_Export__triggered ();
-				void handleSpeedsChanged ();
 				void handleFastSpeedComboboxes ();
 				void setActionsEnabled ();
 				void showError (QString);
