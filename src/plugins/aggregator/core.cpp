@@ -1576,7 +1576,7 @@ namespace LeechCraft
 				emit delegateEntity (e, &id, &pr);
 				if (id == -1)
 				{
-					qWarning () << Q_FUNC_INFO << url << "wasn't deleagated";
+					qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
 					return;
 				}
 			
