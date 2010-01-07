@@ -1,3 +1,18 @@
+IF (NOT QT_USE_FILE)
+	MESSAGE (STATUS "Aggregator: building separately")
+
+	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+	IF (COMMAND cmake_policy)
+		cmake_policy (SET CMP0003 NEW)
+	ENDIF (COMMAND cmake_policy)
+
+	PROJECT (leechcraft_aggregator)
+
+	FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signals)
+	FIND_PACKAGE (Qt4 REQUIRED)
+	FIND_PACKAGE (LeechCraft REQUIRED)
+ENDIF (NOT QT_USE_FILE)
+
 SET (QT_USE_QTSQL TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTNETWORK TRUE)

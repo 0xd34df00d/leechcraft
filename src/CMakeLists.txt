@@ -3,11 +3,11 @@ IF (COMMAND cmake_policy)
 	cmake_policy (SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
 PROJECT (leechcraft)
-IF (NOT DISABLE_RPATH_TRICKS)
-	SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-	SET (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-	SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-ENDIF (NOT DISABLE_RPATH_TRICKS)
+#IF (NOT DISABLE_RPATH_TRICKS)
+#	SET (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#	SET (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#	SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+#ENDIF (NOT DISABLE_RPATH_TRICKS)
 LIST (APPEND CMAKE_MODULE_PATH "cmake")
 IF (MSVC)
 	SET (CMAKE_CXX_FLAGS "/GX /W3")
@@ -65,6 +65,7 @@ ADD_SUBDIRECTORY (xmlsettingsdialog)
 ADD_SUBDIRECTORY (iconsets)
 
 SET (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+SET (LEECHCRAFT_LIBRARIES plugininterface xmlsettignsdialog)
 
 OPTION (ENABLE_SUMMARY "Buidl Summary, the plugin that shows a handy summary of the stuff going on" ON)
 OPTION (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ON)
@@ -401,6 +402,8 @@ INSTALL (DIRECTORY plugininterface/ DESTINATION include/leechcraft/plugininterfa
 INSTALL (FILES xmlsettingsdialog/xmlsettingsdialog.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES xmlsettingsdialog/basesettingsmanager.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
+
+INSTALL (FILES FindLeechCraft.cmake DESTINATION share/leechcraft/cmake)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
