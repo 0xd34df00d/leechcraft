@@ -1,5 +1,21 @@
-FIND_PACKAGE (BZip2 REQUIRED)
+IF (NOT QT_USE_FILE)
+	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+	IF (COMMAND cmake_policy)
+		cmake_policy (SET CMP0003 NEW)
+	ENDIF (COMMAND cmake_policy)
 
+	PROJECT (leechcraft_dcminator)
+
+	SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+
+	FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signals)
+	FIND_PACKAGE (Qt4 REQUIRED)
+	FIND_PACKAGE (LeechCraft REQUIRED)
+
+	INCLUDE (${LEECHCRAFT_USE_FILE})
+ENDIF (NOT QT_USE_FILE)
+
+FIND_PACKAGE (BZip2 REQUIRED)
 INCLUDE (./PCHSupport_26.cmake)
 ADD_SUBDIRECTORY (dcpp)
 
@@ -58,8 +74,7 @@ ADD_LIBRARY (leechcraft_dcminator SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_dcminator
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	dcpp
 	)
 INSTALL (TARGETS leechcraft_dcminator DESTINATION ${LC_PLUGINS_DEST})
