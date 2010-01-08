@@ -20,7 +20,6 @@
 #define PLUGININTERFACE_BACKENDSELECTOR_H
 #include <QWidget>
 #include "piconfig.h"
-#include "../xmlsettingsdialog/basesettingsmanager.h"
 
 namespace Ui
 {
@@ -31,6 +30,8 @@ namespace LeechCraft
 {
 	namespace Util
 	{
+		class BaseSettingsManager;
+
 		/** A common dialog to select storage backend.
 		 *
 		 * Currently following backends are supported:

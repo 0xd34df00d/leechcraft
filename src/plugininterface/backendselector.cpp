@@ -19,6 +19,7 @@
 #include "backendselector.h"
 #include <QSqlDatabase>
 #include "ui_backendselector.h"
+#include "../xmlsettingsdialog/basesettingsmanager.h"
 
 using namespace LeechCraft::Util;
 
