@@ -1,6 +1,4 @@
 IF (NOT QT_USE_FILE)
-	MESSAGE (STATUS "Aggregator: building separately")
-
 	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
 	IF (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
@@ -8,9 +6,13 @@ IF (NOT QT_USE_FILE)
 
 	PROJECT (leechcraft_aggregator)
 
+	SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+
 	FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signals)
 	FIND_PACKAGE (Qt4 REQUIRED)
 	FIND_PACKAGE (LeechCraft REQUIRED)
+
+	INCLUDE (${LEECHCRAFT_USE_FILE})
 ENDIF (NOT QT_USE_FILE)
 
 SET (QT_USE_QTSQL TRUE)
@@ -166,8 +168,7 @@ LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_aggregator
 	${Boost_DATE_TIME_LIBRARY}
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_aggregator DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
