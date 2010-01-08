@@ -22,7 +22,7 @@
 #include <QWidget>
 #include <QTextBrowser>
 #include <interfaces/iwebbrowser.h>
-#include "config.h"
+#include "piconfig.h"
 
 namespace LeechCraft
 {

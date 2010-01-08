@@ -30,7 +30,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QStack>
-#include "config.h"
+#include "piconfig.h"
 
 namespace LeechCraft
 {

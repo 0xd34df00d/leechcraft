@@ -20,7 +20,7 @@
 #define PLUGININTERFACE_CUSTOMCOOKIEJAR_H
 #include <QNetworkCookieJar>
 #include <QByteArray>
-#include "config.h"
+#include "piconfig.h"
 
 namespace LeechCraft
 {

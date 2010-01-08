@@ -18,7 +18,7 @@
 
 #ifndef PLUGININTERFACE_UTIL_H
 #define PLUGININTERFACE_UTIL_H
-#include "config.h"
+#include "piconfig.h"
 #include <QString>
 #include <QDir>
 #include <QtXml/QDomElement>

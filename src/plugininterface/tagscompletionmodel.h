@@ -20,7 +20,7 @@
 #define PLUGININTERFACE_TAGSCOMPLETIONMODEL_H
 #include <QStringListModel>
 #include <QStringList>
-#include "config.h"
+#include "piconfig.h"
 
 namespace LeechCraft
 {

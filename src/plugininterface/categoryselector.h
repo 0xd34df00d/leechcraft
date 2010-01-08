@@ -19,7 +19,7 @@
 #ifndef PLUGININTERFACE_CATEGORYSELECTOR_H
 #define PLUGININTERFACE_CATEGORYSELECTOR_H
 #include <QTreeWidget>
-#include "config.h"
+#include "piconfig.h"
 
 class QStringList;
 class QString;

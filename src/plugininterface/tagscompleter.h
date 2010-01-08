@@ -19,7 +19,7 @@
 #ifndef PLUGININTERFACE_TAGSCOMPLETER_H
 #define PLUGININTERFACE_TAGSCOMPLETER_H
 #include <QCompleter>
-#include "config.h"
+#include "piconfig.h"
 
 namespace LeechCraft
 {

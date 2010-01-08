@@ -19,7 +19,7 @@
 #ifndef PLUGININTERFACE_TAGSFILTERMODEL_H
 #define PLUGININTERFACE_TAGSFILTERMODEL_H
 #include <QSortFilterProxyModel>
-#include "config.h"
+#include "piconfig.h"
 
 namespace LeechCraft
 {

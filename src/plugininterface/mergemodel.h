@@ -21,7 +21,7 @@
 #include <deque>
 #include <QAbstractProxyModel>
 #include <QStringList>
-#include "config.h"
+#include "piconfig.h"
 
 namespace LeechCraft
 {

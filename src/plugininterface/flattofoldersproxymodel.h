@@ -22,7 +22,7 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QMultiHash>
-#include "config.h"
+#include "piconfig.h"
 
 class ITagsManager;
 

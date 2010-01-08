@@ -20,7 +20,7 @@
 #define PLUGININTERFACE_TAGSLINEEDIT_H
 #include <memory>
 #include <QLineEdit>
-#include "config.h"
+#include "piconfig.h"
 #include "categoryselector.h"
 
 namespace LeechCraft

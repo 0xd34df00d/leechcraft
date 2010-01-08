@@ -18,7 +18,7 @@
 
 #ifndef PLUGININTERFACE_DBLOCK_H
 #define PLUGININTERFACE_DBLOCK_H
-#include "config.h"
+#include "piconfig.h"
 
 class QSqlError;
 class QSqlQuery;

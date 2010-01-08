@@ -19,7 +19,7 @@
 #ifndef PLUGININTERFACE_BACKENDSELECTOR_H
 #define PLUGININTERFACE_BACKENDSELECTOR_H
 #include <QWidget>
-#include "config.h"
+#include "piconfig.h"
 #include "../xmlsettingsdialog/basesettingsmanager.h"
 
 namespace Ui
