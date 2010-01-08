@@ -6,7 +6,9 @@ IF (NOT QT_USE_FILE)
 
 	PROJECT (leechcraft_historyholder)
 
-	SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+	IF (NOT CMAKE_MODULE_PATH)
+		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+	ENDIF (NOT CMAKE_MODULE_PATH)
 
 	FIND_PACKAGE (Boost REQUIRED)
 	FIND_PACKAGE (Qt4 REQUIRED)
