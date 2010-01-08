@@ -65,7 +65,7 @@ ADD_SUBDIRECTORY (xmlsettingsdialog)
 ADD_SUBDIRECTORY (iconsets)
 
 SET (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-SET (LEECHCRAFT_LIBRARIES plugininterface xmlsettignsdialog)
+SET (LEECHCRAFT_LIBRARIES plugininterface xmlsettingsdialog)
 
 OPTION (ENABLE_SUMMARY "Buidl Summary, the plugin that shows a handy summary of the stuff going on" ON)
 OPTION (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ON)
@@ -360,7 +360,7 @@ IF (NOT DEFINED LEECHCRAFT_VERSION)
 ENDIF (NOT DEFINED LEECHCRAFT_VERSION)
 
 CONFIGURE_FILE (config.h.in config.h)
-CONFIGURE_FILE (LeechCraft.cmake.in LeechCraft.cmake)
+CONFIGURE_FILE (UseLeechCraft.cmake.in UseLeechCraft.cmake)
 
 IF (UNIX)
 	ADD_CUSTOM_COMMAND (OUTPUT
@@ -399,11 +399,15 @@ INSTALL (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 INSTALL (DIRECTORY plugininterface/ DESTINATION include/leechcraft/plugininterface/
 	PATTERN ".h")
+INSTALL (DIRECTORY interfaces/ DESTINATION include/leechcraft/interfaces/
+	PATTERN ".h")
 INSTALL (FILES xmlsettingsdialog/xmlsettingsdialog.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES xmlsettingsdialog/basesettingsmanager.h DESTINATION include/leechcraft/xmlsettingsdialog/)
+INSTALL (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
-INSTALL (FILES FindLeechCraft.cmake DESTINATION share/leechcraft/cmake)
+INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/UseLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
+INSTALL (FILES FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
