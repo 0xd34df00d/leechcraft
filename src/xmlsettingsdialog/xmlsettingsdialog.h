@@ -35,7 +35,7 @@
 #include <QMap>
 #include <QVariant>
 #include <boost/shared_ptr.hpp>
-#include "config.h"
+#include "xsdconfig.h"
 
 class QStackedWidget;
 class QListWidget;

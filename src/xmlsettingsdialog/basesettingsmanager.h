@@ -24,7 +24,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QDynamicPropertyChangeEvent>
-#include "config.h"
+#include "xsdconfig.h"
 
 #define PROP2CHAR(a) (a.toLatin1 ().constData ())
 
