@@ -52,6 +52,7 @@ public:
 	void StopAll ();
 	bool CouldDownload (const LeechCraft::DownloadEntity&) const;
 	int AddJob (LeechCraft::DownloadEntity);
+	void KillTask (int);
 	QAbstractItemModel* GetRepresentation () const;
 	QWidget* GetControls () const;
 	QWidget* GetAdditionalInfo () const;

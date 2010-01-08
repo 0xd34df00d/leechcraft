@@ -95,6 +95,10 @@ int Nufella::AddJob (LeechCraft::DownloadEntity)
 	return -1;
 }
 
+void Nufella::KillTask (int)
+{
+}
+
 QAbstractItemModel* Nufella::GetRepresentation () const
 {
 	return 0;
