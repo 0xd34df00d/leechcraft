@@ -8,7 +8,7 @@ IF (NOT QT_USE_FILE)
 
 	SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
 
-	FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signals)
+	FIND_PACKAGE (Boost REQUIRED)
 	FIND_PACKAGE (Qt4 REQUIRED)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 
