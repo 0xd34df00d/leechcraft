@@ -4,7 +4,7 @@ IF (NOT QT_USE_FILE)
 		cmake_policy (SET CMP0003 NEW)
 	ENDIF (COMMAND cmake_policy)
 
-	PROJECT (leechcraft_aggregator)
+	PROJECT (leechcraft_bittorrent)
 
 	SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
 
