@@ -1,3 +1,20 @@
+IF (NOT QT_USE_FILE)
+	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+	IF (COMMAND cmake_policy)
+		cmake_policy (SET CMP0003 NEW)
+	ENDIF (COMMAND cmake_policy)
+
+	PROJECT (leechcraft_deadlyrics)
+
+	SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+
+	FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signals)
+	FIND_PACKAGE (Qt4 REQUIRED)
+	FIND_PACKAGE (LeechCraft REQUIRED)
+
+	INCLUDE (${LEECHCRAFT_USE_FILE})
+ENDIF (NOT QT_USE_FILE)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
@@ -55,8 +72,7 @@ ADD_LIBRARY (leechcraft_deadlyrics SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_deadlyrics
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_deadlyrics DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
