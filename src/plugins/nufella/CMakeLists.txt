@@ -1,3 +1,19 @@
+IF (NOT QT_USE_FILE)
+	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+	IF (COMMAND cmake_policy)
+		cmake_policy (SET CMP0003 NEW)
+	ENDIF (COMMAND cmake_policy)
+
+	PROJECT (leechcraft_nufella)
+
+	SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+
+	FIND_PACKAGE (Qt4 REQUIRED)
+	FIND_PACKAGE (LeechCraft REQUIRED)
+
+	INCLUDE (${LEECHCRAFT_USE_FILE})
+ENDIF (NOT QT_USE_FILE)
+
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -41,7 +57,6 @@ ADD_LIBRARY (leechcraft_nufella SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_nufella
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_nufella DESTINATION ${LC_PLUGINS_DEST})
