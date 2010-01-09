@@ -77,7 +77,6 @@ namespace LeechCraft
 
 				AppWideActions AppWideActions_;
 				ChannelActions ChannelActions_;
-				QQueue<QString> ErrorQueue_;
 
 				boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
@@ -133,13 +132,9 @@ namespace LeechCraft
 				Core::Instance ().SetProxy (proxy);
 			
 				connect (&Core::Instance (),
-						SIGNAL (error (const QString&)),
+						SIGNAL (notify (const LeechCraft::Notification&)),
 						this,
-						SLOT (showError (const QString&)));
-				connect (&Core::Instance (),
-						SIGNAL (showDownloadMessage (const QString&)),
-						this,
-						SIGNAL (downloadFinished (const QString&)));
+						SIGNAL (notify (const LeechCraft::Notification&)));
 				connect (&Core::Instance (),
 						SIGNAL (unreadNumberChanged (int)),
 						this,
@@ -517,16 +512,6 @@ namespace LeechCraft
 				e->ignore ();
 			}
 
-			void Aggregator::ScheduleShowError ()
-			{
-				if (Impl_->ErrorQueue_.size () > 1)
-					return;
-			
-				QTimer::singleShot (500,
-						this,
-						SLOT (showError ()));
-			}
-			
 			bool Aggregator::IsRepr () const
 			{
 				return Core::Instance ().GetReprWidget ()->isVisible ();
@@ -544,23 +529,6 @@ namespace LeechCraft
 						mapToSource (Impl_->FlatToFolders_->
 								MapToSource (Impl_->Ui_.Feeds_->
 									selectionModel ()->currentIndex ()));
-			}
-			
-			void Aggregator::showError (const QString& msg)
-			{
-				Impl_->ErrorQueue_.enqueue (msg);
-				ScheduleShowError ();
-			}
-			
-			void Aggregator::showError ()
-			{
-				while (Impl_->ErrorQueue_.size ())
-				{
-					QMessageBox::critical (this,
-							tr ("LeechCraft"),
-							Impl_->ErrorQueue_.dequeue ());
-					QApplication::processEvents ();
-				}
 			}
 			
 			void Aggregator::on_ActionAddFeed__triggered ()

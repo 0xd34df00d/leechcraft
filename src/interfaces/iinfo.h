@@ -57,12 +57,12 @@ namespace LeechCraft
 
 	enum HookID
 	{
-		/** Is called before user is notified about something via
-		 * standard means (a balloon tip).
+		/** Is called when Core gets a notification from a plugin. It
+		 * can be a log string or a message for the user.
 		 * 
 		 * IHookProxy::CancelDefault() cancels the balloon tip.
 		 */
-		HIDDownloadFinishedNotification,
+		HIDNotification,
 
 		/** Is called in the beginnign of creating request in the
 		 * application-wide network access manager.
@@ -101,29 +101,21 @@ namespace LeechCraft
 		 * IHookProxy::CancelDefault() cancels default processing
 		 * and returns the result from the hook from the handler.
 		 */
-		HIDStatusBarChanged,
-
-		/** Is called in the beginning of the method logging the
-		 * messages obtained via the IInfo::log() signal.
-		 *
-		 * IHookProxy::CancelDefault() cancels default processing
-		 * and returns the result from the hook from the handler.
-		 */
-		HIDLogString
+		HIDStatusBarChanged
 	};
 
 	template<int>
 	struct HookSignature;
 
 	template<>
-		struct HookSignature<HIDDownloadFinishedNotification>
+		struct HookSignature<HIDNotification>
 		{
-			/** @param[in,out] msg Message to show.
+			/** @param[in,out] n The notification itself.
 			 * @param[in] show If the notification is enabled in the
 			 * settings.
 			 */
 			typedef boost::function<void (IHookProxy_ptr,
-					QString *msg, bool show)> Signature_t;
+					LeechCraft::Notification *n, bool show)> Signature_t;
 		};
 
 	template<>
@@ -202,17 +194,6 @@ namespace LeechCraft
 					QString *newStatus)> Signature_t;
 		};
 
-	template<>
-		struct HookSignature<HIDLogString>
-		{
-			/** @param[in,out] string The string to be logged.
-			 * @param[in,out] sender The sender of the signal.
-			 */
-			typedef boost::function<void (IHookProxy_ptr,
-					QString *string,
-					QObject *sender)> Signature_t;
-		};
-
 	template<int id>
 		struct HooksContainer
 		{
@@ -221,13 +202,12 @@ namespace LeechCraft
 		};
 };
 
-#define HOOKS_TYPES_LIST (HIDDownloadFinishedNotification)\
+#define HOOKS_TYPES_LIST (HIDNotification)\
 	(HIDNetworkAccessManagerCreateRequest)\
 	(HIDManualJobAddition)\
 	(HIDCouldHandle)\
 	(HIDGotEntity)\
-	(HIDStatusBarChanged)\
-	(HIDLogString)
+	(HIDStatusBarChanged)
 
 /** @brief Tags manager's interface.
  *
@@ -440,10 +420,8 @@ typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
  *   entity is delegated to it, id is set according to the task ID
  *   returned from the provider, and provider is set to point to the
  *   provider object.
- * - downloadFinished (const QString& message);
+ * - notify (const LeechCraft::Notification& notification);
  *   Notifies the user about an event.
- * - log (const QString& message);
- *   Writes a message to the LeechCraft's log.
  */
 class IInfo
 {

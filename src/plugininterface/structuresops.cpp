@@ -98,3 +98,23 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::DownloadEntity& e)
 	}
 	return in;
 }
+
+namespace LeechCraft
+{
+	uint qHash (const LeechCraft::Notification& n)
+	{
+		return qHash (QString::number (n.Priority_) +
+				(n.UntilUserSees_ ? 'a' : 'b') +
+				n.Header_ +
+				n.Text_);
+	}
+};
+
+bool operator== (const LeechCraft::Notification& n1, const LeechCraft::Notification& n2)
+{
+	return n1.Priority_ == n2.Priority_ &&
+		n1.UntilUserSees_ == n2.UntilUserSees_ &&
+		n1.Header_ == n2.Header_ &&
+		n1.Text_ == n2.Text_;
+}
+

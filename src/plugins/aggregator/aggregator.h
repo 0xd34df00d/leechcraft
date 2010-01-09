@@ -101,8 +101,6 @@ namespace LeechCraft
 				bool IsRepr () const;
 				QModelIndex GetRelevantIndex () const;
 			private slots:
-				void showError (const QString&);
-				void showError ();
 				void handleItemSelected (const QModelIndex&);
 				void on_ActionAddFeed__triggered ();
 				void on_ActionRemoveFeed__triggered ();
@@ -123,7 +121,7 @@ namespace LeechCraft
 				void unreadNumberChanged (int);
 				void trayIconActivated ();
 			signals:
-				void downloadFinished (const QString&);
+				void notify (const LeechCraft::Notification&);
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void delegateEntity (const LeechCraft::DownloadEntity&,
 						int*, QObject**);

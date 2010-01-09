@@ -173,9 +173,8 @@ namespace LeechCraft
 				void taskRemoved (int);
 				void taskError (int, IDownload::Error);
 				void gotEntity (const LeechCraft::DownloadEntity&);
-				void downloadFinished (const QString&);
+				void notify (const LeechCraft::Notification&);
 				void fetchedEntry (const FetchedEntry&);
-				void log (const QString&);
 			};
 		};
 	};

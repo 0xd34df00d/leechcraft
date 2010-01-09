@@ -787,11 +787,6 @@ namespace LeechCraft
 						e);
 			}
 			
-			void TorrentPlugin::doLogMessage (const QString& msg)
-			{
-				emit log (msg);
-			}
-			
 			void TorrentPlugin::SetupCore ()
 			{
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
@@ -811,13 +806,9 @@ namespace LeechCraft
 						this,
 						SLOT (showError (QString)));
 				connect (Core::Instance (),
-						SIGNAL (logMessage (const QString&)),
+						SIGNAL (notify (const LeechCraft::Notification&)),
 						this,
-						SLOT (doLogMessage (const QString&)));
-				connect (Core::Instance (),
-						SIGNAL (torrentFinished (const QString&)),
-						this,
-						SIGNAL (downloadFinished (const QString&)));
+						SIGNAL (notify (const LeechCraft::Notification&)));
 				connect (Core::Instance (),
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,

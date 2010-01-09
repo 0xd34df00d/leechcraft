@@ -83,7 +83,7 @@ void Core::doDelayedInit ()
 	QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
 	QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
 
-	Proxy_->RegisterHook (HookSignature<HIDDownloadFinishedNotification>::Signature_t (
+	Proxy_->RegisterHook (HookSignature<HIDNotification>::Signature_t (
 				boost::bind (&NotificationManager::HandleFinishedNotification,
 				NotificationManager_.get (),
 				_1,

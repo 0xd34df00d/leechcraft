@@ -348,8 +348,7 @@ namespace LeechCraft
 				void setScrapeInterval ();
 			signals:
 				void error (QString) const;
-				void logMessage (const QString&) const;
-				void torrentFinished (const QString&);
+				void notify (const LeechCraft::Notification&) const;
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void addToHistory (const QString&, const QString&, quint64,
 						const QDateTime&, const QStringList&);

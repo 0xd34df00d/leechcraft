@@ -18,11 +18,12 @@
 
 #ifndef FANCYPOPUPMANAGER_H
 #define FANCYPOPUPMANAGER_H
-#include <deque>
-#include <map>
 #include <QObject>
 #include <QDateTime>
 #include <QPoint>
+#include <QList>
+#include <QHash>
+#include "plugininterface/structuresops.h"
 
 class QSystemTrayIcon;
 
@@ -36,10 +37,10 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		typedef std::deque<QString> popups_t;
+		typedef QList<Notification> popups_t;
 		popups_t Popups_;
 
-		typedef std::map<QDateTime, QString> dates_t;
+		typedef QHash<Notification, QDateTime> dates_t;
 		dates_t Dates_;
 
 		QSystemTrayIcon *TrayIcon_;
@@ -51,8 +52,10 @@ namespace LeechCraft
 
 		/** Pushes the message to the message array. Shows the popup if
 		 * it was hidden, appends the message otherwise.
+		 * 
+		 * @param[in] n The notification.
 		 */
-		void ShowMessage (const QString&);
+		void ShowMessage (const Notification&);
 	private slots:
 		/** Checks the messages and deletes too old ones.
 		 */

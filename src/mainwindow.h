@@ -79,6 +79,7 @@ namespace LeechCraft
 		const IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
+		FancyPopupManager* GetFancyPopupManager () const;
 	public slots:
 		void catchError (QString);
 	protected:
@@ -108,7 +109,6 @@ namespace LeechCraft
 		void updateClock ();
 		void showHideMain ();
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
-		void handleDownloadFinished (QString);
 		void updateIconSet ();
 		void doDelayedInit ();
 	private:

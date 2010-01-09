@@ -708,9 +708,9 @@ namespace LeechCraft
 						this,
 						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (widget,
-						SIGNAL (downloadFinished (const QString&)),
+						SIGNAL (notify (const LeechCraft::Notification&)),
 						this,
-						SIGNAL (downloadFinished (const QString&)));
+						SIGNAL (notify (const LeechCraft::Notification&)));
 				connect (widget,
 						SIGNAL (urlChanged (const QString&)),
 						this,

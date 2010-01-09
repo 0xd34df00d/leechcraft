@@ -218,9 +218,9 @@ namespace LeechCraft
 				void MarkChannel (const QModelIndex&, bool);
 				void UpdateFeed (const QString&);
 				void HandleProvider (QObject*, int);
+				void ErrorNotification (const QString&, const QString&, bool = true) const;
 			signals:
-				void error (const QString&) const;
-				void showDownloadMessage (const QString&);
+				void notify (const LeechCraft::Notification&) const;
 				void channelDataUpdated ();
 				void unreadNumberChanged (int) const;
 				void delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**);

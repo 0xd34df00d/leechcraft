@@ -68,10 +68,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SLOT (handleQuit ()));
 
 	connect (&Core::Instance (),
-			SIGNAL (downloadFinished (const QString&)),
-			this,
-			SLOT (handleDownloadFinished (QString)));
-	connect (&Core::Instance (),
 			SIGNAL (log (const QString&)),
 			LogToolBox_,
 			SLOT (log (const QString&)));
@@ -152,6 +148,11 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
 {
 	return Guard_;
+}
+
+LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () const
+{
+	return FancyPopupManager_;
 }
 
 void LeechCraft::MainWindow::catchError (QString message)
@@ -536,21 +537,6 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 			showHideMain ();
 			return;
 	}
-}
-
-void LeechCraft::MainWindow::handleDownloadFinished (QString string)
-{
-	bool show = XmlSettingsManager::Instance ()->
-		property ("ShowFinishedDownloadMessages").toBool ();
-
-	HookProxy_ptr proxy (new HookProxy);
-	Q_FOREACH (HookSignature<HIDDownloadFinishedNotification>::Signature_t f,
-			Core::Instance ().GetHooks<HIDDownloadFinishedNotification> ())
-		f (proxy, &string, show);
-
-	if (show &&
-			!proxy->IsCancelled ())
-		FancyPopupManager_->ShowMessage (string);
 }
 
 void LeechCraft::MainWindow::updateIconSet ()

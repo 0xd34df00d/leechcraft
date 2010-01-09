@@ -137,9 +137,9 @@ namespace LeechCraft
 						this,
 						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (&Core::Instance (),
-						SIGNAL (downloadFinished (const QString&)),
+						SIGNAL (notify (const LeechCraft::Notification&)),
 						this,
-						SIGNAL (downloadFinished (const QString&)));
+						SIGNAL (notify (const LeechCraft::Notification&)));
 				connect (&Core::Instance (),
 						SIGNAL (error (const QString&)),
 						this,

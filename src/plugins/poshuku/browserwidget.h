@@ -178,7 +178,7 @@ namespace LeechCraft
 				void statusBarChanged (const QString&);
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
-				void downloadFinished (const QString&);
+				void notify (const LeechCraft::Notification&);
 				void invalidateSettings ();
 			};
 		};

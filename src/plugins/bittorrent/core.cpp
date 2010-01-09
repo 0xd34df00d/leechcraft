@@ -309,8 +309,15 @@ namespace LeechCraft
 							if (file.size () > XmlSettingsManager::Instance ()->
 									property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
 							{
-								emit logMessage (QString ("Rejecting file %1 because it's "
-											"bigger than current auto limit.").arg (str));
+								Notification n =
+								{
+									tr ("BitTorrent"),
+									tr ("Rejecting file %1 because it's "
+											"bigger than current auto limit.").arg (str),
+									false,
+									Notification::PWarning_
+								};
+								emit notify (n);
 								return false;
 							}
 							else
@@ -1286,7 +1293,14 @@ namespace LeechCraft
 			
 			void Core::LogMessage (const QString& message)
 			{
-				emit logMessage (message);
+				Notification n =
+				{
+					QString (),
+					message,
+					false,
+					Notification::PLog_
+				};
+				emit notify (n);
 			}
 			
 			void Core::SetExternalAddress (const QString& address)
@@ -1581,7 +1595,14 @@ namespace LeechCraft
 					toUnicode ((torrent.Handle_.save_path () / fit->path).string ().c_str ());
 
 				QString string = tr ("File finished: %1").arg (name);
-				emit torrentFinished (string);
+				Notification n =
+				{
+					tr ("File finished"),
+					name,
+					false,
+					Notification::PInformation_
+				};
+				emit notify (n);
 
 				DownloadEntity e;
 				e.Entity_ = QUrl::fromLocalFile (name);
@@ -1978,8 +1999,14 @@ namespace LeechCraft
 					.get_torrent_info ();
 			
 				QString name = QString::fromUtf8 (info.name ().c_str ());
-				QString string = tr ("Torrent finished: %1").arg (name);
-				emit torrentFinished (string);
+				Notification n =
+				{
+					tr ("Torrent finished"),
+					name,
+					false,
+					Notification::PInformation_
+				};
+				emit notify (n);
 			
 				for (libtorrent::torrent_info::file_iterator i = info.begin_files (),
 						end = info.end_files (); i != end; ++i)

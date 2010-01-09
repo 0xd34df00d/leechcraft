@@ -79,8 +79,7 @@ namespace LeechCraft
 				void jobRemoved (int);
 				void jobError (int, IDownload::Error);
 				void gotEntity (const LeechCraft::DownloadEntity&);
-				void downloadFinished (const QString&);
-				void log (const QString&);
+				void notify (const LeechCraft::Notification&);
 
 				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);

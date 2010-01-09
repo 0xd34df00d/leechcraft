@@ -39,7 +39,7 @@ namespace LeechCraft
 
 				void Init ();
 				void HandleFinishedNotification (LeechCraft::IHookProxy_ptr,
-						QString*, bool);
+						Notification*, bool);
 			};
 		};
 	};

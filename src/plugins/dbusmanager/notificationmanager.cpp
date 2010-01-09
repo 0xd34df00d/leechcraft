@@ -49,7 +49,7 @@ NotificationManager::NotificationManager (QObject *parent)
 }
 
 void NotificationManager::HandleFinishedNotification (IHookProxy_ptr proxy,
-		QString *msg, bool show)
+		Notification *n, bool show)
 {
 	if (!Connection_.get () ||
 			!show ||
@@ -57,17 +57,21 @@ void NotificationManager::HandleFinishedNotification (IHookProxy_ptr proxy,
 				property ("UseKDENotifications").toBool ())
 		return;
 
+	if (n->Priority_ == Notification::PLog_)
+		return;
+
 	QList<QVariant> arguments;
-	arguments << "LeechCraft"
+	arguments << n->Header_
 		<< uint (0)
 		<< QString ()
 		<< QString ("leechcraft_main")
 		<< QString ()
-		<< *msg
+		<< n->Text_
 		<< QStringList ()
 		<< QVariantMap ()
-		<< Core::Instance ().GetProxy ()->GetSettingsManager ()->
-				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+		<< (n->UntilUserSees_ ? 0
+				: Core::Instance ().GetProxy ()->GetSettingsManager ()->
+				property ("FinishedDownloadMessageTimeout").toInt () * 1000);
 
 	if (Connection_->callWithArgumentList (QDBus::NoBlock,
 			"Notify", arguments).type () == QDBusMessage::ErrorMessage)

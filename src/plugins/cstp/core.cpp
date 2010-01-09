@@ -528,8 +528,18 @@ namespace LeechCraft
 				if (!err)
 				{
 					if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
-						emit downloadFinished (filename +
-								QString ("\n") + url);
+					{
+						Notification n =
+						{
+							tr ("Download finished"),
+							tr ("%1\n%2")
+								.arg (filename)
+								.arg (url),
+							false,
+							Notification::PInformation_
+						};
+						emit notify (n);
+					}
 					bool silence = taskdscr->Parameters_ & LeechCraft::DoNotAnnounceEntity;
 					LeechCraft::TaskParameters tp = taskdscr->Parameters_;
 					Remove (taskdscr);

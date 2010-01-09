@@ -265,11 +265,12 @@ namespace LeechCraft
 		 */
 		void handleStatusBarChanged (QWidget *sender, const QString& msg);
 
-		/** Handles log requests.
+		/** Handles the notification. Either logs it or shows to the
+		 * user, depending in the notification and settings.
 		 *
-		 * @param[in] log The message to log.
+		 * @param[in] notification The notification structure.
 		 */
-		void handleLog (const QString& log);
+		void handleNotify (LeechCraft::Notification notification);
 	private:
 		enum ObjectType
 		{
@@ -321,14 +322,9 @@ namespace LeechCraft
 		 */
 		void error (QString error) const;
 
-		/** Logs the message into LeechCraft's log.
+		/** Sends the message to the log.
 		 */
 		void log (const QString& message);
-
-		/** Notifies the user. The text is taken from the message.
-		 * Notification is usualy performed via system tray balloon tip.
-		 */
-		void downloadFinished (const QString& message);
 	};
 #define LC_DEFINE_REGISTER(a) \
 	template<> \

@@ -175,13 +175,13 @@ namespace LeechCraft
 	{
 		enum Priority
 		{
-			P1_,
-			P2_,
-			P3_,
-			P4_,
-			P5_
+			PLog_,
+			PInformation_,
+			PWarning_,
+			PCritical_
 		};
 
+		QString Header_;
 		QString Text_;
 		bool UntilUserSees_;
 		Priority Priority_;

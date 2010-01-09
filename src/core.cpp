@@ -59,6 +59,7 @@
 #include "sqlstoragebackend.h"
 #include "handlerchoicedialog.h"
 #include "tagsmanager.h"
+#include "fancypopupmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -867,23 +868,26 @@ void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString&
 	ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
 }
 
-void LeechCraft::Core::handleLog (const QString& msg)
+void LeechCraft::Core::handleNotify (LeechCraft::Notification n)
 {
-	QString message = msg;
+	bool show = XmlSettingsManager::Instance ()->
+		property ("ShowFinishedDownloadMessages").toBool ();
+
 	HookProxy_ptr proxy (new HookProxy);
-	Q_FOREACH (HookSignature<HIDLogString>::Signature_t f,
-			GetHooks<HIDLogString> ())
+	Q_FOREACH (HookSignature<HIDNotification>::Signature_t f,
+			GetHooks<HIDNotification> ())
 	{
-		f (proxy, &message, sender ());
+		f (proxy, &n, sender ());
 
 		if (proxy->IsCancelled ())
 			return;
 	}
 
+	QString pname;
 	IInfo *ii = qobject_cast<IInfo*> (sender ());
 	try
 	{
-		emit log (ii->GetName () + ": " + message);
+		pname = ii->GetName ();
 	}
 	catch (const std::exception& e)
 	{
@@ -896,6 +900,28 @@ void LeechCraft::Core::handleLog (const QString& msg)
 		qWarning () << Q_FUNC_INFO
 			<< sender ();
 	}
+
+	QString header;
+	if (pname.isEmpty () && n.Header_.isEmpty ()) {}
+	if (pname.isEmpty () || n.Header_.isEmpty ())
+		header = pname + n.Header_;
+	else
+		header = tr ("%1: %2")
+			.arg (pname)
+			.arg (n.Header_);
+
+	QString text = tr ("%1: %2")
+		.arg (header)
+		.arg (n.Text_);
+
+	emit log (text);
+
+	if (proxy->IsCancelled ())
+		return;
+
+	else if (n.Priority_ != Notification::PLog_ &&
+			show)
+		ReallyMainWindow_->GetFancyPopupManager ()->ShowMessage (n);
 }
 
 void LeechCraft::Core::InitDynamicSignals (QObject *plugin)
@@ -930,20 +956,45 @@ void LeechCraft::Core::InitDynamicSignals (QObject *plugin)
 						int*, QObject**)));
 
 	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"downloadFinished (const QString&)"
+					"notify (const LeechCraft::Notification&)"
 					).constData ()) != -1)
 		connect (plugin,
-				SIGNAL (downloadFinished (const QString&)),
+				SIGNAL (notify (const LeechCraft::Notification&)),
 				this,
-				SIGNAL (downloadFinished (const QString&)));
+				SLOT (handleNotify (LeechCraft::Notification)));
 
 	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
 					"log (const QString&)"
-					).constData ()) != -1)
-		connect (plugin,
-				SIGNAL (log (const QString&)),
-				this,
-				SLOT (handleLog (const QString&)));
+					).constData ()) != -1 ||
+			qmo->indexOfSignal (QMetaObject::normalizedSignature (
+						"downloadFinished (const QString&)"
+						).constData ()) != -1)
+	{
+		QString name;
+		try
+		{
+			name = qobject_cast<IInfo*> (plugin)->GetName ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "while handling old-style notification"
+				<< e.what ()
+				<< plugin;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "while handling old-style notification"
+				<< plugin;
+		}
+
+		qWarning () << Q_FUNC_INFO
+			<< name
+			<< plugin
+			<< "uses old-style log/downloadFinished notifications,"
+			<< "fix it since we are only supporting its detection now";
+	}
 }
 
 void LeechCraft::Core::InitJobHolder (QObject *plugin)

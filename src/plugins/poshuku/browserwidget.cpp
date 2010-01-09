@@ -1049,9 +1049,9 @@ namespace LeechCraft
 
 			void BrowserWidget::notifyLoadFinished (bool ok)
 			{
-				if (!NotifyWhenFinished_->isChecked () ||
-						!Own_ ||
-						isVisible ())
+				if (ok && (!NotifyWhenFinished_->isChecked () ||
+							!Own_ ||
+							isVisible ()))
 					return;
 
 				QString h = Ui_.WebView_->title ();
@@ -1060,12 +1060,25 @@ namespace LeechCraft
 				if (h.isEmpty ())
 					return;
 
+				LeechCraft::Notification n =
+				{
+					tr ("Poshuku"),
+					QString (),
+					false,
+					LeechCraft::Notification::PInformation_
+				};
+
 				if (ok)
-					emit downloadFinished (tr ("Page load finished: %1")
-							.arg (Ui_.WebView_->title ()));
+					n.Text_ = tr ("Page load finished: %1")
+						.arg (Ui_.WebView_->title ());
 				else
-					emit downloadFinished (tr ("Page load failed: %1")
-							.arg (Ui_.WebView_->title ()));
+				{
+					n.Text_ = tr ("Page load failed: %1")
+						.arg (Ui_.WebView_->title ());
+					n.Priority_ = LeechCraft::Notification::PWarning_;
+				}
+
+				emit notify (n);
 			}
 
 			void BrowserWidget::handleChangeEncodingAboutToShow ()

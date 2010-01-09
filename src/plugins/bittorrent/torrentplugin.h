@@ -189,7 +189,6 @@ namespace LeechCraft
 				void handleFastSpeedComboboxes ();
 				void setActionsEnabled ();
 				void showError (QString);
-				void doLogMessage (const QString&);
 				void handleItemSelected (const QModelIndex&);
 			private:
 				void SetupCore ();
@@ -197,11 +196,10 @@ namespace LeechCraft
 				void SetupStuff ();
 				void SetupActions ();
 			signals:
-				void downloadFinished (const QString&);
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void jobFinished (int);
 				void jobRemoved (int);
-				void log (const QString&) const;
+				void notify (const LeechCraft::Notification&) const;
 			};
 		};
 	};

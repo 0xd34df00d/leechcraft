@@ -841,7 +841,14 @@ namespace LeechCraft
 						!td.Internal_)
 				{
 					emit taskError (td.ID_, IDownload::EUnknown);
-					emit log (QString ("LCFTP: %1").arg (msg));
+					Notification n =
+					{
+						"LCFTP",
+						msg,
+						false,
+						Notification::PCritical_
+					};
+					emit notify (n);
 				}
 
 				QMessageBox::critical (0,
@@ -856,9 +863,15 @@ namespace LeechCraft
 				if (data.ID_ >= 0 &&
 						!data.Internal_)
 				{
-					emit downloadFinished (tr ("Download finished: %1")
-							.arg (data.Filename_));
 					emit taskFinished (data.ID_);
+					Notification n =
+					{
+						tr ("FTP transfer finished"),
+						data.Filename_,
+						false,
+						Notification::PInformation_
+					};
+					emit notify (n);
 				}
 
 				SaveTasks ();

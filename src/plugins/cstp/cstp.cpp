@@ -76,13 +76,9 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 				connect (&Core::Instance (),
-						SIGNAL (downloadFinished (const QString&)),
+						SIGNAL (notify (const LeechCraft::Notification&)),
 						this,
-						SIGNAL (downloadFinished (const QString&)));
-				connect (&Core::Instance (),
-						SIGNAL (error (const QString&)),
-						this,
-						SIGNAL (log (const QString&)));
+						SIGNAL (notify (const LeechCraft::Notification&)));
 
 				connect (coreProxy->GetTreeViewReemitter (),
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,

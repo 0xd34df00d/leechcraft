@@ -52,10 +52,10 @@ LeechCraft::FancyPopupManager::~FancyPopupManager ()
 {
 }
 
-void LeechCraft::FancyPopupManager::ShowMessage (const QString& message)
+void LeechCraft::FancyPopupManager::ShowMessage (const LeechCraft::Notification& p)
 {
-	Popups_.push_back (message);
-	Dates_ [QDateTime::currentDateTime ()] = message;
+	Popups_.push_back (p);
+	Dates_ [p] = QDateTime::currentDateTime ();
 
 	UpdateMessage ();
 }
@@ -64,45 +64,69 @@ void LeechCraft::FancyPopupManager::timerTimeout ()
 {
 	QDateTime current = QDateTime::currentDateTime ();
 
-	for (dates_t::iterator i = Dates_.begin ();
-			i != Dates_.end (); ++i)
-		if (i->first.secsTo (current) >=
+	bool modified =false;
+	Q_FOREACH (Notification n, Popups_)
+	{
+		if (Dates_ [n].secsTo (current) >=
 				XmlSettingsManager::Instance ()->
-				property ("FinishedDownloadMessageTimeout").toInt ())
+				property ("FinishedDownloadMessageTimeout").toInt () &&
+				!n.UntilUserSees_)
 		{
-			Popups_.erase (std::find (Popups_.begin (),
-					Popups_.end (), i->second));
-			Dates_.erase (i);
+			Popups_.removeAll (n);
+			Dates_.remove (n);
 
-			UpdateMessage ();
-			break;
+			modified = true;
 		}
+	}
+
+	UpdateMessage ();
 }
 
 void LeechCraft::FancyPopupManager::handleMessageClicked ()
 {
 	Dates_.clear ();
 	Popups_.clear ();
+
+	UpdateMessage ();
 }
 
 void LeechCraft::FancyPopupManager::UpdateMessage ()
 {
+	if (Popups_.isEmpty ())
+	{
+		TrayIcon_->hide ();
+		return;
+	}
+
+	const Notification& first = Popups_.at (0);
+
 	QString message;
 	for (popups_t::const_iterator i = Popups_.begin (),
 			begin = Popups_.begin (),
 			end = Popups_.end (); i != end; ++i)
 	{
-		message += *i;
+		message += i->Text_;
 		message += "\r\n";
 		if (std::distance (begin, i) >= 12)
 			break;
 	}
 
-	if (!message.isEmpty ())
-		TrayIcon_->showMessage (tr ("LeechCraft Notification"),
-				message,
-				QSystemTrayIcon::Information,
-				XmlSettingsManager::Instance ()->
+	QSystemTrayIcon::MessageIcon mi = QSystemTrayIcon::Information;
+	switch (first.Priority_)
+	{
+		case Notification::PWarning_:
+			mi = QSystemTrayIcon::Warning;
+			break;
+		case Notification::PCritical_:
+			mi = QSystemTrayIcon::Critical;
+		default:
+			break;
+	}
+
+	TrayIcon_->showMessage (tr ("LeechCraft Notification"),
+			message,
+			mi,
+			XmlSettingsManager::Instance ()->
 				property ("FinishedDownloadMessageTimeout").toInt () * 1000);
 }
 

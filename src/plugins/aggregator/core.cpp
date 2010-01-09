@@ -164,8 +164,9 @@ namespace LeechCraft
 						emit delegateEntity (e, &id, &pr);
 						if (id == -1)
 						{
-							emit error (tr ("Task for OPML %1 wasn't delegated.")
-									.arg (url.toString ()));
+							ErrorNotification (tr ("Import error"),
+									tr ("Task for OPML %1 wasn't delegated.")
+										.arg (url.toString ()));
 							return;
 						}
 					
@@ -254,13 +255,15 @@ namespace LeechCraft
 				}
 				catch (const std::runtime_error& s)
 				{
-					emit error (QTextCodec::codecForName ("UTF-8")->
+					ErrorNotification (tr ("Storage error"),
+							QTextCodec::codecForName ("UTF-8")->
 							toUnicode (s.what ()));
 					return false;
 				}
 				catch (...)
 				{
-					emit error (tr ("Aggregator: general storage initialization error."));
+					ErrorNotification (tr ("Storage error"),
+							tr ("Aggregator: general storage initialization error."));
 					return false;
 				}
 
@@ -401,7 +404,9 @@ namespace LeechCraft
 					std::find (feeds.begin (), feeds.end (), url);
 				if (pos != feeds.end ())
 				{
-					emit error (tr ("This feed is already added."));
+					ErrorNotification (tr ("Feed addition error"),
+							tr ("The feed %1 is already added")
+							.arg (url));
 					return;
 				}
 			
@@ -431,8 +436,10 @@ namespace LeechCraft
 				emit delegateEntity (e, &id, &pr);
 				if (id == -1)
 				{
-					emit error (tr ("Job for feed %1 wasn't delegated.")
-							.arg (url));
+					ErrorNotification (tr ("Plugin error"),
+							tr ("Job for feed %1 wasn't delegated.")
+							.arg (url),
+							false);
 					return;
 				}
 			
@@ -450,9 +457,11 @@ namespace LeechCraft
 				{
 					channel = ChannelsModel_->GetChannelForIndex (index);
 				}
-				catch (const std::exception&)
+				catch (const std::exception& e)
 				{
-					emit error (tr ("Could not remove the feed."));
+					ErrorNotification (tr ("Feed removal error"),
+							tr ("Could not remove the feed: %1")
+							.arg (e.what ()));
 					return;
 				}
 			
@@ -648,7 +657,9 @@ namespace LeechCraft
 				}
 				catch (const std::exception& e)
 				{
-					emit error (tr ("Could not get feed settings"));
+					ErrorNotification (tr ("Aggregator error"),
+							tr ("Could not get feed settigns: %1")
+							.arg (e.what ()));
 					return Feed::FeedSettings ();
 				}
 			}
@@ -663,7 +674,9 @@ namespace LeechCraft
 				}
 				catch (const std::exception& e)
 				{
-					emit error (tr ("Could not update feed settings"));
+					ErrorNotification (tr ("Aggregator error"),
+							tr ("Could not update feed settings: %1")
+							.arg (e.what ()));
 				}
 			}
 			
@@ -684,7 +697,9 @@ namespace LeechCraft
 						<< si
 						<< index
 						<< isRepr;
-					emit error (tr ("Could not update feed"));
+					ErrorNotification (tr ("Feed update error"),
+							tr ("Could not update feed"),
+							false);
 					return;
 				}
 				QString url = channel.ParentURL_;
@@ -714,7 +729,8 @@ namespace LeechCraft
 				QFile file (filename);
 				if (!file.open (QIODevice::ReadOnly))
 				{
-					emit error (tr ("Could not open file %1 for reading.")
+					ErrorNotification (tr ("OPML import error"),
+							tr ("Could not open file %1 for reading.")
 								.arg (filename));
 					return;
 				}
@@ -731,7 +747,8 @@ namespace LeechCraft
 							&errorLine,
 							&errorColumn))
 				{
-					emit error (tr ("XML error, file %1, line %2, column %3, error:<br />%4")
+					ErrorNotification (tr ("OPML import error"),
+							tr ("XML error, file %1, line %2, column %3, error:<br />%4")
 								.arg (filename)
 								.arg (errorLine)
 								.arg (errorColumn)
@@ -742,7 +759,8 @@ namespace LeechCraft
 				OPMLParser parser (document);
 				if (!parser.IsValid ())
 				{
-					emit error (tr ("OPML from file %1 is not valid.")
+					ErrorNotification (tr ("OPML import error"),
+							tr ("OPML from file %1 is not valid.")
 								.arg (filename));
 					return;
 				}
@@ -774,7 +792,8 @@ namespace LeechCraft
 					}
 					catch (const std::exception& e)
 					{
-						emit error (tr ("Could not update feed settings"));
+						ErrorNotification (tr ("OPML import error"),
+								tr ("Could not update feed settings"));
 					}
 				}
 			}
@@ -804,7 +823,8 @@ namespace LeechCraft
 				QFile f (where);
 				if (!f.open (QIODevice::WriteOnly))
 				{
-					emit error (QString ("Could not open file %1 for write.").arg (where));
+					ErrorNotification (tr ("OPML export error"),
+							tr ("Could not open file %1 for write.").arg (where));
 					return;
 				}
 			
@@ -834,7 +854,8 @@ namespace LeechCraft
 				QFile f (where);
 				if (!f.open (QIODevice::WriteOnly))
 				{
-					emit error (QString ("Could not open file %1 for write.").arg (where));
+					ErrorNotification (tr ("Binary export error"),
+							tr ("Could not open file %1 for write.").arg (where));
 					return;
 				}
 			
@@ -1009,7 +1030,8 @@ namespace LeechCraft
 				}
 				if (!file.size ())
 				{
-					emit error (tr ("Downloaded file from url %1 has null size!").arg (pj.URL_));
+					ErrorNotification (tr ("Feed error"),
+							tr ("Downloaded file from url %1 has null size.").arg (pj.URL_));
 					return;
 				}
 			
@@ -1021,7 +1043,8 @@ namespace LeechCraft
 				if (pj.Role_ == PendingJob::RFeedUpdated &&
 						pos == feeds.end ())
 				{
-					emit error (tr ("Feed with url %1 not found.").arg (pj.URL_));
+					ErrorNotification (tr ("Feed error"),
+							tr ("Feed with url %1 not found.").arg (pj.URL_));
 					return;
 				}
 			
@@ -1035,7 +1058,8 @@ namespace LeechCraft
 					if (!doc.setContent (data, true, &errorMsg, &errorLine, &errorColumn))
 					{
 						file.copy (QDir::tempPath () + "/failedFile.xml");
-						emit error (tr ("XML file parse error: %1, line %2, column %3, filename %4, from %5")
+						ErrorNotification (tr ("Feed error"),
+								tr ("XML file parse error: %1, line %2, column %3, filename %4, from %5")
 								.arg (errorMsg)
 								.arg (errorLine)
 								.arg (errorColumn)
@@ -1048,7 +1072,8 @@ namespace LeechCraft
 					if (!parser)
 					{
 						file.copy (QDir::tempPath () + "/failedFile.xml");
-						emit error (tr ("Could not find parser to parse file %1 from %2")
+						ErrorNotification (tr ("Feed error"),
+								tr ("Could not find parser to parse file %1 from %2")
 								.arg (pj.Filename_)
 								.arg (pj.URL_));
 						return;
@@ -1101,7 +1126,16 @@ namespace LeechCraft
 					HandleExternalData (pj.URL_, file);
 				UpdateUnreadItemsNumber ();
 				if (!emitString.isEmpty ())
-					emit showDownloadMessage (emitString);
+				{
+					Notification n =
+					{
+						tr ("Aggregator updated"),
+						emitString,
+						false,
+						Notification::PInformation_
+					};
+					emit notify (n);
+				}
 				scheduleSave ();
 			}
 			
@@ -1122,7 +1156,8 @@ namespace LeechCraft
 				{
 					if (PendingOPMLs_.contains (id))
 					{
-						emit error (tr ("Unable to download the OPML file."));
+						ErrorNotification (tr ("OPML import error"),
+								tr ("Unable to download the OPML file."));
 						return;
 					}
 				}
@@ -1150,7 +1185,8 @@ namespace LeechCraft
 							msg = tr ("Unknown error for:<br />%1");
 							break;
 					}
-					emit error (msg.arg (pj.URL_));
+					ErrorNotification (tr ("Download error"),
+							msg.arg (pj.URL_));
 				}
 				PendingJobs_.remove (id);
 				ID2Downloader_.remove (id);
@@ -1198,8 +1234,8 @@ namespace LeechCraft
 				emit delegateEntity (e, &id, &pr);
 				if (id == -1)
 				{
-					if (!XmlSettingsManager::Instance ()->property ("BeSilent").toBool ())
-						emit error (tr ("External file %1 wasn't delegated.").arg (url));
+					ErrorNotification (tr ("Feed error"),
+							tr ("External file %1 wasn't delegated.").arg (url));
 					return;
 				}
 			
@@ -1521,7 +1557,8 @@ namespace LeechCraft
 				{
 					qWarning () << Q_FUNC_INFO
 						<< e.what ();
-					emit error (tr ("Could not mark channel"));
+					ErrorNotification (tr ("Aggregator error"),
+							tr ("Could not mark channel"));
 				}
 			}
 			
@@ -1605,6 +1642,18 @@ namespace LeechCraft
 						SLOT (handleJobError (int, IDownload::Error)));
 
 				ID2Downloader_ [id] = provider;
+			}
+			
+			void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const
+			{
+				Notification n =
+				{
+					h,
+					body,
+					wait,
+					Notification::PCritical_
+				};
+				emit notify (n);
 			}
 		};
 	};
