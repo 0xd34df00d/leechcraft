@@ -1,12 +1,12 @@
 @echo off
 
 rem Set these variables to proper paths of your system:
-set BOOST_BIN_DIR="F:\X-Files\Projects\Lib\boost_1_40_0\stage\lib"
-set BOOST_VERSION="1_40"
-set LIBTORRENT_BIN_DIR="F:\X-Files\Projects\Lib\libtorrent\bin\msvc-9.0\release\boost-link-shared\boost-source\threading-multi"
+set BOOST_BIN_DIR="F:\X-Files\Projects\Lib\boost_1_41_0\stage\lib"
+set BOOST_VERSION="1_41"
+set LIBTORRENT_BIN_DIR="f:\X-Files\Projects\Lib\libtorrent-RC_0_15\bin\msvc-9.0\release\boost-link-shared\boost-source\threading-multi"
 set LIBCURL_BIN_DIR="F:\X-Files\Projects\Lib\curl-7.19.6\lib\DLL-Release"
 set OPENSSL_BIN_DIR="F:\X-Files\Projects\Lib\openssl-0.9.8k\out32dll"
-set QT_BIN_DIR="c:\Programs\qt-everywhere-opensource-src-4.6.0-rc1\lib\"
+set QT_BIN_DIR="c:\Programs\qt-everywhere-opensource-src-4.6.0\lib\"
 
 set LEECHCRAFT_ROOT_DIR="..\.."
 set LEECHCRAFT_BUILD_DIR="build32"

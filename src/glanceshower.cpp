@@ -64,7 +64,7 @@ namespace LeechCraft
 
 		QSequentialAnimationGroup *animGroup = new QSequentialAnimationGroup;
 
-		int sqr = std::sqrt (count);
+		int sqr = std::sqrt ((double)count);
 		int rows = sqr;
 		int cols = sqr;
 		if (rows * cols < count)
@@ -84,7 +84,7 @@ namespace LeechCraft
 		qreal scaleFactor = 0;
 		QSize sSize;
 
-		qreal fourth = std::sqrt (std::sqrt (count));
+		qreal fourth = std::sqrt (std::sqrt ((double)count));
 
 		int animLength = 500 / (fourth * fourth * fourth);
 

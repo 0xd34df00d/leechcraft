@@ -347,7 +347,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 
 namespace
 {
-	GetLanguageHack ()
+	QString GetLanguageHack ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());

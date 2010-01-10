@@ -204,7 +204,6 @@ namespace LeechCraft
 				void handleJobError (int, IDownload::Error);
 				void saveSettings ();
 				void handleChannelDataUpdated (Channel_ptr);
-				void handleItemDataUpdated (Item_ptr, Channel_ptr);
 				void handleCustomUpdates ();
 			private:
 				void UpdateUnreadItemsNumber () const;

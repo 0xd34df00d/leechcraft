@@ -97,7 +97,7 @@ namespace LeechCraft
 								QIODevice**);
 						void HandleLoadFinished (QWebPage*);
 						void HandleContextMenu (const QWebHitTestResult&,
-								QMenu*, PluginBase::WebViewCtxMenuStage);
+								QMenu*, LeechCraft::Plugins::Poshuku::PluginBase::WebViewCtxMenuStage);
 						bool ShouldReject (const QNetworkRequest&, QString*) const;
 
 						UserFiltersModel* GetUserFiltersModel () const;
@@ -123,7 +123,6 @@ namespace LeechCraft
 						void ReadSettings ();
 						bool AssignSD (const SubscriptionData&);
 					private slots:
-						void blockImage ();
 						void update ();
 						void handleJobFinished (int);
 						void handleJobError (int, IDownload::Error);

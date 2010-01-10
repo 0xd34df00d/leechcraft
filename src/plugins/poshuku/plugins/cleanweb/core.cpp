@@ -385,7 +385,7 @@ void Core::HandleLoadFinished (QWebPage *page)
 }
 
 void Core::HandleContextMenu (const QWebHitTestResult& r,
-		QMenu *menu, PluginBase::WebViewCtxMenuStage stage)
+	QMenu *menu, LeechCraft::Plugins::Poshuku::PluginBase::WebViewCtxMenuStage stage)
 {
 	QUrl iurl = r.imageUrl ();
 	if (stage == PluginBase::WVSAfterImage &&
