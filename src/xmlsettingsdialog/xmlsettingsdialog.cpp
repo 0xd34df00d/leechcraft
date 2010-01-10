@@ -341,9 +341,38 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 	WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 }
 
+#ifdef Q_WS_WIN
+#include <QCoreApplication>
+#include <QLocale>
+
+namespace
+{
+	GetLanguageHack ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName ());
+		QString localeName = settings.value ("Language", "system").toString ();
+
+		if (localeName == "system")
+		{
+			localeName = QString(::getenv ("LANG"));
+			if (localeName.isEmpty () || localeName.size () != 5)
+				localeName = QLocale::system ().name ();
+		}
+
+		return localeName.left (2);
+	}
+};
+
+#endif
+
 QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 {
+#ifdef Q_WS_WIN
+	QString locale = GetLanguageHack ();
+#else
 	QString locale = Util::GetLanguage ();
+#endif
 
 	QString result = "<no label>";
 	QDomElement label = item.firstChildElement ("label");
