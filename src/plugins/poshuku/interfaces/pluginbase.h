@@ -21,6 +21,7 @@
 #include <stdexcept>
 #include <QObject>
 #include <QWebPage>
+#include <QWebHitTestResult>
 #include "iwebplugin.h"
 
 class QNetworkRequest;
