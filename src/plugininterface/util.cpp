@@ -140,6 +140,7 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 		qApp->installTranslator (transl);
 		return transl;
 	}
+	delete transl;
 
 	qWarning () << Q_FUNC_INFO
 		<< "could not load translation file for locale"
