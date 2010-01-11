@@ -93,10 +93,7 @@ void LeechCraft::FancyPopupManager::handleMessageClicked ()
 void LeechCraft::FancyPopupManager::UpdateMessage ()
 {
 	if (Popups_.isEmpty ())
-	{
-		TrayIcon_->hide ();
 		return;
-	}
 
 	const Notification& first = Popups_.at (0);
 
