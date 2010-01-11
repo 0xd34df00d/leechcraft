@@ -172,6 +172,8 @@ namespace LeechCraft
 						// Build peer_id
 						// Get the tag name.
 						ver = LEECHCRAFT_VERSION;
+						if (ver.isEmpty ())
+							ver = "0.3.65";
 						// Get the part before the '-'.
 						ver = ver.split ('-', QString::SkipEmptyParts).at (0);
 						QStringList vers = ver.split ('.', QString::SkipEmptyParts);
