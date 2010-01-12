@@ -42,6 +42,7 @@ class QTimer;
 class QDomElement;
 class QToolBar;
 class QStandardItemModel;
+class QDataStream;
 
 namespace libtorrent
 {
@@ -357,6 +358,12 @@ namespace LeechCraft
 			};
 		};
 	};
+};
+
+namespace libtorrent
+{
+	QDataStream& operator<< (QDataStream&, const libtorrent::entry&);
+	QDataStream& operator>> (QDataStream&, libtorrent::entry&);
 };
 
 #endif

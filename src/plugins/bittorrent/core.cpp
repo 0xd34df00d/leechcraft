@@ -43,6 +43,7 @@
 #include <QMessageBox>
 #include <QUrl>
 #include <QTextCodec>
+#include <QDataStream>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/create_torrent.hpp>
@@ -66,6 +67,8 @@
 #include "config.h"
 
 using namespace LeechCraft::Util;
+
+Q_DECLARE_METATYPE (libtorrent::entry);
 
 namespace LeechCraft
 {
@@ -138,6 +141,9 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+
+				qRegisterMetaType<libtorrent::entry> ("libtorrent::entry");
+				qRegisterMetaTypeStreamOperators<libtorrent::entry> ("libtorrent::entry");
 			}
 			
 			Core::~Core ()
@@ -190,25 +196,31 @@ namespace LeechCraft
 
 					if (ver.size () != 4)
 						ver = "1111";
+
 					Session_ = new libtorrent::session (libtorrent::fingerprint
 							(peerIDstring.toLatin1 ().constData (),
 							 ver.at (0).digitValue (),
 							 ver.at (1).digitValue (), 
 							 ver.at (2).digitValue (),
 							 ver.at (3).digitValue ()));
+
 					setLoggingSettings ();
-					QList<QVariant> ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
-					Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
+
+					QList<QVariant> ports = XmlSettingsManager::Instance ()->
+						property ("TCPPortRange").toList ();
+					Session_->listen_on (std::make_pair (ports.at (0).toInt (),
+								ports.at (1).toInt ()));
+
 					Session_->add_extension (&libtorrent::create_metadata_plugin);
 					Session_->add_extension (&libtorrent::create_ut_pex_plugin);
 					Session_->add_extension (&libtorrent::create_ut_metadata_plugin);
 					Session_->add_extension (&libtorrent::create_smart_ban_plugin);
-					if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
-						Session_->start_dht (libtorrent::entry ());
+
 					Session_->set_max_uploads (XmlSettingsManager::Instance ()->
 							property ("MaxUploads").toInt ());
 					Session_->set_max_connections (XmlSettingsManager::Instance ()->
 							property ("MaxConnections").toInt ());
+
 					setProxySettings ();
 					setGeneralSettings ();
 					setScrapeInterval ();
@@ -2128,7 +2140,11 @@ namespace LeechCraft
 				dhtSettings << "MaxPeersReply"
 					<< "SearchBranching"
 					<< "ServicePort"
-					<< "MaxDHTFailcount";
+					<< "MaxDHTFailcount"
+					<< "DHTEnabled"
+					<< "EnableLSD"
+					<< "EnableUPNP"
+					<< "EnableNATPMP";
 				XmlSettingsManager::Instance ()->RegisterObject (dhtSettings,
 						this, "setDHTSettings");
 			
@@ -2196,7 +2212,7 @@ namespace LeechCraft
 						.arg (QString::fromUtf8 (e.error ().message ().c_str ()))
 						.arg (e.what ()));
 			}
-			
+
 			void Core::writeSettings ()
 			{
 				SaveScheduled_ = false;
@@ -2292,6 +2308,11 @@ namespace LeechCraft
 				}
 				settings.endArray ();
 				settings.endGroup ();
+
+				if (Session_->is_dht_running ())
+					XmlSettingsManager::Instance ()->
+						setProperty ("DHTState",
+								QVariant::fromValue<libtorrent::entry> (Session_->dht_state ()));
 			
 				Session_->wait_for_alert (libtorrent::time_duration (5));
 			
@@ -2759,6 +2780,33 @@ namespace LeechCraft
 			
 			void Core::setDHTSettings ()
 			{
+				if (XmlSettingsManager::Instance ()->property ("EnableLSD").toBool ())
+					Session_->start_lsd ();
+				else
+					Session_->stop_lsd ();
+
+				if (XmlSettingsManager::Instance ()->property ("EnableUPNP").toBool ())
+					Session_->start_upnp ();
+				else
+					Session_->stop_upnp ();
+
+				if (XmlSettingsManager::Instance ()->property ("EnableNATPMP").toBool ())
+					Session_->start_natpmp ();
+				else
+					Session_->stop_natpmp ();
+
+				if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
+					Session_->start_dht (XmlSettingsManager::Instance ()->
+							property ("DHTState").value<libtorrent::entry> ());
+				else
+				{
+					if (Session_->is_dht_running ())
+						XmlSettingsManager::Instance ()->
+							setProperty ("DHTState",
+									QVariant::fromValue<libtorrent::entry> (Session_->dht_state ()));
+					Session_->stop_dht ();
+				}
+
 				libtorrent::dht_settings settings;
 			
 				settings.max_peers_reply = XmlSettingsManager::Instance ()->property ("MaxPeersReply").toInt ();
@@ -2815,8 +2863,91 @@ namespace LeechCraft
 				else
 					ScrapeTimer_->stop ();
 			}
-			
 		};
 	};
+};
+			
+namespace libtorrent
+{
+	QDataStream& operator<< (QDataStream& out, const entry& e)
+	{
+		out << static_cast<qint8> (1);
+		switch (e.type ())
+		{
+			case entry::int_t:
+				out << static_cast<qint8> (1);
+				out << static_cast<qint64> (e.integer ());
+				break;
+			case entry::string_t:
+				out << static_cast<qint8> (2);
+				out << QString::fromUtf8 (e.string ().c_str ());
+				break;
+			case entry::list_t:
+				out << static_cast<qint8> (3);
+				out << QList<entry>::fromStdList (e.list ());
+				break;
+			case entry::dictionary_t:
+				out << static_cast<qint8> (4);
+				{
+					QMap<QString, entry> m;
+					for (std::map<std::string, entry>::const_iterator
+							i = e.dict ().begin (),
+							end = e.dict ().end (); i != end; ++i)
+						m [QString::fromUtf8 (i->first.c_str ())] = i->second;
+					out << m;
+				}
+				break;
+			default:
+				throw std::runtime_error ("Unkown type when serializing libtorrent::entry");
+		}
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, entry& e)
+	{
+		qint8 version;
+		in >> version;
+		if (version == 1)
+		{
+			qint8 type;
+			in >> type;
+			switch (type)
+			{
+				case 1:
+					{
+						qint64 integer;
+						in >> integer;
+						e = integer;
+					}
+					break;
+				case 2:
+					{
+						QString string;
+						in >> string;
+						e = std::string (string.toUtf8 ().data ());
+					}
+					break;
+				case 3:
+					{
+						QList<entry> list;
+						in >> list;
+						e = list.toStdList ();
+					}
+					break;
+				case 4:
+					{
+						QMap<QString, entry> map;
+						in >> map;
+						std::map<std::string, entry> sm;
+						QStringList keys = map.keys ();
+						Q_FOREACH (QString key, keys)
+							sm [std::string (key.toUtf8 ().data ())] = map [key];
+						e = sm;
+					}
+					break;
+			}
+		}
+		return in;
+	}
 };
 

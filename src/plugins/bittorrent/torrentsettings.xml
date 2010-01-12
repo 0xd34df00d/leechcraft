@@ -225,6 +225,18 @@
 					<label lang="en" value="Announce IP:" />
 					<label lang="ru" value="IP, передаваемый трекеру:" />
 				</item>
+				<item type="checkbox" property="EnableLSD" default="true">
+					<label lang="en" value="Enable Local Service Discovery" />
+					<label lang="ru" value="Включить Local Service Discovery" />
+				</item>
+				<item type="checkbox" property="EnableUPNP" default="true">
+					<label lang="en" value="Enable UPnP support" />
+					<label lang="ru" value="Включить поддержку UPnP" />
+				</item>
+				<item type="checkbox" property="EnableNATPMP" default="true">
+					<label lang="en" value="Enable NAT-PMP support" />
+					<label lang="ru" value="Включить поддержку NAT-PMP" />
+				</item>
 				<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
 					<label lang="en" value="Allow multiple connections per IP" />
 					<label lang="ru" value="Разрешать множественные соединения с одним IP" />
