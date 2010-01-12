@@ -502,10 +502,12 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 		if (!value.isValid () ||
 				value.isNull () ||
 				value.toString () == "on" ||
-				value.toString () == "off")
+				value.toString () == "off" ||
+				value.toString () == "true" ||
+				value.toString () == "false")
 		{
 			if (item.hasAttribute ("default"))
-				value = (item.attribute ("default") == "on");
+				value = (item.attribute ("default") == "on" || item.attribute ("default") == "off");
 			else
 				value = (item.attribute ("state") == "on");
 		}
