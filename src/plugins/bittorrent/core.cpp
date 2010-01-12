@@ -202,7 +202,8 @@ namespace LeechCraft
 							 ver.at (0).digitValue (),
 							 ver.at (1).digitValue (), 
 							 ver.at (2).digitValue (),
-							 ver.at (3).digitValue ()));
+							 ver.at (3).digitValue ()),
+							libtorrent::session::add_default_plugins);
 
 					setLoggingSettings ();
 
