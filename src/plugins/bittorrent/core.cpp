@@ -2872,35 +2872,10 @@ namespace libtorrent
 {
 	QDataStream& operator<< (QDataStream& out, const entry& e)
 	{
-		out << static_cast<qint8> (1);
-		switch (e.type ())
-		{
-			case entry::int_t:
-				out << static_cast<qint8> (1);
-				out << static_cast<qint64> (e.integer ());
-				break;
-			case entry::string_t:
-				out << static_cast<qint8> (2);
-				out << QString::fromUtf8 (e.string ().c_str ());
-				break;
-			case entry::list_t:
-				out << static_cast<qint8> (3);
-				out << QList<entry>::fromStdList (e.list ());
-				break;
-			case entry::dictionary_t:
-				out << static_cast<qint8> (4);
-				{
-					QMap<QString, entry> m;
-					for (std::map<std::string, entry>::const_iterator
-							i = e.dict ().begin (),
-							end = e.dict ().end (); i != end; ++i)
-						m [QString::fromUtf8 (i->first.c_str ())] = i->second;
-					out << m;
-				}
-				break;
-			default:
-				throw std::runtime_error ("Unkown type when serializing libtorrent::entry");
-		}
+		QByteArray ba;
+		libtorrent::bencode (std::back_inserter (ba), e);
+		
+		out << static_cast<qint8> (1) << ba;
 		return out;
 	}
 
@@ -2910,42 +2885,19 @@ namespace libtorrent
 		in >> version;
 		if (version == 1)
 		{
-			qint8 type;
-			in >> type;
-			switch (type)
+			QByteArray ba;
+			in >> ba;
+			const char *begin = ba;
+			try
 			{
-				case 1:
-					{
-						qint64 integer;
-						in >> integer;
-						e = integer;
-					}
-					break;
-				case 2:
-					{
-						QString string;
-						in >> string;
-						e = std::string (string.toUtf8 ().data ());
-					}
-					break;
-				case 3:
-					{
-						QList<entry> list;
-						in >> list;
-						e = list.toStdList ();
-					}
-					break;
-				case 4:
-					{
-						QMap<QString, entry> map;
-						in >> map;
-						std::map<std::string, entry> sm;
-						QStringList keys = map.keys ();
-						Q_FOREACH (QString key, keys)
-							sm [std::string (key.toUtf8 ().data ())] = map [key];
-						e = sm;
-					}
-					break;
+				e = libtorrent::bdecode (begin, begin + ba.size ());
+			}
+			catch (const libtorrent::libtorrent_exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< version
+					<< "while bdecoding"
+					<< e.what ();
 			}
 		}
 		return in;
