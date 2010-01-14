@@ -27,11 +27,10 @@
 #include <QTimer>
 #include <QTextCodec>
 #include <QMessageBox>
-#include <QWebFrame>
-#include <QWebPage>
-#include <QWebElementCollection>
+#include <qwebframe.h>
+#include <qwebpage.h>
+#include <qwebelement.h>
 #include <QCoreApplication>
-#include <QWebHitTestResult>
 #include <QMenu>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"

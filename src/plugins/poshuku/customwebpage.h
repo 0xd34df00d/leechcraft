@@ -19,7 +19,7 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
 #define PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
 #include <boost/shared_ptr.hpp>
-#include <QWebPage>
+#include <qwebpage.h>
 #include <QUrl>
 #include <interfaces/structures.h>
 #include "pageformsdata.h"

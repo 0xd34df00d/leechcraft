@@ -19,7 +19,7 @@
 #ifndef PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
 #define PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
 #include <QHash>
-#include <QWebPluginFactory>
+#include <qwebpluginfactory.h>
 #include "interfaces/iwebplugin.h"
 
 namespace LeechCraft

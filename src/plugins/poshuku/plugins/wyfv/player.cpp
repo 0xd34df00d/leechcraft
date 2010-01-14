@@ -19,7 +19,7 @@
 #include "player.h"
 #include <QNetworkReply>
 #include <QMessageBox>
-#include <QWebView>
+#include <qwebview.h>
 #include "core.h"
 
 namespace LeechCraft

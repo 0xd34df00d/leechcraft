@@ -30,7 +30,6 @@
 #include <QNetworkCookieJar>
 #include <QDir>
 #include <QMenu>
-#include <QWebFrame>
 #include <QInputDialog>
 #include <QNetworkReply>
 #include <QSslSocket>
@@ -39,7 +38,8 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QWebHistory>
+#include <qwebframe.h>
+#include <qwebhistory.h>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <interfaces/ihaveshortcuts.h>

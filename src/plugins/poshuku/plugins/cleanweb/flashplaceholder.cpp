@@ -17,8 +17,8 @@
  **********************************************************************/
 
 #include "flashplaceholder.h"
-#include <QWebView>
-#include <QWebFrame>
+#include <qwebview.h>
+#include <qwebframe.h>
 #include <QFile>
 #include <QMenu>
 #include <QCursor>

@@ -20,12 +20,12 @@
 #include <QtDebug>
 #include <QFile>
 #include <QBuffer>
-#include <QWebFrame>
+#include <qwebframe.h>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>
 #include <QSysInfo>
-#include <QWebHistory>
+#include <qwebhistory.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"

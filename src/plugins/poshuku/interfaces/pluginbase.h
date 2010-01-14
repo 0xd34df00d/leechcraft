@@ -20,8 +20,8 @@
 #define PLUGINBASE_H
 #include <stdexcept>
 #include <QObject>
-#include <QWebPage>
-#include <QWebHitTestResult>
+#include <qwebpage.h>
+#include <qwebframe.h>
 #include "iwebplugin.h"
 
 class QNetworkRequest;

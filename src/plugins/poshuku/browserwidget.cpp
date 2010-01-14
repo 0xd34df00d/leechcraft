@@ -34,13 +34,13 @@
 #include <QTimer>
 #include <QPrintPreviewDialog>
 #include <QPainter>
-#include <QWebFrame>
+#include <qwebframe.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QXmlStreamReader>
 #include <QTextCodec>
-#include <QWebHistory>
+#include <qwebhistory.h>
 #include <QDataStream>
 #include <plugininterface/util.h>
 #include "core.h"

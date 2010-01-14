@@ -20,7 +20,7 @@
 #include <QtDebug>
 #include <QHeaderView>
 #include <QUrl>
-#include <QWebSettings>
+#include <qwebsettings.h>
 #include "core.h"
 
 namespace LeechCraft

@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_FINDDIALOG_H
 #define PLUGINS_POSHUKU_FINDDIALOG_H
-#include <QWebPage>
+#include <qwebpage.h>
 #include "notification.h"
 #include "ui_finddialog.h"
 

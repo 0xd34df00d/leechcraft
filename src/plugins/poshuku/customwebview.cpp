@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "customwebview.h"
-#include <QWebFrame>
+#include <qwebframe.h>
 #include <QMouseEvent>
 #include <QMenu>
 #include <QApplication>
