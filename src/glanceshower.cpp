@@ -26,6 +26,7 @@
 #include <QSequentialAnimationGroup>
 #include <QProgressDialog>
 #include <QPropertyAnimation>
+#include <QKeyEvent>
 #include <QtDebug>
 #include "core.h"
 #include "mainwindow.h"
@@ -41,7 +42,11 @@ namespace LeechCraft
 	{
 		setWindowFlags (Qt::WindowStaysOnTopHint |
 				Qt::FramelessWindowHint);
-//		setRenderHints (QPainter::HighQualityAntialiasing);
+		setAttribute (Qt::WA_TranslucentBackground);
+		setStyleSheet ("background: transparent");
+		setOptimizationFlag (DontSavePainterState);
+		Scene_->setItemIndexMethod (QGraphicsScene::NoIndex);
+		setRenderHints (QPainter::HighQualityAntialiasing);
 	}
 
 	void GlanceShower::SetTabWidget (QTabWidget *tw)
@@ -59,7 +64,7 @@ namespace LeechCraft
 		}
 
 		int count = TabWidget_->count ();
-		if (!count)
+		if (count < 2)
 			return;
 
 		QSequentialAnimationGroup *animGroup = new QSequentialAnimationGroup;
@@ -86,13 +91,11 @@ namespace LeechCraft
 
 		qreal fourth = std::sqrt (std::sqrt ((double)count));
 
-		int animLength = 500 / (fourth * fourth * fourth);
+		int animLength = 500 / (sqr);
 
 		QProgressDialog pg;
 		pg.setMinimumDuration (1000);
 		pg.setRange (0, count);
-
-		qDebug () << animLength;
 
 		for (int row = 0; row < rows; ++row)
 			for (int column = 0;
@@ -104,16 +107,17 @@ namespace LeechCraft
 				QWidget *w = TabWidget_->widget (idx);
 
 				if (!sSize.isValid ())
-					sSize = w->size ();
+					sSize = w->size () / 2;
 				if (sSize != w->size ())
-					w->resize (sSize);
+					w->resize (sSize * 2);
 
 				if (!scaleFactor)
 					scaleFactor = std::min (static_cast<qreal> (wW) / sSize.width (),
 							static_cast<qreal> (wH) / sSize.height ());
 
-				QPixmap pixmap (sSize);
+				QPixmap pixmap (sSize * 2);
 				w->render (&pixmap);
+				pixmap = pixmap.scaled (sSize);
 
 				{
 					QPainter p (&pixmap);
@@ -139,14 +143,11 @@ namespace LeechCraft
 
 				QParallelAnimationGroup *pair = new QParallelAnimationGroup;
 
-				/*
-				 * Moving semitransparent widgets is SOOOOOOO SLOOOOOOOOOOW
 				QPropertyAnimation *posAnim = new QPropertyAnimation (item, "Pos");
 				posAnim->setDuration (animLength);
 				posAnim->setStartValue (QPointF (0, 0));
 				posAnim->setEndValue (QPointF (column * singleW, row * singleH));
 				pair->addAnimation (posAnim);
-				*/
 
 				QPropertyAnimation *opacityAnim = new QPropertyAnimation (item, "Opacity");
 				opacityAnim->setDuration (animLength);
@@ -162,6 +163,14 @@ namespace LeechCraft
 		setGeometry (Core::Instance ().GetReallyMainWindow ()->geometry ());
 		animGroup->start ();
 		show ();
+	}
+
+	void GlanceShower::keyPressEvent (QKeyEvent *e)
+	{
+		if (e->key () == Qt::Key_Escape)
+			deleteLater ();
+		else
+			QGraphicsView::keyPressEvent (e);
 	}
 
 	void GlanceShower::handleClicked (int idx)

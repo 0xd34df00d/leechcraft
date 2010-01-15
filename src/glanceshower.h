@@ -36,6 +36,8 @@ namespace LeechCraft
 
 		void SetTabWidget (QTabWidget*);
 		void Start ();
+	protected:
+		void keyPressEvent (QKeyEvent*);
 	private slots:
 		void handleClicked (int);
 	};

@@ -31,6 +31,7 @@ namespace LeechCraft
 	{
 		setAcceptHoverEvents (true);
 		setTransformationMode (Qt::SmoothTransformation);
+		setCacheMode (ItemCoordinateCache);
 	}
 
 	void GlanceItem::SetIndex (int idx)
@@ -55,7 +56,7 @@ namespace LeechCraft
 
 	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
 	{
-		QueueScaleAnim (scale (), 0.5);
+		QueueScaleAnim (scale (), 1);
 	}
 
 	void GlanceItem::hoverLeaveEvent (QGraphicsSceneHoverEvent*)
