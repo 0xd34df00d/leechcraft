@@ -36,7 +36,7 @@ namespace LeechCraft
 
 		int Index_;
 		qreal Scale_;
-		QPropertyAnimation *Anim_;
+		QPropertyAnimation *ScaleAnim_;
 	public:
 		GlanceItem (const QPixmap&, QGraphicsItem* = 0);
 

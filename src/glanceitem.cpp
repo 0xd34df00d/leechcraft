@@ -27,7 +27,7 @@ namespace LeechCraft
 	GlanceItem::GlanceItem (const QPixmap& px, QGraphicsItem *parent)
 	: QGraphicsPixmapItem (px, parent)
 	, Scale_ (0)
-	, Anim_ (new QPropertyAnimation (this, "Scale"))
+	, ScaleAnim_ (new QPropertyAnimation (this, "Scale"))
 	{
 		setAcceptHoverEvents (true);
 		setTransformationMode (Qt::SmoothTransformation);
@@ -46,21 +46,23 @@ namespace LeechCraft
 
 	void GlanceItem::QueueScaleAnim (qreal start, qreal end)
 	{
-		Anim_->stop ();
-		Anim_->setDuration (500);
-		Anim_->setStartValue (start);
-		Anim_->setEndValue (end);
+		ScaleAnim_->stop ();
+		ScaleAnim_->setDuration (500);
+		ScaleAnim_->setStartValue (start);
+		ScaleAnim_->setEndValue (end);
 
-		Anim_->start ();
+		ScaleAnim_->start ();
 	}
 
 	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
 	{
+		setZValue (1);
 		QueueScaleAnim (scale (), 1);
 	}
 
 	void GlanceItem::hoverLeaveEvent (QGraphicsSceneHoverEvent*)
 	{
+		setZValue (0);
 		QueueScaleAnim (scale (), Scale_);
 	}
 
