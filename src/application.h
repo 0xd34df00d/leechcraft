@@ -36,6 +36,7 @@ namespace LeechCraft
 		QStringList Arguments_;
 
 		std::auto_ptr<QTranslator> Translator_;
+		bool CatchExceptions_;
 	public:
 		enum Errors
 		{

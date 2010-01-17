@@ -45,6 +45,7 @@ using namespace LeechCraft;
 
 LeechCraft::Application::Application (int& argc, char **argv)
 : QApplication (argc, argv)
+, CatchExceptions_ (true)
 {
 	Arguments_ = arguments ();
 
@@ -108,6 +109,9 @@ LeechCraft::Application::Application (int& argc, char **argv)
 			<< std::endl;
 		std::exit (EHelpRequested);
 	}
+
+	if (Arguments_.contains ("-no-app-catch"))
+		CatchExceptions_ = false;
 
 	if (Arguments_.contains ("-clrsckt"))
 		QLocalServer::removeServer (GetSocketName ());
@@ -203,19 +207,24 @@ void Application::InitiateRestart ()
 
 bool Application::notify (QObject *obj, QEvent *event)
 {
-	try
+	if (CatchExceptions_)
 	{
+		try
+		{
+			return QApplication::notify (obj, event);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.what () << "for" << obj << event << event->type ();
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO << obj << event << event->type ();
+		}
+		return false;
+	}
+	else
 		return QApplication::notify (obj, event);
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO << e.what () << "for" << obj << event << event->type ();
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO << obj << event << event->type ();
-	}
-	return false;
 }
 
 void Application::commitData (QSessionManager& sm)
