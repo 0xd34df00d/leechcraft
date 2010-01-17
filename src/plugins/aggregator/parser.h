@@ -43,18 +43,12 @@ namespace LeechCraft
 
 				/** @brief Parses the document
 				 * 
-				 * Parses the passed XML document, differs it with already existing
-				 * elements passed in old, puts new elements into returned container
-				 * and already existing ones - into modified parameter.
+				 * Parses the passed XML document.
 				 *
-				 * @param[in] old Already existing items.
-				 * @param[out] modified Modified items.
 				 * @param[in] document Byte array with XML document.
 				 * @return Container (channels_container_t) with new items.
 				 */
-				virtual channels_container_t Parse (const channels_container_t& old,
-						channels_container_t& modified,
-						const QDomDocument& document) const;
+				virtual channels_container_t ParseFeed (const QDomDocument& document) const;
 			protected:
 				static const QString DC_;
 				static const QString WFW_;

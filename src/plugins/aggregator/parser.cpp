@@ -56,12 +56,9 @@ namespace LeechCraft
 			{
 			}
 			
-			channels_container_t Parser::Parse (const channels_container_t& channels,
-					channels_container_t& modified,
-					const QDomDocument& recent) const
+			channels_container_t Parser::ParseFeed (const QDomDocument& recent) const
 			{
-				channels_container_t newes = Parse (recent),
-					result;
+				channels_container_t newes = Parse (recent);
 				for (size_t i = 0; i < newes.size (); ++i)
 				{
 					Channel_ptr newChannel = newes [i];
@@ -72,49 +69,8 @@ namespace LeechCraft
 							<< newChannel->Title_;
 						newChannel->Link_ = "about:blank";
 					}
-					int position = -1;
-					for (size_t j = 0; j < channels.size (); ++j)
-						if (channels [j]->Title_ == newChannel->Title_ &&
-								channels [j]->Link_ == newChannel->Link_)
-						{
-							position = j;
-							break;
-						}
-			
-					if (position == -1)
-						result.push_back (newChannel);
-					else if (!channels [position]->Items_.size ())
-					{
-						Channel_ptr pointer = channels [position];
-						pointer->Items_ = newChannel->Items_;
-						result.push_back (pointer);
-					}
-					else
-					{
-						Channel_ptr oldChannel = channels [position];
-						Channel_ptr toInsert (new Channel ());
-						Channel_ptr modifiedContainer (new Channel ());
-						toInsert->Equalify (*oldChannel);
-						toInsert->LastBuild_ = newChannel->LastBuild_;
-						modifiedContainer->Equalify (*oldChannel);
-			
-						for (size_t j = 0; j < newChannel->Items_.size (); ++j)
-						{
-							items_container_t::const_iterator place =
-								std::find_if (oldChannel->Items_.begin (),
-										oldChannel->Items_.end (),
-										ItemComparator (newChannel->Items_ [j]));
-			
-							if (place == oldChannel->Items_.end ())
-								toInsert->Items_.push_back (newChannel->Items_ [j]);
-							else
-								modifiedContainer->Items_.push_back (newChannel->Items_ [j]);
-						}
-						result.push_back (toInsert);
-						modified.push_back (modifiedContainer);
-					}
 				}
-				return result;
+				return newes;
 			}
 			
 			QString Parser::GetLink (const QDomElement& parent) const

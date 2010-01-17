@@ -36,6 +36,9 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 			public:
+				struct ChannelNotFoundError {};
+				struct ItemNotFoundError {};
+
 				enum Type
 				{
 					SBSQLite,
@@ -102,11 +105,22 @@ namespace LeechCraft
 				 * separate call to GetItems().
 				 *
 				 * @param[in] title The title of the required channel.
-				 * @param[in] feedparent The URL of parent feed.
+				 * @param[in] feedParent The URL of parent feed.
 				 * @return Full information about the requested channel.
 				 */
 				virtual Channel_ptr GetChannel (const QString& title,
 						const QString& feedParent) const = 0;
+				/** @brief Trims the channel to remove old items.
+				 *
+				 * Emits channelDataUpdated() after that.
+				 *
+				 * @param[in] title The title of the channel to be trimmed.
+				 * @param[in] feedParent The URL of parent feed.
+				 * @param[in] days Max number of days.
+				 * @param[in] number Max number of items.
+				 */
+				virtual void TrimChannel (const QString& title,
+						const QString& feedParent, int days, int number) = 0;
 				/** @brief Returns short information about items in a channel.
 				 *
 				 * Returns short information about items in the storage which are
@@ -190,7 +204,7 @@ namespace LeechCraft
 				 *
 				 * @param[in] channel Pointer to the item that should be added.
 				 * @param[in] parentUrl Parent feed's URL.
-				 * @param[in] parentTitle parent channel's title.
+				 * @param[in] parentTitle Parent channel's title.
 				 */
 				virtual void AddItem (Item_ptr item,
 						const QString& parentUrl, const QString& parentTitle) = 0;

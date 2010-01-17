@@ -77,6 +77,14 @@ namespace LeechCraft
 				return ok;
 			}
 
+			bool operator== (const Enclosure& e1, const Enclosure& e2)
+			{
+				return e1.URL_ == e2.URL_ &&
+					e1.Type_ == e2.Type_ &&
+					e1.Length_ == e2.Length_ &&
+					e1.Lang_ == e2.Lang_;
+			}
+
 			bool operator== (const MRSSEntry& e1, const MRSSEntry& e2)
 			{
 				return e1.URL_ == e2.URL_ &&
@@ -509,6 +517,7 @@ namespace LeechCraft
 						i1->CommentsPageLink_ == i2->CommentsPageLink_ &&
 						i1->Latitude_ == i2->Latitude_ &&
 						i1->Longitude_ == i2->Longitude_ &&
+						SameSets (i1->Enclosures_, i2->Enclosures_) &&
 						SameSets (i1->MRSSEntries_, i2->MRSSEntries_));
 			}
 		};

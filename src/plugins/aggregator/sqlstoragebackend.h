@@ -218,6 +218,16 @@ namespace LeechCraft
 								   */
 								  UpdateChannel_,
 								  /** Binds:
+								   * - parents_hash
+								   * - age
+								   */
+								  ChannelDateTrimmer_,
+								  /** Binds:
+								   * - parents_hash
+								   * - number
+								   */
+								  ChannelNumberTrimmer_,
+								  /** Binds:
 								   * - unread
 								   * - parents_hash
 								   * - title
@@ -517,6 +527,8 @@ namespace LeechCraft
 				virtual void GetChannels (channels_shorts_t&, const QString&) const;
 				virtual Channel_ptr GetChannel (const QString&,
 						const QString&) const;
+				virtual void TrimChannel (const QString&,
+						const QString&, int, int);
 				virtual void GetItems (items_shorts_t&, const QString&) const;
 				virtual int GetUnreadItems (const QString&, const QString&) const;
 				virtual Item_ptr GetItem (const QString&, const QString&,

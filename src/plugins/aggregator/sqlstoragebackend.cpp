@@ -348,6 +348,29 @@ namespace LeechCraft
 						"WHERE parent_feed_url = :parent_feed_url "
 						"AND url = :url "
 						"AND title = :title");
+
+				QString common = "DELETE FROM items "
+					"WHERE parents_hash = :parents_hash ";
+				QString cdt;
+				QString cnt;
+				switch (Type_)
+				{
+					case SBSQLite:
+						cdt = "AND (julianday ('now') - julianday (pub_date) > :age)";
+						cnt = "ORDER BY pub_date DESC LIMIT 10000 OFFSET :number";
+						break;
+					case SBPostgres:
+						cdt = "AND (pub_date - now () > :age * interval '1 day')";
+						cnt = "AND pub_date IN "
+							"(SELECT pub_date FROM items ORDER BY pub_date DESC OFFSET :number)";
+						break;
+				}
+
+				ChannelDateTrimmer_ = QSqlQuery (DB_);
+				ChannelDateTrimmer_.prepare (common + cdt);
+
+				ChannelNumberTrimmer_ = QSqlQuery (DB_);
+				ChannelNumberTrimmer_.prepare (common + cnt);
 			
 				UpdateShortItem_ = QSqlQuery (DB_);
 				UpdateShortItem_.prepare ("UPDATE items SET "
@@ -837,11 +860,11 @@ namespace LeechCraft
 			{
 				ChannelsFullSelector_.bindValue (":title", title);
 				ChannelsFullSelector_.bindValue (":parent_feed_url", feedParent);
-				if (!ChannelsFullSelector_.exec () || !ChannelsFullSelector_.next ())
-				{
+				if (!ChannelsFullSelector_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ChannelsFullSelector_);
-					return Channel_ptr (new Channel);
-				}
+					
+				if (!ChannelsFullSelector_.next ())
+					throw ChannelNotFoundError ();
 			
 				Channel_ptr channel (new Channel);
 			
@@ -863,6 +886,22 @@ namespace LeechCraft
 				ChannelsFullSelector_.finish ();
 			
 				return channel;
+			}
+
+			void SQLStorageBackend::TrimChannel (const QString& title,
+						const QString& feedParent, int days, int number)
+			{
+				ChannelDateTrimmer_.bindValue (":parents_hash", feedParent + title);
+				ChannelDateTrimmer_.bindValue (":age", days);
+				if (!ChannelDateTrimmer_.exec ())
+					LeechCraft::Util::DBLock::DumpError (ChannelDateTrimmer_);
+
+				ChannelNumberTrimmer_.bindValue (":parents_hash", feedParent + title);
+				ChannelNumberTrimmer_.bindValue (":number", number);
+				if (!ChannelNumberTrimmer_.exec ())
+					LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
+
+				emit channelDataUpdated (GetChannel (title, feedParent));
 			}
 			
 			void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parentsHash) const
@@ -912,11 +951,11 @@ namespace LeechCraft
 				ItemFullSelector_.bindValue (":parents_hash", hash);
 				ItemFullSelector_.bindValue (":title", title);
 				ItemFullSelector_.bindValue (":link", link);
-				if (!ItemFullSelector_.exec () || !ItemFullSelector_.next ())
-				{
+				if (!ItemFullSelector_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ItemFullSelector_);
-					return Item_ptr ();
-				}
+
+				if (!ItemFullSelector_.next ())
+					throw ItemNotFoundError ();
 			
 				Item_ptr item (new Item);
 				FillItem (ItemFullSelector_, item);
@@ -1287,7 +1326,6 @@ namespace LeechCraft
 				WriteMRSSEntries (parentUrl + parentTitle,
 						item->Title_, item->Link_, item->MRSSEntries_);
 
-			
 				Channel_ptr channel = GetChannel (parentTitle, parentUrl);
 				emit itemDataUpdated (item, channel);
 				emit channelDataUpdated (channel);

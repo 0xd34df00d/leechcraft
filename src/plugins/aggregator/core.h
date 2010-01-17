@@ -211,8 +211,6 @@ namespace LeechCraft
 				void FetchFavicon (const Channel_ptr&);
 				void HandleExternalData (const QString&, const QFile&);
 				QString HandleFeedUpdated (const channels_container_t&,
-						const channels_container_t&,
-						const channels_container_t&,
 						const PendingJob&);
 				void MarkChannel (const QModelIndex&, bool);
 				void UpdateFeed (const QString&);

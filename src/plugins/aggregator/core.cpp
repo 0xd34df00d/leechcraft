@@ -1012,11 +1012,12 @@ namespace LeechCraft
 			{
 				if (!PendingJobs_.contains (id))
 				{
-					if (!PendingOPMLs_.contains (id))
-						return;
-
-					StartAddingOPML (PendingOPMLs_ [id].Filename_);
-					PendingOPMLs_.remove (id);
+					if (PendingOPMLs_.contains (id))
+					{
+						StartAddingOPML (PendingOPMLs_ [id].Filename_);
+						PendingOPMLs_.remove (id);
+					}
+					return;
 				}
 				PendingJob pj = PendingJobs_ [id];
 				PendingJobs_.remove (id);
@@ -1048,7 +1049,7 @@ namespace LeechCraft
 					return;
 				}
 			
-				channels_container_t channels, modifiedItems, ourChannels;
+				channels_container_t channels;
 				if (pj.Role_ != PendingJob::RFeedExternalData)
 				{
 					QByteArray data = file.readAll ();
@@ -1078,25 +1079,9 @@ namespace LeechCraft
 								.arg (pj.URL_));
 						return;
 					}
-			
-					// We should form the list of already existing channels
-					channels_shorts_t shorts;
-					StorageBackend_->GetChannels (shorts, pj.URL_);
-					for (channels_shorts_t::const_iterator i = shorts.begin (),
-							end = shorts.end (); i != end; ++i)
-					{
-						Channel_ptr channel2push = StorageBackend_->
-							GetChannel (i->Title_, pj.URL_);
-						// And we shouldn't forget about their items.
-						StorageBackend_->GetItems (channel2push->Items_,
-								pj.URL_ + channel2push->Title_);
-						ourChannels.push_back (channel2push);
-					}
-			
-					channels = parser->Parse (ourChannels, modifiedItems, doc);
-					for (size_t i = 0; i < channels.size (); ++i)
-						channels [i]->ParentURL_ = pj.URL_;
+					channels = parser->ParseFeed (doc);
 				}
+
 				QString emitString;
 				if (pj.Role_ == PendingJob::RFeedAdded)
 				{
@@ -1120,8 +1105,7 @@ namespace LeechCraft
 					StorageBackend_->AddFeed (feed);
 				}
 				else if (pj.Role_ == PendingJob::RFeedUpdated)
-					emitString += HandleFeedUpdated (channels, modifiedItems,
-							ourChannels, pj);
+					emitString += HandleFeedUpdated (channels, pj);
 				else if (pj.Role_ == PendingJob::RFeedExternalData)
 					HandleExternalData (pj.URL_, file);
 				UpdateUnreadItemsNumber ();
@@ -1386,161 +1370,114 @@ namespace LeechCraft
 			};
 			
 			QString Core::HandleFeedUpdated (const channels_container_t& channels,
-					const channels_container_t& modifiedChannels,
-					const channels_container_t& ourChannels,
 					const Core::PendingJob& pj)
 			{
 				QString emitString;
-			
-				for (channels_container_t::const_iterator i = modifiedChannels.begin (),
-						end = modifiedChannels.end (); i != end; ++i)
-				{
-					channels_container_t::const_iterator position =
-						std::find_if (ourChannels.begin (), ourChannels.end (),
-								ChannelFinder (*i));
-			
-					if (position == ourChannels.end ())
-						continue;
-			
-					for (items_container_t::const_iterator item = (*i)->Items_.begin (),
-							itemEnd = (*i)->Items_.end (); item != itemEnd; ++item)
-					{
-						items_container_t::iterator ourItem =
-							std::find_if ((*position)->Items_.begin (),
-									(*position)->Items_.end (),
-									ItemComparator (*item));
-						if (ourItem == (*position)->Items_.end ())
-							continue;
-			
-						if (!IsModified (*ourItem, *item))
-							continue;
 
-						(*ourItem)->Description_ = (*item)->Description_;
-						(*ourItem)->Categories_ = (*item)->Categories_;
-						(*ourItem)->NumComments_ = (*item)->NumComments_;
-						(*ourItem)->CommentsLink_ = (*item)->CommentsLink_;
-						(*ourItem)->CommentsPageLink_ = (*item)->CommentsPageLink_;
-						(*ourItem)->Latitude_ = (*item)->Latitude_;
-						(*ourItem)->Longitude_ = (*item)->Longitude_;
-						(*ourItem)->MRSSEntries_ = (*item)->MRSSEntries_;
-			
-						StorageBackend_->UpdateItem ((*ourItem),
-								(*position)->ParentURL_, (*position)->Title_);
-					}
-				}
-			
-				if (!channels.size ())
-					return emitString;
-			
+				const int defaultDays = XmlSettingsManager::Instance ()->
+					property ("ItemsMaxAge").toInt ();
+				const unsigned defaultIpc = XmlSettingsManager::Instance ()->
+					property ("ItemsPerChannel").value<unsigned> ();
+
+				const QString& url = pj.URL_;
 				Feed::FeedSettings settings = StorageBackend_->
-					GetFeedSettings (channels [0]->ParentURL_);
-				const int days = settings.ItemAge_ ? settings.ItemAge_ :
-					XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
-				const unsigned ipc = settings.NumItems_ ? settings.NumItems_ :
-					XmlSettingsManager::Instance ()->property ("ItemsPerChannel").value<unsigned> ();
-			
-				for (channels_container_t::const_iterator i = channels.begin (),
-						end = channels.end (); i != end; ++i)
-				{
-					std::for_each ((*i)->Items_.begin (), (*i)->Items_.end (),
-							boost::bind (&RegexpMatcherManager::HandleItem,
-								&RegexpMatcherManager::Instance (),
-								_1));
+					GetFeedSettings (url);
+				const int days = settings.ItemAge_ ?
+					settings.ItemAge_ :
+					defaultDays;
+				const unsigned ipc = settings.NumItems_ ?
+					settings.NumItems_ :
+					defaultIpc;
 
-					if (settings.AutoDownloadEnclosures_)
-						Q_FOREACH (Item_ptr item, (*i)->Items_)
-							Q_FOREACH (Enclosure e, item->Enclosures_)
-							{
-								DownloadEntity de = Util::MakeEntity (QUrl (e.URL_),
-										XmlSettingsManager::Instance ()->
-											property ("EnclosuresDownloadPath").toString (),
-										0,
-										e.Type_);
-								de.Additional_ [" Tags"] = (*i)->Tags_;
-								emit gotEntity (de);
-							}
-			
-					channels_container_t::const_iterator position =
-						std::find_if (ourChannels.begin (), ourChannels.end (),
-								ChannelFinder (*i));
-			
-					const QDateTime current = QDateTime::currentDateTime ();
-			
-					if (position == ourChannels.end ())
+				QDateTime current = QDateTime::currentDateTime ();
+				Q_FOREACH (Channel_ptr channel, channels)
+				{
+					channel->ParentURL_ = url;
+					Channel_ptr ourChannel;
+					try
 					{
-						size_t truncateAt = ((*i)->Items_.size () <= ipc) ?
-							(*i)->Items_.size () : ipc;
-						for (size_t j = 0; j < (*i)->Items_.size (); j++)
-							if ((*i)->Items_ [j]->PubDate_.daysTo (current) > days)
+						ourChannel = StorageBackend_->
+							GetChannel (channel->Title_, url);
+					}
+					catch (const StorageBackend::ChannelNotFoundError&)
+					{
+						size_t truncateAt = (channel->Items_.size () <= ipc) ?
+							channel->Items_.size () : ipc;
+						for (size_t j = 0; j < channel->Items_.size (); j++)
+							if (channel->Items_ [j]->PubDate_.daysTo (current) > days)
 							{
 			 					truncateAt = std::min (j, truncateAt);
 								break;
 							}
-						(*i)->Items_.resize (truncateAt);
+						channel->Items_.resize (truncateAt);
 			
-						ChannelsModel_->AddChannel ((*i)->ToShort ());
-						StorageBackend_->AddChannel (*i, pj.URL_);
-						emitString += tr ("Added channel \"%1\" (has %2 items)")
-							.arg ((*i)->Title_)
-							.arg ((*i)->Items_.size ());
+						ChannelsModel_->AddChannel (channel->ToShort ());
+						StorageBackend_->AddChannel (channel, pj.URL_);
+						emitString += tr ("Added channel \"%1\" (%2 items)")
+							.arg (channel->Title_)
+							.arg (channel->Items_.size ());
+						continue;
 					}
-					else
-					{
-						if ((*i)->LastBuild_.isValid ())
-							(*position)->LastBuild_ = (*i)->LastBuild_;
-						else 
-							(*position)->LastBuild_ = QDateTime::currentDateTime ();
-			
-						for (size_t j = 0; j < (*i)->Items_.size (); j++)
-							if ((*i)->Items_ [j]->PubDate_.daysTo (current) > days)
-							{
-			 					(*i)->Items_.resize (j);
-								break;
-							}
 
-						int maxNew = ipc - (*position)->Items_.size ();
-						if (static_cast<int> ((*i)->Items_.size ()) > maxNew)
-							(*i)->Items_.resize (maxNew >= 0 ? maxNew : 0);
+					int newItems = 0;
+					int updatedItems = 0;
+
+					Q_FOREACH (Item_ptr item, channel->Items_)
+					{
+						Item_ptr ourItem;
+						try
+						{
+							ourItem = StorageBackend_->
+								GetItem (item->Title_, item->Link_,
+										channel->ParentURL_ + channel->Title_);
+						}
+						catch (const StorageBackend::ItemNotFoundError&)
+						{
+							if (item->PubDate_.daysTo (current) > days)
+								continue;
+
+							StorageBackend_->AddItem (item,
+									channel->ParentURL_, channel->Title_);
+
+							RegexpMatcherManager::Instance ().HandleItem (item);
+
+							if (settings.AutoDownloadEnclosures_)
+								Q_FOREACH (Enclosure e, item->Enclosures_)
+								{
+									DownloadEntity de = Util::MakeEntity (QUrl (e.URL_),
+											XmlSettingsManager::Instance ()->
+												property ("EnclosuresDownloadPath").toString (),
+											0,
+											e.Type_);
+									de.Additional_ [" Tags"] = channel->Tags_;
+									emit gotEntity (de);
+								}
+							++newItems;
+							continue;
+						}
+
+						if (!IsModified (ourItem, item))
+							continue;
+
+						ourItem->Description_ = item->Description_;
+						ourItem->Categories_ = item->Categories_;
+						ourItem->NumComments_ = item->NumComments_;
+						ourItem->CommentsLink_ = item->CommentsLink_;
+						ourItem->CommentsPageLink_ = item->CommentsPageLink_;
+						ourItem->Latitude_ = item->Latitude_;
+						ourItem->Longitude_ = item->Longitude_;
+						ourItem->Enclosures_ = item->Enclosures_;
+						ourItem->MRSSEntries_ = item->MRSSEntries_;
 			
-						if ((*i)->Items_.size ())
-							emitString += tr ("Updated channel \"%1\" (%2 new items)")
-								.arg ((*i)->Title_)
-								.arg ((*i)->Items_.size ());
-			
-						std::for_each ((*i)->Items_.begin (), (*i)->Items_.end (),
-								boost::bind (&StorageBackend::AddItem,
-									StorageBackend_.get (),
-									_1,
-									pj.URL_,
-									(*i)->Title_));
-			
-						// Now cut off old and overwhelming items.
-						unsigned removeFrom = (*position)->Items_.size ();
-						for (size_t j = 0; j < (*position)->Items_.size (); ++j)
-							if ((*position)->Items_ [j]->PubDate_.daysTo (current) > days)
-							{
-								removeFrom = j;
-								break;
-							}
-						/*if (removeFrom == 0)
-							removeFrom = 1;*/
-			
-						removeFrom = std::min (removeFrom, ipc);
-			
-						if ((*position)->Items_.size () > removeFrom)
-							std::for_each ((*position)->Items_.begin () + removeFrom,
-									(*position)->Items_.end (),
-									boost::bind (&StorageBackend::RemoveItem,
-										StorageBackend_.get (),
-										_1,
-										pj.URL_ + (*position)->Title_,
-										(*position)->Title_,
-										pj.URL_));
-			
-						StorageBackend_->UpdateChannel ((*position), pj.URL_);
+						StorageBackend_->UpdateItem (ourItem,
+								channel->ParentURL_, channel->Title_);
+						++updatedItems;
 					}
+
+					StorageBackend_->TrimChannel (channel->Title_, channel->ParentURL_,
+							days, ipc);
 				}
-			
+
 				return emitString;
 			}
 			

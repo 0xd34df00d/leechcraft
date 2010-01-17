@@ -58,6 +58,8 @@ namespace LeechCraft
 				QString Lang_;
 			};
 
+			bool operator== (const Enclosure&, const Enclosure&);
+
 			struct MRSSThumbnail
 			{
 				QString URL_;
