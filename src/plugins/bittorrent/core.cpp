@@ -56,6 +56,7 @@
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
+#include <libtorrent/error_code.hpp>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
@@ -1243,7 +1244,13 @@ namespace LeechCraft
 				{
 					if (filename.leaf () [0] == '.')
 						return false;
-					return true;
+					QFileInfo fi (QString::fromUtf8 (filename.string ().c_str ()));
+					if ((fi.isDir () ||
+								fi.isFile () ||
+								fi.isSymLink ()) &&
+							fi.isReadable ())
+						return true;
+					return false;
 				}
 			
 				void UpdateProgress (int i, QProgressDialog *pd)
@@ -1293,8 +1300,25 @@ namespace LeechCraft
 				std::auto_ptr<QProgressDialog> pd (new QProgressDialog ());
 				pd->setMaximum (ct.num_pieces ());
 			
+				boost::system::error_code hashesError;
 				libtorrent::set_piece_hashes (ct, fullPath.branch_path (),
-						boost::bind (&UpdateProgress, _1, pd.get ()));
+						boost::bind (&UpdateProgress, _1, pd.get ()), hashesError);
+				if (hashesError)
+				{
+					QString message = QString::fromUtf8 (hashesError.message ().c_str ());
+					libtorrent::file_entry entry = fs.at (hashesError.value ());
+					QString fn = QString::fromUtf8 (entry.path.string ().c_str ());
+					qWarning () << Q_FUNC_INFO
+						<< "while in libtorrent::set_piece_hashes():"
+						<< message
+						<< hashesError.category ().name ()
+						<< fn;
+					QMessageBox::critical (0,
+							tr ("LeechCraft"),
+							tr ("Torrent creation failed: %1")
+								.arg (message));
+					return;
+				}
 			
 				libtorrent::entry e = ct.generate ();
 				std::deque<char> outbuf;
