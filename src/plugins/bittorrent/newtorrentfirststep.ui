@@ -1,116 +1,115 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>NewTorrentFirstStep</class>
- <widget class="QWidget" name="NewTorrentFirstStep" >
-  <property name="geometry" >
+ <widget class="QWidget" name="NewTorrentFirstStep">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>509</height>
+    <width>567</width>
+    <height>332</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Main parameters</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/resources/images/bittorrent.svg</iconset>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/resources/images/bittorrent.svg</normaloff>:/resources/images/bittorrent.svg</iconset>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QLabel" name="label_4" >
-     <property name="text" >
-      <string>Output directory:</string>
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Output:</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <layout class="QHBoxLayout" >
+   <item row="0" column="1">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLineEdit" name="OutputDirectory_" />
+      <widget class="QLineEdit" name="Output_"/>
      </item>
      <item>
-      <widget class="QPushButton" name="BrowseOutput_" >
-       <property name="text" >
+      <widget class="QPushButton" name="BrowseOutput_">
+       <property name="text">
         <string>Browse...</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="1" column="0" >
-    <widget class="QLabel" name="label" >
-     <property name="text" >
-      <string>Torrent name:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" >
-    <widget class="QLineEdit" name="TorrentName_" />
-   </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="label_2" >
-     <property name="text" >
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
       <string>Announce URL:</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" >
-    <widget class="QLineEdit" name="AnnounceURL_" />
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="AnnounceURL_"/>
    </item>
-   <item row="3" column="0" >
-    <widget class="QLabel" name="label_6" >
-     <property name="text" >
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
       <string>Torrent's root path:</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" >
-    <layout class="QHBoxLayout" >
+   <item row="2" column="1">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLineEdit" name="RootPath_" />
+      <widget class="QLineEdit" name="RootPath_"/>
      </item>
      <item>
-      <widget class="QPushButton" name="BrowseRoot_" >
-       <property name="text" >
-        <string>Browse...</string>
+      <widget class="QPushButton" name="BrowseFile_">
+       <property name="text">
+        <string>File...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="BrowseDirectory_">
+       <property name="text">
+        <string>Directory...</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="4" column="0" >
-    <widget class="QLabel" name="label_5" >
-     <property name="text" >
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
       <string>Date:</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" >
-    <widget class="QDateEdit" name="Date_" >
-     <property name="displayFormat" >
+   <item row="3" column="1">
+    <widget class="QDateEdit" name="Date_">
+     <property name="displayFormat">
       <string>dd MMM yyyy</string>
      </property>
-     <property name="calendarPopup" >
+     <property name="calendarPopup">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="5" column="0" >
-    <widget class="QLabel" name="label_3" >
-     <property name="text" >
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
       <string>Comment:</string>
      </property>
     </widget>
    </item>
-   <item rowspan="2" row="5" column="1" >
-    <widget class="QTextEdit" name="Comment_" />
+   <item row="4" column="1" rowspan="2">
+    <widget class="QTextEdit" name="Comment_"/>
    </item>
-   <item row="6" column="0" >
+   <item row="5" column="0">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>40</height>
@@ -121,7 +120,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="resources.qrc" />
+  <include location="resources.qrc"/>
  </resources>
  <connections/>
 </ui>

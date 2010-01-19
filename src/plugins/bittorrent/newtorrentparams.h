@@ -30,8 +30,7 @@ namespace LeechCraft
 		{
 			struct NewTorrentParams
 			{
-				QString OutputDirectory_
-					, TorrentName_
+				QString Output_
 					, AnnounceURL_
 					, Comment_
 					, Path_;

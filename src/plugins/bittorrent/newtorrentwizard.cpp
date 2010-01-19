@@ -49,15 +49,14 @@ namespace LeechCraft
 			{
 				NewTorrentParams result;
 			
-				result.OutputDirectory_ = field ("OutputDirectory").toString ();
-				result.TorrentName_ = field ("TorrentName").toString ();
+				result.Output_ = field ("Output").toString ();
 				result.AnnounceURL_ = field ("AnnounceURL").toString ();
 				result.Date_ = field ("Date").toDate ();
 				result.Comment_ = field ("Comment").toString ();
 				result.Path_ = field ("RootPath").toString ();
-				result.URLSeeds_ = field ("URLSeeds").toString ().split(QRegExp("\\s+"));
+				result.URLSeeds_ = field ("URLSeeds").toString ().split (QRegExp("\\s+"));
 				result.DHTEnabled_ = field ("DHTEnabled").toBool ();
-				result.DHTNodes_ = field ("DHTNodes").toString ().split(QRegExp("\\s+"));
+				result.DHTNodes_ = field ("DHTNodes").toString ().split (QRegExp("\\s+"));
 				result.PieceSize_ = 32 * 1024;
 				int index = field ("PieceSize").toInt ();
 				while (index--)

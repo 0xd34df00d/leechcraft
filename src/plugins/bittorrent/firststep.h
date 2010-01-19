@@ -32,9 +32,14 @@ namespace LeechCraft
 				Q_OBJECT
 			public:
 				FirstStep (QWidget *parent = 0);
+
+				bool isComplete () const;
+			private:
+				QString PrepareDirectory () const;
 			private slots:
 				void on_BrowseOutput__released ();
-				void on_BrowseRoot__released ();
+				void on_BrowseFile__released ();
+				void on_BrowseDirectory__released ();
 			};
 		};
 	};

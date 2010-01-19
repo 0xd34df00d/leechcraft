@@ -1254,6 +1254,16 @@ namespace LeechCraft
 			
 			void Core::MakeTorrent (NewTorrentParams params) const
 			{
+				QString filename = params.Output_;
+				if (!filename.endsWith (".torrent"))
+					filename.append (".torrent");
+				QFile file (filename);
+				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+				{
+					emit error (tr ("Could not open file %1 for write!").arg (filename));
+					return;
+				}
+
 				boost::filesystem::path::default_name_check (boost::filesystem::no_check);
 			
 				libtorrent::file_storage fs;
@@ -1290,17 +1300,6 @@ namespace LeechCraft
 				std::deque<char> outbuf;
 				libtorrent::bencode (std::back_inserter (outbuf), e);
 			
-				QString filename = params.OutputDirectory_;
-				if (!filename.endsWith ("/"))
-					filename.append ("/");
-				filename.append (params.TorrentName_);
-				filename.append (".torrent");
-				QFile file (filename);
-				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-				{
-					emit error (tr ("Could not open file %1 for write!").arg (filename));
-					return;
-				}
 				for (size_t i = 0; i < outbuf.size (); ++i)
 					file.write (&outbuf.at (i), 1);
 				file.close ();
