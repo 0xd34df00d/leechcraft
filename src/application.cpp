@@ -215,11 +215,20 @@ bool Application::notify (QObject *obj, QEvent *event)
 		}
 		catch (const std::exception& e)
 		{
-			qWarning () << Q_FUNC_INFO << e.what () << "for" << obj << event << event->type ();
+			qWarning () << Q_FUNC_INFO
+				<< QString::fromUtf8 (e.what ())
+				<< typeid (e).name ()
+				<< "for"
+				<< obj
+				<< event
+				<< event->type ();
 		}
 		catch (...)
 		{
-			qWarning () << Q_FUNC_INFO << obj << event << event->type ();
+			qWarning () << Q_FUNC_INFO
+				<< obj
+				<< event
+				<< event->type ();
 		}
 		return false;
 	}
