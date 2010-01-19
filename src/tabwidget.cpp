@@ -44,6 +44,10 @@ TabWidget::TabWidget (QWidget *parent)
 			SIGNAL (customContextMenuRequested (const QPoint&)),
 			this,
 			SLOT (handleTabBarContextMenu (const QPoint&)));
+	connect (tabBar (),
+			SIGNAL (tabMoved (int, int)),
+			this,
+			SIGNAL (moveHappened (int, int)));
 	XmlSettingsManager::Instance ()->RegisterObject ("TabBarLocation",
 			this, "handleTabBarLocationChanged");
 
