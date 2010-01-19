@@ -1303,6 +1303,11 @@ namespace LeechCraft
 				for (size_t i = 0; i < outbuf.size (); ++i)
 					file.write (&outbuf.at (i), 1);
 				file.close ();
+
+				QMessageBox::information (0,
+						tr ("LeechCraft"),
+						tr ("Torrent file generated: %1")
+							.arg (filename));
 			}
 			
 			void Core::LogMessage (const QString& message)
