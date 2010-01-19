@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <QFile>
-#include <QProgressDialog>
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
@@ -56,7 +55,6 @@
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
-#include <libtorrent/error_code.hpp>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
@@ -66,6 +64,7 @@
 #include "representationmodel.h"
 #include "livestreammanager.h"
 #include "config.h"
+#include "torrentmaker.h"
 
 using namespace LeechCraft::Util;
 
@@ -599,7 +598,8 @@ namespace LeechCraft
 				QFile file (filename);
 				if (!file.open (QIODevice::ReadOnly))
 				{
-					emit error (tr ("Could not open file %1 for read: %2").arg (filename).arg (file.errorString ()));
+					emit error (tr ("Could not open file %1 for read: %2")
+							.arg (filename).arg (file.errorString ()));
 					return libtorrent::torrent_info (libtorrent::sha1_hash ());
 				}
 				return GetTorrentInfo (file.readAll ());
@@ -1238,100 +1238,14 @@ namespace LeechCraft
 				Handles_.at (CurrentTorrent_).Handle_.super_seeding (sup);
 			}
 			
-			namespace
+			void Core::MakeTorrent (const NewTorrentParams& params) const
 			{
-				bool FileFilter (const boost::filesystem::path& filename)
-				{
-					if (filename.leaf () [0] == '.')
-						return false;
-					QFileInfo fi (QString::fromUtf8 (filename.string ().c_str ()));
-					if ((fi.isDir () ||
-								fi.isFile () ||
-								fi.isSymLink ()) &&
-							fi.isReadable ())
-						return true;
-					return false;
-				}
-			
-				void UpdateProgress (int i, QProgressDialog *pd)
-				{
-					pd->setValue (i);
-				}
-			}
-			
-			void Core::MakeTorrent (NewTorrentParams params) const
-			{
-				QString filename = params.Output_;
-				if (!filename.endsWith (".torrent"))
-					filename.append (".torrent");
-				QFile file (filename);
-				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-				{
-					emit error (tr ("Could not open file %1 for write!").arg (filename));
-					return;
-				}
-
-				boost::filesystem::path::default_name_check (boost::filesystem::no_check);
-			
-				libtorrent::file_storage fs;
-				boost::filesystem::path fullPath =
-					boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
-				libtorrent::add_files (fs, fullPath, FileFilter);
-				libtorrent::create_torrent ct (fs, params.PieceSize_);
-			
-				ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
-							.arg (LEECHCRAFT_VERSION)));
-				if (!params.Comment_.isEmpty ())
-					ct.set_comment (params.Comment_.toUtf8 ());
-				for (int i = 0; i < params.URLSeeds_.size (); ++i)
-					ct.add_url_seed (params.URLSeeds_.at (0).toStdString ());
-				ct.set_priv (!params.DHTEnabled_);
-			
-				if (params.DHTEnabled_)
-					for (int i = 0; i < params.DHTNodes_.size (); ++i)
-					{
-						QStringList splitted = params.DHTNodes_.at (i).split (":");
-						ct.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (),
-									splitted [1].trimmed ().toInt ()));
-					}
-			
-				ct.add_tracker (params.AnnounceURL_.toStdString ());
-			
-				std::auto_ptr<QProgressDialog> pd (new QProgressDialog ());
-				pd->setMaximum (ct.num_pieces ());
-			
-				boost::system::error_code hashesError;
-				libtorrent::set_piece_hashes (ct, fullPath.branch_path (),
-						boost::bind (&UpdateProgress, _1, pd.get ()), hashesError);
-				if (hashesError)
-				{
-					QString message = QString::fromUtf8 (hashesError.message ().c_str ());
-					libtorrent::file_entry entry = fs.at (hashesError.value ());
-					QString fn = QString::fromUtf8 (entry.path.string ().c_str ());
-					qWarning () << Q_FUNC_INFO
-						<< "while in libtorrent::set_piece_hashes():"
-						<< message
-						<< hashesError.category ().name ()
-						<< fn;
-					QMessageBox::critical (0,
-							tr ("LeechCraft"),
-							tr ("Torrent creation failed: %1")
-								.arg (message));
-					return;
-				}
-			
-				libtorrent::entry e = ct.generate ();
-				std::deque<char> outbuf;
-				libtorrent::bencode (std::back_inserter (outbuf), e);
-			
-				for (size_t i = 0; i < outbuf.size (); ++i)
-					file.write (&outbuf.at (i), 1);
-				file.close ();
-
-				QMessageBox::information (0,
-						tr ("LeechCraft"),
-						tr ("Torrent file generated: %1")
-							.arg (filename));
+				TorrentMaker *tm = new TorrentMaker ();
+				connect (tm,
+						SIGNAL (error (const QString&)),
+						this,
+						SIGNAL (error (const QString&)));
+				tm->Start (params);
 			}
 			
 			void Core::LogMessage (const QString& message)

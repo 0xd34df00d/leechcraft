@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@
 #include "torrentinfo.h"
 #include "fileinfo.h"
 #include "peerinfo.h"
-#include "newtorrentparams.h"
 
 class QTimer;
 class QDomElement;
@@ -61,6 +60,7 @@ namespace LeechCraft
 			class TorrentFilesModel;
 			class RepresentationModel;
 			class LiveStreamManager;
+			struct NewTorrentParams;
 
 			class Core : public QAbstractItemModel
 			{
@@ -276,7 +276,7 @@ namespace LeechCraft
 				void SetTorrentSequentialDownload (bool);
 				bool IsTorrentSuperSeeding () const;
 				void SetTorrentSuperSeeding (bool);
-				void MakeTorrent (NewTorrentParams) const;
+				void MakeTorrent (const NewTorrentParams&) const;
 				void LogMessage (const QString&);
 				void SetExternalAddress (const QString&);
 				QString GetExternalAddress () const;

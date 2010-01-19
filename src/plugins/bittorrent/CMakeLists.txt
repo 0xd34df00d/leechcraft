@@ -71,6 +71,7 @@ SET (SRCS
 	livestreamplugin.cpp
 	livestreamdevice.cpp
 	speedselectoraction.cpp
+	torrentmaker.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -106,6 +107,7 @@ SET (HEADERS
 	livestreamplugin.h
 	livestreamdevice.h
 	speedselectoraction.h
+	torrentmaker.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h
