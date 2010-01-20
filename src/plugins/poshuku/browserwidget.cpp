@@ -1049,9 +1049,9 @@ namespace LeechCraft
 
 			void BrowserWidget::notifyLoadFinished (bool ok)
 			{
-				if (ok && (!NotifyWhenFinished_->isChecked () ||
-							!Own_ ||
-							isVisible ()))
+				if (!NotifyWhenFinished_->isChecked () ||
+						!Own_ ||
+						isVisible ())
 					return;
 
 				QString h = Ui_.WebView_->title ();
