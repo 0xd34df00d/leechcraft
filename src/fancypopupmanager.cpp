@@ -64,7 +64,6 @@ void LeechCraft::FancyPopupManager::timerTimeout ()
 {
 	QDateTime current = QDateTime::currentDateTime ();
 
-	bool modified =false;
 	Q_FOREACH (Notification n, Popups_)
 	{
 		if (Dates_ [n].secsTo (current) >=
@@ -74,20 +73,14 @@ void LeechCraft::FancyPopupManager::timerTimeout ()
 		{
 			Popups_.removeAll (n);
 			Dates_.remove (n);
-
-			modified = true;
 		}
 	}
-
-	UpdateMessage ();
 }
 
 void LeechCraft::FancyPopupManager::handleMessageClicked ()
 {
 	Dates_.clear ();
 	Popups_.clear ();
-
-	UpdateMessage ();
 }
 
 void LeechCraft::FancyPopupManager::UpdateMessage ()
@@ -95,7 +88,7 @@ void LeechCraft::FancyPopupManager::UpdateMessage ()
 	if (Popups_.isEmpty ())
 		return;
 
-	const Notification& first = Popups_.at (0);
+	Notification::Priority maxPriority = Notification::PLog_;
 
 	QString message;
 	for (popups_t::const_iterator i = Popups_.begin (),
@@ -104,12 +97,13 @@ void LeechCraft::FancyPopupManager::UpdateMessage ()
 	{
 		message += i->Text_;
 		message += "\r\n";
-		if (std::distance (begin, i) >= 12)
-			break;
+
+		if (i->Priority_ > maxPriority)
+			maxPriority = i->Priority_;
 	}
 
 	QSystemTrayIcon::MessageIcon mi = QSystemTrayIcon::Information;
-	switch (first.Priority_)
+	switch (maxPriority)
 	{
 		case Notification::PWarning_:
 			mi = QSystemTrayIcon::Warning;
