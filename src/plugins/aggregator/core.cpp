@@ -1139,11 +1139,9 @@ namespace LeechCraft
 				if (!PendingJobs_.contains (id))
 				{
 					if (PendingOPMLs_.contains (id))
-					{
 						ErrorNotification (tr ("OPML import error"),
 								tr ("Unable to download the OPML file."));
-						return;
-					}
+					return;
 				}
 			
 				PendingJob pj = PendingJobs_ [id];
