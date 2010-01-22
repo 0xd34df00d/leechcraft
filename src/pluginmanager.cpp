@@ -321,6 +321,8 @@ namespace LeechCraft
 			if (settings.value ("AllowLoad", true).toBool ())
 				Plugins_.push_back (loader);
 
+			loader->setLoadHints (QLibrary::ExportExternalSymbolsHint);
+
 			AvailablePlugins_.push_back (loader);
 
 			settings.endGroup ();
