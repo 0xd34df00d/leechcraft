@@ -1415,9 +1415,17 @@ namespace LeechCraft
 			
 						ChannelsModel_->AddChannel (channel->ToShort ());
 						StorageBackend_->AddChannel (channel, pj.URL_);
-						emitString += tr ("Added channel \"%1\" (%2 items)")
+						QString str = tr ("Added channel \"%1\" (%2 items)")
 							.arg (channel->Title_)
 							.arg (channel->Items_.size ());
+						Notification n =
+						{
+							tr ("Aggregator"),
+							str,
+							false,
+							Notification::PInformation_
+						};
+						emit notify (n);
 						continue;
 					}
 
@@ -1481,11 +1489,25 @@ namespace LeechCraft
 						++updatedItems;
 					}
 
+					if (newItems + updatedItems)
+					{
+						QString str = tr ("Updated channel \"%1\" (%2 new items, %3 updated items)")
+							.arg (channel->Title_)
+							.arg (newItems)
+							.arg (updatedItems);
+						Notification n =
+						{
+							tr ("Aggregator"),
+							str,
+							false,
+							Notification::PInformation_
+						};
+						emit notify (n);
+					}
+
 					StorageBackend_->TrimChannel (channel->Title_, channel->ParentURL_,
 							days, ipc);
 				}
-
-				return emitString;
 			}
 			
 			void Core::MarkChannel (const QModelIndex& i, bool state)
