@@ -21,6 +21,7 @@
 #include <QFile>
 #include "coreproxywrapper.h"
 #include "generaldecorator.h"
+#include "downloadentitywrapper.h"
 
 namespace LeechCraft
 {
@@ -271,16 +272,36 @@ namespace LeechCraft
 				}
 			}
 
-			bool WrapperObject::CouldDownload (const DownloadEntity&) const
+			bool WrapperObject::CouldDownload (const DownloadEntity& de) const
 			{
-				// TODO
-				return false;
+				try
+				{
+					QVariantList args;
+					args << QVariant::fromValue<QObject*> (new DownloadEntityWrapper (de));
+					return Call ("CouldDownload", args).toBool ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return false;
+				}
 			}
 
-			int WrapperObject::AddJob (DownloadEntity)
+			int WrapperObject::AddJob (DownloadEntity de)
 			{
-				// TODO
-				return -1;
+				try
+				{
+					QVariantList args;
+					args << QVariant::fromValue<QObject*> (new DownloadEntityWrapper (de));
+					return Call ("AddJob", args).toInt ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e.what ();
+					return -1;
+				}
 			}
 
 			void WrapperObject::KillTask (int id)
