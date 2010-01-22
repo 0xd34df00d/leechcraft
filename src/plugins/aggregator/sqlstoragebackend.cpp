@@ -362,7 +362,7 @@ namespace LeechCraft
 					case SBPostgres:
 						cdt = "AND (pub_date - now () > :age * interval '1 day')";
 						cnt = "AND pub_date IN "
-							"(SELECT pub_date FROM items ORDER BY pub_date DESC OFFSET :number)";
+							"(SELECT pub_date FROM items WHERE parents_hash = :parents_hash ORDER BY pub_date DESC OFFSET :number)";
 						break;
 				}
 
