@@ -260,11 +260,22 @@ namespace LeechCraft
 
 	QObjectList PluginManager::GetAllPlugins () const
 	{
-		QObjectList result;
-		for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
-				i != Plugins_.end (); ++i)
-			result << (*i)->instance ();
-		return result;
+		struct RecursiveCollector
+		{
+			QObjectList Result_;
+			void operator() (DepTreeItem_ptr item)
+			{
+				if (!Result_.contains (item->Plugin_))
+					Result_ << item->Plugin_;
+
+				Q_FOREACH (DepTreeItem_ptr child,
+						item->Needed_ + item->Used_)
+					(*this) (child);
+			}
+		} rc;
+		Q_FOREACH (DepTreeItem_ptr item, Roots_)
+			rc (item);
+		return rc.Result_;
 	}
 
 	QObject* PluginManager::GetProvider (const QString& feature) const

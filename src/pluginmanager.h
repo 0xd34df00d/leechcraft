@@ -59,7 +59,7 @@ namespace LeechCraft
 			bool operator() (DepTreeItem_ptr) const;
 		};
 
-		// No plugins are dependent on these.
+		// No plugins depend on these.
 		QList<DepTreeItem_ptr> Roots_;
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
 		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
