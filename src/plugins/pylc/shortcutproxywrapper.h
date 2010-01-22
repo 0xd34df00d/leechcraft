@@ -16,14 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_PYLC_COREPROXYWRAPPER_H
-#define PLUGINS_PYLC_COREPROXYWRAPPER_H
+#ifndef SHORTCUTPROXYWRAPPER_H
+#define SHORTCUTPROXYWRAPPER_H
 #include <QObject>
-#include <QModelIndex>
-#include <QIcon>
-#include <QMainWindow>
-#include <QTabWidget>
-#include <interfaces/iinfo.h>
+#include <QKeySequence>
+
+class IShortcutProxy;
 
 namespace LeechCraft
 {
@@ -31,37 +29,15 @@ namespace LeechCraft
 	{
 		namespace PyLC
 		{
-			class ShortcutProxyWrapper;
-
-			class CoreProxyWrapper : public QObject
+			class ShortcutProxyWrapper : public QObject
 			{
 				Q_OBJECT
 
-				ICoreProxy_ptr W_;
+				const IShortcutProxy *W_;
 			public:
-				CoreProxyWrapper (ICoreProxy_ptr);
+				ShortcutProxyWrapper (const IShortcutProxy*);
 			public slots:
-				QNetworkAccessManager* GetNetworkAccessManager () const;
-				ShortcutProxyWrapper* GetShortcutProxy () const;
-				QTreeView* GetCurrentView () const;
-				QModelIndex MapToSource (const QModelIndex&) const;
-				/*
-				Util::BaseSettingsManager* GetSettingsManager () const;
-				*/
-				QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
-				QMainWindow* GetMainWindow () const;
-				QTabWidget* GetTabWidget () const;
-				/*
-				ITagsManager* GetTagsManager () const;
-				*/
-				QStringList GetSearchCategories () const;
-				int GetID ();
-				void FreeID (int);
-				QObject* GetTreeViewReemitter () const;
-				/*
-				IPluginsManager* GetPluginsManager () const;
-				*/
-				QObject* GetSelf ();
+				QKeySequence GetShortcut (const QObject*, int) const;
 			};
 		};
 	};

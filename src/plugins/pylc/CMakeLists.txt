@@ -38,6 +38,7 @@ SET (SRCS
 	coreproxywrapper.cpp
 	generaldecorator.cpp
 	downloadentitywrapper.cpp
+	shortcutproxywrapper.cpp
 	)
 SET (HEADERS
 	wrapperobject.h
@@ -46,6 +47,7 @@ SET (HEADERS
 	coreproxywrapper.h
 	generaldecorator.h
 	downloadentitywrapper.h
+	shortcutproxywrapper.h
 	)
 SET (TRANSLATIONS
 	leechcraft_pylc_ru_RU.ts

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "coreproxywrapper.h"
+#include "shortcutproxywrapper.h"
 
 namespace LeechCraft
 {
@@ -32,6 +33,11 @@ namespace LeechCraft
 			QNetworkAccessManager* CoreProxyWrapper::GetNetworkAccessManager () const
 			{
 				return W_->GetNetworkAccessManager ();
+			}
+
+			ShortcutProxyWrapper* CoreProxyWrapper::GetShortcutProxy () const
+			{
+				return new ShortcutProxyWrapper (W_->GetShortcutProxy ());
 			}
 
 			QTreeView* CoreProxyWrapper::GetCurrentView () const
