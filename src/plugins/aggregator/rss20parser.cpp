@@ -113,9 +113,14 @@ namespace LeechCraft
 						.arg (duration.at (0).toElement ().text ());
 				}
 
-				result->PubDate_ = RFC822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
-				if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
-					result->PubDate_ = QDateTime::currentDateTime ();
+				QString pubDateText = item.firstChildElement ("pubDate").text ();
+				if (pubDateText.size ())
+				{
+					result->PubDate_ = RFC822TimeToQDateTime (pubDateText);
+					if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
+						result->PubDate_ = QDateTime::currentDateTime ();
+				}
+
 				result->Guid_ = item.firstChildElement ("guid").text ();
 				if (result->Guid_.isEmpty ())
 					result->Guid_ = "empty";

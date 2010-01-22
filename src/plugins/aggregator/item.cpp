@@ -532,7 +532,9 @@ namespace LeechCraft
 						i1->Description_ == i2->Description_ &&
 						i1->Author_ == i2->Author_ &&
 						i1->Categories_ == i2->Categories_ &&
-						i1->PubDate_ == i2->PubDate_ &&
+						(!i1->PubDate_.isValid () ||
+						 !i2->PubDate_.isValid () ||
+						 i1->PubDate_ == i2->PubDate_) &&
 						i1->NumComments_ == i2->NumComments_ &&
 						i1->CommentsLink_ == i2->CommentsLink_ &&
 						i1->CommentsPageLink_ == i2->CommentsPageLink_ &&

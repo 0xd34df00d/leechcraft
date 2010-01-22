@@ -1082,44 +1082,13 @@ namespace LeechCraft
 					channels = parser->ParseFeed (doc);
 				}
 
-				QString emitString;
 				if (pj.Role_ == PendingJob::RFeedAdded)
-				{
-					for (size_t i = 0; i < channels.size (); ++i)
-					{
-						channels [i]->Tags_ = pj.Tags_;
-						FetchPixmap (channels [i]);
-						FetchFavicon (channels [i]);
-						ChannelsModel_->AddChannel (channels [i]->ToShort ());
-			
-						std::for_each (channels [i]->Items_.begin (),
-								channels [i]->Items_.end (),
-								boost::bind (&RegexpMatcherManager::HandleItem,
-									&RegexpMatcherManager::Instance (),
-									_1));
-					}
-			
-					Feed_ptr feed (new Feed ());
-					feed->Channels_ = channels;
-					feed->URL_ = pj.URL_;
-					StorageBackend_->AddFeed (feed);
-				}
+					HandleFeedAdded (channels, pj);
 				else if (pj.Role_ == PendingJob::RFeedUpdated)
-					emitString += HandleFeedUpdated (channels, pj);
+					HandleFeedUpdated (channels, pj);
 				else if (pj.Role_ == PendingJob::RFeedExternalData)
 					HandleExternalData (pj.URL_, file);
 				UpdateUnreadItemsNumber ();
-				if (!emitString.isEmpty ())
-				{
-					Notification n =
-					{
-						tr ("Aggregator updated"),
-						emitString,
-						false,
-						Notification::PInformation_
-					};
-					emit notify (n);
-				}
 				scheduleSave ();
 			}
 			
@@ -1366,12 +1335,47 @@ namespace LeechCraft
 					}
 				};
 			};
-			
-			QString Core::HandleFeedUpdated (const channels_container_t& channels,
+
+			namespace
+			{
+				void FixDate (Item_ptr& item)
+				{
+					if (!item->PubDate_.isValid ())
+						item->PubDate_ = QDateTime::currentDateTime ();
+				}
+			};
+
+			void Core::HandleFeedAdded (const channels_container_t& channels,
 					const Core::PendingJob& pj)
 			{
-				QString emitString;
+				for (size_t i = 0; i < channels.size (); ++i)
+				{
+					std::for_each (channels [i]->Items_.begin (),
+							channels [i]->Items_.end (),
+							boost::bind (FixDate,
+								_1));
 
+					channels [i]->Tags_ = pj.Tags_;
+					FetchPixmap (channels [i]);
+					FetchFavicon (channels [i]);
+					ChannelsModel_->AddChannel (channels [i]->ToShort ());
+		
+					std::for_each (channels [i]->Items_.begin (),
+							channels [i]->Items_.end (),
+							boost::bind (&RegexpMatcherManager::HandleItem,
+								&RegexpMatcherManager::Instance (),
+								_1));
+				}
+		
+				Feed_ptr feed (new Feed ());
+				feed->Channels_ = channels;
+				feed->URL_ = pj.URL_;
+				StorageBackend_->AddFeed (feed);
+			}
+			
+			void Core::HandleFeedUpdated (const channels_container_t& channels,
+					const Core::PendingJob& pj)
+			{
 				const int defaultDays = XmlSettingsManager::Instance ()->
 					property ("ItemsMaxAge").toInt ();
 				const unsigned defaultIpc = XmlSettingsManager::Instance ()->
@@ -1431,8 +1435,13 @@ namespace LeechCraft
 						}
 						catch (const StorageBackend::ItemNotFoundError&)
 						{
-							if (item->PubDate_.daysTo (current) > days)
-								continue;
+							if (item->PubDate_.isValid ())
+							{
+								if (item->PubDate_.daysTo (current) >= days)
+									continue;
+							}
+							else
+								FixDate (item);
 
 							StorageBackend_->AddItem (item,
 									channel->ParentURL_, channel->Title_);
