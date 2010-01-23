@@ -19,6 +19,7 @@
 #ifndef PLUGININTERFACE_MERGEMODEL_H
 #define PLUGININTERFACE_MERGEMODEL_H
 #include <deque>
+#include <QPointer>
 #include <QAbstractProxyModel>
 #include <QStringList>
 #include "piconfig.h"
@@ -44,7 +45,7 @@ namespace LeechCraft
 
 			mutable bool DefaultAcceptsRowImpl_;
 		protected:
-			typedef std::deque<QAbstractItemModel*> models_t;
+			typedef std::deque<QPointer<QAbstractItemModel> > models_t;
 			models_t Models_;
 		private:
 			QStringList Headers_;

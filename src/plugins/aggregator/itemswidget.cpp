@@ -302,15 +302,15 @@ namespace LeechCraft
 			void ItemsWidget::Selected (const QModelIndex& index)
 			{
 				QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
-				static_cast<ItemsListModel*> (*Impl_->ItemLists_->
-						GetModelForRow (index.row ()))->Selected (mapped);
+				static_cast<ItemsListModel*> (Impl_->ItemLists_->
+						GetModelForRow (index.row ())->data ())->Selected (mapped);
 			}
 
 			void ItemsWidget::MarkItemAsUnread (const QModelIndex& i)
 			{
 				QModelIndex mapped = Impl_->ItemLists_->mapToSource (i);
-				static_cast<ItemsListModel*> (*Impl_->ItemLists_->
-						GetModelForRow (i.row ()))->MarkItemAsUnread (mapped);
+				static_cast<ItemsListModel*> (Impl_->ItemLists_->
+						GetModelForRow (i.row ())->data ())->MarkItemAsUnread (mapped);
 			}
 
 			bool ItemsWidget::IsItemRead (int item) const
@@ -318,7 +318,7 @@ namespace LeechCraft
 				Util::MergeModel::const_iterator i = Impl_->ItemLists_->
 					GetModelForRow (item);
 				int starting = Impl_->ItemLists_->GetStartingRow (i);
-				return static_cast<ItemsListModel*> (*i)->IsItemRead (item - starting);
+				return static_cast<ItemsListModel*> (i->data ())->IsItemRead (item - starting);
 			}
 
 			QStringList ItemsWidget::GetItemCategories (int index) const
@@ -330,7 +330,7 @@ namespace LeechCraft
 					LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
 						GetModelForRow (index);
 					int starting = Impl_->ItemLists_->GetStartingRow (i);
-					return static_cast<ItemsListModel*> (*i)->GetCategories (index - starting);
+					return static_cast<ItemsListModel*> (i->data ())->GetCategories (index - starting);
 				}
 			}
 			
