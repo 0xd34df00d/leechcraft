@@ -44,6 +44,7 @@ namespace LeechCraft
 		static SkinEngine& Instance ();
 		virtual ~SkinEngine ();
 
+		QMap<int, QString> GetIconPath (const QString&) const;
 		QIcon GetIcon (const QString&, const QString&) const;
 		void UpdateIconSet (const QList<QAction*>&);
 		void UpdateIconSet (const QList<QTabWidget*>&);

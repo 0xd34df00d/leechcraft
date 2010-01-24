@@ -45,6 +45,11 @@ SkinEngine::~SkinEngine ()
 {
 }
 
+QMap<int, QString> SkinEngine::GetIconPath (const QString& actionIcon) const
+{
+	return IconName2Path_ [GetIconName (actionIcon)];
+}
+
 QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconOff) const
 {
 	QString icon = GetIconName (actionIcon);
