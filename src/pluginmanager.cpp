@@ -144,7 +144,16 @@ namespace LeechCraft
 				}
 			case 1:
 				if (role == Qt::DisplayRole)
-					return AvailablePlugins_.at (index.row ())->fileName ();
+				{
+					QSettings settings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "-pg");
+					settings.beginGroup ("Plugins");
+					settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+					QVariant result = settings.value ("Info");
+					settings.endGroup ();
+					settings.endGroup ();
+					return result;
+				}
 				else if (role == Qt::ForegroundRole)
 					return QApplication::palette ()
 						.brush (AvailablePlugins_.at (index.row ())->isLoaded () ?
@@ -399,10 +408,12 @@ namespace LeechCraft
 			}
 
 			QString name;
+			QString pinfo;
 			QIcon icon;
 			try
 			{
 				name = info->GetName ();
+				pinfo = info->GetInfo ();
 				icon = info->GetIcon ();
 			}
 			catch (const std::exception& e)
@@ -425,6 +436,7 @@ namespace LeechCraft
 			}
 			settings.beginGroup (file);
 			settings.setValue ("Name", name);
+			settings.setValue ("Info", pinfo);
 			settings.setValue ("Icon", icon.pixmap (48, 48));
 			settings.endGroup ();
 		}
