@@ -121,8 +121,8 @@ namespace LeechCraft
 
 				{
 					QPainter p (&pixmap);
-					QPen pen (qApp->palette ().color (QPalette::BrightText));
-					pen.setWidth (1 / scaleFactor + 1);
+					QPen pen (Qt::black);
+					pen.setWidth (2 / scaleFactor + 1);
 					p.setPen (pen);
 					p.drawRect (QRect (QPoint (0, 0), sSize));
 				}
