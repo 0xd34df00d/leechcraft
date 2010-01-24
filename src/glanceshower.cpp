@@ -147,6 +147,7 @@ namespace LeechCraft
 				posAnim->setDuration (animLength);
 				posAnim->setStartValue (QPointF (0, 0));
 				posAnim->setEndValue (QPointF (column * singleW, row * singleH));
+				posAnim->setEasingCurve (QEasingCurve::OutSine);
 				pair->addAnimation (posAnim);
 
 				QPropertyAnimation *opacityAnim = new QPropertyAnimation (item, "Opacity");
