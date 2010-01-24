@@ -273,6 +273,9 @@ namespace LeechCraft
 					(*this) (child);
 			}
 		} rc;
+		for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
+				i != Plugins_.end (); ++i)
+			rc.Result_ << (*i)->instance ();
 		Q_FOREACH (DepTreeItem_ptr item, Roots_)
 			rc (item);
 		return rc.Result_;
