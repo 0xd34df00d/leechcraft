@@ -3,9 +3,10 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextDocument>
-#include "notificationwidget.h"
 #include <QApplication>
 #include <QMouseEvent>
+#include <QFileInfo>
+#include "notificationwidget.h"
 
 // the universe's only Notification manager
 NotificationsManager *NotificationsManager::instance = 0;
@@ -103,7 +104,9 @@ void NotificationsManager::loadSettings()
 #ifdef Q_WS_WIN32
     themePath = "resources/notification/black";
 #else
-	themePath = "/usr/local/share/leechcraft/notification/black";
+	themePath = "/usr/share/leechcraft/notification/black";
+	if (!QFileInfo (themePath).exists ())
+		themePath = "/usr/local/share/leechcraft/notification/black";
 #endif
     styleSheet = loadContent(themePath + "/content.css");
     content = loadContent(themePath + "/content.html");
