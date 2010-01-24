@@ -25,6 +25,7 @@ LeechCraft::PluginManagerDialog::PluginManagerDialog (QWidget *parent)
 : QWidget (parent)
 {
 	Ui_.setupUi (this);
+	Ui_.PluginsTree_->setWordWrap (true);
 	Ui_.PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());
 }
 
