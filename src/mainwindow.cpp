@@ -602,7 +602,7 @@ void LeechCraft::MainWindow::FillTray ()
 
 	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
 	TrayIcon_->show ();
-	FancyPopupManager_ = new FancyPopupManager (TrayIcon_, this);
+	FancyPopupManager_ = new FancyPopupManager (this);
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,
 			SIGNAL (activated (QSystemTrayIcon::ActivationReason)),

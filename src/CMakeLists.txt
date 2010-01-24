@@ -237,6 +237,9 @@ SET (SRCS
 	glanceshower.cpp
 	glanceitem.cpp
 	3dparty/qxttooltip.cpp
+	kineticnotification.cpp
+	notificationsmanager.cpp
+	notificationwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -301,6 +304,9 @@ SET (HEADERS
 	interfaces/imenuembedder.h
 	interfaces/isummaryrepresentation.h
 	interfaces/structures.h
+	kineticnotification.h
+	notificationsmanager.h
+	notificationwidget.h
 	)
 SET (FORMS
 	commonjobadder.ui
@@ -403,6 +409,7 @@ INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcra
 
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/UseLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
 INSTALL (FILES FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
+INSTALL (DIRECTORY resources/notification DESTINATION share/leechcraft)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
