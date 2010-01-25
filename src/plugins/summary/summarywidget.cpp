@@ -37,6 +37,7 @@ namespace LeechCraft
 			, FilterTimer_ (new QTimer)
 			, Toolbar_ (new QToolBar)
 			{
+				Toolbar_->setWindowTitle ("Summary");
 				Ui_.setupUi (this);
 
 				Q_FOREACH (QObject *plugin, Core::Instance ().GetProxy ()->
