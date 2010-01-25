@@ -24,6 +24,9 @@
 #include <QDBusConnectionInterface>
 #include <QApplication>
 #include <QTimer>
+#ifdef Q_WS_WIN32
+#include <QProcess>
+#endif
 #include "generaladaptor.h"
 #include "tasksadaptor.h"
 
