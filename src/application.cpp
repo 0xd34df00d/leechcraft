@@ -95,6 +95,9 @@ LeechCraft::Application::Application (int& argc, char **argv)
 			<< "              work everywhere, especially on Windows and Mac OS X)."
 			<< std::endl;
 		std::cout
+			<< "-no-app-catch Don't catch exceptions in QApplication::notify"
+			<< std::endl;
+		std::cout
 			<< "-help         Show this help message." << std::endl;
 		std::cout << std::endl;
 		std::cout
@@ -264,6 +267,8 @@ void Application::checkStillRunning ()
 		arguments << "-nolog";
 	if (Arguments_.contains ("-bt"))
 		arguments << "-bt";
+	if (Arguments_.contains ("-no-app-catch"))
+		arguments << "-no-app-catch";
 
 	QProcess::startDetached (applicationFilePath (), arguments);
 
