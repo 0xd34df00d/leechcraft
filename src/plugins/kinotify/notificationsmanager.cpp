@@ -22,7 +22,6 @@ KineticNotification *NotificationsManager::getById ( const QString& id ) const
     return (number == -1) ? 0 : active_notifications.value(number);
 }
 
-
 int NotificationsManager::getNumber ( const QString& id ) const
 {
     for (int i=0;i!=active_notifications.count();i++) {
@@ -32,12 +31,10 @@ int NotificationsManager::getNumber ( const QString& id ) const
     return -1;
 }
 
-
 KineticNotification* NotificationsManager::getByNumber ( const int& number ) const
 {
     return active_notifications.value(number);
 }
-
 
 QRect NotificationsManager::insert ( KineticNotification* notification )
 {
@@ -62,13 +59,11 @@ QRect NotificationsManager::insert ( KineticNotification* notification )
 	}
 }
 
-
 void NotificationsManager::remove ( const QString& id )
 {
     int number = getNumber(id);
     active_notifications.removeAt(number);
 }
-
 
 void NotificationsManager::updateGeometry()
 {
@@ -85,9 +80,6 @@ void NotificationsManager::updateGeometry()
     }
 }
 
-
-
-
 NotificationsManager* NotificationsManager::self()
 {
     if ( !instance )
@@ -95,11 +87,10 @@ NotificationsManager* NotificationsManager::self()
     return instance;
 }
 
-
 void NotificationsManager::loadSettings()
 {
     animationDuration = 1000;
-    defaultSize = QSize(350,150);
+    defaultSize = QSize(350,120);
     margin = 10;
     themePath = ":/plugins/kinotify/resources/notification/black";
     styleSheet = loadContent(themePath + "/content.css");
@@ -111,7 +102,6 @@ void NotificationsManager::loadSettings()
 	action1Trigger = Qt::LeftButton;
 	action2Trigger = Qt::RightButton;
 }
-
 
 QString NotificationsManager::loadContent ( const QString& path )
 {
@@ -129,7 +119,6 @@ QString NotificationsManager::loadContent ( const QString& path )
 					NotificationWidget::MakeImage (QString (themePath + "/images/%1.png").arg (elem)));
         content.close();
     }
-	qDebug () << output;
     return output;
 }
 

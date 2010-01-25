@@ -6,23 +6,27 @@
 #include <QLabel>
 #include <QBuffer>
 #include <QPainter>
+#include <QWebFrame>
 
 NotificationWidget::NotificationWidget ( const QString &styleSheet, const QString &content )
 {
     setTheme ( styleSheet,content );
     //init browser
-    this->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Expanding);
-    this->setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    this->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff);
-    this->setFrameShape ( QFrame::NoFrame );
+    this->page ()->mainFrame ()->setScrollBarPolicy ( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+    this->page ()->mainFrame ()->setScrollBarPolicy ( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+    //this->setFrameShape ( QFrame::NoFrame );
     this->setWindowFlags(NotificationsManager::self()->widgetFlags);
-    //this->resize(NotificationsManager::self()->defaultSize);
     
     //init transparent
+	QPalette pal = palette();
+	pal.setBrush(QPalette::Base, Qt::transparent);
+	page()->setPalette(pal);
+	setAttribute(Qt::WA_OpaquePaintEvent, false);
     this->setAttribute(Qt::WA_TranslucentBackground);
-    this->setAttribute(Qt::WA_NoSystemBackground, false);
-    this->ensurePolished(); // workaround Oxygen filling the background
-    this->setAttribute(Qt::WA_StyledBackground, false);
+
+	resize (NotificationsManager::self()->defaultSize);
+	setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Expanding);
+	page ()->setPreferredContentsSize (size ());
 }
 
 QByteArray NotificationWidget::MakeImage (const QString& path)
@@ -31,7 +35,7 @@ QByteArray NotificationWidget::MakeImage (const QString& path)
 	iconBuffer.open (QIODevice::ReadWrite);
 	QPixmap pixmap (path);
 	pixmap.save (&iconBuffer, "PNG");
-	return iconBuffer.buffer ().toBase64 ();
+	return QByteArray ("data:image/png;base64,") + iconBuffer.buffer ().toBase64 ();
 }
 
 
@@ -41,10 +45,14 @@ QSize NotificationWidget::setData ( const QString& title, const QString& body, c
     data.replace ( "{title}", title );
     data.replace ( "{body}", body );
     data.replace ( "{imagepath}", MakeImage (imagePath));
-    this->document()->setHtml(data);
-    this->document()->setTextWidth(NotificationsManager::self()->defaultSize.width());    
-    int width = NotificationsManager::self()->defaultSize.width();
-    int height = this->document()->size().height();
+    setHtml(data);
+    int width = size ().width();
+    int height = size ().height();
+	QSize contents = page ()->mainFrame ()->contentsSize ();
+	int cheight = contents.height ();
+	if (cheight > height ||
+			(cheight > 0 && cheight < height))
+		height = cheight;
 
     return QSize(width,height);
 }

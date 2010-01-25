@@ -18,10 +18,10 @@
 #define NOTIFICATIONWIDGET_H
 
 #include <QDesktopWidget>
-#include <QTextBrowser>
+#include <QWebView>
 
 class QTextBrowser;
-class NotificationWidget : public QTextBrowser
+class NotificationWidget : public QWebView
 {
     Q_OBJECT
 public:
