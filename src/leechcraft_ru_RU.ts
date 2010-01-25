@@ -520,6 +520,14 @@ p, li { white-space: pre-wrap; }
         <source>F10</source>
         <translation>F10</translation>
     </message>
+    <message>
+        <source>Glance...</source>
+        <translation>Glance...</translation>
+    </message>
+    <message>
+        <source>Show a quick overview of tabs</source>
+        <translation>Показать миниатюры вкладок</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
@@ -591,12 +599,16 @@ p, li { white-space: pre-wrap; }
         <source>Do you really want to clear cookies?</source>
         <translation>Вы действительно хотите удалить куки?</translation>
     </message>
+    <message>
+        <source>%1: %2</source>
+        <translation>%1: %2</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
     <message>
         <source>LeechCraft Notification</source>
-        <translation>Уведомление LeechCraft</translation>
+        <translation type="obsolete">Уведомление LeechCraft</translation>
     </message>
 </context>
 <context>
