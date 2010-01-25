@@ -277,6 +277,8 @@
 			<label lang="en" value="Rendering" />
 			<label lang="ru" value="Рендеринг" />
 			<groupbox>
+				<label lang="en" value="Rendering" />
+				<label lang="ru" value="Рендеринг" />
 				<item type="checkbox" property="Antialiasing" default="on">
 					<label lang="en" value="Antialias primitives if possible" />
 					<label lang="ru" value="По возможности сглаживать примитивы" />
