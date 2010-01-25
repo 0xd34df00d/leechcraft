@@ -246,7 +246,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsDialog_->SetCustomWidget ("IconSet", ic);
 
 	SettingsSink_ = new SettingsSink (tr ("LeechCraft"),
-			XmlSettingsDialog_);
+			XmlSettingsDialog_,
+			this);
 	ShortcutManager_ = new ShortcutManager (this);
 	XmlSettingsDialog_->SetCustomWidget ("ShortcutManager", ShortcutManager_);
 
