@@ -351,7 +351,6 @@ namespace LeechCraft
 				else if (e->type () == QEvent::MouseMove &&
 						o == Ui_.VideoWidget_)
 				{
-					qDebug () << Q_FUNC_INFO;
 					if (Ui_.VideoWidget_->isFullScreen ())
 					{
 						Ui_.VideoWidget_->setCursor (QCursor ());
