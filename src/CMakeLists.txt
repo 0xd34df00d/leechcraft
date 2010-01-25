@@ -96,6 +96,7 @@ OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
 OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
 OPTION (ENABLE_PYLC "Build PyLC, Python support for LeechCraft" ON)
 OPTION (ENABLE_POC "Build PoC, text editor" ON)
+OPTION (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ON)
 
 if (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -185,6 +186,10 @@ IF (ENABLE_PYLC)
 	ADD_SUBDIRECTORY (plugins/pylc)
 ENDIF (ENABLE_PYLC)
 
+IF (ENABLE_KINOTIFY)
+	ADD_SUBDIRECTORY (plugins/kinotify)
+ENDIF (ENABLE_KINOTIFY)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTSQL TRUE)
@@ -237,9 +242,6 @@ SET (SRCS
 	glanceshower.cpp
 	glanceitem.cpp
 	3dparty/qxttooltip.cpp
-	kineticnotification.cpp
-	notificationsmanager.cpp
-	notificationwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -304,9 +306,6 @@ SET (HEADERS
 	interfaces/imenuembedder.h
 	interfaces/isummaryrepresentation.h
 	interfaces/structures.h
-	kineticnotification.h
-	notificationsmanager.h
-	notificationwidget.h
 	)
 SET (FORMS
 	commonjobadder.ui
@@ -409,7 +408,6 @@ INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcra
 
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/UseLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
 INSTALL (FILES FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
-INSTALL (DIRECTORY resources/notification DESTINATION share/leechcraft)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)

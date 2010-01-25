@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QLabel>
+#include <QBuffer>
 #include <QPainter>
 
 NotificationWidget::NotificationWidget ( const QString &styleSheet, const QString &content )
@@ -24,21 +25,28 @@ NotificationWidget::NotificationWidget ( const QString &styleSheet, const QStrin
     this->setAttribute(Qt::WA_StyledBackground, false);
 }
 
+QByteArray NotificationWidget::MakeImage (const QString& path)
+{
+	QBuffer iconBuffer;
+	iconBuffer.open (QIODevice::ReadWrite);
+	QPixmap pixmap (path);
+	pixmap.save (&iconBuffer, "PNG");
+	return iconBuffer.buffer ().toBase64 ();
+}
+
 
 QSize NotificationWidget::setData ( const QString& title, const QString& body, const QString& imagePath )
 {
     QString data = content;
     data.replace ( "{title}", title );
     data.replace ( "{body}", body );
-    data.replace ( "{imagepath}",Qt::escape ( imagePath ) );
+    data.replace ( "{imagepath}", MakeImage (imagePath));
     this->document()->setHtml(data);
     this->document()->setTextWidth(NotificationsManager::self()->defaultSize.width());    
     int width = NotificationsManager::self()->defaultSize.width();
     int height = this->document()->size().height();
 
     return QSize(width,height);
-    
-    
 }
 
 

@@ -69,6 +69,11 @@ QTabWidget* CoreProxy::GetTabWidget () const
 	return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
 }
 
+QMap<int, QString> CoreProxy::GetIconPath (const QString& icon) const
+{
+	return SkinEngine::Instance ().GetIconPath (icon);
+}
+
 QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
 {
 	return SkinEngine::Instance ().GetIcon (icon, iconOff);

@@ -348,6 +348,11 @@ public:
 	 */
 	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
+	/** Returns the current theme's icon paths for the given name.
+	 * Similar to the mapping files.
+	 */
+	virtual QMap<int, QString> GetIconPath (const QString& name) const = 0;
+
 	/** Returns the current theme's icon for the given on and off
 	 * states. Similar to the mapping files.
 	 */

@@ -101,13 +101,7 @@ void NotificationsManager::loadSettings()
     animationDuration = 1000;
     defaultSize = QSize(350,150);
     margin = 10;
-#ifdef Q_WS_WIN32
-    themePath = "resources/notification/black";
-#else
-	themePath = "/usr/share/leechcraft/notification/black";
-	if (!QFileInfo (themePath).exists ())
-		themePath = "/usr/local/share/leechcraft/notification/black";
-#endif
+    themePath = ":/plugins/kinotify/resources/notification/black";
     styleSheet = loadContent(themePath + "/content.css");
     content = loadContent(themePath + "/content.html");
     updatePosition = true;
@@ -123,11 +117,19 @@ QString NotificationsManager::loadContent ( const QString& path )
 {
     QFile content (path);
     QString output;
-    if (content.open(QIODevice::ReadOnly)) {
+    if (content.open(QIODevice::ReadOnly))
+	{
         output = content.readAll();
-        output.replace("{themepath}",Qt::escape(themePath));
+		QStringList elements;
+		elements << "top_left" << "top" << "top_right"
+			<< "left" << "background" << "right"
+			<< "bottom_left" << "bottom" << "bottom_right";
+		Q_FOREACH (QString elem, elements)
+			output.replace (QString ("{%1}").arg (elem),
+					NotificationWidget::MakeImage (QString (themePath + "/images/%1.png").arg (elem)));
         content.close();
     }
+	qDebug () << output;
     return output;
 }
 

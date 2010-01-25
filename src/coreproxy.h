@@ -42,6 +42,7 @@ namespace LeechCraft
 		Util::BaseSettingsManager* GetSettingsManager () const;
 		QMainWindow* GetMainWindow () const;
 		QTabWidget* GetTabWidget () const;
+		QMap<int, QString> GetIconPath (const QString&) const;
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
 		ITagsManager* GetTagsManager () const;
 		QStringList GetSearchCategories () const;

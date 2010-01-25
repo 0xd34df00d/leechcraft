@@ -19,10 +19,13 @@
 #ifndef FANCYPOPUPMANAGER_H
 #define FANCYPOPUPMANAGER_H
 #include <QObject>
+#include <QDateTime>
 #include <QPoint>
+#include <QList>
+#include <QHash>
 #include "plugininterface/structuresops.h"
 
-//class QSystemTrayIcon;
+class QSystemTrayIcon;
 
 namespace LeechCraft
 {
@@ -34,11 +37,18 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
+		typedef QList<Notification> popups_t;
+		popups_t Popups_;
+
+		typedef QHash<Notification, QDateTime> dates_t;
+		dates_t Dates_;
+
+		QSystemTrayIcon *TrayIcon_;
 	public:
 		/** Constructs the manager.
 		 */
-		FancyPopupManager (QObject* = 0);
-		virtual ~FancyPopupManager ();
+		FancyPopupManager (QSystemTrayIcon*,QObject* = 0);
+		~FancyPopupManager ();
 
 		/** Pushes the message to the message array. Shows the popup if
 		 * it was hidden, appends the message otherwise.
@@ -46,6 +56,19 @@ namespace LeechCraft
 		 * @param[in] n The notification.
 		 */
 		void ShowMessage (const Notification&);
+	private slots:
+		/** Checks the messages and deletes too old ones.
+		 */
+		void timerTimeout ();
+
+		/** Clears the message queue.
+		 */
+		void handleMessageClicked ();
+	private:
+		/** The main function to show the message and update the
+		 * corresponding string.
+		 */
+		void UpdateMessage ();
 	};
 };
 
