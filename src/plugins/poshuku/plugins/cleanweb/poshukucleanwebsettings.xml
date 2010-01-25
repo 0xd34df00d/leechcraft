@@ -30,7 +30,7 @@
 			<label lang="en" value="FlashOnClick" />
 			<item type="groupbox" checkable="true" state="on" property="EnableFlashOnClick">
 				<label lang="en" value="Enable FlashOnClick" />
-				<label lang="en" value="Включить FlashOnClick" />
+				<label lang="ru" value="Включить FlashOnClick" />
 				<item type="customwidget" name="FlashOnClickWhitelist" label="own" />
 			</item>
 		</tab>
