@@ -901,7 +901,17 @@ namespace LeechCraft
 				if (!ChannelNumberTrimmer_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
 
-				emit channelDataUpdated (GetChannel (title, feedParent));
+				try
+				{
+					emit channelDataUpdated (GetChannel (title, feedParent));
+				}
+				catch (const ChannelNotFoundError&)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "channel not found"
+						<< title
+						<< feedParent;
+				}
 			}
 			
 			void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parentsHash) const
@@ -1145,7 +1155,17 @@ namespace LeechCraft
 			
 				UpdateShortChannel_.finish ();
 			
-				emit channelDataUpdated (GetChannel (channel.Title_, parent));
+				try
+				{
+					emit channelDataUpdated (GetChannel (channel.Title_, parent));
+				}
+				catch (const ChannelNotFoundError&)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "channel not found"
+						<< channel.Title_
+						<< parent;
+				}
 			}
 			
 			void SQLStorageBackend::UpdateItem (Item_ptr item,
@@ -1188,9 +1208,19 @@ namespace LeechCraft
 				WriteMRSSEntries (parentUrl + parentTitle,
 						item->Title_, item->Link_, item->MRSSEntries_);
 			
-				Channel_ptr channel = GetChannel (parentTitle, parentUrl);
-				emit itemDataUpdated (item, channel);
-				emit channelDataUpdated (channel);
+				try
+				{
+					Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+					emit itemDataUpdated (item, channel);
+					emit channelDataUpdated (channel);
+				}
+				catch (const ChannelNotFoundError&)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "channel not found"
+						<< parentTitle
+						<< parentUrl;
+				}
 			}
 			
 			void SQLStorageBackend::UpdateItem (const ItemShort& item,
@@ -1247,10 +1277,20 @@ namespace LeechCraft
 			
 				UpdateShortItem_.finish ();
 			
-				Channel_ptr channel = GetChannel (parentTitle, parentUrl);
-				emit itemDataUpdated (GetItem (item.Title_,
-							item.URL_, parentUrl + parentTitle), channel);
-				emit channelDataUpdated (channel);
+				try
+				{
+					Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+					emit itemDataUpdated (GetItem (item.Title_,
+								item.URL_, parentUrl + parentTitle), channel);
+					emit channelDataUpdated (channel);
+				}
+				catch (const ChannelNotFoundError&)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "channel not found"
+						<< parentTitle
+						<< parentUrl;
+				}
 			}
 			
 			void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
@@ -1326,9 +1366,19 @@ namespace LeechCraft
 				WriteMRSSEntries (parentUrl + parentTitle,
 						item->Title_, item->Link_, item->MRSSEntries_);
 
-				Channel_ptr channel = GetChannel (parentTitle, parentUrl);
-				emit itemDataUpdated (item, channel);
-				emit channelDataUpdated (channel);
+				try
+				{
+					Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+					emit itemDataUpdated (item, channel);
+					emit channelDataUpdated (channel);
+				}
+				catch (const ChannelNotFoundError&)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "channel not found"
+						<< parentTitle
+						<< parentUrl;
+				}
 			}
 
 			namespace
@@ -1398,9 +1448,19 @@ namespace LeechCraft
 			
 				lock.Good ();
 			
-				Channel_ptr channel = GetChannel (parentTitle, parentUrl);
-				emit itemDataUpdated (item, channel);
-				emit channelDataUpdated (channel);
+				try
+				{
+					Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+					emit itemDataUpdated (item, channel);
+					emit channelDataUpdated (channel);
+				}
+				catch (const ChannelNotFoundError&)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "channel not found"
+						<< parentTitle
+						<< parentUrl;
+				}
 			}
 			
 			void SQLStorageBackend::RemoveFeed (const QString& url)
@@ -1487,14 +1547,24 @@ namespace LeechCraft
 			
 				ToggleChannelUnread_.finish ();
 			
-				Channel_ptr channel = GetChannel (title, purl);
-				emit channelDataUpdated (channel);
-				for (size_t i = 0; i < oldItems.size (); ++i)
-					if (oldItems.at (i)->Unread_ != state)
-					{
-						oldItems.at (i)->Unread_ = state;
-						emit itemDataUpdated (oldItems.at (i), channel);
-					}
+				try
+				{
+					Channel_ptr channel = GetChannel (title, purl);
+					emit channelDataUpdated (channel);
+					for (size_t i = 0; i < oldItems.size (); ++i)
+						if (oldItems.at (i)->Unread_ != state)
+						{
+							oldItems.at (i)->Unread_ = state;
+							emit itemDataUpdated (oldItems.at (i), channel);
+						}
+				}
+				catch (const ChannelNotFoundError&)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "channel not found"
+						<< title
+						<< purl;
+				}
 			}
 			
 			bool SQLStorageBackend::UpdateFeedsStorage (int, int)

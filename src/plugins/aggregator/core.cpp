@@ -369,9 +369,9 @@ namespace LeechCraft
 							property ("UpdateOnStartup").toBool ()) ||
 					(updateDiff > XmlSettingsManager::Instance ()->
 							property ("UpdateInterval").toInt () * 60))
-						QTimer::singleShot (7000,
-								this,
-								SLOT (updateFeeds ()));
+					QTimer::singleShot (7000,
+							this,
+							SLOT (updateFeeds ()));
 				else
 					UpdateTimer_->start (updateDiff * 1000);
 			
@@ -1310,8 +1310,16 @@ namespace LeechCraft
 								.scaled (16, 16);;
 							break;
 					}
-					StorageBackend_->UpdateChannel (data.RelatedChannel_,
-							data.RelatedChannel_->ParentURL_);
+					try
+					{
+						StorageBackend_->UpdateChannel (data.RelatedChannel_,
+								data.RelatedChannel_->ParentURL_);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+							<< e.what ();
+					}
 				}
 				else if (data.RelatedFeed_)
 				{
@@ -1355,9 +1363,8 @@ namespace LeechCraft
 							boost::bind (FixDate,
 								_1));
 
+					channels [i]->ParentURL_ = pj.URL_;
 					channels [i]->Tags_ = pj.Tags_;
-					FetchPixmap (channels [i]);
-					FetchFavicon (channels [i]);
 					ChannelsModel_->AddChannel (channels [i]->ToShort ());
 		
 					std::for_each (channels [i]->Items_.begin (),
@@ -1371,17 +1378,35 @@ namespace LeechCraft
 				feed->Channels_ = channels;
 				feed->URL_ = pj.URL_;
 				StorageBackend_->AddFeed (feed);
+
+				for (size_t i = 0; i < channels.size (); ++i)
+				{
+					FetchPixmap (channels [i]);
+					FetchFavicon (channels [i]);
+				}
 			}
 			
 			void Core::HandleFeedUpdated (const channels_container_t& channels,
 					const Core::PendingJob& pj)
 			{
+				const QString& url = pj.URL_;
+				feeds_urls_t urls;
+				StorageBackend_->GetFeedsURLs (urls);
+
+				if (std::find (urls.begin (), urls.end (), url) == urls.end ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "skipping"
+						<< url
+						<< "cause seems like it's not in storage yet";
+					return;
+				}
+
 				const int defaultDays = XmlSettingsManager::Instance ()->
 					property ("ItemsMaxAge").toInt ();
 				const unsigned defaultIpc = XmlSettingsManager::Instance ()->
 					property ("ItemsPerChannel").value<unsigned> ();
 
-				const QString& url = pj.URL_;
 				Feed::FeedSettings settings = StorageBackend_->
 					GetFeedSettings (url);
 				const int days = settings.ItemAge_ ?
