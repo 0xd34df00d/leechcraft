@@ -1,16 +1,7 @@
 <RCC>
     <qresource prefix="/plugins/kinotify/">
         <file>resources/images/kinotify.svg</file>
-		<file>resources/notification/black/content.css</file>
-		<file>resources/notification/black/content.html</file>
-		<file>resources/notification/black/images/background.png</file>
-		<file>resources/notification/black/images/bottom.png</file>
-		<file>resources/notification/black/images/bottom_left.png</file>
-		<file>resources/notification/black/images/bottom_right.png</file>
-		<file>resources/notification/black/images/left.png</file>
-		<file>resources/notification/black/images/right.png</file>
-		<file>resources/notification/black/images/top.png</file>
-		<file>resources/notification/black/images/top_left.png</file>
-		<file>resources/notification/black/images/top_right.png</file>
+		<file>resources/notification/commie/tmp.html</file>
+		<file>resources/notification/commie/img/back.png</file>
     </qresource>
 </RCC>

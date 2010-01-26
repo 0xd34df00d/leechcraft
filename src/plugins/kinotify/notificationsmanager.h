@@ -33,7 +33,6 @@ public:
     void updateGeometry();
     static NotificationsManager *self();
     int animationDuration;
-    QString styleSheet;
     QString content;
     QString themePath;
     QSize defaultSize;

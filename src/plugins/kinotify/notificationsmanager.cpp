@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QMouseEvent>
 #include <QFileInfo>
+#include <QTimer>
 #include "notificationwidget.h"
 
 // the universe's only Notification manager
@@ -90,11 +91,10 @@ NotificationsManager* NotificationsManager::self()
 void NotificationsManager::loadSettings()
 {
     animationDuration = 1000;
-    defaultSize = QSize(350,120);
+    defaultSize = QSize(350,70);
     margin = 10;
-    themePath = ":/plugins/kinotify/resources/notification/black";
-    styleSheet = loadContent(themePath + "/content.css");
-    content = loadContent(themePath + "/content.html");
+    themePath = ":/plugins/kinotify/resources/notification/commie";
+    content = loadContent(themePath + "/tmp.html");
     updatePosition = true;
     animation = true;
     easingCurve = QEasingCurve::OutSine;
@@ -111,12 +111,10 @@ QString NotificationsManager::loadContent ( const QString& path )
 	{
         output = content.readAll();
 		QStringList elements;
-		elements << "top_left" << "top" << "top_right"
-			<< "left" << "background" << "right"
-			<< "bottom_left" << "bottom" << "bottom_right";
+		elements << "back";
 		Q_FOREACH (QString elem, elements)
 			output.replace (QString ("{%1}").arg (elem),
-					NotificationWidget::MakeImage (QString (themePath + "/images/%1.png").arg (elem)));
+					NotificationWidget::MakeImage (QString (themePath + "/img/%1.png").arg (elem)));
         content.close();
     }
     return output;

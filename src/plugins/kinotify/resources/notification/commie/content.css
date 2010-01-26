@@ -1,0 +1,5 @@
+* {margin: 0; padding: 0; border: 0; background-color: transparent;}
+#notify {width: 320px; height: 130px; -webkit-border-radius: 0.7em; -webkit-box-shadow: 3px 3px 15px #fff; background: url('./img/back.png') scroll no-repeat;}
+img {height: 32px; width: 32px; left: 5px; margin: 5px; float: left; display: inline;}
+h3 {font-size: 1.2em; font-weight: bold; padding: 2px; text-align: center; color: #fff;}
+p {font-size: 0.9em; padding:2px 6px; color: #bbb; text-align: justify;}

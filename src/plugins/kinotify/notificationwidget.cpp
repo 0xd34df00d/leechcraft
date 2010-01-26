@@ -7,10 +7,12 @@
 #include <QBuffer>
 #include <QPainter>
 #include <QWebFrame>
+#include <QTextDocument>
 
-NotificationWidget::NotificationWidget ( const QString &styleSheet, const QString &content )
+NotificationWidget::NotificationWidget ( const QString &content )
 {
-    setTheme ( styleSheet,content );
+    setTheme ( content );
+	setStyleSheet ("background: transparent");
     //init browser
     this->page ()->mainFrame ()->setScrollBarPolicy ( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     this->page ()->mainFrame ()->setScrollBarPolicy ( Qt::Vertical, Qt::ScrollBarAlwaysOff );
@@ -25,7 +27,7 @@ NotificationWidget::NotificationWidget ( const QString &styleSheet, const QStrin
     this->setAttribute(Qt::WA_TranslucentBackground);
 
 	resize (NotificationsManager::self()->defaultSize);
-	setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Expanding);
+	setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Preferred);
 	page ()->setPreferredContentsSize (size ());
 }
 
@@ -43,7 +45,7 @@ QSize NotificationWidget::setData ( const QString& title, const QString& body, c
 {
     QString data = content;
     data.replace ( "{title}", title );
-    data.replace ( "{body}", body );
+    data.replace ( "{body}", Qt::escape (body) );
     data.replace ( "{imagepath}", MakeImage (imagePath));
     setHtml(data);
     int width = size ().width();
@@ -58,10 +60,9 @@ QSize NotificationWidget::setData ( const QString& title, const QString& body, c
 }
 
 
-void NotificationWidget::setTheme ( const QString& styleSheet, const QString& content )
+void NotificationWidget::setTheme ( const QString& content )
 {
     this->content = content;
-    this->setStyleSheet ( styleSheet );
 }
 
 

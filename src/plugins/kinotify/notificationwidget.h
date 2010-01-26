@@ -25,10 +25,10 @@ class NotificationWidget : public QWebView
 {
     Q_OBJECT
 public:
-    NotificationWidget(const QString &styleSheet, const QString &content);
+    NotificationWidget(const QString &content);
 	static QByteArray MakeImage (const QString&);
     QSize setData(const QString& title, const QString& body, const QString &imagePath); //size of textbrowser
-    void setTheme(const QString &styleSheet, const QString &content);
+    void setTheme(const QString &content);
     virtual void mouseReleaseEvent ( QMouseEvent* ev );
 private:
     //QString style_sheet;

@@ -51,8 +51,7 @@ void KineticNotification::send()
 {
     NotificationsManager *manager = NotificationsManager::self();
 
-    notification_widget = new NotificationWidget ( title,body );
-    notification_widget->setTheme ( manager->styleSheet,manager->content );
+    notification_widget = new NotificationWidget ( manager->content );
     QSize notify_size = notification_widget->setData ( title,body,image_path );
     connect (notification_widget,SIGNAL(action1Activated()),SIGNAL(action1Activated()));
     connect (notification_widget,SIGNAL(action2Activated()),SIGNAL(action2Activated()));
