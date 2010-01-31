@@ -3,6 +3,51 @@
 from string import Template
 from optparse import OptionParser
 
+cmake_str = """IF (NOT QT_USE_FILE)
+	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+	IF (COMMAND cmake_policy)
+		cmake_policy (SET CMP0003 NEW)
+	ENDIF (COMMAND cmake_policy)
+
+	PROJECT (leechcraft_${plug_lower})
+
+	IF (NOT CMAKE_MODULE_PATH)
+		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+	ENDIF (NOT CMAKE_MODULE_PATH)
+
+	FIND_PACKAGE (Boost REQUIRED)
+	FIND_PACKAGE (Qt4 REQUIRED)
+	FIND_PACKAGE (LeechCraft REQUIRED)
+
+	INCLUDE ($${LEECHCRAFT_USE_FILE})
+ENDIF (NOT QT_USE_FILE)
+
+INCLUDE ($${QT_USE_FILE})
+INCLUDE_DIRECTORIES (
+	$${CMAKE_CURRENT_BINARY_DIR}
+	$${Boost_INCLUDE_DIR}
+	$${LEECHCRAFT_INCLUDE_DIR}
+	)
+SET (SRCS
+	$plug_lower.cpp
+	)
+SET (HEADERS
+	$plug_lower.h
+	)
+QT4_WRAP_CPP (MOC_SRCS $${HEADERS})
+
+ADD_LIBRARY (leechcraft_${plug_lower} SHARED
+	$${COMPILED_TRANSLATIONS}
+	$${SRCS}
+	$${MOC_SRCS}
+	)
+TARGET_LINK_LIBRARIES (leechcraft_${plug_lower}
+	$${QT_LIBRARIES}
+	$${LEECHCRAFT_LIBRARIES}
+	)
+INSTALL (TARGETS leechcraft_${plug_lower} DESTINATION $${LC_PLUGINS_DEST})
+"""
+
 header_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010  $author
@@ -48,6 +93,7 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+$interfaces_decls
 			};
 		};
 	};
@@ -84,7 +130,7 @@ namespace LeechCraft
 	{
 		namespace $plug
 		{
-			void Plugin::Init (ICoreProxy_ptr)
+			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 			}
 
@@ -108,7 +154,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon (":/resources/images/${plug_lower}.svg");
+				return QIcon ();
 			}
 
 			QStringList Plugin::Provides () const
@@ -129,6 +175,8 @@ namespace LeechCraft
 			void Plugin::SetProvider (QObject*, const QString&)
 			{
 			}
+
+$interfaces_defs
 		};
 	};
 };
@@ -137,34 +185,54 @@ Q_EXPORT_PLUGIN2 (leechcraft_${plug_lower}, LeechCraft::Plugins::$plug::Plugin);
 
 """
 
+decls_all = {}
+decls_all ['IToolBarEmbedder'] = """				QList<QAction*> GetActions () const;"""
+
+defs_all = {}
+defs_all ['IToolBarEmbedder'] = """			QList<QAction*> Plugin::GetActions () const
+			{
+				QList<QAction*> result;
+				return result;
+			}"""
+
 parser = OptionParser ()
 parser.add_option ('-a', '--author', dest='author')
 parser.add_option ('-p', '--plugin', dest='plugin')
 parser.add_option ('-i', '--interfaces', dest='interfaces', default=None)
 (p, args) = parser.parse_args ()
 
-interfaces_array = ['IInfo']
+interfaces_array = []
 
 if p.interfaces != None:
 	for iface in p.interfaces.split (','):
 		interfaces_array.append (iface)
+
+decls_array = ([decls_all [v] for v in interfaces_array])
+defs_array = ([defs_all [v] for v in interfaces_array])
+
+interfaces_array.insert (0, 'IInfo')
 
 interfaces_includes = map (lambda s: s.lower (), interfaces_array)
 
 d = {}
 d ['author'] = p.author
 d ['plug_upper'] = p.plugin.upper ()
+d ['plug_lower'] = p.plugin.lower ()
 d ['plug'] = p.plugin
 d ['interfaces'] = ' '.join (interfaces_array)
 d ['interfaces_inherit'] = '\n						 , public '.join (interfaces_array)
 d ['interfaces_includes'] = '.h>\n#include <interfaces/'.join (interfaces_includes)
+d ['interfaces_decls'] = '\n\n'.join (decls_array)
+d ['interfaces_defs'] = '\n\n'.join (defs_array)
 
 header = Template (header_str)
 hfile = open ('%s.h' % p.plugin.lower (), 'w')
 hfile.write (header.substitute (d))
 
-d ['plug_lower'] = p.plugin.lower ()
-
 source = Template (source_str)
 sfile = open ('%s.cpp' % p.plugin.lower (), 'w')
 sfile.write (source.substitute (d))
+
+cmake = Template (cmake_str)
+sfile = open ('CMakeLists.txt', 'w')
+sfile.write (cmake.substitute (d))
