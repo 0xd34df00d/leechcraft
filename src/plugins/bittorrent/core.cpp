@@ -2775,12 +2775,20 @@ namespace LeechCraft
 				if (XmlSettingsManager::Instance ()->property ("NotificationStorage").toBool ())
 					mask |= libtorrent::alert::storage_notification;
 				else
-					QMessageBox::warning (0,
-							tr ("LeechCraft BitTorrent"),
-							tr ("Storage notifications are disabled. Live streaming "
-								"definitely won't work without them, so if you are "
-								"experiencing troubles, reenable storage notifications "
-								"in \"Notifications\" section of BitTorrent settings."));
+				{
+					if (QMessageBox::question (0,
+								tr ("LeechCraft BitTorrent"),
+								tr ("Storage notifications are disabled. Live streaming "
+									"definitely won't work without them, so if you are "
+									"experiencing troubles, reenable storage notifications "
+									"in \"Notifications\" section of BitTorrent settings. "
+									"Do you want to enable them now?"),
+								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+					{
+						XmlSettingsManager::Instance ()->setProperty ("NotificationStorage", true);
+						mask |= libtorrent::alert::storage_notification;
+					}
+				}
 
 				if (XmlSettingsManager::Instance ()->property ("NotificationTracker").toBool ())
 					mask |= libtorrent::alert::tracker_notification;
