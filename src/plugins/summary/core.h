@@ -127,12 +127,13 @@ namespace LeechCraft
 				 * could not be found.
 				 */
 				QModelIndex MapToSourceRecursively (QModelIndex index) const;
+			public slots:
+				void handleNewTabRequested ();
 			private:
 				void MadeCurrent (SummaryWidget*);
 				SummaryWidget* CreateSummaryWidget ();
 			private slots:
 				void handleCurrentTabChanged (int);
-				void handleNewTabRequested ();
 				void handleNeedToClose ();
 				void handleFilterUpdated ();
 			signals:

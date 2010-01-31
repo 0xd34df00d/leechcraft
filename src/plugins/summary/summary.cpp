@@ -144,6 +144,11 @@ namespace LeechCraft
 			{
 				return Core::Instance ().GetCurrentView ();
 			}
+
+			void Summary::newTabRequested ()
+			{
+				return Core::Instance ().handleNewTabRequested ();
+			}
 		};
 	};
 };

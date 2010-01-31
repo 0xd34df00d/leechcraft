@@ -297,6 +297,11 @@ namespace LeechCraft
 			{
 				return Ui_.MainView_->GetActionInfo ();
 			}
+
+			void Poshuku::newTabRequested ()
+			{
+				Core::Instance ().NewURL ("", true);
+			}
 			
 			void Poshuku::RegisterSettings ()
 			{

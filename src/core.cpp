@@ -1032,28 +1032,7 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 
 void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 {
-	try
-	{
-		IInfo *ii = qobject_cast<IInfo*> (plugin);
-		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
-		QWidget *contents = iet->GetTabContents ();
-		TabContainer_->add (ii->GetName (),
-				contents,
-				ii->GetIcon ());
-		TabContainer_->SetToolBar (iet->GetToolBar (),
-				contents);
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< e.what ()
-			<< plugin;
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< plugin;
-	}
+	TabContainer_->AddObject (plugin);
 }
 
 void LeechCraft::Core::InitMultiTab (QObject *plugin)

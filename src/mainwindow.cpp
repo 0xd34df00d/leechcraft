@@ -57,6 +57,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
 , PluginsActionsBar_ (0)
+, Glance_ (0)
 {
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
@@ -615,7 +616,6 @@ void LeechCraft::MainWindow::FillToolMenu ()
 {
 	QList<QMenu*> toolMenus;
 	QList<QAction*> toolActions;
-	Core::Instance ().GetPluginManager ()->GetAllCastableRoots<IMenuEmbedder*> ();
 	Q_FOREACH (QObject *tool,
 			Core::Instance ().GetPluginManager ()->
 				GetAllCastableRoots<IMenuEmbedder*> ())
@@ -638,6 +638,9 @@ void LeechCraft::MainWindow::FillToolMenu ()
 			Ui_.MenuTools_->insertMenu (Ui_.ActionLogger_, menu);
 		Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
 	}
+
+	Ui_.ActionNewTab_->setMenu (Core::Instance ()
+			.GetTabContainer ()->GetNewTabMenu ());
 
 	on_MainTabWidget__currentChanged (0);
 }

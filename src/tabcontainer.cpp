@@ -20,8 +20,10 @@
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include <QCursor>
+#include <QMenu>
 #include <QtDebug>
 #include <interfaces/imultitabs.h>
+#include <interfaces/iembedtab.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabwidget.h"
@@ -33,7 +35,11 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 		QObject *parent)
 : QObject (parent)
 , TabWidget_ (tabWidget)
+, NewTabMenu_ (new QMenu (tr ("New tab menu")))
+, RestoreMenu_ (new QMenu (tr ("Restore menu")))
 {
+	NewTabMenu_->addMenu (RestoreMenu_);
+
 	for (int i = 0; i < TabWidget_->count (); ++i)
 		OriginalTabNames_ << TabWidget_->tabText (i);
 
@@ -108,6 +114,11 @@ QToolBar* TabContainer::GetToolBar (int position) const
 		return StaticBars_ [widget];
 }
 
+QMenu* TabContainer::GetNewTabMenu () const
+{
+	return NewTabMenu_;
+}
+
 void TabContainer::SetToolBar (QToolBar *bar, QWidget *tw)
 {
 	StaticBars_ [tw] = bar;
@@ -141,6 +152,71 @@ void TabContainer::ForwardKeyboard (QKeyEvent *key)
 	Events_.removeAll (key);
 }
 
+void TabContainer::AddObject (QObject *obj)
+{
+	IInfo *ii = qobject_cast<IInfo*> (obj);
+
+	IEmbedTab *iet = qobject_cast<IEmbedTab*> (obj);
+	if (iet)
+	{
+		try
+		{
+			QString name = ii->GetName ();
+			QIcon icon = ii->GetIcon ();
+			QToolBar *tb = iet->GetToolBar ();
+			QWidget *contents = iet->GetTabContents ();
+
+			EmbedTabs_ [contents] = obj;
+
+			add (name,
+					contents,
+					icon);
+			SetToolBar (tb,
+					contents);
+
+			if (XmlSettingsManager::Instance ()->
+					Property (QString ("Hide%1").arg (name), false).toBool ())
+				remove (TabWidget_->indexOf (contents));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< e.what ()
+				<< obj;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< obj;
+		}
+	}
+
+	IMultiTabs *imt = qobject_cast<IMultiTabs*> (obj);
+	if (imt && !RegisteredMultiTabs_.contains (obj))
+	{
+		RegisteredMultiTabs_ << obj;
+		try
+		{
+			QString name = ii->GetName ();
+			QIcon icon = ii->GetIcon ();
+			NewTabMenu_->addAction (icon, name,
+					obj,
+					SLOT (newTabRequested ()));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< e.what ()
+				<< obj;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< obj;
+		}
+	}
+}
+
 void TabContainer::add (const QString& name, QWidget *contents)
 {
 	add (name, contents, QIcon ());
@@ -162,45 +238,84 @@ void TabContainer::add (const QString& name, QWidget *contents,
 	else
 		TabWidget_->addTab (contents, icon, MakeTabName (name));
 	InvalidateName ();
+
+	TabWidget_->setTabsClosable (TabWidget_->count () != 1);
 }
 
 void TabContainer::remove (QWidget *contents)
 {
+	if (TabWidget_->count () == 1)
+		return;
+
 	int tabNumber = FindTabForWidget (contents);
 	if (tabNumber == -1)
 		return;
 	TabWidget_->removeTab (tabNumber);
 	OriginalTabNames_.removeAt (tabNumber);
 	InvalidateName ();
+
+	TabWidget_->setTabsClosable (TabWidget_->count () != 1);
 }
 
 void TabContainer::remove (int index)
 {
-	QWidget *widget = TabWidget_->widget (index);
-	if (widget->property ("IsUnremoveable").toBool ())
+	if (TabWidget_->count () == 1)
 		return;
 
+	QWidget *widget = TabWidget_->widget (index);
 	IMultiTabsWidget *itw =
 		qobject_cast<IMultiTabsWidget*> (widget);
-	if (!itw)
-		return;
+	if (EmbedTabs_.contains (widget))
+	{
+		QObject *obj = EmbedTabs_ [widget];
 
-	try
-	{
-		itw->Remove ();
+		IInfo *ii = qobject_cast<IInfo*> (obj);
+		try
+		{
+			QString name = ii->GetName ();
+			QIcon icon = ii->GetIcon ();
+
+			XmlSettingsManager::Instance ()->
+					setProperty (qPrintable (QString ("Hide%1").arg (name)),
+							true);
+			remove (widget);
+
+			RestoreMenu_->addAction (icon, name,
+					this,
+					SLOT (restoreEmbedTab ()))->
+				setData (QVariant::fromValue<QObject*> (obj));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< e.what ()
+				<< obj;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< obj;
+		}
 	}
-	catch (const std::exception& e)
+	else if (itw)
 	{
-		qWarning () << Q_FUNC_INFO
-			<< "failed to ITabWidget::Remove"
-			<< e.what ()
-			<< TabWidget_->widget (index);
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "failed to ITabWidget::Remove"
-			<< TabWidget_->widget (index);
+		try
+		{
+			itw->Remove ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to ITabWidget::Remove"
+				<< e.what ()
+				<< TabWidget_->widget (index);
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to ITabWidget::Remove"
+				<< TabWidget_->widget (index);
+		}
 	}
 }
 
@@ -268,6 +383,52 @@ void TabContainer::handleCloseAllButCurrent ()
 	for (int i = TabWidget_->count () - 1; i >= 0; --i)
 		if (i != cur)
 			remove (i);
+}
+
+void TabContainer::restoreEmbedTab ()
+{
+	QAction *action = qobject_cast<QAction*> (sender ());
+	if (!action)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "null action, damn"
+			<< sender ();
+		return;
+	}
+
+	QObject *obj = action->data ().value<QObject*> ();
+	if (!obj)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "action's data is not a QObject*"
+			<< action
+			<< action->data ();
+		return;
+	}
+
+	IInfo *ii = qobject_cast<IInfo*> (obj);
+	try
+	{
+		QString name = ii->GetName ();
+		QIcon icon = ii->GetIcon ();
+
+		XmlSettingsManager::Instance ()->
+				setProperty (qPrintable (QString ("Hide%1").arg (name)),
+						false);
+		action->deleteLater ();
+		AddObject (obj);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< e.what ()
+			<< obj;
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< obj;
+	}
 }
 
 int TabContainer::FindTabForWidget (QWidget *widget) const

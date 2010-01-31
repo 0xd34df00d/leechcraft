@@ -91,6 +91,8 @@ namespace LeechCraft
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+			public slots:
+				void newTabRequested ();
 			private:
 				void RegisterSettings ();
 			private slots:

@@ -25,6 +25,7 @@
 class QIcon;
 class QKeyEvent;
 class QToolBar;
+class QMenu;
 
 namespace LeechCraft
 {
@@ -38,16 +39,23 @@ namespace LeechCraft
 		QStringList OriginalTabNames_;
 		QList<QKeyEvent*> Events_;
 		QMap<QWidget*, QToolBar*> StaticBars_;
+		QMap<QWidget*, QObject*> EmbedTabs_;
+		QList<QObject*> RegisteredMultiTabs_;
+		QMenu *NewTabMenu_;
+		QMenu *RestoreMenu_;
 	public:
 		TabContainer (TabWidget*, QObject* = 0);
 		virtual ~TabContainer ();
 
 		QWidget* GetWidget (int) const;
 		QToolBar* GetToolBar (int) const;
+		QMenu* GetNewTabMenu () const;
 		void SetToolBar (QToolBar*, QWidget*);
 		void RotateLeft ();
 		void RotateRight ();
 		void ForwardKeyboard (QKeyEvent*);
+
+		void AddObject (QObject*);
 	public slots:
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,
@@ -62,6 +70,8 @@ namespace LeechCraft
 		void handleCurrentChanged (int);
 		void handleMoveHappened (int, int);
 		void handleCloseAllButCurrent ();
+	private slots:
+		void restoreEmbedTab ();
 	private:
 		int FindTabForWidget (QWidget*) const;
 		QString MakeTabName (const QString&) const;

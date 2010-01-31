@@ -55,6 +55,9 @@ public:
 /** @brief Interface for plugins having (and opening/closing) multiple
  * tabs.
  *
+ * Plugin is expected to have a slot 'newTabRequested()' which is
+ * similar to IMultiTabsWidget::NewTabRequested() in functionality.
+ *
  * When a plugin wants to add a new tab into LeechCraft, it emits the
  * addNewTab(const QString&, QWidget*) signal, where the first parameter
  * is the name of the new tab, and the second one is the pointer to the
