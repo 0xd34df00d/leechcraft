@@ -133,9 +133,12 @@ namespace LeechCraft
 				QList<QUrl> urls;
 				QList<int> lengths;
 
+				int vnp = contents.indexOf ("var next_page = ");
+				int startPos = contents.indexOf ('}', vnp);
+
 				QRegExp links (".*onclick=\"return operate\\([0-9]*,([0-9]*),([0-9]*),'([0-9a-f]*)',([0-9]*)\\);\".*");
 				links.setMinimal (true);
-				int pos = 0;
+				int pos = startPos;
 				while (pos >= 0)
 				{
 					if (contents.mid (pos).contains ("return operate"))
@@ -157,9 +160,9 @@ namespace LeechCraft
 				}
 
 				QList<QPair<QString, QString> > infos;
-				QRegExp names (".*performer[0-9]*\">(.*)</b> - <span id=\"title[0-9]*\">(.*)</spa.*");
+				QRegExp names (".*performer[0-9]*\">(.*)</b><span>&nbsp;-&nbsp;</span><span id=\"title[0-9]*\">(.*)</spa.*");
 				names.setMinimal (true);
-				pos = 0;
+				pos = startPos;
 				while (pos >= 0)
 				{
 					if (contents.mid (pos).contains ("return operate"))
