@@ -467,12 +467,6 @@ namespace LeechCraft
 						"padding-left: 2em; "
 						"padding-right: 2em;'>");
 			
-				// Title
-				result += startBox.arg (headerBg);
-				result += (QString ("<strong>") +
-						item->Title_ +
-						"</strong></div>");
-			
 				// Link
 				result += (startBox.arg (headerBg) +
 						"<a href='" +
@@ -480,8 +474,10 @@ namespace LeechCraft
 						"'");
 				if (linw)
 					result += " target='_blank'";
-				result += (QString (">") +
-						item->Link_ +
+				result += QString (">");
+				result += (QString ("<strong>") +
+						item->Title_ +
+						"</strong>" + 
 						"</a></div>");
 			
 				// Publication date and author
