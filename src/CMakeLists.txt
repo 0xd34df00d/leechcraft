@@ -97,6 +97,7 @@ OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON
 OPTION (ENABLE_PYLC "Build PyLC, Python support for LeechCraft" ON)
 OPTION (ENABLE_POC "Build PoC, text editor" ON)
 OPTION (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ON)
+OPTION (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ON)
 
 if (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -189,6 +190,10 @@ ENDIF (ENABLE_PYLC)
 IF (ENABLE_KINOTIFY)
 	ADD_SUBDIRECTORY (plugins/kinotify)
 ENDIF (ENABLE_KINOTIFY)
+
+IF (ENABLE_AUSCRIE)
+	ADD_SUBDIRECTORY (plugins/auscrie)
+ENDIF (ENABLE_AUSCRIE)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
