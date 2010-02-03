@@ -255,10 +255,6 @@ namespace LeechCraft
 						SIGNAL (textChanged (const QString&)),
 						Core::Instance ().GetChannelsModel (),
 						SLOT (setFilterFixedString (const QString&)));
-				connect (Impl_->Ui_.Feeds_->selectionModel (),
-						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-						this,
-						SLOT (currentChannelChanged ()));
 				connect (Impl_->AppWideActions_.ActionUpdateFeeds_,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
@@ -686,7 +682,8 @@ namespace LeechCraft
 			void Aggregator::currentChannelChanged ()
 			{
 				QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-				index = Impl_->FlatToFolders_->MapToSource (index);
+				if (Impl_->FlatToFolders_->GetSourceModel ())
+					index = Impl_->FlatToFolders_->MapToSource (index);
 				Impl_->Ui_.ItemsWidget_->CurrentChannelChanged (index);
 			}
 			
@@ -729,6 +726,10 @@ namespace LeechCraft
 					Impl_->FlatToFolders_->SetSourceModel (0);
 					Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
 				}
+				connect (Impl_->Ui_.Feeds_->selectionModel (),
+						SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+						this,
+						SLOT (currentChannelChanged ()));
 				Impl_->Ui_.Feeds_->expandAll ();
 			}
 		};
