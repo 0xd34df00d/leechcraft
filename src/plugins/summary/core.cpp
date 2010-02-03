@@ -48,7 +48,8 @@ namespace LeechCraft
 
 			void Core::Release ()
 			{
-				qDeleteAll (Others_);
+				while (Others_.size ())
+					delete Others_.takeFirst ();
 
 				delete Default_;
 			}
