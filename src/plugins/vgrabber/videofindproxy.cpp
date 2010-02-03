@@ -117,19 +117,6 @@ namespace LeechCraft
 
 			void VideoFindProxy::HandleSearchResults (const QString& contents)
 			{
-				/* TODO check out why this fucking single \" at the beginning breaks it all. Why
-				 * "\"><a href=\"(.*)\">(.*)</a></div>.*" works and why
-				 * "\"><a href=\"(.*)\">(.*)</a></div>.*" doesn't.
-				 *
-				 * The block:
-* <div class="aname" style="width:255px; overflow: hidden"><a href="video430140_158836"><span class="match">Tool</span> - StinkFist</a></div>
-* <div class="adesc" style="width:255px; overflow: hidden">Люблю Тул за их необычные клипы.</div>
-* <div class="ainfo"><b style="color:#000">5:20</b> Загружено 9 июля 2007</div>
-				 *
-				QRegExp upt ("\"><a href=\"(.*)\">(.*)</a></div>.*"
-						"<div class=\"adesc\" style=\"width:255px; overflow: hidden\">(.*)</div>.*"
-						"<div class=\"ainfo\"><b style=\"color:#000\">(.*)</b> (.*)</div>");
-				 */
 				QRegExp upt (".*><a href=\"video([0-9\\_]*)\">(.*)</a></div>.*",
 						Qt::CaseSensitive,
 						QRegExp::RegExp2);
