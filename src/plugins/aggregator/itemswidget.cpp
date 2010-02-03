@@ -354,7 +354,6 @@ namespace LeechCraft
 			
 			void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
 			{
-				qDebug () << Q_FUNC_INFO << si;
 				if (Impl_->MergeMode_)
 					return;
 			
@@ -362,8 +361,6 @@ namespace LeechCraft
 				QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
 				if (f)
 					index = f->mapToSource (index);
-
-				qDebug () << f << index;
 
 				try
 				{

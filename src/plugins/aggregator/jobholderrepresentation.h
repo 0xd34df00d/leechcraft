@@ -34,7 +34,7 @@ namespace LeechCraft
 				QModelIndex Selected_;
 			public:
 				JobHolderRepresentation (QObject* = 0);
-				void SelectionChanged (const QModelIndex&);
+				QModelIndex SelectionChanged (const QModelIndex&);
 			protected:
 				virtual bool filterAcceptsRow (int, const QModelIndex&) const;
 			};

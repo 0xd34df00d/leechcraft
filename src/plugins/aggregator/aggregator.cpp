@@ -357,9 +357,9 @@ namespace LeechCraft
 				QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
 				if (si.model () != GetRepresentation ())
 					si = QModelIndex ();
+				si = Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (si);
 				Impl_->SelectedRepr_ = si;
-				Core::Instance ().GetJobHolderRepresentation ()->SelectionChanged (si);
-				Core::Instance ().GetReprWidget ()->CurrentChannelChanged (Impl_->SelectedRepr_);
+				Core::Instance ().GetReprWidget ()->CurrentChannelChanged (si);
 			}
 			
 			bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const

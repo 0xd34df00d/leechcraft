@@ -37,13 +37,14 @@ namespace LeechCraft
 						"invalidate");
 			}
 			
-			void JobHolderRepresentation::SelectionChanged (const QModelIndex& index)
+			QModelIndex JobHolderRepresentation::SelectionChanged (const QModelIndex& index)
 			{
 				if (index.isValid ())
 					Selected_ = mapToSource (index);
 				else
 					Selected_ = QModelIndex ();
 				invalidateFilter ();
+				return mapFromSource (Selected_);
 			}
 			
 			bool JobHolderRepresentation::filterAcceptsRow (int row,
