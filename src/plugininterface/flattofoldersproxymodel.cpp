@@ -78,7 +78,9 @@ namespace LeechCraft
 
 		int FlatToFoldersProxyModel::columnCount (const QModelIndex&) const
 		{
-			return SourceModel_->columnCount (QModelIndex ());
+			return SourceModel_ ?
+				SourceModel_->columnCount (QModelIndex ()) :
+				0;
 		}
 
 		QVariant FlatToFoldersProxyModel::data (const QModelIndex& index, int role) const
@@ -184,48 +186,50 @@ namespace LeechCraft
 
 			SourceModel_ = model;
 
-			Items_.clear ();
-			Root_->C_.clear ();
-
-			if (!model)
-				return;
-
-			// We don't support changing columns (yet) so don't connect
-			// to columns* signals.
-			connect (model,
-					SIGNAL (headerDataChanged (Qt::Orientation, int, int)),
-					this,
-					SIGNAL (headerDataChanged (Qt::Orientation, int, int)));
-			connect (model,
-					SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
-					this,
-					SLOT (handleDataChanged (const QModelIndex&, const QModelIndex&)));
-			connect (model,
-					SIGNAL (layoutAboutToBeChanged ()),
-					this,
-					SIGNAL (layoutAboutToBeChanged ()));
-			connect (model,
-					SIGNAL (layoutChanged ()),
-					this,
-					SIGNAL (layoutChanged ()));
-			connect (model,
-					SIGNAL (modelReset ()),
-					this,
-					SLOT (handleModelReset ()));
-			connect (model,
-					SIGNAL (rowsInserted (const QModelIndex&,
-							int, int)),
-					this,
-					SLOT (handleRowsInserted (const QModelIndex&,
-							int, int)));
-			connect (model,
-					SIGNAL (rowsAboutToBeRemoved (const QModelIndex&,
-							int, int)),
-					this,
-					SLOT (handleRowsAboutToBeRemoved (const QModelIndex&,
-							int, int)));
+			if (model)
+			{
+				// We don't support changing columns (yet) so don't connect
+				// to columns* signals.
+				connect (model,
+						SIGNAL (headerDataChanged (Qt::Orientation, int, int)),
+						this,
+						SIGNAL (headerDataChanged (Qt::Orientation, int, int)));
+				connect (model,
+						SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+						this,
+						SLOT (handleDataChanged (const QModelIndex&, const QModelIndex&)));
+				connect (model,
+						SIGNAL (layoutAboutToBeChanged ()),
+						this,
+						SIGNAL (layoutAboutToBeChanged ()));
+				connect (model,
+						SIGNAL (layoutChanged ()),
+						this,
+						SIGNAL (layoutChanged ()));
+				connect (model,
+						SIGNAL (modelReset ()),
+						this,
+						SLOT (handleModelReset ()));
+				connect (model,
+						SIGNAL (rowsInserted (const QModelIndex&,
+								int, int)),
+						this,
+						SLOT (handleRowsInserted (const QModelIndex&,
+								int, int)));
+				connect (model,
+						SIGNAL (rowsAboutToBeRemoved (const QModelIndex&,
+								int, int)),
+						this,
+						SLOT (handleRowsAboutToBeRemoved (const QModelIndex&,
+								int, int)));
+			}
 
 			handleModelReset ();
+		}
+
+		QAbstractItemModel* FlatToFoldersProxyModel::GetSourceModel () const
+		{
+			return SourceModel_;
 		}
 
 		QModelIndex FlatToFoldersProxyModel::MapToSource (const QModelIndex& proxy) const
@@ -410,11 +414,13 @@ namespace LeechCraft
 				endRemoveRows ();
 			}
 
-			for (int i = 0, size = SourceModel_->rowCount ();
-					i < size; ++i)
-				HandleRowInserted (i);
-
-			reset ();
+			if (SourceModel_)
+			{
+				for (int i = 0, size = SourceModel_->rowCount ();
+						i < size; ++i)
+					HandleRowInserted (i);
+				reset ();
+			}
 		}
 
 		void FlatToFoldersProxyModel::handleRowsInserted (const QModelIndex&,

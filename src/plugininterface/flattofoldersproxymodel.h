@@ -57,6 +57,7 @@ namespace LeechCraft
 			virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 			void SetSourceModel (QAbstractItemModel*);
+			QAbstractItemModel* GetSourceModel () const;
 			QModelIndex MapToSource (const QModelIndex&) const;
 			QList<QModelIndex> MapFromSource (const QModelIndex&) const;
 		private:
