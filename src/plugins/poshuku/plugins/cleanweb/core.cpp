@@ -347,6 +347,9 @@ QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 		QNetworkRequest *req,
 		QIODevice**)
 {
+	if (!req->originatingObject ())
+		return 0;
+
 	QString matched;
 	if (ShouldReject (*req, &matched))
 	{
