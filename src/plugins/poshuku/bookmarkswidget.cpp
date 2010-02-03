@@ -24,6 +24,7 @@
 #include "favoritesdelegate.h"
 #include "favoritesmodel.h"
 #include "editbookmarkdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -43,9 +44,10 @@ namespace LeechCraft
 				FlatToFolders_.reset (new Util::FlatToFoldersProxyModel (this));
 				FlatToFolders_->SetTagsManager (Core::Instance ()
 						.GetProxy ()->GetTagsManager ());
-				FlatToFolders_->SetSourceModel (FavoritesFilterModel_.get ());
+				handleGroupBookmarks ();
+				XmlSettingsManager::Instance ()->RegisterObject ("GroupBookmarksByTags",
+						this, "handleGroupBookmarks");
 
-				Ui_.FavoritesView_->setModel (FlatToFolders_.get ());
 				Ui_.FavoritesView_->setItemDelegate (new FavoritesDelegate (this));
 				Ui_.FavoritesView_->addAction (Ui_.ActionEditBookmark_);
 				Ui_.FavoritesView_->addAction (Ui_.ActionChangeURL_);
@@ -234,6 +236,21 @@ namespace LeechCraft
 			{
 				Ui_.FavoritesFilterType_->setCurrentIndex (3);
 				updateFavoritesFilter ();
+			}
+
+			void BookmarksWidget::handleGroupBookmarks ()
+			{
+				if (XmlSettingsManager::Instance ()->
+						property ("GroupBookmarksByTags").toBool ())
+				{
+					FlatToFolders_->SetSourceModel (FavoritesFilterModel_.get ());
+					Ui_.FavoritesView_->setModel (FlatToFolders_.get ());
+				}
+				else
+				{
+					FlatToFolders_->SetSourceModel (0);
+					Ui_.FavoritesView_->setModel (FavoritesFilterModel_.get ());
+				}
 			}
 		};
 	};

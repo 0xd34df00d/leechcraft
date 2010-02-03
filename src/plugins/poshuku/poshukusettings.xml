@@ -15,6 +15,10 @@
 				<label lang="en" value="Open new tabs in the background" />
 				<label lang="ru" value="Открывать новые вкладки в фоне" />
 			</item>
+			<item type="checkbox" property="GroupBookmarksByTags" state="on">
+				<label lang="en" value="Group bookmarks by tags" />
+				<label lang="ru" value="Группировать закладки по тегам" />
+			</item>
 			<item type="checkbox" property="ParanoidDownloadsDetection" state="off">
 				<label lang="en" value="Paranoid downloads detection" />
 				<label lang="ru" value="Параноидальное обнаружение загрузок" />
