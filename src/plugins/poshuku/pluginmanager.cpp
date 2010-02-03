@@ -23,6 +23,7 @@
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
+#include <QtDebug>
 #include "proxyobject.h"
 
 namespace LeechCraft
