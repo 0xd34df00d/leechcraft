@@ -205,6 +205,11 @@ namespace LeechCraft
 								int, int)),
 						Impl_->Ui_.Feeds_,
 						SLOT (expandAll ()));
+				connect (Impl_->FlatToFolders_.get (),
+						SIGNAL (rowsRemoved (const QModelIndex&,
+								int, int)),
+						Impl_->Ui_.Feeds_,
+						SLOT (expandAll ()));
 
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionMarkChannelAsRead_);
