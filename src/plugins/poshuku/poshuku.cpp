@@ -145,6 +145,9 @@ namespace LeechCraft
 						this,
 						SLOT (handleError (const QString&)));
 			
+				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
+				Ui_.setupUi (this);
+			
 				if (!Core::Instance ().Init ())
 				{
 					QMessageBox::critical (this,
@@ -157,9 +160,6 @@ namespace LeechCraft
 					Ui_.MainView_->GetToolBar ()->setEnabled (false);
 					return;
 				}
-			
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
-				Ui_.setupUi (this);
 			
 				Core::Instance ().ConnectSignals (Ui_.MainView_);
 				Ui_.MainView_->InitShortcuts ();
