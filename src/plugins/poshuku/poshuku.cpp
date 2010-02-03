@@ -26,6 +26,7 @@
 #include <QUrl>
 #include <QTextCodec>
 #include <QInputDialog>
+#include <QBuffer>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -94,56 +95,8 @@ namespace LeechCraft
 						"poshukusettings.xml");
 				XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 						new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
-			
-				connect (XmlSettingsDialog_.get (),
-						SIGNAL (pushButtonClicked (const QString&)),
-						this,
-						SLOT (handleSettingsClicked (const QString&)));
-			
-				connect (&Core::Instance (),
-						SIGNAL (addNewTab (const QString&, QWidget*)),
-						this,
-						SIGNAL (addNewTab (const QString&, QWidget*)));
-				connect (&Core::Instance (),
-						SIGNAL (removeTab (QWidget*)),
-						this,
-						SIGNAL (removeTab (QWidget*)));
-				connect (&Core::Instance (),
-						SIGNAL (changeTabName (QWidget*, const QString&)),
-						this,
-						SIGNAL (changeTabName (QWidget*, const QString&)));
-				connect (&Core::Instance (),
-						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-						this,
-						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-				connect (&Core::Instance (),
-						SIGNAL (changeTooltip (QWidget*, QWidget*)),
-						this,
-						SIGNAL (changeTooltip (QWidget*, QWidget*)));
-				connect (&Core::Instance (),
-						SIGNAL (statusBarChanged (QWidget*, const QString&)),
-						this,
-						SIGNAL (statusBarChanged (QWidget*, const QString&)));
-				connect (&Core::Instance (),
-						SIGNAL (raiseTab (QWidget*)),
-						this,
-						SIGNAL (raiseTab (QWidget*)));
-				connect (&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
-				connect (&Core::Instance (),
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
-						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
-				connect (&Core::Instance (),
-						SIGNAL (notify (const LeechCraft::Notification&)),
-						this,
-						SIGNAL (notify (const LeechCraft::Notification&)));
-				connect (&Core::Instance (),
-						SIGNAL (error (const QString&)),
-						this,
-						SLOT (handleError (const QString&)));
+
+				InitConnections ();
 			
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
 				Ui_.setupUi (this);
@@ -163,7 +116,7 @@ namespace LeechCraft
 			
 				Core::Instance ().ConnectSignals (Ui_.MainView_);
 				Ui_.MainView_->InitShortcuts ();
-			
+
 				RegisterSettings ();
 			
 				connect (Core::Instance ().GetFavoritesModel (),
@@ -174,6 +127,9 @@ namespace LeechCraft
 
 			void Poshuku::SecondInit ()
 			{
+				QTimer::singleShot (4000,
+						this,
+						SLOT (setHtml ()));
 			}
 			
 			void Poshuku::Release ()
@@ -301,6 +257,82 @@ namespace LeechCraft
 			void Poshuku::newTabRequested ()
 			{
 				Core::Instance ().NewURL ("", true);
+			}
+
+			void Poshuku::InitConnections ()
+			{
+				connect (XmlSettingsDialog_.get (),
+						SIGNAL (pushButtonClicked (const QString&)),
+						this,
+						SLOT (handleSettingsClicked (const QString&)));
+			
+				connect (&Core::Instance (),
+						SIGNAL (addNewTab (const QString&, QWidget*)),
+						this,
+						SIGNAL (addNewTab (const QString&, QWidget*)));
+				connect (&Core::Instance (),
+						SIGNAL (removeTab (QWidget*)),
+						this,
+						SIGNAL (removeTab (QWidget*)));
+				connect (&Core::Instance (),
+						SIGNAL (changeTabName (QWidget*, const QString&)),
+						this,
+						SIGNAL (changeTabName (QWidget*, const QString&)));
+				connect (&Core::Instance (),
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+						this,
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+				connect (&Core::Instance (),
+						SIGNAL (changeTooltip (QWidget*, QWidget*)),
+						this,
+						SIGNAL (changeTooltip (QWidget*, QWidget*)));
+				connect (&Core::Instance (),
+						SIGNAL (statusBarChanged (QWidget*, const QString&)),
+						this,
+						SIGNAL (statusBarChanged (QWidget*, const QString&)));
+				connect (&Core::Instance (),
+						SIGNAL (raiseTab (QWidget*)),
+						this,
+						SIGNAL (raiseTab (QWidget*)));
+				connect (&Core::Instance (),
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+				connect (&Core::Instance (),
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+				connect (&Core::Instance (),
+						SIGNAL (notify (const LeechCraft::Notification&)),
+						this,
+						SIGNAL (notify (const LeechCraft::Notification&)));
+				connect (&Core::Instance (),
+						SIGNAL (error (const QString&)),
+						this,
+						SLOT (handleError (const QString&)));
+			}
+
+			void Poshuku::setHtml ()
+			{
+				QFile file (":/resources/html/home.html");
+				file.open (QIODevice::ReadOnly);
+				QString data = file.readAll ();
+				data.replace ("{title}",
+						tr ("Welcome to LeechCraft!"));
+				data.replace ("{body}",
+						tr ("Welcome to LeechCraft, the integrated internet-client.<br />"
+							"More info is available on the <a href='http://leechcraft.org'>"
+							"project's site</a>."));
+
+				QBuffer iconBuffer;
+				iconBuffer.open (QIODevice::ReadWrite);
+				QPixmap pixmap (":/resources/images/poshuku.svg");
+				pixmap.save (&iconBuffer, "PNG");
+
+				data.replace ("{img}",
+						QByteArray ("data:image/png;base64,") + iconBuffer.buffer ().toBase64 ());
+
+				Ui_.MainView_->SetHtml (data);
 			}
 			
 			void Poshuku::RegisterSettings ()

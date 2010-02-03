@@ -94,8 +94,10 @@ namespace LeechCraft
 			public slots:
 				void newTabRequested ();
 			private:
+				void InitConnections ();
 				void RegisterSettings ();
 			private slots:
+				void setHtml ();
 				void viewerSettingsChanged ();
 				void developerExtrasChanged ();
 				void cacheSettingsChanged ();
