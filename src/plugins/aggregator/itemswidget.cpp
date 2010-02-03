@@ -987,6 +987,8 @@ namespace LeechCraft
 					{
 						Impl_->Ui_.ItemView_->SetHtml ("");
 						Impl_->ActionItemCommentsSubscribe_->setEnabled (false);
+						Impl_->ActionAddToItemBucket_->setEnabled (false);
+						Impl_->ActionMarkItemAsUnread_->setEnabled (false);
 						return;
 					}
 			
@@ -998,6 +1000,8 @@ namespace LeechCraft
 			
 					QString commentsRSS = item->CommentsLink_;
 					Impl_->ActionItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
+					Impl_->ActionAddToItemBucket_->setEnabled (true);
+					Impl_->ActionMarkItemAsUnread_->setEnabled (true);
 				}
 			}
 			
