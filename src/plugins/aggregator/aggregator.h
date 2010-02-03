@@ -120,6 +120,7 @@ namespace LeechCraft
 				void currentChannelChanged ();
 				void unreadNumberChanged (int);
 				void trayIconActivated ();
+				void handleGroupChannels ();
 			signals:
 				void notify (const LeechCraft::Notification&);
 				void gotEntity (const LeechCraft::DownloadEntity&);

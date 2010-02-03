@@ -34,6 +34,10 @@
 			<groupbox>
 				<label lang="en" value="Appearance" />
 				<label lang="ru" value="Внешний вид" />
+				<item type="checkbox" property="GroupChannelsByTags" state="on">
+					<label lang="en" value="Group channels by tags" />
+					<label lang="ru" value="Группировать каналы по тегам" />
+				</item>
 				<item type="checkbox" property="ShowInDashboard" state="on">
 					<label lang="en" value="Show unread channels in summary" />
 					<label lang="ru" value="Показывать непрочитанные каналы в сводке" />

@@ -151,7 +151,7 @@ namespace LeechCraft
 						"aggregatorsettings.xml");
 				Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 						new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
-			
+
 				bool initFailed = false;
 				if (!Core::Instance ().DoDelayedInit ())
 				{
@@ -197,9 +197,7 @@ namespace LeechCraft
 			
 				Impl_->FlatToFolders_.reset (new Util::FlatToFoldersProxyModel);
 				Impl_->FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
-				Impl_->FlatToFolders_->SetSourceModel (Core::Instance ().GetChannelsModel ());
-				Impl_->Ui_.Feeds_->setModel (Impl_->FlatToFolders_.get ());
-				Impl_->Ui_.Feeds_->expandAll ();
+				handleGroupChannels ();
 				connect (Impl_->FlatToFolders_.get (),
 						SIGNAL (rowsInserted (const QModelIndex&,
 								int, int)),
@@ -210,6 +208,8 @@ namespace LeechCraft
 								int, int)),
 						Impl_->Ui_.Feeds_,
 						SLOT (expandAll ()));
+				XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags",
+						this, "handleGroupChannels");
 
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionMarkChannelAsRead_);
@@ -714,6 +714,22 @@ namespace LeechCraft
 				if (unread.isValid ())
 					Impl_->Ui_.Feeds_->setCurrentIndex (Impl_->FlatToFolders_->
 							MapFromSource (unread).at (0));
+			}
+
+			void Aggregator::handleGroupChannels ()
+			{
+				if (XmlSettingsManager::Instance ()->
+						property ("GroupChannelsByTags").toBool ())
+				{
+					Impl_->FlatToFolders_->SetSourceModel (Core::Instance ().GetChannelsModel ());
+					Impl_->Ui_.Feeds_->setModel (Impl_->FlatToFolders_.get ());
+				}
+				else
+				{
+					Impl_->FlatToFolders_->SetSourceModel (0);
+					Impl_->Ui_.Feeds_->setModel (Core::Instance ().GetChannelsModel ());
+				}
+				Impl_->Ui_.Feeds_->expandAll ();
 			}
 		};
 	};
