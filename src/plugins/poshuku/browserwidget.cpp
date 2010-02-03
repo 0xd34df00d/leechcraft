@@ -1051,6 +1051,7 @@ namespace LeechCraft
 			{
 				if (!NotifyWhenFinished_->isChecked () ||
 						!Own_ ||
+						HtmlMode_ ||
 						isVisible ())
 					return;
 
