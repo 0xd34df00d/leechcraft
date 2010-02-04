@@ -27,6 +27,7 @@
 
 class QMenu;
 class QNetworkReply;
+class QIODevice;
 
 namespace LeechCraft
 {
@@ -191,6 +192,7 @@ namespace LeechCraft
 Q_DECLARE_METATYPE (LeechCraft::DownloadEntity);
 Q_DECLARE_METATYPE (LeechCraft::Notification);
 Q_DECLARE_METATYPE (QNetworkReply*);
+Q_DECLARE_METATYPE (QIODevice*);
 Q_DECLARE_METATYPE (QToolBar*);
 Q_DECLARE_METATYPE (QMenu*);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
