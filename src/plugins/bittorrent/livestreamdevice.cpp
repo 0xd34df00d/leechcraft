@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "livestreamdevice.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -28,12 +29,80 @@ namespace LeechCraft
 					QObject *parent)
 			: QIODevice (parent)
 			, Handle_ (h)
+			, NumPieces_ (h.get_torrent_info ().num_pieces ())
 			, FinishedPieces_ (h.get_torrent_info ().num_pieces (), false)
-			, LastIndex_ (0)
 			, EndRangePos_ (0)
 			, ReadPos_ (0)
-			, Available_ (0)
+			, LastReadOffset_ (0)
+			, IsReady_ (false)
 			{
+				boost::filesystem::path tpath = h.save_path ();
+				boost::filesystem::path fpath = h.get_torrent_info ().file_at (0).path;
+				boost::filesystem::path abspath = tpath / fpath;
+				File_.setFileName (QString::fromUtf8 (abspath.string ().c_str ()));
+				File_.open (QIODevice::ReadOnly);
+
+				open (QIODevice::ReadOnly | QIODevice::Unbuffered);
+
+				Handle_.set_piece_deadline (0, 10000, 1);
+				if (NumPieces_ > 1)
+					Handle_.set_piece_deadline (NumPieces_ - 1, 10000, 1);
+			}
+
+			qint64 LiveStreamDevice::bytesAvailable () const
+			{
+				qint64 result = 0;
+				const libtorrent::torrent_info& ti = Handle_.get_torrent_info ();;
+				for (int i = ReadPos_; FinishedPieces_.at (i); ++i)
+					result += ti.piece_size (i);
+				result -= LastReadOffset_;
+				return result;
+			}
+
+			bool LiveStreamDevice::isSequential () const
+			{
+				return false;
+			}
+
+			bool LiveStreamDevice::isWritable () const
+			{
+				return false;
+			}
+
+			bool LiveStreamDevice::open (QIODevice::OpenMode mode)
+			{
+				return true;
+			}
+
+			qint64 LiveStreamDevice::pos () const
+			{
+				qint64 result = 0;
+				const libtorrent::torrent_info& ti = Handle_.get_torrent_info ();;
+				for (int i = 0; i < ReadPos_; ++i)
+					result += ti.piece_size (i);
+				result += LastReadOffset_;
+				return result;
+			}
+
+			bool LiveStreamDevice::seek (qint64 pos)
+			{
+				QIODevice::seek (pos);
+
+				const libtorrent::torrent_info& ti = Handle_.get_torrent_info ();
+				int piece = ReadPos_ = pos / ti.piece_length ();
+				qint64 offset = pos;
+				if (piece == NumPieces_ - 1)
+					offset -= ti.piece_size (piece--);
+				if (piece > 0)
+					offset -= static_cast<qint64> (ti.piece_length ()) * piece;
+				LastReadOffset_ = offset;
+
+				reschedule ();
+			}
+
+			qint64 LiveStreamDevice::size () const
+			{
+				return Handle_.status ().total_wanted;
 			}
 
 			void LiveStreamDevice::GotPiece (int index)
@@ -43,19 +112,42 @@ namespace LeechCraft
 
 			void LiveStreamDevice::PieceRead (const libtorrent::read_piece_alert& a)
 			{
-				if (!a.buffer)
-					return;
-
 				int index = a.piece;
+				qDebug () << Q_FUNC_INFO << index << NumPieces_;
 				FinishedPieces_ [index] = true;
-				PieceData_ [index] = QByteArray (a.buffer.get (), a.size);
+
+				if (!IsReady_ &&
+						FinishedPieces_.at (0) &&
+						FinishedPieces_.at (NumPieces_ - 1))
+				{
+					IsReady_ = true;
+					qDebug () << "ready";
+					emit ready ();
+				}
 
 				CheckNextChunk ();
+				reschedule ();
 			}
 
-			qint64 LiveStreamDevice::readData (char*, qint64)
+			qint64 LiveStreamDevice::readData (char *data, qint64 max)
 			{
-				return -1;
+				const libtorrent::torrent_info& ti = Handle_.get_torrent_info ();
+				File_.seek (pos ());
+				const qint64 result = File_.read (data, max);
+
+				qint64 offset = result;
+				if (offset + LastReadOffset_ < ti.piece_size (ReadPos_))
+					LastReadOffset_;
+				else
+				{
+					offset -= LastReadOffset_;
+					++ReadPos_;
+					while (offset > ti.piece_size (ReadPos_))
+						offset -= ti.piece_size (ReadPos_);
+					LastReadOffset_ = offset;
+				}
+
+				return result;
 			}
 
 			qint64 LiveStreamDevice::writeData (const char*, qint64)
@@ -71,6 +163,21 @@ namespace LeechCraft
 
 				if (hasMoreData)
 					emit readyRead ();
+			}
+
+			void LiveStreamDevice::reschedule ()
+			{
+				int speed = Handle_.status ().download_payload_rate;
+				int size = Handle_.get_torrent_info ().piece_length () / speed;
+				const int time = static_cast<double> (size) / speed * 1000;
+				int thisDeadline = 0;
+				for (int i = ReadPos_; i < NumPieces_; ++i)
+					if (!FinishedPieces_.at (i))
+						Handle_.set_piece_deadline (i, (thisDeadline += time), 1);
+
+				if (!IsReady_ &&
+						NumPieces_ > 1)
+					Handle_.set_piece_deadline (NumPieces_ - 1, 10000, 1);
 			}
 		};
 	};

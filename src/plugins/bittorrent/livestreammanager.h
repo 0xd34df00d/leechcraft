@@ -42,8 +42,8 @@ namespace LeechCraft
 
 				void EnableOn (libtorrent::torrent_handle);
 				void PieceRead (const libtorrent::read_piece_alert&);
-			public slots:
-				void handleGotPiece (int, void*);
+			private slots:
+				void handleDeviceReady ();
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 			};

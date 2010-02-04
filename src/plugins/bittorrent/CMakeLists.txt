@@ -68,7 +68,6 @@ SET (SRCS
 	banpeersdialog.cpp
 	ipfilterdialog.cpp
 	livestreammanager.cpp
-	livestreamplugin.cpp
 	livestreamdevice.cpp
 	speedselectoraction.cpp
 	torrentmaker.cpp
@@ -104,7 +103,6 @@ SET (HEADERS
 	banpeersdialog.h
 	ipfilterdialog.h
 	livestreammanager.h
-	livestreamplugin.h
 	livestreamdevice.h
 	speedselectoraction.h
 	torrentmaker.h

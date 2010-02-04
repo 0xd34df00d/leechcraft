@@ -18,9 +18,8 @@
 
 #ifndef PLUGINS_BITTORRENT_LIVESTREAMDEVICE_H
 #define PLUGINS_BITTORRENT_LIVESTREAMDEVICE_H
-#include <QIODevice>
 #include <QVector>
-#include <QMap>
+#include <QFile>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/alert_types.hpp>
 
@@ -35,26 +34,41 @@ namespace LeechCraft
 				Q_OBJECT
 
 				libtorrent::torrent_handle Handle_;
+				int NumPieces_;
 				QVector<bool> FinishedPieces_;
-				QMap<int, QByteArray> PieceData_;
 				int LastIndex_;
 				// The last piece in the [start; end] range where all
 				// the pieces are finished.
 				int EndRangePos_;
+				// Which piece would be read next.
 				int ReadPos_;
-				qint64 Available_;
+				// Offset in the next piece pointed by ReadPos_;
+				int LastReadOffset_;
+				bool IsReady_;
+				QFile File_;
 			public:
 				LiveStreamDevice (const libtorrent::torrent_handle&,
 						QObject* = 0);
 
+				virtual qint64 bytesAvailable () const;
+				virtual bool isSequential () const;
+				virtual bool isWritable () const;
+				virtual bool open (OpenMode);
+				virtual qint64 pos () const;
+				virtual bool seek (qint64);
+				virtual qint64 size () const;
+
 				void GotPiece (int);
 				void PieceRead (const libtorrent::read_piece_alert&);
-
 			protected:
 				virtual qint64 readData (char*, qint64);
 				virtual qint64 writeData (const char*, qint64);
 			private:
 				void CheckNextChunk ();
+			private slots:
+				void reschedule ();
+			signals:
+				void ready ();
 			};
 		};
 	};

@@ -788,7 +788,7 @@ namespace LeechCraft
 					atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 					atp.auto_managed = true;
 					atp.storage_mode = libtorrent::storage_mode_sparse;
-					atp.paused = (params & NoAutostart);
+					atp.paused = tryLive || (params & NoAutostart);
 					atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 					atp.duplicate_is_error = true;
 					handle = Session_->add_torrent (atp);
@@ -845,8 +845,8 @@ namespace LeechCraft
 
 				if (tryLive)
 				{
-					handle.set_sequential_download (true);
 					LiveStreamManager_->EnableOn (handle);
+					handle.resume ();
 				}
 			
 				ScheduleSave ();
