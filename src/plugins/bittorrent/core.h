@@ -334,9 +334,9 @@ namespace LeechCraft
 			private slots:
 				void writeSettings ();
 				void checkFinished ();
-				void queryLibtorrentForWarnings ();
 				void scrape ();
 			public slots:
+				void queryLibtorrentForWarnings ();
 				void tcpPortRangeChanged ();
 				void dhtStateChanged ();
 				void autosaveIntervalChanged ();

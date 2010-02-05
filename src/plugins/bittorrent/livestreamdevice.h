@@ -35,15 +35,11 @@ namespace LeechCraft
 
 				libtorrent::torrent_handle Handle_;
 				int NumPieces_;
-				QVector<bool> FinishedPieces_;
 				int LastIndex_;
-				// The last piece in the [start; end] range where all
-				// the pieces are finished.
-				int EndRangePos_;
 				// Which piece would be read next.
 				int ReadPos_;
 				// Offset in the next piece pointed by ReadPos_;
-				int LastReadOffset_;
+				int Offset_;
 				bool IsReady_;
 				QFile File_;
 			public:
@@ -60,6 +56,7 @@ namespace LeechCraft
 
 				void GotPiece (int);
 				void PieceRead (const libtorrent::read_piece_alert&);
+				void CheckReady ();
 			protected:
 				virtual qint64 readData (char*, qint64);
 				virtual qint64 writeData (const char*, qint64);

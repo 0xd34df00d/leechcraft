@@ -38,17 +38,33 @@ namespace LeechCraft
 						<< "on"
 						<< QString::fromUtf8 (handle.save_path ().string ().c_str ());
 					LiveStreamDevice *lsd = new LiveStreamDevice (handle, this);
+					Handle2Device_ [handle] = lsd;
 					connect (lsd,
 							SIGNAL (ready ()),
 							this,
 							SLOT (handleDeviceReady ()));
+					lsd->CheckReady ();
 				}
+			}
+
+			bool LiveStreamManager::IsEnabledOn (libtorrent::torrent_handle handle)
+			{
+				return Handle2Device_.contains (handle);
 			}
 
 			void LiveStreamManager::PieceRead (const libtorrent::read_piece_alert& a)
 			{
 				libtorrent::torrent_handle handle =
 					a.handle;
+
+				if (!Handle2Device_.contains (handle))
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "Handle2Device_ doesn't contain handle"
+						<< Handle2Device_.size ();
+					return;
+				}
+
 				Handle2Device_ [handle]->PieceRead (a);
 			}
 
@@ -67,6 +83,7 @@ namespace LeechCraft
 				e.Entity_ = QVariant::fromValue<QIODevice*> (lsd);
 				e.Parameters_ = FromUserInitiated;
 				e.Mime_ = "x-leechcraft/media-qiodevice";
+				emit gotEntity (e);
 			}
 		};
 	};

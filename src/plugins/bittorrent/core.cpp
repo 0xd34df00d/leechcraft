@@ -1954,6 +1954,11 @@ namespace LeechCraft
 				TorrentStruct torrent = Handles_.at (i);
 				libtorrent::torrent_info info = torrent.Handle_
 					.get_torrent_info ();
+
+				if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
+						torrent.Handle_.status ().num_pieces !=
+							torrent.Handle_.get_torrent_info ().num_pieces ())
+					return;
 			
 				QString name = QString::fromUtf8 (info.name ().c_str ());
 				Notification n =
