@@ -52,6 +52,12 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 		Result_ = true;
 		return;
 	}
+	if (e.Entity_.canConvert<QIODevice*> () &&
+			e.Mime_ == "x-leechcraft/media-qiodevice")
+	{
+		Result_ = true;
+		return;
+	}
 	if (e.Entity_.canConvert<QUrl> ())
 	{
 		QUrl url = e.Entity_.toUrl ();
@@ -66,68 +72,6 @@ EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
 	}
 
 	Result_ = false;
-
-	/* TODO
-	 * Use this code path when we will be able to figure out how to
-	 * synchronously check a local file if it's playable.
-	QString source;
-	if (e.Entity_.canConvert<QUrl> ())
-	{
-		QUrl url = e.Entity_.toUrl ();
-		if (url.scheme () == "file")
-			source = url.toLocalFile ();
-		else
-		{
-			QString extension = QFileInfo (url.path ()).suffix ();
-
-			QStringList goodExt = XmlSettingsManager::Instance ()->
-				property ("TestExtensions").toString ()
-				.split (' ', QString::SkipEmptyParts);
-
-			Result_ = goodExt.contains (extension);
-			return;
-		}
-	}
-	else if (e.Entity_.canConvert<QString> ())
-		source = e.Entity_.toString ();
-	else if (e.Additional_ ["SourceURL"].canConvert<QUrl> ())
-	{
-		QUrl url = e.Additional_ ["SourceURL"].toUrl ();
-		QString extension = QFileInfo (url.path ()).suffix ();
-
-		QStringList goodExt = XmlSettingsManager::Instance ()->
-			property ("TestExtensions").toString ()
-			.split (' ', QString::SkipEmptyParts);
-
-		Result_ = goodExt.contains (extension);
-	}
-	else
-		return;
-
-	QFileInfo fi (source);
-	if (!fi.exists ())
-		return;
-
-	if (XmlSettingsManager::Instance ()->property ("TestOnly").toBool () &&
-			!XmlSettingsManager::Instance ()->
-				property ("TestExtensions").toString ()
-				.split (' ', QString::SkipEmptyParts).contains (fi.suffix ()))
-		return;
-
-	std::auto_ptr<Phonon::MediaObject> mo (new Phonon::MediaObject ());
-	std::auto_ptr<Phonon::AudioOutput> ao (new Phonon::AudioOutput ());
-	ao->setMuted (true);
-	Phonon::createPath (mo.get (), ao.get ());
-	mo->setCurrentSource (source);
-	connect (mo.get (),
-			SIGNAL (stateChanged (Phonon::State, Phonon::State)),
-			this,
-			SLOT (stateChanged (Phonon::State)));
-	mo->play ();
-
-	while (!Break_)
-		qApp->processEvents ();
-		*/
 }
 
 bool EntityChecker::Can () const
