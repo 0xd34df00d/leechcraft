@@ -24,6 +24,7 @@
 #include <QtDebug>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "tabbar.h"
 #include "3dparty/qxttooltip.h"
 
 /**
@@ -38,8 +39,10 @@ TabWidget::TabWidget (QWidget *parent)
 : QTabWidget (parent)
 , AsResult_ (false)
 {
+	setTabBar (new TabBar (this));
 	tabBar ()->setExpanding (false);
 	tabBar ()->setContextMenuPolicy (Qt::CustomContextMenu);
+
 	connect (tabBar (),
 			SIGNAL (customContextMenuRequested (const QPoint&)),
 			this,
@@ -48,6 +51,7 @@ TabWidget::TabWidget (QWidget *parent)
 			SIGNAL (tabMoved (int, int)),
 			this,
 			SIGNAL (moveHappened (int, int)));
+
 	XmlSettingsManager::Instance ()->RegisterObject ("TabBarLocation",
 			this, "handleTabBarLocationChanged");
 
@@ -87,6 +91,14 @@ bool TabWidget::event (QEvent *e)
 	}
 	else
 		return QTabWidget::event (e);
+}
+
+void TabWidget::mouseDoubleClickEvent (QMouseEvent *e)
+{
+	if (tabBar ()->tabAt (e->pos ()) == -1)
+		emit newTabRequested ();
+
+	QTabWidget::mouseDoubleClickEvent (e);
 }
 
 void TabWidget::tabRemoved (int index)

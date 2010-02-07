@@ -246,6 +246,7 @@ SET (SRCS
 	clipboardwatcher.cpp
 	glanceshower.cpp
 	glanceitem.cpp
+	tabbar.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -287,6 +288,7 @@ SET (HEADERS
 	clipboardwatcher.h
 	glanceshower.h
 	glanceitem.h
+	tabbar.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h

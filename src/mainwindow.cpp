@@ -203,6 +203,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionNewTab_);
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionCloseTab_);
+	connect (Ui_.MainTabWidget_,
+			SIGNAL (newTabRequested ()),
+			this,
+			SLOT (on_ActionNewTab__triggered ()));
 
 	QToolBar *bar = new QToolBar ();
 	bar->addAction (Ui_.ActionNewTab_);

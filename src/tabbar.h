@@ -16,35 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef TABWIDGET_H
-#define TABWIDGET_H
-#include <QTabWidget>
-#include <QMap>
+#ifndef TABBAR_H
+#define TABBAR_H
+#include <QTabBar>
 
 namespace LeechCraft
 {
-	class TabWidget : public QTabWidget
+	class TabBar : public QTabBar
 	{
 		Q_OBJECT
-
-		bool AsResult_;
-		QMap<int, QWidget*> Widgets_;
-		QList<QAction*> TabBarActions_;
 	public:
-		TabWidget (QWidget* = 0);
-		void SetTooltip (int, QWidget*);
-		int TabAt (const QPoint&) const;
-		void AddAction2TabBar (QAction*);
-	protected:
-		virtual bool event (QEvent*);
-		virtual void mouseDoubleClickEvent (QMouseEvent*);
-		virtual void tabRemoved (int);
-	private slots:
-		void handleTabBarLocationChanged ();
-		void handleTabBarContextMenu (const QPoint&);
-	signals:
-		void moveHappened (int, int);
-		void newTabRequested ();
+		TabBar (QWidget* = 0);
 	};
 };
 
