@@ -117,11 +117,6 @@ namespace LeechCraft
 				return Handle_.status ().total_wanted;
 			}
 
-			void LiveStreamDevice::GotPiece (int index)
-			{
-				Handle_.read_piece (index);
-			}
-
 			void LiveStreamDevice::PieceRead (const libtorrent::read_piece_alert& a)
 			{
 				int index = a.piece;

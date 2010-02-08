@@ -54,7 +54,6 @@ namespace LeechCraft
 				virtual bool seek (qint64);
 				virtual qint64 size () const;
 
-				void GotPiece (int);
 				void PieceRead (const libtorrent::read_piece_alert&);
 				void CheckReady ();
 			protected:
