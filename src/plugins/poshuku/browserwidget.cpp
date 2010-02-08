@@ -485,7 +485,8 @@ namespace LeechCraft
 					Ui_.WebView_->zoomFactor (),
 					NotifyWhenFinished_->isChecked (),
 					QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()),
-					ba
+					ba,
+					Ui_.WebView_->page ()->mainFrame ()->scrollPosition ()
 				};
 				return result;
 			}
@@ -499,6 +500,7 @@ namespace LeechCraft
 						<< settings.ZoomFactor_;
 					Ui_.WebView_->setZoomFactor (settings.ZoomFactor_);
 				}
+
 				NotifyWhenFinished_->setChecked (settings.NotifyWhenFinished_);
 				QTime interval = settings.ReloadInterval_;
 				QTime null (0, 0, 0);
@@ -508,11 +510,15 @@ namespace LeechCraft
 					ReloadPeriodically_->setChecked (true);
 					SetActualReloadInterval (interval);
 				}
+
 				if (settings.WebHistorySerialized_.size ())
 				{
 					QDataStream str (settings.WebHistorySerialized_);
 					str >> *Ui_.WebView_->page ()->history ();
 				}
+
+				if (!settings.ScrollPosition_.isNull ())
+					SetOnLoadScrollPoint (settings.ScrollPosition_);
 			}
 			
 			void BrowserWidget::SetURL (const QUrl& url)

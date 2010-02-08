@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_BROWSERWIDGETSETTINGS_H
 #define PLUGINS_POSHUKU_BROWSERWIDGETSETTINGS_H
 #include <QTime>
+#include <QPoint>
 #include <QMetaType>
 
 class QDataStream;
@@ -35,6 +36,7 @@ namespace LeechCraft
 				bool NotifyWhenFinished_;
 				QTime ReloadInterval_;
 				QByteArray WebHistorySerialized_;
+				QPoint ScrollPosition_;
 			};
 
 			QDataStream& operator<< (QDataStream&, const BrowserWidgetSettings&);
