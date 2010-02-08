@@ -59,6 +59,12 @@ namespace LeechCraft
 			else
 				ExternalBrowser_->SetHtml (html, base);
 		}
+
+		void SelectableBrowser::SetNavBarVisible (bool visible)
+		{
+			if (!Internal_)
+				ExternalBrowser_->SetNavBarVisible (visible);
+		}
 	};
 };
 

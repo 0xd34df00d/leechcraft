@@ -40,6 +40,8 @@ namespace LeechCraft
 			void Construct (IWebBrowser*);
 
 			void SetHtml (const QString&, const QUrl& = QString ());
+
+			void SetNavBarVisible (bool);
 		};
 	};
 };
