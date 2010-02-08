@@ -51,6 +51,10 @@
 					<label lang="en" value="Show items category selector" />
 					<label lang="ru" value="Показывать список категорий новостей" />
 				</item>
+				<item type="checkbox" property="ShowNavBarInItemsView" state="off">
+					<label lang="en" value="Show navigation bar when showing the news item" />
+					<label lang="ru" value="Показывать навигационную панель при отображении новости" />
+				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Items list" />

@@ -159,6 +159,10 @@ namespace LeechCraft
 
 				XmlSettingsManager::Instance ()->RegisterObject ("ShowCategorySelector",
 						this, "selectorVisiblityChanged");
+				XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView",
+						this, "navBarVisibilityChanged");
+				selectorVisiblityChanged ();
+				navBarVisibilityChanged ();
 
 				on_ActionHideReadItems__triggered ();
 			}
@@ -1040,6 +1044,13 @@ namespace LeechCraft
 				}
 				else if (Impl_->ItemCategorySelector_->GetSelections ().size ())
 					Impl_->ItemCategorySelector_->show ();
+			}
+
+			void ItemsWidget::navBarVisibilityChanged ()
+			{
+				Impl_->Ui_.ItemView_->
+					SetNavBarVisible (XmlSettingsManager::Instance ()->
+							property ("ShowNavBarInItemsView").toBool ());
 			}
 		};
 	};
