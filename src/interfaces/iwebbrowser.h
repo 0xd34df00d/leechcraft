@@ -54,6 +54,15 @@ public:
 	virtual void SetHtml (const QString& html,
 			const QUrl& base = QUrl ()) = 0;
 
+	/** @brief Sets whether the navigation bar of the widget (where the
+	 * address bar and reload/back/forward/etc buttons are) is visible.
+	 *
+	 * If the widget doesn't have such bar this function does nothing.
+	 *
+	 * @param[in] visible Whether to show or hide the navbar.
+	 */
+	virtual void SetNavBarVisible (bool visible) = 0;
+
 	/** @brief Returns the IWebWidget as a QWidget.
 	 *
 	 * @return A widget corresponding to this IWebWidget.

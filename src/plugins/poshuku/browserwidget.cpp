@@ -535,6 +535,11 @@ namespace LeechCraft
 				HtmlMode_ = true;
 				Ui_.WebView_->setHtml (html, base);
 			}
+
+			void BrowserWidget::SetNavBarVisible (bool visible)
+			{
+				ToolBar_->setVisible (visible);
+			}
 			
 			QWidget* BrowserWidget::Widget ()
 			{
