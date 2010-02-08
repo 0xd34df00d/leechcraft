@@ -19,12 +19,27 @@
 #include "tabbar.h"
 #include <QMouseEvent>
 #include <QtDebug>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 	TabBar::TabBar (QWidget *parent)
 	: QTabBar (parent)
 	{
+	}
+
+	QSize TabBar::tabSizeHint (int index) const
+	{
+		QSize result = QTabBar::tabSizeHint (index);
+		if (XmlSettingsManager::Instance ()->
+				property ("TrySmarterTabsWidth").toBool ())
+		{
+			int maxWidth = parentWidget ()->width () / count ();
+			if (maxWidth < 50)
+				maxWidth = 50;
+			result.setWidth (std::min (maxWidth, result.width ()));
+		}
+		return result;
 	}
 };
 

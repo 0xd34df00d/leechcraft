@@ -27,6 +27,8 @@ namespace LeechCraft
 		Q_OBJECT
 	public:
 		TabBar (QWidget* = 0);
+	protected:
+		virtual QSize tabSizeHint (int) const;
 	};
 };
 
