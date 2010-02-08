@@ -99,8 +99,8 @@ namespace LeechCraft
 				InitConnections ();
 			
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
-				Ui_.setupUi (this);
 			
+				bool failed = false;
 				if (!Core::Instance ().Init ())
 				{
 					QMessageBox::critical (this,
@@ -110,6 +110,12 @@ namespace LeechCraft
 								"Or, at least, check the storage backend "
 								"settings and restart LeechCraft."));
 					setEnabled (false);
+					failed = true;
+				}
+
+				Ui_.setupUi (this);
+				if (failed)
+				{
 					Ui_.MainView_->GetToolBar ()->setEnabled (false);
 					return;
 				}
