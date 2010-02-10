@@ -199,6 +199,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
 	Ui_.ActionFullscreenMode_->setParent (this);
     Ui_.ActionShowStatusBar_->setProperty ("ActionIcon", "showstatusbar");
+	Ui_.ActionGlance_->setProperty ("ActionIcon", "glance");
 
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionNewTab_);
