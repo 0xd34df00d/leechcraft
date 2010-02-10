@@ -4,9 +4,8 @@
 <context>
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
-        <location filename="core.cpp" line="80"/>
-        <location filename="core.cpp" line="123"/>
-        <location filename="core.cpp" line="231"/>
+        <location filename="core.cpp" line="121"/>
+        <location filename="core.cpp" line="229"/>
         <source>Summary</source>
         <translation type="unfinished"></translation>
     </message>
@@ -32,32 +31,32 @@
 <context>
     <name>LeechCraft::Plugins::Summary::RequestNormalizer</name>
     <message>
-        <location filename="requestnormalizer.cpp" line="48"/>
+        <location filename="requestnormalizer.cpp" line="51"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="49"/>
+        <location filename="requestnormalizer.cpp" line="52"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="50"/>
+        <location filename="requestnormalizer.cpp" line="53"/>
         <source>State</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="66"/>
+        <location filename="requestnormalizer.cpp" line="68"/>
         <source>Request validation error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="82"/>
+        <location filename="requestnormalizer.cpp" line="84"/>
         <source>Request parsing error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="106"/>
+        <location filename="requestnormalizer.cpp" line="108"/>
         <source>Open/close braces mismatch: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -73,7 +72,7 @@
 <context>
     <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="316"/>
+        <location filename="summarywidget.cpp" line="317"/>
         <source>Remove this category</source>
         <translation type="unfinished"></translation>
     </message>

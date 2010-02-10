@@ -45,11 +45,14 @@ namespace LeechCraft
 					QObject *parent)
 			: QObject (parent)
 			, MergeModel_ (merge)
-			, Root_ (new Util::MergeModel (QStringList (tr ("Name"))
-						<< tr ("Status")
-						<< tr ("State")))
+			, Root_ (new Util::MergeModel (QStringList ()))
 			, Parser_ (new RequestParser)
 			{
+				QStringList headers = QStringList (tr ("Name"))
+					<< tr ("Status")
+					<< tr ("State");
+				Root_->SetHeaders (headers);
+
 				setObjectName ("RequestNormalizer");
 				Root_->setProperty ("__LeechCraft_own_core_model", true);
 			}
