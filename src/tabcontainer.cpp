@@ -71,7 +71,7 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleCloseAllButCurrent ()));
-	closeAllButCurrent->setProperty ("ActionIcon", "closeallbutcorrent");
+	closeAllButCurrent->setProperty ("ActionIcon", "closeallbutcurrent");
 	TabWidget_->AddAction2TabBar (closeAllButCurrent);
 }
 
