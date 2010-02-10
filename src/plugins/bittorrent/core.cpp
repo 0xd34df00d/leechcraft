@@ -2177,7 +2177,6 @@ namespace LeechCraft
 						QCoreApplication::applicationName () + "_Torrent");
 				settings.beginGroup ("Core");
 				settings.beginWriteArray ("AddedTorrents");
-				settings.remove ("");
 				for (int i = 0; i < Handles_.size (); ++i)
 				{
 					settings.setArrayIndex (i);
@@ -2195,7 +2194,6 @@ namespace LeechCraft
 							<< i;
 						continue;
 					}
-					settings.remove ("");
 					int oldCurrent = CurrentTorrent_;
 					CurrentTorrent_ = i;
 					try
