@@ -36,7 +36,7 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 : QObject (parent)
 , TabWidget_ (tabWidget)
 , NewTabMenu_ (new QMenu (tr ("New tab menu")))
-, RestoreMenu_ (new QMenu (tr ("Restore menu")))
+, RestoreMenu_ (new QMenu (tr ("Restore tabs")))
 {
 	NewTabMenu_->addMenu (RestoreMenu_);
 

@@ -608,7 +608,7 @@ p, li { white-space: pre-wrap; }
     <name>LeechCraft::FancyPopupManager</name>
     <message>
         <source>LeechCraft Notification</source>
-        <translation type="obsolete">Уведомление LeechCraft</translation>
+        <translation>Уведомление LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -832,6 +832,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Close all but this</source>
         <translation>Закрыть все кроме этой</translation>
+    </message>
+    <message>
+        <source>New tab menu</source>
+        <translation>Меню создания вкладки</translation>
+    </message>
+    <message>
+        <source>Restore tabs</source>
+        <translation>Восстановить вкладки</translation>
     </message>
 </context>
 <context>
