@@ -215,20 +215,34 @@ namespace LeechCraft
 									.arg (cs.Unread_));
 						Q_FOREACH (Item_ptr item, items2write [cs])
 						{
-							w.writeStartElement ("section");
-								w.writeStartElement ("title");
-									w.writeTextElement ("p", item->Title_);
-								w.writeEndElement ();
-								QString descr = item->Description_;
-								descr.remove ("<p>");
-								descr.remove ("</p>");
-								descr.remove (QRegExp ("<img *>",
-											Qt::CaseSensitive, QRegExp::Wildcard));
-								descr.remove (QRegExp ("<a *>",
-											Qt::CaseSensitive, QRegExp::Wildcard));
-								w.writeTextElement ("p", descr);
-								w.writeEmptyElement ("empty-line");
+							w.writeStartElement ("title");
+								w.writeTextElement ("p", item->Title_);
 							w.writeEndElement ();
+
+							bool hasDate = item->PubDate_.isValid ();
+							bool hasAuthor = item->Author_.size ();
+							if (hasDate || hasAuthor)
+							{
+								w.writeStartElement ("epigraph");
+									if (hasDate)
+										w.writeTextElement ("p", tr ("Published on %1")
+												.arg (item->PubDate_.toString ()));
+									if (hasAuthor)
+										w.writeTextElement ("p", tr ("By %1")
+												.arg (item->Author_));
+								w.writeEndElement ();
+								w.writeEmptyElement ("empty-line");
+							}
+
+							QString descr = item->Description_;
+							descr.remove ("<p>");
+							descr.remove ("</p>");
+							descr.remove (QRegExp ("<img *>",
+										Qt::CaseSensitive, QRegExp::Wildcard));
+							descr.remove (QRegExp ("<a *>",
+										Qt::CaseSensitive, QRegExp::Wildcard));
+							w.writeTextElement ("p", descr);
+							w.writeEmptyElement ("empty-line");
 						}
 					w.writeEndElement ();
 				}
