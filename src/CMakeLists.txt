@@ -367,7 +367,7 @@ IF (NOT DEFINED LEECHCRAFT_VERSION)
 ENDIF (NOT DEFINED LEECHCRAFT_VERSION)
 
 CONFIGURE_FILE (config.h.in config.h)
-CONFIGURE_FILE (FindLeechCraft.cmake.in FindLeechCraft.cmake)
+CONFIGURE_FILE (FindLeechCraft.cmake.in FindLeechCraft.cmake @ONLY)
 
 IF (UNIX)
 	ADD_CUSTOM_COMMAND (OUTPUT
