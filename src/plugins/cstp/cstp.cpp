@@ -79,6 +79,10 @@ namespace LeechCraft
 						SIGNAL (error (const QString&)),
 						this,
 						SLOT (handleError (const QString&)));
+				connect (&Core::Instance (),
+						SIGNAL (notify (const LeechCraft::Notification&)),
+						this,
+						SIGNAL (notify (const LeechCraft::Notification&)));
 
 				connect (coreProxy->GetTreeViewReemitter (),
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
@@ -267,7 +271,7 @@ namespace LeechCraft
 			{
 				Notification n =
 				{
-					tr ("HTTP error"),
+					tr ("1TTP error"),
 					error,
 					false,
 					Notification::PCritical_

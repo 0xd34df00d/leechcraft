@@ -102,6 +102,19 @@ namespace LeechCraft
 			{
 				Selected_ = i;
 			}
+
+			namespace
+			{
+				QString MakeFilename (const QUrl& entity)
+				{
+					QString file = QFileInfo (entity.toString (QUrl::RemoveFragment)).fileName ();
+					file.replace ('?', '_');
+					if (file.isEmpty ())
+						file = QString ("index_%1")
+							.arg (QDateTime::currentDateTime ().toString (Qt::ISODate));
+					return file;
+				}
+			}
 			
 			int Core::AddTask (LeechCraft::DownloadEntity& e)
 			{
@@ -113,12 +126,10 @@ namespace LeechCraft
 					QFileInfo fi (e.Location_);
 					QString dir = fi.dir ().path ();
 					QUrl source = e.Additional_ ["SourceURL"].toUrl ();
-					QString file = QFileInfo (source.toString (QUrl::RemoveFragment)).fileName ();
+					QString file = MakeFilename (source);
 			
 					if (fi.isDir ())
 						dir = e.Location_;
-					if (file.isEmpty ())
-						file = "index";
 			
 					return AddTask (rep,
 							dir,
@@ -156,9 +167,7 @@ namespace LeechCraft
 							if (fi.isDir ())
 							{
 								dir = e.Location_;
-								file = QFileInfo (entity.toString (QUrl::RemoveFragment)).fileName ();
-								if (file.isEmpty ())
-									file = "index";
+								file = MakeFilename (entity);
 							}
 							else if (fi.isFile ());
 							else
