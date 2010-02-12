@@ -367,7 +367,7 @@ IF (NOT DEFINED LEECHCRAFT_VERSION)
 ENDIF (NOT DEFINED LEECHCRAFT_VERSION)
 
 CONFIGURE_FILE (config.h.in config.h)
-CONFIGURE_FILE (UseLeechCraft.cmake.in UseLeechCraft.cmake)
+CONFIGURE_FILE (FindLeechCraft.cmake.in FindLeechCraft.cmake)
 
 IF (UNIX)
 	ADD_CUSTOM_COMMAND (OUTPUT
@@ -413,8 +413,7 @@ INSTALL (FILES xmlsettingsdialog/basesettingsmanager.h DESTINATION include/leech
 INSTALL (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
-INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/UseLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
-INSTALL (FILES FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
+INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
