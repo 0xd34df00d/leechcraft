@@ -90,6 +90,7 @@ namespace LeechCraft
 			private slots:
 				void handleItemSelected (const QModelIndex&);
 				void handleFileExists (boost::logic::tribool*);
+				void handleError (const QString&);
 			signals:
 				void jobFinished (int);
 				void jobRemoved (int);

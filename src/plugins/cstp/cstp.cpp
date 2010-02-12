@@ -76,9 +76,9 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 				connect (&Core::Instance (),
-						SIGNAL (notify (const LeechCraft::Notification&)),
+						SIGNAL (error (const QString&)),
 						this,
-						SIGNAL (notify (const LeechCraft::Notification&)));
+						SLOT (handleError (const QString&)));
 
 				connect (coreProxy->GetTreeViewReemitter (),
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
@@ -262,9 +262,21 @@ namespace LeechCraft
 				else
 					*remove = boost::logic::indeterminate;
 			}
-			
-			Q_EXPORT_PLUGIN2 (leechcraft_cstp, CSTP);
+
+			void CSTP::handleError (const QString& error)
+			{
+				Notification n =
+				{
+					tr ("HTTP error"),
+					error,
+					false,
+					Notification::PCritical_
+				};
+				emit notify (n);
+			}
 		};
 	};
 };
+
+Q_EXPORT_PLUGIN2 (leechcraft_cstp, LeechCraft::Plugins::CSTP::CSTP);
 

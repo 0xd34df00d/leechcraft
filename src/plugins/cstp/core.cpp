@@ -474,9 +474,11 @@ namespace LeechCraft
 					return;
 				if (!selected.File_->open (QIODevice::ReadWrite))
 				{
-					QString msg = tr ("Could not open file ") +
-						selected.File_->error ();
-					qWarning () << Q_FUNC_INFO << msg;
+					QString msg = tr ("Could not open file %1: %2")
+						.arg (selected.File_->fileName ())
+						.arg (selected.File_->error ());
+					qWarning () << Q_FUNC_INFO
+						<< msg;
 					emit error (msg);
 					return;
 				}
