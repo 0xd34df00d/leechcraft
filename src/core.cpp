@@ -236,7 +236,8 @@ void LeechCraft::Core::DelayedInit ()
 			ReallyMainWindow_,
 			SLOT (catchError (QString)));
 
-	TabContainer_.reset (new TabContainer (ReallyMainWindow_->GetTabWidget ()));
+	TabContainer_.reset (new TabContainer (ReallyMainWindow_->GetTabWidget (),
+				ReallyMainWindow_->GetTabWidget ()));
 
 	PluginManager_->Init ();
 
