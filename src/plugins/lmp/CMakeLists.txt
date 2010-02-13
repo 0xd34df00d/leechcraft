@@ -7,14 +7,12 @@ IF (NOT QT_USE_FILE)
 	PROJECT (leechcraft_lmp)
 
 	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
 	ENDIF (NOT CMAKE_MODULE_PATH)
 
 	FIND_PACKAGE (Boost REQUIRED)
 	FIND_PACKAGE (Qt4 REQUIRED)
 	FIND_PACKAGE (LeechCraft REQUIRED)
-
-	INCLUDE (${LEECHCRAFT_USE_FILE})
 ENDIF (NOT QT_USE_FILE)
 
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
