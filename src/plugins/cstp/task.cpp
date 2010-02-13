@@ -46,6 +46,7 @@ namespace LeechCraft
 			, Speed_ (0)
 			, Counter_ (0)
 			, Timer_ (0)
+			, CanChangeName_ (true)
 			{
 				StartTime_.start ();
 			}
@@ -57,6 +58,7 @@ namespace LeechCraft
 			, FileSizeAtStart_ (-1)
 			, Speed_ (0)
 			, Timer_ (0)
+			, CanChangeName_ (true)
 			{
 				StartTime_.start ();
 			}
@@ -85,6 +87,8 @@ namespace LeechCraft
 				}
 				else
 				{
+					handleMetaDataChanged ();
+
 					qint64 contentLength = Reply_->
 						header (QNetworkRequest::ContentLengthHeader).toInt ();
 					if (contentLength &&
@@ -134,18 +138,24 @@ namespace LeechCraft
 				if (Reply_.get ())
 					Reply_->abort ();
 			}
+
+			void Task::ForbidNameChanges ()
+			{
+				CanChangeName_ = false;
+			}
 			
 			QByteArray Task::Serialize () const
 			{
 				QByteArray result;
 				{
 					QDataStream out (&result, QIODevice::WriteOnly);
-					out << 1
+					out << 2
 						<< URL_
 						<< StartTime_
 						<< Done_
 						<< Total_
-						<< Speed_;
+						<< Speed_
+						<< CanChangeName_;
 				}
 				return result;
 			}
@@ -155,7 +165,7 @@ namespace LeechCraft
 				QDataStream in (&data, QIODevice::ReadOnly);
 				int version = 0;
 				in >> version;
-				if (version == 1)
+				if (version >= 1)
 				{
 					in >> URL_
 						>> StartTime_
@@ -163,7 +173,10 @@ namespace LeechCraft
 						>> Total_
 						>> Speed_;
 				}
-				else
+				if (version >= 2)
+					in >> CanChangeName_;
+
+				if (version < 1 || version > 2)
 					throw std::runtime_error ("Unknown version");
 			}
 			
@@ -247,6 +260,100 @@ namespace LeechCraft
 			{
 				Speed_ = static_cast<double> (Done_ * 1000) / static_cast<double> (StartTime_.elapsed ());
 			}
+
+			void Task::HandleMetadataRedirection ()
+			{
+				QByteArray newUrl = Reply_->rawHeader ("Location");
+				if (!newUrl.size ())
+					return;
+
+				if (!QUrl (newUrl).isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "invalid redirect URL"
+						<< newUrl
+						<< "for"
+						<< Reply_->url ();
+				}
+				else if (RedirectHistory_.contains (newUrl))
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "redir loop detected"
+						<< newUrl
+						<< "for"
+						<< Reply_->url ();
+					emit done (true);
+				}
+				else
+				{
+					RedirectHistory_ << newUrl;
+				
+					QMetaObject::invokeMethod (this,
+							"redirectedConstruction",
+							Qt::QueuedConnection,
+							Q_ARG (QByteArray, newUrl));
+				}
+			}
+
+			void Task::HandleMetadataFilename ()
+			{
+				qDebug () << Q_FUNC_INFO << CanChangeName_;
+				if (!CanChangeName_)
+					return;
+
+				QByteArray contdis = Reply_->rawHeader ("Content-Disposition");
+				qDebug () << contdis;
+				if (!contdis.size () ||
+						!contdis.contains ("filename=\""))
+					return;
+
+				const QByteArray start = "filename=\"";
+				int startPos = contdis.indexOf (start) + start.size ();
+				bool ignoreNextQuote = false;
+				QString result;
+				while (startPos < contdis.size ())
+				{
+					QChar cur = contdis.at (startPos++);
+					if (cur == '\\')
+						ignoreNextQuote = true;
+					else if (cur == '"' &&
+							!ignoreNextQuote)
+						break;
+					else
+					{
+						result += cur;
+						ignoreNextQuote = false;
+					}
+				}
+
+				if (result.size ())
+				{
+					QString path = To_->fileName ();
+					QString oldPath = path;
+					QString fname = QFileInfo (path).fileName ();
+					path.replace (path.lastIndexOf (fname),
+							fname.size (), result);
+
+					QIODevice::OpenMode om = To_->openMode ();
+					To_->close ();
+
+					if (!To_->rename (path))
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "failed to rename to"
+							<< path
+							<< To_->errorString ();
+					}
+					if (!To_->open (om))
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "failed to re-open the renamed file"
+							<< path;
+						To_->rename (oldPath);
+						To_->open (om);
+					}
+				}
+			}
 			
 			void Task::handleDataTransferProgress (qint64 done, qint64 total)
 			{
@@ -277,36 +384,8 @@ namespace LeechCraft
 			
 			void Task::handleMetaDataChanged ()
 			{
-				QByteArray newUrl = Reply_->rawHeader ("Location");
-				if (newUrl.size ())
-				{
-					if (!QUrl (newUrl).isValid ())
-					{
-						qWarning () << Q_FUNC_INFO
-							<< "invalid redirect URL"
-							<< newUrl
-							<< "for"
-							<< Reply_->url ();
-					}
-					else if (RedirectHistory_.contains (newUrl))
-					{
-						qWarning () << Q_FUNC_INFO
-							<< "redir loop detected"
-							<< newUrl
-							<< "for"
-							<< Reply_->url ();
-						emit done (true);
-					}
-					else
-					{
-						RedirectHistory_ << newUrl;
-					
-						QMetaObject::invokeMethod (this,
-								"redirectedConstruction",
-								Qt::QueuedConnection,
-								Q_ARG (QByteArray, newUrl));
-					}
-				}
+				HandleMetadataRedirection ();
+				HandleMetadataFilename ();
 			}
 			
 			bool Task::handleReadyRead ()

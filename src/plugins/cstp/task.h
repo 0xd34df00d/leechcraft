@@ -55,11 +55,13 @@ namespace LeechCraft
 				int Counter_;
 				int UpdateCounter_;
 				QTimer *Timer_;
+				bool CanChangeName_;
 			public:
 				explicit Task (const QUrl& = QUrl ());
 				explicit Task (QNetworkReply*);
 				void Start (const boost::intrusive_ptr<MorphFile>&);
 				void Stop ();
+				void ForbidNameChanges ();
 
 				QByteArray Serialize () const;
 				void Deserialize (QByteArray&);
@@ -78,6 +80,8 @@ namespace LeechCraft
 			private:
 				void Reset ();
 				void RecalculateSpeed ();
+				void HandleMetadataRedirection ();
+				void HandleMetadataFilename ();
 			private slots:
 				void handleDataTransferProgress (qint64, qint64);
 				void redirectedConstruction (const QByteArray&);

@@ -261,6 +261,9 @@ namespace LeechCraft
 						return -1;
 					}
 				}
+
+				if (tp & Internal)
+					td.Task_->ForbidNameChanges ();
 			
 				connect (td.Task_.get (),
 						SIGNAL (done (bool)),
