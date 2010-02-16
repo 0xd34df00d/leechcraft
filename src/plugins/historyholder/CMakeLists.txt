@@ -36,7 +36,7 @@ SET (TRANSLATIONS
 	leechcraft_historyholder_uk_UA.ts
 	leechcraft_historyholder_ar.ts
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES historyholderresources.qrc)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_uk_UA.qm
