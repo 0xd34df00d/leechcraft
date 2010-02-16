@@ -137,7 +137,7 @@ SET (FORMS
 	bookmarkswidget.ui
 	historywidget.ui
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES poshukuresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_poshuku_ru_RU.ts
 	leechcraft_poshuku_uk_UA.ts
