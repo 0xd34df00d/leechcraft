@@ -47,7 +47,7 @@ SET (TRANSLATIONS
 	leechcraft_deadlyrics_ar.ts
 	leechcraft_deadlyrics_eo.ts
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES deadlyricsresources.qrc)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_uk_UA.qm
