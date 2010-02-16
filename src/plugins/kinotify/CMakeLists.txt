@@ -34,7 +34,7 @@ SET (HEADERS
 	notificationwidget.h
 	notificationsmanager.h
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES kinotifyresources.qrc)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
