@@ -128,7 +128,7 @@ SET (FORMS
 	startupthirdpage.ui
 	export2fb2dialog.ui
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES aggregatorresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_aggregator_ru_RU.ts
 	leechcraft_aggregator_de_DE.ts
