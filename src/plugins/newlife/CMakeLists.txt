@@ -54,7 +54,7 @@ SET (FORMS
 SET (TRANSLATIONS
 	leechcraft_newlife_ru_RU.ts
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES newliferesources.qrc)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_newlife_ru_RU.qm
 	)
