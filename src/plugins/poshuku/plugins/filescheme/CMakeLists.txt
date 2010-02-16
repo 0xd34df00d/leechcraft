@@ -9,7 +9,7 @@ SET (FILESCHEME_HEADERS
 	schemereply.h
 	)
 SET (FILESCHEME_RESOURCES
-	resources.qrc
+	poshukufileschemeresources.qrc
 	)
 SET (FILESCHEME_TRANSLATIONS
 	leechcraft_poshuku_filescheme_ru_RU.ts
