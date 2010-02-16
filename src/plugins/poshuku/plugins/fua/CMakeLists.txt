@@ -16,7 +16,7 @@ SET (FUA_FORMS
 	settings.ui
 	changer.ui
 	)
-SET (FUA_RESOURCES fuaresources.qrc)
+SET (FUA_RESOURCES poshukufuaresources.qrc)
 SET (FUA_TRANSLATIONS
 	leechcraft_poshuku_fua_ru_RU.ts
 	leechcraft_poshuku_fua_uk_UA.ts
