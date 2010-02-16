@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="/" >
+  <qresource prefix="/plugins/summary/" >
     <file>resources/images/summary.svg</file>
   </qresource>
 </RCC>

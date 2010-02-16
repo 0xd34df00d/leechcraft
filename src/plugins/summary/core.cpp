@@ -119,7 +119,7 @@ namespace LeechCraft
 				newTab->SetQuery (cats);
 
 				emit addNewTab (tr ("Summary"), newTab);
-				emit changeTabIcon (newTab, QIcon (":/resources/images/summary.svg"));
+				emit changeTabIcon (newTab, QIcon (":/plugins/summary/resources/images/summary.svg"));
 				emit raiseTab (newTab);
 			}
 
@@ -227,7 +227,7 @@ namespace LeechCraft
 				Others_ << newTab;
 
 				emit addNewTab (tr ("Summary"), newTab);
-				emit changeTabIcon (newTab, QIcon (":/resources/images/summary.svg"));
+				emit changeTabIcon (newTab, QIcon (":/plugins/summary/resources/images/summary.svg"));
 				emit raiseTab (newTab);
 			}
 

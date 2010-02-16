@@ -88,7 +88,7 @@ namespace LeechCraft
 
 			QIcon Summary::GetIcon () const
 			{
-				return QIcon (":/resources/images/summary.svg");
+				return QIcon (":/plugins/summary/resources/images/summary.svg");
 			}
 
 			QStringList Summary::Provides () const
