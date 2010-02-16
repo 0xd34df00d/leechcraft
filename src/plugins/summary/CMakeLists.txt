@@ -49,7 +49,7 @@ SET (FORMS
 SET (TRANSLATIONS
 	leechcraft_summary_ru_RU.ts
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES summaryresources.qrc)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_ru_RU.qm
 	)
