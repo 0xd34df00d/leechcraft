@@ -58,7 +58,7 @@ SET (FORMS
 	tagsasker.ui
 	)
 SET (RESOURCES
-	resources.qrc
+	seekthruresources.qrc
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_seekthru_ru_RU.qm
