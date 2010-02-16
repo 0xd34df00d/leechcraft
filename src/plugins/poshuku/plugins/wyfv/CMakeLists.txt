@@ -32,7 +32,7 @@ SET (WYFV_FORMS
 	relateditem.ui
 	)
 SET (WYFV_RESOURCES
-	resources.qrc
+	poshukuwyfvresources.qrc
 	)
 SET (WYFV_TRANSLATIONS
 	leechcraft_poshuku_wyfv_ru_RU.ts
