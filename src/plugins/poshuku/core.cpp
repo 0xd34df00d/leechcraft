@@ -875,19 +875,27 @@ namespace LeechCraft
 				if (IsShuttingDown_ || !Initialized_)
 					return;
 			
-				int pos = 0;
+				QList<QString> titles;
+				QList<QString> urls;
+				QList<BrowserWidgetSettings> bwsettings;
+				for (widgets_t::const_iterator i = Widgets_.begin (),
+						end = Widgets_.end (); i != end; ++i)
+				{
+					titles << (*i)->GetView ()->title ();
+					urls << (*i)->GetView ()->url ().toString ();
+					bwsettings << (*i)->GetWidgetSettings ();
+				}
+
 				QSettings settings (QCoreApplication::organizationName (),
 						QCoreApplication::applicationName () + "_Poshuku");
 				settings.beginWriteArray ("Saved session");
 				settings.remove ("");
-				for (widgets_t::const_iterator i = Widgets_.begin (),
-						end = Widgets_.end (); i != end; ++i)
+				for (int i = 0; i < titles.size (); ++i)
 				{
-					settings.setArrayIndex (pos++);
-					settings.setValue ("Title", (*i)->GetView ()->title ());
-					settings.setValue ("URL", (*i)->GetView ()->url ().toString ());
-					settings.setValue ("Settings",
-							QVariant::fromValue<BrowserWidgetSettings> ((*i)->GetWidgetSettings ()));
+					settings.setArrayIndex (i);
+					settings.setValue ("Title", titles.at (i));
+					settings.setValue ("URL", urls.at (i));
+					settings.setValue ("Settings", QVariant::fromValue<BrowserWidgetSettings> (bwsettings.at (i)));
 				}
 				settings.endArray ();
 			}
