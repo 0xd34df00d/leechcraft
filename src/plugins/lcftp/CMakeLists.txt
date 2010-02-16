@@ -61,7 +61,7 @@ SET (FORMS
 	tabwidget.ui
 	summarytab.ui
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES lcftpresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_lcftp_ru_RU.ts
 	leechcraft_lcftp_uk_UA.ts
