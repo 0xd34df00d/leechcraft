@@ -39,7 +39,7 @@ SET (HEADERS
 SET (TRANSLATIONS
 	leechcraft_anhero_ru_RU.ts
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES anheroresources.qrc)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_anhero_ru_RU.qm
 	)
