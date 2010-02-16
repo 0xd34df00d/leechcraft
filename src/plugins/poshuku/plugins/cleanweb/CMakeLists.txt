@@ -36,7 +36,7 @@ SET (CLEANWEB_FORMS
 	ruleoptiondialog.ui
 	)
 SET (CLEANWEB_RESOURCES
-	resources.qrc
+	poshukucleanwebresources.qrc
 	)
 SET (CLEANWEB_TRANSLATIONS
 	leechcraft_poshuku_cleanweb_ru_RU.ts
