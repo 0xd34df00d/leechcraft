@@ -48,7 +48,7 @@ SET (FORMS
 	addtask.ui
 	)
 SET (RESOURCES
-	resources.qrc
+	cstpresources.qrc
 	)
 SET (TRANSLATIONS
 	leechcraft_cstp_ru_RU.ts
