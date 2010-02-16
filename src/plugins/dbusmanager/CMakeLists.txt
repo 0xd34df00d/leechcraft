@@ -51,7 +51,7 @@ SET (HEADERS
 SET (FORMS
 	)
 SET (RESOURCES
-	resources.qrc
+	dbusmanagerresources.qrc
 	)
 SET (TRANSLATIONS
 	leechcraft_dbusmanager_ru_RU.ts
