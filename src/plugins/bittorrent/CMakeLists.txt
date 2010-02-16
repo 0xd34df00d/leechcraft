@@ -126,7 +126,7 @@ SET (FORMS
 	banpeersdialog.ui
 	ipfilterdialog.ui
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES bittorrentresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_bittorrent_ru_RU.ts
 	leechcraft_bittorrent_uk_UA.ts
