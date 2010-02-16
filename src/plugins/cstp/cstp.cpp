@@ -135,7 +135,7 @@ namespace LeechCraft
 			
 			QIcon CSTP::GetIcon () const
 			{
-				return QIcon (":/resources/images/cstp.svg");
+				return QIcon (":/plugins/cstp/resources/images/cstp.svg");
 			}
 			
 			qint64 CSTP::GetDownloadSpeed () const

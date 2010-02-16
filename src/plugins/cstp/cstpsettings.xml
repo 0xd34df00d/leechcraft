@@ -51,47 +51,47 @@
 					<label lang="ru" value="Предустановленный user agent:" />
 					<option default="true" value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Firefox/3.0.1">
 						<label lang="en" value="Firefox 3.0.1 on Linux i686" />
-						<binary type="image" place="rcc">:/resources/images/clients/firefox.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/firefox.png</binary>
 					</option>
 					<option value="Mozilla/4.0 (Compatible; MSIE 7.0; Windows NT 5.1)">
 						<label lang="en" value="Internet Explorer 6.0 on Windows XP" />
-						<binary type="image" place="rcc">:/resources/images/clients/ie7.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/ie7.png</binary>
 					</option>
 					<option value="Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)">
 						<label lang="en" value="Internet Explorer 7.0 on Windows Vista" />
-						<binary type="image" place="rcc">:/resources/images/clients/ie7.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/ie7.png</binary>
 					</option>
 					<option value="Mozilla/4.0 (compatible; MSIE 4.0; Windows 98)">
 						<label lang="en" value="Internet Explorer 4.0 on Windows 98" />
-						<binary type="image" place="rcc">:/resources/images/clients/ie4.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/ie4.png</binary>
 					</option>
 					<option value="Mozilla/1.22 (compatible; MSIE 2.0; Windows 95)">
 						<label lang="en" value="Internet Explorer 2.0 on Windows 95" />
-						<binary type="image" place="rcc">:/resources/images/clients/ie2.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/ie2.png</binary>
 					</option>
 					<option value="Mozilla/5.0 (compatible; Konqueror/4.0; Linux) KHTML/4.0.2 (like Gecko)">
 						<label lang="en" value="Konqueror 4.0" />
-						<binary type="image" place="rcc">:/resources/images/clients/konqueror4.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/konqueror4.png</binary>
 					</option>
 					<option value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.16) Gecko/20080718 SeaMonkey/1.1.11">
 						<label lang="en" value="SeaMonkey 1.1.11 on Linux i686" />
-						<binary type="image" place="rcc">:/resources/images/clients/seamonkey.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/seamonkey.png</binary>
 					</option>
 					<option value="Opera/9.52 (X11; Linux x86_64; U; en)">
 						<label lang="en" value="Opera 9.52 on Linux x86_64" />
-						<binary type="image" place="rcc">:/resources/images/clients/opera.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/opera.png</binary>
 					</option>
 					<option value="Wget/1.9.1">
 						<label lang="en" value="Wget 1.9.1" />
-						<binary type="image" place="rcc">:/resources/images/clients/console.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/console.png</binary>
 					</option>
 					<option value="w3m/0.5.2">
 						<label lang="en" value="w3m 0.5.2" />
-						<binary type="image" place="rcc">:/resources/images/clients/console.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/console.png</binary>
 					</option>
 					<option value="Lynx/2.8.7dev.4 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/0.9.8d">
 						<label lang="en" value="Lynx 2.8.7 with OpenSSL" />
-						<binary type="image" place="rcc">:/resources/images/clients/console.png</binary>
+						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/console.png</binary>
 					</option>
 				</item>
 			</groupbox>

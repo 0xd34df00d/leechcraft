@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="/" >
+  <qresource prefix="/plugins/cstp/" >
     <file>resources/images/clients/firefox.png</file>
     <file>resources/images/clients/ie2.png</file>
     <file>resources/images/clients/ie4.png</file>
