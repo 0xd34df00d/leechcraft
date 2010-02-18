@@ -18,7 +18,8 @@
 
 #include <iostream>
 #include <algorithm>
-#include <QtGui/QtGui>
+#include <QMessageBox>
+#include <QCloseEvent>
 #include <QModelIndex>
 #include <QChildEvent>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
