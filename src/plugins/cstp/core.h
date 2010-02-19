@@ -52,7 +52,6 @@ namespace LeechCraft
 		{
 			class Task;
 			class HistoryModel;
-			class RepresentationModel;
 			class MorphFile;
 
 			namespace _Local
@@ -81,7 +80,6 @@ namespace LeechCraft
 				};
 				typedef std::vector<TaskDescr> tasks_t;
 				tasks_t ActiveTasks_;
-				RepresentationModel *RepresentationModel_;
 				bool SaveScheduled_;
 				QNetworkAccessManager *NetworkAccessManager_;
 				QToolBar *Toolbar_;

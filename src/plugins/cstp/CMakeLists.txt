@@ -30,7 +30,6 @@ SET (SRCS
 	addtask.cpp
 	xmlsettingsmanager.cpp
 	mainviewdelegate.cpp
-	representationmodel.cpp
 	morphfile.cpp
 	)
 SET (HEADERS
@@ -41,7 +40,6 @@ SET (HEADERS
 	addtask.h
 	xmlsettingsmanager.h
 	mainviewdelegate.h
-	representationmodel.h
 	morphfile.h
 	)
 SET (FORMS

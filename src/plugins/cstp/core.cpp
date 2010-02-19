@@ -29,7 +29,6 @@
 #include <plugininterface/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
-#include "representationmodel.h"
 #include "morphfile.h"
 #include "addtask.h"
 
@@ -40,8 +39,7 @@ namespace LeechCraft
 		namespace CSTP
 		{
 			Core::Core ()
-			: RepresentationModel_ (new RepresentationModel ())
-			, SaveScheduled_ (false)
+			: SaveScheduled_ (false)
 			, Toolbar_ (0)
 			{
 				setObjectName ("CSTP Core");
@@ -50,12 +48,7 @@ namespace LeechCraft
 			
 				Headers_ << tr ("URL")
 					<< tr ("State")
-					<< tr ("Progress")
-					<< tr ("Speed")
-					<< tr ("ETA")
-					<< tr ("DTA");
-			
-				RepresentationModel_->setSourceModel (this);
+					<< tr ("Progress");
 			
 				ReadSettings ();
 			}
@@ -73,8 +66,6 @@ namespace LeechCraft
 			void Core::Release ()
 			{
 				writeSettings ();
-				delete RepresentationModel_;
-				RepresentationModel_ = 0;
 			}
 
 			void Core::SetCoreProxy (ICoreProxy_ptr proxy)
@@ -327,7 +318,7 @@ namespace LeechCraft
 			
 			QAbstractItemModel* Core::GetRepresentationModel ()
 			{
-				return RepresentationModel_;
+				return this;
 			}
 			
 			QNetworkAccessManager* Core::GetNetworkAccessManager () const
@@ -364,33 +355,10 @@ namespace LeechCraft
 						case HURL:
 							return task->GetURL ();
 						case HState:
-							return td.ErrorFlag_ ?
-								task->GetErrorString () : task->GetState ();
-						case HProgress:
 							{
-								qint64 done = task->GetDone (),
-									   total = task->GetTotal ();
-								int progress = total ? done * 100 / total : 0;
-								if (done > -1)
-								{
-									if (total > -1)
-										return QString (tr ("%1% (%2 of %3)"))
-											.arg (progress)
-											.arg (Util::MakePrettySize (done))
-											.arg (Util::MakePrettySize (total));
-									else
-										return QString (tr ("%1"))
-											.arg (Util::MakePrettySize (done));
-								}
-								else
-									return QString ("");
-							}
-						case HSpeed:
-							return task->IsRunning () ?
-								Util::MakePrettySize (task->GetSpeed ()) + tr ("/s") :
-								QVariant ();
-						case HRemaining:
-							{
+								if (td.ErrorFlag_)
+									return task->GetErrorString ();
+
 								if (!task->IsRunning ())
 									return QVariant ();
 			
@@ -400,12 +368,30 @@ namespace LeechCraft
 			
 								qint64 rem = (total - done) / speed;
 			
-								return Util::MakeTimeFromLong (rem);
+								return tr ("%1 (ETA: %2)")
+									.arg (task->GetState ())
+									.arg (Util::MakeTimeFromLong (rem));
 							}
-						case HDownloading:
-							return task->IsRunning () ?
-								Util::MakeTimeFromLong (task->GetTimeFromStart () / 1000)
-								: QVariant ();;
+						case HProgress:
+							{
+								qint64 done = task->GetDone (),
+									   total = task->GetTotal ();
+								int progress = total ? done * 100 / total : 0;
+								if (done > -1)
+								{
+									if (total > -1)
+										return QString (tr ("%1% (%2 of %3 at %44)"))
+											.arg (progress)
+											.arg (Util::MakePrettySize (done))
+											.arg (Util::MakePrettySize (total))
+											.arg (Util::MakePrettySize (task->GetSpeed ()) + tr ("/s"));
+									else
+										return QString (tr ("%1"))
+											.arg (Util::MakePrettySize (done));
+								}
+								else
+									return QString ("");
+							}
 						default:
 							return QVariant ();
 					}
