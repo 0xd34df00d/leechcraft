@@ -133,7 +133,7 @@ namespace LeechCraft
 
 			void Poshuku::SecondInit ()
 			{
-				QTimer::singleShot (4000,
+				QTimer::singleShot (1000,
 						this,
 						SLOT (setHtml ()));
 			}
