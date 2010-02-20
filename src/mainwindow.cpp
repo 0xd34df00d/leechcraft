@@ -203,7 +203,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionGlance_->setProperty ("ActionIcon", "glance");
 
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
-	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionNewTab_);
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionCloseTab_);
 	connect (Ui_.MainTabWidget_,
 			SIGNAL (newTabRequested ()),
@@ -645,8 +644,11 @@ void LeechCraft::MainWindow::FillToolMenu ()
 		Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
 	}
 
-	Ui_.ActionNewTab_->setMenu (Core::Instance ()
-			.GetTabContainer ()->GetNewTabMenu ());
+	QMenu *ntm = Core::Instance ()
+		.GetTabContainer ()->GetNewTabMenu ();
+	Ui_.ActionNewTab_->setMenu (ntm);
+	Q_FOREACH (QAction *act, ntm->actions ())
+		Ui_.MainTabWidget_->AddAction2TabBar (act);
 
 	on_MainTabWidget__currentChanged (0);
 }
