@@ -47,8 +47,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>528</width>
-         <height>1354</height>
+         <width>542</width>
+         <height>1099</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -60,12 +60,6 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>200</height>
-           </size>
-          </property>
           <property name="title">
            <string>Settings</string>
           </property>
@@ -76,75 +70,85 @@
            <item row="0" column="0">
             <widget class="QLabel" name="label_20">
              <property name="text">
-              <string>Download rate:</string>
+              <string>Download/upload rate:</string>
              </property>
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QSpinBox" name="OverallDownloadRateController_">
-             <property name="specialValueText">
-              <string>Unlimited</string>
-             </property>
-             <property name="accelerated">
-              <bool>true</bool>
-             </property>
-             <property name="suffix">
-              <string> kb/s</string>
-             </property>
-             <property name="minimum">
-              <number>0</number>
-             </property>
-             <property name="maximum">
-              <number>10000</number>
-             </property>
-             <property name="singleStep">
-              <number>100</number>
-             </property>
-             <property name="value">
-              <number>0</number>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QSpinBox" name="OverallDownloadRateController_">
+               <property name="specialValueText">
+                <string>Unlimited</string>
+               </property>
+               <property name="accelerated">
+                <bool>true</bool>
+               </property>
+               <property name="suffix">
+                <string> kb/s</string>
+               </property>
+               <property name="minimum">
+                <number>0</number>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+               <property name="singleStep">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_99">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>/</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="OverallUploadRateController_">
+               <property name="specialValueText">
+                <string>Unlimited</string>
+               </property>
+               <property name="accelerated">
+                <bool>true</bool>
+               </property>
+               <property name="suffix">
+                <string> kb/s</string>
+               </property>
+               <property name="minimum">
+                <number>0</number>
+               </property>
+               <property name="maximum">
+                <number>10000</number>
+               </property>
+               <property name="singleStep">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item row="1" column="0">
-            <widget class="QLabel" name="label_21">
-             <property name="text">
-              <string>Upload rate:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QSpinBox" name="OverallUploadRateController_">
-             <property name="specialValueText">
-              <string>Unlimited</string>
-             </property>
-             <property name="accelerated">
-              <bool>true</bool>
-             </property>
-             <property name="suffix">
-              <string> kb/s</string>
-             </property>
-             <property name="minimum">
-              <number>0</number>
-             </property>
-             <property name="maximum">
-              <number>10000</number>
-             </property>
-             <property name="singleStep">
-              <number>100</number>
-             </property>
-             <property name="value">
-              <number>0</number>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
             <widget class="QLabel" name="label_33">
              <property name="text">
               <string>Desired rating:</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="1" column="1">
             <widget class="QDoubleSpinBox" name="DesiredRating_">
              <property name="specialValueText">
               <string>Infinite</string>
@@ -154,51 +158,61 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="2" column="0">
             <widget class="QLabel" name="label_41">
              <property name="text">
-              <string>Leeching torrents:</string>
+              <string>Leeching/seeding torrents:</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
-            <widget class="QSpinBox" name="DownloadingTorrents_">
-             <property name="specialValueText">
-              <string>Unlimited</string>
-             </property>
-             <property name="minimum">
-              <number>-1</number>
-             </property>
-             <property name="maximum">
-              <number>1000</number>
-             </property>
-             <property name="value">
-              <number>-1</number>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_83">
-             <property name="text">
-              <string>Seeding torrents:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QSpinBox" name="UploadingTorrents_">
-             <property name="specialValueText">
-              <string>Unlimited</string>
-             </property>
-             <property name="minimum">
-              <number>-1</number>
-             </property>
-             <property name="maximum">
-              <number>1000</number>
-             </property>
-             <property name="value">
-              <number>-1</number>
-             </property>
-            </widget>
+           <item row="2" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QSpinBox" name="DownloadingTorrents_">
+               <property name="specialValueText">
+                <string>Unlimited</string>
+               </property>
+               <property name="minimum">
+                <number>-1</number>
+               </property>
+               <property name="maximum">
+                <number>1000</number>
+               </property>
+               <property name="value">
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_83">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>/</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="UploadingTorrents_">
+               <property name="specialValueText">
+                <string>Unlimited</string>
+               </property>
+               <property name="minimum">
+                <number>-1</number>
+               </property>
+               <property name="maximum">
+                <number>1000</number>
+               </property>
+               <property name="value">
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -209,6 +223,9 @@
            <string>Session stats</string>
           </property>
           <layout class="QFormLayout" name="formLayout_3">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="0" column="0">
             <widget class="QLabel" name="label_22">
              <property name="text">
@@ -358,6 +375,9 @@
            <string>Advanced session stats</string>
           </property>
           <layout class="QFormLayout" name="formLayout_8">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="6" column="0">
             <widget class="QLabel" name="label_66">
              <property name="text">
@@ -572,6 +592,9 @@
            <string>Cache stats</string>
           </property>
           <layout class="QFormLayout" name="formLayout">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="0" column="0">
             <widget class="QLabel" name="label_48">
              <property name="text">
@@ -749,8 +772,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>528</width>
-         <height>1448</height>
+         <width>542</width>
+         <height>1182</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -794,66 +817,76 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label_34">
                <property name="text">
-                <string>Download rate:</string>
+                <string>Download/upload rate:</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QSpinBox" name="TorrentDownloadRateController_">
-               <property name="specialValueText">
-                <string>Unlimited</string>
-               </property>
-               <property name="accelerated">
-                <bool>true</bool>
-               </property>
-               <property name="suffix">
-                <string> kb/s</string>
-               </property>
-               <property name="maximum">
-                <number>10000</number>
-               </property>
-               <property name="singleStep">
-                <number>100</number>
-               </property>
-               <property name="value">
-                <number>0</number>
-               </property>
-              </widget>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <widget class="QSpinBox" name="TorrentDownloadRateController_">
+                 <property name="specialValueText">
+                  <string>Unlimited</string>
+                 </property>
+                 <property name="accelerated">
+                  <bool>true</bool>
+                 </property>
+                 <property name="suffix">
+                  <string> kb/s</string>
+                 </property>
+                 <property name="maximum">
+                  <number>10000</number>
+                 </property>
+                 <property name="singleStep">
+                  <number>100</number>
+                 </property>
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_105">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>/</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="TorrentUploadRateController_">
+                 <property name="specialValueText">
+                  <string>Unlimited</string>
+                 </property>
+                 <property name="suffix">
+                  <string> kb/s</string>
+                 </property>
+                 <property name="maximum">
+                  <number>10000</number>
+                 </property>
+                 <property name="singleStep">
+                  <number>100</number>
+                 </property>
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="label_65">
-               <property name="text">
-                <string>Upload rate:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QSpinBox" name="TorrentUploadRateController_">
-               <property name="specialValueText">
-                <string>Unlimited</string>
-               </property>
-               <property name="suffix">
-                <string> kb/s</string>
-               </property>
-               <property name="maximum">
-                <number>10000</number>
-               </property>
-               <property name="singleStep">
-                <number>100</number>
-               </property>
-               <property name="value">
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
               <widget class="QLabel" name="label_36">
                <property name="text">
                 <string>Desired rating:</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="1" column="1">
               <widget class="QDoubleSpinBox" name="TorrentDesiredRating_">
                <property name="specialValueText">
                 <string>Infinite</string>
@@ -863,14 +896,14 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="2" column="0">
               <widget class="QLabel" name="label_44">
                <property name="text">
                 <string>Tags:</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="2" column="1">
               <widget class="LeechCraft::Util::TagsLineEdit" name="TorrentTags_"/>
              </item>
             </layout>
@@ -904,7 +937,6 @@
             </layout>
            </item>
           </layout>
-          <zorder></zorder>
          </widget>
         </item>
         <item>
@@ -913,6 +945,9 @@
            <string>Status</string>
           </property>
           <layout class="QFormLayout" name="formLayout_6">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="0" column="0">
             <widget class="QLabel" name="label">
              <property name="text">
@@ -1052,6 +1087,9 @@
            <string>Advanced status</string>
           </property>
           <layout class="QFormLayout" name="formLayout_9">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="4" column="0">
             <widget class="QLabel" name="label_43">
              <property name="text">
@@ -1188,7 +1226,7 @@
           </property>
           <layout class="QFormLayout" name="formLayout_4">
            <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::ExpandingFieldsGrow</enum>
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
            </property>
            <item row="0" column="0">
             <widget class="QLabel" name="label_5">
@@ -1215,6 +1253,9 @@
             <widget class="QLabel" name="LabelDestination_">
              <property name="text">
               <string/>
+             </property>
+             <property name="openExternalLinks">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -1395,6 +1436,9 @@
            <string>Peers</string>
           </property>
           <layout class="QFormLayout" name="formLayout_7">
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+           </property>
            <item row="0" column="0">
             <widget class="QLabel" name="label_2">
              <property name="text">
@@ -1666,13 +1710,13 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>504</width>
-                 <height>427</height>
+                 <width>520</width>
+                 <height>352</height>
                 </rect>
                </property>
                <layout class="QFormLayout" name="formLayout_10">
                 <property name="fieldGrowthPolicy">
-                 <enum>QFormLayout::ExpandingFieldsGrow</enum>
+                 <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                 </property>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_74">
