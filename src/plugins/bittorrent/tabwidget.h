@@ -42,7 +42,7 @@ namespace LeechCraft
 				QAction *AddWebSeed_;
 				QAction *RemoveWebSeed_;
 			public:
-				TabWidget (QWidget* = 0);
+				TabWidget (QAction*, QWidget* = 0);
 
 				void InvalidateSelection ();
 				void SetOverallDownloadRateController (int);

@@ -771,9 +771,9 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>0</y>
+         <y>-439</y>
          <width>542</width>
-         <height>1182</height>
+         <height>1184</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -1236,11 +1236,18 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLabel" name="LabelTracker_">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="TrackerLayout_">
+             <item>
+              <widget class="QLabel" name="LabelTracker_">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="label_37">

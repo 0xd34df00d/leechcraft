@@ -795,8 +795,8 @@ namespace LeechCraft
 
 				Core::Instance ()->DoDelayedInit ();
 
-				TabWidget_.reset (new TabWidget ());
 				SetupActions ();
+				TabWidget_.reset (new TabWidget (ChangeTrackers_.get ()));
 				TorrentSelectionChanged_ = true;
 				LastPeersUpdate_.reset (new QTime);
 				LastPeersUpdate_->start ();
