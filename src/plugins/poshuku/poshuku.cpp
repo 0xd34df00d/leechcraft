@@ -199,9 +199,9 @@ namespace LeechCraft
 				Ui_.MainView_->NewTabRequested ();
 			}
 			
-			QByteArray Poshuku::GetExpectedPluginClass () const
+			QSet<QByteArray> Poshuku::GetExpectedPluginClasses () const
 			{
-				return Core::Instance ().GetExpectedPluginClass ();
+				return Core::Instance ().GetExpectedPluginClasses ();
 			}
 			
 			void Poshuku::AddPlugin (QObject *plugin)

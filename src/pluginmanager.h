@@ -106,7 +106,7 @@ namespace LeechCraft
 		void CheckPlugins ();
 
 		QList<PluginsContainer_t::iterator> FindProviders (const QString&);
-		QList<PluginsContainer_t::iterator> FindProviders (const QByteArray&);
+		QList<PluginsContainer_t::iterator> FindProviders (const QSet<QByteArray>&);
 
 		/** Returns dependency item that matches the given object.
 		 */

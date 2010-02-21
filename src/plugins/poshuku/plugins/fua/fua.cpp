@@ -125,9 +125,11 @@ void FUA::SetProvider (QObject*, const QString&)
 {
 }
 
-QByteArray FUA::GetPluginClass () const
+QSet<QByteArray> FUA::GetPluginClasses () const
 {
-	return QByteArray (typeid (PluginBase).name ());
+	QSet<QByteArray> result;
+	result << "org.LeechCraft.Poshuku.Plugins/1.0";
+	return result;
 }
 
 boost::shared_ptr<XmlSettingsDialog> FUA::GetSettingsDialog () const

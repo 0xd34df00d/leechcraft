@@ -57,7 +57,7 @@ namespace LeechCraft
 						QStringList Uses () const;
 						void SetProvider (QObject*, const QString&);
 
-						QByteArray GetPluginClass () const;
+						QSet<QByteArray> GetPluginClasses () const;
 
 						void Init (IProxyObject*);
 

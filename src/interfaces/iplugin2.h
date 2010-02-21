@@ -20,6 +20,7 @@
 #define INTERFACES_IPLUGIN2_H
 #include <QtPlugin>
 #include <QByteArray>
+#include <QSet>
 
 /** @brief Base class for second-level plugins.
  *
@@ -30,20 +31,20 @@
  * matching first-level plugins with second-level ones.
  *
  * Plugins of different levels are matched with each other by their
- * class, which is returned by IPlugin2::GetPluginClass() and by
- * IPluginReady::GetExpectedPluginClass().
+ * class, which is returned by IPlugin2::GetPluginClasses() and by
+ * IPluginReady::GetExpectedPluginClasses().
  */
 class IPlugin2
 {
 public:
-	/** @brief Returns the plugin class of this second-level plugin.
+	/** @brief Returns the plugin classes of this second-level plugin.
 	 *
 	 * @note This function should be able to work before IInfo::Init()
 	 * is called.
 	 *
-	 * @return The plugin class.
+	 * @return The plugin classes.
 	 */
-	virtual QByteArray GetPluginClass () const = 0;
+	virtual QSet<QByteArray> GetPluginClasses () const = 0;
 
 	virtual ~IPlugin2 () {}
 };

@@ -478,7 +478,7 @@ namespace LeechCraft
 	}
 
 	QList<PluginManager::PluginsContainer_t::iterator>
-		PluginManager::FindProviders (const QByteArray& expected)
+		PluginManager::FindProviders (const QSet<QByteArray>& expecteds)
 	{
 		QList<PluginsContainer_t::iterator> result;
 		for (PluginsContainer_t::iterator i = Plugins_.begin ();
@@ -487,9 +487,12 @@ namespace LeechCraft
 			IPlugin2 *ip2 = qobject_cast<IPlugin2*> ((*i)->instance ());
 			try
 			{
-				if (ip2 &&
-						ip2->GetPluginClass () == expected)
-					result << i;
+				if (ip2)
+				{
+					QSet<QByteArray> pcs = ip2->GetPluginClasses ();
+					if (!pcs.intersect (expecteds).isEmpty ())
+						result << i;
+				}
 			}
 			catch (const std::exception& e)
 			{
@@ -683,7 +686,7 @@ namespace LeechCraft
 		if (ipr)
 		{
 			QList<PluginsContainer_t::iterator> providers =
-				FindProviders (ipr->GetExpectedPluginClass ());
+				FindProviders (ipr->GetExpectedPluginClasses ());
 			Q_FOREACH (PluginsContainer_t::iterator p,
 					providers)
 			{

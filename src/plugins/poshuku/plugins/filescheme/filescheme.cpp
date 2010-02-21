@@ -88,9 +88,11 @@ namespace LeechCraft
 					{
 					}
 
-					QByteArray FileScheme::GetPluginClass () const
+					QSet<QByteArray> FileScheme::GetPluginClasses () const
 					{
-						return QByteArray (typeid (PluginBase).name ());
+						QSet<QByteArray> result;
+						result << "org.LeechCraft.Poshuku.Plugins/1.0";
+						return result;
 					}
 
 					void FileScheme::Init (IProxyObject*)

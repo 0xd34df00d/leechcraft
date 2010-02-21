@@ -67,7 +67,7 @@ namespace LeechCraft
 						bool CouldHandle (const DownloadEntity&) const;
 						void Handle (DownloadEntity);
 
-						QByteArray GetPluginClass () const;
+						QSet<QByteArray> GetPluginClasses () const;
 
 						void Init (IProxyObject*);
 						bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);

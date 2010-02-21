@@ -71,7 +71,7 @@ namespace LeechCraft
 						QStringList Uses () const;
 						void SetProvider (QObject*, const QString&);
 
-						QByteArray GetPluginClass () const;
+						QSet<QByteArray> GetPluginClasses () const;
 
 						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 

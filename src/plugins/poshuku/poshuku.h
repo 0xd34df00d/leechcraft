@@ -77,7 +77,7 @@ namespace LeechCraft
 				void Remove ();
 				void NewTabRequested ();
 
-				QByteArray GetExpectedPluginClass () const;
+				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;

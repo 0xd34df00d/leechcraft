@@ -95,9 +95,11 @@ namespace LeechCraft
 						return SettingsDialog_;
 					}
 
-					QByteArray WYFV::GetPluginClass () const
+					QSet<QByteArray> WYFV::GetPluginClasses () const
 					{
-						return QByteArray (typeid (PluginBase).name ());
+						QSet<QByteArray> result;
+						result << "org.LeechCraft.Poshuku.Plugins/1.0";
+						return result;
 					}
 
 					void WYFV::Init (LeechCraft::Plugins::Poshuku::IProxyObject*)

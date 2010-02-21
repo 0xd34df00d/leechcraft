@@ -114,7 +114,7 @@ namespace LeechCraft
 				WebPluginFactory* GetWebPluginFactory ();
 
 				void SetProvider (QObject*, const QString&);
-				QByteArray GetExpectedPluginClass () const;
+				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
 
 				QUrl MakeURL (QString) const;

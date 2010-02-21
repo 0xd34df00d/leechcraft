@@ -124,9 +124,11 @@ void CleanWeb::Handle (DownloadEntity e)
 	Core::Instance ().Handle (e);
 }
 
-QByteArray CleanWeb::GetPluginClass () const
+QSet<QByteArray> CleanWeb::GetPluginClasses () const
 {
-	return QByteArray (typeid (PluginBase).name ());
+	QSet<QByteArray> result;
+	result << "org.LeechCraft.Poshuku.Plugins/1.0";
+	return result;
 }
 
 void CleanWeb::Init (LeechCraft::Plugins::Poshuku::IProxyObject*)

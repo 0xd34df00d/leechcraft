@@ -215,9 +215,11 @@ namespace LeechCraft
 				Providers_ [feature] = object;
 			}
 			
-			QByteArray Core::GetExpectedPluginClass () const
+			QSet<QByteArray> Core::GetExpectedPluginClasses () const
 			{
-				return QByteArray (typeid (PluginBase).name ());
+				QSet<QByteArray> result;
+				result << "org.LeechCraft.Poshuku.Plugins/1.0";
+				return result;
 			}
 			
 			void Core::AddPlugin (QObject *plugin)

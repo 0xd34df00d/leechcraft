@@ -65,7 +65,7 @@ namespace LeechCraft
 
 						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-						QByteArray GetPluginClass () const;
+						QSet<QByteArray> GetPluginClasses () const;
 
 						void Init (IProxyObject*);
 						bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
