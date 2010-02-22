@@ -2,19 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name></name>
-    <message>
-        <location filename="config.h" line="6"/>
-        <source>VERSION leechcraft::chatter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="config.h" line="7"/>
-        <source>leech well</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>FsIrcView</name>
     <message>
         <location filename="fsircview.cpp" line="207"/>
@@ -100,28 +87,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="irc.cpp" line="562"/>
+        <location filename="irc.cpp" line="563"/>
         <source>Disconnected from server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="irc.cpp" line="600"/>
+        <location filename="irc.cpp" line="601"/>
         <source>Encoding has been set to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="irc.cpp" line="604"/>
+        <location filename="irc.cpp" line="605"/>
         <source>No such encoding!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="irc.cpp" line="623"/>
+        <location filename="irc.cpp" line="624"/>
         <source>Invalid IRC URI</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="irc.h" line="47"/>
-        <source>See ya in hell!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -144,9 +126,9 @@
     </message>
 </context>
 <context>
-    <name>Plugin</name>
+    <name>LeechCraft::Plugins::Chatter::Plugin</name>
     <message>
-        <location filename="chatter.cpp" line="45"/>
+        <location filename="chatter.cpp" line="49"/>
         <source>Allows to chat in IRC</source>
         <translation type="unfinished"></translation>
     </message>

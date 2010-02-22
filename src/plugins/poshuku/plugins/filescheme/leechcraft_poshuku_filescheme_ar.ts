@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::FileScheme::FileScheme</name>
     <message>
-        <location filename="filescheme.cpp" line="41"/>
+        <location filename="filescheme.cpp" line="64"/>
         <source>Provides support for file:// scheme.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12,37 +12,37 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::FileScheme::SchemeReply</name>
     <message>
-        <location filename="schemereply.cpp" line="31"/>
+        <location filename="schemereply.cpp" line="50"/>
         <source>No error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="89"/>
+        <location filename="schemereply.cpp" line="108"/>
         <source>%1: no such file or directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="99"/>
+        <location filename="schemereply.cpp" line="118"/>
         <source>Unable to read %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="181"/>
+        <location filename="schemereply.cpp" line="200"/>
         <source>Contents of %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="183"/>
+        <location filename="schemereply.cpp" line="202"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="184"/>
+        <location filename="schemereply.cpp" line="203"/>
         <source>Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="185"/>
+        <location filename="schemereply.cpp" line="204"/>
         <source>Modified</source>
         <translation type="unfinished"></translation>
     </message>

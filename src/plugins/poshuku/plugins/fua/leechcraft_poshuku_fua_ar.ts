@@ -36,22 +36,22 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA</name>
     <message>
-        <location filename="fua.cpp" line="42"/>
+        <location filename="fua.cpp" line="60"/>
         <source>Domain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="43"/>
+        <location filename="fua.cpp" line="61"/>
         <source>Agent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="44"/>
+        <location filename="fua.cpp" line="62"/>
         <source>Identification string</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="79"/>
+        <location filename="fua.cpp" line="101"/>
         <source>Allows to set fake user agents for different sites.</source>
         <translation type="unfinished"></translation>
     </message>
