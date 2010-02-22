@@ -700,9 +700,9 @@ namespace LeechCraft
 			
 			void TorrentPlugin::on_ChangeTrackers__triggered ()
 			{
-				QStringList trackers = Core::Instance ()->GetTrackers ();
-				TrackersChanger changer;
-				changer.SetTrackers (trackers);
+				TrackersChanger changer (Core::Instance ()->
+						GetProxy ()->GetMainWindow ());
+				changer.SetTrackers (Core::Instance ()->GetTrackers ());
 				if (changer.exec () == QDialog::Accepted)
 					Core::Instance ()->SetTrackers (changer.GetTrackers ());
 			}

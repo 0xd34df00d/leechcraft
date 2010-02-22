@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_TRACKERSCHANGER_H
-#define PLUGINS_BITTORRENT_TRACKERSCHANGER_H
+#ifndef PLUGINS_BITTORRENT_SINGLETRACKERCHANGER_H
+#define PLUGINS_BITTORRENT_SINGLETRACKERCHANGER_H
 #include <QDialog>
-#include <libtorrent/torrent_info.hpp>
-#include "ui_trackerschanger.h"
+#include "ui_singletrackerchanger.h"
 
 namespace LeechCraft
 {
@@ -28,20 +27,18 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			class TrackersChanger : public QDialog
+			class SingleTrackerChanger : public QDialog
 			{
 				Q_OBJECT
 
-				Ui::TrackersChanger Ui_;
+				Ui::SingleTrackerChanger Ui_;
 			public:
-				TrackersChanger (QWidget* = 0);
-				void SetTrackers (const std::vector<libtorrent::announce_entry>&);
-				std::vector<libtorrent::announce_entry> GetTrackers () const;
-			private slots:
-				void currentItemChanged (QTreeWidgetItem*);
-				void on_ButtonAdd__released ();
-				void on_ButtonModify__released ();
-				void on_ButtonRemove__released ();
+				SingleTrackerChanger (QWidget* = 0);
+
+				void SetTracker (const QString&);
+				void SetTier (int);
+				QString GetTracker () const;
+				int GetTier () const;
 			};
 		};
 	};

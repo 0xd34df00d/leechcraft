@@ -261,10 +261,10 @@ namespace LeechCraft
 				void RemoveWebSeed (const QString&, bool);
 				void SetFilePriority (int, int);
 				void SetFilename (int, const QString&);
-				QStringList GetTrackers () const;
-				QStringList GetTrackers (int) const;
-				void SetTrackers (const QStringList&);
-				void SetTrackers (int, const QStringList&);
+				std::vector<libtorrent::announce_entry> GetTrackers () const;
+				std::vector<libtorrent::announce_entry> GetTrackers (int) const;
+				void SetTrackers (const std::vector<libtorrent::announce_entry>&);
+				void SetTrackers (int, const std::vector<libtorrent::announce_entry>&);
 				QString GetMagnetLink () const;
 				QString GetTorrentDirectory () const;
 				bool MoveTorrentFiles (const QString&);

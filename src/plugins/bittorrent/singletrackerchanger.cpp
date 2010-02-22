@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_TRACKERSCHANGER_H
-#define PLUGINS_BITTORRENT_TRACKERSCHANGER_H
-#include <QDialog>
-#include <libtorrent/torrent_info.hpp>
-#include "ui_trackerschanger.h"
+#include "singletrackerchanger.h"
+#include <QValidator>
+#include <QUrl>
 
 namespace LeechCraft
 {
@@ -28,24 +26,48 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			class TrackersChanger : public QDialog
+			class URLValidator : public QValidator
 			{
-				Q_OBJECT
-
-				Ui::TrackersChanger Ui_;
 			public:
-				TrackersChanger (QWidget* = 0);
-				void SetTrackers (const std::vector<libtorrent::announce_entry>&);
-				std::vector<libtorrent::announce_entry> GetTrackers () const;
-			private slots:
-				void currentItemChanged (QTreeWidgetItem*);
-				void on_ButtonAdd__released ();
-				void on_ButtonModify__released ();
-				void on_ButtonRemove__released ();
+				URLValidator (QObject *parent)
+				: QValidator (parent)
+				{
+				}
+
+				State validate (QString& input, int&) const
+				{
+					QUrl url (input);
+					return url.isValid () ? Acceptable : Intermediate;
+				}
 			};
+
+			SingleTrackerChanger::SingleTrackerChanger (QWidget *parent)
+			: QDialog (parent)
+			{
+				Ui_.setupUi (this);
+				Ui_.Tracker_->setValidator (new URLValidator (this));
+			}
+
+			void SingleTrackerChanger::SetTracker (const QString& tracker)
+			{
+				Ui_.Tracker_->setText (tracker);
+			}
+
+			void SingleTrackerChanger::SetTier (int tier)
+			{
+				Ui_.Tier_->setValue (tier);
+			}
+
+			QString SingleTrackerChanger::GetTracker () const
+			{
+				return Ui_.Tracker_->text ();
+			}
+
+			int SingleTrackerChanger::GetTier () const
+			{
+				return Ui_.Tier_->value ();
+			}
 		};
 	};
 };
-
-#endif
 

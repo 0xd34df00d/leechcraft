@@ -69,6 +69,7 @@ SET (SRCS
 	livestreamdevice.cpp
 	speedselectoraction.cpp
 	torrentmaker.cpp
+	singletrackerchanger.cpp
 	)
 SET (HEADERS
 	torrentplugin.h
@@ -104,6 +105,7 @@ SET (HEADERS
 	livestreamdevice.h
 	speedselectoraction.h
 	torrentmaker.h
+	singletrackerchanger.h
 	newtorrentparams.h
 	torrentinfo.h
 	fileinfo.h
@@ -125,6 +127,7 @@ SET (FORMS
 	fastspeedcontrolwidget.ui
 	banpeersdialog.ui
 	ipfilterdialog.ui
+	singletrackerchanger.ui
 	)
 SET (RESOURCES bittorrentresources.qrc)
 SET (TRANSLATIONS

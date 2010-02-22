@@ -1112,40 +1112,33 @@ namespace LeechCraft
 				ResetFiles ();
 			}
 			
-			QStringList Core::GetTrackers () const
+			std::vector<libtorrent::announce_entry> Core::GetTrackers () const
 			{
 				if (!CheckValidity (CurrentTorrent_))
-					return QStringList ();
+					return std::vector<libtorrent::announce_entry> ();
 			
-				std::vector<libtorrent::announce_entry> an = Handles_.at (CurrentTorrent_).Handle_.trackers ();
-				QStringList result;
-				for (size_t i = 0; i < an.size (); ++i)
-					result.append (QString::fromStdString (an [i].url));
-				return result;
+				return Handles_.at (CurrentTorrent_).Handle_.trackers ();
 			}
 			
-			QStringList Core::GetTrackers (int row) const
+			std::vector<libtorrent::announce_entry> Core::GetTrackers (int row) const
 			{
 				int old = CurrentTorrent_;
 				CurrentTorrent_ = row;
-				QStringList trackers = GetTrackers ();
+				std::vector<libtorrent::announce_entry> trackers = GetTrackers ();
 				CurrentTorrent_ = old;
 				return trackers;
 			}
 
-			void Core::SetTrackers (const QStringList& trackers)
+			void Core::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers)
 			{
 				if (!CheckValidity (CurrentTorrent_))
 					return;
 			
-				std::vector<libtorrent::announce_entry> announces;
-				for (int i = 0; i < trackers.size (); ++i)
-					announces.push_back (libtorrent::announce_entry (trackers.at (i).toStdString ()));
-				Handles_ [CurrentTorrent_].Handle_.replace_trackers (announces);
+				Handles_ [CurrentTorrent_].Handle_.replace_trackers (trackers);
 				Handles_ [CurrentTorrent_].Handle_.force_reannounce ();
 			}
 			
-			void Core::SetTrackers (int row, const QStringList& trackers)
+			void Core::SetTrackers (int row, const std::vector<libtorrent::announce_entry>& trackers)
 			{
 				int old = CurrentTorrent_;
 				CurrentTorrent_ = row;
@@ -1349,6 +1342,7 @@ namespace LeechCraft
 								QString::number (i->Handle_.download_limit ()));
 			
 						writer.writeStartElement ("trackers");
+						/*
 							QStringList trackers =
 								GetTrackers (std::distance (Handles_.begin (), i));
 							for (QStringList::const_iterator tracker = trackers.begin (),
@@ -1359,6 +1353,7 @@ namespace LeechCraft
 								writer.writeCharacters (*tracker);
 								writer.writeEndElement ();
 							}
+							*/
 						writer.writeEndElement ();
 			
 						writer.writeStartElement ("tags");
@@ -1868,14 +1863,6 @@ namespace LeechCraft
 					}
 			
 					handle.prioritize_files (priorities);
-					QStringList trackers = settings.value ("TrackersOverride").toStringList ();
-					if (!trackers.isEmpty ())
-					{
-						std::vector<libtorrent::announce_entry> announces;
-						for (int i = 0; i < trackers.size (); ++i)
-							announces.push_back (libtorrent::announce_entry (trackers.at (i).toStdString ()));
-						handle.replace_trackers (announces);
-					}
 			
 					TorrentStruct tmp =
 					{
@@ -2213,13 +2200,18 @@ namespace LeechCraft
 							Handles_.at (i).Handle_.save_resume_data ();
 				
 							settings.setValue ("SavePath",
-									QString::fromStdString (Handles_.at (i).Handle_.save_path ().string ()));
-							settings.setValue ("Filename", Handles_.at (i).TorrentFileName_);
-							settings.setValue ("TrackersOverride", GetTrackers ());
-							settings.setValue ("Tags", Handles_.at (i).Tags_);
-							settings.setValue ("ID", Handles_.at (i).ID_);
-							settings.setValue ("Parameters", static_cast<int> (Handles_.at (i).Parameters_));
-							settings.setValue ("AutoManaged", Handles_.at (i).AutoManaged_);
+									QString::fromStdString (Handles_.at (i)
+										.Handle_.save_path ().string ()));
+							settings.setValue ("Filename",
+									Handles_.at (i).TorrentFileName_);
+							settings.setValue ("Tags",
+									Handles_.at (i).Tags_);
+							settings.setValue ("ID",
+									Handles_.at (i).ID_);
+							settings.setValue ("Parameters",
+									static_cast<int> (Handles_.at (i).Parameters_));
+							settings.setValue ("AutoManaged",
+									Handles_.at (i).AutoManaged_);
 				
 							QByteArray prioritiesLine;
 							std::copy (Handles_.at (i).FilePriorities_.begin (),
