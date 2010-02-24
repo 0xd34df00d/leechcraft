@@ -74,6 +74,11 @@ void TabWidget::AddAction2TabBar (QAction *act)
 	TabBarActions_ << act;
 }
 
+void TabWidget::InsertAction2TabBar (int index, QAction *act)
+{
+	TabBarActions_.insert(index, act);
+}
+
 bool TabWidget::event (QEvent *e)
 {
 	if (e->type () == QEvent::ToolTip)
