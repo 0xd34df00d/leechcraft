@@ -50,7 +50,7 @@ SET (HEADERS
 SET (TRANSLATIONS
 	leechcraft_pylc_ru_RU.ts
 	)
-SET (RESOURCES resources.qrc)
+SET (RESOURCES pylcresources.qrc)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_pylc_ru_RU.qm
 	)
