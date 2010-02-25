@@ -165,6 +165,8 @@ namespace LeechCraft
 				ICoreProxy_ptr GetProxy () const;
 
 				bool CouldDownload (const LeechCraft::DownloadEntity&) const;
+				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
+				void Handle (LeechCraft::DownloadEntity);
 				PiecesModel* GetPiecesModel ();
 				void ClearPieces ();
 				void UpdatePieces ();

@@ -24,6 +24,7 @@
 #include <QMainWindow>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
+#include <interfaces/ientityhandler.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iimportexport.h>
 #include <interfaces/itaggablejobs.h>
@@ -55,6 +56,7 @@ namespace LeechCraft
 			class TorrentPlugin : public QObject
 								, public IInfo
 								, public IDownload
+								, public IEntityHandler
 								, public IJobHolder
 								, public IImportExport
 								, public ITaggableJobs
@@ -65,7 +67,7 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				Q_INTERFACES (IInfo IDownload IJobHolder IImportExport ITaggableJobs IHaveSettings IHaveShortcuts IStartupWizard IToolBarEmbedder);
+				Q_INTERFACES (IInfo IDownload IEntityHandler IJobHolder IImportExport ITaggableJobs IHaveSettings IHaveShortcuts IStartupWizard IToolBarEmbedder);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;
@@ -142,6 +144,10 @@ namespace LeechCraft
 				bool CouldDownload (const LeechCraft::DownloadEntity&) const;
 				int AddJob (LeechCraft::DownloadEntity);
 				void KillTask (int);
+
+				// IEntityHandler
+				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
+				void Handle (LeechCraft::DownloadEntity);
 
 				// IJobHolder
 				QAbstractItemModel* GetRepresentation () const;

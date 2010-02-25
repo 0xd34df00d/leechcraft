@@ -350,6 +350,15 @@ namespace LeechCraft
 					return false;
 			}
 
+			bool Core::CouldHandle (const DownloadEntity& e) const
+			{
+				return false;
+			}
+
+			void Core::Handle (DownloadEntity e)
+			{
+			}
+
 			PiecesModel* Core::GetPiecesModel ()
 			{
 				return PiecesModel_.get ();

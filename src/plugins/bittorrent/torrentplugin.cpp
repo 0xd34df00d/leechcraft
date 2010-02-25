@@ -261,6 +261,16 @@ namespace LeechCraft
 				return result;
 			}
 
+			bool TorrentPlugin::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			{
+				return Core::Instance ()->CouldHandle (e);
+			}
+
+			void TorrentPlugin::Handle (LeechCraft::DownloadEntity e)
+			{
+				Core::Instance ()->Handle (e);
+			}
+
 			void TorrentPlugin::KillTask (int id)
 			{
 				Core::Instance ()->KillTask (id);
