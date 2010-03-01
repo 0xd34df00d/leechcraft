@@ -143,33 +143,43 @@ void TabWidget::handleTabBarLocationChanged ()
 
 void TabWidget::handleTabBarContextMenu (const QPoint& pos)
 {
-	QMenu menu ("", tabBar ());
+	QMenu *menu = new QMenu ("", tabBar ());
 
 	int tabIndex = tabBar ()->tabAt (pos);
-	if (tabIndex != -1)
+	if (tabIndex != -1 &&
+			XmlSettingsManager::Instance ()->
+				property ("ShowPluginMenuInTabs").toBool ())
 	{
+		bool asSub = XmlSettingsManager::Instance ()->
+			property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
 		IMultiTabsWidget *imtw =
 			qobject_cast<IMultiTabsWidget*> (widget (tabIndex));
 		if (imtw)
 		{
 			QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
+
+			QMenu *subMenu = new QMenu (tabText (tabIndex), menu);
 			Q_FOREACH (QAction *act, tabActions)
-				menu.addAction (act);
+				(asSub ? subMenu : menu)->addAction (act);
+			if (asSub)
+				menu->addMenu (subMenu);
 			if (tabActions.size ())
-				menu.addSeparator ();
+				menu->addSeparator ();
 		}
 	}
 
 	Q_FOREACH (QAction *act, TabBarActions_)
 	{
 		act->setData (tabBar ()->mapToGlobal (pos));
-		menu.addAction (act);
+		menu->addAction (act);
 	}
 
-	menu.exec (tabBar ()->mapToGlobal (pos));
+	menu->exec (tabBar ()->mapToGlobal (pos));
 
 	Q_FOREACH (QAction *act, TabBarActions_)
 		act->setData (QVariant ());
+
+	delete menu;
 }
 
 void TabWidget::handleMoveHappened (int from, int to)

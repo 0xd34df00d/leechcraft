@@ -153,6 +153,14 @@
 					<label lang="uk" value="Слідкувати за каталогом:" />
 				</item>
 			</groupbox>
+			<item type="groupbox" property="ShowPluginMenuInTabs" state="on" checkable="true">
+				<label lang="en" value="Show plugin-dependent actions in tab bar context menu" />
+				<label lang="ru" value="Показывать зависимые от плагина действия в контекстном меню таббара" />
+				<item type="checkbox" property="ShowPluginMenuInTabsAsSubmenu" default="off">
+					<label lang="en" value="Show as a submenu" />
+					<label lang="ru" value="Показывать как подменю" />
+				</item>
+			</item>
 			<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
 				<label lang="en" value="Show messages in tray" />
 				<label lang="ru" value="Показывать сообщения в трее" />
