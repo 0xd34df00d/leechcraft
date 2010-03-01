@@ -199,9 +199,11 @@ void TabContainer::AddObject (QObject *obj)
 		{
 			QString name = ii->GetName ();
 			QIcon icon = ii->GetIcon ();
+			NewTabMenu_->removeAction (RestoreMenu_->menuAction ());
 			NewTabMenu_->addAction (icon, name,
 					obj,
 					SLOT (newTabRequested ()));
+			NewTabMenu_->addMenu (RestoreMenu_);
 		}
 		catch (const std::exception& e)
 		{
