@@ -648,8 +648,9 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	QMenu *ntm = Core::Instance ()
 		.GetTabContainer ()->GetNewTabMenu ();
 	Ui_.ActionNewTab_->setMenu (ntm);
+	int i = 0;
 	Q_FOREACH (QAction *act, ntm->actions ())
-		Ui_.MainTabWidget_->InsertAction2TabBar (0, act);
+		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
 
 	on_MainTabWidget__currentChanged (0);
 }
