@@ -110,6 +110,9 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			}
 			PluginsActionsBar_->addActions (list);
 			PluginsActionsBar_->addSeparator ();
+
+			Ui_.MenuActions_->addActions(list);
+			Ui_.MenuActions_->addSeparator();
 		}
 	}
 
