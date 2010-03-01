@@ -632,6 +632,18 @@ namespace LeechCraft
 				Core::Instance ().NewURL ("", true);
 			}
 
+			QList<QAction*> BrowserWidget::GetTabBarContextMenuActions () const
+			{
+				QList<QAction*> result;
+				result << Reload_
+					<< NotifyWhenFinished_
+					<< Add2Favorites_
+					<< RecentlyClosedAction_
+					<< Print_
+					<< Back_;
+				return result;
+			}
+
 			void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)
 			{
 				OnLoadPos_ = sp;

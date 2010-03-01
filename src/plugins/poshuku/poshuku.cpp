@@ -198,6 +198,11 @@ namespace LeechCraft
 			{
 				Ui_.MainView_->NewTabRequested ();
 			}
+
+			QList<QAction*> Poshuku::GetTabBarContextMenuActions () const
+			{
+				return Ui_.MainView_->GetTabBarContextMenuActions ();
+			}
 			
 			QSet<QByteArray> Poshuku::GetExpectedPluginClasses () const
 			{
