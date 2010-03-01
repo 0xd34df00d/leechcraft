@@ -333,6 +333,8 @@ namespace LeechCraft
 				menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
 				menu->addAction (Browser_->ReloadPeriodically_);
 				menu->addAction (Browser_->NotifyWhenFinished_);
+				menu->addSeparator ();
+				menu->addAction (Browser_->RecentlyClosedAction_);
 
 				Core::Instance ().GetPluginManager ()->
 					OnWebViewCtxMenu (this, e, r, menu.get (),
