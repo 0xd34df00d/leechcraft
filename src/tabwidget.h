@@ -43,6 +43,7 @@ namespace LeechCraft
 	private slots:
 		void handleTabBarLocationChanged ();
 		void handleTabBarContextMenu (const QPoint&);
+		void handleMoveHappened (int, int);
 	signals:
 		void moveHappened (int, int);
 		void newTabRequested ();

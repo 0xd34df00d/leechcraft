@@ -51,6 +51,10 @@ TabWidget::TabWidget (QWidget *parent)
 	connect (tabBar (),
 			SIGNAL (tabMoved (int, int)),
 			this,
+			SLOT (handleMoveHappened (int, int)));
+	connect (tabBar (),
+			SIGNAL (tabMoved (int, int)),
+			this,
 			SIGNAL (moveHappened (int, int)));
 
 	XmlSettingsManager::Instance ()->RegisterObject ("TabBarLocation",
@@ -160,5 +164,10 @@ void TabWidget::handleTabBarContextMenu (const QPoint& pos)
 
 	Q_FOREACH (QAction *act, TabBarActions_)
 		act->setData (QVariant ());
+}
+
+void TabWidget::handleMoveHappened (int from, int to)
+{
+	std::swap (Widgets_ [from], Widgets_ [to]);
 }
 
