@@ -25,6 +25,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabbar.h"
+#include "interfaces/imultitabs.h"
 #include "3dparty/qxttooltip.h"
 
 /**
@@ -139,19 +140,25 @@ void TabWidget::handleTabBarLocationChanged ()
 void TabWidget::handleTabBarContextMenu (const QPoint& pos)
 {
 	QMenu menu ("", tabBar ());
-	Q_FOREACH (QAction *act, TabBarActions_)
+
+	int tabIndex = tabBar ()->tabAt (pos);
+	if (tabIndex != -1)
 	{
-		menu.addAction (act);
-		act->blockSignals (true);
+		IMultiTabsWidget *imtw =
+			qobject_cast<IMultiTabsWidget*> (widget (tabIndex));
+		Q_FOREACH (QAction *act, imtw->GetTabBarContextMenuActions ())
+			menu.addAction (act);
 	}
 
-	QAction *picked = menu.exec (tabBar ()->mapToGlobal (pos));
 	Q_FOREACH (QAction *act, TabBarActions_)
-		act->blockSignals (false);
-	if (!picked)
-		return;
+	{
+		act->setData (tabBar ()->mapToGlobal (pos));
+		menu.addAction (act);
+	}
 
-	picked->setData (tabBar ()->mapToGlobal (pos));
-	picked->trigger ();
+	menu.exec (tabBar ()->mapToGlobal (pos));
+
+	Q_FOREACH (QAction *act, TabBarActions_)
+		act->setData (QVariant ());
 }
 
