@@ -50,6 +50,10 @@ public:
 	/** Notifies this plugin that a new tab was requested.
 	 */
 	virtual void NewTabRequested () = 0;
+
+	/** Returns the list of QActions for the context menu of the tab bar.
+	 */
+	virtual QList<QAction*> GetTabBarContextMenuActions () const = 0;
 };
 
 /** @brief Interface for plugins having (and opening/closing) multiple

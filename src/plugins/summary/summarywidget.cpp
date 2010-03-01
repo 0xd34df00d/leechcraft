@@ -104,6 +104,11 @@ namespace LeechCraft
 				emit newTabRequested ();
 			}
 
+			QList<QAction*> SummaryWidget::GetTabBarContextMenuActions () const
+			{
+				return QList<QAction*> ();
+			}
+
 			void SummaryWidget::SetQuery (QStringList query)
 			{
 				if (query.isEmpty ())

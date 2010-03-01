@@ -49,6 +49,7 @@ namespace LeechCraft
 				void Remove ();
 				QToolBar* GetToolBar () const;
 				void NewTabRequested ();
+				QList<QAction*> GetTabBarContextMenuActions () const;
 
 				void SmartDeselect (SummaryWidget*);
 				Ui::SummaryWidget GetUi () const;

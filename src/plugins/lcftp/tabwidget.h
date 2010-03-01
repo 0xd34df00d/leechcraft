@@ -42,6 +42,7 @@ namespace LeechCraft
 				void Remove ();
 				QToolBar* GetToolBar () const;
 				void NewTabRequested ();
+				QList<QAction*> GetTabBarContextMenuActions () const;
 			private:
 				void Setup (Pane*);
 				Pane* Other (Pane*);

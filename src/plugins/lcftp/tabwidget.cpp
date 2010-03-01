@@ -58,6 +58,11 @@ namespace LeechCraft
 			{
 			}
 
+			QList<QAction*> TabWidget::GetTabBarContextMenuActions () const
+			{
+				return QList<QAction*> ();
+			}
+
 			void TabWidget::Setup (Pane *p)
 			{
 				connect (p,
