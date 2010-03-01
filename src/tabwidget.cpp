@@ -150,8 +150,9 @@ void TabWidget::handleTabBarContextMenu (const QPoint& pos)
 	{
 		IMultiTabsWidget *imtw =
 			qobject_cast<IMultiTabsWidget*> (widget (tabIndex));
-		Q_FOREACH (QAction *act, imtw->GetTabBarContextMenuActions ())
-			menu.addAction (act);
+		if (imtw)
+			Q_FOREACH (QAction *act, imtw->GetTabBarContextMenuActions ())
+				menu.addAction (act);
 	}
 
 	Q_FOREACH (QAction *act, TabBarActions_)
