@@ -98,6 +98,95 @@ namespace LeechCraft
 				Selector_->selectAll ();
 			}
 
+			void WriteChannel (QXmlStreamWriter& w,
+					const ChannelShort& cs, const QList<Item_ptr>& items)
+			{
+				w.writeStartElement ("section");
+					w.writeAttribute ("id", cs.ParentURL_ + cs.Title_);
+					w.writeStartElement ("title");
+						w.writeTextElement ("p", cs.Title_);
+					w.writeEndElement ();
+					w.writeTextElement ("annotation",
+							Export2FB2Dialog::tr ("%1 unread items")
+								.arg (cs.Unread_));
+					Q_FOREACH (Item_ptr item, items)
+					{
+						w.writeStartElement ("title");
+							w.writeTextElement ("p", item->Title_);
+						w.writeEndElement ();
+
+						bool hasDate = item->PubDate_.isValid ();
+						bool hasAuthor = item->Author_.size ();
+						if (hasDate || hasAuthor)
+						{
+							w.writeStartElement ("epigraph");
+								if (hasDate)
+									w.writeTextElement ("p",
+											Export2FB2Dialog::tr ("Published on %1")
+												.arg (item->PubDate_.toString ()));
+								if (hasAuthor)
+									w.writeTextElement ("p",
+											Export2FB2Dialog::tr ("By %1")
+												.arg (item->Author_));
+							w.writeEndElement ();
+							w.writeEmptyElement ("empty-line");
+						}
+
+						QString descr = item->Description_;
+						descr.remove ("<p>");
+						descr.remove ("</p>");
+						descr.remove (QRegExp ("<img *>",
+									Qt::CaseSensitive, QRegExp::Wildcard));
+						descr.remove (QRegExp ("<a *>",
+									Qt::CaseSensitive, QRegExp::Wildcard));
+						w.writeTextElement ("p", descr);
+						w.writeEmptyElement ("empty-line");
+					}
+				w.writeEndElement ();
+			}
+
+			void WriteBeginning (QXmlStreamWriter& w,
+					const QStringList& authors)
+			{
+				w.setAutoFormatting (true);
+				w.setAutoFormattingIndent (2);
+				w.writeStartDocument ();
+				w.writeStartElement ("FictionBook");
+				w.writeDefaultNamespace ("http://www.gribuser.ru/xml/fictionbook/2.0");
+				w.writeNamespace ("http://www.w3.org/1999/xlink", "l");
+
+				w.writeStartElement ("description");
+					w.writeStartElement ("title-info");
+						w.writeTextElement ("genre", "comp_www");
+						w.writeTextElement ("genre", "computers");
+						Q_FOREACH (QString author, authors)
+						{
+							w.writeStartElement ("author");
+								w.writeTextElement ("nickname", author);
+							w.writeEndElement ();
+						}
+						w.writeTextElement ("book-title", "Exported Feeds");
+						w.writeTextElement ("lang", "en");
+					w.writeEndElement ();
+
+					w.writeStartElement ("document-info");
+						w.writeStartElement ("author");
+							w.writeTextElement ("nickname", "LeechCraft");
+						w.writeEndElement ();
+						w.writeTextElement ("program-used",
+								QString ("LeechCraft Aggregator %1")
+									.arg (LEECHCRAFT_VERSION));
+						w.writeTextElement ("id",
+								QUuid::createUuid ().toString ());
+						w.writeTextElement ("version", "1.0");
+						w.writeTextElement ("date",
+								QDate::currentDate ().toString (Qt::ISODate));
+					w.writeEndElement ();
+				w.writeEndElement ();
+
+				w.writeStartElement ("body");
+			}
+
 			void Export2FB2Dialog::handleAccepted ()
 			{
 				QFile file (Ui_.File_->text ());
@@ -165,89 +254,12 @@ namespace LeechCraft
 					authors << "LeechCraft";
 
 				QXmlStreamWriter w (&file);
-				w.setAutoFormatting (true);
-				w.setAutoFormattingIndent (2);
-				w.writeStartDocument ();
-				w.writeStartElement ("FictionBook");
-				w.writeDefaultNamespace ("http://www.gribuser.ru/xml/fictionbook/2.0");
-				w.writeNamespace ("http://www.w3.org/1999/xlink", "l");
+				WriteBeginning (w, authors);
 
-				w.writeStartElement ("description");
-					w.writeStartElement ("title-info");
-						w.writeTextElement ("genre", "comp_www");
-						w.writeTextElement ("genre", "computers");
-						Q_FOREACH (QString author, authors)
-						{
-							w.writeStartElement ("author");
-								w.writeTextElement ("nickname", author);
-							w.writeEndElement ();
-						}
-						w.writeTextElement ("book-title", "Exported Feeds");
-						w.writeTextElement ("lang", "en");
-					w.writeEndElement ();
-
-					w.writeStartElement ("document-info");
-						w.writeStartElement ("author");
-							w.writeTextElement ("nickname", "LeechCraft");
-						w.writeEndElement ();
-						w.writeTextElement ("program-used",
-								QString ("LeechCraft Aggregator %1")
-									.arg (LEECHCRAFT_VERSION));
-						w.writeTextElement ("id",
-								QUuid::createUuid ().toString ());
-						w.writeTextElement ("version", "1.0");
-						w.writeTextElement ("date",
-								QDate::currentDate ().toString (Qt::ISODate));
-					w.writeEndElement ();
-				w.writeEndElement ();
-
-				w.writeStartElement ("body");
 				QList<ChannelShort> shorts = items2write.keys ();
 				Q_FOREACH (ChannelShort cs, shorts)
-				{
-					w.writeStartElement ("section");
-						w.writeAttribute ("id", cs.ParentURL_ + cs.Title_);
-						w.writeStartElement ("title");
-							w.writeTextElement ("p", cs.Title_);
-						w.writeEndElement ();
-						w.writeTextElement ("annotation",
-								tr ("%1 unread items")
-									.arg (cs.Unread_));
-						Q_FOREACH (Item_ptr item, items2write [cs])
-						{
-							w.writeStartElement ("title");
-								w.writeTextElement ("p", item->Title_);
-							w.writeEndElement ();
-
-							bool hasDate = item->PubDate_.isValid ();
-							bool hasAuthor = item->Author_.size ();
-							if (hasDate || hasAuthor)
-							{
-								w.writeStartElement ("epigraph");
-									if (hasDate)
-										w.writeTextElement ("p", tr ("Published on %1")
-												.arg (item->PubDate_.toString ()));
-									if (hasAuthor)
-										w.writeTextElement ("p", tr ("By %1")
-												.arg (item->Author_));
-								w.writeEndElement ();
-								w.writeEmptyElement ("empty-line");
-							}
-
-							QString descr = item->Description_;
-							descr.remove ("<p>");
-							descr.remove ("</p>");
-							descr.remove (QRegExp ("<img *>",
-										Qt::CaseSensitive, QRegExp::Wildcard));
-							descr.remove (QRegExp ("<a *>",
-										Qt::CaseSensitive, QRegExp::Wildcard));
-							w.writeTextElement ("p", descr);
-							w.writeEmptyElement ("empty-line");
-						}
-					w.writeEndElement ();
-				}
+					WriteChannel (w, cs, items2write [cs]);
 				w.writeEndElement ();
-
 				w.writeEndDocument ();
 			}
 		};
