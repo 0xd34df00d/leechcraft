@@ -21,6 +21,7 @@
 #include <QApplication>
 #include <QFont>
 #include <QPalette>
+#include <QIcon>
 #include <interfaces/structures.h>
 #include "channelsmodel.h"
 #include "item.h"
@@ -86,7 +87,12 @@ namespace LeechCraft
 					}
 				else if (role == Qt::DecorationRole &&
 						index.column () == 0)
-					return Channels_.at (row).Favicon_;
+				{
+					QIcon result = Channels_.at (row).Favicon_;
+					if (result.isNull ())
+						result = QIcon (":/resources/images/rss.png");
+					return result;
+				}
 				else if (role == Qt::ForegroundRole)
 					if (Channels_.at (row).Unread_ &&
 							XmlSettingsManager::Instance ()->

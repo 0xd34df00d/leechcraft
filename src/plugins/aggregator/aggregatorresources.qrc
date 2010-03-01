@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/" >
     <file>resources/images/aggregator.svg</file>
+    <file>resources/images/rss.png</file>
   </qresource>
 </RCC>
