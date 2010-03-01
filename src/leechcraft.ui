@@ -14,7 +14,7 @@
    <string>LeechCraft</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="mainresources.qrc">
+   <iconset>
     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -75,7 +75,7 @@
      <x>0</x>
      <y>0</y>
      <width>1045</width>
-     <height>19</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="MenuGeneral_">
@@ -109,9 +109,15 @@
     <addaction name="ActionShowStatusBar_"/>
     <addaction name="ActionFullscreenMode_"/>
    </widget>
+   <widget class="QMenu" name="MenuActions_">
+    <property name="title">
+     <string>Actions</string>
+    </property>
+   </widget>
    <addaction name="MenuGeneral_"/>
    <addaction name="MenuView_"/>
    <addaction name="MenuTools_"/>
+   <addaction name="MenuActions_"/>
    <addaction name="MenuHelp_"/>
   </widget>
   <action name="ActionAddTask_">
@@ -228,8 +234,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="mainresources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
