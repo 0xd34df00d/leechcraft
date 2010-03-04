@@ -39,6 +39,7 @@ namespace LeechCraft
 
 			PLUGININTERFACE_API void AppendChild (TreeItem*);
 			PLUGININTERFACE_API void PrependChild (TreeItem*);
+			PLUGININTERFACE_API void InsertChild (int, TreeItem*);
 			PLUGININTERFACE_API int ChildPosition (TreeItem*);
 			PLUGININTERFACE_API void RemoveChild (int);
 			PLUGININTERFACE_API TreeItem* Child (int);

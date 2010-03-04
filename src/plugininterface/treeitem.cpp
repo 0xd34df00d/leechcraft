@@ -42,6 +42,11 @@ void TreeItem::PrependChild (TreeItem *child)
 	Childs_.prepend (child);
 }
 
+void TreeItem::InsertChild (int index, TreeItem *child)
+{
+	Childs_.insert (index, child);
+}
+
 int TreeItem::ChildPosition (TreeItem *child)
 {
 	return Childs_.indexOf (child);
