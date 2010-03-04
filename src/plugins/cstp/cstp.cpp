@@ -271,7 +271,7 @@ namespace LeechCraft
 			{
 				Notification n =
 				{
-					tr ("1TTP error"),
+					tr ("HTTP error"),
 					error,
 					false,
 					Notification::PCritical_
