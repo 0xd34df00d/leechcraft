@@ -248,7 +248,6 @@ namespace LeechCraft
 
 			void Core::handleTabRemoved (int idx)
 			{
-				qDebug () << Q_FUNC_INFO;
 				QWidget *w = Pos2Widget_ [idx];
 				Util::TreeItem *child = Widget2Child_ [w];
 
@@ -260,6 +259,8 @@ namespace LeechCraft
 					child = child->Parent ();
 				}
 
+				child = Widget2Child_ [w];
+
 				posHier.takeLast ();
 
 				QList<QModelIndex> indexesHier;
@@ -270,8 +271,6 @@ namespace LeechCraft
 					prevIndex = index (pos, 0, prevIndex);
 					indexesHier << prevIndex;
 				}
-
-				qDebug () << indexesHier << child->ChildCount ();
 
 				while (!child->ChildCount ())
 				{
