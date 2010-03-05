@@ -136,6 +136,7 @@ SET (TRANSLATIONS
 	leechcraft_aggregator_ar.ts
 	leechcraft_aggregator_eo.ts
 	leechcraft_aggregator_pl.ts
+	leechcraft_aggregator_es.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_ru_RU.qm
@@ -144,6 +145,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_eo.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_pl.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_es.qm
 	)
 
 ADD_DEFINITIONS(-DBOOST_DYN_LINK)
