@@ -186,6 +186,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.setupUi (this);
 
+	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
+
 	connect (Ui_.ActionAboutQt_,
 			SIGNAL (triggered ()),
 			qApp,

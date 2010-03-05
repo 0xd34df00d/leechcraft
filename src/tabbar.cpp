@@ -26,6 +26,7 @@ namespace LeechCraft
 	TabBar::TabBar (QWidget *parent)
 	: QTabBar (parent)
 	{
+		setObjectName ("org_LeechCraft_MainWindow_CentralTabBar");
 	}
 
 	QSize TabBar::tabSizeHint (int index) const
@@ -40,6 +41,18 @@ namespace LeechCraft
 			result.setWidth (std::min (maxWidth, result.width ()));
 		}
 		return result;
+	}
+
+	void TabBar::tabInserted (int idx)
+	{
+		QTabBar::tabInserted (idx);
+		emit tabWasInserted (idx);
+	}
+
+	void TabBar::tabRemoved (int idx)
+	{
+		QTabBar::tabRemoved (idx);
+		emit tabWasRemoved (idx);
 	}
 };
 

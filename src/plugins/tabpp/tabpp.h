@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,24 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef TABBAR_H
-#define TABBAR_H
-#include <QTabBar>
+#ifndef PLUGINS_TABPP_TABPP_H
+#define PLUGINS_TABPP_TABPP_H
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/itoolbarembedder.h>
+
+class QTreeView;
 
 namespace LeechCraft
 {
-	class TabBar : public QTabBar
+	namespace Plugins
 	{
-		Q_OBJECT
-	public:
-		TabBar (QWidget* = 0);
-	protected:
-		virtual QSize tabSizeHint (int) const;
-		virtual void tabInserted (int);
-		virtual void tabRemoved (int);
-	signals:
-		void tabWasInserted (int);
-		void tabWasRemoved (int);
+		namespace TabPP
+		{
+			class Plugin : public QObject
+						 , public IInfo
+						 , public IToolBarEmbedder
+			{
+				Q_OBJECT
+				Q_INTERFACES (IInfo IToolBarEmbedder)
+
+				QAction *ActivatorAction_;
+				QTreeView *View_;
+			public:
+				void Init (ICoreProxy_ptr);
+				void SecondInit ();
+				void Release ();
+				QString GetName () const;
+				QString GetInfo () const;
+				QIcon GetIcon () const;
+				QStringList Provides () const;
+				QStringList Needs () const;
+				QStringList Uses () const;
+				void SetProvider (QObject*, const QString&);
+
+				QList<QAction*> GetActions () const;
+			private slots:
+				void handleActivatorHovered ();
+			};
+		};
 	};
 };
 

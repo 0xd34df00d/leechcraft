@@ -18,7 +18,7 @@
     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
      <number>3</number>
     </property>
@@ -31,7 +31,7 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item>
+    <item row="0" column="0">
      <widget class="LeechCraft::TabWidget" name="MainTabWidget_">
       <property name="currentIndex">
        <number>-1</number>
@@ -75,7 +75,7 @@
      <x>0</x>
      <y>0</y>
      <width>1045</width>
-     <height>30</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="MenuGeneral_">
