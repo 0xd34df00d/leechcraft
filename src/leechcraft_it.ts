@@ -2,6 +2,45 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
+    <name>AboutDialog</name>
+    <message>
+        <source>About LeechCraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
+    </message>
+    <message utf8="true">
+        <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Authors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contributors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Appreciations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licensing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Third parties</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AuthenticationDialog</name>
     <message>
         <source>Authentication required</source>
@@ -21,9 +60,49 @@
     </message>
 </context>
 <context>
-    <name>CategorySelector</name>
+    <name>BackendSelector</name>
     <message>
-        <source>Tags selector</source>
+        <source>SQLite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostgreSQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Journal mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Temp store:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Synchronous:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VACUUM on exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hostname:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Username:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished">Parola chiave:</translation>
+    </message>
+    <message>
+        <source>Database name:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -72,6 +151,14 @@
         <source>It could be handled by:</source>
         <translation type="unfinished">Può essere aperto da:</translation>
     </message>
+    <message>
+        <source>Save to:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse...</source>
+        <translation type="unfinished">Sfoglia...</translation>
+    </message>
 </context>
 <context>
     <name>KeySequencer</name>
@@ -96,7 +183,7 @@
     </message>
     <message>
         <source>Summary</source>
-        <translation type="unfinished">Sommario</translation>
+        <translation type="obsolete">Sommario</translation>
     </message>
     <message>
         <source>toolBar</source>
@@ -120,7 +207,7 @@
     </message>
     <message>
         <source>Plugin manager</source>
-        <translation type="unfinished">Plugin manager</translation>
+        <translation type="obsolete">Plugin manager</translation>
     </message>
     <message>
         <source>Fullscreen mode</source>
@@ -146,6 +233,77 @@
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About LeechCraft...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About Qt...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show status bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Glance...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show a quick overview of tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::AboutDialog</name>
+    <message>
+        <source>LeechCraft %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
@@ -155,19 +313,19 @@
     </message>
     <message>
         <source>bytes</source>
-        <translation type="unfinished">bytes</translation>
+        <translation type="obsolete">bytes</translation>
     </message>
     <message>
         <source>KB</source>
-        <translation type="unfinished">KB</translation>
+        <translation type="obsolete">KB</translation>
     </message>
     <message>
         <source>MB</source>
-        <translation type="unfinished">MB</translation>
+        <translation type="obsolete">MB</translation>
     </message>
     <message>
         <source>GB</source>
-        <translation type="unfinished">GB</translation>
+        <translation type="obsolete">GB</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -178,15 +336,26 @@
     <name>LeechCraft::CategoryMerger</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation type="obsolete">Nome</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished">Stato</translation>
+        <translation type="obsolete">Stato</translation>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished">Progresso</translation>
+        <translation type="obsolete">Progresso</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::ColorPicker</name>
+    <message>
+        <source>Choose color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -200,15 +369,15 @@
     <name>LeechCraft::Core</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation type="obsolete">Nome</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished">Stato</translation>
+        <translation type="obsolete">Stato</translation>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished">Progresso</translation>
+        <translation type="obsolete">Progresso</translation>
     </message>
     <message>
         <source>Calculating dependencies...</source>
@@ -224,11 +393,11 @@
     </message>
     <message>
         <source>Too long to show</source>
-        <translation type="unfinished">Troppo lungo da mostrare</translation>
+        <translation type="obsolete">Troppo lungo da mostrare</translation>
     </message>
     <message>
         <source>Select save location</source>
-        <translation type="unfinished">Seleziona la locazione di salvataggio</translation>
+        <translation type="obsolete">Seleziona la locazione di salvataggio</translation>
     </message>
     <message>
         <source>Error</source>
@@ -247,10 +416,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Binary entity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>LeechCraft</source>
         <translation type="unfinished">LeechCraft</translation>
     </message>
@@ -263,11 +428,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;from %1</source>
+        <source>%1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -276,6 +437,59 @@
     <message>
         <source>LeechCraft Notification</source>
         <translation type="unfinished">Notifica LeechCraft</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::FilePicker</name>
+    <message>
+        <source>Browse...</source>
+        <translation type="unfinished">Sfoglia...</translation>
+    </message>
+    <message>
+        <source>Select directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select file</source>
+        <translation type="unfinished">Seleziona un file</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::FontPicker</name>
+    <message>
+        <source>Choose font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, %1 pt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, bold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, italic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, underlined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, striken out</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::HandlerChoiceDialog</name>
+    <message>
+        <source>Select save location</source>
+        <translation type="unfinished">Seleziona la locazione di salvataggio</translation>
     </message>
 </context>
 <context>
@@ -324,6 +538,14 @@
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LeechCraft menu</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -348,15 +570,15 @@
     <name>LeechCraft::OperationalModel</name>
     <message>
         <source>Entity</source>
-        <translation type="unfinished">Entità</translation>
+        <translation type="obsolete">Entità</translation>
     </message>
     <message>
         <source>Category</source>
-        <translation type="unfinished">Categoria</translation>
+        <translation type="obsolete">Categoria</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">Informazione</translation>
+        <translation type="obsolete">Informazione</translation>
     </message>
 </context>
 <context>
@@ -382,27 +604,27 @@
     <name>LeechCraft::RequestNormalizer</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nome</translation>
+        <translation type="obsolete">Nome</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished">Stato</translation>
+        <translation type="obsolete">Stato</translation>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished">Progresso</translation>
+        <translation type="obsolete">Progresso</translation>
     </message>
     <message>
         <source>Request validation error: %1</source>
-        <translation type="unfinished">Errore nella validazione della richiesta: %1</translation>
+        <translation type="obsolete">Errore nella validazione della richiesta: %1</translation>
     </message>
     <message>
         <source>Request parsing error: %1</source>
-        <translation type="unfinished">Errore nella analisi della richiesta.</translation>
+        <translation type="obsolete">Errore nella analisi della richiesta.</translation>
     </message>
     <message>
         <source>Open/close braces mismatch</source>
-        <translation type="unfinished">Apertura/chiusura delle parentesi non coincide</translation>
+        <translation type="obsolete">Apertura/chiusura delle parentesi non coincide</translation>
     </message>
 </context>
 <context>
@@ -492,10 +714,32 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::TabContainer</name>
+    <message>
+        <source>New tab menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore tabs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close all but this</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::TabContentsManager</name>
     <message>
         <source>Summary</source>
-        <translation type="unfinished">Sommario</translation>
+        <translation type="obsolete">Sommario</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::TagsManager</name>
+    <message>
+        <source>untagged</source>
+        <translation type="unfinished">non taggato</translation>
     </message>
 </context>
 <context>
@@ -507,6 +751,32 @@
     <message>
         <source>Enter new tag name</source>
         <translation type="unfinished">Inserisci un nuovo nome tag</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::CategorySelector</name>
+    <message>
+        <source>Tags selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select none</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
+    <message>
+        <source>untagged</source>
+        <translation type="unfinished">non taggato</translation>
+    </message>
+    <message>
+        <source>&lt;unknown tag&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -528,15 +798,6 @@
     </message>
 </context>
 <context>
-    <name>Proxy</name>
-    <message numerus="yes">
-        <source>%n day(s), </source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Could not cd into %1</source>
@@ -545,6 +806,44 @@
     <message>
         <source>Could not create %1</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too long to show</source>
+        <translation type="unfinished">Troppo lungo da mostrare</translation>
+    </message>
+    <message>
+        <source>Binary entity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;from %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> KiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> MiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> GiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -604,14 +903,14 @@
     <name>TabContents</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished">Form</translation>
+        <translation type="obsolete">Form</translation>
     </message>
 </context>
 <context>
     <name>TagsManager</name>
     <message>
         <source>untagged</source>
-        <translation type="unfinished">non taggato</translation>
+        <translation type="obsolete">non taggato</translation>
     </message>
 </context>
 <context>
