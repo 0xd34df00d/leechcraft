@@ -19,6 +19,8 @@
 #include "core.h"
 #include <QTabBar>
 #include <QMainWindow>
+#include <QSortFilterProxyModel>
+#include <QDynamicPropertyChangeEvent>
 #include <plugininterface/treeitem.h>
 
 namespace LeechCraft
@@ -31,7 +33,11 @@ namespace LeechCraft
 			: Bar_ (0)
 			, TabWidget_ (0)
 			, RootItem_ (new Util::TreeItem (QList<QVariant> () << QVariant ()))
+			, Sorter_ (new QSortFilterProxyModel (this))
 			{
+				Sorter_->setSourceModel (this);
+				Sorter_->setDynamicSortFilter (true);
+				Sorter_->sort (0);
 			}
 
 			Core& Core::Instance ()
@@ -88,7 +94,7 @@ namespace LeechCraft
 
 			QAbstractItemModel* Core::GetModel ()
 			{
-				return this;
+				return Sorter_;
 			}
 
 			int Core::columnCount (const QModelIndex& index) const
@@ -161,6 +167,25 @@ namespace LeechCraft
 				return parentItem->ChildCount ();
 			}
 
+			bool Core::eventFilter (QObject *obj, QEvent *event)
+			{
+				if (event->type () == QEvent::DynamicPropertyChange)
+				{
+					QWidget *widget = qobject_cast<QWidget*> (obj);
+					if (widget &&
+							static_cast<QDynamicPropertyChangeEvent*> (event)->
+								propertyName () == "WidgetLogicalPath")
+							HandleLogicalPathChanged (widget);
+					else
+						qWarning () << Q_FUNC_INFO
+							<< obj
+							<< "not a QWidget*";
+					return false;
+				}
+				else
+					return QAbstractItemModel::eventFilter (obj, event);
+			}
+
 			Util::TreeItem* Core::Find (const QString& part,
 					Util::TreeItem *parent, QWidget *widget)
 			{
@@ -179,9 +204,11 @@ namespace LeechCraft
 				return result;
 			}
 
-			void Core::handleTabInserted (int idx)
+			void Core::HandleLogicalPathChanged (QWidget *widget)
 			{
-				QWidget *widget = TabWidget_->widget (idx);
+				int idx = TabWidget_->indexOf (widget);
+
+				CleanUpRemovedLogicalPath (widget);
 				QString path = widget->property ("WidgetLogicalPath").toString ();
 				QString removed = path;
 				if (removed.remove ('/').isEmpty ())
@@ -208,29 +235,11 @@ namespace LeechCraft
 						child = new Util::TreeItem (showData, previous);
 						child->ModifyData (0, part, CRRawPath);
 
-						bool inserted = false;
-						for (int i = 0; i < previous->ChildCount (); ++i)
-						{
-							Util::TreeItem *thisChild = previous->Child (i);
-							if (part < thisChild->Data (0).toString ())
-							{
-								qDebug () << "inserting at" << i << previousIndex;
-								beginInsertRows (previousIndex, i, i);
-								previous->InsertChild (i, child);
-								endInsertRows ();
-								inserted = true;
-								break;
-							}
-						}
-
-						if (!inserted)
-						{
-							int pos = rowCount (previousIndex);
-							qDebug () << "inserting at (not in loop)" << pos << previousIndex;
-							beginInsertRows (previousIndex, pos, pos);
-							previous->AppendChild (child);
-							endInsertRows ();
-						}
+						int pos = rowCount (previousIndex);
+						qDebug () << "inserting at (not in loop)" << pos << previousIndex;
+						beginInsertRows (previousIndex, pos, pos);
+						previous->AppendChild (child);
+						endInsertRows ();
 					}
 					previousIndex = index (previous->ChildPosition (child),
 							0, previousIndex);
@@ -242,13 +251,13 @@ namespace LeechCraft
 				Child2Path_ [previous] = path;
 				Widget2Child_ [widget] = previous;
 				Child2Widget_ [previous] = widget;
-				Pos2Widget_ [idx] = widget;
-				Widget2Pos_ [widget] = idx;
 			}
 
-			void Core::handleTabRemoved (int idx)
+			void Core::CleanUpRemovedLogicalPath (QWidget *w)
 			{
-				QWidget *w = Pos2Widget_ [idx];
+				if (!Widget2Child_.contains (w))
+					return;
+
 				Util::TreeItem *child = Widget2Child_ [w];
 
 				QList<int> posHier;
@@ -286,6 +295,23 @@ namespace LeechCraft
 				Child2Path_.remove (child);
 				Widget2Child_.remove (w);
 				Child2Widget_.remove (child);
+			}
+
+			void Core::handleTabInserted (int idx)
+			{
+				QWidget *widget = TabWidget_->widget (idx);
+
+				Pos2Widget_ [idx] = widget;
+				Widget2Pos_ [widget] = idx;
+				widget->installEventFilter (this);
+
+				HandleLogicalPathChanged (widget);
+			}
+
+			void Core::handleTabRemoved (int idx)
+			{
+				QWidget *w = Pos2Widget_ [idx];
+				CleanUpRemovedLogicalPath (w);
 				Pos2Widget_.remove (idx);
 				Widget2Pos_.remove (w);
 			}

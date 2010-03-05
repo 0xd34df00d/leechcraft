@@ -44,6 +44,17 @@ namespace LeechCraft
 
 				Core::Instance ().SetProxy (proxy);
 				View_->setModel (Core::Instance ().GetModel ());
+
+				connect (Core::Instance ().GetModel (),
+						SIGNAL (rowsInserted (const QModelIndex&,
+								int, int)),
+						View_,
+						SLOT (expandAll ()));
+				connect (Core::Instance ().GetModel (),
+						SIGNAL (rowsRemoved (const QModelIndex&,
+								int, int)),
+						View_,
+						SLOT (expandAll ()));
 			}
 
 			void Plugin::SecondInit ()

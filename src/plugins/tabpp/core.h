@@ -22,6 +22,7 @@
 #include "interfaces/iinfo.h"
 
 class QTabBar;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -42,6 +43,7 @@ namespace LeechCraft
 				QTabBar *Bar_;
 				QTabWidget *TabWidget_;
 				Util::TreeItem *RootItem_;
+				QSortFilterProxyModel *Sorter_;
 
 				QMap<QString, Util::TreeItem*> Path2Child_;
 				QMap<Util::TreeItem*, QString> Child2Path_;
@@ -68,8 +70,12 @@ namespace LeechCraft
 				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 				virtual QModelIndex parent (const QModelIndex&) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+			protected:
+				bool eventFilter (QObject*, QEvent*);
 			private:
 				Util::TreeItem* Find (const QString&, Util::TreeItem*, QWidget*);
+				void HandleLogicalPathChanged (QWidget*);
+				void CleanUpRemovedLogicalPath (QWidget*);
 			private slots:
 				void handleTabInserted (int);
 				void handleTabRemoved (int);
