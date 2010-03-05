@@ -307,6 +307,10 @@ namespace LeechCraft
 						this,
 						SIGNAL (titleChanged (const QString&)));
 				connect (Ui_.WebView_,
+						SIGNAL (titleChanged (const QString&)),
+						this,
+						SLOT (updateLogicalPath ()));
+				connect (Ui_.WebView_,
 						SIGNAL (urlChanged (const QString&)),
 						this,
 						SIGNAL (urlChanged (const QString&)));
@@ -314,6 +318,10 @@ namespace LeechCraft
 						SIGNAL (urlChanged (const QString&)),
 						Ui_.URLEdit_,
 						SLOT (setText (const QString&)));
+				connect (Ui_.WebView_,
+						SIGNAL (urlChanged (const QString&)),
+						this,
+						SLOT (updateLogicalPath ()));
 				connect (Ui_.WebView_,
 						SIGNAL (loadProgress (int)),
 						this,
@@ -1159,6 +1167,20 @@ namespace LeechCraft
 					encoding = QTextCodec::codecForMib (mib)->name ();
 				Ui_.WebView_->settings ()->setDefaultTextEncoding (encoding);
 				Reload_->trigger ();
+			}
+
+			void BrowserWidget::updateLogicalPath ()
+			{
+				QUrl url = Ui_.WebView_->url ();
+				QString title = Ui_.WebView_->title ();
+				if (title.isEmpty ())
+					title = tr ("No title");
+				if (url.isEmpty ())
+					url = QUrl ("about:blank");
+				QString path = QString ("/%1/%2")
+					.arg (url.host ())
+					.arg (title);
+				setProperty ("WidgetLogicalPath", path);
 			}
 		};
 	};
