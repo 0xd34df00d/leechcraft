@@ -161,13 +161,16 @@ namespace LeechCraft
 				return parentItem->ChildCount ();
 			}
 
-			Util::TreeItem* Core::Find (const QString& part, Util::TreeItem *parent)
+			Util::TreeItem* Core::Find (const QString& part,
+					Util::TreeItem *parent, QWidget *widget)
 			{
 				Util::TreeItem *result = 0;
 				for (int i = 0; i < parent->ChildCount (); ++i)
 				{
 					Util::TreeItem *child = parent->Child (i);
-					if (child->Data (0, CRRawPath).toString () == part)
+					if (child->Data (0, CRRawPath).toString () == part &&
+							(!child->Data (0, CRWidget).value<QWidget*> () ||
+							 child->Data (0, CRWidget).value<QWidget*> () == widget))
 					{
 						result = child;
 						break;
@@ -196,7 +199,7 @@ namespace LeechCraft
 				QModelIndex previousIndex;
 				Q_FOREACH (QString part, parts)
 				{
-					Util::TreeItem *child = Find (part, previous);
+					Util::TreeItem *child = Find (part, previous, widget);
 					qDebug () << "found" << part << child << previousIndex;
 					if (!child)
 					{
@@ -233,6 +236,8 @@ namespace LeechCraft
 							0, previousIndex);
 					previous = child;
 				}
+				previous->ModifyData (0,
+						QVariant::fromValue<QWidget*> (widget), CRWidget);
 				Path2Child_ [path] = previous;
 				Child2Path_ [previous] = path;
 				Widget2Child_ [widget] = previous;
@@ -243,12 +248,39 @@ namespace LeechCraft
 
 			void Core::handleTabRemoved (int idx)
 			{
+				qDebug () << Q_FUNC_INFO;
 				QWidget *w = Pos2Widget_ [idx];
 				Util::TreeItem *child = Widget2Child_ [w];
+
+				QList<int> posHier;
+				while (child->Parent ())
+				{
+					int pos = child->Parent ()->ChildPosition (child);
+					posHier.prepend (pos);;
+					child = child->Parent ();
+				}
+
+				posHier.takeLast ();
+
+				QList<QModelIndex> indexesHier;
+				QModelIndex prevIndex;
+				indexesHier << prevIndex;
+				Q_FOREACH (int pos, posHier)
+				{
+					prevIndex = index (pos, 0, prevIndex);
+					indexesHier << prevIndex;
+				}
+
+				qDebug () << indexesHier << child->ChildCount ();
 
 				while (!child->ChildCount ())
 				{
 					Util::TreeItem *parent = child->Parent ();
+					int pos = parent->ChildPosition (child);
+					beginRemoveRows (indexesHier.takeLast (), pos, pos);
+					parent->RemoveChild (pos);
+					endRemoveRows ();
+					child = parent;
 				}
 
 				Path2Child_.remove (Child2Path_ [child]);

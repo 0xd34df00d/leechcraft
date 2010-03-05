@@ -54,7 +54,8 @@ namespace LeechCraft
 
 				enum CustomRoles
 				{
-					CRRawPath
+					CRRawPath,
+					CRWidget
 				};
 			public:
 				static Core& Instance ();
@@ -68,7 +69,7 @@ namespace LeechCraft
 				virtual QModelIndex parent (const QModelIndex&) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 			private:
-				Util::TreeItem* Find (const QString&, Util::TreeItem*);
+				Util::TreeItem* Find (const QString&, Util::TreeItem*, QWidget*);
 			private slots:
 				void handleTabInserted (int);
 				void handleTabRemoved (int);
