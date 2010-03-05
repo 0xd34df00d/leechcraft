@@ -96,6 +96,9 @@
 				<option name="ru_RU">
 					<label lang="en" value="Russian (Русский)" />
 				</option>
+				<option name="es">
+					<label lang="en" value="Spanish (Español)" />
+				</option>
 				<option name="uk_UA">
 					<label lang="en" value="Ukrainian (Українська)" />
 				</option>
