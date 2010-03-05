@@ -1032,7 +1032,10 @@ namespace LeechCraft
 			void BrowserWidget::setScrollPosition ()
 			{
 				if (!OnLoadPos_.isNull ())
+				{
 					GetView ()->page ()->mainFrame ()->setScrollPosition (OnLoadPos_);
+					OnLoadPos_ = QPoint ();
+				}
 			}
 
 			void BrowserWidget::pageFocus ()
