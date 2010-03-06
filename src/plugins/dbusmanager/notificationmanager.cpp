@@ -32,15 +32,15 @@ NotificationManager::NotificationManager (QObject *parent)
 : QObject (parent)
 {
 	if (!QDBusConnection::sessionBus ().interface ()->
-			isServiceRegistered ("org.kde.VisualNotifications"))
+			isServiceRegistered ("org.freedesktop.Notifications"))
 	{
 		qWarning () << Q_FUNC_INFO
 			<< QDBusConnection::sessionBus ().interface ()->registeredServiceNames ().value ();
 		return;
 	}
 
-	Connection_.reset (new QDBusInterface ("org.kde.VisualNotifications",
-				"/VisualNotifications"));
+	Connection_.reset (new QDBusInterface ("org.freedesktop.Notifications",
+				"/org/freedesktop/Notifications"));
 	if (!Connection_->isValid ())
 	{
 		qWarning () << Q_FUNC_INFO
@@ -54,7 +54,7 @@ void NotificationManager::HandleFinishedNotification (IHookProxy_ptr proxy,
 	if (!Connection_.get () ||
 			!show ||
 			!XmlSettingsManager::Instance ()->
-				property ("UseKDENotifications").toBool ())
+				property ("UseNotifications").toBool ())
 		return;
 
 	if (n->Priority_ == Notification::PLog_)
@@ -63,7 +63,6 @@ void NotificationManager::HandleFinishedNotification (IHookProxy_ptr proxy,
 	QList<QVariant> arguments;
 	arguments << n->Header_
 		<< uint (0)
-		<< QString ()
 		<< QString ("leechcraft_main")
 		<< QString ()
 		<< n->Text_
