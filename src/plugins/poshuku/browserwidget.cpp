@@ -417,6 +417,8 @@ namespace LeechCraft
 						SIGNAL (storeFormData (const PageFormsData_t&)),
 						RememberDialog_,
 						SLOT (add (const PageFormsData_t&)));
+
+				updateLogicalPath ();
 			}
 			
 			BrowserWidget::~BrowserWidget ()
@@ -1175,11 +1177,19 @@ namespace LeechCraft
 				QString title = Ui_.WebView_->title ();
 				if (title.isEmpty ())
 					title = tr ("No title");
-				if (url.isEmpty ())
-					url = QUrl ("about:blank");
+				QString host = url.host ();
 				QString path = QString ("/%1/%2")
-					.arg (url.host ())
+					.arg (url.isEmpty () ? tr ("Poshuku") : host)
 					.arg (title);
+
+				QStringList domains = host.split ('.', QString::SkipEmptyParts);
+				while (domains.size () > 2)
+				{
+					domains.takeFirst ();
+					path.prepend (QString ("/%1")
+							.arg (domains.join (".")));
+				}
+
 				setProperty ("WidgetLogicalPath", path);
 			}
 		};
