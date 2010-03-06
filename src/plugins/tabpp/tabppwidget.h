@@ -35,6 +35,7 @@ namespace LeechCraft
 				bool ShouldFloat_;
 			public:
 				TabPPWidget (const QString&, QWidget* = 0);
+				void Release ();
 
 				QTreeView* GetView () const;
 				QAction* GetActivatorAction () const;
@@ -43,6 +44,7 @@ namespace LeechCraft
 				void selected (const QModelIndex&);
 				void handleDockLocationChanged (Qt::DockWidgetArea);
 				void handleTopLevelChanged (bool);
+				void handleVisibilityChanged (bool);
 			};
 		};
 	};

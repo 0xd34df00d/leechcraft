@@ -21,6 +21,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QMainWindow>
+#include <QTimer>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -66,6 +67,10 @@ namespace LeechCraft
 						SIGNAL (topLevelChanged (bool)),
 						this,
 						SLOT (handleTopLevelChanged (bool)));
+				connect (this,
+						SIGNAL (visibilityChanged (bool)),
+						this,
+						SLOT (handleVisibilityChanged (bool)));
 
 				QMainWindow *mw = Core::Instance ().GetProxy ()->GetMainWindow ();
 				int area = XmlSettingsManager::Instance ()
@@ -80,9 +85,26 @@ namespace LeechCraft
 								this);
 						break;
 					default:
-						ShouldFloat_ = true;
+						mw->addDockWidget (Qt::LeftDockWidgetArea,
+								this);
 						break;
 				}
+
+				bool visible = XmlSettingsManager::Instance ()
+					.Property ("Visible", false).toBool ();
+				QTimer::singleShot (0,
+						this,
+						visible ?
+						SLOT (show ()) :
+						SLOT (hide ()));
+			}
+
+			void TabPPWidget::Release ()
+			{
+				disconnect (this,
+						0,
+						this,
+						0);
 			}
 
 			QTreeView* TabPPWidget::GetView () const
@@ -127,6 +149,17 @@ namespace LeechCraft
 				if (top)
 					XmlSettingsManager::Instance ().setProperty ("DockArea",
 							Qt::NoDockWidgetArea);
+			}
+
+			void TabPPWidget::handleVisibilityChanged (bool visible)
+			{
+				if (visible && ShouldFloat_)
+				{
+					setFloating (true);
+					ShouldFloat_ = false;
+				}
+
+				XmlSettingsManager::Instance ().setProperty ("Visible", visible);
 			}
 		};
 	};

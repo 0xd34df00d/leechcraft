@@ -47,6 +47,7 @@ namespace LeechCraft
 
 			void Plugin::Release ()
 			{
+				Dock_->Release ();
 			}
 
 			QString Plugin::GetName () const
