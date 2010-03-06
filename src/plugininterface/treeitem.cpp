@@ -47,9 +47,9 @@ void TreeItem::InsertChild (int index, TreeItem *child)
 	Childs_.insert (index, child);
 }
 
-int TreeItem::ChildPosition (TreeItem *child)
+int TreeItem::ChildPosition (const TreeItem *child) const
 {
-	return Childs_.indexOf (child);
+	return Childs_.indexOf (const_cast<TreeItem*> (child));
 }
 
 void TreeItem::RemoveChild (int child)
@@ -57,7 +57,7 @@ void TreeItem::RemoveChild (int child)
 	delete Childs_.takeAt (child);
 }
 
-TreeItem* TreeItem::Child (int row)
+TreeItem* TreeItem::Child (int row) const
 {
 	return Childs_.value (row);
 }
@@ -82,6 +82,11 @@ void TreeItem::ModifyData (int column, const QVariant& data, int role)
 	if (Data_ [role].size () <= column)
 		Data_ [role].resize (column + 1);
 	Data_ [role] [column] = data;
+}
+
+const TreeItem* TreeItem::Parent () const
+{
+	return Parent_;
 }
 
 TreeItem* TreeItem::Parent ()
