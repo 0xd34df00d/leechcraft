@@ -84,6 +84,7 @@ namespace LeechCraft
 				void handleTabRemoved (int);
 				void handleTabsSwapped (int, int);
 				void handleCurrentChanged (int);
+				void handleChangeTabIcon (QWidget*, const QIcon&);
 			};
 		};
 	};

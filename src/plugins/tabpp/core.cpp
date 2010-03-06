@@ -23,6 +23,7 @@
 #include <QSortFilterProxyModel>
 #include <QDynamicPropertyChangeEvent>
 #include <plugininterface/treeitem.h>
+#include <interfaces/imultitabs.h>
 
 namespace LeechCraft
 {
@@ -150,6 +151,10 @@ namespace LeechCraft
 							font.setBold (true);
 							return font;
 						}
+					case Qt::DecorationRole:
+						return index.column () ?
+							QVariant () :
+							item->Data (0, role);
 					default:
 						return QVariant ();
 				}
@@ -357,11 +362,30 @@ namespace LeechCraft
 			{
 				QWidget *widget = TabWidget_->widget (idx);
 
+				bool initConnections = false;
+				if (!Widget2Pos_.contains (widget))
+					initConnections = true;
+
 				Pos2Widget_ [idx] = widget;
 				Widget2Pos_ [widget] = idx;
 				widget->installEventFilter (this);
 
 				HandleLogicalPathChanged (widget);
+
+				if (initConnections)
+				{
+					QObject *obj = 0;
+					IMultiTabsWidget *imtw = qobject_cast<IMultiTabsWidget*> (widget);
+					if (imtw)
+						obj = imtw->ParentMultiTabs ();
+					else
+						obj = widget;
+					connect (obj,
+							SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+							this,
+							SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
+					handleChangeTabIcon (widget, TabWidget_->tabIcon (idx));
+				}
 			}
 
 			void Core::handleTabRemoved (int idx)
@@ -416,6 +440,22 @@ namespace LeechCraft
 					emit dataChanged (ci,
 							ci.sibling (ci.row (), columnCount (ci.parent ()) - 1));
 				}
+			}
+
+			void Core::handleChangeTabIcon (QWidget *widget, const QIcon& icon)
+			{
+				if (!Widget2Child_.contains (widget))
+				{
+					qWarning () << Q_FUNC_INFO
+						<< widget
+						<< "not found";
+					return;
+				}
+
+				Util::TreeItem *item = Widget2Child_ [widget];
+				item->ModifyData (0, icon, Qt::DecorationRole);
+				QModelIndex index = GetIndexForItem (item);
+				emit dataChanged (index, index);
 			}
 		};
 	};
