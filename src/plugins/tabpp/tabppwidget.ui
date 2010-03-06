@@ -23,6 +23,9 @@
     </item>
     <item>
      <widget class="QTreeView" name="View_">
+      <property name="animated">
+       <bool>true</bool>
+      </property>
       <attribute name="headerVisible">
        <bool>false</bool>
       </attribute>
