@@ -35,14 +35,17 @@ namespace LeechCraft
 				Q_INTERFACES (IMultiTabsWidget)
 
 				Ui::TabWidget Ui_;
+				static QObject *S_ParentMultiTabs_;
 			public:
 				TabWidget (const QUrl& url, const QString& str, QWidget* = 0);
 				virtual ~TabWidget ();
+				static void SetParentMultiTabs (QObject*);
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
 				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
+				QObject *ParentMultiTabs () const;
 			private:
 				void Setup (Pane*);
 				Pane* Other (Pane*);

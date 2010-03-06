@@ -36,6 +36,8 @@ namespace LeechCraft
 		{
 			void LCFTP::Init (ICoreProxy_ptr proxy)
 			{
+				TabWidget::SetParentMultiTabs (this);
+
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("lcftp"));
 
 				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());

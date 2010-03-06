@@ -77,6 +77,7 @@ namespace LeechCraft
 				void Remove ();
 				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
+				QObject* ParentMultiTabs () const;
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);

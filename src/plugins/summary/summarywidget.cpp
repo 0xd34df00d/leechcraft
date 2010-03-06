@@ -32,6 +32,8 @@ namespace LeechCraft
 	{
 		namespace Summary
 		{
+			QObject *SummaryWidget::S_ParentMultiTabs_ = 0;
+
 			SummaryWidget::SummaryWidget (QWidget *parent)
 			: QWidget (parent)
 			, FilterTimer_ (new QTimer)
@@ -89,6 +91,11 @@ namespace LeechCraft
 					widget->setParent (0);
 			}
 
+			void SummaryWidget::SetParentMultiTabs (QObject *parent)
+			{
+				S_ParentMultiTabs_ = parent;
+			}
+
 			void SummaryWidget::Remove ()
 			{
 				emit needToClose ();
@@ -107,6 +114,11 @@ namespace LeechCraft
 			QList<QAction*> SummaryWidget::GetTabBarContextMenuActions () const
 			{
 				return QList<QAction*> ();
+			}
+
+			QObject* SummaryWidget::ParentMultiTabs () const
+			{
+				return S_ParentMultiTabs_;
 			}
 
 			void SummaryWidget::SetQuery (QStringList query)

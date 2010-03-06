@@ -31,6 +31,8 @@ namespace LeechCraft
 		{
 			void Summary::Init (ICoreProxy_ptr proxy)
 			{
+				SummaryWidget::SetParentMultiTabs (this);
+
 				Translator_.reset (Util::InstallTranslator ("summary"));
 
 				Core::Instance ().SetProxy (proxy);

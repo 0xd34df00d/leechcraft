@@ -47,6 +47,7 @@ namespace LeechCraft
 			
 			void Poshuku::Init (ICoreProxy_ptr coreProxy)
 			{
+				BrowserWidget::SetParentMultiTabs (this);
 				Core::Instance ().setParent (this);
 				Core::Instance ().SetProxy (coreProxy);
 			
@@ -202,6 +203,11 @@ namespace LeechCraft
 			QList<QAction*> Poshuku::GetTabBarContextMenuActions () const
 			{
 				return Ui_.MainView_->GetTabBarContextMenuActions ();
+			}
+
+			QObject* Poshuku::ParentMultiTabs () const
+			{
+				return Ui_.MainView_->ParentMultiTabs ();
 			}
 			
 			QSet<QByteArray> Poshuku::GetExpectedPluginClasses () const

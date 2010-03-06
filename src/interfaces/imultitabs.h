@@ -51,6 +51,10 @@ public:
 	 */
 	virtual void NewTabRequested () = 0;
 
+	/** Returns the pointer to the plugin that it belongs to.
+	 */
+	virtual QObject* ParentMultiTabs () const = 0;
+
 	/** Returns the list of QActions for the context menu of the tab bar.
 	 */
 	virtual QList<QAction*> GetTabBarContextMenuActions () const = 0;

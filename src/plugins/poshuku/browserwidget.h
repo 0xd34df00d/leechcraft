@@ -87,6 +87,8 @@ namespace LeechCraft
 				bool HtmlMode_;
 				bool Own_;
 
+				static QObject* S_MultiTabsParent_;
+
 				friend class CustomWebView;
 			public:
 				enum Actions
@@ -116,6 +118,7 @@ namespace LeechCraft
 
 				BrowserWidget (QWidget* = 0);
 				virtual ~BrowserWidget ();
+				static void SetParentMultiTabs (QObject*);
 
 				void Deown ();
 				void InitShortcuts ();
@@ -138,6 +141,7 @@ namespace LeechCraft
 				QToolBar* GetToolBar () const;
 				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
+				QObject* ParentMultiTabs () const;
 
 				void SetOnLoadScrollPoint (const QPoint&);
 			private:

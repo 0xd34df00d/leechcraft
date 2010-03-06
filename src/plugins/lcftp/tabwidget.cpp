@@ -26,6 +26,8 @@ namespace LeechCraft
 	{
 		namespace LCFTP
 		{
+			QObject *TabWidget::S_ParentMultiTabs_ = 0;
+
 			TabWidget::TabWidget (const QUrl& url,
 					const QString& str,
 					QWidget *parent)
@@ -42,6 +44,11 @@ namespace LeechCraft
 
 			TabWidget::~TabWidget ()
 			{
+			}
+
+			void TabWidget::SetParentMultiTabs (QObject *parent)
+			{
+				S_ParentMultiTabs_ = parent;
 			}
 
 			void TabWidget::Remove ()
@@ -61,6 +68,11 @@ namespace LeechCraft
 			QList<QAction*> TabWidget::GetTabBarContextMenuActions () const
 			{
 				return QList<QAction*> ();
+			}
+
+			QObject* TabWidget::ParentMultiTabs () const
+			{
+				return S_ParentMultiTabs_;
 			}
 
 			void TabWidget::Setup (Pane *p)

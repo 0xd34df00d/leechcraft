@@ -42,14 +42,17 @@ namespace LeechCraft
 				QTimer *FilterTimer_;
 				QList<QComboBox*> AdditionalBoxes_;
 				QToolBar *Toolbar_;
+				static QObject *S_ParentMultiTabs_;
 			public:
 				SummaryWidget (QWidget* = 0);
 				virtual ~SummaryWidget ();
+				static void SetParentMultiTabs (QObject*);
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
 				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
+				QObject* ParentMultiTabs () const;
 
 				void SmartDeselect (SummaryWidget*);
 				Ui::SummaryWidget GetUi () const;

@@ -62,6 +62,8 @@ namespace LeechCraft
 		namespace Poshuku
 		{
 			using LeechCraft::ActionInfo;
+
+			QObject *BrowserWidget::S_MultiTabsParent_ = 0;
 			
 			BrowserWidget::BrowserWidget (QWidget *parent)
 			: QWidget (parent)
@@ -426,6 +428,11 @@ namespace LeechCraft
 				if (Own_)
 					Core::Instance ().Unregister (this);
 			}
+
+			void BrowserWidget::SetParentMultiTabs (QObject *parent)
+			{
+				S_MultiTabsParent_ = parent;
+			}
 			
 			void BrowserWidget::Deown ()
 			{
@@ -652,6 +659,11 @@ namespace LeechCraft
 					<< Print_
 					<< Back_;
 				return result;
+			}
+
+			QObject* BrowserWidget::ParentMultiTabs () const
+			{
+				return S_MultiTabsParent_;
 			}
 
 			void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)
