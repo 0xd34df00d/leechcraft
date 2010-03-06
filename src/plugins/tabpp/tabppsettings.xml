@@ -7,7 +7,7 @@
 		<groupbox>
 			<label lang="en" value="Behavior" />
 			<label lang="ru" value="Поведение" />
-			<item type="checkbox" property="ShowOnHover" default="on">
+			<item type="checkbox" property="ShowOnHover" default="off">
 				<label lang="en" value="Show on action hover" />
 				<label lang="ru" value="Показывать при наведении мышки на действие" />
 			</item>
