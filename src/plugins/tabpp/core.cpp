@@ -368,6 +368,18 @@ namespace LeechCraft
 
 				Pos2Widget_.remove (idx);
 				Widget2Pos_.remove (w);
+
+				while (true)
+				{
+					if (!Pos2Widget_.contains (idx + 1))
+						break;
+					Pos2Widget_ [idx] = Pos2Widget_ [idx + 1];
+					QWidget *w = Pos2Widget_ [idx];
+
+					Widget2Pos_ [w] = idx;
+					++idx;
+				}
+				Pos2Widget_.remove (idx);
 			}
 
 			void Core::handleCurrentChanged (int idx)
