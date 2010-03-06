@@ -87,6 +87,10 @@ namespace LeechCraft
 						SIGNAL (currentChanged (int)),
 						this,
 						SLOT (handleCurrentChanged (int)));
+				connect (Bar_,
+						SIGNAL (tabMoved (int, int)),
+						this,
+						SLOT (handleTabsSwapped (int, int)));
 			}
 
 			ICoreProxy_ptr Core::GetProxy () const
@@ -380,6 +384,15 @@ namespace LeechCraft
 					++idx;
 				}
 				Pos2Widget_.remove (idx);
+			}
+
+			void Core::handleTabsSwapped (int a, int b)
+			{
+				std::swap (Pos2Widget_ [a], Pos2Widget_ [b]);
+				QWidget *wa = Pos2Widget_ [a];
+				QWidget *wb = Pos2Widget_ [b];
+				Widget2Pos_ [wa] = b;
+				Widget2Pos_ [wb] = a;
 			}
 
 			void Core::handleCurrentChanged (int idx)

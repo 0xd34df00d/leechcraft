@@ -82,6 +82,7 @@ namespace LeechCraft
 			private slots:
 				void handleTabInserted (int);
 				void handleTabRemoved (int);
+				void handleTabsSwapped (int, int);
 				void handleCurrentChanged (int);
 			};
 		};
