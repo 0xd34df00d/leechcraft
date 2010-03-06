@@ -22,6 +22,7 @@
 #include <QDesktopWidget>
 #include <QMainWindow>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,7 +32,7 @@ namespace LeechCraft
 		{
 			TabPPWidget::TabPPWidget (const QString& title, QWidget *parent)
 			: QDockWidget (title, parent)
-			, FirstTime_ (true)
+			, ShouldFloat_ (false)
 			{
 				Ui_.setupUi (this);
 				connect (GetActivatorAction (),
@@ -56,6 +57,32 @@ namespace LeechCraft
 						SIGNAL (clicked (const QModelIndex&)),
 						this,
 						SLOT (selected (const QModelIndex&)));
+
+				connect (this,
+						SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
+						this,
+						SLOT (handleDockLocationChanged (Qt::DockWidgetArea)));
+				connect (this,
+						SIGNAL (topLevelChanged (bool)),
+						this,
+						SLOT (handleTopLevelChanged (bool)));
+
+				QMainWindow *mw = Core::Instance ().GetProxy ()->GetMainWindow ();
+				int area = XmlSettingsManager::Instance ()
+					.Property ("DockArea", Qt::NoDockWidgetArea).toInt ();
+				switch (area)
+				{
+					case Qt::LeftDockWidgetArea:
+					case Qt::RightDockWidgetArea:
+					case Qt::TopDockWidgetArea:
+					case Qt::BottomDockWidgetArea:
+						mw->addDockWidget (static_cast<Qt::DockWidgetArea> (area),
+								this);
+						break;
+					default:
+						ShouldFloat_ = true;
+						break;
+				}
 			}
 
 			QTreeView* TabPPWidget::GetView () const
@@ -70,13 +97,17 @@ namespace LeechCraft
 
 			void TabPPWidget::handleActivatorHovered ()
 			{
+				if (!XmlSettingsManager::Instance ()
+						.property ("ShowOnHover").toBool ())
+					return;
+
 				if (isVisible ())
 					return;
 
-				if (FirstTime_)
+				if (ShouldFloat_)
 				{
-					FirstTime_ = false;
 					setFloating (true);
+					ShouldFloat_ = false;
 				}
 				show ();
 			}
@@ -84,6 +115,18 @@ namespace LeechCraft
 			void TabPPWidget::selected (const QModelIndex& index)
 			{
 				Core::Instance ().HandleSelected (index);
+			}
+
+			void TabPPWidget::handleDockLocationChanged (Qt::DockWidgetArea area)
+			{
+				XmlSettingsManager::Instance ().setProperty ("DockArea", area);
+			}
+
+			void TabPPWidget::handleTopLevelChanged (bool top)
+			{
+				if (top)
+					XmlSettingsManager::Instance ().setProperty ("DockArea",
+							Qt::NoDockWidgetArea);
 			}
 		};
 	};

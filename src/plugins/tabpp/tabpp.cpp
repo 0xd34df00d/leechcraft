@@ -22,6 +22,7 @@
 #include <QMainWindow>
 #include "core.h"
 #include "tabppwidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,7 +32,12 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
+				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+						"tabppsettings.xml");
+
 				Core::Instance ().SetProxy (proxy);
+
 				Dock_ = new TabPPWidget (tr ("Tab++"), proxy->GetMainWindow ());
 			}
 
@@ -82,6 +88,11 @@ namespace LeechCraft
 				QList<QAction*> result;
 				result << Dock_->GetActivatorAction ();
 				return result;
+			}
+
+			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+			{
+				return XmlSettingsDialog_;
 			}
 		};
 	};

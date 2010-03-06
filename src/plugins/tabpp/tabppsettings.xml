@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="Settings" />
+		<label lang="ru" value="Настройки" />
+		<groupbox>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
+			<item type="checkbox" property="ShowOnHover" default="on">
+				<label lang="en" value="Show on action hover" />
+				<label lang="ru" value="Показывать при наведении мышки на действие" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

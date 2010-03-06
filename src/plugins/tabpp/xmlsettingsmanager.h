@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TABPP_TABPP_H
-#define PLUGINS_TABPP_TABPP_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/itoolbarembedder.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#ifndef PLUGINS_TABPP_XMLSETTINGSMANAGER_H
+#define PLUGINS_TABPP_XMLSETTINGSMANAGER_H
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -30,33 +26,16 @@ namespace LeechCraft
 	{
 		namespace TabPP
 		{
-			class TabPPWidget;
-
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IToolBarEmbedder
-						 , public IHaveSettings
+			class XmlSettingsManager : public Util::BaseSettingsManager
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IToolBarEmbedder IHaveSettings)
 
-				TabPPWidget *Dock_;
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				XmlSettingsManager ();
 			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-
-				QList<QAction*> GetActions () const;
-
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				static XmlSettingsManager& Instance ();
+			protected:
+				virtual QSettings* BeginSettings () const;
+				virtual void EndSettings (QSettings*) const;
 			};
 		};
 	};

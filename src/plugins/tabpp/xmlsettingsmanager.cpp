@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TABPP_TABPPWIDGET_H
-#define PLUGINS_TABPP_TABPPWIDGET_H
-#include <QDockWidget>
-#include "ui_tabppwidget.h"
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -27,26 +25,29 @@ namespace LeechCraft
 	{
 		namespace TabPP
 		{
-			class TabPPWidget : public QDockWidget
+			XmlSettingsManager::XmlSettingsManager ()
 			{
-				Q_OBJECT
-
-				Ui::TabPPWidget Ui_;
-				bool ShouldFloat_;
-			public:
-				TabPPWidget (const QString&, QWidget* = 0);
-
-				QTreeView* GetView () const;
-				QAction* GetActivatorAction () const;
-			private slots:
-				void handleActivatorHovered ();
-				void selected (const QModelIndex&);
-				void handleDockLocationChanged (Qt::DockWidgetArea);
-				void handleTopLevelChanged (bool);
-			};
+				Util::BaseSettingsManager::Init ();
+			}
+			
+			XmlSettingsManager& XmlSettingsManager::Instance ()
+			{
+				static XmlSettingsManager xsm;
+				return xsm;
+			}
+			
+			QSettings* XmlSettingsManager::BeginSettings () const
+			{
+				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_TabPP");
+				return settings;
+			}
+			
+			void XmlSettingsManager::EndSettings (QSettings*) const
+			{
+			}
+			
 		};
 	};
 };
-
-#endif
 

@@ -27,11 +27,13 @@ SET (SRCS
 	tabpp.cpp
 	core.cpp
 	tabppwidget.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	tabpp.h
 	core.h
 	tabppwidget.h
+	xmlsettingsmanager.h
 	)
 SET (FORMS
 	tabppwidget.ui
@@ -50,3 +52,4 @@ TARGET_LINK_LIBRARIES (leechcraft_tabpp
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_tabpp DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES tabppsettings.xml DESTINATION ${LC_SETTINGS_DEST})
