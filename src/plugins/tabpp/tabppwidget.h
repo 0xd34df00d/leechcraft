@@ -41,6 +41,7 @@ namespace LeechCraft
 				QAction* GetActivatorAction () const;
 			private slots:
 				void handleActivatorHovered ();
+				void handleFirstTriggered ();
 				void selected (const QModelIndex&);
 				void handleDockLocationChanged (Qt::DockWidgetArea);
 				void handleTopLevelChanged (bool);

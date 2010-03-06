@@ -40,6 +40,10 @@ namespace LeechCraft
 						SIGNAL (hovered ()),
 						this,
 						SLOT (handleActivatorHovered ()));
+				connect (GetActivatorAction (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleFirstTriggered ()));
 
 				Ui_.View_->setModel (Core::Instance ().GetModel ());
 
@@ -87,6 +91,7 @@ namespace LeechCraft
 					default:
 						mw->addDockWidget (Qt::LeftDockWidgetArea,
 								this);
+						ShouldFloat_ = true;
 						break;
 				}
 
@@ -128,10 +133,24 @@ namespace LeechCraft
 
 				if (ShouldFloat_)
 				{
-					setFloating (true);
 					ShouldFloat_ = false;
+					setFloating (true);
 				}
 				show ();
+			}
+
+			void TabPPWidget::handleFirstTriggered ()
+			{
+				if (ShouldFloat_)
+				{
+					ShouldFloat_ = false;
+					setFloating (true);
+					show ();
+				}
+				disconnect (GetActivatorAction (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleFirstTriggered ()));
 			}
 
 			void TabPPWidget::selected (const QModelIndex& index)
@@ -155,8 +174,8 @@ namespace LeechCraft
 			{
 				if (visible && ShouldFloat_)
 				{
-					setFloating (true);
 					ShouldFloat_ = false;
+					setFloating (true);
 				}
 
 				XmlSettingsManager::Instance ().setProperty ("Visible", visible);
