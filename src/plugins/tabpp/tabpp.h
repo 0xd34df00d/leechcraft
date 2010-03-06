@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <interfaces/itoolbarembedder.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
@@ -36,12 +37,18 @@ namespace LeechCraft
 						 , public IInfo
 						 , public IToolBarEmbedder
 						 , public IHaveSettings
+						 , public IHaveShortcuts
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IToolBarEmbedder IHaveSettings)
+				Q_INTERFACES (IInfo IToolBarEmbedder IHaveSettings IHaveShortcuts)
 
 				TabPPWidget *Dock_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+
+				enum ActionsEnum
+				{
+					AEActivator
+				};
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -57,6 +64,9 @@ namespace LeechCraft
 				QList<QAction*> GetActions () const;
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+
+				void SetShortcut (int, const QKeySequence&);
+				QMap<int, ActionInfo> GetActionInfo () const;
 			};
 		};
 	};

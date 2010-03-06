@@ -95,6 +95,31 @@ namespace LeechCraft
 			{
 				return XmlSettingsDialog_;
 			}
+
+			void Plugin::SetShortcut (int id, const QKeySequence& seq)
+			{
+				switch (id)
+				{
+					case AEActivator:
+						Dock_->GetActivatorAction ()->setShortcut (seq);
+						break;
+					default:
+						qWarning () << Q_FUNC_INFO
+							<< "unknown id"
+							<< id
+							<< seq;
+						break;
+				}
+			}
+
+			QMap<int, ActionInfo> Plugin::GetActionInfo () const
+			{
+				QMap<int, ActionInfo> result;
+				result [AEActivator] = ActionInfo (tr ("Show tab switcher"),
+						Dock_->GetActivatorAction ()->shortcut (),
+						Dock_->GetActivatorAction ()->icon ());
+				return result;
+			}
 		};
 	};
 };

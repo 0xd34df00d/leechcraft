@@ -36,6 +36,9 @@ namespace LeechCraft
 			, ShouldFloat_ (false)
 			{
 				Ui_.setupUi (this);
+
+				GetActivatorAction ()->setShortcut (tr ("F9"));
+
 				connect (GetActivatorAction (),
 						SIGNAL (hovered ()),
 						this,
