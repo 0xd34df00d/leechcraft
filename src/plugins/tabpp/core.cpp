@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QTabBar>
 #include <QMainWindow>
+#include <QApplication>
 #include <QSortFilterProxyModel>
 #include <QDynamicPropertyChangeEvent>
 #include <plugininterface/treeitem.h>
@@ -34,6 +35,7 @@ namespace LeechCraft
 			, TabWidget_ (0)
 			, RootItem_ (new Util::TreeItem (QList<QVariant> () << QVariant ()))
 			, Sorter_ (new QSortFilterProxyModel (this))
+			, Current_ (-1)
 			{
 				Sorter_->setSourceModel (this);
 				Sorter_->setDynamicSortFilter (true);
@@ -97,6 +99,26 @@ namespace LeechCraft
 				return Sorter_;
 			}
 
+			void Core::HandleSelected (const QModelIndex& index)
+			{
+				QModelIndex ours = Sorter_->mapToSource (index);
+				if (rowCount (ours))
+					return;
+
+				Util::TreeItem *item = static_cast<Util::TreeItem*> (ours.internalPointer ());
+				if (!Child2Widget_.contains (item))
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "no widget for item"
+						<< index
+						<< item
+						<< Child2Widget_;
+					return;
+				}
+				QWidget *w = Child2Widget_ [item];
+				TabWidget_->setCurrentWidget (w);
+			}
+
 			int Core::columnCount (const QModelIndex& index) const
 			{
 				if (index.isValid ())
@@ -110,11 +132,20 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return QVariant ();
 			
+				Util::TreeItem *item = static_cast<Util::TreeItem*> (index.internalPointer ());
 				switch (role)
 				{
 					case Qt::DisplayRole:
-						return static_cast<Util::TreeItem*> (index.internalPointer ())->
-							Data (index.column ());
+						return item->Data (index.column ());
+					case Qt::FontRole:
+						if (item->Data (0, CRWidget).value<QWidget*> () != Pos2Widget_ [Current_])
+							return QVariant ();
+						else
+						{
+							QFont font = QApplication::font ();
+							font.setBold (true);
+							return font;
+						}
 					default:
 						return QVariant ();
 				}
@@ -187,7 +218,7 @@ namespace LeechCraft
 			}
 
 			Util::TreeItem* Core::Find (const QString& part,
-					Util::TreeItem *parent, QWidget *widget)
+					Util::TreeItem *parent, QWidget *widget) const
 			{
 				Util::TreeItem *result = 0;
 				for (int i = 0; i < parent->ChildCount (); ++i)
@@ -297,6 +328,27 @@ namespace LeechCraft
 				Child2Widget_.remove (child);
 			}
 
+			QModelIndex Core::GetIndexForItem (const Util::TreeItem *item) const
+			{
+				if (!item)
+					return QModelIndex ();
+
+				QList<int> posHier;
+				const Util::TreeItem *child = item;
+				while (child->Parent ())
+				{
+					int pos = child->Parent ()->ChildPosition (child);
+					posHier.prepend (pos);;
+					child = child->Parent ();
+				}
+
+				QModelIndex prevIndex;
+				Q_FOREACH (int pos, posHier)
+					prevIndex = index (pos, 0, prevIndex);
+
+				return prevIndex;
+			}
+
 			void Core::handleTabInserted (int idx)
 			{
 				QWidget *widget = TabWidget_->widget (idx);
@@ -311,13 +363,34 @@ namespace LeechCraft
 			void Core::handleTabRemoved (int idx)
 			{
 				QWidget *w = Pos2Widget_ [idx];
+
 				CleanUpRemovedLogicalPath (w);
+
 				Pos2Widget_.remove (idx);
 				Widget2Pos_.remove (w);
 			}
 
 			void Core::handleCurrentChanged (int idx)
 			{
+				QWidget *prev = 0;
+				if (Pos2Widget_.contains (Current_))
+					prev = Pos2Widget_ [Current_];
+
+				Current_ = idx;
+				QWidget *cw = Pos2Widget_ [Current_];
+				if (prev)
+				{
+					QModelIndex pi = GetIndexForItem (Widget2Child_ [prev]);
+					emit dataChanged (pi,
+							pi.sibling (pi.row (), columnCount (pi.parent ()) - 1));
+				}
+
+				if (cw)
+				{
+					QModelIndex ci = GetIndexForItem (Widget2Child_ [cw]);
+					emit dataChanged (ci,
+							ci.sibling (ci.row (), columnCount (ci.parent ()) - 1));
+				}
 			}
 		};
 	};

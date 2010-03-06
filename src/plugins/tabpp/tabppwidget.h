@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TABPP_TABPP_H
-#define PLUGINS_TABPP_TABPP_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/itoolbarembedder.h>
+#ifndef PLUGINS_TABPP_TABPPWIDGET_H
+#define PLUGINS_TABPP_TABPPWIDGET_H
+#include <QDockWidget>
+#include "ui_tabppwidget.h"
 
 namespace LeechCraft
 {
@@ -28,31 +27,20 @@ namespace LeechCraft
 	{
 		namespace TabPP
 		{
-			class TabPPWidget;
-
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IToolBarEmbedder
+			class TabPPWidget : public QDockWidget
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IToolBarEmbedder)
 
-				TabPPWidget *Dock_;
+				Ui::TabPPWidget Ui_;
+				bool FirstTime_;
 			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				TabPPWidget (const QString&, QWidget* = 0);
 
-				QList<QAction*> GetActions () const;
+				QTreeView* GetView () const;
+				QAction* GetActivatorAction () const;
 			private slots:
 				void handleActivatorHovered ();
+				void selected (const QModelIndex&);
 			};
 		};
 	};

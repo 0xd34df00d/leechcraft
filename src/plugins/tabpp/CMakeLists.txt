@@ -26,17 +26,24 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	tabpp.cpp
 	core.cpp
+	tabppwidget.cpp
 	)
 SET (HEADERS
 	tabpp.h
 	core.h
+	tabppwidget.h
+	)
+SET (FORMS
+	tabppwidget.ui
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_tabpp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_tabpp
 	${QT_LIBRARIES}

@@ -18,12 +18,10 @@
 
 #include "tabpp.h"
 #include <QIcon>
-#include <QTreeView>
 #include <QAction>
-#include <QApplication>
-#include <QDesktopWidget>
 #include <QMainWindow>
 #include "core.h"
+#include "tabppwidget.h"
 
 namespace LeechCraft
 {
@@ -33,28 +31,8 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
-				View_ = new QTreeView ();
-
-				ActivatorAction_ = new QAction (tr ("Tab++"), this);
-				ActivatorAction_->setCheckable (true);
-				connect (ActivatorAction_,
-						SIGNAL (hovered ()),
-						this,
-						SLOT (handleActivatorHovered ()));
-
 				Core::Instance ().SetProxy (proxy);
-				View_->setModel (Core::Instance ().GetModel ());
-
-				connect (Core::Instance ().GetModel (),
-						SIGNAL (rowsInserted (const QModelIndex&,
-								int, int)),
-						View_,
-						SLOT (expandAll ()));
-				connect (Core::Instance ().GetModel (),
-						SIGNAL (rowsRemoved (const QModelIndex&,
-								int, int)),
-						View_,
-						SLOT (expandAll ()));
+				Dock_ = new TabPPWidget (tr ("Tab++"), proxy->GetMainWindow ());
 			}
 
 			void Plugin::SecondInit ()
@@ -102,21 +80,8 @@ namespace LeechCraft
 			QList<QAction*> Plugin::GetActions () const
 			{
 				QList<QAction*> result;
-				result << ActivatorAction_;
+				result << Dock_->GetActivatorAction ();
 				return result;
-			}
-
-			void Plugin::handleActivatorHovered ()
-			{
-				if (ActivatorAction_->isChecked ())
-					return;
-
-				View_->setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
-
-				QRect avail = QApplication::desktop ()->
-					availableGeometry (Core::Instance ().GetProxy ()->GetMainWindow ());
-				View_->setMinimumHeight (avail.height () / 3 * 2);
-				View_->show ();
 			}
 		};
 	};

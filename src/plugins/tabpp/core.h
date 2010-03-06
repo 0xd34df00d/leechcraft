@@ -51,6 +51,7 @@ namespace LeechCraft
 				QMap<Util::TreeItem*, QWidget*> Child2Widget_;
 				QMap<int, QWidget*> Pos2Widget_;
 				QMap<QWidget*, int> Widget2Pos_;
+				int Current_;
 
 				Core ();
 
@@ -64,6 +65,7 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 				QAbstractItemModel* GetModel ();
+				void HandleSelected (const QModelIndex&);
 
 				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
@@ -73,9 +75,10 @@ namespace LeechCraft
 			protected:
 				bool eventFilter (QObject*, QEvent*);
 			private:
-				Util::TreeItem* Find (const QString&, Util::TreeItem*, QWidget*);
+				Util::TreeItem* Find (const QString&, Util::TreeItem*, QWidget*) const;
 				void HandleLogicalPathChanged (QWidget*);
 				void CleanUpRemovedLogicalPath (QWidget*);
+				QModelIndex GetIndexForItem (const Util::TreeItem*) const;
 			private slots:
 				void handleTabInserted (int);
 				void handleTabRemoved (int);
