@@ -30,7 +30,7 @@ namespace LeechCraft
 	{
 		class TreeItem
 		{
-			QList<TreeItem*> Childs_;
+			QList<TreeItem*> Children_;
 			QMap<int, QVector<QVariant> > Data_;
 			TreeItem *Parent_;
 		public:
@@ -53,6 +53,9 @@ namespace LeechCraft
 		};
 	};
 };
+
+PLUGININTERFACE_API QDebug operator<< (QDebug, const LeechCraft::Util::TreeItem&);
+PLUGININTERFACE_API QDebug operator<< (QDebug, const LeechCraft::Util::TreeItem* const);
 
 #endif
 

@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <QStringList>
 #include "treeitem.h"
+#include <QStringList>
+#include <QDebug>
 
 using namespace LeechCraft::Util;
 
@@ -29,42 +30,42 @@ TreeItem::TreeItem (const QList<QVariant>& data, TreeItem *parent)
 
 TreeItem::~TreeItem ()
 {
-	qDeleteAll (Childs_);
+	qDeleteAll (Children_);
 }
 
 void TreeItem::AppendChild (TreeItem *child)
 {
-	Childs_.append (child);
+	Children_.append (child);
 }
 
 void TreeItem::PrependChild (TreeItem *child)
 {
-	Childs_.prepend (child);
+	Children_.prepend (child);
 }
 
 void TreeItem::InsertChild (int index, TreeItem *child)
 {
-	Childs_.insert (index, child);
+	Children_.insert (index, child);
 }
 
 int TreeItem::ChildPosition (const TreeItem *child) const
 {
-	return Childs_.indexOf (const_cast<TreeItem*> (child));
+	return Children_.indexOf (const_cast<TreeItem*> (child));
 }
 
 void TreeItem::RemoveChild (int child)
 {
-	delete Childs_.takeAt (child);
+	delete Children_.takeAt (child);
 }
 
 TreeItem* TreeItem::Child (int row) const
 {
-	return Childs_.value (row);
+	return Children_.value (row);
 }
 
 int TreeItem::ChildCount () const
 {
-	return Childs_.count ();
+	return Children_.count ();
 }
 
 int TreeItem::ColumnCount (int role) const
@@ -97,7 +98,29 @@ TreeItem* TreeItem::Parent ()
 int TreeItem::Row () const
 {
 	if (Parent_)
-		return Parent_->Childs_.indexOf (const_cast<TreeItem*> (this));
+		return Parent_->Children_.indexOf (const_cast<TreeItem*> (this));
 	return 0;
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::Util::TreeItem& item)
+{
+	dbg.nospace () << "{ TreeItem| Parent:"
+		<< item.Parent ();
+	dbg.nospace () << "; Children:"
+		<< item.ChildCount ();
+	dbg.nospace () << "; Data[0]:"
+		<< (item.ColumnCount () ? item.Data (0) : QString ("<no columns>"))
+		<< "}";
+	return dbg.space ();
+}
+
+QDebug operator<< (QDebug dbg, const LeechCraft::Util::TreeItem* const pitem)
+{
+	dbg.nospace () << "TreeItem @ " 
+		<< static_cast<const void* const> (pitem)
+		<< ";";
+	if (pitem)
+		dbg << *pitem;
+	return dbg.space ();
 }
 
