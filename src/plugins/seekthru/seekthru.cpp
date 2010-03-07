@@ -52,11 +52,13 @@ namespace LeechCraft
 				connect (&Core::Instance (),
 						SIGNAL (error (const QString&)),
 						this,
-						SLOT (handleError (const QString&)));
+						SLOT (handleError (const QString&)),
+						Qt::QueuedConnection);
 				connect (&Core::Instance (),
 						SIGNAL (warning (const QString&)),
 						this,
-						SLOT (handleWarning (const QString&)));
+						SLOT (handleWarning (const QString&)),
+						Qt::QueuedConnection);
 				connect (&Core::Instance (),
 						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)),
 						this,
