@@ -184,6 +184,7 @@ namespace LeechCraft
 				}
 
 				QString pasteUrl = re.cap (1);
+				pasteUrl.replace ("html", "jpg").replace ("view", "img");
 
 				LeechCraft::Notification n =
 				{
