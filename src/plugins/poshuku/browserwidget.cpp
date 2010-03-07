@@ -1185,11 +1185,17 @@ namespace LeechCraft
 
 			void BrowserWidget::updateLogicalPath ()
 			{
+				static QStringList skip;
+
+				skip << "org.ru"
+					<< "net.ru";
+
 				QUrl url = Ui_.WebView_->url ();
 				QString title = Ui_.WebView_->title ();
 				if (title.isEmpty ())
 					title = tr ("No title");
 				QString host = url.host ();
+				host.remove ("www.");
 				QString path = QString ("/%1/%2")
 					.arg (url.isEmpty () ? tr ("Poshuku") : host)
 					.arg (title);
@@ -1198,8 +1204,11 @@ namespace LeechCraft
 				while (domains.size () > 2)
 				{
 					domains.takeFirst ();
+					QString joined = domains.join (".");
+					if (skip.contains (joined))
+						continue;
 					path.prepend (QString ("/%1")
-							.arg (domains.join (".")));
+							.arg (joined));
 				}
 
 				setProperty ("WidgetLogicalPath", path);
