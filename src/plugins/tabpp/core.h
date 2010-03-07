@@ -57,7 +57,7 @@ namespace LeechCraft
 
 				enum CustomRoles
 				{
-					CRRawPath,
+					CRRawPath = Qt::UserRole + 100,
 					CRWidget
 				};
 			public:

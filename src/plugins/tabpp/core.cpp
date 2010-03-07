@@ -233,9 +233,10 @@ namespace LeechCraft
 				for (int i = 0; i < parent->ChildCount (); ++i)
 				{
 					Util::TreeItem *child = parent->Child (i);
+					QWidget *chwd = child->Data (0, CRWidget).value<QWidget*> ();
 					if (child->Data (0, CRRawPath).toString () == part &&
-							(!child->Data (0, CRWidget).value<QWidget*> () ||
-							 child->Data (0, CRWidget).value<QWidget*> () == widget))
+							(!chwd ||
+							 chwd == widget))
 					{
 						result = child;
 						break;
@@ -259,15 +260,12 @@ namespace LeechCraft
 					path = QString ("/%1").arg (title);
 				}
 
-				qDebug () << Q_FUNC_INFO << idx << path;
-
 				QStringList parts = path.split ('/', QString::SkipEmptyParts);
 				Util::TreeItem *previous = RootItem_;
 				QModelIndex previousIndex;
 				Q_FOREACH (QString part, parts)
 				{
 					Util::TreeItem *child = Find (part, previous, widget);
-					qDebug () << "found" << part << child << previousIndex;
 					if (!child)
 					{
 						QList<QVariant> showData;
@@ -276,7 +274,6 @@ namespace LeechCraft
 						child->ModifyData (0, part, CRRawPath);
 
 						int pos = rowCount (previousIndex);
-						qDebug () << "inserting at (not in loop)" << pos << previousIndex;
 						beginInsertRows (previousIndex, pos, pos);
 						previous->AppendChild (child);
 						endInsertRows ();
@@ -304,7 +301,7 @@ namespace LeechCraft
 				while (child->Parent ())
 				{
 					int pos = child->Parent ()->ChildPosition (child);
-					posHier.prepend (pos);;
+					posHier.prepend (pos);
 					child = child->Parent ();
 				}
 
@@ -324,6 +321,8 @@ namespace LeechCraft
 				while (!child->ChildCount ())
 				{
 					Util::TreeItem *parent = child->Parent ();
+					if (!parent)
+						break;
 					int pos = parent->ChildPosition (child);
 					beginRemoveRows (indexesHier.takeLast (), pos, pos);
 					parent->RemoveChild (pos);
@@ -362,9 +361,7 @@ namespace LeechCraft
 			{
 				QWidget *widget = TabWidget_->widget (idx);
 
-				bool initConnections = false;
-				if (!Widget2Pos_.contains (widget))
-					initConnections = true;
+				bool initConnections = !Widget2Pos_.contains (widget);
 
 				Pos2Widget_ [idx] = widget;
 				Widget2Pos_ [widget] = idx;
