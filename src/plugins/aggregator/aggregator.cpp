@@ -709,8 +709,11 @@ namespace LeechCraft
 				emit bringToFront ();
 				QModelIndex unread = Core::Instance ().GetUnreadChannelIndex ();
 				if (unread.isValid ())
-					Impl_->Ui_.Feeds_->setCurrentIndex (Impl_->FlatToFolders_->
-							MapFromSource (unread).at (0));
+				{
+					if (Impl_->FlatToFolders_->GetSourceModel ())
+						unread = Impl_->FlatToFolders_->MapFromSource (unread).at (0);
+					Impl_->Ui_.Feeds_->setCurrentIndex (unread);
+				}
 			}
 
 			void Aggregator::handleGroupChannels ()
