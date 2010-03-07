@@ -915,7 +915,10 @@ namespace LeechCraft
 
 				QSettings settings (QCoreApplication::organizationName (),
 						QCoreApplication::applicationName () + "_Poshuku");
-				settings.beginWriteArray ("Saved session");
+				int arrSize = settings.beginReadArray ("Saved session");
+				settings.endArray ();
+
+				settings.beginWriteArray ("Saved session", arrSize);
 				for (int i = 0, size = Widgets_.size (); i < size; ++i)
 					if (Widgets_.at (i) == source)
 					{
