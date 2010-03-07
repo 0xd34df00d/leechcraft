@@ -525,11 +525,13 @@ namespace LeechCraft
 						.GetJobHolderRepresentation ()->
 						mapToSource (Impl_->SelectedRepr_);
 				else
-					return Core::Instance ()
-						.GetChannelsModel ()->
-						mapToSource (Impl_->FlatToFolders_->
-								MapToSource (Impl_->Ui_.Feeds_->
-									selectionModel ()->currentIndex ()));
+				{
+					QModelIndex index = Impl_->Ui_.Feeds_->
+						selectionModel ()->currentIndex ();
+					if (Impl_->FlatToFolders_->GetSourceModel ())
+						index = Impl_->FlatToFolders_->MapToSource (index);
+					return Core::Instance ().GetChannelsModel ()->mapToSource (index);
+				}
 			}
 			
 			void Aggregator::on_ActionAddFeed__triggered ()
