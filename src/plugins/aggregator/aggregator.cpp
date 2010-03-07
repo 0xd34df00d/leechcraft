@@ -534,7 +534,7 @@ namespace LeechCraft
 			
 			void Aggregator::on_ActionAddFeed__triggered ()
 			{
-				AddFeed af;
+				AddFeed af (QString (), this);
 				if (af.exec () == QDialog::Accepted)
 					Core::Instance ().AddFeed (af.GetURL (), af.GetTags ());
 			}

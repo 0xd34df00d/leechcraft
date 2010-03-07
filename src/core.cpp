@@ -704,7 +704,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 
 	QString string = Util::GetUserText (p);
 
-	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string));
+	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string, ReallyMainWindow_));
 
 	int numDownloaders = 0;
 	if (!(p.Parameters_ & LeechCraft::OnlyHandle))

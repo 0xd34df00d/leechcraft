@@ -429,7 +429,7 @@ namespace LeechCraft
 			
 			void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 			{
-				AddMultipleTorrents dialog;
+				AddMultipleTorrents dialog (Core::Instance ()->GetProxy ()->GetMainWindow ());
 				std::auto_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
 				dialog.GetEdit ()->AddSelector ();
 			
@@ -471,7 +471,7 @@ namespace LeechCraft
 			
 			void TorrentPlugin::on_CreateTorrent__triggered ()
 			{
-				std::auto_ptr<NewTorrentWizard> wizard (new NewTorrentWizard ());
+				std::auto_ptr<NewTorrentWizard> wizard (new NewTorrentWizard (Core::Instance ()->GetProxy ()->GetMainWindow ()));
 				if (wizard->exec () == QDialog::Accepted)
 					Core::Instance ()->MakeTorrent (wizard->GetParams ());
 				setActionsEnabled ();
@@ -810,7 +810,7 @@ namespace LeechCraft
 				TorrentSelectionChanged_ = true;
 				LastPeersUpdate_.reset (new QTime);
 				LastPeersUpdate_->start ();
-				AddTorrentDialog_.reset (new AddTorrent ());
+				AddTorrentDialog_.reset (new AddTorrent (Core::Instance ()->GetProxy ()->GetMainWindow ()));
 				connect (Core::Instance (),
 						SIGNAL (error (QString)),
 						this,

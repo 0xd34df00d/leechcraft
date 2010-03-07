@@ -736,7 +736,7 @@ namespace LeechCraft
 			{
 				if (ReloadPeriodically_->isChecked ())
 				{
-					std::auto_ptr<ReloadIntervalSelector> sel (new ReloadIntervalSelector);
+					std::auto_ptr<ReloadIntervalSelector> sel (new ReloadIntervalSelector (this));
 					if (sel->exec () != QDialog::Accepted)
 					{
 						ReloadPeriodically_->setChecked (false);

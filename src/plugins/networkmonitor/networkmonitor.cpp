@@ -20,6 +20,7 @@
 #include <typeinfo>
 #include <QMenu>
 #include <QSortFilterProxyModel>
+#include <QMainWindow>
 #include <plugininterface/util.h>
 #include "requestmodel.h"
 #include "headermodel.h"
@@ -37,6 +38,8 @@ namespace LeechCraft
 				NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
 
 				Ui_.setupUi (this);
+				Qt::WindowFlags	currentWindowFlags = windowFlags ();
+				setParent (proxy->GetMainWindow (), currentWindowFlags);
 				connect (Ui_.SearchString_,
 						SIGNAL (textChanged (const QString&)),
 						this,
