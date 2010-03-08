@@ -664,7 +664,7 @@ namespace LeechCraft
 
 			void Aggregator::on_ActionExportFB2__triggered ()
 			{
-				Export2FB2Dialog *dialog = new Export2FB2Dialog ();
+				Export2FB2Dialog *dialog = new Export2FB2Dialog (this);
 				dialog->setAttribute (Qt::WA_DeleteOnClose);
 				dialog->show ();
 			}

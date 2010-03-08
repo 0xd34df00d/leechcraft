@@ -483,7 +483,7 @@ namespace LeechCraft
 			{
 				if (name == "CookiesEdit")
 				{
-					CookiesEditDialog *dia = new CookiesEditDialog ();
+					CookiesEditDialog *dia = new CookiesEditDialog (this);
 					dia->show ();
 				}
 				else if (name == "ClearIconDatabase")
