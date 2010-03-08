@@ -651,7 +651,7 @@ namespace LeechCraft
 				if (!SavedSessionState_.size ()) ;
 				else if (ask)
 				{
-					std::auto_ptr<RestoreSessionDialog> dia (new RestoreSessionDialog ());
+					std::auto_ptr<RestoreSessionDialog> dia (new RestoreSessionDialog (Core::Instance ().GetProxy ()->GetMainWindow ()));
 					bool added = false;
 					for (int i = 0; i < SavedSessionState_.size (); ++i)
 					{
