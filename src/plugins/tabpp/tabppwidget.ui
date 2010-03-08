@@ -19,7 +19,7 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLineEdit" name="lineEdit"/>
+     <widget class="QLineEdit" name="FilterLine_"/>
     </item>
     <item>
      <widget class="QTreeView" name="View_">

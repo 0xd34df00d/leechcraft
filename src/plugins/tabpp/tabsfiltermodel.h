@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_TABPP_TABPPWIDGET_H
-#define PLUGINS_TABPP_TABPPWIDGET_H
-#include <QDockWidget>
-#include "ui_tabppwidget.h"
+#ifndef PLUGINS_TABPP_TABSFILTERMODEL_H
+#define PLUGINS_TABPP_TABSFILTERMODEL_H
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
@@ -27,28 +26,13 @@ namespace LeechCraft
 	{
 		namespace TabPP
 		{
-			class TabsFilterModel;
-
-			class TabPPWidget : public QDockWidget
+			class TabsFilterModel : public QSortFilterProxyModel
 			{
 				Q_OBJECT
-
-				Ui::TabPPWidget Ui_;
-				bool ShouldFloat_;
-				TabsFilterModel *TabsFilterModel_;
 			public:
-				TabPPWidget (const QString&, QWidget* = 0);
-				void Release ();
-
-				QTreeView* GetView () const;
-				QAction* GetActivatorAction () const;
-			private slots:
-				void handleActivatorHovered ();
-				void handleFirstTriggered ();
-				void selected (const QModelIndex&);
-				void handleDockLocationChanged (Qt::DockWidgetArea);
-				void handleTopLevelChanged (bool);
-				void handleVisibilityChanged (bool);
+				TabsFilterModel (QObject* = 0);
+			protected:
+				virtual bool filterAcceptsRow (int, const QModelIndex&) const;
 			};
 		};
 	};

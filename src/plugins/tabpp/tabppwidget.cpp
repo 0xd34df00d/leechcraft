@@ -24,6 +24,7 @@
 #include <QTimer>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "tabsfiltermodel.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,7 @@ namespace LeechCraft
 			TabPPWidget::TabPPWidget (const QString& title, QWidget *parent)
 			: QDockWidget (title, parent)
 			, ShouldFloat_ (false)
+			, TabsFilterModel_ (new TabsFilterModel (this))
 			{
 				Ui_.setupUi (this);
 
@@ -48,7 +50,15 @@ namespace LeechCraft
 						this,
 						SLOT (handleFirstTriggered ()));
 
-				Ui_.View_->setModel (Core::Instance ().GetModel ());
+				TabsFilterModel_->setSourceModel (Core::Instance ().GetModel ());
+				TabsFilterModel_->setDynamicSortFilter (true);
+				TabsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
+				Ui_.View_->setModel (TabsFilterModel_);
+
+				connect (Ui_.FilterLine_,
+						SIGNAL (textChanged (const QString&)),
+						TabsFilterModel_,
+						SLOT (setFilterFixedString (const QString&)));
 
 				connect (Core::Instance ().GetModel (),
 						SIGNAL (rowsInserted (const QModelIndex&,

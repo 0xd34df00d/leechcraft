@@ -28,12 +28,14 @@ SET (SRCS
 	core.cpp
 	tabppwidget.cpp
 	xmlsettingsmanager.cpp
+	tabsfiltermodel.cpp
 	)
 SET (HEADERS
 	tabpp.h
 	core.h
 	tabppwidget.h
 	xmlsettingsmanager.h
+	tabsfiltermodel.h
 	)
 SET (FORMS
 	tabppwidget.ui
