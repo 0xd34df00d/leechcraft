@@ -168,7 +168,7 @@ namespace LeechCraft
 
 			void TabPPWidget::selected (const QModelIndex& index)
 			{
-				Core::Instance ().HandleSelected (index);
+				Core::Instance ().HandleSelected (TabsFilterModel_->mapToSource (index));
 			}
 
 			void TabPPWidget::handleDockLocationChanged (Qt::DockWidgetArea area)
