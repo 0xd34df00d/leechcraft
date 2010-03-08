@@ -299,8 +299,11 @@ namespace LeechCraft
 
 			bool ItemsWidget::IsItemCurrent (int item) const
 			{
-				return !Impl_->MergeMode_ &&
-					Impl_->CurrentItemsModel_->GetSelectedRow () == item;
+				Util::MergeModel::const_iterator i = Impl_->ItemLists_->
+					GetModelForRow (item);
+				int starting = Impl_->ItemLists_->GetStartingRow (i);
+				return static_cast<ItemsListModel*> (i->data ())->
+					GetSelectedRow () == item - starting;
 			}
 
 			void ItemsWidget::Selected (const QModelIndex& index)
