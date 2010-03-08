@@ -41,6 +41,7 @@
 #include <qwebframe.h>
 #include <qwebhistory.h>
 #include <QtDebug>
+#include <QMainWindow>
 #include <plugininterface/util.h>
 #include <interfaces/ihaveshortcuts.h>
 #include "browserwidget.h"
@@ -738,7 +739,7 @@ namespace LeechCraft
 				QFile file (filename);
 				if (!file.open (QIODevice::ReadOnly))
 				{
-					QMessageBox::critical (0,
+					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 							tr ("LeechCraft"),
 							tr ("Could not open file %1 for reading.")
 								.arg (filename));
@@ -753,7 +754,7 @@ namespace LeechCraft
 				}
 				catch (const std::exception& e)
 				{
-					QMessageBox::critical (0,
+					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 							tr ("LeechCraft"),
 							e.what ());
 				}
@@ -781,7 +782,7 @@ namespace LeechCraft
 				QFile file (filename);
 				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 				{
-					QMessageBox::critical (0,
+					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 							tr ("LeechCraft"),
 							tr ("Could not open file %1 for writing.")
 								.arg (filename));

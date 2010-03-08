@@ -59,7 +59,7 @@ namespace LeechCraft
 				}
 				catch (const std::runtime_error& e)
 				{
-					QMessageBox::warning (0,
+					QMessageBox::warning (this,
 							tr ("LeechCraft"),
 							e.what ());
 				}
@@ -72,7 +72,7 @@ namespace LeechCraft
 				}
 				catch (const std::runtime_error& e)
 				{
-					QMessageBox::warning (0,
+					QMessageBox::warning (this,
 							tr ("LeechCraft"),
 							e.what ());
 				}
@@ -86,7 +86,7 @@ namespace LeechCraft
 				}
 				catch (const std::runtime_error& e)
 				{
-					QMessageBox::warning (0,
+					QMessageBox::warning (this,
 							tr ("LeechCraft"),
 							e.what ());
 				}

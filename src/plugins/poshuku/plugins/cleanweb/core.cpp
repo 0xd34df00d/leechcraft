@@ -32,6 +32,7 @@
 #include <qwebelement.h>
 #include <QCoreApplication>
 #include <QMenu>
+#include <QMainWindow>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
@@ -663,7 +664,7 @@ bool Core::Load (const QUrl& url, const QString& subscrName)
 	emit delegateEntity (e, &id, &pr);
 	if (id == -1)
 	{
-		QMessageBox::critical (0,
+		QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 				tr ("Error"),
 				tr ("The subscription wasn't delegated."));
 		qWarning () << Q_FUNC_INFO

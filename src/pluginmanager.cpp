@@ -248,7 +248,7 @@ namespace LeechCraft
 			}
 			catch (...)
 			{
-				QMessageBox::warning (0,
+				QMessageBox::warning (Core::Instance ().GetReallyMainWindow (),
 						tr ("LeechCraft"),
 						tr ("Release of one or more plugins failed."));
 			}

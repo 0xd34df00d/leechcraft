@@ -31,6 +31,7 @@
 #include <QUrl>
 #include <QTextCodec>
 #include <QTranslator>
+#include <QMainWindow>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -255,7 +256,7 @@ namespace LeechCraft
 			void CSTP::handleFileExists (boost::logic::tribool *remove)
 			{
 				QMessageBox::StandardButton userReply =
-					QMessageBox::warning (0,
+					QMessageBox::warning (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
 						tr ("File exists"),
 						tr ("File %1 already exists, continue download?"),
 						QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);

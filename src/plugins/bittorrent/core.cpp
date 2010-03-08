@@ -43,6 +43,7 @@
 #include <QUrl>
 #include <QTextCodec>
 #include <QDataStream>
+#include <QMainWindow>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/create_torrent.hpp>
@@ -2332,7 +2333,7 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::save_resume_data_failed_alert& a) const
 				{
-					QMessageBox::warning (0,
+					QMessageBox::warning (Core::Instance ()->GetProxy ()->GetMainWindow  (),
 							QObject::tr ("LeechCraft"),
 							QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
 								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
@@ -2341,7 +2342,7 @@ namespace LeechCraft
 			
 				void operator() (const libtorrent::storage_moved_alert& a) const
 				{
-					QMessageBox::information (0,
+					QMessageBox::information (Core::Instance ()->GetProxy ()->GetMainWindow  (),
 							QObject::tr ("LeechCraft"),
 							QObject::tr ("Storage for torrent:<br />%1<br />moved successfully to:<br />%2")
 								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
@@ -2350,7 +2351,7 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::storage_moved_failed_alert& a) const
 				{
-					QMessageBox::critical (0,
+					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow  (),
 							QObject::tr ("LeechCraft"),
 							QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
 								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
@@ -2364,7 +2365,7 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::file_error_alert& a) const
 				{
-					QMessageBox::critical (0,
+					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow  (),
 							QObject::tr ("LeechCraft"),
 							QObject::tr ("File error for torrent:<br />%1<br />"
 								"file:<br />%2<br />error:<br />%3")
@@ -2375,7 +2376,7 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::file_rename_failed_alert& a) const
 				{
-					QMessageBox::critical (0,
+					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow  (),
 							QObject::tr ("LeechCraft"),
 							QObject::tr ("File rename failed for torrent:<br />%1<br />"
 								"file %2, error:<br />%3")
@@ -2386,7 +2387,7 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::torrent_delete_failed_alert& a) const
 				{
-					QMessageBox::critical (0,
+					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow  (),
 							QObject::tr ("LeechCraft"),
 							QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
 								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
@@ -2780,7 +2781,7 @@ namespace LeechCraft
 					mask |= libtorrent::alert::storage_notification;
 				else
 				{
-					if (QMessageBox::question (0,
+					if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow  (),
 								tr ("LeechCraft BitTorrent"),
 								tr ("Storage notifications are disabled. Live streaming "
 									"definitely won't work without them, so if you are "

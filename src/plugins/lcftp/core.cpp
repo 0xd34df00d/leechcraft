@@ -27,6 +27,7 @@
 #include <QPushButton>
 #include <QToolBar>
 #include <QTimer>
+#include <QMainWindow>
 #include <curl/curl.h>
 #include <plugininterface/util.h>
 #include "inactiveworkersfilter.h"
@@ -357,7 +358,9 @@ namespace LeechCraft
 							QMessageBox box (QMessageBox::Question,
 									Core::tr ("LeechCraft"),
 									Core::tr ("%1 already exists. What do you want to do?")
-										.arg (QDir::toNativeSeparators (dir + "/" + file)));
+										.arg (QDir::toNativeSeparators (dir + "/" + file)),
+									QMessageBox::NoButton,
+									Core::Instance ().GetCoreProxy ()->GetMainWindow ());
 							QPushButton *resume = box.addButton (Core::tr ("Resume"),
 									QMessageBox::AcceptRole);
 							QPushButton *overwrite = box.addButton (Core::tr ("Overwrite"),
@@ -376,7 +379,7 @@ namespace LeechCraft
 							{
 								if (!fd.remove (file))
 								{
-									QMessageBox::critical (0,
+									QMessageBox::critical (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
 											Core::tr ("LeechCraft"),
 											Core::tr ("Error removing %1")
 												.arg (QDir::toNativeSeparators (dir + "/" + file)));
@@ -851,7 +854,7 @@ namespace LeechCraft
 					emit notify (n);
 				}
 
-				QMessageBox::critical (0,
+				QMessageBox::critical (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
 						tr ("LeechCraft"),
 						msg);
 			}
@@ -893,7 +896,7 @@ namespace LeechCraft
 						dir.mkdir (entry.Name_);
 					else if (!QFileInfo (name).isDir ())
 					{
-						QMessageBox::critical (0,
+						QMessageBox::critical (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
 								tr ("LeechCraft"),
 								tr ("While mirroring<br />%1<br />to<br />%2<br />"
 									"an error occured:<br />%3<br /> already exists.")

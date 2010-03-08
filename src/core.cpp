@@ -513,7 +513,7 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 {
 	if (name == "ClearCache")
 	{
-		if (QMessageBox::question (0,
+		if (QMessageBox::question (ReallyMainWindow_,
 					tr ("LeechCraft"),
 					tr ("Do you really want to clear the network cache?"),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
@@ -525,7 +525,7 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 	}
 	else if (name == "ClearCookies")
 	{
-		if (QMessageBox::question (0,
+		if (QMessageBox::question (ReallyMainWindow_,
 					tr ("LeechCraft"),
 					tr ("Do you really want to clear cookies?"),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
@@ -757,7 +757,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 			if (!DoDownload (sd, p, id, pr))
 			{
 				if (dia->NumChoices () > 1 &&
-						QMessageBox::question (0,
+						QMessageBox::question (ReallyMainWindow_,
 						tr ("Error"),
 						tr ("Could not add task to the selected downloader, "
 							"would you like to try another one?"),
@@ -774,7 +774,7 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 			if (!DoHandle (sh, p))
 			{
 				if (dia->NumChoices () > 1 &&
-						QMessageBox::question (0,
+						QMessageBox::question (ReallyMainWindow_,
 						tr ("Error"),
 						tr ("Could not handle task with the selected handler, "
 							"would you like to try another one?"),

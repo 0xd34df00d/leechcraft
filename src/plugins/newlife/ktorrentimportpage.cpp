@@ -182,7 +182,7 @@ namespace LeechCraft
 						e.Additional_ ["UserVisibleName"] = tr ("KTorrent settings");
 					}
 					else
-						QMessageBox::critical (0,
+						QMessageBox::critical (this,
 								tr ("LeechCraft"),
 								tr ("Could not access or parse KTorrent settings."));
 				}

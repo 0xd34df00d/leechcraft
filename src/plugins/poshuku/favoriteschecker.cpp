@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QApplication>
 #include <QFontMetrics>
+#include <QMainWindow>
 #include "core.h"
 
 namespace LeechCraft
@@ -46,7 +47,7 @@ namespace LeechCraft
 			{
 				if (Pending_.size ())
 				{
-					QMessageBox::critical (0,
+					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 							tr ("LeechCraft"),
 							tr ("Already checking links, please wait..."));
 					return;
@@ -206,7 +207,7 @@ namespace LeechCraft
 						.arg (serverStuff)
 						.arg (BuildMessage (redirectsList, "redirected", 10));
 
-					QMessageBox::information (0,
+					QMessageBox::information (Core::Instance ().GetProxy ()->GetMainWindow (),
 							tr ("LeechCraft"),
 							message);
 
