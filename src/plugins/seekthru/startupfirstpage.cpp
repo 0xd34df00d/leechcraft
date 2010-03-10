@@ -42,6 +42,11 @@ namespace LeechCraft
 			StartupFirstPage::StartupFirstPage (QWidget *parent)
 			: QWizardPage (parent)
 			{
+				Ui_.setupUi (this);
+				qDebug () << "just after setupUi" << Ui_.LocalizationBox_;
+				qDebug () << typeid (Ui_.LocalizationBox_).name ()
+					<< typeid (*Ui_.LocalizationBox_).name ();
+
 				Sets_ ["general"] << EngineInfo ("enwiki.xml",
 						"enwiki", QString::fromUtf8 ("Wikipedia: en"));
 				Sets_ ["general"] << EngineInfo ("github.xml",
@@ -62,11 +67,6 @@ namespace LeechCraft
 						"dicts", QString::fromUtf8 ("Яндекс.Словари"));
 				Sets_ ["ru"] << EngineInfo ("lurkmore.xml",
 						"lm", QString::fromUtf8 ("Lurkmore"));
-
-				Ui_.setupUi (this);
-				qDebug () << "just after setupUi" << Ui_.LocalizationBox_;
-				qDebug () << typeid (Ui_.LocalizationBox_).name ()
-					<< typeid (*Ui_.LocalizationBox_).name ();
 
 				setTitle (tr ("SeekThru"));
 				setSubTitle (tr ("Select default search engines"));
