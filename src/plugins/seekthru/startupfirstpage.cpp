@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "startupfirstpage.h"
+#include <typeinfo>
 #include <QLineEdit>
 #include <QTextCodec>
+#include <QComboBox>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -62,6 +64,8 @@ namespace LeechCraft
 						"lm", QString::fromUtf8 ("Lurkmore"));
 
 				Ui_.setupUi (this);
+				qDebug () << "just after setupUi" << Ui_.LocalizationBox_;
+				qDebug () << typeid (Ui_.LocalizationBox_).name ();
 
 				setTitle (tr ("SeekThru"));
 				setSubTitle (tr ("Select default search engines"));
@@ -82,6 +86,7 @@ namespace LeechCraft
 					<< language
 					<< selectedIdx
 					<< (void*) Ui_.LocalizationBox_;
+				qDebug () << typeid (Ui_.LocalizationBox_).name ();
 				qDebug () << Ui_.LocalizationBox_;
 				Ui_.LocalizationBox_->setCurrentIndex (selectedIdx);
 				handleCurrentIndexChanged (QString ("(") + language + ")");
