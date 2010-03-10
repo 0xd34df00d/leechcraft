@@ -62,7 +62,6 @@ namespace LeechCraft
 						"lm", QString::fromUtf8 ("Lurkmore"));
 
 				Ui_.setupUi (this);
-				Ui_.Tree_->header ()->setResizeMode (0, QHeaderView::ResizeToContents);
 
 				setTitle (tr ("SeekThru"));
 				setSubTitle (tr ("Select default search engines"));
@@ -107,6 +106,8 @@ namespace LeechCraft
 					edit->setText (info.DefaultTags_);
 					Ui_.Tree_->setItemWidget (item, 1, edit);
 				}
+				if (Ui_.Tree_->header ())
+					Ui_.Tree_->header ()->setResizeMode (0, QHeaderView::ResizeToContents);
 			}
 
 			void StartupFirstPage::handleAccepted ()
