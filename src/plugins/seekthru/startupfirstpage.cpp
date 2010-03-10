@@ -75,9 +75,14 @@ namespace LeechCraft
 				languages ["ru"] = 1;
 
 				QString language = Util::GetLanguage ();
-				Ui_.LocalizationBox_->setCurrentIndex (languages.contains (language) ?
-						languages [language] :
-						0);
+				int selectedIdx = languages.contains (language) ?
+					languages [language] :
+					0;
+				qDebug () << Q_FUNC_INFO
+					<< language
+					<< selectedIdx
+					<< Ui_.LocalizationBox_->count ();
+				Ui_.LocalizationBox_->setCurrentIndex (selectedIdx);
 				handleCurrentIndexChanged (QString ("(") + language + ")");
 			}
 
