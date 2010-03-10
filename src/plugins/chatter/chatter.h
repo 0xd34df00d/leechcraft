@@ -8,6 +8,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/itoolbarembedder.h>
+#include <interfaces/iembedtab.h>
 
 class fsirc;
 
@@ -22,9 +23,10 @@ namespace LeechCraft
 						 , public IHaveSettings
 						 , public IToolBarEmbedder
 						 , public IEntityHandler
+						 , public IEmbedTab
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveSettings IToolBarEmbedder IEntityHandler)
+				Q_INTERFACES (IInfo IHaveSettings IToolBarEmbedder IEntityHandler IEmbedTab)
 
 				std::auto_ptr<QTranslator> Translator_;
 			public:
@@ -44,6 +46,8 @@ namespace LeechCraft
 
 				QList<QAction*> GetActions () const;
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+				QWidget* GetTabContents ();
+				QToolBar* GetToolBar () const;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 			private:

@@ -97,5 +97,15 @@ boost::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
 	return SettingsDialog_;
 }
 
+QWidget* Plugin::GetTabContents ()
+{
+	return fsIrc;
+}
+
+QToolBar* Plugin::GetToolBar () const
+{
+	return 0;
+}
+
 Q_EXPORT_PLUGIN2 (leechcraft_chatter, Plugin);
 
