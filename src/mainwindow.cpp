@@ -244,6 +244,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	QMenu *menu = new QMenu (this);
 	menu->addMenu (Ui_.MenuGeneral_);
 	menu->addMenu (Ui_.MenuView_);
+	menu->addMenu (Ui_.MenuActions_);
 	menu->addMenu (Ui_.MenuTools_);
 	menu->addMenu (Ui_.MenuHelp_);
 	Ui_.ActionMenu_->setMenu (menu);
