@@ -11,6 +11,10 @@
 				<label lang="en" value="Show on action hover" />
 				<label lang="ru" value="Показывать при наведении мышки на действие" />
 			</item>
+			<item type="checkbox" property="FocusOnShow" default="on">
+				<label lang="en" value="Focus on the tab list after show" />
+				<label lang="ru" value="Фокус на списке табов при показе" />
+			</item>
 		</groupbox>
 	</page>
 </settings>

@@ -192,6 +192,11 @@ namespace LeechCraft
 				}
 
 				XmlSettingsManager::Instance ().setProperty ("Visible", visible);
+
+				if (visible &&
+						XmlSettingsManager::Instance ()
+							.property ("FocusOnShow").toBool ())
+					Ui_.View_->setFocus ();
 			}
 		};
 	};
