@@ -38,8 +38,11 @@ fsirc::fsirc(QWidget *parent) : QDialog(parent)
 {
 	setupUi(this);
 	closeTabButton = new QPushButton(QIcon(":/fsirc/data/close.svg"),QString(),this);
+	closeTabButton->setToolTip(tr("Close tab"));
 	newTabButton = new QPushButton(QIcon(":/fsirc/data/new.svg"),QString(),this);
+	newTabButton->setToolTip(tr("New tab"));
 	clearTabButton = new QPushButton(QIcon(":/fsirc/data/clear.svg"), QString(), this);
+	clearTabButton->setToolTip(tr("clearTabButton"));
 	closeTabButton->setFocusPolicy(Qt::NoFocus);
 	newTabButton->setFocusPolicy(Qt::NoFocus);
 	clearTabButton->setFocusPolicy(Qt::NoFocus);
