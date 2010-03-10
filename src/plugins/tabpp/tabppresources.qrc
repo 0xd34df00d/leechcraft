@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>resources/images/tabpp.svg</file>
+  </qresource>
+</RCC>

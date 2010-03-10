@@ -42,6 +42,7 @@ namespace LeechCraft
 				Ui_.View_->installEventFilter (this);
 
 				GetActivatorAction ()->setShortcut (tr ("F9"));
+				GetActivatorAction ()->setIcon (QIcon (":/resources/images/tabpp.svg"));
 
 				connect (GetActivatorAction (),
 						SIGNAL (hovered ()),
