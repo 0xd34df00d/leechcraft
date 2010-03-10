@@ -72,7 +72,7 @@ namespace LeechCraft
 						SLOT (expandAll ()));
 
 				connect (Ui_.View_,
-						SIGNAL (clicked (const QModelIndex&)),
+						SIGNAL (activated (const QModelIndex&)),
 						this,
 						SLOT (selected (const QModelIndex&)));
 
