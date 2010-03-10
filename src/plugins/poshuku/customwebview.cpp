@@ -334,6 +334,8 @@ namespace LeechCraft
 				menu->addAction (Browser_->ReloadPeriodically_);
 				menu->addAction (Browser_->NotifyWhenFinished_);
 				menu->addSeparator ();
+				menu->addAction (Browser_->ChangeEncoding_->menuAction ());
+				menu->addSeparator ();
 				menu->addAction (Browser_->RecentlyClosedAction_);
 
 				Core::Instance ().GetPluginManager ()->
