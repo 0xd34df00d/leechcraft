@@ -15,6 +15,10 @@
 				<label lang="en" value="Focus on the tab list after show" />
 				<label lang="ru" value="Фокус на списке табов при показе" />
 			</item>
+			<item type="checkbox" property="HideOnCtrlEnter" default="on">
+				<label lang="en" value="Hide on Ctrl+Enter" />
+				<label lang="ru" value="Скрывать по Ctrl+Enter" />
+			</item>
 		</groupbox>
 	</page>
 </settings>

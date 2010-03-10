@@ -42,6 +42,8 @@ namespace LeechCraft
 
 				QTreeView* GetView () const;
 				QAction* GetActivatorAction () const;
+			protected:
+				bool eventFilter (QObject*, QEvent*);
 			private slots:
 				void handleActivatorHovered ();
 				void handleFirstTriggered ();

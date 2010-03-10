@@ -22,6 +22,7 @@
 #include <QDesktopWidget>
 #include <QMainWindow>
 #include <QTimer>
+#include <QKeyEvent>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabsfiltermodel.h"
@@ -38,6 +39,7 @@ namespace LeechCraft
 			, TabsFilterModel_ (new TabsFilterModel (this))
 			{
 				Ui_.setupUi (this);
+				Ui_.View_->installEventFilter (this);
 
 				GetActivatorAction ()->setShortcut (tr ("F9"));
 
@@ -133,6 +135,24 @@ namespace LeechCraft
 			QAction* TabPPWidget::GetActivatorAction () const
 			{
 				return toggleViewAction ();
+			}
+
+			bool TabPPWidget::eventFilter (QObject *object, QEvent *event)
+			{
+				if (object == Ui_.View_ &&
+						event->type () == QEvent::KeyRelease &&
+						XmlSettingsManager::Instance ()
+							.property ("HideOnCtrlEnter").toBool ())
+				{
+					QKeyEvent *ke = static_cast<QKeyEvent*> (event);
+					if ((ke->modifiers () & Qt::ControlModifier) &&
+							(ke->key () == Qt::Key_Enter ||
+							 ke->key () == Qt::Key_Return))
+						QTimer::singleShot (0,
+								this,
+								SLOT (hide ()));
+				}
+				return QDockWidget::eventFilter (object, event);
 			}
 
 			void TabPPWidget::handleActivatorHovered ()
