@@ -81,7 +81,8 @@ namespace LeechCraft
 				qDebug () << Q_FUNC_INFO
 					<< language
 					<< selectedIdx
-					<< Ui_.LocalizationBox_->count ();
+					<< (void*) Ui_.LocalizationBox_;
+				qDebug () << Ui_.LocalizationBox_;
 				Ui_.LocalizationBox_->setCurrentIndex (selectedIdx);
 				handleCurrentIndexChanged (QString ("(") + language + ")");
 			}
