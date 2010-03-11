@@ -51,7 +51,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="97"/>
+        <location filename="fua.cpp" line="101"/>
         <source>Allows to set fake user agents for different sites.</source>
         <translation type="unfinished"></translation>
     </message>

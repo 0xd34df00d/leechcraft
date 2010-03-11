@@ -4,125 +4,105 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="46"/>
+        <location filename="core.cpp" line="71"/>
         <source>Short name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="97"/>
+        <location filename="core.cpp" line="113"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="99"/>
+        <location filename="core.cpp" line="115"/>
         <source>Limited</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="101"/>
+        <location filename="core.cpp" line="117"/>
         <source>Private</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="103"/>
+        <location filename="core.cpp" line="119"/>
         <source>Closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="183"/>
+        <location filename="core.cpp" line="199"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="270"/>
+        <location filename="core.cpp" line="307"/>
         <source>Could not open file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="280"/>
+        <location filename="core.cpp" line="317"/>
         <source>Could not remove temporary file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="288"/>
+        <location filename="core.cpp" line="325"/>
         <source>A job was delegated, but it failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="301"/>
+        <location filename="core.cpp" line="377"/>
         <source>XML parse error %1 at %2:%3.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="311"/>
-        <source>Not and OpenSearch description.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="324"/>
-        <source>Malformed OpenSearch description.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="357"/>
-        <source>Enter categories</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="358"/>
-        <source>Please enter categories for this searcher:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::SeekThru::SearchHandler</name>
     <message>
-        <location filename="searchhandler.cpp" line="48"/>
+        <location filename="searchhandler.cpp" line="49"/>
         <source>Subscribe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="73"/>
+        <location filename="searchhandler.cpp" line="74"/>
         <source>%1 total results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="76"/>
+        <location filename="searchhandler.cpp" line="77"/>
         <source>Unknown number of results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="83"/>
+        <location filename="searchhandler.cpp" line="84"/>
         <source> (RSS)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="86"/>
+        <location filename="searchhandler.cpp" line="87"/>
         <source> (Atom)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="89"/>
+        <location filename="searchhandler.cpp" line="90"/>
         <source> (HTML)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="216"/>
+        <location filename="searchhandler.cpp" line="219"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="240"/>
+        <location filename="searchhandler.cpp" line="243"/>
         <source>Could not open file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="251"/>
+        <location filename="searchhandler.cpp" line="254"/>
         <source>Could not remove temporary file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="295"/>
+        <location filename="searchhandler.cpp" line="298"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -130,52 +110,52 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SearchersList</name>
     <message>
-        <location filename="searcherslist.cpp" line="49"/>
+        <location filename="searcherslist.cpp" line="52"/>
         <source>No description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="55"/>
+        <location filename="searcherslist.cpp" line="58"/>
         <source>No long name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="64"/>
+        <location filename="searcherslist.cpp" line="68"/>
         <source>No contacts information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="70"/>
+        <location filename="searcherslist.cpp" line="74"/>
         <source>No developer information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="76"/>
+        <location filename="searcherslist.cpp" line="80"/>
         <source>No attribution information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="82"/>
+        <location filename="searcherslist.cpp" line="86"/>
         <source>No right information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="87"/>
+        <location filename="searcherslist.cpp" line="91"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="87"/>
+        <location filename="searcherslist.cpp" line="91"/>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="96"/>
+        <location filename="searcherslist.cpp" line="100"/>
         <source>Adding a new searcher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searcherslist.cpp" line="97"/>
+        <location filename="searcherslist.cpp" line="101"/>
         <source>Enter the URL of the OpenSearch description</source>
         <translation type="unfinished"></translation>
     </message>
@@ -183,14 +163,27 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="76"/>
+        <location filename="seekthru.cpp" line="91"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="seekthru.cpp" line="132"/>
-        <location filename="seekthru.cpp" line="139"/>
+        <location filename="seekthru.cpp" line="155"/>
+        <location filename="seekthru.cpp" line="162"/>
         <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::SeekThru::StartupFirstPage</name>
+    <message>
+        <location filename="startupfirstpage.cpp" line="71"/>
+        <source>SeekThru</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.cpp" line="72"/>
+        <source>Select default search engines</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -264,6 +257,52 @@
     <message>
         <location filename="searcherslist.ui" line="170"/>
         <source>Languages:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StartupFirstPageWidget</name>
+    <message>
+        <location filename="startupfirstpage.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="22"/>
+        <source>Localized set:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="30"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="35"/>
+        <source>Russian (ru)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="59"/>
+        <source>Engine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="64"/>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TagsAsker</name>
+    <message>
+        <location filename="tagsasker.ui" line="14"/>
+        <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tagsasker.ui" line="22"/>
+        <source>Tags for this searcher:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

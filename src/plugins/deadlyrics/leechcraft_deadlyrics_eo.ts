@@ -4,8 +4,8 @@
 <context>
     <name>LeechCraft::Plugins::DeadLyrics::Core</name>
     <message>
-        <location filename="core.cpp" line="63"/>
-        <location filename="core.cpp" line="68"/>
+        <location filename="core.cpp" line="73"/>
+        <location filename="core.cpp" line="78"/>
         <source>lyrics</source>
         <translation>lyrics</translation>
     </message>
@@ -13,7 +13,7 @@
 <context>
     <name>LeechCraft::Plugins::DeadLyrics::DeadLyRicS</name>
     <message>
-        <location filename="deadlyrics.cpp" line="46"/>
+        <location filename="deadlyrics.cpp" line="56"/>
         <source>Lyrics Searcher</source>
         <translation>Serĉilo de liriko</translation>
     </message>
@@ -21,7 +21,7 @@
 <context>
     <name>LeechCraft::Plugins::DeadLyrics::FindProxy</name>
     <message>
-        <location filename="findproxy.cpp" line="134"/>
+        <location filename="findproxy.cpp" line="140"/>
         <source>Searching...</source>
         <translation>Serĉas...</translation>
     </message>
@@ -29,14 +29,12 @@
 <context>
     <name>LeechCraft::Plugins::DeadLyrics::LyricWikiSearcher</name>
     <message>
-        <location filename="lyricwikisearcher.cpp" line="115"/>
         <source>Lyrics fetch error</source>
-        <translation>Eraro de lirikon venigi</translation>
+        <translation type="obsolete">Eraro de lirikon venigi</translation>
     </message>
     <message>
-        <location filename="lyricwikisearcher.cpp" line="123"/>
         <source>No lyrics found</source>
-        <translation>Neniaj lirikoj estis trovita</translation>
+        <translation type="obsolete">Neniaj lirikoj estis trovita</translation>
     </message>
 </context>
 <context>

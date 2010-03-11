@@ -4,52 +4,52 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="45"/>
+        <location filename="core.cpp" line="71"/>
         <source>Short name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="109"/>
+        <location filename="core.cpp" line="113"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="111"/>
+        <location filename="core.cpp" line="115"/>
         <source>Limited</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="113"/>
+        <location filename="core.cpp" line="117"/>
         <source>Private</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="115"/>
+        <location filename="core.cpp" line="119"/>
         <source>Closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="195"/>
+        <location filename="core.cpp" line="199"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="303"/>
+        <location filename="core.cpp" line="307"/>
         <source>Could not open file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="313"/>
+        <location filename="core.cpp" line="317"/>
         <source>Could not remove temporary file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="321"/>
+        <location filename="core.cpp" line="325"/>
         <source>A job was delegated, but it failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="373"/>
+        <location filename="core.cpp" line="377"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -57,52 +57,52 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SearchHandler</name>
     <message>
-        <location filename="searchhandler.cpp" line="48"/>
+        <location filename="searchhandler.cpp" line="49"/>
         <source>Subscribe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="73"/>
+        <location filename="searchhandler.cpp" line="74"/>
         <source>%1 total results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="76"/>
+        <location filename="searchhandler.cpp" line="77"/>
         <source>Unknown number of results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="83"/>
+        <location filename="searchhandler.cpp" line="84"/>
         <source> (RSS)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="86"/>
+        <location filename="searchhandler.cpp" line="87"/>
         <source> (Atom)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="89"/>
+        <location filename="searchhandler.cpp" line="90"/>
         <source> (HTML)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="216"/>
+        <location filename="searchhandler.cpp" line="219"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="240"/>
+        <location filename="searchhandler.cpp" line="243"/>
         <source>Could not open file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="251"/>
+        <location filename="searchhandler.cpp" line="254"/>
         <source>Could not remove temporary file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="295"/>
+        <location filename="searchhandler.cpp" line="298"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -163,13 +163,13 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="87"/>
+        <location filename="seekthru.cpp" line="91"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="seekthru.cpp" line="151"/>
-        <location filename="seekthru.cpp" line="158"/>
+        <location filename="seekthru.cpp" line="155"/>
+        <location filename="seekthru.cpp" line="162"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
@@ -177,12 +177,12 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::StartupFirstPage</name>
     <message>
-        <location filename="startupfirstpage.cpp" line="67"/>
+        <location filename="startupfirstpage.cpp" line="71"/>
         <source>SeekThru</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="startupfirstpage.cpp" line="68"/>
+        <location filename="startupfirstpage.cpp" line="72"/>
         <source>Select default search engines</source>
         <translation type="unfinished"></translation>
     </message>

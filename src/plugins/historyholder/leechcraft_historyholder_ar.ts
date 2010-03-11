@@ -33,7 +33,7 @@
     <message>
         <location filename="core.cpp" line="180"/>
         <source>Binary data</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">البيانات القابلة للتّنفيذ</translation>
     </message>
 </context>
 <context>
@@ -41,7 +41,7 @@
     <message>
         <location filename="historyholder.cpp" line="51"/>
         <source>Holds history from various plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">يحفظ بيانات من الإضافات المتعددة</translation>
     </message>
 </context>
 <context>

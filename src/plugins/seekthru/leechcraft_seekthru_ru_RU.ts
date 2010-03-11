@@ -4,53 +4,52 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="56"/>
-        <location filename="core.cpp" line="72"/>
+        <location filename="core.cpp" line="71"/>
         <source>Short name</source>
         <translation>Короткое имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="114"/>
+        <location filename="core.cpp" line="113"/>
         <source>Open</source>
         <translation>Открытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="116"/>
+        <location filename="core.cpp" line="115"/>
         <source>Limited</source>
         <translation>Ограниченный</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="118"/>
+        <location filename="core.cpp" line="117"/>
         <source>Private</source>
         <translation>Частный</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="120"/>
+        <location filename="core.cpp" line="119"/>
         <source>Closed</source>
         <translation>Закрытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="200"/>
+        <location filename="core.cpp" line="199"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation>%1 не был делегирован</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="308"/>
+        <location filename="core.cpp" line="307"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="318"/>
+        <location filename="core.cpp" line="317"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="326"/>
+        <location filename="core.cpp" line="325"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Задача была делегирована неудачно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="378"/>
+        <location filename="core.cpp" line="377"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation>Ошибка парсинга XML %1 в %2:%3.</translation>
     </message>

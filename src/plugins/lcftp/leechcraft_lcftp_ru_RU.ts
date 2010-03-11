@@ -29,7 +29,7 @@
     </message>
     <message>
         <source>Download finished: %1</source>
-        <translation>Закачка окончена: %1</translation>
+        <translation type="obsolete">Закачка окончена: %1</translation>
     </message>
     <message>
         <source>While mirroring&lt;br /&gt;%1&lt;br /&gt;to&lt;br /&gt;%2&lt;br /&gt;an error occured:&lt;br /&gt;%3&lt;br /&gt; already exists.</source>
@@ -74,6 +74,10 @@
     <message>
         <source>Choose new file name</source>
         <translation>Выберите новое имя файла</translation>
+    </message>
+    <message>
+        <source>FTP transfer finished</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -84,24 +84,63 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="112"/>
-        <location filename="akregatorimportpage.cpp" line="155"/>
+        <location filename="akregatorimportpage.cpp" line="111"/>
+        <location filename="akregatorimportpage.cpp" line="159"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="113"/>
+        <location filename="akregatorimportpage.cpp" line="112"/>
         <source>The file you&apos;ve selected is not a valid OPML file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="151"/>
+        <location filename="akregatorimportpage.cpp" line="155"/>
         <source>Akregator settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="156"/>
+        <location filename="akregatorimportpage.cpp" line="160"/>
         <source>Could not access or parse Akregator settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::NewLife::KTorrentImportPage</name>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="41"/>
+        <source>KTorrent&apos;s torrents import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="42"/>
+        <source>Select KTorrent&apos;s torrents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="85"/>
+        <source>Select KTorrent&apos;s configuration file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="94"/>
+        <location filename="ktorrentimportpage.cpp" line="186"/>
+        <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="95"/>
+        <source>Can&apos;t read KTorrent&apos;s configuration file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="182"/>
+        <source>KTorrent settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ktorrentimportpage.cpp" line="187"/>
+        <source>Could not access or parse KTorrent settings.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -123,12 +162,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lifereaimportpage.cpp" line="117"/>
+        <location filename="lifereaimportpage.cpp" line="116"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lifereaimportpage.cpp" line="118"/>
+        <location filename="lifereaimportpage.cpp" line="117"/>
         <source>The directory you&apos;ve selected is not Liferea&apos;s directory.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -136,12 +175,12 @@
 <context>
     <name>LeechCraft::Plugins::NewLife::Plugin</name>
     <message>
-        <location filename="newlife.cpp" line="49"/>
+        <location filename="newlife.cpp" line="53"/>
         <source>The settings importer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="newlife.cpp" line="83"/>
+        <location filename="newlife.cpp" line="87"/>
         <source>Import settings...</source>
         <translation type="unfinished"></translation>
     </message>

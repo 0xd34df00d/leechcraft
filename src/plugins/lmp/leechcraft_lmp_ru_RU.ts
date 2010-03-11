@@ -125,87 +125,87 @@
         <translation>Информация на видео</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="387"/>
+        <location filename="playerwidget.cpp" line="386"/>
         <source>Initializing</source>
         <translation>Инициализация</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="390"/>
+        <location filename="playerwidget.cpp" line="389"/>
         <source>Stopped</source>
         <translation>Остановлено</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="393"/>
+        <location filename="playerwidget.cpp" line="392"/>
         <source>Playing</source>
         <translation>Проигрывание</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="396"/>
+        <location filename="playerwidget.cpp" line="395"/>
         <source>Buffering</source>
         <translation>Буферизация</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="399"/>
+        <location filename="playerwidget.cpp" line="398"/>
         <source>Paused</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="402"/>
+        <location filename="playerwidget.cpp" line="401"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="406"/>
+        <location filename="playerwidget.cpp" line="405"/>
         <source> (%1)</source>
         <translation> (%1)</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="407"/>
+        <location filename="playerwidget.cpp" line="406"/>
         <source> [</source>
         <translation> [</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="413"/>
+        <location filename="playerwidget.cpp" line="412"/>
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="417"/>
+        <location filename="playerwidget.cpp" line="416"/>
         <source>]</source>
         <translation>]</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="419"/>
+        <location filename="playerwidget.cpp" line="418"/>
         <source> from </source>
         <translation> из </translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="427"/>
+        <location filename="playerwidget.cpp" line="426"/>
         <source>nowhere</source>
         <translation>ниоткуда</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="440"/>
+        <location filename="playerwidget.cpp" line="439"/>
         <source> (CD)</source>
         <translation> (CD)</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="443"/>
+        <location filename="playerwidget.cpp" line="442"/>
         <source> (DVD)</source>
         <translation> (DVD)</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="446"/>
+        <location filename="playerwidget.cpp" line="445"/>
         <source> (VCD)</source>
         <translation> (VCD)</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="449"/>
+        <location filename="playerwidget.cpp" line="448"/>
         <source> (Unknown disc type)</source>
         <translation> (Неизвестный тип диск)</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="454"/>
+        <location filename="playerwidget.cpp" line="453"/>
         <source>stream</source>
         <translation>потока</translation>
     </message>

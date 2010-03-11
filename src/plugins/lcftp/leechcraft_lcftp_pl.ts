@@ -2,21 +2,40 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>Core</name>
+    <name>LeechCraft::Plugins::LCFTP::Core</name>
     <message>
-        <location filename="core.cpp" line="361"/>
-        <location filename="core.cpp" line="383"/>
-        <source>LeechCraft</source>
+        <location filename="core.cpp" line="197"/>
+        <source>Waiting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="362"/>
+        <location filename="core.cpp" line="202"/>
+        <source>Paused</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="204"/>
+        <source>Downloading at %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="207"/>
+        <source>Uploading at %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="220"/>
+        <source>%1 of %2 (%3%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="225"/>
+        <source>%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="360"/>
         <source>%1 already exists. What do you want to do?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="364"/>
-        <source>Resume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -44,45 +63,18 @@
         <source>Choose new file name</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>LeechCraft::Plugins::LCFTP::Core</name>
-    <message>
-        <location filename="core.cpp" line="199"/>
-        <source>Waiting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="204"/>
-        <source>Paused</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="206"/>
-        <source>Downloading at %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="209"/>
-        <source>Uploading at %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="222"/>
-        <source>%1 of %2 (%3%)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="227"/>
-        <source>%1</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="core.cpp" line="742"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="core.cpp" line="872"/>
+        <source>FTP transfer finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="364"/>
         <location filename="core.cpp" line="750"/>
         <source>Resume</source>
         <translation type="unfinished"></translation>
@@ -93,18 +85,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="851"/>
-        <location filename="core.cpp" line="887"/>
+        <location filename="core.cpp" line="359"/>
+        <location filename="core.cpp" line="383"/>
+        <location filename="core.cpp" line="858"/>
+        <location filename="core.cpp" line="900"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="862"/>
-        <source>Download finished: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="888"/>
+        <location filename="core.cpp" line="901"/>
         <source>While mirroring&lt;br /&gt;%1&lt;br /&gt;to&lt;br /&gt;%2&lt;br /&gt;an error occured:&lt;br /&gt;%3&lt;br /&gt; already exists.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -112,7 +101,7 @@
 <context>
     <name>LeechCraft::Plugins::LCFTP::LCFTP</name>
     <message>
-        <location filename="lcftp.cpp" line="108"/>
+        <location filename="lcftp.cpp" line="110"/>
         <source>A simple FTP client</source>
         <translation type="unfinished"></translation>
     </message>
@@ -158,8 +147,8 @@
 <context>
     <name>LeechCraft::Plugins::LCFTP::Worker</name>
     <message>
-        <location filename="worker.cpp" line="304"/>
-        <location filename="worker.cpp" line="327"/>
+        <location filename="worker.cpp" line="303"/>
+        <location filename="worker.cpp" line="326"/>
         <source>Could not open file&lt;br /&gt;%1&lt;br /&gt;%2</source>
         <translation type="unfinished"></translation>
     </message>

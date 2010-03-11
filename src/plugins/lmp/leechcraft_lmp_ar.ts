@@ -49,7 +49,7 @@
     <message>
         <location filename="core.cpp" line="38"/>
         <source>Show LMP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">إظهار LMP</translation>
     </message>
 </context>
 <context>
@@ -72,42 +72,42 @@
     <message>
         <location filename="player.cpp" line="119"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">الملف</translation>
     </message>
     <message>
         <location filename="player.cpp" line="123"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">المكان</translation>
     </message>
     <message>
         <location filename="player.cpp" line="130"/>
         <source>Audio CD</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CD صوتي</translation>
     </message>
     <message>
         <location filename="player.cpp" line="133"/>
         <source>DVD</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DVD</translation>
     </message>
     <message>
         <location filename="player.cpp" line="136"/>
         <source>Video CD</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CD فيديو</translation>
     </message>
     <message>
         <location filename="player.cpp" line="139"/>
         <source>Unknown disc type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> نوع القرص غير معروف</translation>
     </message>
     <message>
         <location filename="player.cpp" line="145"/>
         <source>Stream</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">المجرى</translation>
     </message>
     <message>
         <location filename="player.cpp" line="187"/>
         <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -115,12 +115,12 @@
     <message>
         <location filename="playerwidget.cpp" line="212"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تشغيل</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="222"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">إيقاف مؤقتاً</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="232"/>
@@ -170,32 +170,32 @@
     <message>
         <location filename="playerwidget.cpp" line="386"/>
         <source>Initializing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">جاري التحضير</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="389"/>
         <source>Stopped</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متوقف</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="392"/>
         <source>Playing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تشغيل</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="395"/>
         <source>Buffering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تخزين في الذاكرة المؤقتة</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="398"/>
         <source>Paused</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">متوقف مؤقتاً</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="401"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">خطأ</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="405"/>
@@ -220,7 +220,7 @@
     <message>
         <location filename="playerwidget.cpp" line="418"/>
         <source> from </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> من </translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="426"/>
@@ -245,12 +245,12 @@
     <message>
         <location filename="playerwidget.cpp" line="448"/>
         <source> (Unknown disc type)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> (نوع القرص غير معروف)</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="453"/>
         <source>stream</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">المجرى</translation>
     </message>
 </context>
 <context>

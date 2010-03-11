@@ -17,12 +17,12 @@
 <context>
     <name>LeechCraft::Plugins::NetworkMonitor::Plugin</name>
     <message>
-        <location filename="networkmonitor.cpp" line="76"/>
+        <location filename="networkmonitor.cpp" line="79"/>
         <source>Network monitor...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkmonitor.cpp" line="98"/>
+        <location filename="networkmonitor.cpp" line="105"/>
         <source>Monitors HTTP network requests and responses.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -50,7 +50,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestmodel.cpp" line="78"/>
+        <location filename="requestmodel.cpp" line="88"/>
         <source>In progress</source>
         <translation type="unfinished"></translation>
     </message>

@@ -70,107 +70,133 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="199"/>
+        <location filename="cstp.cpp" line="209"/>
         <source>CSTP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="201"/>
+        <location filename="cstp.cpp" line="211"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="208"/>
+        <location filename="cstp.cpp" line="218"/>
         <source>Remove all</source>
         <translation>Видалити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="217"/>
+        <location filename="cstp.cpp" line="227"/>
         <source>Start</source>
         <translation>Розпочати</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="224"/>
+        <location filename="cstp.cpp" line="234"/>
         <source>Stop</source>
         <translation>Зупинити</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="231"/>
+        <location filename="cstp.cpp" line="241"/>
         <source>Start all</source>
         <translation>Розпочати всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="238"/>
+        <location filename="cstp.cpp" line="248"/>
         <source>Stop all</source>
         <translation>Зупунити всі</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="250"/>
+        <location filename="cstp.cpp" line="260"/>
         <source>File exists</source>
         <translation>Файл вже існує</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="251"/>
+        <location filename="cstp.cpp" line="261"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 вже існує, бажаєте продовжити завантаження?</translation>
+    </message>
+    <message>
+        <location filename="cstp.cpp" line="275"/>
+        <source>HTTP error</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::CSTP::Core</name>
     <message>
-        <location filename="core.cpp" line="51"/>
+        <location filename="core.cpp" line="49"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="52"/>
+        <location filename="core.cpp" line="50"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="53"/>
+        <location filename="core.cpp" line="51"/>
         <source>Progress</source>
         <translation>Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="54"/>
+        <location filename="core.cpp" line="371"/>
+        <source>%1 (ETA: %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="383"/>
+        <source>%1% (%2 of %3 at %44)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="475"/>
+        <source>Could not open file %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="534"/>
+        <source>Download finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="535"/>
+        <source>%1
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Speed</source>
-        <translation>Швидкість</translation>
+        <translation type="obsolete">Швидкість</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="55"/>
         <source>ETA</source>
-        <translation>ОЧЗ</translation>
+        <translation type="obsolete">ОЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="56"/>
         <source>DTA</source>
-        <translation>ЧЗ</translation>
+        <translation type="obsolete">ЧЗ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="228"/>
+        <location filename="core.cpp" line="242"/>
         <source>Could not truncate file </source>
         <translation>Не можу обрізати файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="351"/>
         <source>%1% (%2 of %3)</source>
-        <translation>%1% (%2 з %3)</translation>
+        <translation type="obsolete">%1% (%2 з %3)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="356"/>
+        <location filename="core.cpp" line="389"/>
         <source>%1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="364"/>
+        <location filename="core.cpp" line="387"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="463"/>
         <source>Could not open file </source>
-        <translation>Не можу відкрити файл</translation>
+        <translation type="obsolete">Не можу відкрити файл</translation>
     </message>
 </context>
 <context>
@@ -184,22 +210,22 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="187"/>
+        <location filename="task.cpp" line="201"/>
         <source>Stopped</source>
         <translation>Зупинено</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="189"/>
+        <location filename="task.cpp" line="203"/>
         <source>Finished</source>
         <translation>Завершено</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="191"/>
+        <location filename="task.cpp" line="205"/>
         <source>Running</source>
         <translation>Працює</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="212"/>
+        <location filename="task.cpp" line="226"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation>Задача ініціалізована неправильно</translation>
     </message>

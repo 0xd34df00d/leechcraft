@@ -647,7 +647,7 @@
     </message>
     <message>
         <source>Aggregator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aggregator</translation>
     </message>
     <message>
         <source>Updated channel &quot;%1&quot; (%2 new items, %3 updated items)</source>
@@ -821,7 +821,7 @@
     </message>
     <message>
         <source>Aggregator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aggregator</translation>
     </message>
     <message>
         <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;/div&gt;</source>

@@ -34,7 +34,7 @@
     <message>
         <location filename="flashonclickwhitelist.ui" line="39"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">إزالة</translation>
     </message>
 </context>
 <context>
@@ -58,40 +58,40 @@
     <message>
         <location filename="cleanweb.cpp" line="85"/>
         <source>Blocks unwanted ads.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">مَنْع الإعلاناتِ الغير مرغوبةِ.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="199"/>
+        <location filename="core.cpp" line="200"/>
         <source>Name</source>
         <translation>hGsl</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="200"/>
+        <location filename="core.cpp" line="201"/>
         <source>Last updated</source>
         <translation>آخر تحديث</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="201"/>
+        <location filename="core.cpp" line="202"/>
         <source>URL</source>
         <translation>المكان</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="402"/>
+        <location filename="core.cpp" line="403"/>
         <source>Block image...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="667"/>
+        <location filename="core.cpp" line="668"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">o&apos;H</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="668"/>
+        <location filename="core.cpp" line="669"/>
         <source>The subscription wasn&apos;t delegated.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">الإشتراك لَمْ يُوفَدْ.</translation>
     </message>
 </context>
 <context>
@@ -297,7 +297,7 @@
         <location filename="ruleoptiondialog.ui" line="166"/>
         <location filename="ruleoptiondialog.ui" line="214"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">إزالة</translation>
     </message>
     <message>
         <location filename="ruleoptiondialog.ui" line="175"/>
@@ -333,7 +333,7 @@
     <message>
         <location filename="userfilters.ui" line="49"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">إزالة</translation>
     </message>
 </context>
 </TS>

@@ -70,53 +70,53 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="208"/>
+        <location filename="cstp.cpp" line="209"/>
         <source>CSTP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="210"/>
+        <location filename="cstp.cpp" line="211"/>
         <source>Remove</source>
         <translation>إزالة</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="217"/>
+        <location filename="cstp.cpp" line="218"/>
         <source>Remove all</source>
         <translation>إزالة الكل</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="226"/>
+        <location filename="cstp.cpp" line="227"/>
         <source>Start</source>
         <translation>بدء</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="233"/>
+        <location filename="cstp.cpp" line="234"/>
         <source>Stop</source>
         <translation>إيقاف</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="240"/>
+        <location filename="cstp.cpp" line="241"/>
         <source>Start all</source>
         <translation>بدء الكل</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="247"/>
+        <location filename="cstp.cpp" line="248"/>
         <source>Stop all</source>
         <translation>إيقاف الكل</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="259"/>
+        <location filename="cstp.cpp" line="260"/>
         <source>File exists</source>
         <translation>الملف موجود</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="260"/>
+        <location filename="cstp.cpp" line="261"/>
         <source>File %1 already exists, continue download?</source>
         <translation>الملف %1 موجود، استمرار تحميله؟</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="274"/>
-        <source>1TTP error</source>
+        <location filename="cstp.cpp" line="275"/>
+        <source>HTTP error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -161,7 +161,8 @@
         <location filename="core.cpp" line="535"/>
         <source>%1
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1
+%2</translation>
     </message>
     <message>
         <source>Speed</source>

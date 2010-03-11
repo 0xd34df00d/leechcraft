@@ -61,17 +61,17 @@
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="393"/>
+        <location filename="core.cpp" line="403"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="658"/>
+        <location filename="core.cpp" line="668"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="659"/>
+        <location filename="core.cpp" line="669"/>
         <source>The subscription wasn&apos;t delegated.</source>
         <translation>Эта подписка не была делегирована.</translation>
     </message>

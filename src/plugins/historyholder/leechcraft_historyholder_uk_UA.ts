@@ -2,14 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>Core</name>
-    <message>
-        <location filename="core.cpp" line="180"/>
-        <source>Binary data</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::HistoryHolder::Core</name>
     <message>
         <location filename="core.cpp" line="67"/>
@@ -31,11 +23,16 @@
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="core.cpp" line="180"/>
+        <source>Binary data</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
-    <name>Plugin</name>
+    <name>LeechCraft::Plugins::HistoryHolder::Plugin</name>
     <message>
-        <location filename="historyholder.cpp" line="47"/>
+        <location filename="historyholder.cpp" line="51"/>
         <source>Holds history from various plugins</source>
         <translation type="unfinished"></translation>
     </message>

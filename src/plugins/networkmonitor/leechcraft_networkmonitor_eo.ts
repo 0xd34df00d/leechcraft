@@ -17,12 +17,12 @@
 <context>
     <name>LeechCraft::Plugins::NetworkMonitor::Plugin</name>
     <message>
-        <location filename="networkmonitor.cpp" line="59"/>
+        <location filename="networkmonitor.cpp" line="79"/>
         <source>Network monitor...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkmonitor.cpp" line="81"/>
+        <location filename="networkmonitor.cpp" line="105"/>
         <source>Monitors HTTP network requests and responses.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -50,7 +50,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestmodel.cpp" line="78"/>
+        <location filename="requestmodel.cpp" line="88"/>
         <source>In progress</source>
         <translation type="unfinished"></translation>
     </message>
@@ -68,17 +68,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkmonitor.ui" line="32"/>
+        <location filename="networkmonitor.ui" line="36"/>
+        <source>String</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="networkmonitor.ui" line="41"/>
+        <source>Wildcard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="networkmonitor.ui" line="46"/>
+        <source>Regexp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="networkmonitor.ui" line="58"/>
         <source>Requests</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkmonitor.ui" line="48"/>
+        <location filename="networkmonitor.ui" line="74"/>
         <source>Request headers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkmonitor.ui" line="69"/>
+        <location filename="networkmonitor.ui" line="92"/>
         <source>Response headers</source>
         <translation type="unfinished"></translation>
     </message>
