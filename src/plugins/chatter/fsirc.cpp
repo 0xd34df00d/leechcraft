@@ -40,17 +40,16 @@ fsirc::fsirc(QWidget *parent) : QDialog(parent)
 {
 	setupUi(this);
 
-	closeTabButton = new QPushButton(QIcon(":/fsirc/data/close.svg"),QString(),this);
-	closeTabButton->setToolTip(tr("Close tab"));
-	closeTabButton->setDisabled(true);
+	actionCloseTab = new QAction (QIcon (":/fsirc/data/close.svg"), QString (), this);
+	actionCloseTab->setToolTip (tr ("Close tab"));
+	actionCloseTab->setDisabled (true);
 
-	actionNewTab = new QAction(QIcon(":/fsirc/data/new.svg"), QString(), this);
-	actionNewTab->setToolTip(tr("New tab"));
+	actionNewTab = new QAction (QIcon (":/fsirc/data/new.svg"), QString (), this);
+	actionNewTab->setToolTip (tr ("New tab"));
 
-	closeTabButton->setFocusPolicy(Qt::NoFocus);
 	cornerButtons = new QToolBar(ircTabHolder);
 	cornerButtons->addAction(actionNewTab);
-	cornerButtons->addWidget(closeTabButton);
+	cornerButtons->addAction(actionCloseTab);
 
 	QVBoxLayout *mainLayout = qobject_cast<QVBoxLayout*> (layout ());
 	mainLayout->insertWidget (0, cornerButtons);
@@ -86,7 +85,7 @@ void fsirc::removeTrayIcon()
 }
 void fsirc::initConnections()
 {
-	connect(closeTabButton, SIGNAL(released()), this, SLOT(closeCurrentTab()));
+	connect(actionCloseTab, SIGNAL(triggered()), this, SLOT(closeCurrentTab()));
 	connect(actionNewTab, SIGNAL(triggered()), this, SLOT(newTab()));
 }
 
@@ -139,12 +138,13 @@ void fsirc::anchorClicked(QUrl url)
 
 void fsirc::closeCurrentTab()
 {
-	if (ircTabHolder->count()>1)
+	if (ircTabHolder->count() > 0)
 	{
 		delete ircList.takeAt(ircTabHolder->currentIndex());
 	}
-	if(ircTabHolder->count()==1)
-		closeTabButton->setDisabled(true);
+
+	if (ircTabHolder->count() == 0)
+		actionCloseTab->setDisabled(true);
 }
 
 void fsirc::newTab(QString uri)
@@ -181,7 +181,7 @@ void fsirc::newTab(QString uri)
 	ircTabHolder->setCurrentIndex(ircTabHolder->addTab(ircView, ircUri));
 
 	refreshTabNames();
-	closeTabButton->setEnabled (ircTabHolder->count () > 0);
+	actionCloseTab->setEnabled (ircTabHolder->count () > 0);
 }
 
 void fsirc::refreshTabNames()

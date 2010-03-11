@@ -48,8 +48,8 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		void initConnections();
 		fsTrayIcon * trayIcon;
 		QTimer * ticker;
-		QPushButton * closeTabButton;
 		QAction *actionNewTab;
+		QAction *actionCloseTab;
 		QToolBar * cornerButtons;
 		static QList<FsIrcView *> ircList;
 	public slots:
