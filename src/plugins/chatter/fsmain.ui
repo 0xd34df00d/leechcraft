@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>fsMainWindow</class>
- <widget class="QDialog" name="fsMainWindow" >
-  <property name="geometry" >
+ <widget class="QDialog" name="fsMainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,13 +10,16 @@
     <height>644</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>fsirc</string>
   </property>
-  <layout class="QHBoxLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTabWidget" name="ircTabHolder" >
-     <property name="currentIndex" >
+    <widget class="QTabWidget" name="ircTabHolder">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
+     <property name="currentIndex">
       <number>-1</number>
      </property>
     </widget>

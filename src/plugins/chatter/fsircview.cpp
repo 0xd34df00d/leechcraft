@@ -22,6 +22,8 @@
 #include <QtCore/QHash>
 #include <QtGui/QScrollBar>
 #include <QtGui/QCompleter>
+#include <QtGui/QInputDialog>
+#include <QtGui/QMessageBox>
 //#include <QtCore/QDebug>
 
 #include "fsircview.h"
@@ -39,6 +41,10 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 	m_chanRegexp = new QRegExp("(\\s)(#(?:\\w|[\\.\\-\\[\\]\\(\\)@\"'`\\^\\$<>&~=#\\*])+)");
 	initCompleters();
 	initConnections();
+
+	actionChangeNick = new QAction (tr ("Change nick"), this);
+	menuButton->addAction (actionChangeNick);
+	connect (actionChangeNick, SIGNAL (triggered ()), this, SLOT (changeNick ()));
 
 	// TODO: make those customizable.. or not?
 	m_msgColors["plain"]="#FFFFFF";
@@ -93,10 +99,6 @@ void FsIrcView::fsEcho(QString message, QString style)
 
 void FsIrcView::initConnections()
 {
-	connect(fsActionCombo,SIGNAL(activated(int)),fsActionEdit,SLOT(setFocus()));
-	connect(fsActionCombo,SIGNAL(activated(int)),this,SLOT(pickAction()));
-	connect(fsActionCombo,SIGNAL(activated(int)),fsActionEdit,SLOT(selectAll()));
-	connect(fsActionEdit, SIGNAL(returnPressed()), this, SLOT(takeAction()));
 	connect(cmdEdit, SIGNAL(returnPressed()), this, SLOT(sayHere()));
 	connect(fsChatView, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
 }
@@ -130,67 +132,15 @@ void FsIrcView::initCompleters()
 	settings.endGroup();
 }
 
-void FsIrcView::takeAction()
-{
-	fSettings settings;
-	QHash<QString, QString> ircUri;
-	switch (fsActionCombo->currentIndex())
-	{
-		case ACT_URI: // Using irc URI
-			if (!IrcLayer::isIrcUri(fsActionEdit->text()))
-				fsEcho("Incorrect irc:// URI");
-			else
-			{
-				if (!m_irc->nickChanged())
-				{
-					qDebug("Nick wasn't changed");
-					// Use server nickname, otherwise global one
-					QVariant valNick=settings.value("servers/"+ircUri["server"]+"/nickname");
-					if (valNick.isValid())
-					{
-						qDebug() << "Found server-specific nick" << valNick.toString();
-						m_irc->ircSetNick(valNick.toString());
-					}
-					else
-					{
-						valNick=settings.value("nickname");
-						qDebug() << "Found global nick" << valNick.toString();
-						if (valNick.isValid())
-							m_irc->ircSetNick(valNick.toString());
-					}
-				}
-
-				// Use URI
-				openIrc(fsActionEdit->text());
-				// Add URI to recent list, if it's not already there
-				if (settings.appendValue(fsActionEdit->text(),"history/irc-uris","uri"))
-					// Update completers
-					initCompleters();
-				settings.setValue("lasturi", fsActionEdit->text());
-			}
-			break;
-		case ACT_NICK: // Changing nick
-			fsExec("nick",fsActionEdit->text());
-			break;
-		case ACT_ENCODING: // Changing encoding
-			fsExec("encoding",fsActionEdit->text());
-			break;
-		case ACT_QUIT: // Goodbye cruel world
-			m_irc->ircQuit(fsActionEdit->text());
-			break;
-	}
-	cmdEdit->setFocus();
-}
-
 void FsIrcView::gotChannelMsg(QHash<QString, QString> data)
 {
 	// Channel message
 	if (data["text"].contains(
-	            QRegExp(
-	                QString("\\b%1\\b").arg(QRegExp::escape(m_irc->nick()))
-	            )
-	        )
-	   )
+				QRegExp(
+					QString("\\b%1\\b").arg(QRegExp::escape(m_irc->nick()))
+				)
+			)
+		)
 	{
 		fsEcho(data["nick"]+": "+data["text"],m_msgColors["private"]);
 		emit gotHlite();
@@ -411,39 +361,6 @@ void FsIrcView::fsQuit()
 	m_irc->ircQuit(FS_QUIT_MSG);
 }
 
-void FsIrcView::pickAction()
-{
-	QString pick;
-	fSettings settings;
-	switch (fsActionCombo->currentIndex())
-	{
-		case ACT_URI: //IRC URI, paste last one / current one
-			if(ircUri().isEmpty())
-			{
-				settings.value("lasturi").toString().isEmpty() ? pick = QString(FS_IRC_URI) : pick=settings.value("lasturi").toString();
-			}
-			else
-			pick=ircUri();
-			break;
-		case ACT_NICK: // nick, current one
-			pick=m_irc->nick();
-			break;
-		case ACT_ENCODING: // encoding, »
-			settings.beginGroup("encodings");
-			if (settings.contains(m_irc->getIrcUri()))
-				pick=settings.value(m_irc->getIrcUri()).toString();
-			else
-				pick=m_irc->encoding();
-			settings.endGroup();
-			break;
-		case ACT_QUIT: // quit. ehm..
-			pick="";
-			break;
-	}
-	fsActionEdit->setCompleter(m_actionCompleters.value(fsActionCombo->currentIndex()));
-	fsActionEdit->setText(pick);
-}
-
 void FsIrcView::openIrc(QString uri)
 {
 	if (!IrcLayer::isIrcUri(uri)) return;
@@ -502,9 +419,6 @@ QString FsIrcView::ircUri() const
 
 void FsIrcView::proposeUri(QString uri)
 {
-	fsActionEdit->setText(uri);
-	fsActionCombo->setCurrentIndex(ACT_URI);
-	fsActionEdit->setFocus();
 }
 
 void FsIrcView::clearView()
@@ -523,4 +437,26 @@ void FsIrcView::gotPrivAction(QHash< QString, QString > data)
 void FsIrcView::gotTopic(QHash< QString, QString > data)
 {
 	fsEcho(tr("%1 sets topic to %2").arg(data["nick"],data["text"]), m_msgColors["event"]);
+}
+
+void FsIrcView::changeNick()
+{
+	fSettings settings;
+
+	QStringList items;
+	items << settings.value("nickname").toString();
+
+	bool ok = false;
+	const QString& nick = QInputDialog::getItem (this, tr ("IRC URI"), tr ("IRC URI"),
+								 items, -1, true, &ok);
+
+	if (!ok)
+		return;
+
+	if (nick.isEmpty ()) {
+		QMessageBox::critical (this, "", tr ("Nick is empty"));
+		return;
+	}
+
+	fsExec ("nick", nick);
 }
