@@ -22,6 +22,8 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QPushButton>
 #include <QtGui/QDesktopServices>
+#include <QtGui/QInputDialog>
+#include <QtGui/QMessageBox>
 #include <QtCore/QDebug>
 #include <QtCore/QRegExp>
 #include <QtCore/QStringList>
@@ -37,18 +39,22 @@ QList<FsIrcView *> fsirc::ircList;
 fsirc::fsirc(QWidget *parent) : QDialog(parent)
 {
 	setupUi(this);
+
 	closeTabButton = new QPushButton(QIcon(":/fsirc/data/close.svg"),QString(),this);
 	closeTabButton->setToolTip(tr("Close tab"));
-	newTabButton = new QPushButton(QIcon(":/fsirc/data/new.svg"),QString(),this);
-	newTabButton->setToolTip(tr("New tab"));
-	closeTabButton->setFocusPolicy(Qt::NoFocus);
-	newTabButton->setFocusPolicy(Qt::NoFocus);
-	cornerButtons = new QToolBar(ircTabHolder);
-	cornerButtons->addWidget(closeTabButton);
-	cornerButtons->addWidget(newTabButton);
 	closeTabButton->setDisabled(true);
-	ircTabHolder->setCornerWidget(cornerButtons);
-	newTab();
+
+	actionNewTab = new QAction(QIcon(":/fsirc/data/new.svg"), QString(), this);
+	actionNewTab->setToolTip(tr("New tab"));
+
+	closeTabButton->setFocusPolicy(Qt::NoFocus);
+	cornerButtons = new QToolBar(ircTabHolder);
+	cornerButtons->addAction(actionNewTab);
+	cornerButtons->addWidget(closeTabButton);
+
+	QVBoxLayout *mainLayout = qobject_cast<QVBoxLayout*> (layout ());
+	mainLayout->insertWidget (0, cornerButtons);
+
 	setWindowIcon(QIcon(":/fsirc/data/icon.svg"));
 	ticker = new QTimer;
 	ticker->setInterval(700);
@@ -81,7 +87,7 @@ void fsirc::removeTrayIcon()
 void fsirc::initConnections()
 {
 	connect(closeTabButton, SIGNAL(released()), this, SLOT(closeCurrentTab()));
-	connect(newTabButton, SIGNAL(released()), this, SLOT(newTab()));
+	connect(actionNewTab, SIGNAL(triggered()), this, SLOT(newTab()));
 }
 
 void fsirc::gotSomeMsg()
@@ -143,23 +149,39 @@ void fsirc::closeCurrentTab()
 
 void fsirc::newTab(QString uri)
 {
-	FsIrcView * ircView = new FsIrcView();
+	QStringList items;
+	items << "irc://irc.freenode.net/#fsirc"
+			<< "irc://irc.freenode.net/#qt-ru";
+
+	bool ok = false;
+	const QString& ircUri = QInputDialog::getItem (this, tr ("IRC URI"), tr ("IRC URI"),
+												   items, -1, true, &ok);
+
+	if (!ok)
+		return;
+
+	if (ircUri.isEmpty ()) {
+		QMessageBox::critical (this, "", tr ("SRC URI is empty"));
+		return;
+	}
+
+	if (!IrcLayer::isIrcUri (ircUri)) {
+		QMessageBox::critical (this, "", tr ("Incorrect SRC URI"));
+		return;
+	}
+
+	FsIrcView *ircView = new FsIrcView ();
 	connect(ircView, SIGNAL(uriChanged()), this, SLOT(refreshTabNames()));
 	connect(ircView, SIGNAL(anchorClicked(QUrl)), this, SLOT(anchorClicked(QUrl)));
 	connect(ircView, SIGNAL(gotSomeMsg()), this, SLOT(gotSomeMsg()));
 	connect(ircView, SIGNAL(gotHlite()), this, SLOT(gotHlite()));
 	ircList << ircView;
-	if(!uri.isEmpty())
-	{
-		ircView->proposeUri(uri);
-		ircView->openIrc(uri);
-	}
-	else
-		ircView->pickAction();
-	ircTabHolder->setCurrentIndex(ircTabHolder->addTab(ircView,"newtab"));
+	ircView->proposeUri(ircUri);
+	ircView->openIrc(ircUri);
+	ircTabHolder->setCurrentIndex(ircTabHolder->addTab(ircView, ircUri));
 
 	refreshTabNames();
-	if(ircTabHolder->count()>1) closeTabButton->setDisabled(false);
+	closeTabButton->setEnabled (ircTabHolder->count () > 0);
 }
 
 void fsirc::refreshTabNames()

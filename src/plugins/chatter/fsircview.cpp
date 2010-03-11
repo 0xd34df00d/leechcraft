@@ -186,10 +186,10 @@ void FsIrcView::gotChannelMsg(QHash<QString, QString> data)
 {
 	// Channel message
 	if (data["text"].contains(
-	            QRegExp(
-	                QString("\\b%1\\b").arg(QRegExp::escape(m_irc->nick()))
-	            )
-	        )
+				QRegExp(
+					QString("\\b%1\\b").arg(QRegExp::escape(m_irc->nick()))
+				)
+			)
 	   )
 	{
 		fsEcho(data["nick"]+": "+data["text"],m_msgColors["private"]);

@@ -49,7 +49,7 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		fsTrayIcon * trayIcon;
 		QTimer * ticker;
 		QPushButton * closeTabButton;
-		QPushButton * newTabButton;
+		QAction *actionNewTab;
 		QToolBar * cornerButtons;
 		static QList<FsIrcView *> ircList;
 	public slots:
