@@ -64,6 +64,8 @@ namespace LeechCraft
 
 				static Core& Instance ();
 
+				void DoDelayedInit ();
+
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 

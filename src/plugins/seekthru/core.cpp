@@ -42,7 +42,6 @@ namespace LeechCraft
 			const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 			
 			Core::Core ()
-			: Headers_ (tr ("Short name"))
 			{
 				qRegisterMetaType<Description> ("LeechCraft::Plugins::SeekThru::Description");
 				qRegisterMetaTypeStreamOperators<UrlDescription> ("LeechCraft::Plugins::SeekThru::UrlDescription");
@@ -65,6 +64,11 @@ namespace LeechCraft
 			{
 				static Core c;
 				return c;
+			}
+
+			void Core::DoDelayedInit ()
+			{
+				Headers_ << tr ("Short name");
 			}
 			
 			int Core::columnCount (const QModelIndex&) const

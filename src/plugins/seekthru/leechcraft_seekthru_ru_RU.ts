@@ -4,52 +4,53 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="45"/>
+        <location filename="core.cpp" line="56"/>
+        <location filename="core.cpp" line="72"/>
         <source>Short name</source>
         <translation>Короткое имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="109"/>
+        <location filename="core.cpp" line="114"/>
         <source>Open</source>
         <translation>Открытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="111"/>
+        <location filename="core.cpp" line="116"/>
         <source>Limited</source>
         <translation>Ограниченный</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="113"/>
+        <location filename="core.cpp" line="118"/>
         <source>Private</source>
         <translation>Частный</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="115"/>
+        <location filename="core.cpp" line="120"/>
         <source>Closed</source>
         <translation>Закрытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="195"/>
+        <location filename="core.cpp" line="200"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation>%1 не был делегирован</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="303"/>
+        <location filename="core.cpp" line="308"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="313"/>
+        <location filename="core.cpp" line="318"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="321"/>
+        <location filename="core.cpp" line="326"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Задача была делегирована неудачно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="373"/>
+        <location filename="core.cpp" line="378"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation>Ошибка парсинга XML %1 в %2:%3.</translation>
     </message>
@@ -57,52 +58,52 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SearchHandler</name>
     <message>
-        <location filename="searchhandler.cpp" line="48"/>
+        <location filename="searchhandler.cpp" line="49"/>
         <source>Subscribe</source>
         <translation>Подписаться</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="73"/>
+        <location filename="searchhandler.cpp" line="74"/>
         <source>%1 total results</source>
         <translation>%1 результатов всего</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="76"/>
+        <location filename="searchhandler.cpp" line="77"/>
         <source>Unknown number of results</source>
         <translation>Неизвестное количество результатов</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="83"/>
+        <location filename="searchhandler.cpp" line="84"/>
         <source> (RSS)</source>
         <translation>(RSS)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="86"/>
+        <location filename="searchhandler.cpp" line="87"/>
         <source> (Atom)</source>
         <translation>(Atom)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="89"/>
+        <location filename="searchhandler.cpp" line="90"/>
         <source> (HTML)</source>
         <translation>(HTML)</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="216"/>
+        <location filename="searchhandler.cpp" line="219"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Задача для запроса&lt;br /&gt;%1&lt;br /&gt;не была делегирована.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="240"/>
+        <location filename="searchhandler.cpp" line="243"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="251"/>
+        <location filename="searchhandler.cpp" line="254"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="295"/>
+        <location filename="searchhandler.cpp" line="298"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
         <translation>Поисковый запрос к URL&lt;br /&gt;%1&lt;br /&gt;был делегирван, но не удался.</translation>
     </message>
@@ -163,13 +164,13 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="87"/>
+        <location filename="seekthru.cpp" line="91"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation>Поиск при помощи OpenSearch-поисковиков.</translation>
     </message>
     <message>
-        <location filename="seekthru.cpp" line="151"/>
-        <location filename="seekthru.cpp" line="158"/>
+        <location filename="seekthru.cpp" line="155"/>
+        <location filename="seekthru.cpp" line="162"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
@@ -177,12 +178,12 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::StartupFirstPage</name>
     <message>
-        <location filename="startupfirstpage.cpp" line="67"/>
+        <location filename="startupfirstpage.cpp" line="71"/>
         <source>SeekThru</source>
         <translation>SeekThru</translation>
     </message>
     <message>
-        <location filename="startupfirstpage.cpp" line="68"/>
+        <location filename="startupfirstpage.cpp" line="72"/>
         <source>Select default search engines</source>
         <translation>Выбор поисковых систем по умолчанию</translation>
     </message>

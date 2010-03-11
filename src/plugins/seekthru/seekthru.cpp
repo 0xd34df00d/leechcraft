@@ -63,6 +63,8 @@ namespace LeechCraft
 						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)),
 						this,
 						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)));
+
+				Core::Instance ().DoDelayedInit ();
 			
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
