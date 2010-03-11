@@ -50,7 +50,6 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		QTimer * ticker;
 		QPushButton * closeTabButton;
 		QPushButton * newTabButton;
-		QPushButton * clearTabButton;
 		QToolBar * cornerButtons;
 		static QList<FsIrcView *> ircList;
 	public slots:
@@ -64,7 +63,6 @@ class fsirc : public QDialog, Ui::fsMainWindow
 		void anchorClicked(QUrl url);
 		void closeCurrentTab();
 		void refreshTabNames();
-		void clearCurrentTab();
 	signals:
 		void gotLink(QString);
 };
