@@ -40,12 +40,14 @@ fsirc::fsirc(QWidget *parent) : QDialog(parent)
 {
 	setupUi(this);
 
-	actionCloseTab = new QAction (QIcon (":/fsirc/data/close.svg"), QString (), this);
-	actionCloseTab->setToolTip (tr ("Close tab"));
-	actionCloseTab->setDisabled (true);
+	actionNewTab = new QAction (QIcon (":/fsirc/data/new.svg"), tr ("New tab"), this);
+	actionNewTab->setToolTip (tr ("Create new tab"));
+	ircTabHolder->addAction(actionNewTab);
 
-	actionNewTab = new QAction (QIcon (":/fsirc/data/new.svg"), QString (), this);
-	actionNewTab->setToolTip (tr ("New tab"));
+	actionCloseTab = new QAction (QIcon (":/fsirc/data/close.svg"), tr ("Close tab"), this);
+	actionCloseTab->setToolTip (tr ("Close current tab"));
+	actionCloseTab->setDisabled (true);
+	ircTabHolder->addAction(actionCloseTab);
 
 	cornerButtons = new QToolBar(ircTabHolder);
 	cornerButtons->addAction(actionNewTab);
