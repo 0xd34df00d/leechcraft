@@ -46,17 +46,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="68"/>
+        <location filename="requestnormalizer.cpp" line="69"/>
         <source>Request validation error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="84"/>
+        <location filename="requestnormalizer.cpp" line="85"/>
         <source>Request parsing error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestnormalizer.cpp" line="108"/>
+        <location filename="requestnormalizer.cpp" line="109"/>
         <source>Open/close braces mismatch: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -64,7 +64,7 @@
 <context>
     <name>LeechCraft::Plugins::Summary::Summary</name>
     <message>
-        <location filename="summary.cpp" line="86"/>
+        <location filename="summary.cpp" line="88"/>
         <source>Summary of downloads and recent events</source>
         <translation type="unfinished"></translation>
     </message>
@@ -72,7 +72,7 @@
 <context>
     <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="317"/>
+        <location filename="summarywidget.cpp" line="334"/>
         <source>Remove this category</source>
         <translation type="unfinished"></translation>
     </message>
