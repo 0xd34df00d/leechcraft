@@ -93,10 +93,6 @@ void FsIrcView::fsEcho(QString message, QString style)
 
 void FsIrcView::initConnections()
 {
-	connect(fsActionCombo,SIGNAL(activated(int)),fsActionEdit,SLOT(setFocus()));
-	connect(fsActionCombo,SIGNAL(activated(int)),this,SLOT(pickAction()));
-	connect(fsActionCombo,SIGNAL(activated(int)),fsActionEdit,SLOT(selectAll()));
-	connect(fsActionEdit, SIGNAL(returnPressed()), this, SLOT(takeAction()));
 	connect(cmdEdit, SIGNAL(returnPressed()), this, SLOT(sayHere()));
 	connect(fsChatView, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
 }
@@ -134,7 +130,7 @@ void FsIrcView::takeAction()
 {
 	fSettings settings;
 	QHash<QString, QString> ircUri;
-	switch (fsActionCombo->currentIndex())
+/*	switch (fsActionCombo->currentIndex())
 	{
 		case ACT_URI: // Using irc URI
 			if (!IrcLayer::isIrcUri(fsActionEdit->text()))
@@ -179,7 +175,7 @@ void FsIrcView::takeAction()
 			m_irc->ircQuit(fsActionEdit->text());
 			break;
 	}
-	cmdEdit->setFocus();
+	cmdEdit->setFocus();**/
 }
 
 void FsIrcView::gotChannelMsg(QHash<QString, QString> data)
@@ -411,39 +407,6 @@ void FsIrcView::fsQuit()
 	m_irc->ircQuit(FS_QUIT_MSG);
 }
 
-void FsIrcView::pickAction()
-{
-	QString pick;
-	fSettings settings;
-	switch (fsActionCombo->currentIndex())
-	{
-		case ACT_URI: //IRC URI, paste last one / current one
-			if(ircUri().isEmpty())
-			{
-				settings.value("lasturi").toString().isEmpty() ? pick = QString(FS_IRC_URI) : pick=settings.value("lasturi").toString();
-			}
-			else
-			pick=ircUri();
-			break;
-		case ACT_NICK: // nick, current one
-			pick=m_irc->nick();
-			break;
-		case ACT_ENCODING: // encoding, »
-			settings.beginGroup("encodings");
-			if (settings.contains(m_irc->getIrcUri()))
-				pick=settings.value(m_irc->getIrcUri()).toString();
-			else
-				pick=m_irc->encoding();
-			settings.endGroup();
-			break;
-		case ACT_QUIT: // quit. ehm..
-			pick="";
-			break;
-	}
-	fsActionEdit->setCompleter(m_actionCompleters.value(fsActionCombo->currentIndex()));
-	fsActionEdit->setText(pick);
-}
-
 void FsIrcView::openIrc(QString uri)
 {
 	if (!IrcLayer::isIrcUri(uri)) return;
@@ -502,9 +465,6 @@ QString FsIrcView::ircUri() const
 
 void FsIrcView::proposeUri(QString uri)
 {
-	fsActionEdit->setText(uri);
-	fsActionCombo->setCurrentIndex(ACT_URI);
-	fsActionEdit->setFocus();
 }
 
 void FsIrcView::clearView()

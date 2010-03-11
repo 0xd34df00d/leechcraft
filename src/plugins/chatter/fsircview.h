@@ -67,7 +67,6 @@ private slots:
 public slots:
 	void fsQuit();
 	void sayHere();
-	void pickAction();
 	void takeAction();
 	void clearView();
 signals:
