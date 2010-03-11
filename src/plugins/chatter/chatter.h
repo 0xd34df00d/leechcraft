@@ -21,12 +21,11 @@ namespace LeechCraft
 			class Plugin : public QObject
 						 , public IInfo
 						 , public IHaveSettings
-						 , public IToolBarEmbedder
 						 , public IEntityHandler
 						 , public IEmbedTab
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveSettings IToolBarEmbedder IEntityHandler IEmbedTab)
+				Q_INTERFACES (IInfo IHaveSettings IEntityHandler IEmbedTab)
 
 				std::auto_ptr<QTranslator> Translator_;
 			public:
@@ -44,7 +43,6 @@ namespace LeechCraft
 				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
 				void Handle (LeechCraft::DownloadEntity);
 
-				QList<QAction*> GetActions () const;
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;

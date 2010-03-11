@@ -73,11 +73,6 @@ void Plugin::SetProvider (QObject*, const QString&)
 {
 }
 
-QList<QAction*> Plugin::GetActions () const
-{
-	return Actions_;
-}
-
 bool Plugin::CouldHandle (const LeechCraft::DownloadEntity& e) const
 {
 	if (!e.Entity_.canConvert<QUrl> ())
