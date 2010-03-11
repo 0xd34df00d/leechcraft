@@ -47,6 +47,7 @@ private:
 	// Dropdown actions
 	enum {ACT_URI, ACT_NICK, ACT_ENCODING, ACT_QUIT};
 	QHash<QString,QString> m_msgColors;
+	QAction *actionChangeNick;
 private slots:
 	void gotChannelMsg(QHash<QString, QString> data);
 	void gotPrivMsg(QHash<QString, QString> data);
@@ -64,10 +65,10 @@ private slots:
 	void gotMode(QHash<QString, QString> data);
 	void gotKick(QHash<QString, QString> data);
 	void gotPrivAction(QHash<QString, QString>);
+	void changeNick();
 public slots:
 	void fsQuit();
 	void sayHere();
-	void takeAction();
 	void clearView();
 signals:
 	void gotLink(QString);
