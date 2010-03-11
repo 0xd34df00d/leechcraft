@@ -30,7 +30,6 @@ SET (SRCS
 	searcherslist.cpp
 	findproxy.cpp
 	searchhandler.cpp
-	selectablebrowser.cpp
 	wizardgenerator.cpp
 	startupfirstpage.cpp
 	tagsasker.cpp
@@ -43,7 +42,6 @@ SET (HEADERS
 	searcherslist.h
 	findproxy.h
 	searchhandler.h
-	selectablebrowser.h
 	wizardgenerator.h
 	startupfirstpage.h
 	tagsasker.h

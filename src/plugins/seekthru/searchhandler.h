@@ -30,11 +30,15 @@ class QAction;
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class SelectableBrowser;
+	};
+
 	namespace Plugins
 	{
 		namespace SeekThru
 		{
-			class SelectableBrowser;
 			/** This class performs search on a single category with a single search
 			 * provider.
 			 */
@@ -68,7 +72,7 @@ namespace LeechCraft
 				QList<Result> Results_;
 				QMap<int, Result> Jobs_;
 				QList<QObject*> Downloaders_;
-				boost::shared_ptr<SelectableBrowser> Viewer_;
+				boost::shared_ptr<Util::SelectableBrowser> Viewer_;
 				boost::shared_ptr<QToolBar> Toolbar_;
 				boost::shared_ptr<QAction> Action_;
 			public:

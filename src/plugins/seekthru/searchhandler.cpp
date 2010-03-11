@@ -26,8 +26,9 @@
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/util.h>
-#include "selectablebrowser.h"
+#include <plugininterface/selectablebrowser.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -39,7 +40,7 @@ namespace LeechCraft
 			
 			SearchHandler::SearchHandler (const Description& d)
 			: D_ (d)
-			, Viewer_ (new SelectableBrowser)
+			, Viewer_ (new Util::SelectableBrowser)
 			, Toolbar_ (new QToolBar)
 			{
 				setObjectName ("SeekThru SearchHandler");
@@ -97,6 +98,8 @@ namespace LeechCraft
 					case LeechCraft::RoleAdditionalInfo:
 						if (Results_.at (r).Type_ == Result::TypeHTML)
 						{
+							Viewer_->SetNavBarVisible (XmlSettingsManager::Instance ()
+									.property ("NavBarVisible").toBool ());
 							Viewer_->SetHtml (Results_.at (r).Response_,
 									Results_.at (r).RequestURL_.toString ()); 
 							return QVariant::fromValue<QWidget*> (Viewer_.get ());
