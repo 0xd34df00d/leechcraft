@@ -89,7 +89,7 @@ namespace LeechCraft
 								property ("Vkontakte.ru").toBool ())
 							return false;
 
-						return url.host () == "vkadre.ru";
+						return url.host ().endsWith ("vkadre.ru");
 					}
 
 					Player* VkontakteruPlayerCreator::Create (const QUrl& url,
