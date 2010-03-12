@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "seekthru.h"
-#include <QMessageBox>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
@@ -151,16 +150,25 @@ namespace LeechCraft
 			
 			void SeekThru::handleError (const QString& error)
 			{
-				QMessageBox::critical (0,
-						tr ("LeechCraft"),
-						error);
+				Notification n =
+				{
+					"SeekThru",
+					error,
+					false,
+					Notification::PCritical_
+				};
+				emit notify (n);
 			}
 			
 			void SeekThru::handleWarning (const QString& error)
 			{
-				QMessageBox::warning (0,
-						tr ("LeechCraft"),
-						error);
+				Notification n =
+				{
+					"SeekThru",
+					error,
+					false,
+					Notification::PWarning_
+				};
 			}
 			
 			Q_EXPORT_PLUGIN2 (leechcraft_seekthru, SeekThru);
