@@ -417,28 +417,38 @@ namespace LeechCraft
 						}
 					default:
 						{
+							QFile file (":/resources/html/generalerror.html");
+							file.open (QIODevice::ReadOnly);
+							QString data = file.readAll ();
+							int statusCode = reply->
+								attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+							if (statusCode)
+								data.replace ("{title}",
+										tr ("Error loading %1: %2 (%3)")
+											.arg (reply->url ().toString ())
+											.arg (reply->errorString ())
+											.arg (statusCode));
+							else
+								data.replace ("{title}",
+										tr ("Error loading %1: %2")
+											.arg (reply->url ().toString ())
+											.arg (reply->errorString ()));
+							QString bodyContents = tr ("The page you tried to access cannot be loaded now.");
+							data.replace ("{body}", bodyContents);
+
+							QBuffer ib;
+							ib.open (QIODevice::ReadWrite);
+							QPixmap px = Core::Instance ().GetProxy ()->GetIcon ("error").pixmap (32, 32);
+							px.save (&ib, "PNG");
+
+							data.replace ("{img}",
+									QByteArray ("data:image/png;base64,") + ib.buffer ().toBase64 ());
+			
 							QWebFrame *found = FindFrame (reply->url ());
-			
-							QFile errorPage (":/resources/html/generalerror.html");
-							errorPage.open (QIODevice::ReadOnly);
-							QString title = tr ("Error loading %1")
-								.arg (reply->url ().toString ());
-							QString contents = QString (errorPage.readAll ())
-								.arg (title)
-								.arg (reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ())
-								.arg (reply->errorString ())
-								.arg (reply->url ().toString ());
-			
-							QBuffer iconBuffer;
-							iconBuffer.open (QIODevice::ReadWrite);
-							QPixmap pixmap (":/resources/images/poshuku.svg");
-							pixmap.save (&iconBuffer, "PNG");
-							contents.replace ("POSHUKU_LOGO", iconBuffer.buffer ().toBase64 ());
-			
 							if (found)
-								found->setHtml (contents, reply->url ());
+								found->setHtml (data, reply->url ());
 							else if (LoadingURL_ == reply->url ())
-								mainFrame ()->setHtml (contents, reply->url ());
+								mainFrame ()->setHtml (data, reply->url ());
 						}
 						break;
 				}

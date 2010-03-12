@@ -1,28 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
-		<title>%1</title>
+		<title>{title}</title>
+		<style>
+			body {margin: 0; padding: 0; border: 0; background: #808080}
+			#main {
+				height: auto;
+				width: 60%;
+				margin-left: auto;
+				margin-right: auto;
+				margin-top: 10%;
+				min-height: 40;
+				-webkit-border-radius: 1.7em;
+				background: #535353 scroll no-repeat;
+				padding:12px;
+			}
+			img {height: 32px; width: 32px; left: 5px; margin: 5px; float: left; display:block;}
+			strong {color: #ffc637; margin: 5px; }
+			p {font-size: 0.9em; padding:2px 6px; color: #ff8c11; text-align: justify;}
+		</style>
 	</head>
-	<style>
-		body
-		{
-			padding: 3%;
-			background-color: #DDFFDD;
-		}
-
-		.box
-		{
-			background-color: #BBFFBB;
-			border: 1px solid #00FF00;
-			width: 94%;
-			padding: 40px;
-		}
-	</style>
 	<body>
-		<div class="box">
-			<img src="data:image/png;base64,POSHUKU_LOGO" width="32" height="32" />
-			<br />
-			<h1>%2: %3</h1>
-			<p>An error occured when connecting to: <a href="%4">%4</a></p>
+		<div id="main">
+			<img src="{img}" alt="" />
+			<h3><strong>{title}</strong></h3>
+			<p>{body}</p>
 		</div>
 	</body>
 </html>

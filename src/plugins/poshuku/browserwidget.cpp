@@ -1197,7 +1197,7 @@ namespace LeechCraft
 				QString host = url.host ();
 				host.remove ("www.");
 				QString path = QString ("/%1/%2")
-					.arg (url.isEmpty () ? tr ("Poshuku") : host)
+					.arg (host.isEmpty () ? tr ("Poshuku") : host)
 					.arg (title);
 
 				QStringList domains = host.split ('.', QString::SkipEmptyParts);
