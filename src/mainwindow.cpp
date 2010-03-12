@@ -250,6 +250,9 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	handleToolButtonStyleChanged ();
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowMenuBarAsButton",
 			this, "handleShowMenuBarAsButton");
+	XmlSettingsManager::Instance ()->RegisterObject ("IconSize",
+			this, "handleIconSize");
+	handleIconSize ();
 
 	LanguageOnLoad_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
 
@@ -506,6 +509,14 @@ namespace
 void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
 {
 	setToolButtonStyle (GetToolButtonStyle ());
+}
+
+void LeechCraft::MainWindow::handleIconSize ()
+{
+	int size = XmlSettingsManager::Instance ()->
+		property ("IconSize").toInt ();
+	if (size)
+		setIconSize (QSize (size, size));
 }
 
 void LeechCraft::MainWindow::handleShowMenuBarAsButton ()

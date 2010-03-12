@@ -104,6 +104,7 @@ namespace LeechCraft
 		void on_ActionLogger__triggered ();
 		void on_MainTabWidget__currentChanged (int);
 		void handleToolButtonStyleChanged ();
+		void handleIconSize ();
 		void handleShowMenuBarAsButton ();
 		void updateSpeedIndicators ();
 		void updateClock ();
