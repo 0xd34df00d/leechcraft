@@ -90,7 +90,19 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	speedUpd->start ();
 	qApp->setQuitOnLastWindowClosed (false);
 
-	Q_FOREACH (QList<QAction*> list, Core::Instance ().GetActions2Embed ())
+	QList<QList<QAction*> > lists = Core::Instance ().GetActions2Embed ();
+	QList<QAction*> ones;
+	Q_FOREACH (QList<QAction*> list, lists)
+		if (list.size () == 1)
+		{
+			ones += list;
+			lists.removeAll (list);
+		}
+
+	if (ones.size ())
+		lists += ones;
+
+	Q_FOREACH (QList<QAction*> list, lists)
 	{
 		Q_FOREACH (QAction *act, list)
 			act->setParent (this);
