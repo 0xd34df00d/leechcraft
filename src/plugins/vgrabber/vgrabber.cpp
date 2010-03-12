@@ -18,7 +18,6 @@
 
 #include "vgrabber.h"
 #include <QIcon>
-#include <QMessageBox>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "audiofindproxy.h"
@@ -163,9 +162,13 @@ namespace LeechCraft
 			void vGrabber::handleError (const QString& msg)
 			{
 				qWarning () << Q_FUNC_INFO << sender () << msg;
-				QMessageBox::critical (0,
-						tr ("LeechCraft"),
-						msg);
+				Notification n =
+				{
+					"vGrabber",
+					msg,
+					false,
+					Notification::PWarning_
+				};
 			}
 
 			void vGrabber::handleCategoriesGoingToChange (const QStringList& added,
