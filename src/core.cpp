@@ -886,20 +886,23 @@ void LeechCraft::Core::handleNotify (LeechCraft::Notification n)
 
 	QString pname;
 	IInfo *ii = qobject_cast<IInfo*> (sender ());
-	try
+	if (ii)
 	{
-		pname = ii->GetName ();
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< e.what ()
-			<< sender ();
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< sender ();
+		try
+		{
+			pname = ii->GetName ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< e.what ()
+				<< sender ();
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< sender ();
+		}
 	}
 
 	QString header;

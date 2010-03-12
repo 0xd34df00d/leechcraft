@@ -264,7 +264,7 @@ namespace LeechCraft
 		 * @param[in] msg The message to show.
 		 */
 		void handleStatusBarChanged (QWidget *sender, const QString& msg);
-
+	public slots:
 		/** Handles the notification. Either logs it or shows to the
 		 * user, depending in the notification and settings.
 		 *

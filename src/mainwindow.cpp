@@ -174,9 +174,14 @@ LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () c
 
 void LeechCraft::MainWindow::catchError (QString message)
 {
-	QMessageBox::critical (this,
-			tr ("LeechCraft"),
-			message);
+	Notification n =
+	{
+		tr ("LeechCraft"),
+		message,
+		false,
+		Notification::PWarning_
+	};
+	Core::Instance ().handleNotify (n);
 }
 
 void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
