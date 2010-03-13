@@ -325,15 +325,19 @@ namespace LeechCraft
 							if (file.size () > XmlSettingsManager::Instance ()->
 									property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
 							{
-								Notification n =
+								if (XmlSettingsManager::Instance ()->
+										property ("NotifyAboutTooBig").toBool ())
 								{
-									tr ("BitTorrent"),
-									tr ("Rejecting file %1 because it's "
-											"bigger than current auto limit.").arg (str),
-									false,
-									Notification::PWarning_
-								};
-								emit notify (n);
+									Notification n =
+									{
+										tr ("BitTorrent"),
+										tr ("Rejecting file %1 because it's "
+												"bigger than current auto limit.").arg (str),
+										false,
+										Notification::PWarning_
+									};
+									emit notify (n);
+								}
 								return false;
 							}
 							else
