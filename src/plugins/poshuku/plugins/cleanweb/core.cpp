@@ -664,9 +664,13 @@ bool Core::Load (const QUrl& url, const QString& subscrName)
 	emit delegateEntity (e, &id, &pr);
 	if (id == -1)
 	{
-		QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
-				tr ("Error"),
-				tr ("The subscription wasn't delegated."));
+		Notification n =
+		{
+			"Poshuku CleanWeb",
+			tr ("The subscription wasn't delegated."),
+			false,
+			Notification::PCritical_
+		};
 		qWarning () << Q_FUNC_INFO
 			<< url.toString ().toUtf8 ();
 		return false;

@@ -78,6 +78,7 @@ namespace LeechCraft
 					signals:
 						void delegateEntity (const LeechCraft::DownloadEntity&,
 								int*, QObject**);
+						void notify (const LeechCraft::Notification&);
 					};
 				};
 			};
