@@ -45,7 +45,7 @@ QSize NotificationWidget::setData ( const QString& title, const QString& body, c
 {
     QString data = content;
     data.replace ( "{title}", title );
-    data.replace ( "{body}", Qt::escape (body) );
+    data.replace ( "{body}", body );
     data.replace ( "{imagepath}", MakeImage (imagePath));
     setHtml(data);
     int width = size ().width();
