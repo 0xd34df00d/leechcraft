@@ -18,7 +18,6 @@
 
 #include "player.h"
 #include <QNetworkReply>
-#include <QMessageBox>
 #include <qwebview.h>
 #include "core.h"
 
@@ -45,14 +44,8 @@ namespace LeechCraft
 							if ((Player_ = player->CreateWidget ()))
 								break;
 						if (Player_)
-						{
 							qobject_cast<QBoxLayout*> (layout ())->
 								insertWidget (0, Player_->Widget ());
-							connect (Player_->Widget (),
-									SIGNAL (error (const QString&)),
-									this,
-									SLOT (handlePlayerError (const QString&)));
-						}
 					}
 
 					Player::~Player ()
@@ -98,13 +91,6 @@ namespace LeechCraft
 							return;
 
 						view->load (url);
-					}
-
-					void Player::handlePlayerError (const QString& error)
-					{
-						QMessageBox::critical (this,
-								tr ("LeechCraft"),
-								error);
 					}
 				};
 			};

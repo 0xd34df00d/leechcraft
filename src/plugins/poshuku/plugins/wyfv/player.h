@@ -53,8 +53,6 @@ namespace LeechCraft
 						virtual ~Player ();
 					protected slots:
 						void handleNavigate (const QUrl&);
-					private slots:
-						void handlePlayerError (const QString&);
 					};
 				};
 			};
