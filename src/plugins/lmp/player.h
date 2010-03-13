@@ -57,11 +57,12 @@ namespace LeechCraft
 				void FillQueue (int) const;
 			public slots:
 				void handleStateUpdated (const QString&);
-				void handleError (const QString&);
 			private slots:
 				void handleSourceChanged (const Phonon::MediaSource&);
 				void handleMetadataChanged ();
 				void on_Queue__activated (const QModelIndex&);
+			signals:
+				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};

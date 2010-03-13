@@ -455,7 +455,16 @@ namespace LeechCraft
 				}
 
 				if (MediaObject_->state () == ErrorState)
-					emit error (result);
+				{
+					Notification n =
+					{
+						"LMP",
+						result,
+						false,
+						Notification::PCritical_
+					};
+					emit notify (n);
+				}
 				else
 					emit stateUpdated (result);
 			}

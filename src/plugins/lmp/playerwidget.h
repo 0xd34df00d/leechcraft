@@ -22,6 +22,7 @@
 #include <QWidget>
 #include <QCursor>
 #include <interfaces/imediaplayer.h>
+#include <interfaces/structures.h>
 #include "ui_playerwidget.h"
 #include "phonon.h"
 
@@ -101,7 +102,7 @@ namespace LeechCraft
 				void hideCursor ();
 			signals:
 				void stateUpdated (const QString&);
-				void error (const QString&);
+				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};

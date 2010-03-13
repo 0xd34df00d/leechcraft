@@ -66,6 +66,10 @@ namespace LeechCraft
 			PlayerWidget* Core::CreateWidget () const
 			{
 				PlayerWidget *result = new PlayerWidget;
+				connect (result,
+					SIGNAL (notify (const LeechCraft::Notification&)),
+					this,
+					SIGNAL (notify (const LeechCraft::Notification&)));
 				KeyInterceptor *ki = new KeyInterceptor (result, result);
 				QList<QWidget*> children = result->findChildren<QWidget*> ();
 				children << result;
@@ -147,6 +151,10 @@ namespace LeechCraft
 							SIGNAL (triggered ()),
 							Player_.get (),
 							SLOT (show ()));
+					connect (Player_.get (),
+						SIGNAL (notify (const LeechCraft::Notification&)),
+						this,
+						SIGNAL (notify (const LeechCraft::Notification&)));
 				}
 				Player_->Enqueue (source);
 				if (e.Parameters_ & FromUserInitiated)

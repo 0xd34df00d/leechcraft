@@ -70,6 +70,7 @@ namespace LeechCraft
 				void Handle (const LeechCraft::DownloadEntity&);
 			signals:
 				void bringToFront ();
+				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};

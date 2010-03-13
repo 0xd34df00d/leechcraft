@@ -42,6 +42,10 @@ void LMP::Init (ICoreProxy_ptr proxy)
 			SIGNAL (bringToFront ()),
 			this,
 			SIGNAL (bringToFront ()));
+	connect (&Core::Instance (),
+		SIGNAL (notify (const LeechCraft::Notification&)),
+		this,
+		SIGNAL (notify (const LeechCraft::Notification&)));
 }
 
 void LMP::SecondInit ()

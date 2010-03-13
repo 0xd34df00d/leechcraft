@@ -20,7 +20,6 @@
 #include <QToolBar>
 #include <QStatusBar>
 #include <QSlider>
-#include <QMessageBox>
 #include <QStandardItem>
 #include <QUrl>
 #include "keyinterceptor.h"
@@ -72,9 +71,9 @@ namespace LeechCraft
 						this,
 						SLOT (handleStateUpdated (const QString&)));
 				connect (Ui_.Player_,
-						SIGNAL (error (const QString&)),
+						SIGNAL (notify (const LeechCraft::Notification&)),
 						this,
-						SLOT (handleError (const QString&)));
+						SIGNAL (notify (const LeechCraft::Notification&)));
 
 				connect (Ui_.Player_->GetMediaObject (),
 						SIGNAL (metaDataChanged ()),
@@ -179,13 +178,6 @@ namespace LeechCraft
 			void Player::handleStateUpdated (const QString& state)
 			{
 				StatusBar_->showMessage (state);
-			}
-
-			void Player::handleError (const QString& error)
-			{
-				QMessageBox::warning (this,
-						tr ("LeechCraft"),
-						error);
 			}
 
 			void Player::handleSourceChanged (const Phonon::MediaSource& source)
