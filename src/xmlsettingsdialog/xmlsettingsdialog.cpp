@@ -95,9 +95,16 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 	QByteArray data = file.readAll ();
 	file.close ();
 
-	if (!Document_->setContent (data))
+	QString emsg;
+	int eline;
+	int ecol;
+	if (!Document_->setContent (data, &emsg, &eline, &ecol))
 	{
-		qWarning () << "Could not parse file";
+		qWarning () << "Could not parse file, line"
+			<< eline
+			<< "; column"
+			<< ecol
+			<< emsg;
 		return;
 	}
 	QDomElement root = Document_->documentElement ();
