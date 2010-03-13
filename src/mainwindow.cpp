@@ -123,8 +123,9 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			PluginsActionsBar_->addActions (list);
 			PluginsActionsBar_->addSeparator ();
 
-			Ui_.MenuActions_->addActions (list);
-			Ui_.MenuActions_->addSeparator ();
+			Q_FOREACH (QAction *action, list)
+				Ui_.MenuTools_->insertAction (Ui_.ActionLogger_, action);
+			Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
 		}
 	}
 
@@ -264,7 +265,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	QMenu *menu = new QMenu (this);
 	menu->addMenu (Ui_.MenuGeneral_);
 	menu->addMenu (Ui_.MenuView_);
-	menu->addMenu (Ui_.MenuActions_);
 	menu->addMenu (Ui_.MenuTools_);
 	menu->addMenu (Ui_.MenuHelp_);
 	Ui_.ActionMenu_->setMenu (menu);

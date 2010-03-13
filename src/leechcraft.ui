@@ -109,15 +109,9 @@
     <addaction name="ActionShowStatusBar_"/>
     <addaction name="ActionFullscreenMode_"/>
    </widget>
-   <widget class="QMenu" name="MenuActions_">
-    <property name="title">
-     <string>Actions</string>
-    </property>
-   </widget>
    <addaction name="MenuGeneral_"/>
    <addaction name="MenuView_"/>
    <addaction name="MenuTools_"/>
-   <addaction name="MenuActions_"/>
    <addaction name="MenuHelp_"/>
   </widget>
   <action name="ActionAddTask_">
