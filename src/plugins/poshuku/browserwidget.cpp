@@ -1119,11 +1119,11 @@ namespace LeechCraft
 
 				if (ok)
 					n.Text_ = tr ("Page load finished: %1")
-						.arg (Ui_.WebView_->title ());
+						.arg (Qt::escape (Ui_.WebView_->title ()));
 				else
 				{
 					n.Text_ = tr ("Page load failed: %1")
-						.arg (Ui_.WebView_->title ());
+						.arg (Qt::escape (Ui_.WebView_->title ()));
 					n.Priority_ = LeechCraft::Notification::PWarning_;
 				}
 
