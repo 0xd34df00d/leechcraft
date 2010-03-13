@@ -7,7 +7,7 @@ IF (NOT QT_USE_FILE)
 	PROJECT (leechcraft_tabpp)
 
 	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake")
+		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
 	ENDIF (NOT CMAKE_MODULE_PATH)
 
 	FIND_PACKAGE (Boost REQUIRED)
