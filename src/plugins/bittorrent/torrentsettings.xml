@@ -183,21 +183,8 @@
 	<page>
 		<label lang="en" value="Advanced network" />
 		<label lang="ru" value="Расширенные сетевые" />
-		<scrollarea horizontalScroll="off">
-			<item type="groupbox" property="ScrapeEnabled" checkable="true" state="off">
-				<label lang="en" value="Scrape enabled" />
-				<label lang="ru" value="Scrape включен" />
-				<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60">
-					<lang value="en">
-						<label value="Scrape interval" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Интервал scrape-запросов" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-			</item>
+		<tab>
+			<label lang="en" value="DHT" />
 			<item type="groupbox" property="DHTEnabled" state="on" checkable="true">
 				<label lang="en" value="DHT" />
 				<label lang="ru" value="DHT" />
@@ -219,12 +206,20 @@
 				</item>
 			</item>
 			<groupbox>
-				<label lang="en" value="Advanced settings" />
-				<label lang="ru" value="Расширенные настройки" />
-				<item type="lineedit" property="AnnounceIP" default="">
-					<label lang="en" value="Announce IP:" />
-					<label lang="ru" value="IP, передаваемый трекеру:" />
+				<label lang="en" value="DHT-related options" />
+				<label lang="ru" value="Относящиеся к DHT опции" />
+				<item type="checkbox" property="UseDHTAsFallback" state="on">
+					<label lang="en" value="Use DHT as fallback" />
+					<label lang="ru" value="Использовать DHT в случае недоступного трекера" />
 				</item>
+			</groupbox>
+		</tab>
+		<tab>
+			<label lang="en" value="Features &amp; extensions" />
+			<label lang="en" value="Возможности и расширения" />
+			<groupbox>
+				<label lang="en" value="Features" />
+				<label lang="en" value="Возможности" />
 				<item type="checkbox" property="EnableLSD" default="true">
 					<label lang="en" value="Enable Local Service Discovery" />
 					<label lang="ru" value="Включить Local Service Discovery" />
@@ -237,51 +232,24 @@
 					<label lang="en" value="Enable NAT-PMP support" />
 					<label lang="ru" value="Включить поддержку NAT-PMP" />
 				</item>
-				<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
-					<label lang="en" value="Allow multiple connections per IP" />
-					<label lang="ru" value="Разрешать множественные соединения с одним IP" />
+			</groupbox>
+			<item type="groupbox" property="ScrapeEnabled" checkable="true" state="off">
+				<label lang="en" value="Scrape enabled" />
+				<label lang="ru" value="Scrape включен" />
+				<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60">
+					<lang value="en">
+						<label value="Scrape interval" />
+						<suffix value=" s" />
+					</lang>
+					<lang value="ru">
+						<label value="Интервал scrape-запросов" />
+						<suffix value=" с" />
+					</lang>
 				</item>
-				<item type="checkbox" property="IgnoreLimitsOnLocalNetwork" state="on">
-					<label lang="en" value="Ignore limits on local network" />
-					<label lang="ru" value="Игнорировать ограничения в локальной сети" />
-				</item>
-				<item type="checkbox" property="DontCountSlowTorrents" default="true">
-					<label lang="en" value="Don't count slow torrents" />
-					<label lang="ru" value="Не учитывать медленные торренты" />
-				</item>
-				<item type="checkbox" property="SendRedundantHave" state="off">
-					<label lang="en" value="Send redundant have messages" />
-					<label lang="ru" value="Посылать ненужные have-сообщения" />
-				</item>
-				<item type="checkbox" property="LazyBitfields" state="on">
-					<label lang="en" value="Lazy bitfields" />
-					<label lang="ru" value="Ленивые битовые маски" />
-				</item>
-				<item type="checkbox" property="UseDHTAsFallback" state="on">
-					
-					<label lang="en" value="Use DHT as fallback" />
-					<label lang="ru" value="Использовать DHT в случае недоступного трекера" />
-				</item>
-				<item type="checkbox" property="UPNPIgnoreNonrouters" state="on">
-					<label lang="en" value="Ignore UPNP-nonrouters" />
-					<label lang="ru" value="Игнорировать UPNP-устройства, не являющиеся роутерами" />
-				</item>
-				<item type="checkbox" property="AutoUploadSlots" default="true">
-					<label lang="en" value="Auto upload slots" />
-					<label lang="ru" value="Автоматические слоты на отдачу" />
-				</item>
-				<item type="checkbox" property="UseParoleMode" default="true">
-					<label lang="en" value="Use parole mode" />
-					<label lang="ru" value="Использовать parole mode" />
-				</item>
-				<item type="checkbox" property="CloseRedundantConnections" default="true">
-					<label lang="en" value="Close redundant connections" />
-					<label lang="ru" value="Закрывать ненужные соединения" />
-				</item>
-				<item type="checkbox" property="PrioritizePartialPieces" default="true">
-					<label lang="en" value="Prioritize partial pieces" />
-					<label lang="ru" value="Повышать приоритет неполных кусков" />
-				</item>
+			</item>
+			<groupbox>
+				<label lang="en" value="Trackers" />
+				<label lang="ru" value="Трекеры" />
 				<item type="checkbox" property="AnnounceToAllTrackers" default="true">
 					<label lang="en" value="Announce to all trackers of one tier" />
 					<label lang="ru" value="Объявлять всем трекерам одного уровня" />
@@ -294,286 +262,340 @@
 					<label lang="en" value="Prefer UDP trackers" />
 					<label lang="ru" value="Предпочитать UDP-трекеры" />
 				</item>
-				<item type="checkbox" property="StrictSuperSeeding" default="false">
-					<label lang="en" value="Strict super seeding" />
-					<label lang="ru" value="Строгий супер-сид" />
-				</item>
-				<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
-					<lang value="en">
-						<label value="Tracker request completion timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Время ожидания результата запроса от трекера:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="TrackerReceiveTimeout" default="40" minimum="10" maximum="300" step="10">
-					<lang value="en">
-						<label value="Tracker data receive timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Время ожидания получения данных от трекера:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="StopTrackerTimeout" default="5" minimum="1" maximum="30" step="1">
-					<lang value="en">
-						<label value="Stop tracker timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Таймаут отсоединения от трекера:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512">
-					<lang value="en">
-						<label value="Tracker maximum response length:" />
-						<suffix value=" KB" />
-					</lang>
-					<lang value="ru">
-						<label value="Максимальный размер ответа от трекера:" />
-						<suffix value=" КБ" />
-					</lang>
-				</item>
-				<item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5">
-					<lang value="en">
-						<label value="Piece response timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Таймаут получения ответа о куске:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5">
-					<lang value="en">
-						<label value="Peer connection timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Таймаут соединения с пиром:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="RequestTimeout" default="50" minimum="5" maximum="3600" step="5">
-					<lang value="en">
-						<label value="Block request timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Время ожидания получения блока:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1">
-					<lang value="en">
-						<label value="Piece request queue time:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Длина очереди запросов для куска:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50">
-					<label lang="en" value="The number of block requests a peer is allowed to queue up:" />
-					<label lang="ru" value="Максимальное число запросов на блоки от пира в очереди:" />
-				</item>
-				<item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50">
-					<label lang="en" value="The number of block requests to a peer in a queue:" />
-					<label lang="ru" value="Максимальное число запросов на блоки пиру в очереди:" />
-				</item>
-				<item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10">
-					<lang value="en">
-						<label value="Peer timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Таймаут связи с пиром:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="UrlSeedTimeout" default="20" minimum="10" maximum="300" step="10">
-					<lang value="en">
-						<label value="Web seed timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Таймаут связи с веб-сидом:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="AutoScrapeMinInterval" default="120" minimum="10" maximum="600" step="10">
-					<lang value="en">
-						<label value="Minimal scrape interval:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Минимальный интервал между scrape:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="UnchokeInterval" default="15" minimum="1" maximum="60" step="5">
-					<lang value="en">
-						<label value="Unchoke interval:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Интервал unchoke:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="MaxPeerListSize" default="8000" minimum="5" maximum="32000" step="500">
-					<label lang="en" value="Max peer list size:" />
-					<label lang="ru" value="Максимум пиров в списке:" />
-				</item>
-				<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10">
-					<lang value="en">
-						<label value="Minimal announce interval:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Минимальный интервал announce:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="MaxRejects" default="50" minimum="3" maximum="1000">
-					<label lang="en" value="Max rejects for a choked peer before ban:" />
-					<label lang="ru" value="Максимум отказов заглушенному пиру перед баном:" />
-				</item>
-				<item type="spinbox" property="SeedingPieceQuota" default="3" minimum="1" maximum="1000">
-					<label lang="en" value="Seeding piece quota:" />
-					<label lang="ru" value="Квота кусков сидирования:" />
-				</item>
-				<item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10">
-					<lang value="en">
-						<label value="Web seed retry wait:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Задержка перед повторным соединением с веб-сидом:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10">
-					<lang value="en">
-						<label value="Minimum peer reconnect time:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Минимальное время перед повторным соединением с пиром:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5">
-					<lang value="en">
-						<label value="Force download of a piece if it could not be fetched in:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Форсировать закачку куска, если он не скачан в течение:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
-					<label lang="en" value="Maximum peer connection attempt failcount:" />
-					<label lang="ru" value="Максимум неудачных соединений с пиром:" />
-				</item>
-				<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10">
-					<label lang="en" value="Connection attempts per second:" />
-					<label lang="ru" value="Попыток соединения в секунду:" />
-				</item>
-				<item type="spinbox" property="SendBufferWatermark" default="80" minimum="1" maximum="100">
-					<lang value="en">
-						<label value="Upper send buffer low-watermark:" />
-						<suffix value=" KB" />
-					</lang>
-					<lang value="ru">
-						<label value="Верхняя отметка исходящего буфера:" />
-						<suffix value=" КБ" />
-					</lang>
-				</item>
-				<item type="spinbox" property="InactivityTimeout" default="600" minimum="30" maximum="1200" step="60">
-					<lang value="en">
-						<label value="Peer inactivity timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Таймаут отсоединения пира из-за неактивности:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="InitialPickerThreshold" default="4" minimum="1" maximum="50" step="5">
-					<label lang="en" value="Request random pieces while we have less than:" />
-					<label lang="ru" value="Запрашивать случайные, пока кусков меньше:" />
-				</item>
-				<item type="spinbox" property="NumWant" default="200" minimum="10" maximum="1000" step="25">
-					<label lang="en" value="How much peers to get from the tracker:" />
-					<label lang="ru" value="Желаемое количество пиров, получаемое от трекера:" />
-				</item>
-				<item type="spinboxrange" property="OutgoingPorts" default="0:0" minimum="1025" maximum="65535">
-					<label lang="en" value="Outgoing ports:" />
-					<label lang="ru" value="Порты исходящих соединений:" />
-				</item>
-				<item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
-					<label lang="en" value="Optimistic unchoke multiplier:" />
-					<label lang="ru" value="Множитель оптимистичного unchoke:" />
-				</item>
-				<item type="spinbox" property="PeerTOS" default="0" minimum="0" maximum="255">
-					<label lang="en" value="TOS byte:" />
-					<label lang="ru" value="TOS-байт:" />
-				</item>
-				<item type="doublespinbox" property="ShareRatioLimit" default="2" minimum="0.7" maximum="1000">
-					<label lang="en" value="Share ratio limit:" />
-					<label lang="ru" value="Предел рейтинга:" />
-				</item>
-				<item type="doublespinbox" property="SeedTimeRatioLimit" default="2" minimum="0.7" maximum="1000">
-					<label lang="en" value="Seed time ratio limit:" />
-					<label lang="ru" value="Предел отношения времени раздачи:" />
-				</item>
-				<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60">
-					<lang value="en">
-						<label value="Seed time limit:" />
-						<suffix value=" min" />
-					</lang>
-					<lang value="ru">
-						<label value="Предел времени раздачи:" />
-						<suffix value=" мин" />
-					</lang>
-				</item>
-				<item type="spinbox" property="AutoScrapeInterval" default="30" minimum="5" maximum="240" step="10">
-					<lang value="en">
-						<label value="Auto scrape interval:" />
-						<suffix value=" min" />
-					</lang>
-					<lang value="ru">
-						<label value="Интервал автоматического scrape:" />
-						<suffix value=" мин" />
-					</lang>
-				</item>
-				<item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5">
-					<label lang="en" value="N of pieces to send via fast extensions:" />
-					<label lang="ru" value="Посылать кусков через fast extensions:" />
-				</item>
-				<item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10">
-					<lang value="en">
-						<label value="Handshake timeout:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Таймаут рукопожатия:" />
-						<suffix value=" с" />
-					</lang>
-				</item>
-				<item type="spinbox" property="UrlSeedPipelineSize" default="5" minimum="1" maximum="20" step="1">
-					<label lang="en" value="Web seed pipeline size:" />
-					<label lang="ru" value="Размер конвеера веб-сида:" />
-				</item>
 			</groupbox>
-		</scrollarea>
+		</tab>
+		<tab>
+			<label lang="en" value="Advanced" />
+			<label lang="ru" value="Расширенные" />
+			<scrollarea horizontalScroll="off">
+				<groupbox>
+					<label lang="en" value="Advanced settings" />
+					<label lang="ru" value="Расширенные настройки" />
+					<item type="lineedit" property="AnnounceIP" default="">
+						<label lang="en" value="Announce IP:" />
+						<label lang="ru" value="IP, передаваемый трекеру:" />
+					</item>
+					<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
+						<label lang="en" value="Allow multiple connections per IP" />
+						<label lang="ru" value="Разрешать множественные соединения с одним IP" />
+					</item>
+					<item type="checkbox" property="IgnoreLimitsOnLocalNetwork" state="on">
+						<label lang="en" value="Ignore limits on local network" />
+						<label lang="ru" value="Игнорировать ограничения в локальной сети" />
+					</item>
+					<item type="checkbox" property="DontCountSlowTorrents" default="true">
+						<label lang="en" value="Don't count slow torrents" />
+						<label lang="ru" value="Не учитывать медленные торренты" />
+					</item>
+					<item type="checkbox" property="SendRedundantHave" state="off">
+						<label lang="en" value="Send redundant have messages" />
+						<label lang="ru" value="Посылать ненужные have-сообщения" />
+					</item>
+					<item type="checkbox" property="LazyBitfields" state="on">
+						<label lang="en" value="Lazy bitfields" />
+						<label lang="ru" value="Ленивые битовые маски" />
+					</item>
+					<item type="checkbox" property="UPNPIgnoreNonrouters" state="on">
+						<label lang="en" value="Ignore UPNP-nonrouters" />
+						<label lang="ru" value="Игнорировать UPNP-устройства, не являющиеся роутерами" />
+					</item>
+					<item type="checkbox" property="AutoUploadSlots" default="true">
+						<label lang="en" value="Auto upload slots" />
+						<label lang="ru" value="Автоматические слоты на отдачу" />
+					</item>
+					<item type="checkbox" property="UseParoleMode" default="true">
+						<label lang="en" value="Use parole mode" />
+						<label lang="ru" value="Использовать parole mode" />
+					</item>
+					<item type="checkbox" property="CloseRedundantConnections" default="true">
+						<label lang="en" value="Close redundant connections" />
+						<label lang="ru" value="Закрывать ненужные соединения" />
+					</item>
+					<item type="checkbox" property="PrioritizePartialPieces" default="true">
+						<label lang="en" value="Prioritize partial pieces" />
+						<label lang="ru" value="Повышать приоритет неполных кусков" />
+					</item>
+					<item type="checkbox" property="StrictSuperSeeding" default="false">
+						<label lang="en" value="Strict super seeding" />
+						<label lang="ru" value="Строгий супер-сид" />
+					</item>
+					<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
+						<lang value="en">
+							<label value="Tracker request completion timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Время ожидания результата запроса от трекера:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="TrackerReceiveTimeout" default="40" minimum="10" maximum="300" step="10">
+						<lang value="en">
+							<label value="Tracker data receive timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Время ожидания получения данных от трекера:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="StopTrackerTimeout" default="5" minimum="1" maximum="30" step="1">
+						<lang value="en">
+							<label value="Stop tracker timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Таймаут отсоединения от трекера:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512">
+						<lang value="en">
+							<label value="Tracker maximum response length:" />
+							<suffix value=" KB" />
+						</lang>
+						<lang value="ru">
+							<label value="Максимальный размер ответа от трекера:" />
+							<suffix value=" КБ" />
+						</lang>
+					</item>
+					<item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5">
+						<lang value="en">
+							<label value="Piece response timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Таймаут получения ответа о куске:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5">
+						<lang value="en">
+							<label value="Peer connection timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Таймаут соединения с пиром:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="RequestTimeout" default="50" minimum="5" maximum="3600" step="5">
+						<lang value="en">
+							<label value="Block request timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Время ожидания получения блока:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1">
+						<lang value="en">
+							<label value="Piece request queue time:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Длина очереди запросов для куска:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50">
+						<label lang="en" value="The number of block requests a peer is allowed to queue up:" />
+						<label lang="ru" value="Максимальное число запросов на блоки от пира в очереди:" />
+					</item>
+					<item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50">
+						<label lang="en" value="The number of block requests to a peer in a queue:" />
+						<label lang="ru" value="Максимальное число запросов на блоки пиру в очереди:" />
+					</item>
+					<item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10">
+						<lang value="en">
+							<label value="Peer timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Таймаут связи с пиром:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="UrlSeedTimeout" default="20" minimum="10" maximum="300" step="10">
+						<lang value="en">
+							<label value="Web seed timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Таймаут связи с веб-сидом:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="AutoScrapeMinInterval" default="120" minimum="10" maximum="600" step="10">
+						<lang value="en">
+							<label value="Minimal scrape interval:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Минимальный интервал между scrape:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="UnchokeInterval" default="15" minimum="1" maximum="60" step="5">
+						<lang value="en">
+							<label value="Unchoke interval:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Интервал unchoke:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="MaxPeerListSize" default="8000" minimum="5" maximum="32000" step="500">
+						<label lang="en" value="Max peer list size:" />
+						<label lang="ru" value="Максимум пиров в списке:" />
+					</item>
+					<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10">
+						<lang value="en">
+							<label value="Minimal announce interval:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Минимальный интервал announce:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="MaxRejects" default="50" minimum="3" maximum="1000">
+						<label lang="en" value="Max rejects for a choked peer before ban:" />
+						<label lang="ru" value="Максимум отказов заглушенному пиру перед баном:" />
+					</item>
+					<item type="spinbox" property="SeedingPieceQuota" default="3" minimum="1" maximum="1000">
+						<label lang="en" value="Seeding piece quota:" />
+						<label lang="ru" value="Квота кусков сидирования:" />
+					</item>
+					<item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10">
+						<lang value="en">
+							<label value="Web seed retry wait:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Задержка перед повторным соединением с веб-сидом:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10">
+						<lang value="en">
+							<label value="Minimum peer reconnect time:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Минимальное время перед повторным соединением с пиром:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5">
+						<lang value="en">
+							<label value="Force download of a piece if it could not be fetched in:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Форсировать закачку куска, если он не скачан в течение:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
+						<label lang="en" value="Maximum peer connection attempt failcount:" />
+						<label lang="ru" value="Максимум неудачных соединений с пиром:" />
+					</item>
+					<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10">
+						<label lang="en" value="Connection attempts per second:" />
+						<label lang="ru" value="Попыток соединения в секунду:" />
+					</item>
+					<item type="spinbox" property="SendBufferWatermark" default="80" minimum="1" maximum="100">
+						<lang value="en">
+							<label value="Upper send buffer low-watermark:" />
+							<suffix value=" KB" />
+						</lang>
+						<lang value="ru">
+							<label value="Верхняя отметка исходящего буфера:" />
+							<suffix value=" КБ" />
+						</lang>
+					</item>
+					<item type="spinbox" property="InactivityTimeout" default="600" minimum="30" maximum="1200" step="60">
+						<lang value="en">
+							<label value="Peer inactivity timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Таймаут отсоединения пира из-за неактивности:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="InitialPickerThreshold" default="4" minimum="1" maximum="50" step="5">
+						<label lang="en" value="Request random pieces while we have less than:" />
+						<label lang="ru" value="Запрашивать случайные, пока кусков меньше:" />
+					</item>
+					<item type="spinbox" property="NumWant" default="200" minimum="10" maximum="1000" step="25">
+						<label lang="en" value="How much peers to get from the tracker:" />
+						<label lang="ru" value="Желаемое количество пиров, получаемое от трекера:" />
+					</item>
+					<item type="spinboxrange" property="OutgoingPorts" default="0:0" minimum="1025" maximum="65535">
+						<label lang="en" value="Outgoing ports:" />
+						<label lang="ru" value="Порты исходящих соединений:" />
+					</item>
+					<item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
+						<label lang="en" value="Optimistic unchoke multiplier:" />
+						<label lang="ru" value="Множитель оптимистичного unchoke:" />
+					</item>
+					<item type="spinbox" property="PeerTOS" default="0" minimum="0" maximum="255">
+						<label lang="en" value="TOS byte:" />
+						<label lang="ru" value="TOS-байт:" />
+					</item>
+					<item type="doublespinbox" property="ShareRatioLimit" default="2" minimum="0.7" maximum="1000">
+						<label lang="en" value="Share ratio limit:" />
+						<label lang="ru" value="Предел рейтинга:" />
+					</item>
+					<item type="doublespinbox" property="SeedTimeRatioLimit" default="2" minimum="0.7" maximum="1000">
+						<label lang="en" value="Seed time ratio limit:" />
+						<label lang="ru" value="Предел отношения времени раздачи:" />
+					</item>
+					<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60">
+						<lang value="en">
+							<label value="Seed time limit:" />
+							<suffix value=" min" />
+						</lang>
+						<lang value="ru">
+							<label value="Предел времени раздачи:" />
+							<suffix value=" мин" />
+						</lang>
+					</item>
+					<item type="spinbox" property="AutoScrapeInterval" default="30" minimum="5" maximum="240" step="10">
+						<lang value="en">
+							<label value="Auto scrape interval:" />
+							<suffix value=" min" />
+						</lang>
+						<lang value="ru">
+							<label value="Интервал автоматического scrape:" />
+							<suffix value=" мин" />
+						</lang>
+					</item>
+					<item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5">
+						<label lang="en" value="N of pieces to send via fast extensions:" />
+						<label lang="ru" value="Посылать кусков через fast extensions:" />
+					</item>
+					<item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10">
+						<lang value="en">
+							<label value="Handshake timeout:" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Таймаут рукопожатия:" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+					<item type="spinbox" property="UrlSeedPipelineSize" default="5" minimum="1" maximum="20" step="1">
+						<label lang="en" value="Web seed pipeline size:" />
+						<label lang="ru" value="Размер конвеера веб-сида:" />
+					</item>
+				</groupbox>
+			</scrollarea>
+		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Local settings" />
