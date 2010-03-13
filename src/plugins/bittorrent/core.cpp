@@ -2333,29 +2333,54 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::save_resume_data_failed_alert& a) const
 				{
-					QMessageBox::warning (Core::Instance ()->GetProxy ()->GetMainWindow  (),
-							QObject::tr ("LeechCraft"),
-							QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
-								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+					Notification n =
+					{
+						"BitTorrent",
+						QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
+							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
+						false,
+						Notification::PWarning_
+					};
+					QMetaObject::invokeMethod (Core::Instance (),
+							"notify",
+							Qt::QueuedConnection,
+							Q_ARG (LeechCraft::Notification, n));
 				}
 			
 				void operator() (const libtorrent::storage_moved_alert& a) const
 				{
-					QMessageBox::information (Core::Instance ()->GetProxy ()->GetMainWindow  (),
-							QObject::tr ("LeechCraft"),
-							QObject::tr ("Storage for torrent:<br />%1<br />moved successfully to:<br />%2")
-								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-								.arg (QString::fromUtf8 (a.path.c_str ())));
+					Notification n =
+					{
+						"BitTorrent",
+						QObject::tr ("Storage for torrent:<br />%1"
+								"<br />moved successfully to:<br />%2")
+							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+							.arg (QString::fromUtf8 (a.path.c_str ())),
+						false,
+						Notification::PInformation_
+					};
+					QMetaObject::invokeMethod (Core::Instance (),
+							"notify",
+							Qt::QueuedConnection,
+							Q_ARG (LeechCraft::Notification, n));
 				}
 
 				void operator() (const libtorrent::storage_moved_failed_alert& a) const
 				{
-					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow  (),
-							QObject::tr ("LeechCraft"),
-							QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
-								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+					Notification n =
+					{
+						"BitTorrent",
+						QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
+							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
+						false,
+						Notification::PCritical_
+					};
+					QMetaObject::invokeMethod (Core::Instance (),
+							"notify",
+							Qt::QueuedConnection,
+							Q_ARG (LeechCraft::Notification, n));
 				}
 			
 				void operator() (const libtorrent::metadata_received_alert& a) const
@@ -2365,33 +2390,57 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::file_error_alert& a) const
 				{
-					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow  (),
-							QObject::tr ("LeechCraft"),
-							QObject::tr ("File error for torrent:<br />%1<br />"
-								"file:<br />%2<br />error:<br />%3")
-								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-								.arg (QString::fromUtf8 (a.file.c_str ()))
-								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+					Notification n =
+					{
+						"BitTorrent",
+						QObject::tr ("File error for torrent:<br />%1<br />"
+							"file:<br />%2<br />error:<br />%3")
+							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+							.arg (QString::fromUtf8 (a.file.c_str ()))
+							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
+						false,
+						Notification::PCritical_
+					};
+					QMetaObject::invokeMethod (Core::Instance (),
+							"notify",
+							Qt::QueuedConnection,
+							Q_ARG (LeechCraft::Notification, n));
 				}
 
 				void operator() (const libtorrent::file_rename_failed_alert& a) const
 				{
-					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow  (),
-							QObject::tr ("LeechCraft"),
-							QObject::tr ("File rename failed for torrent:<br />%1<br />"
-								"file %2, error:<br />%3")
-								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-								.arg (QString::number (a.index))
-								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+					Notification n =
+					{
+						"BitTorrent",
+						QObject::tr ("File rename failed for torrent:<br />%1<br />"
+							"file %2, error:<br />%3")
+							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+							.arg (QString::number (a.index))
+							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
+						false,
+						Notification::PCritical_
+					};
+					QMetaObject::invokeMethod (Core::Instance (),
+							"notify",
+							Qt::QueuedConnection,
+							Q_ARG (LeechCraft::Notification, n));
 				}
 
 				void operator() (const libtorrent::torrent_delete_failed_alert& a) const
 				{
-					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow  (),
-							QObject::tr ("LeechCraft"),
-							QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
-								.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-								.arg (QString::fromUtf8 (a.error.message ().c_str ())));
+					Notification n =
+					{
+						"BitTorrent",
+						QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
+							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
+						false,
+						Notification::PCritical_
+					};
+					QMetaObject::invokeMethod (Core::Instance (),
+							"notify",
+							Qt::QueuedConnection,
+							Q_ARG (LeechCraft::Notification, n));
 				}
 				
 				void operator() (const libtorrent::file_completed_alert&) const

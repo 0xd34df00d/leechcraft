@@ -728,11 +728,18 @@ namespace LeechCraft
 					return;
 			
 				if (!Core::Instance ()->MoveTorrentFiles (newDir))
-					QMessageBox::warning (Core::Instance ()->GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
-							tr ("Failed to move torrent's files from %1 to %2")
+				{
+					Notification n =
+					{
+						"BitTorrent",
+						tr ("Failed to move torrent's files from %1 to %2")
 							.arg (oldDir)
-							.arg (newDir));
+							.arg (newDir),
+						false,
+						Notification::PCritical_
+					};
+					emit notify (n);
+				}
 			}
 
 			void TorrentPlugin::on_MakeMagnetLink__triggered ()
@@ -791,10 +798,14 @@ namespace LeechCraft
 			
 			void TorrentPlugin::showError (QString e)
 			{
-				qWarning () << e;
-				QMessageBox::warning (Core::Instance ()->GetProxy ()->GetMainWindow (),
-						tr ("LeechCraft"),
-						e);
+				Notification n =
+				{
+					"BitTorrent",
+					e,
+					false,
+					Notification::PCritical_
+				};
+				emit notify (n);
 			}
 			
 			void TorrentPlugin::SetupCore ()

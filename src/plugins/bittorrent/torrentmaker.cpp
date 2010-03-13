@@ -116,10 +116,8 @@ namespace LeechCraft
 						<< message
 						<< hashesError.category ().name ()
 						<< fn;
-					QMessageBox::critical (Core::Instance ()->GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
-							tr ("Torrent creation failed: %1")
-								.arg (message));
+					emit error (tr ("Torrent creation failed: %1")
+							.arg (message));
 					return;
 				}
 			
