@@ -22,6 +22,7 @@
 #include <QCloseEvent>
 #include <QModelIndex>
 #include <QChildEvent>
+#include <QCursor>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/itraymenu.h>
@@ -428,7 +429,7 @@ void LeechCraft::MainWindow::on_ActionShowStatusBar__triggered ()
 void LeechCraft::MainWindow::on_ActionMenu__triggered ()
 {
 	QMenu *menu = Ui_.ActionMenu_->menu ();
-	menu->exec ();
+	menu->exec (QCursor::pos ());
 }
 
 void LeechCraft::MainWindow::handleQuit ()
