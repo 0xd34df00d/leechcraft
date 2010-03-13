@@ -893,9 +893,16 @@ namespace LeechCraft
 			{
 				if (!CheckValidity (pos))
 					return;
+
+				int roptions = libtorrent::session::none;
+				if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow  (),
+							tr ("LeechCraft BitTorrent"),
+							tr ("Do you want to delete this torrent's files as well?"),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+					roptions |= libtorrent::session::delete_files;
 			
 				beginRemoveRows (QModelIndex (), pos, pos);
-				Session_->remove_torrent (Handles_.at (pos).Handle_);
+				Session_->remove_torrent (Handles_.at (pos).Handle_, roptions);
 				int id = Handles_.at (pos).ID_;
 				Handles_.removeAt (pos);
 				Proxy_->FreeID (id);
