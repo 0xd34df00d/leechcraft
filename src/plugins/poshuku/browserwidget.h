@@ -175,7 +175,7 @@ namespace LeechCraft
 				void handleChangeEncodingAboutToShow ();
 				void handleChangeEncodingTriggered (QAction*);
 				void updateLogicalPath ();
-				void showMoreMenu ();
+				void showSendersMenu ();
 			signals:
 				void titleChanged (const QString&);
 				void urlChanged (const QString&);

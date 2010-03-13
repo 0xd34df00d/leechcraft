@@ -194,7 +194,7 @@ namespace LeechCraft
 				connect (more,
 						SIGNAL (triggered ()),
 						this,
-						SLOT (showMoreMenu ()));
+						SLOT (showSendersMenu ()));
 				more->setText (tr ("More..."));
 				more->setProperty ("ActionIcon", "poshuku_more");
 				
@@ -1050,6 +1050,11 @@ namespace LeechCraft
 						if (!inserted)
 						{
 							ToolBar_->addAction (ExternalLinks_->menuAction ());
+							connect (ExternalLinks_->menuAction (),
+									SIGNAL (triggered ()),
+									this,
+									SLOT (showSendersMenu ()),
+									Qt::UniqueConnection);
 							inserted = true;
 						}
 					}
@@ -1219,7 +1224,7 @@ namespace LeechCraft
 				setProperty ("WidgetLogicalPath", path);
 			}
 
-			void BrowserWidget::showMoreMenu ()
+			void BrowserWidget::showSendersMenu ()
 			{
 				QAction *action = qobject_cast<QAction*> (sender ());
 				if (!action)
