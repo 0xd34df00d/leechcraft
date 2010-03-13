@@ -27,6 +27,7 @@
 #include <QTextCodec>
 #include <QInputDialog>
 #include <QBuffer>
+#include <QMenu>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -122,7 +123,6 @@ namespace LeechCraft
 				}
 			
 				Core::Instance ().ConnectSignals (Ui_.MainView_);
-				Ui_.MainView_->InitShortcuts ();
 
 				RegisterSettings ();
 			
@@ -130,6 +130,48 @@ namespace LeechCraft
 						SIGNAL (error (const QString&)),
 						this,
 						SLOT (handleError (const QString&)));
+
+				ImportXbel_ = new QAction (tr ("Import XBEL..."),
+						this);
+				ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
+				ExportXbel_ = new QAction (tr ("Export XBEL..."),
+						this);
+				ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
+				CheckFavorites_ = new QAction (tr ("Check favorites..."),
+						this);
+				CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
+
+				connect (ImportXbel_,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (importXbel ()));
+				connect (ExportXbel_,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (exportXbel ()));
+				connect (CheckFavorites_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleCheckFavorites ()));
+
+				Ui_.MainView_->InitShortcuts ();
+				const IShortcutProxy *proxy = coreProxy->GetShortcutProxy ();
+				ImportXbel_->setShortcut (proxy->GetShortcut (this, EAImportXbel_));
+				ExportXbel_->setShortcut (proxy->GetShortcut (this, EAExportXbel_));
+				CheckFavorites_->setShortcut (proxy->GetShortcut (this, EACheckFavorites_));
+			
+				QMenu *menu = new QMenu (tr ("Poshuku actions"), this);
+				menu->addAction (ImportXbel_);
+				menu->addAction (ExportXbel_);
+				menu->addSeparator ();
+				menu->addAction (CheckFavorites_);
+				ToolBarMenu_ = new QAction (tr ("Poshuku actions"), this);
+				ToolBarMenu_->setIcon (GetIcon ());
+				ToolBarMenu_->setMenu (menu);
+				connect (ToolBarMenu_,
+						SIGNAL (triggered ()),
+						Ui_.MainView_,
+						SLOT (showSendersMenu ()));
 			}
 
 			void Poshuku::SecondInit ()
@@ -262,13 +304,55 @@ namespace LeechCraft
 			
 			void Poshuku::SetShortcut (int name, const QKeySequence& sequence)
 			{
-				Ui_.MainView_->SetShortcut (name, sequence);
-				Core::Instance ().SetShortcut (name, sequence);
+				if (name <= BrowserWidget::ActionMax)
+				{
+					Ui_.MainView_->SetShortcut (name, sequence);
+					Core::Instance ().SetShortcut (name, sequence);
+				}
+				else
+				{
+					QAction *act = 0;
+					switch (name)
+					{
+						case EAImportXbel_:
+							act = ImportXbel_;
+							break;
+						case EAExportXbel_:
+							act = ExportXbel_;
+							break;
+						case EACheckFavorites_:
+							act = CheckFavorites_;
+							break;
+					}
+					if (act)
+						act->setShortcut (sequence);
+				}
 			}
 			
 			QMap<int, LeechCraft::ActionInfo> Poshuku::GetActionInfo () const
 			{
-				return Ui_.MainView_->GetActionInfo ();
+				QMap<int, LeechCraft::ActionInfo> result = Ui_.MainView_->GetActionInfo ();
+				result [EAImportXbel_] = ActionInfo (ImportXbel_->text (),
+						QKeySequence (), ImportXbel_->icon ());
+				result [EAExportXbel_] = ActionInfo (ExportXbel_->text (),
+						QKeySequence (), ExportXbel_->icon ());
+				result [EACheckFavorites_] = ActionInfo (CheckFavorites_->text (),
+						QKeySequence (), CheckFavorites_->icon ());
+				return result;
+			}
+
+			QList<QMenu*> Poshuku::GetToolMenus () const
+			{
+				return QList<QMenu*> ();
+			}
+
+			QList<QAction*> Poshuku::GetToolActions () const
+			{
+				QList<QAction*> result;
+				result << ImportXbel_;
+				result << ExportXbel_;
+				result << CheckFavorites_;
+				return result;
 			}
 
 			void Poshuku::newTabRequested ()
@@ -499,6 +583,11 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO
 						<< "unknown name"
 						<< name;
+			}
+
+			void Poshuku::handleCheckFavorites ()
+			{
+				Core::Instance ().CheckFavorites ();
 			}
 		};
 	};

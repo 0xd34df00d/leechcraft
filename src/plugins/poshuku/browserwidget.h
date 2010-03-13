@@ -59,10 +59,6 @@ namespace LeechCraft
 				QAction *ZoomIn_;
 				QAction *ZoomOut_;
 				QAction *ZoomReset_;
-				// TODO move out to the common menu
-				QAction *ImportXbel_;
-				// TODO move out to the common menu
-				QAction *ExportXbel_;
 				QAction *Cut_;
 				QAction *Copy_;
 				QAction *Paste_;
@@ -73,9 +69,6 @@ namespace LeechCraft
 				QAction *ReloadStop_;
 				QAction *ReloadPeriodically_;
 				QAction *NotifyWhenFinished_;
-				// TODO move out to the common menu
-				QAction *CheckFavorites_;
-				// TODO move out to the common menu
 				QAction *RecentlyClosedAction_;
 				QPoint OnLoadPos_;
 				QMenu *ChangeEncoding_;
@@ -99,13 +92,13 @@ namespace LeechCraft
 					EAPrintPreview_,
 					EAScreenSave_,
 					EAViewSources_,
-					EANewTab_, // Unused now
-					EACloseTab_,
+					EAUnused0,
+					EAUnused1,
 					EAZoomIn_,
 					EAZoomOut_,
 					EAZoomReset_,
-					EAImportXbel_,
-					EAExportXbel_,
+					EAUnused2,
+					EAUnused3,
 					EACut_,
 					EACopy_,
 					EAPaste_,
@@ -113,7 +106,8 @@ namespace LeechCraft
 					EAForward_,
 					EAReload_,
 					EAStop_,
-					EARecentlyClosedAction_
+					EARecentlyClosedAction_,
+					ActionMax = 2000
 				};
 
 				BrowserWidget (QWidget* = 0);
@@ -153,7 +147,6 @@ namespace LeechCraft
 				void on_URLEdit__returnPressed ();
 				void handleReloadPeriodically ();
 				void handleAdd2Favorites ();
-				void handleCheckFavorites ();
 				void handleFind ();
 				void findText (const QString&, QWebPage::FindFlags);
 				void handleViewPrint (QWebFrame*);

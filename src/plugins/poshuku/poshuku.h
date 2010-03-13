@@ -27,6 +27,7 @@
 #include <interfaces/imultitabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/imenuembedder.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -51,15 +52,26 @@ namespace LeechCraft
 						  , public IEntityHandler
 						  , public IHaveShortcuts
 						  , public IWebBrowser
+						  , public IMenuEmbedder
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IMultiTabsWidget IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts)
+				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IMultiTabsWidget IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IMenuEmbedder)
 
 				Ui::Poshuku Ui_;
+				QAction *ToolBarMenu_;
+				QAction *ImportXbel_;
+				QAction *ExportXbel_;
+				QAction *CheckFavorites_;
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 			public:
+				enum Actions
+				{
+					EAImportXbel_ = BrowserWidget::ActionMax + 1,
+					EAExportXbel_,
+					EACheckFavorites_
+				};
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
 				void Release ();
@@ -93,6 +105,9 @@ namespace LeechCraft
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+
+				QList<QMenu*> GetToolMenus () const;
+				QList<QAction*> GetToolActions () const;
 			public slots:
 				void newTabRequested ();
 			private:
@@ -106,6 +121,7 @@ namespace LeechCraft
 				void handleError (const QString&);
 				void handleNewTab ();
 				void handleSettingsClicked (const QString&);
+				void handleCheckFavorites ();
 			signals:
 				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);

@@ -136,10 +136,6 @@ namespace LeechCraft
 				Add2Favorites_->setProperty ("ActionIcon", "poshuku_addtofavorites");
 				Add2Favorites_->setEnabled (false);
 
-				CheckFavorites_ = new QAction (tr ("Check favorites..."),
-						this);
-				CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
-			
 				Find_ = new QAction (tr ("Find..."),
 						this);
 				Find_->setProperty ("ActionIcon", "poshuku_find");
@@ -177,14 +173,6 @@ namespace LeechCraft
 						this);
 				ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
 			
-				ImportXbel_ = new QAction (tr ("Import XBEL..."),
-						this);
-				ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
-			
-				ExportXbel_ = new QAction (tr ("Export XBEL..."),
-						this);
-				ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
-			
 				ToolBar_->addAction (Back_);
 				ToolBar_->addAction (Forward_);
 				ToolBar_->addAction (ReloadStop_);
@@ -202,7 +190,6 @@ namespace LeechCraft
 
 				moreMenu->addAction (Find_);
 				moreMenu->addAction (Add2Favorites_);
-				moreMenu->addAction (CheckFavorites_);
 				moreMenu->addSeparator ();
 				moreMenu->addAction (ReloadPeriodically_);
 				moreMenu->addAction (NotifyWhenFinished_);
@@ -216,9 +203,6 @@ namespace LeechCraft
 				moreMenu->addAction (ScreenSave_);
 				moreMenu->addSeparator ();
 				moreMenu->addAction (ViewSources_);
-				moreMenu->addSeparator ();
-				moreMenu->addAction (ImportXbel_);
-				moreMenu->addAction (ExportXbel_);
 				moreMenu->addSeparator ();
 
 				ChangeEncoding_ = moreMenu->addMenu (tr ("Change encoding"));
@@ -264,10 +248,6 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleAdd2Favorites ()));
-				connect (CheckFavorites_,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleCheckFavorites ()));
 				connect (Print_,
 						SIGNAL (triggered ()),
 						this,
@@ -300,14 +280,6 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						Ui_.WebView_,
 						SLOT (zoomReset ()));
-				connect (ImportXbel_,
-						SIGNAL (triggered ()),
-						&Core::Instance (),
-						SLOT (importXbel ()));
-				connect (ExportXbel_,
-						SIGNAL (triggered ()),
-						&Core::Instance (),
-						SLOT (exportXbel ()));
 			
 				connect (Ui_.WebView_,
 						SIGNAL (titleChanged (const QString&)),
@@ -465,8 +437,6 @@ namespace LeechCraft
 				ZoomIn_->setShortcut (proxy->GetShortcut (object, EAZoomIn_));
 				ZoomOut_->setShortcut (proxy->GetShortcut (object, EAZoomOut_));
 				ZoomReset_->setShortcut (proxy->GetShortcut (object, EAZoomReset_));
-				ImportXbel_->setShortcut (proxy->GetShortcut (object, EAImportXbel_));
-				ExportXbel_->setShortcut (proxy->GetShortcut (object, EAExportXbel_));
 				RecentlyClosedAction_->setShortcut (proxy->GetShortcut (object, EARecentlyClosedAction_));
 			}
 			
@@ -600,8 +570,6 @@ namespace LeechCraft
 						(ZoomIn_)
 						(ZoomOut_)
 						(ZoomReset_)
-						(ImportXbel_)
-						(ExportXbel_)
 						(Cut_)
 						(Copy_)
 						(Paste_)
@@ -626,8 +594,6 @@ namespace LeechCraft
 				_L (ZoomIn_, Qt::CTRL + Qt::Key_Plus);
 				_L (ZoomOut_, Qt::CTRL + Qt::Key_Minus);
 				_L (ZoomReset_, tr ("Ctrl+0"));
-				_L (ImportXbel_, QKeySequence ());
-				_L (ExportXbel_, QKeySequence ());
 				_L (Cut_, tr ("Ctrl+X"));
 				_L (Copy_, tr ("Ctrl+C"));
 				_L (Paste_, tr ("Ctrl+V"));
@@ -781,11 +747,6 @@ namespace LeechCraft
 						Ui_.WebView_->url ().toString ());
 			}
 
-			void BrowserWidget::handleCheckFavorites ()
-			{
-				Core::Instance ().CheckFavorites ();
-			}
-			
 			void BrowserWidget::handleFind ()
 			{
 				QAction *act = qobject_cast<QAction*> (sender ());
