@@ -895,7 +895,7 @@ namespace LeechCraft
 					return;
 
 				int roptions = libtorrent::session::none;
-				if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow  (),
+				if (QMessageBox::question (Proxy_->GetMainWindow  (),
 							tr ("LeechCraft BitTorrent"),
 							tr ("Do you want to leave this torrent's files?"),
 							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
@@ -2849,7 +2849,7 @@ namespace LeechCraft
 					mask |= libtorrent::alert::storage_notification;
 				else
 				{
-					if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow  (),
+					if (QMessageBox::question (Proxy_->GetMainWindow  (),
 								tr ("LeechCraft BitTorrent"),
 								tr ("Storage notifications are disabled. Live streaming "
 									"definitely won't work without them, so if you are "
