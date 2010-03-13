@@ -842,21 +842,16 @@ namespace LeechCraft
 
 				if (td.ID_ >= 0 &&
 						!td.Internal_)
-				{
 					emit taskError (td.ID_, IDownload::EUnknown);
-					Notification n =
-					{
-						"LCFTP",
-						msg,
-						false,
-						Notification::PCritical_
-					};
-					emit notify (n);
-				}
 
-				QMessageBox::critical (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
-						tr ("LeechCraft"),
-						msg);
+				Notification n =
+				{
+					"LCFTP",
+					msg,
+					false,
+					Notification::PCritical_
+				};
+				emit notify (n);
 			}
 
 			void Core::handleFinished (const TaskData& data)
@@ -896,13 +891,18 @@ namespace LeechCraft
 						dir.mkdir (entry.Name_);
 					else if (!QFileInfo (name).isDir ())
 					{
-						QMessageBox::critical (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
-								tr ("LeechCraft"),
-								tr ("While mirroring<br />%1<br />to<br />%2<br />"
-									"an error occured:<br />%3<br /> already exists.")
-									.arg (entry.PreviousTask_.URL_.toString ())
-									.arg (QDir::toNativeSeparators (entry.PreviousTask_.Filename_))
-									.arg (QDir::toNativeSeparators (name)));
+						Notification n =
+						{
+							"LCFTP",
+							tr ("While mirroring<br />%1<br />to<br />%2<br />"
+								"an error occured:<br />%3<br /> already exists.")
+								.arg (entry.PreviousTask_.URL_.toString ())
+								.arg (QDir::toNativeSeparators (entry.PreviousTask_.Filename_))
+								.arg (QDir::toNativeSeparators (name)),
+							false,
+							Notification::PCritical_
+						};
+						emit notify (n);
 						return;
 					}
 					name += "/";
