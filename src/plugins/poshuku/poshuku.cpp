@@ -469,9 +469,14 @@ namespace LeechCraft
 			
 			void Poshuku::handleError (const QString& msg)
 			{
-				QMessageBox::warning (this,
-						tr ("LeechCraft"),
-						msg);
+				Notification n =
+				{
+					"Poshuku",
+					msg,
+					false,
+					Notification::PWarning_
+				};
+				emit notify (n);
 			}
 			
 			void Poshuku::handleNewTab ()
