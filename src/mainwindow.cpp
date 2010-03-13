@@ -425,6 +425,12 @@ void LeechCraft::MainWindow::on_ActionShowStatusBar__triggered ()
 	statusBar ()->setVisible (Ui_.ActionShowStatusBar_->isChecked ());
 }
 
+void LeechCraft::MainWindow::on_ActionMenu__triggered ()
+{
+	QMenu *menu = Ui_.ActionMenu_->menu ();
+	menu->exec ();
+}
+
 void LeechCraft::MainWindow::handleQuit ()
 {
 	WriteSettings ();

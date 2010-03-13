@@ -97,7 +97,8 @@ namespace LeechCraft
 		void on_ActionSettings__triggered ();
 		void on_ActionAboutLeechCraft__triggered ();
 		void on_ActionQuit__triggered ();
-        void on_ActionShowStatusBar__triggered ();
+		void on_ActionShowStatusBar__triggered ();
+		void on_ActionMenu__triggered ();
 		void handleQuit ();
 		void handleLanguage ();
 		void on_ActionFullscreenMode__triggered (bool);
