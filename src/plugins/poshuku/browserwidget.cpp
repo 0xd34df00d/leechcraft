@@ -40,6 +40,7 @@
 #include <QDesktopServices>
 #include <QXmlStreamReader>
 #include <QTextCodec>
+#include <QCursor>
 #include <qwebhistory.h>
 #include <QDataStream>
 #include <plugininterface/util.h>
@@ -190,6 +191,10 @@ namespace LeechCraft
 
 				QMenu *moreMenu = new QMenu (this);
 				QAction *more = moreMenu->menuAction ();
+				connect (more,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (showMoreMenu ()));
 				more->setText (tr ("More..."));
 				more->setProperty ("ActionIcon", "poshuku_more");
 				
@@ -1212,6 +1217,21 @@ namespace LeechCraft
 				}
 
 				setProperty ("WidgetLogicalPath", path);
+			}
+
+			void BrowserWidget::showMoreMenu ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "sender is not a QAction"
+						<< sender ();
+					return;
+				}
+
+				QMenu *menu = action->menu ();
+				menu->exec (QCursor::pos ());
 			}
 		};
 	};
