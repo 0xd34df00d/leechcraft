@@ -141,6 +141,7 @@ namespace LeechCraft
 				switch (role)
 				{
 					case Qt::DisplayRole:
+					case Qt::ToolTipRole:
 						return item->Data (index.column ());
 					case Qt::FontRole:
 						if (item->Data (0, CRWidget).value<QWidget*> () != Pos2Widget_ [Current_])
