@@ -215,11 +215,11 @@
 			</groupbox>
 		</tab>
 		<tab>
-			<label lang="en" value="Features &amp; extensions" />
-			<label lang="en" value="Возможности и расширения" />
+			<label lang="en" value="Features &amp;&amp; extensions" />
+			<label lang="ru" value="Возможности и расширения" />
 			<groupbox>
 				<label lang="en" value="Features" />
-				<label lang="en" value="Возможности" />
+				<label lang="ru" value="Возможности" />
 				<item type="checkbox" property="EnableLSD" default="true">
 					<label lang="en" value="Enable Local Service Discovery" />
 					<label lang="ru" value="Включить Local Service Discovery" />
@@ -233,20 +233,26 @@
 					<label lang="ru" value="Включить поддержку NAT-PMP" />
 				</item>
 			</groupbox>
-			<item type="groupbox" property="ScrapeEnabled" checkable="true" state="off">
-				<label lang="en" value="Scrape enabled" />
-				<label lang="ru" value="Scrape включен" />
-				<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60">
-					<lang value="en">
-						<label value="Scrape interval" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Интервал scrape-запросов" />
-						<suffix value=" с" />
-					</lang>
+			<groupbox>
+				<label lang="en" value="Extensions" />
+				<label lang="ru" value="Расширения" />
+				<item type="checkbox" property="EnablePEX" default="true">
+					<label lang="en" value="Enable PeX" />
+					<label lang="ru" value="Включить PeX" />
 				</item>
-			</item>
+				<item type="checkbox" property="EnableMetadata" default="true">
+					<label lang="en" value="Allow to download metadata from the swarm" />
+					<label lang="ru" value="Позволять скачивать метаданные из роя" />
+				</item>
+				<item type="checkbox" property="EnableUTMetadata" default="true">
+					<label lang="en" value="Same as the above, but µTorrent-compatible" />
+					<label lang="ru" value="То же, что и предыдущее, но совместимое с µTorrent" />
+				</item>
+				<item type="checkbox" property="EnableSmartBan" default="true">
+					<label lang="en" value="Enable Smart Ban" />
+					<label lang="ru" value="Включить Smart Ban" />
+				</item>
+			</groupbox>
 			<groupbox>
 				<label lang="en" value="Trackers" />
 				<label lang="ru" value="Трекеры" />
@@ -268,6 +274,20 @@
 			<label lang="en" value="Advanced" />
 			<label lang="ru" value="Расширенные" />
 			<scrollarea horizontalScroll="off">
+				<item type="groupbox" property="ScrapeEnabled" checkable="true" state="off">
+					<label lang="en" value="Scrape enabled" />
+					<label lang="ru" value="Scrape включен" />
+					<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60">
+						<lang value="en">
+							<label value="Scrape interval" />
+							<suffix value=" s" />
+						</lang>
+						<lang value="ru">
+							<label value="Интервал scrape-запросов" />
+							<suffix value=" с" />
+						</lang>
+					</item>
+				</item>
 				<groupbox>
 					<label lang="en" value="Advanced settings" />
 					<label lang="ru" value="Расширенные настройки" />

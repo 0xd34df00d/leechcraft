@@ -204,7 +204,7 @@ namespace LeechCraft
 							 ver.at (1).digitValue (), 
 							 ver.at (2).digitValue (),
 							 ver.at (3).digitValue ()),
-							libtorrent::session::add_default_plugins);
+							0);
 
 					setLoggingSettings ();
 
@@ -213,10 +213,18 @@ namespace LeechCraft
 					Session_->listen_on (std::make_pair (ports.at (0).toInt (),
 								ports.at (1).toInt ()));
 
-					Session_->add_extension (&libtorrent::create_metadata_plugin);
-					Session_->add_extension (&libtorrent::create_ut_pex_plugin);
-					Session_->add_extension (&libtorrent::create_ut_metadata_plugin);
-					Session_->add_extension (&libtorrent::create_smart_ban_plugin);
+					if (XmlSettingsManager::Instance ()->
+							property ("EnableMetadata").toBool ())
+						Session_->add_extension (&libtorrent::create_metadata_plugin);
+					if (XmlSettingsManager::Instance ()->
+							property ("EnablePEX").toBool ())
+						Session_->add_extension (&libtorrent::create_ut_pex_plugin);
+					if (XmlSettingsManager::Instance ()->
+							property ("EnableUTMetadata").toBool ())
+						Session_->add_extension (&libtorrent::create_ut_metadata_plugin);
+					if (XmlSettingsManager::Instance ()->
+							property ("EnableSmartBan").toBool ())
+						Session_->add_extension (&libtorrent::create_smart_ban_plugin);
 
 					Session_->set_max_uploads (XmlSettingsManager::Instance ()->
 							property ("MaxUploads").toInt ());
