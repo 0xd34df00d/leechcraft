@@ -7,7 +7,7 @@
 		<tab>
 			<label lang="en" value="Appearance" />
 			<label lang="ru" value="Внешний вид" />
-            <label lang="uk" value="Зовнішній вигляд" />
+			<label lang="uk" value="Зовнішній вигляд" />
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
 				<label lang="ru" value="Использовать кнопки прокрутки табов" />
@@ -16,17 +16,21 @@
 			<item type="checkbox" property="ShowMenuBarAsButton" state="off">
 				<label lang="en" value="Show menu bar as button" />
 				<label lang="ru" value="Показывать панель меню в виде кнопки" />
+				<label lang="uk" value="Показувати панель меню у вигляді кнопок" />
 			</item>
 			<item type="checkbox" property="TrySmarterTabsWidth" state="on">
 				<label lang="en" value="Try smarter tabs width calculation" />
 				<label lang="ru" value="Пытаться использовать более умный алгоритм расчета ширины вкладок" />
+				<label lang="uk" value="Нмагатися використовувати більш досконалий алгоритм розрахунку ширини вкладок" />
 			</item>
 			<item type="combobox" property="IconSize">
 				<label lang="en" value="Icon size" />
 				<label lang="ru" value="Размер иконок" />
+				<label lang="uk" value="Розмір іконок" />
 				<option name="0" default="true">
 					<label lang="en" value="System default" />
 					<label lang="ru" value="Системный" />
+					<label lang="uk" value="Системний" />
 				</option>
 				<option name="16">
 					<label lang="en" value="16x16" />
@@ -41,41 +45,51 @@
 			<item type="combobox" property="ToolButtonStyle">
 				<label lang="en" value="Tool button style:" />
 				<label lang="ru" value="Стиль панелей инструментов:" />
+				<label lang="uk" value="Стиль панелей інструментів:" />
 				<option name="iconOnly" default="true">
 					<label lang="en" value="Only display the icon" />
 					<label lang="ru" value="Показывать только иконку" />
+					<label lang="uk" value="Показувати лише іконку" />
 				</option>
 				<option name="textOnly">
 					<label lang="en" value="Only display the text" />
 					<label lang="ru" value="Показывать только текст" />
+					<label lang="uk" value="Показувати лише текст" />
 				</option>
 				<option name="textBesideIcon">
 					<label lang="en" value="The text appears beside the icon" />
 					<label lang="ru" value="Текст рядом с иконкой" />
+					<label lang="uk" value="Текст поряд з іконкою" />
 				</option>
 				<option name="textUnderIcon">
 					<label lang="en" value="The text appears under the icon" />
 					<label lang="ru" value="Текст под иконкой" />
+					<label lang="uk" value="Текст під іконкою" />
 				</option>
 			</item>
 			<item type="combobox" property="TabBarLocation">
 				<label lang="en" value="Tab bar location:" />
 				<label lang="ru" value="Положение вкладок:" />
+				<label lang="uk" value="Розташування вкладок:" />
 				<option name="north" default="true">
 					<label lang="en" value="Top" />
 					<label lang="ru" value="Сверху" />
+					<label lang="uk" value="Зверху" />
 				</option>
 				<option name="south">
 					<label lang="en" value="Bottom" />
 					<label lang="ru" value="Снизу" />
+					<label lang="uk" value="Знизу" />
 				</option>
 				<option name="west">
 					<label lang="en" value="Left" />
 					<label lang="ru" value="Слева" />
+					<label lang="uk" value="Зліва" />
 				</option>
 				<option name="east">
 					<label lang="en" value="Right" />
 					<label lang="ru" value="Справа" />
+					<label lang="uk" value="Зправа" />
 				</option>
 			</item>
 			<item type="customwidget" name="IconSet">
@@ -91,7 +105,7 @@
 			<item type="combobox" property="Language">
 				<label lang="en" value="Language:" />
 				<label lang="ru" value="Язык:" />
-				<label lang="uk" value="Язик:" />
+				<label lang="uk" value="Мова:" />
 				<option name="system" default="true">
 					<label lang="en" value="System" />
 				</option>
@@ -123,7 +137,7 @@
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
 				<label lang="en" value="Maximum log lines:" />
 				<label lang="ru" value="Максимум строк в логе:" />
-				<label lang="uk" value="Максимум строк в логу:" />
+				<label lang="uk" value="Максимум рядків в журналі:" />
 			</item>
 		</tab>
 		<tab>
@@ -158,14 +172,17 @@
 				<item type="checkbox" property="ExitOnClose" default="false">
 					<label lang="en" value="Exit on close" />
 					<label lang="ru" value="Выходить при закрытии" />
+					<label lang="uk" value="Виходити при закритті" />
 				</item>
 				<item type="checkbox" property="OpenTabNext" default="false">
 					<label lang="en" value="Open new tab next to current" />
 					<label lang="ru" value="Открывать вкладку после текущей" />
+					<label lang="uk" value="Відкривати вкладку після поточної" />
 				</item>
 				<item type="checkbox" property="DontAskWhenSingle" default="false">
 					<label lang="en" value="Automatically accept task when there is only one handler" />
 					<label lang="ru" value="Автоматически добавлять задачу, когда есть только один обработчик" />
+					<label lang="uk" value="Автоматично додавати задачу, якщо є лише один обробник" />
 				</item>
 				<item type="path" property="WatchDirectory" onCancel="clear">
 					<label lang="en" value="Watch directory:" />
@@ -176,9 +193,11 @@
 			<item type="groupbox" property="ShowPluginMenuInTabs" state="on" checkable="true">
 				<label lang="en" value="Show plugin-dependent actions in tab bar context menu" />
 				<label lang="ru" value="Показывать зависимые от плагина действия в контекстном меню таббара" />
+				<label lang="uk" value="Показувати залежні від плагіна дії у контекстному меню панелі табів" />
 				<item type="checkbox" property="ShowPluginMenuInTabsAsSubmenu" default="off">
 					<label lang="en" value="Show as a submenu" />
 					<label lang="ru" value="Показывать как подменю" />
+					<label lang="uk" value="Показувати як підменю" />
 				</item>
 			</item>
 			<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
@@ -205,10 +224,11 @@
 	<page>
 		<label lang="en" value="Tags" />
 		<label lang="ru" value="Теги" />
-		<label lang="uk" value="Теги" />
+		<label lang="uk" value="Позначки" />
 		<groupbox>
 			<label lang="en" value="Tags manager" />
 			<label lang="ru" value="Менеджер тегов" />
+			<label lang="uk" value="Менеджер позначок" />
 			<item type="customwidget" label="own" name="TagsViewer" />
 		</groupbox>
 	</page>
@@ -233,14 +253,17 @@
 		<item type="checkbox" property="FilterTrackingCookies" default="on">
 			<label lang="en" value="Filter tracking cookies" />
 			<label lang="ru" value="Фильтровать отслеживающие куки" />
+			<label lang="uk" value="Фільтрувати шпигунські куки" />
 		</item>
 		<item type="pushbutton" name="ClearCache">
 			<label lang="en" value="Clear cache" />
 			<label lang="ru" value="Очистить кеш" />
+			<label lang="uk" value="Очистити кеш" />
 		</item>
 		<item type="pushbutton" name="ClearCookies">
 			<label lang="en" value="Clear cookies" />
 			<label lang="ru" value="Очистить куки" />
+			<label lang="uk" value="Очистити куки" />
 		</item>
 		<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
 			<label lang="en" value="Application-wide proxy" />
@@ -294,9 +317,11 @@
 	<page>
 		<label lang="en" value="Plugins" />
 		<label lang="ru" value="Плагины" />
+		<label lang="uk" value="Плагіни" />
 		<groupbox>
 			<label lang="en" value="Plugins manager" />
 			<label lang="ru" value="Менеджер плагинов" />
+			<label lang="uk" value="Менеджер плагинів" />
 			<item type="customwidget" label="own" name="PluginManager" />
 		</groupbox>
 	</page>
