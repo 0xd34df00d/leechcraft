@@ -23,6 +23,7 @@
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QGridLayout>
 #include <QtGui/QMessageBox>
+#include <QtGui/QLineEdit>
 
 #include "connectiondialog.h"
 #include "fsettings.h"
@@ -31,6 +32,12 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	: QDialog (parent)
 {
 	fSettings settings;
+
+	uriLabel = new QLabel (tr ("IRC URI"), this);
+	uriLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
+
+	uriEdit = new QLineEdit (this);
+	connect (uriEdit, SIGNAL (textChanged (QString)), this, SLOT (uriChanged (QString)));
 
 	serverLabel = new QLabel (tr ("IRC server"), this);
 	serverLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -64,14 +71,16 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	encodingEdit->setEnabled (false);
 
 	QGridLayout *layout = new QGridLayout ();
-	layout->addWidget (serverLabel, 0, 0);
-	layout->addWidget (serverEdit, 0, 1);
-	layout->addWidget (roomLabel, 1, 0);
-	layout->addWidget (roomEdit, 1, 1);
-	layout->addWidget (nickLabel, 2, 0);
-	layout->addWidget (nickEdit, 2, 1);
-	layout->addWidget (encodingLabel, 3, 0);
-	layout->addWidget (encodingEdit, 3, 1);
+	layout->addWidget (uriLabel, 0, 0);
+	layout->addWidget (uriEdit, 0, 1);
+	layout->addWidget (serverLabel, 1, 0);
+	layout->addWidget (serverEdit, 1, 1);
+	layout->addWidget (roomLabel, 2, 0);
+	layout->addWidget (roomEdit, 2, 1);
+	layout->addWidget (nickLabel, 3, 0);
+	layout->addWidget (nickEdit, 3, 1);
+	layout->addWidget (encodingLabel, 4, 0);
+	layout->addWidget (encodingEdit, 4, 1);
 
 	QDialogButtonBox *buttonBox = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
 				Qt::Horizontal,
@@ -187,4 +196,31 @@ void ConnectionDialog::saveAndAccept ()
 	settings.setValue("Connection/LastEncoding_" + serverEdit->currentText (), encodingEdit->currentIndex ());
 
 	accept ();
+}
+
+void ConnectionDialog::uriChanged (const QString& uri)
+{
+	static QRegExp serverRegExp("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
+
+	if (!serverRegExp.exactMatch (uri)) {
+		serverEdit->setCurrentIndex (-1);
+		return;
+	}
+
+	const QString& server = serverRegExp.cap (1);
+	const QString& room = serverRegExp.cap (2);
+
+	int index = serverEdit->findText(server, Qt::MatchFixedString);
+
+	if (index >= 0)
+		serverEdit->setCurrentIndex(index);
+	else
+		serverEdit->setEditText(server);
+
+	index = roomEdit->findText(room, Qt::MatchFixedString);
+
+	if (index >= 0)
+		roomEdit->setCurrentIndex(index);
+	else
+		roomEdit->setEditText(room);
 }

@@ -22,6 +22,7 @@
 
 class QLabel;
 class QComboBox;
+class QLineEdit;
 
 #include <QtGui/QDialog>
 
@@ -30,6 +31,8 @@ class ConnectionDialog : public QDialog
 	Q_OBJECT
 
 private:
+	QLabel *uriLabel;
+	QLineEdit *uriEdit;
 	QLabel *serverLabel;
 	QComboBox *serverEdit;
 	QLabel *roomLabel;
@@ -56,6 +59,7 @@ public:
 private Q_SLOTS:
 	void serverChanged ();
 	void saveAndAccept ();
+	void uriChanged (const QString& uri);
 };
 
 #endif //CONNECTIONDIALOG_H
