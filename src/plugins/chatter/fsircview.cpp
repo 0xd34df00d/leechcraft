@@ -448,8 +448,8 @@ void FsIrcView::changeNick()
 {
 	fSettings settings;
 
-	static QRegExp serverPortRegExp ("^irc://([a-zA-Z0-9\\.\\-]+):([0-9]+)/(\\S+)$");
-	static QRegExp serverRegExp ("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
+	QRegExp serverPortRegExp ("^irc://([a-zA-Z0-9\\.\\-]+):([0-9]+)/(\\S+)$");
+	QRegExp serverRegExp ("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
 
 	QString server;
 
