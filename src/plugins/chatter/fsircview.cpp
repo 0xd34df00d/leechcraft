@@ -448,9 +448,16 @@ void FsIrcView::changeNick()
 {
 	fSettings settings;
 
+	static QRegExp serverPortRegExp ("^irc://([a-zA-Z0-9\\.\\-]+):([0-9]+)/(\\S+)$");
 	static QRegExp serverRegExp ("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
-	serverRegExp.exactMatch (ircUri ());
-	const QString& server = serverRegExp.cap (1);
+
+	QString server;
+
+	if(serverPortRegExp.exactMatch(ircUri ())) {
+		server = serverPortRegExp.cap(1);
+	} else if(serverRegExp.exactMatch(ircUri ())) {
+		server = serverRegExp.cap(1);
+	}
 
 	const QStringList& nicksList = settings.value("Connection/Nicks_" + server, QStringList()).toStringList();
 

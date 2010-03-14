@@ -198,15 +198,22 @@ void ConnectionDialog::saveAndAccept ()
 
 void ConnectionDialog::uriChanged (const QString& uri)
 {
+	static QRegExp serverPortRegExp ("^irc://([a-zA-Z0-9\\.\\-]+):([0-9]+)/(\\S+)$");
 	static QRegExp serverRegExp ("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
 
-	if (!serverRegExp.exactMatch (uri)) {
+	QString server;
+	QString room;
+
+	if(serverPortRegExp.exactMatch(uri)) {
+		server = serverPortRegExp.cap(1);
+		room = serverPortRegExp.cap(3);
+	} else if(serverRegExp.exactMatch(uri)) {
+		server = serverRegExp.cap(1);
+		room = serverRegExp.cap(2);
+	} else {
 		serverEdit->setCurrentIndex (-1);
 		return;
 	}
-
-	const QString& server = serverRegExp.cap (1);
-	const QString& room = serverRegExp.cap (2);
 
 	int index = serverEdit->findText(server, Qt::MatchFixedString);
 
