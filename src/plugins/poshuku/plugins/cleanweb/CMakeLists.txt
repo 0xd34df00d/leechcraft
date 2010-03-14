@@ -34,6 +34,7 @@ SET (CLEANWEB_FORMS
 	flashonclickwhitelist.ui
 	userfilters.ui
 	ruleoptiondialog.ui
+	subscriptionadddialog.ui
 	)
 SET (CLEANWEB_RESOURCES
 	poshukucleanwebresources.qrc
