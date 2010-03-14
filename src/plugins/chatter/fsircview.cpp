@@ -469,5 +469,9 @@ void FsIrcView::changeNick()
 void FsIrcView::setConnection()
 {
 	ConnectionDialog d (this);
-	d.exec ();
+	if (d.exec ()) {
+		fsExec("nick", d.nick());
+		fsExec("encoding", d.encoding());
+		openIrc("irc://" + d.server() + "/" + d.room());
+	}
 }
