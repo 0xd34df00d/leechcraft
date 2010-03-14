@@ -45,9 +45,7 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	serverEdit = new QComboBox (this);
 	serverEdit->setEditable (true);
 	serverEdit->addItems(settings.value("Connection/Servers", QStringList()).toStringList());
-	serverEdit->setCurrentIndex (-1);
 	connect (serverEdit, SIGNAL (editTextChanged (QString)), this, SLOT (serverChanged ()));
-	connect (serverEdit, SIGNAL (currentIndexChanged (QString)), this, SLOT (serverChanged ()));
 
 	roomLabel = new QLabel (tr ("Room"), this);
 	roomLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -200,7 +198,7 @@ void ConnectionDialog::saveAndAccept ()
 
 void ConnectionDialog::uriChanged (const QString& uri)
 {
-	static QRegExp serverRegExp("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
+	static QRegExp serverRegExp ("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
 
 	if (!serverRegExp.exactMatch (uri)) {
 		serverEdit->setCurrentIndex (-1);

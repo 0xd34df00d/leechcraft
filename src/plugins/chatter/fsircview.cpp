@@ -448,12 +448,17 @@ void FsIrcView::changeNick()
 {
 	fSettings settings;
 
-	QStringList items;
-	items << settings.value("nickname").toString();
+	static QRegExp serverRegExp ("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
+	serverRegExp.exactMatch (ircUri ());
+	const QString& server = serverRegExp.cap (1);
+
+	const QStringList& nicksList = settings.value("Connection/Nicks_" + server, QStringList()).toStringList();
 
 	bool ok = false;
 	const QString& nick = QInputDialog::getItem (this, tr ("IRC URI"), tr ("IRC URI"),
-								 items, -1, true, &ok);
+					nicksList,
+					settings.value("Connection/LastNick_" + server, -1).toInt (),
+					true, &ok);
 
 	if (!ok)
 		return;
