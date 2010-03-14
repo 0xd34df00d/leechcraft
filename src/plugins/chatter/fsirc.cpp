@@ -152,28 +152,28 @@ void fsirc::closeCurrentTab()
 void fsirc::newTab(QString uri)
 {
 
-	if (uri.isEmpty()) {
-		QStringList items;
-		items << "irc://irc.freenode.net/#fsirc"
-				<< "irc://irc.freenode.net/#qt-ru";
-
-		bool ok = false;
-		uri = QInputDialog::getItem (this, tr ("IRC URI"), tr ("IRC URI"),
-									 items, -1, true, &ok);
-
-		if (!ok)
-			return;
-	}
-
-	if (uri.isEmpty ()) {
-		QMessageBox::critical (this, "", tr ("SRC URI is empty"));
-		return;
-	}
-
-	if (!IrcLayer::isIrcUri (uri)) {
-		QMessageBox::critical (this, "", tr ("Incorrect SRC URI"));
-		return;
-	}
+//	if (uri.isEmpty()) {
+//		QStringList items;
+//		items << "irc://irc.freenode.net/#fsirc"
+//				<< "irc://irc.freenode.net/#qt-ru";
+//
+//		bool ok = false;
+//		uri = QInputDialog::getItem (this, tr ("IRC URI"), tr ("IRC URI"),
+//									 items, -1, true, &ok);
+//
+//		if (!ok)
+//			return;
+//	}
+//
+//	if (uri.isEmpty ()) {
+//		QMessageBox::critical (this, "", tr ("SRC URI is empty"));
+//		return;
+//	}
+//
+//	if (!IrcLayer::isIrcUri (uri)) {
+//		QMessageBox::critical (this, "", tr ("Incorrect SRC URI"));
+//		return;
+//	}
 
 	FsIrcView *ircView = new FsIrcView ();
 	connect(ircView, SIGNAL(uriChanged()), this, SLOT(refreshTabNames()));
@@ -181,8 +181,8 @@ void fsirc::newTab(QString uri)
 	connect(ircView, SIGNAL(gotSomeMsg()), this, SLOT(gotSomeMsg()));
 	connect(ircView, SIGNAL(gotHlite()), this, SLOT(gotHlite()));
 	ircList << ircView;
-	ircView->proposeUri(uri);
-	ircView->openIrc(uri);
+//	ircView->proposeUri(uri);
+//	ircView->openIrc(uri);
 	ircTabHolder->setCurrentIndex(ircTabHolder->addTab(ircView, uri));
 
 	refreshTabNames();
