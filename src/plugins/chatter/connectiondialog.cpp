@@ -84,6 +84,8 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	mainLayout->addWidget (buttonBox);
 
 	setLayout (mainLayout);
+
+	serverEdit->setCurrentIndex(settings.value("Connection/LastServer", -1).toInt ());
 }
 
 QString ConnectionDialog::server ()
@@ -135,8 +137,11 @@ void ConnectionDialog::serverChanged ()
 	fSettings settings;
 
 	roomEdit->addItems(settings.value("Connection/Rooms_" + serverEdit->currentText (), QStringList()).toStringList());
+	roomEdit->setCurrentIndex(settings.value("Connection/LastRoom_" + serverEdit->currentText (), -1).toInt ());
 	nickEdit->addItems(settings.value("Connection/Nicks_" + serverEdit->currentText (), QStringList()).toStringList());
+	nickEdit->setCurrentIndex(settings.value("Connection/LastNick_" + serverEdit->currentText (), -1).toInt ());
 	encodingEdit->addItems(settings.value("Connection/Encodings_" + serverEdit->currentText (), QStringList()).toStringList());
+	encodingEdit->setCurrentIndex(settings.value("Connection/LastEncoding_" + serverEdit->currentText (), -1).toInt ());
 
 	roomEdit->setEnabled (!serverEdit->currentText ().isEmpty ());
 	nickEdit->setEnabled (!serverEdit->currentText ().isEmpty ());
@@ -175,6 +180,11 @@ void ConnectionDialog::saveAndAccept ()
 		l.insert(0, encodingEdit->currentText ());
 		settings.setValue("Connection/Encodings_" + serverEdit->currentText (), l);
 	}
+
+	settings.setValue("Connection/LastServer", serverEdit->currentIndex ());
+	settings.setValue("Connection/LastRoom_" + serverEdit->currentText (), roomEdit->currentIndex ());
+	settings.setValue("Connection/LastNick_" + serverEdit->currentText (), nickEdit->currentIndex ());
+	settings.setValue("Connection/LastEncoding_" + serverEdit->currentText (), encodingEdit->currentIndex ());
 
 	accept ();
 }
