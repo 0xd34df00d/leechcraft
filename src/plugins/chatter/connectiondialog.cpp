@@ -49,6 +49,7 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	serverEdit->addItems(settings.value("Connection/Servers", QStringList()).toStringList());
 	serverEdit->setCurrentIndex (-1);
 	connect (serverEdit, SIGNAL (editTextChanged (QString)), this, SLOT (serverChanged ()));
+	connect (serverEdit, SIGNAL (editTextChanged (QString)), this, SLOT (updateUri ()));
 
 	roomLabel = new QLabel (tr ("Room"), this);
 	roomLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -56,6 +57,7 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	roomEdit = new QComboBox (this);
 	roomEdit->setEditable (true);
 	roomEdit->setEnabled (false);
+	connect (roomEdit, SIGNAL (editTextChanged (QString)), this, SLOT (updateUri ()));
 
 	nickLabel = new QLabel (tr ("Nick"), this);
 	nickLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -228,4 +230,13 @@ void ConnectionDialog::uriChanged (const QString& uri)
 		roomEdit->setCurrentIndex(index);
 	else
 		roomEdit->setEditText(room);
+}
+
+void ConnectionDialog::updateUri()
+{
+	if (serverEdit->currentText ().isEmpty() || roomEdit->currentText ().isEmpty()) {
+		return;
+	}
+
+	uriEdit->setText ("irc://" + serverEdit->currentText () + "/" + roomEdit->currentText ());
 }
