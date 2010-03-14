@@ -32,6 +32,7 @@ SET (SRCS
 	ircserver.cpp
 	chatter.cpp
 	xmlsettingsmanager.cpp
+	connectiondialog.cpp
 	)
 SET (HEADERS
 	fscmdedit.h
@@ -45,6 +46,7 @@ SET (HEADERS
 	config.h
 	chatter.h
 	xmlsettingsmanager.h
+	connectiondialog.h
 	)
 SET (RESOURCES fsirc.qrc)
 SET (UIS

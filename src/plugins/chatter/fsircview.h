@@ -48,6 +48,7 @@ private:
 	enum {ACT_URI, ACT_NICK, ACT_ENCODING, ACT_QUIT};
 	QHash<QString,QString> m_msgColors;
 	QAction *actionChangeNick;
+	QAction *actionConnect;
 private slots:
 	void gotChannelMsg(QHash<QString, QString> data);
 	void gotPrivMsg(QHash<QString, QString> data);
@@ -66,6 +67,7 @@ private slots:
 	void gotKick(QHash<QString, QString> data);
 	void gotPrivAction(QHash<QString, QString>);
 	void changeNick();
+	void setConnection();
 public slots:
 	void fsQuit();
 	void sayHere();

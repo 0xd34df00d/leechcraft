@@ -31,6 +31,7 @@
 #include "fsettings.h"
 #include "config.h"
 #include "fsirc.h"
+#include "connectiondialog.h"
 
 FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 {
@@ -41,6 +42,10 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 	m_chanRegexp = new QRegExp("(\\s)(#(?:\\w|[\\.\\-\\[\\]\\(\\)@\"'`\\^\\$<>&~=#\\*])+)");
 	initCompleters();
 	initConnections();
+
+	actionConnect = new QAction (tr ("Connect to room"), this);
+	menuButton->addAction (actionConnect);
+	connect (actionConnect, SIGNAL (triggered ()), this, SLOT (setConnection()));
 
 	actionChangeNick = new QAction (tr ("Change nick"), this);
 	menuButton->addAction (actionChangeNick);
@@ -459,4 +464,10 @@ void FsIrcView::changeNick()
 	}
 
 	fsExec ("nick", nick);
+}
+
+void FsIrcView::setConnection()
+{
+	ConnectionDialog d (this);
+	d.exec ();
 }
