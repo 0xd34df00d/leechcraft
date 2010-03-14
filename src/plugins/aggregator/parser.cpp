@@ -374,7 +374,14 @@ namespace LeechCraft
 						if (en.hasAttribute ("url"))
 							entry.URL_ = en.attribute ("url");
 						else
-							entry.URL_ = *d.URL_;
+						{
+							QDomNodeList players = en.elementsByTagNameNS (Parser::MediaRSS_,
+									"player");
+							if (!players.size ())
+								qWarning () << Q_FUNC_INFO
+									<< "bad feed with no players and urls";
+							entry.URL_ = players.at (0).toElement ().attribute ("url");
+						}
 
 						entry.Size_ = en.attribute ("fileSize").toInt ();
 						entry.Type_ = en.attribute ("type");
@@ -411,11 +418,6 @@ namespace LeechCraft
 						entry.Comments_ = d.Comments_;
 						entry.PeerLinks_ = d.PeerLinks_;
 						entry.Scenes_ = d.Scenes_;
-
-						/*
-						Q_FOREACH (MRSSThumbnail th, entry.Thumbnails_)
-							qDebug () << entry.URL_ << th.URL_;
-							*/
 
 						result << entry;
 					}
