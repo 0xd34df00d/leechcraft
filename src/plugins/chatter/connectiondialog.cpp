@@ -22,31 +22,46 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QDialogButtonBox>
 #include <QtGui/QGridLayout>
+#include <QtGui/QMessageBox>
 
 #include "connectiondialog.h"
+#include "fsettings.h"
 
 ConnectionDialog::ConnectionDialog (QWidget *parent)
 	: QDialog (parent)
 {
+	fSettings settings;
+
 	serverLabel = new QLabel (tr ("IRC server"), this);
+	serverLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
 	serverEdit = new QComboBox (this);
 	serverEdit->setEditable (true);
+	serverEdit->addItems(settings.value("Connection/Servers", QStringList()).toStringList());
+	serverEdit->setCurrentIndex (-1);
+	connect (serverEdit, SIGNAL (editTextChanged (QString)), this, SLOT (serverChanged ()));
+	connect (serverEdit, SIGNAL (currentIndexChanged (QString)), this, SLOT (serverChanged ()));
 
 	roomLabel = new QLabel (tr ("Room"), this);
+	roomLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
 	roomEdit = new QComboBox (this);
 	roomEdit->setEditable (true);
+	roomEdit->setEnabled (false);
 
 	nickLabel = new QLabel (tr ("Nick"), this);
+	nickLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
 	nickEdit = new QComboBox (this);
 	nickEdit->setEditable (true);
+	nickEdit->setEnabled (false);
 
 	encodingLabel = new QLabel (tr ("Encoding"), this);
+	encodingLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
 	encodingEdit = new QComboBox (this);
 	encodingEdit->setEditable (true);
+	encodingEdit->setEnabled (false);
 
 	QGridLayout *layout = new QGridLayout ();
 	layout->addWidget (serverLabel, 0, 0);
@@ -61,7 +76,7 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	QDialogButtonBox *buttonBox = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
 				Qt::Horizontal,
 				this);
-	connect (buttonBox, SIGNAL (accepted ()), this, SLOT (accept ()));
+	connect (buttonBox, SIGNAL (accepted ()), this, SLOT (saveAndAccept ()));
 	connect (buttonBox, SIGNAL (rejected ()), this, SLOT (reject ()));
 
 	QVBoxLayout *mainLayout = new QVBoxLayout ();
@@ -69,4 +84,97 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	mainLayout->addWidget (buttonBox);
 
 	setLayout (mainLayout);
+}
+
+QString ConnectionDialog::server ()
+{
+	return serverEdit->currentText ();
+}
+
+void ConnectionDialog::setServer (const QString& server)
+{
+	serverEdit->setEditText (server);
+}
+
+QString ConnectionDialog::room ()
+{
+	return roomEdit->currentText ();
+}
+
+void ConnectionDialog::setRoom (const QString& room)
+{
+	roomEdit->setEditText (room);
+}
+
+QString ConnectionDialog::nick ()
+{
+	return nickEdit->currentText ();
+}
+
+void ConnectionDialog::setNick (const QString& nick)
+{
+	nickEdit->setEditText (nick);
+}
+
+QString ConnectionDialog::encoding ()
+{
+	return encodingEdit->currentText ();
+}
+
+void ConnectionDialog::setEncoding (const QString& encoding)
+{
+	encodingEdit->setEditText (encoding);
+}
+
+void ConnectionDialog::serverChanged ()
+{
+	roomEdit->clear();
+	nickEdit->clear();
+	encodingEdit->clear();
+
+	fSettings settings;
+
+	roomEdit->addItems(settings.value("Connection/Rooms_" + serverEdit->currentText (), QStringList()).toStringList());
+	nickEdit->addItems(settings.value("Connection/Nicks_" + serverEdit->currentText (), QStringList()).toStringList());
+	encodingEdit->addItems(settings.value("Connection/Encodings_" + serverEdit->currentText (), QStringList()).toStringList());
+
+	roomEdit->setEnabled (!serverEdit->currentText ().isEmpty ());
+	nickEdit->setEnabled (!serverEdit->currentText ().isEmpty ());
+	encodingEdit->setEnabled (!serverEdit->currentText ().isEmpty ());
+}
+
+void ConnectionDialog::saveAndAccept ()
+{
+	if (serverEdit->currentText ().isEmpty ()
+		|| roomEdit->currentText ().isEmpty ()
+		|| nickEdit->currentText ().isEmpty ()
+		|| encodingEdit->currentText ().isEmpty ()) {
+
+		QMessageBox::critical (this, "", tr ("Parameters is not valid"));
+		return;
+	}
+
+	fSettings settings;
+	if (serverEdit->findText (serverEdit->currentText (), Qt::MatchFixedString) == -1) {
+		QStringList l = settings.value("Connection/Servers", QStringList ()).toStringList ();
+		l.insert(0, serverEdit->currentText ());
+		settings.setValue("Connection/Servers", l);
+	}
+	if (roomEdit->findText (roomEdit->currentText (), Qt::MatchFixedString) == -1) {
+		QStringList l = settings.value("Connection/Rooms_" + serverEdit->currentText (), QStringList ()).toStringList ();
+		l.insert(0, roomEdit->currentText ());
+		settings.setValue("Connection/Rooms_" + serverEdit->currentText (), l);
+	}
+	if (nickEdit->findText (nickEdit->currentText (), Qt::MatchFixedString) == -1) {
+		QStringList l = settings.value("Connection/Nicks_" + serverEdit->currentText (), QStringList ()).toStringList ();
+		l.insert(0, nickEdit->currentText ());
+		settings.setValue("Connection/Nicks_" + serverEdit->currentText (), l);
+	}
+	if (encodingEdit->findText (encodingEdit->currentText (), Qt::MatchFixedString) == -1) {
+		QStringList l = settings.value("Connection/Encodings_" + serverEdit->currentText (), QStringList ()).toStringList ();
+		l.insert(0, encodingEdit->currentText ());
+		settings.setValue("Connection/Encodings_" + serverEdit->currentText (), l);
+	}
+
+	accept ();
 }

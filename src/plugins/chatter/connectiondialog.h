@@ -43,6 +43,19 @@ public:
 	ConnectionDialog (QWidget *parent = 0);
 	virtual ~ConnectionDialog()
 	{}
+
+	QString server ();
+	void setServer (const QString& server);
+	QString room ();
+	void setRoom (const QString& room);
+	QString nick ();
+	void setNick (const QString& nick);
+	QString encoding ();
+	void setEncoding (const QString& encoding);
+
+private Q_SLOTS:
+	void serverChanged ();
+	void saveAndAccept ();
 };
 
 #endif //CONNECTIONDIALOG_H
