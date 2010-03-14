@@ -103,17 +103,20 @@ namespace LeechCraft
 						UserFiltersModel* GetUserFiltersModel () const;
 						FlashOnClickPlugin* GetFlashOnClick ();
 						FlashOnClickWhitelist* GetFlashOnClickWhitelist ();
-					private:
-						bool Matches (const QString&, const Filter&,
-								const QString&, const QString&) const;
-						void HandleProvider (QObject*);
-						void Parse (const QString&);
+
+						bool Exists (const QUrl& url) const;
+						bool Exists (const QString& name) const;
 
 						/** Loads the subscription from the url with the name
 						 * subscrName. Returns true if the load delegation was
 						 * successful, otherwise returns false.
 						 */
 						bool Load (const QUrl& url, const QString& subscrName);
+					private:
+						bool Matches (const QString&, const Filter&,
+								const QString&, const QString&) const;
+						void HandleProvider (QObject*);
+						void Parse (const QString&);
 
 						/** Removes the subscription at
 						 * ~/.leechcraft/cleanweb/filename.

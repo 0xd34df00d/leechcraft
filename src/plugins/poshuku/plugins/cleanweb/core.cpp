@@ -45,29 +45,32 @@ using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 
 namespace
 {
+	enum FilterType
+	{
+		FTName_,
+		FTFilename_,
+		FTUrl_
+	};
+
+	template<typename T>
 	struct FilterFinderBase
 	{
-		const QString& ID_;
-		enum Type
-		{
-			TName_,
-			TFilename_
-		};
+		const T& ID_;
 
-		FilterFinderBase (const QString& id)
+		FilterFinderBase (const T& id)
 		: ID_ (id)
 		{
 		}
 	};
 
-	template<FilterFinderBase::Type>
+	template<FilterType>
 		struct FilterFinder;
 
 	template<>
-		struct FilterFinder<FilterFinderBase::TName_> : FilterFinderBase
+		struct FilterFinder<FTName_> : FilterFinderBase<QString>
 		{
 			FilterFinder (const QString& id)
-			: FilterFinderBase (id)
+			: FilterFinderBase<QString> (id)
 			{
 			}
 
@@ -78,16 +81,30 @@ namespace
 		};
 
 	template<>
-		struct FilterFinder<FilterFinderBase::TFilename_> : FilterFinderBase
+		struct FilterFinder<FTFilename_> : FilterFinderBase<QString>
 		{
 			FilterFinder (const QString& id)
-			: FilterFinderBase (id)
+			: FilterFinderBase<QString> (id)
 			{
 			}
 
 			bool operator() (const Filter& f) const
 			{
 				return f.SD_.Filename_ == ID_;
+			}
+		};
+
+	template<>
+		struct FilterFinder<FTUrl_> : FilterFinderBase<QUrl>
+		{
+			FilterFinder (const QUrl& id)
+			: FilterFinderBase<QUrl> (id)
+			{
+			}
+
+			bool operator() (const Filter& f) const
+			{
+				return f.SD_.URL_ == ID_;
 			}
 		};
 
@@ -307,7 +324,7 @@ bool Core::CouldHandle (const DownloadEntity& e) const
 	{
 		QString name = url.queryItemValue ("title");
 		if (std::find_if (Filters_.begin (), Filters_.end (),
-					FilterFinder<FilterFinderBase::TName_> (name)) == Filters_.end ())
+					FilterFinder<FTName_> (name)) == Filters_.end ())
 			return true;
 		else
 			return false;
@@ -316,14 +333,26 @@ bool Core::CouldHandle (const DownloadEntity& e) const
 		return false;
 }
 
+bool Core::Exists (const QString& subscrName) const
+{
+	return std::find_if (Filters_.begin (), Filters_.end (),
+			FilterFinder<FTName_> (subscrName)) != Filters_.end ();
+}
+
+
+bool Core::Exists (const QUrl& url) const
+{
+	return std::find_if (Filters_.begin (), Filters_.end (),
+			FilterFinder<FTUrl_> (url)) != Filters_.end ();
+}
+
 void Core::Handle (DownloadEntity subscr)
 {
 	QUrl subscrUrl = subscr.Entity_.toUrl ();
 	QUrl url (subscrUrl.queryItemValue ("location"));
 	QString subscrName = subscrUrl.queryItemValue ("title");
-
-	if (std::find_if (Filters_.begin (), Filters_.end (),
-				FilterFinder<FilterFinderBase::TName_> (subscrName)) != Filters_.end ())
+	
+	if (Exists (subscrName) || Exists (url))
 		return;
 
 	Load (url, subscrName);
@@ -626,7 +655,7 @@ void Core::Parse (const QString& filePath)
 	f.SD_.Filename_ = QFileInfo (filePath).fileName ();
 
 	QList<Filter>::iterator pos = std::find_if (Filters_.begin (), Filters_.end (),
-			FilterFinder<FilterFinderBase::TFilename_> (f.SD_.Filename_));
+			FilterFinder<FTFilename_> (f.SD_.Filename_));
 	if (pos != Filters_.end ())
 	{
 		int row = std::distance (Filters_.begin (), pos);
@@ -696,7 +725,7 @@ void Core::Remove (const QString& fileName)
 	home.remove (fileName);
 
 	QList<Filter>::iterator pos = std::find_if (Filters_.begin (), Filters_.end (),
-			FilterFinder<FilterFinderBase::TFilename_> (fileName));
+			FilterFinder<FTFilename_> (fileName));
 	if (pos != Filters_.end ())
 	{
 		int row = std::distance (Filters_.begin (), pos);
@@ -760,7 +789,7 @@ bool Core::AssignSD (const SubscriptionData& sd)
 {
 	QList<Filter>::iterator pos =
 		std::find_if (Filters_.begin (), Filters_.end (),
-			FilterFinder<FilterFinderBase::TFilename_> (sd.Filename_));
+			FilterFinder<FTFilename_> (sd.Filename_));
 	if (pos != Filters_.end ())
 	{
 		pos->SD_ = sd;
