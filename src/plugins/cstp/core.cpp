@@ -524,10 +524,12 @@ namespace LeechCraft
 				QStringList tags = taskdscr->Tags_;
 			
 				taskdscr->File_->close ();
+
+				bool notifyUser = !(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser);
 			
 				if (!err)
 				{
-					if (!(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser))
+					if (notifyUser)
 					{
 						Notification n =
 						{
@@ -558,7 +560,8 @@ namespace LeechCraft
 				else
 				{
 					taskdscr->ErrorFlag_ = true;
-					emit error (errorStr);
+					if (notifyUser)
+						emit error (errorStr);
 					emit taskError (id, IDownload::EUnknown);
 					if (taskdscr->Parameters_ & LeechCraft::NotPersistent)
 						Remove (taskdscr);
