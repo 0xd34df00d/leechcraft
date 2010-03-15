@@ -131,6 +131,11 @@ namespace LeechCraft
 					if (e.Mime_ != "application/atom+xml" &&
 							e.Mime_ != "application/rss+xml")
 						return false;
+
+					QString linkRel = e.Additional_ ["LinkRel"].toString ();
+					if (linkRel.size () &&
+							linkRel != "alternate")
+						return false;
 				}
 			
 				return true;
