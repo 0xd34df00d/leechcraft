@@ -239,7 +239,7 @@ namespace LeechCraft
 
 			void TabWidget::updateTorrentStats ()
 			{
-				if (!Core::Instance ()->GetCurrentTorrent () == -1)
+				if (Core::Instance ()->GetCurrentTorrent () == -1)
 					return;
 			
 				switch (currentIndex ())
