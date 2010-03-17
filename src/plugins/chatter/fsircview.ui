@@ -19,7 +19,7 @@
      <item>
       <widget class="QPushButton" name="changeThemeButton">
        <property name="text">
-        <string>Theme</string>
+        <string>Topic</string>
        </property>
       </widget>
      </item>

@@ -105,6 +105,7 @@ void FsIrcView::fsEcho(QString message, QString style)
 void FsIrcView::initConnections()
 {
 	connect(cmdEdit, SIGNAL(returnPressed()), this, SLOT(sayHere()));
+	connect (sendButton, SIGNAL (clicked ()), this, SLOT (sayHere ()));
 	connect(fsChatView, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
 }
 
