@@ -1,16 +1,16 @@
-@echo off
+rem @echo off
 
 rem Set these variables to proper paths of your system:
-set BOOST_BIN_DIR="F:\X-Files\Projects\Lib\boost_1_41_0\stage\lib"
-set BOOST_VERSION="1_41"
-set LIBTORRENT_BIN_DIR="f:\X-Files\Projects\Lib\libtorrent-RC_0_15\bin\msvc-9.0\release\boost-link-shared\boost-source\threading-multi"
-set LIBCURL_BIN_DIR="F:\X-Files\Projects\Lib\curl-7.19.6\lib\DLL-Release"
-set OPENSSL_BIN_DIR="F:\X-Files\Projects\Lib\openssl-0.9.8k\out32dll"
-set QT_BIN_DIR="c:\Programs\qt-everywhere-opensource-src-4.6.0\lib\"
+set BOOST_BIN_DIR="C:\Boost\1.42\stage\lib"
+set BOOST_VERSION="1_42"
+set LIBTORRENT_BIN_DIR="C:/Programming/libtorrent/bin/msvc-9.0/release/boost-link-shared/boost-source/threading-multi/"
+set LIBCURL_BIN_DIR="C:/Programming/curl/curl-7.20.0/lib/Release/"
+set OPENSSL_BIN_DIR="C:/Programming/openssl/openssl-0.9.8m/out32dll/"
+set QT_BIN_DIR="c:\Qt\4.6.2\bin"
 
 set LEECHCRAFT_ROOT_DIR="..\.."
 set LEECHCRAFT_BUILD_DIR="build32"
-set BUILD_TYPE="Release"
+set BUILD_TYPE="MinSizeRel"
 
 rem This is the directory where LeechCraft will live
 set TARGET_DIR="LeechCraft"
@@ -22,6 +22,8 @@ mkdir %TARGET_DIR%\plugins
 mkdir %TARGET_DIR%\plugins\bin
 mkdir %TARGET_DIR%\plugins\imageformats
 mkdir %TARGET_DIR%\plugins\sqldrivers
+mkdir %TARGET_DIR%\plugins\phonon_backend
+mkdir %TARGET_DIR%\plugins\iconengines
 mkdir %TARGET_DIR%\settings
 mkdir %TARGET_DIR%\translations
 mkdir %TARGET_DIR%\leechcraft
@@ -55,7 +57,14 @@ copy %QT_BIN_DIR%\..\plugins\imageformats\qmng4.dll %TARGET_DIR%\plugins\imagefo
 copy %QT_BIN_DIR%\..\plugins\imageformats\qsvg4.dll %TARGET_DIR%\plugins\imageformats
 copy %QT_BIN_DIR%\..\plugins\imageformats\qtiff4.dll %TARGET_DIR%\plugins\imageformats
 
+copy %QT_BIN_DIR%\..\plugins\iconengines\qsvgicon4.dll %TARGET_DIR%\plugins\iconengines
+
+copy %QT_BIN_DIR%\..\plugins\phonon_backend\phonon_ds94.dll %TARGET_DIR%\plugins\phonon_backend
+
 copy %QT_BIN_DIR%\..\plugins\sqldrivers\qsqlite4.dll %TARGET_DIR%\plugins\sqldrivers
+copy %QT_BIN_DIR%\..\plugins\sqldrivers\qsqlpsql4.dll %TARGET_DIR%\plugins\sqldrivers
+
+rem copy %QT_BIN_DIR%\..\translations\qt_*.qm %TARGET_DIR%\translations
 
 rem - OpenSSL -
 copy %OPENSSL_BIN_DIR%\libeay32.dll %TARGET_DIR%
@@ -75,42 +84,10 @@ copy %LEECHCRAFT_BUILD_DIR%\plugininterface\%BUILD_TYPE%\plugininterface.dll %TA
 copy %LEECHCRAFT_BUILD_DIR%\xmlsettingsdialog\%BUILD_TYPE%\xmlsettingsdialog.dll %TARGET_DIR%
 
 rem - Plugins -
-copy %LEECHCRAFT_BUILD_DIR%\plugins\aggregator\%BUILD_TYPE%\leechcraft_aggregator.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\bittorrent\%BUILD_TYPE%\leechcraft_bittorrent.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\chatter\%BUILD_TYPE%\leechcraft_chatter.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\cstp\%BUILD_TYPE%\leechcraft_cstp.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\deadlyrics\%BUILD_TYPE%\leechcraft_deadlyrics.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\historyholder\%BUILD_TYPE%\leechcraft_historyholder.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\lcftp\%BUILD_TYPE%\leechcraft_lcftp.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\lmp\%BUILD_TYPE%\leechcraft_lmp.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\networkmonitor\%BUILD_TYPE%\leechcraft_networkmonitor.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\newlife\%BUILD_TYPE%\leechcraft_newlife.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\%BUILD_TYPE%\leechcraft_poshuku.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\seekthru\%BUILD_TYPE%\leechcraft_seekthru.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\summary\%BUILD_TYPE%\leechcraft_summary.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\vgrabber\%BUILD_TYPE%\leechcraft_vgrabber.dll %TARGET_DIR%\plugins\bin
-rem copy %LEECHCRAFT_BUILD_DIR%\plugins\yasd\%BUILD_TYPE%\leechcraft_yasd.dll %TARGET_DIR%\plugins\bin
-
-rem - Poshuku sub-plugins -
-copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\plugins\cleanweb\%BUILD_TYPE%\leechcraft_poshuku_cleanweb.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\plugins\filescheme\%BUILD_TYPE%\leechcraft_poshuku_filescheme.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\plugins\fua\%BUILD_TYPE%\leechcraft_poshuku_fua.dll %TARGET_DIR%\plugins\bin
-copy %LEECHCRAFT_BUILD_DIR%\plugins\poshuku\plugins\wyfv\%BUILD_TYPE%\leechcraft_poshuku_wyfv.dll %TARGET_DIR%\plugins\bin
+for /r %LEECHCRAFT_BUILD_DIR%\plugins %%f in (%BUILD_TYPE%\leechcraft_*.dll) do copy %%f %TARGET_DIR%\plugins\bin
 
 rem - Settings -
-copy %LEECHCRAFT_ROOT_DIR%\src\coresettings.xml %TARGET_DIR%\settings
-
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\aggregator\aggregatorsettings.xml %TARGET_DIR%\settings
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\bittorrent\torrentsettings.xml %TARGET_DIR%\settings
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\cstp\cstpsettings.xml %TARGET_DIR%\settings
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\lmp\lmpsettings.xml %TARGET_DIR%\settings
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\poshuku\poshukusettings.xml %TARGET_DIR%\settings
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\seekthru\seekthrusettings.xml %TARGET_DIR%\settings
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\vgrabber\vgrabbersettings.xml %TARGET_DIR%\settings
-
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\poshuku\plugins\cleanweb\poshukucleanwebsettings.xml %TARGET_DIR%\settings
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\poshuku\plugins\fua\poshukufuasettings.xml %TARGET_DIR%\settings
-copy %LEECHCRAFT_ROOT_DIR%\src\plugins\poshuku\plugins\wyfv\poshukuwyfvsettings.xml %TARGET_DIR%\settings
+for /r %LEECHCRAFT_ROOT_DIR%\src %%f in (*settings.xml) do copy %%f %TARGET_DIR%\settings
 
 rem - Translations -
 for /r %LEECHCRAFT_ROOT_DIR%\src %%f in (*.qm) do copy %%f %TARGET_DIR%\translations
