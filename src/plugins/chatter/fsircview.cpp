@@ -105,6 +105,7 @@ void FsIrcView::fsEcho(QString message, QString style)
 void FsIrcView::initConnections()
 {
 	connect(cmdEdit, SIGNAL(returnPressed()), this, SLOT(sayHere()));
+	connect (sendButton, SIGNAL (clicked ()), this, SLOT (sayHere ()));
 	connect(fsChatView, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
 }
 
@@ -212,6 +213,9 @@ void FsIrcView::gotNames(QStringList data)
 {
 	QString output = tr("Names for %1: %2").arg(m_irc->target(),data.join(", "));
 	fsEcho(output, m_msgColors["event"]);
+
+	usersListView->clear ();
+	usersListView->addItems (data);
 }
 
 void FsIrcView::gotTopic(QStringList data)
