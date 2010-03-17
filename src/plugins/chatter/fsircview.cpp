@@ -212,6 +212,9 @@ void FsIrcView::gotNames(QStringList data)
 {
 	QString output = tr("Names for %1: %2").arg(m_irc->target(),data.join(", "));
 	fsEcho(output, m_msgColors["event"]);
+
+	usersListView->clear ();
+	usersListView->addItems (data);
 }
 
 void FsIrcView::gotTopic(QStringList data)
