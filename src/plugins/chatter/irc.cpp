@@ -44,11 +44,11 @@ IrcLayer::IrcLayer(QObject * parent, QString ircUri) : QObject(parent)
 	connect(this, SIGNAL(gotKick(QHash<QString, QString>)), this, SLOT(checkKicked(QHash<QString, QString>)));
 	connect(this, SIGNAL(gotNames(QStringList)), this, SLOT(addNames(QStringList)));
 
-	connect(this, SIGNAL(gotPart()), SIGNAL(userListChanged()));
-	connect(this, SIGNAL(gotJoin()), SIGNAL(userListChanged()));
-	connect(this, SIGNAL(gotQuit()), SIGNAL(userListChanged()));
-	connect(this, SIGNAL(gotNick()), SIGNAL(userListChanged()));
-	connect(this, SIGNAL(gotKick()), SIGNAL(userListChanged()));
+	connect(this, SIGNAL(gotPart(QHash<QString, QString>)), this, SIGNAL(userListChanged()));
+	connect(this, SIGNAL(gotJoin(QHash<QString, QString>)), this, SIGNAL(userListChanged()));
+	connect(this, SIGNAL(gotQuit(QHash<QString, QString>)), this, SIGNAL(userListChanged()));
+	connect(this, SIGNAL(gotNick(QHash<QString, QString>)), this, SIGNAL(userListChanged()));
+	connect(this, SIGNAL(gotKick(QHash<QString, QString>)), this, SIGNAL(userListChanged()));
 //	connect(m_socket, SIGNAL(error()), this, SLOT(gotError()));
 }
 
