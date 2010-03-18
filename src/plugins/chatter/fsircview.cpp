@@ -221,6 +221,7 @@ void FsIrcView::gotNames(QStringList data)
 void FsIrcView::gotTopic(QStringList data)
 {
 	fsEcho(tr("Topic for ") + data[1] + ": " + data[2], m_msgColors["event"]);
+	topicEdit->setText (data[2]);
 }
 
 void FsIrcView::gotNick(QHash<QString, QString> data)
