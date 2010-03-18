@@ -196,6 +196,8 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
     Section "Poshuku WYFV" POSHUKUWYFVPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\poshukuwyfvsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku_wyfv.dll
 		SectionIn 1
@@ -218,6 +220,8 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
     Section "vGrabber" VGRABBERPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\vgrabbersettings.xml
         SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_vgrabber.dll
 		SectionIn 1
