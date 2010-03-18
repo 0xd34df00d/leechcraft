@@ -402,6 +402,7 @@ void FsIrcView::openIrc(QString uri)
 	connect(m_irc, SIGNAL(gotInfo(QString)), this, SIGNAL(gotSomeMsg()));
 	connect(m_irc, SIGNAL(gotAction(QHash<QString, QString>)), this, SIGNAL(gotSomeMsg()));
 	connect(m_irc, SIGNAL(gotKick(QHash<QString, QString>)), this, SIGNAL(gotSomeMsg()));
+	connect(m_irc, SIGNAL (userListChanged()), this, SLOT (updateUsersList ()));
 }
 
 void FsIrcView::fsOut(QString message)
@@ -491,4 +492,10 @@ void FsIrcView::setConnection()
 		fsExec("encoding", d.encoding());
 		openIrc("irc://" + d.server() + "/" + d.room());
 	}
+}
+
+void FsIrcView::updateUsersList ()
+{
+	usersListView->clear ();
+	usersListView->addItems (m_irc->users ());
 }

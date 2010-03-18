@@ -68,6 +68,7 @@ private slots:
 	void gotPrivAction(QHash<QString, QString>);
 	void changeNick();
 	void setConnection();
+	void updateUsersList ();
 public slots:
 	void fsQuit();
 	void sayHere();
