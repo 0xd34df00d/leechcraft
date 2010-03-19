@@ -378,10 +378,13 @@ namespace LeechCraft
 						obj = imtw->ParentMultiTabs ();
 					else
 						obj = widget;
-					connect (obj,
-							SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-							this,
-							SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
+					if (widget->metaObject ()->indexOfSignal (QMetaObject::normalizedSignature (
+									"changeTabIcon (QWidget*, const QIcon&)"
+									).constData ()) != -1)
+						connect (obj,
+								SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+								this,
+								SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
 					handleChangeTabIcon (widget, TabWidget_->tabIcon (idx));
 				}
 			}
