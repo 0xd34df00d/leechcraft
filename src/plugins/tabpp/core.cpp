@@ -446,12 +446,7 @@ namespace LeechCraft
 			void Core::handleChangeTabIcon (QWidget *widget, const QIcon& icon)
 			{
 				if (!Widget2Child_.contains (widget))
-				{
-					qWarning () << Q_FUNC_INFO
-						<< widget
-						<< "not found";
 					return;
-				}
 
 				Util::TreeItem *item = Widget2Child_ [widget];
 				item->ModifyData (0, icon, Qt::DecorationRole);
