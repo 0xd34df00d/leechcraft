@@ -160,7 +160,7 @@ namespace LeechCraft
 				ExportXbel_->setShortcut (proxy->GetShortcut (this, EAExportXbel_));
 				CheckFavorites_->setShortcut (proxy->GetShortcut (this, EACheckFavorites_));
 			
-				ToolMenu_ = new QMenu (tr ("Poshuku actions"), this);
+				ToolMenu_ = new QMenu (tr ("Poshuku"), this);
 				ToolMenu_->setIcon (GetIcon ());
 				ToolMenu_->addAction (ImportXbel_);
 				ToolMenu_->addAction (ExportXbel_);
