@@ -48,6 +48,7 @@ namespace LeechCraft
 				QToolBar* GetToolBar () const;
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
+				void bringToFront ();
 			private:
 				QList<QAction*> Actions_;
 				fsirc *fsIrc;
