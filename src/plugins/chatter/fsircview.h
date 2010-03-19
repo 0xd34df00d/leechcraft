@@ -69,6 +69,7 @@ private slots:
 	void changeNick();
 	void setConnection();
 	void updateUsersList ();
+	void slotAnchorClicked (QUrl url);
 public slots:
 	void fsQuit();
 	void sayHere();

@@ -63,6 +63,10 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 	m_msgColors["link"]="#88FF76";
 	m_msgColors["nicklink"]="#6FFF4B";
 	m_msgColors["chanlink"]="#439A2D";
+
+	fSettings settings;
+
+	splitter->restoreState (settings.value ("SplitterState", QByteArray ()).toByteArray());
 }
 
 FsIrcView::~FsIrcView()
@@ -70,6 +74,10 @@ FsIrcView::~FsIrcView()
 	delete m_irc;
 	delete m_linkRegexp;
 	delete m_chanRegexp;
+
+	fSettings settings;
+
+	settings.setValue ("SplitterState", splitter->saveState ());
 }
 
 void FsIrcView::fsEcho(QString message, QString style)
@@ -93,7 +101,7 @@ void FsIrcView::fsEcho(QString message, QString style)
 	{
 		message.replace(
 			QRegExp(QString("([%2]|\\s|^|$)%1(?=[%2]|\\s|^|$)").arg(QRegExp::escape(user), QRegExp::escape(",\"';:.%!\\$#()"))),
-			QString("\\1<a href='irc://%1:%2/%3' style='color:%4'>%3</a>").arg(m_irc->server(), m_irc->port(), user, m_msgColors["nicklink"])
+			QString("\\1<a href=%1 style='color:%2'>%1</a>").arg( user, m_msgColors["nicklink"])
 		);
 	}
 	// Highlighting channel references
@@ -106,7 +114,7 @@ void FsIrcView::initConnections()
 {
 	connect(cmdEdit, SIGNAL(returnPressed()), this, SLOT(sayHere()));
 	connect (sendButton, SIGNAL (clicked ()), this, SLOT (sayHere ()));
-	connect(fsChatView, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
+	connect(fsChatView, SIGNAL (anchorClicked (QUrl)), this, SLOT (slotAnchorClicked (QUrl)));
 }
 
 void FsIrcView::initCompleters()
@@ -211,9 +219,6 @@ void FsIrcView::gotError(QString message)
 
 void FsIrcView::gotNames(QStringList data)
 {
-	QString output = tr("Names for %1: %2").arg(m_irc->target(),data.join(", "));
-	fsEcho(output, m_msgColors["event"]);
-
 	usersListView->clear ();
 	usersListView->addItems (data);
 }
@@ -222,6 +227,7 @@ void FsIrcView::gotTopic(QStringList data)
 {
 	fsEcho(tr("Topic for ") + data[1] + ": " + data[2], m_msgColors["event"]);
 	topicEdit->setText (data[2]);
+	topicEdit->setCursorPosition (0);
 }
 
 void FsIrcView::gotNick(QHash<QString, QString> data)
@@ -498,4 +504,13 @@ void FsIrcView::updateUsersList ()
 {
 	usersListView->clear ();
 	usersListView->addItems (m_irc->users ());
+}
+
+void FsIrcView::slotAnchorClicked (QUrl url)
+{
+	if (m_irc->users ().contains (url.toString ())) {
+		cmdEdit->insert (url.toString() + ": ");
+	} else {
+		emit anchorClicked (url);
+	}
 }
