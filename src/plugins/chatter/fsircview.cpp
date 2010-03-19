@@ -221,6 +221,7 @@ void FsIrcView::gotNames(QStringList data)
 void FsIrcView::gotTopic(QStringList data)
 {
 	fsEcho(tr("Topic for ") + data[1] + ": " + data[2], m_msgColors["event"]);
+	topicEdit->setText (data[2]);
 }
 
 void FsIrcView::gotNick(QHash<QString, QString> data)
@@ -401,6 +402,7 @@ void FsIrcView::openIrc(QString uri)
 	connect(m_irc, SIGNAL(gotInfo(QString)), this, SIGNAL(gotSomeMsg()));
 	connect(m_irc, SIGNAL(gotAction(QHash<QString, QString>)), this, SIGNAL(gotSomeMsg()));
 	connect(m_irc, SIGNAL(gotKick(QHash<QString, QString>)), this, SIGNAL(gotSomeMsg()));
+	connect(m_irc, SIGNAL (userListChanged()), this, SLOT (updateUsersList ()));
 }
 
 void FsIrcView::fsOut(QString message)
@@ -490,4 +492,10 @@ void FsIrcView::setConnection()
 		fsExec("encoding", d.encoding());
 		openIrc("irc://" + d.server() + "/" + d.room());
 	}
+}
+
+void FsIrcView::updateUsersList ()
+{
+	usersListView->clear ();
+	usersListView->addItems (m_irc->users ());
 }

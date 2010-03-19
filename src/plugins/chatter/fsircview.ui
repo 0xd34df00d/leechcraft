@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="themeEdit"/>
+      <widget class="QLineEdit" name="topicEdit"/>
      </item>
      <item>
       <widget class="QToolButton" name="menuButton">

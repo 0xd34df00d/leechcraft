@@ -121,6 +121,7 @@ signals:
 	void gotError(QString);
 	void gotAction(QHash<QString, QString>);
 	void gotNames(QStringList);
+	void userListChanged();
 	// RPL_TOPIC
 	void gotTopic(QStringList);
 	// command one
