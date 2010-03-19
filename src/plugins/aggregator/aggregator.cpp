@@ -165,7 +165,7 @@ namespace LeechCraft
 					Impl_->AppWideActions_.ActionImportBinary_->setEnabled (false);
 					Impl_->AppWideActions_.ActionExportBinary_->setEnabled (false);
 					Impl_->AppWideActions_.ActionExportFB2_->setEnabled (false);
-					initFailed =true;
+					initFailed = true;
 				}
 
 				Impl_->Ui_.setupUi (this);
