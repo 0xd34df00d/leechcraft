@@ -63,6 +63,10 @@ FsIrcView::FsIrcView(QWidget * parent) : QWidget(parent)
 	m_msgColors["link"]="#88FF76";
 	m_msgColors["nicklink"]="#6FFF4B";
 	m_msgColors["chanlink"]="#439A2D";
+
+	fSettings settings;
+
+	splitter->restoreState (settings.value ("SplitterState", QByteArray ()).toByteArray());
 }
 
 FsIrcView::~FsIrcView()
@@ -70,6 +74,10 @@ FsIrcView::~FsIrcView()
 	delete m_irc;
 	delete m_linkRegexp;
 	delete m_chanRegexp;
+
+	fSettings settings;
+
+	settings.setValue ("SplitterState", splitter->saveState ());
 }
 
 void FsIrcView::fsEcho(QString message, QString style)
@@ -211,9 +219,6 @@ void FsIrcView::gotError(QString message)
 
 void FsIrcView::gotNames(QStringList data)
 {
-	QString output = tr("Names for %1: %2").arg(m_irc->target(),data.join(", "));
-	fsEcho(output, m_msgColors["event"]);
-
 	usersListView->clear ();
 	usersListView->addItems (data);
 }
@@ -222,6 +227,7 @@ void FsIrcView::gotTopic(QStringList data)
 {
 	fsEcho(tr("Topic for ") + data[1] + ": " + data[2], m_msgColors["event"]);
 	topicEdit->setText (data[2]);
+	topicEdit->setCursorPosition (0);
 }
 
 void FsIrcView::gotNick(QHash<QString, QString> data)
