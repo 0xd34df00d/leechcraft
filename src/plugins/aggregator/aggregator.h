@@ -29,6 +29,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
 #include <interfaces/itoolbarembedder.h>
+#include <interfaces/imenuembedder.h>
 #include <interfaces/itraymenu.h>
 #include <interfaces/istartupwizard.h>
 
@@ -58,9 +59,10 @@ namespace LeechCraft
 							 , public IToolBarEmbedder
 							 , public IStartupWizard
 							 , public ITrayMenu
+							 , public IMenuEmbedder
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder IStartupWizard ITrayMenu)
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder IStartupWizard ITrayMenu IMenuEmbedder)
 
 				Aggregator_Impl *Impl_;
 			public:
@@ -94,6 +96,9 @@ namespace LeechCraft
 
 				QList<QAction*> GetTrayActions () const;
 				QList<QMenu*> GetTrayMenus () const;
+
+				QList<QMenu*> GetToolMenus () const;
+				QList<QAction*> GetToolActions () const;
 			protected:
 				virtual void keyPressEvent (QKeyEvent*);
 			private:

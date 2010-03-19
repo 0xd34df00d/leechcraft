@@ -78,6 +78,8 @@ namespace LeechCraft
 				AppWideActions AppWideActions_;
 				ChannelActions ChannelActions_;
 
+				QMenu *ToolMenu_;
+
 				boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<Util::TagsCompleter> TagsLineCompleter_;
@@ -119,6 +121,14 @@ namespace LeechCraft
 				SetupActionsStruct (Impl_->ChannelActions_, this);
 				SetupActionsStruct (Impl_->AppWideActions_, this);
 				Core::Instance ().SetAppWideActions (Impl_->AppWideActions_);
+
+				Impl_->ToolMenu_ = new QMenu (tr ("Aggregator"));
+				Impl_->ToolMenu_->setIcon (GetIcon ());
+				Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionImportOPML_);
+				Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportOPML_);
+				Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionImportBinary_);
+				Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportBinary_);
+				Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportFB2_);
 			
 				Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
 
@@ -447,6 +457,21 @@ namespace LeechCraft
 			QList<QMenu*> Aggregator::GetTrayMenus () const
 			{
 				return QList<QMenu*> ();
+			}
+
+			QList<QMenu*> Aggregator::GetToolMenus () const
+			{
+				QList<QMenu*> result;
+				result << Impl_->ToolMenu_;
+				return result;
+			}
+
+			QList<QAction*> Aggregator::GetToolActions () const
+			{
+				QList<QAction*> result;
+				result << Impl_->AppWideActions_.ActionItemBucket_;
+				result << Impl_->AppWideActions_.ActionRegexpMatcher_;
+				return result;
 			}
 			
 			void Aggregator::keyPressEvent (QKeyEvent *e)
