@@ -166,6 +166,8 @@ namespace LeechCraft
 					Impl_->AppWideActions_.ActionExportBinary_->setEnabled (false);
 					Impl_->AppWideActions_.ActionExportFB2_->setEnabled (false);
 					initFailed = true;
+					qWarning () << Q_FUNC_INFO
+						<< "core initialization failed";
 				}
 
 				Impl_->Ui_.setupUi (this);
