@@ -20,6 +20,7 @@
 
 #include <QtCore/QRegExp>
 #include <QtCore/QHash>
+#include <QtCore/QTime>
 #include <QtGui/QScrollBar>
 #include <QtGui/QCompleter>
 #include <QtGui/QInputDialog>
@@ -107,7 +108,7 @@ void FsIrcView::fsEcho(QString message, QString style)
 	// Highlighting channel references
 	message.replace(*m_chanRegexp,QString("\\1<a href='irc://%1:%2/\\2' style='color:%3'>\\2</a>").arg(m_irc->server(), m_irc->port(), m_msgColors["chanlink"]));
 	// Phew.
-	fsOut(QString("<span style='color:%1'>%2</span> <br />").arg(style,message));
+	fsOut(QString("[%1] <span style='color:%2'>%3</span> <br />").arg(QTime::currentTime().toString ("hh:mm:ss"), style,message));
 }
 
 void FsIrcView::initConnections()
