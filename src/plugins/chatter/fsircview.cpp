@@ -101,7 +101,7 @@ void FsIrcView::fsEcho(QString message, QString style)
 	{
 		message.replace(
 			QRegExp(QString("([%2]|\\s|^|$)%1(?=[%2]|\\s|^|$)").arg(QRegExp::escape(user), QRegExp::escape(",\"';:.%!\\$#()"))),
-			QString("\\1<a href='irc://%1:%2/%3' style='color:%4'>%3</a>").arg(m_irc->server(), m_irc->port(), user, m_msgColors["nicklink"])
+			QString("\\1<a href=%1 style='color:%2'>%1</a>").arg( user, m_msgColors["nicklink"])
 		);
 	}
 	// Highlighting channel references
@@ -114,7 +114,7 @@ void FsIrcView::initConnections()
 {
 	connect(cmdEdit, SIGNAL(returnPressed()), this, SLOT(sayHere()));
 	connect (sendButton, SIGNAL (clicked ()), this, SLOT (sayHere ()));
-	connect(fsChatView, SIGNAL(anchorClicked(QUrl)), this, SIGNAL(anchorClicked(QUrl)));
+	connect(fsChatView, SIGNAL (anchorClicked (QUrl)), this, SLOT (slotAnchorClicked (QUrl)));
 }
 
 void FsIrcView::initCompleters()
@@ -504,4 +504,13 @@ void FsIrcView::updateUsersList ()
 {
 	usersListView->clear ();
 	usersListView->addItems (m_irc->users ());
+}
+
+void FsIrcView::slotAnchorClicked (QUrl url)
+{
+	if (m_irc->users ().contains (url.toString ())) {
+		cmdEdit->insert (url.toString() + ": ");
+	} else {
+		emit anchorClicked (url);
+	}
 }
