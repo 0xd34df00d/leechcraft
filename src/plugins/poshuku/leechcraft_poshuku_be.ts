@@ -734,7 +734,7 @@
         <location filename="poshuku.cpp" line="77"/>
         <location filename="poshuku.cpp" line="91"/>
         <location filename="poshuku.cpp" line="109"/>
-        <location filename="poshuku.cpp" line="536"/>
+        <location filename="poshuku.cpp" line="528"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
@@ -760,32 +760,32 @@
     </message>
     <message>
         <location filename="poshuku.cpp" line="163"/>
-        <location filename="poshuku.cpp" line="168"/>
-        <source>Poshuku actions</source>
+        <source>Poshuku</source>
+        <oldsource>Poshuku actions</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="193"/>
+        <location filename="poshuku.cpp" line="185"/>
         <source>Poshuku Browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="198"/>
+        <location filename="poshuku.cpp" line="190"/>
         <source>Simple yet functional web browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="422"/>
+        <location filename="poshuku.cpp" line="414"/>
         <source>Welcome to LeechCraft!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="424"/>
+        <location filename="poshuku.cpp" line="416"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="537"/>
+        <location filename="poshuku.cpp" line="529"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
         <translation type="unfinished"></translation>
     </message>
