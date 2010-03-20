@@ -9,7 +9,6 @@ aggregator_importopml lc_documentimport
 aggregator_larrow lc_back
 aggregator_rarrow lc_forward
 aggregator_refresh lc_refresh
-aggregator_remove lc_remove
 aggregator_stop lc_stop
 cstp_add lc_addjob
 cstp_remove lc_remove
@@ -45,6 +44,7 @@ torrent_deletejob lc_remove
 torrent_export lc_export
 torrent_import lc_import
 torrent_ipfilter lc_filter
+torrent_removewebseed lc_remove
 torrent_startjob lc_start
 torrent_stopjob lc_pause
 vgrabber_handle lc_start
