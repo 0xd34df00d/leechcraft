@@ -68,47 +68,47 @@
     <message>
         <location filename="actionsstructs.cpp" line="31"/>
         <source>Add feed...</source>
-        <translation type="unfinished">Liste hinzufügen...</translation>
+        <translation>Liste hinzufügen...</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="36"/>
         <source>Update all feeds</source>
-        <translation type="unfinished">Alle Listen update</translation>
+        <translation>Alle Listen update</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="40"/>
         <source>Item bucket...</source>
-        <translation type="unfinished">Sammlung von Artikeln...</translation>
+        <translation>Sammlung von Artikeln...</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="45"/>
         <source>Regexp matcher...</source>
-        <translation type="unfinished">Regular Ausdruck Test...</translation>
+        <translation>Regular Ausdruck Test...</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="50"/>
         <source>Import from OPML...</source>
-        <translation type="unfinished">Aus OPML importieren...</translation>
+        <translation>Aus OPML importieren...</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="55"/>
         <source>Export to OPML...</source>
-        <translation type="unfinished">In OPML exportieren...</translation>
+        <translation>In OPML exportieren...</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="60"/>
         <source>Import from binary...</source>
-        <translation type="unfinished">Aus Binär importieren...</translation>
+        <translation>Aus Binär importieren...</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="65"/>
         <source>Export to binary...</source>
-        <translation type="unfinished">In Binär exportieren...</translation>
+        <translation>In Binär exportieren...</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="70"/>
         <source>Export to FB2...</source>
-        <translation type="unfinished"></translation>
+        <translation>In FB2 exportieren...</translation>
     </message>
 </context>
 <context>
@@ -116,27 +116,27 @@
     <message>
         <location filename="actionsstructs.cpp" line="78"/>
         <source>Remove feed</source>
-        <translation type="unfinished">Liste entfernen</translation>
+        <translation>Liste entfernen</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="83"/>
         <source>Update selected feed</source>
-        <translation type="unfinished">Ausgewählte Liste update</translation>
+        <translation>Ausgewählte Liste update</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="88"/>
         <source>Mark channel as read</source>
-        <translation type="unfinished">Channel als gelesen markieren</translation>
+        <translation>Channel als gelesen markieren</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="92"/>
         <source>Mark channel as unread</source>
-        <translation type="unfinished">Channel als ungelesen markieren</translation>
+        <translation>Channel als ungelesen markieren</translation>
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="96"/>
         <source>Settings...</source>
-        <translation type="unfinished">Einstellungen...</translation>
+        <translation>Einstellungen...</translation>
     </message>
 </context>
 <context>
@@ -150,7 +150,7 @@
         <location filename="export.ui" line="25"/>
         <source>Save to:</source>
         <oldsource>Where to save:</oldsource>
-        <translation type="unfinished">Wohin speichern:</translation>
+        <translation>Wohin speichern:</translation>
     </message>
     <message>
         <location filename="export.ui" line="37"/>
@@ -203,7 +203,7 @@
     <message>
         <location filename="export2fb2dialog.ui" line="56"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Uberblick...</translation>
     </message>
 </context>
 <context>
@@ -572,13 +572,13 @@
     <message>
         <location filename="aggregator.cpp" line="127"/>
         <source>Aggregator</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggregator</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="582"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removing confirmation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Sie wollen die Liste für immer entfernen:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Wollen Sie wirklich es machen?</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="645"/>
@@ -696,7 +696,7 @@
     <message>
         <location filename="core.cpp" line="413"/>
         <source>The feed %1 is already added</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Liste %1 ist schon hinzugefügt</translation>
     </message>
     <message>
         <location filename="core.cpp" line="444"/>
@@ -711,7 +711,7 @@
     <message>
         <location filename="core.cpp" line="468"/>
         <source>Could not remove the feed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Liste kann nicht entfernt werden: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="665"/>
@@ -723,12 +723,12 @@
     <message>
         <location filename="core.cpp" line="666"/>
         <source>Could not get feed settigns: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Es ist unmöglich, die Einstellungen der Liste zu bekommen: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="683"/>
         <source>Could not update feed settings: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Es ist unmöglich, die Einstellungen der Liste zu update: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="705"/>
@@ -787,18 +787,18 @@
     <message>
         <location filename="core.cpp" line="1040"/>
         <source>Downloaded file from url %1 has null size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geladene Datei aus URL %1 hast Größe Null.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1448"/>
         <source>Added channel &quot;%1&quot; (%2 items)</source>
-        <translation type="unfinished"></translation>
+        <translation>Channel &quot;%1&quot; ist hinzufügt (hast %2 Artikel)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1453"/>
         <location filename="core.cpp" line="1530"/>
         <source>Aggregator</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggregator</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1524"/>
@@ -846,7 +846,7 @@
     <message>
         <location filename="core.cpp" line="1138"/>
         <source>Local error for:&lt;br /&gt;%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokal Fehler für:&lt;br /&gt;%1</translation>
     </message>
     <message>
         <source>Local errro for:&lt;br /&gt;%1</source>
@@ -886,32 +886,32 @@
     <message>
         <location filename="export2fb2dialog.cpp" line="66"/>
         <source>Select save file</source>
-        <translation type="unfinished">Datei für Speichern wählen</translation>
+        <translation>Datei für Speichern wählen</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="68"/>
         <source>fb2 files (*.fb2);;XML files (*.xml);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>fb2 Datei (*.opml);;XML Datei (*.xml);;Alle Datei (*.*)</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="110"/>
         <source>%1 unread items</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Artikel ungelesen</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="125"/>
         <source>Published on %1</source>
-        <translation type="unfinished">Veröffentlicht ist in %1</translation>
+        <translation>Veröffentlicht ist in %1</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="129"/>
         <source>By %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="196"/>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.cpp" line="197"/>
@@ -1015,17 +1015,17 @@
     <message>
         <location filename="itemswidget.cpp" line="81"/>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="82"/>
         <source>Date</source>
-        <translation type="unfinished">Datum</translation>
+        <translation>Datum</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="387"/>
         <source>Hide read items</source>
-        <translation type="unfinished">Gelesen Artikel verstecken</translation>
+        <translation>Gelesen Artikel verstecken</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="396"/>
@@ -1040,12 +1040,12 @@
     <message>
         <location filename="itemswidget.cpp" line="404"/>
         <source>Subscribe to comments</source>
-        <translation type="unfinished">Abonnieren für Kommentare</translation>
+        <translation>Abonnieren für Kommentare</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="412"/>
         <source>Aggregator</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggregator</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="478"/>
@@ -1340,7 +1340,7 @@
     <message>
         <location filename="startupfirstpage.cpp" line="32"/>
         <source>Aggregator</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggregator</translation>
     </message>
     <message>
         <location filename="startupfirstpage.cpp" line="33"/>
@@ -1353,7 +1353,7 @@
     <message>
         <location filename="startupsecondpage.cpp" line="37"/>
         <source>Aggregator</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggregator</translation>
     </message>
     <message>
         <location filename="startupsecondpage.cpp" line="38"/>
@@ -1366,7 +1366,7 @@
     <message>
         <location filename="startupthirdpage.cpp" line="110"/>
         <source>Aggregator</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggregator</translation>
     </message>
     <message>
         <location filename="startupthirdpage.cpp" line="111"/>
@@ -1413,7 +1413,7 @@
     <message>
         <location filename="parser.cpp" line="557"/>
         <source>Comments</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommentar</translation>
     </message>
     <message>
         <location filename="parser.cpp" line="575"/>
@@ -1497,7 +1497,7 @@
     <message>
         <location filename="startupfirstpage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="20"/>
@@ -1507,12 +1507,12 @@
     <message>
         <location filename="startupfirstpage.ui" line="35"/>
         <source>Update interval:</source>
-        <translation type="unfinished">Update interval:</translation>
+        <translation>Update interval:</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="42"/>
         <source> min</source>
-        <translation type="unfinished"> min</translation>
+        <translation> min</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="63"/>
@@ -1532,7 +1532,7 @@
     <message>
         <location filename="startupfirstpage.ui" line="102"/>
         <source> days</source>
-        <translation type="unfinished">-Tag</translation>
+        <translation>-Tag</translation>
     </message>
 </context>
 <context>
@@ -1540,7 +1540,7 @@
     <message>
         <location filename="startupsecondpage.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -1548,7 +1548,7 @@
     <message>
         <location filename="startupthirdpage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="startupthirdpage.ui" line="22"/>
@@ -1568,17 +1568,17 @@
     <message>
         <location filename="startupthirdpage.ui" line="59"/>
         <source>Feed</source>
-        <translation type="unfinished">Liste</translation>
+        <translation>Liste</translation>
     </message>
     <message>
         <location filename="startupthirdpage.ui" line="64"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags</translation>
     </message>
     <message>
         <location filename="startupthirdpage.ui" line="69"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
 </context>
 </TS>
