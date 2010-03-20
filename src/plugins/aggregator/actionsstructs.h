@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_AGGREGATOR_ACTIONSSTRUCTS_H
 #define PLUGINS_AGGREGATOR_ACTIONSSTRUCTS_H
+#include <QCoreApplication>
 
 class QAction;
 class QWidget;
@@ -30,6 +31,8 @@ namespace LeechCraft
 		{
 			struct AppWideActions
 			{
+				Q_DECLARE_TR_FUNCTIONS (AppWideActions);
+			public:
 				QAction *ActionAddFeed_;
 				QAction *ActionUpdateFeeds_;
 				QAction *ActionItemBucket_;
@@ -39,20 +42,22 @@ namespace LeechCraft
 				QAction *ActionImportBinary_;
 				QAction *ActionExportBinary_;
 				QAction *ActionExportFB2_;
-			};
 
-			void SetupActionsStruct (AppWideActions&, QWidget*);
+				void SetupActionsStruct (QWidget*);
+			};
 
 			struct ChannelActions
 			{
+				Q_DECLARE_TR_FUNCTIONS (ChannelActions);
+			public:
 				QAction *ActionRemoveFeed_;
 				QAction *ActionUpdateSelectedFeed_;
 				QAction *ActionMarkChannelAsRead_;
 				QAction *ActionMarkChannelAsUnread_;
 				QAction *ActionChannelSettings_;
-			};
 
-			void SetupActionsStruct (ChannelActions&, QWidget*);
+				void SetupActionsStruct (QWidget*);
+			};
 		};
 	};
 };

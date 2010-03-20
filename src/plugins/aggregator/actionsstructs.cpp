@@ -26,76 +26,76 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			void SetupActionsStruct (AppWideActions& aw, QWidget *parent)
+			void AppWideActions::SetupActionsStruct (QWidget *parent)
 			{
-				aw.ActionAddFeed_ = new QAction (Aggregator::tr ("Add feed..."),
+				ActionAddFeed_ = new QAction (tr ("Add feed..."),
 						parent);
-				aw.ActionAddFeed_->setObjectName ("ActionAddFeed_");
-				aw.ActionAddFeed_->setProperty ("ActionIcon", "aggregator_add");
+				ActionAddFeed_->setObjectName ("ActionAddFeed_");
+				ActionAddFeed_->setProperty ("ActionIcon", "aggregator_add");
 			
-				aw.ActionUpdateFeeds_ = new QAction (Aggregator::tr ("Update all feeds"),
+				ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"),
 						parent);
-				aw.ActionUpdateFeeds_->setProperty ("ActionIcon", "aggregator_updateallfeeds");
+				ActionUpdateFeeds_->setProperty ("ActionIcon", "aggregator_updateallfeeds");
 			
-				aw.ActionItemBucket_ = new QAction (Aggregator::tr ("Item bucket..."),
+				ActionItemBucket_ = new QAction (tr ("Item bucket..."),
 						parent);
-				aw.ActionItemBucket_->setObjectName ("ActionItemBucket_");
-				aw.ActionItemBucket_->setProperty ("ActionIcon", "aggregator_favorites");
+				ActionItemBucket_->setObjectName ("ActionItemBucket_");
+				ActionItemBucket_->setProperty ("ActionIcon", "aggregator_favorites");
 			
-				aw.ActionRegexpMatcher_ = new QAction (Aggregator::tr ("Regexp matcher..."),
+				ActionRegexpMatcher_ = new QAction (tr ("Regexp matcher..."),
 						parent);
-				aw.ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");
-				aw.ActionRegexpMatcher_->setProperty ("ActionIcon", "aggregator_filter");
+				ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");
+				ActionRegexpMatcher_->setProperty ("ActionIcon", "aggregator_filter");
 			
-				aw.ActionImportOPML_ = new QAction (Aggregator::tr ("Import from OPML..."),
+				ActionImportOPML_ = new QAction (tr ("Import from OPML..."),
 						parent);
-				aw.ActionImportOPML_->setObjectName ("ActionImportOPML_");
-				aw.ActionImportOPML_->setProperty ("ActionIcon", "aggregator_importopml");
+				ActionImportOPML_->setObjectName ("ActionImportOPML_");
+				ActionImportOPML_->setProperty ("ActionIcon", "aggregator_importopml");
 			
-				aw.ActionExportOPML_ = new QAction (Aggregator::tr ("Export to OPML..."),
+				ActionExportOPML_ = new QAction (tr ("Export to OPML..."),
 						parent);
-				aw.ActionExportOPML_->setObjectName ("ActionExportOPML_");
-				aw.ActionExportOPML_->setProperty ("ActionIcon", "aggregator_exportopml");
+				ActionExportOPML_->setObjectName ("ActionExportOPML_");
+				ActionExportOPML_->setProperty ("ActionIcon", "aggregator_exportopml");
 			
-				aw.ActionImportBinary_ = new QAction (Aggregator::tr ("Import from binary..."),
+				ActionImportBinary_ = new QAction (tr ("Import from binary..."),
 						parent);
-				aw.ActionImportBinary_->setObjectName ("ActionImportBinary_");
-				aw.ActionImportBinary_->setProperty ("ActionIcon", "aggregator_importbinary");
+				ActionImportBinary_->setObjectName ("ActionImportBinary_");
+				ActionImportBinary_->setProperty ("ActionIcon", "aggregator_importbinary");
 			
-				aw.ActionExportBinary_ = new QAction (Aggregator::tr ("Export to binary..."),
+				ActionExportBinary_ = new QAction (tr ("Export to binary..."),
 						parent);
-				aw.ActionExportBinary_->setObjectName ("ActionExportBinary_");
-				aw.ActionExportBinary_->setProperty ("ActionIcon", "aggregator_exportbinary");
+				ActionExportBinary_->setObjectName ("ActionExportBinary_");
+				ActionExportBinary_->setProperty ("ActionIcon", "aggregator_exportbinary");
 
-				aw.ActionExportFB2_ = new QAction (Aggregator::tr ("Export to FB2..."),
+				ActionExportFB2_ = new QAction (tr ("Export to FB2..."),
 						parent);
-				aw.ActionExportFB2_->setObjectName ("ActionExportFB2_");
-				aw.ActionExportFB2_->setProperty ("ActionIcon", "aggregator_fb2");
+				ActionExportFB2_->setObjectName ("ActionExportFB2_");
+				ActionExportFB2_->setProperty ("ActionIcon", "aggregator_fb2");
 			}
 
-			void SetupActionsStruct (ChannelActions& ca, QWidget *parent)
+			void ChannelActions::SetupActionsStruct (QWidget *parent)
 			{
-				ca.ActionRemoveFeed_ = new QAction (QObject::tr ("Remove feed"),
+				ActionRemoveFeed_ = new QAction (tr ("Remove feed"),
 						parent);
-				ca.ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
-				ca.ActionRemoveFeed_->setProperty ("ActionIcon", "aggregator_remove");
+				ActionRemoveFeed_->setObjectName ("ActionRemoveFeed_");
+				ActionRemoveFeed_->setProperty ("ActionIcon", "aggregator_remove");
 
-				ca.ActionUpdateSelectedFeed_ = new QAction (QObject::tr ("Update selected feed"),
+				ActionUpdateSelectedFeed_ = new QAction (tr ("Update selected feed"),
 						parent);
-				ca.ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
-				ca.ActionUpdateSelectedFeed_->setProperty ("ActionIcon", "aggregator_updateselectedfeed");
+				ActionUpdateSelectedFeed_->setObjectName ("ActionUpdateSelectedFeed_");
+				ActionUpdateSelectedFeed_->setProperty ("ActionIcon", "aggregator_updateselectedfeed");
 
-				ca.ActionMarkChannelAsRead_ = new QAction (QObject::tr ("Mark channel as read"),
+				ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"),
 						parent);
-				ca.ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");
+				ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");
 			
-				ca.ActionMarkChannelAsUnread_ = new QAction (QObject::tr ("Mark channel as unread"),
+				ActionMarkChannelAsUnread_ = new QAction (tr ("Mark channel as unread"),
 						parent);
-				ca.ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
+				ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
 			
-				ca.ActionChannelSettings_ = new QAction (QObject::tr ("Settings..."),
+				ActionChannelSettings_ = new QAction (tr ("Settings..."),
 						parent);
-				ca.ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
+				ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
 			}
 		};
 	};

@@ -118,8 +118,10 @@ namespace LeechCraft
 				setProperty ("IsUnremoveable", true);
 
 				Impl_ = new Aggregator_Impl;
-				SetupActionsStruct (Impl_->ChannelActions_, this);
-				SetupActionsStruct (Impl_->AppWideActions_, this);
+				Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
+
+				Impl_->ChannelActions_.SetupActionsStruct (this);
+				Impl_->AppWideActions_.SetupActionsStruct (this);
 				Core::Instance ().SetAppWideActions (Impl_->AppWideActions_);
 
 				Impl_->ToolMenu_ = new QMenu (tr ("Aggregator"));
@@ -130,8 +132,6 @@ namespace LeechCraft
 				Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportBinary_);
 				Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportFB2_);
 			
-				Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
-
 				Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon (":/resources/images/aggregator.svg"), this));
 				Impl_->TrayIcon_->hide ();
 				connect (Impl_->TrayIcon_.get (),
