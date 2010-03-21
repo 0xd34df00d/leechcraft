@@ -553,7 +553,7 @@ namespace LeechCraft
 		};
 
 		Finder finder (entity);
-#ifdef QT_DEBUGj
+#ifdef QT_DEBUG
 		qDebug () << Q_FUNC_INFO << Roots_;
 #endif
 		Q_FOREACH (DepTreeItem_ptr dep, Roots_)
