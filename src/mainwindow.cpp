@@ -348,10 +348,13 @@ void LeechCraft::MainWindow::WriteSettings ()
 	settings.beginGroup ("Window");
 	settings.setValue ("StatusBarEnabled",
 			Ui_.ActionShowStatusBar_->isChecked ());
-	settings.setValue ("PluginsArea",
-			toolBarArea (PluginsActionsBar_));
-	settings.setValue ("PluginsBarVisible",
-			PluginsActionsBar_->isVisible ());
+	if (PluginsActionsBar_)
+	{
+		settings.setValue ("PluginsArea",
+				toolBarArea (PluginsActionsBar_));
+		settings.setValue ("PluginsBarVisible",
+				PluginsActionsBar_->isVisible ());
+	}
 	settings.endGroup ();
 }
 
