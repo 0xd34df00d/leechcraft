@@ -147,7 +147,8 @@ void TabContainer::ForwardKeyboard (QKeyEvent *key)
 	if (!Events_.contains (key))
 	{
 		Events_ << key;
-		QCoreApplication::sendEvent (TabWidget_->currentWidget (), key);
+		if (TabWidget_->currentWidget ())
+			QCoreApplication::sendEvent (TabWidget_->currentWidget (), key);
 	}
 	Events_.removeAll (key);
 }
