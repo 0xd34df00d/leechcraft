@@ -121,6 +121,8 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
 	Section "Chatter" CHATTERPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\chattersettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_chatter.dll
 		SectionIn 1
@@ -133,6 +135,8 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
 	Section "DeadLyrics" DEADLYRICSPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\deadlyricssettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_deadlyrics.dll
 		SectionIn 1
@@ -148,6 +152,8 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
     Section "LCFTP" LCFTPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\lcftpsettings.xml
         SetOutPath $INSTDIR
 		File libcurl.dll
 		SetOutPath $INSTDIR\plugins\bin
@@ -155,6 +161,8 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
     Section "LMP" LMPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\lmpsettings.xml
         SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_lmp.dll
         SectionIn 1
@@ -215,6 +223,8 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
 	Section "Tab++" TABPPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\tabppsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_tabpp.dll
 		SectionIn 1
