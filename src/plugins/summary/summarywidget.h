@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <interfaces/imultitabs.h>
 #include "ui_summarywidget.h"
+#include "core.h"
 
 class QTimer;
 class QComboBox;
@@ -65,6 +66,7 @@ namespace LeechCraft
 				QStringList GetUniqueCategories () const;
 				void FillCombobox (QComboBox*);
 				QString GetQuery () const;
+				Query2 GetQuery2 () const;
 				void ReinitToolbar ();
 			private slots:
 				void updatePanes (const QModelIndex&, const QModelIndex&);
@@ -79,6 +81,7 @@ namespace LeechCraft
 			signals:
 				void filterUpdated ();
 				void queryUpdated (const QString&);
+				void queryUpdated (const LeechCraft::Plugins::Summary::Query2&);
 				void needToClose ();
 				void newTabRequested ();
 			};

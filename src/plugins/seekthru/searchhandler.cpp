@@ -181,7 +181,7 @@ namespace LeechCraft
 									item.second.size () - 2);
 							// To the correct string if Params_ has this key or to
 							// empty string otherwise.
-							item.second = r.Params_ [key];
+							item.second = r.Params_ [key].toString ();
 						}
 						else
 							item.second = "";

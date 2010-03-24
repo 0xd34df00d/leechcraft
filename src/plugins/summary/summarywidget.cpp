@@ -207,6 +207,40 @@ namespace LeechCraft
 				return query;
 			}
 
+			Query2 SummaryWidget::GetQuery2 () const
+			{
+				Query2 result;
+				result.Query_ = SearchWidget_->GetFilterLine ()->text ();
+				result.Categories_ << (SearchWidget_->GetLeastCategory ()->currentText ());
+				result.Op_ = Query2::OPOr;
+				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
+					result.Categories_ << box->currentText ();
+				switch (SearchWidget_->GetFilterType ()->currentIndex ())
+				{
+					case 0:
+						result.Type_ = Query2::TString;
+						break;
+					case 1:
+						result.Type_ = Query2::TWildcard;
+						break;
+					case 2:
+						result.Type_ = Query2::TRegexp;
+						break;
+					case 3:
+						result.Type_ = Query2::TTags;
+						break;
+					default:
+						result.Type_ = Query2::TString;
+						qWarning () << Q_FUNC_INFO
+							<< "unknown Type index"
+							<< SearchWidget_->GetFilterType ()->currentIndex ()
+							<< SearchWidget_->GetFilterType ()->currentText ();
+						break;
+				}
+
+				return result;
+			}
+
 			void SummaryWidget::ReinitToolbar ()
 			{
 				Toolbar_->clear ();
@@ -292,7 +326,7 @@ namespace LeechCraft
 				if (selection)
 					selection->setCurrentIndex (QModelIndex (), QItemSelectionModel::Clear);
 
-				QString query = GetQuery ();
+				Query2 query = GetQuery2 ();
 				QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 				Ui_.PluginsTasksTree_->
 					setModel (Core::Instance ().GetTasksModel (query));

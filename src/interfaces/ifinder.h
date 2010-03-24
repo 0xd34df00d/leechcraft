@@ -20,7 +20,8 @@
 #define INTERFACES_IFINDER_H
 #include <boost/shared_ptr.hpp>
 #include <QStringList>
-#include <QMap>
+#include <QHash>
+#include <QVariant>
 
 class QAbstractItemModel;
 
@@ -65,7 +66,7 @@ namespace LeechCraft
 		QString String_;
 		/** Any additional parameters not recognized by LeechCraft.
 		 */
-		QMap<QString, QString> Params_;
+		QHash<QString, QVariant> Params_;
 	};
 };
 

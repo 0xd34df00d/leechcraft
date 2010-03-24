@@ -19,8 +19,10 @@
 #ifndef PLUGINS_SUMMARY_CORE_H
 #define PLUGINS_SUMMARY_CORE_H
 #include <QObject>
-#include "interfaces/iinfo.h"
-#include "plugininterface/mergemodel.h"
+#include <QHash>
+#include <plugininterface/mergemodel.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/ifinder.h>
 
 namespace LeechCraft
 {
@@ -30,6 +32,27 @@ namespace LeechCraft
 		{
 			class SummaryWidget;
 			class TreeViewReemitter;
+
+			struct Query2
+			{
+				QString Query_;
+				QStringList Categories_;
+				enum
+				{
+					OPAnd,
+					OPOr
+				} Op_;
+
+				enum
+				{
+					TString,
+					TWildcard,
+					TRegexp,
+					TTags
+				} Type_;
+				
+				QHash<QString, QHash<QString, QVariant> > Params_;
+			};
 
 			class Core : public QObject
 			{
@@ -42,6 +65,7 @@ namespace LeechCraft
 				SummaryWidget *Current_;
 				QList<SummaryWidget*> Others_;
 				TreeViewReemitter *Reemitter_;
+				mutable QHash<QAbstractItemModel*, QList<IFindProxy_ptr> > KeepProxiesThisWay_;
 
 				Core ();
 			public:
@@ -106,6 +130,13 @@ namespace LeechCraft
 				 */
 				QAbstractItemModel* GetTasksModel (const QString& request) const;
 
+				/** Creates a new model for the given request and returns a
+				 * pointer to it. Ownership is transferred to the caller.
+				 *
+				 * For example, this is used in the Summary.
+				 */
+				QAbstractItemModel* GetTasksModel (const Query2& query) const;
+
 				/** Returns list of tags for a given row using given model. It's
 				 * assumed that the passed model is actually a MergeModel.
 				 *
@@ -136,6 +167,7 @@ namespace LeechCraft
 				void handleCurrentTabChanged (int);
 				void handleNeedToClose ();
 				void handleFilterUpdated ();
+				void handleTaskModelDestroyed ();
 			signals:
 				void addNewTab (const QString&, QWidget*);
 				void removeTab (QWidget*);
@@ -149,6 +181,8 @@ namespace LeechCraft
 		};
 	};
 };
+
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Summary::Query2);
 
 #endif
 
