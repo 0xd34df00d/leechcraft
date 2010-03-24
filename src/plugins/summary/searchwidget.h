@@ -40,6 +40,10 @@ namespace LeechCraft
 				QComboBox* GetFilterType () const;
 
 				void AddCategory (QComboBox*);
+			private slots:
+				void on_Add__released ();
+			signals:
+				void categoryComboboxRequested ();
 			};
 		};
 	};

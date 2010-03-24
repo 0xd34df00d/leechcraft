@@ -52,6 +52,10 @@ namespace LeechCraft
 				Core::Instance ().GetProxy ()->GetMainWindow ()->
 					addDockWidget (Qt::LeftDockWidgetArea, SearchWidget_);
 				SearchWidget_->hide ();
+				connect (SearchWidget_,
+						SIGNAL (categoryComboboxRequested ()),
+						this,
+						SLOT (addCategoryBox ()));
 
 				Q_FOREACH (QObject *plugin, Core::Instance ().GetProxy ()->
 						GetPluginsManager ()->GetAllCastableRoots<IFinder*> ())
@@ -140,7 +144,7 @@ namespace LeechCraft
 
 				Q_FOREACH (QString cat, query)
 				{
-					on_Add__released ();
+					addCategoryBox ();
 					QComboBox *box = AdditionalBoxes_.last ();
 					box->setCurrentIndex (box->findText (cat));
 				}
@@ -329,7 +333,7 @@ namespace LeechCraft
 				menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 			}
 			
-			void SummaryWidget::on_Add__released ()
+			void SummaryWidget::addCategoryBox ()
 			{
 				QComboBox *box = new QComboBox (this);
 				box->setDuplicatesEnabled (true);

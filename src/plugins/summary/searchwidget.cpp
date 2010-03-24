@@ -50,6 +50,11 @@ namespace LeechCraft
 			{
 				Ui_.SearchStuff_->insertWidget (1, box);
 			}
+
+			void SearchWidget::on_Add__released ()
+			{
+				emit categoryComboboxRequested ();
+			}
 		};
 	};
 };
