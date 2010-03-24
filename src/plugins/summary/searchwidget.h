@@ -38,12 +38,14 @@ namespace LeechCraft
 				QComboBox* GetLeastCategory () const;
 				QLineEdit* GetFilterLine () const;
 				QComboBox* GetFilterType () const;
+				bool IsOr () const;
 
 				void AddCategory (QComboBox*);
 			private slots:
 				void on_Add__released ();
 			signals:
 				void categoryComboboxRequested ();
+				void paramsChanged ();
 			};
 		};
 	};

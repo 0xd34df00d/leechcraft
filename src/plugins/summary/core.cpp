@@ -52,6 +52,8 @@ namespace LeechCraft
 					delete Others_.takeFirst ();
 
 				delete Default_;
+
+				KeepProxiesThisWay_.clear ();
 			}
 
 			void Core::SetProxy (ICoreProxy_ptr proxy)

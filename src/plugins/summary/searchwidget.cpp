@@ -29,6 +29,10 @@ namespace LeechCraft
 			{
 				Ui_.setupUi (this);
 				Ui_.LeastCategory_->setDuplicatesEnabled (true);
+				connect (Ui_.Or_,
+						SIGNAL (toggled (bool)),
+						this,
+						SIGNAL (paramsChanged ()));
 			}
 
 			QComboBox* SearchWidget::GetLeastCategory () const
@@ -44,6 +48,11 @@ namespace LeechCraft
 			QComboBox* SearchWidget::GetFilterType () const
 			{
 				return Ui_.Type_;
+			}
+
+			bool SearchWidget::IsOr () const
+			{
+				return Ui_.Or_->isChecked ();
 			}
 
 			void SearchWidget::AddCategory (QComboBox *box)

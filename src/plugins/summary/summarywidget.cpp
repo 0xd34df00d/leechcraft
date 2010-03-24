@@ -83,6 +83,10 @@ namespace LeechCraft
 						SIGNAL (textEdited (const QString&)),
 						this,
 						SLOT (filterParametersChanged ()));
+				connect (SearchWidget_,
+						SIGNAL (paramsChanged ()),
+						this,
+						SLOT (filterParametersChanged ()));
 				connect (SearchWidget_->GetFilterLine (),
 						SIGNAL (returnPressed ()),
 						this,
@@ -212,7 +216,9 @@ namespace LeechCraft
 				Query2 result;
 				result.Query_ = SearchWidget_->GetFilterLine ()->text ();
 				result.Categories_ << (SearchWidget_->GetLeastCategory ()->currentText ());
-				result.Op_ = Query2::OPOr;
+				result.Op_ = SearchWidget_->IsOr () ?
+					Query2::OPOr :
+					Query2::OPAnd;;
 				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
 					result.Categories_ << box->currentText ();
 				switch (SearchWidget_->GetFilterType ()->currentIndex ())
