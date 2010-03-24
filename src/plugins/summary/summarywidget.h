@@ -32,6 +32,8 @@ namespace LeechCraft
 	{
 		namespace Summary
 		{
+			class SearchWidget;
+
 			class SummaryWidget : public QWidget
 								, public IMultiTabsWidget 
 			{
@@ -42,6 +44,8 @@ namespace LeechCraft
 				QTimer *FilterTimer_;
 				QList<QComboBox*> AdditionalBoxes_;
 				QToolBar *Toolbar_;
+				QAction *ActionSearch_;
+				SearchWidget *SearchWidget_;
 				static QObject *S_ParentMultiTabs_;
 			public:
 				SummaryWidget (QWidget* = 0);
@@ -61,6 +65,7 @@ namespace LeechCraft
 				QStringList GetUniqueCategories () const;
 				void FillCombobox (QComboBox*);
 				QString GetQuery () const;
+				void ReinitToolbar ();
 			private slots:
 				void updatePanes (const QModelIndex&, const QModelIndex&);
 				void filterParametersChanged ();
@@ -69,7 +74,6 @@ namespace LeechCraft
 				void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
 				void on_Add__released ();
 				void handleCategoriesChanged (const QStringList&, const QStringList&);
-				void on_SimpleSearch__toggled (bool);
 				void removeCategoryBox ();
 				void syncSelection (const QModelIndex&);
 			signals:
