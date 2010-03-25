@@ -169,6 +169,7 @@ namespace LeechCraft
 					false,
 					Notification::PWarning_
 				};
+				emit notify (n);
 			}
 
 			void vGrabber::handleCategoriesGoingToChange (const QStringList& added,
