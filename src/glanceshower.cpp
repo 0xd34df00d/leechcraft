@@ -89,8 +89,6 @@ namespace LeechCraft
 		qreal scaleFactor = 0;
 		QSize sSize;
 
-		qreal fourth = std::sqrt (std::sqrt ((double)count));
-
 		int animLength = 500 / (sqr);
 
 		QProgressDialog pg;
