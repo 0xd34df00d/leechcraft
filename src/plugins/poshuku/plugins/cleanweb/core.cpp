@@ -702,6 +702,7 @@ bool Core::Load (const QUrl& url, const QString& subscrName)
 		};
 		qWarning () << Q_FUNC_INFO
 			<< url.toString ().toUtf8 ();
+		emit notify (n);
 		return false;
 	}
 
