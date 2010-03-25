@@ -136,7 +136,7 @@ void TabWidget::handleTabBarLocationChanged ()
 	else if (value == "west")
 		pos = QTabWidget::West;
 	else if (value == "east")
-		pos = QTabWidget::South;
+		pos = QTabWidget::East;
 
 	setTabPosition (pos);
 }
