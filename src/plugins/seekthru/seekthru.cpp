@@ -169,6 +169,7 @@ namespace LeechCraft
 					false,
 					Notification::PWarning_
 				};
+				emit notify (n);
 			}
 			
 			Q_EXPORT_PLUGIN2 (leechcraft_seekthru, SeekThru);
