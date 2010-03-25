@@ -484,7 +484,7 @@ namespace LeechCraft
 								break;
 						}
 #elif defined (Q_OS_DARWIN)
-						QString macver = "unknown Mac OS";
+						QString macver;
 						switch (QSysInfo::MacintoshVersion)
 						{
 							case QSysInfo::MV_CHEETAH:
@@ -507,6 +507,9 @@ namespace LeechCraft
 								break;
 							case QSysInfo::MV_SNOWLEOPARD:
 								macver = "Snow Leopard";
+								break;
+							default:
+								macver = "unknown Mac OS ";
 								break;
 						}
 #endif
