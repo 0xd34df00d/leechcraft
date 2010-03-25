@@ -214,7 +214,7 @@ namespace LeechCraft
 				source.replace ("VTAG", vtag);
 				source.replace ("VKID", vkid);
 
-				LeechCraft::TaskParameter hd;
+				LeechCraft::TaskParameter hd = OnlyHandle;
 				switch (Type_)
 				{
 					case PTInvalid:
