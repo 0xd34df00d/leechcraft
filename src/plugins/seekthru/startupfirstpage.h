@@ -27,20 +27,21 @@ namespace LeechCraft
 	{
 		namespace SeekThru
 		{
+			struct EngineInfo
+			{
+				QString ResourceFileName_;
+				QString DefaultTags_;
+				QString Name_;
+
+				EngineInfo (const QString&, const QString&, const QString&);
+			};
+			typedef QList<EngineInfo> EngineInfos_t;
+
 			class StartupFirstPage : public QWizardPage
 			{
 				Q_OBJECT
 
 				Ui::StartupFirstPageWidget Ui_;
-				struct EngineInfo
-				{
-					QString ResourceFileName_;
-					QString DefaultTags_;
-					QString Name_;
-
-					EngineInfo (const QString&, const QString&, const QString&);
-				};
-				typedef QList<EngineInfo> EngineInfos_t;
 				QMap<QString, EngineInfos_t> Sets_;
 				enum
 				{
