@@ -103,6 +103,8 @@ namespace LeechCraft
 				Ui_.ControlsDockWidget_->setWidget (0);
 				if (widget)
 					widget->setParent (0);
+
+				delete SearchWidget_;
 			}
 
 			void SummaryWidget::SetParentMultiTabs (QObject *parent)
