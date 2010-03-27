@@ -52,7 +52,7 @@ void SubscriptionsManager::on_AddButton__released ()
 	QUrl url (subscriptionAdd.URLEdit_->text ());
 	QUrl locationUrl;
 	if (url.queryItemValue ("location").contains ("%"))
-		locationUrl.setEncodedUrl (url.queryItemValue ("location").toAscii ());
+		locationUrl.setUrl (QUrl::fromPercentEncoding(url.queryItemValue ("location").toAscii ()));
 	else
 		locationUrl.setUrl (url.queryItemValue ("location"));
 
