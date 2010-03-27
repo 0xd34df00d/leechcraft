@@ -178,7 +178,7 @@
              <string> min.</string>
             </property>
             <property name="maximum">
-             <number>300</number>
+             <number>10080</number>
             </property>
             <property name="singleStep">
              <number>5</number>
