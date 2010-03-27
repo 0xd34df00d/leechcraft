@@ -88,8 +88,7 @@ namespace LeechCraft
 						case 4:
 							return QObject::tr ("Last month");
 						default:
-							return QObject::tr ("Last %1 months")
-								.arg (number - 3);
+							return QObject::tr ("Last %n month(s)", "", number - 3);
 					}
 				}
 			};

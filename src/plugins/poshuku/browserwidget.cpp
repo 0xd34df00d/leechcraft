@@ -97,7 +97,7 @@ namespace LeechCraft
 				Paste_->setProperty ("ActionIcon", "poshuku_paste");
 			
 				ToolBar_ = new QToolBar (this);
-				ToolBar_->setWindowTitle (tr ("Poshuku"));
+				ToolBar_->setWindowTitle ("Poshuku");
 			
 				Back_ = Ui_.WebView_->pageAction (QWebPage::Back);
 				Back_->setParent (this);
@@ -809,7 +809,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 				{
 					QMessageBox::critical (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Could not open %1 for write")
 								.arg (filename));
 					return;
@@ -818,7 +818,7 @@ namespace LeechCraft
 				if (!file.write (dia->Save ()))
 				{
 					QMessageBox::critical (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Could not write screenshot to %1")
 								.arg (filename));
 					return;
@@ -1082,7 +1082,7 @@ namespace LeechCraft
 
 				LeechCraft::Notification n =
 				{
-					tr ("Poshuku"),
+					"Poshuku",
 					QString (),
 					false,
 					LeechCraft::Notification::PInformation_
@@ -1168,7 +1168,7 @@ namespace LeechCraft
 				QString host = url.host ();
 				host.remove ("www.");
 				QString path = QString ("/%1/%2")
-					.arg (host.isEmpty () ? tr ("Poshuku") : host)
+					.arg (host.isEmpty () ? QString ("Poshuku") : host)
 					.arg (title);
 
 				QStringList domains = host.split ('.', QString::SkipEmptyParts);

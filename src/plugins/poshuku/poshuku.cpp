@@ -61,7 +61,7 @@ namespace LeechCraft
 				catch (const std::runtime_error& e)
 				{
 					QMessageBox::warning (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							e.what ());
 				}
 
@@ -74,7 +74,7 @@ namespace LeechCraft
 				catch (const std::runtime_error& e)
 				{
 					QMessageBox::warning (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							e.what ());
 				}
 
@@ -88,7 +88,7 @@ namespace LeechCraft
 				catch (const std::runtime_error& e)
 				{
 					QMessageBox::warning (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							e.what ());
 				}
 			
@@ -106,7 +106,7 @@ namespace LeechCraft
 				if (!Core::Instance ().Init ())
 				{
 					QMessageBox::critical (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Poshuku failed to initialize properly. "
 								"Check logs and talk with the developers. "
 								"Or, at least, check the storage backend "
@@ -533,7 +533,7 @@ namespace LeechCraft
 					setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
 				if (enabled && sender ())
 					QMessageBox::information (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Please note that Developer Extras would work correctly "
 								"only for pages that are loaded after enabling."));
 			}
