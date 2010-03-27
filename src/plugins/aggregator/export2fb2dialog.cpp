@@ -107,8 +107,7 @@ namespace LeechCraft
 						w.writeTextElement ("p", cs.Title_);
 					w.writeEndElement ();
 					w.writeTextElement ("annotation",
-							Export2FB2Dialog::tr ("%1 unread items")
-								.arg (cs.Unread_));
+							Export2FB2Dialog::tr ("%n unread item(s)", "", cs.Unread_));
 					Q_FOREACH (Item_ptr item, items)
 					{
 						w.writeStartElement ("title");
@@ -193,7 +192,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::WriteOnly))
 				{
 					QMessageBox::critical (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Could not open file %1 for write:<br />%2.")
 								.arg (Ui_.File_->text ())
 								.arg (file.errorString ()));

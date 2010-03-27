@@ -29,7 +29,7 @@ namespace LeechCraft
 			{
 				Ui_.setupUi (this);
 
-				setTitle (tr ("Aggregator"));
+				setTitle ("Aggregator");
 				setSubTitle (tr ("Set default options"));
 			}
 

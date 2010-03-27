@@ -409,7 +409,7 @@ namespace LeechCraft
 			QToolBar* ItemsWidget::SetupToolBar ()
 			{
 				QToolBar *bar = new QToolBar ();
-				bar->setWindowTitle (tr ("Aggregator"));
+				bar->setWindowTitle ("Aggregator");
 
 				const AppWideActions& aw = Core::Instance ().GetAppWideActions ();
 			
@@ -511,14 +511,12 @@ namespace LeechCraft
 				// Comments stuff
 				if (item->NumComments_ >= 0 && !item->CommentsPageLink_.isEmpty ())
 					result += (startBox.arg (headerBg) + 
-							tr ("%1 comments, <a href='%2'%3>view them</a></div>")
-								.arg (item->NumComments_)
+							tr ("%n comment(s), <a href='%1'%2>view them</a></div>", "", item->NumComments_)
 								.arg (item->CommentsPageLink_)
 								.arg (linw ? " target='_blank'" : ""));
 				else if (item->NumComments_ >= 0)
 					result += (startBox.arg (headerBg) + 
-							tr ("%1 comments</div>")
-								.arg (item->NumComments_));
+							tr ("%n comment(s)", "", item->NumComments_) + "</div>");
 				else if (!item->CommentsPageLink_.isEmpty ())
 					result += (startBox.arg (headerBg) + 
 							tr ("<a href='%1'%2>View comments</a></div>")
@@ -588,10 +586,10 @@ namespace LeechCraft
 						result += tr ("Executable ");
 
 					if (entry->Title_.isEmpty ())
-						result += tr ("<a href='%1' target='_blank'>%1</a><hr />")
+						result += QString ("<a href='%1' target='_blank'>%1</a><hr />")
 							.arg (url);
 					else
-						result += tr ("<a href='%1' target='_blank'>%2</a><hr />")
+						result += QString ("<a href='%1' target='_blank'>%2</a><hr />")
 							.arg (url)
 							.arg (entry->Title_);
 
@@ -616,7 +614,7 @@ namespace LeechCraft
 					}
 
 					if (!entry->Description_.isEmpty ())
-						result += tr ("%1<br />")
+						result += QString ("%1<br />")
 							.arg (entry->Description_);
 
 					QList<int> sizes;
@@ -796,7 +794,7 @@ namespace LeechCraft
 					QStringList cmTypes = comments.keys ();
 					Q_FOREACH (QString type, cmTypes)
 					{
-						result += tr ("<strong>%1:</strong>")
+						result += QString ("<strong>%1:</strong>")
 							.arg (type);
 						result += inpad.arg (alternateBg)
 							.arg (headerText);
@@ -824,7 +822,7 @@ namespace LeechCraft
 					{
 						if (cr.Role_.isEmpty ())
 							continue;
-						credits += tr ("<li>%1: %2</li>")
+						credits += QString ("<li>%1: %2</li>")
 							.arg (cr.Role_)
 							.arg (cr.Who_);
 					}
