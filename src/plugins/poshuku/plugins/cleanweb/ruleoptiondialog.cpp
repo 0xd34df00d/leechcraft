@@ -140,7 +140,7 @@ namespace LeechCraft
 					{
 						bool ok;
 						QString domain = QInputDialog::getText (this,
-								tr ("LeechCraft"),
+								"LeechCraft",
 								tr ("Enter domain"),
 								QLineEdit::Normal,
 								QString (),
@@ -166,7 +166,7 @@ namespace LeechCraft
 
 						bool ok;
 						QString domain = QInputDialog::getText (this,
-								tr ("LeechCraft"),
+								"LeechCraft",
 								tr ("Enter domain"),
 								QLineEdit::Normal,
 								box->itemText (idx),
@@ -191,7 +191,7 @@ namespace LeechCraft
 						}
 
 						if (QMessageBox::question (this,
-									tr ("LeechCraft"),
+									"LeechCraft",
 									tr ("Are you sure you want to remove %1?")
 										.arg (box->itemText (idx)),
 									QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
