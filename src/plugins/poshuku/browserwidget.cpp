@@ -1028,15 +1028,18 @@ namespace LeechCraft
 				Ui_.Progress_->setVisible (!(p == 100 || !p));
 				QAction *o = 0;
 				QAction *n = 0;
+				QString actionIcon = "poshuku_";
 				if (p < 100 && p > 0)
 				{
 					o = Reload_;
 					n = Stop_;
+					actionIcon += "stop";
 				}
 				else
 				{
 					o = Stop_;
 					n = Reload_;
+					actionIcon += "reload";
 				}
 				disconnect (ReloadStop_,
 						SIGNAL (triggered ()),
@@ -1045,6 +1048,7 @@ namespace LeechCraft
 				ReloadStop_->setIcon (n->icon ());
 				ReloadStop_->setShortcut (n->shortcut ());
 				ReloadStop_->setText (n->text ());
+				ReloadStop_->setProperty ("ActionIcon", actionIcon);
 				connect (ReloadStop_,
 						SIGNAL (triggered ()),
 						n,
