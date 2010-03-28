@@ -781,7 +781,7 @@
     </message>
     <message>
         <source>Too long to show</source>
-        <translation>Занадовга для показу</translation>
+        <translation>Занадтодовга для показу</translation>
     </message>
     <message>
         <source>Binary entity</source>
