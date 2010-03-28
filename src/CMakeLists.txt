@@ -89,7 +89,6 @@ OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP reques
 OPTION (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ON)
 OPTION (ENABLE_CHATTER "Build Chatter, simple IRC client" ON)
 OPTION (ENABLE_YASD "Build YASD, Yet Another Site Downloader" ON)
-OPTION (ENABLE_DCMINATOR "Build DCminator, the DirectConnect client" ON)
 OPTION (ENABLE_REMOTER "Build Remoter, the remote access manager" OFF)
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
 OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
@@ -159,10 +158,6 @@ ENDIF (ENABLE_HISTORYHOLDER)
 IF (ENABLE_YASD)
 	ADD_SUBDIRECTORY (plugins/yasd)
 ENDIF (ENABLE_YASD)
-
-IF (ENABLE_DCMINATOR)
-	ADD_SUBDIRECTORY (plugins/dcminator)
-ENDIF (ENABLE_DCMINATOR)
 
 IF (ENABLE_REMOTER)
 	ADD_SUBDIRECTORY (plugins/remoter)
