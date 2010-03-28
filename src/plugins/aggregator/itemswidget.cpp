@@ -499,7 +499,8 @@ namespace LeechCraft
 				// Comments stuff
 				if (item->NumComments_ >= 0 && !item->CommentsPageLink_.isEmpty ())
 					result += (startBox.arg (headerBg) + 
-							tr ("%n comment(s), <a href='%1'%2>view them</a></div>", "", item->NumComments_)
+							tr ("%n comment(s), <a href='%1'%2>view them</a></div>",
+								"", item->NumComments_)
 								.arg (item->CommentsPageLink_)
 								.arg (linw ? " target='_blank'" : ""));
 				else if (item->NumComments_ >= 0)

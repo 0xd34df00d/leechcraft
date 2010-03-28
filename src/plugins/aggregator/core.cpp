@@ -1445,7 +1445,8 @@ namespace LeechCraft
 			
 						ChannelsModel_->AddChannel (channel->ToShort ());
 						StorageBackend_->AddChannel (channel, pj.URL_);
-						QString str = tr ("Added channel \"%1\" (%n item(s))", "", channel->Items_.size ())
+						QString str = tr ("Added channel \"%1\" (%n item(s))",
+								"", channel->Items_.size ())
 							.arg (channel->Title_);
 						Notification n =
 						{
@@ -1520,9 +1521,9 @@ namespace LeechCraft
 
 					if (newItems + updatedItems)
 					{
-						QString str = tr ("Updated channel \"%1\"").arg (channel->Title_) + "(" +
-							      tr ("%n new item(s)", "Channel update", newItems) +
-							      tr ("%n updated item(s)", "Channle update", updatedItems) +")";
+						QString str = tr ("Updated channel \"%1\" (%2, %3)").arg (channel->Title_)
+							.arg (tr ("%n new item(s)", "Channel update", newItems))
+							.arg (tr ("%n updated item(s)", "Channel update", updatedItems));
 						Notification n =
 						{
 							"Aggregator",
