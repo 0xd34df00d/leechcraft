@@ -38,7 +38,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="85"/>
+        <location filename="cleanweb.cpp" line="89"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокирует нежелательную рекламу.</translation>
     </message>
@@ -46,32 +46,31 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="200"/>
+        <location filename="core.cpp" line="217"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="201"/>
+        <location filename="core.cpp" line="218"/>
         <source>Last updated</source>
         <translation>Последнее обновление</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="202"/>
+        <location filename="core.cpp" line="219"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="403"/>
+        <location filename="core.cpp" line="432"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="668"/>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="669"/>
+        <location filename="core.cpp" line="699"/>
         <source>The subscription wasn&apos;t delegated.</source>
         <translation>Эта подписка не была делегирована.</translation>
     </message>
@@ -141,6 +140,34 @@
         <location filename="ruleoptiondialog.cpp" line="195"/>
         <source>Are you sure you want to remove %1?</source>
         <translation>Вы уверены, что хотите удалить %1?</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionsManager</name>
+    <message>
+        <location filename="subscriptionsmanager.cpp" line="66"/>
+        <location filename="subscriptionsmanager.cpp" line="75"/>
+        <location filename="subscriptionsmanager.cpp" line="84"/>
+        <location filename="subscriptionsmanager.cpp" line="93"/>
+        <source>Error adding subscription</source>
+        <translation>Ошибка добавления подписки</translation>
+    </message>
+    <message>
+        <location filename="subscriptionsmanager.cpp" line="67"/>
+        <source>Can&apos;t add subscription without a title.</source>
+        <translation>Невозможно добавить подписку без названия.</translation>
+    </message>
+    <message>
+        <location filename="subscriptionsmanager.cpp" line="76"/>
+        <location filename="subscriptionsmanager.cpp" line="85"/>
+        <source>Subscription with such title allready exists.</source>
+        <translation>Подписка с таким названием уже существует.</translation>
+    </message>
+    <message>
+        <location filename="subscriptionsmanager.cpp" line="94"/>
+        <source>Invalid URL.&lt;br /&gt;Valid URL format is: abp://subscribe/?location=URL</source>
+        <oldsource>Invalid URL.&lt;br /&gt;Valid url format is: abp://subscribe/?location=URL</oldsource>
+        <translation>Неправильный URL.&lt;br /&gt;Правильный формат URL: abp://subscribe/?location=URL</translation>
     </message>
 </context>
 <context>
@@ -288,6 +315,29 @@
     </message>
 </context>
 <context>
+    <name>SubscriptionAddDialog</name>
+    <message>
+        <location filename="subscriptionadddialog.ui" line="14"/>
+        <source>Add Subscription</source>
+        <translation>Добавление подписки</translation>
+    </message>
+    <message>
+        <location filename="subscriptionadddialog.ui" line="22"/>
+        <source>Title:</source>
+        <translation>Название:</translation>
+    </message>
+    <message>
+        <location filename="subscriptionadddialog.ui" line="32"/>
+        <source>URL:</source>
+        <translation>URL:</translation>
+    </message>
+    <message>
+        <location filename="subscriptionadddialog.ui" line="39"/>
+        <source>Should be in AdBlock format: abp://subscribe/?location=&lt;b&gt;URL&lt;/b&gt;</source>
+        <translation>Должен быть в формате AdBlock: abp://subscribe/?location=&lt;b&gt;URL&lt;/b&gt;</translation>
+    </message>
+</context>
+<context>
     <name>SubscriptionsManager</name>
     <message>
         <location filename="subscriptionsmanager.ui" line="14"/>
@@ -295,7 +345,12 @@
         <translation>Ыа</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.ui" line="30"/>
+        <location filename="subscriptionsmanager.ui" line="32"/>
+        <source>Add</source>
+        <translation>Добавить</translation>
+    </message>
+    <message>
+        <location filename="subscriptionsmanager.ui" line="39"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>

@@ -91,7 +91,7 @@ void SubscriptionsManager::on_AddButton__released ()
 	{
 		QMessageBox::warning (this,
 				tr ("Error adding subscription"),
-				tr ("Invalid URL.<br />Valid url format is: abp://subscribe/?location=URL"),
+				tr ("Invalid URL.<br />Valid URL format is: abp://subscribe/?location=URL"),
 				QMessageBox::Ok);
 		return;
 	}
