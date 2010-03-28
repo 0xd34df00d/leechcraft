@@ -241,7 +241,7 @@
     <message>
         <location filename="banpeersdialog.ui" line="14"/>
         <source>Ban peers</source>
-        <translation>Заблокувати пірів</translation>
+        <translation>Блокування пірів</translation>
     </message>
     <message>
         <location filename="banpeersdialog.ui" line="25"/>
