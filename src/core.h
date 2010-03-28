@@ -317,6 +317,8 @@ namespace LeechCraft
 		 * to be a valid IMultiTabs*.
 		 */
 		void InitMultiTab (QObject *object);
+
+		void InitCommonTab (QObject *object);
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */

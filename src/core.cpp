@@ -1037,6 +1037,8 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 {
 	TabContainer_->AddObject (plugin);
+
+	InitCommonTab (plugin);
 }
 
 void LeechCraft::Core::InitMultiTab (QObject *plugin)
@@ -1049,6 +1051,12 @@ void LeechCraft::Core::InitMultiTab (QObject *plugin)
 			SIGNAL (removeTab (QWidget*)),
 			TabContainer_.get (),
 			SLOT (remove (QWidget*)));
+
+	InitCommonTab (plugin);
+}
+
+void LeechCraft::Core::InitCommonTab (QObject *plugin)
+{
 	connect (plugin,
 			SIGNAL (changeTabName (QWidget*, const QString&)),
 			TabContainer_.get (),
