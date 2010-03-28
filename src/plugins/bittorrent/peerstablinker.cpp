@@ -149,7 +149,7 @@ namespace LeechCraft
 							.arg (p.PI_->downloading_progress)
 							.arg (p.PI_->downloading_total));
 				else
-					Ui_->PeerProgress_->setText (tr ("%1")
+					Ui_->PeerProgress_->setText (QString ("%1")
 							.arg (p.PI_->progress));
 
 				Ui_->PeerIsSeed_->setText (p.PI_->seed ?
@@ -157,9 +157,8 @@ namespace LeechCraft
 
 				QTime lastRequest (0, 0, 0);
 				lastRequest.addMSecs (libtorrent::total_milliseconds (p.PI_->last_request));
-				Ui_->PeerLastRequest_->setText (tr ("%1 (%2 seconds remaining)")
-						.arg (lastRequest.toString ())
-						.arg (p.PI_->request_timeout));
+				Ui_->PeerLastRequest_->setText (tr ("%1 (%n second(s) remaining)", "", p.PI_->request_timeout)
+						.arg (lastRequest.toString ()));
 
 				QTime lastActive (0, 0, 0);
 				lastActive.addMSecs (libtorrent::total_milliseconds (p.PI_->last_active));

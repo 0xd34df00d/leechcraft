@@ -338,7 +338,7 @@ namespace LeechCraft
 								{
 									Notification n =
 									{
-										tr ("BitTorrent"),
+										"BitTorrent",
 										tr ("Rejecting file %1 because it's "
 												"bigger than current auto limit.").arg (str),
 										false,
@@ -896,7 +896,7 @@ namespace LeechCraft
 
 				int roptions = libtorrent::session::none;
 				if (QMessageBox::question (Proxy_->GetMainWindow  (),
-							tr ("LeechCraft BitTorrent"),
+							"LeechCraft BitTorrent",
 							tr ("Do you want to leave this torrent's files?"),
 							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 					roptions |= libtorrent::session::delete_files;
@@ -2850,7 +2850,7 @@ namespace LeechCraft
 				else
 				{
 					if (QMessageBox::question (Proxy_->GetMainWindow  (),
-								tr ("LeechCraft BitTorrent"),
+								"LeechCraft BitTorrent",
 								tr ("Storage notifications are disabled. Live streaming "
 									"definitely won't work without them, so if you are "
 									"experiencing troubles, reenable storage notifications "
