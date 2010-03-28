@@ -473,7 +473,7 @@
     <message>
         <location filename="core.cpp" line="141"/>
         <source>Poshuku: general storage initialization error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poshuku: помилка ініціалізації системи збереження даних.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="728"/>
@@ -562,7 +562,7 @@
     <message>
         <location filename="customwebview.cpp" line="138"/>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Увімкнено</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="139"/>
@@ -638,7 +638,7 @@
     <message>
         <location filename="customwebview.cpp" line="312"/>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук...</translation>
     </message>
 </context>
 <context>
@@ -646,7 +646,7 @@
     <message>
         <location filename="favoriteschecker.cpp" line="37"/>
         <source>Checking Favorites...</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевірка закладок...</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="38"/>
@@ -662,17 +662,17 @@
     <message>
         <location filename="favoriteschecker.cpp" line="52"/>
         <source>Already checking links, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Посилання вже перевіряються. Будь ласка, зачекайте...</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="104"/>
         <source>%1 favorites are %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 закладок %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="110"/>
         <source>%1 favorites are %2.&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 закладок %2.&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="171"/>
@@ -683,22 +683,22 @@
     <message>
         <location filename="favoriteschecker.cpp" line="180"/>
         <source>&lt;br /&gt;Length: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;Розмір: %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="183"/>
         <source>&lt;br /&gt;Last-modified: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;Останній раз змінено: %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="189"/>
         <source>&lt;br /&gt;Redirects to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;Перенаправляє на %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="199"/>
         <source>%1 favorites total.&lt;br /&gt;%2 favorites are accessible.&lt;br /&gt;%3%4 are not correctly returned by the remote server.&lt;br /&gt;%5</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 закладок загалом.&lt;br /&gt;%2 закладок доступно.&lt;br /&gt;%3%4 повертаються некоректно віддаленим сервером.&lt;br /&gt;%5</translation>
     </message>
 </context>
 <context>
@@ -768,7 +768,7 @@
         <location filename="poshuku.cpp" line="163"/>
         <location filename="poshuku.cpp" line="168"/>
         <source>Poshuku actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії Poshuku</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="193"/>
@@ -793,7 +793,7 @@
     <message>
         <location filename="poshuku.cpp" line="537"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
-        <translation type="unfinished">Зауважте, що додатки для розробників будуть працювати лише на сторінках, що завантажені після того, як вони були увімкнені.</translation>
+        <translation>Зауважте, що додатки для розробників будуть працювати лише на сторінках, що завантажені після того, як вони були увімкнені.</translation>
     </message>
 </context>
 <context>
@@ -809,7 +809,7 @@
     <message>
         <location filename="searchtext.cpp" line="34"/>
         <source>Search %1 with:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шукати %1 за допомогою:</translation>
     </message>
 </context>
 <context>
@@ -817,7 +817,7 @@
     <message>
         <location filename="passwordremember.ui" line="14"/>
         <source>Password remember</source>
-        <translation type="unfinished"></translation>
+        <translation>Збереження паролів</translation>
     </message>
     <message>
         <location filename="passwordremember.ui" line="20"/>
@@ -888,12 +888,12 @@
     <message>
         <location filename="xbelparser.cpp" line="46"/>
         <source>Not an XBEL entity.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не XBEL.</translation>
     </message>
     <message>
         <location filename="xbelparser.cpp" line="49"/>
         <source>This XBEL is not 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>XBEL не версії 1.0.</translation>
     </message>
 </context>
 <context>
@@ -901,12 +901,12 @@
     <message>
         <location filename="reloadintervalselector.ui" line="14"/>
         <source>Select reload interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Оберіть інтервал перезавантаження</translation>
     </message>
     <message>
         <location filename="reloadintervalselector.ui" line="22"/>
         <source>Reload every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезавантажувати кожні:</translation>
     </message>
     <message>
         <location filename="reloadintervalselector.ui" line="29"/>
@@ -947,7 +947,7 @@
     <message>
         <location filename="screenshotsavedialog.ui" line="13"/>
         <source>Page shooter</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти сторінку як малюнок</translation>
     </message>
     <message>
         <location filename="screenshotsavedialog.ui" line="28"/>
