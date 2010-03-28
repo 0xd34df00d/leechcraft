@@ -160,18 +160,10 @@ namespace LeechCraft
 				ExportXbel_->setShortcut (proxy->GetShortcut (this, EAExportXbel_));
 				CheckFavorites_->setShortcut (proxy->GetShortcut (this, EACheckFavorites_));
 			
-				QMenu *menu = new QMenu (tr ("Poshuku actions"), this);
-				menu->addAction (ImportXbel_);
-				menu->addAction (ExportXbel_);
-				menu->addSeparator ();
-				menu->addAction (CheckFavorites_);
-				ToolBarMenu_ = new QAction (tr ("Poshuku actions"), this);
-				ToolBarMenu_->setIcon (GetIcon ());
-				ToolBarMenu_->setMenu (menu);
-				connect (ToolBarMenu_,
-						SIGNAL (triggered ()),
-						Ui_.MainView_,
-						SLOT (showSendersMenu ()));
+				ToolMenu_ = new QMenu (tr ("Poshuku"), this);
+				ToolMenu_->setIcon (GetIcon ());
+				ToolMenu_->addAction (ImportXbel_);
+				ToolMenu_->addAction (ExportXbel_);
 			}
 
 			void Poshuku::SecondInit ()
@@ -343,14 +335,14 @@ namespace LeechCraft
 
 			QList<QMenu*> Poshuku::GetToolMenus () const
 			{
-				return QList<QMenu*> ();
+				QList<QMenu*> result;
+				result << ToolMenu_;
+				return result;
 			}
 
 			QList<QAction*> Poshuku::GetToolActions () const
 			{
 				QList<QAction*> result;
-				result << ImportXbel_;
-				result << ExportXbel_;
 				result << CheckFavorites_;
 				return result;
 			}

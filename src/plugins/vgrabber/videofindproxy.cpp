@@ -103,8 +103,10 @@ namespace LeechCraft
 			QUrl VideoFindProxy::GetURL () const
 			{
 				QByteArray urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=video";
-				return QUrl (urlStr.replace ("FIND",
-							QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_)));
+				urlStr.replace ("FIND",
+						QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_).toPercentEncoding ());
+				QUrl result = QUrl::fromEncoded (urlStr);
+				return result;
 			}
 
 			void VideoFindProxy::Handle (const QString& contents)
@@ -214,7 +216,7 @@ namespace LeechCraft
 				source.replace ("VTAG", vtag);
 				source.replace ("VKID", vkid);
 
-				LeechCraft::TaskParameter hd;
+				LeechCraft::TaskParameter hd = OnlyHandle;
 				switch (Type_)
 				{
 					case PTInvalid:

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr">
+<TS version="2.0" language="be_BY">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -279,31 +279,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="203"/>
-        <source>Show status bar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="208"/>
-        <source>Close tab</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="211"/>
-        <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="216"/>
-        <source>Glance...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="219"/>
-        <source>Show a quick overview of tabs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="leechcraft.ui" line="152"/>
         <location filename="leechcraft.ui" line="155"/>
         <source>Fullscreen mode</source>
@@ -348,6 +323,31 @@
     <message>
         <location filename="leechcraft.ui" line="192"/>
         <source>menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="203"/>
+        <source>Show status bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="208"/>
+        <source>Close tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="211"/>
+        <source>Ctrl+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="216"/>
+        <source>Glance...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="219"/>
+        <source>Show a quick overview of tabs</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -418,12 +418,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="913"/>
-        <location filename="core.cpp" line="917"/>
-        <source>%1: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="761"/>
         <location filename="core.cpp" line="778"/>
         <source>Error</source>
@@ -442,6 +436,12 @@
     <message>
         <location filename="core.cpp" line="805"/>
         <source>Could not handle download entity %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="913"/>
+        <location filename="core.cpp" line="917"/>
+        <source>%1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -529,8 +529,8 @@
         <location filename="mainwindow.cpp" line="162"/>
         <location filename="mainwindow.cpp" line="181"/>
         <location filename="mainwindow.cpp" line="282"/>
-        <location filename="mainwindow.cpp" line="418"/>
-        <location filename="mainwindow.cpp" line="463"/>
+        <location filename="mainwindow.cpp" line="415"/>
+        <location filename="mainwindow.cpp" line="460"/>
         <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
@@ -547,28 +547,28 @@
     <message>
         <location filename="mainwindow.cpp" line="301"/>
         <location filename="mainwindow.cpp" line="305"/>
-        <location filename="mainwindow.cpp" line="557"/>
-        <location filename="mainwindow.cpp" line="558"/>
+        <location filename="mainwindow.cpp" line="554"/>
+        <location filename="mainwindow.cpp" line="555"/>
         <source>/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="419"/>
+        <location filename="mainwindow.cpp" line="416"/>
         <source>Do you really want to quit?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="464"/>
+        <location filename="mainwindow.cpp" line="461"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="564"/>
+        <location filename="mainwindow.cpp" line="561"/>
         <source>%1 down, %2 up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="631"/>
+        <location filename="mainwindow.cpp" line="628"/>
         <source>LeechCraft menu</source>
         <translation type="unfinished"></translation>
     </message>
@@ -869,6 +869,8 @@
         <location filename="plugininterface/util.cpp" line="111"/>
         <source>%n day(s), </source>
         <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>

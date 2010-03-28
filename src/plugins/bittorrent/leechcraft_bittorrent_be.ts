@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr">
+<TS version="2.0" language="be_BY">
 <context>
     <name>AddMultipleTorrents</name>
     <message>
@@ -104,40 +104,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="addtorrent.ui" line="220"/>
-        <source>Tracker URL:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="227"/>
-        <location filename="addtorrent.ui" line="241"/>
-        <location filename="addtorrent.ui" line="255"/>
-        <location filename="addtorrent.ui" line="269"/>
-        <location filename="addtorrent.ui" line="283"/>
-        <source>&lt;unknown&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="234"/>
-        <source>Size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="248"/>
-        <source>Creator:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="262"/>
-        <source>Comment:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="276"/>
-        <source>Date:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="addtorrent.ui" line="72"/>
         <source>Files:</source>
         <translation type="unfinished"></translation>
@@ -200,6 +166,40 @@
     <message>
         <location filename="addtorrent.ui" line="208"/>
         <source>Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="220"/>
+        <source>Tracker URL:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="227"/>
+        <location filename="addtorrent.ui" line="241"/>
+        <location filename="addtorrent.ui" line="255"/>
+        <location filename="addtorrent.ui" line="269"/>
+        <location filename="addtorrent.ui" line="283"/>
+        <source>&lt;unknown&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="234"/>
+        <source>Size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="248"/>
+        <source>Creator:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="262"/>
+        <source>Comment:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="276"/>
+        <source>Date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -509,6 +509,12 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="core.cpp" line="899"/>
+        <location filename="core.cpp" line="2853"/>
+        <source>LeechCraft BitTorrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="core.cpp" line="900"/>
         <source>Do you want to leave this torrent&apos;s files?</source>
         <translation type="unfinished"></translation>
@@ -516,22 +522,6 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="948"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1982"/>
-        <source>Torrent finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="899"/>
-        <location filename="core.cpp" line="2853"/>
-        <source>LeechCraft BitTorrent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="2854"/>
-        <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -620,6 +610,11 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="core.cpp" line="1982"/>
+        <source>Torrent finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="core.cpp" line="2171"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation type="unfinished"></translation>
@@ -632,6 +627,11 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="2709"/>
         <source>Wrong announce address %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="2854"/>
+        <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1031,13 +1031,13 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentmaker.cpp" line="133"/>
-        <source>LeechCraft</source>
+        <location filename="torrentmaker.cpp" line="119"/>
+        <source>Torrent creation failed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentmaker.cpp" line="119"/>
-        <source>Torrent creation failed: %1</source>
+        <location filename="torrentmaker.cpp" line="133"/>
+        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1063,11 +1063,18 @@ IPv6 input mask</extracomment>
         <source>Do you really want to delete %n torrents?</source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="735"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="753"/>
+        <source>Magnet link:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1081,23 +1088,8 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1022"/>
-        <source>Change trackers...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="1024"/>
-        <source>C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="torrentplugin.cpp" line="908"/>
         <source>Create torrent...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="753"/>
-        <source>Magnet link:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1188,6 +1180,16 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentplugin.cpp" line="1015"/>
         <source>M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="1022"/>
+        <source>Change trackers...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="1024"/>
+        <source>C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1284,13 +1286,13 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="newtorrentfirststep.ui" line="36"/>
-        <source>Browse...</source>
+        <location filename="newtorrentfirststep.ui" line="24"/>
+        <source>Output:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="newtorrentfirststep.ui" line="24"/>
-        <source>Output:</source>
+        <location filename="newtorrentfirststep.ui" line="36"/>
+        <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1568,6 +1570,12 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="tabwidget.ui" line="73"/>
+        <location filename="tabwidget.ui" line="820"/>
+        <source>Download/upload rate:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="tabwidget.ui" line="82"/>
         <location filename="tabwidget.ui" line="120"/>
         <location filename="tabwidget.ui" line="173"/>
@@ -1586,6 +1594,13 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="tabwidget.ui" line="113"/>
+        <location filename="tabwidget.ui" line="195"/>
+        <location filename="tabwidget.ui" line="857"/>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="tabwidget.ui" line="147"/>
         <location filename="tabwidget.ui" line="885"/>
         <source>Desired rating:</source>
@@ -1595,19 +1610,6 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="154"/>
         <location filename="tabwidget.ui" line="892"/>
         <source>Infinite</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="73"/>
-        <location filename="tabwidget.ui" line="820"/>
-        <source>Download/upload rate:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="113"/>
-        <location filename="tabwidget.ui" line="195"/>
-        <location filename="tabwidget.ui" line="857"/>
-        <source>/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

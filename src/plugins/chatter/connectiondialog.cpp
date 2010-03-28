@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QtCore/QTextCodec>
+
 #include <QtGui/QLabel>
 #include <QtGui/QComboBox>
 #include <QtGui/QDialogButtonBox>
@@ -47,7 +49,7 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	serverEdit->addItems(settings.value("Connection/Servers", QStringList()).toStringList());
 	serverEdit->setCurrentIndex (-1);
 	connect (serverEdit, SIGNAL (editTextChanged (QString)), this, SLOT (serverChanged ()));
-	connect (serverEdit, SIGNAL (currentIndexChanged (QString)), this, SLOT (serverChanged ()));
+	connect (serverEdit, SIGNAL (editTextChanged (QString)), this, SLOT (updateUri ()));
 
 	roomLabel = new QLabel (tr ("Room"), this);
 	roomLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -55,6 +57,7 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	roomEdit = new QComboBox (this);
 	roomEdit->setEditable (true);
 	roomEdit->setEnabled (false);
+	connect (roomEdit, SIGNAL (editTextChanged (QString)), this, SLOT (updateUri ()));
 
 	nickLabel = new QLabel (tr ("Nick"), this);
 	nickLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -67,8 +70,16 @@ ConnectionDialog::ConnectionDialog (QWidget *parent)
 	encodingLabel->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
 
 	encodingEdit = new QComboBox (this);
-	encodingEdit->setEditable (true);
-	encodingEdit->setEnabled (false);
+	encodingEdit->setEditable (false);
+
+	{
+		QList<int> textCodecs = QTextCodec::availableMibs();
+
+		for (QList<int>::iterator it = textCodecs.begin (), end = textCodecs.end (); it != end; it++) {
+			encodingEdit->addItem (QTextCodec::codecForMib(*it)->name());
+		}
+		encodingEdit->setCurrentIndex (encodingEdit->findText ("UTF-8"));
+	}
 
 	QGridLayout *layout = new QGridLayout ();
 	layout->addWidget (uriLabel, 0, 0);
@@ -134,14 +145,13 @@ QString ConnectionDialog::encoding ()
 
 void ConnectionDialog::setEncoding (const QString& encoding)
 {
-	encodingEdit->setEditText (encoding);
+	encodingEdit->setCurrentIndex (encodingEdit->findText (encoding));
 }
 
 void ConnectionDialog::serverChanged ()
 {
 	roomEdit->clear();
 	nickEdit->clear();
-	encodingEdit->clear();
 
 	fSettings settings;
 
@@ -149,20 +159,16 @@ void ConnectionDialog::serverChanged ()
 	roomEdit->setCurrentIndex(settings.value("Connection/LastRoom_" + serverEdit->currentText (), -1).toInt ());
 	nickEdit->addItems(settings.value("Connection/Nicks_" + serverEdit->currentText (), QStringList()).toStringList());
 	nickEdit->setCurrentIndex(settings.value("Connection/LastNick_" + serverEdit->currentText (), -1).toInt ());
-	encodingEdit->addItems(settings.value("Connection/Encodings_" + serverEdit->currentText (), QStringList()).toStringList());
-	encodingEdit->setCurrentIndex(settings.value("Connection/LastEncoding_" + serverEdit->currentText (), -1).toInt ());
 
 	roomEdit->setEnabled (!serverEdit->currentText ().isEmpty ());
 	nickEdit->setEnabled (!serverEdit->currentText ().isEmpty ());
-	encodingEdit->setEnabled (!serverEdit->currentText ().isEmpty ());
 }
 
 void ConnectionDialog::saveAndAccept ()
 {
 	if (serverEdit->currentText ().isEmpty ()
 		|| roomEdit->currentText ().isEmpty ()
-		|| nickEdit->currentText ().isEmpty ()
-		|| encodingEdit->currentText ().isEmpty ()) {
+		|| nickEdit->currentText ().isEmpty ()) {
 
 		QMessageBox::critical (this, "", tr ("Parameters is not valid"));
 		return;
@@ -184,31 +190,32 @@ void ConnectionDialog::saveAndAccept ()
 		l.insert(0, nickEdit->currentText ());
 		settings.setValue("Connection/Nicks_" + serverEdit->currentText (), l);
 	}
-	if (encodingEdit->findText (encodingEdit->currentText (), Qt::MatchFixedString) == -1) {
-		QStringList l = settings.value("Connection/Encodings_" + serverEdit->currentText (), QStringList ()).toStringList ();
-		l.insert(0, encodingEdit->currentText ());
-		settings.setValue("Connection/Encodings_" + serverEdit->currentText (), l);
-	}
 
 	settings.setValue("Connection/LastServer", serverEdit->currentIndex ());
 	settings.setValue("Connection/LastRoom_" + serverEdit->currentText (), roomEdit->currentIndex ());
 	settings.setValue("Connection/LastNick_" + serverEdit->currentText (), nickEdit->currentIndex ());
-	settings.setValue("Connection/LastEncoding_" + serverEdit->currentText (), encodingEdit->currentIndex ());
 
 	accept ();
 }
 
 void ConnectionDialog::uriChanged (const QString& uri)
 {
-	static QRegExp serverRegExp("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
+	QRegExp serverPortRegExp ("^irc://([a-zA-Z0-9\\.\\-]+):([0-9]+)/(\\S+)$");
+	QRegExp serverRegExp ("^irc://([a-zA-Z0-9\\.\\-]+)/(\\S+)$");
 
-	if (!serverRegExp.exactMatch (uri)) {
+	QString server;
+	QString room;
+
+	if(serverPortRegExp.exactMatch(uri)) {
+		server = serverPortRegExp.cap(1);
+		room = serverPortRegExp.cap(3);
+	} else if(serverRegExp.exactMatch(uri)) {
+		server = serverRegExp.cap(1);
+		room = serverRegExp.cap(2);
+	} else {
 		serverEdit->setCurrentIndex (-1);
 		return;
 	}
-
-	const QString& server = serverRegExp.cap (1);
-	const QString& room = serverRegExp.cap (2);
 
 	int index = serverEdit->findText(server, Qt::MatchFixedString);
 
@@ -223,4 +230,13 @@ void ConnectionDialog::uriChanged (const QString& uri)
 		roomEdit->setCurrentIndex(index);
 	else
 		roomEdit->setEditText(room);
+}
+
+void ConnectionDialog::updateUri()
+{
+	if (serverEdit->currentText ().isEmpty() || roomEdit->currentText ().isEmpty()) {
+		return;
+	}
+
+	uriEdit->setText ("irc://" + serverEdit->currentText () + "/" + roomEdit->currentText ());
 }

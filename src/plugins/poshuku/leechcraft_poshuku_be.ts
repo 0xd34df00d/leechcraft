@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr">
+<TS version="2.0" language="be_BY">
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
@@ -252,6 +252,16 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::BrowserWidget</name>
     <message>
+        <location filename="browserwidget.cpp" line="76"/>
+        <source>Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="77"/>
+        <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="browserwidget.cpp" line="100"/>
         <location filename="browserwidget.cpp" line="1070"/>
         <location filename="browserwidget.cpp" line="1156"/>
@@ -261,6 +271,16 @@
     <message>
         <location filename="browserwidget.cpp" line="123"/>
         <source>Reload periodically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="127"/>
+        <source>Notify when finished loading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="134"/>
+        <source>Bookmark...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -286,26 +306,6 @@
     <message>
         <location filename="browserwidget.cpp" line="159"/>
         <source>View sources...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="76"/>
-        <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="77"/>
-        <source>History</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="127"/>
-        <source>Notify when finished loading</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="134"/>
-        <source>Bookmark...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -364,26 +364,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1077"/>
-        <source>Page load finished: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="1081"/>
-        <source>Page load failed: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="1108"/>
-        <source>Default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="1152"/>
-        <source>No title</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="browserwidget.cpp" line="596"/>
         <source>Ctrl+0</source>
         <translation type="unfinished"></translation>
@@ -437,6 +417,26 @@
     <message>
         <location filename="browserwidget.cpp" line="822"/>
         <source>Could not write screenshot to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="1077"/>
+        <source>Page load finished: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="1081"/>
+        <source>Page load failed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="1108"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="1152"/>
+        <source>No title</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -761,6 +761,7 @@
     <message>
         <location filename="poshuku.cpp" line="163"/>
         <source>Poshuku</source>
+        <oldsource>Poshuku actions</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -151,7 +151,6 @@ void fsirc::closeCurrentTab()
 
 void fsirc::newTab(QString uri)
 {
-
 //	if (uri.isEmpty()) {
 //		QStringList items;
 //		items << "irc://irc.freenode.net/#fsirc"

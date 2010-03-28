@@ -58,7 +58,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IMultiTabsWidget IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IMenuEmbedder)
 
 				Ui::Poshuku Ui_;
-				QAction *ToolBarMenu_;
+				QMenu *ToolMenu_;
 				QAction *ImportXbel_;
 				QAction *ExportXbel_;
 				QAction *CheckFavorites_;

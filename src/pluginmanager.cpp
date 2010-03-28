@@ -553,10 +553,19 @@ namespace LeechCraft
 		};
 
 		Finder finder (entity);
+#ifdef QT_DEBUG
+		qDebug () << Q_FUNC_INFO << Roots_;
+#endif
 		Q_FOREACH (DepTreeItem_ptr dep, Roots_)
 		{
+#ifdef QT_DEBUG
+			qDebug () << dep->Plugin_;
+#endif
 			if (dep->Plugin_ == entity)
 			{
+#ifdef QT_DEBUG
+				qDebug () << "REMOVING for" << entity;
+#endif
 				Roots_.removeAll (dep);
 				return dep;
 			}
@@ -567,6 +576,10 @@ namespace LeechCraft
 			}
 		}
 
+#ifdef QT_DEBUG
+		qDebug () << "not found";
+#endif
+
 		return DepTreeItem_ptr ();
 	}
 
@@ -574,8 +587,15 @@ namespace LeechCraft
 	{
 		for (PluginsContainer_t::iterator i = Plugins_.begin ();
 				i < Plugins_.end (); ++i)
+		{
+#ifdef QT_DEBUG
+			qDebug () << Q_FUNC_INFO << ((*i)->instance ());
+#endif
 			if (!GetDependency ((*i)->instance ()))
 			{
+#ifdef QT_DEBUG
+				qDebug () << Q_FUNC_INFO << "would CalculateSingle";
+#endif
 				try
 				{
 					Roots_ << CalculateSingle (i);
@@ -593,7 +613,15 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO
 						<< "CalculateSingle failed";
 				}
+#ifdef QT_DEBUG
+				DumpTree ();
+#endif
 			}
+		}
+#ifdef QT_DEBUG
+		qDebug () << "after calculating dependencies";
+		DumpTree ();
+#endif
 	}
 
 	PluginManager::DepTreeItem_ptr
@@ -601,6 +629,9 @@ namespace LeechCraft
 			(PluginManager::PluginsContainer_t::iterator i)
 	{
 		QObject *entity = (*i)->instance ();
+#ifdef QT_DEBUG
+		qDebug () << Q_FUNC_INFO << "calculating for" << entity;
+#endif
 		try
 		{
 			return CalculateSingle (entity, i);

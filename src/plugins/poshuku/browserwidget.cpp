@@ -38,10 +38,10 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDesktopServices>
-#include <QXmlStreamReader>
 #include <QTextCodec>
 #include <QCursor>
 #include <qwebhistory.h>
+#include <qwebelement.h>
 #include <QDataStream>
 #include <plugininterface/util.h>
 #include "core.h"
@@ -951,33 +951,17 @@ namespace LeechCraft
 				ToolBar_->removeAction (ExternalLinks_->menuAction ());
 				ExternalLinks_->clear ();
 			
-				QXmlStreamReader xml (Ui_.WebView_->page ()->mainFrame ()->toHtml ());
+				QWebElementCollection links = Ui_.WebView_->page ()->mainFrame ()->findAllElements ("link");
 				bool inserted = false;
-				while (!xml.atEnd ())
+				Q_FOREACH (QWebElement link, links)
 				{
-					QXmlStreamReader::TokenType token = xml.readNext ();
-					if (token == QXmlStreamReader::EndElement &&
-							xml.name () == "head")
-						break;
-					else if (token != QXmlStreamReader::StartElement)
+					if (link.attribute ("type") == "")
 						continue;
-			
-					if (xml.name () != "link")
-						continue;
-			
-					QXmlStreamAttributes attributes = xml.attributes ();
-					if (attributes.value ("type") == "")
-						continue;
-			
-					if (attributes.value ("rel") != "alternate" &&
-							attributes.value ("rel") != "search")
-						continue;
-			
-					LeechCraft::DownloadEntity e;
 
-					e.Mime_ = attributes.value ("type").toString ();
-			
-					QString entity = attributes.value ("title").toString ();
+					LeechCraft::DownloadEntity e;
+					e.Mime_ = link.attribute ("type");
+
+					QString entity = link.attribute ("title");
 					if (entity.isEmpty ())
 					{
 						entity = e.Mime_;
@@ -988,13 +972,14 @@ namespace LeechCraft
 			
 					QUrl entityUrl = Util::MakeAbsoluteUrl (Ui_.WebView_->
 								page ()->mainFrame ()->url (),
-							attributes.value ("href").toString ());
+							link.attribute ("href"));
 					e.Entity_ = entityUrl;
 					e.Additional_ ["SourceURL"] = entityUrl;
 					e.Parameters_ = LeechCraft::FromUserInitiated |
 						LeechCraft::OnlyHandle;
 					e.Additional_ ["UserVisibleName"] = entity;
-			
+					e.Additional_ ["LinkRel"] = link.attribute ("rel");
+
 					bool ch = false;
 					emit couldHandle (e, &ch);
 					if (ch)

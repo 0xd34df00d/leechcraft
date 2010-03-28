@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,47 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ACTIONSSTRUCTS_H
-#define PLUGINS_AGGREGATOR_ACTIONSSTRUCTS_H
-#include <QCoreApplication>
-
-class QAction;
-class QWidget;
+#ifndef PLUGINS_SUMMARY_SEARCHWIDGET_H
+#define PLUGINS_SUMMARY_SEARCHWIDGET_H
+#include <QDockWidget>
+#include "ui_searchwidget.h"
 
 namespace LeechCraft
 {
 	namespace Plugins
 	{
-		namespace Aggregator
+		namespace Summary
 		{
-			struct AppWideActions
+			class SearchWidget : public QDockWidget
 			{
-				Q_DECLARE_TR_FUNCTIONS (AppWideActions);
+				Q_OBJECT
+
+				Ui::SearchWidget Ui_;
 			public:
-				QAction *ActionAddFeed_;
-				QAction *ActionUpdateFeeds_;
-				QAction *ActionItemBucket_;
-				QAction *ActionRegexpMatcher_;
-				QAction *ActionImportOPML_;
-				QAction *ActionExportOPML_;
-				QAction *ActionImportBinary_;
-				QAction *ActionExportBinary_;
-				QAction *ActionExportFB2_;
+				SearchWidget (QWidget* = 0);
 
-				void SetupActionsStruct (QWidget*);
-			};
+				QComboBox* GetLeastCategory () const;
+				QLineEdit* GetFilterLine () const;
+				QComboBox* GetFilterType () const;
+				bool IsOr () const;
 
-			struct ChannelActions
-			{
-				Q_DECLARE_TR_FUNCTIONS (ChannelActions);
-			public:
-				QAction *ActionRemoveFeed_;
-				QAction *ActionUpdateSelectedFeed_;
-				QAction *ActionMarkChannelAsRead_;
-				QAction *ActionMarkChannelAsUnread_;
-				QAction *ActionChannelSettings_;
-
-				void SetupActionsStruct (QWidget*);
+				void AddCategory (QComboBox*);
+			private slots:
+				void on_Add__released ();
+			signals:
+				void categoryComboboxRequested ();
+				void paramsChanged ();
 			};
 		};
 	};

@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <interfaces/imultitabs.h>
 #include "ui_summarywidget.h"
+#include "core.h"
 
 class QTimer;
 class QComboBox;
@@ -32,6 +33,8 @@ namespace LeechCraft
 	{
 		namespace Summary
 		{
+			class SearchWidget;
+
 			class SummaryWidget : public QWidget
 								, public IMultiTabsWidget 
 			{
@@ -42,6 +45,8 @@ namespace LeechCraft
 				QTimer *FilterTimer_;
 				QList<QComboBox*> AdditionalBoxes_;
 				QToolBar *Toolbar_;
+				QAction *ActionSearch_;
+				SearchWidget *SearchWidget_;
 				static QObject *S_ParentMultiTabs_;
 			public:
 				SummaryWidget (QWidget* = 0);
@@ -61,20 +66,22 @@ namespace LeechCraft
 				QStringList GetUniqueCategories () const;
 				void FillCombobox (QComboBox*);
 				QString GetQuery () const;
+				Query2 GetQuery2 () const;
+				void ReinitToolbar ();
 			private slots:
 				void updatePanes (const QModelIndex&, const QModelIndex&);
 				void filterParametersChanged ();
 				void filterReturnPressed ();
 				void feedFilterParameters ();
 				void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
-				void on_Add__released ();
+				void addCategoryBox ();
 				void handleCategoriesChanged (const QStringList&, const QStringList&);
-				void on_SimpleSearch__toggled (bool);
 				void removeCategoryBox ();
 				void syncSelection (const QModelIndex&);
 			signals:
 				void filterUpdated ();
 				void queryUpdated (const QString&);
+				void queryUpdated (const LeechCraft::Plugins::Summary::Query2&);
 				void needToClose ();
 				void newTabRequested ();
 			};

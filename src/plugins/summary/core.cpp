@@ -52,6 +52,8 @@ namespace LeechCraft
 					delete Others_.takeFirst ();
 
 				delete Default_;
+
+				KeepProxiesThisWay_.clear ();
 			}
 
 			void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -153,6 +155,73 @@ namespace LeechCraft
 				RequestNormalizer *rm = new RequestNormalizer (MergeModel_);
 				rm->SetRequest (text);
 				return rm->GetModel ();
+			}
+
+			QAbstractItemModel* Core::GetTasksModel (const Query2& query) const
+			{
+				QStringList headers = QStringList (tr ("Name"))
+					<< tr ("Status")
+					<< tr ("State");
+				Util::MergeModel *result = new Util::MergeModel (headers);
+				connect (result,
+						SIGNAL (destroyed (QObject*)),
+						this,
+						SLOT (handleTaskModelDestroyed ()));
+				result->setProperty ("__LeechCraft_own_core_model", true);
+				if (query.Categories_.contains ("d") ||
+						query.Categories_.contains ("downloads") ||
+						query.Categories_.isEmpty ())
+					result->AddModel (MergeModel_.get ());
+
+				QSet<QString> cats = QSet<QString>::fromList (query.Categories_);
+
+				QList<IFinder*> finders = Proxy_->
+					GetPluginsManager ()->GetAllCastableTo<IFinder*> ();
+				Q_FOREACH (IFinder *finder, finders)
+				{
+					QSet<QString> fcats = QSet<QString>::fromList (finder->GetCategories ());
+					bool exclude = true;
+					if (query.Op_ == Query2::OPOr)
+					{
+						if (fcats.intersect (cats).size ())
+							exclude = false;
+					}
+					else
+					{
+						if (fcats.contains (cats))
+							exclude = false;
+					}
+
+					if (exclude)
+						finders.removeAll (finder);
+				}
+
+				Q_FOREACH (QString category, cats)
+				{
+					Q_FOREACH (IFinder *finder, finders)
+					{
+						QStringList fcats = finder->GetCategories ();
+						if (fcats.contains (category))
+						{
+							Request r =
+							{
+								false,
+								static_cast<Request::Type> (query.Type_),
+								QString (),
+								category,
+								query.Query_,
+								query.Params_ [category]
+							};
+							Q_FOREACH (IFindProxy_ptr proxy, finder->GetProxy (r))
+							{
+								KeepProxiesThisWay_ [result] << proxy;
+								result->AddModel (proxy->GetModel ());
+							}
+						}
+					}
+				}
+
+				return result;
 			}
 
 			QStringList Core::GetTagsForIndex (int index, QAbstractItemModel *model) const
@@ -260,6 +329,20 @@ namespace LeechCraft
 				}
 
 				Reemitter_->ConnectModelSpecific (w);
+			}
+
+			void Core::handleTaskModelDestroyed ()
+			{
+				QAbstractItemModel *model = static_cast<QAbstractItemModel*> (sender ());
+				if (!KeepProxiesThisWay_.contains (model))
+				{
+					qWarning () << Q_FUNC_INFO
+						<< sender ()
+						<< "doesn't exist";
+					return;
+				}
+
+				KeepProxiesThisWay_.remove (model);
 			}
 		};
 	};

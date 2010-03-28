@@ -38,6 +38,8 @@ namespace LeechCraft
 			private:
 				QList<QAction*> Actions_;
 				Editor * poc;
+			signals:
+				void bringToFront ();
 			};
 		};
 	};

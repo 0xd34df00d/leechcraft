@@ -348,7 +348,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 	WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
 }
 
-#ifdef Q_WS_WIN
+#if defined (Q_WS_WIN) || defined (Q_WS_MAC)
 #include <QCoreApplication>
 #include <QLocale>
 
@@ -375,7 +375,7 @@ namespace
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 {
-#ifdef Q_WS_WIN
+#if defined (Q_WS_WIN) || defined (Q_WS_MAC)
 	QString locale = GetLanguageHack ();
 #else
 	QString locale = Util::GetLanguage ();

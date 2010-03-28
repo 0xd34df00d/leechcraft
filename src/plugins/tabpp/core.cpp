@@ -378,10 +378,13 @@ namespace LeechCraft
 						obj = imtw->ParentMultiTabs ();
 					else
 						obj = widget;
-					connect (obj,
-							SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-							this,
-							SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
+					if (widget->metaObject ()->indexOfSignal (QMetaObject::normalizedSignature (
+									"changeTabIcon (QWidget*, const QIcon&)"
+									).constData ()) != -1)
+						connect (obj,
+								SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+								this,
+								SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
 					handleChangeTabIcon (widget, TabWidget_->tabIcon (idx));
 				}
 			}
@@ -443,12 +446,7 @@ namespace LeechCraft
 			void Core::handleChangeTabIcon (QWidget *widget, const QIcon& icon)
 			{
 				if (!Widget2Child_.contains (widget))
-				{
-					qWarning () << Q_FUNC_INFO
-						<< widget
-						<< "not found";
 					return;
-				}
 
 				Util::TreeItem *item = Widget2Child_ [widget];
 				item->ModifyData (0, icon, Qt::DecorationRole);

@@ -31,6 +31,7 @@ SET (SRCS
 	filtermodel.cpp
 	treeviewreemitter.cpp
 	operationalmodel.cpp
+	searchwidget.cpp
 	)
 SET (HEADERS
 	summary.h
@@ -42,9 +43,11 @@ SET (HEADERS
 	filtermodel.h
 	treeviewreemitter.h
 	operationalmodel.h
+	searchwidget.h
 	)
 SET (FORMS
 	summarywidget.ui
+	searchwidget.ui
 	)
 SET (TRANSLATIONS
 	leechcraft_summary_ru_RU.ts

@@ -17,10 +17,11 @@
  **********************************************************************/
 
 #include "settingssink.h"
+#include <QPushButton>
+#include <QtDebug>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <QtDebug>
 
 Q_DECLARE_METATYPE (LeechCraft::Util::XmlSettingsDialog*);
 
@@ -69,6 +70,10 @@ namespace LeechCraft
 
 		connect (this,
 				SIGNAL (accepted ()),
+				widget,
+				SLOT (accept ()));
+		connect (Ui_.Buttons_->button (QDialogButtonBox::Apply),
+				SIGNAL (released ()),
 				widget,
 				SLOT (accept ()));
 		connect (this,

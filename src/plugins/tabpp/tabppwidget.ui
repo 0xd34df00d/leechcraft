@@ -18,6 +18,9 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="margin">
+     <number>2</number>
+    </property>
     <item>
      <widget class="QLineEdit" name="FilterLine_"/>
     </item>

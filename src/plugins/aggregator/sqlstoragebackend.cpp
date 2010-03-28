@@ -1598,6 +1598,8 @@ namespace LeechCraft
 						return "TINYINT";
 					case SBPostgres:
 						return "BOOLEAN";
+					default:
+						return "BOOLEAN";
 				}
 			}
 
@@ -1609,6 +1611,8 @@ namespace LeechCraft
 						return "BLOB";
 					case SBPostgres:
 						return "BYTEA";
+					default:
+						return "BLOB";
 				}
 			}
 			

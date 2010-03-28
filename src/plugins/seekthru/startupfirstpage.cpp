@@ -31,7 +31,7 @@ namespace LeechCraft
 	{
 		namespace SeekThru
 		{
-			StartupFirstPage::EngineInfo::EngineInfo (const QString& fn,
+			EngineInfo::EngineInfo (const QString& fn,
 					const QString& tags, const QString& name)
 			: ResourceFileName_ (fn)
 			, DefaultTags_ (tags)

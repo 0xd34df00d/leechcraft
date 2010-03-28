@@ -62,12 +62,12 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="Buttons_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -78,7 +78,7 @@
  </resources>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>Buttons_</sender>
    <signal>accepted()</signal>
    <receiver>SettingsSink</receiver>
    <slot>accept()</slot>
@@ -94,7 +94,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>Buttons_</sender>
    <signal>rejected()</signal>
    <receiver>SettingsSink</receiver>
    <slot>reject()</slot>

@@ -410,18 +410,6 @@ namespace LeechCraft
 			{
 				QToolBar *bar = new QToolBar ();
 				bar->setWindowTitle ("Aggregator");
-
-				const AppWideActions& aw = Core::Instance ().GetAppWideActions ();
-			
-				bar->addAction (aw.ActionItemBucket_);
-				bar->addAction (aw.ActionRegexpMatcher_);
-				bar->addSeparator ();
-				bar->addAction (aw.ActionImportOPML_);
-				bar->addAction (aw.ActionExportOPML_);
-				bar->addAction (aw.ActionImportBinary_);
-				bar->addAction (aw.ActionExportBinary_);
-				bar->addAction (aw.ActionExportFB2_);
-				bar->addSeparator ();
 				bar->addAction (Impl_->ActionHideReadItems_);
 			
 				return bar;

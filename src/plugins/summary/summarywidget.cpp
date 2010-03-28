@@ -21,10 +21,12 @@
 #include <QComboBox>
 #include <QMenu>
 #include <QToolBar>
+#include <QMainWindow>
 #include <QtDebug>
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
 #include "core.h"
+#include "searchwidget.h"
 
 namespace LeechCraft
 {
@@ -38,9 +40,22 @@ namespace LeechCraft
 			: QWidget (parent)
 			, FilterTimer_ (new QTimer)
 			, Toolbar_ (new QToolBar)
+			, SearchWidget_ (new SearchWidget)
 			{
+				ActionSearch_ = SearchWidget_->toggleViewAction ();
+				ActionSearch_->setProperty ("ActionIcon", "find");
+				ActionSearch_->setShortcut (tr ("Ctrl+F"));
 				Toolbar_->setWindowTitle ("Summary");
+				ReinitToolbar ();
 				Ui_.setupUi (this);
+
+				Core::Instance ().GetProxy ()->GetMainWindow ()->
+					addDockWidget (Qt::LeftDockWidgetArea, SearchWidget_);
+				SearchWidget_->hide ();
+				connect (SearchWidget_,
+						SIGNAL (categoryComboboxRequested ()),
+						this,
+						SLOT (addCategoryBox ()));
 
 				Q_FOREACH (QObject *plugin, Core::Instance ().GetProxy ()->
 						GetPluginsManager ()->GetAllCastableRoots<IFinder*> ())
@@ -49,8 +64,7 @@ namespace LeechCraft
 							this,
 							SLOT (handleCategoriesChanged (const QStringList&, const QStringList&)));
 
-				Ui_.LeastCategory_->setDuplicatesEnabled (true);
-				FillCombobox (Ui_.LeastCategory_);
+				FillCombobox (SearchWidget_->GetLeastCategory ());
 
 				FilterTimer_->setSingleShot (true);
 				FilterTimer_->setInterval (800);
@@ -61,19 +75,19 @@ namespace LeechCraft
 
 				Ui_.ControlsDockWidget_->hide ();
 
-				connect (Ui_.SimpleSearch_,
-						SIGNAL (toggled (bool)),
-						this,
-						SLOT (filterParametersChanged ()));
-				connect (Ui_.LeastCategory_,
+				connect (SearchWidget_->GetLeastCategory (),
 						SIGNAL (currentIndexChanged (int)),
 						this,
 						SLOT (filterParametersChanged ()));
-				connect (Ui_.FilterLine_,
+				connect (SearchWidget_->GetFilterLine (),
 						SIGNAL (textEdited (const QString&)),
 						this,
 						SLOT (filterParametersChanged ()));
-				connect (Ui_.FilterLine_,
+				connect (SearchWidget_,
+						SIGNAL (paramsChanged ()),
+						this,
+						SLOT (filterParametersChanged ()));
+				connect (SearchWidget_->GetFilterLine (),
 						SIGNAL (returnPressed ()),
 						this,
 						SLOT (filterReturnPressed ()));
@@ -89,6 +103,8 @@ namespace LeechCraft
 				Ui_.ControlsDockWidget_->setWidget (0);
 				if (widget)
 					widget->setParent (0);
+
+				delete SearchWidget_;
 			}
 
 			void SummaryWidget::SetParentMultiTabs (QObject *parent)
@@ -126,15 +142,15 @@ namespace LeechCraft
 				if (query.isEmpty ())
 					return;
 
-				Ui_.FilterLine_->setText (query.takeFirst ());
+				SearchWidget_->GetFilterLine ()->setText (query.takeFirst ());
 
 				if (!query.isEmpty ())
-					Ui_.LeastCategory_->setCurrentIndex (Ui_.LeastCategory_->
+					SearchWidget_->GetLeastCategory ()->setCurrentIndex (SearchWidget_->GetLeastCategory ()->
 							findText (query.takeFirst ()));
 
 				Q_FOREACH (QString cat, query)
 				{
-					on_Add__released ();
+					addCategoryBox ();
 					QComboBox *box = AdditionalBoxes_.last ();
 					box->setCurrentIndex (box->findText (cat));
 				}
@@ -162,42 +178,82 @@ namespace LeechCraft
 
 			QString SummaryWidget::GetQuery () const
 			{
-				QString query = Ui_.FilterLine_->text ();
-				if (Ui_.SimpleSearch_->checkState () == Qt::Checked)
+				QString query = SearchWidget_->GetFilterLine ()->text ();
+				QString prepend = QString ("ca:\"%1\"")
+					.arg (SearchWidget_->GetLeastCategory ()->currentText ());
+				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
+					prepend += QString (" OR ca:\"%1\"").arg (box->currentText ());
+				prepend = QString ("(%1) ").arg (prepend);
+				prepend += "t:";
+				switch (SearchWidget_->GetFilterType ()->currentIndex ())
 				{
-					QString prepend = QString ("ca:\"%1\"")
-						.arg (Ui_.LeastCategory_->currentText ());
-					Q_FOREACH (QComboBox *box, AdditionalBoxes_)
-						prepend += QString (" OR ca:\"%1\"").arg (box->currentText ());
-					prepend = QString ("(%1) ").arg (prepend);
-					prepend += "t:";
-					switch (Ui_.Type_->currentIndex ())
-					{
-						case 0:
-							prepend += 'f';
-							break;
-						case 1:
-							prepend += 'w';
-							break;
-						case 2:
-							prepend += 'r';
-							break;
-						case 3:
-							prepend += 't';
-							break;
-						default:
-							prepend += 'f';
-							qWarning () << Q_FUNC_INFO
-								<< "unknown Type index"
-								<< Ui_.Type_->currentIndex ()
-								<< Ui_.Type_->currentText ();
-							break;
-					}
-
-					prepend += ' ';
-					query.prepend (prepend);
+					case 0:
+						prepend += 'f';
+						break;
+					case 1:
+						prepend += 'w';
+						break;
+					case 2:
+						prepend += 'r';
+						break;
+					case 3:
+						prepend += 't';
+						break;
+					default:
+						prepend += 'f';
+						qWarning () << Q_FUNC_INFO
+							<< "unknown Type index"
+							<< SearchWidget_->GetFilterType ()->currentIndex ()
+							<< SearchWidget_->GetFilterType ()->currentText ();
+						break;
 				}
+
+				prepend += ' ';
+				query.prepend (prepend);
 				return query;
+			}
+
+			Query2 SummaryWidget::GetQuery2 () const
+			{
+				Query2 result;
+				result.Query_ = SearchWidget_->GetFilterLine ()->text ();
+				result.Categories_ << (SearchWidget_->GetLeastCategory ()->currentText ());
+				result.Op_ = SearchWidget_->IsOr () ?
+					Query2::OPOr :
+					Query2::OPAnd;;
+				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
+					result.Categories_ << box->currentText ();
+				switch (SearchWidget_->GetFilterType ()->currentIndex ())
+				{
+					case 0:
+						result.Type_ = Query2::TString;
+						break;
+					case 1:
+						result.Type_ = Query2::TWildcard;
+						break;
+					case 2:
+						result.Type_ = Query2::TRegexp;
+						break;
+					case 3:
+						result.Type_ = Query2::TTags;
+						break;
+					default:
+						result.Type_ = Query2::TString;
+						qWarning () << Q_FUNC_INFO
+							<< "unknown Type index"
+							<< SearchWidget_->GetFilterType ()->currentIndex ()
+							<< SearchWidget_->GetFilterType ()->currentText ();
+						break;
+				}
+
+				return result;
+			}
+
+			void SummaryWidget::ReinitToolbar ()
+			{
+				Toolbar_->clear ();
+				Toolbar_->addAction (ActionSearch_);
+				Toolbar_->addSeparator ();
 			}
 
 			void SummaryWidget::SmartDeselect (SummaryWidget *newFocus)
@@ -215,7 +271,7 @@ namespace LeechCraft
 						Ui_.PluginsTasksTree_->selectionModel ()->
 							setCurrentIndex (QModelIndex (), QItemSelectionModel::ClearAndSelect);
 					}
-					Toolbar_->clear ();
+					ReinitToolbar ();
 					Ui_.ControlsDockWidget_->hide ();
 				}
 			}
@@ -240,7 +296,7 @@ namespace LeechCraft
 
 				if (newIndex.isValid ())
 				{
-					Toolbar_->clear ();
+					ReinitToolbar ();
 					if (controls)
 					{
 						Q_FOREACH (QAction *action, controls->actions ())
@@ -278,7 +334,7 @@ namespace LeechCraft
 				if (selection)
 					selection->setCurrentIndex (QModelIndex (), QItemSelectionModel::Clear);
 
-				QString query = GetQuery ();
+				Query2 query = GetQuery2 ();
 				QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 				Ui_.PluginsTasksTree_->
 					setModel (Core::Instance ().GetTasksModel (query));
@@ -319,7 +375,7 @@ namespace LeechCraft
 				menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 			}
 			
-			void SummaryWidget::on_Add__released ()
+			void SummaryWidget::addCategoryBox ()
 			{
 				QComboBox *box = new QComboBox (this);
 				box->setDuplicatesEnabled (true);
@@ -340,7 +396,7 @@ namespace LeechCraft
 				box->setContextMenuPolicy (Qt::ActionsContextMenu);
 				box->addAction (remove);
 
-				Ui_.SearchStuff_->insertWidget (3, box);
+				SearchWidget_->AddCategory (box);
 				AdditionalBoxes_ << box;
 			}
 
@@ -349,18 +405,12 @@ namespace LeechCraft
 				QStringList currentCats = GetUniqueCategories ();
 
 				Q_FOREACH (QComboBox *box,
-						AdditionalBoxes_ + (QList<QComboBox*> () << Ui_.LeastCategory_))
+						AdditionalBoxes_ + (QList<QComboBox*> () << SearchWidget_->GetLeastCategory ()))
 				{
 					box->clear ();
 					box->addItem ("downloads");
 					box->addItems (currentCats);
 				}
-			}
-
-			void SummaryWidget::on_SimpleSearch__toggled (bool on)
-			{
-				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
-					box->setEnabled (on);
 			}
 
 			void SummaryWidget::removeCategoryBox ()

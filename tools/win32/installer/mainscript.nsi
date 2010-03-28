@@ -42,9 +42,6 @@ SectionGroup "Core"
 	Section "LeechCraft" MAINFILES
 		SetOutPath $INSTDIR
 		File icon64.ico
-#		File icon32.ico
-#		File icon24.ico
-#		File icon16.ico
 		File plugininterface.dll
 		File xmlsettingsdialog.dll
 		File leechcraft.exe
@@ -68,21 +65,13 @@ SectionGroup "Core"
 
 	Section "Qt" QT
 		SetOutPath $INSTDIR
-		File QtCore4.dll
-		File QtGui4.dll
-		File QtNetwork4.dll
-		File QtScript4.dll
-		File QtSql4.dll
-		File QtSvg4.dll
-		File QtWebkit4.dll
-		File QtXml4.dll
-        File QtXmlPatterns4.dll
+		File Qt*4.dll
 		File qt.conf
 		File phonon4.dll
-#		File phonon_ds94.dll
 		SetOutPath $INSTDIR\plugins
 		File /r plugins\imageformats
 		File /r plugins\sqldrivers
+		File /r plugins\phonon_backend
 		SectionIn 1 2 RO
 	SectionEnd
 
@@ -113,17 +102,29 @@ SectionGroup "Plugins"
 		File settings\aggregatorsettings.xml
 		SectionIn 1
 	SectionEnd
+	Section "Auscrie" AUSCRIEPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_auscrie.dll
+		SectionIn 1
+	SectionEnd
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-vc90-mt-1_40.dll
-		File boost_filesystem-vc90-mt-1_40.dll
-		File boost_system-vc90-mt-1_40.dll
-		File boost_thread-vc90-mt-1_40.dll
+		File boost_date_time-vc90-mt-1_42.dll
+		File boost_filesystem-vc90-mt-1_42.dll
+		File boost_system-vc90-mt-1_42.dll
+		File boost_thread-vc90-mt-1_42.dll
 		SetOutPath $INSTDIR\settings
 		File settings\torrentsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_bittorrent.dll
+		SectionIn 1
+	SectionEnd
+	Section "Chatter" CHATTERPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\chattersettings.xml
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_chatter.dll
 		SectionIn 1
 	SectionEnd
 	Section "CSTP" HTTPPLUGIN
@@ -133,12 +134,9 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_cstp.dll
 		SectionIn 1
 	SectionEnd
-    Section "Chatter" CHATTERPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_chatter.dll
-		SectionIn 1
-	SectionEnd
 	Section "DeadLyrics" DEADLYRICSPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\deadlyricssettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_deadlyrics.dll
 		SectionIn 1
@@ -148,7 +146,14 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_historyholder.dll
 		SectionIn 1
 	SectionEnd
+	Section "Kinotify" KINOTIFYPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_kinotify.dll
+		SectionIn 1
+	SectionEnd
     Section "LCFTP" LCFTPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\lcftpsettings.xml
         SetOutPath $INSTDIR
 		File libcurl.dll
 		SetOutPath $INSTDIR\plugins\bin
@@ -156,6 +161,8 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
     Section "LMP" LMPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\lmpsettings.xml
         SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_lmp.dll
         SectionIn 1
@@ -189,16 +196,18 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_poshuku_filescheme.dll
 		SectionIn 1
 	SectionEnd
-    Section "Poshuku WYFV" POSHUKUWYFVPLUGIN
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_poshuku_wyfv.dll
-		SectionIn 1
-	SectionEnd
 	Section "Poshuku FUA" POSHUKUFUAPLUGIN
 		SetOutPath $INSTDIR\settings
 		File settings\poshukufuasettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku_fua.dll
+		SectionIn 1
+	SectionEnd
+    Section "Poshuku WYFV" POSHUKUWYFVPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\poshukuwyfvsettings.xml
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_poshuku_wyfv.dll
 		SectionIn 1
 	SectionEnd
 	Section "SeekThru" SEEKTHRUPLUGIN
@@ -213,7 +222,16 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_summary.dll
 		SectionIn 1
 	SectionEnd
-    Section "VGrabber" VGRABBERPLUGIN
+	Section "Tab++" TABPPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\tabppsettings.xml
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_tabpp.dll
+		SectionIn 1
+	SectionEnd
+    Section "vGrabber" VGRABBERPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\vgrabbersettings.xml
         SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_vgrabber.dll
 		SectionIn 1
@@ -276,7 +294,7 @@ Section "Uninstall"
 	DeleteRegKey /ifempty HKCU "Software\Deviant\LeechCraft"
 SectionEnd
 
-LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft and its support libraries."
+LangString DESC_MAINFILES ${LANG_ENGLISH} "LeechCraft Core."
 LangString DESC_QT ${LANG_ENGLISH} "Qt libraries."
 LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual Studio libraries."
 LangString DESC_OPENSSL ${LANG_ENGLISH} "OpenSSL support."
@@ -293,33 +311,40 @@ LangString DESC_POSHUKUPLUGIN ${LANG_ENGLISH} "Full-featured web browser."
 LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_ENGLISH} "Ad blocker for the Poshuku compatible with Firefox's AdBlock lists."
 LangString DESC_POSHUKUFILESCHEMEPLUGIN ${LANG_ENGLISH} "Support of the file:// scheme for the Poshuku."
 LangString DESC_POSHUKUFUAPLUGIN ${LANG_ENGLISH} "Fake User Agent plugin for the Poshuku."
-LangString DESC_POSHUKUWYFVPLUGIN ${LANG_ENGLISH} "Alternate media player for YouTube."
-LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "Fetches lyrics from LyricWiki.org."
+LangString DESC_POSHUKUWYFVPLUGIN ${LANG_ENGLISH} "Alternate media player for YouTube and other similar sites."
+LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "Fetches lyrics from various sites."
 LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-aware search engines."
-LangString DESC_SUMMARYPLUGIN ${LANG_ENGLISH} "Summary tab."
+LangString DESC_SUMMARYPLUGIN ${LANG_ENGLISH} "Summary tab with current downloads, events and status."
 LangString DESC_VGRABBERPLUGIN ${LANG_ENGLISH} "VKontakte.ru stuff grabber."
+LangString DESC_AUSCRIEPLUGIN ${LANG_ENGLISH} "Auto Screenshooter."
+LangString DESC_KINOTIFYPLUGIN ${LANG_ENGLISH} "Kinotify provides fancy notifications instead of plain default ones."
+LangString DESC_TABPPPLUGIN ${LANG_ENGLISH} "Tab++ enhances tabbed navigation experience."
 
-LangString DESC_MAINFILES ${LANG_RUSSIAN} "Сам LeechCraft и его вспомогательные бИблиотеки."
+LangString DESC_MAINFILES ${LANG_RUSSIAN} "Ядро LeechCraft."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
 LangString DESC_MSVC ${LANG_RUSSIAN} "Библиотеки Microsoft Visual Studio."
 LangString DESC_OPENSSL ${LANG_RUSSIAN} "Библиотеки OpenSSL."
-LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Поддержка HTTP."
-LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "Чаты IRC."
+LangString DESC_HTTPPLUGIN ${LANG_RUSSIAN} "Простой HTTP-клиент."
+LangString DESC_CHATTERPLUGIN ${LANG_RUSSIAN} "Клиент для сетей IRC."
 LangString DESC_TORRENTPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Torrent-клиент."
-LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Агрегатор RSS/Atom-лент."
-LangString DESC_HISTORYHOLDERPLUGIN ${LANG_RUSSIAN} "Хранит историю закачек."
-LangString DESC_LCFTPPLUGIN ${LANG_RUSSIAN} "Клиент протокола FTP."
+LangString DESC_AGGREGATORPLUGIN ${LANG_RUSSIAN} "Клиент для чтения RSS/Atom-лент."
+LangString DESC_HISTORYHOLDERPLUGIN ${LANG_RUSSIAN} "Хранение истории закачек."
+LangString DESC_LCFTPPLUGIN ${LANG_RUSSIAN} "Двухпанельный FTP-клиент."
 LangString DESC_LMPPLUGIN ${LANG_RUSSIAN} "LeechCraft Media Player - многофункциональный проигрыватель."
-LangString DESC_NETWORKMONITORPLUGIN ${LANG_RUSSIAN} "Следит за HTTP-запросами."
+LangString DESC_NETWORKMONITORPLUGIN ${LANG_RUSSIAN} "Отображает HTTP-запросы."
 LangString DESC_NEWLIFEPLUGIN ${LANG_RUSSIAN} "Импорт настроек из других программ."
 LangString DESC_POSHUKUPLUGIN ${LANG_RUSSIAN} "Полнофункциональный веб-браузер."
 LangString DESC_POSHUKUCLEANWEBPLUGIN ${LANG_RUSSIAN} "Блокировщик рекламы для Poshuku, совместимый с Firefox AdBlock."
 LangString DESC_POSHUKUFILESCHEMEPLUGIN ${LANG_RUSSIAN} "Поддержка file://-схемы для Poshuku."
 LangString DESC_POSHUKUFUAPLUGIN ${LANG_RUSSIAN} "Плагин для Poshuku, подделывающий идентификацию браузера."
-LangString DESC_DEADLYRICSPLUGIN ${LANG_RUSSIAN} "Поиск песен на LyricWiki.org."
+LangString DESC_POSHUKUWYFVPLUGIN ${LANG_RUSSIAN} "Альтернативный медиа-проигрыватель для Youtube и подобных сайтов."
+LangString DESC_DEADLYRICSPLUGIN ${LANG_RUSSIAN} "Клиент для поиска текстов песен."
 LangString DESC_SEEKTHRUPLUGIN ${LANG_RUSSIAN} "Клиент для поисковиков, поддерживающих OpenSearch."
+LangString DESC_SUMMARYPLUGIN ${LANG_RUSSIAN} "Сводка с текущими закачками, событиями и статусом."
 LangString DESC_VGRABBERPLUGIN ${LANG_RUSSIAN} "Плагин для скачивания и проигрывания музыки и видео из социальной сети В Контакте."
-#TODO: впилить описания DESC_POSHUKUWYFVPLUGIN и DESC_SUMMARYPLUGIN, сейчас мне лениво.
+LangString DESC_AUSCRIEPLUGIN ${LANG_RUSSIAN} "Плагин для создания и загрузки снимков окна LeechCraft в один клик."
+LangString DESC_KINOTIFYPLUGIN ${LANG_RUSSIAN} "Kinotify предоставляет красивые уведомления вместо обычных уведомлений по умолчанию."
+LangString DESC_TABPPPLUGIN ${LANG_RUSSIAN} "Tab++ улучшает работу с вкладками."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
@@ -335,6 +360,7 @@ LangString DESC_VGRABBERPLUGIN ${LANG_RUSSIAN} "Плагин для скачивания и проигрыв
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFILESCHEMEPLUGIN} $(DESC_POSHUKUFILESCHEMEPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFUAPLUGIN} $(DESC_POSHUKUFUAPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUCLEANWEBPLUGIN} $(DESC_POSHUKUCLEANWEBPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUWYFVPLUGIN} $(DESC_POSHUKUWYFVPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${DEADLYRICSPLUGIN} $(DESC_DEADLYRICSPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${SEEKTHRUPLUGIN} $(DESC_SEEKTHRUPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HISTORYHOLDERPLUGIN} $(DESC_HISTORYHOLDERPLUGIN)
@@ -342,6 +368,10 @@ LangString DESC_VGRABBERPLUGIN ${LANG_RUSSIAN} "Плагин для скачивания и проигрыв
     !insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
     !insertmacro MUI_DESCRIPTION_TEXT ${LCFTPPLUGIN} $(DESC_LCFTPPLUGIN)
     !insertmacro MUI_DESCRIPTION_TEXT ${VGRABBERPLUGIN} $(DESC_VGRABBERPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${SUMMARYPLUGIN} $(DESC_SUMMARYPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${AUSCRIEPLUGIN} $(DESC_AUSCRIEPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${KINOTIFYPLUGIN} $(DESC_KINOTIFYPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${TABPPPLUGIN} $(DESC_TABPPPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit

@@ -12,7 +12,7 @@
     <message>
         <location filename="aboutdialog.ui" line="51"/>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
     <message utf8="true">
         <location filename="aboutdialog.ui" line="70"/>
@@ -127,7 +127,7 @@
     <message>
         <location filename="plugininterface/backendselector.ui" line="197"/>
         <source>Password:</source>
-        <translation type="unfinished">Paßwort:</translation>
+        <translation>Paßwort:</translation>
     </message>
     <message>
         <location filename="plugininterface/backendselector.ui" line="211"/>
@@ -199,7 +199,7 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="73"/>
         <source>Browse...</source>
-        <translation type="unfinished">Überblick...</translation>
+        <translation>Überblick...</translation>
     </message>
 </context>
 <context>
@@ -236,7 +236,7 @@
         <translation type="obsolete">toolBar</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="125"/>
+        <location filename="leechcraft.ui" line="119"/>
         <source>Add task</source>
         <translation>Aufgabe hinzufügen</translation>
     </message>
@@ -270,67 +270,62 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="114"/>
-        <source>Actions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="130"/>
+        <location filename="leechcraft.ui" line="124"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="133"/>
+        <location filename="leechcraft.ui" line="127"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="141"/>
+        <location filename="leechcraft.ui" line="135"/>
         <source>Quit</source>
         <translation>Ausgang</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="144"/>
+        <location filename="leechcraft.ui" line="138"/>
         <source>F10</source>
-        <translation type="unfinished">F10</translation>
+        <translation>F10</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="150"/>
+        <location filename="leechcraft.ui" line="144"/>
         <source>exit</source>
         <translation>Ausgang</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="195"/>
+        <location filename="leechcraft.ui" line="189"/>
         <source>Menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="198"/>
+        <location filename="leechcraft.ui" line="192"/>
         <source>menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="209"/>
+        <location filename="leechcraft.ui" line="203"/>
         <source>Show status bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="214"/>
+        <location filename="leechcraft.ui" line="208"/>
         <source>Close tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="217"/>
+        <location filename="leechcraft.ui" line="211"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="222"/>
+        <location filename="leechcraft.ui" line="216"/>
         <source>Glance...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="225"/>
+        <location filename="leechcraft.ui" line="219"/>
         <source>Show a quick overview of tabs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -339,39 +334,39 @@
         <translation type="obsolete">Plugin manager</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="158"/>
-        <location filename="leechcraft.ui" line="161"/>
+        <location filename="leechcraft.ui" line="152"/>
+        <location filename="leechcraft.ui" line="155"/>
         <source>Fullscreen mode</source>
         <translation>Vollbild-Modus</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="164"/>
+        <location filename="leechcraft.ui" line="158"/>
         <source>F11</source>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="169"/>
-        <location filename="leechcraft.ui" line="172"/>
+        <location filename="leechcraft.ui" line="163"/>
+        <location filename="leechcraft.ui" line="166"/>
         <source>Log</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="177"/>
+        <location filename="leechcraft.ui" line="171"/>
         <source>New tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="180"/>
+        <location filename="leechcraft.ui" line="174"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="185"/>
+        <location filename="leechcraft.ui" line="179"/>
         <source>About LeechCraft...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="190"/>
+        <location filename="leechcraft.ui" line="184"/>
         <source>About Qt...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -381,7 +376,7 @@
     <message>
         <location filename="aboutdialog.cpp" line="28"/>
         <source>LeechCraft %1</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft %1</translation>
     </message>
 </context>
 <context>
@@ -481,7 +476,7 @@
         <location filename="core.cpp" line="517"/>
         <location filename="core.cpp" line="529"/>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="core.cpp" line="518"/>
@@ -494,10 +489,10 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="910"/>
-        <location filename="core.cpp" line="914"/>
+        <location filename="core.cpp" line="913"/>
+        <location filename="core.cpp" line="917"/>
         <source>%1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2</translation>
     </message>
     <message>
         <source>Too long to show</source>
@@ -550,7 +545,7 @@
     <message>
         <location filename="xmlsettingsdialog/filepicker.cpp" line="34"/>
         <source>Browse...</source>
-        <translation type="unfinished">Überblick...</translation>
+        <translation>Überblick...</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/filepicker.cpp" line="75"/>
@@ -561,7 +556,7 @@
         <location filename="xmlsettingsdialog/filepicker.cpp" line="81"/>
         <location filename="xmlsettingsdialog/filepicker.cpp" line="87"/>
         <source>Select file</source>
-        <translation type="unfinished">Datei wählen</translation>
+        <translation>Datei wählen</translation>
     </message>
 </context>
 <context>
@@ -607,7 +602,7 @@
     <message>
         <location filename="handlerchoicedialog.cpp" line="197"/>
         <source>Select save location</source>
-        <translation type="unfinished">Platz für Speichern wählen</translation>
+        <translation>Platz für Speichern wählen</translation>
     </message>
 </context>
 <context>
@@ -621,16 +616,16 @@
         <translation type="obsolete">Plugins</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="148"/>
-        <location filename="mainwindow.cpp" line="166"/>
-        <location filename="mainwindow.cpp" line="261"/>
-        <location filename="mainwindow.cpp" line="394"/>
-        <location filename="mainwindow.cpp" line="433"/>
+        <location filename="mainwindow.cpp" line="162"/>
+        <location filename="mainwindow.cpp" line="181"/>
+        <location filename="mainwindow.cpp" line="282"/>
+        <location filename="mainwindow.cpp" line="415"/>
+        <location filename="mainwindow.cpp" line="460"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="150"/>
+        <location filename="mainwindow.cpp" line="164"/>
         <source>%1 - LeechCraft</source>
         <translation>%1 - LeechCraft</translation>
     </message>
@@ -639,35 +634,35 @@
         <translation type="obsolete">Die Schnittstelle initialisiert sich...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="101"/>
+        <location filename="mainwindow.cpp" line="114"/>
         <source>Actions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="277"/>
+        <location filename="mainwindow.cpp" line="298"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="280"/>
-        <location filename="mainwindow.cpp" line="284"/>
-        <location filename="mainwindow.cpp" line="519"/>
-        <location filename="mainwindow.cpp" line="520"/>
+        <location filename="mainwindow.cpp" line="301"/>
+        <location filename="mainwindow.cpp" line="305"/>
+        <location filename="mainwindow.cpp" line="554"/>
+        <location filename="mainwindow.cpp" line="555"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="395"/>
+        <location filename="mainwindow.cpp" line="416"/>
         <source>Do you really want to quit?</source>
         <translation>Wollen Sie wirklich ausgehen?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="434"/>
+        <location filename="mainwindow.cpp" line="461"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="593"/>
+        <location filename="mainwindow.cpp" line="628"/>
         <source>LeechCraft menu</source>
         <translation type="unfinished"></translation>
     </message>
@@ -680,7 +675,7 @@
         <translation type="obsolete">Management Plugins</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="526"/>
+        <location filename="mainwindow.cpp" line="561"/>
         <source>%1 down, %2 up</source>
         <translation>%1 down, %2 up</translation>
     </message>
@@ -928,7 +923,7 @@
     <message>
         <location filename="tagsmanager.cpp" line="33"/>
         <source>untagged</source>
-        <translation type="unfinished">Ohne tags</translation>
+        <translation>Ohne tags</translation>
     </message>
 </context>
 <context>
@@ -967,7 +962,7 @@
     <message>
         <location filename="plugininterface/flattofoldersproxymodel.cpp" line="100"/>
         <source>untagged</source>
-        <translation type="unfinished">Ohne tags</translation>
+        <translation>Ohne tags</translation>
     </message>
     <message>
         <location filename="plugininterface/flattofoldersproxymodel.cpp" line="104"/>
@@ -1001,7 +996,7 @@
     <message>
         <location filename="plugininterface/util.cpp" line="36"/>
         <source>Too long to show</source>
-        <translation type="unfinished">Es ist zu lang für Vorschau</translation>
+        <translation>Es ist zu lang für Vorschau</translation>
     </message>
     <message>
         <location filename="plugininterface/util.cpp" line="53"/>
@@ -1042,8 +1037,6 @@
         <location filename="plugininterface/util.cpp" line="111"/>
         <source>%n day(s), </source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1115,7 +1108,7 @@
         <location filename="sslerrorsdialog.ui" line="57"/>
         <source>Remember my choice for the resource</source>
         <oldsource>Remember my choice for the file</oldsource>
-        <translation type="unfinished">Erinnern mein Wahl für die Datei</translation>
+        <translation>Erinnern mein Wahl für die Datei</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="64"/>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,51 +16,55 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_STARTUPFIRSTPAGE_H
-#define PLUGINS_SEEKTHRU_STARTUPFIRSTPAGE_H
-#include <QWizardPage>
-#include "ui_startupfirstpage.h"
+#include "searchwidget.h"
 
 namespace LeechCraft
 {
 	namespace Plugins
 	{
-		namespace SeekThru
+		namespace Summary
 		{
-			struct EngineInfo
+			SearchWidget::SearchWidget (QWidget *parent)
+			: QDockWidget (parent)
 			{
-				QString ResourceFileName_;
-				QString DefaultTags_;
-				QString Name_;
+				Ui_.setupUi (this);
+				Ui_.LeastCategory_->setDuplicatesEnabled (true);
+				connect (Ui_.Or_,
+						SIGNAL (toggled (bool)),
+						this,
+						SIGNAL (paramsChanged ()));
+			}
 
-				EngineInfo (const QString&, const QString&, const QString&);
-			};
-			typedef QList<EngineInfo> EngineInfos_t;
-
-			class StartupFirstPage : public QWizardPage
+			QComboBox* SearchWidget::GetLeastCategory () const
 			{
-				Q_OBJECT
+				return Ui_.LeastCategory_;
+			}
 
-				Ui::StartupFirstPageWidget Ui_;
-				QMap<QString, EngineInfos_t> Sets_;
-				enum
-				{
-					RoleSet = Qt::UserRole + 127,
-					RoleFile
-				};
-			public:
-				StartupFirstPage (QWidget* = 0);
+			QLineEdit* SearchWidget::GetFilterLine () const
+			{
+				return Ui_.FilterLine_;
+			}
 
-				void initializePage ();
-			private:
-				void Populate (const QString&);
-			private slots:
-				void handleAccepted ();
-				void handleCurrentIndexChanged (const QString&);
-			};
+			QComboBox* SearchWidget::GetFilterType () const
+			{
+				return Ui_.Type_;
+			}
+
+			bool SearchWidget::IsOr () const
+			{
+				return Ui_.Or_->isChecked ();
+			}
+
+			void SearchWidget::AddCategory (QComboBox *box)
+			{
+				Ui_.SearchStuff_->insertWidget (1, box);
+			}
+
+			void SearchWidget::on_Add__released ()
+			{
+				emit categoryComboboxRequested ();
+			}
 		};
 	};
 };
-
-#endif
 

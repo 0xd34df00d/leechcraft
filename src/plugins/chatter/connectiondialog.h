@@ -60,6 +60,7 @@ private Q_SLOTS:
 	void serverChanged ();
 	void saveAndAccept ();
 	void uriChanged (const QString& uri);
+	void updateUri();
 };
 
 #endif //CONNECTIONDIALOG_H

@@ -124,8 +124,10 @@ namespace LeechCraft
 			QUrl AudioFindProxy::GetURL () const
 			{
 				QByteArray urlStr = "http://vkontakte.ru/gsearch.php?q=FIND&section=audio";
-				return QUrl (urlStr.replace ("FIND",
-							QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_)));
+				urlStr.replace ("FIND",
+						QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_).toPercentEncoding ());
+				QUrl result = QUrl::fromEncoded (urlStr);
+				return result;
 			}
 
 			void AudioFindProxy::Handle (const QString& contents)
