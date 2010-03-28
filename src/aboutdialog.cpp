@@ -25,7 +25,7 @@ namespace LeechCraft
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
-		Ui_.ProgramName_->setText (tr ("LeechCraft %1")
+		Ui_.ProgramName_->setText (QString ("LeechCraft %1")
 				.arg (LEECHCRAFT_VERSION));
 	}
 };

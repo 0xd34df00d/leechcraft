@@ -514,7 +514,7 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 	if (name == "ClearCache")
 	{
 		if (QMessageBox::question (ReallyMainWindow_,
-					tr ("LeechCraft"),
+					"LeechCraft",
 					tr ("Do you really want to clear the network cache?"),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
@@ -526,7 +526,7 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 	else if (name == "ClearCookies")
 	{
 		if (QMessageBox::question (ReallyMainWindow_,
-					tr ("LeechCraft"),
+					"LeechCraft",
 					tr ("Do you really want to clear cookies?"),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
@@ -910,11 +910,11 @@ void LeechCraft::Core::handleNotify (LeechCraft::Notification n)
 	if (pname.isEmpty () || n.Header_.isEmpty ())
 		header = pname + n.Header_;
 	else
-		header = tr ("%1: %2")
+		header = QString ("%1: %2")
 			.arg (pname)
 			.arg (n.Header_);
 
-	QString text = tr ("%1: %2")
+	QString text = QString ("%1: %2")
 		.arg (header)
 		.arg (n.Text_);
 
