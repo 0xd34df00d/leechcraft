@@ -5,39 +5,35 @@
     <name>AboutDialog</name>
     <message>
         <source>About LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Про LeechCraft</translation>
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message utf8="true">
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Authors</source>
-        <translation type="unfinished"></translation>
+        <translation>Автори</translation>
     </message>
     <message>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>Учасники</translation>
     </message>
     <message>
         <source>Appreciations</source>
-        <translation type="unfinished"></translation>
+        <translation>Подяки</translation>
     </message>
     <message>
         <source>Licensing</source>
-        <translation type="unfinished"></translation>
+        <translation>Ліцензування</translation>
     </message>
     <message>
         <source>Third parties</source>
-        <translation type="unfinished"></translation>
+        <translation>Треті сторони</translation>
     </message>
 </context>
 <context>
@@ -75,39 +71,39 @@
     </message>
     <message>
         <source>Journal mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим журналювання:</translation>
     </message>
     <message>
         <source>Temp store:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тимчасова пам&apos;ять:</translation>
     </message>
     <message>
         <source>Synchronous:</source>
-        <translation type="unfinished"></translation>
+        <translation>Синхронізувати:</translation>
     </message>
     <message>
         <source>VACUUM on exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Оптимізувати при виході</translation>
     </message>
     <message>
         <source>Hostname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Комп&apos;ютер:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Порт:</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувач:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="unfinished">Пароль:</translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <source>Database name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва бази даних:</translation>
     </message>
 </context>
 <context>
@@ -162,20 +158,20 @@
     <message>
         <source>It could be downloaded by:</source>
         <oldsource>This entity could be downloaded by:</oldsource>
-        <translation type="unfinished">Може бути завантажений:</translation>
+        <translation>Може бути завантажений:</translation>
     </message>
     <message>
         <source>It could be handled by:</source>
         <oldsource>This entity could also be handled by:</oldsource>
-        <translation type="unfinished">Може бути оброблений:</translation>
+        <translation>Може бути оброблений:</translation>
     </message>
     <message>
         <source>Save to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти у:</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">Огляд...</translation>
+        <translation>Огляд...</translation>
     </message>
 </context>
 <context>
@@ -249,50 +245,46 @@
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Засоби</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Допомога</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Перегляд</translation>
     </message>
     <message>
         <source>About LeechCraft...</source>
-        <translation type="unfinished"></translation>
+        <translation>Про LeechCraft...</translation>
     </message>
     <message>
         <source>About Qt...</source>
-        <translation type="unfinished"></translation>
+        <translation>Про Qt...</translation>
     </message>
     <message>
         <source>Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню</translation>
     </message>
     <message>
         <source>menu</source>
-        <translation type="unfinished"></translation>
+        <translation>меню</translation>
     </message>
     <message>
         <source>Show status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати рядок стану</translation>
     </message>
     <message>
         <source>Close tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити вкладку</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Actions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -305,18 +297,11 @@
     </message>
     <message>
         <source>Glance...</source>
-        <translation type="unfinished"></translation>
+        <translation>Погляд...</translation>
     </message>
     <message>
         <source>Show a quick overview of tabs</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::AboutDialog</name>
-    <message>
-        <source>LeechCraft %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Поперендій перегляд вмісту вкладок</translation>
     </message>
 </context>
 <context>
@@ -359,17 +344,6 @@
     <message>
         <source>Progress</source>
         <translation type="obsolete">Прогрес</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::ColorPicker</name>
-    <message>
-        <source>Choose color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -431,7 +405,7 @@
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <source>Do you really want to clear the network cache?</source>
@@ -449,10 +423,6 @@
         <source>&lt;br /&gt;from %1</source>
         <translation type="obsolete">&lt;br /&gt;з %1</translation>
     </message>
-    <message>
-        <source>%1: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
@@ -465,53 +435,18 @@
     <name>LeechCraft::FilePicker</name>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">Огляд...</translation>
-    </message>
-    <message>
-        <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Огляд...</translation>
     </message>
     <message>
         <source>Select file</source>
-        <translation type="unfinished">Вибрати файл</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::FontPicker</name>
-    <message>
-        <source>Choose font</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>, %1 pt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>, bold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>, italic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>, underlined</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>, striken out</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Вибрати файл</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::HandlerChoiceDialog</name>
     <message>
         <source>Select save location</source>
-        <translation type="unfinished">Видеріть місце для збереження</translation>
+        <translation>Оберіть місце для збереження</translation>
     </message>
 </context>
 <context>
@@ -562,11 +497,11 @@
     </message>
     <message>
         <source>LeechCraft menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню LeechCraft</translation>
     </message>
     <message>
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Дії</translation>
     </message>
 </context>
 <context>
@@ -747,11 +682,11 @@
     </message>
     <message>
         <source>Restore tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Відновити вкладки</translation>
     </message>
     <message>
         <source>Close all but this</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити всі крім поточної</translation>
     </message>
 </context>
 <context>
@@ -765,7 +700,7 @@
     <name>LeechCraft::TagsManager</name>
     <message>
         <source>untagged</source>
-        <translation type="unfinished"></translation>
+        <translation>без позначок</translation>
     </message>
 </context>
 <context>
@@ -776,29 +711,29 @@
     </message>
     <message>
         <source>Enter new tag name</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть нову позначку</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Util::CategorySelector</name>
     <message>
         <source>Tags selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрі позначок</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати всі</translation>
     </message>
     <message>
         <source>Select none</source>
-        <translation type="unfinished"></translation>
+        <translation>Жодної</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
     <message>
         <source>untagged</source>
-        <translation type="unfinished"></translation>
+        <translation>без позначок</translation>
     </message>
     <message>
         <source>&lt;unknown tag&gt;</source>
@@ -813,7 +748,7 @@
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Очистити</translation>
+        <translation>Очистити</translation>
     </message>
 </context>
 <context>
@@ -846,7 +781,7 @@
     </message>
     <message>
         <source>Too long to show</source>
-        <translation type="unfinished">Занадто велика довжина для показу</translation>
+        <translation>Занадовга для показу</translation>
     </message>
     <message>
         <source>Binary entity</source>
@@ -854,11 +789,11 @@
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="unfinished">&lt;br /&gt;&lt;br /&gt;типу &lt;code&gt;%1&lt;/code&gt;</translation>
+        <translation>&lt;br /&gt;&lt;br /&gt;типу &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
         <source>&lt;br /&gt;from %1</source>
-        <translation type="unfinished">&lt;br /&gt;з %1</translation>
+        <translation>&lt;br /&gt;з %1</translation>
     </message>
     <message>
         <source> b</source>
@@ -931,11 +866,11 @@
     </message>
     <message>
         <source>Remember my choice for the whole host</source>
-        <translation type="unfinished"></translation>
+        <translation>Запам&apos;ятати мів вибір для всього комп&apos;ютера</translation>
     </message>
     <message>
         <source>Remember my choice for the resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Запам&apos;ятати мій вибір для цього ресурсу</translation>
     </message>
 </context>
 <context>

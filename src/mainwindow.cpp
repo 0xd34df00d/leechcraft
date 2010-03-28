@@ -159,7 +159,7 @@ const IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
 void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 {
 	if (title.isEmpty ())
-		setWindowTitle (tr ("LeechCraft"));
+		setWindowTitle ("LeechCraft");
 	else
 		setWindowTitle (tr ("%1 - LeechCraft").arg (title));
 }
@@ -178,7 +178,7 @@ void LeechCraft::MainWindow::catchError (QString message)
 {
 	Notification n =
 	{
-		tr ("LeechCraft"),
+		"LeechCraft",
 		message,
 		false,
 		Notification::PWarning_
@@ -279,7 +279,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	XmlSettingsDialog_->SetCustomWidget ("IconSet", ic);
 
-	SettingsSink_ = new SettingsSink (tr ("LeechCraft"),
+	SettingsSink_ = new SettingsSink ("LeechCraft",
 			XmlSettingsDialog_,
 			this);
 	ShortcutManager_ = new ShortcutManager (this);
@@ -460,7 +460,7 @@ void LeechCraft::MainWindow::handleLanguage ()
 		return;
 
 	if (QMessageBox::question (this,
-				tr ("LeechCraft"),
+				"LeechCraft",
 				tr ("This change requires restarting LeechCraft. "
 					"Do you want to restart now?"),
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
