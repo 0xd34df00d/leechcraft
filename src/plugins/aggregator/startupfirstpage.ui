@@ -39,13 +39,13 @@
      <item row="0" column="1">
       <widget class="QSpinBox" name="UpdateInterval_">
        <property name="suffix">
-        <string> min</string>
+        <string> min.</string>
        </property>
        <property name="minimum">
         <number>1</number>
        </property>
        <property name="maximum">
-        <number>3000</number>
+        <number>10080</number>
        </property>
        <property name="singleStep">
         <number>5</number>
@@ -99,7 +99,7 @@
       <item row="1" column="1">
        <widget class="QSpinBox" name="ItemsMaxAge_">
         <property name="suffix">
-         <string> days</string>
+         <string> day(s)</string>
         </property>
         <property name="minimum">
          <number>1</number>

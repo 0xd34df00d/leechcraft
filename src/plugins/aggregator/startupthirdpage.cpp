@@ -107,7 +107,7 @@ namespace LeechCraft
 						0);
 				handleCurrentIndexChanged (QString ("(") + language + ")");
 
-				setTitle (tr ("Aggregator"));
+				setTitle ("Aggregator");
 				setSubTitle (tr ("Select feeds"));
 			}
 

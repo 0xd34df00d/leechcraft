@@ -18,6 +18,9 @@
 
 #include "subscriptionsmanager.h"
 #include "core.h"
+#include "ui_subscriptionadddialog.h"
+#include <memory>
+#include <QMessageBox>
 
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 
@@ -35,5 +38,60 @@ void SubscriptionsManager::on_RemoveButton__released ()
 		return;
 
 	Core::Instance ().Remove (current);
+}
+
+void SubscriptionsManager::on_AddButton__released ()
+{
+	Ui::SubscriptionAddDialog subscriptionAdd;
+	std::auto_ptr<QDialog> subscriptionAddWidget (new QDialog (this));
+	subscriptionAdd.setupUi (subscriptionAddWidget.get ());
+
+	if (!subscriptionAddWidget->exec ())
+		return;
+
+	QUrl url (subscriptionAdd.URLEdit_->text ());
+	QUrl locationUrl;
+	if (url.queryItemValue ("location").contains ("%"))
+		locationUrl.setUrl (QUrl::fromPercentEncoding(url.queryItemValue ("location").toAscii ()));
+	else
+		locationUrl.setUrl (url.queryItemValue ("location"));
+
+	if (url.scheme () == "abp" &&
+			url.host () == "subscribe" &&
+			locationUrl.isValid ())
+	{
+		if (subscriptionAdd.TitleEdit_->text ().isEmpty ())
+		{
+			QMessageBox::warning (this, tr ("Error adding subscription"),
+					      tr ("Can't add subscription without title"),
+					      QMessageBox::Ok);
+			return;
+		}
+
+		if (Core::Instance ().Exists (subscriptionAdd.TitleEdit_->text ()))
+		{
+			QMessageBox::warning (this, tr ("Error adding subscription"),
+					      tr ("Subscription with such title allready exists"),
+					      QMessageBox::Ok);
+			return;
+		}
+
+		if (Core::Instance ().Exists (locationUrl))
+		{
+			QMessageBox::warning (this, tr ("Error adding subscription"),
+					      tr ("Subscription with such title allready exists"),
+					      QMessageBox::Ok);
+			return;
+		}
+	}
+	else
+	{
+		QMessageBox::warning (this, tr ("Error adding subscription"),
+					    tr ("Invalid URL<br />Valid url format is: abp://subscribe/?location=URL"),
+					    QMessageBox::Ok);
+		return;
+	}
+
+	Core::Instance ().Load (locationUrl, subscriptionAdd.TitleEdit_->text ());
 }
 

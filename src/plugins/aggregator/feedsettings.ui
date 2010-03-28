@@ -14,7 +14,7 @@
    <string>Feed settings</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="aggregatorresources.qrc">
     <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -175,10 +175,10 @@
              <string>Default</string>
             </property>
             <property name="suffix">
-             <string> min</string>
+             <string> min.</string>
             </property>
             <property name="maximum">
-             <number>300</number>
+             <number>10080</number>
             </property>
             <property name="singleStep">
              <number>5</number>
@@ -224,7 +224,7 @@
              <string>Default</string>
             </property>
             <property name="suffix">
-             <string> days</string>
+             <string> day(s)</string>
             </property>
             <property name="maximum">
              <number>3650</number>
@@ -287,7 +287,7 @@
   <tabstop>ChannelDescription_</tabstop>
  </tabstops>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="aggregatorresources.qrc"/>
  </resources>
  <connections>
   <connection>

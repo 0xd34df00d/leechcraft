@@ -39,6 +39,7 @@ namespace LeechCraft
 					public:
 						SubscriptionsManager (QWidget* = 0);
 					private slots:
+						void on_AddButton__released ();
 						void on_RemoveButton__released ();
 					};
 				};

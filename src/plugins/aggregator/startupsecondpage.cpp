@@ -34,7 +34,7 @@ namespace LeechCraft
 				lay->addWidget (Selector_);
 				Ui_.SelectorContainer_->setLayout (lay);
 
-				setTitle (tr ("Aggregator"));
+				setTitle ("Aggregator");
 				setSubTitle (tr ("Set storage options"));
 			}
 
