@@ -1,0 +1,111 @@
+.TH "eiskaltdcpp" 1 "18 Mar 2010"
+.SH "NAME"
+EiskaltDC++ \- graphical client for Direct Connect which uses Qt libraries
+.SH "SYNOPSIS"
+.PP
+.B eiskaltdcpp
+<magnet link> <dchub://link> <adc(s)://link>
+.br
+.B eiskaltdcpp
+<Key>
+.SH "DESCRIPTION"
+.PP
+\fBEiskaltDC++\fP is a program for UNIX-like systems that uses the Direct Connect and ADC protocol. It is compatible with other DC clients, such as the original DC from Neomodus, DC++ and derivatives. EiskaltDC++ also interoperates with all common DC hub software.
+.SH "COMMAND LINE OPTIONS"
+.RB "A summary of options is included below."
+.TP
+.BR "\-h,  \-\-help"
+display help and exit
+.TP
+.BR "\-v,  \-\-version"
+output version information and exit
+.SH "KEYBOARD SHORTCUTS"
+.TP
+.B "Ctrl+O"
+Open options window
+.TP
+.B "Ctrl+L"
+Open own filelist
+.TP
+.B "Ctrl+R"
+Refresh share
+.TP
+.B "Ctrl+H"
+Quick connect
+.TP
+.B "Ctrl+T"
+Show/hide transfers widget
+.TP
+.B "Ctrl+D"
+Show/hide downloads queue widget
+.TP
+.B "Ctrl+S"
+Open search widget
+.TP
+.B "Ctrl+F"
+Show/hide find in chat frame
+.TP
+.B "Ctrl+A"
+Select all
+.TP
+.B "Ctrl+W"
+Close current widget
+.TP
+.B "Ctrl+PageDown"
+Switch to the next widget
+.TP
+.B "Ctrl+PageUp"
+Switch to the previous widget
+.TP
+.B "Ctrl++"
+Zoom in text in the chat
+.TP
+.B "Ctrl+-"
+Zoom out text in the chat
+.TP
+.B "Shift+L"
+Open filelist from local filesystem
+.TP
+.B "Esc"
+Close dialog window or hide main window in tray
+.SH "CHAT COMMANDS"
+/aspell on/off - enable/disable spell checking (only if program was build with aspell support)
+.br
+/alias <ALIAS_NAME>::<COMMAND> - make alias /ALIAS_NAME to /COMMAND
+.br
+/alias purge <ALIAS_NAME> - remove alias
+.br
+/alias list - list all aliases
+.br
+/away <message> - set away-mode on/off
+.br
+/back - set away-mode off
+.br
+/browse <nick> - browse user files
+.br
+/clear - clear chat window
+.br
+/close - close this hub
+.br
+/fav - add this hub to favorites
+.br
+/grant <nick> - grant extra slot to user
+.br
+/help, /?, /h - show help
+.br
+/info <nick> - show info about user
+.br
+/me - say a third person
+.br
+/pm <nick> - begin private chat with user
+.br
+/sh <command> - start command and redirect output to the chat
+.SH AUTHOR
+This program was written by Andrey Karlov <dein.negativ@gmail.com>.
+.br
+EiskaltDC++ homepage: \fBhttp://code.google.com/p/eiskaltdc/\fR
+.SH "BUG REPORTS"
+If you find a bug in EiskaltDC++ please report it here:
+.B http://code.google.com/p/eiskaltdc/issues/list
+.PP
+This manual page was written by Boris Pek <tehnick-8@mail.ru> for the Debian project (and may be used by others).
