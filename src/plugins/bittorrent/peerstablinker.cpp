@@ -157,7 +157,8 @@ namespace LeechCraft
 
 				QTime lastRequest (0, 0, 0);
 				lastRequest.addMSecs (libtorrent::total_milliseconds (p.PI_->last_request));
-				Ui_->PeerLastRequest_->setText (tr ("%1 (%n second(s) remaining)", "", p.PI_->request_timeout)
+				Ui_->PeerLastRequest_->setText (tr ("%1 (%n second(s) remaining)",
+							"", p.PI_->request_timeout)
 						.arg (lastRequest.toString ()));
 
 				QTime lastActive (0, 0, 0);
