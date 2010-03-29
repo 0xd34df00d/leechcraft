@@ -362,7 +362,7 @@ namespace
 
 		if (localeName == "system")
 		{
-			localeName = QString(::getenv ("LANG"));
+			localeName = QString (::getenv ("LANG")).left (5);
 			if (localeName.isEmpty () || localeName.size () != 5)
 				localeName = QLocale::system ().name ();
 		}
