@@ -42,7 +42,7 @@ namespace LeechCraft
 
 				Dialog_ = new ShooterDialog (Proxy_->GetMainWindow ());
 
-				ShotAction_ = new QAction (Proxy_->GetIcon ("screenshot"),
+				ShotAction_ = new QAction (GetIcon (),
 						tr ("Make a screenshot"),
 						this);
 				connect (ShotAction_,
@@ -71,7 +71,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/auscrie.svg");
 			}
 
 			QStringList Plugin::Provides () const
