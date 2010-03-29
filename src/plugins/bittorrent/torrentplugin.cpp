@@ -498,8 +498,8 @@ namespace LeechCraft
 				}
 
 				if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
-							tr ("Do you really want to delete %n torrents?", 0, rows.size ()),
+							"LeechCraft",
+							tr ("Do you really want to delete %n torrent(s)?", 0, rows.size ()),
 							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 					return;
 
@@ -894,7 +894,7 @@ namespace LeechCraft
 			void TorrentPlugin::SetupActions ()
 			{
 				Toolbar_.reset (new QToolBar ());
-				Toolbar_->setWindowTitle (tr ("BitTorrent"));
+				Toolbar_->setWindowTitle ("BitTorrent");
 			
 				OpenTorrent_.reset (new QAction (tr ("Open torrent..."),
 							Toolbar_.get ()));

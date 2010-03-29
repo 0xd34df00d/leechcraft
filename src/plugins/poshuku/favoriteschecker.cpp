@@ -48,7 +48,7 @@ namespace LeechCraft
 				if (Pending_.size ())
 				{
 					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Already checking links, please wait..."));
 					return;
 				}
@@ -168,7 +168,7 @@ namespace LeechCraft
 								res.StatusCode_ > 399)
 						{
 							++serverStuff;
-							mres = tr ("HTTP %1")
+							mres = QString ("HTTP %1")
 								.arg (res.StatusCode_);
 						}
 						else
@@ -208,7 +208,7 @@ namespace LeechCraft
 						.arg (BuildMessage (redirectsList, "redirected", 10));
 
 					QMessageBox::information (Core::Instance ().GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
+							"LeechCraft",
 							message);
 
 					ProgressDialog_->reset ();

@@ -11,10 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Poshuku</string>
+   <string notr="true">Poshuku</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="poshukuresources.qrc">
     <normaloff>:/resources/images/poshuku.svg</normaloff>:/resources/images/poshuku.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -35,7 +35,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="poshukuresources.qrc"/>
  </resources>
  <connections/>
 </ui>

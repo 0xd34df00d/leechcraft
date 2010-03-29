@@ -743,7 +743,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::ReadOnly))
 				{
 					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Could not open file %1 for reading.")
 								.arg (filename));
 					return;
@@ -758,7 +758,7 @@ namespace LeechCraft
 				catch (const std::exception& e)
 				{
 					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
+							"LeechCraft",
 							e.what ());
 				}
 			}
@@ -786,7 +786,7 @@ namespace LeechCraft
 				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 				{
 					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Could not open file %1 for writing.")
 								.arg (filename));
 					return;

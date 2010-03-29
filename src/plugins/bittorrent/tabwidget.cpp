@@ -481,7 +481,7 @@ namespace LeechCraft
 				Ui_.LabelTracker_->
 					setText (QString::fromStdString (i->Status_.current_tracker));
 				Ui_.LabelDestination_->
-					setText (tr ("<a href='%1'>%1</a>")
+					setText (QString ("<a href='%1'>%1</a>")
 							.arg (i->Destination_));
 				Ui_.LabelName_->
 					setText (QString::fromUtf8 (i->Info_->name ().c_str ()));

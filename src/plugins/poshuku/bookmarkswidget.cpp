@@ -145,7 +145,7 @@ namespace LeechCraft
 
 				if (newURL.isEmpty ())
 					QMessageBox::critical (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("URL of a bookmark can't be empty."));
 
 				Core::Instance ().GetFavoritesModel ()->ChangeURL (source, newURL);

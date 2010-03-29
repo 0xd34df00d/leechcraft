@@ -31,7 +31,7 @@ namespace LeechCraft
 			{
 				Ui_.setupUi (this);
 
-				setTitle (tr ("BitTorrent"));
+				setTitle ("BitTorrent");
 				setSubTitle (tr ("Set basic options"));
 			}
 

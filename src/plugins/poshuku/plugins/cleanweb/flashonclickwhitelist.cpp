@@ -125,7 +125,7 @@ namespace LeechCraft
 						if (Matches (str))
 						{
 							QMessageBox::warning (this,
-									tr ("LeechCraft"),
+									"LeechCraft",
 									tr ("This URL is already matched by another whitelist entry."));
 							return;
 						}

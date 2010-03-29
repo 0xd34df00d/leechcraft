@@ -130,7 +130,7 @@ namespace LeechCraft
 				file.close ();
 
 				if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Torrent file generated: %1.<br />Do you want to start seeding now?")
 								.arg (QDir::toNativeSeparators (filename)),
 							QMessageBox::Yes | QMessageBox::No) ==
