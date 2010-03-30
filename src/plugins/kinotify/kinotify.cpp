@@ -110,11 +110,15 @@ namespace LeechCraft
 						break;
 				}
 
+				QString path;
 				QMap<int, QString> sizes = Proxy_->GetIconPath (mi);
-				int size = 0;
-				if (!sizes.contains (size))
-					size = sizes.keys ().last ();
-				QString path = sizes [size];
+				if (sizes.size ())
+				{
+					int size = 0;
+					if (!sizes.contains (size))
+						size = sizes.keys ().last ();
+					path = sizes [size];
+				}
 				kn->setMessage (n->Header_, n->Text_, path);
 				kn->send ();
 			}
