@@ -1,4 +1,4 @@
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "Magnet.h"
 #include "WulforUtil.h"
 #include "icons/gv.xpm"
@@ -556,15 +556,15 @@ bool WulforUtil::openUrl(const QString &url){
         QDesktopServices::openUrl(QUrl::fromEncoded(url.toAscii()));
     }
     else if (url.startsWith("adc://") || url.startsWith("adcs://")){
-        MainWindow::getInstance()->newHubFrame(url, "UTF-8");
+        MainLayoutWrapper::getInstance()->newHubFrame(url, "UTF-8");
     }
     else if (url.startsWith("dchub://")){
-        MainWindow::getInstance()->newHubFrame(url, WSGET(WS_DEFAULT_LOCALE));
+        MainLayoutWrapper::getInstance()->newHubFrame(url, WSGET(WS_DEFAULT_LOCALE));
     }
     else if (url.startsWith("magnet:")){
         QString magnet = url;
 
-        Magnet *m = new Magnet(MainWindow::getInstance());
+        Magnet *m = new Magnet(MainLayoutWrapper::getInstance());
 
         m->setLink(magnet);
         m->setModal(true);
@@ -603,7 +603,7 @@ bool WulforUtil::getUserCommandParams(QString command, dcpp::StringMap &ucParams
 
         if (done.find(name.toStdString()) == done.end()){
             bool bOk;
-            QString input = QInputDialog::getText(MainWindow::getInstance(), tr("Enter parameter value"), name, QLineEdit::Normal, store, &bOk);
+            QString input = QInputDialog::getText(MainLayoutWrapper::getInstance(), tr("Enter parameter value"), name, QLineEdit::Normal, store, &bOk);
 
             if (bOk){
                 store = input;

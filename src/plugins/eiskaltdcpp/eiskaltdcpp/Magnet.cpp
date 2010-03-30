@@ -16,7 +16,7 @@
 
 #include "WulforUtil.h"
 #include "SearchFrame.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "Func.h"
 #include <QtDebug>
 using namespace dcpp;
@@ -96,9 +96,9 @@ void Magnet::setLink(const QString &link){
 
     setWindowTitle(lineEdit_FNAME->text());
 
-    if (!MainWindow::getInstance()->isVisible()){
-        MainWindow::getInstance()->show();
-        MainWindow::getInstance()->raise();
+    if (!MainLayoutWrapper::getInstance()->isVisible()){
+        MainLayoutWrapper::getInstance()->show();
+        MainLayoutWrapper::getInstance()->raise();
     }
 
     if (WIGET(WI_DEF_MAGNET_ACTION) != 0) {

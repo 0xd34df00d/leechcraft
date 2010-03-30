@@ -1,5 +1,5 @@
 #include "FavoriteUsers.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "WulforUtil.h"
 #include "FavoriteUsersModel.h"
 
@@ -54,7 +54,7 @@ FavoriteUsers::FavoriteUsers(QWidget *parent) :
 
     FavoriteManager::getInstance()->addListener(this);
 
-    MainWindow::getInstance()->addArenaWidget(this);
+    MainLayoutWrapper::getInstance()->addArenaWidget(this);
 }
 
 FavoriteUsers::~FavoriteUsers(){
@@ -64,9 +64,9 @@ FavoriteUsers::~FavoriteUsers(){
 
 void FavoriteUsers::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidget(this);
 
         WSSET(WS_FAVUSERS_STATE, treeView->header()->saveState().toBase64());
 
@@ -75,8 +75,8 @@ void FavoriteUsers::closeEvent(QCloseEvent *e){
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }

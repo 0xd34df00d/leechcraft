@@ -4,7 +4,7 @@
 #include <QMouseEvent>
 
 #include "ArenaWidget.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 
 ToolBar::ToolBar(QWidget *parent):
     QToolBar(parent),
@@ -36,7 +36,7 @@ void ToolBar::showEvent(QShowEvent *e){
 
     if (tabbar && e->spontaneous()){
         tabbar->hide();// I know, this is crap, but tabbar->repaint() doesn't fit all tabs in tabbar properly when
-        tabbar->show();// MainWindow becomes visible (restoring from system tray)
+        tabbar->show();// MainLayoutWrapper becomes visible (restoring from system tray)
     }
 }
 
@@ -103,7 +103,7 @@ void ToolBar::slotIndexChanged(int index){
     if (!awgt || !awgt->getWidget())
         return;
 
-    MainWindow::getInstance()->mapWidgetOnArena(awgt);
+    MainLayoutWrapper::getInstance()->mapWidgetOnArena(awgt);
 }
 
 void ToolBar::slotTabMoved(int from, int to){
@@ -187,7 +187,7 @@ void ToolBar::redraw(){
     ArenaWidget *awgt = findWidgetForIndex(tabbar->currentIndex());
 
     if (awgt)
-        MainWindow::getInstance()->setWindowTitle(awgt->getArenaTitle());
+        MainLayoutWrapper::getInstance()->setWindowTitle(awgt->getArenaTitle());
 }
 
 void ToolBar::nextTab(){

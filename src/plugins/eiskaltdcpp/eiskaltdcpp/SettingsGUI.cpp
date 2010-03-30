@@ -1,7 +1,7 @@
 #include "SettingsGUI.h"
 #include "WulforSettings.h"
 #include "WulforUtil.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "EmoticonFactory.h"
 
 #include <QListWidgetItem>
@@ -336,7 +336,7 @@ void SettingsGUI::slotBrowseLng(){
         WSSET(WS_TRANSLATION_FILE, file);
 
         WulforSettings::getInstance()->loadTranslation();
-        MainWindow::getInstance()->retranslateUi();
+        MainLayoutWrapper::getInstance()->retranslateUi();
 
         lineEdit_LANGFILE->setText(WSGET(WS_TRANSLATION_FILE));
     }
@@ -348,7 +348,7 @@ void SettingsGUI::slotLngIndexChanged(int index){
     WSSET(WS_TRANSLATION_FILE, file);
 
     WulforSettings::getInstance()->loadTranslation();
-    MainWindow::getInstance()->retranslateUi();
+    MainLayoutWrapper::getInstance()->retranslateUi();
 
     lineEdit_LANGFILE->setText(WSGET(WS_TRANSLATION_FILE));
 }

@@ -1,7 +1,7 @@
 #include "ShareBrowser.h"
 #include "WulforUtil.h"
 #include "FileBrowserModel.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "SearchFrame.h"
 
 #include "dcpp/SettingsManager.h"
@@ -146,9 +146,9 @@ ShareBrowser::~ShareBrowser(){
     delete list_model;
     delete arena_menu;
 
-    MainWindow::getInstance()->remWidgetFromArena(this);
-    MainWindow::getInstance()->remArenaWidget(this);
-    MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
+    MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
+    MainLayoutWrapper::getInstance()->remArenaWidget(this);
+    MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
 
     Menu::deleteInstance();
 
@@ -317,7 +317,7 @@ void ShareBrowser::download(dcpp::DirectoryListing::Directory *dir, const QStrin
             listing.download(dir, target.toStdString(), false);
         }
         catch (const Exception &e){
-            MainWindow::getInstance()->setStatusMessage(_q(e.getError()));
+            MainLayoutWrapper::getInstance()->setStatusMessage(_q(e.getError()));
         }
     }
 }
@@ -330,7 +330,7 @@ void ShareBrowser::download(dcpp::DirectoryListing::File *file, const QString &t
             listing.download(file, (target+name).toStdString(), false, false);
         }
         catch (const Exception &e){
-            MainWindow::getInstance()->setStatusMessage(_q(e.getError()));
+            MainLayoutWrapper::getInstance()->setStatusMessage(_q(e.getError()));
         }
     }
 }
@@ -611,9 +611,9 @@ void ShareBrowser::slotLoaderFinish(){
     /*treeView_LPANE->resizeColumnToContents(0);
     treeView_LPANE->resizeColumnToContents(1);*/
 
-    MainWindow::getInstance()->addArenaWidget(this);
-    MainWindow::getInstance()->mapWidgetOnArena(this);
-    MainWindow::getInstance()->addArenaWidgetOnToolbar(this);
+    MainLayoutWrapper::getInstance()->addArenaWidget(this);
+    MainLayoutWrapper::getInstance()->mapWidgetOnArena(this);
+    MainLayoutWrapper::getInstance()->addArenaWidgetOnToolbar(this);
 
 }
 

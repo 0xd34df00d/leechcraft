@@ -1,6 +1,6 @@
 #include "FavoriteHubs.h"
 #include "FavoriteHubModel.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "WulforUtil.h"
 #include "WulforSettings.h"
 
@@ -29,16 +29,16 @@ FavoriteHubs::FavoriteHubs(QWidget *parent):
 FavoriteHubs::~FavoriteHubs(){
     FavoriteManager::getInstance()->removeListener(this);
 
-    MainWindow::getInstance()->remArenaWidget(this);
+    MainLayoutWrapper::getInstance()->remArenaWidget(this);
 
     delete model;
 }
 
 void FavoriteHubs::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidget(this);
 
         save();
 
@@ -47,8 +47,8 @@ void FavoriteHubs::closeEvent(QCloseEvent *e){
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }
@@ -107,7 +107,7 @@ void FavoriteHubs::init(){
     treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     treeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    MainWindow::getInstance()->addArenaWidget(this);
+    MainLayoutWrapper::getInstance()->addArenaWidget(this);
 
     load();
 
@@ -343,7 +343,7 @@ void FavoriteHubs::slotContexMenu(const QPoint &){
         }
         else if (res == conn && entry){
             QString encoding = WulforUtil::getInstance()->dcEnc2QtEnc(_q(entry->getEncoding()));
-           MainWindow::getInstance()->newHubFrame(address, encoding);
+           MainLayoutWrapper::getInstance()->newHubFrame(address, encoding);
         }
         else if (res == add_new){
             FavoriteHubEditor editor;

@@ -8,7 +8,7 @@
 #include <QClipboard>
 
 #include "DownloadQueueModel.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "SearchFrame.h"
 #include "HubFrame.h"
 #include "HubManager.h"
@@ -205,9 +205,9 @@ DownloadQueue::~DownloadQueue(){
 
 void DownloadQueue::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidget(this);
 
         //setAttribute(Qt::WA_DeleteOnClose);
 
@@ -216,8 +216,8 @@ void DownloadQueue::closeEvent(QCloseEvent *e){
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }
@@ -258,7 +258,7 @@ void DownloadQueue::init(){
 
     loadList();
 
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
 
     MW->addArenaWidget(this);
 }

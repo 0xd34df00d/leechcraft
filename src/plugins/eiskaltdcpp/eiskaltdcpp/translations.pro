@@ -1,4 +1,4 @@
-HEADERS = HEADERS = MainWindow.h \
+HEADERS = HEADERS = MainLayoutWrapper.h \
     Antispam.h \
     AntiSpamFrame.h \
     IPFilter.h \
@@ -55,7 +55,7 @@ SOURCES = main.cpp \
     IPFilterFrame.cpp \
     IPFilterModel.cpp \
     FavoriteUsers.cpp \
-    MainWindow.cpp \
+    MainLayoutWrapper.cpp \
     HubFrame.cpp \
     WulforManager.cpp \
     UserListModel.cpp \

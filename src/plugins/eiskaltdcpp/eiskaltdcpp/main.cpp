@@ -27,10 +27,10 @@ using namespace std;
 #endif
 
 #include <QApplication>
-#include <QMainWindow>
+#include <QMainLayoutWrapper>
 #include <QtDBus>
 
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 
 void callBack(void* x, const std::string& a)
 {
@@ -84,8 +84,8 @@ int main(int argc, char *argv[])
 
     HubManager::newInstance();
 
-    MainWindow::newInstance();
-    MainWindow::getInstance()->setUnload(!WBGET(WB_TRAY_ENABLED));
+    MainLayoutWrapper::newInstance();
+    MainLayoutWrapper::getInstance()->setUnload(!WBGET(WB_TRAY_ENABLED));
 
     WulforSettings::getInstance()->loadTheme();
 
@@ -102,12 +102,12 @@ int main(int argc, char *argv[])
     Notification::newInstance();
     Notification::getInstance()->enableTray(WBGET(WB_TRAY_ENABLED));
 
-    MainWindow::getInstance()->autoconnect();
-    MainWindow::getInstance()->show();
-    MainWindow::getInstance()->parseCmdLine();
+    MainLayoutWrapper::getInstance()->autoconnect();
+    MainLayoutWrapper::getInstance()->show();
+    MainLayoutWrapper::getInstance()->parseCmdLine();
 
     if (WBGET(WB_MAINWINDOW_HIDE))
-        MainWindow::getInstance()->hide();
+        MainLayoutWrapper::getInstance()->hide();
 
     ret = app.exec();
 
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 
     Notification::deleteInstance();
 
-    MainWindow::deleteInstance();
+    MainLayoutWrapper::deleteInstance();
 
     HubManager::deleteInstance();
 

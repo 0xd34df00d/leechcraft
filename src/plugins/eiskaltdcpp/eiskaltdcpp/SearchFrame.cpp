@@ -11,7 +11,7 @@
 #include <QMessageBox>
 
 #include "SearchFrame.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "HubFrame.h"
 #include "HubManager.h"
 #include "SearchModel.h"
@@ -248,8 +248,8 @@ SearchFrame::~SearchFrame(){
     SearchManager::getInstance()->removeListener(this);
     ClientManager::getInstance()->removeListener(this);
 
-    MainWindow::getInstance()->remArenaWidget(this);
-    MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
+    MainLayoutWrapper::getInstance()->remArenaWidget(this);
+    MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
 
     delete model;
     delete arena_menu;
@@ -318,7 +318,7 @@ void SearchFrame::init(){
     connect(timer1, SIGNAL(timeout()), this, SLOT(slotTimer()));
     connect(pushButton_SIDEPANEL, SIGNAL(clicked()), this, SLOT(slotToggleSidePanel()));
 
-    MainWindow *mwnd = MainWindow::getInstance();
+    MainLayoutWrapper *mwnd = MainLayoutWrapper::getInstance();
 
     comboBox_SEARCHSTR->installEventFilter(this);
 
@@ -662,7 +662,7 @@ void SearchFrame::searchFile(const QString &file){
 }
 
 void SearchFrame::slotStartSearch(){
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
     QString s = comboBox_SEARCHSTR->currentText();
     StringList clients;
 

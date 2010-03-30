@@ -1,5 +1,5 @@
 #include "SettingsConnection.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 
 #include "dcpp/stdinc.h"
 #include "dcpp/DCPlusPlus.h"
@@ -132,7 +132,7 @@ void SettingsConnection::ok(){
     if (old_mode != SETTING(INCOMING_CONNECTIONS) || old_tcp != (SETTING(TCP_PORT))
         || old_udp != (SETTING(UDP_PORT)) || old_tls != (SETTING(TLS_PORT)))
         {
-            MainWindow::getInstance()->startSocket();
+            MainLayoutWrapper::getInstance()->startSocket();
         }
 }
 

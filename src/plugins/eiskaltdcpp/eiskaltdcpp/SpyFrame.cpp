@@ -1,5 +1,5 @@
 #include "SpyFrame.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "SpyModel.h"
 #include "WulforUtil.h"
 #include "Func.h"
@@ -23,7 +23,7 @@ SpyFrame::SpyFrame(QWidget *parent) :
     treeView->setModel(model);
     treeView->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    MainWindow::getInstance()->addArenaWidget(this);
+    MainLayoutWrapper::getInstance()->addArenaWidget(this);
 
     connect(pushButton, SIGNAL(clicked()), this, SLOT(slotStartStop()));
     connect(pushButton_CLEAR, SIGNAL(clicked()), this, SLOT(slotClear()));
@@ -36,9 +36,9 @@ SpyFrame::~SpyFrame(){
 
 void SpyFrame::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidget(this);
 
         //setAttribute(Qt::WA_DeleteOnClose);
 
@@ -57,8 +57,8 @@ void SpyFrame::closeEvent(QCloseEvent *e){
                 slotStartStop();
         }
 
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }

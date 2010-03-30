@@ -1,5 +1,5 @@
 #include "PublicHubs.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "WulforSettings.h"
 
 #include <QApplication>
@@ -22,7 +22,7 @@ PublicHubs::PublicHubs(QWidget *parent) :
 
     FavoriteManager::getInstance()->addListener(this);
 
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
     MW->addArenaWidget(this);
 
     entries = FavoriteManager::getInstance()->getPublicHubs();
@@ -50,17 +50,17 @@ PublicHubs::~PublicHubs(){
 
 void PublicHubs::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidget(this);
 
         WSSET(WS_PUBLICHUBS_STATE, treeView->header()->saveState().toBase64());
 
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }
@@ -130,7 +130,7 @@ void PublicHubs::slotContextMenu(){
 
     if (ret == connect){
         PublicHubItem * item = NULL;
-        MainWindow *MW = MainWindow::getInstance();
+        MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
 
         foreach (QModelIndex i, indexes){
             item = reinterpret_cast<PublicHubItem*>(i.internalPointer());
