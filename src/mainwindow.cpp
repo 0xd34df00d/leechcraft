@@ -375,6 +375,12 @@ void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 		qobject_cast<IMultiTabsWidget*> (GetTabWidget ()->currentWidget ());
 	if (imtw)
 		imtw->NewTabRequested ();
+	else
+	{
+		QMenu *menu = Core::Instance ()
+			.GetTabContainer ()->GetNewTabMenu ();
+		menu->exec ();
+	}
 }
 
 void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
