@@ -7,7 +7,7 @@ add_definitions(-DFS_USAGE_C)
 IF (NOT WIN32)
 aux_source_directory(${PROJECT_SOURCE_DIR} gnulib_SRCS)
 # actual target:
-ADD_LIBRARY(gnu STATIC ${gnulib_SRCS})
+ADD_LIBRARY(gnu SHARED ${gnulib_SRCS})
 ENDIF (NOT WIN32)
 elseif (FS_USAGE_C)
 message(STATUS "Sorry but this lib don't build without necessary headers")

@@ -23,7 +23,7 @@
 #include "ArenaWidget.h"
 #include "WulforUtil.h"
 #include "FinishedTransfersModel.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 
 using namespace dcpp;
 
@@ -92,9 +92,9 @@ protected:
 
     virtual void closeEvent(QCloseEvent *e){
         if (isUnload()){
-            MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-            MainWindow::getInstance()->remWidgetFromArena(this);
-            MainWindow::getInstance()->remArenaWidget(this);
+            MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+            MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
+            MainLayoutWrapper::getInstance()->remArenaWidget(this);
 
             //setAttribute(Qt::WA_DeleteOnClose);
 
@@ -106,8 +106,8 @@ protected:
             e->accept();
         }
         else {
-            MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-            MainWindow::getInstance()->remWidgetFromArena(this);
+            MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+            MainLayoutWrapper::getInstance()->remWidgetFromArena(this);
 
             e->ignore();
         }
@@ -125,7 +125,7 @@ private:
 
         loadList();
 
-        MainWindow::getInstance()->addArenaWidget(this);
+        MainLayoutWrapper::getInstance()->addArenaWidget(this);
         FinishedManager::getInstance()->addListener(this);
 
         setUnload(false);

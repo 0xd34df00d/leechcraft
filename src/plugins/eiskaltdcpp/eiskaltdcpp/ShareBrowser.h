@@ -21,7 +21,7 @@
 #include "dcpp/DirectoryListing.h"
 #include "dcpp/Singleton.h"
 
-class MainWindow;
+class MainLayoutWrapper;
 
 class FileBrowserModel;
 class FileBrowserItem;

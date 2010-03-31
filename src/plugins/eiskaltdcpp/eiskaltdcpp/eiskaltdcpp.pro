@@ -2,7 +2,7 @@ QT += xml
 CONFIG += link_pkgconfig
 PKGCONFIG += libupnp
 INCLUDEPATH += ../dcpp
-HEADERS = MainWindow.h \
+HEADERS = MainLayoutWrapper.h \
     Func.h \
     WulforManager.h \
     ../dcpp/HashBloom.h \
@@ -149,7 +149,7 @@ HEADERS = MainWindow.h \
     PublicHubModel.h \
     PublicHubs.h
 SOURCES = main.cpp \
-    MainWindow.cpp \
+    MainLayoutWrapper.cpp \
     ../dcpp/HashManager.cpp \
     ../dcpp/SettingsManager.cpp \
     ../dcpp/DCPlusPlus.cpp \

@@ -10,7 +10,7 @@
 
 #include "QuickConnect.h"
 #include "HubFrame.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "WulforSettings.h"
 
 QuickConnect::QuickConnect(QWidget *parent) : QDialog(parent) {
@@ -43,7 +43,7 @@ void QuickConnect::slotAccept() {
     if (hub.startsWith("adc://") || hub.startsWith("adcs://"))
         encoding = "UTF-8";
     if (!hub.isEmpty()) {
-        MainWindow::getInstance()->newHubFrame(hub, (encoding.isEmpty())? (WSGET(WS_DEFAULT_LOCALE)) : (encoding));
+        MainLayoutWrapper::getInstance()->newHubFrame(hub, (encoding.isEmpty())? (WSGET(WS_DEFAULT_LOCALE)) : (encoding));
 
         QStringList list = WulforSettings::getInstance()->getStr(WS_QCONNECT_HISTORY).split(" ", QString::SkipEmptyParts);
 

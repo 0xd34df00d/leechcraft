@@ -2,7 +2,7 @@
 #include "WulforSettings.h"
 #include "WulforUtil.h"
 #include "HubManager.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "Notification.h"
 #include "EmoticonFactory.h"
 #include "EmoticonDialog.h"
@@ -121,14 +121,14 @@ bool PMWindow::eventFilter(QObject *obj, QEvent *e){
 void PMWindow::closeEvent(QCloseEvent *c_e){
     emit privateMessageClosed(cid);
 
-    MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-    MainWindow::getInstance()->remArenaWidget(this);
+    MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
+    MainLayoutWrapper::getInstance()->remArenaWidget(this);
 
     if (hasMessages)
         unread--;
 
     hasMessages = false;
-    MainWindow::getInstance()->redrawToolPanel();
+    MainLayoutWrapper::getInstance()->redrawToolPanel();
 
     if (unread == 0)
         Notify->resetTrayIcon();
@@ -144,7 +144,7 @@ void PMWindow::showEvent(QShowEvent *e){
             unread--;
 
         hasMessages = false;
-        MainWindow::getInstance()->redrawToolPanel();
+        MainLayoutWrapper::getInstance()->redrawToolPanel();
 
         if (unread == 0)
             Notify->resetTrayIcon();
@@ -217,7 +217,7 @@ void PMWindow::addOutput(QString msg){
     if (!isVisible()){
         hasMessages = true;
         unread++;
-        MainWindow::getInstance()->redrawToolPanel();
+        MainLayoutWrapper::getInstance()->redrawToolPanel();
     }
 }
 
@@ -243,7 +243,7 @@ void PMWindow::slotHub(){
     HubFrame *fr = HubManager::getInstance()->getHub(hubUrl);
 
     if (fr)
-        MainWindow::getInstance()->mapWidgetOnArena(fr);
+        MainLayoutWrapper::getInstance()->mapWidgetOnArena(fr);
 }
 
 void PMWindow::slotShare(){
@@ -255,7 +255,7 @@ void PMWindow::slotShare(){
 
             if (user){
                 if (user == ClientManager::getInstance()->getMe())
-                    MainWindow::getInstance()->browseOwnFiles();
+                    MainLayoutWrapper::getInstance()->browseOwnFiles();
                 else
                     QueueManager::getInstance()->addList(user, _tq(hubUrl), QueueItem::FLAG_CLIENT_VIEW);
             }

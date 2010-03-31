@@ -7,7 +7,7 @@
 
 #include "WulforUtil.h"
 #include "WulforSettings.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "ShellCommandRunner.h"
 
 static int getBitPos(unsigned eventId){
@@ -41,7 +41,7 @@ void Notification::enableTray(bool enable){
 
         tray = NULL;
 
-        MainWindow::getInstance()->setUnload(true);
+        MainLayoutWrapper::getInstance()->setUnload(true);
 
         WBSET(WB_TRAY_ENABLED, false);
     }
@@ -78,7 +78,7 @@ void Notification::enableTray(bool enable){
 
         tray->show();
 
-        MainWindow::getInstance()->setUnload(false);
+        MainLayoutWrapper::getInstance()->setUnload(false);
 
         WBSET(WB_TRAY_ENABLED, true);
     }
@@ -101,14 +101,14 @@ void Notification::showMessage(Notification::Type t, const QString &title, const
             if (title.isEmpty() || msg.isEmpty())
                 break;
 
-            if ((MainWindow::getInstance()->isActiveWindow() || MainWindow::getInstance()->isVisible() ) &&
+            if ((MainLayoutWrapper::getInstance()->isActiveWindow() || MainLayoutWrapper::getInstance()->isVisible() ) &&
                 !WBGET(WB_NOTIFY_SHOW_ON_ACTIVE))
                 break;
 
             if (!(static_cast<unsigned>(WIGET(WI_NOTIFY_EVENTMAP)) & static_cast<unsigned>(t)))
                 break;
 
-            if (tray && t == PM && (!MainWindow::getInstance()->isVisible() || WBGET(WB_NOTIFY_CH_ICON_ALWAYS)))
+            if (tray && t == PM && (!MainLayoutWrapper::getInstance()->isVisible() || WBGET(WB_NOTIFY_CH_ICON_ALWAYS)))
                 tray->setIcon(WulforUtil::getInstance()->getPixmap(WulforUtil::eiMESSAGE_TRAY_ICON));
 
             if (notify)
@@ -155,12 +155,12 @@ void Notification::reloadSounds(){
 }
 
 void Notification::slotExit(){
-    MainWindow::getInstance()->setUnload(true);
-    MainWindow::getInstance()->close();
+    MainLayoutWrapper::getInstance()->setUnload(true);
+    MainLayoutWrapper::getInstance()->close();
 }
 
 void Notification::slotShowHide(){
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
 
     if (MW->isVisible()){
         MW->hide();

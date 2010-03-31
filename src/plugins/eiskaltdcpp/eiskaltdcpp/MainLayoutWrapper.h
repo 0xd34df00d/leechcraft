@@ -45,17 +45,17 @@ using namespace dcpp;
 class FavoriteHubs;
 class DownloadQueue;
 class ToolBar;
-class MainWindow;
+class MainLayoutWrapper;
 
 class QProgressBar;
 
-class MainWindowCustomEvent: public QEvent{
+class MainLayoutWrapperCustomEvent: public QEvent{
 public:
     static const QEvent::Type Event = static_cast<QEvent::Type>(1210);
 
-    MainWindowCustomEvent(FuncBase *f = NULL): QEvent(Event), f(f)
+    MainLayoutWrapperCustomEvent(FuncBase *f = NULL): QEvent(Event), f(f)
     {}
-    virtual ~MainWindowCustomEvent(){ delete f; }
+    virtual ~MainLayoutWrapperCustomEvent(){ delete f; }
 
     FuncBase *func() { return f; }
 private:
@@ -72,16 +72,16 @@ public:
     About(QWidget *parent): QDialog(parent){ setupUi(this); }
 };
 
-class MainWindow:
+class MainLayoutWrapper:
         public QMainWindow,
-        public dcpp::Singleton<MainWindow>,
+        public dcpp::Singleton<MainLayoutWrapper>,
         private LogManagerListener,
         private TimerManagerListener,
         private QueueManagerListener
 {
     Q_OBJECT
 
-friend class dcpp::Singleton<MainWindow>;
+friend class dcpp::Singleton<MainLayoutWrapper>;
 
     public:
 
@@ -177,8 +177,8 @@ friend class dcpp::Singleton<MainWindow>;
         void slotAboutQt();
 
     private:
-        MainWindow (QWidget *parent=NULL);
-        virtual ~MainWindow();
+        MainLayoutWrapper (QWidget *parent=NULL);
+        virtual ~MainLayoutWrapper();
 
         /** LogManagerListener */
         virtual void on(dcpp::LogManagerListener::Message, time_t t, const std::string&) throw();
@@ -286,9 +286,9 @@ public:
     EiskaltApp(int argc, char *argv[]): QApplication(argc, argv){}
 
     void commitData(QSessionManager& manager){
-        if (MainWindow::getInstance()){
-            MainWindow::getInstance()->setUnload(true);
-            MainWindow::getInstance()->close();
+        if (MainLayoutWrapper::getInstance()){
+            MainLayoutWrapper::getInstance()->setUnload(true);
+            MainLayoutWrapper::getInstance()->close();
         }
 
         manager.release();

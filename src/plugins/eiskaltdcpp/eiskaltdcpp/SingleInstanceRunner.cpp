@@ -1,5 +1,5 @@
 #include "SingleInstanceRunner.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "Func.h"
 
 SingleInstanceRunner::SingleInstanceRunner()
@@ -55,5 +55,5 @@ void SingleInstanceRunner::slotReadyRead(){
     QString data = sock->readAll();
 
     if (!data.isEmpty())
-        MainWindow::getInstance()->parseInstanceLine(data);
+        MainLayoutWrapper::getInstance()->parseInstanceLine(data);
 }

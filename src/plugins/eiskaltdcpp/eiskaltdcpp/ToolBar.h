@@ -9,7 +9,7 @@
 #include "ArenaWidget.h"
 
 class ArenaWidget;
-class MainWindow;
+class MainLayoutWrapper;
 
 class ToolBar :
     public QToolBar

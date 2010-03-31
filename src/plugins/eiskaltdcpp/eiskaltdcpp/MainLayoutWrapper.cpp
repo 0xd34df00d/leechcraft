@@ -1,4 +1,4 @@
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 
 #include <stdlib.h>
 #include <string>
@@ -56,7 +56,7 @@
 
 using namespace std;
 
-MainWindow::MainWindow (QWidget *parent):
+MainLayoutWrapper::MainLayoutWrapper (QWidget *parent):
         QMainWindow(parent),
         statusLabel(NULL)
 {
@@ -107,7 +107,7 @@ MainWindow::MainWindow (QWidget *parent):
         qApp->setStyle(WSGET(WS_APP_THEME));
 }
 
-MainWindow::~MainWindow(){
+MainLayoutWrapper::~MainLayoutWrapper(){
     LogManager::getInstance()->removeListener(this);
     TimerManager::getInstance()->removeListener(this);
     QueueManager::getInstance()->removeListener(this);
@@ -129,7 +129,7 @@ MainWindow::~MainWindow(){
     delete tBar;
 }
 
-void MainWindow::closeEvent(QCloseEvent *c_e){
+void MainLayoutWrapper::closeEvent(QCloseEvent *c_e){
     if (!isUnload && WBGET(WB_TRAY_ENABLED)){
         hide();
         c_e->ignore();
@@ -226,7 +226,7 @@ void MainWindow::closeEvent(QCloseEvent *c_e){
     c_e->accept();
 }
 
-void MainWindow::showEvent(QShowEvent *e){
+void MainLayoutWrapper::showEvent(QShowEvent *e){
     if (e->spontaneous())
         redrawToolPanel();
 
@@ -248,9 +248,9 @@ void MainWindow::showEvent(QShowEvent *e){
     e->accept();
 }
 
-void MainWindow::customEvent(QEvent *e){
-    if (e->type() == MainWindowCustomEvent::Event){
-        MainWindowCustomEvent *c_e = reinterpret_cast<MainWindowCustomEvent*>(e);
+void MainLayoutWrapper::customEvent(QEvent *e){
+    if (e->type() == MainLayoutWrapperCustomEvent::Event){
+        MainLayoutWrapperCustomEvent *c_e = reinterpret_cast<MainLayoutWrapperCustomEvent*>(e);
 
         c_e->func()->call();
     }
@@ -258,11 +258,11 @@ void MainWindow::customEvent(QEvent *e){
     e->accept();
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *e){
+bool MainLayoutWrapper::eventFilter(QObject *obj, QEvent *e){
     return QMainWindow::eventFilter(obj, e);
 }
 
-void MainWindow::init(){
+void MainLayoutWrapper::init(){
     arena = new QDockWidget();
     arena->setFloating(false);
     arena->setAllowedAreas(Qt::RightDockWidgetArea);
@@ -307,7 +307,7 @@ void MainWindow::init(){
     connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(slotExit()));
 }
 
-void MainWindow::loadSettings(){
+void MainLayoutWrapper::loadSettings(){
     WulforSettings *WS = WulforSettings::getInstance();
 
     bool showMax = WS->getBool(WB_MAINWINDOW_MAXIMIZED);
@@ -334,7 +334,7 @@ void MainWindow::loadSettings(){
         this->restoreState(QByteArray::fromBase64(wstate.toAscii()));
 }
 
-void MainWindow::saveSettings(){
+void MainLayoutWrapper::saveSettings(){
     static bool stateIsSaved = false;
 
     if (stateIsSaved)
@@ -353,7 +353,7 @@ void MainWindow::saveSettings(){
     stateIsSaved = true;
 }
 
-void MainWindow::initActions(){
+void MainLayoutWrapper::initActions(){
 
     WulforUtil *WU = WulforUtil::getInstance();
 
@@ -570,7 +570,7 @@ void MainWindow::initActions(){
     }
 }
 
-void MainWindow::initHotkeys(){
+void MainLayoutWrapper::initHotkeys(){
     ctrl_pgdown = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_PageDown), this);
     ctrl_pgup   = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_PageUp), this);
     ctrl_w      = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this);
@@ -584,7 +584,7 @@ void MainWindow::initHotkeys(){
     connect(ctrl_w,      SIGNAL(activated()), this, SLOT(slotCloseCurrentWidget()));
 }
 
-void MainWindow::initMenuBar(){
+void MainLayoutWrapper::initMenuBar(){
     {
         menuFile = new QMenu("", this);
 
@@ -615,7 +615,7 @@ void MainWindow::initMenuBar(){
     menuBar()->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
-void MainWindow::initStatusBar(){
+void MainLayoutWrapper::initStatusBar(){
     statusLabel = new QLabel(statusBar());
     statusLabel->setFrameShadow(QFrame::Plain);
     statusLabel->setFrameShape(QFrame::NoFrame);
@@ -676,7 +676,7 @@ void MainWindow::initStatusBar(){
 #endif //FREE_SPACE_BAR
 }
 
-void MainWindow::retranslateUi(){
+void MainLayoutWrapper::retranslateUi(){
     //Retranslate menu actions
     {
         menuFile->setTitle(tr("&File"));
@@ -744,7 +744,7 @@ void MainWindow::retranslateUi(){
     }
 }
 
-void MainWindow::initToolbar(){
+void MainLayoutWrapper::initToolbar(){
     fBar = new ToolBar(this);
     fBar->setObjectName("fBar");
     fBar->addActions(toolBarActions);
@@ -765,7 +765,7 @@ void MainWindow::initToolbar(){
     addToolBar(tBar);
 }
 
-void MainWindow::newHubFrame(QString address, QString enc){
+void MainLayoutWrapper::newHubFrame(QString address, QString enc){
     if (address.isEmpty())
         return;
 
@@ -786,7 +786,7 @@ void MainWindow::newHubFrame(QString address, QString enc){
     addArenaWidgetOnToolbar(fr);
 }
 
-void MainWindow::updateStatus(QMap<QString, QString> map){
+void MainLayoutWrapper::updateStatus(QMap<QString, QString> map){
     if (!statusLabel)
         return;
 
@@ -830,9 +830,9 @@ void MainWindow::updateStatus(QMap<QString, QString> map){
     unsigned long long available = 0;
     unsigned long long total = 0;
     if (!s.empty()) {
-        if (MainWindow::FreeDiscSpace(s.c_str() , &available, &total) == false) {
+        if (MainLayoutWrapper::FreeDiscSpace(s.c_str() , &available, &total) == false) {
             s = Util::getPath(Util::PATH_USER_CONFIG);
-            if (MainWindow::FreeDiscSpace(s.c_str() , &available, &total) == false) {
+            if (MainLayoutWrapper::FreeDiscSpace(s.c_str() , &available, &total) == false) {
             available = 0;
             total = 0;
             }
@@ -853,11 +853,11 @@ void MainWindow::updateStatus(QMap<QString, QString> map){
     }
 }
 
-void MainWindow::setStatusMessage(QString msg){
+void MainLayoutWrapper::setStatusMessage(QString msg){
     msgLabel->setText(msg);
 }
 
-void MainWindow::autoconnect(){
+void MainLayoutWrapper::autoconnect(){
     const FavoriteHubEntryList& fl = FavoriteManager::getInstance()->getFavoriteHubs();
 
     for(FavoriteHubEntryList::const_iterator i = fl.begin(); i != fl.end(); ++i) {
@@ -874,7 +874,7 @@ void MainWindow::autoconnect(){
     }
 }
 
-void MainWindow::parseCmdLine(){
+void MainLayoutWrapper::parseCmdLine(){
     QStringList args = qApp->arguments();
 
     foreach (QString arg, args){
@@ -893,7 +893,7 @@ void MainWindow::parseCmdLine(){
     }
 }
 
-void MainWindow::parseInstanceLine(QString data){
+void MainLayoutWrapper::parseInstanceLine(QString data){
     QStringList args = data.split("\n", QString::SkipEmptyParts);
 
     foreach (QString arg, args){
@@ -912,11 +912,11 @@ void MainWindow::parseInstanceLine(QString data){
     }
 }
 
-void MainWindow::browseOwnFiles(){
+void MainLayoutWrapper::browseOwnFiles(){
     slotFileBrowseOwnFilelist();
 }
 
-void MainWindow::slotFileBrowseFilelist(){
+void MainLayoutWrapper::slotFileBrowseFilelist(){
     static ShareBrowser *local_share = NULL;
     QString file = QFileDialog::getOpenFileName(this, tr("Choose file to open"), QString::fromStdString(Util::getPath(Util::PATH_FILE_LISTS)),
             tr("Modern XML Filelists") + " (*.xml.bz2);;" +
@@ -930,7 +930,7 @@ void MainWindow::slotFileBrowseFilelist(){
     }
 }
 
-void MainWindow::redrawToolPanel(){
+void MainLayoutWrapper::redrawToolPanel(){
     tBar->redraw();
 
     QHash<QAction*, ArenaWidget*>::iterator it = menuWidgetsHash.begin();
@@ -942,14 +942,14 @@ void MainWindow::redrawToolPanel(){
     }
 }
 
-void MainWindow::addArenaWidget(ArenaWidget *wgt){
+void MainLayoutWrapper::addArenaWidget(ArenaWidget *wgt){
     if (!arenaWidgets.contains(wgt) && wgt && wgt->getWidget()){
         arenaWidgets.push_back(wgt);
         arenaMap[wgt] = wgt->getWidget();
     }
 }
 
-void MainWindow::remArenaWidget(ArenaWidget *awgt){
+void MainLayoutWrapper::remArenaWidget(ArenaWidget *awgt){
     if (arenaWidgets.contains(awgt)){
         arenaWidgets.removeAt(arenaWidgets.indexOf(awgt));
         arenaMap.erase(arenaMap.find(awgt));
@@ -964,7 +964,7 @@ void MainWindow::remArenaWidget(ArenaWidget *awgt){
     }
 }
 
-void MainWindow::mapWidgetOnArena(ArenaWidget *awgt){
+void MainLayoutWrapper::mapWidgetOnArena(ArenaWidget *awgt){
     if (!arenaWidgets.contains(awgt))
         return;
 
@@ -1006,7 +1006,7 @@ void MainWindow::mapWidgetOnArena(ArenaWidget *awgt){
     }
 }
 
-void MainWindow::remWidgetFromArena(ArenaWidget *awgt){
+void MainLayoutWrapper::remWidgetFromArena(ArenaWidget *awgt){
     if (!arenaWidgets.contains(awgt))
         return;
 
@@ -1021,7 +1021,7 @@ void MainWindow::remWidgetFromArena(ArenaWidget *awgt){
     chatDisable->setEnabled(false);*/
 }
 
-void MainWindow::addArenaWidgetOnToolbar(ArenaWidget *awgt, bool keepFocus){
+void MainLayoutWrapper::addArenaWidgetOnToolbar(ArenaWidget *awgt, bool keepFocus){
     if (!arenaWidgets.contains(awgt))
         return;
 
@@ -1042,7 +1042,7 @@ void MainWindow::addArenaWidgetOnToolbar(ArenaWidget *awgt, bool keepFocus){
     tBar->insertWidget(awgt, keepFocus);
 }
 
-void MainWindow::remArenaWidgetFromToolbar(ArenaWidget *awgt){
+void MainLayoutWrapper::remArenaWidgetFromToolbar(ArenaWidget *awgt){
     QHash<QAction*, ArenaWidget*>::iterator it = menuWidgetsHash.begin();
     for (; it != menuWidgetsHash.end(); ++it){
         if (it.value() == awgt){
@@ -1063,7 +1063,7 @@ void MainWindow::remArenaWidgetFromToolbar(ArenaWidget *awgt){
     tBar->removeWidget(awgt);
 }
 
-void MainWindow::toggleSingletonWidget(ArenaWidget *a){
+void MainLayoutWrapper::toggleSingletonWidget(ArenaWidget *a){
     if (!a)
         return;
 
@@ -1111,7 +1111,7 @@ void MainWindow::toggleSingletonWidget(ArenaWidget *a){
     }
 }
 
-void MainWindow::startSocket(){
+void MainLayoutWrapper::startSocket(){
     SearchManager::getInstance()->disconnect();
     ConnectionManager::getInstance()->disconnect();
 
@@ -1136,11 +1136,11 @@ void MainWindow::startSocket(){
     UPnPMapper::getInstance()->forward();
 }
 
-void MainWindow::showShareBrowser(dcpp::UserPtr usr, QString file, QString jump_to){
+void MainLayoutWrapper::showShareBrowser(dcpp::UserPtr usr, QString file, QString jump_to){
     ShareBrowser *sb = new ShareBrowser(usr, file, jump_to);
 }
 
-void MainWindow::slotFileOpenLogFile(){
+void MainLayoutWrapper::slotFileOpenLogFile(){
     QString f = QFileDialog::getOpenFileName(this, tr("Open log file"),_q(SETTING(LOG_DIRECTORY)), tr("Log files (*.log);;All files (*.*)"));
 
     if (!f.isEmpty()){
@@ -1153,7 +1153,7 @@ void MainWindow::slotFileOpenLogFile(){
     }
 }
 
-void MainWindow::slotFileBrowseOwnFilelist(){
+void MainLayoutWrapper::slotFileBrowseOwnFilelist(){
     static ShareBrowser *local_share = NULL;
 
     if (arenaWidgets.contains(local_share)){
@@ -1168,7 +1168,7 @@ void MainWindow::slotFileBrowseOwnFilelist(){
     local_share = new ShareBrowser(user, file, "");
 }
 
-void MainWindow::slotFileRefreshShare(){
+void MainLayoutWrapper::slotFileRefreshShare(){
     ShareManager *SM = ShareManager::getInstance();
 
     SM->setDirty();
@@ -1180,87 +1180,87 @@ void MainWindow::slotFileRefreshShare(){
     progress.exec();
 }
 
-void MainWindow::slotFileHashProgress(){
+void MainLayoutWrapper::slotFileHashProgress(){
     HashProgress progress(this);
 
     progress.exec();
 }
 
-void MainWindow::slotHubsReconnect(){
+void MainLayoutWrapper::slotHubsReconnect(){
     HubFrame *fr = HubManager::getInstance()->activeHub();
 
     if (fr)
         fr->reconnect();
 }
 
-void MainWindow::slotToolsSearch(){
+void MainLayoutWrapper::slotToolsSearch(){
     SearchFrame *sf = new SearchFrame();
 
     sf->setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void MainWindow::slotToolsDownloadQueue(){
+void MainLayoutWrapper::slotToolsDownloadQueue(){
     if (!DownloadQueue::getInstance())
         DownloadQueue::newInstance();
 
     toggleSingletonWidget(DownloadQueue::getInstance());
 }
 
-void MainWindow::slotToolsFinishedDownloads(){
+void MainLayoutWrapper::slotToolsFinishedDownloads(){
     if (!FinishedDownloads::getInstance())
         FinishedDownloads::newInstance();
 
     toggleSingletonWidget(FinishedDownloads::getInstance());
 }
 
-void MainWindow::slotToolsFinishedUploads(){
+void MainLayoutWrapper::slotToolsFinishedUploads(){
     if (!FinishedUploads::getInstance())
         FinishedUploads::newInstance();
 
     toggleSingletonWidget(FinishedUploads::getInstance());
 }
 
-void MainWindow::slotToolsSpy(){
+void MainLayoutWrapper::slotToolsSpy(){
     if (!SpyFrame::getInstance())
         SpyFrame::newInstance();
 
     toggleSingletonWidget(SpyFrame::getInstance());
 }
 
-void MainWindow::slotToolsAntiSpam(){
+void MainLayoutWrapper::slotToolsAntiSpam(){
     AntiSpamFrame fr(this);
 
     fr.exec();
 }
 
-void MainWindow::slotToolsIPFilter(){
+void MainLayoutWrapper::slotToolsIPFilter(){
     IPFilterFrame fr(this);
 
     fr.exec();
 }
 
-void MainWindow::slotHubsFavoriteHubs(){
+void MainLayoutWrapper::slotHubsFavoriteHubs(){
     if (!FavoriteHubs::getInstance())
         FavoriteHubs::newInstance();
 
     toggleSingletonWidget(FavoriteHubs::getInstance());
 }
 
-void MainWindow::slotHubsPublicHubs(){
+void MainLayoutWrapper::slotHubsPublicHubs(){
     if (!PublicHubs::getInstance())
         PublicHubs::newInstance();
 
     toggleSingletonWidget(PublicHubs::getInstance());
 }
 
-void MainWindow::slotHubsFavoriteUsers(){
+void MainLayoutWrapper::slotHubsFavoriteUsers(){
     if (!FavoriteUsers::getInstance())
         FavoriteUsers::newInstance();
 
     toggleSingletonWidget(FavoriteUsers::getInstance());
 }
 
-void MainWindow::slotToolsSettings(){
+void MainLayoutWrapper::slotToolsSettings(){
     Settings s;
 
     s.exec();
@@ -1272,7 +1272,7 @@ void MainWindow::slotToolsSettings(){
         fileHideWindow->setText(tr("Hide window"));
 }
 
-void MainWindow::slotToolsTransfer(bool toggled){
+void MainLayoutWrapper::slotToolsTransfer(bool toggled){
     if (toggled){
         transfer_dock->setVisible(true);
         transfer_dock->setWidget(TransferView::getInstance());
@@ -1283,7 +1283,7 @@ void MainWindow::slotToolsTransfer(bool toggled){
     }
 }
 
-void MainWindow::slotChatClear(){
+void MainLayoutWrapper::slotChatClear(){
     HubFrame *fr = HubManager::getInstance()->activeHub();
 
     if (fr)
@@ -1308,21 +1308,21 @@ void MainWindow::slotChatClear(){
     }
 }
 
-void MainWindow::slotFindInChat(){
+void MainLayoutWrapper::slotFindInChat(){
     HubFrame *fr = HubManager::getInstance()->activeHub();
 
     if (fr)
         fr->slotHideFindFrame();
 }
 
-void MainWindow::slotChatDisable(){
+void MainLayoutWrapper::slotChatDisable(){
     HubFrame *fr = HubManager::getInstance()->activeHub();
 
     if (fr)
         fr->disableChat();
 }
 
-void MainWindow::slotWidgetsToggle(){
+void MainLayoutWrapper::slotWidgetsToggle(){
     QAction *act = reinterpret_cast<QAction*>(sender());
     QHash<QAction*, ArenaWidget*>::iterator it = menuWidgetsHash.find(act);
 
@@ -1332,13 +1332,13 @@ void MainWindow::slotWidgetsToggle(){
     mapWidgetOnArena(it.value());
 }
 
-void MainWindow::slotQC(){
+void MainLayoutWrapper::slotQC(){
     QuickConnect qc;
 
     qc.exec();
 }
 
-void MainWindow::slotHideWindow(){
+void MainLayoutWrapper::slotHideWindow(){
     HubFrame *fr = HubManager::getInstance()->activeHub();
     if (fr){
         if (fr->lineEdit_FIND->hasFocus() && WBGET(WB_TRAY_ENABLED)){
@@ -1355,7 +1355,7 @@ void MainWindow::slotHideWindow(){
     }
 }
 
-void MainWindow::slotHideProgressSpace() {
+void MainLayoutWrapper::slotHideProgressSpace() {
     if (WBGET(WB_SHOW_FREE_SPACE)) {
         progressSpace->hide();
         toolsHideProgressSpace->setText(tr("Show free space bar"));
@@ -1369,13 +1369,13 @@ void MainWindow::slotHideProgressSpace() {
     }
 }
 
-void MainWindow::slotExit(){
+void MainLayoutWrapper::slotExit(){
     setUnload(true);
 
     close();
 }
 
-void MainWindow::slotAboutClient(){
+void MainLayoutWrapper::slotAboutClient(){
     About a(this);
 
     qulonglong app_total_down = WSGET(WS_APP_TOTAL_DOWN).toULongLong();
@@ -1410,41 +1410,41 @@ void MainWindow::slotAboutClient(){
     a.exec();
 }
 
-void MainWindow::slotUnixSignal(int sig){
+void MainLayoutWrapper::slotUnixSignal(int sig){
     printf("%i\n");
 }
 
-void MainWindow::slotCloseCurrentWidget(){
+void MainLayoutWrapper::slotCloseCurrentWidget(){
     if (arena->widget())
         arena->widget()->close();
 }
 
-void MainWindow::slotAboutQt(){
+void MainLayoutWrapper::slotAboutQt(){
     QMessageBox::aboutQt(this);
 }
 
-void MainWindow::on(dcpp::LogManagerListener::Message, time_t t, const std::string& m) throw(){
+void MainLayoutWrapper::on(dcpp::LogManagerListener::Message, time_t t, const std::string& m) throw(){
     QTextCodec *codec = QTextCodec::codecForLocale();
 
-    typedef Func1<MainWindow, QString> FUNC;
-    FUNC *func = new FUNC(this, &MainWindow::setStatusMessage, codec->toUnicode(m.c_str()));
+    typedef Func1<MainLayoutWrapper, QString> FUNC;
+    FUNC *func = new FUNC(this, &MainLayoutWrapper::setStatusMessage, codec->toUnicode(m.c_str()));
 
-    QApplication::postEvent(this, new MainWindowCustomEvent(func));
+    QApplication::postEvent(this, new MainLayoutWrapperCustomEvent(func));
 }
 
-void MainWindow::on(dcpp::QueueManagerListener::Finished, QueueItem *item, const std::string &dir, int64_t) throw(){
+void MainLayoutWrapper::on(dcpp::QueueManagerListener::Finished, QueueItem *item, const std::string &dir, int64_t) throw(){
     if (item->isSet(QueueItem::FLAG_CLIENT_VIEW | QueueItem::FLAG_USER_LIST)){
         UserPtr user = item->getDownloads()[0]->getUser();
         QString listName = QString::fromStdString(item->getListName());
 
-        typedef Func3<MainWindow, UserPtr, QString, QString> FUNC;
-        FUNC *func = new FUNC(this, &MainWindow::showShareBrowser, user, listName, QString::fromStdString(dir));
+        typedef Func3<MainLayoutWrapper, UserPtr, QString, QString> FUNC;
+        FUNC *func = new FUNC(this, &MainLayoutWrapper::showShareBrowser, user, listName, QString::fromStdString(dir));
 
-        QApplication::postEvent(this, new MainWindowCustomEvent(func));
+        QApplication::postEvent(this, new MainLayoutWrapperCustomEvent(func));
     }
 }
 
-void MainWindow::on(dcpp::TimerManagerListener::Second, uint32_t ticks) throw(){
+void MainLayoutWrapper::on(dcpp::TimerManagerListener::Second, uint32_t ticks) throw(){
     static quint32 lastUpdate = 0;
     static quint64 lastUp = 0, lastDown = 0;
 
@@ -1481,13 +1481,13 @@ void MainWindow::on(dcpp::TimerManagerListener::Second, uint32_t ticks) throw(){
     lastUp = Socket::getTotalUp();
     lastDown = Socket::getTotalDown();
 
-    typedef Func1<MainWindow, QMap<QString, QString> > FUNC;
-    FUNC *func = new FUNC(this, &MainWindow::updateStatus, map);
+    typedef Func1<MainLayoutWrapper, QMap<QString, QString> > FUNC;
+    FUNC *func = new FUNC(this, &MainLayoutWrapper::updateStatus, map);
 
-    QApplication::postEvent(this, new MainWindowCustomEvent(func));
+    QApplication::postEvent(this, new MainLayoutWrapperCustomEvent(func));
 }
 #ifdef FREE_SPACE_BAR_C
-bool MainWindow::FreeDiscSpace ( std::string path,  unsigned long long * res, unsigned long long * res2) {
+bool MainLayoutWrapper::FreeDiscSpace ( std::string path,  unsigned long long * res, unsigned long long * res2) {
         if ( !res ) {
             return false;
         }

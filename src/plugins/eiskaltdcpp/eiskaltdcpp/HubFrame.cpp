@@ -1,5 +1,5 @@
 #include "HubFrame.h"
-#include "MainWindow.h"
+#include "MainLayoutWrapper.h"
 #include "PMWindow.h"
 #include "Func.h"
 #include "WulforUtil.h"
@@ -748,7 +748,7 @@ void HubFrame::customEvent(QEvent *e){
 }
 
 void HubFrame::closeEvent(QCloseEvent *e){
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
 
     MW->remArenaWidgetFromToolbar(this);
     MW->remWidgetFromArena(this);
@@ -805,7 +805,7 @@ void HubFrame::showEvent(QShowEvent *e){
     HubManager::getInstance()->setActiveHub(this);
 
     hasMessages = false;
-    MainWindow::getInstance()->redrawToolPanel();
+    MainLayoutWrapper::getInstance()->redrawToolPanel();
 }
 
 void HubFrame::hideEvent(QHideEvent *e){
@@ -1304,11 +1304,11 @@ void HubFrame::addPM(QString cid, QString output){
         connect(p, SIGNAL(privateMessageClosed(QString)), this, SLOT(slotPMClosed(QString)));
         connect(p->textEdit_CHAT, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotChatMenu(QPoint)));
 
-        MainWindow::getInstance()->addArenaWidget(p);
-        MainWindow::getInstance()->addArenaWidgetOnToolbar(p, WBGET(WB_CHAT_KEEPFOCUS));
+        MainLayoutWrapper::getInstance()->addArenaWidget(p);
+        MainLayoutWrapper::getInstance()->addArenaWidgetOnToolbar(p, WBGET(WB_CHAT_KEEPFOCUS));
 
         if (!WBGET(WB_CHAT_KEEPFOCUS))
-            MainWindow::getInstance()->mapWidgetOnArena(p);
+            MainLayoutWrapper::getInstance()->mapWidgetOnArena(p);
 
         p->addOutput(output);
 
@@ -1419,7 +1419,7 @@ void HubFrame::browseUserFiles(const QString& id, bool match){
 
             if (user){
                 if (user == ClientManager::getInstance()->getMe())
-                    MainWindow::getInstance()->browseOwnFiles();
+                    MainLayoutWrapper::getInstance()->browseOwnFiles();
                 else if (match)
                     QueueManager::getInstance()->addList(user, client->getHubUrl(), QueueItem::FLAG_MATCH_QUEUE);
                 else
@@ -1449,7 +1449,7 @@ void HubFrame::grantSlot(const QString& id){
         }
     }
 
-    MainWindow::getInstance()->setStatusMessage(message);
+    MainLayoutWrapper::getInstance()->setStatusMessage(message);
 }
 
 void HubFrame::addUserToFav(const QString& id){
@@ -1469,7 +1469,7 @@ void HubFrame::addUserToFav(const QString& id){
         }
     }
 
-    MainWindow::getInstance()->setStatusMessage(message);
+    MainLayoutWrapper::getInstance()->setStatusMessage(message);
 }
 
 void HubFrame::delUserFromFav(const QString& id){
@@ -1489,7 +1489,7 @@ void HubFrame::delUserFromFav(const QString& id){
         }
     }
 
-    MainWindow::getInstance()->setStatusMessage(message);
+    MainLayoutWrapper::getInstance()->setStatusMessage(message);
 }
 
 void HubFrame::delUserFromQueue(const QString& id){
@@ -1557,7 +1557,7 @@ void HubFrame::newMsg(VarMap map){
 
     if (!isVisible()){
         hasMessages = true;
-        MainWindow::getInstance()->redrawToolPanel();
+        MainLayoutWrapper::getInstance()->redrawToolPanel();
     }
 }
 
@@ -1637,7 +1637,7 @@ void HubFrame::pmUserEvent(QString cid, QString e){
 }
 
 void HubFrame::getPassword(){
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
 
     if (!MW->isVisible() && !(client->getPassword().size() > 0)){
         MW->show();
@@ -1777,14 +1777,14 @@ void HubFrame::slotReconnect(){
 }
 
 void HubFrame::slotMapOnArena(){
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
 
     MW->mapWidgetOnArena(this);
 }
 
 void HubFrame::slotClose(){
-    MainWindow::getInstance()->remArenaWidget(this);
-    MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
+    MainLayoutWrapper::getInstance()->remArenaWidget(this);
+    MainLayoutWrapper::getInstance()->remArenaWidgetFromToolbar(this);
 
     close();
 }
@@ -2111,7 +2111,7 @@ void HubFrame::slotChatMenu(const QPoint &){
         case Menu::ClearChat:
         {
             if (pmw)
-                MainWindow::getInstance()->slotChatClear(); // some hack
+                MainLayoutWrapper::getInstance()->slotChatClear(); // some hack
             else
                 clearChat();
 
@@ -2166,7 +2166,7 @@ void HubFrame::slotShowWnd(){
     if (isVisible())
         return;
 
-   MainWindow *MW = MainWindow::getInstance();
+   MainLayoutWrapper *MW = MainLayoutWrapper::getInstance();
 
    MW->mapWidgetOnArena(this);
 }
@@ -2509,8 +2509,8 @@ void HubFrame::on(GetPassword, Client*) throw(){
 }
 
 void HubFrame::on(ClientListener::HubUpdated, Client*) throw(){
-    typedef Func0<MainWindow> FUNC;
-    FUNC *func = new FUNC(MainWindow::getInstance(), &MainWindow::redrawToolPanel);
+    typedef Func0<MainLayoutWrapper> FUNC;
+    FUNC *func = new FUNC(MainLayoutWrapper::getInstance(), &MainLayoutWrapper::redrawToolPanel);
 
     QApplication::postEvent(this, new UserCustomEvent(func));
 }
