@@ -789,6 +789,9 @@ namespace LeechCraft
 				Q_FOREACH (QObject *plugin, ipa->GetPlugins ())
 					init (FindTreeItem (plugin));
 		}
+
+		Q_FOREACH (QObject *plugin, GetAllPlugins ())
+			Core::Instance ().Setup (plugin);
 	}
 
 	bool PluginManager::InitializeSingle (PluginManager::DepTreeItem_ptr item)
@@ -850,8 +853,6 @@ namespace LeechCraft
 			qDebug () << "Initializing" << name << "...";
 			ii->Init (ICoreProxy_ptr (new CoreProxy ()));
 			item->Initialized_ = true;
-
-			Core::Instance ().Setup (item->Plugin_);
 		}
 		catch (const std::exception& e)
 		{

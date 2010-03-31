@@ -167,17 +167,20 @@ void TabContainer::AddObject (QObject *obj)
 			QToolBar *tb = iet->GetToolBar ();
 			QWidget *contents = iet->GetTabContents ();
 
-			EmbedTabs_ [contents] = obj;
+			if (!EmbedTabs_.contains (contents))
+			{
+				EmbedTabs_ [contents] = obj;
 
-			add (name,
-					contents,
-					icon);
-			SetToolBar (tb,
-					contents);
+				add (name,
+						contents,
+						icon);
+				SetToolBar (tb,
+						contents);
 
-			if (XmlSettingsManager::Instance ()->
-					Property (QString ("Hide%1").arg (name), false).toBool ())
-				remove (TabWidget_->indexOf (contents));
+				if (XmlSettingsManager::Instance ()->
+						Property (QString ("Hide%1").arg (name), false).toBool ())
+					remove (TabWidget_->indexOf (contents));
+			}
 		}
 		catch (const std::exception& e)
 		{

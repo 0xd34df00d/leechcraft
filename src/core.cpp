@@ -1036,8 +1036,6 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 
 void LeechCraft::Core::InitEmbedTab (QObject *plugin)
 {
-	TabContainer_->AddObject (plugin);
-
 	InitCommonTab (plugin);
 }
 
@@ -1057,25 +1055,32 @@ void LeechCraft::Core::InitMultiTab (QObject *plugin)
 
 void LeechCraft::Core::InitCommonTab (QObject *plugin)
 {
+	TabContainer_->AddObject (plugin);
+
 	connect (plugin,
 			SIGNAL (changeTabName (QWidget*, const QString&)),
 			TabContainer_.get (),
-			SLOT (changeTabName (QWidget*, const QString&)));
+			SLOT (changeTabName (QWidget*, const QString&)),
+			Qt::UniqueConnection);
 	connect (plugin,
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
 			TabContainer_.get (),
-			SLOT (changeTabIcon (QWidget*, const QIcon&)));
+			SLOT (changeTabIcon (QWidget*, const QIcon&)),
+			Qt::UniqueConnection);
 	connect (plugin,
 			SIGNAL (changeTooltip (QWidget*, QWidget*)),
 			TabContainer_.get (),
-			SLOT (changeTooltip (QWidget*, QWidget*)));
+			SLOT (changeTooltip (QWidget*, QWidget*)),
+			Qt::UniqueConnection);
 	connect (plugin,
 			SIGNAL (statusBarChanged (QWidget*, const QString&)),
 			this,
-			SLOT (handleStatusBarChanged (QWidget*, const QString&)));
+			SLOT (handleStatusBarChanged (QWidget*, const QString&)),
+			Qt::UniqueConnection);
 	connect (plugin,
 			SIGNAL (raiseTab (QWidget*)),
 			TabContainer_.get (),
-			SLOT (bringToFront (QWidget*)));
+			SLOT (bringToFront (QWidget*)),
+			Qt::UniqueConnection);
 }
 
