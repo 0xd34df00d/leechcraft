@@ -1,10 +1,20 @@
-#project (leechcraft_eiskaltdcpp)
+project (leechcraft_eiskaltdcpp)
 cmake_minimum_required (VERSION 2.6)
 if (FREE_SPACE_BAR_C)
 add_subdirectory(gnulib)
 endif (FREE_SPACE_BAR_C)
 
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+set (QT_USE_QTDBUS TRUE)
 include (${QT_USE_FILE})
+include_directories (${LEECHCRAFT_INCLUDE_DIR}
+	${UPNP_INCLUDE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/..
+	${Boost_INCLUDE_DIRS}
+	${CMAKE_CURRENT_BINARY_DIR})
+
 set (HDRS   ArenaWidget.h
             EmoticonObject.h
             Func.h
@@ -208,11 +218,6 @@ if (USE_ASPELL)
   include_directories (${ASPELL_INCLUDE_DIR})
   set (LIBS ${LIBS} ${ASPELL_LIBRARIES})
 endif (USE_ASPELL)
-
-message(STATUS "Having these as LC include dirs: ${LEECHCRAFT_INCLUDE_DIR}")
-include_directories (${UPNP_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}
-	${PROJECT_SOURCE_DIR}/.. ${Boost_INCLUDE_DIRS} ${LEECHCRAFT_INCLUDE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR})
 
 if (APPLE)
   # set how it shows up in the Info.plist file

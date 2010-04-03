@@ -208,14 +208,6 @@ endif (ICONV_SECOND_ARGUMENT_IS_CONST)
 set(CMAKE_CXX_FLAGS_RELEASE     "-DNDEBUG -O3 -fomit-frame-pointer -pipe")
 set(CMAKE_CXX_FLAGS_DEBUG       "-UNDEBUG -g3 -pipe")
 
-include_directories(${eiskaltdcpp_BINARY_DIR}
-   ${eiskaltdcpp_BINARY_DIR}/dcpp
-   ${eiskaltdcpp_SOURCE_DIR}/dcpp
-   ${eiskaltdcpp_BINARY_DIR}/eiskaltdcpp
-   ${eiskaltdcpp_SOURCE_DIR}/eiskaltdcpp
-   ${eiskaltdcpp_SOURCE_DIR}
-   ${GMP_INCLUDE_DIR}
-   )
 message(STATUS "CMake would use these libs when building:
                 upnp: ${UPNP_LIBRARY}
                 boost: ${Boost_LIBRARIES} ${Boost_INCLUDE_DIR}
