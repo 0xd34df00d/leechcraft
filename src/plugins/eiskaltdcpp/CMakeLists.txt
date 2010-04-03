@@ -1,6 +1,8 @@
 IF (NOT QT_USE_FILE)
 	cmake_minimum_required (VERSION 2.6)
+
 	set (PROJECT_NAME_GLOBAL leechcraft_eiskaltdcpp)
+
 	if (not CMAKE_MODULE_PATH)
 		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
 	endif (not CMAKE_MODULE_PATH)

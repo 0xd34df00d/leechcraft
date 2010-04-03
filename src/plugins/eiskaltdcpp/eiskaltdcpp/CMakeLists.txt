@@ -1,10 +1,8 @@
-project (leechcraft_eiskaltdcpp)
+#project (leechcraft_eiskaltdcpp)
 cmake_minimum_required (VERSION 2.6)
 if (FREE_SPACE_BAR_C)
 add_subdirectory(gnulib)
 endif (FREE_SPACE_BAR_C)
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include (${QT_USE_FILE})
 set (HDRS   ArenaWidget.h
@@ -53,7 +51,6 @@ set (SRCS   Antispam.cpp
             SettingsSharing.cpp
             ShareBrowser.cpp
             ShellCommandRunner.cpp
-            SingleInstanceRunner.cpp
             SpyFrame.cpp
             SpyModel.cpp
             ToolBar.cpp
@@ -97,7 +94,6 @@ set (MOC_HDRS Antispam.h
             SettingsNotification.h
             SettingsPersonal.h
             SettingsSharing.h
-            SingleInstanceRunner.h
             QuickConnect.h
             SearchFrame.h
             SearchModel.h
@@ -196,7 +192,6 @@ if (UNIX)
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/)
 endif (UNIX)
 
-include_directories (${QT_INCLUDES} ${UPNP_INCLUDE_DIR} ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/.. ${Boost_INCLUDE_DIRS})
 set (LIBS ${LIBS} ${QT_LIBRARIES} ${UPNP_LIBRARY} ${Boost_LIBRARIES} ${ICONV_LIBRARIES})
 
 if (FREE_SPACE_BAR AND NOT FREE_SPACE_BAR_C)
@@ -213,6 +208,11 @@ if (USE_ASPELL)
   include_directories (${ASPELL_INCLUDE_DIR})
   set (LIBS ${LIBS} ${ASPELL_LIBRARIES})
 endif (USE_ASPELL)
+
+message(STATUS "Having these as LC include dirs: ${LEECHCRAFT_INCLUDE_DIR}")
+include_directories (${UPNP_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}
+	${PROJECT_SOURCE_DIR}/.. ${Boost_INCLUDE_DIRS} ${LEECHCRAFT_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR})
 
 if (APPLE)
   # set how it shows up in the Info.plist file

@@ -47,6 +47,7 @@
 #include "ToolBar.h"
 #include "Magnet.h"
 #include "SpyFrame.h"
+#include "Notification.h"
 
 #include "UPnPMapper.h"
 #include "WulforSettings.h"
@@ -54,109 +55,138 @@
 
 #include "Version.h"
 
+#include "dcpp/DCPlusPlus.h"
+
+#include "dcpp/HashManager.h"
+#include "dcpp/forward.h"
+#include "dcpp/QueueManager.h"
+#include "dcpp/Thread.h"
+
 using namespace std;
 
-MainLayoutWrapper::MainLayoutWrapper (QWidget *parent):
-        QMainWindow(parent),
-        statusLabel(NULL)
+#ifndef WIN32
+#include <unistd.h>
+#include <signal.h>
+
+void installHandlers(){
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = SIG_IGN;
+    if (sigaction(SIGPIPE, &sa, NULL) == -1){
+        std::cout << "Cannot handle SIGPIPE" << std::endl;
+    }
+
+    std::cout << "Signal handlers installed." << std::endl;
+}
+#endif
+
+void callBack(void* x, const std::string& a)
 {
-    exitBegin = false;
-    
-    arenaMap.clear();
-    arenaWidgets.clear();
-
-    init();
-
-    retranslateUi();
-
-    LogManager::getInstance()->addListener(this);
-    TimerManager::getInstance()->addListener(this);
-    QueueManager::getInstance()->addListener(this);
-
-    startSocket();
-
-    setStatusMessage(tr("Ready"));
-
-    TransferView::newInstance();
-
-    transfer_dock->setWidget(TransferView::getInstance());
-
-    blockSignals(true);
-    toolsTransfers->setChecked(transfer_dock->isVisible());
-    blockSignals(false);
-
-    if (WBGET(WB_ANTISPAM_ENABLED)){
-        AntiSpam::newInstance();
-
-        AntiSpam::getInstance()->loadLists();
-        AntiSpam::getInstance()->loadSettings();
-    }
-
-    if (WBGET(WB_IPFILTER_ENABLED)){
-        IPFilter::newInstance();
-
-        IPFilter::getInstance()->loadList();
-    }
-
-    QFont f;
-
-    if (!WSGET(WS_APP_FONT).isEmpty() && f.fromString(WSGET(WS_APP_FONT)))
-        qApp->setFont(f);
-
-    if (!WSGET(WS_APP_THEME).isEmpty())
-        qApp->setStyle(WSGET(WS_APP_THEME));
+	qDebug () << Q_FUNC_INFO << "Loading:" << a.c_str ();
 }
 
-MainLayoutWrapper::~MainLayoutWrapper(){
-    LogManager::getInstance()->removeListener(this);
-    TimerManager::getInstance()->removeListener(this);
-    QueueManager::getInstance()->removeListener(this);
+MainLayoutWrapper* MainLayoutWrapper::S_StaticThis = 0;
 
-    if (AntiSpam::getInstance()){
-        AntiSpam::getInstance()->saveLists();
-        AntiSpam::getInstance()->saveSettings();
-        AntiSpam::deleteInstance();
+void MainLayoutWrapper::Init (ICoreProxy_ptr proxy)
+{
+	S_StaticThis = this;
+    dcpp::startup(callBack, NULL);
+    dcpp::TimerManager::getInstance()->start();
+
+    installHandlers();
+
+    HashManager::getInstance()->setPriority(Thread::IDLE);
+
+    WulforSettings::newInstance();
+    WulforSettings::getInstance()->load();
+    WulforSettings::getInstance()->loadTranslation();
+    WulforSettings::getInstance()->loadTheme();
+
+    WulforUtil::newInstance();
+
+    if (WulforUtil::getInstance()->loadUserIcons())
+        std::cout << "UserList icons has been loaded" << std::endl;
+
+    if (WulforUtil::getInstance()->loadIcons())
+        std::cout << "Application icons has been loaded" << std::endl;
+
+    UPnP::newInstance();
+    UPnP::getInstance()->start();
+    UPnPMapper::newInstance();
+
+    HubManager::newInstance();
+
+    WulforSettings::getInstance()->loadTheme();
+
+    if (WBGET(WB_APP_ENABLE_EMOTICON)){
+        EmoticonFactory::newInstance();
+        EmoticonFactory::getInstance()->load();
     }
 
-    if (IPFilter::getInstance()){
-        IPFilter::getInstance()->saveList();
-        IPFilter::deleteInstance();
-    }
+#ifdef USE_ASPELL
+    if (WBGET(WB_APP_ENABLE_ASPELL))
+        SpellCheck::newInstance();
+#endif
 
-    delete arena;
+    Notification::newInstance();
+    Notification::getInstance()->enableTray(WBGET(WB_TRAY_ENABLED));
 
-    delete fBar;
-    delete tBar;
+    autoconnect();
+    show();
+    parseCmdLine();
+
+    if (WBGET(WB_MAINWINDOW_HIDE))
+        getInstance()->hide();
 }
 
-void MainLayoutWrapper::closeEvent(QCloseEvent *c_e){
-    if (!isUnload && WBGET(WB_TRAY_ENABLED)){
-        hide();
-        c_e->ignore();
+void MainLayoutWrapper::SecondInit ()
+{
+	ConstructAsConstructor ();
+}
 
-        return;
-    }
+void MainLayoutWrapper::Release ()
+{
+	ReleaseAsClosed ();
+	ReleaseAsDestructor ();
+	ReleaseAsAfterExec ();
+}
 
-    if (isUnload && WBGET(WB_EXIT_CONFIRM) && !exitBegin){
-        QMessageBox::StandardButton ret;
+QString MainLayoutWrapper::GetName () const
+{
+	return "EiskaltDC++";
+}
 
-        ret = QMessageBox::question(this, tr("Exit confirm"),
-                                    tr("Exit program?"),
-                                    QMessageBox::Yes | QMessageBox::No,
-                                    QMessageBox::Yes);
+QString MainLayoutWrapper::GetInfo () const
+{
+	return tr ("EiskaltDC++ is a cool DC client.");
+}
 
-        if (ret == QMessageBox::Yes){
-            exitBegin = true;
-        }
-        else{
-            setUnload(false);
+QStringList MainLayoutWrapper::Provides () const
+{
+	return QStringList ("directconnect");
+}
 
-            c_e->ignore();
+QStringList MainLayoutWrapper::Needs () const
+{
+	return QStringList ();
+}
 
-            return;
-        }
-    }
+QStringList MainLayoutWrapper::Uses () const
+{
+	return QStringList ();
+}
 
+void MainLayoutWrapper::SetProvider (QObject*, const QString&)
+{
+}
+
+QIcon MainLayoutWrapper::GetIcon () const
+{
+	return WulforUtil::getInstance()->getPixmap(WulforUtil::eiICON_APPL);
+}
+
+void MainLayoutWrapper::ReleaseAsClosed ()
+{
     saveSettings();
 
     blockSignals(true);
@@ -222,8 +252,105 @@ void MainLayoutWrapper::closeEvent(QCloseEvent *c_e){
         if (arenaMap.contains(it.key()))//some widgets can autodelete itself from arena widgets
             it.value()->close();
     }
+}
 
-    c_e->accept();
+void MainLayoutWrapper::ReleaseAsAfterExec ()
+{
+	qDebug () << Q_FUNC_INFO << "Shutting down...";
+
+    WulforSettings::getInstance()->save();
+
+    EmoticonFactory::deleteInstance();
+
+#ifdef USE_ASPELL
+    if (SpellCheck::getInstance())
+        SpellCheck::deleteInstance();
+#endif
+
+    UPnPMapper::deleteInstance();
+    UPnP::getInstance()->stop();
+    UPnP::deleteInstance();
+
+    Notification::deleteInstance();
+
+    HubManager::deleteInstance();
+
+    WulforUtil::deleteInstance();
+    WulforSettings::deleteInstance();
+
+    dcpp::shutdown();
+}
+
+void MainLayoutWrapper::ReleaseAsDestructor ()
+{
+    LogManager::getInstance()->removeListener(this);
+    TimerManager::getInstance()->removeListener(this);
+    QueueManager::getInstance()->removeListener(this);
+
+    if (AntiSpam::getInstance()){
+        AntiSpam::getInstance()->saveLists();
+        AntiSpam::getInstance()->saveSettings();
+        AntiSpam::deleteInstance();
+    }
+
+    if (IPFilter::getInstance()){
+        IPFilter::getInstance()->saveList();
+        IPFilter::deleteInstance();
+    }
+
+    delete arena;
+
+    delete fBar;
+    delete tBar;
+}
+
+MainLayoutWrapper* MainLayoutWrapper::getInstance ()
+{
+	return S_StaticThis;
+}
+
+void MainLayoutWrapper::ConstructAsConstructor ()
+{
+    arenaMap.clear();
+    arenaWidgets.clear();
+
+    init();
+
+    retranslateUi();
+
+    LogManager::getInstance()->addListener(this);
+    TimerManager::getInstance()->addListener(this);
+    QueueManager::getInstance()->addListener(this);
+
+    startSocket();
+
+    setStatusMessage(tr("Ready"));
+
+    TransferView::newInstance();
+
+    transfer_dock->setWidget(TransferView::getInstance());
+
+    blockSignals(true);
+    toolsTransfers->setChecked(transfer_dock->isVisible());
+    blockSignals(false);
+
+    if (WBGET(WB_ANTISPAM_ENABLED)){
+        AntiSpam::newInstance();
+
+        AntiSpam::getInstance()->loadLists();
+        AntiSpam::getInstance()->loadSettings();
+    }
+
+    if (WBGET(WB_IPFILTER_ENABLED)){
+        IPFilter::newInstance();
+
+        IPFilter::getInstance()->loadList();
+    }
+
+    QFont f;
+}
+
+void MainLayoutWrapper::closeEvent(QCloseEvent *c_e){
 }
 
 void MainLayoutWrapper::showEvent(QShowEvent *e){
@@ -303,8 +430,6 @@ void MainLayoutWrapper::init(){
     initHotkeys();
 
     loadSettings();
-
-    connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(slotExit()));
 }
 
 void MainLayoutWrapper::loadSettings(){
@@ -388,11 +513,6 @@ void MainLayoutWrapper::initActions(){
 
         if (!WBGET(WB_TRAY_ENABLED))
             fileHideWindow->setText(tr("Show/hide find frame"));
-
-        fileQuit = new QAction("", this);
-        fileQuit->setShortcut(tr("Ctrl+Q"));
-        fileQuit->setIcon(WU->getPixmap(WulforUtil::eiEXIT));
-        connect(fileQuit, SIGNAL(triggered()), this, SLOT(slotExit()));
 
         hubsHubReconnect = new QAction("", this);
         hubsHubReconnect->setIcon(WU->getPixmap(WulforUtil::eiRECONNECT));
@@ -501,9 +621,7 @@ void MainLayoutWrapper::initActions(){
                 << separator0
                 << fileOpenLogFile
                 << separator1
-                << fileHideWindow
-                << separator2
-                << fileQuit;
+                << fileHideWindow;
 
         hubsMenuActions << hubsHubReconnect
                 << hubsQuickConnect
@@ -552,9 +670,7 @@ void MainLayoutWrapper::initActions(){
                 << separator5
                 << toolsSpy
                 << toolsAntiSpam
-                << toolsIPFilter
-                << separator6
-                << fileQuit;
+                << toolsIPFilter;
     }
     {
         menuWidgets = new QMenu("", this);
@@ -690,8 +806,6 @@ void MainLayoutWrapper::retranslateUi(){
         fileFileListRefresh->setText(tr("Refresh share"));
 
         fileHashProgress->setText(tr("Hash progress"));
-
-        fileQuit->setText(tr("Quit"));
 
         menuHubs->setTitle(tr("&Hubs"));
 
@@ -1350,9 +1464,6 @@ void MainLayoutWrapper::slotHideWindow(){
             return;
         }
     }
-    if (!isUnload && isActiveWindow() && WBGET(WB_TRAY_ENABLED)) {
-        hide();
-    }
 }
 
 void MainLayoutWrapper::slotHideProgressSpace() {
@@ -1367,12 +1478,6 @@ void MainLayoutWrapper::slotHideProgressSpace() {
 
         WBSET(WB_SHOW_FREE_SPACE, true);
     }
-}
-
-void MainLayoutWrapper::slotExit(){
-    setUnload(true);
-
-    close();
 }
 
 void MainLayoutWrapper::slotAboutClient(){
@@ -1521,3 +1626,6 @@ bool MainLayoutWrapper::FreeDiscSpace ( std::string path,  unsigned long long * 
 #endif //WIN32
 }
 #endif //FREE_SPACE_BAR_C
+
+Q_EXPORT_PLUGIN2 (leechcraft_eiskaltdcpp, MainLayoutWrapper);
+

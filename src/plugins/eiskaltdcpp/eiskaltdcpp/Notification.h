@@ -78,7 +78,6 @@ public slots:
     void switchModule(int);
 
 private slots:
-    void slotExit();
     void slotShowHide();
     void slotTrayMenuTriggered(QSystemTrayIcon::ActivationReason);
     void slotCmdFinished(bool, QString);

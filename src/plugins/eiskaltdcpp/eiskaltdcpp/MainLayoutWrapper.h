@@ -20,6 +20,8 @@
 #include <QShortcut>
 #include <QKeySequence>
 
+#include <interfaces/iinfo.h>
+
 #include "dcpp/stdinc.h"
 #include "dcpp/DCPlusPlus.h"
 #include "dcpp/ConnectionManager.h"
@@ -74,20 +76,33 @@ public:
 
 class MainLayoutWrapper:
         public QMainWindow,
-        public dcpp::Singleton<MainLayoutWrapper>,
+		public IInfo,
         private LogManagerListener,
         private TimerManagerListener,
         private QueueManagerListener
 {
-    Q_OBJECT
+		Q_OBJECT
+		Q_INTERFACES (IInfo)
 
-friend class dcpp::Singleton<MainLayoutWrapper>;
-
+		static MainLayoutWrapper *S_StaticThis;
     public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+
+		QString GetName () const;
+		QString GetInfo () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
+		QIcon GetIcon () const;
 
         typedef QList<QAction*> ActionList;
         typedef QList<ArenaWidget*> ArenaWidgetList;
         typedef QMap<ArenaWidget*, QWidget*> ArenaWidgetMap;
+
+		static MainLayoutWrapper* getInstance ();
 
         /** Allow widget to be mapped on arena*/
         void addArenaWidget(ArenaWidget*);
@@ -128,10 +143,6 @@ friend class dcpp::Singleton<MainLayoutWrapper>;
 
         /** */
         void retranslateUi();
-
-        /** */
-        void setUnload(bool b){ isUnload = b; }
-
     public slots:
         void slotChatClear();
 
@@ -164,7 +175,6 @@ friend class dcpp::Singleton<MainLayoutWrapper>;
         void slotQC();
         void slotHideWindow();
         void slotHideProgressSpace();
-        void slotExit();
 
         void slotCloseCurrentWidget();
 
@@ -177,8 +187,10 @@ friend class dcpp::Singleton<MainLayoutWrapper>;
         void slotAboutQt();
 
     private:
-        MainLayoutWrapper (QWidget *parent=NULL);
-        virtual ~MainLayoutWrapper();
+		void ConstructAsConstructor ();
+		void ReleaseAsClosed ();
+		void ReleaseAsAfterExec ();
+		void ReleaseAsDestructor ();
 
         /** LogManagerListener */
         virtual void on(dcpp::LogManagerListener::Message, time_t t, const std::string&) throw();
@@ -206,8 +218,6 @@ friend class dcpp::Singleton<MainLayoutWrapper>;
 #ifdef FREE_SPACE_BAR_C
         static bool FreeDiscSpace ( std::string path, unsigned long long * res, unsigned long long * res2);
 #endif
-        bool isUnload;
-        bool exitBegin;
 
         // Widgets
         QDockWidget *arena;
@@ -233,7 +243,6 @@ friend class dcpp::Singleton<MainLayoutWrapper>;
         QAction *fileHashProgress;
         QAction *fileOpenLogFile;
         QAction *fileHideWindow;
-        QAction *fileQuit;
 
         QMenu   *menuHubs;
         QAction *hubsHubReconnect;

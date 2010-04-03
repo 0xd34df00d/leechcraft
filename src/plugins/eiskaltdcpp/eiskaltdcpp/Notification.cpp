@@ -41,8 +41,6 @@ void Notification::enableTray(bool enable){
 
         tray = NULL;
 
-        MainLayoutWrapper::getInstance()->setUnload(true);
-
         WBSET(WB_TRAY_ENABLED, false);
     }
     else {
@@ -61,24 +59,19 @@ void Notification::enableTray(bool enable){
         menu->setTitle("EiskaltDC++");
 
         QAction *show_hide = new QAction(tr("Show/Hide window"), menu);
-        QAction *close_app = new QAction(tr("Exit"), menu);
         QAction *sep = new QAction(menu);
         sep->setSeparator(true);
 
         show_hide->setIcon(WulforUtil::getInstance()->getPixmap(WulforUtil::eiHIDEWINDOW));
-        close_app->setIcon(WulforUtil::getInstance()->getPixmap(WulforUtil::eiEXIT));
 
         connect(show_hide, SIGNAL(triggered()), this, SLOT(slotShowHide()));
-        connect(close_app, SIGNAL(triggered()), this, SLOT(slotExit()));
         connect(tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(slotTrayMenuTriggered(QSystemTrayIcon::ActivationReason)));
 
-        menu->addActions(QList<QAction*>() << show_hide << sep << close_app);
+        menu->addActions(QList<QAction*>() << show_hide << sep);
 
         tray->setContextMenu(menu);
 
         tray->show();
-
-        MainLayoutWrapper::getInstance()->setUnload(false);
 
         WBSET(WB_TRAY_ENABLED, true);
     }
@@ -152,11 +145,6 @@ void Notification::reloadSounds(){
     QString decoded = QByteArray::fromBase64(encoded.toAscii());
 
     sounds = decoded.split("\n");
-}
-
-void Notification::slotExit(){
-    MainLayoutWrapper::getInstance()->setUnload(true);
-    MainLayoutWrapper::getInstance()->close();
 }
 
 void Notification::slotShowHide(){
