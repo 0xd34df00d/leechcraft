@@ -98,7 +98,7 @@ OPTION (ENABLE_POC "Build PoC, text editor" ON)
 OPTION (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ON)
 OPTION (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ON)
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" ON)
-OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" ON)
+OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
 
 if (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
