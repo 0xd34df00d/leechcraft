@@ -1,6 +1,14 @@
-project (eiskaltdcpp)
-cmake_minimum_required (VERSION 2.6)
-set (PROJECT_NAME_GLOBAL eiskaltdcpp)
+IF (NOT QT_USE_FILE)
+	cmake_minimum_required (VERSION 2.6)
+	set (PROJECT_NAME_GLOBAL leechcraft_eiskaltdcpp)
+	if (not CMAKE_MODULE_PATH)
+		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	endif (not CMAKE_MODULE_PATH)
+
+	find_package (Boost COMPONENTS date_time filesystem system REQUIRED)
+	find_package (Qt4 4.5 COMPONENTS QtCore QtGui QtXml QtNetwork QtDBus REQUIRED )
+	find_package (LeechCraft REQUIRED)
+ENDIF (NOT QT_USE_FILE)
 
 set (VERSION "2.0.0")
 include (CheckIncludeFile)
@@ -8,27 +16,6 @@ include (CheckIncludeFiles)
 include (CheckFunctionExists)
 include (FindPkgConfig)
 include (CheckCXXSourceCompiles)
-
-#IF (GPTOOLS_CPU AND GPTOOLS_MEM)
-#    SET (GPTOOLS_CPU FALSE)
-#    SET (GPTOOLS_MEM FALSE)
-#    SET (GPTOOLS_CPU_AND_MEM TRUE)
-#ENDIF (GPTOOLS_CPU AND GPTOOLS_MEM)
-#IF (GPTOOLS_MEM)
-#    MESSAGE (STATUS "Enabled memory profiling via Google perftools")
-#    SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc")
-#    SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ltcmalloc")
-#ENDIF (GPTOOLS_MEM)
-#IF (GPTOOLS_CPU)
-#    MESSAGE (STATUS "Enabled CPU profiling via Google perftools")
-#    SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lprofiler")
-#    SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -lprofiler")
-#ENDIF (GPTOOLS_CPU)
-#IF (GPTOOLS_CPU_AND_MEM)
-#    MESSAGE (STATUS "Enabled both CPU and memory profiling via Google perftools")
-#    SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -ltcmalloc_and_profiler")
-#    SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ltcmalloc_and_profiler")
-#ENDIF (GPTOOLS_CPU_AND_MEM)
 
 if (ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
   # Already in cache, be silent
@@ -107,7 +94,6 @@ find_package (ZLIB REQUIRED)
 find_package (OpenSSL REQUIRED)
 find_package (Threads REQUIRED)
 find_package (Gettext REQUIRED)
-find_package (Qt4 4.5 COMPONENTS QtCore QtGui QtXml QtNetwork QtDBus REQUIRED )
 find_package (PkgConfig)
 
 if (USE_ASPELL)
@@ -116,65 +102,6 @@ if (USE_ASPELL)
 else (USE_ASPELL)
   message (STATUS "Building without Aspell support")
 endif (USE_ASPELL)
-
-#if (NOT (LOCAL_BOOST EQUAL 0))
-#set (LOCAL_BOOST 1)
-#endif (NOT (LOCAL_BOOST EQUAL 0))
-
-if (FREE_SPACE_BAR AND NOT FREE_SPACE_BAR_C)
-if (NOT LOCAL_BOOST)
-find_package (Boost COMPONENTS date_time filesystem system REQUIRED)
-message (STATUS "Build with free space bar (boost)")
-else (NOT LOCAL_BOOST)
-message (STATUS "Sorry, you add flag when use boost libs with flag when change ")
-message (STATUS "local boost headers, may build this config only with free space bar (c realized)")
-set (FREE_SPACE_BAR_C 1)
-set (FREE_SPACE_BAR 0)
-endif (NOT LOCAL_BOOST)
-endif (FREE_SPACE_BAR AND NOT FREE_SPACE_BAR_C)
-
-if (FREE_SPACE_BAR_C AND NOT FREE_SPACE_BAR)
-set (FREE_SPACE_BAR_C 1)
-if (NOT LOCAL_BOOST)
-find_package (Boost REQUIRED)
-endif (NOT LOCAL_BOOST)
-message (STATUS "Build with free space bar (realisation on C, POSIX 1003.1-2001 (and later) with XSI)")
-endif (FREE_SPACE_BAR_C AND NOT FREE_SPACE_BAR)
-
-if (FREE_SPACE_BAR AND FREE_SPACE_BAR_C)
-set (FREE_SPACE_BAR 0)
-set (FREE_SPACE_BAR_C 1)
-if (NOT LOCAL_BOOST)
-find_package (Boost REQUIRED)
-endif (NOT LOCAL_BOOST)
-message (STATUS "Build with free space bar (realisation on C, POSIX 1003.1-2001 (and later) with XSI)")
-endif (FREE_SPACE_BAR AND FREE_SPACE_BAR_C)
-
-if (NOT FREE_SPACE_BAR AND NOT FREE_SPACE_BAR_C)
-set (FREE_SPACE_BAR 0)
-set (FREE_SPACE_BAR_C 0)
-if (NOT LOCAL_BOOST)
-find_package (Boost REQUIRED)
-endif (NOT LOCAL_BOOST)
-message (STATUS "Build without free space bar")
-endif (NOT FREE_SPACE_BAR AND NOT FREE_SPACE_BAR_C)
-
-if (LOCAL_BOOST)
-file(GLOB BOOST_TAR_EXISTS  *.tar.gz)
-if (NOT BOOST_TAR_EXISTS)
-set (boost_file_name "boost.tar.gz")
-file(DOWNLOAD http://eiskaltdc.googlecode.com/files/${boost_file_name} ${CMAKE_CURRENT_SOURCE_DIR}/${boost_file_name} LOG boost_logs STATUS boost_status)
-message (STATUS "${boost_logs}")
-message (STATUS "${boost_status}")
-endif (NOT BOOST_TAR_EXISTS)
-file(GLOB BOOST_TAR_EXISTS  *.tar.gz)
-FIND_PROGRAM (TAR_CMD tar)
-  EXECUTE_PROCESS (
-                COMMAND ${TAR_CMD} -xf ${BOOST_TAR_EXISTS}
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/)
-set (Boost_INCLUDEDIR "./")
-message (STATUS "USED LOCAL BOOST HEADERS")
-endif(LOCAL_BOOST)
 
 pkg_check_modules (PC_UPNP REQUIRED libupnp)
 
@@ -287,8 +214,7 @@ include_directories(${eiskaltdcpp_BINARY_DIR}
    ${eiskaltdcpp_SOURCE_DIR}
    ${GMP_INCLUDE_DIR}
    )
-message(STATUS "CMAKE use in build this libs(and headers):
-
+message(STATUS "CMake would use these libs when building:
                 upnp: ${UPNP_LIBRARY}
                 boost: ${Boost_LIBRARIES} ${Boost_INCLUDE_DIR}
                 bzip2: ${BZIP2_LIBRARIES}
@@ -304,5 +230,3 @@ CONFIGURE_FILE(
   "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
   IMMEDIATE @ONLY)
-
-

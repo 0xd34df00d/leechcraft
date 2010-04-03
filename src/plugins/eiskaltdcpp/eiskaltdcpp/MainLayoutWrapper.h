@@ -280,21 +280,5 @@ friend class dcpp::Singleton<MainLayoutWrapper>;
         HistoryInterface<QWidget*> history;
 };
 
-class EiskaltApp: public QApplication{
-Q_OBJECT
-public:
-    EiskaltApp(int argc, char *argv[]): QApplication(argc, argv){}
-
-    void commitData(QSessionManager& manager){
-        if (MainLayoutWrapper::getInstance()){
-            MainLayoutWrapper::getInstance()->setUnload(true);
-            MainLayoutWrapper::getInstance()->close();
-        }
-
-        manager.release();
-    }
-
-    void saveState(QSessionManager &){ /** Do nothing */ }
-};
-
 #endif //MAINWINDOW_H_
+

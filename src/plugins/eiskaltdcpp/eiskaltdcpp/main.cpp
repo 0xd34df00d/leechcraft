@@ -37,8 +37,6 @@ void callBack(void* x, const std::string& a)
     std::cout << "Loading: " << a << std::endl;
 }
 
-void parseCmdLine(const QStringList &);
-
 #ifndef WIN32
 #include <unistd.h>
 #include <signal.h>
@@ -50,8 +48,6 @@ int main(int argc, char *argv[])
 {
     EiskaltApp app(argc, argv);
     int ret = 0;
-
-    parseCmdLine(qApp->arguments());
 
     SingleInstanceRunner runner;
 

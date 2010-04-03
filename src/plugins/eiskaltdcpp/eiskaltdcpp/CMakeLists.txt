@@ -1,4 +1,4 @@
-project (eiskaltdcpp)
+project (leechcraft_eiskaltdcpp)
 cmake_minimum_required (VERSION 2.6)
 if (FREE_SPACE_BAR_C)
 add_subdirectory(gnulib)
@@ -223,7 +223,7 @@ if (APPLE)
   SET(SRCS ${SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/icons/icon_128x128.icns)
 endif (APPLE)
 
-add_library (eiskaltdcpp SHARED
+add_library (leechcraft_eiskaltdcpp SHARED
                 ${M_SRCS}
                 ${U_SRCS}
                 ${SRCS}
@@ -234,13 +234,13 @@ add_library (eiskaltdcpp SHARED
 add_definitions (-I. -I.. -DCLIENT_DATA_DIR="${CLIENT_DATA_DIR}" -DCLIENT_SOUNDS_DIR="${CLIENT_SOUNDS_DEST}" -DCLIENT_TRANSLATIONS_DIR="${CLIENT_TRANSLATIONS_DEST}" -DCLIENT_ICONS_DIR="${CLIENT_ICONS_DEST}" )
 
 if (APPLE)
-target_link_libraries (eiskaltdcpp ${LIBS} dcpp iconv intl upnp ixml)
+target_link_libraries (leechcraft_eiskaltdcpp ${LIBS} dcpp iconv intl upnp ixml)
 else (APPLE)
-target_link_libraries (eiskaltdcpp ${LEECHCRAFT_LIBRARIES} ${LIBS} dcpp)
+target_link_libraries (leechcraft_eiskaltdcpp ${LEECHCRAFT_LIBRARIES} ${LIBS} dcpp)
 endif (APPLE)
 
-  set_property (TARGET eiskaltdcpp PROPERTY OUTPUT_NAME ${PROJECT_NAME_GLOBAL})
-  install (TARGETS eiskaltdcpp DESTINATION ${LC_PLUGINS_DEST})
+  set_property (TARGET leechcraft_eiskaltdcpp PROPERTY OUTPUT_NAME ${PROJECT_NAME_GLOBAL})
+  install (TARGETS leechcraft_eiskaltdcpp DESTINATION ${LC_PLUGINS_DEST})
 
 if (NOT APPLE)
 
