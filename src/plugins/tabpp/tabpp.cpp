@@ -23,6 +23,7 @@
 #include "core.h"
 #include "tabppwidget.h"
 #include "xmlsettingsmanager.h"
+#include "tabwidget.h"
 
 namespace LeechCraft
 {
@@ -119,6 +120,16 @@ namespace LeechCraft
 						Dock_->GetActivatorAction ()->shortcut (),
 						Dock_->GetActivatorAction ()->icon ());
 				return result;
+			}
+
+			void Plugin::newTabRequested ()
+			{
+				TabWidget *w = new TabWidget ();
+				connect (w,
+						SIGNAL (removeTab (QWidget*)),
+						this,
+						SIGNAL (removeTab (QWidget*)));
+				emit addNewTab (QString ("Tab++"), w);
 			}
 		};
 	};

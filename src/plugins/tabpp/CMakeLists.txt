@@ -27,6 +27,7 @@ SET (SRCS
 	tabppwidget.cpp
 	xmlsettingsmanager.cpp
 	tabsfiltermodel.cpp
+	tabwidget.cpp
 	)
 SET (HEADERS
 	tabpp.h
@@ -34,9 +35,11 @@ SET (HEADERS
 	tabppwidget.h
 	xmlsettingsmanager.h
 	tabsfiltermodel.h
+	tabwidget.h
 	)
 SET (FORMS
 	tabppwidget.ui
+	tabwidget.ui
 	)
 SET (RESOURCES tabppresources.qrc)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

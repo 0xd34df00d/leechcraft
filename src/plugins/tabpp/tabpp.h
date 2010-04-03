@@ -23,6 +23,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/itoolbarembedder.h>
+#include <interfaces/imultitabs.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
@@ -38,9 +39,10 @@ namespace LeechCraft
 						 , public IToolBarEmbedder
 						 , public IHaveSettings
 						 , public IHaveShortcuts
+						 , public IMultiTabs
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IToolBarEmbedder IHaveSettings IHaveShortcuts)
+				Q_INTERFACES (IInfo IToolBarEmbedder IHaveSettings IHaveShortcuts IMultiTabs)
 
 				TabPPWidget *Dock_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
@@ -67,6 +69,17 @@ namespace LeechCraft
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, ActionInfo> GetActionInfo () const;
+			public slots:
+				void newTabRequested ();
+			signals:
+				void bringToFront ();
+				void addNewTab (const QString&, QWidget*);
+				void removeTab (QWidget*);
+				void changeTabName (QWidget*, const QString&);
+				void changeTabIcon (QWidget*, const QIcon&);
+				void changeTooltip (QWidget*, QWidget*);
+				void statusBarChanged (QWidget*, const QString&);
+				void raiseTab (QWidget*);
 			};
 		};
 	};
