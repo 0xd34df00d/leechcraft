@@ -91,7 +91,9 @@ void MainLayoutWrapper::Init (ICoreProxy_ptr proxy)
 {
 	S_StaticThis = this;
     dcpp::startup(callBack, NULL);
-    dcpp::TimerManager::getInstance()->start();
+	TimerManager *tm = dcpp::TimerManager::getInstance();
+	qDebug () << Q_FUNC_INFO << tm;
+    tm->start();
 
     installHandlers();
 
@@ -182,7 +184,7 @@ void MainLayoutWrapper::SetProvider (QObject*, const QString&)
 
 QIcon MainLayoutWrapper::GetIcon () const
 {
-	return WulforUtil::getInstance()->getPixmap(WulforUtil::eiICON_APPL);
+	return QIcon ();
 }
 
 void MainLayoutWrapper::ReleaseAsClosed ()
