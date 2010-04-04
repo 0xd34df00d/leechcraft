@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <QAction>
 #include <QMainWindow>
+#include <QTranslator>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "tabppwidget.h"
 #include "xmlsettingsmanager.h"
@@ -39,7 +41,8 @@ namespace LeechCraft
 
 				Core::Instance ().SetProxy (proxy);
 
-				Dock_ = new TabPPWidget (tr ("Tab++"), proxy->GetMainWindow ());
+				Dock_ = new TabPPWidget ("Tab++", proxy->GetMainWindow ());
+				Translator_.reset (LeechCraft::Util::InstallTranslator ("tabpp"));
 			}
 
 			void Plugin::SecondInit ()

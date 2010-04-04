@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_TABPP_TABPP_H
 #define PLUGINS_TABPP_TABPP_H
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
@@ -25,6 +26,8 @@
 #include <interfaces/itoolbarembedder.h>
 #include <interfaces/imultitabs.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -47,6 +50,7 @@ namespace LeechCraft
 				TabPPWidget *Dock_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 
+				std::auto_ptr<QTranslator> Translator_;
 				enum ActionsEnum
 				{
 					AEActivator
