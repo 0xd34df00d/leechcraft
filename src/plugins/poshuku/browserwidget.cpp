@@ -759,6 +759,12 @@ namespace LeechCraft
 			void BrowserWidget::findText (const QString& text,
 					QWebPage::FindFlags flags)
 			{
+				if (PreviousFindText_ != text)
+				{
+					QWebPage::FindFlags nflags = flags | QWebPage::HighlightAllOccurrences;
+					Ui_.WebView_->page ()->findText (text, nflags);
+					PreviousFindText_ = text;
+				}
 				bool found = Ui_.WebView_->page ()->findText (text, flags);
 				FindDialog_->SetSuccessful (found);
 			}

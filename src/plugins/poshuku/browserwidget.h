@@ -77,6 +77,7 @@ namespace LeechCraft
 				FindDialog *FindDialog_;
 				PasswordRemember *RememberDialog_;
 				QTimer *ReloadTimer_;
+				QString PreviousFindText_;
 				bool HtmlMode_;
 				bool Own_;
 
