@@ -186,7 +186,7 @@ namespace LeechCraft
 				if (initFailed)
 				{
 					QMessageBox::critical (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Aggregator failed to initialize properly. "
 								"Check logs and talk with the developers. "
 								"Or, at least, check the storage backend "
@@ -578,7 +578,7 @@ namespace LeechCraft
 				QString name = ds.sibling (ds.row (), 0).data ().toString ();
 			
 				QMessageBox mb (QMessageBox::Warning,
-						tr ("LeechCraft"),
+						"LeechCraft",
 						tr ("You are going to permanently remove the feed:"
 							"<br />%1<br /><br />"
 							"Are you really sure that you want to do it?",
