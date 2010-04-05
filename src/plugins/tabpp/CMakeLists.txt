@@ -43,9 +43,11 @@ SET (FORMS
 	)
 SET (TRANSLATIONS
 	leechcraft_tabpp_uk_UA.ts
+	leechcraft_tabpp_ru_RU.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_ru_RU.qm
 	)
 SET (RESOURCES tabppresources.qrc)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
