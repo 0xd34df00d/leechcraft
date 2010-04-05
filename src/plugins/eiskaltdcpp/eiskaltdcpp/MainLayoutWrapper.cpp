@@ -91,9 +91,7 @@ void MainLayoutWrapper::Init (ICoreProxy_ptr proxy)
 {
 	S_StaticThis = this;
     dcpp::startup(callBack, NULL);
-	TimerManager *tm = dcpp::TimerManager::getInstance();
-	qDebug () << Q_FUNC_INFO << tm;
-    tm->start();
+	dcpp::TimerManager::getInstance()->start();
 
     installHandlers();
 
@@ -134,7 +132,6 @@ void MainLayoutWrapper::Init (ICoreProxy_ptr proxy)
     Notification::getInstance()->enableTray(WBGET(WB_TRAY_ENABLED));
 
     autoconnect();
-    show();
     parseCmdLine();
 
     if (WBGET(WB_MAINWINDOW_HIDE))
