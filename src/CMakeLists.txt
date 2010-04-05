@@ -99,6 +99,7 @@ OPTION (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ON)
 OPTION (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ON)
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" ON)
 OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
+OPTION (ENABLE_AZOTH "Build Azoth, the IM client" ON)
 
 if (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -199,6 +200,10 @@ ENDIF (ENABLE_TABPP)
 IF (ENABLE_EISKALTDCPP)
         ADD_SUBDIRECTORY (plugins/eiskaltdcpp)
 ENDIF (ENABLE_EISKALTDCPP)
+
+IF (ENABLE_AZOTH)
+        ADD_SUBDIRECTORY (plugins/azoth)
+ENDIF (ENABLE_AZOTH)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
