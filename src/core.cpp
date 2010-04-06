@@ -229,6 +229,13 @@ void LeechCraft::Core::Setup (QObject *plugin)
 		InitMultiTab (plugin);
 }
 
+void LeechCraft::Core::PostSecondInit (QObject *plugin)
+{
+	if (qobject_cast<IMultiTabs*> (plugin) ||
+			qobject_cast<IEmbedTab*> (plugin))
+		TabContainer_->AddObject (plugin);
+}
+
 void LeechCraft::Core::DelayedInit ()
 {
 	connect (this,
@@ -1055,8 +1062,6 @@ void LeechCraft::Core::InitMultiTab (QObject *plugin)
 
 void LeechCraft::Core::InitCommonTab (QObject *plugin)
 {
-	TabContainer_->AddObject (plugin);
-
 	connect (plugin,
 			SIGNAL (changeTabName (QWidget*, const QString&)),
 			TabContainer_.get (),

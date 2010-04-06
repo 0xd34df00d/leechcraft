@@ -199,6 +199,8 @@ namespace LeechCraft
 		 */
 		void Setup (QObject *object);
 
+		void PostSecondInit (QObject *object);
+
 		/** Some preprocessor black magick to initialize storage and a
 		 * method per each hook signature.
 		 */
