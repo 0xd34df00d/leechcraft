@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTH_H
-#define PLUGINS_AZOTH_AZOTH_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
+#include "azothserverconnectionadaptor.h"
+#include "azothserverconnection.h"
 
 namespace LeechCraft
 {
@@ -28,30 +25,17 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginReady
+			AzothServerConnectionAdaptor::AzothServerConnectionAdaptor (AzothServerConnection *azc)
+			: QDBusAbstractAdaptor (azc)
+			, AZC_ (azc)
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+			}
 
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
-			};
+			void AzothServerConnectionAdaptor::ReaddProtocolPlugins ()
+			{
+				AZC_->ReaddProtocolPlugins ();
+			}
 		};
 	};
 };
-
-#endif
 

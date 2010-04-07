@@ -18,6 +18,7 @@
 
 #include "azoth.h"
 #include <QIcon>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,6 +28,9 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				Core::Instance ().SetProxy (proxy);
+
+				Core::Instance ().Init ();
 			}
 
 			void Plugin::SecondInit ()
@@ -71,7 +75,15 @@ namespace LeechCraft
 			{
 			}
 
+			QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+			{
+				return Core::Instance ().GetExpectedPluginClasses ();
+			}
 
+			void Plugin::AddPlugin (QObject *object)
+			{
+				Core::Instance ().AddPlugin (object);
+			}
 		};
 	};
 };

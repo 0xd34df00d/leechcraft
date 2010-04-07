@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTH_H
-#define PLUGINS_AZOTH_AZOTH_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
+#ifndef PLUGINS_AZOTH_AZOTHSERVERCONNECTIONADAPTOR_H
+#define PLUGINS_AZOTH_AZOTHSERVERCONNECTIONADAPTOR_H
+#include <QDBusAbstractAdaptor>
 
 namespace LeechCraft
 {
@@ -28,26 +26,18 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginReady
+			class AzothServerConnection;
+
+			class AzothServerConnectionAdaptor : public QDBusAbstractAdaptor
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Azoth.Client")
 
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
+				AzothServerConnection *AZC_;
+			public:
+				AzothServerConnectionAdaptor (AzothServerConnection*);
+			public slots:
+				Q_NOREPLY void ReaddProtocolPlugins ();
 			};
 		};
 	};

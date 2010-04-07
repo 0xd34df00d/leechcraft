@@ -16,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTH_H
-#define PLUGINS_AZOTH_AZOTH_H
+#ifndef PLUGINS_AZOTH_AZOTHSERVERCONNECTION_H
+#define PLUGINS_AZOTH_AZOTHSERVERCONNECTION_H
+#include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
+#include <QDBusInterface>
+#include <QProcess>
+
+class QDBusPendingCallWatcher;
 
 namespace LeechCraft
 {
@@ -28,30 +31,29 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginReady
+			class AzothServerConnection : public QObject
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Azoth.Client")
 
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
+				std::auto_ptr<QDBusInterface> Connection_;
+			public:
+				AzothServerConnection (QObject* = 0);
+
+				void Establish ();
+				void Release ();
+				void ReaddProtocolPlugins ();
+			private slots:
+				void initServer ();
+				void handleProcessError (QProcess::ProcessError);
+				void handleAddProtocolPluginCallFinished (QDBusPendingCallWatcher*);
+			private:
+				void StartCommunication ();
 			};
 		};
 	};
 };
+
 
 #endif
 

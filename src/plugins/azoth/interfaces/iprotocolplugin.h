@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTH_H
-#define PLUGINS_AZOTH_AZOTH_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
+#ifndef PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
+#define PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
 
 namespace LeechCraft
 {
@@ -28,30 +25,20 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginReady
+			namespace Plugins
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
+				class IProtocolPlugin
+				{
+				public:
+					virtual ~IProtocolPlugin () {}
+				};
 			};
 		};
 	};
 };
+
+Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin,
+		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin/1.0");
 
 #endif
 

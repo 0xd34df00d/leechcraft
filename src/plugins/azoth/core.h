@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTH_H
-#define PLUGINS_AZOTH_AZOTH_H
+#ifndef PLUGINS_AZOTH_CORE_H
+#define PLUGINS_AZOTH_CORE_H
 #include <QObject>
+#include <QSet>
 #include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
 
 namespace LeechCraft
 {
@@ -28,26 +28,33 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginReady
+			class AzothServerConnection;
+
+			class Core : public QObject
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady)
+
+				ICoreProxy_ptr Proxy_;
+
+				QObjectList ProtocolPlugins_;
+
+				AzothServerConnection *ServerConnection_;
+
+				Core ();
 			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				static Core& Instance ();
+
+				void SetProxy (ICoreProxy_ptr);
+				ICoreProxy_ptr GetProxy () const;
+
+				void Init ();
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
+
+				const QObjectList& GetProtocolPlugins () const;
+			private:
+				void AddProtocolPlugin (QObject*);
 			};
 		};
 	};
