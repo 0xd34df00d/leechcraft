@@ -290,6 +290,14 @@ namespace LeechCraft
 		return rc.Result_;
 	}
 
+	QString PluginManager::GetPluginLibraryPath (const QObject *object) const
+	{
+		Q_FOREACH (QPluginLoader_ptr loader, Plugins_)
+			if (loader->instance () == object)
+				return loader->fileName ();
+		return QString ();
+	}
+
 	QObject* PluginManager::GetProvider (const QString& feature) const
 	{
 		if (!FeatureProviders_.contains (feature))

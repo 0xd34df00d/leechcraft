@@ -307,6 +307,8 @@ public:
 		return result;
 	}
 
+	virtual QString GetPluginLibraryPath (const QObject* object) const = 0;
+
 	virtual ~IPluginsManager () {}
 };
 
