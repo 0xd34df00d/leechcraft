@@ -28,8 +28,12 @@ namespace LeechCraft
 		namespace Azoth
 		{
 			Core::Core ()
-			: ServerConnection_ (0)
 			{
+				ServerConnection_ = new AzothServerConnection ();
+				connect (ServerConnection_,
+						SIGNAL (notify (const LeechCraft::Notification&)),
+						this,
+						SIGNAL (notify (const LeechCraft::Notification&)));
 			}
 
 			Core& Core::Instance ()
@@ -50,7 +54,12 @@ namespace LeechCraft
 
 			void Core::Init ()
 			{
-				ServerConnection_ = new AzothServerConnection ();
+				ServerConnection_->Establish ();
+			}
+
+			void Core::Release ()
+			{
+				ServerConnection_->Release ();
 			}
 
 			QSet<QByteArray> Core::GetExpectedPluginClasses () const

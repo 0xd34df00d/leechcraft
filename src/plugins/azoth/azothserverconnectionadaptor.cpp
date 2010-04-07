@@ -31,6 +31,11 @@ namespace LeechCraft
 			{
 			}
 
+			void AzothServerConnectionAdaptor::ServerReady ()
+			{
+				AZC_->ServerReady ();
+			}
+
 			void AzothServerConnectionAdaptor::ReaddProtocolPlugins ()
 			{
 				AZC_->ReaddProtocolPlugins ();

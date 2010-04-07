@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTHSERVERCONNECTIONADAPTOR_H
-#define PLUGINS_AZOTH_AZOTHSERVERCONNECTIONADAPTOR_H
-#include <QDBusAbstractAdaptor>
+#include "azothclientconnectionadaptor.h"
+#include "azothclientconnection.h"
 
 namespace LeechCraft
 {
@@ -26,29 +25,25 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class AzothServerConnection;
-
-			class AzothServerConnectionAdaptor : public QDBusAbstractAdaptor
+			namespace Server
 			{
-				Q_OBJECT
-				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Azoth.Client")
+				AzothClientConnectionAdaptor::AzothClientConnectionAdaptor (AzothClientConnection *acc)
+				: QDBusAbstractAdaptor (acc)
+				, ACC_ (acc)
+				{
+				}
 
-				AzothServerConnection *AZC_;
-			public:
-				AzothServerConnectionAdaptor (AzothServerConnection*);
-			public slots:
-				/** Called by the server to notify core that it has loaded.
-				 */
-				Q_NOREPLY void ServerReady ();
+				bool AzothClientConnectionAdaptor::AddProtocolPluginByPath (QString path)
+				{
+					ACC_->AddProtocolPluginByPath (path);
+				}
 
-				/** Called by the server to push all the protocol plugins
-				 * to the server again.
-				 */
-				Q_NOREPLY void ReaddProtocolPlugins ();
+				void AzothClientConnectionAdaptor::Shutdown ()
+				{
+					ACC_->Shutdown ();
+				}
 			};
 		};
 	};
 };
-
-#endif
 

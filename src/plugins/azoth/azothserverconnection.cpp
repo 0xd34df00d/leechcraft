@@ -46,19 +46,13 @@ namespace LeechCraft
 				{
 					QProcess *process = new QProcess ();
 					connect (process,
-							SIGNAL (started ()),
-							this,
-							SLOT (initServer ()),
-							Qt::QueuedConnection);
-					connect (process,
 							SIGNAL (error (QProcess::ProcessError)),
 							this,
 							SLOT (handleProcessError (QProcess::ProcessError)));
 					process->start ("leechcraft_azoth_server");
-					return;
 				}
-
-				StartCommunication ();
+				else
+					ServerReady ();
 			}
 
 			void AzothServerConnection::Release ()
@@ -67,8 +61,9 @@ namespace LeechCraft
 					Connection_->asyncCall ("Shutdown");
 			}
 
-			void AzothServerConnection::initServer ()
+			void AzothServerConnection::ServerReady ()
 			{
+				qDebug () << Q_FUNC_INFO;
 				Connection_.reset (new QDBusInterface ("org.LeechCraft.Azoth.Server",
 							"/Azoth/Server"));
 				if (!Connection_->isValid ())
@@ -81,6 +76,7 @@ namespace LeechCraft
 
 			void AzothServerConnection::ReaddProtocolPlugins ()
 			{
+				qDebug () << Q_FUNC_INFO;
 				IPluginsManager *pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 				QObjectList pps = Core::Instance ().GetProtocolPlugins ();
 				Q_FOREACH (QObject *protocol, pps)
@@ -95,8 +91,6 @@ namespace LeechCraft
 							this,
 							SLOT (handleAddProtocolPluginCallFinished (QDBusPendingCallWatcher*)));
 				}
-
-				StartCommunication ();
 			}
 
 			void AzothServerConnection::handleProcessError (QProcess::ProcessError pe)
@@ -104,6 +98,15 @@ namespace LeechCraft
 				qWarning () << Q_FUNC_INFO
 					<< "error"
 					<< pe;
+
+				Notification n =
+				{
+					"Azoth",
+					tr ("Helper process error: %1").arg (pe),
+					false,
+					Notification::PCritical_
+				};
+				emit notify (n);
 			}
 
 			void AzothServerConnection::handleAddProtocolPluginCallFinished (QDBusPendingCallWatcher *w)
@@ -119,20 +122,8 @@ namespace LeechCraft
 				else if (!reply.argumentAt<0> ())
 					qWarning () << Q_FUNC_INFO
 						<< "server reports failure";
-			}
 
-			void AzothServerConnection::StartCommunication ()
-			{
-				if (!Connection_.get ())
-				{
-					Connection_.reset (new QDBusInterface ("org.LeechCraft.Azoth.Server",
-								"/Azoth/Server"));
-					if (!Connection_->isValid ())
-					{
-						qWarning () << Q_FUNC_INFO
-							<< Connection_->lastError ();
-					}
-				}
+				w->deleteLater ();
 			}
 		};
 	};

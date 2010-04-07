@@ -48,6 +48,7 @@ namespace LeechCraft
 				ICoreProxy_ptr GetProxy () const;
 
 				void Init ();
+				void Release ();
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
@@ -55,6 +56,8 @@ namespace LeechCraft
 				const QObjectList& GetProtocolPlugins () const;
 			private:
 				void AddProtocolPlugin (QObject*);
+			signals:
+				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};

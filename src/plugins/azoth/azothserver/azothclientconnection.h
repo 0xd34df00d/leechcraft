@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTHSERVERCONNECTIONADAPTOR_H
-#define PLUGINS_AZOTH_AZOTHSERVERCONNECTIONADAPTOR_H
-#include <QDBusAbstractAdaptor>
+#ifndef PLUGINS_AZOTH_SERVER_AZOTHCLIENTCONNECTION_H
+#define PLUGINS_AZOTH_SERVER_AZOTHCLIENTCONNECTION_H
+#include <memory>
+#include <QObject>
+#include <QDBusInterface>
+
+class QDBusPendingCallWatcher;
 
 namespace LeechCraft
 {
@@ -26,25 +30,27 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class AzothServerConnection;
-
-			class AzothServerConnectionAdaptor : public QDBusAbstractAdaptor
+			namespace Server
 			{
-				Q_OBJECT
-				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Azoth.Client")
+				class AzothClientConnection : public QObject
+				{
+					Q_OBJECT
 
-				AzothServerConnection *AZC_;
-			public:
-				AzothServerConnectionAdaptor (AzothServerConnection*);
-			public slots:
-				/** Called by the server to notify core that it has loaded.
-				 */
-				Q_NOREPLY void ServerReady ();
+					std::auto_ptr<QDBusInterface> Connection_;
+				public:
+					AzothClientConnection (QObject* = 0);
 
-				/** Called by the server to push all the protocol plugins
-				 * to the server again.
-				 */
-				Q_NOREPLY void ReaddProtocolPlugins ();
+					void Establish ();
+					void RequestPlugins ();
+
+					/* These functions are expected to be called
+					 * from the adaptor.
+					 */
+					bool AddProtocolPluginByPath (const QString& path);
+					void Shutdown ();
+				private slots:
+					void handleReaddProtocolPluginsFinished (QDBusPendingCallWatcher*);
+				};
 			};
 		};
 	};

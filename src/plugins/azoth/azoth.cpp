@@ -30,6 +30,11 @@ namespace LeechCraft
 			{
 				Core::Instance ().SetProxy (proxy);
 
+				connect (&Core::Instance (),
+						SIGNAL (notify (const LeechCraft::Notification&)),
+						this,
+						SIGNAL (notify (const LeechCraft::Notification&)));
+
 				Core::Instance ().Init ();
 			}
 
@@ -39,6 +44,7 @@ namespace LeechCraft
 
 			void Plugin::Release ()
 			{
+				Core::Instance ().Release ();
 			}
 
 			QString Plugin::GetName () const

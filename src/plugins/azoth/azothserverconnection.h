@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QDBusInterface>
 #include <QProcess>
+#include <interfaces/structures.h>
 
 class QDBusPendingCallWatcher;
 
@@ -34,7 +35,6 @@ namespace LeechCraft
 			class AzothServerConnection : public QObject
 			{
 				Q_OBJECT
-				Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Azoth.Client")
 
 				std::auto_ptr<QDBusInterface> Connection_;
 			public:
@@ -43,12 +43,12 @@ namespace LeechCraft
 				void Establish ();
 				void Release ();
 				void ReaddProtocolPlugins ();
+				void ServerReady ();
 			private slots:
-				void initServer ();
 				void handleProcessError (QProcess::ProcessError);
 				void handleAddProtocolPluginCallFinished (QDBusPendingCallWatcher*);
-			private:
-				void StartCommunication ();
+			signals:
+				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};
