@@ -284,6 +284,7 @@ void TabContainer::remove (int index)
 			XmlSettingsManager::Instance ()->
 					setProperty (qPrintable (QString ("Hide%1").arg (name)),
 							true);
+			EmbedTabs_.remove (widget);
 			remove (widget);
 
 			RestoreMenu_->addAction (icon, name,
