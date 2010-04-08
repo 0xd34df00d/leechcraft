@@ -82,6 +82,9 @@ public:
  * To bring the tab to front, plugin emits raiseTab(QWidget*) signal,
  * where the first parameter is the pointer to previously inserted tab.
  *
+ * @note You can't use the above signals before SecondInit() has been
+ * called on your plugin, but you can use them in SecondInit() and later.
+ *
  * @sa IEmbedTab
  * @sa IWindow
  */
