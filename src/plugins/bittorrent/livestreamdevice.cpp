@@ -117,10 +117,8 @@ namespace LeechCraft
 				return Handle_.status ().total_wanted;
 			}
 
-			void LiveStreamDevice::PieceRead (const libtorrent::read_piece_alert& a)
+			void LiveStreamDevice::PieceRead (const libtorrent::read_piece_alert&)
 			{
-				int index = a.piece;
-
 				CheckReady ();
 				CheckNextChunk ();
 				reschedule ();
