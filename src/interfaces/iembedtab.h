@@ -49,6 +49,9 @@ class IEmbedTab
 public:
 	/** @brief Returns the widget with tab contents.
 	 *
+	 * This function is called after the IInfo::SecondInit() has been
+	 * called on this plugin.
+	 *
 	 * @return Widget with tab contents.
 	 */
 	virtual QWidget* GetTabContents () = 0;
@@ -57,6 +60,9 @@ public:
 	 *
 	 * The returned toolbar would be shown on top of the LeechCraft's
 	 * main window. If there is no toolbar, 0 should be returned.
+	 *
+	 * This function is called after the IInfo::SecondInit() has been
+	 * called on this plugin.
 	 *
 	 * @return The toolbar of this plugin.
 	 */
