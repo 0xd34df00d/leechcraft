@@ -35,7 +35,7 @@ namespace LeechCraft
 
 				bool AzothClientConnectionAdaptor::AddProtocolPluginByPath (QString path)
 				{
-					ACC_->AddProtocolPluginByPath (path);
+					return ACC_->AddProtocolPluginByPath (path);
 				}
 
 				void AzothClientConnectionAdaptor::Shutdown ()
