@@ -630,6 +630,16 @@
 					<label lang="en" value="Notify when automatic addition failed because of the next option" />
 					<label lang="ru" value="Уведомлять, когда автоматическое добавление не удалось из-за следующей опции" />
 				</item>
+				<item type="combobox" property="AllocationMode">
+					<label lang="en" value="File allocation mode:" />
+					<label lang="ru" value="Режим выделения места под файлы:" />
+					<option name="sparse" default="true">
+						<label lang="en" value="Sparse" />
+					</option>
+					<option name="full">
+						<label lang="en" value="Full" />
+					</option>
+				</item>
 				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2">
 					<lang value="en">
 						<label value="Maximum automatically added torrent size:" />

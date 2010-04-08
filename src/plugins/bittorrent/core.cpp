@@ -363,12 +363,12 @@ namespace LeechCraft
 					return false;
 			}
 
-			bool Core::CouldHandle (const DownloadEntity& e) const
+			bool Core::CouldHandle (const DownloadEntity&) const
 			{
 				return false;
 			}
 
-			void Core::Handle (DownloadEntity e)
+			void Core::Handle (DownloadEntity)
 			{
 			}
 
@@ -737,6 +737,19 @@ namespace LeechCraft
 				else
 					UpdateTagsImpl (tags, CurrentTorrent_);
 			}
+
+			namespace
+			{
+				libtorrent::storage_mode_t GetCurrentStorageMode ()
+				{
+					QString sm = XmlSettingsManager::Instance ()->
+						property ("AllocationMode").toString ();
+					if (sm == "full")
+						return libtorrent::storage_mode_allocate;
+					else
+						return libtorrent::storage_mode_sparse;
+				}
+			};
 			
 			int Core::AddMagnet (const QString& magnet,
 					const QString& path,
@@ -748,7 +761,7 @@ namespace LeechCraft
 				{
 					libtorrent::add_torrent_params atp;
 					atp.auto_managed = true;
-					atp.storage_mode = libtorrent::storage_mode_sparse;
+					atp.storage_mode = GetCurrentStorageMode ();
 					atp.paused = (params & NoAutostart);
 					atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 					atp.duplicate_is_error = true;
@@ -809,7 +822,7 @@ namespace LeechCraft
 					libtorrent::add_torrent_params atp;
 					atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 					atp.auto_managed = true;
-					atp.storage_mode = libtorrent::storage_mode_sparse;
+					atp.storage_mode = GetCurrentStorageMode ();
 					atp.paused = tryLive || (params & NoAutostart);
 					atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
 					atp.duplicate_is_error = true;
@@ -1945,7 +1958,7 @@ namespace LeechCraft
 				{
 					libtorrent::add_torrent_params atp;
 					atp.ti = new libtorrent::torrent_info (e);
-					atp.storage_mode = libtorrent::storage_mode_sparse;
+					atp.storage_mode = GetCurrentStorageMode ();
 					atp.save_path = path;
 					atp.auto_managed = automanaged;
 					atp.paused = pause;
