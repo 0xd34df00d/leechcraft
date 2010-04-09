@@ -76,7 +76,7 @@ namespace LeechCraft
 				return false;
 			}
 
-			bool LiveStreamDevice::open (QIODevice::OpenMode mode)
+			bool LiveStreamDevice::open (QIODevice::OpenMode)
 			{
 				return true;
 			}
