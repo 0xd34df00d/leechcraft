@@ -435,7 +435,7 @@ QString FsIrcView::ircUri() const
 	if(m_irc->connected()) return m_irc->getIrcUri(); else return QString();
 }
 
-void FsIrcView::proposeUri(QString uri)
+void FsIrcView::proposeUri(QString)
 {
 }
 
