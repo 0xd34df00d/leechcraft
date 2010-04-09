@@ -116,7 +116,7 @@ namespace LeechCraft
 				emit completeChanged ();
 			}
 
-			void AkregatorImportPage::on_FileLocation__textEdited (const QString& text)
+			void AkregatorImportPage::on_FileLocation__textEdited (const QString&)
 			{
 				emit completeChanged ();
 			}

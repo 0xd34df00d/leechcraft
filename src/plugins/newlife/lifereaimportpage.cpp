@@ -121,7 +121,7 @@ namespace LeechCraft
 				emit completeChanged ();
 			}
 
-			void LifereaImportPage::on_FileLocation__textEdited (const QString& text)
+			void LifereaImportPage::on_FileLocation__textEdited (const QString&)
 			{
 				emit completeChanged ();
 			}
