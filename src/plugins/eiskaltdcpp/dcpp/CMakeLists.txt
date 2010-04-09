@@ -4,7 +4,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 cmake_minimum_required (VERSION 2.6)
 
-set (CMAKE_CXX_FLAGS "-fPIC")
+set (CMAKE_CXX_FLAGS "-fPIC -fno-strict-aliasing")
 
 aux_source_directory(${PROJECT_SOURCE_DIR} dcpp_srcs)
 if (HAVE_ADDRS_H EQUAL 1)
