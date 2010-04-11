@@ -34,7 +34,15 @@ namespace LeechCraft
 
 		QList<QWizardPage*> pages;
 		Q_FOREACH (IStartupWizard *wizard, wizards)
-			pages += wizard->GetWizardPages ();
+		{
+			QList<QWizardPage*> tp = wizard->GetWizardPages ();
+#ifdef QT_DEBUG
+			qDebug () << Q_FUNC_INFO
+				<< reinterpret_cast<IInfo*> (wizard)->GetName ()
+				<< tp;
+#endif
+			pages += tp;
+		}
 
 		if (!pages.size ())
 		{
@@ -56,7 +64,15 @@ namespace LeechCraft
 				Qt::QueuedConnection);
 
 		Q_FOREACH (QWizardPage *page, pages)
+		{
+#ifdef QT_DEBUG
+			qDebug () << "Adding page" << page;
+#endif
 			addPage (page);
+#ifdef QT_DEBUG
+			qDebug () << "Added page" << page;
+#endif
+		}
 
 		show ();
 	}
