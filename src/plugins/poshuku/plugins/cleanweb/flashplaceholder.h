@@ -35,13 +35,16 @@ namespace LeechCraft
 					class FlashPlaceHolder : public QWidget
 					{
 						Q_OBJECT
+						Q_PROPERTY(bool swapping READ IsSwapping)
 
 						Ui::FlashPlaceHolder Ui_;
 						QUrl URL_;
+						bool Swapping_;
 					public:
 						FlashPlaceHolder (const QUrl&, QWidget* = 0);
+						bool IsSwapping () const;
 					private slots:
-						void on_LoadFlash__released ();
+						void handleLoadFlash ();
 						void handleContextMenu ();
 						void handleAddWhitelist ();
 					};

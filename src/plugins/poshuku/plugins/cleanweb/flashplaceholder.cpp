@@ -23,6 +23,7 @@
 #include <QMenu>
 #include <QCursor>
 #include <QtDebug>
+#include <qwebelement.h>
 #include "core.h"
 #include "flashonclickwhitelist.h"
 
@@ -40,10 +41,20 @@ namespace LeechCraft
 							QWidget *parent)
 					: QWidget (parent)
 					, URL_ (url)
+					, Swapping_ (false)
 					{
 						Ui_.setupUi (this);
 						setToolTip (url.toString ());
 						Ui_.LoadFlash_->setToolTip (url.toString ());
+						connect (Ui_.LoadFlash_,
+								SIGNAL (released ()),
+								Ui_.LoadFlash_,
+								SLOT (deleteLater  ()));
+						connect (Ui_.LoadFlash_,
+								SIGNAL (released ()),
+								this,
+								SLOT (handleLoadFlash  ()),
+								Qt::QueuedConnection);
 
 						setContextMenuPolicy (Qt::CustomContextMenu);
 						connect (this,
@@ -52,7 +63,12 @@ namespace LeechCraft
 								SLOT (handleContextMenu ()));
 					}
 
-					void FlashPlaceHolder::on_LoadFlash__released ()
+					bool FlashPlaceHolder::IsSwapping () const
+					{
+						return Swapping_;
+					}
+
+					void FlashPlaceHolder::handleLoadFlash ()
 					{
 						QWidget *parent = parentWidget ();
 						QWebView *view = 0;
@@ -65,21 +81,38 @@ namespace LeechCraft
 						if (!view)
 							return;
 
-						QString filename = ":/plugins/poshuku/plugins/cleanweb/resources/scripts/swap.js";
-						QFile file (filename);
-						file.open (QIODevice::ReadOnly);
-						QString js = QString (file.readAll ()).arg (URL_.toString ());
+						QString selector = "%1[type=\"application/x-shockwave-flash\"]";
+						QString mime = "application/futuresplash";
 
 						hide ();
 
+						Swapping_ = true;
+
 						QList<QWebFrame*> frames;
-						frames << view->page ()->mainFrame ();
-						while (frames.size ())
+						frames.append (view->page ()->mainFrame ());
+
+						while (!frames.isEmpty ())
 						{
 							QWebFrame *frame = frames.takeFirst ();
-							frame->evaluateJavaScript (js);
-							frames += frame->childFrames ();
+							QWebElement docElement = frame->documentElement ();
+
+							QWebElementCollection elements;
+							elements.append (docElement.findAll (selector.arg ("object")));
+							elements.append (docElement.findAll (selector.arg ("embed")));
+
+							Q_FOREACH (QWebElement element, elements)
+							{
+								if (!element.evaluateJavaScript ("this.swapping").toBool ())
+									continue;
+
+								QWebElement substitute = element.clone ();
+								substitute.setAttribute ("type", mime);
+								element.replace (substitute);
+							}
+
+							frames += frame->childFrames();
 						}
+						Swapping_ = false;
 					}
 
 					void FlashPlaceHolder::handleContextMenu ()
@@ -87,7 +120,8 @@ namespace LeechCraft
 						QMenu menu;
 						menu.addAction (tr ("Load"),
 								this,
-								SLOT (on_LoadFlash__released ()));
+								SLOT (handleLoadFlash ()),
+								Qt::QueuedConnection);
 						menu.addSeparator ();
 
 						QAction *addUrl = menu.addAction (tr ("Add URL to whitelist..."),
