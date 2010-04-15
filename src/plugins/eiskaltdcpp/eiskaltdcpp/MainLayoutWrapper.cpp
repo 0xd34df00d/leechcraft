@@ -19,15 +19,6 @@
 #ifdef FREE_SPACE_BAR
     #include <boost/filesystem.hpp>
 #endif //FREE_SPACE_BAR
-#ifdef FREE_SPACE_BAR_C
-    #ifdef WIN32
-        #include <io.h>
-    #else //WIN32
-        extern "C" {
-        #include "gnulib/fsusage.h"
-        }
-    #endif //WIN32
-#endif
 #include "HubFrame.h"
 #include "HubManager.h"
 #include "HashProgress.h"
@@ -579,7 +570,7 @@ void MainLayoutWrapper::initActions(){
         toolsHideProgressSpace = new QAction(tr("Hide free space bar"), this);
         if (!WBGET(WB_SHOW_FREE_SPACE))
             toolsHideProgressSpace->setText(tr("Show free space bar"));
-#if (!defined FREE_SPACE_BAR && !defined FREE_SPACE_BAR_C)
+#if (!defined FREE_SPACE_BAR)
         toolsHideProgressSpace->setVisible(false);
 #endif
         toolsHideProgressSpace->setIcon(WU->getPixmap(WulforUtil::eiFREESPACE));
@@ -765,7 +756,7 @@ void MainLayoutWrapper::initStatusBar(){
     msgLabel->setFrameShadow(QFrame::Plain);
     msgLabel->setFrameShape(QFrame::NoFrame);
     msgLabel->setAlignment(Qt::AlignLeft);
-#if (defined FREE_SPACE_BAR || defined FREE_SPACE_BAR_C)
+#if (defined FREE_SPACE_BAR)
     progressSpace = new QProgressBar(this);
     progressSpace->setMaximum(100);
     progressSpace->setMinimum(0);
@@ -776,9 +767,9 @@ void MainLayoutWrapper::initStatusBar(){
 
     if (!WBGET(WB_SHOW_FREE_SPACE))
         progressSpace->hide();
-#else //FREE_SPACE_BAR || FREE_SPACE_BAR_C
+#else //FREE_SPACE_BAR
     WBSET(WB_SHOW_FREE_SPACE, false);
-#endif //FREE_SPACE_BAR || FREE_SPACE_BAR_C
+#endif //FREE_SPACE_BAR
 
     statusBar()->addWidget(msgLabel);
     statusBar()->addPermanentWidget(statusDLabel);
@@ -786,7 +777,7 @@ void MainLayoutWrapper::initStatusBar(){
     statusBar()->addPermanentWidget(statusDSPLabel);
     statusBar()->addPermanentWidget(statusUSPLabel);
     statusBar()->addPermanentWidget(statusLabel);
-#if (defined FREE_SPACE_BAR || defined FREE_SPACE_BAR_C)
+#if (defined FREE_SPACE_BAR)
     statusBar()->addPermanentWidget(progressSpace);
 #endif //FREE_SPACE_BAR
 }
@@ -938,30 +929,6 @@ void MainLayoutWrapper::updateStatus(QMap<QString, QString> map){
             progressSpace->setToolTip(tooltip);
             progressSpace->setValue(static_cast<unsigned>(percent));
         }
-#elif defined FREE_SPACE_BAR_C
-    std::string s = SETTING(DOWNLOAD_DIRECTORY);
-    unsigned long long available = 0;
-    unsigned long long total = 0;
-    if (!s.empty()) {
-        if (MainLayoutWrapper::FreeDiscSpace(s.c_str() , &available, &total) == false) {
-            s = Util::getPath(Util::PATH_USER_CONFIG);
-            if (MainLayoutWrapper::FreeDiscSpace(s.c_str() , &available, &total) == false) {
-            available = 0;
-            total = 0;
-            }
-        }
-    }
-    float percent = 100.0f*(total-available)/total;
-    QString format = tr("Free %1")
-                         .arg(_q(dcpp::Util::formatBytes(available)));
-
-    QString tooltip = tr("Free %1 of %2")
-                         .arg(_q(dcpp::Util::formatBytes(available)))
-                         .arg(_q(dcpp::Util::formatBytes(total)));
-
-            progressSpace->setFormat(format);
-            progressSpace->setToolTip(tooltip);
-            progressSpace->setValue(static_cast<unsigned>(percent));
 #endif //FREE_SPACE_BAR
     }
 }
@@ -1590,41 +1557,6 @@ void MainLayoutWrapper::on(dcpp::TimerManagerListener::Second, uint32_t ticks) t
 
     QApplication::postEvent(this, new MainLayoutWrapperCustomEvent(func));
 }
-#ifdef FREE_SPACE_BAR_C
-bool MainLayoutWrapper::FreeDiscSpace ( std::string path,  unsigned long long * res, unsigned long long * res2) {
-        if ( !res ) {
-            return false;
-        }
-
-#ifdef WIN32
-        ULARGE_INTEGER lpFreeBytesAvailableToCaller; // receives the number of bytes on
-                                               // disk available to the caller
-        ULARGE_INTEGER lpTotalNumberOfBytes;    // receives the number of bytes on disk
-        ULARGE_INTEGER lpTotalNumberOfFreeBytes; // receives the free bytes on disk
-
-        if ( GetDiskFreeSpaceEx( path.c_str(), &lpFreeBytesAvailableToCaller,
-                                &lpTotalNumberOfBytes,
-                                &lpTotalNumberOfFreeBytes ) == true ) {
-                *res = lpTotalNumberOfFreeBytes.QuadPart;
-                *res2 = lpTotalNumberOfBytes.QuadPart;
-                return true;
-        } else {
-            return false;
-        }
-#else //WIN32
-        struct fs_usage fsp;
-        if ( get_fs_usage(path.c_str(),path.c_str(),&fsp) == 0 ) {
-                // printf("ok %d\n",fsp.fsu_bavail_top_bit_set);
-                *res = fsp.fsu_bavail*fsp.fsu_blocksize;
-                *res2 =fsp.fsu_blocks*fsp.fsu_blocksize;
-                return true;
-        } else {
-                printf("ERROR: no info for free space");
-                return false;
-        }
-#endif //WIN32
-}
-#endif //FREE_SPACE_BAR_C
 
 Q_EXPORT_PLUGIN2 (leechcraft_eiskaltdcpp, MainLayoutWrapper);
 

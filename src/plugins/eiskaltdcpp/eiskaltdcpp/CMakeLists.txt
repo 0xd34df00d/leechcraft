@@ -1,8 +1,5 @@
 project (leechcraft_eiskaltdcpp)
 cmake_minimum_required (VERSION 2.6)
-if (FREE_SPACE_BAR_C)
-add_subdirectory(gnulib)
-endif (FREE_SPACE_BAR_C)
 
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
@@ -204,14 +201,10 @@ endif (UNIX)
 
 set (LIBS ${LIBS} ${QT_LIBRARIES} ${UPNP_LIBRARY} ${Boost_LIBRARIES} ${ICONV_LIBRARIES})
 
-if (FREE_SPACE_BAR AND NOT FREE_SPACE_BAR_C)
+if (FREE_SPACE_BAR)
   add_definitions (-DFREE_SPACE_BAR)
   set (LIBS ${LIBS} ${Boost_LIBRARIES})
-endif (FREE_SPACE_BAR AND NOT FREE_SPACE_BAR_C)
-if (FREE_SPACE_BAR_C AND NOT FREE_SPACE_BAR)
-  add_definitions (-DFREE_SPACE_BAR_C)
-  set (LIBS ${LIBS} gnu)
-endif (FREE_SPACE_BAR_C AND NOT FREE_SPACE_BAR)
+endif (FREE_SPACE_BAR)
 
 if (USE_ASPELL)
   add_definitions (-DUSE_ASPELL ${ASPELL_DEFINITIONS})

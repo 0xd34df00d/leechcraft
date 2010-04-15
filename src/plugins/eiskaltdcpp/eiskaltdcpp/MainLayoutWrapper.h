@@ -215,9 +215,6 @@ class MainLayoutWrapper:
         void toggleSingletonWidget(ArenaWidget *a);
 
         void updateStatus(QMap<QString,QString>);
-#ifdef FREE_SPACE_BAR_C
-        static bool FreeDiscSpace ( std::string path, unsigned long long * res, unsigned long long * res2);
-#endif
 
         // Widgets
         QDockWidget *arena;
