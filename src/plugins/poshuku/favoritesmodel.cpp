@@ -244,7 +244,7 @@ namespace LeechCraft
 			
 			void FavoritesModel::handleItemAdded (const FavoritesModel::FavoritesItem& item)
 			{
-				beginInsertRows (QModelIndex (), 0, 0);
+				beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 				Items_.push_back (item);
 				endInsertRows ();
 			}
