@@ -38,6 +38,7 @@ namespace LeechCraft
 				int CurrentRow_;
 				// First is ParentURL_ and second is Title_
 				QPair<QString, QString> CurrentChannelHash_;
+				bool MayBeRichText_;
 			public:
 				ItemsListModel (QObject* = 0);
 

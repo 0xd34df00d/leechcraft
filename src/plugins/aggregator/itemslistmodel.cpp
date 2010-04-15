@@ -19,6 +19,7 @@
 #include "itemslistmodel.h"
 #include <QApplication>
 #include <QPalette>
+#include <QTextDocument>
 #include <QtDebug>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -32,6 +33,7 @@ namespace LeechCraft
 			ItemsListModel::ItemsListModel (QObject *parent)
 			: QAbstractItemModel (parent)
 			, CurrentRow_ (-1)
+			, MayBeRichText_ (false)
 			{
 				ItemHeaders_ << tr ("Name") << tr ("Date");
 			}
@@ -91,6 +93,8 @@ namespace LeechCraft
 				CurrentItems_.clear ();
 				Core::Instance ().GetStorageBackend ()->
 					GetItems (CurrentItems_, hash.first + hash.second);
+				if (CurrentItems_.size ())
+					MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
 				reset ();
 			}
 			
@@ -165,7 +169,17 @@ namespace LeechCraft
 					switch (index.column ())
 					{
 						case 0:
-							return CurrentItems_ [index.row ()].Title_;
+							{
+								QString title = CurrentItems_ [index.row ()].Title_;
+								if (MayBeRichText_ &&
+										Qt::mightBeRichText (title))
+								{
+									QTextDocument doc;
+									doc.setHtml (title);
+									title = doc.toPlainText ();
+								}
+								return title;
+							}
 						case 1:
 							return CurrentItems_ [index.row ()].PubDate_;
 						default:
