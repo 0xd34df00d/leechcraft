@@ -93,7 +93,7 @@ namespace LeechCraft
 			{
 				QModelIndex current = Ui_.FavoritesView_->
 					selectionModel ()->currentIndex ();
-				if (FlatToFolders_)
+				if (FlatToFolders_->GetSourceModel ())
 					current = FlatToFolders_->MapToSource (current);
 				if (!current.isValid ())
 					return;
@@ -117,7 +117,7 @@ namespace LeechCraft
 			{
 				QModelIndex current = Ui_.FavoritesView_->
 					selectionModel ()->currentIndex ();
-				if (FlatToFolders_)
+				if (FlatToFolders_->GetSourceModel ())
 					current = FlatToFolders_->MapToSource (current);
 				if (!current.isValid ())
 					return;
@@ -155,8 +155,6 @@ namespace LeechCraft
 			{
 				QModelIndex current = Ui_.FavoritesView_->
 					selectionModel ()->currentIndex ();
-				if (FlatToFolders_)
-					current = FlatToFolders_->MapToSource (current);
 				if (!current.isValid ())
 					return;
 
@@ -165,7 +163,10 @@ namespace LeechCraft
 			
 			void BookmarksWidget::translateRemoveFavoritesItem (const QModelIndex& sourceIndex)
 			{
-				QModelIndex index = FavoritesFilterModel_->mapToSource (sourceIndex);
+				QModelIndex index = sourceIndex;
+				if (FlatToFolders_->GetSourceModel ())
+					index = FlatToFolders_->MapToSource (index);
+				index = FavoritesFilterModel_->mapToSource (index);
 				Core::Instance ().GetFavoritesModel ()->removeItem (index);
 			}
 
@@ -203,7 +204,7 @@ namespace LeechCraft
 			void BookmarksWidget::on_FavoritesView__activated (const QModelIndex& act)
 			{
 				QModelIndex index;
-				if (FlatToFolders_)
+				if (FlatToFolders_->GetSourceModel ())
 					index = FlatToFolders_->MapToSource (act);
 
 				Ui_.ActionEditBookmark_->setEnabled (index.isValid ());
