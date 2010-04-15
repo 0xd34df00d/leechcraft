@@ -237,6 +237,16 @@ namespace LeechCraft
 				if (url == "localhost")
 					return QUrl ("http://localhost");
 
+				QHostAddress testAddress;
+				bool success = testAddress.setAddress (url);
+				if (success)
+				{
+					QUrl result;
+					result.setHost (url);
+					result.setScheme ("http://");
+					return result;
+				}
+
 				// If the url without percent signs and two following characters is
 				// a valid url (it should not be percent-encoded), then treat source
 				// url as percent-encoded, otherwise treat as not percent-encoded.
