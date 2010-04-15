@@ -37,6 +37,9 @@
     <string>Dashboard</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_4">
+    <property name="margin">
+     <number>1</number>
+    </property>
     <item>
      <widget class="QScrollArea" name="scrollArea_2">
       <property name="widgetResizable">
@@ -47,7 +50,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>542</width>
+         <width>554</width>
          <height>1099</height>
         </rect>
        </property>
@@ -762,6 +765,9 @@
     <string>Torrent</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <property name="margin">
+     <number>1</number>
+    </property>
     <item>
      <widget class="QScrollArea" name="scrollArea">
       <property name="widgetResizable">
@@ -771,8 +777,8 @@
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>-439</y>
-         <width>542</width>
+         <y>0</y>
+         <width>554</width>
          <height>1184</height>
         </rect>
        </property>
@@ -1599,6 +1605,9 @@
     <string>Files</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_12">
+    <property name="margin">
+     <number>1</number>
+    </property>
     <item>
      <widget class="QTreeView" name="FilesView_">
       <property name="selectionMode">
@@ -1666,6 +1675,9 @@
     <string>Peers</string>
    </attribute>
    <layout class="QVBoxLayout" name="verticalLayout_11">
+    <property name="margin">
+     <number>1</number>
+    </property>
     <item>
      <widget class="QSplitter" name="splitter_2">
       <property name="orientation">
@@ -1717,7 +1729,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>520</width>
+                 <width>532</width>
                  <height>352</height>
                 </rect>
                </property>
@@ -2010,6 +2022,9 @@
     <string>Pieces</string>
    </attribute>
    <layout class="QGridLayout">
+    <property name="margin">
+     <number>1</number>
+    </property>
     <item row="0" column="0">
      <widget class="QTreeView" name="PiecesView_">
       <property name="rootIsDecorated">
