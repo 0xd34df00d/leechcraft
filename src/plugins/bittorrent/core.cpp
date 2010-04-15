@@ -231,6 +231,10 @@ namespace LeechCraft
 					Session_->set_max_connections (XmlSettingsManager::Instance ()->
 							property ("MaxConnections").toInt ());
 
+					libtorrent::entry sstate = XmlSettingsManager::Instance ()->
+							property ("SessionState").value<libtorrent::entry> ();
+					Session_->load_state (sstate);
+
 					setProxySettings ();
 					setGeneralSettings ();
 					setScrapeInterval ();
@@ -2289,10 +2293,16 @@ namespace LeechCraft
 				settings.endArray ();
 				settings.endGroup ();
 
-				if (Session_->is_dht_running ())
-					XmlSettingsManager::Instance ()->
-						setProperty ("DHTState",
-								QVariant::fromValue<libtorrent::entry> (Session_->dht_state ()));
+				boost::uint32_t saveflags = 0xffffffff;
+				if (!Session_->is_dht_running ())
+					saveflags &= ~libtorrent::session::save_dht_state;
+
+				libtorrent::entry sessionState;
+				Session_->save_state (sessionState, saveflags);
+
+				XmlSettingsManager::Instance ()->
+					setProperty ("SessionState",
+							QVariant::fromValue<libtorrent::entry> (sessionState));
 			
 				Session_->wait_for_alert (libtorrent::time_duration (5));
 			
@@ -2560,9 +2570,12 @@ namespace LeechCraft
 			void Core::dhtStateChanged ()
 			{
 				if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
-					Session_->start_dht (libtorrent::entry ());
+					Session_->start_dht ();
 				else
+				{
+					writeSettings ();
 					Session_->stop_dht ();
+				}
 			}
 			
 			void Core::autosaveIntervalChanged ()
@@ -2825,14 +2838,10 @@ namespace LeechCraft
 					Session_->stop_natpmp ();
 
 				if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
-					Session_->start_dht (XmlSettingsManager::Instance ()->
-							property ("DHTState").value<libtorrent::entry> ());
+					Session_->start_dht ();
 				else
 				{
-					if (Session_->is_dht_running ())
-						XmlSettingsManager::Instance ()->
-							setProperty ("DHTState",
-									QVariant::fromValue<libtorrent::entry> (Session_->dht_state ()));
+					writeSettings ();
 					Session_->stop_dht ();
 				}
 
