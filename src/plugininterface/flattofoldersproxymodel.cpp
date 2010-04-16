@@ -106,7 +106,7 @@ namespace LeechCraft
 						return ut;
 				}
 				else if (role == RoleTags)
-					return TM_->GetTag (fti->Tag_);
+					return fti->Tag_;
 				else
 					return QVariant ();
 			}
