@@ -119,6 +119,7 @@ namespace LeechCraft
 					QString Link_;
 					QString Description_;
 					QString Author_;
+					int NumItems_;
 				};
 
 				static Core& Instance ();

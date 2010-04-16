@@ -83,6 +83,8 @@ namespace LeechCraft
 			
 				Ui_.ChannelDescription_->setHtml (ci.Description_);
 				Ui_.ChannelAuthor_->setText (ci.Author_);
+
+				Ui_.FeedNumItems_->setText (QString::number (ci.NumItems_));
 			
 				QPixmap pixmap = Core::Instance ().GetChannelPixmap (Index_);
 				if (pixmap.width () > 400)

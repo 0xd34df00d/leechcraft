@@ -571,6 +571,11 @@ namespace LeechCraft
 					GetChannel (channel.Title_, channel.ParentURL_);
 				ci.Description_ = rc->Description_;
 				ci.Author_ = rc->Author_;
+
+				items_shorts_t items;
+				StorageBackend_->GetItems (items, channel.ParentURL_ + channel.Title_);
+				ci.NumItems_ = items.size ();
+
 				return ci;
 			}
 			
