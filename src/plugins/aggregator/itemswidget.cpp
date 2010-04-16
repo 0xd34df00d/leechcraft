@@ -248,6 +248,8 @@ namespace LeechCraft
 			void ItemsWidget::SetMergeMode (bool merge)
 			{
 				Impl_->MergeMode_ = merge;
+				ClearSupplementaryModels ();
+
 				if (Impl_->MergeMode_)
 				{
 					QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
@@ -272,26 +274,55 @@ namespace LeechCraft
 								<< e.what ();
 							continue;
 						}
-						QPair<QString, QString> hash = qMakePair (cs.ParentURL_, cs.Title_);
-			
-						if (hash == Impl_->CurrentItemsModel_->GetHash ())
-							continue;
-			
-						boost::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
-						ilm->Reset (hash);
-						Impl_->SupplementaryModels_ << ilm;
-						Impl_->ItemLists_->AddModel (ilm.get ());
+						AddSupplementaryModelFor (cs);
 					}
 				}
-				else
-					while (Impl_->SupplementaryModels_.size ())
-					{
-						Impl_->ItemLists_->
-							RemoveModel (Impl_->SupplementaryModels_.at (0).get ());
-						Impl_->SupplementaryModels_.removeAt (0);
-					}
 			}
 			
+			void ItemsWidget::SetMergeModeTags (const QStringList& tags)
+			{
+				if (Impl_->MergeMode_)
+					return;
+
+				ClearSupplementaryModels ();
+
+				QSet<QString> tagsSet = QSet<QString>::fromList (tags);
+
+				ChannelsModel *cm = Core::Instance ().GetRawChannelsModel ();
+				bool added = false;
+
+				for (int i = 0, size = cm->rowCount (); i < size; ++i)
+				{
+					QModelIndex index = cm->index (i, 0);
+					QSet<QString> thisSet = QSet<QString>::fromList (index
+							.data (RoleTags).toStringList ());
+					if (!thisSet.intersect (tagsSet).size ())
+						continue;
+
+					ChannelShort cs;
+					try
+					{
+						cs = cm-> GetChannelForIndex (index);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO << e.what ();
+						continue;
+					}
+
+					/** So that first one gets assigned to the
+					 * current items model.
+					 */
+					if (!added)
+					{
+						Impl_->CurrentItemsModel_->Reset (qMakePair (cs.ParentURL_, cs.Title_));
+						added = true;
+					}
+					else
+						AddSupplementaryModelFor (cs);
+				}
+			}
+
 			void ItemsWidget::SetHideRead (bool hide)
 			{
 				Impl_->ItemsFilterModel_->SetHideRead (hide);
@@ -363,6 +394,8 @@ namespace LeechCraft
 			{
 				if (Impl_->MergeMode_)
 					return;
+
+				ClearSupplementaryModels ();
 			
 				QModelIndex index = si;
 				QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
@@ -380,6 +413,29 @@ namespace LeechCraft
 					Impl_->CurrentItemsModel_->Reset (qMakePair (QString (), QString ()));
 				}
 				emit currentChannelChanged (index);
+			}
+
+			void ItemsWidget::ClearSupplementaryModels ()
+			{
+				while (Impl_->SupplementaryModels_.size ())
+				{
+					Impl_->ItemLists_->
+							RemoveModel (Impl_->SupplementaryModels_.at (0).get ());
+					Impl_->SupplementaryModels_.removeAt (0);
+				}
+			}
+
+			void ItemsWidget::AddSupplementaryModelFor (const ChannelShort& cs)
+			{
+				QPair<QString, QString> hash = qMakePair (cs.ParentURL_, cs.Title_);
+
+				if (hash == Impl_->CurrentItemsModel_->GetHash ())
+					return;
+
+				boost::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
+				ilm->Reset (hash);
+				Impl_->SupplementaryModels_ << ilm;
+				Impl_->ItemLists_->AddModel (ilm.get ());
 			}
 
 			void ItemsWidget::SetupActions ()

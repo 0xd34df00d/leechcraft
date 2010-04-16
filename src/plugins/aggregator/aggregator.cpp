@@ -710,9 +710,19 @@ namespace LeechCraft
 			
 			void Aggregator::currentChannelChanged ()
 			{
-				QModelIndex index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+				QModelIndex index = Impl_->Ui_.Feeds_->
+						selectionModel ()->currentIndex ();
 				if (Impl_->FlatToFolders_->GetSourceModel ())
+				{
+					QModelIndex origIndex = index;
 					index = Impl_->FlatToFolders_->MapToSource (index);
+					if (!index.isValid ())
+					{
+						QStringList tags = origIndex.data (RoleTags).toStringList ();
+						Impl_->Ui_.ItemsWidget_->SetMergeModeTags (tags);
+						return;
+					}
+				}
 				Impl_->Ui_.ItemsWidget_->CurrentChannelChanged (index);
 			}
 			
