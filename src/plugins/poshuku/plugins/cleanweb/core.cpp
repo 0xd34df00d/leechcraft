@@ -349,13 +349,8 @@ bool Core::Exists (const QUrl& url) const
 void Core::Handle (DownloadEntity subscr)
 {
 	QUrl subscrUrl = subscr.Entity_.toUrl ();
-	QUrl url (subscrUrl.queryItemValue ("location"));
-	QString subscrName = subscrUrl.queryItemValue ("title");
-	
-	if (Exists (subscrName) || Exists (url))
-		return;
 
-	Load (url, subscrName);
+	Add (subscrUrl);
 }
 
 QAbstractItemModel* Core::GetModel ()
@@ -668,6 +663,21 @@ void Core::Parse (const QString& filePath)
 	beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 	Filters_ << f;
 	endInsertRows ();
+}
+
+bool Core::Add (const QUrl& subscrUrl)
+{
+	QUrl url;
+	if (subscrUrl.queryItemValue ("location").contains ("%"))
+		url.setUrl (QUrl::fromPercentEncoding (subscrUrl.queryItemValue ("location").toAscii ()));
+	else
+		url.setUrl (subscrUrl.queryItemValue ("location"));
+	QString subscrName = subscrUrl.queryItemValue ("title");
+
+	if (Exists (subscrName) || Exists (url))
+		return false;
+
+	return Load (url, subscrName);
 }
 
 bool Core::Load (const QUrl& url, const QString& subscrName)

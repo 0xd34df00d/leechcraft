@@ -107,9 +107,34 @@ namespace LeechCraft
 						bool Exists (const QUrl& url) const;
 						bool Exists (const QString& name) const;
 
+						/** Parses the abp:-schemed url, gets subscription
+						 * name and real url from there and adds it via Load().
+						 *
+						 * Returns true if the url is added successfully or
+						 * false otherwise (if url is malformed or such
+						 * subscription already exists, for example).
+						 *
+						 * @param[in] url The abp:-schemed URL.
+						 *
+						 * @return Whether addition was successful.
+						 */
+						bool Add (const QUrl& url);
+
 						/** Loads the subscription from the url with the name
 						 * subscrName. Returns true if the load delegation was
 						 * successful, otherwise returns false.
+						 *
+						 * url is expected to be a "real" URL of the filters
+						 * file — with, say, http:// scheme.
+						 *
+						 * Returns true if the url is added successfully or
+						 * false otherwise (if url is malformed or such
+						 * subscription already exists, for example).
+						 *
+						 * @param[in] url Real URL of the file with the filters.
+						 * @param[in] subscrName The name if this subscription.
+						 *
+						 * @return Whether addition was successful.
 						 */
 						bool Load (const QUrl& url, const QString& subscrName);
 					private:

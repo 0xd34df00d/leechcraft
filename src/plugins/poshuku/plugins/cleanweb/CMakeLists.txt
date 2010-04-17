@@ -13,6 +13,8 @@ SET (CLEANWEB_SRCS
 	userfiltersmodel.cpp
 	filter.cpp
 	ruleoptiondialog.cpp
+	wizardgenerator.cpp
+	startupfirstpage.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
@@ -27,6 +29,8 @@ SET (CLEANWEB_HEADERS
 	userfiltersmodel.h
 	filter.h
 	ruleoptiondialog.h
+	wizardgenerator.h
+	startupfirstpage.h
 	)
 SET (CLEANWEB_FORMS
 	subscriptionsmanager.ui
@@ -35,6 +39,7 @@ SET (CLEANWEB_FORMS
 	userfilters.ui
 	ruleoptiondialog.ui
 	subscriptionadddialog.ui
+	startupfirstpage.ui
 	)
 SET (CLEANWEB_RESOURCES
 	poshukucleanwebresources.qrc
