@@ -17,7 +17,7 @@
    <string>Select ad blocking lists</string>
   </property>
   <property name="subTitle">
-   <string>Select ad blocking lists that you would like to be added to the Poshuku CleanWeb plugin.</string>
+   <string>Select ad blocking lists that you would like to add to the Poshuku CleanWeb plugin.</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="margin">
@@ -237,8 +237,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>144</width>
-        <height>118</height>
+        <width>521</width>
+        <height>336</height>
        </rect>
       </property>
       <attribute name="label">
@@ -275,7 +275,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>262</width>
+               <width>501</width>
                <height>294</height>
               </rect>
              </property>
