@@ -26,7 +26,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Please note that having too many lists may and will slow down browsing. Moreover, one doesn't usually need more than 2-3 lists.</string>
+      <string>Please note that having too many lists may slow down browsing. Moreover, one doesn't usually need more than two or three lists.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
