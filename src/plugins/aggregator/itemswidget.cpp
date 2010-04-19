@@ -483,29 +483,34 @@ namespace LeechCraft
 			
 			QString ItemsWidget::ToHtml (const Item_ptr& item)
 			{
-				QPalette palette = QApplication::palette ();
-			
 				QString headerBg = GetHex (QPalette::Window);
+				QString borderColor = headerBg;
 				QString headerText = GetHex (QPalette::WindowText);
 				QString alternateBg = GetHex (QPalette::AlternateBase);
-			
-				QString startBox = "<div style='background: %1; "
+
+				QString firstStartBox = "<div style='background: %1; "
 					"color: COLOR; "
-					"margin-left: -1em;"
-					"margin-right: -1em; "
 					"padding-left: 2em; "
-					"padding-right: 2em;'>";
-				startBox.replace ("COLOR", headerText);
+					"padding-right: 2em; "
+					"border: 2px none green; "
+					"margin: 0px; "
+					"-webkit-border-top-left-radius: 1em; "
+					"-webkit-border-top-right-radius: 1em;'>";
+				firstStartBox.replace ("COLOR", headerText);
 			
 				bool linw = XmlSettingsManager::Instance ()->
 						property ("AlwaysUseExternalBrowser").toBool ();
 			
 				QString result = QString ("<div style='background: %1; "
-						"margin-left: 0px; "
-						"margin-right: 0px; "
-						"padding-left: 1em; "
-						"padding-right: 1em'>")
-					.arg (GetHex (QPalette::Base));
+						"margin-top: 0em; "
+						"margin-left: 0em; "
+						"margin-right: 0em; "
+						"margin-bottom: 0.5 em; "
+						"padding: 0px; "
+						"border: 2px solid %2; "
+						"-webkit-border-radius: 1em;'>")
+					.arg (GetHex (QPalette::Light))
+					.arg (borderColor);
 
 				QString inpad = QString ("<div style='background: %1; "
 						"color: %2; "
@@ -514,10 +519,11 @@ namespace LeechCraft
 						"padding-bottom: 1em; "
 						"padding-left: 2em; "
 						"padding-right: 2em;'>");
+
+				result += firstStartBox.arg (headerBg);
 			
 				// Link
-				result += (startBox.arg (headerBg) +
-						"<a href='" +
+				result += ("<a href='" +
 						item->Link_ +
 						"'");
 				if (linw)
@@ -526,47 +532,41 @@ namespace LeechCraft
 				result += (QString ("<strong>") +
 						item->Title_ +
 						"</strong>" + 
-						"</a></div>");
+						"</a><br />");
 			
 				// Publication date and author
 				if (item->PubDate_.isValid () && !item->Author_.isEmpty ())
-					result += (startBox.arg (headerBg) +
-							tr ("Published on %1 by %2")
-						   		.arg (item->PubDate_.toString ())
-								.arg (item->Author_) +
-							"</div>");
+					result += tr ("Published on %1 by %2")
+						   	.arg (item->PubDate_.toString ())
+							.arg (item->Author_) +
+						"<br />";
 				else if (item->PubDate_.isValid ())
-					result += (startBox.arg (headerBg) +
-							tr ("Published on %1")
-						   		.arg (item->PubDate_.toString ()) +
-							"</div>");
+					result += tr ("Published on %1")
+						   	.arg (item->PubDate_.toString ()) +
+					   	"<br />";
 				else if (!item->Author_.isEmpty ())
-					result += (startBox.arg (headerBg) +
-							tr ("Published by %1")
-								.arg (item->Author_) +
-							"</div>");
+					result += tr ("Published by %1")
+							.arg (item->Author_) +
+						"<br />";
 			
 				// Categories
 				if (item->Categories_.size ())
-					result += (startBox.arg (headerBg) +
-							item->Categories_.join ("; ") +
-							"</div>");
+					result += item->Categories_.join ("; ") +
+						"</br>";
 			
 				// Comments stuff
 				if (item->NumComments_ >= 0 && !item->CommentsPageLink_.isEmpty ())
-					result += (startBox.arg (headerBg) + 
-							tr ("%n comment(s), <a href='%1'%2>view them</a></div>",
-								"", item->NumComments_)
-								.arg (item->CommentsPageLink_)
-								.arg (linw ? " target='_blank'" : ""));
+					result += tr ("%n comment(s), <a href='%1'%2>view them</a><br />",
+							"", item->NumComments_)
+							.arg (item->CommentsPageLink_)
+							.arg (linw ? " target='_blank'" : "");
 				else if (item->NumComments_ >= 0)
-					result += (startBox.arg (headerBg) + 
-							tr ("%n comment(s)", "", item->NumComments_) + "</div>");
+					result += tr ("%n comment(s)", "", item->NumComments_) +
+						"<br />";
 				else if (!item->CommentsPageLink_.isEmpty ())
-					result += (startBox.arg (headerBg) + 
-							tr ("<a href='%1'%2>View comments</a></div>")
-								.arg (item->CommentsPageLink_)
-								.arg (linw ? " target='_blank'" : ""));
+					result += tr ("<a href='%1'%2>View comments</a><br />")
+							.arg (item->CommentsPageLink_)
+							.arg (linw ? " target='_blank'" : "");
 
 				if (item->Latitude_ ||
 						item->Longitude_)
@@ -575,19 +575,19 @@ namespace LeechCraft
 							"?f=q&source=s_q&hl=en&geocode=&q=%1+%2")
 						.arg (item->Latitude_)
 						.arg (item->Longitude_);
-					result += (startBox.arg (headerBg) +
-							tr ("Geoposition: <a href='%3'%4 title='Google Maps'>%1 %2</a></div>")
-								.arg (item->Latitude_)
-								.arg (item->Longitude_)
-								.arg (link)
-								.arg (linw ? " target='_blank'" : ""));
+					result += tr ("Geoposition: <a href='%3'%4 title='Google Maps'>%1 %2</a></br>")
+							.arg (item->Latitude_)
+							.arg (item->Longitude_)
+							.arg (link)
+							.arg (linw ? " target='_blank'" : "");
 				}
 			
-				result += "<br />";
-				result += QString ("<div style='color: %2'>")
-					.arg (GetHex (QPalette::Text));
-			
 				// Description
+				result += QString ("</div><div style='color: %1;"
+						"padding-top: 0.5em; "
+						"padding-left: 1em; "
+						"padding-right: 1em;'>")
+					.arg (GetHex (QPalette::Text));
 				result += item->Description_;
 
 				for (QList<Enclosure>::const_iterator i = item->Enclosures_.begin (),
@@ -1020,7 +1020,6 @@ namespace LeechCraft
 						Item_ptr item = GetItem (mapped);
 			
 						html += ToHtml (item);
-						html += "<hr />";
 					}
 			
 					Impl_->Ui_.ItemView_->SetHtml (html);
