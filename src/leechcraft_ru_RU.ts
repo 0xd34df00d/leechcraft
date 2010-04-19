@@ -8,14 +8,6 @@
         <translation>О LeechCraft</translation>
     </message>
     <message>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
-        <source>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</source>
-        <translation>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</translation>
-    </message>
-    <message>
         <source>Authors</source>
         <translation>Авторы</translation>
     </message>
@@ -30,22 +22,6 @@
     <message>
         <source>Licensing</source>
         <translation>Лицензии</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;BitTorrent plugin uses the Rasterbar Software&apos;s libtorrent:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright (c) 2003 - 2007, Arvid Norberg&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;All rights reserved.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;BitTorrent plugin uses the Rasterbar Software&apos;s libtorrent:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Copyright (c) 2003 - 2007, Arvid Norberg&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;All rights reserved.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message utf8="true">
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
@@ -73,53 +49,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Save credentials</source>
         <translation>Сохранить</translation>
-    </message>
-</context>
-<context>
-    <name>BackendSelector</name>
-    <message>
-        <source>SQLite</source>
-        <translation>SQLite</translation>
-    </message>
-    <message>
-        <source>PostgreSQL</source>
-        <translation>PostgreSQL</translation>
-    </message>
-    <message>
-        <source>Journal mode:</source>
-        <translation>Режим журналирования:</translation>
-    </message>
-    <message>
-        <source>Temp store:</source>
-        <translation>Временное хранилище:</translation>
-    </message>
-    <message>
-        <source>Synchronous:</source>
-        <translation>Синхронная работа:</translation>
-    </message>
-    <message>
-        <source>VACUUM on exit</source>
-        <translation>Оптимизация при выходе</translation>
-    </message>
-    <message>
-        <source>Hostname:</source>
-        <translation>Хост:</translation>
-    </message>
-    <message>
-        <source>Port:</source>
-        <translation>Порт:</translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation>Логин:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation>Пароль:</translation>
-    </message>
-    <message>
-        <source>Database name:</source>
-        <translation>Имя БД:</translation>
     </message>
 </context>
 <context>
@@ -300,17 +229,6 @@ p, li { white-space: pre-wrap; }
         <source>Show a quick overview of tabs</source>
         <translation>Показать миниатюры вкладок</translation>
     </message>
-    <message>
-        <source>Actions</source>
-        <translation type="unfinished">Действия</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::AboutDialog</name>
-    <message>
-        <source>LeechCraft %1</source>
-        <translation>LeechCraft %1</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
@@ -321,17 +239,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::ColorPicker</name>
-    <message>
-        <source>Choose color</source>
-        <translation>Выберите цвет</translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation>Выбрать...</translation>
     </message>
 </context>
 <context>
@@ -364,10 +271,6 @@ p, li { white-space: pre-wrap; }
         <translation>Невозможно обработать задачу выбранным обработчиком, хотите попробовать другой?</translation>
     </message>
     <message>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
         <source>Do you really want to clear the network cache?</source>
         <translation>Вы действительно хотите очистить кэш?</translation>
     </message>
@@ -375,62 +278,12 @@ p, li { white-space: pre-wrap; }
         <source>Do you really want to clear cookies?</source>
         <translation>Вы действительно хотите удалить куки?</translation>
     </message>
-    <message>
-        <source>%1: %2</source>
-        <translation>%1: %2</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
     <message>
         <source>LeechCraft Notification</source>
         <translation>Уведомление LeechCraft</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::FilePicker</name>
-    <message>
-        <source>Browse...</source>
-        <translation>Обзор...</translation>
-    </message>
-    <message>
-        <source>Select directory</source>
-        <translation>Выберите директорию</translation>
-    </message>
-    <message>
-        <source>Select file</source>
-        <translation>Выберите файл</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::FontPicker</name>
-    <message>
-        <source>Choose font</source>
-        <translation>Выберите шрифт</translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation>Выбрать...</translation>
-    </message>
-    <message>
-        <source>, %1 pt</source>
-        <translation>, %1 pt</translation>
-    </message>
-    <message>
-        <source>, bold</source>
-        <translation>, жирный</translation>
-    </message>
-    <message>
-        <source>, italic</source>
-        <translation>, курсив</translation>
-    </message>
-    <message>
-        <source>, underlined</source>
-        <translation>, подчеркнутый</translation>
-    </message>
-    <message>
-        <source>, striken out</source>
-        <translation>, перечеркнутый</translation>
     </message>
 </context>
 <context>
@@ -637,32 +490,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>LeechCraft::Util::CategorySelector</name>
-    <message>
-        <source>Tags selector</source>
-        <translation>Выбор тегов</translation>
-    </message>
-    <message>
-        <source>Select all</source>
-        <translation>Выбрать все</translation>
-    </message>
-    <message>
-        <source>Select none</source>
-        <translation>Снять отметку со всех</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
-    <message>
-        <source>untagged</source>
-        <translation>неотмеченное</translation>
-    </message>
-    <message>
-        <source>&lt;unknown tag&gt;</source>
-        <translation>&lt;неизвестный тег&gt;</translation>
-    </message>
-</context>
-<context>
     <name>LogToolBox</name>
     <message>
         <source>Log</source>
@@ -678,57 +505,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Plugin Manager</source>
         <translation>Менеджер плагинов</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <source>Too long to show</source>
-        <translation>Слишком длинное для показа</translation>
-    </message>
-    <message>
-        <source>Binary entity</source>
-        <translation>Двоичный объект</translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation>&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;from %1</source>
-        <translation>&lt;br /&gt;от %1</translation>
-    </message>
-    <message>
-        <source> b</source>
-        <translation>б</translation>
-    </message>
-    <message>
-        <source> KiB</source>
-        <translation> КиБ</translation>
-    </message>
-    <message>
-        <source> MiB</source>
-        <translation> МиБ</translation>
-    </message>
-    <message>
-        <source> GiB</source>
-        <translation> ГиБ</translation>
-    </message>
-    <message numerus="yes">
-        <source>%n day(s), </source>
-        <translation>
-            <numerusform>%n день</numerusform>
-            <numerusform>%n дня</numerusform>
-            <numerusform>%n дней</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Could not cd into %1</source>
-        <translation>Невозможно перейти в директорию %1</translation>
-    </message>
-    <message>
-        <source>Could not create %1</source>
-        <translation>Невозможно создать %1</translation>
     </message>
 </context>
 <context>
