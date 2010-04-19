@@ -4,10 +4,25 @@
 <context>
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
-        <location filename="core.cpp" line="121"/>
-        <location filename="core.cpp" line="229"/>
+        <location filename="core.cpp" line="123"/>
+        <location filename="core.cpp" line="298"/>
         <source>Summary</source>
         <translation>Сводка</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="162"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="163"/>
+        <source>Status</source>
+        <translation>Статус</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="164"/>
+        <source>State</source>
+        <translation>Состояние</translation>
     </message>
 </context>
 <context>
@@ -72,37 +87,80 @@
 <context>
     <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="334"/>
+        <location filename="summarywidget.cpp" line="47"/>
+        <source>Ctrl+F</source>
+        <translation>Ctrl+F</translation>
+    </message>
+    <message>
+        <location filename="summarywidget.cpp" line="390"/>
         <source>Remove this category</source>
         <translation>Удалить эту категорию</translation>
     </message>
 </context>
 <context>
-    <name>SummaryWidget</name>
+    <name>SearchWidget</name>
     <message>
-        <location filename="summarywidget.ui" line="51"/>
-        <source>Add</source>
-        <translation>Добавить</translation>
+        <location filename="searchwidget.ui" line="14"/>
+        <source>Search parameters</source>
+        <translation>Параметры поиска</translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="59"/>
+        <location filename="searchwidget.ui" line="33"/>
         <source>String</source>
         <translation>Строка</translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="64"/>
+        <location filename="searchwidget.ui" line="38"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="69"/>
+        <location filename="searchwidget.ui" line="43"/>
         <source>Regexp</source>
         <translation>Regexp</translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="74"/>
+        <location filename="searchwidget.ui" line="48"/>
         <source>Tags</source>
         <translation>Теги</translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="104"/>
+        <source>Add</source>
+        <translation>Добавить</translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="111"/>
+        <source>AND</source>
+        <translation>И</translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="118"/>
+        <source>OR</source>
+        <translation>ИЛИ</translation>
+    </message>
+</context>
+<context>
+    <name>SummaryWidget</name>
+    <message>
+        <source>Add</source>
+        <translation type="obsolete">Добавить</translation>
+    </message>
+    <message>
+        <source>String</source>
+        <translation type="obsolete">Строка</translation>
+    </message>
+    <message>
+        <source>Wildcard</source>
+        <translation type="obsolete">Маска</translation>
+    </message>
+    <message>
+        <source>Regexp</source>
+        <translation type="obsolete">Regexp</translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation type="obsolete">Теги</translation>
     </message>
 </context>
 </TS>
