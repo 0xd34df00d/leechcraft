@@ -557,7 +557,7 @@ namespace LeechCraft
 				// Categories
 				if (item->Categories_.size ())
 					result += item->Categories_.join ("; ") +
-						"</br>";
+						"<br />";
 			
 				// Comments stuff
 				if (item->NumComments_ >= 0 && !item->CommentsPageLink_.isEmpty ())
@@ -580,7 +580,7 @@ namespace LeechCraft
 							"?f=q&source=s_q&hl=en&geocode=&q=%1+%2")
 						.arg (item->Latitude_)
 						.arg (item->Longitude_);
-					result += tr ("Geoposition: <a href='%3'%4 title='Google Maps'>%1 %2</a></br>")
+					result += tr ("Geoposition: <a href='%3'%4 title='Google Maps'>%1 %2</a><br />")
 							.arg (item->Latitude_)
 							.arg (item->Longitude_)
 							.arg (link)
