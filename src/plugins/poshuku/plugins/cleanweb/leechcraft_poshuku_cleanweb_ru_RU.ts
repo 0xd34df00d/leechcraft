@@ -38,7 +38,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="89"/>
+        <location filename="cleanweb.cpp" line="90"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокирует нежелательную рекламу.</translation>
     </message>
@@ -61,7 +61,7 @@
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="432"/>
+        <location filename="core.cpp" line="427"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
@@ -70,7 +70,7 @@
         <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="699"/>
+        <location filename="core.cpp" line="709"/>
         <source>The subscription wasn&apos;t delegated.</source>
         <translation>Эта подписка не была делегирована.</translation>
     </message>
@@ -93,9 +93,8 @@
         <translation>Введите URL для добавления в белый список FlashOnClick</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="128"/>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <location filename="flashonclickwhitelist.cpp" line="129"/>
@@ -106,17 +105,17 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashPlaceHolder</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="88"/>
+        <location filename="flashplaceholder.cpp" line="121"/>
         <source>Load</source>
         <translation>Загрузить</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="93"/>
+        <location filename="flashplaceholder.cpp" line="127"/>
         <source>Add URL to whitelist...</source>
         <translation>Добавить URL в белый список...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="98"/>
+        <location filename="flashplaceholder.cpp" line="132"/>
         <source>Add host to whitelist...</source>
         <translation>Добавить хост в белый список...</translation>
     </message>
@@ -124,11 +123,8 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RuleOptionDialog</name>
     <message>
-        <location filename="ruleoptiondialog.cpp" line="143"/>
-        <location filename="ruleoptiondialog.cpp" line="169"/>
-        <location filename="ruleoptiondialog.cpp" line="194"/>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <location filename="ruleoptiondialog.cpp" line="144"/>
@@ -312,6 +308,254 @@
         <location filename="ruleoptiondialog.ui" line="175"/>
         <source>Disable for:</source>
         <translation>Отключить для:</translation>
+    </message>
+</context>
+<context>
+    <name>StartupFirstPageWidget</name>
+    <message>
+        <location filename="startupfirstpage.ui" line="17"/>
+        <source>Select ad blocking lists</source>
+        <translation>Выберите списки блокировки рекламы</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="20"/>
+        <source>Select ad blocking lists that you would like to add to the Poshuku CleanWeb plugin.</source>
+        <translation>Выберите списки блокировки рекламы, которые бы вы хотели добавить в плагин Poshuku CleanWeb.</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="29"/>
+        <source>Please note that having too many lists may slow down browsing. Moreover, one doesn&apos;t usually need more than two or three lists.</source>
+        <translation>Пожалуйста, имейте в виду, что слишком много списков замедлит работу в интернете. Более того, обычно не нужно больше двух или трех списков.</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="51"/>
+        <source>Various lists</source>
+        <translation>Различные списки</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="79"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fadblock%2Dchinalist%2Egooglecode%2Ecom%2Fsvn%2Ftrunk%2Fadblock%2Etxt&amp;title=ChinaList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="91"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fadblock%2Emaltekraus%2Ede%2Fadblock%2Etxt&amp;title=Filter von Dr%2EEvil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="103"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fruadlist%2Egooglecode%2Ecom%2Fsvn%2Ftrunk%2Fadblock%2Etxt&amp;title=RuAdList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="115"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fadblockrules%2Eorg%2Fdownload%2Ephp%3Ftype%3Dall&amp;title=AdblockRules%2Eorg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="127"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Ebsi%2Einfo%2Epl%2FfiltrABP%2Etxt&amp;title=BSI Lista Polska</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="139"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fadblock%2Edajbych%2Enet%2Fadblock%2Etxt&amp;title=Czech List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="151"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fchewey%2Ede%2Fmozilla%2Fdata%2Fadblock%2Etxt&amp;title=C%C3%A9drics Liste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="163"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fdutchmega%2Enl%2Fdutchblock%2Flist%2Etxt&amp;title=dutchblock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="175"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fs3%2Eamazonaws%2Ecom%2Flcp%2Fmaty%2Fmyfiles%2FAdBlock%2DNauscopio%2Dmaty%2Etxt&amp;title=Filtros Nauscopicos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="187"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fisraellist%2Egooglecode%2Ecom%2Ffiles%2FIsraelList%2Etxt&amp;title=IsraelList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="199"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fadblock%2Dplus%2Djapanese%2Dfilter%2Egooglecode%2Ecom%2Fsvn%2Ftrunk%2Fabp_jp_general%2Etxt&amp;title=Japanese General Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="211"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fmozilla%2Egfsolone%2Ecom%2Ffiltri%2Etxt&amp;title=Xfiles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="245"/>
+        <source>EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="254"/>
+        <source>Enable EasyList</source>
+        <translation>Включить EasyList</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="264"/>
+        <source>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;title=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="286"/>
+        <source>+ EasyPrivacy (privacy protection)</source>
+        <translation>+ EasyPrivacy (защита приватности)</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="290"/>
+        <source>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasyprivacy%2Etxt&amp;title=EasyPrivacy&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="302"/>
+        <source>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylistgermany%2Etxt&amp;title=EasyList Germany&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="314"/>
+        <source>abp:subscribe?location=http%3A%2F%2Flian%2Einfo%2Etm%2Fliste_fr%2Etxt&amp;title=Liste FR&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="326"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Epicpoc%2Ero%2Fmenetzrolist%2Etxt&amp;title=ROList&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="338"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fadblockplus%2Dvietnam%2Egooglecode%2Ecom%2Fsvn%2Ftrunk%2Fabpvn%2Etxt&amp;title=Vi%E1%BB%87t Nam List&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="350"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fadblocklist%2Eorg%2Fadblock%2Dpxf%2Dpolish%2Etxt&amp;title=AdblockList%2Eorg&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="362"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fstanev%2Eorg%2Fabp%2Fadblock_bg%2Etxt&amp;title=Bulgarian list&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="374"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fabp%2Dcorset%2Egooglecode%2Ecom%2Fhg%2Fcorset%2Etxt&amp;title=Corset&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="386"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fhome%2Eonline%2Eno%2F%7Emlangsho%2Fadblock%2Etxt&amp;title=Norsk adblockliste&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="398"/>
+        <source>abp:subscribe?location=http%3A%2F%2Ftamilfriends%2Dlist%2Egooglecode%2Ecom%2Fsvn%2Fadblock%2Etxt&amp;title=TamilFriends List&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="410"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Evoid%2Egr%2Fkargig%2Fvoid%2Dgr%2Dfilters%2Etxt&amp;title=void%2Egr&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="422"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Ewiltteri%2Enet%2Fwiltteri%2Etxt&amp;title=Wiltteri&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="459"/>
+        <source>Fanboy&apos;s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="468"/>
+        <source>Enable Fanboy&apos;s List</source>
+        <translation>Включить Fanboy&apos;s List</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="478"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;title=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="500"/>
+        <source>Fanboy&apos;s Adult/Dating List (blocks adverts on adult websites)</source>
+        <translation>Fanboy&apos;s Adult/Dating List (блокирует рекламу на сайтах «для взрослых»)</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="504"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dadult%2Etxt&amp;title=Fanboy%27s Adult%2FDating List&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="516"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dchn%2Etxt&amp;title=Fanboy%27s Chinese&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="528"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcz%2Etxt&amp;title=Fanboy%27s Czech&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="540"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Desp%2Etxt&amp;title=Fanboy%27s Espanol%2FPortuguese&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="552"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Djpn%2Etxt&amp;title=Fanboy%27s Japanese&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="564"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dkrn%2Etxt&amp;title=Fanboy%27s Korean&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="572"/>
+        <source>Fanboy&apos;s Object Dimensions (blocks popular advert dimensions)</source>
+        <translation>Fanboy&apos;s Object Dimensions (блокирует популярные рекламные размеры)</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="576"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Ddimensions%2Etxt&amp;title=Fanboy%27s Object Dimensions&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="584"/>
+        <source>Fanboy&apos;s P2P (blocks adverts on P2P websites)</source>
+        <translation>Fanboy&apos;s P2P (блокирует рекламу на P2P-сайтах)</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="588"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dp2p%2Etxt&amp;title=Fanboy%27s P2P&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="600"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dswe%2Etxt&amp;title=Fanboy%27s Swedish&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="612"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dstats%2Etxt&amp;title=Fanboy%27s Tracking%2FStats Blocking&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="624"/>
+        <source>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dtky%2Etxt&amp;title=Fanboy%27s Turkish&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
