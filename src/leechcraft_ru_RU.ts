@@ -52,6 +52,53 @@
     </message>
 </context>
 <context>
+    <name>BackendSelector</name>
+    <message>
+        <source>SQLite</source>
+        <translation>SQLite</translation>
+    </message>
+    <message>
+        <source>PostgreSQL</source>
+        <translation>PostgreSQL</translation>
+    </message>
+    <message>
+        <source>Journal mode:</source>
+        <translation>Режим журналирования:</translation>
+    </message>
+    <message>
+        <source>Temp store:</source>
+        <translation>Временное хранилище:</translation>
+    </message>
+    <message>
+        <source>Synchronous:</source>
+        <translation>Синхронный режим:</translation>
+    </message>
+    <message>
+        <source>VACUUM on exit</source>
+        <translation>VACUUM при выходе</translation>
+    </message>
+    <message>
+        <source>Hostname:</source>
+        <translation>Хост:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <source>Username:</source>
+        <translation>Имя пользователя:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Пароль:</translation>
+    </message>
+    <message>
+        <source>Database name:</source>
+        <translation>База данных:</translation>
+    </message>
+</context>
+<context>
     <name>CommonJobAdder</name>
     <message>
         <source>Add task</source>
@@ -242,6 +289,17 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::ColorPicker</name>
+    <message>
+        <source>Choose color</source>
+        <translation>Выбрать цвет</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Выбрать...</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::CommonJobAdder</name>
     <message>
         <source>Select file</source>
@@ -284,6 +342,52 @@
     <message>
         <source>LeechCraft Notification</source>
         <translation>Уведомление LeechCraft</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::FilePicker</name>
+    <message>
+        <source>Browse...</source>
+        <translation>Обзор...</translation>
+    </message>
+    <message>
+        <source>Select directory</source>
+        <translation>Выберите директорию</translation>
+    </message>
+    <message>
+        <source>Select file</source>
+        <translation>Выберите файл</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::FontPicker</name>
+    <message>
+        <source>Choose font</source>
+        <translation>Выберите шрифт</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Выбрать...</translation>
+    </message>
+    <message>
+        <source>, %1 pt</source>
+        <translation>, %1 pt</translation>
+    </message>
+    <message>
+        <source>, bold</source>
+        <translation>, жирный</translation>
+    </message>
+    <message>
+        <source>, italic</source>
+        <translation>, курсив</translation>
+    </message>
+    <message>
+        <source>, underlined</source>
+        <translation>, подчеркнутый</translation>
+    </message>
+    <message>
+        <source>, striken out</source>
+        <translation>, зачеркнутый</translation>
     </message>
 </context>
 <context>
@@ -490,6 +594,32 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Util::CategorySelector</name>
+    <message>
+        <source>Tags selector</source>
+        <translation>Выбор тегов</translation>
+    </message>
+    <message>
+        <source>Select all</source>
+        <translation>Выбрать все</translation>
+    </message>
+    <message>
+        <source>Select none</source>
+        <translation>Не выбрать ни один</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
+    <message>
+        <source>untagged</source>
+        <translation>неотмеченное</translation>
+    </message>
+    <message>
+        <source>&lt;unknown tag&gt;</source>
+        <translation>&lt;неизвестный тег&gt;</translation>
+    </message>
+</context>
+<context>
     <name>LogToolBox</name>
     <message>
         <source>Log</source>
@@ -505,6 +635,57 @@
     <message>
         <source>Plugin Manager</source>
         <translation>Менеджер плагинов</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Too long to show</source>
+        <translation>Слишком длинное для показа</translation>
+    </message>
+    <message>
+        <source>Binary entity</source>
+        <translation>Бинарная сущность</translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation>&lt;br /&gt;&lt;br /&gt;типа&lt;code&gt;%1&lt;/code&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;br /&gt;from %1</source>
+        <translation>&lt;br /&gt;из %1</translation>
+    </message>
+    <message>
+        <source> b</source>
+        <translation> b</translation>
+    </message>
+    <message>
+        <source> KiB</source>
+        <translation> КиБ</translation>
+    </message>
+    <message>
+        <source> MiB</source>
+        <translation> МиБ</translation>
+    </message>
+    <message>
+        <source> GiB</source>
+        <translation> ГиБ</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n день</numerusform>
+            <numerusform>%n дня</numerusform>
+            <numerusform>%n дней</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Could not cd into %1</source>
+        <translation>Невозможно перейти в %1</translation>
+    </message>
+    <message>
+        <source>Could not create %1</source>
+        <translation>Невозможно создать %1</translation>
     </message>
 </context>
 <context>
