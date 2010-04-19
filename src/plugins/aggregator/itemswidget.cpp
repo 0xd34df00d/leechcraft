@@ -492,6 +492,7 @@ namespace LeechCraft
 					"color: COLOR; "
 					"padding-left: 2em; "
 					"padding-right: 2em; "
+					"padding-bottom: 0.5em;"
 					"border: 2px none green; "
 					"margin: 0px; "
 					"-webkit-border-top-left-radius: 1em; "
@@ -501,15 +502,19 @@ namespace LeechCraft
 				bool linw = XmlSettingsManager::Instance ()->
 						property ("AlwaysUseExternalBrowser").toBool ();
 			
-				QString result = QString ("<div style='background: %1; "
+				QString result = QString (
+						"<style>a { color: %2; } a.visited { color: %3 }</style>"
+						"<div style='background: %1; "
 						"margin-top: 0em; "
 						"margin-left: 0em; "
 						"margin-right: 0em; "
 						"margin-bottom: 0.5 em; "
 						"padding: 0px; "
-						"border: 2px solid %2; "
+						"border: 2px solid %4; "
 						"-webkit-border-radius: 1em;'>")
-					.arg (GetHex (QPalette::Light))
+					.arg (GetHex (QPalette::Base))
+					.arg (GetHex (QPalette::Link))
+					.arg (GetHex (QPalette::LinkVisited))
 					.arg (borderColor);
 
 				QString inpad = QString ("<div style='background: %1; "
