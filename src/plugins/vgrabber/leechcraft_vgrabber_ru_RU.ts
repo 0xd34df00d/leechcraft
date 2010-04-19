@@ -37,7 +37,7 @@
         <translation>Аудио В Контакте</translation>
     </message>
     <message>
-        <location filename="audiofindproxy.cpp" line="228"/>
+        <location filename="audiofindproxy.cpp" line="230"/>
         <source>Nothing found for %1</source>
         <translation>Ничего не найдено для %1</translation>
     </message>
@@ -106,12 +106,12 @@
         <translation>Видео</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="170"/>
+        <location filename="videofindproxy.cpp" line="172"/>
         <source>Nothing found for %1</source>
         <translation>Ничего не найдено для %1</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="266"/>
+        <location filename="videofindproxy.cpp" line="268"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Задача для запроса&lt;br /&gt;%1&lt;br /&gt;не была делегирована.</translation>
     </message>
@@ -119,14 +119,9 @@
 <context>
     <name>LeechCraft::Plugins::vGrabber::vGrabber</name>
     <message>
-        <location filename="vgrabber.cpp" line="84"/>
+        <location filename="vgrabber.cpp" line="83"/>
         <source>vkontakte.ru audio/video grabber.</source>
         <translation>Скачивание и проигрывание медиа-файлов В Контакте.</translation>
-    </message>
-    <message>
-        <location filename="vgrabber.cpp" line="167"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
     </message>
 </context>
 </TS>
