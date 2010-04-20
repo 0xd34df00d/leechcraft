@@ -52,6 +52,8 @@ bool NotificationManager::CouldNotify (const DownloadEntity& e) const
 {
 	return XmlSettingsManager::Instance ()->
 			property ("UseNotifications").toBool () &&
+		Connection_.get () &&
+		Connection_->isValid () &&
 		e.Mime_ == "x-leechcraft/notification" &&
 		e.Additional_ ["Priority"].toInt () != PLog_;
 }
