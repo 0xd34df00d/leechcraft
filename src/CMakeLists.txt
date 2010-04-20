@@ -305,7 +305,6 @@ SET (HEADERS
 	interfaces/iwindow.h
 	interfaces/idownload.h
 	interfaces/ihavesettings.h
-	interfaces/icustomprovider.h
 	interfaces/imultitabs.h
 	interfaces/iembedtab.h
 	interfaces/itaggablejobs.h
