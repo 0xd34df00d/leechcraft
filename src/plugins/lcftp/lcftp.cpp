@@ -63,24 +63,24 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 
-				TabManager *manager = Core::Instance ().GetTabManager ();
-				connect (manager,
+				TabManager_ = Core::Instance ().GetTabManager ();
+				connect (TabManager_,
 						SIGNAL (addNewTab (const QString&, QWidget*)),
 						this,
 						SIGNAL (addNewTab (const QString&, QWidget*)));
-				connect (manager,
+				connect (TabManager_,
 						SIGNAL (removeTab (QWidget*)),
 						this,
 						SIGNAL (removeTab (QWidget*)));
-				connect (manager,
+				connect (TabManager_,
 						SIGNAL (changeTabName (QWidget*, const QString&)),
 						this,
 						SIGNAL (changeTabName (QWidget*, const QString&)));
-				connect (manager,
+				connect (TabManager_,
 						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
 						this,
 						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-				connect (manager,
+				connect (TabManager_,
 						SIGNAL (statusBarChanged (QWidget*, const QString&)),
 						this,
 						SIGNAL (statusBarChanged (QWidget*, const QString&)));
@@ -184,6 +184,11 @@ namespace LeechCraft
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> LCFTP::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
+			}
+
+			void LCFTP::newTabRequested ()
+			{
+				TabManager_->AddTab (QUrl (), QString ());
 			}
 		};
 	};

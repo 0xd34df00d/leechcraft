@@ -35,6 +35,8 @@ namespace LeechCraft
 	{
 		namespace LCFTP
 		{
+			class TabManager;
+
 			class LCFTP : public QObject
 						, public IInfo
 						, public IMultiTabs
@@ -48,6 +50,7 @@ namespace LeechCraft
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				TabManager *TabManager_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -74,6 +77,8 @@ namespace LeechCraft
 				void Handle (DownloadEntity);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+			public slots:
+				void newTabRequested ();
 			signals:
 				void jobFinished (int);
 				void jobRemoved (int);
