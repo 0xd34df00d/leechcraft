@@ -49,6 +49,11 @@ namespace LeechCraft
 			signals:
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void bringToFront ();
+				void changeTabName (QWidget*, const QString&);
+				void changeTabIcon (QWidget*, const QIcon&);
+				void changeTooltip (QWidget*, QWidget*);
+				void statusBarChanged (QWidget*, const QString&);
+				void raiseTab (QWidget*);
 			private:
 				QList<QAction*> Actions_;
 				fsirc *fsIrc;
