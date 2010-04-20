@@ -57,7 +57,7 @@ namespace LeechCraft
 			private:
 				void AddProtocolPlugin (QObject*);
 			signals:
-				void notify (const LeechCraft::Notification&);
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

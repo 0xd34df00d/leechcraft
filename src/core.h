@@ -226,7 +226,7 @@ namespace LeechCraft
 		 * settings of type 'pushbutton').
 		 */
 		void handleSettingClicked (const QString&);
-	private slots:
+
 		/** Handles the entity which could be anything - path to a file,
 		 * link, contents of a .torrent file etc. If the entity is a
 		 * string, this parameter is considered to be an UTF-8
@@ -243,7 +243,7 @@ namespace LeechCraft
 		 */
 		bool handleGotEntity (LeechCraft::DownloadEntity entity,
 				int *id = 0, QObject **provider = 0);
-
+	private slots:
 		/** Returns whether the given entity could be handlerd.
 		 *
 		 * @param[in] entity The download entity to be checked.
@@ -266,13 +266,6 @@ namespace LeechCraft
 		 * @param[in] msg The message to show.
 		 */
 		void handleStatusBarChanged (QWidget *sender, const QString& msg);
-	public slots:
-		/** Handles the notification. Either logs it or shows to the
-		 * user, depending in the notification and settings.
-		 *
-		 * @param[in] notification The notification structure.
-		 */
-		void handleNotify (LeechCraft::Notification notification);
 	private:
 		enum ObjectType
 		{
@@ -321,6 +314,13 @@ namespace LeechCraft
 		void InitMultiTab (QObject *object);
 
 		void InitCommonTab (QObject *object);
+
+		/** Handles the notification. Either logs it or shows to the
+		 * user, depending in the notification and preferences.
+		 *
+		 * @param[in] entity DownloadEntity with the notification.
+		 */
+		void HandleNotify (const LeechCraft::DownloadEntity& entity);
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */

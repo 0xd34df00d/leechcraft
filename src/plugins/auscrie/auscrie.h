@@ -62,7 +62,7 @@ namespace LeechCraft
 			private:
 				void Post (const QByteArray&);
 			signals:
-				void notify (const LeechCraft::Notification&);
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

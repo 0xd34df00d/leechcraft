@@ -21,6 +21,7 @@
 #include <QDBusConnectionInterface>
 #include <QDBusPendingCallWatcher>
 #include <QtDebug>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "azothserverconnectionadaptor.h"
 
@@ -99,14 +100,8 @@ namespace LeechCraft
 					<< "error"
 					<< pe;
 
-				Notification n =
-				{
-					"Azoth",
-					tr ("Helper process error: %1").arg (pe),
-					false,
-					Notification::PCritical_
-				};
-				emit notify (n);
+				QString text = tr ("Helper process error: %1").arg (pe);
+				emit gotEntity (Util::MakeNotification ("Azoth", text, PCritical_));
 			}
 
 			void AzothServerConnection::handleAddProtocolPluginCallFinished (QDBusPendingCallWatcher *w)

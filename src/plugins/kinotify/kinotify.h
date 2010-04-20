@@ -20,6 +20,7 @@
 #define PLUGINS_KINOTIFY_KINOTIFY_H
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
@@ -29,9 +30,10 @@ namespace LeechCraft
 		{
 			class Plugin : public QObject
 						 , public IInfo
+						 , public IEntityHandler
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
+				Q_INTERFACES (IInfo IEntityHandler)
 
 				ICoreProxy_ptr Proxy_;
 			public:
@@ -46,8 +48,8 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 
-				void HandleFinishedNotification (LeechCraft::IHookProxy_ptr,
-						Notification*, bool);
+				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
+				void Handle (LeechCraft::DownloadEntity);
 			};
 		};
 	};

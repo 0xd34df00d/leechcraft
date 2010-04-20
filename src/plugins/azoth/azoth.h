@@ -49,7 +49,7 @@ namespace LeechCraft
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
 			signals:
-				void notify (const LeechCraft::Notification&);
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

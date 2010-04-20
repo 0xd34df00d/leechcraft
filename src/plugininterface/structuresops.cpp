@@ -60,6 +60,14 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::DownloadEntity& e)
 			e.Parameters_ |= LeechCraft::NotPersistent;
 		if (parameters & LeechCraft::DoNotAnnounceEntity)
 			e.Parameters_ |= LeechCraft::DoNotAnnounceEntity;
+		if (parameters & LeechCraft::OnlyHandle)
+			e.Parameters_ |= LeechCraft::OnlyHandle;
+		if (parameters & LeechCraft::OnlyDownload)
+			e.Parameters_ |= LeechCraft::OnlyDownload;
+		if (parameters & LeechCraft::AutoAccept)
+			e.Parameters_ |= LeechCraft::AutoAccept;
+		if (parameters & LeechCraft::ShouldQuerySource)
+			e.Parameters_ |= LeechCraft::ShouldQuerySource;
 	}
 	else if (version == 1)
 	{
@@ -89,6 +97,14 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::DownloadEntity& e)
 			e.Parameters_ |= LeechCraft::NotPersistent;
 		if (parameters & LeechCraft::DoNotAnnounceEntity)
 			e.Parameters_ |= LeechCraft::DoNotAnnounceEntity;
+		if (parameters & LeechCraft::OnlyHandle)
+			e.Parameters_ |= LeechCraft::OnlyHandle;
+		if (parameters & LeechCraft::OnlyDownload)
+			e.Parameters_ |= LeechCraft::OnlyDownload;
+		if (parameters & LeechCraft::AutoAccept)
+			e.Parameters_ |= LeechCraft::AutoAccept;
+		if (parameters & LeechCraft::ShouldQuerySource)
+			e.Parameters_ |= LeechCraft::ShouldQuerySource;
 	}
 	else
 	{
@@ -99,22 +115,18 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::DownloadEntity& e)
 	return in;
 }
 
-namespace LeechCraft
+bool operator< (const LeechCraft::DownloadEntity& e1, const LeechCraft::DownloadEntity& e2)
 {
-	uint qHash (const LeechCraft::Notification& n)
-	{
-		return qHash (QString::number (n.Priority_) +
-				(n.UntilUserSees_ ? 'a' : 'b') +
-				n.Header_ +
-				n.Text_);
-	}
-};
-
-bool operator== (const LeechCraft::Notification& n1, const LeechCraft::Notification& n2)
-{
-	return n1.Priority_ == n2.Priority_ &&
-		n1.UntilUserSees_ == n2.UntilUserSees_ &&
-		n1.Header_ == n2.Header_ &&
-		n1.Text_ == n2.Text_;
+	return e1.Mime_ < e2.Mime_ &&
+		e1.Location_ < e2.Location_ &&
+		e1.Parameters_ < e2.Parameters_;
 }
 
+bool operator== (const LeechCraft::DownloadEntity& e1, const LeechCraft::DownloadEntity& e2)
+{
+	return e1.Mime_ == e2.Mime_ &&
+		e1.Entity_ == e2.Entity_ &&
+		e1.Location_ == e2.Location_ &&
+		e1.Parameters_ == e2.Parameters_ &&
+		e1.Additional_ == e2.Additional_;
+}

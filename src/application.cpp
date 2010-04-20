@@ -153,7 +153,6 @@ LeechCraft::Application::Application (int& argc, char **argv)
     qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
 	qRegisterMetaType<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaType<LeechCraft::DownloadEntity> ("LeechCraft::DownloadEntity");
-	qRegisterMetaType<LeechCraft::Notification> ("LeechCraft::Notification");
 	qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaTypeStreamOperators<LeechCraft::DownloadEntity> ("LeechCraft::DownloadEntity");
 

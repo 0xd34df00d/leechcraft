@@ -71,7 +71,6 @@ namespace LeechCraft
 				void handleError (const QString&);
 				void handleWarning (const QString&);
 			signals:
-				void notify (const LeechCraft::Notification&);
 				void delegateEntity (const LeechCraft::DownloadEntity&,
 						int*, QObject**);
 				void gotEntity (const LeechCraft::DownloadEntity&);

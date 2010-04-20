@@ -396,10 +396,6 @@ namespace LeechCraft
 						this,
 						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (&Core::Instance (),
-						SIGNAL (notify (const LeechCraft::Notification&)),
-						this,
-						SIGNAL (notify (const LeechCraft::Notification&)));
-				connect (&Core::Instance (),
 						SIGNAL (error (const QString&)),
 						this,
 						SLOT (handleError (const QString&)));
@@ -545,14 +541,7 @@ namespace LeechCraft
 			
 			void Poshuku::handleError (const QString& msg)
 			{
-				Notification n =
-				{
-					"Poshuku",
-					msg,
-					false,
-					Notification::PWarning_
-				};
-				emit notify (n);
+				emit gotEntity (Util::MakeNotification ("Poshuku", msg, PWarning_));
 			}
 			
 			void Poshuku::handleNewTab ()

@@ -219,11 +219,23 @@ LeechCraft::DownloadEntity LeechCraft::Util::MakeEntity (const QVariant& entity,
 		LeechCraft::TaskParameters tp,
 		const QString& mime)
 {
-	LeechCraft::DownloadEntity result;
+	DownloadEntity result;
 	result.Entity_ = entity;
 	result.Location_ = location;
 	result.Parameters_ = tp;
 	result.Mime_ = mime;
+	return result;
+}
+
+LeechCraft::DownloadEntity LeechCraft::Util::MakeNotification (const QString& header,
+		const QString& text, Priority priority)
+{
+	DownloadEntity result = MakeEntity (header,
+			QString (),
+			AutoAccept | OnlyHandle,
+			"x-leechcraft/notification");
+	result.Additional_ ["Text"] = text;
+	result.Additional_ ["Priority"] = priority;
 	return result;
 }
 

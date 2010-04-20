@@ -102,7 +102,7 @@ namespace LeechCraft
 				void hideCursor ();
 			signals:
 				void stateUpdated (const QString&);
-				void notify (const LeechCraft::Notification&);
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

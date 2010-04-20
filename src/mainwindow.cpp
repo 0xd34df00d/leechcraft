@@ -176,14 +176,13 @@ LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () c
 
 void LeechCraft::MainWindow::catchError (QString message)
 {
-	Notification n =
-	{
-		"LeechCraft",
-		message,
-		false,
-		Notification::PWarning_
-	};
-	Core::Instance ().handleNotify (n);
+	DownloadEntity e = Util::MakeEntity ("LeechCraft",
+			QString (),
+			AutoAccept | OnlyHandle,
+			"x-leechcraft/notification");
+	e.Additional_ ["Text"] = message;
+	e.Additional_ ["Priority"] = PWarning_;
+	Core::Instance ().handleGotEntity (e);
 }
 
 void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)

@@ -62,7 +62,7 @@ namespace LeechCraft
 				void handleMetadataChanged ();
 				void on_Queue__activated (const QModelIndex&);
 			signals:
-				void notify (const LeechCraft::Notification&);
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

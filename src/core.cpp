@@ -807,6 +807,11 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 					property ("DontAskWhenSingle").toBool ())) &&
 			dia->GetFirstEntityHandler ())
 		return DoHandle (dia->GetFirstEntityHandler (), p);
+	else if (p.Mime_ == "x-leechcraft/notification")
+	{
+		HandleNotify (p);
+		return true;
+	}
 	else
 	{
 		emit log (tr ("Could not handle download entity %1.")
@@ -876,20 +881,10 @@ void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString&
 	ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
 }
 
-void LeechCraft::Core::handleNotify (LeechCraft::Notification n)
+void LeechCraft::Core::HandleNotify (const LeechCraft::DownloadEntity& entity)
 {
 	bool show = XmlSettingsManager::Instance ()->
 		property ("ShowFinishedDownloadMessages").toBool ();
-
-	HookProxy_ptr proxy (new HookProxy);
-	Q_FOREACH (HookSignature<HIDNotification>::Signature_t f,
-			GetHooks<HIDNotification> ())
-	{
-		f (proxy, &n, sender ());
-
-		if (proxy->IsCancelled ())
-			return;
-	}
 
 	QString pname;
 	IInfo *ii = qobject_cast<IInfo*> (sender ());
@@ -912,27 +907,28 @@ void LeechCraft::Core::handleNotify (LeechCraft::Notification n)
 		}
 	}
 
+	QString nheader = entity.Entity_.toString ();
+	QString ntext = entity.Additional_ ["Text"].toString ();
+	int priority = entity.Additional_ ["Priority"].toInt ();
+
 	QString header;
-	if (pname.isEmpty () && n.Header_.isEmpty ()) {}
-	if (pname.isEmpty () || n.Header_.isEmpty ())
-		header = pname + n.Header_;
+	if (pname.isEmpty () && nheader.isEmpty ()) {}
+	if (pname.isEmpty () || nheader.isEmpty ())
+		header = pname + nheader;
 	else
 		header = QString ("%1: %2")
 			.arg (pname)
-			.arg (n.Header_);
+			.arg (nheader);
 
 	QString text = QString ("%1: %2")
 		.arg (header)
-		.arg (n.Text_);
+		.arg (ntext);
 
 	emit log (text);
 
-	if (proxy->IsCancelled ())
-		return;
-
-	else if (n.Priority_ != Notification::PLog_ &&
+	if (priority != PLog_ &&
 			show)
-		ReallyMainWindow_->GetFancyPopupManager ()->ShowMessage (n);
+		ReallyMainWindow_->GetFancyPopupManager ()->ShowMessage (entity);
 }
 
 void LeechCraft::Core::InitDynamicSignals (QObject *plugin)

@@ -75,6 +75,9 @@ public:
 	 * is the same as in return value of
 	 * IHaveShortcuts::GetActionInfo().
 	 *
+	 * The object is used to distinguish between ids of different
+	 * plugins. It can be said that object defines the context for id.
+	 *
 	 * @param[in] object The object that should be checked.
 	 * @param[in] id ID of the action.
 	 * @return The key sequence for the passed action.

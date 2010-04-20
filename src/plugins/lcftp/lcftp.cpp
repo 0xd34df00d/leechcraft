@@ -62,10 +62,6 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
-				connect (&Core::Instance (),
-						SIGNAL (notify (const LeechCraft::Notification&)),
-						this,
-						SIGNAL (notify (const LeechCraft::Notification&)));
 
 				TabManager *manager = Core::Instance ().GetTabManager ();
 				connect (manager,

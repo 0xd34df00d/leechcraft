@@ -162,14 +162,7 @@ namespace LeechCraft
 			void vGrabber::handleError (const QString& msg)
 			{
 				qWarning () << Q_FUNC_INFO << sender () << msg;
-				Notification n =
-				{
-					"vGrabber",
-					msg,
-					false,
-					Notification::PWarning_
-				};
-				emit notify (n);
+				emit gotEntity (Util::MakeNotification ("vGrabber", msg, PWarning_));
 			}
 
 			void vGrabber::handleCategoriesGoingToChange (const QStringList& added,

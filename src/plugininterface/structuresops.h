@@ -25,12 +25,8 @@
 PLUGININTERFACE_API QDataStream& operator<< (QDataStream& out, const LeechCraft::DownloadEntity& e);
 PLUGININTERFACE_API QDataStream& operator>> (QDataStream& in, LeechCraft::DownloadEntity& e);
 
-namespace LeechCraft
-{
-	PLUGININTERFACE_API uint qHash (const LeechCraft::Notification&);
-};
-
-PLUGININTERFACE_API bool operator== (const LeechCraft::Notification&, const LeechCraft::Notification&);
+PLUGININTERFACE_API bool operator< (const LeechCraft::DownloadEntity&, const LeechCraft::DownloadEntity&);
+PLUGININTERFACE_API bool operator== (const LeechCraft::DownloadEntity&, const LeechCraft::DownloadEntity&);
 
 #endif
 

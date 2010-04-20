@@ -127,7 +127,6 @@ namespace LeechCraft
 				void trayIconActivated ();
 				void handleGroupChannels ();
 			signals:
-				void notify (const LeechCraft::Notification&);
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void delegateEntity (const LeechCraft::DownloadEntity&,
 						int*, QObject**);

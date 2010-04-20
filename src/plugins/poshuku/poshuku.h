@@ -133,7 +133,6 @@ namespace LeechCraft
 				void raiseTab (QWidget*);
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
-				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};

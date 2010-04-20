@@ -22,6 +22,7 @@
 #include <QBitmap>
 #include <QTimer>
 #include <QDialog>
+#include <plugininterface/util.h>
 #include "phonon.h"
 #include "videosettings.h"
 #include "xmlsettingsmanager.h"
@@ -455,16 +456,7 @@ namespace LeechCraft
 				}
 
 				if (MediaObject_->state () == ErrorState)
-				{
-					Notification n =
-					{
-						"LMP",
-						result,
-						false,
-						Notification::PCritical_
-					};
-					emit notify (n);
-				}
+					emit gotEntity (Util::MakeNotification ("LMP", result, PCritical_));
 				else
 					emit stateUpdated (result);
 			}

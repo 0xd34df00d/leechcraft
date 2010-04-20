@@ -724,10 +724,6 @@ namespace LeechCraft
 						this,
 						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
 				connect (widget,
-						SIGNAL (notify (const LeechCraft::Notification&)),
-						this,
-						SIGNAL (notify (const LeechCraft::Notification&)));
-				connect (widget,
 						SIGNAL (urlChanged (const QString&)),
 						this,
 						SLOT (handleURLChanged (const QString&)));

@@ -31,9 +31,9 @@ namespace LeechCraft
 				Core::Instance ().SetProxy (proxy);
 
 				connect (&Core::Instance (),
-						SIGNAL (notify (const LeechCraft::Notification&)),
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,
-						SIGNAL (notify (const LeechCraft::Notification&)));
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 
 				Core::Instance ().Init ();
 			}

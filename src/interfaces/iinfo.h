@@ -57,13 +57,6 @@ namespace LeechCraft
 
 	enum HookID
 	{
-		/** Is called when Core gets a notification from a plugin. It
-		 * can be a log string or a message for the user.
-		 * 
-		 * IHookProxy::CancelDefault() cancels the balloon tip.
-		 */
-		HIDNotification,
-
 		/** Is called in the beginnign of creating request in the
 		 * application-wide network access manager.
 		 *
@@ -106,17 +99,6 @@ namespace LeechCraft
 
 	template<int>
 	struct HookSignature;
-
-	template<>
-		struct HookSignature<HIDNotification>
-		{
-			/** @param[in,out] n The notification itself.
-			 * @param[in] show If the notification is enabled in the
-			 * settings.
-			 */
-			typedef boost::function<void (IHookProxy_ptr,
-					LeechCraft::Notification *n, bool show)> Signature_t;
-		};
 
 	template<>
 		struct HookSignature<HIDNetworkAccessManagerCreateRequest>
@@ -202,8 +184,7 @@ namespace LeechCraft
 		};
 };
 
-#define HOOKS_TYPES_LIST (HIDNotification)\
-	(HIDNetworkAccessManagerCreateRequest)\
+#define HOOKS_TYPES_LIST (HIDNetworkAccessManagerCreateRequest)\
 	(HIDManualJobAddition)\
 	(HIDCouldHandle)\
 	(HIDGotEntity)\
@@ -333,6 +314,8 @@ public:
 
 	/** @brief Returns the shortcut proxy used to communicate with the
 	 * shortcut manager.
+	 *
+	 * @sa IShortcutProxy
 	 */
 	virtual const IShortcutProxy* GetShortcutProxy () const = 0;
 
@@ -346,17 +329,41 @@ public:
 	 */
 	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
 
-	/** Returns the LeechCraft's settings manager.
+	/** @brief Returns the LeechCraft's settings manager.
+	 *
+	 * In the returned settings manager you can use any property name
+	 * you want if it starts from "PluginsStorage". To avoid name
+	 * collisions from different plugins it's strongly encouraged to
+	 * also use the plugin name in the property. So the property name
+	 * would look like "PluginsStorage/PluginName/YourProperty".
 	 */
 	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
-	/** Returns the current theme's icon paths for the given name.
+	/** @brief Returns the current theme's icon paths for the given name.
 	 * Similar to the mapping files.
+	 *
+	 * There can be different files for different icon sizes. Scalable
+	 * icons are considered to have a special value for size: 0.
+	 * The return value is the mapping from icon size (only one
+	 * dimension since icons are rectangluar) to the path to the graphic
+	 * file.
+	 *
+	 * @param[in] name The name of the icon to search for.
+	 * @return Size -> path mapping.
+	 *
+	 * @sa GetIcon
 	 */
 	virtual QMap<int, QString> GetIconPath (const QString& name) const = 0;
 
 	/** Returns the current theme's icon for the given on and off
 	 * states. Similar to the mapping files.
+	 *
+	 * @param[in] on The name of the icon in the "on" state.
+	 * @param[in] off The name of the icon in the "off" state, if any.
+	 * @return The QIcon object created from image files which could be
+	 * obtained via GetIconPath().
+	 *
+	 * @sa GetIconPath
 	 */
 	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) const = 0;
 
@@ -377,13 +384,28 @@ public:
 	 */
 	virtual QStringList GetSearchCategories () const = 0;
 
-	/** Returns an ID for a delegated task from the pool.
+	/** @brief Returns an ID for a delegated task from the pool.
+	 *
+	 * Use this in your downloader plugin when generating an ID for a
+	 * newly added task. This way you can avoid ID clashes with other
+	 * downloaders.
+	 *
+	 * @return The ID of the task.
+	 *
+	 * @sa FreeID()
 	 */
 	virtual int GetID () = 0;
 
-	/** Marks an ID previously returned by GetID to the pool.
+	/** @brief Marks an ID previously returned by GetID as unused.
+	 *
+	 * Returns the id to the global ID pool. Use this in your downloader
+	 * plugins after your download finishes.
+	 *
+	 * @param[in] id An ID previously obtained by GetID().
+	 *
+	 * @sa GetID()
 	 */
-	virtual void FreeID (int) = 0;
+	virtual void FreeID (int id) = 0;
 
 	/** Returns the object that reemits the signals from the currently
 	 * active QTreeView.
@@ -394,6 +416,10 @@ public:
 	 */
 	virtual IPluginsManager* GetPluginsManager () const = 0;
 
+	/** @brief Returns the pointer to itself as QObject*.
+	 *
+	 * Just to avoid nasty reinterpret_casts.
+	 */
 	virtual QObject* GetSelf () = 0;
 
 #define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t) = 0;
@@ -415,6 +441,26 @@ typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
  * plugin doesn't provide this interface (qobject_cast<IInfo*> to it
  * fails), it would be considered as a malformed one and would be
  * unloaded.
+ *
+ * The initialization of plugins is split into two stages: Init() and
+ * SecondInit().
+ *
+ * In the first one plugins ought to initialize their data structures,
+ * allocate memory and perform other initializations that don't depend
+ * depend on other plugins. After the first stage (after Init()) the
+ * plugin should be in a usable state: no call shall fail because
+ * required data hasn't been initialized.
+ *
+ * In the second stage, SecondInit(), plugins can fill the data that
+ * depends on other plugins. For example, in SecondInit() the Tab++
+ * plugin, which shows a fancy tab tree, queries the MainWindow about
+ * existing tabs and about plugins that can open tabs and connects to
+ * their respective signals.
+ *
+ * So, as the rule of thumb, if the action required to initialize your
+ * plugin depends on others - move it to SecondInit(), leaving in Init()
+ * only basic initialization/allocation stuff like allocation memory for
+ * the objects.
  *
  * This interface can also have following signals which will be
  * autodetected by LeechCraft:
@@ -440,7 +486,10 @@ public:
 	 * Generally, all initialization code should be placed into this
 	 * method instead of plugin's instance object's constructor.
 	 *
-	 * After this call plugin should be in a usable state.
+	 * After this call plugin should be in a usable state. That means
+	 * that all data members should be initialized, callable from other
+	 * plugins etc. That also means that in this function you can't rely
+	 * on other plugins being initialized.
 	 *
 	 * @param[in] proxy The pointer to proxy to LeechCraft.
 	 *

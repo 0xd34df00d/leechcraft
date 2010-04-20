@@ -1075,25 +1075,20 @@ namespace LeechCraft
 				if (h.isEmpty ())
 					return;
 
-				LeechCraft::Notification n =
-				{
-					"Poshuku",
-					QString (),
-					false,
-					LeechCraft::Notification::PInformation_
-				};
+				QString text;
+				Priority prio = PInfo_;
 
 				if (ok)
-					n.Text_ = tr ("Page load finished: %1")
+					text = tr ("Page load finished: %1")
 						.arg (Qt::escape (Ui_.WebView_->title ()));
 				else
 				{
-					n.Text_ = tr ("Page load failed: %1")
+					text = tr ("Page load failed: %1")
 						.arg (Qt::escape (Ui_.WebView_->title ()));
-					n.Priority_ = LeechCraft::Notification::PWarning_;
+					prio = PWarning_;
 				}
 
-				emit notify (n);
+				emit gotEntity (Util::MakeNotification ("Poshuku", text, prio));
 			}
 
 			void BrowserWidget::handleChangeEncodingAboutToShow ()

@@ -729,16 +729,10 @@ namespace LeechCraft
 			
 				if (!Core::Instance ()->MoveTorrentFiles (newDir))
 				{
-					Notification n =
-					{
-						"BitTorrent",
-						tr ("Failed to move torrent's files from %1 to %2")
+					QString text = tr ("Failed to move torrent's files from %1 to %2")
 							.arg (oldDir)
-							.arg (newDir),
-						false,
-						Notification::PCritical_
-					};
-					emit notify (n);
+							.arg (newDir);
+					emit gotEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 				}
 			}
 
@@ -798,14 +792,7 @@ namespace LeechCraft
 			
 			void TorrentPlugin::showError (QString e)
 			{
-				Notification n =
-				{
-					"BitTorrent",
-					e,
-					false,
-					Notification::PCritical_
-				};
-				emit notify (n);
+				emit gotEntity (Util::MakeNotification ("BitTorrent", e, PCritical_));
 			}
 			
 			void TorrentPlugin::SetupCore ()
@@ -826,10 +813,6 @@ namespace LeechCraft
 						SIGNAL (error (QString)),
 						this,
 						SLOT (showError (QString)));
-				connect (Core::Instance (),
-						SIGNAL (notify (const LeechCraft::Notification&)),
-						this,
-						SIGNAL (notify (const LeechCraft::Notification&)));
 				connect (Core::Instance (),
 						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 						this,

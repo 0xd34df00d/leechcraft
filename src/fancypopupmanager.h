@@ -22,7 +22,7 @@
 #include <QDateTime>
 #include <QPoint>
 #include <QList>
-#include <QHash>
+#include <QMap>
 #include "plugininterface/structuresops.h"
 
 class QSystemTrayIcon;
@@ -37,10 +37,10 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		typedef QList<Notification> popups_t;
+		typedef QList<DownloadEntity> popups_t;
 		popups_t Popups_;
 
-		typedef QHash<Notification, QDateTime> dates_t;
+		typedef QMap<DownloadEntity, QDateTime> dates_t;
 		dates_t Dates_;
 
 		QSystemTrayIcon *TrayIcon_;
@@ -55,7 +55,7 @@ namespace LeechCraft
 		 * 
 		 * @param[in] n The notification.
 		 */
-		void ShowMessage (const Notification&);
+		void ShowMessage (const DownloadEntity&);
 	private slots:
 		/** Checks the messages and deletes too old ones.
 		 */

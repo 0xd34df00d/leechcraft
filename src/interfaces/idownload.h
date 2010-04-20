@@ -28,6 +28,19 @@
  * by LeechCraft and other plugins as download providers should
  * implement this interface.
  *
+ * Plugins implementing this interface are expected to have following
+ * signals:
+ * - jobFinished (int id)
+ *   Indicates that a job with a given id has finished.
+ * - jobFinished (int id)
+ *   Indicates that a job with a given id has been removed.
+ * - handleJobError (int id, IDownload::Error error)
+ *   Indicates that an error occured while downloading a job with the
+ *   given id.
+ *
+ * In order to obtain IDs for the tasks plugins are expected to use
+ * ICoreProxy::GetID() in order to avoid name clashes.
+ *
  * @sa IJobHolder, IEntityHandler
  */
 class IDownload

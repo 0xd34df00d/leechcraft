@@ -172,7 +172,6 @@ namespace LeechCraft
 				void taskRemoved (int);
 				void taskError (int, IDownload::Error);
 				void gotEntity (const LeechCraft::DownloadEntity&);
-				void notify (const LeechCraft::Notification&);
 				void error (const QString&);
 				void fileExists (boost::logic::tribool*);
 			};

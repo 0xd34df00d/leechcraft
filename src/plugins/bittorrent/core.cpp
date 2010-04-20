@@ -340,15 +340,11 @@ namespace LeechCraft
 								if (XmlSettingsManager::Instance ()->
 										property ("NotifyAboutTooBig").toBool ())
 								{
-									Notification n =
-									{
-										"BitTorrent",
-										tr ("Rejecting file %1 because it's "
-												"bigger than current auto limit.").arg (str),
-										false,
-										Notification::PWarning_
-									};
-									emit notify (n);
+									QString text = tr ("Rejecting file %1 because it's "
+											"bigger than current auto limit.").arg (str);
+									emit const_cast<Core*> (this)->
+											gotEntity (Util::MakeNotification ("BitTorrent",
+											text, PWarning_));
 								}
 								return false;
 							}
@@ -1289,14 +1285,7 @@ namespace LeechCraft
 			
 			void Core::LogMessage (const QString& message)
 			{
-				Notification n =
-				{
-					QString (),
-					message,
-					false,
-					Notification::PLog_
-				};
-				emit notify (n);
+				emit gotEntity (Util::MakeNotification ("BitTorrent", message, PLog_));
 			}
 			
 			void Core::SetExternalAddress (const QString& address)
@@ -1593,14 +1582,7 @@ namespace LeechCraft
 					toUnicode ((torrent.Handle_.save_path () / fit->path).string ().c_str ());
 
 				QString string = tr ("File finished: %1").arg (name);
-				Notification n =
-				{
-					tr ("File finished"),
-					name,
-					false,
-					Notification::PInformation_
-				};
-				emit notify (n);
+				emit gotEntity (Util::MakeNotification ("BitTorrent", string, PInfo_));
 
 				DownloadEntity e;
 				e.Entity_ = QUrl::fromLocalFile (name);
@@ -1994,14 +1976,9 @@ namespace LeechCraft
 					return;
 			
 				QString name = QString::fromUtf8 (info.name ().c_str ());
-				Notification n =
-				{
-					tr ("Torrent finished"),
-					name,
-					false,
-					Notification::PInformation_
-				};
-				emit notify (n);
+
+				emit gotEntity (Util::MakeNotification ("BitTorrent",
+						tr ("Torrent finished: %1").arg (name), PInfo_));
 			
 				for (libtorrent::torrent_info::file_iterator i = info.begin_files (),
 						end = info.end_files (); i != end; ++i)
@@ -2375,54 +2352,39 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::save_resume_data_failed_alert& a) const
 				{
-					Notification n =
-					{
-						"BitTorrent",
-						QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
-							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
-						false,
-						Notification::PWarning_
-					};
+					QString text = QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
+						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PWarning_);
 					QMetaObject::invokeMethod (Core::Instance (),
-							"notify",
+							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::Notification, n));
+							Q_ARG (LeechCraft::DownloadEntity, n));
 				}
 			
 				void operator() (const libtorrent::storage_moved_alert& a) const
 				{
-					Notification n =
-					{
-						"BitTorrent",
-						QObject::tr ("Storage for torrent:<br />%1"
-								"<br />moved successfully to:<br />%2")
-							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-							.arg (QString::fromUtf8 (a.path.c_str ())),
-						false,
-						Notification::PInformation_
-					};
+					QString text = QObject::tr ("Storage for torrent:<br />%1"
+							"<br />moved successfully to:<br />%2")
+						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+						.arg (QString::fromUtf8 (a.path.c_str ()));
+					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PInfo_);
 					QMetaObject::invokeMethod (Core::Instance (),
-							"notify",
+							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::Notification, n));
+							Q_ARG (LeechCraft::DownloadEntity, n));
 				}
 
 				void operator() (const libtorrent::storage_moved_failed_alert& a) const
 				{
-					Notification n =
-					{
-						"BitTorrent",
-						QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
-							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
-						false,
-						Notification::PCritical_
-					};
+					QString text = QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
+						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 					QMetaObject::invokeMethod (Core::Instance (),
-							"notify",
+							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::Notification, n));
+							Q_ARG (LeechCraft::DownloadEntity, n));
 				}
 			
 				void operator() (const libtorrent::metadata_received_alert& a) const
@@ -2432,57 +2394,42 @@ namespace LeechCraft
 
 				void operator() (const libtorrent::file_error_alert& a) const
 				{
-					Notification n =
-					{
-						"BitTorrent",
-						QObject::tr ("File error for torrent:<br />%1<br />"
-							"file:<br />%2<br />error:<br />%3")
-							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-							.arg (QString::fromUtf8 (a.file.c_str ()))
-							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
-						false,
-						Notification::PCritical_
-					};
+					QString text = QObject::tr ("File error for torrent:<br />%1<br />"
+						"file:<br />%2<br />error:<br />%3")
+						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+						.arg (QString::fromUtf8 (a.file.c_str ()))
+						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 					QMetaObject::invokeMethod (Core::Instance (),
-							"notify",
+							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::Notification, n));
+							Q_ARG (LeechCraft::DownloadEntity, n));
 				}
 
 				void operator() (const libtorrent::file_rename_failed_alert& a) const
 				{
-					Notification n =
-					{
-						"BitTorrent",
-						QObject::tr ("File rename failed for torrent:<br />%1<br />"
-							"file %2, error:<br />%3")
-							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-							.arg (QString::number (a.index))
-							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
-						false,
-						Notification::PCritical_
-					};
+					QString text = QObject::tr ("File rename failed for torrent:<br />%1<br />"
+						"file %2, error:<br />%3")
+						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+						.arg (QString::number (a.index))
+						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 					QMetaObject::invokeMethod (Core::Instance (),
-							"notify",
+							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::Notification, n));
+							Q_ARG (LeechCraft::DownloadEntity, n));
 				}
 
 				void operator() (const libtorrent::torrent_delete_failed_alert& a) const
 				{
-					Notification n =
-					{
-						"BitTorrent",
-						QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
-							.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-							.arg (QString::fromUtf8 (a.error.message ().c_str ())),
-						false,
-						Notification::PCritical_
-					};
+					QString text = QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
+						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 					QMetaObject::invokeMethod (Core::Instance (),
-							"notify",
+							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::Notification, n));
+							Q_ARG (LeechCraft::DownloadEntity, n));
 				}
 				
 				void operator() (const libtorrent::file_completed_alert&) const

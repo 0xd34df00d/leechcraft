@@ -38,8 +38,8 @@ namespace LeechCraft
 				NotificationManager (QObject* = 0);
 
 				void Init ();
-				void HandleFinishedNotification (LeechCraft::IHookProxy_ptr,
-						Notification*, bool);
+				bool CouldNotify (const DownloadEntity&) const;
+				void HandleNotification (const DownloadEntity&);
 			};
 		};
 	};

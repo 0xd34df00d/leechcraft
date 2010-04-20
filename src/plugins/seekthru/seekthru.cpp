@@ -150,26 +150,12 @@ namespace LeechCraft
 			
 			void SeekThru::handleError (const QString& error)
 			{
-				Notification n =
-				{
-					"SeekThru",
-					error,
-					false,
-					Notification::PCritical_
-				};
-				emit notify (n);
+				emit gotEntity (Util::MakeNotification ("SeekThru", error, PCritical_));
 			}
 			
 			void SeekThru::handleWarning (const QString& error)
 			{
-				Notification n =
-				{
-					"SeekThru",
-					error,
-					false,
-					Notification::PWarning_
-				};
-				emit notify (n);
+				emit gotEntity (Util::MakeNotification ("SeekThru", error, PWarning_));
 			}
 			
 			Q_EXPORT_PLUGIN2 (leechcraft_seekthru, SeekThru);

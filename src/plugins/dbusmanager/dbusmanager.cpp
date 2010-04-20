@@ -87,6 +87,16 @@ namespace LeechCraft
 			{
 				return SettingsDialog_;
 			}
+
+			bool DBusManager::CouldHandle (const DownloadEntity& e) const
+			{
+				return Core::Instance ().CouldHandle (e);
+			}
+
+			void DBusManager::Handle (DownloadEntity e)
+			{
+				Core::Instance ().Handle (e);
+			}
 		};
 	};
 };

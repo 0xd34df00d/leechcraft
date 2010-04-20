@@ -31,12 +31,6 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
-				Proxy_->RegisterHook (HookSignature<HIDNotification>::Signature_t (
-							boost::bind (&Plugin::HandleFinishedNotification,
-								this,
-								_1,
-								_2,
-								_3)));
 			}
 
 			void Plugin::SecondInit ()
@@ -81,30 +75,34 @@ namespace LeechCraft
 			{
 			}
 
-			void Plugin::HandleFinishedNotification (IHookProxy_ptr proxy,
-					Notification *n, bool show)
+			bool Plugin::CouldHandle (const LeechCraft::DownloadEntity& e) const
 			{
-				if (!show)
+				return e.Mime_ == "x-leechcraft/notification" &&
+						e.Additional_ ["Priority"].toInt () != PLog_;
+			}
+
+			void Plugin::Handle (LeechCraft::DownloadEntity e)
+			{
+				Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
+				if (prio == PLog_)
 					return;
 
-				if (n->Priority_ == Notification::PLog_)
-					return;
+				QString header = e.Entity_.toString ();
+				QString text = e.Additional_ ["Text"].toString ();
 
 				int timeout = Proxy_->GetSettingsManager ()->
 					property ("FinishedDownloadMessageTimeout").toInt () * 1000;
-
-				proxy->CancelDefault ();
 
 				KineticNotification *kn = new KineticNotification (QString::number (rand ()),
 						timeout);
 				
 				QString mi = "information";
-				switch (n->Priority_)
+				switch (prio)
 				{
-					case Notification::PWarning_:
+					case PWarning_:
 						mi = "warning";
 						break;
-					case Notification::PCritical_:
+					case PCritical_:
 						mi = "error";
 					default:
 						break;
@@ -119,7 +117,7 @@ namespace LeechCraft
 						size = sizes.keys ().last ();
 					path = sizes [size];
 				}
-				kn->setMessage (n->Header_, n->Text_, path);
+				kn->setMessage (header, text, path);
 				kn->send ();
 			}
 		};

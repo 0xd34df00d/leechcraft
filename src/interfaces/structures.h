@@ -88,9 +88,43 @@ namespace LeechCraft
 
 	/** @brief Describes parameters of an entity.
 	 *
-	 * This struct is used both for addition of new download jobs and
+	 * This struct is used both for addition of new download tasks and
 	 * for announcing about finished/available entities, so its members
 	 * are context-dependent.
+	 *
+	 * This is generally used for communications between different
+	 * plugins. So, it can be thought as a general packet or message.
+	 *
+	 * There are two kinds of messages: notifications and delegation
+	 * requests.
+	 *
+	 * First ones are asynchronous. They are used by plugins to notify
+	 * Core and other plugins about events like download completion. In
+	 * this case plugin that emits this notification doesn't care what
+	 * happens next. For example, a bittorrent client that just finished
+	 * downloading some files would emit a notification about those
+	 * files.
+	 *
+	 * For notification messages the following signal is used:
+	 * gotEntity (const LeechCraft::DownloadEntity& entity).
+	 *
+	 * The second type of messages, delegation requests, is used by
+	 * plugins to delegate a given task to other plugins. For example,
+	 * an RSS feed reader uses this kind of messages to delegate the
+	 * downloading of the feeds via HTTP to a plugin that can handle
+	 * HTTP. The signal that is used to emit this messages obviously
+	 * blocks. After emitting the signal one could get the id and
+	 * pointer to object that handles the request.
+	 *
+	 * For delegation requests the following signal is used:
+	 * delegateEntity (const LeechCraft::DownloadEntity& entity, int *id, QObject **object);
+	 *
+	 * There is also a third signal related to messaging:
+	 * couldHandle (const LeechCraft::DownloadEntity& entity, bool *could);
+	 *
+	 * It queries whether there are plugins that could handle the given
+	 * entity. It also blocks. After emitting this signal the could
+	 * variable would be set up accordingly.
 	 *
 	 * @sa LeechCraft::TaskParameter
 	 */
@@ -102,7 +136,11 @@ namespace LeechCraft
 		 * that should be downloaded or handled. For example, contents
 		 * of a torrent file, a magnet link, an RSS document.
 		 *
-		 * Local files should start with file://
+		 * Here are some rules:
+		 * - Local files should be a QUrl (QUrl::fromLocalFile).
+		 * - URLs should be a QUrl as well.
+		 * - Anything binary like contents of a torrent file should be a
+		 *   QByteArray.
 		 *
 		 * In the context of announcing about a finished entity, it
 		 * could contain previously mentioned entities as well.
@@ -122,6 +160,14 @@ namespace LeechCraft
 		/** @brief MIME type of the entity.
 		 *
 		 * An empty mime is considered to be no mime.
+		 *
+		 * Some predefined or commonly used ones:
+		 * - "x-leechcraft/notification"
+		 *   A notification item. It should have a "Priority"
+		 *   Additional_ member with int values of enum Priority,
+		 *   Entity_ is expected to be a QString with notification
+		 *   header and Additional_ ["Text"] is expected to be the
+		 *   notification text.
 		 */
 		QString Mime_;
 
@@ -172,25 +218,16 @@ namespace LeechCraft
 		RoleContextMenu
 	};
 
-	struct Notification
+	enum Priority
 	{
-		enum Priority
-		{
-			PLog_,
-			PInformation_,
-			PWarning_,
-			PCritical_
-		};
-
-		QString Header_;
-		QString Text_;
-		bool UntilUserSees_;
-		Priority Priority_;
+		PLog_,
+		PInfo_,
+		PWarning_,
+		PCritical_
 	};
 };
 
 Q_DECLARE_METATYPE (LeechCraft::DownloadEntity);
-Q_DECLARE_METATYPE (LeechCraft::Notification);
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QIODevice*);
 Q_DECLARE_METATYPE (QToolBar*);

@@ -75,7 +75,6 @@ namespace LeechCraft
 				void delegateEntity (const LeechCraft::DownloadEntity&,
 						int*, QObject**);
 				void categoriesChanged (const QStringList&, const QStringList&);
-				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};

@@ -70,6 +70,16 @@ QString Core::Greeter (const QString&)
 	return tr ("LeechCraft D-Bus general interface");
 }
 
+bool Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
+{
+	return NotificationManager_->CouldNotify (e);
+}
+
+void Core::Handle (const LeechCraft::DownloadEntity& e)
+{
+	NotificationManager_->HandleNotification (e);
+}
+
 void Core::DumpError ()
 {
 	qDebug () << Q_FUNC_INFO
@@ -89,12 +99,5 @@ void Core::doDelayedInit ()
 	QDBusConnection::sessionBus ().registerService ("org.LeechCraft.DBus");
 	QDBusConnection::sessionBus ().registerObject ("/General", General_.get ());
 	QDBusConnection::sessionBus ().registerObject ("/Tasks", Tasks_.get ());
-
-	Proxy_->RegisterHook (HookSignature<HIDNotification>::Signature_t (
-				boost::bind (&NotificationManager::HandleFinishedNotification,
-				NotificationManager_.get (),
-				_1,
-				_2,
-				_3)));
 }
 

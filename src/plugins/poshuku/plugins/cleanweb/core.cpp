@@ -703,16 +703,14 @@ bool Core::Load (const QUrl& url, const QString& subscrName)
 	emit delegateEntity (e, &id, &pr);
 	if (id == -1)
 	{
-		Notification n =
-		{
-			"Poshuku CleanWeb",
-			tr ("The subscription wasn't delegated."),
-			false,
-			Notification::PCritical_
-		};
 		qWarning () << Q_FUNC_INFO
+			<< "unable to delegate"
+			<< subscrName
 			<< url.toString ().toUtf8 ();
-		emit notify (n);
+		QString str = tr ("The subscription %1 wasn't delegated.")
+				.arg (subscrName);
+		emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
+				str, PCritical_));
 		return false;
 	}
 

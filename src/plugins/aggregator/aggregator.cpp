@@ -140,11 +140,7 @@ namespace LeechCraft
 						SLOT (trayIconActivated ()));
 			
 				Core::Instance ().SetProxy (proxy);
-			
-				connect (&Core::Instance (),
-						SIGNAL (notify (const LeechCraft::Notification&)),
-						this,
-						SIGNAL (notify (const LeechCraft::Notification&)));
+
 				connect (&Core::Instance (),
 						SIGNAL (unreadNumberChanged (int)),
 						this,

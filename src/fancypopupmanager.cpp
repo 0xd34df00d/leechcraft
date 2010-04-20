@@ -52,10 +52,10 @@ LeechCraft::FancyPopupManager::~FancyPopupManager ()
 {
 }
 
-void LeechCraft::FancyPopupManager::ShowMessage (const LeechCraft::Notification& p)
+void LeechCraft::FancyPopupManager::ShowMessage (const LeechCraft::DownloadEntity& e)
 {
-	Popups_.push_back (p);
-	Dates_ [p] = QDateTime::currentDateTime ();
+	Popups_.push_back (e);
+	Dates_ [e] = QDateTime::currentDateTime ();
 
 	UpdateMessage ();
 }
@@ -64,15 +64,14 @@ void LeechCraft::FancyPopupManager::timerTimeout ()
 {
 	QDateTime current = QDateTime::currentDateTime ();
 
-	Q_FOREACH (Notification n, Popups_)
+	Q_FOREACH (DownloadEntity e, Popups_)
 	{
-		if (Dates_ [n].secsTo (current) >=
+		if (Dates_ [e].secsTo (current) >=
 				XmlSettingsManager::Instance ()->
-				property ("FinishedDownloadMessageTimeout").toInt () &&
-				!n.UntilUserSees_)
+				property ("FinishedDownloadMessageTimeout").toInt ())
 		{
-			Popups_.removeAll (n);
-			Dates_.remove (n);
+			Popups_.removeAll (e);
+			Dates_.remove (e);
 		}
 	}
 }
@@ -88,27 +87,28 @@ void LeechCraft::FancyPopupManager::UpdateMessage ()
 	if (Popups_.isEmpty ())
 		return;
 
-	Notification::Priority maxPriority = Notification::PLog_;
+	Priority maxPriority = PLog_;
 
 	QString message;
 	for (popups_t::const_iterator i = Popups_.begin (),
 			begin = Popups_.begin (),
 			end = Popups_.end (); i != end; ++i)
 	{
-		message += i->Text_;
+		message += i->Additional_ ["Text"].toString ();
 		message += "\r\n";
 
-		if (i->Priority_ > maxPriority)
-			maxPriority = i->Priority_;
+		Priority prio = static_cast<Priority> (i->Additional_ ["Priority"].toInt ());
+		if (prio > maxPriority)
+			maxPriority = prio;
 	}
 
 	QSystemTrayIcon::MessageIcon mi = QSystemTrayIcon::Information;
 	switch (maxPriority)
 	{
-		case Notification::PWarning_:
+		case PWarning_:
 			mi = QSystemTrayIcon::Warning;
 			break;
-		case Notification::PCritical_:
+		case PCritical_:
 			mi = QSystemTrayIcon::Critical;
 		default:
 			break;

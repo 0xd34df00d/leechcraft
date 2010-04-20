@@ -46,9 +46,9 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
 					int*, QObject**)));
 	connect (&Core::Instance (),
-			SIGNAL (notify (const LeechCraft::Notification&)),
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 			this,
-			SIGNAL (notify (const LeechCraft::Notification&)));
+			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 
 	Core::Instance ().SetProxy (proxy);
 

@@ -96,7 +96,6 @@ namespace LeechCraft
 				void jobRemoved (int);
 				void jobError (int, IDownload::Error);
 				void gotEntity (const LeechCraft::DownloadEntity&);
-				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};

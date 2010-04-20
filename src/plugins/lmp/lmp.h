@@ -71,7 +71,7 @@ namespace LeechCraft
 				QList<QAction*> GetActions () const;
 			signals:
 				void bringToFront ();
-				void notify (const LeechCraft::Notification&);
+				void gotEntity (const LeechCraft::DownloadEntity&);
 			};
 		};
 	};

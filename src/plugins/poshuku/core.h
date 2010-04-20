@@ -181,7 +181,6 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::DownloadEntity&);
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 				void newUnclose (QAction*);
-				void notify (const LeechCraft::Notification&);
 			};
 		};
 	};

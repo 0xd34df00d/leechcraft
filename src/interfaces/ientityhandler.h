@@ -42,18 +42,23 @@ public:
 	 * Entity could be anything from file name to URL to all kinds of
 	 * hashes like Magnet links.
 	 *
-	 * @param[in] entity A DownloadEntity structure.
+	 * @param[in] entity A DownloadEntity structure that could be possibly
+	 * handled by this plugin.
+	 * @return Whether this plugin can handle this particular entity.
 	 *
 	 * @sa Handle
 	 * @sa LeechCraft::DownloadEntity
 	 */
 	virtual bool CouldHandle (const LeechCraft::DownloadEntity& entity) const = 0;
 
-	/** @brief Gives plugin the ability to handle the entity.
+	/** @brief Notifies the plugin that it should handle the given entity.
 	 *
-	 * Notifies IEntityHandler that this entity should be handled.
+	 * This function is called to make IEntityHandle know that it should
+	 * handle the given entity. The entity is guaranteed to be checked
+	 * previously against CouldHandle().
 	 *
-	 * @param[in] entity A DownloadEntity structure.
+	 * @param[in] entity A DownloadEntity structure to be handled by
+	 * this plugin.
 	 *
 	 * @sa LeechCraft::DownloadEntity
 	 */
