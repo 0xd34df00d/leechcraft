@@ -35,6 +35,8 @@ using namespace LeechCraft::Plugins::DBusManager;
 
 Core::Core ()
 {
+	NotificationManager_.reset (new NotificationManager);
+
 	QTimer::singleShot (1500,
 			this,
 			SLOT (doDelayedInit ()));
@@ -88,8 +90,6 @@ void Core::DumpError ()
 
 void Core::doDelayedInit ()
 {
-	NotificationManager_.reset (new NotificationManager);
-
 	General_.reset (new General);
 	new GeneralAdaptor (General_.get ());
 
