@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AUSCRIE_AUSCRIE_H
 #define PLUGINS_AUSCRIE_AUSCRIE_H
 #include <QObject>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/itoolbarembedder.h>
 
@@ -37,6 +38,7 @@ namespace LeechCraft
 				Q_OBJECT
 				Q_INTERFACES (IInfo IToolBarEmbedder)
 
+				std::auto_ptr<QTranslator> Translator_;
 				ICoreProxy_ptr Proxy_;
 				QAction *ShotAction_;
 				ShooterDialog *Dialog_;

@@ -1,8 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010  Georg Rudoy
- *
- * This program is free software: you can redistribute it and/or modify
+ * * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -27,6 +26,7 @@
 #include <QUrl>
 #include <QClipboard>
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include <plugininterface/util.h>
 #include "shooterdialog.h"
 #include "poster.h"
 
@@ -39,6 +39,8 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
+
+				Translator_.reset (Util::InstallTranslator ("auscrie"));
 
 				Dialog_ = new ShooterDialog (Proxy_->GetMainWindow ());
 
