@@ -7,8 +7,8 @@
 		<groupbox>
 			<label lang="en" value="KDE" />
 			<item type="checkbox" property="UseNotifications" state="on">
-				<label lang="en" value="Use notifications (KDE >= 4.4 or libnotify)" />
-				<label lang="ru" value="Использовать оповещения (KDE >= 4.4 либо libnotify)" />
+				<label lang="en" value="Use notifications (KDE ≥ 4.4 or libnotify)" />
+				<label lang="ru" value="Использовать оповещения (KDE ≥ 4.4 либо libnotify)" />
 			</item>
 		</groupbox>
 	</page>
