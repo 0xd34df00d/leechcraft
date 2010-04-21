@@ -53,12 +53,6 @@ namespace LeechCraft
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerColor ());
 	}
 
-	ItemHandlerFactory& ItemHandlerFactory::Instance ()
-	{
-		static ItemHandlerFactory f;
-		return f;
-	}
-
 	ItemHandlerFactory::~ItemHandlerFactory ()
 	{
 	}

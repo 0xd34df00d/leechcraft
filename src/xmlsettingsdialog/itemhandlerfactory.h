@@ -34,10 +34,8 @@ namespace LeechCraft
 	class ItemHandlerFactory
 	{
 		QList<ItemHandlerBase_ptr> Handlers_;
-
-		ItemHandlerFactory ();
 	public:
-		static ItemHandlerFactory& Instance ();
+		ItemHandlerFactory ();
 		~ItemHandlerFactory ();
 
 		/** @brief Create a visual representation for the given element

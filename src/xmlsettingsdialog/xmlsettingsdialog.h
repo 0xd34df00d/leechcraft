@@ -46,6 +46,8 @@ class QDomDocument;
 
 namespace LeechCraft
 {
+	class ItemHandlerFactory;
+
 	namespace Util
 	{
 		class XmlSettingsDialog : public QWidget
@@ -58,6 +60,7 @@ namespace LeechCraft
 			QString DefaultLang_;
 			boost::shared_ptr<QDomDocument> Document_;
 			QList<QWidget*> Customs_;
+			ItemHandlerFactory *HandlersManager_;
 		public:
 			struct LangElements
 			{

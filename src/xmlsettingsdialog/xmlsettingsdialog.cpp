@@ -40,6 +40,7 @@ using namespace LeechCraft::Util;
 
 XmlSettingsDialog::XmlSettingsDialog ()
 : Document_ (new QDomDocument)
+, HandlersManager_ (new ItemHandlerFactory ())
 {
 	ItemHandlerBase::SetXmlSettingsDialog (this);
 	Pages_ = new QStackedWidget (this);
@@ -159,11 +160,11 @@ void XmlSettingsDialog::MergeXml (const QByteArray& newXml)
 				<< propName;
 			continue;
 		}
-		ItemHandlerFactory::Instance ().SetValue (object, value);
+		HandlersManager_->SetValue (object, value);
 	}
 
 	UpdateXml ();
-	ItemHandlerFactory::Instance ().ClearNewValues ();
+	HandlersManager_->ClearNewValues ();
 }
 
 void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
@@ -314,7 +315,7 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 	if (type.isEmpty () || type.isNull ())
 		return;
 
-	if (!ItemHandlerFactory::Instance ().Handle (item, baseWidget))
+	if (!HandlersManager_->Handle (item, baseWidget))
 		qWarning () << Q_FUNC_INFO << "unhandled type" << type;
 
 	WorkingObject_->setProperty (property.toLatin1 ().constData (), GetValue (item));
@@ -471,7 +472,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 			return tmpValue;
 	}
 
-	return ItemHandlerFactory::Instance ().GetValue (item, value);
+	return HandlersManager_->GetValue (item, value);
 }
 
 QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
@@ -532,7 +533,7 @@ void XmlSettingsDialog::UpdateXml (bool whole)
 	else
 	{
 		const ItemHandlerBase::Prop2NewValue_t& props =
-				ItemHandlerFactory::Instance ().GetNewValues ();
+				HandlersManager_->GetNewValues ();
 		for (ItemHandlerBase::Prop2NewValue_t::const_iterator i = props.begin (),
 				end = props.end (); i != end; ++i)
 		{
@@ -563,12 +564,12 @@ void XmlSettingsDialog::UpdateXml (bool whole)
 void XmlSettingsDialog::UpdateSingle (const QString&,
 		const QVariant& value, QDomElement& element)
 {
-	ItemHandlerFactory::Instance ().UpdateSingle (element, value);
+	HandlersManager_->UpdateSingle (element, value);
 }
 
 void XmlSettingsDialog::SetValue (QWidget *object, const QVariant& value)
 {
-	ItemHandlerFactory::Instance ().SetValue (object, value);
+	HandlersManager_->SetValue (object, value);
 }
 
 bool XmlSettingsDialog::eventFilter (QObject *obj, QEvent *event)
@@ -590,7 +591,7 @@ bool XmlSettingsDialog::eventFilter (QObject *obj, QEvent *event)
 void XmlSettingsDialog::accept ()
 {
 	const ItemHandlerBase::Prop2NewValue_t& props =
-			ItemHandlerFactory::Instance ().GetNewValues ();
+			HandlersManager_->GetNewValues ();
 	for (ItemHandlerBase::Prop2NewValue_t::const_iterator i = props.begin (),
 			end = props.end (); i != end; ++i)
 		WorkingObject_->setProperty (i.key ().toLatin1 ().constData (),
@@ -598,7 +599,7 @@ void XmlSettingsDialog::accept ()
 
 	UpdateXml ();
 
-	ItemHandlerFactory::Instance ().ClearNewValues ();
+	HandlersManager_->ClearNewValues ();
 
 	Q_FOREACH (QWidget *widget, Customs_)
 		QMetaObject::invokeMethod (widget, "accept");
@@ -607,7 +608,7 @@ void XmlSettingsDialog::accept ()
 void XmlSettingsDialog::reject ()
 {
 	const ItemHandlerBase::Prop2NewValue_t& props =
-			ItemHandlerFactory::Instance ().GetNewValues ();
+			HandlersManager_->GetNewValues ();
 	for (ItemHandlerBase::Prop2NewValue_t::const_iterator i = props.begin (),
 			end = props.end (); i != end; ++i)
 	{
@@ -624,7 +625,7 @@ void XmlSettingsDialog::reject ()
 				WorkingObject_->property (i.key ().toLatin1 ().constData ()));
 	}
 	
-	ItemHandlerFactory::Instance ().ClearNewValues ();
+	HandlersManager_->ClearNewValues ();
 
 	Q_FOREACH (QWidget *widget, Customs_)
 		QMetaObject::invokeMethod (widget, "reject");
