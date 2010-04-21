@@ -55,18 +55,17 @@ namespace LeechCraft
 			QStackedWidget *Pages_;
 			QStringList Titles_;
 			QObject *WorkingObject_;
-			typedef QMap<QString, QVariant> Property2Value_t;
-			Property2Value_t Prop2NewValue_;
 			QString DefaultLang_;
 			boost::shared_ptr<QDomDocument> Document_;
+			QList<QWidget*> Customs_;
+		public:
 			struct LangElements
 			{
 				bool Valid_;
 				QPair<bool, QString> Label_;
 				QPair<bool, QString> Suffix_;
 			};
-			QList<QWidget*> Customs_;
-		public:
+
 			XMLSETTINGSMANAGER_API XmlSettingsDialog ();
 			XMLSETTINGSMANAGER_API virtual ~XmlSettingsDialog ();
 			XMLSETTINGSMANAGER_API void RegisterObject (QObject*, const QString&);
@@ -126,28 +125,80 @@ namespace LeechCraft
 			 * @return The names of the pages.
 			 */
 			XMLSETTINGSMANAGER_API QStringList GetPages () const;
+
+			/** @brief Returns the human-readable label for the given
+			 * element.
+			 *
+			 * Returns the proper label for an element according to the
+			 * current locale and XML settings.
+			 *
+			 * @param[in] element The element for which label should be
+			 * returned.
+			 * @return The label suitable for showing to the user in the
+			 * current language.
+			 *
+			 * @sa GetLangElements()
+			 */
+			QString GetLabel (const QDomElement& element) const;
+
+			/** @brief Returns the current value for the given element.
+			 *
+			 * This function checks the object associated with this
+			 * settings dialog and returns a value previously stored or
+			 * default value if no previously set value exists.
+			 *
+			 * If ignoreObject is set, this function ignores the
+			 * preferences already present and just parses the XML file.
+			 * In this case, the default value is returned.
+			 *
+			 * @param[in] element The element for which the preferences
+			 * value should be returned.
+			 * @param[in] ignoreObject Whether associated object should
+			 * be ignored.
+			 * @return The current preferences value for the element.
+			 */
+			QVariant GetValue (const QDomElement& element,
+					bool ignoreObject = false) const;
+
+			/** @brief Returns the list of images associated with the
+			 * given element.
+			 *
+			 * This function iterates over all children with name
+			 * "binary" and creates the list of images that could be
+			 * retreieved from those binary children.
+			 *
+			 * @param[in] element The element to collect images from.
+			 * @return The list of images, if any.
+			 */
+			QList<QImage> GetImages (const QDomElement& element) const;
+
+			/** @brief Parses the given element under the given parent
+			 * widget.
+			 *
+			 * @param[in] element The element to inspect.
+			 * @param[in] parent The parent widget under which to build
+			 * up the representation.
+			 */
+			void ParseEntity (const QDomElement& element, QWidget *parent);
+
+			/** @brief Get other human-readable messages from the
+			 * element.
+			 *
+			 * This function is similar to GetLabel(), but instead it
+			 * returns a slightly different list of user-visible
+			 * elements.
+			 *
+			 * @param[in] element The element to inspect.
+			 * @return The LangElements structure filled with available
+			 * language/locale-dependent strings.
+			 *
+			 * @sa GetLabel()
+			 */
+			LangElements GetLangElements (const QDomElement& element) const;
 		private:
 			void HandleDeclaration (const QDomElement&);
 			void ParsePage (const QDomElement&);
-			void ParseEntity (const QDomElement&, QWidget*);
 			void ParseItem (const QDomElement&, QWidget*);
-			QString GetLabel (const QDomElement&) const;
-			LangElements GetLangElements (const QDomElement&) const;
-			QVariant GetValue (const QDomElement&, bool = false) const;
-			void DoLineedit (const QDomElement&, QFormLayout*);
-			void DoCheckbox (const QDomElement&, QFormLayout*);
-			void DoSpinbox (const QDomElement&, QFormLayout*);
-			void DoDoubleSpinbox (const QDomElement&, QFormLayout*);
-			void DoGroupbox (const QDomElement&, QFormLayout*);
-			void DoSpinboxRange (const QDomElement&, QFormLayout*);
-			void DoPath (const QDomElement&, QFormLayout*);
-			void DoRadio (const QDomElement&, QFormLayout*);
-			void DoCombobox (const QDomElement&, QFormLayout*);
-			void DoFont (const QDomElement&, QFormLayout*);
-			void DoColor (const QDomElement&, QFormLayout*);
-			void DoPushButton (const QDomElement&, QFormLayout*);
-			void DoCustomWidget (const QDomElement&, QFormLayout*);
-			QList<QImage> GetImages (const QDomElement&) const;
 			void UpdateXml (bool = false);
 			void UpdateSingle (const QString&, const QVariant&, QDomElement&);
 			void SetValue (QWidget*, const QVariant&);
@@ -158,7 +209,6 @@ namespace LeechCraft
 			virtual void reject ();
 		private slots:
 			void handleCustomDestroyed ();
-			void updatePreferences ();
 			void handlePushButtonReleased ();
 		signals:
 			XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
