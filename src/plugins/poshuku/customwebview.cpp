@@ -57,7 +57,7 @@ namespace LeechCraft
 			
 				CustomWebPage *page = new CustomWebPage (this);
 				setPage (page);
-			
+
 				connect (this,
 						SIGNAL (urlChanged (const QUrl&)),
 						this,
@@ -351,6 +351,24 @@ namespace LeechCraft
 				QWebView::contextMenuEvent (e);
 			}
 			
+			void CustomWebView::keyReleaseEvent (QKeyEvent *event)
+			{
+				bool handled = false;
+				if (event->matches (QKeySequence::Copy))
+				{
+					const QString& text = selectedText ();
+					if (!text.isEmpty ())
+					{
+						QApplication::clipboard ()->setText (text,
+								QClipboard::Clipboard);
+						handled = true;
+					}
+				}
+
+				if (!handled)
+					QWebView::keyReleaseEvent (event);
+			}
+
 			int CustomWebView::LevelForZoom (qreal zoom)
 			{
 				int i = Zooms_.indexOf (zoom);
