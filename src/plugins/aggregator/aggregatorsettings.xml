@@ -22,6 +22,22 @@
 					<label lang="en" value="Always use external browser" />
 					<label lang="ru" value="Всегда использовать внешний браузер" />
 				</item>
+				<item type="combobox" property="NotificationsFeedUpdateBehavior">
+					<label lang="en" value="Notifications on feed update:" />
+					<label lang="ru" value="Уведомления при обновлении лент:" />
+					<option name="ShowAll" default="true">
+						<label lang="en" value="all" />
+						<label lang="ru" value="все" />
+					</option>
+					<option name="ShowNew">
+						<label lang="en" value="only about new items" />
+						<label lang="ru" value="только о новых статьях" />
+					</option>
+					<option name="ShowNo">
+						<label lang="en" value="don't show" />
+						<label lang="ru" value="не показывать" />
+					</option>
+				</item>
 				<item type="lineedit" property="CommentsTags" default="comments">
 					<label lang="en" value="Additional tags for comment feeds:" />
 					<label lang="ru" value="Дополнительные метки для лент комментариев:" />

@@ -1517,7 +1517,19 @@ namespace LeechCraft
 						++updatedItems;
 					}
 
-					if (newItems + updatedItems)
+					QString method = XmlSettingsManager::Instance ()->
+							property ("NotificationsFeedUpdateBehavior").toString ();
+					bool shouldShow = true;
+					if (method == "ShowNo")
+						shouldShow = false;
+					else if (method == "ShowNew")
+						shouldShow = newItems;
+					else if (method == "ShowAll")
+						shouldShow = newItems + updatedItems;
+
+					qDebug () << Q_FUNC_INFO << shouldShow << newItems << updatedItems << method;
+
+					if (shouldShow)
 					{
 						QString str = tr ("Updated channel \"%1\" (%2, %3)").arg (channel->Title_)
 							.arg (tr ("%n new item(s)", "Channel update", newItems))
