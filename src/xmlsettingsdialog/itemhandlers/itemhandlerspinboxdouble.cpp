@@ -24,7 +24,8 @@ namespace LeechCraft
 	ItemHandlerSpinboxDouble::ItemHandlerSpinboxDouble ()
 	: ItemHandlerSpinboxBase<QDoubleSpinBox, double> (Converter_t (boost::bind (&QString::toDouble,
 					_1, static_cast<bool*> (0))),
-			"doublespinbox")
+			"doublespinbox",
+			SIGNAL (valueChanged (double)))
 	{
 	}
 

@@ -37,10 +37,12 @@ namespace LeechCraft
 	private:
 		Converter_t Converter_;
 		QString ElementType_;
+		const char *ChangedSignal_;
 	public:
-		ItemHandlerSpinboxBase (Converter_t cvt, const QString& etype)
+		ItemHandlerSpinboxBase (Converter_t cvt, const QString& etype, const char *cs)
 		: Converter_ (cvt)
 		, ElementType_ (etype)
+		, ChangedSignal_ (cs)
 		{
 		}
 
@@ -81,7 +83,7 @@ namespace LeechCraft
 
 			box->setValue (value.value<ValueType> ());
 			connect (box,
-					SIGNAL (valueChanged (int)),
+					ChangedSignal_,
 					this,
 					SLOT (updatePreferences ()));
 

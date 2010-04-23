@@ -24,7 +24,8 @@ namespace LeechCraft
 	ItemHandlerSpinbox::ItemHandlerSpinbox ()
 	: ItemHandlerSpinboxBase<QSpinBox, int> (Converter_t (boost::bind (&QString::toInt,
 					_1, static_cast<bool*> (0), 10)),
-			"spinbox")
+			"spinbox",
+			SIGNAL (valueChanged (int)))
 	{
 	}
 
