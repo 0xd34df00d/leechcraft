@@ -43,7 +43,6 @@ namespace LeechCraft
 						void initializePage ();
 					private slots:
 						void handleAccepted ();
-						void handleListsChanged ();
 					};
 				};
 			};
