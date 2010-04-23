@@ -442,6 +442,7 @@ void LeechCraft::MainWindow::on_ActionMenu__triggered ()
 
 void LeechCraft::MainWindow::handleQuit ()
 {
+	hide ();
 	WriteSettings ();
 	Core::Instance ().Release ();
 
