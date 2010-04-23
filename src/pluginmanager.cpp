@@ -314,6 +314,8 @@ namespace LeechCraft
 	{
 #ifdef Q_WS_WIN
 		ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
+#elif Q_WS_MAC
+		ScanDir (QApplication::applicationDirPath () + "../PlugIns/bin");
 #else
 		QString libdir (PLUGINS_LIBDIR);
 		ScanDir (QString ("/usr/local/%1/leechcraft/plugins")

@@ -128,13 +128,17 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 #ifdef Q_WS_WIN
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
-				QCoreApplication::applicationDirPath () + "/translations"))
+					QCoreApplication::applicationDirPath () + "/translations"))
+#elif Q_WS_MAC
+	if (transl->load (filename, ":/") ||
+			transl->load (filename,
+					QCoreApplication::applicationDirPath () + "../Resources/translations"))
 #else
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
-				QString ("/usr/local/share/%1/translations").arg (appName)) ||
+					QString ("/usr/local/share/%1/translations").arg (appName)) ||
 			transl->load (filename,
-				QString ("/usr/share/%1/translations").arg (appName)))
+					QString ("/usr/share/%1/translations").arg (appName)))
 #endif
 	{
 		qApp->installTranslator (transl);

@@ -23,8 +23,10 @@ using namespace LeechCraft;
 
 Settings::Settings ()
 {
-#ifdef Q_OS_WIN32
+#ifdef Q_WS_WIN
 	ConfigDir_ = QCoreApplication::applicationDirPath () + "/leechcraft/";
+#elif Q_WS_MAC
+	ConfigDir_ = QCoreApplication::applicationDirPath () + "../Resources/config";
 #else
 	ConfigDir_ = "/etc/leechcraft/";
 #endif

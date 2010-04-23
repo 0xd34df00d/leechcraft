@@ -144,12 +144,30 @@ void SkinEngine::FindIconSets ()
 {
 	IconSets_.clear ();
 
-#if defined (Q_OS_UNIX)
+	/** Platform-specific aths for *.mapping files are as follows:
+	 *
+	 * Unix:
+	 * /usr/share/leechcraft/icons
+	 * /usr/local/share/leechcraft/icons
+	 *
+	 * Mac OS X:
+	 * %APP_DIR%/../Resources/icons
+	 *
+	 * Win32:
+	 * %APP_DIR%/icons
+	 */
+#if defined (Q_WS_MAC)
+	QDir dir = QApplication::applicationDir ();
+	dir.cdUp ();
+	dir.cd ("Resources");
+	dir.cd ("icons");
+	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+#elif defined (Q_WS_X11)
 	QDir dir = QDir ("/usr/share/leechcraft/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 	dir = QDir ("/usr/local/share/leechcraft/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
-#elif defined (Q_OS_WIN32)
+#elif defined (Q_WS_WIN)
 	QDir dir = QDir::current ();
 	if (dir.cd (QCoreApplication::applicationDirPath () + "/icons"))
 		IconSets_ << dir.entryList (QStringList ("*.mapping"));
@@ -190,12 +208,15 @@ void SkinEngine::FindIcons ()
 		CollectDir (QDir::homePath () + "/.icons", iconSet);
 		CollectDir (QDir::homePath () + "/.leechcraft/icons", iconSet);
 
-#if defined (Q_OS_UNIX)
+#if defined (Q_WS_MAC)
+		FillMapping (QApplication::applicationDirPath () + "../Resources/icons", iconSet);
+		CollectDir (QApplication::applicationDirPath () + "../Resources/icons", iconSet);
+#elif defined (Q_WS_X11)
 		FillMapping ("/usr/share/leechcraft/icons", iconSet);
 		FillMapping ("/usr/local/share/leechcraft/icons", iconSet);
 		CollectDir ("/usr/share/icons", iconSet);
 		CollectDir ("/usr/local/share/icons", iconSet);
-#elif defined (Q_OS_WIN32)
+#elif defined (Q_WS_WIN)
 		FillMapping (QApplication::applicationDirPath () + "/icons", iconSet);
 		CollectDir (QApplication::applicationDirPath () + "/icons", iconSet);
 #endif
