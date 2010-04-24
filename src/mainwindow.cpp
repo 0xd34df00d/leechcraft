@@ -120,6 +120,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 				addToolBar (area, PluginsActionsBar_);
 				PluginsActionsBar_->setVisible (settings
 						.value ("PluginsBarVisible", true).toBool ());
+				settings.endGroup ();
 			}
 			PluginsActionsBar_->addActions (list);
 			PluginsActionsBar_->addSeparator ();
@@ -442,8 +443,8 @@ void LeechCraft::MainWindow::on_ActionMenu__triggered ()
 
 void LeechCraft::MainWindow::handleQuit ()
 {
-	hide ();
 	WriteSettings ();
+	hide ();
 	Core::Instance ().Release ();
 
 	TrayIcon_->hide ();
