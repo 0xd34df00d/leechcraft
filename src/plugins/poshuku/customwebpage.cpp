@@ -72,6 +72,10 @@ namespace LeechCraft
 						SIGNAL (javaScriptWindowObjectCleared ()),
 						this,
 						SLOT (handleJavaScriptWindowObjectCleared ()));
+				connect (mainFrame (),
+						SIGNAL (urlChanged (const QUrl&)),
+						this,
+						SIGNAL (loadingURL (const QUrl&)));
 				connect (this,
 						SIGNAL (contentsChanged ()),
 						this,
@@ -563,10 +567,7 @@ namespace LeechCraft
 				}
 			
 				if (frame == mainFrame ())
-				{
 					LoadingURL_ = request.url ();
-					emit loadingURL (LoadingURL_);
-				}
 			
 				return QWebPage::acceptNavigationRequest (frame, request, type);
 			}
