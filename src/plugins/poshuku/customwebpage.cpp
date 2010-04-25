@@ -227,12 +227,32 @@ namespace LeechCraft
 									static_cast<const ErrorPageExtensionOption*> (eo);
 							ErrorPageExtensionReturn *ret =
 									static_cast<ErrorPageExtensionReturn*> (er);
-
-							QString data = MakeErrorReplyContents (error->error,
-									error->url, error->errorString);
-							ret->baseUrl = error->url;
-							ret->content = data.toUtf8 ();
-							return true;
+							switch (error->error)
+							{
+							case 102:			// Delegated entity
+								return false;
+							case 301:			// Unknown protocol (should delegate)
+							{
+								LeechCraft::DownloadEntity e =
+									LeechCraft::Util::MakeEntity (error->url,
+										QString (),
+										LeechCraft::FromUserInitiated);
+								emit gotEntity (e);
+								if (XmlSettingsManager::Instance ()->
+										property ("CloseEmptyDelegatedPages").toBool () &&
+										history ()->currentItem ().url ().isEmpty ())
+									emit windowCloseRequested ();
+								return true;
+							}
+							default:
+							{
+								QString data = MakeErrorReplyContents (error->error,
+										error->url, error->errorString);
+								ret->baseUrl = error->url;
+								ret->content = data.toUtf8 ();
+								return true;
+							}
+							}
 						}
 						default:
 							return QWebPage::extension (e, eo, er);
