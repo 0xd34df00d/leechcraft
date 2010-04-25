@@ -80,16 +80,15 @@ namespace LeechCraft
 						SIGNAL (error (const QString&)),
 						this,
 						SLOT (handleError (const QString&)));
-
-				connect (coreProxy->GetTreeViewReemitter (),
-						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
-								QTreeView*)),
-						this,
-						SLOT (handleItemSelected (const QModelIndex&)));
 			}
 
 			void CSTP::SecondInit ()
 			{
+				connect (Core::Instance ().GetCoreProxy ()->GetTreeViewReemitter (),
+						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
+								QTreeView*)),
+						this,
+						SLOT (handleItemSelected (const QModelIndex&)));
 			}
 			
 			void CSTP::Release ()
