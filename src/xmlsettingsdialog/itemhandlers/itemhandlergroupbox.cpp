@@ -58,12 +58,12 @@ namespace LeechCraft
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (updatePreferences ()));
-		XSD_->ParseEntity (item, box);
-
 		box->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
 		lay->addRow (box);
+
+		XSD_->ParseEntity (item, box);
 	}
 
 	void ItemHandlerGroupbox::SetValue (QWidget *widget,
