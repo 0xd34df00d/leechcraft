@@ -51,6 +51,8 @@ namespace LeechCraft
 
 				void SetButtons (Qt::MouseButtons);
 				void SetModifiers (Qt::KeyboardModifiers);
+				bool supportsExtension (Extension) const;
+				bool extension (Extension, const ExtensionOption*, ExtensionReturn*);
 			private slots:
 				void handleContentsChanged ();
 				void handleDatabaseQuotaExceeded (QWebFrame*, QString);
@@ -90,6 +92,7 @@ namespace LeechCraft
 				virtual bool javaScriptPrompt (QWebFrame*, const QString&, const QString&, QString*);
 				virtual QString userAgentForUrl (const QUrl&) const;
 			private:
+				QString MakeErrorReplyContents (int, const QUrl&, const QString&) const;
 				QWebFrame* FindFrame (const QUrl&);
 				void HandleForms (QWebFrame*, const QNetworkRequest&,
 						QWebPage::NavigationType);

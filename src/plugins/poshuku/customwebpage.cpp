@@ -186,6 +186,40 @@ namespace LeechCraft
 				Modifiers_ = modifiers;
 			}
 			
+			bool CustomWebPage::supportsExtension (QWebPage::Extension e) const
+			{
+				switch (e)
+				{
+					case ErrorPageExtension:
+						return true;
+					default:
+						return QWebPage::supportsExtension (e);
+				}
+			}
+
+			bool CustomWebPage::extension (QWebPage::Extension e,
+					const QWebPage::ExtensionOption* eo, QWebPage::ExtensionReturn *er)
+			{
+				switch (e)
+				{
+					case ErrorPageExtension:
+					{
+						const ErrorPageExtensionOption *error =
+								static_cast<const ErrorPageExtensionOption*> (eo);
+						ErrorPageExtensionReturn *ret =
+								static_cast<ErrorPageExtensionReturn*> (er);
+
+						QString data = MakeErrorReplyContents (error->error,
+								error->url, error->errorString);
+						ret->baseUrl = error->url;
+						ret->content = data.toUtf8 ();
+						return true;
+					}
+					default:
+						return QWebPage::extension (e, eo, er);
+				}
+			}
+
 			void CustomWebPage::handleContentsChanged ()
 			{
 				if (Core::Instance ().GetPluginManager ()->
@@ -417,32 +451,11 @@ namespace LeechCraft
 						}
 					default:
 						{
-							QFile file (":/resources/html/generalerror.html");
-							file.open (QIODevice::ReadOnly);
-							QString data = file.readAll ();
 							int statusCode = reply->
 								attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
-							if (statusCode)
-								data.replace ("{title}",
-										tr ("Error loading %1: %2 (%3)")
-											.arg (reply->url ().toString ())
-											.arg (reply->errorString ())
-											.arg (statusCode));
-							else
-								data.replace ("{title}",
-										tr ("Error loading %1: %2")
-											.arg (reply->url ().toString ())
-											.arg (reply->errorString ()));
-							QString bodyContents = tr ("The page you tried to access cannot be loaded now.");
-							data.replace ("{body}", bodyContents);
 
-							QBuffer ib;
-							ib.open (QIODevice::ReadWrite);
-							QPixmap px = Core::Instance ().GetProxy ()->GetIcon ("error").pixmap (32, 32);
-							px.save (&ib, "PNG");
-
-							data.replace ("{img}",
-									QByteArray ("data:image/png;base64,") + ib.buffer ().toBase64 ());
+							QString data = MakeErrorReplyContents (statusCode,
+									reply->url (), reply->errorString ());
 			
 							QWebFrame *found = FindFrame (reply->url ());
 							if (found)
@@ -454,6 +467,36 @@ namespace LeechCraft
 				}
 			}
 			
+			QString CustomWebPage::MakeErrorReplyContents (int statusCode,
+					const QUrl& url, const QString& errorString) const
+			{
+				QFile file (":/resources/html/generalerror.html");
+				file.open (QIODevice::ReadOnly);
+				QString data = file.readAll ();
+				if (statusCode)
+					data.replace ("{title}",
+							tr ("Error loading %1: %2 (%3)")
+								.arg (url.toString ())
+								.arg (errorString)
+								.arg (statusCode));
+				else
+					data.replace ("{title}",
+							tr ("Error loading %1: %2")
+								.arg (url.toString ())
+								.arg (errorString));
+				QString bodyContents = tr ("The page you tried to access cannot be loaded now.");
+				data.replace ("{body}", bodyContents);
+
+				QBuffer ib;
+				ib.open (QIODevice::ReadWrite);
+				QPixmap px = Core::Instance ().GetProxy ()->GetIcon ("error").pixmap (32, 32);
+				px.save (&ib, "PNG");
+
+				data.replace ("{img}",
+						QByteArray ("data:image/png;base64,") + ib.buffer ().toBase64 ());
+				return data;
+			}
+
 			void CustomWebPage::handleWindowCloseRequested ()
 			{
 				if (Core::Instance ().GetPluginManager ()->
