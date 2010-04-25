@@ -100,6 +100,9 @@ namespace LeechCraft
 			BE (HandleContentsChanged, (QWebPage*));
 			BE (HandleDatabaseQuotaExceeded, (QWebPage*)(QWebFrame*)(QString));
 			BE (HandleDownloadRequested, (QWebPage*)(const QNetworkRequest&));
+			CE (HandleExtension,
+					(QWebPage*)(QWebPage::Extension)(const QWebPage::ExtensionOption*)(QWebPage::ExtensionReturn*),
+					bool);
 			BE (HandleFrameCreated, (QWebPage*)(QWebFrame*));
 			BE (HandleGeometryChangeRequested, (QWebPage*)(const QRect&));
 			BE (HandleJavaScriptWindowObjectCleared, (QWebPage*)(QWebFrame*));
@@ -118,6 +121,7 @@ namespace LeechCraft
 			BE (HandleSelectionChanged, (QWebPage*));
 			BE (HandleStatusBarMessage, (QWebPage*)(const QString&));
 			BE (HandleStatusBarVisibilityChangeRequested, (QWebPage*)(bool));
+			CE (HandleSupportsExtension, (const QWebPage*)(QWebPage::Extension), bool)
 			BE (HandleToolBarVisibilityChangeRequested, (QWebPage*)(bool));
 			BE (HandleUnsupportedContent, (QWebPage*)(QNetworkReply*));
 			BE (HandleWindowCloseRequested, (QWebPage*));

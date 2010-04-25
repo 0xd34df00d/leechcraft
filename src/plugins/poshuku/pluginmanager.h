@@ -50,6 +50,8 @@ namespace LeechCraft
 				bool HandleContentsChanged (QWebPage*);
 				bool HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString);
 				bool HandleDownloadRequested (QWebPage*, const QNetworkRequest&);
+				bool HandleExtension (QWebPage*, QWebPage::Extension,
+						const QWebPage::ExtensionOption*, QWebPage::ExtensionReturn*);
 				bool HandleFrameCreated (QWebPage*, QWebFrame*);
 				bool HandleGeometryChangeRequested (QWebPage*, const QRect&);
 				bool HandleJavaScriptWindowObjectCleared (QWebPage*, QWebFrame*);
@@ -69,6 +71,7 @@ namespace LeechCraft
 				bool HandleSelectionChanged (QWebPage*);
 				bool HandleStatusBarMessage (QWebPage*, const QString&);
 				bool HandleStatusBarVisibilityChangeRequested (QWebPage*, bool);
+				bool HandleSupportsExtension (const QWebPage*, QWebPage::Extension);
 				bool HandleToolBarVisibilityChangeRequested (QWebPage*, bool);
 				bool HandleUnsupportedContent (QWebPage*, QNetworkReply*);
 				bool HandleWindowCloseRequested (QWebPage*);

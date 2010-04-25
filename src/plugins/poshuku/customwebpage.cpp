@@ -188,35 +188,51 @@ namespace LeechCraft
 			
 			bool CustomWebPage::supportsExtension (QWebPage::Extension e) const
 			{
-				switch (e)
+				try
 				{
-					case ErrorPageExtension:
-						return true;
-					default:
-						return QWebPage::supportsExtension (e);
+					return Core::Instance ().GetPluginManager ()->
+							HandleSupportsExtension (this, e);
+				}
+				catch (...)
+				{
+					switch (e)
+					{
+						case ErrorPageExtension:
+							return true;
+						default:
+							return QWebPage::supportsExtension (e);
+					}
 				}
 			}
 
 			bool CustomWebPage::extension (QWebPage::Extension e,
 					const QWebPage::ExtensionOption* eo, QWebPage::ExtensionReturn *er)
 			{
-				switch (e)
+				try
 				{
-					case ErrorPageExtension:
+					return Core::Instance ().GetPluginManager ()->
+							HandleExtension (this, e, eo, er);
+				}
+				catch (...)
+				{
+					switch (e)
 					{
-						const ErrorPageExtensionOption *error =
-								static_cast<const ErrorPageExtensionOption*> (eo);
-						ErrorPageExtensionReturn *ret =
-								static_cast<ErrorPageExtensionReturn*> (er);
+						case ErrorPageExtension:
+						{
+							const ErrorPageExtensionOption *error =
+									static_cast<const ErrorPageExtensionOption*> (eo);
+							ErrorPageExtensionReturn *ret =
+									static_cast<ErrorPageExtensionReturn*> (er);
 
-						QString data = MakeErrorReplyContents (error->error,
-								error->url, error->errorString);
-						ret->baseUrl = error->url;
-						ret->content = data.toUtf8 ();
-						return true;
+							QString data = MakeErrorReplyContents (error->error,
+									error->url, error->errorString);
+							ret->baseUrl = error->url;
+							ret->content = data.toUtf8 ();
+							return true;
+						}
+						default:
+							return QWebPage::extension (e, eo, er);
 					}
-					default:
-						return QWebPage::extension (e, eo, er);
 				}
 			}
 

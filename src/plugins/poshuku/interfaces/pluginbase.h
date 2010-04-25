@@ -137,6 +137,15 @@ namespace LeechCraft
 					return false;
 				}
 
+				/** See the official Qt docs for
+				 * QWebPage::extension() function.
+				 */
+				virtual bool HandleExtension (QWebPage*, QWebPage::Extension,
+						const QWebPage::ExtensionOption*, QWebPage::ExtensionReturn*)
+				{
+					throw std::runtime_error ("We don't handle it by default.");
+				}
+
 				/** See the official Qt docs for the
 				 * QWebPage::frameCreated() signal.
 				 */
@@ -280,6 +289,14 @@ namespace LeechCraft
 				virtual bool HandleStatusBarVisibilityChangeRequested (QWebPage*, bool)
 				{
 					return false;
+				}
+
+				/** See the official Qt docs for the
+				 * QWebPage::supportsExtension() function.
+				 */
+				virtual bool HandleSupportsExtension (const QWebPage*, QWebPage::Extension)
+				{
+					throw std::runtime_error ("We don't handle it by default.");
 				}
 
 				/** See the official Qt docs for the
