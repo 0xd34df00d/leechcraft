@@ -814,6 +814,7 @@ namespace LeechCraft
 				}
 			
 				libtorrent::torrent_handle handle;
+				bool autoManaged = !(params & NoAutostart);
 				try
 				{
 					boost::intrusive_ptr<libtorrent::torrent_info> tinfo (
@@ -821,7 +822,7 @@ namespace LeechCraft
 							);
 					libtorrent::add_torrent_params atp;
 					atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
-					atp.auto_managed = true;
+					atp.auto_managed = autoManaged;
 					atp.storage_mode = GetCurrentStorageMode ();
 					atp.paused = tryLive || (params & NoAutostart);
 					atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
@@ -856,7 +857,7 @@ namespace LeechCraft
 				QByteArray contents = file.readAll ();
 				file.close ();
 			
-				handle.auto_managed (true);
+				handle.auto_managed (autoManaged);
 			
 				beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
 				QString torrentFileName = QString::fromUtf8 (handle.name ().c_str ());
@@ -871,7 +872,7 @@ namespace LeechCraft
 					TSIdle,
 			   		0,
 					tags,
-					true,
+					autoManaged,
 					Proxy_->GetID (),
 					params
 				};
