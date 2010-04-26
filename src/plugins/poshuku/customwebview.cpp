@@ -21,6 +21,7 @@
 #include <QMouseEvent>
 #include <QMenu>
 #include <QApplication>
+#include <QBuffer>
 #include <QClipboard>
 #include <QFile>
 #include <QtDebug>
@@ -125,22 +126,10 @@ namespace LeechCraft
 				if (url.scheme () == "about")
 				{
 					if (url.path () == "plugins")
-					{
-						QFile pef (":/resources/html/pluginsenum.html");
-						pef.open (QIODevice::ReadOnly);
-						QString contents = QString (pef.readAll ())
-							.replace ("INSTALLEDPLUGINS", tr ("Installed plugins"))
-							.replace ("NOPLUGINS", tr ("No plugins installed"))
-							.replace ("FILENAME", tr ("File name"))
-							.replace ("MIME", tr ("MIME type"))
-							.replace ("DESCR", tr ("Description"))
-							.replace ("SUFFIXES", tr ("Suffixes"))
-							.replace ("ENABLED", tr ("Enabled"))
-							.replace ("NO", tr ("No"))
-							.replace ("YES", tr ("Yes"));
-						setHtml (contents);
-						return;
-					}
+						NavigatePlugins ();
+					else if (url.path () == "home")
+						NavigateHome ();
+					return;
 				}
 				if (title.isEmpty ())
 					title = tr ("Loading...");
@@ -392,6 +381,48 @@ namespace LeechCraft
 					return i - 1;
 			}
 			
+			void CustomWebView::NavigatePlugins ()
+			{
+				QFile pef (":/resources/html/pluginsenum.html");
+				pef.open (QIODevice::ReadOnly);
+				QString contents = QString (pef.readAll ())
+					.replace ("INSTALLEDPLUGINS", tr ("Installed plugins"))
+					.replace ("NOPLUGINS", tr ("No plugins installed"))
+					.replace ("FILENAME", tr ("File name"))
+					.replace ("MIME", tr ("MIME type"))
+					.replace ("DESCR", tr ("Description"))
+					.replace ("SUFFIXES", tr ("Suffixes"))
+					.replace ("ENABLED", tr ("Enabled"))
+					.replace ("NO", tr ("No"))
+					.replace ("YES", tr ("Yes"));
+				setHtml (contents);
+			}
+
+			void CustomWebView::NavigateHome ()
+			{
+				QFile file (":/resources/html/home.html");
+				file.open (QIODevice::ReadOnly);
+				QString data = file.readAll ();
+				data.replace ("{pagetitle}",
+						tr ("Welcome to LeechCraft!"));
+				data.replace ("{title}",
+						tr ("Welcome to LeechCraft!"));
+				data.replace ("{body}",
+						tr ("Welcome to LeechCraft, the integrated internet-client.<br />"
+							"More info is available on the <a href='http://leechcraft.org'>"
+							"project's site</a>."));
+
+				QBuffer iconBuffer;
+				iconBuffer.open (QIODevice::ReadWrite);
+				QPixmap pixmap (":/resources/images/poshuku.svg");
+				pixmap.save (&iconBuffer, "PNG");
+
+				data.replace ("{img}",
+						QByteArray ("data:image/png;base64,") + iconBuffer.buffer ().toBase64 ());
+
+				setHtml (data);
+			}
+
 			void CustomWebView::zoomIn ()
 			{
 				int i = LevelForZoom (zoomFactor ());

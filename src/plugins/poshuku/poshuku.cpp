@@ -26,7 +26,6 @@
 #include <QUrl>
 #include <QTextCodec>
 #include <QInputDialog>
-#include <QBuffer>
 #include <QMenu>
 #include <QtDebug>
 #include <plugininterface/util.h>
@@ -403,25 +402,7 @@ namespace LeechCraft
 
 			void Poshuku::setHtml ()
 			{
-				QFile file (":/resources/html/home.html");
-				file.open (QIODevice::ReadOnly);
-				QString data = file.readAll ();
-				data.replace ("{title}",
-						tr ("Welcome to LeechCraft!"));
-				data.replace ("{body}",
-						tr ("Welcome to LeechCraft, the integrated internet-client.<br />"
-							"More info is available on the <a href='http://leechcraft.org'>"
-							"project's site</a>."));
-
-				QBuffer iconBuffer;
-				iconBuffer.open (QIODevice::ReadWrite);
-				QPixmap pixmap (":/resources/images/poshuku.svg");
-				pixmap.save (&iconBuffer, "PNG");
-
-				data.replace ("{img}",
-						QByteArray ("data:image/png;base64,") + iconBuffer.buffer ().toBase64 ());
-
-				Ui_.MainView_->SetHtml (data);
+				Ui_.MainView_->Load ("about:home");
 			}
 			
 			void Poshuku::RegisterSettings ()
