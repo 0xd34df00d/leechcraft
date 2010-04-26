@@ -167,7 +167,7 @@ namespace LeechCraft
 	void GlanceShower::keyPressEvent (QKeyEvent *e)
 	{
 		if (e->key () == Qt::Key_Escape)
-			deleteLater ();
+			Finalize ();
 		else
 			QGraphicsView::keyPressEvent (e);
 	}
@@ -175,6 +175,12 @@ namespace LeechCraft
 	void GlanceShower::handleClicked (int idx)
 	{
 		TabWidget_->setCurrentIndex (idx);
+		Finalize ();
+	}
+
+	void GlanceShower::Finalize ()
+	{
+		emit finished (true);
 		deleteLater ();
 	}
 };

@@ -402,6 +402,12 @@ void LeechCraft::MainWindow::on_ActionGlance__triggered ()
 {
 	Glance_ = new GlanceShower;
 	Glance_->SetTabWidget (Ui_.MainTabWidget_);
+	connect (Glance_,
+			SIGNAL (finished (bool)),
+			Ui_.ActionGlance_,
+			SLOT (setEnabled (bool)));
+
+	Ui_.ActionGlance_->setEnabled (false);
 	Glance_->Start ();
 }
 
