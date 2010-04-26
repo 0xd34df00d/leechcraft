@@ -121,7 +121,6 @@ SET (HEADERS
 	interfaces/iflashoverrider.h
 	)
 SET (FORMS
-	poshuku.ui
 	browserwidget.ui
 	addtofavoritesdialog.ui
 	restoresessiondialog.ui

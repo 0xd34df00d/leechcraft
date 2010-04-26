@@ -23,7 +23,6 @@
 #include <QTranslator>
 #include <QWidget>
 #include <interfaces/iinfo.h>
-#include <interfaces/iembedtab.h>
 #include <interfaces/imultitabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ipluginready.h>
@@ -32,7 +31,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "ui_poshuku.h"
+#include "browserwidget.h"
 
 class QWebView;
 
@@ -42,11 +41,9 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			class Poshuku : public QWidget
+			class Poshuku : public QObject
 						  , public IInfo
-						  , public IEmbedTab
 						  , public IMultiTabs
-						  , public IMultiTabsWidget
 						  , public IPluginReady
 						  , public IHaveSettings
 						  , public IEntityHandler
@@ -55,9 +52,8 @@ namespace LeechCraft
 						  , public IMenuEmbedder
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IMultiTabsWidget IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IMenuEmbedder)
+				Q_INTERFACES (IInfo IMultiTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IMenuEmbedder)
 
-				Ui::Poshuku Ui_;
 				QMenu *ToolMenu_;
 				QAction *ImportXbel_;
 				QAction *ExportXbel_;
@@ -83,14 +79,6 @@ namespace LeechCraft
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
 
-				QWidget* GetTabContents ();
-				QToolBar* GetToolBar () const;
-
-				void Remove ();
-				void NewTabRequested ();
-				QList<QAction*> GetTabBarContextMenuActions () const;
-				QObject* ParentMultiTabs () const;
-
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
 
@@ -114,7 +102,7 @@ namespace LeechCraft
 				void InitConnections ();
 				void RegisterSettings ();
 			private slots:
-				void setHtml ();
+				void createTabFirstTime ();
 				void viewerSettingsChanged ();
 				void developerExtrasChanged ();
 				void cacheSettingsChanged ();

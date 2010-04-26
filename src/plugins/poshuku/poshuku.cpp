@@ -27,6 +27,7 @@
 #include <QTextCodec>
 #include <QInputDialog>
 #include <QMenu>
+#include <QMainWindow>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompletionmodel.h>
@@ -54,12 +55,13 @@ namespace LeechCraft
 				try
 				{
 					QWebSettings::setIconDatabasePath (
-							LeechCraft::Util::CreateIfNotExists ("poshuku/favicons").absolutePath ()
+							LeechCraft::Util::CreateIfNotExists ("poshuku/favicons")
+									.absolutePath ()
 							);
 				}
 				catch (const std::runtime_error& e)
 				{
-					QMessageBox::warning (this,
+					QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
 							"LeechCraft",
 							e.what ());
 				}
@@ -67,12 +69,13 @@ namespace LeechCraft
 				try
 				{
 					QWebSettings::setOfflineStoragePath (
-							LeechCraft::Util::CreateIfNotExists ("poshuku/offlinestorage").absolutePath ()
+							LeechCraft::Util::CreateIfNotExists ("poshuku/offlinestorage")
+									.absolutePath ()
 							);
 				}
 				catch (const std::runtime_error& e)
 				{
-					QMessageBox::warning (this,
+					QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
 							"LeechCraft",
 							e.what ());
 				}
@@ -86,7 +89,7 @@ namespace LeechCraft
 				}
 				catch (const std::runtime_error& e)
 				{
-					QMessageBox::warning (this,
+					QMessageBox::warning (Core::Instance ().GetProxy ()->GetMainWindow (),
 							"LeechCraft",
 							e.what ());
 				}
@@ -104,25 +107,18 @@ namespace LeechCraft
 				bool failed = false;
 				if (!Core::Instance ().Init ())
 				{
-					QMessageBox::critical (this,
+					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 							"LeechCraft",
 							tr ("Poshuku failed to initialize properly. "
 								"Check logs and talk with the developers. "
 								"Or, at least, check the storage backend "
 								"settings and restart LeechCraft."));
-					setEnabled (false);
 					failed = true;
 				}
 
-				Ui_.setupUi (this);
 				if (failed)
-				{
-					Ui_.MainView_->GetToolBar ()->setEnabled (false);
 					return;
-				}
 			
-				Core::Instance ().ConnectSignals (Ui_.MainView_);
-
 				RegisterSettings ();
 			
 				connect (Core::Instance ().GetFavoritesModel (),
@@ -153,13 +149,13 @@ namespace LeechCraft
 						this,
 						SLOT (handleCheckFavorites ()));
 
-				Ui_.MainView_->InitShortcuts ();
 				const IShortcutProxy *proxy = coreProxy->GetShortcutProxy ();
 				ImportXbel_->setShortcut (proxy->GetShortcut (this, EAImportXbel_));
 				ExportXbel_->setShortcut (proxy->GetShortcut (this, EAExportXbel_));
 				CheckFavorites_->setShortcut (proxy->GetShortcut (this, EACheckFavorites_));
 			
-				ToolMenu_ = new QMenu (tr ("Poshuku"), this);
+				ToolMenu_ = new QMenu (tr ("Poshuku"),
+						Core::Instance ().GetProxy ()->GetMainWindow ());
 				ToolMenu_->setIcon (GetIcon ());
 				ToolMenu_->addAction (ImportXbel_);
 				ToolMenu_->addAction (ExportXbel_);
@@ -169,7 +165,7 @@ namespace LeechCraft
 			{
 				QTimer::singleShot (1000,
 						this,
-						SLOT (setHtml ()));
+						SLOT (createTabFirstTime ()));
 			}
 			
 			void Poshuku::Release ()
@@ -212,35 +208,6 @@ namespace LeechCraft
 			QIcon Poshuku::GetIcon () const
 			{
 				return QIcon (":/resources/images/poshuku.svg");
-			}
-			
-			QWidget* Poshuku::GetTabContents ()
-			{
-				return this;
-			}
-			
-			QToolBar* Poshuku::GetToolBar () const
-			{
-				return Ui_.MainView_->GetToolBar ();
-			}
-
-			void Poshuku::Remove ()
-			{
-			}
-
-			void Poshuku::NewTabRequested ()
-			{
-				Ui_.MainView_->NewTabRequested ();
-			}
-
-			QList<QAction*> Poshuku::GetTabBarContextMenuActions () const
-			{
-				return Ui_.MainView_->GetTabBarContextMenuActions ();
-			}
-
-			QObject* Poshuku::ParentMultiTabs () const
-			{
-				return Ui_.MainView_->ParentMultiTabs ();
 			}
 			
 			QSet<QByteArray> Poshuku::GetExpectedPluginClasses () const
@@ -296,10 +263,7 @@ namespace LeechCraft
 			void Poshuku::SetShortcut (int name, const QKeySequence& sequence)
 			{
 				if (name <= BrowserWidget::ActionMax)
-				{
-					Ui_.MainView_->SetShortcut (name, sequence);
 					Core::Instance ().SetShortcut (name, sequence);
-				}
 				else
 				{
 					QAction *act = 0;
@@ -322,7 +286,8 @@ namespace LeechCraft
 			
 			QMap<int, LeechCraft::ActionInfo> Poshuku::GetActionInfo () const
 			{
-				QMap<int, LeechCraft::ActionInfo> result = Ui_.MainView_->GetActionInfo ();
+				BrowserWidget bw;
+				QMap<int, LeechCraft::ActionInfo> result = bw.GetActionInfo ();
 				result [EAImportXbel_] = ActionInfo (ImportXbel_->text (),
 						QKeySequence (), ImportXbel_->icon ());
 				result [EAExportXbel_] = ActionInfo (ExportXbel_->text (),
@@ -400,11 +365,6 @@ namespace LeechCraft
 						SLOT (handleError (const QString&)));
 			}
 
-			void Poshuku::setHtml ()
-			{
-				Ui_.MainView_->Load ("about:home");
-			}
-			
 			void Poshuku::RegisterSettings ()
 			{
 				QList<QByteArray> viewerSettings;
@@ -449,6 +409,18 @@ namespace LeechCraft
 				cacheSettingsChanged ();
 			}
 			
+			void Poshuku::createTabFirstTime ()
+			{
+				bool firstTime = XmlSettingsManager::Instance ()->
+						Property ("FirstTimeRun", true).toBool ();
+				bool startWithHome = XmlSettingsManager::Instance ()->
+						property ("StartWithHomeTab").toBool ();
+				if (firstTime || startWithHome)
+					Core::Instance ().NewURL ("about:home", true);
+				XmlSettingsManager::Instance ()->
+						setProperty ("FirstTimeRun", false);
+			}
+
 			void Poshuku::viewerSettingsChanged ()
 			{
 				QWebSettings::globalSettings ()->setFontFamily (QWebSettings::StandardFont,
@@ -501,7 +473,7 @@ namespace LeechCraft
 				QWebSettings::globalSettings ()->
 					setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
 				if (enabled && sender ())
-					QMessageBox::information (this,
+					QMessageBox::information (Core::Instance ().GetProxy ()->GetMainWindow (),
 							"LeechCraft",
 							tr ("Please note that Developer Extras would work correctly "
 								"only for pages that are loaded after enabling."));
@@ -534,7 +506,9 @@ namespace LeechCraft
 			{
 				if (name == "CookiesEdit")
 				{
-					CookiesEditDialog *dia = new CookiesEditDialog (this);
+					CookiesEditDialog *dia =
+							new CookiesEditDialog (Core::Instance ()
+									.GetProxy ()->GetMainWindow ());
 					dia->show ();
 				}
 				else if (name == "ClearIconDatabase")

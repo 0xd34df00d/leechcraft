@@ -14,6 +14,10 @@
 				<label lang="ru" value="Восстанавливать предыдущую сессию" />
 				<label lang="uk" value="Відновити попередню сесію" />
 			</item>
+			<item type="checkbox" property="StartWithHomeTab" state="off">
+				<label lang="en" value="Always open home tab" />
+				<label lang="ru" value="Всегда открывать домашнюю вкладку" />
+			</item>
 			<item type="checkbox" property="BackgroundNewTabs" state="on">
 				<label lang="en" value="Open new tabs in the background" />
 				<label lang="ru" value="Открывать новые вкладки в фоне" />
@@ -106,7 +110,6 @@
 						<label value="Видаляти історію давнішу, ніж:" />
 						<suffix value=" днів" />
 					</lang>
-
 				</item>
 				<item type="spinbox" property="HistoryKeepLessThan" minimum="0" maximum="100000" default="20000">
 					<lang value="en">
