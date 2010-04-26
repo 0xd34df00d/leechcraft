@@ -267,6 +267,10 @@ namespace LeechCraft
 			{
 				SummaryWidget *result = new SummaryWidget ();
 				connect (result,
+						SIGNAL (changeTabName (const QString&)),
+						this,
+						SLOT (handleChangeTabName (const QString&)));
+				connect (result,
 						SIGNAL (newTabRequested ()),
 						this,
 						SLOT (handleNewTabRequested ()));
@@ -280,6 +284,11 @@ namespace LeechCraft
 						SLOT (handleFilterUpdated ()));
 				Reemitter_->Connect (result);
 				return result;
+			}
+
+			void Core::handleChangeTabName (const QString& name)
+			{
+				emit changeTabName (qobject_cast<QWidget*> (sender ()), name);
 			}
 
 			void Core::handleCurrentTabChanged (int newIndex)

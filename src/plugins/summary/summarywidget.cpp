@@ -362,6 +362,15 @@ namespace LeechCraft
 				itemsHeader->resizeSection (2,
 						fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
+				QString newName;
+				if (query.Query_.size ())
+					newName = tr ("S: %1 [%2]")
+							.arg (query.Query_)
+							.arg (query.Categories_.join ("; "));
+				else
+					newName = tr ("Summary [%1]")
+							.arg (query.Categories_.join ("; "));
+				emit changeTabName (newName);
 				emit filterUpdated ();
 				emit queryUpdated (query);
 			}

@@ -164,6 +164,7 @@ namespace LeechCraft
 				void MadeCurrent (SummaryWidget*);
 				SummaryWidget* CreateSummaryWidget ();
 			private slots:
+				void handleChangeTabName (const QString&);
 				void handleCurrentTabChanged (int);
 				void handleNeedToClose ();
 				void handleFilterUpdated ();

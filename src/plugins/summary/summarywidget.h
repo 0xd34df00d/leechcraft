@@ -79,6 +79,7 @@ namespace LeechCraft
 				void removeCategoryBox ();
 				void syncSelection (const QModelIndex&);
 			signals:
+				void changeTabName (const QString&);
 				void filterUpdated ();
 				void queryUpdated (const QString&);
 				void queryUpdated (const LeechCraft::Plugins::Summary::Query2&);
