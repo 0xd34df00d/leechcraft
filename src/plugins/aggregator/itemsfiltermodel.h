@@ -35,6 +35,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				bool HideRead_;
+				bool UnreadOnTop_;
 				QSet<QString> ItemCategories_;
 				ItemsWidget *ItemsWidget_;
 			public:
@@ -45,8 +46,10 @@ namespace LeechCraft
 				void SetHideRead (bool);
 			protected:
 				virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+				virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
 			public slots:
 				void categorySelectionChanged (const QStringList&);
+				void handleUnreadOnTopChanged ();
 			};
 		};
 	};

@@ -22,6 +22,10 @@
 					<label lang="en" value="Always use external browser" />
 					<label lang="ru" value="Всегда использовать внешний браузер" />
 				</item>
+				<item type="checkbox" property="UnreadOnTop" state="on">
+					<label lang="en" value="Show unread items on top" />
+					<label lang="ru" value="Показывать непрочтенные статьи наверху" />
+				</item>
 				<item type="combobox" property="NotificationsFeedUpdateBehavior">
 					<label lang="en" value="Notifications on feed update:" />
 					<label lang="ru" value="Уведомления при обновлении лент:" />
