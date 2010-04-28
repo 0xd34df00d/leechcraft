@@ -57,7 +57,7 @@ namespace LeechCraft
 								SLOT (invalidateButtons ()));
 
 						connect (Ui_.String_,
-								SIGNAL (textChanged ()),
+								SIGNAL (textChanged (const QString&)),
 								this,
 								SLOT (invalidateButtons ()));
 					}
