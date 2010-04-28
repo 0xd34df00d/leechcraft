@@ -149,26 +149,34 @@ namespace LeechCraft
 			int GetStartingRow (const_iterator iterator) const;
 			
 			/** Returns the model that corresponds to the given row. If
-			 * there is no such model, throws.
+			 * there is no such model, throws std::runtime_error. If
+			 * starting is not null, it also calculates and returns the
+			 * starting row for the returned model. This allows to avoid
+			 * calling GetStartingRow() after this function and thus
+			 * speed things up.
 			 *
 			 * @param[in] row The row that should be identified.
+			 * @param[in,out] starting The pointer to variable that will
+			 * store the starting row, if not null.
 			 * @return Iterator associated with the model.
 			 *
 			 * @exception std::runtime_error Throws if there is no model
 			 * for such row.
 			 */
-			const_iterator GetModelForRow (int row) const;
+			const_iterator GetModelForRow (int row, int *starting = 0) const;
 
 			/** This is an overloaded function provided for convenience.
 			 * Non-const and returns a non-const iterator.
 			 *
 			 * @param[in] row The row that should be identified.
+			 * @param[in,out] starting The pointer to variable that will
+			 * store the starting row, if not null.
 			 * @return Iterator associated with the model.
 			 *
 			 * @exception std::runtime_error Throws if there is no model
 			 * for such row.
 			 */
-			iterator GetModelForRow (int row);
+			iterator GetModelForRow (int row, int *starting = 0);
 		public Q_SLOTS:
 			void handleColumnsAboutToBeInserted (const QModelIndex&, int, int);
 			void handleColumnsAboutToBeRemoved (const QModelIndex&, int, int);

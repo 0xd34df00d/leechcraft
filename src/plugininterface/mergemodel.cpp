@@ -140,9 +140,11 @@ QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 	int proxyRow = proxyIndex.row ();
 	int proxyColumn = proxyIndex.column ();
 	const_iterator modIter;
+	int startingRow = 0;
 	try
 	{
-		modIter = GetModelForRow (proxyRow);
+		// here goes blocker for hierarchical #2 (cause of startingRow)
+		modIter = GetModelForRow (proxyRow, &startingRow);
 	}
 	catch (const std::runtime_error& e)
 	{
@@ -159,9 +161,6 @@ QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 			<< models;
 		throw;
 	}
-	//
-	// here goes blocker for hierarchical #2
-	int startingRow = GetStartingRow (modIter);
 
 	return (*modIter)->index (proxyRow - startingRow, proxyColumn, QModelIndex ());
 }
@@ -289,15 +288,19 @@ int MergeModel::GetStartingRow (MergeModel::const_iterator it) const
 	return result;
 }
 
-MergeModel::const_iterator MergeModel::GetModelForRow (int row) const
+MergeModel::const_iterator MergeModel::GetModelForRow (int row, int *starting) const
 {
 	int counter = 0;
+	if (starting)
+		*starting = 0;
 	for (models_t::const_iterator i = Models_.begin (),
 			end = Models_.end (); i != end; ++i)
 	{
 		counter += RowCount (*i);
 		if (counter > row)
 			return i;
+		if (starting)
+			*starting = counter;
 	}
 	QString msg = Q_FUNC_INFO;
 	msg += ": not found ";
@@ -305,15 +308,19 @@ MergeModel::const_iterator MergeModel::GetModelForRow (int row) const
 	throw std::runtime_error (qPrintable (msg));
 }
 
-MergeModel::iterator MergeModel::GetModelForRow (int row)
+MergeModel::iterator MergeModel::GetModelForRow (int row, int *starting)
 {
 	int counter = 0;
+	if (starting)
+		*starting = 0;
 	for (models_t::iterator i = Models_.begin (),
 			end = Models_.end (); i != end; ++i)
 	{
 		counter += RowCount (*i);
 		if (counter > row)
 			return i;
+		if (starting)
+			*starting = counter;
 	}
 	QString msg = Q_FUNC_INFO;
 	msg += ": not found ";
