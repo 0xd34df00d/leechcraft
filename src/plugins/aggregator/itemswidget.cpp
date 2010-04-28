@@ -330,9 +330,9 @@ namespace LeechCraft
 
 			bool ItemsWidget::IsItemCurrent (int item) const
 			{
+				int starting = 0;
 				Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-					GetModelForRow (item);
-				int starting = Impl_->ItemLists_->GetStartingRow (i);
+					GetModelForRow (item, &starting);
 				return static_cast<ItemsListModel*> (i->data ())->
 					GetSelectedRow () == item - starting;
 			}
@@ -353,9 +353,9 @@ namespace LeechCraft
 
 			bool ItemsWidget::IsItemRead (int item) const
 			{
+				int starting = 0;
 				Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-					GetModelForRow (item);
-				int starting = Impl_->ItemLists_->GetStartingRow (i);
+					GetModelForRow (item, &starting);
 				return static_cast<ItemsListModel*> (i->data ())->IsItemRead (item - starting);
 			}
 
@@ -365,9 +365,9 @@ namespace LeechCraft
 					return Impl_->CurrentItemsModel_->GetCategories (index);
 				else
 				{
+					int starting = 0;
 					LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-						GetModelForRow (index);
-					int starting = Impl_->ItemLists_->GetStartingRow (i);
+						GetModelForRow (index, &starting);
 					return static_cast<ItemsListModel*> (i->data ())->GetCategories (index - starting);
 				}
 			}
