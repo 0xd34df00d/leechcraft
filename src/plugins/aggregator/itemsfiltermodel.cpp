@@ -54,8 +54,7 @@ namespace LeechCraft
 					const QModelIndex& sourceParent) const
 			{
 				if (HideRead_ &&
-						ItemsWidget_->IsItemRead (sourceRow) &&
-						!ItemsWidget_->IsItemCurrent (sourceRow))
+						ItemsWidget_->IsItemReadNotCurrent (sourceRow))
 					return false;
 
 				if (!ItemCategories_.isEmpty ())
@@ -67,9 +66,8 @@ namespace LeechCraft
 					if (!itemCategories.size ())
 						categoryFound = true;
 					else
-						for (QStringList::const_iterator i = itemCategories.begin (),
-								end = itemCategories.end (); i != end; ++i)
-							if (ItemCategories_.contains (*i))
+						Q_FOREACH (QString cat, itemCategories)
+							if (ItemCategories_.contains (cat))
 							{
 								categoryFound = true;
 								break;

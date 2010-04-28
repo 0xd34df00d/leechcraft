@@ -79,6 +79,7 @@ namespace LeechCraft
 				void Selected (const QModelIndex&);
 				void MarkItemAsUnread (const QModelIndex&);
 				bool IsItemRead (int) const;
+				bool IsItemReadNotCurrent (int) const;
 				QStringList GetItemCategories (int) const;
 				void AddToItemBucket (const QModelIndex&) const;
 				void SubscribeToComments (const QModelIndex&) const;
