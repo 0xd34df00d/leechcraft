@@ -677,7 +677,15 @@ bool Core::Add (const QUrl& subscrUrl)
 	if (Exists (subscrName) || Exists (url))
 		return false;
 
-	return Load (url, subscrName);
+	bool result = Load (url, subscrName);
+	if (result)
+	{
+		QString str = tr ("The subscription %1 was successfully added.")
+				.arg (subscrName);
+		emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
+				str, PInfo_));
+	}
+	return result;
 }
 
 bool Core::Load (const QUrl& url, const QString& subscrName)
