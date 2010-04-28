@@ -168,6 +168,14 @@ namespace LeechCraft
 		 *   Entity_ is expected to be a QString with notification
 		 *   header and Additional_ ["Text"] is expected to be the
 		 *   notification text.
+		 *   Additional_ ["NotificationActions"] may have
+		 *   user-readable QStringList of actions to be available in
+		 *   the notification, In this case,
+		 *   Additional_ ["HandlingObject"] must be a QObject* pointing
+		 *   to the handling object. This object must have the slot
+		 *   notificationActionTriggered(int) which would be called with
+		 *   the index of the selected action, if any. The index
+		 *   corresponds to the position in NotificationActions list.
 		 */
 		QString Mime_;
 

@@ -23,6 +23,8 @@
 #include <QDBusInterface>
 #include <interfaces/iinfo.h>
 
+class QDBusPendingCallWatcher;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -34,12 +36,22 @@ namespace LeechCraft
 				Q_OBJECT
 
 				std::auto_ptr<QDBusInterface> Connection_;
+				struct ActionData
+				{
+					QObject *Handler_;
+					QStringList Actions_;
+				};
+				QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;
+				QMap<uint, ActionData> CallID2AD_;
 			public:
 				NotificationManager (QObject* = 0);
 
 				void Init ();
 				bool CouldNotify (const DownloadEntity&) const;
 				void HandleNotification (const DownloadEntity&);
+			private slots:
+				void handleNotificationCallFinished (QDBusPendingCallWatcher*);
+				void handleActionInvoked (uint, QString);
 			};
 		};
 	};
