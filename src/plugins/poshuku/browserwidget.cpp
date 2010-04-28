@@ -909,15 +909,15 @@ namespace LeechCraft
 						property ("GenerateTooltips").toBool ())
 					return;
 			
-				const int previewWidth = 200;
+				const int previewWidth = 400;
 				if (!Ui_.WebView_->size ().isValid ())
 					return;
 			
 				QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
 				if (contentsSize.width () < 800)
-					contentsSize.setWidth (800);
+					contentsSize.scale (800, 1, Qt::KeepAspectRatioByExpanding);
 				int maxHeight = 0.8 * QApplication::desktop ()->
-					screenGeometry (this).height () * static_cast<double> (contentsSize.width ()) / 200.0;
+					screenGeometry (this).height () * static_cast<double> (contentsSize.width ()) / previewWidth;
 				contentsSize.setHeight (std::min (contentsSize.height (), 3000));
 				QPoint scroll = Ui_.WebView_->page ()->mainFrame ()->scrollPosition ();
 				QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
@@ -926,6 +926,9 @@ namespace LeechCraft
 				QPixmap pixmap (contentsSize);
 				if (pixmap.isNull ())
 					return;
+
+				pixmap.fill (QColor (0, 0, 0, 0));
+
 				QPainter painter (&pixmap);
 				Ui_.WebView_->page ()->setViewportSize (contentsSize);
 				Ui_.WebView_->page ()->mainFrame ()->render (&painter, clip);
@@ -941,7 +944,7 @@ namespace LeechCraft
 				pixmap = pixmap.scaledToWidth (previewWidth, Qt::SmoothTransformation);
 				maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
 				if (pixmap.height () > maxHeight)
-					pixmap = pixmap.copy (0, 0, 200, maxHeight);
+					pixmap = pixmap.copy (0, 0, previewWidth, maxHeight);
 				widget->setPixmap (pixmap);
 				widget->setFixedSize (pixmap.width (), pixmap.height ());
 			
