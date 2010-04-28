@@ -231,18 +231,21 @@ void TabContainer::add (const QString& name, QWidget *contents)
 void TabContainer::add (const QString& name, QWidget *contents,
 		const QIcon& icon)
 {
-	OriginalTabNames_ << name;
 	if (XmlSettingsManager::Instance ()->
 			property ("OpenTabNext").toBool ())
 	{
 		int current = TabWidget_->currentIndex ();
+		OriginalTabNames_.insert (current + 1, name);
 		TabWidget_->insertTab (current + 1,
 				contents,
 				icon,
 				MakeTabName (name));
 	}
 	else
+	{
+		OriginalTabNames_ << name;
 		TabWidget_->addTab (contents, icon, MakeTabName (name));
+	}
 	InvalidateName ();
 
 	TabWidget_->setTabsClosable (TabWidget_->count () != 1);
