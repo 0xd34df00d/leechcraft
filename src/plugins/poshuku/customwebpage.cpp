@@ -242,7 +242,7 @@ namespace LeechCraft
 										property ("CloseEmptyDelegatedPages").toBool () &&
 										history ()->currentItem ().url ().isEmpty ())
 									emit windowCloseRequested ();
-								return true;
+								return false;
 							}
 							default:
 							{
