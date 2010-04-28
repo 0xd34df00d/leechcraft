@@ -226,11 +226,9 @@ namespace LeechCraft
 
 			QStringList Core::GetTagsForIndex (int index, QAbstractItemModel *model) const
 			{
+				int starting = 0;
 				Util::MergeModel::const_iterator modIter =
-					dynamic_cast<Util::MergeModel*> (model)->GetModelForRow (index);
-
-				int starting = dynamic_cast<Util::MergeModel*> (model)->
-					GetStartingRow (modIter);
+					dynamic_cast<Util::MergeModel*> (model)->GetModelForRow (index, &starting);
 
 				QStringList ids = (*modIter)->data ((*modIter)->
 						index (index - starting, 0), RoleTags).toStringList ();
