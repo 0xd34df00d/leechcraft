@@ -681,6 +681,21 @@ namespace LeechCraft
 				ReloadTimer_->start (msecs);
 			}
 			
+			void BrowserWidget::notificationActionTriggered (int idx)
+			{
+				qDebug () << Q_FUNC_INFO << idx;
+				switch (idx)
+				{
+					case 0:
+						emit raiseTab (this);
+						break;
+					default:
+						qWarning () << Q_FUNC_INFO
+							<< "unhandled"
+							<< idx;
+				}
+			}
+
 			void BrowserWidget::handleIconChanged ()
 			{
 				QIcon icon = Ui_.WebView_->icon ();
@@ -1088,7 +1103,10 @@ namespace LeechCraft
 					prio = PWarning_;
 				}
 
-				emit gotEntity (Util::MakeNotification ("Poshuku", text, prio));
+				DownloadEntity e = Util::MakeNotification ("Poshuku", text, prio);
+				e.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject*> (this);
+				e.Additional_ ["NotificationActions"] = QStringList (tr ("Open"));
+				emit gotEntity (e);
 			}
 
 			void BrowserWidget::handleChangeEncodingAboutToShow ()

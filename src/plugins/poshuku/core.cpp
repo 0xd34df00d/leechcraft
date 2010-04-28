@@ -360,6 +360,10 @@ namespace LeechCraft
 						SIGNAL (invalidateSettings ()),
 						this,
 						SLOT (saveSingleSession ()));
+				connect (widget,
+						SIGNAL (raiseTab (QWidget*)),
+						this,
+						SIGNAL (raiseTab (QWidget*)));
 			}
 
 			void Core::CheckFavorites ()
