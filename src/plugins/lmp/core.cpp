@@ -67,9 +67,9 @@ namespace LeechCraft
 			{
 				PlayerWidget *result = new PlayerWidget;
 				connect (result,
-					SIGNAL (notify (const LeechCraft::Notification&)),
+					SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
 					this,
-					SIGNAL (notify (const LeechCraft::Notification&)));
+					SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 				KeyInterceptor *ki = new KeyInterceptor (result, result);
 				QList<QWidget*> children = result->findChildren<QWidget*> ();
 				children << result;
