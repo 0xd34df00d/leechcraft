@@ -92,7 +92,8 @@ namespace LeechCraft
 			{
 				if (left.column () == 1 &&
 						right.column () == 1 &&
-						UnreadOnTop_)
+						UnreadOnTop_ &&
+						!HideRead_)
 				{
 					bool lr = ItemsWidget_->IsItemRead (left.row ());
 					bool rr = ItemsWidget_->IsItemRead (right.row ());

@@ -95,6 +95,10 @@ namespace LeechCraft
 				Impl_->ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 				Impl_->Ui_.Items_->setModel (Impl_->ItemsFilterModel_.get ());
 				Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
+				connect (Impl_->ItemLists_.get (),
+						SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+						Impl_->ItemsFilterModel_.get (),
+						SLOT (invalidate ()));
 			
 				Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
 				Impl_->Ui_.Items_->addAction (Impl_->ActionAddToItemBucket_);
