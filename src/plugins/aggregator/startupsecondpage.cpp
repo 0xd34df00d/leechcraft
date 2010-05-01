@@ -36,6 +36,8 @@ namespace LeechCraft
 
 				setTitle ("Aggregator");
 				setSubTitle (tr ("Set storage options"));
+
+				setProperty ("WizardType", 1);
 			}
 
 			void StartupSecondPage::initializePage ()
@@ -48,6 +50,11 @@ namespace LeechCraft
 						SIGNAL (accepted ()),
 						Selector_,
 						SLOT (accept ()));
+				XmlSettingsManager::Instance ()->
+						setProperty ("StartupVersion", 2);
+
+				int thisId = property ("PageID").toInt ();
+				wizard ()->removePage (thisId + 1);
 			}
 
 			void StartupSecondPage::handleAccepted ()

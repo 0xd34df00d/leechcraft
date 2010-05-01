@@ -33,25 +33,12 @@ namespace LeechCraft
 				QList<QWizardPage*> result;
 				int version = XmlSettingsManager::Instance ()->
 					Property ("StartupVersion", 0).toInt ();
-				bool shouldBreak = false;
-				if (version == 0)
-				{
+				if (version <= 0)
 					result << new StartupFirstPage ();
-					++version;
-				}
-				if (version == 1)
-				{
+				if (version <= 1)
 					result << new StartupSecondPage ();
-					++version;
-					shouldBreak = true;
-				}
-				if (version == 2 &&
-						!shouldBreak)
-				{
+				if (version <= 2)
 					result << new StartupThirdPage ();
-					++version;
-				}
-				XmlSettingsManager::Instance ()->setProperty ("StartupVersion", version);
 				return result;
 			}
 		};

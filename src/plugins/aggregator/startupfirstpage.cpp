@@ -39,6 +39,8 @@ namespace LeechCraft
 						SIGNAL (accepted ()),
 						this,
 						SLOT (handleAccepted ()));
+				XmlSettingsManager::Instance ()->
+						setProperty ("StartupVersion", 1);
 			}
 
 			void StartupFirstPage::handleAccepted ()
