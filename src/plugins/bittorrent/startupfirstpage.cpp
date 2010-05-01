@@ -33,6 +33,8 @@ namespace LeechCraft
 
 				setTitle ("BitTorrent");
 				setSubTitle (tr ("Set basic options"));
+
+				setProperty ("WizardType", 1);
 			}
 
 			void StartupFirstPage::initializePage ()
