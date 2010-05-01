@@ -106,6 +106,8 @@ namespace LeechCraft
 
 			Type type = wtpage->GetChosenType ();
 
+			const_cast<StartupWizard*> (this)->setProperty ("WizardType", type);
+
 			int nextId = QWizard::nextId ();
 			QWizardPage *nextPage = page (nextId);
 			QList<QWizardPage*>::const_iterator i =
@@ -127,8 +129,15 @@ namespace LeechCraft
 
 	void StartupWizard::AddPages ()
 	{
+		setProperty ("WizardType", TAdvanced);
+
+		int i = 1;
 		Q_FOREACH (QWizardPage *page, Pages_)
-			Page2ID_ [page] = addPage (page);
+		{
+			page->setProperty ("PageID", i);
+			Page2ID_ [page] = i;
+			setPage (i++, page);
+		}
 	}
 
 	void StartupWizard::handleAccepted ()
