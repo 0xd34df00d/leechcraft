@@ -257,6 +257,7 @@ SET (SRCS
 	glanceshower.cpp
 	glanceitem.cpp
 	tabbar.cpp
+	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
 	)
 SET (HEADERS
@@ -299,6 +300,7 @@ SET (HEADERS
 	glanceshower.h
 	glanceitem.h
 	tabbar.h
+	wizardtypechoicepage.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
@@ -336,6 +338,7 @@ SET (FORMS
 	keysequencer.ui
 	tagsviewer.ui
 	aboutdialog.ui
+	wizardtypechoicepage.ui
 	)
 SET (RESOURCES mainresources.qrc)
 SET (TRANSLATIONS

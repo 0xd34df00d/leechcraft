@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,36 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef STARTUPWIZARD_H
-#define STARTUPWIZARD_H
-#include <QWizard>
-#include <QMap>
+#include "wizardtypechoicepage.h"
 
 namespace LeechCraft
 {
-	class StartupWizard : public QWizard
+	WizardTypeChoicePage::WizardTypeChoicePage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+	}
 
-		QList<QWizardPage*> Pages_;
-		QMap<QWizardPage*, int> Page2ID_;
-		int TypeChoseID_;
-	public:
-		enum Type
-		{
-			TBasic,
-			TAdvanced
-		};
-		StartupWizard (QWidget* = 0);
+	WizardTypeChoicePage::~WizardTypeChoicePage ()
+	{
+	}
 
-		int nextId () const;
-	private:
-		void AddPages ();
-	private slots:
-		void handleAccepted ();
-		void handleRejected ();
-	};
+	StartupWizard::Type WizardTypeChoicePage::GetChosenType () const
+	{
+		if (Ui_.BasicSetup_->isChecked ())
+			return StartupWizard::TBasic;
+		else
+			return StartupWizard::TAdvanced;
+	}
 };
-
-#endif
-

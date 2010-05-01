@@ -17,14 +17,17 @@
  **********************************************************************/
 
 #include "startupwizard.h"
+#include <QMessageBox>
 #include "interfaces/istartupwizard.h"
 #include "core.h"
 #include "application.h"
+#include "wizardtypechoicepage.h"
 
 namespace LeechCraft
 {
 	StartupWizard::StartupWizard (QWidget *parent)
 	: QWizard (parent)
+	, TypeChoseID_ (-10)
 	{
 		setWindowTitle (tr ("Startup wizard"));
 		setWizardStyle (QWizard::ModernStyle);
@@ -32,19 +35,13 @@ namespace LeechCraft
 		QList<IStartupWizard*> wizards = Core::Instance ()
 			.GetPluginManager ()->GetAllCastableTo<IStartupWizard*> ();
 
-		QList<QWizardPage*> pages;
 		Q_FOREACH (IStartupWizard *wizard, wizards)
 		{
 			QList<QWizardPage*> tp = wizard->GetWizardPages ();
-#ifdef QT_DEBUG
-			qDebug () << Q_FUNC_INFO
-				<< reinterpret_cast<IInfo*> (wizard)->GetName ()
-				<< tp;
-#endif
-			pages += tp;
+			Pages_ += tp;
 		}
 
-		if (!pages.size ())
+		if (!Pages_.size ())
 		{
 			deleteLater ();
 			return;
@@ -63,18 +60,75 @@ namespace LeechCraft
 				SLOT (handleRejected ()),
 				Qt::QueuedConnection);
 
-		Q_FOREACH (QWizardPage *page, pages)
+		bool hadAdvanced = false;
+		bool hadBasic = false;
+
+		Q_FOREACH (QWizardPage *page, Pages_)
+			if (page->property ("WizardType").toInt () == StartupWizard::TAdvanced)
+				hadAdvanced = true;
+			else
+				hadBasic = true;
+
+		if (hadBasic && !hadAdvanced)
+			AddPages ();
+		else if (!hadBasic && hadAdvanced &&
+				QMessageBox::question (this,
+						"LeechCraft",
+						tr ("Would you like to set advanced options?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			AddPages ();
+		else
 		{
-#ifdef QT_DEBUG
-			qDebug () << "Adding page" << page;
-#endif
-			addPage (page);
-#ifdef QT_DEBUG
-			qDebug () << "Added page" << page;
-#endif
+			WizardTypeChoicePage *wtpage = new WizardTypeChoicePage (this);
+			TypeChoseID_ = addPage (wtpage);
+			AddPages ();
 		}
 
 		show ();
+	}
+
+	int StartupWizard::nextId () const
+	{
+		if (TypeChoseID_ < 0 ||
+				QWizard::nextId () == -1)
+			return QWizard::nextId ();
+		else
+		{
+			WizardTypeChoicePage *wtpage =
+					qobject_cast<WizardTypeChoicePage*> (page (TypeChoseID_));
+			if (!wtpage)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "current page is not WizardTypeChoicePage,"
+						<< "but it's ID tells us it should be.";
+				return -1;
+			}
+
+			Type type = wtpage->GetChosenType ();
+
+			int nextId = QWizard::nextId ();
+			QWizardPage *nextPage = page (nextId);
+			QList<QWizardPage*>::const_iterator i =
+					std::find (Pages_.begin (), Pages_.end (), nextPage);
+			if (i == Pages_.end ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "strange, no such page was found"
+						<< nextPage
+						<< Pages_;
+				return -1;
+			}
+			for (; i != Pages_.end (); ++i)
+				if ((*i)->property ("WizardType").toInt () <= type)
+					return Page2ID_ [*i];
+			return -1;
+		}
+	}
+
+	void StartupWizard::AddPages ()
+	{
+		Q_FOREACH (QWizardPage *page, Pages_)
+			Page2ID_ [page] = addPage (page);
 	}
 
 	void StartupWizard::handleAccepted ()
