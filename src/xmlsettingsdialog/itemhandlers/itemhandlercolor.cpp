@@ -45,7 +45,7 @@ namespace LeechCraft
 		QLabel *label = new QLabel (labelString);
 		label->setWordWrap (false);
 
-		ColorPicker *picker = new ColorPicker (labelString, XSD_);
+		ColorPicker *picker = new ColorPicker (labelString);
 		picker->setObjectName (item.attribute ("property"));
 		picker->SetCurrentColor (XSD_->GetValue (item).value<QColor> ());
 

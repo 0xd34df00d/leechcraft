@@ -40,7 +40,6 @@ namespace LeechCraft
 
 	void ItemHandlerGroupbox::Handle (const QDomElement& item, QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
 		QGroupBox *box = new QGroupBox (XSD_->GetLabel (item));
 		box->setObjectName (item.attribute ("property"));
 		QFormLayout *groupLayout = new QFormLayout ();
@@ -61,9 +60,10 @@ namespace LeechCraft
 		box->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
-		lay->addRow (box);
-
 		XSD_->ParseEntity (item, box);
+
+		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		lay->addRow (box);
 	}
 
 	void ItemHandlerGroupbox::SetValue (QWidget *widget,
