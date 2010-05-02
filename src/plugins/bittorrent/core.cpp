@@ -2465,7 +2465,8 @@ namespace LeechCraft
 							, libtorrent::file_rename_failed_alert
 							, libtorrent::file_completed_alert
 							, libtorrent::read_piece_alert
-							>::handle_alert (a, sd);
+							> alertHandler (a, sd);
+						Q_UNUSED (alertHandler);
 					}
 					catch (const libtorrent::libtorrent_exception& e)
 					{
