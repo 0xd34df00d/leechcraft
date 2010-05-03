@@ -144,6 +144,7 @@ namespace LeechCraft
 				void SetActualReloadInterval (const QTime&);
 			public slots:
 				void notificationActionTriggered (int);
+				void focusLineEdit ();
 			private slots:
 				void handleIconChanged ();
 				void handleStatusBarMessage (const QString&);
@@ -157,7 +158,6 @@ namespace LeechCraft
 				void handlePrintingWithPreview ();
 				void handleScreenSave ();
 				void handleViewSources ();
-				void focusLineEdit ();
 				void handleNewUnclose (QAction*);
 				void handleUncloseDestroyed ();
 				void updateTooltip ();

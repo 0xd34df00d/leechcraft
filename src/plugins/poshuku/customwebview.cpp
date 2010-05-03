@@ -353,6 +353,8 @@ namespace LeechCraft
 						handled = true;
 					}
 				}
+				else if (event->key () == Qt::Key_F6)
+					Browser_->focusLineEdit ();
 
 				if (!handled)
 					QWebView::keyReleaseEvent (event);
