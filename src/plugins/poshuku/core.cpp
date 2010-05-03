@@ -256,7 +256,7 @@ namespace LeechCraft
 				QUrl testUrl (withoutPercent);
 				QUrl result;
 				if (testUrl.toString () == withoutPercent)
-					result = QUrl::fromPercentEncoding (url.toUtf8 ());
+					result = QUrl::fromEncoded (url.toUtf8 ());
 				else
 					result = QUrl (url);
 			
