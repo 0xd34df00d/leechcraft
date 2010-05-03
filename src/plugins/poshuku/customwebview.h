@@ -36,6 +36,7 @@ namespace LeechCraft
 
 				QList<qreal> Zooms_;
 				BrowserWidget *Browser_;
+				QString PreviousEncoding_;
 			public:
 				CustomWebView (QWidget* = 0);
 				virtual ~CustomWebView ();
@@ -62,6 +63,7 @@ namespace LeechCraft
 				void zoomReset ();
 			private slots:
 				void remakeURL (const QUrl&);
+				void handleLoadFinished ();
 				void openLinkHere ();
 				void openLinkInNewTab ();
 				void saveLink ();

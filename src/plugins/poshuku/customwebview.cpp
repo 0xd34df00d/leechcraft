@@ -24,6 +24,8 @@
 #include <QBuffer>
 #include <QClipboard>
 #include <QFile>
+#include <QWebElement>
+#include <QTextCodec>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include "core.h"
@@ -63,6 +65,10 @@ namespace LeechCraft
 						SIGNAL (urlChanged (const QUrl&)),
 						this,
 						SLOT (remakeURL (const QUrl&)));
+				connect (this,
+						SIGNAL (loadFinished (bool)),
+						this,
+						SLOT (handleLoadFinished ()));
 			
 				connect (page,
 						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
@@ -76,6 +82,10 @@ namespace LeechCraft
 						SIGNAL (loadingURL (const QUrl&)),
 						this,
 						SLOT (remakeURL (const QUrl&)));
+				connect (page,
+						SIGNAL (initialLayoutCompleted ()),
+						this,
+						SLOT (handleInitialLayoutCompleted ()));
 				connect (page,
 						SIGNAL (printRequested (QWebFrame*)),
 						this,
@@ -133,6 +143,7 @@ namespace LeechCraft
 				}
 				if (title.isEmpty ())
 					title = tr ("Loading...");
+				remakeURL (url);
 				emit titleChanged (title);
 				load (url);
 			}
@@ -452,9 +463,36 @@ namespace LeechCraft
 				emit invalidateSettings ();
 			}
 			
+			/*
+			 * urlStr.replace ("FIND",
+						QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_).toPercentEncoding ());
+				QUrl result = QUrl::fromEncoded (urlStr);
+			 */
 			void CustomWebView::remakeURL (const QUrl& url)
 			{
-				emit urlChanged (url.toString ());
+				QString string = url.toString ();
+				QWebElement equivs = page ()->mainFrame ()->
+						findFirstElement ("meta[http-equiv=\"Content-Type\"]");
+				if (!equivs.isNull ())
+				{
+					QString content = equivs.attribute ("content", "text/html; charset=UTF-8");
+					const QString charset = "charset=";
+					int pos = content.indexOf (charset);
+					if (pos >= 0)
+						PreviousEncoding_ = content.mid (pos + charset.length ()).toLower ();
+				}
+
+				if (PreviousEncoding_ != "utf-8" &&
+						PreviousEncoding_ != "utf8" &&
+						!PreviousEncoding_.isEmpty ())
+					string = url.toEncoded ();
+
+				emit urlChanged (string);
+			}
+
+			void CustomWebView::handleLoadFinished ()
+			{
+				remakeURL (url ());
 			}
 
 			void CustomWebView::openLinkHere ()
