@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include <QDBusInterface>
+#include <QPointer>
 #include <interfaces/iinfo.h>
 
 class QDBusPendingCallWatcher;
@@ -38,7 +39,7 @@ namespace LeechCraft
 				std::auto_ptr<QDBusInterface> Connection_;
 				struct ActionData
 				{
-					QObject *Handler_;
+					QPointer<QObject> Handler_;
 					QStringList Actions_;
 				};
 				QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;

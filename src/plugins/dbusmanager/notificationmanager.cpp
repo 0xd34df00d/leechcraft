@@ -134,6 +134,13 @@ void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatche
 void NotificationManager::handleActionInvoked (uint id, QString action)
 {
 	const ActionData& ad = CallID2AD_ [id];
+	if (!ad.Handler_)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "handler already destroyed";
+		return;
+	}
+
 	int idx = action.toInt ();
 
 	QMetaObject::invokeMethod (ad.Handler_,
