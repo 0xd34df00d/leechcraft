@@ -69,6 +69,8 @@ namespace LeechCraft
 							<< newChannel->Title_;
 						newChannel->Link_ = "about:blank";
 					}
+					Q_FOREACH (Item_ptr item, newChannel->Items_)
+						item->Title_ = item->Title_.trimmed ();
 				}
 				return newes;
 			}
@@ -105,6 +107,13 @@ namespace LeechCraft
 
 				nodes = parent.elementsByTagNameNS (DC_,
 						"creator");
+				if (nodes.size ())
+				{
+					result = nodes.at (0).toElement ().text ();
+					return result;
+				}
+
+				nodes = parent.elementsByTagName ("author");
 				if (nodes.size ())
 				{
 					result = nodes.at (0).toElement ().text ();
