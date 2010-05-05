@@ -380,7 +380,7 @@ namespace LeechCraft
 								if (done > -1)
 								{
 									if (total > -1)
-										return QString (tr ("%1% (%2 of %3 at %44)"))
+										return QString (tr ("%1% (%2 of %3 at %4)"))
 											.arg (progress)
 											.arg (Util::MakePrettySize (done))
 											.arg (Util::MakePrettySize (total))
