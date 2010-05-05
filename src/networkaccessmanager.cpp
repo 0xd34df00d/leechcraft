@@ -204,7 +204,6 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		SslErrorsDialog *dia = new SslErrorsDialog (msg,
 				errors,
 				qApp->activeWindow ());
-		dia->setAttribute (Qt::WA_DeleteOnClose);
 
 		bool ignore = (dia->exec () == QDialog::Accepted);
 		SslErrorsDialog::RememberChoice choice = dia->GetRememberChoice ();
@@ -218,6 +217,8 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 				settings.setValue (reply->url ().host (),
 						ignore);
 		}
+
+		dia->deleteLater ();
 
 		if (ignore)
 			reply->ignoreSslErrors ();
