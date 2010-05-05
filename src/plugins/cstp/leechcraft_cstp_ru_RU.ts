@@ -70,54 +70,49 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="209"/>
+        <location filename="cstp.cpp" line="204"/>
         <source>CSTP</source>
         <translation>CSTP</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="211"/>
+        <location filename="cstp.cpp" line="206"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="218"/>
+        <location filename="cstp.cpp" line="213"/>
         <source>Remove all</source>
         <translation>Удалить все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="227"/>
+        <location filename="cstp.cpp" line="222"/>
         <source>Start</source>
         <translation>Старт</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="234"/>
+        <location filename="cstp.cpp" line="229"/>
         <source>Stop</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="241"/>
+        <location filename="cstp.cpp" line="236"/>
         <source>Start all</source>
         <translation>Стартовать все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="248"/>
+        <location filename="cstp.cpp" line="243"/>
         <source>Stop all</source>
         <translation>Остановить все</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="260"/>
+        <location filename="cstp.cpp" line="255"/>
         <source>File exists</source>
         <translation>Файл существует</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="261"/>
+        <location filename="cstp.cpp" line="256"/>
         <source>File %1 already exists, continue download?</source>
         <translation>Файл %1 уже существует, продолжить закачку?</translation>
-    </message>
-    <message>
-        <location filename="cstp.cpp" line="275"/>
-        <source>HTTP error</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -140,50 +135,31 @@
     <message>
         <location filename="core.cpp" line="371"/>
         <source>%1 (ETA: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (ETA: %2)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="383"/>
-        <source>%1% (%2 of %3 at %44)</source>
-        <translation type="unfinished"></translation>
+        <source>%1% (%2 of %3 at %4)</source>
+        <oldsource>%1% (%2 of %3 at %44)</oldsource>
+        <translation>%1% (%2 из %3 на %4)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="475"/>
         <source>Could not open file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно открыть файл %1: %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="534"/>
-        <source>Download finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="535"/>
-        <source>%1
+        <source>Download finished: %1
 %2</source>
-        <translation type="unfinished">%1
+        <oldsource>Download finished</oldsource>
+        <translation>Закачка завершена: %1
 %2</translation>
-    </message>
-    <message>
-        <source>Speed</source>
-        <translation type="obsolete">Скорость</translation>
-    </message>
-    <message>
-        <source>ETA</source>
-        <translation type="obsolete">ОВП</translation>
-    </message>
-    <message>
-        <source>DTA</source>
-        <translation type="obsolete">ВП</translation>
     </message>
     <message>
         <location filename="core.cpp" line="242"/>
         <source>Could not truncate file </source>
         <translation>Невозможно сократить файл</translation>
-    </message>
-    <message>
-        <source>%1% (%2 of %3)</source>
-        <translation type="obsolete">%1% (%2 из %3)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="389"/>
@@ -194,10 +170,6 @@
         <location filename="core.cpp" line="387"/>
         <source>/s</source>
         <translation>/c</translation>
-    </message>
-    <message>
-        <source>Could not open file </source>
-        <translation type="obsolete">Невозможно открыть файл</translation>
     </message>
 </context>
 <context>

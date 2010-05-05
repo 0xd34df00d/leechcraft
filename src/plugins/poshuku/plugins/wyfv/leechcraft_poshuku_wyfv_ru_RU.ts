@@ -2,14 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::Player</name>
-    <message>
-        <location filename="player.cpp" line="106"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::RelatedItem</name>
     <message>
         <location filename="relateditem.cpp" line="108"/>

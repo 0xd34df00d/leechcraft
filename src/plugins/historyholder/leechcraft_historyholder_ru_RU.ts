@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>Core</name>
-    <message>
-        <source>Binary data</source>
-        <translation type="obsolete">Бинарные данные</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::HistoryHolder::Core</name>
     <message>
         <location filename="core.cpp" line="67"/>
@@ -42,13 +35,6 @@
         <location filename="historyholder.cpp" line="51"/>
         <source>Holds history from various plugins</source>
         <translation>Хранит историю из других плагинов</translation>
-    </message>
-</context>
-<context>
-    <name>Plugin</name>
-    <message>
-        <source>Holds history from various plugins</source>
-        <translation type="obsolete">Хранит историю различных плагинов</translation>
     </message>
 </context>
 </TS>

@@ -28,10 +28,6 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <source>Download finished: %1</source>
-        <translation type="obsolete">Закачка окончена: %1</translation>
-    </message>
-    <message>
         <source>While mirroring&lt;br /&gt;%1&lt;br /&gt;to&lt;br /&gt;%2&lt;br /&gt;an error occured:&lt;br /&gt;%3&lt;br /&gt; already exists.</source>
         <translation>Во время зеркалирования&lt;br /&gt;%1&lt;br /&gt;в&lt;br /&gt;%2&lt;br /&gt;возникла ошибка:&lt;br /&gt;%3&lt;br /&gt;уже существует.</translation>
     </message>
@@ -76,8 +72,8 @@
         <translation>Выберите новое имя файла</translation>
     </message>
     <message>
-        <source>FTP transfer finished</source>
-        <translation type="unfinished"></translation>
+        <source>FTP transfer finished: %1</source>
+        <translation>FTP-загрузка завершена: %1</translation>
     </message>
 </context>
 <context>

@@ -163,15 +163,9 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="91"/>
+        <location filename="seekthru.cpp" line="90"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation>Поиск при помощи OpenSearch-поисковиков.</translation>
-    </message>
-    <message>
-        <location filename="seekthru.cpp" line="155"/>
-        <location filename="seekthru.cpp" line="162"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
     </message>
 </context>
 <context>

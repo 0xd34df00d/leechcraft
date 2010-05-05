@@ -66,13 +66,14 @@
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <source>Error</source>
-        <translation type="obsolete">Ошибка</translation>
+        <location filename="core.cpp" line="683"/>
+        <source>The subscription %1 was successfully added.</source>
+        <translation>Подписка %1 была успешно добавлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="709"/>
-        <source>The subscription wasn&apos;t delegated.</source>
-        <translation>Эта подписка не была делегирована.</translation>
+        <location filename="core.cpp" line="718"/>
+        <source>The subscription %1 wasn&apos;t delegated.</source>
+        <translation>Подписка %1 не была делегирована.</translation>
     </message>
 </context>
 <context>
@@ -91,10 +92,6 @@
         <location filename="flashonclickwhitelist.cpp" line="114"/>
         <source>Please enter the URL to add to the FlashOnClick&apos;s whitelist</source>
         <translation>Введите URL для добавления в белый список FlashOnClick</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <location filename="flashonclickwhitelist.cpp" line="129"/>
@@ -122,10 +119,6 @@
 </context>
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RuleOptionDialog</name>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
     <message>
         <location filename="ruleoptiondialog.cpp" line="144"/>
         <location filename="ruleoptiondialog.cpp" line="170"/>

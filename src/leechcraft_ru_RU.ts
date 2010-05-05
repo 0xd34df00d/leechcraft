@@ -559,6 +559,10 @@
         <source>Startup wizard</source>
         <translation>Мастер первого запуска</translation>
     </message>
+    <message>
+        <source>Would you like to set advanced options?</source>
+        <translation>Вы хотите установить продвинутые опции?</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::TabContainer</name>
@@ -754,6 +758,29 @@
     <message>
         <source>Remove</source>
         <translation>Удалить</translation>
+    </message>
+</context>
+<context>
+    <name>WizardTypeChoicePage</name>
+    <message>
+        <source>WizardPage</source>
+        <translation>WizardPage</translation>
+    </message>
+    <message>
+        <source>Select wizard type</source>
+        <translation>Выберите тип мастера</translation>
+    </message>
+    <message>
+        <source>Select the complexity level of options you would like to set during this startup wizard.</source>
+        <translation>Выберите уровень сложности настроек, которые вы хотите установить в этом мастере.</translation>
+    </message>
+    <message>
+        <source>Basic setup</source>
+        <translation>Базовая настройка</translation>
+    </message>
+    <message>
+        <source>Advanced setup</source>
+        <translation>Продвинутая настройка</translation>
     </message>
 </context>
 </TS>

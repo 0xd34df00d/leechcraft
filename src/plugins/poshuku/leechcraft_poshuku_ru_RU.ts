@@ -360,22 +360,27 @@
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1118"/>
+        <location filename="browserwidget.cpp" line="1111"/>
+        <source>Open</source>
+        <translation>Открыть</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="1134"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1162"/>
+        <location filename="browserwidget.cpp" line="1178"/>
         <source>No title</source>
         <translation>Без названия</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1087"/>
+        <location filename="browserwidget.cpp" line="1100"/>
         <source>Page load finished: %1</source>
         <translation>Загрузка страницы завершена: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1091"/>
+        <location filename="browserwidget.cpp" line="1104"/>
         <source>Page load failed: %1</source>
         <translation>Ошибка загрузка страницы: %1</translation>
     </message>
@@ -415,17 +420,17 @@
         <translation>Перезагружается раз в %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="804"/>
+        <location filename="browserwidget.cpp" line="819"/>
         <source>Save screenshot</source>
         <translation>Сохранить скриншот</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="819"/>
+        <location filename="browserwidget.cpp" line="834"/>
         <source>Could not open %1 for write</source>
         <translation>Невозможно открыть %1 на запись</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="828"/>
+        <location filename="browserwidget.cpp" line="843"/>
         <source>Could not write screenshot to %1</source>
         <translation>Невозможно записать скриншот в %1</translation>
     </message>
@@ -480,17 +485,17 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="427"/>
+        <location filename="customwebpage.cpp" line="518"/>
         <source>Error loading %1: %2 (%3)</source>
         <translation>Ошибка загрузки %1: %2 (%3)</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="433"/>
+        <location filename="customwebpage.cpp" line="524"/>
         <source>Error loading %1: %2</source>
         <translation>Ошибка загрузки %1: %2</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="436"/>
+        <location filename="customwebpage.cpp" line="527"/>
         <source>The page you tried to access cannot be loaded now.</source>
         <translation>Страница, которую вы пытались открыть, сейчас не может быть загружена.</translation>
     </message>
@@ -498,52 +503,52 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebView</name>
     <message>
-        <location filename="customwebview.cpp" line="132"/>
+        <location filename="customwebview.cpp" line="402"/>
         <source>Installed plugins</source>
         <translation>Установленные плагины</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="133"/>
+        <location filename="customwebview.cpp" line="403"/>
         <source>No plugins installed</source>
         <translation>Нет установленных плагинов</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="134"/>
+        <location filename="customwebview.cpp" line="404"/>
         <source>File name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="135"/>
+        <location filename="customwebview.cpp" line="405"/>
         <source>MIME type</source>
         <translation>MIME-тип</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="136"/>
+        <location filename="customwebview.cpp" line="406"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="137"/>
+        <location filename="customwebview.cpp" line="407"/>
         <source>Suffixes</source>
         <translation>Расширения</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="138"/>
+        <location filename="customwebview.cpp" line="408"/>
         <source>Enabled</source>
         <translation>Включено</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="139"/>
+        <location filename="customwebview.cpp" line="409"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="140"/>
+        <location filename="customwebview.cpp" line="410"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="146"/>
+        <location filename="customwebview.cpp" line="145"/>
         <location filename="customwebview.cpp" line="154"/>
         <source>Loading...</source>
         <translation>Загружается...</translation>
@@ -607,6 +612,17 @@
         <location filename="customwebview.cpp" line="312"/>
         <source>Search...</source>
         <translation>Поиск...</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="420"/>
+        <location filename="customwebview.cpp" line="422"/>
+        <source>Welcome to LeechCraft!</source>
+        <translation>Добро пожаловать в LeechCraft!</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="424"/>
+        <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
+        <translation>Добро пожаловать в LeechCraft, интегрированный интернет-клиент.&lt;br /&gt;Вы можете узнать больше на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сайте проекта&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -706,52 +722,42 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Poshuku</name>
     <message>
-        <location filename="poshuku.cpp" line="110"/>
+        <location filename="poshuku.cpp" line="112"/>
         <source>Poshuku failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation>Poshuku не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Ну или, по крайней мере, проверьте настройки хранения и перезапустите LeechCraft.</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="134"/>
+        <location filename="poshuku.cpp" line="129"/>
         <source>Import XBEL...</source>
         <translation>Импортировать XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="137"/>
+        <location filename="poshuku.cpp" line="132"/>
         <source>Export XBEL...</source>
         <translation>Экспортировать в XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="140"/>
+        <location filename="poshuku.cpp" line="135"/>
         <source>Check favorites...</source>
         <translation>Проверить закладки...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="163"/>
+        <location filename="poshuku.cpp" line="157"/>
         <source>Poshuku</source>
         <translation>Poshuku</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="185"/>
+        <location filename="poshuku.cpp" line="180"/>
         <source>Poshuku Browser</source>
         <translation>Poshuku Browser</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="190"/>
+        <location filename="poshuku.cpp" line="185"/>
         <source>Simple yet functional web browser</source>
         <translation>Простой, но в то же время функциональный веб-браузер</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="414"/>
-        <source>Welcome to LeechCraft!</source>
-        <translation>Добро пожаловать в LeechCraft!</translation>
-    </message>
-    <message>
-        <location filename="poshuku.cpp" line="416"/>
-        <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
-        <translation>Добро пожаловать в LeechCraft, интегрированный интернет-клиент.&lt;br /&gt;Вы можете узнать больше на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сайте проекта&lt;/a&gt;.</translation>
-    </message>
-    <message>
-        <location filename="poshuku.cpp" line="529"/>
+        <location filename="poshuku.cpp" line="478"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
         <translation>Пожалуйста, имейте в виду, что расширения для разработчика будут правильно работать только для страниц, загруженных после включения.</translation>
     </message>

@@ -4,44 +4,37 @@
 <context>
     <name>LeechCraft::Plugins::Auscrie::Plugin</name>
     <message>
-        <location filename="auscrie.cpp" line="47"/>
+        <location filename="auscrie.cpp" line="48"/>
         <source>Make a screenshot</source>
         <translation>Сделать снимок экрана</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="70"/>
+        <location filename="auscrie.cpp" line="71"/>
         <source>Simple auto screenshoter.</source>
         <translation>Простой скриншотер.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="134"/>
+        <location filename="auscrie.cpp" line="135"/>
         <source>Save as</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="136"/>
+        <location filename="auscrie.cpp" line="137"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>Файлы %1 (*.%1);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="177"/>
-        <location filename="auscrie.cpp" line="192"/>
-        <location filename="auscrie.cpp" line="214"/>
-        <source>Auscrie</source>
-        <translation>Auscrie</translation>
-    </message>
-    <message>
-        <location filename="auscrie.cpp" line="178"/>
+        <location filename="auscrie.cpp" line="176"/>
         <source>Page parse failed</source>
         <translation>Парсинг страницы не удался</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="193"/>
+        <location filename="auscrie.cpp" line="186"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
         <translation>Картинка загружена: %1, URL был скопирован в буфер обмена</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="215"/>
+        <location filename="auscrie.cpp" line="198"/>
         <source>Upload of screenshot failed: %1</source>
         <translation>Загрузка скриншота не удалась: %1</translation>
     </message>

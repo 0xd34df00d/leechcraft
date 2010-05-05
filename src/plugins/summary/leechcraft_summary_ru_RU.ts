@@ -5,7 +5,7 @@
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
         <location filename="core.cpp" line="123"/>
-        <location filename="core.cpp" line="298"/>
+        <location filename="core.cpp" line="305"/>
         <source>Summary</source>
         <translation>Сводка</translation>
     </message>
@@ -92,7 +92,17 @@
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="390"/>
+        <location filename="summarywidget.cpp" line="367"/>
+        <source>S: %1 [%2]</source>
+        <translation>C: %1 [%2]</translation>
+    </message>
+    <message>
+        <location filename="summarywidget.cpp" line="371"/>
+        <source>Summary [%1]</source>
+        <translation>Сводка [%1]</translation>
+    </message>
+    <message>
+        <location filename="summarywidget.cpp" line="399"/>
         <source>Remove this category</source>
         <translation>Удалить эту категорию</translation>
     </message>
@@ -138,29 +148,6 @@
         <location filename="searchwidget.ui" line="118"/>
         <source>OR</source>
         <translation>ИЛИ</translation>
-    </message>
-</context>
-<context>
-    <name>SummaryWidget</name>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">Добавить</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation type="obsolete">Строка</translation>
-    </message>
-    <message>
-        <source>Wildcard</source>
-        <translation type="obsolete">Маска</translation>
-    </message>
-    <message>
-        <source>Regexp</source>
-        <translation type="obsolete">Regexp</translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation type="obsolete">Теги</translation>
     </message>
 </context>
 </TS>
