@@ -100,6 +100,7 @@ OPTION (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ON)
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" ON)
 OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
 OPTION (ENABLE_AZOTH "Build Azoth, the IM client" ON)
+OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" ON)
 
 if (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
@@ -198,12 +199,16 @@ IF (ENABLE_TABPP)
 ENDIF (ENABLE_TABPP)
 
 IF (ENABLE_EISKALTDCPP)
-        ADD_SUBDIRECTORY (plugins/eiskaltdcpp)
+	ADD_SUBDIRECTORY (plugins/eiskaltdcpp)
 ENDIF (ENABLE_EISKALTDCPP)
 
 IF (ENABLE_AZOTH)
-        ADD_SUBDIRECTORY (plugins/azoth)
+	ADD_SUBDIRECTORY (plugins/azoth)
 ENDIF (ENABLE_AZOTH)
+
+IF (ENABLE_SECMAN)
+	ADD_SUBDIRECTORY (plugins/secman)
+ENDIF (ENABLE_SECMAN)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
