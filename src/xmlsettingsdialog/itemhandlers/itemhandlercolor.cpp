@@ -65,6 +65,8 @@ namespace LeechCraft
 		if (!value.canConvert<QColor> ()
 				|| !value.value<QColor> ().isValid ())
 			value = QColor (item.attribute ("default"));
+
+		return value;
 	}
 
 	void ItemHandlerColor::SetValue (QWidget *widget, const QVariant& value) const
