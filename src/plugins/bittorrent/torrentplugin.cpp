@@ -710,11 +710,51 @@ namespace LeechCraft
 			
 			void TorrentPlugin::on_ChangeTrackers__triggered ()
 			{
+				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
+				if (!tree)
+					return;
+
+				QItemSelectionModel *sel = tree->selectionModel ();
+				if (!sel)
+					return;
+
+				QModelIndexList sis = sel->selectedRows ();
+				QList<int> rows;
+				std::vector<libtorrent::announce_entry> allTrackers;
+				Q_FOREACH (QModelIndex si, sis)
+				{
+					std::vector<libtorrent::announce_entry> those =
+							Core::Instance ()->GetTrackers (Core::Instance ()->
+									GetProxy ()->MapToSource (si).row ());
+					std::copy (those.begin (), those.end (),
+							std::back_inserter (allTrackers));
+				}
+
+				std::string libtorrent::announce_entry::*purl =
+						&libtorrent::announce_entry::url;
+
+				std::stable_sort (allTrackers.begin (), allTrackers.end (),
+						boost::bind (purl, _1) <
+						boost::bind (purl, _2));
+
+				std::vector<libtorrent::announce_entry>::iterator newLast =
+						std::unique (allTrackers.begin (), allTrackers.end (),
+									boost::bind (purl, _1) ==
+									boost::bind (purl, _2));
+
+				allTrackers.erase (newLast, allTrackers.end ());
+
+				if (!allTrackers.size ())
+					return;
+
 				TrackersChanger changer (Core::Instance ()->
 						GetProxy ()->GetMainWindow ());
-				changer.SetTrackers (Core::Instance ()->GetTrackers ());
+				changer.SetTrackers (allTrackers);
+
 				if (changer.exec () == QDialog::Accepted)
-					Core::Instance ()->SetTrackers (changer.GetTrackers ());
+					Q_FOREACH (QModelIndex si, sis)
+						Core::Instance ()->SetTrackers (changer.GetTrackers (),
+								Core::Instance ()->GetProxy ()->MapToSource (si).row ());
 			}
 			
 			void TorrentPlugin::on_MoveFiles__triggered ()

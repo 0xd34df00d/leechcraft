@@ -1155,38 +1155,24 @@ namespace LeechCraft
 				ResetFiles ();
 			}
 			
-			std::vector<libtorrent::announce_entry> Core::GetTrackers () const
+			std::vector<libtorrent::announce_entry> Core::GetTrackers (const boost::optional<int>& row) const
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				int tor = row ? *row : CurrentTorrent_;
+				if (!CheckValidity (tor))
 					return std::vector<libtorrent::announce_entry> ();
 			
-				return Handles_.at (CurrentTorrent_).Handle_.trackers ();
-			}
-			
-			std::vector<libtorrent::announce_entry> Core::GetTrackers (int row) const
-			{
-				int old = CurrentTorrent_;
-				CurrentTorrent_ = row;
-				std::vector<libtorrent::announce_entry> trackers = GetTrackers ();
-				CurrentTorrent_ = old;
-				return trackers;
+				return Handles_.at (tor).Handle_.trackers ();
 			}
 
-			void Core::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers)
+			void Core::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers,
+					const boost::optional<int>& row)
 			{
-				if (!CheckValidity (CurrentTorrent_))
+				int tor = row ? *row : CurrentTorrent_;
+				if (!CheckValidity (tor))
 					return;
 			
-				Handles_ [CurrentTorrent_].Handle_.replace_trackers (trackers);
-				Handles_ [CurrentTorrent_].Handle_.force_reannounce ();
-			}
-			
-			void Core::SetTrackers (int row, const std::vector<libtorrent::announce_entry>& trackers)
-			{
-				int old = CurrentTorrent_;
-				CurrentTorrent_ = row;
-				SetTrackers (trackers);
-				CurrentTorrent_ = old;
+				Handles_ [tor].Handle_.replace_trackers (trackers);
+				Handles_ [tor].Handle_.force_reannounce ();
 			}
 			
 			QString Core::GetMagnetLink () const
