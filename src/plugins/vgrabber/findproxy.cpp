@@ -22,6 +22,7 @@
 #include <QAction>
 #include <interfaces/structures.h>
 #include <plugininterface/util.h>
+#include "categoriesselector.h"
 
 namespace LeechCraft
 {
@@ -29,9 +30,11 @@ namespace LeechCraft
 	{
 		namespace vGrabber
 		{
-			FindProxy::FindProxy (const Request& r)
+			FindProxy::FindProxy (const Request& r, CategoriesSelector *cs, FindProxyType type)
 			: Toolbar_ (new QToolBar)
 			, R_ (r)
+			, CategoriesSelector_ (cs)
+			, FindProxyType_ (type)
 			{
 				ActionDownload_ = Toolbar_->addAction (tr ("Download"));
 				ActionDownload_->setProperty ("ActionIcon", "vgrabber_download");
@@ -90,6 +93,18 @@ namespace LeechCraft
 			QAbstractItemModel* FindProxy::GetModel ()
 			{
 				return this;
+			}
+
+			QByteArray FindProxy::GetUniqueSearchID () const
+			{
+				return QString ("org.LeechCraft.vGrabber.%1")
+						.arg (GetURL ().toString ())
+						.toUtf8 ();
+			}
+
+			QStringList FindProxy::GetCategories () const
+			{
+				return CategoriesSelector_->GetHRCategories ();
 			}
 
 			int FindProxy::columnCount (const QModelIndex&) const

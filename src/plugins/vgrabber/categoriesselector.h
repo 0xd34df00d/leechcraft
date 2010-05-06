@@ -20,6 +20,7 @@
 #define PLUGINS_VGRABBER_CATEGORIESSELECTOR_H
 #include <QWidget>
 #include "ui_categoriesselector.h"
+#include "findproxy.h"
 
 namespace LeechCraft
 {
@@ -37,16 +38,10 @@ namespace LeechCraft
 				vGrabber *Parent_;
 				QStringList Deleted_;
 				QStringList Added_;
-			public:
-				enum Type
-				{
-					TAudio,
-					TVideo
-				};
 			private:
-				Type Type_;
+				FindProxy::FindProxyType Type_;
 			public:
-				CategoriesSelector (Type, vGrabber*, QWidget* = 0);
+				CategoriesSelector (FindProxy::FindProxyType, vGrabber*, QWidget* = 0);
 
 				QStringList GetCategories () const;
 				QStringList GetHRCategories () const;

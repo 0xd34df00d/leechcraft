@@ -37,13 +37,13 @@ namespace LeechCraft
 			{
 				QString Query_;
 				QStringList Categories_;
-				enum
+				enum Operation
 				{
 					OPAnd,
 					OPOr
 				} Op_;
 
-				enum
+				enum Type
 				{
 					TString,
 					TWildcard,

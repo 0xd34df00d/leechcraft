@@ -47,8 +47,8 @@ namespace LeechCraft
 				}
 			};
 
-			AudioFindProxy::AudioFindProxy (const Request& r)
-			: FindProxy (r)
+			AudioFindProxy::AudioFindProxy (const Request& r, CategoriesSelector *cs)
+			: FindProxy (r, cs, FPTAudio)
 			{
 				SetError (tr ("Searching for %1...")
 						.arg (r.String_));

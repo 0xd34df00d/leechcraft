@@ -52,7 +52,7 @@ namespace LeechCraft
 
 				QMap<int, QString> VideoJobs_;
 			public:
-				VideoFindProxy (const Request&);
+				VideoFindProxy (const Request&, CategoriesSelector*);
 
 				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;

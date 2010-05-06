@@ -84,6 +84,17 @@ namespace LeechCraft
 				return this;
 			}
 			
+			QByteArray FindProxy::GetUniqueSearchID () const
+			{
+				return QString ("org.LeechCraft.DeadLyrics.%1")
+						.arg (Request_.String_).toUtf8 ();
+			}
+
+			QStringList FindProxy::GetCategories () const
+			{
+				return Core::Instance ().GetCategories ();
+			}
+
 			int FindProxy::columnCount (const QModelIndex&) const
 			{
 				return 3;

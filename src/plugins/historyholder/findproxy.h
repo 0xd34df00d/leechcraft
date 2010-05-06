@@ -33,9 +33,13 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 				Q_INTERFACES (IFindProxy);
+
+				Request R_;
 			public:
 				FindProxy (const LeechCraft::Request&);
 				QAbstractItemModel* GetModel ();
+				QByteArray GetUniqueSearchID () const;
+				QStringList GetCategories () const;
 			protected:
 				QStringList GetTagsForIndex (int) const;
 			};

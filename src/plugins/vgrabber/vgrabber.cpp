@@ -41,9 +41,9 @@ namespace LeechCraft
 				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 						"vgrabbersettings.xml");
 
-				Audio_ = new CategoriesSelector (CategoriesSelector::TAudio,
+				Audio_ = new CategoriesSelector (FindProxy::FPTAudio,
 						this);
-				Video_ = new CategoriesSelector (CategoriesSelector::TVideo,
+				Video_ = new CategoriesSelector (FindProxy::FPTVideo,
 						this);
 				connect (Audio_,
 						SIGNAL (goingToAccept (const QStringList&,
@@ -119,10 +119,10 @@ namespace LeechCraft
 			{
 				QList<FindProxy_ptr> preresult;
 				if (Audio_->GetHRCategories ().contains (req.Category_))
-					preresult << FindProxy_ptr (new AudioFindProxy (req));
+					preresult << FindProxy_ptr (new AudioFindProxy (req, Audio_));
 
 				if (Video_->GetHRCategories ().contains (req.Category_))
-					preresult << FindProxy_ptr (new VideoFindProxy (req));
+					preresult << FindProxy_ptr (new VideoFindProxy (req, Video_));
 
 				QList<IFindProxy_ptr> result;
 				Q_FOREACH (FindProxy_ptr fp, preresult)

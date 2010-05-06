@@ -47,6 +47,19 @@ namespace LeechCraft
 				return MergeModel_.get ();
 			}
 			
+			QByteArray FindProxy::GetUniqueSearchID () const
+			{
+				return QString ("org.LeechCraft.SeekThru.%1.%2")
+						.arg (R_.Category_)
+						.arg (R_.String_)
+						.toUtf8 ();
+			}
+
+			QStringList FindProxy::GetCategories () const
+			{
+				return QStringList (R_.Category_);
+			}
+
 			void FindProxy::SetHandlers (const QList<SearchHandler_ptr>& handlers)
 			{
 				Handlers_ = handlers;

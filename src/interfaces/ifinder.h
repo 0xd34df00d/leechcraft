@@ -86,6 +86,34 @@ public:
 	 * @return The model with results.
 	 */
 	virtual QAbstractItemModel* GetModel () = 0;
+
+	/** @brief Represents the unique ID of this finder type.
+	 *
+	 * Unique ID may be (and would be, in most cases) dependent upon
+	 * the request this IFindProxy represents. This is required in order
+	 * to filter out different IFindProxy objects that represent the
+	 * same result set.
+	 *
+	 * Consider your plugin performs the same search for two different
+	 * categories. For example, one is site's name, where it searches,
+	 * and the other one is "music", because your plugin searches for
+	 * music. Then, if user selects both music and the site name, only
+	 * one search find proxy should be returned. Thus, this function
+	 * allows to avoid such situations.
+	 *
+	 * @return The string with unique ID.
+	 */
+	virtual QByteArray GetUniqueSearchID () const = 0;
+
+	/** @brief Returns the list of categories this proxy would return.
+	 *
+	 * This function should return the list of human-readable
+	 * representation of categories that this find proxy's results would
+	 * belong into.
+	 *
+	 * @return The list of categories this proxy would search in.
+	 */
+	virtual QStringList GetCategories () const = 0;
 };
 
 typedef boost::shared_ptr<IFindProxy> IFindProxy_ptr;

@@ -39,7 +39,7 @@ namespace LeechCraft
 				};
 				QList<AudioResult> AudioResults_;
 			public:
-				AudioFindProxy (const Request&);
+				AudioFindProxy (const Request&, CategoriesSelector*);
 
 				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;

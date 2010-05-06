@@ -28,7 +28,7 @@ namespace LeechCraft
 	{
 		namespace vGrabber
 		{
-			CategoriesSelector::CategoriesSelector (Type type,
+			CategoriesSelector::CategoriesSelector (FindProxy::FindProxyType type,
 					vGrabber *vgr, QWidget *parent)
 			: QWidget (parent)
 			, Parent_ (vgr)
@@ -89,13 +89,13 @@ namespace LeechCraft
 				{
 					switch (Type_)
 					{
-						case TAudio:
+						case FindProxy::FPTAudio:
 							AddItem ("music");
 							WriteSettings ();
 							Deleted_.clear ();
 							Added_.clear ();
 							break;
-						case TVideo:
+						case FindProxy::FPTVideo:
 							AddItem ("videos");
 							WriteSettings ();
 							Deleted_.clear ();

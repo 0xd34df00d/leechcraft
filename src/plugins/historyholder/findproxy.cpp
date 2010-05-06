@@ -24,6 +24,7 @@ using namespace LeechCraft::Util;
 using namespace LeechCraft::Plugins::HistoryHolder;
 
 FindProxy::FindProxy (const Request& r)
+: R_ (r)
 {
 	setSourceModel (&Core::Instance ());
 	setDynamicSortFilter (true);
@@ -50,6 +51,19 @@ FindProxy::FindProxy (const Request& r)
 QAbstractItemModel* FindProxy::GetModel ()
 {
 	return this;
+}
+
+QByteArray FindProxy::GetUniqueSearchID () const
+{
+	return QString ("org.LeechCraft.HistoryHolder.%1.%2")
+			.arg (R_.Type_)
+			.arg (R_.String_)
+			.toUtf8 ();
+}
+
+QStringList FindProxy::GetCategories () const
+{
+	return QStringList (R_.Category_);
 }
 
 QStringList FindProxy::GetTagsForIndex (int row) const

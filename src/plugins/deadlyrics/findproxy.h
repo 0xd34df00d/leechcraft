@@ -54,6 +54,8 @@ namespace LeechCraft
 				virtual ~FindProxy ();
 
 				QAbstractItemModel* GetModel ();
+				QByteArray GetUniqueSearchID () const;
+				QStringList GetCategories () const;
 
 				int columnCount (const QModelIndex&) const;
 				QVariant data (const QModelIndex&, int) const;

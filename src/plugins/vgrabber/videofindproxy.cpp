@@ -27,8 +27,8 @@ namespace LeechCraft
 	{
 		namespace vGrabber
 		{
-			VideoFindProxy::VideoFindProxy (const Request& r)
-			: FindProxy (r)
+			VideoFindProxy::VideoFindProxy (const Request& r, CategoriesSelector *cs)
+			: FindProxy (r, cs, FPTVideo)
 			, Type_ (PTInvalid)
 			{
 				SetError (tr ("Searching for %1...")

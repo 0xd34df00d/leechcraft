@@ -36,6 +36,8 @@ namespace LeechCraft
 	{
 		namespace vGrabber
 		{
+			class CategoriesSelector;
+
 			class FindProxy : public QAbstractItemModel
 							, public IFindProxy
 			{
@@ -51,11 +53,22 @@ namespace LeechCraft
 				QMap<int, QString> Jobs_;
 				boost::optional<QString> Error_;
 			public:
-				FindProxy (const Request&);
+				enum FindProxyType
+				{
+					FPTAudio,
+					FPTVideo
+				};
+			protected:
+				FindProxyType FindProxyType_;
+				CategoriesSelector *CategoriesSelector_;
+			public:
+				FindProxy (const Request&, CategoriesSelector*, FindProxyType);
 				virtual ~FindProxy ();
 
 				void Start ();
 				QAbstractItemModel* GetModel ();
+				QByteArray GetUniqueSearchID () const;
+				QStringList GetCategories () const;
 
 				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 				virtual Qt::ItemFlags flags (const QModelIndex&) const;

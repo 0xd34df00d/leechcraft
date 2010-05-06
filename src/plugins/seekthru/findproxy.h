@@ -47,6 +47,8 @@ namespace LeechCraft
 				virtual ~FindProxy ();
 
 				QAbstractItemModel* GetModel ();
+				QByteArray GetUniqueSearchID () const;
+				QStringList GetCategories () const;
 
 				void SetHandlers (const QList<SearchHandler_ptr>&);
 			};

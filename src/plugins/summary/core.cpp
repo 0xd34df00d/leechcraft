@@ -157,6 +157,34 @@ namespace LeechCraft
 				return rm->GetModel ();
 			}
 
+			namespace
+			{
+				template<typename T>
+				void FilterByCats (const QSet<QString>& cats,
+						QList<T>& finders,
+						Query2::Operation operation)
+				{
+					Q_FOREACH (T finder, finders)
+					{
+						QSet<QString> fcats = QSet<QString>::fromList (finder->GetCategories ());
+						bool exclude = true;
+						if (operation == Query2::OPOr)
+						{
+							if (fcats.intersect (cats).size ())
+								exclude = false;
+						}
+						else
+						{
+							if (fcats.contains (cats))
+								exclude = false;
+						}
+
+						if (exclude)
+							finders.removeAll (finder);
+					}
+				}
+			};
+
 			QAbstractItemModel* Core::GetTasksModel (const Query2& query) const
 			{
 				QStringList headers = QStringList (tr ("Name"))
@@ -173,51 +201,41 @@ namespace LeechCraft
 						query.Categories_.isEmpty ())
 					result->AddModel (MergeModel_.get ());
 
-				QSet<QString> cats = QSet<QString>::fromList (query.Categories_);
-
 				QList<IFinder*> finders = Proxy_->
 					GetPluginsManager ()->GetAllCastableTo<IFinder*> ();
+				QSet<QString> cats = QSet<QString>::fromList (query.Categories_);
+				FilterByCats (cats, finders, query.Op_);
+
+				QSet<QByteArray> used;
 				Q_FOREACH (IFinder *finder, finders)
 				{
-					QSet<QString> fcats = QSet<QString>::fromList (finder->GetCategories ());
-					bool exclude = true;
-					if (query.Op_ == Query2::OPOr)
+					QList<IFindProxy_ptr> proxies;
+					Q_FOREACH (QString category, cats)
 					{
-						if (fcats.intersect (cats).size ())
-							exclude = false;
-					}
-					else
-					{
-						if (fcats.contains (cats))
-							exclude = false;
-					}
-
-					if (exclude)
-						finders.removeAll (finder);
-				}
-
-				Q_FOREACH (QString category, cats)
-				{
-					Q_FOREACH (IFinder *finder, finders)
-					{
-						QStringList fcats = finder->GetCategories ();
-						if (fcats.contains (category))
+						Request r =
 						{
-							Request r =
-							{
-								false,
-								static_cast<Request::Type> (query.Type_),
-								QString (),
-								category,
-								query.Query_,
-								query.Params_ [category]
-							};
-							Q_FOREACH (IFindProxy_ptr proxy, finder->GetProxy (r))
-							{
-								KeepProxiesThisWay_ [result] << proxy;
-								result->AddModel (proxy->GetModel ());
-							}
-						}
+							false,
+							static_cast<Request::Type> (query.Type_),
+							QString (),
+							category,
+							query.Query_,
+							query.Params_ [category]
+						};
+
+						proxies += finder->GetProxy (r);
+					}
+
+					FilterByCats (cats, proxies, query.Op_);
+
+					Q_FOREACH (IFindProxy_ptr proxy, proxies)
+					{
+						QByteArray thisId = proxy->GetUniqueSearchID ();
+						if (used.contains (thisId))
+							continue;
+
+						used << thisId;
+						KeepProxiesThisWay_ [result] << proxy;
+						result->AddModel (proxy->GetModel ());
 					}
 				}
 
@@ -228,7 +246,7 @@ namespace LeechCraft
 			{
 				int starting = 0;
 				Util::MergeModel::const_iterator modIter =
-					dynamic_cast<Util::MergeModel*> (model)->GetModelForRow (index, &starting);
+						dynamic_cast<Util::MergeModel*> (model)->GetModelForRow (index, &starting);
 
 				QStringList ids = (*modIter)->data ((*modIter)->
 						index (index - starting, 0), RoleTags).toStringList ();
@@ -329,7 +347,7 @@ namespace LeechCraft
 				SummaryWidget *w = qobject_cast<SummaryWidget*> (sender ());
 				if (!w)
 				{
-					qDebug () << Q_FUNC_INFO
+					qWarning () << Q_FUNC_INFO
 						<< "not a SummaryWidget*"
 						<< sender ();
 					return;
