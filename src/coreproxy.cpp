@@ -100,21 +100,12 @@ QStringList CoreProxy::GetSearchCategories () const
 
 int CoreProxy::GetID ()
 {
-	int i = 0;
-	while (true)
-		if (!UsedIDs_.Val ().contains (++i))
-		{
-			UsedIDs_.Val () << i;
-			return i;
-		}
-	throw std::runtime_error ("ID pool exhausted");
+	return Pool_.GetID ();
 }
 
 void CoreProxy::FreeID (int id)
 {
-	if (UsedIDs_.Val ().removeAll (id) != 1)
-		throw std::runtime_error (QString ("The ID being freed wasn't reserved %1")
-				.arg (id).toStdString ().c_str ());
+	Pool_.FreeID (id);
 }
 
 QObject* CoreProxy::GetTreeViewReemitter () const

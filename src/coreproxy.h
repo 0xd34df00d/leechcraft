@@ -20,7 +20,7 @@
 #define COREPROXY_H
 #include <QObject>
 #include "interfaces/iinfo.h"
-#include "plugininterface/guarded.h"
+#include "plugininterface/idpool.h"
 
 namespace LeechCraft
 {
@@ -32,7 +32,7 @@ namespace LeechCraft
 		Q_OBJECT
 		Q_INTERFACES (ICoreProxy);
 
-		Util::Guarded<QList<int> > UsedIDs_;
+		Util::IDPool<int> Pool_;
 	public:
 		CoreProxy (QObject* = 0);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
