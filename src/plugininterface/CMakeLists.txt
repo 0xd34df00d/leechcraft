@@ -42,6 +42,7 @@ SET (HEADERS
 	listmodel.h
 	selectablebrowser.h
 	flattofoldersproxymodel.h
+	idpool.h
 	)
 SET (FORMS
 	backendselector.ui
