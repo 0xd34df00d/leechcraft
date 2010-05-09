@@ -59,6 +59,7 @@ namespace LeechCraft
 								   */
 								  FeedSettingsSetter_,
 								  /** Returns:
+								   * - channel_id
 								   * - title
 								   * - url
 								   * - tags
@@ -66,7 +67,7 @@ namespace LeechCraft
 								   * - favicon
 								   *
 								   * Binds:
-								   * - parent_feed_url
+								   * - feed_id
 								   */
 								  ChannelsShortSelector_,
 								  /** Returns:
@@ -89,7 +90,7 @@ namespace LeechCraft
 								   * - number of unread items
 								   *
 								   * Binds:
-								   * - parents_hash
+								   * - channel_id
 								   */
 								  UnreadItemsCounter_,
 								  /** Returns:
@@ -257,7 +258,7 @@ namespace LeechCraft
 								   */
 								  ToggleChannelUnread_,
 								  /** Binds:
-								   * - url
+								   * - feed_id
 								   */
 								  RemoveFeed_,
 								  /** Binds:
@@ -522,17 +523,16 @@ namespace LeechCraft
 				virtual void Prepare ();
 
 				virtual void GetFeedsURLs (feeds_urls_t&) const;
-				virtual Feed::FeedSettings GetFeedSettings (const QString&) const;
+				virtual Feed::FeedSettings GetFeedSettings (const IDType_t&) const;
 				virtual void SetFeedSettings (const QString&, const Feed::FeedSettings&);
-				virtual void GetChannels (channels_shorts_t&, const QString&) const;
+				virtual void GetChannels (channels_shorts_t&, const IDType_t&) const;
 				virtual Channel_ptr GetChannel (const QString&,
 						const QString&) const;
 				virtual void TrimChannel (const QString&,
 						const QString&, int, int);
 				virtual void GetItems (items_shorts_t&, const QString&) const;
 				virtual int GetUnreadItems (const QString&, const QString&) const;
-				virtual Item_ptr GetItem (const QString&, const QString&,
-						const QString&) const;
+				virtual Item_ptr GetItem (const IDType_t&) const;
 				virtual void GetItems (items_container_t&,
 						const QString&) const;
 
@@ -550,7 +550,7 @@ namespace LeechCraft
 						const QString&,
 						const QString&,
 						const QString&);
-				virtual void RemoveFeed (const QString&);
+				virtual void RemoveFeed (const IDType_t&);
 				virtual bool UpdateFeedsStorage (int, int);
 				virtual bool UpdateChannelsStorage (int, int);
 				virtual bool UpdateItemsStorage (int, int);
@@ -562,15 +562,28 @@ namespace LeechCraft
 				QByteArray SerializePixmap (const QPixmap&) const;
 				QPixmap UnserializePixmap (const QByteArray&) const;
 				bool RollItemsStorage (int);
+
+				void RemoveTables ();
+				Feed::FeedSettings GetFeedSettingsFromVersion5 (Feed_ptr) const;
+				QList<Feed_ptr> LoadFeedsFromVersion5 () const;
+				QList<Feed_ptr> GetFeedsFromVersion5 () const;
+				QList<Channel_ptr> GetChannelsFromVersion5 (const QString&,
+						const IDType_t&) const;
+				QList<Item_ptr> GetItemsFromVersion5 (const QString&,
+						const IDType_t&) const;
+				void FillItemVersion5 (const QSqlQuery&, Item_ptr&) const;
+				void GetEnclosuresVersion5 (const QString&, const QString&, const QString&,
+						QList<Enclosure>&, const IDType_t&) const;
+				void GetMRSSEntriesVersion5 (const QString&, const QString&, const QString&,
+						QList<MRSSEntry>&, const IDType_t&) const;
+
 				void FillItem (const QSqlQuery&, Item_ptr&) const;
 				void WriteEnclosures (const QString&, const QString&, const QString&,
 						const QList<Enclosure>&);
-				void GetEnclosures (const QString&, const QString&, const QString&,
-						QList<Enclosure>&) const;
+				void GetEnclosures (const IDType_t&, QList<Enclosure>&) const;
 				void WriteMRSSEntries (const QString&, const QString&, const QString&,
 						const QList<MRSSEntry>&);
-				void GetMRSSEntries (const QString&, const QString&, const QString&,
-						QList<MRSSEntry>&) const;
+				void GetMRSSEntries (const IDType_t&, QList<MRSSEntry>&) const;
 			};
 		};
 	};

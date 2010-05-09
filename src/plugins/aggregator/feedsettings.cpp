@@ -29,6 +29,7 @@ namespace LeechCraft
 			FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
 			: QDialog (parent)
 			, Index_ (mapped)
+			, SettingsID_ (-1)
 			{
 				Ui_.setupUi (this);
 			
@@ -43,7 +44,27 @@ namespace LeechCraft
 				QStringList tags = Core::Instance ().GetTagsForIndex (Index_.row ());
 				Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
 			
-				Feed::FeedSettings settings = Core::Instance ().GetFeedSettings (Index_);
+				Feed::FeedSettings settings (-1, -1);
+				try
+				{
+					settings = Core::Instance ().GetFeedSettings (Index_);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to get settings for"
+							<< Index_
+							<< e.what ();
+					return;
+				}
+				catch (const StorageBackend::FeedSettingsNotFoundError&)
+				{
+					settings = Feed::FeedSettings (Core::Instance ()
+							.GetChannelInfo (Index_).FeedID_)
+				}
+
+				SettingsID_ = settings.SettingsID_;
+
 				Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
 				Ui_.NumItems_->setValue (settings.NumItems_);
 				Ui_.ItemAge_->setValue (settings.ItemAge_);
@@ -98,10 +119,12 @@ namespace LeechCraft
 				QString tags = Ui_.ChannelTags_->text ();
 				Core::Instance ().SetTagsForIndex (tags, Index_);
 			
-				Feed::FeedSettings settings (Ui_.UpdateInterval_->value (),
-					Ui_.NumItems_->value (),
-					Ui_.ItemAge_->value (),
-					Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked);
+				Feed::FeedSettings settings (Core::Instance ().GetChannelInfo (Index_).FeedID_,
+						SettingsID_,
+						Ui_.UpdateInterval_->value (),
+						Ui_.NumItems_->value (),
+						Ui_.ItemAge_->value (),
+						Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked);
 				Core::Instance ().SetFeedSettings (settings, Index_);
 			
 				QDialog::accept ();

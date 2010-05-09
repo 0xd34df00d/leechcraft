@@ -21,6 +21,8 @@
 #include <QFileDialog>
 #include <QDir>
 #include <QTimer>
+#include "feed.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -84,7 +86,9 @@ namespace LeechCraft
 						end = channels.end (); i != end; ++i)
 				{
 					QStringList strings;
-					strings << i->Title_ << i->ParentURL_;
+					Feed_ptr feed = Core::Instance ().GetStorageBackend ()->
+							GetFeed (i->FeedID_);
+					strings << i->Title_ << feed->URL_;
 			
 					QTreeWidgetItem *item =
 						new QTreeWidgetItem (Ui_.Channels_, strings);

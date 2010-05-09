@@ -47,14 +47,15 @@ namespace LeechCraft
 					 root.attribute ("version") == "0.92");
 			}
 			
-			channels_container_t RSS091Parser::Parse (const QDomDocument& doc) const
+			channels_container_t RSS091Parser::Parse (const QDomDocument& doc,
+					const IDType_t& feedId) const
 			{
 				channels_container_t channels;
 				QDomElement root = doc.documentElement ();
 				QDomElement channel = root.firstChildElement ("channel");
 				while (!channel.isNull ())
 				{
-					Channel_ptr chan (new Channel);
+					Channel_ptr chan (new Channel (feedId));
 			
 					chan->Title_ = channel.firstChildElement ("title").text ().trimmed ();
 					chan->Description_ = channel.firstChildElement ("description").text ();
@@ -63,7 +64,8 @@ namespace LeechCraft
 					QDomElement item = channel.firstChildElement ("item");
 					while (!item.isNull ())
 					{
-						chan->Items_.push_back (Item_ptr (ParseItem (item)));
+						chan->Items_.push_back (Item_ptr (ParseItem (item,
+								chan->ChannelID_)));
 						item = item.nextSiblingElement ("item");
 					}
 					if (!chan->LastBuild_.isValid () || chan->LastBuild_.isNull ())
@@ -80,9 +82,10 @@ namespace LeechCraft
 				return channels;
 			}
 			
-			Item* RSS091Parser::ParseItem (const QDomElement& item) const
+			Item* RSS091Parser::ParseItem (const QDomElement& item,
+					const IDType_t& channelId) const
 			{
-				Item *result = new Item;
+				Item *result = new Item (channelId);
 				result->Title_ = UnescapeHTML (item.firstChildElement ("title").text ());
 				if (result->Title_.isEmpty ())
 					result->Title_ = "<>";
@@ -91,7 +94,8 @@ namespace LeechCraft
 				result->PubDate_ = RFC822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
 				if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
 				{
-					qDebug () << "Aggregator RSS 0.91: Can't parse item pubDate: " << item.firstChildElement ("pubDate").text ();
+					qWarning () << "Aggregator RSS 0.91: Can't parse item pubDate: "
+							<< item.firstChildElement ("pubDate").text ();
 					result->PubDate_ = QDateTime::currentDateTime ();
 				}
 				result->Guid_ = item.firstChildElement ("guid").text ();
@@ -103,8 +107,8 @@ namespace LeechCraft
 				result->NumComments_ = GetNumComments (item);
 				result->CommentsLink_ = GetCommentsRSS (item);
 				result->CommentsPageLink_ = GetCommentsLink (item);
-				result->Enclosures_ = GetEnclosures (item);
-				result->Enclosures_ += GetEncEnclosures (item);
+				result->Enclosures_ = GetEnclosures (item, result->ItemID_);
+				result->Enclosures_ += GetEncEnclosures (item, result->ItemID_);
 				QPair<double, double> point = GetGeoPoint (item);
 				result->Latitude_ = point.first;
 				result->Longitude_ = point.second;

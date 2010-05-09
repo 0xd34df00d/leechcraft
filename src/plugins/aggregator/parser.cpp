@@ -56,9 +56,9 @@ namespace LeechCraft
 			{
 			}
 			
-			channels_container_t Parser::ParseFeed (const QDomDocument& recent) const
+			channels_container_t Parser::ParseFeed (const QDomDocument& recent, const IDType_t& feedId) const
 			{
-				channels_container_t newes = Parse (recent);
+				channels_container_t newes = Parse (recent, feedId);
 				for (size_t i = 0; i < newes.size (); ++i)
 				{
 					Channel_ptr newChannel = newes [i];
@@ -214,7 +214,8 @@ namespace LeechCraft
 				return result;
 			}
 			
-			QList<Enclosure> Parser::GetEncEnclosures (const QDomElement& parent) const
+			QList<Enclosure> Parser::GetEncEnclosures (const QDomElement& parent,
+					const IDType_t& itemId) const
 			{
 				QList<Enclosure> result;
 			
@@ -224,13 +225,11 @@ namespace LeechCraft
 				{
 					QDomElement link = nodes.at (i).toElement ();
 			
-					Enclosure e =
-					{
-						link.attributeNS (RDF_, "resource"),
-						link.attributeNS (Enc_, "type"),
-						link.attributeNS (Enc_, "length", "-1").toLongLong (),
-						""
-					};
+					Enclosure e (itemId);
+					e.URL_ = link.attributeNS (RDF_, "resource");
+					e.Type_ = link.attributeNS (Enc_, "type");
+					e.Length_ = link.attributeNS (Enc_, "length", "-1").toLongLong ();
+					e.Lang_ = "";
 			
 					result << e;
 				}

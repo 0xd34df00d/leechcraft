@@ -20,6 +20,7 @@
 #include <QDataStream>
 #include <typeinfo>
 #include "item.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -122,10 +123,36 @@ namespace LeechCraft
 					SameSets (e1.Scenes_, e2.Scenes_);
 			}
 
+			Enclosure::Enclosure (const IDType_t& item)
+			: EnclosureID_ (Core::Instance ().GetPool (Core::PTEnclosure).GetID ())
+			, ItemID_ (item)
+			{
+			}
+
+			Enclosure::Enclosure (const IDType_t& item, const IDType_t& enclosure)
+			: EnclosureID_ (enclosure)
+			, ItemID_ (item)
+			{
+			}
+
+			Item::Item (const IDType_t& channel)
+			: ItemID_ (Core::Instance ().GetPool (Core::PTItem).GetID ())
+			, ChannelID_ (channel)
+			{
+			}
+
+			Item::Item (const IDType_t& channel, const IDType_t& item)
+			: ItemID_ (item)
+			, ChannelID_ (channel)
+			{
+			}
+
 			ItemShort Item::ToShort () const
 			{
 				ItemShort is =
 				{
+					ItemID_,
+					ChannelID_,
 					Title_,
 					Link_,
 					Categories_,
@@ -147,8 +174,7 @@ namespace LeechCraft
 			
 			bool operator== (const Item& i1, const Item& i2)
 			{
-				return i1.Title_ == i2.Title_ &&
-					i1.Link_ == i2.Link_;
+				return i1.ItemID_ == i2.ItemID_;
 			}
 
 			QDataStream& operator<< (QDataStream& out, const Enclosure& enc)
@@ -390,8 +416,10 @@ namespace LeechCraft
 
 			QDataStream& operator<< (QDataStream& out, const Item& item)
 			{
-				int version = 4;
+				int version = 5;
 				out << version
+					<< item.ItemID_
+					<< item.ChannelID_
 					<< item.Title_
 					<< item.Link_
 					<< item.Description_
@@ -414,6 +442,9 @@ namespace LeechCraft
 			{
 				int version = 0;
 				in >> version;
+				if (version == 5)
+					in >> item.ItemID_
+						>> item.ChannelID_;
 				if (version >= 1)
 					in >> item.Title_
 						>> item.Link_
@@ -434,7 +465,7 @@ namespace LeechCraft
 				if (version == 4)
 					in >> item.MRSSEntries_;
 
-				if (version < 1 || version > 4)
+				if (version < 1 || version > 5)
 					qWarning () << Q_FUNC_INFO << "unknown version" << version;
 
 				return in;
@@ -442,7 +473,9 @@ namespace LeechCraft
 
 			void Print (const Item& item)
 			{
-				qDebug () << item.Title_
+				qDebug () << item.ItemID_
+					<< item.ChannelID_
+					<< item.Title_
 					<< item.Link_
 					<< item.Description_
 					<< item.Author_

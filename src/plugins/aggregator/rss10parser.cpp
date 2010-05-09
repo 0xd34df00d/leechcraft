@@ -45,7 +45,8 @@ namespace LeechCraft
 				return root.tagName () == "RDF";
 			}
 			
-			channels_container_t RSS10Parser::Parse (const QDomDocument& doc) const
+			channels_container_t RSS10Parser::Parse (const QDomDocument& doc,
+					const IDType_t& feedId) const
 			{
 				channels_container_t result;
 			
@@ -54,7 +55,7 @@ namespace LeechCraft
 				QDomElement channelDescr = root.firstChildElement ("channel");
 				while (!channelDescr.isNull ())
 				{
-					Channel_ptr channel (new Channel);
+					Channel_ptr channel (new Channel (feedId));
 					channel->Title_ = channelDescr.firstChildElement ("title").text ().trimmed ();
 					channel->Link_ = channelDescr.firstChildElement ("link").text ();
 					channel->Description_ =
@@ -86,7 +87,7 @@ namespace LeechCraft
 					QString about = itemDescr.attributeNS (RDF_, "about");
 					if (item2Channel.contains (about))
 					{
-						Item_ptr item (new Item);
+						Item_ptr item (new Item (item2Channel [about]->ChannelID_));
 						item->Title_ = itemDescr.firstChildElement ("title").text ();
 						item->Link_ = itemDescr.firstChildElement ("link").text ();
 						item->Description_ = itemDescr.firstChildElement ("description").text ();
@@ -98,7 +99,7 @@ namespace LeechCraft
 						item->NumComments_ = GetNumComments (itemDescr);
 						item->CommentsLink_ = GetCommentsRSS (itemDescr);
 						item->CommentsPageLink_ = GetCommentsLink (itemDescr);
-						item->Enclosures_ = GetEncEnclosures (itemDescr);
+						item->Enclosures_ = GetEncEnclosures (itemDescr, item->ItemID_);
 						QPair<double, double> point = GetGeoPoint (itemDescr);
 						item->Latitude_ = point.first;
 						item->Longitude_ = point.second;

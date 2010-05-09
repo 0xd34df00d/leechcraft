@@ -44,7 +44,6 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			class ItemBucket;
 			struct Enclosure;
 
 			struct Aggregator_Impl;
@@ -110,7 +109,6 @@ namespace LeechCraft
 				void on_ActionAddFeed__triggered ();
 				void on_ActionRemoveFeed__triggered ();
 				void on_ActionUpdateSelectedFeed__triggered ();
-				void on_ActionItemBucket__triggered ();
 				void on_ActionRegexpMatcher__triggered ();
 				void on_ActionImportOPML__triggered ();
 				void on_ActionExportOPML__triggered ();

@@ -48,10 +48,11 @@ namespace LeechCraft
 				return true;
 			}
 			
-			channels_container_t Atom10Parser::Parse (const QDomDocument& doc) const
+			channels_container_t Atom10Parser::Parse (const QDomDocument& doc,
+					const IDType_t& feedId) const
 			{
 				channels_container_t channels;
-				Channel_ptr chan (new Channel);
+				Channel_ptr chan (new Channel (feedId));
 				channels.push_back (chan);
 			
 				QDomElement root = doc.documentElement ();
@@ -75,16 +76,17 @@ namespace LeechCraft
 				QDomElement entry = root.firstChildElement ("entry");
 				while (!entry.isNull ())
 				{
-					chan->Items_.push_back (Item_ptr (ParseItem (entry)));
+					chan->Items_.push_back (Item_ptr (ParseItem (entry, chan->ChannelID_)));
 					entry = entry.nextSiblingElement ("entry");
 				}
 			
 				return channels;
 			}
 			
-			Item* Atom10Parser::ParseItem (const QDomElement& entry) const
+			Item* Atom10Parser::ParseItem (const QDomElement& entry,
+					const IDType_t& channelId) const
 			{
-				Item *item = new Item;
+				Item *item = new Item (channelId);
 			
 				item->Title_ = entry.firstChildElement ("title").text ();
 				item->Link_ = GetLink (entry);
@@ -102,8 +104,8 @@ namespace LeechCraft
 					summary = entry.firstChildElement ("summary");
 				item->Description_ = ParseEscapeAware (summary);
 			
-				item->Enclosures_ = GetEnclosures (entry);
-				item->Enclosures_ += GetEncEnclosures (entry);
+				item->Enclosures_ = GetEnclosures (entry, item->ItemID_);
+				item->Enclosures_ += GetEncEnclosures (entry, item->ItemID_);
 
 				QPair<double, double> point = GetGeoPoint (entry);
 				item->Latitude_ = point.first;

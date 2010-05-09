@@ -23,6 +23,7 @@
 #include <QModelIndex>
 #include <plugininterface/tagscompleter.h>
 #include "ui_feedsettings.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace LeechCraft
 				Ui::FeedSettings Ui_;
 				std::auto_ptr<LeechCraft::Util::TagsCompleter> ChannelTagsCompleter_;
 				QModelIndex Index_;
+				IDType_t SettingsID_;
 			public:
 				FeedSettings (const QModelIndex&, QWidget* = 0);
 			public slots:

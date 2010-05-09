@@ -43,12 +43,16 @@ namespace LeechCraft
 
 				/** @brief Parses the document
 				 * 
-				 * Parses the passed XML document.
+				 * Parses the passed XML document. Created channels are
+				 * already sane and validated, with proper feed IDs and
+				 * such (that's why feedId parameter is required).
 				 *
 				 * @param[in] document Byte array with XML document.
+				 * @param[in] feedId The ID of the parent feed.
 				 * @return Container (channels_container_t) with new items.
 				 */
-				virtual channels_container_t ParseFeed (const QDomDocument& document) const;
+				virtual channels_container_t ParseFeed (const QDomDocument& document,
+						const IDType_t& feedId) const;
 			protected:
 				static const QString DC_;
 				static const QString WFW_;
@@ -61,7 +65,8 @@ namespace LeechCraft
 				static const QString GeoRSSW3_;
 				static const QString MediaRSS_;
 
-				virtual channels_container_t Parse (const QDomDocument&) const = 0;
+				virtual channels_container_t Parse (const QDomDocument&,
+						const IDType_t&) const = 0;
 				QString GetLink (const QDomElement&) const;
 				QString GetAuthor (const QDomElement&) const;
 				QString GetCommentsRSS (const QDomElement&) const;
@@ -72,7 +77,8 @@ namespace LeechCraft
 				QStringList GetDCCategories (const QDomElement&) const;
 				QStringList GetITunesCategories (const QDomElement&) const;
 				QStringList GetPlainCategories (const QDomElement&) const;
-				QList<Enclosure> GetEncEnclosures (const QDomElement&) const;
+				QList<Enclosure> GetEncEnclosures (const QDomElement&,
+						const IDType_t&) const;
 				QPair<double, double> GetGeoPoint (const QDomElement&) const; 
 				QList<MRSSEntry> GetMediaRSS (const QDomElement&) const;
 

@@ -98,7 +98,7 @@ namespace LeechCraft
 				return result.toLocalTime ();
 			}
 			
-			QList<Enclosure> RSSParser::GetEnclosures (const QDomElement& entry) const
+			QList<Enclosure> RSSParser::GetEnclosures (const QDomElement& entry, const IDType_t& item) const
 			{
 				QList<Enclosure> result;
 				QDomNodeList links = entry.elementsByTagName ("enclosure");
@@ -106,14 +106,11 @@ namespace LeechCraft
 				{
 					QDomElement link = links.at (i).toElement ();
 			
-					Enclosure e =
-					{
-						link.attribute ("url"),
-						link.attribute ("type"),
-						link.attribute ("length", "-1").toLongLong (),
-						link.attribute ("hreflang")
-					};
-			
+					Enclosure e (item);
+					e.URL_ = link.attribute ("url");
+					e.Type_ = link.attribute ("type");
+					e.Length_ = link.attribute ("length", "-1").toLongLong ();
+					e.Lang_ = link.attribute ("hreflang");
 					result << e;
 				}
 				return result;

@@ -44,8 +44,6 @@ SET (SRCS
     xmlsettingsmanager.cpp
     channelsmodel.cpp
     channelsfiltermodel.cpp
-	itembucket.cpp
-	itemmodel.cpp
 	regexpmatcherui.cpp
 	singleregexp.cpp
 	regexpmatchermanager.cpp
@@ -87,8 +85,6 @@ SET (HEADERS
     channelsmodel.h
     xmlsettingsmanager.h
     channelsfiltermodel.h
-	itembucket.h
-	itemmodel.h
 	regexpmatcherui.h
 	singleregexp.h
 	regexpmatchermanager.h

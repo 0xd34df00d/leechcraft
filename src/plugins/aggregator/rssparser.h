@@ -41,7 +41,7 @@ namespace LeechCraft
 				virtual ~RSSParser ();
 			protected:
 				QDateTime RFC822TimeToQDateTime (const QString&) const;
-				QList<Enclosure> GetEnclosures (const QDomElement&) const;
+				QList<Enclosure> GetEnclosures (const QDomElement&, const IDType_t&) const;
 			};
 		};
 	};

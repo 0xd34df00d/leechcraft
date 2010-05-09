@@ -52,7 +52,8 @@ namespace LeechCraft
 				return result;
 			}
 			
-			QList<Enclosure> AtomParser::GetEnclosures (const QDomElement& entry) const
+			QList<Enclosure> AtomParser::GetEnclosures (const QDomElement& entry,
+					const IDType_t& itemId) const
 			{
 				QList<Enclosure> result;
 				QDomNodeList links = entry.elementsByTagName ("link");
@@ -62,14 +63,11 @@ namespace LeechCraft
 					if (link.attribute ("rel") != "enclosure")
 						continue;
 			
-					Enclosure e =
-					{
-						link.attribute ("href"),
-						link.attribute ("type"),
-						link.attribute ("length", "-1").toLongLong (),
-						link.attribute ("hreflang")
-					};
-			
+					Enclosure e (itemId);
+					e.URL_ = link.attribute ("href");
+					e.Type_ = link.attribute ("type");
+					e.Length_ = link.attribute ("length", "-1").toLongLong ();
+					e.Lang_ = link.attribute ("hreflang");
 					result << e;
 				}
 				return result;

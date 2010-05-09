@@ -34,8 +34,10 @@ namespace LeechCraft
 				static RSS091Parser& Instance ();
 				virtual bool CouldParse (const QDomDocument&) const;
 			protected:
-				virtual channels_container_t Parse (const QDomDocument&) const;
-				Item* ParseItem (const QDomElement&) const;
+				virtual channels_container_t Parse (const QDomDocument&,
+						const IDType_t&) const;
+				Item* ParseItem (const QDomElement&,
+						const IDType_t&) const;
 			};
 		};
 	};
