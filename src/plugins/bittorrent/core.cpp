@@ -231,9 +231,14 @@ namespace LeechCraft
 					Session_->set_max_connections (XmlSettingsManager::Instance ()->
 							property ("MaxConnections").toInt ());
 
-					libtorrent::entry sstate = XmlSettingsManager::Instance ()->
-							property ("SessionState").value<libtorrent::entry> ();
-					Session_->load_state (sstate);
+					QVariant sstateVariant = XmlSettingsManager::Instance ()->
+							property ("SessionState");
+					if (sstateVariant.isValid () &&
+							!sstateVariant.isNull ())
+					{
+						libtorrent::entry sstate = sstateVariant.value<libtorrent::entry> ();
+						Session_->load_state (sstate);
+					}
 
 					setProxySettings ();
 					setGeneralSettings ();
