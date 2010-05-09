@@ -26,6 +26,7 @@
 #include <QMetaType>
 #include <QTextCodec>
 #include <QtDebug>
+#include <QRegExp>
 #include <plugininterface/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
@@ -98,11 +99,29 @@ namespace LeechCraft
 			{
 				QString MakeFilename (const QUrl& entity)
 				{
-					QString file = QFileInfo (entity.toString (QUrl::RemoveFragment)).fileName ();
-					file.replace ('?', '_');
+					QFileInfo fileInfo (entity.toString (QUrl::RemoveFragment));
+					QString file = fileInfo.fileName ();
+					static const QRegExp restrictedChars (",|=|;|:|\\[|\\]|\\\"|\\*|\\?|&|\\||\\\\|/|(?:^LPT$)|(?:^COM$)|(?:^PRN$)");
+					static const QString replaceWith ('_');
+					if (file.length () >= 256)
+					{
+						QString extension (fileInfo.completeSuffix ());
+						QString baseName (fileInfo.baseName ());
+						if (extension.length () > 253)
+							extension.resize (253);
+
+						if ((baseName.length () + extension.length ()) >= 254)
+							baseName.resize (254 - extension.length ());
+
+						file = baseName + '.' + extension;
+					}
+
 					if (file.isEmpty ())
 						file = QString ("index_%1")
 							.arg (QDateTime::currentDateTime ().toString (Qt::ISODate));
+					file.replace (restrictedChars, replaceWith);
+					if (file != fileInfo.fileName ())
+						 qWarning () << Q_FUNC_INFO << fileInfo.fileName () <<" was corrected to: " << file;
 					return file;
 				}
 			}
