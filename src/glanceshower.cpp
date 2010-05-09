@@ -27,6 +27,8 @@
 #include <QProgressDialog>
 #include <QPropertyAnimation>
 #include <QKeyEvent>
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QtDebug>
 #include "core.h"
 #include "mainwindow.h"
@@ -77,8 +79,10 @@ namespace LeechCraft
 		if (rows * cols < count)
 			++rows;
 
-		int width = Core::Instance ().GetReallyMainWindow ()->width ();
-		int height = Core::Instance ().GetReallyMainWindow ()->height ();
+		QRect screenGeom = QApplication::desktop ()->
+				screenGeometry (Core::Instance ().GetReallyMainWindow ());
+		int width = screenGeom.width ();
+		int height = screenGeom.height ();
 
 		int singleW = width / cols;
 		int singleH = height / rows;
@@ -115,7 +119,8 @@ namespace LeechCraft
 
 				QPixmap pixmap (sSize * 2);
 				w->render (&pixmap);
-				pixmap = pixmap.scaled (sSize);
+				pixmap = pixmap.scaled (sSize,
+						Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
 				{
 					QPainter p (&pixmap);
@@ -159,7 +164,7 @@ namespace LeechCraft
 
 		setScene (Scene_);
 
-		setGeometry (Core::Instance ().GetReallyMainWindow ()->geometry ());
+		setGeometry (screenGeom);
 		animGroup->start ();
 		show ();
 	}
