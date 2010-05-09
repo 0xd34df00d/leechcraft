@@ -356,7 +356,7 @@ namespace LeechCraft
 								fd.exists (file))
 						{
 							QMessageBox box (QMessageBox::Question,
-									Core::tr ("LeechCraft"),
+									"LeechCraft",
 									Core::tr ("%1 already exists. What do you want to do?")
 										.arg (QDir::toNativeSeparators (dir + "/" + file)),
 									QMessageBox::NoButton,
