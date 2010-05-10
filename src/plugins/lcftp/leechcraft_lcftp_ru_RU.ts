@@ -87,7 +87,7 @@
     <name>LeechCraft::Plugins::LCFTP::Pane</name>
     <message>
         <source>Transfer</source>
-        <translation>Передачть</translation>
+        <translation>Передача</translation>
     </message>
     <message>
         <source>Name</source>

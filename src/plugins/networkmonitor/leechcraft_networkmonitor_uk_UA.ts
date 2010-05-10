@@ -70,17 +70,17 @@
     <message>
         <location filename="networkmonitor.ui" line="36"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Рядок</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="41"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>Маска</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="46"/>
         <source>Regexp</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулярний вираз</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="58"/>

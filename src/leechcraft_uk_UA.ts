@@ -13,7 +13,7 @@
     </message>
     <message utf8="true">
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft - це багатоплатформовий модульний Інтернет-клієнт, що має модулі для перегляду веб-сторінок, чтитання новин, завантаження з мережі BitTorrent та багато інших можливостей.</translation>
     </message>
     <message>
         <source>Authors</source>
@@ -63,11 +63,11 @@
     </message>
     <message>
         <source>SQLite</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite</translation>
     </message>
     <message>
         <source>PostgreSQL</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL</translation>
     </message>
     <message>
         <source>Journal mode:</source>
@@ -152,10 +152,6 @@
         <translation>LeechCraft виявив сутність:</translation>
     </message>
     <message>
-        <source>TextLabel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>It could be downloaded by:</source>
         <oldsource>This entity could be downloaded by:</oldsource>
         <translation>Може бути завантажений:</translation>
@@ -182,7 +178,7 @@
     </message>
     <message>
         <source>background-color: rgb(255, 255, 255);</source>
-        <translation type="unfinished"></translation>
+        <translation>background-color: rgb(255, 255, 255);</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -233,7 +229,7 @@
     </message>
     <message>
         <source>Main toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Головна панель інструментів</translation>
     </message>
     <message>
         <source>New tab</source>
@@ -328,7 +324,7 @@
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -344,6 +340,17 @@
     <message>
         <source>Progress</source>
         <translation type="obsolete">Прогрес</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::ColorPicker</name>
+    <message>
+        <source>Choose color</source>
+        <translation>Оберіть колір</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Обрати...</translation>
     </message>
 </context>
 <context>
@@ -435,11 +442,46 @@
     <name>LeechCraft::FilePicker</name>
     <message>
         <source>Browse...</source>
-        <translation type="obsolete">Огляд...</translation>
+        <translation>Огляд...</translation>
     </message>
     <message>
         <source>Select file</source>
-        <translation type="obsolete">Вибрати файл</translation>
+        <translation>Оберіть файл</translation>
+    </message>
+    <message>
+        <source>Select directory</source>
+        <translation>Оберіть директорію</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::FontPicker</name>
+    <message>
+        <source>Choose font</source>
+        <translation>Оберіть шрифт</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Обрати...</translation>
+    </message>
+    <message>
+        <source>, %1 pt</source>
+        <translation>, %1 пт</translation>
+    </message>
+    <message>
+        <source>, bold</source>
+        <translation>, жирний</translation>
+    </message>
+    <message>
+        <source>, italic</source>
+        <translation>, курсив</translation>
+    </message>
+    <message>
+        <source>, underlined</source>
+        <translation>, підкреслений</translation>
+    </message>
+    <message>
+        <source>, striken out</source>
+        <translation>, закреслений</translation>
     </message>
 </context>
 <context>
@@ -465,7 +507,7 @@
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <source>/s</source>
@@ -481,15 +523,11 @@
     </message>
     <message>
         <source>/s	</source>
-        <translation type="unfinished"></translation>
+        <translation>/c	</translation>
     </message>
     <message>
         <source>Do you really want to quit?</source>
         <translation>Ви справді бажаєте вийти?</translation>
-    </message>
-    <message>
-        <source>%1 - LeechCraft</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
@@ -512,7 +550,7 @@
     </message>
     <message>
         <source>Could not create Core directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо створити директорію для Ядра.</translation>
     </message>
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
@@ -558,7 +596,7 @@
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -636,7 +674,7 @@
     </message>
     <message>
         <source>Issuer info</source>
-        <translation type="unfinished"></translation>
+        <translation>Виданий</translation>
     </message>
     <message>
         <source>Organization:</source>
@@ -644,11 +682,11 @@
     </message>
     <message>
         <source>Common name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальна назва:</translation>
     </message>
     <message>
         <source>Locality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Місце знаходження:</translation>
     </message>
     <message>
         <source>Organizational unit name:</source>
@@ -664,21 +702,25 @@
     </message>
     <message>
         <source>Subject info</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::StartupWizard</name>
     <message>
         <source>Startup wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Мейстер першого запуску</translation>
+    </message>
+    <message>
+        <source>Would you like to set advanced options?</source>
+        <translation>Перейти до тонкого налаштування?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::TabContainer</name>
     <message>
         <source>New tab menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Меню створення вкладки</translation>
     </message>
     <message>
         <source>Restore tabs</source>
@@ -737,7 +779,7 @@
     </message>
     <message>
         <source>&lt;unknown tag&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;невідома позначка&gt;</translation>
     </message>
 </context>
 <context>
@@ -785,7 +827,7 @@
     </message>
     <message>
         <source>Binary entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Двійковий об&apos;єкт</translation>
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
@@ -797,23 +839,23 @@
     </message>
     <message>
         <source> b</source>
-        <translation type="unfinished"></translation>
+        <translation> б</translation>
     </message>
     <message>
         <source> KiB</source>
-        <translation type="unfinished"></translation>
+        <translation> КіБ</translation>
     </message>
     <message>
         <source> MiB</source>
-        <translation type="unfinished"></translation>
+        <translation> МіБ</translation>
     </message>
     <message>
         <source> GiB</source>
-        <translation type="unfinished"></translation>
+        <translation> ГіБ</translation>
     </message>
     <message numerus="yes">
         <source>%n day(s), </source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n день, </numerusform>
             <numerusform>%n дені, </numerusform>
             <numerusform>%n денів, </numerusform>
@@ -850,7 +892,7 @@
     </message>
     <message>
         <source>&lt;Here we say that errors happened&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Тут ми повідомляємо про помилки&gt;</translation>
     </message>
     <message>
         <source>Name</source>
@@ -893,6 +935,29 @@
     <message>
         <source>Remove</source>
         <translation>Видалити</translation>
+    </message>
+</context>
+<context>
+    <name>WizardTypeChoicePage</name>
+    <message>
+        <source>WizardPage</source>
+        <translation>Сторінка Майстра</translation>
+    </message>
+    <message>
+        <source>Select wizard type</source>
+        <translation>Оберіть тип Майстра</translation>
+    </message>
+    <message>
+        <source>Select the complexity level of options you would like to set during this startup wizard.</source>
+        <translation>Оберіть рівень складоності параметрів, які ви бажаєте встановити.</translation>
+    </message>
+    <message>
+        <source>Basic setup</source>
+        <translation>Базові параметри</translation>
+    </message>
+    <message>
+        <source>Advanced setup</source>
+        <translation>Розширені параметри</translation>
     </message>
 </context>
 </TS>
