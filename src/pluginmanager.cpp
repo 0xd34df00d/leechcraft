@@ -249,7 +249,7 @@ namespace LeechCraft
 			catch (...)
 			{
 				QMessageBox::warning (Core::Instance ().GetReallyMainWindow (),
-						tr ("LeechCraft"),
+						"LeechCraft",
 						tr ("Release of one or more plugins failed."));
 			}
 		}

@@ -91,7 +91,7 @@ namespace LeechCraft
 				if (!CheckValidity (filename))
 				{
 					QMessageBox::critical (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Can't read KTorrent's configuration file"));
 					return;
 				}
@@ -183,7 +183,7 @@ namespace LeechCraft
 					}
 					else
 						QMessageBox::critical (this,
-								tr ("LeechCraft"),
+								"LeechCraft",
 								tr ("Could not access or parse KTorrent settings."));
 				}
 				emit gotEntity (e);

@@ -113,7 +113,7 @@ namespace LeechCraft
 
 				if (!CheckValidity (filename))
 					QMessageBox::critical (this,
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("The directory you've selected is not Liferea's directory."));
 				else
 					Ui_.FileLocation_->setText (filename);
@@ -162,7 +162,7 @@ namespace LeechCraft
 					}
 					else
 						QMessageBox::critical (0,
-								tr ("LeechCraft"),
+								"LeechCraft",
 								tr ("Could not access or parse Akregator settings."));
 				}
 				*/

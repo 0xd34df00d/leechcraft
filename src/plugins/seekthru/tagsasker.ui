@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>509</width>
-    <height>66</height>
+    <height>77</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>LeechCraft</string>
+   <string notr="true">LeechCraft</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

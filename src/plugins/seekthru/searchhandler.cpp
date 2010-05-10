@@ -71,8 +71,7 @@ namespace LeechCraft
 								return SearchString_;
 							case 1:
 								if (Results_.at (r).TotalResults_ >= 0)
-									return tr ("%1 total results")
-										.arg (Results_.at (r).TotalResults_);
+									return tr ("%n total result(s)", "", Results_.at (r).TotalResults_);
 								else
 									return tr ("Unknown number of results");
 							case 2:
@@ -81,13 +80,13 @@ namespace LeechCraft
 									switch (Results_.at (r).Type_)
 									{
 										case Result::TypeRSS:
-											result += tr (" (RSS)");
+											result += " (RSS)";
 											break;
 										case Result::TypeAtom:
-											result += tr (" (Atom)");
+											result += " (Atom)";
 											break;
 										case Result::TypeHTML:
-											result += tr (" (HTML)");
+											result += " (HTML)";
 											break;
 									}
 									return result;

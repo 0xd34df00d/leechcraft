@@ -68,7 +68,7 @@ namespace LeechCraft
 				Sets_ ["ru"] << EngineInfo ("lurkmore.xml",
 						"lm", QString::fromUtf8 ("Lurkmore"));
 
-				setTitle (tr ("SeekThru"));
+				setTitle ("SeekThru");
 				setSubTitle (tr ("Select default search engines"));
 				
 				connect (Ui_.LocalizationBox_,

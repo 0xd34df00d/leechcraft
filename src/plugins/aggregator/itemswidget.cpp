@@ -764,7 +764,7 @@ namespace LeechCraft
 							current += tr ("End time: %1<br />")
 								.arg (sc.EndTime_);
 						if (!sc.Description_.isEmpty ())
-							current += tr ("%1<br />")
+							current += QString ("%1<br />")
 								.arg (sc.Description_);
 
 						if (!current.isEmpty ())
@@ -786,8 +786,7 @@ namespace LeechCraft
 						result += tr ("<strong>Views:</strong> %1")
 							.arg (entry->Views_);
 					if (entry->Favs_)
-						result += tr ("<strong>Added to favorites:</strong> %1 times")
-							.arg (entry->Favs_);
+						result += tr ("<strong>Added to favorites:</strong> %n time(s)", "", entry->Favs_);
 					if (entry->RatingAverage_)
 						result += tr ("<strong>Average rating:</strong> %1")
 							.arg (entry->RatingAverage_);

@@ -27,7 +27,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>3</number>
   </property>
   <property name="elideMode">
    <enum>Qt::ElideRight</enum>
@@ -50,8 +50,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>554</width>
-         <height>1099</height>
+         <width>544</width>
+         <height>1084</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -778,8 +778,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>554</width>
-         <height>1184</height>
+         <width>544</width>
+         <height>1163</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -1637,7 +1637,7 @@
        <item row="0" column="1">
         <widget class="QLabel" name="FilePath_">
          <property name="text">
-          <string>TextLabel</string>
+          <string notr="true">TextLabel</string>
          </property>
         </widget>
        </item>
@@ -1651,7 +1651,7 @@
        <item row="1" column="1">
         <widget class="QLabel" name="FileProgress_">
          <property name="text">
-          <string>TextLabel</string>
+          <string notr="true">TextLabel</string>
          </property>
         </widget>
        </item>
@@ -1729,8 +1729,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>532</width>
-                 <height>352</height>
+                 <width>520</width>
+                 <height>337</height>
                 </rect>
                </property>
                <layout class="QFormLayout" name="formLayout_10">

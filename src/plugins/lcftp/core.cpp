@@ -222,7 +222,7 @@ namespace LeechCraft
 										.arg (Util::MakePrettySize (s.second))
 										.arg (s.first * 100 / s.second);
 								else
-									return tr ("%1")
+									return QString ("%1")
 										.arg (Util::MakePrettySize (s.first));
 							}
 						default:
@@ -380,7 +380,7 @@ namespace LeechCraft
 								if (!fd.remove (file))
 								{
 									QMessageBox::critical (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
-											Core::tr ("LeechCraft"),
+											"LeechCraft",
 											Core::tr ("Error removing %1")
 												.arg (QDir::toNativeSeparators (dir + "/" + file)));
 									return QString ();

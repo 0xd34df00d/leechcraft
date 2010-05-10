@@ -217,7 +217,7 @@ namespace LeechCraft
 						if (code == 404)
 						{
 							QMessageBox::critical (this,
-									tr ("LeechCraft"),
+									"LeechCraft",
 									tr ("This format is unavailable, please select another one."));
 							return;
 						}
