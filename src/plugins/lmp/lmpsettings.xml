@@ -4,15 +4,19 @@
 	<page>
 		<label lang="en" value="General" />
 		<label lang="ru" value="Общие" />
+		<label lang="uk" value="Загальні" />
 		<tab>
 			<label lang="en" value="Plugin communication" />
 			<label lang="ru" value="Взаимодействие с плагинами" />
+			<label lang="uk" value="Взаємодія з плагінами" />
 			<item type="groupbox" property="TestOnly" state="on" checkable="true">
 				<label lang="en" value="Test only these extensions" />
 				<label lang="ru" value="Проверять только эти расширения" />
+				<label lang="uk" value="Перевіряти лише ці розширення" />
 				<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 ogg">
 					<label lang="en" value="Extenstions list:" />
 					<label lang="ru" value="Список расширений:" />
+					<label lang="uk" value="Список розширень:" />
 				</item>
 			</item>
 		</tab>

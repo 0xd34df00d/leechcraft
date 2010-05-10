@@ -6,6 +6,7 @@
 		<item type="checkbox" property="ShowTrayIcon" state="off">
 			<label lang="en" value="Show icon in tray" />
 			<label lang="ru" value="Показывать иконку в трее" />
+			<label lang="uk" value="Показвати іконку в треї" />
 		</item>
 	</page>
 </settings>
