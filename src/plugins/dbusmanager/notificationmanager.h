@@ -37,6 +37,13 @@ namespace LeechCraft
 				Q_OBJECT
 
 				std::auto_ptr<QDBusInterface> Connection_;
+
+				struct CapCheckData
+				{
+					DownloadEntity Entity_;
+				};
+				QMap<QDBusPendingCallWatcher*, CapCheckData> Watcher2CapCheck_;
+
 				struct ActionData
 				{
 					QPointer<QObject> Handler_;
@@ -50,8 +57,11 @@ namespace LeechCraft
 				void Init ();
 				bool CouldNotify (const DownloadEntity&) const;
 				void HandleNotification (const DownloadEntity&);
+			private:
+				void DoNotify (const DownloadEntity&, bool);
 			private slots:
 				void handleNotificationCallFinished (QDBusPendingCallWatcher*);
+				void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
 				void handleActionInvoked (uint, QString);
 			};
 		};

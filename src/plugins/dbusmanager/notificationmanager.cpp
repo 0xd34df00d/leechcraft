@@ -70,16 +70,44 @@ void NotificationManager::HandleNotification (const DownloadEntity& e)
 				property ("UseNotifications").toBool ())
 		return;
 
+	QStringList actions = e.Additional_ ["NotificationActions"].toStringList ();
+	if (actions.isEmpty ())
+		DoNotify (e, false);
+	else
+	{
+		CapCheckData cd =
+		{
+			e
+		};
+
+		QDBusPendingCall pending = Connection_->
+				asyncCall ("GetCapabilities");
+		QDBusPendingCallWatcher *watcher =
+			new QDBusPendingCallWatcher (pending, this);
+		Watcher2CapCheck_ [watcher] = cd;
+		connect (watcher,
+				SIGNAL (finished (QDBusPendingCallWatcher*)),
+				this,
+				SLOT (handleCapCheckCallFinished (QDBusPendingCallWatcher*)));
+	}
+}
+
+void NotificationManager::DoNotify (const DownloadEntity& e, bool hasActions)
+{
 	Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
 	QString header = e.Entity_.toString ();
 	QString text = e.Additional_ ["Text"].toString ();
 	bool uus = e.Additional_ ["UntilUserSees"].toBool ();
 
-	QStringList actions = e.Additional_ ["NotificationActions"].toStringList ();
 	QStringList fmtActions;
-	int i = 0;
-	Q_FOREACH (QString action, actions)
-		fmtActions << QString::number (i++) << action;
+	QStringList actions;
+	if (hasActions)
+	{
+		actions = e.Additional_ ["NotificationActions"].toStringList ();
+		int i = 0;
+		Q_FOREACH (QString action, actions)
+			fmtActions << QString::number (i++) << action;
+	}
 
 	if (prio == PLog_)
 		return;
@@ -129,6 +157,23 @@ void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatche
 	Watcher2AD_.remove (w);
 
 	w->deleteLater ();
+}
+
+void NotificationManager::handleCapCheckCallFinished (QDBusPendingCallWatcher *w)
+{
+	QDBusPendingReply<QStringList> reply = *w;
+	if (reply.isError ())
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "failed to handle notification, failed to query caps:"
+			<< reply.error ().name ()
+			<< reply.error ().message ();
+		return;
+	}
+	QStringList caps = reply.argumentAt<0> ();
+	bool hasActions = caps.contains ("actions");
+	DownloadEntity e = Watcher2CapCheck_.take (w).Entity_;
+	DoNotify (e, hasActions);
 }
 
 void NotificationManager::handleActionInvoked (uint id, QString action)
