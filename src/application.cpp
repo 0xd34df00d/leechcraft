@@ -136,7 +136,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 		if (!home.mkdir (".leechcraft"))
 		{
 			QMessageBox::critical (0,
-					tr ("LeechCraft"),
+					"LeechCraft",
 					QDir::toNativeSeparators (tr ("Could not create path %1/.leechcraft")
 						.arg (QDir::homePath ())));
 			std::exit (EPaths);

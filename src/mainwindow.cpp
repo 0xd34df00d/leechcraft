@@ -162,7 +162,7 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 	if (title.isEmpty ())
 		setWindowTitle ("LeechCraft");
 	else
-		setWindowTitle (tr ("%1 - LeechCraft").arg (title));
+		setWindowTitle (QString ("%1 - LeechCraft").arg (title));
 }
 
 LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
@@ -427,7 +427,7 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 {
 	if (XmlSettingsManager::Instance ()->property ("ConfirmQuit").toBool () &&
 			QMessageBox::question (this,
-				tr ("LeechCraft"),
+				"LeechCraft",
 				tr ("Do you really want to quit?"),
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 		return;

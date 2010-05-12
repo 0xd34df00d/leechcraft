@@ -8,19 +8,23 @@
 		<tab>
 			<label lang="en" value="Audio" />
 			<label lang="ru" value="Аудио" />
+			<label lang="uk" value="Аудіо" />
 			<item type="checkbox" property="FilterSameURLs" default="on">
 				<label lang="en" value="Filter files with the same URL" />
 				<label lang="ru" value="Отфильтровывать файлы с одинаковым адресом" />
+				<label lang="uk" value="Фільтрувати файли з однаковими адресами" />
 			</item>
 			<item type="checkbox" property="FilterSamePTL" default="on">
 				<label lang="en" value="Filter files with same title and length" />
 				<label lang="ru" value="Отфильтровывать файлы с одинаковыми именами и длинами" />
+				<label lang="uk" value="Фільтрувати файли з однаковми назвами і довжиною" />
 			</item>
 			<item type="customwidget" name="AudioCategoriesToUse" label="own" />
 		</tab>
 		<tab>
 			<label lang="en" value="Video" />
 			<label lang="ru" value="Видео" />
+			<label lang="uk" value="Відео" />
 			<item type="customwidget" name="VideoCategoriesToUse" label="own" />
 		</tab>
 	</page>

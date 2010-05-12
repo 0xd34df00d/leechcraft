@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="uk_UA">
 <context>
     <name>CategoriesSelector</name>
     <message>
         <location filename="categoriesselector.ui" line="33"/>
         <source>Categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Категорія</translation>
     </message>
     <message>
         <location filename="categoriesselector.ui" line="43"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати...</translation>
     </message>
     <message>
         <location filename="categoriesselector.ui" line="50"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити...</translation>
     </message>
     <message>
         <location filename="categoriesselector.ui" line="57"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
 </context>
 <context>
@@ -29,17 +29,17 @@
     <message>
         <location filename="audiofindproxy.cpp" line="53"/>
         <source>Searching for %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук %1...</translation>
     </message>
     <message>
         <location filename="audiofindproxy.cpp" line="72"/>
         <source>Audio vkontakte.ru</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудіо В Контакте</translation>
     </message>
     <message>
-        <location filename="audiofindproxy.cpp" line="228"/>
+        <location filename="audiofindproxy.cpp" line="230"/>
         <source>Nothing found for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Нічого не знайдено по %1</translation>
     </message>
 </context>
 <context>
@@ -47,45 +47,45 @@
     <message>
         <location filename="categoriesselector.cpp" line="166"/>
         <source>Add category</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати категорію</translation>
     </message>
     <message>
         <location filename="categoriesselector.cpp" line="183"/>
         <source>Modify category</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити категорію</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::vGrabber::FindProxy</name>
     <message>
-        <location filename="findproxy.cpp" line="36"/>
+        <location filename="findproxy.cpp" line="39"/>
         <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="43"/>
+        <location filename="findproxy.cpp" line="46"/>
         <source>Handle</source>
-        <translation type="unfinished"></translation>
+        <translation>Обробити</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="60"/>
+        <location filename="findproxy.cpp" line="63"/>
         <source>Empty search string</source>
-        <translation type="unfinished"></translation>
+        <translation>Пустий запит</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="81"/>
+        <location filename="findproxy.cpp" line="84"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Завдання на запит&lt;br /&gt;%1&lt;br /&gt;не було делеговано.</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="140"/>
+        <location filename="findproxy.cpp" line="155"/>
         <source>Could not open file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо відкрити файл %1.</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="156"/>
+        <location filename="findproxy.cpp" line="171"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Завдання на запит&lt;br /&gt;%1&lt;br /&gt;було делеговано, але зазнало невдачі.</translation>
     </message>
 </context>
 <context>
@@ -93,40 +93,35 @@
     <message>
         <location filename="videofindproxy.cpp" line="34"/>
         <source>Searching for %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук %1...</translation>
     </message>
     <message>
         <location filename="videofindproxy.cpp" line="53"/>
         <source>Video vkontakte.ru</source>
-        <translation type="unfinished"></translation>
+        <translation>Відео В Контакте</translation>
     </message>
     <message>
         <location filename="videofindproxy.cpp" line="66"/>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Відео</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="170"/>
+        <location filename="videofindproxy.cpp" line="172"/>
         <source>Nothing found for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Нічого не знайдено по %1</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="266"/>
+        <location filename="videofindproxy.cpp" line="268"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Завдання на запит&lt;br /&gt;%1&lt;br /&gt;не було делеговано.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::vGrabber::vGrabber</name>
     <message>
-        <location filename="vgrabber.cpp" line="84"/>
+        <location filename="vgrabber.cpp" line="83"/>
         <source>vkontakte.ru audio/video grabber.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vgrabber.cpp" line="167"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантаження та програванная аудіо та відео з В Контакте.</translation>
     </message>
 </context>
 </TS>

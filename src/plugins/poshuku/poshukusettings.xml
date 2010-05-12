@@ -17,6 +17,7 @@
 			<item type="checkbox" property="StartWithHomeTab" state="off">
 				<label lang="en" value="Always open home tab" />
 				<label lang="ru" value="Всегда открывать домашнюю вкладку" />
+				<label lang="uk" value="Завжди відкривати домашню вкладку" />
 			</item>
 			<item type="checkbox" property="BackgroundNewTabs" state="on">
 				<label lang="en" value="Open new tabs in the background" />

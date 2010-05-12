@@ -4,6 +4,7 @@
 	<page>
 		<label lang="en" value="FUA settings" />
 		<label lang="ru" value="Параметры FUA" />
+		<label lang="uk" value="Параметри FUA" />
 		<item type="customwidget" name="Settings" label="own" />
 	</page>
 </settings>

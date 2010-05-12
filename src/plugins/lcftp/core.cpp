@@ -222,7 +222,7 @@ namespace LeechCraft
 										.arg (Util::MakePrettySize (s.second))
 										.arg (s.first * 100 / s.second);
 								else
-									return tr ("%1")
+									return QString ("%1")
 										.arg (Util::MakePrettySize (s.first));
 							}
 						default:
@@ -356,7 +356,7 @@ namespace LeechCraft
 								fd.exists (file))
 						{
 							QMessageBox box (QMessageBox::Question,
-									Core::tr ("LeechCraft"),
+									"LeechCraft",
 									Core::tr ("%1 already exists. What do you want to do?")
 										.arg (QDir::toNativeSeparators (dir + "/" + file)),
 									QMessageBox::NoButton,
@@ -380,7 +380,7 @@ namespace LeechCraft
 								if (!fd.remove (file))
 								{
 									QMessageBox::critical (Core::Instance ().GetCoreProxy ()->GetMainWindow (),
-											Core::tr ("LeechCraft"),
+											"LeechCraft",
 											Core::tr ("Error removing %1")
 												.arg (QDir::toNativeSeparators (dir + "/" + file)));
 									return QString ();

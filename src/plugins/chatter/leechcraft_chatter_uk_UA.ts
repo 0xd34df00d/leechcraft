@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="uk_UA">
 <context>
     <name></name>
     <message>
@@ -19,77 +19,77 @@
     <message>
         <location filename="fsircview.cpp" line="207"/>
         <source>Private: </source>
-        <translation type="unfinished"></translation>
+        <translation>Приват: </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="212"/>
         <source>Notice: </source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщення:</translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="258"/>
         <source>Names for %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Імена для %1: %2</translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="264"/>
         <source>Topic for </source>
-        <translation type="unfinished"></translation>
+        <translation>Тема для </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="269"/>
         <source> is now known as </source>
-        <translation type="unfinished"></translation>
+        <translation> тепер відомий як </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="290"/>
         <source> has joined </source>
-        <translation type="unfinished"></translation>
+        <translation> приєднався до </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="303"/>
         <source> has left </source>
-        <translation type="unfinished"></translation>
+        <translation> вийшов з </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="308"/>
         <source> has quit IRC: </source>
-        <translation type="unfinished"></translation>
+        <translation> покинув IRC: </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="313"/>
         <source> has kicked </source>
-        <translation type="unfinished"></translation>
+        <translation> вигнав </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="313"/>
         <source> out of </source>
-        <translation type="unfinished"></translation>
+        <translation> з </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="318"/>
         <source> has set mode </source>
-        <translation type="unfinished"></translation>
+        <translation> встановив режим </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="318"/>
         <source> on </source>
-        <translation type="unfinished"></translation>
+        <translation> на </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="405"/>
         <source>RAW -&gt; </source>
-        <translation type="unfinished"></translation>
+        <translation>RAW -&gt; </translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="520"/>
         <source>Private: * %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Приват: * %1 %2</translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="525"/>
         <source>%1 sets topic to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 встановлюе тему: %2</translation>
     </message>
 </context>
 <context>
@@ -97,32 +97,32 @@
     <message>
         <location filename="irc.cpp" line="64"/>
         <source>Contacting IRC server...</source>
-        <translation type="unfinished"></translation>
+        <translation>З&apos;єднання з IRC сервером...</translation>
     </message>
     <message>
         <location filename="irc.cpp" line="563"/>
         <source>Disconnected from server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Відключений від серверу.</translation>
     </message>
     <message>
         <location filename="irc.cpp" line="601"/>
         <source>Encoding has been set to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановлено кодування %1</translation>
     </message>
     <message>
         <location filename="irc.cpp" line="605"/>
         <source>No such encoding!</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає такого кодування!</translation>
     </message>
     <message>
         <location filename="irc.cpp" line="624"/>
         <source>Invalid IRC URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправильна адреса IRC</translation>
     </message>
     <message>
         <location filename="irc.h" line="47"/>
         <source>See ya in hell!</source>
-        <translation type="unfinished"></translation>
+        <translation>Побачимось у пеклі!</translation>
     </message>
 </context>
 <context>
@@ -130,17 +130,17 @@
     <message>
         <location filename="ircserver.cpp" line="62"/>
         <source>Contacting IRC server...</source>
-        <translation type="unfinished"></translation>
+        <translation>З&apos;єднання з IRC сервером...</translation>
     </message>
     <message>
         <location filename="ircserver.cpp" line="75"/>
         <source>Not connected to server!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не підключений до серверу!</translation>
     </message>
     <message>
         <location filename="ircserver.cpp" line="184"/>
         <source>Logging in...</source>
-        <translation type="unfinished"></translation>
+        <translation>Реєструюсь...</translation>
     </message>
 </context>
 <context>
@@ -148,7 +148,7 @@
     <message>
         <location filename="chatter.cpp" line="45"/>
         <source>Allows to chat in IRC</source>
-        <translation type="unfinished"></translation>
+        <translation>Дозволяє теревенити в IRC</translation>
     </message>
 </context>
 <context>
@@ -166,22 +166,22 @@
     <message>
         <location filename="fsircview.ui" line="52"/>
         <source>Open IRC URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити адресу IRC</translation>
     </message>
     <message>
         <location filename="fsircview.ui" line="57"/>
         <source>Change nick</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити прізвисько</translation>
     </message>
     <message>
         <location filename="fsircview.ui" line="62"/>
         <source>Set encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити кодування</translation>
     </message>
     <message>
         <location filename="fsircview.ui" line="67"/>
         <source>Stop this senseless struggle</source>
-        <translation type="unfinished"></translation>
+        <translation>Припинити цю марну битву</translation>
     </message>
     <message>
         <location filename="fsircview.ui" line="96"/>

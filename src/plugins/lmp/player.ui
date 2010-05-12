@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>LMP</string>
+   <string notr="true">LMP</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">

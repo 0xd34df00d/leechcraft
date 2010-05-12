@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="margin">
@@ -39,10 +39,10 @@
    <item>
     <layout class="QHBoxLayout" name="ControlsLayout_">
      <item>
-      <widget class="Phonon::VolumeSlider" name="VolumeSlider_"/>
+      <widget class="Phonon::VolumeSlider" name="VolumeSlider_" native="true"/>
      </item>
      <item>
-      <widget class="Phonon::SeekSlider" name="SeekSlider_"/>
+      <widget class="Phonon::SeekSlider" name="SeekSlider_" native="true"/>
      </item>
     </layout>
    </item>

@@ -302,7 +302,7 @@ namespace LeechCraft
 					return;
 
 				QByteArray contdis = Reply_->rawHeader ("Content-Disposition");
-				qDebug () << contdis;
+				qDebug () << Q_FUNC_INFO << contdis;
 				if (!contdis.size () ||
 						!contdis.contains ("filename=\""))
 					return;
@@ -391,7 +391,19 @@ namespace LeechCraft
 			bool Task::handleReadyRead ()
 			{
 				if (Reply_.get ())
-					To_->write (Reply_->readAll ());
+				{
+					quint64 avail = Reply_->bytesAvailable ();
+					quint64 res = To_->write (Reply_->readAll ());
+					if ((-1 == res) || (res != avail))
+					{
+						//FIXME: should show error message to user, but I don't know wich of Leechcraft APIs is appropriate in this case
+						qWarning () << Q_FUNC_INFO
+							    << "Error writing to file: "
+							    << To_->fileName () << " "
+							    << To_->errorString ();
+						emit done (true);
+					}
+				}
 				if (URL_.isEmpty () &&
 						Core::Instance ().HasFinishedReply (Reply_.get ()))
 				{

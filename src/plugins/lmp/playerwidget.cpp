@@ -403,7 +403,7 @@ namespace LeechCraft
 						break;
 				}
 				if (MediaObject_->state () == ErrorState)
-					result += tr (" (%1)").arg (MediaObject_->errorString ()); 
+					result += QString (" (%1)").arg (MediaObject_->errorString ());
 				result += tr (" [");
 				result += QString::number (static_cast<double> (MediaObject_->
 							currentTime ())/1000., 'f', 1);

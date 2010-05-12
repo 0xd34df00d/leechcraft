@@ -4,85 +4,106 @@
 	<page>
 		<label lang="en" value="General settings" />
 		<label lang="ru" value="Общие настройки" />
+		<label lang="uk" value="Загальні налаштування" />
 		<groupbox>
 			<label lang="en" value="General settings" />
 			<label lang="ru" value="Общие настройки" />
+			<label lang="uk" value="Загальні налаштування" />
 			<item type="checkbox" property="ActivatedTransfers" default="on">
 				<label lang="en" value="Transfer is also triggered by activating an item" />
 				<label lang="ru" value="Начинать передачи в результате активации строки в списке" />
+				<label lang="uk" value="Починати передачу при активації рядка в списку" />
 			</item>
 			<item type="checkbox" property="TransferHiddenFiles" default="on">
 				<label lang="en" value="Transfer hidden files" />
 				<label lang="ru" value="Передавать скрытые файлы" />
+				<label lang="uk" value="Передавати приховані файли" />
 			</item>
 			<item type="checkbox" property="FollowSymLinks" default="off">
 				<label lang="en" value="Follow symlinks" />
 				<label lang="ru" value="Переходить по символическим ссылкам" />
+				<label lang="uk" value="Зважати на символічні посилання" />
 			</item>
 			<item type="checkbox" property="AppendRemoteFiles" default="on">
 				<label lang="en" value="Append to remote files instead of overwriting" />
 				<label lang="ru" value="Дописывать к удалённым файлам вместо перезаписи" />
+				<label lang="uk" value="Дописувати дані в кінець віддалених файлів замість перезапису" />
 			</item>
 		</groupbox>
 		<groupbox>
 			<label lang="en" value="Identification" />
 			<label lang="ru" value="Идентификация" />
+			<label lang="uk" value="Ідентифікація" />
 			<item type="lineedit" property="FTPLogin" default="anonymous">
 				<label lang="en" value="Login:" />
 				<label lang="ru" value="Логин:" />
+				<label lang="uk" value="Логін:" />
 			</item>
 			<item type="lineedit" property="FTPPassword" default="simpleemail@leechcraft.org">
 				<label lang="en" value="Password:" />
 				<label lang="ru" value="Пароль:" />
+				<label lang="uk" value="Пароль:" />
 			</item>
 		</groupbox>
 	</page>
 	<page>
 		<label lang="en" value="FTP settings" />
 		<label lang="ru" value="Настройки FTP" />
+		<label lang="uk" value="Параметри FTP" />
 		<tab>
 			<label lang="en" value="Behavior" />
 			<label lang="ru" value="Поведение" />
+			<label lang="uk" value="Поведінка" />
 			<item type="checkbox" property="UseEPRT" default="on">
 				<label lang="en" value="Attempt to use EPRT and LPRT instead of PORT" />
 				<label lang="ru" value="Пытаться использовать EPRT и LPRT вместо PORT" />
+				<label lang="uk" value="Намагатися використовувати EPRT та LPRT замість POST" />
 			</item>
 			<item type="checkbox" property="UseEPSV" default="on">
 				<label lang="en" value="Attempt to use EPSV before PASV" />
 				<label lang="ru" value="Пытаться использовать EPSV перед PASV" />
+				<label lang="uk" value="Намагатися використовувати EPSV перед PASV" />
 			</item>
 			<item type="checkbox" property="SkipPasvIP" default="off">
 				<label lang="en" value="Skip IP received as the result of PASV" />
 				<label lang="ru" value="Игнорировать IP, полученный в результате PASV" />
+				<label lang="uk" value="Ігнорувати IP, що був отриманий в результаті PASV" />
 			</item>
 			<item type="spinbox" property="TotalNumWorkers" minimum="2" maximum="128" default="4">
 				<label lang="en" value="Total number of worker threads:" />
 				<label lang="ru" value="Общее количество рабочих потоков:" />
+				<label lang="uk" value="Загальна кількість робочих потоків:" />
 			</item>
 			<item type="spinbox" property="WorkersPerDomain" minimum="1" maximum="64" default="2">
 				<label lang="en" value="Worker threads per domain:" />
 				<label lang="ru" value="Рабочих потоков на домен:" />
+				<label lang="uk" value="Робочих потоків на домен:" />
 			</item>
 		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Network settings" />
 		<label lang="ru" value="Настройки сети" />
+		<label lang="uk" value="Налаштування мережі" />
 		<tab>
 			<label lang="en" value="General" />
 			<label lang="ru" value="Общие" />
+			<label lang="uk" value="Загальні" />
 			<item type="groupbox" property="CustomPortRange" checkable="true" default="off">
 				<label lang="en" value="Custom port range" />
 				<label lang="ru" value="Специальный диапазон портов" />
+				<label lang="uk" value="Спеціальний діапазон портів" />
 				<item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
 					<label lang="en" value="Port range:" />
 					<label lang="ru" value="Диапазон портов:" />
+					<label lang="uk" value="Діапазон портів:" />
 				</item>
 			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Proxy settings" />
 			<label lang="ru" value="Настройки прокси" />
+			<label lang="uk" value="Налаштування проксі" />
 			<item type="groupbox" property="ProxyEnabled" checkable="true" default="off">
 				<label lang="en" value="Application-wide proxy" />
 				<label lang="ru" value="Глобальный прокси" />
@@ -133,10 +154,12 @@
 				<item type="checkbox" propery="ProxyTunnel" default="off">
 					<label lang="en" value="Tunnel requests through the proxy" />
 					<label lang="ru" value="Тунеллировать запросы через прокси" />
+					<label lang="uk" value="Тунелювати запити через проксі" />
 				</item>
 				<item type="lineedit" property="NoProxy" default="">
 					<label lang="en" value="Comma-separated list of exceptions:" />
 					<label lang="ru" value="Разделенный запятыми список исключений:" />
+					<label lang="uk" value="Список виключень (розділяти комами):" />
 				</item>
 			</item>
 		</tab>
