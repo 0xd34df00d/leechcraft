@@ -786,7 +786,8 @@ namespace LeechCraft
 						result += tr ("<strong>Views:</strong> %1")
 							.arg (entry->Views_);
 					if (entry->Favs_)
-						result += tr ("<strong>Added to favorites:</strong> %n time(s)", "", entry->Favs_);
+						result += tr ("<strong>Added to favorites:</strong> %n time(s)",
+								"", entry->Favs_);
 					if (entry->RatingAverage_)
 						result += tr ("<strong>Average rating:</strong> %1")
 							.arg (entry->RatingAverage_);

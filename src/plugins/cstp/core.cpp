@@ -121,7 +121,10 @@ namespace LeechCraft
 							.arg (QDateTime::currentDateTime ().toString (Qt::ISODate));
 					file.replace (restrictedChars, replaceWith);
 					if (file != fileInfo.fileName ())
-						 qWarning () << Q_FUNC_INFO << fileInfo.fileName () <<" was corrected to: " << file;
+						 qWarning () << Q_FUNC_INFO
+								 << fileInfo.fileName ()
+								 << "was corrected to:"
+								 << file;
 					return file;
 				}
 			}
