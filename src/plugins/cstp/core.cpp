@@ -638,6 +638,10 @@ namespace LeechCraft
 			
 					QByteArray data = settings.value ("Task").toByteArray ();
 					td.Task_.reset (new Task ());
+					connect (td.Task_.get (),
+							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+							this,
+							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 					try
 					{
 						td.Task_->Deserialize (data);

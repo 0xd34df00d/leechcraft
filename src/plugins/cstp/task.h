@@ -26,6 +26,7 @@
 #include <QTime>
 #include <QNetworkReply>
 #include <QStringList>
+#include <interfaces/structures.h>
 #include "morphfile.h"
 
 class QAuthenticator;
@@ -92,6 +93,7 @@ namespace LeechCraft
 				void handleFinished ();
 				void handleError ();
 			signals:
+				void gotEntity (const LeechCraft::DownloadEntity&);
 				void updateInterface ();
 				void done (bool);
 			};
