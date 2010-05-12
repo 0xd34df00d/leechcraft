@@ -177,7 +177,9 @@ namespace LeechCraft
 		 * user-visible notification. These notifications have
 		 * "x-leechcraft/notification" MIME.
 		 *
-		 * See the documentation for DownloadEntity about such entities.
+		 * You can further customize the returned DownloadEntity to suit
+		 * your exact needs. See the documentation for DownloadEntity
+		 * about such entities.
 		 *
 		 * @param[in] header The header of the notification.
 		 * @param[in] text The text of the notification.
