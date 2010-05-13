@@ -106,17 +106,27 @@ bool TabWidget::event (QEvent *e)
 void TabWidget::mouseDoubleClickEvent (QMouseEvent *e)
 {
 	if (tabBar ()->tabAt (e->pos ()) == -1)
+	{
 		emit newTabRequested ();
+		e->accept ();
+	}
 
 	QTabWidget::mouseDoubleClickEvent (e);
 }
 
 void TabWidget::mouseReleaseEvent (QMouseEvent *e)
 {
+	int tabIndex = tabBar ()->tabAt (e->pos ());
 	if (e->button () == Qt::RightButton &&
-			tabBar ()->tabAt (e->pos ()) == -1)
+			tabIndex == -1)
 	{
 		emit newTabMenuRequested ();
+		e->accept ();
+	}
+	else if (e->button () == Qt::MidButton &&
+			tabIndex != -1)
+	{
+		emit tabCloseRequested (tabIndex);
 		e->accept ();
 	}
 
