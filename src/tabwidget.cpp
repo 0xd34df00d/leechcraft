@@ -111,6 +111,18 @@ void TabWidget::mouseDoubleClickEvent (QMouseEvent *e)
 	QTabWidget::mouseDoubleClickEvent (e);
 }
 
+void TabWidget::mouseReleaseEvent (QMouseEvent *e)
+{
+	if (e->button () == Qt::RightButton &&
+			tabBar ()->tabAt (e->pos ()) == -1)
+	{
+		emit newTabMenuRequested ();
+		e->accept ();
+	}
+
+	QTabWidget::mouseReleaseEvent (e);
+}
+
 void TabWidget::tabRemoved (int index)
 {
 	Widgets_.remove (index);

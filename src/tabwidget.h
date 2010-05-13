@@ -39,6 +39,7 @@ namespace LeechCraft
 	protected:
 		virtual bool event (QEvent*);
 		virtual void mouseDoubleClickEvent (QMouseEvent*);
+		virtual void mouseReleaseEvent (QMouseEvent*);
 		virtual void tabRemoved (int);
 	private slots:
 		void handleTabBarLocationChanged ();
@@ -47,6 +48,7 @@ namespace LeechCraft
 	signals:
 		void moveHappened (int, int);
 		void newTabRequested ();
+		void newTabMenuRequested ();
 	};
 };
 
