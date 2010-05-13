@@ -23,7 +23,7 @@
 					<label lang="ru" value="Всегда использовать внешний браузер" />
 					<label lang="uk" value="Завжди використовувати зовнішній браузер" />
 				</item>
-				<item type="checkbox" property="UnreadOnTop" state="on">
+				<item type="checkbox" property="UnreadOnTop" state="off">
 					<label lang="en" value="Show unread items on top" />
 					<label lang="ru" value="Показывать непрочтенные статьи наверху" />
 					<label lang="uk" value="Показвати непрочитані статті зверху" />
