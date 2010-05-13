@@ -198,8 +198,6 @@ namespace LeechCraft
 			
 				Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
 						Property ("MergeItems", false).toBool ());
-				Impl_->Ui_.ShowAsTape_->setChecked (XmlSettingsManager::Instance ()->
-						Property ("TapeMode", false).toBool ());
 			
 				Impl_->RegexpMatcherUi_.reset (new RegexpMatcherUi (this));
 			
@@ -696,12 +694,6 @@ namespace LeechCraft
 			{
 				Impl_->Ui_.ItemsWidget_->SetMergeMode (merge);
 				XmlSettingsManager::Instance ()->setProperty ("MergeItems", merge);
-			}
-			
-			void Aggregator::on_ShowAsTape__toggled (bool tape)
-			{
-				Impl_->Ui_.ItemsWidget_->SetTapeMode (tape);
-				XmlSettingsManager::Instance ()->setProperty ("TapeMode", tape);
 			}
 			
 			void Aggregator::currentChannelChanged ()

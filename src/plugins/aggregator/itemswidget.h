@@ -99,6 +99,7 @@ namespace LeechCraft
 				void invalidateMergeMode ();
 				void channelChanged (const QModelIndex&);
 				void on_ActionHideReadItems__triggered ();
+				void on_ActionShowAsTape__triggered ();
 				void on_ActionMarkItemAsUnread__triggered ();
 				void on_CaseSensitiveSearch__stateChanged (int);
 				void on_ActionAddToItemBucket__triggered ();

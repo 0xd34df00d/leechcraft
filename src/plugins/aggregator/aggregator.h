@@ -121,7 +121,6 @@ namespace LeechCraft
 				void on_ActionMarkChannelAsUnread__triggered ();
 				void on_ActionChannelSettings__triggered ();
 				void on_MergeItems__toggled (bool);
-				void on_ShowAsTape__toggled (bool);
 				void currentChannelChanged ();
 				void unreadNumberChanged (int);
 				void trayIconActivated ();
