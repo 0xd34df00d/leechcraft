@@ -163,6 +163,7 @@ namespace LeechCraft
 				ChannelsFullSelector_ = QSqlQuery (DB_);
 				ChannelsFullSelector_.prepare ("SELECT "
 						"url, "
+						"title, "
 						"description, "
 						"last_build, "
 						"tags, "
@@ -172,8 +173,7 @@ namespace LeechCraft
 						"pixmap, "
 						"favicon "
 						"FROM channels "
-						"WHERE parent_feed_url = :parent_feed_url "
-						"AND title = :title "
+						"WHERE channel_id = :channel_id "
 						"ORDER BY title");
 			
 				UnreadItemsCounter_ = QSqlQuery (DB_);
@@ -195,13 +195,14 @@ namespace LeechCraft
 			
 				ItemsShortSelector_ = QSqlQuery (DB_);
 				ItemsShortSelector_.prepare ("SELECT "
+						"item_id, "
 						"title, "
 						"url, "
 						"category, "
 						"pub_date, "
 						"unread "
 						"FROM items "
-						"WHERE parents_hash = :parents_hash "
+						"WHERE channel_id = :channel_id "
 						"ORDER BY pub_date DESC, "
 						"title DESC");
 			
@@ -239,25 +240,18 @@ namespace LeechCraft
 						"comments_url, "
 						"comments_page_url, "
 						"latitude, "
-						"longitude "
+						"longitude, "
+						"channel_id,"
+						"item_id, "
 						"FROM items "
-						"WHERE parents_hash = :parents_hash "
+						"WHERE channel_id = :channel_id "
 						"ORDER BY pub_date DESC");
-			
+
 				ChannelFinder_ = QSqlQuery (DB_);
-				ChannelFinder_.prepare ("SELECT description "
+				ChannelFinder_.prepare ("SELECT 1 "
 						"FROM channels "
-						"WHERE parent_feed_url = :parent_feed_url "
-						"AND title = :title "
-						"AND url = :url");
-			
-				ItemFinder_ = QSqlQuery (DB_);
-				ItemFinder_.prepare ("SELECT title "
-						"FROM items "
-						"WHERE parents_hash = :parents_hash "
-						"AND title = :title "
-						"AND url = :url");
-			
+						"WHERE channel_id = :channel_id");
+
 				InsertFeed_ = QSqlQuery (DB_);
 				InsertFeed_.prepare ("INSERT INTO feeds ("
 						"url, "
@@ -269,7 +263,8 @@ namespace LeechCraft
 			
 				InsertChannel_ = QSqlQuery (DB_);
 				InsertChannel_.prepare ("INSERT INTO channels ("
-						"parent_feed_url, "
+						"channel_id, "
+						"feed_id, "
 						"url, "
 						"title, "
 						"description, "
@@ -281,7 +276,8 @@ namespace LeechCraft
 						"pixmap, "
 						"favicon"
 						") VALUES ("
-						":parent_feed_url, "
+						":channel_id, "
+						":feed_id, "
 						":url, "
 						":title, "
 						":description, "
@@ -296,7 +292,8 @@ namespace LeechCraft
 			
 				InsertItem_ = QSqlQuery (DB_);
 				InsertItem_.prepare ("INSERT INTO items ("
-						"parents_hash, "
+						"item_id, "
+						"channel_id, "
 						"title, "
 						"url, "
 						"description, "
@@ -311,7 +308,8 @@ namespace LeechCraft
 						"latitude, "
 						"longitude"
 						") VALUES ("
-						":parents_hash, "
+						":item_id, "
+						":channel_id, "
 						":title, "
 						":url, "
 						":description, "
@@ -331,9 +329,7 @@ namespace LeechCraft
 				UpdateShortChannel_.prepare ("UPDATE channels SET "
 						"tags = :tags, "
 						"last_build = :last_build "
-						"WHERE parent_feed_url = :parent_feed_url "
-						"AND url = :url "
-						"AND title = :title");
+						"WHERE channel_id = :channel_id");
 			
 				UpdateChannel_ = QSqlQuery (DB_);
 				UpdateChannel_.prepare ("UPDATE channels SET "
@@ -345,9 +341,7 @@ namespace LeechCraft
 						"pixmap_url = :pixmap_url, "
 						"pixmap = :pixmap, "
 						"favicon = :favicon "
-						"WHERE parent_feed_url = :parent_feed_url "
-						"AND url = :url "
-						"AND title = :title");
+						"WHERE channel_id = :channel_id");
 
 				QString common = "DELETE FROM items "
 					"WHERE parents_hash = :parents_hash ";
@@ -375,9 +369,7 @@ namespace LeechCraft
 				UpdateShortItem_ = QSqlQuery (DB_);
 				UpdateShortItem_.prepare ("UPDATE items SET "
 						"unread = :unread "
-						"WHERE parents_hash = :parents_hash "
-						"AND title = :title "
-						"AND url = :url");
+						"WHERE item_id = :item_id");
 			
 				UpdateItem_ = QSqlQuery (DB_);
 				UpdateItem_.prepare ("UPDATE items SET "
@@ -391,14 +383,12 @@ namespace LeechCraft
 						"comments_page_url = :comments_page_url, "
 						"latitude = :latitude, "
 						"longitude = :longitude "
-						"WHERE parents_hash = :parents_hash "
-						"AND title = :title "
-						"AND url = :url");
+						"WHERE item_id = :item_id");
 			
 				ToggleChannelUnread_ = QSqlQuery (DB_);
 				ToggleChannelUnread_.prepare ("UPDATE items SET "
 						"unread = :unread "
-						"WHERE parents_hash = :parents_hash "
+						"WHERE channel_id = :channel_id "
 						"AND unread <> :unread");
 			
 				RemoveFeed_ = QSqlQuery (DB_);
@@ -407,13 +397,11 @@ namespace LeechCraft
 			
 				RemoveChannel_ = QSqlQuery (DB_);
 				RemoveChannel_.prepare ("DELETE FROM channels "
-						"WHERE parent_feed_url = :parent_feed_url");
+						"WHERE channel_id = :channel_id");
 			
 				RemoveItem_ = QSqlQuery (DB_);
 				RemoveItem_.prepare ("DELETE FROM items "
-						"WHERE parents_hash = :parents_hash "
-						"AND title = :title "
-						"AND url = :url");
+						"WHERE item_id = :item_id");
 			
 				WriteEnclosure_ = QSqlQuery (DB_);
 				WriteEnclosure_.prepare (QString ("INSERT %1 INTO enclosures ("
@@ -421,17 +409,15 @@ namespace LeechCraft
 							"type, "
 							"length, "
 							"lang, "
-							"item_parents_hash, "
-							"item_title, "
-							"item_url"
+							"item_id, "
+							"enclosure_id"
 							") VALUES ("
 							":url, "
 							":type, "
 							":length, "
 							":lang, "
-							":item_parents_hash, "
-							":item_title, "
-							":item_url"
+							":item_id, "
+							":enclosure_id"
 							")").arg (orReplace));
 
 				WriteMediaRSS_ = QSqlQuery (DB_);
@@ -694,9 +680,7 @@ namespace LeechCraft
 			
 				RemoveEnclosures_ = QSqlQuery (DB_);
 				RemoveEnclosures_.prepare ("DELETE FROM enclosures "
-						"WHERE item_parents_hash = :item_parents_hash "
-						"AND item_title = :item_title "
-						"AND item_url = :item_url");
+						"WHERE item_id = :item_id");
 			
 				GetEnclosures_ = QSqlQuery (DB_);
 				GetEnclosures_.prepare ("SELECT "
@@ -711,39 +695,27 @@ namespace LeechCraft
 
 				RemoveMediaRSS_ = QSqlQuery (DB_);
 				RemoveMediaRSS_.prepare ("DELETE FROM mrss "
-						"WHERE item_parents_hash = :item_parents_hash "
-						"AND item_title = :item_title "
-						"AND item_url = :item_url");
+						"WHERE item_id = :item_id");
 
 				RemoveMediaRSSThumbnails_ = QSqlQuery (DB_);
 				RemoveMediaRSSThumbnails_.prepare ("DELETE FROM mrss_thumbnails "
-						"WHERE item_parents_hash = :item_parents_hash "
-						"AND item_title = :item_title "
-						"AND item_url = :item_url");
+						"WHERE item_id = :item_id");
 
 				RemoveMediaRSSCredits_ = QSqlQuery (DB_);
 				RemoveMediaRSSCredits_.prepare ("DELETE FROM mrss_credits "
-						"WHERE item_parents_hash = :item_parents_hash "
-						"AND item_title = :item_title "
-						"AND item_url = :item_url");
+						"WHERE item_id = :item_id");
 
 				RemoveMediaRSSComments_ = QSqlQuery (DB_);
 				RemoveMediaRSSComments_.prepare ("DELETE FROM mrss_comments "
-						"WHERE item_parents_hash = :item_parents_hash "
-						"AND item_title = :item_title "
-						"AND item_url = :item_url");
+						"WHERE item_id = :item_id");
 
 				RemoveMediaRSSPeerLinks_ = QSqlQuery (DB_);
 				RemoveMediaRSSPeerLinks_.prepare ("DELETE FROM mrss_peerlinks "
-						"WHERE item_parents_hash = :item_parents_hash "
-						"AND item_title = :item_title "
-						"AND item_url = :item_url");
+						"WHERE item_id = :item_id");
 
 				RemoveMediaRSSScenes_ = QSqlQuery (DB_);
 				RemoveMediaRSSScenes_.prepare ("DELETE FROM mrss_scenes "
-						"WHERE item_parents_hash = :item_parents_hash "
-						"AND item_title = :item_title "
-						"AND item_url = :item_url");
+						"WHERE item_id = :item_id");
 			}
 			
 			void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
@@ -829,7 +801,8 @@ namespace LeechCraft
 					IDType_t id = ChannelsShortSelector_.value (0).value<IDType_t> ();
 
 					UnreadItemsCounter_.bindValue (":channel_id", id);
-					if (!UnreadItemsCounter_.exec () || !UnreadItemsCounter_.next ())
+					if (!UnreadItemsCounter_.exec () ||
+							!UnreadItemsCounter_.next ())
 						Util::DBLock::DumpError (UnreadItemsCounter_);
 					else
 						unread = UnreadItemsCounter_.value (0).toInt ();
@@ -856,72 +829,78 @@ namespace LeechCraft
 				ChannelsShortSelector_.finish ();
 			}
 			
-			Channel_ptr SQLStorageBackend::GetChannel (const QString& title,
-					const QString& feedParent) const
+			Channel_ptr SQLStorageBackend::GetChannel (const IDType_t& channelId,
+					const IDType_t& parentFeed) const
 			{
-				ChannelsFullSelector_.bindValue (":title", title);
-				ChannelsFullSelector_.bindValue (":parent_feed_url", feedParent);
+				ChannelsFullSelector_.bindValue (":channelId", channelId);
 				if (!ChannelsFullSelector_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ChannelsFullSelector_);
 					
 				if (!ChannelsFullSelector_.next ())
 					throw ChannelNotFoundError ();
 			
-				Channel_ptr channel (new Channel);
+				Channel_ptr channel (new Channel (parentFeed, channelId));
 			
 				channel->Link_ = ChannelsFullSelector_.value (0).toString ();
-				channel->Title_ = title;
-				channel->Description_ = ChannelsFullSelector_.value (1).toString ();
-				channel->LastBuild_ = ChannelsFullSelector_.value (2).toDateTime ();
-				QString tags = ChannelsFullSelector_.value (3).toString ();
+				channel->Title_ = ChannelsFullSelector_.value (1).toString ();
+				channel->Description_ = ChannelsFullSelector_.value (2).toString ();
+				channel->LastBuild_ = ChannelsFullSelector_.value (3).toDateTime ();
+				QString tags = ChannelsFullSelector_.value (4).toString ();
 				channel->Tags_ = Core::Instance ().GetProxy ()->GetTagsManager ()->Split (tags);
-				channel->Language_ = ChannelsFullSelector_.value (4).toString ();
-				channel->Author_ = ChannelsFullSelector_.value (5).toString ();
-				channel->PixmapURL_ = ChannelsFullSelector_.value (6).toString ();
+				channel->Language_ = ChannelsFullSelector_.value (5).toString ();
+				channel->Author_ = ChannelsFullSelector_.value (6).toString ();
+				channel->PixmapURL_ = ChannelsFullSelector_.value (7).toString ();
 				channel->Pixmap_ = UnserializePixmap (ChannelsFullSelector_
-						.value (7).toByteArray ());
-				channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
 						.value (8).toByteArray ());
-				channel->ParentURL_ = feedParent;
+				channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
+						.value (9).toByteArray ());
 			
 				ChannelsFullSelector_.finish ();
 			
 				return channel;
 			}
 
-			void SQLStorageBackend::TrimChannel (const QString& title,
-						const QString& feedParent, int days, int number)
+			void SQLStorageBackend::TrimChannel (const IDType_t& channelId,
+					int days, int number)
 			{
-				ChannelDateTrimmer_.bindValue (":parents_hash", feedParent + title);
+				ChannelDateTrimmer_.bindValue (":channel_id", channelId);
 				ChannelDateTrimmer_.bindValue (":age", days);
 				if (!ChannelDateTrimmer_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ChannelDateTrimmer_);
 
-				ChannelNumberTrimmer_.bindValue (":parents_hash", feedParent + title);
+				ChannelNumberTrimmer_.bindValue (":channel_id", channelId);
 				ChannelNumberTrimmer_.bindValue (":number", number);
 				if (!ChannelNumberTrimmer_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
 
 				try
 				{
-					emit channelDataUpdated (GetChannel (title, feedParent));
+					emit channelDataUpdated (GetChannel (channelId,
+							FindParentFeedForChannel (channelId)));
 				}
 				catch (const ChannelNotFoundError&)
 				{
 					qWarning () << Q_FUNC_INFO
-						<< "channel not found"
-						<< title
-						<< feedParent;
+							<< "channel not found"
+							<< channelId;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "error updating channel data"
+							<< channelId
+							<< e.what ();
 				}
 			}
 			
-			void SQLStorageBackend::GetItems (items_shorts_t& shorts, const QString& parentsHash) const
+			void SQLStorageBackend::GetItems (items_shorts_t& shorts,
+					const IDType_t& channelId) const
 			{
-				ItemsShortSelector_.bindValue (":parents_hash", parentsHash);
+				ItemsShortSelector_.bindValue (":channel_id", channelId);
 			
 				if (!ItemsShortSelector_.exec ())
 				{
-					LeechCraft::Util::DBLock::DumpError (ItemsShortSelector_);
+					Util::DBLock::DumpError (ItemsShortSelector_);
 					return;
 				}
 			
@@ -929,12 +908,14 @@ namespace LeechCraft
 				{
 					ItemShort sh =
 					{
-						ItemsShortSelector_.value (0).toString (),
+						ItemsShortSelector_.value (0).value<IDType_t> (),
+						channelId,
 						ItemsShortSelector_.value (1).toString (),
-						ItemsShortSelector_.value (2).toString ()
+						ItemsShortSelector_.value (2).toString (),
+						ItemsShortSelector_.value (3).toString ()
 							.split ("<<<", QString::SkipEmptyParts),
-						ItemsShortSelector_.value (3).toDateTime (),
-						ItemsShortSelector_.value (4).toBool ()
+						ItemsShortSelector_.value (4).toDateTime (),
+						ItemsShortSelector_.value (5).toBool ()
 					};
 			
 					shorts.push_back (sh);
@@ -943,12 +924,13 @@ namespace LeechCraft
 				ItemsShortSelector_.finish ();
 			}
 			
-			int SQLStorageBackend::GetUnreadItems (const QString& purl, const QString& title) const
+			int SQLStorageBackend::GetUnreadItems (const IDType_t& channelId) const
 			{
 				int unread = 0;
-				UnreadItemsCounter_.bindValue (":parents_hash", purl + title);
-				if (!UnreadItemsCounter_.exec () || !UnreadItemsCounter_.next ())
-					LeechCraft::Util::DBLock::DumpError (UnreadItemsCounter_);
+				UnreadItemsCounter_.bindValue (":channel_id", channelId);
+				if (!UnreadItemsCounter_.exec () ||
+						!UnreadItemsCounter_.next ())
+					Util::DBLock::DumpError (UnreadItemsCounter_);
 				else
 					unread = UnreadItemsCounter_.value (0).toInt ();
 			
@@ -970,16 +952,16 @@ namespace LeechCraft
 				FillItem (ItemFullSelector_, item);
 				ItemFullSelector_.finish ();
 			
-				GetEnclosures (hash, title, link, item->Enclosures_);
-				GetMRSSEntries (hash, title, link, item->MRSSEntries_);
+				GetEnclosures (itemId, item->Enclosures_);
+				GetMRSSEntries (itemId, item->MRSSEntries_);
 			
 				return item;
 			}
 			
 			void SQLStorageBackend::GetItems (items_container_t& items,
-					const QString& hash) const
+					const IDType_t& channelId) const
 			{
-				ItemsFullSelector_.bindValue (":parents_hash", hash);
+				ItemsFullSelector_.bindValue (":channel_id", channelId);
 				if (!ItemsFullSelector_.exec ())
 				{
 					LeechCraft::Util::DBLock::DumpError (ItemsFullSelector_);
@@ -988,10 +970,12 @@ namespace LeechCraft
 			
 				while (ItemsFullSelector_.next ())
 				{
-					Item_ptr item (new Item);
+					IDType_t itemId = ItemsFullSelector_.value (14 ).value<IDType_t> ();
+					Item_ptr item (new Item (channelId,
+							itemId));
 					FillItem (ItemsFullSelector_, item);
-					GetEnclosures (hash, item->Title_, item->Link_, item->Enclosures_);
-					GetMRSSEntries (hash, item->Title_, item->Link_, item->MRSSEntries_);
+					GetEnclosures (itemId, item->Enclosures_);
+					GetMRSSEntries (itemId, item->MRSSEntries_);
 			
 					items.push_back (item);
 				}
@@ -1026,7 +1010,7 @@ namespace LeechCraft
 					std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
 						   boost::bind (&SQLStorageBackend::AddChannel,
 							   this,
-							   _1, feed->URL_));
+							   _1));
 				}
 				catch (const std::runtime_error& e)
 				{
@@ -1039,38 +1023,31 @@ namespace LeechCraft
 				lock.Good ();
 			}
 			
-			void SQLStorageBackend::UpdateChannel (Channel_ptr channel, const QString& parent)
+			void SQLStorageBackend::UpdateChannel (Channel_ptr channel)
 			{
-				ChannelFinder_.bindValue (":parent_feed_url", parent);
-				ChannelFinder_.bindValue (":title", channel->Title_);
-				ChannelFinder_.bindValue (":url", channel->Link_);
+				ChannelFinder_.bindValue (":channel_id", channel->ChannelID_);
 				if (!ChannelFinder_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
-					LeechCraft::Util::DBLock::DumpError (ChannelFinder_);
+					Util::DBLock::DumpError (ChannelFinder_);
 					throw std::runtime_error (qPrintable (QString (
-									"Unable to execute channel finder query for t %1, url %2, p %3")
+									"Unable to execute channel finder query for channel {title: %1; url: %2}")
 								.arg (channel->Title_)
-								.arg (channel->Link_)
-								.arg (parent)));
+								.arg (channel->Link_)));
 				}
-				ChannelFinder_.next ();
-				if (!ChannelFinder_.isValid ())
+				if (!ChannelFinder_.next ())
 				{
 					qWarning () << Q_FUNC_INFO
-						<< "not found such channel"
+						<< "not found channel"
 						<< channel->Title_
 						<< channel->Link_
-						<< parent
 						<< ", inserting it";
-					AddChannel (channel, parent);
+					AddChannel (channel);
 					return;
 				}
 				ChannelFinder_.finish ();
 			
-				UpdateChannel_.bindValue (":parent_feed_url", parent);
-				UpdateChannel_.bindValue (":url", channel->Link_);
-				UpdateChannel_.bindValue (":title", channel->Title_);
+				UpdateChannel_.bindValue (":channel_id", channel->ChannelID_);
 				UpdateChannel_.bindValue (":description", channel->Description_);
 				UpdateChannel_.bindValue (":last_build", channel->LastBuild_);
 				UpdateChannel_.bindValue (":tags",
@@ -1084,12 +1061,11 @@ namespace LeechCraft
 				if (!UpdateChannel_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
-					LeechCraft::Util::DBLock::DumpError (UpdateChannel_);
+					Util::DBLock::DumpError (UpdateChannel_);
 					throw std::runtime_error (qPrintable (QString (
-									"Failed to save channel t %1, u %2, p %3")
+									"Failed to save channel t %1, u %2")
 								.arg (channel->Title_)
-								.arg (channel->Link_)
-								.arg (parent)));
+								.arg (channel->Link_)));
 				}
 
 				if (!UpdateChannel_.numRowsAffected ())
@@ -1101,51 +1077,41 @@ namespace LeechCraft
 				emit channelDataUpdated (channel);
 			}
 			
-			void SQLStorageBackend::UpdateChannel (const ChannelShort& channel,
-					const QString& parent)
+			void SQLStorageBackend::UpdateChannel (const ChannelShort& channel)
 			{
-				ChannelFinder_.bindValue (":parent_feed_url", parent);
-				ChannelFinder_.bindValue (":title", channel.Title_);
-				ChannelFinder_.bindValue (":url", channel.Link_);
+				ChannelFinder_.bindValue (":channel_id", channel.ChannelID_);
 				if (!ChannelFinder_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (ChannelFinder_);
 					throw std::runtime_error (qPrintable (QString (
-									"Unable to execute channel finder query t %1, u %2, p %3")
+									"Unable to execute channel finder query {title: %1, url: %2}")
 								.arg (channel.Title_)
-								.arg (channel.Link_)
-								.arg (parent)));
+								.arg (channel.Link_)));
 				}
-				ChannelFinder_.next ();
-				if (!ChannelFinder_.isValid ())
+				if (!ChannelFinder_.next ())
 				{
 					qWarning () << Q_FUNC_INFO;
 					throw std::runtime_error (qPrintable (QString (
 									"Selected channel for updating doesn't exist and we don't "
-									"have enough info to insert it t %1, u %2, p %3.")
+									"have enough info to insert it {title: %1, url: %2}")
 								.arg (channel.Title_)
-								.arg (channel.Link_)
-								.arg (parent)));
+								.arg (channel.Link_)));
 				}
 				ChannelFinder_.finish ();
 			
-				UpdateShortChannel_.bindValue (":parent_feed_url", parent);
-				UpdateShortChannel_.bindValue (":url", channel.Link_);
-				UpdateShortChannel_.bindValue (":title", channel.Title_);
+				UpdateShortChannel_.bindValue (":channel_id", channel.ChannelID_);
 				UpdateShortChannel_.bindValue (":last_build", channel.LastBuild_);
-				UpdateShortChannel_.bindValue (":tags",
-						Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
+				UpdateShortChannel_.bindValue (":tags", Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
 			
 				if (!UpdateShortChannel_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (UpdateShortChannel_);
 					throw std::runtime_error (qPrintable (QString (
-									"Failed to save channel t %1, u %2, p %3")
+									"Failed to save channel {title: %1, url: %2}")
 								.arg (channel.Title_)
-								.arg (channel.Link_)
-								.arg (parent)));
+								.arg (channel.Link_)));
 				}
 
 				if (!UpdateShortChannel_.numRowsAffected ())
@@ -1156,23 +1122,22 @@ namespace LeechCraft
 			
 				try
 				{
-					emit channelDataUpdated (GetChannel (channel.Title_, parent));
+					emit channelDataUpdated (GetChannel (channel.ChannelID_,
+							channel.FeedID_));
 				}
 				catch (const ChannelNotFoundError&)
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "channel not found"
 						<< channel.Title_
-						<< parent;
+						<< channel.Link_
+						<< channel.ChannelID_;
 				}
 			}
 			
-			void SQLStorageBackend::UpdateItem (Item_ptr item,
-					const QString& parentUrl, const QString& parentTitle)
+			void SQLStorageBackend::UpdateItem (Item_ptr item)
 			{
-				UpdateItem_.bindValue (":parents_hash", parentUrl + parentTitle);
-				UpdateItem_.bindValue (":title", item->Title_);
-				UpdateItem_.bindValue (":url", item->Link_);
+				UpdateItem_.bindValue (":item_id", item->ItemID_);
 				UpdateItem_.bindValue (":description", item->Description_);
 				UpdateItem_.bindValue (":author", item->Author_);
 				UpdateItem_.bindValue (":category", item->Categories_.join ("<<<"));
@@ -1187,11 +1152,10 @@ namespace LeechCraft
 				if (!UpdateItem_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
-					LeechCraft::Util::DBLock::DumpError (UpdateItem_);
+					Util::DBLock::DumpError (UpdateItem_);
 					throw std::runtime_error (qPrintable (QString (
-									"Failed to save item pu %1, pt %2, t %3, u %4")
-								.arg (parentUrl)
-								.arg (parentTitle)
+									"Failed to save item {id: %1, title: %2, url: %3}")
+								.arg (item->ItemID_)
 								.arg (item->Title_)
 								.arg (item->Link_)));
 				}
@@ -1202,14 +1166,14 @@ namespace LeechCraft
 			
 				UpdateItem_.finish ();
 
-				WriteEnclosures (parentUrl + parentTitle,
-						item->Title_, item->Link_, item->Enclosures_);
-				WriteMRSSEntries (parentUrl + parentTitle,
-						item->Title_, item->Link_, item->MRSSEntries_);
+				WriteEnclosures (item->Enclosures_);
+				WriteMRSSEntries (item->MRSSEntries_);
 			
 				try
 				{
-					Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+					IDType_t cid = item->ChannelID_;
+					Channel_ptr channel = GetChannel (cid,
+							FindParentFeedForChannel (cid));
 					emit itemDataUpdated (item, channel);
 					emit channelDataUpdated (channel);
 				}
@@ -1217,55 +1181,22 @@ namespace LeechCraft
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "channel not found"
-						<< parentTitle
-						<< parentUrl;
+						<< item->ChannelID_;
 				}
 			}
 			
-			void SQLStorageBackend::UpdateItem (const ItemShort& item,
-					const QString& parentUrl, const QString& parentTitle)
+			void SQLStorageBackend::UpdateItem (const ItemShort& item)
 			{
-				ItemFinder_.bindValue (":parents_hash", parentUrl + parentTitle);
-				ItemFinder_.bindValue (":title", item.Title_);
-				ItemFinder_.bindValue (":url", item.URL_);
-				if (!ItemFinder_.exec ())
-				{
-					qWarning () << Q_FUNC_INFO;
-					LeechCraft::Util::DBLock::DumpError (ItemFinder_);
-					throw std::runtime_error (qPrintable (QString (
-									"Unable to execute item finder query pu %1, pt %2, t %3, u %4")
-								.arg (parentUrl)
-								.arg (parentTitle)
-								.arg (item.Title_)
-								.arg (item.URL_)));
-				}
-				ItemFinder_.next ();
-				if (!ItemFinder_.isValid ())
-				{
-					qWarning () << Q_FUNC_INFO;
-					throw std::runtime_error (qPrintable (QString (
-									"Specified item doesn't exist and we couldn't add it because "
-									"there isn't enough info pu %1, pt %2, t %3, u %4")
-								.arg (parentUrl)
-								.arg (parentTitle)
-								.arg (item.Title_)
-								.arg (item.URL_)));
-				}
-				ItemFinder_.finish ();
-			
-				UpdateShortItem_.bindValue (":parents_hash", parentUrl + parentTitle);
+				UpdateShortItem_.bindValue (":item_id", item.ItemID_);
 				UpdateShortItem_.bindValue (":unread", item.Unread_);
-				UpdateShortItem_.bindValue (":title", item.Title_);
-				UpdateShortItem_.bindValue (":url", item.URL_);
 			
 				if (!UpdateShortItem_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (UpdateShortItem_);
 					throw std::runtime_error (qPrintable (QString (
-									"Failed to save item pu %1, pt %2, t %3, u %4")
-								.arg (parentUrl)
-								.arg (parentTitle)
+									"Failed to save item {id: %1, title: %2, url: %3}")
+								.arg (item.ItemID_)
 								.arg (item.Title_)
 								.arg (item.URL_)));
 				}
@@ -1278,23 +1209,24 @@ namespace LeechCraft
 			
 				try
 				{
-					Channel_ptr channel = GetChannel (parentTitle, parentUrl);
-					emit itemDataUpdated (GetItem (item.Title_,
-								item.URL_, parentUrl + parentTitle), channel);
+					IDType_t cid = item.ChannelID_;
+					Channel_ptr channel = GetChannel (cid,
+							FindParentFeedForChannel (cid));
+					emit itemDataUpdated (GetItem (item.ItemID_), channel);
 					emit channelDataUpdated (channel);
 				}
 				catch (const ChannelNotFoundError&)
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "channel not found"
-						<< parentTitle
-						<< parentUrl;
+						<< item.ChannelID_;
 				}
 			}
 			
-			void SQLStorageBackend::AddChannel (Channel_ptr channel, const QString& url)
+			void SQLStorageBackend::AddChannel (Channel_ptr channel)
 			{
-				InsertChannel_.bindValue (":parent_feed_url", url);
+				InsertChannel_.bindValue (":channel_id", channel->ChannelID_);
+				InsertChannel_.bindValue (":feed_id", channel->FeedID_);
 				InsertChannel_.bindValue (":url", channel->Link_);
 				InsertChannel_.bindValue (":title", channel->Title_);
 				InsertChannel_.bindValue (":description", channel->Description_);
@@ -1310,12 +1242,13 @@ namespace LeechCraft
 				if (!InsertChannel_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
-					LeechCraft::Util::DBLock::DumpError (InsertChannel_);
+					Util::DBLock::DumpError (InsertChannel_);
 					throw std::runtime_error (qPrintable (QString (
-									"Failed to save channel t %1, u %2, p %3")
+									"Failed to save channel {id: %1, title: %2, url: %3, parent: %4}")
+								.arg (channel->ChannelID_)
 								.arg (channel->Title_)
 								.arg (channel->Link_)
-								.arg (url)));
+								.arg (channel->FeedID_)));
 				}
 			
 				InsertChannel_.finish ();
@@ -1323,15 +1256,13 @@ namespace LeechCraft
 				std::for_each (channel->Items_.begin (), channel->Items_.end (),
 					   boost::bind (&SQLStorageBackend::AddItem,
 						   this,
-						   _1,
-						   url,
-						   channel->Title_));
+						   _1));
 			}
 			
-			void SQLStorageBackend::AddItem (Item_ptr item,
-					const QString& parentUrl, const QString& parentTitle)
+			void SQLStorageBackend::AddItem (Item_ptr item)
 			{
-				InsertItem_.bindValue (":parents_hash", parentUrl + parentTitle);
+				InsertItem_.bindValue (":item_id", item->ItemID_);
+				InsertItem_.bindValue (":channel_id", item->ChannelID_);
 				InsertItem_.bindValue (":title", item->Title_);
 				InsertItem_.bindValue (":url", item->Link_);
 				InsertItem_.bindValue (":description", item->Description_);
@@ -1351,23 +1282,23 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (InsertItem_);
 					throw std::runtime_error (qPrintable (QString (
-									"Failed to save item pu %1, pt %2, t %3, u %4")
-								.arg (parentUrl)
-								.arg (parentTitle)
+									"Failed to save item {id: %1, channel: %2, title: %3, url: %4")
+								.arg (item->ItemID_)
+								.arg (item->ChannelID_)
 								.arg (item->Title_)
 								.arg (item->Link_)));
 				}
 			
 				InsertItem_.finish ();
 
-				WriteEnclosures (parentUrl + parentTitle,
-						item->Title_, item->Link_, item->Enclosures_);
-				WriteMRSSEntries (parentUrl + parentTitle,
-						item->Title_, item->Link_, item->MRSSEntries_);
+				WriteEnclosures (item->Enclosures_);
+				WriteMRSSEntries (item->MRSSEntries_);
 
 				try
 				{
-					Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+					IDType_t cid = item->ChannelID_;
+					Channel_ptr channel = GetChannel (cid,
+							FindParentFeedForChannel (cid));
 					emit itemDataUpdated (item, channel);
 					emit channelDataUpdated (channel);
 				}
@@ -1375,21 +1306,16 @@ namespace LeechCraft
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "channel not found"
-						<< parentTitle
-						<< parentUrl;
+						<< item->ChannelID_;
 				}
 			}
 
 			namespace
 			{
 				bool PerformRemove (QSqlQuery& query,
-						const QString& hash,
-						const QString& title,
-						const QString& link)
+						const IDType_t& itemId)
 				{
-					query.bindValue (":item_parents_hash", hash);
-					query.bindValue (":item_title", title);
-					query.bindValue (":item_url", link);
+					query.bindValue (":item_id", itemId);
 					if (!query.exec ())
 					{
 						LeechCraft::Util::DBLock::DumpError (query);
@@ -1402,10 +1328,7 @@ namespace LeechCraft
 				}
 			}
 			
-			void SQLStorageBackend::RemoveItem (Item_ptr item,
-					const QString& hash,
-					const QString& parentTitle,
-					const QString& parentUrl)
+			void SQLStorageBackend::RemoveItem (Item_ptr item)
 			{
 				LeechCraft::Util::DBLock lock (DB_);
 				try
@@ -1418,24 +1341,20 @@ namespace LeechCraft
 					return;
 				}
 
-				QString t = item->Title_;
-				QString l = item->Link_;
-				if (!PerformRemove (RemoveEnclosures_, hash, t, l) ||
-						!PerformRemove (RemoveMediaRSS_, hash, t, l) ||
-						!PerformRemove (RemoveMediaRSSThumbnails_, hash, t, l) ||
-						!PerformRemove (RemoveMediaRSSCredits_, hash, t, l) ||
-						!PerformRemove (RemoveMediaRSSComments_, hash, t, l) ||
-						!PerformRemove (RemoveMediaRSSPeerLinks_, hash, t, l) ||
-						!PerformRemove (RemoveMediaRSSScenes_, hash, t, l))
+				if (!PerformRemove (RemoveEnclosures_, item->ItemID_) ||
+						!PerformRemove (RemoveMediaRSS_, item->ItemID_) ||
+						!PerformRemove (RemoveMediaRSSThumbnails_, item->ItemID_) ||
+						!PerformRemove (RemoveMediaRSSCredits_, item->ItemID_) ||
+						!PerformRemove (RemoveMediaRSSComments_, item->ItemID_) ||
+						!PerformRemove (RemoveMediaRSSPeerLinks_, item->ItemID_) ||
+						!PerformRemove (RemoveMediaRSSScenes_, item->ItemID_))
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "a Remove* query failed";
 					return;
 				}
 
-				RemoveItem_.bindValue (":parents_hash", hash);
-				RemoveItem_.bindValue (":title", item->Title_);
-				RemoveItem_.bindValue (":url", item->Link_);
+				RemoveItem_.bindValue (":item_id", item->ItemID_);
 			
 				if (!RemoveItem_.exec ())
 				{
@@ -1449,7 +1368,9 @@ namespace LeechCraft
 			
 				try
 				{
-					Channel_ptr channel = GetChannel (parentTitle, parentUrl);
+					IDType_t cid = item->ChannelID_;
+					Channel_ptr channel = GetChannel (cid,
+							FindParentFeedForChannel (cid));
 					emit itemDataUpdated (item, channel);
 					emit channelDataUpdated (channel);
 				}
@@ -1457,8 +1378,7 @@ namespace LeechCraft
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "channel not found"
-						<< parentTitle
-						<< parentUrl;
+						<< item->ChannelID_;
 				}
 			}
 			
@@ -1488,15 +1408,14 @@ namespace LeechCraft
 				lock.Good ();
 			}
 			
-			void SQLStorageBackend::ToggleChannelUnread (const QString& purl,
-					const QString& title,
+			void SQLStorageBackend::ToggleChannelUnread (const IDType_t& channelId,
 					bool state)
 			{
 				items_container_t oldItems;
-				GetItems (oldItems, purl + title);
+				GetItems (oldItems, channelId);
 
 				ToggleChannelUnread_.bindValue (0, state);
-				ToggleChannelUnread_.bindValue (1, purl + title);
+				ToggleChannelUnread_.bindValue (1, channelId);
 				ToggleChannelUnread_.bindValue (2, state);
 			
 				if (!ToggleChannelUnread_.exec ())
@@ -1504,16 +1423,17 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO;
 					LeechCraft::Util::DBLock::DumpError (ToggleChannelUnread_);
 					throw std::runtime_error (qPrintable (QString (
-									"Failed to toggle item t %1, p %2")
-								.arg (title)
-								.arg (purl)));
+									"Failed to toggle items {cid: %1, state %2}")
+								.arg (channelId)
+								.arg (state)));
 				}
 			
 				ToggleChannelUnread_.finish ();
 			
 				try
 				{
-					Channel_ptr channel = GetChannel (title, purl);
+					Channel_ptr channel = GetChannel (channelId,
+							FindParentFeedForChannel (channelId));
 					emit channelDataUpdated (channel);
 					for (size_t i = 0; i < oldItems.size (); ++i)
 						if (oldItems.at (i)->Unread_ != state)
@@ -1526,8 +1446,7 @@ namespace LeechCraft
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "channel not found"
-						<< title
-						<< purl;
+						<< channelId;
 				}
 			}
 			
@@ -2286,8 +2205,10 @@ namespace LeechCraft
 				{
 					Item_ptr item (new Item (channelId));
 					FillItemVersion5 (itemsSelector, item);
-					GetEnclosuresVersion5 (hash, item->Title_, item->Link_, item->Enclosures_);
-					GetMRSSEntriesVersion5 (hash, item->Title_, item->Link_, item->MRSSEntries_);
+					GetEnclosuresVersion5 (hash, item->Title_,
+							item->Link_, item->Enclosures_, item->ItemID_);
+					GetMRSSEntriesVersion5 (hash, item->Title_,
+							item->Link_, item->MRSSEntries_, item->ItemID_);
 				}
 				return result;
 			}
@@ -2508,6 +2429,23 @@ namespace LeechCraft
 				GetMediaRSSs_.finish ();
 			}
 
+			IDType_t SQLStorageBackend::FindParentFeedForChannel (const IDType_t& channel) const
+			{
+				QSqlQuery query (DB_);
+				query.prepare ("SELECT feed_id FROM channels WHERE channel_id = :channel");
+				query.bindValue (":channel", channel);
+				if (!query.exec ())
+				{
+					Util::DBLock::DumpError (query);
+					throw std::runtime_error ("Unable to find parent feed for channel");
+				}
+
+				if (!query.next ())
+					throw ChannelNotFoundError ();
+
+				return query.value (0).value<IDType_t> ();
+			}
+
 			void SQLStorageBackend::FillItem (const QSqlQuery& query, Item_ptr& item) const
 			{
 				item->Title_ = query.value (0).toString ();
@@ -2526,20 +2464,17 @@ namespace LeechCraft
 				item->ChannelID_ = query.value (13).toString ().toDouble ();
 			}
 
-			void SQLStorageBackend::WriteEnclosures (const QString& hash,
-					const QString& title, const QString& link,
-					const QList<Enclosure>& enclosures)
+			void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)
 			{
 				for (QList<Enclosure>::const_iterator i = enclosures.begin (),
 						end = enclosures.end (); i != end; ++i)
 				{
+					WriteEnclosure_.bindValue (":item_id", i->ItemID_);
+					WriteEnclosure_.bindValue (":enclosure_id", i->EnclosureID_);
 					WriteEnclosure_.bindValue (":url", i->URL_);
 					WriteEnclosure_.bindValue (":type", i->Type_);
 					WriteEnclosure_.bindValue (":length", i->Length_);
 					WriteEnclosure_.bindValue (":lang", i->Lang_);
-					WriteEnclosure_.bindValue (":item_parents_hash", hash);
-					WriteEnclosure_.bindValue (":item_title", title);
-					WriteEnclosure_.bindValue (":item_url", link);
 			
 					if (!WriteEnclosure_.exec ())
 						LeechCraft::Util::DBLock::DumpError (WriteEnclosure_);
@@ -2548,12 +2483,10 @@ namespace LeechCraft
 				WriteEnclosure_.finish ();
 			}
 			
-			void SQLStorageBackend::GetEnclosures (const QString& hash, const QString& title,
-					const QString& link, QList<Enclosure>& enclosures) const
+			void SQLStorageBackend::GetEnclosures (const IDType_t& itemId,
+					QList<Enclosure>& enclosures) const
 			{
-				GetEnclosures_.bindValue (":item_parents_hash", hash);
-				GetEnclosures_.bindValue (":item_title", title);
-				GetEnclosures_.bindValue (":item_url", link);
+				GetEnclosures_.bindValue (":item_id", itemId);
 			
 				if (!GetEnclosures_.exec ())
 				{
@@ -2563,13 +2496,11 @@ namespace LeechCraft
 			
 				while (GetEnclosures_.next ())
 				{
-					Enclosure e =
-					{
-						GetEnclosures_.value (0).toString (),
-						GetEnclosures_.value (1).toString (),
-						GetEnclosures_.value (2).toLongLong (),
-						GetEnclosures_.value (3).toString ()
-					};
+					Enclosure e (itemId, GetEnclosures_.value (0).value<IDType_t> ());
+					e.URL_ = GetEnclosures_.value (1).toString ();
+					e.Type_ = GetEnclosures_.value (2).toString ();
+					e.Length_ = GetEnclosures_.value (3).toLongLong ();
+					e.Lang_ = GetEnclosures_.value (4).toString ();
 			
 					enclosures << e;
 				}

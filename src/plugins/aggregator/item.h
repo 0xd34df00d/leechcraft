@@ -89,56 +89,87 @@ namespace LeechCraft
 				 * @param[in] encId The ID of the enclosure.
 				 */
 				Enclosure (const IDType_t& itemId, const IDType_t& encId);
+			private:
+				Enclosure ();
+				friend QDataStream& operator>> (QDataStream&, Enclosure&);
+				friend QDataStream& operator>> (QDataStream&, QList<Enclosure>&);
 			};
 
 			bool operator== (const Enclosure&, const Enclosure&);
 
 			struct MRSSThumbnail
 			{
+				IDType_t MRSSThumbnailID_;
+				IDType_t MRSSEntryID_;
 				QString URL_;
 				int Width_;
 				int Height_;
 				QString Time_;
+
+				MRSSThumbnail (const IDType_t& entryId);
+				MRSSThumbnail (const IDType_t& entryId, const IDType_t& thisId);
 			};
 
 			bool operator== (const MRSSThumbnail&, const MRSSThumbnail&);
 
 			struct MRSSCredit
 			{
+				IDType_t MRSSCreditID_;
+				IDType_t MRSSEntryID_;
 				QString Role_;
 				QString Who_;
+
+				MRSSCredit (const IDType_t& entryId);
+				MRSSCredit (const IDType_t& entryId, const IDType_t& thisId);
 			};
 
 			bool operator== (const MRSSCredit&, const MRSSCredit&);
 
 			struct MRSSComment
 			{
+				IDType_t MRSSCommentID_;
+				IDType_t MRSSEntryID_;
 				QString Type_;
 				QString Comment_;
+
+				MRSSComment (const IDType_t& entryId);
+				MRSSComment (const IDType_t& entryId, const IDType_t& thisId);
 			};
 
 			bool operator== (const MRSSComment&, const MRSSComment&);
 
 			struct MRSSPeerLink
 			{
+				IDType_t MRSSPeerLinkID_;
+				IDType_t MRSSEntryID_;
 				QString Type_;
 				QString Link_;
+
+				MRSSPeerLink (const IDType_t& entryId);
+				MRSSPeerLink (const IDType_t& entryId, const IDType_t& thisId);
 			};
 
 			bool operator== (const MRSSPeerLink&, const MRSSPeerLink&);
 
 			struct MRSSScene
 			{
+				IDType_t MRSSSceneID_;
+				IDType_t MRSSEntryID_;
 				QString Title_;
 				QString Description_;
 				QString StartTime_;
 				QString EndTime_;
+
+				MRSSScene (const IDType_t& entryId);
+				MRSSScene (const IDType_t& entryId, const IDType_t& thisId);
 			};
 
 			bool operator== (const MRSSScene&, const MRSSScene&);
 
 			struct MRSSEntry
 			{
+				IDType_t MRSSEntryID_;
+				IDType_t ItemID_;
 				QString URL_;
 				qint64 Size_;
 				QString Type_;
@@ -173,9 +204,13 @@ namespace LeechCraft
 				QList<MRSSComment> Comments_;
 				QList<MRSSPeerLink> PeerLinks_;
 				QList<MRSSScene> Scenes_;
+
+				MRSSEntry (const IDType_t& itemId);
+				MRSSEntry (const IDType_t& itemId, const IDType_t& entryId);
 			};
 
 			bool operator== (const MRSSEntry&, const MRSSEntry&);
+			bool Equals (const MRSSEntry&, const MRSSEntry&);
 
 			struct Item
 			{

@@ -88,6 +88,11 @@ namespace LeechCraft
 
 			bool operator== (const MRSSEntry& e1, const MRSSEntry& e2)
 			{
+				return e1.MRSSEntryID_ == e2.MRSSEntryID_;
+			}
+
+			bool Equals (const MRSSEntry& e1, const MRSSEntry& e2)
+			{
 				return e1.URL_ == e2.URL_ &&
 					e1.Size_ == e2.Size_ &&
 					e1.Type_ == e2.Type_ &&
@@ -132,6 +137,12 @@ namespace LeechCraft
 			Enclosure::Enclosure (const IDType_t& item, const IDType_t& enclosure)
 			: EnclosureID_ (enclosure)
 			, ItemID_ (item)
+			{
+			}
+
+			Enclosure::Enclosure ()
+			: EnclosureID_ (0)
+			, ItemID_ (0)
 			{
 			}
 

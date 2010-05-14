@@ -569,7 +569,8 @@ namespace LeechCraft
 				ci.ChannelID_ = channel.ChannelID_;
 				ci.Link_ = channel.Link_;
 			
-				Channel_ptr rc = StorageBackend_->GetChannel (channel.ChannelID_);
+				Channel_ptr rc = StorageBackend_->
+						GetChannel (channel.ChannelID_, channel.FeedID_);
 				ci.Description_ = rc->Description_;
 				ci.Author_ = rc->Author_;
 
@@ -588,7 +589,8 @@ namespace LeechCraft
 				try
 				{
 					ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
-					Channel_ptr rc = StorageBackend_->GetChannel (channel.ChannelID_);
+					Channel_ptr rc = StorageBackend_->
+							GetChannel (channel.ChannelID_, channel.FeedID_);
 					return rc->Pixmap_;
 				}
 				catch (const std::exception& e)
@@ -622,7 +624,8 @@ namespace LeechCraft
 				try
 				{
 					ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
-					FetchFavicon (StorageBackend_->GetChannel (channel.ChannelID_));
+					FetchFavicon (StorageBackend_->
+							GetChannel (channel.ChannelID_, channel.FeedID_));
 				}
 				catch (const std::exception& e)
 				{
@@ -887,7 +890,7 @@ namespace LeechCraft
 						end = channels.end (); i != end; ++i)
 				{
 					Channel_ptr channel = StorageBackend_->
-							GetChannel (i->ChannelID_);
+							GetChannel (i->ChannelID_, i->FeedID_);
 					items_shorts_t items;
 					StorageBackend_->GetItems (items, channel->ChannelID_);
 			
@@ -1465,7 +1468,7 @@ namespace LeechCraft
 					{
 						IDType_t ourChannelID = StorageBackend_->FindChannel (channel->Title_,
 								channel->Link_, feedId);
-						ourChannel = StorageBackend_->GetChannel (ourChannelID);
+						ourChannel = StorageBackend_->GetChannel (ourChannelID, feedId);
 					}
 					catch (const StorageBackend::ChannelNotFoundError&)
 					{

@@ -72,6 +72,7 @@ namespace LeechCraft
 								  ChannelsShortSelector_,
 								  /** Returns:
 								   * - url
+								   * - title
 								   * - description
 								   * - last_build
 								   * - tags
@@ -82,8 +83,7 @@ namespace LeechCraft
 								   * - favicon
 								   *
 								   * Binds:
-								   * - parent_feed_url
-								   * - title
+								   * - channel_id
 								   */
 								  ChannelsFullSelector_,
 								  /** Returns:
@@ -94,6 +94,7 @@ namespace LeechCraft
 								   */
 								  UnreadItemsCounter_,
 								  /** Returns:
+								   * - item_id
 								   * - title
 								   * - url
 								   * - category
@@ -101,7 +102,7 @@ namespace LeechCraft
 								   * - unread
 								   *
 								   * Binds:
-								   * - parents_hash
+								   * - channel_id
 								   */
 								  ItemsShortSelector_,
 								  /** Returns:
@@ -116,11 +117,12 @@ namespace LeechCraft
 								   * - num_comments
 								   * - comments_url
 								   * - comments_page_url
+								   * - latitude
+								   * - longitue
+								   * - channel_id
 								   *
 								   * Binds:
-								   * - parents_hash
-								   * - title
-								   * - url
+								   * - item_id
 								   */
 								  ItemFullSelector_,
 								  /** Returns:
@@ -137,36 +139,28 @@ namespace LeechCraft
 								   * - comments_page_url
 								   * - latitude
 								   * - longitude
+								   * - channel_id
+								   * - item_id
 								   *
 								   * Binds:
-								   * - parents_hash
+								   * - channel_id
 								   */
 								  ItemsFullSelector_,
 								  /** Returns:
-								   * - description
+								   * - 1
 								   *
 								   * Binds:
-								   * - parent_feed_url
-								   * - title
-								   * - url
+								   * - channel_id
 								   */
 								  ChannelFinder_,
-								  /** Returns:
-								   * - title
-								   *
-								   * Binds:
-								   * - parents_hash
-								   * - title
-								   * - url
-								   */
-								  ItemFinder_,
 								  /** Binds:
 								   * - url
 								   * - last_update
 								   */
 								  InsertFeed_,
 								  /** Binds:
-								   * - parent_feed_url
+								   * - channel_id
+								   * - feed_id
 								   * - url
 								   * - title
 								   * - description
@@ -197,11 +191,9 @@ namespace LeechCraft
 								   */
 								  InsertItem_,
 								  /** Binds:
-								   * - title
-								   * - url
+								   * - channel_id
 								   * - tags
 								   * - last_build
-								   * - parent_feed_url
 								   */
 								  UpdateShortChannel_,
 								  /** Binds:
@@ -213,18 +205,16 @@ namespace LeechCraft
 								   * - pixmap_url
 								   * - pixmap
 								   * - favicon
-								   * - parent_feed_url
-								   * - url
-								   * - title
+								   * - channel_id
 								   */
 								  UpdateChannel_,
 								  /** Binds:
-								   * - parents_hash
+								   * - channel_id
 								   * - age
 								   */
 								  ChannelDateTrimmer_,
 								  /** Binds:
-								   * - parents_hash
+								   * - channel_id
 								   * - number
 								   */
 								  ChannelNumberTrimmer_,
@@ -244,12 +234,10 @@ namespace LeechCraft
 								   * - num_comments
 								   * - comments_url
 								   * - comments_page_url
-								   * - parents_hash
-								   * - title
-								   * - url
 								   * - guid
 								   * - latitude
 								   * - longitude
+								   * - item_id
 								   */
 								  UpdateItem_,
 								  /** Binds:
@@ -262,14 +250,11 @@ namespace LeechCraft
 								   */
 								  RemoveFeed_,
 								  /** Binds:
-								   * - parent_feed_url
+								   * - channel_id
 								   */
 								  RemoveChannel_,
 								  /** Binds:
-								   * - parents_hash
-								   * - title
-								   * - url
-								   * - guid
+								   * - item_id
 								   */
 								  RemoveItem_,
 								  /** Binds:
@@ -277,27 +262,23 @@ namespace LeechCraft
 								   * - type
 								   * - length
 								   * - lang
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
+								   * - enclosure_id
 								   */
 								  WriteEnclosure_,
 								  /** Binds:
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
 								   */
 								  RemoveEnclosures_,
 								  /** Returns:
+								   * - enclosure_id
 								   * - url
 								   * - type
 								   * - length
 								   * - lang
 								   *
 								   * Binds:
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
 								   */
 								  GetEnclosures_,
 								  /** Binds:
@@ -373,9 +354,7 @@ namespace LeechCraft
 								   */
 								  GetMediaRSSs_,
 								  /** Binds:
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
 								   */
 								  RemoveMediaRSS_,
 								  /** Binds:
@@ -487,33 +466,23 @@ namespace LeechCraft
 								   */
 								  GetMediaRSSScenes_,
 								  /** Binds:
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
 								   */
 								  RemoveMediaRSSThumbnails_,
 								  /** Binds:
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
 								   */
 								  RemoveMediaRSSCredits_,
 								  /** Binds:
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
 								   */
 								  RemoveMediaRSSComments_,
 								  /** Binds:
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
 								   */
 								  RemoveMediaRSSPeerLinks_,
 								  /** Binds:
-								   * - item_parents_hash
-								   * - item_title
-								   * - item_url
+								   * - item_id
 								   */
 								  RemoveMediaRSSScenes_;
 			public:
@@ -524,37 +493,31 @@ namespace LeechCraft
 
 				virtual void GetFeedsURLs (feeds_urls_t&) const;
 				virtual Feed::FeedSettings GetFeedSettings (const IDType_t&) const;
-				virtual void SetFeedSettings (const QString&, const Feed::FeedSettings&);
+				virtual void SetFeedSettings (const QString&,
+						const Feed::FeedSettings&);
 				virtual void GetChannels (channels_shorts_t&, const IDType_t&) const;
-				virtual Channel_ptr GetChannel (const QString&,
-						const QString&) const;
-				virtual void TrimChannel (const QString&,
-						const QString&, int, int);
-				virtual void GetItems (items_shorts_t&, const QString&) const;
-				virtual int GetUnreadItems (const QString&, const QString&) const;
+				virtual Channel_ptr GetChannel (const IDType_t&,
+						const IDType_t&) const;
+				virtual void TrimChannel (const IDType_t&, int, int);
+				virtual void GetItems (items_shorts_t&, const IDType_t&) const;
+				virtual int GetUnreadItems (const IDType_t&) const;
 				virtual Item_ptr GetItem (const IDType_t&) const;
 				virtual void GetItems (items_container_t&,
-						const QString&) const;
+						const IDType_t&) const;
 
 				virtual void AddFeed (Feed_ptr);
-				virtual void UpdateChannel (Channel_ptr, const QString&);
-				virtual void UpdateChannel (const ChannelShort&,
-						const QString&);
-				virtual void UpdateItem (Item_ptr,
-						const QString&, const QString&);
-				virtual void UpdateItem (const ItemShort&,
-						const QString&, const QString&);
-				virtual void AddChannel (Channel_ptr, const QString&);
-				virtual void AddItem (Item_ptr, const QString&, const QString&);
-				virtual void RemoveItem (Item_ptr,
-						const QString&,
-						const QString&,
-						const QString&);
+				virtual void UpdateChannel (Channel_ptr);
+				virtual void UpdateChannel (const ChannelShort&);
+				virtual void UpdateItem (Item_ptr);
+				virtual void UpdateItem (const ItemShort&);
+				virtual void AddChannel (Channel_ptr);
+				virtual void AddItem (Item_ptr);
+				virtual void RemoveItem (Item_ptr);
 				virtual void RemoveFeed (const IDType_t&);
 				virtual bool UpdateFeedsStorage (int, int);
 				virtual bool UpdateChannelsStorage (int, int);
 				virtual bool UpdateItemsStorage (int, int);
-				virtual void ToggleChannelUnread (const QString&, const QString&, bool);
+				virtual void ToggleChannelUnread (const IDType_t&, bool);
 			private:
 				QString GetBoolType () const;
 				QString GetBlobType () const;
@@ -577,12 +540,11 @@ namespace LeechCraft
 				void GetMRSSEntriesVersion5 (const QString&, const QString&, const QString&,
 						QList<MRSSEntry>&, const IDType_t&) const;
 
+				IDType_t FindParentFeedForChannel (const IDType_t&) const;
 				void FillItem (const QSqlQuery&, Item_ptr&) const;
-				void WriteEnclosures (const QString&, const QString&, const QString&,
-						const QList<Enclosure>&);
+				void WriteEnclosures (const QList<Enclosure>&);
 				void GetEnclosures (const IDType_t&, QList<Enclosure>&) const;
-				void WriteMRSSEntries (const QString&, const QString&, const QString&,
-						const QList<MRSSEntry>&);
+				void WriteMRSSEntries (const QList<MRSSEntry>&);
 				void GetMRSSEntries (const IDType_t&, QList<MRSSEntry>&) const;
 			};
 		};

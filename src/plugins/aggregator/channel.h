@@ -62,7 +62,8 @@ namespace LeechCraft
 				QPixmap Favicon_;
 				items_container_t Items_;
 
-				Channel (const IDType_t&);
+				Channel (const IDType_t& feedId);
+				Channel (const IDType_t& feedId, const IDType_t& channelId);
 				Channel (const Channel&);
 				Channel& operator= (const Channel&);
 

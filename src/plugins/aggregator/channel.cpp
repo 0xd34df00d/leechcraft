@@ -35,7 +35,13 @@ namespace LeechCraft
 			, FeedID_ (id)
 			{
 			}
-			
+
+			Channel::Channel (const IDType_t& id, const IDType_t& chId)
+			: ChannelID_ (chId)
+			, FeedID_ (id)
+			{
+			}
+
 			Channel::Channel (const Channel& channel)
 			: Items_ (channel.Items_)
 			{
