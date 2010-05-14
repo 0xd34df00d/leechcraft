@@ -1218,6 +1218,7 @@ namespace LeechCraft
 			void Core::saveSettings ()
 			{
 				SaveScheduled_ = false;
+				SyncPools ();
 			}
 			
 			void Core::handleChannelDataUpdated (Channel_ptr channel)

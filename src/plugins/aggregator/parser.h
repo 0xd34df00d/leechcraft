@@ -80,7 +80,8 @@ namespace LeechCraft
 				QList<Enclosure> GetEncEnclosures (const QDomElement&,
 						const IDType_t&) const;
 				QPair<double, double> GetGeoPoint (const QDomElement&) const; 
-				QList<MRSSEntry> GetMediaRSS (const QDomElement&) const;
+				QList<MRSSEntry> GetMediaRSS (const QDomElement&,
+						const IDType_t&) const;
 
 				QDateTime FromRFC3339 (const QString&) const;
 				static QString UnescapeHTML (const QString&);

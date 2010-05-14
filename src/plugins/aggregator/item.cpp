@@ -146,6 +146,57 @@ namespace LeechCraft
 			{
 			}
 
+#define MRSS_CN(a) MRSS##a
+#define MRSS_ENUM(a) PTMRSS##a
+#define MRSS_IDMEM(a) MRSS##a##ID_
+#define MRSS_DEFINE_CTORS(a) \
+			MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry) \
+			: MRSS_IDMEM(a) (Core::Instance ().GetPool (Core::MRSS_ENUM(a)).GetID ()) \
+			, MRSSEntryID_ (mrssEntry) \
+			{ \
+			} \
+	\
+			MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry, \
+					const IDType_t& mrssThis) \
+			: MRSS_IDMEM(a) (mrssThis) \
+			, MRSSEntryID_ (mrssEntry) \
+			{ \
+			} \
+	\
+			MRSS_CN(a)::MRSS_CN(a) () \
+			: MRSS_IDMEM(a) (0) \
+			, MRSSEntryID_ (0) \
+			{ \
+			}
+#define MRSS_TRAVERSER(z,i,array) MRSS_DEFINE_CTORS (BOOST_PP_SEQ_ELEM(i, array))
+#define MRSS_EXPANDER(Classes) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Classes), MRSS_TRAVERSER, Classes)
+#define MRSS_CLASSES_LIST (Thumbnail)(Credit)(Comment)(PeerLink)(Scene)
+
+			MRSS_EXPANDER (MRSS_CLASSES_LIST);
+
+#undef CLASSES_LIST
+#undef MRSS_DEFINE_REGISTER
+#undef MRSS_TRAVERSER
+#undef MRSS_EXPANDER
+
+			MRSSEntry::MRSSEntry (const IDType_t& itemId)
+			: MRSSEntryID_ (Core::Instance ().GetPool (Core::PTMRSSEntry).GetID ())
+			, ItemID_ (itemId)
+			{
+			}
+
+			MRSSEntry::MRSSEntry (const IDType_t& itemId, const IDType_t& thisId)
+			: MRSSEntryID_ (thisId)
+			, ItemID_ (itemId)
+			{
+			}
+
+			MRSSEntry::MRSSEntry ()
+			: MRSSEntryID_ (0)
+			, ItemID_ (0)
+			{
+			}
+
 			Item::Item (const IDType_t& channel)
 			: ItemID_ (Core::Instance ().GetPool (Core::PTItem).GetID ())
 			, ChannelID_ (channel)

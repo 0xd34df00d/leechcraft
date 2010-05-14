@@ -119,6 +119,12 @@ namespace LeechCraft
 					PTItem,
 					PTFeedSettings,
 					PTEnclosure,
+					PTMRSSEntry,
+					PTMRSSThumbnail,
+					PTMRSSCredit,
+					PTMRSSComment,
+					PTMRSSPeerLink,
+					PTMRSSScene,
 					PTMAX
 				};
 			private:

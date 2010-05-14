@@ -110,7 +110,7 @@ namespace LeechCraft
 				QPair<double, double> point = GetGeoPoint (entry);
 				item->Latitude_ = point.first;
 				item->Longitude_ = point.second;
-				item->MRSSEntries_ = GetMediaRSS (entry);
+				item->MRSSEntries_ = GetMediaRSS (entry, item->ItemID_);
 			
 				return item;
 			}

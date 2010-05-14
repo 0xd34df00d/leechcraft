@@ -91,7 +91,6 @@ namespace LeechCraft
 				Enclosure (const IDType_t& itemId, const IDType_t& encId);
 			private:
 				Enclosure ();
-				friend QDataStream& operator>> (QDataStream&, Enclosure&);
 				friend QDataStream& operator>> (QDataStream&, QList<Enclosure>&);
 			};
 
@@ -108,6 +107,9 @@ namespace LeechCraft
 
 				MRSSThumbnail (const IDType_t& entryId);
 				MRSSThumbnail (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSThumbnail ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSThumbnail>&);
 			};
 
 			bool operator== (const MRSSThumbnail&, const MRSSThumbnail&);
@@ -121,6 +123,9 @@ namespace LeechCraft
 
 				MRSSCredit (const IDType_t& entryId);
 				MRSSCredit (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSCredit ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSCredit>&);
 			};
 
 			bool operator== (const MRSSCredit&, const MRSSCredit&);
@@ -134,6 +139,9 @@ namespace LeechCraft
 
 				MRSSComment (const IDType_t& entryId);
 				MRSSComment (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSComment ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSComment>&);
 			};
 
 			bool operator== (const MRSSComment&, const MRSSComment&);
@@ -147,6 +155,9 @@ namespace LeechCraft
 
 				MRSSPeerLink (const IDType_t& entryId);
 				MRSSPeerLink (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSPeerLink ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSPeerLink>&);
 			};
 
 			bool operator== (const MRSSPeerLink&, const MRSSPeerLink&);
@@ -162,6 +173,9 @@ namespace LeechCraft
 
 				MRSSScene (const IDType_t& entryId);
 				MRSSScene (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSScene ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSScene>&);
 			};
 
 			bool operator== (const MRSSScene&, const MRSSScene&);
@@ -207,6 +221,9 @@ namespace LeechCraft
 
 				MRSSEntry (const IDType_t& itemId);
 				MRSSEntry (const IDType_t& itemId, const IDType_t& entryId);
+			private:
+				MRSSEntry ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSEntry>&);
 			};
 
 			bool operator== (const MRSSEntry&, const MRSSEntry&);
