@@ -339,7 +339,6 @@ namespace LeechCraft
 			public slots:
 				void queryLibtorrentForWarnings ();
 				void tcpPortRangeChanged ();
-				void dhtStateChanged ();
 				void autosaveIntervalChanged ();
 				void maxUploadsChanged ();
 				void maxConnectionsChanged ();

@@ -2507,17 +2507,6 @@ namespace LeechCraft
 				Session_->listen_on (std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ()));
 			}
 			
-			void Core::dhtStateChanged ()
-			{
-				if (XmlSettingsManager::Instance ()->property ("DHTEnabled").toBool ())
-					Session_->start_dht ();
-				else
-				{
-					writeSettings ();
-					Session_->stop_dht ();
-				}
-			}
-			
 			void Core::autosaveIntervalChanged ()
 			{
 				SettingsSaveTimer_->stop ();
