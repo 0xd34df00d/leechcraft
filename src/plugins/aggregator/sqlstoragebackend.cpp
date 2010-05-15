@@ -25,6 +25,7 @@
 #include <QBuffer>
 #include <QSqlError>
 #include <QVariant>
+#include <QSqlRecord>
 #include "plugininterface/dblock.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -115,7 +116,7 @@ namespace LeechCraft
 									property ("SQLiteTempStore").toString ())))
 						LeechCraft::Util::DBLock::DumpError (pragma);
 				}
-			
+
 				FeedFinderByURL_ = QSqlQuery (DB_);
 				FeedFinderByURL_.prepare ("SELECT feed_id "
 						"FROM feeds "
@@ -136,8 +137,8 @@ namespace LeechCraft
 						"item_age, "
 						"auto_download_enclosures "
 						"FROM feeds_settings "
-						"WHERE feed_url = :feed_url");
-			
+						"WHERE feed_id = :feed_id");
+
 				FeedSettingsSetter_ = QSqlQuery (DB_);
 				QString orReplace;
 				if (Type_ == SBSQLite)
@@ -186,7 +187,7 @@ namespace LeechCraft
 						"FROM channels "
 						"WHERE channel_id = :channel_id "
 						"ORDER BY title");
-			
+
 				UnreadItemsCounter_ = QSqlQuery (DB_);
 				switch (Type_)
 				{
@@ -253,7 +254,7 @@ namespace LeechCraft
 						"latitude, "
 						"longitude, "
 						"channel_id,"
-						"item_id, "
+						"item_id "
 						"FROM items "
 						"WHERE channel_id = :channel_id "
 						"ORDER BY pub_date DESC");
@@ -278,15 +279,7 @@ namespace LeechCraft
 						"AND url = :url");
 
 				InsertFeed_ = QSqlQuery (DB_);
-				InsertFeed_.prepare ("INSERT INTO feeds ("
-						"feed_id, "
-						"url, "
-						"last_update"
-						") VALUES ("
-						":feed_id, "
-						":url, "
-						":last_update"
-						")");
+				InsertFeed_.prepare ("INSERT INTO feeds (feed_id, url, last_update) VALUES (:feed_id, :url, :last_update);");
 			
 				InsertChannel_ = QSqlQuery (DB_);
 				InsertChannel_.prepare ("INSERT INTO channels ("
@@ -315,7 +308,7 @@ namespace LeechCraft
 						":pixmap_url, "
 						":pixmap, "
 						":favicon"
-						")");
+						");");
 			
 				InsertItem_ = QSqlQuery (DB_);
 				InsertItem_.prepare ("INSERT INTO items ("
@@ -350,8 +343,8 @@ namespace LeechCraft
 						":comments_page_url, "
 						":latitude, "
 						":longitude"
-						")");
-			
+						");");
+
 				UpdateShortChannel_ = QSqlQuery (DB_);
 				UpdateShortChannel_.prepare ("UPDATE channels SET "
 						"tags = :tags, "
@@ -371,7 +364,7 @@ namespace LeechCraft
 						"WHERE channel_id = :channel_id");
 
 				QString common = "DELETE FROM items "
-					"WHERE parents_hash = :parents_hash ";
+					"WHERE channel_id = :channel_id ";
 				QString cdt;
 				QString cnt;
 				switch (Type_)
@@ -383,7 +376,7 @@ namespace LeechCraft
 					case SBPostgres:
 						cdt = "AND (pub_date - now () > :age * interval '1 day')";
 						cnt = "AND pub_date IN "
-							"(SELECT pub_date FROM items WHERE parents_hash = :parents_hash ORDER BY pub_date DESC OFFSET :number)";
+							"(SELECT pub_date FROM items WHERE channel_id = :channel_id ORDER BY pub_date DESC OFFSET :number)";
 						break;
 				}
 
@@ -397,7 +390,7 @@ namespace LeechCraft
 				UpdateShortItem_.prepare ("UPDATE items SET "
 						"unread = :unread "
 						"WHERE item_id = :item_id");
-			
+
 				UpdateItem_ = QSqlQuery (DB_);
 				UpdateItem_.prepare ("UPDATE items SET "
 						"description = :description, "
@@ -689,27 +682,27 @@ namespace LeechCraft
 
 				RemoveMediaRSS_ = QSqlQuery (DB_);
 				RemoveMediaRSS_.prepare ("DELETE FROM mrss "
-						"WHERE item_id = :item_id");
+						"WHERE mrss_id = :mrss_id");
 
 				RemoveMediaRSSThumbnails_ = QSqlQuery (DB_);
 				RemoveMediaRSSThumbnails_.prepare ("DELETE FROM mrss_thumbnails "
-						"WHERE item_id = :item_id");
+						"WHERE mrss_thumb_id = :mrss_thumb_id");
 
 				RemoveMediaRSSCredits_ = QSqlQuery (DB_);
 				RemoveMediaRSSCredits_.prepare ("DELETE FROM mrss_credits "
-						"WHERE item_id = :item_id");
+						"WHERE mrss_credits_id = :mrss_credits_id");
 
 				RemoveMediaRSSComments_ = QSqlQuery (DB_);
 				RemoveMediaRSSComments_.prepare ("DELETE FROM mrss_comments "
-						"WHERE item_id = :item_id");
+						"WHERE mrss_comment_id = :mrss_comment_id");
 
 				RemoveMediaRSSPeerLinks_ = QSqlQuery (DB_);
 				RemoveMediaRSSPeerLinks_.prepare ("DELETE FROM mrss_peerlinks "
-						"WHERE item_id = :item_id");
+						"WHERE mrss_peerlink_id = :mrss_peerlink_id");
 
 				RemoveMediaRSSScenes_ = QSqlQuery (DB_);
 				RemoveMediaRSSScenes_.prepare ("DELETE FROM mrss_scenes "
-						"WHERE item_id = :item_id");
+						"WHERE mrss_scene_id = :mrss_scene_id");
 			}
 			
 			void SQLStorageBackend::GetFeedsIDs (ids_t& result) const
@@ -1078,7 +1071,7 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO << e.what ();
 					return;
 				}
-			
+
 				InsertFeed_.finish ();
 			}
 			
@@ -1592,7 +1585,7 @@ namespace LeechCraft
 							"last_update TIMESTAMP "
 							");"))
 					{
-						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						Util::DBLock::DumpError (query);
 						return false;
 					}
 				}
@@ -1608,7 +1601,7 @@ namespace LeechCraft
 									"auto_download_enclosures %1 NOT NULL"
 									");").arg (GetBoolType ())))
 					{
-						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						Util::DBLock::DumpError (query);
 						return false;
 					}
 			
@@ -1897,7 +1890,7 @@ namespace LeechCraft
 						return false;
 					}
 				}
-			
+
 				return true;
 			}
 			
