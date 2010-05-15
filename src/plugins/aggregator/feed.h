@@ -131,6 +131,7 @@ namespace LeechCraft
 				channels_container_t Channels_;
 
 				Feed ();
+				Feed (const IDType_t& id);
 			};
 
 			typedef boost::shared_ptr<Feed> Feed_ptr;

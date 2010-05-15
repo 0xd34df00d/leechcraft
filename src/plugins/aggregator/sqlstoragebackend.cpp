@@ -19,6 +19,7 @@
 #include "sqlstoragebackend.h"
 #include <stdexcept>
 #include <boost/bind.hpp>
+#include <boost/optional.hpp>
 #include <QDir>
 #include <QDebug>
 #include <QBuffer>
@@ -116,10 +117,17 @@ namespace LeechCraft
 				}
 			
 				FeedFinderByURL_ = QSqlQuery (DB_);
-				FeedFinderByURL_.prepare ("SELECT last_update "
+				FeedFinderByURL_.prepare ("SELECT feed_id "
 						"FROM feeds "
 						"WHERE url = :url");
-			
+
+				FeedGetter_ = QSqlQuery (DB_);
+				FeedGetter_.prepare ("SELECT "
+						"url, "
+						"last_update "
+						"FROM feeds "
+						"WHERE feed_id = :feed_id");
+
 				FeedSettingsGetter_ = QSqlQuery (DB_);
 				FeedSettingsGetter_.prepare ("SELECT "
 						"update_timeout, "
@@ -135,13 +143,15 @@ namespace LeechCraft
 					orReplace = "OR REPLACE";
 			
 				FeedSettingsSetter_.prepare (QString ("INSERT %1 INTO feeds_settings ("
-						"feed_url, "
+						"feed_id, "
+						"settings_id, "
 						"update_timeout, "
 						"num_items, "
 						"item_age, "
 						"auto_download_enclosures"
 						") VALUES ("
-						":feed_url, "
+						":feed_id, "
+						":settings_id, "
 						":update_timeout, "
 						":num_items, "
 						":item_age, "
@@ -251,6 +261,20 @@ namespace LeechCraft
 				ChannelFinder_.prepare ("SELECT 1 "
 						"FROM channels "
 						"WHERE channel_id = :channel_id");
+
+				ChannelIDFromTitleURL_ = QSqlQuery (DB_);
+				ChannelIDFromTitleURL_.prepare ("SELECT channel_id "
+						"FROM channels "
+						"WHERE feed_id = :feed_id "
+						"AND title = :title "
+						"AND url = :url");
+
+				ItemIDFromTitleURL_ = QSqlQuery (DB_);
+				ItemIDFromTitleURL_.prepare ("SELECT item_id "
+						"FROM items "
+						"WHERE channel_id = :channel_id "
+						"AND title = :title "
+						"AND url = :url");
 
 				InsertFeed_ = QSqlQuery (DB_);
 				InsertFeed_.prepare ("INSERT INTO feeds ("
@@ -685,31 +709,67 @@ namespace LeechCraft
 						"WHERE item_id = :item_id");
 			}
 			
-			void SQLStorageBackend::GetFeedsURLs (feeds_urls_t& result) const
+			void SQLStorageBackend::GetFeedsIDs (ids_t& result) const
 			{
 				QSqlQuery feedSelector (DB_);
-				QString idType;
-				switch (Type_)
-				{
-					case SBSQLite:
-						idType = "ROWID";
-						break;
-					case SBPostgres:
-						idType = "CTID";
-						break;
-				}
-				if (!feedSelector.exec (QString ("SELECT url "
+				if (!feedSelector.exec (QString ("SELECT feed_id "
 							"FROM feeds "
-							"ORDER BY %1").arg (idType)))
+							"ORDER BY feed_id")))
 				{
-					LeechCraft::Util::DBLock::DumpError (feedSelector);
+					Util::DBLock::DumpError (feedSelector);
 					return;
 				}
 			
 				while (feedSelector.next ())
-					result.push_back (feedSelector.value (0).toString ());
+					result.push_back (feedSelector.value (0).toInt ());
 			}
 			
+			Feed_ptr SQLStorageBackend::GetFeed (const IDType_t& feedId) const
+			{
+				FeedGetter_.bindValue (":feed_id", feedId);
+				if (!FeedGetter_.exec ())
+				{
+					Util::DBLock::DumpError (FeedGetter_);
+					throw FeedGettingError ();
+				}
+
+				if (!FeedGetter_.next ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no feed found with"
+							<< feedId;
+					throw FeedNotFoundError ();
+				}
+
+				Feed_ptr feed (new Feed (feedId));
+				feed->URL_ = FeedGetter_.value (0).toString ();
+				feed->LastUpdate_ = FeedGetter_.value (1).toDateTime ();
+				FeedGetter_.finish ();
+				return feed;
+			}
+
+			IDType_t SQLStorageBackend::FindFeed (const QString& url) const
+			{
+				FeedFinderByURL_.bindValue (":url", url);
+				if (!FeedFinderByURL_.exec ())
+				{
+					Util::DBLock::DumpError (FeedFinderByURL_);
+					throw FeedGettingError ();
+				}
+
+				if (!FeedFinderByURL_.next ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no feed for"
+							<< url;
+					throw FeedNotFoundError ();
+				}
+
+				IDType_t id = FeedFinderByURL_.value (0).value<IDType_t> ();
+				FeedFinderByURL_.finish ();
+				return id;
+			}
+
 			Feed::FeedSettings SQLStorageBackend::GetFeedSettings (const IDType_t& feedId) const
 			{
 				FeedSettingsGetter_.bindValue (":feed_id", feedId);
@@ -724,7 +784,7 @@ namespace LeechCraft
 					throw FeedSettingsNotFoundError ();
 			
 				Feed::FeedSettings result (feedId,
-						FeedSettingsGetter_.value (0).toInt (),
+						FeedSettingsGetter_.value (0).value<IDType_t> (),
 						FeedSettingsGetter_.value (1).toInt (),
 						FeedSettingsGetter_.value (2).toInt (),
 						FeedSettingsGetter_.value (3).toInt (),
@@ -734,11 +794,12 @@ namespace LeechCraft
 				return result;
 			}
 			
-			void SQLStorageBackend::SetFeedSettings (const QString& feedURL,
-					const Feed::FeedSettings& settings)
+			void SQLStorageBackend::SetFeedSettings (const Feed::FeedSettings& settings)
 			{
-				FeedSettingsSetter_.bindValue (":feed_url",
-						feedURL);
+				FeedSettingsSetter_.bindValue (":settings_id",
+						settings.SettingsID_);
+				FeedSettingsSetter_.bindValue (":feed_id",
+						settings.FeedID_);
 				FeedSettingsSetter_.bindValue (":update_timeout",
 						settings.UpdateTimeout_);
 				FeedSettingsSetter_.bindValue (":num_items",
@@ -801,7 +862,7 @@ namespace LeechCraft
 			{
 				ChannelsFullSelector_.bindValue (":channelId", channelId);
 				if (!ChannelsFullSelector_.exec ())
-					LeechCraft::Util::DBLock::DumpError (ChannelsFullSelector_);
+					Util::DBLock::DumpError (ChannelsFullSelector_);
 					
 				if (!ChannelsFullSelector_.next ())
 					throw ChannelNotFoundError ();
@@ -825,6 +886,46 @@ namespace LeechCraft
 				ChannelsFullSelector_.finish ();
 			
 				return channel;
+			}
+
+			IDType_t SQLStorageBackend::FindChannel (const QString& title,
+					const QString& link, const IDType_t& feedId) const
+			{
+				ChannelIDFromTitleURL_.bindValue (":feed_id", feedId);
+				ChannelIDFromTitleURL_.bindValue (":title", title);
+				ChannelIDFromTitleURL_.bindValue (":url", link);
+				if (!ChannelIDFromTitleURL_.exec ())
+				{
+					Util::DBLock::DumpError (ChannelIDFromTitleURL_);
+					throw ChannelGettingError ();
+				}
+
+				if (!ChannelIDFromTitleURL_.next ())
+					throw ChannelNotFoundError ();
+
+				IDType_t result = ChannelIDFromTitleURL_.value (0).value<IDType_t> ();
+				ChannelIDFromTitleURL_.finish ();
+				return result;
+			}
+
+			IDType_t SQLStorageBackend::FindItem (const QString& title,
+					const QString& link, const IDType_t& channelId) const
+			{
+				ItemIDFromTitleURL_.bindValue (":channel_id", channelId);
+				ItemIDFromTitleURL_.bindValue (":title", title);
+				ItemIDFromTitleURL_.bindValue (":url", link);
+				if (!ItemIDFromTitleURL_.exec ())
+				{
+					Util::DBLock::DumpError (ItemIDFromTitleURL_);
+					throw ItemGettingError ();
+				}
+
+				if (!ChannelIDFromTitleURL_.next ())
+					throw ItemNotFoundError ();
+
+				IDType_t result = ItemIDFromTitleURL_.value (0).value<IDType_t> ();
+				ItemIDFromTitleURL_.finish ();
+				return result;
 			}
 
 			void SQLStorageBackend::TrimChannel (const IDType_t& channelId,
@@ -924,7 +1025,7 @@ namespace LeechCraft
 			
 				return item;
 			}
-			
+
 			void SQLStorageBackend::GetItems (items_container_t& items,
 					const IDType_t& channelId) const
 			{
@@ -1295,9 +1396,31 @@ namespace LeechCraft
 				}
 			}
 			
-			void SQLStorageBackend::RemoveItem (Item_ptr item)
+			void SQLStorageBackend::RemoveItem (const IDType_t& itemId)
 			{
-				LeechCraft::Util::DBLock lock (DB_);
+				boost::optional<IDType_t> cid;
+				try
+				{
+					Item_ptr item = GetItem (itemId);
+					*cid = item->ChannelID_;
+				}
+				catch (const ItemNotFoundError&)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "tried to delete item"
+							<< itemId
+							<< ", but it doesn't exist already";
+					return;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to obtain more info on"
+							<< itemId
+							<< "so won't update channel data";
+				}
+
+				Util::DBLock lock (DB_);
 				try
 				{
 					lock.Init ();
@@ -1308,24 +1431,24 @@ namespace LeechCraft
 					return;
 				}
 
-				if (!PerformRemove (RemoveEnclosures_, item->ItemID_) ||
-						!PerformRemove (RemoveMediaRSS_, item->ItemID_) ||
-						!PerformRemove (RemoveMediaRSSThumbnails_, item->ItemID_) ||
-						!PerformRemove (RemoveMediaRSSCredits_, item->ItemID_) ||
-						!PerformRemove (RemoveMediaRSSComments_, item->ItemID_) ||
-						!PerformRemove (RemoveMediaRSSPeerLinks_, item->ItemID_) ||
-						!PerformRemove (RemoveMediaRSSScenes_, item->ItemID_))
+				if (!PerformRemove (RemoveEnclosures_, itemId) ||
+						!PerformRemove (RemoveMediaRSS_, itemId) ||
+						!PerformRemove (RemoveMediaRSSThumbnails_, itemId) ||
+						!PerformRemove (RemoveMediaRSSCredits_, itemId) ||
+						!PerformRemove (RemoveMediaRSSComments_, itemId) ||
+						!PerformRemove (RemoveMediaRSSPeerLinks_, itemId) ||
+						!PerformRemove (RemoveMediaRSSScenes_, itemId))
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "a Remove* query failed";
 					return;
 				}
 
-				RemoveItem_.bindValue (":item_id", item->ItemID_);
+				RemoveItem_.bindValue (":item_id", itemId);
 			
 				if (!RemoveItem_.exec ())
 				{
-					LeechCraft::Util::DBLock::DumpError (RemoveItem_);
+					Util::DBLock::DumpError (RemoveItem_);
 					return;
 				}
 			
@@ -1333,19 +1456,20 @@ namespace LeechCraft
 			
 				lock.Good ();
 			
-				try
+				if (cid)
 				{
-					IDType_t cid = item->ChannelID_;
-					Channel_ptr channel = GetChannel (cid,
-							FindParentFeedForChannel (cid));
-					emit itemDataUpdated (item, channel);
-					emit channelDataUpdated (channel);
-				}
-				catch (const ChannelNotFoundError&)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "channel not found"
-						<< item->ChannelID_;
+					try
+					{
+						Channel_ptr channel = GetChannel (*cid,
+								FindParentFeedForChannel (*cid));
+						emit channelDataUpdated (channel);
+					}
+					catch (const ChannelNotFoundError&)
+					{
+						qWarning () << Q_FUNC_INFO
+							<< "channel not found"
+							<< *cid;
+					}
 				}
 			}
 			

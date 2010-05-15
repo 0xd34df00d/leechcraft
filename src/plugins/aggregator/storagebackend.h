@@ -37,8 +37,12 @@ namespace LeechCraft
 				Q_OBJECT
 			public:
 				struct ChannelNotFoundError {};
+				struct ChannelGettingError {};
 				struct ItemNotFoundError {};
+				struct ItemGettingError {};
 				struct FeedSettingsNotFoundError {};
+				struct FeedGettingError {};
+				struct FeedNotFoundError {};
 
 				enum Type
 				{

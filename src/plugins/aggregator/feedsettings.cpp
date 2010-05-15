@@ -60,7 +60,7 @@ namespace LeechCraft
 				catch (const StorageBackend::FeedSettingsNotFoundError&)
 				{
 					settings = Feed::FeedSettings (Core::Instance ()
-							.GetChannelInfo (Index_).FeedID_)
+							.GetChannelInfo (Index_).FeedID_);
 				}
 
 				SettingsID_ = settings.SettingsID_;

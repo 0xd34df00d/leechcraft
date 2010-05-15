@@ -43,6 +43,14 @@ namespace LeechCraft
 								   */
 				mutable QSqlQuery FeedFinderByURL_,
 								  /** Returns:
+								   * - url
+								   * - last_update
+								   *
+								   * Binds:
+								   * - feed_id
+								   */
+								  FeedGetter_,
+								  /** Returns:
 								   * - update_timeout
 								   * - num_items
 								   * - item_age
@@ -153,6 +161,24 @@ namespace LeechCraft
 								   * - channel_id
 								   */
 								  ChannelFinder_,
+								  /** Returns:
+								   * - channel_id
+								   *
+								   * Binds:
+								   * - title
+								   * - url
+								   * - feed_id
+								   */
+								  ChannelIDFromTitleURL_,
+								  /** Returns:
+								   * - item_id
+								   *
+								   * Binds:
+								   * - title
+								   * - url
+								   * - channel_id
+								   */
+								  ItemIDFromTitleURL_,
 								  /** Binds:
 								   * - url
 								   * - last_update
@@ -491,17 +517,22 @@ namespace LeechCraft
 
 				virtual void Prepare ();
 
-				virtual void GetFeedsURLs (feeds_urls_t&) const;
+				virtual void GetFeedsIDs (ids_t&) const;
+				virtual Feed_ptr GetFeed (const IDType_t&) const;
+				virtual IDType_t FindFeed (const QString&) const;
 				virtual Feed::FeedSettings GetFeedSettings (const IDType_t&) const;
-				virtual void SetFeedSettings (const QString&,
-						const Feed::FeedSettings&);
+				virtual void SetFeedSettings (const Feed::FeedSettings&);
 				virtual void GetChannels (channels_shorts_t&, const IDType_t&) const;
 				virtual Channel_ptr GetChannel (const IDType_t&,
 						const IDType_t&) const;
+				virtual IDType_t FindChannel (const QString& ,
+						const QString&, const IDType_t&) const;
 				virtual void TrimChannel (const IDType_t&, int, int);
 				virtual void GetItems (items_shorts_t&, const IDType_t&) const;
 				virtual int GetUnreadItems (const IDType_t&) const;
 				virtual Item_ptr GetItem (const IDType_t&) const;
+				virtual IDType_t FindItem (const QString&,
+						const QString&, const IDType_t&) const;
 				virtual void GetItems (items_container_t&,
 						const IDType_t&) const;
 
@@ -512,7 +543,7 @@ namespace LeechCraft
 				virtual void UpdateItem (const ItemShort&);
 				virtual void AddChannel (Channel_ptr);
 				virtual void AddItem (Item_ptr);
-				virtual void RemoveItem (Item_ptr);
+				virtual void RemoveItem (const IDType_t&);
 				virtual void RemoveFeed (const IDType_t&);
 				virtual bool UpdateFeedsStorage (int, int);
 				virtual bool UpdateChannelsStorage (int, int);

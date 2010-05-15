@@ -32,7 +32,6 @@
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
-#include "itemmodel.h"
 
 namespace LeechCraft
 {
@@ -216,8 +215,7 @@ namespace LeechCraft
 				const ItemsListModel *model = static_cast<const ItemsListModel*> (mapped.model ());
 				ItemShort item = model->GetItem (mapped);
 				return Core::Instance ().GetStorageBackend ()->
-					GetItem (item.Title_, item.URL_,
-						model->GetHash ().first + model->GetHash ().second);
+					GetItem (item.ItemID_);
 			}
 
 			QToolBar* ItemsWidget::GetToolBar () const
