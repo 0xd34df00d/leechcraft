@@ -455,7 +455,7 @@ namespace LeechCraft
 				{
 					ErrorNotification (tr ("Plugin error"),
 							tr ("Job for feed %1 wasn't delegated.")
-							.arg (url),
+								.arg (url),
 							false);
 					return -1;
 				}
@@ -936,24 +936,22 @@ namespace LeechCraft
 					const QString& tagsString)
 			{
 				QStringList tags = Proxy_->GetTagsManager ()->Split (tagsString);
-			
-				for (feeds_container_t::const_iterator i = feeds.begin (),
-						end = feeds.end (); i != end; ++i)
+
+				Q_FOREACH (Feed_ptr feed, feeds)
 				{
-					for (channels_container_t::const_iterator j =
-							(*i)->Channels_.begin (), jEnd = (*i)->Channels_.end ();
-							j != jEnd; ++j)
+					Q_FOREACH (Channel_ptr channel, feed->Channels_)
 					{
-						for (QStringList::const_iterator tag = tags.begin (),
-								tagEnd = tags.end (); tag != tagEnd; ++tag)
-							if (!(*j)->Tags_.contains (*tag))
-								(*j)->Tags_ << *tag;
-			
-						ChannelsModel_->AddChannel ((*j)->ToShort ());
+						Q_FOREACH (QString tag, tags)
+							if (!channel->Tags_.contains (tag))
+								channel->Tags_ << tag;
+
+						ChannelsModel_->AddChannel (channel->ToShort ());
 					}
-			
-					StorageBackend_->AddFeed (*i);
+
+					StorageBackend_->AddFeed (feed);
 				}
+
+				SyncPools ();
 			}
 			
 			void Core::SetContextMenu (QMenu *menu)

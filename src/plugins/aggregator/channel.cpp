@@ -124,8 +124,6 @@ namespace LeechCraft
 			{
 				int version = 2;
 				out << version
-					<< chan.ChannelID_
-					<< chan.FeedID_
 					<< chan.Title_
 					<< chan.Link_
 					<< chan.Description_
@@ -170,9 +168,7 @@ namespace LeechCraft
 				else if (version == 2)
 				{
 					quint32 size;
-					in >> chan.ChannelID_
-						>> chan.FeedID_
-						>> chan.Title_
+					in >> chan.Title_
 						>> chan.Link_
 						>> chan.Description_
 						>> chan.LastBuild_

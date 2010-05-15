@@ -1630,14 +1630,14 @@ namespace LeechCraft
 													"WHERE feed_id = NEW.feed_id) "
 											"DO INSTEAD "
 												"(UPDATE feeds_settings "
-													"SET settigns_id = NEW.settings_id, "
+													"SET settings_id = NEW.settings_id, "
 													"update_timeout = NEW.update_timeout, "
 													"num_items = NEW.num_items, "
 													"item_age = NEW.item_age, "
 													"auto_download_enclosures = NEW.auto_download_enclosures "
-													"WHERE feed_url = NEW.feed_url)"))
+													"WHERE feed_id = NEW.feed_id)"))
 						{
-							LeechCraft::Util::DBLock::DumpError (query);
+							Util::DBLock::DumpError (query);
 							return false;
 						}
 					}
@@ -1711,13 +1711,13 @@ namespace LeechCraft
 											"ON INSERT TO \"enclosures\" "
 											"WHERE "
 												"EXISTS (SELECT 1 FROM enclosures "
-													"WHERE item_id = NEW.item_id "
+													"WHERE item_id = NEW.item_id) "
 											"DO INSTEAD "
 												"(UPDATE enclosures "
 													"SET type = NEW.type, "
 													"length = NEW.length, "
 													"lang = NEW.lang "
-													"WHERE item_id = NEW.item_id"))
+													"WHERE item_id = NEW.item_id)"))
 						{
 							Util::DBLock::DumpError (query);
 							return false;
@@ -1774,7 +1774,7 @@ namespace LeechCraft
 											"ON INSERT TO \"mrss\" "
 											"WHERE "
 												"EXISTS (SELECT 1 FROM mrss "
-													"WHERE mrss_id = NEW.mrss_id "
+													"WHERE mrss_id = NEW.mrss_id) "
 											"DO INSTEAD "
 												"(UPDATE mrss "
 													"SET size = NEW.size, "
@@ -1834,7 +1834,7 @@ namespace LeechCraft
 											"ON INSERT TO \"mrss_thumbnails\" "
 											"WHERE "
 												"EXISTS (SELECT 1 FROM mrss_thumbnails "
-													"WHERE mrss_thumb_id = NEW.mrss_thumb_id "
+													"WHERE mrss_thumb_id = NEW.mrss_thumb_id) "
 											"DO INSTEAD "
 												"(UPDATE mrss_thumbnails "
 													"SET width = NEW.width, "
@@ -2012,6 +2012,10 @@ namespace LeechCraft
 				}
 				else if (version == 6)
 				{
+					qDebug () << Q_FUNC_INFO
+							<< "preparing to migrate to version 6 of SQL storage format";
+
+					qDebug () << Q_FUNC_INFO << "loading feeds...";
 					QList<Feed_ptr> feeds;
 					try
 					{
@@ -2024,6 +2028,8 @@ namespace LeechCraft
 								<< e.what ();
 						return false;
 					}
+
+					qDebug () << Q_FUNC_INFO << "loading settings...";
 
 					QList<Feed::FeedSettings> settings;
 					try
@@ -2048,6 +2054,8 @@ namespace LeechCraft
 						return false;
 					}
 
+					qDebug () << Q_FUNC_INFO << "loaded, dropping data...";
+
 					try
 					{
 						RemoveTables ();
@@ -2059,9 +2067,18 @@ namespace LeechCraft
 								<< e.what ();
 						return false;
 					}
-					InitializeTables ();
+
+					qDebug () << Q_FUNC_INFO << "initializing fresh tables...";
+
+					if (!InitializeTables ())
+						return false;
+
+					qDebug () << Q_FUNC_INFO << "re-adding feeds...";
+
 					Q_FOREACH (Feed_ptr feed, feeds)
 						AddFeed (feed);
+
+					qDebug () << "syncing pools and exiting";
 
 					Core::Instance ().SyncPools ();
 				}
@@ -2072,6 +2089,55 @@ namespace LeechCraft
 			
 			void SQLStorageBackend::RemoveTables ()
 			{
+				struct
+				{
+					const QSqlDatabase& ThisDB_;
+
+					void operator() (const QString& drstr)
+					{
+						QSqlQuery dropper = QSqlQuery (ThisDB_);
+						if (!dropper.exec (drstr))
+						{
+							Util::DBLock::DumpError (dropper);
+							throw std::runtime_error (qPrintable (dropper
+									.lastError ().text ()));
+						}
+					}
+				} rd = { DB_ };
+
+				rd ("ALTER TABLE feeds DROP CONSTRAINT feeds_pkey;");
+				rd ("ALTER TABLE enclosures DROP CONSTRAINT enclosures_pkey;");
+				rd ("DROP INDEX idx_enclosures_item_parents_hash_item_title_item_url;");
+				rd ("DROP INDEX idx_channels_parent_feed_url;");
+				rd ("DROP INDEX idx_channels_parent_feed_url_title;");
+				rd ("DROP INDEX idx_channels_parent_feed_url_title_url;");
+				rd ("ALTER TABLE feeds_settings DROP CONSTRAINT feeds_settings_pkey;");
+				rd ("DROP INDEX idx_items_parents_hash;");
+				rd ("DROP INDEX idx_items_parents_hash_title_url;");
+				rd ("DROP INDEX idx_items_parents_hash_unread;");
+				rd ("DROP INDEX idx_items_title;");
+				rd ("DROP INDEX idx_items_url;");
+				rd ("ALTER TABLE mrss DROP CONSTRAINT mrss_pkey;");
+				rd ("DROP INDEX idx_mrss_item_parents_hash_item_title_item_url;");
+				rd ("DROP INDEX idx_mrss_item_title;");
+				rd ("DROP INDEX idx_mrss_item_url;");
+				rd ("DROP INDEX idx_mrss_comments_parent_url_item_parents_hash_item_title_item_;");
+				rd ("ALTER TABLE mrss_credits DROP CONSTRAINT mrss_credits_pkey;");
+				rd ("DROP INDEX idx_mrss_credits_parent_url_item_parents_hash_item_title_item_u;");
+				rd ("DROP INDEX idx_mrss_peerlinks_parent_url_item_parents_hash_item_title_item;");
+				rd ("DROP INDEX idx_mrss_scenes_parent_url_item_parents_hash_item_title_item_ur;");
+				rd ("ALTER TABLE mrss_thumbnails DROP CONSTRAINT mrss_thumbnails_pkey;");
+				rd ("DROP INDEX idx_mrss_thumbnails_parent_url_item_parents_hash_item_title_ite;");
+
+				if (Type_ == SBPostgres)
+				{
+					rd ("DROP RULE replace_mrss_thumbnails ON mrss_thumbnails;");
+					rd ("DROP RULE replace_mrss_credits ON mrss_credits;");
+					rd ("DROP RULE replace_mrss ON mrss;");
+					rd ("DROP RULE replace_feeds_settings ON feeds_settings;");
+					rd ("DROP RULE replace_enclosures ON enclosures;");
+				}
+
 				QSqlQuery dropper = QSqlQuery (DB_);
 				if (!dropper.exec ("DROP TABLE "
 						"channels, enclosures, feeds, "

@@ -50,7 +50,6 @@ namespace LeechCraft
 				QAction *ActionShowAsTape_;
 
 				QAction *ActionMarkItemAsUnread_;
-				QAction *ActionAddToItemBucket_;
 				QAction *ActionItemCommentsSubscribe_;
 
 				bool TapeMode_;
@@ -102,7 +101,6 @@ namespace LeechCraft
 						SLOT (invalidate ()));
 			
 				Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
-				Impl_->Ui_.Items_->addAction (Impl_->ActionAddToItemBucket_);
 				Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 				Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 				connect (Impl_->Ui_.SearchLine_,
@@ -315,7 +313,7 @@ namespace LeechCraft
 					 */
 					if (!added)
 					{
-						Impl_->CurrentItemsModel_->Reset (qMakePair (cs.ParentURL_, cs.Title_));
+						Impl_->CurrentItemsModel_->Reset (cs.ChannelID_);
 						added = true;
 					}
 					else
@@ -381,12 +379,6 @@ namespace LeechCraft
 					return static_cast<ItemsListModel*> (i->data ())->GetCategories (index - starting);
 				}
 			}
-			
-			void ItemsWidget::AddToItemBucket (const QModelIndex& index) const
-			{
-				Core::Instance ().GetItemBucket ()->
-					GetItemModel ()->AddItem (GetItem (index));
-			}
 
 			void ItemsWidget::SubscribeToComments (const QModelIndex& index) const
 			{
@@ -416,11 +408,11 @@ namespace LeechCraft
 				{
 					ChannelShort ch = Core::Instance ()
 						.GetRawChannelsModel ()->GetChannelForIndex (index);
-					Impl_->CurrentItemsModel_->Reset (qMakePair (ch.ParentURL_, ch.Title_));
+					Impl_->CurrentItemsModel_->Reset (ch.ChannelID_);
 				}
 				catch (const std::exception&)
 				{
-					Impl_->CurrentItemsModel_->Reset (qMakePair (QString (), QString ()));
+					Impl_->CurrentItemsModel_->Reset (-1);
 				}
 				emit currentChannelChanged (index);
 			}
@@ -437,13 +429,11 @@ namespace LeechCraft
 
 			void ItemsWidget::AddSupplementaryModelFor (const ChannelShort& cs)
 			{
-				QPair<QString, QString> hash = qMakePair (cs.ParentURL_, cs.Title_);
-
-				if (hash == Impl_->CurrentItemsModel_->GetHash ())
+				if (cs.ChannelID_ == Impl_->CurrentItemsModel_->GetCurrentChannel ())
 					return;
 
 				boost::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
-				ilm->Reset (hash);
+				ilm->Reset (cs.ChannelID_);
 				Impl_->SupplementaryModels_ << ilm;
 				Impl_->ItemLists_->AddModel (ilm.get ());
 			}
@@ -469,10 +459,6 @@ namespace LeechCraft
 				Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
 						this);
 				Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
-			
-				Impl_->ActionAddToItemBucket_ = new QAction (tr ("Add to item bucket"),
-						this);
-				Impl_->ActionAddToItemBucket_->setObjectName ("ActionAddToItemBucket_");
 
 				Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
 						this);
@@ -933,15 +919,11 @@ namespace LeechCraft
 
 			void ItemsWidget::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
 			{
-				QPair<QString, QString> hash = qMakePair (channel->ParentURL_, channel->Title_);
-
-				if (Impl_->CurrentItemsModel_->GetHash () == hash)
-				{
+				if (Impl_->CurrentItemsModel_->GetCurrentChannel () == channel->ChannelID_)
 					Impl_->CurrentItemsModel_->ItemDataUpdated (item);
-				}
 				else
 					Q_FOREACH (boost::shared_ptr<ItemsListModel> m, Impl_->SupplementaryModels_)
-						if (m->GetHash () == hash)
+						if (m->GetCurrentChannel () == channel->ChannelID_)
 						{
 							m->ItemDataUpdated (item);
 							break;
@@ -1012,13 +994,6 @@ namespace LeechCraft
 						Qt::CaseSensitive : Qt::CaseInsensitive);
 			}
 			
-			void ItemsWidget::on_ActionAddToItemBucket__triggered ()
-			{
-				AddToItemBucket (Impl_->ItemsFilterModel_->
-						mapToSource (Impl_->Ui_.Items_->selectionModel ()->
-							currentIndex ()));
-			}
-			
 			void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
 			{
 				QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
@@ -1064,7 +1039,6 @@ namespace LeechCraft
 					{
 						Impl_->Ui_.ItemView_->SetHtml ("");
 						Impl_->ActionItemCommentsSubscribe_->setEnabled (false);
-						Impl_->ActionAddToItemBucket_->setEnabled (false);
 						Impl_->ActionMarkItemAsUnread_->setEnabled (false);
 						return;
 					}
@@ -1077,7 +1051,6 @@ namespace LeechCraft
 			
 					QString commentsRSS = item->CommentsLink_;
 					Impl_->ActionItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
-					Impl_->ActionAddToItemBucket_->setEnabled (true);
 					Impl_->ActionMarkItemAsUnread_->setEnabled (true);
 				}
 			}

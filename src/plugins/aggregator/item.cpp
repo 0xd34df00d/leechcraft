@@ -478,10 +478,8 @@ namespace LeechCraft
 
 			QDataStream& operator<< (QDataStream& out, const Item& item)
 			{
-				int version = 5;
+				int version = 4;
 				out << version
-					<< item.ItemID_
-					<< item.ChannelID_
 					<< item.Title_
 					<< item.Link_
 					<< item.Description_
@@ -504,9 +502,6 @@ namespace LeechCraft
 			{
 				int version = 0;
 				in >> version;
-				if (version == 5)
-					in >> item.ItemID_
-						>> item.ChannelID_;
 				if (version >= 1)
 					in >> item.Title_
 						>> item.Link_
@@ -527,7 +522,7 @@ namespace LeechCraft
 				if (version == 4)
 					in >> item.MRSSEntries_;
 
-				if (version < 1 || version > 5)
+				if (version < 1 || version > 4)
 					qWarning () << Q_FUNC_INFO << "unknown version" << version;
 
 				return in;

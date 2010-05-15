@@ -81,7 +81,6 @@ namespace LeechCraft
 				bool IsItemRead (int) const;
 				bool IsItemReadNotCurrent (int) const;
 				QStringList GetItemCategories (int) const;
-				void AddToItemBucket (const QModelIndex&) const;
 				void SubscribeToComments (const QModelIndex&) const;
 				void CurrentChannelChanged (const QModelIndex&);
 			private:
@@ -102,7 +101,6 @@ namespace LeechCraft
 				void on_ActionShowAsTape__triggered ();
 				void on_ActionMarkItemAsUnread__triggered ();
 				void on_CaseSensitiveSearch__stateChanged (int);
-				void on_ActionAddToItemBucket__triggered ();
 				void on_ActionItemCommentsSubscribe__triggered ();
 				void on_CategoriesSplitter__splitterMoved ();
 				void currentItemChanged (const QItemSelection&);

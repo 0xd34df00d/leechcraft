@@ -67,8 +67,7 @@ namespace LeechCraft
 			
 			QDataStream& operator<< (QDataStream& out, const Feed& feed)
 			{
-				out << feed.FeedID_
-					<< feed.URL_
+				out << feed.URL_
 					<< feed.LastUpdate_
 					<< static_cast<quint32> (feed.Channels_.size ());
 				for (quint32 i = 0; i < feed.Channels_.size (); ++i)
@@ -79,8 +78,7 @@ namespace LeechCraft
 			QDataStream& operator>> (QDataStream& in, Feed& feed)
 			{
 				quint32 size = 0;
-				in >> feed.FeedID_
-					>> feed.URL_
+				in >> feed.URL_
 					>> feed.LastUpdate_
 					>> size;
 				for (quint32 i = 0; i < size; ++i)

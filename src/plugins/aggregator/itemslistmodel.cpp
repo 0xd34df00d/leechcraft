@@ -34,6 +34,7 @@ namespace LeechCraft
 			: QAbstractItemModel (parent)
 			, CurrentRow_ (-1)
 			, MayBeRichText_ (false)
+			, CurrentChannel_ (-1)
 			{
 				ItemHeaders_ << tr ("Name") << tr ("Date");
 			}
@@ -43,14 +44,14 @@ namespace LeechCraft
 				return CurrentRow_;
 			}
 			
-			const QPair<QString, QString>& ItemsListModel::GetHash () const
+			const IDType_t& ItemsListModel::GetCurrentChannel () const
 			{
-				return CurrentChannelHash_;
+				return CurrentChannel_;
 			}
 			
-			void ItemsListModel::SetHash (const QPair<QString, QString>& hash)
+			void ItemsListModel::SetCurrentChannel (const IDType_t& channel)
 			{
-				CurrentChannelHash_ = hash;
+				CurrentChannel_ = channel;
 				reset ();
 			}
 			
@@ -59,16 +60,14 @@ namespace LeechCraft
 				CurrentRow_ = index.row ();
 				ItemShort item = CurrentItems_ [index.row ()];
 				item.Unread_ = false;
-				Core::Instance ().GetStorageBackend ()->UpdateItem (item,
-						CurrentChannelHash_.first, CurrentChannelHash_.second);
+				Core::Instance ().GetStorageBackend ()->UpdateItem (item);
 			}
 			
 			void ItemsListModel::MarkItemAsUnread (const QModelIndex& i)
 			{
 				ItemShort is = CurrentItems_ [i.row ()];
 				is.Unread_ = true;
-				Core::Instance ().GetStorageBackend ()->UpdateItem (is,
-						CurrentChannelHash_.first, CurrentChannelHash_.second);
+				Core::Instance ().GetStorageBackend ()->UpdateItem (is);
 			}
 			
 			const ItemShort& ItemsListModel::GetItem (const QModelIndex& index) const
@@ -86,15 +85,18 @@ namespace LeechCraft
 				return CurrentItems_ [item].Categories_;
 			}
 			
-			void ItemsListModel::Reset (const QPair<QString, QString>& hash)
+			void ItemsListModel::Reset (const IDType_t& channel)
 			{
-				CurrentChannelHash_ = hash;
+				CurrentChannel_ = channel;
 				CurrentRow_ = -1;
 				CurrentItems_.clear ();
-				Core::Instance ().GetStorageBackend ()->
-					GetItems (CurrentItems_, hash.first + hash.second);
-				if (CurrentItems_.size ())
-					MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
+				if (channel != -1)
+				{
+					Core::Instance ().GetStorageBackend ()->
+						GetItems (CurrentItems_, channel);
+					if (CurrentItems_.size ())
+						MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
+				}
 				reset ();
 			}
 			
