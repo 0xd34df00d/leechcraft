@@ -2186,7 +2186,8 @@ namespace LeechCraft
 					{
 						QString hash = feed->URL_ + channel->Title_;
 						channel->Items_ =
-								GetItemsFromVersion5 (hash, channel->ChannelID_).toVector ().toStdVector ();
+								GetItemsFromVersion5 (hash, channel->ChannelID_)
+									.toVector ().toStdVector ();
 					}
 
 					feed->Channels_ = channels.toVector ().toStdVector ();
@@ -2305,6 +2306,7 @@ namespace LeechCraft
 							item->Link_, item->Enclosures_, item->ItemID_);
 					GetMRSSEntriesVersion5 (hash, item->Title_,
 							item->Link_, item->MRSSEntries_, item->ItemID_);
+					result << item;
 				}
 				return result;
 			}

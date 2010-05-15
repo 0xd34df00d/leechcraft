@@ -1559,8 +1559,6 @@ namespace LeechCraft
 					else if (method == "ShowAll")
 						shouldShow = newItems + updatedItems;
 
-					qDebug () << Q_FUNC_INFO << shouldShow << newItems << updatedItems << method;
-
 					if (shouldShow)
 					{
 						QString str = tr ("Updated channel \"%1\" (%2, %3)").arg (channel->Title_)
