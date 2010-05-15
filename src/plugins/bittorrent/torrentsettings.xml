@@ -21,12 +21,12 @@
 				<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
 					<label lang="en" value="Maximum upload connections:" />
 					<label lang="ru" value="Максимально соединений на раздачу:" />
-					<label lang="uk" value="Максимальна кількість з&amp;єднань при поширенні" />
+					<label lang="uk" value="Максимальна кількість з&apos;єднань при поширенні" />
 				</item>
 				<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
 					<label lang="en" value="Maximum total connections:" />
 					<label lang="ru" value="Максимально соединений всего:" />
-					<label lang="uk" value="Максимальна загальна кількість з&amp;єднань" />
+					<label lang="uk" value="Максимальна загальна кількість з&apos;єднань" />
 				</item>
 			</groupbox>
 			<groupbox>
@@ -140,7 +140,7 @@
 				<item type="lineedit" property="TrackerProxyHost">
 					<label lang="en" value="Host:" />
 					<label lang="ru" value="Хост:" />
-					<label lang="uk" value="Комп&amp;ютeр:" />
+					<label lang="uk" value="Комп&apos;ютeр:" />
 				</item>
 				<item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
 					<label lang="en" value="Port:" />
@@ -174,7 +174,7 @@
 				<item type="lineedit" property="PeerProxyHost">
 					<label lang="en" value="Host:" />
 					<label lang="ru" value="Хост:" />
-					<label lang="uk" value="Комп&amp;ютер:" />
+					<label lang="uk" value="Комп&apos;ютер:" />
 				</item>
 				<item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
 					<label lang="en" value="Port:" />
@@ -351,7 +351,7 @@
 					<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
 						<label lang="en" value="Allow multiple connections per IP" />
 						<label lang="ru" value="Разрешать множественные соединения с одним IP" />
-						<label lang="uk" value="Дозволити кілька з&amp;єднань з одного IP" />
+						<label lang="uk" value="Дозволити кілька з&apos;єднань з одного IP" />
 					</item>
 					<item type="checkbox" property="IgnoreLimitsOnLocalNetwork" state="on">
 						<label lang="en" value="Ignore limits on local network" />
@@ -391,7 +391,7 @@
 					<item type="checkbox" property="CloseRedundantConnections" default="true">
 						<label lang="en" value="Close redundant connections" />
 						<label lang="ru" value="Закрывать ненужные соединения" />
-						<label lang="uk" value="Закривати непотрібні з&amp;єднання" />
+						<label lang="uk" value="Закривати непотрібні з&apos;єднання" />
 					</item>
 					<item type="checkbox" property="PrioritizePartialPieces" default="true">
 						<label lang="en" value="Prioritize partial pieces" />
@@ -443,7 +443,7 @@
 							<suffix value=" с" />
 						</lang>
 						<lang value="uk">
-							<label value="Таймаут від&amp;єднання від трекера:" />
+							<label value="Таймаут від&apos;єднання від трекера:" />
 							<suffix value=" с" />
 						</lang>
 
@@ -488,7 +488,7 @@
 							<suffix value=" с" />
 						</lang>
 						<lang value="uk">
-							<label value="Таймаут з&amp;єданная з вузлом:" />
+							<label value="Таймаут з&apos;єданная з вузлом:" />
 							<suffix value=" с" />
 						</lang>
 
@@ -543,7 +543,7 @@
 							<suffix value=" с" />
 						</lang>
 						<lang value="uk">
-							<label value="Таймаут зв&amp;язку з вузлом:" />
+							<label value="Таймаут зв&apos;язку з вузлом:" />
 							<suffix value=" с" />
 						</lang>
 
@@ -558,7 +558,7 @@
 							<suffix value=" с" />
 						</lang>
 						<lang value="uk">
-							<label value="Таймаут зв&amp;язку з веб-поширювачем:" />
+							<label value="Таймаут зв&apos;язку з веб-поширювачем:" />
 							<suffix value=" с" />
 						</lang>
 
@@ -633,7 +633,7 @@
 							<suffix value=" с" />
 						</lang>
 						<lang value="uk">
-							<label value="Затримка перед повторним з&amp;єднанням з веб-поширювачем:" />
+							<label value="Затримка перед повторним з&apos;єднанням з веб-поширювачем:" />
 							<suffix value=" с" />
 						</lang>
 					</item>
@@ -647,7 +647,7 @@
 							<suffix value=" с" />
 						</lang>
 						<lang value="uk">
-							<label value="Мінімальний час перед повторним з&amp;єднанням з вузлом:" />
+							<label value="Мінімальний час перед повторним з&apos;єднанням з вузлом:" />
 							<suffix value=" с" />
 						</lang>
 
@@ -670,12 +670,12 @@
 					<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
 						<label lang="en" value="Maximum peer connection attempt failcount:" />
 						<label lang="ru" value="Максимум неудачных соединений с пиром:" />
-						<label lang="uk" value="Максимум невдалих з&amp;єднань з вузлом:" />
+						<label lang="uk" value="Максимум невдалих з&apos;єднань з вузлом:" />
 					</item>
 					<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10">
 						<label lang="en" value="Connection attempts per second:" />
 						<label lang="ru" value="Попыток соединения в секунду:" />
-						<label lang="uk" value="Спроб з&amp;єднань в секунду:" />
+						<label lang="uk" value="Спроб з&apos;єднань в секунду:" />
 					</item>
 					<item type="spinbox" property="SendBufferWatermark" default="80" minimum="1" maximum="100">
 						<lang value="en">
@@ -719,7 +719,7 @@
 					<item type="spinboxrange" property="OutgoingPorts" default="0:0" minimum="1025" maximum="65535">
 						<label lang="en" value="Outgoing ports:" />
 						<label lang="ru" value="Порты исходящих соединений:" />
-						<label lang="uk" value="Порти для вихідних з&amp;єднань:" />
+						<label lang="uk" value="Порти для вихідних з&apos;єднань:" />
 					</item>
 					<item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
 						<label lang="en" value="Optimistic unchoke multiplier:" />
