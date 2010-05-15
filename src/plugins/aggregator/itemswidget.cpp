@@ -48,6 +48,7 @@ namespace LeechCraft
 
 				QToolBar *ControlToolBar_;
 				QAction *ActionHideReadItems_;
+				QAction *ActionShowAsTape_;
 
 				QAction *ActionMarkItemAsUnread_;
 				QAction *ActionAddToItemBucket_;
@@ -72,7 +73,8 @@ namespace LeechCraft
 				SetupActions ();
 
 				Impl_->ChannelsFilter_ = 0;
-				Impl_->TapeMode_ = false;
+				Impl_->TapeMode_ = XmlSettingsManager::Instance ()->
+						Property ("ShowAsTape", false).toBool ();
 				Impl_->MergeMode_ = false;
 				Impl_->ControlToolBar_ = SetupToolBar ();
 
@@ -225,9 +227,6 @@ namespace LeechCraft
 
 			void ItemsWidget::SetTapeMode (bool tape)
 			{
-				if (!isVisible ())
-					return;
-
 				Impl_->TapeMode_ = tape;
 				if (tape)
 					disconnect (Impl_->Ui_.Items_->selectionModel (),
@@ -243,6 +242,9 @@ namespace LeechCraft
 							SLOT (currentItemChanged (const QItemSelection&)),
 							Qt::QueuedConnection);
 				currentItemChanged (QItemSelection ());
+
+				XmlSettingsManager::Instance ()->
+						setProperty ("ShowAsTape", tape);
 			}
 			
 			void ItemsWidget::SetMergeMode (bool merge)
@@ -455,9 +457,16 @@ namespace LeechCraft
 				Impl_->ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
 				Impl_->ActionHideReadItems_->setCheckable (true);
 				Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "aggregator_rssshow");
-				Impl_->ActionHideReadItems_->setProperty ("ActionIconOff", "aggregator_rsshide");
 				Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
 						Property ("HideReadItems", false).toBool ());
+
+				Impl_->ActionShowAsTape_ = new QAction (tr ("Show items as tape"),
+						this);
+				Impl_->ActionShowAsTape_->setObjectName ("ActionShowAsTape_");
+				Impl_->ActionShowAsTape_->setCheckable (true);
+				Impl_->ActionShowAsTape_->setProperty ("ActionIcon", "aggregator_tapemode_on");
+				Impl_->ActionShowAsTape_->setChecked (XmlSettingsManager::Instance ()->
+						Property ("ShowAsTape", false).toBool ());
 
 				Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
 						this);
@@ -477,6 +486,7 @@ namespace LeechCraft
 				QToolBar *bar = new QToolBar ();
 				bar->setWindowTitle ("Aggregator");
 				bar->addAction (Impl_->ActionHideReadItems_);
+				bar->addAction (Impl_->ActionShowAsTape_);
 			
 				return bar;
 			}
@@ -786,7 +796,8 @@ namespace LeechCraft
 						result += tr ("<strong>Views:</strong> %1")
 							.arg (entry->Views_);
 					if (entry->Favs_)
-						result += tr ("<strong>Added to favorites:</strong> %n time(s)", "", entry->Favs_);
+						result += tr ("<strong>Added to favorites:</strong> %n time(s)",
+								"", entry->Favs_);
 					if (entry->RatingAverage_)
 						result += tr ("<strong>Average rating:</strong> %1")
 							.arg (entry->RatingAverage_);
@@ -981,6 +992,11 @@ namespace LeechCraft
 				XmlSettingsManager::Instance ()->
 					setProperty ("HideReadItems", hide);
 				SetHideRead (hide);
+			}
+
+			void ItemsWidget::on_ActionShowAsTape__triggered ()
+			{
+				SetTapeMode (!Impl_->TapeMode_);
 			}
 			
 			void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()

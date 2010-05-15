@@ -107,6 +107,7 @@ namespace LeechCraft
 		void handleToolButtonStyleChanged ();
 		void handleIconSize ();
 		void handleShowMenuBarAsButton ();
+		void handleNewTabMenuRequested ();
 		void updateSpeedIndicators ();
 		void updateClock ();
 		void showHideMain ();

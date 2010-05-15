@@ -121,7 +121,10 @@ namespace LeechCraft
 							.arg (QDateTime::currentDateTime ().toString (Qt::ISODate));
 					file.replace (restrictedChars, replaceWith);
 					if (file != fileInfo.fileName ())
-						 qWarning () << Q_FUNC_INFO << fileInfo.fileName () <<" was corrected to: " << file;
+						 qWarning () << Q_FUNC_INFO
+								 << fileInfo.fileName ()
+								 << "was corrected to:"
+								 << file;
 					return file;
 				}
 			}
@@ -635,6 +638,10 @@ namespace LeechCraft
 			
 					QByteArray data = settings.value ("Task").toByteArray ();
 					td.Task_.reset (new Task ());
+					connect (td.Task_.get (),
+							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+							this,
+							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 					try
 					{
 						td.Task_->Deserialize (data);

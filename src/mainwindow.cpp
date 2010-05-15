@@ -233,6 +233,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SIGNAL (newTabRequested ()),
 			this,
 			SLOT (on_ActionNewTab__triggered ()));
+	connect (Ui_.MainTabWidget_,
+			SIGNAL (newTabMenuRequested ()),
+			this,
+			SLOT (handleNewTabMenuRequested ()));
 
 	QToolBar *bar = new QToolBar ();
 	bar->addAction (Ui_.ActionNewTab_);
@@ -379,7 +383,7 @@ void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 	{
 		QMenu *menu = Core::Instance ()
 			.GetTabContainer ()->GetNewTabMenu ();
-		menu->exec ();
+		menu->popup (QCursor::pos ());
 	}
 }
 
@@ -561,6 +565,13 @@ void LeechCraft::MainWindow::handleShowMenuBarAsButton ()
 		Ui_.MainToolbar_->removeAction (Ui_.ActionMenu_);
 		Ui_.MenuBar_->show ();
 	}
+}
+
+void LeechCraft::MainWindow::handleNewTabMenuRequested ()
+{
+	QMenu *ntmenu = Core::Instance ()
+			.GetTabContainer ()->GetNewTabMenu ();
+	ntmenu->popup (QCursor::pos ());
 }
 
 void LeechCraft::MainWindow::updateSpeedIndicators ()

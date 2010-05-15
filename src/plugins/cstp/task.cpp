@@ -28,6 +28,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
+#include <plugininterface/util.h>
 #include "hook.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -394,13 +395,21 @@ namespace LeechCraft
 				{
 					quint64 avail = Reply_->bytesAvailable ();
 					quint64 res = To_->write (Reply_->readAll ());
-					if ((-1 == res) || (res != avail))
+					if ((-1 == res) ||
+							(res != avail))
 					{
-						//FIXME: should show error message to user, but I don't know wich of Leechcraft APIs is appropriate in this case
 						qWarning () << Q_FUNC_INFO
-							    << "Error writing to file: "
-							    << To_->fileName () << " "
+							    << "Error writing to file:"
+							    << To_->fileName ()
 							    << To_->errorString ();
+
+						QString errString = tr ("Error writing to file %1: %2")
+								.arg (To_->fileName ())
+								.arg (To_->errorString ());
+						DownloadEntity e = Util::MakeNotification ("LeechCraft CSTP",
+								errString,
+								PCritical_);
+						emit gotEntity (e);
 						emit done (true);
 					}
 				}
