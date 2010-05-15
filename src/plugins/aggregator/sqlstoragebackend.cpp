@@ -130,6 +130,7 @@ namespace LeechCraft
 
 				FeedSettingsGetter_ = QSqlQuery (DB_);
 				FeedSettingsGetter_.prepare ("SELECT "
+						"settings_id, "
 						"update_timeout, "
 						"num_items, "
 						"item_age, "
@@ -278,9 +279,11 @@ namespace LeechCraft
 
 				InsertFeed_ = QSqlQuery (DB_);
 				InsertFeed_.prepare ("INSERT INTO feeds ("
+						"feed_id, "
 						"url, "
 						"last_update"
 						") VALUES ("
+						":feed_id, "
 						":url, "
 						":last_update"
 						")");
@@ -1054,17 +1057,7 @@ namespace LeechCraft
 			
 			void SQLStorageBackend::AddFeed (Feed_ptr feed)
 			{
-				LeechCraft::Util::DBLock lock (DB_);
-				try
-				{
-					lock.Init ();
-				}
-				catch (const std::runtime_error& e)
-				{
-					qWarning () << Q_FUNC_INFO << e.what ();
-					return;
-				}
-			
+				InsertFeed_.bindValue (":feed_id", feed->FeedID_);
 				InsertFeed_.bindValue (":url", feed->URL_);
 				InsertFeed_.bindValue (":last_update", feed->LastUpdate_);
 				if (!InsertFeed_.exec ())
@@ -1087,8 +1080,6 @@ namespace LeechCraft
 				}
 			
 				InsertFeed_.finish ();
-			
-				lock.Good ();
 			}
 			
 			void SQLStorageBackend::UpdateChannel (Channel_ptr channel)
@@ -2068,15 +2059,23 @@ namespace LeechCraft
 						return false;
 					}
 
+					qDebug () << Q_FUNC_INFO << "DB has now" << DB_.tables ();
 					qDebug () << Q_FUNC_INFO << "initializing fresh tables...";
 
 					if (!InitializeTables ())
 						return false;
 
+					qDebug () << Q_FUNC_INFO << "(re)initializing queries...";
+
+					Prepare ();
+
 					qDebug () << Q_FUNC_INFO << "re-adding feeds...";
 
 					Q_FOREACH (Feed_ptr feed, feeds)
+					{
+						qDebug () << "adding feed" << feed->URL_;
 						AddFeed (feed);
+					}
 
 					qDebug () << "syncing pools and exiting";
 
@@ -2138,17 +2137,12 @@ namespace LeechCraft
 					rd ("DROP RULE replace_enclosures ON enclosures;");
 				}
 
-				QSqlQuery dropper = QSqlQuery (DB_);
-				if (!dropper.exec ("DROP TABLE "
-						"channels, enclosures, feeds, "
-						"feeds_settings, items, mrss, "
-						"mrss_comments, mrss_credits, "
-						"mrss_peerlinks, mrss_scenes, "
-						"mrss_thumbnails"))
-				{
-					Util::DBLock::DumpError (dropper);
-					throw std::runtime_error (qPrintable (dropper.lastError ().text ()));
-				}
+				rd ("DROP TABLE "
+					"channels, enclosures, feeds, "
+					"feeds_settings, items, mrss, "
+					"mrss_comments, mrss_credits, "
+					"mrss_peerlinks, mrss_scenes, "
+					"mrss_thumbnails");
 			}
 
 			Feed::FeedSettings SQLStorageBackend::GetFeedSettingsFromVersion5 (Feed_ptr feed) const
