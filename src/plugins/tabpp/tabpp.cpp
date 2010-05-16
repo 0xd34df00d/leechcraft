@@ -43,6 +43,8 @@ namespace LeechCraft
 
 				Dock_ = new TabPPWidget ("Tab++", proxy->GetMainWindow ());
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("tabpp"));
+
+				TabWidget::SetMultiTabsParent (this);
 			}
 
 			void Plugin::SecondInit ()
