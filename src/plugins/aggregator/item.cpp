@@ -20,6 +20,7 @@
 #include <QDataStream>
 #include <typeinfo>
 #include "item.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -87,6 +88,11 @@ namespace LeechCraft
 
 			bool operator== (const MRSSEntry& e1, const MRSSEntry& e2)
 			{
+				return e1.MRSSEntryID_ == e2.MRSSEntryID_;
+			}
+
+			bool Equals (const MRSSEntry& e1, const MRSSEntry& e2)
+			{
 				return e1.URL_ == e2.URL_ &&
 					e1.Size_ == e2.Size_ &&
 					e1.Type_ == e2.Type_ &&
@@ -122,10 +128,93 @@ namespace LeechCraft
 					SameSets (e1.Scenes_, e2.Scenes_);
 			}
 
+			Enclosure::Enclosure (const IDType_t& item)
+			: EnclosureID_ (Core::Instance ().GetPool (Core::PTEnclosure).GetID ())
+			, ItemID_ (item)
+			{
+			}
+
+			Enclosure::Enclosure (const IDType_t& item, const IDType_t& enclosure)
+			: EnclosureID_ (enclosure)
+			, ItemID_ (item)
+			{
+			}
+
+			Enclosure::Enclosure ()
+			: EnclosureID_ (0)
+			, ItemID_ (0)
+			{
+			}
+
+#define MRSS_CN(a) MRSS##a
+#define MRSS_ENUM(a) PTMRSS##a
+#define MRSS_IDMEM(a) MRSS##a##ID_
+#define MRSS_DEFINE_CTORS(a) \
+			MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry) \
+			: MRSS_IDMEM(a) (Core::Instance ().GetPool (Core::MRSS_ENUM(a)).GetID ()) \
+			, MRSSEntryID_ (mrssEntry) \
+			{ \
+			} \
+	\
+			MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry, \
+					const IDType_t& mrssThis) \
+			: MRSS_IDMEM(a) (mrssThis) \
+			, MRSSEntryID_ (mrssEntry) \
+			{ \
+			} \
+	\
+			MRSS_CN(a)::MRSS_CN(a) () \
+			: MRSS_IDMEM(a) (0) \
+			, MRSSEntryID_ (0) \
+			{ \
+			}
+#define MRSS_TRAVERSER(z,i,array) MRSS_DEFINE_CTORS (BOOST_PP_SEQ_ELEM(i, array))
+#define MRSS_EXPANDER(Classes) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Classes), MRSS_TRAVERSER, Classes)
+#define MRSS_CLASSES_LIST (Thumbnail)(Credit)(Comment)(PeerLink)(Scene)
+
+			MRSS_EXPANDER (MRSS_CLASSES_LIST);
+
+#undef CLASSES_LIST
+#undef MRSS_DEFINE_REGISTER
+#undef MRSS_TRAVERSER
+#undef MRSS_EXPANDER
+
+			MRSSEntry::MRSSEntry (const IDType_t& itemId)
+			: MRSSEntryID_ (Core::Instance ().GetPool (Core::PTMRSSEntry).GetID ())
+			, ItemID_ (itemId)
+			{
+			}
+
+			MRSSEntry::MRSSEntry (const IDType_t& itemId, const IDType_t& thisId)
+			: MRSSEntryID_ (thisId)
+			, ItemID_ (itemId)
+			{
+			}
+
+			MRSSEntry::MRSSEntry ()
+			: MRSSEntryID_ (0)
+			, ItemID_ (0)
+			{
+			}
+
+			Item::Item (const IDType_t& channel)
+			: ItemID_ (Core::Instance ().GetPool (Core::PTItem).GetID ())
+			, ChannelID_ (channel)
+			{
+			}
+
+			Item::Item (const IDType_t& channel, const IDType_t& item)
+			: ItemID_ (item)
+			, ChannelID_ (channel)
+			{
+			}
+
 			ItemShort Item::ToShort () const
 			{
 				ItemShort is =
 				{
+					ItemID_,
+					ChannelID_,
 					Title_,
 					Link_,
 					Categories_,
@@ -147,8 +236,7 @@ namespace LeechCraft
 			
 			bool operator== (const Item& i1, const Item& i2)
 			{
-				return i1.Title_ == i2.Title_ &&
-					i1.Link_ == i2.Link_;
+				return i1.ItemID_ == i2.ItemID_;
 			}
 
 			QDataStream& operator<< (QDataStream& out, const Enclosure& enc)
@@ -442,7 +530,9 @@ namespace LeechCraft
 
 			void Print (const Item& item)
 			{
-				qDebug () << item.Title_
+				qDebug () << item.ItemID_
+					<< item.ChannelID_
+					<< item.Title_
 					<< item.Link_
 					<< item.Description_
 					<< item.Author_

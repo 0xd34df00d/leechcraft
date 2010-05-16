@@ -56,9 +56,9 @@ namespace LeechCraft
 			{
 			}
 			
-			channels_container_t Parser::ParseFeed (const QDomDocument& recent) const
+			channels_container_t Parser::ParseFeed (const QDomDocument& recent, const IDType_t& feedId) const
 			{
-				channels_container_t newes = Parse (recent);
+				channels_container_t newes = Parse (recent, feedId);
 				for (size_t i = 0; i < newes.size (); ++i)
 				{
 					Channel_ptr newChannel = newes [i];
@@ -214,7 +214,8 @@ namespace LeechCraft
 				return result;
 			}
 			
-			QList<Enclosure> Parser::GetEncEnclosures (const QDomElement& parent) const
+			QList<Enclosure> Parser::GetEncEnclosures (const QDomElement& parent,
+					const IDType_t& itemId) const
 			{
 				QList<Enclosure> result;
 			
@@ -224,13 +225,11 @@ namespace LeechCraft
 				{
 					QDomElement link = nodes.at (i).toElement ();
 			
-					Enclosure e =
-					{
-						link.attributeNS (RDF_, "resource"),
-						link.attributeNS (Enc_, "type"),
-						link.attributeNS (Enc_, "length", "-1").toLongLong (),
-						""
-					};
+					Enclosure e (itemId);
+					e.URL_ = link.attributeNS (RDF_, "resource");
+					e.Type_ = link.attributeNS (Enc_, "type");
+					e.Length_ = link.attributeNS (Enc_, "length", "-1").toLongLong ();
+					e.Lang_ = "";
 			
 					result << e;
 				}
@@ -350,9 +349,12 @@ namespace LeechCraft
 						return *this;
 					}
 				};
+
 				QHash<QDomNode, ArbitraryLocatedData> Cache_;
+
+				IDType_t ItemID_;
 			public:
-				MRSSParser () {}
+				MRSSParser (const IDType_t& itemId) : ItemID_ (itemId) {}
 
 				QList<MRSSEntry> operator() (const QDomElement& item)
 				{
@@ -375,10 +377,10 @@ namespace LeechCraft
 							"content");
 					for (int i = 0; i < entries.size (); ++i)
 					{
-						MRSSEntry entry;
+						MRSSEntry entry (ItemID_);
 
 						QDomElement en = entries.at (i).toElement ();
-						ArbitraryLocatedData d = GetArbitraryLocatedDataFor (en);
+						ArbitraryLocatedData d = GetArbitraryLocatedDataFor (en, entry.MRSSEntryID_);
 
 						if (en.hasAttribute ("url"))
 							entry.URL_ = en.attribute ("url");
@@ -433,7 +435,8 @@ namespace LeechCraft
 					return result;
 				}
 
-				ArbitraryLocatedData GetArbitraryLocatedDataFor (const QDomElement& holder)
+				ArbitraryLocatedData GetArbitraryLocatedDataFor (const QDomElement& holder,
+						const IDType_t& mrssId)
 				{
 					ArbitraryLocatedData result;
 
@@ -445,7 +448,7 @@ namespace LeechCraft
 						parent = parent.parentNode ().toElement ();
 					}
 					Q_FOREACH (QDomElement p, parents)
-						result += CollectArbitraryLocatedData (p);
+						result += CollectArbitraryLocatedData (p, mrssId);
 
 					return result;
 				}
@@ -505,7 +508,8 @@ namespace LeechCraft
 					return boost::optional<int> ();
 				}
 
-				QList<MRSSThumbnail> GetThumbnails (const QDomElement& element)
+				QList<MRSSThumbnail> GetThumbnails (const QDomElement& element,
+						const IDType_t& mrssId)
 				{
 					QList<MRSSThumbnail> result;
 					QList<QDomNode> thumbs = GetDirectChildrenNS (element, Parser::MediaRSS_,
@@ -517,19 +521,18 @@ namespace LeechCraft
 						int width = widthOpt ? *widthOpt : 0;
 						boost::optional<int> heightOpt = GetInt (thumbNode, "height");
 						int height = heightOpt ? *heightOpt : 0;
-						MRSSThumbnail thumb =
-						{
-							thumbNode.attribute ("url"),
-							width,
-							height,
-							thumbNode.attribute ("time")
-						};
+						MRSSThumbnail thumb (mrssId);
+						thumb.URL_ = thumbNode.attribute ("url");
+						thumb.Width_ = width;
+						thumb.Height_ = height;
+						thumb.Time_ = thumbNode.attribute ("time");
 						result << thumb;
 					}
 					return result;
 				}
 
-				QList<MRSSCredit> GetCredits (const QDomElement& element)
+				QList<MRSSCredit> GetCredits (const QDomElement& element,
+						const IDType_t& mrssId)
 				{
 					QList<MRSSCredit> result;
 					QList<QDomNode> credits = GetDirectChildrenNS (element, Parser::MediaRSS_,
@@ -539,17 +542,16 @@ namespace LeechCraft
 						QDomElement creditNode = credits.at (i).toElement ();
 						if (!creditNode.hasAttribute ("role"))
 							continue;
-						MRSSCredit credit =
-						{
-							creditNode.attribute ("role"),
-							creditNode.text ()
-						};
+						MRSSCredit credit (mrssId);
+						credit.Role_ = creditNode.attribute ("role");
+						credit.Who_ = creditNode.text ();
 						result << credit;
 					}
 					return result;
 				}
 
-				QList<MRSSComment> GetComments (const QDomElement& element)
+				QList<MRSSComment> GetComments (const QDomElement& element,
+						const IDType_t& mrssId)
 				{
 					QList<MRSSComment> result;
 					QList<QDomNode> commParents = GetDirectChildrenNS (element, Parser::MediaRSS_,
@@ -561,11 +563,9 @@ namespace LeechCraft
 								"comment");
 						for (int i = 0; i < comments.size (); ++i)
 						{
-							MRSSComment comment =
-							{
-								QObject::tr ("Comments"),
-								comments.at (i).toElement ().text ()
-							};
+							MRSSComment comment (mrssId);
+							comment.Type_ = QObject::tr ("Comments");
+							comment.Comment_ = comments.at (i).toElement ().text ();
 							result << comment;
 						}
 					}
@@ -579,11 +579,9 @@ namespace LeechCraft
 								"response");
 						for (int i = 0; i < responses.size (); ++i)
 						{
-							MRSSComment comment =
-							{
-								QObject::tr ("Responses"),
-								responses.at (i).toElement ().text ()
-							};
+							MRSSComment comment (mrssId);
+							comment.Type_ = QObject::tr ("Responses");
+							comment.Comment_ = responses.at (i).toElement ().text ();
 							result << comment;
 						}
 					}
@@ -597,18 +595,17 @@ namespace LeechCraft
 								"backLink");
 						for (int i = 0; i < backlinks.size (); ++i)
 						{
-							MRSSComment comment =
-							{
-								QObject::tr ("Backlinks"),
-								backlinks.at (i).toElement ().text ()
-							};
+							MRSSComment comment (mrssId);
+							comment.Type_ = QObject::tr ("Backlinks");
+							comment.Comment_ = backlinks.at (i).toElement ().text ();
 							result << comment;
 						}
 					}
 					return result;
 				}
 
-				QList<MRSSPeerLink> GetPeerLinks (const QDomElement& element)
+				QList<MRSSPeerLink> GetPeerLinks (const QDomElement& element,
+						const IDType_t& mrssId)
 				{
 					QList<MRSSPeerLink> result;
 					QList<QDomNode> links = GetDirectChildrenNS (element, Parser::MediaRSS_,
@@ -616,17 +613,16 @@ namespace LeechCraft
 					for (int i = 0; i < links.size (); ++i)
 					{
 						QDomElement linkNode = links.at (i).toElement ();
-						MRSSPeerLink pl =
-						{
-							linkNode.attribute ("type"),
-							linkNode.attribute ("href")
-						};
+						MRSSPeerLink pl (mrssId);
+						pl.Link_ = linkNode.attribute ("href");
+						pl.Type_ = linkNode.attribute ("type");
 						result << pl;
 					}
 					return result;
 				}
 
-				QList<MRSSScene> GetScenes (const QDomElement& element)
+				QList<MRSSScene> GetScenes (const QDomElement& element,
+						const IDType_t& mrssId)
 				{
 					QList<MRSSScene> result;
 					QList<QDomNode> scenesNode = GetDirectChildrenNS (element, Parser::MediaRSS_,
@@ -638,20 +634,19 @@ namespace LeechCraft
 						for (int i = 0; i < scenesNodes.size (); ++i)
 						{
 							QDomElement sceneNode = scenesNodes.at (i).toElement ();
-							MRSSScene scene =
-							{
-								sceneNode.firstChildElement ("sceneTitle").text (),
-								sceneNode.firstChildElement ("sceneDescription").text (),
-								sceneNode.firstChildElement ("sceneStartTime").text (),
-								sceneNode.firstChildElement ("sceneEndTime").text ()
-							};
+							MRSSScene scene (mrssId);
+							scene.Title_ = sceneNode.firstChildElement ("sceneTitle").text ();
+							scene.Description_ = sceneNode.firstChildElement ("sceneDescription").text ();
+							scene.StartTime_ = sceneNode.firstChildElement ("sceneStartTime").text ();
+							scene.EndTime_ = sceneNode.firstChildElement ("sceneEndTime").text ();
 							result << scene;
 						}
 					}
 					return result;
 				}
 
-				ArbitraryLocatedData CollectArbitraryLocatedData (const QDomElement& element)
+				ArbitraryLocatedData CollectArbitraryLocatedData (const QDomElement& element,
+						const IDType_t& mrssId)
 				{
 					if (Cache_.contains (element))
 						return Cache_ [element];
@@ -745,11 +740,11 @@ namespace LeechCraft
 						views,
 						favs,
 						tags,
-						GetThumbnails (element),
-						GetCredits (element),
-						GetComments (element),
-						GetPeerLinks (element),
-						GetScenes (element)
+						GetThumbnails (element, mrssId),
+						GetCredits (element, mrssId),
+						GetComments (element, mrssId),
+						GetPeerLinks (element, mrssId),
+						GetScenes (element, mrssId)
 					};
 
 					Cache_ [element] = result;
@@ -757,9 +752,10 @@ namespace LeechCraft
 				}
 			};
 
-			QList<MRSSEntry> Parser::GetMediaRSS (const QDomElement& item) const
+			QList<MRSSEntry> Parser::GetMediaRSS (const QDomElement& item,
+					const IDType_t& itemId) const
 			{
-				return MRSSParser () (item);
+				return MRSSParser (itemId) (item);
 			}
 			
 			QDateTime Parser::FromRFC3339 (const QString& t) const

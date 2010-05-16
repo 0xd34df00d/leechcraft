@@ -102,7 +102,7 @@ namespace LeechCraft
 					const ChannelShort& cs, const QList<Item_ptr>& items)
 			{
 				w.writeStartElement ("section");
-					w.writeAttribute ("id", cs.ParentURL_ + cs.Title_);
+					w.writeAttribute ("id", QString::number (cs.ChannelID_));
 					w.writeStartElement ("title");
 						w.writeTextElement ("p", cs.Title_);
 					w.writeEndElement ();
@@ -201,7 +201,8 @@ namespace LeechCraft
 
 				StorageBackend *sb = Core::Instance ().GetStorageBackend ();
 
-				QModelIndexList rows = Ui_.ChannelsTree_->selectionModel ()->selectedRows ();
+				QModelIndexList rows = Ui_.ChannelsTree_->
+						selectionModel ()->selectedRows ();
 				bool unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;
 				QStringList categories = Selector_->GetSelections ();
 
@@ -213,13 +214,12 @@ namespace LeechCraft
 					ChannelShort cs = Core::Instance ()
 						.GetRawChannelsModel ()->GetChannelForIndex (row);
 
-					Channel_ptr channel = sb->GetChannel (cs.Title_,
-							cs.ParentURL_);
+					Channel_ptr channel = sb->
+							GetChannel (cs.ChannelID_, cs.FeedID_);
 					authors << channel->Author_;
 
 					items_shorts_t items;
-					QString hash = cs.ParentURL_ + cs.Title_;
-					sb->GetItems (items, hash);
+					sb->GetItems (items, cs.ChannelID_);
 			
 					for (items_shorts_t::const_iterator i = items.begin (),
 							end = items.end (); i != end; ++i)
@@ -242,8 +242,7 @@ namespace LeechCraft
 								continue;
 						}
 
-						Item_ptr item = sb->GetItem (i->Title_,
-									i->URL_, hash);
+						Item_ptr item = sb->GetItem (i->ItemID_);
 
 						items2write [cs].prepend (item);
 					}

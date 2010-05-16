@@ -25,6 +25,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include "channel.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -45,17 +46,55 @@ namespace LeechCraft
 				 */
 				struct FeedSettings
 				{
-					/** @brief Returns a default-constructed feed.
+					/** @brief Returns a default-constructed feed
+					 * settings object.
 					 *
-					 * A default-constructed feed has all the settings set to default
-					 * values - so, no settings are overridden.
+					 * A default-constructed feed settings has
+					 * everything set to default values - so, no
+					 * settings are overridden.
 					 *
+					 * This constructor requests a new SettingsID_ for
+					 * this feed settings object.
+					 *
+					 * @param[in] feedId ID of the feed that these
+					 * settings relate to.
 					 * @param[in] ut Update interval.
 					 * @param[in] ni Number of items.
 					 * @param[in] ia Max age.
 					 * @param[in] ada Automatically download enclosures.
 					 */
-					FeedSettings (int ut = 0, int ni = 0, int ia = 0, bool ada = false);
+					FeedSettings (IDType_t feedId,
+							int ut = 0, int ni = 0, int ia = 0, bool ada = false);
+
+					/** @brief Returns a default-constructed feed
+					 * settings object.
+					 *
+					 * A default-constructed feed settings has
+					 * everything set to default values - so, no
+					 * settings are overridden.
+					 *
+					 * This constructor allows to reuse an existing ID
+					 * for the SettingsID_.
+					 *
+					 * @param[in] feedId ID of the feed that these
+					 * settings relate to.
+					 * @param[in] settingsId ID of the settings object
+					 * to be used.
+					 * @param[in] ut Update interval.
+					 * @param[in] ni Number of items.
+					 * @param[in] ia Max age.
+					 * @param[in] ada Automatically download enclosures.
+					 */
+					FeedSettings (IDType_t feedId, IDType_t settingsId,
+							int ut, int ni, int ia, bool ada);
+
+					/** @brief ID of these settings.
+					 */
+					IDType_t SettingsID_;
+
+					/** @brief ID of the corresponding feed.
+					 */
+					IDType_t FeedID_;
 
 					/** @brief Update timeout for the feed.
 					 *
@@ -86,13 +125,13 @@ namespace LeechCraft
 					bool AutoDownloadEnclosures_;
 				};
 
+				IDType_t FeedID_;
 				QString URL_;
 				QDateTime LastUpdate_;
 				channels_container_t Channels_;
 
 				Feed ();
-				Feed (const Feed&);
-				Feed& operator= (const Feed&);
+				Feed (const IDType_t& id);
 			};
 
 			typedef boost::shared_ptr<Feed> Feed_ptr;

@@ -26,6 +26,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include "item.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -35,17 +36,20 @@ namespace LeechCraft
 		{
 			struct ChannelShort
 			{
+				IDType_t ChannelID_;
+				IDType_t FeedID_;
 				QString Title_;
 				QString Link_;
 				QStringList Tags_;
 				QDateTime LastBuild_;
 				QPixmap Favicon_;
 				int Unread_;
-				QString ParentURL_;
 			};
 
 			struct Channel
 			{
+				IDType_t ChannelID_;
+				IDType_t FeedID_;
 				QString Title_;
 				QString Link_;
 				QString Description_;
@@ -56,12 +60,11 @@ namespace LeechCraft
 				QString PixmapURL_;
 				QPixmap Pixmap_;
 				QPixmap Favicon_;
-				QString ParentURL_;
 				items_container_t Items_;
 
-				Channel ();
+				Channel (const IDType_t& feedId);
+				Channel (const IDType_t& feedId, const IDType_t& channelId);
 				Channel (const Channel&);
-				~Channel ();
 				Channel& operator= (const Channel&);
 
 				int CountUnreadItems () const;

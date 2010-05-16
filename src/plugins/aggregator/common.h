@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ITEMBUCKET_H
-#define PLUGINS_AGGREGATOR_ITEMBUCKET_H
-#include <QDialog>
-#include "item.h"
-#include "ui_itembucket.h"
-
-class QModelIndex;
+#ifndef PLUGINS_AGGREGATOR_COMMON_H
+#define PLUGINS_AGGREGATOR_COMMON_H
+#include <vector>
 
 namespace LeechCraft
 {
@@ -30,27 +26,10 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			class ItemModel;
-
-			class ItemBucket : public QDialog
-			{
-				Q_OBJECT
-
-				ItemModel *ItemModel_;
-				Ui::ItemBucket Ui_;
-			public:
-				ItemBucket (QWidget* = 0);
-				virtual ~ItemBucket ();
-
-				ItemModel* GetItemModel () const;
-			private slots:
-				void on_Items__activated (const QModelIndex&);
-				void on_ActionDeleteItem__triggered ();
-				void currentItemChanged (const QModelIndex&);
-			};
+			typedef quint64 IDType_t;
+			typedef QList<IDType_t> ids_t;
 		};
 	};
 };
 
 #endif
-

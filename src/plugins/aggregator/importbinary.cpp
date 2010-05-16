@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "importbinary.h"
+#include <boost/bind.hpp>
 #include <QFile>
 #include <QDataStream>
 #include <QFileDialog>
@@ -52,27 +53,11 @@ namespace LeechCraft
 				return Ui_.AdditionalTags_->text ().trimmed ();
 			}
 			
-			namespace
-			{
-				struct ParentFinder
-				{
-					const QString& URL_;
-			
-					ParentFinder (const QString& url)
-					: URL_ (url)
-					{
-					}
-			
-					bool operator() (const Feed_ptr& feed) const
-					{
-						return URL_ == feed->URL_;
-					}
-				};
-			};
-			
 			feeds_container_t ImportBinary::GetSelectedFeeds () const
 			{
 				feeds_container_t result;
+
+				QMap<IDType_t, IDType_t> foreignIDs2Local;
 			
 				for (int i = 0, end = Ui_.FeedsToImport_->topLevelItemCount ();
 						i < end; ++i)
@@ -82,19 +67,19 @@ namespace LeechCraft
 						continue;
 			
 					Channel_ptr chan = Channels_ [i];
-					feeds_container_t::iterator pos =
-						std::find_if (result.begin (), result.end (),
-								ParentFinder (chan->ParentURL_));
-					if (pos == result.end ())
+					if (!foreignIDs2Local.contains (chan->FeedID_))
 					{
 						Feed_ptr feed (new Feed ());
-						feed->URL_ = chan->ParentURL_;
 						feed->LastUpdate_ = QDateTime::currentDateTime ();
-						feed->Channels_.push_back (chan);
 						result.push_back (feed);
+						foreignIDs2Local [chan->FeedID_] = feed->FeedID_;
 					}
-					else
-						(*pos)->Channels_.push_back (chan);
+
+					IDType_t our = foreignIDs2Local [chan->FeedID_];
+					feeds_container_t::iterator pos =
+						std::find_if (result.begin (), result.end (),
+								boost::bind (&Feed::FeedID_, _1) == our);
+					(*pos)->Channels_.push_back (chan);
 				}
 			
 				return result;
@@ -184,13 +169,12 @@ namespace LeechCraft
 			
 				while (stream.status () == QDataStream::Ok)
 				{
-					Channel_ptr channel (new Channel ());
+					Channel_ptr channel (new Channel (-1, -1));
 					stream >> (*channel);
 					Channels_.push_back (channel);
 			
 					QStringList strings (channel->Title_);
-					strings << channel->ParentURL_
-						<< QString::number (channel->Items_.size ());
+					strings << QString::number (channel->Items_.size ());
 			
 					QTreeWidgetItem *item =
 						new QTreeWidgetItem (Ui_.FeedsToImport_, strings);

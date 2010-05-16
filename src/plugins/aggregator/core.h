@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AGGREGATOR_CORE_H
 #define PLUGINS_AGGREGATOR_CORE_H
 #include <memory>
+#include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QString>
 #include <QMap>
@@ -26,13 +27,12 @@
 #include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
-#include <boost/shared_ptr.hpp>
+#include <plugininterface/idpool.h>
 #include "item.h"
 #include "channel.h"
 #include "feed.h"
 #include "storagebackend.h"
 #include "actionsstructs.h"
-#include "itembucket.h"
 
 class QTimer;
 class QNetworkReply;
@@ -103,18 +103,37 @@ namespace LeechCraft
 				QTimer *UpdateTimer_, *CustomUpdateTimer_;
 				boost::shared_ptr<StorageBackend> StorageBackend_;
 				JobHolderRepresentation *JobHolderRepresentation_;
-				QMap<QString, QDateTime> Updates_;
+				QMap<IDType_t, QDateTime> Updates_;
 				ChannelsFilterModel *ChannelsFilterModel_;
 				ICoreProxy_ptr Proxy_;
 				bool Initialized_;
 				AppWideActions AppWideActions_;
 				ItemsWidget *ReprWidget_;
-				std::auto_ptr<ItemBucket> ItemBucket_;
 
 				Core ();
 			public:
+				enum PoolType
+				{
+					PTFeed,
+					PTChannel,
+					PTItem,
+					PTFeedSettings,
+					PTEnclosure,
+					PTMRSSEntry,
+					PTMRSSThumbnail,
+					PTMRSSCredit,
+					PTMRSSComment,
+					PTMRSSPeerLink,
+					PTMRSSScene,
+					PTMAX
+				};
+			private:
+				QHash<PoolType, Util::IDPool<IDType_t> > Pools_;
+			public:
 				struct ChannelInfo
 				{
+					IDType_t FeedID_;
+					IDType_t ChannelID_;
 					QString URL_;
 					QString Link_;
 					QString Description_;
@@ -128,17 +147,19 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
+				Util::IDPool<IDType_t>& GetPool (PoolType);
+				void SyncPools () const;
+
 				bool CouldHandle (const LeechCraft::DownloadEntity&);
 				void Handle (LeechCraft::DownloadEntity);
 				void StartAddingOPML (const QString&);
 				void SetAppWideActions (const AppWideActions&);
 				const AppWideActions& GetAppWideActions () const;
 				bool DoDelayedInit ();
-				void AddFeed (const QString&, const QString&);
-				void AddFeed (const QString&, const QStringList&);
+				int AddFeed (const QString&, const QString&);
+				int AddFeed (const QString&, const QStringList&);
 				void RemoveFeed (const QModelIndex&);
 				ItemsWidget* GetReprWidget () const;
-				ItemBucket* GetItemBucket () const;
 
 				/** Returns the channels model as it is.
 				 *
@@ -216,7 +237,7 @@ namespace LeechCraft
 				void HandleFeedUpdated (const channels_container_t&,
 						const PendingJob&);
 				void MarkChannel (const QModelIndex&, bool);
-				void UpdateFeed (const QString&);
+				void UpdateFeed (const IDType_t&);
 				void HandleProvider (QObject*, int);
 				void ErrorNotification (const QString&, const QString&, bool = true) const;
 			signals:

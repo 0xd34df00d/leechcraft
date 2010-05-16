@@ -35,7 +35,8 @@ namespace LeechCraft
 				static RSS10Parser& Instance ();
 				virtual bool CouldParse (const QDomDocument&) const;
 			private:
-				channels_container_t Parse (const QDomDocument&) const;
+				channels_container_t Parse (const QDomDocument&,
+						const IDType_t&) const;
 			};
 		};
 	};

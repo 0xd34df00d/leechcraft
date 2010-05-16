@@ -37,20 +37,20 @@ namespace LeechCraft
 				items_shorts_t CurrentItems_;
 				int CurrentRow_;
 				// First is ParentURL_ and second is Title_
-				QPair<QString, QString> CurrentChannelHash_;
+				IDType_t CurrentChannel_;
 				bool MayBeRichText_;
 			public:
 				ItemsListModel (QObject* = 0);
 
 				int GetSelectedRow () const;
-				const QPair<QString, QString>& GetHash () const;
-				void SetHash (const QPair<QString, QString>&);
+				const IDType_t& GetCurrentChannel () const;
+				void SetCurrentChannel (const IDType_t&);
 				void Selected (const QModelIndex&);
 				void MarkItemAsUnread (const QModelIndex&);
 				const ItemShort& GetItem (const QModelIndex&) const;
 				bool IsItemRead (int) const;
 				QStringList GetCategories (int) const;
-				void Reset (const QPair<QString, QString>&);
+				void Reset (const IDType_t&);
 				void ItemDataUpdated (Item_ptr);
 
 				int columnCount (const QModelIndex& = QModelIndex ()) const;

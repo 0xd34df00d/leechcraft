@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <numeric>
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 #include <QtDebug>
 #include <QImage>
 #include <QDir>
@@ -40,11 +41,9 @@
 #include "atom10parser.h"
 #include "atom03parser.h"
 #include "channelsmodel.h"
-#include "itembucket.h"
 #include "opmlparser.h"
 #include "opmlwriter.h"
 #include "sqlstoragebackend.h"
-#include "itemmodel.h"
 #include "jobholderrepresentation.h"
 #include "channelsfiltermodel.h"
 #include "importopml.h"
@@ -65,15 +64,9 @@ namespace LeechCraft
 			, Initialized_ (false)
 			{
 				qRegisterMetaType<QItemSelection> ("QItemSelection");
-				qRegisterMetaType<Item> ("LeechCraft::Plugins::Aggregator::Item");
-				qRegisterMetaType<Enclosure> ("LeechCraft::Plugins::Aggregator::Enclosure");
-
 				qRegisterMetaType<Item_ptr> ("Item_ptr");
 				qRegisterMetaType<Channel_ptr> ("Channel_ptr");
-
 				qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
-				qRegisterMetaTypeStreamOperators<Item> ("LeechCraft::Plugins::Aggregator::Item");
-				qRegisterMetaTypeStreamOperators<Enclosure> ("LeechCraft::Plugins::Aggregator::Enclosure");
 			}
 			
 			Core& Core::Instance ()
@@ -84,11 +77,11 @@ namespace LeechCraft
 			
 			void Core::Release ()
 			{
+				SyncPools ();
 				delete JobHolderRepresentation_;
 				delete ChannelsFilterModel_;
 				delete ChannelsModel_;
 				delete ReprWidget_;
-				ItemBucket_.reset ();
 
 				StorageBackend_.reset ();
 				XmlSettingsManager::Instance ()->Release ();
@@ -104,6 +97,20 @@ namespace LeechCraft
 				return Proxy_;
 			}
 			
+			Util::IDPool<IDType_t>& Core::GetPool (Core::PoolType type)
+			{
+				return Pools_ [type];
+			}
+
+			void Core::SyncPools () const
+			{
+				QList<PoolType> types = Pools_.keys ();
+				Q_FOREACH (PoolType type, types)
+					XmlSettingsManager::Instance ()->
+							setProperty (QString ("PoolState_%1").arg (type).toLatin1 (),
+									Pools_ [type].SaveState ());
+			}
+
 			bool Core::CouldHandle (const LeechCraft::DownloadEntity& e)
 			{
 				if (!e.Entity_.canConvert<QUrl> () ||
@@ -272,7 +279,14 @@ namespace LeechCraft
 					return false;
 				}
 
-				ItemBucket_.reset (new ItemBucket ());
+				for (int type = 0; type < PTMAX; ++type)
+				{
+					Util::IDPool<IDType_t> pool;
+					QByteArray state = XmlSettingsManager::Instance ()->
+							property (QString ("PoolState_%1").arg (type).toLatin1 ()).toByteArray ();
+					pool.LoadState (state);
+					Pools_ [static_cast<PoolType> (type)] = pool;
+				}
 
 				ChannelsModel_ = new ChannelsModel ();
 				ChannelsFilterModel_ = new ChannelsFilterModel ();
@@ -283,7 +297,7 @@ namespace LeechCraft
 			
 				const int feedsTable = 1;
 				const int channelsTable = 1;
-				const int itemsTable = 5;
+				const int itemsTable = 6;
 			
 				bool tablesOK = true;
 			
@@ -332,13 +346,12 @@ namespace LeechCraft
 			
 				if (tablesOK)
 				{
-					feeds_urls_t feeds;
-					StorageBackend_->GetFeedsURLs (feeds);
-					for (feeds_urls_t::const_iterator i = feeds.begin (),
-							end = feeds.end (); i != end; ++i)
+					ids_t feeds;
+					StorageBackend_->GetFeedsIDs (feeds);
+					Q_FOREACH (IDType_t feedId, feeds)
 					{
 						channels_shorts_t channels;
-						StorageBackend_->GetChannels (channels, *i);
+						StorageBackend_->GetChannels (channels, feedId);
 						std::for_each (channels.begin (), channels.end (),
 								boost::bind (&ChannelsModel::AddChannel,
 									ChannelsModel_,
@@ -396,23 +409,19 @@ namespace LeechCraft
 				return true;
 			}
 
-			void Core::AddFeed (const QString& url, const QString& tagString)
+			int Core::AddFeed (const QString& url, const QString& tagString)
 			{
-				AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
+				return AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 			}
 			
-			void Core::AddFeed (const QString& url, const QStringList& tags)
+			int Core::AddFeed (const QString& url, const QStringList& tags)
 			{
-				feeds_urls_t feeds;
-				StorageBackend_->GetFeedsURLs (feeds);
-				feeds_urls_t::const_iterator pos =
-					std::find (feeds.begin (), feeds.end (), url);
-				if (pos != feeds.end ())
+				if (StorageBackend_->FindFeed (url) != -1)
 				{
 					ErrorNotification (tr ("Feed addition error"),
 							tr ("The feed %1 is already added")
 							.arg (url));
-					return;
+					return -1;
 				}
 			
 				QString name = LeechCraft::Util::GetTemporaryName ();
@@ -435,6 +444,10 @@ namespace LeechCraft
 					name,
 					tagIds
 				};
+
+				Feed_ptr feed (new Feed ());
+				feed->URL_ = pj.URL_;
+				StorageBackend_->AddFeed (feed);
 			
 				int id = -1;
 				QObject *pr;
@@ -443,13 +456,14 @@ namespace LeechCraft
 				{
 					ErrorNotification (tr ("Plugin error"),
 							tr ("Job for feed %1 wasn't delegated.")
-							.arg (url),
+								.arg (url),
 							false);
-					return;
+					return -1;
 				}
 			
 				HandleProvider (pr, id);
 				PendingJobs_ [id] = pj;
+				return feed->FeedID_;
 			}
 			
 			void Core::RemoveFeed (const QModelIndex& index)
@@ -470,19 +484,12 @@ namespace LeechCraft
 					return;
 				}
 			
-				QString feedURL = channel.ParentURL_;
-				if (feedURL.isEmpty ())
-				{
-					qWarning () << Q_FUNC_INFO << "could not find feed for channel" ;
-					return;
-				}
-			
 				channels_shorts_t shorts;
-				StorageBackend_->GetChannels (shorts, feedURL);
+				StorageBackend_->GetChannels (shorts, channel.FeedID_);
 			
 				for (size_t i = 0, size = shorts.size (); i < size; ++i)
 					ChannelsModel_->RemoveChannel (shorts [i]);
-				StorageBackend_->RemoveFeed (feedURL);
+				StorageBackend_->RemoveFeed (channel.FeedID_);
 			
 				UpdateUnreadItemsNumber ();
 			}
@@ -492,11 +499,6 @@ namespace LeechCraft
 				return ReprWidget_;
 			}
 
-			ItemBucket* Core::GetItemBucket () const
-			{
-				return ItemBucket_.get ();
-			}
-			
 			ChannelsModel* Core::GetRawChannelsModel () const
 			{
 				return ChannelsModel_;
@@ -564,16 +566,20 @@ namespace LeechCraft
 					return ChannelInfo ();
 				}
 				ChannelInfo ci;
-				ci.URL_ = channel.ParentURL_;
+				ci.FeedID_ = channel.FeedID_;
+				ci.ChannelID_ = channel.ChannelID_;
 				ci.Link_ = channel.Link_;
 			
 				Channel_ptr rc = StorageBackend_->
-					GetChannel (channel.Title_, channel.ParentURL_);
+						GetChannel (channel.ChannelID_, channel.FeedID_);
 				ci.Description_ = rc->Description_;
 				ci.Author_ = rc->Author_;
 
+				Feed_ptr feed = StorageBackend_->GetFeed (channel.FeedID_);
+				ci.URL_ = feed->URL_;
+
 				items_shorts_t items;
-				StorageBackend_->GetItems (items, channel.ParentURL_ + channel.Title_);
+				StorageBackend_->GetItems (items, channel.ChannelID_);
 				ci.NumItems_ = items.size ();
 
 				return ci;
@@ -585,7 +591,7 @@ namespace LeechCraft
 				{
 					ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
 					Channel_ptr rc = StorageBackend_->
-						GetChannel (channel.Title_, channel.ParentURL_);
+							GetChannel (channel.ChannelID_, channel.FeedID_);
 					return rc->Pixmap_;
 				}
 				catch (const std::exception& e)
@@ -605,7 +611,7 @@ namespace LeechCraft
 					channel.Tags_.clear ();
 					Q_FOREACH (QString tag, tlist)
 						channel.Tags_.append (Proxy_->GetTagsManager ()->GetID (tag));
-					StorageBackend_->UpdateChannel (channel, channel.ParentURL_);
+					StorageBackend_->UpdateChannel (channel);
 				}
 				catch (const std::exception& e)
 				{
@@ -619,8 +625,8 @@ namespace LeechCraft
 				try
 				{
 					ChannelShort channel = ChannelsModel_->GetChannelForIndex (index);
-					FetchFavicon (StorageBackend_->GetChannel (channel.Title_,
-								channel.ParentURL_));
+					FetchFavicon (StorageBackend_->
+							GetChannel (channel.ChannelID_, channel.FeedID_));
 				}
 				catch (const std::exception& e)
 				{
@@ -642,7 +648,7 @@ namespace LeechCraft
 				}
 			
 				items_shorts_t items;
-				StorageBackend_->GetItems (items, cs.ParentURL_ + cs.Title_);
+				StorageBackend_->GetItems (items, cs.ChannelID_);
 			
 				QStringList result;
 				for (items_shorts_t::const_iterator i = items.begin (),
@@ -663,14 +669,15 @@ namespace LeechCraft
 				try
 				{
 					return StorageBackend_->GetFeedSettings (ChannelsModel_->
-							GetChannelForIndex (index).ParentURL_);
+							GetChannelForIndex (index).FeedID_);
 				}
 				catch (const std::exception& e)
 				{
 					ErrorNotification (tr ("Aggregator error"),
-							tr ("Could not get feed settigns: %1")
+							tr ("Could not get feed settings: %1")
 							.arg (e.what ()));
-					return Feed::FeedSettings ();
+					throw std::runtime_error (QString ("Could not get feed settings, "
+							"inner exception: %1").arg (e.what ()).toStdString ());
 				}
 			}
 			
@@ -679,8 +686,7 @@ namespace LeechCraft
 			{
 				try
 				{
-					StorageBackend_->SetFeedSettings (ChannelsModel_->
-							GetChannelForIndex (index).ParentURL_, settings);
+					StorageBackend_->SetFeedSettings (settings);
 				}
 				catch (const std::exception& e)
 				{
@@ -697,8 +703,7 @@ namespace LeechCraft
 				ChannelShort channel;
 				try
 				{
-					channel = ChannelsModel_->
-						GetChannelForIndex (index);
+					channel = ChannelsModel_->GetChannelForIndex (index);
 				}
 				catch (const std::exception& e)
 				{
@@ -712,13 +717,7 @@ namespace LeechCraft
 							false);
 					return;
 				}
-				QString url = channel.ParentURL_;
-				if (url.isEmpty ())
-				{
-					qWarning () << Q_FUNC_INFO << "could not found feed for index" << index;
-					return;
-				}
-				UpdateFeed (url);
+				UpdateFeed (channel.FeedID_);
 			}
 			
 			QModelIndex Core::GetUnreadChannelIndex () const
@@ -790,15 +789,22 @@ namespace LeechCraft
 				for (OPMLParser::items_container_t::const_iterator i = items.begin (),
 						end = items.end (); i != end; ++i)
 				{
-					AddFeed (i->URL_, tagsList + i->Categories_);
+					IDType_t feedId = AddFeed (i->URL_, tagsList + i->Categories_);
+					if (feedId == -1)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "not added feed from OPML:"
+								<< i->URL_;
+						continue;
+					}
 
 					try
 					{
 						int interval = 0;
 						if (i->CustomFetchInterval_)
 							interval = i->FetchInterval_;
-						Feed::FeedSettings s (interval, i->MaxArticleNumber_, i->MaxArticleAge_);
-						StorageBackend_->SetFeedSettings (i->URL_, s);
+						Feed::FeedSettings s (feedId, interval, i->MaxArticleNumber_, i->MaxArticleAge_);
+						StorageBackend_->SetFeedSettings (s);
 					}
 					catch (const std::exception& e)
 					{
@@ -884,18 +890,15 @@ namespace LeechCraft
 				for (channels_shorts_t::const_iterator i = channels.begin (),
 						end = channels.end (); i != end; ++i)
 				{
-					Channel_ptr channel = StorageBackend_->GetChannel (i->Title_,
-							i->ParentURL_);
+					Channel_ptr channel = StorageBackend_->
+							GetChannel (i->ChannelID_, i->FeedID_);
 					items_shorts_t items;
-			
-					QString hash = i->ParentURL_ + i->Title_;
-			
-					StorageBackend_->GetItems (items, hash);
+					StorageBackend_->GetItems (items, channel->ChannelID_);
 			
 					for (items_shorts_t::const_iterator j = items.begin (),
 							endJ = items.end (); j != endJ; ++j)
-						channel->Items_.push_back (StorageBackend_->GetItem (j->Title_,
-									j->URL_, hash));
+						channel->Items_.push_back (StorageBackend_->
+								GetItem (j->ItemID_));
 			
 					data << (*channel);
 				}
@@ -924,35 +927,32 @@ namespace LeechCraft
 			
 			void Core::GetChannels (channels_shorts_t& channels) const
 			{
-				feeds_urls_t urls;
-				StorageBackend_->GetFeedsURLs (urls);
-				for (feeds_urls_t::const_iterator i = urls.begin (),
-						end = urls.end (); i != end; ++i)
-					StorageBackend_->GetChannels (channels, *i);
+				ids_t ids;
+				StorageBackend_->GetFeedsIDs (ids);
+				Q_FOREACH (IDType_t id, ids)
+					StorageBackend_->GetChannels (channels, id);
 			}
 			
 			void Core::AddFeeds (const feeds_container_t& feeds,
 					const QString& tagsString)
 			{
 				QStringList tags = Proxy_->GetTagsManager ()->Split (tagsString);
-			
-				for (feeds_container_t::const_iterator i = feeds.begin (),
-						end = feeds.end (); i != end; ++i)
+
+				Q_FOREACH (Feed_ptr feed, feeds)
 				{
-					for (channels_container_t::const_iterator j =
-							(*i)->Channels_.begin (), jEnd = (*i)->Channels_.end ();
-							j != jEnd; ++j)
+					Q_FOREACH (Channel_ptr channel, feed->Channels_)
 					{
-						for (QStringList::const_iterator tag = tags.begin (),
-								tagEnd = tags.end (); tag != tagEnd; ++tag)
-							if (!(*j)->Tags_.contains (*tag))
-								(*j)->Tags_ << *tag;
-			
-						ChannelsModel_->AddChannel ((*j)->ToShort ());
+						Q_FOREACH (QString tag, tags)
+							if (!channel->Tags_.contains (tag))
+								channel->Tags_ << tag;
+
+						ChannelsModel_->AddChannel (channel->ToShort ());
 					}
-			
-					StorageBackend_->AddFeed (*i);
+
+					StorageBackend_->AddFeed (feed);
 				}
+
+				SyncPools ();
 			}
 			
 			void Core::SetContextMenu (QMenu *menu)
@@ -1046,13 +1046,10 @@ namespace LeechCraft
 					return;
 				}
 			
-				feeds_urls_t feeds;
-				StorageBackend_->GetFeedsURLs (feeds);
-				feeds_urls_t::const_iterator pos =
-					std::find (feeds.begin (), feeds.end (), pj.URL_);
+				IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
 			
 				if (pj.Role_ == PendingJob::RFeedUpdated &&
-						pos == feeds.end ())
+						feedId == -1)
 				{
 					ErrorNotification (tr ("Feed error"),
 							tr ("Feed with url %1 not found.").arg (pj.URL_));
@@ -1089,7 +1086,7 @@ namespace LeechCraft
 								.arg (pj.URL_));
 						return;
 					}
-					channels = parser->ParseFeed (doc);
+					channels = parser->ParseFeed (doc, feedId);
 				}
 
 				if (pj.Role_ == PendingJob::RFeedAdded)
@@ -1155,16 +1152,29 @@ namespace LeechCraft
 			
 			void Core::updateFeeds ()
 			{
-				feeds_urls_t urls;
-				StorageBackend_->GetFeedsURLs (urls);
-				for (feeds_urls_t::const_iterator i = urls.begin (),
-						end = urls.end (); i != end; ++i)
+				ids_t ids;
+				StorageBackend_->GetFeedsIDs (ids);
+				Q_FOREACH (IDType_t id, ids)
 				{
-					// It's handled by custom timer.
-					if (StorageBackend_->GetFeedSettings (*i).UpdateTimeout_)
-						continue;
+					try
+					{
+						// It's handled by custom timer.
+						if (StorageBackend_->GetFeedSettings (id).UpdateTimeout_)
+							continue;
+					}
+					catch (const StorageBackend::FeedSettingsNotFoundError&)
+					{
+						// That's ok, we have no settings so we update as always.
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error obtaining settings for feed"
+								<< id
+								<< e.what ();
+					}
 			
-					UpdateFeed (*i);
+					UpdateFeed (id);
 				}
 				XmlSettingsManager::Instance ()->
 					setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
@@ -1207,13 +1217,14 @@ namespace LeechCraft
 			void Core::saveSettings ()
 			{
 				SaveScheduled_ = false;
+				SyncPools ();
 			}
 			
 			void Core::handleChannelDataUpdated (Channel_ptr channel)
 			{
 				ChannelShort cs = channel->ToShort ();
 			
-				cs.Unread_ = StorageBackend_->GetUnreadItems (cs.ParentURL_, cs.Title_);
+				cs.Unread_ = StorageBackend_->GetUnreadItems (cs.ChannelID_);
 				ChannelsModel_->UpdateChannelData (cs);
 				UpdateUnreadItemsNumber ();
 			}
@@ -1236,21 +1247,37 @@ namespace LeechCraft
 			
 			void Core::handleCustomUpdates ()
 			{
-				feeds_urls_t urls;
-				StorageBackend_->GetFeedsURLs (urls);
+				ids_t ids;
+				StorageBackend_->GetFeedsIDs (ids);
 				QDateTime current = QDateTime::currentDateTime ();
-				for (feeds_urls_t::const_iterator i = urls.begin (),
-						end = urls.end (); i != end; ++i)
+				Q_FOREACH (IDType_t id, ids)
 				{
-					int ut = StorageBackend_->GetFeedSettings (*i).UpdateTimeout_;
+					int ut = 0;
+					try
+					{
+						ut = StorageBackend_->GetFeedSettings (id).UpdateTimeout_;
+					}
+					catch (const StorageBackend::FeedSettingsNotFoundError&)
+					{
+						continue;
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "could not get feed settings for"
+								<< id
+								<< e.what ();
+						continue;
+					}
+
 					// It's handled by normal timer.
 					if (!ut)
 						continue;
 			
-					if (!Updates_.contains (*i) ||
-							(Updates_ [*i].isValid () &&
-							 Updates_ [*i].secsTo (current) / 60 > ut))
-						UpdateFeed (*i);
+					if (!Updates_.contains (id) ||
+							(Updates_ [id].isValid () &&
+							 Updates_ [id].secsTo (current) / 60 > ut))
+						UpdateFeed (id);
 				}
 			}
 			
@@ -1322,8 +1349,7 @@ namespace LeechCraft
 					}
 					try
 					{
-						StorageBackend_->UpdateChannel (data.RelatedChannel_,
-								data.RelatedChannel_->ParentURL_);
+						StorageBackend_->UpdateChannel (data.RelatedChannel_);
 					}
 					catch (const std::exception& e)
 					{
@@ -1373,7 +1399,6 @@ namespace LeechCraft
 							boost::bind (FixDate,
 								_1));
 
-					channels [i]->ParentURL_ = pj.URL_;
 					channels [i]->Tags_ = pj.Tags_;
 					ChannelsModel_->AddChannel (channels [i]->ToShort ());
 		
@@ -1383,11 +1408,6 @@ namespace LeechCraft
 								&RegexpMatcherManager::Instance (),
 								_1));
 				}
-		
-				Feed_ptr feed (new Feed ());
-				feed->Channels_ = channels;
-				feed->URL_ = pj.URL_;
-				StorageBackend_->AddFeed (feed);
 
 				for (size_t i = 0; i < channels.size (); ++i)
 				{
@@ -1400,10 +1420,8 @@ namespace LeechCraft
 					const Core::PendingJob& pj)
 			{
 				const QString& url = pj.URL_;
-				feeds_urls_t urls;
-				StorageBackend_->GetFeedsURLs (urls);
-
-				if (std::find (urls.begin (), urls.end (), url) == urls.end ())
+				IDType_t feedId = StorageBackend_->FindFeed (url);
+				if (feedId == -1)
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "skipping"
@@ -1416,25 +1434,41 @@ namespace LeechCraft
 					property ("ItemsMaxAge").toInt ();
 				const unsigned defaultIpc = XmlSettingsManager::Instance ()->
 					property ("ItemsPerChannel").value<unsigned> ();
+				bool downloadEnclosures = false;
 
-				Feed::FeedSettings settings = StorageBackend_->
-					GetFeedSettings (url);
-				const int days = settings.ItemAge_ ?
-					settings.ItemAge_ :
-					defaultDays;
-				const unsigned ipc = settings.NumItems_ ?
-					settings.NumItems_ :
-					defaultIpc;
+				int days = defaultDays;
+				unsigned ipc = defaultIpc;
+				try
+				{
+					Feed::FeedSettings settings = StorageBackend_->
+							GetFeedSettings (feedId);
+					if (settings.ItemAge_)
+						days = settings.ItemAge_;
+					if (settings.NumItems_)
+						ipc = settings.NumItems_;
+					downloadEnclosures = settings.AutoDownloadEnclosures_;
+				}
+				catch (const StorageBackend::FeedSettingsNotFoundError&)
+				{
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to get feed settings for"
+							<< feedId
+							<< url
+							<< e.what ();
+				}
 
 				QDateTime current = QDateTime::currentDateTime ();
 				Q_FOREACH (Channel_ptr channel, channels)
 				{
-					channel->ParentURL_ = url;
 					Channel_ptr ourChannel;
 					try
 					{
-						ourChannel = StorageBackend_->
-							GetChannel (channel->Title_, url);
+						IDType_t ourChannelID = StorageBackend_->FindChannel (channel->Title_,
+								channel->Link_, feedId);
+						ourChannel = StorageBackend_->GetChannel (ourChannelID, feedId);
 					}
 					catch (const StorageBackend::ChannelNotFoundError&)
 					{
@@ -1447,9 +1481,9 @@ namespace LeechCraft
 								break;
 							}
 						channel->Items_.resize (truncateAt);
-			
+
 						ChannelsModel_->AddChannel (channel->ToShort ());
-						StorageBackend_->AddChannel (channel, pj.URL_);
+						StorageBackend_->AddChannel (channel);
 						QString str = tr ("Added channel \"%1\" (%n item(s))",
 								"", channel->Items_.size ())
 							.arg (channel->Title_);
@@ -1460,14 +1494,17 @@ namespace LeechCraft
 					int newItems = 0;
 					int updatedItems = 0;
 
+					GetPool (PTChannel).FreeID (channel->ChannelID_);
+
 					Q_FOREACH (Item_ptr item, channel->Items_)
 					{
 						Item_ptr ourItem;
 						try
 						{
-							ourItem = StorageBackend_->
-								GetItem (item->Title_, item->Link_,
-										channel->ParentURL_ + channel->Title_);
+							IDType_t ourItemID = StorageBackend_->
+									FindItem (item->Title_, item->Link_,
+											ourChannel->ChannelID_);
+							ourItem = StorageBackend_->GetItem (ourItemID);
 						}
 						catch (const StorageBackend::ItemNotFoundError&)
 						{
@@ -1479,12 +1516,12 @@ namespace LeechCraft
 							else
 								FixDate (item);
 
-							StorageBackend_->AddItem (item,
-									channel->ParentURL_, channel->Title_);
+							item->ChannelID_ = ourChannel->ChannelID_;
+							StorageBackend_->AddItem (item);
 
 							RegexpMatcherManager::Instance ().HandleItem (item);
 
-							if (settings.AutoDownloadEnclosures_)
+							if (downloadEnclosures)
 								Q_FOREACH (Enclosure e, item->Enclosures_)
 								{
 									DownloadEntity de = Util::MakeEntity (QUrl (e.URL_),
@@ -1509,11 +1546,35 @@ namespace LeechCraft
 						ourItem->CommentsPageLink_ = item->CommentsPageLink_;
 						ourItem->Latitude_ = item->Latitude_;
 						ourItem->Longitude_ = item->Longitude_;
+
+						Q_FOREACH (Enclosure enc, ourItem->Enclosures_)
+							GetPool (PTEnclosure).FreeID (enc.EnclosureID_);
 						ourItem->Enclosures_ = item->Enclosures_;
+						BOOST_FOREACH (Enclosure& enc, ourItem->Enclosures_)
+							enc.ItemID_ = ourItem->ItemID_;
+
+						Q_FOREACH (MRSSEntry entry, ourItem->MRSSEntries_)
+						{
+							GetPool (PTMRSSEntry).FreeID (entry.MRSSEntryID_);
+
+							Q_FOREACH (MRSSComment comment, entry.Comments_)
+								GetPool (PTMRSSComment).FreeID (comment.MRSSCommentID_);
+							Q_FOREACH (MRSSCredit credit, entry.Credits_)
+								GetPool (PTMRSSCredit).FreeID (credit.MRSSCreditID_);
+							Q_FOREACH (MRSSPeerLink peerLink, entry.PeerLinks_)
+								GetPool (PTMRSSPeerLink).FreeID (peerLink.MRSSPeerLinkID_);
+							Q_FOREACH (MRSSThumbnail thumb, entry.Thumbnails_)
+								GetPool (PTMRSSThumbnail).FreeID (thumb.MRSSThumbnailID_);
+							Q_FOREACH (MRSSScene scene, entry.Scenes_)
+								GetPool (PTMRSSScene).FreeID (scene.MRSSSceneID_);
+						}
 						ourItem->MRSSEntries_ = item->MRSSEntries_;
-			
-						StorageBackend_->UpdateItem (ourItem,
-								channel->ParentURL_, channel->Title_);
+						BOOST_FOREACH (MRSSEntry& entry, ourItem->MRSSEntries_)
+							entry.ItemID_ = ourItem->ItemID_;
+
+						GetPool (PTItem).FreeID (item->ItemID_);
+
+						StorageBackend_->UpdateItem (ourItem);
 						++updatedItems;
 					}
 
@@ -1527,8 +1588,6 @@ namespace LeechCraft
 					else if (method == "ShowAll")
 						shouldShow = newItems + updatedItems;
 
-					qDebug () << Q_FUNC_INFO << shouldShow << newItems << updatedItems << method;
-
 					if (shouldShow)
 					{
 						QString str = tr ("Updated channel \"%1\" (%2, %3)").arg (channel->Title_)
@@ -1537,7 +1596,7 @@ namespace LeechCraft
 						emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
 					}
 
-					StorageBackend_->TrimChannel (channel->Title_, channel->ParentURL_,
+					StorageBackend_->TrimChannel (ourChannel->ChannelID_,
 							days, ipc);
 				}
 			}
@@ -1548,8 +1607,7 @@ namespace LeechCraft
 				{
 					ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
 			
-					QString hash = cs.ParentURL_ + cs.Title_;
-					StorageBackend_->ToggleChannelUnread (cs.ParentURL_, cs.Title_, state);
+					StorageBackend_->ToggleChannelUnread (cs.ChannelID_, state);
 				}
 				catch (const std::exception& e)
 				{
@@ -1560,8 +1618,9 @@ namespace LeechCraft
 				}
 			}
 			
-			void Core::UpdateFeed (const QString& url)
+			void Core::UpdateFeed (const IDType_t& id)
 			{
+				QString url = StorageBackend_->GetFeed (id)->URL_;
 				QList<int> keys = PendingJobs_.keys ();
 				Q_FOREACH (int key, keys)
 					if (PendingJobs_ [key].URL_ == url)
@@ -1606,18 +1665,18 @@ namespace LeechCraft
 					QStringList ()
 				};
 			
-				int id = -1;
+				int jobId = -1;
 				QObject *pr;
-				emit delegateEntity (e, &id, &pr);
+				emit delegateEntity (e, &jobId, &pr);
 				if (id == -1)
 				{
 					qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
 					return;
 				}
 			
-				HandleProvider (pr, id);
-				PendingJobs_ [id] = pj;
-				Updates_ [url] = QDateTime::currentDateTime ();
+				HandleProvider (pr, jobId);
+				PendingJobs_ [jobId] = pj;
+				Updates_ [id] = QDateTime::currentDateTime ();
 			}
 			
 			void Core::HandleProvider (QObject *provider, int id)

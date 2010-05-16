@@ -38,7 +38,8 @@ namespace LeechCraft
 				virtual ~AtomParser ();
 			protected:
 				virtual QString ParseEscapeAware (const QDomElement&) const;
-				QList<Enclosure> GetEnclosures (const QDomElement&) const;
+				QList<Enclosure> GetEnclosures (const QDomElement&,
+						const IDType_t&) const;
 			};
 		};
 	};

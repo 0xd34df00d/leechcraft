@@ -22,6 +22,7 @@
 #include <QStringList>
 #include "channel.h"
 #include "item.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -29,18 +30,22 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			Channel::Channel ()
+			Channel::Channel (const IDType_t& id)
+			: ChannelID_ (Core::Instance ().GetPool (Core::PTChannel).GetID ())
+			, FeedID_ (id)
 			{
 			}
-			
+
+			Channel::Channel (const IDType_t& id, const IDType_t& chId)
+			: ChannelID_ (chId)
+			, FeedID_ (id)
+			{
+			}
+
 			Channel::Channel (const Channel& channel)
 			: Items_ (channel.Items_)
 			{
 				Equalify (channel);
-			}
-			
-			Channel::~Channel ()
-			{
 			}
 			
 			Channel& Channel::operator= (const Channel& channel)
@@ -60,6 +65,8 @@ namespace LeechCraft
 			
 			void Channel::Equalify (const Channel& channel)
 			{
+				ChannelID_ = channel.ChannelID_;
+				FeedID_ = channel.FeedID_;
 				Title_ = channel.Title_;
 				Link_ = channel.Link_;
 				Description_ = channel.Description_;
@@ -70,41 +77,37 @@ namespace LeechCraft
 				PixmapURL_ = channel.PixmapURL_;
 				Pixmap_ = channel.Pixmap_;
 				Favicon_ = channel.Favicon_;
-				ParentURL_ = channel.ParentURL_;
 			}
 			
 			ChannelShort Channel::ToShort () const
 			{
 				ChannelShort cs =
 				{
+					ChannelID_,
+					FeedID_,
 					Title_,
 					Link_,
 					Tags_,
 					LastBuild_,
 					Favicon_,
-					CountUnreadItems (),
-					ParentURL_
+					CountUnreadItems ()
 				};
 				return cs;
 			}
 			
 			bool operator< (const ChannelShort& cs1, const ChannelShort& cs2)
 			{
-				return (cs1.Title_ + cs1.Link_) < (cs2.Title_ + cs2.Link_);
+				return cs1.ChannelID_ < cs2.ChannelID_;
 			}
 
 			bool operator== (const ChannelShort& cs1, const ChannelShort& cs2)
 			{
-				return cs1.Title_ == cs2.Title_ &&
-					cs1.Link_ == cs2.Link_ &&
-					cs1.ParentURL_ == cs2.ParentURL_;
+				return cs1.ChannelID_ == cs2.ChannelID_;
 			}
 
 			bool operator== (const Channel_ptr& ch, const ChannelShort& cs)
 			{
-				return ch->Title_ == cs.Title_ &&
-					ch->Link_ == cs.Link_ &&
-					ch->ParentURL_ == cs.ParentURL_;
+				return ch->ChannelID_ == cs.ChannelID_;
 			}
 
 			bool operator== (const ChannelShort& cs, const Channel_ptr& ch)
@@ -114,14 +117,12 @@ namespace LeechCraft
 
 			bool operator== (const Channel& c1, const Channel& c2)
 			{
-				return c1.Title_ == c2.Title_ &&
-					c1.Link_ == c2.Link_ &&
-					c1.ParentURL_ == c2.ParentURL_;
+				return c1.ChannelID_ == c2.ChannelID_;
 			}
 
 			QDataStream& operator<< (QDataStream& out, const Channel& chan)
 			{
-				int version = 1;
+				int version = 2;
 				out << version
 					<< chan.Title_
 					<< chan.Link_
@@ -133,7 +134,6 @@ namespace LeechCraft
 					<< chan.PixmapURL_
 					<< chan.Pixmap_
 					<< chan.Favicon_
-					<< chan.ParentURL_
 					<< static_cast<quint32> (chan.Items_.size ());
 				for (size_t i = 0; i < chan.Items_.size (); ++i)
 					out << *chan.Items_ [i];
@@ -144,9 +144,7 @@ namespace LeechCraft
 			{
 				int version = 0;
 				in >> version;
-				if (!version)
-					return in;
-				else if (version == 1)
+				if (version == 1)
 				{
 					quint32 size;
 					in >> chan.Title_
@@ -158,19 +156,37 @@ namespace LeechCraft
 						>> chan.Author_
 						>> chan.PixmapURL_
 						>> chan.Pixmap_
-						>> chan.Favicon_
-						>> chan.ParentURL_;
+						>> chan.Favicon_;
 					in >> size;
 					for (size_t i = 0; i < size; ++i)
 					{
-						Item_ptr it (new Item);
+						Item_ptr it (new Item (chan.ChannelID_));
 						in >> *it;
 						chan.Items_.push_back (it);
 					}
-					return in;
 				}
-				else
-					return in;
+				else if (version == 2)
+				{
+					quint32 size;
+					in >> chan.Title_
+						>> chan.Link_
+						>> chan.Description_
+						>> chan.LastBuild_
+						>> chan.Tags_
+						>> chan.Language_
+						>> chan.Author_
+						>> chan.PixmapURL_
+						>> chan.Pixmap_
+						>> chan.Favicon_;
+					in >> size;
+					for (size_t i = 0; i < size; ++i)
+					{
+						Item_ptr it (new Item (chan.ChannelID_));
+						in >> *it;
+						chan.Items_.push_back (it);
+					}
+				}
+				return in;
 			}
 		};
 	};

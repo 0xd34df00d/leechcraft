@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include <QMetaType>
 #include <boost/shared_ptr.hpp>
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -33,6 +34,8 @@ namespace LeechCraft
 		{
 			struct ItemShort
 			{
+				IDType_t ItemID_;
+				IDType_t ChannelID_;
 				QString Title_;
 				QString URL_;
 				QStringList Categories_;
@@ -44,68 +47,143 @@ namespace LeechCraft
 			 */
 			struct Enclosure
 			{
-				/* @brief The URL this enclosure refers to.
+				/** @brief Enclosure ID.
+				 */
+				IDType_t EnclosureID_;
+
+				/** @brief Parent item's ID.
+				 */
+				IDType_t ItemID_;
+
+				/** @brief The URL this enclosure refers to.
 				 */
 				QString URL_;
+
 				/** @brief MIME type of the enclosure.
 				 */
 				QString Type_;
+
 				/** @brief Length of the attached enclosure or -1 if unknown.
 				 */
 				qint64 Length_;
+
 				/** @brief  For the Atom's hreflang attribute.
 				 */
 				QString Lang_;
+
+				/** @brief Constructs the enclosure with given parent.
+				 *
+				 * The given enclosure requests a new ID for it from the
+				 * Core.
+				 *
+				 * @param[in] itemId The ID of the parent item.
+				 */
+				Enclosure (const IDType_t& itemId);
+
+				/** @brief Constructs the enclosure with given parent.
+				 *
+				 * The enclosure doesn't request a new ID from the Core
+				 * and uses encId instead.
+				 *
+				 * @param[in] itemId The ID of the parent item.
+				 * @param[in] encId The ID of the enclosure.
+				 */
+				Enclosure (const IDType_t& itemId, const IDType_t& encId);
+			private:
+				Enclosure ();
+				friend QDataStream& operator>> (QDataStream&, QList<Enclosure>&);
 			};
 
 			bool operator== (const Enclosure&, const Enclosure&);
 
 			struct MRSSThumbnail
 			{
+				IDType_t MRSSThumbnailID_;
+				IDType_t MRSSEntryID_;
 				QString URL_;
 				int Width_;
 				int Height_;
 				QString Time_;
+
+				MRSSThumbnail (const IDType_t& entryId);
+				MRSSThumbnail (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSThumbnail ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSThumbnail>&);
 			};
 
 			bool operator== (const MRSSThumbnail&, const MRSSThumbnail&);
 
 			struct MRSSCredit
 			{
+				IDType_t MRSSCreditID_;
+				IDType_t MRSSEntryID_;
 				QString Role_;
 				QString Who_;
+
+				MRSSCredit (const IDType_t& entryId);
+				MRSSCredit (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSCredit ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSCredit>&);
 			};
 
 			bool operator== (const MRSSCredit&, const MRSSCredit&);
 
 			struct MRSSComment
 			{
+				IDType_t MRSSCommentID_;
+				IDType_t MRSSEntryID_;
 				QString Type_;
 				QString Comment_;
+
+				MRSSComment (const IDType_t& entryId);
+				MRSSComment (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSComment ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSComment>&);
 			};
 
 			bool operator== (const MRSSComment&, const MRSSComment&);
 
 			struct MRSSPeerLink
 			{
+				IDType_t MRSSPeerLinkID_;
+				IDType_t MRSSEntryID_;
 				QString Type_;
 				QString Link_;
+
+				MRSSPeerLink (const IDType_t& entryId);
+				MRSSPeerLink (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSPeerLink ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSPeerLink>&);
 			};
 
 			bool operator== (const MRSSPeerLink&, const MRSSPeerLink&);
 
 			struct MRSSScene
 			{
+				IDType_t MRSSSceneID_;
+				IDType_t MRSSEntryID_;
 				QString Title_;
 				QString Description_;
 				QString StartTime_;
 				QString EndTime_;
+
+				MRSSScene (const IDType_t& entryId);
+				MRSSScene (const IDType_t& entryId, const IDType_t& thisId);
+			private:
+				MRSSScene ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSScene>&);
 			};
 
 			bool operator== (const MRSSScene&, const MRSSScene&);
 
 			struct MRSSEntry
 			{
+				IDType_t MRSSEntryID_;
+				IDType_t ItemID_;
 				QString URL_;
 				qint64 Size_;
 				QString Type_;
@@ -140,12 +218,27 @@ namespace LeechCraft
 				QList<MRSSComment> Comments_;
 				QList<MRSSPeerLink> PeerLinks_;
 				QList<MRSSScene> Scenes_;
+
+				MRSSEntry (const IDType_t& itemId);
+				MRSSEntry (const IDType_t& itemId, const IDType_t& entryId);
+			private:
+				MRSSEntry ();
+				friend QDataStream& operator>> (QDataStream&, QList<MRSSEntry>&);
 			};
 
 			bool operator== (const MRSSEntry&, const MRSSEntry&);
+			bool Equals (const MRSSEntry&, const MRSSEntry&);
 
 			struct Item
 			{
+				/** The unique ID of the item.
+				 */
+				IDType_t ItemID_;
+
+				/** The unique ID of the channel this item belongs to.
+				 */
+				IDType_t ChannelID_;
+
 				/** The title of the item as showed in the item list.
 				 */
 				QString Title_;
@@ -215,6 +308,26 @@ namespace LeechCraft
 				 */
 				QList<MRSSEntry> MRSSEntries_;
 
+				/** @brief Constructs the item as belonging to the
+				 * given channel.
+				 *
+				 * Item ID is automatically requested from the Core.
+				 *
+				 * @param[in] channel The parent channel of this item.
+				 */
+				Item (const IDType_t& channel);
+
+				/** @brief Constructs the item as belonging to the
+				 * given channel and having given ID.
+				 *
+				 * This way item ID isn't generated, itemId is used
+				 * instead.
+				 *
+				 * @param[in] channel The parent channel of this item.
+				 * @param[in] itemId The item ID of this channel.
+				 */
+				Item (const IDType_t& channel, const IDType_t& itemId);
+
 				/** Returns the simplified (short) representation of this item.
 				 *
 				 * @return The simplified (short) representation.
@@ -261,7 +374,6 @@ namespace LeechCraft
 	};
 };
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Aggregator::Item);
 Q_DECLARE_METATYPE (LeechCraft::Plugins::Aggregator::Item_ptr);
 
 #endif

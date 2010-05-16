@@ -50,10 +50,8 @@
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
 #include "regexpmatcherui.h"
-#include "itembucket.h"
 #include "regexpmatchermanager.h"
 #include "export.h"
-#include "itembucket.h"
 #include "importbinary.h"
 #include "feedsettings.h"
 #include "jobholderrepresentation.h"
@@ -98,7 +96,7 @@ namespace LeechCraft
 					EAActionMarkChannelAsUnread_,
 					EAActionChannelSettings_,
 					EAActionUpdateSelectedFeed_,
-					EAActionItemBucket_,
+					EAActionUNUSED1_,
 					EAActionRegexpMatcher_,
 					EAActionHideReadItems_,
 					EAActionImportOPML_,
@@ -164,7 +162,6 @@ namespace LeechCraft
 					setEnabled (false);
 					Impl_->AppWideActions_.ActionAddFeed_->setEnabled (false);
 					Impl_->AppWideActions_.ActionUpdateFeeds_->setEnabled (false);
-					Impl_->AppWideActions_.ActionItemBucket_->setEnabled (false);
 					Impl_->AppWideActions_.ActionRegexpMatcher_->setEnabled (false);
 					Impl_->AppWideActions_.ActionImportOPML_->setEnabled (false);
 					Impl_->AppWideActions_.ActionExportOPML_->setEnabled (false);
@@ -399,7 +396,6 @@ namespace LeechCraft
 			{
 				_LC_EXPANDER ((ActionAddFeed_)
 						(ActionUpdateFeeds_)
-						(ActionItemBucket_)
 						(ActionRegexpMatcher_)
 						(ActionImportOPML_)
 						(ActionExportOPML_)
@@ -416,7 +412,6 @@ namespace LeechCraft
 				QMap<int, ActionInfo> result;
 				_L (ActionAddFeed_);
 				_L (ActionUpdateFeeds_);
-				_L (ActionItemBucket_);
 				_L (ActionRegexpMatcher_);
 				_L (ActionImportOPML_);
 				_L (ActionExportOPML_);
@@ -463,7 +458,6 @@ namespace LeechCraft
 			QList<QAction*> Aggregator::GetToolActions () const
 			{
 				QList<QAction*> result;
-				result << Impl_->AppWideActions_.ActionItemBucket_;
 				result << Impl_->AppWideActions_.ActionRegexpMatcher_;
 				return result;
 			}
@@ -617,11 +611,6 @@ namespace LeechCraft
 					return;
 				}
 				Core::Instance ().UpdateFeed (current, isRepr);
-			}
-			
-			void Aggregator::on_ActionItemBucket__triggered ()
-			{
-				Core::Instance ().GetItemBucket ()->show ();
 			}
 			
 			void Aggregator::on_ActionRegexpMatcher__triggered ()

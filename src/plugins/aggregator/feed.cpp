@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include "feed.h"
 #include "channel.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,8 +28,22 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			Feed::FeedSettings::FeedSettings (int ut, int ni, int ia, bool ade)
-			: UpdateTimeout_ (ut)
+			Feed::FeedSettings::FeedSettings (IDType_t feedId,
+					int ut, int ni, int ia, bool ade)
+			: SettingsID_ (Core::Instance ().GetPool (Core::PTFeedSettings).GetID ())
+			, FeedID_ (feedId)
+			, UpdateTimeout_ (ut)
+			, NumItems_ (ni)
+			, ItemAge_ (ia)
+			, AutoDownloadEnclosures_ (ade)
+			{
+			}
+
+			Feed::FeedSettings::FeedSettings (IDType_t feedId, IDType_t settingsId,
+					int ut, int ni, int ia, bool ade)
+			: SettingsID_ (settingsId)
+			, FeedID_ (feedId)
+			, UpdateTimeout_ (ut)
 			, NumItems_ (ni)
 			, ItemAge_ (ia)
 			, AutoDownloadEnclosures_ (ade)
@@ -36,24 +51,15 @@ namespace LeechCraft
 			}
 			
 			Feed::Feed ()
+			: FeedID_ (Core::Instance ().GetPool (Core::PTFeed).GetID ())
 			{
 			}
 			
-			Feed::Feed (const Feed& feed)
-			: URL_ (feed.URL_)
-			, LastUpdate_ (feed.LastUpdate_)
-			, Channels_ (feed.Channels_)
+			Feed::Feed (const IDType_t& feedId)
+			: FeedID_ (feedId)
 			{
 			}
-			
-			Feed& Feed::operator= (const Feed& feed)
-			{
-				URL_ = feed.URL_;
-				LastUpdate_ = feed.LastUpdate_;
-				Channels_ = feed.Channels_;
-				return *this;
-			}
-			
+
 			bool operator< (const Feed& f1, const Feed& f2)
 			{
 				return f1.URL_ < f2.URL_;
@@ -77,7 +83,7 @@ namespace LeechCraft
 					>> size;
 				for (quint32 i = 0; i < size; ++i)
 				{
-					Channel_ptr chan (new Channel);
+					Channel_ptr chan (new Channel (feed.FeedID_));
 					in >> *chan;
 					feed.Channels_.push_back (chan);
 				}
