@@ -758,7 +758,7 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO
 							<< "no feed for"
 							<< url;
-					throw FeedNotFoundError ();
+					return -1;
 				}
 
 				IDType_t id = FeedFinderByURL_.value (0).value<IDType_t> ();
