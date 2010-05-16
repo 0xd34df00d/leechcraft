@@ -45,6 +45,8 @@ namespace LeechCraft
 				boost::shared_ptr<ExternalProxy> ExternalProxy_;
 				typedef QMap<QWebFrame*, QWebHistoryItem*> Frame2History_t;
 				Frame2History_t Frame2History_;
+
+				QMap<ErrorDomain, QMap<int, QStringList> > Error2Suggestions_;
 			public:
 				CustomWebPage (QObject* = 0);
 				virtual ~CustomWebPage ();
@@ -92,7 +94,8 @@ namespace LeechCraft
 				virtual bool javaScriptPrompt (QWebFrame*, const QString&, const QString&, QString*);
 				virtual QString userAgentForUrl (const QUrl&) const;
 			private:
-				QString MakeErrorReplyContents (int, const QUrl&, const QString&) const;
+				QString MakeErrorReplyContents (int, const QUrl&,
+						const QString&, ErrorDomain = WebKit) const;
 				QWebFrame* FindFrame (const QUrl&);
 				void HandleForms (QWebFrame*, const QNetworkRequest&,
 						QWebPage::NavigationType);

@@ -174,6 +174,15 @@ namespace LeechCraft
 				if (Core::Instance ().GetPluginManager ()->
 						HandleEndWebPageConstruction (this))
 					return;
+
+				QString checkDown = tr ("<a href=\"http://downforeveryoneorjustme.com/{host}\" "
+						"target=\"_blank\">check</a> if the site <strong>{host}</strong> is down for you only;",
+						"{host} would be substituded with site's host name.");
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::HostNotFoundError] << tr ("check if the URL address is written correctly;")
+						<< checkDown
+						<< tr ("try changing your DNS servers;")
+						<< tr ("make sure that LeechCraft is allowed to access the Internet and particularly web sites;")
+						<< tr ("contact your system/network administrator, especially if you can't load any single page.");
 			}
 			
 			CustomWebPage::~CustomWebPage ()
@@ -247,7 +256,7 @@ namespace LeechCraft
 							default:
 							{
 								QString data = MakeErrorReplyContents (error->error,
-										error->url, error->errorString);
+										error->url, error->errorString, error->domain);
 								ret->baseUrl = error->url;
 								ret->content = data.toUtf8 ();
 								return true;
@@ -495,7 +504,7 @@ namespace LeechCraft
 								attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
 
 							QString data = MakeErrorReplyContents (statusCode,
-									reply->url (), reply->errorString ());
+									reply->url (), reply->errorString (), QtNetwork);
 			
 							QWebFrame *found = FindFrame (reply->url ());
 							if (found)
@@ -508,24 +517,42 @@ namespace LeechCraft
 			}
 			
 			QString CustomWebPage::MakeErrorReplyContents (int statusCode,
-					const QUrl& url, const QString& errorString) const
+					const QUrl& url, const QString& errorString, ErrorDomain domain) const
 			{
 				QFile file (":/resources/html/generalerror.html");
 				file.open (QIODevice::ReadOnly);
 				QString data = file.readAll ();
-				if (statusCode)
-					data.replace ("{title}",
-							tr ("Error loading %1: %2 (%3)")
-								.arg (url.toString ())
+				data.replace ("{title}",
+						tr ("Error loading %1")
+							.arg (url.toString ()));
+				if (statusCode &&
+						domain == Http)
+					data.replace ("{subtitle}",
+							tr ("%1 (%2)")
 								.arg (errorString)
 								.arg (statusCode));
 				else
-					data.replace ("{title}",
-							tr ("Error loading %1: %2")
-								.arg (url.toString ())
+					data.replace ("{subtitle}",
+							tr ("%1")
 								.arg (errorString));
 				QString bodyContents = tr ("The page you tried to access cannot be loaded now.");
+
+				QStringList suggestions = Error2Suggestions_ [domain] [statusCode];
+				QString additionalContents;
+				if (suggestions.size ())
+				{
+					bodyContents += "<br />";
+					bodyContents += tr ("Try doing the following:");
+
+					additionalContents += "<ul class=\"suggestionslist\"><li class=\"suggestionitem\">";
+					additionalContents += suggestions.join ("</li><li class=\"suggestionitem\">");
+					additionalContents += "</li></ul>";
+				}
 				data.replace ("{body}", bodyContents);
+				data.replace ("{additional}", additionalContents);
+
+				if (data.contains ("{host}"))
+					data.replace ("{host}", url.host ());
 
 				QBuffer ib;
 				ib.open (QIODevice::ReadWrite);

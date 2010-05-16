@@ -330,6 +330,7 @@ namespace LeechCraft
 				menu->addSeparator ();
 				menu->addAction (Browser_->ViewSources_);
 				menu->addSeparator ();
+				qDebug () << Q_FUNC_INFO << pageAction (QWebPage::ReloadAndBypassCache);
 				menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
 				menu->addAction (Browser_->ReloadPeriodically_);
 				menu->addAction (Browser_->NotifyWhenFinished_);

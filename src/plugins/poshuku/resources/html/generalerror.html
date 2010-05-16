@@ -14,18 +14,23 @@
 				-webkit-border-radius: 1.7em;
 				border: 2px solid #ff3a23;
 				background: #535353 scroll no-repeat;
-				padding:12px;
+				padding:1em;
 			}
 			img {height: 32px; width: 32px; left: 5px; margin: 5px; float: left; display:block;}
 			strong {color: #ffc637; margin: 5px; }
-			p {font-size: 0.9em; padding:2px 6px; color: #ff8c11; text-align: justify;}
+			h2 {font-size: 1.5em; }
+			h3 {color: #f9bf30; margin: 5px; font-size: 1.2em;}
+			p {font-size: 1.0em; padding-top: 1em; padding-left: 1em; padding-bottom: 0em; color: #ff8c11; text-align: justify;}
+			ul {font-size: 0.9em; padding-left: 4em; padding-top: 0em; color: #1E0F01; text-align: justify;}
 		</style>
 	</head>
 	<body>
 		<div id="main">
 			<img src="{img}" alt="" />
-			<h3><strong>{title}</strong></h3>
+			<h2><strong>{title}</strong></h2>
+			<h3>{subtitle}</h3>
 			<p>{body}</p>
+			{additional}
 		</div>
 	</body>
 </html>
