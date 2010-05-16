@@ -2086,6 +2086,28 @@ namespace LeechCraft
 			
 			void SQLStorageBackend::RemoveTables ()
 			{
+				if (Type_ == SBSQLite)
+				{
+					QDir dir = QDir::home ();
+					dir.cd (".leechcraft");
+					dir.cd ("aggregator");
+					if (!dir.rename ("aggregator.db", "aggregator.db.version5backup"))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "could not rename old file";
+						throw std::runtime_error ("Could not rename old file");
+					}
+					DB_.setDatabaseName (dir.filePath ("aggregator.db"));
+					if (!DB_.open ())
+					{
+						qWarning () << Q_FUNC_INFO;
+						Util::DBLock::DumpError (DB_.lastError ());
+						throw std::runtime_error (qPrintable (QString ("Could not re-initialize database: %1")
+									.arg (DB_.lastError ().text ())));
+					}
+					return;
+				}
+
 				struct
 				{
 					const QSqlDatabase& ThisDB_;
@@ -2104,26 +2126,26 @@ namespace LeechCraft
 
 				rd ("ALTER TABLE feeds DROP CONSTRAINT feeds_pkey;");
 				rd ("ALTER TABLE enclosures DROP CONSTRAINT enclosures_pkey;");
+				rd ("ALTER TABLE feeds_settings DROP CONSTRAINT feeds_settings_pkey;");
+				rd ("ALTER TABLE mrss DROP CONSTRAINT mrss_pkey;");
+				rd ("ALTER TABLE mrss_credits DROP CONSTRAINT mrss_credits_pkey;");
+				rd ("ALTER TABLE mrss_thumbnails DROP CONSTRAINT mrss_thumbnails_pkey;");
 				rd ("DROP INDEX idx_enclosures_item_parents_hash_item_title_item_url;");
 				rd ("DROP INDEX idx_channels_parent_feed_url;");
 				rd ("DROP INDEX idx_channels_parent_feed_url_title;");
 				rd ("DROP INDEX idx_channels_parent_feed_url_title_url;");
-				rd ("ALTER TABLE feeds_settings DROP CONSTRAINT feeds_settings_pkey;");
 				rd ("DROP INDEX idx_items_parents_hash;");
 				rd ("DROP INDEX idx_items_parents_hash_title_url;");
 				rd ("DROP INDEX idx_items_parents_hash_unread;");
 				rd ("DROP INDEX idx_items_title;");
 				rd ("DROP INDEX idx_items_url;");
-				rd ("ALTER TABLE mrss DROP CONSTRAINT mrss_pkey;");
 				rd ("DROP INDEX idx_mrss_item_parents_hash_item_title_item_url;");
 				rd ("DROP INDEX idx_mrss_item_title;");
 				rd ("DROP INDEX idx_mrss_item_url;");
 				rd ("DROP INDEX idx_mrss_comments_parent_url_item_parents_hash_item_title_item_;");
-				rd ("ALTER TABLE mrss_credits DROP CONSTRAINT mrss_credits_pkey;");
 				rd ("DROP INDEX idx_mrss_credits_parent_url_item_parents_hash_item_title_item_u;");
 				rd ("DROP INDEX idx_mrss_peerlinks_parent_url_item_parents_hash_item_title_item;");
 				rd ("DROP INDEX idx_mrss_scenes_parent_url_item_parents_hash_item_title_item_ur;");
-				rd ("ALTER TABLE mrss_thumbnails DROP CONSTRAINT mrss_thumbnails_pkey;");
 				rd ("DROP INDEX idx_mrss_thumbnails_parent_url_item_parents_hash_item_title_ite;");
 
 				if (Type_ == SBPostgres)
