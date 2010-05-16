@@ -178,11 +178,16 @@ namespace LeechCraft
 				QString checkDown = tr ("<a href=\"http://downforeveryoneorjustme.com/{host}\" "
 						"target=\"_blank\">check</a> if the site <strong>{host}</strong> is down for you only;",
 						"{host} would be substituded with site's host name.");
-				Error2Suggestions_ [QtNetwork] [QNetworkReply::HostNotFoundError] << tr ("check if the URL address is written correctly;")
+
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::HostNotFoundError] << tr ("check if the URL is written correctly;")
 						<< checkDown
 						<< tr ("try changing your DNS servers;")
 						<< tr ("make sure that LeechCraft is allowed to access the Internet and particularly web sites;")
 						<< tr ("contact your system/network administrator, especially if you can't load any single page.");
+				Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError] << tr ("check if the URL is written correctly;")
+						<< tr ("go to web site's <a href=\"{schema}://{host}/\">main page</a> and finding the required page there.");
+
+				Error2Suggestions_ [Http] [404] = Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError];
 			}
 			
 			CustomWebPage::~CustomWebPage ()
@@ -553,6 +558,8 @@ namespace LeechCraft
 
 				if (data.contains ("{host}"))
 					data.replace ("{host}", url.host ());
+				if (data.contains ("{schema}"))
+					data.replace ("{schema}", url.scheme ());
 
 				QBuffer ib;
 				ib.open (QIODevice::ReadWrite);
