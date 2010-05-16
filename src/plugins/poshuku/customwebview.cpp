@@ -83,10 +83,6 @@ namespace LeechCraft
 						this,
 						SLOT (remakeURL (const QUrl&)));
 				connect (page,
-						SIGNAL (initialLayoutCompleted ()),
-						this,
-						SLOT (handleInitialLayoutCompleted ()));
-				connect (page,
 						SIGNAL (printRequested (QWebFrame*)),
 						this,
 						SIGNAL (printRequested (QWebFrame*)));
