@@ -32,6 +32,16 @@
 #include "xmlsettingsmanager.h"
 #include "morphfile.h"
 #include "addtask.h"
+extern "C"
+{
+	#ifdef Q_OS_WIN32
+		#include <stdlib.h>
+		static const int LC_FILENAME_MAX = _MAX_FNAME;
+	#else
+		#include <limits.h>
+		static const int LC_FILENAME_MAX = NAME_MAX;
+	#endif
+}
 
 namespace LeechCraft
 {
@@ -101,24 +111,26 @@ namespace LeechCraft
 				{
 					QFileInfo fileInfo (entity.toString (QUrl::RemoveFragment));
 					QString file = fileInfo.fileName ();
-					static const QRegExp restrictedChars (",|=|;|:|\\[|\\]|\\\"|\\*|\\?|&|\\||\\\\|/|(?:^LPT$)|(?:^COM$)|(?:^PRN$)");
-					static const QString replaceWith ('_');
-					if (file.length () >= 256)
+					if (file.length () >= LC_FILENAME_MAX)
 					{
 						QString extension (fileInfo.completeSuffix ());
 						QString baseName (fileInfo.baseName ());
-						if (extension.length () > 253)
-							extension.resize (253);
 
-						if ((baseName.length () + extension.length ()) >= 254)
-							baseName.resize (254 - extension.length ());
-
+						// at least one character for file name and one for dot
+						if (extension.length () > LC_FILENAME_MAX - 2)
+						// in most cases there will be trash, but its hard to assume
+						// how long extension could be. For example odf.tar.bz2
+							extension.resize (LC_FILENAME_MAX - 2);
+						if ((baseName.length () + extension.length ()) > (LC_FILENAME_MAX - 1))
+							baseName.resize (LC_FILENAME_MAX - 1 - extension.length ());
 						file = baseName + '.' + extension;
 					}
 
 					if (file.isEmpty ())
 						file = QString ("index_%1")
 							.arg (QDateTime::currentDateTime ().toString (Qt::ISODate));
+					static const QRegExp restrictedChars (",|=|;|:|\\[|\\]|\\\"|\\*|\\?|&|\\||\\\\|/|(?:^LPT\\d$)|(?:^COM\\d$)|(?:^PRN$)|(?:^AUX$)|(?:^CON$)|(?:^NUL$)");
+					static const QString replaceWith ('_');
 					file.replace (restrictedChars, replaceWith);
 					if (file != fileInfo.fileName ())
 						 qWarning () << Q_FUNC_INFO
