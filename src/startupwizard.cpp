@@ -123,6 +123,11 @@ namespace LeechCraft
 			for (; i != Pages_.end (); ++i)
 				if ((*i)->property ("WizardType").toInt () <= type)
 					return Page2ID_ [*i];
+				else
+					disconnect (this,
+							0,
+							*i,
+							0);
 			return -1;
 		}
 	}
