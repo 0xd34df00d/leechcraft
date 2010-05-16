@@ -227,7 +227,6 @@ namespace LeechCraft
 			};
 
 			bool operator== (const MRSSEntry&, const MRSSEntry&);
-			bool Equals (const MRSSEntry&, const MRSSEntry&);
 
 			struct Item
 			{

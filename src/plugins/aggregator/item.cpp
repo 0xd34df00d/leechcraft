@@ -88,11 +88,6 @@ namespace LeechCraft
 
 			bool operator== (const MRSSEntry& e1, const MRSSEntry& e2)
 			{
-				return e1.MRSSEntryID_ == e2.MRSSEntryID_;
-			}
-
-			bool Equals (const MRSSEntry& e1, const MRSSEntry& e2)
-			{
 				return e1.URL_ == e2.URL_ &&
 					e1.Size_ == e2.Size_ &&
 					e1.Type_ == e2.Type_ &&

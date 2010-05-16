@@ -1547,30 +1547,40 @@ namespace LeechCraft
 						ourItem->Latitude_ = item->Latitude_;
 						ourItem->Longitude_ = item->Longitude_;
 
-						Q_FOREACH (Enclosure enc, ourItem->Enclosures_)
-							GetPool (PTEnclosure).FreeID (enc.EnclosureID_);
-						ourItem->Enclosures_ = item->Enclosures_;
-						BOOST_FOREACH (Enclosure& enc, ourItem->Enclosures_)
-							enc.ItemID_ = ourItem->ItemID_;
-
-						Q_FOREACH (MRSSEntry entry, ourItem->MRSSEntries_)
+						Q_FOREACH (Enclosure enc, item->Enclosures_)
 						{
-							GetPool (PTMRSSEntry).FreeID (entry.MRSSEntryID_);
-
-							Q_FOREACH (MRSSComment comment, entry.Comments_)
-								GetPool (PTMRSSComment).FreeID (comment.MRSSCommentID_);
-							Q_FOREACH (MRSSCredit credit, entry.Credits_)
-								GetPool (PTMRSSCredit).FreeID (credit.MRSSCreditID_);
-							Q_FOREACH (MRSSPeerLink peerLink, entry.PeerLinks_)
-								GetPool (PTMRSSPeerLink).FreeID (peerLink.MRSSPeerLinkID_);
-							Q_FOREACH (MRSSThumbnail thumb, entry.Thumbnails_)
-								GetPool (PTMRSSThumbnail).FreeID (thumb.MRSSThumbnailID_);
-							Q_FOREACH (MRSSScene scene, entry.Scenes_)
-								GetPool (PTMRSSScene).FreeID (scene.MRSSSceneID_);
+							if (ourItem->Enclosures_.contains (enc))
+								GetPool (PTEnclosure).FreeID (enc.EnclosureID_);
+							else
+							{
+								enc.ItemID_ = ourItem->ItemID_;
+								ourItem->Enclosures_ << enc;
+							}
 						}
-						ourItem->MRSSEntries_ = item->MRSSEntries_;
-						BOOST_FOREACH (MRSSEntry& entry, ourItem->MRSSEntries_)
-							entry.ItemID_ = ourItem->ItemID_;
+
+						Q_FOREACH (MRSSEntry entry, item->MRSSEntries_)
+						{
+							if (ourItem->MRSSEntries_.contains (entry))
+							{
+								GetPool (PTMRSSEntry).FreeID (entry.MRSSEntryID_);
+
+								Q_FOREACH (MRSSComment comment, entry.Comments_)
+									GetPool (PTMRSSComment).FreeID (comment.MRSSCommentID_);
+								Q_FOREACH (MRSSCredit credit, entry.Credits_)
+									GetPool (PTMRSSCredit).FreeID (credit.MRSSCreditID_);
+								Q_FOREACH (MRSSPeerLink peerLink, entry.PeerLinks_)
+									GetPool (PTMRSSPeerLink).FreeID (peerLink.MRSSPeerLinkID_);
+								Q_FOREACH (MRSSThumbnail thumb, entry.Thumbnails_)
+									GetPool (PTMRSSThumbnail).FreeID (thumb.MRSSThumbnailID_);
+								Q_FOREACH (MRSSScene scene, entry.Scenes_)
+									GetPool (PTMRSSScene).FreeID (scene.MRSSSceneID_);
+							}
+							else
+							{
+								entry.ItemID_ = ourItem->ItemID_;
+								ourItem->MRSSEntries_ << entry;
+							}
+						}
 
 						GetPool (PTItem).FreeID (item->ItemID_);
 

@@ -594,7 +594,7 @@ namespace LeechCraft
 						"ORDER BY role");
 
 				WriteMediaRSSComment_ = QSqlQuery (DB_);
-				WriteMediaRSSComment_.prepare ("INSERT INTO mrss_comments ("
+				WriteMediaRSSComment_.prepare (QString ("INSERT %1 INTO mrss_comments ("
 						"mrss_comment_id, "
 						"mrss_id, "
 						"type, "
@@ -604,7 +604,7 @@ namespace LeechCraft
 						":mrss_id, "
 						":type, "
 						":comment"
-						")");
+						")").arg (orReplace));
 
 				GetMediaRSSComments_ = QSqlQuery (DB_);
 				GetMediaRSSComments_.prepare ("SELECT "
@@ -616,7 +616,7 @@ namespace LeechCraft
 						"ORDER BY comment");
 				
 				WriteMediaRSSPeerLink_ = QSqlQuery (DB_);
-				WriteMediaRSSPeerLink_.prepare ("INSERT INTO mrss_peerlinks ("
+				WriteMediaRSSPeerLink_.prepare (QString ("INSERT %1 INTO mrss_peerlinks ("
 						"mrss_peerlink_id, "
 						"mrss_id, "
 						"type, "
@@ -626,7 +626,7 @@ namespace LeechCraft
 						":mrss_id, "
 						":type, "
 						":link"
-						")");
+						")").arg (orReplace));
 
 				GetMediaRSSPeerLinks_ = QSqlQuery (DB_);
 				GetMediaRSSPeerLinks_.prepare ("SELECT "
@@ -638,7 +638,7 @@ namespace LeechCraft
 						"ORDER BY link");
 
 				WriteMediaRSSScene_ = QSqlQuery (DB_);
-				WriteMediaRSSScene_.prepare ("INSERT INTO mrss_scenes ("
+				WriteMediaRSSScene_.prepare (QString ("INSERT %1 INTO mrss_scenes ("
 						"mrss_scene_id, "
 						"mrss_id, "
 						"title, "
@@ -652,7 +652,7 @@ namespace LeechCraft
 						":description, "
 						":start_time, "
 						":end_time"
-						")");
+						")").arg (orReplace));
 
 				GetMediaRSSScenes_ = QSqlQuery (DB_);
 				GetMediaRSSScenes_.prepare ("SELECT "
@@ -1644,7 +1644,7 @@ namespace LeechCraft
 							"favicon %1 "
 							");").arg (GetBlobType ())))
 					{
-						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						LeechCraft::Util::DBLock::DumpError (query);
 						return false;
 					}
 				}
@@ -1669,8 +1669,15 @@ namespace LeechCraft
 							"longitude TEXT"
 							");").arg (GetBoolType ())))
 					{
-						LeechCraft::Util::DBLock::DumpError (query.lastError ());
+						LeechCraft::Util::DBLock::DumpError (query);
 						return false;
+					}
+
+					if (!query.exec ("CREATE INDEX idx_items_channel_id ON items (channel_id);"))
+					{
+						Util::DBLock::DumpError (query);
+						qWarning () << Q_FUNC_INFO
+								<< "could not create index, performance would suffer";
 					}
 				}
 			
@@ -1685,7 +1692,7 @@ namespace LeechCraft
 								"lang TEXT "
 								");"))
 					{
-						Util::DBLock::DumpError (query.lastError ());
+						Util::DBLock::DumpError (query);
 						return false;
 					}
 			
@@ -1748,7 +1755,7 @@ namespace LeechCraft
 									"item_url TEXT"
 									");").arg (GetBoolType ())))
 					{
-						Util::DBLock::DumpError (query.lastError ());
+						Util::DBLock::DumpError (query);
 						return false;
 					}
 
@@ -1808,7 +1815,7 @@ namespace LeechCraft
 								"time TEXT"
 								");"))
 					{
-						Util::DBLock::DumpError (query.lastError ());
+						Util::DBLock::DumpError (query);
 						return false;
 					}
 
@@ -1834,7 +1841,6 @@ namespace LeechCraft
 
 				if (!DB_.tables ().contains ("mrss_credits"))
 				{
-
 					if (!query.exec ("CREATE TABLE mrss_credits ("
 								"mrss_credits_id BIGINT PRIMARY KEY, "
 								"mrss_id BIGINT NOT NULL REFERENCES mrss ON DELETE CASCADE, "
@@ -1842,8 +1848,26 @@ namespace LeechCraft
 								"who TEXT"
 								");"))
 					{
-						Util::DBLock::DumpError (query.lastError ());
+						Util::DBLock::DumpError (query);
 						return false;
+					}
+
+					if (Type_ == SBPostgres)
+					{
+						if (!query.exec ("CREATE RULE \"replace_mrss_credits\" AS "
+											"ON INSERT TO \"mrss_credits\" "
+											"WHERE "
+												"EXISTS (SELECT 1 FROM mrss_credits "
+													"WHERE mrss_credits_id = NEW.mrss_credits_id) "
+											"DO INSTEAD "
+												"(UPDATE mrss_credits "
+													"SET role = NEW.role, "
+													"who = NEW.who "
+													"WHERE mrss_credits_id = NEW.mrss_credits_id)"))
+						{
+							Util::DBLock::DumpError (query);
+							return false;
+						}
 					}
 				}
 
@@ -1856,7 +1880,22 @@ namespace LeechCraft
 								"comment TEXT"
 								");"))
 					{
-						Util::DBLock::DumpError (query.lastError ());
+						Util::DBLock::DumpError (query);
+						return false;
+					}
+
+					if (!query.exec ("CREATE RULE \"replace_mrss_comments\" AS "
+										"ON INSERT TO \"mrss_comments\" "
+										"WHERE "
+											"EXISTS (SELECT 1 FROM mrss_comments "
+												"WHERE mrss_comment_id = NEW.mrss_comment_id) "
+										"DO INSTEAD "
+											"(UPDATE mrss_comments "
+												"SET type = NEW.type, "
+												"comment = NEW.comment "
+												"WHERE mrss_comment_id = NEW.mrss_comment_id)"))
+					{
+						Util::DBLock::DumpError (query);
 						return false;
 					}
 				}
@@ -1873,6 +1912,21 @@ namespace LeechCraft
 						Util::DBLock::DumpError (query.lastError ());
 						return false;
 					}
+
+					if (!query.exec ("CREATE RULE \"replace_mrss_peerlinks\" AS "
+										"ON INSERT TO \"mrss_peerlinks\" "
+										"WHERE "
+											"EXISTS (SELECT 1 FROM mrss_peerlinks "
+												"WHERE mrss_peerlink_id = NEW.mrss_peerlink_id) "
+										"DO INSTEAD "
+											"(UPDATE mrss_peerlinks "
+												"SET type = NEW.type, "
+												"link = NEW.link "
+												"WHERE mrss_peerlink_id = NEW.mrss_peerlink_id)"))
+					{
+						Util::DBLock::DumpError (query);
+						return false;
+					}
 				}
 
 				if (!DB_.tables ().contains ("mrss_scenes"))
@@ -1887,6 +1941,23 @@ namespace LeechCraft
 								");"))
 					{
 						Util::DBLock::DumpError (query.lastError ());
+						return false;
+					}
+
+					if (!query.exec ("CREATE RULE \"replace_mrss_scenes\" AS "
+										"ON INSERT TO \"mrss_scenes\" "
+										"WHERE "
+											"EXISTS (SELECT 1 FROM mrss_scenes "
+												"WHERE mrss_scene_id = NEW.mrss_scene_id) "
+										"DO INSTEAD "
+											"(UPDATE mrss_scenes "
+												"SET title = NEW.title, "
+												"description = NEW.description, "
+												"start_time = NEW.start_time, "
+												"end_time = NEW.end_time "
+												"WHERE mrss_scene_id = NEW.mrss_scene_id)"))
+					{
+						Util::DBLock::DumpError (query);
 						return false;
 					}
 				}
