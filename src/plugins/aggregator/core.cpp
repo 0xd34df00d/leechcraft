@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <numeric>
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 #include <QtDebug>
 #include <QImage>
 #include <QDir>
@@ -1480,7 +1481,7 @@ namespace LeechCraft
 								break;
 							}
 						channel->Items_.resize (truncateAt);
-			
+
 						ChannelsModel_->AddChannel (channel->ToShort ());
 						StorageBackend_->AddChannel (channel);
 						QString str = tr ("Added channel \"%1\" (%n item(s))",
@@ -1493,6 +1494,8 @@ namespace LeechCraft
 					int newItems = 0;
 					int updatedItems = 0;
 
+					GetPool (PTChannel).FreeID (channel->ChannelID_);
+
 					Q_FOREACH (Item_ptr item, channel->Items_)
 					{
 						Item_ptr ourItem;
@@ -1500,7 +1503,7 @@ namespace LeechCraft
 						{
 							IDType_t ourItemID = StorageBackend_->
 									FindItem (item->Title_, item->Link_,
-											channel->ChannelID_);
+											ourChannel->ChannelID_);
 							ourItem = StorageBackend_->GetItem (ourItemID);
 						}
 						catch (const StorageBackend::ItemNotFoundError&)
@@ -1513,6 +1516,7 @@ namespace LeechCraft
 							else
 								FixDate (item);
 
+							item->ChannelID_ = ourChannel->ChannelID_;
 							StorageBackend_->AddItem (item);
 
 							RegexpMatcherManager::Instance ().HandleItem (item);
@@ -1542,9 +1546,34 @@ namespace LeechCraft
 						ourItem->CommentsPageLink_ = item->CommentsPageLink_;
 						ourItem->Latitude_ = item->Latitude_;
 						ourItem->Longitude_ = item->Longitude_;
+
+						Q_FOREACH (Enclosure enc, ourItem->Enclosures_)
+							GetPool (PTEnclosure).FreeID (enc.EnclosureID_);
 						ourItem->Enclosures_ = item->Enclosures_;
+						BOOST_FOREACH (Enclosure& enc, ourItem->Enclosures_)
+							enc.ItemID_ = ourItem->ItemID_;
+
+						Q_FOREACH (MRSSEntry entry, ourItem->MRSSEntries_)
+						{
+							GetPool (PTMRSSEntry).FreeID (entry.MRSSEntryID_);
+
+							Q_FOREACH (MRSSComment comment, entry.Comments_)
+								GetPool (PTMRSSComment).FreeID (comment.MRSSCommentID_);
+							Q_FOREACH (MRSSCredit credit, entry.Credits_)
+								GetPool (PTMRSSCredit).FreeID (credit.MRSSCreditID_);
+							Q_FOREACH (MRSSPeerLink peerLink, entry.PeerLinks_)
+								GetPool (PTMRSSPeerLink).FreeID (peerLink.MRSSPeerLinkID_);
+							Q_FOREACH (MRSSThumbnail thumb, entry.Thumbnails_)
+								GetPool (PTMRSSThumbnail).FreeID (thumb.MRSSThumbnailID_);
+							Q_FOREACH (MRSSScene scene, entry.Scenes_)
+								GetPool (PTMRSSScene).FreeID (scene.MRSSSceneID_);
+						}
 						ourItem->MRSSEntries_ = item->MRSSEntries_;
-			
+						BOOST_FOREACH (MRSSEntry& entry, ourItem->MRSSEntries_)
+							entry.ItemID_ = ourItem->ItemID_;
+
+						GetPool (PTItem).FreeID (item->ItemID_);
+
 						StorageBackend_->UpdateItem (ourItem);
 						++updatedItems;
 					}
@@ -1567,7 +1596,7 @@ namespace LeechCraft
 						emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
 					}
 
-					StorageBackend_->TrimChannel (channel->ChannelID_,
+					StorageBackend_->TrimChannel (ourChannel->ChannelID_,
 							days, ipc);
 				}
 			}

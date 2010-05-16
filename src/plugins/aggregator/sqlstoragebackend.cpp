@@ -916,7 +916,7 @@ namespace LeechCraft
 					throw ItemGettingError ();
 				}
 
-				if (!ChannelIDFromTitleURL_.next ())
+				if (!ItemIDFromTitleURL_.next ())
 					throw ItemNotFoundError ();
 
 				IDType_t result = ItemIDFromTitleURL_.value (0).value<IDType_t> ();
@@ -1061,10 +1061,6 @@ namespace LeechCraft
 			
 				try
 				{
-					qDebug () << "inserting"
-							<< feed->Channels_.size ()
-							<< "channels for"
-							<< feed->URL_;
 					std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
 						   boost::bind (&SQLStorageBackend::AddChannel,
 							   this,
@@ -1281,7 +1277,6 @@ namespace LeechCraft
 			
 			void SQLStorageBackend::AddChannel (Channel_ptr channel)
 			{
-				qDebug () << "adding channel" << channel->Link_ << channel->Title_;
 				InsertChannel_.bindValue (":channel_id", channel->ChannelID_);
 				InsertChannel_.bindValue (":feed_id", channel->FeedID_);
 				InsertChannel_.bindValue (":url", channel->Link_);
@@ -2075,7 +2070,12 @@ namespace LeechCraft
 						AddFeed (feed);
 					}
 
-					qDebug () << "syncing pools and exiting";
+					qDebug () << Q_FUNC_INFO << "re-adding settings...";
+
+					Q_FOREACH (Feed::FeedSettings s, settings)
+						SetFeedSettings (s);
+
+					qDebug () << Q_FUNC_INFO << "syncing pools and exiting";
 
 					Core::Instance ().SyncPools ();
 				}
