@@ -31,6 +31,7 @@
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
 #include "xmlsettingsmanager.h"
+#include "mainwindow.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -203,7 +204,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 			.arg (reply->url ().toString ());
 		SslErrorsDialog *dia = new SslErrorsDialog (msg,
 				errors,
-				qApp->activeWindow ());
+				Core::Instance ().GetReallyMainWindow ());
 
 		bool ignore = (dia->exec () == QDialog::Accepted);
 		SslErrorsDialog::RememberChoice choice = dia->GetRememberChoice ();
