@@ -313,7 +313,7 @@ namespace LeechCraft
 				if (Core::Instance ().GetPluginManager ()->
 						HandleJavaScriptWindowObjectCleared (this, frame))
 					return;
-			
+
 				frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
 				frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
 			}
@@ -764,6 +764,8 @@ namespace LeechCraft
 			void CustomWebPage::HandleForms (QWebFrame *frame,
 					const QNetworkRequest& request, QWebPage::NavigationType type)
 			{
+				// TODO rewrite in QWebElement API with SecMan in mind.
+				/*
 				JSProxy_->ClearForms ();
 			
 				QWebFrame *formFrame = frame ? frame : mainFrame ();
@@ -792,10 +794,13 @@ namespace LeechCraft
 			
 					emit storeFormData (data);
 				}
+				*/
 			}
 			
 			void CustomWebPage::fillForms (QWebFrame *frame)
 			{
+				// TODO rewrite in QWebElement API with SecMan in mind.
+				/*
 				JSProxy_->ClearForms ();
 			
 				QString url = frame->url ().toString ();
@@ -815,6 +820,7 @@ namespace LeechCraft
 			
 				Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())
 					fillForms (childFrame);
+					*/
 			}
 		};
 	};
