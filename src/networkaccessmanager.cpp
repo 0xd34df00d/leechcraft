@@ -66,15 +66,6 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	CustomCookieJar *jar = new CustomCookieJar (this);
 	setCookieJar (jar);
 	handleFilterTrackingCookies ();
-	QFile file (QDir::homePath () +
-			"/.leechcraft/core/cookies.txt");
-	if (file.open (QIODevice::ReadOnly))
-		jar->Load (file.readAll ());
-	else
-		qWarning () << Q_FUNC_INFO
-			<< "could not open file"
-			<< file.fileName ()
-			<< file.errorString ();
 
 	try
 	{
@@ -88,6 +79,16 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			<< e.what ()
 			<< "so continuing without cache";
 	}
+
+	QFile file (QDir::homePath () +
+			"/.leechcraft/core/cookies.txt");
+	if (file.open (QIODevice::ReadOnly))
+		jar->Load (file.readAll ());
+	else
+		qWarning () << Q_FUNC_INFO
+			<< "could not open file"
+			<< file.fileName ()
+			<< file.errorString ();
 
 	connect (CookieSaveTimer_.get (),
 			SIGNAL (timeout ()),
