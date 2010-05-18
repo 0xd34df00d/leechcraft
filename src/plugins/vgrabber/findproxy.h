@@ -48,10 +48,12 @@ namespace LeechCraft
 			protected:
 				QAction *ActionDownload_;
 				QAction *ActionHandle_;
+				QAction *ActionCopyToClipboard_;
 				QToolBar *Toolbar_;
 				Request R_;
 				QMap<int, QString> Jobs_;
 				boost::optional<QString> Error_;
+				QMenu *ContextMenu_;
 			public:
 				enum FindProxyType
 				{
@@ -84,6 +86,7 @@ namespace LeechCraft
 			protected slots:
 				virtual void handleDownload () = 0;
 				virtual void handleHandle () = 0;
+				virtual void handleCopyToClipboard ();
 			private slots:
 				void handleJobFinished (int);
 				void handleJobError (int);

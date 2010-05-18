@@ -20,6 +20,8 @@
 #include <QTextCodec>
 #include <QToolBar>
 #include <QAction>
+#include <QClipboard>
+#include <QMenu>
 #include <interfaces/structures.h>
 #include <plugininterface/util.h>
 #include "categoriesselector.h"
@@ -49,11 +51,26 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleHandle ()));
+
+				ActionCopyToClipboard_ = new QAction (tr ("Copy URL to clipboard"),
+						this);
+				ActionCopyToClipboard_->setProperty ("ActionIcon", "copytoclipboard");
+				connect (ActionCopyToClipboard_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleCopyToClipboard ()));
+
+				ContextMenu_ = new QMenu (tr ("vGrabber menu"));
+				ContextMenu_->addAction (ActionDownload_);
+				ContextMenu_->addAction (ActionHandle_);
+				ContextMenu_->addSeparator ();
+				ContextMenu_->addAction (ActionCopyToClipboard_);
 			}
 			
 			FindProxy::~FindProxy ()
 			{
 				delete Toolbar_;
+				delete ContextMenu_;
 			}
 
 			void FindProxy::Start ()
@@ -141,6 +158,15 @@ namespace LeechCraft
 				return QModelIndex ();
 			}
 			
+			void FindProxy::handleCopyToClipboard ()
+			{
+				QUrl url = qobject_cast<QAction*> (sender ())->data ().value<QUrl> ();
+				QString urlStr = url.toString ();
+				QApplication::clipboard ()->setText (urlStr, QClipboard::Clipboard);
+				if (QApplication::clipboard ()->supportsSelection ())
+					QApplication::clipboard ()->setText (urlStr, QClipboard::Selection);
+			}
+
 			void FindProxy::handleJobFinished (int id)
 			{
 				if (!Jobs_.contains (id))

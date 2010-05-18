@@ -44,6 +44,7 @@ namespace LeechCraft
 				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 			protected:
+				void UpdateURLActionsData (int) const;
 				virtual QUrl GetURL () const;
 				virtual void Handle (const QString&);
 			protected slots:

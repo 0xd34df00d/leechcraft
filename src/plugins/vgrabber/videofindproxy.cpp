@@ -72,23 +72,35 @@ namespace LeechCraft
 						}
 					case LeechCraft::RoleControls:
 						{
-							QUrl url;
-							if (VideoResults_.size () > index.row ())
-								url = VideoResults_ [index.row ()].URL_;
-							if (!url.isEmpty ())
-							{
-								ActionDownload_->setData (url);
-								ActionHandle_->setData (url);
-							}
-							ActionDownload_->setEnabled (!url.isEmpty ());
-							ActionHandle_->setEnabled (!url.isEmpty ());
+							UpdateURLActionsData (index.row ());
 							return QVariant::fromValue<QToolBar*> (Toolbar_);
+						}
+					case LeechCraft::RoleContextMenu:
+						{
+							UpdateURLActionsData (index.row ());
+							return QVariant::fromValue<QMenu*> (ContextMenu_);
 						}
 					default:
 						return QVariant ();
 				}
 			}
 			
+			void VideoFindProxy::UpdateURLActionsData (int row) const
+			{
+				QUrl url;
+				if (VideoResults_.size () > row)
+					url = VideoResults_ [row].URL_;
+				if (!url.isEmpty ())
+				{
+					ActionDownload_->setData (url);
+					ActionHandle_->setData (url);
+					ActionCopyToClipboard_->setData (url);
+				}
+				ActionDownload_->setEnabled (!url.isEmpty ());
+				ActionHandle_->setEnabled (!url.isEmpty ());
+				ActionCopyToClipboard_->setEnabled (!url.isEmpty ());
+			}
+
 			int VideoFindProxy::rowCount (const QModelIndex& parent) const
 			{
 				if (parent.isValid ())

@@ -93,17 +93,13 @@ namespace LeechCraft
 						}
 					case LeechCraft::RoleControls:
 						{
-							QUrl url;
-							if (AudioResults_.size () > index.row ())
-								url = AudioResults_ [index.row ()].URL_;
-							if (!url.isEmpty ())
-							{
-								ActionDownload_->setData (url);
-								ActionHandle_->setData (url);
-							}
-							ActionDownload_->setEnabled (!url.isEmpty ());
-							ActionHandle_->setEnabled (!url.isEmpty ());
+							UpdateURLActionsData (index.row ());
 							return QVariant::fromValue<QToolBar*> (Toolbar_);
+						}
+					case LeechCraft::RoleContextMenu:
+						{
+							UpdateURLActionsData (index.row ());
+							return QVariant::fromValue<QMenu*> (ContextMenu_);
 						}
 					default:
 						return QVariant ();
@@ -119,6 +115,22 @@ namespace LeechCraft
 					return 1;
 				else
 					return AudioResults_.size ();
+			}
+
+			void AudioFindProxy::UpdateURLActionsData (int row) const
+			{
+				QUrl url;
+				if (AudioResults_.size () > row)
+					url = AudioResults_ [row].URL_;
+				if (!url.isEmpty ())
+				{
+					ActionDownload_->setData (url);
+					ActionHandle_->setData (url);
+					ActionCopyToClipboard_->setData (url);
+				}
+				ActionDownload_->setEnabled (!url.isEmpty ());
+				ActionHandle_->setEnabled (!url.isEmpty ());
+				ActionCopyToClipboard_->setEnabled (!url.isEmpty ());
 			}
 
 			QUrl AudioFindProxy::GetURL () const
