@@ -126,8 +126,7 @@ namespace LeechCraft
 			 * @paarm[in,out] The location where the entity should be saved.
 			 */
 			typedef boost::function<void (IHookProxy_ptr,
-					QString *entity,
-					QString *location)> Signature_t;
+					QString *entity)> Signature_t;
 		};
 
 	template<>

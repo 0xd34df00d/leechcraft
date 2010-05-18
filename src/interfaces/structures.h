@@ -196,34 +196,40 @@ namespace LeechCraft
 		QMap<QString, QVariant> Additional_;
 	};
 
+	/** This enumeration describes the additional roles that may be
+	 * returned from models that are embedded in Summary-like viewers.
+	 * Those like IJobHolders or IFindProxies.
+	 *
+	 * @sa IJobHolder, IFindProxy
+	 */
 	enum CustomDataRoles
 	{
 		/** The role for the string list with tags. So, QStringList is
 		 * expected to be returned.
 		 */
-		RoleTags = 100,
+		RoleTags = 100,    //!< RoleTags
 		/* The role for the additional controls for a given item.
 		 * QToolBar* is expected to be returned.
 		 */
-		RoleControls,
+		RoleControls,      //!< RoleControls
 		/** The role for the widget appearing on the right part of the
 		 * screen when the user selects an item. QWidget* is expected to
 		 * be returned.
 		 */
-		RoleAdditionalInfo,
+		RoleAdditionalInfo,//!< RoleAdditionalInfo
 		/** The role for the hash of the item, used to compare two
 		 * different results, possibly from two different models.
 		 * QByteArray is expected to be returned.
 		 */
-		RoleHash,
+		RoleHash,          //!< RoleHash
 		/** This should return MIME of an item if it's available,
 		 * otherwise an empty string should be returned.
 		 */
-		RoleMime,
+		RoleMime,          //!< RoleMime
 		/** This role returns the QMenu* that should be used as the
 		 * context menu.
 		 */
-		RoleContextMenu
+		RoleContextMenu    //!< RoleContextMenu
 	};
 
 	enum Priority

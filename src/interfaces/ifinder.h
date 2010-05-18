@@ -83,7 +83,12 @@ public:
 
 	/** Returns the model with search results representation.
 	 *
+	 * See the CustomDataRoles list for the list of roles you can
+	 * use in your model to communicate with other parts.
+	 *
 	 * @return The model with results.
+	 *
+	 * @sa CustomDataRoles
 	 */
 	virtual QAbstractItemModel* GetModel () = 0;
 
