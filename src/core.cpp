@@ -275,13 +275,13 @@ void LeechCraft::Core::DelayedInit ()
 			SLOT (pullEntityQueue ()));
 }
 
-void LeechCraft::Core::TryToAddJob (QString name, QString where)
+void LeechCraft::Core::TryToAddJob (QString name)
 {
 	HookProxy_ptr proxy (new HookProxy);
 	Q_FOREACH (HookSignature<HIDManualJobAddition>::Signature_t f,
 			GetHooks<HIDManualJobAddition> ())
 	{
-		f (proxy, &name, &where);
+		f (proxy, &name);
 
 		if (proxy->IsCancelled ())
 			return;
@@ -298,7 +298,6 @@ void LeechCraft::Core::TryToAddJob (QString name, QString where)
 		else
 			e.Entity_ = name;
 	}
-	e.Location_ = where;
 	e.Parameters_ = FromUserInitiated;
 
 	if (!handleGotEntity (e))

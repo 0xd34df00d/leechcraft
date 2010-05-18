@@ -159,7 +159,7 @@ namespace LeechCraft
 
 		/** Tries to add a task from the Add Task Dialog.
 		 */
-		void TryToAddJob (QString, QString);
+		void TryToAddJob (QString);
 
 		/** Returns true if both indexes belong to the same model. If
 		 * both indexes are invalid, true is returned.

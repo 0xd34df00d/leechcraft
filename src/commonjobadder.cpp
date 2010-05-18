@@ -30,18 +30,11 @@ LeechCraft::CommonJobAdder::CommonJobAdder (QWidget *parent)
 	setupUi (this);
 	What_->setText (XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
 				QDir::homePath ()).toString ());
-	Where_->setText (XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
-				QDir::homePath ()).toString ());
 }
 
 QString LeechCraft::CommonJobAdder::GetString () const
 {
 	return What_->text ();
-}
-
-QString LeechCraft::CommonJobAdder::GetWhere () const
-{
-	return Where_->text ();
 }
 
 void LeechCraft::CommonJobAdder::on_Browse__released ()
@@ -55,19 +48,6 @@ void LeechCraft::CommonJobAdder::on_Browse__released ()
 
 	What_->setText (name);
 	XmlSettingsManager::Instance ()->setProperty ("LastWhatFolder", name);
-}
-
-void LeechCraft::CommonJobAdder::on_BrowseWhere__released ()
-{
-	QString name = QFileDialog::getExistingDirectory (this,
-			tr ("Select file"),
-			XmlSettingsManager::Instance ()->Property ("LastWhereFolder",
-				QDir::homePath ()).toString ());
-	if (name.isEmpty ())
-		return;
-
-	Where_->setText (name);
-	XmlSettingsManager::Instance ()->setProperty ("LastWhereFolder", name);
 }
 
 void LeechCraft::CommonJobAdder::on_Paste__released ()

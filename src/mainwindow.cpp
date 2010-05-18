@@ -370,7 +370,7 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 
 	QString name = adder.GetString ();
 	if (!name.isEmpty ())
-		Core::Instance ().TryToAddJob (name, adder.GetWhere ());
+		Core::Instance ().TryToAddJob (name);
 }
 
 void LeechCraft::MainWindow::on_ActionNewTab__triggered ()

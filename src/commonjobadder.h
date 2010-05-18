@@ -44,22 +44,11 @@ namespace LeechCraft
 		 * @return The What.
 		 */
 		QString GetString () const;
-
-		/** Returns the value of Where field.
-		 *
-		 * @return the Where.
-		 */
-		QString GetWhere () const;
 	private slots:
 		/** Handles clicking the Browse button near What field. Pops up
 		 * the QFileDialog::getOpenFileName dialog.
 		 */
 		void on_Browse__released ();
-	
-		/** Handles clicking the Browse button near Where field. Pops up
-		 * the QFileDialog::getOpenFileName dialog.
-		 */
-		void on_BrowseWhere__released ();
 
 		/** Handles clicking the Paste button. Pastes text to the What
 		 * field from the clipboard.
