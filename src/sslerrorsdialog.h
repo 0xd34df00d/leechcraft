@@ -38,8 +38,11 @@ namespace LeechCraft
 			, RCHost
 		};
 
+		SslErrorsDialog (QWidget* = 0);
 		SslErrorsDialog (const QString&, const QList<QSslError>&, QWidget* = 0);
 		virtual ~SslErrorsDialog ();
+
+		void Update (const QString&, const QList<QSslError>&);
 
 		RememberChoice GetRememberChoice () const;
 	private:

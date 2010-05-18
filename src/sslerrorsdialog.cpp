@@ -21,21 +21,33 @@
 
 using namespace LeechCraft;
 
+LeechCraft::SslErrorsDialog::SslErrorsDialog (QWidget *parent)
+: QDialog (parent)
+{
+	Ui_.setupUi (this);
+}
+
 LeechCraft::SslErrorsDialog::SslErrorsDialog (const QString& msg,
 		const QList<QSslError>& errors,
 		QWidget *parent)
 : QDialog (parent)
 {
 	Ui_.setupUi (this);
+	Update (msg, errors);
+}
+
+LeechCraft::SslErrorsDialog::~SslErrorsDialog ()
+{
+}
+
+void LeechCraft::SslErrorsDialog::Update (const QString& msg,
+		const QList<QSslError>& errors)
+{
 	Ui_.Description_->setText (msg);
 	for (QList<QSslError>::const_iterator i = errors.begin (),
 			end = errors.end (); i != end; ++i)
 		PopulateTree (*i);
 	Ui_.Errors_->expandAll ();
-}
-
-LeechCraft::SslErrorsDialog::~SslErrorsDialog ()
-{
 }
 
 LeechCraft::SslErrorsDialog::RememberChoice LeechCraft::SslErrorsDialog::GetRememberChoice () const

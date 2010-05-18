@@ -200,27 +200,27 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	}
 	else
 	{
+		QUrl url = reply->url ();
 		QString msg = tr ("<code>%1</code><br />has SSL errors."
 				" What do you want to do?")
-			.arg (reply->url ().toString ());
-		SslErrorsDialog *dia = new SslErrorsDialog (msg,
-				errors,
-				Core::Instance ().GetReallyMainWindow ());
+			.arg (url.toString ());
 
-		bool ignore = (dia->exec () == QDialog::Accepted);
-		SslErrorsDialog::RememberChoice choice = dia->GetRememberChoice ();
+		if (!ErrorsDialog_)
+			ErrorsDialog_.reset (new SslErrorsDialog (Core::Instance ().GetReallyMainWindow ()));
+		ErrorsDialog_->Update (msg, errors);
+
+		bool ignore = (ErrorsDialog_->exec () == QDialog::Accepted);
+		SslErrorsDialog::RememberChoice choice = ErrorsDialog_->GetRememberChoice ();
 
 		if (choice != SslErrorsDialog::RCNot)
 		{
 			if (choice == SslErrorsDialog::RCFile)
-				settings.setValue (reply->url ().toString (),
+				settings.setValue (url.toString (),
 						ignore);
 			else
-				settings.setValue (reply->url ().host (),
+				settings.setValue (url.host (),
 						ignore);
 		}
-
-		dia->deleteLater ();
 
 		if (ignore)
 			reply->ignoreSslErrors ();
