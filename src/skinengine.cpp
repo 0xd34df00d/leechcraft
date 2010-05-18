@@ -157,7 +157,7 @@ void SkinEngine::FindIconSets ()
 	 * %APP_DIR%/icons
 	 */
 #if defined (Q_WS_MAC)
-	QDir dir = QApplication::applicationDir ();
+	QDir dir (QApplication::applicationDirPath ());
 	dir.cdUp ();
 	dir.cd ("Resources");
 	dir.cd ("icons");

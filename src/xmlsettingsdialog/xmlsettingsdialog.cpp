@@ -68,7 +68,7 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 #ifdef Q_WS_WIN
 	else if (QFile::exists (QString ("settings/") + basename))
 		filename = QString ("settings/") + basename;
-#elif Q_WS_MAC
+#elif defined (Q_WS_MAC)
 	else if (QFile::exists (QApplication::applicationDirPath () +
 			"../Resources/settings/" + basename))
 		filename = QString ("settings/") + basename;
