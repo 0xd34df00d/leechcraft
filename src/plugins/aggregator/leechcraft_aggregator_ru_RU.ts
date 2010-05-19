@@ -444,59 +444,59 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="186"/>
+        <location filename="aggregator.cpp" line="183"/>
         <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation>Aggregator не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Или проверьте настройки хранилища данных и перезапустите LeechCraft.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="241"/>
+        <location filename="aggregator.cpp" line="236"/>
         <source>Feeds actions</source>
         <translation>Действия над лентами</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="317"/>
+        <location filename="aggregator.cpp" line="312"/>
         <source>RSS/Atom feed reader.</source>
         <translation>Чтение RSS/Atom-лент.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="127"/>
+        <location filename="aggregator.cpp" line="125"/>
         <source>Aggregator</source>
         <translation>Aggregator</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="578"/>
+        <location filename="aggregator.cpp" line="570"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removing confirmation</comment>
         <translation>Вы собираетесь навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Вы уверены?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="641"/>
+        <location filename="aggregator.cpp" line="628"/>
         <source>Export to OPML</source>
         <translation>Экспорт в OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="642"/>
-        <location filename="aggregator.cpp" line="672"/>
+        <location filename="aggregator.cpp" line="629"/>
+        <location filename="aggregator.cpp" line="659"/>
         <source>Select save file</source>
         <translation>Выберите файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="643"/>
+        <location filename="aggregator.cpp" line="630"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML-файлы (*.opml);;XML-файлы (*.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="671"/>
+        <location filename="aggregator.cpp" line="658"/>
         <source>Export to binary file</source>
         <translation>Экспорт в бинарный файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="673"/>
+        <location filename="aggregator.cpp" line="660"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Файл обмена Aggregator (*.lcae);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="735"/>
+        <location filename="aggregator.cpp" line="716"/>
         <source>%1 unread messages in %2 channels.</source>
         <translation>%1 непрочитанных статей в %2 каналах.</translation>
     </message>
@@ -522,124 +522,119 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::Core</name>
     <message>
-        <location filename="core.cpp" line="445"/>
+        <location filename="core.cpp" line="458"/>
         <source>Job for feed %1 wasn&apos;t delegated.</source>
         <translation>Задача для ленты %1 не была делегирована.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="806"/>
+        <location filename="core.cpp" line="812"/>
         <source>Could not update feed settings</source>
         <translation>Невозможно обновить настройки ленты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="711"/>
+        <location filename="core.cpp" line="716"/>
         <source>Could not update feed</source>
         <translation>Невозможно обновить ленту</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="172"/>
+        <location filename="core.cpp" line="179"/>
         <source>Import error</source>
         <translation>Ошибка импорта</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="263"/>
         <location filename="core.cpp" line="270"/>
+        <location filename="core.cpp" line="277"/>
         <source>Storage error</source>
         <translation>Ошибка хранилища</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="412"/>
+        <location filename="core.cpp" line="421"/>
         <source>Feed addition error</source>
         <translation>Ошибка добавления фида</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="413"/>
+        <location filename="core.cpp" line="422"/>
         <source>The feed %1 is already added</source>
         <translation>Фид %1 уже добавлен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="444"/>
+        <location filename="core.cpp" line="457"/>
         <source>Plugin error</source>
         <translation>Ошибка плагина</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="467"/>
+        <location filename="core.cpp" line="481"/>
         <source>Feed removal error</source>
         <translation>Ошибка удаления фида</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="468"/>
+        <location filename="core.cpp" line="482"/>
         <source>Could not remove the feed: %1</source>
         <translation>Невозможно удалить фид: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="670"/>
-        <location filename="core.cpp" line="687"/>
-        <location filename="core.cpp" line="1558"/>
+        <location filename="core.cpp" line="676"/>
+        <location filename="core.cpp" line="693"/>
+        <location filename="core.cpp" line="1626"/>
         <source>Aggregator error</source>
         <translation>Ошибка Aggregator</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="671"/>
-        <source>Could not get feed settigns: %1</source>
-        <translation>Невозможно получить настройки фида: %1</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="688"/>
+        <location filename="core.cpp" line="694"/>
         <source>Could not update feed settings: %1</source>
         <translation>Невозможно обновить настройки фида: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="710"/>
+        <location filename="core.cpp" line="715"/>
         <source>Feed update error</source>
         <translation>Ошибка обновления фида</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="742"/>
-        <location filename="core.cpp" line="760"/>
-        <location filename="core.cpp" line="772"/>
-        <location filename="core.cpp" line="805"/>
-        <location filename="core.cpp" line="1121"/>
+        <location filename="core.cpp" line="741"/>
+        <location filename="core.cpp" line="759"/>
+        <location filename="core.cpp" line="771"/>
+        <location filename="core.cpp" line="811"/>
+        <location filename="core.cpp" line="1118"/>
         <source>OPML import error</source>
         <translation>Ошибка импорта OPML</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="743"/>
+        <location filename="core.cpp" line="742"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Невозможно открыть %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="761"/>
+        <location filename="core.cpp" line="760"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
         <translation>Ошибка XML, файл %1, строка %2, столбец %3, ошибка:&lt;br /&gt;%4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="773"/>
+        <location filename="core.cpp" line="772"/>
         <source>OPML from file %1 is not valid.</source>
         <translation>OPML-файл %1 невалиден.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="836"/>
+        <location filename="core.cpp" line="842"/>
         <source>OPML export error</source>
         <translation>Ошибка экспорта OPML</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="837"/>
-        <location filename="core.cpp" line="868"/>
+        <location filename="core.cpp" line="843"/>
+        <location filename="core.cpp" line="874"/>
         <source>Could not open file %1 for write.</source>
         <translation>Невозможно открыть файл %1 на запись.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="867"/>
+        <location filename="core.cpp" line="873"/>
         <source>Binary export error</source>
         <translation>Ошибка экспорта в бинарный формат</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1044"/>
-        <location filename="core.cpp" line="1057"/>
-        <location filename="core.cpp" line="1072"/>
-        <location filename="core.cpp" line="1086"/>
-        <location filename="core.cpp" line="1198"/>
+        <location filename="core.cpp" line="1054"/>
+        <location filename="core.cpp" line="1069"/>
+        <location filename="core.cpp" line="1083"/>
+        <location filename="core.cpp" line="1208"/>
         <source>Feed error</source>
         <translation>Ошибка фида</translation>
     </message>
@@ -649,7 +644,7 @@
         <translation>Файл, скачанный с %1, имеет нулевой размер.</translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1453"/>
+        <location filename="core.cpp" line="1487"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
         <oldsource>Added channel &quot;%1&quot; (%2 items)</oldsource>
         <translation>
@@ -659,7 +654,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1535"/>
+        <location filename="core.cpp" line="1604"/>
         <source>%n new item(s)</source>
         <comment>Channel update</comment>
         <translation>
@@ -669,7 +664,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1536"/>
+        <location filename="core.cpp" line="1605"/>
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
         <translation>
@@ -679,74 +674,79 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1534"/>
+        <location filename="core.cpp" line="1603"/>
         <source>Updated channel &quot;%1&quot; (%2, %3)</source>
         <oldsource>Updated channel &quot;%1&quot;</oldsource>
         <translation>Обновлен канал &quot;%1&quot; (%2, %3)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="173"/>
+        <location filename="core.cpp" line="180"/>
         <source>Task for OPML %1 wasn&apos;t delegated.</source>
         <translation>Задача для OPML %1 не была делегирована.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="271"/>
+        <location filename="core.cpp" line="278"/>
         <source>Aggregator: general storage initialization error.</source>
         <translation>Aggregator: общая ошибка инициализации подсистемы хранения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1058"/>
+        <location filename="core.cpp" line="677"/>
+        <source>Could not get feed settings: %1</source>
+        <translation>Невозможно получить настройки ленты: %1</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1055"/>
         <source>Feed with url %1 not found.</source>
         <translation>Лента с URL %1 не найдена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1073"/>
+        <location filename="core.cpp" line="1070"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
         <translation>Ошибка парсинга XML: %1, строка %2, столбец %3, имя файла %4, от %5</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1087"/>
+        <location filename="core.cpp" line="1084"/>
         <source>Could not find parser to parse file %1 from %2</source>
         <translation>Невозможно найти парсер для файла %1 из %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1122"/>
+        <location filename="core.cpp" line="1119"/>
         <source>Unable to download the OPML file.</source>
         <translation>Невозможно скачать OPML-файл.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1137"/>
+        <location filename="core.cpp" line="1134"/>
         <source>Address not found:&lt;br /&gt;%1</source>
         <translation>Адрес не найден:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1140"/>
+        <location filename="core.cpp" line="1137"/>
         <source>Access denied:&lt;br /&gt;%1</source>
         <translation>Доступ запрещен:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1143"/>
+        <location filename="core.cpp" line="1140"/>
         <source>Local error for:&lt;br /&gt;%1</source>
         <oldsource>Local errro for:&lt;br /&gt;%1</oldsource>
         <translation>Локальная ошибка для:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1146"/>
+        <location filename="core.cpp" line="1143"/>
         <source>Unknown error for:&lt;br /&gt;%1</source>
         <translation>Неизвестная ошибка для:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1149"/>
+        <location filename="core.cpp" line="1146"/>
         <source>Download error</source>
         <translation>Ошибка скачивания</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1199"/>
+        <location filename="core.cpp" line="1209"/>
         <source>External file %1 wasn&apos;t delegated.</source>
         <translation>Внешний файл %1 не был делегирован.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1559"/>
+        <location filename="core.cpp" line="1627"/>
         <source>Could not mark channel</source>
         <translation>Невозможно отметить канал</translation>
     </message>
@@ -792,34 +792,34 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::ImportBinary</name>
     <message>
-        <location filename="importbinary.cpp" line="121"/>
+        <location filename="importbinary.cpp" line="106"/>
         <source>Select binary file</source>
         <translation>Выберите бинарный файл</translation>
     </message>
     <message>
-        <location filename="importbinary.cpp" line="123"/>
+        <location filename="importbinary.cpp" line="108"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Файл обмена Aggregator (*.lcae);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="importbinary.cpp" line="148"/>
-        <location filename="importbinary.cpp" line="162"/>
-        <location filename="importbinary.cpp" line="175"/>
+        <location filename="importbinary.cpp" line="133"/>
+        <location filename="importbinary.cpp" line="147"/>
+        <location filename="importbinary.cpp" line="160"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="importbinary.cpp" line="149"/>
+        <location filename="importbinary.cpp" line="134"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Невозможно открыть %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="importbinary.cpp" line="163"/>
+        <location filename="importbinary.cpp" line="148"/>
         <source>Selected file %1 is not a valid LeechCraft::Aggregator exchange file.</source>
         <translation>Выбранный файл %1 не является правильным файлом обмена Aggregator.</translation>
     </message>
     <message>
-        <location filename="importbinary.cpp" line="176"/>
+        <location filename="importbinary.cpp" line="161"/>
         <source>Selected file %1 is a valid LeechCraft::Aggregator exchange file, but its version %2 is unknown</source>
         <translation>Выбранный файл %1 является правильным файлом обмена Aggregator, но версия %2 неизвестна</translation>
     </message>
@@ -860,22 +860,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::ItemModel</name>
-    <message>
-        <location filename="itemmodel.cpp" line="40"/>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::Aggregator::ItemsListModel</name>
     <message>
-        <location filename="itemslistmodel.cpp" line="38"/>
+        <location filename="itemslistmodel.cpp" line="39"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="38"/>
+        <location filename="itemslistmodel.cpp" line="39"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
@@ -893,42 +885,37 @@
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="453"/>
+        <location filename="itemswidget.cpp" line="443"/>
         <source>Hide read items</source>
         <translation>Прятать прочитанные новости</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="462"/>
+        <location filename="itemswidget.cpp" line="459"/>
         <source>Mark item as unread</source>
         <translation>Отметить статью как непрочитанную</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="466"/>
-        <source>Add to item bucket</source>
-        <translation>Добавить в сборник статей</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.cpp" line="470"/>
+        <location filename="itemswidget.cpp" line="463"/>
         <source>Subscribe to comments</source>
         <translation>Подписаться на комментарии</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="554"/>
+        <location filename="itemswidget.cpp" line="548"/>
         <source>Published on %1 by %2</source>
         <translation>Опубликовал %2 в %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="559"/>
+        <location filename="itemswidget.cpp" line="553"/>
         <source>Published on %1</source>
         <translation>Опубликовано в %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="563"/>
+        <location filename="itemswidget.cpp" line="557"/>
         <source>Published by %1</source>
         <translation>Опубликовал %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="579"/>
+        <location filename="itemswidget.cpp" line="573"/>
         <source>%n comment(s)</source>
         <oldsource>%1 comments&lt;/div&gt;</oldsource>
         <translation>
@@ -938,57 +925,52 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="614"/>
+        <location filename="itemswidget.cpp" line="608"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation>Файл типа %1, размер %2:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="618"/>
+        <location filename="itemswidget.cpp" line="612"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation>Файл типа %1 и неизвестного размера:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="624"/>
+        <location filename="itemswidget.cpp" line="618"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation>&lt;br /&gt;Указанный язык: %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="638"/>
+        <location filename="itemswidget.cpp" line="632"/>
         <source>Image </source>
         <translation>Изображение</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="640"/>
+        <location filename="itemswidget.cpp" line="634"/>
         <source>Audio </source>
         <translation>Аудио</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="642"/>
+        <location filename="itemswidget.cpp" line="636"/>
         <source>Video </source>
         <translation>Видео</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="644"/>
+        <location filename="itemswidget.cpp" line="638"/>
         <source>Document </source>
         <translation>Документ</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="646"/>
+        <location filename="itemswidget.cpp" line="640"/>
         <source>Executable </source>
         <translation>Приложение</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="767"/>
-        <source>%1&lt;br /&gt;</source>
-        <translation>%1&lt;br /&gt;</translation>
-    </message>
-    <message>
-        <location filename="itemswidget.cpp" line="714"/>
+        <location filename="itemswidget.cpp" line="708"/>
         <source>&lt;hr /&gt;Thumbnail at %1:&lt;br /&gt;</source>
         <translation>&lt;hr /&gt;Кадр в %1:&lt;br /&gt;</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="574"/>
+        <location filename="itemswidget.cpp" line="568"/>
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
         <translation>
             <numerusform>&lt;a href=&apos;%1&apos;%2&gt;посмотреть %n комментарий&lt;/a&gt;&lt;/div&gt;</numerusform>
@@ -997,159 +979,169 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="582"/>
+        <location filename="itemswidget.cpp" line="576"/>
         <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;a href=&apos;%1&apos;%2&gt;Посмотреть комментарии&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="593"/>
+        <location filename="itemswidget.cpp" line="587"/>
         <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
         <oldsource>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;/br&gt;</oldsource>
         <translation>Положение: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="738"/>
+        <location filename="itemswidget.cpp" line="732"/>
         <source>&lt;strong&gt;Keywords:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Ключевые слова:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="742"/>
+        <location filename="itemswidget.cpp" line="736"/>
         <source>&lt;strong&gt;Language:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Язык:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="746"/>
+        <location filename="itemswidget.cpp" line="740"/>
         <source>Sample</source>
         <translation>Пример</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="748"/>
+        <location filename="itemswidget.cpp" line="742"/>
         <source>Continuous stream</source>
         <translation>Поток</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="750"/>
+        <location filename="itemswidget.cpp" line="744"/>
         <source>Full version</source>
         <translation>Полная версия</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="758"/>
+        <location filename="itemswidget.cpp" line="752"/>
         <source>Title: %1&lt;br /&gt;</source>
         <translation>Название: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="761"/>
+        <location filename="itemswidget.cpp" line="755"/>
         <source>Start time: %1&lt;br /&gt;</source>
         <translation>Время начала: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="764"/>
+        <location filename="itemswidget.cpp" line="758"/>
         <source>End time: %1&lt;br /&gt;</source>
         <translation>Время окончания: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="777"/>
+        <location filename="itemswidget.cpp" line="771"/>
         <source>&lt;strong&gt;Scenes:&lt;/strong&gt;</source>
         <oldsource>&lt;strong&gt;Scenes:&lt;/strong</oldsource>
         <translation>&lt;strong&gt;Сцены:&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="786"/>
+        <location filename="itemswidget.cpp" line="780"/>
         <source>&lt;strong&gt;Views:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Просмотры:&lt;/strong&gt; %1</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="789"/>
-        <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %1 times</source>
+        <source>&lt;strong&gt;Number of marks:&lt;/strong&gt; %1</source>
+        <oldsource>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %1 times</oldsource>
         <translation>&lt;strong&gt;Добавлено в закладки:&lt;/strong&gt; %1 раз</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="792"/>
+        <location filename="itemswidget.cpp" line="786"/>
         <source>&lt;strong&gt;Average rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Средний рейтинг:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="795"/>
-        <source>&lt;strong&gt;Number of marks:&lt;/strong&gt; %1</source>
-        <translation>&lt;strong&gt;Количество оценок:&lt;/strong&gt; %1</translation>
+        <location filename="itemswidget.cpp" line="451"/>
+        <source>Show items as tape</source>
+        <translation>Показывать статьи лентой</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="itemswidget.cpp" line="783"/>
+        <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
+        <translation>
+            <numerusform>&lt;strong&gt;Добавлено в избранное:&lt;/strong&gt; %n раз</numerusform>
+            <numerusform>&lt;strong&gt;Добавлено в избранное:&lt;/strong&gt; %n раза</numerusform>
+            <numerusform>&lt;strong&gt;Добавлено в избранное:&lt;/strong&gt; %n раз</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="798"/>
+        <location filename="itemswidget.cpp" line="792"/>
         <source>&lt;strong&gt;Minimal rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Минимальный рейтинг:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="801"/>
+        <location filename="itemswidget.cpp" line="795"/>
         <source>&lt;strong&gt;Maximal rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Максимальный рейтинг:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="805"/>
+        <location filename="itemswidget.cpp" line="799"/>
         <source>&lt;strong&gt;User tags:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Пользовательские теги:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="810"/>
+        <location filename="itemswidget.cpp" line="804"/>
         <source>&lt;li&gt;&lt;strong&gt;Duration:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Длительность:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="813"/>
+        <location filename="itemswidget.cpp" line="807"/>
         <source>&lt;li&gt;&lt;strong&gt;Channels:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Количество каналов:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="817"/>
+        <location filename="itemswidget.cpp" line="811"/>
         <source>&lt;li&gt;&lt;strong&gt;Size:&lt;/strong&gt; %1x%2&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Размер:&lt;/strong&gt; %1x%2&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="821"/>
+        <location filename="itemswidget.cpp" line="815"/>
         <source>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Битрейт:&lt;/strong&gt; %1 kbps&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="824"/>
+        <location filename="itemswidget.cpp" line="818"/>
         <source>&lt;li&gt;&lt;strong&gt;Framerate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Частота кадров:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="827"/>
+        <location filename="itemswidget.cpp" line="821"/>
         <source>&lt;li&gt;&lt;strong&gt;Sampling rate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Частота дискретизации:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="830"/>
+        <location filename="itemswidget.cpp" line="824"/>
         <source>&lt;li&gt;&lt;strong&gt;MIME type:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;MIME-тип:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="835"/>
+        <location filename="itemswidget.cpp" line="829"/>
         <source>&lt;strong&gt;Technical information:&lt;/strong&gt;</source>
         <translation>&lt;strong&gt;Техническая информация:&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="845"/>
+        <location filename="itemswidget.cpp" line="839"/>
         <source>&lt;strong&gt;Rating:&lt;/strong&gt; %1 (according to %2 scheme)&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Рейтинг:&lt;/strong&gt; %1 (по схеме %2)&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="869"/>
+        <location filename="itemswidget.cpp" line="863"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="873"/>
+        <location filename="itemswidget.cpp" line="867"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="877"/>
+        <location filename="itemswidget.cpp" line="871"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="892"/>
+        <location filename="itemswidget.cpp" line="886"/>
         <source>&lt;strong&gt;Credits:&lt;/strong&gt;</source>
         <oldsource>&lt;strong&gt;Credits:&lt;/strong</oldsource>
         <translation>&lt;strong&gt;Исполнители:&lt;/strong&gt;</translation>
@@ -1227,17 +1219,12 @@
         <source>Merge items</source>
         <translation>Объединять статьи</translation>
     </message>
-    <message>
-        <location filename="mainwidget.ui" line="74"/>
-        <source>Show as a tape</source>
-        <translation>Показывать лентой</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="atom03parser.cpp" line="62"/>
-        <location filename="atom10parser.cpp" line="60"/>
+        <location filename="atom03parser.cpp" line="63"/>
+        <location filename="atom10parser.cpp" line="61"/>
         <source>(No title)</source>
         <translation>(Без названия)</translation>
     </message>
@@ -1248,22 +1235,22 @@
         <translation>подкаст %1</translation>
     </message>
     <message>
-        <location filename="parser.cpp" line="566"/>
+        <location filename="parser.cpp" line="567"/>
         <source>Comments</source>
         <translation>Комментарии</translation>
     </message>
     <message>
-        <location filename="parser.cpp" line="584"/>
+        <location filename="parser.cpp" line="583"/>
         <source>Responses</source>
         <translation>Ответы</translation>
     </message>
     <message>
-        <location filename="parser.cpp" line="602"/>
+        <location filename="parser.cpp" line="599"/>
         <source>Backlinks</source>
         <translation>Обратные ссылки</translation>
     </message>
     <message>
-        <location filename="rss20parser.cpp" line="112"/>
+        <location filename="rss20parser.cpp" line="114"/>
         <source>Duration: %1</source>
         <translation>Длительность: %1</translation>
     </message>

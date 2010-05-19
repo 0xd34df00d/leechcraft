@@ -5,22 +5,22 @@
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
         <location filename="core.cpp" line="123"/>
-        <location filename="core.cpp" line="305"/>
+        <location filename="core.cpp" line="327"/>
         <source>Summary</source>
         <translation>Сводка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="162"/>
+        <location filename="core.cpp" line="190"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="163"/>
+        <location filename="core.cpp" line="191"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="164"/>
+        <location filename="core.cpp" line="192"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
@@ -102,7 +102,7 @@
         <translation>Сводка [%1]</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="399"/>
+        <location filename="summarywidget.cpp" line="400"/>
         <source>Remove this category</source>
         <translation>Удалить эту категорию</translation>
     </message>

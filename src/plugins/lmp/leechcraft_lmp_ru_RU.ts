@@ -150,11 +150,6 @@
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="406"/>
-        <source> (%1)</source>
-        <translation> (%1)</translation>
-    </message>
-    <message>
         <location filename="playerwidget.cpp" line="407"/>
         <source> [</source>
         <translation> [</translation>
@@ -203,22 +198,6 @@
         <location filename="playerwidget.cpp" line="454"/>
         <source>stream</source>
         <translation>потока</translation>
-    </message>
-</context>
-<context>
-    <name>Player</name>
-    <message>
-        <location filename="player.ui" line="14"/>
-        <source>LMP</source>
-        <translation>LMP</translation>
-    </message>
-</context>
-<context>
-    <name>PlayerWidget</name>
-    <message>
-        <location filename="playerwidget.ui" line="20"/>
-        <source>Form</source>
-        <translation>Форма</translation>
     </message>
 </context>
 <context>

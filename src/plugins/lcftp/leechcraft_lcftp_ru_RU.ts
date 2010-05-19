@@ -20,14 +20,6 @@
         <translation>%1 из %2 (%3%)</translation>
     </message>
     <message>
-        <source>%1</source>
-        <translation>%1</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
         <source>While mirroring&lt;br /&gt;%1&lt;br /&gt;to&lt;br /&gt;%2&lt;br /&gt;an error occured:&lt;br /&gt;%3&lt;br /&gt; already exists.</source>
         <translation>Во время зеркалирования&lt;br /&gt;%1&lt;br /&gt;в&lt;br /&gt;%2&lt;br /&gt;возникла ошибка:&lt;br /&gt;%3&lt;br /&gt;уже существует.</translation>
     </message>
@@ -124,10 +116,6 @@
 <context>
     <name>Pane</name>
     <message>
-        <source>Form</source>
-        <translation>Форма</translation>
-    </message>
-    <message>
         <source>..</source>
         <translation>..</translation>
     </message>
@@ -138,10 +126,6 @@
 </context>
 <context>
     <name>SummaryTab</name>
-    <message>
-        <source>Form</source>
-        <translation>Форма</translation>
-    </message>
     <message>
         <source>Download speed:</source>
         <translation>Скорость загрузки:</translation>
@@ -157,13 +141,6 @@
     <message>
         <source> KiB/s</source>
         <translation>КиБ/с</translation>
-    </message>
-</context>
-<context>
-    <name>TabWidget</name>
-    <message>
-        <source>Form</source>
-        <translation>Форма</translation>
     </message>
 </context>
 </TS>

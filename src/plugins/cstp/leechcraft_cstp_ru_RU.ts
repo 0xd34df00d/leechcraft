@@ -57,11 +57,6 @@
         <translation>%1 не является директорией, хотите выбрать другую?</translation>
     </message>
     <message>
-        <location filename="addtask.cpp" line="125"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
         <location filename="addtask.cpp" line="157"/>
         <source>Select directory</source>
         <translation>Выбор директории</translation>
@@ -69,11 +64,6 @@
 </context>
 <context>
     <name>LeechCraft::Plugins::CSTP::CSTP</name>
-    <message>
-        <location filename="cstp.cpp" line="204"/>
-        <source>CSTP</source>
-        <translation>CSTP</translation>
-    </message>
     <message>
         <location filename="cstp.cpp" line="206"/>
         <source>Remove</source>
@@ -118,38 +108,38 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Core</name>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="60"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="50"/>
+        <location filename="core.cpp" line="61"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="51"/>
+        <location filename="core.cpp" line="62"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="371"/>
+        <location filename="core.cpp" line="405"/>
         <source>%1 (ETA: %2)</source>
         <translation>%1 (ETA: %2)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="383"/>
+        <location filename="core.cpp" line="417"/>
         <source>%1% (%2 of %3 at %4)</source>
         <oldsource>%1% (%2 of %3 at %44)</oldsource>
         <translation>%1% (%2 из %3 на %4)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="475"/>
+        <location filename="core.cpp" line="509"/>
         <source>Could not open file %1: %2</source>
         <translation>Невозможно открыть файл %1: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="534"/>
+        <location filename="core.cpp" line="568"/>
         <source>Download finished: %1
 %2</source>
         <oldsource>Download finished</oldsource>
@@ -157,17 +147,17 @@
 %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="242"/>
+        <location filename="core.cpp" line="276"/>
         <source>Could not truncate file </source>
         <translation>Невозможно сократить файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="389"/>
+        <location filename="core.cpp" line="423"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="387"/>
+        <location filename="core.cpp" line="421"/>
         <source>/s</source>
         <translation>/c</translation>
     </message>
@@ -183,24 +173,29 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="201"/>
+        <location filename="task.cpp" line="202"/>
         <source>Stopped</source>
         <translation>Остановлена</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="203"/>
+        <location filename="task.cpp" line="204"/>
         <source>Finished</source>
         <translation>Закончена</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="205"/>
+        <location filename="task.cpp" line="206"/>
         <source>Running</source>
         <translation>Выполняется</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="226"/>
+        <location filename="task.cpp" line="227"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation>Задача некорректно инициализирована</translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="406"/>
+        <source>Error writing to file %1: %2</source>
+        <translation>Ошибка записи в файл %1: %2</translation>
     </message>
 </context>
 </TS>

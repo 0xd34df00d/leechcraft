@@ -456,28 +456,28 @@
         <translation>Poshuku: общая ошибка инициализации подсистемы хранения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="741"/>
+        <location filename="core.cpp" line="738"/>
         <source>Select XBEL file</source>
         <translation>Выбор файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="743"/>
-        <location filename="core.cpp" line="783"/>
+        <location filename="core.cpp" line="740"/>
+        <location filename="core.cpp" line="780"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Файлы XBEL (*.xbel);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="757"/>
+        <location filename="core.cpp" line="754"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не могу открыть файл %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="781"/>
+        <location filename="core.cpp" line="778"/>
         <source>Save XBEL file</source>
         <translation>Сохранение файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="800"/>
+        <location filename="core.cpp" line="797"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не могу открыть файл %1 на запись.</translation>
     </message>
@@ -485,142 +485,185 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="518"/>
-        <source>Error loading %1: %2 (%3)</source>
-        <translation>Ошибка загрузки %1: %2 (%3)</translation>
+        <location filename="customwebpage.cpp" line="178"/>
+        <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
+        <comment>{host} would be substituded with site&apos;s host name.</comment>
+        <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;проверьте&lt;/a&gt; не работает ли сайт &lt;strong&gt;{host}&lt;/strong&gt; только у вас или у всех;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="524"/>
-        <source>Error loading %1: %2</source>
-        <translation>Ошибка загрузки %1: %2</translation>
+        <location filename="customwebpage.cpp" line="182"/>
+        <location filename="customwebpage.cpp" line="187"/>
+        <source>check if the URL is written correctly;</source>
+        <translation>проверьте, правильно ли написан URL;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="527"/>
+        <location filename="customwebpage.cpp" line="184"/>
+        <source>try changing your DNS servers;</source>
+        <translation>попробуйте поменять ваши DNS-сервера;</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="185"/>
+        <source>make sure that LeechCraft is allowed to access the Internet and particularly web sites;</source>
+        <translation>убедитесь, что LeechCraft&apos;у разрешен доступ в Интернет и, в особенности, к веб-сайтам;</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="186"/>
+        <source>contact your system/network administrator, especially if you can&apos;t load any single page.</source>
+        <translation>свяжитесь с вашим системным администратором, особенно если вы не можете загрузить ни одну страницу.</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="188"/>
+        <source>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and find the required page from there.</source>
+        <oldsource>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and finding the required page there.</oldsource>
+        <translation>перейдите на &lt;a href=&quot;{schema}://{host}/&quot;&gt;главную страницу&lt;/a&gt; сайта и попробуйте найти необходимую информацию оттуда.</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="531"/>
+        <source>Error loading %1</source>
+        <translation>Ошибка загрузки %1</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="536"/>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="541"/>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="543"/>
         <source>The page you tried to access cannot be loaded now.</source>
         <translation>Страница, которую вы пытались открыть, сейчас не может быть загружена.</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="550"/>
+        <source>Try doing the following:</source>
+        <translation>Попробуйте следующее:</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebView</name>
     <message>
-        <location filename="customwebview.cpp" line="402"/>
+        <location filename="customwebview.cpp" line="399"/>
         <source>Installed plugins</source>
         <translation>Установленные плагины</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="403"/>
+        <location filename="customwebview.cpp" line="400"/>
         <source>No plugins installed</source>
         <translation>Нет установленных плагинов</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="404"/>
+        <location filename="customwebview.cpp" line="401"/>
         <source>File name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="405"/>
+        <location filename="customwebview.cpp" line="402"/>
         <source>MIME type</source>
         <translation>MIME-тип</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="406"/>
+        <location filename="customwebview.cpp" line="403"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="407"/>
+        <location filename="customwebview.cpp" line="404"/>
         <source>Suffixes</source>
         <translation>Расширения</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="408"/>
+        <location filename="customwebview.cpp" line="405"/>
         <source>Enabled</source>
         <translation>Включено</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="409"/>
+        <location filename="customwebview.cpp" line="406"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="410"/>
+        <location filename="customwebview.cpp" line="407"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="145"/>
-        <location filename="customwebview.cpp" line="154"/>
+        <location filename="customwebview.cpp" line="141"/>
+        <location filename="customwebview.cpp" line="150"/>
         <source>Loading...</source>
         <translation>Загружается...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="248"/>
+        <location filename="customwebview.cpp" line="244"/>
         <source>Subscribe</source>
         <translation>Подписаться</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="256"/>
+        <location filename="customwebview.cpp" line="252"/>
         <source>Open &amp;here</source>
         <translation>Открыть &amp;здесь</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="258"/>
+        <location filename="customwebview.cpp" line="254"/>
         <source>Open in new &amp;tab</source>
         <translation>Открыть в новой &amp;вкладке</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="261"/>
+        <location filename="customwebview.cpp" line="257"/>
         <source>&amp;Save link...</source>
         <translation>&amp;Cохранить ссылку...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="267"/>
+        <location filename="customwebview.cpp" line="263"/>
         <source>&amp;Bookmark link...</source>
         <translation>Добавить ссылку в &amp;избранное...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="273"/>
+        <location filename="customwebview.cpp" line="269"/>
         <source>&amp;Copy link</source>
         <translation>&amp;Копировать ссылку</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="287"/>
+        <location filename="customwebview.cpp" line="283"/>
         <source>Open image here</source>
         <translation>Открыть изображение здесь</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="289"/>
+        <location filename="customwebview.cpp" line="285"/>
         <source>Open image in new tab</source>
         <translation>Открыть изображение в новой вкладке</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="292"/>
+        <location filename="customwebview.cpp" line="288"/>
         <source>Save image...</source>
         <translation>Сохранить изображение...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="294"/>
+        <location filename="customwebview.cpp" line="290"/>
         <source>Copy image</source>
         <translation>Копировать изображение</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="296"/>
+        <location filename="customwebview.cpp" line="292"/>
         <source>Copy image location</source>
         <translation>Копировать ссылку на изображение</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="312"/>
+        <location filename="customwebview.cpp" line="308"/>
         <source>Search...</source>
         <translation>Поиск...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="420"/>
-        <location filename="customwebview.cpp" line="422"/>
+        <location filename="customwebview.cpp" line="417"/>
+        <location filename="customwebview.cpp" line="419"/>
         <source>Welcome to LeechCraft!</source>
         <translation>Добро пожаловать в LeechCraft!</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="424"/>
+        <location filename="customwebview.cpp" line="421"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
         <translation>Добро пожаловать в LeechCraft, интегрированный интернет-клиент.&lt;br /&gt;Вы можете узнать больше на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сайте проекта&lt;/a&gt;.</translation>
     </message>
@@ -740,11 +783,6 @@
         <location filename="poshuku.cpp" line="135"/>
         <source>Check favorites...</source>
         <translation>Проверить закладки...</translation>
-    </message>
-    <message>
-        <location filename="poshuku.cpp" line="157"/>
-        <source>Poshuku</source>
-        <translation>Poshuku</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="180"/>
@@ -929,11 +967,6 @@
         <location filename="searchtext.ui" line="14"/>
         <source>Search</source>
         <translation>Поиск</translation>
-    </message>
-    <message>
-        <location filename="searchtext.ui" line="20"/>
-        <source>TextLabel</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="searchtext.ui" line="47"/>
