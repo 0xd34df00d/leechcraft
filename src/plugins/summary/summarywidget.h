@@ -83,6 +83,7 @@ namespace LeechCraft
 				void filterUpdated ();
 				void queryUpdated (const QString&);
 				void queryUpdated (const LeechCraft::Plugins::Summary::Query2&);
+				void raiseTab (QWidget*);
 				void needToClose ();
 				void newTabRequested ();
 			};

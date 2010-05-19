@@ -373,6 +373,7 @@ namespace LeechCraft
 				emit changeTabName (newName);
 				emit filterUpdated ();
 				emit queryUpdated (query);
+				emit raiseTab (this);
 			}
 
 			void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)

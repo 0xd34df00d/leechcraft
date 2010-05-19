@@ -298,6 +298,10 @@ namespace LeechCraft
 						SIGNAL (filterUpdated ()),
 						this,
 						SLOT (handleFilterUpdated ()));
+				connect (result,
+						SIGNAL (raiseTab (QWidget*)),
+						this,
+						SIGNAL (raiseTab (QWidget*)));
 				Reemitter_->Connect (result);
 				return result;
 			}
