@@ -26,6 +26,7 @@
 #include <QSettings>
 #include <plugininterface/util.h>
 #include <plugininterface/customcookiejar.h>
+#include <plugininterface/defaulthookproxy.h>
 #include "core.h"
 #include "networkdiskcache.h"
 #include "authenticationdialog.h"
@@ -117,7 +118,7 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 		const QNetworkRequest& req, QIODevice *out)
 {
 	QNetworkRequest r = req;
-	HookProxy_ptr proxy (new HookProxy);
+	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
 	Q_FOREACH (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t f,
 			Core::Instance ().GetHooks<HIDNetworkAccessManagerCreateRequest> ())
 	{
