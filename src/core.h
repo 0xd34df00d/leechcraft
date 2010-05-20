@@ -44,19 +44,6 @@ namespace LeechCraft
 {
 	class MainWindow;
 
-	class HookProxy : public IHookProxy
-	{
-		bool Cancelled_;
-	public:
-		HookProxy ();
-		virtual ~HookProxy ();
-
-		void CancelDefault ();
-		bool IsCancelled () const;
-	};
-
-	typedef boost::shared_ptr<HookProxy> HookProxy_ptr;
-
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
 	 */

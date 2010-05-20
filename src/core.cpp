@@ -39,6 +39,7 @@
 #include <QClipboard>
 #include <plugininterface/util.h>
 #include <plugininterface/customcookiejar.h>
+#include <plugininterface/defaulthookproxy.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ientityhandler.h>
@@ -63,25 +64,6 @@
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
-
-HookProxy::HookProxy ()
-: Cancelled_ (false)
-{
-}
-
-HookProxy::~HookProxy ()
-{
-}
-
-void HookProxy::CancelDefault ()
-{
-	Cancelled_ = true;
-}
-
-bool HookProxy::IsCancelled () const
-{
-	return Cancelled_;
-}
 
 LeechCraft::Core::Core ()
 : NetworkAccessManager_ (new NetworkAccessManager)
@@ -277,7 +259,7 @@ void LeechCraft::Core::DelayedInit ()
 
 void LeechCraft::Core::TryToAddJob (QString name)
 {
-	HookProxy_ptr proxy (new HookProxy);
+	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
 	Q_FOREACH (HookSignature<HIDManualJobAddition>::Signature_t f,
 			GetHooks<HIDManualJobAddition> ())
 	{
@@ -545,7 +527,7 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 
 bool LeechCraft::Core::CouldHandle (LeechCraft::DownloadEntity e) const
 {
-	HookProxy_ptr proxy (new HookProxy);
+	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
 	Q_FOREACH (HookSignature<HIDCouldHandle>::Signature_t f,
 			GetHooks<HIDCouldHandle> ())
 	{
@@ -698,7 +680,7 @@ QList<QObject*> LeechCraft::Core::GetObjects (const DownloadEntity& p,
 
 bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 {
-	HookProxy_ptr proxy (new HookProxy);
+	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
 	Q_FOREACH (HookSignature<HIDGotEntity>::Signature_t f,
 			GetHooks<HIDGotEntity> ())
 	{
@@ -864,7 +846,7 @@ void LeechCraft::Core::embeddedTabWantsToFront ()
 void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString& origMessage)
 {
 	QString msg = origMessage;
-	HookProxy_ptr proxy (new HookProxy);
+	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
 	Q_FOREACH (HookSignature<HIDStatusBarChanged>::Signature_t f,
 			GetHooks<HIDStatusBarChanged> ())
 	{

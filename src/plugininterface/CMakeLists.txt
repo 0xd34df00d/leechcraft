@@ -24,6 +24,7 @@ SET (SRCS
 	listmodel.cpp
 	selectablebrowser.cpp
 	flattofoldersproxymodel.cpp
+	defaulthookproxy.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -42,6 +43,7 @@ SET (HEADERS
 	listmodel.h
 	selectablebrowser.h
 	flattofoldersproxymodel.h
+	defaulthookproxy.h
 	idpool.h
 	)
 SET (FORMS
