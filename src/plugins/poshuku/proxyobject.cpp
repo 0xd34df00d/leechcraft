@@ -29,11 +29,6 @@ namespace LeechCraft
 			{
 				return Core::Instance ().GetPluginsMenu ();
 			}
-			
-			QNetworkAccessManager* ProxyObject::GetNetworkAccessManager () const
-			{
-				return Core::Instance ().GetNetworkAccessManager ();
-			}
 		};
 	};
 };

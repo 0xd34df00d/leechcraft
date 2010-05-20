@@ -419,10 +419,10 @@ void Core::HandleLoadFinished (QWebPage *page)
 }
 
 void Core::HandleContextMenu (const QWebHitTestResult& r,
-	QMenu *menu, LeechCraft::Plugins::Poshuku::PluginBase::WebViewCtxMenuStage stage)
+	QMenu *menu, LeechCraft::Plugins::Poshuku::WebViewCtxMenuStage stage)
 {
 	QUrl iurl = r.imageUrl ();
-	if (stage == PluginBase::WVSAfterImage &&
+	if (stage == WVSAfterImage &&
 			!iurl.isEmpty ())
 		menu->addAction (tr ("Block image..."),
 				UserFilters_,

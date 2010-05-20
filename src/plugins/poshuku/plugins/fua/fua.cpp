@@ -141,7 +141,8 @@ void FUA::Init (IProxyObject*)
 {
 }
 
-QString FUA::OnUserAgentForUrl (const QWebPage*, const QUrl& url)
+void FUA::userAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
+		const QUrl& url, const QWebPage*, QString *result)
 {
 	QString host = url.host ();
 	for (int i = 0; i < Model_->rowCount (); ++i)
@@ -149,9 +150,12 @@ QString FUA::OnUserAgentForUrl (const QWebPage*, const QUrl& url)
 		QStandardItem *item = Model_->item (i);
 		QRegExp re (item->text (), Qt::CaseSensitive, QRegExp::Wildcard);
 		if (re.exactMatch (host))
-			return Model_->item (i, 2)->text ();
+		{
+			proxy->CancelDefault ();
+			*result = Model_->item (i, 2)->text ();
+			return;
+		}
 	}
-	throw std::runtime_error ("Not found");
 }
 
 void FUA::Save () const

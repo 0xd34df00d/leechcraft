@@ -28,6 +28,8 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <plugininterface/util.h>
+#include <plugininterface/defaulthookproxy.h>
+#include "interfaces/poshukutypes.h"
 #include "core.h"
 #include "customwebpage.h"
 #include "browserwidget.h"
@@ -57,6 +59,8 @@ namespace LeechCraft
 					<< 2
 					<< 2.4
 					<< 3;
+
+				Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 			
 				CustomWebPage *page = new CustomWebPage (this);
 				setPage (page);
@@ -201,9 +205,10 @@ namespace LeechCraft
 				QWebHitTestResult r = page ()->
 					mainFrame ()->hitTestContent (e->pos ());
 
-				Core::Instance ().GetPluginManager ()->
-					OnWebViewCtxMenu (this, e, r, menu.get (),
-							PluginManager::WVSStart);
+				IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+
+				emit webViewContextMenu (proxy, this, e, r,
+						menu.get (), WVSStart);
 			
 				if (!r.linkUrl ().isEmpty ())
 				{
@@ -272,9 +277,8 @@ namespace LeechCraft
 						menu->addAction (pageAction (QWebPage::InspectElement));
 				}
 			
-				Core::Instance ().GetPluginManager ()->
-					OnWebViewCtxMenu (this, e, r, menu.get (),
-							PluginManager::WVSAfterLink);
+				emit webViewContextMenu (proxy, this, e, r,
+						menu.get (), WVSAfterLink);
 			
 				if (!r.imageUrl ().isEmpty ())
 				{
@@ -293,9 +297,8 @@ namespace LeechCraft
 							this, SLOT (copyImageLocation ()))->setData (r.imageUrl ());
 				}
 
-				Core::Instance ().GetPluginManager ()->
-					OnWebViewCtxMenu (this, e, r, menu.get (),
-							PluginManager::WVSAfterImage);
+				emit webViewContextMenu (proxy, this, e, r,
+						menu.get (), WVSAfterImage);
 
 				if (!page ()->selectedText ().isEmpty ())
 				{
@@ -309,9 +312,8 @@ namespace LeechCraft
 							this, SLOT (searchSelectedText ()));
 				}
 
-				Core::Instance ().GetPluginManager ()->
-					OnWebViewCtxMenu (this, e, r, menu.get (),
-							PluginManager::WVSAfterSelectedText);
+				emit webViewContextMenu (proxy, this, e, r,
+						menu.get (), WVSAfterSelectedText);
 			
 				if (menu->isEmpty ())
 					menu.reset (page ()->createStandardContextMenu ());
@@ -326,7 +328,6 @@ namespace LeechCraft
 				menu->addSeparator ();
 				menu->addAction (Browser_->ViewSources_);
 				menu->addSeparator ();
-				qDebug () << Q_FUNC_INFO << pageAction (QWebPage::ReloadAndBypassCache);
 				menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
 				menu->addAction (Browser_->ReloadPeriodically_);
 				menu->addAction (Browser_->NotifyWhenFinished_);
@@ -335,9 +336,8 @@ namespace LeechCraft
 				menu->addSeparator ();
 				menu->addAction (Browser_->RecentlyClosedAction_);
 
-				Core::Instance ().GetPluginManager ()->
-					OnWebViewCtxMenu (this, e, r, menu.get (),
-							PluginManager::WVSAfterFinish);
+				emit webViewContextMenu (proxy, this, e, r,
+						menu.get (), WVSAfterFinish);
 			
 				if (!menu->isEmpty ())
 				{

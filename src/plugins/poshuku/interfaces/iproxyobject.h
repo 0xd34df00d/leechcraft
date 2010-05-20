@@ -33,7 +33,6 @@ namespace LeechCraft
 			{
 			public:
 				virtual QMenu* GetPluginsMenu () const = 0;
-				virtual QNetworkAccessManager* GetNetworkAccessManager () const = 0;
 			};
 		};
 	};

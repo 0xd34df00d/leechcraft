@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
 #include <QHash>
 #include <qwebpluginfactory.h>
+#include <interfaces/iinfo.h>
 #include "interfaces/iwebplugin.h"
 
 namespace LeechCraft
@@ -45,6 +46,9 @@ namespace LeechCraft
 				void refreshPlugins ();
 			private:
 				void Reload ();
+			signals:
+				void webPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+						QList<IWebPlugin*>&);
 			};
 		};
 	};

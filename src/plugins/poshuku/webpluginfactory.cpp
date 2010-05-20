@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "webpluginfactory.h"
+#include <plugininterface/defaulthookproxy.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -28,6 +29,8 @@ namespace LeechCraft
 			WebPluginFactory::WebPluginFactory (QObject *parent)
 			: QWebPluginFactory (parent)
 			{
+				Core::Instance ().GetPluginManager ()->
+						RegisterHookable (this);
 				Reload ();
 			}
 
@@ -78,9 +81,8 @@ namespace LeechCraft
 				Plugins_.clear ();
 				MIME2Plugin_.clear ();
 
-				if (Core::Instance ().GetPluginManager ()->
-						HandleWebPluginFactoryReload (Plugins_))
-					return;
+				emit webPluginFactoryReload (IHookProxy_ptr (new Util::DefaultHookProxy),
+						Plugins_);
 
 				Q_FOREACH (IWebPlugin *plugin, Plugins_)
 					Q_FOREACH (const QWebPluginFactory::MimeType mime,

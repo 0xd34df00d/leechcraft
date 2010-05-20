@@ -28,6 +28,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/pluginbase.h>
+#include <interfaces/poshukutypes.h>
 
 namespace LeechCraft
 {
@@ -74,9 +75,13 @@ namespace LeechCraft
 						QSet<QByteArray> GetPluginClasses () const;
 
 						void Init (IProxyObject*);
-						bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
-						bool HandleLoadFinished (QWebPage*, bool);
-						bool OnWebViewCtxMenu (QWebView*, QContextMenuEvent*,
+					public slots:
+						void loadFinished (LeechCraft::IHookProxy_ptr,
+								QWebPage*, bool);
+						void webPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+								QList<IWebPlugin*>&);
+						void webViewContextMenu (LeechCraft::IHookProxy_ptr,
+								QWebView*, QContextMenuEvent*,
 								const QWebHitTestResult&, QMenu*,
 								WebViewCtxMenuStage);
 					signals:

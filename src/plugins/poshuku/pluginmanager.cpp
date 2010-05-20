@@ -23,8 +23,11 @@
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
+#include <QMetaMethod>
 #include <QtDebug>
 #include "proxyobject.h"
+#include "core.h"
+#include "customwebpage.h"
 
 namespace LeechCraft
 {
@@ -38,6 +41,60 @@ namespace LeechCraft
 			{
 			}
 			
+			namespace
+			{
+#define LC_N(a) (QMetaObject::normalizedSignature(a))
+#define LC_TOSLOT(a) ('1' + QByteArray(a))
+#define LC_TOSIGNAL(a) ('2' + QByteArray(a))
+				void ConnectHookSignals (QObject *sender, QObject *receiver,
+						bool destSlot)
+				{
+					const QMetaObject *mo = sender->metaObject ();
+					for (int i = 0, size = mo->methodCount ();
+							i < size; ++i)
+					{
+						QMetaMethod method = mo->method (i);
+						if (method.methodType () != QMetaMethod::Signal)
+							continue;
+						if (method.parameterTypes ().size () == 0)
+							continue;
+						if (method.parameterTypes ().at (0) != "LeechCraft::IHookProxy_ptr")
+							continue;
+
+						if (receiver->metaObject ()->
+								indexOfMethod (LC_N (method.signature ())) == -1)
+						{
+							if (!destSlot)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "not found meta method for"
+										<< method.signature ()
+										<< "in receiver object"
+										<< receiver;
+							}
+							continue;
+						}
+
+						if (!QObject::connect (sender,
+								LC_TOSIGNAL (method.signature ()),
+								receiver,
+								destSlot ? LC_TOSLOT (method.signature ()) : LC_TOSIGNAL (method.signature ()),
+								Qt::UniqueConnection))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "connect for"
+									<< sender
+									<< "->"
+									<< receiver
+									<< ":"
+									<< method.signature ()
+									<< "failed";
+						}
+					}
+				}
+#undef LC_N
+			};
+
 			void PluginManager::AddPlugin (QObject *plugin)
 			{
 				PluginBase_ptr base = qobject_cast<PluginBase_ptr> (plugin);
@@ -50,8 +107,15 @@ namespace LeechCraft
 				}
 				base->Init (ProxyObject_.get ());
 				Plugins_.push_back (base);
+
+				ConnectHookSignals (this, plugin, true);
 			}
 			
+			void PluginManager::RegisterHookable (QObject *object)
+			{
+				ConnectHookSignals (object, this, false);
+			}
+
 #define SEQ_TRAVERSER(z,i,array) \
 				BOOST_PP_COMMA_IF(i) BOOST_PP_SEQ_ELEM(i,array) param ## i
 			
@@ -94,12 +158,8 @@ namespace LeechCraft
 				}
 			
 			VE (Init, (IProxyObject*));
-			BE (HandleWebPluginFactoryReload, (QList<IWebPlugin*>&));
 			BE (HandleBeginWebPageConstruction, (QWebPage*));
 			BE (HandleEndWebPageConstruction, (QWebPage*));
-			BE (HandleContentsChanged, (QWebPage*));
-			BE (HandleDatabaseQuotaExceeded, (QWebPage*)(QWebFrame*)(QString));
-			BE (HandleDownloadRequested, (QWebPage*)(const QNetworkRequest&));
 			CE (HandleExtension,
 					(QWebPage*)(QWebPage::Extension)(const QWebPage::ExtensionOption*)(QWebPage::ExtensionReturn*),
 					bool);
@@ -108,7 +168,6 @@ namespace LeechCraft
 			BE (HandleJavaScriptWindowObjectCleared, (QWebPage*)(QWebFrame*));
 			BE (HandleLinkClicked, (QWebPage*)(const QUrl&));
 			BE (HandleLinkHovered, (QWebPage*)(const QString&)(const QString&)(const QString&));
-			BE (HandleLoadFinished, (QWebPage*)(bool));
 			BE (HandleLoadProgress, (QWebPage*)(int));
 			BE (HandleLoadStarted, (QWebPage*));
 			BE (HandleMenuBarVisibilityChangeRequested, (QWebPage*)(bool));
@@ -137,9 +196,6 @@ namespace LeechCraft
 			BE (OnJavaScriptConsoleMessage, (QWebPage*)(const QString&)(int)(const QString&));
 			CE (OnJavaScriptPrompt, (QWebPage*)(QWebFrame*)(const QString&)(const QString&)(QString*),
 					bool);
-			CE (OnUserAgentForUrl, (const QWebPage*)(const QUrl&), QString);
-			BE (OnWebViewCtxMenu,
-					(QWebView*)(QContextMenuEvent*)(const QWebHitTestResult&)(QMenu*)(WebViewCtxMenuStage));
 		};
 	};
 };

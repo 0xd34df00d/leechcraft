@@ -20,7 +20,9 @@
 #define PLUGINS_POSHUKU_PLUGINMANAGER_H
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <interfaces/iinfo.h>
 #include "interfaces/pluginbase.h"
+#include "interfaces/poshukutypes.h"
 
 namespace LeechCraft
 {
@@ -29,6 +31,7 @@ namespace LeechCraft
 		namespace Poshuku
 		{
 			class ProxyObject;
+			class Core;
 
 			class PluginManager : public QObject
 								, public PluginBase
@@ -43,13 +46,27 @@ namespace LeechCraft
 
 				void AddPlugin (QObject*);
 
+				void RegisterHookable (QObject*);
+			signals:
+				void contentsChanged (LeechCraft::IHookProxy_ptr, QWebPage*);
+				void databaseQuotaExceeded (LeechCraft::IHookProxy_ptr,
+						QWebPage*, QWebFrame*, QString);
+				void downloadRequested (LeechCraft::IHookProxy_ptr,
+						QWebPage*, QNetworkRequest*);
+				void loadFinished (LeechCraft::IHookProxy_ptr,
+						QWebPage*, bool*);
+				void userAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
+						const QUrl&, const QWebPage*, QString*);
+				void webViewContextMenu (LeechCraft::IHookProxy_ptr,
+						QWebView*, QContextMenuEvent*,
+						const QWebHitTestResult&, QMenu*,
+						WebViewCtxMenuStage);
+				void webPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+						QList<IWebPlugin*>&);
+			public:
 				void Init (IProxyObject*);
-				bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
 				bool HandleBeginWebPageConstruction (QWebPage*);
 				bool HandleEndWebPageConstruction (QWebPage*);
-				bool HandleContentsChanged (QWebPage*);
-				bool HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString);
-				bool HandleDownloadRequested (QWebPage*, const QNetworkRequest&);
 				bool HandleExtension (QWebPage*, QWebPage::Extension,
 						const QWebPage::ExtensionOption*, QWebPage::ExtensionReturn*);
 				bool HandleFrameCreated (QWebPage*, QWebFrame*);
@@ -58,7 +75,6 @@ namespace LeechCraft
 				bool HandleLinkClicked (QWebPage*, const QUrl&);
 				bool HandleLinkHovered (QWebPage*, const QString&,
 						const QString&, const QString&);
-				bool HandleLoadFinished (QWebPage*, bool);
 				bool HandleLoadProgress (QWebPage*, int);
 				bool HandleLoadStarted (QWebPage*);
 				bool HandleMenuBarVisibilityChangeRequested (QWebPage*, bool);
@@ -88,9 +104,6 @@ namespace LeechCraft
 				bool OnJavaScriptPrompt (QWebPage*, QWebFrame*, const QString&,
 						const QString&, QString*);
 				QString OnUserAgentForUrl (const QWebPage*, const QUrl&);
-				bool OnWebViewCtxMenu (QWebView*, QContextMenuEvent*,
-						const QWebHitTestResult&, QMenu*,
-						WebViewCtxMenuStage);
 			};
 		};
 	};

@@ -20,6 +20,8 @@
 #define PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
 #include <qwebview.h>
 #include <interfaces/structures.h>
+#include <interfaces/iinfo.h>
+#include "interfaces/poshukutypes.h"
 #include "pageformsdata.h"
 
 namespace LeechCraft
@@ -86,6 +88,12 @@ namespace LeechCraft
 				void closeRequested ();
 				void storeFormData (const PageFormsData_t&);
 				void invalidateSettings ();
+
+				// Hook support signals
+				void webViewContextMenu (LeechCraft::IHookProxy_ptr,
+						QWebView*, QContextMenuEvent*,
+						const QWebHitTestResult&, QMenu*,
+						WebViewCtxMenuStage);
 			};
 		};
 	};

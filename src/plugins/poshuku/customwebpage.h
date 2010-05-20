@@ -22,6 +22,7 @@
 #include <qwebpage.h>
 #include <QUrl>
 #include <interfaces/structures.h>
+#include <interfaces/iinfo.h>
 #include "pageformsdata.h"
 
 namespace LeechCraft
@@ -105,6 +106,15 @@ namespace LeechCraft
 				void storeFormData (const PageFormsData_t&);
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 				void delayedFillForms (QWebFrame*);
+
+				// Hook support signals
+				void contentsChanged (LeechCraft::IHookProxy_ptr, QWebPage*);
+				void databaseQuotaExceeded (LeechCraft::IHookProxy_ptr,
+						QWebPage*, QWebFrame*, QString);
+				void downloadRequested (LeechCraft::IHookProxy_ptr,
+						QWebPage*, QNetworkRequest*);
+				void loadFinished (LeechCraft::IHookProxy_ptr,
+						QWebPage*, bool*);
 			};
 		};
 	};

@@ -76,10 +76,12 @@ namespace LeechCraft
 						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 						void Init (IProxyObject*);
-						QString OnUserAgentForUrl (const QWebPage*, const QUrl&);
 
 						void Save () const;
 						const QMap<QString, QString>& GetBrowser2ID () const;
+					public slots:
+						void userAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
+								const QUrl&, const QWebPage*, QString*);
 					};
 				};
 			};

@@ -63,23 +63,6 @@ namespace LeechCraft
 				{
 				}
 
-				/** @brief Reload of the web plugin factory.
-				 *
-				 * A plugin can insert itself into the list of the
-				 * plugins here. It's not recommended to inspect this
-				 * list of the plugins as the order of plugins is
-				 * not determined.
-				 *
-				 * @param plugins The list with web plugins.
-				 * @return True if the reload and plugin processing
-				 * should be stopped, false otherwise.
-				 */
-				virtual bool HandleWebPluginFactoryReload (QList<IWebPlugin*>& plugins)
-				{
-					Q_UNUSED (plugins);
-					return false;
-				}
-
 				/** @brief Begin of web page construction.
 				 *
 				 * This function is called just in the beginning of
@@ -109,31 +92,6 @@ namespace LeechCraft
 				virtual bool HandleEndWebPageConstruction (QWebPage *webpage)
 				{
 					Q_UNUSED (webpage);
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::contentsChanged() signal.
-				 */
-				virtual bool HandleContentsChanged (QWebPage*)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::databaseQuotaExceeded() signal.
-				 */
-				virtual bool HandleDatabaseQuotaExceeded (QWebPage*, QWebFrame*, QString)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::downloadRequested() signal.
-				 */
-				virtual bool HandleDownloadRequested (QWebPage*,
-						const QNetworkRequest&)
-				{
 					return false;
 				}
 
@@ -183,14 +141,6 @@ namespace LeechCraft
 				 */
 				virtual bool HandleLinkHovered (QWebPage*,
 						const QString&, const QString&, const QString&)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::loadFinished() signal.
-				 */
-				virtual bool HandleLoadFinished (QWebPage*, bool)
 				{
 					return false;
 				}
@@ -388,63 +338,6 @@ namespace LeechCraft
 						const QString&, QString*)
 				{
 					throw std::runtime_error ("We don't handle it by default.");
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::userAgentForUrl().
-				 */
-				virtual QString OnUserAgentForUrl (const QWebPage*, const QUrl&)
-				{
-					throw std::runtime_error ("We don't handle it by default.");
-				}
-
-				/** Enumartion describing the part of menu that's being
-				 * constructed inside QWebView's subclass'
-				 * contextMenuEvent.
-				 */
-				enum WebViewCtxMenuStage
-				{
-					/// Just the beginning of menu construction.
-					WVSStart,
-					/// Stage related to clicking on a hyperlink finished.
-					WVSAfterLink,
-					/// Stage related to clicking on an image finished.
-					WVSAfterImage,
-					/// Stage related to clicking with having some
-					/// selected text finished.
-					WVSAfterSelectedText,
-					/// The standard set of actions was embedded, This
-					/// stage is just before executing the menu.
-					WVSAfterFinish
-				};
-
-				/** Called inside QWebView's subclass' context menu
-				 * event on different stages with different values
-				 * of stage. All stages are passed regardless whether
-				 * their ocnditions where met like selected text is
-				 * present for WVSAfterSelectedText stage.
-				 *
-				 * @param[in/out] view The QWebView where all this
-				 * happens.
-				 * @param[in] e The context menu event.
-				 * @param[in] r The result of performing
-				 * QWebFrame::hitTestContent(). This one is used
-				 * through the whole procedure of building the menu.
-				 * @param[in/out] menu The menu that is being constructed.
-				 * @param[in] stage Curretn stage.
-				 */
-				virtual bool OnWebViewCtxMenu (QWebView *view,
-						QContextMenuEvent *e,
-						const QWebHitTestResult& r,
-						QMenu *menu,
-						WebViewCtxMenuStage stage)
-				{
-					Q_UNUSED (view);
-					Q_UNUSED (e);
-					Q_UNUSED (r);
-					Q_UNUSED (menu);
-					Q_UNUSED (stage);
-					return false;
 				}
 			};
 

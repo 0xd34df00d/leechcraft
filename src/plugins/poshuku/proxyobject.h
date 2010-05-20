@@ -34,7 +34,6 @@ namespace LeechCraft
 				Q_INTERFACES (LeechCraft::Plugins::Poshuku::IProxyObject);
 			public:
 				QMenu* GetPluginsMenu () const;
-				QNetworkAccessManager* GetNetworkAccessManager () const;
 			};
 		};
 	};

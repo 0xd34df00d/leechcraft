@@ -27,6 +27,7 @@
 #include <QSysInfo>
 #include <qwebhistory.h>
 #include <plugininterface/util.h>
+#include <plugininterface/defaulthookproxy.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
@@ -48,6 +49,8 @@ namespace LeechCraft
 			, JSProxy_ (new JSProxy (this))
 			, ExternalProxy_ (new ExternalProxy (this))
 			{
+				Core::Instance ().GetPluginManager ()->RegisterHookable (this);
+
 				if (Core::Instance ().GetPluginManager ()->
 						HandleBeginWebPageConstruction (this))
 					return;
@@ -185,7 +188,7 @@ namespace LeechCraft
 						<< tr ("make sure that LeechCraft is allowed to access the Internet and particularly web sites;")
 						<< tr ("contact your system/network administrator, especially if you can't load any single page.");
 				Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError] << tr ("check if the URL is written correctly;")
-						<< tr ("go to web site's <a href=\"{schema}://{host}/\">main page</a> and finding the required page there.");
+						<< tr ("go to web site's <a href=\"{schema}://{host}/\">main page</a> and find the required page from there.");
 
 				Error2Suggestions_ [Http] [404] = Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError];
 			}
@@ -276,25 +279,25 @@ namespace LeechCraft
 
 			void CustomWebPage::handleContentsChanged ()
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleContentsChanged (this))
-					return;
+				emit contentsChanged (IHookProxy_ptr (new Util::DefaultHookProxy),
+						this);
 			}
 			
 			void CustomWebPage::handleDatabaseQuotaExceeded (QWebFrame *frame, QString string)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleDatabaseQuotaExceeded (this, frame, string))
-					return;
+				emit databaseQuotaExceeded (IHookProxy_ptr (new Util::DefaultHookProxy),
+						this, frame, string);
 			}
 			
-			void CustomWebPage::handleDownloadRequested (const QNetworkRequest& request)
+			void CustomWebPage::handleDownloadRequested (const QNetworkRequest& other)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleDownloadRequested (this, request))
+				QNetworkRequest request = other;
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit downloadRequested (proxy, this, &request);
+				if (proxy->IsCancelled ())
 					return;
 			
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (request.url (),
+				LeechCraft::DownloadEntity e = Util::MakeEntity (request.url (),
 						QString (),
 						LeechCraft::FromUserInitiated);
 				emit gotEntity (e);
@@ -342,8 +345,9 @@ namespace LeechCraft
 			
 			void CustomWebPage::handleLoadFinished (bool ok)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleLoadFinished (this, ok))
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				emit loadFinished (proxy, this, &ok);
+				if (proxy->IsCancelled ())
 					return;
 			
 				emit delayedFillForms (mainFrame ());

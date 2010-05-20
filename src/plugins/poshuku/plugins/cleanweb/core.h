@@ -26,6 +26,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/pluginbase.h>
+#include <interfaces/poshukutypes.h>
 #include "filter.h"
 
 class QNetworkRequest;
@@ -97,7 +98,7 @@ namespace LeechCraft
 								QIODevice**);
 						void HandleLoadFinished (QWebPage*);
 						void HandleContextMenu (const QWebHitTestResult&,
-								QMenu*, LeechCraft::Plugins::Poshuku::PluginBase::WebViewCtxMenuStage);
+								QMenu*, WebViewCtxMenuStage);
 						bool ShouldReject (const QNetworkRequest&, QString*) const;
 
 						UserFiltersModel* GetUserFiltersModel () const;

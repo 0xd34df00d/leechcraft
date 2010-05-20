@@ -43,6 +43,7 @@
 #include <QtDebug>
 #include <QMainWindow>
 #include <plugininterface/util.h>
+#include <plugininterface/defaulthookproxy.h>
 #include <interfaces/ihaveshortcuts.h>
 #include "browserwidget.h"
 #include "customwebview.h"
@@ -91,6 +92,7 @@ namespace LeechCraft
 				settings.endArray ();
 
 				PluginManager_.reset (new PluginManager (this));
+				PluginManager_->RegisterHookable (this);
 				URLCompletionModel_.reset (new URLCompletionModel (this));
 			
 				PluginsMenu_ = new QMenu (tr ("Plugins"));
@@ -431,183 +433,177 @@ namespace LeechCraft
 
 			QString Core::GetUserAgent (const QUrl& url, const QWebPage *page) const
 			{
-				try
-				{
-					return GetPluginManager ()->OnUserAgentForUrl (page, url);
-				}
-				catch (...)
-				{
-					if (url.host ().contains (".google."))
-						return QString ();
-					else
-					{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				QString result;
+				emit userAgentForUrlRequested (proxy, url, page, &result);
+				if (proxy->IsCancelled ())
+					return result;
+
 #if defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
-						QString winver = "unknown Windows";
-						switch (QSysInfo::windowsVersion ())
-						{
-							case QSysInfo::WV_32s:
-								winver = "Windows 3.1 with Win32s";
-								break;
-							case QSysInfo::WV_95:
-								winver = "Windows 95";
-								break;
-							case QSysInfo::WV_98:
-								winver = "Windows 98";
-								break;
-							case QSysInfo::WV_Me:
-								winver = "Windows ME";
-								break;
-							case QSysInfo::WV_NT:
-								winver = "Windows NT";
-								break;
-							case QSysInfo::WV_2000:
-								winver = "Windows 2000";
-								break;
-							case QSysInfo::WV_XP:
-								winver = "Windows XP";
-								break;
-							case QSysInfo::WV_2003:
-								winver = "Windows 2003";
-								break;
-							case QSysInfo::WV_VISTA:
-								winver = "Windows Vista";
-								break;
-							case QSysInfo::WV_WINDOWS7:
-								winver = "Windows 7";
-								break;
-							case QSysInfo::WV_CE:
-								winver = "Windows CE";
-								break;
-							case QSysInfo::WV_CENET:
-								winver = "Windows CE .NET";
-								break;
-							case QSysInfo::WV_CE_5:
-								winver = "Windows CE 5.x";
-								break;
-							case QSysInfo::WV_CE_6:
-								winver = "Windows CE 6.x";
-								break;
-							case QSysInfo::WV_DOS_based:
-								winver = "unknown DOS-based";
-								break;
-							case QSysInfo::WV_NT_based:
-								winver = "unkown NT-based";
-								break;
-							case QSysInfo::WV_CE_based:
-								winver = "unknown CE-based";
-								break;
-						}
+				QString winver = "unknown Windows";
+				switch (QSysInfo::windowsVersion ())
+				{
+					case QSysInfo::WV_32s:
+						winver = "Windows 3.1 with Win32s";
+						break;
+					case QSysInfo::WV_95:
+						winver = "Windows 95";
+						break;
+					case QSysInfo::WV_98:
+						winver = "Windows 98";
+						break;
+					case QSysInfo::WV_Me:
+						winver = "Windows ME";
+						break;
+					case QSysInfo::WV_NT:
+						winver = "Windows NT";
+						break;
+					case QSysInfo::WV_2000:
+						winver = "Windows 2000";
+						break;
+					case QSysInfo::WV_XP:
+						winver = "Windows XP";
+						break;
+					case QSysInfo::WV_2003:
+						winver = "Windows 2003";
+						break;
+					case QSysInfo::WV_VISTA:
+						winver = "Windows Vista";
+						break;
+					case QSysInfo::WV_WINDOWS7:
+						winver = "Windows 7";
+						break;
+					case QSysInfo::WV_CE:
+						winver = "Windows CE";
+						break;
+					case QSysInfo::WV_CENET:
+						winver = "Windows CE .NET";
+						break;
+					case QSysInfo::WV_CE_5:
+						winver = "Windows CE 5.x";
+						break;
+					case QSysInfo::WV_CE_6:
+						winver = "Windows CE 6.x";
+						break;
+					case QSysInfo::WV_DOS_based:
+						winver = "unknown DOS-based";
+						break;
+					case QSysInfo::WV_NT_based:
+						winver = "unkown NT-based";
+						break;
+					case QSysInfo::WV_CE_based:
+						winver = "unknown CE-based";
+						break;
+				}
 #elif defined (Q_OS_DARWIN)
-						QString macver;
-						switch (QSysInfo::MacintoshVersion)
-						{
-							case QSysInfo::MV_CHEETAH:
-								macver = "Cheetah";
-								break;
-							case QSysInfo::MV_PUMA:
-								macver = "Puma";
-								break;
-							case QSysInfo::MV_JAGUAR:
-								macver = "Jaguar";
-								break;
-							case QSysInfo::MV_PANTHER:
-								macver = "Panther";
-								break;
-							case QSysInfo::MV_TIGER:
-								macver = "Tiger";
-								break;
-							case QSysInfo::MV_LEOPARD:
-								macver = "Leopard";
-								break;
-							case QSysInfo::MV_SNOWLEOPARD:
-								macver = "Snow Leopard";
-								break;
-							default:
-								macver = "unknown Mac OS ";
-								break;
-						}
+				QString macver;
+				switch (QSysInfo::MacintoshVersion)
+				{
+					case QSysInfo::MV_CHEETAH:
+						macver = "Cheetah";
+						break;
+					case QSysInfo::MV_PUMA:
+						macver = "Puma";
+						break;
+					case QSysInfo::MV_JAGUAR:
+						macver = "Jaguar";
+						break;
+					case QSysInfo::MV_PANTHER:
+						macver = "Panther";
+						break;
+					case QSysInfo::MV_TIGER:
+						macver = "Tiger";
+						break;
+					case QSysInfo::MV_LEOPARD:
+						macver = "Leopard";
+						break;
+					case QSysInfo::MV_SNOWLEOPARD:
+						macver = "Snow Leopard";
+						break;
+					default:
+						macver = "unknown Mac OS ";
+						break;
+				}
 #endif
-						return QString ("LeechCraft (%1; %2; %3; %4) (LeechCraft/Poshuku %5; WebKit %6/%7)")
-							// %1 platform
+				return QString ("LeechCraft (%1; %2; %3; %4) (LeechCraft/Poshuku %5; WebKit %6/%7)")
+					// %1 platform
 #ifdef Q_WS_MAC
-							.arg ("Macintosh")
+					.arg ("Macintosh")
 #elif defined (Q_WS_WIN)
-							.arg ("Windows")
+					.arg ("Windows")
 #elif defined (Q_WS_X11)
-							.arg ("X11")
+					.arg ("X11")
 #elif defined (Q_WS_QWS)
-							.arg ("QWS")
+					.arg ("QWS")
 #else
-							.arg ("compatible")
+					.arg ("compatible")
 #endif
-							// %2 security
-							.arg (QSslSocket::supportsSsl () ? "U" : "N")
-							// %3 subplatform
+					// %2 security
+					.arg (QSslSocket::supportsSsl () ? "U" : "N")
+					// %3 subplatform
 #ifdef Q_OS_AIX
-							.arg ("AIX")
+					.arg ("AIX")
 #elif defined (Q_OS_BSD4)
-							.arg ("BSD 4.4")
+					.arg ("BSD 4.4")
 #elif defined (Q_OS_BSDI)
-							.arg ("BSD/OS")
+					.arg ("BSD/OS")
 #elif defined (Q_OS_CYGWIN)
-							.arg ("Cygwin")
+					.arg ("Cygwin")
 #elif defined (Q_OS_DARWIN)
-							.arg (macver)
+					.arg (macver)
 #elif defined (Q_OS_DGUX)
-							.arg ("DG/UX")
+					.arg ("DG/UX")
 #elif defined (Q_OS_DYNIX)
-							.arg ("DYNIX/ptx")
+					.arg ("DYNIX/ptx")
 #elif defined (Q_OS_FREEBSD)
-							.arg ("FreeBSD")
+					.arg ("FreeBSD")
 #elif defined (Q_OS_HPUX)
-							.arg ("HP-UX")
+					.arg ("HP-UX")
 #elif defined (Q_OS_HURD)
-							.arg ("GNU Hurd")
+					.arg ("GNU Hurd")
 #elif defined (Q_OS_IRIX)
-							.arg ("IRIX")
+					.arg ("IRIX")
 #elif defined (Q_OS_LINUX)
-							.arg ("Linux")
+					.arg ("Linux")
 #elif defined (Q_OS_LYNX)
-							.arg ("LynxOS")
+					.arg ("LynxOS")
 #elif defined (Q_OS_NETBSD)
-							.arg ("NetBSD")
+					.arg ("NetBSD")
 #elif defined (Q_OS_OPENBSD)
-							.arg ("OpenBSD")
+					.arg ("OpenBSD")
 #elif defined (Q_OS_OS2)
-							.arg ("OS/2")
+					.arg ("OS/2")
 #elif defined (Q_OS_OS2EMX)
-							.arg ("OS/2 XFree86")
+					.arg ("OS/2 XFree86")
 #elif defined (Q_OS_OSF)
-							.arg ("HP Tru64 UNIX")
+					.arg ("HP Tru64 UNIX")
 #elif defined (Q_OS_QNX6)
-							.arg ("QNX RTP 6.1")
+					.arg ("QNX RTP 6.1")
 #elif defined (Q_OS_QNX)
-							.arg ("QNX")
+					.arg ("QNX")
 #elif defined (Q_OS_RELIANT)
-							.arg ("Reliant UNIX")
+					.arg ("Reliant UNIX")
 #elif defined (Q_OS_SCO)
-							.arg ("SCO OpenServer 5")
+					.arg ("SCO OpenServer 5")
 #elif defined (Q_OS_SOLARIS)
-							.arg ("Sun Solaris")
+					.arg ("Sun Solaris")
 #elif defined (Q_OS_ULTRIX)
-							.arg ("DEC Ultrix")
+					.arg ("DEC Ultrix")
 #elif defined (Q_OS_UNIXWARE)
-							.arg ("UnixWare 7 or Open UNIX 8")
+					.arg ("UnixWare 7 or Open UNIX 8")
 #elif defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
-							.arg (winver)
+					.arg (winver)
 #elif defined (Q_OS_UNIX)
-							.arg ("any UNIX BSD/SYSV")
+					.arg ("any UNIX BSD/SYSV")
 #else
 #warning "Unknown OS"
-							.arg ("unkown subplatform")
+					.arg ("unkown subplatform")
 #endif
-							// %4 locale
-							.arg (QLocale::system ().name ())
-							.arg (LEECHCRAFT_VERSION)
-							.arg (QT_VERSION_STR)
-							.arg (qVersion ());
-					}
-				}
+					// %4 locale
+					.arg (QLocale::system ().name ())
+					.arg (LEECHCRAFT_VERSION)
+					.arg (QT_VERSION_STR)
+					.arg (qVersion ());
 			}
 			
 			void Core::Unregister (BrowserWidget *widget)

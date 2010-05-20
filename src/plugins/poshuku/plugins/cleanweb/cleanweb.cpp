@@ -146,24 +146,23 @@ void CleanWeb::Init (LeechCraft::Plugins::Poshuku::IProxyObject*)
 {
 }
 
-bool CleanWeb::HandleWebPluginFactoryReload (QList<LeechCraft::Plugins::Poshuku::IWebPlugin*>& plugins)
+void CleanWeb::webPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+		QList<LeechCraft::Plugins::Poshuku::IWebPlugin*>& plugins)
 {
 	plugins << Core::Instance ().GetFlashOnClick ();
-	return false;
 }
 
-bool CleanWeb::HandleLoadFinished (QWebPage *page, bool)
+void CleanWeb::loadFinished (IHookProxy_ptr, QWebPage *page, bool)
 {
 	Core::Instance ().HandleLoadFinished (page);
-	return false;
 }
 
-bool CleanWeb::OnWebViewCtxMenu (QWebView*, QContextMenuEvent*,
+void CleanWeb::webViewContextMenu (IHookProxy_ptr,
+		QWebView*, QContextMenuEvent*,
 		const QWebHitTestResult& r, QMenu *menu,
 		WebViewCtxMenuStage stage)
 {
 	Core::Instance ().HandleContextMenu (r, menu, stage);
-	return false;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, CleanWeb);
