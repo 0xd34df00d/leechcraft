@@ -73,22 +73,22 @@ LeechCraft::Core::Core ()
 , LocalSocketHandler_ (new LocalSocketHandler)
 {
 	connect (LocalSocketHandler_.get (),
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,
-			SLOT (queueEntity (const LeechCraft::DownloadEntity&)));
+			SLOT (queueEntity (const LeechCraft::Entity&)));
 	connect (NetworkAccessManager_.get (),
 			SIGNAL (error (const QString&)),
 			this,
 			SIGNAL (error (const QString&)));
 
 	connect (DirectoryWatcher_.get (),
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,
-			SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
+			SLOT (handleGotEntity (LeechCraft::Entity)));
 	connect (ClipboardWatcher_.get (),
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,
-			SLOT (handleGotEntity (LeechCraft::DownloadEntity)));
+			SLOT (handleGotEntity (LeechCraft::Entity)));
 
 	StorageBackend_->Prepare ();
 
@@ -239,14 +239,14 @@ void LeechCraft::Core::DelayedInit ()
 	}
 
 	disconnect (LocalSocketHandler_.get (),
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,
-			SLOT (queueEntity (const LeechCraft::DownloadEntity&)));
+			SLOT (queueEntity (const LeechCraft::Entity&)));
 
 	connect (LocalSocketHandler_.get (),
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,
-			SLOT (handleGotEntity (const LeechCraft::DownloadEntity&)));
+			SLOT (handleGotEntity (const LeechCraft::Entity&)));
 
 	QTimer::singleShot (1000,
 			LocalSocketHandler_.get (),
@@ -269,7 +269,7 @@ void LeechCraft::Core::TryToAddJob (QString name)
 			return;
 	}
 
-	DownloadEntity e;
+	Entity e;
 	if (QFile::exists (name))
 		e.Entity_ = QUrl::fromLocalFile (name);
 	else
@@ -429,7 +429,7 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 
 			Q_FOREACH (QString format, event->mimeData ()->formats ())
 			{
-				DownloadEntity e = Util::MakeEntity (event->
+				Entity e = Util::MakeEntity (event->
 							mimeData ()->data (format),
 						QString (),
 						LeechCraft::FromUserInitiated,
@@ -450,7 +450,7 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 
 			Q_FOREACH (QString format, event->mimeData ()->formats ())
 			{
-				DownloadEntity e = Util::MakeEntity (event->
+				Entity e = Util::MakeEntity (event->
 							mimeData ()->data (format),
 						QString (),
 						LeechCraft::FromUserInitiated,
@@ -525,7 +525,7 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 	}
 }
 
-bool LeechCraft::Core::CouldHandle (LeechCraft::DownloadEntity e) const
+bool LeechCraft::Core::CouldHandle (LeechCraft::Entity e) const
 {
 	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
 	Q_FOREACH (HookSignature<HIDCouldHandle>::Signature_t f,
@@ -551,7 +551,7 @@ bool LeechCraft::Core::CouldHandle (LeechCraft::DownloadEntity e) const
 namespace
 {
 	bool DoDownload (IDownload *sd,
-			LeechCraft::DownloadEntity p,
+			LeechCraft::Entity p,
 			int *id,
 			QObject **pr)
 	{
@@ -593,7 +593,7 @@ namespace
 	}
 
 	bool DoHandle (IEntityHandler *sh,
-			LeechCraft::DownloadEntity p)
+			LeechCraft::Entity p)
 	{
 		try
 		{
@@ -616,7 +616,7 @@ namespace
 	}
 };
 
-QList<QObject*> LeechCraft::Core::GetObjects (const DownloadEntity& p,
+QList<QObject*> LeechCraft::Core::GetObjects (const Entity& p,
 		LeechCraft::Core::ObjectType type, bool detectOnly) const
 {
 	QObjectList plugins;
@@ -678,7 +678,7 @@ QList<QObject*> LeechCraft::Core::GetObjects (const DownloadEntity& p,
 	return result;
 }
 
-bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
+bool LeechCraft::Core::handleGotEntity (Entity p, int *id, QObject **pr)
 {
 	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
 	Q_FOREACH (HookSignature<HIDGotEntity>::Signature_t f,
@@ -802,19 +802,19 @@ bool LeechCraft::Core::handleGotEntity (DownloadEntity p, int *id, QObject **pr)
 	return true;
 }
 
-void LeechCraft::Core::handleCouldHandle (const LeechCraft::DownloadEntity& e, bool *could)
+void LeechCraft::Core::handleCouldHandle (const LeechCraft::Entity& e, bool *could)
 {
 	*could = CouldHandle (e);
 }
 
-void LeechCraft::Core::queueEntity (LeechCraft::DownloadEntity e)
+void LeechCraft::Core::queueEntity (LeechCraft::Entity e)
 {
 	QueuedEntities_ << e;
 }
 
 void LeechCraft::Core::pullEntityQueue ()
 {
-	Q_FOREACH (DownloadEntity e, QueuedEntities_)
+	Q_FOREACH (Entity e, QueuedEntities_)
 		handleGotEntity (e);
 	QueuedEntities_.clear ();
 }
@@ -862,7 +862,7 @@ void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString&
 	ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
 }
 
-void LeechCraft::Core::HandleNotify (const LeechCraft::DownloadEntity& entity)
+void LeechCraft::Core::HandleNotify (const LeechCraft::Entity& entity)
 {
 	bool show = XmlSettingsManager::Instance ()->
 		property ("ShowFinishedDownloadMessages").toBool ();
@@ -917,30 +917,30 @@ void LeechCraft::Core::InitDynamicSignals (QObject *plugin)
 	const QMetaObject *qmo = plugin->metaObject ();
 
 	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"couldHandle (const LeechCraft::DownloadEntity&, bool*)"
+					"couldHandle (const LeechCraft::Entity&, bool*)"
 					).constData ()) != -1)
 		connect (plugin,
-				SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 				this,
-				SLOT (handleCouldHandle (const LeechCraft::DownloadEntity&, bool*)));
+				SLOT (handleCouldHandle (const LeechCraft::Entity&, bool*)));
 
 	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"gotEntity (const LeechCraft::DownloadEntity&)"
+					"gotEntity (const LeechCraft::Entity&)"
 					).constData ()) != -1)
 		connect (plugin,
-				SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
-				SLOT (handleGotEntity (LeechCraft::DownloadEntity)),
+				SLOT (handleGotEntity (LeechCraft::Entity)),
 				Qt::QueuedConnection);
 
 	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**)"
+					"delegateEntity (const LeechCraft::Entity&, int*, QObject**)"
 					).constData ()) != -1)
 		connect (plugin,
-				SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**)),
 				this,
-				SLOT (handleGotEntity (LeechCraft::DownloadEntity,
+				SLOT (handleGotEntity (LeechCraft::Entity,
 						int*, QObject**)));
 
 	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (

@@ -75,13 +75,13 @@ namespace LeechCraft
 			{
 			}
 
-			bool Plugin::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return e.Mime_ == "x-leechcraft/notification" &&
 						e.Additional_ ["Priority"].toInt () != PLog_;
 			}
 
-			void Plugin::Handle (LeechCraft::DownloadEntity e)
+			void Plugin::Handle (LeechCraft::Entity e)
 			{
 				Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
 				if (prio == PLog_)

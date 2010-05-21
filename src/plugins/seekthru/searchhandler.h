@@ -94,9 +94,9 @@ namespace LeechCraft
 			private:
 				void HandleProvider (QObject*);
 			signals:
-				void delegateEntity (const LeechCraft::DownloadEntity&,
+				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void error (const QString&);
 				void warning (const QString&);
 			};

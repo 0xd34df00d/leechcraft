@@ -165,7 +165,7 @@ namespace LeechCraft
 				Providers_ [feature] = provider;
 			}
 			
-			bool Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			bool Core::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				if (!e.Entity_.canConvert<QUrl> ())
 					return false;
@@ -184,7 +184,7 @@ namespace LeechCraft
 			void Core::Add (const QUrl& url)
 			{
 				QString name = LeechCraft::Util::GetTemporaryName ();
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (url,
+				LeechCraft::Entity e = LeechCraft::Util::MakeEntity (url,
 						name,
 						LeechCraft::Internal |
 							LeechCraft::DoNotSaveInHistory |
@@ -260,15 +260,15 @@ namespace LeechCraft
 					{
 						SearchHandler_ptr sh (new SearchHandler (d));
 						connect (sh.get (),
-								SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+								SIGNAL (delegateEntity (const LeechCraft::Entity&,
 										int*, QObject**)),
 								this,
-								SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+								SIGNAL (delegateEntity (const LeechCraft::Entity&,
 										int*, QObject**)));
 						connect (sh.get (),
-								SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+								SIGNAL (gotEntity (const LeechCraft::Entity&)),
 								this,
-								SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+								SIGNAL (gotEntity (const LeechCraft::Entity&)));
 						connect (sh.get (),
 								SIGNAL (error (const QString&)),
 								this,

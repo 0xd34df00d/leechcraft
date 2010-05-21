@@ -48,8 +48,8 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 			};
 		};
 	};

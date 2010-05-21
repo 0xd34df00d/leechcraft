@@ -111,7 +111,7 @@ namespace LeechCraft
 									Pools_ [type].SaveState ());
 			}
 
-			bool Core::CouldHandle (const LeechCraft::DownloadEntity& e)
+			bool Core::CouldHandle (const LeechCraft::Entity& e)
 			{
 				if (!e.Entity_.canConvert<QUrl> () ||
 						!Initialized_)
@@ -148,7 +148,7 @@ namespace LeechCraft
 				return true;
 			}
 
-			void Core::Handle (LeechCraft::DownloadEntity e)
+			void Core::Handle (LeechCraft::Entity e)
 			{
 				QUrl url = e.Entity_.toUrl ();
 				if (e.Mime_ == "text/x-opml")
@@ -159,7 +159,7 @@ namespace LeechCraft
 					{
 						QString name = LeechCraft::Util::GetTemporaryName ();
 
-						LeechCraft::DownloadEntity e = Util::MakeEntity (url,
+						LeechCraft::Entity e = Util::MakeEntity (url,
 								name, 
 								LeechCraft::Internal |
 									LeechCraft::DoNotNotifyUser |
@@ -425,7 +425,7 @@ namespace LeechCraft
 				}
 			
 				QString name = LeechCraft::Util::GetTemporaryName ();
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (QUrl (url),
+				LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
 						name, 
 						LeechCraft::Internal |
 							LeechCraft::DoNotNotifyUser |
@@ -1184,7 +1184,7 @@ namespace LeechCraft
 			
 			void Core::fetchExternalFile (const QString& url, const QString& where)
 			{
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (QUrl (url),
+				LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
 						where,
 						LeechCraft::Internal |
 							LeechCraft::DoNotNotifyUser |
@@ -1524,7 +1524,7 @@ namespace LeechCraft
 							if (downloadEnclosures)
 								Q_FOREACH (Enclosure e, item->Enclosures_)
 								{
-									DownloadEntity de = Util::MakeEntity (QUrl (e.URL_),
+									Entity de = Util::MakeEntity (QUrl (e.URL_),
 											XmlSettingsManager::Instance ()->
 												property ("EnclosuresDownloadPath").toString (),
 											0,
@@ -1659,7 +1659,7 @@ namespace LeechCraft
 
 				QString filename = LeechCraft::Util::GetTemporaryName ();
 
-				LeechCraft::DownloadEntity e = LeechCraft::Util::MakeEntity (QUrl (url),
+				LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
 						filename,
 						LeechCraft::Internal |
 							LeechCraft::DoNotNotifyUser |
@@ -1713,7 +1713,7 @@ namespace LeechCraft
 			
 			void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const
 			{
-				DownloadEntity e = Util::MakeNotification (h, body, PCritical_);
+				Entity e = Util::MakeNotification (h, body, PCritical_);
 				e.Additional_ ["UntilUserSees"] = wait;
 				emit const_cast<Core*> (this)->gotEntity (e);
 			}

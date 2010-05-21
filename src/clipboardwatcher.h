@@ -52,7 +52,7 @@ namespace LeechCraft
 	signals:
 		/** Notifies about new entity obtained from the clipboard.
 		 */
-		void gotEntity (const LeechCraft::DownloadEntity&);
+		void gotEntity (const LeechCraft::Entity&);
 	};
 };
 

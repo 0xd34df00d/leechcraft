@@ -60,8 +60,8 @@ namespace LeechCraft
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				QModelIndex MapToSource (const QModelIndex&) const;
 				QObject* GetTreeViewReemitter () const;

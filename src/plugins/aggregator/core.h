@@ -150,8 +150,8 @@ namespace LeechCraft
 				Util::IDPool<IDType_t>& GetPool (PoolType);
 				void SyncPools () const;
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&);
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&);
+				void Handle (LeechCraft::Entity);
 				void StartAddingOPML (const QString&);
 				void SetAppWideActions (const AppWideActions&);
 				const AppWideActions& GetAppWideActions () const;
@@ -243,8 +243,8 @@ namespace LeechCraft
 			signals:
 				void channelDataUpdated ();
 				void unreadNumberChanged (int) const;
-				void delegateEntity (const LeechCraft::DownloadEntity&, int*, QObject**);
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

@@ -31,9 +31,9 @@ namespace LeechCraft
 			{
 				ServerConnection_ = new AzothServerConnection ();
 				connect (ServerConnection_,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 			}
 
 			Core& Core::Instance ()

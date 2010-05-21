@@ -106,7 +106,7 @@ namespace LeechCraft
 	 * files.
 	 *
 	 * For notification messages the following signal is used:
-	 * gotEntity (const LeechCraft::DownloadEntity& entity).
+	 * gotEntity (const LeechCraft::Entity& entity).
 	 *
 	 * The second type of messages, delegation requests, is used by
 	 * plugins to delegate a given task to other plugins. For example,
@@ -117,10 +117,10 @@ namespace LeechCraft
 	 * pointer to object that handles the request.
 	 *
 	 * For delegation requests the following signal is used:
-	 * delegateEntity (const LeechCraft::DownloadEntity& entity, int *id, QObject **object);
+	 * delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **object);
 	 *
 	 * There is also a third signal related to messaging:
-	 * couldHandle (const LeechCraft::DownloadEntity& entity, bool *could);
+	 * couldHandle (const LeechCraft::Entity& entity, bool *could);
 	 *
 	 * It queries whether there are plugins that could handle the given
 	 * entity. It also blocks. After emitting this signal the could
@@ -128,7 +128,7 @@ namespace LeechCraft
 	 *
 	 * @sa LeechCraft::TaskParameter
 	 */
-	struct DownloadEntity
+	struct Entity
 	{
 		/** @brief The entity that this object represents.
 		 *
@@ -241,7 +241,7 @@ namespace LeechCraft
 	};
 };
 
-Q_DECLARE_METATYPE (LeechCraft::DownloadEntity);
+Q_DECLARE_METATYPE (LeechCraft::Entity);
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QIODevice*);
 Q_DECLARE_METATYPE (QToolBar*);

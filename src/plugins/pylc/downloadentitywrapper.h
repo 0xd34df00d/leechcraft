@@ -28,14 +28,14 @@ namespace LeechCraft
 	{
 		namespace PyLC
 		{
-			class DownloadEntityWrapper : public QObject
+			class EntityWrapper : public QObject
 			{
 				Q_OBJECT
 				Q_ENUMS (TaskParameters)
 				
-				DownloadEntity W_;
+				Entity W_;
 			public:
-				DownloadEntityWrapper (const DownloadEntity&);
+				EntityWrapper (const Entity&);
 				Q_PROPERTY (QVariant Entity READ GetEntity WRITE SetEntity)
 				Q_PROPERTY (QString Location READ GetLocation WRITE SetLocation)
 				Q_PROPERTY (QString Mime READ GetMime WRITE SetMime)

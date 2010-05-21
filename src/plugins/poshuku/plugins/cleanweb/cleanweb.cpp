@@ -40,15 +40,15 @@ void CleanWeb::Init (ICoreProxy_ptr proxy)
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_cleanweb"));
 	connect (&Core::Instance (),
-			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+			SIGNAL (delegateEntity (const LeechCraft::Entity&,
 					int*, QObject**)),
 			this,
-			SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+			SIGNAL (delegateEntity (const LeechCraft::Entity&,
 					int*, QObject**)));
 	connect (&Core::Instance (),
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+			SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 	Core::Instance ().SetProxy (proxy);
 
@@ -119,12 +119,12 @@ boost::shared_ptr<XmlSettingsDialog> CleanWeb::GetSettingsDialog () const
 	return SettingsDialog_;
 }
 
-bool CleanWeb::CouldHandle (const DownloadEntity& e) const
+bool CleanWeb::CouldHandle (const Entity& e) const
 {
 	return Core::Instance ().CouldHandle (e);
 }
 
-void CleanWeb::Handle (DownloadEntity e)
+void CleanWeb::Handle (Entity e)
 {
 	Core::Instance ().Handle (e);
 }

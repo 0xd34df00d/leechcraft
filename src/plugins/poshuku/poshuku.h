@@ -84,8 +84,8 @@ namespace LeechCraft
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				void Open (const QString&);
 				IWebWidget* GetWidget () const;
@@ -119,8 +119,8 @@ namespace LeechCraft
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
 				void raiseTab (QWidget*);
-				void gotEntity (const LeechCraft::DownloadEntity&);
-				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
+				void gotEntity (const LeechCraft::Entity&);
+				void couldHandle (const LeechCraft::Entity&, bool*);
 			};
 		};
 	};

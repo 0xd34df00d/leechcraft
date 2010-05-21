@@ -37,10 +37,10 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		typedef QList<DownloadEntity> popups_t;
+		typedef QList<Entity> popups_t;
 		popups_t Popups_;
 
-		typedef QMap<DownloadEntity, QDateTime> dates_t;
+		typedef QMap<Entity, QDateTime> dates_t;
 		dates_t Dates_;
 
 		QSystemTrayIcon *TrayIcon_;
@@ -55,7 +55,7 @@ namespace LeechCraft
 		 * 
 		 * @param[in] n The notification.
 		 */
-		void ShowMessage (const DownloadEntity&);
+		void ShowMessage (const Entity&);
 	private slots:
 		/** Checks the messages and deletes too old ones.
 		 */

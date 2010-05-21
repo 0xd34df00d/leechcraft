@@ -272,12 +272,12 @@ namespace LeechCraft
 				}
 			}
 
-			bool WrapperObject::CouldDownload (const DownloadEntity& de) const
+			bool WrapperObject::CouldDownload (const Entity& de) const
 			{
 				try
 				{
 					QVariantList args;
-					args << QVariant::fromValue<QObject*> (new DownloadEntityWrapper (de));
+					args << QVariant::fromValue<QObject*> (new EntityWrapper (de));
 					return Call ("CouldDownload", args).toBool ();
 				}
 				catch (const std::exception& e)
@@ -288,12 +288,12 @@ namespace LeechCraft
 				}
 			}
 
-			int WrapperObject::AddJob (DownloadEntity de)
+			int WrapperObject::AddJob (Entity de)
 			{
 				try
 				{
 					QVariantList args;
-					args << QVariant::fromValue<QObject*> (new DownloadEntityWrapper (de));
+					args << QVariant::fromValue<QObject*> (new EntityWrapper (de));
 					return Call ("AddJob", args).toInt ();
 				}
 				catch (const std::exception& e)

@@ -153,12 +153,12 @@ namespace LeechCraft
 					Core::Instance ()->PauseTorrent (i);
 			}
 			
-			bool TorrentPlugin::CouldDownload (const DownloadEntity& e) const
+			bool TorrentPlugin::CouldDownload (const Entity& e) const
 			{
 				return Core::Instance ()->CouldDownload (e);
 			}
 			
-			int TorrentPlugin::AddJob (DownloadEntity e)
+			int TorrentPlugin::AddJob (Entity e)
 			{
 				QString suggestedFname;
 
@@ -261,12 +261,12 @@ namespace LeechCraft
 				return result;
 			}
 
-			bool TorrentPlugin::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			bool TorrentPlugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return Core::Instance ()->CouldHandle (e);
 			}
 
-			void TorrentPlugin::Handle (LeechCraft::DownloadEntity e)
+			void TorrentPlugin::Handle (LeechCraft::Entity e)
 			{
 				Core::Instance ()->Handle (e);
 			}
@@ -854,9 +854,9 @@ namespace LeechCraft
 						this,
 						SLOT (showError (QString)));
 				connect (Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (Core::Instance (),
 						SIGNAL (taskFinished (int)),
 						this,

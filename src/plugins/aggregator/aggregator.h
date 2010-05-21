@@ -83,8 +83,8 @@ namespace LeechCraft
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
@@ -124,8 +124,8 @@ namespace LeechCraft
 				void trayIconActivated ();
 				void handleGroupChannels ();
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
-				void delegateEntity (const LeechCraft::DownloadEntity&,
+				void gotEntity (const LeechCraft::Entity&);
+				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
 				void bringToFront ();
 				void changeTabName (QWidget*, const QString&);

@@ -138,7 +138,7 @@ namespace LeechCraft
 			 * value is ignored.
 			 */
 			typedef boost::function<bool (IHookProxy_ptr,
-					LeechCraft::DownloadEntity *entity)> Signature_t;
+					LeechCraft::Entity *entity)> Signature_t;
 		};
 
 	template<>
@@ -156,7 +156,7 @@ namespace LeechCraft
 			 * value is ignored.
 			 */
 			typedef boost::function<bool (IHookProxy_ptr,
-					LeechCraft::DownloadEntity *entity,
+					LeechCraft::Entity *entity,
 					int *id,
 					QObject **provider,
 					QObject *sender)> Signature_t;
@@ -463,11 +463,11 @@ typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
  *
  * This interface can also have following signals which will be
  * autodetected by LeechCraft:
- * - couldHandle (const LeechCraft::DownloadEntity& entity, bool *could);
+ * - couldHandle (const LeechCraft::Entity& entity, bool *could);
  *   Checks whether given entity could be handled.
- * - gotEntity (const LeechCraft::DownloadEntity& entity);
+ * - gotEntity (const LeechCraft::Entity& entity);
  *   Notifies other plugins about a new entity.
- * - delegateEntity (const LeechCraft::DownloadEntity& entity, int *id, QObject **provider);
+ * - delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **provider);
  *   Entity delegation request. If a suitable provider is found, the
  *   entity is delegated to it, id is set according to the task ID
  *   returned from the provider, and provider is set to point to the

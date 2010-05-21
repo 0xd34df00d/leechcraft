@@ -316,13 +316,13 @@ namespace LeechCraft
 						this,
 						SLOT (handleStatusBarMessage (const QString&)));
 				connect (Ui_.WebView_,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (Ui_.WebView_,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 				connect (Ui_.WebView_->page (),
 						SIGNAL (linkHovered (const QString&,
 								const QString&,
@@ -366,9 +366,9 @@ namespace LeechCraft
 						this,
 						SIGNAL (needToClose ()));
 				connect (Ui_.WebView_->page (),
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 			
 				connect (&Core::Instance (),
 						SIGNAL (newUnclose (QAction*)),
@@ -1013,7 +1013,7 @@ namespace LeechCraft
 			void BrowserWidget::handleEntityAction ()
 			{
 				emit gotEntity (qobject_cast<QAction*> (sender ())->
-						data ().value<LeechCraft::DownloadEntity> ());
+						data ().value<LeechCraft::Entity> ());
 			}
 			
 			void BrowserWidget::checkLinkRels ()
@@ -1031,7 +1031,7 @@ namespace LeechCraft
 					if (link.attribute ("type") == "")
 						continue;
 
-					LeechCraft::DownloadEntity e;
+					LeechCraft::Entity e;
 					e.Mime_ = link.attribute ("type");
 
 					QString entity = link.attribute ("title");
@@ -1065,7 +1065,7 @@ namespace LeechCraft
 								entity,
 								this,
 								SLOT (handleEntityAction ()));
-						act->setData (QVariant::fromValue<LeechCraft::DownloadEntity> (e));
+						act->setData (QVariant::fromValue<LeechCraft::Entity> (e));
 						if (!inserted)
 						{
 							ToolBar_->addAction (ExternalLinks_->menuAction ());
@@ -1164,7 +1164,7 @@ namespace LeechCraft
 					prio = PWarning_;
 				}
 
-				DownloadEntity e = Util::MakeNotification ("Poshuku", text, prio);
+				Entity e = Util::MakeNotification ("Poshuku", text, prio);
 				e.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject*> (this);
 				e.Additional_ ["NotificationActions"] = QStringList (tr ("Open"));
 				emit gotEntity (e);

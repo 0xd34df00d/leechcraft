@@ -22,7 +22,7 @@
 
 namespace LeechCraft
 {
-	struct DownloadEntity;
+	struct Entity;
 
 	namespace Plugins
 	{
@@ -36,7 +36,7 @@ namespace LeechCraft
 			public slots:
 				void AddSearchProvider (const QString&);
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

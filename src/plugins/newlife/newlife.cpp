@@ -100,9 +100,9 @@ namespace LeechCraft
 			{
 				ImportWizard *wiz = new ImportWizard ();
 				connect (wiz,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				wiz->show ();
 			}
 		};

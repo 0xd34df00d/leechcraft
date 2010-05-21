@@ -46,7 +46,7 @@ namespace LeechCraft
 			private slots:
 				void handleDeviceReady ();
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

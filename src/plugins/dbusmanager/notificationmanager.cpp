@@ -53,7 +53,7 @@ NotificationManager::NotificationManager (QObject *parent)
 			SLOT (handleActionInvoked (uint, QString)));
 }
 
-bool NotificationManager::CouldNotify (const DownloadEntity& e) const
+bool NotificationManager::CouldNotify (const Entity& e) const
 {
 	return XmlSettingsManager::Instance ()->
 			property ("UseNotifications").toBool () &&
@@ -63,7 +63,7 @@ bool NotificationManager::CouldNotify (const DownloadEntity& e) const
 		e.Additional_ ["Priority"].toInt () != PLog_;
 }
 
-void NotificationManager::HandleNotification (const DownloadEntity& e)
+void NotificationManager::HandleNotification (const Entity& e)
 {
 	if (!Connection_.get () ||
 			!XmlSettingsManager::Instance ()->
@@ -92,7 +92,7 @@ void NotificationManager::HandleNotification (const DownloadEntity& e)
 	}
 }
 
-void NotificationManager::DoNotify (const DownloadEntity& e, bool hasActions)
+void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 {
 	Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
 	QString header = e.Entity_.toString ();
@@ -172,7 +172,7 @@ void NotificationManager::handleCapCheckCallFinished (QDBusPendingCallWatcher *w
 	}
 	QStringList caps = reply.argumentAt<0> ();
 	bool hasActions = caps.contains ("actions");
-	DownloadEntity e = Watcher2CapCheck_.take (w).Entity_;
+	Entity e = Watcher2CapCheck_.take (w).Entity_;
 	DoNotify (e, hasActions);
 }
 

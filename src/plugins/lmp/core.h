@@ -67,10 +67,10 @@ namespace LeechCraft
 				void Enqueue (const QUrl&);
 				void Enqueue (QIODevice*);
 				QAction* GetShowAction () const;
-				void Handle (const LeechCraft::DownloadEntity&);
+				void Handle (const LeechCraft::Entity&);
 			signals:
 				void bringToFront ();
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

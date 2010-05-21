@@ -77,8 +77,8 @@ namespace LeechCraft
 				qint64 GetUploadSpeed () const;
 				void StartAll ();
 				void StopAll ();
-				bool CouldDownload (const LeechCraft::DownloadEntity&) const;
-				int AddJob (LeechCraft::DownloadEntity);
+				bool CouldDownload (const LeechCraft::Entity&) const;
+				int AddJob (LeechCraft::Entity);
 				void KillTask (int);
 
 				QAbstractItemModel* GetRepresentation () const;
@@ -95,7 +95,7 @@ namespace LeechCraft
 				void jobFinished (int);
 				void jobRemoved (int);
 				void jobError (int, IDownload::Error);
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

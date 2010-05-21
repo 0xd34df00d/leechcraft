@@ -23,7 +23,7 @@
 
 namespace LeechCraft
 {
-	struct DownloadEntity;
+	struct Entity;
 
 	namespace Plugins
 	{
@@ -46,7 +46,7 @@ namespace LeechCraft
 				void on_FileLocation__textEdited (const QString&);
 				void handleAccepted ();
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

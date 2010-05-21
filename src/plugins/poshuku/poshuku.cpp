@@ -225,7 +225,7 @@ namespace LeechCraft
 				return XmlSettingsDialog_;
 			}
 
-			bool Poshuku::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			bool Poshuku::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				if (!(e.Parameters_ & FromUserInitiated) ||
 						e.Parameters_ & Internal)
@@ -239,7 +239,7 @@ namespace LeechCraft
 					(url.scheme () == "http" || url.scheme () == "https"));
 			}
 
-			void Poshuku::Handle (LeechCraft::DownloadEntity e)
+			void Poshuku::Handle (LeechCraft::Entity e)
 			{
 				QUrl url = e.Entity_.toUrl ();
 				Core::Instance ().NewURL (url, true);
@@ -352,13 +352,13 @@ namespace LeechCraft
 						this,
 						SIGNAL (raiseTab (QWidget*)));
 				connect (&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (&Core::Instance (),
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 				connect (&Core::Instance (),
 						SIGNAL (error (const QString&)),
 						this,

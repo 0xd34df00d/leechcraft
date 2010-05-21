@@ -24,7 +24,7 @@ class QWizardPage;
 
 namespace LeechCraft
 {
-	struct DownloadEntity;
+	struct Entity;
 
 	namespace Plugins
 	{
@@ -40,7 +40,7 @@ namespace LeechCraft
 				virtual QStringList GetNames () const = 0;
 				virtual QList<QWizardPage*> GetWizardPages () const = 0;
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

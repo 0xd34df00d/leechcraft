@@ -164,9 +164,9 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
-				bool CouldDownload (const LeechCraft::DownloadEntity&) const;
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldDownload (const LeechCraft::Entity&) const;
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 				PiecesModel* GetPiecesModel ();
 				void ClearPieces ();
 				void UpdatePieces ();
@@ -349,7 +349,7 @@ namespace LeechCraft
 				void setScrapeInterval ();
 			signals:
 				void error (QString) const;
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void addToHistory (const QString&, const QString&, quint64,
 						const QDateTime&, const QStringList&);
 				void taskFinished (int);

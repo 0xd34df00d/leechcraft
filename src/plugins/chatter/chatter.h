@@ -40,14 +40,14 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void bringToFront ();
 				void changeTabName (QWidget*, const QString&);
 				void changeTabIcon (QWidget*, const QIcon&);

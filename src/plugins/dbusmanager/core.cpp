@@ -72,12 +72,12 @@ QString Core::Greeter (const QString&)
 	return tr ("LeechCraft D-Bus general interface");
 }
 
-bool Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
+bool Core::CouldHandle (const LeechCraft::Entity& e) const
 {
 	return NotificationManager_->CouldNotify (e);
 }
 
-void Core::Handle (const LeechCraft::DownloadEntity& e)
+void Core::Handle (const LeechCraft::Entity& e)
 {
 	NotificationManager_->HandleNotification (e);
 }

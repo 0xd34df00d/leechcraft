@@ -63,17 +63,17 @@ namespace LeechCraft
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				QList<QWizardPage*> GetWizardPages () const;
 			private slots:
 				void handleError (const QString&);
 				void handleWarning (const QString&);
 			signals:
-				void delegateEntity (const LeechCraft::DownloadEntity&,
+				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void categoriesChanged (const QStringList&, const QStringList&);
 			};
 		};

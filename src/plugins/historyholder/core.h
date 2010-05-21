@@ -42,7 +42,7 @@ namespace LeechCraft
 			public:
 				struct HistoryEntry
 				{
-					LeechCraft::DownloadEntity Entity_;
+					LeechCraft::Entity Entity_;
 					QDateTime DateTime_;
 				};
 			private:
@@ -62,7 +62,7 @@ namespace LeechCraft
 				void Release ();
 				void SetCoreProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetCoreProxy () const;
-				void Handle (const LeechCraft::DownloadEntity&);
+				void Handle (const LeechCraft::Entity&);
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
@@ -79,7 +79,7 @@ namespace LeechCraft
 				void remove ();
 				void handleActivated (const QModelIndex&, QTreeView*);
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

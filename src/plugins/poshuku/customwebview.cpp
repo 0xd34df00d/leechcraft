@@ -75,13 +75,13 @@ namespace LeechCraft
 						SLOT (handleLoadFinished ()));
 			
 				connect (page,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 				connect (page,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (page,
 						SIGNAL (loadingURL (const QUrl&)),
 						this,
@@ -166,9 +166,9 @@ namespace LeechCraft
 					widget->setWindowFlags (Qt::Dialog);
 					widget->setAttribute (Qt::WA_DeleteOnClose);
 					connect (widget,
-							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+							SIGNAL (gotEntity (const LeechCraft::Entity&)),
 							&Core::Instance (),
-							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+							SIGNAL (gotEntity (const LeechCraft::Entity&)));
 					connect (widget,
 							SIGNAL (titleChanged (const QString&)),
 							widget,
@@ -223,7 +223,7 @@ namespace LeechCraft
 
 						if (hasAtom || hasRSS)
 						{
-							LeechCraft::DownloadEntity e;
+							LeechCraft::Entity e;
 							if (hasAtom)
 							{
 								e.Additional_ ["UserVisibleName"] = "Atom";
@@ -510,7 +510,7 @@ namespace LeechCraft
 			void CustomWebView::subscribeToLink ()
 			{
 				QList<QVariant> list = qobject_cast<QAction*> (sender ())->data ().toList ();
-				DownloadEntity e = Util::MakeEntity (list.at (0),
+				Entity e = Util::MakeEntity (list.at (0),
 						QString (),
 						FromUserInitiated | OnlyHandle,
 						list.at (1).toString ());
@@ -565,9 +565,9 @@ namespace LeechCraft
 
 				SearchText *st = new SearchText (text, this);
 				connect (st,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				st->setAttribute (Qt::WA_DeleteOnClose);
 				st->show ();
 			}

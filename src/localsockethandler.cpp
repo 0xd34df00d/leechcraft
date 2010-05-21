@@ -131,7 +131,7 @@ namespace LeechCraft
 		else
 			entity = arguments.last ();
 
-		DownloadEntity e = Util::MakeEntity (entity,
+		Entity e = Util::MakeEntity (entity,
 				QString (),
 				tp);
 		emit gotEntity (e);

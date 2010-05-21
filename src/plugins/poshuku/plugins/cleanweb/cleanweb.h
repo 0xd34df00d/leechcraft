@@ -67,8 +67,8 @@ namespace LeechCraft
 
 						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-						bool CouldHandle (const DownloadEntity&) const;
-						void Handle (DownloadEntity);
+						bool CouldHandle (const Entity&) const;
+						void Handle (Entity);
 
 						QList<QWizardPage*> GetWizardPages () const;
 
@@ -85,9 +85,9 @@ namespace LeechCraft
 								const QWebHitTestResult&, QMenu*,
 								WebViewCtxMenuStage);
 					signals:
-						void delegateEntity (const LeechCraft::DownloadEntity&,
+						void delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**);
-						void gotEntity (const LeechCraft::DownloadEntity&);
+						void gotEntity (const LeechCraft::Entity&);
 					};
 				};
 			};

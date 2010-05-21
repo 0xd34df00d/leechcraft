@@ -50,8 +50,8 @@ public:
 	qint64 GetUploadSpeed () const;
 	void StartAll ();
 	void StopAll ();
-	bool CouldDownload (const LeechCraft::DownloadEntity&) const;
-	int AddJob (LeechCraft::DownloadEntity);
+	bool CouldDownload (const LeechCraft::Entity&) const;
+	int AddJob (LeechCraft::Entity);
 	void KillTask (int);
 	QAbstractItemModel* GetRepresentation () const;
 	QWidget* GetControls () const;

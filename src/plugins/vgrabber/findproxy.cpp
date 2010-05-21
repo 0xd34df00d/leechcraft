@@ -84,7 +84,7 @@ namespace LeechCraft
 				QUrl url = GetURL ();
 
 				QString fname = Util::GetTemporaryName ();
-				DownloadEntity e =
+				Entity e =
 					Util::MakeEntity (url,
 						fname,
 						LeechCraft::Internal |
@@ -231,7 +231,7 @@ namespace LeechCraft
 						<< act;
 				}
 
-				DownloadEntity e = Util::MakeEntity (url,
+				Entity e = Util::MakeEntity (url,
 						QString (),
 						LeechCraft::FromUserInitiated |
 							param);

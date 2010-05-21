@@ -41,7 +41,7 @@ namespace LeechCraft
 				void on_MarkAll__released ();
 				void on_UnmarkAll__released ();
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

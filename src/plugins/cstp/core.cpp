@@ -141,7 +141,7 @@ namespace LeechCraft
 				}
 			}
 			
-			int Core::AddTask (LeechCraft::DownloadEntity& e)
+			int Core::AddTask (LeechCraft::Entity& e)
 			{
 				QUrl entity = e.Entity_.toUrl ();
 				QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
@@ -342,7 +342,7 @@ namespace LeechCraft
 						result, _Local::SpeedAccumulator ());
 			}
 			
-			bool Core::CouldDownload (const LeechCraft::DownloadEntity& e)
+			bool Core::CouldDownload (const LeechCraft::Entity& e)
 			{
 				QUrl url = e.Entity_.toUrl ();
 				return (url.isValid () &&
@@ -577,7 +577,7 @@ namespace LeechCraft
 					if (!silence)
 					{
 						tp |= LeechCraft::IsDownloaded;
-						LeechCraft::DownloadEntity e =
+						LeechCraft::Entity e =
 							LeechCraft::Util::MakeEntity (QUrl::fromLocalFile (filename),
 								url,
 								tp);
@@ -651,9 +651,9 @@ namespace LeechCraft
 					QByteArray data = settings.value ("Task").toByteArray ();
 					td.Task_.reset (new Task ());
 					connect (td.Task_.get (),
-							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+							SIGNAL (gotEntity (const LeechCraft::Entity&)),
 							this,
-							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+							SIGNAL (gotEntity (const LeechCraft::Entity&)));
 					try
 					{
 						td.Task_->Deserialize (data);

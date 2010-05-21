@@ -39,15 +39,15 @@ namespace LeechCraft
 				Core::Instance ().SetProxy (proxy);
 
 				connect (&Core::Instance (),
-						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
 						this,
-						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)));
 				connect (&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (&Core::Instance (),
 						SIGNAL (error (const QString&)),
 						this,
@@ -132,12 +132,12 @@ namespace LeechCraft
 				return XmlSettingsDialog_;
 			}
 			
-			bool SeekThru::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			bool SeekThru::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return Core::Instance ().CouldHandle (e);
 			}
 			
-			void SeekThru::Handle (LeechCraft::DownloadEntity e)
+			void SeekThru::Handle (LeechCraft::Entity e)
 			{
 				Core::Instance ().Add (e.Entity_.toUrl ());
 			}

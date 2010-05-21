@@ -61,7 +61,7 @@ namespace LeechCraft
 	signals:
 		/** Emitted when a new or modified file is detected.
 		 */
-		void gotEntity (const LeechCraft::DownloadEntity& entity);
+		void gotEntity (const LeechCraft::Entity& entity);
 	};
 };
 

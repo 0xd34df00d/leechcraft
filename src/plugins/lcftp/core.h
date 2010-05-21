@@ -131,10 +131,10 @@ namespace LeechCraft
 				bool setData (const QModelIndex&, const QVariant&, int);
 
 				QStringList Provides () const;
-				bool IsOK (const DownloadEntity&) const;
+				bool IsOK (const Entity&) const;
 				/** Downloads given download entity.
 				 */
-				int Add (DownloadEntity);
+				int Add (Entity);
 				/** Downloads the given url to the given path. Whether
 				 * the target files are checked to is controlled by
 				 * check.
@@ -143,7 +143,7 @@ namespace LeechCraft
 				/** Uploads the given path to the given url.
 				 */
 				void Add (const QString& path, const QUrl& url);
-				void Handle (DownloadEntity);
+				void Handle (Entity);
 				int Browse (const QUrl&);
 
 				bool IsAcceptable (int) const;
@@ -172,7 +172,7 @@ namespace LeechCraft
 				void taskFinished (int);
 				void taskRemoved (int);
 				void taskError (int, IDownload::Error);
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void fetchedEntry (const FetchedEntry&);
 			};
 		};

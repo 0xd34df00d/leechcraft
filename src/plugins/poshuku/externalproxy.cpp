@@ -32,7 +32,7 @@ namespace LeechCraft
 
 			void ExternalProxy::AddSearchProvider (const QString& url)
 			{
-				LeechCraft::DownloadEntity e;
+				LeechCraft::Entity e;
 				e.Entity_ = url.toUtf8 ();
 				e.Mime_ = "application/opensearchdescription+xml";
 				e.Location_ = url;

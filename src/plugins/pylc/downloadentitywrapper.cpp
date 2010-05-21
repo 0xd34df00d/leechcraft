@@ -24,57 +24,57 @@ namespace LeechCraft
 	{
 		namespace PyLC
 		{
-			DownloadEntityWrapper::DownloadEntityWrapper (const DownloadEntity& e)
+			EntityWrapper::EntityWrapper (const Entity& e)
 			: W_ (e)
 			{
 			}
 			
-			QVariant DownloadEntityWrapper::GetEntity () const
+			QVariant EntityWrapper::GetEntity () const
 			{
 				return W_.Entity_;
 			}
 			
-			QString DownloadEntityWrapper::GetLocation () const
+			QString EntityWrapper::GetLocation () const
 			{
 				return W_.Location_;
 			}
 			
-			QString DownloadEntityWrapper::GetMime () const
+			QString EntityWrapper::GetMime () const
 			{
 				return W_.Mime_;
 			}
 			
-			TaskParameters DownloadEntityWrapper::GetParameters () const
+			TaskParameters EntityWrapper::GetParameters () const
 			{
 				return W_.Parameters_;
 			}
 			
-			QMap<QString, QVariant> DownloadEntityWrapper::GetAdditional () const
+			QMap<QString, QVariant> EntityWrapper::GetAdditional () const
 			{
 				return W_.Additional_;
 			}
 			
-			void DownloadEntityWrapper::SetEntity (const QVariant& e)
+			void EntityWrapper::SetEntity (const QVariant& e)
 			{
 				W_.Entity_ = e;
 			}
 			
-			void DownloadEntityWrapper::SetLocation (const QString& location)
+			void EntityWrapper::SetLocation (const QString& location)
 			{
 				W_.Location_ = location;
 			}
 			
-			void DownloadEntityWrapper::SetMime (const QString& mime)
+			void EntityWrapper::SetMime (const QString& mime)
 			{
 				W_.Mime_ = mime;
 			}
 			
-			void DownloadEntityWrapper::SetParameters (const TaskParameters& p)
+			void EntityWrapper::SetParameters (const TaskParameters& p)
 			{
 				W_.Parameters_ = p;
 			}
 			
-			void DownloadEntityWrapper::SetAdditional (const QMap<QString, QVariant>& additional)
+			void EntityWrapper::SetAdditional (const QMap<QString, QVariant>& additional)
 			{
 				W_.Additional_ = additional;
 			}

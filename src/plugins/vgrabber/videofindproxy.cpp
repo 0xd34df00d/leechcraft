@@ -263,7 +263,7 @@ namespace LeechCraft
 				QUrl url = qobject_cast<QAction*> (sender ())->data ().value<QUrl> ();
 
 				QString fname = Util::GetTemporaryName ();
-				DownloadEntity e =
+				Entity e =
 					Util::MakeEntity (url,
 						fname,
 						LeechCraft::Internal |

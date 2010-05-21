@@ -93,7 +93,7 @@ namespace LeechCraft
 				void handleFinished ();
 				void handleError ();
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void updateInterface ();
 				void done (bool);
 			};

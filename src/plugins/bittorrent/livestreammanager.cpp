@@ -79,7 +79,7 @@ namespace LeechCraft
 					return;
 				}
 
-				DownloadEntity e;
+				Entity e;
 				e.Entity_ = QVariant::fromValue<QIODevice*> (lsd);
 				e.Parameters_ = FromUserInitiated;
 				e.Mime_ = "x-leechcraft/media-qiodevice";

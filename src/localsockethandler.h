@@ -23,7 +23,7 @@
 
 namespace LeechCraft
 {
-	struct DownloadEntity;
+	struct Entity;
 	class MainWindow;
 
 	class LocalSocketHandler : public QObject
@@ -41,7 +41,7 @@ namespace LeechCraft
 	private:
 		void DoLine (const QStringList&);
 	signals:
-		void gotEntity (const LeechCraft::DownloadEntity&);
+		void gotEntity (const LeechCraft::Entity&);
 	};
 };
 

@@ -56,7 +56,7 @@ namespace LeechCraft
 				if (!selected.size ())
 					return;
 
-				DownloadEntity e = Util::MakeEntity (Text_,
+				Entity e = Util::MakeEntity (Text_,
 						QString (),
 						FromUserInitiated,
 						"x-leechcraft/category-search-request");

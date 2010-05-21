@@ -144,10 +144,10 @@ namespace LeechCraft
 						this,
 						SLOT (unreadNumberChanged (int)));
 				connect (&Core::Instance (),
-						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
 						this,
-						SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)));
 			
 				Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
@@ -270,13 +270,13 @@ namespace LeechCraft
 				Impl_->Ui_.MainSplitter_->setStretchFactor (1, 9);
 			
 				connect (&RegexpMatcherManager::Instance (),
-						SIGNAL (gotLink (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotLink (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (proxy->GetTreeViewReemitter (),
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
 								QTreeView*)),
@@ -366,12 +366,12 @@ namespace LeechCraft
 				Core::Instance ().GetReprWidget ()->CurrentChannelChanged (si);
 			}
 			
-			bool Aggregator::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			bool Aggregator::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return Core::Instance ().CouldHandle (e);
 			}
 			
-			void Aggregator::Handle (LeechCraft::DownloadEntity e)
+			void Aggregator::Handle (LeechCraft::Entity e)
 			{
 				Core::Instance ().Handle (e);
 			}

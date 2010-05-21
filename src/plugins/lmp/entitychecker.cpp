@@ -28,7 +28,7 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Plugins::LMP;
 
-EntityChecker::EntityChecker (const LeechCraft::DownloadEntity& e)
+EntityChecker::EntityChecker (const LeechCraft::Entity& e)
 : Result_ (false)
 , Break_ (false)
 {

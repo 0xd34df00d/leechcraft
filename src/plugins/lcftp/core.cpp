@@ -318,7 +318,7 @@ namespace LeechCraft
 				return result;
 			}
 
-			bool Core::IsOK (const DownloadEntity& e) const
+			bool Core::IsOK (const Entity& e) const
 			{
 				if (!e.Entity_.canConvert<QUrl> ())
 					return false;
@@ -429,7 +429,7 @@ namespace LeechCraft
 				}
 			};
 
-			int Core::Add (DownloadEntity e)
+			int Core::Add (Entity e)
 			{
 				if (!e.Entity_.canConvert<QUrl> ())
 					return -1;
@@ -530,7 +530,7 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::Handle (DownloadEntity e)
+			void Core::Handle (Entity e)
 			{
 				if (!e.Entity_.canConvert<QUrl> ())
 					return;

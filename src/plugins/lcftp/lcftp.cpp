@@ -59,9 +59,9 @@ namespace LeechCraft
 						this,
 						SIGNAL (jobError (int, IDownload::Error)));
 				connect (&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				TabManager_ = Core::Instance ().GetTabManager ();
 				connect (TabManager_,
@@ -153,12 +153,12 @@ namespace LeechCraft
 			{
 			}
 
-			bool LCFTP::CouldDownload (const DownloadEntity& e) const
+			bool LCFTP::CouldDownload (const Entity& e) const
 			{
 				return Core::Instance ().IsOK (e);
 			}
 
-			int LCFTP::AddJob (DownloadEntity e)
+			int LCFTP::AddJob (Entity e)
 			{
 				return Core::Instance ().Add (e);
 			}
@@ -171,12 +171,12 @@ namespace LeechCraft
 				// the call to GetID() and returned from AddJob.
 			}
 
-			bool LCFTP::CouldHandle (const DownloadEntity& e) const
+			bool LCFTP::CouldHandle (const Entity& e) const
 			{
 				return Core::Instance ().IsOK (e);
 			}
 
-			void LCFTP::Handle (DownloadEntity e)
+			void LCFTP::Handle (Entity e)
 			{
 				Core::Instance ().Handle (e);
 			}

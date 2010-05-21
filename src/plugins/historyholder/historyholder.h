@@ -54,13 +54,13 @@ namespace LeechCraft
 				QStringList GetCategories () const;
 				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void categoriesChanged (const QStringList&, const QStringList&);
 			};
 		};

@@ -87,8 +87,8 @@ namespace LeechCraft
 						QModelIndex parent (const QModelIndex&) const;
 						int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-						bool CouldHandle (const DownloadEntity&) const;
-						void Handle (DownloadEntity);
+						bool CouldHandle (const Entity&) const;
+						void Handle (Entity);
 						QAbstractItemModel* GetModel ();
 						void Remove (const QModelIndex&);
 						QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
@@ -156,9 +156,9 @@ namespace LeechCraft
 						void handleJobFinished (int);
 						void handleJobError (int, IDownload::Error);
 					signals:
-						void delegateEntity (const LeechCraft::DownloadEntity&,
+						void delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**);
-						void gotEntity (const LeechCraft::DownloadEntity&);
+						void gotEntity (const LeechCraft::Entity&);
 					};
 				};
 			};

@@ -30,7 +30,7 @@ class QAction;
 
 namespace LeechCraft
 {
-	struct DownloadEntity;
+	struct Entity;
 
 	namespace Plugins
 	{
@@ -91,8 +91,8 @@ namespace LeechCraft
 				void handleJobFinished (int);
 				void handleJobError (int);
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
-				void delegateEntity (const LeechCraft::DownloadEntity&,
+				void gotEntity (const LeechCraft::Entity&);
+				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
 				void error (const QString&);
 			};

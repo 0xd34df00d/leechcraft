@@ -73,14 +73,14 @@ void Plugin::SetProvider (QObject*, const QString&)
 {
 }
 
-bool Plugin::CouldHandle (const LeechCraft::DownloadEntity& e) const
+bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
 {
 	if (!e.Entity_.canConvert<QUrl> ())
 		return false;
 	return (e.Entity_.toUrl().scheme() == "irc");
 }
 
-void Plugin::Handle (LeechCraft::DownloadEntity e)
+void Plugin::Handle (LeechCraft::Entity e)
 {
 	if (!e.Entity_.canConvert<QUrl> ())
 		return;

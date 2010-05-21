@@ -71,9 +71,9 @@ namespace LeechCraft
 						this,
 						SLOT (handleStateUpdated (const QString&)));
 				connect (Ui_.Player_,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				connect (Ui_.Player_->GetMediaObject (),
 						SIGNAL (metaDataChanged ()),

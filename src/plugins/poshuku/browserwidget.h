@@ -187,8 +187,8 @@ namespace LeechCraft
 				void tooltipChanged (QWidget*);
 				void addToFavorites (const QString&, const QString&);
 				void statusBarChanged (const QString&);
-				void gotEntity (const LeechCraft::DownloadEntity&);
-				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
+				void gotEntity (const LeechCraft::Entity&);
+				void couldHandle (const LeechCraft::Entity&, bool*);
 				void invalidateSettings ();
 				void raiseTab (QWidget*);
 

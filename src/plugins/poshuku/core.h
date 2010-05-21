@@ -178,8 +178,8 @@ namespace LeechCraft
 				void raiseTab (QWidget*);
 				void error (const QString&) const;
 				void statusBarChanged (QWidget*, const QString&);
-				void gotEntity (const LeechCraft::DownloadEntity&);
-				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
+				void gotEntity (const LeechCraft::Entity&);
+				void couldHandle (const LeechCraft::Entity&, bool*);
 				void newUnclose (QAction*);
 
 				// Hook support signals

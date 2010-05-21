@@ -716,13 +716,13 @@ namespace LeechCraft
 						this,
 						SLOT (handleAddToFavorites (const QString&, const QString&)));
 				connect (widget,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (widget,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)),
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 						this,
-						SIGNAL (couldHandle (const LeechCraft::DownloadEntity&, bool*)));
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 				connect (widget,
 						SIGNAL (urlChanged (const QString&)),
 						this,

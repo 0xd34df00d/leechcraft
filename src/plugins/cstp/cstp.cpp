@@ -73,9 +73,9 @@ namespace LeechCraft
 						this,
 						SIGNAL (jobError (int, IDownload::Error)));
 				connect (&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (&Core::Instance (),
 						SIGNAL (error (const QString&)),
 						this,
@@ -154,12 +154,12 @@ namespace LeechCraft
 				Core::Instance ().stopAllTriggered ();
 			}
 			
-			bool CSTP::CouldDownload (const LeechCraft::DownloadEntity& e) const
+			bool CSTP::CouldDownload (const LeechCraft::Entity& e) const
 			{
 				return Core::Instance ().CouldDownload (e);
 			}
 			
-			int CSTP::AddJob (LeechCraft::DownloadEntity e)
+			int CSTP::AddJob (LeechCraft::Entity e)
 			{
 				return Core::Instance ().AddTask (e);
 			}

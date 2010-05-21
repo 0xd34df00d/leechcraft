@@ -52,7 +52,7 @@ LeechCraft::FancyPopupManager::~FancyPopupManager ()
 {
 }
 
-void LeechCraft::FancyPopupManager::ShowMessage (const LeechCraft::DownloadEntity& e)
+void LeechCraft::FancyPopupManager::ShowMessage (const LeechCraft::Entity& e)
 {
 	Popups_.push_back (e);
 	Dates_ [e] = QDateTime::currentDateTime ();
@@ -64,7 +64,7 @@ void LeechCraft::FancyPopupManager::timerTimeout ()
 {
 	QDateTime current = QDateTime::currentDateTime ();
 
-	Q_FOREACH (DownloadEntity e, Popups_)
+	Q_FOREACH (Entity e, Popups_)
 	{
 		if (Dates_ [e].secsTo (current) >=
 				XmlSettingsManager::Instance ()->

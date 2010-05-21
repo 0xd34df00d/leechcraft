@@ -48,7 +48,7 @@ namespace LeechCraft
 				void handleProcessError (QProcess::ProcessError);
 				void handleAddProtocolPluginCallFinished (QDBusPendingCallWatcher*);
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

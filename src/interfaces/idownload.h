@@ -100,24 +100,24 @@ public:
 	 * Entity could be anything from file name to URL to all kinds of
 	 * hashes like Magnet links.
 	 *
-	 * @param[in] entity A DownloadEntity structure.
+	 * @param[in] entity A Entity structure.
 	 *
 	 * @sa AddJob
-	 * @sa LeechCraft::DownloadEntity
+	 * @sa LeechCraft::Entity
 	 */
-	virtual bool CouldDownload (const LeechCraft::DownloadEntity& entity) const = 0;
+	virtual bool CouldDownload (const LeechCraft::Entity& entity) const = 0;
 
 	/** @brief Adds the job with given parameters.
 	 *
 	 * Adds the job to the downloader and returns the ID of the newly
 	 * added job back to identify it.
 	 *
-	 * @param[in] entity A DownloadEntity structure.
+	 * @param[in] entity A Entity structure.
 	 * @return ID of the job for the other plugins to use.
 	 *
-	 * @sa LeechCraft::DownloadEntity
+	 * @sa LeechCraft::Entity
 	 */
-	virtual int AddJob (LeechCraft::DownloadEntity entity) = 0;
+	virtual int AddJob (LeechCraft::Entity entity) = 0;
 
 	/** @brief Kills the task with the given id.
 	 *

@@ -85,12 +85,12 @@ void Nufella::StopAll ()
 {
 }
 
-bool Nufella::CouldDownload (const LeechCraft::DownloadEntity& entity) const
+bool Nufella::CouldDownload (const LeechCraft::Entity& entity) const
 {
 	return false;
 }
 
-int Nufella::AddJob (LeechCraft::DownloadEntity)
+int Nufella::AddJob (LeechCraft::Entity)
 {
 	return -1;
 }

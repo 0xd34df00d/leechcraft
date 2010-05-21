@@ -73,11 +73,11 @@ namespace LeechCraft
 
 		/** @brief Return the user-readable representation of the entity.
 		 *
-		 * @param[in] entity The DownloadEntity to make the
+		 * @param[in] entity The Entity to make the
 		 * user-readable representation from.
 		 * @return The user-readable string describing the entity.
 		 */
-		PLUGININTERFACE_API QString GetUserText (const DownloadEntity& entity);
+		PLUGININTERFACE_API QString GetUserText (const Entity& entity);
 
 		/** @brief Makes a formatted size from number.
 		 *
@@ -148,48 +148,48 @@ namespace LeechCraft
 		 */
 		PLUGININTERFACE_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
 
-		/** @brief An utility function to make a DownloadEntity.
+		/** @brief An utility function to make a Entity.
 		 *
-		 * Creates a DownloadEntity that wraps the given entity from
+		 * Creates a Entity that wraps the given entity from
 		 * given location with parameterrs identified by tp and given
 		 * mime type (which is null by default).
 		 *
 		 * This function is provided for convenience and is equivalent
-		 * to manually filling the DownloadEntity.
+		 * to manually filling the Entity.
 		 *
-		 * @param[in] entity The Entity_ field of the DownloadEntity.
-		 * @param[in] location The Location_ field of the DownloadEntity.
-		 * @param[in] tp The Params_ field of the DownloadEntity.
-		 * @param[in] mime The Mime_ field of the DownloadEntity.
-		 * @return The resulting DownloadEntity.
+		 * @param[in] entity The Entity_ field of the Entity.
+		 * @param[in] location The Location_ field of the Entity.
+		 * @param[in] tp The Params_ field of the Entity.
+		 * @param[in] mime The Mime_ field of the Entity.
+		 * @return The resulting Entity.
 		 *
-		 * @sa DownloadEntity, MakeNotification()
+		 * @sa Entity, MakeNotification()
 		 */
-		PLUGININTERFACE_API DownloadEntity MakeEntity (const QVariant& entity,
+		PLUGININTERFACE_API Entity MakeEntity (const QVariant& entity,
 				const QString& location,
 				LeechCraft::TaskParameters tp,
 				const QString& mime = QString ());
 
-		/** @brief An utility function to make a DownloadEntity with
+		/** @brief An utility function to make a Entity with
 		 * notification.
 		 *
-		 * Creates a DownloadEntity that holds information about
+		 * Creates a Entity that holds information about
 		 * user-visible notification. These notifications have
 		 * "x-leechcraft/notification" MIME.
 		 *
-		 * You can further customize the returned DownloadEntity to suit
-		 * your exact needs. See the documentation for DownloadEntity
+		 * You can further customize the returned Entity to suit
+		 * your exact needs. See the documentation for Entity
 		 * about such entities.
 		 *
 		 * @param[in] header The header of the notification.
 		 * @param[in] text The text of the notification.
 		 * @param[in] priority The priority level of the notification.
-		 * @return The DownloadEntity containing the corresponding
+		 * @return The Entity containing the corresponding
 		 * notification.
 		 *
 		 * @sa DownoadEntity, MakeEntity()
 		 */
-		PLUGININTERFACE_API DownloadEntity MakeNotification (const QString& header,
+		PLUGININTERFACE_API Entity MakeNotification (const QString& header,
 				const QString& text,
 				Priority priority);
 

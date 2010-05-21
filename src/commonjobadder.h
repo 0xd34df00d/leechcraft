@@ -25,7 +25,7 @@ namespace LeechCraft
 {
 	/** Dialog for adding tasks directly via LeechCraft. Has two fields,
 	 * What and Where, corresponding to Entity_ and Location_ fields of
-	 * DownloadEntity respectively.
+	 * Entity respectively.
 	 */
 	class CommonJobAdder : public QDialog,
 						   private Ui::CommonJobAdder

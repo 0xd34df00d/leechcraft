@@ -27,9 +27,9 @@ void Plugin::Init (ICoreProxy_ptr proxy)
 {
 	Core::Instance ().SetCoreProxy (proxy);
 	connect (&Core::Instance (),
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+			SIGNAL (gotEntity (const LeechCraft::Entity&)));
 }
 
 void Plugin::SecondInit ()
@@ -87,13 +87,13 @@ QList<IFindProxy_ptr> Plugin::GetProxy (const LeechCraft::Request& r)
 	return result;
 }
 
-bool Plugin::CouldHandle (const LeechCraft::DownloadEntity& e) const
+bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
 {
 	Core::Instance ().Handle (e);
 	return false;
 }
 
-void Plugin::Handle (LeechCraft::DownloadEntity)
+void Plugin::Handle (LeechCraft::Entity)
 {
 }
 

@@ -99,7 +99,7 @@ namespace LeechCraft
 					return 0;
 			}
 
-			bool Core::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			bool Core::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				if (e.Mime_ == "x-leechcraft/category-search-request" && 
 						e.Entity_.canConvert<QString> ())
@@ -108,7 +108,7 @@ namespace LeechCraft
 					return false;
 			}
 			
-			void Core::Handle (LeechCraft::DownloadEntity e)
+			void Core::Handle (LeechCraft::Entity e)
 			{
 				QString query = e.Entity_.toString ();
 				QStringList cats = e.Additional_ ["Categories"].toStringList ();

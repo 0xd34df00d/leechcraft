@@ -190,7 +190,7 @@ namespace LeechCraft
 					url.setQueryItems (newItems);
 			
 					QString fname = LeechCraft::Util::GetTemporaryName ();
-					LeechCraft::DownloadEntity e =
+					LeechCraft::Entity e =
 						LeechCraft::Util::MakeEntity (url,
 							fname,
 							LeechCraft::Internal |
@@ -309,7 +309,7 @@ namespace LeechCraft
 				else if (Results_.at (r).Type_ == Result::TypeRSS)
 					mime = "application/rss+xml";
 			
-				LeechCraft::DownloadEntity e =
+				LeechCraft::Entity e =
 					LeechCraft::Util::MakeEntity (Results_.at (r).RequestURL_,
 							QString (),
 							LeechCraft::FromUserInitiated,

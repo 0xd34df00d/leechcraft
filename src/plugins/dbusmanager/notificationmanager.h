@@ -40,7 +40,7 @@ namespace LeechCraft
 
 				struct CapCheckData
 				{
-					DownloadEntity Entity_;
+					Entity Entity_;
 				};
 				QMap<QDBusPendingCallWatcher*, CapCheckData> Watcher2CapCheck_;
 
@@ -55,10 +55,10 @@ namespace LeechCraft
 				NotificationManager (QObject* = 0);
 
 				void Init ();
-				bool CouldNotify (const DownloadEntity&) const;
-				void HandleNotification (const DownloadEntity&);
+				bool CouldNotify (const Entity&) const;
+				void HandleNotification (const Entity&);
 			private:
-				void DoNotify (const DownloadEntity&, bool);
+				void DoNotify (const Entity&, bool);
 			private slots:
 				void handleNotificationCallFinished (QDBusPendingCallWatcher*);
 				void handleCapCheckCallFinished (QDBusPendingCallWatcher*);

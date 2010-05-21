@@ -71,8 +71,8 @@ namespace LeechCraft
 				void handleCategoriesGoingToChange (const QStringList&,
 						const QStringList&);
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
-				void delegateEntity (const LeechCraft::DownloadEntity&,
+				void gotEntity (const LeechCraft::Entity&);
+				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
 				void categoriesChanged (const QStringList&, const QStringList&);
 			};

@@ -59,7 +59,7 @@ namespace LeechCraft
 		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
 		std::auto_ptr<ClipboardWatcher> ClipboardWatcher_;
 		std::auto_ptr<LocalSocketHandler> LocalSocketHandler_;
-		QList<DownloadEntity> QueuedEntities_;
+		QList<Entity> QueuedEntities_;
 
 		Core ();
 	public:
@@ -223,12 +223,12 @@ namespace LeechCraft
 		 * the return value of IDownloader::AddJob() is assigned to *id.
 		 * The same is with the provider.
 		 *
-		 * @param[in] entity DownloadEntity.
+		 * @param[in] entity Entity.
 		 * @param[out] id The ID of the job if applicable.
 		 * @param[out] provider The provider that downloads this job.
 		 * @return True if the entity was actually handled.
 		 */
-		bool handleGotEntity (LeechCraft::DownloadEntity entity,
+		bool handleGotEntity (LeechCraft::Entity entity,
 				int *id = 0, QObject **provider = 0);
 	private slots:
 		/** Returns whether the given entity could be handlerd.
@@ -236,10 +236,10 @@ namespace LeechCraft
 		 * @param[in] entity The download entity to be checked.
 		 * @param[out] could Whether the given entity could be checked.
 		 */
-		void handleCouldHandle (const LeechCraft::DownloadEntity& entity,
+		void handleCouldHandle (const LeechCraft::Entity& entity,
 				bool *could);
 
-		void queueEntity (LeechCraft::DownloadEntity);
+		void queueEntity (LeechCraft::Entity);
 
 		void pullEntityQueue ();
 
@@ -271,7 +271,7 @@ namespace LeechCraft
 		 *
 		 * @return The list of objects that are able/download the entity.
 		 */
-		QList<QObject*> GetObjects (const LeechCraft::DownloadEntity& entity,
+		QList<QObject*> GetObjects (const LeechCraft::Entity& entity,
 				ObjectType type, bool detectOnly) const;
 
 		/** Checks whether given entity could be handled or downloaded.
@@ -279,7 +279,7 @@ namespace LeechCraft
 		 * @param[in] entity The entity to check.
 		 * @return Whether the given entity could be handled.
 		 */
-		bool CouldHandle (LeechCraft::DownloadEntity entity) const;
+		bool CouldHandle (LeechCraft::Entity entity) const;
 
 		/** Initializes IInfo's signals of the object.
 		 */
@@ -305,9 +305,9 @@ namespace LeechCraft
 		/** Handles the notification. Either logs it or shows to the
 		 * user, depending in the notification and preferences.
 		 *
-		 * @param[in] entity DownloadEntity with the notification.
+		 * @param[in] entity Entity with the notification.
 		 */
-		void HandleNotify (const LeechCraft::DownloadEntity& entity);
+		void HandleNotify (const LeechCraft::Entity& entity);
 	signals:
 		/** Notifies the user about an error by a pop-up message box.
 		 */

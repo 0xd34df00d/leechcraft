@@ -61,7 +61,7 @@ namespace LeechCraft
 		HandlerChoiceDialog (const QString& entity, QWidget *parent = 0);
 
 		/** Sets the suggested file name. That is, the
-		 * DownloadEntity::Location field.
+		 * Entity::Location field.
 		 *
 		 * @param[in] suggestion The suggested filename.
 		 */

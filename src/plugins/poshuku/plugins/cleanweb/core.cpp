@@ -316,7 +316,7 @@ int Core::rowCount (const QModelIndex& index) const
 	return index.isValid () ? 0 : Filters_.size ();
 }
 
-bool Core::CouldHandle (const DownloadEntity& e) const
+bool Core::CouldHandle (const Entity& e) const
 {
 	QUrl url = e.Entity_.toUrl ();
 	if (url.scheme () == "abp" &&
@@ -346,7 +346,7 @@ bool Core::Exists (const QUrl& url) const
 			FilterFinder<FTUrl_> (url)) != Filters_.end ();
 }
 
-void Core::Handle (DownloadEntity subscr)
+void Core::Handle (Entity subscr)
 {
 	QUrl subscrUrl = subscr.Entity_.toUrl ();
 
@@ -697,7 +697,7 @@ bool Core::Load (const QUrl& url, const QString& subscrName)
 	QString name = QFileInfo (url.path ()).fileName ();
 	QString path = home.absoluteFilePath (name);
 
-	LeechCraft::DownloadEntity e =
+	LeechCraft::Entity e =
 		LeechCraft::Util::MakeEntity (url,
 			path,
 			LeechCraft::Internal |

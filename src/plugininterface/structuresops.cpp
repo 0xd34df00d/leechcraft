@@ -18,7 +18,7 @@
 
 #include "structuresops.h"
 
-QDataStream& operator<< (QDataStream& out, const LeechCraft::DownloadEntity& e)
+QDataStream& operator<< (QDataStream& out, const LeechCraft::Entity& e)
 {
 	quint16 version = 2;
 	out << version
@@ -31,7 +31,7 @@ QDataStream& operator<< (QDataStream& out, const LeechCraft::DownloadEntity& e)
 }
 
 
-QDataStream& operator>> (QDataStream& in, LeechCraft::DownloadEntity& e)
+QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 {
 	quint16 version;
 	in >> version;
@@ -115,14 +115,14 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::DownloadEntity& e)
 	return in;
 }
 
-bool operator< (const LeechCraft::DownloadEntity& e1, const LeechCraft::DownloadEntity& e2)
+bool operator< (const LeechCraft::Entity& e1, const LeechCraft::Entity& e2)
 {
 	return e1.Mime_ < e2.Mime_ &&
 		e1.Location_ < e2.Location_ &&
 		e1.Parameters_ < e2.Parameters_;
 }
 
-bool operator== (const LeechCraft::DownloadEntity& e1, const LeechCraft::DownloadEntity& e2)
+bool operator== (const LeechCraft::Entity& e1, const LeechCraft::Entity& e2)
 {
 	return e1.Mime_ == e2.Mime_ &&
 		e1.Entity_ == e2.Entity_ &&

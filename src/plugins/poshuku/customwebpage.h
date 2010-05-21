@@ -98,10 +98,10 @@ namespace LeechCraft
 				void HandleForms (QWebFrame*, const QNetworkRequest&,
 						QWebPage::NavigationType);
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void loadingURL (const QUrl&);
 				void storeFormData (const PageFormsData_t&);
-				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
+				void couldHandle (const LeechCraft::Entity&, bool*);
 				void delayedFillForms (QWebFrame*);
 
 				// Hook support signals

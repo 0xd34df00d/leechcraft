@@ -56,7 +56,7 @@ namespace LeechCraft
 			private slots:
 				void runWizard ();
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

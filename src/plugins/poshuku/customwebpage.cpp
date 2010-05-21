@@ -70,9 +70,9 @@ namespace LeechCraft
 						Qt::QueuedConnection);
 
 				connect (ExternalProxy_.get (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				connect (mainFrame (),
 						SIGNAL (javaScriptWindowObjectCleared ()),
@@ -245,7 +245,7 @@ namespace LeechCraft
 							return false;
 						case 301:			// Unknown protocol (should delegate)
 						{
-							LeechCraft::DownloadEntity e =
+							LeechCraft::Entity e =
 								LeechCraft::Util::MakeEntity (error->url,
 									QString (),
 									LeechCraft::FromUserInitiated);
@@ -291,7 +291,7 @@ namespace LeechCraft
 				if (proxy->IsCancelled ())
 					return;
 			
-				LeechCraft::DownloadEntity e = Util::MakeEntity (request.url (),
+				LeechCraft::Entity e = Util::MakeEntity (request.url (),
 						QString (),
 						LeechCraft::FromUserInitiated);
 				emit gotEntity (e);
@@ -436,7 +436,7 @@ namespace LeechCraft
 						else
 						{
 							reply->abort ();
-							LeechCraft::DownloadEntity e =
+							LeechCraft::Entity e =
 								LeechCraft::Util::MakeEntity (reply->url (),
 									QString (),
 									LeechCraft::FromUserInitiated);
@@ -456,7 +456,7 @@ namespace LeechCraft
 										property ("ParanoidDownloadsDetection").toBool () ||
 										reply->header (QNetworkRequest::ContentTypeHeader).isValid ())
 								{
-									LeechCraft::DownloadEntity e =
+									LeechCraft::Entity e =
 										LeechCraft::Util::MakeEntity (
 												QVariant::fromValue<QNetworkReply*> (reply),
 												QString (),
@@ -570,7 +570,7 @@ namespace LeechCraft
 				if (scheme == "mailto" ||
 						scheme == "ftp")
 				{
-					LeechCraft::DownloadEntity e =
+					LeechCraft::Entity e =
 						LeechCraft::Util::MakeEntity (request.url (),
 							QString (),
 							LeechCraft::FromUserInitiated);

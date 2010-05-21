@@ -23,7 +23,7 @@
 
 namespace LeechCraft
 {
-	struct DownloadEntity;
+	struct Entity;
 
 	namespace Plugins
 	{
@@ -50,7 +50,7 @@ namespace LeechCraft
 			private:
 				void SetupImporters ();
 			signals:
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

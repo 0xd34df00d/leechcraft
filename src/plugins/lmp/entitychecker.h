@@ -24,7 +24,7 @@
 
 namespace LeechCraft
 {
-	struct DownloadEntity;
+	struct Entity;
 
 	namespace Plugins
 	{
@@ -37,7 +37,7 @@ namespace LeechCraft
 				bool Result_;
 				bool Break_;
 			public:
-				EntityChecker (const LeechCraft::DownloadEntity&);
+				EntityChecker (const LeechCraft::Entity&);
 				bool Can () const;
 			private slots:
 				void stateChanged (Phonon::State);

@@ -110,7 +110,7 @@ namespace LeechCraft
 				void RestoreSettings ();
 				void ScheduleSave ();
 			signals:
-				void gotLink (const LeechCraft::DownloadEntity&) const;
+				void gotLink (const LeechCraft::Entity&) const;
 			};
 		};
 	};

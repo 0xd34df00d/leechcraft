@@ -139,9 +139,9 @@ namespace LeechCraft
 						<< tr ("Standard"));
 
 				connect (LiveStreamManager_.get (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				qRegisterMetaType<libtorrent::entry> ("libtorrent::entry");
 				qRegisterMetaTypeStreamOperators<libtorrent::entry> ("libtorrent::entry");
@@ -317,7 +317,7 @@ namespace LeechCraft
 				return Proxy_;
 			}
 			
-			bool Core::CouldDownload (const DownloadEntity& e) const
+			bool Core::CouldDownload (const Entity& e) const
 			{
 				if (e.Entity_.canConvert<QUrl> ())
 				{
@@ -368,12 +368,12 @@ namespace LeechCraft
 					return false;
 			}
 
-			bool Core::CouldHandle (const DownloadEntity&) const
+			bool Core::CouldHandle (const Entity&) const
 			{
 				return false;
 			}
 
-			void Core::Handle (DownloadEntity)
+			void Core::Handle (Entity)
 			{
 			}
 
@@ -1576,7 +1576,7 @@ namespace LeechCraft
 				QString string = tr ("File finished: %1").arg (name);
 				emit gotEntity (Util::MakeNotification ("BitTorrent", string, PInfo_));
 
-				DownloadEntity e;
+				Entity e;
 				e.Entity_ = QUrl::fromLocalFile (name);
 				e.Parameters_ = LeechCraft::IsDownloaded |
 					LeechCraft::ShouldQuerySource;
@@ -1975,7 +1975,7 @@ namespace LeechCraft
 				for (libtorrent::torrent_info::file_iterator i = info.begin_files (),
 						end = info.end_files (); i != end; ++i)
 				{
-					DownloadEntity e;
+					Entity e;
 					e.Entity_ = QUrl::fromLocalFile (QTextCodec::codecForLocale ()->
 							toUnicode ((torrent.Handle_.save_path () / i->path)
 							.string ().c_str ()).toUtf8 ());
@@ -2347,11 +2347,11 @@ namespace LeechCraft
 					QString text = QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
 						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PWarning_);
+					Entity n = Util::MakeNotification ("BitTorrent", text, PWarning_);
 					QMetaObject::invokeMethod (Core::Instance (),
 							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::DownloadEntity, n));
+							Q_ARG (LeechCraft::Entity, n));
 				}
 			
 				void operator() (const libtorrent::storage_moved_alert& a) const
@@ -2360,11 +2360,11 @@ namespace LeechCraft
 							"<br />moved successfully to:<br />%2")
 						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 						.arg (QString::fromUtf8 (a.path.c_str ()));
-					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PInfo_);
+					Entity n = Util::MakeNotification ("BitTorrent", text, PInfo_);
 					QMetaObject::invokeMethod (Core::Instance (),
 							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::DownloadEntity, n));
+							Q_ARG (LeechCraft::Entity, n));
 				}
 
 				void operator() (const libtorrent::storage_moved_failed_alert& a) const
@@ -2372,11 +2372,11 @@ namespace LeechCraft
 					QString text = QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
 						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
+					Entity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 					QMetaObject::invokeMethod (Core::Instance (),
 							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::DownloadEntity, n));
+							Q_ARG (LeechCraft::Entity, n));
 				}
 			
 				void operator() (const libtorrent::metadata_received_alert& a) const
@@ -2391,11 +2391,11 @@ namespace LeechCraft
 						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 						.arg (QString::fromUtf8 (a.file.c_str ()))
 						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
+					Entity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 					QMetaObject::invokeMethod (Core::Instance (),
 							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::DownloadEntity, n));
+							Q_ARG (LeechCraft::Entity, n));
 				}
 
 				void operator() (const libtorrent::file_rename_failed_alert& a) const
@@ -2405,11 +2405,11 @@ namespace LeechCraft
 						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 						.arg (QString::number (a.index))
 						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
+					Entity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 					QMetaObject::invokeMethod (Core::Instance (),
 							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::DownloadEntity, n));
+							Q_ARG (LeechCraft::Entity, n));
 				}
 
 				void operator() (const libtorrent::torrent_delete_failed_alert& a) const
@@ -2417,11 +2417,11 @@ namespace LeechCraft
 					QString text = QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
 						.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 						.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-					DownloadEntity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
+					Entity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 					QMetaObject::invokeMethod (Core::Instance (),
 							"gotEntity",
 							Qt::QueuedConnection,
-							Q_ARG (LeechCraft::DownloadEntity, n));
+							Q_ARG (LeechCraft::Entity, n));
 				}
 				
 				void operator() (const libtorrent::file_completed_alert&) const

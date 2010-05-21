@@ -43,9 +43,9 @@ void LMP::Init (ICoreProxy_ptr proxy)
 			this,
 			SIGNAL (bringToFront ()));
 	connect (&Core::Instance (),
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,
-			SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+			SIGNAL (gotEntity (const LeechCraft::Entity&)));
 }
 
 void LMP::SecondInit ()
@@ -107,13 +107,13 @@ boost::shared_ptr<XmlSettingsDialog> LMP::GetSettingsDialog () const
 	return SettingsDialog_;
 }
 
-bool LMP::CouldHandle (const LeechCraft::DownloadEntity& e) const
+bool LMP::CouldHandle (const LeechCraft::Entity& e) const
 {
 	EntityChecker ec (e);
 	return ec.Can ();
 }
 
-void LMP::Handle (LeechCraft::DownloadEntity e)
+void LMP::Handle (LeechCraft::Entity e)
 {
 	if (!CouldHandle (e))
 		return;

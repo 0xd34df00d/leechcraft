@@ -113,7 +113,7 @@ ICoreProxy_ptr Core::GetCoreProxy () const
 	return CoreProxy_;
 }
 
-void Core::Handle (const LeechCraft::DownloadEntity& entity)
+void Core::Handle (const LeechCraft::Entity& entity)
 {
 	if (entity.Parameters_ & LeechCraft::DoNotSaveInHistory ||
 			entity.Parameters_ & LeechCraft::Internal ||
@@ -313,7 +313,7 @@ void Core::handleActivated (const QModelIndex& si, QTreeView*)
 
 	index = sm->mapToSource (index);
 
-	LeechCraft::DownloadEntity e = History_.at (index.row ()).Entity_;
+	LeechCraft::Entity e = History_.at (index.row ()).Entity_;
 	e.Parameters_ |= LeechCraft::FromUserInitiated;
 	e.Parameters_ &= ~LeechCraft::IsDownloaded;
 	emit gotEntity (e);

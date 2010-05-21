@@ -67,9 +67,9 @@ namespace LeechCraft
 			{
 				PlayerWidget *result = new PlayerWidget;
 				connect (result,
-					SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+					SIGNAL (gotEntity (const LeechCraft::Entity&)),
 					this,
-					SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+					SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				KeyInterceptor *ki = new KeyInterceptor (result, result);
 				QList<QWidget*> children = result->findChildren<QWidget*> ();
 				children << result;
@@ -125,7 +125,7 @@ namespace LeechCraft
 				return ShowAction_;
 			}
 
-			void Core::Handle (const LeechCraft::DownloadEntity& e)
+			void Core::Handle (const LeechCraft::Entity& e)
 			{
 				MediaSource *source = 0;
 				if (e.Entity_.canConvert<QNetworkReply*> ())

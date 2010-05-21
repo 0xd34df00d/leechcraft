@@ -92,9 +92,9 @@ namespace LeechCraft
 						SLOT (handleAccepted ()));
 
 				connect (this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						wizard (),
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				QString defaultFile = GetSuggestion ();
 
@@ -132,7 +132,7 @@ namespace LeechCraft
 				if (!CheckValidity (filename))
 					return;
 
-				DownloadEntity e = Util::MakeEntity (QUrl::fromLocalFile (filename + "/feedlist.opml"),
+				Entity e = Util::MakeEntity (QUrl::fromLocalFile (filename + "/feedlist.opml"),
 						QString (),
 						FromUserInitiated,
 						"text/x-opml");

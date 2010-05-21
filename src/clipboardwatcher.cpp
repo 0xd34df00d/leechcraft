@@ -50,7 +50,7 @@ namespace LeechCraft
 
 		PreviousClipboardContents_ = text;
 
-		DownloadEntity e = Util::MakeEntity (text.toUtf8 (),
+		Entity e = Util::MakeEntity (text.toUtf8 (),
 				QString (),
 				FromUserInitiated);
 

@@ -78,7 +78,7 @@ namespace LeechCraft
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 				void SetProvider (QObject*, const QString&);
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
+				bool CouldHandle (const LeechCraft::Entity&) const;
 				/** Fetches the searcher from the url.
 				 *
 				 * @param[in] url The url with the search description.
@@ -102,9 +102,9 @@ namespace LeechCraft
 			signals:
 				void error (const QString&);
 				void warning (const QString&);
-				void delegateEntity (const LeechCraft::DownloadEntity&,
+				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void categoriesChanged (const QStringList&, const QStringList&);
 			};
 		};

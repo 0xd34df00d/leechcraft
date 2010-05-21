@@ -177,7 +177,7 @@ LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () c
 
 void LeechCraft::MainWindow::catchError (QString message)
 {
-	DownloadEntity e = Util::MakeEntity ("LeechCraft",
+	Entity e = Util::MakeEntity ("LeechCraft",
 			QString (),
 			AutoAccept | OnlyHandle,
 			"x-leechcraft/notification");

@@ -122,12 +122,12 @@ namespace LeechCraft
 				return Core::Instance ().GetDefaultTab ()->GetToolBar ();
 			}
 
-			bool Summary::CouldHandle (const LeechCraft::DownloadEntity& e) const
+			bool Summary::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return Core::Instance ().CouldHandle (e);
 			}
 			
-			void Summary::Handle (LeechCraft::DownloadEntity e)
+			void Summary::Handle (LeechCraft::Entity e)
 			{
 				Core::Instance ().Handle (e);
 			}

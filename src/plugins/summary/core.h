@@ -80,8 +80,8 @@ namespace LeechCraft
 				SummaryWidget* GetDefaultTab () const;
 				QTreeView* GetCurrentView () const;
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				/** Returns true if both indexes belong to the same model. If
 				 * both indexes are invalid, true is returned.

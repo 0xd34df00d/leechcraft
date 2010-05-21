@@ -51,8 +51,8 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 				QString Greeter (const QString&);
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (const LeechCraft::DownloadEntity&);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (const LeechCraft::Entity&);
 			private:
 				void DumpError ();
 			private slots:

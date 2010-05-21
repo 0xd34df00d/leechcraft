@@ -269,7 +269,7 @@ namespace LeechCraft
 				for (QStringList::const_iterator i = links.begin (),
 						end = links.end ();	i != end; ++i)
 				{
-					LeechCraft::DownloadEntity e;
+					LeechCraft::Entity e;
 					QUrl url (*i);
 					if (url.isValid ())
 						e.Entity_ = url;

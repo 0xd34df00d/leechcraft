@@ -81,8 +81,8 @@ namespace LeechCraft
 				void renderSettingsChanged ();
 			signals:
 				void urlChanged (const QString&);
-				void gotEntity (const LeechCraft::DownloadEntity&);
-				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
+				void gotEntity (const LeechCraft::Entity&);
+				void couldHandle (const LeechCraft::Entity&, bool*);
 				void addToFavorites (const QString&, const QString&);
 				void printRequested (QWebFrame*);
 				void closeRequested ();

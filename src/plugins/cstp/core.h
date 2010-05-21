@@ -107,13 +107,13 @@ namespace LeechCraft
 				void SetToolbar (QToolBar*);
 				void ItemSelected (const QModelIndex&);
 
-				int AddTask (LeechCraft::DownloadEntity&);
+				int AddTask (LeechCraft::Entity&);
 				void KillTask (int);
 				qint64 GetDone (int) const;
 				qint64 GetTotal (int) const;
 				bool IsRunning (int) const;
 				qint64 GetTotalDownloadSpeed () const;
-				bool CouldDownload (const LeechCraft::DownloadEntity&);
+				bool CouldDownload (const LeechCraft::Entity&);
 				QAbstractItemModel* GetRepresentationModel ();
 				void SetNetworkAccessManager (QNetworkAccessManager*);
 				QNetworkAccessManager* GetNetworkAccessManager () const;
@@ -171,7 +171,7 @@ namespace LeechCraft
 				void taskFinished (int);
 				void taskRemoved (int);
 				void taskError (int, IDownload::Error);
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 				void error (const QString&);
 				void fileExists (boost::logic::tribool*);
 			};

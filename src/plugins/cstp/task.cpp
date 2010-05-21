@@ -406,7 +406,7 @@ namespace LeechCraft
 						QString errString = tr ("Error writing to file %1: %2")
 								.arg (To_->fileName ())
 								.arg (To_->errorString ());
-						DownloadEntity e = Util::MakeNotification ("LeechCraft CSTP",
+						Entity e = Util::MakeNotification ("LeechCraft CSTP",
 								errString,
 								PCritical_);
 						emit gotEntity (e);

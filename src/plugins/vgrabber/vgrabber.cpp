@@ -128,15 +128,15 @@ namespace LeechCraft
 				Q_FOREACH (FindProxy_ptr fp, preresult)
 				{
 					connect (fp.get (),
-							SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+							SIGNAL (delegateEntity (const LeechCraft::Entity&,
 									int*, QObject**)),
 							this,
-							SIGNAL (delegateEntity (const LeechCraft::DownloadEntity&,
+							SIGNAL (delegateEntity (const LeechCraft::Entity&,
 									int*, QObject**)));
 					connect (fp.get (),
-							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+							SIGNAL (gotEntity (const LeechCraft::Entity&)),
 							this,
-							SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+							SIGNAL (gotEntity (const LeechCraft::Entity&)));
 					connect (fp.get (),
 							SIGNAL (error (const QString&)),
 							this,

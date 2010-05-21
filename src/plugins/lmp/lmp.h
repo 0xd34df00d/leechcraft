@@ -65,13 +65,13 @@ namespace LeechCraft
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				bool CouldHandle (const LeechCraft::DownloadEntity&) const;
-				void Handle (LeechCraft::DownloadEntity);
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				QList<QAction*> GetActions () const;
 			signals:
 				void bringToFront ();
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

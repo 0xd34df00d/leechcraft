@@ -69,12 +69,12 @@ namespace LeechCraft
 				qint64 GetUploadSpeed () const;
 				void StartAll ();
 				void StopAll ();
-				bool CouldDownload (const DownloadEntity&) const;
-				int AddJob (DownloadEntity);
+				bool CouldDownload (const Entity&) const;
+				int AddJob (Entity);
 				void KillTask (int);
 
-				bool CouldHandle (const DownloadEntity&) const;
-				void Handle (DownloadEntity);
+				bool CouldHandle (const Entity&) const;
+				void Handle (Entity);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 			public slots:
@@ -83,7 +83,7 @@ namespace LeechCraft
 				void jobFinished (int);
 				void jobRemoved (int);
 				void jobError (int, IDownload::Error);
-				void gotEntity (const LeechCraft::DownloadEntity&);
+				void gotEntity (const LeechCraft::Entity&);
 
 				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);

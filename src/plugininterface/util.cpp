@@ -31,7 +31,7 @@
 #include <QUrl>
 #include <QtDebug>
 
-QString LeechCraft::Util::GetUserText (const DownloadEntity& p)
+QString LeechCraft::Util::GetUserText (const Entity& p)
 {
 	QString string = QObject::tr ("Too long to show");
 	if (p.Additional_.contains ("UserVisibleName") &&
@@ -218,12 +218,12 @@ QString LeechCraft::Util::GetTemporaryName (const QString& pattern)
 	return name;
 }
 
-LeechCraft::DownloadEntity LeechCraft::Util::MakeEntity (const QVariant& entity,
+LeechCraft::Entity LeechCraft::Util::MakeEntity (const QVariant& entity,
 		const QString& location,
 		LeechCraft::TaskParameters tp,
 		const QString& mime)
 {
-	DownloadEntity result;
+	Entity result;
 	result.Entity_ = entity;
 	result.Location_ = location;
 	result.Parameters_ = tp;
@@ -231,10 +231,10 @@ LeechCraft::DownloadEntity LeechCraft::Util::MakeEntity (const QVariant& entity,
 	return result;
 }
 
-LeechCraft::DownloadEntity LeechCraft::Util::MakeNotification (const QString& header,
+LeechCraft::Entity LeechCraft::Util::MakeNotification (const QString& header,
 		const QString& text, Priority priority)
 {
-	DownloadEntity result = MakeEntity (header,
+	Entity result = MakeEntity (header,
 			QString (),
 			AutoAccept | OnlyHandle,
 			"x-leechcraft/notification");
