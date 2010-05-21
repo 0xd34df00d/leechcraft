@@ -160,13 +160,11 @@ namespace LeechCraft
 			VE (Init, (IProxyObject*));
 			BE (HandleMenuBarVisibilityChangeRequested, (QWebPage*)(bool));
 			BE (HandleMicroFocusChanged, (QWebPage*));
-			BE (HandlePrintRequested, (QWebPage*)(QWebFrame*));
 			BE (HandleRepaintRequested, (QWebPage*)(const QRect&));
 			BE (HandleRestoreFrameStateRequested, (QWebPage*)(QWebFrame*));
 			BE (HandleSaveFrameStateRequested, (QWebPage*)(QWebFrame*)(QWebHistoryItem*));
 			BE (HandleScrollRequested, (QWebPage*)(int)(int)(const QRect&));
 			BE (HandleSelectionChanged, (QWebPage*));
-			BE (HandleStatusBarMessage, (QWebPage*)(const QString&));
 			BE (HandleStatusBarVisibilityChangeRequested, (QWebPage*)(bool));
 			BE (HandleToolBarVisibilityChangeRequested, (QWebPage*)(bool));
 			CE (OnChooseFile, (QWebPage*)(QWebFrame*)(const QString&), QString);;

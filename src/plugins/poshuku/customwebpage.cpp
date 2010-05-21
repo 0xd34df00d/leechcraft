@@ -369,13 +369,6 @@ namespace LeechCraft
 					return;
 			}
 			
-			void CustomWebPage::handlePrintRequested (QWebFrame *frame)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandlePrintRequested (this, frame))
-					return;
-			}
-			
 			void CustomWebPage::handleRepaintRequested (const QRect& rect)
 			{
 				if (Core::Instance ().GetPluginManager ()->

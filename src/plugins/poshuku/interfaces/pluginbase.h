@@ -80,14 +80,6 @@ namespace LeechCraft
 				}
 
 				/** See the official Qt docs for the
-				 * QWebPage::printRequested() signal.
-				 */
-				virtual bool HandlePrintRequested (QWebPage*, QWebFrame*)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
 				 * QWebPage::repaintRequested() signal.
 				 */
 				virtual bool HandleRepaintRequested (QWebPage*, const QRect&)
@@ -123,14 +115,6 @@ namespace LeechCraft
 				 * QWebPage::selectionChanged() signal.
 				 */
 				virtual bool HandleSelectionChanged (QWebPage*)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::statusBarMessage() signal.
-				 */
-				virtual bool HandleStatusBarMessage (QWebPage*, const QString&)
 				{
 					return false;
 				}

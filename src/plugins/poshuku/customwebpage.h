@@ -69,7 +69,6 @@ namespace LeechCraft
 				void handleLoadStarted ();
 				void handleMenuBarVisibilityChangeRequested (bool);
 				void handleMicroFocusChanged ();
-				void handlePrintRequested (QWebFrame*);
 				void handleRepaintRequested (const QRect&);
 				void handleRestoreFrameStateRequested (QWebFrame*);
 				void handleSaveFrameStateRequested (QWebFrame*, QWebHistoryItem*);
