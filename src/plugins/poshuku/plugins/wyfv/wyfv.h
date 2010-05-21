@@ -68,9 +68,9 @@ namespace LeechCraft
 						QSet<QByteArray> GetPluginClasses () const;
 
 						void Init (IProxyObject*);
-						bool HandleWebPluginFactoryReload (QList<IWebPlugin*>&);
-
 						bool WouldOverrideFlash (const QUrl&) const;
+					public slots:
+						void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr, QList<IWebPlugin*>&);
 					};
 				};
 			};

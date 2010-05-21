@@ -25,6 +25,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
+#include "interfaces/ibrowserwidget.h"
 #include "ui_browserwidget.h"
 
 class QToolBar;
@@ -41,11 +42,12 @@ namespace LeechCraft
 			struct BrowserWidgetSettings;
 
 			class BrowserWidget : public QWidget
+								, public IBrowserWidget
 								, public IWebWidget
 								, public IMultiTabsWidget
 			{
 				Q_OBJECT
-				Q_INTERFACES (IWebWidget IMultiTabsWidget)
+				Q_INTERFACES (LeechCraft::Plugins::Poshuku::IBrowserWidget IWebWidget IMultiTabsWidget)
 
 				Ui::BrowserWidget Ui_;
 
@@ -120,6 +122,10 @@ namespace LeechCraft
 
 				void SetUnclosers (const QList<QAction*>&);
 				CustomWebView* GetView () const;
+				// This is the same as above but to satisfy the IBrowserWidget.
+				QWebView* GetWebView () const;
+				QLineEdit* GetURLEdit () const;
+
 				BrowserWidgetSettings GetWidgetSettings () const;
 				void SetWidgetSettings (const BrowserWidgetSettings&);
 				void SetURL (const QUrl&);
@@ -172,6 +178,7 @@ namespace LeechCraft
 				void handleChangeEncodingTriggered (QAction*);
 				void updateLogicalPath ();
 				void showSendersMenu ();
+				void handleUrlChanged (const QString&);
 			signals:
 				void titleChanged (const QString&);
 				void urlChanged (const QString&);
@@ -184,6 +191,43 @@ namespace LeechCraft
 				void couldHandle (const LeechCraft::DownloadEntity&, bool*);
 				void invalidateSettings ();
 				void raiseTab (QWidget*);
+
+				// Hook support
+				void hookFindText (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget,
+						QString *findText,
+						QWebPage::FindFlags *findFlags);
+				void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget);
+				bool hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget,
+						int *progress);
+				void hookNotificationActionTriggered (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget,
+						int *index);
+				void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget,
+						bool *ok,
+						bool notifyWhenFinished,
+						bool own,
+						bool htmlMode);
+				void hookPrint (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget,
+						bool *preview,
+						QWebFrame *frame);
+				void hookSetURL (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget,
+						QUrl *url);
+				void hookStatusBarMessage (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget,
+						QString *message);
+				void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
+						const QObject *browserWidget,
+						QList<QAction*>*) const;
+				void hookUpdateLogicalPath (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget);
+				void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
+						QObject *browserWidget);
 			};
 		};
 	};

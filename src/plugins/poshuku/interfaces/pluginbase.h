@@ -63,104 +63,6 @@ namespace LeechCraft
 				{
 				}
 
-				/** @brief Begin of web page construction.
-				 *
-				 * This function is called just in the beginning of
-				 * construction of the webpage.
-				 *
-				 * @param[in] webpage Pointer to the web page being
-				 * constructed.
-				 * @return True if the web page construction and plugins
-				 * processing should be stopped, false otherwise.
-				 */
-				virtual bool HandleBeginWebPageConstruction (QWebPage *webpage)
-				{
-					Q_UNUSED (webpage);
-					return false;
-				}
-
-				/** @brief End of web page construction.
-				 *
-				 * This function is called just in the end of
-				 * construction of the webpage.
-				 *
-				 * @param[in] webpage Pointer to the web page being
-				 * constructed.
-				 * @return True if the web page construction and plugins
-				 * processing should be stopped, false otherwise.
-				 */
-				virtual bool HandleEndWebPageConstruction (QWebPage *webpage)
-				{
-					Q_UNUSED (webpage);
-					return false;
-				}
-
-				/** See the official Qt docs for
-				 * QWebPage::extension() function.
-				 */
-				virtual bool HandleExtension (QWebPage*, QWebPage::Extension,
-						const QWebPage::ExtensionOption*, QWebPage::ExtensionReturn*)
-				{
-					throw std::runtime_error ("We don't handle it by default.");
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::frameCreated() signal.
-				 */
-				virtual bool HandleFrameCreated (QWebPage*, QWebFrame*)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::geometryChangeRequested() signal.
-				 */
-				virtual bool HandleGeometryChangeRequested (QWebPage*, const QRect&)
-				{
-					return false;
-				}
-
-				/** This function is called in a slot connected to
-				 * QWebFrame::javaScriptWindowObjectCleared().
-				 */
-				virtual bool HandleJavaScriptWindowObjectCleared (QWebPage*, QWebFrame*)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::linkClicked() signal.
-				 */
-				virtual bool HandleLinkClicked (QWebPage*, const QUrl&)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::linkHovered() signal.
-				 */
-				virtual bool HandleLinkHovered (QWebPage*,
-						const QString&, const QString&, const QString&)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::loadProgress() signal.
-				 */
-				virtual bool HandleLoadProgress (QWebPage*, int)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::loadStarted() signal.
-				 */
-				virtual bool HandleLoadStarted (QWebPage*)
-				{
-					return false;
-				}
-
 				/** See the official Qt docs for the
 				 * QWebPage::menuBarVisibilityChangeRequested() signal.
 				 */
@@ -242,14 +144,6 @@ namespace LeechCraft
 				}
 
 				/** See the official Qt docs for the
-				 * QWebPage::supportsExtension() function.
-				 */
-				virtual bool HandleSupportsExtension (const QWebPage*, QWebPage::Extension)
-				{
-					throw std::runtime_error ("We don't handle it by default.");
-				}
-
-				/** See the official Qt docs for the
 				 * QWebPage::toolBarVisibilityChangeRequested() signal.
 				 */
 				virtual bool HandleToolBarVisibilityChangeRequested (QWebPage*, bool)
@@ -257,44 +151,9 @@ namespace LeechCraft
 					return false;
 				}
 
-				/** See the official Qt docs for the
-				 * QWebPage::unsupportedContent() signal.
-				 */
-				virtual bool HandleUnsupportedContent (QWebPage*, QNetworkReply*)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::windowCloseRequested() signal.
-				 */
-				virtual bool HandleWindowCloseRequested (QWebPage*)
-				{
-					return false;
-				}
-
-				/** See the official Qt docs for the
-				 * QWebPage::acceptNavigationRequest().
-				 */
-				virtual bool OnAcceptNavigationRequest (QWebPage*,
-						QWebFrame*,
-						const QNetworkRequest&,
-						QWebPage::NavigationType)
-				{
-					return false;
-				}
-
 				/** See the official Qt docs for the QWebPage::chooseFile().
 				 */
 				virtual QString OnChooseFile (QWebPage*, QWebFrame*, const QString&)
-				{
-					throw std::runtime_error ("We don't handle it by default.");
-				}
-
-				/** See the official Qt docs for the QWebPage::createPlugin().
-				 */
-				virtual QObject* OnCreatePlugin (QWebPage*, const QString&, const QUrl&,
-						const QStringList&, const QStringList&)
 				{
 					throw std::runtime_error ("We don't handle it by default.");
 				}

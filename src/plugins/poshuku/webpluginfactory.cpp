@@ -81,7 +81,7 @@ namespace LeechCraft
 				Plugins_.clear ();
 				MIME2Plugin_.clear ();
 
-				emit webPluginFactoryReload (IHookProxy_ptr (new Util::DefaultHookProxy),
+				emit hookWebPluginFactoryReload (IHookProxy_ptr (new Util::DefaultHookProxy),
 						Plugins_);
 
 				Q_FOREACH (IWebPlugin *plugin, Plugins_)

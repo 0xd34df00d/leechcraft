@@ -207,7 +207,7 @@ namespace LeechCraft
 
 				IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
-				emit webViewContextMenu (proxy, this, e, r,
+				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSStart);
 			
 				if (!r.linkUrl ().isEmpty ())
@@ -277,7 +277,7 @@ namespace LeechCraft
 						menu->addAction (pageAction (QWebPage::InspectElement));
 				}
 			
-				emit webViewContextMenu (proxy, this, e, r,
+				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterLink);
 			
 				if (!r.imageUrl ().isEmpty ())
@@ -297,7 +297,7 @@ namespace LeechCraft
 							this, SLOT (copyImageLocation ()))->setData (r.imageUrl ());
 				}
 
-				emit webViewContextMenu (proxy, this, e, r,
+				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterImage);
 
 				if (!page ()->selectedText ().isEmpty ())
@@ -312,7 +312,7 @@ namespace LeechCraft
 							this, SLOT (searchSelectedText ()));
 				}
 
-				emit webViewContextMenu (proxy, this, e, r,
+				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterSelectedText);
 			
 				if (menu->isEmpty ())
@@ -336,7 +336,7 @@ namespace LeechCraft
 				menu->addSeparator ();
 				menu->addAction (Browser_->RecentlyClosedAction_);
 
-				emit webViewContextMenu (proxy, this, e, r,
+				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterFinish);
 			
 				if (!menu->isEmpty ())

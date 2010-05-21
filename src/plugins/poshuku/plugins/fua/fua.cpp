@@ -141,7 +141,7 @@ void FUA::Init (IProxyObject*)
 {
 }
 
-void FUA::userAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
+void FUA::hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
 		const QUrl& url, const QWebPage*, QString *result)
 {
 	QString host = url.host ();

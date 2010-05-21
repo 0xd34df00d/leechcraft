@@ -435,7 +435,7 @@ namespace LeechCraft
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 				QString result;
-				emit userAgentForUrlRequested (proxy, url, page, &result);
+				emit hookUserAgentForUrlRequested (proxy, url, page, &result);
 				if (proxy->IsCancelled ())
 					return result;
 

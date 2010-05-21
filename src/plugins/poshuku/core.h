@@ -183,7 +183,7 @@ namespace LeechCraft
 				void newUnclose (QAction*);
 
 				// Hook support signals
-				void userAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
+				void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 						const QUrl&, const QWebPage*, QString*) const;
 			};
 		};

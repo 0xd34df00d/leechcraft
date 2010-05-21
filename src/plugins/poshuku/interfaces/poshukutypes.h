@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
-#define PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
-#include <QHash>
-#include <qwebpluginfactory.h>
-#include <interfaces/iinfo.h>
-#include "interfaces/iwebplugin.h"
+#ifndef PLUGINS_POSHUKU_INTERFACES_POSHUKUTYPES_H
+#define PLUGINS_POSHUKU_INTERFACES_POSHUKUTYPES_H
 
 namespace LeechCraft
 {
@@ -29,30 +25,27 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			class WebPluginFactory : public QWebPluginFactory
+			/** Enumartion describing the part of menu that's being
+			 * constructed inside QWebView's subclass'
+			 * contextMenuEvent.
+			 */
+			enum WebViewCtxMenuStage
 			{
-				Q_OBJECT
-
-				QList<IWebPlugin*> Plugins_;
-				typedef QHash<QString, IWebPlugin*> MIME2Plugin_t;
-				MIME2Plugin_t MIME2Plugin_;
-			public:
-				WebPluginFactory (QObject* = 0);
-				virtual ~WebPluginFactory ();
-
-				QObject* create (const QString&, const QUrl&,
-						const QStringList&, const QStringList&) const;
-				QList<Plugin> plugins () const;
-				void refreshPlugins ();
-			private:
-				void Reload ();
-			signals:
-				void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-						QList<IWebPlugin*>&);
+				/// Just the beginning of menu construction.
+				WVSStart,
+				/// Stage related to clicking on a hyperlink finished.
+				WVSAfterLink,
+				/// Stage related to clicking on an image finished.
+				WVSAfterImage,
+				/// Stage related to clicking with having some
+				/// selected text finished.
+				WVSAfterSelectedText,
+				/// The standard set of actions was embedded, This
+				/// stage is just before executing the menu.
+				WVSAfterFinish
 			};
 		};
 	};
 };
 
 #endif
-

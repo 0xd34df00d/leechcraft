@@ -90,7 +90,7 @@ namespace LeechCraft
 				void invalidateSettings ();
 
 				// Hook support signals
-				void webViewContextMenu (LeechCraft::IHookProxy_ptr,
+				void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
 						QWebView*, QContextMenuEvent*,
 						const QWebHitTestResult&, QMenu*,
 						WebViewCtxMenuStage);

@@ -146,18 +146,18 @@ void CleanWeb::Init (LeechCraft::Plugins::Poshuku::IProxyObject*)
 {
 }
 
-void CleanWeb::webPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+void CleanWeb::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 		QList<LeechCraft::Plugins::Poshuku::IWebPlugin*>& plugins)
 {
 	plugins << Core::Instance ().GetFlashOnClick ();
 }
 
-void CleanWeb::loadFinished (IHookProxy_ptr, QWebPage *page, bool)
+void CleanWeb::hookLoadFinished (IHookProxy_ptr, QWebPage *page, bool)
 {
 	Core::Instance ().HandleLoadFinished (page);
 }
 
-void CleanWeb::webViewContextMenu (IHookProxy_ptr,
+void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
 		QWebView*, QContextMenuEvent*,
 		const QWebHitTestResult& r, QMenu *menu,
 		WebViewCtxMenuStage stage)

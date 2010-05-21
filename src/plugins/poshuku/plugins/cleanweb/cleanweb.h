@@ -76,11 +76,11 @@ namespace LeechCraft
 
 						void Init (IProxyObject*);
 					public slots:
-						void loadFinished (LeechCraft::IHookProxy_ptr,
+						void hookLoadFinished (LeechCraft::IHookProxy_ptr,
 								QWebPage*, bool);
-						void webPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+						void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 								QList<IWebPlugin*>&);
-						void webViewContextMenu (LeechCraft::IHookProxy_ptr,
+						void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
 								QWebView*, QContextMenuEvent*,
 								const QWebHitTestResult&, QMenu*,
 								WebViewCtxMenuStage);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
-#define PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
-#include <QHash>
-#include <qwebpluginfactory.h>
-#include <interfaces/iinfo.h>
-#include "interfaces/iwebplugin.h"
+#ifndef PLUGINS_POSHUKU_IBROWSERWIDGET_H
+#define PLUGINS_POSHUKU_IBROWSERWIDGET_H
+
+class QWebView;
+class QLineEdit;
 
 namespace LeechCraft
 {
@@ -29,30 +28,17 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			class WebPluginFactory : public QWebPluginFactory
+			class IBrowserWidget
 			{
-				Q_OBJECT
-
-				QList<IWebPlugin*> Plugins_;
-				typedef QHash<QString, IWebPlugin*> MIME2Plugin_t;
-				MIME2Plugin_t MIME2Plugin_;
 			public:
-				WebPluginFactory (QObject* = 0);
-				virtual ~WebPluginFactory ();
-
-				QObject* create (const QString&, const QUrl&,
-						const QStringList&, const QStringList&) const;
-				QList<Plugin> plugins () const;
-				void refreshPlugins ();
-			private:
-				void Reload ();
-			signals:
-				void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-						QList<IWebPlugin*>&);
+				virtual QWebView* GetWebView () const = 0;
+				virtual QLineEdit* GetURLEdit () const = 0;
 			};
 		};
 	};
 };
 
-#endif
+Q_DECLARE_INTERFACE (LeechCraft::Plugins::Poshuku::IBrowserWidget,
+		"org.Deviant.LeechCraft.Plugins.Poshuku.IBrowserWidget/1.0");
 
+#endif

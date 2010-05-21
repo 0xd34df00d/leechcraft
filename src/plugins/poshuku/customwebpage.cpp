@@ -51,9 +51,12 @@ namespace LeechCraft
 			{
 				Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 
-				if (Core::Instance ().GetPluginManager ()->
-						HandleBeginWebPageConstruction (this))
-					return;
+				{
+					Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+					emit hookWebPageConstructionStarted (proxy, this);
+					if (proxy->IsCancelled ())
+						return;
+				}
 
 				setForwardUnsupportedContent (true);
 				setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
@@ -114,10 +117,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleLoadFinished (bool)));
 				connect (this,
-						SIGNAL (loadProgress (int)),
-						this,
-						SLOT (handleLoadProgress (int)));
-				connect (this,
 						SIGNAL (loadStarted ()),
 						this,
 						SLOT (handleLoadStarted ()));
@@ -154,10 +153,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleSelectionChanged ()));
 				connect (this,
-						SIGNAL (statusBarMessage (const QString&)),
-						this,
-						SLOT (handleStatusBarMessage (const QString&)));
-				connect (this,
 						SIGNAL (statusBarVisibilityChangeRequested (bool)),
 						this,
 						SLOT (handleStatusBarVisibilityChangeRequested (bool)));
@@ -174,10 +169,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleWindowCloseRequested ()));
 
-				if (Core::Instance ().GetPluginManager ()->
-						HandleEndWebPageConstruction (this))
-					return;
-
 				QString checkDown = tr ("<a href=\"http://downforeveryoneorjustme.com/{host}\" "
 						"target=\"_blank\">check</a> if the site <strong>{host}</strong> is down for you only;",
 						"{host} would be substituded with site's host name.");
@@ -191,6 +182,13 @@ namespace LeechCraft
 						<< tr ("go to web site's <a href=\"{schema}://{host}/\">main page</a> and find the required page from there.");
 
 				Error2Suggestions_ [Http] [404] = Error2Suggestions_ [QtNetwork] [QNetworkReply::ContentNotFoundError];
+
+				{
+					Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+					emit hookWebPageConstructionFinished (proxy, this);
+					if (proxy->IsCancelled ())
+						return;
+				}
 			}
 			
 			CustomWebPage::~CustomWebPage ()
@@ -209,83 +207,79 @@ namespace LeechCraft
 			
 			bool CustomWebPage::supportsExtension (QWebPage::Extension e) const
 			{
-				try
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				bool result = false;
+				emit hookSupportsExtension (proxy, this, e, &result);
+				if (proxy->IsCancelled ())
+					return result;
+
+				switch (e)
 				{
-					return Core::Instance ().GetPluginManager ()->
-							HandleSupportsExtension (this, e);
-				}
-				catch (...)
-				{
-					switch (e)
-					{
-						case ErrorPageExtension:
-							return true;
-						default:
-							return QWebPage::supportsExtension (e);
-					}
+					case ErrorPageExtension:
+						return true;
+					default:
+						return QWebPage::supportsExtension (e);
 				}
 			}
 
 			bool CustomWebPage::extension (QWebPage::Extension e,
 					const QWebPage::ExtensionOption* eo, QWebPage::ExtensionReturn *er)
 			{
-				try
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				bool result = false;
+				emit hookExtension (proxy, this, e, eo, er, &result);
+				if (proxy->IsCancelled ())
+					return result;
+
+				switch (e)
 				{
-					return Core::Instance ().GetPluginManager ()->
-							HandleExtension (this, e, eo, er);
-				}
-				catch (...)
-				{
-					switch (e)
+					case ErrorPageExtension:
 					{
-						case ErrorPageExtension:
+						const ErrorPageExtensionOption *error =
+								static_cast<const ErrorPageExtensionOption*> (eo);
+						ErrorPageExtensionReturn *ret =
+								static_cast<ErrorPageExtensionReturn*> (er);
+						switch (error->error)
 						{
-							const ErrorPageExtensionOption *error =
-									static_cast<const ErrorPageExtensionOption*> (eo);
-							ErrorPageExtensionReturn *ret =
-									static_cast<ErrorPageExtensionReturn*> (er);
-							switch (error->error)
-							{
-							case 102:			// Delegated entity
-								return false;
-							case 301:			// Unknown protocol (should delegate)
-							{
-								LeechCraft::DownloadEntity e =
-									LeechCraft::Util::MakeEntity (error->url,
-										QString (),
-										LeechCraft::FromUserInitiated);
-								emit gotEntity (e);
-								if (XmlSettingsManager::Instance ()->
-										property ("CloseEmptyDelegatedPages").toBool () &&
-										history ()->currentItem ().url ().isEmpty ())
-									emit windowCloseRequested ();
-								return false;
-							}
-							default:
-							{
-								QString data = MakeErrorReplyContents (error->error,
-										error->url, error->errorString, error->domain);
-								ret->baseUrl = error->url;
-								ret->content = data.toUtf8 ();
-								return true;
-							}
-							}
+						case 102:			// Delegated entity
+							return false;
+						case 301:			// Unknown protocol (should delegate)
+						{
+							LeechCraft::DownloadEntity e =
+								LeechCraft::Util::MakeEntity (error->url,
+									QString (),
+									LeechCraft::FromUserInitiated);
+							emit gotEntity (e);
+							if (XmlSettingsManager::Instance ()->
+									property ("CloseEmptyDelegatedPages").toBool () &&
+									history ()->currentItem ().url ().isEmpty ())
+								emit windowCloseRequested ();
+							return false;
 						}
 						default:
-							return QWebPage::extension (e, eo, er);
+						{
+							QString data = MakeErrorReplyContents (error->error,
+									error->url, error->errorString, error->domain);
+							ret->baseUrl = error->url;
+							ret->content = data.toUtf8 ();
+							return true;
+						}
+						}
 					}
+					default:
+						return QWebPage::extension (e, eo, er);
 				}
 			}
 
 			void CustomWebPage::handleContentsChanged ()
 			{
-				emit contentsChanged (IHookProxy_ptr (new Util::DefaultHookProxy),
+				emit hookContentsChanged (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this);
 			}
 			
 			void CustomWebPage::handleDatabaseQuotaExceeded (QWebFrame *frame, QString string)
 			{
-				emit databaseQuotaExceeded (IHookProxy_ptr (new Util::DefaultHookProxy),
+				emit hookDatabaseQuotaExceeded (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this, frame, string);
 			}
 			
@@ -293,7 +287,7 @@ namespace LeechCraft
 			{
 				QNetworkRequest request = other;
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				emit downloadRequested (proxy, this, &request);
+				emit hookDownloadRequested (proxy, this, &request);
 				if (proxy->IsCancelled ())
 					return;
 			
@@ -305,66 +299,60 @@ namespace LeechCraft
 			
 			void CustomWebPage::handleFrameCreated (QWebFrame *frame)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleFrameCreated (this, frame))
-					return;
+				emit hookFrameCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
+						this, frame);
 			}
 			
 			void CustomWebPage::handleJavaScriptWindowObjectCleared ()
 			{
 				QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
-				if (Core::Instance ().GetPluginManager ()->
-						HandleJavaScriptWindowObjectCleared (this, frame))
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				emit hookJavaScriptWindowObjectCleared (proxy, this, frame);
+				if (proxy->IsCancelled ())
 					return;
 
 				frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
 				frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
 			}
 			
-			void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
+			void CustomWebPage::handleGeometryChangeRequested (const QRect& threct)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleGeometryChangeRequested (this, rect))
-					return;
+				QRect rect = threct;
+				emit hookGeometryChangeRequested (IHookProxy_ptr (new Util::DefaultHookProxy),
+						this, &rect);
 			}
 			
-			void CustomWebPage::handleLinkClicked (const QUrl& url)
+			void CustomWebPage::handleLinkClicked (const QUrl& thurl)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleLinkClicked (this, url))
-					return;
+				QUrl url = thurl;
+				emit hookLinkClicked (IHookProxy_ptr (new Util::DefaultHookProxy),
+						this, &url);
 			}
 			
-			void CustomWebPage::handleLinkHovered (const QString& link,
-					const QString& title, const QString& context)
+			void CustomWebPage::handleLinkHovered (const QString& thlink,
+					const QString& thtitle, const QString& thcontext)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleLinkHovered (this, link, title, context))
-					return;
+				QString link = thlink;
+				QString title = thtitle;
+				QString context = thcontext;
+				emit hookLinkHovered (IHookProxy_ptr (new Util::DefaultHookProxy),
+						this, &link, &title, &context);
 			}
 			
 			void CustomWebPage::handleLoadFinished (bool ok)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-				emit loadFinished (proxy, this, &ok);
+				emit hookLoadFinished (proxy, this, &ok);
 				if (proxy->IsCancelled ())
 					return;
 			
 				emit delayedFillForms (mainFrame ());
 			}
 			
-			void CustomWebPage::handleLoadProgress (int progress)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleLoadProgress (this, progress))
-					return;
-			}
-			
 			void CustomWebPage::handleLoadStarted ()
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleLoadStarted (this))
-					return;
+				emit hookLoadStarted (IHookProxy_ptr (new Util::DefaultHookProxy),
+						this);
 			}
 			
 			void CustomWebPage::handleMenuBarVisibilityChangeRequested (bool vis)
@@ -424,13 +412,6 @@ namespace LeechCraft
 					return;
 			}
 			
-			void CustomWebPage::handleStatusBarMessage (const QString& msg)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleStatusBarMessage (this, msg))
-					return;
-			}
-			
 			void CustomWebPage::handleStatusBarVisibilityChangeRequested (bool vis)
 			{
 				if (Core::Instance ().GetPluginManager ()->
@@ -447,8 +428,9 @@ namespace LeechCraft
 			
 			void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleUnsupportedContent (this, reply))
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookUnsupportedContent (proxy, this, reply);
+				if (proxy->IsCancelled ())
 					return;
 
 				switch (reply->error ())
@@ -577,17 +559,19 @@ namespace LeechCraft
 
 			void CustomWebPage::handleWindowCloseRequested ()
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleWindowCloseRequested (this))
-					return;
+				emit hookWindowCloseRequested (IHookProxy_ptr (new Util::DefaultHookProxy),
+						this);
 			}
 			
 			bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
-					const QNetworkRequest& request, QWebPage::NavigationType type)
+					const QNetworkRequest& other, QWebPage::NavigationType type)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						OnAcceptNavigationRequest (this, frame, request, type))
-					return false;
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				bool result = false;
+				QNetworkRequest request = other;
+				emit hookAcceptNavigationRequest (proxy, this, frame, &request, type, &result);
+				if (proxy->IsCancelled ())
+					return result;
 			
 				QString scheme = request.url ().scheme ();
 				if (scheme == "mailto" ||
@@ -643,18 +627,21 @@ namespace LeechCraft
 				}
 			}
 			
-			QObject* CustomWebPage::createPlugin (const QString& clsid, const QUrl& url,
-					const QStringList& names, const QStringList& values)
+			QObject* CustomWebPage::createPlugin (const QString& thclsid, const QUrl& thurl,
+					const QStringList& thnames, const QStringList& thvalues)
 			{
-				try
-				{
-					return Core::Instance ().GetPluginManager ()->
-						OnCreatePlugin (this, clsid, url, names, values);
-				}
-				catch (...)
-				{
-					return QWebPage::createPlugin (clsid, url, names, values);
-				}
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				QObject *result = 0;
+				QString clsid = thclsid;
+				QUrl url = thurl;
+				QStringList names = thnames;
+				QStringList values = thvalues;
+				emit hookCreatePlugin (proxy, this,
+						&clsid, &url, &names, &values, &result);
+				if (proxy->IsCancelled ())
+					return result;
+
+				return QWebPage::createPlugin (clsid, url, names, values);
 			}
 			
 			QWebPage* CustomWebPage::createWindow (QWebPage::WebWindowType type)

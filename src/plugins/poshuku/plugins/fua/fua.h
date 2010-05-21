@@ -80,7 +80,7 @@ namespace LeechCraft
 						void Save () const;
 						const QMap<QString, QString>& GetBrowser2ID () const;
 					public slots:
-						void userAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
+						void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 								const QUrl&, const QWebPage*, QString*);
 					};
 				};

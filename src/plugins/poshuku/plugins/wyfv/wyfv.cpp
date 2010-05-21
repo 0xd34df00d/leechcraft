@@ -106,10 +106,10 @@ namespace LeechCraft
 					{
 					}
 
-					bool WYFV::HandleWebPluginFactoryReload (QList<IWebPlugin*>& plugins)
+					void WYFV::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+							QList<IWebPlugin*>& plugins)
 					{
 						plugins << Core::Instance ().GetWYFVPlugin ();
-						return false;
 					}
 
 					bool WYFV::WouldOverrideFlash (const QUrl& url) const

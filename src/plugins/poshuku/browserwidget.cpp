@@ -44,6 +44,7 @@
 #include <qwebelement.h>
 #include <QDataStream>
 #include <plugininterface/util.h>
+#include <plugininterface/defaulthookproxy.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -73,6 +74,7 @@ namespace LeechCraft
 			, Own_ (true)
 			{
 				Ui_.setupUi (this);
+				Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 				Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
 				Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
 				Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
@@ -292,11 +294,7 @@ namespace LeechCraft
 				connect (Ui_.WebView_,
 						SIGNAL (urlChanged (const QString&)),
 						this,
-						SIGNAL (urlChanged (const QString&)));
-				connect (Ui_.WebView_,
-						SIGNAL (urlChanged (const QString&)),
-						Ui_.URLEdit_,
-						SLOT (setText (const QString&)));
+						SLOT (handleUrlChanged (const QString&)));
 				connect (Ui_.WebView_,
 						SIGNAL (urlChanged (const QString&)),
 						this,
@@ -467,6 +465,16 @@ namespace LeechCraft
 				return Ui_.WebView_;
 			}
 
+			QWebView* BrowserWidget::GetWebView () const
+			{
+				return GetView ();
+			}
+
+			QLineEdit* BrowserWidget::GetURLEdit () const
+			{
+				return Ui_.URLEdit_;
+			}
+
 			BrowserWidgetSettings BrowserWidget::GetWidgetSettings () const
 			{
 				QByteArray ba;
@@ -513,8 +521,14 @@ namespace LeechCraft
 					SetOnLoadScrollPoint (settings.ScrollPosition_);
 			}
 			
-			void BrowserWidget::SetURL (const QUrl& url)
+			void BrowserWidget::SetURL (const QUrl& thurl)
 			{
+				QUrl url = thurl;
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookSetURL (proxy, this, &url);
+				if (proxy->IsCancelled ())
+					return;
+
 				if (!url.isEmpty ())
 				{
 					HtmlMode_ = false;
@@ -623,12 +637,18 @@ namespace LeechCraft
 			QList<QAction*> BrowserWidget::GetTabBarContextMenuActions () const
 			{
 				QList<QAction*> result;
-				result << Reload_
-					<< NotifyWhenFinished_
-					<< Add2Favorites_
-					<< RecentlyClosedAction_
-					<< Print_
-					<< Back_;
+
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookTabBarContextMenuActions (proxy, this, &result);
+
+				if (!proxy->IsCancelled ())
+					result << Reload_
+						<< NotifyWhenFinished_
+						<< Add2Favorites_
+						<< RecentlyClosedAction_
+						<< Print_
+						<< Back_;
+
 				return result;
 			}
 
@@ -644,6 +664,11 @@ namespace LeechCraft
 			
 			void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
 			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookPrint (proxy, this, &preview, frame);
+				if (proxy->IsCancelled ())
+					return;
+
 				std::auto_ptr<QPrinter> printer (new QPrinter ());
 			
 				QPrintDialog *dialog = new QPrintDialog (printer.get (), this);
@@ -683,7 +708,11 @@ namespace LeechCraft
 			
 			void BrowserWidget::notificationActionTriggered (int idx)
 			{
-				qDebug () << Q_FUNC_INFO << idx;
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookNotificationActionTriggered (proxy, this, &idx);
+				if (proxy->IsCancelled ())
+					return;
+
 				switch (idx)
 				{
 					case 0:
@@ -698,14 +727,25 @@ namespace LeechCraft
 
 			void BrowserWidget::handleIconChanged ()
 			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookIconChanged (proxy, this);
+				if (proxy->IsCancelled ())
+					return;
+
 				QIcon icon = Ui_.WebView_->icon ();
 				if (icon.isNull ())
 					icon = Core::Instance ().GetIcon (Ui_.WebView_->url ());
 				emit iconChanged (icon);
 			}
 			
-			void BrowserWidget::handleStatusBarMessage (const QString& msg)
+			void BrowserWidget::handleStatusBarMessage (const QString& thmsg)
 			{
+				QString msg = thmsg;
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookStatusBarMessage (proxy, this, &msg);
+				if (proxy->IsCancelled ())
+					return;
+
 				emit statusBarChanged (msg);
 			}
 			
@@ -713,6 +753,11 @@ namespace LeechCraft
 			{
 				if (Ui_.URLEdit_->IsCompleting () ||
 						Ui_.URLEdit_->text ().isEmpty ())
+					return;
+
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookURLEditReturnPressed (proxy, this);
+				if (proxy->IsCancelled ())
 					return;
 			
 				Load (Ui_.URLEdit_->text ());
@@ -771,9 +816,13 @@ namespace LeechCraft
 				FindDialog_->Focus ();
 			}
 			
-			void BrowserWidget::findText (const QString& text,
+			void BrowserWidget::findText (const QString& thtext,
 					QWebPage::FindFlags flags)
 			{
+				QString text = thtext;
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookFindText (proxy, this, &text, &flags);
+
 				if (PreviousFindText_ != text)
 				{
 					QWebPage::FindFlags nflags = flags | QWebPage::HighlightAllOccurrences;
@@ -1048,6 +1097,11 @@ namespace LeechCraft
 			
 			void BrowserWidget::handleLoadProgress (int p)
 			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookLoadProgress (proxy, this, &p);
+				if (proxy->IsCancelled ())
+					return;
+
 				Ui_.Progress_->setValue (p);
 				Ui_.Progress_->setVisible (!(p == 100 || !p));
 				QAction *o = 0;
@@ -1081,6 +1135,10 @@ namespace LeechCraft
 
 			void BrowserWidget::notifyLoadFinished (bool ok)
 			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookNotifyLoadFinished (proxy, this, &ok,
+						NotifyWhenFinished_->isChecked (), Own_, HtmlMode_);
+
 				if (!NotifyWhenFinished_->isChecked () ||
 						!Own_ ||
 						HtmlMode_ ||
@@ -1167,6 +1225,11 @@ namespace LeechCraft
 
 			void BrowserWidget::updateLogicalPath ()
 			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookUpdateLogicalPath (proxy, this);
+				if (proxy->IsCancelled ())
+					return;
+
 				static QStringList skip;
 
 				skip << "org.ru"
@@ -1209,6 +1272,12 @@ namespace LeechCraft
 
 				QMenu *menu = action->menu ();
 				menu->exec (QCursor::pos ());
+			}
+
+			void BrowserWidget::handleUrlChanged (const QString& value)
+			{
+				emit urlChanged (value);
+				Ui_.URLEdit_->setText (value);
 			}
 		};
 	};

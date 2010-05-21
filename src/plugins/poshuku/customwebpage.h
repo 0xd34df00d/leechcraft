@@ -66,7 +66,6 @@ namespace LeechCraft
 				void handleLinkClicked (const QUrl&);
 				void handleLinkHovered (const QString&, const QString&, const QString&);
 				void handleLoadFinished (bool);
-				void handleLoadProgress (int);
 				void handleLoadStarted ();
 				void handleMenuBarVisibilityChangeRequested (bool);
 				void handleMicroFocusChanged ();
@@ -76,7 +75,6 @@ namespace LeechCraft
 				void handleSaveFrameStateRequested (QWebFrame*, QWebHistoryItem*);
 				void handleScrollRequested (int, int, const QRect&);
 				void handleSelectionChanged ();
-				void handleStatusBarMessage (const QString&);
 				void handleStatusBarVisibilityChangeRequested (bool);
 				void handleToolBarVisiblityChangeRequested (bool);
 				void handleUnsupportedContent (QNetworkReply*);
@@ -108,13 +106,69 @@ namespace LeechCraft
 				void delayedFillForms (QWebFrame*);
 
 				// Hook support signals
-				void contentsChanged (LeechCraft::IHookProxy_ptr, QWebPage*);
-				void databaseQuotaExceeded (LeechCraft::IHookProxy_ptr,
-						QWebPage*, QWebFrame*, QString);
-				void downloadRequested (LeechCraft::IHookProxy_ptr,
-						QWebPage*, QNetworkRequest*);
-				void loadFinished (LeechCraft::IHookProxy_ptr,
-						QWebPage*, bool*);
+				void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QNetworkRequest *request,
+						QWebPage::NavigationType type,
+						bool *result);
+				void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page);
+				void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QString *clsid,
+						QUrl *url,
+						QStringList *params,
+						QStringList *values,
+						QObject **result);
+				void hookDatabaseQuotaExceeded (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *sourcePage,
+						QWebFrame *sourceFrame,
+						QString databaseName);
+				void hookDownloadRequested (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *sourcePage,
+						QNetworkRequest *downloadRequest);
+				void hookExtension (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebPage::Extension extension,
+						const QWebPage::ExtensionOption* extensionOption,
+						QWebPage::ExtensionReturn* extensionReturn,
+						bool *result);
+				void hookFrameCreated (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frameCreated);
+				bool hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QRect *rect);
+				void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *sourcePage,
+						QWebFrame *frameCleared);
+				bool hookLinkClicked (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QUrl *url);
+				bool hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QString *link,
+						QString *title,
+						QString *textContent);
+				void hookLoadFinished (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						bool *result);
+				bool hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page);
+				void hookSupportsExtension (LeechCraft::IHookProxy_ptr proxy,
+						const QWebPage *page,
+						QWebPage::Extension extension,
+						bool *result) const;
+				void hookUnsupportedContent (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QNetworkReply *reply);
+				bool hookWebPageConstructionFinished (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page);
+				bool hookWebPageConstructionStarted (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page);
+				void hookWindowCloseRequested (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page);
 			};
 		};
 	};

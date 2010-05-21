@@ -158,18 +158,6 @@ namespace LeechCraft
 				}
 			
 			VE (Init, (IProxyObject*));
-			BE (HandleBeginWebPageConstruction, (QWebPage*));
-			BE (HandleEndWebPageConstruction, (QWebPage*));
-			CE (HandleExtension,
-					(QWebPage*)(QWebPage::Extension)(const QWebPage::ExtensionOption*)(QWebPage::ExtensionReturn*),
-					bool);
-			BE (HandleFrameCreated, (QWebPage*)(QWebFrame*));
-			BE (HandleGeometryChangeRequested, (QWebPage*)(const QRect&));
-			BE (HandleJavaScriptWindowObjectCleared, (QWebPage*)(QWebFrame*));
-			BE (HandleLinkClicked, (QWebPage*)(const QUrl&));
-			BE (HandleLinkHovered, (QWebPage*)(const QString&)(const QString&)(const QString&));
-			BE (HandleLoadProgress, (QWebPage*)(int));
-			BE (HandleLoadStarted, (QWebPage*));
 			BE (HandleMenuBarVisibilityChangeRequested, (QWebPage*)(bool));
 			BE (HandleMicroFocusChanged, (QWebPage*));
 			BE (HandlePrintRequested, (QWebPage*)(QWebFrame*));
@@ -180,16 +168,8 @@ namespace LeechCraft
 			BE (HandleSelectionChanged, (QWebPage*));
 			BE (HandleStatusBarMessage, (QWebPage*)(const QString&));
 			BE (HandleStatusBarVisibilityChangeRequested, (QWebPage*)(bool));
-			CE (HandleSupportsExtension, (const QWebPage*)(QWebPage::Extension), bool)
 			BE (HandleToolBarVisibilityChangeRequested, (QWebPage*)(bool));
-			BE (HandleUnsupportedContent, (QWebPage*)(QNetworkReply*));
-			BE (HandleWindowCloseRequested, (QWebPage*));
-			BE (OnAcceptNavigationRequest,
-					(QWebPage*)(QWebFrame*)(const QNetworkRequest&)(QWebPage::NavigationType));
-			CE (OnChooseFile, (QWebPage*)(QWebFrame*)(const QString&), QString);
-			CE (OnCreatePlugin,
-					(QWebPage*)(const QString&)(const QUrl&)(const QStringList&)(const QStringList&),
-					QObject*);
+			CE (OnChooseFile, (QWebPage*)(QWebFrame*)(const QString&), QString);;
 			CE (OnCreateWindow, (QWebPage*)(QWebPage::WebWindowType), QWebPage*);
 			BE (OnJavaScriptAlert, (QWebPage*)(QWebFrame*)(const QString&));
 			CE (OnJavaScriptConfirm, (QWebPage*)(QWebFrame*)(const QString&), bool);
