@@ -1,36 +1,30 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
 	<head>
 		<title>{title}</title>
 		<style>
-			body {margin: 0; padding: 0; border: 0; background: #641616}
-			#main {
-				height: auto;
-				width: 60%;
-				margin-left: auto;
-				margin-right: auto;
-				margin-top: 10%;
-				min-height: 40;
-				-webkit-border-radius: 1.7em;
-				border: 2px solid #ff3a23;
-				background: #535353 scroll no-repeat;
-				padding:1em;
-			}
-			img {height: 32px; width: 32px; left: 5px; margin: 5px; float: left; display:block;}
-			strong {color: #ffc637; margin: 5px; }
-			h2 {font-size: 1.5em; }
-			h3 {color: #f9bf30; margin: 5px; font-size: 1.2em;}
-			p {font-size: 1.0em; padding-top: 1em; padding-left: 1em; padding-bottom: 0em; color: #ff8c11; text-align: justify;}
-			ul {font-size: 0.9em; padding-left: 4em; padding-top: 0em; color: #1E0F01; text-align: justify;}
+			html * {margin: 0; padding: 0; border: 0; font-family: sans-serif;}
+			body {background: lightgrey; color: black;}
+			#main {margin: 0 auto; width: 50%;}
+			span {display: block; position: relative; top: 50%; margin-top: -25%; height: auto;min-height: 40;-webkit-border-radius: 15px; border:thin solid dimgray;background: snow;padding:2em; padding-left: 70px;}
+			img {height: 32px; width: 32px; position: absolute; left: 25px; top: 33px;}
+			hr {height: 1px; background: gainsboro;}
+			h1 {font-size: 2em; line-height: 32px;}
+			h2 {font-size: 1.4em;}
+			p {padding-top: 1em;padding-left: 1px;}
+			ul {font-size: 0.9em;padding-left: 3px;list-style-position: inside;}
 		</style>
 	</head>
 	<body>
 		<div id="main">
-			<img src="{img}" alt="" />
-			<h2><strong>{title}</strong></h2>
-			<h3>{subtitle}</h3>
+		<span>
+			<img src="{img}" alt="Something wrong" />
+			<h1>{title}</h1>
+			<hr>
+			<h2>{subtitle}</h2>
 			<p>{body}</p>
 			{additional}
+		</span>
 		</div>
 	</body>
 </html>
