@@ -96,7 +96,12 @@ namespace LeechCraft
 								QNetworkAccessManager::Operation*,
 								QNetworkRequest*,
 								QIODevice**);
-						void HandleLoadFinished (QWebPage*);
+						void HandleExtension (LeechCraft::IHookProxy_ptr,
+								QWebPage*,
+								QWebPage::Extension,
+								const QWebPage::ExtensionOption*,
+								QWebPage::ExtensionReturn*,
+								bool*);
 						void HandleContextMenu (const QWebHitTestResult&,
 								QMenu*, WebViewCtxMenuStage);
 						bool ShouldReject (const QNetworkRequest&, QString*) const;

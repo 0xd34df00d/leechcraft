@@ -152,9 +152,14 @@ void CleanWeb::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 	plugins << Core::Instance ().GetFlashOnClick ();
 }
 
-void CleanWeb::hookLoadFinished (IHookProxy_ptr, QWebPage *page, bool)
+void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
+		QWebPage *page,
+		QWebPage::Extension ext,
+		const QWebPage::ExtensionOption *opt,
+		QWebPage::ExtensionReturn *ret,
+		bool *result)
 {
-	Core::Instance ().HandleLoadFinished (page);
+	Core::Instance ().HandleExtension (proxy, page, ext, opt, ret, result);
 }
 
 void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,

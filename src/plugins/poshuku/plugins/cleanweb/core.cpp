@@ -385,37 +385,46 @@ QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 	QString matched;
 	if (ShouldReject (*req, &matched))
 	{
-		if (Blocked_.size () > 30)
+		if (Blocked_.size () > 300)
 			Blocked_.removeFirst ();
-		qDebug () << "rejecting against" << matched << req->url ();
-		Blocked_ << matched;
+		qDebug () << "rejecting against" << matched;
+		Blocked_ << req->url ().toString ();
 		hook->CancelDefault ();
 		return new BlockedNetworkReply (*req, this);
 	}
 	return 0;
 }
 
-void Core::HandleLoadFinished (QWebPage *page)
+void Core::HandleExtension (LeechCraft::IHookProxy_ptr proxy,
+		QWebPage *page,
+		QWebPage::Extension ext,
+		const QWebPage::ExtensionOption *opt,
+		QWebPage::ExtensionReturn *ret,
+		bool *result)
 {
+	if (ext != QWebPage::ErrorPageExtension)
+		return;
+
+	const QWebPage::ErrorPageExtensionOption *error =
+			static_cast<const QWebPage::ErrorPageExtensionOption*> (opt);
+	if (error->error != QNetworkReply::ContentAccessDenied)
+		return;
+
+	QString url = error->url.toString ();
+	if (!Blocked_.contains (url))
+		return;
+
+	proxy->CancelDefault ();
+	*result = true;
+
 	QWebFrame *frame = page->mainFrame ();
-	Q_FOREACH (QString blocked, Blocked_)
-	{
-		QString stripped = blocked;
-		stripped.remove ('\\');
-		stripped.remove ('*');
-		QString selector = QString ("*[src~=\"%1\"]").arg (stripped);
-		QWebElementCollection elems = frame->findAllElements (selector);
-
-		if (elems.count ())
-			Blocked_.removeOne (blocked);
-		else
-			continue;
-
-		qDebug () << blocked << elems.count ();
-
+	QWebElementCollection elems =
+			frame->findAllElements (QString ("*[src=\"%1\"]").arg (url));
+	if (elems.count ())
 		Q_FOREACH (QWebElement elem, elems)
 			elem.removeFromDocument ();
-	}
+	else
+		qWarning () << Q_FUNC_INFO << "not found" << url;
 }
 
 void Core::HandleContextMenu (const QWebHitTestResult& r,
