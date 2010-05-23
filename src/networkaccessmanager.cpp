@@ -202,6 +202,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	else
 	{
 		QUrl url = reply->url ();
+		QPointer<QNetworkReply> repGuarded (reply);
 		QString msg = tr ("<code>%1</code><br />has SSL errors."
 				" What do you want to do?")
 			.arg (url.toString ());
@@ -224,7 +225,13 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		}
 
 		if (ignore)
-			reply->ignoreSslErrors ();
+		{
+			if (repGuarded)
+				repGuarded->ignoreSslErrors ();
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "reply destructed while in errors dialog";
+		}
 	}
 	settings.endGroup ();
 }
