@@ -112,11 +112,17 @@
 				<option name="ar">
 					<label lang="en" value="Arabic (العربية)" />
 				</option>
+				<option name="de">
+					<label lang="en" value="German (Deutsch)" />
+				</option>
 				<option name="en">
 					<label lang="en" value="English" />
 				</option>
-				<option name="es">
+				<option name="eo">
 					<label lang="en" value="Esperanto" />
+				</option>
+				<option name="es">
+					<label lang="en" value="Spanish" />
 				</option>
 				<option name="it">
 					<label lang="en" value="Italian (Italiano)" />
