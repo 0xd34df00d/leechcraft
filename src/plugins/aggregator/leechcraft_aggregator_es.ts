@@ -12,55 +12,12 @@
         <translation>URL:</translation>
     </message>
     <message>
-        <source>http://deviant-soft.ws/rss.xml</source>
-        <translation type="obsolete">http://deviant-soft.ws/rss.xml</translation>
-    </message>
-    <message>
         <source>Tags:</source>
         <translation>Etiquetas:</translation>
     </message>
     <message>
         <source>untagged</source>
         <translation>sin etiquetar</translation>
-    </message>
-</context>
-<context>
-    <name>Aggregator</name>
-    <message>
-        <source>Add feed...</source>
-        <translation type="obsolete">Añadir feed...</translation>
-    </message>
-    <message>
-        <source>Update all feeds</source>
-        <translation type="obsolete">Actualizar todos los feeds</translation>
-    </message>
-    <message>
-        <source>Item bucket...</source>
-        <translation type="obsolete">Cubo de elementos...</translation>
-    </message>
-    <message>
-        <source>Regexp matcher...</source>
-        <translation type="obsolete">Emparejador de exp. regulares...</translation>
-    </message>
-    <message>
-        <source>Import from OPML...</source>
-        <translation type="obsolete">Importar desde OPML...</translation>
-    </message>
-    <message>
-        <source>Export to OPML...</source>
-        <translation type="obsolete">Exportar a OPML...</translation>
-    </message>
-    <message>
-        <source>Import from binary...</source>
-        <translation type="obsolete">Importar desde binario...</translation>
-    </message>
-    <message>
-        <source>Export to binary...</source>
-        <translation type="obsolete">Exportar a binario...</translation>
-    </message>
-    <message>
-        <source>Export to FB2...</source>
-        <translation type="obsolete">Exportar a FB2...</translation>
     </message>
 </context>
 <context>
@@ -226,20 +183,12 @@
         <translation>Predeterminado</translation>
     </message>
     <message>
-        <source> min</source>
-        <translation type="obsolete"> min</translation>
-    </message>
-    <message>
         <source>Max items number:</source>
         <translation>Máximo número de elementos:</translation>
     </message>
     <message>
         <source>Max item&apos;s age:</source>
         <translation>Antigüedad máxima del elemento:</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation type="obsolete"> días</translation>
     </message>
     <message>
         <source>Update favicon</source>
@@ -401,80 +350,12 @@
         <source>Case sensitive</source>
         <translation>Sensible a mayúsculas y minúsculas</translation>
     </message>
-    <message>
-        <source>Subscribe to comments</source>
-        <translation type="obsolete">Suscribirse a los comentarios</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::Aggregator</name>
     <message>
         <source>RSS/Atom feed reader.</source>
         <translation>Lector de feeds RSS/Atom.</translation>
-    </message>
-    <message>
-        <source>Add feed...</source>
-        <translation type="obsolete">Añadir feed</translation>
-    </message>
-    <message>
-        <source>Update all feeds</source>
-        <translation type="obsolete">Actualizar todos los feeds</translation>
-    </message>
-    <message>
-        <source>Remove feed</source>
-        <translation type="obsolete">Eliminar feed</translation>
-    </message>
-    <message>
-        <source>Mark channel as read</source>
-        <translation type="obsolete">Marcar el canal como leído</translation>
-    </message>
-    <message>
-        <source>Mark channel as unread</source>
-        <translation type="obsolete">Marcar el canal como no leído</translation>
-    </message>
-    <message>
-        <source>Settings...</source>
-        <translation type="obsolete">Preferencias...</translation>
-    </message>
-    <message>
-        <source>Update selected feed</source>
-        <translation type="obsolete">Actualizar feed seleccionado</translation>
-    </message>
-    <message>
-        <source>Item bucket...</source>
-        <translation type="obsolete">Cubo de elementos...</translation>
-    </message>
-    <message>
-        <source>Regexp matcher...</source>
-        <translation type="obsolete">Emparejador de exp. regulares</translation>
-    </message>
-    <message>
-        <source>Hide read items</source>
-        <translation type="obsolete">Ocultar elementos leídos</translation>
-    </message>
-    <message>
-        <source>Import from OPML...</source>
-        <translation type="obsolete">Importar desde OPML...</translation>
-    </message>
-    <message>
-        <source>Export to OPML...</source>
-        <translation type="obsolete">Exportar a OPML...</translation>
-    </message>
-    <message>
-        <source>Import from binary...</source>
-        <translation type="obsolete">Importar desde binario...</translation>
-    </message>
-    <message>
-        <source>Export to binary...</source>
-        <translation type="obsolete">Exportar a binario...</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
-        <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do it?</source>
-        <translation type="obsolete">Vas a eliminar permanentemente el feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;¿Estas seguro de que lo quieres hacer?</translation>
     </message>
     <message>
         <source>Export to OPML</source>
@@ -536,28 +417,8 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::Core</name>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">Nombre</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">Fecha</translation>
-    </message>
-    <message>
-        <source>This feed is already added.</source>
-        <translation type="obsolete">Este feed ya ha sido añadido</translation>
-    </message>
-    <message>
         <source>Job for feed %1 wasn&apos;t delegated.</source>
         <translation>Trabajo para el feed %1 no fue delegado.</translation>
-    </message>
-    <message>
-        <source>Could not remove the feed.</source>
-        <translation type="obsolete">No se pudo eliminar el feed.</translation>
-    </message>
-    <message>
-        <source>Could not get feed settings</source>
-        <translation type="obsolete">No se pudieron cargar los ajustes del feed</translation>
     </message>
     <message>
         <source>Could not update feed settings</source>
@@ -578,14 +439,6 @@
     <message>
         <source>OPML from file %1 is not valid.</source>
         <translation>OPML de archivo %1 is no es válido.</translation>
-    </message>
-    <message>
-        <source>Provided web browser is wrong web browser.</source>
-        <translation type="obsolete">El navegador web seleccionado es erroneo</translation>
-    </message>
-    <message>
-        <source>Downloaded file from url %1 has null size!</source>
-        <translation type="obsolete">¡El archivo descargado desde la url %1 tiene tamaño nulo!</translation>
     </message>
     <message>
         <source>Feed with url %1 not found.</source>
@@ -618,14 +471,6 @@
     <message>
         <source>External file %1 wasn&apos;t delegated.</source>
         <translation>El archivo externo %1 no fue delegado.</translation>
-    </message>
-    <message>
-        <source>Added channel &quot;%1&quot; (has %2 items)</source>
-        <translation type="obsolete">Canal &quot;%1&quot; añadido (tiene %2 elementos)</translation>
-    </message>
-    <message>
-        <source>Updated channel &quot;%1&quot; (%2 new items)</source>
-        <translation type="obsolete">Canal &quot;%1&quot; actualizado (%2 nuevos elementos)</translation>
     </message>
     <message>
         <source>Could not mark channel</source>
@@ -712,10 +557,6 @@
         <translation>Error de descarga</translation>
     </message>
     <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Aggregator</translation>
-    </message>
-    <message>
         <source>Could not get feed settings: %1</source>
         <translation>No se pudieron cargar los ajustes del feed: %1</translation>
     </message>
@@ -743,6 +584,7 @@
         <comment>Channel update</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -765,16 +607,13 @@
         <translation>Por %1</translation>
     </message>
     <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
         <source>Could not open file %1 for write:&lt;br /&gt;%2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
         <source>%n unread item(s)</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -834,13 +673,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::ItemModel</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nombre</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::Aggregator::ItemsListModel</name>
     <message>
         <source>Name</source>
@@ -858,10 +690,6 @@
         <translation>Marcar el elemento como no leído</translation>
     </message>
     <message>
-        <source>Add to item bucket</source>
-        <translation type="obsolete">Añadir item al cubo</translation>
-    </message>
-    <message>
         <source>Published on %1 by %2</source>
         <translation>Publicado en %1 por %2</translation>
     </message>
@@ -872,18 +700,6 @@
     <message>
         <source>Published by %1</source>
         <translation>Publicado por %1</translation>
-    </message>
-    <message>
-        <source>%1 comments, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</source>
-        <translation type="obsolete">%1 comentarios, &lt;a href=&apos;%2&apos;%3&gt;verlos&lt;/a&gt;&lt;/div&gt;</translation>
-    </message>
-    <message>
-        <source>%1 comments&lt;/div&gt;</source>
-        <translation type="obsolete">%1 comentarios&lt;/div&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;/div&gt;</source>
-        <translation type="obsolete">&lt;a href=&apos;%1&apos;%2&gt;Ver comentarios&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
@@ -912,10 +728,6 @@
     <message>
         <source>Subscribe to comments</source>
         <translation>Suscribirse a los comentarios</translation>
-    </message>
-    <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Aggregator</translation>
     </message>
     <message>
         <source>Image </source>
@@ -1083,6 +895,7 @@
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -1115,20 +928,12 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupFirstPage</name>
     <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Aggregator</translation>
-    </message>
-    <message>
         <source>Set default options</source>
         <translation>Usar opcionespor defecto</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupSecondPage</name>
-    <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Aggregator</translation>
-    </message>
     <message>
         <source>Set storage options</source>
         <translation>Ajustar las opciones de almacenamiento</translation>
@@ -1137,20 +942,12 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupThirdPage</name>
     <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Aggregator</translation>
-    </message>
-    <message>
         <source>Select feeds</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MainWidget</name>
-    <message>
-        <source>MainWidget</source>
-        <translation type="obsolete">WidgetPrincipal</translation>
-    </message>
     <message>
         <source>Tags:</source>
         <translation>Etiquetas:</translation>
@@ -1159,36 +956,12 @@
         <source>Merge items</source>
         <translation>Unir elementos</translation>
     </message>
-    <message>
-        <source>Show as a tape</source>
-        <translation type="obsolete">Mostrar como una cinta</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>(No title)</source>
         <translation>(Sin título)</translation>
-    </message>
-    <message>
-        <source>Remove feed</source>
-        <translation type="obsolete">Eliminar feed</translation>
-    </message>
-    <message>
-        <source>Update selected feed</source>
-        <translation type="obsolete">Actualizar feed seleccionado</translation>
-    </message>
-    <message>
-        <source>Mark channel as read</source>
-        <translation type="obsolete">Marcar el canal como leído</translation>
-    </message>
-    <message>
-        <source>Mark channel as unread</source>
-        <translation type="obsolete">Marcar el canal como no leído</translation>
-    </message>
-    <message>
-        <source>Settings...</source>
-        <translation type="obsolete">Preferencias...</translation>
     </message>
     <message>
         <source>Podcast %1</source>
@@ -1261,10 +1034,6 @@
         <translation>Intervalo de actualización:</translation>
     </message>
     <message>
-        <source> min</source>
-        <translation type="obsolete"> min</translation>
-    </message>
-    <message>
         <source>Storage</source>
         <translation>Almacenamiento</translation>
     </message>
@@ -1275,10 +1044,6 @@
     <message>
         <source>Keep items for:</source>
         <translation>Mantener objetos para:</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation type="obsolete"> días</translation>
     </message>
     <message>
         <source> min.</source>

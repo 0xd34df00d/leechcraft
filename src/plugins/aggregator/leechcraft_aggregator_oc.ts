@@ -2,361 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="oc">
 <context>
-    <name></name>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL :</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <comment>AddFeed#3</comment>
-        <translation type="obsolete">Etiquetas :</translation>
-    </message>
-    <message>
-        <source>Update all feeds</source>
-        <translation type="obsolete">Met a jorn totes los fluxes</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <comment>Export#3</comment>
-        <translation type="obsolete">Percórrer...</translation>
-    </message>
-    <message>
-        <source>Title:</source>
-        <comment>Export#4</comment>
-        <translation type="obsolete">Títol :</translation>
-    </message>
-    <message>
-        <source>Owner:</source>
-        <comment>Export#5</comment>
-        <translation type="obsolete">Proprietari :</translation>
-    </message>
-    <message>
-        <source>Channels:</source>
-        <translation type="obsolete">Canals :</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <comment>Export#8</comment>
-        <translation type="obsolete">Nom</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <comment>Export#9</comment>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <comment>Export2FB2Dialog#3</comment>
-        <translation type="obsolete">Percórrer...</translation>
-    </message>
-    <message>
-        <source>Link:</source>
-        <translation type="obsolete">Ligam :</translation>
-    </message>
-    <message>
-        <source>Author:</source>
-        <translation type="obsolete">Autor :</translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="obsolete">Descripcion :</translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <translation type="obsolete">Paramètres</translation>
-    </message>
-    <message>
-        <source>Channel</source>
-        <translation type="obsolete">Canal</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <comment>FeedSettings#9</comment>
-        <translation type="obsolete">Etiquetas :</translation>
-    </message>
-    <message>
-        <source>Feed</source>
-        <comment>FeedSettings#11</comment>
-        <translation type="obsolete">Flux</translation>
-    </message>
-    <message>
-        <source>Update interval:</source>
-        <comment>FeedSettings#12</comment>
-        <translation type="obsolete">Interval de mesa a jorn :</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Per defaut</translation>
-    </message>
-    <message>
-        <source> min</source>
-        <comment>FeedSettings#14</comment>
-        <translation type="obsolete"> min</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <comment>FeedSettings#17</comment>
-        <translation type="obsolete"> jorns</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <comment>ImportBinary#2</comment>
-        <translation type="obsolete">Fichièr :</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <comment>ImportBinary#3</comment>
-        <translation type="obsolete">Percórrer...</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <comment>ImportBinary#7</comment>
-        <translation type="obsolete">Títol</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <comment>ImportBinary#8</comment>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Items</source>
-        <translation type="obsolete">Elements</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <comment>ImportOPML#2</comment>
-        <translation type="obsolete">Fichièr :</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <comment>ImportOPML#3</comment>
-        <translation type="obsolete">Percórrer...</translation>
-    </message>
-    <message>
-        <source>Title:</source>
-        <comment>ImportOPML#4</comment>
-        <translation type="obsolete">Títol :</translation>
-    </message>
-    <message>
-        <source>Created:</source>
-        <translation type="obsolete">Creat lo :</translation>
-    </message>
-    <message>
-        <source>Modified:</source>
-        <translation type="obsolete">Modificat lo :</translation>
-    </message>
-    <message>
-        <source>Owner:</source>
-        <comment>ImportOPML#7</comment>
-        <translation type="obsolete">Proprietari :</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <comment>ImportOPML#9</comment>
-        <translation type="obsolete">Nom</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Valor</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <comment>ImportOPML#14</comment>
-        <translation type="obsolete">Títol</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <comment>ImportOPML#15</comment>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Delete item</source>
-        <translation type="obsolete">Escafar un objècte</translation>
-    </message>
-    <message>
-        <source>Form</source>
-        <comment>ItemsWidget#1</comment>
-        <translation type="obsolete">Formulari</translation>
-    </message>
-    <message>
-        <source>Case sensitive</source>
-        <translation type="obsolete">Respectar la cassa</translation>
-    </message>
-    <message>
-        <source>Feed</source>
-        <comment>LeechCraft::Plugins::Aggregator::ChannelsModel#1</comment>
-        <translation type="obsolete">Flux</translation>
-    </message>
-    <message>
-        <source>Import error</source>
-        <translation type="obsolete">Error d&apos;importacion</translation>
-    </message>
-    <message>
-        <source>Plugin error</source>
-        <translation type="obsolete">Error de modul</translation>
-    </message>
-    <message>
-        <source>Download error</source>
-        <translation type="obsolete">Error de telecargament</translation>
-    </message>
-    <message>
-        <source>By %1</source>
-        <translation type="obsolete">Per %1</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <comment>LeechCraft::Plugins::Aggregator::ItemModel#1</comment>
-        <translation type="obsolete">Nom</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <comment>LeechCraft::Plugins::Aggregator::ItemsListModel#1</comment>
-        <translation type="obsolete">Nom</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <comment>LeechCraft::Plugins::Aggregator::ItemsListModel#2</comment>
-        <translation type="obsolete">Data</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <comment>LeechCraft::Plugins::Aggregator::ItemsWidget#1</comment>
-        <translation type="obsolete">Nom</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <comment>LeechCraft::Plugins::Aggregator::ItemsWidget#2</comment>
-        <translation type="obsolete">Data</translation>
-    </message>
-    <message>
-        <source>Audio </source>
-        <translation type="obsolete">Àudio </translation>
-    </message>
-    <message>
-        <source>Video </source>
-        <translation type="obsolete">Vidèo </translation>
-    </message>
-    <message>
-        <source>Document </source>
-        <translation type="obsolete">Document </translation>
-    </message>
-    <message>
-        <source>&lt;strong&gt;Language:&lt;/strong&gt; %1&lt;br /&gt;</source>
-        <translation type="obsolete">&lt;strong&gt;Lenga :&lt;/strong&gt; %1&lt;br /&gt;</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">Exemple</translation>
-    </message>
-    <message>
-        <source>&lt;strong&gt;%1:&lt;/strong&gt;</source>
-        <translation type="obsolete">&lt;strong&gt;%1 :&lt;/strong&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
-        <translation type="obsolete">&lt;strong&gt;Copyright :&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</source>
-        <translation type="obsolete">&lt;strong&gt;Copyright :&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;li&gt;%1: %2&lt;/li&gt;</source>
-        <translation type="obsolete">&lt;li&gt;%1 : %2&lt;/li&gt;</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <comment>LeechCraft::Plugins::Aggregator::RegexpMatcherUi#1</comment>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <comment>MainWidget#1</comment>
-        <translation type="obsolete">Etiquetas :</translation>
-    </message>
-    <message>
-        <source>Remove feed</source>
-        <translation type="obsolete">Suprimir lo flux</translation>
-    </message>
-    <message>
-        <source>Settings...</source>
-        <translation type="obsolete">Configuracion...</translation>
-    </message>
-    <message>
-        <source>Comments</source>
-        <translation type="obsolete">Comentaris</translation>
-    </message>
-    <message>
-        <source>Responses</source>
-        <translation type="obsolete">Responsas</translation>
-    </message>
-    <message>
-        <source>Add...</source>
-        <translation type="obsolete">Apondre...</translation>
-    </message>
-    <message>
-        <source>Modify...</source>
-        <translation type="obsolete">Modificar...</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Suprimir</translation>
-    </message>
-    <message>
-        <source>Form</source>
-        <comment>StartupFirstPageWidget#1</comment>
-        <translation type="obsolete">Formulari</translation>
-    </message>
-    <message>
-        <source>Update interval:</source>
-        <comment>StartupFirstPageWidget#3</comment>
-        <translation type="obsolete">Interval de mesa a jorn :</translation>
-    </message>
-    <message>
-        <source> min</source>
-        <comment>StartupFirstPageWidget#4</comment>
-        <translation type="obsolete"> min</translation>
-    </message>
-    <message>
-        <source>Storage</source>
-        <translation type="obsolete">Emmagazinatge</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <comment>StartupFirstPageWidget#8</comment>
-        <translation type="obsolete"> jorns</translation>
-    </message>
-    <message>
-        <source>Form</source>
-        <comment>StartupSecondPageWidget#1</comment>
-        <translation type="obsolete">Formulari</translation>
-    </message>
-    <message>
-        <source>Form</source>
-        <comment>StartupThirdPageWidget#1</comment>
-        <translation type="obsolete">Formulari</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">General</translation>
-    </message>
-    <message>
-        <source>Feed</source>
-        <comment>StartupThirdPageWidget#5</comment>
-        <translation type="obsolete">Flux</translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation type="obsolete">Etiquetas</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <comment>StartupThirdPageWidget#7</comment>
-        <translation type="obsolete">URL</translation>
-    </message>
-</context>
-<context>
     <name>AddFeed</name>
     <message>
         <location filename="addfeed.ui" line="14"/>
@@ -1060,6 +705,7 @@
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1073,6 +719,7 @@
         <comment>Channel update</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -1080,6 +727,7 @@
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1105,6 +753,7 @@
         <location filename="export2fb2dialog.cpp" line="110"/>
         <source>%n unread item(s)</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1259,12 +908,14 @@
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="itemswidget.cpp" line="573"/>
         <source>%n comment(s)</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1377,6 +1028,7 @@
         <location filename="itemswidget.cpp" line="783"/>
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>

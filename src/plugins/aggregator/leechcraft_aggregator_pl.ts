@@ -16,10 +16,6 @@
         <translation>URL:</translation>
     </message>
     <message>
-        <source>http://deviant-soft.ws/rss.xml</source>
-        <translation type="obsolete">http://deviant-soft.ws/rss.xml</translation>
-    </message>
-    <message>
         <location filename="addfeed.ui" line="43"/>
         <source>Tags:</source>
         <translation>Tagi:</translation>
@@ -28,41 +24,6 @@
         <location filename="addfeed.ui" line="50"/>
         <source>untagged</source>
         <translation>nieotagowany</translation>
-    </message>
-</context>
-<context>
-    <name>Aggregator</name>
-    <message>
-        <source>Add feed...</source>
-        <translation type="obsolete">Dodaj Kanał...</translation>
-    </message>
-    <message>
-        <source>Update all feeds</source>
-        <translation type="obsolete">Aktualizuj wszystkie kanały</translation>
-    </message>
-    <message>
-        <source>Item bucket...</source>
-        <translation type="obsolete">Kosz na przedmioty ...</translation>
-    </message>
-    <message>
-        <source>Regexp matcher...</source>
-        <translation type="obsolete">Porównywarka regexpów...</translation>
-    </message>
-    <message>
-        <source>Import from OPML...</source>
-        <translation type="obsolete">Importuj z OPML...</translation>
-    </message>
-    <message>
-        <source>Export to OPML...</source>
-        <translation type="obsolete">Eksportuj do OPML...</translation>
-    </message>
-    <message>
-        <source>Import from binary...</source>
-        <translation type="obsolete">Importuj z pliku binarnego...</translation>
-    </message>
-    <message>
-        <source>Export to binary...</source>
-        <translation type="obsolete">Eksportuj do pliku binarnego...</translation>
     </message>
 </context>
 <context>
@@ -287,10 +248,6 @@
         <translation>dni</translation>
     </message>
     <message>
-        <source> min</source>
-        <translation type="obsolete">min</translation>
-    </message>
-    <message>
         <location filename="feedsettings.ui" line="205"/>
         <source>Max items number:</source>
         <translation>Maksymalna liczba przedmiotów:</translation>
@@ -299,10 +256,6 @@
         <location filename="feedsettings.ui" line="228"/>
         <source>Max item&apos;s age:</source>
         <translation>Maksymalny wiek przedmiotu:</translation>
-    </message>
-    <message>
-        <source> days</source>
-        <translation type="obsolete">dni</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="251"/>
@@ -485,10 +438,6 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::Aggregator</name>
     <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
         <location filename="aggregator.cpp" line="183"/>
         <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation>Aggregator nie został właściwie zainicjowany. Sprawdź dzienniki i porozmawiaj z twórcami. Albo, przynajmniej, sprawdz ustawienia i uruchom  ponownie LeechCraft.</translation>
@@ -507,62 +456,6 @@
         <location filename="aggregator.cpp" line="125"/>
         <source>Aggregator</source>
         <translation>Agregator</translation>
-    </message>
-    <message>
-        <source>Add feed...</source>
-        <translation type="obsolete">Dodaj Kanał...</translation>
-    </message>
-    <message>
-        <source>Update all feeds</source>
-        <translation type="obsolete">Aktualizuj wszystkie kanały</translation>
-    </message>
-    <message>
-        <source>Remove feed</source>
-        <translation type="obsolete">Usuń kanał</translation>
-    </message>
-    <message>
-        <source>Mark channel as read</source>
-        <translation type="obsolete">Oznacz kanał jako przeczytany</translation>
-    </message>
-    <message>
-        <source>Mark channel as unread</source>
-        <translation type="obsolete">Oznacz kanał jako nie przeczytany</translation>
-    </message>
-    <message>
-        <source>Settings...</source>
-        <translation type="obsolete">Ustawienia...</translation>
-    </message>
-    <message>
-        <source>Update selected feed</source>
-        <translation type="obsolete">Aktualizuj zaznaczony kanał</translation>
-    </message>
-    <message>
-        <source>Item bucket...</source>
-        <translation type="obsolete">Kosz na przedmioty ...</translation>
-    </message>
-    <message>
-        <source>Regexp matcher...</source>
-        <translation type="obsolete">Porównywarka regexpów...</translation>
-    </message>
-    <message>
-        <source>Hide read items</source>
-        <translation type="obsolete">Usuń przeczytane przedmioty</translation>
-    </message>
-    <message>
-        <source>Import from OPML...</source>
-        <translation type="obsolete">Importuj z OPML...</translation>
-    </message>
-    <message>
-        <source>Export to OPML...</source>
-        <translation type="obsolete">Eksportuj do OPML...</translation>
-    </message>
-    <message>
-        <source>Import from binary...</source>
-        <translation type="obsolete">Importuj z pliku binarnego...</translation>
-    </message>
-    <message>
-        <source>Export to binary...</source>
-        <translation type="obsolete">Eksportuj do pliku binarnego...</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="570"/>
@@ -633,29 +526,9 @@
         <translation>Agreagator: ogólny błąd inicjalizacji.</translation>
     </message>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">Nazwa</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">Data</translation>
-    </message>
-    <message>
-        <source>This feed is already added.</source>
-        <translation type="obsolete">Ten kanał jest już dodany.</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="458"/>
         <source>Job for feed %1 wasn&apos;t delegated.</source>
         <translation>Zadanie dla kanału %1 nie zostało delegowane.</translation>
-    </message>
-    <message>
-        <source>Could not remove the feed.</source>
-        <translation type="obsolete">Nie mogę usunąć.</translation>
-    </message>
-    <message>
-        <source>Could not get feed settings</source>
-        <translation type="obsolete">Nie mogę dostać się do ustawień</translation>
     </message>
     <message>
         <location filename="core.cpp" line="812"/>
@@ -799,6 +672,8 @@
         <comment>Channel update</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -807,15 +682,9 @@
         <comment>Channel update</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
-    </message>
-    <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Agregator</translation>
-    </message>
-    <message>
-        <source>Downloaded file from url %1 has null size!</source>
-        <translation type="obsolete">Plik pobrany z adresu %1 ma rozmiar 0 bajtów!</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1055"/>
@@ -868,14 +737,6 @@
         <translation>Zewnętrzny plik %1 nie został delegowany.</translation>
     </message>
     <message>
-        <source>Added channel &quot;%1&quot; (has %2 items)</source>
-        <translation type="obsolete">Dodany kanał %1 (ma %2 przedmiotów)</translation>
-    </message>
-    <message>
-        <source>Updated channel &quot;%1&quot; (%2 new items)</source>
-        <translation type="obsolete">Aktualizuj kanał &quot;%1&quot; (%2 nowych przedmiotów)</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="1627"/>
         <source>Could not mark channel</source>
         <translation>Nie mogę zaznaczyć kanału</translation>
@@ -904,10 +765,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
         <location filename="export2fb2dialog.cpp" line="196"/>
         <source>Could not open file %1 for write:&lt;br /&gt;%2.</source>
         <translation type="unfinished"></translation>
@@ -917,6 +774,8 @@
         <source>%n unread item(s)</source>
         <oldsource>%1 unread items</oldsource>
         <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -992,13 +851,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::ItemModel</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nazwa</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::Aggregator::ItemsListModel</name>
     <message>
         <location filename="itemslistmodel.cpp" line="39"/>
@@ -1039,17 +891,9 @@
         <translation>Zaznacz przedmiot jako przeczytany</translation>
     </message>
     <message>
-        <source>Add to item bucket</source>
-        <translation type="obsolete">Dodaj do koszyka</translation>
-    </message>
-    <message>
         <location filename="itemswidget.cpp" line="463"/>
         <source>Subscribe to comments</source>
         <translation>Subskrybuj komentarze</translation>
-    </message>
-    <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Agregator</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="548"/>
@@ -1065,18 +909,6 @@
         <location filename="itemswidget.cpp" line="557"/>
         <source>Published by %1</source>
         <translation>Opublikowany przez %1</translation>
-    </message>
-    <message>
-        <source>%1 comments, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</source>
-        <translation type="obsolete">%1 komentarzy, &lt;a href=&apos;%2&apos; %3&gt; ogladany przez &lt;/a&gt;&lt;/div&gt;</translation>
-    </message>
-    <message>
-        <source>%1 comments&lt;/div&gt;</source>
-        <translation type="obsolete">%1 komentarzy &lt;/div&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;/div&gt;</source>
-        <translation type="obsolete">&lt;a href=&apos;%1&apos; %2&gt;Ogladaj komentarze&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="608"/>
@@ -1248,12 +1080,16 @@
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="itemswidget.cpp" line="573"/>
         <source>%n comment(s)</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1271,6 +1107,8 @@
         <location filename="itemswidget.cpp" line="783"/>
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1334,10 +1172,6 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupFirstPage</name>
     <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Agregator</translation>
-    </message>
-    <message>
         <location filename="startupfirstpage.cpp" line="33"/>
         <source>Set default options</source>
         <translation>Ustaw domyślne opcje</translation>
@@ -1345,10 +1179,6 @@
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupSecondPage</name>
-    <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Agregator</translation>
-    </message>
     <message>
         <location filename="startupsecondpage.cpp" line="38"/>
         <source>Set storage options</source>
@@ -1358,10 +1188,6 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupThirdPage</name>
     <message>
-        <source>Aggregator</source>
-        <translation type="obsolete">Agregator</translation>
-    </message>
-    <message>
         <location filename="startupthirdpage.cpp" line="111"/>
         <source>Select feeds</source>
         <translation type="unfinished"></translation>
@@ -1369,10 +1195,6 @@
 </context>
 <context>
     <name>MainWidget</name>
-    <message>
-        <source>MainWidget</source>
-        <translation type="obsolete">GłównyWidget</translation>
-    </message>
     <message>
         <location filename="mainwidget.ui" line="36"/>
         <source>Tags:</source>
@@ -1382,10 +1204,6 @@
         <location filename="mainwidget.ui" line="64"/>
         <source>Merge items</source>
         <translation>Połącz przedmioty</translation>
-    </message>
-    <message>
-        <source>Show as a tape</source>
-        <translation type="obsolete">Pokaż jako kasete</translation>
     </message>
 </context>
 <context>
@@ -1421,26 +1239,6 @@
         <location filename="rss20parser.cpp" line="114"/>
         <source>Duration: %1</source>
         <translation>Czas trwania: %1</translation>
-    </message>
-    <message>
-        <source>Remove feed</source>
-        <translation type="obsolete">Usuń kanał</translation>
-    </message>
-    <message>
-        <source>Update selected feed</source>
-        <translation type="obsolete">Aktualizuj zaznaczony kanał</translation>
-    </message>
-    <message>
-        <source>Mark channel as read</source>
-        <translation type="obsolete">Oznacz kanał jako przeczytany</translation>
-    </message>
-    <message>
-        <source>Mark channel as unread</source>
-        <translation type="obsolete">Oznacz kanał jako nie przeczytany</translation>
-    </message>
-    <message>
-        <source>Settings...</source>
-        <translation type="obsolete">Ustawienia...</translation>
     </message>
 </context>
 <context>

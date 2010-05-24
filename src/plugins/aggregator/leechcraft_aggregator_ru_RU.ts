@@ -38,36 +38,31 @@
     </message>
     <message>
         <location filename="actionsstructs.cpp" line="40"/>
-        <source>Item bucket...</source>
-        <translation>Сборник статей...</translation>
-    </message>
-    <message>
-        <location filename="actionsstructs.cpp" line="45"/>
         <source>Regexp matcher...</source>
         <translation>Автоматическая обработка...</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="50"/>
+        <location filename="actionsstructs.cpp" line="45"/>
         <source>Import from OPML...</source>
         <translation>Импортировать из OPML...</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="55"/>
+        <location filename="actionsstructs.cpp" line="50"/>
         <source>Export to OPML...</source>
         <translation>Экспортировать в OPML...</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="60"/>
+        <location filename="actionsstructs.cpp" line="55"/>
         <source>Import from binary...</source>
         <translation>Импортировать из LCAE...</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="65"/>
+        <location filename="actionsstructs.cpp" line="60"/>
         <source>Export to binary...</source>
         <translation>Экспортировать в LCAE...</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="70"/>
+        <location filename="actionsstructs.cpp" line="65"/>
         <source>Export to FB2...</source>
         <translation>Экспортировать в FB2...</translation>
     </message>
@@ -75,27 +70,27 @@
 <context>
     <name>ChannelActions</name>
     <message>
-        <location filename="actionsstructs.cpp" line="78"/>
+        <location filename="actionsstructs.cpp" line="73"/>
         <source>Remove feed</source>
         <translation>Удалить ленту</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="83"/>
+        <location filename="actionsstructs.cpp" line="78"/>
         <source>Update selected feed</source>
         <translation>Обновить выделенную ленту</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="88"/>
+        <location filename="actionsstructs.cpp" line="83"/>
         <source>Mark channel as read</source>
         <translation>Отметить канал как прочитанный</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="92"/>
+        <location filename="actionsstructs.cpp" line="87"/>
         <source>Mark channel as unread</source>
         <translation>Отметить канал как непрочитанный</translation>
     </message>
     <message>
-        <location filename="actionsstructs.cpp" line="96"/>
+        <location filename="actionsstructs.cpp" line="91"/>
         <source>Settings...</source>
         <translation>Настройки...</translation>
     </message>
