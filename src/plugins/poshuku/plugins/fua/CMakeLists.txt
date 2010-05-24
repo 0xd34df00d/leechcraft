@@ -21,13 +21,14 @@ SET (FUA_TRANSLATIONS
 	leechcraft_poshuku_fua_ru_RU.ts
 	leechcraft_poshuku_fua_uk_UA.ts
 	leechcraft_poshuku_fua_ar.ts
-	leechcraft_poshuku_fua_de.ts
+	leechcraft_poshuku_fua_eo.ts
 	)
 SET (FUA_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_de.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_eo.qm
 	)
 QT4_WRAP_CPP (FUA_MOC_SRCS ${FUA_HEADERS})
 QT4_WRAP_UI (FUA_UIS_H ${FUA_FORMS})

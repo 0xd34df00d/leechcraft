@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru">
 <context>
     <name>Changer</name>
     <message>
@@ -59,24 +59,19 @@
 <context>
     <name>Settings</name>
     <message>
-        <location filename="settings.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="settings.ui" line="27"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aldoni...</translation>
     </message>
     <message>
         <location filename="settings.ui" line="34"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ŝanĝi...</translation>
     </message>
     <message>
         <location filename="settings.ui" line="41"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Forigi</translation>
     </message>
     <message>
         <location filename="settings.ui" line="65"/>
