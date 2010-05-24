@@ -16,12 +16,14 @@ SET (FILESCHEME_TRANSLATIONS
 	leechcraft_poshuku_filescheme_uk_UA.ts
 	leechcraft_poshuku_filescheme_de.ts
 	leechcraft_poshuku_filescheme_eo.ts
+	leechcraft_poshuku_filescheme_es.ts
 	)
 SET (FILESCHEME_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_filescheme_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_filescheme_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_filescheme_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_filescheme_eo.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_filescheme_es.qm
 	)
 QT4_WRAP_CPP (FILESCHEME_MOC_SRCS ${FILESCHEME_HEADERS})
 QT4_ADD_RESOURCES (FILESCHEME_RCCS ${FILESCHEME_RESOURCES})
