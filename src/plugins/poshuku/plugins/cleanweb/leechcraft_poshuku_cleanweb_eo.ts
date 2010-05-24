@@ -294,7 +294,7 @@
         <location line="-41"/>
         <location line="+48"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Forigi</translation>
     </message>
     <message>
         <location line="-39"/>

@@ -2,37 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fr">
 <context>
-    <name></name>
-    <message>
-        <source>Blocks unwanted ads.</source>
-        <translation type="obsolete">Bloquer les publicités indésirable</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nom</translation>
-    </message>
-    <message>
-        <source>Last updated</source>
-        <translation type="obsolete">Dernière mise à jour</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Erreur</translation>
-    </message>
-    <message>
-        <source>The subscription wasn&apos;t delegated.</source>
-        <translation type="obsolete">L&apos;inscription n&apos;a pas été déléguée.</translation>
-    </message>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">Formulaire</translation>
-    </message>
-</context>
-<context>
     <name>FlashOnClickWhitelist</name>
     <message>
         <location filename="flashonclickwhitelist.ui" line="25"/>

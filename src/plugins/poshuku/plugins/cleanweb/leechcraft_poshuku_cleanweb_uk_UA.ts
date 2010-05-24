@@ -61,23 +61,19 @@
         <translation>Адреса</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="427"/>
+        <location filename="core.cpp" line="436"/>
         <source>Block image...</source>
         <translation>Заблокувати зображення...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="683"/>
+        <location filename="core.cpp" line="692"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Підписка %1 була успішно додана.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="718"/>
+        <location filename="core.cpp" line="727"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Підписка %1 не була делегована.</translation>
-    </message>
-    <message>
-        <source>The subscription wasn&apos;t delegated.</source>
-        <translation type="obsolete">Підписка не була делегована.</translation>
     </message>
 </context>
 <context>
