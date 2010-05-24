@@ -51,6 +51,7 @@ SET (TRANSLATIONS
 	leechcraft_seekthru_uk_UA.ts
 	leechcraft_seekthru_de.ts
 	leechcraft_seekthru_eo.ts
+	leechcraft_seekthru_es.ts
 	)
 SET (FORMS
 	searcherslist.ui
@@ -65,6 +66,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_seekthru_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_seekthru_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_seekthru_eo.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_seekthru_es.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
