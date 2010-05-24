@@ -50,6 +50,7 @@ SET (CLEANWEB_TRANSLATIONS
 	leechcraft_poshuku_cleanweb_ar.ts
 	leechcraft_poshuku_cleanweb_eo.ts
 	leechcraft_poshuku_cleanweb_de.ts
+	leechcraft_poshuku_cleanweb_es.ts
 	)
 SET (CLEANWEB_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_cleanweb_ru_RU.qm
@@ -57,6 +58,7 @@ SET (CLEANWEB_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_cleanweb_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_cleanweb_eo.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_cleanweb_de.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_cleanweb_es.qm
 	)
 QT4_WRAP_CPP (CLEANWEB_MOC_SRCS ${CLEANWEB_HEADERS})
 QT4_WRAP_UI (CLEANWEB_UIS_H ${CLEANWEB_FORMS})
