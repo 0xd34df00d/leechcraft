@@ -127,7 +127,7 @@ SET (FORMS
 SET (RESOURCES aggregatorresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_aggregator_ru_RU.ts
-	leechcraft_aggregator_de_DE.ts
+	leechcraft_aggregator_de.ts
 	leechcraft_aggregator_uk_UA.ts
 	leechcraft_aggregator_ar.ts
 	leechcraft_aggregator_eo.ts
@@ -137,7 +137,7 @@ SET (TRANSLATIONS
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_de_DE.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_eo.qm
