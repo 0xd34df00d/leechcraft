@@ -2,43 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de">
 <context>
-    <name></name>
-    <message>
-        <source>LeechCraft</source>
-        <comment>LeechCraft::Plugins::Poshuku::Plugins::WYFV::Player#1</comment>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
-        <source>Failed to load</source>
-        <translation type="obsolete">Laden fehlgeschlagen</translation>
-    </message>
-    <message>
-        <source>Related videos</source>
-        <translation type="obsolete">Ähnliche Videos</translation>
-    </message>
-    <message>
-        <source>Replaces Flash-based video player to play video without Flash installed.</source>
-        <translation type="obsolete">Ersetzt Flash-basiertes Videoplugin, um Videos ohne installiertes Flash abzuspielen.</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <comment>LeechCraft::Plugins::Poshuku::Plugins::WYFV::YoutubePlayer#1</comment>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
-        <source>This format is unavailable, please select another one.</source>
-        <translation type="obsolete">Dieses Format ist nicht verfügbar. Bitte wählen Sie ein anderes.</translation>
-    </message>
-    <message>
-        <source>Related...</source>
-        <translation type="obsolete">Ähnlich…</translation>
-    </message>
-    <message>
-        <source>%v</source>
-        <translation type="obsolete">%v</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::RelatedItem</name>
     <message>
         <location filename="relateditem.cpp" line="108"/>

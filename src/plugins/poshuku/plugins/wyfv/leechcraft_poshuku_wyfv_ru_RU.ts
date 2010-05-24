@@ -28,11 +28,6 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::YoutubePlayer</name>
     <message>
-        <location filename="youtubeplayer.cpp" line="220"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
         <location filename="youtubeplayer.cpp" line="221"/>
         <source>This format is unavailable, please select another one.</source>
         <translation>Этот формат недоступен. Пожалуйста, выберитте другой.</translation>
