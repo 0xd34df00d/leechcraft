@@ -42,6 +42,7 @@ SET (TRANSLATIONS
 	leechcraft_networkmonitor_ar.ts
 	leechcraft_networkmonitor_de.ts
 	leechcraft_networkmonitor_eo.ts
+	leechcraft_networkmonitor_es.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_ru_RU.qm
@@ -49,6 +50,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_eo.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_es.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
