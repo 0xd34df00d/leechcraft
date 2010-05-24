@@ -812,6 +812,7 @@ IPv6 input mask</extracomment>
         <source>%1 (%n second(s) remaining)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1023,6 +1024,7 @@ IPv6 input mask</extracomment>
         <location filename="torrentplugin.cpp" line="502"/>
         <source>Do you really want to delete %n torrent(s)?</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>

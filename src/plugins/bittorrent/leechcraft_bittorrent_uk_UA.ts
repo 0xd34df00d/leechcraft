@@ -514,17 +514,9 @@ IPv6 input mask</extracomment>
         <translation>Торрент %1 не може бути повторно анонсований в даний момент. Спробуйте повторити пізніше.</translation>
     </message>
     <message>
-        <source>Torrent finished</source>
-        <translation type="obsolete">Торрент завершено</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="2816"/>
+        <location filename="core.cpp" line="2805"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation>Сповіщеня підсистеми збереження відключені. Відтворення в реальному часі беде недоступне. Якщо у Вас виникли проблеми, увімкніть сповіщення у розділі &quot;Сповіщення&quot; параметрів BitTorrent. Хочете увімкнути їх зараз?</translation>
-    </message>
-    <message>
-        <source>Could not open file %1 for write!</source>
-        <translation type="obsolete">Не можу відкрити файл %1 для запису!</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1298"/>
@@ -555,10 +547,6 @@ IPv6 input mask</extracomment>
         <location filename="core.cpp" line="1576"/>
         <source>File finished: %1</source>
         <translation>Файл завершений: %1</translation>
-    </message>
-    <message>
-        <source>File finished</source>
-        <translation type="obsolete">Файл завершено</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1811"/>
@@ -626,7 +614,7 @@ IPv6 input mask</extracomment>
         <translation>Не можу створити шлях %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2675"/>
+        <location filename="core.cpp" line="2664"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильна адреса для анонсування %1</translation>
     </message>
@@ -663,14 +651,6 @@ IPv6 input mask</extracomment>
 </context>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::FirstStep</name>
-    <message>
-        <source>Select where to place torrent file</source>
-        <translation type="obsolete">Вкажіть місце для розміщення торрент-файла</translation>
-    </message>
-    <message>
-        <source>Select root path</source>
-        <translation type="obsolete">Вкажіть шлях до кореневої теки</translation>
-    </message>
     <message>
         <location filename="firststep.cpp" line="83"/>
         <source>Select where to save torrent file</source>
@@ -1268,17 +1248,9 @@ IPv6 input mask</extracomment>
         <translation>Основні параметри</translation>
     </message>
     <message>
-        <source>Output directory:</source>
-        <translation type="obsolete">Вивести в теку:</translation>
-    </message>
-    <message>
         <location filename="newtorrentfirststep.ui" line="36"/>
         <source>Browse...</source>
         <translation>Огляд...</translation>
-    </message>
-    <message>
-        <source>Torrent name:</source>
-        <translation type="obsolete">Назва торрента:</translation>
     </message>
     <message>
         <location filename="newtorrentfirststep.ui" line="24"/>
@@ -1549,10 +1521,6 @@ IPv6 input mask</extracomment>
         <translation>Панель керування</translation>
     </message>
     <message>
-        <source>Download rate:</source>
-        <translation type="obsolete">Швидкість завантаження:</translation>
-    </message>
-    <message>
         <location filename="tabwidget.ui" line="85"/>
         <location filename="tabwidget.ui" line="123"/>
         <location filename="tabwidget.ui" line="176"/>
@@ -1569,10 +1537,6 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="873"/>
         <source> kb/s</source>
         <translation> кб/с</translation>
-    </message>
-    <message>
-        <source>Upload rate:</source>
-        <translation type="obsolete">Роздано:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="150"/>
@@ -2174,14 +2138,6 @@ IPv6 input mask</extracomment>
 </context>
 <context>
     <name>TrackersChanger</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Діалог</translation>
-    </message>
-    <message>
-        <source>Trackers, one per line:</source>
-        <translation type="obsolete">Трекери, по одному на рядок:</translation>
-    </message>
     <message>
         <location filename="trackerschanger.ui" line="20"/>
         <source>Change trackers</source>
