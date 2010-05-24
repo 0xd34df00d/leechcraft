@@ -126,7 +126,7 @@
     </message>
     <message>
         <source>Location:</source>
-        <translation>Місце знаходження:</translation>
+        <translation type="obsolete">Місце знаходження:</translation>
     </message>
 </context>
 <context>

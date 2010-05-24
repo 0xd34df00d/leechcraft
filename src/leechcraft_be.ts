@@ -9,19 +9,9 @@
         <source>About LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="aboutdialog.ui" line="51"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message utf8="true">
         <location filename="aboutdialog.ui" line="70"/>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.ui" line="80"/>
-        <source>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -139,24 +129,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="29"/>
+        <location filename="commonjobadder.ui" line="26"/>
         <source>Entity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="41"/>
-        <location filename="commonjobadder.ui" line="69"/>
+        <location filename="commonjobadder.ui" line="56"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="48"/>
+        <location filename="commonjobadder.ui" line="63"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="commonjobadder.ui" line="57"/>
-        <source>Location:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -170,11 +154,6 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="20"/>
         <source>LeechCraft has detected an entity:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="handlerchoicedialog.ui" line="27"/>
-        <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -352,20 +331,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AboutDialog</name>
-    <message>
-        <location filename="aboutdialog.cpp" line="28"/>
-        <source>LeechCraft %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Application</name>
-    <message>
-        <location filename="application.cpp" line="139"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="application.cpp" line="140"/>
         <source>Could not create path %1/.leechcraft</source>
@@ -388,8 +354,7 @@
 <context>
     <name>LeechCraft::CommonJobAdder</name>
     <message>
-        <location filename="commonjobadder.cpp" line="50"/>
-        <location filename="commonjobadder.cpp" line="63"/>
+        <location filename="commonjobadder.cpp" line="43"/>
         <source>Select file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -397,51 +362,39 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="298"/>
+        <location filename="core.cpp" line="286"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="517"/>
-        <location filename="core.cpp" line="529"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="518"/>
+        <location filename="core.cpp" line="506"/>
         <source>Do you really want to clear the network cache?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="530"/>
+        <location filename="core.cpp" line="518"/>
         <source>Do you really want to clear cookies?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="761"/>
-        <location filename="core.cpp" line="778"/>
+        <location filename="core.cpp" line="749"/>
+        <location filename="core.cpp" line="766"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="762"/>
+        <location filename="core.cpp" line="750"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="779"/>
+        <location filename="core.cpp" line="767"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="805"/>
+        <location filename="core.cpp" line="798"/>
         <source>Could not handle download entity %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="913"/>
-        <location filename="core.cpp" line="917"/>
-        <source>%1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -526,49 +479,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="162"/>
-        <location filename="mainwindow.cpp" line="181"/>
-        <location filename="mainwindow.cpp" line="282"/>
-        <location filename="mainwindow.cpp" line="415"/>
-        <location filename="mainwindow.cpp" line="460"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="164"/>
-        <source>%1 - LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="298"/>
+        <location filename="mainwindow.cpp" line="302"/>
         <source>/s	</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="301"/>
         <location filename="mainwindow.cpp" line="305"/>
-        <location filename="mainwindow.cpp" line="554"/>
-        <location filename="mainwindow.cpp" line="555"/>
+        <location filename="mainwindow.cpp" line="309"/>
+        <location filename="mainwindow.cpp" line="581"/>
+        <location filename="mainwindow.cpp" line="582"/>
         <source>/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="416"/>
+        <location filename="mainwindow.cpp" line="435"/>
         <source>Do you really want to quit?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="461"/>
+        <location filename="mainwindow.cpp" line="481"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="561"/>
+        <location filename="mainwindow.cpp" line="588"/>
         <source>%1 down, %2 up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="628"/>
+        <location filename="mainwindow.cpp" line="655"/>
         <source>LeechCraft menu</source>
         <translation type="unfinished"></translation>
     </message>
@@ -576,23 +515,23 @@
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="165"/>
-        <location filename="networkaccessmanager.cpp" line="175"/>
+        <location filename="networkaccessmanager.cpp" line="168"/>
+        <location filename="networkaccessmanager.cpp" line="178"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="201"/>
+        <location filename="networkaccessmanager.cpp" line="206"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="236"/>
+        <location filename="networkaccessmanager.cpp" line="246"/>
         <source>Could not create Core directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="244"/>
+        <location filename="networkaccessmanager.cpp" line="254"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -610,11 +549,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="252"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="pluginmanager.cpp" line="253"/>
         <source>Release of one or more plugins failed.</source>
         <translation type="unfinished"></translation>
@@ -623,103 +557,103 @@
 <context>
     <name>LeechCraft::SslErrorsDialog</name>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="60"/>
+        <location filename="sslerrorsdialog.cpp" line="72"/>
         <source>Certificate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="61"/>
+        <location filename="sslerrorsdialog.cpp" line="73"/>
         <source>(No certificate available for this error)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="65"/>
+        <location filename="sslerrorsdialog.cpp" line="77"/>
         <source>Valid:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="66"/>
+        <location filename="sslerrorsdialog.cpp" line="78"/>
         <source>yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="66"/>
+        <location filename="sslerrorsdialog.cpp" line="78"/>
         <source>no</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="67"/>
+        <location filename="sslerrorsdialog.cpp" line="79"/>
         <source>Effective date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="69"/>
+        <location filename="sslerrorsdialog.cpp" line="81"/>
         <source>Expiry date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="71"/>
+        <location filename="sslerrorsdialog.cpp" line="83"/>
         <source>Version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="73"/>
+        <location filename="sslerrorsdialog.cpp" line="85"/>
         <source>Serial number:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="75"/>
+        <location filename="sslerrorsdialog.cpp" line="87"/>
         <source>MD5 digest:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="77"/>
+        <location filename="sslerrorsdialog.cpp" line="89"/>
         <source>SHA1 digest:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="81"/>
+        <location filename="sslerrorsdialog.cpp" line="93"/>
         <source>Issuer info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="87"/>
-        <location filename="sslerrorsdialog.cpp" line="120"/>
+        <location filename="sslerrorsdialog.cpp" line="99"/>
+        <location filename="sslerrorsdialog.cpp" line="132"/>
         <source>Organization:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="92"/>
-        <location filename="sslerrorsdialog.cpp" line="125"/>
+        <location filename="sslerrorsdialog.cpp" line="104"/>
+        <location filename="sslerrorsdialog.cpp" line="137"/>
         <source>Common name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="97"/>
-        <location filename="sslerrorsdialog.cpp" line="130"/>
+        <location filename="sslerrorsdialog.cpp" line="109"/>
+        <location filename="sslerrorsdialog.cpp" line="142"/>
         <source>Locality:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="102"/>
-        <location filename="sslerrorsdialog.cpp" line="135"/>
+        <location filename="sslerrorsdialog.cpp" line="114"/>
+        <location filename="sslerrorsdialog.cpp" line="147"/>
         <source>Organizational unit name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="107"/>
-        <location filename="sslerrorsdialog.cpp" line="140"/>
+        <location filename="sslerrorsdialog.cpp" line="119"/>
+        <location filename="sslerrorsdialog.cpp" line="152"/>
         <source>Country name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="112"/>
-        <location filename="sslerrorsdialog.cpp" line="145"/>
+        <location filename="sslerrorsdialog.cpp" line="124"/>
+        <location filename="sslerrorsdialog.cpp" line="157"/>
         <source>State or province name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="115"/>
+        <location filename="sslerrorsdialog.cpp" line="127"/>
         <source>Subject info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -727,8 +661,13 @@
 <context>
     <name>LeechCraft::StartupWizard</name>
     <message>
-        <location filename="startupwizard.cpp" line="29"/>
+        <location filename="startupwizard.cpp" line="32"/>
         <source>Startup wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupwizard.cpp" line="77"/>
+        <source>Would you like to set advanced options?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -875,12 +814,12 @@
         </translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="190"/>
+        <location filename="plugininterface/util.cpp" line="194"/>
         <source>Could not cd into %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="197"/>
+        <location filename="plugininterface/util.cpp" line="201"/>
         <source>Could not create %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -964,6 +903,34 @@
     <message>
         <location filename="tagsviewer.ui" line="45"/>
         <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WizardTypeChoicePage</name>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="14"/>
+        <source>WizardPage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="17"/>
+        <source>Select wizard type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="20"/>
+        <source>Select the complexity level of options you would like to set during this startup wizard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="39"/>
+        <source>Basic setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="49"/>
+        <source>Advanced setup</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

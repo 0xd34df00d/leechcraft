@@ -1162,6 +1162,7 @@
         <source>%n day(s), </source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>

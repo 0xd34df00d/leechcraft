@@ -118,7 +118,7 @@
     </message>
     <message>
         <source>Location:</source>
-        <translation>Сохранить в:</translation>
+        <translation type="obsolete">Сохранить в:</translation>
     </message>
 </context>
 <context>
@@ -131,10 +131,6 @@
         <source>LeechCraft has detected an entity:</source>
         <oldsource>LeechCraft has detected some entity:</oldsource>
         <translation>LeechCraft обнаружил объект:</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation></translation>
     </message>
     <message>
         <source>It could be downloaded by:</source>
@@ -285,7 +281,7 @@
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -401,7 +397,7 @@
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <source>/s</source>
@@ -421,7 +417,7 @@
     </message>
     <message>
         <source>%1 - LeechCraft</source>
-        <translation>%1 - LeechCraft</translation>
+        <translation type="obsolete">%1 - LeechCraft</translation>
     </message>
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
@@ -471,7 +467,7 @@
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
 </context>
 <context>

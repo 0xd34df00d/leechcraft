@@ -530,20 +530,59 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>BackendSelector</name>
     <message>
+        <location filename="plugininterface/backendselector.ui" line="21"/>
         <source>SQLite</source>
-        <translation type="obsolete">SQLite</translation>
+        <translation type="unfinished">SQLite</translation>
     </message>
     <message>
+        <location filename="plugininterface/backendselector.ui" line="26"/>
         <source>PostgreSQL</source>
-        <translation type="obsolete">PostgreSQL</translation>
+        <translation type="unfinished">PostgreSQL</translation>
     </message>
     <message>
+        <location filename="plugininterface/backendselector.ui" line="46"/>
+        <source>Journal mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="82"/>
+        <source>Temp store:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="103"/>
+        <source>Synchronous:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="131"/>
+        <source>VACUUM on exit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="160"/>
+        <source>Hostname:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="170"/>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="187"/>
         <source>Username:</source>
-        <translation type="obsolete">اسم المستخدم:</translation>
+        <translation type="unfinished">اسم المستخدم:</translation>
     </message>
     <message>
+        <location filename="plugininterface/backendselector.ui" line="197"/>
         <source>Password:</source>
-        <translation type="obsolete">كلمة المرور:</translation>
+        <translation type="unfinished">كلمة المرور:</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/backendselector.ui" line="211"/>
+        <source>Database name:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -554,25 +593,23 @@ p, li { white-space: pre-wrap; }
         <translation>إضافة مهمّة</translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="29"/>
+        <location filename="commonjobadder.ui" line="26"/>
         <source>Entity:</source>
         <translation>ﺈﺿﺎﻓﺓ ﻢﻬﻣﺓ:</translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="41"/>
-        <location filename="commonjobadder.ui" line="69"/>
+        <location filename="commonjobadder.ui" line="56"/>
         <source>Browse...</source>
         <translation>استكشاف...</translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="48"/>
+        <location filename="commonjobadder.ui" line="63"/>
         <source>Paste</source>
         <translation>لصق</translation>
     </message>
     <message>
-        <location filename="commonjobadder.ui" line="57"/>
         <source>Location:</source>
-        <translation>ﻢﻛﺎﻧ:</translation>
+        <translation type="obsolete">ﻢﻛﺎﻧ:</translation>
     </message>
 </context>
 <context>
@@ -586,11 +623,6 @@ p, li { white-space: pre-wrap; }
         <location filename="handlerchoicedialog.ui" line="20"/>
         <source>LeechCraft has detected an entity:</source>
         <translation>تم اكتشاف صيغة تحميل:</translation>
-    </message>
-    <message>
-        <location filename="handlerchoicedialog.ui" line="27"/>
-        <source>TextLabel</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="34"/>
@@ -789,9 +821,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="139"/>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <location filename="application.cpp" line="140"/>
@@ -833,19 +864,20 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::ColorPicker</name>
     <message>
+        <location filename="xmlsettingsdialog/colorpicker.cpp" line="34"/>
         <source>Choose color</source>
-        <translation type="obsolete">اختيار اللون</translation>
+        <translation type="unfinished">اختيار اللون</translation>
     </message>
     <message>
+        <location filename="xmlsettingsdialog/colorpicker.cpp" line="36"/>
         <source>Choose...</source>
-        <translation type="obsolete">اختيار...</translation>
+        <translation type="unfinished">اختيار...</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::CommonJobAdder</name>
     <message>
-        <location filename="commonjobadder.cpp" line="50"/>
-        <location filename="commonjobadder.cpp" line="63"/>
+        <location filename="commonjobadder.cpp" line="43"/>
         <source>Select file</source>
         <translation>اختر الملف</translation>
     </message>
@@ -873,7 +905,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">جار التنصيب %1...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="305"/>
+        <location filename="core.cpp" line="286"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>لا يوجد برامج مساعدة قابلة لتحميل %1</translation>
     </message>
@@ -882,12 +914,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="525"/>
+        <location filename="core.cpp" line="506"/>
         <source>Do you really want to clear the network cache?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="537"/>
+        <location filename="core.cpp" line="518"/>
         <source>Do you really want to clear cookies?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -904,24 +936,24 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">ﺎﺨﺗﺭ ﻢﻛﺎﻧ ﺎﻟﺬﻳ ﺕﺮﻳﺩ ﺢﻔﻇ ﺎﻠﻤﻠﻓ ﻒﻴﻫ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="768"/>
-        <location filename="core.cpp" line="785"/>
+        <location filename="core.cpp" line="749"/>
+        <location filename="core.cpp" line="766"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="769"/>
+        <location filename="core.cpp" line="750"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="786"/>
+        <location filename="core.cpp" line="767"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <oldsource>Could not handle job with the selected handler, would you like to try another one?</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="812"/>
+        <location filename="core.cpp" line="798"/>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -937,27 +969,58 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::FilePicker</name>
     <message>
+        <location filename="xmlsettingsdialog/filepicker.cpp" line="34"/>
         <source>Browse...</source>
-        <translation type="obsolete">استعراض...</translation>
+        <translation type="unfinished">استعراض...</translation>
     </message>
     <message>
+        <location filename="xmlsettingsdialog/filepicker.cpp" line="75"/>
         <source>Select directory</source>
-        <translation type="obsolete">اختيار المكان</translation>
+        <translation type="unfinished">اختيار المكان</translation>
     </message>
     <message>
+        <location filename="xmlsettingsdialog/filepicker.cpp" line="81"/>
+        <location filename="xmlsettingsdialog/filepicker.cpp" line="87"/>
         <source>Select file</source>
-        <translation type="obsolete">اختيار الملف</translation>
+        <translation type="unfinished">اختيار الملف</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::FontPicker</name>
     <message>
+        <location filename="xmlsettingsdialog/fontpicker.cpp" line="34"/>
         <source>Choose font</source>
-        <translation type="obsolete">اختيار الخط</translation>
+        <translation type="unfinished">اختيار الخط</translation>
     </message>
     <message>
+        <location filename="xmlsettingsdialog/fontpicker.cpp" line="36"/>
         <source>Choose...</source>
-        <translation type="obsolete">اختيار...</translation>
+        <translation type="unfinished">اختيار...</translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/fontpicker.cpp" line="54"/>
+        <source>, %1 pt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/fontpicker.cpp" line="57"/>
+        <source>, bold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/fontpicker.cpp" line="59"/>
+        <source>, italic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/fontpicker.cpp" line="61"/>
+        <source>, underlined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/fontpicker.cpp" line="63"/>
+        <source>, striken out</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -984,40 +1047,38 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="424"/>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="164"/>
         <source>%1 - LeechCraft</source>
-        <translation>%1 - LeechCraft</translation>
+        <translation type="obsolete">%1 - LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="298"/>
+        <location filename="mainwindow.cpp" line="302"/>
         <source>/s	</source>
         <translation>/ث	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="301"/>
         <location filename="mainwindow.cpp" line="305"/>
-        <location filename="mainwindow.cpp" line="563"/>
-        <location filename="mainwindow.cpp" line="564"/>
+        <location filename="mainwindow.cpp" line="309"/>
+        <location filename="mainwindow.cpp" line="581"/>
+        <location filename="mainwindow.cpp" line="582"/>
         <source>/s</source>
         <translation>/ث</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="425"/>
+        <location filename="mainwindow.cpp" line="435"/>
         <source>Do you really want to quit?</source>
         <translation>هل تريد الخروج؟</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="470"/>
+        <location filename="mainwindow.cpp" line="481"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>هذا التغيير يلزمه إعادة تشغيل البرنامج. ÷ل تريد ذلك؟</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="637"/>
+        <location filename="mainwindow.cpp" line="655"/>
         <source>LeechCraft menu</source>
         <translation>قائمة LeechCraft</translation>
     </message>
@@ -1026,7 +1087,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">تحكّم با البرامج المساعدة</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="570"/>
+        <location filename="mainwindow.cpp" line="588"/>
         <source>%1 down, %2 up</source>
         <translation>تحميل %1، إعطاء %2</translation>
     </message>
@@ -1034,24 +1095,24 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="165"/>
-        <location filename="networkaccessmanager.cpp" line="175"/>
+        <location filename="networkaccessmanager.cpp" line="168"/>
+        <location filename="networkaccessmanager.cpp" line="178"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <oldsource>The URL&lt;br /&gt;&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;with realm&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="201"/>
+        <location filename="networkaccessmanager.cpp" line="206"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="236"/>
+        <location filename="networkaccessmanager.cpp" line="246"/>
         <source>Could not create Core directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="244"/>
+        <location filename="networkaccessmanager.cpp" line="254"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1084,9 +1145,8 @@ p, li { white-space: pre-wrap; }
         <translation>الملف</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="252"/>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="253"/>
@@ -1112,103 +1172,103 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::SslErrorsDialog</name>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="60"/>
+        <location filename="sslerrorsdialog.cpp" line="72"/>
         <source>Certificate</source>
         <translation>شهادة</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="61"/>
+        <location filename="sslerrorsdialog.cpp" line="73"/>
         <source>(No certificate available for this error)</source>
         <translation>لا يوجد شهادات لهذا الخطأ</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="65"/>
+        <location filename="sslerrorsdialog.cpp" line="77"/>
         <source>Valid:</source>
         <translation>صالح:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="66"/>
+        <location filename="sslerrorsdialog.cpp" line="78"/>
         <source>yes</source>
         <translation>نعم</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="66"/>
+        <location filename="sslerrorsdialog.cpp" line="78"/>
         <source>no</source>
         <translation>لا</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="67"/>
+        <location filename="sslerrorsdialog.cpp" line="79"/>
         <source>Effective date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="69"/>
+        <location filename="sslerrorsdialog.cpp" line="81"/>
         <source>Expiry date:</source>
         <translation>تاريخ الانتهاء:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="71"/>
+        <location filename="sslerrorsdialog.cpp" line="83"/>
         <source>Version:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="73"/>
+        <location filename="sslerrorsdialog.cpp" line="85"/>
         <source>Serial number:</source>
         <translation>رقم التسلسل:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="75"/>
+        <location filename="sslerrorsdialog.cpp" line="87"/>
         <source>MD5 digest:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="77"/>
+        <location filename="sslerrorsdialog.cpp" line="89"/>
         <source>SHA1 digest:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="81"/>
+        <location filename="sslerrorsdialog.cpp" line="93"/>
         <source>Issuer info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="87"/>
-        <location filename="sslerrorsdialog.cpp" line="120"/>
+        <location filename="sslerrorsdialog.cpp" line="99"/>
+        <location filename="sslerrorsdialog.cpp" line="132"/>
         <source>Organization:</source>
         <translation>الشركة:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="92"/>
-        <location filename="sslerrorsdialog.cpp" line="125"/>
+        <location filename="sslerrorsdialog.cpp" line="104"/>
+        <location filename="sslerrorsdialog.cpp" line="137"/>
         <source>Common name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="97"/>
-        <location filename="sslerrorsdialog.cpp" line="130"/>
+        <location filename="sslerrorsdialog.cpp" line="109"/>
+        <location filename="sslerrorsdialog.cpp" line="142"/>
         <source>Locality:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="102"/>
-        <location filename="sslerrorsdialog.cpp" line="135"/>
+        <location filename="sslerrorsdialog.cpp" line="114"/>
+        <location filename="sslerrorsdialog.cpp" line="147"/>
         <source>Organizational unit name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="107"/>
-        <location filename="sslerrorsdialog.cpp" line="140"/>
+        <location filename="sslerrorsdialog.cpp" line="119"/>
+        <location filename="sslerrorsdialog.cpp" line="152"/>
         <source>Country name:</source>
         <translation>اسم البلد:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="112"/>
-        <location filename="sslerrorsdialog.cpp" line="145"/>
+        <location filename="sslerrorsdialog.cpp" line="124"/>
+        <location filename="sslerrorsdialog.cpp" line="157"/>
         <source>State or province name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="115"/>
+        <location filename="sslerrorsdialog.cpp" line="127"/>
         <source>Subject info</source>
         <translation>معلومات العنوان</translation>
     </message>
@@ -1216,8 +1276,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::StartupWizard</name>
     <message>
-        <location filename="startupwizard.cpp" line="29"/>
+        <location filename="startupwizard.cpp" line="32"/>
         <source>Startup wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupwizard.cpp" line="77"/>
+        <source>Would you like to set advanced options?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1268,6 +1333,37 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>LeechCraft::Util::CategorySelector</name>
+    <message>
+        <location filename="plugininterface/categoryselector.cpp" line="37"/>
+        <source>Tags selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/categoryselector.cpp" line="50"/>
+        <source>Select all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/categoryselector.cpp" line="56"/>
+        <source>Select none</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
+    <message>
+        <location filename="plugininterface/flattofoldersproxymodel.cpp" line="100"/>
+        <source>untagged</source>
+        <translation type="unfinished">غير معلَّم</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/flattofoldersproxymodel.cpp" line="104"/>
+        <source>&lt;unknown tag&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LogToolBox</name>
     <message>
         <location filename="logtoolbox.ui" line="13"/>
@@ -1286,6 +1382,71 @@ p, li { white-space: pre-wrap; }
         <location filename="pluginmanagerdialog.ui" line="20"/>
         <source>Plugin Manager</source>
         <translation>إعداد البرتمج المساعدة</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="plugininterface/util.cpp" line="36"/>
+        <source>Too long to show</source>
+        <translation type="unfinished">طويل جدّاً الإظهار</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="53"/>
+        <source>Binary entity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="56"/>
+        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="63"/>
+        <source>&lt;br /&gt;from %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="93"/>
+        <source> b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="95"/>
+        <source> KiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="97"/>
+        <source> MiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="99"/>
+        <source> GiB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="plugininterface/util.cpp" line="111"/>
+        <source>%n day(s), </source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="194"/>
+        <source>Could not cd into %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/util.cpp" line="201"/>
+        <source>Could not create %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1383,6 +1544,34 @@ p, li { white-space: pre-wrap; }
         <location filename="tagsviewer.ui" line="45"/>
         <source>Remove</source>
         <translation>حذف</translation>
+    </message>
+</context>
+<context>
+    <name>WizardTypeChoicePage</name>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="14"/>
+        <source>WizardPage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="17"/>
+        <source>Select wizard type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="20"/>
+        <source>Select the complexity level of options you would like to set during this startup wizard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="39"/>
+        <source>Basic setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="wizardtypechoicepage.ui" line="49"/>
+        <source>Advanced setup</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
