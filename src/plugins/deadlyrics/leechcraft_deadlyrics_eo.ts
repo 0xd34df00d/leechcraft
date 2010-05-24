@@ -21,7 +21,7 @@
 <context>
     <name>LeechCraft::Plugins::DeadLyrics::FindProxy</name>
     <message>
-        <location filename="findproxy.cpp" line="140"/>
+        <location filename="findproxy.cpp" line="151"/>
         <source>Searching...</source>
         <translation>Serĉas...</translation>
     </message>
