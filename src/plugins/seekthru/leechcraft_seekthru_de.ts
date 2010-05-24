@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="de">
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
         <location filename="core.cpp" line="71"/>
         <source>Short name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurzname</translation>
     </message>
     <message>
         <location filename="core.cpp" line="113"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffnen</translation>
     </message>
     <message>
         <location filename="core.cpp" line="115"/>
         <source>Limited</source>
-        <translation type="unfinished"></translation>
+        <translation>Begrenzt</translation>
     </message>
     <message>
         <location filename="core.cpp" line="117"/>
         <source>Private</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertraulich</translation>
     </message>
     <message>
         <location filename="core.cpp" line="119"/>
         <source>Closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Gesperrt</translation>
     </message>
     <message>
         <location filename="core.cpp" line="199"/>
@@ -36,12 +36,12 @@
     <message>
         <location filename="core.cpp" line="307"/>
         <source>Could not open file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei %1 kann nicht geöffnet werden.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="317"/>
         <source>Could not remove temporary file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die temponäre Datei %1 kann nicht entfernt werden.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="325"/>
@@ -59,50 +59,38 @@
     <message>
         <location filename="searchhandler.cpp" line="49"/>
         <source>Subscribe</source>
-        <translation type="unfinished"></translation>
+        <translation>Abonnieren</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <location filename="searchhandler.cpp" line="74"/>
-        <source>%1 total results</source>
-        <translation type="unfinished"></translation>
+        <source>%n total result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="77"/>
+        <location filename="searchhandler.cpp" line="76"/>
         <source>Unknown number of results</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannte Nummer an Ergebnissen</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="84"/>
-        <source> (RSS)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="searchhandler.cpp" line="87"/>
-        <source> (Atom)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="searchhandler.cpp" line="90"/>
-        <source> (HTML)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="searchhandler.cpp" line="219"/>
+        <location filename="searchhandler.cpp" line="218"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="243"/>
+        <location filename="searchhandler.cpp" line="242"/>
         <source>Could not open file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei %1 kann nicht geöffnet werden.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="254"/>
+        <location filename="searchhandler.cpp" line="253"/>
         <source>Could not remove temporary file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die temponäre Datei %1 kann nicht entfernt werden.</translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="298"/>
+        <location filename="searchhandler.cpp" line="297"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -112,47 +100,47 @@
     <message>
         <location filename="searcherslist.cpp" line="52"/>
         <source>No description</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Beschreibung</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="58"/>
         <source>No long name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein vollständiger Name</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="68"/>
         <source>No contacts information</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Kontaktinformationen</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="74"/>
         <source>No developer information</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Entwicklerinformationen</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="80"/>
         <source>No attribution information</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Informationen über Attribute</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="86"/>
         <source>No right information</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Rechtsinformationen</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="91"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="91"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Nein</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="100"/>
         <source>Adding a new searcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine neue Suche hinzufügen</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="101"/>
@@ -163,28 +151,17 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="91"/>
+        <location filename="seekthru.cpp" line="90"/>
         <source>Search via OpenSearch-aware search providers.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="seekthru.cpp" line="155"/>
-        <location filename="seekthru.cpp" line="162"/>
-        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::SeekThru::StartupFirstPage</name>
     <message>
-        <location filename="startupfirstpage.cpp" line="71"/>
-        <source>SeekThru</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="startupfirstpage.cpp" line="72"/>
         <source>Select default search engines</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Standardsuchengines wählen</translation>
     </message>
 </context>
 <context>
@@ -197,42 +174,42 @@
     <message>
         <location filename="searcherslist.ui" line="24"/>
         <source>Controls</source>
-        <translation type="unfinished"></translation>
+        <translation>Steuerung</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="30"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hinzufügen...</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="40"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="60"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="69"/>
         <source>Long name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vollständiger Name:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="83"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschreibung:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="93"/>
         <source>Tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="100"/>
         <source>Contact:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontakt:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="114"/>
@@ -242,31 +219,26 @@
     <message>
         <location filename="searcherslist.ui" line="128"/>
         <source>Right:</source>
-        <translation type="unfinished"></translation>
+        <translation>Recht:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="142"/>
         <source>Developer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Entwickler:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="156"/>
         <source>Adult:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erwachsene:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="170"/>
         <source>Languages:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprachen:</translation>
     </message>
 </context>
 <context>
     <name>StartupFirstPageWidget</name>
-    <message>
-        <location filename="startupfirstpage.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="startupfirstpage.ui" line="22"/>
         <source>Localized set:</source>
@@ -275,35 +247,30 @@
     <message>
         <location filename="startupfirstpage.ui" line="30"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="35"/>
         <source>Russian (ru)</source>
-        <translation type="unfinished"></translation>
+        <translation>Russisch (ru)</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="59"/>
         <source>Engine</source>
-        <translation type="unfinished"></translation>
+        <translation>Engine</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="64"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags</translation>
     </message>
 </context>
 <context>
     <name>TagsAsker</name>
     <message>
-        <location filename="tagsasker.ui" line="14"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="tagsasker.ui" line="22"/>
         <source>Tags for this searcher:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags für diese Suche:</translation>
     </message>
 </context>
 </TS>
