@@ -28,15 +28,50 @@
     <name>Aggregator</name>
     <message>
         <source>Add feed...</source>
-        <translation>Añadir feed...</translation>
+        <translation type="obsolete">Añadir feed...</translation>
     </message>
     <message>
         <source>Update all feeds</source>
-        <translation>Actualizar todos los feeds</translation>
+        <translation type="obsolete">Actualizar todos los feeds</translation>
     </message>
     <message>
         <source>Item bucket...</source>
-        <translation>Cubo de elementos...</translation>
+        <translation type="obsolete">Cubo de elementos...</translation>
+    </message>
+    <message>
+        <source>Regexp matcher...</source>
+        <translation type="obsolete">Emparejador de exp. regulares...</translation>
+    </message>
+    <message>
+        <source>Import from OPML...</source>
+        <translation type="obsolete">Importar desde OPML...</translation>
+    </message>
+    <message>
+        <source>Export to OPML...</source>
+        <translation type="obsolete">Exportar a OPML...</translation>
+    </message>
+    <message>
+        <source>Import from binary...</source>
+        <translation type="obsolete">Importar desde binario...</translation>
+    </message>
+    <message>
+        <source>Export to binary...</source>
+        <translation type="obsolete">Exportar a binario...</translation>
+    </message>
+    <message>
+        <source>Export to FB2...</source>
+        <translation type="obsolete">Exportar a FB2...</translation>
+    </message>
+</context>
+<context>
+    <name>AppWideActions</name>
+    <message>
+        <source>Add feed...</source>
+        <translation>Añadir canal...</translation>
+    </message>
+    <message>
+        <source>Update all feeds</source>
+        <translation>Actualizar todos los canales</translation>
     </message>
     <message>
         <source>Regexp matcher...</source>
@@ -61,6 +96,29 @@
     <message>
         <source>Export to FB2...</source>
         <translation>Exportar a FB2...</translation>
+    </message>
+</context>
+<context>
+    <name>ChannelActions</name>
+    <message>
+        <source>Remove feed</source>
+        <translation>Eliminar feed</translation>
+    </message>
+    <message>
+        <source>Update selected feed</source>
+        <translation>Actualizar feed seleccionado</translation>
+    </message>
+    <message>
+        <source>Mark channel as read</source>
+        <translation>Marcar el canal como leído</translation>
+    </message>
+    <message>
+        <source>Mark channel as unread</source>
+        <translation>Marcar el canal como no leído</translation>
+    </message>
+    <message>
+        <source>Settings...</source>
+        <translation>Preferencias...</translation>
     </message>
 </context>
 <context>
@@ -110,11 +168,11 @@
     </message>
     <message>
         <source>Only unread items</source>
-        <translation type="unfinished"></translation>
+        <translation>Sólo los elementos no leídos</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Examinar...</translation>
     </message>
 </context>
 <context>
@@ -169,7 +227,7 @@
     </message>
     <message>
         <source> min</source>
-        <translation> min</translation>
+        <translation type="obsolete"> min</translation>
     </message>
     <message>
         <source>Max items number:</source>
@@ -181,7 +239,7 @@
     </message>
     <message>
         <source> days</source>
-        <translation> días</translation>
+        <translation type="obsolete"> días</translation>
     </message>
     <message>
         <source>Update favicon</source>
@@ -189,6 +247,18 @@
     </message>
     <message>
         <source>Automatically download enclosures</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Items:</source>
+        <translation>Elementos:</translation>
+    </message>
+    <message>
+        <source> min.</source>
+        <translation> min.</translation>
+    </message>
+    <message>
+        <source> day(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -340,7 +410,7 @@
     <name>LeechCraft::Plugins::Aggregator::Aggregator</name>
     <message>
         <source>RSS/Atom feed reader.</source>
-        <translation>Lector de feeds RSS/Atom</translation>
+        <translation>Lector de feeds RSS/Atom.</translation>
     </message>
     <message>
         <source>Add feed...</source>
@@ -400,7 +470,7 @@
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you are really sure that you want to do it?</source>
@@ -441,7 +511,11 @@
     <message>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removing confirmation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Vas a eliminar permanentemente el feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;¿Estas seguro de que lo quieres hacer?</translation>
+    </message>
+    <message>
+        <source>Aggregator</source>
+        <translation>Aggregator</translation>
     </message>
 </context>
 <context>
@@ -559,15 +633,15 @@
     </message>
     <message>
         <source>Import error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de importación</translation>
     </message>
     <message>
         <source>Task for OPML %1 wasn&apos;t delegated.</source>
-        <translation type="unfinished"></translation>
+        <translation>La tarea para OPML %1 no fue delegado.</translation>
     </message>
     <message>
         <source>Storage error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de almacenamiento</translation>
     </message>
     <message>
         <source>Aggregator: general storage initialization error.</source>
@@ -579,11 +653,11 @@
     </message>
     <message>
         <source>The feed %1 is already added</source>
-        <translation type="unfinished"></translation>
+        <translation>Este feed %1 ya ha sido añadido</translation>
     </message>
     <message>
         <source>Plugin error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error del complemento</translation>
     </message>
     <message>
         <source>Feed removal error</source>
@@ -591,19 +665,15 @@
     </message>
     <message>
         <source>Could not remove the feed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo eliminar el feed: %1</translation>
     </message>
     <message>
         <source>Aggregator error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not get feed settigns: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Could not update feed settings: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudieron actualizar los ajustes del feed: %1</translation>
     </message>
     <message>
         <source>Feed update error</source>
@@ -611,19 +681,19 @@
     </message>
     <message>
         <source>OPML import error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al importar OPML</translation>
     </message>
     <message>
         <source>OPML export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al exportar OPML</translation>
     </message>
     <message>
         <source>Could not open file %1 for write.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo abrir el archivo %1 para escritura.</translation>
     </message>
     <message>
         <source>Binary export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al exportar binario</translation>
     </message>
     <message>
         <source>Feed error</source>
@@ -631,7 +701,7 @@
     </message>
     <message>
         <source>Downloaded file from url %1 has null size.</source>
-        <translation type="unfinished"></translation>
+        <translation>¡El archivo descargado desde la url %1 tiene tamaño nulo.</translation>
     </message>
     <message>
         <source>Unable to download the OPML file.</source>
@@ -639,19 +709,41 @@
     </message>
     <message>
         <source>Download error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added channel &quot;%1&quot; (%2 items)</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de descarga</translation>
     </message>
     <message>
         <source>Aggregator</source>
-        <translation type="unfinished">Aggregator</translation>
+        <translation type="obsolete">Aggregator</translation>
     </message>
     <message>
-        <source>Updated channel &quot;%1&quot; (%2 new items, %3 updated items)</source>
-        <translation type="unfinished"></translation>
+        <source>Could not get feed settings: %1</source>
+        <translation>No se pudieron cargar los ajustes del feed: %1</translation>
+    </message>
+    <message numerus="yes">
+        <source>Added channel &quot;%1&quot; (%n item(s))</source>
+        <translation>
+            <numerusform>Canal &quot;%1&quot; añadido (tiene %n elemento)</numerusform>
+            <numerusform>Canal &quot;%1&quot; añadido (tiene %n elementos)</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Updated channel &quot;%1&quot; (%2, %3)</source>
+        <translation>Canal &quot;%1&quot; actualizado (%2, %3)</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n new item(s)</source>
+        <comment>Channel update</comment>
+        <translation>
+            <numerusform>%n nuevos elemento</numerusform>
+            <numerusform>%n nuevos elementos</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n updated item(s)</source>
+        <comment>Channel update</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -662,11 +754,7 @@
     </message>
     <message>
         <source>fb2 files (*.fb2);;XML files (*.xml);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 unread items</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos fb2 (*.fb2);; Archivos XML (*.xml);;Todos los archivos (*.*)</translation>
     </message>
     <message>
         <source>Published on %1</source>
@@ -674,15 +762,21 @@
     </message>
     <message>
         <source>By %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Por %1</translation>
     </message>
     <message>
         <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
+        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <source>Could not open file %1 for write:&lt;br /&gt;%2.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n unread item(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -743,7 +837,7 @@
     <name>LeechCraft::Plugins::Aggregator::ItemModel</name>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
 </context>
 <context>
@@ -765,7 +859,7 @@
     </message>
     <message>
         <source>Add to item bucket</source>
-        <translation>Añadir item al cubo</translation>
+        <translation type="obsolete">Añadir item al cubo</translation>
     </message>
     <message>
         <source>Published on %1 by %2</source>
@@ -781,15 +875,15 @@
     </message>
     <message>
         <source>%1 comments, &lt;a href=&apos;%2&apos;%3&gt;view them&lt;/a&gt;&lt;/div&gt;</source>
-        <translation>%1 comentarios, &lt;a href=&apos;%2&apos;%3&gt;verlos&lt;/a&gt;&lt;/div&gt;</translation>
+        <translation type="obsolete">%1 comentarios, &lt;a href=&apos;%2&apos;%3&gt;verlos&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
         <source>%1 comments&lt;/div&gt;</source>
-        <translation>%1 comentarios&lt;/div&gt;</translation>
+        <translation type="obsolete">%1 comentarios&lt;/div&gt;</translation>
     </message>
     <message>
         <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;/div&gt;</source>
-        <translation>&lt;a href=&apos;%1&apos;%2&gt;Ver comentarios&lt;/a&gt;&lt;/div&gt;</translation>
+        <translation type="obsolete">&lt;a href=&apos;%1&apos;%2&gt;Ver comentarios&lt;/a&gt;&lt;/div&gt;</translation>
     </message>
     <message>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
@@ -821,43 +915,27 @@
     </message>
     <message>
         <source>Aggregator</source>
-        <translation type="unfinished">Aggregator</translation>
-    </message>
-    <message>
-        <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;/div&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Aggregator</translation>
     </message>
     <message>
         <source>Image </source>
-        <translation type="unfinished"></translation>
+        <translation>Imágen </translation>
     </message>
     <message>
         <source>Audio </source>
-        <translation type="unfinished"></translation>
+        <translation>Audio </translation>
     </message>
     <message>
         <source>Video </source>
-        <translation type="unfinished"></translation>
+        <translation>Video </translation>
     </message>
     <message>
         <source>Document </source>
-        <translation type="unfinished"></translation>
+        <translation>Documento </translation>
     </message>
     <message>
         <source>Executable </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;hr /&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;hr /&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ejecutable </translation>
     </message>
     <message>
         <source>&lt;hr /&gt;Thumbnail at %1:&lt;br /&gt;</source>
@@ -873,7 +951,7 @@
     </message>
     <message>
         <source>Sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Muestra</translation>
     </message>
     <message>
         <source>Continuous stream</source>
@@ -881,19 +959,19 @@
     </message>
     <message>
         <source>Full version</source>
-        <translation type="unfinished"></translation>
+        <translation>Version completa</translation>
     </message>
     <message>
         <source>Title: %1&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Título: %1&lt;br /&gt;</translation>
     </message>
     <message>
         <source>Start time: %1&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiempo de inicio: %1&lt;br /&gt;</translation>
     </message>
     <message>
         <source>End time: %1&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiempo finalizado: %1&lt;br /&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Scenes:&lt;/strong&gt;</source>
@@ -901,10 +979,6 @@
     </message>
     <message>
         <source>&lt;strong&gt;Views:&lt;/strong&gt; %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %1 times</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -933,11 +1007,11 @@
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;Channels:&lt;/strong&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;strong&gt;Canales:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;Size:&lt;/strong&gt; %1x%2&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;strong&gt;Tamaño:&lt;/strong&gt; %1x%2&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</source>
@@ -957,35 +1031,59 @@
     </message>
     <message>
         <source>&lt;strong&gt;Technical information:&lt;/strong&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Información tecnica:&lt;/strong&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Rating:&lt;/strong&gt; %1 (according to %2 scheme)&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;strong&gt;%1:&lt;/strong&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;li&gt;%1: %2&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Credits:&lt;/strong&gt;</source>
+        <translation>&lt;strong&gt;Creditos:&lt;/strong&gt;</translation>
+    </message>
+    <message>
+        <source>Show items as tape</source>
+        <translation>Mostrar elementos como una cinta</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
+        <translation>
+            <numerusform>%n comentario, &lt;a href=&apos;%1&apos;%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform>
+            <numerusform>%n comentarios, &lt;a href=&apos;%1&apos;%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n comment(s)</source>
+        <translation>
+            <numerusform>%n comentario</numerusform>
+            <numerusform>%n comentarios</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</source>
+        <translation>&lt;a href=&apos;%1&apos;%2&gt;Ver comentarios&lt;/a&gt;&lt;br /&gt;</translation>
+    </message>
+    <message>
+        <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -1011,36 +1109,36 @@
     </message>
     <message>
         <source>Either title matcher or body extractor is malformed.</source>
-        <translation>O el emparejador de títulos o el extractor del cuerpo está malformado</translation>
+        <translation>O el emparejador de títulos o el extractor del cuerpo está malformado.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupFirstPage</name>
     <message>
         <source>Aggregator</source>
-        <translation>Aggregator</translation>
+        <translation type="obsolete">Aggregator</translation>
     </message>
     <message>
         <source>Set default options</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar opcionespor defecto</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupSecondPage</name>
     <message>
         <source>Aggregator</source>
-        <translation>Aggregator</translation>
+        <translation type="obsolete">Aggregator</translation>
     </message>
     <message>
         <source>Set storage options</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustar las opciones de almacenamiento</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::StartupThirdPage</name>
     <message>
         <source>Aggregator</source>
-        <translation>Aggregator</translation>
+        <translation type="obsolete">Aggregator</translation>
     </message>
     <message>
         <source>Select feeds</source>
@@ -1063,7 +1161,7 @@
     </message>
     <message>
         <source>Show as a tape</source>
-        <translation>Mostrar como una cinta</translation>
+        <translation type="obsolete">Mostrar como una cinta</translation>
     </message>
 </context>
 <context>
@@ -1074,44 +1172,44 @@
     </message>
     <message>
         <source>Remove feed</source>
-        <translation>Eliminar feed</translation>
+        <translation type="obsolete">Eliminar feed</translation>
     </message>
     <message>
         <source>Update selected feed</source>
-        <translation>Actualizar feed seleccionado</translation>
+        <translation type="obsolete">Actualizar feed seleccionado</translation>
     </message>
     <message>
         <source>Mark channel as read</source>
-        <translation>Marcar el canal como leído</translation>
+        <translation type="obsolete">Marcar el canal como leído</translation>
     </message>
     <message>
         <source>Mark channel as unread</source>
-        <translation>Marcar el canal como no leído</translation>
+        <translation type="obsolete">Marcar el canal como no leído</translation>
     </message>
     <message>
         <source>Settings...</source>
-        <translation>Preferencias...</translation>
+        <translation type="obsolete">Preferencias...</translation>
     </message>
     <message>
         <source>Podcast %1</source>
         <extracomment>This is the template for the category created of * iTunes podcast keywords.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Podcast %1</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentarios</translation>
     </message>
     <message>
         <source>Responses</source>
-        <translation type="unfinished"></translation>
+        <translation>Respuestas</translation>
     </message>
     <message>
         <source>Backlinks</source>
-        <translation type="unfinished"></translation>
+        <translation>Páginas enlazadas</translation>
     </message>
     <message>
         <source>Duration: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Duración: %1</translation>
     </message>
 </context>
 <context>
@@ -1164,23 +1262,31 @@
     </message>
     <message>
         <source> min</source>
-        <translation> min</translation>
+        <translation type="obsolete"> min</translation>
     </message>
     <message>
         <source>Storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacenamiento</translation>
     </message>
     <message>
         <source>Items per channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Objetos por canal:</translation>
     </message>
     <message>
         <source>Keep items for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mantener objetos para:</translation>
     </message>
     <message>
         <source> days</source>
-        <translation> días</translation>
+        <translation type="obsolete"> días</translation>
+    </message>
+    <message>
+        <source> min.</source>
+        <translation> min.</translation>
+    </message>
+    <message>
+        <source> day(s)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1202,11 +1308,11 @@
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>General</translation>
     </message>
     <message>
         <source>Russian (ru)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruso (ru)</translation>
     </message>
     <message>
         <source>Feed</source>
@@ -1214,7 +1320,7 @@
     </message>
     <message>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiquetas</translation>
     </message>
     <message>
         <source>URL</source>
