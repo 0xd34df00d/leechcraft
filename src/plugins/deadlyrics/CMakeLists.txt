@@ -48,6 +48,7 @@ SET (TRANSLATIONS
 	leechcraft_deadlyrics_eo.ts
 	leechcraft_deadlyrics_de.ts
 	leechcraft_deadlyrics_es.ts
+	leechcraft_deadlyrics_fr.ts
 	)
 SET (RESOURCES deadlyricsresources.qrc)
 SET (COMPILED_TRANSLATIONS
@@ -57,6 +58,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_eo.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_es.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_fr.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
