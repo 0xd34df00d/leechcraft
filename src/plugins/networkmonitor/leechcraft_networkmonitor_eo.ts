@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru">
 <context>
     <name>LeechCraft::Plugins::NetworkMonitor::HeaderModel</name>
     <message>
         <location filename="headermodel.cpp" line="26"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nomo</translation>
     </message>
     <message>
         <location filename="headermodel.cpp" line="27"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valoro</translation>
     </message>
 </context>
 <context>
@@ -19,7 +19,7 @@
     <message>
         <location filename="networkmonitor.cpp" line="79"/>
         <source>Network monitor...</source>
-        <translation type="unfinished"></translation>
+        <translation>Reta kontrolilo...</translation>
     </message>
     <message>
         <location filename="networkmonitor.cpp" line="105"/>
@@ -32,27 +32,27 @@
     <message>
         <location filename="requestmodel.cpp" line="35"/>
         <source>Date started</source>
-        <translation type="unfinished"></translation>
+        <translation>Komencodato</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="36"/>
         <source>Date finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Findato</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="37"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="38"/>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Gastiga komputilo</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="88"/>
         <source>In progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Farante</translation>
     </message>
 </context>
 <context>
@@ -60,7 +60,7 @@
     <message>
         <location filename="networkmonitor.ui" line="14"/>
         <source>Network Monitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Reta kontrolilo</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="20"/>
@@ -70,12 +70,12 @@
     <message>
         <location filename="networkmonitor.ui" line="36"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Signoĉeno</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="41"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>Ĵokero</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="46"/>
@@ -85,7 +85,7 @@
     <message>
         <location filename="networkmonitor.ui" line="58"/>
         <source>Requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Petoj</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="74"/>
