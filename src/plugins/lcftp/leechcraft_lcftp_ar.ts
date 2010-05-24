@@ -29,19 +29,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="225"/>
-        <source>%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="359"/>
-        <location filename="core.cpp" line="383"/>
-        <location filename="core.cpp" line="858"/>
-        <location filename="core.cpp" line="900"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="360"/>
         <source>%1 already exists. What do you want to do?</source>
         <translation type="unfinished"></translation>
@@ -88,12 +75,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="872"/>
-        <source>FTP transfer finished</source>
+        <location filename="core.cpp" line="859"/>
+        <source>FTP transfer finished: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="901"/>
+        <location filename="core.cpp" line="883"/>
         <source>While mirroring&lt;br /&gt;%1&lt;br /&gt;to&lt;br /&gt;%2&lt;br /&gt;an error occured:&lt;br /&gt;%3&lt;br /&gt; already exists.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -101,7 +88,7 @@
 <context>
     <name>LeechCraft::Plugins::LCFTP::LCFTP</name>
     <message>
-        <location filename="lcftp.cpp" line="110"/>
+        <location filename="lcftp.cpp" line="106"/>
         <source>A simple FTP client</source>
         <translation type="unfinished"></translation>
     </message>
@@ -156,11 +143,6 @@
 <context>
     <name>Pane</name>
     <message>
-        <location filename="pane.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="pane.ui" line="25"/>
         <source>..</source>
         <translation type="unfinished"></translation>
@@ -173,11 +155,6 @@
 </context>
 <context>
     <name>SummaryTab</name>
-    <message>
-        <location filename="summarytab.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="summarytab.ui" line="25"/>
         <source>Download speed:</source>
@@ -198,14 +175,6 @@
         <location filename="summarytab.ui" line="42"/>
         <location filename="summarytab.ui" line="64"/>
         <source> KiB/s</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TabWidget</name>
-    <message>
-        <location filename="tabwidget.ui" line="14"/>
-        <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
