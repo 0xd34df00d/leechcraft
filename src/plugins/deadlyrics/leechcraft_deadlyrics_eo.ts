@@ -27,17 +27,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::DeadLyrics::LyricWikiSearcher</name>
-    <message>
-        <source>Lyrics fetch error</source>
-        <translation type="obsolete">Eraro de lirikon venigi</translation>
-    </message>
-    <message>
-        <source>No lyrics found</source>
-        <translation type="obsolete">Neniaj lirikoj estis trovita</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="searcher.cpp" line="60"/>

@@ -21,20 +21,9 @@
 <context>
     <name>LeechCraft::Plugins::DeadLyrics::FindProxy</name>
     <message>
-        <location filename="findproxy.cpp" line="140"/>
+        <location filename="findproxy.cpp" line="151"/>
         <source>Searching...</source>
         <translation>جاري البحث...</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Plugins::DeadLyrics::LyricWikiSearcher</name>
-    <message>
-        <source>Lyrics fetch error</source>
-        <translation type="obsolete">خطأ في إحضار الكلمات</translation>
-    </message>
-    <message>
-        <source>No lyrics found</source>
-        <translation type="obsolete">غير موجود</translation>
     </message>
 </context>
 <context>
