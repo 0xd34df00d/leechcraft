@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru">
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
         <location filename="core.cpp" line="71"/>
         <source>Short name</source>
-        <translation type="unfinished"></translation>
+        <translation>Mallonga nomo</translation>
     </message>
     <message>
         <location filename="core.cpp" line="113"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Malfermi</translation>
     </message>
     <message>
         <location filename="core.cpp" line="115"/>
@@ -21,7 +21,7 @@
     <message>
         <location filename="core.cpp" line="117"/>
         <source>Private</source>
-        <translation type="unfinished"></translation>
+        <translation>Privata</translation>
     </message>
     <message>
         <location filename="core.cpp" line="119"/>
@@ -59,50 +59,39 @@
     <message>
         <location filename="searchhandler.cpp" line="49"/>
         <source>Subscribe</source>
-        <translation type="unfinished"></translation>
+        <translation>Subskribi</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <location filename="searchhandler.cpp" line="74"/>
-        <source>%1 total results</source>
-        <translation type="unfinished"></translation>
+        <source>%n total result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="77"/>
+        <location filename="searchhandler.cpp" line="76"/>
         <source>Unknown number of results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="84"/>
-        <source> (RSS)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="searchhandler.cpp" line="87"/>
-        <source> (Atom)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="searchhandler.cpp" line="90"/>
-        <source> (HTML)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="searchhandler.cpp" line="219"/>
+        <location filename="searchhandler.cpp" line="218"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="243"/>
+        <location filename="searchhandler.cpp" line="242"/>
         <source>Could not open file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="254"/>
+        <location filename="searchhandler.cpp" line="253"/>
         <source>Could not remove temporary file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchhandler.cpp" line="298"/>
+        <location filename="searchhandler.cpp" line="297"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -112,7 +101,7 @@
     <message>
         <location filename="searcherslist.cpp" line="52"/>
         <source>No description</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenio priskribo</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="58"/>
@@ -147,7 +136,7 @@
     <message>
         <location filename="searcherslist.cpp" line="91"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne</translation>
     </message>
     <message>
         <location filename="searcherslist.cpp" line="100"/>
@@ -163,24 +152,13 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="91"/>
+        <location filename="seekthru.cpp" line="90"/>
         <source>Search via OpenSearch-aware search providers.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="seekthru.cpp" line="155"/>
-        <location filename="seekthru.cpp" line="162"/>
-        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::SeekThru::StartupFirstPage</name>
-    <message>
-        <location filename="startupfirstpage.cpp" line="71"/>
-        <source>SeekThru</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="startupfirstpage.cpp" line="72"/>
         <source>Select default search engines</source>
@@ -263,11 +241,6 @@
 <context>
     <name>StartupFirstPageWidget</name>
     <message>
-        <location filename="startupfirstpage.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="startupfirstpage.ui" line="22"/>
         <source>Localized set:</source>
         <translation type="unfinished"></translation>
@@ -295,11 +268,6 @@
 </context>
 <context>
     <name>TagsAsker</name>
-    <message>
-        <location filename="tagsasker.ui" line="14"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="tagsasker.ui" line="22"/>
         <source>Tags for this searcher:</source>
