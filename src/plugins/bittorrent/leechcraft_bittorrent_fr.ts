@@ -2,89 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="fr">
 <context>
-    <name></name>
-    <message>
-        <source>Add multiple torrents</source>
-        <translation type="obsolete">Ajouter plusieurs fichiers torrent</translation>
-    </message>
-    <message>
-        <source>Open directory:</source>
-        <translation type="obsolete">Ouvrir le dossier:</translation>
-    </message>
-    <message>
-        <source>Save directory:</source>
-        <translation type="obsolete">Sauvegarder dans le dossier:</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <comment>AddMultipleTorrents#5</comment>
-        <translation type="obsolete">Étiquettes :</translation>
-    </message>
-    <message>
-        <source>Add torrent</source>
-        <translation type="obsolete">Ajouter un fichier torrent</translation>
-    </message>
-    <message>
-        <source>Torrent</source>
-        <comment>AddTorrent#2</comment>
-        <translation type="obsolete">Fichier torrent</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <comment>AddTorrent#4</comment>
-        <translation type="obsolete">Parcourir…</translation>
-    </message>
-    <message>
-        <source>Files:</source>
-        <translation type="obsolete">Fichiers :</translation>
-    </message>
-    <message>
-        <source>Mark all</source>
-        <translation type="obsolete">Tout sélectionner</translation>
-    </message>
-    <message>
-        <source>Unmark all</source>
-        <translation type="obsolete">Tout désélectionner</translation>
-    </message>
-    <message>
-        <source>untagged</source>
-        <translation type="obsolete">sans étiquette</translation>
-    </message>
-    <message>
-        <source>Tracker URL:</source>
-        <translation type="obsolete">URL du Tracker :</translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">Taille :</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Annuler</translation>
-    </message>
-    <message>
-        <source>Where to save:</source>
-        <translation type="obsolete">Emplacement de sauvegarde :</translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <comment>ExportDialog#4</comment>
-        <translation type="obsolete">Préférences</translation>
-    </message>
-    <message>
-        <source>Select directory with torrents</source>
-        <translation type="obsolete">Sélectionnez un dossier contenant des fichiers torrent</translation>
-    </message>
-    <message>
-        <source>Select torrent file</source>
-        <translation type="obsolete">Sélectionnez un fichier torrent</translation>
-    </message>
-    <message>
-        <source>Torrents (*.torrent);;All files (*.*)</source>
-        <translation type="obsolete">Fichiers torrent (*.torrent);;Tous les fichiers (*.*)</translation>
-    </message>
-</context>
-<context>
     <name>AddMultipleTorrents</name>
     <message>
         <location filename="addmultipletorrents.ui" line="13"/>
@@ -895,6 +812,7 @@ IPv6 input mask</extracomment>
         <source>%1 (%n second(s) remaining)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1106,6 +1024,7 @@ IPv6 input mask</extracomment>
         <location filename="torrentplugin.cpp" line="502"/>
         <source>Do you really want to delete %n torrent(s)?</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1537,7 +1456,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="singletrackerchanger.ui" line="23"/>
         <source>URL:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">URL:</translation>
     </message>
     <message>
         <location filename="singletrackerchanger.ui" line="33"/>
@@ -2221,7 +2140,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="trackerschanger.ui" line="36"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">URL</translation>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="41"/>
