@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::DBusManager::Core</name>
     <message>
-        <location filename="core.cpp" line="70"/>
+        <location filename="core.cpp" line="72"/>
         <source>LeechCraft D-Bus general interface</source>
         <translation type="unfinished"></translation>
     </message>
