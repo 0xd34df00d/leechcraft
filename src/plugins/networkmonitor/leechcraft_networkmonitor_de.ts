@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="de">
 <context>
     <name>LeechCraft::Plugins::NetworkMonitor::HeaderModel</name>
     <message>
         <location filename="headermodel.cpp" line="26"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="headermodel.cpp" line="27"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wert</translation>
     </message>
 </context>
 <context>
@@ -19,12 +19,12 @@
     <message>
         <location filename="networkmonitor.cpp" line="79"/>
         <source>Network monitor...</source>
-        <translation type="unfinished"></translation>
+        <translation>Netzwerküberwachung…</translation>
     </message>
     <message>
         <location filename="networkmonitor.cpp" line="105"/>
         <source>Monitors HTTP network requests and responses.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeigt HTTP Netzwerk Anfragen und Antworten.</translation>
     </message>
 </context>
 <context>
@@ -32,27 +32,27 @@
     <message>
         <location filename="requestmodel.cpp" line="35"/>
         <source>Date started</source>
-        <translation type="unfinished"></translation>
+        <translation>Startdatum</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="36"/>
         <source>Date finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Abschlussdatum</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="37"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="38"/>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Host</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="88"/>
         <source>In progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorgang läuft</translation>
     </message>
 </context>
 <context>
@@ -60,32 +60,32 @@
     <message>
         <location filename="networkmonitor.ui" line="14"/>
         <source>Network Monitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Netzwerküberwachung</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="20"/>
         <source>Clear finished items</source>
-        <translation type="unfinished"></translation>
+        <translation>Beendete Einträge entfernen</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="36"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>String</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="41"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>Platzhalter</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="46"/>
         <source>Regexp</source>
-        <translation type="unfinished"></translation>
+        <translation>reg. Ausdruck</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="58"/>
         <source>Requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfragen</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="74"/>
