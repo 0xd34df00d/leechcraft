@@ -2,49 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ar" sourcelanguage="en">
 <context>
-    <name>Core</name>
-    <message>
-        <source>Show LMP</source>
-        <translation type="obsolete">إظهار LMP</translation>
-    </message>
-    <message>
-        <source>Initializing</source>
-        <translation type="obsolete">جاري التحضير</translation>
-    </message>
-    <message>
-        <source>Stopped</source>
-        <translation type="obsolete">متوقف</translation>
-    </message>
-    <message>
-        <source>Playing</source>
-        <translation type="obsolete">تشغيل</translation>
-    </message>
-    <message>
-        <source>Buffering</source>
-        <translation type="obsolete">تخزين في الذاكرة المؤقتة</translation>
-    </message>
-    <message>
-        <source>Paused</source>
-        <translation type="obsolete">متوقف مؤقتاً</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">خطأ</translation>
-    </message>
-    <message>
-        <source> from </source>
-        <translation type="obsolete"> من </translation>
-    </message>
-    <message>
-        <source> (Unknown disc type)</source>
-        <translation type="obsolete"> (نوع القرص غير معروف)</translation>
-    </message>
-    <message>
-        <source>stream</source>
-        <translation type="obsolete">المجرى</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::LMP::Core</name>
     <message>
         <location filename="core.cpp" line="38"/>
@@ -55,262 +12,192 @@
 <context>
     <name>LeechCraft::Plugins::LMP::Player</name>
     <message>
-        <location filename="player.cpp" line="50"/>
+        <location filename="player.cpp" line="49"/>
         <source>Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="player.cpp" line="51"/>
+        <location filename="player.cpp" line="50"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="player.cpp" line="114"/>
+        <location filename="player.cpp" line="113"/>
         <source>No metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="player.cpp" line="119"/>
+        <location filename="player.cpp" line="118"/>
         <source>File</source>
         <translation type="unfinished">الملف</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="123"/>
+        <location filename="player.cpp" line="122"/>
         <source>URL</source>
         <translation type="unfinished">المكان</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="130"/>
+        <location filename="player.cpp" line="129"/>
         <source>Audio CD</source>
         <translation type="unfinished">CD صوتي</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="133"/>
+        <location filename="player.cpp" line="132"/>
         <source>DVD</source>
         <translation type="unfinished">DVD</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="136"/>
+        <location filename="player.cpp" line="135"/>
         <source>Video CD</source>
         <translation type="unfinished">CD فيديو</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="139"/>
+        <location filename="player.cpp" line="138"/>
         <source>Unknown disc type</source>
         <translation type="unfinished"> نوع القرص غير معروف</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="145"/>
+        <location filename="player.cpp" line="144"/>
         <source>Stream</source>
         <translation type="unfinished">المجرى</translation>
-    </message>
-    <message>
-        <location filename="player.cpp" line="187"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::LMP::PlayerWidget</name>
     <message>
-        <location filename="playerwidget.cpp" line="212"/>
+        <location filename="playerwidget.cpp" line="213"/>
         <source>Play</source>
         <translation type="unfinished">تشغيل</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="222"/>
+        <location filename="playerwidget.cpp" line="223"/>
         <source>Pause</source>
         <translation type="unfinished">إيقاف مؤقتاً</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="232"/>
+        <location filename="playerwidget.cpp" line="233"/>
         <source>Viewer settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="258"/>
+        <location filename="playerwidget.cpp" line="259"/>
         <source>Toggle full screen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="263"/>
+        <location filename="playerwidget.cpp" line="264"/>
         <source>F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="270"/>
+        <location filename="playerwidget.cpp" line="271"/>
         <source>Pause/resume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="276"/>
+        <location filename="playerwidget.cpp" line="277"/>
         <source>P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="277"/>
+        <location filename="playerwidget.cpp" line="278"/>
         <source>R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="284"/>
+        <location filename="playerwidget.cpp" line="285"/>
         <source>Volume up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="298"/>
+        <location filename="playerwidget.cpp" line="299"/>
         <source>Volume down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="311"/>
+        <location filename="playerwidget.cpp" line="312"/>
         <source>On-screen display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="386"/>
+        <location filename="playerwidget.cpp" line="387"/>
         <source>Initializing</source>
         <translation type="unfinished">جاري التحضير</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="389"/>
+        <location filename="playerwidget.cpp" line="390"/>
         <source>Stopped</source>
         <translation type="unfinished">متوقف</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="392"/>
+        <location filename="playerwidget.cpp" line="393"/>
         <source>Playing</source>
         <translation type="unfinished">تشغيل</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="395"/>
+        <location filename="playerwidget.cpp" line="396"/>
         <source>Buffering</source>
         <translation type="unfinished">تخزين في الذاكرة المؤقتة</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="398"/>
+        <location filename="playerwidget.cpp" line="399"/>
         <source>Paused</source>
         <translation type="unfinished">متوقف مؤقتاً</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="401"/>
+        <location filename="playerwidget.cpp" line="402"/>
         <source>Error</source>
         <translation type="unfinished">خطأ</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="405"/>
-        <source> (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="playerwidget.cpp" line="406"/>
+        <location filename="playerwidget.cpp" line="407"/>
         <source> [</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="412"/>
+        <location filename="playerwidget.cpp" line="413"/>
         <source>/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="416"/>
+        <location filename="playerwidget.cpp" line="417"/>
         <source>]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="418"/>
+        <location filename="playerwidget.cpp" line="419"/>
         <source> from </source>
         <translation type="unfinished"> من </translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="426"/>
+        <location filename="playerwidget.cpp" line="427"/>
         <source>nowhere</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="439"/>
+        <location filename="playerwidget.cpp" line="440"/>
         <source> (CD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="442"/>
+        <location filename="playerwidget.cpp" line="443"/>
         <source> (DVD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="445"/>
+        <location filename="playerwidget.cpp" line="446"/>
         <source> (VCD)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="448"/>
+        <location filename="playerwidget.cpp" line="449"/>
         <source> (Unknown disc type)</source>
         <translation type="unfinished"> (نوع القرص غير معروف)</translation>
     </message>
     <message>
-        <location filename="playerwidget.cpp" line="453"/>
+        <location filename="playerwidget.cpp" line="454"/>
         <source>stream</source>
         <translation type="unfinished">المجرى</translation>
-    </message>
-</context>
-<context>
-    <name>Player</name>
-    <message>
-        <source>Source type</source>
-        <translation type="obsolete">نوع المصدر</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">الملف</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">المكان</translation>
-    </message>
-    <message>
-        <source>Audio CD</source>
-        <translation type="obsolete">CD صوتي</translation>
-    </message>
-    <message>
-        <source>DVD</source>
-        <translation type="obsolete">DVD</translation>
-    </message>
-    <message>
-        <source>Video CD</source>
-        <translation type="obsolete">CD فيديو</translation>
-    </message>
-    <message>
-        <source>Unknown disc type</source>
-        <translation type="obsolete"> نوع القرص غير معروف</translation>
-    </message>
-    <message>
-        <source>Stream</source>
-        <translation type="obsolete">المجرى</translation>
-    </message>
-    <message>
-        <source>Play</source>
-        <translation type="obsolete">تشغيل</translation>
-    </message>
-    <message>
-        <source>Pause</source>
-        <translation type="obsolete">إيقاف مؤقتاً</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
-        <location filename="player.ui" line="14"/>
-        <source>LMP</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
-    <name>PlayerWidget</name>
-    <message>
-        <location filename="playerwidget.ui" line="20"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
