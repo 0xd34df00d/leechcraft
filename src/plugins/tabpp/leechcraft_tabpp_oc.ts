@@ -2,17 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="oc">
 <context>
-    <name></name>
-    <message>
-        <source>unknown</source>
-        <translation type="obsolete">desconegut</translation>
-    </message>
-    <message>
-        <source>F9</source>
-        <translation type="obsolete">F9</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::TabPP::Core</name>
     <message>
         <location filename="core.cpp" line="260"/>

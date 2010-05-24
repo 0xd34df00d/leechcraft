@@ -12,12 +12,12 @@
 <context>
     <name>LeechCraft::Plugins::TabPP::Plugin</name>
     <message>
-        <location filename="tabpp.cpp" line="64"/>
+        <location filename="tabpp.cpp" line="66"/>
         <source>Enhances user experience with tabs.</source>
         <translation>Покращуе взаємодію з вкладками.</translation>
     </message>
     <message>
-        <location filename="tabpp.cpp" line="122"/>
+        <location filename="tabpp.cpp" line="124"/>
         <source>Show tab switcher</source>
         <translation>Показати перемикач вкладок</translation>
     </message>
