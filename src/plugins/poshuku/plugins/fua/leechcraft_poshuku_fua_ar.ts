@@ -59,11 +59,6 @@
 <context>
     <name>Settings</name>
     <message>
-        <location filename="settings.ui" line="14"/>
-        <source>Form</source>
-        <translation>النموذج</translation>
-    </message>
-    <message>
         <location filename="settings.ui" line="27"/>
         <source>Add...</source>
         <translation>إضافة...</translation>

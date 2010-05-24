@@ -63,11 +63,6 @@
 <context>
     <name>Settings</name>
     <message>
-        <location filename="settings.ui" line="14"/>
-        <source>Form</source>
-        <translation>Ыа</translation>
-    </message>
-    <message>
         <location filename="settings.ui" line="27"/>
         <source>Add...</source>
         <translation>Добавить...</translation>
