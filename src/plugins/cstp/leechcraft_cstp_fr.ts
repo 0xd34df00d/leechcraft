@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="fr">
 <context>
     <name>AddTask</name>
     <message>
         <location filename="addtask.ui" line="13"/>
         <source>Add task</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une tâche</translation>
     </message>
     <message>
         <location filename="addtask.ui" line="21"/>
         <source>URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>URL :</translation>
     </message>
     <message>
         <location filename="addtask.ui" line="31"/>
         <source>Local path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin local :</translation>
     </message>
     <message>
         <location filename="addtask.ui" line="43"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Parcourir…</translation>
     </message>
     <message>
         <location filename="addtask.ui" line="55"/>
         <source>Filename:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de fichier :</translation>
     </message>
     <message>
         <location filename="addtask.ui" line="65"/>
         <source>Comment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Commentaire :</translation>
     </message>
 </context>
 <context>
@@ -39,143 +39,123 @@
     <message>
         <location filename="addtask.cpp" line="107"/>
         <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le répertoire %1 n&apos;existe pas, souhaitez vous en sélectionner un autre ?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="110"/>
         <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le répertoire %1 n&apos;est pas lisible, souhaitez vous en sélectionner un autre ?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="113"/>
         <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;écrire dans le répertoire %1, souhaitez vous en sélectionner un autre ?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="116"/>
         <source>%1 isn&apos;t a directory at all, would you like to select another?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="addtask.cpp" line="125"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 n&apos;est pas un répertoire, souhaitez vous en sélectionner un autre ?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="157"/>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner un répertoire</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::CSTP::CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="209"/>
-        <source>CSTP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="cstp.cpp" line="211"/>
+        <location filename="cstp.cpp" line="206"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="218"/>
+        <location filename="cstp.cpp" line="213"/>
         <source>Remove all</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout supprimer</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="227"/>
+        <location filename="cstp.cpp" line="222"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Lancer</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="234"/>
+        <location filename="cstp.cpp" line="229"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrêter</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="241"/>
+        <location filename="cstp.cpp" line="236"/>
         <source>Start all</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout démarrer</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="248"/>
+        <location filename="cstp.cpp" line="243"/>
         <source>Stop all</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout arrêter</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="260"/>
+        <location filename="cstp.cpp" line="255"/>
         <source>File exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier existe</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="261"/>
+        <location filename="cstp.cpp" line="256"/>
         <source>File %1 already exists, continue download?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="cstp.cpp" line="275"/>
-        <source>HTTP error</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier %1 existe déjà, continuer à télécharger ?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::CSTP::Core</name>
     <message>
-        <location filename="core.cpp" line="49"/>
+        <location filename="core.cpp" line="60"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="50"/>
+        <location filename="core.cpp" line="61"/>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>État</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="51"/>
+        <location filename="core.cpp" line="62"/>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>Avancement</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="371"/>
+        <location filename="core.cpp" line="276"/>
+        <source>Could not truncate file </source>
+        <translation>Impossible de découper le fichier </translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="405"/>
         <source>%1 (ETA: %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="383"/>
-        <source>%1% (%2 of %3 at %44)</source>
+        <location filename="core.cpp" line="417"/>
+        <source>%1% (%2 of %3 at %4)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="475"/>
-        <source>Could not open file %1: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="534"/>
-        <source>Download finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="535"/>
-        <source>%1
-%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="242"/>
-        <source>Could not truncate file </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="389"/>
-        <source>%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="387"/>
+        <location filename="core.cpp" line="421"/>
         <source>/s</source>
+        <translation>/s</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="423"/>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="509"/>
+        <source>Could not open file %1: %2</source>
+        <translation>Impossible d&apos;ouvrir le fichier %1: %2</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="568"/>
+        <source>Download finished: %1
+%2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -184,29 +164,34 @@
     <message>
         <location filename="mainviewdelegate.cpp" line="71"/>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactif</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="201"/>
+        <location filename="task.cpp" line="202"/>
         <source>Stopped</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrêté</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="203"/>
+        <location filename="task.cpp" line="204"/>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminé</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="205"/>
+        <location filename="task.cpp" line="206"/>
         <source>Running</source>
-        <translation type="unfinished"></translation>
+        <translation>En cours</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="226"/>
+        <location filename="task.cpp" line="227"/>
         <source>Task isn&apos;t initialized properly</source>
+        <translation>La tâche n&apos;est pas initialisée correctement</translation>
+    </message>
+    <message>
+        <location filename="task.cpp" line="406"/>
+        <source>Error writing to file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

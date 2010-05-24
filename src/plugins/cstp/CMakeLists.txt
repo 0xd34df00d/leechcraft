@@ -55,6 +55,7 @@ SET (TRANSLATIONS
 	leechcraft_cstp_de.ts
 	leechcraft_cstp_eo.ts
 	leechcraft_cstp_es.ts
+	leechcraft_cstp_fr.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_ru_RU.qm
@@ -63,6 +64,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_eo.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_es.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_fr.qm
 	)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
