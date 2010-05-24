@@ -138,6 +138,7 @@ SET (TRANSLATIONS
 	leechcraft_bittorrent_pl.ts
 	leechcraft_bittorrent_es.ts
 	leechcraft_bittorrent_fr.ts
+	leechcraft_bittorrent_oc.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_ru_RU.qm
@@ -147,6 +148,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_pl.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_es.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_fr.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_oc.qm
 	)
 
 ADD_DEFINITIONS (-DWIN32_LEAN_AND_MEAN -DBOOST_ALL_NO_LIB)
