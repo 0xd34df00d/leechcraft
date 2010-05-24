@@ -36,12 +36,7 @@ namespace LeechCraft
 				ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"),
 						parent);
 				ActionUpdateFeeds_->setProperty ("ActionIcon", "aggregator_updateallfeeds");
-			
-				ActionItemBucket_ = new QAction (tr ("Item bucket..."),
-						parent);
-				ActionItemBucket_->setObjectName ("ActionItemBucket_");
-				ActionItemBucket_->setProperty ("ActionIcon", "aggregator_favorites");
-			
+
 				ActionRegexpMatcher_ = new QAction (tr ("Regexp matcher..."),
 						parent);
 				ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");

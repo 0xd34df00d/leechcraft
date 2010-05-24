@@ -35,7 +35,6 @@ namespace LeechCraft
 			public:
 				QAction *ActionAddFeed_;
 				QAction *ActionUpdateFeeds_;
-				QAction *ActionItemBucket_;
 				QAction *ActionRegexpMatcher_;
 				QAction *ActionImportOPML_;
 				QAction *ActionExportOPML_;
