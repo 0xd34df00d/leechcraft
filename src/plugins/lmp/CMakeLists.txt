@@ -64,11 +64,13 @@ SET (TRANSLATIONS
 	leechcraft_lmp_ru_RU.ts
 	leechcraft_lmp_uk_UA.ts
 	leechcraft_lmp_ar.ts
+	leechcraft_lmp_de.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lmp_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lmp_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lmp_ar.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lmp_de.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
