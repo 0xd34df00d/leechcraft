@@ -34,11 +34,30 @@ SET (HEADERS
 	notificationwidget.h
 	notificationsmanager.h
 	)
+SET (TRANSLATIONS
+	leechcraft_kinotify_ru_RU.ts
+	leechcraft_kinotify_uk_UA.ts
+	leechcraft_kinotify_ar.ts
+	leechcraft_kinotify_de.ts
+	)
 SET (RESOURCES kinotifyresources.qrc)
+SET (COMPILED_TRANSLATIONS
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_kinotify_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_kinotify_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_kinotify_ar.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_kinotify_de.qm
+	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
+ADD_CUSTOM_COMMAND (OUTPUT
+	${COMPILED_TRANSLATIONS}
+	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
+	DEPENDS ${TRANSLATIONS}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
 ADD_LIBRARY (leechcraft_kinotify SHARED
+	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${RCCS}
