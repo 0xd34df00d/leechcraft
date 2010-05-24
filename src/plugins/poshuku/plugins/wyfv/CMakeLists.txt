@@ -36,11 +36,12 @@ SET (WYFV_RESOURCES
 	)
 SET (WYFV_TRANSLATIONS
 	leechcraft_poshuku_wyfv_ru_RU.ts
-	leechcraft_poshuku_wyfv_ar.ts
+	leechcraft_poshuku_wyfv_de.ts
 	)
 SET (WYFV_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_wyfv_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_wyfv_ar.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_wyfv_de.qm
 	)
 QT4_WRAP_CPP (WYFV_MOC_SRCS ${WYFV_HEADERS})
 QT4_WRAP_UI (WYFV_UIS_H ${WYFV_FORMS})
