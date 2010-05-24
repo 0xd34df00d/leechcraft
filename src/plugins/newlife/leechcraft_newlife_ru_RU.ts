@@ -84,12 +84,6 @@
         <translation>Файлы OPML (*.opml *.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="akregatorimportpage.cpp" line="111"/>
-        <location filename="akregatorimportpage.cpp" line="159"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
         <location filename="akregatorimportpage.cpp" line="112"/>
         <source>The file you&apos;ve selected is not a valid OPML file.</source>
         <translation>Файл, выбранный вами, не является валидным OPML-файлом.</translation>
@@ -123,12 +117,6 @@
         <translation>Выберите конфигурационный файл KTorrent</translation>
     </message>
     <message>
-        <location filename="ktorrentimportpage.cpp" line="94"/>
-        <location filename="ktorrentimportpage.cpp" line="186"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
         <location filename="ktorrentimportpage.cpp" line="95"/>
         <source>Can&apos;t read KTorrent&apos;s configuration file</source>
         <translation>Невозможно прочитать конфигурационный файл KTorrent</translation>
@@ -160,11 +148,6 @@
         <location filename="lifereaimportpage.cpp" line="108"/>
         <source>Select Liferea&apos;s directory</source>
         <translation>Выбор директории Liferea</translation>
-    </message>
-    <message>
-        <location filename="lifereaimportpage.cpp" line="116"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
     </message>
     <message>
         <location filename="lifereaimportpage.cpp" line="117"/>
