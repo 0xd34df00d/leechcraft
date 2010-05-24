@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="de">
 <context>
     <name>LeechCraft::Plugins::HistoryHolder::Core</name>
     <message>
         <location filename="core.cpp" line="67"/>
         <source>Entity/location</source>
-        <translation type="unfinished"></translation>
+        <translation>Ort</translation>
     </message>
     <message>
         <location filename="core.cpp" line="68"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum</translation>
     </message>
     <message>
         <location filename="core.cpp" line="69"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags</translation>
     </message>
     <message>
         <location filename="core.cpp" line="84"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="core.cpp" line="180"/>
         <source>Binary data</source>
-        <translation type="unfinished"></translation>
+        <translation>Binäre Daten</translation>
     </message>
 </context>
 <context>
@@ -34,7 +34,7 @@
     <message>
         <location filename="historyholder.cpp" line="51"/>
         <source>Holds history from various plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Beinhaltet History von verschiedenen Plug-Ins</translation>
     </message>
 </context>
 </TS>
