@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="pl">
 <context>
     <name>LeechCraft::Plugins::LCFTP::Core</name>
     <message>
         <location filename="core.cpp" line="197"/>
         <source>Waiting</source>
-        <translation type="unfinished"></translation>
+        <translation>Oczekiwanie</translation>
     </message>
     <message>
         <location filename="core.cpp" line="202"/>
         <source>Paused</source>
-        <translation type="unfinished"></translation>
+        <translation>Wstrzymane</translation>
     </message>
     <message>
         <location filename="core.cpp" line="204"/>
@@ -26,84 +26,71 @@
     <message>
         <location filename="core.cpp" line="220"/>
         <source>%1 of %2 (%3%)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="225"/>
-        <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 z %2 (%3%)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="360"/>
         <source>%1 already exists. What do you want to do?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="366"/>
-        <source>Overwrite</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="368"/>
-        <source>Rename</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="370"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="384"/>
-        <source>Error removing %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="398"/>
-        <source>Choose new file name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="742"/>
-        <source>Pause</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="872"/>
-        <source>FTP transfer finished</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 już istnieje. Co chcesz zrobić?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="364"/>
         <location filename="core.cpp" line="750"/>
         <source>Resume</source>
-        <translation type="unfinished"></translation>
+        <translation>Wznów</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="366"/>
+        <source>Overwrite</source>
+        <translation>Nadpisz</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="368"/>
+        <source>Rename</source>
+        <translation>Zmień nazwę</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="370"/>
+        <source>Cancel</source>
+        <translation>Anuluj</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="384"/>
+        <source>Error removing %1</source>
+        <translation>Błąd podczas usuwania %1</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="398"/>
+        <source>Choose new file name</source>
+        <translation>Wybierz nową nazwę pliku</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="742"/>
+        <source>Pause</source>
+        <translation>Wstrzymaj</translation>
     </message>
     <message>
         <location filename="core.cpp" line="758"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="359"/>
-        <location filename="core.cpp" line="383"/>
-        <location filename="core.cpp" line="858"/>
-        <location filename="core.cpp" line="900"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <location filename="core.cpp" line="859"/>
+        <source>FTP transfer finished: %1</source>
+        <translation>Zakończono przesyłanie FTP: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="901"/>
+        <location filename="core.cpp" line="883"/>
         <source>While mirroring&lt;br /&gt;%1&lt;br /&gt;to&lt;br /&gt;%2&lt;br /&gt;an error occured:&lt;br /&gt;%3&lt;br /&gt; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wystąpił błąd podczas synchronizacji &lt;br /&gt;%1&lt;br /&gt;do&lt;br /&gt;%2&lt;br /&gt;:  &lt;br /&gt;%3&lt;br /&gt; już istnieje.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::LCFTP::LCFTP</name>
     <message>
-        <location filename="lcftp.cpp" line="110"/>
+        <location filename="lcftp.cpp" line="106"/>
         <source>A simple FTP client</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosty klient FTP</translation>
     </message>
 </context>
 <context>
@@ -111,37 +98,37 @@
     <message>
         <location filename="pane.cpp" line="54"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesyłanie</translation>
     </message>
     <message>
         <location filename="pane.cpp" line="78"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa</translation>
     </message>
     <message>
         <location filename="pane.cpp" line="79"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar</translation>
     </message>
     <message>
         <location filename="pane.cpp" line="80"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodzaj</translation>
     </message>
     <message>
         <location filename="pane.cpp" line="81"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Data</translation>
     </message>
     <message>
         <location filename="pane.cpp" line="239"/>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog</translation>
     </message>
     <message>
         <location filename="pane.cpp" line="240"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik</translation>
     </message>
 </context>
 <context>
@@ -150,63 +137,45 @@
         <location filename="worker.cpp" line="303"/>
         <location filename="worker.cpp" line="326"/>
         <source>Could not open file&lt;br /&gt;%1&lt;br /&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie udało się otworzyć pliku &lt;br /&gt;%1&lt;br /&gt;%2</translation>
     </message>
 </context>
 <context>
     <name>Pane</name>
     <message>
-        <location filename="pane.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="pane.ui" line="25"/>
         <source>..</source>
-        <translation type="unfinished"></translation>
+        <translation>..</translation>
     </message>
     <message>
         <location filename="pane.ui" line="32"/>
         <source>/</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
     </message>
 </context>
 <context>
     <name>SummaryTab</name>
     <message>
-        <location filename="summarytab.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="summarytab.ui" line="25"/>
         <source>Download speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prędkość pobierania:</translation>
     </message>
     <message>
         <location filename="summarytab.ui" line="32"/>
         <source>Upload speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prędkość wysyłania:</translation>
     </message>
     <message>
         <location filename="summarytab.ui" line="39"/>
         <location filename="summarytab.ui" line="61"/>
         <source>Unlimited</source>
-        <translation type="unfinished"></translation>
+        <translation>Bez ograniczenia</translation>
     </message>
     <message>
         <location filename="summarytab.ui" line="42"/>
         <location filename="summarytab.ui" line="64"/>
         <source> KiB/s</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TabWidget</name>
-    <message>
-        <location filename="tabwidget.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation> KiB/s</translation>
     </message>
 </context>
 </TS>
