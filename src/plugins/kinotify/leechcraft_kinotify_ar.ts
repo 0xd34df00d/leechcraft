@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::Kinotify::Plugin</name>
     <message>
-        <location filename="kinotify.cpp" line="57"/>
+        <location filename="kinotify.cpp" line="51"/>
         <source>Fancy Kinetic notifications.</source>
         <translation type="unfinished"></translation>
     </message>
