@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="ru">
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::FileScheme::FileScheme</name>
     <message>
@@ -14,7 +14,7 @@
     <message>
         <location filename="schemereply.cpp" line="50"/>
         <source>No error</source>
-        <translation type="unfinished"></translation>
+        <translation>Neniu eraro</translation>
     </message>
     <message>
         <location filename="schemereply.cpp" line="108"/>
@@ -34,17 +34,17 @@
     <message>
         <location filename="schemereply.cpp" line="202"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosiero</translation>
     </message>
     <message>
         <location filename="schemereply.cpp" line="203"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Grandeco</translation>
     </message>
     <message>
         <location filename="schemereply.cpp" line="204"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Ŝanĝita</translation>
     </message>
 </context>
 </TS>
