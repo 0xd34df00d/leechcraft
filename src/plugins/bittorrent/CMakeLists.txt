@@ -133,12 +133,14 @@ SET (RESOURCES bittorrentresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_bittorrent_ru_RU.ts
 	leechcraft_bittorrent_uk_UA.ts
+	leechcraft_bittorrent_de.ts
 	leechcraft_bittorrent_ar.ts
 	leechcraft_bittorrent_pl.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_pl.qm
 	)
