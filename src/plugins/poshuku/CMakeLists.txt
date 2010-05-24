@@ -143,6 +143,7 @@ SET (TRANSLATIONS
 	leechcraft_poshuku_ar.ts
 	leechcraft_poshuku_de.ts
 	leechcraft_poshuku_es.ts
+	leechcraft_poshuku_fr.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_ru_RU.qm
@@ -150,6 +151,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_es.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fr.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
