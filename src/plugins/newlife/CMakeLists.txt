@@ -54,11 +54,13 @@ SET (FORMS
 SET (TRANSLATIONS
 	leechcraft_newlife_ru_RU.ts
 	leechcraft_newlife_ar.ts
+	leechcraft_newlife_de.ts
 	)
 SET (RESOURCES newliferesources.qrc)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_newlife_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_newlife_ar.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_newlife_de.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
