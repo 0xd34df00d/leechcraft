@@ -37,7 +37,7 @@
         <translation>Аудіо В Контакте</translation>
     </message>
     <message>
-        <location filename="audiofindproxy.cpp" line="230"/>
+        <location filename="audiofindproxy.cpp" line="242"/>
         <source>Nothing found for %1</source>
         <translation>Нічого не знайдено по %1</translation>
     </message>
@@ -58,32 +58,42 @@
 <context>
     <name>LeechCraft::Plugins::vGrabber::FindProxy</name>
     <message>
-        <location filename="findproxy.cpp" line="39"/>
+        <location filename="findproxy.cpp" line="41"/>
         <source>Download</source>
         <translation>Завантажити</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="46"/>
+        <location filename="findproxy.cpp" line="48"/>
         <source>Handle</source>
         <translation>Обробити</translation>
     </message>
     <message>
+        <location filename="findproxy.cpp" line="55"/>
+        <source>Copy URL to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="findproxy.cpp" line="63"/>
+        <source>vGrabber menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="findproxy.cpp" line="80"/>
         <source>Empty search string</source>
         <translation>Пустий запит</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="84"/>
+        <location filename="findproxy.cpp" line="101"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Завдання на запит&lt;br /&gt;%1&lt;br /&gt;не було делеговано.</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="155"/>
+        <location filename="findproxy.cpp" line="181"/>
         <source>Could not open file %1.</source>
         <translation>Неможливо відкрити файл %1.</translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="171"/>
+        <location filename="findproxy.cpp" line="197"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
         <translation>Завдання на запит&lt;br /&gt;%1&lt;br /&gt;було делеговано, але зазнало невдачі.</translation>
     </message>
@@ -106,12 +116,12 @@
         <translation>Відео</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="172"/>
+        <location filename="videofindproxy.cpp" line="184"/>
         <source>Nothing found for %1</source>
         <translation>Нічого не знайдено по %1</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="268"/>
+        <location filename="videofindproxy.cpp" line="280"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Завдання на запит&lt;br /&gt;%1&lt;br /&gt;не було делеговано.</translation>
     </message>

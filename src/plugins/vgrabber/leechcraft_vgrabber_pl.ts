@@ -37,7 +37,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="audiofindproxy.cpp" line="228"/>
+        <location filename="audiofindproxy.cpp" line="242"/>
         <source>Nothing found for %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -58,32 +58,42 @@
 <context>
     <name>LeechCraft::Plugins::vGrabber::FindProxy</name>
     <message>
-        <location filename="findproxy.cpp" line="36"/>
+        <location filename="findproxy.cpp" line="41"/>
         <source>Download</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="43"/>
+        <location filename="findproxy.cpp" line="48"/>
         <source>Handle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="60"/>
+        <location filename="findproxy.cpp" line="55"/>
+        <source>Copy URL to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="findproxy.cpp" line="63"/>
+        <source>vGrabber menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="findproxy.cpp" line="80"/>
         <source>Empty search string</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="81"/>
+        <location filename="findproxy.cpp" line="101"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="140"/>
+        <location filename="findproxy.cpp" line="181"/>
         <source>Could not open file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="findproxy.cpp" line="156"/>
+        <location filename="findproxy.cpp" line="197"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -106,12 +116,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="170"/>
+        <location filename="videofindproxy.cpp" line="184"/>
         <source>Nothing found for %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="266"/>
+        <location filename="videofindproxy.cpp" line="280"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -119,13 +129,8 @@
 <context>
     <name>LeechCraft::Plugins::vGrabber::vGrabber</name>
     <message>
-        <location filename="vgrabber.cpp" line="84"/>
+        <location filename="vgrabber.cpp" line="83"/>
         <source>vkontakte.ru audio/video grabber.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vgrabber.cpp" line="167"/>
-        <source>LeechCraft</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
