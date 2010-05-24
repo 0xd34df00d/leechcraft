@@ -4,9 +4,24 @@
 <context>
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
-        <location filename="core.cpp" line="121"/>
-        <location filename="core.cpp" line="229"/>
+        <location filename="core.cpp" line="123"/>
+        <location filename="core.cpp" line="327"/>
         <source>Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="190"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="191"/>
+        <source>Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="192"/>
+        <source>State</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -72,36 +87,66 @@
 <context>
     <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="334"/>
+        <location filename="summarywidget.cpp" line="47"/>
+        <source>Ctrl+F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="summarywidget.cpp" line="367"/>
+        <source>S: %1 [%2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="summarywidget.cpp" line="371"/>
+        <source>Summary [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="summarywidget.cpp" line="400"/>
         <source>Remove this category</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>SummaryWidget</name>
+    <name>SearchWidget</name>
     <message>
-        <location filename="summarywidget.ui" line="51"/>
-        <source>Add</source>
+        <location filename="searchwidget.ui" line="14"/>
+        <source>Search parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="59"/>
+        <location filename="searchwidget.ui" line="33"/>
         <source>String</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="64"/>
+        <location filename="searchwidget.ui" line="38"/>
         <source>Wildcard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="69"/>
+        <location filename="searchwidget.ui" line="43"/>
         <source>Regexp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.ui" line="74"/>
+        <location filename="searchwidget.ui" line="48"/>
         <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="104"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="111"/>
+        <source>AND</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="118"/>
+        <source>OR</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

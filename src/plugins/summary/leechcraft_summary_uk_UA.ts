@@ -5,7 +5,7 @@
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
         <location filename="core.cpp" line="123"/>
-        <location filename="core.cpp" line="323"/>
+        <location filename="core.cpp" line="327"/>
         <source>Summary</source>
         <translation>Зведення</translation>
     </message>
@@ -102,7 +102,7 @@
         <translation>Зведення [%1]</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="399"/>
+        <location filename="summarywidget.cpp" line="400"/>
         <source>Remove this category</source>
         <translation>Видалити цю категорію</translation>
     </message>
