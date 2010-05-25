@@ -91,7 +91,7 @@ namespace LeechCraft
 				Impl_->ItemsFilterModel_.reset (new ItemsFilterModel (this));
 				Impl_->ItemsFilterModel_->SetItemsWidget (this);
 				Impl_->ItemsFilterModel_->setSourceModel (Impl_->ItemLists_.get ());
-				Impl_->ItemsFilterModel_->setFilterKeyColumn (1);
+				Impl_->ItemsFilterModel_->setFilterKeyColumn (0);
 				Impl_->ItemsFilterModel_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 				Impl_->Ui_.Items_->setModel (Impl_->ItemsFilterModel_.get ());
 				Impl_->Ui_.Items_->sortByColumn (1, Qt::DescendingOrder);
