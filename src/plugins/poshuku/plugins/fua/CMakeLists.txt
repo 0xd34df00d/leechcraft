@@ -21,6 +21,7 @@ SET (FUA_TRANSLATIONS
 	leechcraft_poshuku_fua_ru_RU.ts
 	leechcraft_poshuku_fua_uk_UA.ts
 	leechcraft_poshuku_fua_ar.ts
+	leechcraft_poshuku_fua_de.ts
 	leechcraft_poshuku_fua_eo.ts
 	leechcraft_poshuku_fua_es.ts
 	)
