@@ -200,6 +200,49 @@ namespace LeechCraft
 						CurrentItems_ [index.row ()].Unread_)
 					return XmlSettingsManager::Instance ()->
 						property ("UnreadItemsFont");
+				else if (role == Qt::ToolTipRole)
+				{
+					IDType_t id = CurrentItems_ [index.row ()].ItemID_;
+					Item_ptr item = Core::Instance ()
+							.GetStorageBackend ()->GetItem (id);
+					QString result = QString ("<qt><strong>%1</strong><br />").arg (item->Title_);
+					if (item->Author_.size ())
+					{
+						result += tr ("<b>Author</b>: %1").arg (item->Author_);
+						result += "<br />";
+					}
+					if (item->Categories_.size ())
+					{
+						result += tr ("<b>Categories</b>: %1").arg (item->Categories_.join ("; "));
+						result += "<br />";
+					}
+					if (item->NumComments_ > 0)
+					{
+						result += tr ("%n comment(s)", "", item->NumComments_);
+						result += "<br />";
+					}
+					if (item->Enclosures_.size () > 0)
+					{
+						result += tr ("%n enclosure(s)", "", item->Enclosures_.size ());
+						result += "<br />";
+					}
+					if (item->MRSSEntries_.size () > 0)
+					{
+						result += tr ("%n MediaRSS entry(s)", "", item->MRSSEntries_.size ());
+						result += "<br />";
+					}
+					if (item->CommentsLink_.size ())
+					{
+						result += tr ("RSS with comments is available");
+						result += "<br />";
+					}
+					result += "<br />";
+					const int maxDescriptionSize = 1000;
+					result += item->Description_.left (maxDescriptionSize);
+					if (item->Description_.size () > maxDescriptionSize)
+						result += "...";
+					return result;
+				}
 				else
 					return QVariant ();
 			}
