@@ -73,6 +73,7 @@ namespace LeechCraft
 								   * - tags
 								   * - last_build
 								   * - favicon
+								   * - author
 								   *
 								   * Binds:
 								   * - feed_id

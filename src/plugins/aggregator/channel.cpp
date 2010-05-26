@@ -85,6 +85,7 @@ namespace LeechCraft
 				{
 					ChannelID_,
 					FeedID_,
+					Author_,
 					Title_,
 					Link_,
 					Tags_,

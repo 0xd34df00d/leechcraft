@@ -167,7 +167,8 @@ namespace LeechCraft
 						"url, "
 						"tags, "
 						"last_build,"
-						"favicon "
+						"favicon, "
+						"author "
 						"FROM channels "
 						"WHERE feed_id = :feed_id "
 						"ORDER BY title");
@@ -839,6 +840,7 @@ namespace LeechCraft
 					{
 						id,
 						feedId,
+						ChannelsShortSelector_.value (6).toString (),
 						ChannelsShortSelector_.value (1).toString (),
 						ChannelsShortSelector_.value (2).toString (),
 						tags,

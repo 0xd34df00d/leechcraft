@@ -38,6 +38,7 @@ namespace LeechCraft
 			{
 				IDType_t ChannelID_;
 				IDType_t FeedID_;
+				QString Author_;
 				QString Title_;
 				QString Link_;
 				QStringList Tags_;

@@ -26,6 +26,7 @@
 #include "channelsmodel.h"
 #include "item.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -108,6 +109,32 @@ namespace LeechCraft
 							property ("UnreadItemsFont");
 					else
 						return QVariant ();
+				}
+				else if (role == Qt::ToolTipRole)
+				{
+					const ChannelShort& cs = Channels_.at (row);
+					QString result = QString ("<qt><b>%1</b><br />").arg (cs.Title_);
+					if (cs.Author_.size ())
+					{
+						result += tr ("<strong>Author</strong>: %1").arg (cs.Author_);
+						result += "<br />";
+					}
+					if (cs.Tags_.size ())
+					{
+						QStringList hrTags;
+						Q_FOREACH (QString id, cs.Tags_)
+							hrTags << Core::Instance ().GetProxy ()->
+								GetTagsManager ()->GetTag (id);
+						result += tr ("<b>Tags</b>: %1").arg (hrTags.join ("; "));
+						result += "<br />";
+					}
+					QString elidedLink = QApplication::fontMetrics ()
+							.elidedText (cs.Link_, Qt::ElideMiddle, 400);
+					result += QString ("<a href='%1'>%2</a>")
+							.arg (cs.Link_)
+							.arg (elidedLink);
+					result += "</qt>";
+					return result;
 				}
 				else if (role == LeechCraft::RoleTags)
 					return Channels_.at (row).Tags_;
