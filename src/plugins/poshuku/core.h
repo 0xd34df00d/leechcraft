@@ -146,7 +146,7 @@ namespace LeechCraft
 				QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;
 			private:
 				void RestoreSession (bool);
-				void HandleHistory (QWebView*);
+				void HandleHistory (CustomWebView*);
 				/** Sets up the connections between widget's signals
 				 * and our signals/slots that are always useful, both in own
 				 * and deown mode.

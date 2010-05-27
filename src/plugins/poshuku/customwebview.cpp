@@ -155,6 +155,29 @@ namespace LeechCraft
 				QWebView::load (req, op, ba);
 			}
 			
+
+			QString CustomWebView::URLToProperString (const QUrl& url)
+			{
+				QString string = url.toString ();
+				QWebElement equivs = page ()->mainFrame ()->
+						findFirstElement ("meta[http-equiv=\"Content-Type\"]");
+				if (!equivs.isNull ())
+				{
+					QString content = equivs.attribute ("content", "text/html; charset=UTF-8");
+					const QString charset = "charset=";
+					int pos = content.indexOf (charset);
+					if (pos >= 0)
+						PreviousEncoding_ = content.mid (pos + charset.length ()).toLower ();
+				}
+
+				if (PreviousEncoding_ != "utf-8" &&
+						PreviousEncoding_ != "utf8" &&
+						!PreviousEncoding_.isEmpty ())
+					string = url.toEncoded ();
+
+				return string;
+			}
+
 			QWebView* CustomWebView::createWindow (QWebPage::WebWindowType type)
 			{
 				if (type == QWebPage::WebModalDialog)
@@ -459,32 +482,10 @@ namespace LeechCraft
 
 				emit invalidateSettings ();
 			}
-			
-			/*
-			 * urlStr.replace ("FIND",
-						QTextCodec::codecForName ("Windows-1251")->fromUnicode (R_.String_).toPercentEncoding ());
-				QUrl result = QUrl::fromEncoded (urlStr);
-			 */
+
 			void CustomWebView::remakeURL (const QUrl& url)
 			{
-				QString string = url.toString ();
-				QWebElement equivs = page ()->mainFrame ()->
-						findFirstElement ("meta[http-equiv=\"Content-Type\"]");
-				if (!equivs.isNull ())
-				{
-					QString content = equivs.attribute ("content", "text/html; charset=UTF-8");
-					const QString charset = "charset=";
-					int pos = content.indexOf (charset);
-					if (pos >= 0)
-						PreviousEncoding_ = content.mid (pos + charset.length ()).toLower ();
-				}
-
-				if (PreviousEncoding_ != "utf-8" &&
-						PreviousEncoding_ != "utf8" &&
-						!PreviousEncoding_.isEmpty ())
-					string = url.toEncoded ();
-
-				emit urlChanged (string);
+				emit urlChanged (URLToProperString (url));
 			}
 
 			void CustomWebView::handleLoadFinished ()

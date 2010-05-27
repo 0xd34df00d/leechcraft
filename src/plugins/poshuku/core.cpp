@@ -699,9 +699,9 @@ namespace LeechCraft
 				}
 			}
 			
-			void Core::HandleHistory (QWebView *view)
+			void Core::HandleHistory (CustomWebView *view)
 			{
-				QString url = view->url ().toString ();
+				QString url = view->URLToProperString (view->url ());
 			
 				if (!view->title ().isEmpty () &&
 						!url.isEmpty () && url != "about:blank")

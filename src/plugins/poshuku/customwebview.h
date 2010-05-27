@@ -49,6 +49,18 @@ namespace LeechCraft
 				void Load (const QNetworkRequest&,
 						QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
 						const QByteArray& = QByteArray ());
+
+				/** This function is equivalent to url.toString() if the
+				 * url is all in UTF-8. But if the site is in another
+				 * category, QUrl::toString() returns a bad, unreadable
+				 * and, moreover, unusable string. In this case, this
+				 * function converts the url to its percent-encoding
+				 * representation.
+				 *
+				 * @param[in] url The possibly non-UTF-8 URL.
+				 * @return
+				 */
+				QString URLToProperString (const QUrl& url);
 			protected:
 				virtual QWebView* createWindow (QWebPage::WebWindowType);
 				virtual void mousePressEvent (QMouseEvent*);
