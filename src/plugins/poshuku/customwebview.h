@@ -24,6 +24,8 @@
 #include "interfaces/poshukutypes.h"
 #include "pageformsdata.h"
 
+class QTimer;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -39,6 +41,9 @@ namespace LeechCraft
 				QList<qreal> Zooms_;
 				BrowserWidget *Browser_;
 				QString PreviousEncoding_;
+				QTimer *ScrollTimer_;
+				double ScrollDelta_;
+				double AccumulatedScrollShift_;
 			public:
 				CustomWebView (QWidget* = 0);
 				virtual ~CustomWebView ();
@@ -91,6 +96,7 @@ namespace LeechCraft
 				void copyImageLocation ();
 				void searchSelectedText ();
 				void renderSettingsChanged ();
+				void handleAutoscroll ();
 			signals:
 				void urlChanged (const QString&);
 				void gotEntity (const LeechCraft::Entity&);

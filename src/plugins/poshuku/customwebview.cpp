@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "customwebview.h"
+#include <cmath>
 #include <qwebframe.h>
 #include <QMouseEvent>
 #include <QMenu>
@@ -44,6 +45,9 @@ namespace LeechCraft
 		{
 			CustomWebView::CustomWebView (QWidget *parent)
 			: QWebView (parent)
+			, ScrollTimer_ (new QTimer (this))
+			, ScrollDelta_ (0)
+			, AccumulatedScrollShift_ (0)
 			{
 				Zooms_ << 0.3
 					<< 0.5
@@ -61,6 +65,12 @@ namespace LeechCraft
 					<< 3;
 
 				Core::Instance ().GetPluginManager ()->RegisterHookable (this);
+
+				connect (ScrollTimer_,
+						SIGNAL (timeout ()),
+						this,
+						SLOT (handleAutoscroll ()));
+				ScrollTimer_->start (30);
 			
 				CustomWebPage *page = new CustomWebPage (this);
 				setPage (page);
@@ -386,6 +396,12 @@ namespace LeechCraft
 				}
 				else if (event->key () == Qt::Key_F6)
 					Browser_->focusLineEdit ();
+				else if (event->modifiers () == Qt::SHIFT &&
+						(event->key () == Qt::Key_PageUp || event->key () == Qt::Key_PageDown))
+					ScrollDelta_ += event->key () == Qt::Key_PageUp ? -0.1 : 0.1;
+				else if (event->modifiers () == Qt::SHIFT &&
+						event->key () == Qt::Key_Plus)
+					ScrollDelta_ = 0;
 
 				if (!handled)
 					QWebView::keyReleaseEvent (event);
@@ -590,6 +606,24 @@ namespace LeechCraft
 					hints |= QPainter::HighQualityAntialiasing;
 
 				setRenderHints (hints);
+			}
+
+			void CustomWebView::handleAutoscroll ()
+			{
+				if (!ScrollDelta_)
+					return;
+
+				AccumulatedScrollShift_ += ScrollDelta_;
+
+				if (std::abs (AccumulatedScrollShift_) >= 1)
+				{
+					QWebFrame *mf = page ()->mainFrame ();
+					QPoint pos = mf->scrollPosition ();
+					pos += QPoint (0, AccumulatedScrollShift_);
+					mf->setScrollPosition (pos);
+
+					AccumulatedScrollShift_ -= static_cast<int> (AccumulatedScrollShift_);
+				}
 			}
 		};
 	};
