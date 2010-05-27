@@ -132,7 +132,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	}
 
 	updateIconSet ();
-	installEventFilter (new ChildActionEventFilter (this));
 
 	setUpdatesEnabled (true);
 	show ();
@@ -202,6 +201,8 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
+	installEventFilter (new ChildActionEventFilter (this));
+
 	Ui_.setupUi (this);
 
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
