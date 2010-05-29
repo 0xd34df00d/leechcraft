@@ -67,15 +67,6 @@ namespace LeechCraft
 				void handleLinkHovered (const QString&, const QString&, const QString&);
 				void handleLoadFinished (bool);
 				void handleLoadStarted ();
-				void handleMenuBarVisibilityChangeRequested (bool);
-				void handleMicroFocusChanged ();
-				void handleRepaintRequested (const QRect&);
-				void handleRestoreFrameStateRequested (QWebFrame*);
-				void handleSaveFrameStateRequested (QWebFrame*, QWebHistoryItem*);
-				void handleScrollRequested (int, int, const QRect&);
-				void handleSelectionChanged ();
-				void handleStatusBarVisibilityChangeRequested (bool);
-				void handleToolBarVisiblityChangeRequested (bool);
 				void handleUnsupportedContent (QNetworkReply*);
 				void handleWindowCloseRequested ();
 				void fillForms (QWebFrame*);
@@ -111,6 +102,11 @@ namespace LeechCraft
 						QNetworkRequest *request,
 						QWebPage::NavigationType type,
 						bool *result);
+				void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QString *suggested,
+						QString *result);
 				void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
 				void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
@@ -120,6 +116,10 @@ namespace LeechCraft
 						QStringList *params,
 						QStringList *values,
 						QObject **result);
+				void hookCreateWindow (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebPage::WebWindowType type,
+						QWebPage **result);
 				void hookDatabaseQuotaExceeded (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *sourcePage,
 						QWebFrame *sourceFrame,
@@ -139,6 +139,27 @@ namespace LeechCraft
 				bool hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QRect *rect);
+				void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QString *msg);
+				void hookJavaScriptConfirm (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QString *msg,
+						bool *result);
+				void hookJavaScriptConsoleMessage (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QString *msg,
+						int *line,
+						QString *sourceId);
+				void hookJavaScriptPrompt (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QString *msg,
+						QString *defValue,
+						QString *resultString,
+						bool *result);
 				void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *sourcePage,
 						QWebFrame *frameCleared);

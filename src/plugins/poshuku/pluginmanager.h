@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINMANAGER_H
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <QWebPage>
 #include <interfaces/iinfo.h>
 #include "interfaces/pluginbase.h"
 #include "interfaces/poshukutypes.h"
@@ -34,10 +35,8 @@ namespace LeechCraft
 			class Core;
 
 			class PluginManager : public QObject
-								, public PluginBase
 			{
 				Q_OBJECT
-				Q_INTERFACES (LeechCraft::Plugins::Poshuku::PluginBase)
 
 				std::vector<PluginBase_ptr> Plugins_;
 				boost::shared_ptr<ProxyObject> ProxyObject_;
@@ -54,6 +53,11 @@ namespace LeechCraft
 						QNetworkRequest *request,
 						QWebPage::NavigationType type,
 						bool *result);
+				void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QString *suggested,
+						QString **result);
 				void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
 				void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
@@ -63,6 +67,10 @@ namespace LeechCraft
 						QStringList *params,
 						QStringList *values,
 						QObject **result);
+				void hookCreateWindow (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebPage::WebWindowType type,
+						QWebPage *result);
 				void hookDatabaseQuotaExceeded (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *sourcePage,
 						QWebFrame *sourceFrame,
@@ -88,6 +96,27 @@ namespace LeechCraft
 						QRect *rect);
 				void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget);
+				void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QString *msg);
+				void hookJavaScriptConfirm (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QString *msg,
+						bool *result);
+				void hookJavaScriptConsoleMessage (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QString *msg,
+						int *line,
+						QString *sourceId);
+				void hookJavaScriptPrompt (LeechCraft::IHookProxy_ptr proxy,
+						QWebPage *page,
+						QWebFrame *frame,
+						QString *msg,
+						QString *defValue,
+						QString *resultString,
+						bool *result);
 				void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *sourcePage,
 						QWebFrame *frameCleared);
@@ -158,25 +187,6 @@ namespace LeechCraft
 						WebViewCtxMenuStage menuBuildStage);
 				void hookWindowCloseRequested (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
-			public:
-				void Init (IProxyObject*);
-				bool HandleMenuBarVisibilityChangeRequested (QWebPage*, bool);
-				bool HandleMicroFocusChanged (QWebPage*);
-				bool HandleRepaintRequested (QWebPage*, const QRect&);
-				bool HandleRestoreFrameStateRequested (QWebPage*, QWebFrame*);
-				bool HandleSaveFrameStateRequested (QWebPage*, QWebFrame*, QWebHistoryItem*);
-				bool HandleScrollRequested (QWebPage*, int, int, const QRect&);
-				bool HandleSelectionChanged (QWebPage*);
-				bool HandleStatusBarVisibilityChangeRequested (QWebPage*, bool);
-				bool HandleToolBarVisibilityChangeRequested (QWebPage*, bool);
-				QString OnChooseFile (QWebPage*, QWebFrame*, const QString&);
-				QWebPage* OnCreateWindow (QWebPage*, QWebPage::WebWindowType);
-				bool OnJavaScriptAlert (QWebPage*, QWebFrame*, const QString&);
-				bool OnJavaScriptConfirm (QWebPage*, QWebFrame*, const QString&);
-				bool OnJavaScriptConsoleMessage (QWebPage*, const QString&,
-						int, const QString&);
-				bool OnJavaScriptPrompt (QWebPage*, QWebFrame*, const QString&,
-						const QString&, QString*);
 			};
 		};
 	};

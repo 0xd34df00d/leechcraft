@@ -67,7 +67,6 @@ namespace LeechCraft
 				 */
 				QString URLToProperString (const QUrl& url);
 			protected:
-				virtual QWebView* createWindow (QWebPage::WebWindowType);
 				virtual void mousePressEvent (QMouseEvent*);
 				virtual void wheelEvent (QWheelEvent*);
 				virtual void contextMenuEvent (QContextMenuEvent*);

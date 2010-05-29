@@ -187,30 +187,6 @@ namespace LeechCraft
 
 				return string;
 			}
-
-			QWebView* CustomWebView::createWindow (QWebPage::WebWindowType type)
-			{
-				if (type == QWebPage::WebModalDialog)
-				{
-					// We don't need to register it in the Core, so construct
-					// directly.
-					BrowserWidget *widget = new BrowserWidget (this);
-					widget->InitShortcuts ();
-					widget->setWindowFlags (Qt::Dialog);
-					widget->setAttribute (Qt::WA_DeleteOnClose);
-					connect (widget,
-							SIGNAL (gotEntity (const LeechCraft::Entity&)),
-							&Core::Instance (),
-							SIGNAL (gotEntity (const LeechCraft::Entity&)));
-					connect (widget,
-							SIGNAL (titleChanged (const QString&)),
-							widget,
-							SLOT (setWindowTitle (const QString&)));
-					return widget->GetView ();
-				}
-				else
-					return Core::Instance ().MakeWebView ();
-			}
 			
 			void CustomWebView::mousePressEvent (QMouseEvent *e)
 			{

@@ -115,65 +115,6 @@ namespace LeechCraft
 			{
 				ConnectHookSignals (object, this, false);
 			}
-
-#define SEQ_TRAVERSER(z,i,array) \
-				BOOST_PP_COMMA_IF(i) BOOST_PP_SEQ_ELEM(i,array) param ## i
-			
-#define BE(Func,Params)																		\
-				bool PluginManager::Func (																\
-						BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Params), SEQ_TRAVERSER, Params)				\
-						)																				\
-				{																						\
-					Q_FOREACH (PluginBase_ptr ptr, Plugins_)											\
-						if (ptr->Func (BOOST_PP_ENUM_PARAMS (BOOST_PP_SEQ_SIZE (Params), param)))		\
-							return true;																\
-																										\
-					return false; 																		\
-				}
-			
-#define CE(Func,Params,R)																	\
-				R PluginManager::Func (																	\
-						BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Params), SEQ_TRAVERSER, Params)				\
-						)																				\
-				{																						\
-					Q_FOREACH (PluginBase_ptr ptr, Plugins_)											\
-						try																				\
-						{																				\
-							return ptr->Func (BOOST_PP_ENUM_PARAMS (BOOST_PP_SEQ_SIZE (Params), param));\
-						}																				\
-						catch (...)																		\
-						{																				\
-						}																				\
-																										\
-					throw std::runtime_error ("No plugins handled the input.");							\
-				}
-			
-#define VE(Func,Params)																		\
-				void PluginManager::Func (																\
-						BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Params), SEQ_TRAVERSER, Params)				\
-						)																				\
-				{																						\
-					Q_FOREACH (PluginBase_ptr ptr, Plugins_)											\
-						ptr->Func (BOOST_PP_ENUM_PARAMS (BOOST_PP_SEQ_SIZE (Params), param));			\
-				}
-			
-			VE (Init, (IProxyObject*));
-			BE (HandleMenuBarVisibilityChangeRequested, (QWebPage*)(bool));
-			BE (HandleMicroFocusChanged, (QWebPage*));
-			BE (HandleRepaintRequested, (QWebPage*)(const QRect&));
-			BE (HandleRestoreFrameStateRequested, (QWebPage*)(QWebFrame*));
-			BE (HandleSaveFrameStateRequested, (QWebPage*)(QWebFrame*)(QWebHistoryItem*));
-			BE (HandleScrollRequested, (QWebPage*)(int)(int)(const QRect&));
-			BE (HandleSelectionChanged, (QWebPage*));
-			BE (HandleStatusBarVisibilityChangeRequested, (QWebPage*)(bool));
-			BE (HandleToolBarVisibilityChangeRequested, (QWebPage*)(bool));
-			CE (OnChooseFile, (QWebPage*)(QWebFrame*)(const QString&), QString);;
-			CE (OnCreateWindow, (QWebPage*)(QWebPage::WebWindowType), QWebPage*);
-			BE (OnJavaScriptAlert, (QWebPage*)(QWebFrame*)(const QString&));
-			CE (OnJavaScriptConfirm, (QWebPage*)(QWebFrame*)(const QString&), bool);
-			BE (OnJavaScriptConsoleMessage, (QWebPage*)(const QString&)(int)(const QString&));
-			CE (OnJavaScriptPrompt, (QWebPage*)(QWebFrame*)(const QString&)(const QString&)(QString*),
-					bool);
 		};
 	};
 };

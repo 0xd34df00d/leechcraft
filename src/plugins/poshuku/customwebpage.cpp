@@ -35,6 +35,7 @@
 #include "jsproxy.h"
 #include "externalproxy.h"
 #include "webpluginfactory.h"
+#include "browserwidget.h"
 
 namespace LeechCraft
 {
@@ -423,70 +424,6 @@ namespace LeechCraft
 						this);
 			}
 			
-			void CustomWebPage::handleMenuBarVisibilityChangeRequested (bool vis)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleMenuBarVisibilityChangeRequested (this, vis))
-					return;
-			}
-			
-			void CustomWebPage::handleMicroFocusChanged ()
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleMicroFocusChanged (this))
-					return;
-			}
-			
-			void CustomWebPage::handleRepaintRequested (const QRect& rect)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleRepaintRequested (this, rect))
-					return;
-			}
-			
-			void CustomWebPage::handleRestoreFrameStateRequested (QWebFrame *frame)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleRestoreFrameStateRequested (this, frame))
-					return;
-			}
-			
-			void CustomWebPage::handleSaveFrameStateRequested (QWebFrame *frame,
-					QWebHistoryItem *item)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleSaveFrameStateRequested (this, frame, item))
-					return;
-			}
-			
-			void CustomWebPage::handleScrollRequested (int dx, int dy, const QRect& rect)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleScrollRequested (this, dx, dy, rect))
-					return;
-			}
-			
-			void CustomWebPage::handleSelectionChanged ()
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleSelectionChanged (this))
-					return;
-			}
-			
-			void CustomWebPage::handleStatusBarVisibilityChangeRequested (bool vis)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleStatusBarVisibilityChangeRequested (this, vis))
-					return;
-			}
-			
-			void CustomWebPage::handleToolBarVisiblityChangeRequested (bool vis)
-			{
-				if (Core::Instance ().GetPluginManager ()->
-						HandleToolBarVisibilityChangeRequested (this, vis))
-					return;
-			}
-			
 			void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -675,17 +612,16 @@ namespace LeechCraft
 				return QWebPage::acceptNavigationRequest (frame, request, type);
 			}
 			
-			QString CustomWebPage::chooseFile (QWebFrame *frame, const QString& suggested)
+			QString CustomWebPage::chooseFile (QWebFrame *frame, const QString& thsuggested)
 			{
-				try
-				{
-					return Core::Instance ().GetPluginManager ()->
-						OnChooseFile (this, frame, suggested);
-				}
-				catch (...)
-				{
-					return QWebPage::chooseFile (frame, suggested);
-				}
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				QString result;
+				QString suggested = thsuggested;
+				emit hookChooseFile (proxy, this, frame, &suggested, &result);
+				if (proxy->IsCancelled ())
+					return result;
+
+				return QWebPage::chooseFile (frame, suggested);
 			}
 			
 			QObject* CustomWebPage::createPlugin (const QString& thclsid, const QUrl& thurl,
@@ -707,61 +643,89 @@ namespace LeechCraft
 			
 			QWebPage* CustomWebPage::createWindow (QWebPage::WebWindowType type)
 			{
-				try
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				QWebPage *result;
+				emit hookCreateWindow (proxy, this, type, &result);
+				if (proxy->IsCancelled ())
+					return result;
+
+				switch (type)
 				{
-					return Core::Instance ().GetPluginManager ()->
-						OnCreateWindow (this, type);
-				}
-				catch (...)
-				{
-					return QWebPage::createWindow (type);
+				case QWebPage::WebBrowserWindow:
+					return Core::Instance ().NewURL (QUrl ())->GetView ()->page ();
+				case QWebPage::WebModalDialog:
+					{
+						BrowserWidget *widget = new BrowserWidget (view ());
+						widget->InitShortcuts ();
+						widget->setWindowFlags (Qt::Dialog);
+						widget->setAttribute (Qt::WA_DeleteOnClose);
+						widget->setWindowModality (Qt::ApplicationModal);
+						connect (widget,
+								SIGNAL (gotEntity (const LeechCraft::Entity&)),
+								&Core::Instance (),
+								SIGNAL (gotEntity (const LeechCraft::Entity&)));
+						connect (widget,
+								SIGNAL (titleChanged (const QString&)),
+								widget,
+								SLOT (setWindowTitle (const QString&)));
+						widget->show ();
+						return widget->GetView ()->page ();
+					}
 				}
 			}
 			
-			void CustomWebPage::javaScriptAlert (QWebFrame *frame, const QString& msg)
+			void CustomWebPage::javaScriptAlert (QWebFrame *frame, const QString& thmsg)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						OnJavaScriptAlert (this, frame, msg))
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				QString msg = thmsg;
+				emit hookJavaScriptAlert (proxy,
+						this, frame, &msg);
+				if (proxy->IsCancelled ())
 					return;
-				else
-					QWebPage::javaScriptAlert (frame, msg);
+
+				QWebPage::javaScriptAlert (frame, msg);
 			}
 			
-			bool CustomWebPage::javaScriptConfirm (QWebFrame *frame, const QString& msg)
+			bool CustomWebPage::javaScriptConfirm (QWebFrame *frame, const QString& thmsg)
 			{
-				try
-				{
-					return Core::Instance ().GetPluginManager ()->
-						OnJavaScriptConfirm (this, frame, msg);
-				}
-				catch (...)
-				{
-					return QWebPage::javaScriptConfirm (frame, msg);
-				}
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				QString msg = thmsg;
+				bool result = false;
+				emit hookJavaScriptConfirm (proxy,
+						this, frame, &msg, &result);
+				if (proxy->IsCancelled ())
+					return result;
+
+				return QWebPage::javaScriptConfirm (frame, msg);
 			}
 			
-			void CustomWebPage::javaScriptConsoleMessage (const QString& msg, int line,
-					const QString& sid)
+			void CustomWebPage::javaScriptConsoleMessage (const QString& thmsg, int line,
+					const QString& thsid)
 			{
-				if (Core::Instance ().GetPluginManager ()->
-						OnJavaScriptConsoleMessage (this, msg, line, sid))
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				QString msg = thmsg;
+				QString sid = thsid;
+				emit hookJavaScriptConsoleMessage (proxy,
+						this, &msg, &line, &sid);
+				if (proxy->IsCancelled ())
 					return;
-				else
-					QWebPage::javaScriptConsoleMessage (msg, line, sid);
+
+				QWebPage::javaScriptConsoleMessage (msg, line, sid);
 			}
 			
-			bool CustomWebPage::javaScriptPrompt (QWebFrame *frame, const QString& pr,
-					const QString& def, QString *result)
+			bool CustomWebPage::javaScriptPrompt (QWebFrame *frame, const QString& thpr,
+					const QString& thdef, QString *result)
 			{
-				try
-				{
-					return Core::Instance ().GetPluginManager ()->
-						OnJavaScriptPrompt (this, frame, pr, def, result);
-				}
-				catch (...)
-				{
-					return QWebPage::javaScriptPrompt (frame, pr, def, result);
-				}
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				QString pr = thpr;
+				QString def = thdef;
+				bool res = false;
+				emit hookJavaScriptPrompt (proxy,
+						this, frame, &pr, &def, result, &res);
+				if (proxy->IsCancelled ())
+					return result;
+
+				return QWebPage::javaScriptPrompt (frame, pr, def, result);
 			}
 			
 			QString CustomWebPage::userAgentForUrl (const QUrl& url) const
