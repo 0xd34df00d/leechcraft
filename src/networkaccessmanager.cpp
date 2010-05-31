@@ -205,7 +205,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		QPointer<QNetworkReply> repGuarded (reply);
 		QString msg = tr ("<code>%1</code><br />has SSL errors."
 				" What do you want to do?")
-			.arg (url.toString ());
+			.arg (QApplication::fontMetrics ().elidedText(url.toString (), Qt::ElideMiddle, 300));
 
 		if (!ErrorsDialog_)
 			ErrorsDialog_.reset (new SslErrorsDialog (Core::Instance ().GetReallyMainWindow ()));
