@@ -312,8 +312,6 @@ void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 {
 	QString type = item.attribute ("type");
 
-	QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
-
 	QString property = item.attribute ("property");
 
 	if (type.isEmpty () || type.isNull ())
