@@ -46,6 +46,7 @@ namespace LeechCraft
 			, FileSizeAtStart_ (-1)
 			, Speed_ (0)
 			, Counter_ (0)
+			, UpdateCounter_ (0)
 			, Timer_ (0)
 			, CanChangeName_ (true)
 			{
@@ -58,6 +59,8 @@ namespace LeechCraft
 			, Total_ (0)
 			, FileSizeAtStart_ (-1)
 			, Speed_ (0)
+			, Counter_ (0)
+			, UpdateCounter_ (0)
 			, Timer_ (0)
 			, CanChangeName_ (true)
 			{
