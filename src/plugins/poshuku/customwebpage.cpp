@@ -122,42 +122,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleLoadStarted ()));
 				connect (this,
-						SIGNAL (menuBarVisibilityChangeRequested (bool)),
-						this,
-						SLOT (handleMenuBarVisibilityChangeRequested (bool)));
-				connect (this,
-						SIGNAL (microFocusChanged ()),
-						this,
-						SLOT (handleMicroFocusChanged ()));
-				connect (this,
-						SIGNAL (repaintRequested (const QRect&)),
-						this,
-						SLOT (handleRepaintRequested (const QRect&)));
-				connect (this,
-						SIGNAL (restoreFrameStateRequested (QWebFrame*)),
-						this,
-						SLOT (handleRestoreFrameStateRequested (QWebFrame*)));
-				connect (this,
-						SIGNAL (saveFrameStateRequested (QWebFrame*, QWebHistoryItem*)),
-						this,
-						SLOT (handleSaveFrameStateRequested (QWebFrame*, QWebHistoryItem*)));
-				connect (this,
-						SIGNAL (scrollRequested (int, int, const QRect&)),
-						this,
-						SLOT (handleScrollRequested (int, int, const QRect&)));
-				connect (this,
-						SIGNAL (selectionChanged ()),
-						this,
-						SLOT (handleSelectionChanged ()));
-				connect (this,
-						SIGNAL (statusBarVisibilityChangeRequested (bool)),
-						this,
-						SLOT (handleStatusBarVisibilityChangeRequested (bool)));
-				connect (this,
-						SIGNAL (toolBarVisibilityChangeRequested (bool)),
-						this,
-						SLOT (handleToolBarVisiblityChangeRequested (bool)));
-				connect (this,
 						SIGNAL (unsupportedContent (QNetworkReply*)),
 						this,
 						SLOT (handleUnsupportedContent (QNetworkReply*)));

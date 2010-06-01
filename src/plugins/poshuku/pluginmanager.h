@@ -57,7 +57,7 @@ namespace LeechCraft
 						QWebPage *page,
 						QWebFrame *frame,
 						QString *suggested,
-						QString **result);
+						QString *result);
 				void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
 				void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
@@ -70,7 +70,7 @@ namespace LeechCraft
 				void hookCreateWindow (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QWebPage::WebWindowType type,
-						QWebPage *result);
+						QWebPage **result);
 				void hookDatabaseQuotaExceeded (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *sourcePage,
 						QWebFrame *sourceFrame,
