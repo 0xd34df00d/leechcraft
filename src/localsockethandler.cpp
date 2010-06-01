@@ -117,6 +117,8 @@ namespace LeechCraft
 					entity = QUrl (arguments.last ());
 				else if (type == "url_encoded")
 					entity = QUrl::fromEncoded (arguments.last ().toUtf8 ());
+				else if (type == "file")
+					entity = QUrl::fromLocalFile (arguments.last ());
 				else
 					entity = arguments.last ();
 			}
