@@ -25,7 +25,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iflashoverrider.h>
-#include <interfaces/pluginbase.h>
+#include <interfaces/iwebplugin.h>
 
 namespace LeechCraft
 {
@@ -41,12 +41,10 @@ namespace LeechCraft
 							   , public IInfo
 							   , public IHaveSettings
 							   , public IPlugin2
-							   , public PluginBase
 							   , public IFlashOverrider
 					{
 						Q_OBJECT
 						Q_INTERFACES (IInfo IHaveSettings IPlugin2
-								LeechCraft::Plugins::Poshuku::PluginBase
 								LeechCraft::Plugins::Poshuku::IFlashOverrider)
 
 						boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
@@ -67,7 +65,6 @@ namespace LeechCraft
 
 						QSet<QByteArray> GetPluginClasses () const;
 
-						void Init (IProxyObject*);
 						bool WouldOverrideFlash (const QUrl&) const;
 					public slots:
 						void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr, QList<IWebPlugin*>&);

@@ -19,6 +19,7 @@
 #include "filescheme.h"
 #include <typeinfo>
 #include <boost/bind.hpp>
+#include <QIcon>
 #include <plugininterface/util.h>
 #include "schemereply.h"
 
@@ -93,10 +94,6 @@ namespace LeechCraft
 						QSet<QByteArray> result;
 						result << "org.LeechCraft.Poshuku.Plugins/1.0";
 						return result;
-					}
-
-					void FileScheme::Init (IProxyObject*)
-					{
 					}
 
 					QNetworkReply* FileScheme::CreateRequest (IHookProxy_ptr proxy,

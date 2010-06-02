@@ -137,10 +137,6 @@ boost::shared_ptr<XmlSettingsDialog> FUA::GetSettingsDialog () const
 	return XmlSettingsDialog_;
 }
 
-void FUA::Init (IProxyObject*)
-{
-}
-
 void FUA::hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
 		const QUrl& url, const QWebPage*, QString *result)
 {

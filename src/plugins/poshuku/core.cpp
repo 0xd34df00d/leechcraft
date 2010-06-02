@@ -57,7 +57,6 @@
 #include "config.h"
 #include "favoriteschecker.h"
 #include "webpluginfactory.h"
-#include "interfaces/pluginbase.h"
 
 namespace LeechCraft
 {

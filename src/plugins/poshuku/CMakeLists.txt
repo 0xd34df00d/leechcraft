@@ -116,7 +116,6 @@ SET (HEADERS
 	hideabletabwidget.h
 	bookmarkswidget.h
 	historywidget.h
-	interfaces/pluginbase.h
 	interfaces/iwebplugin.h
 	interfaces/iflashoverrider.h
 	)

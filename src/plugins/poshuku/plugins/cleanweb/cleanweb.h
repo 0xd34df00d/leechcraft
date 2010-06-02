@@ -22,13 +22,16 @@
 #include <QObject>
 #include <QMap>
 #include <QTranslator>
+#include <QWebPage>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/istartupwizard.h>
-#include <interfaces/pluginbase.h>
+#include <interfaces/iwebplugin.h>
 #include <interfaces/poshukutypes.h>
+
+class QWebView;
 
 namespace LeechCraft
 {
@@ -46,10 +49,9 @@ namespace LeechCraft
 								   , public IEntityHandler
 								   , public IStartupWizard
 								   , public IPlugin2
-								   , public PluginBase
 					{
 						Q_OBJECT
-						Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2 LeechCraft::Plugins::Poshuku::PluginBase)
+						Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
 
 						boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 						std::auto_ptr<QTranslator> Translator_;
@@ -73,8 +75,6 @@ namespace LeechCraft
 						QList<QWizardPage*> GetWizardPages () const;
 
 						QSet<QByteArray> GetPluginClasses () const;
-
-						void Init (IProxyObject*);
 					public slots:
 						void hookExtension (LeechCraft::IHookProxy_ptr,
 								QWebPage*,

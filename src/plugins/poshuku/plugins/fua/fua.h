@@ -26,9 +26,9 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/pluginbase.h>
 
 class QStandardItemModel;
+class QWebPage;
 
 namespace LeechCraft
 {
@@ -50,10 +50,9 @@ namespace LeechCraft
 							  , public IInfo
 							  , public IPlugin2
 							  , public IHaveSettings
-							  , public LeechCraft::Plugins::Poshuku::PluginBase
 					{
 						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Plugins::Poshuku::PluginBase)
+						Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 						boost::shared_ptr<QStandardItemModel> Model_;
 						boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
@@ -74,8 +73,6 @@ namespace LeechCraft
 						QSet<QByteArray> GetPluginClasses () const;
 
 						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-
-						void Init (IProxyObject*);
 
 						void Save () const;
 						const QMap<QString, QString>& GetBrowser2ID () const;

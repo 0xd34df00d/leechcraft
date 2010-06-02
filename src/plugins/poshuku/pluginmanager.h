@@ -22,8 +22,10 @@
 #include <boost/shared_ptr.hpp>
 #include <QWebPage>
 #include <interfaces/iinfo.h>
-#include "interfaces/pluginbase.h"
 #include "interfaces/poshukutypes.h"
+#include "interfaces/iwebplugin.h"
+
+class QWebView;
 
 namespace LeechCraft
 {
@@ -38,7 +40,7 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				std::vector<PluginBase_ptr> Plugins_;
+				std::vector<QObject*> Plugins_;
 				boost::shared_ptr<ProxyObject> ProxyObject_;
 			public:
 				PluginManager (QObject* = 0);

@@ -142,10 +142,6 @@ QSet<QByteArray> CleanWeb::GetPluginClasses () const
 	return result;
 }
 
-void CleanWeb::Init (LeechCraft::Plugins::Poshuku::IProxyObject*)
-{
-}
-
 void CleanWeb::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 		QList<LeechCraft::Plugins::Poshuku::IWebPlugin*>& plugins)
 {

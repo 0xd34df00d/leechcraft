@@ -97,16 +97,11 @@ namespace LeechCraft
 
 			void PluginManager::AddPlugin (QObject *plugin)
 			{
-				PluginBase_ptr base = qobject_cast<PluginBase_ptr> (plugin);
-				if (!base)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "passed plugin is not a valid Poshuku plugin"
-						<< plugin;
-					return;
-				}
-				base->Init (ProxyObject_.get ());
-				Plugins_.push_back (base);
+				QMetaObject::invokeMethod (plugin,
+						"initPlugin",
+						Q_ARG (IProxyObject*, ProxyObject_.get ()));
+
+				Plugins_.push_back (plugin);
 
 				ConnectHookSignals (this, plugin, true);
 			}

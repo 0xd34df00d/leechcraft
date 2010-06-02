@@ -102,10 +102,6 @@ namespace LeechCraft
 						return result;
 					}
 
-					void WYFV::Init (LeechCraft::Plugins::Poshuku::IProxyObject*)
-					{
-					}
-
 					void WYFV::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 							QList<IWebPlugin*>& plugins)
 					{

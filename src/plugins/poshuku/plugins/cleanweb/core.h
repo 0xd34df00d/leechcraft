@@ -23,9 +23,9 @@
 #include <QStringList>
 #include <QNetworkReply>
 #include <QDateTime>
+#include <QWebPage>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
-#include <interfaces/pluginbase.h>
 #include <interfaces/poshukutypes.h>
 #include "filter.h"
 
