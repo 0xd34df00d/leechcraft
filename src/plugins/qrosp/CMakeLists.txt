@@ -27,12 +27,14 @@ SET (SRCS
 	pluginmanager.cpp
 	wrapperobject.cpp
 	coreproxywrapper.cpp
+	third-party/qmetaobjectbuilder.cpp
 	)
 SET (HEADERS
 	qrosp.h
 	pluginmanager.h
 	wrapperobject.h
 	coreproxywrapper.h
+	third-party/qmetaobjectbuilder.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 

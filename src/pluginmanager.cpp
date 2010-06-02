@@ -230,6 +230,14 @@ namespace LeechCraft
 	void PluginManager::Init ()
 	{
 		CheckPlugins ();
+		Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
+		{
+			QObject *inst = loader->instance ();
+			Plugins_ << inst;
+			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> (inst);
+			if (ipa)
+				Plugins_ << ipa->GetPlugins ();
+		}
 		CalculateDependencies ();
 		InitializePlugins ();
 	}
@@ -259,12 +267,12 @@ namespace LeechCraft
 
 	QString PluginManager::Name (const PluginManager::Size_t& pos) const
 	{
-		return (qobject_cast<IInfo*> (Plugins_ [pos]->instance ()))->GetName ();
+		return (qobject_cast<IInfo*> (Plugins_ [pos]))->GetName ();
 	}
 
 	QString PluginManager::Info (const PluginManager::Size_t& pos) const
 	{
-		return qobject_cast<IInfo*> (Plugins_ [pos]->instance ())->GetInfo ();
+		return qobject_cast<IInfo*> (Plugins_ [pos])->GetInfo ();
 	}
 
 	QObjectList PluginManager::GetAllPlugins () const
@@ -282,9 +290,7 @@ namespace LeechCraft
 					(*this) (child);
 			}
 		} rc;
-		for (PluginsContainer_t::const_iterator i = Plugins_.begin ();
-				i != Plugins_.end (); ++i)
-			rc.Result_ << (*i)->instance ();
+		rc.Result_ = Plugins_;
 		Q_FOREACH (DepTreeItem_ptr item, Roots_)
 			rc (item);
 		return rc.Result_;
@@ -292,7 +298,7 @@ namespace LeechCraft
 
 	QString PluginManager::GetPluginLibraryPath (const QObject *object) const
 	{
-		Q_FOREACH (QPluginLoader_ptr loader, Plugins_)
+		Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
 			if (loader->instance () == object)
 				return loader->fileName ();
 		return QString ();
@@ -341,7 +347,7 @@ namespace LeechCraft
 
 			QPluginLoader_ptr loader (new QPluginLoader (name));
 			if (settings.value ("AllowLoad", true).toBool ())
-				Plugins_.push_back (loader);
+				PluginContainers_.push_back (loader);
 
 			loader->setLoadHints (QLibrary::ExportExternalSymbolsHint);
 
@@ -359,9 +365,9 @@ namespace LeechCraft
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
 
-		for (int i = 0; i < Plugins_.size (); ++i)
+		for (int i = 0; i < PluginContainers_.size (); ++i)
 		{
-			QPluginLoader_ptr loader = Plugins_.at (i);
+			QPluginLoader_ptr loader = PluginContainers_.at (i);
 
 			QString file = loader->fileName ();
 
@@ -454,16 +460,16 @@ namespace LeechCraft
 		settings.endGroup ();
 	}
 
-	QList<PluginManager::PluginsContainer_t::iterator>
+	QList<PluginManager::Plugins_t::iterator>
 		PluginManager::FindProviders (const QString& feature)
 	{
-		QList<PluginsContainer_t::iterator> result;
-		for (PluginsContainer_t::iterator i = Plugins_.begin ();
+		QList<Plugins_t::iterator> result;
+		for (Plugins_t::iterator i = Plugins_.begin ();
 				i != Plugins_.end (); ++i)
 		{
 			try
 			{
-				if (qobject_cast<IInfo*> ((*i)->instance ())->
+				if (qobject_cast<IInfo*> (*i)->
 						Provides ().contains (feature))
 					result << i;
 			}
@@ -473,33 +479,34 @@ namespace LeechCraft
 					<< "failed to get providers with"
 					<< e.what ()
 					<< "for"
-					<< (*i)->fileName ();
-				Unload (i);
+					<< (*Find (*i))->fileName ();
+				Unload (Find (*i));
 			}
 			catch (...)
 			{
 				qWarning () << Q_FUNC_INFO
 					<< "failed to get providers"
-					<< (*i)->fileName ();
-				Unload (i);
+					<< (*Find (*i))->fileName ();
+				Unload (Find (*i));
 			}
 		}
 		return result;
 	}
 
-	QList<PluginManager::PluginsContainer_t::iterator>
+	QList<PluginManager::Plugins_t::iterator>
 		PluginManager::FindProviders (const QSet<QByteArray>& expecteds)
 	{
-		QList<PluginsContainer_t::iterator> result;
-		for (PluginsContainer_t::iterator i = Plugins_.begin ();
+		QList<Plugins_t::iterator> result;
+		for (Plugins_t::iterator i = Plugins_.begin ();
 				i != Plugins_.end (); ++i)
 		{
-			IPlugin2 *ip2 = qobject_cast<IPlugin2*> ((*i)->instance ());
+			IPlugin2 *ip2 = qobject_cast<IPlugin2*> (*i);
 			try
 			{
 				if (ip2)
 				{
 					QSet<QByteArray> pcs = ip2->GetPluginClasses ();
+					qDebug () << qobject_cast<IInfo*> (*i)->GetName () << pcs << expecteds;
 					if (!pcs.intersect (expecteds).isEmpty ())
 						result << i;
 				}
@@ -510,15 +517,15 @@ namespace LeechCraft
 					<< "failed to get class with"
 					<< e.what ()
 					<< "for"
-					<< (*i)->fileName ();
-				Unload (i);
+					<< (*Find (*i))->fileName ();
+				Unload (Find (*i));
 			}
 			catch (...)
 			{
 				qWarning () << Q_FUNC_INFO
 					<< "failed to get class"
-					<< (*i)->fileName ();
-				Unload (i);
+					<< (*Find (*i))->fileName ();
+				Unload (Find (*i));
 			}
 		}
 		return result;
@@ -595,13 +602,13 @@ namespace LeechCraft
 
 	void PluginManager::CalculateDependencies ()
 	{
-		for (PluginsContainer_t::iterator i = Plugins_.begin ();
+		for (Plugins_t::iterator i = Plugins_.begin ();
 				i < Plugins_.end (); ++i)
 		{
 #ifdef QT_DEBUG
 			qDebug () << Q_FUNC_INFO << ((*i)->instance ());
 #endif
-			if (!GetDependency ((*i)->instance ()))
+			if (!GetDependency (*i))
 			{
 #ifdef QT_DEBUG
 				qDebug () << Q_FUNC_INFO << "would CalculateSingle";
@@ -609,14 +616,6 @@ namespace LeechCraft
 				try
 				{
 					Roots_ << CalculateSingle (i);
-
-					IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> ((*i)->instance ());
-					if (ipa)
-					{
-						QList<QObject*> plugins = ipa->GetPlugins ();
-						Q_FOREACH (QObject *child, plugins)
-							Roots_ << CalculateSingle (child, Plugins_.end ());
-					}
 				}
 				catch (...)
 				{
@@ -636,9 +635,9 @@ namespace LeechCraft
 
 	PluginManager::DepTreeItem_ptr
 		PluginManager::CalculateSingle
-			(PluginManager::PluginsContainer_t::iterator i)
+			(PluginManager::Plugins_t::iterator i)
 	{
-		QObject *entity = (*i)->instance ();
+		QObject *entity = *i;
 #ifdef QT_DEBUG
 		qDebug () << Q_FUNC_INFO << "calculating for" << entity;
 #endif
@@ -652,33 +651,31 @@ namespace LeechCraft
 				<< "failed to get required stuff with"
 				<< e.what ()
 				<< "for"
-				<< (*i)->fileName ();
-			Unload (i);
+				<< (*Find (*i))->fileName ();
+			Unload (Find (*i));
 			throw;
 		}
 		catch (...)
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "failed to get required stuff"
-				<< (*i)->fileName ();
-			Unload (i);
+				<< (*Find (*i))->fileName ();
+			Unload (Find (*i));
 			throw;
 		}
 	}
 
 	PluginManager::DepTreeItem_ptr
 		PluginManager::CalculateSingle (QObject *entity,
-				PluginManager::PluginsContainer_t::iterator pos)
+				PluginManager::Plugins_t::iterator pos)
 	{
 		DepTreeItem_ptr possibly = GetDependency (entity);
 		if (possibly)
 			return possibly;
 
 		IInfo *info = qobject_cast<IInfo*> (entity);
-		QStringList needs;
-		QStringList uses;
-		needs = info->Needs ();
-		uses = info->Uses ();
+		QStringList needs = info->Needs ();
+		QStringList uses = info->Uses ();
 
 #ifdef QT_DEBUG
 		qDebug () << "new item" << info->GetName ();
@@ -688,14 +685,14 @@ namespace LeechCraft
 
 		Q_FOREACH (QString need, needs)
 		{
-			QList<PluginsContainer_t::iterator> providers = FindProviders (need);
-			Q_FOREACH (PluginsContainer_t::iterator p,
+			QList<Plugins_t::iterator> providers = FindProviders (need);
+			Q_FOREACH (Plugins_t::iterator p,
 					providers)
 			{
 				// It's initialized already.
 				if (p < pos)
 				{
-					DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
+					DepTreeItem_ptr depprov = GetDependency (*p);
 					// TODO register entity in depprov->Belongs_
 					if (depprov)
 						newDep->Needed_.insert (need, depprov);
@@ -707,14 +704,14 @@ namespace LeechCraft
 
 		Q_FOREACH (QString use, uses)
 		{
-			QList<PluginsContainer_t::iterator> providers = FindProviders (use);
-			Q_FOREACH (PluginsContainer_t::iterator p,
+			QList<Plugins_t::iterator> providers = FindProviders (use);
+			Q_FOREACH (Plugins_t::iterator p,
 					providers)
 			{
 				// It's initialized already.
 				if (p < pos)
 				{
-					DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
+					DepTreeItem_ptr depprov = GetDependency (*p);
 					if (depprov)
 						newDep->Used_.insert (use, depprov);
 				}
@@ -726,15 +723,15 @@ namespace LeechCraft
 		IPluginReady *ipr = qobject_cast<IPluginReady*> (entity);
 		if (ipr)
 		{
-			QList<PluginsContainer_t::iterator> providers =
+			QList<Plugins_t::iterator> providers =
 				FindProviders (ipr->GetExpectedPluginClasses ());
-			Q_FOREACH (PluginsContainer_t::iterator p,
+			Q_FOREACH (Plugins_t::iterator p,
 					providers)
 			{
 				// It's initialized already.
 				if (p < pos)
 				{
-					DepTreeItem_ptr depprov = GetDependency ((*p)->instance ());
+					DepTreeItem_ptr depprov = GetDependency (*p);
 					if (depprov)
 						newDep->Used_.insert ("__lc_plugin2", depprov);
 				}
@@ -788,16 +785,18 @@ namespace LeechCraft
 		} init (this);
 
 
-		for (PluginsContainer_t::iterator i = Plugins_.begin ();
+		for (Plugins_t::iterator i = Plugins_.begin ();
 				i < Plugins_.end (); ++i)
 		{
-			if (!init (FindTreeItem (i)))
+			if (!init (FindTreeItem (*i)))
 				continue;
 
-			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> ((*i)->instance ());
+			/* _PLUGINS
+			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> (*i);
 			if (ipa)
 				Q_FOREACH (QObject *plugin, ipa->GetPlugins ())
 					init (FindTreeItem (plugin));
+			*/
 		}
 
 		Q_FOREACH (QObject *plugin, GetAllPlugins ())
@@ -938,11 +937,6 @@ namespace LeechCraft
 			item->Print ();
 	}
 
-	PluginManager::DepTreeItem_ptr PluginManager::FindTreeItem (PluginManager::PluginsContainer_t::iterator i)
-	{
-		return FindTreeItem ((*i)->instance ());
-	}
-
 	PluginManager::DepTreeItem_ptr PluginManager::FindTreeItem (QObject *inst)
 	{
 		struct Descender
@@ -1011,13 +1005,13 @@ namespace LeechCraft
 	PluginManager::PluginsContainer_t::iterator
 		PluginManager::Find (QObject *item)
 	{
-		return std::find_if (Plugins_.begin (), Plugins_.end (),
+		return std::find_if (PluginContainers_.begin (), PluginContainers_.end (),
 				LoaderFinder (item));
 	}
 
 	void PluginManager::Unload (PluginsContainer_t::iterator i)
 	{
-		if (i == Plugins_.end ())
+		if (i == PluginContainers_.end ())
 			return;
 
 		if (!UnloadQueue_.contains (i))
@@ -1115,7 +1109,7 @@ namespace LeechCraft
 		std::sort (UnloadQueue_.begin (), UnloadQueue_.end ());
 		while (UnloadQueue_.size ())
 		{
-			Plugins_.erase (UnloadQueue_.last ());
+			PluginContainers_.erase (UnloadQueue_.last ());
 			UnloadQueue_.pop_back ();
 		}
 	}

@@ -21,6 +21,7 @@
 #include <QObject>
 #include <qross/core/action.h>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
 
 namespace LeechCraft
 {
@@ -30,12 +31,17 @@ namespace LeechCraft
 		{
 			class WrapperObject : public QObject
 								, public IInfo
+								, public IPlugin2
 			{
 				QString Type_;
 				QString Path_;
 				mutable Qross::Action *ScriptAction_;
 
 				QList<QString> Interfaces_;
+
+				QMetaObject *ThisMetaObject_;
+				QMap<int, QMetaMethod> Index2MetaMethod_;
+				QMap<int, QString> Index2ExportedSignatures_;
 			public:
 				WrapperObject (const QString&, const QString&);
 				virtual ~WrapperObject ();
@@ -45,6 +51,8 @@ namespace LeechCraft
 
 				// MOC hacks
 				virtual void* qt_metacast (const char*);
+				virtual const QMetaObject* metaObject () const;
+				virtual int qt_metacall (QMetaObject::Call, int, void**);
 
 				// IInfo
 				void Init (ICoreProxy_ptr);
@@ -57,6 +65,9 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+
+				// IPlugin2
+				QSet<QByteArray> GetPluginClasses () const;
 			private:
 				template<typename T>
 				T Call (const QString& name,
@@ -66,6 +77,9 @@ namespace LeechCraft
 						return T ();
 					return ScriptAction_->callFunction (name, args).value<T> ();
 				}
+
+				void InitScript ();
+				void BuildMetaObject ();
 			};
 
 			template<>

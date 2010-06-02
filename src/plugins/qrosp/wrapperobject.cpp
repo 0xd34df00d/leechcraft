@@ -24,6 +24,7 @@
 
 #include <qross/core/script.h>
 #include "coreproxywrapper.h"
+#include "third-party/qmetaobjectbuilder.h"
 
 namespace LeechCraft
 {
@@ -35,31 +36,34 @@ namespace LeechCraft
 					const QString& path)
 			: Type_ (type)
 			, Path_ (path)
-			, ScriptAction_ (new Qross::Action (this, QUrl::fromLocalFile (path)))
+			, ThisMetaObject_ (0)
+			, ScriptAction_ (new Qross::Action (0, QUrl::fromLocalFile (path)))
 			{
 				ScriptAction_->setInterpreter (type);
 				ScriptAction_->setFile (path);
 				ScriptAction_->trigger ();
 
 				Interfaces_ = Call<QStringList> ("SupportedInterfaces");
-				qDebug () << Q_FUNC_INFO
-						<< path
-						<< Interfaces_;
 				if (!Interfaces_.contains ("IInfo"))
 					Interfaces_ << "IInfo";
 				if (!Interfaces_.contains ("org.Deviant.LeechCraft.IInfo/1.0"))
 					Interfaces_ << "org.Deviant.LeechCraft.IInfo/1.0";
 
+				InitScript ();
+
+				BuildMetaObject ();
+			}
+
+			void WrapperObject::InitScript ()
+			{
 				QVariantList pathArgs;
-				pathArgs << QFileInfo (path).absolutePath ();
+				pathArgs << QFileInfo (Path_).absolutePath ();
 				Call<void> ("SetScriptPath", pathArgs);
 
 #ifndef QROSP_NO_QTSCRIPT
-				if (type == "qtscript")
+				if (Type_ == "qtscript")
 				{
 					QStringList requires = Call<QStringList> ("Requires");
-					qDebug () << "JS plugin asked for:"
-							<< requires;
 					QObject *scriptEngineObject = 0;
 					QMetaObject::invokeMethod (ScriptAction_->script (),
 							"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
@@ -75,8 +79,48 @@ namespace LeechCraft
 #endif
 			}
 
+			void WrapperObject::BuildMetaObject ()
+			{
+				QMetaObjectBuilder builder;
+
+				builder.setSuperClass (QObject::metaObject ());
+				builder.setClassName (QString ("LeechCraft::Plugins::Qross::%1::%2")
+							.arg (Type_)
+							.arg (Call<QString> ("GetName").remove (' ')).toLatin1 ());
+
+				int currentMetaMethod = 0;
+
+				QStringList sigSlots = Call<QStringList> ("ExportedSlots");
+				Q_FOREACH (QString signature, sigSlots)
+				{
+					Index2ExportedSignatures_ [currentMetaMethod++] = signature;
+					builder.addSlot (signature.toLatin1 ());
+				}
+
+				QStringList sigSignals = Call<QStringList> ("ExportedSignals");
+				Q_FOREACH (QString signature, sigSignals)
+				{
+					Index2ExportedSignatures_ [currentMetaMethod++] = signature;
+					builder.addSignal (signature.toLatin1 ());
+				}
+
+				ThisMetaObject_ = builder.toMetaObject ();
+
+				for (int i = ThisMetaObject_->methodOffset (),
+						offset = ThisMetaObject_->methodOffset (),
+						count = ThisMetaObject_->methodCount (); i < count; ++i)
+					Index2MetaMethod_ [i - offset] = ThisMetaObject_->method (i);
+
+				for (int i = ThisMetaObject_->methodOffset (),
+						count = ThisMetaObject_->methodCount (); i < count; ++i)
+					qDebug () << i << ThisMetaObject_->method (i).signature ();
+				qDebug () << Index2ExportedSignatures_;
+			}
+
 			WrapperObject::~WrapperObject ()
 			{
+				delete ScriptAction_;
+				qFree (ThisMetaObject_);
 			}
 
 			const QString& WrapperObject::GetType () const
@@ -96,6 +140,33 @@ namespace LeechCraft
 				if (!strcmp (interfaceName, "IInfo") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IInfo/1.0"))
 					return static_cast<IInfo*> (this);
+				if (!strcmp (interfaceName, "IPlugin2") ||
+						!strcmp (interfaceName, "org.Deviant.LeechCraft.IPlugin2/1.0"))
+					return static_cast<IPlugin2*> (this);
+			}
+
+			const QMetaObject* WrapperObject::metaObject () const
+			{
+				qDebug () << Q_FUNC_INFO << ThisMetaObject_
+						<< (ThisMetaObject_ ? ThisMetaObject_ : QObject::d_ptr->metaObject);
+				return ThisMetaObject_ ? ThisMetaObject_ : QObject::d_ptr->metaObject;
+			}
+
+			int WrapperObject::qt_metacall (QMetaObject::Call call,
+					int id, void **args)
+			{
+				qDebug () << Q_FUNC_INFO;
+				id = QObject::qt_metacall (call, id, args);
+				if (id < 0)
+					return id;
+				if (call == QMetaObject::InvokeMetaMethod)
+				{
+					QString signature = Index2ExportedSignatures_ [id];
+					QMetaMethod method = Index2MetaMethod_ [id];
+					qDebug () << Q_FUNC_INFO << id
+							<< signature << method.signature ();
+				}
+				return id;
 			}
 
 			void WrapperObject::Init (ICoreProxy_ptr proxy)
@@ -151,6 +222,15 @@ namespace LeechCraft
 				args << QVariant::fromValue<QObject*> (provider);
 				args << feature;
 				Call<void> ("SetProvider", args);
+			}
+
+			QSet<QByteArray> WrapperObject::GetPluginClasses () const
+			{
+				QSet<QByteArray> result;
+				Q_FOREACH (QString pclass,
+						Call<QStringList> ("GetPluginClasses"))
+					result << pclass.toUtf8 ();
+				return result;
 			}
 
 			template<>

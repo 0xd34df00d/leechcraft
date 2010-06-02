@@ -64,7 +64,9 @@ namespace LeechCraft
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
 		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
 		// Only currently loaded plugins
-		mutable PluginsContainer_t Plugins_;
+		mutable PluginsContainer_t PluginContainers_;
+		typedef QList<QObject*> Plugins_t;
+		mutable Plugins_t Plugins_;
 		// All plugins ever seen
 		PluginsContainer_t AvailablePlugins_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
@@ -106,8 +108,8 @@ namespace LeechCraft
 		 */
 		void CheckPlugins ();
 
-		QList<PluginsContainer_t::iterator> FindProviders (const QString&);
-		QList<PluginsContainer_t::iterator> FindProviders (const QSet<QByteArray>&);
+		QList<Plugins_t::iterator> FindProviders (const QString&);
+		QList<Plugins_t::iterator> FindProviders (const QSet<QByteArray>&);
 
 		/** Returns dependency item that matches the given object.
 		 */
@@ -116,8 +118,8 @@ namespace LeechCraft
 		/** Calculates the deps.
 		 */
 		void CalculateDependencies ();
-		DepTreeItem_ptr CalculateSingle (PluginsContainer_t::iterator);
-		DepTreeItem_ptr CalculateSingle (QObject*, PluginsContainer_t::iterator);
+		DepTreeItem_ptr CalculateSingle (Plugins_t::iterator);
+		DepTreeItem_ptr CalculateSingle (QObject*, Plugins_t::iterator);
 
 		/** Preinitializes the plugins, pushes second-level plugins to
 		 * first-level ones and calls IInfo::Init() on each one.
@@ -126,7 +128,6 @@ namespace LeechCraft
 		bool InitializeSingle (DepTreeItem_ptr);
 		void Release (DepTreeItem_ptr);
 		void DumpTree ();
-		DepTreeItem_ptr FindTreeItem (PluginsContainer_t::iterator);
 		DepTreeItem_ptr FindTreeItem (QObject*);
 		PluginsContainer_t::iterator Find (DepTreeItem_ptr);
 		PluginsContainer_t::iterator Find (QObject*);
