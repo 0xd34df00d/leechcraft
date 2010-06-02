@@ -138,6 +138,9 @@ namespace LeechCraft
 				if (!strcmp (interfaceName, "IPlugin2") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IPlugin2/1.0"))
 					return static_cast<IPlugin2*> (this);
+				if (!strcmp (interfaceName, "IJobHolder") ||
+						!strcmp (interfaceName, "org.Deviant.LeechCraft.IJobHolder/1.0"))
+					return static_cast<IJobHolder*> (this);
 			}
 
 			const QMetaObject* WrapperObject::metaObject () const
@@ -220,6 +223,11 @@ namespace LeechCraft
 				args << QVariant::fromValue<QObject*> (provider);
 				args << feature;
 				Call<void> ("SetProvider", args);
+			}
+
+			QAbstractItemModel* WrapperObject::GetRepresentation () const
+			{
+				return Call<QAbstractItemModel*> ("GetRepresentation");
 			}
 
 			QSet<QByteArray> WrapperObject::GetPluginClasses () const

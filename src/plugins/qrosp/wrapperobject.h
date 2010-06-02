@@ -22,6 +22,7 @@
 #include <qross/core/action.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ijobholder.h>
 
 namespace LeechCraft
 {
@@ -31,6 +32,7 @@ namespace LeechCraft
 		{
 			class WrapperObject : public QObject
 								, public IInfo
+								, public IJobHolder
 								, public IPlugin2
 			{
 				QString Type_;
@@ -65,6 +67,9 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+
+				// IJobHolder
+				QAbstractItemModel* GetRepresentation () const;
 
 				// IPlugin2
 				QSet<QByteArray> GetPluginClasses () const;
