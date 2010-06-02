@@ -110,11 +110,6 @@ namespace LeechCraft
 						offset = ThisMetaObject_->methodOffset (),
 						count = ThisMetaObject_->methodCount (); i < count; ++i)
 					Index2MetaMethod_ [i - offset] = ThisMetaObject_->method (i);
-
-				for (int i = ThisMetaObject_->methodOffset (),
-						count = ThisMetaObject_->methodCount (); i < count; ++i)
-					qDebug () << i << ThisMetaObject_->method (i).signature ();
-				qDebug () << Index2ExportedSignatures_;
 			}
 
 			WrapperObject::~WrapperObject ()
@@ -147,24 +142,27 @@ namespace LeechCraft
 
 			const QMetaObject* WrapperObject::metaObject () const
 			{
-				qDebug () << Q_FUNC_INFO << ThisMetaObject_
-						<< (ThisMetaObject_ ? ThisMetaObject_ : QObject::d_ptr->metaObject);
 				return ThisMetaObject_ ? ThisMetaObject_ : QObject::d_ptr->metaObject;
 			}
 
 			int WrapperObject::qt_metacall (QMetaObject::Call call,
-					int id, void **args)
+					int id, void **argsArray)
 			{
-				qDebug () << Q_FUNC_INFO;
-				id = QObject::qt_metacall (call, id, args);
+				id = QObject::qt_metacall (call, id, argsArray);
 				if (id < 0)
 					return id;
 				if (call == QMetaObject::InvokeMetaMethod)
 				{
 					QString signature = Index2ExportedSignatures_ [id];
 					QMetaMethod method = Index2MetaMethod_ [id];
-					qDebug () << Q_FUNC_INFO << id
-							<< signature << method.signature ();
+					QVariantList args;
+					for (int i = 0, size = method.parameterTypes ().size ();
+							i < size; ++i)
+						args << QVariant (QVariant::nameToType (method.parameterTypes ().at (i)),
+								argsArray [i + 1]);
+					QString name (method.signature ());
+					name = name.left (name.indexOf ('('));
+					Call<void> (name, args);
 				}
 				return id;
 			}
