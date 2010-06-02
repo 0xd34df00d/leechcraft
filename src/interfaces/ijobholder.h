@@ -29,13 +29,14 @@ class QWidget;
  * If a plugin wants to show any data in the Downloaders tab, it should
  * implement this interface.
  *
- * Item model is returned by GetRepresentation(), GetControls() and
- * GetAdditionalInfo() are used to retrieve controls and information
- * pane of the plugin. Returned model should have four columns, each for
- * name, state, progress and speed. Controls and additional information
- * pane are only visible when a job handled by the plugin is selected.
+ * Item model is returned by GetRepresentation(), and various roles are
+ * used to retrieve controls and information pane of the plugin.
+ * Returned model should have four columns, each for name, state and
+ * status. Controls and additional information pane are only visible
+ * when a job handled by the plugin is selected.
  *
  * @sa IDownloader
+ * @sa CustomDataRoles
  */
 class IJobHolder
 {
@@ -66,8 +67,7 @@ public:
 	 *
 	 * @return Representation model.
 	 *
-	 * @sa GetControls
-	 * @sa GetAdditionalInfo
+	 * @sa CustomDataRoles
 	 */
 	virtual QAbstractItemModel* GetRepresentation () const = 0;
 
@@ -76,6 +76,7 @@ public:
 	virtual ~IJobHolder () {}
 };
 
+Q_DECLARE_METATYPE (QAbstractItemModel*);
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
 
 #endif
