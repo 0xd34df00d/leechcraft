@@ -1102,8 +1102,11 @@ namespace LeechCraft
 				if (proxy->IsCancelled ())
 					return;
 
-				Ui_.Progress_->setValue (p);
-				Ui_.Progress_->setVisible (!(p == 100 || !p));
+				QString title = Ui_.WebView_->title ();
+				if (p > 0 && p < 100)
+					title.prepend (QString ("[%1%] ").arg (p));
+				emit titleChanged (title);
+
 				QAction *o = 0;
 				QAction *n = 0;
 				QString actionIcon = "poshuku_";
