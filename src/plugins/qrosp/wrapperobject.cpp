@@ -23,8 +23,12 @@
 #endif
 
 #include <qross/core/script.h>
-#include "coreproxywrapper.h"
+#include "wrappers/coreproxywrapper.h"
+#include "wrappers/hookproxywrapper.h"
 #include "third-party/qmetaobjectbuilder.h"
+
+Q_DECLARE_METATYPE (QList<QAction*>);
+Q_DECLARE_METATYPE (QList<QMenu*>);
 
 namespace LeechCraft
 {
@@ -141,11 +145,26 @@ namespace LeechCraft
 				if (!strcmp (interfaceName, "IJobHolder") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IJobHolder/1.0"))
 					return static_cast<IJobHolder*> (this);
+				if (!strcmp (interfaceName, "IMenuEmbedder") ||
+						!strcmp (interfaceName, "org.Deviant.LeechCraft.IMenuEmbedder/1.0"))
+					return static_cast<IMenuEmbedder*> (this);
 			}
 
 			const QMetaObject* WrapperObject::metaObject () const
 			{
 				return ThisMetaObject_ ? ThisMetaObject_ : QObject::d_ptr->metaObject;
+			}
+
+			namespace
+			{
+				QVariant MakeFromParameter (const QByteArray& type, void *elem)
+				{
+					if (type == "LeechCraft::IHookProxy_ptr")
+						return QVariant::fromValue<QObject*> (new HookProxyWrapper (*static_cast<IHookProxy_ptr*> (elem)));
+					else
+						return QVariant (QVariant::nameToType (type),
+								elem);
+				}
 			}
 
 			int WrapperObject::qt_metacall (QMetaObject::Call call,
@@ -156,12 +175,11 @@ namespace LeechCraft
 					return id;
 				if (call == QMetaObject::InvokeMetaMethod)
 				{
-					QString signature = Index2ExportedSignatures_ [id];
 					QMetaMethod method = Index2MetaMethod_ [id];
 					QVariantList args;
 					for (int i = 0, size = method.parameterTypes ().size ();
 							i < size; ++i)
-						args << QVariant (QVariant::nameToType (method.parameterTypes ().at (i)),
+						args << MakeFromParameter (method.parameterTypes ().at (i),
 								argsArray [i + 1]);
 					QString name (method.signature ());
 					name = name.left (name.indexOf ('('));
@@ -228,6 +246,31 @@ namespace LeechCraft
 			QAbstractItemModel* WrapperObject::GetRepresentation () const
 			{
 				return Call<QAbstractItemModel*> ("GetRepresentation");
+			}
+
+			QList<QMenu*> WrapperObject::GetToolMenus () const
+			{
+				return Call<QList<QMenu*> > ("GetToolMenus");
+			}
+
+			QList<QAction*> WrapperObject::GetToolActions () const
+			{
+				return Call<QList<QAction*> > ("GetToolActions");
+			}
+
+			QList<QAction*> WrapperObject::GetActions () const
+			{
+				return Call<QList<QAction*> > ("GetActions");
+			}
+
+			QList<QAction*> WrapperObject::GetTrayActions () const
+			{
+				return Call<QList<QAction*> > ("GetTrayActions");
+			}
+
+			QList<QMenu*> WrapperObject::GetTrayMenus () const
+			{
+				return Call<QList<QMenu*> > ("GetTrayMenus");
 			}
 
 			QSet<QByteArray> WrapperObject::GetPluginClasses () const

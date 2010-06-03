@@ -16,13 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_WRAPPEROBJECT_H
-#define PLUGINS_QROSP_WRAPPEROBJECT_H
+#ifndef PLUGINS_QROSP_WRAPPERS_WRAPPEROBJECT_H
+#define PLUGINS_QROSP_WRAPPERS_WRAPPEROBJECT_H
 #include <QObject>
 #include <qross/core/action.h>
 #include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/imenuembedder.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/itoolbarembedder.h>
+#include <interfaces/itraymenu.h>
 
 namespace LeechCraft
 {
@@ -33,7 +36,10 @@ namespace LeechCraft
 			class WrapperObject : public QObject
 								, public IInfo
 								, public IJobHolder
+								, public IMenuEmbedder
 								, public IPlugin2
+								, public IToolBarEmbedder
+								, public ITrayMenu
 			{
 				QString Type_;
 				QString Path_;
@@ -70,6 +76,17 @@ namespace LeechCraft
 
 				// IJobHolder
 				QAbstractItemModel* GetRepresentation () const;
+
+				// IMenuEmbedder
+				QList<QMenu*> GetToolMenus () const;
+				QList<QAction*> GetToolActions () const;
+
+				// IToolBarEmbedder
+				QList<QAction*> GetActions () const;
+
+				// ITrayMenu
+				QList<QAction*> GetTrayActions () const;
+				QList<QMenu*> GetTrayMenus () const;
 
 				// IPlugin2
 				QSet<QByteArray> GetPluginClasses () const;
