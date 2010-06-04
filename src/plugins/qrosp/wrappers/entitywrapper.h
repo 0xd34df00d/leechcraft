@@ -46,7 +46,7 @@ namespace LeechCraft
 
 				void* wrappedObject () const;
 			public slots:
-				Entity ToEntity () const;
+				LeechCraft::Entity ToEntity () const;
 				const QVariant& GetEntity () const;
 				void SetEntity (const QVariant&);
 				const QString& GetLocation () const;

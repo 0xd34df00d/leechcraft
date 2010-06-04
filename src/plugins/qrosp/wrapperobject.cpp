@@ -127,6 +127,7 @@ namespace LeechCraft
 						signature = signature.trimmed ();
 						if (signature.isEmpty ())
 							continue;
+						SignalsIDs_ << currentMetaMethod;
 						Index2ExportedSignatures_ [currentMetaMethod++] = signature;
 						builder.addSignal (signature);
 					}
@@ -202,14 +203,19 @@ namespace LeechCraft
 				if (call == QMetaObject::InvokeMetaMethod)
 				{
 					QMetaMethod method = Index2MetaMethod_ [id];
-					QVariantList args;
-					for (int i = 0, size = method.parameterTypes ().size ();
-							i < size; ++i)
-						args << MakeFromParameter (method.parameterTypes ().at (i),
-								argsArray [i + 1]);
-					QString name (method.signature ());
-					name = name.left (name.indexOf ('('));
-					Call<void> (name, args);
+					if (method.methodType () == QMetaMethod::Signal)
+						QMetaObject::activate (this, metaObject (), id, argsArray);
+					else
+					{
+						QVariantList args;
+						for (int i = 0, size = method.parameterTypes ().size ();
+								i < size; ++i)
+							args << MakeFromParameter (method.parameterTypes ().at (i),
+									argsArray [i + 1]);
+						QString name (method.signature ());
+						name = name.left (name.indexOf ('('));
+						Call<void> (name, args);
+					}
 				}
 				return id;
 			}

@@ -50,6 +50,7 @@ namespace LeechCraft
 				QMetaObject *ThisMetaObject_;
 				QMap<int, QMetaMethod> Index2MetaMethod_;
 				QMap<int, QByteArray> Index2ExportedSignatures_;
+				QSet<int> SignalsIDs_;
 			public:
 				WrapperObject (const QString&, const QString&);
 				virtual ~WrapperObject ();
