@@ -26,16 +26,20 @@ SET (SRCS
 	qrosp.cpp
 	pluginmanager.cpp
 	wrapperobject.cpp
+	typesfactory.cpp
 	wrappers/coreproxywrapper.cpp
 	wrappers/hookproxywrapper.cpp
+	wrappers/entitywrapper.cpp
 	third-party/qmetaobjectbuilder.cpp
 	)
 SET (HEADERS
 	qrosp.h
 	pluginmanager.h
 	wrapperobject.h
+	typesfactory.h
 	wrappers/coreproxywrapper.h
 	wrappers/hookproxywrapper.h
+	wrappers/entitywrapper.h
 	third-party/qmetaobjectbuilder.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

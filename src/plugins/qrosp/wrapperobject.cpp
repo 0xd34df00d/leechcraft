@@ -23,8 +23,11 @@
 #endif
 
 #include <qross/core/script.h>
+#include <qross/core/manager.h>
+#include <qross/core/wrapperinterface.h>
 #include "wrappers/coreproxywrapper.h"
 #include "wrappers/hookproxywrapper.h"
+#include "wrappers/entitywrapper.h"
 #include "third-party/qmetaobjectbuilder.h"
 
 Q_DECLARE_METATYPE (QList<QAction*>);
@@ -43,6 +46,10 @@ namespace LeechCraft
 			, ThisMetaObject_ (0)
 			, ScriptAction_ (new Qross::Action (0, QUrl::fromLocalFile (path)))
 			{
+				BuildMetaObject ();
+
+				ScriptAction_->addObject (this, "Signals");
+
 				ScriptAction_->setInterpreter (type);
 				ScriptAction_->setFile (path);
 				ScriptAction_->trigger ();
@@ -54,8 +61,6 @@ namespace LeechCraft
 					Interfaces_ << "org.Deviant.LeechCraft.IInfo/1.0";
 
 				InitScript ();
-
-				BuildMetaObject ();
 			}
 
 			void WrapperObject::InitScript ()
@@ -85,6 +90,9 @@ namespace LeechCraft
 
 			void WrapperObject::BuildMetaObject ()
 			{
+				QString path = QFileInfo (Path_).absolutePath ();
+				QDir scriptDir (path);
+
 				QMetaObjectBuilder builder;
 
 				builder.setSuperClass (QObject::metaObject ());
@@ -94,18 +102,34 @@ namespace LeechCraft
 
 				int currentMetaMethod = 0;
 
-				QStringList sigSlots = Call<QStringList> ("ExportedSlots");
-				Q_FOREACH (QString signature, sigSlots)
+				if (scriptDir.exists ("ExportedSlots"))
 				{
-					Index2ExportedSignatures_ [currentMetaMethod++] = signature;
-					builder.addSlot (signature.toLatin1 ());
+					QFile slotsFile (scriptDir.filePath ("ExportedSlots"));
+					slotsFile.open (QIODevice::ReadOnly);
+					QList<QByteArray> sigSlots = slotsFile.readAll ().split ('\n');
+					Q_FOREACH (QByteArray signature, sigSlots)
+					{
+						signature = signature.trimmed ();
+						if (signature.isEmpty ())
+							continue;
+						Index2ExportedSignatures_ [currentMetaMethod++] = signature;
+						builder.addSlot (signature);
+					}
 				}
 
-				QStringList sigSignals = Call<QStringList> ("ExportedSignals");
-				Q_FOREACH (QString signature, sigSignals)
+				if (scriptDir.exists ("ExportedSignals"))
 				{
-					Index2ExportedSignatures_ [currentMetaMethod++] = signature;
-					builder.addSignal (signature.toLatin1 ());
+					QFile sigsFile (scriptDir.filePath ("ExportedSignals"));
+					sigsFile.open (QIODevice::ReadOnly);
+					QList<QByteArray> sigSignals = sigsFile.readAll ().split ('\n');
+					Q_FOREACH (QByteArray signature, sigSignals)
+					{
+						signature = signature.trimmed ();
+						if (signature.isEmpty ())
+							continue;
+						Index2ExportedSignatures_ [currentMetaMethod++] = signature;
+						builder.addSignal (signature);
+					}
 				}
 
 				ThisMetaObject_ = builder.toMetaObject ();
@@ -161,6 +185,8 @@ namespace LeechCraft
 				{
 					if (type == "LeechCraft::IHookProxy_ptr")
 						return QVariant::fromValue<QObject*> (new HookProxyWrapper (*static_cast<IHookProxy_ptr*> (elem)));
+					else if (type == "LeechCraft::Entity")
+						return QVariant::fromValue<QObject*> (new EntityWrapper (*static_cast<Entity*> (elem)));
 					else
 						return QVariant (QVariant::nameToType (type),
 								elem);

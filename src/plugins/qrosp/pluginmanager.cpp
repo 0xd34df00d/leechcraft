@@ -21,6 +21,8 @@
 #include <QtDebug>
 #include <qross/core/manager.h>
 #include "wrapperobject.h"
+#include "typesfactory.h"
+#include "wrappers/entitywrapper.h"
 
 namespace LeechCraft
 {
@@ -30,6 +32,8 @@ namespace LeechCraft
 		{
 			PluginManager::PluginManager ()
 			{
+				Qross::Manager::self ().registerMetaTypeHandler ("LeechCraft::Entity", EntityHandler);
+
 				qDebug () << Q_FUNC_INFO
 						<< "interpreters:"
 						<< Qross::Manager::self ().interpreters ();
@@ -38,6 +42,8 @@ namespace LeechCraft
 				qDebug () << Q_FUNC_INFO
 						<< "found"
 						<< plugins;
+
+				Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
 
 				Q_FOREACH (QString type, plugins.keys ())
 					Q_FOREACH (QString path, plugins [type])
@@ -92,20 +98,26 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO
 							<< "unable to cd into ~/.leechcraft/plugins/scriptable";
 				else
-					Q_FOREACH (QFileInfo dirInfo,
+					// Iterate over the different types of scripts
+					Q_FOREACH (QFileInfo sameType,
 							dir.entryInfoList (QDir::Dirs |
 									QDir::NoDotAndDotDot |
 									QDir::Readable))
 					{
-						if (!dirInfo.isReadable ())
-							continue;
-						QFileInfoList list;
-						QString type = dirInfo.fileName ();
-						QStringList exts = knownExtensions.value (type, QStringList ("*.*"));
-						list += Collector (exts) (dirInfo.absoluteFilePath ());
-
-						Q_FOREACH (QFileInfo info, list)
-							result [type] += info.absoluteFilePath ();
+						// For the same type iterate over subdirs with
+						// actual plugins.
+						Q_FOREACH (QFileInfo pluginDir,
+								QDir (sameType.absoluteFilePath ()).entryInfoList (QDir::Dirs |
+										QDir::NoDotAndDotDot |
+										QDir::Readable))
+						{
+							QString type = sameType.fileName ();
+							QStringList exts = knownExtensions.value (type, QStringList ("*.*"));
+							QFileInfoList list = Collector (exts) (pluginDir.absoluteFilePath ());
+							Q_FOREACH (QFileInfo fileInfo, list)
+								if (fileInfo.baseName () == pluginDir.baseName ())
+									result [type] += fileInfo.absoluteFilePath ();
+						}
 					}
 
 				return result;
