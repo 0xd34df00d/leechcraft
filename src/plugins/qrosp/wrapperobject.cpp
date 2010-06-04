@@ -28,6 +28,9 @@
 #include "wrappers/coreproxywrapper.h"
 #include "wrappers/hookproxywrapper.h"
 #include "wrappers/entitywrapper.h"
+#include "wrappers/pluginsmanagerwrapper.h"
+#include "wrappers/shortcutproxywrapper.h"
+#include "wrappers/tagsmanagerwrapper.h"
 #include "third-party/qmetaobjectbuilder.h"
 
 Q_DECLARE_METATYPE (QList<QAction*>);

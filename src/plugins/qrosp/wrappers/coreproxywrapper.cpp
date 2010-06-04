@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "coreproxywrapper.h"
+#include "shortcutproxywrapper.h"
+#include "pluginsmanagerwrapper.h"
+#include "tagsmanagerwrapper.h"
 
 namespace LeechCraft
 {
@@ -32,6 +35,11 @@ namespace LeechCraft
 			QNetworkAccessManager* CoreProxyWrapper::GetNetworkAccessManager () const
 			{
 				return Proxy_->GetNetworkAccessManager ();
+			}
+
+			QObject* CoreProxyWrapper::GetShortcutProxy () const
+			{
+				return new ShortcutProxyWrapper (Proxy_->GetShortcutProxy ());
 			}
 
 			QTreeView* CoreProxyWrapper::GetCurrentView () const
@@ -64,6 +72,11 @@ namespace LeechCraft
 				return Proxy_->GetTabWidget ();
 			}
 
+			QObject* CoreProxyWrapper::GetTagsManager () const
+			{
+				return new TagsManagerWrapper (Proxy_->GetTagsManager ());
+			}
+
 			QStringList CoreProxyWrapper::GetSearchCategories () const
 			{
 				return Proxy_->GetSearchCategories ();
@@ -82,6 +95,11 @@ namespace LeechCraft
 			QObject* CoreProxyWrapper::GetTreeViewReemitter () const
 			{
 				return Proxy_->GetTreeViewReemitter ();
+			}
+
+			QObject* CoreProxyWrapper::GetPluginsManager () const
+			{
+				return new PluginsManagerWrapper (Proxy_->GetPluginsManager ());
 			}
 
 			QObject* CoreProxyWrapper::GetSelf ()

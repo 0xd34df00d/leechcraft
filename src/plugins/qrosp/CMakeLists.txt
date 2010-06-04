@@ -30,6 +30,9 @@ SET (SRCS
 	wrappers/coreproxywrapper.cpp
 	wrappers/hookproxywrapper.cpp
 	wrappers/entitywrapper.cpp
+	wrappers/shortcutproxywrapper.cpp
+	wrappers/pluginsmanagerwrapper.cpp
+	wrappers/tagsmanagerwrapper.cpp
 	third-party/qmetaobjectbuilder.cpp
 	)
 SET (HEADERS
@@ -40,6 +43,9 @@ SET (HEADERS
 	wrappers/coreproxywrapper.h
 	wrappers/hookproxywrapper.h
 	wrappers/entitywrapper.h
+	wrappers/shortcutproxywrapper.h
+	wrappers/pluginsmanagerwrapper.h
+	wrappers/tagsmanagerwrapper.h
 	third-party/qmetaobjectbuilder.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

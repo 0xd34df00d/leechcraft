@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_COREPROXYWRAPPER_H
-#define PLUGINS_QROSP_COREPROXYWRAPPER_H
+#ifndef PLUGINS_QROSP_WRAPPERS_COREPROXYWRAPPER_H
+#define PLUGINS_QROSP_WRAPPERS_COREPROXYWRAPPER_H
 #include <interfaces/iinfo.h>
 #include <QMap>
 #include <QIcon>
@@ -43,7 +43,7 @@ namespace LeechCraft
 				CoreProxyWrapper (ICoreProxy_ptr);
 			public slots:
 				QNetworkAccessManager* GetNetworkAccessManager () const;
-				//const IShortcutProxy* GetShortcutProxy () const;
+				QObject* GetShortcutProxy () const;
 				QTreeView* GetCurrentView () const;
 				QModelIndex MapToSource (const QModelIndex&) const;
 				//LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const;
@@ -51,12 +51,12 @@ namespace LeechCraft
 				QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
 				QMainWindow* GetMainWindow () const;
 				QTabWidget* GetTabWidget () const;
-				//ITagsManager* GetTagsManager () const;
+				QObject* GetTagsManager () const;
 				QStringList GetSearchCategories () const;
 				int GetID ();
 				void FreeID (int id);
 				QObject* GetTreeViewReemitter () const;
-				//IPluginsManager* GetPluginsManager () const;
+				QObject* GetPluginsManager () const;
 				QObject* GetSelf ();
 			};
 		};
