@@ -22,6 +22,7 @@
 #include <QCloseEvent>
 #include <QModelIndex>
 #include <QChildEvent>
+#include <QToolButton>
 #include <QCursor>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
@@ -205,6 +206,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.setupUi (this);
 
+	NewTabButton_ = new QToolButton (this);
+
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
 
 	connect (Ui_.ActionAboutQt_,
@@ -213,7 +216,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SLOT (aboutQt ()));
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
-	Ui_.ActionNewTab_->setProperty ("ActionIcon", "newtab");
+	NewTabButton_->setDefaultAction (Ui_.ActionNewTab_);
+	NewTabButton_->defaultAction ()->setProperty ("ActionIcon", "newtab");
 	Ui_.ActionMenu_->setProperty ("ActionIcon", "menu");
 	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "closetab");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
@@ -239,7 +243,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SLOT (handleNewTabMenuRequested ()));
 
 	QToolBar *bar = new QToolBar ();
-	bar->addAction (Ui_.ActionNewTab_);
+	bar->addWidget (NewTabButton_);
 	bar->addAction (Ui_.ActionCloseTab_);
 	Ui_.MainTabWidget_->setCornerWidget (bar, Qt::TopRightCorner);
 
@@ -716,11 +720,11 @@ void LeechCraft::MainWindow::FillToolMenu ()
 
 	QMenu *ntm = Core::Instance ()
 		.GetTabContainer ()->GetNewTabMenu ();
-	Ui_.ActionNewTab_->setMenu (ntm);
+	NewTabButton_->setMenu (ntm);
+	NewTabButton_->setPopupMode (QToolButton::MenuButtonPopup);
 	int i = 0;
 	Q_FOREACH (QAction *act, ntm->actions ())
 		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
 
 	on_MainTabWidget__currentChanged (0);
 }
-

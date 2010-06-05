@@ -31,6 +31,7 @@ class QDockWidget;
 class QModelIndex;
 class QToolBar;
 class IShortcutProxy;
+class QToolButton;
 
 namespace LeechCraft
 {
@@ -72,6 +73,7 @@ namespace LeechCraft
 		ToolbarGuard *Guard_;
 		QToolBar *PluginsActionsBar_;
 		GlanceShower *Glance_;
+		QToolButton *NewTabButton_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();

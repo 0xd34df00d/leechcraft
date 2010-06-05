@@ -166,14 +166,6 @@
     <string>Log</string>
    </property>
   </action>
-  <action name="ActionNewTab_">
-   <property name="text">
-    <string>New tab</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+T</string>
-   </property>
-  </action>
   <action name="ActionAboutLeechCraft_">
    <property name="text">
     <string>About LeechCraft...</string>
@@ -217,6 +209,14 @@
    </property>
    <property name="toolTip">
     <string>Show a quick overview of tabs</string>
+   </property>
+  </action>
+  <action name="ActionNewTab_">
+   <property name="text">
+    <string>New tab</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>
