@@ -36,11 +36,6 @@
 Q_DECLARE_METATYPE (QList<QAction*>);
 Q_DECLARE_METATYPE (QList<QMenu*>);
 
-// The following is required only on 4.6 for some reason.
-#if QT_VERSION < 0x040700
-Q_DECLARE_METATYPE (QAbstractItemModel*);
-#endif
-
 namespace LeechCraft
 {
 	namespace Plugins
