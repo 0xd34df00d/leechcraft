@@ -187,7 +187,6 @@ namespace LeechCraft
 			{
 				QVariant MakeFromParameter (const QByteArray& type, void *elem)
 				{
-					qDebug () << type << elem << QMetaType::type (type);
 					if (type == "LeechCraft::IHookProxy_ptr")
 						return QVariant::fromValue<QObject*> (new HookProxyWrapper (*static_cast<IHookProxy_ptr*> (elem)));
 					else if (type == "LeechCraft::Entity")
