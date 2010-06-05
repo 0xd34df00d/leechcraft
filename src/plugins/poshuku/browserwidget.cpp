@@ -162,7 +162,7 @@ namespace LeechCraft
 						this);
 				ViewSources_->setProperty ("ActionIcon", "poshuku_viewsources");
 				ViewSources_->setEnabled (false);
-			
+
 				ZoomIn_ = new QAction (tr ("Zoom in"),
 						this);
 				ZoomIn_->setProperty ("ActionIcon", "poshuku_zoomin");
@@ -190,22 +190,28 @@ namespace LeechCraft
 				
 				ToolBar_->addAction (more);
 
-				moreMenu->addAction (Find_);
-				moreMenu->addAction (Add2Favorites_);
-				moreMenu->addSeparator ();
-				moreMenu->addAction (ReloadPeriodically_);
-				moreMenu->addAction (NotifyWhenFinished_);
-				moreMenu->addSeparator ();
-				moreMenu->addAction (ZoomIn_);
-				moreMenu->addAction (ZoomOut_);
-				moreMenu->addAction (ZoomReset_);
-				moreMenu->addSeparator ();
-				moreMenu->addAction (Print_);
-				moreMenu->addAction (PrintPreview_);
-				moreMenu->addAction (ScreenSave_);
-				moreMenu->addSeparator ();
-				moreMenu->addAction (ViewSources_);
-				moreMenu->addSeparator ();
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				emit hookMoreMenuFillBegin (proxy, moreMenu);
+				if (!proxy->IsCancelled ())
+				{
+					moreMenu->addAction (Find_);
+					moreMenu->addAction (Add2Favorites_);
+					moreMenu->addSeparator ();
+					moreMenu->addAction (ReloadPeriodically_);
+					moreMenu->addAction (NotifyWhenFinished_);
+					moreMenu->addSeparator ();
+					moreMenu->addAction (ZoomIn_);
+					moreMenu->addAction (ZoomOut_);
+					moreMenu->addAction (ZoomReset_);
+					moreMenu->addSeparator ();
+					moreMenu->addAction (Print_);
+					moreMenu->addAction (PrintPreview_);
+					moreMenu->addAction (ScreenSave_);
+					moreMenu->addSeparator ();
+					moreMenu->addAction (ViewSources_);
+				}
+				proxy.reset (new Util::DefaultHookProxy ());
+				emit hookMoreMenuFillEnd (proxy, moreMenu);
 
 				ChangeEncoding_ = moreMenu->addMenu (tr ("Change encoding"));
 				connect (ChangeEncoding_,
@@ -220,8 +226,6 @@ namespace LeechCraft
 				RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 				RecentlyClosed_->setEnabled (false);
 				RecentlyClosedAction_ = RecentlyClosed_->menuAction ();
-			
-				moreMenu->addMenu (Core::Instance ().GetPluginsMenu ());
 			
 				ExternalLinks_ = new QMenu (this);
 				ExternalLinks_->menuAction ()->setText (tr ("External links"));

@@ -133,11 +133,15 @@ namespace LeechCraft
 				void hookLoadFinished (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						bool *result);
-				bool hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
+				void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget,
 						int *progress);
 				bool hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
+				void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
+						QMenu *menu);
+				void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
+						QMenu *menu);
 				void hookNotificationActionTriggered (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget,
 						int *index);

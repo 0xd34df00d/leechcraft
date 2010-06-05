@@ -58,6 +58,7 @@ namespace LeechCraft
 				QAction *PrintPreview_;
 				QAction *ScreenSave_;
 				QAction *ViewSources_;
+				QAction *ContentsEditable_;
 				QAction *ZoomIn_;
 				QAction *ZoomOut_;
 				QAction *ZoomReset_;
@@ -199,9 +200,13 @@ namespace LeechCraft
 						QWebPage::FindFlags *findFlags);
 				void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget);
-				bool hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
+				void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget,
 						int *progress);
+				void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
+						QMenu *menu);
+				void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
+						QMenu *menu);
 				void hookNotificationActionTriggered (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget,
 						int *index);

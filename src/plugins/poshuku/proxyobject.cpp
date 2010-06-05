@@ -25,10 +25,6 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			QMenu* ProxyObject::GetPluginsMenu () const
-			{
-				return Core::Instance ().GetPluginsMenu ();
-			}
 		};
 	};
 };

@@ -94,8 +94,6 @@ namespace LeechCraft
 				PluginManager_->RegisterHookable (this);
 				URLCompletionModel_.reset (new URLCompletionModel (this));
 			
-				PluginsMenu_ = new QMenu (tr ("Plugins"));
-			
 				QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 			}
 			
@@ -652,12 +650,7 @@ namespace LeechCraft
 			
 				saveSession ();
 			}
-			
-			QMenu* Core::GetPluginsMenu () const
-			{
-				return PluginsMenu_;
-			}
-			
+
 			void Core::RestoreSession (bool ask)
 			{
 				if (!SavedSessionState_.size ()) ;

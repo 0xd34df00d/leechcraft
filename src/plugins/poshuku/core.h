@@ -58,8 +58,6 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				QMenu *PluginsMenu_;
-
 				typedef std::vector<BrowserWidget*> widgets_t;
 				widgets_t Widgets_;
 				// title/url pairs;
@@ -123,7 +121,6 @@ namespace LeechCraft
 				IWebWidget* GetWidget ();
 				CustomWebView* MakeWebView (bool = false);
 				void Unregister (BrowserWidget*);
-				QMenu* GetPluginsMenu () const;
 				/** Sets up the connections between widget's signals
 				 * and our signals/slots only useful in own mode.
 				 *

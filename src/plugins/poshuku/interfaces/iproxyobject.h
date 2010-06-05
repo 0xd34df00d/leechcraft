@@ -32,7 +32,6 @@ namespace LeechCraft
 			class IProxyObject
 			{
 			public:
-				virtual QMenu* GetPluginsMenu () const = 0;
 			};
 		};
 	};
