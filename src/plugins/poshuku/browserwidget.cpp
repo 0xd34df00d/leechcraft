@@ -191,7 +191,7 @@ namespace LeechCraft
 				ToolBar_->addAction (more);
 
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-				emit hookMoreMenuFillBegin (proxy, moreMenu);
+				emit hookMoreMenuFillBegin (proxy, moreMenu, Ui_.WebView_, this);
 				if (!proxy->IsCancelled ())
 				{
 					moreMenu->addAction (Find_);
@@ -211,7 +211,7 @@ namespace LeechCraft
 					moreMenu->addAction (ViewSources_);
 				}
 				proxy.reset (new Util::DefaultHookProxy ());
-				emit hookMoreMenuFillEnd (proxy, moreMenu);
+				emit hookMoreMenuFillEnd (proxy, moreMenu, Ui_.WebView_, this);
 
 				ChangeEncoding_ = moreMenu->addMenu (tr ("Change encoding"));
 				connect (ChangeEncoding_,

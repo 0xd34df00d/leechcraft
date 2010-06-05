@@ -139,9 +139,13 @@ namespace LeechCraft
 				bool hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
 				void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
-						QMenu *menu);
+						QMenu *menu,
+						QWebView *webView,
+						QObject *browserWidget);
 				void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
-						QMenu *menu);
+						QMenu *menu,
+						QWebView *webView,
+						QObject *browserWidget);
 				void hookNotificationActionTriggered (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget,
 						int *index);
