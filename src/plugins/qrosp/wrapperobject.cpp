@@ -18,6 +18,8 @@
 
 #include "wrapperobject.h"
 
+#include <QCoreApplication>
+#include <QTranslator>
 #ifndef QROSP_NO_QTSCRIPT
 #include <QScriptEngine>
 #endif
@@ -25,6 +27,7 @@
 #include <qross/core/script.h>
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
+#include <plugininterface/util.h>
 #include "wrappers/coreproxywrapper.h"
 #include "wrappers/hookproxywrapper.h"
 #include "wrappers/entitywrapper.h"
@@ -63,7 +66,26 @@ namespace LeechCraft
 				if (!Interfaces_.contains ("org.Deviant.LeechCraft.IInfo/1.0"))
 					Interfaces_ << "org.Deviant.LeechCraft.IInfo/1.0";
 
+				LoadScriptTranslations ();
 				InitScript ();
+			}
+
+			void WrapperObject::LoadScriptTranslations ()
+			{
+				QFileInfo fileInfo = QFileInfo (Path_);
+				QString path = fileInfo.absolutePath ();
+
+				QString localeName = Util::GetLocaleName ();
+				QString filename = fileInfo.completeBaseName () + "_" + localeName;
+
+				Translator_.reset (new QTranslator);
+				if (!Translator_->load (filename, path))
+				{
+					Translator_.reset ();
+					return;
+				}
+
+				qApp->installTranslator (Translator_.get ());
 			}
 
 			void WrapperObject::InitScript ()
@@ -130,7 +152,6 @@ namespace LeechCraft
 						signature = signature.trimmed ();
 						if (signature.isEmpty ())
 							continue;
-						SignalsIDs_ << currentMetaMethod;
 						Index2ExportedSignatures_ [currentMetaMethod++] = signature;
 						builder.addSignal (signature);
 					}

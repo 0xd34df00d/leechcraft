@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_QROSP_WRAPPERS_WRAPPEROBJECT_H
 #define PLUGINS_QROSP_WRAPPERS_WRAPPEROBJECT_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <qross/core/action.h>
 #include <interfaces/iinfo.h>
@@ -26,6 +27,8 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/itoolbarembedder.h>
 #include <interfaces/itraymenu.h>
+
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -50,7 +53,8 @@ namespace LeechCraft
 				QMetaObject *ThisMetaObject_;
 				QMap<int, QMetaMethod> Index2MetaMethod_;
 				QMap<int, QByteArray> Index2ExportedSignatures_;
-				QSet<int> SignalsIDs_;
+
+				boost::shared_ptr<QTranslator> Translator_;
 			public:
 				WrapperObject (const QString&, const QString&);
 				virtual ~WrapperObject ();
@@ -101,6 +105,7 @@ namespace LeechCraft
 					return ScriptAction_->callFunction (name, args).value<T> ();
 				}
 
+				void LoadScriptTranslations ();
 				void InitScript ();
 				void BuildMetaObject ();
 			};
