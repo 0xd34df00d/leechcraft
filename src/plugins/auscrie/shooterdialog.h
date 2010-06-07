@@ -20,6 +20,7 @@
 #define PLUGINS_AUSCRIE_SHOOTERDIALOG_H
 #include <QDialog>
 #include "ui_shooterdialog.h"
+#include "poster.h"
 
 namespace LeechCraft
 {
@@ -35,13 +36,14 @@ namespace LeechCraft
 			public:
 				enum Action
 				{
-					ASave,
-					AUpload
+					AUpload,
+					ASave
 				};
 
 				ShooterDialog (QWidget* = 0);
 
 				Action GetAction () const;
+				Poster::HostingService GetHostingService () const;
 				int GetTimeout () const;
 				QString GetFormat () const;
 				int GetQuality () const;

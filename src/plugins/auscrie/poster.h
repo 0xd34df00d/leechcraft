@@ -18,7 +18,9 @@
 
 #ifndef PLUGINS_AUSCRIE_POSTER_H
 #define PLUGINS_AUSCRIE_POSTER_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <QMap>
 
 class QNetworkReply;
 class QNetworkAccessManager;
@@ -31,13 +33,33 @@ namespace LeechCraft
 	{
 		namespace Auscrie
 		{
+			struct Worker
+			{
+				virtual ~Worker () {}
+
+				virtual QNetworkReply* Post (const QByteArray&,
+						const QString&, QNetworkAccessManager*) const = 0;
+				virtual const QRegExp& GetPageRegExp () const = 0;
+			};
+
+			typedef boost::shared_ptr<Worker> Worker_ptr;
+
 			class Poster : public QObject
 			{
 				Q_OBJECT
 
 				QNetworkReply *Reply_;
 			public:
-				Poster (const QByteArray&, const QString&,
+				enum HostingService
+				{
+					ImagebinCa
+				};
+			private:
+				const HostingService Service_;
+				QMap<HostingService, Worker_ptr> Workers_;
+			public:
+				Poster (HostingService,
+						const QByteArray&, const QString&,
 						QNetworkAccessManager*, QObject* = 0);
 			private slots:
 				void handleFinished ();

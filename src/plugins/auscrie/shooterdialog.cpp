@@ -41,9 +41,23 @@ namespace LeechCraft
 						return ASave;
 					default:
 						qWarning () << Q_FUNC_INFO
-							<< Ui_.ActionBox_->currentIndex ()
-							<< "unhandled";
+								<< Ui_.ActionBox_->currentIndex ()
+								<< "unhandled";
 						return ASave;
+				}
+			}
+
+			Poster::HostingService ShooterDialog::GetHostingService () const
+			{
+				switch (Ui_.ActionBox_->currentIndex ())
+				{
+					case 0:
+						return Poster::ImagebinCa;
+					default:
+						qWarning () << Q_FUNC_INFO
+								<< Ui_.ActionBox_->currentIndex ()
+								<< "unhandled, defaulting to imagebin.ca";
+						return Poster::ImagebinCa;
 				}
 			}
 

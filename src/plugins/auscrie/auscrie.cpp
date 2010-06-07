@@ -165,7 +165,8 @@ namespace LeechCraft
 
 			void Plugin::Post (const QByteArray& data)
 			{
-				Poster *p = new Poster (data,
+				Poster *p = new Poster (Dialog_->GetHostingService (),
+						data,
 						Dialog_->GetFormat (),
 						Proxy_->GetNetworkAccessManager ());
 				connect (p,

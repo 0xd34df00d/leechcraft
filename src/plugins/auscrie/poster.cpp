@@ -33,30 +33,55 @@ namespace LeechCraft
 	{
 		namespace Auscrie
 		{
-			Poster::Poster (const QByteArray& data, const QString& format,
+			struct ImagebinWorker : Worker
+			{
+				QRegExp RegExp_;
+
+				ImagebinWorker ()
+				: RegExp_ ("<p>You can find this at <a href='([^<]+)'>([^<]+)</a></p>")
+				{
+				}
+
+				QNetworkReply* Post (const QByteArray& data, const QString& format,
+						QNetworkAccessManager *am) const
+				{
+					QUrl url ("http://imagebin.ca/upload.php");
+
+					RequestBuilder builder;
+					builder.AddPair ("t", "file");
+
+					QString name = QString ("screenshot.%1").arg (format.toLower ());
+					builder.AddPair ("name", name);
+					builder.AddPair ("tags", "leechcraft");
+					builder.AddPair ("adult", "f");
+					builder.AddFile (format, "f", data);
+
+					QByteArray formed = builder.Build ();
+
+					QNetworkRequest request (url);
+					request.setHeader (QNetworkRequest::ContentTypeHeader,
+							QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
+					request.setHeader (QNetworkRequest::ContentLengthHeader,
+							QString::number (formed.size ()));
+					return am->post (request, formed);
+				}
+
+				const QRegExp& GetPageRegExp () const
+				{
+					return RegExp_;
+				}
+			};
+
+			Poster::Poster (Poster::HostingService service,
+					const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am, QObject *parent)
 			: QObject (parent)
+			, Service_ (service)
 			, Reply_ (0)
 			{
-				QUrl url ("http://imagebin.ca/upload.php");
+				Workers_ [ImagebinCa] = Worker_ptr (new ImagebinWorker);
 
-				RequestBuilder builder;
-				builder.AddPair ("t", "file");
-
-				QString name = QString ("screenshot.%1").arg (format.toLower ());
-				builder.AddPair ("name", name);
-				builder.AddPair ("tags", "leechcraft");
-				builder.AddPair ("adult", "f");
-				builder.AddFile (format, "f", data);
-
-				QByteArray formed = builder.Build ();
-
-				QNetworkRequest request (url);
-				request.setHeader (QNetworkRequest::ContentTypeHeader,
-						QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
-				request.setHeader (QNetworkRequest::ContentLengthHeader,
-						QString::number (formed.size ()));
-				Reply_ = am->post (request, formed);
+				Reply_ = Workers_ [Service_]->Post (data, format, am);
 
 				connect (Reply_,
 						SIGNAL (finished ()),
@@ -72,7 +97,7 @@ namespace LeechCraft
 			{
 				QString result = Reply_->readAll ();
 
-				QRegExp re ("<p>You can find this at <a href='([^<]+)'>([^<]+)</a></p>");
+				const QRegExp& re = Workers_ [Service_]->GetPageRegExp ();
 				if (!re.exactMatch (result))
 				{
 					emit gotEntity (Util::MakeNotification ("Auscrie", tr ("Page parse failed"), PCritical_));
