@@ -25,6 +25,8 @@ class QNetworkAccessManager;
 
 namespace LeechCraft
 {
+	struct Entity;
+
 	namespace Plugins
 	{
 		namespace Auscrie
@@ -32,6 +34,8 @@ namespace LeechCraft
 			class Poster : public QObject
 			{
 				Q_OBJECT
+
+				QNetworkReply *Reply_;
 			public:
 				Poster (const QByteArray&, const QString&,
 						QNetworkAccessManager*, QObject* = 0);
@@ -39,8 +43,7 @@ namespace LeechCraft
 				void handleFinished ();
 				void handleError ();
 			signals:
-				void finished (QNetworkReply*);
-				void error (QNetworkReply*);
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

@@ -57,8 +57,6 @@ namespace LeechCraft
 			private slots:
 				void makeScreenshot ();
 				void shoot ();
-				void handleFinished (QNetworkReply*);
-				void handleError (QNetworkReply*);
 			private:
 				void Post (const QByteArray&);
 			signals:

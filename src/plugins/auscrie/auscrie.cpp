@@ -22,9 +22,6 @@
 #include <QBuffer>
 #include <QDir>
 #include <QFileDialog>
-#include <QNetworkReply>
-#include <QUrl>
-#include <QClipboard>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <plugininterface/util.h>
 #include "shooterdialog.h"
@@ -166,55 +163,15 @@ namespace LeechCraft
 				}
 			}
 
-			void Plugin::handleFinished (QNetworkReply *reply)
-			{
-				QString result = reply->readAll ();
-
-				QRegExp re ("<p>You can find this at <a href='([^<]+)'>([^<]+)</a></p>");
-				if (!re.exactMatch (result))
-				{
-					emit gotEntity (Util::MakeNotification ("Auscrie", tr ("Page parse failed"), PCritical_));
-					return;
-				}
-
-				QString pasteUrl = re.cap (1);
-				pasteUrl.replace ("html", "jpg").replace ("view", "img");
-
-				QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
-				QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
-
-				QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-					.arg (pasteUrl);
-				emit gotEntity (Util::MakeNotification ("Auscrie", text, PInfo_));
-
-				sender ()->deleteLater ();
-			}
-
-			void Plugin::handleError (QNetworkReply *reply)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< reply->errorString ();
-
-				QString text = tr ("Upload of screenshot failed: %1")
-									.arg (reply->errorString ());
-				emit gotEntity (Util::MakeNotification ("Auscrie", text, PCritical_));
-
-				sender ()->deleteLater ();
-			}
-
 			void Plugin::Post (const QByteArray& data)
 			{
 				Poster *p = new Poster (data,
 						Dialog_->GetFormat (),
 						Proxy_->GetNetworkAccessManager ());
 				connect (p,
-						SIGNAL (finished (QNetworkReply*)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SLOT (handleFinished (QNetworkReply*)));
-				connect (p,
-						SIGNAL (error (QNetworkReply*)),
-						this,
-						SLOT (handleError (QNetworkReply*)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 			}
 		};
 	};

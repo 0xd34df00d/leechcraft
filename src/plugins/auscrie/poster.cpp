@@ -19,7 +19,12 @@
 #include "poster.h"
 #include <QNetworkReply>
 #include <QUrl>
+#include <QRegExp>
+#include <QClipboard>
+#include <QApplication>
 #include <QtDebug>
+#include <interfaces/structures.h>
+#include <plugininterface/util.h>
 #include "requestbuilder.h"
 
 namespace LeechCraft
@@ -31,6 +36,7 @@ namespace LeechCraft
 			Poster::Poster (const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am, QObject *parent)
 			: QObject (parent)
+			, Reply_ (0)
 			{
 				QUrl url ("http://imagebin.ca/upload.php");
 
@@ -50,13 +56,13 @@ namespace LeechCraft
 						QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
 				request.setHeader (QNetworkRequest::ContentLengthHeader,
 						QString::number (formed.size ()));
-				QNetworkReply *reply = am->post (request, formed);
+				Reply_ = am->post (request, formed);
 
-				connect (reply,
+				connect (Reply_,
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleFinished ()));
-				connect (reply,
+				connect (Reply_,
 						SIGNAL (error (QNetworkReply::NetworkError)),
 						this,
 						SLOT (handleError ()));
@@ -64,12 +70,38 @@ namespace LeechCraft
 
 			void Poster::handleFinished ()
 			{
-				emit finished (qobject_cast<QNetworkReply*> (sender ()));
+				QString result = Reply_->readAll ();
+
+				QRegExp re ("<p>You can find this at <a href='([^<]+)'>([^<]+)</a></p>");
+				if (!re.exactMatch (result))
+				{
+					emit gotEntity (Util::MakeNotification ("Auscrie", tr ("Page parse failed"), PCritical_));
+					return;
+				}
+
+				QString pasteUrl = re.cap (1);
+				pasteUrl.replace ("html", "jpg").replace ("view", "img");
+
+				QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
+				QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
+
+				QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
+					.arg (pasteUrl);
+				emit gotEntity (Util::MakeNotification ("Auscrie", text, PInfo_));
+
+				deleteLater ();
 			}
 
 			void Poster::handleError ()
 			{
-				emit error (qobject_cast<QNetworkReply*> (sender ()));
+				qWarning () << Q_FUNC_INFO
+					<< Reply_->errorString ();
+
+				QString text = tr ("Upload of screenshot failed: %1")
+									.arg (Reply_->errorString ());
+				emit gotEntity (Util::MakeNotification ("Auscrie", text, PCritical_));
+
+				deleteLater ();
 			}
 		};
 	};
