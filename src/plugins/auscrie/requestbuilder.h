@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_POSTER_H
-#define PLUGINS_AUSCRIE_POSTER_H
-#include <QObject>
-
-class QNetworkReply;
-class QNetworkAccessManager;
+#ifndef PLUGINS_AUSCRIE_REQUESTBUILDER_H
+#define PLUGINS_AUSCRIE_REQUESTBUILDER_H
+#include <QString>
 
 namespace LeechCraft
 {
@@ -29,22 +26,21 @@ namespace LeechCraft
 	{
 		namespace Auscrie
 		{
-			class Poster : public QObject
+			class RequestBuilder
 			{
-				Q_OBJECT
+				QByteArray Result_;
+				QString Boundary_;
 			public:
-				Poster (const QByteArray&, const QString&,
-						QNetworkAccessManager*, QObject* = 0);
-			private slots:
-				void handleFinished ();
-				void handleError ();
-			signals:
-				void finished (QNetworkReply*);
-				void error (QNetworkReply*);
+				RequestBuilder ();
+
+				void AddPair (const QString&, const QString&);
+				void AddFile (const QString&, const QString&, const QByteArray&);
+
+				QByteArray Build ();
+				QString GetBoundary () const;
 			};
 		};
 	};
 };
 
 #endif
-

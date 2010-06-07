@@ -19,8 +19,8 @@
 #include "poster.h"
 #include <QNetworkReply>
 #include <QUrl>
-#include <QUuid>
 #include <QtDebug>
+#include "requestbuilder.h"
 
 namespace LeechCraft
 {
@@ -32,37 +32,22 @@ namespace LeechCraft
 					QNetworkAccessManager *am, QObject *parent)
 			: QObject (parent)
 			{
-				QString rnd = QUuid::createUuid ().toString ();
-				rnd = rnd.mid (1, rnd.size () - 2);
-				rnd += rnd;
-				rnd = rnd.left (55);
-
-				Boundary_ = "----------";
-				Boundary_ += rnd;
-
 				QUrl url ("http://imagebin.ca/upload.php");
-				QByteArray formed = AddPair ("t", "file");
-				//url.addQueryItem ("t", "file");
+
+				RequestBuilder builder;
+				builder.AddPair ("t", "file");
 
 				QString name = QString ("screenshot.%1").arg (format.toLower ());
-				formed += AddPair ("name", name);
-				//url.addQueryItem ("name", name);
+				builder.AddPair ("name", name);
+				builder.AddPair ("tags", "leechcraft");
+				builder.AddPair ("adult", "f");
+				builder.AddFile (format, "f", data);
 
-				formed += AddPair ("tags", "leechcraft");
-				//url.addQueryItem ("tags", "leechcraft");
-
-				formed += AddPair ("adult", "f");
-				//url.addQueryItem ("adult", "f");
-
-				formed += AddFile (format, "f", data);
-
-				formed += "--";
-				formed += Boundary_;
-				formed += "--";
+				QByteArray formed = builder.Build ();
 
 				QNetworkRequest request (url);
 				request.setHeader (QNetworkRequest::ContentTypeHeader,
-						QString ("multipart/form-data; boundary=" + Boundary_));
+						QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
 				request.setHeader (QNetworkRequest::ContentLengthHeader,
 						QString::number (formed.size ()));
 				QNetworkReply *reply = am->post (request, formed);
@@ -75,53 +60,6 @@ namespace LeechCraft
 						SIGNAL (error (QNetworkReply::NetworkError)),
 						this,
 						SLOT (handleError ()));
-			}
-
-			QByteArray Poster::AddPair (const QString& name, const QString& value)
-			{
-				QByteArray str;
-
-				str += "--";
-				str += Boundary_;
-				str += "\r\n";
-				str += "Content-Disposition: form-data; name=\"";
-				str += name.toAscii();
-				str += "\"";
-				str += "\r\n\r\n";
-				str += value.toUtf8();
-				str += "\r\n";
-
-				return str;
-			}
-
-			QByteArray Poster::AddFile (const QString& format,
-					const QString& name, const QByteArray& imageData)
-			{
-				QByteArray str;
-
-				str += "--";
-				str += Boundary_;
-				str += "\r\n";
-				str += "Content-Disposition: form-data; name=\"";
-				str += name.toAscii ();
-				str += "\"; ";
-				str += "filename=\"";
-				str += QString ("screenshot.%1")
-					.arg (format.toLower ())
-					.toAscii ();
-				str += "\"";
-				str += "\r\n";
-				str += "Content-Type: ";
-				if (format.toLower () == "jpg")
-					str += "image/jpeg";
-				else
-					str += "image/png";
-				str += "\r\n\r\n";
-
-				str += imageData;
-				str += "\r\n";
-
-				return str;
 			}
 
 			void Poster::handleFinished ()

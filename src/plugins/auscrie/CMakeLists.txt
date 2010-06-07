@@ -26,11 +26,13 @@ SET (SRCS
 	auscrie.cpp
 	shooterdialog.cpp
 	poster.cpp
+	requestbuilder.cpp
 	)
 SET (HEADERS
 	auscrie.h
 	shooterdialog.h
 	poster.h
+	requestbuilder.h
 	)
 SET (FORMS
 	shooterdialog.ui
