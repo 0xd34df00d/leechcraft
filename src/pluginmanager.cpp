@@ -606,7 +606,7 @@ namespace LeechCraft
 				i < Plugins_.end (); ++i)
 		{
 #ifdef QT_DEBUG
-			qDebug () << Q_FUNC_INFO << ((*i)->instance ());
+			qDebug () << Q_FUNC_INFO << (*i);
 #endif
 			if (!GetDependency (*i))
 			{
