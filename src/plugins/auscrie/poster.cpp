@@ -66,9 +66,14 @@ namespace LeechCraft
 					return am->post (request, formed);
 				}
 
-				const QRegExp& GetPageRegExp () const
+				QString GetLink (const QString& contents) const
 				{
-					return RegExp_;
+					if (!RegExp_.exactMatch (contents))
+						return QString ();
+
+					QString pasteUrl = RegExp_.cap (1);
+					pasteUrl.replace ("html", "jpg").replace ("view", "img");
+					return pasteUrl;
 				}
 			};
 
@@ -97,15 +102,13 @@ namespace LeechCraft
 			{
 				QString result = Reply_->readAll ();
 
-				const QRegExp& re = Workers_ [Service_]->GetPageRegExp ();
-				if (!re.exactMatch (result))
+				QString pasteUrl = Workers_ [Service_]->GetLink (result);
+
+				if (pasteUrl.isEmpty ())
 				{
 					emit gotEntity (Util::MakeNotification ("Auscrie", tr ("Page parse failed"), PCritical_));
 					return;
 				}
-
-				QString pasteUrl = re.cap (1);
-				pasteUrl.replace ("html", "jpg").replace ("view", "img");
 
 				QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
 				QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);

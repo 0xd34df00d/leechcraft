@@ -37,9 +37,9 @@ namespace LeechCraft
 			{
 				virtual ~Worker () {}
 
-				virtual QNetworkReply* Post (const QByteArray&,
-						const QString&, QNetworkAccessManager*) const = 0;
-				virtual const QRegExp& GetPageRegExp () const = 0;
+				virtual QNetworkReply* Post (const QByteArray& imageData,
+						const QString& format, QNetworkAccessManager *am) const = 0;
+				virtual QString GetLink (const QString& contents) const = 0;
 			};
 
 			typedef boost::shared_ptr<Worker> Worker_ptr;
