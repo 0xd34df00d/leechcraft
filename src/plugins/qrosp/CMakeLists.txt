@@ -27,6 +27,7 @@ SET (SRCS
 	pluginmanager.cpp
 	wrapperobject.cpp
 	typesfactory.cpp
+	utilproxy.cpp
 	wrappers/coreproxywrapper.cpp
 	wrappers/hookproxywrapper.cpp
 	wrappers/entitywrapper.cpp
@@ -40,6 +41,7 @@ SET (HEADERS
 	pluginmanager.h
 	wrapperobject.h
 	typesfactory.h
+	utilproxy.h
 	wrappers/coreproxywrapper.h
 	wrappers/hookproxywrapper.h
 	wrappers/entitywrapper.h

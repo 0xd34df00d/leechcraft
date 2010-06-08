@@ -22,6 +22,7 @@
 #include <qross/core/manager.h>
 #include "wrapperobject.h"
 #include "typesfactory.h"
+#include "utilproxy.h"
 #include "wrappers/entitywrapper.h"
 
 namespace LeechCraft
@@ -44,6 +45,11 @@ namespace LeechCraft
 						<< plugins;
 
 				Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
+				Qross::Manager::self ().addQObject (new UtilProxy, "Util");
+
+#ifndef QROSP_NO_QTSCRIPT
+				//qScriptRegisterMetaType (Priority, ToScriptValue, FromScriptValue);
+#endif
 
 				Q_FOREACH (QString type, plugins.keys ())
 					Q_FOREACH (QString path, plugins [type])

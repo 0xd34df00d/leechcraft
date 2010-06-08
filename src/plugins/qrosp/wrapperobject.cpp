@@ -28,6 +28,7 @@
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
 #include <plugininterface/util.h>
+#include "utilproxy.h"
 #include "wrappers/coreproxywrapper.h"
 #include "wrappers/hookproxywrapper.h"
 #include "wrappers/entitywrapper.h"
@@ -206,7 +207,7 @@ namespace LeechCraft
 
 			namespace
 			{
-				QVariant MakeFromParameter (const QByteArray& type, void *elem)
+				QVariant WrapParameter (const QByteArray& type, void *elem)
 				{
 					if (type == "LeechCraft::IHookProxy_ptr")
 						return QVariant::fromValue<QObject*> (new HookProxyWrapper (*static_cast<IHookProxy_ptr*> (elem)));
@@ -234,7 +235,7 @@ namespace LeechCraft
 						QVariantList args;
 						for (int i = 0, size = method.parameterTypes ().size ();
 								i < size; ++i)
-							args << MakeFromParameter (method.parameterTypes ().at (i),
+							args << WrapParameter (method.parameterTypes ().at (i),
 									argsArray [i + 1]);
 						QString name (method.signature ());
 						name = name.left (name.indexOf ('('));
