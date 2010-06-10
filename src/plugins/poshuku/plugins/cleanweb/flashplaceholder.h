@@ -45,6 +45,7 @@ namespace LeechCraft
 						bool IsSwapping () const;
 					private slots:
 						void handleLoadFlash ();
+						void handleHideFlash ();
 						void handleContextMenu ();
 						void handleAddWhitelist ();
 					};

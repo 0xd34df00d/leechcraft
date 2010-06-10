@@ -115,6 +115,51 @@ namespace LeechCraft
 						Swapping_ = false;
 					}
 
+					void FlashPlaceHolder::handleHideFlash ()
+					{
+						QWidget *parent = parentWidget ();
+						QWebView *view = 0;
+						while (parent)
+						{
+							if ((view = qobject_cast<QWebView*> (parent)))
+								break;
+							parent = parent->parentWidget ();
+						}
+						if (!view)
+							return;
+
+						QString selector = "%1[type=\"application/x-shockwave-flash\"]";
+
+						hide ();
+
+						Swapping_ = true;
+
+						QList<QWebFrame*> frames;
+						frames.append (view->page ()->mainFrame ());
+
+						while (!frames.isEmpty ())
+						{
+							QWebFrame *frame = frames.takeFirst ();
+							QWebElement docElement = frame->documentElement ();
+
+							QWebElementCollection elements;
+							elements.append (docElement.findAll (selector.arg ("object")));
+							elements.append (docElement.findAll (selector.arg ("embed")));
+
+							Q_FOREACH (QWebElement element, elements)
+							{
+								if (!element.evaluateJavaScript ("this.swapping").toBool ())
+									continue;
+
+								element.removeFromDocument ();
+								break;
+							}
+
+							frames += frame->childFrames();
+						}
+						Swapping_ = false;
+					}
+
 					void FlashPlaceHolder::handleContextMenu ()
 					{
 						QMenu menu;
@@ -139,6 +184,13 @@ namespace LeechCraft
 								.GetFlashOnClickWhitelist ()->Matches (url));
 						addHost->setEnabled (!Core::Instance ()
 								.GetFlashOnClickWhitelist ()->Matches (host));
+
+						menu.addSeparator ();
+						menu.addAction (tr ("Hide"),
+								this,
+								SLOT (handleHideFlash ()),
+								Qt::QueuedConnection);
+
 						menu.exec (QCursor::pos ());
 					}
 
