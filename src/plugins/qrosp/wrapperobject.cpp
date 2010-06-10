@@ -260,6 +260,7 @@ namespace LeechCraft
 			void WrapperObject::Release ()
 			{
 				Call<void> ("Release");
+				ScriptAction_->finalize ();
 			}
 
 			QString WrapperObject::GetName () const
