@@ -27,6 +27,8 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/itoolbarembedder.h>
 #include <interfaces/itraymenu.h>
+#include <interfaces/iembedtab.h>
+#include <interfaces/ientityhandler.h>
 
 class QTranslator;
 
@@ -38,6 +40,8 @@ namespace LeechCraft
 		{
 			class WrapperObject : public QObject
 								, public IInfo
+								, public IEmbedTab
+								, public IEntityHandler
 								, public IJobHolder
 								, public IMenuEmbedder
 								, public IPlugin2
@@ -78,6 +82,14 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+
+				// IEmbedTab
+				QWidget* GetTabContents ();
+				QToolBar* GetToolBar () const;
+
+				// IEntityHandler
+				bool CouldHandle (const LeechCraft::Entity&) const;
+				void Handle (LeechCraft::Entity);
 
 				// IJobHolder
 				QAbstractItemModel* GetRepresentation () const;

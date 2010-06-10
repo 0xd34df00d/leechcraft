@@ -189,6 +189,9 @@ namespace LeechCraft
 				if (!strcmp (interfaceName, "IInfo") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IInfo/1.0"))
 					return static_cast<IInfo*> (this);
+				if (!strcmp (interfaceName, "IEntityHandler") ||
+						!strcmp (interfaceName, "org.Deviant.LeechCraft.IEntityHandler/1.0"))
+					return static_cast<IEntityHandler*> (this);
 				if (!strcmp (interfaceName, "IPlugin2") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IPlugin2/1.0"))
 					return static_cast<IPlugin2*> (this);
@@ -198,6 +201,9 @@ namespace LeechCraft
 				if (!strcmp (interfaceName, "IMenuEmbedder") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IMenuEmbedder/1.0"))
 					return static_cast<IMenuEmbedder*> (this);
+				if (!strcmp (interfaceName, "IEmbedTab") ||
+						!strcmp (interfaceName, "org.Deviant.LeechCraft.IEmbedTab/1.0"))
+					return static_cast<IEmbedTab*> (this);
 			}
 
 			const QMetaObject* WrapperObject::metaObject () const
@@ -299,6 +305,30 @@ namespace LeechCraft
 				args << QVariant::fromValue<QObject*> (provider);
 				args << feature;
 				Call<void> ("SetProvider", args);
+			}
+
+			QWidget* WrapperObject::GetTabContents ()
+			{
+				return Call<QWidget*> ("GetTabContents");
+			}
+
+			QToolBar* WrapperObject::GetToolBar () const
+			{
+				return Call<QToolBar*> ("GetToolBar");
+			}
+
+			bool WrapperObject::CouldHandle (const Entity& e) const
+			{
+				QVariantList args;
+				args << QVariant::fromValue<QObject*> (new EntityWrapper (e));
+				return Call<bool> ("CouldHandle", args);
+			}
+
+			void WrapperObject::Handle (Entity e)
+			{
+				QVariantList args;
+				args << QVariant::fromValue<QObject*> (new EntityWrapper (e));
+				Call<void> ("Handle", args);
 			}
 
 			QAbstractItemModel* WrapperObject::GetRepresentation () const
