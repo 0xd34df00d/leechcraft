@@ -202,11 +202,13 @@ void TabContainer::AddObject (QObject *obj)
 		try
 		{
 			QString name = ii->GetName ();
+			QString info = ii->GetInfo ();
 			QIcon icon = ii->GetIcon ();
 			NewTabMenu_->removeAction (RestoreMenu_->menuAction ());
-			NewTabMenu_->addAction (icon, name,
+			NewTabMenu_->addAction (icon,
+					QString ("%1 (%2)").arg (name).arg (info),
 					obj,
-					SLOT (newTabRequested ()));
+					SLOT (newTabRequested ()))->setToolTip (info);
 			NewTabMenu_->addMenu (RestoreMenu_);
 		}
 		catch (const std::exception& e)
