@@ -431,6 +431,10 @@
         <source>Actions</source>
         <translation>Действия</translation>
     </message>
+    <message>
+        <source>Always</source>
+        <translation>Всегда</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>

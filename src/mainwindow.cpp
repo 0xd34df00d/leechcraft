@@ -24,6 +24,7 @@
 #include <QChildEvent>
 #include <QToolButton>
 #include <QCursor>
+#include <QCheckBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/itraymenu.h>
@@ -433,12 +434,23 @@ void LeechCraft::MainWindow::on_ActionAboutLeechCraft__triggered ()
 
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 {
-	if (XmlSettingsManager::Instance ()->property ("ConfirmQuit").toBool () &&
-			QMessageBox::question (this,
+	if (XmlSettingsManager::Instance ()->property ("ConfirmQuit").toBool ())
+	{
+		QMessageBox mbox (QMessageBox::Question,
 				"LeechCraft",
 				tr ("Do you really want to quit?"),
-				QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-		return;
+				QMessageBox::Yes | QMessageBox::No,
+				this);
+		mbox.setDefaultButton (QMessageBox::No);
+
+		QPushButton always (tr ("Always"));
+		mbox.addButton (&always, QMessageBox::AcceptRole);
+
+		if (mbox.exec () == QMessageBox::No)
+			return;
+		else if (mbox.clickedButton () == &always)
+			XmlSettingsManager::Instance ()->setProperty ("ConfirmQuit", false);
+	}
 
 	setEnabled (false);
 	qApp->quit ();
