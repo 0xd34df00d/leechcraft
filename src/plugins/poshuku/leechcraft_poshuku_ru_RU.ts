@@ -287,7 +287,7 @@
     <message>
         <location filename="browserwidget.cpp" line="125"/>
         <source>Reload periodically</source>
-        <translation>Периодически перезагружать</translation>
+        <translation>Периодически обновлять страницу</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="129"/>
@@ -322,115 +322,115 @@
     <message>
         <location filename="browserwidget.cpp" line="174"/>
         <source>Reset zoom</source>
-        <translation>Изначальный масштаб</translation>
+        <translation>Сбросить масштаб</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="210"/>
+        <location filename="browserwidget.cpp" line="216"/>
         <source>Change encoding</source>
         <translation>Изменить кодировку</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="220"/>
+        <location filename="browserwidget.cpp" line="226"/>
         <source>Recently closed</source>
         <translation>Недавно закрытые</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="227"/>
+        <location filename="browserwidget.cpp" line="231"/>
         <source>External links</source>
         <translation>Внешние ссылки</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="602"/>
+        <location filename="browserwidget.cpp" line="606"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="603"/>
+        <location filename="browserwidget.cpp" line="607"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="604"/>
+        <location filename="browserwidget.cpp" line="608"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="605"/>
+        <location filename="browserwidget.cpp" line="609"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1169"/>
+        <location filename="browserwidget.cpp" line="1176"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1192"/>
+        <location filename="browserwidget.cpp" line="1199"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1241"/>
+        <location filename="browserwidget.cpp" line="1248"/>
         <source>No title</source>
         <translation>Без названия</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1158"/>
+        <location filename="browserwidget.cpp" line="1165"/>
         <source>Page load finished: %1</source>
         <translation>Загрузка страницы завершена: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1162"/>
+        <location filename="browserwidget.cpp" line="1169"/>
         <source>Page load failed: %1</source>
         <translation>Ошибка загрузка страницы: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="610"/>
+        <location filename="browserwidget.cpp" line="614"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="611"/>
+        <location filename="browserwidget.cpp" line="615"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="612"/>
+        <location filename="browserwidget.cpp" line="616"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="613"/>
+        <location filename="browserwidget.cpp" line="617"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="618"/>
+        <location filename="browserwidget.cpp" line="622"/>
         <source>Ctrl+Shift+T</source>
         <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="675"/>
+        <location filename="browserwidget.cpp" line="679"/>
         <source>Print web page</source>
         <translation>Печать веб-страницы</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="702"/>
+        <location filename="browserwidget.cpp" line="706"/>
         <source>Reloading once in %1</source>
         <translation>Перезагружается раз в %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="868"/>
+        <location filename="browserwidget.cpp" line="872"/>
         <source>Save screenshot</source>
         <translation>Сохранить скриншот</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="883"/>
+        <location filename="browserwidget.cpp" line="887"/>
         <source>Could not open %1 for write</source>
         <translation>Невозможно открыть %1 на запись</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="892"/>
+        <location filename="browserwidget.cpp" line="896"/>
         <source>Could not write screenshot to %1</source>
         <translation>Невозможно записать скриншот в %1</translation>
     </message>
@@ -446,38 +446,37 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Core</name>
     <message>
-        <location filename="core.cpp" line="98"/>
         <source>Plugins</source>
-        <translation>Плагины</translation>
+        <translation type="obsolete">Плагины</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="143"/>
+        <location filename="core.cpp" line="140"/>
         <source>Poshuku: general storage initialization error.</source>
         <translation>Poshuku: общая ошибка инициализации подсистемы хранения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="737"/>
+        <location filename="core.cpp" line="729"/>
         <source>Select XBEL file</source>
         <translation>Выбор файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="739"/>
-        <location filename="core.cpp" line="779"/>
+        <location filename="core.cpp" line="731"/>
+        <location filename="core.cpp" line="771"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Файлы XBEL (*.xbel);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="753"/>
+        <location filename="core.cpp" line="745"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не могу открыть файл %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="777"/>
+        <location filename="core.cpp" line="769"/>
         <source>Save XBEL file</source>
         <translation>Сохранение файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="796"/>
+        <location filename="core.cpp" line="788"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не могу открыть файл %1 на запись.</translation>
     </message>
@@ -485,105 +484,105 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="168"/>
+        <location filename="customwebpage.cpp" line="133"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
         <comment>{host} would be substituded with site&apos;s host name.</comment>
         <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;проверьте&lt;/a&gt; не работает ли сайт &lt;strong&gt;{host}&lt;/strong&gt; только у вас или у всех;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="171"/>
+        <location filename="customwebpage.cpp" line="136"/>
         <source>try again later</source>
         <translation>попробуйте еще раз позже</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="172"/>
+        <location filename="customwebpage.cpp" line="137"/>
         <source>contact remote server&apos;s administrator (typically at &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</source>
         <translation>свяжитесь с администратором удаленного сервера (обычно &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="174"/>
+        <location filename="customwebpage.cpp" line="139"/>
         <source>contact your system/network administrator, especially if you can&apos;t load any single page</source>
         <translation>свяжитесь с вашим системным администратором, особенно если вы не можете загрузить ни одну страницу</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="176"/>
+        <location filename="customwebpage.cpp" line="141"/>
         <source>check your proxy settings</source>
         <translation>проверьте ваши настройки proxy</translation>
     </message>
     <message>
+        <location filename="customwebpage.cpp" line="152"/>
         <location filename="customwebpage.cpp" line="187"/>
-        <location filename="customwebpage.cpp" line="222"/>
         <source>check if the URL is written correctly;</source>
         <translation>проверьте, правильно ли написан URL;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="188"/>
+        <location filename="customwebpage.cpp" line="153"/>
         <source>try changing your DNS servers;</source>
         <translation>попробуйте поменять ваши DNS-сервера;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="189"/>
+        <location filename="customwebpage.cpp" line="154"/>
         <source>make sure that LeechCraft is allowed to access the Internet and particularly web sites;</source>
         <translation>убедитесь, что LeechCraft&apos;у разрешен доступ в Интернет и, в особенности, к веб-сайтам;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="194"/>
+        <location filename="customwebpage.cpp" line="159"/>
         <source>check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;</source>
         <translation>проверьте, не потребляют ли некоторые закачки слишком много канала: попробуйте ограничить их скорость или снизить количество подключений для них;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="199"/>
+        <location filename="customwebpage.cpp" line="164"/>
         <source>try again.</source>
         <translation>попробуйте еще раз.</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="201"/>
+        <location filename="customwebpage.cpp" line="166"/>
         <source>make sure that remote server is really what it claims to be;</source>
         <translation>убедитесь, что удаленный сервер действительно тот, за кого он себя выдает;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="223"/>
+        <location filename="customwebpage.cpp" line="188"/>
         <source>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and find the required page from there.</source>
         <oldsource>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and finding the required page there.</oldsource>
         <translation>перейдите на &lt;a href=&quot;{schema}://{host}/&quot;&gt;главную страницу&lt;/a&gt; сайта и попробуйте найти необходимую информацию оттуда.</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="225"/>
+        <location filename="customwebpage.cpp" line="190"/>
         <source>check the login and password you entered and try again</source>
         <translation>проверьте логин и пароль, введенные вами, и попробуйте еще раз</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="229"/>
+        <location filename="customwebpage.cpp" line="194"/>
         <source>check if the URL is written correctly, particularly, the part before the &apos;://&apos;;</source>
         <translation>проверьте, написан ли правильно URL, особенно часть перед &apos;://&apos;;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="230"/>
+        <location filename="customwebpage.cpp" line="195"/>
         <source>try installing plugins that are known to support this protocol;</source>
         <translation>попробуйте установить плагины, которые поддерживают этот протокол;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="578"/>
+        <location filename="customwebpage.cpp" line="479"/>
         <source>Error loading %1</source>
         <translation>Ошибка загрузки %1</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="583"/>
+        <location filename="customwebpage.cpp" line="484"/>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="588"/>
+        <location filename="customwebpage.cpp" line="489"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="590"/>
+        <location filename="customwebpage.cpp" line="491"/>
         <source>The page you tried to access cannot be loaded now.</source>
         <translation>Страница, которую вы пытались открыть, сейчас не может быть загружена.</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="597"/>
+        <location filename="customwebpage.cpp" line="498"/>
         <source>Try doing the following:</source>
         <translation>Попробуйте следующее:</translation>
     </message>
@@ -591,124 +590,124 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebView</name>
     <message>
-        <location filename="customwebview.cpp" line="399"/>
+        <location filename="customwebview.cpp" line="421"/>
         <source>Installed plugins</source>
         <translation>Установленные плагины</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="400"/>
+        <location filename="customwebview.cpp" line="422"/>
         <source>No plugins installed</source>
         <translation>Нет установленных плагинов</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="401"/>
+        <location filename="customwebview.cpp" line="423"/>
         <source>File name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="402"/>
+        <location filename="customwebview.cpp" line="424"/>
         <source>MIME type</source>
         <translation>MIME-тип</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="403"/>
+        <location filename="customwebview.cpp" line="425"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="404"/>
+        <location filename="customwebview.cpp" line="426"/>
         <source>Suffixes</source>
         <translation>Расширения</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="405"/>
+        <location filename="customwebview.cpp" line="427"/>
         <source>Enabled</source>
         <translation>Включено</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="406"/>
+        <location filename="customwebview.cpp" line="428"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="407"/>
+        <location filename="customwebview.cpp" line="429"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="145"/>
-        <location filename="customwebview.cpp" line="154"/>
+        <location filename="customwebview.cpp" line="162"/>
+        <location filename="customwebview.cpp" line="171"/>
         <source>Loading...</source>
         <translation>Загружается...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="249"/>
+        <location filename="customwebview.cpp" line="265"/>
         <source>Subscribe</source>
         <translation>Подписаться</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="257"/>
+        <location filename="customwebview.cpp" line="273"/>
         <source>Open &amp;here</source>
         <translation>Открыть &amp;здесь</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="259"/>
+        <location filename="customwebview.cpp" line="275"/>
         <source>Open in new &amp;tab</source>
         <translation>Открыть в новой &amp;вкладке</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="262"/>
+        <location filename="customwebview.cpp" line="278"/>
         <source>&amp;Save link...</source>
         <translation>&amp;Cохранить ссылку...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="268"/>
+        <location filename="customwebview.cpp" line="284"/>
         <source>&amp;Bookmark link...</source>
         <translation>Добавить ссылку в &amp;избранное...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="274"/>
+        <location filename="customwebview.cpp" line="290"/>
         <source>&amp;Copy link</source>
         <translation>&amp;Копировать ссылку</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="287"/>
+        <location filename="customwebview.cpp" line="303"/>
         <source>Open image here</source>
         <translation>Открыть изображение здесь</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="289"/>
+        <location filename="customwebview.cpp" line="305"/>
         <source>Open image in new tab</source>
         <translation>Открыть изображение в новой вкладке</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="292"/>
+        <location filename="customwebview.cpp" line="308"/>
         <source>Save image...</source>
         <translation>Сохранить изображение...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="294"/>
+        <location filename="customwebview.cpp" line="310"/>
         <source>Copy image</source>
         <translation>Копировать изображение</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="296"/>
+        <location filename="customwebview.cpp" line="312"/>
         <source>Copy image location</source>
         <translation>Копировать ссылку на изображение</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="311"/>
+        <location filename="customwebview.cpp" line="327"/>
         <source>Search...</source>
         <translation>Поиск...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="417"/>
-        <location filename="customwebview.cpp" line="419"/>
+        <location filename="customwebview.cpp" line="439"/>
+        <location filename="customwebview.cpp" line="441"/>
         <source>Welcome to LeechCraft!</source>
         <translation>Добро пожаловать в LeechCraft!</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="421"/>
+        <location filename="customwebview.cpp" line="443"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
         <translation>Добро пожаловать в LeechCraft, интегрированный интернет-клиент.&lt;br /&gt;Вы можете узнать больше на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сайте проекта&lt;/a&gt;.</translation>
     </message>
