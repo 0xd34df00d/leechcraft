@@ -499,27 +499,36 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::ChannelsModel</name>
     <message>
-        <location filename="channelsmodel.cpp" line="43"/>
+        <location filename="channelsmodel.cpp" line="44"/>
         <source>Feed</source>
         <translation>Лента</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="44"/>
+        <location filename="channelsmodel.cpp" line="45"/>
         <source>Unread items</source>
         <translation>Непрочитанные</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="45"/>
+        <location filename="channelsmodel.cpp" line="46"/>
         <source>Last build</source>
         <translation>Последнее обновление</translation>
+    </message>
+    <message>
+        <location filename="channelsmodel.cpp" line="119"/>
+        <source>&lt;strong&gt;Author&lt;/strong&gt;: %1</source>
+        <translation>&lt;strong&gt;Автор&lt;/strong&gt;: %1</translation>
+    </message>
+    <message>
+        <location filename="channelsmodel.cpp" line="128"/>
+        <source>&lt;b&gt;Tags&lt;/b&gt;: %1</source>
+        <translation>&lt;b&gt;Теги&lt;/b&gt;: %1</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::Core</name>
     <message>
-        <location filename="core.cpp" line="458"/>
         <source>Job for feed %1 wasn&apos;t delegated.</source>
-        <translation>Задача для ленты %1 не была делегирована.</translation>
+        <translation type="obsolete">Задача для ленты %1 не была делегирована.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="812"/>
@@ -535,6 +544,11 @@
         <location filename="core.cpp" line="179"/>
         <source>Import error</source>
         <translation>Ошибка импорта</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="180"/>
+        <source>Could not find plugin to download OPML %1.</source>
+        <translation>Невозможно найти модуль для скачивания OPML %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="270"/>
@@ -556,6 +570,11 @@
         <location filename="core.cpp" line="457"/>
         <source>Plugin error</source>
         <translation>Ошибка плагина</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="458"/>
+        <source>Could not find plugin to download feed %1.</source>
+        <translation>Невозможно найти модуль для скачивания ленты %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="481"/>
@@ -675,9 +694,8 @@
         <translation>Обновлен канал &quot;%1&quot; (%2, %3)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="180"/>
         <source>Task for OPML %1 wasn&apos;t delegated.</source>
-        <translation>Задача для OPML %1 не была делегирована.</translation>
+        <translation type="obsolete">Задача для OPML %1 не была делегирована.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="278"/>
@@ -737,8 +755,9 @@
     </message>
     <message>
         <location filename="core.cpp" line="1209"/>
-        <source>External file %1 wasn&apos;t delegated.</source>
-        <translation>Внешний файл %1 не был делегирован.</translation>
+        <source>Could not find plugin to download external file %1.</source>
+        <oldsource>External file %1 wasn&apos;t delegated.</oldsource>
+        <translation>Невозможно найти модуль для скачивания внешнего файла %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1627"/>
@@ -865,6 +884,48 @@
         <location filename="itemslistmodel.cpp" line="39"/>
         <source>Date</source>
         <translation>Дата</translation>
+    </message>
+    <message>
+        <location filename="itemslistmodel.cpp" line="211"/>
+        <source>&lt;b&gt;Author&lt;/b&gt;: %1</source>
+        <translation>&lt;b&gt;Автор&lt;/b&gt;: %1</translation>
+    </message>
+    <message>
+        <location filename="itemslistmodel.cpp" line="216"/>
+        <source>&lt;b&gt;Categories&lt;/b&gt;: %1</source>
+        <translation>&lt;b&gt;Категории&lt;/b&gt;: %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="itemslistmodel.cpp" line="221"/>
+        <source>%n comment(s)</source>
+        <translation>
+            <numerusform>%n комментарий</numerusform>
+            <numerusform>%n комментария</numerusform>
+            <numerusform>%n комментариев</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="itemslistmodel.cpp" line="226"/>
+        <source>%n enclosure(s)</source>
+        <translation>
+            <numerusform>%n вложение</numerusform>
+            <numerusform>%n вложения</numerusform>
+            <numerusform>%n вложений</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="itemslistmodel.cpp" line="231"/>
+        <source>%n MediaRSS entry(s)</source>
+        <translation>
+            <numerusform>%n запись MediaRSS</numerusform>
+            <numerusform>%n записи MediaRSS</numerusform>
+            <numerusform>%n записей MediaRSS</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="itemslistmodel.cpp" line="236"/>
+        <source>RSS with comments is available</source>
+        <translation>Доступен RSS с комментариями</translation>
     </message>
 </context>
 <context>
