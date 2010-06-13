@@ -177,7 +177,7 @@ namespace LeechCraft
 						if (id == -1)
 						{
 							ErrorNotification (tr ("Import error"),
-									tr ("Task for OPML %1 wasn't delegated.")
+									tr ("Could not find plugin to download OPML %1.")
 										.arg (url.toString ()));
 							return;
 						}
@@ -455,7 +455,7 @@ namespace LeechCraft
 				if (id == -1)
 				{
 					ErrorNotification (tr ("Plugin error"),
-							tr ("Job for feed %1 wasn't delegated.")
+							tr ("Could not find plugin to download feed %1.")
 								.arg (url),
 							false);
 					return -1;
@@ -1206,7 +1206,7 @@ namespace LeechCraft
 				if (id == -1)
 				{
 					ErrorNotification (tr ("Feed error"),
-							tr ("External file %1 wasn't delegated.").arg (url));
+							tr ("Could not find plugin to download external file %1.").arg (url));
 					return;
 				}
 			
