@@ -33,7 +33,11 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLineEdit" name="What_"/>
+        <widget class="QLineEdit" name="What_">
+         <property name="toolTip">
+          <string>Enter URL or file name or any other thing you think LeechCraft can handle.</string>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">

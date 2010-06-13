@@ -28,8 +28,13 @@ LeechCraft::CommonJobAdder::CommonJobAdder (QWidget *parent)
 : QDialog (parent)
 {
 	setupUi (this);
-	What_->setText (XmlSettingsManager::Instance ()->Property ("LastWhatFolder",
-				QDir::homePath ()).toString ());
+#if QT_VERSION >= 0x040700
+	What_->setPlaceholderText (What_->toolTip ());
+#endif
+	QString text = XmlSettingsManager::Instance ()->
+			Property ("LastWhatFolder", QString ()).toString ();
+	if (!text.isEmpty ())
+		What_->setText (text);
 }
 
 QString LeechCraft::CommonJobAdder::GetString () const
