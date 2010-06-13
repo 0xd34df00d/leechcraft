@@ -726,5 +726,8 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	Q_FOREACH (QAction *act, ntm->actions ())
 		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
 
+	Ui_.MenuGeneral_->insertMenu (Ui_.ActionQuit_, ntm);
+	Ui_.MenuGeneral_->insertSeparator (Ui_.ActionQuit_);
+
 	on_MainTabWidget__currentChanged (0);
 }
