@@ -158,7 +158,7 @@ namespace LeechCraft
 				void handleURLChanged (const QString&);
 				void handleIconChanged (const QIcon&);
 				void handleNeedToClose ();
-				void handleAddToFavorites (const QString&, const QString&);
+				void handleAddToFavorites (QString, QString);
 				void handleStatusBarChanged (const QString&);
 				void handleTooltipChanged (QWidget*);
 				void favoriteTagsUpdated (const QStringList&);
@@ -180,6 +180,12 @@ namespace LeechCraft
 				void newUnclose (QAction*);
 
 				// Hook support signals
+				void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
+						QString title, QString url, QStringList tags);
+				void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
+						QString *title, QString *url);
+				void hookIconRequested (LeechCraft::IHookProxy_ptr,
+						const QUrl& url, QIcon *icon) const;
 				void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 						const QUrl&, const QWebPage*, QString*) const;
 			};

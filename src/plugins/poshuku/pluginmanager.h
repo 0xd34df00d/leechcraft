@@ -55,6 +55,10 @@ namespace LeechCraft
 						QNetworkRequest *request,
 						QWebPage::NavigationType type,
 						bool *result);
+				void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
+						QString title, QString url, QStringList tags);
+				void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
+						QString *title, QString *url);
 				void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QWebFrame *frame,
@@ -98,6 +102,8 @@ namespace LeechCraft
 						QRect *rect);
 				void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget);
+				void hookIconRequested (LeechCraft::IHookProxy_ptr,
+						const QUrl& url, QIcon *icon);
 				void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QWebFrame *frame,
