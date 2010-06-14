@@ -399,8 +399,7 @@ void Core::HandleExtension (LeechCraft::IHookProxy_ptr proxy,
 		QWebPage *page,
 		QWebPage::Extension ext,
 		const QWebPage::ExtensionOption *opt,
-		QWebPage::ExtensionReturn *ret,
-		bool *result)
+		QWebPage::ExtensionReturn *ret)
 {
 	if (ext != QWebPage::ErrorPageExtension)
 		return;
@@ -415,7 +414,7 @@ void Core::HandleExtension (LeechCraft::IHookProxy_ptr proxy,
 		return;
 
 	proxy->CancelDefault ();
-	*result = true;
+	proxy->SetReturnValue (true);
 
 	QWebFrame *frame = page->mainFrame ();
 	QWebElementCollection elems =

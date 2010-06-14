@@ -152,10 +152,9 @@ void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
 		QWebPage *page,
 		QWebPage::Extension ext,
 		const QWebPage::ExtensionOption *opt,
-		QWebPage::ExtensionReturn *ret,
-		bool *result)
+		QWebPage::ExtensionReturn *ret)
 {
-	Core::Instance ().HandleExtension (proxy, page, ext, opt, ret, result);
+	Core::Instance ().HandleExtension (proxy, page, ext, opt, ret);
 }
 
 void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,

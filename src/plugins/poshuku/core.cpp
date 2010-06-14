@@ -439,7 +439,10 @@ namespace LeechCraft
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 				emit hookUserAgentForUrlRequested (proxy, url, page);
 				if (proxy->IsCancelled ())
+				{
+					qDebug () << proxy->GetReturnValue ().toString ();
 					return proxy->GetReturnValue ().toString ();
+				}
 
 #if defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
 				QString winver = "unknown Windows";

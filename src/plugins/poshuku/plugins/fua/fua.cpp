@@ -138,7 +138,7 @@ boost::shared_ptr<XmlSettingsDialog> FUA::GetSettingsDialog () const
 }
 
 void FUA::hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
-		const QUrl& url, const QWebPage*, QString *result)
+		const QUrl& url, const QWebPage*)
 {
 	QString host = url.host ();
 	for (int i = 0; i < Model_->rowCount (); ++i)
@@ -148,7 +148,7 @@ void FUA::hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
 		if (re.exactMatch (host))
 		{
 			proxy->CancelDefault ();
-			*result = Model_->item (i, 2)->text ();
+			proxy->SetReturnValue (Model_->item (i, 2)->text ());
 			return;
 		}
 	}
