@@ -53,8 +53,7 @@ namespace LeechCraft
 						QWebPage *page,
 						QWebFrame *frame,
 						QNetworkRequest *request,
-						QWebPage::NavigationType type,
-						bool *result);
+						QWebPage::NavigationType type);
 				void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
 						QString title, QString url, QStringList tags);
 				void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
@@ -62,8 +61,7 @@ namespace LeechCraft
 				void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QWebFrame *frame,
-						QString *suggested,
-						QString *result);
+						QString *suggested);
 				void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
 				void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
@@ -71,12 +69,10 @@ namespace LeechCraft
 						QString *clsid,
 						QUrl *url,
 						QStringList *params,
-						QStringList *values,
-						QObject **result);
+						QStringList *values);
 				void hookCreateWindow (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
-						QWebPage::WebWindowType type,
-						QWebPage **result);
+						QWebPage::WebWindowType type);
 				void hookDatabaseQuotaExceeded (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *sourcePage,
 						QWebFrame *sourceFrame,
@@ -88,8 +84,7 @@ namespace LeechCraft
 						QWebPage *page,
 						QWebPage::Extension extension,
 						const QWebPage::ExtensionOption* extensionOption,
-						QWebPage::ExtensionReturn* extensionReturn,
-						bool *result);
+						QWebPage::ExtensionReturn* extensionReturn);
 				void hookFindText (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget,
 						QString *findText,
@@ -97,13 +92,14 @@ namespace LeechCraft
 				void hookFrameCreated (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QWebFrame *frameCreated);
-				bool hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
+				void hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QRect *rect);
 				void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget);
 				void hookIconRequested (LeechCraft::IHookProxy_ptr,
-						const QUrl& url, QIcon *icon);
+						const QUrl& url,
+						QIcon *icon);
 				void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QWebFrame *frame,
@@ -111,8 +107,7 @@ namespace LeechCraft
 				void hookJavaScriptConfirm (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QWebFrame *frame,
-						QString *msg,
-						bool *result);
+						QString *msg);
 				void hookJavaScriptConsoleMessage (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QString *msg,
@@ -123,15 +118,14 @@ namespace LeechCraft
 						QWebFrame *frame,
 						QString *msg,
 						QString *defValue,
-						QString *resultString,
-						bool *result);
+						QString *resultString);
 				void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *sourcePage,
 						QWebFrame *frameCleared);
-				bool hookLinkClicked (LeechCraft::IHookProxy_ptr proxy,
+				void hookLinkClicked (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QUrl *url);
-				bool hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
+				void hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QString *link,
 						QString *title,
@@ -142,7 +136,7 @@ namespace LeechCraft
 				void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget,
 						int *progress);
-				bool hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
+				void hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
 				void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 						QMenu *menu,
@@ -173,8 +167,7 @@ namespace LeechCraft
 						QString *message);
 				void hookSupportsExtension (LeechCraft::IHookProxy_ptr proxy,
 						const QWebPage *page,
-						QWebPage::Extension extension,
-						bool *result);
+						QWebPage::Extension extension);
 				void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
 						const QObject *browserWidget,
 						QList<QAction*>*) const;
@@ -187,11 +180,10 @@ namespace LeechCraft
 						QObject *browserWidget);
 				void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
 						const QUrl& url,
-						const QWebPage* sourcePage,
-						QString *result);
-				bool hookWebPageConstructionFinished (LeechCraft::IHookProxy_ptr proxy,
+						const QWebPage* sourcePage);
+				void hookWebPageConstructionFinished (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
-				bool hookWebPageConstructionStarted (LeechCraft::IHookProxy_ptr proxy,
+				void hookWebPageConstructionStarted (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page);
 				void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr proxy,
 						QList<IWebPlugin*>& plugins);

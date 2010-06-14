@@ -241,10 +241,9 @@ namespace LeechCraft
 			bool CustomWebPage::supportsExtension (QWebPage::Extension e) const
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-				bool result = false;
-				emit hookSupportsExtension (proxy, this, e, &result);
+				emit hookSupportsExtension (proxy, this, e);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().toBool ();
 
 				switch (e)
 				{
@@ -259,10 +258,9 @@ namespace LeechCraft
 					const QWebPage::ExtensionOption* eo, QWebPage::ExtensionReturn *er)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-				bool result = false;
-				emit hookExtension (proxy, this, e, eo, er, &result);
+				emit hookExtension (proxy, this, e, eo, er);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().toBool ();
 
 				switch (e)
 				{
@@ -529,11 +527,10 @@ namespace LeechCraft
 					const QNetworkRequest& other, QWebPage::NavigationType type)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				bool result = false;
 				QNetworkRequest request = other;
-				emit hookAcceptNavigationRequest (proxy, this, frame, &request, type, &result);
+				emit hookAcceptNavigationRequest (proxy, this, frame, &request, type);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().toBool ();
 			
 				QString scheme = request.url ().scheme ();
 				if (scheme == "mailto" ||
@@ -579,11 +576,10 @@ namespace LeechCraft
 			QString CustomWebPage::chooseFile (QWebFrame *frame, const QString& thsuggested)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				QString result;
 				QString suggested = thsuggested;
-				emit hookChooseFile (proxy, this, frame, &suggested, &result);
+				emit hookChooseFile (proxy, this, frame, &suggested);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().toString ();
 
 				return QWebPage::chooseFile (frame, suggested);
 			}
@@ -592,15 +588,14 @@ namespace LeechCraft
 					const QStringList& thnames, const QStringList& thvalues)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				QObject *result = 0;
 				QString clsid = thclsid;
 				QUrl url = thurl;
 				QStringList names = thnames;
 				QStringList values = thvalues;
 				emit hookCreatePlugin (proxy, this,
-						&clsid, &url, &names, &values, &result);
+						&clsid, &url, &names, &values);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().value<QObject*> ();
 
 				return QWebPage::createPlugin (clsid, url, names, values);
 			}
@@ -608,10 +603,9 @@ namespace LeechCraft
 			QWebPage* CustomWebPage::createWindow (QWebPage::WebWindowType type)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				QWebPage *result;
-				emit hookCreateWindow (proxy, this, type, &result);
+				emit hookCreateWindow (proxy, this, type);
 				if (proxy->IsCancelled ())
-					return result;
+					return qobject_cast<QWebPage*> (proxy->GetReturnValue ().value<QObject*> ());
 
 				switch (type)
 				{
@@ -654,11 +648,10 @@ namespace LeechCraft
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 				QString msg = thmsg;
-				bool result = false;
 				emit hookJavaScriptConfirm (proxy,
-						this, frame, &msg, &result);
+						this, frame, &msg);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().toBool ();
 
 				return QWebPage::javaScriptConfirm (frame, msg);
 			}
@@ -683,11 +676,10 @@ namespace LeechCraft
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 				QString pr = thpr;
 				QString def = thdef;
-				bool res = false;
 				emit hookJavaScriptPrompt (proxy,
-						this, frame, &pr, &def, result, &res);
+						this, frame, &pr, &def, result);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().toBool ();
 
 				return QWebPage::javaScriptPrompt (frame, pr, def, result);
 			}

@@ -437,10 +437,9 @@ namespace LeechCraft
 			QString Core::GetUserAgent (const QUrl& url, const QWebPage *page) const
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-				QString result;
-				emit hookUserAgentForUrlRequested (proxy, url, page, &result);
+				emit hookUserAgentForUrlRequested (proxy, url, page);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().toString ();
 
 #if defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
 				QString winver = "unknown Windows";
