@@ -51,6 +51,21 @@ namespace LeechCraft
 		/** Cancels default handler of the event.
 		 */
 		virtual void CancelDefault () = 0;
+
+		/** Returns the current "return value" of this hook call chain.
+		 *
+		 * @return The current "return value".
+		 */
+		virtual const QVariant& GetReturnValue () const = 0;
+
+
+		/** Sets the "return value" of this hook chain. Consequent
+		 * calls to this function would overwrite the previously set
+		 * value.
+		 *
+		 * @param[in] value The new return value of this hook.
+		 */
+		virtual void SetReturnValue (const QVariant& value) = 0;
 	};
 
 	typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;

@@ -36,5 +36,15 @@ namespace LeechCraft
 		{
 			return Cancelled_;
 		}
+
+		const QVariant& DefaultHookProxy::GetReturnValue () const
+		{
+			return ReturnValue_;
+		}
+
+		void DefaultHookProxy::SetReturnValue (const QVariant& val)
+		{
+			ReturnValue_ = val;
+		}
 	};
 };
