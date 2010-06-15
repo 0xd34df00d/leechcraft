@@ -36,6 +36,7 @@ namespace LeechCraft
 
 			void Plugin::Release ()
 			{
+				PluginManager::Instance ().Release ();
 			}
 
 			QString Plugin::GetName () const

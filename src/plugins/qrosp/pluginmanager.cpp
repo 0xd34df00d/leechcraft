@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QtDebug>
 #include <qross/core/manager.h>
+#include <qross/core/interpreter.h>
 #include "wrapperobject.h"
 #include "typesfactory.h"
 #include "utilproxy.h"
@@ -60,6 +61,11 @@ namespace LeechCraft
 			{
 				static PluginManager pm;
 				return pm;
+			}
+
+			void PluginManager::Release ()
+			{
+				Qross::Manager::self ().finalize ();
 			}
 
 			QList<QObject*> PluginManager::GetPlugins ()

@@ -36,6 +36,7 @@ namespace LeechCraft
 			public:
 				static PluginManager& Instance ();
 
+				void Release ();
 				QList<QObject*> GetPlugins ();
 			private:
 				QMap<QString, QStringList> FindPlugins ();
