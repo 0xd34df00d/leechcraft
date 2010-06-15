@@ -29,11 +29,14 @@ namespace LeechCraft
 		class PLUGININTERFACE_API DefaultHookProxy : public IHookProxy
 		{
 			bool Cancelled_;
+			QVariant ReturnValue_;
 		public:
 			DefaultHookProxy ();
 
 			void CancelDefault ();
 			bool IsCancelled () const;
+			const QVariant& GetReturnValue () const;
+			void SetReturnValue (const QVariant&);
 		};
 
 		typedef boost::shared_ptr<DefaultHookProxy> DefaultHookProxy_ptr;

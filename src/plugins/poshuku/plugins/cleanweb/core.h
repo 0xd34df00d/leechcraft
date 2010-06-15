@@ -100,8 +100,7 @@ namespace LeechCraft
 								QWebPage*,
 								QWebPage::Extension,
 								const QWebPage::ExtensionOption*,
-								QWebPage::ExtensionReturn*,
-								bool*);
+								QWebPage::ExtensionReturn*);
 						void HandleContextMenu (const QWebHitTestResult&,
 								QMenu*, WebViewCtxMenuStage);
 						bool ShouldReject (const QNetworkRequest&, QString*) const;

@@ -413,7 +413,13 @@ namespace LeechCraft
 
 			QIcon Core::GetIcon (const QUrl& url) const
 			{
-				QIcon result = QWebSettings::iconForUrl (url);
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				QIcon result;
+				emit hookIconRequested (proxy, url, &result);
+				if (proxy->IsCancelled ())
+					return result;
+
+				result = QWebSettings::iconForUrl (url);
 				if (!result.isNull ())
 					return result;
 
@@ -431,10 +437,12 @@ namespace LeechCraft
 			QString Core::GetUserAgent (const QUrl& url, const QWebPage *page) const
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-				QString result;
-				emit hookUserAgentForUrlRequested (proxy, url, page, &result);
+				emit hookUserAgentForUrlRequested (proxy, url, page);
 				if (proxy->IsCancelled ())
-					return result;
+				{
+					qDebug () << proxy->GetReturnValue ().toString ();
+					return proxy->GetReturnValue ().toString ();
+				}
 
 #if defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
 				QString winver = "unknown Windows";
@@ -840,8 +848,13 @@ namespace LeechCraft
 				saveSession ();
 			}
 			
-			void Core::handleAddToFavorites (const QString& title, const QString& url)
+			void Core::handleAddToFavorites (QString title, QString url)
 			{
+				Util::DefaultHookProxy_ptr proxy = Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy ());
+				emit hookAddToFavoritesRequested (proxy, &title, &url);
+				if (proxy->IsCancelled ())
+					return;
+
 				std::auto_ptr<AddToFavoritesDialog> dia (new AddToFavoritesDialog (title,
 							url,
 							qApp->activeWindow ()));
@@ -856,6 +869,10 @@ namespace LeechCraft
 							url, dia->GetTags ());
 				}
 				while (!result);
+
+				proxy.reset (new Util::DefaultHookProxy ());
+				emit hookAddedToFavorites (proxy, dia->GetTitle (),
+						url, dia->GetTags ());
 			}
 			
 			void Core::handleStatusBarChanged (const QString& msg)

@@ -39,6 +39,8 @@
 
 Q_DECLARE_METATYPE (QList<QAction*>);
 Q_DECLARE_METATYPE (QList<QMenu*>);
+Q_DECLARE_METATYPE (QUrl*);
+Q_DECLARE_METATYPE (QString*);
 
 namespace LeechCraft
 {
@@ -53,6 +55,8 @@ namespace LeechCraft
 			, ThisMetaObject_ (0)
 			, ScriptAction_ (new Qross::Action (0, QUrl::fromLocalFile (path)))
 			{
+				qRegisterMetaType<QUrl*> ("QUrl*");
+				qRegisterMetaType<QString*> ("QString*");
 				BuildMetaObject ();
 
 				ScriptAction_->addObject (this, "Signals");
@@ -220,8 +224,19 @@ namespace LeechCraft
 					else if (type == "LeechCraft::Entity")
 						return QVariant::fromValue<QObject*> (new EntityWrapper (*static_cast<Entity*> (elem)));
 					else
-						return QVariant (QMetaType::type (type),
-								elem);
+					{
+						int id = QMetaType::type (type);
+						if (!id)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unknown type"
+									<< type;
+							return QVariant ();
+						}
+						else
+							return QVariant (QMetaType::type (type),
+									elem);
+					}
 				}
 			}
 

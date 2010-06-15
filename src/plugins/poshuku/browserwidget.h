@@ -152,6 +152,9 @@ namespace LeechCraft
 			public slots:
 				void notificationActionTriggered (int);
 				void focusLineEdit ();
+				QWebView* getWebView () const;
+				QLineEdit* getAddressBar () const;
+				QWidget* getSideBar () const;
 			private slots:
 				void handleIconChanged ();
 				void handleStatusBarMessage (const QString&);

@@ -913,6 +913,21 @@ namespace LeechCraft
 				Ui_.URLEdit_->setFocus (Qt::OtherFocusReason);
 			}
 			
+			QWebView* BrowserWidget::getWebView () const
+			{
+				return Ui_.WebView_;
+			}
+
+			QLineEdit* BrowserWidget::getAddressBar () const
+			{
+				return Ui_.URLEdit_;
+			}
+
+			QWidget* BrowserWidget::getSideBar () const
+			{
+				return Ui_.Sidebar_;
+			}
+
 			void BrowserWidget::handleNewUnclose (QAction *action)
 			{
 				QList<QAction*> actions = RecentlyClosed_->actions ();

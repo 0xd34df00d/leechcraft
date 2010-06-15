@@ -80,8 +80,7 @@ namespace LeechCraft
 								QWebPage*,
 								QWebPage::Extension,
 								const QWebPage::ExtensionOption*,
-								QWebPage::ExtensionReturn*,
-								bool*);
+								QWebPage::ExtensionReturn*);
 						void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 								QList<IWebPlugin*>&);
 						void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,

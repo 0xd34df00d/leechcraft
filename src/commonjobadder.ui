@@ -35,7 +35,7 @@
        <item>
         <widget class="QLineEdit" name="What_">
          <property name="toolTip">
-          <string>Enter URL or file name or any other thing you think LeechCraft can handle.</string>
+          <string>Enter URL or file name or any other thing you believe LeechCraft can handle.</string>
          </property>
         </widget>
        </item>
