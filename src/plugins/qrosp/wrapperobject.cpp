@@ -217,14 +217,16 @@ namespace LeechCraft
 
 			namespace
 			{
-				QVariant WrapParameter (const QByteArray& type, void *elem)
+				QVariant WrapParameter (QByteArray type, void *elem)
 				{
+					type = QMetaObject::normalizedType (type);
 					if (type == "LeechCraft::IHookProxy_ptr")
 						return QVariant::fromValue<QObject*> (new HookProxyWrapper (*static_cast<IHookProxy_ptr*> (elem)));
 					else if (type == "LeechCraft::Entity")
 						return QVariant::fromValue<QObject*> (new EntityWrapper (*static_cast<Entity*> (elem)));
 					else
 					{
+						type.replace ("const ", "");
 						int id = QMetaType::type (type);
 						if (!id)
 						{
