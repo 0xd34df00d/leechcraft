@@ -26,6 +26,10 @@
 #include <boost/shared_ptr.hpp>
 #include "common.h"
 
+// Some compilers need predeclarations for the friend operators, others
+// don't.
+#ifndef Q_CC_MSVC
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -50,6 +54,8 @@ QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MR
 QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSPeerLink>&);
 QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSScene>&);
 QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSEntry>&);
+
+#endif
 
 namespace LeechCraft
 {
