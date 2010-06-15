@@ -34,6 +34,7 @@
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
+using namespace LeechCraft::Plugins::Poshuku;
 using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
 
 void CleanWeb::Init (ICoreProxy_ptr proxy)

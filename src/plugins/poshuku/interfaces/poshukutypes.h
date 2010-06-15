@@ -25,7 +25,7 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
-			/** Enumartion describing the part of menu that's being
+			/** Enumeration describing the part of menu that's being
 			 * constructed inside QWebView's subclass'
 			 * contextMenuEvent.
 			 */
