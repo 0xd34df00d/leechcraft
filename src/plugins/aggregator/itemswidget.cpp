@@ -524,10 +524,11 @@ namespace LeechCraft
 				QString inpad = QString ("<div style='background: %1; "
 						"color: %2; "
 						"border: 1px solid #333333; "
-						"padding-top: 1em; "
-						"padding-bottom: 1em; "
+						"padding-top: 0.2em; "
+						"padding-bottom: 0.2em; "
 						"padding-left: 2em; "
-						"padding-right: 2em;'>");
+						"padding-right: 2em;"
+						"-webkit-border-radius: 1em;'>");
 
 				result += firstStartBox.arg (headerBg);
 			
