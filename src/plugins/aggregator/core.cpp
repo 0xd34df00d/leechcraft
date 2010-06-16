@@ -177,8 +177,9 @@ namespace LeechCraft
 						if (id == -1)
 						{
 							ErrorNotification (tr ("Import error"),
-									tr ("Could not find plugin to download OPML %1.")
-										.arg (url.toString ()));
+									tr ("Could not find plugin to download OPML from %1.")
+										.arg (url.host ()),
+									url.toString ());
 							return;
 						}
 					
@@ -419,8 +420,8 @@ namespace LeechCraft
 				if (StorageBackend_->FindFeed (url) != -1)
 				{
 					ErrorNotification (tr ("Feed addition error"),
-							tr ("The feed %1 is already added")
-							.arg (url));
+							tr ("The feed is already added"),
+							url);
 					return -1;
 				}
 			
@@ -1042,7 +1043,8 @@ namespace LeechCraft
 				if (!file.size ())
 				{
 					ErrorNotification (tr ("Feed error"),
-							tr ("Downloaded file from url %1 has null size.").arg (pj.URL_));
+							tr ("Downloaded file has null size."),
+							pj.URL_);
 					return;
 				}
 			
@@ -1081,9 +1083,9 @@ namespace LeechCraft
 					{
 						file.copy (QDir::tempPath () + "/failedFile.xml");
 						ErrorNotification (tr ("Feed error"),
-								tr ("Could not find parser to parse file %1 from %2")
-								.arg (pj.Filename_)
-								.arg (pj.URL_));
+								tr ("Could not find parser to parse file %1")
+									.arg (pj.Filename_),
+								pj.URL_);
 						return;
 					}
 					channels = parser->ParseFeed (doc, feedId);
@@ -1144,7 +1146,8 @@ namespace LeechCraft
 							break;
 					}
 					ErrorNotification (tr ("Download error"),
-							msg.arg (pj.URL_));
+							msg.arg (QUrl (pj.URL_).host ()),
+							pj.URL_);
 				}
 				PendingJobs_.remove (id);
 				ID2Downloader_.remove (id);
@@ -1206,7 +1209,10 @@ namespace LeechCraft
 				if (id == -1)
 				{
 					ErrorNotification (tr ("Feed error"),
-							tr ("Could not find plugin to download external file %1.").arg (url));
+							tr ("Could not find plugin to download "
+									"external file from %1.")
+								.arg (QUrl (url).host ()),
+							url);
 					return;
 				}
 			
@@ -1711,10 +1717,12 @@ namespace LeechCraft
 				ID2Downloader_ [id] = provider;
 			}
 			
-			void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const
+			void Core::ErrorNotification (const QString& h,
+					const QString& body, const QString& url, bool wait) const
 			{
 				Entity e = Util::MakeNotification (h, body, PCritical_);
 				e.Additional_ ["UntilUserSees"] = wait;
+				e.Additional_ ["Link"] = url;
 				emit const_cast<Core*> (this)->gotEntity (e);
 			}
 		};

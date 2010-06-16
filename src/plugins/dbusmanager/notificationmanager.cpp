@@ -97,6 +97,9 @@ void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 	Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
 	QString header = e.Entity_.toString ();
 	QString text = e.Additional_ ["Text"].toString ();
+	QString link = e.Additional_ ["Link"].toString ();
+	if (!link.isEmpty ())
+		text += QString ("<br />URL: %1").arg (link);
 	bool uus = e.Additional_ ["UntilUserSees"].toBool ();
 
 	QStringList fmtActions;

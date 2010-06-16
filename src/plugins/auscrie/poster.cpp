@@ -113,9 +113,10 @@ namespace LeechCraft
 				QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
 				QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
 
-				QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-					.arg (pasteUrl);
-				emit gotEntity (Util::MakeNotification ("Auscrie", text, PInfo_));
+				QString text = tr ("Image pasted, the URL was copied to the clipboard");
+				Entity e = Util::MakeNotification ("Auscrie", text, PInfo_);
+				e.Additional_ ["Link"] = pasteUrl;
+				emit gotEntity (e);
 
 				deleteLater ();
 			}

@@ -565,10 +565,11 @@ namespace LeechCraft
 				{
 					if (notifyUser)
 					{
-						QString text = tr ("Download finished: %1\n%2")
-							.arg (filename)
-							.arg (url);
-						emit gotEntity (Util::MakeNotification ("CSTP", text, PInfo_));
+						QString text = tr ("Download finished: %1")
+							.arg (filename);
+						Entity e = Util::MakeNotification ("CSTP", text, PInfo_);
+						e.Additional_ ["Link"] = url;
+						emit gotEntity (e);
 					}
 					bool silence = taskdscr->Parameters_ & LeechCraft::DoNotAnnounceEntity;
 					LeechCraft::TaskParameters tp = taskdscr->Parameters_;
