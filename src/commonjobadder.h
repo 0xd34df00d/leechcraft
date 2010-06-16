@@ -49,11 +49,6 @@ namespace LeechCraft
 		 * the QFileDialog::getOpenFileName dialog.
 		 */
 		void on_Browse__released ();
-
-		/** Handles clicking the Paste button. Pastes text to the What
-		 * field from the clipboard.
-		 */
-		void on_Paste__released ();
 	};
 };
 

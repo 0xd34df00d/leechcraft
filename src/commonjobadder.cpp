@@ -54,10 +54,3 @@ void LeechCraft::CommonJobAdder::on_Browse__released ()
 	What_->setText (name);
 	XmlSettingsManager::Instance ()->setProperty ("LastWhatFolder", name);
 }
-
-void LeechCraft::CommonJobAdder::on_Paste__released ()
-{
-	QString text = QApplication::clipboard ()->text ();
-	What_->setText (text.split ('\n') [0]);
-}
-

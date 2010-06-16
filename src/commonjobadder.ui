@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>599</width>
-    <height>121</height>
+    <width>590</width>
+    <height>60</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <iconset resource="mainresources.qrc">
     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
@@ -31,46 +31,18 @@
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLineEdit" name="What_">
-         <property name="toolTip">
-          <string>Enter URL or file name or any other thing you believe LeechCraft can handle.</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="Browse_">
-           <property name="text">
-            <string>Browse...</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="Paste_">
-           <property name="text">
-            <string>Paste</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
+      <widget class="QLineEdit" name="What_">
+       <property name="toolTip">
+        <string>Enter URL or file name or any other thing you believe LeechCraft can handle.</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="Browse_">
+       <property name="text">
+        <string>Browse...</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
