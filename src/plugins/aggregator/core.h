@@ -239,8 +239,7 @@ namespace LeechCraft
 				void MarkChannel (const QModelIndex&, bool);
 				void UpdateFeed (const IDType_t&);
 				void HandleProvider (QObject*, int);
-				void ErrorNotification (const QString& header, const QString& body,
-						const QString& link = QString (), bool tillUserSees = true) const;
+				void ErrorNotification (const QString&, const QString&, bool = true) const;
 			signals:
 				void channelDataUpdated ();
 				void unreadNumberChanged (int) const;

@@ -89,12 +89,6 @@ namespace LeechCraft
 
 				QString header = e.Entity_.toString ();
 				QString text = e.Additional_ ["Text"].toString ();
-				QString link = e.Additional_ ["Link"].toString ();
-				if (!link.isEmpty ())
-				{
-					text += "<br />";
-					text += tr ("URL: %1").arg (link);
-				}
 
 				int timeout = Proxy_->GetSettingsManager ()->
 					property ("FinishedDownloadMessageTimeout").toInt () * 1000;
