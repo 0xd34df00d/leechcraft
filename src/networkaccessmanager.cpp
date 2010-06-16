@@ -207,12 +207,11 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 				" What do you want to do?")
 			.arg (QApplication::fontMetrics ().elidedText(url.toString (), Qt::ElideMiddle, 300));
 
-		if (!ErrorsDialog_)
-			ErrorsDialog_.reset (new SslErrorsDialog (Core::Instance ().GetReallyMainWindow ()));
-		ErrorsDialog_->Update (msg, errors);
+		std::auto_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
+		errDialog->Update (msg, errors);
 
-		bool ignore = (ErrorsDialog_->exec () == QDialog::Accepted);
-		SslErrorsDialog::RememberChoice choice = ErrorsDialog_->GetRememberChoice ();
+		bool ignore = (errDialog->exec () == QDialog::Accepted);
+		SslErrorsDialog::RememberChoice choice = errDialog->GetRememberChoice ();
 
 		if (choice != SslErrorsDialog::RCNot)
 		{

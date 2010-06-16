@@ -19,7 +19,6 @@
 #ifndef NETWORKACCESSMANAGER_H
 #define NETWORKACCESSMANAGER_H
 #include <memory>
-#include <boost/shared_ptr.hpp>
 #include <QNetworkAccessManager>
 #include <QTimer>
 
@@ -32,7 +31,6 @@ namespace LeechCraft
 		Q_OBJECT
 
 		std::auto_ptr<QTimer> CookieSaveTimer_;
-		boost::shared_ptr<SslErrorsDialog> ErrorsDialog_;
 	public:
 		NetworkAccessManager (QObject* = 0);
 		virtual ~NetworkAccessManager ();
