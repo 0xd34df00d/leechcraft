@@ -1678,7 +1678,7 @@ namespace LeechCraft
 				int jobId = -1;
 				QObject *pr;
 				emit delegateEntity (e, &jobId, &pr);
-				if (id == -1)
+				if (jobId == -1)
 				{
 					qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
 					return;
