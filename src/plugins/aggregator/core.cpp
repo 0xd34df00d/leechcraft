@@ -1681,6 +1681,9 @@ namespace LeechCraft
 				if (jobId == -1)
 				{
 					qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
+					emit gotEntity (Util::MakeNotification ("Aggregator",
+							tr ("Could not find plugin for feed with URL %1")
+								.arg (url), LeechCraft::PCritical_));
 					return;
 				}
 			
