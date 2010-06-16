@@ -33,6 +33,7 @@
 #include "sslerrorsdialog.h"
 #include "xmlsettingsmanager.h"
 #include "mainwindow.h"
+#include "config.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -167,7 +168,9 @@ void LeechCraft::NetworkAccessManager::handleAuthentication (QNetworkReply *repl
 {
 	QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
 		.arg (authen->realm ())
-		.arg (reply->url ().toString ());
+		.arg (QApplication::fontMetrics ()
+				.elidedText (reply->url ().toString (),
+						Qt::ElideMiddle, ELIDED_URL_WIDTH));
 
 	DoCommonAuth (msg, authen);
 }
@@ -205,7 +208,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		QPointer<QNetworkReply> repGuarded (reply);
 		QString msg = tr ("<code>%1</code><br />has SSL errors."
 				" What do you want to do?")
-			.arg (QApplication::fontMetrics ().elidedText(url.toString (), Qt::ElideMiddle, 300));
+			.arg (QApplication::fontMetrics ().elidedText(url.toString (), Qt::ElideMiddle, ELIDED_URL_WIDTH));
 
 		std::auto_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
 		errDialog->Update (msg, errors);
