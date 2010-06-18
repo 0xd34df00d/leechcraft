@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <QUrl>
 #include <QtDebug>
+#include <plugininterface/defaulthookproxy.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -32,6 +33,9 @@ namespace LeechCraft
 			: QAbstractItemModel (parent)
 			, Valid_ (false)
 			{
+				Core::Instance ().GetPluginManager ()->RegisterHookable (this);
+
+				emit hookURLCompletionModelCreated (IHookProxy_ptr (new Util::DefaultHookProxy), this);
 			}
 			
 			URLCompletionModel::~URLCompletionModel ()
@@ -92,12 +96,43 @@ namespace LeechCraft
 				return Items_.size ();
 			}
 			
+			void URLCompletionModel::addItem (const QString& title, const QString& url)
+			{
+				HistoryItem item =
+				{
+					title,
+					QDateTime (),
+					url
+				};
+
+				beginInsertRows (QModelIndex (), 0, 0);
+				Items_.insert (Items_.begin (), item);
+				endInsertRows ();
+			}
+
 			void URLCompletionModel::setBase (const QString& str)
 			{
 				Valid_ = false;
 				Base_ = str;
 			
 				Populate ();
+
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				int size = Items_.size ();
+				emit hookURLCompletionNewStringRequested (proxy, this, str, size);
+				if (proxy->IsCancelled ())
+				{
+					int newSize = Items_.size ();
+					if (newSize == size)
+						Items_.clear ();
+					else
+					{
+						history_items_t newItems;
+						std::copy (Items_.begin (), Items_.begin () + newSize - size,
+								std::back_inserter (newItems));
+						Items_ = newItems;
+					}
+				}
 
 				emit baseUpdated (sender ());
 			}

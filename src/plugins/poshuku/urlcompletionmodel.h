@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
 #define PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
 #include <QAbstractItemModel>
+#include <interfaces/iinfo.h>
 #include "historymodel.h"
 
 namespace LeechCraft
@@ -54,8 +55,17 @@ namespace LeechCraft
 			public slots:
 				void setBase (const QString&);
 				void handleItemAdded (const HistoryItem&);
+				void addItem (const QString& title, const QString& url);
 			signals:
 				void baseUpdated (QObject*);
+
+				// Plugin API
+				void hookURLCompletionModelCreated (LeechCraft::IHookProxy_ptr proxy,
+						QObject *model);
+				void hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr proxy,
+						QObject *model,
+						const QString& string,
+						int historyItems);
 			private:
 				void Populate ();
 			};
