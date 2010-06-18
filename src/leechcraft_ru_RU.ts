@@ -113,12 +113,8 @@
         <translation>Обзор...</translation>
     </message>
     <message>
-        <source>Paste</source>
-        <translation>Вставить</translation>
-    </message>
-    <message>
-        <source>Location:</source>
-        <translation type="obsolete">Сохранить в:</translation>
+        <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -279,10 +275,6 @@
         <source>Could not create path %1/.leechcraft</source>
         <translation>Невозможно создать путь %1/.leechcraft</translation>
     </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::ColorPicker</name>
@@ -396,10 +388,6 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
         <source>/s</source>
         <translation>/с</translation>
     </message>
@@ -414,10 +402,6 @@
     <message>
         <source>Do you really want to quit?</source>
         <translation>Вы действительно хотите выйти?</translation>
-    </message>
-    <message>
-        <source>%1 - LeechCraft</source>
-        <translation type="obsolete">%1 - LeechCraft</translation>
     </message>
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
@@ -468,10 +452,6 @@
     <message>
         <source>Release of one or more plugins failed.</source>
         <translation>Завершение работы одного или нескольких плагинов не удалось.</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
     </message>
 </context>
 <context>
