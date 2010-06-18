@@ -176,8 +176,6 @@ namespace LeechCraft
 						QNetworkReply *reply);
 				void hookUpdateLogicalPath (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget);
-				void hookURLCompletionModelCreated (LeechCraft::IHookProxy_ptr proxy,
-						QObject *model);
 				void hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr proxy,
 						QObject *model,
 						const QString& string,

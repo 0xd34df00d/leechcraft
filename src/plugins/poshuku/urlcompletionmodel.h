@@ -60,8 +60,6 @@ namespace LeechCraft
 				void baseUpdated (QObject*);
 
 				// Plugin API
-				void hookURLCompletionModelCreated (LeechCraft::IHookProxy_ptr proxy,
-						QObject *model);
 				void hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr proxy,
 						QObject *model,
 						const QString& string,

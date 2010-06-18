@@ -33,9 +33,6 @@ namespace LeechCraft
 			: QAbstractItemModel (parent)
 			, Valid_ (false)
 			{
-				Core::Instance ().GetPluginManager ()->RegisterHookable (this);
-
-				emit hookURLCompletionModelCreated (IHookProxy_ptr (new Util::DefaultHookProxy), this);
 			}
 			
 			URLCompletionModel::~URLCompletionModel ()

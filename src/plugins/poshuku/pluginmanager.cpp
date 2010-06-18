@@ -97,9 +97,10 @@ namespace LeechCraft
 
 			void PluginManager::AddPlugin (QObject *plugin)
 			{
-				QMetaObject::invokeMethod (plugin,
-						"initPlugin",
-						Q_ARG (IProxyObject*, ProxyObject_.get ()));
+				if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
+					QMetaObject::invokeMethod (plugin,
+							"initPlugin",
+							Q_ARG (QObject*, ProxyObject_.get ()));
 
 				Plugins_.push_back (plugin);
 

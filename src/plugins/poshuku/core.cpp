@@ -92,7 +92,9 @@ namespace LeechCraft
 
 				PluginManager_.reset (new PluginManager (this));
 				PluginManager_->RegisterHookable (this);
+
 				URLCompletionModel_.reset (new URLCompletionModel (this));
+				PluginManager_->RegisterHookable (URLCompletionModel_.get ());
 			
 				QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 			}
