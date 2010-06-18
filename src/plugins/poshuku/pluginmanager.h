@@ -21,6 +21,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <QWebPage>
+#include <plugininterface/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 #include "interfaces/poshukutypes.h"
 #include "interfaces/iwebplugin.h"
@@ -36,18 +37,15 @@ namespace LeechCraft
 			class ProxyObject;
 			class Core;
 
-			class PluginManager : public QObject
+			class PluginManager : public Util::BaseHookInterconnector
 			{
 				Q_OBJECT
 
-				std::vector<QObject*> Plugins_;
 				boost::shared_ptr<ProxyObject> ProxyObject_;
 			public:
 				PluginManager (QObject* = 0);
 
-				void AddPlugin (QObject*);
-
-				void RegisterHookable (QObject*);
+				virtual void AddPlugin (QObject*);
 			signals:
 				void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,

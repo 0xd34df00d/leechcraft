@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "pluginmanager.h"
-#include <stdexcept>
-#include <QtDebug>
-#include "proxyobject.h"
-#include "core.h"
-#include "customwebpage.h"
+#ifndef UTIL_BASEHOOKINTERCONNECTOR_H
+#define UTIL_BASEHOOKINTERCONNECTOR_H
+#include <QObject>
+#include <QList>
+#include "piconfig.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+	namespace Util
 	{
-		namespace Poshuku
+		class PLUGININTERFACE_API BaseHookInterconnector : public QObject
 		{
-			PluginManager::PluginManager (QObject *parent)
-			: Util::BaseHookInterconnector (parent)
-			, ProxyObject_ (new ProxyObject)
-			{
-			}
+			Q_OBJECT
+		protected:
+			QList<QObject*> Plugins_;
+		public:
+			BaseHookInterconnector (QObject* = 0);
+			virtual ~BaseHookInterconnector ();
 
-			void PluginManager::AddPlugin (QObject *plugin)
-			{
-				if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
-					QMetaObject::invokeMethod (plugin,
-							"initPlugin",
-							Q_ARG (QObject*, ProxyObject_.get ()));
-
-				Util::BaseHookInterconnector::AddPlugin (plugin);
-			}
+			virtual void AddPlugin (QObject*);
+			void RegisterHookable (QObject*);
 		};
 	};
 };
 
+#endif
