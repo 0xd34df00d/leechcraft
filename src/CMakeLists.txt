@@ -356,6 +356,8 @@ SET (TRANSLATIONS
 	leechcraft_es.ts
 	leechcraft_tr.ts
 	leechcraft_en.ts
+	leechcraft_be.ts
+	leechcraft_fr.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ru_RU.qm
