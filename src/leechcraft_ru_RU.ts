@@ -114,7 +114,7 @@
     </message>
     <message>
         <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите URL, имя файла или любую другую строку, которую, как вы думаете, LeechCraft может обработать.</translation>
     </message>
 </context>
 <context>

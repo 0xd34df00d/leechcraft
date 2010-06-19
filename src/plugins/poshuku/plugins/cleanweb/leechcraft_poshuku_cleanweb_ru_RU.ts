@@ -38,7 +38,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="90"/>
+        <location filename="cleanweb.cpp" line="91"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокирует нежелательную рекламу.</translation>
     </message>
@@ -61,17 +61,17 @@
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="436"/>
+        <location filename="core.cpp" line="435"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="692"/>
+        <location filename="core.cpp" line="691"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Подписка %1 была успешно добавлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="727"/>
+        <location filename="core.cpp" line="726"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Подписка %1 не была делегирована.</translation>
     </message>
@@ -102,19 +102,24 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashPlaceHolder</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="121"/>
+        <location filename="flashplaceholder.cpp" line="166"/>
         <source>Load</source>
         <translation>Загрузить</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="127"/>
+        <location filename="flashplaceholder.cpp" line="172"/>
         <source>Add URL to whitelist...</source>
         <translation>Добавить URL в белый список...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="132"/>
+        <location filename="flashplaceholder.cpp" line="177"/>
         <source>Add host to whitelist...</source>
         <translation>Добавить хост в белый список...</translation>
+    </message>
+    <message>
+        <location filename="flashplaceholder.cpp" line="189"/>
+        <source>Hide</source>
+        <translation>Скрыть</translation>
     </message>
 </context>
 <context>

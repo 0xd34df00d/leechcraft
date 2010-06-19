@@ -340,97 +340,97 @@
         <translation>Внешние ссылки</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="606"/>
+        <location filename="browserwidget.cpp" line="611"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="607"/>
+        <location filename="browserwidget.cpp" line="612"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="608"/>
+        <location filename="browserwidget.cpp" line="613"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="609"/>
+        <location filename="browserwidget.cpp" line="614"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1176"/>
+        <location filename="browserwidget.cpp" line="1195"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1199"/>
+        <location filename="browserwidget.cpp" line="1218"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1248"/>
+        <location filename="browserwidget.cpp" line="1267"/>
         <source>No title</source>
         <translation>Без названия</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1165"/>
+        <location filename="browserwidget.cpp" line="1184"/>
         <source>Page load finished: %1</source>
         <translation>Загрузка страницы завершена: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1169"/>
+        <location filename="browserwidget.cpp" line="1188"/>
         <source>Page load failed: %1</source>
         <translation>Ошибка загрузка страницы: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="614"/>
+        <location filename="browserwidget.cpp" line="619"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="615"/>
+        <location filename="browserwidget.cpp" line="620"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="616"/>
+        <location filename="browserwidget.cpp" line="621"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="617"/>
+        <location filename="browserwidget.cpp" line="622"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="622"/>
+        <location filename="browserwidget.cpp" line="627"/>
         <source>Ctrl+Shift+T</source>
         <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="679"/>
+        <location filename="browserwidget.cpp" line="684"/>
         <source>Print web page</source>
         <translation>Печать веб-страницы</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="706"/>
+        <location filename="browserwidget.cpp" line="711"/>
         <source>Reloading once in %1</source>
         <translation>Перезагружается раз в %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="872"/>
+        <location filename="browserwidget.cpp" line="876"/>
         <source>Save screenshot</source>
         <translation>Сохранить скриншот</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="887"/>
+        <location filename="browserwidget.cpp" line="891"/>
         <source>Could not open %1 for write</source>
         <translation>Невозможно открыть %1 на запись</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="896"/>
+        <location filename="browserwidget.cpp" line="900"/>
         <source>Could not write screenshot to %1</source>
         <translation>Невозможно записать скриншот в %1</translation>
     </message>
@@ -446,37 +446,33 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Core</name>
     <message>
-        <source>Plugins</source>
-        <translation type="obsolete">Плагины</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="140"/>
+        <location filename="core.cpp" line="142"/>
         <source>Poshuku: general storage initialization error.</source>
         <translation>Poshuku: общая ошибка инициализации подсистемы хранения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="729"/>
+        <location filename="core.cpp" line="739"/>
         <source>Select XBEL file</source>
         <translation>Выбор файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="731"/>
-        <location filename="core.cpp" line="771"/>
+        <location filename="core.cpp" line="741"/>
+        <location filename="core.cpp" line="781"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Файлы XBEL (*.xbel);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="745"/>
+        <location filename="core.cpp" line="755"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не могу открыть файл %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="769"/>
+        <location filename="core.cpp" line="779"/>
         <source>Save XBEL file</source>
         <translation>Сохранение файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="788"/>
+        <location filename="core.cpp" line="798"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не могу открыть файл %1 на запись.</translation>
     </message>
@@ -562,27 +558,27 @@
         <translation>попробуйте установить плагины, которые поддерживают этот протокол;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="479"/>
+        <location filename="customwebpage.cpp" line="477"/>
         <source>Error loading %1</source>
         <translation>Ошибка загрузки %1</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="484"/>
+        <location filename="customwebpage.cpp" line="482"/>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="489"/>
+        <location filename="customwebpage.cpp" line="487"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="491"/>
+        <location filename="customwebpage.cpp" line="489"/>
         <source>The page you tried to access cannot be loaded now.</source>
         <translation>Страница, которую вы пытались открыть, сейчас не может быть загружена.</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="498"/>
+        <location filename="customwebpage.cpp" line="496"/>
         <source>Try doing the following:</source>
         <translation>Попробуйте следующее:</translation>
     </message>

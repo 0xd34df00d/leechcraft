@@ -4,37 +4,40 @@
 <context>
     <name>LeechCraft::Plugins::Auscrie::Plugin</name>
     <message>
-        <location filename="auscrie.cpp" line="48"/>
+        <location filename="auscrie.cpp" line="45"/>
         <source>Make a screenshot</source>
         <translation>Сделать снимок экрана</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="71"/>
+        <location filename="auscrie.cpp" line="68"/>
         <source>Simple auto screenshoter.</source>
         <translation>Простой скриншотер.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="135"/>
+        <location filename="auscrie.cpp" line="132"/>
         <source>Save as</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="137"/>
+        <location filename="auscrie.cpp" line="134"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>Файлы %1 (*.%1);;Все файлы (*.*)</translation>
     </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::Auscrie::Poster</name>
     <message>
-        <location filename="auscrie.cpp" line="176"/>
+        <location filename="poster.cpp" line="109"/>
         <source>Page parse failed</source>
         <translation>Парсинг страницы не удался</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="186"/>
+        <location filename="poster.cpp" line="116"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
         <translation>Картинка загружена: %1, URL был скопирован в буфер обмена</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="198"/>
+        <location filename="poster.cpp" line="128"/>
         <source>Upload of screenshot failed: %1</source>
         <translation>Загрузка скриншота не удалась: %1</translation>
     </message>

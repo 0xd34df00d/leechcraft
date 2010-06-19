@@ -173,27 +173,27 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="202"/>
+        <location filename="task.cpp" line="205"/>
         <source>Stopped</source>
         <translation>Остановлена</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="204"/>
+        <location filename="task.cpp" line="207"/>
         <source>Finished</source>
         <translation>Закончена</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="206"/>
+        <location filename="task.cpp" line="209"/>
         <source>Running</source>
         <translation>Выполняется</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="227"/>
+        <location filename="task.cpp" line="230"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation>Задача некорректно инициализирована</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="406"/>
+        <location filename="task.cpp" line="409"/>
         <source>Error writing to file %1: %2</source>
         <translation>Ошибка записи в файл %1: %2</translation>
     </message>
