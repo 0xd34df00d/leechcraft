@@ -158,7 +158,7 @@ namespace LeechCraft
 			private slots:
 				void handleIconChanged ();
 				void handleStatusBarMessage (const QString&);
-				void on_URLEdit__returnPressed ();
+				void handleURLFrameLoad (const QString&);
 				void handleReloadPeriodically ();
 				void handleAdd2Favorites ();
 				void handleFind ();

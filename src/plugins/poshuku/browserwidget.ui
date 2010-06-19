@@ -26,9 +26,12 @@
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="LeechCraft::Plugins::Poshuku::ProgressLineEdit" name="URLEdit_">
-         <property name="text">
-          <string/>
+        <widget class="LeechCraft::Plugins::Poshuku::URLFrame" name="URLFrame_">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
         </widget>
        </item>
@@ -91,14 +94,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::Poshuku::ProgressLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>progresslineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>LeechCraft::Plugins::Poshuku::HideableTabWidget</class>
    <extends>QWidget</extends>
    <header>hideabletabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::Plugins::Poshuku::URLFrame</class>
+   <extends>QFrame</extends>
+   <header>urlframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

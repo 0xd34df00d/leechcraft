@@ -233,7 +233,7 @@ namespace LeechCraft
 					setProperty ("ActionIcon", "poshuku_externalentities");
 			
 				QWidgetAction *addressBar = new QWidgetAction (this);
-				addressBar->setDefaultWidget (Ui_.URLEdit_);
+				addressBar->setDefaultWidget (Ui_.URLFrame_);
 				ToolBar_->addAction (addressBar);
 			
 				static_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
@@ -286,6 +286,11 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						Ui_.WebView_,
 						SLOT (zoomReset ()));
+
+				connect (Ui_.URLFrame_,
+						SIGNAL (load (const QString&)),
+						this,
+						SLOT (handleURLFrameLoad (const QString&)));
 			
 				connect (Ui_.WebView_,
 						SIGNAL (titleChanged (const QString&)),
@@ -476,7 +481,7 @@ namespace LeechCraft
 
 			QLineEdit* BrowserWidget::GetURLEdit () const
 			{
-				return Ui_.URLEdit_;
+				return Ui_.URLFrame_->GetEdit ();
 			}
 
 			BrowserWidgetSettings BrowserWidget::GetWidgetSettings () const
@@ -547,7 +552,7 @@ namespace LeechCraft
 			
 			void BrowserWidget::SetHtml (const QString& html, const QUrl& base)
 			{
-				Ui_.URLEdit_->clear ();
+				Ui_.URLFrame_->GetEdit ()->clear ();
 				HtmlMode_ = true;
 				Ui_.WebView_->setHtml (html, base);
 			}
@@ -739,6 +744,9 @@ namespace LeechCraft
 				QIcon icon = Ui_.WebView_->icon ();
 				if (icon.isNull ())
 					icon = Core::Instance ().GetIcon (Ui_.WebView_->url ());
+
+				Ui_.URLFrame_->SetFavicon (icon);
+
 				emit iconChanged (icon);
 			}
 			
@@ -753,18 +761,14 @@ namespace LeechCraft
 				emit statusBarChanged (msg);
 			}
 			
-			void BrowserWidget::on_URLEdit__returnPressed ()
+			void BrowserWidget::handleURLFrameLoad (const QString& text)
 			{
-				if (Ui_.URLEdit_->IsCompleting () ||
-						Ui_.URLEdit_->text ().isEmpty ())
-					return;
-
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 				emit hookURLEditReturnPressed (proxy, this);
 				if (proxy->IsCancelled ())
 					return;
 			
-				Load (Ui_.URLEdit_->text ());
+				Load (text);
 			}
 
 			void BrowserWidget::handleReloadPeriodically ()
@@ -910,7 +914,7 @@ namespace LeechCraft
 			
 			void BrowserWidget::focusLineEdit ()
 			{
-				Ui_.URLEdit_->setFocus (Qt::OtherFocusReason);
+				Ui_.URLFrame_->GetEdit ()->setFocus (Qt::OtherFocusReason);
 			}
 			
 			QWebView* BrowserWidget::getWebView () const
@@ -920,7 +924,7 @@ namespace LeechCraft
 
 			QLineEdit* BrowserWidget::getAddressBar () const
 			{
-				return Ui_.URLEdit_;
+				return Ui_.URLFrame_->GetEdit ();
 			}
 
 			QWidget* BrowserWidget::getSideBar () const
@@ -1299,7 +1303,7 @@ namespace LeechCraft
 			void BrowserWidget::handleUrlChanged (const QString& value)
 			{
 				emit urlChanged (value);
-				Ui_.URLEdit_->setText (value);
+				Ui_.URLFrame_->GetEdit ()->setText (value);
 			}
 		};
 	};

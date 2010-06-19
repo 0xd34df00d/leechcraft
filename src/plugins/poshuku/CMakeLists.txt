@@ -70,6 +70,7 @@ SET (SRCS
 	hideabletabwidget.cpp
 	bookmarkswidget.cpp
 	historywidget.cpp
+	urlframe.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -116,6 +117,7 @@ SET (HEADERS
 	hideabletabwidget.h
 	bookmarkswidget.h
 	historywidget.h
+	urlframe.h
 	interfaces/iwebplugin.h
 	interfaces/iflashoverrider.h
 	)
@@ -134,6 +136,7 @@ SET (FORMS
 	hideabletabwidget.ui
 	bookmarkswidget.ui
 	historywidget.ui
+	urlframe.ui
 	)
 SET (RESOURCES poshukuresources.qrc)
 SET (TRANSLATIONS
