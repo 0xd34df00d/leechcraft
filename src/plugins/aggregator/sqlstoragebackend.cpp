@@ -1886,19 +1886,22 @@ namespace LeechCraft
 						return false;
 					}
 
-					if (!query.exec ("CREATE RULE \"replace_mrss_comments\" AS "
-										"ON INSERT TO \"mrss_comments\" "
-										"WHERE "
-											"EXISTS (SELECT 1 FROM mrss_comments "
-												"WHERE mrss_comment_id = NEW.mrss_comment_id) "
-										"DO INSTEAD "
-											"(UPDATE mrss_comments "
-												"SET type = NEW.type, "
-												"comment = NEW.comment "
-												"WHERE mrss_comment_id = NEW.mrss_comment_id)"))
+					if (Type_ == SBPostgres)
 					{
-						Util::DBLock::DumpError (query);
-						return false;
+						if (!query.exec ("CREATE RULE \"replace_mrss_comments\" AS "
+											"ON INSERT TO \"mrss_comments\" "
+											"WHERE "
+												"EXISTS (SELECT 1 FROM mrss_comments "
+													"WHERE mrss_comment_id = NEW.mrss_comment_id) "
+											"DO INSTEAD "
+												"(UPDATE mrss_comments "
+													"SET type = NEW.type, "
+													"comment = NEW.comment "
+													"WHERE mrss_comment_id = NEW.mrss_comment_id)"))
+						{
+							Util::DBLock::DumpError (query);
+							return false;
+						}
 					}
 				}
 
