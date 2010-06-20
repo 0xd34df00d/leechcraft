@@ -83,13 +83,19 @@ SectionGroup "Core"
 	SectionEnd
 
 	Section "MSVC" MSVC
-#		SetOutPath $WINDIR
-#		File /r WinSxS
-#		SetOutPath $INSTDIR
+		# Check is Visual Studio 2008 SP1 Redistributable package is installed:
+		Push $R0
+		ClearErrors
+		ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}" "Version"
+		IfErrors 0 VSRedistInstalled
+        
 		SetOutPath $TEMP
 		File vcredist_x86.exe
 		DetailPrint "Installing Visual C++ 2008 Libraries"
 		ExecWait '"$TEMP\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
+        
+VSRedistInstalled:
+		Exch $R0
 		SectionIn 1 2 RO
 	SectionEnd
 SectionGroupEnd
