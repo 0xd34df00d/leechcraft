@@ -1918,19 +1918,22 @@ namespace LeechCraft
 						return false;
 					}
 
-					if (!query.exec ("CREATE RULE \"replace_mrss_peerlinks\" AS "
-										"ON INSERT TO \"mrss_peerlinks\" "
-										"WHERE "
-											"EXISTS (SELECT 1 FROM mrss_peerlinks "
-												"WHERE mrss_peerlink_id = NEW.mrss_peerlink_id) "
-										"DO INSTEAD "
-											"(UPDATE mrss_peerlinks "
-												"SET type = NEW.type, "
-												"link = NEW.link "
-												"WHERE mrss_peerlink_id = NEW.mrss_peerlink_id)"))
+					if (Type_ == SBPostgres)
 					{
-						Util::DBLock::DumpError (query);
-						return false;
+						if (!query.exec ("CREATE RULE \"replace_mrss_peerlinks\" AS "
+											"ON INSERT TO \"mrss_peerlinks\" "
+											"WHERE "
+												"EXISTS (SELECT 1 FROM mrss_peerlinks "
+													"WHERE mrss_peerlink_id = NEW.mrss_peerlink_id) "
+											"DO INSTEAD "
+												"(UPDATE mrss_peerlinks "
+													"SET type = NEW.type, "
+													"link = NEW.link "
+													"WHERE mrss_peerlink_id = NEW.mrss_peerlink_id)"))
+						{
+							Util::DBLock::DumpError (query);
+							return false;
+						}
 					}
 				}
 
@@ -1949,21 +1952,24 @@ namespace LeechCraft
 						return false;
 					}
 
-					if (!query.exec ("CREATE RULE \"replace_mrss_scenes\" AS "
-										"ON INSERT TO \"mrss_scenes\" "
-										"WHERE "
-											"EXISTS (SELECT 1 FROM mrss_scenes "
-												"WHERE mrss_scene_id = NEW.mrss_scene_id) "
-										"DO INSTEAD "
-											"(UPDATE mrss_scenes "
-												"SET title = NEW.title, "
-												"description = NEW.description, "
-												"start_time = NEW.start_time, "
-												"end_time = NEW.end_time "
-												"WHERE mrss_scene_id = NEW.mrss_scene_id)"))
+					if (Type_ == SBPostgres)
 					{
-						Util::DBLock::DumpError (query);
-						return false;
+						if (!query.exec ("CREATE RULE \"replace_mrss_scenes\" AS "
+											"ON INSERT TO \"mrss_scenes\" "
+											"WHERE "
+												"EXISTS (SELECT 1 FROM mrss_scenes "
+													"WHERE mrss_scene_id = NEW.mrss_scene_id) "
+											"DO INSTEAD "
+												"(UPDATE mrss_scenes "
+													"SET title = NEW.title, "
+													"description = NEW.description, "
+													"start_time = NEW.start_time, "
+													"end_time = NEW.end_time "
+													"WHERE mrss_scene_id = NEW.mrss_scene_id)"))
+						{
+							Util::DBLock::DumpError (query);
+							return false;
+						}
 					}
 				}
 
