@@ -278,6 +278,7 @@ SectionGroup "Translations"
 	Section "Russian"
 		SetOutPath $INSTDIR
 		File /r *_ru_RU.qm
+        File /r *_ru.qm
 		SectionIn 1
 	SectionEnd
 	Section "Spanish"

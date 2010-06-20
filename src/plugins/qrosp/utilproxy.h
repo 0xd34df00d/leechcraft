@@ -28,7 +28,7 @@ class QTranslator;
 
 namespace LeechCraft
 {
-	class Entity;
+	struct Entity;
 
 	namespace Plugins
 	{
