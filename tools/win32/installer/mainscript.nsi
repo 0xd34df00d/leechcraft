@@ -250,7 +250,7 @@ SectionGroup "Translations"
 		File /r *_ar.qm
 		SectionIn 1
 	SectionEnd
-    Section "Deutch"
+    Section "German"
 		SetOutPath $INSTDIR
 		File /r *_de_DE.qm
 		SectionIn 1
@@ -260,14 +260,29 @@ SectionGroup "Translations"
 		File /r *_eo.qm
 		SectionIn 1
 	SectionEnd
+    Section "French"
+		SetOutPath $INSTDIR
+		File /r *_fr.qm
+		SectionIn 1
+	SectionEnd
 	Section "Italian"
 		SetOutPath $INSTDIR
 		File /r *_it.qm
 		SectionIn 1
 	SectionEnd
+	Section "Polish"
+		SetOutPath $INSTDIR
+		File /r *_pl.qm
+		SectionIn 1
+	SectionEnd
 	Section "Russian"
 		SetOutPath $INSTDIR
 		File /r *_ru_RU.qm
+		SectionIn 1
+	SectionEnd
+	Section "Spanish"
+		SetOutPath $INSTDIR
+		File /r *_es.qm
 		SectionIn 1
 	SectionEnd
 	Section "Ukrainian"
