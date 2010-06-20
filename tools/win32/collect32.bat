@@ -1,16 +1,16 @@
 rem @echo off
 
 rem Set these variables to proper paths of your system:
-set BOOST_BIN_DIR="C:\Boost\1.42\stage\lib"
+set BOOST_BIN_DIR="f:\X-Files\Projects\Lib\boost_1_42_0\stage\lib"
 set BOOST_VERSION="1_42"
-set LIBTORRENT_BIN_DIR="C:/Programming/libtorrent/bin/msvc-9.0/release/boost-link-shared/boost-source/threading-multi/"
-set LIBCURL_BIN_DIR="C:/Programming/curl/curl-7.20.0/lib/Release/"
-set OPENSSL_BIN_DIR="C:/Programming/openssl/openssl-0.9.8m/out32dll/"
-set QT_BIN_DIR="c:\Qt\4.6.2\bin"
+set LIBTORRENT_BIN_DIR="f:/X-Files/Projects/Lib/libtorrent/tags/libtorrent-0_15_0/bin/msvc-9.0/release/boost-link-shared/boost-source/threading-multi/"
+set LIBCURL_BIN_DIR="f:/X-Files/Projects/Lib/curl-7.19.6/lib/DLL-Release/"
+set OPENSSL_BIN_DIR="f:/X-Files/Projects/Lib/openssl-0.9.8k/out32dll/"
+set QT_BIN_DIR="c:\Programs\Qt\4.6.2\bin"
 
 set LEECHCRAFT_ROOT_DIR="..\.."
 set LEECHCRAFT_BUILD_DIR="build32"
-set BUILD_TYPE="MinSizeRel"
+set BUILD_TYPE="RelWithDebInfo"
 
 rem This is the directory where LeechCraft will live
 set TARGET_DIR="LeechCraft"
@@ -99,4 +99,8 @@ copy nul %TARGET_DIR%\leechcraft\themes\oxygen
 
 rem - Other stuff -
 copy %LEECHCRAFT_ROOT_DIR%\tools\win32\installer\qt.conf %TARGET_DIR%
+
+rem === COMPILE QT TRANSLATIONS ===
+for %%f in (%QT_BIN_DIR%\..\translations\qt_*.ts) do %QT_BIN_DIR%\lrelease %%f
+copy %QT_BIN_DIR%\..\translations\qt_*.qm %TARGET_DIR%\translations
 pause
