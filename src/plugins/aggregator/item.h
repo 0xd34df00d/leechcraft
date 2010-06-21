@@ -26,35 +26,11 @@
 #include <boost/shared_ptr.hpp>
 #include "common.h"
 
-// Some compilers need predeclarations for the friend operators, others
-// don't.
-#ifndef Q_CC_MSVC
-
-namespace LeechCraft
-{
-	namespace Plugins
-	{
-		namespace Aggregator
-		{
-			struct Enclosure;
-			struct MRSSThumbnail;
-			struct MRSSCredit;
-			struct MRSSComment;
-			struct MRSSPeerLink;
-			struct MRSSScene;
-			struct MRSSEntry;
-		};
-	};
-};
-
-QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::Enclosure>&);
-QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSThumbnail>&);
-QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSCredit>&);
-QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSComment>&);
-QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSPeerLink>&);
-QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSScene>&);
-QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSEntry>&);
-
+// Workaround stupid MSVS behaviour.
+#ifdef Q_CC_MSVC
+#define PROPER_NAMESPACE ::
+#else
+#define PROPER_NAMESPACE
 #endif
 
 namespace LeechCraft
@@ -63,6 +39,23 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
+#ifndef Q_CC_MSVC
+			struct Enclosure;
+			struct MRSSThumbnail;
+			struct MRSSCredit;
+			struct MRSSComment;
+			struct MRSSPeerLink;
+			struct MRSSScene;
+			struct MRSSEntry;
+
+            QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::Enclosure>&);
+            QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSThumbnail>&);
+            QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSCredit>&);
+            QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSComment>&);
+            QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSPeerLink>&);
+            QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSScene>&);
+            QDataStream& operator>> (QDataStream&, QList<LeechCraft::Plugins::Aggregator::MRSSEntry>&);
+#endif
 			struct ItemShort
 			{
 				IDType_t ItemID_;
@@ -122,7 +115,7 @@ namespace LeechCraft
 				Enclosure (const IDType_t& itemId, const IDType_t& encId);
 			private:
 				Enclosure ();
-				friend QDataStream& ::operator>> (QDataStream&, QList<Enclosure>&);
+				friend QDataStream& PROPER_NAMESPACE operator>> (QDataStream&, QList<Enclosure>&);
 			};
 
 			bool operator== (const Enclosure&, const Enclosure&);
@@ -140,7 +133,7 @@ namespace LeechCraft
 				MRSSThumbnail (const IDType_t& entryId, const IDType_t& thisId);
 			private:
 				MRSSThumbnail ();
-				friend QDataStream& ::operator>> (QDataStream&, QList<MRSSThumbnail>&);
+				friend QDataStream& PROPER_NAMESPACE operator>> (QDataStream&, QList<MRSSThumbnail>&);
 			};
 
 			bool operator== (const MRSSThumbnail&, const MRSSThumbnail&);
@@ -156,7 +149,7 @@ namespace LeechCraft
 				MRSSCredit (const IDType_t& entryId, const IDType_t& thisId);
 			private:
 				MRSSCredit ();
-				friend QDataStream& ::operator>> (QDataStream&, QList<MRSSCredit>&);
+				friend QDataStream& PROPER_NAMESPACE operator>> (QDataStream&, QList<MRSSCredit>&);
 			};
 
 			bool operator== (const MRSSCredit&, const MRSSCredit&);
@@ -172,7 +165,7 @@ namespace LeechCraft
 				MRSSComment (const IDType_t& entryId, const IDType_t& thisId);
 			private:
 				MRSSComment ();
-				friend QDataStream& ::operator>> (QDataStream&, QList<MRSSComment>&);
+				friend QDataStream& PROPER_NAMESPACE operator>> (QDataStream&, QList<MRSSComment>&);
 			};
 
 			bool operator== (const MRSSComment&, const MRSSComment&);
@@ -188,7 +181,7 @@ namespace LeechCraft
 				MRSSPeerLink (const IDType_t& entryId, const IDType_t& thisId);
 			private:
 				MRSSPeerLink ();
-				friend QDataStream& ::operator>> (QDataStream&, QList<MRSSPeerLink>&);
+				friend QDataStream& PROPER_NAMESPACE operator>> (QDataStream&, QList<MRSSPeerLink>&);
 			};
 
 			bool operator== (const MRSSPeerLink&, const MRSSPeerLink&);
@@ -206,7 +199,7 @@ namespace LeechCraft
 				MRSSScene (const IDType_t& entryId, const IDType_t& thisId);
 			private:
 				MRSSScene ();
-				friend QDataStream& ::operator>> (QDataStream&, QList<MRSSScene>&);
+				friend QDataStream& PROPER_NAMESPACE operator>> (QDataStream&, QList<MRSSScene>&);
 			};
 
 			bool operator== (const MRSSScene&, const MRSSScene&);
@@ -254,7 +247,7 @@ namespace LeechCraft
 				MRSSEntry (const IDType_t& itemId, const IDType_t& entryId);
 			private:
 				MRSSEntry ();
-				friend QDataStream& ::operator>> (QDataStream&, QList<MRSSEntry>&);
+				friend QDataStream& PROPER_NAMESPACE operator>> (QDataStream&, QList<MRSSEntry>&);
 			};
 
 			bool operator== (const MRSSEntry&, const MRSSEntry&);
@@ -403,6 +396,9 @@ namespace LeechCraft
 		};
 	};
 };
+
+// Not needed now:
+#undef PROPER_NAMESPACE
 
 Q_DECLARE_METATYPE (LeechCraft::Plugins::Aggregator::Item_ptr);
 
