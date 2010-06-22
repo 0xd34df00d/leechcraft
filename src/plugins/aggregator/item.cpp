@@ -635,7 +635,6 @@ namespace LeechCraft
                         { \
                                 qint32 size = 0; \
                                 in >> size; \
-                                list.reserve (size); \
                                 for (int i = 0; i < size; ++i) \
                                 { \
                                         Type tmp; \
