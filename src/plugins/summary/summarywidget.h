@@ -77,9 +77,7 @@ namespace LeechCraft
 				void filterReturnPressed ();
 				void feedFilterParameters ();
 				void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
-				void addCategoryBox ();
 				void handleCategoriesChanged (const QStringList&, const QStringList&);
-				void removeCategoryBox ();
 				void syncSelection (const QModelIndex&);
 			signals:
 				void changeTabName (const QString&);

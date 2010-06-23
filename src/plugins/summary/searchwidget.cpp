@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "searchwidget.h"
+#include <plugininterface/categoryselector.h>
 
 namespace LeechCraft
 {
@@ -26,18 +27,21 @@ namespace LeechCraft
 		{
 			SearchWidget::SearchWidget (QWidget *parent)
 			: QDockWidget (parent)
+			, CategorySelector_ (new Util::CategorySelector ())
 			{
 				Ui_.setupUi (this);
-				Ui_.LeastCategory_->setDuplicatesEnabled (true);
+
+				Ui_.SearchStuff_->addWidget (CategorySelector_);
+
+				connect (CategorySelector_,
+						SIGNAL (selectionChanged (const QStringList&)),
+						this,
+						SIGNAL (paramsChanged ()));
+
 				connect (Ui_.Or_,
 						SIGNAL (toggled (bool)),
 						this,
 						SIGNAL (paramsChanged ()));
-			}
-
-			QComboBox* SearchWidget::GetLeastCategory () const
-			{
-				return Ui_.LeastCategory_;
 			}
 
 			QLineEdit* SearchWidget::GetFilterLine () const
@@ -55,9 +59,19 @@ namespace LeechCraft
 				return Ui_.Or_->isChecked ();
 			}
 
-			void SearchWidget::AddCategory (QComboBox *box)
+			QStringList SearchWidget::GetCategories () const
 			{
-				Ui_.SearchStuff_->insertWidget (1, box);
+				return CategorySelector_->GetSelections ();
+			}
+
+			void SearchWidget::SetPossibleCategories (const QStringList& possible)
+			{
+				CategorySelector_->SetPossibleSelections (possible);
+			}
+
+			void SearchWidget::SelectCategories (const QStringList& subset)
+			{
+				CategorySelector_->SetSelections (subset);
 			}
 
 			void SearchWidget::on_Add__released ()

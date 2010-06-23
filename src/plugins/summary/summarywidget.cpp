@@ -70,8 +70,6 @@ namespace LeechCraft
 							this,
 							SLOT (handleCategoriesChanged (const QStringList&, const QStringList&)));
 
-				FillCombobox (SearchWidget_->GetLeastCategory ());
-
 				FilterTimer_->setSingleShot (true);
 				FilterTimer_->setInterval (800);
 				connect (FilterTimer_,
@@ -81,10 +79,6 @@ namespace LeechCraft
 
 				Ui_.ControlsDockWidget_->hide ();
 
-				connect (SearchWidget_->GetLeastCategory (),
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (filterParametersChanged ()));
 				connect (SearchWidget_->GetFilterLine (),
 						SIGNAL (textEdited (const QString&)),
 						this,
@@ -102,6 +96,8 @@ namespace LeechCraft
 					GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
 				Q_FOREACH (QObject *plugin, plugins)
 					ConnectObject (plugin);
+
+				SearchWidget_->SetPossibleCategories (GetUniqueCategories () + QStringList ("downloads"));
 
 				filterParametersChanged ();
 			}
@@ -200,15 +196,7 @@ namespace LeechCraft
 				SearchWidget_->GetFilterLine ()->setText (query.takeFirst ());
 
 				if (!query.isEmpty ())
-					SearchWidget_->GetLeastCategory ()->setCurrentIndex (SearchWidget_->GetLeastCategory ()->
-							findText (query.takeFirst ()));
-
-				Q_FOREACH (QString cat, query)
-				{
-					addCategoryBox ();
-					QComboBox *box = AdditionalBoxes_.last ();
-					box->setCurrentIndex (box->findText (cat));
-				}
+					SearchWidget_->SelectCategories (query);
 
 				feedFilterParameters ();
 			}
@@ -234,10 +222,17 @@ namespace LeechCraft
 			QString SummaryWidget::GetQuery () const
 			{
 				QString query = SearchWidget_->GetFilterLine ()->text ();
-				QString prepend = QString ("ca:\"%1\"")
-					.arg (SearchWidget_->GetLeastCategory ()->currentText ());
-				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
-					prepend += QString (" OR ca:\"%1\"").arg (box->currentText ());
+
+				QString prepend;
+				QStringList categories = SearchWidget_->GetCategories ();
+				if (categories.size ())
+				{
+					prepend = QString ("ca:\"%1\"")
+						.arg (categories.takeFirst ());
+					Q_FOREACH (const QString& cat, categories)
+						prepend += QString (" OR ca:\"%1\"").arg (cat);
+				}
+
 				prepend = QString ("(%1) ").arg (prepend);
 				prepend += "t:";
 				switch (SearchWidget_->GetFilterType ()->currentIndex ())
@@ -272,12 +267,10 @@ namespace LeechCraft
 			{
 				Query2 result;
 				result.Query_ = SearchWidget_->GetFilterLine ()->text ();
-				result.Categories_ << (SearchWidget_->GetLeastCategory ()->currentText ());
+				result.Categories_ = SearchWidget_->GetCategories ();
 				result.Op_ = SearchWidget_->IsOr () ?
 					Query2::OPOr :
 					Query2::OPAnd;
-				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
-					result.Categories_ << box->currentText ();
 				switch (SearchWidget_->GetFilterType ()->currentIndex ())
 				{
 					case 0:
@@ -342,7 +335,9 @@ namespace LeechCraft
 
 			void SummaryWidget::handleActionTriggered (QAction *proxyAction)
 			{
-				qDebug () << Q_FUNC_INFO;
+				if (proxyAction == ActionSearch_)
+					return;
+
 				QAction *action = qobject_cast<QAction*> (proxyAction->
 						data ().value<QObject*> ());
 				QItemSelectionModel *selModel =
@@ -496,61 +491,13 @@ namespace LeechCraft
 					return;
 				menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 			}
-			
-			void SummaryWidget::addCategoryBox ()
-			{
-				QComboBox *box = new QComboBox (this);
-				box->setDuplicatesEnabled (true);
-				box->setInsertPolicy (QComboBox::InsertAlphabetically);
-				connect (box,
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (filterParametersChanged ()));
-
-				FillCombobox (box);
-
-				QAction *remove = new QAction (tr ("Remove this category"), this);
-				connect (remove,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (removeCategoryBox ()));
-				remove->setData (QVariant::fromValue<QWidget*> (box));
-				box->setContextMenuPolicy (Qt::ActionsContextMenu);
-				box->addAction (remove);
-
-				SearchWidget_->AddCategory (box);
-				AdditionalBoxes_ << box;
-			}
 
 			void SummaryWidget::handleCategoriesChanged (const QStringList&, const QStringList&)
 			{
 				QStringList currentCats = GetUniqueCategories ();
 
-				Q_FOREACH (QComboBox *box,
-						AdditionalBoxes_ + (QList<QComboBox*> () << SearchWidget_->GetLeastCategory ()))
-				{
-					box->clear ();
-					box->addItem ("downloads");
-					box->addItems (currentCats);
-				}
-			}
-
-			void SummaryWidget::removeCategoryBox ()
-			{
-				QAction *act = qobject_cast<QAction*> (sender ());
-				if (!act)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "sender is not a QAction*"
-						<< sender ();
-					return;
-				}
-
-				QComboBox *w = qobject_cast<QComboBox*> (act->data ().value<QWidget*> ());
-				AdditionalBoxes_.removeAll (w);
-				w->deleteLater ();
-
-				filterParametersChanged ();
+				QStringList currentSelection = SearchWidget_->GetCategories ();
+				SearchWidget_->SetPossibleCategories (currentCats + QStringList ("downloads"));
 			}
 
 			void SummaryWidget::syncSelection (const QModelIndex& current)

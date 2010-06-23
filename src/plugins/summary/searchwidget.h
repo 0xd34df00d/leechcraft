@@ -23,6 +23,11 @@
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class CategorySelector;
+	};
+
 	namespace Plugins
 	{
 		namespace Summary
@@ -32,15 +37,17 @@ namespace LeechCraft
 				Q_OBJECT
 
 				Ui::SearchWidget Ui_;
+				Util::CategorySelector *CategorySelector_;
 			public:
 				SearchWidget (QWidget* = 0);
 
-				QComboBox* GetLeastCategory () const;
 				QLineEdit* GetFilterLine () const;
 				QComboBox* GetFilterType () const;
 				bool IsOr () const;
 
-				void AddCategory (QComboBox*);
+				QStringList GetCategories () const;
+				void SetPossibleCategories (const QStringList&);
+				void SelectCategories (const QStringList& subset);
 			private slots:
 				void on_Add__released ();
 			signals:
