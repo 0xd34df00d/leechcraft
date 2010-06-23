@@ -21,7 +21,6 @@
 #include <plugininterface/util.h>
 #include "core.h"
 #include "summarywidget.h"
-#include "treeviewreemitter.h"
 
 namespace LeechCraft
 {
@@ -137,11 +136,6 @@ namespace LeechCraft
 				return Core::Instance ().MapToSourceRecursively (index);
 			}
 
-			QObject* Summary::GetTreeViewReemitter () const
-			{
-				return Core::Instance ().GetTreeViewReemitter ();
-			}
-			
 			QTreeView* Summary::GetCurrentView () const
 			{
 				return Core::Instance ().GetCurrentView ();

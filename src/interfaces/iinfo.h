@@ -421,11 +421,6 @@ public:
 	 */
 	virtual void FreeID (int id) = 0;
 
-	/** Returns the object that reemits the signals from the currently
-	 * active QTreeView.
-	 */
-	virtual QObject* GetTreeViewReemitter () const = 0;
-
 	/** @brief Returns the application's plugin manager.
 	 */
 	virtual IPluginsManager* GetPluginsManager () const = 0;

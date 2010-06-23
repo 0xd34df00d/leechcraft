@@ -55,7 +55,6 @@ namespace LeechCraft
 				QStringList GetSearchCategories () const;
 				int GetID ();
 				void FreeID (int id);
-				QObject* GetTreeViewReemitter () const;
 				QObject* GetPluginsManager () const;
 				QObject* GetSelf ();
 			};

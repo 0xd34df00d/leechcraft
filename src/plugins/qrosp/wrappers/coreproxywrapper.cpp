@@ -92,11 +92,6 @@ namespace LeechCraft
 				Proxy_->FreeID (id);
 			}
 
-			QObject* CoreProxyWrapper::GetTreeViewReemitter () const
-			{
-				return Proxy_->GetTreeViewReemitter ();
-			}
-
 			QObject* CoreProxyWrapper::GetPluginsManager () const
 			{
 				return new PluginsManagerWrapper (Proxy_->GetPluginsManager ());

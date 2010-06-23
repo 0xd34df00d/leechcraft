@@ -63,6 +63,8 @@ namespace LeechCraft
 				Ui::SummaryWidget GetUi () const;
 				void SetQuery (QStringList);
 			private:
+				void ReconnectModelSpecific ();
+				void ConnectObject (QObject*);
 				QStringList GetUniqueCategories () const;
 				void FillCombobox (QComboBox*);
 				QString GetQuery () const;

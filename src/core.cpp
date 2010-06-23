@@ -338,20 +338,6 @@ QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 	return QModelIndex ();
 }
 
-QObject* LeechCraft::Core::GetTreeViewReemitter () const
-{
-	// TODO move out to a separate class so that merging would be possible
-	QList<ISummaryRepresentation*> summaries =
-		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-	Q_FOREACH (ISummaryRepresentation *summary, summaries)
-	{
-		QObject* result = summary->GetTreeViewReemitter ();
-		if (result)
-			return result;
-	}
-	return 0;
-}
-
 QTreeView* LeechCraft::Core::GetCurrentView () const
 {
 	QList<ISummaryRepresentation*> summaries =

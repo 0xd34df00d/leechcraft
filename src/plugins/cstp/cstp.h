@@ -88,7 +88,7 @@ namespace LeechCraft
 				template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 				void SetupToolbar ();
 			private slots:
-				void handleItemSelected (const QModelIndex&);
+				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 				void handleFileExists (boost::logic::tribool*);
 				void handleError (const QString&);
 			signals:

@@ -84,13 +84,8 @@ namespace LeechCraft
 
 			void CSTP::SecondInit ()
 			{
-				connect (Core::Instance ().GetCoreProxy ()->GetTreeViewReemitter (),
-						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
-								QTreeView*)),
-						this,
-						SLOT (handleItemSelected (const QModelIndex&)));
 			}
-			
+
 			void CSTP::Release ()
 			{
 				Core::Instance ().Release ();
@@ -174,7 +169,7 @@ namespace LeechCraft
 				return Core::Instance ().GetRepresentationModel ();
 			}
 			
-			void CSTP::handleItemSelected (const QModelIndex& si)
+			void CSTP::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& si, const QModelIndex&)
 			{
 				QModelIndex index = Core::Instance ().GetCoreProxy ()->MapToSource (si);
 				if (index.model () != GetRepresentation ())

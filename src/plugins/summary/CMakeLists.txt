@@ -29,7 +29,6 @@ SET (SRCS
 	requestnormalizer.cpp
 	categorymerger.cpp
 	filtermodel.cpp
-	treeviewreemitter.cpp
 	operationalmodel.cpp
 	searchwidget.cpp
 	)
@@ -41,7 +40,6 @@ SET (HEADERS
 	requestnormalizer.h
 	categorymerger.h
 	filtermodel.h
-	treeviewreemitter.h
 	operationalmodel.h
 	searchwidget.h
 	)

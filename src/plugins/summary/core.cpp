@@ -20,7 +20,6 @@
 #include <interfaces/ijobholder.h>
 #include "summarywidget.h"
 #include "requestnormalizer.h"
-#include "treeviewreemitter.h"
 
 namespace LeechCraft
 {
@@ -34,7 +33,6 @@ namespace LeechCraft
 						<< QString ()))
 			, Default_ (0)
 			, Current_ (0)
-			, Reemitter_ (new TreeViewReemitter (this))
 			{
 				MergeModel_->setObjectName ("Core MergeModel");
 				MergeModel_->setProperty ("__LeechCraft_own_core_model", true);
@@ -79,11 +77,6 @@ namespace LeechCraft
 
 				Default_ = CreateSummaryWidget ();
 				Default_->setProperty ("IsUnremoveable", true);
-			}
-
-			TreeViewReemitter* Core::GetTreeViewReemitter () const
-			{
-				return Reemitter_;
 			}
 
 			SummaryWidget* Core::GetDefaultTab () const
@@ -185,7 +178,7 @@ namespace LeechCraft
 				}
 			};
 
-			QAbstractItemModel* Core::GetTasksModel (const Query2& query) const
+			Util::MergeModel* Core::GetTasksModel (const Query2& query) const
 			{
 				QStringList headers = QStringList (tr ("Name"))
 					<< tr ("Status")
@@ -302,7 +295,6 @@ namespace LeechCraft
 						SIGNAL (raiseTab (QWidget*)),
 						this,
 						SIGNAL (raiseTab (QWidget*)));
-				Reemitter_->Connect (result);
 				return result;
 			}
 
@@ -344,20 +336,6 @@ namespace LeechCraft
 
 				Others_.removeAll (tab);
 				tab->deleteLater ();
-			}
-
-			void Core::handleFilterUpdated ()
-			{
-				SummaryWidget *w = qobject_cast<SummaryWidget*> (sender ());
-				if (!w)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "not a SummaryWidget*"
-						<< sender ();
-					return;
-				}
-
-				Reemitter_->ConnectModelSpecific (w);
 			}
 
 			void Core::handleTaskModelDestroyed ()

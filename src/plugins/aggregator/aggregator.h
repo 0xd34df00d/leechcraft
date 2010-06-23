@@ -104,8 +104,9 @@ namespace LeechCraft
 				void ScheduleShowError ();
 				bool IsRepr () const;
 				QModelIndex GetRelevantIndex () const;
+			public slots:
+				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 			private slots:
-				void handleItemSelected (const QModelIndex&);
 				void on_ActionAddFeed__triggered ();
 				void on_ActionRemoveFeed__triggered ();
 				void on_ActionUpdateSelectedFeed__triggered ();

@@ -107,5 +107,10 @@ QMap<int, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
 	return Core::Instance ().GetActionInfo ();
 }
 
+void Plugin::handleTasksTreeActivated (const QModelIndex& index)
+{
+	Core::Instance ().handleTasksTreeActivated (index);
+}
+
 Q_EXPORT_PLUGIN2 (leechcraft_historyholder, Plugin);
 

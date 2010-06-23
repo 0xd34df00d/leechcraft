@@ -108,11 +108,6 @@ void CoreProxy::FreeID (int id)
 	Pool_.FreeID (id);
 }
 
-QObject* CoreProxy::GetTreeViewReemitter () const
-{
-	return Core::Instance ().GetTreeViewReemitter ();
-}
-
 IPluginsManager* CoreProxy::GetPluginsManager () const
 {
 	return Core::Instance ().GetPluginManager ();

@@ -25,6 +25,7 @@
 #include <QtDebug>
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 #include "core.h"
 #include "searchwidget.h"
 
@@ -92,7 +93,56 @@ namespace LeechCraft
 						this,
 						SLOT (filterReturnPressed ()));
 
+				QList<QObject*> plugins = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
+				Q_FOREACH (QObject *plugin, plugins)
+					ConnectObject (plugin);
+
 				filterParametersChanged ();
+			}
+
+			void SummaryWidget::ReconnectModelSpecific ()
+			{
+				QItemSelectionModel *sel = Ui_.PluginsTasksTree_->selectionModel ();
+
+#define C2(sig,sl,arg1,arg2) \
+				if (mo->indexOfMethod (QMetaObject::normalizedSignature ("handleTasksTreeSelection" #sl "(" #arg1 ", " #arg2 ")")) != -1) \
+					connect (sel, \
+							SIGNAL (sig (arg1, arg2)), \
+							object, \
+							SLOT (handleTasksTreeSelection##sl (arg1, arg2)));
+
+				QList<QObject*> plugins = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
+				Q_FOREACH (QObject *object, plugins)
+				{
+					const QMetaObject *mo = object->metaObject ();
+
+					C2 (currentChanged, CurrentChanged, const QModelIndex&, const QModelIndex&);
+					C2 (currentColumnChanged, CurrentColumnChanged, const QModelIndex&, const QModelIndex&);
+					C2 (currentRowChanged, CurrentRowChanged, const QModelIndex&, const QModelIndex&);
+				}
+#undef C2
+			}
+
+			void SummaryWidget::ConnectObject (QObject *object)
+			{
+				const QMetaObject *mo = object->metaObject ();
+
+#define C1(sig,sl,arg) \
+				if (mo->indexOfMethod (QMetaObject::normalizedSignature ("handleTasksTree" #sl "(" #arg ")")) != -1) \
+					connect (Ui_.PluginsTasksTree_, \
+							SIGNAL (sig (arg)), \
+							object, \
+							SLOT (handleTasksTree##sl (arg)));
+
+				C1 (activated, Activated, const QModelIndex&);
+				C1 (clicked, Clicked, const QModelIndex&);
+				C1 (doubleClicked, DoubleClicked, const QModelIndex&);
+				C1 (entered, Entered, const QModelIndex&);
+				C1 (pressed, Pressed, const QModelIndex&);
+				C1 (viewportEntered, ViewportEntered, );
+#undef C1
 			}
 
 			SummaryWidget::~SummaryWidget ()
@@ -220,7 +270,7 @@ namespace LeechCraft
 				result.Categories_ << (SearchWidget_->GetLeastCategory ()->currentText ());
 				result.Op_ = SearchWidget_->IsOr () ?
 					Query2::OPOr :
-					Query2::OPAnd;;
+					Query2::OPAnd;
 				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
 					result.Categories_ << box->currentText ();
 				switch (SearchWidget_->GetFilterType ()->currentIndex ())
@@ -336,8 +386,8 @@ namespace LeechCraft
 
 				Query2 query = GetQuery2 ();
 				QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
-				Ui_.PluginsTasksTree_->
-					setModel (Core::Instance ().GetTasksModel (query));
+				Util::MergeModel *tasksModel = Core::Instance ().GetTasksModel (query);
+				Ui_.PluginsTasksTree_->setModel (tasksModel);
 				delete old;
 
 				connect (Ui_.PluginsTasksTree_->selectionModel (),
@@ -370,6 +420,9 @@ namespace LeechCraft
 				else
 					newName = tr ("Summary [%1]")
 							.arg (query.Categories_.join ("; "));
+
+				ReconnectModelSpecific ();
+
 				emit changeTabName (newName);
 				emit filterUpdated ();
 				emit queryUpdated (query);
