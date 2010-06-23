@@ -44,7 +44,6 @@ namespace LeechCraft
 			public slots:
 				QNetworkAccessManager* GetNetworkAccessManager () const;
 				QObject* GetShortcutProxy () const;
-				QTreeView* GetCurrentView () const;
 				QModelIndex MapToSource (const QModelIndex&) const;
 				//LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const;
 				QMap<int, QString> GetIconPath (const QString& name) const;

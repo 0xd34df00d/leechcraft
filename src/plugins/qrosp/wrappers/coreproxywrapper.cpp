@@ -42,11 +42,6 @@ namespace LeechCraft
 				return new ShortcutProxyWrapper (Proxy_->GetShortcutProxy ());
 			}
 
-			QTreeView* CoreProxyWrapper::GetCurrentView () const
-			{
-				return Proxy_->GetCurrentView ();
-			}
-
 			QModelIndex CoreProxyWrapper::MapToSource (const QModelIndex& index) const
 			{
 				return Proxy_->MapToSource (index);

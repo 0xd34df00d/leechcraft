@@ -938,15 +938,18 @@ namespace LeechCraft
 
 			void Core::handlePause ()
 			{
-				QTreeView *tree = Proxy_->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				Q_FOREACH (QModelIndex si, sis)
 				{
 					QModelIndex index = Proxy_->MapToSource (si);
@@ -967,15 +970,18 @@ namespace LeechCraft
 
 			void Core::handleResume ()
 			{
-				QTreeView *tree = Proxy_->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				Q_FOREACH (QModelIndex si, sis)
 				{
 					QModelIndex index = Proxy_->MapToSource (si);
@@ -998,15 +1004,18 @@ namespace LeechCraft
 
 			void Core::handleDelete ()
 			{
-				QTreeView *tree = Proxy_->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				QList<int> tasksIndexes;
 				Q_FOREACH (QModelIndex si, sis)
 				{

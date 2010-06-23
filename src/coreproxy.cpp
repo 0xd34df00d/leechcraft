@@ -44,11 +44,6 @@ const IShortcutProxy* CoreProxy::GetShortcutProxy () const
 	return Core::Instance ().GetShortcutProxy ();
 }
 
-QTreeView* CoreProxy::GetCurrentView () const
-{
-	return Core::Instance ().GetCurrentView ();
-}
-
 QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
 {
 	return Core::Instance ().MapToSource (index);

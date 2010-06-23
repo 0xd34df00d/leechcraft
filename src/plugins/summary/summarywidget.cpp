@@ -22,6 +22,7 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QMainWindow>
+#include <QWidgetAction>
 #include <QtDebug>
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
@@ -47,6 +48,10 @@ namespace LeechCraft
 				ActionSearch_->setProperty ("ActionIcon", "find");
 				ActionSearch_->setShortcut (tr ("Ctrl+F"));
 				Toolbar_->setWindowTitle ("Summary");
+				connect (Toolbar_,
+						SIGNAL (actionTriggered (QAction*)),
+						this,
+						SLOT (handleActionTriggered (QAction*)));
 				ReinitToolbar ();
 				Ui_.setupUi (this);
 
@@ -301,6 +306,10 @@ namespace LeechCraft
 
 			void SummaryWidget::ReinitToolbar ()
 			{
+				Q_FOREACH (QAction *action, Toolbar_->actions ())
+					if (action != ActionSearch_ &&
+							!qobject_cast<QWidgetAction*> (action))
+						delete action;
 				Toolbar_->clear ();
 				Toolbar_->addAction (ActionSearch_);
 				Toolbar_->addSeparator ();
@@ -331,6 +340,22 @@ namespace LeechCraft
 				return Ui_;
 			}
 
+			void SummaryWidget::handleActionTriggered (QAction *proxyAction)
+			{
+				qDebug () << Q_FUNC_INFO;
+				QAction *action = qobject_cast<QAction*> (proxyAction->
+						data ().value<QObject*> ());
+				QItemSelectionModel *selModel =
+						Ui_.PluginsTasksTree_->selectionModel ();
+				QModelIndexList indexes = selModel->selectedRows ();
+				action->setProperty ("SelectedRows",
+						QVariant::fromValue<QList<QModelIndex> > (indexes));
+				action->setProperty ("ItemSelectionModel",
+						QVariant::fromValue<QObject*> (selModel));
+
+				action->activate (QAction::Trigger);
+			}
+
 			void SummaryWidget::updatePanes (const QModelIndex& newIndex,
 					const QModelIndex& oldIndex)
 			{
@@ -349,6 +374,7 @@ namespace LeechCraft
 					ReinitToolbar ();
 					if (controls)
 					{
+						QList<QAction*> proxies;
 						Q_FOREACH (QAction *action, controls->actions ())
 						{
 							QString ai = action->property ("ActionIcon").toString ();
@@ -356,7 +382,40 @@ namespace LeechCraft
 									action->icon ().isNull ())
 								action->setIcon (Core::Instance ().GetProxy ()->GetIcon (ai));
 						}
-						Toolbar_->addActions (controls->actions ());
+
+						Q_FOREACH (QAction *action, controls->actions ())
+						{
+							QAction *pa = new QAction (action->icon (),
+									action->text (), Toolbar_);
+							if (action->isSeparator ())
+								pa->setSeparator (true);
+							else if (qobject_cast<QWidgetAction*> (action))
+							{
+								proxies << action;
+								continue;
+							}
+							else
+							{
+								pa->setCheckable (action->isCheckable ());
+								pa->setChecked (action->isChecked ());
+								pa->setShortcuts (action->shortcuts ());
+								pa->setStatusTip (action->statusTip ());
+								pa->setToolTip (action->toolTip ());
+								pa->setWhatsThis (action->whatsThis ());
+								pa->setData (QVariant::fromValue<QObject*> (action));
+
+								connect (pa,
+										SIGNAL (hovered ()),
+										action,
+										SIGNAL (hovered ()));
+								connect (pa,
+										SIGNAL (toggled (bool)),
+										action,
+										SIGNAL (toggled (bool)));
+							}
+							proxies << pa;
+						}
+						Toolbar_->addActions (proxies);
 					}
 					if (addiInfo != Ui_.ControlsDockWidget_->widget ())
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);

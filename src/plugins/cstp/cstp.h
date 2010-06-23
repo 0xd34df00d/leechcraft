@@ -19,6 +19,7 @@
 #ifndef PLUGINS_CSTP_CSTP_H
 #define PLUGINS_CSTP_CSTP_H
 #include <memory>
+#include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ijobholder.h>
@@ -28,7 +29,6 @@
 
 class QTabWidget;
 class QToolBar;
-class QModelIndex;
 class QTranslator;
 
 namespace boost

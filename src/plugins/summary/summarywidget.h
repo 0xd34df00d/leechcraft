@@ -71,6 +71,7 @@ namespace LeechCraft
 				Query2 GetQuery2 () const;
 				void ReinitToolbar ();
 			private slots:
+				void handleActionTriggered (QAction*);
 				void updatePanes (const QModelIndex&, const QModelIndex&);
 				void filterParametersChanged ();
 				void filterReturnPressed ();

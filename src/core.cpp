@@ -338,19 +338,6 @@ QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 	return QModelIndex ();
 }
 
-QTreeView* LeechCraft::Core::GetCurrentView () const
-{
-	QList<ISummaryRepresentation*> summaries =
-		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-	Q_FOREACH (ISummaryRepresentation *summary, summaries)
-	{
-		QTreeView* result = summary->GetCurrentView ();
-		if (result)
-			return result;
-	}
-	return 0;
-}
-
 TabContainer* LeechCraft::Core::GetTabContainer () const
 {
 	return TabContainer_.get ();

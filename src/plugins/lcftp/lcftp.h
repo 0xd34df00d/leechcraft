@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include <QTranslator>
+#include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ijobholder.h>
