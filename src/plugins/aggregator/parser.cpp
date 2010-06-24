@@ -51,6 +51,7 @@ namespace LeechCraft
 			const QString Parser::GeoRSSSimple_ = "http://www.georss.org/georss";
 			const QString Parser::GeoRSSW3_ = "http://www.w3.org/2003/01/geo/wgs84_pos#";
 			const QString Parser::MediaRSS_ = "http://search.yahoo.com/mrss/";
+			const QString Parser::Content_ = "http://purl.org/rss/1.0/modules/content/";
 
 			Parser::~Parser ()
 			{
@@ -75,6 +76,45 @@ namespace LeechCraft
 				return newes;
 			}
 			
+			namespace
+			{
+				inline void AppendToList (QList<QDomNode>& nodes,
+						const QDomNodeList& dumbList)
+				{
+					for (int i = 0, size = dumbList.size ();
+							i < size; ++i)
+						nodes << dumbList.at (i);
+				}
+			};
+
+			QString Parser::GetDescription (const QDomElement& parent) const
+			{
+				QList<QDomNode> nodes;
+				AppendToList (nodes,
+						parent.elementsByTagNameNS (Content_, "encoded"));
+				AppendToList (nodes,
+						parent.elementsByTagNameNS (ITunes_, "summary"));
+
+				QString max;
+
+				Q_FOREACH (const QDomNode& cand, nodes)
+				{
+					QString repr = cand.toElement ().text ();
+					if (repr.size () > max.size ())
+						max = repr;
+				}
+
+				return max;
+			}
+
+			void Parser::GetDescription (const QDomElement& parent,
+					QString& cand) const
+			{
+				QString extContent = GetDescription (parent);
+				if (extContent.size () > cand.size ())
+					cand = extContent;
+			}
+
 			QString Parser::GetLink (const QDomElement& parent) const
 			{
 				QString result;

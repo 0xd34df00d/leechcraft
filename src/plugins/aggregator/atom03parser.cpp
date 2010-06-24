@@ -96,6 +96,7 @@ namespace LeechCraft
 				if (summary.isNull ())
 					summary = entry.firstChildElement ("summary");
 				item->Description_ = ParseEscapeAware (summary);
+				GetDescription (entry, item->Description_);
 			
 				item->Categories_ += GetAllCategories (entry);
 				item->Author_ = GetAuthor (entry);
