@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Wizard</string>
+   <string>Settings Import Wizard</string>
   </property>
   <property name="wizardStyle">
    <enum>QWizard::ClassicStyle</enum>

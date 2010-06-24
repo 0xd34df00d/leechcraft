@@ -45,12 +45,14 @@ SET (TRANSLATIONS
 	leechcraft_tabpp_uk_UA.ts
 	leechcraft_tabpp_ru_RU.ts
 	leechcraft_tabpp_de.ts
+	leechcraft_tabpp_en.ts
 	leechcraft_tabpp_oc.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_de.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_en.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_oc.qm
 	)
 SET (RESOURCES tabppresources.qrc)
