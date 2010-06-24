@@ -119,6 +119,7 @@ namespace LeechCraft
 	private:
 		void FillTray ();
 		void FillToolMenu ();
+		void InitializeShortcuts ();
 	};
 };
 

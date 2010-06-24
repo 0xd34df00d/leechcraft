@@ -51,12 +51,14 @@ namespace LeechCraft
 		QToolBar* GetToolBar (int) const;
 		QMenu* GetNewTabMenu () const;
 		void SetToolBar (QToolBar*, QWidget*);
-		void RotateLeft ();
-		void RotateRight ();
 		void ForwardKeyboard (QKeyEvent*);
 
 		void AddObject (QObject*);
 	public slots:
+		void rotateLeft ();
+		void rotateRight ();
+		void navigateToTabNumber ();
+
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,
 				const QIcon& icon);

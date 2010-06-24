@@ -25,6 +25,7 @@
 #include <QToolButton>
 #include <QCursor>
 #include <QCheckBox>
+#include <QShortcut>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/itraymenu.h>
@@ -657,6 +658,7 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 	FillTray ();
 	FillToolMenu ();
+	InitializeShortcuts ();
 
 	setAcceptDrops (true);
 
@@ -742,4 +744,27 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	Ui_.MenuGeneral_->insertSeparator (Ui_.ActionQuit_);
 
 	on_MainTabWidget__currentChanged (0);
+}
+
+void LeechCraft::MainWindow::InitializeShortcuts ()
+{
+	connect (new QShortcut (QKeySequence ("Ctrl+["), this),
+			SIGNAL (activated ()),
+			Core::Instance ().GetTabContainer (),
+			SLOT (rotateLeft ()));
+	connect (new QShortcut (QKeySequence ("Ctrl+]"), this),
+			SIGNAL (activated ()),
+			Core::Instance ().GetTabContainer (),
+			SLOT (rotateRight ()));
+
+	for (int i = 0; i < 10; ++i)
+	{
+		QString seqStr = QString ("Ctrl+\\, %1").arg (i);
+		QShortcut *sc = new QShortcut (QKeySequence (seqStr), this);
+		sc->setProperty ("TabNumber", i);
+		connect (sc,
+				SIGNAL (activated ()),
+				Core::Instance ().GetTabContainer (),
+				SLOT (navigateToTabNumber ()));
+	}
 }
