@@ -185,7 +185,7 @@ namespace LeechCraft
 				void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
 						QString *title, QString *url);
 				void hookIconRequested (LeechCraft::IHookProxy_ptr,
-						const QUrl& url, QIcon *icon) const;
+						const QUrl& url) const;
 				void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 						const QUrl&, const QWebPage*) const;
 			};
