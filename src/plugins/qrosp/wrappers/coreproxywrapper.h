@@ -24,9 +24,10 @@
 #include <QStringList>
 #include <QModelIndex>
 
-class QNetworkAccessManager;
 class QTreeView;
 class QTabWidget;
+
+Q_DECLARE_METATYPE (QNetworkAccessManager*);
 
 namespace LeechCraft
 {

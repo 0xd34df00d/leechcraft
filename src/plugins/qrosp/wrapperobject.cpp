@@ -57,6 +57,7 @@ namespace LeechCraft
 			{
 				qRegisterMetaType<QUrl*> ("QUrl*");
 				qRegisterMetaType<QString*> ("QString*");
+				qRegisterMetaType<QNetworkAccessManager*> ("QNetworkAccessManager*");
 				BuildMetaObject ();
 
 				ScriptAction_->addObject (this, "Signals");
