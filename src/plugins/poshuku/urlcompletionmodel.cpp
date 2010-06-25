@@ -95,6 +95,7 @@ namespace LeechCraft
 			
 			void URLCompletionModel::addItem (const QString& title, const QString& url)
 			{
+				qDebug () << Q_FUNC_INFO << title << url;
 				HistoryItem item =
 				{
 					title,
