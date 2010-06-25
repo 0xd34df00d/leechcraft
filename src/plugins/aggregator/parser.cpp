@@ -71,7 +71,7 @@ namespace LeechCraft
 						newChannel->Link_ = "about:blank";
 					}
 					Q_FOREACH (Item_ptr item, newChannel->Items_)
-						item->Title_ = item->Title_.trimmed ();
+						item->Title_ = item->Title_.trimmed ().simplified ();
 				}
 				return newes;
 			}
