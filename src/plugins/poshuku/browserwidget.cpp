@@ -17,6 +17,11 @@
  **********************************************************************/
 
 #include "browserwidget.h"
+
+#ifdef ENABLE_IDN
+#include <idna.h>
+#endif
+
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
@@ -43,6 +48,7 @@
 #include <qwebhistory.h>
 #include <qwebelement.h>
 #include <QDataStream>
+#include <QRegExp>
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
 #include "core.h"
@@ -1303,7 +1309,34 @@ namespace LeechCraft
 			void BrowserWidget::handleUrlChanged (const QString& value)
 			{
 				emit urlChanged (value);
-				Ui_.URLFrame_->GetEdit ()->setText (value);
+				QString userText = value;
+#ifdef ENABLE_IDN
+				qDebug () << Q_FUNC_INFO << "IDN enabled";
+				if (userText.contains ("xn--"))
+				{
+					QRegExp rx ("(?://|\\.)xn--(.+)(?:\\.|/)");
+					rx.setMinimal (true);
+					int pos = 0;
+					QStringList caps;
+
+					while ((pos = rx.indexIn (userText, pos)) != -1)
+					{
+						caps << rx.cap (1);
+						pos += rx.matchedLength () - 4;
+					}
+
+					Q_FOREACH (QString str, caps)
+					{
+						str.prepend ("xn--");
+						char *output = 0;
+						idna_to_unicode_8z8z (str.toUtf8 ().constData (),
+								&output, IDNA_ALLOW_UNASSIGNED);
+						QString newStr = QString::fromUtf8 (output);
+						userText.replace (str, newStr);
+					}
+				}
+#endif
+				Ui_.URLFrame_->GetEdit ()->setText (userText);
 			}
 		};
 	};
