@@ -857,8 +857,8 @@
         <source>%n day(s), </source>
         <translation>
             <numerusform>%n день, </numerusform>
-            <numerusform>%n дені, </numerusform>
-            <numerusform>%n денів, </numerusform>
+            <numerusform>%n дні, </numerusform>
+            <numerusform>%n днів, </numerusform>
         </translation>
     </message>
 </context>
