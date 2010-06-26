@@ -59,6 +59,8 @@ namespace LeechCraft
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+			public slots:
+				void handleTasksTreeActivated (const QModelIndex&);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void categoriesChanged (const QStringList&, const QStringList&);

@@ -24,6 +24,7 @@
 #include <QMultiMap>
 #include <QStringList>
 #include <QPluginLoader>
+#include <QIcon>
 #include "interfaces/iinfo.h"
 
 namespace LeechCraft
@@ -75,6 +76,8 @@ namespace LeechCraft
 		UnloadQueue_t UnloadQueue_;
 
 		QStringList Headers_;
+
+		QIcon DefaultPluginIcon_;
 	public:
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (QObject *parent = 0);

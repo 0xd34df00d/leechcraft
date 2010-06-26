@@ -628,6 +628,30 @@ namespace LeechCraft
 						SameSets (i1->Enclosures_, i2->Enclosures_) &&
 						SameSets (i1->MRSSEntries_, i2->MRSSEntries_));
 			}
+
+#ifndef Q_CC_MSVC
+#define LC_DECLOP(Type) \
+                        QDataStream& operator>> (QDataStream& in, QList<Type>& list) \
+                        { \
+                                qint32 size = 0; \
+                                in >> size; \
+                                for (int i = 0; i < size; ++i) \
+                                { \
+                                        Type tmp; \
+                                        in >> tmp; \
+                                        list << tmp; \
+                                } \
+                                return in; \
+                        }
+
+                        LC_DECLOP (Enclosure);
+                        LC_DECLOP (MRSSThumbnail);
+                        LC_DECLOP (MRSSCredit);
+                        LC_DECLOP (MRSSComment);
+                        LC_DECLOP (MRSSPeerLink);
+                        LC_DECLOP (MRSSScene);
+                        LC_DECLOP (MRSSEntry);
+#endif
 		};
 	};
 };

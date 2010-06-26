@@ -24,9 +24,10 @@
 #include <QStringList>
 #include <QModelIndex>
 
-class QNetworkAccessManager;
 class QTreeView;
 class QTabWidget;
+
+Q_DECLARE_METATYPE (QNetworkAccessManager*);
 
 namespace LeechCraft
 {
@@ -44,7 +45,6 @@ namespace LeechCraft
 			public slots:
 				QNetworkAccessManager* GetNetworkAccessManager () const;
 				QObject* GetShortcutProxy () const;
-				QTreeView* GetCurrentView () const;
 				QModelIndex MapToSource (const QModelIndex&) const;
 				//LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const;
 				QMap<int, QString> GetIconPath (const QString& name) const;
@@ -55,7 +55,6 @@ namespace LeechCraft
 				QStringList GetSearchCategories () const;
 				int GetID ();
 				void FreeID (int id);
-				QObject* GetTreeViewReemitter () const;
 				QObject* GetPluginsManager () const;
 				QObject* GetSelf ();
 			};

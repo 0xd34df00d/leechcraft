@@ -14,7 +14,7 @@
    <string>Cookies Editor</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset resource="poshukuresources.qrc">
     <normaloff>:/resources/images/poshuku.svg</normaloff>:/resources/images/poshuku.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -146,7 +146,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="poshukuresources.qrc"/>
  </resources>
  <connections>
   <connection>

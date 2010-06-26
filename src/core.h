@@ -173,10 +173,6 @@ namespace LeechCraft
 		 */
 		QModelIndex MapToSource (const QModelIndex& index) const;
 
-		QObject* GetTreeViewReemitter () const;
-
-		QTreeView* GetCurrentView () const;
-
 		/** Returns the app-wide TabContainer.
 		 */
 		TabContainer* GetTabContainer () const;

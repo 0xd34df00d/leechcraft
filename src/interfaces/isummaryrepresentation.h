@@ -29,7 +29,6 @@ public:
 	virtual ~ISummaryRepresentation () {}
 
 	virtual QModelIndex MapToSource (const QModelIndex&) const = 0;
-	virtual QObject* GetTreeViewReemitter () const = 0;
 	virtual QTreeView* GetCurrentView () const = 0;
 };
 

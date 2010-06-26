@@ -100,12 +100,8 @@ namespace LeechCraft
 				result->Link_ = item.firstChildElement ("link").text ();
 
 				result->Description_ = item.firstChildElement ("description").text ();
-				if (result->Description_.isEmpty ())
-				{
-					QDomNodeList nodes = item.elementsByTagNameNS (ITunes_, "summary");
-					if (nodes.size ())
-						result->Description_ = nodes.at (0).toElement ().text ();
-				}
+				GetDescription (item, result->Description_);
+
 				QDomNodeList duration = item.elementsByTagNameNS (ITunes_, "duration");
 				if (duration.size ())
 				{

@@ -55,11 +55,17 @@ SET (UIS
 	)
 SET (TRANSLATIONS
 	leechcraft_chatter_ru_RU.ts
+	leechcraft_chatter_uk_UA.ts
 	leechcraft_chatter_ar.ts
+	leechcraft_chatter_en.ts
+	leechcraft_chatter_pl.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_chatter_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_chatter_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_chatter_ar.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_chatter_en.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_chatter_pl.qm
 	)
 
 QT4_WRAP_UI (C_UIS ${UIS})

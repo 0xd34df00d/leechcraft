@@ -38,6 +38,9 @@ SET (TRANSLATIONS
 	leechcraft_historyholder_de.ts
 	leechcraft_historyholder_es.ts
 	leechcraft_historyholder_oc.ts
+	leechcraft_historyholder_en.ts
+	leechcraft_historyholder_fr.ts
+	leechcraft_historyholder_pl.ts
 	)
 SET (RESOURCES historyholderresources.qrc)
 SET (COMPILED_TRANSLATIONS
@@ -47,6 +50,9 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_es.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_oc.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_en.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_fr.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_pl.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

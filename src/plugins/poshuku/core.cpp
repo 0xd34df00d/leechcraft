@@ -416,12 +416,11 @@ namespace LeechCraft
 			QIcon Core::GetIcon (const QUrl& url) const
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-				QIcon result;
-				emit hookIconRequested (proxy, url, &result);
+				emit hookIconRequested (proxy, url);
 				if (proxy->IsCancelled ())
-					return result;
+					return proxy->GetReturnValue ().value<QIcon> ();
 
-				result = QWebSettings::iconForUrl (url);
+				QIcon result = QWebSettings::iconForUrl (url);
 				if (!result.isNull ())
 					return result;
 

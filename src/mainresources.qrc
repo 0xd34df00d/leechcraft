@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/" >
         <file>resources/images/leechcraft.svg</file>
+        <file>resources/images/defaultpluginicon.svg</file>
     </qresource>
 </RCC>

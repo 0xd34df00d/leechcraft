@@ -73,11 +73,12 @@ namespace LeechCraft
 				QModelIndex index (int, int, const QModelIndex&) const;
 				QModelIndex parent (const QModelIndex&) const;
 				int rowCount (const QModelIndex&) const;
+			public slots:
+				void handleTasksTreeActivated (const QModelIndex&);
 			private:
 				void WriteSettings ();
 			private slots:
 				void remove ();
-				void handleActivated (const QModelIndex&, QTreeView*);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 			};

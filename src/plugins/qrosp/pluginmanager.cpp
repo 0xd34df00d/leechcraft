@@ -18,6 +18,7 @@
 
 #include "pluginmanager.h"
 #include <QDir>
+#include <QModelIndex>
 #include <QtDebug>
 #include <qross/core/manager.h>
 #include <qross/core/interpreter.h>

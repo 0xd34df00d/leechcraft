@@ -29,7 +29,10 @@
 #include <QSettings>
 #include <QTextCodec>
 #include <QUrl>
+#include <QAction>
 #include <QtDebug>
+
+Q_DECLARE_METATYPE (QList<QModelIndex>);
 
 QString LeechCraft::Util::GetUserText (const Entity& p)
 {
@@ -266,5 +269,23 @@ QUrl LeechCraft::Util::MakeAbsoluteUrl (QUrl originalUrl, const QString& hrefUrl
 	}
 	else
 		return QUrl::fromEncoded (hrefUrl.toUtf8 ());
+}
+
+QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
+{
+	QAction *senderAct = qobject_cast<QAction*> (sender);
+	if (!senderAct)
+	{
+		QString debugString;
+		{
+			QDebug d (&debugString);
+			d << "sender is not a QAction*"
+					<< sender;
+		}
+		throw std::runtime_error (qPrintable (debugString));
+	}
+
+	return senderAct->
+			property ("SelectedRows").value<QList<QModelIndex> > ();
 }
 

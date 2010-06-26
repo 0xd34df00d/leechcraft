@@ -48,7 +48,9 @@ SET (TRANSLATIONS
 	leechcraft_vgrabber_uk_UA.ts
 	leechcraft_vgrabber_ar.ts
 	leechcraft_vgrabber_de.ts
+	leechcraft_vgrabber_en.ts
 	leechcraft_vgrabber_oc.ts
+	leechcraft_vgrabber_pl.ts
 	)
 SET (RESOURCES vgrabberresources.qrc)
 SET (COMPILED_TRANSLATIONS
@@ -56,7 +58,9 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_vgrabber_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_vgrabber_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_vgrabber_de.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_vgrabber_en.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_vgrabber_oc.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_vgrabber_pl.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})

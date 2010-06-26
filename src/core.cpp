@@ -338,33 +338,6 @@ QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 	return QModelIndex ();
 }
 
-QObject* LeechCraft::Core::GetTreeViewReemitter () const
-{
-	// TODO move out to a separate class so that merging would be possible
-	QList<ISummaryRepresentation*> summaries =
-		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-	Q_FOREACH (ISummaryRepresentation *summary, summaries)
-	{
-		QObject* result = summary->GetTreeViewReemitter ();
-		if (result)
-			return result;
-	}
-	return 0;
-}
-
-QTreeView* LeechCraft::Core::GetCurrentView () const
-{
-	QList<ISummaryRepresentation*> summaries =
-		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-	Q_FOREACH (ISummaryRepresentation *summary, summaries)
-	{
-		QTreeView* result = summary->GetCurrentView ();
-		if (result)
-			return result;
-	}
-	return 0;
-}
-
 TabContainer* LeechCraft::Core::GetTabContainer () const
 {
 	return TabContainer_.get ();
@@ -394,33 +367,6 @@ template<> \
 bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 {
 	if (ReallyMainWindow_ &&
-			watched == ReallyMainWindow_->GetTabWidget ())
-	{
-		if (e->type () == QEvent::KeyRelease)
-		{
-			QKeyEvent *key = static_cast<QKeyEvent*> (e);
-			bool handled = false;
-
-			if (key->modifiers () & Qt::ControlModifier)
-			{
-				if (key->key () == Qt::Key_BracketLeft)
-				{
-					TabContainer_->RotateLeft ();
-					handled = true;
-				}
-				else if (key->key () == Qt::Key_BracketRight)
-				{
-					TabContainer_->RotateRight ();
-					handled = true;
-				}
-			}
-			if (handled)
-				return true;
-			else
-				TabContainer_->ForwardKeyboard (key);
-		}
-	}
-	else if (ReallyMainWindow_ &&
 			watched == ReallyMainWindow_)
 	{
 		if (e->type () == QEvent::DragEnter)

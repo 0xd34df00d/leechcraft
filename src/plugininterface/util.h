@@ -21,6 +21,7 @@
 #include "piconfig.h"
 #include <QString>
 #include <QDir>
+#include <QModelIndex>
 #include <QtXml/QDomElement>
 #include <QtDebug>
 #include <interfaces/structures.h>
@@ -194,6 +195,8 @@ namespace LeechCraft
 				Priority priority);
 
 		PLUGININTERFACE_API QUrl MakeAbsoluteUrl (QUrl, const QString& hrefUrl);
+
+		PLUGININTERFACE_API QModelIndexList GetSummarySelectedRows (QObject *sender);
 
 		/** @brief Returns an element for a given tags list.
 		 *

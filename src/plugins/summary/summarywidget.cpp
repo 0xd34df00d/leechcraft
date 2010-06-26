@@ -22,9 +22,11 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QMainWindow>
+#include <QWidgetAction>
 #include <QtDebug>
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 #include "core.h"
 #include "searchwidget.h"
 
@@ -46,6 +48,10 @@ namespace LeechCraft
 				ActionSearch_->setProperty ("ActionIcon", "find");
 				ActionSearch_->setShortcut (tr ("Ctrl+F"));
 				Toolbar_->setWindowTitle ("Summary");
+				connect (Toolbar_,
+						SIGNAL (actionTriggered (QAction*)),
+						this,
+						SLOT (handleActionTriggered (QAction*)));
 				ReinitToolbar ();
 				Ui_.setupUi (this);
 
@@ -64,8 +70,6 @@ namespace LeechCraft
 							this,
 							SLOT (handleCategoriesChanged (const QStringList&, const QStringList&)));
 
-				FillCombobox (SearchWidget_->GetLeastCategory ());
-
 				FilterTimer_->setSingleShot (true);
 				FilterTimer_->setInterval (800);
 				connect (FilterTimer_,
@@ -75,10 +79,6 @@ namespace LeechCraft
 
 				Ui_.ControlsDockWidget_->hide ();
 
-				connect (SearchWidget_->GetLeastCategory (),
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (filterParametersChanged ()));
 				connect (SearchWidget_->GetFilterLine (),
 						SIGNAL (textEdited (const QString&)),
 						this,
@@ -92,7 +92,58 @@ namespace LeechCraft
 						this,
 						SLOT (filterReturnPressed ()));
 
+				QList<QObject*> plugins = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
+				Q_FOREACH (QObject *plugin, plugins)
+					ConnectObject (plugin);
+
+				SearchWidget_->SetPossibleCategories (GetUniqueCategories () + QStringList ("downloads"));
+
 				filterParametersChanged ();
+			}
+
+			void SummaryWidget::ReconnectModelSpecific ()
+			{
+				QItemSelectionModel *sel = Ui_.PluginsTasksTree_->selectionModel ();
+
+#define C2(sig,sl,arg1,arg2) \
+				if (mo->indexOfMethod (QMetaObject::normalizedSignature ("handleTasksTreeSelection" #sl "(" #arg1 ", " #arg2 ")")) != -1) \
+					connect (sel, \
+							SIGNAL (sig (arg1, arg2)), \
+							object, \
+							SLOT (handleTasksTreeSelection##sl (arg1, arg2)));
+
+				QList<QObject*> plugins = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
+				Q_FOREACH (QObject *object, plugins)
+				{
+					const QMetaObject *mo = object->metaObject ();
+
+					C2 (currentChanged, CurrentChanged, const QModelIndex&, const QModelIndex&);
+					C2 (currentColumnChanged, CurrentColumnChanged, const QModelIndex&, const QModelIndex&);
+					C2 (currentRowChanged, CurrentRowChanged, const QModelIndex&, const QModelIndex&);
+				}
+#undef C2
+			}
+
+			void SummaryWidget::ConnectObject (QObject *object)
+			{
+				const QMetaObject *mo = object->metaObject ();
+
+#define C1(sig,sl,arg) \
+				if (mo->indexOfMethod (QMetaObject::normalizedSignature ("handleTasksTree" #sl "(" #arg ")")) != -1) \
+					connect (Ui_.PluginsTasksTree_, \
+							SIGNAL (sig (arg)), \
+							object, \
+							SLOT (handleTasksTree##sl (arg)));
+
+				C1 (activated, Activated, const QModelIndex&);
+				C1 (clicked, Clicked, const QModelIndex&);
+				C1 (doubleClicked, DoubleClicked, const QModelIndex&);
+				C1 (entered, Entered, const QModelIndex&);
+				C1 (pressed, Pressed, const QModelIndex&);
+				C1 (viewportEntered, ViewportEntered, );
+#undef C1
 			}
 
 			SummaryWidget::~SummaryWidget ()
@@ -145,15 +196,7 @@ namespace LeechCraft
 				SearchWidget_->GetFilterLine ()->setText (query.takeFirst ());
 
 				if (!query.isEmpty ())
-					SearchWidget_->GetLeastCategory ()->setCurrentIndex (SearchWidget_->GetLeastCategory ()->
-							findText (query.takeFirst ()));
-
-				Q_FOREACH (QString cat, query)
-				{
-					addCategoryBox ();
-					QComboBox *box = AdditionalBoxes_.last ();
-					box->setCurrentIndex (box->findText (cat));
-				}
+					SearchWidget_->SelectCategories (query);
 
 				feedFilterParameters ();
 			}
@@ -179,10 +222,17 @@ namespace LeechCraft
 			QString SummaryWidget::GetQuery () const
 			{
 				QString query = SearchWidget_->GetFilterLine ()->text ();
-				QString prepend = QString ("ca:\"%1\"")
-					.arg (SearchWidget_->GetLeastCategory ()->currentText ());
-				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
-					prepend += QString (" OR ca:\"%1\"").arg (box->currentText ());
+
+				QString prepend;
+				QStringList categories = SearchWidget_->GetCategories ();
+				if (categories.size ())
+				{
+					prepend = QString ("ca:\"%1\"")
+						.arg (categories.takeFirst ());
+					Q_FOREACH (const QString& cat, categories)
+						prepend += QString (" OR ca:\"%1\"").arg (cat);
+				}
+
 				prepend = QString ("(%1) ").arg (prepend);
 				prepend += "t:";
 				switch (SearchWidget_->GetFilterType ()->currentIndex ())
@@ -217,12 +267,10 @@ namespace LeechCraft
 			{
 				Query2 result;
 				result.Query_ = SearchWidget_->GetFilterLine ()->text ();
-				result.Categories_ << (SearchWidget_->GetLeastCategory ()->currentText ());
+				result.Categories_ = SearchWidget_->GetCategories ();
 				result.Op_ = SearchWidget_->IsOr () ?
 					Query2::OPOr :
-					Query2::OPAnd;;
-				Q_FOREACH (QComboBox *box, AdditionalBoxes_)
-					result.Categories_ << box->currentText ();
+					Query2::OPAnd;
 				switch (SearchWidget_->GetFilterType ()->currentIndex ())
 				{
 					case 0:
@@ -251,6 +299,10 @@ namespace LeechCraft
 
 			void SummaryWidget::ReinitToolbar ()
 			{
+				Q_FOREACH (QAction *action, Toolbar_->actions ())
+					if (action != ActionSearch_ &&
+							!qobject_cast<QWidgetAction*> (action))
+						delete action;
 				Toolbar_->clear ();
 				Toolbar_->addAction (ActionSearch_);
 				Toolbar_->addSeparator ();
@@ -281,6 +333,24 @@ namespace LeechCraft
 				return Ui_;
 			}
 
+			void SummaryWidget::handleActionTriggered (QAction *proxyAction)
+			{
+				if (proxyAction == ActionSearch_)
+					return;
+
+				QAction *action = qobject_cast<QAction*> (proxyAction->
+						data ().value<QObject*> ());
+				QItemSelectionModel *selModel =
+						Ui_.PluginsTasksTree_->selectionModel ();
+				QModelIndexList indexes = selModel->selectedRows ();
+				action->setProperty ("SelectedRows",
+						QVariant::fromValue<QList<QModelIndex> > (indexes));
+				action->setProperty ("ItemSelectionModel",
+						QVariant::fromValue<QObject*> (selModel));
+
+				action->activate (QAction::Trigger);
+			}
+
 			void SummaryWidget::updatePanes (const QModelIndex& newIndex,
 					const QModelIndex& oldIndex)
 			{
@@ -299,6 +369,7 @@ namespace LeechCraft
 					ReinitToolbar ();
 					if (controls)
 					{
+						QList<QAction*> proxies;
 						Q_FOREACH (QAction *action, controls->actions ())
 						{
 							QString ai = action->property ("ActionIcon").toString ();
@@ -306,7 +377,40 @@ namespace LeechCraft
 									action->icon ().isNull ())
 								action->setIcon (Core::Instance ().GetProxy ()->GetIcon (ai));
 						}
-						Toolbar_->addActions (controls->actions ());
+
+						Q_FOREACH (QAction *action, controls->actions ())
+						{
+							QAction *pa = new QAction (action->icon (),
+									action->text (), Toolbar_);
+							if (action->isSeparator ())
+								pa->setSeparator (true);
+							else if (qobject_cast<QWidgetAction*> (action))
+							{
+								proxies << action;
+								continue;
+							}
+							else
+							{
+								pa->setCheckable (action->isCheckable ());
+								pa->setChecked (action->isChecked ());
+								pa->setShortcuts (action->shortcuts ());
+								pa->setStatusTip (action->statusTip ());
+								pa->setToolTip (action->toolTip ());
+								pa->setWhatsThis (action->whatsThis ());
+								pa->setData (QVariant::fromValue<QObject*> (action));
+
+								connect (pa,
+										SIGNAL (hovered ()),
+										action,
+										SIGNAL (hovered ()));
+								connect (pa,
+										SIGNAL (toggled (bool)),
+										action,
+										SIGNAL (toggled (bool)));
+							}
+							proxies << pa;
+						}
+						Toolbar_->addActions (proxies);
 					}
 					if (addiInfo != Ui_.ControlsDockWidget_->widget ())
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);
@@ -336,8 +440,8 @@ namespace LeechCraft
 
 				Query2 query = GetQuery2 ();
 				QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
-				Ui_.PluginsTasksTree_->
-					setModel (Core::Instance ().GetTasksModel (query));
+				Util::MergeModel *tasksModel = Core::Instance ().GetTasksModel (query);
+				Ui_.PluginsTasksTree_->setModel (tasksModel);
 				delete old;
 
 				connect (Ui_.PluginsTasksTree_->selectionModel (),
@@ -370,6 +474,9 @@ namespace LeechCraft
 				else
 					newName = tr ("Summary [%1]")
 							.arg (query.Categories_.join ("; "));
+
+				ReconnectModelSpecific ();
+
 				emit changeTabName (newName);
 				emit filterUpdated ();
 				emit queryUpdated (query);
@@ -384,61 +491,13 @@ namespace LeechCraft
 					return;
 				menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 			}
-			
-			void SummaryWidget::addCategoryBox ()
-			{
-				QComboBox *box = new QComboBox (this);
-				box->setDuplicatesEnabled (true);
-				box->setInsertPolicy (QComboBox::InsertAlphabetically);
-				connect (box,
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (filterParametersChanged ()));
-
-				FillCombobox (box);
-
-				QAction *remove = new QAction (tr ("Remove this category"), this);
-				connect (remove,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (removeCategoryBox ()));
-				remove->setData (QVariant::fromValue<QWidget*> (box));
-				box->setContextMenuPolicy (Qt::ActionsContextMenu);
-				box->addAction (remove);
-
-				SearchWidget_->AddCategory (box);
-				AdditionalBoxes_ << box;
-			}
 
 			void SummaryWidget::handleCategoriesChanged (const QStringList&, const QStringList&)
 			{
 				QStringList currentCats = GetUniqueCategories ();
 
-				Q_FOREACH (QComboBox *box,
-						AdditionalBoxes_ + (QList<QComboBox*> () << SearchWidget_->GetLeastCategory ()))
-				{
-					box->clear ();
-					box->addItem ("downloads");
-					box->addItems (currentCats);
-				}
-			}
-
-			void SummaryWidget::removeCategoryBox ()
-			{
-				QAction *act = qobject_cast<QAction*> (sender ());
-				if (!act)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "sender is not a QAction*"
-						<< sender ();
-					return;
-				}
-
-				QComboBox *w = qobject_cast<QComboBox*> (act->data ().value<QWidget*> ());
-				AdditionalBoxes_.removeAll (w);
-				w->deleteLater ();
-
-				filterParametersChanged ();
+				QStringList currentSelection = SearchWidget_->GetCategories ();
+				SearchWidget_->SetPossibleCategories (currentCats + QStringList ("downloads"));
 			}
 
 			void SummaryWidget::syncSelection (const QModelIndex& current)

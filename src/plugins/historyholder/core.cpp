@@ -102,10 +102,6 @@ void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 {
 	CoreProxy_ = proxy;
 	Remove_->setParent (proxy->GetMainWindow ());
-	connect (CoreProxy_->GetTreeViewReemitter (),
-			SIGNAL (activated (const QModelIndex&, QTreeView*)),
-			this,
-			SLOT (handleActivated (const QModelIndex&, QTreeView*)));
 }
 
 ICoreProxy_ptr Core::GetCoreProxy () const
@@ -259,15 +255,21 @@ void Core::WriteSettings ()
 
 void Core::remove ()
 {
-	QTreeView *currentView = CoreProxy_->GetCurrentView ();
-	if (!currentView)
-		return;
-
-	QModelIndexList selected = currentView->selectionModel ()->selectedRows ();
-	QList<int> rows;
-	Q_FOREACH (QModelIndex index, selected)
+	QModelIndexList sis;
+	try
 	{
-		index = CoreProxy_->MapToSource (index);
+		sis = Util::GetSummarySelectedRows (sender ());
+	}
+	catch (const std::runtime_error& e)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< e.what ();
+		return;
+	}
+
+	QList<int> rows;
+	Q_FOREACH (QModelIndex index, sis)
+	{
 		if (!index.isValid ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -296,7 +298,7 @@ void Core::remove ()
 	WriteSettings ();
 }
 
-void Core::handleActivated (const QModelIndex& si, QTreeView*)
+void Core::handleTasksTreeActivated (const QModelIndex& si)
 {
 	QModelIndex index = CoreProxy_->MapToSource (si);
 	if (!index.isValid ())

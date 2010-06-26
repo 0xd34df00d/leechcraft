@@ -119,6 +119,20 @@ QStringList CategorySelector::GetSelections ()
 	return tags;
 }
 
+void CategorySelector::SetSelections (const QStringList& tags)
+{
+	blockSignals (true);
+	for (int i = 0; i < topLevelItemCount (); ++i)
+	{
+		Qt::CheckState state =
+			tags.contains (topLevelItem (i)->data (0, RoleTag).toString ()) ?
+				Qt::Checked :
+				Qt::Unchecked;
+		topLevelItem (i)->setCheckState (0, state);
+	}
+	blockSignals (false);
+}
+
 void CategorySelector::moveEvent (QMoveEvent *e)
 {
 	QWidget::moveEvent (e);
@@ -179,17 +193,8 @@ void CategorySelector::selectNone ()
 
 void CategorySelector::lineTextChanged (const QString& text)
 {
-	blockSignals (true);
 	QStringList tags = text.split ("; ", QString::SkipEmptyParts);
-	for (int i = 0; i < topLevelItemCount (); ++i)
-	{
-		Qt::CheckState state =
-			tags.contains (topLevelItem (i)->data (0, RoleTag).toString ()) ?
-				Qt::Checked :
-				Qt::Unchecked;
-		topLevelItem (i)->setCheckState (0, state);
-	}
-	blockSignals (false);
+	SetSelections (tags);
 }
 
 void CategorySelector::buttonToggled ()

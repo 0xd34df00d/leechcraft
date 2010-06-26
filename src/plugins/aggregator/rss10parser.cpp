@@ -91,6 +91,7 @@ namespace LeechCraft
 						item->Title_ = itemDescr.firstChildElement ("title").text ();
 						item->Link_ = itemDescr.firstChildElement ("link").text ();
 						item->Description_ = itemDescr.firstChildElement ("description").text ();
+						GetDescription (itemDescr, item->Description_);
 			
 						item->Categories_ = GetAllCategories (itemDescr);
 						item->Author_ = GetAuthor (itemDescr);

@@ -1401,6 +1401,7 @@ namespace LeechCraft
 
 					channels [i]->Tags_ = pj.Tags_;
 					ChannelsModel_->AddChannel (channels [i]->ToShort ());
+					StorageBackend_->AddChannel (channels [i]);
 		
 					std::for_each (channels [i]->Items_.begin (),
 							channels [i]->Items_.end (),

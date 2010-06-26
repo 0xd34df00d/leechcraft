@@ -124,7 +124,7 @@ void TabContainer::SetToolBar (QToolBar *bar, QWidget *tw)
 	StaticBars_ [tw] = bar;
 }
 
-void TabContainer::RotateLeft ()
+void TabContainer::rotateLeft ()
 {
 	int index = TabWidget_->currentIndex ();
 	if (index)
@@ -133,13 +133,21 @@ void TabContainer::RotateLeft ()
 		TabWidget_->setCurrentIndex (TabWidget_->count () - 1);
 }
 
-void TabContainer::RotateRight ()
+void TabContainer::rotateRight ()
 {
 	int index = TabWidget_->currentIndex ();
 	if (index < TabWidget_->count () - 1)
 		TabWidget_->setCurrentIndex (index + 1);
 	else
 		TabWidget_->setCurrentIndex (0);
+}
+
+void TabContainer::navigateToTabNumber ()
+{
+	int n = sender ()->property ("TabNumber").toInt ();
+	if (n >= TabWidget_->count ())
+		return;
+	TabWidget_->setCurrentIndex (n);
 }
 
 void TabContainer::ForwardKeyboard (QKeyEvent *key)

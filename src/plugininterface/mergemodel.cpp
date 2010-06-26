@@ -328,6 +328,15 @@ MergeModel::iterator MergeModel::GetModelForRow (int row, int *starting)
 	throw std::runtime_error (qPrintable (msg));
 }
 
+QList<QAbstractItemModel*> MergeModel::GetAllModels () const
+{
+	QList<QAbstractItemModel*> result;
+	Q_FOREACH (QPointer<QAbstractItemModel> p, Models_)
+		if (p)
+			result << p.data ();
+	return result;
+}
+
 void MergeModel::handleColumnsAboutToBeInserted (const QModelIndex&, int, int)
 {
 	qWarning () << "model" << sender ()

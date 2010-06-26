@@ -19,6 +19,7 @@
 #ifndef PLUGINS_CSTP_CSTP_H
 #define PLUGINS_CSTP_CSTP_H
 #include <memory>
+#include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ijobholder.h>
@@ -28,7 +29,6 @@
 
 class QTabWidget;
 class QToolBar;
-class QModelIndex;
 class QTranslator;
 
 namespace boost
@@ -88,7 +88,7 @@ namespace LeechCraft
 				template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 				void SetupToolbar ();
 			private slots:
-				void handleItemSelected (const QModelIndex&);
+				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 				void handleFileExists (boost::logic::tribool*);
 				void handleError (const QString&);
 			signals:

@@ -177,6 +177,16 @@ namespace LeechCraft
 			 * for such row.
 			 */
 			iterator GetModelForRow (int row, int *starting = 0);
+
+			/** @brief Returns all models intalled into this one.
+			 *
+			 * Only those models that are not null (and, thus, haven't
+			 * been destroyed) are returned in the list. This list is
+			 * guaranteed to contain only valid objects.
+			 *
+			 * @return The list of models.
+			 */
+			QList<QAbstractItemModel*> GetAllModels () const;
 		public Q_SLOTS:
 			void handleColumnsAboutToBeInserted (const QModelIndex&, int, int);
 			void handleColumnsAboutToBeRemoved (const QModelIndex&, int, int);

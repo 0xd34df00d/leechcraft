@@ -42,11 +42,6 @@ namespace LeechCraft
 				return new ShortcutProxyWrapper (Proxy_->GetShortcutProxy ());
 			}
 
-			QTreeView* CoreProxyWrapper::GetCurrentView () const
-			{
-				return Proxy_->GetCurrentView ();
-			}
-
 			QModelIndex CoreProxyWrapper::MapToSource (const QModelIndex& index) const
 			{
 				return Proxy_->MapToSource (index);
@@ -90,11 +85,6 @@ namespace LeechCraft
 			void CoreProxyWrapper::FreeID (int id)
 			{
 				Proxy_->FreeID (id);
-			}
-
-			QObject* CoreProxyWrapper::GetTreeViewReemitter () const
-			{
-				return Proxy_->GetTreeViewReemitter ();
 			}
 
 			QObject* CoreProxyWrapper::GetPluginsManager () const

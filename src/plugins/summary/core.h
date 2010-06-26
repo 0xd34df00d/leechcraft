@@ -64,7 +64,6 @@ namespace LeechCraft
 				SummaryWidget *Default_;
 				SummaryWidget *Current_;
 				QList<SummaryWidget*> Others_;
-				TreeViewReemitter *Reemitter_;
 				mutable QHash<QAbstractItemModel*, QList<IFindProxy_ptr> > KeepProxiesThisWay_;
 
 				Core ();
@@ -76,7 +75,6 @@ namespace LeechCraft
 
 				void SecondInit ();
 
-				TreeViewReemitter* GetTreeViewReemitter () const;
 				SummaryWidget* GetDefaultTab () const;
 				QTreeView* GetCurrentView () const;
 
@@ -135,7 +133,7 @@ namespace LeechCraft
 				 *
 				 * For example, this is used in the Summary.
 				 */
-				QAbstractItemModel* GetTasksModel (const Query2& query) const;
+				Util::MergeModel* GetTasksModel (const Query2& query) const;
 
 				/** Returns list of tags for a given row using given model. It's
 				 * assumed that the passed model is actually a MergeModel.
@@ -167,7 +165,6 @@ namespace LeechCraft
 				void handleChangeTabName (const QString&);
 				void handleCurrentTabChanged (int);
 				void handleNeedToClose ();
-				void handleFilterUpdated ();
 				void handleTaskModelDestroyed ();
 			signals:
 				void addNewTab (const QString&, QWidget*);

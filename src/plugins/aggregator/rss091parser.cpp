@@ -91,6 +91,7 @@ namespace LeechCraft
 					result->Title_ = "<>";
 				result->Link_ = item.firstChildElement ("link").text ();
 				result->Description_ = item.firstChildElement ("description").text ();
+				GetDescription (item, result->Description_);
 				result->PubDate_ = RFC822TimeToQDateTime (item.firstChildElement ("pubDate").text ());
 				if (!result->PubDate_.isValid () || result->PubDate_.isNull ())
 				{

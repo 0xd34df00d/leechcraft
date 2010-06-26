@@ -195,7 +195,7 @@ namespace LeechCraft
 				void handleFastSpeedComboboxes ();
 				void setActionsEnabled ();
 				void showError (QString);
-				void handleItemSelected (const QModelIndex&);
+				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 			private:
 				void SetupCore ();
 				void SetupTorrentView ();

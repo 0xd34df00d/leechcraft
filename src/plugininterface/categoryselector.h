@@ -74,6 +74,7 @@ namespace LeechCraft
 			 * @sa GetSelections
 			 */
 			void SetPossibleSelections (const QStringList& selections);
+
 			/** @brief Gets selected items.
 			 *
 			 * Returns the selected items - a subset of selection variants
@@ -84,6 +85,17 @@ namespace LeechCraft
 			 * @sa SetPossibleSelections
 			 */
 			QStringList GetSelections ();
+
+			/** @brief Selects some of the items.
+			 *
+			 * Selects some of the items presented by elements of the
+			 * subset list.
+			 *
+			 * This function won't emit selectionChanged() signal.
+			 *
+			 * @param[in] subset The list of items to select.
+			 */
+			void SetSelections (const QStringList& subset);
 		protected:
 			/** @brief Checks whether after the move event the selector
 			 * won't be beoynd the screen. if it would, moves back.

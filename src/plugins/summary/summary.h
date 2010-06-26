@@ -64,7 +64,6 @@ namespace LeechCraft
 				void Handle (LeechCraft::Entity);
 
 				QModelIndex MapToSource (const QModelIndex&) const;
-				QObject* GetTreeViewReemitter () const;
 				QTreeView* GetCurrentView () const;
 			public slots:
 				void newTabRequested ();

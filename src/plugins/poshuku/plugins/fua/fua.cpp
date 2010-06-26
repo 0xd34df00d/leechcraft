@@ -34,28 +34,29 @@ using namespace LeechCraft::Util;
 void LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA::Init (ICoreProxy_ptr)
 {
 	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_fua"));
-	Browser2ID_ ["Firefox 1.5.0.4"] =
-		"Mozilla/5.0 (X11; U; x86_64 Linux; en_US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4";
-	Browser2ID_ ["Firefox 2.0.0.8"] =
-		"Mozilla/5.0 (X11; U; x86_64 Linux; en_US; rv:1.8.16) Gecko/20071015 Firefox/2.0.0.8";
-	Browser2ID_ ["IE 4.01 on Windows 2000"] =
-		"Mozilla/4.0 (compatible; MSIE 4.01; Windows NT 5.0)";
-	Browser2ID_ ["IE 5.0 on Mac PPC"] =
-		"Mozilla/4.0 (compatible; MSIE 5.0; Mac_PowerPC)";
-	Browser2ID_ ["IE 5.5 on Windows 2000"] =
-		"Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)";
-	Browser2ID_ ["IE 6.0 on Windows XP"] =
-		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
-	Browser2ID_ ["Mozilla 1.7.3 on Windows XP"] =
-		"Mozilla/5.0 (Windows; U; Windows NT 5.1; en_US; rv:1.7.3) Gecko/20040916";
-	Browser2ID_ ["Netscape 7.1 on Windows XP"] =
-		"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-CA; rv:1.4) Gecko/20030624 Netscape/7.1 (ax)";
-	Browser2ID_ ["Netscape Navigator 4.76 on Windows 95"] =
-		"Mozilla/4.7 [en_US] (Win95; U)";
-	Browser2ID_ ["Opera 4.03 on Windows NT 4.0"] =
-		"Opera/4.03 (Windows NT 4.0; U)";
-	Browser2ID_ ["Safari 2.0 on Mac OS X"] =
-		"Mozilla/5.0 (Macintosh; U; PPC Mac OS X; appLanguage) AppleWebKit/412 (KHTML, like Gecko) Safari/412";
+
+	Browser2ID_ ["Chromium 5 on Linux x86"] = "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.70 Safari/533.4";
+	Browser2ID_ ["Chromium 6 on Linux x86"] = "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.1 (KHTML, like Gecko) Chrome/6.0.427.0 Safari/534.1";
+	Browser2ID_ ["Chromium 6 on Windows 7"] = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.1 (KHTML, like Gecko) Chrome/6.0.437.3 Safari/534.1";
+	Browser2ID_ ["Epiphany 2.30 on Linux x86 (Ubuntu 10.04)"] = "Mozilla/5.0 (X11; U; Linux i686; en-us) AppleWebKit/531.2+ (KHTML, like Gecko) Safari/531.2+ Ubuntu/10.04 LTS () Epiphany/2.30.2";
+	Browser2ID_ ["Firefox 1.5.0.4 on Linux amd64"] = "Mozilla/5.0 (X11; U; x86_64 Linux; en_US; rv:1.8.0.4) Gecko/20060508 Firefox/1.5.0.4";
+	Browser2ID_ ["Firefox 2.0.0.8 on Linux amd64"] = "Mozilla/5.0 (X11; U; x86_64 Linux; en_US; rv:1.8.16) Gecko/20071015 Firefox/2.0.0.8";
+	Browser2ID_ ["Firefox 3.6.3 on Linux x86"] = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.3) Gecko/20100424 Gentoo Firefox/3.6.3";
+	Browser2ID_ ["IE 4.01 on Windows 2000"] = "Mozilla/4.0 (compatible; MSIE 4.01; Windows NT 5.0)";
+	Browser2ID_ ["IE 5.0 on Mac PPC"] = "Mozilla/4.0 (compatible; MSIE 5.0; Mac_PowerPC)";
+	Browser2ID_ ["IE 5.5 on Windows 2000"] = "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0)";
+	Browser2ID_ ["IE 6.0 on Windows XP"] = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
+	Browser2ID_ ["IE 8.0 on Windows XP SP3"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648; InfoPath.1; .NET CLR 3.5.21022; .NET CLR 1.1.4322; OfficeLiveConnector.1.4; OfficeLivePatch.1.3; .NET CLR 3.0.4506.2152)";
+	Browser2ID_ ["IE 8.0 on Windows 7"] = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.3)";
+	Browser2ID_ ["Mozilla 1.7.3 on Windows XP"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en_US; rv:1.7.3) Gecko/20040916";
+	Browser2ID_ ["Netscape 7.1 on Windows XP"] = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-CA; rv:1.4) Gecko/20030624 Netscape/7.1 (ax)";
+	Browser2ID_ ["Netscape Navigator 4.76 on Windows 95"] =  "Mozilla/4.7 [en_US] (Win95; U)";
+	Browser2ID_ ["Opera 4.03 on Windows NT 4.0"] = "Opera/4.03 (Windows NT 4.0; U)";
+	Browser2ID_ ["Opera 10.53 on Windows XP"] = "Opera/9.80 (Windows NT 5.1; U; en) Presto/2.5.24 Version/10.53";
+	Browser2ID_ ["Safari 2 on Mac OS X"] = "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; appLanguage) AppleWebKit/412 (KHTML, like Gecko) Safari/412";
+	Browser2ID_ ["Safari 5 on Windows 7"] = "Mozilla/5.0 (Windows; U; Windows NT 6.1; ru-RU) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16";
+	Browser2ID_ ["UCWeb 7 on Windows Mobile 5"] = "HTC_P3400-Mozilla/4.0 Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC)/UCWEB7.0.0.41/31/400";
+
 	Model_.reset (new QStandardItemModel);
 	Model_->setHorizontalHeaderLabels (QStringList (tr ("Domain"))
 				<< tr ("Agent")

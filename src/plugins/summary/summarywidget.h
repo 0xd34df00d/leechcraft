@@ -63,20 +63,21 @@ namespace LeechCraft
 				Ui::SummaryWidget GetUi () const;
 				void SetQuery (QStringList);
 			private:
+				void ReconnectModelSpecific ();
+				void ConnectObject (QObject*);
 				QStringList GetUniqueCategories () const;
 				void FillCombobox (QComboBox*);
 				QString GetQuery () const;
 				Query2 GetQuery2 () const;
 				void ReinitToolbar ();
 			private slots:
+				void handleActionTriggered (QAction*);
 				void updatePanes (const QModelIndex&, const QModelIndex&);
 				void filterParametersChanged ();
 				void filterReturnPressed ();
 				void feedFilterParameters ();
 				void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
-				void addCategoryBox ();
 				void handleCategoriesChanged (const QStringList&, const QStringList&);
-				void removeCategoryBox ();
 				void syncSelection (const QModelIndex&);
 			signals:
 				void changeTabName (const QString&);

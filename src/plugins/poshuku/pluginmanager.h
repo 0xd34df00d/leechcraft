@@ -96,8 +96,7 @@ namespace LeechCraft
 				void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 						QObject *browserWidget);
 				void hookIconRequested (LeechCraft::IHookProxy_ptr,
-						const QUrl& url,
-						QIcon *icon);
+						const QUrl& url);
 				void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
 						QWebPage *page,
 						QWebFrame *frame,

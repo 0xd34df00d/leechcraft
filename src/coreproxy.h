@@ -37,7 +37,6 @@ namespace LeechCraft
 		CoreProxy (QObject* = 0);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 		const IShortcutProxy* GetShortcutProxy () const;
-		QTreeView* GetCurrentView () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
 		Util::BaseSettingsManager* GetSettingsManager () const;
 		QMainWindow* GetMainWindow () const;
@@ -48,7 +47,6 @@ namespace LeechCraft
 		QStringList GetSearchCategories () const;
 		int GetID ();
 		void FreeID (int);
-		QObject* GetTreeViewReemitter () const;
 		IPluginsManager* GetPluginsManager () const;
 		QObject* GetSelf ();
 

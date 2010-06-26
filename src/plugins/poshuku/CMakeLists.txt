@@ -15,6 +15,12 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+OPTION (ENABLE_IDN "Enable support for Internationalized Domain Names" OFF)
+
+IF (ENABLE_IDN)
+	ADD_DEFINITIONS (-DENABLE_IDN)
+ENDIF (ENABLE_IDN)
+
 SET (QT_USE_QTSQL TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTWEBKIT TRUE)
@@ -143,17 +149,25 @@ SET (TRANSLATIONS
 	leechcraft_poshuku_ru_RU.ts
 	leechcraft_poshuku_uk_UA.ts
 	leechcraft_poshuku_ar.ts
+	leechcraft_poshuku_be.ts
 	leechcraft_poshuku_de.ts
+	leechcraft_poshuku_en.ts
 	leechcraft_poshuku_es.ts
+	leechcraft_poshuku_eo.ts
 	leechcraft_poshuku_fr.ts
+	leechcraft_poshuku_pl.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_ar.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_be.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_de.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_en.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_es.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_eo.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fr.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_pl.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
@@ -173,9 +187,15 @@ ADD_LIBRARY (leechcraft_poshuku SHARED
 	${UIS_H}
 	${RCCS}
 	)
+	
+IF (ENABLE_IDN)
+	SET (IDN_LIB "idn")
+ENDIF (ENABLE_IDN)
+
 TARGET_LINK_LIBRARIES (leechcraft_poshuku
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${IDN_LIB}
 	)
 INSTALL (TARGETS leechcraft_poshuku DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

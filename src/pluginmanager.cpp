@@ -74,6 +74,7 @@ namespace LeechCraft
 
 	PluginManager::PluginManager (QObject *parent)
 	: QAbstractItemModel (parent)
+	, DefaultPluginIcon_ (QIcon (":/resources/images/defaultpluginicon.svg"))
 	{
 		Headers_ << tr ("Name")
 			<< tr ("File");
@@ -120,6 +121,9 @@ namespace LeechCraft
 							QVariant result = settings.value ("Icon");
 							settings.endGroup ();
 							settings.endGroup ();
+							if (result.value<QIcon> ().isNull () &&
+									result.value<QPixmap> ().isNull ())
+								result = DefaultPluginIcon_;
 							return result;
 						}
 					case Qt::CheckStateRole:

@@ -333,11 +333,6 @@ public:
 	 */
 	virtual const IShortcutProxy* GetShortcutProxy () const = 0;
 
-	/** Returns the currently active QTreeView from a Summary tab or 0
-	 * if currently active tab is not Summary.
-	 */
-	virtual QTreeView* GetCurrentView () const = 0;
-
 	/** @brief Maps the given index up to the plugin's through the
 	 * hierarchy of LeechCraft's models
 	 */
@@ -420,11 +415,6 @@ public:
 	 * @sa GetID()
 	 */
 	virtual void FreeID (int id) = 0;
-
-	/** Returns the object that reemits the signals from the currently
-	 * active QTreeView.
-	 */
-	virtual QObject* GetTreeViewReemitter () const = 0;
 
 	/** @brief Returns the application's plugin manager.
 	 */

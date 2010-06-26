@@ -69,12 +69,6 @@ namespace LeechCraft
 				SetupCore ();
 				SetupTorrentView ();
 				SetupStuff ();
-
-				connect (proxy->GetTreeViewReemitter (),
-						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&,
-								QTreeView*)),
-						this,
-						SLOT (handleItemSelected (const QModelIndex&)));
 			
 				setActionsEnabled ();
 			}
@@ -281,7 +275,7 @@ namespace LeechCraft
 				return FilterModel_.get ();
 			}
 			
-			void TorrentPlugin::handleItemSelected (const QModelIndex& si)
+			void TorrentPlugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& si, const QModelIndex&)
 			{
 				QModelIndex item = Core::Instance ()->GetProxy ()->MapToSource (si);
 				if (item.model () != GetRepresentation ())
@@ -476,18 +470,21 @@ namespace LeechCraft
 					Core::Instance ()->MakeTorrent (wizard->GetParams ());
 				setActionsEnabled ();
 			}
-			
+
 			void TorrentPlugin::on_RemoveTorrent__triggered ()
 			{
-				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				QList<int> rows;
 				Q_FOREACH (QModelIndex si, sis)
 				{
@@ -514,15 +511,18 @@ namespace LeechCraft
 
 			void TorrentPlugin::on_Resume__triggered ()
 			{
-				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				QList<int> rows;
 				Q_FOREACH (QModelIndex si, sis)
 					Core::Instance ()->ResumeTorrent (Core::Instance ()->GetProxy ()->MapToSource (si).row ());
@@ -531,15 +531,18 @@ namespace LeechCraft
 			
 			void TorrentPlugin::on_Stop__triggered ()
 			{
-				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				QList<int> rows;
 				Q_FOREACH (QModelIndex si, sis)
 					Core::Instance ()->PauseTorrent (Core::Instance ()->GetProxy ()->MapToSource (si).row ());
@@ -548,17 +551,21 @@ namespace LeechCraft
 			
 			namespace
 			{
-				std::deque<int> GetSelections (QAbstractItemModel *model)
+				std::deque<int> GetSelections (QAbstractItemModel *model,
+						QObject *sender)
 				{
-					QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
-					if (!tree)
-						throw std::runtime_error ("No current view");
+					QModelIndexList sis;
+					try
+					{
+						sis = Util::GetSummarySelectedRows (sender);
+					}
+					catch (const std::runtime_error& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< e.what ();
+						throw e;
+					}
 
-					QItemSelectionModel *sel = tree->selectionModel ();
-					if (!sel)
-						throw std::runtime_error ("No selection model");
-
-					QModelIndexList sis = sel->selectedRows ();
 					std::deque<int> selections;
 					Q_FOREACH (QModelIndex si, sis)
 					{
@@ -574,19 +581,22 @@ namespace LeechCraft
 			
 			void TorrentPlugin::on_MoveUp__triggered ()
 			{
-				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				std::deque<int> selections;
 				try
 				{
-					selections = GetSelections (GetRepresentation ());
+					selections = GetSelections (GetRepresentation (), sender ());
 				}
 				catch (const std::exception& e)
 				{
@@ -597,7 +607,12 @@ namespace LeechCraft
 
 				Core::Instance ()->MoveUp (selections);
 
-				sel->clearSelection ();
+				QItemSelectionModel *sel = qobject_cast<QItemSelectionModel*> (sender ()->
+						property ("ItemSelectionModel").value<QObject*> ());
+
+				if (sel)
+					sel->clearSelection ();
+
 				QItemSelection selection;
 				Q_FOREACH (QModelIndex si, sis)
 				{
@@ -607,25 +622,30 @@ namespace LeechCraft
 					
 					selection.select (sibling, sibling);
 				}
-				sel->select (selection, QItemSelectionModel::Rows |
-						QItemSelectionModel::SelectCurrent);
+
+				if (sel)
+					sel->select (selection, QItemSelectionModel::Rows |
+							QItemSelectionModel::SelectCurrent);
 			}
 			
 			void TorrentPlugin::on_MoveDown__triggered ()
 			{
-				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				std::deque<int> selections;
 				try
 				{
-					selections = GetSelections (GetRepresentation ());
+					selections = GetSelections (GetRepresentation (), sender ());
 				}
 				catch (const std::exception& e)
 				{
@@ -636,7 +656,12 @@ namespace LeechCraft
 
 				Core::Instance ()->MoveDown (selections);
 
-				sel->clearSelection ();
+				QItemSelectionModel *sel = qobject_cast<QItemSelectionModel*> (sender ()->
+						property ("ItemSelectionModel").value<QObject*> ());
+
+				if (sel)
+					sel->clearSelection ();
+
 				QItemSelection selection;
 				Q_FOREACH (QModelIndex si, sis)
 				{
@@ -646,15 +671,18 @@ namespace LeechCraft
 
 					selection.select (sibling, sibling);
 				}
-				sel->select (selection, QItemSelectionModel::Rows |
-						QItemSelectionModel::SelectCurrent);
+
+				if (sel)
+					sel->select (selection, QItemSelectionModel::Rows |
+							QItemSelectionModel::SelectCurrent);
 			}
 			
 			void TorrentPlugin::on_MoveToTop__triggered ()
 			{
 				try
 				{
-					Core::Instance ()->MoveToTop (GetSelections (GetRepresentation ()));
+					Core::Instance ()->MoveToTop (GetSelections (GetRepresentation (),
+							sender ()));
 				}
 				catch (const std::exception& e)
 				{
@@ -668,7 +696,8 @@ namespace LeechCraft
 			{
 				try
 				{
-					Core::Instance ()->MoveToBottom (GetSelections (GetRepresentation ()));
+					Core::Instance ()->MoveToBottom (GetSelections (GetRepresentation (),
+							sender ()));
 				}
 				catch (const std::exception& e)
 				{
@@ -682,7 +711,7 @@ namespace LeechCraft
 			{
 				try
 				{
-					Q_FOREACH (int torrent, GetSelections (GetRepresentation ()))
+					Q_FOREACH (int torrent, GetSelections (GetRepresentation (), sender ()))
 						Core::Instance ()->ForceReannounce (torrent);
 				}
 				catch (const std::exception& e)
@@ -697,7 +726,7 @@ namespace LeechCraft
 			{
 				try
 				{
-					Q_FOREACH (int torrent, GetSelections (GetRepresentation ()))
+					Q_FOREACH (int torrent, GetSelections (GetRepresentation (), sender ()))
 						Core::Instance ()->ForceRecheck (torrent);
 				}
 				catch (const std::exception& e)
@@ -710,15 +739,18 @@ namespace LeechCraft
 			
 			void TorrentPlugin::on_ChangeTrackers__triggered ()
 			{
-				QTreeView *tree = Core::Instance ()->GetProxy ()->GetCurrentView ();
-				if (!tree)
+				QModelIndexList sis;
+				try
+				{
+					sis = Util::GetSummarySelectedRows (sender ());
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					return;
+				}
 
-				QItemSelectionModel *sel = tree->selectionModel ();
-				if (!sel)
-					return;
-
-				QModelIndexList sis = sel->selectedRows ();
 				QList<int> rows;
 				std::vector<libtorrent::announce_entry> allTrackers;
 				Q_FOREACH (QModelIndex si, sis)
