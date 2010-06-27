@@ -67,6 +67,7 @@ namespace LeechCraft
 				Toolbar_->addAction (Ui_.ActionSaveAs_);
 
 				Ui_.TextEditor_->setAutoIndent (true);
+				Ui_.TextEditor_->setUtf8 (true);
 
 				QMenu *doctypeMenu = new QMenu ("Document type");
 				doctypeMenu->addAction ("C++");
