@@ -1,5 +1,5 @@
 /**********************************************************************
- * LeechCraft - modular cross-platform feature rich internet client.
+1 * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -84,7 +84,20 @@ namespace LeechCraft
 						SIGNAL (languageChanged (const QString&)),
 						this,
 						SLOT (checkProperDoctypeAction (const QString&)));
+
 				WindowMenus_ ["tools"] << DoctypeMenu_->menuAction ();
+				WindowMenus_ ["tools"] << Ui_.ActionShowEOL_;
+				WindowMenus_ ["tools"] << Ui_.ActionShowCaretLine_;
+
+				connect (Ui_.ActionShowEOL_,
+						SIGNAL (toggled (bool)),
+						Ui_.TextEditor_,
+						SLOT (setEolVisibility (bool)));
+				connect (Ui_.ActionShowCaretLine_,
+						SIGNAL (toggled (bool)),
+						Ui_.TextEditor_,
+						SLOT (setCaretLineVisible (bool)));
+				Ui_.TextEditor_->setCaretLineVisible (true);
 			}
 
 			void EditorPage::SetParentMultiTabs (QObject *parent)

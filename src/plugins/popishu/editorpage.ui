@@ -69,6 +69,25 @@
     <string>documentsaveas</string>
    </property>
   </action>
+  <action name="ActionShowEOL_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show end of lines</string>
+   </property>
+  </action>
+  <action name="ActionShowCaretLine_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show caret line</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
