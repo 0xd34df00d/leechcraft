@@ -82,6 +82,9 @@ namespace LeechCraft
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
 		FancyPopupManager* GetFancyPopupManager () const;
+
+		void AddMenus (const QMap<QString, QList<QAction*> >&);
+		void RemoveMenus (const QMap<QString, QList<QAction*> >&);
 	public slots:
 		void catchError (QString);
 	protected:

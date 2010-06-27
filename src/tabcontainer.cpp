@@ -376,9 +376,18 @@ void TabContainer::bringToFront (QWidget *widget) const
 	TabWidget_->setCurrentWidget (widget);
 }
 
-void TabContainer::handleCurrentChanged (int)
+void TabContainer::handleCurrentChanged (int index)
 {
 	InvalidateName ();
+
+	IMultiTabsWidget *imtw = qobject_cast<IMultiTabsWidget*> (TabWidget_->widget (index));
+	if (imtw)
+	{
+		QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
+		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
+		Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
+		Menus_ = menus;
+	}
 }
 
 void TabContainer::handleMoveHappened (int from, int to)

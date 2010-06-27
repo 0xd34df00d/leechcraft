@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QMap>
 
+class QAction;
 class QIcon;
 class QKeyEvent;
 class QToolBar;
@@ -43,6 +44,7 @@ namespace LeechCraft
 		QList<QObject*> RegisteredMultiTabs_;
 		QMenu *NewTabMenu_;
 		QMenu *RestoreMenu_;
+		QMap<QString, QList<QAction*> > Menus_;
 	public:
 		TabContainer (TabWidget*, QObject* = 0);
 		virtual ~TabContainer ();

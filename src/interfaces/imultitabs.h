@@ -19,6 +19,7 @@
 #ifndef INTERFACES_IMULTITABS_H
 #define INTERFACES_IMULTITABS_H
 #include <QtPlugin>
+#include <QMap>
 
 class QToolBar;
 
@@ -58,6 +59,24 @@ public:
 	/** Returns the list of QActions for the context menu of the tab bar.
 	 */
 	virtual QList<QAction*> GetTabBarContextMenuActions () const = 0;
+
+	/** Returns the list of QActions for menus identified by the keys of
+	 * the returned map.
+	 *
+	 * Currently the key "view" serves for View menu, "tools" for Tools,
+	 * and other keys can have any name — they will be prepended before
+	 * the "Help" menu.
+	 *
+	 * Cause this function is expected to be rarely used, the default
+	 * implementation does nothing and returns an empty map.
+	 *
+	 * @return The map with keys identifying menus and values — the
+	 * corresponding list of actions.
+	 */
+	virtual QMap<QString, QList<QAction*> > GetWindowMenus () const
+	{
+		return QMap<QString, QList<QAction*> > ();
+	}
 };
 
 /** @brief Interface for plugins having (and opening/closing) multiple

@@ -178,6 +178,53 @@ LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () c
 	return FancyPopupManager_;
 }
 
+void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& menus)
+{
+	Q_FOREACH (const QString& menuName, menus.keys ())
+	{
+		QMenu *toInsert = 0;
+		if (menuName == "view")
+			toInsert = Ui_.MenuView_;
+		else if (menuName == "tools")
+			toInsert = Ui_.MenuTools_;
+
+		if (toInsert)
+			toInsert->insertActions (toInsert->actions ().at (0),
+					menus [menuName]);
+		else
+		{
+			QMenu *menu = new QMenu (menuName);
+			menu->addActions (menus [menuName]);
+			menuBar ()->insertMenu (Ui_.MenuHelp_->menuAction (), menu);
+			Ui_.ActionMenu_->menu ()->insertMenu (Ui_.MenuHelp_->menuAction (), menu);
+		}
+	}
+}
+
+void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*> >& menus)
+{
+	Q_FOREACH (const QString& menuName, menus.keys ())
+	{
+		QMenu *toRemove = 0;
+		if (menuName == "view")
+			toRemove = Ui_.MenuView_;
+		else if (menuName == "tools")
+			toRemove = Ui_.MenuTools_;
+
+		if (toRemove)
+			Q_FOREACH (QAction *action, menus [menuName])
+				toRemove->removeAction (action);
+		else
+			Q_FOREACH (QAction *action, menuBar ()->actions ())
+				if (action->text () == menuName)
+				{
+					menuBar ()->removeAction (action);
+					Ui_.ActionMenu_->menu ()->removeAction (action);
+					break;
+				}
+	}
+}
+
 void LeechCraft::MainWindow::catchError (QString message)
 {
 	Entity e = Util::MakeEntity ("LeechCraft",
