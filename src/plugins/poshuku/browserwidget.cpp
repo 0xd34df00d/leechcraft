@@ -1311,7 +1311,6 @@ namespace LeechCraft
 				emit urlChanged (value);
 				QString userText = value;
 #ifdef ENABLE_IDN
-				qDebug () << Q_FUNC_INFO << "IDN enabled";
 				if (userText.contains ("xn--"))
 				{
 					QRegExp rx ("(?://|\\.)xn--(.+)(?:\\.|/)");
