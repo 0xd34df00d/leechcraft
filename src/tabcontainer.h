@@ -43,8 +43,8 @@ namespace LeechCraft
 		QMap<QWidget*, QObject*> EmbedTabs_;
 		QList<QObject*> RegisteredMultiTabs_;
 		QMenu *NewTabMenu_;
-		QMenu *RestoreMenu_;
 		QMap<QString, QList<QAction*> > Menus_;
+		QMap<QString, QAction*> ReaddOnRestore_;
 	public:
 		TabContainer (TabWidget*, QObject* = 0);
 		virtual ~TabContainer ();

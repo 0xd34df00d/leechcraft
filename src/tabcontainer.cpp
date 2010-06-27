@@ -36,10 +36,7 @@ TabContainer::TabContainer (TabWidget *tabWidget,
 : QObject (parent)
 , TabWidget_ (tabWidget)
 , NewTabMenu_ (new QMenu (tr ("New tab menu")))
-, RestoreMenu_ (new QMenu (tr ("Restore tabs")))
 {
-	NewTabMenu_->addMenu (RestoreMenu_);
-
 	for (int i = 0; i < TabWidget_->count (); ++i)
 		OriginalTabNames_ << TabWidget_->tabText (i);
 
@@ -212,12 +209,10 @@ void TabContainer::AddObject (QObject *obj)
 			QString name = ii->GetName ();
 			QString info = ii->GetInfo ();
 			QIcon icon = ii->GetIcon ();
-			NewTabMenu_->removeAction (RestoreMenu_->menuAction ());
 			NewTabMenu_->addAction (icon,
-					QString ("%1 (%2)").arg (name).arg (info),
+					name,
 					obj,
 					SLOT (newTabRequested ()))->setToolTip (info);
-			NewTabMenu_->addMenu (RestoreMenu_);
 		}
 		catch (const std::exception& e)
 		{
@@ -300,10 +295,26 @@ void TabContainer::remove (int index)
 			EmbedTabs_.remove (widget);
 			remove (widget);
 
-			RestoreMenu_->addAction (icon, name,
-					this,
-					SLOT (restoreEmbedTab ()))->
-				setData (QVariant::fromValue<QObject*> (obj));
+			QAction *action = 0;
+			Q_FOREACH (QAction *act, NewTabMenu_->actions ())
+				if (act->text () == name)
+				{
+					action = new QAction (icon, name, this);
+					connect (action,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (restoreEmbedTab ()));
+					NewTabMenu_->insertAction (act, action);
+					NewTabMenu_->removeAction (act);
+					ReaddOnRestore_ [name] = act;
+					break;
+				}
+
+			if (!action)
+				action = NewTabMenu_->addAction (icon, name,
+						this,
+						SLOT (restoreEmbedTab ()));
+			action->setData (QVariant::fromValue<QObject*> (obj));
 		}
 		catch (const std::exception& e)
 		{
@@ -444,6 +455,12 @@ void TabContainer::restoreEmbedTab ()
 		XmlSettingsManager::Instance ()->
 				setProperty (qPrintable (QString ("Hide%1").arg (name)),
 						false);
+		if (ReaddOnRestore_.contains (action->text ()))
+		{
+			QAction *readd = ReaddOnRestore_ [action->text ()];
+			NewTabMenu_->insertAction (action, readd);
+		}
+
 		action->deleteLater ();
 		AddObject (obj);
 	}
