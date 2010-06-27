@@ -70,6 +70,7 @@ namespace LeechCraft
 				void on_ActionWSInvisible__triggered ();
 				void on_ActionWSVisible__triggered ();
 				void on_ActionWSVisibleAfterIndent__triggered ();
+				void on_ActionShowLineNumbers__toggled (bool);
 				void on_TextEditor__textChanged ();
 
 				void checkInterpreters (const QString& language);

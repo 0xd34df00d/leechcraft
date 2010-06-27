@@ -85,16 +85,19 @@ namespace LeechCraft
 						this,
 						SLOT (checkProperDoctypeAction (const QString&)));
 
-				WindowMenus_ ["tools"] << DoctypeMenu_->menuAction ();
-				WindowMenus_ ["tools"] << Ui_.ActionShowEOL_;
-				WindowMenus_ ["tools"] << Ui_.ActionShowCaretLine_;
+				QString editor = tr ("Editor");
+				WindowMenus_ [editor] << DoctypeMenu_->menuAction ();
+				WindowMenus_ [editor] << Ui_.ActionShowEOL_;
+				WindowMenus_ [editor] << Ui_.ActionShowCaretLine_;
+				WindowMenus_ [editor] << Ui_.ActionAutoIndent_;
 
 				QMenu *wsVis = new QMenu (tr ("Whitespace visibility"));
 				wsVis->addAction (Ui_.ActionWSInvisible_);
 				wsVis->addAction (Ui_.ActionWSVisible_);
 				wsVis->addAction (Ui_.ActionWSVisibleAfterIndent_);
+				WindowMenus_ [editor] << wsVis->menuAction ();
 
-				WindowMenus_ ["tools"] << wsVis->menuAction ();
+				WindowMenus_ [editor] << Ui_.ActionShowLineNumbers_;
 
 				connect (Ui_.ActionShowEOL_,
 						SIGNAL (toggled (bool)),
@@ -104,7 +107,13 @@ namespace LeechCraft
 						SIGNAL (toggled (bool)),
 						Ui_.TextEditor_,
 						SLOT (setCaretLineVisible (bool)));
+				connect (Ui_.ActionAutoIndent_,
+						SIGNAL (toggled (bool)),
+						Ui_.TextEditor_,
+						SLOT (setAutoIndent (bool)));
 				Ui_.TextEditor_->setCaretLineVisible (true);
+
+				Ui_.TextEditor_->setAutoCompletionThreshold (1);
 			}
 
 			void EditorPage::SetParentMultiTabs (QObject *parent)
@@ -250,6 +259,13 @@ namespace LeechCraft
 				SetWhitespaceVisibility (QsciScintilla::WsVisibleAfterIndent);
 			}
 
+			void EditorPage::on_ActionShowLineNumbers__toggled (bool enable)
+			{
+				Ui_.TextEditor_->setMarginType (0, QsciScintilla::NumberMargin);
+				Ui_.TextEditor_->setMarginWidth (0, "1000");
+				Ui_.TextEditor_->setMarginLineNumbers (0, enable);
+			}
+
 			void EditorPage::on_TextEditor__textChanged ()
 			{
 				Modified_ = true;
@@ -316,20 +332,24 @@ namespace LeechCraft
 
 			QsciLexer* EditorPage::GetLexerByLanguage (const QString& lang) const
 			{
+				QsciLexer *result = 0;
 				if (lang == "C++")
-					return new QsciLexerCPP (Ui_.TextEditor_);
+					result = new QsciLexerCPP (Ui_.TextEditor_);
 				else if (lang == "CSS")
-					return new QsciLexerCSS (Ui_.TextEditor_);
+					result = new QsciLexerCSS (Ui_.TextEditor_);
 				else if (lang == "HTML")
-					return new QsciLexerHTML (Ui_.TextEditor_);
+					result = new QsciLexerHTML (Ui_.TextEditor_);
 				else if (lang == "JavaScript")
-					return new QsciLexerJavaScript (Ui_.TextEditor_);
+					result = new QsciLexerJavaScript (Ui_.TextEditor_);
 				else if (lang == "Python")
-					return new QsciLexerPython (Ui_.TextEditor_);
+					result = new QsciLexerPython (Ui_.TextEditor_);
 				else if (lang == "XML")
-					return new QsciLexerXML (Ui_.TextEditor_);
-				else
-					return 0;
+					result = new QsciLexerXML (Ui_.TextEditor_);
+
+				if (result)
+					result->setFont (QFont ("Terminus"));
+
+				return result;
 			}
 
 			QString EditorPage::GetLanguage (const QString& name) const

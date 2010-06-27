@@ -118,6 +118,27 @@
     <string>Visible after indent</string>
    </property>
   </action>
+  <action name="ActionAutoIndent_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Automatic indentation</string>
+   </property>
+  </action>
+  <action name="ActionShowLineNumbers_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show line numbers</string>
+   </property>
+  </action>
+  <action name="ActionEnableFolding_">
+   <property name="text">
+    <string>Enable folding</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
