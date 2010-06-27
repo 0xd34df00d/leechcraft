@@ -162,7 +162,7 @@ namespace LeechCraft
 		 * An empty mime is considered to be no mime.
 		 *
 		 * Some predefined or commonly used ones:
-		 * - "x-leechcraft/notification"
+		 * - x-leechcraft/notification
 		 *   A notification item. It should have a "Priority"
 		 *   Additional_ member with int values of enum Priority,
 		 *   Entity_ is expected to be a QString with notification
@@ -176,6 +176,10 @@ namespace LeechCraft
 		 *   notificationActionTriggered(int) which would be called with
 		 *   the index of the selected action, if any. The index
 		 *   corresponds to the position in NotificationActions list.
+		 * - x-leechcraft/plain-text-document
+		 *   A plaintext document. Entity_ contains the contents of the
+		 *   document in this case, and Additional_ ["Language"] may
+		 *   contain the language of this document (like C++/JS/whatever).
 		 */
 		QString Mime_;
 
