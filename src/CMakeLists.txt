@@ -101,8 +101,9 @@ OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
 OPTION (ENABLE_AZOTH "Build Azoth, the IM client" ON)
 OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" ON)
 OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
+OPTION (ENABLE_POPISHU "Build Qrosp, the scripting support plugin" OFF)
 
-if (ENABLE_SUMMARY)
+IF (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
 ENDIF (ENABLE_SUMMARY)
 
@@ -209,6 +210,10 @@ ENDIF (ENABLE_SECMAN)
 IF (ENABLE_QROSP)
 	ADD_SUBDIRECTORY (plugins/qrosp)
 ENDIF (ENABLE_QROSP)
+
+IF (ENABLE_POPISHU)
+	ADD_SUBDIRECTORY (plugins/popishu)
+ENDIF (ENABLE_POPISHU)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
