@@ -912,6 +912,21 @@ namespace LeechCraft
 			void BrowserWidget::handleViewSources ()
 			{
 				QString html = Ui_.WebView_->page ()->mainFrame ()->toHtml ();
+
+				Entity e = Util::MakeEntity (html,
+						QString (),
+						FromUserInitiated,
+						"x-leechcraft/plain-text-document");
+				e.Additional_ ["Language"] = "HTML";
+
+				bool ch = false;
+				emit couldHandle (e, &ch);
+				if (ch)
+				{
+					emit gotEntity (e);
+					return;
+				}
+
 				SourceViewer *viewer = new SourceViewer (this);
 				viewer->setAttribute (Qt::WA_DeleteOnClose);
 				viewer->SetHtml (html);
