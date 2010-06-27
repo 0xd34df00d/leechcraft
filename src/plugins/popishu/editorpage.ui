@@ -88,6 +88,36 @@
     <string>Show caret line</string>
    </property>
   </action>
+  <action name="ActionWSInvisible_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Invisible</string>
+   </property>
+  </action>
+  <action name="ActionWSVisible_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Always visible</string>
+   </property>
+   <property name="toolTip">
+    <string>Always visible</string>
+   </property>
+  </action>
+  <action name="ActionWSVisibleAfterIndent_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Visible after indent</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

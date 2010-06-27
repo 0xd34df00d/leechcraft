@@ -67,11 +67,15 @@ namespace LeechCraft
 				void on_ActionOpen__triggered ();
 				void on_ActionSave__triggered ();
 				void on_ActionSaveAs__triggered ();
+				void on_ActionWSInvisible__triggered ();
+				void on_ActionWSVisible__triggered ();
+				void on_ActionWSVisibleAfterIndent__triggered ();
 				void on_TextEditor__textChanged ();
 
 				void checkInterpreters (const QString& language);
 				void checkProperDoctypeAction (const QString& language);
 			private:
+				void SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility);
 				bool Save ();
 				QsciLexer* GetLexerByLanguage (const QString&) const;
 				QString GetLanguage (const QString& filename) const;

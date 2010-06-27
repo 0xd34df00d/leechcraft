@@ -69,7 +69,7 @@ namespace LeechCraft
 				Ui_.TextEditor_->setAutoIndent (true);
 				Ui_.TextEditor_->setUtf8 (true);
 
-				DoctypeMenu_ = new QMenu ("Document type");
+				DoctypeMenu_ = new QMenu (tr ("Document type"));
 				DoctypeMenu_->addAction ("C++")->setCheckable (true);
 				DoctypeMenu_->addAction ("CSS")->setCheckable (true);
 				DoctypeMenu_->addAction ("HTML")->setCheckable (true);
@@ -88,6 +88,13 @@ namespace LeechCraft
 				WindowMenus_ ["tools"] << DoctypeMenu_->menuAction ();
 				WindowMenus_ ["tools"] << Ui_.ActionShowEOL_;
 				WindowMenus_ ["tools"] << Ui_.ActionShowCaretLine_;
+
+				QMenu *wsVis = new QMenu (tr ("Whitespace visibility"));
+				wsVis->addAction (Ui_.ActionWSInvisible_);
+				wsVis->addAction (Ui_.ActionWSVisible_);
+				wsVis->addAction (Ui_.ActionWSVisibleAfterIndent_);
+
+				WindowMenus_ ["tools"] << wsVis->menuAction ();
 
 				connect (Ui_.ActionShowEOL_,
 						SIGNAL (toggled (bool)),
@@ -228,6 +235,21 @@ namespace LeechCraft
 					Filename_ = fname;
 			}
 
+			void EditorPage::on_ActionWSInvisible__triggered ()
+			{
+				SetWhitespaceVisibility (QsciScintilla::WsInvisible);
+			}
+
+			void EditorPage::on_ActionWSVisible__triggered ()
+			{
+				SetWhitespaceVisibility (QsciScintilla::WsVisible);
+			}
+
+			void EditorPage::on_ActionWSVisibleAfterIndent__triggered ()
+			{
+				SetWhitespaceVisibility (QsciScintilla::WsVisibleAfterIndent);
+			}
+
 			void EditorPage::on_TextEditor__textChanged ()
 			{
 				Modified_ = true;
@@ -244,6 +266,18 @@ namespace LeechCraft
 					act->blockSignals (true);
 					act->setChecked (act->text () == language);
 					act->blockSignals (false);
+				}
+			}
+
+			void EditorPage::SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility wv)
+			{
+				Ui_.TextEditor_->setWhitespaceVisibility (wv);
+				QAction *senderAct = qobject_cast<QAction*> (sender ());
+				if (senderAct)
+				{
+					senderAct->blockSignals (true);
+					senderAct->setChecked (true);
+					senderAct->blockSignals (false);
 				}
 			}
 
