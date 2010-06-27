@@ -47,6 +47,7 @@ namespace LeechCraft
 				void changeTabIcon (QWidget*, const QIcon&);
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
+				void raiseTab (QWidget*);
 			};
 		};
 	};

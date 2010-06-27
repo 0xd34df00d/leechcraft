@@ -17,6 +17,18 @@
  **********************************************************************/
 
 #include "editorpage.h"
+#include <QToolBar>
+#include <QFileDialog>
+#include <QFile>
+#include <QMessageBox>
+#include <QMenu>
+#include <QFileInfo>
+#include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexercss.h>
+#include <Qsci/qscilexerhtml.h>
+#include <Qsci/qscilexerjavascript.h>
+#include <Qsci/qscilexerpython.h>
+#include <Qsci/qscilexerxml.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -29,9 +41,45 @@ namespace LeechCraft
 
 			EditorPage::EditorPage (QWidget *parent)
 			: QWidget (parent)
+			, Toolbar_ (new QToolBar)
+			, Modified_ (false)
 			{
+#define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
+				DEFPAIR (C++, cpp);
+				DEFPAIR (C++, h);
+				DEFPAIR (C++, cxx);
+				DEFPAIR (C++, hxx);
+				DEFPAIR (CSS, css);
+				DEFPAIR (HTML, htm);
+				DEFPAIR (HTML, html);
+				DEFPAIR (HTML, xhtml);
+				DEFPAIR (JavaScript, es);
+				DEFPAIR (JavaScript, js);
+				DEFPAIR (JavaScript, qs);
+				DEFPAIR (Python, py);
+				DEFPAIR (XML, xml);
+#undef DEFPAIR
 				Ui_.setupUi (this);
+
+				Toolbar_->addAction (Ui_.ActionNew_);
+				Toolbar_->addAction (Ui_.ActionOpen_);
+				Toolbar_->addAction (Ui_.ActionSave_);
+				Toolbar_->addAction (Ui_.ActionSaveAs_);
+
 				Ui_.TextEditor_->setAutoIndent (true);
+
+				QMenu *doctypeMenu = new QMenu ("Document type");
+				doctypeMenu->addAction ("C++");
+				doctypeMenu->addAction ("CSS");
+				doctypeMenu->addAction ("HTML");
+				doctypeMenu->addAction ("JavaScript");
+				doctypeMenu->addAction ("Python");
+				doctypeMenu->addAction ("XML");
+				connect (doctypeMenu,
+						SIGNAL (triggered (QAction*)),
+						this,
+						SLOT (selectDoctype (QAction*)));
+				WindowMenus_ ["tools"] << doctypeMenu->menuAction ();
 			}
 
 			void EditorPage::SetParentMultiTabs (QObject *parent)
@@ -41,12 +89,32 @@ namespace LeechCraft
 
 			void EditorPage::Remove ()
 			{
+				if (Modified_)
+				{
+					QString name = QFileInfo (Filename_).fileName ();
+					if (name.isEmpty ())
+						name = tr ("Untitled");
+
+					QMessageBox::StandardButton res =
+							QMessageBox::question (this,
+									tr ("LeechCraft"),
+									tr ("The document <em>%1</em> is modified. "
+										"Do you want to save it now?")
+										.arg (name),
+									QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+					if (res == QMessageBox::Cancel)
+						return;
+					else if (res == QMessageBox::Yes)
+						on_ActionSave__triggered ();
+				}
+
 				emit removeTab (this);
+				deleteLater ();
 			}
 
 			QToolBar* EditorPage::GetToolBar () const
 			{
-				return 0;
+				return Toolbar_;
 			}
 
 			void EditorPage::NewTabRequested ()
@@ -62,6 +130,136 @@ namespace LeechCraft
 			QList<QAction*> EditorPage::GetTabBarContextMenuActions () const
 			{
 				return QList<QAction*> ();
+			}
+
+			QMap<QString, QList<QAction*> > EditorPage::GetWindowMenus () const
+			{
+				return WindowMenus_;
+			}
+
+			void EditorPage::selectDoctype (QAction *action)
+			{
+				QString name = action->text ();
+				Ui_.TextEditor_->setLexer (GetLexerByLanguage (name));
+				emit languageChanged (name);
+			}
+
+			void EditorPage::on_ActionNew__triggered ()
+			{
+				Filename_.clear ();
+
+				Ui_.TextEditor_->setText (QString ());
+				Modified_ = false;
+
+				emit changeTabName (this, QString ("%1 - Popishu")
+						.arg (tr ("Untitled")));
+			}
+
+			void EditorPage::on_ActionOpen__triggered ()
+			{
+				QString filename = QFileDialog::getOpenFileName (this,
+						tr ("Select file to open"));
+				if (filename.isEmpty ())
+					return;
+
+				QFile file (filename);
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Could not open file %1 for reading.")
+								.arg (filename));
+					return;
+				}
+
+				Filename_ = filename;
+				Ui_.TextEditor_->setText (file.readAll ());
+
+				Ui_.TextEditor_->setLexer (GetLexerByLanguage (GetLanguage (Filename_)));
+				emit languageChanged (GetLanguage (Filename_));
+
+				Modified_ = false;
+
+				emit changeTabName (this, QString ("%1 - Popishu")
+						.arg (Filename_));
+			}
+
+			void EditorPage::on_ActionSave__triggered ()
+			{
+				Save ();
+			}
+
+			void EditorPage::on_ActionSaveAs__triggered ()
+			{
+				QString fname = Filename_;
+				Filename_.clear ();
+				if (!Save ())
+					Filename_ = fname;
+			}
+
+			void EditorPage::on_TextEditor__textChanged ()
+			{
+				Modified_ = true;
+			}
+
+			void EditorPage::checkInterpreters (const QString& language)
+			{
+			}
+
+			bool EditorPage::Save ()
+			{
+				if (Filename_.isEmpty ())
+				{
+					Filename_ = QFileDialog::getSaveFileName (this,
+							tr ("Select file to save"));
+					if (Filename_.isEmpty ())
+						return false;
+
+					emit changeTabName (this, QString ("%1 - Popishu")
+							.arg (Filename_));
+				}
+
+				QFile file (Filename_);
+				if (!file.open (QIODevice::WriteOnly))
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Could not open file %1 for writing.")
+								.arg (Filename_));
+					return false;
+				}
+
+				file.write (Ui_.TextEditor_->text ().toUtf8 ());
+
+				Ui_.TextEditor_->setLexer (GetLexerByLanguage (GetLanguage (Filename_)));
+				emit languageChanged (GetLanguage (Filename_));
+
+				Modified_ = false;
+
+				return true;
+			}
+
+			QsciLexer* EditorPage::GetLexerByLanguage (const QString& lang) const
+			{
+				if (lang == "C++")
+					return new QsciLexerCPP (Ui_.TextEditor_);
+				else if (lang == "CSS")
+					return new QsciLexerCSS (Ui_.TextEditor_);
+				else if (lang == "HTML")
+					return new QsciLexerHTML (Ui_.TextEditor_);
+				else if (lang == "JavaScript")
+					return new QsciLexerJavaScript (Ui_.TextEditor_);
+				else if (lang == "Python")
+					return new QsciLexerPython (Ui_.TextEditor_);
+				else if (lang == "XML")
+					return new QsciLexerXML (Ui_.TextEditor_);
+				else
+					return 0;
+			}
+
+			QString EditorPage::GetLanguage (const QString& name) const
+			{
+				return Extension2Lang_ [QFileInfo (name).suffix ()];
 			}
 		};
 	};

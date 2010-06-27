@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POPISHU_EDITORPAGE_H
 #define PLUGINS_POPISHU_EDITORPAGE_H
 #include <QWidget>
+#include <QHash>
 #include <interfaces/imultitabs.h>
 #include "ui_editorpage.h"
 
@@ -37,6 +38,12 @@ namespace LeechCraft
 				Ui::EditorPage Ui_;
 
 				static QObject* S_MultiTabsParent_;
+
+				QToolBar *Toolbar_;
+				QString Filename_;
+				bool Modified_;
+				QMap<QString, QList<QAction*> > WindowMenus_;
+				QHash<QString, QString> Extension2Lang_;
 			public:
 				EditorPage (QWidget* = 0);
 
@@ -47,12 +54,28 @@ namespace LeechCraft
 				void NewTabRequested ();
 				QObject* ParentMultiTabs () const;
 				QList<QAction*> GetTabBarContextMenuActions () const;
+				QMap<QString, QList<QAction*> > GetWindowMenus () const;
+			private slots:
+				void selectDoctype (QAction*);
+				void on_ActionNew__triggered ();
+				void on_ActionOpen__triggered ();
+				void on_ActionSave__triggered ();
+				void on_ActionSaveAs__triggered ();
+				void on_TextEditor__textChanged ();
+
+				void checkInterpreters (const QString& language);
+			private:
+				bool Save ();
+				QsciLexer* GetLexerByLanguage (const QString&) const;
+				QString GetLanguage (const QString& filename) const;
 			signals:
 				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);
 				void changeTabIcon (QWidget*, const QIcon&);
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
+
+				void languageChanged (const QString& language);
 			};
 		};
 	};

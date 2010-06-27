@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>277</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,6 +25,50 @@
     </widget>
    </item>
   </layout>
+  <action name="ActionNew_">
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string>documentnew</string>
+   </property>
+  </action>
+  <action name="ActionOpen_">
+   <property name="text">
+    <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string>documentopen</string>
+   </property>
+  </action>
+  <action name="ActionSave_">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string>documentsave</string>
+   </property>
+  </action>
+  <action name="ActionSaveAs_">
+   <property name="text">
+    <string>Save as...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string>documentsaveas</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

@@ -37,7 +37,9 @@ namespace LeechCraft
 
 			void Core::NewTabRequested ()
 			{
-				emit addNewTab ("Popishu", MakeEditorPage ());
+				EditorPage *page = MakeEditorPage ();
+				emit addNewTab ("Popishu", page);
+				emit raiseTab (page);
 			}
 
 			EditorPage* Core::MakeEditorPage ()
@@ -47,6 +49,10 @@ namespace LeechCraft
 						SIGNAL (removeTab (QWidget*)),
 						this,
 						SIGNAL (removeTab (QWidget*)));
+				connect (result,
+						SIGNAL (changeTabName (QWidget*, const QString&)),
+						this,
+						SIGNAL (changeTabName (QWidget*, const QString&)));
 				return result;
 			}
 		};
