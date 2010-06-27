@@ -69,18 +69,22 @@ namespace LeechCraft
 				Ui_.TextEditor_->setAutoIndent (true);
 				Ui_.TextEditor_->setUtf8 (true);
 
-				QMenu *doctypeMenu = new QMenu ("Document type");
-				doctypeMenu->addAction ("C++");
-				doctypeMenu->addAction ("CSS");
-				doctypeMenu->addAction ("HTML");
-				doctypeMenu->addAction ("JavaScript");
-				doctypeMenu->addAction ("Python");
-				doctypeMenu->addAction ("XML");
-				connect (doctypeMenu,
+				DoctypeMenu_ = new QMenu ("Document type");
+				DoctypeMenu_->addAction ("C++")->setCheckable (true);
+				DoctypeMenu_->addAction ("CSS")->setCheckable (true);
+				DoctypeMenu_->addAction ("HTML")->setCheckable (true);
+				DoctypeMenu_->addAction ("JavaScript")->setCheckable (true);
+				DoctypeMenu_->addAction ("Python")->setCheckable (true);
+				DoctypeMenu_->addAction ("XML")->setCheckable (true);
+				connect (DoctypeMenu_,
 						SIGNAL (triggered (QAction*)),
 						this,
 						SLOT (selectDoctype (QAction*)));
-				WindowMenus_ ["tools"] << doctypeMenu->menuAction ();
+				connect (this,
+						SIGNAL (languageChanged (const QString&)),
+						this,
+						SLOT (checkProperDoctypeAction (const QString&)));
+				WindowMenus_ ["tools"] << DoctypeMenu_->menuAction ();
 			}
 
 			void EditorPage::SetParentMultiTabs (QObject *parent)
@@ -218,6 +222,16 @@ namespace LeechCraft
 
 			void EditorPage::checkInterpreters (const QString& language)
 			{
+			}
+
+			void EditorPage::checkProperDoctypeAction (const QString& language)
+			{
+				Q_FOREACH (QAction *act, DoctypeMenu_->actions ())
+				{
+					act->blockSignals (true);
+					act->setChecked (act->text () == language);
+					act->blockSignals (false);
+				}
 			}
 
 			bool EditorPage::Save ()

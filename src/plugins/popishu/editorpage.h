@@ -23,6 +23,8 @@
 #include <interfaces/imultitabs.h>
 #include "ui_editorpage.h"
 
+class QMenu;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -40,6 +42,7 @@ namespace LeechCraft
 				static QObject* S_MultiTabsParent_;
 
 				QToolBar *Toolbar_;
+				QMenu *DoctypeMenu_;
 				QString Filename_;
 				bool Modified_;
 				QMap<QString, QList<QAction*> > WindowMenus_;
@@ -67,6 +70,7 @@ namespace LeechCraft
 				void on_TextEditor__textChanged ();
 
 				void checkInterpreters (const QString& language);
+				void checkProperDoctypeAction (const QString& language);
 			private:
 				bool Save ();
 				QsciLexer* GetLexerByLanguage (const QString&) const;
