@@ -21,6 +21,8 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/imultitabs.h>
+#include <interfaces/ientityhandler.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -31,9 +33,10 @@ namespace LeechCraft
 			class Plugin : public QObject
 						 , public IInfo
 						 , public IMultiTabs
+						 , public IEntityHandler
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs)
+				Q_INTERFACES (IInfo IMultiTabs IEntityHandler)
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -45,6 +48,9 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+
+				bool CouldHandle (const Entity&) const;
+				void Handle (Entity);
 			public slots:
 				void newTabRequested ();
 			signals:

@@ -35,11 +35,23 @@ namespace LeechCraft
 				return c;
 			}
 
-			void Core::NewTabRequested ()
+			EditorPage* Core::NewTabRequested ()
 			{
 				EditorPage *page = MakeEditorPage ();
 				emit addNewTab ("Popishu", page);
 				emit raiseTab (page);
+
+				return page;
+			}
+
+			void Core::Handle (const Entity& e)
+			{
+				EditorPage *page = NewTabRequested ();
+				page->SetText (e.Entity_.toString ());
+
+				QString language = e.Additional_ ["Language"].toString ();
+				if (!language.isEmpty ())
+					page->SetLanguage (language);
 			}
 
 			EditorPage* Core::MakeEditorPage ()

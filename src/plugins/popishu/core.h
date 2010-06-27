@@ -20,6 +20,7 @@
 #define PLUGINS_POPISHU_CORE_H
 #include <QObject>
 #include <QIcon>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -37,7 +38,8 @@ namespace LeechCraft
 			public:
 				static Core& Instance ();
 
-				void NewTabRequested ();
+				EditorPage* NewTabRequested ();
+				void Handle (const Entity&);
 			private:
 				EditorPage* MakeEditorPage ();
 			signals:

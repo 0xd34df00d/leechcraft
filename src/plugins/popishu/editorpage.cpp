@@ -137,6 +137,19 @@ namespace LeechCraft
 				return WindowMenus_;
 			}
 
+			void EditorPage::SetText (const QString& text)
+			{
+				Ui_.TextEditor_->setText (text);
+			}
+
+			void EditorPage::SetLanguage (const QString& language)
+			{
+				if (!Extension2Lang_.values ().contains (language))
+					return;
+
+				Ui_.TextEditor_->setLexer (GetLexerByLanguage (language));
+			}
+
 			void EditorPage::selectDoctype (QAction *action)
 			{
 				QString name = action->text ();

@@ -90,6 +90,17 @@ namespace LeechCraft
 			{
 			}
 
+			bool Plugin::CouldHandle (const Entity& entity) const
+			{
+				return entity.Mime_ == "x-leechcraft/plain-text-document" &&
+						entity.Entity_.canConvert<QString> ();
+			}
+
+			void Plugin::Handle (Entity entity)
+			{
+				Core::Instance ().Handle (entity);
+			}
+
 			void Plugin::newTabRequested ()
 			{
 				Core::Instance ().NewTabRequested ();

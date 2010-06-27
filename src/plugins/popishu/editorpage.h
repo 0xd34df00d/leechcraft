@@ -45,9 +45,9 @@ namespace LeechCraft
 				QMap<QString, QList<QAction*> > WindowMenus_;
 				QHash<QString, QString> Extension2Lang_;
 			public:
-				EditorPage (QWidget* = 0);
-
 				static void SetParentMultiTabs (QObject*);
+
+				EditorPage (QWidget* = 0);
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
@@ -55,6 +55,9 @@ namespace LeechCraft
 				QObject* ParentMultiTabs () const;
 				QList<QAction*> GetTabBarContextMenuActions () const;
 				QMap<QString, QList<QAction*> > GetWindowMenus () const;
+
+				void SetText (const QString&);
+				void SetLanguage (const QString&);
 			private slots:
 				void selectDoctype (QAction*);
 				void on_ActionNew__triggered ();
