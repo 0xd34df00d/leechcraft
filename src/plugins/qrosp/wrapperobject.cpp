@@ -23,6 +23,7 @@
 #ifndef QROSP_NO_QTSCRIPT
 #include <QScriptEngine>
 #endif
+#include <QStandardItemModel>
 
 #include <qross/core/script.h>
 #include <qross/core/manager.h>
@@ -42,6 +43,8 @@ Q_DECLARE_METATYPE (QList<QMenu*>);
 Q_DECLARE_METATYPE (QUrl*);
 Q_DECLARE_METATYPE (QString*);
 
+#define SCALL(x) (Call<x > (ScriptAction_))
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -58,6 +61,7 @@ namespace LeechCraft
 				qRegisterMetaType<QUrl*> ("QUrl*");
 				qRegisterMetaType<QString*> ("QString*");
 				qRegisterMetaType<QNetworkAccessManager*> ("QNetworkAccessManager*");
+				qRegisterMetaType<QStandardItemModel*> ("QStandardItemModel*");
 				BuildMetaObject ();
 
 				ScriptAction_->addObject (this, "Signals");
@@ -66,7 +70,7 @@ namespace LeechCraft
 				ScriptAction_->setFile (path);
 				ScriptAction_->trigger ();
 
-				Interfaces_ = Call<QStringList> ("SupportedInterfaces");
+				Interfaces_ = SCALL (QStringList) ("SupportedInterfaces");
 				if (!Interfaces_.contains ("IInfo"))
 					Interfaces_ << "IInfo";
 				if (!Interfaces_.contains ("org.Deviant.LeechCraft.IInfo/1.0"))
@@ -98,12 +102,12 @@ namespace LeechCraft
 			{
 				QVariantList pathArgs;
 				pathArgs << QFileInfo (Path_).absolutePath ();
-				Call<void> ("SetScriptPath", pathArgs);
+				SCALL (void) ("SetScriptPath", pathArgs);
 
 #ifndef QROSP_NO_QTSCRIPT
 				if (Type_ == "qtscript")
 				{
-					QStringList requires = Call<QStringList> ("Requires");
+					QStringList requires = SCALL (QStringList) ("Requires");
 					QObject *scriptEngineObject = 0;
 					QMetaObject::invokeMethod (ScriptAction_->script (),
 							"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
@@ -129,7 +133,7 @@ namespace LeechCraft
 				builder.setSuperClass (QObject::metaObject ());
 				builder.setClassName (QString ("LeechCraft::Plugins::Qross::%1::%2")
 							.arg (Type_)
-							.arg (Call<QString> ("GetName").remove (' ')).toLatin1 ());
+							.arg (SCALL (QString) ("GetName").remove (' ')).toLatin1 ());
 
 				int currentMetaMethod = 0;
 
@@ -263,7 +267,7 @@ namespace LeechCraft
 									argsArray [i + 1]);
 						QString name (method.signature ());
 						name = name.left (name.indexOf ('('));
-						Call<void> (name, args);
+						SCALL (void) (name, args);
 					}
 				}
 				return id;
@@ -273,48 +277,48 @@ namespace LeechCraft
 			{
 				QVariantList args;
 				args << QVariant::fromValue<QObject*> (new CoreProxyWrapper (proxy));
-				Call<void> ("Init", args);
+				SCALL (void) ("Init", args);
 			}
 
 			void WrapperObject::SecondInit ()
 			{
-				Call<void> ("SecondInit");
+				SCALL (void) ("SecondInit");
 			}
 
 			void WrapperObject::Release ()
 			{
-				Call<void> ("Release");
+				SCALL (void) ("Release");
 				ScriptAction_->finalize ();
 			}
 
 			QString WrapperObject::GetName () const
 			{
-				return Call<QString> ("GetName");
+				return SCALL (QString) ("GetName");
 			}
 
 			QString WrapperObject::GetInfo () const
 			{
-				return Call<QString> ("GetInfo");
+				return SCALL (QString) ("GetInfo");
 			}
 
 			QIcon WrapperObject::GetIcon () const
 			{
-				return Call<QIcon> ("GetIcon");
+				return SCALL (QIcon) ("GetIcon");
 			}
 
 			QStringList WrapperObject::Provides () const
 			{
-				return Call<QStringList> ("Provides");
+				return SCALL (QStringList) ("Provides");
 			}
 
 			QStringList WrapperObject::Needs () const
 			{
-				return Call<QStringList> ("Needs");
+				return SCALL (QStringList) ("Needs");
 			}
 
 			QStringList WrapperObject::Uses () const
 			{
-				return Call<QStringList> ("Uses");
+				return SCALL (QStringList) ("Uses");
 			}
 
 			void WrapperObject::SetProvider (QObject *provider, const QString& feature)
@@ -322,78 +326,85 @@ namespace LeechCraft
 				QVariantList args;
 				args << QVariant::fromValue<QObject*> (provider);
 				args << feature;
-				Call<void> ("SetProvider", args);
+				SCALL (void) ("SetProvider", args);
 			}
 
 			QWidget* WrapperObject::GetTabContents ()
 			{
-				return Call<QWidget*> ("GetTabContents");
+				return SCALL (QWidget*) ("GetTabContents");
 			}
 
 			QToolBar* WrapperObject::GetToolBar () const
 			{
-				return Call<QToolBar*> ("GetToolBar");
+				return SCALL (QToolBar*) ("GetToolBar");
 			}
 
 			bool WrapperObject::CouldHandle (const Entity& e) const
 			{
 				QVariantList args;
 				args << QVariant::fromValue<QObject*> (new EntityWrapper (e));
-				return Call<bool> ("CouldHandle", args);
+				return SCALL (bool) ("CouldHandle", args);
 			}
 
 			void WrapperObject::Handle (Entity e)
 			{
 				QVariantList args;
 				args << QVariant::fromValue<QObject*> (new EntityWrapper (e));
-				Call<void> ("Handle", args);
+				SCALL (void) ("Handle", args);
 			}
 
 			QAbstractItemModel* WrapperObject::GetRepresentation () const
 			{
-				return Call<QAbstractItemModel*> ("GetRepresentation");
+				return SCALL (QAbstractItemModel*) ("GetRepresentation");
 			}
 
 			QList<QMenu*> WrapperObject::GetToolMenus () const
 			{
-				return Call<QList<QMenu*> > ("GetToolMenus");
+				return SCALL (QList<QMenu*>) ("GetToolMenus");
 			}
 
 			QList<QAction*> WrapperObject::GetToolActions () const
 			{
-				return Call<QList<QAction*> > ("GetToolActions");
+				return SCALL (QList<QAction*>) ("GetToolActions");
 			}
 
 			QList<QAction*> WrapperObject::GetActions () const
 			{
-				return Call<QList<QAction*> > ("GetActions");
+				return SCALL (QList<QAction*>) ("GetActions");
 			}
 
 			QList<QAction*> WrapperObject::GetTrayActions () const
 			{
-				return Call<QList<QAction*> > ("GetTrayActions");
+				return SCALL (QList<QAction*>) ("GetTrayActions");
 			}
 
 			QList<QMenu*> WrapperObject::GetTrayMenus () const
 			{
-				return Call<QList<QMenu*> > ("GetTrayMenus");
+				return SCALL (QList<QMenu*>) ("GetTrayMenus");
 			}
 
 			QSet<QByteArray> WrapperObject::GetPluginClasses () const
 			{
 				QSet<QByteArray> result;
 				Q_FOREACH (QString pclass,
-						Call<QStringList> ("GetPluginClasses"))
+						SCALL (QStringList) ("GetPluginClasses"))
 					result << pclass.toUtf8 ();
 				return result;
 			}
 
-			template<>
-			void WrapperObject::Call<void> (const QString& name,
+			void WrapperObject::Call<void>::operator() (const QString& name,
 					const QVariantList& args) const
 			{
 				if (ScriptAction_->functionNames ().contains (name))
 					ScriptAction_->callFunction (name, args);
+			}
+
+			QVariant WrapperObject::Call<QVariant>::operator() (const QString& name,
+					const QVariantList& args) const
+			{
+				if (!ScriptAction_->functionNames ().contains (name))
+					return QVariant ();
+				return ScriptAction_->callFunction (name, args);
 			}
 		};
 	};

@@ -109,22 +109,84 @@ namespace LeechCraft
 				QSet<QByteArray> GetPluginClasses () const;
 			private:
 				template<typename T>
-				T Call (const QString& name,
-						const QVariantList& args = QVariantList ()) const
+				struct Call
 				{
-					if (!ScriptAction_->functionNames ().contains (name))
+					Qross::Action *ScriptAction_;
+
+					Call (Qross::Action *sa) : ScriptAction_ (sa) {}
+
+					T operator() (const QString& name,
+							const QVariantList& args = QVariantList ()) const
+					{
+						if (!ScriptAction_->functionNames ().contains (name))
+							return T ();
+
+						QVariant result = ScriptAction_->callFunction (name, args);
+						if (result.canConvert<T> ())
+							return result.value<T> ();
+
+						qWarning () << Q_FUNC_INFO
+								<< "unable to unwrap result"
+								<< result;
 						return T ();
-					return ScriptAction_->callFunction (name, args).value<T> ();
-				}
+					}
+				};
 
 				void LoadScriptTranslations ();
 				void InitScript ();
 				void BuildMetaObject ();
 			};
 
+			template<typename T>
+			struct WrapperObject::Call<T*>
+			{
+				Qross::Action *ScriptAction_;
+
+				Call (Qross::Action *sa) : ScriptAction_ (sa) {}
+
+				T* operator() (const QString& name,
+						const QVariantList& args = QVariantList ()) const
+				{
+					if (!ScriptAction_->functionNames ().contains (name))
+						return 0;
+
+					QVariant result = ScriptAction_->callFunction (name, args);
+					if (result.canConvert<T*> ())
+						return result.value<T*> ();
+					else if (result.canConvert<QObject*> ())
+					{
+						QObject *object = result.value<QObject*> ();
+						return qobject_cast<T*> (object);
+					}
+
+					qDebug () << Q_FUNC_INFO
+							<< "unable to unwrap result"
+							<< result;
+					return 0;
+				}
+			};
+
 			template<>
-			void WrapperObject::Call<void> (const QString& name,
-					const QVariantList& args) const;
+			struct WrapperObject::Call<void>
+			{
+				Qross::Action *ScriptAction_;
+
+				Call (Qross::Action *sa) : ScriptAction_ (sa) {}
+
+				void operator() (const QString&,
+						const QVariantList& = QVariantList ()) const;
+			};
+
+			template<>
+			struct WrapperObject::Call<QVariant>
+			{
+				Qross::Action *ScriptAction_;
+
+				Call (Qross::Action *sa) : ScriptAction_ (sa) {}
+
+				QVariant operator() (const QString& name,
+						const QVariantList& args) const;
+			};
 		};
 	};
 };
