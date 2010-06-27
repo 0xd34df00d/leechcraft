@@ -304,6 +304,10 @@ public:
 
 	virtual QString GetPluginLibraryPath (const QObject* object) const = 0;
 
+	virtual void InjectPlugin (QObject *object) = 0;
+
+	virtual void ReleasePlugin (QObject *object) = 0;
+
 	virtual ~IPluginsManager () {}
 };
 

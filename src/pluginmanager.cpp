@@ -24,8 +24,8 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <QCryptographicHash>
 #include <plugininterface/util.h>
+#include <plugininterface/exceptions.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
@@ -306,6 +306,100 @@ namespace LeechCraft
 			if (loader->instance () == object)
 				return loader->fileName ();
 		return QString ();
+	}
+
+	void PluginManager::InjectPlugin (QObject *object)
+	{
+		DepTreeItem_ptr depItem (new DepTreeItem ());
+		depItem->Plugin_ = object;
+		try
+		{
+			qobject_cast<IInfo*> (object)->Init (ICoreProxy_ptr (new CoreProxy ()));
+			Core::Instance ().Setup (object);
+
+			qobject_cast<IInfo*> (object)->SecondInit ();
+			Core::Instance ().PostSecondInit (object);
+
+			IPlugin2 *ip2 = qobject_cast<IPlugin2*> (object);
+			if (ip2)
+			{
+				QSet<QByteArray> classes = ip2->GetPluginClasses ();
+				Q_FOREACH (IPluginReady *ipr, GetAllCastableTo<IPluginReady*> ())
+					if (!ipr->GetExpectedPluginClasses ()
+							.intersect (classes).isEmpty ())
+						ipr->AddPlugin (object);
+			}
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to init the object with"
+				<< e.what ()
+				<< "for"
+				<< object;
+			throw;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to initt"
+				<< object;
+		}
+
+		depItem->Initialized_ = true;
+		Roots_ << depItem;
+	}
+
+	void PluginManager::ReleasePlugin (QObject *object)
+	{
+		DepTreeItem_ptr depItem = GetDependency (object);
+		if (!depItem->Initialized_)
+		{
+			QString str;
+			QDebug debug (&str);
+			debug << "dep item for"
+					<< object
+					<< "isn't initialized";
+			qWarning () << Q_FUNC_INFO
+					<< str;
+			throw DependencyException (str);
+		}
+
+		if (depItem->Belongs_.size ())
+		{
+			QList<QObject*> holders;
+			Q_FOREACH (DepTreeItem_ptr dep, depItem->Belongs_)
+				holders << dep->Plugin_;
+
+			QString str;
+			QDebug debug (&str);
+			debug << object
+					<< "cannot be released because of"
+					<< holders;
+			qWarning () << Q_FUNC_INFO
+					<< str;
+			throw ReleaseFailureException (str, holders);
+		}
+
+		try
+		{
+			qobject_cast<IInfo*> (object)->Release ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to release the unloading object with"
+				<< e.what ()
+				<< "for"
+				<< object;
+			throw;
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to release the unloading object"
+				<< object;
+		}
 	}
 
 	QObject* PluginManager::GetProvider (const QString& feature) const

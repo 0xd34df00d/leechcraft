@@ -60,14 +60,18 @@ namespace LeechCraft
 			bool operator() (DepTreeItem_ptr) const;
 		};
 
-		// No plugins depend on these.
+		// No plugins depend on these, thus, these's Belongs_ field is
+		// empty.
 		QList<DepTreeItem_ptr> Roots_;
+
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
 		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
+
 		// Only currently loaded plugins
 		mutable PluginsContainer_t PluginContainers_;
 		typedef QList<QObject*> Plugins_t;
 		mutable Plugins_t Plugins_;
+
 		// All plugins ever seen
 		PluginsContainer_t AvailablePlugins_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
@@ -100,6 +104,9 @@ namespace LeechCraft
 
 		QObjectList GetAllPlugins () const;
 		QString GetPluginLibraryPath (const QObject*) const;
+
+		void InjectPlugin (QObject *object);
+		void ReleasePlugin (QObject *object);
 
 		QObject* GetProvider (const QString&) const;
 		void Unload (QObject*);
