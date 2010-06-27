@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/" >
+	<file>resources/images/popishu.svg</file>
+  </qresource>
+</RCC>

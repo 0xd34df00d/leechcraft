@@ -38,11 +38,14 @@ SET (HEADERS
 	core.h
 	editorpage.h
 	)
+SET (RESOURCES popishuresources.qrc)
 SET (FORMS
 	editorpage.ui
 	)
+
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_popishu SHARED
 	${COMPILED_TRANSLATIONS}
@@ -50,6 +53,7 @@ ADD_LIBRARY (leechcraft_popishu SHARED
 	${HEADERS}
 	${MOC_SRCS}
 	${UIS_H}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_popishu
 	${QT_LIBRARIES}

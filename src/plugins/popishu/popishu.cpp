@@ -68,7 +68,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/popishu.svg");
 			}
 
 			QStringList Plugin::Provides () const
