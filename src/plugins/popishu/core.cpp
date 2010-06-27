@@ -40,6 +40,7 @@ namespace LeechCraft
 				EditorPage *page = MakeEditorPage ();
 				emit addNewTab ("Popishu", page);
 				emit raiseTab (page);
+				emit changeTabIcon (page, QIcon (":/resources/images/popishu.svg"));
 
 				return page;
 			}

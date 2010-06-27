@@ -46,6 +46,10 @@ namespace LeechCraft
 						SIGNAL (changeTabName (QWidget*, const QString&)),
 						this,
 						SIGNAL (changeTabName (QWidget*, const QString&)));
+				connect (&Core::Instance (),
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+						this,
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
 			}
 
 			void Plugin::SecondInit ()
