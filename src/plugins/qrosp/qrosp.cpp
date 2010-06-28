@@ -18,7 +18,13 @@
 
 #include "qrosp.h"
 #include <QIcon>
+#include <QUrl>
+#include <QFileInfo>
+#include <qross/core/manager.h>
 #include "pluginmanager.h"
+#include "wrapperobject.h"
+
+Q_DECLARE_METATYPE (QObject**);
 
 namespace LeechCraft
 {
@@ -76,6 +82,32 @@ namespace LeechCraft
 			QList<QObject*> Plugin::GetPlugins ()
 			{
 				return PluginManager::Instance ().GetPlugins ();
+			}
+
+			bool Plugin::CouldHandle (const Entity& entity) const
+			{
+				QString language = entity.Additional_ ["Language"].toString ().toLower ();
+				if (entity.Mime_ != "x-leechcraft/script-wrap-request")
+					return false;
+				if (!entity.Additional_ ["Object"].value<QObject**> ())
+					return false;
+				if (!Qross::Manager::self ().interpreters ().contains (language))
+					return false;
+				if (!entity.Entity_.toUrl ().isValid ())
+					return false;
+				if (!QFileInfo (entity.Entity_
+						.toUrl ().toLocalFile ()).exists ())
+					return false;
+
+				return true;
+			}
+
+			void Plugin::Handle (Entity entity)
+			{
+				QString language = entity.Additional_ ["Language"].toString ().toLower ();
+				QString path = entity.Entity_.toUrl ().toLocalFile ();
+
+				*entity.Additional_ ["Object"].value<QObject**> () = new WrapperObject (language, path);
 			}
 		};
 	};
