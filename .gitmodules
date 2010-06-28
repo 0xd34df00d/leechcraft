@@ -1,6 +1,0 @@
-[submodule "src/plugins/remoter/webclient"]
-	path = src/plugins/remoter/webclient
-	url = git://gitorious.org/qt-labs/webclient.git
-[submodule "src/plugins/azoth/plugins/retina/iris"]
-	path = src/plugins/azoth/plugins/retina/iris
-	url = git://git.psi-im.org/iris.git
