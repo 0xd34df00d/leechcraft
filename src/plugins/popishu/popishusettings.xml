@@ -15,7 +15,7 @@
 				<label lang="en" value="Identation width:" />
 				<label lang="ru" value="Ширина отступов:" />
 			</item>
-			<item type="font" property="MonoFont" default="DejaVu Sans Mono, 10 pt">
+			<item type="font" property="MonoFont" default="DejaVu Sans Mono">
 				<label lang="en" value="Monospace font:" />
 				<label lang="ru" value="Моноширинный шрифт:" />
 				<label lang="uk" value="Моноширинний шрифт:" />
