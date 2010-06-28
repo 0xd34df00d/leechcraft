@@ -69,8 +69,11 @@ namespace LeechCraft
 			if (element.hasAttribute ("default"))
 			{
 				QFont font;
-				if (!font.fromString (element.attribute ("default")))
-					value = QApplication::font ();
+				QString defStr = element.attribute ("default");
+				if (font.fromString (defStr))
+					value = font;
+				else
+					value = QFont (defStr);
 			}
 			else
 				value = QApplication::font ();
