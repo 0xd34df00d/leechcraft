@@ -20,6 +20,7 @@
 #define PLUGINS_POPISHU_CORE_H
 #include <QObject>
 #include <QIcon>
+#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 
 namespace LeechCraft
@@ -34,9 +35,14 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
+				ICoreProxy_ptr Proxy_;
+
 				Core ();
 			public:
 				static Core& Instance ();
+
+				void SetProxy (ICoreProxy_ptr);
+				ICoreProxy_ptr GetProxy () const;
 
 				EditorPage* NewTabRequested ();
 				void Handle (const Entity&);
@@ -50,6 +56,10 @@ namespace LeechCraft
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
 				void raiseTab (QWidget*);
+				void delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**);
+
+				void couldHandle (const LeechCraft::Entity&, bool*);
 			};
 		};
 	};

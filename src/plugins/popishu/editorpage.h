@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QHash>
 #include <interfaces/imultitabs.h>
+#include <interfaces/structures.h>
 #include "ui_editorpage.h"
 
 class QMenu;
@@ -47,10 +48,14 @@ namespace LeechCraft
 				bool Modified_;
 				QMap<QString, QList<QAction*> > WindowMenus_;
 				QHash<QString, QString> Extension2Lang_;
+
+				QtMsgHandler DefaultMsgHandler_;
+				QObject *WrappedObject_;
 			public:
 				static void SetParentMultiTabs (QObject*);
 
 				EditorPage (QWidget* = 0);
+				virtual ~EditorPage ();
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
@@ -72,6 +77,8 @@ namespace LeechCraft
 				void on_ActionWSVisibleAfterIndent__triggered ();
 				void on_ActionShowLineNumbers__toggled (bool);
 				void on_TextEditor__textChanged ();
+				void on_Inject__released ();
+				void on_Release__released ();
 
 				void checkInterpreters (const QString& language);
 				void checkProperDoctypeAction (const QString& language);
@@ -80,12 +87,16 @@ namespace LeechCraft
 				bool Save ();
 				QsciLexer* GetLexerByLanguage (const QString&) const;
 				QString GetLanguage (const QString& filename) const;
+				void ShowConsole (bool);
 			signals:
 				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);
 				void changeTabIcon (QWidget*, const QIcon&);
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
+				void couldHandle (const LeechCraft::Entity&, bool*);
+				void delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**);
 
 				void languageChanged (const QString& language);
 			};

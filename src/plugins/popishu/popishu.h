@@ -61,6 +61,10 @@ namespace LeechCraft
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
 				void raiseTab (QWidget*);
+				void delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**);
+
+				void couldHandle (const LeechCraft::Entity&, bool*);
 			};
 		};
 	};

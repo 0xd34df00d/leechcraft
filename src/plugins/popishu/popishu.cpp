@@ -30,6 +30,9 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				EditorPage::SetParentMultiTabs (this);
+
+				Core::Instance ().SetProxy (proxy);
+
 				connect (&Core::Instance (),
 						SIGNAL (addNewTab (const QString&, QWidget*)),
 						this,
@@ -50,6 +53,16 @@ namespace LeechCraft
 						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
 						this,
 						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+				connect (&Core::Instance (),
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
+				connect (&Core::Instance (),
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)));
 			}
 
 			void Plugin::SecondInit ()

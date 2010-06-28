@@ -17,19 +17,24 @@
  **********************************************************************/
 
 #include "editorpage.h"
+#include <iostream>
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFile>
 #include <QMessageBox>
 #include <QMenu>
 #include <QFileInfo>
+#include <QUrl>
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexercss.h>
 #include <Qsci/qscilexerhtml.h>
 #include <Qsci/qscilexerjavascript.h>
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerxml.h>
+#include <plugininterface/util.h>
 #include "core.h"
+
+Q_DECLARE_METATYPE (QObject**);
 
 namespace LeechCraft
 {
@@ -43,6 +48,7 @@ namespace LeechCraft
 			: QWidget (parent)
 			, Toolbar_ (new QToolBar)
 			, Modified_ (false)
+			, DefaultMsgHandler_ (0)
 			{
 #define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
 				DEFPAIR (C++, cpp);
@@ -84,6 +90,10 @@ namespace LeechCraft
 						SIGNAL (languageChanged (const QString&)),
 						this,
 						SLOT (checkProperDoctypeAction (const QString&)));
+				connect (this,
+						SIGNAL (languageChanged (const QString&)),
+						this,
+						SLOT (checkInterpreters (const QString&)));
 
 				QString editor = tr ("Editor");
 				WindowMenus_ [editor] << DoctypeMenu_->menuAction ();
@@ -114,6 +124,17 @@ namespace LeechCraft
 				Ui_.TextEditor_->setCaretLineVisible (true);
 
 				Ui_.TextEditor_->setAutoCompletionThreshold (1);
+
+				Ui_.Inject_->setEnabled (true);
+				Ui_.Release_->setEnabled (false);
+
+				ShowConsole (false);
+			}
+
+			EditorPage::~EditorPage ()
+			{
+				if (DefaultMsgHandler_)
+					qInstallMsgHandler (DefaultMsgHandler_);
 			}
 
 			void EditorPage::SetParentMultiTabs (QObject *parent)
@@ -262,7 +283,7 @@ namespace LeechCraft
 			void EditorPage::on_ActionShowLineNumbers__toggled (bool enable)
 			{
 				Ui_.TextEditor_->setMarginType (0, QsciScintilla::NumberMargin);
-				Ui_.TextEditor_->setMarginWidth (0, "1000");
+				Ui_.TextEditor_->setMarginWidth (0, "10000");
 				Ui_.TextEditor_->setMarginLineNumbers (0, enable);
 			}
 
@@ -271,8 +292,147 @@ namespace LeechCraft
 				Modified_ = true;
 			}
 
+			static QPlainTextEdit *S_TextEdit_ = 0;
+
+			void output (QtMsgType type, const char *msg)
+			{
+				QString line;
+				switch (type)
+				{
+				case QtDebugMsg:
+					line = "Debug: ";
+					break;
+				case QtWarningMsg:
+					line = "Warning: ";
+					break;
+				case QtCriticalMsg:
+					line = "Critical: ";
+					break;
+				case QtFatalMsg:
+					std::cerr << "Fatal: " << msg;
+					abort ();
+				}
+
+				line += msg;
+				if (S_TextEdit_)
+					S_TextEdit_->appendPlainText (line);
+			}
+
+			void EditorPage::on_Inject__released ()
+			{
+				if (!Save ())
+					return;
+
+				Entity e = Util::MakeEntity (QUrl::fromLocalFile (Filename_),
+						QString (),
+						FromUserInitiated | OnlyHandle,
+						"x-leechcraft/script-wrap-request");
+				e.Additional_ ["Object"] = QVariant::fromValue<QObject**> (&WrappedObject_);
+
+				Q_FOREACH (QAction *action, DoctypeMenu_->actions ())
+					if (action->isChecked ())
+					{
+						e.Additional_ ["Language"] = action->text ();
+						break;
+					}
+
+
+				S_TextEdit_ = Ui_.Console_;
+				DefaultMsgHandler_ = qInstallMsgHandler (output);
+
+				emit delegateEntity (e, 0, 0);
+
+				if (!WrappedObject_)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "script wrapping failed";
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Script wrapping failed."));
+
+					qInstallMsgHandler (DefaultMsgHandler_);
+					S_TextEdit_ = 0;
+					DefaultMsgHandler_ = 0;
+
+					return;
+				}
+
+				try
+				{
+					Core::Instance ().GetProxy ()->
+							GetPluginsManager ()->InjectPlugin (WrappedObject_);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "script injection failed"
+							<< e.what ();
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Script injection failed: %1")
+								.arg (e.what ()));
+					WrappedObject_->deleteLater ();
+
+					qInstallMsgHandler (DefaultMsgHandler_);
+					S_TextEdit_ = 0;
+					DefaultMsgHandler_ = 0;
+
+					return;
+				}
+
+				qDebug () << Q_FUNC_INFO
+						<< "obtained"
+						<< WrappedObject_;
+
+				Ui_.Inject_->setEnabled (false);
+				Ui_.Release_->setEnabled (true);
+			}
+
+			void EditorPage::on_Release__released ()
+			{
+				Ui_.Inject_->setEnabled (true);
+				Ui_.Release_->setEnabled (false);
+
+				try
+				{
+					Core::Instance ().GetProxy ()->
+							GetPluginsManager ()->ReleasePlugin (WrappedObject_);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "script injection failed"
+							<< e.what ();
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Script injection failed: %1")
+								.arg (e.what ()));
+					WrappedObject_->deleteLater ();
+					return;
+				}
+				WrappedObject_ = 0;
+
+				if (DefaultMsgHandler_)
+				{
+					S_TextEdit_ = 0;
+					qInstallMsgHandler (DefaultMsgHandler_);
+					DefaultMsgHandler_ = 0;
+				}
+			}
+
 			void EditorPage::checkInterpreters (const QString& language)
 			{
+				Entity e = Util::MakeEntity (QUrl::fromLocalFile (Filename_),
+						QString (),
+						FromUserInitiated,
+						"x-leechcraft/script-wrap-request");
+				QObject *object = 0;
+				e.Additional_ ["Object"] = QVariant::fromValue<QObject**> (&object);
+				e.Additional_ ["Language"] = language;
+
+				bool ch = false;
+				emit couldHandle (e, &ch);
+				ShowConsole (ch);
 			}
 
 			void EditorPage::checkProperDoctypeAction (const QString& language)
@@ -355,6 +515,14 @@ namespace LeechCraft
 			QString EditorPage::GetLanguage (const QString& name) const
 			{
 				return Extension2Lang_ [QFileInfo (name).suffix ()];
+			}
+
+			void EditorPage::ShowConsole (bool show)
+			{
+				Ui_.Console_->setVisible (show);
+				Ui_.Inject_->setVisible (show);
+				Ui_.Release_->setVisible (show);
+				Ui_.Splitter_->refresh ();
 			}
 		};
 	};

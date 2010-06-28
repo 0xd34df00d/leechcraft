@@ -35,6 +35,16 @@ namespace LeechCraft
 				return c;
 			}
 
+			void Core::SetProxy (ICoreProxy_ptr proxy)
+			{
+				Proxy_ = proxy;
+			}
+
+			ICoreProxy_ptr Core::GetProxy () const
+			{
+				return Proxy_;
+			}
+
 			EditorPage* Core::NewTabRequested ()
 			{
 				EditorPage *page = MakeEditorPage ();
@@ -66,6 +76,16 @@ namespace LeechCraft
 						SIGNAL (changeTabName (QWidget*, const QString&)),
 						this,
 						SIGNAL (changeTabName (QWidget*, const QString&)));
+				connect (result,
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
+						this,
+						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
+				connect (result,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)));
 				return result;
 			}
 		};
