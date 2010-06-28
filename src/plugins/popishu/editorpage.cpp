@@ -356,7 +356,7 @@ namespace LeechCraft
 				Q_FOREACH (QAction *action, DoctypeMenu_->actions ())
 					if (action->isChecked ())
 					{
-						e.Additional_ ["Language"] = action->text ();
+						e.Additional_ ["Language"] = FixLanguage (action->text ());
 						break;
 					}
 
@@ -462,7 +462,7 @@ namespace LeechCraft
 						property ("IndentationWidth").toInt ());
 			}
 
-			void EditorPage::checkInterpreters (const QString& language)
+			void EditorPage::checkInterpreters (QString language)
 			{
 				Entity e = Util::MakeEntity (QUrl::fromLocalFile (Filename_),
 						QString (),
@@ -470,7 +470,7 @@ namespace LeechCraft
 						"x-leechcraft/script-wrap-request");
 				QObject *object = 0;
 				e.Additional_ ["Object"] = QVariant::fromValue<QObject**> (&object);
-				e.Additional_ ["Language"] = language;
+				e.Additional_ ["Language"] = FixLanguage (language);
 
 				bool ch = false;
 				emit couldHandle (e, &ch);
@@ -558,6 +558,14 @@ namespace LeechCraft
 			QString EditorPage::GetLanguage (const QString& name) const
 			{
 				return Extension2Lang_ [QFileInfo (name).suffix ()];
+			}
+
+			QString EditorPage::FixLanguage (const QString& language) const
+			{
+				if (language.toLower () == "javascript")
+					return "qtscript";
+				else
+					return language;
 			}
 
 			void EditorPage::ShowConsole (bool show)

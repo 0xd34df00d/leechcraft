@@ -84,13 +84,14 @@ namespace LeechCraft
 				void handleMonoFontChanged ();
 				void handleOtherPrefs ();
 
-				void checkInterpreters (const QString& language);
+				void checkInterpreters (QString language);
 				void checkProperDoctypeAction (const QString& language);
 			private:
 				void SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility);
 				bool Save ();
 				QsciLexer* GetLexerByLanguage (const QString&) const;
 				QString GetLanguage (const QString& filename) const;
+				QString FixLanguage (const QString&) const;
 				void ShowConsole (bool);
 			signals:
 				void removeTab (QWidget*);
