@@ -38,7 +38,19 @@ SET (HEADERS
 	core.h
 	editorpage.h
 	)
-SET (RESOURCES popishuresources.qrc)
+SET (RESOURCES
+	popishuresources.qrc
+	)
+SET (TRANSLATIONS
+	leechcraft_popishu_ru_RU.ts
+	leechcraft_popishu_uk_UA.ts
+	leechcraft_popishu_en.ts
+	)
+SET (COMPILED_TRANSLATIONS
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_popishu_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_popishu_uk_UA.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_popishu_en.qm
+	)
 SET (FORMS
 	editorpage.ui
 	)
@@ -47,6 +59,12 @@ QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
+ADD_CUSTOM_COMMAND (OUTPUT
+	${COMPILED_TRANSLATIONS}
+	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
+	DEPENDS ${TRANSLATIONS}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
 ADD_LIBRARY (leechcraft_popishu SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
