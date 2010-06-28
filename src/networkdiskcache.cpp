@@ -20,12 +20,18 @@
 #include <QtDebug>
 #include <QDateTime>
 #include <QDir>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
+#include <QTimer>
+#include <QDirIterator>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 	NetworkDiskCache::NetworkDiskCache (QObject *parent)
 	: QNetworkDiskCache (parent)
+	, IsCollectingGarbage_ (false)
+	, PreviousSize_ (-1)
 	{
 		setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
 
@@ -46,11 +52,94 @@ namespace LeechCraft
 			return QNetworkDiskCache::prepare (metadata);
 	}
 
+	qint64 NetworkDiskCache::expire ()
+	{
+		collectGarbage ();
+		if (PreviousSize_ >= 0)
+			return PreviousSize_;
+		else
+			return maximumCacheSize () / 10 * 8;
+	}
+
 	void NetworkDiskCache::handleCacheSize ()
 	{
 		setMaximumCacheSize (XmlSettingsManager::Instance ()->
 				property ("CacheSize").toInt () * 1048576);
-		expire ();
+		QTimer::singleShot (60000,
+				this,
+				SLOT (collectGarbage ()));
+	}
+
+	namespace
+	{
+		qint64 Collector (QString& cacheDirectory, qint64 goal)
+		{
+		    if (cacheDirectory.isEmpty ())
+		        return 0;
+
+		    QDir::Filters filters = QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot;
+		    QDirIterator it (cacheDirectory, filters, QDirIterator::Subdirectories);
+
+		    QMultiMap<QDateTime, QString> cacheItems;
+		    qint64 totalSize = 0;
+		    while (it.hasNext ())
+		    {
+		        QString path = it.next ();
+		        QFileInfo info = it.fileInfo ();
+		        QString fileName = info.fileName ();
+		        if (fileName.endsWith(".cache") &&
+		        		fileName.startsWith("cache_"))
+		        {
+		            cacheItems.insert(info.created (), path);
+		            totalSize += info.size ();
+		        }
+		    }
+
+		    QMultiMap<QDateTime, QString>::const_iterator i = cacheItems.constBegin();
+		    while (i != cacheItems.constEnd())
+		    {
+		        if (totalSize < goal)
+		            break;
+		        QString name = i.value ();
+		        QFile file (name);
+		        qint64 size = file.size ();
+		        file.remove ();
+		        totalSize -= size;
+		        ++i;
+		    }
+
+		    return totalSize;
+		}
+	};
+
+	void NetworkDiskCache::collectGarbage ()
+	{
+		if (IsCollectingGarbage_)
+			return;
+
+		if (cacheDirectory ().isEmpty ())
+			return;
+
+		IsCollectingGarbage_ = true;
+
+		QFutureWatcher<qint64> *watcher = new QFutureWatcher<qint64> (this);
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCollectorFinished ()));
+
+		QFuture<qint64> future = QtConcurrent::run (Collector,
+				cacheDirectory (), maximumCacheSize () * 9 / 10);
+		watcher->setFuture (future);
+	}
+
+	void NetworkDiskCache::handleCollectorFinished ()
+	{
+		QFutureWatcher<qint64> *watcher = dynamic_cast<QFutureWatcher<qint64>*> (sender ());
+
+		PreviousSize_ = watcher->result ();
+
+		IsCollectingGarbage_ = false;
 	}
 };
 

@@ -25,12 +25,20 @@ namespace LeechCraft
 	class NetworkDiskCache : public QNetworkDiskCache
 	{
 		Q_OBJECT
+
+		bool IsCollectingGarbage_;
+		qint64 PreviousSize_;
 	public:
 		NetworkDiskCache (QObject* = 0);
 
 		virtual QIODevice* prepare (const QNetworkCacheMetaData&);
+	protected:
+		virtual qint64 expire ();
 	public slots:
 		void handleCacheSize ();
+		void collectGarbage ();
+	private slots:
+		void handleCollectorFinished ();
 	};
 };
 
