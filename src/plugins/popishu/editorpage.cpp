@@ -25,11 +25,15 @@
 #include <QMenu>
 #include <QFileInfo>
 #include <QUrl>
+#include <Qsci/qscilexerbash.h>
+#include <Qsci/qscilexercmake.h>
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexercss.h>
 #include <Qsci/qscilexerhtml.h>
 #include <Qsci/qscilexerjavascript.h>
 #include <Qsci/qscilexerpython.h>
+#include <Qsci/qscilexerruby.h>
+#include <Qsci/qscilexersql.h>
 #include <Qsci/qscilexerxml.h>
 #include <plugininterface/util.h>
 #include "core.h"
@@ -53,6 +57,8 @@ namespace LeechCraft
 			, WrappedObject_ (0)
 			{
 #define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
+				DEFPAIR (Bash, sh);
+				DEFPAIR (CMake, cmake);
 				DEFPAIR (C++, cpp);
 				DEFPAIR (C++, h);
 				DEFPAIR (C++, cxx);
@@ -65,6 +71,8 @@ namespace LeechCraft
 				DEFPAIR (JavaScript, js);
 				DEFPAIR (JavaScript, qs);
 				DEFPAIR (Python, py);
+				DEFPAIR (Ruby, rb);
+				DEFPAIR (SQL, sql);
 				DEFPAIR (XML, xml);
 #undef DEFPAIR
 				Ui_.setupUi (this);
@@ -78,11 +86,15 @@ namespace LeechCraft
 				Ui_.TextEditor_->setUtf8 (true);
 
 				DoctypeMenu_ = new QMenu (tr ("Document type"));
+				DoctypeMenu_->addAction ("Bash")->setCheckable (true);
+				DoctypeMenu_->addAction ("CMake")->setCheckable (true);
 				DoctypeMenu_->addAction ("C++")->setCheckable (true);
 				DoctypeMenu_->addAction ("CSS")->setCheckable (true);
 				DoctypeMenu_->addAction ("HTML")->setCheckable (true);
 				DoctypeMenu_->addAction ("JavaScript")->setCheckable (true);
 				DoctypeMenu_->addAction ("Python")->setCheckable (true);
+				DoctypeMenu_->addAction ("Ruby")->setCheckable (true);
+				DoctypeMenu_->addAction ("SQL")->setCheckable (true);
 				DoctypeMenu_->addAction ("XML")->setCheckable (true);
 				connect (DoctypeMenu_,
 						SIGNAL (triggered (QAction*)),
@@ -535,7 +547,11 @@ namespace LeechCraft
 			QsciLexer* EditorPage::GetLexerByLanguage (const QString& lang) const
 			{
 				QsciLexer *result = 0;
-				if (lang == "C++")
+				if (lang == "Bash")
+					result = new QsciLexerBash (Ui_.TextEditor_);
+				else if (lang == "CMake")
+					result = new QsciLexerCMake (Ui_.TextEditor_);
+				else if (lang == "C++")
 					result = new QsciLexerCPP (Ui_.TextEditor_);
 				else if (lang == "CSS")
 					result = new QsciLexerCSS (Ui_.TextEditor_);
@@ -545,6 +561,10 @@ namespace LeechCraft
 					result = new QsciLexerJavaScript (Ui_.TextEditor_);
 				else if (lang == "Python")
 					result = new QsciLexerPython (Ui_.TextEditor_);
+				else if (lang == "Ruby")
+					result = new QsciLexerRuby (Ui_.TextEditor_);
+				else if (lang == "SQL")
+					result = new QsciLexerSQL (Ui_.TextEditor_);
 				else if (lang == "XML")
 					result = new QsciLexerXML (Ui_.TextEditor_);
 
