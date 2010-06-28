@@ -135,6 +135,9 @@ namespace LeechCraft
 			{
 				if (DefaultMsgHandler_)
 					qInstallMsgHandler (DefaultMsgHandler_);
+				if (WrappedObject_)
+					Core::Instance ().GetProxy ()->
+							GetPluginsManager ()->ReleasePlugin (WrappedObject_);
 			}
 
 			void EditorPage::SetParentMultiTabs (QObject *parent)
@@ -335,7 +338,6 @@ namespace LeechCraft
 						e.Additional_ ["Language"] = action->text ();
 						break;
 					}
-
 
 				S_TextEdit_ = Ui_.Console_;
 				DefaultMsgHandler_ = qInstallMsgHandler (output);
