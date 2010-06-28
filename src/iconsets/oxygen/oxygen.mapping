@@ -1,3 +1,4 @@
+/dirs actions
 about lc_about
 aggregator_add lc_subscribe
 aggregator_exportbinary lc_export
