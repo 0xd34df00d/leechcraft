@@ -117,7 +117,7 @@ namespace LeechCraft
 						SIGNAL (storeFormData (const PageFormsData_t&)));
 
 				QList<QByteArray> renderSettings;
-				renderSettings << "Antialiasing"
+				renderSettings << "PrimitivesAntialiasing"
 					<< "TextAntialiasing"
 					<< "SmoothPixmapTransform"
 					<< "HighQualityAntialiasing";
@@ -576,7 +576,7 @@ namespace LeechCraft
 			{
 				QPainter::RenderHints hints;
 				if (XmlSettingsManager::Instance ()->
-						property ("Antialiasing").toBool ())
+						property ("PrimitivesAntialiasing").toBool ())
 					hints |= QPainter::Antialiasing;
 				if (XmlSettingsManager::Instance ()->
 						property ("TextAntialiasing").toBool ())

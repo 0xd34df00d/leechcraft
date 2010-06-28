@@ -353,7 +353,7 @@
 				<label lang="en" value="Rendering" />
 				<label lang="ru" value="Рендеринг" />
 				<label lang="uk" value="Рендеринг" />
-				<item type="checkbox" property="Antialiasing" default="off">
+				<item type="checkbox" property="PrimitivesAntialiasing" default="off">
 					<label lang="en" value="Antialias primitives if possible" />
 					<label lang="ru" value="По возможности сглаживать примитивы" />
 					<label lang="uk" value="Згладжувати примітиви (якщо можливо)" />
@@ -368,8 +368,8 @@
 					<label lang="ru" value="Гладкое преобразование изображений" />
 					<label lang="uk" value="Плавне перетворення зображень" />
 				</item>
-				<item type="checkbox" property="HighQuklityAntialiasing" default="on">
-					<label lang="en" value="High-quklity antialiasing" />
+				<item type="checkbox" property="HighQualityAntialiasing" default="on">
+					<label lang="en" value="High-quality antialiasing" />
 					<label lang="ru" value="Высококачественное сглаживание" />
 					<label lang="uk" value="Високоякісне згладжування" />
 				</item>
