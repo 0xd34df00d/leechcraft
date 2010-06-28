@@ -33,6 +33,7 @@
 #include <Qsci/qscilexerxml.h>
 #include <plugininterface/util.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (QObject**);
 
@@ -97,10 +98,10 @@ namespace LeechCraft
 						SLOT (checkInterpreters (const QString&)));
 
 				QString editor = tr ("Editor");
-				WindowMenus_ [editor] << DoctypeMenu_->menuAction ();
-				WindowMenus_ [editor] << Ui_.ActionShowEOL_;
-				WindowMenus_ [editor] << Ui_.ActionShowCaretLine_;
+				WindowMenus_ [editor] << Ui_.ActionEnableFolding_;
 				WindowMenus_ [editor] << Ui_.ActionAutoIndent_;
+				WindowMenus_ [editor] << Ui_.ActionShowLineNumbers_;
+				WindowMenus_ [editor] << DoctypeMenu_->menuAction ();
 
 				QMenu *wsVis = new QMenu (tr ("Whitespace visibility"));
 				wsVis->addAction (Ui_.ActionWSInvisible_);
@@ -108,7 +109,8 @@ namespace LeechCraft
 				wsVis->addAction (Ui_.ActionWSVisibleAfterIndent_);
 				WindowMenus_ [editor] << wsVis->menuAction ();
 
-				WindowMenus_ [editor] << Ui_.ActionShowLineNumbers_;
+				WindowMenus_ [editor] << Ui_.ActionShowEOL_;
+				WindowMenus_ [editor] << Ui_.ActionShowCaretLine_;
 
 				connect (Ui_.ActionShowEOL_,
 						SIGNAL (toggled (bool)),
@@ -125,9 +127,20 @@ namespace LeechCraft
 				Ui_.TextEditor_->setCaretLineVisible (true);
 
 				Ui_.TextEditor_->setAutoCompletionThreshold (1);
+				on_ActionEnableFolding__toggled (Ui_.ActionEnableFolding_->isChecked ());
 
 				Ui_.Inject_->setEnabled (true);
 				Ui_.Release_->setEnabled (false);
+
+				XmlSettingsManager::Instance ()->
+						RegisterObject ("MonoFont", this, "handleMonoFontChanged");
+
+				QList<QByteArray> otherPrefs;
+				otherPrefs << "TabWidget"
+						<< "IdentationWidth";
+				XmlSettingsManager::Instance ()->
+						RegisterObject (otherPrefs, this, "handleOtherPrefs");
+				handleOtherPrefs ();
 
 				ShowConsole (false);
 			}
@@ -291,6 +304,13 @@ namespace LeechCraft
 				Ui_.TextEditor_->setMarginLineNumbers (0, enable);
 			}
 
+			void EditorPage::on_ActionEnableFolding__toggled (bool enable)
+			{
+				Ui_.TextEditor_->setFolding (enable ?
+						QsciScintilla::CircledTreeFoldStyle :
+						QsciScintilla::NoFoldStyle);
+			}
+
 			void EditorPage::on_TextEditor__textChanged ()
 			{
 				Modified_ = true;
@@ -423,6 +443,25 @@ namespace LeechCraft
 				}
 			}
 
+			void EditorPage::handleMonoFontChanged ()
+			{
+				QsciLexer *lexer = Ui_.TextEditor_->lexer ();
+				if (!lexer)
+					return;
+
+				QFont font = XmlSettingsManager::Instance ()->
+						property ("MonoFont").value<QFont> ();
+				lexer->setFont (font);
+			}
+
+			void EditorPage::handleOtherPrefs ()
+			{
+				Ui_.TextEditor_->setTabWidth (XmlSettingsManager::Instance ()->
+						property ("TabWidth").toInt ());
+				Ui_.TextEditor_->setTabWidth (XmlSettingsManager::Instance ()->
+						property ("IndentationWidth").toInt ());
+			}
+
 			void EditorPage::checkInterpreters (const QString& language)
 			{
 				Entity e = Util::MakeEntity (QUrl::fromLocalFile (Filename_),
@@ -510,7 +549,8 @@ namespace LeechCraft
 					result = new QsciLexerXML (Ui_.TextEditor_);
 
 				if (result)
-					result->setFont (QFont ("Terminus"));
+					result->setFont (XmlSettingsManager::Instance ()->
+							property ("MonoFont").value<QFont> ());
 
 				return result;
 			}

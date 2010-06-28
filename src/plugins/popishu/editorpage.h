@@ -76,9 +76,13 @@ namespace LeechCraft
 				void on_ActionWSVisible__triggered ();
 				void on_ActionWSVisibleAfterIndent__triggered ();
 				void on_ActionShowLineNumbers__toggled (bool);
+				void on_ActionEnableFolding__toggled (bool);
 				void on_TextEditor__textChanged ();
 				void on_Inject__released ();
 				void on_Release__released ();
+
+				void handleMonoFontChanged ();
+				void handleOtherPrefs ();
 
 				void checkInterpreters (const QString& language);
 				void checkProperDoctypeAction (const QString& language);

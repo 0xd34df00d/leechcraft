@@ -4,5 +4,22 @@
 	<page>
 		<label lang="en" value="Editor settings" />
 		<label lang="ru" value="Параметры редактора" />
+		<groupbox>
+			<label lang="en" value="Editor settings" />
+			<label lang="ru" value="Параметры редактора" />
+			<item type="spinbox" property="TabWidth" default="4">
+				<label lang="en" value="Tab width:" />
+				<label lang="ru" value="Ширина символа табуляции:" />
+			</item>
+			<item type="spinbox" property="IdentationWidth" default="4">
+				<label lang="en" value="Identation width:" />
+				<label lang="ru" value="Ширина отступов:" />
+			</item>
+			<item type="font" property="MonoFont" default="DejaVu Sans Mono, 10 pt">
+				<label lang="en" value="Monospace font:" />
+				<label lang="ru" value="Моноширинный шрифт:" />
+				<label lang="uk" value="Моноширинний шрифт:" />
+			</item>
+		</groupbox>
 	</page>
 </settings>

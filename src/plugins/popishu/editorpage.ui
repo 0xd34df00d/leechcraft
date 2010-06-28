@@ -178,6 +178,12 @@
    </property>
   </action>
   <action name="ActionEnableFolding_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Enable folding</string>
    </property>
