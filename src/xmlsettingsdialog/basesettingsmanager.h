@@ -24,6 +24,7 @@
 #include <QSettings>
 #include <QStringList>
 #include <QDynamicPropertyChangeEvent>
+#include <QPointer>
 #include "xsdconfig.h"
 
 #define PROP2CHAR(a) (a.toLatin1 ().constData ())
@@ -41,7 +42,7 @@ namespace LeechCraft
 		{
 			Q_OBJECT
 
-			QMap<QByteArray, QPair<QObject*, QByteArray> > Properties2Object_;
+			QMap<QByteArray, QPair<QPointer<QObject>, QByteArray> > Properties2Object_;
 			bool Initializing_;
 			QSettings *Settings_;
 		public:
