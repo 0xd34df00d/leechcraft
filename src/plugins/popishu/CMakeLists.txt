@@ -32,11 +32,13 @@ SET (SRCS
 	popishu.cpp
 	core.cpp
 	editorpage.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	popishu.h
 	core.h
 	editorpage.h
+	xmlsettingsmanager.h
 	)
 SET (RESOURCES
 	popishuresources.qrc

@@ -17,9 +17,13 @@
  **********************************************************************/
 
 #include "popishu.h"
+#include <QTranslator>
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "editorpage.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -30,6 +34,12 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				EditorPage::SetParentMultiTabs (this);
+
+				Translator_.reset (Util::InstallTranslator ("popishu"));
+
+				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+						"popishusettings.xml");
 
 				Core::Instance ().SetProxy (proxy);
 
@@ -116,6 +126,11 @@ namespace LeechCraft
 			void Plugin::Handle (Entity entity)
 			{
 				Core::Instance ().Handle (entity);
+			}
+
+			boost::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+			{
+				return XmlSettingsDialog_;
 			}
 
 			void Plugin::newTabRequested ()

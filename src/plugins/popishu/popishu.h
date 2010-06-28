@@ -22,7 +22,10 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/imultitabs.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/structures.h>
+
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -34,9 +37,13 @@ namespace LeechCraft
 						 , public IInfo
 						 , public IMultiTabs
 						 , public IEntityHandler
+						 , public IHaveSettings
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs IEntityHandler)
+				Q_INTERFACES (IInfo IMultiTabs IEntityHandler IHaveSettings)
+
+				boost::shared_ptr<QTranslator> Translator_;
+				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -51,6 +58,8 @@ namespace LeechCraft
 
 				bool CouldHandle (const Entity&) const;
 				void Handle (Entity);
+
+				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 			public slots:
 				void newTabRequested ();
 			signals:
