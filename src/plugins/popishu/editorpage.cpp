@@ -49,6 +49,7 @@ namespace LeechCraft
 			, Toolbar_ (new QToolBar)
 			, Modified_ (false)
 			, DefaultMsgHandler_ (0)
+			, WrappedObject_ (0)
 			{
 #define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
 				DEFPAIR (C++, cpp);
@@ -155,7 +156,7 @@ namespace LeechCraft
 
 					QMessageBox::StandardButton res =
 							QMessageBox::question (this,
-									tr ("LeechCraft"),
+									"LeechCraft",
 									tr ("The document <em>%1</em> is modified. "
 										"Do you want to save it now?")
 										.arg (name),
