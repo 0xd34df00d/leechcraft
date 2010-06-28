@@ -27,7 +27,7 @@
        <string/>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QPlainTextEdit" name="Console_"/>
@@ -76,7 +76,7 @@
     <string>Ctrl+N</string>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string>documentnew</string>
+    <string notr="true">documentnew</string>
    </property>
   </action>
   <action name="ActionOpen_">
@@ -87,7 +87,7 @@
     <string>Ctrl+O</string>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string>documentopen</string>
+    <string notr="true">documentopen</string>
    </property>
   </action>
   <action name="ActionSave_">
@@ -98,7 +98,7 @@
     <string>Ctrl+S</string>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string>documentsave</string>
+    <string notr="true">documentsave</string>
    </property>
   </action>
   <action name="ActionSaveAs_">
@@ -109,7 +109,7 @@
     <string>Ctrl+Shift+S</string>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string>documentsaveas</string>
+    <string notr="true">documentsaveas</string>
    </property>
   </action>
   <action name="ActionShowEOL_">
