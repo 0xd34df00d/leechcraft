@@ -38,6 +38,7 @@ namespace LeechCraft
 		QMap<QString, sizef_t> IconName2Path_;
 		QMap<QString, QString> IconName2FileName_;
 		QStringList IconSets_;
+		QStringList IconDirs_;
 
 		SkinEngine ();
 	public:

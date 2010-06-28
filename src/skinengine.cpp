@@ -30,6 +30,8 @@
 
 using namespace LeechCraft;
 
+const int MaxIconSize = 32;
+
 SkinEngine::SkinEngine ()
 {
 	FindIconSets ();
@@ -200,6 +202,7 @@ void SkinEngine::FindIcons ()
 	{
 		IconName2Path_.clear ();
 		IconName2FileName_.clear ();
+		IconDirs_.clear ();
 
 		OldIconSet_ = iconSet;
 
@@ -268,7 +271,19 @@ void SkinEngine::ParseMapping (QFile& mappingFile)
 		QStringList pair = QString::fromUtf8 (lineData)
 			.split (' ', QString::SkipEmptyParts);
 		if (pair.size () == 2)
-			IconName2FileName_ [pair.at (0).simplified ()] = pair.at (1).simplified ();
+		{
+			// Thread mapping declarations in a special way.
+			// /dirs contains a ;-separated list of directories with icons.
+			if (pair.at (0).startsWith ('/'))
+			{
+				QString name = pair.at (0).mid (1);
+				if (name == "dirs")
+					IconDirs_ << pair.at (1).simplified ().split (';',
+							QString::SkipEmptyParts);
+			}
+			else
+				IconName2FileName_ [pair.at (0).simplified ()] = pair.at (1).simplified ();
+		}
 
 		lineData = mappingFile.readLine ();
 	}
@@ -292,7 +307,8 @@ void SkinEngine::CollectDir (const QString& folder, const QString& iconSet)
 
 			for (QStringList::const_iterator j = subdirs.begin (),
 					subdirsEnd = subdirs.end (); j != subdirsEnd; ++j)
-				CollectSubdir (current, *j, *i);
+				if (!IconDirs_.size () || IconDirs_.contains (*j))
+					CollectSubdir (current, *j, *i);
 		}
 		else if (*i >= 16 && *i <= 32)
 		{
@@ -304,7 +320,8 @@ void SkinEngine::CollectDir (const QString& folder, const QString& iconSet)
 
 			for (QStringList::const_iterator j = subdirs.begin (),
 					subdirsEnd = subdirs.end (); j != subdirsEnd; ++j)
-				CollectSubdir (current, *j, *i);
+				if (!IconDirs_.size () || IconDirs_.contains (*j))
+					CollectSubdir (current, *j, *i);
 		}
 	}
 }
@@ -344,7 +361,10 @@ std::vector<int> SkinEngine::GetDirForBase (const QString& base,
 		if (splitted.size () != 2)
 			continue;
 
-		numbers.push_back (splitted.at (0).toInt ());
+		int size = splitted.at (0).toInt ();
+		if (size > MaxIconSize)
+			continue;
+		numbers.push_back (size);
 	}
 
 	std::sort (numbers.begin (), numbers.end ());
