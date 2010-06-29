@@ -87,6 +87,7 @@ namespace LeechCraft
 				void handleDataTransferProgress (qint64, qint64);
 				void redirectedConstruction (const QByteArray&);
 				void handleMetaDataChanged ();
+				void handleLocalTransfer ();
 				/** Returns true if the reply is at end after this read.
 				 */
 				bool handleReadyRead ();

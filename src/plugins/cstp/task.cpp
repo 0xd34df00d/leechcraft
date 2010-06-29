@@ -52,7 +52,7 @@ namespace LeechCraft
 			{
 				StartTime_.start ();
 			}
-			
+
 			Task::Task (QNetworkReply *reply)
 			: Reply_ (reply)
 			, Done_ (-1)
@@ -71,20 +71,28 @@ namespace LeechCraft
 			{
 				FileSizeAtStart_ = tof->size ();
 				To_ = tof;
-			
+
 				if (!Reply_.get ())
 				{
+					if (URL_.scheme () == "file")
+					{
+						QTimer::singleShot (100,
+								this,
+								SLOT (handleLocalTransfer ()));
+						return;
+					}
+
 					QString ua = XmlSettingsManager::Instance ()
 						.property ("UserUserAgent").toString ();
 					if (ua.isEmpty ())
 						ua = XmlSettingsManager::Instance ()
 							.property ("PredefinedUserAgent").toString ();
-			
+
 					QNetworkRequest req (URL_);
 					req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
 					req.setRawHeader ("User-Agent", ua.toLatin1 ());
 					req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
-			
+
 					StartTime_.restart ();
 					QNetworkAccessManager *nam = Core::Instance ().GetNetworkAccessManager ();
 					Reply_.reset (nam->get (req));
@@ -113,7 +121,7 @@ namespace LeechCraft
 							return;
 					}
 				}
-			
+
 				Reply_->setParent (0);
 				connect (Reply_.get (),
 						SIGNAL (downloadProgress (qint64, qint64)),
@@ -136,7 +144,7 @@ namespace LeechCraft
 						this,
 						SLOT (handleReadyRead ()));
 			}
-			
+
 			void Task::Stop ()
 			{
 				if (Reply_.get ())
@@ -147,7 +155,7 @@ namespace LeechCraft
 			{
 				CanChangeName_ = false;
 			}
-			
+
 			QByteArray Task::Serialize () const
 			{
 				QByteArray result;
@@ -163,7 +171,7 @@ namespace LeechCraft
 				}
 				return result;
 			}
-			
+
 			void Task::Deserialize (QByteArray& data)
 			{
 				QDataStream in (&data, QIODevice::ReadOnly);
@@ -183,22 +191,22 @@ namespace LeechCraft
 				if (version < 1 || version > 2)
 					throw std::runtime_error ("Unknown version");
 			}
-			
+
 			double Task::GetSpeed () const
 			{
 				return Speed_;
 			}
-			
+
 			qint64 Task::GetDone () const
 			{
 				return Done_;
 			}
-			
+
 			qint64 Task::GetTotal () const
 			{
 				return Total_;
 			}
-			
+
 			QString Task::GetState () const
 			{
 				if (!Reply_.get ())
@@ -208,40 +216,40 @@ namespace LeechCraft
 				else
 					return tr ("Running");
 			}
-			
+
 			QString Task::GetURL () const
 			{
 				return Reply_.get () ? Reply_->url ().toString () : URL_.toString ();
 			}
-			
+
 			int Task::GetTimeFromStart () const
 			{
 				return StartTime_.elapsed ();
 			}
-			
+
 			bool Task::IsRunning () const
 			{
 				return Reply_.get () && !URL_.isEmpty ();
 			}
-			
+
 			QString Task::GetErrorString () const
 			{
 				// TODO implement own translations for errors.
 				return Reply_.get () ? Reply_->errorString () : tr ("Task isn't initialized properly");
 			}
-			
+
 			void Task::AddRef ()
 			{
 				++Counter_;
 			}
-			
+
 			void Task::Release ()
 			{
 				--Counter_;
 				if (!Counter_)
 					deleteLater ();
 			}
-			
+
 			void Task::Reset ()
 			{
 				RedirectHistory_.clear ();
@@ -259,7 +267,7 @@ namespace LeechCraft
 						SIGNAL (updateInterface ()));
 				Timer_->start (3000);
 			}
-			
+
 			void Task::RecalculateSpeed ()
 			{
 				Speed_ = static_cast<double> (Done_ * 1000) / static_cast<double> (StartTime_.elapsed ());
@@ -291,7 +299,7 @@ namespace LeechCraft
 				else
 				{
 					RedirectHistory_ << newUrl;
-				
+
 					QMetaObject::invokeMethod (this,
 							"redirectedConstruction",
 							Qt::QueuedConnection,
@@ -358,18 +366,18 @@ namespace LeechCraft
 					}
 				}
 			}
-			
+
 			void Task::handleDataTransferProgress (qint64 done, qint64 total)
 			{
 				Done_ = done;
 				Total_ = total;
-			
+
 				RecalculateSpeed ();
-			
+
 				if (done == total)
 					emit updateInterface ();
 			}
-			
+
 			void Task::redirectedConstruction (const QByteArray& newUrl)
 			{
 				if (To_ && FileSizeAtStart_ >= 0)
@@ -379,19 +387,79 @@ namespace LeechCraft
 					To_->resize (FileSizeAtStart_);
 					To_->open (QIODevice::ReadWrite);
 				}
-			
+
 				Reply_.reset ();
-			
+
 				URL_ = QUrl::fromEncoded (newUrl);
 				Start (To_);
 			}
-			
+
 			void Task::handleMetaDataChanged ()
 			{
 				HandleMetadataRedirection ();
 				HandleMetadataFilename ();
 			}
-			
+
+			void Task::handleLocalTransfer ()
+			{
+				QString localFile = URL_.toLocalFile ();
+				qDebug () << "LOCAL FILE" << localFile << To_->fileName ();
+				QFileInfo fi (localFile);
+				if (!fi.isFile ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< URL_
+							<< "is not a file";
+					QTimer::singleShot (0,
+							this,
+							SLOT (handleError ()));
+					return;
+				}
+
+				QString destination = To_->fileName ();
+				QFile file (localFile);
+				To_->close ();
+				if (!To_->remove () ||
+						!file.copy (destination))
+				{
+					if (!To_->open (QIODevice::WriteOnly))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to open destfile"
+								<< To_->fileName ()
+								<< "for writing";
+						QTimer::singleShot (0,
+								this,
+								SLOT (handleError ()));
+						return;
+					}
+
+					if (!file.open (QIODevice::ReadOnly))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to open sourcefile"
+								<< file.fileName ()
+								<< "for reading";
+						QTimer::singleShot (0,
+								this,
+								SLOT (handleError ()));
+						return;
+					}
+
+					const int chunkSize = 10 * 1024 * 1024;
+					QByteArray chunk = file.read (chunkSize);
+					while (chunk.size ())
+					{
+						To_->write (chunk);
+						chunk = file.read (chunkSize);
+					}
+				}
+
+				QTimer::singleShot (0,
+						this,
+						SLOT (handleFinished ()));
+			}
+
 			bool Task::handleReadyRead ()
 			{
 				if (Reply_.get ())
@@ -424,7 +492,7 @@ namespace LeechCraft
 				}
 				return false;
 			}
-			
+
 			void Task::handleFinished ()
 			{
 				Core::Instance ().RemoveFinishedReply (Reply_.get ());
@@ -434,19 +502,20 @@ namespace LeechCraft
 						0);
 				if (Reply_.get ())
 					Reply_.release ()->deleteLater ();
+				qDebug () << "i finished!";
 				emit done (false);
 			}
-			
+
 			void Task::handleError ()
 			{
 				emit done (true);
 			}
-			
+
 			void intrusive_ptr_add_ref (Task *task)
 			{
 				task->AddRef ();
 			}
-			
+
 			void intrusive_ptr_release (Task *task)
 			{
 				task->Release ();

@@ -25,6 +25,7 @@
 #include <QTimer>
 #include <QMetaType>
 #include <QTextCodec>
+#include <QStringList>
 #include <QtDebug>
 #include <QRegExp>
 #include <plugininterface/util.h>
@@ -56,24 +57,24 @@ namespace LeechCraft
 				setObjectName ("CSTP Core");
 				qRegisterMetaType<boost::intrusive_ptr<MorphFile> > ("boost::intrusive_ptr<MorphFile>");
 				qRegisterMetaType<QNetworkReply*> ("QNetworkReply*");
-			
+
 				Headers_ << tr ("URL")
 					<< tr ("State")
 					<< tr ("Progress");
-			
+
 				ReadSettings ();
 			}
-			
+
 			Core::~Core ()
 			{
 			}
-			
+
 			Core& Core::Instance ()
 			{
 				static Core core;
 				return core;
 			}
-			
+
 			void Core::Release ()
 			{
 				writeSettings ();
@@ -94,12 +95,12 @@ namespace LeechCraft
 			{
 				return CoreProxy_;
 			}
-			
+
 			void Core::SetToolbar (QToolBar *widget)
 			{
 				Toolbar_ = widget;
 			}
-			
+
 			void Core::ItemSelected (const QModelIndex& i)
 			{
 				Selected_ = i;
@@ -140,7 +141,7 @@ namespace LeechCraft
 					return file;
 				}
 			}
-			
+
 			int Core::AddTask (LeechCraft::Entity& e)
 			{
 				QUrl entity = e.Entity_.toUrl ();
@@ -152,10 +153,10 @@ namespace LeechCraft
 					QString dir = fi.dir ().path ();
 					QUrl source = e.Additional_ ["SourceURL"].toUrl ();
 					QString file = MakeFilename (source);
-			
+
 					if (fi.isDir ())
 						dir = e.Location_;
-			
+
 					return AddTask (rep,
 							dir,
 							file,
@@ -171,9 +172,9 @@ namespace LeechCraft
 						CSTP::AddTask at (entity, e.Location_);
 						if (at.exec () == QDialog::Rejected)
 							return -1;
-			
+
 						AddTask::Task task = at.GetTask ();
-			
+
 						return AddTask (task.URL_,
 								task.LocalPath_,
 								task.Filename_,
@@ -186,7 +187,7 @@ namespace LeechCraft
 						QFileInfo fi (e.Location_);
 						QString dir = fi.dir ().path (),
 								file = fi.fileName ();
-			
+
 						if (!(e.Parameters_ & LeechCraft::Internal))
 						{
 							if (fi.isDir ())
@@ -198,7 +199,7 @@ namespace LeechCraft
 							else
 								return -1;
 						}
-			
+
 						return AddTask (entity,
 								dir,
 								file,
@@ -222,7 +223,7 @@ namespace LeechCraft
 					<< id
 					<< ActiveTasks_.size ();
 			}
-			
+
 			int Core::AddTask (QNetworkReply *rep,
 					const QString& path,
 					const QString& filename,
@@ -232,10 +233,10 @@ namespace LeechCraft
 			{
 				TaskDescr td;
 				td.Task_.reset (new Task (rep));
-			
+
 				return AddTask (td, path, filename, comment, tags, tp);
 			}
-			
+
 			int Core::AddTask (const QUrl& url,
 					const QString& path,
 					const QString& filename,
@@ -245,10 +246,10 @@ namespace LeechCraft
 			{
 				TaskDescr td;
 				td.Task_.reset (new Task (url));
-			
+
 				return AddTask (td, path, filename, comment, tags, tp);
 			}
-			
+
 			int Core::AddTask (TaskDescr& td,
 					const QString& path,
 					const QString& filename,
@@ -264,7 +265,7 @@ namespace LeechCraft
 				td.Parameters_ = tp;
 				td.ID_ = CoreProxy_->GetID ();
 				td.Tags_ = tags;
-			
+
 				if (td.File_->exists ())
 				{
 					boost::logic::tribool remove = false;
@@ -289,7 +290,7 @@ namespace LeechCraft
 
 				if (tp & Internal)
 					td.Task_->ForbidNameChanges ();
-			
+
 				connect (td.Task_.get (),
 						SIGNAL (done (bool)),
 						this,
@@ -298,7 +299,7 @@ namespace LeechCraft
 						SIGNAL (updateInterface ()),
 						this,
 						SLOT (updateInterface ()));
-			
+
 				beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 				ActiveTasks_.push_back (td);
 				endInsertRows ();
@@ -307,22 +308,22 @@ namespace LeechCraft
 					startTriggered (rowCount () - 1);
 				return td.ID_;
 			}
-			
+
 			qint64 Core::GetDone (int pos) const
 			{
 				return TaskAt (pos).Task_->GetDone ();
 			}
-			
+
 			qint64 Core::GetTotal (int pos) const
 			{
 				return TaskAt (pos).Task_->GetTotal ();
 			}
-			
+
 			bool Core::IsRunning (int pos) const
 			{
 				return TaskAt (pos).Task_->IsRunning ();
 			}
-			
+
 			namespace _Local
 			{
 				struct SpeedAccumulator
@@ -334,52 +335,58 @@ namespace LeechCraft
 					}
 				};
 			};
-			
+
 			qint64 Core::GetTotalDownloadSpeed () const
 			{
 				qint64 result = 0;
 				return std::accumulate (ActiveTasks_.begin (), ActiveTasks_.end (),
 						result, _Local::SpeedAccumulator ());
 			}
-			
+
 			bool Core::CouldDownload (const LeechCraft::Entity& e)
 			{
+				if (e.Entity_.value<QNetworkReply*> ())
+					return true;
+
 				QUrl url = e.Entity_.toUrl ();
-				return (url.isValid () &&
-					(url.scheme () == "http" || url.scheme () == "https")) ||
-					e.Entity_.value<QNetworkReply*> ();
+				if (!url.isValid ())
+					return false;
+
+				QStringList schemes ("http");
+				schemes << "https" << "file";
+				return schemes.contains (url.scheme ());
 			}
-			
+
 			QAbstractItemModel* Core::GetRepresentationModel ()
 			{
 				return this;
 			}
-			
+
 			QNetworkAccessManager* Core::GetNetworkAccessManager () const
 			{
 				return NetworkAccessManager_;
 			}
-			
+
 			bool Core::HasFinishedReply (QNetworkReply *rep) const
 			{
 				return FinishedReplies_.contains (rep);
 			}
-			
+
 			void Core::RemoveFinishedReply (QNetworkReply *rep)
 			{
 				FinishedReplies_.remove (rep);
 			}
-			
+
 			int Core::columnCount (const QModelIndex&) const
 			{
 				return Headers_.size ();
 			}
-			
+
 			QVariant Core::data (const QModelIndex& index, int role) const
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				if (role == Qt::DisplayRole)
 				{
 					TaskDescr td = TaskAt (index.row ());
@@ -395,13 +402,13 @@ namespace LeechCraft
 
 								if (!task->IsRunning ())
 									return QVariant ();
-			
+
 								qint64 done = task->GetDone (),
 									   total = task->GetTotal ();
 								double speed = task->GetSpeed ();
-			
+
 								qint64 rem = (total - done) / speed;
-			
+
 								return tr ("%1 (ETA: %2)")
 									.arg (task->GetState ())
 									.arg (Util::MakeTimeFromLong (rem));
@@ -435,17 +442,17 @@ namespace LeechCraft
 				else
 					return QVariant ();
 			}
-			
+
 			Qt::ItemFlags Core::flags (const QModelIndex&) const
 			{
 				return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 			}
-			
+
 			bool Core::hasChildren (const QModelIndex& index) const
 			{
 				return !index.isValid ();
 			}
-			
+
 			QVariant Core::headerData (int column, Qt::Orientation orient, int role) const
 			{
 				if (orient == Qt::Horizontal && role == Qt::DisplayRole)
@@ -453,25 +460,25 @@ namespace LeechCraft
 				else
 					return QVariant ();
 			}
-			
+
 			QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
 			{
 				if (!hasIndex (row, column, parent))
 					return QModelIndex ();
-			
+
 				return createIndex (row, column);
 			}
-			
+
 			QModelIndex Core::parent (const QModelIndex&) const
 			{
 				return QModelIndex ();
 			}
-			
+
 			int Core::rowCount (const QModelIndex& parent) const
 			{
 				return parent.isValid () ? 0 : ActiveTasks_.size ();
 			}
-			
+
 			void Core::removeTriggered (int i)
 			{
 				if (i == -1)
@@ -480,18 +487,18 @@ namespace LeechCraft
 						return;
 					i = Selected_.row ();
 				}
-			
+
 				tasks_t::iterator it = ActiveTasks_.begin ();
 				std::advance (it, i);
 				Remove (it);
 			}
-			
+
 			void Core::removeAllTriggered ()
 			{
 				while (ActiveTasks_.size ())
 					removeTriggered (0);
 			}
-			
+
 			void Core::startTriggered (int i)
 			{
 				if (i == -1)
@@ -500,7 +507,7 @@ namespace LeechCraft
 						return;
 					i = Selected_.row ();
 				}
-			
+
 				TaskDescr selected = TaskAt (i);
 				if (selected.Task_->IsRunning ())
 					return;
@@ -516,7 +523,7 @@ namespace LeechCraft
 				}
 				selected.Task_->Start (selected.File_);
 			}
-			
+
 			void Core::stopTriggered (int i)
 			{
 				if (i == -1)
@@ -525,42 +532,42 @@ namespace LeechCraft
 						return;
 					i = Selected_.row ();
 				}
-			
+
 				TaskDescr selected = TaskAt (i);
 				if (!selected.Task_->IsRunning ())
 					return;
 				selected.Task_->Stop ();
 				selected.File_->close ();
 			}
-			
+
 			void Core::startAllTriggered ()
 			{
 				for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
 					startTriggered (i);
 			}
-			
+
 			void Core::stopAllTriggered ()
 			{
 				for (int i = 0, size = ActiveTasks_.size (); i < size; ++i)
 					stopTriggered (i);
 			}
-			
+
 			void Core::done (bool err)
 			{
 				tasks_t::iterator taskdscr = FindTask (sender ());
 				if (taskdscr == ActiveTasks_.end ())
 					return;
-			
+
 				int id = taskdscr->ID_;
 				QString filename = taskdscr->File_->fileName ();
 				QString url = taskdscr->Task_->GetURL ();
 				QString errorStr = taskdscr->Task_->GetErrorString ();
 				QStringList tags = taskdscr->Tags_;
-			
+
 				taskdscr->File_->close ();
 
 				bool notifyUser = !(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser);
-			
+
 				if (!err)
 				{
 					if (notifyUser)
@@ -595,18 +602,18 @@ namespace LeechCraft
 						Remove (taskdscr);
 				}
 			}
-			
+
 			void Core::updateInterface ()
 			{
 				tasks_t::const_iterator it = FindTask (sender ());
 				if (it == ActiveTasks_.end ())
 					return;
-			
+
 				int pos = std::distance<tasks_t::const_iterator>
 					(ActiveTasks_.begin (), it);
 				emit dataChanged (index (pos, 0), index (pos, columnCount () - 1));
 			}
-			
+
 			void Core::writeSettings ()
 			{
 				QSettings settings (QCoreApplication::organizationName (),
@@ -620,7 +627,7 @@ namespace LeechCraft
 				{
 					if (i->Parameters_ & LeechCraft::NotPersistent)
 						continue;
-			
+
 					settings.setArrayIndex (taskIndex++);
 					settings.setValue ("Task", i->Task_->Serialize ());
 					settings.setValue ("Filename", i->File_->fileName ());
@@ -631,12 +638,12 @@ namespace LeechCraft
 				SaveScheduled_ = false;
 				settings.endArray ();
 			}
-			
+
 			void Core::finishedReply (QNetworkReply *rep)
 			{
 				FinishedReplies_.insert (rep);
 			}
-			
+
 			void Core::ReadSettings ()
 			{
 				QSettings settings (QCoreApplication::organizationName (),
@@ -645,9 +652,9 @@ namespace LeechCraft
 				for (int i = 0; i < size; ++i)
 				{
 					settings.setArrayIndex (i);
-			
+
 					TaskDescr td;
-			
+
 					QByteArray data = settings.value ("Task").toByteArray ();
 					td.Task_.reset (new Task ());
 					connect (td.Task_.get (),
@@ -663,7 +670,7 @@ namespace LeechCraft
 						qWarning () << Q_FUNC_INFO << e.what ();
 						continue;
 					}
-			
+
 					connect (td.Task_.get (),
 							SIGNAL (done (bool)),
 							this,
@@ -672,45 +679,45 @@ namespace LeechCraft
 							SIGNAL (updateInterface ()),
 							this,
 							SLOT (updateInterface ()));
-			
+
 					QString filename = settings.value ("Filename").toString ();
 					td.File_.reset (new MorphFile (filename));
-			
+
 					td.Comment_ = settings.value ("Comment").toString ();
 					td.ErrorFlag_ = settings.value ("ErrorFlag").toBool ();
 					td.Tags_ = settings.value ("Tags").toStringList ();
-			
+
 					ActiveTasks_.push_back (td);
 				}
 				SaveScheduled_ = false;
 				settings.endArray ();
 			}
-			
+
 			void Core::ScheduleSave ()
 			{
 				if (SaveScheduled_)
 					return;
-			
+
 				QTimer::singleShot (100, this, SLOT (writeSettings ()));
 			}
-			
+
 			struct _Local::ObjectFinder
 			{
 				QObject *Pred_;
-			
+
 				enum Type
 				{
 					TObject
 				};
-			
+
 				Type Type_;
-			
+
 				ObjectFinder (QObject* task)
 				: Pred_ (task)
 				, Type_ (TObject)
 				{
 				}
-			
+
 				bool operator() (const Core::TaskDescr& td)
 				{
 					switch (Type_)
@@ -722,19 +729,19 @@ namespace LeechCraft
 					}
 				}
 			};
-			
+
 			Core::tasks_t::const_iterator Core::FindTask (QObject *task) const
 			{
 				return std::find_if (ActiveTasks_.begin (), ActiveTasks_.end (),
 						_Local::ObjectFinder (task));
 			}
-			
+
 			Core::tasks_t::iterator Core::FindTask (QObject *task)
 			{
 				return std::find_if (ActiveTasks_.begin (), ActiveTasks_.end (),
 						_Local::ObjectFinder (task));
 			}
-			
+
 			void Core::Remove (tasks_t::iterator it)
 			{
 				int dst = std::distance (ActiveTasks_.begin (), it);
@@ -743,17 +750,17 @@ namespace LeechCraft
 				ActiveTasks_.erase (it);
 				endRemoveRows ();
 				CoreProxy_->FreeID (id);
-			
+
 				ScheduleSave ();
 			}
-			
+
 			Core::tasks_t::const_reference Core::TaskAt (int pos) const
 			{
 				tasks_t::const_iterator begin = ActiveTasks_.begin ();
 				std::advance (begin, pos);
 				return *begin;
 			}
-			
+
 			Core::tasks_t::reference Core::TaskAt (int pos)
 			{
 				tasks_t::iterator begin = ActiveTasks_.begin ();
