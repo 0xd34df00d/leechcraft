@@ -20,6 +20,8 @@
 #include <algorithm>
 #include <QTimer>
 #include <QtDebug>
+#include <interfaces/iinfo.h>
+#include <plugininterface/defaulthookproxy.h>
 #include "filtermodel.h"
 #include "core.h"
 
@@ -43,6 +45,9 @@ namespace LeechCraft
 					<< tr ("URL")
 					<< tr ("Tags");
 				QTimer::singleShot (0, this, SLOT (loadData ()));
+
+				Core::Instance ().GetPluginManager ()->
+						RegisterHookable (this);
 			}
 			
 			FavoritesModel::~FavoritesModel ()
@@ -184,6 +189,10 @@ namespace LeechCraft
 								"like such title is already used.").arg (title));
 					return false;
 				}
+
+				Util::DefaultHookProxy_ptr proxy = Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy ());
+				emit hookAddedToFavorites (proxy, title, url, visibleTags);
+
 				return true;
 			}
 
@@ -291,8 +300,8 @@ namespace LeechCraft
 					return;
 			
 				beginInsertRows (QModelIndex (), 0, items.size () - 1);
-				for (items_t::reverse_iterator i = items.rbegin (),
-						end = items.rend (); i != end; ++i)
+				for (items_t::iterator i = items.begin (),
+						end = items.end (); i != end; ++i)
 				{
 					Q_FOREACH (QString tag, i->Tags_)
 					{

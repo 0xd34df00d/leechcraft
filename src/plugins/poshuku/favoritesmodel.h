@@ -18,9 +18,10 @@
 
 #ifndef PLUGINS_POSHUKU_FAVORITESMODEL_H
 #define PLUGINS_POSHUKU_FAVORITESMODEL_H
-#include <vector>
 #include <QAbstractItemModel>
 #include <QStringList>
+#include <QList>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
@@ -43,7 +44,7 @@ namespace LeechCraft
 
 					bool operator== (const FavoritesItem&) const;
 				};
-				typedef std::vector<FavoritesItem> items_t;
+				typedef QList<FavoritesItem> items_t;
 			private:
 				items_t Items_;
 				QMap<QString, QString> CheckResults_;
@@ -85,6 +86,10 @@ namespace LeechCraft
 				void loadData ();
 			signals:
 				void error (const QString&);
+
+				// Hook support
+				void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
+						QString title, QString url, QStringList tags);
 			};
 		};
 	};

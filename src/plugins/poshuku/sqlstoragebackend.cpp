@@ -363,7 +363,7 @@ namespace LeechCraft
 			}
 			
 			void SQLStorageBackend::LoadFavorites (
-					std::vector<FavoritesModel::FavoritesItem>& items
+					FavoritesModel::items_t& items
 					) const
 			{
 				if (!FavoritesLoader_.exec ())

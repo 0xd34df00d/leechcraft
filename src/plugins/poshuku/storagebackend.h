@@ -108,7 +108,7 @@ namespace LeechCraft
 				 * @param[out] items. The container with items. They would be
 				 * appended to the container.
 				 */
-				virtual void LoadFavorites (std::vector<FavoritesModel::FavoritesItem>& items) const = 0;
+				virtual void LoadFavorites (FavoritesModel::items_t& items) const = 0;
 
 				/** @brief Add an item to the favorites list.
 				 *

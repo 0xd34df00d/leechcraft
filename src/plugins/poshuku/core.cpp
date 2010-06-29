@@ -870,10 +870,6 @@ namespace LeechCraft
 							url, dia->GetTags ());
 				}
 				while (!result);
-
-				proxy.reset (new Util::DefaultHookProxy ());
-				emit hookAddedToFavorites (proxy, dia->GetTitle (),
-						url, dia->GetTags ());
 			}
 			
 			void Core::handleStatusBarChanged (const QString& msg)

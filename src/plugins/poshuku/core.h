@@ -180,8 +180,6 @@ namespace LeechCraft
 				void newUnclose (QAction*);
 
 				// Hook support signals
-				void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
-						QString title, QString url, QStringList tags);
 				void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
 						QString *title, QString *url);
 				void hookIconRequested (LeechCraft::IHookProxy_ptr,
