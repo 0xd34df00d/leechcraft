@@ -40,7 +40,7 @@ namespace LeechCraft
 					url.setPath (path);
 				}
 
-				QString location = Util::GetTemporaryName ("lackman_XXXXXX");
+				QString location = Util::GetTemporaryName ("lackman_XXXXXX.xz");
 
 				PendingRI pri =
 				{
@@ -51,6 +51,7 @@ namespace LeechCraft
 				Entity e = Util::MakeEntity (url,
 						location,
 						LeechCraft::Internal |
+							LeechCraft::DoNotNotifyUser |
 							LeechCraft::DoNotSaveInHistory |
 							LeechCraft::NotPersistent |
 							LeechCraft::DoNotAnnounceEntity);
@@ -93,7 +94,18 @@ namespace LeechCraft
 				PendingRI pri = PendingRIs_.take (id);
 
 				QString name = pri.Location_;
-				qDebug () << Q_FUNC_INFO << name;
+				QProcess *unarch = new QProcess (this);
+				unarch->setProperty ("URL", pri.URL_);
+				unarch->setProperty ("Filename", name);
+				connect (unarch,
+						SIGNAL (finished (int, QProcess::ExitStatus)),
+						this,
+						SLOT (handleUnarchFinished (int, QProcess::ExitStatus)));
+				connect (unarch,
+						SIGNAL (error (QProcess::ProcessError)),
+						this,
+						SLOT (handleUnarchError (QProcess::ProcessError)));
+				unarch->start ("unxz", QStringList ("-c") << name);
 			}
 
 			void RepoInfoFetcher::handleJobRemoved (int id)
@@ -111,10 +123,47 @@ namespace LeechCraft
 
 				PendingRI pri = PendingRIs_.take (id);
 
+				QFile::remove (pri.Location_);
+
 				emit gotEntity (Util::MakeNotification (tr ("Error fetching repository"),
 						tr ("Error downloading file from %1.")
 							.arg (pri.URL_.toString ()),
 						PCritical_));
+			}
+
+			void RepoInfoFetcher::handleUnarchFinished (int exitCode,
+					QProcess::ExitStatus exitStatus)
+			{
+				sender ()->deleteLater ();
+
+				if (exitCode)
+				{
+					emit gotEntity (Util::MakeNotification (tr ("Repository unpack error"),
+							tr ("Unable to unpack the repository file. unxz error: %1."
+								"Problematic file is at %2.")
+								.arg (exitCode)
+								.arg (sender ()->property ("Filename").toString ()),
+							PCritical_));
+					return;
+				}
+
+				QByteArray data = qobject_cast<QProcess*> (sender ())->readAllStandardOutput ();
+				qDebug () << data;
+
+				QFile::remove (sender ()->property ("Filename").toString ());
+			}
+
+			void RepoInfoFetcher::handleUnarchError (QProcess::ProcessError error)
+			{
+				sender ()->deleteLater ();
+
+				qWarning () << Q_FUNC_INFO
+						<< "unable to unpack for"
+						<< sender ()->property ("URL").toUrl ()
+						<< sender ()->property ("Filename").toString ()
+						<< "with"
+						<< error
+						<< qobject_cast<QProcess*> (sender ())->readAllStandardError ();
 			}
 		}
 	}

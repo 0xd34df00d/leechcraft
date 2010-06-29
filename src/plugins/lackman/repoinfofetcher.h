@@ -20,6 +20,7 @@
 #define PLUGINS_LACKMAN_REPOINFOFETCHER_H
 #include <QObject>
 #include <QUrl>
+#include <QProcess>
 #include <interfaces/idownload.h>
 #include "repoinfo.h"
 
@@ -47,6 +48,9 @@ namespace LeechCraft
 				void handleJobFinished (int);
 				void handleJobRemoved (int);
 				void handleJobError (int, IDownload::Error);
+
+				void handleUnarchFinished (int, QProcess::ExitStatus);
+				void handleUnarchError (QProcess::ProcessError);
 			signals:
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
