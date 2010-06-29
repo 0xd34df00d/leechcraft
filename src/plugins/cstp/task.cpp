@@ -309,7 +309,6 @@ namespace LeechCraft
 
 			void Task::HandleMetadataFilename ()
 			{
-				qDebug () << Q_FUNC_INFO << CanChangeName_;
 				if (!CanChangeName_)
 					return;
 
@@ -502,7 +501,6 @@ namespace LeechCraft
 						0);
 				if (Reply_.get ())
 					Reply_.release ()->deleteLater ();
-				qDebug () << "i finished!";
 				emit done (false);
 			}
 
