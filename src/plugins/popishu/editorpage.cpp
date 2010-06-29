@@ -590,9 +590,7 @@ namespace LeechCraft
 
 			void EditorPage::ShowConsole (bool show)
 			{
-				Ui_.Console_->setVisible (show);
-				Ui_.Inject_->setVisible (show);
-				Ui_.Release_->setVisible (show);
+				Ui_.ConsoleBox_->setVisible (show);
 				Ui_.Splitter_->refresh ();
 			}
 		};
