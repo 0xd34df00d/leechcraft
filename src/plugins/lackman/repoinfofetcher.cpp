@@ -379,7 +379,9 @@ namespace LeechCraft
 					package = package.nextSiblingElement ("package");
 				}
 
-				emit componentFetched (infos);
+				emit componentFetched (infos,
+						sender ()->property ("Component").toString (),
+						sender ()->property ("RepoID").toInt ());
 			}
 
 			void RepoInfoFetcher::handleUnarchError (QProcess::ProcessError error)

@@ -166,17 +166,7 @@ namespace LeechCraft
 				}
 
 				Q_FOREACH (const QString& component, ri.GetComponents ())
-				{
-					QueryAddRepoComponents_.bindValue (":repo_id", repoId);
-					QueryAddRepoComponents_.bindValue (":component", component);
-					if (!QueryAddRepoComponents_.exec ())
-					{
-						Util::DBLock::DumpError (QueryAddRepoComponents_);
-						throw std::runtime_error ("Query execution failed.");
-					}
-
-					QueryAddRepoComponents_.finish ();
-				}
+					AddComponent (repoId, component);
 
 				lock.Good ();
 
@@ -199,6 +189,112 @@ namespace LeechCraft
 				QueryGetRepoComponents_.finish ();
 
 				return result;
+			}
+
+			int Storage::FindComponent (int repoId, const QString& component)
+			{
+				QueryFindComponent_.bindValue (":repo_id", repoId);
+				QueryFindComponent_.bindValue (":component", component);
+				if (!QueryFindComponent_.exec ())
+				{
+					Util::DBLock::DumpError (QueryFindComponent_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				int result = -1;
+				if (QueryFindComponent_.next ())
+					result = QueryFindComponent_.value (0).toInt ();
+
+				QueryFindComponent_.finish ();
+
+				return result;
+			}
+
+			int Storage::AddComponent (int repoId, const QString& component, bool returnId)
+			{
+				QueryAddRepoComponent_.bindValue (":repo_id", repoId);
+				QueryAddRepoComponent_.bindValue (":component", component);
+				if (!QueryAddRepoComponent_.exec ())
+				{
+					Util::DBLock::DumpError (QueryAddRepoComponent_);
+					throw std::runtime_error ("Query execution failed.");
+				}
+
+				QueryAddRepoComponent_.finish ();
+
+				if (!returnId)
+					 return 0;
+
+				return FindComponent (repoId, component);
+			}
+
+			int Storage::FindPackage (const QString& name, const QString& version)
+			{
+				QueryFindPackage_.bindValue (":name", name);
+				QueryFindPackage_.bindValue (":version", version);
+				if (!QueryFindPackage_.exec ())
+				{
+					Util::DBLock::DumpError (QueryFindPackage_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				int result = -1;
+				if (QueryFindPackage_.next ())
+					result = QueryFindPackage_.value (0).toInt ();
+
+				QueryFindPackage_.finish ();
+
+				return result;
+			}
+
+			int Storage::AddPackage (const QString& name, const QString& version)
+			{
+				QueryAddPackage_.bindValue (":name", name);
+				QueryAddPackage_.bindValue (":version", version);
+				if (!QueryAddPackage_.exec ())
+				{
+					Util::DBLock::DumpError (QueryAddPackage_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QueryAddPackage_.finish ();
+
+				return FindPackage (name, version);
+			}
+
+			bool Storage::HasLocation (int packageId, int componentId)
+			{
+				QueryHasLocation_.bindValue (":package_id", packageId);
+				QueryHasLocation_.bindValue (":component_id", componentId);
+				if (!QueryHasLocation_.exec ())
+				{
+					Util::DBLock::DumpError (QueryHasLocation_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				if (!QueryHasLocation_.next ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to position on first record.";
+					throw std::runtime_error ("Unable to position on first record.");
+				}
+
+				bool result = QueryHasLocation_.value (0).toInt () != 0;
+				QueryHasLocation_.finish ();
+				return result;
+			}
+
+			void Storage::AddLocation (int packageId, int componentId)
+			{
+				QueryAddLocation_.bindValue (":package_id", packageId);
+				QueryAddLocation_.bindValue (":component_id", componentId);
+				if (!QueryAddLocation_.exec ())
+				{
+					Util::DBLock::DumpError (QueryAddLocation_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QueryAddLocation_.finish ();
 			}
 
 			void Storage::InitTables ()
@@ -235,13 +331,33 @@ namespace LeechCraft
 				QueryAddRepo_ = QSqlQuery (DB_);
 				QueryAddRepo_.prepare (LoadQuery ("insert_repo"));
 
-				QueryAddRepoComponents_ = QSqlQuery (DB_);
-				QueryAddRepoComponents_.prepare ("INSERT INTO components (repo_id, component) "
+				QueryAddRepoComponent_ = QSqlQuery (DB_);
+				QueryAddRepoComponent_.prepare ("INSERT INTO components (repo_id, component) "
 						"VALUES (:repo_id, :component);");
 
 				QueryGetRepoComponents_ = QSqlQuery (DB_);
 				QueryGetRepoComponents_.prepare ("SELECT component "
 						"FROM components WHERE repo_id = :repo_id;");
+
+				QueryFindComponent_ = QSqlQuery (DB_);
+				QueryFindComponent_.prepare ("SELECT component_id "
+						"FROM components WHERE repo_id = :repo_id AND component = :component;");
+
+				QueryFindPackage_ = QSqlQuery (DB_);
+				QueryFindPackage_.prepare ("SELECT package_id "
+						"FROM packages WHERE name = :name AND version = :version;");
+
+				QueryAddPackage_ = QSqlQuery (DB_);
+				QueryAddPackage_.prepare ("INSERT INTO packages (name, version) "
+						"VALUES (:name, :version);");
+
+				QueryHasLocation_ = QSqlQuery (DB_);
+				QueryHasLocation_.prepare ("SELECT COUNT (package_id) "
+						"FROM locations WHERE package_id = :package_id AND component_id = :component_id;");
+
+				QueryAddLocation_ = QSqlQuery (DB_);
+				QueryAddLocation_.prepare ("INSERT INTO locations (package_id, component_id) "
+						"VALUES (:package_id, :component_id);");
 			}
 		}
 	}

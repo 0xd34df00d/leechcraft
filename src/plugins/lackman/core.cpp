@@ -47,9 +47,11 @@ namespace LeechCraft
 						this,
 						SLOT (handleInfoFetched (const RepoInfo&)));
 				connect (RepoInfoFetcher_,
-						SIGNAL (componentFetched (const PackageShortInfoList&)),
+						SIGNAL (componentFetched (const PackageShortInfoList&,
+								const QString&, int)),
 						this,
-						SLOT (handleComponentFetched (const PackageShortInfoList&)));
+						SLOT (handleComponentFetched (const PackageShortInfoList&,
+								const QString&, int)));
 			}
 
 			Core& Core::Instance ()
@@ -85,9 +87,10 @@ namespace LeechCraft
 			void Core::UpdateRepo (const QUrl& url, const QStringList& components)
 			{
 				int id = -1;
+				QStringList ourComponents;
 				try
 				{
-					int id = Storage_->FindRepo (url);
+					id = Storage_->FindRepo (url);
 					if (id == -1)
 					{
 						QString str;
@@ -102,6 +105,7 @@ namespace LeechCraft
 								PCritical_));
 						return;
 					}
+					ourComponents = Storage_->GetComponents (id);
 				}
 				catch (const std::exception& e)
 				{
@@ -166,11 +170,97 @@ namespace LeechCraft
 				UpdateRepo (ri.GetUrl (), ri.GetComponents ());
 			}
 
-			void Core::handleComponentFetched (const PackageShortInfoList& shortInfos)
+			void Core::handleComponentFetched (const PackageShortInfoList& shortInfos,
+					const QString& component, int repoId)
 			{
-				qDebug () << Q_FUNC_INFO;
+				int componentId = -1;
+				try
+				{
+					componentId = Storage_->FindComponent (repoId, component);
+					if (componentId == -1)
+						componentId = Storage_->AddComponent (repoId, component);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to get component ID for"
+							<< component
+							<< "of"
+							<< repoId
+							<< e.what ();
+					emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+							tr ("Unable to load component ID for component %1.")
+								.arg (component),
+							PCritical_));
+					return;
+				}
+
+				// Step 1. Adding new components.
 				Q_FOREACH (const PackageShortInfo& info, shortInfos)
-					qDebug () << info.Name_ << info.Versions_;
+					Q_FOREACH (const QString& version, info.Versions_)
+					{
+						int packageId = -1;
+						try
+						{
+							packageId = Storage_->FindPackage (info.Name_, version);
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to get package ID for"
+									<< info.Name_
+									<< version
+									<< e.what ();
+							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+									tr ("Unable to load package ID for package `%1`-%2")
+										.arg (info.Name_)
+										.arg (version),
+									PCritical_));
+							return;
+						}
+
+						try
+						{
+							if (packageId == -1)
+								packageId = Storage_->AddPackage (info.Name_, version);
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to get save package"
+									<< info.Name_
+									<< version
+									<< e.what ();
+							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+									tr ("Unable to save package `%1`-%2")
+										.arg (info.Name_)
+										.arg (version),
+									PCritical_));
+							return;
+						}
+
+						try
+						{
+							if (!Storage_->HasLocation (packageId, componentId))
+								Storage_->AddLocation (packageId, componentId);
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to add package location"
+									<< info.Name_
+									<< version
+									<< e.what ();
+							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+									tr ("Unable to save package location for "
+										"package `%1`-%2 and component %3")
+										.arg (info.Name_)
+										.arg (version)
+										.arg (component),
+									PCritical_));
+							return;
+						}
+					}
 			}
 		}
 	}

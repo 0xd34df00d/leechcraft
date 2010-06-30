@@ -70,7 +70,8 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::Entity&);
 
 				void infoFetched (const RepoInfo&);
-				void componentFetched (const PackageShortInfoList&);
+				void componentFetched (const PackageShortInfoList& packages,
+						const QString& component, int repoId);
 			};
 		}
 	}

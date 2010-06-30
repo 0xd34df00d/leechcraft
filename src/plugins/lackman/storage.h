@@ -41,15 +41,30 @@ namespace LeechCraft
 				QSqlQuery QueryCountPackages_;
 				QSqlQuery QueryFindRepo_;
 				QSqlQuery QueryAddRepo_;
-				QSqlQuery QueryAddRepoComponents_;
+				QSqlQuery QueryAddRepoComponent_;
 				QSqlQuery QueryGetRepoComponents_;
+				QSqlQuery QueryFindComponent_;
+				QSqlQuery QueryFindPackage_;
+				QSqlQuery QueryAddPackage_;
+				QSqlQuery QueryHasLocation_;
+				QSqlQuery QueryAddLocation_;
 			public:
 				Storage (QObject* = 0);
 
-				int CountPackages (const QUrl&);
-				int FindRepo (const QUrl&);
-				int AddRepo (const RepoInfo&);
-				QStringList GetComponents (int);
+				int CountPackages (const QUrl& repoUrl);
+
+				int FindRepo (const QUrl& repoUrl);
+				int AddRepo (const RepoInfo& ri);
+
+				QStringList GetComponents (int repoId);
+				int FindComponent (int repoId, const QString& component);
+				int AddComponent (int repoId, const QString& component, bool = true);
+
+				int FindPackage (const QString& name, const QString& version);
+				int AddPackage (const QString& name, const QString& version);
+
+				bool HasLocation (int packageId, int componentId);
+				void AddLocation (int packageId, int componentId);
 			private:
 				void InitTables ();
 				void InitQueries ();

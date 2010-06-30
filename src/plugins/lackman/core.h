@@ -53,9 +53,11 @@ namespace LeechCraft
 				void UpdateRepo (const QUrl&, const QStringList&);
 			private slots:
 				void handleInfoFetched (const RepoInfo&);
-				void handleComponentFetched (const PackageShortInfoList&);
+				void handleComponentFetched (const PackageShortInfoList&,
+						const QString&, int);
 			signals:
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+				void delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
 			};
 		}
