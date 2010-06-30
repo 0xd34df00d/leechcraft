@@ -1,5 +1,5 @@
 CREATE TABLE images (
-	package_id INTEGER REFERENCES packages,
+	package_id INTEGER REFERENCES packages ON DELETE CASCADE,
 	url TEXT NOT NULL,
 	type CHAR(1) NOT NULL
 );

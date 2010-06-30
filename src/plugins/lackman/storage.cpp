@@ -228,6 +228,101 @@ namespace LeechCraft
 				return FindComponent (repoId, component);
 			}
 
+			void Storage::RemoveComponent (int repoId, const QString& component)
+			{
+				Util::DBLock lock (DB_);
+				try
+				{
+					lock.Init ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to start transaction";
+					throw std::runtime_error ("Unable to start transaction");
+				}
+
+				int compId = FindComponent (repoId, component);
+				if (compId == -1)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "component"
+							<< component
+							<< "not found.";
+					throw std::runtime_error ("Requested component not found");
+				}
+
+				QSqlQuery idsSelector (DB_);
+				idsSelector.prepare ("SELECT DISTINCT package_id "
+						"FROM locations WHERE component_id = :component_id");
+				idsSelector.bindValue (":component_id", compId);
+				if (!idsSelector.exec ())
+				{
+					Util::DBLock::DumpError (idsSelector);
+					throw std::runtime_error ("Fetching of possibly affected packages failed.");
+				}
+
+				QList<int> possiblyAffected;
+				while (idsSelector.next ())
+					possiblyAffected << idsSelector.value (0).toInt ();
+
+				idsSelector.finish ();
+
+				QSqlQuery remover (DB_);
+				remover.prepare ("DELETE FROM locations WHERE component_id = :component_id;");
+				remover.bindValue (":component_id", compId);
+				if (!remover.exec ())
+				{
+					Util::DBLock::DumpError (remover);
+					throw std::runtime_error ("Unable to remove component from locations.");
+				}
+				remover.prepare ("DELETE FROM components WHERE component_id = :component_id;");
+				remover.bindValue (":component_id", compId);
+				if (!remover.exec ())
+				{
+					Util::DBLock::DumpError (remover);
+					throw std::runtime_error ("Unable to remove component from components.");
+				}
+
+				remover.finish ();
+
+				QSqlQuery checker (DB_);
+				checker.prepare ("SELECT COUNT (package_id) FROM locations WHERE package_id = :package_id;");
+				Q_FOREACH (int packageId, possiblyAffected)
+				{
+					checker.bindValue (":package_id", packageId);
+					if (!checker.exec ())
+					{
+						Util::DBLock::DumpError (checker);
+						throw std::runtime_error ("Unable to remove check affected.");
+					}
+
+					if (!checker.next ())
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "zarroo rows";
+						throw std::runtime_error ("Unable to move to the next row");
+					}
+
+					if (checker.value (0).toInt ())
+						continue;
+
+					checker.finish ();
+
+					remover.prepare ("DELETE FROM packages WHERE package_id = :package_id;");
+					remover.bindValue (":package_id", packageId);
+					if (!remover.exec ())
+					{
+						Util::DBLock::DumpError (remover);
+						throw std::runtime_error ("Unable to remove orphaned package.");
+					}
+
+					remover.finish ();
+				}
+
+				lock.Good ();
+			}
+
 			int Storage::FindPackage (const QString& name, const QString& version)
 			{
 				QueryFindPackage_.bindValue (":name", name);

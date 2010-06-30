@@ -1,5 +1,5 @@
 CREATE TABLE deps (
-	package_id INTEGER REFERENCES packages,
+	package_id INTEGER REFERENCES packages ON DELETE CASCADE,
 	name TEXT NOT NULL,
 	version TEXT NOT NULL,
 	type CHAR(1) NOT NULL

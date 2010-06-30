@@ -124,6 +124,36 @@ namespace LeechCraft
 					return;
 				}
 
+				Q_FOREACH (const QString& oc, ourComponents)
+				{
+					if (!components.contains (oc))
+					{
+						qDebug () << Q_FUNC_INFO
+								<< "orphaned component"
+								<< oc;
+						try
+						{
+							Storage_->RemoveComponent (id, oc);
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to remove component"
+									<< oc
+									<< "not present in freshly obtained description of"
+									<< id
+									<< url;
+							emit gotEntity (Util::MakeNotification (tr ("Error updating repository"),
+									tr ("Unable to remove the component `%1` which "
+										"disappeared from the list of components for repo %2.")
+										.arg (oc)
+										.arg (url.toString ()),
+									PCritical_));
+							return;
+						}
+					}
+				}
+
 				Q_FOREACH (const QString& component, components)
 				{
 					QUrl compUrl = url;

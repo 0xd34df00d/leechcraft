@@ -59,6 +59,7 @@ namespace LeechCraft
 				QStringList GetComponents (int repoId);
 				int FindComponent (int repoId, const QString& component);
 				int AddComponent (int repoId, const QString& component, bool = true);
+				void RemoveComponent (int repoId, const QString& component);
 
 				int FindPackage (const QString& name, const QString& version);
 				int AddPackage (const QString& name, const QString& version);
