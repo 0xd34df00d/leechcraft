@@ -28,6 +28,11 @@ namespace LeechCraft
 			{
 			}
 
+			RepoInfo::RepoInfo (const QUrl& url)
+			: URL_ (url)
+			{
+			}
+
 			RepoInfo::RepoInfo (const QUrl& url, const QString& name,
 					const QString& shortDescr, const QStringList& components)
 			: URL_ (url)
@@ -77,14 +82,14 @@ namespace LeechCraft
 				LongDescr_ = descr;
 			}
 
-			const MaintainerInfoList& RepoInfo::GetMaintainers () const
+			const MaintainerInfo& RepoInfo::GetMaintainer () const
 			{
-				return Maintainers_;
+				return Maintainer_;
 			}
 
-			void RepoInfo::SetMaintainers (const MaintainerInfoList& maints)
+			void RepoInfo::SetMaintainer (const MaintainerInfo& maint)
 			{
-				Maintainers_ = maints;
+				Maintainer_ = maint;
 			}
 
 			const QStringList& RepoInfo::GetComponents () const
@@ -94,7 +99,9 @@ namespace LeechCraft
 
 			void RepoInfo::SetComponents (const QStringList& components)
 			{
-				Components_ = components;
+				Components_.clear ();
+				Q_FOREACH (const QString& c, components)
+					Components_ << c.simplified ();
 			}
 		}
 	}

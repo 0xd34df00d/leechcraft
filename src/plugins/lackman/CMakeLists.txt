@@ -16,6 +16,9 @@ IF (NOT QT_USE_FILE)
 ENDIF (NOT QT_USE_FILE)
 
 SET (QT_USE_QTNETWORK TRUE)
+SET (QT_USE_QTXML TRUE)
+SET (QT_USE_QTXMLPATTERNS TRUE)
+SET (QT_USE_QTSQL TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -27,12 +30,17 @@ SET (SRCS
 	core.cpp
 	repoinfo.cpp
 	repoinfofetcher.cpp
+	storage.cpp
 	)
 SET (HEADERS
 	lackman.h
 	core.h
 	repoinfo.h
 	repoinfofetcher.h
+	storage.h
+	)
+SET (RESOURCES
+	lackmanresources.qrc
 	)
 SET (FORMS
 	lackman.ui
@@ -40,12 +48,14 @@ SET (FORMS
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_lackman SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lackman
 	${QT_LIBRARIES}

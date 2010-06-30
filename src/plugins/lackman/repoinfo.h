@@ -21,6 +21,7 @@
 #include <QMetaType>
 #include <QStringList>
 #include <QUrl>
+#include <QMap>
 
 namespace LeechCraft
 {
@@ -43,10 +44,11 @@ namespace LeechCraft
 				QString ShortDescr_;
 				QString LongDescr_;
 
-				QList<MaintainerInfo> Maintainers_;
+				MaintainerInfo Maintainer_;
 				QStringList Components_;
 			public:
 				explicit RepoInfo ();
+				explicit RepoInfo (const QUrl&);
 				RepoInfo (const QUrl& url, const QString& name,
 						const QString& shortDescr, const QStringList& components);
 
@@ -58,15 +60,55 @@ namespace LeechCraft
 				void SetShortDescr (const QString&);
 				const QString& GetLongDescr () const;
 				void SetLongDescr (const QString&);
-				const MaintainerInfoList& GetMaintainers () const;
-				void SetMaintainers (const MaintainerInfoList&);
+				const MaintainerInfo& GetMaintainer () const;
+				void SetMaintainer (const MaintainerInfo&);
 				const QStringList& GetComponents () const;
 				void SetComponents (const QStringList&);
+			};
+
+			struct PackageShortInfo
+			{
+				QString Name_;
+				QStringList Versions_;
+			};
+
+			typedef QList<PackageShortInfo> PackageShortInfoList;
+
+			struct Dependency
+			{
+				enum Type
+				{
+					TProvides,
+					TRequires
+				} Type_;
+				QString Name_;
+			};
+
+			struct PackageVersionInfo
+			{
+				enum Type
+				{
+					TTranslation,
+					TPlugin,
+					TIconset
+				} Type_;
+				QString Language_;
+				QString Description_;
+				QString LongDescription_;
+				QStringList Tags_;
+			};
+
+			struct PackageInfo : PackageShortInfo
+			{
+				typedef QMap<QString, PackageVersionInfo> Version2Info_t;
+				Version2Info_t Infos_;
 			};
 		}
 	}
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::RepoInfo);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::PackageShortInfo);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::PackageShortInfoList);
 
 #endif

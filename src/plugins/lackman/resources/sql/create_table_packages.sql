@@ -1,0 +1,5 @@
+CREATE TABLE packages (
+	package_id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name TEXT NOT NULL,
+	version TEXT NOT NULL
+);

@@ -40,22 +40,37 @@ namespace LeechCraft
 					QString Location_;
 				};
 				QMap<int, PendingRI> PendingRIs_;
+
+				struct PendingComponent
+				{
+					QUrl URL_;
+					QString Location_;
+					QString Component_;
+					int RepoID_;
+				};
+				QMap<int, PendingComponent> PendingComponents_;
 			public:
 				RepoInfoFetcher (QObject*);
 
 				void FetchFor (QUrl);
+				void FetchComponent (QUrl, int, const QString& component);
 			private slots:
-				void handleJobFinished (int);
-				void handleJobRemoved (int);
-				void handleJobError (int, IDownload::Error);
+				void handleRIFinished (int);
+				void handleRIRemoved (int);
+				void handleRIError (int, IDownload::Error);
+				void handleComponentFinished (int);
+				void handleComponentRemoved (int);
+				void handleComponentError (int, IDownload::Error);
 
-				void handleUnarchFinished (int, QProcess::ExitStatus);
+				void handleRepoUnarchFinished (int, QProcess::ExitStatus);
+				void handleComponentUnarchFinished (int, QProcess::ExitStatus);
 				void handleUnarchError (QProcess::ProcessError);
 			signals:
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
 
-				void successfullyFetched (const RepoInfo&);
+				void infoFetched (const RepoInfo&);
+				void componentFetched (const PackageShortInfoList&);
 			};
 		}
 	}

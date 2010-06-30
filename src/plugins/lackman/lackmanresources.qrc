@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="/" >
+	<file>resources/sql/create_table_deps.sql</file>
+	<file>resources/sql/create_table_packages.sql</file>
+	<file>resources/sql/create_table_infos.sql</file>
+	<file>resources/sql/create_table_locations.sql</file>
+	<file>resources/sql/create_table_images.sql</file>
+	<file>resources/sql/create_table_tags.sql</file>
+	<file>resources/sql/create_table_repos.sql</file>
+	<file>resources/sql/create_table_components.sql</file>
+	<file>resources/sql/insert_repo.sql</file>
+  </qresource>
+</RCC>

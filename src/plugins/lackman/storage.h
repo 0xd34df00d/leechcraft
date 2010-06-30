@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LACKMAN_CORE_H
-#define PLUGINS_LACKMAN_CORE_H
-#include <boost/shared_ptr.hpp>
+#ifndef PLUGINS_LACKMAN_STORAGE_H
+#define PLUGINS_LACKMAN_STORAGE_H
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include "repoinfo.h"
+#include <QSqlDatabase>
+#include <QSqlQuery>
+
+class QUrl;
 
 namespace LeechCraft
 {
@@ -29,37 +30,32 @@ namespace LeechCraft
 	{
 		namespace LackMan
 		{
-			class RepoInfoFetcher;
-			class Storage;
+			class RepoInfo;
 
-			class Core : public QObject
+			class Storage : public QObject
 			{
 				Q_OBJECT
 
-				ICoreProxy_ptr Proxy_;
-				RepoInfoFetcher *RepoInfoFetcher_;
-				Storage *Storage_;
+				QSqlDatabase DB_;
 
-				Core ();
+				QSqlQuery QueryCountPackages_;
+				QSqlQuery QueryFindRepo_;
+				QSqlQuery QueryAddRepo_;
+				QSqlQuery QueryAddRepoComponents_;
+				QSqlQuery QueryGetRepoComponents_;
 			public:
-				static Core& Instance ();
+				Storage (QObject* = 0);
 
-				void Release ();
-
-				void SetProxy (ICoreProxy_ptr);
-				ICoreProxy_ptr GetProxy () const;
-
-				void AddRepo (const QUrl&);
-				void UpdateRepo (const QUrl&, const QStringList&);
-			private slots:
-				void handleInfoFetched (const RepoInfo&);
-				void handleComponentFetched (const PackageShortInfoList&);
-			signals:
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-				void gotEntity (const LeechCraft::Entity&);
+				int CountPackages (const QUrl&);
+				int FindRepo (const QUrl&);
+				int AddRepo (const RepoInfo&);
+				QStringList GetComponents (int);
+			private:
+				void InitTables ();
+				void InitQueries ();
 			};
-		}
-	}
-}
+		};
+	};
+};
 
 #endif
