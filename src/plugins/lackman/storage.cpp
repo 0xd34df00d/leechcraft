@@ -173,6 +173,39 @@ namespace LeechCraft
 				return repoId;
 			}
 
+			RepoInfo Storage::GetRepo (int repoId)
+			{
+				QueryGetRepo_.bindValue (":repo_id", repoId);
+				if (!QueryGetRepo_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetRepo_);
+					throw std::runtime_error ("Query execution failed.");
+				}
+				if (!QueryGetRepo_.next ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not position on next record";
+					throw std::runtime_error ("Could not position on next record");
+				}
+				RepoInfo result (QUrl::fromEncoded (QueryGetRepo_.value (0).toString ().toUtf8 ()));
+
+				result.SetName (QueryGetRepo_.value (1).toString ());
+				result.SetShortDescr (QueryGetRepo_.value (2).toString ());
+				result.SetLongDescr (QueryGetRepo_.value (3).toString ());
+				MaintainerInfo info =
+				{
+					QueryGetRepo_.value (4).toString (),
+					QueryGetRepo_.value (5).toString ()
+				};
+				result.SetMaintainer (info);
+
+				QueryGetRepo_.finish ();
+
+				result.SetComponents (GetComponents (repoId));
+
+				return result;
+			}
+
 			QStringList Storage::GetComponents (int repoId)
 			{
 				QueryGetRepoComponents_.bindValue (":repo_id", repoId);
@@ -342,19 +375,245 @@ namespace LeechCraft
 				return result;
 			}
 
-			int Storage::AddPackage (const QString& name, const QString& version)
+			PackageShortInfo Storage::GetPackage (int packageId)
 			{
-				QueryAddPackage_.bindValue (":name", name);
-				QueryAddPackage_.bindValue (":version", version);
-				if (!QueryAddPackage_.exec ())
+				QueryGetPackage_.bindValue (":package_id", packageId);
+				if (!QueryGetPackage_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetPackage_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				if (!QueryGetPackage_.next ())
+				{
+					QString str = QString ("package with id %1 not found")
+							.arg (packageId);
+					qWarning () << Q_FUNC_INFO
+							<< str;
+					throw std::runtime_error (qPrintable (str));
+				}
+
+				PackageShortInfo info =
+				{
+					QueryGetPackage_.value (0).toString (),
+					QStringList (QueryGetPackage_.value (1).toString ())
+				};
+				QueryGetPackage_.finish ();
+
+				return info;
+			}
+
+			void Storage::RemovePackage (int packageId)
+			{
+				Util::DBLock lock (DB_);
+				try
+				{
+					lock.Init ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to begin transaction:"
+							<< e.what ();
+					throw;
+				}
+
+				QString name = GetPackage (packageId).Name_;
+
+				QueryClearTags_.bindValue (":name", name);
+				if (!QueryClearTags_.exec ())
+				{
+					Util::DBLock::DumpError (QueryClearTags_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QueryClearPackageInfos_.bindValue (":name", name);
+				if (!QueryClearPackageInfos_.exec ())
+				{
+					Util::DBLock::DumpError (QueryClearPackageInfos_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QueryClearImages_.bindValue (":name", name);
+				if (!QueryClearImages_.exec ())
+				{
+					Util::DBLock::DumpError (QueryClearImages_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QueryRemovePackage_.bindValue (":package_id", packageId);
+				if (!QueryRemovePackage_.exec ())
+				{
+					Util::DBLock::DumpError (QueryRemovePackage_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				lock.Good ();
+			}
+
+			void Storage::AddPackages (const PackageInfo& pInfo)
+			{
+				Util::DBLock lock (DB_);
+				try
+				{
+					lock.Init ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ()
+							<< "while acquiring lock";
+					throw;
+				}
+
+				Q_FOREACH (const QString& version, pInfo.Versions_)
+				{
+					QueryAddPackage_.bindValue (":name", pInfo.Name_);
+					QueryAddPackage_.bindValue (":version", version);
+					if (!QueryAddPackage_.exec ())
+					{
+						Util::DBLock::DumpError (QueryAddPackage_);
+						throw std::runtime_error ("Query execution failed");
+					}
+				}
+				QueryAddPackage_.finish ();
+
+				QueryClearPackageInfos_.bindValue (":name", pInfo.Name_);
+				if (!QueryClearPackageInfos_.exec ())
 				{
 					Util::DBLock::DumpError (QueryAddPackage_);
 					throw std::runtime_error ("Query execution failed");
 				}
+				QueryClearPackageInfos_.finish ();
 
-				QueryAddPackage_.finish ();
+				QueryAddPackageInfo_.bindValue (":name", pInfo.Name_);
+				QueryAddPackageInfo_.bindValue (":short_descr", pInfo.Description_);
+				QueryAddPackageInfo_.bindValue (":long_descr", pInfo.LongDescription_);
+				QueryAddPackageInfo_.bindValue (":type", pInfo.Type_);
+				QueryAddPackageInfo_.bindValue (":language", pInfo.Language_);
+				QueryAddPackageInfo_.bindValue (":maint_name", pInfo.MaintName_);
+				QueryAddPackageInfo_.bindValue (":maint_email", pInfo.MaintEmail_);
+				QueryAddPackageInfo_.bindValue (":icon_url", pInfo.IconURL_);
+				if (!QueryAddPackageInfo_.exec ())
+				{
+					Util::DBLock::DumpError (QueryAddPackageInfo_);
+					throw std::runtime_error ("Query execution failed");
+				}
+				QueryAddPackageInfo_.finish ();
 
-				return FindPackage (name, version);
+				QueryClearTags_.bindValue (":name", pInfo.Name_);
+				if (!QueryClearTags_.exec ())
+				{
+					Util::DBLock::DumpError (QueryClearTags_);
+					throw std::runtime_error ("Query execution failed");
+				}
+				QueryClearTags_.finish ();
+
+				Q_FOREACH (const QString& tag, pInfo.Tags_)
+				{
+					QueryAddTag_.bindValue (":name", pInfo.Name_);
+					QueryAddTag_.bindValue (":tag", tag);
+					if (!QueryAddTag_.exec ())
+					{
+						Util::DBLock::DumpError (QueryAddTag_);
+						throw std::runtime_error ("Query execution failed");
+					}
+				}
+				QueryAddTag_.finish ();
+
+				QueryClearImages_.bindValue (":name", pInfo.Name_);
+				if (!QueryClearImages_.exec ())
+				{
+					Util::DBLock::DumpError (QueryClearImages_);
+					throw std::runtime_error ("Query execution failed");
+				}
+				QueryClearImages_.finish ();
+
+				Q_FOREACH (const Image& img, pInfo.Images_)
+				{
+					QueryAddImage_.bindValue (":name", pInfo.Name_);
+					QueryAddImage_.bindValue (":url", img.URL_);
+					QueryAddImage_.bindValue (":type", img.Type_);
+					if (!QueryAddImage_.exec ())
+					{
+						Util::DBLock::DumpError (QueryAddImage_);
+						throw std::runtime_error ("Query execution failed");
+					}
+				}
+				QueryAddImage_.finish ();
+
+				Q_FOREACH (const QString& thisVersion, pInfo.Deps_.keys ())
+				{
+					int packageId = -1;
+					try
+					{
+						packageId = FindPackage (pInfo.Name_, thisVersion);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to get package ID for"
+								<< pInfo.Name_
+								<< thisVersion
+								<< "with error:"
+								<< e.what ();
+						throw;
+					}
+
+					if (packageId == -1)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "package ID for"
+								<< pInfo.Name_
+								<< thisVersion
+								<< "not found";
+						throw std::runtime_error (qPrintable (QString ("package ID for %1 "
+								"version %2 not found.")
+									.arg (pInfo.Name_)
+									.arg (thisVersion)));
+					}
+
+					QueryClearDeps_.bindValue (":package_id", packageId);
+					if (!QueryClearDeps_.exec ())
+					{
+						Util::DBLock::DumpError (QueryClearDeps_);
+						throw std::runtime_error ("Query execution failed");
+					}
+					QueryClearDeps_.finish ();
+
+					Q_FOREACH (const Dependency& dep, pInfo.Deps_ [thisVersion])
+					{
+						QueryAddDep_.bindValue (":package_id", packageId);
+						QueryAddDep_.bindValue (":name", dep.Name_);
+						QueryAddDep_.bindValue (":version", dep.Version_);
+						QueryAddDep_.bindValue (":type", dep.Type_);
+						if (!QueryAddDep_.exec ())
+						{
+							Util::DBLock::DumpError (QueryAddDep_);
+							throw std::runtime_error ("Query execution failed");
+						}
+					}
+					QueryAddDep_.finish ();
+				}
+
+				lock.Good ();
+			}
+
+			QList<int> Storage::GetPackagesInComponent (int componentId)
+			{
+				QueryGetPackagesInComponent_.bindValue (":component_id", componentId);
+				if (!QueryGetPackagesInComponent_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetPackagesInComponent_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QList<int> result;
+				while (QueryGetPackagesInComponent_.next ())
+					result << QueryGetPackagesInComponent_.value (0).toInt ();
+
+				QueryGetPackagesInComponent_.finish ();
+				return result;
 			}
 
 			bool Storage::HasLocation (int packageId, int componentId)
@@ -426,6 +685,10 @@ namespace LeechCraft
 				QueryAddRepo_ = QSqlQuery (DB_);
 				QueryAddRepo_.prepare (LoadQuery ("insert_repo"));
 
+				QueryGetRepo_ = QSqlQuery (DB_);
+				QueryGetRepo_.prepare ("SELECT url, name, description, "
+						"longdescr, maint_name, maint_email FROM repos WHERE repo_id = :repo_id;");
+
 				QueryAddRepoComponent_ = QSqlQuery (DB_);
 				QueryAddRepoComponent_.prepare ("INSERT INTO components (repo_id, component) "
 						"VALUES (:repo_id, :component);");
@@ -446,6 +709,12 @@ namespace LeechCraft
 				QueryAddPackage_.prepare ("INSERT INTO packages (name, version) "
 						"VALUES (:name, :version);");
 
+				QueryGetPackage_ = QSqlQuery (DB_);
+				QueryGetPackage_.prepare ("SELECT name, version FROM packages WHERE package_id = :package_id;");
+
+				QueryRemovePackage_ = QSqlQuery (DB_);
+				QueryRemovePackage_.prepare ("DELETE FROM packages WHERE package_id = :package_id;");
+
 				QueryHasLocation_ = QSqlQuery (DB_);
 				QueryHasLocation_.prepare ("SELECT COUNT (package_id) "
 						"FROM locations WHERE package_id = :package_id AND component_id = :component_id;");
@@ -453,6 +722,38 @@ namespace LeechCraft
 				QueryAddLocation_ = QSqlQuery (DB_);
 				QueryAddLocation_.prepare ("INSERT INTO locations (package_id, component_id) "
 						"VALUES (:package_id, :component_id);");
+
+				QueryClearTags_ = QSqlQuery (DB_);
+				QueryClearTags_.prepare ("DELETE FROM tags WHERE name = :name;");
+
+				QueryAddTag_ = QSqlQuery (DB_);
+				QueryAddTag_.prepare ("INSERT INTO tags (name, tag) VALUES (:name, :tag);");
+
+				QueryAddPackageInfo_ = QSqlQuery (DB_);
+				QueryAddPackageInfo_.prepare ("INSERT OR REPLACE INTO infos "
+						"(name, short_descr, long_descr, type, language, maint_name, maint_email, icon_url) "
+						"VALUES "
+						"(:name, :short_descr, :long_descr, :type, :language, :maint_name, :maint_email, :icon_url);");
+
+				QueryClearPackageInfos_ = QSqlQuery (DB_);
+				QueryClearPackageInfos_.prepare ("DELETE FROM infos WHERE name = :name;");
+
+				QueryClearImages_ = QSqlQuery (DB_);
+				QueryClearImages_.prepare ("DELETE FROM images WHERE name = :name;");
+
+				QueryAddImage_ = QSqlQuery (DB_);
+				QueryAddImage_.prepare ("INSERT INTO images (name, url, type) "
+						"VALUES (:name, :url, :type);");
+
+				QueryClearDeps_ = QSqlQuery (DB_);
+				QueryClearDeps_.prepare ("DELETE FROM deps WHERE package_id = :package_id;");
+
+				QueryAddDep_ = QSqlQuery (DB_);
+				QueryAddDep_.prepare ("INSERT INTO deps (package_id, name, version, type) "
+						"VALUES (:package_id, :name, :version, :type);");
+
+				QueryGetPackagesInComponent_ = QSqlQuery (DB_);
+				QueryGetPackagesInComponent_.prepare ("SELECT package_id FROM locations WHERE component_id = :component_id;");
 			}
 		}
 	}

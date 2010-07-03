@@ -1,7 +1,9 @@
 CREATE TABLE infos (
-	package_id INTEGER REFERENCES packages ON DELETE CASCADE,
+	name TEXT NOT NULL UNIQUE,
 	short_descr TEXT NOT NULL,
 	long_descr TEXT,
+	type SMALLINT NOT NULL,
+	language TEXT,
 	maint_name TEXT NOT NULL,
 	maint_email TEXT NOT NULL,
 	icon_url TEXT

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "repoinfo.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -102,6 +103,29 @@ namespace LeechCraft
 				Components_.clear ();
 				Q_FOREACH (const QString& c, components)
 					Components_ << c.simplified ();
+			}
+
+			void PackageInfo::Dump () const
+			{
+				qDebug () << "Package name: " << Name_
+						<< "; versions:" << Versions_
+						<< "; type:" << Type_
+						<< "; language:" << Language_
+						<< "; description:" << Description_
+						<< "; long descr:" << LongDescription_
+						<< "; tags:" << Tags_
+						<< "; maintainer:" << MaintName_ << MaintEmail_
+						<< "; icon:" << IconURL_
+						<< "; dependencies:";
+				Q_FOREACH (QString version, Deps_.keys ())
+					Q_FOREACH (const Dependency& d, Deps_ [version])
+						qDebug () << "\t" << version << d.Type_ << d.Name_ << d.Version_;
+				if (Images_.size ())
+				{
+					qDebug () << "; images:";
+					Q_FOREACH (const Image& img, Images_)
+						qDebug () << "\t" << img.Type_ << img.URL_;
+				}
 			}
 		}
 	}

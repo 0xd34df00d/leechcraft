@@ -23,6 +23,9 @@
 #include <interfaces/iinfo.h>
 #include "repoinfo.h"
 
+class QAbstractItemModel;
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -39,6 +42,7 @@ namespace LeechCraft
 				ICoreProxy_ptr Proxy_;
 				RepoInfoFetcher *RepoInfoFetcher_;
 				Storage *Storage_;
+				QStandardItemModel *PluginsModel_;
 
 				Core ();
 			public:
@@ -49,12 +53,19 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
+				QAbstractItemModel* GetPluginsModel () const;
+
 				void AddRepo (const QUrl&);
 				void UpdateRepo (const QUrl&, const QStringList&);
+			private:
+				void PopulatePluginsModel ();
+				void HandleNewPackages (const PackageShortInfoList& shorts,
+						int componentId, const QString& component, const QUrl& repoUrl);
 			private slots:
 				void handleInfoFetched (const RepoInfo&);
 				void handleComponentFetched (const PackageShortInfoList&,
 						const QString&, int);
+				void handlePackageFetched (const PackageInfo&, int);
 			signals:
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);

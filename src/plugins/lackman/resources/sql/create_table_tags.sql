@@ -1,4 +1,4 @@
 CREATE TABLE tags (
-	package_id INTEGER REFERENCES packages ON DELETE CASCADE,
+	name TEXT NOT NULL,
 	tag TEXT NOT NULL
 );

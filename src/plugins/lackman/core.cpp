@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "core.h"
+#include <boost/bind.hpp>
+#include <QString>
+#include <QStandardItemModel>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include "repoinfofetcher.h"
@@ -31,6 +34,7 @@ namespace LeechCraft
 			Core::Core ()
 			: RepoInfoFetcher_ (new RepoInfoFetcher (this))
 			, Storage_ (new Storage (this))
+			, PluginsModel_ (new QStandardItemModel (this))
 			{
 				connect (RepoInfoFetcher_,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
@@ -52,6 +56,10 @@ namespace LeechCraft
 						this,
 						SLOT (handleComponentFetched (const PackageShortInfoList&,
 								const QString&, int)));
+				connect (RepoInfoFetcher_,
+						SIGNAL (packageFetched (const PackageInfo&, int)),
+						this,
+						SLOT (handlePackageFetched (const PackageInfo&, int)));
 			}
 
 			Core& Core::Instance ()
@@ -77,6 +85,11 @@ namespace LeechCraft
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
+			}
+
+			QAbstractItemModel* Core::GetPluginsModel () const
+			{
+				return PluginsModel_;
 			}
 
 			void Core::AddRepo (const QUrl& url)
@@ -162,6 +175,101 @@ namespace LeechCraft
 				}
 			}
 
+			void Core::PopulatePluginsModel ()
+			{
+			}
+
+			void Core::HandleNewPackages (const PackageShortInfoList& shortInfos,
+					int componentId, const QString& component, const QUrl& repoUrl)
+			{
+				QMap<QString, QList<QString> > PackageName2NewVersions_;
+
+				Q_FOREACH (const PackageShortInfo& info, shortInfos)
+					Q_FOREACH (const QString& version, info.Versions_)
+					{
+						int packageId = -1;
+						try
+						{
+							packageId = Storage_->FindPackage (info.Name_, version);
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to get package ID for"
+									<< info.Name_
+									<< version
+									<< e.what ();
+							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+									tr ("Unable to load package ID for package `%1`-%2")
+										.arg (info.Name_)
+										.arg (version),
+									PCritical_));
+							return;
+						}
+
+						try
+						{
+							if (packageId == -1)
+								PackageName2NewVersions_ [info.Name_] << version;
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to get save package"
+									<< info.Name_
+									<< version
+									<< e.what ();
+							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+									tr ("Unable to save package `%1`-%2")
+										.arg (info.Name_)
+										.arg (version),
+									PCritical_));
+							return;
+						}
+
+						try
+						{
+							if (packageId != -1 &&
+									!Storage_->HasLocation (packageId, componentId))
+								Storage_->AddLocation (packageId, componentId);
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to add package location"
+									<< info.Name_
+									<< version
+									<< e.what ();
+							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
+									tr ("Unable to save package location for "
+										"package `%1`-%2 and component %3")
+										.arg (info.Name_)
+										.arg (version)
+										.arg (component),
+									PCritical_));
+							return;
+						}
+					}
+
+
+				Q_FOREACH (QString packageName, PackageName2NewVersions_.keys ())
+				{
+					QUrl packageUrl = repoUrl;
+					QString normalized = packageName.toLower ().simplified ();
+					normalized.remove (' ');
+					normalized.remove ('\t');
+					packageUrl.setPath (packageUrl.path () +
+							"/dists/" + component + "/all" +
+							'/' + normalized +
+							'/' + normalized +
+							".xml.xz");
+					RepoInfoFetcher_->FetchPackageInfo (packageUrl,
+							packageName,
+							PackageName2NewVersions_ [packageName],
+							componentId);
+				}
+			}
+
 			void Core::handleInfoFetched (const RepoInfo& ri)
 			{
 				int repoId = -1;
@@ -204,11 +312,14 @@ namespace LeechCraft
 					const QString& component, int repoId)
 			{
 				int componentId = -1;
+				QUrl repoUrl;
 				try
 				{
 					componentId = Storage_->FindComponent (repoId, component);
 					if (componentId == -1)
 						componentId = Storage_->AddComponent (repoId, component);
+
+					repoUrl = Storage_->GetRepo (repoId).GetUrl ();
 				}
 				catch (const std::exception& e)
 				{
@@ -225,72 +336,52 @@ namespace LeechCraft
 					return;
 				}
 
-				// Step 1. Adding new components.
-				Q_FOREACH (const PackageShortInfo& info, shortInfos)
-					Q_FOREACH (const QString& version, info.Versions_)
+				QList<int> presentPackages = Storage_->GetPackagesInComponent (componentId);
+				Q_FOREACH (int presentPId, presentPackages)
+				{
+					PackageShortInfo psi = Storage_->GetPackage (presentPId);
+					bool found = false;
+					Q_FOREACH (const PackageShortInfo& candidate, shortInfos)
 					{
-						int packageId = -1;
-						try
+						if (candidate.Name_ != psi.Name_)
+							continue;
+						if (!candidate.Versions_.contains (psi.Versions_.at (0)))
 						{
-							packageId = Storage_->FindPackage (info.Name_, version);
-						}
-						catch (const std::exception& e)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "unable to get package ID for"
-									<< info.Name_
-									<< version
-									<< e.what ();
-							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
-									tr ("Unable to load package ID for package `%1`-%2")
-										.arg (info.Name_)
-										.arg (version),
-									PCritical_));
-							return;
-						}
-
-						try
-						{
-							if (packageId == -1)
-								packageId = Storage_->AddPackage (info.Name_, version);
-						}
-						catch (const std::exception& e)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "unable to get save package"
-									<< info.Name_
-									<< version
-									<< e.what ();
-							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
-									tr ("Unable to save package `%1`-%2")
-										.arg (info.Name_)
-										.arg (version),
-									PCritical_));
-							return;
-						}
-
-						try
-						{
-							if (!Storage_->HasLocation (packageId, componentId))
-								Storage_->AddLocation (packageId, componentId);
-						}
-						catch (const std::exception& e)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "unable to add package location"
-									<< info.Name_
-									<< version
-									<< e.what ();
-							emit gotEntity (Util::MakeNotification (tr ("Error parsing component"),
-									tr ("Unable to save package location for "
-										"package `%1`-%2 and component %3")
-										.arg (info.Name_)
-										.arg (version)
-										.arg (component),
-									PCritical_));
-							return;
+							found = true;
+							break;
 						}
 					}
+
+					if (!found)
+						Storage_->RemovePackage (presentPId);
+				}
+
+				HandleNewPackages (shortInfos, componentId, component, repoUrl);
+			}
+
+			void Core::handlePackageFetched (const PackageInfo& pInfo,
+					int componentId)
+			{
+				try
+				{
+					Storage_->AddPackages (pInfo);
+					Q_FOREACH (const QString& version, pInfo.Versions_)
+					{
+						int packageId =
+								Storage_->FindPackage (pInfo.Name_, version);
+						Storage_->AddLocation (packageId, componentId);
+					}
+				}
+				catch (const std::runtime_error& e)
+				{
+					pInfo.Dump ();
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
+					emit gotEntity (Util::MakeNotification (tr ("Error retrieving package"),
+							tr ("Unable to save package %1.")
+								.arg (pInfo.Name_),
+							PCritical_));
+				}
 			}
 		}
 	}

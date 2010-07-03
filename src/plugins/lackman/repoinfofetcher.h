@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QProcess>
+#include <QHash>
 #include <interfaces/idownload.h>
 #include "repoinfo.h"
 
@@ -39,7 +40,7 @@ namespace LeechCraft
 					QUrl URL_;
 					QString Location_;
 				};
-				QMap<int, PendingRI> PendingRIs_;
+				QHash<int, PendingRI> PendingRIs_;
 
 				struct PendingComponent
 				{
@@ -48,12 +49,26 @@ namespace LeechCraft
 					QString Component_;
 					int RepoID_;
 				};
-				QMap<int, PendingComponent> PendingComponents_;
+				QHash<int, PendingComponent> PendingComponents_;
+
+				struct PendingPackage
+				{
+					QUrl URL_;
+					QString Location_;
+					QString PackageName_;
+					QList<QString> NewVersions_;
+					int ComponentId_;
+				};
+				QHash<int, PendingPackage> PendingPackages_;
 			public:
 				RepoInfoFetcher (QObject*);
 
 				void FetchFor (QUrl);
 				void FetchComponent (QUrl, int, const QString& component);
+				void FetchPackageInfo (const QUrl& url,
+						const QString& name,
+						const QList<QString>& newVers,
+						int componentId);
 			private slots:
 				void handleRIFinished (int);
 				void handleRIRemoved (int);
@@ -61,9 +76,13 @@ namespace LeechCraft
 				void handleComponentFinished (int);
 				void handleComponentRemoved (int);
 				void handleComponentError (int, IDownload::Error);
+				void handlePackageFinished (int);
+				void handlePackageRemoved (int);
+				void handlePackageError (int, IDownload::Error);
 
 				void handleRepoUnarchFinished (int, QProcess::ExitStatus);
 				void handleComponentUnarchFinished (int, QProcess::ExitStatus);
+				void handlePackageUnarchFinished (int, QProcess::ExitStatus);
 				void handleUnarchError (QProcess::ProcessError);
 			signals:
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
@@ -72,6 +91,7 @@ namespace LeechCraft
 				void infoFetched (const RepoInfo&);
 				void componentFetched (const PackageShortInfoList& packages,
 						const QString& component, int repoId);
+				void packageFetched (const PackageInfo&, int componentId);
 			};
 		}
 	}

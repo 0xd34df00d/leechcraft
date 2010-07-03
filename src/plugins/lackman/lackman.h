@@ -24,6 +24,8 @@
 #include <interfaces/iembedtab.h>
 #include "ui_lackman.h"
 
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -38,6 +40,8 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IEmbedTab)
 
 				Ui::LackMan Ui_;
+				QSortFilterProxyModel *FilterString_;
+				QSortFilterProxyModel *FilterByTags_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();

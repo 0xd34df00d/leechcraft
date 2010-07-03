@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "lackman.h"
+#include <QSortFilterProxyModel>
 #include <QIcon>
 #include "core.h"
 
@@ -29,6 +30,12 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				Ui_.setupUi (this);
+
+				FilterByTags_ = new QSortFilterProxyModel (this);
+				FilterString_ = new QSortFilterProxyModel (this);
+				FilterString_->setSourceModel (FilterByTags_);
+
+				Ui_.Plugins_->setModel (FilterString_);
 
 				Core::Instance ().SetProxy (proxy);
 

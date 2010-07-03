@@ -82,26 +82,38 @@ namespace LeechCraft
 					TRequires
 				} Type_;
 				QString Name_;
+				QString Version_;
 			};
 
-			struct PackageVersionInfo
+			struct Image
 			{
 				enum Type
 				{
-					TTranslation,
+					TScreenshot,
+					TThumbnail
+				} Type_;
+				QString URL_;
+			};
+
+			struct PackageInfo : PackageShortInfo
+			{
+				enum Type
+				{
 					TPlugin,
+					TTranslation,
 					TIconset
 				} Type_;
 				QString Language_;
 				QString Description_;
 				QString LongDescription_;
 				QStringList Tags_;
-			};
+				QMap<QString, QList<Dependency> > Deps_;
+				QString MaintName_;
+				QString MaintEmail_;
+				QString IconURL_;
+				QList<Image> Images_;
 
-			struct PackageInfo : PackageShortInfo
-			{
-				typedef QMap<QString, PackageVersionInfo> Version2Info_t;
-				Version2Info_t Infos_;
+				void Dump () const;
 			};
 		}
 	}
@@ -110,5 +122,6 @@ namespace LeechCraft
 Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::RepoInfo);
 Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::PackageShortInfo);
 Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::PackageShortInfoList);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::PackageInfo);
 
 #endif

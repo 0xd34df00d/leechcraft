@@ -145,6 +145,60 @@ namespace LeechCraft
 						Qt::UniqueConnection);
 			}
 
+			void RepoInfoFetcher::FetchPackageInfo (const QUrl& packageUrl,
+					const QString& packageName,
+					const QList<QString>& newVersions,
+					int componentId)
+			{
+				QString location = Util::GetTemporaryName ("lackman_XXXXXX.xz");
+
+				PendingPackage pp =
+				{
+					packageUrl,
+					location,
+					packageName,
+					newVersions,
+					componentId
+				};
+
+				Entity e = Util::MakeEntity (packageUrl,
+						location,
+						LeechCraft::Internal |
+							LeechCraft::DoNotNotifyUser |
+							LeechCraft::DoNotSaveInHistory |
+							LeechCraft::NotPersistent |
+							LeechCraft::DoNotAnnounceEntity);
+				int id = -1;
+				QObject *pr;
+				emit delegateEntity (e, &id, &pr);
+				if (id == -1)
+				{
+					emit gotEntity (Util::MakeNotification (tr ("Error fetching package information"),
+							tr ("Could not find plugin to fetch package information at %1.")
+								.arg (packageUrl.toString ()),
+							PCritical_));
+					return;
+				}
+
+				PendingPackages_ [id] = pp;
+
+				connect (pr,
+						SIGNAL (jobFinished (int)),
+						this,
+						SLOT (handlePackageFinished (int)),
+						Qt::UniqueConnection);
+				connect (pr,
+						SIGNAL (jobRemoved (int)),
+						this,
+						SLOT (handlePackageRemoved (int)),
+						Qt::UniqueConnection);
+				connect (pr,
+						SIGNAL (jobError (int, IDownload::Error)),
+						this,
+						SLOT (handlePackageError (int, IDownload::Error)),
+						Qt::UniqueConnection);
+			}
+
 			void RepoInfoFetcher::handleRIFinished (int id)
 			{
 				if (!PendingRIs_.contains (id))
@@ -233,6 +287,51 @@ namespace LeechCraft
 				emit gotEntity (Util::MakeNotification (tr ("Error fetching component"),
 						tr ("Error downloading file from %1.")
 							.arg (pc.URL_.toString ()),
+						PCritical_));
+			}
+
+			void RepoInfoFetcher::handlePackageFinished (int id)
+			{
+				if (!PendingPackages_.contains (id))
+					return;
+
+				PendingPackage pp = PendingPackages_ [id];
+
+				QProcess *unarch = new QProcess (this);
+				unarch->setProperty ("Filename", pp.Location_);
+				unarch->setProperty ("URL", pp.URL_);
+				unarch->setProperty ("TaskID", id);
+				connect (unarch,
+						SIGNAL (finished (int, QProcess::ExitStatus)),
+						this,
+						SLOT (handlePackageUnarchFinished (int, QProcess::ExitStatus)));
+				connect (unarch,
+						SIGNAL (error (QProcess::ProcessError)),
+						this,
+						SLOT (handleUnarchError (QProcess::ProcessError)));
+				unarch->start ("unxz", QStringList ("-c") << pp.Location_);
+			}
+
+			void RepoInfoFetcher::handlePackageRemoved (int id)
+			{
+				if (!PendingPackages_.contains (id))
+					return;
+
+				PendingPackages_.remove (id);
+			}
+
+			void RepoInfoFetcher::handlePackageError (int id, IDownload::Error error)
+			{
+				if (!PendingPackages_.contains (id))
+					return;
+
+				PendingPackage pp = PendingPackages_.take (id);
+
+				QFile::remove (pp.Location_);
+
+				emit gotEntity (Util::MakeNotification (tr ("Error fetching package"),
+						tr ("Error fetching package from %1.")
+							.arg (pp.URL_.toString ()),
 						PCritical_));
 			}
 
@@ -382,6 +481,122 @@ namespace LeechCraft
 				emit componentFetched (infos,
 						sender ()->property ("Component").toString (),
 						sender ()->property ("RepoID").toInt ());
+			}
+
+			void RepoInfoFetcher::handlePackageUnarchFinished (int exitCode,
+					QProcess::ExitStatus status)
+			{
+				sender ()->deleteLater ();
+
+				int id = sender ()->property ("TaskID").toInt ();
+				PendingPackage pp = PendingPackages_.take (id);
+
+				if (exitCode)
+				{
+					emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
+							tr ("Unable to unpack the component file. unxz error: %1."
+								"Problematic file is at %2.")
+								.arg (exitCode)
+								.arg (sender ()->property ("Filename").toString ()),
+							PCritical_));
+					return;
+				}
+
+				QByteArray data = qobject_cast<QProcess*> (sender ())->readAllStandardOutput ();
+				QFile::remove (sender ()->property ("Filename").toString ());
+
+				QDomDocument doc;
+				QString msg;
+				int line = 0;
+				int column = 0;
+				if (!doc.setContent (data, &msg, &line, &column))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "erroneous document with msg"
+							<< msg
+							<< line
+							<< column
+							<< data;
+					emit gotEntity (Util::MakeNotification (tr ("Package parse error"),
+							tr ("Unable to parse package description file. "
+								"More information is available in logs."),
+							PCritical_));
+					return;
+				}
+
+				PackageInfo packageInfo;
+				QDomElement package = doc.documentElement ();
+
+				QString type = package.attribute ("type");
+				if (type == "iconset")
+					packageInfo.Type_ = PackageInfo::TIconset;
+				else if (type == "translation")
+					packageInfo.Type_ = PackageInfo::TTranslation;
+				else
+					packageInfo.Type_ = PackageInfo::TPlugin;
+
+				packageInfo.Language_ = package.attribute ("language");
+				packageInfo.Name_ = pp.PackageName_;
+				packageInfo.Versions_ = pp.NewVersions_;
+				packageInfo.Description_ = package.firstChildElement ("description").text ();
+				packageInfo.LongDescription_ = package.firstChildElement ("long").text ();
+
+				QDomElement images = package.firstChildElement ("images");
+				QDomElement imageNode = images.firstChildElement ("thumbnail");
+				while (!imageNode.isNull ())
+				{
+					Image image =
+					{
+						Image::TThumbnail,
+						imageNode.attribute ("url")
+					};
+					packageInfo.Images_ << image;
+					imageNode = imageNode.nextSiblingElement ("thumbnail");
+				}
+				imageNode = images.firstChildElement ("screenshot");
+				while (!imageNode.isNull ())
+				{
+					Image image =
+					{
+						Image::TScreenshot,
+						imageNode.attribute ("url")
+					};
+					packageInfo.Images_ << image;
+					imageNode = imageNode.nextSiblingElement ("screenshot");
+				}
+				packageInfo.IconURL_ = images.firstChildElement ("icon").attribute ("url");
+
+				QDomElement tags = package.firstChildElement ("tags");
+				QDomElement tagNode = tags.firstChildElement ("tag");
+				while (!tagNode.isNull ())
+				{
+					packageInfo.Tags_ << tagNode.text ();
+					tagNode = tagNode.nextSiblingElement ("tag");
+				}
+
+				QDomElement maintNode = package.firstChildElement ("maintainer");
+				packageInfo.MaintName_ = maintNode.firstChildElement ("name").text ();
+				packageInfo.MaintEmail_ = maintNode.firstChildElement ("email").text ();
+
+				QDomElement depends = package.firstChildElement ("depends");
+				QDomElement dependNode = depends.firstChildElement ("depend");
+				while (!dependNode.isNull ())
+				{
+					Dependency dep;
+					if (dependNode.attribute ("type") == "depends" ||
+							!dependNode.hasAttribute ("type"))
+						dep.Type_ = Dependency::TRequires;
+					else
+						dep.Type_ = Dependency::TProvides;
+					dep.Name_ = dependNode.attribute ("name");
+					dep.Version_ = dependNode.attribute ("version");
+
+					packageInfo.Deps_ [dependNode.attribute ("thisVersion")] << dep;
+
+					dependNode = dependNode.nextSiblingElement ("depend");
+				}
+
+				emit packageFetched (packageInfo, pp.ComponentId_);
 			}
 
 			void RepoInfoFetcher::handleUnarchError (QProcess::ProcessError error)
