@@ -19,6 +19,7 @@
 #ifndef PLUGINS_LACKMAN_LACKMAN_H
 #define PLUGINS_LACKMAN_LACKMAN_H
 #include <QWidget>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iembedtab.h>
@@ -40,6 +41,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IEmbedTab)
 
 				Ui::LackMan Ui_;
+				std::auto_ptr<QTranslator> Translator_;
 				QSortFilterProxyModel *FilterString_;
 				QSortFilterProxyModel *FilterByTags_;
 			public:

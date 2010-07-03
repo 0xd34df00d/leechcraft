@@ -19,6 +19,7 @@
 #include "lackman.h"
 #include <QSortFilterProxyModel>
 #include <QIcon>
+#include <plugininterface/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -29,6 +30,8 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				Translator_.reset (Util::InstallTranslator ("lackman"));
+
 				Ui_.setupUi (this);
 
 				FilterByTags_ = new QSortFilterProxyModel (this);

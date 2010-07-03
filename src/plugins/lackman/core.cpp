@@ -36,6 +36,13 @@ namespace LeechCraft
 			, Storage_ (new Storage (this))
 			, PluginsModel_ (new QStandardItemModel (this))
 			{
+				QStringList labels;
+				labels << tr ("Name")
+						<< tr ("Type")
+						<< tr ("Tags")
+						<< tr ("Last version");
+				PluginsModel_->setHorizontalHeaderLabels (labels);
+
 				connect (RepoInfoFetcher_,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
