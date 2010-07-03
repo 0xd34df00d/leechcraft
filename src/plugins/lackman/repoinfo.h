@@ -124,7 +124,7 @@ namespace LeechCraft
 				int PackageID_;
 				QString Name_;
 				QString Version_;
-				QString Type_;
+				PackageInfo::Type Type_;
 				QUrl IconURL_;
 				QStringList Tags_;
 			};

@@ -642,7 +642,7 @@ namespace LeechCraft
 						packageId,
 						name,
 						QueryGetListPackageInfo_.value (2).toString (),
-						QueryGetListPackageInfo_.value (3).toString (),
+						static_cast<PackageInfo::Type> (QueryGetListPackageInfo_.value (3).toInt ()),
 						QUrl::fromEncoded (QueryGetListPackageInfo_.value (4).toString ().toUtf8 ()),
 						GetPackageTags (packageId)
 					};
@@ -817,8 +817,8 @@ namespace LeechCraft
 				QueryGetPackagesInComponent_.prepare ("SELECT package_id FROM locations WHERE component_id = :component_id;");
 
 				QueryGetListPackageInfo_ = QSqlQuery (DB_);
-				QueryGetListPackageInfo_.prepare ("SELECT packages.package_id, packages.name, packages.version, "
-						"infos.type, infos.icon_url FROM packages, infos WHERE package.name = infos.name;");
+				QueryGetListPackageInfo_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
+						"infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name;");
 
 				QueryGetPackageTags_ = QSqlQuery (DB_);
 				QueryGetPackageTags_.prepare ("SELECT tag FROM tags, packages WHERE tags.name = packages.name AND package_id = :package_id;");

@@ -36,13 +36,6 @@ namespace LeechCraft
 			, Storage_ (new Storage (this))
 			, PluginsModel_ (new QStandardItemModel (this))
 			{
-				QStringList labels;
-				labels << tr ("Name")
-						<< tr ("Type")
-						<< tr ("Tags")
-						<< tr ("Last version");
-				PluginsModel_->setHorizontalHeaderLabels (labels);
-
 				connect (RepoInfoFetcher_,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
@@ -67,6 +60,8 @@ namespace LeechCraft
 						SIGNAL (packageFetched (const PackageInfo&, int)),
 						this,
 						SLOT (handlePackageFetched (const PackageInfo&, int)));
+
+				PopulatePluginsModel ();
 			}
 
 			Core& Core::Instance ()
@@ -184,6 +179,15 @@ namespace LeechCraft
 
 			void Core::PopulatePluginsModel ()
 			{
+				PluginsModel_->clear ();
+
+				QStringList labels;
+				labels << tr ("Name")
+						<< tr ("Type")
+						<< tr ("Tags")
+						<< tr ("Last version");
+				PluginsModel_->setHorizontalHeaderLabels (labels);
+
 				QMap<QString, QList<ListPackageInfo> > infos;
 				try
 				{
@@ -204,6 +208,35 @@ namespace LeechCraft
 							boost::bind (IsVersionLess,
 									boost::bind (&ListPackageInfo::Version_, _1),
 									boost::bind (&ListPackageInfo::Version_, _2)));
+					qDebug () << packageName;
+					Q_FOREACH (const ListPackageInfo& info, list)
+						qDebug () << info.Version_;
+
+					ListPackageInfo last = list.last ();
+
+					QString type;
+					switch (last.Type_)
+					{
+					case PackageInfo::TPlugin:
+						type = tr ("plugin");
+						break;
+					case PackageInfo::TIconset:
+						type = tr ("iconset");
+						break;
+					case PackageInfo::TTranslation:
+						type = tr ("translation");
+						break;
+					}
+
+					QList<QStandardItem*> row;
+					row << new QStandardItem (last.Name_)
+							<< new QStandardItem (type)
+							<< new QStandardItem (last.Tags_.join ("; "))
+							<< new QStandardItem (last.Version_);
+
+					row.at (0)->setData (last.PackageID_, PMRPackageID);
+
+					PluginsModel_->appendRow (row);
 				}
 			}
 

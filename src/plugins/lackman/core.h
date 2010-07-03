@@ -45,6 +45,10 @@ namespace LeechCraft
 				QStandardItemModel *PluginsModel_;
 
 				Core ();
+				enum PluginsModelRoles
+				{
+					PMRPackageID = Qt::UserRole + 1
+				};
 			public:
 				static Core& Instance ();
 
