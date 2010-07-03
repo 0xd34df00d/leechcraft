@@ -18,6 +18,7 @@
 
 #include "repoinfo.h"
 #include <QtDebug>
+#include "versionverifier.h"
 
 namespace LeechCraft
 {
@@ -130,7 +131,8 @@ namespace LeechCraft
 
 			bool IsVersionLess (const QString& lver, const QString& rver)
 			{
-				return true;
+				VersionVerifier vv;
+				return vv.CompareVersions (lver, rver) < 0;
 			}
 		}
 	}
