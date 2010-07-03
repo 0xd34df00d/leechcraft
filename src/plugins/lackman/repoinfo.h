@@ -110,11 +110,28 @@ namespace LeechCraft
 				QMap<QString, QList<Dependency> > Deps_;
 				QString MaintName_;
 				QString MaintEmail_;
-				QString IconURL_;
+				QUrl IconURL_;
 				QList<Image> Images_;
 
 				void Dump () const;
 			};
+
+			/** This contains those and only those fields which are
+			 * displayed in the Pacakges list.
+			 */
+			struct ListPackageInfo
+			{
+				int PackageID_;
+				QString Name_;
+				QString Version_;
+				QString Type_;
+				QUrl IconURL_;
+				QStringList Tags_;
+			};
+
+			/** Some kind of operator< for version strings.
+			 */
+			bool IsVersionLess (const QString&, const QString&);
 		}
 	}
 }

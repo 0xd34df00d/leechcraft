@@ -127,6 +127,11 @@ namespace LeechCraft
 						qDebug () << "\t" << img.Type_ << img.URL_;
 				}
 			}
+
+			bool IsVersionLess (const QString& lver, const QString& rver)
+			{
+				return true;
+			}
 		}
 	}
 }

@@ -441,6 +441,13 @@ namespace LeechCraft
 					throw std::runtime_error ("Query execution failed");
 				}
 
+				QueryRemovePackageFromLocations_.bindValue (":package_id", packageId);
+				if (!QueryRemovePackageFromLocations_.exec ())
+				{
+					Util::DBLock::DumpError (QueryRemovePackageFromLocations_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
 				QueryRemovePackage_.bindValue (":package_id", packageId);
 				if (!QueryRemovePackage_.exec ())
 				{
@@ -616,6 +623,57 @@ namespace LeechCraft
 				return result;
 			}
 
+			QMap<QString, QList<ListPackageInfo> > Storage::GetListPackageInfos ()
+			{
+				if (!QueryGetListPackageInfo_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetListPackageInfo_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QMap<QString, QList<ListPackageInfo> > result;
+				while (QueryGetListPackageInfo_.next ())
+				{
+					int packageId = QueryGetListPackageInfo_.value (0).toInt ();
+					QString name = QueryGetListPackageInfo_.value (1).toString ();
+
+					ListPackageInfo info =
+					{
+						packageId,
+						name,
+						QueryGetListPackageInfo_.value (2).toString (),
+						QueryGetListPackageInfo_.value (3).toString (),
+						QUrl::fromEncoded (QueryGetListPackageInfo_.value (4).toString ().toUtf8 ()),
+						GetPackageTags (packageId)
+					};
+
+					result [name] << info;
+				}
+
+				QueryGetListPackageInfo_.finish ();
+
+				return result;
+			}
+
+			QStringList Storage::GetPackageTags (int packageId)
+			{
+				QueryGetPackageTags_.bindValue (":package_id", packageId);
+				if (!QueryGetPackageTags_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetPackageTags_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QStringList result;
+
+				while (QueryGetPackageTags_.next ())
+					result << QueryGetPackageTags_.value (0).toString ();
+
+				QueryGetPackageTags_.finish ();
+
+				return result;
+			}
+
 			bool Storage::HasLocation (int packageId, int componentId)
 			{
 				QueryHasLocation_.bindValue (":package_id", packageId);
@@ -723,6 +781,9 @@ namespace LeechCraft
 				QueryAddLocation_.prepare ("INSERT INTO locations (package_id, component_id) "
 						"VALUES (:package_id, :component_id);");
 
+				QueryRemovePackageFromLocations_ = QSqlQuery (DB_);
+				QueryRemovePackageFromLocations_.prepare ("DELETE FROM locations WHERE package_id = :package_id;");
+
 				QueryClearTags_ = QSqlQuery (DB_);
 				QueryClearTags_.prepare ("DELETE FROM tags WHERE name = :name;");
 
@@ -754,6 +815,13 @@ namespace LeechCraft
 
 				QueryGetPackagesInComponent_ = QSqlQuery (DB_);
 				QueryGetPackagesInComponent_.prepare ("SELECT package_id FROM locations WHERE component_id = :component_id;");
+
+				QueryGetListPackageInfo_ = QSqlQuery (DB_);
+				QueryGetListPackageInfo_.prepare ("SELECT packages.package_id, packages.name, packages.version, "
+						"infos.type, infos.icon_url FROM packages, infos WHERE package.name = infos.name;");
+
+				QueryGetPackageTags_ = QSqlQuery (DB_);
+				QueryGetPackageTags_.prepare ("SELECT tag FROM tags, packages WHERE tags.name = packages.name AND package_id = :package_id;");
 			}
 		}
 	}

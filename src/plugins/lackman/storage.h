@@ -53,6 +53,7 @@ namespace LeechCraft
 				QSqlQuery QueryRemovePackage_;
 				QSqlQuery QueryHasLocation_;
 				QSqlQuery QueryAddLocation_;
+				QSqlQuery QueryRemovePackageFromLocations_;
 				QSqlQuery QueryClearTags_;
 				QSqlQuery QueryAddTag_;
 				QSqlQuery QueryClearPackageInfos_;
@@ -62,6 +63,8 @@ namespace LeechCraft
 				QSqlQuery QueryClearDeps_;
 				QSqlQuery QueryAddDep_;
 				QSqlQuery QueryGetPackagesInComponent_;
+				QSqlQuery QueryGetListPackageInfo_;
+				QSqlQuery QueryGetPackageTags_;
 			public:
 				Storage (QObject* = 0);
 
@@ -80,7 +83,11 @@ namespace LeechCraft
 				PackageShortInfo GetPackage (int packageId);
 				void RemovePackage (int packageId);
 				void AddPackages (const PackageInfo&);
+
 				QList<int> GetPackagesInComponent (int);
+				QMap<QString, QList<ListPackageInfo> > GetListPackageInfos ();
+
+				QStringList GetPackageTags (int);
 
 				bool HasLocation (int packageId, int componentId);
 				void AddLocation (int packageId, int componentId);

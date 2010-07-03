@@ -184,6 +184,27 @@ namespace LeechCraft
 
 			void Core::PopulatePluginsModel ()
 			{
+				QMap<QString, QList<ListPackageInfo> > infos;
+				try
+				{
+					infos = Storage_->GetListPackageInfos ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to get package infos"
+							<< e.what ();
+					return;
+				}
+
+				Q_FOREACH (const QString& packageName, infos.keys ())
+				{
+					QList<ListPackageInfo> list = infos [packageName];
+					std::sort (list.begin (), list.end (),
+							boost::bind (IsVersionLess,
+									boost::bind (&ListPackageInfo::Version_, _1),
+									boost::bind (&ListPackageInfo::Version_, _2)));
+				}
 			}
 
 			void Core::HandleNewPackages (const PackageShortInfoList& shortInfos,
@@ -343,16 +364,48 @@ namespace LeechCraft
 					return;
 				}
 
-				QList<int> presentPackages = Storage_->GetPackagesInComponent (componentId);
+				QList<int> presentPackages;
+				try
+				{
+					presentPackages = Storage_->GetPackagesInComponent (componentId);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to get present packages in component:"
+							<< e.what ();
+					emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
+							tr ("Unable to load packages already present in the component %1.")
+								.arg (component),
+							PCritical_));
+					return;
+				}
+
 				Q_FOREACH (int presentPId, presentPackages)
 				{
-					PackageShortInfo psi = Storage_->GetPackage (presentPId);
+					PackageShortInfo psi;
+					try
+					{
+						psi = Storage_->GetPackage (presentPId);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to get present package:"
+								<< e.what ();
+						emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
+								tr ("Unable to load package already present in the component %1.")
+									.arg (component),
+								PCritical_));
+						return;
+					}
+
 					bool found = false;
 					Q_FOREACH (const PackageShortInfo& candidate, shortInfos)
 					{
 						if (candidate.Name_ != psi.Name_)
 							continue;
-						if (!candidate.Versions_.contains (psi.Versions_.at (0)))
+						if (candidate.Versions_.contains (psi.Versions_.at (0)))
 						{
 							found = true;
 							break;
@@ -360,7 +413,25 @@ namespace LeechCraft
 					}
 
 					if (!found)
-						Storage_->RemovePackage (presentPId);
+					{
+						try
+						{
+							Storage_->RemovePackage (presentPId);
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to remove package for:"
+									<< component
+									<< presentPId
+									<< e.what ();
+							emit gotEntity (Util::MakeNotification (tr ("Error handling component"),
+									tr ("Unable to remove package which has been removed upstream from %1.")
+										.arg (component),
+									PCritical_));
+							return;
+						}
+					}
 				}
 
 				HandleNewPackages (shortInfos, componentId, component, repoUrl);
