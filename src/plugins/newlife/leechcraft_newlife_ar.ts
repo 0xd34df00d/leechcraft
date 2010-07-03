@@ -4,11 +4,6 @@
 <context>
     <name>FeedsSettingsImportPage</name>
     <message>
-        <location filename="feedssettingsimportpage.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="feedssettingsimportpage.ui" line="22"/>
         <source>Location:</source>
         <translation type="unfinished"></translation>
@@ -27,11 +22,6 @@
 </context>
 <context>
     <name>FirstPage</name>
-    <message>
-        <location filename="firstpage.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="firstpage.ui" line="17"/>
         <source>Choose application</source>
@@ -52,7 +42,7 @@
     <name>ImportWizard</name>
     <message>
         <location filename="importwizard.ui" line="14"/>
-        <source>Wizard</source>
+        <source>Settings Import Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

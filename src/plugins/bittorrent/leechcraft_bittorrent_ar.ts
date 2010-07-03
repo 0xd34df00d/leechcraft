@@ -307,14 +307,6 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>FastSpeedControlWidget</name>
-    <message>
-        <location filename="fastspeedcontrolwidget.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>IPFilterDialog</name>
     <message>
         <location filename="ipfilterdialog.ui" line="14"/>
@@ -1021,37 +1013,37 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::TorrentPlugin</name>
     <message>
-        <location filename="torrentplugin.cpp" line="97"/>
+        <location filename="torrentplugin.cpp" line="91"/>
         <source>Full-featured BitTorrent client.</source>
         <translation>برنامج التورنت كامل المواصفات.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="772"/>
+        <location filename="torrentplugin.cpp" line="804"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>غير قادر على نقل ملفات التورنت من %1 إلى %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="922"/>
+        <location filename="torrentplugin.cpp" line="954"/>
         <source>Open torrent...</source>
         <translation>فتح تورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1045"/>
+        <location filename="torrentplugin.cpp" line="1077"/>
         <source>Change trackers...</source>
         <translation>تغيير مسارات...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1047"/>
+        <location filename="torrentplugin.cpp" line="1079"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="931"/>
+        <location filename="torrentplugin.cpp" line="963"/>
         <source>Create torrent...</source>
         <translation>إنشاء تورنت...</translation>
     </message>
     <message numerus="yes">
-        <location filename="torrentplugin.cpp" line="502"/>
+        <location filename="torrentplugin.cpp" line="499"/>
         <source>Do you really want to delete %n torrent(s)?</source>
         <oldsource>Do you really want to delete %n torrents?</oldsource>
         <translation type="unfinished">
@@ -1064,117 +1056,117 @@ IPv6 input mask</extracomment>
         </translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="787"/>
+        <location filename="torrentplugin.cpp" line="819"/>
         <source>Magnet link:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="933"/>
+        <location filename="torrentplugin.cpp" line="965"/>
         <source>N</source>
         <translation>N</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="940"/>
+        <location filename="torrentplugin.cpp" line="972"/>
         <source>Open multiple torrents...</source>
         <translation>فتح مجموعة التورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="948"/>
+        <location filename="torrentplugin.cpp" line="980"/>
         <source>IP filter...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="956"/>
+        <location filename="torrentplugin.cpp" line="988"/>
         <source>Remove</source>
         <translation>إزالة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="958"/>
+        <location filename="torrentplugin.cpp" line="990"/>
         <source>Del</source>
         <translation>مسح</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="965"/>
+        <location filename="torrentplugin.cpp" line="997"/>
         <source>Resume</source>
         <translation>استمرار</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="967"/>
+        <location filename="torrentplugin.cpp" line="999"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="974"/>
+        <location filename="torrentplugin.cpp" line="1006"/>
         <source>Pause</source>
         <translation>إيقاف مؤقّتاً</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="976"/>
+        <location filename="torrentplugin.cpp" line="1008"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="983"/>
+        <location filename="torrentplugin.cpp" line="1015"/>
         <source>Move up</source>
         <translation>نقل للأعلى</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="992"/>
+        <location filename="torrentplugin.cpp" line="1024"/>
         <source>Move down</source>
         <translation>نقل للأسفل</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1001"/>
+        <location filename="torrentplugin.cpp" line="1033"/>
         <source>Move to top</source>
         <translation>نقل لأعلى القائمة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1010"/>
+        <location filename="torrentplugin.cpp" line="1042"/>
         <source>Move to bottom</source>
         <translation>نقل إلى أسفل القائمة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1019"/>
+        <location filename="torrentplugin.cpp" line="1051"/>
         <source>Reannounce</source>
         <translation>إعادة الإنطاق</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1021"/>
+        <location filename="torrentplugin.cpp" line="1053"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1028"/>
+        <location filename="torrentplugin.cpp" line="1060"/>
         <source>Recheck</source>
         <translation>إعادة الفحص</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1036"/>
+        <location filename="torrentplugin.cpp" line="1068"/>
         <source>Move files...</source>
         <translation>نقل ملفات...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1038"/>
+        <location filename="torrentplugin.cpp" line="1070"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1054"/>
+        <location filename="torrentplugin.cpp" line="1086"/>
         <source>Make magnet link...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1062"/>
+        <location filename="torrentplugin.cpp" line="1094"/>
         <source>Import...</source>
         <translation>إستيراد...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1070"/>
+        <location filename="torrentplugin.cpp" line="1102"/>
         <source>Export...</source>
         <translation>تصدير...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1114"/>
+        <location filename="torrentplugin.cpp" line="1146"/>
         <source>Torrents actions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1477,11 +1469,6 @@ IPv6 input mask</extracomment>
 </context>
 <context>
     <name>StartupFirstPageWidget</name>
-    <message>
-        <location filename="startupfirstpage.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="startupfirstpage.ui" line="25"/>
         <source>Port range:</source>

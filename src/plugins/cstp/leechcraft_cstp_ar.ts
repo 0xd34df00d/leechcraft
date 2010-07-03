@@ -65,42 +65,42 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::CSTP</name>
     <message>
-        <location filename="cstp.cpp" line="206"/>
+        <location filename="cstp.cpp" line="201"/>
         <source>Remove</source>
         <translation>إزالة</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="213"/>
+        <location filename="cstp.cpp" line="208"/>
         <source>Remove all</source>
         <translation>إزالة الكل</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="222"/>
+        <location filename="cstp.cpp" line="217"/>
         <source>Start</source>
         <translation>بدء</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="229"/>
+        <location filename="cstp.cpp" line="224"/>
         <source>Stop</source>
         <translation>إيقاف</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="236"/>
+        <location filename="cstp.cpp" line="231"/>
         <source>Start all</source>
         <translation>بدء الكل</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="243"/>
+        <location filename="cstp.cpp" line="238"/>
         <source>Stop all</source>
         <translation>إيقاف الكل</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="255"/>
+        <location filename="cstp.cpp" line="250"/>
         <source>File exists</source>
         <translation>الملف موجود</translation>
     </message>
     <message>
-        <location filename="cstp.cpp" line="256"/>
+        <location filename="cstp.cpp" line="251"/>
         <source>File %1 already exists, continue download?</source>
         <translation>الملف %1 موجود، استمرار تحميله؟</translation>
     </message>
@@ -108,53 +108,53 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Core</name>
     <message>
-        <location filename="core.cpp" line="60"/>
+        <location filename="core.cpp" line="61"/>
         <source>URL</source>
         <translation>المكان</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="61"/>
+        <location filename="core.cpp" line="62"/>
         <source>State</source>
         <translation>الحالة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="62"/>
+        <location filename="core.cpp" line="63"/>
         <source>Progress</source>
         <translation>التقدّم</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="405"/>
+        <location filename="core.cpp" line="412"/>
         <source>%1 (ETA: %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="417"/>
+        <location filename="core.cpp" line="424"/>
         <source>%1% (%2 of %3 at %4)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="568"/>
+        <location filename="core.cpp" line="575"/>
         <source>Download finished: %1
 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="509"/>
+        <location filename="core.cpp" line="516"/>
         <source>Could not open file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="276"/>
+        <location filename="core.cpp" line="277"/>
         <source>Could not truncate file </source>
         <translation>غير قادر على تقطيع الملف</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="423"/>
+        <location filename="core.cpp" line="430"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="421"/>
+        <location filename="core.cpp" line="428"/>
         <source>/s</source>
         <translation>ثوان</translation>
     </message>
@@ -170,27 +170,27 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="202"/>
+        <location filename="task.cpp" line="213"/>
         <source>Stopped</source>
         <translation>متوفّف</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="204"/>
+        <location filename="task.cpp" line="215"/>
         <source>Finished</source>
         <translation>منتهي</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="206"/>
+        <location filename="task.cpp" line="217"/>
         <source>Running</source>
         <translation>تحميل</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="227"/>
+        <location filename="task.cpp" line="238"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation>المهمّة لَمْ تُشغّلْ بشكل صحيح</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="406"/>
+        <location filename="task.cpp" line="476"/>
         <source>Error writing to file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>

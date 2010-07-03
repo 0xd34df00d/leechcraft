@@ -34,12 +34,6 @@ namespace LeechCraft
 
 				Ui_.setupUi (this);
 
-				FilterByTags_ = new QSortFilterProxyModel (this);
-				FilterString_ = new QSortFilterProxyModel (this);
-				FilterString_->setSourceModel (FilterByTags_);
-
-				Ui_.Plugins_->setModel (FilterString_);
-
 				Core::Instance ().SetProxy (proxy);
 
 				connect (&Core::Instance (),
@@ -52,6 +46,13 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+
+				FilterByTags_ = new QSortFilterProxyModel (this);
+				FilterByTags_->setSourceModel (Core::Instance ().GetPluginsModel ());
+				FilterString_ = new QSortFilterProxyModel (this);
+				FilterString_->setSourceModel (FilterByTags_);
+
+				Ui_.Plugins_->setModel (FilterString_);
 			}
 
 			void Plugin::SecondInit ()
