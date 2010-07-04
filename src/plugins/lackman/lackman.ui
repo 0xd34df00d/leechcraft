@@ -27,7 +27,7 @@
        <enum>QFrame::Raised</enum>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QLineEdit" name="SearchLine_"/>
@@ -37,7 +37,17 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <widget class="QTreeView" name="Plugins_"/>
+         <widget class="QTreeView" name="Plugins_">
+          <property name="rootIsDecorated">
+           <bool>false</bool>
+          </property>
+          <property name="itemsExpandable">
+           <bool>false</bool>
+          </property>
+          <attribute name="headerVisible">
+           <bool>false</bool>
+          </attribute>
+         </widget>
          <widget class="LeechCraft::Util::SelectableBrowser" name="Description_" native="true"/>
         </widget>
        </item>

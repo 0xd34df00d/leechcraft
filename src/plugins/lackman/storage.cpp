@@ -673,8 +673,9 @@ namespace LeechCraft
 						packageId,
 						name,
 						QueryGetListPackageInfos_.value (2).toString (),
-						static_cast<PackageInfo::Type> (QueryGetListPackageInfos_.value (3).toInt ()),
-						QUrl::fromEncoded (QueryGetListPackageInfos_.value (4).toString ().toUtf8 ()),
+						QueryGetListPackageInfos_.value (3).toString (),
+						static_cast<PackageInfo::Type> (QueryGetListPackageInfos_.value (4).toInt ()),
+						QUrl::fromEncoded (QueryGetListPackageInfos_.value (5).toString ().toUtf8 ()),
 						GetPackageTags (packageId)
 					};
 
@@ -713,8 +714,9 @@ namespace LeechCraft
 					packageId,
 					name,
 					QueryGetSingleListPackageInfo_.value (2).toString (),
-					static_cast<PackageInfo::Type> (QueryGetSingleListPackageInfo_.value (3).toInt ()),
-					QUrl::fromEncoded (QueryGetSingleListPackageInfo_.value (4).toString ().toUtf8 ()),
+					QueryGetSingleListPackageInfo_.value (3).toString (),
+					static_cast<PackageInfo::Type> (QueryGetSingleListPackageInfo_.value (4).toInt ()),
+					QUrl::fromEncoded (QueryGetSingleListPackageInfo_.value (5).toString ().toUtf8 ()),
 					GetPackageTags (packageId)
 				};
 
@@ -953,7 +955,7 @@ namespace LeechCraft
 
 				QueryGetListPackageInfos_ = QSqlQuery (DB_);
 				QueryGetListPackageInfos_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
-						"infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name;");
+						"infos.short_descr, infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name;");
 
 				QueryGetSingleListPackageInfo_ = QSqlQuery (DB_);
 				QueryGetSingleListPackageInfo_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "

@@ -139,9 +139,12 @@ namespace LeechCraft
 				int PackageID_;
 				QString Name_;
 				QString Version_;
+				QString ShortDescription_;
 				PackageInfo::Type Type_;
 				QUrl IconURL_;
 				QStringList Tags_;
+				bool HasNewVersion_;
+				bool IsInstalled_;
 			};
 
 			/** Some kind of operator< for version strings.

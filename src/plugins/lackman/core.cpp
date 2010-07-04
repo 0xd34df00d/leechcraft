@@ -26,6 +26,7 @@
 #include <config.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
+#include "packagesmodel.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,7 @@ namespace LeechCraft
 			Core::Core ()
 			: RepoInfoFetcher_ (new RepoInfoFetcher (this))
 			, Storage_ (new Storage (this))
-			, PluginsModel_ (new QStandardItemModel (this))
+			, PluginsModel_ (new PackagesModel (this))
 			{
 				Relation2comparator [Dependency::L] = IsVersionLess;
 				Relation2comparator [Dependency::GE] = boost::bind (std::logical_not<bool> (),
@@ -260,7 +261,7 @@ namespace LeechCraft
 				entries += QDir ("/usr/local/share/leechcraft/installed").entryList ();
 #endif
 
-				QString nameStart ("PluginName: ");
+				QString nameStart ("Name: ");
 				QString versionStart ("Version: ");
 
 				Q_FOREACH (const QString& entry, entries)
@@ -302,26 +303,18 @@ namespace LeechCraft
 				return result;
 			}
 
+			InstalledDependencyInfoList Core::GetLackManInstalledPackages () const
+			{
+				return Storage_->GetInstalledPackages ();
+			}
+
 			InstalledDependencyInfoList Core::GetAllInstalledPackages () const
 			{
-				InstalledDependencyInfoList result = GetSystemInstalledPackages ();
-
-				result += Storage_->GetInstalledPackages ();
-
-				return result;
+				return GetSystemInstalledPackages () + GetLackManInstalledPackages ();
 			}
 
 			void Core::PopulatePluginsModel ()
 			{
-				PluginsModel_->clear ();
-
-				QStringList labels;
-				labels << tr ("Name")
-						<< tr ("Type")
-						<< tr ("Tags")
-						<< tr ("Last version");
-				PluginsModel_->setHorizontalHeaderLabels (labels);
-
 				QMap<QString, QList<ListPackageInfo> > infos;
 				try
 				{
@@ -335,6 +328,8 @@ namespace LeechCraft
 					return;
 				}
 
+				InstalledDependencyInfoList instedAll = GetSystemInstalledPackages ();
+
 				Q_FOREACH (const QString& packageName, infos.keys ())
 				{
 					QList<ListPackageInfo> list = infos [packageName];
@@ -342,11 +337,20 @@ namespace LeechCraft
 							boost::bind (IsVersionLess,
 									boost::bind (&ListPackageInfo::Version_, _1),
 									boost::bind (&ListPackageInfo::Version_, _2)));
-					qDebug () << packageName;
-					Q_FOREACH (const ListPackageInfo& info, list)
-						qDebug () << info.Version_;
-
 					ListPackageInfo last = list.last ();
+
+					Q_FOREACH (const InstalledDependencyInfo& idi,
+							instedAll)
+						if (last.Name_ == idi.Dep_.Name_)
+						{
+							last.IsInstalled_ = true;
+
+							if (idi.Source_ == InstalledDependencyInfo::SLackMan &&
+									IsVersionLess (idi.Dep_.Version_, last.Version_))
+								last.HasNewVersion_ = true;
+
+							break;
+						}
 
 					QString type;
 					switch (last.Type_)
@@ -362,15 +366,7 @@ namespace LeechCraft
 						break;
 					}
 
-					QList<QStandardItem*> row;
-					row << new QStandardItem (last.Name_)
-							<< new QStandardItem (type)
-							<< new QStandardItem (last.Tags_.join ("; "))
-							<< new QStandardItem (last.Version_);
-
-					row.at (0)->setData (last.PackageID_, PMRPackageID);
-
-					PluginsModel_->appendRow (row);
+					PluginsModel_->AddRow (last);
 				}
 			}
 

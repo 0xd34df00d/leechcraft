@@ -21,6 +21,7 @@
 #include <QIcon>
 #include <plugininterface/util.h>
 #include "core.h"
+#include "packagesdelegate.h"
 
 namespace LeechCraft
 {
@@ -52,6 +53,7 @@ namespace LeechCraft
 				FilterString_ = new QSortFilterProxyModel (this);
 				FilterString_->setSourceModel (FilterByTags_);
 
+				Ui_.Plugins_->setItemDelegate (new PackagesDelegate (this));
 				Ui_.Plugins_->setModel (FilterString_);
 			}
 

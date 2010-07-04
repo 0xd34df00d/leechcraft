@@ -36,6 +36,7 @@ namespace LeechCraft
 		{
 			class RepoInfoFetcher;
 			class Storage;
+			class PackagesModel;
 
 			class Core : public QObject
 			{
@@ -44,13 +45,9 @@ namespace LeechCraft
 				ICoreProxy_ptr Proxy_;
 				RepoInfoFetcher *RepoInfoFetcher_;
 				Storage *Storage_;
-				QStandardItemModel *PluginsModel_;
+				PackagesModel *PluginsModel_;
 
 				Core ();
-				enum PluginsModelRoles
-				{
-					PMRPackageID = Qt::UserRole + 1
-				};
 			public:
 				static Core& Instance ();
 
@@ -70,6 +67,7 @@ namespace LeechCraft
 				void UpdateRepo (const QUrl&, const QStringList&);
 			private:
 				InstalledDependencyInfoList GetSystemInstalledPackages () const;
+				InstalledDependencyInfoList GetLackManInstalledPackages () const;
 				InstalledDependencyInfoList GetAllInstalledPackages () const;
 				void PopulatePluginsModel ();
 				void HandleNewPackages (const PackageShortInfoList& shorts,
