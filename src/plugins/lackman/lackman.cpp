@@ -86,7 +86,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/resources/images/lackman.svg");
 			}
 
 			QStringList Plugin::Provides () const

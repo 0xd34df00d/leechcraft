@@ -10,5 +10,6 @@
 	<file>resources/sql/create_table_components.sql</file>
 	<file>resources/sql/create_table_installed.sql</file>
 	<file>resources/sql/insert_repo.sql</file>
+	<file>resources/images/lackman.svg</file>
   </qresource>
 </RCC>
