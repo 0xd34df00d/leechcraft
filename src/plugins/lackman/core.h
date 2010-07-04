@@ -19,6 +19,8 @@
 #ifndef PLUGINS_LACKMAN_CORE_H
 #define PLUGINS_LACKMAN_CORE_H
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
+#include <boost/bind.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include "repoinfo.h"
@@ -59,9 +61,16 @@ namespace LeechCraft
 
 				QAbstractItemModel* GetPluginsModel () const;
 
+				DependencyList GetDependencies (int) const;
+				QList<ListPackageInfo> GetDependencyFulfillers (const Dependency&) const;
+				bool IsVersionOk (const QString& candidate, QString refVer) const;
+				bool IsFulfilled (const Dependency&) const;
+
 				void AddRepo (const QUrl&);
 				void UpdateRepo (const QUrl&, const QStringList&);
 			private:
+				InstalledDependencyInfoList GetSystemInstalledPackages () const;
+				InstalledDependencyInfoList GetAllInstalledPackages () const;
 				void PopulatePluginsModel ();
 				void HandleNewPackages (const PackageShortInfoList& shorts,
 						int componentId, const QString& component, const QUrl& repoUrl);

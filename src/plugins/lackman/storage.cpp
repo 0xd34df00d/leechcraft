@@ -23,6 +23,7 @@
 #include <plugininterface/dblock.h>
 #include <plugininterface/util.h>
 #include "repoinfo.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -108,6 +109,36 @@ namespace LeechCraft
 				QueryCountPackages_.finish ();
 
 				return value;
+			}
+
+			InstalledDependencyInfoList Storage::GetInstalledPackages ()
+			{
+				if (!QueryGetInstalledPackages_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetInstalledPackages_);
+					throw std::runtime_error ("Query execution failed.");
+				}
+
+				InstalledDependencyInfoList result;
+
+				while (QueryGetInstalledPackages_.next ())
+				{
+					Dependency dep =
+					{
+						Dependency::TProvides,
+						QueryGetInstalledPackages_.value (0).toString (),
+						QueryGetInstalledPackages_.value (1).toString ()
+					};
+					InstalledDependencyInfo info =
+					{
+						dep,
+						InstalledDependencyInfo::SLackMan
+					};
+
+					result << info;
+				}
+
+				return result;
 			}
 
 			int Storage::FindRepo (const QUrl& repoUrl)
@@ -625,32 +656,135 @@ namespace LeechCraft
 
 			QMap<QString, QList<ListPackageInfo> > Storage::GetListPackageInfos ()
 			{
-				if (!QueryGetListPackageInfo_.exec ())
+				if (!QueryGetListPackageInfos_.exec ())
 				{
-					Util::DBLock::DumpError (QueryGetListPackageInfo_);
+					Util::DBLock::DumpError (QueryGetListPackageInfos_);
 					throw std::runtime_error ("Query execution failed");
 				}
 
 				QMap<QString, QList<ListPackageInfo> > result;
-				while (QueryGetListPackageInfo_.next ())
+				while (QueryGetListPackageInfos_.next ())
 				{
-					int packageId = QueryGetListPackageInfo_.value (0).toInt ();
-					QString name = QueryGetListPackageInfo_.value (1).toString ();
+					int packageId = QueryGetListPackageInfos_.value (0).toInt ();
+					QString name = QueryGetListPackageInfos_.value (1).toString ();
 
 					ListPackageInfo info =
 					{
 						packageId,
 						name,
-						QueryGetListPackageInfo_.value (2).toString (),
-						static_cast<PackageInfo::Type> (QueryGetListPackageInfo_.value (3).toInt ()),
-						QUrl::fromEncoded (QueryGetListPackageInfo_.value (4).toString ().toUtf8 ()),
+						QueryGetListPackageInfos_.value (2).toString (),
+						static_cast<PackageInfo::Type> (QueryGetListPackageInfos_.value (3).toInt ()),
+						QUrl::fromEncoded (QueryGetListPackageInfos_.value (4).toString ().toUtf8 ()),
 						GetPackageTags (packageId)
 					};
 
 					result [name] << info;
 				}
 
-				QueryGetListPackageInfo_.finish ();
+				QueryGetListPackageInfos_.finish ();
+
+				return result;
+			}
+
+			ListPackageInfo Storage::GetSingleListPackageInfo (int packageId)
+			{
+				if (!QueryGetSingleListPackageInfo_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetSingleListPackageInfo_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QMap<QString, QList<ListPackageInfo> > result;
+				if (!QueryGetSingleListPackageInfo_.next ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "package with package ID"
+							<< packageId
+							<< "not found;";
+					QString str = tr ("Package with ID %1 not found.")
+							.arg (packageId);
+					throw std::runtime_error (qPrintable (str));
+				}
+
+				QString name = QueryGetSingleListPackageInfo_.value (1).toString ();
+
+				ListPackageInfo info =
+				{
+					packageId,
+					name,
+					QueryGetSingleListPackageInfo_.value (2).toString (),
+					static_cast<PackageInfo::Type> (QueryGetSingleListPackageInfo_.value (3).toInt ()),
+					QUrl::fromEncoded (QueryGetSingleListPackageInfo_.value (4).toString ().toUtf8 ()),
+					GetPackageTags (packageId)
+				};
+
+				QueryGetSingleListPackageInfo_.finish ();
+
+				return info;
+			}
+
+			DependencyList Storage::GetDependencies (int packageId)
+			{
+				QueryGetDependencies_.bindValue (":package_id", packageId);
+				if (!QueryGetDependencies_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetDependencies_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				DependencyList result;
+
+				while (QueryGetDependencies_.next ())
+				{
+					Dependency::Type type;
+					QString typeString = QueryGetDependencies_.value (0).toString ();
+					if (typeString == "depends")
+						type = Dependency::TRequires;
+					else if (typeString == "requires")
+						type = Dependency::TProvides;
+					else
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unknown type"
+								<< typeString;
+						QString err = tr ("Unknown dependency type `%1`.")
+								.arg (typeString);
+						throw std::runtime_error (qPrintable (err));
+					}
+
+					Dependency dep =
+					{
+						type,
+						QueryGetDependencies_.value (1).toString (),
+						QueryGetDependencies_.value (2).toString ()
+					};
+					result << dep;
+				}
+
+				QueryGetDependencies_.finish ();
+
+				return result;
+			}
+
+			QList<ListPackageInfo> Storage::GetFulfillers (const Dependency& dep)
+			{
+				QueryGetFulfillerCandidates_.bindValue (":name", dep.Name_);
+				if (!QueryGetFulfillerCandidates_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetPackageTags_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QList<ListPackageInfo> result;
+
+				while (QueryGetFulfillerCandidates_.next ())
+				{
+					int packageId = QueryGetFulfillerCandidates_.value (0).toInt ();
+					QString version = QueryGetFulfillerCandidates_.value (1).toString ();
+
+					if (Core::Instance ().IsVersionOk (version, dep.Version_))
+						result << GetSingleListPackageInfo (packageId);
+				}
 
 				return result;
 			}
@@ -720,7 +854,8 @@ namespace LeechCraft
 						<< "images"
 						<< "tags"
 						<< "repos"
-						<< "components";
+						<< "components"
+						<< "installed";
 				Q_FOREACH (const QString& name, names)
 					if (!DB_.tables ().contains (name))
 						if (!query.exec (LoadQuery (QString ("create_table_%1").arg (name))))
@@ -816,12 +951,25 @@ namespace LeechCraft
 				QueryGetPackagesInComponent_ = QSqlQuery (DB_);
 				QueryGetPackagesInComponent_.prepare ("SELECT package_id FROM locations WHERE component_id = :component_id;");
 
-				QueryGetListPackageInfo_ = QSqlQuery (DB_);
-				QueryGetListPackageInfo_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
+				QueryGetListPackageInfos_ = QSqlQuery (DB_);
+				QueryGetListPackageInfos_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
 						"infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name;");
+
+				QueryGetSingleListPackageInfo_ = QSqlQuery (DB_);
+				QueryGetSingleListPackageInfo_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
+						"infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name AND packages.package_id = :package_id;");
 
 				QueryGetPackageTags_ = QSqlQuery (DB_);
 				QueryGetPackageTags_.prepare ("SELECT tag FROM tags, packages WHERE tags.name = packages.name AND package_id = :package_id;");
+
+				QueryGetInstalledPackages_ = QSqlQuery (DB_);
+				QueryGetInstalledPackages_.prepare ("SELECT name, version FROM installed;");
+
+				QueryGetDependencies_ = QSqlQuery (DB_);
+				QueryGetDependencies_.prepare ("SELECT name, version, type FROM deps WHERE package_id = :package_id;");
+
+				QueryGetFulfillerCandidates_ = QSqlQuery (DB_);
+				QueryGetFulfillerCandidates_.prepare ("SELECT package_id, version FROM deps WHERE name = :name;");
 			}
 		}
 	}

@@ -63,12 +63,18 @@ namespace LeechCraft
 				QSqlQuery QueryClearDeps_;
 				QSqlQuery QueryAddDep_;
 				QSqlQuery QueryGetPackagesInComponent_;
-				QSqlQuery QueryGetListPackageInfo_;
+				QSqlQuery QueryGetListPackageInfos_;
+				QSqlQuery QueryGetSingleListPackageInfo_;
 				QSqlQuery QueryGetPackageTags_;
+				QSqlQuery QueryGetInstalledPackages_;
+				QSqlQuery QueryGetDependencies_;
+				QSqlQuery QueryGetFulfillerCandidates_;
 			public:
 				Storage (QObject* = 0);
 
 				int CountPackages (const QUrl& repoUrl);
+
+				InstalledDependencyInfoList GetInstalledPackages ();
 
 				int FindRepo (const QUrl& repoUrl);
 				int AddRepo (const RepoInfo& ri);
@@ -86,6 +92,9 @@ namespace LeechCraft
 
 				QList<int> GetPackagesInComponent (int);
 				QMap<QString, QList<ListPackageInfo> > GetListPackageInfos ();
+				ListPackageInfo GetSingleListPackageInfo (int);
+				DependencyList GetDependencies (int);
+				QList<ListPackageInfo> GetFulfillers (const Dependency&);
 
 				QStringList GetPackageTags (int);
 

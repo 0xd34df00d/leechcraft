@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_LACKMAN_REPOINFO_H
 #define PLUGINS_LACKMAN_REPOINFO_H
+#include <boost/function.hpp>
 #include <QMetaType>
 #include <QStringList>
 #include <QUrl>
@@ -78,12 +79,26 @@ namespace LeechCraft
 			{
 				enum Type
 				{
-					TProvides,
-					TRequires
+					TRequires,
+					TProvides
 				} Type_;
+
+				/** Dependency version `relation` candidate version.
+				 */
+				enum Relation
+				{
+					G, //!< G Dependency version should be greater than candidate's.
+					E, //!< E Dependency version should be equal to candidate's.
+					L, //!< L Dependency version should be less than candidate's.
+					GE,//!< GE Dependency version should be greater or equal to candidate's.
+					LE //!< LE Dependency version should be less or equal to candidate's.
+				};
+
 				QString Name_;
 				QString Version_;
 			};
+
+			typedef QList<Dependency> DependencyList;
 
 			struct Image
 			{
@@ -107,7 +122,7 @@ namespace LeechCraft
 				QString Description_;
 				QString LongDescription_;
 				QStringList Tags_;
-				QMap<QString, QList<Dependency> > Deps_;
+				QMap<QString, DependencyList> Deps_;
 				QString MaintName_;
 				QString MaintEmail_;
 				QUrl IconURL_;
@@ -132,6 +147,31 @@ namespace LeechCraft
 			/** Some kind of operator< for version strings.
 			 */
 			bool IsVersionLess (const QString&, const QString&);
+
+			typedef boost::function<bool (const QString&, const QString&)> Comparator_t;
+
+			extern QMap<Dependency::Relation, Comparator_t> Relation2comparator;
+
+			/** Describes an installed dependency. Installed dependency may
+			 * come either from system package manager of be installed
+			 * by LackMan. Source enum is used to distinguish between
+			 * these two cases.
+			 */
+			struct InstalledDependencyInfo
+			{
+				Dependency Dep_;
+
+				/** Whether package was installed via standard system
+				 * means like system package manager or via LackMan.
+				 */
+				enum Source
+				{
+					SSystem,//!< SSystem Package came from system.
+					SLackMan//!< SLackMan Package came via LackMan.
+				} Source_;
+			};
+
+			typedef QList<InstalledDependencyInfo> InstalledDependencyInfoList;
 		}
 	}
 }

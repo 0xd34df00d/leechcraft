@@ -31,6 +31,7 @@ SET (SRCS
 	repoinfo.cpp
 	repoinfofetcher.cpp
 	storage.cpp
+	deptreebuilder.cpp
 	)
 SET (HEADERS
 	lackman.h
@@ -38,6 +39,7 @@ SET (HEADERS
 	repoinfo.h
 	repoinfofetcher.h
 	storage.h
+	deptreebuilder.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts

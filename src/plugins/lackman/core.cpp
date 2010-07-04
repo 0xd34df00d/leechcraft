@@ -20,8 +20,10 @@
 #include <boost/bind.hpp>
 #include <QString>
 #include <QStandardItemModel>
+#include <QDir>
 #include <QtDebug>
 #include <plugininterface/util.h>
+#include <config.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
 
@@ -31,11 +33,23 @@ namespace LeechCraft
 	{
 		namespace LackMan
 		{
+			QMap<Dependency::Relation, Comparator_t> Relation2comparator;
+
 			Core::Core ()
 			: RepoInfoFetcher_ (new RepoInfoFetcher (this))
 			, Storage_ (new Storage (this))
 			, PluginsModel_ (new QStandardItemModel (this))
 			{
+				Relation2comparator [Dependency::L] = IsVersionLess;
+				Relation2comparator [Dependency::GE] = boost::bind (std::logical_not<bool> (),
+						Relation2comparator [Dependency::L]);
+				Relation2comparator [Dependency::E] = std::equal_to<QString> ();
+				Relation2comparator [Dependency::LE] = boost::bind (std::logical_or<bool> (),
+						Relation2comparator [Dependency::L], Relation2comparator [Dependency::E]);
+				Relation2comparator [Dependency::G] = boost::bind (std::logical_not<bool> (),
+						Relation2comparator [Dependency::LE]);
+				Relation2comparator [Dependency::G] = boost::bind (Relation2comparator [Dependency::L], _2, _1);
+
 				connect (RepoInfoFetcher_,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
@@ -92,6 +106,65 @@ namespace LeechCraft
 			QAbstractItemModel* Core::GetPluginsModel () const
 			{
 				return PluginsModel_;
+			}
+
+			DependencyList Core::GetDependencies (int packageId) const
+			{
+				DependencyList result;
+				Q_FOREACH (const Dependency& dep, Storage_->GetDependencies (packageId))
+					if (dep.Type_ == Dependency::TRequires)
+						result << dep;
+				return result;
+			}
+
+			QList<ListPackageInfo> Core::GetDependencyFulfillers (const Dependency& dep) const
+			{
+				return Storage_->GetFulfillers (dep);
+			}
+
+			bool Core::IsVersionOk (const QString& candidate, QString refVer) const
+			{
+				Dependency::Relation relation;
+
+				if (refVer.startsWith (">="))
+				{
+					relation = Dependency::GE;
+					refVer = refVer.mid (2);
+				}
+				else if (refVer.startsWith ("<="))
+				{
+					relation = Dependency::LE;
+					refVer = refVer.mid (2);
+				}
+				else if (refVer.startsWith ('>'))
+				{
+					relation = Dependency::G;
+					refVer = refVer.mid (1);
+				}
+				else if (refVer.startsWith ('<'))
+				{
+					relation = Dependency::L;
+					refVer = refVer.mid (1);
+				}
+				else
+				{
+					relation = Dependency::E;
+					if (refVer.startsWith ('='))
+						refVer = refVer.mid (1);
+				}
+				refVer = refVer.trimmed ();
+
+				return Relation2comparator [relation] (candidate, refVer);
+			}
+
+			bool Core::IsFulfilled (const Dependency& dep) const
+			{
+				Q_FOREACH (const InstalledDependencyInfo& info, GetAllInstalledPackages ())
+					if (info.Dep_.Name_ == dep.Name_ &&
+							IsVersionOk (info.Dep_.Version_, dep.Version_))
+						return true;
+
+				return false;
 			}
 
 			void Core::AddRepo (const QUrl& url)
@@ -175,6 +248,67 @@ namespace LeechCraft
 					compUrl.setPath ((compUrl.path () + "/dists/%1/all/").arg (component));
 					RepoInfoFetcher_->FetchComponent (compUrl, id, component);
 				}
+			}
+
+			InstalledDependencyInfoList Core::GetSystemInstalledPackages () const
+			{
+				InstalledDependencyInfoList result;
+
+				QStringList entries;
+#if defined(Q_WS_X11)
+				entries += QDir ("/usr/share/leechcraft/installed").entryList ();
+				entries += QDir ("/usr/local/share/leechcraft/installed").entryList ();
+#endif
+
+				QString nameStart ("PluginName: ");
+				QString versionStart ("Version: ");
+
+				Q_FOREACH (const QString& entry, entries)
+				{
+					QFile file (entry);
+					if (!file.open (QIODevice::ReadOnly))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to open"
+								<< entry
+								<< "for reading, skipping it.";
+						continue;
+					}
+
+					InstalledDependencyInfo info;
+					info.Source_ = InstalledDependencyInfo::SSystem;
+
+					QStringList lines = QString (file.readAll ()).split ('\n', QString::SkipEmptyParts);
+					Q_FOREACH (const QString& untrimmed, lines)
+					{
+						QString string = untrimmed.trimmed ();
+						if (string.startsWith (nameStart))
+							info.Dep_.Name_ = string.mid (nameStart.length ());
+						else if (string.startsWith (versionStart))
+							info.Dep_.Version_ = string.mid (versionStart.length ());
+					}
+
+					if (info.Dep_.Version_.isEmpty ())
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "dependency version for"
+								<< info.Dep_.Name_
+								<< "not filled, defaulting to"
+								<< LEECHCRAFT_VERSION;
+						info.Dep_.Version_ = LEECHCRAFT_VERSION;
+					}
+				}
+
+				return result;
+			}
+
+			InstalledDependencyInfoList Core::GetAllInstalledPackages () const
+			{
+				InstalledDependencyInfoList result = GetSystemInstalledPackages ();
+
+				result += Storage_->GetInstalledPackages ();
+
+				return result;
 			}
 
 			void Core::PopulatePluginsModel ()
