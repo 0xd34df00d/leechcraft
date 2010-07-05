@@ -34,6 +34,7 @@ SET (SRCS
 	deptreebuilder.cpp
 	packagesmodel.cpp
 	packagesdelegate.cpp
+	xmlparsers.cpp
 	)
 SET (HEADERS
 	lackman.h
@@ -44,6 +45,7 @@ SET (HEADERS
 	deptreebuilder.h
 	packagesmodel.h
 	packagesdelegate.h
+	xmlparsers.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts
