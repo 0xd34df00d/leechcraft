@@ -54,11 +54,7 @@ namespace LeechCraft
 				QString title = index.data (Qt::DisplayRole).toString ();
 				QString shortDescr = index.data (PackagesModel::PMRShortDescription).toString ();
 				QStringList tags = index.data (PackagesModel::PMRTags).toStringList ();
-
-				QString attribute;
-				QColor fgColor = option.state.testFlag (QStyle::State_Selected) ?
-						option.palette.color (QPalette::HighlightedText) :
-						option.palette.color (QPalette::Text);
+				QColor fgColor = option.palette.color (QPalette::Text);
 
 				QIcon icon = index.data (Qt::DecorationRole).value<QIcon> ();
 
@@ -72,20 +68,20 @@ namespace LeechCraft
 				p.translate (-option.rect.topLeft ());
 
 				const int height = ItemHeightForOption (option);
-				int textShift = 2 * CPadding + CIconSize;
-				int textWidth = r.width () - textShift;
+				int textShift = CPadding + CIconSize;
+				int textWidth = r.width () - textShift - CPadding;
 				int singleHeight = height / CNumLines;
 
 				p.setPen (fgColor);
 				p.setFont (titleOption.font);
-				p.drawText (r.left () + (ltr ? textShift : 0), r.top (),
+				p.drawText (r.left () + (ltr ? textShift : 0), r.top () + CPadding,
 						textWidth, singleHeight,
 						Qt::AlignBottom | Qt::AlignLeft, title);
 
 				p.setFont (option.font);
 				shortDescr = fontMetrics.elidedText (shortDescr,
 						option.textElideMode, textWidth);
-				p.drawText (r.left () + (ltr ? textShift : 0), r.top () + singleHeight,
+				p.drawText (r.left () + (ltr ? textShift : 0), r.top () + singleHeight + CPadding,
 						textWidth, singleHeight,
 						Qt::AlignTop | Qt::AlignLeft, shortDescr);
 

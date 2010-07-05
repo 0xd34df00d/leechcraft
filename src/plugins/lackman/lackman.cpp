@@ -60,11 +60,13 @@ namespace LeechCraft
 			void Plugin::SecondInit ()
 			{
 				IPluginsManager *pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+				/*
 				QObjectList browsers = pm->Filter<IWebBrowser*> (pm->GetAllPlugins ());
 				IWebBrowser *browser = browsers.size () ?
 					qobject_cast<IWebBrowser*> (browsers.at (0)) :
 					0;
 				Ui_.Description_->Construct (browser);
+				*/
 
 				Core::Instance ().AddRepo (QUrl::fromLocalFile ("/home/d34df00d/Programming/lcpacks"));
 			}
