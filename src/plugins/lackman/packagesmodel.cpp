@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "packagesmodel.h"
+#include <QIcon>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -45,8 +47,12 @@ namespace LeechCraft
 				{
 				case Qt::DisplayRole:
 					return lpi.Name_;
+				case Qt::DecorationRole:
+					return Core::Instance ().GetIconForLPI (lpi);
 				case PackagesModel::PMRShortDescription:
 					return lpi.ShortDescription_;
+				case PackagesModel::PMRLongDescription:
+					return lpi.LongDescription_;
 				case PackagesModel::PMRTags:
 					return lpi.Tags_;
 				case PackagesModel::PMRInstalled:

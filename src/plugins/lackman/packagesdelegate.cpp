@@ -19,7 +19,10 @@
 #include "packagesdelegate.h"
 #include <QPainter>
 #include <QApplication>
+#include <QTreeView>
+#include <QtDebug>
 #include "packagesmodel.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,13 +30,22 @@ namespace LeechCraft
 	{
 		namespace LackMan
 		{
-			const int PackagesDelegate::CPadding = 5;
+			const int PackagesDelegate::CPadding = 7;
 			const int PackagesDelegate::CIconSize = 32;
 			const int PackagesDelegate::CTitleSizeDelta = 2;
 			const int PackagesDelegate::CNumLines = 3;
 
-			PackagesDelegate::PackagesDelegate (QObject *parent)
+			namespace
+			{
+				int GetLongDescrHeight ()
+				{
+					return 400;
+				}
+			}
+
+			PackagesDelegate::PackagesDelegate (QTreeView *parent)
 			: QStyledItemDelegate (parent)
+			, Viewport_ (parent->viewport ())
 			{
 			}
 
@@ -50,11 +62,16 @@ namespace LeechCraft
 
 				const QRect& r = option.rect;
 				bool ltr = (painter->layoutDirection () == Qt::LeftToRight);
+				bool selected = option.state & QStyle::State_Selected;
+				if (selected)
+					painter->fillRect (option.rect, option.palette.highlight ());
 
 				QString title = index.data (Qt::DisplayRole).toString ();
 				QString shortDescr = index.data (PackagesModel::PMRShortDescription).toString ();
 				QStringList tags = index.data (PackagesModel::PMRTags).toStringList ();
-				QColor fgColor = option.palette.color (QPalette::Text);
+				QColor fgColor = selected ?
+						option.palette.color (QPalette::HighlightedText) :
+						option.palette.color (QPalette::Text);
 
 				QIcon icon = index.data (Qt::DecorationRole).value<QIcon> ();
 
@@ -67,32 +84,48 @@ namespace LeechCraft
 				QPainter p (&pixmap);
 				p.translate (-option.rect.topLeft ());
 
-				const int height = ItemHeightForOption (option);
-				int textShift = CPadding + CIconSize;
+				int textShift = 2 * CPadding + CIconSize;
+				int leftPos = r.left () + (ltr ? textShift : 0);
 				int textWidth = r.width () - textShift - CPadding;
-				int singleHeight = height / CNumLines;
+				int shiftFromTop = r.top () + CPadding;
+				int textHeight = TextHeight (option);
 
 				p.setPen (fgColor);
 				p.setFont (titleOption.font);
-				p.drawText (r.left () + (ltr ? textShift : 0), r.top () + CPadding,
-						textWidth, singleHeight,
+				p.drawText (leftPos, shiftFromTop,
+						textWidth, TitleHeight (option),
 						Qt::AlignBottom | Qt::AlignLeft, title);
+
+				shiftFromTop += TitleHeight (option);
 
 				p.setFont (option.font);
 				shortDescr = fontMetrics.elidedText (shortDescr,
 						option.textElideMode, textWidth);
-				p.drawText (r.left () + (ltr ? textShift : 0), r.top () + singleHeight + CPadding,
-						textWidth, singleHeight,
+				p.drawText (leftPos, shiftFromTop,
+						textWidth, textHeight,
 						Qt::AlignTop | Qt::AlignLeft, shortDescr);
+
+				shiftFromTop += textHeight;
 
 				QFont tagsFont = option.font;
 				tagsFont.setItalic (true);
 				p.setFont (tagsFont);
-				p.drawText (r.left () + (ltr ? textShift : 0), r.top () + 2 * singleHeight,
-						textWidth, singleHeight,
+				p.drawText (leftPos, shiftFromTop,
+						textWidth, textHeight,
 						Qt::AlignBottom | Qt::AlignRight, tags.join ("; "));
-
+				style->drawPrimitive (QStyle::PE_FrameGroupBox, &option, &p);
 				p.end ();
+
+				shiftFromTop += textHeight;
+
+				if (selected)
+				{
+					PrepareSelectableBrowser ();
+					SelectableBrowser_->SetHtml (index.data (PackagesModel::PMRLongDescription).toString ());
+					SelectableBrowser_->move (leftPos, shiftFromTop);
+					SelectableBrowser_->resize (textWidth, CurrentInfoHeight (option));
+					SelectableBrowser_->show ();
+				}
 
 				painter->drawPixmap (option.rect, pixmap);
 
@@ -109,19 +142,53 @@ namespace LeechCraft
 					const QModelIndex& index) const
 			{
 				QSize result = index.data (Qt::SizeHintRole).toSize ();
-				result.rheight () = ItemHeightForOption (option);
+				result.rheight () = TitleHeight (option) + TextHeight (option) * 2 + CPadding * 2;
+				if (index == CurrentSelection_)
+					result.rheight () += CurrentInfoHeight (option);
 				return result;
 			}
 
-			int PackagesDelegate::ItemHeightForOption (const QStyleOptionViewItem& option) const
+			int PackagesDelegate::TitleHeight (const QStyleOptionViewItem& option) const
 			{
 				QFont boldFont = option.font;
 
 				boldFont.setBold (true);
 				boldFont.setPointSize (boldFont.pointSize () + CTitleSizeDelta);
 
-				int textHeight = QFontInfo (boldFont).pixelSize () + QFontInfo (option.font).pixelSize () * (CNumLines - 1);
-				return std::max (textHeight, CIconSize) + 2 * CPadding;
+				return QFontInfo (boldFont).pixelSize () + CPadding;
+			}
+
+			int PackagesDelegate::TextHeight (const QStyleOptionViewItem& option) const
+			{
+				return QFontInfo (option.font).pixelSize () + CPadding;
+			}
+
+			int PackagesDelegate::CurrentInfoHeight (const QStyleOptionViewItem& option) const
+			{
+				return 300;
+			}
+
+			void PackagesDelegate::PrepareSelectableBrowser () const
+			{
+				if (SelectableBrowser_)
+					return;
+
+				SelectableBrowser_ = new Util::SelectableBrowser ();
+				QList<IWebBrowser*> browsers = Core::Instance ().GetProxy ()->
+						GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ();
+				if (browsers.size ())
+					SelectableBrowser_->Construct (browsers.at (0));
+				SelectableBrowser_->setParent (Viewport_);
+				SelectableBrowser_->SetNavBarVisible (false);
+			}
+
+			void PackagesDelegate::handleRowChanged (const QModelIndex& current, const QModelIndex& previous)
+			{
+				CurrentSelection_ = current;
+				if (SelectableBrowser_)
+					SelectableBrowser_->hide ();
+				emit sizeHintChanged (previous);
+				emit sizeHintChanged (current);
 			}
 		}
 	}

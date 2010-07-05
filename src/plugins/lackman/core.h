@@ -62,6 +62,7 @@ namespace LeechCraft
 				QList<ListPackageInfo> GetDependencyFulfillers (const Dependency&) const;
 				bool IsVersionOk (const QString& candidate, QString refVer) const;
 				bool IsFulfilled (const Dependency&) const;
+				QIcon GetIconForLPI (const ListPackageInfo&);
 
 				void AddRepo (const QUrl&);
 				void UpdateRepo (const QUrl&, const QStringList&);

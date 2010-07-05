@@ -168,6 +168,24 @@ namespace LeechCraft
 				return false;
 			}
 
+			QIcon Core::GetIconForLPI (const ListPackageInfo& packageInfo)
+			{
+				QIcon result;
+				switch (packageInfo.Type_)
+				{
+				case PackageInfo::TPlugin:
+					result = Proxy_->GetIcon ("lackman_plugin");
+					break;
+				case PackageInfo::TIconset:
+					result = Proxy_->GetIcon ("lackman_iconset");
+					break;
+				case PackageInfo::TTranslation:
+					result = Proxy_->GetIcon ("lackman_translation");
+					break;
+				}
+				return result;
+			}
+
 			void Core::AddRepo (const QUrl& url)
 			{
 				RepoInfoFetcher_->FetchFor (url);

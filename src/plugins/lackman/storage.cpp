@@ -674,8 +674,9 @@ namespace LeechCraft
 						name,
 						QueryGetListPackageInfos_.value (2).toString (),
 						QueryGetListPackageInfos_.value (3).toString (),
-						static_cast<PackageInfo::Type> (QueryGetListPackageInfos_.value (4).toInt ()),
-						QUrl::fromEncoded (QueryGetListPackageInfos_.value (5).toString ().toUtf8 ()),
+						QueryGetListPackageInfos_.value (4).toString (),
+						static_cast<PackageInfo::Type> (QueryGetListPackageInfos_.value (5).toInt ()),
+						QUrl::fromEncoded (QueryGetListPackageInfos_.value (6).toString ().toUtf8 ()),
 						GetPackageTags (packageId)
 					};
 
@@ -715,8 +716,9 @@ namespace LeechCraft
 					name,
 					QueryGetSingleListPackageInfo_.value (2).toString (),
 					QueryGetSingleListPackageInfo_.value (3).toString (),
-					static_cast<PackageInfo::Type> (QueryGetSingleListPackageInfo_.value (4).toInt ()),
-					QUrl::fromEncoded (QueryGetSingleListPackageInfo_.value (5).toString ().toUtf8 ()),
+					QueryGetSingleListPackageInfo_.value (4).toString (),
+					static_cast<PackageInfo::Type> (QueryGetSingleListPackageInfo_.value (5).toInt ()),
+					QUrl::fromEncoded (QueryGetSingleListPackageInfo_.value (6).toString ().toUtf8 ()),
 					GetPackageTags (packageId)
 				};
 
@@ -955,11 +957,11 @@ namespace LeechCraft
 
 				QueryGetListPackageInfos_ = QSqlQuery (DB_);
 				QueryGetListPackageInfos_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
-						"infos.short_descr, infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name;");
+						"infos.short_descr, infos.long_descr, infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name;");
 
 				QueryGetSingleListPackageInfo_ = QSqlQuery (DB_);
 				QueryGetSingleListPackageInfo_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
-						"infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name AND packages.package_id = :package_id;");
+						"infos.short_descr, infos.long_descr, infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name AND packages.package_id = :package_id;");
 
 				QueryGetPackageTags_ = QSqlQuery (DB_);
 				QueryGetPackageTags_.prepare ("SELECT tag FROM tags, packages WHERE tags.name = packages.name AND package_id = :package_id;");

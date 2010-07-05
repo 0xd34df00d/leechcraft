@@ -140,6 +140,7 @@ namespace LeechCraft
 				QString Name_;
 				QString Version_;
 				QString ShortDescription_;
+				QString LongDescription_;
 				PackageInfo::Type Type_;
 				QUrl IconURL_;
 				QStringList Tags_;

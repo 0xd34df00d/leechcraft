@@ -19,6 +19,10 @@
 #ifndef PLUGINS_LACKMAN_PACKAGESDELEGATE_H
 #define PLUGINS_LACKMAN_PACKAGESDELEGATE_H
 #include <QStyledItemDelegate>
+#include <QPointer>
+#include <plugininterface/selectablebrowser.h>
+
+class QTreeView;
 
 namespace LeechCraft
 {
@@ -34,13 +38,22 @@ namespace LeechCraft
 				static const int CIconSize;
 				static const int CTitleSizeDelta;
 				static const int CNumLines;
+
+				mutable QModelIndex CurrentSelection_;
+				mutable QPointer<Util::SelectableBrowser> SelectableBrowser_;
+				QWidget * const Viewport_;
 			public:
-				PackagesDelegate (QObject* = 0);
+				PackagesDelegate (QTreeView* = 0);
 
 				void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 				QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
 			private:
-				int ItemHeightForOption (const QStyleOptionViewItem&) const;
+				int TitleHeight (const QStyleOptionViewItem&) const;
+				int TextHeight (const QStyleOptionViewItem&) const;
+				int CurrentInfoHeight (const QStyleOptionViewItem&) const;
+				void PrepareSelectableBrowser () const;
+			public slots:
+				void handleRowChanged (const QModelIndex&, const QModelIndex&);
 			};
 		}
 	}

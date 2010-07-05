@@ -53,8 +53,15 @@ namespace LeechCraft
 				FilterString_ = new QSortFilterProxyModel (this);
 				FilterString_->setSourceModel (FilterByTags_);
 
-				Ui_.Plugins_->setItemDelegate (new PackagesDelegate (this));
+				PackagesDelegate *pd = new PackagesDelegate (Ui_.Plugins_);
+				Ui_.Plugins_->setItemDelegate (pd);
 				Ui_.Plugins_->setModel (FilterString_);
+
+				connect (Ui_.Plugins_->selectionModel (),
+						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+						pd,
+						SLOT (handleRowChanged (const QModelIndex&, const QModelIndex&)),
+						Qt::QueuedConnection);
 			}
 
 			void Plugin::SecondInit ()
