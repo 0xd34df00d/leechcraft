@@ -68,13 +68,13 @@ namespace LeechCraft
 				qRegisterMetaType<Channel_ptr> ("Channel_ptr");
 				qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 			}
-			
+
 			Core& Core::Instance ()
 			{
 				static Core core;
 				return core;
 			}
-			
+
 			void Core::Release ()
 			{
 				SyncPools ();
@@ -86,17 +86,17 @@ namespace LeechCraft
 				StorageBackend_.reset ();
 				XmlSettingsManager::Instance ()->Release ();
 			}
-			
+
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
 			}
-			
+
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
 			}
-			
+
 			Util::IDPool<IDType_t>& Core::GetPool (Core::PoolType type)
 			{
 				return Pools_ [type];
@@ -134,7 +134,7 @@ namespace LeechCraft
 					if (url.scheme () != "http" &&
 							url.scheme () != "https")
 						return false;
-				
+
 					if (e.Mime_ != "application/atom+xml" &&
 							e.Mime_ != "application/rss+xml")
 						return false;
@@ -144,7 +144,7 @@ namespace LeechCraft
 							linkRel != "alternate")
 						return false;
 				}
-			
+
 				return true;
 			}
 
@@ -160,7 +160,7 @@ namespace LeechCraft
 						QString name = LeechCraft::Util::GetTemporaryName ();
 
 						LeechCraft::Entity e = Util::MakeEntity (url,
-								name, 
+								name,
 								LeechCraft::Internal |
 									LeechCraft::DoNotNotifyUser |
 									LeechCraft::DoNotSaveInHistory |
@@ -170,7 +170,7 @@ namespace LeechCraft
 						{
 							name
 						};
-					
+
 						int id = -1;
 						QObject *pr;
 						emit delegateEntity (e, &id, &pr);
@@ -181,7 +181,7 @@ namespace LeechCraft
 										.arg (url.toString ()));
 							return;
 						}
-					
+
 						HandleProvider (pr, id);
 						PendingOPMLs_ [id] = po;
 					}
@@ -217,13 +217,13 @@ namespace LeechCraft
 								af.GetTags ());
 				}
 			}
-			
+
 			void Core::StartAddingOPML (const QString& file)
 			{
 				ImportOPML importDialog (file);
 				if (importDialog.exec () == QDialog::Rejected)
 					return;
-			
+
 				AddFromOPML (importDialog.GetFilename (),
 						importDialog.GetTags (),
 						importDialog.GetMask ());
@@ -238,7 +238,7 @@ namespace LeechCraft
 			{
 				return AppWideActions_;
 			}
-			
+
 			bool Core::DoDelayedInit ()
 			{
 				QDir dir = QDir::home ();
@@ -249,7 +249,7 @@ namespace LeechCraft
 						"directories for Aggregator";
 					return false;
 				}
-			
+
 				StorageBackend::Type type;
 				QString strType = XmlSettingsManager::Instance ()->
 					property ("StorageType").toString ();
@@ -260,7 +260,7 @@ namespace LeechCraft
 				else
 					throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 								.arg (strType)));
-			
+
 				try
 				{
 					StorageBackend_ = StorageBackend::Create (type);
@@ -292,15 +292,15 @@ namespace LeechCraft
 				ChannelsFilterModel_ = new ChannelsFilterModel ();
 				ChannelsFilterModel_->setSourceModel (ChannelsModel_);
 				ChannelsFilterModel_->setFilterKeyColumn (0);
-			
+
 				JobHolderRepresentation_ = new JobHolderRepresentation ();
-			
+
 				const int feedsTable = 1;
 				const int channelsTable = 1;
 				const int itemsTable = 6;
-			
+
 				bool tablesOK = true;
-			
+
 				if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
 						Property (strType + "FeedsTableVersion", feedsTable).toInt (),
 						feedsTable))
@@ -308,7 +308,7 @@ namespace LeechCraft
 							feedsTable);
 				else
 					tablesOK = false;
-			
+
 				if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
 						Property (strType + "ChannelsTableVersion", channelsTable).toInt (),
 						channelsTable))
@@ -324,26 +324,26 @@ namespace LeechCraft
 							itemsTable);
 				else
 					tablesOK = false;
-			
+
 				StorageBackend_->Prepare ();
-			
+
 				connect (StorageBackend_.get (),
 						SIGNAL (channelDataUpdated (Channel_ptr)),
 						this,
 						SLOT (handleChannelDataUpdated (Channel_ptr)),
 						Qt::QueuedConnection);
-			
+
 				ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 				ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
 				ParserFactory::Instance ().Register (&RSS091Parser::Instance ());
 				ParserFactory::Instance ().Register (&Atom03Parser::Instance ());
 				ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
-			
+
 				connect (ChannelsModel_,
 						SIGNAL (channelDataUpdated ()),
 						this,
 						SIGNAL (channelDataUpdated ()));
-			
+
 				if (tablesOK)
 				{
 					ids_t feeds;
@@ -362,16 +362,16 @@ namespace LeechCraft
 				ReprWidget_ = new ItemsWidget ();
 				ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
 				ChannelsModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
-			
+
 				JobHolderRepresentation_->setSourceModel (ChannelsModel_);
-			
+
 				CustomUpdateTimer_ = new QTimer (this);
 				CustomUpdateTimer_->start (60 * 1000);
 				connect (CustomUpdateTimer_,
 						SIGNAL (timeout ()),
 						this,
 						SLOT (handleCustomUpdates ()));
-			
+
 				UpdateTimer_ = new QTimer (this);
 				UpdateTimer_->setSingleShot (true);
 				QDateTime currentDateTime = QDateTime::currentDateTime ();
@@ -381,7 +381,7 @@ namespace LeechCraft
 						SIGNAL (timeout ()),
 						this,
 						SLOT (updateFeeds ()));
-			
+
 				int updateDiff = lastUpdated.secsTo (currentDateTime);
 				if ((XmlSettingsManager::Instance ()->
 							property ("UpdateOnStartup").toBool ()) ||
@@ -392,14 +392,14 @@ namespace LeechCraft
 							SLOT (updateFeeds ()));
 				else
 					UpdateTimer_->start (updateDiff * 1000);
-			
+
 				QTimer *saveTimer = new QTimer (this);
 				saveTimer->start (60 * 1000);
 				connect (saveTimer,
 						SIGNAL (timeout ()),
 						this,
 						SLOT (scheduleSave ()));
-			
+
 				XmlSettingsManager::Instance ()->
 					RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 				XmlSettingsManager::Instance ()->
@@ -413,7 +413,7 @@ namespace LeechCraft
 			{
 				return AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 			}
-			
+
 			int Core::AddFeed (const QString& url, const QStringList& tags)
 			{
 				if (StorageBackend_->FindFeed (url) != -1)
@@ -423,16 +423,16 @@ namespace LeechCraft
 							.arg (url));
 					return -1;
 				}
-			
+
 				QString name = LeechCraft::Util::GetTemporaryName ();
 				LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
-						name, 
+						name,
 						LeechCraft::Internal |
 							LeechCraft::DoNotNotifyUser |
 							LeechCraft::DoNotSaveInHistory |
 							LeechCraft::NotPersistent |
 							LeechCraft::DoNotAnnounceEntity);
-			
+
 				QStringList tagIds;
 				Q_FOREACH (QString tag, tags)
 					tagIds << Proxy_->GetTagsManager ()->GetID (tag);
@@ -448,7 +448,7 @@ namespace LeechCraft
 				Feed_ptr feed (new Feed ());
 				feed->URL_ = pj.URL_;
 				StorageBackend_->AddFeed (feed);
-			
+
 				int id = -1;
 				QObject *pr;
 				emit delegateEntity (e, &id, &pr);
@@ -460,17 +460,17 @@ namespace LeechCraft
 							false);
 					return -1;
 				}
-			
+
 				HandleProvider (pr, id);
 				PendingJobs_ [id] = pj;
 				return feed->FeedID_;
 			}
-			
+
 			void Core::RemoveFeed (const QModelIndex& index)
 			{
 				if (!index.isValid ())
 					return;
-			
+
 				ChannelShort channel;
 				try
 				{
@@ -483,17 +483,17 @@ namespace LeechCraft
 							.arg (e.what ()));
 					return;
 				}
-			
+
 				channels_shorts_t shorts;
 				StorageBackend_->GetChannels (shorts, channel.FeedID_);
-			
+
 				for (size_t i = 0, size = shorts.size (); i < size; ++i)
 					ChannelsModel_->RemoveChannel (shorts [i]);
 				StorageBackend_->RemoveFeed (channel.FeedID_);
-			
+
 				UpdateUnreadItemsNumber ();
 			}
-			
+
 			ItemsWidget* Core::GetReprWidget () const
 			{
 				return ReprWidget_;
@@ -503,12 +503,12 @@ namespace LeechCraft
 			{
 				return ChannelsModel_;
 			}
-			
+
 			QSortFilterProxyModel* Core::GetChannelsModel () const
 			{
 				return ChannelsFilterModel_;
 			}
-			
+
 			IWebBrowser* Core::GetWebBrowser () const
 			{
 				IPluginsManager *pm = Proxy_->GetPluginsManager ();
@@ -517,17 +517,17 @@ namespace LeechCraft
 					qobject_cast<IWebBrowser*> (browsers.at (0)) :
 					0;
 			}
-			
+
 			void Core::MarkChannelAsRead (const QModelIndex& i)
 			{
 				MarkChannel (i, false);
 			}
-			
+
 			void Core::MarkChannelAsUnread (const QModelIndex& i)
 			{
 				MarkChannel (i, true);
 			}
-			
+
 			QStringList Core::GetTagsForIndex (int i) const
 			{
 				try
@@ -551,7 +551,7 @@ namespace LeechCraft
 					return QStringList ();
 				}
 			}
-			
+
 			Core::ChannelInfo Core::GetChannelInfo (const QModelIndex& i) const
 			{
 				ChannelShort channel;
@@ -569,7 +569,7 @@ namespace LeechCraft
 				ci.FeedID_ = channel.FeedID_;
 				ci.ChannelID_ = channel.ChannelID_;
 				ci.Link_ = channel.Link_;
-			
+
 				Channel_ptr rc = StorageBackend_->
 						GetChannel (channel.ChannelID_, channel.FeedID_);
 				ci.Description_ = rc->Description_;
@@ -584,7 +584,7 @@ namespace LeechCraft
 
 				return ci;
 			}
-			
+
 			QPixmap Core::GetChannelPixmap (const QModelIndex& i) const
 			{
 				try
@@ -601,7 +601,7 @@ namespace LeechCraft
 					return QPixmap ();
 				}
 			}
-			
+
 			void Core::SetTagsForIndex (const QString& tags, const QModelIndex& index)
 			{
 				try
@@ -619,7 +619,7 @@ namespace LeechCraft
 						<< e.what ();
 				}
 			}
-			
+
 			void Core::UpdateFavicon (const QModelIndex& index)
 			{
 				try
@@ -634,7 +634,7 @@ namespace LeechCraft
 						<< e.what ();
 				}
 			}
-			
+
 			QStringList Core::GetCategories (const QModelIndex& index) const
 			{
 				ChannelShort cs;
@@ -646,10 +646,10 @@ namespace LeechCraft
 				{
 					return QStringList ();
 				}
-			
+
 				items_shorts_t items;
 				StorageBackend_->GetItems (items, cs.ChannelID_);
-			
+
 				QStringList result;
 				for (items_shorts_t::const_iterator i = items.begin (),
 						end = items.end (); i != end; ++i)
@@ -663,7 +663,7 @@ namespace LeechCraft
 				std::sort (result.begin (), result.end ());
 				return result;
 			}
-			
+
 			Feed::FeedSettings Core::GetFeedSettings (const QModelIndex& index) const
 			{
 				try
@@ -680,7 +680,7 @@ namespace LeechCraft
 							"inner exception: %1").arg (e.what ()).toStdString ());
 				}
 			}
-			
+
 			void Core::SetFeedSettings (const Feed::FeedSettings& settings,
 					const QModelIndex& index)
 			{
@@ -695,11 +695,11 @@ namespace LeechCraft
 							.arg (e.what ()));
 				}
 			}
-			
+
 			void Core::UpdateFeed (const QModelIndex& si, bool isRepr)
 			{
 				QModelIndex index = si;
-			
+
 				ChannelShort channel;
 				try
 				{
@@ -719,18 +719,18 @@ namespace LeechCraft
 				}
 				UpdateFeed (channel.FeedID_);
 			}
-			
+
 			QModelIndex Core::GetUnreadChannelIndex () const
 			{
 				return ChannelsFilterModel_->
 					mapFromSource (ChannelsModel_->GetUnreadChannelIndex ());
 			}
-			
+
 			int Core::GetUnreadChannelsNumber () const
 			{
 				return ChannelsModel_->GetUnreadChannelsNumber ();
 			}
-			
+
 			void Core::AddFromOPML (const QString& filename,
 					const QString& tags,
 					const std::vector<bool>& mask)
@@ -743,10 +743,10 @@ namespace LeechCraft
 								.arg (filename));
 					return;
 				}
-			
+
 				QByteArray data = file.readAll ();
 				file.close ();
-			
+
 				QString errorMsg;
 				int errorLine, errorColumn;
 				QDomDocument document;
@@ -764,7 +764,7 @@ namespace LeechCraft
 								.arg (errorMsg));
 					return;
 				}
-			
+
 				OPMLParser parser (document);
 				if (!parser.IsValid ())
 				{
@@ -773,7 +773,7 @@ namespace LeechCraft
 								.arg (filename));
 					return;
 				}
-			
+
 				OPMLParser::items_container_t items = parser.Parse ();
 				for (std::vector<bool>::const_iterator begin = mask.begin (),
 						i = mask.end () - 1; i >= begin; --i)
@@ -784,7 +784,7 @@ namespace LeechCraft
 						std::advance (eraser, distance);
 						items.erase (eraser);
 					}
-			
+
 				QStringList tagsList = Proxy_->GetTagsManager ()->Split (tags);
 				for (OPMLParser::items_container_t::const_iterator i = items.begin (),
 						end = items.end (); i != end; ++i)
@@ -813,7 +813,7 @@ namespace LeechCraft
 					}
 				}
 			}
-			
+
 			void Core::ExportToOPML (const QString& where,
 					const QString& title,
 					const QString& owner,
@@ -822,7 +822,7 @@ namespace LeechCraft
 			{
 				channels_shorts_t channels;
 				GetChannels (channels);
-			
+
 				for (std::vector<bool>::const_iterator begin = mask.begin (),
 						i = mask.end () - 1; i >= begin; --i)
 					if (!*i)
@@ -832,10 +832,10 @@ namespace LeechCraft
 						std::advance (eraser, distance);
 						channels.erase (eraser);
 					}
-			
+
 				OPMLWriter writer;
 				QString data = writer.Write (channels, title, owner, ownerEmail);
-			
+
 				QFile f (where);
 				if (!f.open (QIODevice::WriteOnly))
 				{
@@ -843,11 +843,11 @@ namespace LeechCraft
 							tr ("Could not open file %1 for write.").arg (where));
 					return;
 				}
-			
+
 				f.write (data.toUtf8 ());
 				f.close ();
 			}
-			
+
 			void Core::ExportToBinary (const QString& where,
 					const QString& title,
 					const QString& owner,
@@ -856,7 +856,7 @@ namespace LeechCraft
 			{
 				channels_shorts_t channels;
 				GetChannels (channels);
-			
+
 				for (std::vector<bool>::const_iterator begin = mask.begin (),
 						i = mask.end () - 1; i >= begin; --i)
 					if (!*i)
@@ -866,7 +866,7 @@ namespace LeechCraft
 						std::advance (eraser, distance);
 						channels.erase (eraser);
 					}
-			
+
 				QFile f (where);
 				if (!f.open (QIODevice::WriteOnly))
 				{
@@ -874,10 +874,10 @@ namespace LeechCraft
 							tr ("Could not open file %1 for write.").arg (where));
 					return;
 				}
-			
+
 				QByteArray buffer;
 				QDataStream data (&buffer, QIODevice::WriteOnly);
-			
+
 				int version = 1;
 				int magic = 0xd34df00d;
 				data <<
@@ -886,7 +886,7 @@ namespace LeechCraft
 					title <<
 					owner <<
 					ownerEmail;
-			
+
 				for (channels_shorts_t::const_iterator i = channels.begin (),
 						end = channels.end (); i != end; ++i)
 				{
@@ -894,37 +894,37 @@ namespace LeechCraft
 							GetChannel (i->ChannelID_, i->FeedID_);
 					items_shorts_t items;
 					StorageBackend_->GetItems (items, channel->ChannelID_);
-			
+
 					for (items_shorts_t::const_iterator j = items.begin (),
 							endJ = items.end (); j != endJ; ++j)
 						channel->Items_.push_back (StorageBackend_->
 								GetItem (j->ItemID_));
-			
+
 					data << (*channel);
 				}
-			
+
 				f.write (qCompress (buffer, 9));
 			}
-			
+
 			JobHolderRepresentation* Core::GetJobHolderRepresentation () const
 			{
 				return JobHolderRepresentation_;
 			}
-			
+
 			StorageBackend* Core::GetStorageBackend () const
 			{
 				return StorageBackend_.get ();
 			}
-			
+
 			QWebView* Core::CreateWindow ()
 			{
 				IWebBrowser *browser = GetWebBrowser ();
 				if (!browser)
 					return 0;
-			
+
 				return browser->CreateWindow ();
 			}
-			
+
 			void Core::GetChannels (channels_shorts_t& channels) const
 			{
 				ids_t ids;
@@ -932,7 +932,7 @@ namespace LeechCraft
 				Q_FOREACH (IDType_t id, ids)
 					StorageBackend_->GetChannels (channels, id);
 			}
-			
+
 			void Core::AddFeeds (const feeds_container_t& feeds,
 					const QString& tagsString)
 			{
@@ -954,12 +954,12 @@ namespace LeechCraft
 
 				SyncPools ();
 			}
-			
+
 			void Core::SetContextMenu (QMenu *menu)
 			{
 				ChannelsModel_->SetMenu (menu);
 			}
-			
+
 			void Core::scheduleSave ()
 			{
 				if (SaveScheduled_)
@@ -967,7 +967,7 @@ namespace LeechCraft
 				QTimer::singleShot (500, this, SLOT (saveSettings ()));
 				SaveScheduled_ = true;
 			}
-			
+
 			void Core::openLink (const QString& url)
 			{
 				IWebBrowser *browser = GetWebBrowser ();
@@ -981,25 +981,25 @@ namespace LeechCraft
 
 				browser->Open (url);
 			}
-			
+
 			namespace
 			{
 				struct IsDateSuitable
 				{
 					QDateTime DateTime_;
-			
+
 					IsDateSuitable (const QDateTime& dt)
 					: DateTime_ (dt)
 					{
 					}
-			
+
 					bool operator() (const Item_ptr& it)
 					{
 						return it->PubDate_ < DateTime_;
 					}
 				};
 			};
-			
+
 			namespace
 			{
 				class FileRemoval : public QFile
@@ -1009,7 +1009,7 @@ namespace LeechCraft
 							: QFile (name)
 						{
 						}
-			
+
 						virtual ~FileRemoval ()
 						{
 							close ();
@@ -1017,7 +1017,7 @@ namespace LeechCraft
 						}
 				};
 			};
-			
+
 			void Core::handleJobFinished (int id)
 			{
 				if (!PendingJobs_.contains (id))
@@ -1032,7 +1032,7 @@ namespace LeechCraft
 				PendingJob pj = PendingJobs_ [id];
 				PendingJobs_.remove (id);
 				ID2Downloader_.remove (id);
-			
+
 				FileRemoval file (pj.Filename_);
 				if (!file.open (QIODevice::ReadOnly))
 				{
@@ -1041,13 +1041,14 @@ namespace LeechCraft
 				}
 				if (!file.size ())
 				{
-					ErrorNotification (tr ("Feed error"),
-							tr ("Downloaded file from url %1 has null size.").arg (pj.URL_));
+					if (pj.Role_ != PendingJob::RFeedExternalData)
+						ErrorNotification (tr ("Feed error"),
+								tr ("Downloaded file from url %1 has null size.").arg (pj.URL_));
 					return;
 				}
-			
+
 				IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
-			
+
 				if (pj.Role_ == PendingJob::RFeedUpdated &&
 						feedId == -1)
 				{
@@ -1055,7 +1056,7 @@ namespace LeechCraft
 							tr ("Feed with url %1 not found.").arg (pj.URL_));
 					return;
 				}
-			
+
 				channels_container_t channels;
 				if (pj.Role_ != PendingJob::RFeedExternalData)
 				{
@@ -1075,7 +1076,7 @@ namespace LeechCraft
 								.arg (pj.URL_));
 						return;
 					}
-			
+
 					Parser *parser = ParserFactory::Instance ().Return (doc);
 					if (!parser)
 					{
@@ -1098,7 +1099,7 @@ namespace LeechCraft
 				UpdateUnreadItemsNumber ();
 				scheduleSave ();
 			}
-			
+
 			void Core::handleJobRemoved (int id)
 			{
 				if (PendingJobs_.contains (id))
@@ -1109,7 +1110,7 @@ namespace LeechCraft
 				if (PendingOPMLs_.contains (id))
 					PendingOPMLs_.remove (id);
 			}
-			
+
 			void Core::handleJobError (int id, IDownload::Error ie)
 			{
 				if (!PendingJobs_.contains (id))
@@ -1119,10 +1120,10 @@ namespace LeechCraft
 								tr ("Unable to download the OPML file."));
 					return;
 				}
-			
+
 				PendingJob pj = PendingJobs_ [id];
 				FileRemoval file (pj.Filename_);
-			
+
 				if ((!XmlSettingsManager::Instance ()->property ("BeSilent").toBool () &&
 							pj.Role_ == PendingJob::RFeedUpdated) ||
 						pj.Role_ == PendingJob::RFeedAdded)
@@ -1149,7 +1150,7 @@ namespace LeechCraft
 				PendingJobs_.remove (id);
 				ID2Downloader_.remove (id);
 			}
-			
+
 			void Core::updateFeeds ()
 			{
 				ids_t ids;
@@ -1173,7 +1174,7 @@ namespace LeechCraft
 								<< id
 								<< e.what ();
 					}
-			
+
 					UpdateFeed (id);
 				}
 				XmlSettingsManager::Instance ()->
@@ -1181,7 +1182,7 @@ namespace LeechCraft
 				UpdateTimer_->start (XmlSettingsManager::Instance ()->
 						property ("UpdateInterval").toInt () * 60 * 1000);
 			}
-			
+
 			void Core::fetchExternalFile (const QString& url, const QString& where)
 			{
 				LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
@@ -1191,7 +1192,7 @@ namespace LeechCraft
 							LeechCraft::DoNotSaveInHistory |
 							LeechCraft::NotPersistent |
 							LeechCraft::DoNotAnnounceEntity);
-			
+
 				PendingJob pj =
 				{
 					PendingJob::RFeedExternalData,
@@ -1199,7 +1200,7 @@ namespace LeechCraft
 					where,
 					QStringList ()
 				};
-			
+
 				int id = -1;
 				QObject *pr;
 				emit delegateEntity (e, &id, &pr);
@@ -1209,42 +1210,42 @@ namespace LeechCraft
 							tr ("Could not find plugin to download external file %1.").arg (url));
 					return;
 				}
-			
+
 				HandleProvider (pr, id);
 				PendingJobs_ [id] = pj;
 			}
-			
+
 			void Core::saveSettings ()
 			{
 				SaveScheduled_ = false;
 				SyncPools ();
 			}
-			
+
 			void Core::handleChannelDataUpdated (Channel_ptr channel)
 			{
 				ChannelShort cs = channel->ToShort ();
-			
+
 				cs.Unread_ = StorageBackend_->GetUnreadItems (cs.ChannelID_);
 				ChannelsModel_->UpdateChannelData (cs);
 				UpdateUnreadItemsNumber ();
 			}
-			
+
 			void Core::updateIntervalChanged ()
 			{
 				UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->
 						property ("UpdateInterval").toInt () * 60 * 1000);
 			}
-			
+
 			void Core::showIconInTrayChanged ()
 			{
 				UpdateUnreadItemsNumber ();
 			}
-			
+
 			void Core::handleSslError (QNetworkReply *reply)
 			{
 				reply->ignoreSslErrors ();
 			}
-			
+
 			void Core::handleCustomUpdates ()
 			{
 				ids_t ids;
@@ -1273,19 +1274,19 @@ namespace LeechCraft
 					// It's handled by normal timer.
 					if (!ut)
 						continue;
-			
+
 					if (!Updates_.contains (id) ||
 							(Updates_ [id].isValid () &&
 							 Updates_ [id].secsTo (current) / 60 > ut))
 						UpdateFeed (id);
 				}
 			}
-			
+
 			void Core::UpdateUnreadItemsNumber () const
 			{
 				emit unreadNumberChanged (ChannelsModel_->GetUnreadItemsNumber ());
 			}
-			
+
 			void Core::FetchPixmap (const Channel_ptr& channel)
 			{
 				if (QUrl (channel->PixmapURL_).isValid () &&
@@ -1307,13 +1308,13 @@ namespace LeechCraft
 					PendingJob2ExternalData_ [channel->PixmapURL_] = data;
 				}
 			}
-			
+
 			void Core::FetchFavicon (const Channel_ptr& channel)
 			{
 				QUrl oldUrl (channel->Link_);
 				oldUrl.setPath ("/favicon.ico");
 				QString iconUrl = oldUrl.toString ();
-			
+
 				ExternalData iconData;
 				iconData.Type_ = ExternalData::TIcon;
 				iconData.RelatedChannel_ = channel;
@@ -1329,7 +1330,7 @@ namespace LeechCraft
 				}
 				PendingJob2ExternalData_ [iconUrl] = iconData;
 			}
-			
+
 			void Core::HandleExternalData (const QString& url, const QFile& file)
 			{
 				ExternalData data = PendingJob2ExternalData_.take (url);
@@ -1361,18 +1362,18 @@ namespace LeechCraft
 				{
 				}
 			}
-			
+
 			namespace
 			{
 				struct ChannelFinder
 				{
 					const Channel_ptr& Channel_;
-			
+
 					ChannelFinder (const Channel_ptr& channel)
 					: Channel_ (channel)
 					{
 					}
-			
+
 					bool operator() (const Channel_ptr& obj)
 					{
 						return *Channel_ == *obj;
@@ -1402,7 +1403,7 @@ namespace LeechCraft
 					channels [i]->Tags_ = pj.Tags_;
 					ChannelsModel_->AddChannel (channels [i]->ToShort ());
 					StorageBackend_->AddChannel (channels [i]);
-		
+
 					std::for_each (channels [i]->Items_.begin (),
 							channels [i]->Items_.end (),
 							boost::bind (&RegexpMatcherManager::HandleItem,
@@ -1416,7 +1417,7 @@ namespace LeechCraft
 					FetchFavicon (channels [i]);
 				}
 			}
-			
+
 			void Core::HandleFeedUpdated (const channels_container_t& channels,
 					const Core::PendingJob& pj)
 			{
@@ -1611,13 +1612,13 @@ namespace LeechCraft
 							days, ipc);
 				}
 			}
-			
+
 			void Core::MarkChannel (const QModelIndex& i, bool state)
 			{
 				try
 				{
 					ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
-			
+
 					StorageBackend_->ToggleChannelUnread (cs.ChannelID_, state);
 				}
 				catch (const std::exception& e)
@@ -1628,7 +1629,7 @@ namespace LeechCraft
 							tr ("Could not mark channel"));
 				}
 			}
-			
+
 			void Core::UpdateFeed (const IDType_t& id)
 			{
 				QString url = StorageBackend_->GetFeed (id)->URL_;
@@ -1667,7 +1668,7 @@ namespace LeechCraft
 							LeechCraft::DoNotSaveInHistory |
 							LeechCraft::NotPersistent |
 							LeechCraft::DoNotAnnounceEntity);
-			
+
 				PendingJob pj =
 				{
 					PendingJob::RFeedUpdated,
@@ -1675,7 +1676,7 @@ namespace LeechCraft
 					filename,
 					QStringList ()
 				};
-			
+
 				int jobId = -1;
 				QObject *pr;
 				emit delegateEntity (e, &jobId, &pr);
@@ -1687,17 +1688,17 @@ namespace LeechCraft
 								.arg (url), LeechCraft::PCritical_));
 					return;
 				}
-			
+
 				HandleProvider (pr, jobId);
 				PendingJobs_ [jobId] = pj;
 				Updates_ [id] = QDateTime::currentDateTime ();
 			}
-			
+
 			void Core::HandleProvider (QObject *provider, int id)
 			{
 				if (Downloaders_.contains (provider))
 					return;
-			
+
 				Downloaders_ << provider;
 				connect (provider,
 						SIGNAL (jobFinished (int)),
@@ -1714,7 +1715,7 @@ namespace LeechCraft
 
 				ID2Downloader_ [id] = provider;
 			}
-			
+
 			void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const
 			{
 				Entity e = Util::MakeNotification (h, body, PCritical_);
