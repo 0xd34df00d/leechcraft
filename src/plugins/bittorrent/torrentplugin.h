@@ -73,7 +73,6 @@ namespace LeechCraft
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;
 				std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
 				std::auto_ptr<QTime> LastPeersUpdate_;
-				std::auto_ptr<RepresentationModel> FilterModel_;
 				bool TorrentSelectionChanged_;
 				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsAddDiaCompleter_;
 				std::auto_ptr<TabWidget> TabWidget_;
@@ -198,7 +197,6 @@ namespace LeechCraft
 				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 			private:
 				void SetupCore ();
-				void SetupTorrentView ();
 				void SetupStuff ();
 				void SetupActions ();
 			signals:

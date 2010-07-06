@@ -40,7 +40,6 @@
 #include "newtorrentwizard.h"
 #include "xmlsettingsmanager.h"
 #include "movetorrentfiles.h"
-#include "representationmodel.h"
 #include "trackerschanger.h"
 #include "exportdialog.h"
 #include "wizardgenerator.h"
@@ -61,77 +60,76 @@ namespace LeechCraft
 	{
 		namespace BitTorrent
 		{
-			
+
 			void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (InstallTranslator ("bittorrent"));
 				Core::Instance ()->SetProxy (proxy);
 				SetupCore ();
-				SetupTorrentView ();
 				SetupStuff ();
-			
+
 				setActionsEnabled ();
 			}
 
 			void TorrentPlugin::SecondInit ()
 			{
 			}
-			
+
 			TorrentPlugin::~TorrentPlugin ()
 			{
 			}
-			
+
 			QString TorrentPlugin::GetName () const
 			{
 				return "BitTorrent";
 			}
-			
+
 			QString TorrentPlugin::GetInfo () const
 			{
 				return tr ("Full-featured BitTorrent client.");
 			}
-			
+
 			QStringList TorrentPlugin::Provides () const
 			{
 				return QStringList ("bittorrent") << "resume" << "remoteable";
 			}
-			
+
 			QStringList TorrentPlugin::Needs () const
 			{
 				return QStringList ();
 			}
-			
+
 			QStringList TorrentPlugin::Uses () const
 			{
 				return QStringList ();
 			}
-			
+
 			void TorrentPlugin::SetProvider (QObject*, const QString&)
 			{
 			}
-			
+
 			void TorrentPlugin::Release ()
 			{
 				Core::Instance ()->Release ();
 				XmlSettingsManager::Instance ()->Release ();
 				XmlSettingsDialog_.reset ();
 			}
-			
+
 			QIcon TorrentPlugin::GetIcon () const
 			{
-				return QIcon (":/resources/images/bittorrent.svg"); 
+				return QIcon (":/resources/images/bittorrent.svg");
 			}
-			
+
 			qint64 TorrentPlugin::GetDownloadSpeed () const
 			{
 				return Core::Instance ()->GetOverallStats ().download_rate;
 			}
-			
+
 			qint64 TorrentPlugin::GetUploadSpeed () const
 			{
 				return Core::Instance ()->GetOverallStats ().upload_rate;
 			}
-			
+
 			void TorrentPlugin::StartAll ()
 			{
 				int numTorrents = Core::Instance ()->columnCount (QModelIndex ());
@@ -139,19 +137,19 @@ namespace LeechCraft
 					Core::Instance ()->ResumeTorrent (i);
 				setActionsEnabled ();
 			}
-			
+
 			void TorrentPlugin::StopAll ()
 			{
 				int numTorrents = Core::Instance ()->columnCount (QModelIndex ());
 				for (int i = 0; i < numTorrents; ++i)
 					Core::Instance ()->PauseTorrent (i);
 			}
-			
+
 			bool TorrentPlugin::CouldDownload (const Entity& e) const
 			{
 				return Core::Instance ()->CouldDownload (e);
 			}
-			
+
 			int TorrentPlugin::AddJob (Entity e)
 			{
 				QString suggestedFname;
@@ -168,7 +166,7 @@ namespace LeechCraft
 								GetTagsManager ()->Split (at))
 							tags << Core::Instance ()->GetProxy ()->
 								GetTagsManager ()->GetID (tag);
-				
+
 						QList<QPair<QString, QString> > queryItems = resource.queryItems ();
 						for (QList<QPair<QString, QString> >::const_iterator i = queryItems.begin (),
 								end = queryItems.end (); i != end; ++i)
@@ -180,7 +178,7 @@ namespace LeechCraft
 									tags += Core::Instance ()->GetProxy ()->
 										GetTagsManager ()->GetID (hr);
 							}
-				
+
 						return Core::Instance ()->AddMagnet (resource.toString (),
 								e.Location_,
 								tags,
@@ -189,7 +187,7 @@ namespace LeechCraft
 					else if (resource.scheme () == "file")
 						suggestedFname = resource.toLocalFile ();
 				}
-			
+
 				QByteArray entity = e.Entity_.toByteArray ();
 
 				QFile file (suggestedFname);
@@ -209,7 +207,7 @@ namespace LeechCraft
 				AddTorrentDialog_->SetFilename (suggestedFname);
 				if (!e.Location_.isEmpty ())
 					AddTorrentDialog_->SetSavePath (e.Location_);
-			
+
 				QString path;
 				QStringList tags = e.Additional_ [" Tags"].toStringList ();
 				QVector<bool> files;
@@ -222,7 +220,7 @@ namespace LeechCraft
 
 					if (AddTorrentDialog_->exec () == QDialog::Rejected)
 						return -1;
-			
+
 					fname = AddTorrentDialog_->GetFilename (),
 					path = AddTorrentDialog_->GetSavePath ();
 					tryLive = AddTorrentDialog_->GetTryLive ();
@@ -269,66 +267,64 @@ namespace LeechCraft
 			{
 				Core::Instance ()->KillTask (id);
 			}
-			
+
 			QAbstractItemModel* TorrentPlugin::GetRepresentation () const
 			{
-				return FilterModel_.get ();
+				return Core::Instance ();
 			}
-			
+
 			void TorrentPlugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& si, const QModelIndex&)
 			{
-				QModelIndex item = Core::Instance ()->GetProxy ()->MapToSource (si);
-				if (item.model () != GetRepresentation ())
-					item = QModelIndex ();
+				QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
+				if (mapped.model () != GetRepresentation ())
+					mapped = QModelIndex ();
 
-				QModelIndex mapped = item.isValid () ?
-					FilterModel_->mapToSource (item) : QModelIndex ();
 				Core::Instance ()->SetCurrentTorrent (mapped.row ());
 				if (mapped.isValid ())
 					TabWidget_->InvalidateSelection ();
-			
+
 				setActionsEnabled ();
 			}
-			
+
 			void TorrentPlugin::ImportSettings (const QByteArray& settings)
 			{
 				XmlSettingsDialog_->MergeXml (settings);
 			}
-			
+
 			void TorrentPlugin::ImportData (const QByteArray&)
 			{
 			}
-			
+
 			QByteArray TorrentPlugin::ExportSettings () const
 			{
 				return XmlSettingsDialog_->GetXml ().toUtf8 ();
 			}
-			
+
 			QByteArray TorrentPlugin::ExportData () const
 			{
 				return QByteArray ();
 			}
-			
+
 			void TorrentPlugin::SetTags (int torrent, const QStringList& tags)
 			{
 				Core::Instance ()->UpdateTags (tags, torrent);
 			}
-			
+
 			boost::shared_ptr<XmlSettingsDialog> TorrentPlugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
-			
+
 #define _LC_MERGE(a) EA##a
-			
+
 #define _LC_SINGLE(a) \
 				case _LC_MERGE(a): \
 					a->setShortcut (shortcut); \
 					break;
-			
+
 #define _LC_TRAVERSER(z,i,array) \
 				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
-			
+
 #define _LC_EXPANDER(Names) \
 				switch (name) \
 				{ \
@@ -356,7 +352,7 @@ namespace LeechCraft
 						(Export_)
 						(MakeMagnetLink_));
 			}
-			
+
 #define _L(a) result [EA##a] = ActionInfo (a->text (), \
 					a->shortcut (), a->icon ())
 			QMap<int, ActionInfo> TorrentPlugin::GetActionInfo () const
@@ -397,13 +393,13 @@ namespace LeechCraft
 				result += OpenMultipleTorrents_.get ();
 				return result;
 			}
-			
+
 			void TorrentPlugin::on_OpenTorrent__triggered ()
 			{
 				AddTorrentDialog_->Reinit ();
 				if (AddTorrentDialog_->exec () == QDialog::Rejected)
 					return;
-			
+
 				QString filename = AddTorrentDialog_->GetFilename (),
 						path = AddTorrentDialog_->GetSavePath ();
 				bool tryLive = AddTorrentDialog_->GetTryLive ();
@@ -420,20 +416,20 @@ namespace LeechCraft
 						tp);
 				setActionsEnabled ();
 			}
-			
+
 			void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 			{
 				AddMultipleTorrents dialog (Core::Instance ()->GetProxy ()->GetMainWindow ());
 				std::auto_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
 				dialog.GetEdit ()->AddSelector ();
-			
+
 				if (dialog.exec () == QDialog::Rejected)
 					return;
-			
+
 				TaskParameters tp = FromUserInitiated;
 				if (dialog.GetAddType () != Core::Started)
 					tp |= NoAutostart;
-			
+
 				QString savePath = dialog.GetSaveDirectory (),
 						openPath = dialog.GetOpenDirectory ();
 				QDir dir (openPath);
@@ -462,7 +458,7 @@ namespace LeechCraft
 				Q_FOREACH (pair, filter)
 					Core::Instance ()->BanPeers (pair.first, pair.second);
 			}
-			
+
 			void TorrentPlugin::on_CreateTorrent__triggered ()
 			{
 				std::auto_ptr<NewTorrentWizard> wizard (new NewTorrentWizard (Core::Instance ()->GetProxy ()->GetMainWindow ()));
@@ -490,7 +486,7 @@ namespace LeechCraft
 				{
 					QModelIndex mapped = Core::Instance ()->GetProxy ()->MapToSource (si);
 					if (mapped.isValid () &&
-							mapped.model () == FilterModel_.get ())
+							mapped.model () == Core::Instance ())
 						rows << mapped.row ();
 				}
 
@@ -502,7 +498,7 @@ namespace LeechCraft
 
 				std::sort (rows.begin (), rows.end (),
 						std::greater<int> ());
-			
+
 				Q_FOREACH (int row, rows)
 					Core::Instance ()->RemoveTorrent (row);
 				TabWidget_->InvalidateSelection ();
@@ -528,7 +524,7 @@ namespace LeechCraft
 					Core::Instance ()->ResumeTorrent (Core::Instance ()->GetProxy ()->MapToSource (si).row ());
 				setActionsEnabled ();
 			}
-			
+
 			void TorrentPlugin::on_Stop__triggered ()
 			{
 				QModelIndexList sis;
@@ -548,7 +544,7 @@ namespace LeechCraft
 					Core::Instance ()->PauseTorrent (Core::Instance ()->GetProxy ()->MapToSource (si).row ());
 				setActionsEnabled ();
 			}
-			
+
 			namespace
 			{
 				std::deque<int> GetSelections (QAbstractItemModel *model,
@@ -578,7 +574,7 @@ namespace LeechCraft
 					return selections;
 				}
 			};
-			
+
 			void TorrentPlugin::on_MoveUp__triggered ()
 			{
 				QModelIndexList sis;
@@ -619,7 +615,7 @@ namespace LeechCraft
 					QModelIndex sibling = si.sibling (si.row () - 1, si.column ());
 					if (Core::Instance ()->GetProxy ()->MapToSource (sibling).model () != GetRepresentation ())
 						continue;
-					
+
 					selection.select (sibling, sibling);
 				}
 
@@ -627,7 +623,7 @@ namespace LeechCraft
 					sel->select (selection, QItemSelectionModel::Rows |
 							QItemSelectionModel::SelectCurrent);
 			}
-			
+
 			void TorrentPlugin::on_MoveDown__triggered ()
 			{
 				QModelIndexList sis;
@@ -676,7 +672,7 @@ namespace LeechCraft
 					sel->select (selection, QItemSelectionModel::Rows |
 							QItemSelectionModel::SelectCurrent);
 			}
-			
+
 			void TorrentPlugin::on_MoveToTop__triggered ()
 			{
 				try
@@ -691,7 +687,7 @@ namespace LeechCraft
 					return;
 				}
 			}
-			
+
 			void TorrentPlugin::on_MoveToBottom__triggered ()
 			{
 				try
@@ -706,7 +702,7 @@ namespace LeechCraft
 					return;
 				}
 			}
-			
+
 			void TorrentPlugin::on_ForceReannounce__triggered ()
 			{
 				try
@@ -721,7 +717,7 @@ namespace LeechCraft
 					return;
 				}
 			}
-			
+
 			void TorrentPlugin::on_ForceRecheck__triggered ()
 			{
 				try
@@ -736,7 +732,7 @@ namespace LeechCraft
 					return;
 				}
 			}
-			
+
 			void TorrentPlugin::on_ChangeTrackers__triggered ()
 			{
 				QModelIndexList sis;
@@ -788,7 +784,7 @@ namespace LeechCraft
 						Core::Instance ()->SetTrackers (changer.GetTrackers (),
 								Core::Instance ()->GetProxy ()->MapToSource (si).row ());
 			}
-			
+
 			void TorrentPlugin::on_MoveFiles__triggered ()
 			{
 				QString oldDir = Core::Instance ()->GetTorrentDirectory ();
@@ -798,7 +794,7 @@ namespace LeechCraft
 				QString newDir = mtf.GetNewLocation ();
 				if (oldDir == newDir)
 					return;
-			
+
 				if (!Core::Instance ()->MoveTorrentFiles (newDir))
 				{
 					QString text = tr ("Failed to move torrent's files from %1 to %2")
@@ -823,21 +819,21 @@ namespace LeechCraft
 				dia->resize (700, dia->height ());
 				dia->show ();
 			}
-			
+
 			void TorrentPlugin::on_Import__triggered ()
 			{
 			}
-			
+
 			void TorrentPlugin::on_Export__triggered ()
 			{
 				ExportDialog dia;
 				if (dia.exec () == QDialog::Rejected)
 					return;
-			
+
 				bool settings = dia.GetSettings ();
 				bool active = dia.GetActive ();
 				QString where = dia.GetLocation ();
-			
+
 				Core::Instance ()->Export (where, settings, active);
 			}
 
@@ -849,7 +845,7 @@ namespace LeechCraft
 				int up = UpSelectorAction_->CurrentData ();
 				TabWidget_->SetOverallUploadRateController (up);
 			}
-			
+
 			void TorrentPlugin::setActionsEnabled ()
 			{
 				int torrent = Core::Instance ()->GetCurrentTorrent ();
@@ -861,12 +857,12 @@ namespace LeechCraft
 				Resume_->setEnabled (isValid);
 				ForceReannounce_->setEnabled (isValid);
 			}
-			
+
 			void TorrentPlugin::showError (QString e)
 			{
 				emit gotEntity (Util::MakeNotification ("BitTorrent", e, PCritical_));
 			}
-			
+
 			void TorrentPlugin::SetupCore ()
 			{
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
@@ -897,26 +893,15 @@ namespace LeechCraft
 						SIGNAL (taskRemoved (int)),
 						this,
 						SIGNAL (jobRemoved (int)));
-			
+
 				Core::Instance ()->SetWidgets (Toolbar_.get (), TabWidget_.get ());
 			}
-			
-			void TorrentPlugin::SetupTorrentView ()
-			{
-				FilterModel_.reset (new RepresentationModel);
-				FilterModel_->setSourceModel (Core::Instance ());
-				connect (Core::Instance (),
-						SIGNAL (dataChanged (const QModelIndex&,
-								const QModelIndex&)),
-						FilterModel_.get (),
-						SLOT (invalidate ()));
-			}
-			
+
 			void TorrentPlugin::SetupStuff ()
 			{
 				TagsAddDiaCompleter_.reset (new TagsCompleter (AddTorrentDialog_->GetEdit ()));
 				AddTorrentDialog_->GetEdit ()->AddSelector ();
-			
+
 				OverallStatsUpdateTimer_.reset (new QTimer (this));
 				connect (OverallStatsUpdateTimer_.get (),
 						SIGNAL (timeout ()),
@@ -924,9 +909,9 @@ namespace LeechCraft
 						SLOT (updateTorrentStats ()));
 				connect (OverallStatsUpdateTimer_.get (),
 						SIGNAL (timeout ()),
-						FilterModel_.get (),
-						SLOT (invalidate ()));
-				OverallStatsUpdateTimer_->start (500);
+						Core::Instance (),
+						SLOT (updateRows ()));
+				OverallStatsUpdateTimer_->start (2000);
 
 				FastSpeedControlWidget *fsc = new FastSpeedControlWidget ();
 				XmlSettingsDialog_->SetCustomWidget ("FastSpeedControl", fsc);
@@ -945,12 +930,12 @@ namespace LeechCraft
 					RegisterObject ("EnableFastSpeedControl",
 						UpSelectorAction_, "handleSpeedsChanged");
 			}
-			
+
 			void TorrentPlugin::SetupActions ()
 			{
 				Toolbar_.reset (new QToolBar ());
 				Toolbar_->setWindowTitle ("BitTorrent");
-			
+
 				OpenTorrent_.reset (new QAction (tr ("Open torrent..."),
 							Toolbar_.get ()));
 				OpenTorrent_->setShortcut (Qt::Key_Insert);
@@ -959,7 +944,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_OpenTorrent__triggered ()));
-			
+
 				CreateTorrent_.reset (new QAction (tr ("Create torrent..."),
 							Toolbar_.get ()));
 				CreateTorrent_->setShortcut (tr ("N"));
@@ -968,7 +953,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_CreateTorrent__triggered ()));
-			
+
 				OpenMultipleTorrents_.reset (new QAction (tr ("Open multiple torrents..."),
 						Toolbar_.get ()));
 				OpenMultipleTorrents_->setProperty ("ActionIcon", "torrent_addmulti");
@@ -984,7 +969,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_IPFilter__triggered ()));
-			
+
 				RemoveTorrent_.reset (new QAction (tr ("Remove"),
 							Toolbar_.get ()));
 				RemoveTorrent_->setShortcut (tr ("Del"));
@@ -993,7 +978,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_RemoveTorrent__triggered ()));
-				
+
 				Resume_.reset (new QAction (tr ("Resume"),
 							Toolbar_.get ()));
 				Resume_->setShortcut (tr ("R"));
@@ -1002,7 +987,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_Resume__triggered ()));
-			
+
 				Stop_.reset (new QAction (tr ("Pause"),
 							Toolbar_.get ()));
 				Stop_->setShortcut (tr ("S"));
@@ -1011,7 +996,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_Stop__triggered ()));
-			
+
 				MoveUp_.reset (new QAction (tr ("Move up"),
 							Toolbar_.get ()));
 				MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
@@ -1020,7 +1005,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_MoveUp__triggered ()));
-			
+
 				MoveDown_.reset (new QAction (tr ("Move down"),
 							Toolbar_.get ()));
 				MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
@@ -1029,7 +1014,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_MoveDown__triggered ()));
-			
+
 				MoveToTop_.reset (new QAction (tr ("Move to top"),
 							Toolbar_.get ()));
 				MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
@@ -1038,7 +1023,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_MoveToTop__triggered ()));
-			
+
 				MoveToBottom_.reset (new QAction (tr ("Move to bottom"),
 							Toolbar_.get ()));
 				MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
@@ -1047,7 +1032,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_MoveToBottom__triggered ()));
-			
+
 				ForceReannounce_.reset (new QAction (tr ("Reannounce"),
 							Toolbar_.get ()));
 				ForceReannounce_->setShortcut (tr ("F"));
@@ -1056,7 +1041,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_ForceReannounce__triggered ()));
-				
+
 				ForceRecheck_.reset (new QAction (tr ("Recheck"),
 						Toolbar_.get ()));
 				ForceRecheck_->setProperty ("ActionIcon", "torrent_forcerecheck");
@@ -1064,7 +1049,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_ForceRecheck__triggered ()));
-			
+
 				MoveFiles_.reset (new QAction (tr ("Move files..."),
 							Toolbar_.get ()));
 				MoveFiles_->setShortcut (tr ("M"));
@@ -1073,7 +1058,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_MoveFiles__triggered ()));
-			
+
 				ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
 							Toolbar_.get ()));
 				ChangeTrackers_->setShortcut (tr ("C"));
@@ -1090,7 +1075,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_MakeMagnetLink__triggered ()));
-			
+
 				Import_.reset (new QAction (tr ("Import..."),
 							Toolbar_.get ()));
 				connect (Import_.get (),
@@ -1098,7 +1083,7 @@ namespace LeechCraft
 						this,
 						SLOT (on_Import__triggered ()));
 				Import_->setProperty ("ActionIcon", "torrent_import");
-			
+
 				Export_.reset (new QAction (tr ("Export..."),
 							Toolbar_.get ()));
 				connect (Export_.get (),
@@ -1142,7 +1127,7 @@ namespace LeechCraft
 						SIGNAL (currentIndexChanged (int)),
 						this,
 						SLOT (handleFastSpeedComboboxes ()));
-			
+
 				QMenu *contextMenu = new QMenu (tr ("Torrents actions"));
 				contextMenu->addAction (RemoveTorrent_.get ());
 				contextMenu->addSeparator ();

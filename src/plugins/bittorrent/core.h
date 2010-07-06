@@ -347,6 +347,7 @@ namespace LeechCraft
 				void setDHTSettings ();
 				void setLoggingSettings ();
 				void setScrapeInterval ();
+				void updateRows ();
 			signals:
 				void error (QString) const;
 				void gotEntity (const LeechCraft::Entity&);

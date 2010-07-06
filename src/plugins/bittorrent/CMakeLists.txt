@@ -53,7 +53,6 @@ SET (SRCS
 	peersmodel.cpp
 	filesviewdelegate.cpp
 	movetorrentfiles.cpp
-	representationmodel.cpp
 	trackerschanger.cpp
 	exportdialog.cpp
 	peerstablinker.cpp
@@ -89,7 +88,6 @@ SET (HEADERS
 	peersmodel.h
 	filesviewdelegate.h
 	movetorrentfiles.h
-	representationmodel.h
 	trackerschanger.h
 	exportdialog.h
 	peerstablinker.h
