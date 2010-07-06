@@ -282,6 +282,7 @@ namespace LeechCraft
 
 			void PackagesDelegate::invalidateWidgetPositions ()
 			{
+				SelectableBrowser_->hide ();
 				QTreeView *view = qobject_cast<QTreeView*> (parent ());
 				QAbstractItemModel *model = view->model ();
 				for (int i = 0, rows = model->rowCount ();
