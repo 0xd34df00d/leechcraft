@@ -59,6 +59,8 @@ namespace LeechCraft
 					return lpi.IsInstalled_;
 				case PackagesModel::PMRUpgradable:
 					return lpi.HasNewVersion_;
+				case PackagesModel::PMRVersion:
+					return lpi.Version_;
 				default:
 					return QVariant ();
 				}

@@ -20,9 +20,11 @@
 #define PLUGINS_LACKMAN_PACKAGESDELEGATE_H
 #include <QStyledItemDelegate>
 #include <QPointer>
+#include <QHash>
 #include <plugininterface/selectablebrowser.h>
 
 class QTreeView;
+class QToolButton;
 
 namespace LeechCraft
 {
@@ -36,11 +38,15 @@ namespace LeechCraft
 
 				static const int CPadding;
 				static const int CIconSize;
+				static const int CActionsSize;
 				static const int CTitleSizeDelta;
 				static const int CNumLines;
 
 				mutable QModelIndex CurrentSelection_;
 				mutable QPointer<Util::SelectableBrowser> SelectableBrowser_;
+				mutable QHash<int, QToolButton*> Row2InstallRemove_;
+				mutable QHash<int, QToolButton*> Row2Update_;
+
 				QWidget * const Viewport_;
 			public:
 				PackagesDelegate (QTreeView* = 0);
@@ -52,8 +58,11 @@ namespace LeechCraft
 				int TextHeight (const QStyleOptionViewItem&) const;
 				int CurrentInfoHeight (const QStyleOptionViewItem&) const;
 				void PrepareSelectableBrowser () const;
+				QToolButton* GetInstallRemove (const QModelIndex&) const;
+				QToolButton* GetUpdate (const QModelIndex&) const;
 			public slots:
 				void handleRowChanged (const QModelIndex&, const QModelIndex&);
+				void invalidateWidgetPositions ();
 			};
 		}
 	}

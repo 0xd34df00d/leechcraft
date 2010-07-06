@@ -20,6 +20,9 @@
 #include <QPainter>
 #include <QApplication>
 #include <QTreeView>
+#include <QAction>
+#include <QToolButton>
+#include <QScrollBar>
 #include <QtDebug>
 #include "packagesmodel.h"
 #include "core.h"
@@ -32,21 +35,19 @@ namespace LeechCraft
 		{
 			const int PackagesDelegate::CPadding = 7;
 			const int PackagesDelegate::CIconSize = 32;
+			const int PackagesDelegate::CActionsSize = 32;
 			const int PackagesDelegate::CTitleSizeDelta = 2;
 			const int PackagesDelegate::CNumLines = 3;
-
-			namespace
-			{
-				int GetLongDescrHeight ()
-				{
-					return 400;
-				}
-			}
 
 			PackagesDelegate::PackagesDelegate (QTreeView *parent)
 			: QStyledItemDelegate (parent)
 			, Viewport_ (parent->viewport ())
 			{
+				connect (parent->verticalScrollBar (),
+						SIGNAL (valueChanged (int)),
+						this,
+						SLOT (invalidateWidgetPositions ()),
+						Qt::QueuedConnection);
 			}
 
 			void PackagesDelegate::paint (QPainter *painter,
@@ -68,6 +69,7 @@ namespace LeechCraft
 
 				QString title = index.data (Qt::DisplayRole).toString ();
 				QString shortDescr = index.data (PackagesModel::PMRShortDescription).toString ();
+				QString version = index.data (PackagesModel::PMRVersion).toString ();
 				QStringList tags = index.data (PackagesModel::PMRTags).toStringList ();
 				QColor fgColor = selected ?
 						option.palette.color (QPalette::HighlightedText) :
@@ -110,13 +112,29 @@ namespace LeechCraft
 				QFont tagsFont = option.font;
 				tagsFont.setItalic (true);
 				p.setFont (tagsFont);
+				if (selected)
+					p.drawText (leftPos, shiftFromTop,
+							textWidth, textHeight,
+							Qt::AlignBottom | Qt::AlignLeft,
+							tr ("Version %1 available").arg (version));
 				p.drawText (leftPos, shiftFromTop,
 						textWidth, textHeight,
 						Qt::AlignBottom | Qt::AlignRight, tags.join ("; "));
 				style->drawPrimitive (QStyle::PE_FrameGroupBox, &option, &p);
-				p.end ();
 
 				shiftFromTop += textHeight;
+
+				p.end ();
+
+				QToolButton *instRem = GetInstallRemove (index);
+				instRem->move (leftPos, shiftFromTop);
+				instRem->show ();
+
+				QToolButton *update = GetUpdate (index);
+				update->move (leftPos + instRem->width () + CPadding, shiftFromTop);
+				update->show ();
+
+				shiftFromTop += CActionsSize;
 
 				if (selected)
 				{
@@ -142,7 +160,7 @@ namespace LeechCraft
 					const QModelIndex& index) const
 			{
 				QSize result = index.data (Qt::SizeHintRole).toSize ();
-				result.rheight () = TitleHeight (option) + TextHeight (option) * 2 + CPadding * 2;
+				result.rheight () = TitleHeight (option) + TextHeight (option) * 2 + CActionsSize + CPadding * 2;
 				if (index == CurrentSelection_)
 					result.rheight () += CurrentInfoHeight (option);
 				return result;
@@ -165,7 +183,7 @@ namespace LeechCraft
 
 			int PackagesDelegate::CurrentInfoHeight (const QStyleOptionViewItem& option) const
 			{
-				return 300;
+				return 500;
 			}
 
 			void PackagesDelegate::PrepareSelectableBrowser () const
@@ -182,6 +200,77 @@ namespace LeechCraft
 				SelectableBrowser_->SetNavBarVisible (false);
 			}
 
+			QToolButton* PackagesDelegate::GetInstallRemove (const QModelIndex& index) const
+			{
+				int row = index.row ();
+				if (!Row2InstallRemove_.contains (row))
+				{
+					QAction *action = new QAction (Viewport_);
+					connect (action,
+							SIGNAL (triggered ()),
+							&Core::Instance (),
+							SLOT (installRemoveRequested ()));
+
+					QToolButton *toolButton = new QToolButton (Viewport_);
+					toolButton->resize (CActionsSize, CActionsSize);
+					toolButton->setDefaultAction (action);
+					Row2InstallRemove_ [row] = toolButton;
+				}
+
+				QToolButton *button = Row2InstallRemove_ [row];
+
+				bool installed = index.data (PackagesModel::PMRInstalled).toBool ();
+				QString label;
+				QString iconName;
+				if (installed)
+				{
+					label = tr ("Remove");
+					iconName = "remove";
+				}
+				else
+				{
+					label = tr ("Install");
+					iconName = "addjob";
+				}
+
+				QAction *action = button->defaultAction ();
+				action->setText (label);
+				action->setIcon (Core::Instance ().GetProxy ()->GetIcon (iconName));
+				action->setData (index.data (PackagesModel::PMRPackageID));
+
+				return button;
+			}
+
+			QToolButton* PackagesDelegate::GetUpdate (const QModelIndex& index) const
+			{
+				int row = index.row ();
+				if (!Row2Update_.contains (row))
+				{
+					QAction *action = new QAction (Core::Instance ()
+								.GetProxy ()->GetIcon ("update"),
+							tr ("Update"),
+							Viewport_);
+					connect (action,
+							SIGNAL (triggered ()),
+							&Core::Instance (),
+							SLOT (updateRequested ()));
+
+					QToolButton *toolButton = new QToolButton (Viewport_);
+					toolButton->resize (CActionsSize, CActionsSize);
+					toolButton->setDefaultAction (action);
+					Row2Update_ [row] = toolButton;
+				}
+
+				QToolButton *button = Row2Update_ [row];
+				QAction *action = button->defaultAction ();
+
+				bool upgradable = index.data (PackagesModel::PMRUpgradable).toBool ();
+				action->setEnabled (upgradable);
+				action->setData (index.data (PackagesModel::PMRPackageID));
+
+				return button;
+			}
+
 			void PackagesDelegate::handleRowChanged (const QModelIndex& current, const QModelIndex& previous)
 			{
 				CurrentSelection_ = current;
@@ -189,6 +278,15 @@ namespace LeechCraft
 					SelectableBrowser_->hide ();
 				emit sizeHintChanged (previous);
 				emit sizeHintChanged (current);
+			}
+
+			void PackagesDelegate::invalidateWidgetPositions ()
+			{
+				QTreeView *view = qobject_cast<QTreeView*> (parent ());
+				QAbstractItemModel *model = view->model ();
+				for (int i = 0, rows = model->rowCount ();
+						i < rows; ++i)
+					emit sizeHintChanged (model->index (i, 0));
 			}
 		}
 	}
