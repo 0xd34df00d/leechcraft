@@ -22,7 +22,9 @@
 #include <QTreeView>
 #include <QAction>
 #include <QToolButton>
+#include <QTimer>
 #include <QScrollBar>
+#include <QHBoxLayout>
 #include <QtDebug>
 #include "packagesmodel.h"
 #include "core.h"
@@ -126,25 +128,6 @@ namespace LeechCraft
 
 				p.end ();
 
-				QToolButton *instRem = GetInstallRemove (index);
-				instRem->move (leftPos, shiftFromTop);
-				instRem->show ();
-
-				QToolButton *update = GetUpdate (index);
-				update->move (leftPos + instRem->width () + CPadding, shiftFromTop);
-				update->show ();
-
-				shiftFromTop += CActionsSize;
-
-				if (selected)
-				{
-					PrepareSelectableBrowser ();
-					SelectableBrowser_->SetHtml (index.data (PackagesModel::PMRLongDescription).toString ());
-					SelectableBrowser_->move (leftPos, shiftFromTop);
-					SelectableBrowser_->resize (textWidth, CurrentInfoHeight (option));
-					SelectableBrowser_->show ();
-				}
-
 				painter->drawPixmap (option.rect, pixmap);
 
 				icon.paint (painter,
@@ -154,15 +137,51 @@ namespace LeechCraft
 						r.top () + CPadding,
 						CIconSize, CIconSize,
 						Qt::AlignCenter, QIcon::Normal);
+
+				QWidget *layoutWidget = GetLayout (index);
+				QPoint actionPos (leftPos, shiftFromTop);
+				if (layoutWidget->pos () != actionPos)
+					layoutWidget->move (actionPos);
+				if (!layoutWidget->isVisible ())
+					layoutWidget->show ();
+
+				shiftFromTop += CActionsSize + CPadding;
+
+				if (selected)
+				{
+					PrepareSelectableBrowser ();
+					SelectableBrowser_->SetHtml (index.data (PackagesModel::PMRLongDescription).toString ());
+
+					QPoint browserPos (leftPos, shiftFromTop);
+					if (SelectableBrowser_->pos () != browserPos)
+						SelectableBrowser_->move (browserPos);
+
+					QSize browserSize (textWidth, CurrentInfoHeight (option));
+					if (SelectableBrowser_->size () != browserSize)
+						SelectableBrowser_->resize (browserSize);
+
+					if (!SelectableBrowser_->isVisible ())
+						SelectableBrowser_->show ();
+				}
 			}
 
 			QSize PackagesDelegate::sizeHint (const QStyleOptionViewItem& option,
 					const QModelIndex& index) const
 			{
 				QSize result = index.data (Qt::SizeHintRole).toSize ();
-				result.rheight () = TitleHeight (option) + TextHeight (option) * 2 + CActionsSize + CPadding * 2;
+
+				// One padding from the top, one from the bottom, and
+				// one between webview and install/remove actions (if
+				// selected).
+				result.rheight () = TitleHeight (option) +
+						TextHeight (option) * 2 +
+						CActionsSize + CPadding * 2;
 				if (index == CurrentSelection_)
+				{
 					result.rheight () += CurrentInfoHeight (option);
+					result.rheight () += CPadding;
+				}
+
 				return result;
 			}
 
@@ -183,7 +202,7 @@ namespace LeechCraft
 
 			int PackagesDelegate::CurrentInfoHeight (const QStyleOptionViewItem& option) const
 			{
-				return 500;
+				return 200;
 			}
 
 			void PackagesDelegate::PrepareSelectableBrowser () const
@@ -200,7 +219,7 @@ namespace LeechCraft
 				SelectableBrowser_->SetNavBarVisible (false);
 			}
 
-			QToolButton* PackagesDelegate::GetInstallRemove (const QModelIndex& index) const
+			QWidget* PackagesDelegate::GetInstallRemove (const QModelIndex& index) const
 			{
 				int row = index.row ();
 				if (!Row2InstallRemove_.contains (row))
@@ -211,7 +230,7 @@ namespace LeechCraft
 							&Core::Instance (),
 							SLOT (installRemoveRequested ()));
 
-					QToolButton *toolButton = new QToolButton (Viewport_);
+					QToolButton *toolButton = new QToolButton ();
 					toolButton->resize (CActionsSize, CActionsSize);
 					toolButton->setDefaultAction (action);
 					Row2InstallRemove_ [row] = toolButton;
@@ -241,7 +260,7 @@ namespace LeechCraft
 				return button;
 			}
 
-			QToolButton* PackagesDelegate::GetUpdate (const QModelIndex& index) const
+			QWidget* PackagesDelegate::GetUpdate (const QModelIndex& index) const
 			{
 				int row = index.row ();
 				if (!Row2Update_.contains (row))
@@ -255,7 +274,7 @@ namespace LeechCraft
 							&Core::Instance (),
 							SLOT (updateRequested ()));
 
-					QToolButton *toolButton = new QToolButton (Viewport_);
+					QToolButton *toolButton = new QToolButton ();
 					toolButton->resize (CActionsSize, CActionsSize);
 					toolButton->setDefaultAction (action);
 					Row2Update_ [row] = toolButton;
@@ -271,11 +290,34 @@ namespace LeechCraft
 				return button;
 			}
 
+			QWidget* PackagesDelegate::GetLayout (const QModelIndex& index) const
+			{
+				if (!Row2Layout_.contains (index.row ()))
+				{
+					QWidget *instRem = GetInstallRemove (index);
+					QWidget *update = GetUpdate (index);
+
+					QWidget *result = new QWidget (Viewport_);
+
+					QHBoxLayout *layout = new QHBoxLayout (result);
+					layout->addWidget (instRem);
+					layout->addWidget (update);
+
+					result->setLayout (layout);
+
+					Row2Layout_ [index.row ()] = result;
+				}
+
+				return Row2Layout_ [index.row ()];
+			}
+
 			void PackagesDelegate::handleRowChanged (const QModelIndex& current, const QModelIndex& previous)
 			{
 				CurrentSelection_ = current;
+
 				if (SelectableBrowser_)
 					SelectableBrowser_->hide ();
+
 				emit sizeHintChanged (previous);
 				emit sizeHintChanged (current);
 			}

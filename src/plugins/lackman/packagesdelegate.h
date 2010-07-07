@@ -46,6 +46,7 @@ namespace LeechCraft
 				mutable QPointer<Util::SelectableBrowser> SelectableBrowser_;
 				mutable QHash<int, QToolButton*> Row2InstallRemove_;
 				mutable QHash<int, QToolButton*> Row2Update_;
+				mutable QHash<int, QWidget*> Row2Layout_;
 
 				QWidget * const Viewport_;
 			public:
@@ -58,8 +59,9 @@ namespace LeechCraft
 				int TextHeight (const QStyleOptionViewItem&) const;
 				int CurrentInfoHeight (const QStyleOptionViewItem&) const;
 				void PrepareSelectableBrowser () const;
-				QToolButton* GetInstallRemove (const QModelIndex&) const;
-				QToolButton* GetUpdate (const QModelIndex&) const;
+				QWidget* GetInstallRemove (const QModelIndex&) const;
+				QWidget* GetUpdate (const QModelIndex&) const;
+				QWidget* GetLayout (const QModelIndex&) const;
 			public slots:
 				void handleRowChanged (const QModelIndex&, const QModelIndex&);
 				void invalidateWidgetPositions ();
