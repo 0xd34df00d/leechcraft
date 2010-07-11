@@ -129,6 +129,11 @@ namespace LeechCraft
 				}
 			}
 
+			bool operator== (const ListPackageInfo& lpi1, const ListPackageInfo& lpi2)
+			{
+				return lpi1.PackageID_ == lpi2.PackageID_;
+			}
+
 			bool IsVersionLess (const QString& lver, const QString& rver)
 			{
 				VersionVerifier vv;

@@ -148,6 +148,8 @@ namespace LeechCraft
 				bool IsInstalled_;
 			};
 
+			bool operator== (const ListPackageInfo&, const ListPackageInfo&);
+
 			/** Some kind of operator< for version strings.
 			 */
 			bool IsVersionLess (const QString&, const QString&);

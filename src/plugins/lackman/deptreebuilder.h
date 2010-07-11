@@ -18,6 +18,8 @@
 
 #ifndef PLUGINS_LACKMAN_DEPTREEBUILDER_H
 #define PLUGINS_LACKMAN_DEPTREEBUILDER_H
+#include <boost/shared_ptr.hpp>
+#include <QStack>
 #include "repoinfo.h"
 
 namespace LeechCraft
@@ -29,10 +31,54 @@ namespace LeechCraft
 			class DepTreeBuilder
 			{
 			public:
+				typedef QStack<QString> DFSLevels_t;
+			private:
+				/** List of package names that are parents of the
+				 * package currently being visited.
+				 */
+				QStack<QString> Levels_;
+
+				struct GraphNode;
+				typedef boost::shared_ptr<GraphNode> GraphNode_ptr;
+
+				struct GraphNode
+				{
+					int PackageId_;
+					QList<GraphNode_ptr> ChildNodes_;
+
+					/** Wheter this graph node is considered to be
+					 * "fulfilled" when any of its dependencies is
+					 * "fulfilled" or when all dependencies are
+					 * fulfilled.
+					 *
+					 * Dependencies are represented by ChildNodes_, so
+					 * basically TAny-typed node's fulfilled field is
+					 * calculated as OR, and TAll — as AND.
+					 *
+					 * Generally, TAll-nodes are used to represent a
+					 * plugin — a plugin may be installed if all its
+					 * dependencies may be installed. TAny-nodes are
+					 * used to represent a dependency on interface:
+					 * such a dependency is fulfilled when any plugin
+					 * which implements that interface may be installed.
+					 */
+					enum Type
+					{
+						TAny,//!< TAny It's enough for any child node to be fulfilled.
+						TAll //!< TAll All child nodes should be fulfilled.
+					} Type_;
+
+					GraphNode (Type);
+				};
+
+				GraphNode_ptr GraphRoot_;
+			public:
 				DepTreeBuilder ();
 				virtual ~DepTreeBuilder ();
 
-				void operator() (const ListPackageInfo&);
+				void BuildFor (const ListPackageInfo&);
+			private:
+				void BuildInnerLoop (const ListPackageInfo&);
 			};
 		};
 	};
