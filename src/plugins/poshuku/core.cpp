@@ -915,6 +915,7 @@ namespace LeechCraft
 					settings.setValue ("Settings", QVariant::fromValue<BrowserWidgetSettings> (bwsettings.at (i)));
 				}
 				settings.endArray ();
+				settings.sync();
 			}
 
 			void Core::saveSingleSession ()
@@ -945,6 +946,7 @@ namespace LeechCraft
 						break;
 					}
 				settings.endArray ();
+				settings.sync();
 			}
 			
 			void Core::restorePages ()
