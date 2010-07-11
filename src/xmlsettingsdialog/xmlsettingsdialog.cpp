@@ -71,7 +71,8 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 #elif defined (Q_WS_MAC)
 	else if (QFile::exists (QApplication::applicationDirPath () +
 			"../Resources/settings/" + basename))
-		filename = QString ("settings/") + basename;
+		filename = QApplication::applicationDirPath () +
+				"../Resources/settings/" + basename;
 #else
 	else if (QFile::exists (QString ("/usr/local/share/leechcraft/settings/") + basename))
 		filename = QString ("/usr/local/share/leechcraft/settings/") + basename;
@@ -242,7 +243,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		box->setLayout (groupLayout);
 		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 		ParseEntity (gbox, box);
-		
+
 		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
 		lay->addRow (box);
 
@@ -626,7 +627,7 @@ void XmlSettingsDialog::reject ()
 		SetValue (object,
 				WorkingObject_->property (i.key ().toLatin1 ().constData ()));
 	}
-	
+
 	HandlersManager_->ClearNewValues ();
 
 	Q_FOREACH (QWidget *widget, Customs_)
