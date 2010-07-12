@@ -74,13 +74,16 @@ namespace LeechCraft
 			struct FulfillableChecker : public boost::default_dfs_visitor
 			{
 				const QList<DepTreeBuilder::Vertex_t>& BackVertices_;
+				const QList<DepTreeBuilder::Edge_t>& BackEdges_;
 				const DepTreeBuilder::Edge2Vertices_t E2V_;
 				DepTreeBuilder::Graph_t& G_;
 
 				FulfillableChecker (const QList<DepTreeBuilder::Vertex_t>& bv,
+						const QList<DepTreeBuilder::Edge_t>& be,
 						const DepTreeBuilder::Edge2Vertices_t& e2v,
 						DepTreeBuilder::Graph_t& g)
 				: BackVertices_ (bv)
+				, BackEdges_ (be)
 				, E2V_ (e2v)
 				, G_ (g)
 				{
@@ -89,7 +92,9 @@ namespace LeechCraft
 				template<typename Vertex, typename Graph>
 				void finish_vertex (Vertex u, Graph&)
 				{
-					if (BackVertices_.contains (u))
+					bool hasBackEdge = BackVertices_.contains (u);
+					if (hasBackEdge &&
+							G_ [u].Type_ == DepTreeBuilder::VertexInfo::TAll)
 					{
 						G_ [u].IsFulfilled_ = false;
 						return;
@@ -117,11 +122,16 @@ namespace LeechCraft
 							G_ [u].IsFulfilled_ = false;
 							for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
 									i < range.second; ++i)
+							{
+								if (BackEdges_.contains (*i))
+									continue;
+
 								if (G_ [GetV (i)].IsFulfilled_)
 								{
 									G_ [u].IsFulfilled_ = true;
 									break;
 								}
+							}
 							break;
 						}
 					}
@@ -229,6 +239,7 @@ namespace LeechCraft
 
 				// Third, mark fulfillable/unfulfillable deps.
 				FulfillableChecker checker (backVertices,
+						backEdges,
 						Edge2Vertices_,
 						Graph_);
 				boost::depth_first_search (Graph_, boost::visitor (checker));
