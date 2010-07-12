@@ -4,7 +4,7 @@ Qt4 is >= 4.6.
 Boost is >= 1.37 with patch against faulty epoll on newer kernels or just >= 1.38.
 
 == Overall ==
- Qt4 (>=4.6)
+ Qt4 (>=4.6, 4.7 is recommended)
 	Core
 	Gui
 	Network
@@ -31,7 +31,7 @@ Boost is >= 1.37 with patch against faulty epoll on newer kernels or just >= 1.3
  KDE >= 4.2
 
 == BitTorrent ==
- Rasterbar Libtorrent (0.15 when it'd be released, branches/RC_0_15 from SVN for now)
+ Rasterbar Libtorrent (0.15)
  Depends: aggregatedisplay
  Provides: downloader-bittorrent
  Suggests: webbrowser
@@ -44,12 +44,12 @@ Boost is >= 1.37 with patch against faulty epoll on newer kernels or just >= 1.3
  QtDBus
  Provides: dbus
 
-== DCminator ==
- This should not be built, it doesn't work yet.
-
 == DeadLyrics ==
  Depends: downloader-http
 		  aggregatedisplay
+
+== LackMan ==
+ Depends: downloader-http
 
 == LCFTP ==
  libcurl >= 7.19.4
@@ -62,6 +62,10 @@ Boost is >= 1.37 with patch against faulty epoll on newer kernels or just >= 1.3
 == New Life ==
  Suggests: feedreader
 		   downloader-bittorrent
+
+== Popishu ==
+ QScintilla
+ Recommends: scriptrunner
 
 == Poshuku ==
  QtWebkit
@@ -76,12 +80,10 @@ Boost is >= 1.37 with patch against faulty epoll on newer kernels or just >= 1.3
 === WYFV ===
  Depends: mediaplayer
 
-== PyLc ==
- Depends: python 2.5 or 2.6 dev files
-		  PythonQt (http://pythonqt.sourceforge.net)
-
-== Remoter ==
- This should not be built, it doesn't work yet.
+== Qrosp ==
+ Qross (git://github.com/0xd34df00d/Qross.git)
+ Qrosscore is required, qrosspython is recommended.
+ Provides: scriptrunner
 
 == SeekThru ==
  Depends: downloader-http
@@ -96,6 +98,3 @@ Boost is >= 1.37 with patch against faulty epoll on newer kernels or just >= 1.3
 == vGrabber ==
  Depends: downloader-http
 		  aggregatedisplay
-
-== YASD ==
- This should not be built, it doesn't work yet.
