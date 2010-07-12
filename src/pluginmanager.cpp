@@ -473,7 +473,7 @@ namespace LeechCraft
 			{
 				qWarning () << "A plugin isn't really a file, aborting load:"
 					<< file;
-				Plugins_.removeAt (i--);
+				PluginContainers_.removeAt (i--);
 				continue;
 			}
 
@@ -484,7 +484,7 @@ namespace LeechCraft
 					<< file
 					<< ";"
 					<< loader->errorString ();
-				Plugins_.removeAt (i--);
+				PluginContainers_.removeAt (i--);
 				continue;
 			}
 
@@ -500,7 +500,7 @@ namespace LeechCraft
 					<< e.what ()
 					<< "for"
 					<< file;
-				Plugins_.removeAt (i--);
+				PluginContainers_.removeAt (i--);
 				continue;
 			}
 			catch (...)
@@ -508,7 +508,7 @@ namespace LeechCraft
 				qWarning () << Q_FUNC_INFO
 					<< "failed to construct the instance for"
 					<< file;
-				Plugins_.removeAt (i--);
+				PluginContainers_.removeAt (i--);
 				continue;
 			}
 
@@ -517,7 +517,7 @@ namespace LeechCraft
 			{
 				qWarning () << "Casting to IInfo failed:"
 						<< file;
-				Plugins_.removeAt (i--);
+				PluginContainers_.removeAt (i--);
 				continue;
 			}
 
@@ -537,7 +537,7 @@ namespace LeechCraft
 					<< e.what ()
 					<< "for"
 					<< file;
-				Plugins_.removeAt (i--);
+				PluginContainers_.removeAt (i--);
 				continue;
 			}
 			catch (...)
@@ -545,7 +545,7 @@ namespace LeechCraft
 				qWarning () << Q_FUNC_INFO
 					<< "failed to get name/icon"
 					<< file;
-				Plugins_.removeAt (i--);
+				PluginContainers_.removeAt (i--);
 				continue;
 			}
 			settings.beginGroup (file);
