@@ -262,6 +262,12 @@ namespace LeechCraft
 
 			bool DepTreeBuilder::IsFulfilled () const
 			{
+				return Graph_ [*boost::vertices (Graph_).first].IsFulfilled_;
+			}
+
+			const QList<int>& DepTreeBuilder::GetPackagesToInstall () const
+			{
+				return PackagesToInstall_;
 			}
 
 			void DepTreeBuilder::InnerLoop (const ListPackageInfo& packageInfo)

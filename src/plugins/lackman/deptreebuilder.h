@@ -140,7 +140,22 @@ namespace LeechCraft
 				DepTreeBuilder (const ListPackageInfo&);
 				virtual ~DepTreeBuilder ();
 
+				/** Whether it is possible to install the package for
+				 * which this graph is being built.
+				 */
 				bool IsFulfilled () const;
+
+				/** @brief Returns the list of packages that need to be
+				 * installed in order to install the package passed to
+				 * the constructor.
+				 *
+				 * The return value of this function only makes sense if
+				 * the package may be installed at all: if IsFulfilled()
+				 * returns true.
+				 *
+				 * @return The list of packages to be installed.
+				 */
+				const QList<int>& GetPackagesToInstall () const;
 			private:
 				/** @brief Builds the part of dependency tree for the
 				 * package identified by lpi.
