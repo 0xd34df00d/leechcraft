@@ -414,6 +414,11 @@ namespace LeechCraft
 		Unload (Find (plugin));
 	}
 
+	const QStringList& PluginManager::GetPluginLoadErrors () const
+	{
+		return PluginLoadErrors_;
+	}
+
 	void PluginManager::FindPlugins ()
 	{
 #ifdef Q_WS_WIN
@@ -472,7 +477,9 @@ namespace LeechCraft
 			if (!QFileInfo (loader->fileName ()).isFile ())
 			{
 				qWarning () << "A plugin isn't really a file, aborting load:"
-					<< file;
+						<< file;
+				PluginLoadErrors_ << tr ("Refusing to load plugin from %1 because it's not a file.")
+						.arg (QFileInfo (file).fileName ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
@@ -484,6 +491,9 @@ namespace LeechCraft
 					<< file
 					<< ";"
 					<< loader->errorString ();
+				PluginLoadErrors_ << tr ("Could not load plugin from %1: %2.")
+						.arg (QFileInfo (file).fileName ())
+						.arg (loader->errorString ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
@@ -500,6 +510,10 @@ namespace LeechCraft
 					<< e.what ()
 					<< "for"
 					<< file;
+				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
+							"failed to construct plugin instance with exception %2.")
+						.arg (QFileInfo (file).fileName ())
+						.arg (e.what ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
@@ -508,6 +522,9 @@ namespace LeechCraft
 				qWarning () << Q_FUNC_INFO
 					<< "failed to construct the instance for"
 					<< file;
+				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
+							"failed to construct plugin instance.")
+						.arg (QFileInfo (file).fileName ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
@@ -517,6 +534,9 @@ namespace LeechCraft
 			{
 				qWarning () << "Casting to IInfo failed:"
 						<< file;
+				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
+							"unable to cast plugin instance to IInfo*.")
+						.arg (QFileInfo (file).fileName ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
@@ -537,6 +557,10 @@ namespace LeechCraft
 					<< e.what ()
 					<< "for"
 					<< file;
+				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
+							"unable to get name/info/icon with exception %2.")
+						.arg (QFileInfo (file).fileName ())
+						.arg (e.what ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
@@ -545,6 +569,9 @@ namespace LeechCraft
 				qWarning () << Q_FUNC_INFO
 					<< "failed to get name/icon"
 					<< file;
+				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
+							"unable to get name/info/icon.")
+						.arg (QFileInfo (file).fileName ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
