@@ -179,6 +179,35 @@ namespace LeechCraft
 			QIcon Core::GetIconForLPI (const ListPackageInfo& packageInfo)
 			{
 				QIcon result;
+
+				boost::optional<QByteArray> data;
+				if (!packageInfo.IconURL_.isEmpty ())
+				{
+					try
+					{
+						data = ExternalResourceManager_->
+								GetResourceData (packageInfo.IconURL_);
+					}
+					catch (const std::runtime_error& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "could not download icon at"
+								<< packageInfo.IconURL_
+								<< e.what ();
+					}
+				}
+
+				if (data)
+				{
+					QPixmap px;
+					if (px.loadFromData (*data) &&
+							!px.isNull ())
+					{
+						result = QIcon (px);
+						return result;
+					}
+				}
+
 				switch (packageInfo.Type_)
 				{
 				case PackageInfo::TPlugin:

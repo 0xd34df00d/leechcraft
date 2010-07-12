@@ -43,9 +43,14 @@ namespace LeechCraft
 
 			boost::optional<QByteArray> ExternalResourceManager::GetResourceData (const QUrl& url)
 			{
+				Q_FOREACH (const PendingResource& pr, PendingResources_.values ())
+					if (pr.URL_ == url)
+						return boost::optional<QByteArray> ();
+
 				QString fileName = URLToFileName (url);
 
-				if (ResourcesDir_.entryList ().contains (fileName))
+				if (ResourcesDir_.entryList ().contains (fileName) &&
+						ResourcesDir_.entryInfoList (QStringList (fileName)).at (0).size ())
 				{
 					QString path = ResourcesDir_.filePath (fileName);
 					QFile file (path);
@@ -109,9 +114,9 @@ namespace LeechCraft
 							this,
 							SLOT (handleResourceError (int, IDownload::Error)),
 							Qt::UniqueConnection);
-
-					return boost::optional<QByteArray> ();
 				}
+
+				return boost::optional<QByteArray> ();
 			}
 
 			void ExternalResourceManager::ClearCaches ()
