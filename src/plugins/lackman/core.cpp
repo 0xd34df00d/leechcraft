@@ -27,6 +27,7 @@
 #include "repoinfofetcher.h"
 #include "storage.h"
 #include "packagesmodel.h"
+#include "externalresourcemanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,7 @@ namespace LeechCraft
 
 			Core::Core ()
 			: RepoInfoFetcher_ (new RepoInfoFetcher (this))
+			, ExternalResourceManager_ (new ExternalResourceManager (this))
 			, Storage_ (new Storage (this))
 			, PluginsModel_ (new PackagesModel (this))
 			{
@@ -51,6 +53,12 @@ namespace LeechCraft
 						Relation2comparator [Dependency::LE]);
 				Relation2comparator [Dependency::G] = boost::bind (Relation2comparator [Dependency::L], _2, _1);
 
+				connect (ExternalResourceManager_,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)));
 				connect (RepoInfoFetcher_,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
@@ -641,6 +649,10 @@ namespace LeechCraft
 								.arg (pInfo.Name_),
 							PCritical_));
 				}
+
+				ExternalResourceManager_->GetResourceData (pInfo.IconURL_);
+				Q_FOREACH (const Image& image, pInfo.Images_)
+					ExternalResourceManager_->GetResourceData (QUrl::fromEncoded (image.URL_.toUtf8 ()));
 			}
 		}
 	}

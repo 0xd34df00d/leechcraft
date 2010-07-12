@@ -35,6 +35,7 @@ namespace LeechCraft
 		namespace LackMan
 		{
 			class RepoInfoFetcher;
+			class ExternalResourceManager;
 			class Storage;
 			class PackagesModel;
 
@@ -44,6 +45,7 @@ namespace LeechCraft
 
 				ICoreProxy_ptr Proxy_;
 				RepoInfoFetcher *RepoInfoFetcher_;
+				ExternalResourceManager *ExternalResourceManager_;
 				Storage *Storage_;
 				PackagesModel *PluginsModel_;
 
