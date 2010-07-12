@@ -45,6 +45,53 @@ namespace LeechCraft
 				}
 			};
 
+			DepTreeBuilder::GraphVertex::GraphVertex (DepTreeBuilder::GraphVertex::Type type)
+			: IsFulfilled_ (false)
+			, Type_ (type)
+			{
+			}
+
+			DepTreeBuilder::GraphVertex::GraphVertex (int packageId)
+			: IsFulfilled_ (false)
+			, Type_ (TAll)
+			, PackageId_ (packageId)
+			{
+			}
+
+			DepTreeBuilder::GraphVertex::GraphVertex (const QString& depName)
+			: IsFulfilled_ (false)
+			, Type_ (TAny)
+			, Dependency_ (depName)
+			{
+			}
+
+			void DepTreeBuilder::GraphVertex::CheckFulfilled ()
+			{
+				switch (Type_)
+				{
+				case TAll:
+					IsFulfilled_ = true;
+					Q_FOREACH (const GraphVertex_ptr& depVertex,
+							ChildVertices_)
+						if (!depVertex->IsFulfilled_)
+						{
+							IsFulfilled_ = false;
+							break;
+						}
+					break;
+				case TAny:
+					IsFulfilled_ = false;
+					Q_FOREACH (const GraphVertex_ptr& packageVertex,
+							ChildVertices_)
+						if (packageVertex->IsFulfilled_)
+						{
+							IsFulfilled_ = true;
+							break;
+						}
+					break;
+				}
+			}
+
 			DepTreeBuilder::DepTreeBuilder ()
 			{
 			}
@@ -55,8 +102,14 @@ namespace LeechCraft
 
 			void DepTreeBuilder::BuildFor (const ListPackageInfo& packageInfo)
 			{
-				GraphRoot_.reset (new GraphNode (GraphNode::TAll));
-				BuildInnerLoop (packageInfo);
+				GraphRoot_.reset (new GraphVertex (GraphVertex::TAll));
+				BuildInnerLoop (packageInfo, GraphRoot_);
+				GraphRoot_->CheckFulfilled ();
+			}
+
+			bool DepTreeBuilder::IsFulfilled () const
+			{
+				return GraphRoot_->IsFulfilled_;
 			}
 
 			namespace
@@ -79,7 +132,8 @@ namespace LeechCraft
 				};
 			}
 
-			void DepTreeBuilder::BuildInnerLoop (const ListPackageInfo& packageInfo)
+			void DepTreeBuilder::BuildInnerLoop (const ListPackageInfo& packageInfo,
+					DepTreeBuilder::GraphVertex_ptr parentVertex)
 			{
 				StackGuard sg (packageInfo.Name_, Levels_);
 
@@ -89,6 +143,9 @@ namespace LeechCraft
 				{
 					if (Core::Instance ().IsFulfilled (dep))
 						continue;
+
+					GraphVertex_ptr depVertex (new GraphVertex (dep.Name_));
+					parentVertex->ChildVertices_ << depVertex;
 
 					QList<ListPackageInfo> suitable = Core::Instance ().GetDependencyFulfillers (dep);
 
@@ -101,8 +158,20 @@ namespace LeechCraft
 						}
 
 					if (!suitable.size ())
-						throw ExceptionCircularDep (failedDeps);
+						continue;
+
+					Q_FOREACH (const ListPackageInfo& lpi, suitable)
+					{
+						GraphVertex_ptr packageVertex (new GraphVertex (lpi.PackageID_));
+						depVertex->ChildVertices_ << packageVertex;
+
+						BuildInnerLoop (lpi, packageVertex);
+					}
+
+					depVertex->CheckFulfilled ();
 				}
+
+				parentVertex->CheckFulfilled ();
 			}
 		};
 	};
