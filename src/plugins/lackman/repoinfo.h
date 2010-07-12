@@ -100,6 +100,8 @@ namespace LeechCraft
 
 			typedef QList<Dependency> DependencyList;
 
+			bool operator== (const Dependency&, const Dependency&);
+
 			struct Image
 			{
 				enum Type
@@ -178,6 +180,8 @@ namespace LeechCraft
 			};
 
 			typedef QList<InstalledDependencyInfo> InstalledDependencyInfoList;
+
+			uint qHash (const Dependency&);
 		}
 	}
 }

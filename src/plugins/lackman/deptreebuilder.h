@@ -124,7 +124,7 @@ namespace LeechCraft
 				typedef Graph_t::in_edge_iterator InEdgeIterator_t;
 
 				QHash<int, Vertex_t> Package2Vertex_;
-				QHash<QString, Vertex_t> Dependency2Vertex_;
+				QHash<Dependency, Vertex_t> Dependency2Vertex_;
 
 				typedef QMap<Edge_t, QPair<Vertex_t, Vertex_t> > Edge2Vertices_t;
 				Edge2Vertices_t Edge2Vertices_;
