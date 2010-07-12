@@ -47,7 +47,7 @@ SET (HEADERS
 	packagesmodel.h
 	packagesdelegate.h
 	xmlparsers.h
-	externalresourcemanager.cpp
+	externalresourcemanager.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts

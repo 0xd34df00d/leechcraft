@@ -650,9 +650,43 @@ namespace LeechCraft
 							PCritical_));
 				}
 
-				ExternalResourceManager_->GetResourceData (pInfo.IconURL_);
+				if (pInfo.IconURL_.isValid ())
+				{
+					try
+					{
+						ExternalResourceManager_->GetResourceData (pInfo.IconURL_);
+					}
+					catch (const std::runtime_error& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error fetching icon from"
+								<< pInfo.IconURL_
+								<< e.what ();
+						emit gotEntity (Util::MakeNotification (tr ("Error retrieving package icon"),
+								tr ("Unable to retrieve icon for package %1.")
+									.arg (pInfo.Name_),
+								PCritical_));
+					}
+				}
+
 				Q_FOREACH (const Image& image, pInfo.Images_)
-					ExternalResourceManager_->GetResourceData (QUrl::fromEncoded (image.URL_.toUtf8 ()));
+					try
+					{
+						ExternalResourceManager_->
+								GetResourceData (QUrl::fromEncoded (image.URL_.toUtf8 ()));
+					}
+					catch (const std::runtime_error& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error fetching"
+								<< image.URL_
+								<< e.what ();
+						emit gotEntity (Util::MakeNotification (tr ("Error retrieving image"),
+								tr ("Unable to retrieve image for package %1 from %2.")
+									.arg (pInfo.Name_)
+									.arg (image.URL_),
+								PCritical_));
+					}
 			}
 		}
 	}

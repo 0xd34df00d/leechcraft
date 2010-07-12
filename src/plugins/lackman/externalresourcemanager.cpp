@@ -151,7 +151,7 @@ namespace LeechCraft
 				qWarning () << Q_FUNC_INFO
 						<< "got error"
 						<< error
-						<< "for PR"
+						<< "for PendingResource"
 						<< id
 						<< PendingResources_ [id].URL_;
 				PendingResources_.remove (id);
