@@ -17,6 +17,10 @@
  **********************************************************************/
 
 #include "deptreebuilder.h"
+#include <boost/graph/visitors.hpp>
+#include <boost/graph/depth_first_search.hpp>
+#include <boost/graph/filtered_graph.hpp>
+#include <boost/graph/topological_sort.hpp>
 #include "core.h"
 
 namespace LeechCraft
@@ -25,118 +29,232 @@ namespace LeechCraft
 	{
 		namespace LackMan
 		{
-			class ExceptionCircularDep : public std::runtime_error
+			DepTreeBuilder::VertexInfo::VertexInfo ()
+			: IsFulfilled_ (false)
+			, Type_ (TAny)
 			{
-				QStringList DepNames_;
-			public:
-				ExceptionCircularDep(const QStringList& names)
-				: std::runtime_error ("Circular dependency detected.")
-				, DepNames_ (names)
-				{
-				}
+			}
 
-				virtual ~ExceptionCircularDep () throw ()
-				{
-				}
-
-				virtual const char* what () throw ()
-				{
-					return qPrintable (QString ("Circular dependency detected, backedges to { %1 }").arg (DepNames_.join ("; ")));
-				}
-			};
-
-			DepTreeBuilder::GraphVertex::GraphVertex (DepTreeBuilder::GraphVertex::Type type)
+			DepTreeBuilder::VertexInfo::VertexInfo (DepTreeBuilder::VertexInfo::Type type)
 			: IsFulfilled_ (false)
 			, Type_ (type)
 			{
 			}
 
-			DepTreeBuilder::GraphVertex::GraphVertex (int packageId)
+			DepTreeBuilder::VertexInfo::VertexInfo (int packageId)
 			: IsFulfilled_ (false)
 			, Type_ (TAll)
 			, PackageId_ (packageId)
 			{
 			}
 
-			DepTreeBuilder::GraphVertex::GraphVertex (const QString& depName)
+			DepTreeBuilder::VertexInfo::VertexInfo (const QString& depName)
 			: IsFulfilled_ (false)
 			, Type_ (TAny)
 			, Dependency_ (depName)
 			{
 			}
 
-			void DepTreeBuilder::GraphVertex::CheckFulfilled ()
+			struct CycleDetector : public boost::default_dfs_visitor
 			{
-				switch (Type_)
-				{
-				case TAll:
-					IsFulfilled_ = true;
-					Q_FOREACH (const GraphVertex_ptr& depVertex,
-							ChildVertices_)
-						if (!depVertex->IsFulfilled_)
-						{
-							IsFulfilled_ = false;
-							break;
-						}
-					break;
-				case TAny:
-					IsFulfilled_ = false;
-					Q_FOREACH (const GraphVertex_ptr& packageVertex,
-							ChildVertices_)
-						if (packageVertex->IsFulfilled_)
-						{
-							IsFulfilled_ = true;
-							break;
-						}
-					break;
-				}
-			}
+				QList<DepTreeBuilder::Edge_t>& BackEdges_;
 
-			DepTreeBuilder::DepTreeBuilder ()
+				CycleDetector (QList<DepTreeBuilder::Edge_t>& be)
+				: BackEdges_ (be)
+				{
+				}
+
+				template<typename Edge, typename Graph>
+				void back_edge (Edge edge, Graph&)
+				{
+					BackEdges_ << edge;
+				}
+			};
+
+			struct FulfillableChecker : public boost::default_dfs_visitor
 			{
+				const QList<DepTreeBuilder::Vertex_t>& BackVertices_;
+				const DepTreeBuilder::Edge2Vertices_t E2V_;
+				DepTreeBuilder::Graph_t& G_;
+
+				FulfillableChecker (const QList<DepTreeBuilder::Vertex_t>& bv,
+						const DepTreeBuilder::Edge2Vertices_t& e2v,
+						DepTreeBuilder::Graph_t& g)
+				: BackVertices_ (bv)
+				, E2V_ (e2v)
+				, G_ (g)
+				{
+				}
+
+				template<typename Vertex, typename Graph>
+				void finish_vertex (Vertex u, Graph&)
+				{
+					if (BackVertices_.contains (u))
+					{
+						G_ [u].IsFulfilled_ = false;
+						return;
+					}
+
+					std::pair<DepTreeBuilder::OutEdgeIterator_t,
+							DepTreeBuilder::OutEdgeIterator_t> range = boost::out_edges (u, G_);
+					if (range.first == range.second)
+						G_ [u].IsFulfilled_ = true;
+					else
+					{
+						switch (G_ [u].Type_)
+						{
+						case DepTreeBuilder::VertexInfo::TAll:
+							G_ [u].IsFulfilled_ = true;
+							for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
+									i < range.second; ++i)
+								if (!G_ [GetV (i)].IsFulfilled_)
+								{
+									G_ [u].IsFulfilled_ = false;
+									break;
+								}
+							break;
+						case DepTreeBuilder::VertexInfo::TAny:
+							G_ [u].IsFulfilled_ = false;
+							for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
+									i < range.second; ++i)
+								if (G_ [GetV (i)].IsFulfilled_)
+								{
+									G_ [u].IsFulfilled_ = true;
+									break;
+								}
+							break;
+						}
+					}
+				}
+
+				DepTreeBuilder::Vertex_t GetV (const DepTreeBuilder::OutEdgeIterator_t it)
+				{
+					return E2V_ [*it].second;
+				}
+			};
+
+			struct VertexPredicate
+			{
+				const DepTreeBuilder::Graph_t& G_;
+				const DepTreeBuilder::Edge2Vertices_t E2V_;
+
+				VertexPredicate (const DepTreeBuilder::Edge2Vertices_t& e2v,
+						const DepTreeBuilder::Graph_t& g)
+				: G_ (g)
+				{
+				}
+
+				template<typename Vertex>
+				bool operator() (const Vertex& v) const
+				{
+					/* If dependency is not fulfilled, we should not
+					 * see it in filtered output in any case.
+					 */
+					if (!G_ [v].IsFulfilled_)
+						return false;
+
+					/* If this dependency is of type TAny, then the
+					 * parent dependency is of type TAll, and we should
+					 * always see it if it's fulfilled (what we've
+					 * checked in previous condition).
+					 */
+					if (G_ [v].Type_ == DepTreeBuilder::VertexInfo::TAny)
+						return true;
+
+					/* This dependency is fulfilled, but is of type
+					 * TAll. Bad for us: we should step one level up and
+					 * check if there is any dependency (which would be
+					 * of type TAny) that lists this dependency as first
+					 * fulfillable.
+					 *
+					 * This way we leave only one fulfillable dependency.
+					 *
+					 * Just as a sidenote, there is little reason in
+					 * tying to being "first fulfillable": it'd be much
+					 * more sensible to check, for example, if we pull
+					 * the least possible amount of additional packages,
+					 * but that's too difficult.
+					 */
+					std::pair<DepTreeBuilder::InEdgeIterator_t,
+							DepTreeBuilder::InEdgeIterator_t> range = boost::in_edges (G_, v);
+					for (DepTreeBuilder::InEdgeIterator_t i = range.first;
+							i < range.second; ++i)
+					{
+						Vertex u = E2V_ [*i].first;
+						std::pair<DepTreeBuilder::OutEdgeIterator_t,
+								DepTreeBuilder::OutEdgeIterator_t> sameLevel = boost::out_edges (G_, u);
+
+						for (DepTreeBuilder::OutEdgeIterator_t candIt = sameLevel.first;
+								candIt < sameLevel.second; ++candIt)
+						{
+							Vertex candidate = E2V_ [*candIt].second;
+							if (G_ [candidate].IsFulfilled_)
+							{
+								// If we're here, we're checking the
+								// first fulfillable candidate.
+
+								// The next if would succeed only if
+								// first fulfillable is the Vertex we
+								// are checking.
+								if (candidate == v)
+									return true;
+								else
+									break;
+							}
+						}
+					}
+
+					return false;
+				}
+			};
+
+			DepTreeBuilder::DepTreeBuilder (const ListPackageInfo& packageInfo)
+			{
+				// First, build the graph.
+				Vertex_t root = boost::add_vertex (Graph_);
+				Graph_ [root] = VertexInfo (packageInfo.PackageID_);
+				Package2Vertex_ [packageInfo.PackageID_] = root;
+				InnerLoop (packageInfo);
+
+				// Second, find all the backedges.
+				QList<Edge_t> backEdges;
+				CycleDetector cd (backEdges);
+				boost::depth_first_search (Graph_, boost::visitor (cd));
+
+				// Prepare the list of those vertices that have back
+				// edges coming from them.
+				QList<Vertex_t> backVertices;
+				Q_FOREACH (const Edge_t& edge, backEdges)
+					backVertices << Edge2Vertices_ [edge].first;
+
+				// Third, mark fulfillable/unfulfillable deps.
+				FulfillableChecker checker (backVertices,
+						Edge2Vertices_,
+						Graph_);
+				boost::depth_first_search (Graph_, boost::visitor (checker));
+
+				// Create filtered graph with only those that are
+				// fulfilled.
+				boost::filtered_graph<Graph_t,
+						boost::keep_all, VertexPredicate> fg (Graph_,
+								boost::keep_all (),
+								VertexPredicate (Edge2Vertices_, Graph_));
+
+				// Finally run topological sort over filtered graph.
+				boost::topological_sort (Graph_,
+						std::front_inserter (PackagesToInstall_));
 			}
 
 			DepTreeBuilder::~DepTreeBuilder ()
 			{
 			}
 
-			void DepTreeBuilder::BuildFor (const ListPackageInfo& packageInfo)
-			{
-				GraphRoot_.reset (new GraphVertex (GraphVertex::TAll));
-				BuildInnerLoop (packageInfo, GraphRoot_);
-				GraphRoot_->CheckFulfilled ();
-			}
-
 			bool DepTreeBuilder::IsFulfilled () const
 			{
-				return GraphRoot_->IsFulfilled_;
 			}
 
-			namespace
+			void DepTreeBuilder::InnerLoop (const ListPackageInfo& packageInfo)
 			{
-				struct StackGuard
-				{
-					DepTreeBuilder::DFSLevels_t& Stack_;
-
-					StackGuard (const QString& packageName,
-							DepTreeBuilder::DFSLevels_t& stack)
-					: Stack_ (stack)
-					{
-						Stack_.push (packageName);
-					}
-
-					~StackGuard ()
-					{
-						Stack_.pop ();
-					}
-				};
-			}
-
-			void DepTreeBuilder::BuildInnerLoop (const ListPackageInfo& packageInfo,
-					DepTreeBuilder::GraphVertex_ptr parentVertex)
-			{
-				StackGuard sg (packageInfo.Name_, Levels_);
-
 				QList<Dependency> dependencies = Core::Instance ().GetDependencies (packageInfo.PackageID_);
 
 				Q_FOREACH (const Dependency& dep, dependencies)
@@ -144,34 +262,40 @@ namespace LeechCraft
 					if (Core::Instance ().IsFulfilled (dep))
 						continue;
 
-					GraphVertex_ptr depVertex (new GraphVertex (dep.Name_));
-					parentVertex->ChildVertices_ << depVertex;
+					Vertex_t depVertex;
+					if (!Dependency2Vertex_.contains (dep.Name_))
+					{
+						depVertex = boost::add_vertex (Graph_);
+						Graph_ [depVertex] = VertexInfo (dep.Name_);
+
+						Dependency2Vertex_ [dep.Name_] = depVertex;
+					}
+					else
+						depVertex = Dependency2Vertex_ [dep.Name_];
+
+					Vertex_t packageVertex = Package2Vertex_ [packageInfo.PackageID_];
+					Edge_t edge = boost::add_edge (packageVertex, depVertex, Graph_).first;
+					Edge2Vertices_ [edge] = qMakePair (packageVertex, depVertex);
 
 					QList<ListPackageInfo> suitable = Core::Instance ().GetDependencyFulfillers (dep);
 
-					QStringList failedDeps;
-					Q_FOREACH (const ListPackageInfo& lpi, suitable)
-						if (Levels_.contains (lpi.Name_))
-						{
-							failedDeps << lpi.Name_;
-							suitable.removeAll (lpi);
-						}
-
-					if (!suitable.size ())
-						continue;
-
 					Q_FOREACH (const ListPackageInfo& lpi, suitable)
 					{
-						GraphVertex_ptr packageVertex (new GraphVertex (lpi.PackageID_));
-						depVertex->ChildVertices_ << packageVertex;
+						Vertex_t ffVertex;
+						if (!Package2Vertex_.contains (lpi.PackageID_))
+						{
+							ffVertex = boost::add_vertex (Graph_);
+							Graph_ [ffVertex] = VertexInfo (lpi.PackageID_);
 
-						BuildInnerLoop (lpi, packageVertex);
+							Package2Vertex_ [lpi.PackageID_] = ffVertex;
+						}
+						else
+							ffVertex = Package2Vertex_ [lpi.PackageID_];
+
+						Edge_t edge = boost::add_edge (depVertex, ffVertex, Graph_).first;
+						Edge2Vertices_ [edge] = qMakePair (depVertex, ffVertex);
 					}
-
-					depVertex->CheckFulfilled ();
 				}
-
-				parentVertex->CheckFulfilled ();
 			}
 		};
 	};

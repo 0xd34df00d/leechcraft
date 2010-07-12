@@ -19,6 +19,9 @@
 #ifndef PLUGINS_LACKMAN_DEPTREEBUILDER_H
 #define PLUGINS_LACKMAN_DEPTREEBUILDER_H
 #include <boost/shared_ptr.hpp>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/properties.hpp>
+#include <QHash>
 #include <QStack>
 #include "repoinfo.h"
 
@@ -28,20 +31,13 @@ namespace LeechCraft
 	{
 		namespace LackMan
 		{
+			struct CycleDetector;
+			struct FulfillableChecker;
+			struct VertexPredicate;
+
 			class DepTreeBuilder
 			{
-			public:
-				typedef QStack<QString> DFSLevels_t;
-			private:
-				/** List of package names that are parents of the
-				 * package currently being visited.
-				 */
-				QStack<QString> Levels_;
-
-				struct GraphVertex;
-				typedef boost::shared_ptr<GraphVertex> GraphVertex_ptr;
-
-				struct GraphVertex
+				struct VertexInfo
 				{
 					/** Makes sense only for those vertices representing
 					 * packages, not any-typed dependencies, like
@@ -53,8 +49,6 @@ namespace LeechCraft
 					 * typed dependencies, like interfaces.
 					 */
 					QString Dependency_;
-
-					QList<GraphVertex_ptr> ChildVertices_;
 
 					bool IsFulfilled_;
 
@@ -80,12 +74,16 @@ namespace LeechCraft
 						TAll //!< TAll All child vertices should be fulfilled.
 					} Type_;
 
+					/** Constructs an empty VertexInfo of type TAny.
+					 */
+					VertexInfo ();
+
 					/** Constructs a not identified vertex with the
 					 * given type.
 					 *
 					 * @param[in] type The type of this vertex.
 					 */
-					GraphVertex (Type type);
+					VertexInfo (Type type);
 
 					/** @brief Constructs vertex with type TAll and
 					 * given packageId used to identify this vertex.
@@ -97,7 +95,7 @@ namespace LeechCraft
 					 * @param[in] packageId ID of the package this
 					 * vertex represents.
 					 */
-					GraphVertex (int packageId);
+					VertexInfo (int packageId);
 
 					/** @brief Constructs vertex with type TAny and
 					 * given dependency name used to identify this
@@ -110,17 +108,38 @@ namespace LeechCraft
 					 * @param[in] depName Name of the dependency this
 					 * vertex represents.
 					 */
-					GraphVertex (const QString& depName);
-
-					void CheckFulfilled ();
+					VertexInfo (const QString& depName);
 				};
 
-				GraphVertex_ptr GraphRoot_;
+				typedef boost::shared_ptr<VertexInfo> VertexInfo_ptr;
+
+				typedef boost::property<boost::vertex_color_t, boost::default_color_type,
+						VertexInfo> VertexProperty;
+				typedef boost::adjacency_list<boost::vecS, boost::vecS,
+						boost::directedS, VertexProperty> Graph_t;
+
+				typedef Graph_t::vertex_descriptor Vertex_t;
+				typedef Graph_t::edge_descriptor Edge_t;
+				typedef Graph_t::out_edge_iterator OutEdgeIterator_t;
+				typedef Graph_t::in_edge_iterator InEdgeIterator_t;
+
+				QHash<int, Vertex_t> Package2Vertex_;
+				QHash<QString, Vertex_t> Dependency2Vertex_;
+
+				typedef QMap<Edge_t, QPair<Vertex_t, Vertex_t> > Edge2Vertices_t;
+				Edge2Vertices_t Edge2Vertices_;
+
+				Graph_t Graph_;
+
+				friend struct CycleDetector;
+				friend struct FulfillableChecker;
+				friend struct VertexPredicate;
+
+				QList<int> PackagesToInstall_;
 			public:
-				DepTreeBuilder ();
+				DepTreeBuilder (const ListPackageInfo&);
 				virtual ~DepTreeBuilder ();
 
-				void BuildFor (const ListPackageInfo&);
 				bool IsFulfilled () const;
 			private:
 				/** @brief Builds the part of dependency tree for the
@@ -133,12 +152,8 @@ namespace LeechCraft
 				 *
 				 * @param[in] lpi The package for which to build the
 				 * tree.
-				 * @param[in/out] parent The node representing lpi.
-				 * It's, obviously, expected to be of type
-				 * GraphNode::TAll.
 				 */
-				void BuildInnerLoop (const ListPackageInfo& lpi,
-						GraphVertex_ptr parent);
+				void InnerLoop (const ListPackageInfo& lpi);
 			};
 		};
 	};
