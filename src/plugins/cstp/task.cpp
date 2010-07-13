@@ -495,10 +495,13 @@ namespace LeechCraft
 			void Task::handleFinished ()
 			{
 				Core::Instance ().RemoveFinishedReply (Reply_.get ());
-				disconnect (Reply_.get (),
-						0,
-						this,
-						0);
+
+				if (Reply_.get ())
+					disconnect (Reply_.get (),
+							0,
+							this,
+							0);
+
 				if (Reply_.get ())
 					Reply_.release ()->deleteLater ();
 				emit done (false);
