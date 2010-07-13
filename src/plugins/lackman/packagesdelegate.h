@@ -49,6 +49,7 @@ namespace LeechCraft
 				mutable QHash<int, QWidget*> Row2Layout_;
 
 				QWidget * const Viewport_;
+				QAbstractItemModel * const Model_;
 			public:
 				PackagesDelegate (QTreeView* = 0);
 
@@ -65,6 +66,7 @@ namespace LeechCraft
 			public slots:
 				void handleRowChanged (const QModelIndex&, const QModelIndex&);
 				void invalidateWidgetPositions ();
+				void hideOverflousActions (const QModelIndex&, int, int);
 			};
 		}
 	}

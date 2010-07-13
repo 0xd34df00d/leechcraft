@@ -44,11 +44,17 @@ namespace LeechCraft
 			PackagesDelegate::PackagesDelegate (QTreeView *parent)
 			: QStyledItemDelegate (parent)
 			, Viewport_ (parent->viewport ())
+			, Model_ (parent->model ())
 			{
 				connect (parent->verticalScrollBar (),
 						SIGNAL (valueChanged (int)),
 						this,
 						SLOT (invalidateWidgetPositions ()),
+						Qt::QueuedConnection);
+				connect (Model_,
+						SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
+						this,
+						SLOT (hideOverflousActions (const QModelIndex&, int, int)),
 						Qt::QueuedConnection);
 			}
 
@@ -332,6 +338,15 @@ namespace LeechCraft
 				for (int i = 0, rows = model->rowCount ();
 						i < rows; ++i)
 					emit sizeHintChanged (model->index (i, 0));
+			}
+
+			void PackagesDelegate::hideOverflousActions (const QModelIndex&,
+					int, int)
+			{
+				int rowCount = Model_->rowCount ();
+				int thisCount = Row2Layout_.size ();
+				for (int i = rowCount; i < thisCount; ++i)
+					Row2Layout_ [i]->hide ();
 			}
 		}
 	}
