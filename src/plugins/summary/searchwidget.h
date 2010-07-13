@@ -48,10 +48,7 @@ namespace LeechCraft
 				QStringList GetCategories () const;
 				void SetPossibleCategories (const QStringList&);
 				void SelectCategories (const QStringList& subset);
-			private slots:
-				void on_Add__released ();
 			signals:
-				void categoryComboboxRequested ();
 				void paramsChanged ();
 			};
 		};

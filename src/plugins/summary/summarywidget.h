@@ -36,7 +36,7 @@ namespace LeechCraft
 			class SearchWidget;
 
 			class SummaryWidget : public QWidget
-								, public IMultiTabsWidget 
+								, public IMultiTabsWidget
 			{
 				Q_OBJECT
 				Q_INTERFACES (IMultiTabsWidget)
@@ -81,7 +81,6 @@ namespace LeechCraft
 				void syncSelection (const QModelIndex&);
 			signals:
 				void changeTabName (const QString&);
-				void filterUpdated ();
 				void queryUpdated (const QString&);
 				void queryUpdated (const LeechCraft::Plugins::Summary::Query2&);
 				void raiseTab (QWidget*);

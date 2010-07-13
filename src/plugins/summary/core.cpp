@@ -94,13 +94,13 @@ namespace LeechCraft
 
 			bool Core::CouldHandle (const LeechCraft::Entity& e) const
 			{
-				if (e.Mime_ == "x-leechcraft/category-search-request" && 
+				if (e.Mime_ == "x-leechcraft/category-search-request" &&
 						e.Entity_.canConvert<QString> ())
 					return true;
 				else
 					return false;
 			}
-			
+
 			void Core::Handle (LeechCraft::Entity e)
 			{
 				QString query = e.Entity_.toString ();
@@ -287,10 +287,6 @@ namespace LeechCraft
 						SIGNAL (needToClose ()),
 						this,
 						SLOT (handleNeedToClose ()));
-				connect (result,
-						SIGNAL (filterUpdated ()),
-						this,
-						SLOT (handleFilterUpdated ()));
 				connect (result,
 						SIGNAL (raiseTab (QWidget*)),
 						this,

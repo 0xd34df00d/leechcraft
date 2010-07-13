@@ -73,11 +73,6 @@ namespace LeechCraft
 			{
 				CategorySelector_->SetSelections (subset);
 			}
-
-			void SearchWidget::on_Add__released ()
-			{
-				emit categoryComboboxRequested ();
-			}
 		};
 	};
 };

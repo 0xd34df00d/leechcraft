@@ -58,10 +58,6 @@ namespace LeechCraft
 				Core::Instance ().GetProxy ()->GetMainWindow ()->
 					addDockWidget (Qt::LeftDockWidgetArea, SearchWidget_);
 				SearchWidget_->hide ();
-				connect (SearchWidget_,
-						SIGNAL (categoryComboboxRequested ()),
-						this,
-						SLOT (addCategoryBox ()));
 
 				Q_FOREACH (QObject *plugin, Core::Instance ().GetProxy ()->
 						GetPluginsManager ()->GetAllCastableRoots<IFinder*> ())
@@ -478,7 +474,6 @@ namespace LeechCraft
 				ReconnectModelSpecific ();
 
 				emit changeTabName (newName);
-				emit filterUpdated ();
 				emit queryUpdated (query);
 				emit raiseTab (this);
 			}
