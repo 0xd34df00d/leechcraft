@@ -33,23 +33,25 @@ namespace LeechCraft
 				{
 					return QString (url.toEncoded ().toBase64 ().replace ('/', '_'));
 				}
+
+				QDir GetDir ()
+				{
+					return Util::CreateIfNotExists ("lackman/resources/");
+				}
 			}
 
 			ExternalResourceManager::ExternalResourceManager (QObject *parent)
 			: QObject (parent)
-			, ResourcesDir_ (Util::CreateIfNotExists ("lackman/resources/"))
+			, ResourcesDir_ (GetDir ())
 			{
 			}
 
 			boost::optional<QByteArray> ExternalResourceManager::GetResourceData (const QUrl& url)
 			{
-				Q_FOREACH (const PendingResource& pr, PendingResources_.values ())
-					if (pr.URL_ == url)
-						return boost::optional<QByteArray> ();
-
 				QString fileName = URLToFileName (url);
 
-				if (ResourcesDir_.entryList ().contains (fileName) &&
+				bool hasFile = ResourcesDir_.entryList ().contains (fileName);
+				if (hasFile &&
 						ResourcesDir_.entryInfoList (QStringList (fileName)).at (0).size ())
 				{
 					QString path = ResourcesDir_.filePath (fileName);
@@ -68,6 +70,10 @@ namespace LeechCraft
 				}
 				else
 				{
+					Q_FOREACH (const PendingResource& pr, PendingResources_.values ())
+						if (pr.URL_ == url)
+							return boost::optional<QByteArray> ();
+
 					QString location = ResourcesDir_.filePath (fileName);
 
 					Entity e = Util::MakeEntity (url,
@@ -136,6 +142,8 @@ namespace LeechCraft
 					return;
 
 				PendingResource pr = PendingResources_.take (id);
+
+				ResourcesDir_ = GetDir ();
 
 				emit resourceFetched (pr.URL_);
 			}
