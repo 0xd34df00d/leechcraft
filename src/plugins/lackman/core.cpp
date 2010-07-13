@@ -661,11 +661,27 @@ namespace LeechCraft
 				try
 				{
 					Storage_->AddPackages (pInfo);
+
+					QStringList versions = pInfo.Versions_;
+					std::sort (versions.begin (), versions.end (), IsVersionLess);
+					QString greatest = versions.last ();
+
 					Q_FOREACH (const QString& version, pInfo.Versions_)
 					{
 						int packageId =
 								Storage_->FindPackage (pInfo.Name_, version);
 						Storage_->AddLocation (packageId, componentId);
+
+						if (version == greatest)
+						{
+							QString existing = PluginsModel_->FindPackage (pInfo.Name_).Version_;
+							if (existing.isEmpty ())
+								PluginsModel_->AddRow (Storage_->
+										GetSingleListPackageInfo (packageId));
+							else if (IsVersionLess (existing, greatest))
+								PluginsModel_->UpdateRow (Storage_->
+										GetSingleListPackageInfo (packageId));
+						}
 					}
 				}
 				catch (const std::runtime_error& e)

@@ -54,6 +54,8 @@ namespace LeechCraft
 				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 				void AddRow (const ListPackageInfo&);
+				void UpdateRow (const ListPackageInfo&);
+				ListPackageInfo FindPackage (const QString&) const;
 				void Clear ();
 			};
 		}

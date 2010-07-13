@@ -690,6 +690,7 @@ namespace LeechCraft
 
 			ListPackageInfo Storage::GetSingleListPackageInfo (int packageId)
 			{
+				QueryGetSingleListPackageInfo_.bindValue (":package_id", packageId);
 				if (!QueryGetSingleListPackageInfo_.exec ())
 				{
 					Util::DBLock::DumpError (QueryGetSingleListPackageInfo_);
