@@ -68,7 +68,7 @@ class QMetaPropertyBuilderPrivate;
 class QMetaEnumBuilder;
 class QMetaEnumBuilderPrivate;
 
-class Q_DECLARATIVE_EXPORT QMetaObjectBuilder
+class QMetaObjectBuilder
 {
 public:
     enum AddMember
