@@ -225,6 +225,7 @@ namespace LeechCraft
 				if (!Row2InstallRemove_.contains (row))
 				{
 					QAction *action = new QAction (Viewport_);
+					action->setCheckable (true);
 					connect (action,
 							SIGNAL (triggered ()),
 							&Core::Instance (),
@@ -269,6 +270,7 @@ namespace LeechCraft
 								.GetProxy ()->GetIcon ("update"),
 							tr ("Update"),
 							Viewport_);
+					action->setCheckable (true);
 					connect (action,
 							SIGNAL (triggered ()),
 							&Core::Instance (),

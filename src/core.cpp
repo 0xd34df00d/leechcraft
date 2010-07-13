@@ -255,6 +255,10 @@ void LeechCraft::Core::DelayedInit ()
 	QTimer::singleShot (2000,
 			this,
 			SLOT (pullEntityQueue ()));
+
+	QTimer::singleShot (10000,
+			this,
+			SLOT (handlePluginLoadErrors ()));
 }
 
 void LeechCraft::Core::TryToAddJob (QString name)
@@ -763,6 +767,13 @@ void LeechCraft::Core::pullEntityQueue ()
 	Q_FOREACH (Entity e, QueuedEntities_)
 		handleGotEntity (e);
 	QueuedEntities_.clear ();
+}
+
+void LeechCraft::Core::handlePluginLoadErrors ()
+{
+	Q_FOREACH (const QString& error, PluginManager_->GetPluginLoadErrors ())
+		handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
+				error, PCritical_));
 }
 
 void LeechCraft::Core::embeddedTabWantsToFront ()

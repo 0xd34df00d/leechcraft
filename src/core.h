@@ -159,7 +159,7 @@ namespace LeechCraft
 		 * @return Whether the indexes belong to the same model.
 		 */
 		bool SameModel (const QModelIndex& i1, const QModelIndex& i2) const;
-		
+
 		/** Calculates and returns current upload/download speeds.
 		 */
 		QPair<qint64, qint64> GetSpeeds () const;
@@ -238,6 +238,8 @@ namespace LeechCraft
 		void queueEntity (LeechCraft::Entity);
 
 		void pullEntityQueue ();
+
+		void handlePluginLoadErrors ();
 
 		/** Handles requests to show a tab above others.
 		 */

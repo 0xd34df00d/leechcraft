@@ -82,6 +82,8 @@ namespace LeechCraft
 		QStringList Headers_;
 
 		QIcon DefaultPluginIcon_;
+
+		QStringList PluginLoadErrors_;
 	public:
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (QObject *parent = 0);
@@ -110,6 +112,8 @@ namespace LeechCraft
 
 		QObject* GetProvider (const QString&) const;
 		void Unload (QObject*);
+
+		const QStringList& GetPluginLoadErrors () const;
 	private:
 		void FindPlugins ();
 		void ScanDir (const QString&);

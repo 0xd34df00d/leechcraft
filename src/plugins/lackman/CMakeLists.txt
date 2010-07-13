@@ -35,6 +35,7 @@ SET (SRCS
 	packagesmodel.cpp
 	packagesdelegate.cpp
 	xmlparsers.cpp
+	externalresourcemanager.cpp
 	)
 SET (HEADERS
 	lackman.h
@@ -46,6 +47,7 @@ SET (HEADERS
 	packagesmodel.h
 	packagesdelegate.h
 	xmlparsers.h
+	externalresourcemanager.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts

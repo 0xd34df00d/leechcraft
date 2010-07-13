@@ -280,15 +280,15 @@ namespace LeechCraft
 						continue;
 
 					Vertex_t depVertex;
-					if (!Dependency2Vertex_.contains (dep.Name_))
+					if (!Dependency2Vertex_.contains (dep))
 					{
 						depVertex = boost::add_vertex (Graph_);
 						Graph_ [depVertex] = VertexInfo (dep.Name_);
 
-						Dependency2Vertex_ [dep.Name_] = depVertex;
+						Dependency2Vertex_ [dep] = depVertex;
 					}
 					else
-						depVertex = Dependency2Vertex_ [dep.Name_];
+						depVertex = Dependency2Vertex_ [dep];
 
 					Vertex_t packageVertex = Package2Vertex_ [packageInfo.PackageID_];
 					Edge_t edge = boost::add_edge (packageVertex, depVertex, Graph_).first;

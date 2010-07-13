@@ -49,8 +49,11 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				FilterByTags_ = new QSortFilterProxyModel (this);
+				FilterByTags_->setDynamicSortFilter (true);
 				FilterByTags_->setSourceModel (Core::Instance ().GetPluginsModel ());
 				FilterString_ = new QSortFilterProxyModel (this);
+				FilterString_->setDynamicSortFilter (true);
+				FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 				FilterString_->setSourceModel (FilterByTags_);
 
 				PackagesDelegate *pd = new PackagesDelegate (Ui_.Plugins_);
@@ -62,18 +65,15 @@ namespace LeechCraft
 						pd,
 						SLOT (handleRowChanged (const QModelIndex&, const QModelIndex&)),
 						Qt::QueuedConnection);
+				connect (Ui_.SearchLine_,
+						SIGNAL (textEdited (const QString&)),
+						FilterString_,
+						SLOT (setFilterFixedString (const QString&)));
 			}
 
 			void Plugin::SecondInit ()
 			{
 				IPluginsManager *pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-				/*
-				QObjectList browsers = pm->Filter<IWebBrowser*> (pm->GetAllPlugins ());
-				IWebBrowser *browser = browsers.size () ?
-					qobject_cast<IWebBrowser*> (browsers.at (0)) :
-					0;
-				Ui_.Description_->Construct (browser);
-				*/
 
 				Core::Instance ().AddRepo (QUrl::fromLocalFile ("/home/d34df00d/Programming/lcpacks"));
 			}

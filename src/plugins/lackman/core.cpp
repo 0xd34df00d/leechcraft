@@ -27,6 +27,7 @@
 #include "repoinfofetcher.h"
 #include "storage.h"
 #include "packagesmodel.h"
+#include "externalresourcemanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,7 @@ namespace LeechCraft
 
 			Core::Core ()
 			: RepoInfoFetcher_ (new RepoInfoFetcher (this))
+			, ExternalResourceManager_ (new ExternalResourceManager (this))
 			, Storage_ (new Storage (this))
 			, PluginsModel_ (new PackagesModel (this))
 			{
@@ -51,6 +53,12 @@ namespace LeechCraft
 						Relation2comparator [Dependency::LE]);
 				Relation2comparator [Dependency::G] = boost::bind (Relation2comparator [Dependency::L], _2, _1);
 
+				connect (ExternalResourceManager_,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&,
+								int*, QObject**)));
 				connect (RepoInfoFetcher_,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
@@ -171,6 +179,35 @@ namespace LeechCraft
 			QIcon Core::GetIconForLPI (const ListPackageInfo& packageInfo)
 			{
 				QIcon result;
+
+				boost::optional<QByteArray> data;
+				if (!packageInfo.IconURL_.isEmpty ())
+				{
+					try
+					{
+						data = ExternalResourceManager_->
+								GetResourceData (packageInfo.IconURL_);
+					}
+					catch (const std::runtime_error& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "could not download icon at"
+								<< packageInfo.IconURL_
+								<< e.what ();
+					}
+				}
+
+				if (data)
+				{
+					QPixmap px;
+					if (px.loadFromData (*data) &&
+							!px.isNull ())
+					{
+						result = QIcon (px);
+						return result;
+					}
+				}
+
 				switch (packageInfo.Type_)
 				{
 				case PackageInfo::TPlugin:
@@ -624,11 +661,27 @@ namespace LeechCraft
 				try
 				{
 					Storage_->AddPackages (pInfo);
+
+					QStringList versions = pInfo.Versions_;
+					std::sort (versions.begin (), versions.end (), IsVersionLess);
+					QString greatest = versions.last ();
+
 					Q_FOREACH (const QString& version, pInfo.Versions_)
 					{
 						int packageId =
 								Storage_->FindPackage (pInfo.Name_, version);
 						Storage_->AddLocation (packageId, componentId);
+
+						if (version == greatest)
+						{
+							QString existing = PluginsModel_->FindPackage (pInfo.Name_).Version_;
+							if (existing.isEmpty ())
+								PluginsModel_->AddRow (Storage_->
+										GetSingleListPackageInfo (packageId));
+							else if (IsVersionLess (existing, greatest))
+								PluginsModel_->UpdateRow (Storage_->
+										GetSingleListPackageInfo (packageId));
+						}
 					}
 				}
 				catch (const std::runtime_error& e)
@@ -641,6 +694,44 @@ namespace LeechCraft
 								.arg (pInfo.Name_),
 							PCritical_));
 				}
+
+				if (pInfo.IconURL_.isValid ())
+				{
+					try
+					{
+						ExternalResourceManager_->GetResourceData (pInfo.IconURL_);
+					}
+					catch (const std::runtime_error& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error fetching icon from"
+								<< pInfo.IconURL_
+								<< e.what ();
+						emit gotEntity (Util::MakeNotification (tr ("Error retrieving package icon"),
+								tr ("Unable to retrieve icon for package %1.")
+									.arg (pInfo.Name_),
+								PCritical_));
+					}
+				}
+
+				Q_FOREACH (const Image& image, pInfo.Images_)
+					try
+					{
+						ExternalResourceManager_->
+								GetResourceData (QUrl::fromEncoded (image.URL_.toUtf8 ()));
+					}
+					catch (const std::runtime_error& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error fetching"
+								<< image.URL_
+								<< e.what ();
+						emit gotEntity (Util::MakeNotification (tr ("Error retrieving image"),
+								tr ("Unable to retrieve image for package %1 from %2.")
+									.arg (pInfo.Name_)
+									.arg (image.URL_),
+								PCritical_));
+					}
 			}
 		}
 	}

@@ -26,6 +26,7 @@ SET (SRCS
 	flattofoldersproxymodel.cpp
 	defaulthookproxy.cpp
 	basehookinterconnector.cpp
+	fileremoveguard.cpp
 	exceptions.cpp
 	)
 SET (HEADERS
@@ -47,6 +48,7 @@ SET (HEADERS
 	flattofoldersproxymodel.h
 	defaulthookproxy.h
 	basehookinterconnector.h
+	fileremoveguard.h
 	exceptions.h
 	idpool.h
 	)

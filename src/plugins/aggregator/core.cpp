@@ -31,6 +31,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/mergemodel.h>
 #include <plugininterface/util.h>
+#include <plugininterface/fileremoveguard.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
@@ -1000,24 +1001,6 @@ namespace LeechCraft
 				};
 			};
 
-			namespace
-			{
-				class FileRemoval : public QFile
-				{
-					public:
-						FileRemoval (const QString& name)
-							: QFile (name)
-						{
-						}
-
-						virtual ~FileRemoval ()
-						{
-							close ();
-							remove ();
-						}
-				};
-			};
-
 			void Core::handleJobFinished (int id)
 			{
 				if (!PendingJobs_.contains (id))
@@ -1033,7 +1016,7 @@ namespace LeechCraft
 				PendingJobs_.remove (id);
 				ID2Downloader_.remove (id);
 
-				FileRemoval file (pj.Filename_);
+				Util::FileRemoveGuard file (pj.Filename_);
 				if (!file.open (QIODevice::ReadOnly))
 				{
 					qWarning () << Q_FUNC_INFO << "could not open file for pj " << pj.Filename_;
@@ -1122,7 +1105,7 @@ namespace LeechCraft
 				}
 
 				PendingJob pj = PendingJobs_ [id];
-				FileRemoval file (pj.Filename_);
+				Util::FileRemoveGuard file (pj.Filename_);
 
 				if ((!XmlSettingsManager::Instance ()->property ("BeSilent").toBool () &&
 							pj.Role_ == PendingJob::RFeedUpdated) ||

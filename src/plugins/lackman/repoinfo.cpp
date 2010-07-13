@@ -106,6 +106,13 @@ namespace LeechCraft
 					Components_ << c.simplified ();
 			}
 
+			bool operator== (const Dependency& dep1, const Dependency& dep2)
+			{
+				return dep1.Type_ == dep2.Type_ &&
+						dep1.Name_ == dep2.Name_ &&
+						dep1.Version_ == dep2.Version_;
+			}
+
 			void PackageInfo::Dump () const
 			{
 				qDebug () << "Package name: " << Name_
@@ -138,6 +145,11 @@ namespace LeechCraft
 			{
 				VersionVerifier vv;
 				return vv.CompareVersions (lver, rver) < 0;
+			}
+
+			uint qHash (const Dependency& dep)
+			{
+				return qHash (QString::number (dep.Type_) + dep.Name_ + dep.Version_);
 			}
 		}
 	}

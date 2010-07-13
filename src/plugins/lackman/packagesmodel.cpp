@@ -100,6 +100,28 @@ namespace LeechCraft
 				endInsertRows ();
 			}
 
+			void PackagesModel::UpdateRow (const ListPackageInfo& lpi)
+			{
+				for (int i = 0, size = Packages_.size ();
+						i < size; ++i)
+					if (Packages_.at (i) == lpi)
+					{
+						Packages_ [i] = lpi;
+						emit dataChanged (index (i, 0),
+								index (i, columnCount () - 1));
+						break;
+					}
+			}
+
+			ListPackageInfo PackagesModel::FindPackage (const QString& name) const
+			{
+				Q_FOREACH (const ListPackageInfo& lpi, Packages_)
+					if (lpi.Name_ == name)
+						return lpi;
+
+				return ListPackageInfo ();
+			}
+
 			void PackagesModel::Clear ()
 			{
 				Packages_.clear ();
