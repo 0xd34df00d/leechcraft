@@ -68,6 +68,8 @@ namespace LeechCraft
 
 				void AddRepo (const QUrl&);
 				void UpdateRepo (const QUrl&, const QStringList&);
+
+				QStringList GetAllTags () const;
 			private:
 				InstalledDependencyInfoList GetSystemInstalledPackages () const;
 				InstalledDependencyInfoList GetLackManInstalledPackages () const;
@@ -84,6 +86,7 @@ namespace LeechCraft
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
+				void tagsUpdated ();
 			};
 		}
 	}

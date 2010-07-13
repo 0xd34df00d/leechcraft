@@ -58,6 +58,8 @@ namespace LeechCraft
 
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
+			private slots:
+				void handleTagsUpdated ();
 			signals:
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);

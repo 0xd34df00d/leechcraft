@@ -97,6 +97,7 @@ namespace LeechCraft
 				QList<ListPackageInfo> GetFulfillers (const Dependency&);
 
 				QStringList GetPackageTags (int);
+				QStringList GetAllTags ();
 
 				bool HasLocation (int packageId, int componentId);
 				void AddLocation (int packageId, int componentId);

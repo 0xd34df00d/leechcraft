@@ -47,6 +47,10 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				connect (&Core::Instance (),
+						SIGNAL (tagsUpdated ()),
+						this,
+						SLOT (handleTagsUpdated ()));
 
 				FilterByTags_ = new QSortFilterProxyModel (this);
 				FilterByTags_->setDynamicSortFilter (true);
@@ -69,6 +73,8 @@ namespace LeechCraft
 						SIGNAL (textEdited (const QString&)),
 						FilterString_,
 						SLOT (setFilterFixedString (const QString&)));
+
+				handleTagsUpdated ();
 			}
 
 			void Plugin::SecondInit ()
@@ -125,6 +131,12 @@ namespace LeechCraft
 			QToolBar* Plugin::GetToolBar () const
 			{
 				return 0;
+			}
+
+			void Plugin::handleTagsUpdated ()
+			{
+				QStringList tags = Core::Instance ().GetAllTags ();
+				Ui_.CategorySelector_->SetPossibleSelections (tags);
 			}
 		};
 	};

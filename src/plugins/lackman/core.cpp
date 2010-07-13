@@ -306,6 +306,11 @@ namespace LeechCraft
 				}
 			}
 
+			QStringList Core::GetAllTags () const
+			{
+				return Storage_->GetAllTags ();
+			}
+
 			InstalledDependencyInfoList Core::GetSystemInstalledPackages () const
 			{
 				InstalledDependencyInfoList result;

@@ -813,6 +813,25 @@ namespace LeechCraft
 				return result;
 			}
 
+			QStringList Storage::GetAllTags ()
+			{
+				QSqlQuery query ("SELECT DISTINCT tag FROM tags;");
+				if (!query.exec ())
+				{
+					Util::DBLock::DumpError (query);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QStringList result;
+
+				while (query.next ())
+					result << query.value (0).toString ();
+
+				query.finish ();
+
+				return result;
+			}
+
 			bool Storage::HasLocation (int packageId, int componentId)
 			{
 				QueryHasLocation_.bindValue (":package_id", packageId);

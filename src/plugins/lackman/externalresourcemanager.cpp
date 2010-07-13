@@ -50,7 +50,7 @@ namespace LeechCraft
 			{
 				QString fileName = URLToFileName (url);
 
-				bool hasFile = ResourcesDir_.entryList ().contains (fileName);
+				bool hasFile = ResourcesDir_.exists (fileName);
 				if (hasFile &&
 						ResourcesDir_.entryInfoList (QStringList (fileName)).at (0).size ())
 				{
