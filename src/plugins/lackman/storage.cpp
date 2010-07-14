@@ -64,6 +64,14 @@ namespace LeechCraft
 			: QObject (parent)
 			, DB_ (QSqlDatabase::addDatabase ("QSQLITE", "LackManConnectionAvailable"))
 			{
+				if (!DB_.isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "database invalid :(";
+					Util::DBLock::DumpError (DB_.lastError ());
+					throw std::runtime_error ("Unable to add database connection.");
+				}
+
 				QDir dir;
 				try
 				{
@@ -71,7 +79,8 @@ namespace LeechCraft
 				}
 				catch (const std::exception& e)
 				{
-					qWarning () << Q_FUNC_INFO << e.what ();
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
 					throw;
 				}
 
@@ -815,7 +824,7 @@ namespace LeechCraft
 
 			QStringList Storage::GetAllTags ()
 			{
-				QSqlQuery query ("SELECT DISTINCT tag FROM tags;");
+				QSqlQuery query ("SELECT DISTINCT tag FROM tags;", DB_);
 				if (!query.exec ())
 				{
 					Util::DBLock::DumpError (query);
