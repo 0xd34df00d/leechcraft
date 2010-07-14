@@ -62,9 +62,10 @@ namespace LeechCraft
 				Q_FOREACH (QObject *plugin, Core::Instance ().GetProxy ()->
 						GetPluginsManager ()->GetAllCastableRoots<IFinder*> ())
 					connect (plugin,
-							SIGNAL (categoriesChanged (const QStringList&, const QStringList&)),
+							SIGNAL (categoriesChanged (const QStringList&,
+									const QStringList&)),
 							this,
-							SLOT (handleCategoriesChanged (const QStringList&, const QStringList&)));
+							SLOT (handleCategoriesChanged ()));
 
 				FilterTimer_->setSingleShot (true);
 				FilterTimer_->setInterval (800);
@@ -487,7 +488,7 @@ namespace LeechCraft
 				menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 			}
 
-			void SummaryWidget::handleCategoriesChanged (const QStringList&, const QStringList&)
+			void SummaryWidget::handleCategoriesChanged ()
 			{
 				QStringList currentCats = GetUniqueCategories ();
 

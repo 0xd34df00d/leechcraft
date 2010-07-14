@@ -70,6 +70,8 @@ namespace LeechCraft
 				QString GetQuery () const;
 				Query2 GetQuery2 () const;
 				void ReinitToolbar ();
+			public slots:
+				void handleCategoriesChanged ();
 			private slots:
 				void handleActionTriggered (QAction*);
 				void updatePanes (const QModelIndex&, const QModelIndex&);
@@ -77,7 +79,6 @@ namespace LeechCraft
 				void filterReturnPressed ();
 				void feedFilterParameters ();
 				void on_PluginsTasksTree__customContextMenuRequested (const QPoint&);
-				void handleCategoriesChanged (const QStringList&, const QStringList&);
 				void syncSelection (const QModelIndex&);
 			signals:
 				void changeTabName (const QString&);

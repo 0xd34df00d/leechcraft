@@ -61,6 +61,10 @@ namespace LeechCraft
 						SIGNAL (currentChanged (int)),
 						this,
 						SLOT (handleCurrentTabChanged (int)));
+				connect (Proxy_->GetPluginsManager ()->GetObject (),
+						SIGNAL (pluginInjected (QObject*)),
+						this,
+						SLOT (handlePluginInjected (QObject*)));
 			}
 
 			ICoreProxy_ptr Core::GetProxy () const
@@ -346,6 +350,28 @@ namespace LeechCraft
 				}
 
 				KeepProxiesThisWay_.remove (model);
+			}
+
+			void Core::handlePluginInjected (QObject *object)
+			{
+				IJobHolder *ijh = qobject_cast<IJobHolder*> (object);
+				if (ijh)
+					MergeModel_->AddModel (ijh->GetRepresentation ());
+
+				IFinder *finder = qobject_cast<IFinder*> (object);
+				QList<SummaryWidget*> allsw = Others_;
+				allsw << Default_;
+				if (finder)
+					Q_FOREACH (SummaryWidget *sw, allsw)
+					{
+						sw->handleCategoriesChanged ();
+
+						connect (object,
+								SIGNAL (categoriesChanged (const QStringList&,
+										const QStringList&)),
+								sw,
+								SLOT (handleCategoriesChanged ()));
+					}
 			}
 		};
 	};

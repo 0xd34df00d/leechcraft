@@ -50,7 +50,7 @@ namespace LeechCraft
 					TRegexp,
 					TTags
 				} Type_;
-				
+
 				QHash<QString, QHash<QString, QVariant> > Params_;
 			};
 
@@ -166,6 +166,7 @@ namespace LeechCraft
 				void handleCurrentTabChanged (int);
 				void handleNeedToClose ();
 				void handleTaskModelDestroyed ();
+				void handlePluginInjected (QObject*);
 			signals:
 				void addNewTab (const QString&, QWidget*);
 				void removeTab (QWidget*);
