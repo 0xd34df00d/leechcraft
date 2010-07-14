@@ -7,9 +7,11 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${GLOOX_INCLUDE_DIR})
 SET (XOOX_SRCS
 	xoox.cpp
+	glooxprotocol.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
+	glooxprotocol.h
 	)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
 ADD_LIBRARY (leechcraft_azoth_xoox SHARED

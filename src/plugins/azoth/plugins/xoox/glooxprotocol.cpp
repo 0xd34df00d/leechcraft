@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "glooxprotocol.h"
+#include <interfaces/iprotocolplugin.h>
 
 namespace LeechCraft
 {
@@ -28,9 +29,9 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
-					GlooxProtocol::GlooxProtocol (QObject *object)
+					GlooxProtocol::GlooxProtocol (QObject *parent)
 					: QObject (parent)
-					, ParentProtocolPlugin_ (qobject_cast<IProtocolPlugin*> (object))
+					, ParentProtocolPlugin_ (qobject_cast<IProtocolPlugin*> (parent))
 					{
 					}
 
