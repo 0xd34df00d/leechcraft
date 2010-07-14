@@ -342,9 +342,12 @@ namespace LeechCraft
 		catch (...)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "failed to initt"
+				<< "failed to init"
 				<< object;
+			throw;
 		}
+
+		emit pluginInjected (object);
 
 		depItem->Initialized_ = true;
 		Roots_ << depItem;
@@ -400,6 +403,11 @@ namespace LeechCraft
 				<< "failed to release the unloading object"
 				<< object;
 		}
+	}
+
+	QObject* PluginManager::GetObject ()
+	{
+		return this;
 	}
 
 	QObject* PluginManager::GetProvider (const QString& feature) const

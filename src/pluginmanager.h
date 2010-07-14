@@ -110,6 +110,8 @@ namespace LeechCraft
 		void InjectPlugin (QObject *object);
 		void ReleasePlugin (QObject *object);
 
+		QObject* GetObject ();
+
 		QObject* GetProvider (const QString&) const;
 		void Unload (QObject*);
 
@@ -149,7 +151,7 @@ namespace LeechCraft
 	private slots:
 		void processUnloadQueue ();
 	signals:
-		void downloadFinished (QString);
+		void pluginInjected (QObject*);
 	};
 };
 
