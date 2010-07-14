@@ -19,7 +19,6 @@
 #include "core.h"
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
-#include "azothserverconnection.h"
 
 namespace LeechCraft
 {
@@ -29,11 +28,6 @@ namespace LeechCraft
 		{
 			Core::Core ()
 			{
-				ServerConnection_ = new AzothServerConnection ();
-				connect (ServerConnection_,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 			}
 
 			Core& Core::Instance ()
@@ -54,12 +48,10 @@ namespace LeechCraft
 
 			void Core::Init ()
 			{
-				ServerConnection_->Establish ();
 			}
 
 			void Core::Release ()
 			{
-				ServerConnection_->Release ();
 			}
 
 			QSet<QByteArray> Core::GetExpectedPluginClasses () const

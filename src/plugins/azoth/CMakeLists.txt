@@ -17,8 +17,6 @@ IF (NOT QT_USE_FILE)
 	INCLUDE (${LEECHCRAFT_USE_FILE})
 ENDIF (NOT QT_USE_FILE)
 
-ADD_SUBDIRECTORY (azothserver)
-
 SET (QT_USE_QTDBUS TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
@@ -28,14 +26,10 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	azoth.cpp
-	azothserverconnection.cpp
-	azothserverconnectionadaptor.cpp
 	core.cpp
 	)
 SET (HEADERS
 	azoth.h
-	azothserverconnection.h
-	azothserverconnectionadaptor.h
 	core.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

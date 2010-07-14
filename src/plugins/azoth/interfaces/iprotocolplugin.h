@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
 #define PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
+#include <QList>
 
 namespace LeechCraft
 {
@@ -27,10 +28,14 @@ namespace LeechCraft
 		{
 			namespace Plugins
 			{
+				class IProtocol;
+
 				class IProtocolPlugin
 				{
 				public:
 					virtual ~IProtocolPlugin () {}
+
+					QList<IProtocol*> GetProtocols () const;
 				};
 			};
 		};

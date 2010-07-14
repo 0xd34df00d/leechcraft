@@ -28,8 +28,6 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class AzothServerConnection;
-
 			class Core : public QObject
 			{
 				Q_OBJECT
@@ -37,8 +35,6 @@ namespace LeechCraft
 				ICoreProxy_ptr Proxy_;
 
 				QObjectList ProtocolPlugins_;
-
-				AzothServerConnection *ServerConnection_;
 
 				Core ();
 			public:
