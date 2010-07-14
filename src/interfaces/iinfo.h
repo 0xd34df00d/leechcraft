@@ -216,6 +216,8 @@ class ITagsManager
 public:
 	typedef QString tag_id;
 
+	virtual ~ITagsManager () {}
+
 	/** @brief Returns the ID of the given tag.
 	 *
 	 * If there is no such tag, it's added to the tag collection and the
@@ -270,8 +272,6 @@ public:
 	 * all the meta-stuff.
 	 */
 	virtual QObject* GetObject () = 0;
-
-	virtual ~ITagsManager () {}
 };
 
 /** @brief This interface is used to represent LeechCraft's global
@@ -291,6 +291,8 @@ public:
 class IPluginsManager
 {
 public:
+	virtual ~IPluginsManager () {}
+
 	/** @brief Returns list of pointers to all present plugins.
 	 *
 	 * @return The list of pointers to all present plugins.
@@ -404,8 +406,6 @@ public:
 	 * @return The plugin manager as a QObject.
 	 */
 	virtual QObject* GetObject () = 0;
-
-	virtual ~IPluginsManager () {}
 };
 
 /** @brief Proxy class for the communication with LeechCraft.
@@ -416,6 +416,8 @@ public:
 class ICoreProxy
 {
 public:
+	virtual ~ICoreProxy () {}
+
 	/** @brief Returns application-wide network access manager.
 	 *
 	 * If your plugin wants to work well with other internet-related
@@ -534,8 +536,6 @@ public:
 #undef LC_EXPANDER
 #undef LC_TRAVERSER
 #undef LC_DEFINE_REGISTER
-
-	virtual ~ICoreProxy () {}
 };
 
 typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
