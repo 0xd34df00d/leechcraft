@@ -208,7 +208,7 @@ namespace LeechCraft
 
 			int PackagesDelegate::CurrentInfoHeight (const QStyleOptionViewItem& option) const
 			{
-				return 200;
+				return 140;
 			}
 
 			void PackagesDelegate::PrepareSelectableBrowser () const

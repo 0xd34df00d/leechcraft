@@ -133,8 +133,6 @@ namespace LeechCraft
 
 			void Plugin::handleTagsUpdated ()
 			{
-				QStringList tags = Core::Instance ().GetAllTags ();
-				Ui_.CategorySelector_->SetPossibleSelections (tags);
 			}
 		};
 	};
