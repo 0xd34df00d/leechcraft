@@ -79,8 +79,6 @@ namespace LeechCraft
 
 			void Plugin::SecondInit ()
 			{
-				IPluginsManager *pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-
 				Core::Instance ().AddRepo (QUrl::fromLocalFile ("/home/d34df00d/Programming/lcpacks"));
 			}
 
