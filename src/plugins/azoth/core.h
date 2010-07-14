@@ -43,9 +43,6 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
-				void Init ();
-				void Release ();
-
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
 

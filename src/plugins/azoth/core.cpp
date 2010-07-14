@@ -46,14 +46,6 @@ namespace LeechCraft
 				return Proxy_;
 			}
 
-			void Core::Init ()
-			{
-			}
-
-			void Core::Release ()
-			{
-			}
-
 			QSet<QByteArray> Core::GetExpectedPluginClasses () const
 			{
 				QSet<QByteArray> classes;

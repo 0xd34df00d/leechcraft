@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTH_H
-#define PLUGINS_AZOTH_AZOTH_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
+#include "mainwidget.h"
+#include <QToolBar>
+#include <QMenu>
 
 namespace LeechCraft
 {
@@ -28,36 +26,17 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class MainWidget;
-
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginReady
+			MainWidget::MainWidget (QWidget *parent)
+			: QWidget (parent)
+			, UpperBar_ (new QToolBar)
+			, MenuNewAccount_ (new QMenu)
 			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady)
+				Ui_.setupUi (this);
 
-				MainWidget *MW_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+				layout ()->addWidget (UpperBar_);
 
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
-	};
-};
-
-#endif
-
+				UpperBar_->addAction (MenuNewAccount_->menuAction ());
+			}
+		}
+	}
+}

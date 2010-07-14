@@ -18,7 +18,11 @@
 
 #include "azoth.h"
 #include <QIcon>
+#include <QDockWidget>
+#include <QMainWindow>
+#include <QVBoxLayout>
 #include "core.h"
+#include "mainwidget.h"
 
 namespace LeechCraft
 {
@@ -30,12 +34,17 @@ namespace LeechCraft
 			{
 				Core::Instance ().SetProxy (proxy);
 
+				QMainWindow *mainWin = proxy->GetMainWindow ();
+				QDockWidget *dw = new QDockWidget (mainWin);
+				MW_ = new MainWidget ();
+				dw->setWidget (MW_);
+
+				mainWin->addDockWidget (Qt::RightDockWidgetArea, dw);
+
 				connect (&Core::Instance (),
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
-				Core::Instance ().Init ();
 			}
 
 			void Plugin::SecondInit ()
@@ -44,7 +53,6 @@ namespace LeechCraft
 
 			void Plugin::Release ()
 			{
-				Core::Instance ().Release ();
 			}
 
 			QString Plugin::GetName () const

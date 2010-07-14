@@ -27,21 +27,28 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	azoth.cpp
 	core.cpp
+	mainwidget.cpp
 	)
 SET (HEADERS
 	azoth.h
 	core.h
+	mainwidget.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
 	interfaces/iclentry.h
 	)
+SET (FORMS
+	mainwidget.ui
+	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_azoth SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth
 	${QT_LIBRARIES}
