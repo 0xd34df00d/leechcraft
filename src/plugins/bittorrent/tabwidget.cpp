@@ -485,8 +485,14 @@ namespace LeechCraft
 					setText (QString::fromUtf8 (i->Info_->name ().c_str ()));
 				Ui_.LabelCreator_->
 					setText (QString::fromUtf8 (i->Info_->creator ().c_str ()));
-				Ui_.LabelComment_->
-					setText (QString::fromUtf8 (i->Info_->comment ().c_str ()));
+
+				QString commentString = QString::fromUtf8 (i->Info_->comment ().c_str ());
+				if (QUrl::fromEncoded (commentString.toUtf8 ()).isValid ())
+					Ui_.LabelComment_->setText (QString ("<a href='%1'>%1</a>")
+							.arg (commentString));
+				else
+					Ui_.LabelComment_->setText (commentString);
+
 				Ui_.LabelPrivate_->
 					setText (i->Info_->priv () ?
 							tr ("Yes") :
