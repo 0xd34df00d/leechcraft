@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
-#define PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
-#include <QList>
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
+#include <QObject>
+#include "interfaces/iprotocol.h"
 
 namespace LeechCraft
 {
@@ -28,23 +29,28 @@ namespace LeechCraft
 		{
 			namespace Plugins
 			{
-				class IProtocol;
-
-				class IProtocolPlugin
+				namespace Xoox
 				{
-				public:
-					virtual ~IProtocolPlugin () {}
+					class GlooxProtocol : public QObject
+										, public IProtocol
+					{
+						Q_OBJECT
 
-					virtual QObject* GetObject () = 0;
-					virtual QList<IProtocol*> GetProtocols () const = 0;
-				};
+						IProtocolPlugin *ParentProtocolPlugin_;
+					public:
+						GlooxProtocol (QObject* = 0);
+						virtual ~GlooxProtocol ();
+
+						QObject* GetObject ();
+						QList<IAccount*> GetRegisteredAccounts ();
+						IProtocolPlugin* GetParentProtocolPlugin () const;
+						QString GetProtocolName () const;
+						QByteArray GetProtocolID () const;
+					};
+				}
 			}
 		}
 	}
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin/1.0");
-
 #endif
-

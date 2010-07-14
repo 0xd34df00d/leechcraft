@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
-#define PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
-#include <QList>
+#include "glooxprotocol.h"
 
 namespace LeechCraft
 {
@@ -28,23 +26,44 @@ namespace LeechCraft
 		{
 			namespace Plugins
 			{
-				class IProtocol;
-
-				class IProtocolPlugin
+				namespace Xoox
 				{
-				public:
-					virtual ~IProtocolPlugin () {}
+					GlooxProtocol::GlooxProtocol (QObject *object)
+					: QObject (parent)
+					, ParentProtocolPlugin_ (qobject_cast<IProtocolPlugin*> (object))
+					{
+					}
 
-					virtual QObject* GetObject () = 0;
-					virtual QList<IProtocol*> GetProtocols () const = 0;
-				};
+					GlooxProtocol::~GlooxProtocol ()
+					{
+					}
+
+					QObject* GlooxProtocol::GetObject ()
+					{
+						return this;
+					}
+
+					QList<IAccount*> GlooxProtocol::GetRegisteredAccounts ()
+					{
+						return QList<IAccount*> ();
+					}
+
+					IProtocolPlugin* GlooxProtocol::GetParentProtocolPlugin () const
+					{
+						return ParentProtocolPlugin_;
+					}
+
+					QString GlooxProtocol::GetProtocolName () const
+					{
+						return tr ("XMPP");
+					}
+
+					QByteArray GlooxProtocol::GetProtocolID () const
+					{
+						return "Xoox.Gloox.XMPP";
+					}
+				}
 			}
 		}
 	}
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin/1.0");
-
-#endif
-

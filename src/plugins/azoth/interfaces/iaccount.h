@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
-#define PLUGINS_AZOTH_INTERFACES_IPROTOCOLPLUGIN_H
-#include <QList>
+#ifndef PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
+#define PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
 
 namespace LeechCraft
 {
@@ -29,22 +28,26 @@ namespace LeechCraft
 			namespace Plugins
 			{
 				class IProtocol;
+				class ICLEntriy;
 
-				class IProtocolPlugin
+				class IAccount
 				{
 				public:
-					virtual ~IProtocolPlugin () {}
+					virtual ~IAccount () {}
 
 					virtual QObject* GetObject () = 0;
-					virtual QList<IProtocol*> GetProtocols () const = 0;
+					virtual IProtocol* GetParentProtocol () const = 0;
+					virtual QList<ICLEntry*> GetCLEntries () = 0;
+					virtual QString GetAccountName () const = 0;
+					virtual QByteArray GetAccountID () const = 0;
 				};
 			}
 		}
 	}
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IAccount,
+		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IAccount/1.0");
+
 
 #endif
-

@@ -31,6 +31,10 @@ SET (SRCS
 SET (HEADERS
 	azoth.h
 	core.h
+	interfaces/iprotocolplugin.h
+	interfaces/iaccount.h
+	interfaces/iprotocol.h
+	interfaces/iclentry.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 
@@ -44,3 +48,6 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
+
+SET (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+ADD_SUBDIRECTORY (plugins/xoox)

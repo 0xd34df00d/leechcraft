@@ -54,7 +54,7 @@ namespace LeechCraft
 
 			QString Plugin::GetInfo () const
 			{
-				return tr ("");
+				return tr ("Extensible IM client for LeechCraft.");
 			}
 
 			QIcon Plugin::GetIcon () const
