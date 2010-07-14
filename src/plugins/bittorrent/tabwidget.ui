@@ -1249,7 +1249,7 @@
                 <string/>
                </property>
                <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -1739,7 +1739,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>194</width>
+                 <width>531</width>
                  <height>352</height>
                 </rect>
                </property>
