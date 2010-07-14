@@ -63,6 +63,10 @@ namespace LeechCraft
 					{
 						return "Xoox.Gloox.XMPP";
 					}
+
+					void GlooxProtocol::InitiateAccountRegistration ()
+					{
+					}
 				}
 			}
 		}

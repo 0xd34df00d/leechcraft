@@ -46,6 +46,7 @@ namespace LeechCraft
 						IProtocolPlugin* GetParentProtocolPlugin () const;
 						QString GetProtocolName () const;
 						QByteArray GetProtocolID () const;
+						void InitiateAccountRegistration ();
 					};
 				}
 			}

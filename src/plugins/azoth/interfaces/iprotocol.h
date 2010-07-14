@@ -47,6 +47,7 @@ namespace LeechCraft
 					virtual IProtocolPlugin* GetParentProtocolPlugin () const = 0;
 					virtual QString GetProtocolName () const = 0;
 					virtual QByteArray GetProtocolID () const = 0;
+					virtual void InitiateAccountRegistration () = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (IProtocol::ProtocolFeatures);

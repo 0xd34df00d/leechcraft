@@ -14,6 +14,7 @@ SET (XOOX_HEADERS
 	glooxprotocol.h
 	)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
+
 ADD_LIBRARY (leechcraft_azoth_xoox SHARED
 	${XOOX_SRCS}
 	${XOOX_MOC_SRCS}
