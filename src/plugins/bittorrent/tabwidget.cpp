@@ -56,16 +56,14 @@ namespace LeechCraft
 
 				TagsChangeCompleter_.reset (new TagsCompleter (Ui_.TorrentTags_));
 				Ui_.TorrentTags_->AddSelector ();
-			
+
 				Ui_.PiecesView_->setModel (Core::Instance ()->GetPiecesModel ());
-			
+
 				Ui_.FilesView_->setModel (Core::Instance ()->GetTorrentFilesModel ());
 				Ui_.FilesView_->setItemDelegate (new FilesViewDelegate (Ui_.FilesView_));
 
-				QToolBar *ttb = new QToolBar ();
-				ttb->addAction (editTrackers);
-				Ui_.TrackerLayout_->addWidget (ttb);
-			
+				Ui_.TrackersButton_->setDefaultAction (editTrackers);
+
 				QSortFilterProxyModel *peersSorter = new QSortFilterProxyModel (this);
 				peersSorter->setDynamicSortFilter (true);
 				peersSorter->setSourceModel (Core::Instance ()->GetPeersModel ());
@@ -75,7 +73,7 @@ namespace LeechCraft
 				new PeersTabLinker (&Ui_, peersSorter, this);
 
 				Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel ());
-			
+
 				header = Ui_.WebSeedsView_->header ();
 				header->resizeSection (0,
 						fm.width ("average.domain.name.of.a.tracker"));
@@ -201,7 +199,7 @@ namespace LeechCraft
 						SLOT (handleRemoveWebSeed ()));
 				Ui_.WebSeedsView_->addAction (AddWebSeed_);
 				Ui_.WebSeedsView_->addAction (RemoveWebSeed_);
-				
+
 				QList<QByteArray> tabWidgetSettings;
 				tabWidgetSettings << "ActiveSessionStats"
 					<< "ActiveAdvancedSessionStats"
@@ -241,7 +239,7 @@ namespace LeechCraft
 			{
 				if (Core::Instance ()->GetCurrentTorrent () == -1)
 					return;
-			
+
 				switch (currentIndex ())
 				{
 					case 0:
@@ -263,7 +261,7 @@ namespace LeechCraft
 				}
 				TorrentSelectionChanged_ = false;
 			}
-			
+
 			namespace
 			{
 				struct Percenter
@@ -282,7 +280,7 @@ namespace LeechCraft
 							return QString ("");
 					}
 				};
-			
+
 				template<int i>
 				struct Constructor
 				{
@@ -295,18 +293,18 @@ namespace LeechCraft
 					}
 				};
 			};
-			
+
 			void TabWidget::UpdateOverallStats ()
 			{
 				libtorrent::session_status stats = Core::Instance ()->GetOverallStats ();
-			
+
 				Ui_.LabelTotalDownloadRate_->
 					setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
 				Ui_.LabelTotalUploadRate_->
 					setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
-			
+
 				Constructor<1> speed;
-			
+
 				Ui_.LabelOverheadDownloadRate_->
 					setText (speed (stats.ip_overhead_download_rate, stats.download_rate));
 				Ui_.LabelOverheadUploadRate_->
@@ -319,12 +317,12 @@ namespace LeechCraft
 					setText (speed (stats.tracker_download_rate, stats.download_rate));
 				Ui_.LabelTrackerUploadRate_->
 					setText (speed (stats.tracker_upload_rate, stats.upload_rate));
-			
+
 				Ui_.LabelTotalDownloaded_->
 					setText (Util::MakePrettySize (stats.total_download));
 				Ui_.LabelTotalUploaded_->
 					setText (Util::MakePrettySize (stats.total_upload));
-			
+
 				Constructor<0> simple;
 				Ui_.LabelOverheadDownloaded_->
 					setText (simple (stats.total_ip_overhead_download, stats.total_download));
@@ -338,7 +336,7 @@ namespace LeechCraft
 					setText (simple (stats.total_tracker_download, stats.total_download));
 				Ui_.LabelTrackerUploaded_->
 					setText (simple (stats.total_tracker_upload, stats.total_upload));
-			
+
 				Ui_.LabelTotalPeers_->setText (QString::number (stats.num_peers));
 				Ui_.LabelTotalDHTNodes_->setText (QString ("(") +
 						QString::number (stats.dht_global_nodes) +
@@ -360,7 +358,7 @@ namespace LeechCraft
 					setText (Util::MakePrettySize (stats.total_redundant_bytes));
 				Ui_.LabelExternalAddress_->
 					setText (Core::Instance ()->GetExternalAddress ());
-			
+
 				libtorrent::cache_status cs = Core::Instance ()->GetCacheStats ();
 				Ui_.BlocksWritten_->setText (QString::number (cs.blocks_written));
 				Ui_.Writes_->setText (QString::number (cs.writes));
@@ -374,7 +372,7 @@ namespace LeechCraft
 					setText (QString::number (static_cast<double> (cs.blocks_read_hit) /
 							static_cast<double> (cs.blocks_read)));
 				Ui_.ReadCacheSize_->setText (QString::number (cs.read_cache_size));
-			
+
 				Core::pertrackerstats_t ptstats;
 				Core::Instance ()->GetPerTracker (ptstats);
 				Ui_.PerTrackerStats_->clear ();
@@ -385,11 +383,11 @@ namespace LeechCraft
 					strings	<< i->first
 						<< Util::MakePrettySize (i->second.DownloadRate_) + tr ("/s")
 						<< Util::MakePrettySize (i->second.UploadRate_) + tr ("/s");
-			
+
 					new QTreeWidgetItem (Ui_.PerTrackerStats_, strings);
 				}
 			}
-			
+
 			void TabWidget::UpdateDashboard ()
 			{
 				Ui_.OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
@@ -398,7 +396,7 @@ namespace LeechCraft
 				Ui_.UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
 				Ui_.DesiredRating_->setValue (Core::Instance ()->GetDesiredRating ());
 			}
-			
+
 			void TabWidget::UpdateTorrentControl ()
 			{
 				Ui_.TorrentDownloadRateController_->
@@ -413,7 +411,7 @@ namespace LeechCraft
 						IsTorrentSequentialDownload () ? Qt::Checked : Qt::Unchecked);
 				Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->
 						IsTorrentSuperSeeding () ? Qt::Checked : Qt::Unchecked);
-			
+
 				std::auto_ptr<TorrentInfo> i;
 				try
 				{
@@ -424,7 +422,7 @@ namespace LeechCraft
 					Ui_.TorrentControlTab_->setEnabled (false);
 					return;
 				}
-			
+
 				Ui_.TorrentControlTab_->setEnabled (true);
 				Ui_.LabelState_->setText (i->State_);
 				Ui_.LabelDownloadRate_->
@@ -538,7 +536,7 @@ namespace LeechCraft
 				Ui_.LabelDownBandwidthQueue_->
 					setText (QString::number (i->Status_.down_bandwidth_queue));
 			}
-			
+
 			void TabWidget::UpdateFilesPage ()
 			{
 				if (TorrentSelectionChanged_)
@@ -553,12 +551,12 @@ namespace LeechCraft
 					Ui_.FilesView_->expandAll ();
 				}
 			}
-			
+
 			void TabWidget::UpdatePeersPage ()
 			{
 				Core::Instance ()->UpdatePeers ();
 			}
-			
+
 			void TabWidget::UpdatePiecesPage ()
 			{
 				Core::Instance ()->UpdatePieces ();
@@ -568,57 +566,57 @@ namespace LeechCraft
 			{
 				Core::Instance ()->SetOverallDownloadRate (val);
 			}
-			
+
 			void TabWidget::on_OverallUploadRateController__valueChanged (int val)
 			{
 				Core::Instance ()->SetOverallUploadRate (val);
 			}
-			
+
 			void TabWidget::on_DesiredRating__valueChanged (double val)
 			{
 				Core::Instance ()->SetDesiredRating (val);
 			}
-			
+
 			void TabWidget::on_TorrentDownloadRateController__valueChanged (int val)
 			{
 				Core::Instance ()->SetTorrentDownloadRate (val);
 			}
-			
+
 			void TabWidget::on_TorrentUploadRateController__valueChanged (int val)
 			{
 				Core::Instance ()->SetTorrentUploadRate (val);
 			}
-			
+
 			void TabWidget::on_TorrentDesiredRating__valueChanged (double val)
 			{
 				Core::Instance ()->SetTorrentDesiredRating (val);
 			}
-			
+
 			void TabWidget::on_TorrentManaged__stateChanged (int state)
 			{
 				Core::Instance ()->SetTorrentManaged (state == Qt::Checked);
 			}
-			
+
 			void TabWidget::on_TorrentSequentialDownload__stateChanged (int state)
 			{
 				Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked);
 			}
-			
+
 			void TabWidget::on_TorrentSuperSeeding__stateChanged (int state)
 			{
 				Core::Instance ()->SetTorrentSuperSeeding (state == Qt::Checked);
 			}
-			
+
 			void TabWidget::on_DownloadingTorrents__valueChanged (int newValue)
 			{
 				Core::Instance ()->SetMaxDownloadingTorrents (newValue);
 			}
-			
+
 			void TabWidget::on_UploadingTorrents__valueChanged (int newValue)
 			{
 				Core::Instance ()->SetMaxUploadingTorrents (newValue);
 			}
-			
+
 			void TabWidget::on_TorrentTags__editingFinished ()
 			{
 				Core::Instance ()->UpdateTags (Core::Instance ()->GetProxy ()->
@@ -749,7 +747,7 @@ namespace LeechCraft
 			void TabWidget::handleAddWebSeed ()
 			{
 				AddWebSeedDialog ws;
-				if (ws.exec () != QDialog::Accepted || 
+				if (ws.exec () != QDialog::Accepted ||
 						ws.GetURL ().isEmpty ())
 					return;
 

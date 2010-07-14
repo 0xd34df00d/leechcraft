@@ -747,7 +747,6 @@ namespace LeechCraft
 					return;
 				}
 
-				QList<int> rows;
 				std::vector<libtorrent::announce_entry> allTrackers;
 				Q_FOREACH (QModelIndex si, sis)
 				{
@@ -757,6 +756,11 @@ namespace LeechCraft
 					std::copy (those.begin (), those.end (),
 							std::back_inserter (allTrackers));
 				}
+
+				if (!allTrackers.size ())
+					allTrackers = Core::Instance ()->
+							GetTrackers (Core::Instance ()->
+									GetCurrentTorrent ());
 
 				std::string libtorrent::announce_entry::*purl =
 						&libtorrent::announce_entry::url;
