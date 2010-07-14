@@ -9,7 +9,6 @@
 			<label lang="en" value="Behavior" />
 			<label lang="ru" value="Поведение" />
 			<label lang="uk" value="Поведінка" />
-		<groupbox>
 			<item type="checkbox" property="ShowOnHover" default="off">
 				<label lang="en" value="Show on action hover" />
 				<label lang="ru" value="Показывать при наведении мышки на действие" />
