@@ -61,7 +61,7 @@ SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
 
 # Check modules first in local dir
-SET (CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake;/usr/local/share/cmake/Modules")
+SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signals)
 FIND_PACKAGE (Qt4 REQUIRED)
