@@ -136,6 +136,28 @@ namespace LeechCraft
 				}
 			}
 
+			QList<QStandardItem*> Core::GetCategoriesItems (QStringList cats, QStandardItem *account)
+			{
+				if (cats.isEmpty ())
+					cats << tr ("General");
+
+				QList<QStandardItem*> result;
+				Q_FOREACH (const QString& cat, cats)
+				{
+					if (!Account2Category2Item_ [account].keys ().contains (cat))
+					{
+						QStandardItem *catItem = new QStandardItem (cat);
+						catItem->setData (account->data (CLRAccountObject), CLRAccountObject);
+						Account2Category2Item_ [account] [cat] = catItem;
+						account->appendRow (catItem);
+					}
+
+					result << Account2Category2Item_ [account] [cat];
+				}
+
+				return result;
+			}
+
 			void Core::handleAccountCreatorTriggered ()
 			{
 				QAction *sa = qobject_cast<QAction*> (sender ());
@@ -193,16 +215,18 @@ namespace LeechCraft
 				Q_FOREACH (Plugins::ICLEntry *clEntry,
 						account->GetCLEntries ())
 				{
-					QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
-					clItem->setData (QVariant::fromValue<QObject*> (account->GetObject ()),
-							CLRAccountObject);
-					clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
-							CLREntryObject);
-
-					clItems << clItem;
+					QList<QStandardItem*> catItems =
+							GetCategoriesItems (clEntry->Groups (), accItem);
+					Q_FOREACH (QStandardItem *catItem, catItems)
+					{
+						QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
+						clItem->setData (QVariant::fromValue<QObject*> (account->GetObject ()),
+								CLRAccountObject);
+						clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
+								CLREntryObject);
+						catItem->appendRow (clItem);
+					}
 				}
-
-				accItem->appendRows (clItems);
 
 				connect (accObject,
 						SIGNAL (gotCLItems (const QList<QObject*>&)),
@@ -268,12 +292,17 @@ namespace LeechCraft
 						break;
 					}
 
-					QStandardItem *clItem = new QStandardItem (entry->GetEntryName ());
-					clItem->setData (QVariant::fromValue<QObject*> (item),
-							CLREntryObject);
-					clItem->setData (QVariant::fromValue<QObject*> (accountObj),
-							CLRAccountObject);
-					accountItem->appendRow (clItem);
+					QList<QStandardItem*> catItems =
+							GetCategoriesItems (entry->Groups (), accountItem);
+					Q_FOREACH (QStandardItem *catItem, catItems)
+					{
+						QStandardItem *clItem = new QStandardItem (entry->GetEntryName ());
+						clItem->setData (QVariant::fromValue<QObject*> (item),
+								CLREntryObject);
+						clItem->setData (QVariant::fromValue<QObject*> (accountObj),
+								CLRAccountObject);
+						catItem->appendRow (clItem);
+					}
 				}
 			}
 		};

@@ -23,6 +23,7 @@
 #include <interfaces/iinfo.h>
 
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -40,6 +41,10 @@ namespace LeechCraft
 				QList<QAction*> AccountCreatorActions_;
 
 				QStandardItemModel *CLModel_;
+
+				typedef QMap<QString, QStandardItem*> Category2Item_t;
+				typedef QMap<QStandardItem*, Category2Item_t> Account2Category2Item_t;
+				Account2Category2Item_t Account2Category2Item_;
 
 				Core ();
 
@@ -63,6 +68,7 @@ namespace LeechCraft
 				QAbstractItemModel* GetCLModel () const;
 			private:
 				void AddProtocolPlugin (QObject*);
+				QList<QStandardItem*> GetCategoriesItems (QStringList, QStandardItem*);
 			private slots:
 				void handleAccountCreatorTriggered ();
 				void addAccount (QObject*);
