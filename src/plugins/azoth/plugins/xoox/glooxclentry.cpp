@@ -56,7 +56,10 @@ namespace LeechCraft
 
 					QString GlooxCLEntry::GetEntryName () const
 					{
-						return QString::fromUtf8 (RI_->name ().c_str ());
+						std::string name = RI_->name ();
+						if (!name.size ())
+							name = RI_->jid ();
+						return QString::fromUtf8 (name.c_str ());
 					}
 
 					void GlooxCLEntry::SetEntryName (const QString& name)
