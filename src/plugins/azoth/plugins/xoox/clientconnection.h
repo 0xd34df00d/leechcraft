@@ -16,11 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <interfaces/iaccount.h>
+#include <gloox/connectionlistener.h>
+#include <gloox/rosterlistener.h>
+
+class QTimer;
+
+namespace gloox
+{
+	class Client;
+	class JID;
+}
 
 namespace LeechCraft
 {
@@ -30,46 +39,34 @@ namespace LeechCraft
 		{
 			namespace Plugins
 			{
-				class IProtocol;
-
 				namespace Xoox
 				{
-					class ClientConnection;
+					struct GlooxAccountState;
 
-					struct GlooxAccountState
-					{
-						IAccount::State State_;
-						QString Status_;
-						int Priority_;
-					};
-
-					class GlooxAccount : public QObject
-									   , public IAccount
+					class ClientConnection : public QObject
+										   , public gloox::ConnectionListener
 					{
 						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
 
-						QString Name_;
-						IProtocol *ParentProtocol_;
-
-						QString JID_;
-						QString Nick_;
-						QString Resource_;
-						qint16 Priority_;
-
-						boost::shared_ptr<ClientConnection> ClientConnection_;
+						boost::shared_ptr<gloox::Client> Client_;
+						QTimer *PollTimer_;
 					public:
-						GlooxAccount (const QString&, QObject*);
+						ClientConnection (const gloox::JID&,
+								const QString&,
+								const GlooxAccountState&);
 
-						QObject* GetObject ();
-						IProtocol* GetParentProtocol () const;
-						AccountFeatures GetAccountFeatures () const;
-						QList<ICLEntry*> GetCLEntries ();
-						QString GetAccountName () const;
-						void RenameAccount (const QString&);
-						QByteArray GetAccountID () const;
-						void OpenConfigurationDialog ();
-						void ChangeState (State, const QString& = QString ());
+						void SetState (const GlooxAccountState&);
+					protected:
+						// ConnectionListener
+						virtual void onConnect ();
+						virtual void onDisconnect (gloox::ConnectionError);
+						virtual void onResourceBind (const std::string&);
+						virtual void onResourceBindError (const gloox::Error*);
+						virtual void onSessionCreateError (const gloox::Error*);
+						virtual void onStreamEvent (gloox::StreamEvent);
+						virtual bool onTLSConnect (const gloox::CertInfo&);
+					private slots:
+						void handlePollTimer ();
 					};
 				}
 			}

@@ -19,15 +19,10 @@
 #include "glooxaccount.h"
 #include <memory>
 #include <QInputDialog>
-#include <gloox/client.h>
-#include <gloox/message.h>
-#include <gloox/messagesession.h>
-#include <gloox/error.h>
-#include <gloox/capabilities.h>
 #include <interfaces/iprotocol.h>
 #include "glooxaccountconfigurationdialog.h"
 #include "core.h"
-#include "config.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -95,9 +90,22 @@ namespace LeechCraft
 						Priority_ = dia->GetPriority ();
 					}
 
-					void GlooxAccount::ChangeState (State state, const QString& status)
+					void GlooxAccount::ChangeState (State accState, const QString& status)
 					{
-						if (!Client_)
+						if (accState == IAccount::SOffline)
+						{
+							ClientConnection_.reset ();
+							return;
+						}
+
+						struct GlooxAccountState state =
+						{
+							accState,
+							status,
+							Priority_
+						};
+
+						if (!ClientConnection_)
 						{
 							// TODO nonmodal
 							QString pwd = QInputDialog::getText (0,
@@ -105,69 +113,10 @@ namespace LeechCraft
 									tr ("Enter password for %1:").arg (JID_));
 
 							gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
-							Client_.reset (new gloox::Client (jid, pwd.toUtf8 ().constData ()));
-
-							Client_->registerMessageHandler (this);
-							Client_->registerConnectionListener (this);
-
-							gloox::Capabilities *caps = new gloox::Capabilities (Client_->disco ());
-							caps->setNode ("http://leechcraft.org/azoth");
-							Client_->addPresenceExtension (caps);
-
-							Client_->disco ()->setVersion ("LeechCraft Azoth", LEECHCRAFT_VERSION, "Gentŏŏ Linux");
-							Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
-							Client_->disco ()->addFeature ("jabber:iq:roster");
-
-							Client_->setPresence (gloox::Presence::Available, Priority_);
-
-							Client_->connect (false);
+							ClientConnection_.reset (new ClientConnection (jid, pwd, state));
 						}
-					}
-
-					void GlooxAccount::handleMessage (const gloox::Message& stanza,
-							gloox::MessageSession *session)
-					{
-						qDebug () << Q_FUNC_INFO << stanza.body ().c_str ();
-					}
-
-					void GlooxAccount::onConnect ()
-					{
-						qDebug () << Q_FUNC_INFO;
-					}
-
-					void GlooxAccount::onDisconnect (gloox::ConnectionError e)
-					{
-						qWarning () << Q_FUNC_INFO << e << Client_->streamErrorText ().c_str () << Client_->authError ();
-					}
-
-					void GlooxAccount::onResourceBind (const std::string& resource)
-					{
-						qDebug () << Q_FUNC_INFO << resource.c_str ();
-					}
-
-					void GlooxAccount::onResourceBindError (const gloox::Error *error)
-					{
-						qWarning () << Q_FUNC_INFO;
-						if (error)
-							qWarning () << error->text ().c_str ();
-					}
-
-					void GlooxAccount::onSessionCreateError (const gloox::Error *error)
-					{
-						qWarning () << Q_FUNC_INFO;
-						if (error)
-							qWarning () << error->text ().c_str ();
-					}
-
-					void GlooxAccount::onStreamEvent (gloox::StreamEvent e)
-					{
-						qDebug () << Q_FUNC_INFO;
-					}
-
-					bool GlooxAccount::onTLSConnect (const gloox::CertInfo& info)
-					{
-						qDebug () << Q_FUNC_INFO << info.server.c_str ();
-						return true;
+						else
+							ClientConnection_->SetState (state);
 					}
 				}
 			}

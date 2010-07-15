@@ -10,12 +10,14 @@ SET (XOOX_SRCS
 	glooxprotocol.cpp
 	glooxaccountconfigurationdialog.cpp
 	glooxaccount.cpp
+	clientconnection.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
 	glooxprotocol.h
 	glooxaccountconfigurationdialog.h
 	glooxaccount.h
+	clientconnection.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

@@ -49,7 +49,14 @@ namespace LeechCraft
 					{
 						SOffline,
 						SOnline,
-						SNotAvailable
+						SChat,
+						SAway,
+						SDND,
+						SXA,
+						SUnavailable,
+						SProbe,
+						SError,
+						SInvalid
 					};
 
 					virtual QObject* GetObject () = 0;
