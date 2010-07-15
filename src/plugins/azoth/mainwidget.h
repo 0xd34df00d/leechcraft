@@ -40,6 +40,8 @@ namespace LeechCraft
 				QMenu *MenuNewAccount_;
 			public:
 				MainWidget (QWidget* = 0);
+
+				void AddAccountCreators (const QList<QAction*>&);
 			};
 		}
 	}

@@ -38,6 +38,7 @@ namespace LeechCraft
 				QDockWidget *dw = new QDockWidget (mainWin);
 				MW_ = new MainWidget ();
 				dw->setWidget (MW_);
+				dw->setWindowTitle ("Azoth");
 
 				mainWin->addDockWidget (Qt::RightDockWidgetArea, dw);
 
@@ -45,6 +46,12 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+
+				handleAccountCreatorActionsAdded (Core::Instance ().GetAccountCreatorActions ());
+				connect (&Core::Instance (),
+						SIGNAL (accountCreatorActionsAdded (const QList<QAction*>&)),
+						this,
+						SLOT (handleAccountCreatorActionsAdded (const QList<QAction*>&)));
 			}
 
 			void Plugin::SecondInit ()
@@ -97,6 +104,11 @@ namespace LeechCraft
 			void Plugin::AddPlugin (QObject *object)
 			{
 				Core::Instance ().AddPlugin (object);
+			}
+
+			void Plugin::handleAccountCreatorActionsAdded (const QList<QAction*>& actions)
+			{
+				MW_->AddAccountCreators (actions);
 			}
 		};
 	};

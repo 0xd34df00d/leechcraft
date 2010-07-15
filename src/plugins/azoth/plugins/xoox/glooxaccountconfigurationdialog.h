@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
-#include <QObject>
-#include "interfaces/iprotocol.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONDIALOG_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONDIALOG_H
+#include <QDialog>
+#include "ui_glooxaccountconfigurationdialog.h"
 
 namespace LeechCraft
 {
@@ -31,23 +31,18 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
-					class GlooxProtocol : public QObject
-										, public IProtocol
+					class GlooxAccountConfigurationDialog : public QDialog
 					{
 						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
 
-						IProtocolPlugin *ParentProtocolPlugin_;
+						Ui::GlooxAccountConfigurationDialog Ui_;
 					public:
-						GlooxProtocol (QObject*);
-						virtual ~GlooxProtocol ();
+						GlooxAccountConfigurationDialog (QWidget* = 0);
 
-						QObject* GetObject ();
-						QList<IAccount*> GetRegisteredAccounts ();
-						IProtocolPlugin* GetParentProtocolPlugin () const;
-						QString GetProtocolName () const;
-						QByteArray GetProtocolID () const;
-						void InitiateAccountRegistration ();
+						QString GetJID () const;
+						QString GetNick () const;
+						QString GetResource () const;
+						short GetPriority () const;
 					};
 				}
 			}

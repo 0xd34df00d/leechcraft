@@ -17,8 +17,12 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QIcon>
+#include <QAction>
+#include <QtDebug>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
+#include "interfaces/iprotocol.h"
 
 namespace LeechCraft
 {
@@ -74,6 +78,11 @@ namespace LeechCraft
 				return ProtocolPlugins_;
 			}
 
+			QList<QAction*> Core::GetAccountCreatorActions () const
+			{
+				return AccountCreatorActions_;
+			}
+
 			void Core::AddProtocolPlugin (QObject *plugin)
 			{
 				Plugins::IProtocolPlugin *ipp =
@@ -85,11 +94,60 @@ namespace LeechCraft
 						<< "tells it implements the IProtocolPlugin but cast failed";
 				else
 				{
-					qDebug () << Q_FUNC_INFO
-						<< "got protocol plugin"
-						<< plugin;
 					ProtocolPlugins_ << plugin;
+
+					QIcon icon = qobject_cast<IInfo*> (plugin)->GetIcon ();
+					QList<QAction*> bunch;
+					Q_FOREACH (Plugins::IProtocol *proto, ipp->GetProtocols ())
+					{
+						QAction *accountCreator = new QAction (icon,
+								proto->GetProtocolName (), this);
+						accountCreator->setData (QVariant::fromValue<QObject*> (proto->GetObject ()));
+						connect (accountCreator,
+								SIGNAL (triggered ()),
+								this,
+								SLOT (handleAccountCreatorTriggered ()));
+
+						bunch << accountCreator;
+					}
+
+					emit accountCreatorActionsAdded (bunch);
+
+					AccountCreatorActions_ += bunch;
 				}
+			}
+
+			void Core::handleAccountCreatorTriggered ()
+			{
+				QAction *sa = qobject_cast<QAction*> (sender ());
+				if (!sa)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender is not an action"
+							<< sender ();
+					return;
+				}
+
+				QObject *protoObject = sa->data ().value<QObject*> ();
+				if (!protoObject)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender data is not QObject"
+							<< sa->data ();
+					return;
+				}
+
+				Plugins::IProtocol *proto =
+						qobject_cast<Plugins::IProtocol*> (protoObject);
+				if (!proto)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cast protoObject to proto"
+							<< protoObject;
+					return;
+				}
+
+				proto->InitiateAccountRegistration ();
 			}
 		};
 	};

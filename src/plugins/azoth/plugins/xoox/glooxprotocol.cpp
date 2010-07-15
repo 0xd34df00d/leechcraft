@@ -17,7 +17,11 @@
  **********************************************************************/
 
 #include "glooxprotocol.h"
+#include <QInputDialog>
+#include <QMainWindow>
 #include <interfaces/iprotocolplugin.h>
+#include "glooxaccount.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -66,6 +70,15 @@ namespace LeechCraft
 
 					void GlooxProtocol::InitiateAccountRegistration ()
 					{
+						QString name = QInputDialog::getText (0,
+								tr ("LeechCraft"),
+								tr ("Enter new account name"));
+						if (name.isEmpty ())
+							return;
+
+						GlooxAccount *account = new GlooxAccount (name, this);
+						account->OpenConfigurationDialog ();
+						account->ChangeState (IAccount::SOnline);
 					}
 				}
 			}

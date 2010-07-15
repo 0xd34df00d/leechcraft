@@ -35,6 +35,7 @@ namespace LeechCraft
 				ICoreProxy_ptr Proxy_;
 
 				QObjectList ProtocolPlugins_;
+				QList<QAction*> AccountCreatorActions_;
 
 				Core ();
 			public:
@@ -47,10 +48,15 @@ namespace LeechCraft
 				void AddPlugin (QObject*);
 
 				const QObjectList& GetProtocolPlugins () const;
+
+				QList<QAction*> GetAccountCreatorActions () const;
 			private:
 				void AddProtocolPlugin (QObject*);
+			private slots:
+				void handleAccountCreatorTriggered ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
+				void accountCreatorActionsAdded (const QList<QAction*>&);
 			};
 		};
 	};

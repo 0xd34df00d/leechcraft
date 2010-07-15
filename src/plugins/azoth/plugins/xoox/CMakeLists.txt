@@ -8,16 +8,25 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 SET (XOOX_SRCS
 	xoox.cpp
 	glooxprotocol.cpp
+	glooxaccountconfigurationdialog.cpp
+	glooxaccount.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
 	glooxprotocol.h
+	glooxaccountconfigurationdialog.h
+	glooxaccount.h
+	)
+SET (XOOX_FORMS
+	glooxaccountconfigurationdialog.ui
 	)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
+QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
 
 ADD_LIBRARY (leechcraft_azoth_xoox SHARED
 	${XOOX_SRCS}
 	${XOOX_MOC_SRCS}
+	${XOOX_UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_xoox
 	${QT_LIBRARIES}

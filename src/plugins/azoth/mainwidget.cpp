@@ -37,6 +37,11 @@ namespace LeechCraft
 
 				UpperBar_->addAction (MenuNewAccount_->menuAction ());
 			}
+
+			void MainWidget::AddAccountCreators (const QList<QAction*>& actions)
+			{
+				MenuNewAccount_->addActions (actions);
+			}
 		}
 	}
 }

@@ -52,6 +52,8 @@ namespace LeechCraft
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
+			private slots:
+				void handleAccountCreatorActionsAdded (const QList<QAction*>&);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 			};
