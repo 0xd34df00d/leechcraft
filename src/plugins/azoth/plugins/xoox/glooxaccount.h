@@ -70,6 +70,11 @@ namespace LeechCraft
 						QByteArray GetAccountID () const;
 						void OpenConfigurationDialog ();
 						void ChangeState (State, const QString& = QString ());
+						void Synchronize ();
+					private slots:
+						void handleGotRosterItems (const QList<QObject*>&);
+					signals:
+						void gotCLItems (const QList<QObject*>);
 					};
 				}
 			}

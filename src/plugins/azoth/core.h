@@ -66,6 +66,7 @@ namespace LeechCraft
 			private slots:
 				void handleAccountCreatorTriggered ();
 				void addAccount (QObject*);
+				void handleGotCLItems (const QList<QObject*>&);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void accountCreatorActionsAdded (const QList<QAction*>&);

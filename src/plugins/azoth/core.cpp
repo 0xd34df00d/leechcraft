@@ -203,6 +203,78 @@ namespace LeechCraft
 				}
 
 				accItem->appendRows (clItems);
+
+				connect (accObject,
+						SIGNAL (gotCLItems (const QList<QObject*>&)),
+						this,
+						SLOT (handleGotCLItems (const QList<QObject*>&)));
+			}
+
+			void Core::handleGotCLItems (const QList<QObject*>& items)
+			{
+				QMap<QObject*, QStandardItem*> accountItemCache;
+				Q_FOREACH (QObject *item, items)
+				{
+					Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (item);
+					if (!entry)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< item
+								<< "is not a valid ICLEntry";
+						continue;
+					}
+
+					Plugins::IAccount *account = entry->GetParentAccount ();
+					if (!account)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "parent account of"
+								<< item
+								<< "is null";
+						continue;
+					}
+
+					QObject *accountObj = account->GetObject ();
+					if (!accountObj)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "account object of"
+								<< item
+								<< "is null";
+						continue;
+					}
+
+					QStandardItem *accountItem = 0;
+					if (accountItemCache.contains (accountObj))
+						accountItem = accountItemCache [accountObj];
+					else
+						for (int i = 0, size = CLModel_->rowCount ();
+								i < size; ++i)
+							if (CLModel_->item (i)->
+										data (CLRAccountObject).value<QObject*> () ==
+									accountObj)
+							{
+								accountItem = CLModel_->item (i);
+								accountItemCache [accountObj] = accountItem;
+								break;
+							}
+
+					if (!accountItem)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "could not find account item for"
+								<< item
+								<< accountObj;
+						break;
+					}
+
+					QStandardItem *clItem = new QStandardItem (entry->GetEntryName ());
+					clItem->setData (QVariant::fromValue<QObject*> (item),
+							CLREntryObject);
+					clItem->setData (QVariant::fromValue<QObject*> (accountObj),
+							CLRAccountObject);
+					accountItem->appendRow (clItem);
+				}
 			}
 		};
 	};

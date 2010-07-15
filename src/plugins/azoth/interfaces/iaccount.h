@@ -68,6 +68,7 @@ namespace LeechCraft
 					virtual QByteArray GetAccountID () const = 0;
 					virtual void OpenConfigurationDialog () = 0;
 					virtual void ChangeState (State, const QString& = QString ()) = 0;
+					virtual void Synchronize () = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (IAccount::AccountFeatures);

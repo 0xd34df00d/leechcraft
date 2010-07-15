@@ -16,9 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_ICLENTRY_H
-#define PLUGINS_AZOTH_INTERFACES_ICLENTRY_H
-#include <QFlags>
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
+#include <QObject>
+#include <interfaces/iclentry.h>
+
+namespace gloox
+{
+	class RosterItem;
+}
 
 namespace LeechCraft
 {
@@ -30,39 +36,32 @@ namespace LeechCraft
 			{
 				class IAccount;
 
-				class ICLEntry
+				namespace Xoox
 				{
-				public:
-					virtual ~ICLEntry () {}
-
-					enum Feature
+					class GlooxCLEntry : public QObject
+									   , public ICLEntry
 					{
-						FPermanentEntry = 0x0001,
-						FSessionEntry = 0x0002,
-						FIsChat = 0x0004,
-						FIsMUC = 0x0040,
-						FIsPrivateChat = 0x0400,
-						FSupportsRenames = 0x0100
+						Q_OBJECT
+
+						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
+
+						IAccount *ParentAccount_;
+						gloox::RosterItem *RI_;
+					public:
+						GlooxCLEntry (gloox::RosterItem*, QObject*);
+
+						QObject* GetObject ();
+						IAccount* GetParentAccount () const;
+						Features GetEntryFeatures () const;
+						QString GetEntryName () const;
+						void SetEntryName (const QString&);
+						QByteArray GetEntryID () const;
+						QStringList Groups () const;
 					};
-
-					Q_DECLARE_FLAGS (Features, Feature);
-
-					virtual QObject* GetObject () = 0;
-					virtual IAccount* GetParentAccount () const = 0;
-					virtual Features GetEntryFeatures () const = 0;
-					virtual QString GetEntryName () const = 0;
-					virtual void SetEntryName (const QString&) = 0;
-					virtual QByteArray GetEntryID () const = 0;
-					virtual QStringList Groups () const = 0;
-				};
-
-				Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);
+				}
 			}
 		}
 	}
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::ICLEntry,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.ICLEntry/1.0");
 
 #endif

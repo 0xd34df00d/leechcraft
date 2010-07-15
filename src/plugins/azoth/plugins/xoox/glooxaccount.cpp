@@ -113,10 +113,25 @@ namespace LeechCraft
 									tr ("Enter password for %1:").arg (JID_));
 
 							gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
-							ClientConnection_.reset (new ClientConnection (jid, pwd, state));
+							ClientConnection_.reset (new ClientConnection (jid, pwd, state, this));
+
+							connect (ClientConnection_.get (),
+									SIGNAL (gotRosterItems (const QList<QObject*>&)),
+									this,
+									SLOT (handleGotRosterItems (const QList<QObject*>&)));
 						}
 						else
 							ClientConnection_->SetState (state);
+					}
+
+					void GlooxAccount::Synchronize ()
+					{
+						ClientConnection_->Synchronize ();
+					}
+
+					void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
+					{
+						emit gotCLItems (items);
 					}
 				}
 			}

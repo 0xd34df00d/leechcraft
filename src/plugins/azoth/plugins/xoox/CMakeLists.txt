@@ -11,6 +11,7 @@ SET (XOOX_SRCS
 	glooxaccountconfigurationdialog.cpp
 	glooxaccount.cpp
 	clientconnection.cpp
+	glooxclentry.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -18,6 +19,7 @@ SET (XOOX_HEADERS
 	glooxaccountconfigurationdialog.h
 	glooxaccount.h
 	clientconnection.h
+	glooxclentry.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
