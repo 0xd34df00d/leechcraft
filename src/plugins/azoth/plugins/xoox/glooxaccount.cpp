@@ -23,9 +23,11 @@
 #include <gloox/message.h>
 #include <gloox/messagesession.h>
 #include <gloox/error.h>
+#include <gloox/capabilities.h>
 #include <interfaces/iprotocol.h>
 #include "glooxaccountconfigurationdialog.h"
 #include "core.h"
+#include "config.h"
 
 namespace LeechCraft
 {
@@ -104,8 +106,20 @@ namespace LeechCraft
 
 							gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
 							Client_.reset (new gloox::Client (jid, pwd.toUtf8 ().constData ()));
+
 							Client_->registerMessageHandler (this);
 							Client_->registerConnectionListener (this);
+
+							gloox::Capabilities *caps = new gloox::Capabilities (Client_->disco ());
+							caps->setNode ("http://leechcraft.org/azoth");
+							Client_->addPresenceExtension (caps);
+
+							Client_->disco ()->setVersion ("LeechCraft Azoth", LEECHCRAFT_VERSION, "Gentŏŏ Linux");
+							Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
+							Client_->disco ()->addFeature ("jabber:iq:roster");
+
+							Client_->setPresence (gloox::Presence::Available, Priority_);
+
 							Client_->connect (false);
 						}
 					}

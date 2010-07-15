@@ -41,7 +41,7 @@ namespace LeechCraft
 
 				namespace Xoox
 				{
-					class AccountMessageHandler;
+					class ClientConnection;
 
 					class GlooxAccount : public QObject
 									   , public IAccount
