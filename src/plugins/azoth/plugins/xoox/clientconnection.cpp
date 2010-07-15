@@ -25,6 +25,7 @@
 #include <gloox/messagesession.h>
 #include <gloox/error.h>
 #include <gloox/capabilities.h>
+#include <gloox/rostermanager.h>
 #include "glooxaccount.h"
 #include "config.h"
 

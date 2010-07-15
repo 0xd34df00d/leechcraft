@@ -22,6 +22,8 @@
 #include <QSet>
 #include <interfaces/iinfo.h>
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -37,7 +39,15 @@ namespace LeechCraft
 				QObjectList ProtocolPlugins_;
 				QList<QAction*> AccountCreatorActions_;
 
+				QStandardItemModel *CLModel_;
+
 				Core ();
+
+				enum CLRoles
+				{
+					CLRAccountObject = Qt::UserRole + 1,
+					CLREntryObject
+				};
 			public:
 				static Core& Instance ();
 
@@ -50,10 +60,12 @@ namespace LeechCraft
 				const QObjectList& GetProtocolPlugins () const;
 
 				QList<QAction*> GetAccountCreatorActions () const;
+				QAbstractItemModel* GetCLModel () const;
 			private:
 				void AddProtocolPlugin (QObject*);
 			private slots:
 				void handleAccountCreatorTriggered ();
+				void addAccount (QObject*);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void accountCreatorActionsAdded (const QList<QAction*>&);

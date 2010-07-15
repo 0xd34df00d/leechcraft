@@ -35,27 +35,23 @@ namespace LeechCraft
 				public:
 					virtual ~ICLEntry () {}
 
-					enum Type
-					{
-						TPermanentEntry,
-						TSessionEntry
-					};
-
 					enum Feature
 					{
-						FIsMUC,
-						FIsChat,
-						FIsPrivate
+						FPermanentEntry = 0x0001,
+						FSessionEntry = 0x0002,
+						FIsChat = 0x0010,
+						FIsMUC = 0x0020,
+						FIsPrivateChat = 0x0030
 					};
 
-					Q_DECLARE_FLAGS (Feature, Features);
+					Q_DECLARE_FLAGS (Features, Feature);
 
 					virtual QObject* GetObject () const = 0;
 					virtual IAccount* GetParentAccount () const = 0;
-					virtual Type GetEntryType () const = 0;
 					virtual Features GetEntryFeatures () const = 0;
 					virtual QString GetEntryName () const = 0;
 					virtual QByteArray GetEntryID () const = 0;
+					virtual QStringList Groups () const = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

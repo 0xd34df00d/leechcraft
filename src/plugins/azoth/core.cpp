@@ -19,10 +19,14 @@
 #include "core.h"
 #include <QIcon>
 #include <QAction>
+#include <QStandardItemModel>
+#include <QStandardItem>
 #include <QtDebug>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
+#include "interfaces/iaccount.h"
+#include "interfaces/iclentry.h"
 
 namespace LeechCraft
 {
@@ -31,6 +35,7 @@ namespace LeechCraft
 		namespace Azoth
 		{
 			Core::Core ()
+			: CLModel_ (new QStandardItemModel (this))
 			{
 			}
 
@@ -83,6 +88,11 @@ namespace LeechCraft
 				return AccountCreatorActions_;
 			}
 
+			QAbstractItemModel* Core::GetCLModel () const
+			{
+				return CLModel_;
+			}
+
 			void Core::AddProtocolPlugin (QObject *plugin)
 			{
 				Plugins::IProtocolPlugin *ipp =
@@ -109,6 +119,15 @@ namespace LeechCraft
 								SLOT (handleAccountCreatorTriggered ()));
 
 						bunch << accountCreator;
+
+						Q_FOREACH (Plugins::IAccount *account,
+								proto->GetRegisteredAccounts ())
+							addAccount (account->GetObject ());
+
+						connect (proto->GetObject (),
+								SIGNAL (accountAdded (QObject*)),
+								this,
+								SLOT (addAccount (QObject*)));
 					}
 
 					emit accountCreatorActionsAdded (bunch);
@@ -148,6 +167,42 @@ namespace LeechCraft
 				}
 
 				proto->InitiateAccountRegistration ();
+			}
+
+			void Core::addAccount (QObject *accObject)
+			{
+				Plugins::IAccount *account =
+						qobject_cast<Plugins::IAccount*> (accObject);
+				if (!account)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "account doesn't implement Plugins::IAccount*"
+							<< accObject
+							<< sender ();
+					return;
+				}
+
+				QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
+				accItem->setData (QVariant::fromValue<QObject*> (account->GetObject ()),
+						CLRAccountObject);
+				CLModel_->appendRow (accItem);
+
+				accItem->setEditable (false);
+
+				QList<QStandardItem*> clItems;
+				Q_FOREACH (Plugins::ICLEntry *clEntry,
+						account->GetCLEntries ())
+				{
+					QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
+					clItem->setData (QVariant::fromValue<QObject*> (account->GetObject ()),
+							CLRAccountObject);
+					clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
+							CLREntryObject);
+
+					clItems << clItem;
+				}
+
+				accItem->appendRows (clItems);
 			}
 		};
 	};

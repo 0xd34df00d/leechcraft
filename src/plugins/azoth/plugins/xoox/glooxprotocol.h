@@ -48,6 +48,8 @@ namespace LeechCraft
 						QString GetProtocolName () const;
 						QByteArray GetProtocolID () const;
 						void InitiateAccountRegistration ();
+					signals:
+						void accountAdded (QObject*);
 					};
 				}
 			}

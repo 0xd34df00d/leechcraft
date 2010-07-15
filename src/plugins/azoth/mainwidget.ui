@@ -24,7 +24,17 @@
     <number>2</number>
    </property>
    <item>
-    <widget class="QTreeView" name="CLTree_"/>
+    <widget class="QTreeView" name="CLTree_">
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="animated">
+      <bool>true</bool>
+     </property>
+     <property name="headerHidden">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
   </layout>
   <action name="ActionAddAccount_">

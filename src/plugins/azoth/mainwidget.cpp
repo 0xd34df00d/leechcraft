@@ -19,6 +19,7 @@
 #include "mainwidget.h"
 #include <QToolBar>
 #include <QMenu>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -32,6 +33,7 @@ namespace LeechCraft
 			, MenuNewAccount_ (new QMenu)
 			{
 				Ui_.setupUi (this);
+				Ui_.CLTree_->setModel (Core::Instance ().GetCLModel ());
 
 				layout ()->addWidget (UpperBar_);
 

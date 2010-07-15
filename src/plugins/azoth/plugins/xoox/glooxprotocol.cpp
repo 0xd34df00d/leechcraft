@@ -78,6 +78,9 @@ namespace LeechCraft
 
 						GlooxAccount *account = new GlooxAccount (name, this);
 						account->OpenConfigurationDialog ();
+
+						emit accountAdded (account);
+
 						account->ChangeState (IAccount::SOnline);
 					}
 				}
