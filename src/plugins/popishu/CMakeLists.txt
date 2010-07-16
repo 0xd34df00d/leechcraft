@@ -33,12 +33,14 @@ SET (SRCS
 	core.cpp
 	editorpage.cpp
 	xmlsettingsmanager.cpp
+	replacedialog.cpp
 	)
 SET (HEADERS
 	popishu.h
 	core.h
 	editorpage.h
 	xmlsettingsmanager.h
+	replacedialog.h
 	)
 SET (RESOURCES
 	popishuresources.qrc
@@ -55,6 +57,7 @@ SET (COMPILED_TRANSLATIONS
 	)
 SET (FORMS
 	editorpage.ui
+	replacedialog.ui
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

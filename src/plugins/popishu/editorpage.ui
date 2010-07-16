@@ -225,6 +225,14 @@
     <string>Character</string>
    </property>
   </action>
+  <action name="ActionReplace_">
+   <property name="text">
+    <string>Replace...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

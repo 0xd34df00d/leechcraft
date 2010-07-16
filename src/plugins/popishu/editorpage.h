@@ -80,6 +80,7 @@ namespace LeechCraft
 				void on_ActionWrapNone__triggered ();
 				void on_ActionWrapWords__triggered ();
 				void on_ActionWrapCharacters__triggered ();
+				void on_ActionReplace__triggered ();
 				void on_TextEditor__textChanged ();
 				void on_Inject__released ();
 				void on_Release__released ();

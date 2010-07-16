@@ -38,6 +38,7 @@
 #include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "replacedialog.h"
 
 Q_DECLARE_METATYPE (QObject**);
 
@@ -109,7 +110,7 @@ namespace LeechCraft
 						this,
 						SLOT (checkInterpreters (const QString&)));
 
-				QString editor = tr ("Editor");
+				QString editor = "view";
 				WindowMenus_ [editor] << Ui_.ActionEnableFolding_;
 				WindowMenus_ [editor] << Ui_.ActionAutoIndent_;
 				WindowMenus_ [editor] << Ui_.ActionShowLineNumbers_;
@@ -131,6 +132,9 @@ namespace LeechCraft
 
 				WindowMenus_ [editor] << Ui_.ActionShowEOL_;
 				WindowMenus_ [editor] << Ui_.ActionShowCaretLine_;
+
+				QString edit = tr ("Edit");
+				WindowMenus_ [edit] << Ui_.ActionReplace_;
 
 				connect (Ui_.ActionShowEOL_,
 						SIGNAL (toggled (bool)),
@@ -352,6 +356,37 @@ namespace LeechCraft
 			void EditorPage::on_ActionWrapCharacters__triggered ()
 			{
 				Ui_.TextEditor_->setWrapMode (QsciScintilla::WrapCharacter);
+			}
+
+			void EditorPage::on_ActionReplace__triggered ()
+			{
+				std::auto_ptr<ReplaceDialog> dia (new ReplaceDialog (this));
+				if (dia->exec () != QDialog::Accepted)
+					return;
+
+				QString before = dia->GetBefore ();
+				QString after = dia->GetAfter ();
+				Qt::CaseSensitivity cs = dia->GetCaseSensitivity ();
+				switch (dia->GetScope ())
+				{
+				case ReplaceDialog::SAll:
+				{
+					QString text = Ui_.TextEditor_->text ();
+					text.replace (before, after, cs);
+					Ui_.TextEditor_->setText (text);
+				}
+				case ReplaceDialog::SSelected:
+				{
+					QString text = Ui_.TextEditor_->selectedText ();
+					text.replace (before, after, cs);
+
+					int lineFrom = 0, indexFrom = 0,
+							lineTo = 0, indexTo = 0;
+					Ui_.TextEditor_->getSelection (&lineFrom, &indexFrom, &lineTo, &indexTo);
+					Ui_.TextEditor_->removeSelectedText ();
+					Ui_.TextEditor_->insertAt (text, lineFrom, indexFrom);
+				}
+				}
 			}
 
 			void EditorPage::on_TextEditor__textChanged ()
