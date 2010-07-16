@@ -120,6 +120,14 @@ namespace LeechCraft
 				wsVis->addAction (Ui_.ActionWSVisible_);
 				wsVis->addAction (Ui_.ActionWSVisibleAfterIndent_);
 				WindowMenus_ [editor] << wsVis->menuAction ();
+				GroupActions (wsVis->actions ());
+
+				QMenu *wrapMode = new QMenu (tr ("Wrapping mode"));
+				wrapMode->addAction (Ui_.ActionWrapNone_);
+				wrapMode->addAction (Ui_.ActionWrapWords_);
+				wrapMode->addAction (Ui_.ActionWrapCharacters_);
+				WindowMenus_ [editor] << wrapMode->menuAction ();
+				GroupActions (wrapMode->actions ());
 
 				WindowMenus_ [editor] << Ui_.ActionShowEOL_;
 				WindowMenus_ [editor] << Ui_.ActionShowCaretLine_;
@@ -323,6 +331,21 @@ namespace LeechCraft
 						QsciScintilla::NoFoldStyle);
 			}
 
+			void EditorPage::on_ActionWrapNone__triggered ()
+			{
+				Ui_.TextEditor_->setWrapMode (QsciScintilla::WrapNone);
+			}
+
+			void EditorPage::on_ActionWrapWords__triggered ()
+			{
+				Ui_.TextEditor_->setWrapMode (QsciScintilla::WrapWord);
+			}
+
+			void EditorPage::on_ActionWrapCharacters__triggered ()
+			{
+				Ui_.TextEditor_->setWrapMode (QsciScintilla::WrapCharacter);
+			}
+
 			void EditorPage::on_TextEditor__textChanged ()
 			{
 				Modified_ = true;
@@ -502,13 +525,6 @@ namespace LeechCraft
 			void EditorPage::SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility wv)
 			{
 				Ui_.TextEditor_->setWhitespaceVisibility (wv);
-				QAction *senderAct = qobject_cast<QAction*> (sender ());
-				if (senderAct)
-				{
-					senderAct->blockSignals (true);
-					senderAct->setChecked (true);
-					senderAct->blockSignals (false);
-				}
 			}
 
 			bool EditorPage::Save ()
@@ -592,6 +608,16 @@ namespace LeechCraft
 			{
 				Ui_.ConsoleBox_->setVisible (show);
 				Ui_.Splitter_->refresh ();
+			}
+
+			void EditorPage::GroupActions (const QList<QAction*>& actions)
+			{
+				if (!actions.size ())
+					return;
+
+				QActionGroup *group = new QActionGroup (this);
+				Q_FOREACH (QAction *action, actions)
+					group->addAction (action);
 			}
 		};
 	};

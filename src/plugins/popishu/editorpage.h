@@ -77,6 +77,9 @@ namespace LeechCraft
 				void on_ActionWSVisibleAfterIndent__triggered ();
 				void on_ActionShowLineNumbers__toggled (bool);
 				void on_ActionEnableFolding__toggled (bool);
+				void on_ActionWrapNone__triggered ();
+				void on_ActionWrapWords__triggered ();
+				void on_ActionWrapCharacters__triggered ();
 				void on_TextEditor__textChanged ();
 				void on_Inject__released ();
 				void on_Release__released ();
@@ -93,6 +96,7 @@ namespace LeechCraft
 				QString GetLanguage (const QString& filename) const;
 				QString FixLanguage (const QString&) const;
 				void ShowConsole (bool);
+				void GroupActions (const QList<QAction*>&);
 			signals:
 				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);

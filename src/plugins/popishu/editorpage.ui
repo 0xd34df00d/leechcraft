@@ -195,6 +195,36 @@
     <string>Enable folding</string>
    </property>
   </action>
+  <action name="ActionWrapNone_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>No wrap</string>
+   </property>
+  </action>
+  <action name="ActionWrapWords_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Word</string>
+   </property>
+  </action>
+  <action name="ActionWrapCharacters_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Character</string>
+   </property>
+   <property name="toolTip">
+    <string>Character</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
