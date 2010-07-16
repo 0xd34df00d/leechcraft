@@ -85,6 +85,7 @@ namespace LeechCraft
 				void on_Release__released ();
 
 				void handleMonoFontChanged ();
+				void handleVisualWrapFlags ();
 				void handleOtherPrefs ();
 
 				void checkInterpreters (QString language);

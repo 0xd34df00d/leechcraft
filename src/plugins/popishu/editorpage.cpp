@@ -155,6 +155,14 @@ namespace LeechCraft
 				XmlSettingsManager::Instance ()->
 						RegisterObject ("MonoFont", this, "handleMonoFontChanged");
 
+				QList<QByteArray> visualWrapPrefs;
+				visualWrapPrefs << "EndLineFlag"
+						<< "StartLineFlag"
+						<< "WrappedIndent";
+				XmlSettingsManager::Instance ()->
+						RegisterObject (visualWrapPrefs, this, "handleVisualWrapFlags");
+				handleVisualWrapFlags ();
+
 				QList<QByteArray> otherPrefs;
 				otherPrefs << "TabWidget"
 						<< "IdentationWidth";
@@ -487,6 +495,32 @@ namespace LeechCraft
 				QFont font = XmlSettingsManager::Instance ()->
 						property ("MonoFont").value<QFont> ();
 				lexer->setFont (font);
+			}
+
+			namespace
+			{
+				QsciScintilla::WrapVisualFlag FlagFromName (const QString& name)
+				{
+					if (name == "text")
+						return QsciScintilla::WrapFlagByText;
+					else if (name == "border")
+						return QsciScintilla::WrapFlagByBorder;
+					else
+						return QsciScintilla::WrapFlagNone;
+				}
+			}
+
+			void EditorPage::handleVisualWrapFlags ()
+			{
+				QsciScintilla::WrapVisualFlag eflag =
+						FlagFromName (XmlSettingsManager::Instance ()->
+								property ("EndLineFlag").toString ());
+				QsciScintilla::WrapVisualFlag sflag =
+						FlagFromName (XmlSettingsManager::Instance ()->
+								property ("StartLineFlag").toString ());;
+				int indent = XmlSettingsManager::Instance ()->
+						property ("WrappedIndent").toInt ();
+				Ui_.TextEditor_->setWrapVisualFlags (eflag, sflag, indent);
 			}
 
 			void EditorPage::handleOtherPrefs ()
