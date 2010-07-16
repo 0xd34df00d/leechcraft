@@ -147,6 +147,7 @@ namespace LeechCraft
 					if (!Account2Category2Item_ [account].keys ().contains (cat))
 					{
 						QStandardItem *catItem = new QStandardItem (cat);
+						catItem->setEditable (false);
 						catItem->setData (account->data (CLRAccountObject), CLRAccountObject);
 						Account2Category2Item_ [account] [cat] = catItem;
 						account->appendRow (catItem);
@@ -220,6 +221,7 @@ namespace LeechCraft
 					Q_FOREACH (QStandardItem *catItem, catItems)
 					{
 						QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
+						clItem->setEditable (false);
 						clItem->setData (QVariant::fromValue<QObject*> (account->GetObject ()),
 								CLRAccountObject);
 						clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
@@ -297,6 +299,7 @@ namespace LeechCraft
 					Q_FOREACH (QStandardItem *catItem, catItems)
 					{
 						QStandardItem *clItem = new QStandardItem (entry->GetEntryName ());
+						clItem->setEditable (false);
 						clItem->setData (QVariant::fromValue<QObject*> (item),
 								CLREntryObject);
 						clItem->setData (QVariant::fromValue<QObject*> (accountObj),
