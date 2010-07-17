@@ -1288,9 +1288,9 @@ namespace LeechCraft
 					title = tr ("No title");
 				QString host = url.host ();
 				host.remove ("www.");
-				QString path = QString ("/%1/%2")
-					.arg (host.isEmpty () ? QString ("Poshuku") : host)
-					.arg (title);
+				QStringList path;
+				path << (host.isEmpty () ? QString ("Poshuku") : host);
+				path << title;
 
 				QStringList domains = host.split ('.', QString::SkipEmptyParts);
 				while (domains.size () > 2)
@@ -1299,8 +1299,7 @@ namespace LeechCraft
 					QString joined = domains.join (".");
 					if (skip.contains (joined))
 						continue;
-					path.prepend (QString ("/%1")
-							.arg (joined));
+					path.prepend (joined);
 				}
 
 				setProperty ("WidgetLogicalPath", path);

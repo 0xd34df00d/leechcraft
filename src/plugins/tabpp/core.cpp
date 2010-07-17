@@ -25,6 +25,25 @@
 #include <plugininterface/treeitem.h>
 #include <interfaces/imultitabs.h>
 
+bool operator< (const QStringList& left, const QStringList& right)
+{
+	if (left.size () < right.size ())
+		return true;
+
+	// Left is empty, but not less than right => right is
+	// empty as well, and stringlists are equal.
+	if (left.isEmpty ())
+		return false;
+
+	// We should compare elements from the end.
+	int delta = left.size () - right.size ();
+	for (int i = right.size () - 1; i >= 0; --i)
+		if (left.at (i + delta) < right.at (i))
+			return true;
+
+	return false;
+}
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -253,17 +272,16 @@ namespace LeechCraft
 					return;
 
 				CleanUpRemovedLogicalPath (widget);
-				QString path = widget->property ("WidgetLogicalPath").toString ();
-				QString removed = path;
-				if (removed.remove ('/').isEmpty ())
+				QStringList parts = widget->
+						property ("WidgetLogicalPath").toStringList ();
+				if (parts.isEmpty ())
 				{
 					QString title = Bar_->tabText (idx);
 					if (title.isEmpty ())
 						title = tr ("unknown");
-					path = QString ("/%1").arg (title);
+					parts << title;
 				}
 
-				QStringList parts = path.split ('/', QString::SkipEmptyParts);
 				Util::TreeItem *previous = RootItem_;
 				QModelIndex previousIndex;
 				Q_FOREACH (QString part, parts)
@@ -287,8 +305,8 @@ namespace LeechCraft
 				}
 				previous->ModifyData (0,
 						QVariant::fromValue<QWidget*> (widget), CRWidget);
-				Path2Child_ [path] = previous;
-				Child2Path_ [previous] = path;
+				Path2Child_ [parts] = previous;
+				Child2Path_ [previous] = parts;
 				Widget2Child_ [widget] = previous;
 				Child2Widget_ [previous] = widget;
 			}

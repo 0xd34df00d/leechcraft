@@ -45,8 +45,8 @@ namespace LeechCraft
 				Util::TreeItem *RootItem_;
 				QSortFilterProxyModel *Sorter_;
 
-				QMap<QString, Util::TreeItem*> Path2Child_;
-				QMap<Util::TreeItem*, QString> Child2Path_;
+				QMap<QStringList, Util::TreeItem*> Path2Child_;
+				QMap<Util::TreeItem*, QStringList> Child2Path_;
 				QMap<QWidget*, Util::TreeItem*> Widget2Child_;
 				QMap<Util::TreeItem*, QWidget*> Child2Widget_;
 				QMap<int, QWidget*> Pos2Widget_;
