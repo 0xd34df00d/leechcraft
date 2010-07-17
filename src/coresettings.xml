@@ -21,7 +21,7 @@
 			<item type="checkbox" property="TrySmarterTabsWidth" state="on">
 				<label lang="en" value="Try smarter tabs width calculation" />
 				<label lang="ru" value="Пытаться использовать более умный алгоритм расчета ширины вкладок" />
-				<label lang="uk" value="Нмагатися використовувати більш досконалий алгоритм розрахунку ширини вкладок" />
+				<label lang="uk" value="Намагатися використовувати більш досконалий алгоритм розрахунку ширини вкладок" />
 			</item>
 			<item type="combobox" property="IconSize">
 				<label lang="en" value="Icon size" />
