@@ -324,6 +324,10 @@
         <source>Do you really want to clear cookies?</source>
         <translation>Вы действительно хотите удалить куки?</translation>
     </message>
+    <message>
+        <source>Plugin load error</source>
+        <translation>Ошибка загрузки плагина</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
@@ -453,6 +457,34 @@
         <source>Release of one or more plugins failed.</source>
         <translation>Завершение работы одного или нескольких плагинов не удалось.</translation>
     </message>
+    <message>
+        <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
+        <translation>Отказываюсь загружать плагин из %1, так как он не является файлом.</translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: %2.</source>
+        <translation>Невозможно загрузить плагин из %1: %2.</translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
+        <translation>Невозможно загрузить плагин из %1: невозможно создать экземпляр плагина с исключением %2.</translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: failed to construct plugin instance.</source>
+        <translation>Невозможно загрузить плагин из %1: невозможно создать экземпляр плагина.</translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
+        <translation>Невозможно загрузить плагин из %1: невозможно преобразовать экземпляр плагина к IInfo*.</translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
+        <translation>Невозможно загрузить плагин из %1: не удалось получить имя/информацию/иконку с исключением %2.</translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: unable to get name/info/icon.</source>
+        <translation>Невозможно загрузить плагин из %1: не удалось получить имя/информацию/иконку.</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::SslErrorsDialog</name>
@@ -556,7 +588,7 @@
     </message>
     <message>
         <source>Restore tabs</source>
-        <translation>Восстановить вкладки</translation>
+        <translation type="obsolete">Восстановить вкладки</translation>
     </message>
 </context>
 <context>
