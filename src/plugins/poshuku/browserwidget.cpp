@@ -72,7 +72,7 @@ namespace LeechCraft
 			using LeechCraft::ActionInfo;
 
 			QObject *BrowserWidget::S_MultiTabsParent_ = 0;
-			
+
 			BrowserWidget::BrowserWidget (QWidget *parent)
 			: QWidget (parent)
 			, ReloadTimer_ (new QTimer (this))
@@ -96,25 +96,25 @@ namespace LeechCraft
 						SIGNAL (timeout ()),
 						Ui_.WebView_,
 						SLOT (reload ()));
-			
+
 				Cut_ = Ui_.WebView_->pageAction (QWebPage::Cut);
 				Cut_->setProperty ("ActionIcon", "poshuku_cut");
 				Copy_ = Ui_.WebView_->pageAction (QWebPage::Copy);
 				Copy_->setProperty ("ActionIcon", "poshuku_copy");
 				Paste_ = Ui_.WebView_->pageAction (QWebPage::Paste);
 				Paste_->setProperty ("ActionIcon", "poshuku_paste");
-			
+
 				ToolBar_ = new QToolBar (this);
 				ToolBar_->setWindowTitle ("Poshuku");
-			
+
 				Back_ = Ui_.WebView_->pageAction (QWebPage::Back);
 				Back_->setParent (this);
 				Back_->setProperty ("ActionIcon", "poshuku_back");
-			
+
 				Forward_ = Ui_.WebView_->pageAction (QWebPage::Forward);
 				Forward_->setParent (this);
 				Forward_->setProperty ("ActionIcon", "poshuku_forward");
-			
+
 				Reload_ = Ui_.WebView_->pageAction (QWebPage::Reload);
 				Reload_->setProperty ("ActionIcon", "poshuku_reload");
 				Reload_->setIcon (Core::Instance ()
@@ -131,14 +131,14 @@ namespace LeechCraft
 				ReloadPeriodically_ = new QAction (tr ("Reload periodically"), this);
 				ReloadPeriodically_->setCheckable (true);
 				ReloadPeriodically_->setProperty ("ActionIcon", "poshuku_reloadperiodically");
-				
+
 				NotifyWhenFinished_ = new QAction (tr ("Notify when finished loading"), this);
 				NotifyWhenFinished_->setCheckable (true);
 				NotifyWhenFinished_->setProperty ("ActionIcon", "poshuku_notifywhenfinished");
 				NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ()->
 						property ("NotifyFinishedByDefault").toBool ());
 
-			
+
 				Add2Favorites_ = new QAction (tr ("Bookmark..."),
 						this);
 				Add2Favorites_->setProperty ("ActionIcon", "poshuku_addtofavorites");
@@ -148,22 +148,22 @@ namespace LeechCraft
 						this);
 				Find_->setProperty ("ActionIcon", "poshuku_find");
 				Find_->setEnabled (false);
-			
+
 				Print_ = new QAction (tr ("Print..."),
 						this);
 				Print_->setProperty ("ActionIcon", "poshuku_print");
 				Print_->setEnabled (false);
-			
+
 				PrintPreview_ = new QAction (tr ("Print with preview..."),
 						this);
 				PrintPreview_->setProperty ("ActionIcon", "poshuku_printpreview");
 				PrintPreview_->setEnabled (false);
-			
+
 				ScreenSave_ = new QAction (tr ("Take page's screenshot..."),
 						this);
 				ScreenSave_->setProperty ("ActionIcon", "poshuku_takescreenshot");
 				ScreenSave_->setEnabled (false);
-			
+
 				ViewSources_ = new QAction (tr ("View sources..."),
 						this);
 				ViewSources_->setProperty ("ActionIcon", "poshuku_viewsources");
@@ -172,15 +172,15 @@ namespace LeechCraft
 				ZoomIn_ = new QAction (tr ("Zoom in"),
 						this);
 				ZoomIn_->setProperty ("ActionIcon", "poshuku_zoomin");
-			
+
 				ZoomOut_ = new QAction (tr ("Zoom out"),
 						this);
 				ZoomOut_->setProperty ("ActionIcon", "poshuku_zoomout");
-			
+
 				ZoomReset_ = new QAction (tr ("Reset zoom"),
 						this);
 				ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
-			
+
 				ToolBar_->addAction (Back_);
 				ToolBar_->addAction (Forward_);
 				ToolBar_->addAction (ReloadStop_);
@@ -193,7 +193,7 @@ namespace LeechCraft
 						SLOT (showSendersMenu ()));
 				more->setText (tr ("More..."));
 				more->setProperty ("ActionIcon", "poshuku_more");
-				
+
 				ToolBar_->addAction (more);
 
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
@@ -228,22 +228,22 @@ namespace LeechCraft
 						SIGNAL (triggered (QAction*)),
 						this,
 						SLOT (handleChangeEncodingTriggered (QAction*)));
-			
+
 				RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 				RecentlyClosed_->setEnabled (false);
 				RecentlyClosedAction_ = RecentlyClosed_->menuAction ();
-			
+
 				ExternalLinks_ = new QMenu (this);
 				ExternalLinks_->menuAction ()->setText (tr ("External links"));
 				ExternalLinks_->menuAction ()->
 					setProperty ("ActionIcon", "poshuku_externalentities");
-			
+
 				QWidgetAction *addressBar = new QWidgetAction (this);
 				addressBar->setDefaultWidget (Ui_.URLFrame_);
 				ToolBar_->addAction (addressBar);
-			
+
 				static_cast<QVBoxLayout*> (layout ())->insertWidget (0, ToolBar_);
-			
+
 				connect (ReloadPeriodically_,
 						SIGNAL (triggered ()),
 						this,
@@ -297,7 +297,7 @@ namespace LeechCraft
 						SIGNAL (load (const QString&)),
 						this,
 						SLOT (handleURLFrameLoad (const QString&)));
-			
+
 				connect (Ui_.WebView_,
 						SIGNAL (titleChanged (const QString&)),
 						this,
@@ -384,27 +384,27 @@ namespace LeechCraft
 						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 						this,
 						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-			
+
 				connect (&Core::Instance (),
 						SIGNAL (newUnclose (QAction*)),
 						this,
 						SLOT (handleNewUnclose (QAction*)));
-			
+
 				QTimer::singleShot (100,
 						this,
 						SLOT (focusLineEdit ()));
-			
+
 				FindDialog_ = new FindDialog (Ui_.WebFrame_);
 				FindDialog_->hide ();
-			
+
 				connect (FindDialog_,
 						SIGNAL (next (const QString&, QWebPage::FindFlags)),
 						this,
 						SLOT (findText (const QString&, QWebPage::FindFlags)));
-			
+
 				RememberDialog_ = new PasswordRemember (Ui_.WebFrame_);
 				RememberDialog_->hide ();
-			
+
 				connect (Ui_.WebView_,
 						SIGNAL (storeFormData (const PageFormsData_t&)),
 						RememberDialog_,
@@ -412,7 +412,7 @@ namespace LeechCraft
 
 				updateLogicalPath ();
 			}
-			
+
 			BrowserWidget::~BrowserWidget ()
 			{
 				if (Own_)
@@ -423,7 +423,7 @@ namespace LeechCraft
 			{
 				S_MultiTabsParent_ = parent;
 			}
-			
+
 			void BrowserWidget::Deown ()
 			{
 				Own_ = false;
@@ -433,7 +433,7 @@ namespace LeechCraft
 			{
 				const IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
 				QObject *object = Core::Instance ().parent ();
-			
+
 				Cut_->setShortcut (proxy->GetShortcut (object, EACut_));
 				Copy_->setShortcut (proxy->GetShortcut (object, EACopy_));
 				Paste_->setShortcut (proxy->GetShortcut (object, EAPaste_));
@@ -452,7 +452,7 @@ namespace LeechCraft
 				ZoomReset_->setShortcut (proxy->GetShortcut (object, EAZoomReset_));
 				RecentlyClosedAction_->setShortcut (proxy->GetShortcut (object, EARecentlyClosedAction_));
 			}
-			
+
 			void BrowserWidget::SetUnclosers (const QList<QAction*>& unclosers)
 			{
 				RecentlyClosed_->addActions (unclosers);
@@ -464,7 +464,7 @@ namespace LeechCraft
 							SIGNAL (triggered ()),
 							unclosers.front (),
 							SLOT (trigger ()));
-			
+
 					foreach (QAction *action, unclosers)
 					{
 						connect (action,
@@ -474,7 +474,7 @@ namespace LeechCraft
 					}
 				}
 			}
-			
+
 			CustomWebView* BrowserWidget::GetView () const
 			{
 				return Ui_.WebView_;
@@ -535,7 +535,7 @@ namespace LeechCraft
 				if (!settings.ScrollPosition_.isNull ())
 					SetOnLoadScrollPoint (settings.ScrollPosition_);
 			}
-			
+
 			void BrowserWidget::SetURL (const QUrl& thurl)
 			{
 				QUrl url = thurl;
@@ -550,12 +550,12 @@ namespace LeechCraft
 					Ui_.WebView_->Load (url);
 				}
 			}
-			
+
 			void BrowserWidget::Load (const QString& url)
 			{
 				SetURL (Core::Instance ().MakeURL (url));
 			}
-			
+
 			void BrowserWidget::SetHtml (const QString& html, const QUrl& base)
 			{
 				Ui_.URLFrame_->GetEdit ()->clear ();
@@ -567,22 +567,22 @@ namespace LeechCraft
 			{
 				ToolBar_->setVisible (visible);
 			}
-			
+
 			QWidget* BrowserWidget::Widget ()
 			{
 				return this;
 			}
-			
+
 #define _LC_MERGE(a) EA##a
-			
+
 #define _LC_SINGLE(a) \
 				case _LC_MERGE(a): \
 					a->setShortcut (shortcut); \
 					break;
-			
+
 #define _LC_TRAVERSER(z,i,array) \
 				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
-			
+
 #define _LC_EXPANDER(Names) \
 				switch (name) \
 				{ \
@@ -608,7 +608,7 @@ namespace LeechCraft
 						(Stop_)
 						(RecentlyClosedAction_));
 			}
-			
+
 #define _L(a,b) result [EA##a] = ActionInfo (a->text (), \
 					b, a->icon ())
 			QMap<int, ActionInfo> BrowserWidget::GetActionInfo () const
@@ -633,12 +633,12 @@ namespace LeechCraft
 				_L (RecentlyClosedAction_, tr ("Ctrl+Shift+T"));
 				return result;
 			}
-			
+
 			void BrowserWidget::Remove ()
 			{
 				emit needToClose ();
 			}
-			
+
 			QToolBar* BrowserWidget::GetToolBar () const
 			{
 				return Own_ ? ToolBar_ : 0;
@@ -676,7 +676,7 @@ namespace LeechCraft
 			{
 				OnLoadPos_ = sp;
 			}
-			
+
 			void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -685,15 +685,15 @@ namespace LeechCraft
 					return;
 
 				std::auto_ptr<QPrinter> printer (new QPrinter ());
-			
+
 				QPrintDialog *dialog = new QPrintDialog (printer.get (), this);
 				dialog->setWindowTitle (tr ("Print web page"));
 				if (!Ui_.WebView_->selectedText ().isEmpty ())
 					dialog->addEnabledOption (QAbstractPrintDialog::PrintSelection);
-			
+
 				if (dialog->exec () != QDialog::Accepted)
 					return;
-			
+
 				if (preview)
 				{
 					QPrintPreviewDialog *prevDialog =
@@ -702,11 +702,11 @@ namespace LeechCraft
 							SIGNAL (paintRequested (QPrinter*)),
 							frame,
 							SLOT (print (QPrinter*)));
-			
+
 					if (prevDialog->exec () != QDialog::Accepted)
 						return;
 				}
-			
+
 				frame->print (printer.get ());
 			}
 
@@ -720,7 +720,7 @@ namespace LeechCraft
 				ReloadPeriodically_->setToolTip (tip);
 				ReloadTimer_->start (msecs);
 			}
-			
+
 			void BrowserWidget::notificationActionTriggered (int idx)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -755,7 +755,7 @@ namespace LeechCraft
 
 				emit iconChanged (icon);
 			}
-			
+
 			void BrowserWidget::handleStatusBarMessage (const QString& thmsg)
 			{
 				QString msg = thmsg;
@@ -766,14 +766,14 @@ namespace LeechCraft
 
 				emit statusBarChanged (msg);
 			}
-			
+
 			void BrowserWidget::handleURLFrameLoad (const QString& text)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 				emit hookURLEditReturnPressed (proxy, this);
 				if (proxy->IsCancelled ())
 					return;
-			
+
 				Load (text);
 			}
 
@@ -814,7 +814,7 @@ namespace LeechCraft
 
 				emit invalidateSettings ();
 			}
-			
+
 			void BrowserWidget::handleAdd2Favorites ()
 			{
 				emit addToFavorites (Ui_.WebView_->title (),
@@ -829,7 +829,7 @@ namespace LeechCraft
 				FindDialog_->show ();
 				FindDialog_->Focus ();
 			}
-			
+
 			void BrowserWidget::findText (const QString& thtext,
 					QWebPage::FindFlags flags)
 			{
@@ -846,38 +846,38 @@ namespace LeechCraft
 				bool found = Ui_.WebView_->page ()->findText (text, flags);
 				FindDialog_->SetSuccessful (found);
 			}
-			
+
 			void BrowserWidget::handleViewPrint (QWebFrame *frame)
 			{
 				PrintImpl (false, frame);
 			}
-			
+
 			void BrowserWidget::handlePrinting ()
 			{
 				PrintImpl (false, Ui_.WebView_->page ()->mainFrame ());
 			}
-			
+
 			void BrowserWidget::handlePrintingWithPreview ()
 			{
 				PrintImpl (true, Ui_.WebView_->page ()->mainFrame ());
 			}
-			
+
 			void BrowserWidget::handleScreenSave ()
 			{
 				QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
 				QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
 				QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
-			
+
 				QPixmap image (contentsSize);
 				QPainter painter (&image);
 				Ui_.WebView_->page ()->setViewportSize (contentsSize);
 				Ui_.WebView_->page ()->mainFrame ()->render (&painter, clip);
 				Ui_.WebView_->page ()->setViewportSize (oldSize);
-			
+
 				std::auto_ptr<ScreenShotSaveDialog> dia (new ScreenShotSaveDialog (image, this));
 				if (dia->exec () != QDialog::Accepted)
 					return;
-			
+
 				QString filename = QFileDialog::getSaveFileName (this,
 						tr ("Save screenshot"),
 						XmlSettingsManager::Instance ()->
@@ -886,9 +886,9 @@ namespace LeechCraft
 									QDesktopServices::DocumentsLocation)).toString ());
 				if (filename.isEmpty ())
 					return;
-			
+
 				XmlSettingsManager::Instance ()->setProperty ("ScreenshotsLocation", filename);
-			
+
 				QFile file (filename);
 				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 				{
@@ -898,7 +898,7 @@ namespace LeechCraft
 								.arg (filename));
 					return;
 				}
-			
+
 				if (!file.write (dia->Save ()))
 				{
 					QMessageBox::critical (this,
@@ -908,7 +908,7 @@ namespace LeechCraft
 					return;
 				}
 			}
-			
+
 			void BrowserWidget::handleViewSources ()
 			{
 				QString html = Ui_.WebView_->page ()->mainFrame ()->toHtml ();
@@ -932,12 +932,12 @@ namespace LeechCraft
 				viewer->SetHtml (html);
 				viewer->show ();
 			}
-			
+
 			void BrowserWidget::focusLineEdit ()
 			{
 				Ui_.URLFrame_->GetEdit ()->setFocus (Qt::OtherFocusReason);
 			}
-			
+
 			QWebView* BrowserWidget::getWebView () const
 			{
 				return Ui_.WebView_;
@@ -977,7 +977,7 @@ namespace LeechCraft
 						this,
 						SLOT (handleUncloseDestroyed ()));
 			}
-			
+
 			void BrowserWidget::handleUncloseDestroyed ()
 			{
 				if (!RecentlyClosed_->actions ().size ())
@@ -995,17 +995,17 @@ namespace LeechCraft
 					RecentlyClosed_->setDefaultAction (RecentlyClosed_->actions ().front ());
 				}
 			}
-			
+
 			void BrowserWidget::updateTooltip ()
 			{
 				if (!XmlSettingsManager::Instance ()->
 						property ("GenerateTooltips").toBool ())
 					return;
-			
+
 				const int previewWidth = 400;
 				if (!Ui_.WebView_->size ().isValid ())
 					return;
-			
+
 				QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
 				if (contentsSize.width () < 800)
 					contentsSize.scale (800, 1, Qt::KeepAspectRatioByExpanding);
@@ -1015,7 +1015,7 @@ namespace LeechCraft
 				QPoint scroll = Ui_.WebView_->page ()->mainFrame ()->scrollPosition ();
 				QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
 				QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
-			
+
 				QPixmap pixmap (contentsSize);
 				if (pixmap.isNull ())
 					return;
@@ -1028,22 +1028,22 @@ namespace LeechCraft
 				Ui_.WebView_->page ()->setViewportSize (oldSize);
 				Ui_.WebView_->page ()->mainFrame ()->setScrollPosition (scroll);
 				painter.end ();
-			
+
 				QLabel *widget = new QLabel;
-			
+
 				if (pixmap.height () > 3000)
 					pixmap = pixmap.copy (0, 0, pixmap.width (), 3000);
-			
+
 				pixmap = pixmap.scaledToWidth (previewWidth, Qt::SmoothTransformation);
 				maxHeight = 0.8 * QApplication::desktop ()->screenGeometry (this).height ();
 				if (pixmap.height () > maxHeight)
 					pixmap = pixmap.copy (0, 0, previewWidth, maxHeight);
 				widget->setPixmap (pixmap);
 				widget->setFixedSize (pixmap.width (), pixmap.height ());
-			
+
 				emit tooltipChanged (widget);
 			}
-			
+
 			void BrowserWidget::enableActions ()
 			{
 				Add2Favorites_->setEnabled (true);
@@ -1053,21 +1053,21 @@ namespace LeechCraft
 				ScreenSave_->setEnabled (true);
 				ViewSources_->setEnabled (true);
 			}
-			
+
 			void BrowserWidget::handleEntityAction ()
 			{
 				emit gotEntity (qobject_cast<QAction*> (sender ())->
 						data ().value<LeechCraft::Entity> ());
 			}
-			
+
 			void BrowserWidget::checkLinkRels ()
 			{
 				if (HtmlMode_)
 					return;
-			
+
 				ToolBar_->removeAction (ExternalLinks_->menuAction ());
 				ExternalLinks_->clear ();
-			
+
 				QWebElementCollection links = Ui_.WebView_->page ()->mainFrame ()->findAllElements ("link");
 				bool inserted = false;
 				Q_FOREACH (QWebElement link, links)
@@ -1086,7 +1086,7 @@ namespace LeechCraft
 						entity.remove ("+xml");
 						entity = entity.toUpper ();
 					}
-			
+
 					QUrl entityUrl = Util::MakeAbsoluteUrl (Ui_.WebView_->
 								page ()->mainFrame ()->url (),
 							link.attribute ("href"));
@@ -1138,7 +1138,7 @@ namespace LeechCraft
 				if (!HtmlMode_ && isVisible ())
 					Ui_.WebView_->setFocus ();
 			}
-			
+
 			void BrowserWidget::handleLoadProgress (int p)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);

@@ -136,7 +136,7 @@ namespace LeechCraft
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				Util::TreeItem *item = static_cast<Util::TreeItem*> (index.internalPointer ());
 				switch (role)
 				{
@@ -165,46 +165,46 @@ namespace LeechCraft
 			{
 				if (!hasIndex (row, col, parent))
 					return QModelIndex ();
-			
+
 				Util::TreeItem *parentItem;
-			
+
 				if (!parent.isValid ())
 					parentItem = RootItem_;
 				else
 					parentItem = static_cast<Util::TreeItem*> (parent.internalPointer ());
-			
+
 				Util::TreeItem *childItem = parentItem->Child (row);
 				if (childItem)
 					return createIndex (row, col, childItem);
 				else
 					return QModelIndex ();
 			}
-			
+
 			QModelIndex Core::parent (const QModelIndex& index) const
 			{
 				if (!index.isValid ())
 					return QModelIndex ();
-			
+
 				Util::TreeItem *childItem = static_cast<Util::TreeItem*> (index.internalPointer ()),
 						 *parentItem = childItem->Parent ();
-			
+
 				if (parentItem == RootItem_)
 					return QModelIndex ();
-			
+
 				return createIndex (parentItem->Row (), 0, parentItem);
 			}
-			
+
 			int Core::rowCount (const QModelIndex& parent) const
 			{
 				Util::TreeItem *parentItem;
 				if (parent.column () > 0)
 					return 0;
-			
+
 				if (!parent.isValid ())
 					parentItem = RootItem_;
 				else
 					parentItem = static_cast<Util::TreeItem*> (parent.internalPointer ());
-			
+
 				return parentItem->ChildCount ();
 			}
 
@@ -249,6 +249,8 @@ namespace LeechCraft
 			void Core::HandleLogicalPathChanged (QWidget *widget)
 			{
 				int idx = TabWidget_->indexOf (widget);
+				if (idx < 0)
+					return;
 
 				CleanUpRemovedLogicalPath (widget);
 				QString path = widget->property ("WidgetLogicalPath").toString ();
