@@ -31,16 +31,22 @@ namespace LeechCraft
 				class IProtocol;
 				class ICLEntry;
 
+				/** Represents an account — an entity within IProtocol
+				 * owning some ICLEntry objects.
+				 */
 				class IAccount
 				{
 				public:
 					virtual ~IAccount () {}
 
+					/** Represents the features that may be supproted by
+					 * an acoount.
+					 */
 					enum AccountFeature
 					{
-						FRenamable = 0x01,
-						FSupportsXA = 0x02,
-						FHasConfigurationDialog = 0x04
+						FRenamable				= 0x01, //!< FRenamable This account can be renamed, so calls to RenameAccount() would not be senseless.
+						FSupportsXA				= 0x02, //!< FSupportsXA This account supports Extended Away statuses.
+						FHasConfigurationDialog	= 0x04  //!< FHasConfigurationDialog This account has configuration dialog.
 					};
 
 					Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);
@@ -59,15 +65,86 @@ namespace LeechCraft
 						SInvalid
 					};
 
+					/** Returns the account object as a QObject.
+					 *
+					 * @return Account object as QObject.
+					 */
 					virtual QObject* GetObject () = 0;
+
+					/** Returns the pointer to the parent protocol
+					 * that this account belongs to.
+					 *
+					 * @return The parent protocol of this account.
+					 */
 					virtual IProtocol* GetParentProtocol () const = 0;
+
+					/** Returns the OR-ed combination of features of
+					 * this account.
+					 *
+					 * @return The features of this account.
+					 */
 					virtual AccountFeatures GetAccountFeatures () const = 0;
+
+					/** @brief Returns the list of contact list entries
+					 * of this account.
+					 *
+					 * Typically this would a list of contacts added to
+					 * the account.
+					 *
+					 * @return The list of contact list entries of this
+					 * account.
+					 */
 					virtual QList<ICLEntry*> GetCLEntries () = 0;
+
+					/** @brief Returns the human-readable name of this
+					 * account.
+					 *
+					 * @return Human-readable name of this account.
+					 *
+					 * @sa RenameAccount()
+					 */
 					virtual QString GetAccountName () const = 0;
-					virtual void RenameAccount (const QString&) = 0;
+
+					/** @brief Sets the human-readable name of this
+					 * account to the new name.
+					 *
+					 * @param[in] name The new name of the account.
+					 *
+					 * @sa GetAccountName()
+					 */
+					virtual void RenameAccount (const QString& name) = 0;
+
+					/** @brief Returns the ID of this account.
+					 *
+					 * The returned ID should be unique among all
+					 * accounts and should not depend on the value of
+					 * GetAccountName() (the human-readable name of the
+					 * account).
+					 *
+					 * @return The unique and persistent account ID.
+					 */
 					virtual QByteArray GetAccountID () const = 0;
+
+					/** @brief Requests the account to open its
+					 * configuration dialog.
+					 */
 					virtual void OpenConfigurationDialog () = 0;
-					virtual void ChangeState (State, const QString& = QString ()) = 0;
+
+					/** @brief Sets the state of this account.
+					 *
+					 * If the account was offline, it is expected to
+					 * connect at this point automatically.
+					 *
+					 * @param[in] state The new state of the account.
+					 * @param[in] msg The status message, if it makes
+					 * sense.
+					 */
+					virtual void ChangeState (State state,
+							const QString& msg = QString ()) = 0;
+
+					/** Synchronizes changes between this account and
+					 * the server, if applicable.
+					 */
 					virtual void Synchronize () = 0;
 				};
 

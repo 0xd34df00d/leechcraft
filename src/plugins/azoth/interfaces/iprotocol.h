@@ -31,6 +31,18 @@ namespace LeechCraft
 				class IAccount;
 				class IProtocolPlugin;
 
+				/** @brief Represents a protocol.
+				 *
+				 * IProtocol class represents a single protocol with its
+				 * own set of accounts.
+				 *
+				 * Implementations of this interface are expected to
+				 * have the following signals:
+				 * - accountAdded(QObject*), which is emitted when a new
+				 *   account has been added. The parameter is expected
+				 *   to be a pointer to the newly added IAccount
+				 *   instance.
+				 */
 				class IProtocol
 				{
 				public:
@@ -42,11 +54,48 @@ namespace LeechCraft
 
 					Q_DECLARE_FLAGS (ProtocolFeatures, ProtocolFeature);
 
+					/** Returns the protocol object as a QObject.
+					 *
+					 * @return Protocol object as QObject.
+					 */
 					virtual QObject* GetObject () = 0;
+
+					/** Returns the accounts registered within this
+					 * protocol.
+					 *
+					 * @return The list of accoutns of this protocol.
+					 */
 					virtual QList<IAccount*> GetRegisteredAccounts () = 0;
+
+					/** Returns the pointer to the parent protocol
+					 * plugin that this protocol belongs to.
+					 *
+					 * @return The parent protocol plugin of this
+					 * protocol.
+					 */
 					virtual IProtocolPlugin* GetParentProtocolPlugin () const = 0;
+
+					/** Returns the human-readable name of this
+					 * protocol, like "Jabber" or "ICQ".
+					 *
+					 * @return Human-readable name of the protocol.
+					 */
 					virtual QString GetProtocolName () const = 0;
+
+					/** Returns the protocol ID, which must be unique
+					 * among all the protocols.
+					 *
+					 * @return The unique ID of this protocol.
+					 */
 					virtual QByteArray GetProtocolID () const = 0;
+
+					/** @brief Notifies the protocol that a new account
+					 * should be registered.
+					 *
+					 * Protocol plugin is expected to ask the user for
+					 * account details, register the account and emit
+					 * the accountAdded(QObject*) signal.
+					 */
 					virtual void InitiateAccountRegistration () = 0;
 				};
 

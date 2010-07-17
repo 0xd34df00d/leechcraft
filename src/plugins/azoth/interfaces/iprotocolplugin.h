@@ -30,12 +30,25 @@ namespace LeechCraft
 			{
 				class IProtocol;
 
+				/** This is the base interface for plugins providing
+				 * protocols.
+				 */
 				class IProtocolPlugin
 				{
 				public:
 					virtual ~IProtocolPlugin () {}
 
+					/** Returns the protocol plugin object as a QObject.
+					 *
+					 * @return The protocol plugin as a QObject.
+					 */
 					virtual QObject* GetObject () = 0;
+
+					/** Returns the list of protocols supported by this
+					 * plugin.
+					 *
+					 * @return The list of this plugin's protocols.
+					 */
 					virtual QList<IProtocol*> GetProtocols () const = 0;
 				};
 			}
