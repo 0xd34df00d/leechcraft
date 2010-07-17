@@ -280,13 +280,17 @@ namespace LeechCraft
 								LeechCraft::Util::MakeEntity (error->url,
 									QString (),
 									LeechCraft::FromUserInitiated);
-							emit gotEntity (e);
-							if (XmlSettingsManager::Instance ()->
-									property ("CloseEmptyDelegatedPages").toBool () &&
-									history ()->currentItem ().url ().isEmpty ())
-								//QMetaObject::invokeMethod (this, "windowCloseRequested", Qt::QueuedConnection);
-								emit windowCloseRequested ();
-							return false;
+							bool ch = false;
+							emit couldHandle (e, &ch);
+							if (ch)
+							{
+								emit gotEntity (e);
+								if (XmlSettingsManager::Instance ()->
+										property ("CloseEmptyDelegatedPages").toBool () &&
+										history ()->currentItem ().url ().isEmpty ())
+									emit windowCloseRequested ();
+								return false;
+							}
 						}
 						default:
 						{
