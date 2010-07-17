@@ -934,7 +934,7 @@ namespace LeechCraft
 				int arrSize = settings.beginReadArray ("Saved session");
 				settings.endArray ();
 
-				settings.beginWriteArray ("Saved session", arrSize);
+				settings.beginWriteArray ("Saved session");
 				for (int i = 0, size = Widgets_.size (); i < size; ++i)
 					if (Widgets_.at (i) == source)
 					{
@@ -945,6 +945,10 @@ namespace LeechCraft
 								QVariant::fromValue<BrowserWidgetSettings> (source->GetWidgetSettings ()));
 						break;
 					}
+
+				// It looks like QSettings determines array size by last used index
+				// no matter what was passed to QSettings::beginWriteArray (). Forcing correct size
+				settings.setArrayIndex (Widgets_.size () - 1);
 				settings.endArray ();
 				settings.sync ();
 			}
