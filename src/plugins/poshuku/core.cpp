@@ -65,7 +65,7 @@ namespace LeechCraft
 		namespace Poshuku
 		{
 			using LeechCraft::Util::TagsCompletionModel;
-			
+
 			Core::Core ()
 			: NetworkAccessManager_ (0)
 			, WebPluginFactory_ (0)
@@ -95,16 +95,16 @@ namespace LeechCraft
 
 				URLCompletionModel_.reset (new URLCompletionModel (this));
 				PluginManager_->RegisterHookable (URLCompletionModel_.get ());
-			
+
 				QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 			}
-			
+
 			Core& Core::Instance ()
 			{
 				static Core core;
 				return core;
 			}
-			
+
 			bool Core::Init ()
 			{
 				QDir dir = QDir::home ();
@@ -115,7 +115,7 @@ namespace LeechCraft
 						<< "could not create neccessary directories for Poshuku";
 					return false;
 				}
-			
+
 				StorageBackend::Type type;
 				QString strType = XmlSettingsManager::Instance ()->
 					property ("StorageType").toString ();
@@ -126,7 +126,7 @@ namespace LeechCraft
 				else
 					throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 								.arg (strType)));
-			
+
 				try
 				{
 					StorageBackend_ = StorageBackend::Create (type);
@@ -143,18 +143,18 @@ namespace LeechCraft
 					return false;
 				}
 				StorageBackend_->Prepare ();
-			
+
 				HistoryModel_.reset (new HistoryModel (this));
 				connect (StorageBackend_.get (),
 						SIGNAL (added (const HistoryItem&)),
 						HistoryModel_.get (),
 						SLOT (handleItemAdded (const HistoryItem&)));
-			
+
 				connect (StorageBackend_.get (),
 						SIGNAL (added (const HistoryItem&)),
 						URLCompletionModel_.get (),
 						SLOT (handleItemAdded (const HistoryItem&)));
-			
+
 				FavoritesModel_.reset (new FavoritesModel (this));
 				connect (StorageBackend_.get (),
 						SIGNAL (added (const FavoritesModel::FavoritesItem&)),
@@ -170,36 +170,36 @@ namespace LeechCraft
 						SLOT (handleItemRemoved (const FavoritesModel::FavoritesItem&)));
 
 				FavoritesChecker_ = new FavoritesChecker (this);
-			
+
 				QTimer::singleShot (200, this, SLOT (postConstruct ()));
 				Initialized_ = true;
 				return true;
 			}
-			
+
 			void Core::Release ()
 			{
 				saveSession ();
 				IsShuttingDown_ = true;
 				while (Widgets_.begin () != Widgets_.end ())
 					delete *Widgets_.begin ();
-			
+
 				HistoryModel_.reset ();
 				FavoritesModel_.reset ();
 				StorageBackend_.reset ();
-			
+
 				XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
 				XmlSettingsManager::Instance ()->Release ();
 
 				delete WebPluginFactory_;
 			}
-			
+
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
 				NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
 				ShortcutProxy_ = proxy->GetShortcutProxy ();
 			}
-			
+
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
@@ -211,24 +211,24 @@ namespace LeechCraft
 					WebPluginFactory_ = new WebPluginFactory (this);
 				return WebPluginFactory_;
 			}
-			
+
 			void Core::SetProvider (QObject *object, const QString& feature)
 			{
 				Providers_ [feature] = object;
 			}
-			
+
 			QSet<QByteArray> Core::GetExpectedPluginClasses () const
 			{
 				QSet<QByteArray> result;
 				result << "org.LeechCraft.Poshuku.Plugins/1.0";
 				return result;
 			}
-			
+
 			void Core::AddPlugin (QObject *plugin)
 			{
 				PluginManager_->AddPlugin (plugin);
 			}
-			
+
 			QUrl Core::MakeURL (QString url) const
 			{
 				if (url.isEmpty ())
@@ -260,7 +260,7 @@ namespace LeechCraft
 					result = QUrl::fromEncoded (url.toUtf8 ());
 				else
 					result = QUrl (url);
-			
+
 				if (result.scheme ().isEmpty ())
 				{
 					if (!url.count (' ') && url.count ('.'))
@@ -278,7 +278,7 @@ namespace LeechCraft
 
 				return result;
 			}
-			
+
 			BrowserWidget* Core::NewURL (const QUrl& url, bool raise)
 			{
 				if (!Initialized_)
@@ -288,17 +288,17 @@ namespace LeechCraft
 				widget->InitShortcuts ();
 				widget->SetUnclosers (Unclosers_);
 				Widgets_.push_back (widget);
-			
+
 				emit addNewTab (tr (""), widget);
 
 				ConnectSignals (widget);
-			
+
 				if (!url.isEmpty ())
 					widget->SetURL (url);
-			
+
 				if (raise)
 					emit raiseTab (widget);
-			
+
 				return widget;
 			}
 
@@ -306,7 +306,7 @@ namespace LeechCraft
 			{
 				return NewURL (MakeURL (str), raise);
 			}
-			
+
 			IWebWidget* Core::GetWidget ()
 			{
 				if (!Initialized_)
@@ -318,7 +318,7 @@ namespace LeechCraft
 				SetupConnections (widget);
 				return widget;
 			}
-			
+
 			CustomWebView* Core::MakeWebView (bool invert)
 			{
 				if (!Initialized_)
@@ -327,10 +327,10 @@ namespace LeechCraft
 				bool raise = true;
 				if (XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ())
 					raise = false;
-			
+
 				if (invert)
 					raise = !raise;
-			
+
 				return NewURL (QUrl (), raise)->GetView ();
 			}
 
@@ -371,43 +371,43 @@ namespace LeechCraft
 			{
 				FavoritesChecker_->Check ();
 			}
-			
+
 			FavoritesModel* Core::GetFavoritesModel () const
 			{
 				return FavoritesModel_.get ();
 			}
-			
+
 			HistoryModel* Core::GetHistoryModel () const
 			{
 				return HistoryModel_.get ();
 			}
-			
+
 			URLCompletionModel* Core::GetURLCompletionModel () const
 			{
 				return URLCompletionModel_.get ();
 			}
-			
+
 			QNetworkAccessManager* Core::GetNetworkAccessManager () const
 			{
 				return NetworkAccessManager_;
 			}
-			
+
 			StorageBackend* Core::GetStorageBackend () const
 			{
 				return StorageBackend_.get ();
 			}
-			
+
 			PluginManager* Core::GetPluginManager () const
 			{
 				return PluginManager_.get ();
 			}
-			
+
 			void Core::SetShortcut (int name, const QKeySequence& shortcut)
 			{
 				Q_FOREACH (BrowserWidget *widget, Widgets_)
 					widget->SetShortcut (name, shortcut);
 			}
-			
+
 			const IShortcutProxy* Core::GetShortcutProxy () const
 			{
 				return ShortcutProxy_;
@@ -611,7 +611,7 @@ namespace LeechCraft
 					.arg (QT_VERSION_STR)
 					.arg (qVersion ());
 			}
-			
+
 			void Core::Unregister (BrowserWidget *widget)
 			{
 				widgets_t::iterator pos =
@@ -621,11 +621,11 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO << widget << "not found in the collection";
 					return;
 				}
-			
+
 				QString title = widget->GetView ()->title ();
 				if (title.isEmpty ())
 					title = widget->GetView ()->url ().toString ();
-			
+
 				if (!title.isEmpty ())
 				{
 					if (title.size () > 53)
@@ -644,19 +644,19 @@ namespace LeechCraft
 						ba
 					};
 					action->setData (QVariant::fromValue (ud));
-			
+
 					connect (action,
 							SIGNAL (triggered ()),
 							this,
 							SLOT (handleUnclose ()));
-			
+
 					emit newUnclose (action);
-			
+
 					Unclosers_.push_front (action);
 				}
-			
+
 				Widgets_.erase (pos);
-			
+
 				saveSession ();
 			}
 
@@ -677,7 +677,7 @@ namespace LeechCraft
 						dia->AddPair (title, url);
 						added = true;
 					}
-			
+
 					if (added &&
 							dia->exec () == QDialog::Accepted)
 					{
@@ -699,11 +699,11 @@ namespace LeechCraft
 					QTimer::singleShot (2000, this, SLOT (restorePages ()));
 				}
 			}
-			
+
 			void Core::HandleHistory (CustomWebView *view)
 			{
 				QString url = view->URLToProperString (view->url ());
-			
+
 				if (!view->title ().isEmpty () &&
 						!url.isEmpty () && url != "about:blank")
 					HistoryModel_->AddItem (view->title (),
@@ -729,7 +729,7 @@ namespace LeechCraft
 						this,
 						SLOT (handleURLChanged (const QString&)));
 			}
-			
+
 			void Core::importXbel ()
 			{
 				QString suggestion = XmlSettingsManager::Instance ()->
@@ -739,13 +739,13 @@ namespace LeechCraft
 						suggestion,
 						tr ("XBEL files (*.xbel);;"
 							"All files (*.*)"));
-			
+
 				if (filename.isEmpty ())
 					return;
-			
+
 				XmlSettingsManager::Instance ()->setProperty ("LastXBELOpen",
 						QFileInfo (filename).absolutePath ());
-			
+
 				QFile file (filename);
 				if (!file.open (QIODevice::ReadOnly))
 				{
@@ -755,9 +755,9 @@ namespace LeechCraft
 								.arg (filename));
 					return;
 				}
-			
+
 				QByteArray data = file.readAll ();
-			
+
 				try
 				{
 					XbelParser p (data);
@@ -769,7 +769,7 @@ namespace LeechCraft
 							e.what ());
 				}
 			}
-			
+
 			void Core::exportXbel ()
 			{
 				QString suggestion = XmlSettingsManager::Instance ()->
@@ -779,16 +779,16 @@ namespace LeechCraft
 						suggestion,
 						tr ("XBEL files (*.xbel);;"
 							"All files (*.*)"));
-			
+
 				if (filename.isEmpty ())
 					return;
-			
+
 				if (!filename.endsWith (".xbel"))
 					filename.append (".xbel");
-			
+
 				XmlSettingsManager::Instance ()->setProperty ("LastXBELSave",
 						QFileInfo (filename).absolutePath ());
-			
+
 				QFile file (filename);
 				if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 				{
@@ -798,12 +798,12 @@ namespace LeechCraft
 								.arg (filename));
 					return;
 				}
-			
+
 				QByteArray data;
 				XbelGenerator g (data);
 				file.write (data);
 			}
-			
+
 			void Core::handleUnclose ()
 			{
 				QAction *action = qobject_cast<QAction*> (sender ());
@@ -819,36 +819,36 @@ namespace LeechCraft
 
 				action->deleteLater ();
 			}
-			
+
 			void Core::handleTitleChanged (const QString& newTitle)
 			{
 				emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
-			
+
 				saveSingleSession ();
 			}
-			
+
 			void Core::handleURLChanged (const QString&)
 			{
 				HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
-			
+
 				saveSingleSession ();
 			}
-			
+
 			void Core::handleIconChanged (const QIcon& newIcon)
 			{
 				emit changeTabIcon (dynamic_cast<QWidget*> (sender ()), newIcon);
 			}
-			
+
 			void Core::handleNeedToClose ()
 			{
 				BrowserWidget *w = dynamic_cast<BrowserWidget*> (sender ());
 				emit removeTab (w);
-			
+
 				w->deleteLater ();
-			
+
 				saveSession ();
 			}
-			
+
 			void Core::handleAddToFavorites (QString title, QString url)
 			{
 				Util::DefaultHookProxy_ptr proxy = Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy ());
@@ -859,39 +859,39 @@ namespace LeechCraft
 				std::auto_ptr<AddToFavoritesDialog> dia (new AddToFavoritesDialog (title,
 							url,
 							qApp->activeWindow ()));
-			
+
 				bool result = false;
 				do
 				{
 					if (dia->exec () == QDialog::Rejected)
 						return;
-			
+
 					result = FavoritesModel_->AddItem (dia->GetTitle (),
 							url, dia->GetTags ());
 				}
 				while (!result);
 			}
-			
+
 			void Core::handleStatusBarChanged (const QString& msg)
 			{
 				emit statusBarChanged (static_cast<QWidget*> (sender ()), msg);
 			}
-			
+
 			void Core::handleTooltipChanged (QWidget *tip)
 			{
 				emit changeTooltip (static_cast<QWidget*> (sender ()), tip);
 			}
-			
+
 			void Core::favoriteTagsUpdated (const QStringList& tags)
 			{
 				XmlSettingsManager::Instance ()->setProperty ("FavoriteTags", tags);
 			}
-			
+
 			void Core::saveSession ()
 			{
 				if (IsShuttingDown_ || !Initialized_)
 					return;
-			
+
 				QList<QString> titles;
 				QList<QString> urls;
 				QList<BrowserWidgetSettings> bwsettings;
@@ -952,7 +952,7 @@ namespace LeechCraft
 				settings.endArray ();
 				settings.sync ();
 			}
-			
+
 			void Core::restorePages ()
 			{
 				for (QList<int>::const_iterator i = RestoredURLs_.begin (),
@@ -965,16 +965,16 @@ namespace LeechCraft
 
 				SavedSessionState_.clear ();
 				SavedSessionSettings_.clear ();
-			
+
 				saveSession ();
 			}
-			
+
 			void Core::postConstruct ()
 			{
 				bool cleanShutdown = XmlSettingsManager::Instance ()->
 					Property ("CleanShutdown", true).toBool ();
 				XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", false);
-			
+
 				if (!cleanShutdown)
 					RestoreSession (true);
 				else if (XmlSettingsManager::Instance ()->

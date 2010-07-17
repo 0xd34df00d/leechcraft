@@ -223,7 +223,7 @@ namespace LeechCraft
 						return;
 				}
 			}
-			
+
 			CustomWebPage::~CustomWebPage ()
 			{
 			}
@@ -232,12 +232,12 @@ namespace LeechCraft
 			{
 				MouseButtons_ = buttons;
 			}
-			
+
 			void CustomWebPage::SetModifiers (Qt::KeyboardModifiers modifiers)
 			{
 				Modifiers_ = modifiers;
 			}
-			
+
 			bool CustomWebPage::supportsExtension (QWebPage::Extension e) const
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
@@ -280,12 +280,17 @@ namespace LeechCraft
 								LeechCraft::Util::MakeEntity (error->url,
 									QString (),
 									LeechCraft::FromUserInitiated);
-							emit gotEntity (e);
-							if (XmlSettingsManager::Instance ()->
-									property ("CloseEmptyDelegatedPages").toBool () &&
-									history ()->currentItem ().url ().isEmpty ())
-								emit windowCloseRequested ();
-							return false;
+							bool ch = false;
+							emit couldHandle (e, &ch);
+							if (ch)
+							{
+								emit gotEntity (e);
+								if (XmlSettingsManager::Instance ()->
+										property ("CloseEmptyDelegatedPages").toBool () &&
+										history ()->currentItem ().url ().isEmpty ())
+									emit windowCloseRequested ();
+								return false;
+							}
 						}
 						default:
 						{
@@ -307,13 +312,13 @@ namespace LeechCraft
 				emit hookContentsChanged (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this);
 			}
-			
+
 			void CustomWebPage::handleDatabaseQuotaExceeded (QWebFrame *frame, QString string)
 			{
 				emit hookDatabaseQuotaExceeded (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this, frame, string);
 			}
-			
+
 			void CustomWebPage::handleDownloadRequested (const QNetworkRequest& other)
 			{
 				QNetworkRequest request = other;
@@ -321,19 +326,19 @@ namespace LeechCraft
 				emit hookDownloadRequested (proxy, this, &request);
 				if (proxy->IsCancelled ())
 					return;
-			
+
 				LeechCraft::Entity e = Util::MakeEntity (request.url (),
 						QString (),
 						LeechCraft::FromUserInitiated);
 				emit gotEntity (e);
 			}
-			
+
 			void CustomWebPage::handleFrameCreated (QWebFrame *frame)
 			{
 				emit hookFrameCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this, frame);
 			}
-			
+
 			void CustomWebPage::handleJavaScriptWindowObjectCleared ()
 			{
 				QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
@@ -345,21 +350,21 @@ namespace LeechCraft
 				frame->addToJavaScriptWindowObject ("JSProxy", JSProxy_.get ());
 				frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
 			}
-			
+
 			void CustomWebPage::handleGeometryChangeRequested (const QRect& threct)
 			{
 				QRect rect = threct;
 				emit hookGeometryChangeRequested (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this, &rect);
 			}
-			
+
 			void CustomWebPage::handleLinkClicked (const QUrl& thurl)
 			{
 				QUrl url = thurl;
 				emit hookLinkClicked (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this, &url);
 			}
-			
+
 			void CustomWebPage::handleLinkHovered (const QString& thlink,
 					const QString& thtitle, const QString& thcontext)
 			{
@@ -369,23 +374,23 @@ namespace LeechCraft
 				emit hookLinkHovered (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this, &link, &title, &context);
 			}
-			
+
 			void CustomWebPage::handleLoadFinished (bool ok)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 				emit hookLoadFinished (proxy, this, &ok);
 				if (proxy->IsCancelled ())
 					return;
-			
+
 				emit delayedFillForms (mainFrame ());
 			}
-			
+
 			void CustomWebPage::handleLoadStarted ()
 			{
 				emit hookLoadStarted (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this);
 			}
-			
+
 			void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -433,7 +438,7 @@ namespace LeechCraft
 									e.Additional_ ["SourceURL"] = reply->url ();
 									e.Mime_ = reply->
 										header (QNetworkRequest::ContentTypeHeader).toString ();
-			
+
 									emit gotEntity (e);
 									if (XmlSettingsManager::Instance ()->
 											property ("CloseEmptyDelegatedPages").toBool () &&
@@ -456,7 +461,7 @@ namespace LeechCraft
 
 							QString data = MakeErrorReplyContents (statusCode,
 									reply->url (), reply->errorString (), QtNetwork);
-			
+
 							QWebFrame *found = FindFrame (reply->url ());
 							if (found)
 								found->setHtml (data, reply->url ());
@@ -466,7 +471,7 @@ namespace LeechCraft
 						break;
 				}
 			}
-			
+
 			QString CustomWebPage::MakeErrorReplyContents (int statusCode,
 					const QUrl& url, const QString& errorString, ErrorDomain domain) const
 			{
@@ -522,7 +527,7 @@ namespace LeechCraft
 				emit hookWindowCloseRequested (IHookProxy_ptr (new Util::DefaultHookProxy),
 						this);
 			}
-			
+
 			bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 					const QNetworkRequest& other, QWebPage::NavigationType type)
 			{
@@ -531,7 +536,7 @@ namespace LeechCraft
 				emit hookAcceptNavigationRequest (proxy, this, frame, &request, type);
 				if (proxy->IsCancelled ())
 					return proxy->GetReturnValue ().toBool ();
-			
+
 				QString scheme = request.url ().scheme ();
 				if (scheme == "mailto" ||
 						scheme == "ftp")
@@ -548,31 +553,31 @@ namespace LeechCraft
 						QDesktopServices::openUrl (request.url ());
 					return false;
 				}
-			
+
 				if (frame)
 					HandleForms (frame, request, type);
-			
+
 				if ((type == NavigationTypeLinkClicked ||
 							type == NavigationTypeOther) &&
 						(MouseButtons_ == Qt::MidButton ||
 						 Modifiers_ & Qt::ControlModifier))
 				{
 					bool invert = Modifiers_ & Qt::ShiftModifier;
-			
+
 					CustomWebView *view = Core::Instance ().MakeWebView (invert);
 					view->Load (request);
-			
+
 					MouseButtons_ = Qt::NoButton;
 					Modifiers_ = Qt::NoModifier;
 					return false;
 				}
-			
+
 				if (frame == mainFrame ())
 					LoadingURL_ = request.url ();
-			
+
 				return QWebPage::acceptNavigationRequest (frame, request, type);
 			}
-			
+
 			QString CustomWebPage::chooseFile (QWebFrame *frame, const QString& thsuggested)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -583,7 +588,7 @@ namespace LeechCraft
 
 				return QWebPage::chooseFile (frame, suggested);
 			}
-			
+
 			QObject* CustomWebPage::createPlugin (const QString& thclsid, const QUrl& thurl,
 					const QStringList& thnames, const QStringList& thvalues)
 			{
@@ -599,7 +604,7 @@ namespace LeechCraft
 
 				return QWebPage::createPlugin (clsid, url, names, values);
 			}
-			
+
 			QWebPage* CustomWebPage::createWindow (QWebPage::WebWindowType type)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -631,7 +636,7 @@ namespace LeechCraft
 					}
 				}
 			}
-			
+
 			void CustomWebPage::javaScriptAlert (QWebFrame *frame, const QString& thmsg)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -643,7 +648,7 @@ namespace LeechCraft
 
 				QWebPage::javaScriptAlert (frame, msg);
 			}
-			
+
 			bool CustomWebPage::javaScriptConfirm (QWebFrame *frame, const QString& thmsg)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -655,7 +660,7 @@ namespace LeechCraft
 
 				return QWebPage::javaScriptConfirm (frame, msg);
 			}
-			
+
 			void CustomWebPage::javaScriptConsoleMessage (const QString& thmsg, int line,
 					const QString& thsid)
 			{
@@ -669,7 +674,7 @@ namespace LeechCraft
 
 				QWebPage::javaScriptConsoleMessage (msg, line, sid);
 			}
-			
+
 			bool CustomWebPage::javaScriptPrompt (QWebFrame *frame, const QString& thpr,
 					const QString& thdef, QString *result)
 			{
@@ -683,7 +688,7 @@ namespace LeechCraft
 
 				return QWebPage::javaScriptPrompt (frame, pr, def, result);
 			}
-			
+
 			QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 			{
 				QString ua = Core::Instance ().GetUserAgent (url, this);
@@ -692,7 +697,7 @@ namespace LeechCraft
 				else
 					return ua;
 			}
-			
+
 			QWebFrame* CustomWebPage::FindFrame (const QUrl& url)
 			{
 				QList<QWebFrame*> frames;
@@ -706,7 +711,7 @@ namespace LeechCraft
 				}
 				return 0;
 			}
-			
+
 			namespace
 			{
 				bool CheckData (const PageFormsData_t& data,
@@ -732,14 +737,14 @@ namespace LeechCraft
 					return true;
 				}
 			};
-			
+
 			void CustomWebPage::HandleForms (QWebFrame *frame,
 					const QNetworkRequest& request, QWebPage::NavigationType type)
 			{
 				// TODO rewrite in QWebElement API with SecMan in mind.
 				/*
 				JSProxy_->ClearForms ();
-			
+
 				QWebFrame *formFrame = frame ? frame : mainFrame ();
 				QFile file (":/resources/scripts/formquery.js");
 				if (file.open (QIODevice::ReadOnly))
@@ -757,29 +762,29 @@ namespace LeechCraft
 #endif
 					if (!CheckData (data, frame, request))
 						return;
-			
+
 					QString url = frame->url ().toString ();
-			
+
 					// Check if this should be emitted at all
 					if (Core::Instance ().GetStorageBackend ()->GetFormsIgnored (url))
 						return;
-			
+
 					emit storeFormData (data);
 				}
 				*/
 			}
-			
+
 			void CustomWebPage::fillForms (QWebFrame *frame)
 			{
 				// TODO rewrite in QWebElement API with SecMan in mind.
 				/*
 				JSProxy_->ClearForms ();
-			
+
 				QString url = frame->url ().toString ();
-			
+
 				PageFormsData_t data;
 				Core::Instance ().GetStorageBackend ()->GetFormsData (url, data [url]);
-			
+
 				JSProxy_->SetForms (data);
 				QFile sfile (":/resources/scripts/formsetter.js");
 				if (sfile.open (QIODevice::ReadOnly))
@@ -789,7 +794,7 @@ namespace LeechCraft
 						<< "could not open internal file"
 						<< sfile.fileName ()
 						<< sfile.errorString ();
-			
+
 				Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())
 					fillForms (childFrame);
 					*/
