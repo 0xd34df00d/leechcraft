@@ -31,6 +31,8 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
+					class GlooxAccount;
+
 					class GlooxProtocol : public QObject
 										, public IProtocol
 					{
@@ -38,6 +40,7 @@ namespace LeechCraft
 						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
 
 						IProtocolPlugin *ParentProtocolPlugin_;
+						QList<GlooxAccount*> Accounts_;
 					public:
 						GlooxProtocol (QObject*);
 						virtual ~GlooxProtocol ();
@@ -48,6 +51,9 @@ namespace LeechCraft
 						QString GetProtocolName () const;
 						QByteArray GetProtocolID () const;
 						void InitiateAccountRegistration ();
+					private:
+						void SaveAccounts () const;
+						void RestoreAccounts ();
 					signals:
 						void accountAdded (QObject*);
 					};

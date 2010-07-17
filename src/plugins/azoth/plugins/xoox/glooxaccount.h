@@ -43,6 +43,9 @@ namespace LeechCraft
 						int Priority_;
 					};
 
+					class GlooxAccount;
+					typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
+
 					class GlooxAccount : public QObject
 									   , public IAccount
 					{
@@ -71,6 +74,9 @@ namespace LeechCraft
 						void OpenConfigurationDialog ();
 						void ChangeState (State, const QString& = QString ());
 						void Synchronize ();
+
+						QByteArray Serialize () const;
+						static GlooxAccount* Deserialize (const QByteArray&, QObject*);
 					private slots:
 						void handleGotRosterItems (const QList<QObject*>&);
 					signals:

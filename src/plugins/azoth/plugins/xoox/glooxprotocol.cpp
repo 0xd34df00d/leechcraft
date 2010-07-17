@@ -19,6 +19,8 @@
 #include "glooxprotocol.h"
 #include <QInputDialog>
 #include <QMainWindow>
+#include <QSettings>
+#include <QCoreApplication>
 #include <interfaces/iprotocolplugin.h>
 #include "glooxaccount.h"
 #include "core.h"
@@ -37,6 +39,10 @@ namespace LeechCraft
 					: QObject (parent)
 					, ParentProtocolPlugin_ (qobject_cast<IProtocolPlugin*> (parent))
 					{
+						RestoreAccounts ();
+
+						Q_FOREACH (GlooxAccount *account, Accounts_)
+							account->ChangeState (IAccount::SOnline);
 					}
 
 					GlooxProtocol::~GlooxProtocol ()
@@ -50,7 +56,10 @@ namespace LeechCraft
 
 					QList<IAccount*> GlooxProtocol::GetRegisteredAccounts ()
 					{
-						return QList<IAccount*> ();
+						QList<IAccount*> result;
+						Q_FOREACH (GlooxAccount *acc, Accounts_)
+							result << static_cast<IAccount*> (acc);
+						return result;
 					}
 
 					IProtocolPlugin* GlooxProtocol::GetParentProtocolPlugin () const
@@ -79,9 +88,51 @@ namespace LeechCraft
 						GlooxAccount *account = new GlooxAccount (name, this);
 						account->OpenConfigurationDialog ();
 
+						Accounts_ << account;
+						SaveAccounts ();
+
 						emit accountAdded (account);
 
 						account->ChangeState (IAccount::SOnline);
+					}
+
+					void GlooxProtocol::SaveAccounts () const
+					{
+						QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+								QCoreApplication::organizationName (),
+								QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
+						settings.beginWriteArray ("Accounts");
+						for (int i = 0, size = Accounts_.size ();
+								i < size; ++i)
+						{
+							settings.setArrayIndex (i);
+							settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+						}
+						settings.endArray ();
+						settings.sync ();
+					}
+
+					void GlooxProtocol::RestoreAccounts ()
+					{
+						QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+								QCoreApplication::organizationName (),
+								QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
+						int size = settings.beginReadArray ("Accounts");
+						for (int i = 0; i < size; ++i)
+						{
+							settings.setArrayIndex (i);
+							QByteArray data = settings.value ("SerializedData").toByteArray ();
+							GlooxAccount *acc = GlooxAccount::Deserialize (data, this);
+							if (!acc)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "unserializable acount"
+										<< i;
+								continue;
+							}
+							Accounts_ << acc;
+						}
+						settings.endArray ();
 					}
 				}
 			}

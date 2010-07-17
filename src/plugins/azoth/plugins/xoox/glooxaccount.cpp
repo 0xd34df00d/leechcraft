@@ -129,6 +129,51 @@ namespace LeechCraft
 						ClientConnection_->Synchronize ();
 					}
 
+
+					QByteArray GlooxAccount::Serialize () const
+					{
+						quint16 version = 1;
+
+						QByteArray result;
+						{
+							QDataStream ostr (&result, QIODevice::WriteOnly);
+							ostr << version
+									<< Name_
+									<< JID_
+									<< Nick_
+									<< Resource_
+									<< Priority_;
+						}
+
+						return result;
+					}
+
+					GlooxAccount* GlooxAccount::Deserialize (const QByteArray& data, QObject *parent)
+					{
+						quint16 version = 0;
+
+						QDataStream in (data);
+						in >> version;
+
+						if (version != 1)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unknown version"
+									<< version;
+							return 0;
+						}
+
+						QString name;
+						in >> name;
+						GlooxAccount *result = new GlooxAccount (name, parent);
+						in >> result->JID_
+								>> result->Nick_
+								>> result->Resource_
+								>> result->Priority_;
+
+						return result;
+					}
+
 					void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
 					{
 						emit gotCLItems (items);
