@@ -102,7 +102,7 @@
 					<label lang="en" value="Use color to mark unread" />
 					<label lang="ru" value="Выделять непрочитанные цветом" />
 					<label lang="uk" value="Виділяти непрочитані кольором" />
-					<item type="color" property="UnreadItemsColor" default="red">
+					<item type="color" property="UnreadItemsColor" default="06007B">
 						<label lang="en" value="Color:" />
 						<label lang="ru" value="Цвет:" />
 						<label lang="uk" value="Колір:" />
