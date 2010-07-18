@@ -168,6 +168,18 @@ namespace LeechCraft
 				}
 				Populate ("general");
 			}
+
+			void StartupThirdPage::on_SelectAll__released ()
+			{
+				for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
+					Ui_.Tree_->topLevelItem (i)->setCheckState (0, Qt::Checked);
+			}
+
+			void StartupThirdPage::on_DeselectAll__released ()
+			{
+				for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
+					Ui_.Tree_->topLevelItem (i)->setCheckState (0, Qt::Unchecked);
+			}
 		};
 	};
 };
