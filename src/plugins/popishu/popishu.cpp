@@ -73,6 +73,10 @@ namespace LeechCraft
 						this,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)));
+				connect (&Core::Instance (),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 			}
 
 			void Plugin::SecondInit ()

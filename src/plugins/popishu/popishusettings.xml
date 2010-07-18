@@ -61,5 +61,13 @@
 				<label lang="ru" value="Отступ перенесенной строки" />
 			</item>
 		</groupbox>
+		<groupbox>
+			<label lang="en" value="Behavior" />
+			<label lang="ru" value="Поведение" />
+			<item type="spinbox" property="NumRecentlyOpened" default="8">
+				<label lang="en" value="Remember this much recently opened files:" />
+				<label lang="ru" value="Запоминать столько недавно открытых файлов:" />
+			</item>
+		</groupbox>
 	</page>
 </settings>

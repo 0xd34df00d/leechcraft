@@ -86,6 +86,10 @@ namespace LeechCraft
 						this,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)));
+				connect (result,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
 				return result;
 			}
 		};
