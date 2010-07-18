@@ -289,3 +289,9 @@ QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
 			property ("SelectedRows").value<QList<QModelIndex> > ();
 }
 
+QAction* LeechCraft::Util::CreateSeparator (QObject *parent)
+{
+	QAction *result = new QAction (parent);
+	result->setSeparator (true);
+	return result;
+}

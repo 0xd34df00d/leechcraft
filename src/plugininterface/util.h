@@ -56,11 +56,11 @@ namespace LeechCraft
 		}
 
 		template<typename T>
-		struct ValueFinder 
+		struct ValueFinder
 		{
 			typedef typename T::data_type data_type;
 			data_type Object_;
-			
+
 			ValueFinder (data_type data)
 			: Object_ (data)
 			{
@@ -197,6 +197,8 @@ namespace LeechCraft
 		PLUGININTERFACE_API QUrl MakeAbsoluteUrl (QUrl, const QString& hrefUrl);
 
 		PLUGININTERFACE_API QModelIndexList GetSummarySelectedRows (QObject *sender);
+
+		PLUGININTERFACE_API QAction* CreateSeparator (QObject *parent);
 
 		/** @brief Returns an element for a given tags list.
 		 *
