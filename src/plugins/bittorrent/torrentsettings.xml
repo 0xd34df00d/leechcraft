@@ -813,8 +813,8 @@
 				<label lang="ru" value="Локальные настройки" />
 				<label lang="uk" value="Локальні налаштування" />
 				<item type="checkbox" property="NotifyAboutTooBig" default="false">
-					<label lang="en" value="Notify when automatic addition failed because of the next option" />
-					<label lang="ru" value="Уведомлять, когда автоматическое добавление не удалось из-за следующей опции" />
+					<label lang="en" value="Notify when torrent wasn't automatically added because its too large size" />
+					<label lang="ru" value="Уведомлять, когда торрент не был добавлен автоматически из-за большого размера" />
 					<label lang="uk" value="Повідомляти, коли автоматичне додавання не вдалось чреез наступну опцію" />
 				</item>
 				<item type="combobox" property="AllocationMode">
