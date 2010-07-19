@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+ "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd">
+<book id="general_overview" xmlns="http://docbook.org/ns/docbook" version="5.0" lang="ru">
+	<bookinfo>
+		<title>Обзор</title>
+	</bookinfo>
+	<chapter id="architecture">
+		<title>Архитектура LeechCraft</title>
+		<para>LeechCraft основан на плагинах. Ядро LeechCraft только обеспечивает корректный порядок загрузки/выгрузки плагинов, инициализирует их, соединяет их между собой и обеспечивает доставку сообщений между ними. Ядро также выполняет некоторые общие задачи типа показывания общего GUI пользователю, объединения настроек от различных плагинов в один диалог или поддержания сетевого кеша и базы cookies.</para>
+		<para>Плагины могут взаимодействовать между собой либо через набор интерфейсов (основанный, но не ограниченный общими для LeechCraft интерфейсами, находящимися в директории <filename>/src/interfaces/</filename>), либо используя механизм сообщений.</para>
+		<para>Рассмотрим оба этих метода.</para>
+		<sect1 id="message-communication">
+			<title>Механизм сообщений</title>
+			<para>Этот метод больше подходит, когда вы не знаете конкретный плагин, либо не знаете, как этот плагин устроен, и взаимодействие через сообщения вполне вас устраивает. Диаметрально противоположный случай — когда необходимо обеспечить взаимодействие двух (или более) конкретных плагинов, а вводить для этого еще один интерфейс не хочется.</para>
+			<para>Взаимодействие обеспечивается при помощи структуры <structname>LeechCraft::Entity</structname> (находящейся в <filename>/src/interfaces/structures.h</filename>), которую можно рассматривать как некий пакет или сообщение — иными словами, <structname>Entity</structname> соответствует некоторой <emphasis>сущности</emphasis>. Плагины шлют эти <structname>Entity</structname>-сообщения, ядро LeechCraft ловит их, и... Здесь начинается самое интересное.</para>
+			<para>Итак, есть два типа сообщений. Одинаковая <structname>Entity</structname> используется для каждого из этих типов, и эти сообщения различаются только методом отправки их из плагина.</para>
+			<para>Первый тип сообщений — <emphasis>уведомление</emphasis>. <emphasis>Уведомления</emphasis> используются для уведомления ядра и других плагинов о том, что появилась новая сущность, но плагин не заботится о том, что произойдет с ней дальше.</para>
+			<para>В качестве примера рассмотрим BitTorrent-клиент, который только что завершил закачку. Он <emphasis>уведомляет</emphasis> остальные части LeechCraft о файлах, которые он только что закончил скачивать, но ему совершенно не важно, что с ними произойдет далее.</para>
+			<para>Так как последствия такого сообщения не интересуют плагин прямо в точке создания уведомления, сигнал, используемый для отправки этого уведомления не блокирующий и возвращается сразу. Он помещает сообщение в главный цикл сообщений, и таким образом обработка сообщения произойдет только тогда, когда управление снова перейдет циклу сообщений.</para>
+			<para>Для отправки <emphasis>уведомления</emphasis> используется
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>void <function>gotEntity</function></funcdef>
+						<paramdef>LeechCraft::Entity *<parameter>entity</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+				сигнал. Достаточно просто определить его в главном классе вашего плагина (это тот, который экспортируется при помощи макроса <funcname>Q_EXPORT_PLUGIN2</funcname>), и ядро LeechCraft автоматически найдет его.</para>
+			<para>Второй тип сообщений — <emphasis>запрос на делегирование</emphasis>. Он используется для <emphasis>делегирования</emphasis> некой задачи другому плагину в надежде, что найдется плагин, способный обработaть такой запрос. При использовании такого типа сообщений возможно получить доступ к плагину, который был выбран для обработки запроса, и, соответственно, можно в дальнейшем взаимодействовать с ним. Очевидно, соответствующий сигнал блокирующий.</para>
+			<para>Например, рассмотрим Aggregator — клиент для чтения новостей. Он не скачивает ленты сам, вместо этого он делегирует это какому-нибудь другому плагину, отправляя <emphasis>запрос на делегирование</emphasis>. После возврата из соответствующего сигнала, плагин-отправитель будет знать, делегирована ли сущность, и если она делегирована успешно, какой плагин ее обрабатывает.</para>
+			<para>Для отправки <emphasis>запроса на делегирование</emphasis> используется
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>void <function>delegateEntity</function></funcdef>
+						<paramdef>LeechCraft::Entity *<parameter>entity</parameter></paramdef>
+						<paramdef>int *<parameter>id</parameter> = 0</paramdef>
+						<paramdef>QObject **<parameter>handler</parameter> = 0</paramdef>
+					</funcprototype>
+				</funcsynopsis>
+				сигнал. Здесь, если делегирование прошло успешно, <parameter>handler</parameter> будет указывать на главный объект плагина, который обрабатывает этот запрос, и <parameter>id</parameter> будет равен идентификатору задачи в этом обработчике — некоторому неотрицательному числу. Для проверки, было ли делегирование успешным, часто используется следующий финт: перед вызовом сигнала <function>delegateEntity</function>, <parameter>id</parameter> устанавливается в некоторое отрицательное значение, например, -1. Если после вызова сигнала оно так и осталось этим отрицательным значением, то запрос на делегирование не удался.</para>
+				<example>
+					<title>Делегирование и проверка результата</title>
+					<para>В этом примере отправляется запрос на делегирование для закачивания данного <parameter>url</parameter> в заданное место (<parameter>location</parameter>) с параметрами задачи, часто используемыми для внутренних задач в LeechCraft (таких как скачивание ленты новостей: пользователю необязательно знать о самом процессе скачивания). Мы проверяем, успешен ли был запрос, в случае неуспеха мы используем <function>LeechCraft::Util::MakeNotification</function> для создания пользовательского уведомления (структуры <structname>Entity</structname>, описывающей некоторое сообщение для пользователя, не путать с сообщением-уведомлением в смысле типа сообщения) с некоторым понятным пользователю заголовком, описанием ошибки и приоритетом. Мы излучаем это пользовательское сообщение как уведомление при помощи сигнала <function>gotEntity</function>. Кстати, это реальный кусок кода из плагина LackMan — пакетного менеджера.</para>
+					<programlisting language="c++">
+Entity e = Util::MakeEntity (url,
+		location,
+		LeechCraft::Internal |
+			LeechCraft::DoNotNotifyUser |
+			LeechCraft::DoNotSaveInHistory |
+			LeechCraft::NotPersistent |
+			LeechCraft::DoNotAnnounceEntity);
+int id = -1;
+QObject *pr;
+emit delegateEntity (e, &amp;id, &amp;pr);
+if (id == -1)
+{
+	emit gotEntity (Util::MakeNotification (tr ("Error fetching repository"),
+			tr ("Could not find plugin to fetch repository information for %1.")
+				.arg (url.toString ()),
+			PCritical_));
+	return;
+}
+					</programlisting>
+				</example>
+			<para>В некоторых случаях необходимо знать, способен ли вообще LeechCraft обработать некоторую сущность здесь и сейчас, но не обрабатывать ее. Например, плагин Poshuku — веб-браузер, при завершении загрузки страницы проверяет, какие ссылки на внешние ресурсы (типа RSS-лент или OpenSearch-описаний) могут быть обработаны. Для тех ссылок, которые могут быть обработаны, Poshuku дает возможность их обработать.</para>
+			<para>Для проверки возможности обработки сущности, используется сигнал
+				<funcsynopsis>
+					<funcprototype>
+						<funcdef>void <function>couldHandle</function></funcdef>
+						<paramdef>const LeechCraft::Entity&amp; <parameter>entity</parameter></paramdef>
+						<paramdef>bool *<parameter>could</parameter></paramdef>
+					</funcprototype>
+				</funcsynopsis>
+				Этот сигнал блокирующий. Он возвращает либо после того, как ядро найдет первый способный обработать сущность <parameter>entity</parameter> плагин, либо если все опрошенные плагины отказываются ее обработать. Результат сохраняется в переменной, на которую указывает <parameter>could</parameter>.</para>
+			<para>В общшем случае лучше не хранить результат этого сигнала долго, так как плагины могут динамически во время выполнения решать, обрабатывать ту или иную сущность или нет. Однако, обычно вполне безопасно исходить из предположения, что результат не изменится до возврата в основной цикл событий.</para>
+		</sect1>
+		<sect1>
+			<title>Использование интерфейсов</title>
+			<para>Это в некотором смысле гораздо более простой подход, но он также гораздо более «статичный». Имея указатель на <classname>QObject</classname> — главный объект плагина (объект класса, экспортированного из плагина при помощи <function>Q_EXPORT_PLUGIN2</function>), с которым вы хотите взаимодействовать, вы можете попробовать преобразовать его при помощи <function>qobject_cast</function> в интересующий вас интерфейс.</para>
+			<para>Есть три основных способа получить указатель на другой плагин:
+				<itemizedlist>
+					<listitem><para>Он может быть установлен ядром LeechCraft в обработчике сигнала <function>delegateEntity</function>: третий параметр этого сигнала — указатель на указатель на объект-обработчик сущности. предыдущая секция содержит больше информации на эту тему.</para></listitem>
+					<listitem><para>Он может быть получен плагином в функции <function>IInfo::SetProvider</function>, если он вернул соответствующий список зависимостей из <function>IInfo::Needs</function> или <function>IInfo::Uses</function>.</para></listitem>
+					<listitem><para>Вы также можете получить список всех плагинов через объект-менеджер плагинов, который можно получить через <function>ICoreProxy::GetPluginsManager</function>. Соответствующий <classname>ICoreProxy</classname> передается в <function>IInfo::Init</function> плагина.</para></listitem>
+				</itemizedlist>
+			</para>
+			<para>Рассмотрим пару простых примеров, иллюстрирующих основные идеи взаимодействия с другими плагинами.</para>
+			<example>
+				<title>Получение любого плагина, реализующего интерфейс <classname>IWebBrowser</classname>.</title>
+				<para>Это реальный пример из плагина Aggregator. Полагается, что <classname>ICoreProxy</classname>, переданный в <function>IInfo::Init</function> вашего плагина, сохранен как <varname>Proxy_</varname>.</para>
+				<programlisting language="c++">
+<![CDATA[
+IWebBrowser* Core::GetWebBrowser () const
+{
+    IPluginsManager *pm = Proxy_->GetPluginsManager ();
+    QObjectList browsers = pm->Filter<IWebBrowser*> (pm->GetAllPlugins ());
+    return browsers.size () ?
+        qobject_cast<IWebBrowser*> (browsers.at (0)) :
+        0;
+}
+]]>
+				</programlisting>
+			</example>
+			<example>
+				<title>Более продвинутое делегирование и обработка ошибок.</title>
+				<para>Это другая часть кода, взятая из Aggregator. Вот как он делегирует скачивание свежих версий лент новостей другому плагину.</para>
+				<programlisting language="c++">
+<![CDATA[
+void Core::UpdateFeed (const QString& url)
+{
+    QList<int> keys = PendingJobs_.keys ();
+    Q_FOREACH (int key, keys)
+        if (PendingJobs_ [key].URL_ == url)
+        {
+            QObject *provider = ID2Downloader_ [key];
+            IDownload *downloader = qobject_cast<IDownload*> (provider);
+            if (downloader)
+            {
+                qWarning () << Q_FUNC_INFO
+                    << "stalled task detected from"
+                    << downloader
+                    << "trying to kill...";
+                downloader->KillTask (key);
+                ID2Downloader_.remove (key);
+                PendingJobs_.remove (key);
+                qWarning () << Q_FUNC_INFO
+                    << "killed!";
+            }
+            else
+                qWarning () << Q_FUNC_INFO
+                    << "provider is not a downloader:"
+                    << provider
+                    << "; cannot kill the task";
+            return;
+        }
+
+    QString filename = LeechCraft::Util::GetTemporaryName ();
+
+    LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
+            filename,
+            LeechCraft::Internal |
+                LeechCraft::DoNotNotifyUser |
+                LeechCraft::DoNotSaveInHistory |
+                LeechCraft::NotPersistent |
+                LeechCraft::DoNotAnnounceEntity);
+
+    PendingJob pj =
+    {
+        PendingJob::RFeedUpdated,
+        url,
+        filename,
+        QStringList ()
+    };
+
+    int id = -1;
+    QObject *pr;
+    emit delegateEntity (e, &id, &pr);
+    if (id == -1)
+    {
+        qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
+        return;
+    }
+
+    HandleProvider (pr, id);
+    PendingJobs_ [id] = pj;
+    Updates_ [url] = QDateTime::currentDateTime ();
+}
+
+void Core::HandleProvider (QObject *provider, int id)
+{
+    if (Downloaders_.contains (provider))
+        return;
+
+    Downloaders_ << provider;
+    connect (provider,
+            SIGNAL (jobFinished (int)),
+            this,
+            SLOT (handleJobFinished (int)));
+    connect (provider,
+            SIGNAL (jobRemoved (int)),
+            this,
+            SLOT (handleJobRemoved (int)));
+    connect (provider,
+            SIGNAL (jobError (int, IDownload::Error)),
+            this,
+            SLOT (handleJobError (int, IDownload::Error)));
+
+    ID2Downloader_ [id] = provider;
+}
+]]>
+			</programlisting>
+			</example>
+		</sect1>
+	</chapter>
+ </book>

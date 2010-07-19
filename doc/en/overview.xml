@@ -13,7 +13,7 @@
 		<sect1 id="message-communication">
 			<title>Message-based communication</title>
 			<para>This method is more useful when you don't know the exact plugin, or, at least, what does this plugin look like (what interfaces it implements) and just talking by such messages with other plugins is OK for you.</para>
-			<para>Communcation is done using <structname>LeechCraft::Entity</structname> (found in <filename>/src/interfaces/structures.h</filename>) structure which can be considered as a packet or a message. Plugins send these <structname>Entity</structname> messages, LeechCraft Core catches them, andâ¦ Here the story begins.</para>
+			<para>Communcation is done using <structname>LeechCraft::Entity</structname> (found in <filename>/src/interfaces/structures.h</filename>) structure which can be considered as a packet or a message. Plugins send these <structname>Entity</structname> messages, LeechCraft Core catches them, andÃ¢ÂÂ¦ Here the story begins.</para>
 			<para>So, you have two types of messages. Same <structname>Entity</structname> is used for both of them, and they differ only by the way of sending them out of your plugin.</para>
 			<para>First type of messages is <emphasis>notification</emphasis>. It's used to notify Core or other plugins that a new entity appeared, but your plugin doesn't care what would happen with it after the announcement.</para>
 			<para>Let's consider a BitTorrent client that has just finished a download as an example. It would <emphasis>notify</emphasis> other parts of LeechCraft about files it just finished downloading but it doesn't care what would happen with them next, would they be handled or not, etc.</para>
@@ -25,22 +25,22 @@
 						<paramdef>LeechCraft::Entity *<parameter>entity</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
-				signal. Just declare it in your plugin instance object (the one you export with <funcname>Q_EXPORT_PLUGIN2</funcname>, and LeechCraft core would automatically attach to it.</para>
+				signal. Just declare it in your plugin instance object (the one you export with <funcname>Q_EXPORT_PLUGIN2</funcname>), and LeechCraft core would automatically detect it at runtime.</para>
 			<para>Second type is <emphasis>delegation request</emphasis>. It's used to <emphasis>delegate</emphasis> a task to another plugin and hope there is such plugin that can handle it. This way you get access to the plugin that would actually handle the task and can communicate with it. The corresponding signal blocks.</para>
-			<para>For instance, consider the Aggregator feed reader. It doesn't download feeds itself, instead, it delegates them to another plugin by emitting a <emphasis>delegation request</emphasis>. After returning, plugin would know whether the entity was actually delegated, and if it was, which plugin is handling it.</para>
-			<para>To send a <emphasis>notification request</emphasis>, use the
+			<para>For instance, consider the Aggregator feed reader. It doesn't download feeds itself, instead, it delegates them to another plugin by emitting a <emphasis>delegation request</emphasis>. After returning from the signal used to emit such a message, the sender plugin would know whether the entity was actually delegated, and if it was, which plugin is handling it.</para>
+			<para>To send a <emphasis>delegation request</emphasis>, use the
 				<funcsynopsis>
 					<funcprototype>
 						<funcdef>void <function>delegateEntity</function></funcdef>
 						<paramdef>LeechCraft::Entity *<parameter>entity</parameter></paramdef>
-						<paramdef>QObject **<parameter>handler</parameter> = 0</paramdef>
 						<paramdef>int *<parameter>id</parameter> = 0</paramdef>
+						<paramdef>QObject **<parameter>handler</parameter> = 0</paramdef>
 					</funcprototype>
 				</funcsynopsis>
-				signal. Here, if the delegation was successful, <parameter>handler</parameter> would be set to point to the object that handles this delegation request and <parameter>id</parameter> would countain the ID of the task in that handler. It's guaranteed to be a some non-negative value. To check if the delegation request was successful, the following trick is commonly applied: before emitting the <function>delegateEntity</function> signal, set the id to some negative value like -1 and after emitting check if it is still -1. If it is, the delegation failed.</para>
+				signal. Here, if the delegation was successful, <parameter>handler</parameter> would be set to point to the object that handles this delegation request and <parameter>id</parameter> would be the ID of the task in that handler. It's guaranteed to be a some non-negative value. To check if the delegation request was successful, the following trick is commonly applied: before emitting the <function>delegateEntity</function> signal, set the <parameter>id</parameter> to some negative value like -1 and after emitting check if it is still -1. If it is, the delegation failed.</para>
 				<example>
 					<title>Delegating an entity and checking success of delegation</title>
-					<para>In this example we emit a delegation entity for downloading a given <parameter>url</parameter> to <parameter>location</parameter> with task parameters commonly used for internal LeechCraft tasks. We check if the delegation was successful, and if it failed, we use <function>LeechCraft::Util::MakeNotification</function> to create a user-notification entity with human-readable error title, message and priority, and we emit it as a notification via <function>gotEntity</function>. Actually, this is a real piece of code from LackMan plugin, the package manager.</para>
+					<para>In this example we emit a delegation entity for downloading a given <parameter>url</parameter> to <parameter>location</parameter> with task parameters commonly used for internal LeechCraft tasks (user does not have to know about the process of downloading news feeds, for example). We check if the delegation was successful, and if it failed, we use <function>LeechCraft::Util::MakeNotification</function> to create a user-notification (an <structname>Entity</structname> that represents some notification for the user, not to be confused with notification <structname>Entity</structname>) entity with human-readable error title, message and priority, and we emit it as a notification via <function>gotEntity</function>. Actually, this is a real piece of code from LackMan plugin, the package manager.</para>
 					<programlisting language="c++">
 Entity e = Util::MakeEntity (url,
 		location,
@@ -103,7 +103,7 @@ IWebBrowser* Core::GetWebBrowser () const
 			</example>
 			<example>
 				<title>More sophisticated task delegation and error handling.</title>
-				<para>This is another bunch of code taked from the Aggregator. This is how it delegated the downloading of fresh versions of feed files to another plugin.</para>
+				<para>This is another bunch of code taked from the Aggregator. This is how it delegates the downloading of fresh versions of feed files to another plugin.</para>
 				<programlisting language="c++">
 <![CDATA[
 void Core::UpdateFeed (const QString& url)
