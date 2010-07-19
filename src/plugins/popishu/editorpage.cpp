@@ -671,6 +671,9 @@ namespace LeechCraft
 
 				emit changeTabName (this, QString ("%1 - Popishu")
 						.arg (Filename_));
+				QStringList path ("Popishu");
+				path += Filename_.split ('/', QString::SkipEmptyParts);
+				setProperty ("WidgetLogicalPath", path);
 
 				PrependRecentFile (filename);
 			}
