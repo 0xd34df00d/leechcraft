@@ -20,7 +20,9 @@
 #include <QStringList>
 #include <QtDebug>
 #include <gloox/rosteritem.h>
+#include <gloox/resource.h>
 #include <interfaces/iaccount.h>
+#include "glooxaccount.h"
 
 namespace LeechCraft
 {
@@ -32,9 +34,10 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
-					GlooxCLEntry::GlooxCLEntry (gloox::RosterItem *ri, QObject *parent)
+					GlooxCLEntry::GlooxCLEntry (gloox::RosterItem *ri, GlooxAccount *parent)
 					: QObject (parent)
 					, ParentAccount_ (qobject_cast<IAccount*> (parent))
+					, ParentAccountObject_ (parent)
 					, RI_ (ri)
 					{
 					}
@@ -79,6 +82,22 @@ namespace LeechCraft
 						Q_FOREACH (const std::string& string, RI_->groups ())
 							result << QString::fromUtf8 (string.c_str ());
 						return result;
+					}
+
+					QStringList GlooxCLEntry::Variants () const
+					{
+						QStringList result;
+						gloox::RosterItem::ResourceMap rmap = RI_->resources ();
+						for (gloox::RosterItem::ResourceMap::const_iterator i = rmap.begin (),
+								end = rmap.end (); i != end; ++i)
+							result << QString::fromUtf8 (i->second->message ().c_str ());
+						return result;
+					}
+
+					IMessage* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
+							const QString& variant, const QString& msg)
+					{
+						return ParentAccountObject_->CreateMessage (type, variant, msg, RI_);
 					}
 				}
 			}

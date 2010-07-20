@@ -20,7 +20,17 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <QMap>
+#include <gloox/messagehandler.h>
+#include <gloox/jid.h>
 #include <interfaces/iaccount.h>
+#include <interfaces/imessage.h>
+
+namespace gloox
+{
+	class Client;
+	class RosterItem;
+}
 
 namespace LeechCraft
 {
@@ -48,6 +58,7 @@ namespace LeechCraft
 
 					class GlooxAccount : public QObject
 									   , public IAccount
+									   , public gloox::MessageHandler
 					{
 						Q_OBJECT
 						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
@@ -61,6 +72,8 @@ namespace LeechCraft
 						qint16 Priority_;
 
 						boost::shared_ptr<ClientConnection> ClientConnection_;
+						// Bare JID → resource → session.
+						QMap<gloox::JID, QMap<QString, gloox::MessageSession*> > Sessions_;
 					public:
 						GlooxAccount (const QString&, QObject*);
 
@@ -77,8 +90,17 @@ namespace LeechCraft
 
 						QByteArray Serialize () const;
 						static GlooxAccount* Deserialize (const QByteArray&, QObject*);
+
+						IMessage* CreateMessage (IMessage::MessageType,
+								const QString&, const QString&,
+								gloox::RosterItem*);
+
+						// MessageHandler
+						void handleMessage (const gloox::Message&, gloox::MessageSession*);
 					private slots:
 						void handleGotRosterItems (const QList<QObject*>&);
+					private:
+						void InitializeSession (gloox::MessageSession*);
 					signals:
 						void gotCLItems (const QList<QObject*>);
 					};

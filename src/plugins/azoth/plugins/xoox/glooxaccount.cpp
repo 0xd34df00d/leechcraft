@@ -19,10 +19,14 @@
 #include "glooxaccount.h"
 #include <memory>
 #include <QInputDialog>
+#include <gloox/messagesession.h>
+#include <gloox/client.h>
+#include <gloox/message.h>
 #include <interfaces/iprotocol.h>
 #include "glooxaccountconfigurationdialog.h"
 #include "core.h"
 #include "clientconnection.h"
+#include "glooxmessage.h"
 
 namespace LeechCraft
 {
@@ -129,7 +133,6 @@ namespace LeechCraft
 						ClientConnection_->Synchronize ();
 					}
 
-
 					QByteArray GlooxAccount::Serialize () const
 					{
 						quint16 version = 1;
@@ -174,9 +177,51 @@ namespace LeechCraft
 						return result;
 					}
 
+					IMessage* GlooxAccount::CreateMessage (IMessage::MessageType type,
+							const QString& variant, const QString& body,
+							gloox::RosterItem *ri)
+					{
+						gloox::JID jid = gloox::JID (ri->jid ());
+						gloox::JID bareJid = jid.bareJID ();
+						if (!Sessions_ [bareJid].contains (variant))
+						{
+							const std::string resource = variant.toUtf8 ().constData ();
+							if (ri->resource (resource))
+								jid.setResource (resource);
+
+							gloox::MessageSession *ses =
+									new gloox::MessageSession (ClientConnection_->GetClient (), jid);
+							InitializeSession (ses);
+							Sessions_ [bareJid] [variant] = ses;
+						}
+
+						GlooxMessage *msg = new GlooxMessage (type, IMessage::DOut,
+								ClientConnection_->GetCLEntry (bareJid), variant,
+								Sessions_ [bareJid] [variant]);
+						msg->SetBody (body);
+						return msg;
+					}
+
+					void GlooxAccount::handleMessage (const gloox::Message& msg,
+							gloox::MessageSession *ses)
+					{
+						gloox::JID bareJid = msg.from ().bareJID ();
+						QString variant = QString::fromUtf8 (msg.from ().resource ().c_str ());
+						if (!Sessions_ [bareJid].contains (variant))
+						{
+							InitializeSession (ses);
+							Sessions_ [bareJid] [variant] = ses;
+						}
+					}
+
 					void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
 					{
 						emit gotCLItems (items);
+					}
+
+					void GlooxAccount::InitializeSession (gloox::MessageSession *ses)
+					{
+						ses->registerMessageHandler (this);
 					}
 				}
 			}

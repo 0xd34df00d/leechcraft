@@ -16,14 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXMESSAGE_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXMESSAGE_H
 #include <QObject>
-#include <interfaces/iclentry.h>
+#include <interfaces/imessage.h>
 
 namespace gloox
 {
-	class RosterItem;
 	class MessageSession;
 }
 
@@ -35,38 +34,36 @@ namespace LeechCraft
 		{
 			namespace Plugins
 			{
-				class IAccount;
-
 				namespace Xoox
 				{
-					class GlooxAccount;
+					class GlooxCLEntry;
 
-					class GlooxCLEntry : public QObject
-									   , public ICLEntry
+					class GlooxMessage : public QObject
+									   , public IMessage
 					{
 						Q_OBJECT
 
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
-
-						IAccount *ParentAccount_;
-						GlooxAccount *ParentAccountObject_;
-						gloox::RosterItem *RI_;
+						MessageType Type_;
+						Direction Direction_;
+						GlooxCLEntry *Entry_;
+						QString Body_;
+						QString Variant_;
+						gloox::MessageSession *Session_;
 					public:
-						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
+						GlooxMessage (IMessage::MessageType type,
+								IMessage::Direction direction,
+								GlooxCLEntry *entry,
+								const QString& variant,
+								gloox::MessageSession *session);
 
-						// ICLEntry
 						QObject* GetObject ();
-						IAccount* GetParentAccount () const;
-						Features GetEntryFeatures () const;
-						QString GetEntryName () const;
-						void SetEntryName (const QString&);
-						QByteArray GetEntryID () const;
-						QStringList Groups () const;
-						QStringList Variants () const;
-						IMessage* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
-					signals:
-						void gotMessage (IMessage*);
+						void Send ();
+						Direction GetDirection () const;
+						MessageType GetMessageType () const;
+						ICLEntry* OtherPart () const;
+						QString GetOtherVariant () const;
+						QString GetBody () const;
+						void SetBody (const QString&);
 					};
 				}
 			}

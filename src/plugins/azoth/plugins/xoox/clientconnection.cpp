@@ -85,6 +85,16 @@ namespace LeechCraft
 						Client_->rosterManager ()->synchronize ();
 					}
 
+					gloox::Client* ClientConnection::GetClient () const
+					{
+						return Client_.get ();
+					}
+
+					GlooxCLEntry* ClientConnection::GetCLEntry (const gloox::JID& bareJid) const
+					{
+						return JID2CLEntry_ [bareJid];
+					}
+
 					void ClientConnection::onConnect ()
 					{
 						qDebug () << Q_FUNC_INFO;
@@ -135,7 +145,7 @@ namespace LeechCraft
 						gloox::RosterItem *ri = Client_->rosterManager ()->getRosterItem (jid);
 
 						GlooxCLEntry *entry = new GlooxCLEntry (ri, Account_);
-						JID2CLEntry_ [jid] = entry;
+						JID2CLEntry_ [jid.bareJID ()] = entry;
 						emit gotRosterItems (QList<QObject*> () << entry);
 					}
 
@@ -146,7 +156,7 @@ namespace LeechCraft
 
 					void ClientConnection::handleItemRemoved (const gloox::JID& jid)
 					{
-						if (!JID2CLEntry_.contains (jid))
+						if (!JID2CLEntry_.contains (jid.bareJID ()))
 						{
 							qWarning () << Q_FUNC_INFO
 									<< "strange, we have no"
@@ -155,13 +165,13 @@ namespace LeechCraft
 							return;
 						}
 
-						GlooxCLEntry *entry = JID2CLEntry_.take (jid);
+						GlooxCLEntry *entry = JID2CLEntry_.take (jid.bareJID ());
 						emit rosterItemRemoved (entry);
 					}
 
 					void ClientConnection::handleItemUpdated (const gloox::JID& jid)
 					{
-						if (!JID2CLEntry_.contains (jid))
+						if (!JID2CLEntry_.contains (jid.bareJID ()))
 						{
 							qWarning () << Q_FUNC_INFO
 									<< "strange, we have no"
@@ -170,7 +180,7 @@ namespace LeechCraft
 							return;
 						}
 
-						emit rosterItemUpdated (JID2CLEntry_ [jid]);
+						emit rosterItemUpdated (JID2CLEntry_ [jid.bareJID ()]);
 					}
 
 					void ClientConnection::handleItemUnsubscribed (const gloox::JID& jid)

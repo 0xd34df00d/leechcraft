@@ -65,6 +65,8 @@ namespace LeechCraft
 
 						void SetState (const GlooxAccountState&);
 						void Synchronize ();
+						gloox::Client* GetClient () const;
+						GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
 					protected:
 						// ConnectionListener
 						virtual void onConnect ();
