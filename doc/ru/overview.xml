@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
- "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd">
-<book id="general_overview" xmlns="http://docbook.org/ns/docbook" version="5.0" lang="ru">
+<book id="general_overview" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="ru">
 	<bookinfo>
 		<title>Обзор</title>
 	</bookinfo>
@@ -25,7 +23,7 @@
 						<paramdef>LeechCraft::Entity *<parameter>entity</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
-				сигнал. Достаточно просто определить его в главном классе вашего плагина (это тот, который экспортируется при помощи макроса <funcname>Q_EXPORT_PLUGIN2</funcname>), и ядро LeechCraft автоматически найдет его.</para>
+				сигнал. Достаточно просто определить его в главном классе вашего плагина (это тот, который экспортируется при помощи макроса <function>Q_EXPORT_PLUGIN2</function>), и ядро LeechCraft автоматически найдет его.</para>
 			<para>Второй тип сообщений — <emphasis>запрос на делегирование</emphasis>. Он используется для <emphasis>делегирования</emphasis> некой задачи другому плагину в надежде, что найдется плагин, способный обработaть такой запрос. При использовании такого типа сообщений возможно получить доступ к плагину, который был выбран для обработки запроса, и, соответственно, можно в дальнейшем взаимодействовать с ним. Очевидно, соответствующий сигнал блокирующий.</para>
 			<para>Например, рассмотрим Aggregator — клиент для чтения новостей. Он не скачивает ленты сам, вместо этого он делегирует это какому-нибудь другому плагину, отправляя <emphasis>запрос на делегирование</emphasis>. После возврата из соответствующего сигнала, плагин-отправитель будет знать, делегирована ли сущность, и если она делегирована успешно, какой плагин ее обрабатывает.</para>
 			<para>Для отправки <emphasis>запроса на делегирование</emphasis> используется
@@ -193,3 +191,4 @@ void Core::HandleProvider (QObject *provider, int id)
 		</sect1>
 	</chapter>
  </book>
+ 

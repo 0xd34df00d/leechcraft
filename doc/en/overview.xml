@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
- "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd">
-<book id="general_overview" xmlns="http://docbook.org/ns/docbook" version="5.0" lang="en">
+<book id="general_overview" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
 	<bookinfo>
 		<title>General overview</title>
 	</bookinfo>
@@ -13,7 +11,7 @@
 		<sect1 id="message-communication">
 			<title>Message-based communication</title>
 			<para>This method is more useful when you don't know the exact plugin, or, at least, what does this plugin look like (what interfaces it implements) and just talking by such messages with other plugins is OK for you.</para>
-			<para>Communcation is done using <structname>LeechCraft::Entity</structname> (found in <filename>/src/interfaces/structures.h</filename>) structure which can be considered as a packet or a message. Plugins send these <structname>Entity</structname> messages, LeechCraft Core catches them, andÃ¢ÂÂ¦ Here the story begins.</para>
+			<para>Communcation is done using <structname>LeechCraft::Entity</structname> (found in <filename>/src/interfaces/structures.h</filename>) structure which can be considered as a packet or a message. Plugins send these <structname>Entity</structname> messages, LeechCraft Core catches them, andâ¦ Here the story begins.</para>
 			<para>So, you have two types of messages. Same <structname>Entity</structname> is used for both of them, and they differ only by the way of sending them out of your plugin.</para>
 			<para>First type of messages is <emphasis>notification</emphasis>. It's used to notify Core or other plugins that a new entity appeared, but your plugin doesn't care what would happen with it after the announcement.</para>
 			<para>Let's consider a BitTorrent client that has just finished a download as an example. It would <emphasis>notify</emphasis> other parts of LeechCraft about files it just finished downloading but it doesn't care what would happen with them next, would they be handled or not, etc.</para>
@@ -25,7 +23,7 @@
 						<paramdef>LeechCraft::Entity *<parameter>entity</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
-				signal. Just declare it in your plugin instance object (the one you export with <funcname>Q_EXPORT_PLUGIN2</funcname>), and LeechCraft core would automatically detect it at runtime.</para>
+				signal. Just declare it in your plugin instance object (the one you export with <function>Q_EXPORT_PLUGIN2</function>), and LeechCraft core would automatically detect it at runtime.</para>
 			<para>Second type is <emphasis>delegation request</emphasis>. It's used to <emphasis>delegate</emphasis> a task to another plugin and hope there is such plugin that can handle it. This way you get access to the plugin that would actually handle the task and can communicate with it. The corresponding signal blocks.</para>
 			<para>For instance, consider the Aggregator feed reader. It doesn't download feeds itself, instead, it delegates them to another plugin by emitting a <emphasis>delegation request</emphasis>. After returning from the signal used to emit such a message, the sender plugin would know whether the entity was actually delegated, and if it was, which plugin is handling it.</para>
 			<para>To send a <emphasis>delegation request</emphasis>, use the
