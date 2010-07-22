@@ -99,6 +99,11 @@ namespace LeechCraft
 					{
 						return ParentAccountObject_->CreateMessage (type, variant, msg, RI_);
 					}
+
+					void GlooxCLEntry::ReemitMessage (IMessage *msg)
+					{
+						emit gotMessage (msg);
+					}
 				}
 			}
 		}

@@ -24,6 +24,7 @@
 namespace gloox
 {
 	class MessageSession;
+	class Message;
 }
 
 namespace LeechCraft
@@ -49,11 +50,14 @@ namespace LeechCraft
 						QString Body_;
 						QString Variant_;
 						gloox::MessageSession *Session_;
+						QDateTime DateTime_;
 					public:
 						GlooxMessage (IMessage::MessageType type,
 								IMessage::Direction direction,
 								GlooxCLEntry *entry,
-								const QString& variant,
+								gloox::MessageSession *session);
+						GlooxMessage (const gloox::Message& msg,
+								GlooxCLEntry *entry,
 								gloox::MessageSession *session);
 
 						QObject* GetObject ();
@@ -64,6 +68,8 @@ namespace LeechCraft
 						QString GetOtherVariant () const;
 						QString GetBody () const;
 						void SetBody (const QString&);
+						QDateTime GetDateTime () const;
+						void SetDateTime (const QDateTime&);
 					};
 				}
 			}

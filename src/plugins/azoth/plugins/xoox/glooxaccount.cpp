@@ -27,6 +27,7 @@
 #include "core.h"
 #include "clientconnection.h"
 #include "glooxmessage.h"
+#include "glooxclentry.h"
 
 namespace LeechCraft
 {
@@ -196,9 +197,10 @@ namespace LeechCraft
 						}
 
 						GlooxMessage *msg = new GlooxMessage (type, IMessage::DOut,
-								ClientConnection_->GetCLEntry (bareJid), variant,
+								ClientConnection_->GetCLEntry (bareJid),
 								Sessions_ [bareJid] [variant]);
 						msg->SetBody (body);
+						msg->SetDateTime (QDateTime::currentDateTime ());
 						return msg;
 					}
 
@@ -212,6 +214,19 @@ namespace LeechCraft
 							InitializeSession (ses);
 							Sessions_ [bareJid] [variant] = ses;
 						}
+
+						GlooxCLEntry *entry = ClientConnection_->GetCLEntry (bareJid);
+						if (!entry)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "no JID for msg from"
+									<< bareJid.full ().c_str ();
+							return;
+						}
+
+						GlooxMessage *gm = new GlooxMessage (msg, entry, ses);
+
+						entry->ReemitMessage (gm);
 					}
 
 					void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)

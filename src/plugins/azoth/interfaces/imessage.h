@@ -46,8 +46,7 @@ namespace LeechCraft
 
 					enum MessageType
 					{
-						MTChat,
-						MTGroupchat
+						MTChat
 					};
 
 					virtual QObject* GetObject () = 0;
@@ -58,6 +57,8 @@ namespace LeechCraft
 					virtual QString GetOtherVariant () const = 0;
 					virtual QString GetBody () const = 0;
 					virtual void SetBody (const QString&) = 0;
+					virtual QDateTime GetDateTime () const = 0;
+					virtual void SetDateTime (const QDateTime&) = 0;
 				};
 			}
 		}

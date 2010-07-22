@@ -17,7 +17,9 @@
  **********************************************************************/
 
 #include "glooxmessage.h"
+#include <QtDebug>
 #include <gloox/messagesession.h>
+#include <gloox/message.h>
 #include "glooxclentry.h"
 
 namespace LeechCraft
@@ -33,13 +35,24 @@ namespace LeechCraft
 					GlooxMessage::GlooxMessage (IMessage::MessageType type,
 							IMessage::Direction direction,
 							GlooxCLEntry *entry,
-							const QString& variant,
 							gloox::MessageSession *session)
 					: Type_ (type)
 					, Direction_ (direction)
 					, Entry_ (entry)
-					, Variant_ (variant)
+					, Variant_ (QString::fromUtf8 (session->target ().resource ().c_str ()))
 					, Session_ (session)
+					{
+					}
+
+					GlooxMessage::GlooxMessage (const gloox::Message& message,
+							GlooxCLEntry *entry,
+							gloox::MessageSession *session)
+					: Type_ (MTChat)
+					, Direction_ (DIn)
+					, Entry_ (entry)
+					, Variant_ (QString::fromUtf8 (session->target ().resource ().c_str ()))
+					, Session_ (session)
+					, Body_ (QString::fromUtf8 (message.body ().c_str ()))
 					{
 					}
 
@@ -50,10 +63,16 @@ namespace LeechCraft
 
 					void GlooxMessage::Send ()
 					{
+						if (Direction_ == DIn)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "tried to send incoming message";
+							return;
+						}
+
 						switch (Type_)
 						{
 						case MTChat:
-						case MTGroupchat:
 							Session_->send (Body_.toUtf8 ().constData (), std::string ());
 							return;
 						}
@@ -87,6 +106,16 @@ namespace LeechCraft
 					void GlooxMessage::SetBody (const QString& body)
 					{
 						Body_ = body;
+					}
+
+					QDateTime GlooxMessage::GetDateTime () const
+					{
+						return DateTime_;
+					}
+
+					void GlooxMessage::SetDateTime (const QDateTime& dateTime)
+					{
+						DateTime_ = dateTime;
 					}
 				}
 			}
