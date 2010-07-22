@@ -86,7 +86,7 @@ namespace LeechCraft
 						.arg (info.ShortDescription_));
 				Q_FOREACH (int dep, deps)
 				{
-					info = Core::Instance ().GetListPackageInfo (id);
+					info = Core::Instance ().GetListPackageInfo (dep);
 					QStandardItem *item = new QStandardItem (QString ("%1 (%2)")
 							.arg (info.Name_)
 							.arg (info.ShortDescription_));
