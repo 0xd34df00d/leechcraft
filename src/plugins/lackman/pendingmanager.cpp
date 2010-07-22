@@ -102,6 +102,16 @@ namespace LeechCraft
 				Deps_.remove (id);
 				container.remove (id);
 
+				if (!ID2ModelRow_.contains (id))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "strange, seems like"
+							<< id
+							<< "hasn't been added to the model";
+					return;
+				}
+
+				PendingModel_->takeRow (ID2ModelRow_ [id]->row ());
 				delete ID2ModelRow_.take (id);
 			}
 		}
