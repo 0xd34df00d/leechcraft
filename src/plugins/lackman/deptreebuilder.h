@@ -137,7 +137,7 @@ namespace LeechCraft
 
 				QList<int> PackagesToInstall_;
 			public:
-				DepTreeBuilder (const ListPackageInfo&);
+				DepTreeBuilder (int);
 				virtual ~DepTreeBuilder ();
 
 				/** Whether it is possible to install the package for
@@ -158,17 +158,18 @@ namespace LeechCraft
 				const QList<int>& GetPackagesToInstall () const;
 			private:
 				/** @brief Builds the part of dependency tree for the
-				 * package identified by lpi.
+				 * package identified by package.
 				 *
 				 * Once this function has finished building the layers
 				 * of dep tree relevant to the package lpi, it would
 				 * recursively call itself on those packages on which
-				 * lpi depends.
+				 * package depends.
 				 *
-				 * @param[in] lpi The package for which to build the
+				 * @param[in] package The ID of the package for which
+				 * to build the
 				 * tree.
 				 */
-				void InnerLoop (const ListPackageInfo& lpi);
+				void InnerLoop (int package);
 			};
 		};
 	};

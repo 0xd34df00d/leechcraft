@@ -218,13 +218,13 @@ namespace LeechCraft
 				}
 			};
 
-			DepTreeBuilder::DepTreeBuilder (const ListPackageInfo& packageInfo)
+			DepTreeBuilder::DepTreeBuilder (int packageId)
 			{
 				// First, build the graph.
 				Vertex_t root = boost::add_vertex (Graph_);
-				Graph_ [root] = VertexInfo (packageInfo.PackageID_);
-				Package2Vertex_ [packageInfo.PackageID_] = root;
-				InnerLoop (packageInfo);
+				Graph_ [root] = VertexInfo (packageId);
+				Package2Vertex_ [packageId] = root;
+				InnerLoop (packageId);
 
 				// Second, find all the backedges.
 				QList<Edge_t> backEdges;
@@ -270,9 +270,9 @@ namespace LeechCraft
 				return PackagesToInstall_;
 			}
 
-			void DepTreeBuilder::InnerLoop (const ListPackageInfo& packageInfo)
+			void DepTreeBuilder::InnerLoop (int packageId)
 			{
-				QList<Dependency> dependencies = Core::Instance ().GetDependencies (packageInfo.PackageID_);
+				QList<Dependency> dependencies = Core::Instance ().GetDependencies (packageId);
 
 				Q_FOREACH (const Dependency& dep, dependencies)
 				{
@@ -290,7 +290,7 @@ namespace LeechCraft
 					else
 						depVertex = Dependency2Vertex_ [dep];
 
-					Vertex_t packageVertex = Package2Vertex_ [packageInfo.PackageID_];
+					Vertex_t packageVertex = Package2Vertex_ [packageId];
 					Edge_t edge = boost::add_edge (packageVertex, depVertex, Graph_).first;
 					Edge2Vertices_ [edge] = qMakePair (packageVertex, depVertex);
 
@@ -305,6 +305,8 @@ namespace LeechCraft
 							Graph_ [ffVertex] = VertexInfo (lpi.PackageID_);
 
 							Package2Vertex_ [lpi.PackageID_] = ffVertex;
+
+							InnerLoop (lpi.PackageID_);
 						}
 						else
 							ffVertex = Package2Vertex_ [lpi.PackageID_];
