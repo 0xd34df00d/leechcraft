@@ -145,12 +145,19 @@ namespace LeechCraft
 
 			struct VertexPredicate
 			{
-				const DepTreeBuilder::Graph_t& G_;
-				const DepTreeBuilder::Edge2Vertices_t E2V_;
+				DepTreeBuilder::Graph_t *G_;
+				DepTreeBuilder::Edge2Vertices_t *E2V_;
 
-				VertexPredicate (const DepTreeBuilder::Edge2Vertices_t& e2v,
-						const DepTreeBuilder::Graph_t& g)
-				: G_ (g)
+				VertexPredicate ()
+				: G_ (0)
+				, E2V_ (0)
+				{
+				}
+
+				VertexPredicate (DepTreeBuilder::Edge2Vertices_t& e2v,
+						DepTreeBuilder::Graph_t& g)
+				: G_ (&g)
+				, E2V_ (&e2v)
 				{
 				}
 
@@ -160,7 +167,7 @@ namespace LeechCraft
 					/* If dependency is not fulfilled, we should not
 					 * see it in filtered output in any case.
 					 */
-					if (!G_ [v].IsFulfilled_)
+					if (!(*G_) [v].IsFulfilled_)
 						return false;
 
 					/* If this dependency is of type TAny, then the
@@ -168,7 +175,7 @@ namespace LeechCraft
 					 * always see it if it's fulfilled (what we've
 					 * checked in previous condition).
 					 */
-					if (G_ [v].Type_ == DepTreeBuilder::VertexInfo::TAny)
+					if ((*G_) [v].Type_ == DepTreeBuilder::VertexInfo::TAny)
 						return true;
 
 					/* This dependency is fulfilled, but is of type
@@ -185,20 +192,21 @@ namespace LeechCraft
 					 * the least possible amount of additional packages,
 					 * but that's too difficult.
 					 */
+
 					std::pair<DepTreeBuilder::InEdgeIterator_t,
-							DepTreeBuilder::InEdgeIterator_t> range = boost::in_edges (G_, v);
+							DepTreeBuilder::InEdgeIterator_t> range = boost::in_edges (v, *G_);
 					for (DepTreeBuilder::InEdgeIterator_t i = range.first;
 							i < range.second; ++i)
 					{
-						Vertex u = E2V_ [*i].first;
+						Vertex u = (*E2V_) [*i].first;
 						std::pair<DepTreeBuilder::OutEdgeIterator_t,
-								DepTreeBuilder::OutEdgeIterator_t> sameLevel = boost::out_edges (G_, u);
+								DepTreeBuilder::OutEdgeIterator_t> sameLevel = boost::out_edges (u, *G_);
 
 						for (DepTreeBuilder::OutEdgeIterator_t candIt = sameLevel.first;
 								candIt < sameLevel.second; ++candIt)
 						{
-							Vertex candidate = E2V_ [*candIt].second;
-							if (G_ [candidate].IsFulfilled_)
+							Vertex candidate = (*E2V_) [*candIt].second;
+							if ((*G_) [candidate].IsFulfilled_)
 							{
 								// If we're here, we're checking the
 								// first fulfillable candidate.
@@ -246,14 +254,18 @@ namespace LeechCraft
 
 				// Create filtered graph with only those that are
 				// fulfilled.
-				boost::filtered_graph<Graph_t,
-						boost::keep_all, VertexPredicate> fg (Graph_,
-								boost::keep_all (),
-								VertexPredicate (Edge2Vertices_, Graph_));
+				typedef boost::filtered_graph<Graph_t, boost::keep_all, VertexPredicate> fg_t;
+				fg_t fg = fg_t (Graph_,
+						boost::keep_all (),
+						VertexPredicate (Edge2Vertices_, Graph_));
 
 				// Finally run topological sort over filtered graph.
-				boost::topological_sort (Graph_,
-						std::front_inserter (PackagesToInstall_));
+				QList<Vertex_t> vertices;
+				boost::topological_sort (fg,
+						std::front_inserter (vertices));
+				Q_FOREACH (const Vertex_t& vertex, vertices)
+					if (fg [vertex].Type_ == VertexInfo::TAll)
+						PackagesToInstall_ << fg [vertex].PackageId_;
 			}
 
 			DepTreeBuilder::~DepTreeBuilder ()

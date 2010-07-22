@@ -116,7 +116,7 @@ namespace LeechCraft
 				typedef boost::property<boost::vertex_color_t, boost::default_color_type,
 						VertexInfo> VertexProperty;
 				typedef boost::adjacency_list<boost::vecS, boost::vecS,
-						boost::directedS, VertexProperty> Graph_t;
+						boost::bidirectionalS, VertexProperty> Graph_t;
 
 				typedef Graph_t::vertex_descriptor Vertex_t;
 				typedef Graph_t::edge_descriptor Edge_t;
