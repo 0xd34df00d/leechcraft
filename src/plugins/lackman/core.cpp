@@ -28,6 +28,7 @@
 #include "storage.h"
 #include "packagesmodel.h"
 #include "externalresourcemanager.h"
+#include "pendingmanager.h"
 
 namespace LeechCraft
 {
@@ -42,6 +43,7 @@ namespace LeechCraft
 			, ExternalResourceManager_ (new ExternalResourceManager (this))
 			, Storage_ (new Storage (this))
 			, PluginsModel_ (new PackagesModel (this))
+			, PendingManager_ (new PendingManager (this))
 			{
 				Relation2comparator [Dependency::L] = IsVersionLess;
 				Relation2comparator [Dependency::GE] = boost::bind (std::logical_not<bool> (),
@@ -115,6 +117,11 @@ namespace LeechCraft
 			QAbstractItemModel* Core::GetPluginsModel () const
 			{
 				return PluginsModel_;
+			}
+
+			PendingManager* Core::GetPendingManager () const
+			{
+				return PendingManager_;
 			}
 
 			DependencyList Core::GetDependencies (int packageId) const
@@ -221,6 +228,11 @@ namespace LeechCraft
 					break;
 				}
 				return result;
+			}
+
+			ListPackageInfo Core::GetListPackageInfo (int packageId)
+			{
+				return Storage_->GetSingleListPackageInfo (packageId);
 			}
 
 			void Core::AddRepo (const QUrl& url)
@@ -388,7 +400,7 @@ namespace LeechCraft
 					return;
 				}
 
-				InstalledDependencyInfoList instedAll = GetSystemInstalledPackages ();
+				InstalledDependencyInfoList instedAll = GetLackManInstalledPackages ();
 
 				Q_FOREACH (const QString& packageName, infos.keys ())
 				{

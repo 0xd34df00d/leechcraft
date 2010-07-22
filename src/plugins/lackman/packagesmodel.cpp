@@ -49,6 +49,8 @@ namespace LeechCraft
 					return lpi.Name_;
 				case Qt::DecorationRole:
 					return Core::Instance ().GetIconForLPI (lpi);
+				case PackagesModel::PMRPackageID:
+					return lpi.PackageID_;
 				case PackagesModel::PMRShortDescription:
 					return lpi.ShortDescription_;
 				case PackagesModel::PMRLongDescription:

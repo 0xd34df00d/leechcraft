@@ -38,6 +38,7 @@ namespace LeechCraft
 			class ExternalResourceManager;
 			class Storage;
 			class PackagesModel;
+			class PendingManager;
 
 			class Core : public QObject
 			{
@@ -48,6 +49,7 @@ namespace LeechCraft
 				ExternalResourceManager *ExternalResourceManager_;
 				Storage *Storage_;
 				PackagesModel *PluginsModel_;
+				PendingManager *PendingManager_;
 
 				Core ();
 			public:
@@ -57,14 +59,17 @@ namespace LeechCraft
 
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
-
 				QAbstractItemModel* GetPluginsModel () const;
+				PendingManager* GetPendingManager () const;
 
 				DependencyList GetDependencies (int) const;
 				QList<ListPackageInfo> GetDependencyFulfillers (const Dependency&) const;
 				bool IsVersionOk (const QString& candidate, QString refVer) const;
 				bool IsFulfilled (const Dependency&) const;
 				QIcon GetIconForLPI (const ListPackageInfo&);
+				ListPackageInfo GetListPackageInfo (int);
+				bool IsInstalled (int) const;
+				bool IsUpgradable (int) const;
 
 				void AddRepo (const QUrl&);
 				void UpdateRepo (const QUrl&, const QStringList&);
