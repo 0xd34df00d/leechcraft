@@ -177,10 +177,8 @@
 				<label lang="en" value="Show messages in tray" />
 				<label lang="uk" value="Показувати повідомленя в треї" />
 				<item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
-					<lang value="en">
-						<label value="Message timeout:" />
-						<suffix value=" s" />
-					</lang>
+					<label value="Message timeout:" />
+					<suffix value=" s" />
 					<lang value="uk">
 						<label value="Відображати повідомлення:" />
 						<suffix value=" с" />
@@ -202,10 +200,8 @@
 		<label lang="en" value="Network" />
 		<label lang="uk" value="Мережеа" />
 		<item type="spinbox" property="CacheSize" default="200" minimum="0" maximum="1048576">
-			<lang value="en">
-				<label value="Cache size:" />
-				<suffix value=" MB" />
-			</lang>
+			<label value="Cache size:" />
+			<suffix value=" MB" />
 			<lang value="uk">
 				<label value="Розмір кешу:" />
 				<suffix value=" МБ" />
