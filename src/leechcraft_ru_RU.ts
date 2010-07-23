@@ -795,4 +795,275 @@
         <translation>Продвинутая настройка</translation>
     </message>
 </context>
+<context>
+    <name>coresettings</name>
+    <message>
+        <source>Appearance</source>
+        <translation>Внешний вид</translation>
+    </message>
+    <message>
+        <source>Use tab scroll buttons</source>
+        <translation>Использовать кнопки прокрутки табов</translation>
+    </message>
+    <message>
+        <source>Show menu bar as button</source>
+        <translation>Показывать панель меню в виде кнопки</translation>
+    </message>
+    <message>
+        <source>Try smarter tabs width calculation</source>
+        <translation>Пытаться использовать умный алгоритм расчета ширины вкладок</translation>
+    </message>
+    <message>
+        <source>Icon size</source>
+        <translation>Размер иконок</translation>
+    </message>
+    <message>
+        <source>System default</source>
+        <translation>Системный</translation>
+    </message>
+    <message>
+        <source>16x16</source>
+        <translation>16x16</translation>
+    </message>
+    <message>
+        <source>24x24</source>
+        <translation>24x24</translation>
+    </message>
+    <message>
+        <source>32x32</source>
+        <translation>32x32</translation>
+    </message>
+    <message>
+        <source>Tool button style:</source>
+        <translation>Стиль панелей инструментов:</translation>
+    </message>
+    <message>
+        <source>Only display the icon</source>
+        <translation>Показывать только иконку</translation>
+    </message>
+    <message>
+        <source>Only display the text</source>
+        <translation>Показывать только текст</translation>
+    </message>
+    <message>
+        <source>The text appears beside the icon</source>
+        <translation>Текст рядом с иконкой</translation>
+    </message>
+    <message>
+        <source>The text appears under the icon</source>
+        <translation>Текст под иконкой</translation>
+    </message>
+    <message>
+        <source>Tab bar location:</source>
+        <translation>Положение вкладок:</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation>Сверху</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation>Снизу</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation>Слева</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation>Справа</translation>
+    </message>
+    <message>
+        <source>Icon set:</source>
+        <translation>Набор иконок:</translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation>Стиль:</translation>
+    </message>
+    <message>
+        <source>Language:</source>
+        <translation>Язык:</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation>Системный</translation>
+    </message>
+    <message>
+        <source>Arabic (Ø§ÙØ¹Ø±Ø¨ÙØ©)</source>
+        <translation>Arabic (Ø§ÙØ¹Ø±Ø¨ÙØ©)</translation>
+    </message>
+    <message>
+        <source>German (Deutsch)</source>
+        <translation>German (Deutsch)</translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation>English</translation>
+    </message>
+    <message>
+        <source>Esperanto</source>
+        <translation>Esperanto</translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation>Spanish</translation>
+    </message>
+    <message>
+        <source>Italian (Italiano)</source>
+        <translation>Italian (Italiano)</translation>
+    </message>
+    <message>
+        <source>Polish (Polski)</source>
+        <translation>Polish (Polski)</translation>
+    </message>
+    <message>
+        <source>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</source>
+        <translation>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</translation>
+    </message>
+    <message>
+        <source>Spanish (EspaÃ±ol)</source>
+        <translation>Spanish (EspaÃ±ol)</translation>
+    </message>
+    <message>
+        <source>Ukrainian (Ð£ÐºÑÐ°ÑÐ½ÑÑÐºÐ°)</source>
+        <translation>Ukrainian (Ð£ÐºÑÐ°ÑÐ½ÑÑÐºÐ°)</translation>
+    </message>
+    <message>
+        <source>Maximum log lines:</source>
+        <translation>Максимум строк в журнале:</translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation>Горячие клавиши</translation>
+    </message>
+    <message>
+        <source>Behavior</source>
+        <translation>Поведение</translation>
+    </message>
+    <message>
+        <source>Watch clipboard</source>
+        <translation>Следить за буфером обмена</translation>
+    </message>
+    <message>
+        <source>Ask quit confirmation</source>
+        <translation>Запрашивать подтверждение выхода</translation>
+    </message>
+    <message>
+        <source>Exit on close</source>
+        <translation>Выходить при закрытии</translation>
+    </message>
+    <message>
+        <source>Open new tab next to current</source>
+        <translation>Открывать вкладку после текущей</translation>
+    </message>
+    <message>
+        <source>Automatically accept task when there is only one handler</source>
+        <translation>Автоматически добавлять задачу, когда есть только один обработчик</translation>
+    </message>
+    <message>
+        <source>Watch directory:</source>
+        <translation>Следить за директорией:</translation>
+    </message>
+    <message>
+        <source>Show plugin-dependent actions in tab bar context menu</source>
+        <translation>Показывать действия плагина в меню панели вкладок</translation>
+    </message>
+    <message>
+        <source>Show as a submenu</source>
+        <translation>Показывать как подменю</translation>
+    </message>
+    <message>
+        <source>Show messages in tray</source>
+        <translation>Показывать сообщения в трее</translation>
+    </message>
+    <message>
+        <source>Message timeout:</source>
+        <translation>Время показа:</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <translation> с</translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation>Теги</translation>
+    </message>
+    <message>
+        <source>Tags manager</source>
+        <translation>Менеджер тегов</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation>Сеть</translation>
+    </message>
+    <message>
+        <source>Cache size:</source>
+        <translation>Размер кеша:</translation>
+    </message>
+    <message>
+        <source> MB</source>
+        <translation> МиБ</translation>
+    </message>
+    <message>
+        <source>Filter tracking cookies</source>
+        <translation>Фильтровать отслеживающие куки</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>Очистить кеш</translation>
+    </message>
+    <message>
+        <source>Clear cookies</source>
+        <translation>Очистить куки</translation>
+    </message>
+    <message>
+        <source>Application-wide proxy</source>
+        <translation>Глобальный прокси</translation>
+    </message>
+    <message>
+        <source>Host:</source>
+        <translation>Хост:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <source>Login:</source>
+        <translation>Логин:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Пароль:</translation>
+    </message>
+    <message>
+        <source>Proxy type:</source>
+        <translation>Тип прокси:</translation>
+    </message>
+    <message>
+        <source>SOCKS5</source>
+        <translation>SOCKS5</translation>
+    </message>
+    <message>
+        <source>Transparent HTTP</source>
+        <translation>Прозрачный HTTP</translation>
+    </message>
+    <message>
+        <source>Caching HTTP</source>
+        <translation>Кеширующий HTTP</translation>
+    </message>
+    <message>
+        <source>Caching FTP</source>
+        <translation>Кеширующий FTP</translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation>Плагины</translation>
+    </message>
+    <message>
+        <source>Plugins manager</source>
+        <translation>Менеджер плагинов</translation>
+    </message>
+</context>
 </TS>
