@@ -59,6 +59,7 @@ XmlSettingsDialog::~XmlSettingsDialog ()
 
 void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 {
+	Basename_ = QFileInfo (basename).baseName ();
 	WorkingObject_ = obj;
 	QString filename;
 	if (QFile::exists (basename))
@@ -351,112 +352,34 @@ namespace
 
 QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 {
-#if defined (Q_WS_WIN) || defined (Q_WS_MAC)
-	QString locale = GetLanguageHack ();
-#else
-	QString locale = Util::GetLanguage ();
-#endif
-
 	QString result = "<no label>";
 	QDomElement label = item.firstChildElement ("label");
-	while (!label.isNull ())
-	{
-		if (label.attribute ("lang").toLower () == locale)
-		{
-			result = label.attribute ("value");
-			break;
-		}
-		label = label.nextSiblingElement ("label");
-	}
-	if (result == "<no label>")
-	{
-		label = item.firstChildElement ("label");
-		while (!label.isNull ())
-		{
-			if (label.attribute ("lang").toLower () == DefaultLang_)
-			{
-				result = label.attribute ("value");
-				break;
-			}
-			label = label.nextSiblingElement ("label");
-		}
-	}
-	return result;
+	if (!label.isNull ())
+		result = label.attribute ("value");
+	return QCoreApplication::translate (qPrintable (Basename_),
+			result.toUtf8 ().constData ());
 }
 
 XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomElement& parent) const
 {
-	QString locale = QString(::getenv ("LANG")).left (2);
-	if (locale.isNull () || locale.isEmpty ())
-		locale = QLocale::system ().name ().toLower ();
-	if (locale == "c")
-		locale = "en";
-
-	locale = locale.left (2);
 	LangElements returning;
-	returning.Valid_ = false;
-
-	bool found = false;
-
-	QDomElement result = parent.firstChildElement ("lang");
-	while (!result.isNull ())
-	{
-		if (result.attribute ("value").toLower () == locale)
-		{
-			found = true;
-			break;
-		}
-		result = result.nextSiblingElement ("lang");
-	}
-	if (!found)
-	{
-		result = parent.firstChildElement ("lang");
-		while (!result.isNull ())
-		{
-			if (result.attribute ("value").toLower () == DefaultLang_)
-			{
-				found = true;
-				break;
-			}
-			result = result.nextSiblingElement ("lang");
-		}
-	}
-	if (!found)
-	{
-		result = parent.firstChildElement ("lang");
-		while (!result.isNull ())
-		{
-			if (result.attribute ("value").toLower () == "en" || !result.hasAttribute ("value"))
-			{
-				found = true;
-				break;
-			}
-			result = result.nextSiblingElement ("lang");
-		}
-	}
-	if (result.isNull ())
-		return returning;
-
 	returning.Valid_ = true;
 
-	QDomElement label = result.firstChildElement ("label");
-	if (!label.isNull () && label.hasAttribute ("value"))
+	QDomElement label = parent.firstChildElement ("label");
+	if (!label.isNull ())
 	{
 		returning.Label_.first = true;
-		returning.Label_.second = label.attribute ("value");
+		returning.Label_.second = QCoreApplication::translate (qPrintable (Basename_),
+				label.attribute ("value").toUtf8 ().constData ());
 	}
-	else
-		returning.Label_.first = false;
 
-	QDomElement suffix = result.firstChildElement ("suffix");
-	if (!suffix.isNull () && suffix.hasAttribute ("value"))
+	QDomElement suffix = parent.firstChildElement ("suffix");
+	if (!suffix.isNull ())
 	{
 		returning.Suffix_.first = true;
-		returning.Suffix_.second = suffix.attribute ("value");
+		returning.Suffix_.second = QCoreApplication::translate (qPrintable (Basename_),
+				suffix.attribute ("value").toUtf8 ().constData ());
 	}
-	else
-		returning.Suffix_.first = false;
-
 	return returning;
 }
 
