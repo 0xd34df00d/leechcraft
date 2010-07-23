@@ -74,6 +74,9 @@ namespace LeechCraft
 				void AddRepo (const QUrl&);
 				void UpdateRepo (const QUrl&, const QStringList&);
 
+				void CancelPending ();
+				void AcceptPending ();
+
 				QStringList GetAllTags () const;
 			private:
 				InstalledDependencyInfoList GetSystemInstalledPackages () const;

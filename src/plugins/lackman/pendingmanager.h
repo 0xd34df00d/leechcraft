@@ -51,6 +51,10 @@ namespace LeechCraft
 				void Reset ();
 				void ToggleInstallRemove (int id, bool enable, bool installed);
 				void ToggleUpdate (int id, bool enable);
+
+				const QSet<int>& GetPendingInstall () const;
+				const QSet<int>& GetPendingRemove () const;
+				const QSet<int>& GetPendingUpdate () const;
 			private:
 				void EnablePackageInto (int, QSet<int>&);
 				void DisablePackageFrom (int, QSet<int>&);
