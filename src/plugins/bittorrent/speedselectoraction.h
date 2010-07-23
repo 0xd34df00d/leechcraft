@@ -19,8 +19,7 @@
 #ifndef PLUGINS_BITTORRENT_SPEEDSELECTORACTION_H
 #define PLUGINS_BITTORRENT_SPEEDSELECTORACTION_H
 #include <QWidgetAction>
-
-class QComboBox;
+#include <QComboBox>
 
 namespace LeechCraft
 {
