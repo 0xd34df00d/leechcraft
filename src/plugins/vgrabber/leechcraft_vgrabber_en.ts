@@ -134,4 +134,32 @@
         <translation>vkontakte.ru audio/video grabber.</translation>
     </message>
 </context>
+<context>
+    <name>vgrabbersettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General settings</source>
+        <translation>General settings</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Audio</source>
+        <translation>Audio</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Filter files with the same URL</source>
+        <translation>Filter files with the same URL</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Filter files with same title and length</source>
+        <translation>Filter files with same title and length</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Video</source>
+        <translation>Video</translation>
+    </message>
+</context>
 </TS>

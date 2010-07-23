@@ -134,4 +134,32 @@
         <translation>Скачивание и проигрывание медиа-файлов В Контакте.</translation>
     </message>
 </context>
+<context>
+    <name>vgrabbersettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General settings</source>
+        <translation>Общие настройки</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Audio</source>
+        <translation>Аудио</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Filter files with the same URL</source>
+        <translation>Отфильтровывать файлы с одинаковым адресом</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Filter files with same title and length</source>
+        <translation>Отфильтровывать файлы с одинаковыми именами и длинами</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Video</source>
+        <translation>Видео</translation>
+    </message>
+</context>
 </TS>
