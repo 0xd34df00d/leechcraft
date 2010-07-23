@@ -87,7 +87,7 @@
     <message>
         <location filename="playerwidget.cpp" line="264"/>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="271"/>
@@ -97,12 +97,12 @@
     <message>
         <location filename="playerwidget.cpp" line="277"/>
         <source>P</source>
-        <translation type="unfinished"></translation>
+        <translation>P</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="278"/>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="285"/>
@@ -152,17 +152,17 @@
     <message>
         <location filename="playerwidget.cpp" line="407"/>
         <source> [</source>
-        <translation type="unfinished"></translation>
+        <translation>[</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="413"/>
         <source>/</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="417"/>
         <source>]</source>
-        <translation type="unfinished"></translation>
+        <translation>]</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="419"/>
@@ -226,6 +226,29 @@
         <location filename="videosettings.ui" line="143"/>
         <source>Saturation:</source>
         <translation>Насиченість:</translation>
+    </message>
+</context>
+<context>
+    <name>lmpsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation>Загальні</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Plugin communication</source>
+        <translation>Взаємодія з плагінами</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Test only these extensions</source>
+        <translation>Перевіряти лише ці розширення</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Extenstions list:</source>
+        <translation>Список розширень:</translation>
     </message>
 </context>
 </TS>

@@ -3,26 +3,16 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Settings" />
-		<label lang="ru" value="Настройки" />
-		<label lang="uk" value="Налаштування" />
 		<groupbox>
 			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
-			<label lang="uk" value="Поведінка" />
 			<item type="checkbox" property="ShowOnHover" default="off">
 				<label lang="en" value="Show on action hover" />
-				<label lang="ru" value="Показывать при наведении мышки на действие" />
-				<label lang="uk" value="Показувати при наведенні курсору" />
 			</item>
 			<item type="checkbox" property="FocusOnShow" default="on">
 				<label lang="en" value="Focus on the tab list after show" />
-				<label lang="ru" value="Фокус на списке табов при показе" />
-				<label lang="uk" value="Фокусувати на списку вкладок при показі" />
 			</item>
 			<item type="checkbox" property="HideOnCtrlEnter" default="on">
 				<label lang="en" value="Hide on Ctrl+Enter" />
-				<label lang="ru" value="Скрывать по Ctrl+Enter" />
-				<label lang="uk" value="Приховувати по Ctrl+Enter" />
 			</item>
 		</groupbox>
 	</page>

@@ -891,7 +891,7 @@
     </message>
     <message>
         <source>Arabic (Ø§ÙØ¹Ø±Ø¨ÙØ©)</source>
-        <translation>Arabic (Ø§ÙØ¹Ø±Ø¨ÙØ©)</translation>
+        <translation>Arabic (ﺎﻠﻋﺮﺒﻳﺓ)</translation>
     </message>
     <message>
         <source>German (Deutsch)</source>
@@ -919,15 +919,15 @@
     </message>
     <message>
         <source>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</source>
-        <translation>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</translation>
+        <translation>Russian (Русский)</translation>
     </message>
     <message>
         <source>Spanish (EspaÃ±ol)</source>
-        <translation>Spanish (EspaÃ±ol)</translation>
+        <translation>Spanish (Español)</translation>
     </message>
     <message>
         <source>Ukrainian (Ð£ÐºÑÐ°ÑÐ½ÑÑÐºÐ°)</source>
-        <translation>Ukrainian (Ð£ÐºÑÐ°ÑÐ½ÑÑÐºÐ°)</translation>
+        <translation>Ukrainian (Українська)</translation>
     </message>
     <message>
         <source>Maximum log lines:</source>

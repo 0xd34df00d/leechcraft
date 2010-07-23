@@ -128,7 +128,7 @@
     <name>SummaryTab</name>
     <message>
         <source>Download speed:</source>
-        <translation>Скорость загрузки:</translation>
+        <translation>Скорость скачивания:</translation>
     </message>
     <message>
         <source>Upload speed:</source>
@@ -140,7 +140,138 @@
     </message>
     <message>
         <source> KiB/s</source>
-        <translation>КиБ/с</translation>
+        <translation> КиБ/с</translation>
+    </message>
+</context>
+<context>
+    <name>lcftpsettings</name>
+    <message>
+        <source>General settings</source>
+        <translation>Общие настройки</translation>
+    </message>
+    <message>
+        <source>Transfer is also triggered by activating an item</source>
+        <translation>Начинать передачу в результате активации строки в списке</translation>
+    </message>
+    <message>
+        <source>Transfer hidden files</source>
+        <translation>Передавать скрытые файлы</translation>
+    </message>
+    <message>
+        <source>Follow symlinks</source>
+        <translation>Переходить по символическим ссылкам</translation>
+    </message>
+    <message>
+        <source>Append to remote files instead of overwriting</source>
+        <translation>Дописывать к удаленным файлам вместо перезаписи</translation>
+    </message>
+    <message>
+        <source>Identification</source>
+        <translation>Идентификация</translation>
+    </message>
+    <message>
+        <source>Login:</source>
+        <translation>Логин:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Пароль:</translation>
+    </message>
+    <message>
+        <source>FTP settings</source>
+        <translation>Параметры FTP</translation>
+    </message>
+    <message>
+        <source>Behavior</source>
+        <translation>Поведение</translation>
+    </message>
+    <message>
+        <source>Attempt to use EPRT and LPRT instead of PORT</source>
+        <translation>Пытаться использовать EPRT и LPRT вместо PORT</translation>
+    </message>
+    <message>
+        <source>Attempt to use EPSV before PASV</source>
+        <translation>Пытаться использовать EPSV вместо PASV</translation>
+    </message>
+    <message>
+        <source>Skip IP received as the result of PASV</source>
+        <translation>Игнорировать IP, полученный в результате PASV</translation>
+    </message>
+    <message>
+        <source>Total number of worker threads:</source>
+        <translation>Общее количество рабочих потоков:</translation>
+    </message>
+    <message>
+        <source>Worker threads per domain:</source>
+        <translation>Рабочих потоков на домен:</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>Настройки сети</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation>Общие</translation>
+    </message>
+    <message>
+        <source>Custom port range</source>
+        <translation>Специальный диапазон портов</translation>
+    </message>
+    <message>
+        <source>Port range:</source>
+        <translation>Диапазон портов:</translation>
+    </message>
+    <message>
+        <source>Proxy settings</source>
+        <translation>Настройки прокси</translation>
+    </message>
+    <message>
+        <source>Application-wide proxy</source>
+        <translation>Глобальный прокси</translation>
+    </message>
+    <message>
+        <source>Host:</source>
+        <translation>Хост:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <source>Proxy type:</source>
+        <translation>Тип прокси:</translation>
+    </message>
+    <message>
+        <source>HTTP</source>
+        <translation>HTTP</translation>
+    </message>
+    <message>
+        <source>HTTP 1.0</source>
+        <translation>HTTP 1.0</translation>
+    </message>
+    <message>
+        <source>SOCKS4</source>
+        <translation>SOCKS4</translation>
+    </message>
+    <message>
+        <source>SOCKS4A</source>
+        <translation>SOCKS4A</translation>
+    </message>
+    <message>
+        <source>SOCKS5</source>
+        <translation>SOCKS5</translation>
+    </message>
+    <message>
+        <source>SOCKS5-HOSTNAME</source>
+        <translation>SOCKS5-HOSTNAME</translation>
+    </message>
+    <message>
+        <source>Tunnel requests through the proxy</source>
+        <translation>Туннеллировать запросы через прокси</translation>
+    </message>
+    <message>
+        <source>Comma-separated list of exceptions:</source>
+        <translation>Разделенный запятыми список исключений:</translation>
     </message>
 </context>
 </TS>

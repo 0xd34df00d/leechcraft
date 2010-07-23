@@ -143,4 +143,135 @@
         <translation> КіБ/с</translation>
     </message>
 </context>
+<context>
+    <name>lcftpsettings</name>
+    <message>
+        <source>General settings</source>
+        <translation>Загальні налаштування</translation>
+    </message>
+    <message>
+        <source>Transfer is also triggered by activating an item</source>
+        <translation>Починати передачу при активації рядка в списку</translation>
+    </message>
+    <message>
+        <source>Transfer hidden files</source>
+        <translation>Передавати приховані файли</translation>
+    </message>
+    <message>
+        <source>Follow symlinks</source>
+        <translation>Зважати на символічні посилання</translation>
+    </message>
+    <message>
+        <source>Append to remote files instead of overwriting</source>
+        <translation>Дописувати дані в кінець віддалених файлів замість перезапису</translation>
+    </message>
+    <message>
+        <source>Identification</source>
+        <translation>Ідентифікація</translation>
+    </message>
+    <message>
+        <source>Login:</source>
+        <translation>Логін:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Пароль:</translation>
+    </message>
+    <message>
+        <source>FTP settings</source>
+        <translation>Параметри FTP</translation>
+    </message>
+    <message>
+        <source>Behavior</source>
+        <translation>Поведінка</translation>
+    </message>
+    <message>
+        <source>Attempt to use EPRT and LPRT instead of PORT</source>
+        <translation>Намагатися використовувати EPRT та LPRT замість PORT</translation>
+    </message>
+    <message>
+        <source>Attempt to use EPSV before PASV</source>
+        <translation>Намагатися використовувати EPSV перед PASV</translation>
+    </message>
+    <message>
+        <source>Skip IP received as the result of PASV</source>
+        <translation>Ігнорувати IP, що був отриманий в результаті PASV</translation>
+    </message>
+    <message>
+        <source>Total number of worker threads:</source>
+        <translation>Загальна кількість робочих потоків:</translation>
+    </message>
+    <message>
+        <source>Worker threads per domain:</source>
+        <translation>Робочих потоків на домен:</translation>
+    </message>
+    <message>
+        <source>Network settings</source>
+        <translation>Налаштування мережі</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation>Загальні</translation>
+    </message>
+    <message>
+        <source>Custom port range</source>
+        <translation>Спеціальний діапазон портів</translation>
+    </message>
+    <message>
+        <source>Port range:</source>
+        <translation>Діапазон портів:</translation>
+    </message>
+    <message>
+        <source>Proxy settings</source>
+        <translation>Налаштування проксі</translation>
+    </message>
+    <message>
+        <source>Application-wide proxy</source>
+        <translation>Глобальний проксі</translation>
+    </message>
+    <message>
+        <source>Host:</source>
+        <translation>Хост:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <source>Proxy type:</source>
+        <translation>Тип проксі:</translation>
+    </message>
+    <message>
+        <source>HTTP</source>
+        <translation>HTTP</translation>
+    </message>
+    <message>
+        <source>HTTP 1.0</source>
+        <translation>HTTP 1.0</translation>
+    </message>
+    <message>
+        <source>SOCKS4</source>
+        <translation>SOCKS4</translation>
+    </message>
+    <message>
+        <source>SOCKS4A</source>
+        <translation>SOCKS4A</translation>
+    </message>
+    <message>
+        <source>SOCKS5</source>
+        <translation>SOCKS5</translation>
+    </message>
+    <message>
+        <source>SOCKS5-HOSTNAME</source>
+        <translation>SOCKS5-HOSTNAME</translation>
+    </message>
+    <message>
+        <source>Tunnel requests through the proxy</source>
+        <translation>Тунелювати запити через проксі</translation>
+    </message>
+    <message>
+        <source>Comma-separated list of exceptions:</source>
+        <translation>Список виключень (розділяти комами):</translation>
+    </message>
+</context>
 </TS>

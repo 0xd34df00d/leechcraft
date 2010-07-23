@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::TabPP::Core</name>
     <message>
-        <location filename="core.cpp" line="260"/>
+        <location filename="core.cpp" line="281"/>
         <source>unknown</source>
         <translation>неизвестно</translation>
     </message>
@@ -28,6 +28,34 @@
         <location filename="tabppwidget.cpp" line="44"/>
         <source>F9</source>
         <translation>F9</translation>
+    </message>
+</context>
+<context>
+    <name>tabppsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>Settings</source>
+        <translation>Настройки</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Behavior</source>
+        <translation>Поведение</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Show on action hover</source>
+        <translation>Показывать при наведении курсора на действие</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Focus on the tab list after show</source>
+        <translation>Фокус на списке табов при показе</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Hide on Ctrl+Enter</source>
+        <translation>Скрывать по Ctrl+Enter</translation>
     </message>
 </context>
 </TS>

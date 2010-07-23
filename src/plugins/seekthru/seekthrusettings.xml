@@ -2,27 +2,17 @@
 <settings>
 	<page>
 		<label lang="en" value="SeekThru settings" />
-		<label lang="ru" value="Настройки SeekThru" />
-		<label lang="uk" value="Налаштування SeekThru" />
 		<tab>
 			<label lang="en" value="Searchers" />
-			<label lang="ru" value="Поисковики" />
-			<label lang="uk" value="Пошуковці" />
 			<groupbox>
 				<label lang="en" value="Searchers" />
-				<label lang="ru" value="Поисковики" />
-				<label lang="uk" value="Пошуковці" />
 				<item type="customwidget" name="SearchersList" label="own" />
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Appearance" />
-			<label lang="ru" value="Внешний вид" />
-			<label lang="uk" value="Вигляд" />
 			<item type="checkbox" property="NavBarVisible" default="on">
 				<label lang="en" value="Navigation bar visible" />
-				<label lang="ru" value="Отображать навигационную панель" />
-				<label lang="uk" value="Відображати навігаційну панель" />
 			</item>
 		</tab>
 	</page>

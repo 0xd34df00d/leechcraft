@@ -2,6 +2,29 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="uk_UA">
 <context>
+    <name>AddFeed</name>
+    <message>
+        <location filename="addfeed.ui" line="14"/>
+        <source>Add feed</source>
+        <translation>Додати стрічку</translation>
+    </message>
+    <message>
+        <location filename="addfeed.ui" line="29"/>
+        <source>URL:</source>
+        <translation>Адреса:</translation>
+    </message>
+    <message>
+        <location filename="addfeed.ui" line="43"/>
+        <source>Tags:</source>
+        <translation>Теги:</translation>
+    </message>
+    <message>
+        <location filename="addfeed.ui" line="50"/>
+        <source>untagged</source>
+        <translation>без позначок</translation>
+    </message>
+</context>
+<context>
     <name>AppWideActions</name>
     <message>
         <location filename="actionsstructs.cpp" line="31"/>
@@ -70,6 +93,347 @@
         <location filename="actionsstructs.cpp" line="91"/>
         <source>Settings...</source>
         <translation>Налаштування...</translation>
+    </message>
+</context>
+<context>
+    <name>Export</name>
+    <message>
+        <location filename="export.ui" line="14"/>
+        <source>This string is overriden in the source code</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="export.ui" line="25"/>
+        <source>Save to:</source>
+        <oldsource>Where to save:</oldsource>
+        <translation>Куди зберігати:</translation>
+    </message>
+    <message>
+        <location filename="export.ui" line="37"/>
+        <source>Browse...</source>
+        <translation>Огляд...</translation>
+    </message>
+    <message>
+        <location filename="export.ui" line="46"/>
+        <source>Title:</source>
+        <translation>Заголовок:</translation>
+    </message>
+    <message>
+        <location filename="export.ui" line="53"/>
+        <source>Owner:</source>
+        <translation>Власник:</translation>
+    </message>
+    <message>
+        <location filename="export.ui" line="60"/>
+        <source>Owner email:</source>
+        <translation>e-mail власника:</translation>
+    </message>
+    <message>
+        <location filename="export.ui" line="67"/>
+        <source>Channels:</source>
+        <translation>Канали:</translation>
+    </message>
+    <message>
+        <location filename="export.ui" line="84"/>
+        <source>Name</source>
+        <translation>Назва</translation>
+    </message>
+    <message>
+        <location filename="export.ui" line="89"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+</context>
+<context>
+    <name>Export2FB2Dialog</name>
+    <message>
+        <location filename="export2fb2dialog.ui" line="14"/>
+        <source>Export to FB2</source>
+        <translation>Експорт у FB2</translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="37"/>
+        <source>Only unread items</source>
+        <translation>Лише непрочитані</translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="56"/>
+        <source>Browse...</source>
+        <translation>Огляд....</translation>
+    </message>
+</context>
+<context>
+    <name>FeedSettings</name>
+    <message>
+        <location filename="feedsettings.ui" line="14"/>
+        <source>Feed settings</source>
+        <translation>Налаштування стрічок</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="84"/>
+        <source>Feed URL:</source>
+        <translation>URL стрічки:</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="98"/>
+        <source>Items:</source>
+        <translation>Статті:</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="128"/>
+        <source>Settings</source>
+        <translation>Налаштування</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="134"/>
+        <source>Channel</source>
+        <translation>Канал</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="145"/>
+        <source>Tags:</source>
+        <translation>Теги:</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="160"/>
+        <source>Automatically download enclosures</source>
+        <translation>Автоматично завантажувати вкладення</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="170"/>
+        <source>Feed</source>
+        <translation>Стрічка</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="179"/>
+        <source>Update interval:</source>
+        <translation>Інтервал оновлення:</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="189"/>
+        <location filename="feedsettings.ui" line="215"/>
+        <location filename="feedsettings.ui" line="238"/>
+        <source>Default</source>
+        <translation>Типово</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="192"/>
+        <source> min.</source>
+        <oldsource> min</oldsource>
+        <translation> хв.</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="205"/>
+        <source>Max items number:</source>
+        <translation>Максимальна кількість новин:</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="228"/>
+        <source>Max item&apos;s age:</source>
+        <translation>Максимальний вік новин:</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="241"/>
+        <source> day(s)</source>
+        <oldsource> days</oldsource>
+        <translation> дн</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="251"/>
+        <source>Update favicon</source>
+        <translation>Оновити іконку</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="28"/>
+        <source>Channel information</source>
+        <translation>Інформація про канал</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="46"/>
+        <source>Link:</source>
+        <translation>Адреса:</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="60"/>
+        <source>Author:</source>
+        <translation>Автор:</translation>
+    </message>
+    <message>
+        <location filename="feedsettings.ui" line="74"/>
+        <source>Description:</source>
+        <translation>Опис:</translation>
+    </message>
+</context>
+<context>
+    <name>ImportBinary</name>
+    <message>
+        <location filename="importbinary.ui" line="14"/>
+        <source>Import from binary file</source>
+        <translation>Імпорт з бінарного файлу</translation>
+    </message>
+    <message>
+        <location filename="importbinary.ui" line="23"/>
+        <source>File:</source>
+        <translation>Файл:</translation>
+    </message>
+    <message>
+        <location filename="importbinary.ui" line="35"/>
+        <source>Browse...</source>
+        <translation>Огляд....</translation>
+    </message>
+    <message>
+        <location filename="importbinary.ui" line="44"/>
+        <source>Additional tags:</source>
+        <translation>Додаткові теги:</translation>
+    </message>
+    <message>
+        <location filename="importbinary.ui" line="51"/>
+        <source>imported</source>
+        <translation>iмпортовано</translation>
+    </message>
+    <message>
+        <location filename="importbinary.ui" line="58"/>
+        <source>Feeds:</source>
+        <translation>Стрічки:</translation>
+    </message>
+    <message>
+        <location filename="importbinary.ui" line="66"/>
+        <source>Title</source>
+        <translation>Заголовок</translation>
+    </message>
+    <message>
+        <location filename="importbinary.ui" line="71"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="importbinary.ui" line="76"/>
+        <source>Items</source>
+        <translation>Статті</translation>
+    </message>
+</context>
+<context>
+    <name>ImportOPML</name>
+    <message>
+        <location filename="importopml.ui" line="14"/>
+        <source>OPML Import</source>
+        <translation>Імпорт OPML</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="27"/>
+        <source>File:</source>
+        <translation>Файл:</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="39"/>
+        <source>Browse...</source>
+        <translation>Огляд....</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="48"/>
+        <source>Title:</source>
+        <translation>Заголовок:</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="62"/>
+        <source>Created:</source>
+        <translation>Створено:</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="76"/>
+        <source>Modified:</source>
+        <translation>Змінено:</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="90"/>
+        <source>Owner:</source>
+        <translation>Власник:</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="111"/>
+        <source>Other fields:</source>
+        <translation>Інші поля:</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="119"/>
+        <source>Name</source>
+        <translation>Назва</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="124"/>
+        <source>Value</source>
+        <translation>Значення</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="132"/>
+        <source>Additional tags:</source>
+        <translation>Додаткові теги:</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="139"/>
+        <source>imported</source>
+        <translation>Імпортовано</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="154"/>
+        <source>Title</source>
+        <translation>Заголовок</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="159"/>
+        <source>URL</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="177"/>
+        <source>Owner email:</source>
+        <translation>e-mail власника:</translation>
+    </message>
+    <message>
+        <location filename="importopml.ui" line="146"/>
+        <source>Feeds:</source>
+        <translation>Стрічки:</translation>
+    </message>
+</context>
+<context>
+    <name>ItemBucket</name>
+    <message>
+        <location filename="itembucket.ui" line="14"/>
+        <source>Item Bucket</source>
+        <translation>Довгий ящик</translation>
+    </message>
+    <message>
+        <location filename="itembucket.ui" line="40"/>
+        <source>Delete item</source>
+        <translation>Видалити статтю</translation>
+    </message>
+</context>
+<context>
+    <name>ItemsWidget</name>
+    <message>
+        <location filename="itemswidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Форма</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.ui" line="29"/>
+        <source>Fixed string</source>
+        <translation>Фіксований рядок</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.ui" line="34"/>
+        <source>Wildcard</source>
+        <translation>Маска</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.ui" line="39"/>
+        <source>Regexp</source>
+        <translation>Регулярний вираз</translation>
+    </message>
+    <message>
+        <location filename="itemswidget.ui" line="47"/>
+        <source>Case sensitive</source>
+        <translation>Чутливий до регістру</translation>
     </message>
 </context>
 <context>
@@ -888,6 +1252,19 @@
     </message>
 </context>
 <context>
+    <name>MainWidget</name>
+    <message>
+        <location filename="mainwidget.ui" line="36"/>
+        <source>Tags:</source>
+        <translation>Теги:</translation>
+    </message>
+    <message>
+        <location filename="mainwidget.ui" line="64"/>
+        <source>Merge items</source>
+        <translation>Об&apos;єднати статі</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="atom03parser.cpp" line="63"/>
@@ -920,6 +1297,148 @@
         <location filename="rss20parser.cpp" line="110"/>
         <source>Duration: %1</source>
         <translation>Тривалість: %1</translation>
+    </message>
+</context>
+<context>
+    <name>RegexpMatcherUi</name>
+    <message>
+        <location filename="regexpmatcherui.ui" line="13"/>
+        <source>Regexp Matcher</source>
+        <translation>Фільтр</translation>
+    </message>
+    <message>
+        <location filename="regexpmatcherui.ui" line="44"/>
+        <source>Add...</source>
+        <translation>Додати...</translation>
+    </message>
+    <message>
+        <location filename="regexpmatcherui.ui" line="51"/>
+        <source>Modify...</source>
+        <translation>Змінити...</translation>
+    </message>
+    <message>
+        <location filename="regexpmatcherui.ui" line="58"/>
+        <source>Remove</source>
+        <translation>Видалити</translation>
+    </message>
+</context>
+<context>
+    <name>SingleRegexp</name>
+    <message>
+        <location filename="singleregexp.ui" line="14"/>
+        <source>Regexp modifier</source>
+        <translation>Редактор регулярних виразів</translation>
+    </message>
+    <message>
+        <location filename="singleregexp.ui" line="29"/>
+        <source>Title matcher:</source>
+        <translation>Фільтр заголовків:</translation>
+    </message>
+    <message>
+        <location filename="singleregexp.ui" line="39"/>
+        <source>Body matcher:</source>
+        <translation>Філтр змісту:</translation>
+    </message>
+</context>
+<context>
+    <name>StartupFirstPageWidget</name>
+    <message>
+        <location filename="startupfirstpage.ui" line="14"/>
+        <source>Form</source>
+        <translation>Форма</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="20"/>
+        <source>Show icon in tray when there are unread items</source>
+        <translation>Показувати іконку у треї, якщо є непрочитані елементи</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="35"/>
+        <source>Update interval:</source>
+        <translation>Інтервал оновлення:</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="42"/>
+        <source> min.</source>
+        <oldsource> min</oldsource>
+        <translation> хв.</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="63"/>
+        <source>Storage</source>
+        <translation>Зберігання</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="72"/>
+        <source>Items per channel:</source>
+        <translation>Елементів у каналі:</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="95"/>
+        <source>Keep items for:</source>
+        <translation>Зберігати елементи:</translation>
+    </message>
+    <message>
+        <location filename="startupfirstpage.ui" line="102"/>
+        <source> day(s)</source>
+        <oldsource> days</oldsource>
+        <translation> дн</translation>
+    </message>
+</context>
+<context>
+    <name>StartupSecondPageWidget</name>
+    <message>
+        <location filename="startupsecondpage.ui" line="20"/>
+        <source>Form</source>
+        <translation>Форма</translation>
+    </message>
+</context>
+<context>
+    <name>StartupThirdPageWidget</name>
+    <message>
+        <location filename="startupthirdpage.ui" line="14"/>
+        <source>Form</source>
+        <translation>Форма</translation>
+    </message>
+    <message>
+        <location filename="startupthirdpage.ui" line="22"/>
+        <source>Localized set:</source>
+        <translation>Локалізований набір:</translation>
+    </message>
+    <message>
+        <location filename="startupthirdpage.ui" line="30"/>
+        <source>General</source>
+        <translation>Загальний</translation>
+    </message>
+    <message>
+        <location filename="startupthirdpage.ui" line="35"/>
+        <source>Russian (ru)</source>
+        <translation>Русский (ru)</translation>
+    </message>
+    <message>
+        <location filename="startupthirdpage.ui" line="59"/>
+        <source>Feed</source>
+        <translation>Стрічка</translation>
+    </message>
+    <message>
+        <location filename="startupthirdpage.ui" line="64"/>
+        <source>Tags</source>
+        <translation>Позначки</translation>
+    </message>
+    <message>
+        <location filename="startupthirdpage.ui" line="69"/>
+        <source>URL</source>
+        <translation>Адреса</translation>
+    </message>
+    <message>
+        <location filename="startupthirdpage.ui" line="92"/>
+        <source>Select all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="startupthirdpage.ui" line="99"/>
+        <source>Deselect all</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
