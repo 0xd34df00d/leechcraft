@@ -8,22 +8,17 @@
 			<label lang="uk" value="Зовнішній вигляд" />
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
-				<label lang="uk" value="Використовувати кнопки прокручування табів" />
 			</item>
 			<item type="checkbox" property="ShowMenuBarAsButton" state="off">
 				<label lang="en" value="Show menu bar as button" />
-				<label lang="uk" value="Показувати панель меню у вигляді кнопок" />
 			</item>
 			<item type="checkbox" property="TrySmarterTabsWidth" state="on">
 				<label lang="en" value="Try smarter tabs width calculation" />
-				<label lang="uk" value="Намагатися використовувати більш досконалий алгоритм розрахунку ширини вкладок" />
 			</item>
 			<item type="combobox" property="IconSize">
 				<label lang="en" value="Icon size" />
-				<label lang="uk" value="Розмір іконок" />
 				<option name="0" default="true">
 					<label lang="en" value="System default" />
-					<label lang="uk" value="Системний" />
 				</option>
 				<option name="16">
 					<label lang="en" value="16x16" />
@@ -40,19 +35,15 @@
 				<label lang="uk" value="Стиль панелей інструментів:" />
 				<option name="iconOnly" default="true">
 					<label lang="en" value="Only display the icon" />
-					<label lang="uk" value="Показувати лише іконку" />
 				</option>
 				<option name="textOnly">
 					<label lang="en" value="Only display the text" />
-					<label lang="uk" value="Показувати лише текст" />
 				</option>
 				<option name="textBesideIcon">
 					<label lang="en" value="The text appears beside the icon" />
-					<label lang="uk" value="Текст поряд з іконкою" />
 				</option>
 				<option name="textUnderIcon">
 					<label lang="en" value="The text appears under the icon" />
-					<label lang="uk" value="Текст під іконкою" />
 				</option>
 			</item>
 			<item type="combobox" property="TabBarLocation">
@@ -60,32 +51,25 @@
 				<label lang="uk" value="Розташування вкладок:" />
 				<option name="north" default="true">
 					<label lang="en" value="Top" />
-					<label lang="uk" value="Зверху" />
 				</option>
 				<option name="south">
 					<label lang="en" value="Bottom" />
-					<label lang="uk" value="Знизу" />
 				</option>
 				<option name="west">
 					<label lang="en" value="Left" />
-					<label lang="uk" value="Зліва" />
 				</option>
 				<option name="east">
 					<label lang="en" value="Right" />
-					<label lang="uk" value="Зправа" />
 				</option>
 			</item>
 			<item type="customwidget" name="IconSet">
 				<label lang="en" value="Icon set:" />
-				<label lang="uk" value="Набір іконок:" />
 			</item>
 			<item type="customwidget" name="AppQStyle">
 				<label lang="en" value="Style:" />
-				<label lang="uk" value="Стиль:" />
 			</item>
 			<item type="combobox" property="Language">
 				<label lang="en" value="Language:" />
-				<label lang="uk" value="Мова:" />
 				<option name="system" default="true">
 					<label lang="en" value="System" />
 				</option>
@@ -122,67 +106,49 @@
 			</item>
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
 				<label lang="en" value="Maximum log lines:" />
-				<label lang="uk" value="Максимум рядків в журналі:" />
 			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Shortcuts" />
-			<label lang="uk" value="Гарячі клавиші" />
 			<item type="customwidget" label="own" name="ShortcutManager" />
 		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Behavior" />
-		<label lang="uk" value="Поведінка" />
 		<tab>
 			<label lang="en" value="Behavior" />
-			<label lang="uk" value="Поведінка" />
 			<groupbox>
 				<label lang="en" value="Behavior" />
-				<label lang="uk" value="Поведінка" />
 				<item type="checkbox" property="WatchClipboard" state="off">
 					<label lang="en" value="Watch clipboard" />
-					<label lang="uk" value="Спостерігати за буфером обміну" />
 				</item>
 				<item type="checkbox" property="ConfirmQuit" default="true">
 					<label lang="en" value="Ask quit confirmation" />
-					<label lang="uk" value="Запитувати підтвердження виходу" />
 				</item>
 				<item type="checkbox" property="ExitOnClose" default="false">
 					<label lang="en" value="Exit on close" />
-					<label lang="uk" value="Виходити при закритті" />
 				</item>
 				<item type="checkbox" property="OpenTabNext" default="false">
 					<label lang="en" value="Open new tab next to current" />
-					<label lang="uk" value="Відкривати вкладку після поточної" />
 				</item>
 				<item type="checkbox" property="DontAskWhenSingle" default="true">
 					<label lang="en" value="Automatically accept task when there is only one handler" />
-					<label lang="uk" value="Автоматично додавати задачу, якщо є лише один обробник" />
 				</item>
 				<item type="path" property="WatchDirectory" onCancel="clear">
 					<label lang="en" value="Watch directory:" />
-					<label lang="uk" value="Слідкувати за каталогом:" />
 				</item>
 			</groupbox>
 			<item type="groupbox" property="ShowPluginMenuInTabs" state="on" checkable="true">
 				<label lang="en" value="Show plugin-dependent actions in tab bar context menu" />
-				<label lang="uk" value="Показувати залежні від плагіна дії у контекстному меню панелі табів" />
 				<item type="checkbox" property="ShowPluginMenuInTabsAsSubmenu" default="off">
 					<label lang="en" value="Show as a submenu" />
-					<label lang="uk" value="Показувати як підменю" />
 				</item>
 			</item>
 			<item type="groupbox" property="ShowFinishedDownloadMessages" state="on" checkable="true">
 				<label lang="en" value="Show messages in tray" />
-				<label lang="uk" value="Показувати повідомленя в треї" />
 				<item type="spinbox" property="FinishedDownloadMessageTimeout" default="10" minimum="1" maximum="15" step="1">
 					<label value="Message timeout:" />
 					<suffix value=" s" />
-					<lang value="uk">
-						<label value="Відображати повідомлення:" />
-						<suffix value=" с" />
-					</lang>
 				</item>
 			</item>
 		</tab>
@@ -192,51 +158,37 @@
 		<label lang="uk" value="Позначки" />
 		<groupbox>
 			<label lang="en" value="Tags manager" />
-			<label lang="uk" value="Менеджер позначок" />
 			<item type="customwidget" label="own" name="TagsViewer" />
 		</groupbox>
 	</page>
 	<page>
 		<label lang="en" value="Network" />
-		<label lang="uk" value="Мережеа" />
 		<item type="spinbox" property="CacheSize" default="200" minimum="0" maximum="1048576">
 			<label value="Cache size:" />
 			<suffix value=" MB" />
-			<lang value="uk">
-				<label value="Розмір кешу:" />
-				<suffix value=" МБ" />
-			</lang>
 		</item>
 		<item type="checkbox" property="FilterTrackingCookies" default="on">
 			<label lang="en" value="Filter tracking cookies" />
-			<label lang="uk" value="Фільтрувати шпигунські куки" />
 		</item>
 		<item type="pushbutton" name="ClearCache">
 			<label lang="en" value="Clear cache" />
-			<label lang="uk" value="Очистити кеш" />
 		</item>
 		<item type="pushbutton" name="ClearCookies">
 			<label lang="en" value="Clear cookies" />
-			<label lang="uk" value="Очистити куки" />
 		</item>
 		<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
 			<label lang="en" value="Application-wide proxy" />
-			<label lang="uk" value="Глобальний проксі" />
 			<item type="lineedit" property="ProxyHost">
 				<label lang="en" value="Host:" />
-				<label lang="uk" value="Хост:" />
 			</item>
 			<item type="spinbox" property="ProxyPort" default="3128" minimum="1" maximum="65535" step="1">
 				<label lang="en" value="Port:" />
-				<label lang="uk" value="Порт:" />
 			</item>
 			<item type="lineedit" property="ProxyLogin">
 				<label lang="en" value="Login:" />
-				<label lang="uk" value="Логін:" />
 			</item>
 			<item type="lineedit" property="ProxyPassword" password="true">
 				<label lang="en" value="Password:" />
-				<label lang="uk" value="Пароль:" />
 			</item>
 			<item type="combobox" property="ProxyType">
 				<label lang="en" value="Proxy type:" />
@@ -246,25 +198,20 @@
 				</option>
 				<option name="tphttp">
 					<label lang="en" value="Transparent HTTP" />
-					<label lang="uk" value="Прозорий HTTP" />
 				</option>
 				<option name="chttp">
 					<label lang="en" value="Caching HTTP" />
-					<label lang="uk" value="HTTP з кешуванням" />
 				</option>
 				<option name="cftp">
 					<label lang="en" value="Caching FTP" />
-					<label lang="uk" value="FTP з кешуванням" />
 				</option>
 			</item>
 		</item>
 	</page>
 	<page>
 		<label lang="en" value="Plugins" />
-		<label lang="uk" value="Плагіни" />
 		<groupbox>
 			<label lang="en" value="Plugins manager" />
-			<label lang="uk" value="Менеджер плагинів" />
 			<item type="customwidget" label="own" name="PluginManager" />
 		</groupbox>
 	</page>
