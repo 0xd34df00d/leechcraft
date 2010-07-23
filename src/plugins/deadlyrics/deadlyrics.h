@@ -20,6 +20,7 @@
 #define PLUGINS_DEADLYRICS_DEADLYRICS_H
 #include <QObject>
 #include <QStringList>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/ihavesettings.h>
@@ -38,6 +39,7 @@ namespace LeechCraft
 				Q_OBJECT
 				Q_INTERFACES (IInfo IFinder IHaveSettings)
 
+				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
