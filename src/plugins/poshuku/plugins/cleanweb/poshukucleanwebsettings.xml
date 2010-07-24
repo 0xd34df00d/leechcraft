@@ -1,43 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="General" />
-		<label lang="ru" value="Общие" />
-		<label lang="uk" value="Загальні" />
 		<tab>
 			<label lang="en" value="Updates" />
-			<label lang="ru" value="Обновление" />
-			<label lang="uk" value="Оновлення" />
 			<item type="groupbox" checkable="true" state="on" property="Autoupdate">
 				<label lang="en" value="Update subscriptions" />
-				<label lang="ru" value="Обновлять подписки" />
-				<label lang="uk" value="Оновлювати підписки" />
 				<item type="spinbox" property="UpdateInterval" minimum="1" maximum="65535" default="5">
 					<label lang="en" value="Update interval:" />
-					<label lang="ru" value="Интервал обновления:" />
-					<label lang="uk" value="Інтервал оновлення:" />
 				</item>
 			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="User filters" />
-			<label lang="ru" value="Пользовательские фильтры" />
-			<label lang="uk" value="Користувацькі фільтри" />
 			<item type="customwidget" name="UserFilters" label="own" />
 		</tab>
 		<tab>
 			<label lang="en" value="Subscriptions" />
-			<label lang="ru" value="Подписки" />
-			<label lang="uk" value="Підписки" />
 			<item type="customwidget" name="SubscriptionsManager" label="own" />
 		</tab>
 		<tab>
 			<label lang="en" value="FlashOnClick" />
 			<item type="groupbox" checkable="true" state="on" property="EnableFlashOnClick">
 				<label lang="en" value="Enable FlashOnClick" />
-				<label lang="ru" value="Включить FlashOnClick" />
-				<label lang="uk" value="Увімкнути FlashOnClick" />
 				<item type="customwidget" name="FlashOnClickWhitelist" label="own" />
 			</item>
 		</tab>

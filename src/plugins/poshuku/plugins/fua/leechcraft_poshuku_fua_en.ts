@@ -83,4 +83,12 @@
         <translation>Changes would be applied immediately</translation>
     </message>
 </context>
+<context>
+    <name>poshukufuasettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>FUA settings</source>
+        <translation>FUA settings</translation>
+    </message>
+</context>
 </TS>

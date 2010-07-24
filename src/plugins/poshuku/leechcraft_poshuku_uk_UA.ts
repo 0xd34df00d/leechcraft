@@ -83,14 +83,6 @@
     </message>
 </context>
 <context>
-    <name>BrowserWidget</name>
-    <message>
-        <location filename="browserwidget.ui" line="14"/>
-        <source>Browser widget</source>
-        <translation>Віджет браузера</translation>
-    </message>
-</context>
-<context>
     <name>CookiesEditDialog</name>
     <message>
         <location filename="cookieseditdialog.ui" line="14"/>
@@ -145,8 +137,8 @@
     <name>EditBookmarkDialog</name>
     <message>
         <location filename="editbookmarkdialog.ui" line="14"/>
-        <source>Dialog</source>
-        <translation>Діалог</translation>
+        <source>Edit bookmark</source>
+        <translation>Редагувати закладки</translation>
     </message>
     <message>
         <location filename="editbookmarkdialog.ui" line="23"/>
@@ -190,7 +182,7 @@
     <message>
         <location filename="finddialog.ui" line="64"/>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="61"/>
@@ -200,11 +192,6 @@
 </context>
 <context>
     <name>HistoryWidget</name>
-    <message>
-        <location filename="historywidget.ui" line="14"/>
-        <source>Form</source>
-        <translation>Форма</translation>
-    </message>
     <message>
         <location filename="historywidget.ui" line="31"/>
         <source>Fixed string</source>
@@ -255,182 +242,182 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="188"/>
+        <location filename="browserwidget.cpp" line="194"/>
         <source>More...</source>
         <translation>Більше...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="141"/>
+        <location filename="browserwidget.cpp" line="147"/>
         <source>Find...</source>
         <translation>Знайти...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="146"/>
+        <location filename="browserwidget.cpp" line="152"/>
         <source>Print...</source>
         <translation>Друкувати...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="151"/>
+        <location filename="browserwidget.cpp" line="157"/>
         <source>Print with preview...</source>
         <translation>Переглянути і надрукувати...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="156"/>
+        <location filename="browserwidget.cpp" line="162"/>
         <source>Take page&apos;s screenshot...</source>
         <translation>Зберегти як зображення...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="161"/>
+        <location filename="browserwidget.cpp" line="167"/>
         <source>View sources...</source>
         <translation>Переглянути код сторінки...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="125"/>
+        <location filename="browserwidget.cpp" line="131"/>
         <source>Reload periodically</source>
         <translation>Періодично перезавантажувати</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="129"/>
+        <location filename="browserwidget.cpp" line="135"/>
         <source>Notify when finished loading</source>
         <translation>Повідомляти про завершення завантаження</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="136"/>
+        <location filename="browserwidget.cpp" line="142"/>
         <source>Bookmark...</source>
         <translation>Закладки...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="166"/>
+        <location filename="browserwidget.cpp" line="172"/>
         <source>Zoom in</source>
         <translation>Збільшити</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="170"/>
+        <location filename="browserwidget.cpp" line="176"/>
         <source>Zoom out</source>
         <translation>Зменшити</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="174"/>
+        <location filename="browserwidget.cpp" line="180"/>
         <source>Reset zoom</source>
         <translation>Відновити масштаб</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="210"/>
+        <location filename="browserwidget.cpp" line="222"/>
         <source>Change encoding</source>
         <translation>Змінити кодування</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="220"/>
+        <location filename="browserwidget.cpp" line="232"/>
         <source>Recently closed</source>
         <translation>Нещодавно закриті</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="227"/>
+        <location filename="browserwidget.cpp" line="237"/>
         <source>External links</source>
         <translation>Заовнішні посилання</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="602"/>
+        <location filename="browserwidget.cpp" line="617"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="603"/>
+        <location filename="browserwidget.cpp" line="618"/>
         <source>Ctrl+F</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="604"/>
+        <location filename="browserwidget.cpp" line="619"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="605"/>
+        <location filename="browserwidget.cpp" line="620"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1169"/>
+        <location filename="browserwidget.cpp" line="1216"/>
         <source>Open</source>
         <translation>Відкрити</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1192"/>
+        <location filename="browserwidget.cpp" line="1239"/>
         <source>Default</source>
         <translation>Типово</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1241"/>
+        <location filename="browserwidget.cpp" line="1288"/>
         <source>No title</source>
         <translation>Без заголовку</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1158"/>
+        <location filename="browserwidget.cpp" line="1205"/>
         <source>Page load finished: %1</source>
         <translation>Завантаження сторіки %1 завершено</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1162"/>
+        <location filename="browserwidget.cpp" line="1209"/>
         <source>Page load failed: %1</source>
         <translation>Завантаження сторіки %1 зазнало невдачі</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="610"/>
+        <location filename="browserwidget.cpp" line="625"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="78"/>
+        <location filename="browserwidget.cpp" line="84"/>
         <source>Bookmarks</source>
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="79"/>
+        <location filename="browserwidget.cpp" line="85"/>
         <source>History</source>
         <translation>Історія</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="611"/>
+        <location filename="browserwidget.cpp" line="626"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="612"/>
+        <location filename="browserwidget.cpp" line="627"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="613"/>
+        <location filename="browserwidget.cpp" line="628"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="618"/>
+        <location filename="browserwidget.cpp" line="633"/>
         <source>Ctrl+Shift+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="675"/>
+        <location filename="browserwidget.cpp" line="690"/>
         <source>Print web page</source>
         <translation>Друкувати веб сторінку</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="702"/>
+        <location filename="browserwidget.cpp" line="717"/>
         <source>Reloading once in %1</source>
         <translation>Перезавантажувати кожні %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="868"/>
+        <location filename="browserwidget.cpp" line="882"/>
         <source>Save screenshot</source>
         <translation>Зберегти зображення</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="883"/>
+        <location filename="browserwidget.cpp" line="897"/>
         <source>Could not open %1 for write</source>
         <translation>Не можу відкрити %1 для запису</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="892"/>
+        <location filename="browserwidget.cpp" line="906"/>
         <source>Could not write screenshot to %1</source>
         <translation>Не можу записати зображення до %1</translation>
     </message>
@@ -446,38 +433,33 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Core</name>
     <message>
-        <location filename="core.cpp" line="98"/>
-        <source>Plugins</source>
-        <translation>Плагіни</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="143"/>
+        <location filename="core.cpp" line="142"/>
         <source>Poshuku: general storage initialization error.</source>
         <translation>Poshuku: помилка ініціалізації системи збереження даних.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="737"/>
+        <location filename="core.cpp" line="738"/>
         <source>Select XBEL file</source>
         <translation>Оберіть XBEL файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="739"/>
-        <location filename="core.cpp" line="779"/>
+        <location filename="core.cpp" line="740"/>
+        <location filename="core.cpp" line="780"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>XBEL файли (*.xbel);;Всі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="753"/>
+        <location filename="core.cpp" line="754"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не можу відкрити файл %1 для читання.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="777"/>
+        <location filename="core.cpp" line="778"/>
         <source>Save XBEL file</source>
         <translation>Зберегти XBEL файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="796"/>
+        <location filename="core.cpp" line="797"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не можу відкрити файл %1 для запису.</translation>
     </message>
@@ -485,104 +467,104 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="168"/>
+        <location filename="customwebpage.cpp" line="133"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
         <comment>{host} would be substituded with site&apos;s host name.</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="171"/>
+        <location filename="customwebpage.cpp" line="136"/>
         <source>try again later</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="172"/>
+        <location filename="customwebpage.cpp" line="137"/>
         <source>contact remote server&apos;s administrator (typically at &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="174"/>
+        <location filename="customwebpage.cpp" line="139"/>
         <source>contact your system/network administrator, especially if you can&apos;t load any single page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="176"/>
+        <location filename="customwebpage.cpp" line="141"/>
         <source>check your proxy settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="customwebpage.cpp" line="152"/>
         <location filename="customwebpage.cpp" line="187"/>
-        <location filename="customwebpage.cpp" line="222"/>
         <source>check if the URL is written correctly;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="188"/>
+        <location filename="customwebpage.cpp" line="153"/>
         <source>try changing your DNS servers;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="189"/>
+        <location filename="customwebpage.cpp" line="154"/>
         <source>make sure that LeechCraft is allowed to access the Internet and particularly web sites;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="194"/>
+        <location filename="customwebpage.cpp" line="159"/>
         <source>check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="199"/>
+        <location filename="customwebpage.cpp" line="164"/>
         <source>try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="201"/>
+        <location filename="customwebpage.cpp" line="166"/>
         <source>make sure that remote server is really what it claims to be;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="223"/>
+        <location filename="customwebpage.cpp" line="188"/>
         <source>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and find the required page from there.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="225"/>
+        <location filename="customwebpage.cpp" line="190"/>
         <source>check the login and password you entered and try again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="229"/>
+        <location filename="customwebpage.cpp" line="194"/>
         <source>check if the URL is written correctly, particularly, the part before the &apos;://&apos;;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="230"/>
+        <location filename="customwebpage.cpp" line="195"/>
         <source>try installing plugins that are known to support this protocol;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="578"/>
+        <location filename="customwebpage.cpp" line="482"/>
         <source>Error loading %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="583"/>
+        <location filename="customwebpage.cpp" line="487"/>
         <source>%1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="588"/>
+        <location filename="customwebpage.cpp" line="492"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="590"/>
+        <location filename="customwebpage.cpp" line="494"/>
         <source>The page you tried to access cannot be loaded now.</source>
         <translation>Сторінка, яку Ви намагаєтесь відкрити зараз не може бути заватажена.</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="597"/>
+        <location filename="customwebpage.cpp" line="501"/>
         <source>Try doing the following:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -590,124 +572,124 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebView</name>
     <message>
-        <location filename="customwebview.cpp" line="399"/>
+        <location filename="customwebview.cpp" line="421"/>
         <source>Installed plugins</source>
         <translation>Встановлені плагіни</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="400"/>
+        <location filename="customwebview.cpp" line="422"/>
         <source>No plugins installed</source>
         <translation>Жоден плагін не встановлено</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="401"/>
+        <location filename="customwebview.cpp" line="423"/>
         <source>File name</source>
         <translation>Назва файлу</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="402"/>
+        <location filename="customwebview.cpp" line="424"/>
         <source>MIME type</source>
         <translation>MIME тип</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="403"/>
+        <location filename="customwebview.cpp" line="425"/>
         <source>Description</source>
         <translation>Опис</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="404"/>
+        <location filename="customwebview.cpp" line="426"/>
         <source>Suffixes</source>
         <translation>Суфікси</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="405"/>
+        <location filename="customwebview.cpp" line="427"/>
         <source>Enabled</source>
         <translation>Увімкнено</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="406"/>
+        <location filename="customwebview.cpp" line="428"/>
         <source>No</source>
         <translation>Ні</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="407"/>
+        <location filename="customwebview.cpp" line="429"/>
         <source>Yes</source>
         <translation>Так</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="145"/>
-        <location filename="customwebview.cpp" line="154"/>
+        <location filename="customwebview.cpp" line="162"/>
+        <location filename="customwebview.cpp" line="171"/>
         <source>Loading...</source>
         <translation>Завантаження...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="249"/>
+        <location filename="customwebview.cpp" line="265"/>
         <source>Subscribe</source>
         <translation>Підписатись</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="257"/>
+        <location filename="customwebview.cpp" line="273"/>
         <source>Open &amp;here</source>
         <translation>Відктири &amp;тут</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="259"/>
+        <location filename="customwebview.cpp" line="275"/>
         <source>Open in new &amp;tab</source>
         <translation>Відкрити у новій &amp;вкладці</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="262"/>
+        <location filename="customwebview.cpp" line="278"/>
         <source>&amp;Save link...</source>
         <translation>&amp;Зберегти за посиланням...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="268"/>
+        <location filename="customwebview.cpp" line="284"/>
         <source>&amp;Bookmark link...</source>
         <translation>&amp;Додати до закладок...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="274"/>
+        <location filename="customwebview.cpp" line="290"/>
         <source>&amp;Copy link</source>
         <translation>&amp;Копіювати посилання</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="287"/>
+        <location filename="customwebview.cpp" line="303"/>
         <source>Open image here</source>
         <translation>Відкрити зображення тут</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="289"/>
+        <location filename="customwebview.cpp" line="305"/>
         <source>Open image in new tab</source>
         <translation>Відкрити зображення у новій вкладці</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="292"/>
+        <location filename="customwebview.cpp" line="308"/>
         <source>Save image...</source>
         <translation>Зберегти зображення...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="294"/>
+        <location filename="customwebview.cpp" line="310"/>
         <source>Copy image</source>
         <translation>Копіювати зображення</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="296"/>
+        <location filename="customwebview.cpp" line="312"/>
         <source>Copy image location</source>
         <translation>Копіювати адресу зображення</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="311"/>
+        <location filename="customwebview.cpp" line="327"/>
         <source>Search...</source>
         <translation>Пошук...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="417"/>
-        <location filename="customwebview.cpp" line="419"/>
+        <location filename="customwebview.cpp" line="439"/>
+        <location filename="customwebview.cpp" line="441"/>
         <source>Welcome to LeechCraft!</source>
         <translation>Ласкаво просимо до LeechCraft!</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="421"/>
+        <location filename="customwebview.cpp" line="443"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
         <translation>Ласкаво просимо до LeechCraft - інтегрованого Інтернет-клієнту.&lt;br /&gt;Більше інформації можете дізнатись на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сторінці проекту&lt;/a&gt;.</translation>
     </message>
@@ -742,7 +724,7 @@
     <message>
         <location filename="favoriteschecker.cpp" line="177"/>
         <source>HTTP %1</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="180"/>
@@ -768,22 +750,22 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::FavoritesModel</name>
     <message>
-        <location filename="favoritesmodel.cpp" line="42"/>
+        <location filename="favoritesmodel.cpp" line="44"/>
         <source>Title</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="favoritesmodel.cpp" line="43"/>
+        <location filename="favoritesmodel.cpp" line="45"/>
         <source>URL</source>
         <translation>Адреса</translation>
     </message>
     <message>
-        <location filename="favoritesmodel.cpp" line="44"/>
+        <location filename="favoritesmodel.cpp" line="46"/>
         <source>Tags</source>
         <translation>Позначки</translation>
     </message>
     <message>
-        <location filename="favoritesmodel.cpp" line="183"/>
+        <location filename="favoritesmodel.cpp" line="188"/>
         <source>Failed to add&lt;br /&gt;%1&lt;br /&gt;to Favorites, seems like such title is already used.</source>
         <translation>Не вдалося додати &lt;br /&gt;%1&lt;br /&gt;до закладок. Схоже така назва вже використовується.</translation>
     </message>
@@ -951,7 +933,7 @@
     <message>
         <location filename="reloadintervalselector.ui" line="29"/>
         <source>hh:mm:ss</source>
-        <translation type="unfinished"></translation>
+        <translation>hh:mm:ss</translation>
     </message>
 </context>
 <context>
@@ -1029,6 +1011,330 @@
         <location filename="sourceviewer.ui" line="13"/>
         <source>Source viewer</source>
         <translation>Перегляд коду</translation>
+    </message>
+</context>
+<context>
+    <name>poshukusettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>Browser settings</source>
+        <translation>Параметри браузера</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Behavior</source>
+        <translation>Поведінка</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Restore previous session</source>
+        <translation>Відновити попередню сесію</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Always open home tab</source>
+        <translation>Завжди відкривати домашню вкладку</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Open new tabs in the background</source>
+        <translation>Відкривати нові вкладки у фоні</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="7"/>
+        <source>Group bookmarks by tags</source>
+        <translation>Групувати закпладки за позначками</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="8"/>
+        <source>Paranoid downloads detection</source>
+        <translation>Старане виявлення завантажень</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="9"/>
+        <source>Differ download locations by file extension</source>
+        <translation>Розрізняти папки для завантажень за розширенями файлів</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="10"/>
+        <source>Try to detect links to RSS/Atom feeds</source>
+        <translation>Намагатися виявляти посилання на RSS/Atom-стрічки</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="11"/>
+        <source>Generate tooltips</source>
+        <translation>Створювати мініатюри сторінок</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="12"/>
+        <source>Notify about finished loads by default</source>
+        <translation>Типово повідомляти про завершені завантаження</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="13"/>
+        <source>Automatically close empty pages with delegated content</source>
+        <translation>Закривати порожні сторінки з делегованим вмістом</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="14"/>
+        <source>Open these schemes using external applications:</source>
+        <translation>Обробляти дані схеми зовнішніми додатками:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="15"/>
+        <source>User CSS URL:</source>
+        <translation>URL користувацького CSS:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="16"/>
+        <location filename="dummyfile.cpp" line="17"/>
+        <source>Security</source>
+        <translation>Безпека</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="18"/>
+        <source>Offline storage database</source>
+        <translation>Автономне сховище</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="19"/>
+        <source>Offline web application cache</source>
+        <translation>Автономний кеш веб-додатків</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="20"/>
+        <source>Local storage database</source>
+        <translation>Локальне сховище</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="21"/>
+        <source>Store local link history</source>
+        <translation>Зберігати локальну історію посилань</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="22"/>
+        <source>Clear history items older than:</source>
+        <translation>Видаляти історію давнішу, ніж:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="23"/>
+        <source> days</source>
+        <translation> днів</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="24"/>
+        <source>Keep less than: </source>
+        <translation>Зберігати в історії не більше ніж:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="25"/>
+        <source> items</source>
+        <translation> записів</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="26"/>
+        <source>Cookies...</source>
+        <translation>Cookies...</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="27"/>
+        <source>Clear favicon database</source>
+        <translation>Очистити базу іконок сайтів</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="28"/>
+        <source>Cache</source>
+        <translation>Кеш</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="29"/>
+        <source>Offline storage</source>
+        <translation>Автономна пам&apos;ять</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="30"/>
+        <source>Offline storage default quota:</source>
+        <translation>Offline storage default quota:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="31"/>
+        <source> KB</source>
+        <translation> КБ</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="32"/>
+        <source>In-memory</source>
+        <translation>В пам&apos;яті</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="33"/>
+        <source>Prefetch DNS entries</source>
+        <translation>Завчасне визначення адрес DNS</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="34"/>
+        <source>Maximum pages:</source>
+        <translation>Максимум сторінок:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="35"/>
+        <source>Minimum dead capacity:</source>
+        <translation>Мінімальний незайнятий об&apos;єм:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="36"/>
+        <location filename="dummyfile.cpp" line="38"/>
+        <location filename="dummyfile.cpp" line="40"/>
+        <source> MB</source>
+        <translation> МБ</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="37"/>
+        <source>Maximum dead capacity:</source>
+        <translation>Максимальний незайнятий об&apos;єм:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="39"/>
+        <source>Total capacity:</source>
+        <translation>Загальний об&apos;єм:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="41"/>
+        <source>Clear in-memory caches</source>
+        <translation>Очистити кеш в пам&apos;яті</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="42"/>
+        <source>Storage</source>
+        <translation>Сховище</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="43"/>
+        <source>Viewer settings</source>
+        <translation>Параметри переглядача</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="44"/>
+        <location filename="dummyfile.cpp" line="45"/>
+        <source>Dynamic content</source>
+        <translation>Динамічний вміст</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="46"/>
+        <source>Load images automatically</source>
+        <translation>Автоматично завантажувати зображення</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="47"/>
+        <source>Allow Javascript</source>
+        <translation>Дозволити Javascript</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="48"/>
+        <source>Allow Java</source>
+        <translation>Дозволити Java</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="49"/>
+        <source>Allow plugins</source>
+        <translation>Дозволити плагіни</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="50"/>
+        <source>Javascript programs can open new windows</source>
+        <translation>Дозволити Javascript відкривати нові вікна</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="51"/>
+        <source>Javascript programs can access clipboard</source>
+        <translation>Дозволити Javascript доступ до буфера обміну</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="52"/>
+        <source>Developer extras</source>
+        <translation>Додатки для розробників</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="53"/>
+        <location filename="dummyfile.cpp" line="54"/>
+        <source>Fonts</source>
+        <translation>Шрифти</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="55"/>
+        <source>Standard font:</source>
+        <translation>Стандартний шрифт:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="56"/>
+        <source>Fixed font:</source>
+        <translation>Моноширинний шрифт:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="57"/>
+        <source>Serif font:</source>
+        <translation>Шрифт з зарубками:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="58"/>
+        <source>SansSerif font:</source>
+        <translation>Шрифт без зарубок:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="59"/>
+        <source>Cursive font:</source>
+        <translation>Курсивний шрифт:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="60"/>
+        <source>Fantasy font:</source>
+        <translation>Fantasy-шрифт:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="61"/>
+        <source>Sizes</source>
+        <translation>Разміри</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="62"/>
+        <source>Minimum font size:</source>
+        <translation>Мінімальний розмір шрифта:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="63"/>
+        <source>Default font size:</source>
+        <translation>Розмірш шрифта за заомвчуванням:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="64"/>
+        <source>Default fixed font size:</source>
+        <translation>Розмір фіксованого шрифта за замовчуванням:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="65"/>
+        <location filename="dummyfile.cpp" line="66"/>
+        <source>Rendering</source>
+        <translation>Рендеринг</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="67"/>
+        <source>Antialias primitives if possible</source>
+        <translation>Згладжувати примітиви (якщо можливо)</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="68"/>
+        <source>Antialias text if possible</source>
+        <translation>Згаджувати текст (якщо можливо)</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="69"/>
+        <source>Smooth pixmap transform</source>
+        <translation>Плавне перетворення зображень</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="70"/>
+        <source>High-quality antialiasing</source>
+        <translation>Високоякісне згладжування</translation>
     </message>
 </context>
 </TS>

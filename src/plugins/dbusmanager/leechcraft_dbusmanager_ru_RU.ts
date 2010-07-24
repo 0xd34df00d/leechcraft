@@ -33,4 +33,19 @@
         <translation>Не найден плагин %1 с задачами.</translation>
     </message>
 </context>
+<context>
+    <name>dbusmanagersettings</name>
+    <message>
+        <source>Environment</source>
+        <translation>Окружение</translation>
+    </message>
+    <message>
+        <source>KDE</source>
+        <translation>KDE</translation>
+    </message>
+    <message>
+        <source>Use notifications (KDE â¥ 4.4 or libnotify)</source>
+        <translation>Использовать уведомления (KDE ≥ 4.4 или libnotify)</translation>
+    </message>
+</context>
 </TS>

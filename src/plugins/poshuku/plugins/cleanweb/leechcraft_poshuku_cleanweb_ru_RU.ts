@@ -582,11 +582,6 @@
 <context>
     <name>SubscriptionsManager</name>
     <message>
-        <location filename="subscriptionsmanager.ui" line="14"/>
-        <source>Form</source>
-        <translation>Ыа</translation>
-    </message>
-    <message>
         <location filename="subscriptionsmanager.ui" line="32"/>
         <source>Add</source>
         <translation>Добавить</translation>
@@ -613,6 +608,49 @@
         <location filename="userfilters.ui" line="49"/>
         <source>Remove</source>
         <translation>Удалить</translation>
+    </message>
+</context>
+<context>
+    <name>poshukucleanwebsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation>Общие</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Updates</source>
+        <translation>Обновление</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Update subscriptions</source>
+        <translation>Обновлять подписки</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Update interval:</source>
+        <translation>Интервал обновления:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>User filters</source>
+        <translation>Пользовательские фильтры</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="7"/>
+        <source>Subscriptions</source>
+        <translation>Подписки</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="8"/>
+        <source>FlashOnClick</source>
+        <translation>FlashOnClick</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="9"/>
+        <source>Enable FlashOnClick</source>
+        <translation>Включить FlashOnClick</translation>
     </message>
 </context>
 </TS>
