@@ -1,46 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Network" />
-		<label lang="ru" value="Сетевые" />
-		<label lang="uk" value="Мережа" />
 		<tab>
 			<label lang="en" value="General" />
-			<label lang="ru" value="Общие" />
-			<label lang="uk" value="Загальні" />
 			<groupbox>
 				<label lang="en" value="General" />
-				<label lang="ru" value="Общие" />
-				<label lang="uk" value="Загальні" />
 				<item type="spinboxrange" property="TCPPortRange" default="6881:6889" minimum="1" maximum="65535" step="5">
 					<label lang="en" value="Port range:" />
-					<label lang="ru" value="Диапазон портов:" />
-					<label lang="uk" value="Діапазон портів" />
 				</item>
 				<item type="spinbox" property="MaxUploads" default="100" minimum="1" maximum="5000" step="5">
 					<label lang="en" value="Maximum upload connections:" />
-					<label lang="ru" value="Максимально соединений на раздачу:" />
-					<label lang="uk" value="Максимальна кількість з&apos;єднань при поширенні" />
 				</item>
 				<item type="spinbox" property="MaxConnections" default="200" minimum="2" maximum="5000" step="10">
 					<label lang="en" value="Maximum total connections:" />
-					<label lang="ru" value="Максимально соединений всего:" />
-					<label lang="uk" value="Максимальна загальна кількість з&apos;єднань" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Identification" />
-				<label lang="ru" value="Идентификация" />
-				<label lang="uk" value="Ідентифікація" />
 				<item type="lineedit" property="UserAgent" default="LeechCraft">
 					<label lang="en" value="HTTP User-Agent:" />
-					<label lang="ru" value="HTTP User-Agent:" />
 				</item>
 				<item type="combobox" property="PeerIDString" maxVisibleItems="20">
 					<label lang="en" value="Peer ID string:" />
-					<label lang="ru" value="Строка Peer ID:" />
-					<label lang="uk" value="Рядок Pear ID:" />
 					<option name="AG">
 						<label lang="en" value="Ares" />
 						<binary type="image" place="rcc">:/resources/images/clients/ares.png</binary>
@@ -108,54 +90,34 @@
 				</item>
 				<item type="groupbox" property="OverridePeerIDVersion" default="false" checkable="true">
 					<label lang="en" value="Override Peer ID version" />
-					<label lang="ru" value="Переопределить версию Peer ID" />
-					<label lang="uk" value="Задати версію Peer ID" />
 					<item type="lineedit" property="PeerIDVersion" default="0300" inputMask="9999">
 						<label lang="en" value="Peer ID version:" />
-						<label lang="ru" value="Версия Peer ID:" />
-						<label lang="uk" value="Версія Peer ID:" />
 					</item>
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Fast speed control" />
-			<label lang="ru" value="Быстрый контроль скорости" />
-			<label lang="uk" value="Спрощений контроль швидкості" />
 			<item type="groupbox" property="EnableFastSpeedControl" checkable="true" state="off">
 				<label lang="en" value="Enable fast speed control" />
-				<label lang="ru" value="Включить быстрый контроль скорости" />
-				<label lang="uk" value="Увімкнути спрощений контроль швидкості" />
 				<item type="customwidget" name="FastSpeedControl" label="own" />
 			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Proxy" />
-			<label lang="ru" value="Прокси" />
-			<label lang="uk" value="Проксі" />
 			<item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
 				<label lang="en" value="Tracker proxy:" />
-				<label lang="ru" value="Прокси трекеров:" />
-				<label lang="uk" value="Пошук трекерів:" />
 				<item type="lineedit" property="TrackerProxyHost">
 					<label lang="en" value="Host:" />
-					<label lang="ru" value="Хост:" />
-					<label lang="uk" value="Комп&apos;ютeр:" />
 				</item>
 				<item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
 					<label lang="en" value="Port:" />
-					<label lang="ru" value="Порт:" />
-					<label lang="uk" value="Порт:" />
 				</item>
 				<item type="lineedit" property="TrackerProxyAuth">
 					<label lang="en" value="Login@Password:" />
-					<label lang="ru" value="Логин@Пароль:" />
-					<label lang="uk" value="Логін@Пароль:" />
 				</item>
 				<item type="combobox" property="TrackerProxyType">
 					<label lang="en" value="Proxy type:" />
-					<label lang="ru" value="Тип прокси:" />
-					<label lang="uk" value="Тип проксі:" />
 					<option name="socks5">
 						<label lang="en" value="SOCKS5" />
 					</option>
@@ -169,27 +131,17 @@
 			</item>
 			<item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
 				<label lang="en" value="Peer proxy:" />
-				<label lang="ru" value="Прокси пиров:" />
-				<label lang="uk" value="Проксі вузлів:" />
 				<item type="lineedit" property="PeerProxyHost">
 					<label lang="en" value="Host:" />
-					<label lang="ru" value="Хост:" />
-					<label lang="uk" value="Комп&apos;ютер:" />
 				</item>
 				<item type="spinbox" property="PeerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
 					<label lang="en" value="Port:" />
-					<label lang="ru" value="Порт:" />
-					<label lang="uk" value="Порт:" />
 				</item>
 				<item type="lineedit" property="PeerProxyAuth">
 					<label lang="en" value="Login@Password:" />
-					<label lang="ru" value="Логин@Пароль:" />
-					<label lang="uk" value="Логін@Пароль:" />
 				</item>
 				<item type="combobox" property="PeerProxyType">
 					<label lang="en" value="Proxy type:" />
-					<label lang="ru" value="Тип прокси:" />
-					<label lang="uk" value="Тип проксі:" />
 					<option name="socks5">
 						<label lang="en" value="SOCKS5" />
 					</option>
@@ -205,596 +157,251 @@
 	</page>
 	<page>
 		<label lang="en" value="Advanced network" />
-		<label lang="ru" value="Расширенные сетевые" />
-		<label lang="uk" value="Розширені мережеві параметри" />
 		<tab>
 			<label lang="en" value="DHT" />
 			<item type="groupbox" property="DHTEnabled" state="on" checkable="true">
 				<label lang="en" value="DHT" />
-				<label lang="ru" value="DHT" />
 				<item type="spinbox" property="MaxPeersReply" default="50" minimum="10" maximum="150" step="10">
 					<label lang="en" value="Maximum peers in reply:" />
-					<label lang="ru" value="Максимум пиров при ответе:" />
-					<label lang="uk" value="Максимум вузлів при відповіді:" />
 				</item>
 				<item type="spinbox" property="SearchBranching" default="5" minimum="2" maximum="10" step="1">
 					<label lang="en" value="Search branching:" />
-					<label lang="ru" value="Ветвление поиска:" />
-					<label lang="uk" value="Розгалуження пошуку:" />
 				</item>
 				<item type="spinbox" property="ServicePort" default="0" minimum="0" maximum="65535" step="1">
 					<label lang="en" value="Service port:" />
-					<label lang="ru" value="Сервисный порт:" />
-					<label lang="uk" value="Сервісний порт:" />
 				</item>
 				<item type="spinbox" property="MaxDHTFailcount" default="20" minimum="5" maximum="50" step="5">
 					<label lang="en" value="Maximum node fail count:" />
-					<label lang="ru" value="Максимальное количество неудач узла:" />
-					<label lang="uk" value="Максимальна кількість невдач вузла" />
 				</item>
 			</item>
 			<groupbox>
 				<label lang="en" value="DHT-related options" />
-				<label lang="ru" value="Относящиеся к DHT опции" />
-				<label lang="uk" value="Налаштування DHT" />
 				<item type="checkbox" property="UseDHTAsFallback" state="on">
 					<label lang="en" value="Use DHT as fallback" />
-					<label lang="ru" value="Использовать DHT в случае недоступного трекера" />
-					<label lang="uk" value="Використовувати DHT у разі недоступності трекера" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Features &amp;&amp; extensions" />
-			<label lang="ru" value="Возможности и расширения" />
-			<label lang="uk" value="Можливості та розширення" />
 			<groupbox>
 				<label lang="en" value="Features" />
-				<label lang="ru" value="Возможности" />
-				<label lang="uk" value="Можливості" />
 				<item type="checkbox" property="EnableLSD" default="true">
 					<label lang="en" value="Enable Local Service Discovery" />
-					<label lang="ru" value="Включить Local Service Discovery" />
-					<label lang="uk" value="Увімкнути виявлення локальних сервісів" />
 				</item>
 				<item type="checkbox" property="EnableUPNP" default="true">
 					<label lang="en" value="Enable UPnP support" />
-					<label lang="ru" value="Включить поддержку UPnP" />
-					<label lang="uk" value="Увімкнути підтримку UPnP" />
 				</item>
 				<item type="checkbox" property="EnableNATPMP" default="true">
 					<label lang="en" value="Enable NAT-PMP support" />
-					<label lang="ru" value="Включить поддержку NAT-PMP" />
-					<label lang="uk" value="Увімкнути підтримку NAT-PMP" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Extensions" />
-				<label lang="ru" value="Расширения" />
-				<label lang="uk" value="Розширення" />
 				<item type="checkbox" property="EnablePEX" default="true">
 					<label lang="en" value="Enable PeX" />
-					<label lang="ru" value="Включить PeX" />
-					<label lang="uk" value="Увімкнути обмін пірами" />
 				</item>
 				<item type="checkbox" property="EnableMetadata" default="true">
 					<label lang="en" value="Allow to download metadata from the swarm" />
-					<label lang="ru" value="Позволять скачивать метаданные из роя" />
-					<label lang="uk" value="Дозволити завантажувати метадані з рою" />
 				</item>
 				<item type="checkbox" property="EnableUTMetadata" default="true">
 					<label lang="en" value="Same as the above, but µTorrent-compatible" />
-					<label lang="ru" value="То же, что и предыдущее, но совместимое с µTorrent" />
-					<label lang="uk" value="Сумісний з µTorrent аналог попереднього" />
 				</item>
 				<item type="checkbox" property="EnableSmartBan" default="true">
 					<label lang="en" value="Enable Smart Ban" />
-					<label lang="ru" value="Включить Smart Ban" />
-					<label lang="uk" value="Увімкнути інтелектуальне блокування" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Trackers" />
-				<label lang="ru" value="Трекеры" />
-				<label lang="uk" value="Трекери" />
 				<item type="checkbox" property="AnnounceToAllTrackers" default="true">
 					<label lang="en" value="Announce to all trackers of one tier" />
-					<label lang="ru" value="Объявлять всем трекерам одного уровня" />
-					<label lang="uk" value="Оновлювати всі трекери одного рівня" />
 				</item>
 				<item type="checkbox" property="AnnounceToAllTiers" default="false">
 					<label lang="en" value="Announce to all tiers" />
-					<label lang="ru" value="Объявлять всем уровням" />
-					<label lang="uk" value="Оголошувати всім рівням" />
 				</item>
 				<item type="checkbox" property="PreferUDPTrackers" default="false">
 					<label lang="en" value="Prefer UDP trackers" />
-					<label lang="ru" value="Предпочитать UDP-трекеры" />
-					<label lang="uk" value="Віддавати перевагу UDP-трекерам" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Advanced" />
-			<label lang="ru" value="Расширенные" />
-			<label lang="uk" value="Розширені" />
 			<scrollarea horizontalScroll="off">
 				<item type="groupbox" property="ScrapeEnabled" checkable="true" state="off">
 					<label lang="en" value="Scrape enabled" />
-					<label lang="ru" value="Scrape включен" />
-					<label lang="uk" value="Scrape увімкнено" />
 					<item type="spinbox" property="ScrapeInterval" default="60" minimum="10" maximum="3600" step="60">
-						<lang value="en">
-							<label value="Scrape interval" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Интервал scrape-запросов" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Інтервал scrape-запитів" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Scrape interval" />
+						<suffix value=" s" />
 					</item>
 				</item>
 				<groupbox>
 					<label lang="en" value="Advanced settings" />
-					<label lang="ru" value="Расширенные настройки" />
-					<label lang="uk" value="Розширені параметри" />
 					<item type="lineedit" property="AnnounceIP" default="">
 						<label lang="en" value="Announce IP:" />
-						<label lang="ru" value="IP, передаваемый трекеру:" />
-						<label lang="uk" value="IP, що передається трекеру:" />
 					</item>
 					<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
 						<label lang="en" value="Allow multiple connections per IP" />
-						<label lang="ru" value="Разрешать множественные соединения с одним IP" />
-						<label lang="uk" value="Дозволити кілька з&apos;єднань з одного IP" />
 					</item>
 					<item type="checkbox" property="IgnoreLimitsOnLocalNetwork" state="on">
 						<label lang="en" value="Ignore limits on local network" />
-						<label lang="ru" value="Игнорировать ограничения в локальной сети" />
-						<label lang="uk" value="Ігнорувати обмеження в локальній мережі" />
 					</item>
 					<item type="checkbox" property="DontCountSlowTorrents" default="true">
 						<label lang="en" value="Don't count slow torrents" />
-						<label lang="ru" value="Не учитывать медленные торренты" />
-						<label lang="uk" value="Не враховувати повільні торренти" />
 					</item>
 					<item type="checkbox" property="SendRedundantHave" state="off">
 						<label lang="en" value="Send redundant have messages" />
-						<label lang="ru" value="Посылать ненужные have-сообщения" />
-						<label lang="uk" value="Посилати надлишкові have-повідомлення" />
 					</item>
 					<item type="checkbox" property="LazyBitfields" state="on">
 						<label lang="en" value="Lazy bitfields" />
-						<label lang="ru" value="Ленивые битовые маски" />
-						<label lang="uk" value="Ліниві бітові маски" />
 					</item>
 					<item type="checkbox" property="UPNPIgnoreNonrouters" state="on">
 						<label lang="en" value="Ignore UPNP-nonrouters" />
-						<label lang="ru" value="Игнорировать UPNP-устройства, не являющиеся роутерами" />
-						<label lang="uk" value="Ігнорувати UPnP пристрої, що не є роутерами" />
 					</item>
 					<item type="checkbox" property="AutoUploadSlots" default="true">
 						<label lang="en" value="Auto upload slots" />
-						<label lang="ru" value="Автоматические слоты на отдачу" />
-						<label lang="uk" value="Автоматичні слоти для поширення" />
 					</item>
 					<item type="checkbox" property="UseParoleMode" default="true">
 						<label lang="en" value="Use parole mode" />
-						<label lang="ru" value="Использовать parole mode" />
-						<label lang="uk" value="Використовувати режим parole" />
 					</item>
 					<item type="checkbox" property="CloseRedundantConnections" default="true">
 						<label lang="en" value="Close redundant connections" />
-						<label lang="ru" value="Закрывать ненужные соединения" />
-						<label lang="uk" value="Закривати непотрібні з&apos;єднання" />
 					</item>
 					<item type="checkbox" property="PrioritizePartialPieces" default="true">
 						<label lang="en" value="Prioritize partial pieces" />
-						<label lang="ru" value="Повышать приоритет неполных кусков" />
-						<label lang="uk" value="Підвищувати пріорітет неповни шматків" />
 					</item>
 					<item type="checkbox" property="StrictSuperSeeding" default="false">
 						<label lang="en" value="Strict super seeding" />
-						<label lang="ru" value="Строгий супер-сид" />
-						<label lang="uk" value="Суворий супер-поширювач" />
 					</item>
 					<item type="spinbox" property="TrackerCompletionTimeout" default="60" minimum="10" maximum="300" step="10">
-						<lang value="en">
-							<label value="Tracker request completion timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Время ожидания результата запроса от трекера:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Час очікування відповіді від трекера:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Tracker request completion timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="TrackerReceiveTimeout" default="40" minimum="10" maximum="300" step="10">
-						<lang value="en">
-							<label value="Tracker data receive timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Время ожидания получения данных от трекера:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Час очікування даних від трекера:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Tracker data receive timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="StopTrackerTimeout" default="5" minimum="1" maximum="30" step="1">
-						<lang value="en">
-							<label value="Stop tracker timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Таймаут отсоединения от трекера:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Таймаут від&apos;єднання від трекера:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Stop tracker timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="TrackerMaximumResponseLength" default="1024" minimum="512" maximum="16384" step="512">
-						<lang value="en">
-							<label value="Tracker maximum response length:" />
-							<suffix value=" KB" />
-						</lang>
-						<lang value="ru">
-							<label value="Максимальный размер ответа от трекера:" />
-							<suffix value=" КБ" />
-						</lang>
-						<lang value="uk">
-							<label value="Максимальний розмір відповіді від трекера:" />
-							<suffix value=" КБ" />
-						</lang>
-
+						<label value="Tracker maximum response length:" />
+						<suffix value=" KB" />
 					</item>
 					<item type="spinbox" property="PieceTimeout" default="10" minimum="5" maximum="30" step="5">
-						<lang value="en">
-							<label value="Piece response timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Таймаут получения ответа о куске:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Таймаут очікування відповіді про шматок:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Piece response timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="PeerConnectTimeout" default="10" minimum="1" maximum="60" step="5">
-						<lang value="en">
-							<label value="Peer connection timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Таймаут соединения с пиром:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Таймаут з&apos;єданная з вузлом:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Peer connection timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="RequestTimeout" default="50" minimum="5" maximum="3600" step="5">
-						<lang value="en">
-							<label value="Block request timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Время ожидания получения блока:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Час очікування отримання блока:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Block request timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="RequestQueueTime" default="3" minimum="1" maximum="10" step="1">
-						<lang value="en">
-							<label value="Piece request queue time:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Длина очереди запросов для куска:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Довжина черги запитів для шматка:" />
-							<suffix value=" c" />
-						</lang>
-
+						<label value="Piece request queue time:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="MaxAllowedInRequestQueue" default="250" minimum="50" maximum="1000" step="50">
 						<label lang="en" value="The number of block requests a peer is allowed to queue up:" />
-						<label lang="ru" value="Максимальное число запросов на блоки от пира в очереди:" />
-						<label lang="uk" value="Максимальне число запитів на блоки від вузлів в черзі:" />
 					</item>
 					<item type="spinbox" property="MaxOutRequestQueue" default="200" minimum="50" maximum="1000" step="50">
 						<label lang="en" value="The number of block requests to a peer in a queue:" />
-						<label lang="ru" value="Максимальное число запросов на блоки пиру в очереди:" />
-						<label lang="uk" value="Максимальне число запитів на блоки до вузла в черзі:" />
 					</item>
 					<item type="spinbox" property="PeerTimeout" default="120" minimum="10" maximum="300" step="10">
-						<lang value="en">
-							<label value="Peer timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Таймаут связи с пиром:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Таймаут зв&apos;язку з вузлом:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Peer timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="UrlSeedTimeout" default="20" minimum="10" maximum="300" step="10">
-						<lang value="en">
-							<label value="Web seed timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Таймаут связи с веб-сидом:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Таймаут зв&apos;язку з веб-поширювачем:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Web seed timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="AutoScrapeMinInterval" default="120" minimum="10" maximum="600" step="10">
-						<lang value="en">
-							<label value="Minimal scrape interval:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Минимальный интервал между scrape:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Мінімальний інтервал між scrape:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Minimal scrape interval:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="UnchokeInterval" default="15" minimum="1" maximum="60" step="5">
-						<lang value="en">
-							<label value="Unchoke interval:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Интервал unchoke:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Інтервал unchoke:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Unchoke interval:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="MaxPeerListSize" default="8000" minimum="5" maximum="32000" step="500">
 						<label lang="en" value="Max peer list size:" />
-						<label lang="ru" value="Максимум пиров в списке:" />
-						<label lang="uk" value="Максимум вузлів у списку:" />
 					</item>
 					<item type="spinbox" property="MinAnnounceInterval" default="300" minimum="10" maximum="3600" step="10">
-						<lang value="en">
-							<label value="Minimal announce interval:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Минимальный интервал announce:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Мінімальний інтервал між оголошеннями:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Minimal announce interval:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="MaxRejects" default="50" minimum="3" maximum="1000">
 						<label lang="en" value="Max rejects for a choked peer before ban:" />
-						<label lang="ru" value="Максимум отказов заглушенному пиру перед баном:" />
-						<label lang="uk" value="Максимальна кількість відмов вузла перед блокуванням:" />
 					</item>
 					<item type="spinbox" property="SeedingPieceQuota" default="3" minimum="1" maximum="1000">
 						<label lang="en" value="Seeding piece quota:" />
-						<label lang="ru" value="Квота кусков сидирования:" />
-						<label lang="uk" value="Квота шматків поширення:" />
 					</item>
 					<item type="spinbox" property="UrlSeedWaitRetry" default="30" minimum="5" maximum="300" step="10">
-						<lang value="en">
-							<label value="Web seed retry wait:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Задержка перед повторным соединением с веб-сидом:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Затримка перед повторним з&apos;єднанням з веб-поширювачем:" />
-							<suffix value=" с" />
-						</lang>
+						<label value="Web seed retry wait:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="MinReconnectTime" default="60" minimum="10" maximum="600" step="10">
-						<lang value="en">
-							<label value="Minimum peer reconnect time:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Минимальное время перед повторным соединением с пиром:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Мінімальний час перед повторним з&apos;єднанням з вузлом:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Minimum peer reconnect time:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="WholePiecesThreshold" default="20" minimum="5" maximum="50" step="5">
-						<lang value="en">
-							<label value="Force download of a piece if it could not be fetched in:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Форсировать закачку куска, если он не скачан в течение:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Примусове завантаження шматка, якщо він не був завантажени за:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Force download of a piece if it could not be fetched in:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="MaxFailcount" default="5" minimum="1" maximum="99" step="1">
 						<label lang="en" value="Maximum peer connection attempt failcount:" />
-						<label lang="ru" value="Максимум неудачных соединений с пиром:" />
-						<label lang="uk" value="Максимум невдалих з&apos;єднань з вузлом:" />
 					</item>
 					<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10">
 						<label lang="en" value="Connection attempts per second:" />
-						<label lang="ru" value="Попыток соединения в секунду:" />
-						<label lang="uk" value="Спроб з&apos;єднань в секунду:" />
 					</item>
 					<item type="spinbox" property="SendBufferWatermark" default="80" minimum="1" maximum="100">
-						<lang value="en">
-							<label value="Upper send buffer low-watermark:" />
-							<suffix value=" KB" />
-						</lang>
-						<lang value="ru">
-							<label value="Верхняя отметка исходящего буфера:" />
-							<suffix value=" КБ" />
-						</lang>
-						<lang value="uk">
-							<label value="Верхня межа для вихідного буфера:" />
-							<suffix value=" КБ" />
-						</lang>
+						<label value="Upper send buffer low-watermark:" />
+						<suffix value=" KB" />
 					</item>
 					<item type="spinbox" property="InactivityTimeout" default="600" minimum="30" maximum="1200" step="60">
-						<lang value="en">
-							<label value="Peer inactivity timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Таймаут отсоединения пира из-за неактивности:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Таймаут відключення вузла через неактивність:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Peer inactivity timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="InitialPickerThreshold" default="4" minimum="1" maximum="50" step="5">
 						<label lang="en" value="Request random pieces while we have less than:" />
-						<label lang="ru" value="Запрашивать случайные, пока кусков меньше:" />
-						<label lang="uk" value="Завантажувати випадкові шматки доки їм менше:" />
 					</item>
 					<item type="spinbox" property="NumWant" default="200" minimum="10" maximum="1000" step="25">
 						<label lang="en" value="How much peers to get from the tracker:" />
-						<label lang="ru" value="Желаемое количество пиров, получаемое от трекера:" />
-						<label lang="uk" value="Бажана кількість отриманих від трекера вузлів:" />
 					</item>
 					<item type="spinboxrange" property="OutgoingPorts" default="0:0" minimum="1025" maximum="65535">
 						<label lang="en" value="Outgoing ports:" />
-						<label lang="ru" value="Порты исходящих соединений:" />
-						<label lang="uk" value="Порти для вихідних з&apos;єднань:" />
 					</item>
 					<item type="spinbox" property="OptimisticUnchokeMultiplier" default="4" minimum="2" maximum="10" step="1">
 						<label lang="en" value="Optimistic unchoke multiplier:" />
-						<label lang="ru" value="Множитель оптимистичного unchoke:" />
-						<label lang="uk" value="Множник для оптимістичного unchoke:" />
 					</item>
 					<item type="spinbox" property="PeerTOS" default="0" minimum="0" maximum="255">
 						<label lang="en" value="TOS byte:" />
-						<label lang="ru" value="TOS-байт:" />
-						<label lang="uk" value="TOS-байт:" />
 					</item>
 					<item type="doublespinbox" property="ShareRatioLimit" default="2" minimum="0.7" maximum="1000">
 						<label lang="en" value="Share ratio limit:" />
-						<label lang="ru" value="Предел рейтинга:" />
-						<label lang="uk" value="Межа рейтинга:" />
 					</item>
 					<item type="doublespinbox" property="SeedTimeRatioLimit" default="2" minimum="0.7" maximum="1000">
 						<label lang="en" value="Seed time ratio limit:" />
-						<label lang="ru" value="Предел отношения времени раздачи:" />
-						<label lang="uk" value="Межа відношення часу поширення:" />
 					</item>
 					<item type="doublespinbox" property="SeedTimeLimit" default="1440" minimum="60" maximum="30240" step="60">
-						<lang value="en">
-							<label value="Seed time limit:" />
-							<suffix value=" min" />
-						</lang>
-						<lang value="ru">
-							<label value="Предел времени раздачи:" />
-							<suffix value=" мин" />
-						</lang>
-						<lang value="uk">
-							<label value="Межа часу поширення:" />
-							<suffix value=" хв." />
-						</lang>
-
+						<label value="Seed time limit:" />
+						<suffix value=" min" />
 					</item>
 					<item type="spinbox" property="AutoScrapeInterval" default="30" minimum="5" maximum="240" step="10">
-						<lang value="en">
-							<label value="Auto scrape interval:" />
-							<suffix value=" min" />
-						</lang>
-						<lang value="ru">
-							<label value="Интервал автоматического scrape:" />
-							<suffix value=" мин" />
-						</lang>
-						<lang value="uk">
-							<label value="Інтервал автоматичного scrape:" />
-							<suffix value=" хв." />
-						</lang>
-
+						<label value="Auto scrape interval:" />
+						<suffix value=" min" />
 					</item>
 					<item type="spinbox" property="AllowedFastSetSize" default="10" minimum="1" maximum="50" step="5">
 						<label lang="en" value="N of pieces to send via fast extensions:" />
-						<label lang="ru" value="Посылать кусков через fast extensions:" />
-						<label lang="uk" value="Кількість шматків, що передаються через швидкі розширення:" />
 					</item>
 					<item type="spinbox" property="HandshakeTimeout" default="10" minimum="1" maximum="60" step="10">
-						<lang value="en">
-							<label value="Handshake timeout:" />
-							<suffix value=" s" />
-						</lang>
-						<lang value="ru">
-							<label value="Таймаут рукопожатия:" />
-							<suffix value=" с" />
-						</lang>
-						<lang value="uk">
-							<label value="Таймаут рукостискання:" />
-							<suffix value=" с" />
-						</lang>
-
+						<label value="Handshake timeout:" />
+						<suffix value=" s" />
 					</item>
 					<item type="spinbox" property="UrlSeedPipelineSize" default="5" minimum="1" maximum="20" step="1">
 						<label lang="en" value="Web seed pipeline size:" />
-						<label lang="ru" value="Размер конвеера веб-сида:" />
-						<label lang="uk" value="Розмір конвеєра веб-поширювача:" />
 					</item>
 				</groupbox>
 			</scrollarea>
@@ -802,309 +409,150 @@
 	</page>
 	<page>
 		<label lang="en" value="Local settings" />
-		<label lang="ru" value="Локальные настройки" />
-		<label lang="uk" value="Локальні налаштування" />
 		<tab>
 			<label lang="en" value="General" />
-			<label lang="ru" value="Общие" />
-			<label lang="uk" value="Загальні" />
 			<groupbox>
 				<label lang="en" value="Local settings" />
-				<label lang="ru" value="Локальные настройки" />
-				<label lang="uk" value="Локальні налаштування" />
 				<item type="checkbox" property="NotifyAboutTooBig" default="false">
 					<label lang="en" value="Notify when torrent wasn't automatically added because its too large size" />
-					<label lang="ru" value="Уведомлять, когда торрент не был добавлен автоматически из-за большого размера" />
-					<label lang="uk" value="Повідомляти, коли автоматичне додавання не вдалось чреез наступну опцію" />
 				</item>
 				<item type="combobox" property="AllocationMode">
 					<label lang="en" value="File allocation mode:" />
-					<label lang="ru" value="Режим выделения места под файлы:" />
-					<label lang="uk" value="Режим виділення місця під файли:" />
 					<option name="sparse" default="true">
 						<label lang="en" value="Sparse" />
-						<label lang="uk" value="Розріджені файли" />
 					</option>
 					<option name="full">
 						<label lang="en" value="Full" />
-						<label lang="uk" value="Повне виділення" />
 					</option>
 				</item>
 				<item type="spinbox" property="MaxAutoTorrentSize" default="2" minimum="2" maximum="1024" step="2">
-					<lang value="en">
-						<label value="Maximum automatically added torrent size:" />
-						<suffix value=" MB" />
-					</lang>
-					<lang value="ru">
-						<label value="Максимальный размер автоматически добавляемого торрента:" />
-						<suffix value=" МБ" />
-					</lang>
-					<lang value="uk">
-						<label value="Максимальний розмір торрента, що додається автоматично:" />
-						<suffix value=" МБ" />
-					</lang>
-
+					<label value="Maximum automatically added torrent size:" />
+					<suffix value=" MB" />
 				</item>
 				<item type="spinbox" property="AutosaveInterval" default="120" minimum="5" maximum="3600" step="15" suffix=" s">
-					<lang value="en">
-						<label value="Autosave interval:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Интервал автосохранения:" />
-						<suffix value=" с" />
-					</lang>
-					<lang value="uk">
-						<label value="Інтервал автоматичного збереження:" />
-						<suffix value=" с" />
-					</lang>
-
+					<label value="Autosave interval:" />
+					<suffix value=" s" />
 				</item>
 				<item type="spinbox" property="CacheSize" default="8" minimum="1" maximum="256">
-					<lang value="en">
-						<label value="Cache size:" />
-						<suffix value=" KB" />
-					</lang>
-					<lang value="ru">
-						<label value="Размер кэша:" />
-						<suffix value=" МБ" />
-					</lang>
-					<lang value="uk">
-						<label value="Розмір кеша:" />
-						<suffix value=" МБ" />
-					</lang>
+					<label value="Cache size:" />
+					<suffix value=" KB" />
 				</item>
 				<item type="lineedit" property="AutomaticTags" default="automatic">
 					<label lang="en" value="Tags for automatic jobs:" />
-					<label lang="ru" value="Метки для автоматических задач:" />
-					<label lang="uk" value="Позначка для автоматичних задач:" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Advanced" />
-			<label lang="ru" value="Расширенные" />
-			<label lang="uk" value="Розширені" />
 			<scrollarea horizontalScroll="off">
 				<item type="checkbox" property="AccurateFileProgress" state="off">
 					<label lang="en" value="Accurate but slow file progress calculation" />
-					<label lang="ru" value="Точное, но медленное вычисление прогресса файлов" />
-					<label lang="uk" value="Точне, але повільне обчислення прогресу файла" />
 				</item>
 				<item type="checkbox" property="UseReadCache" state="on">
 					<label lang="en" value="Use read cache" />
-					<label lang="ru" value="Использовать кэш для чтения" />
-					<label lang="uk" value="Використовувати кеш для читання" />
 				</item>
 				<item type="checkbox" property="FreeTorrentHashes" state="on">
 					<label lang="en" value="Unload hashes from memory if seeding" />
-					<label lang="ru" value="Выгружать хеши из памяти при раздаче" />
-					<label lang="uk" value="Вивантажувати хеші з пам&apn;яті при поширенні" />
 				</item>
 				<item type="checkbox" property="LockDiskCache" state="on">
 					<label lang="en" value="Prevent disk cache from swapping out" />
-					<label lang="ru" value="Предотвращать сброс кэша в своп" />
-					<label lang="uk" value="Запобігати скиданню кеша до файлу підкачки" />
 				</item>
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true">
 					<label lang="en" value="Give slots to seeding torrents in automanaged mode" />
-					<label lang="ru" value="Давать слоты раздающимся торрентам в автоуправляемом режиме" />
-					<label lang="uk" value="Автоматично давати слот для торрентів, що поширюються" />
 				</item>
 				<item type="spinbox" property="CacheExpiry" default="60" minimum="5" maximum="1200">
-					<lang value="en">
-						<label value="Cache expiry:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Годность кэша:" />
-						<suffix value=" с" />
-					</lang>
-					<lang value="uk">
-						<label value="Час придатності кеша:" />
-						<suffix value=" с" />
-					</lang>
+					<label value="Cache expiry:" />
+					<suffix value=" s" />
 				</item>
 				<item type="spinbox" property="AutoManageStartup" default="120" minimum="10" maximum="16300" step="10">
-					<lang value="en">
-						<label value="Automanage startup wait:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Ожидание начала торрента для автоуправления:" />
-						<suffix value=" с" />
-					</lang>
-					<lang value="uk">
-						<label value="Затримка перед початком автокерування:" />
-						<suffix value=" с" />
-					</lang>
-
+					<label value="Automanage startup wait:" />
+					<suffix value=" s" />
 				</item>
 				<item type="spinbox" property="AutoManageInterval" default="10" minimum="10" maximum="1200" step="10">
-					<lang value="en">
-						<label value="Auto queue manage interval:" />
-						<suffix value=" s" />
-					</lang>
-					<lang value="ru">
-						<label value="Интервал управления очередью:" />
-						<suffix value=" с" />
-					</lang>
-					<lang value="uk">
-						<label value="Інтервал автоматичного керування чергою:" />
-						<suffix value=" с" />
-					</lang>
-
+					<label value="Auto queue manage interval:" />
+					<suffix value=" s" />
 				</item>
 				<item type="spinbox" property="MaxOutstandingDiskBytesPerConnection" default="1024" minimum="32" maximum="65536" step="512">
-					<lang value="en">
-						<label value="Maximum outstanding disk bytes per connection:" />
-						<suffix value=" KB" />
-					</lang>
-					<lang value="ru">
-						<label value="Максимально байт в очереди за запись на соединение:" />
-						<suffix value=" КБ" />
-					</lang>
-					<lang value="uk">
-						<label value="Максимум байт для одного з&apm;єдання, що чекають на запис" />
-						<suffix value=" КБ" />
-					</lang>
+					<label value="Maximum outstanding disk bytes per connection:" />
+					<suffix value=" KB" />
 				</item>
 				<item type="spinbox" property="CacheBufferChunkSize" default="16" minimum="1" maximum="256">
-					<lang value="en">
-						<label value="Allocate this number of blocks at a time:" />
-						<suffix value=" blocks" />
-					</lang>
-					<lang value="ru">
-						<label value="Выделять по:" />
-						<suffix value=" блоков" />
-					</lang>
-					<lang value="uk">
-						<label value="Виділяти по:" />
-						<suffix value=" блоків" />
-					</lang>
+					<label value="Allocate this number of blocks at a time:" />
+					<suffix value=" blocks" />
 				</item>
 				<item type="spinbox" property="FilePoolSize" default="40" minimum="5" maximum="1000" step="5">
 					<label lang="en" value="Maximum amount of concurrently open files:" />
-					<label lang="ru" value="Максимальное число одновременно открытых файлов:" />
-					<label lang="uk" value="Максимальна кількість одночасно відкритих файлів:" />
 				</item>
 			</scrollarea>
 		</tab>
 		<tab>
 			<label lang="en" value="Logging" />
-			<label lang="ru" value="Протоколирование" />
-			<label lang="uk" value="Журнал" />
 			<groupbox>
 				<label lang="en" value="Logging levels" />
-				<label lang="ru" value="Уровни протоколирования" />
-				<label lang="uk" value="Рівень жуналювання" />
 				<item type="checkbox" property="NotificationError" default="on">
 					<label lang="en" value="Error notifications" />
-					<label lang="ru" value="Уведомления об ошибках" />
-					<label lang="uk" value="Повідомлення про помилки" />
 				</item>
 				<item type="checkbox" property="NotificationPeer" default="off">
 					<label lang="en" value="Peer events" />
-					<label lang="ru" value="События пиров" />
-					<label lang="uk" value="Події вузлів" />
 				</item>
-				<item type="checkbox" property="NotificationPortMapping" default="on">
+				<item type="checkbox" property="NotificationPortMapping" default="off">
 					<label lang="en" value="Port mapping events" />
-					<label lang="ru" value="События назначения портов" />
-					<label lang="uk" value="Події призначення портів" />
 				</item>
 				<item type="checkbox" property="NotificationStorage" default="on">
 					<label lang="en" value="Storage events" />
-					<label lang="ru" value="События хранилища" />
-					<label lang="uk" value="Події сховища" />
 				</item>
-				<item type="checkbox" property="NotificationTracker" default="on">
+				<item type="checkbox" property="NotificationTracker" default="off">
 					<label lang="en" value="Tracker events" />
-					<label lang="ru" value="События трекера" />
-					<label lang="uk" value="Події трекера" />
 				</item>
-				<item type="checkbox" property="NotificationStatus" default="on">
+				<item type="checkbox" property="NotificationStatus" default="off">
 					<label lang="en" value="State change events" />
-					<label lang="ru" value="События изменения статуса" />
-					<label lang="uk" value="Події зміни статусу" />
 				</item>
 				<item type="checkbox" property="NotificationProgress" default="off">
 					<label lang="en" value="Progress events" />
-					<label lang="ru" value="События хода торрентов" />
-					<label lang="uk" value="Події поступу завантаження" />
 				</item>
 				<item type="checkbox" property="NotificationIPBlock" default="on">
 					<label lang="en" value="IP block events" />
-					<label lang="ru" value="События блокировщика IP" />
-					<label lang="uk" value="Події блокування IP" />
 				</item>
 				<item type="checkbox" property="PerformanceWarning" default="on">
 					<label lang="en" value="Performance warnings" />
-					<label lang="ru" value="Предупреждения производительности" />
-					<label lang="uk" value="Попереждення про швидкодію" />
 				</item>
 			</groupbox>
 		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Info pane" />
-		<label lang="ru" value="Информационная панель" />
-		<label lang="uk" value="Інформаційна панель" />
 		<tab>
 			<label lang="en" value="Active groups" />
-			<label lang="ru" value="Активные группы" />
-			<label lang="uk" value="Активні групи" />
 			<groupbox>
 				<label lang="en" value="Dashboard" />
-				<label lang="ru" value="Панель управления" />
-				<label lang="uk" value="Панель керування" />
 				<item type="checkbox" property="ActiveSessionStats" default="on">
 					<label lang="en" value="Session stats" />
-					<label lang="ru" value="Статистика сессии" />
-					<label lang="uk" value="Статистика сеансу" />
 				</item>
 				<item type="checkbox" property="ActiveAdvancedSessionStats" default="on">
 					<label lang="en" value="Advanced session stats" />
-					<label lang="ru" value="Расширенная статистика сессии" />
-					<label lang="uk" value="Розширена статистика сеансу" />
 				</item>
 				<item type="checkbox" property="ActiveTrackerStats" default="on">
 					<label lang="en" value="Per-tracker stats" />
-					<label lang="ru" value="Статистика по трекерам" />
-					<label lang="uk" value="Статистика по трекерам" />
 				</item>
 				<item type="checkbox" property="ActiveCacheStats" default="on">
 					<label lang="en" value="Cache stats" />
-					<label lang="ru" value="Статистика кэша" />
-					<label lang="uk" value="Статистика кеша" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Torrent" />
-				<label lang="ru" value="Торрент" />
-				<label lang="uk" value="Торрент" />
 				<item type="checkbox" property="ActiveTorrentStatus" default="on">
 					<label lang="en" value="Status" />
-					<label lang="ru" value="Статус" />
-					<label lang="uk" value="Статус" />
 				</item>
 				<item type="checkbox" property="ActiveTorrentAdvancedStatus" default="on">
 					<label lang="en" value="Advanced status" />
-					<label lang="ru" value="Расширенный статус" />
-					<label lang="uk" value="Розширений статус" />
 				</item>
 				<item type="checkbox" property="ActiveTorrentInfo" default="on">
 					<label lang="en" value="Information" />
-					<label lang="ru" value="Информация" />
-					<label lang="uk" value="Інформація" />
 				</item>
 				<item type="checkbox" property="ActiveTorrentPeers" default="on">
 					<label lang="en" value="Peers" />
-					<label lang="ru" value="Пиры" />
-					<label lang="uk" value="Вузли" />
 				</item>
 			</groupbox>
 		</tab>
 	</page>
 </settings>
-
