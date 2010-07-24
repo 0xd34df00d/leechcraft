@@ -134,4 +134,32 @@
         <translation>Завантаження та програванная аудіо та відео з В Контакте.</translation>
     </message>
 </context>
+<context>
+    <name>vgrabbersettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General settings</source>
+        <translation>Загальні параметри</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Audio</source>
+        <translation>Аудіо</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Filter files with the same URL</source>
+        <translation>Фільтрувати файли з однаковими адресами</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Filter files with same title and length</source>
+        <translation>Фільтрувати файли з однаковми назвами і довжиною</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Video</source>
+        <translation>Відео</translation>
+    </message>
+</context>
 </TS>

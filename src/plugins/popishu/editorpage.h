@@ -44,6 +44,7 @@ namespace LeechCraft
 
 				QToolBar *Toolbar_;
 				QMenu *DoctypeMenu_;
+				QMenu *RecentFilesMenu_;
 				QString Filename_;
 				bool Modified_;
 				QMap<QString, QList<QAction*> > WindowMenus_;
@@ -91,14 +92,19 @@ namespace LeechCraft
 
 				void checkInterpreters (QString language);
 				void checkProperDoctypeAction (const QString& language);
+
+				void handleRecentFileOpen ();
 			private:
 				void SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility);
 				bool Save ();
+				void Open (const QString&);
 				QsciLexer* GetLexerByLanguage (const QString&) const;
 				QString GetLanguage (const QString& filename) const;
 				QString FixLanguage (const QString&) const;
 				void ShowConsole (bool);
 				void GroupActions (const QList<QAction*>&);
+				void RestoreRecentFiles ();
+				void PrependRecentFile (const QString&, bool = true);
 			signals:
 				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);
@@ -108,6 +114,7 @@ namespace LeechCraft
 				void couldHandle (const LeechCraft::Entity&, bool*);
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
+				void gotEntity (const LeechCraft::Entity&);
 
 				void languageChanged (const QString& language);
 			};

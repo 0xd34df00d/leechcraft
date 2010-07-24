@@ -19,6 +19,7 @@
 #include "deadlyrics.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "findproxy.h"
 #include "xmlsettingsmanager.h"
@@ -31,6 +32,8 @@ namespace LeechCraft
 		{
 			void DeadLyRicS::Init (ICoreProxy_ptr proxy)
 			{
+				Translator_.reset (Util::InstallTranslator ("deadlyrics"));
+
 				Core::Instance ().SetProxy (proxy);
 
 				SettingsDialog_.reset (new Util::XmlSettingsDialog ());

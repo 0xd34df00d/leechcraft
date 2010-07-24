@@ -228,4 +228,27 @@
         <translation>Saturation:</translation>
     </message>
 </context>
+<context>
+    <name>lmpsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation>General</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Plugin communication</source>
+        <translation>Plugin communication</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Test only these extensions</source>
+        <translation>Test only these extensions</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Extenstions list:</source>
+        <translation>Extenstions list:</translation>
+    </message>
+</context>
 </TS>

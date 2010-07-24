@@ -273,4 +273,28 @@
         <translation>Tags for this searcher:</translation>
     </message>
 </context>
+<context>
+    <name>seekthrusettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>SeekThru settings</source>
+        <translation>SeekThru settings</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Searchers</source>
+        <translation>Searchers</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Appearance</source>
+        <translation>Appearance</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Navigation bar visible</source>
+        <translation>Navigation bar visible</translation>
+    </message>
+</context>
 </TS>

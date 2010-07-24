@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::TabPP::Core</name>
     <message>
-        <location filename="core.cpp" line="260"/>
+        <location filename="core.cpp" line="281"/>
         <source>unknown</source>
         <translation>невідомо</translation>
     </message>
@@ -27,7 +27,35 @@
     <message>
         <location filename="tabppwidget.cpp" line="44"/>
         <source>F9</source>
-        <translation type="unfinished"></translation>
+        <translation>F9</translation>
+    </message>
+</context>
+<context>
+    <name>tabppsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>Settings</source>
+        <translation>Налаштування</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Behavior</source>
+        <translation>Поведінка</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Show on action hover</source>
+        <translation>Показувати при наведенні курсору</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Focus on the tab list after show</source>
+        <translation>Фокусувати на списку вкладок при показі</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Hide on Ctrl+Enter</source>
+        <translation>Приховувати по Ctrl+Enter</translation>
     </message>
 </context>
 </TS>

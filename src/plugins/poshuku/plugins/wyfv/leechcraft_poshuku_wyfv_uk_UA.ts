@@ -46,7 +46,35 @@
     <message>
         <location filename="relateditem.ui" line="130"/>
         <source>%v</source>
-        <translation type="unfinished"></translation>
+        <translation>%v</translation>
+    </message>
+</context>
+<context>
+    <name>poshukuwyfvsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation>Загальні</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>WYFV</source>
+        <translation>WYFV</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Enable for these sites:</source>
+        <translation>Використовувати для цих сайтів:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>YouTube</source>
+        <translation>YouTube</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Vkontakte.ru</source>
+        <translation>Vkontakte.ru</translation>
     </message>
 </context>
 </TS>

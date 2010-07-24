@@ -72,6 +72,7 @@ namespace LeechCraft
 				void raiseTab (QWidget*);
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
+				void gotEntity (const LeechCraft::Entity&);
 
 				void couldHandle (const LeechCraft::Entity&, bool*);
 			};

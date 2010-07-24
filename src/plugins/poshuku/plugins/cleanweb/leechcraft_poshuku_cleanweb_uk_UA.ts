@@ -38,7 +38,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="90"/>
+        <location filename="cleanweb.cpp" line="91"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокує небажану рекламу.</translation>
     </message>
@@ -61,17 +61,17 @@
         <translation>Адреса</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="436"/>
+        <location filename="core.cpp" line="435"/>
         <source>Block image...</source>
         <translation>Заблокувати зображення...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="692"/>
+        <location filename="core.cpp" line="691"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Підписка %1 була успішно додана.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="727"/>
+        <location filename="core.cpp" line="726"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Підписка %1 не була делегована.</translation>
     </message>
@@ -102,19 +102,24 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashPlaceHolder</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="121"/>
+        <location filename="flashplaceholder.cpp" line="166"/>
         <source>Load</source>
         <translation>Завантажити</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="127"/>
+        <location filename="flashplaceholder.cpp" line="172"/>
         <source>Add URL to whitelist...</source>
         <translation>Додати адресу до білого списку...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="132"/>
+        <location filename="flashplaceholder.cpp" line="177"/>
         <source>Add host to whitelist...</source>
         <translation>Додати комп&apos;ютер до білого списку...</translation>
+    </message>
+    <message>
+        <location filename="flashplaceholder.cpp" line="189"/>
+        <source>Hide</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -576,11 +581,6 @@
 <context>
     <name>SubscriptionsManager</name>
     <message>
-        <location filename="subscriptionsmanager.ui" line="14"/>
-        <source>Form</source>
-        <translation>Форма</translation>
-    </message>
-    <message>
         <location filename="subscriptionsmanager.ui" line="32"/>
         <source>Add</source>
         <translation>Додати</translation>
@@ -607,6 +607,49 @@
         <location filename="userfilters.ui" line="49"/>
         <source>Remove</source>
         <translation>Видалити</translation>
+    </message>
+</context>
+<context>
+    <name>poshukucleanwebsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation>Загальні</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Updates</source>
+        <translation>Оновлення</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Update subscriptions</source>
+        <translation>Оновлювати підписки</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Update interval:</source>
+        <translation>Інтервал оновлення:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>User filters</source>
+        <translation>Користувацькі фільтри</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="7"/>
+        <source>Subscriptions</source>
+        <translation>Підписки</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="8"/>
+        <source>FlashOnClick</source>
+        <translation>FlashOnClick</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="9"/>
+        <source>Enable FlashOnClick</source>
+        <translation>Увімкнути FlashOnClick</translation>
     </message>
 </context>
 </TS>

@@ -3,180 +3,100 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="General settings" />
-		<label lang="ru" value="Общие настройки" />
-		<label lang="uk" value="Загальні параметри" />
 		<tab>
 			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
-			<label lang="uk" value="Поведінка" />
 			<groupbox>
 				<label lang="en" value="Behavior" />
-				<label lang="ru" value="Поведение" />
-				<label lang="uk" value="Поведінка" />
 				<item type="checkbox" property="BeSilent" state="on">
 					<label lang="en" value="Be silent" />
-					<label lang="ru" value="Вести себя тихо" />
-					<label lang="uk" value="Поводитись тихо" />
 				</item>
 				<item type="checkbox" property="AlwaysUseExternalBrowser" state="on">
 					<label lang="en" value="Always use external browser" />
-					<label lang="ru" value="Всегда использовать внешний браузер" />
-					<label lang="uk" value="Завжди використовувати зовнішній браузер" />
 				</item>
 				<item type="checkbox" property="UnreadOnTop" state="off">
 					<label lang="en" value="Show unread items on top" />
-					<label lang="ru" value="Показывать непрочтенные статьи наверху" />
-					<label lang="uk" value="Показвати непрочитані статті зверху" />
 				</item>
 				<item type="combobox" property="NotificationsFeedUpdateBehavior">
 					<label lang="en" value="Notifications on feed update:" />
-					<label lang="ru" value="Уведомления при обновлении лент:" />
-					<label lang="uk" value="Сповіщати про оновлення стрічок:" />
 					<option name="ShowAll" default="true">
 						<label lang="en" value="all" />
-						<label lang="ru" value="все" />
-						<label lang="uk" value="всі" />
 					</option>
 					<option name="ShowNew">
 						<label lang="en" value="only about new items" />
-						<label lang="ru" value="только о новых статьях" />
-						<label lang="uk" value="Тільки про нові статті" />
 					</option>
 					<option name="ShowNo">
 						<label lang="en" value="don't show" />
-						<label lang="ru" value="не показывать" />
-						<label lang="uk" value="не сповіщати" />
 					</option>
 				</item>
 				<item type="lineedit" property="CommentsTags" default="comments">
 					<label lang="en" value="Additional tags for comment feeds:" />
-					<label lang="ru" value="Дополнительные метки для лент комментариев:" />
-					<label lang="uk" value="Додаткові позначки для стрічок коментарів:" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Appearance" />
-			<label lang="ru" value="Внешний вид" />
-			<label lang="uk" value="Зовнішній вигляд" />
 			<groupbox>
 				<label lang="en" value="Appearance" />
-				<label lang="ru" value="Внешний вид" />
-				<label lang="uk" value="Зовнішній вигляд" />
 				<item type="checkbox" property="GroupChannelsByTags" state="on">
 					<label lang="en" value="Group channels by tags" />
-					<label lang="ru" value="Группировать каналы по тегам" />
-					<label lang="uk" value="Групувати канали за позначками" />
 				</item>
 				<item type="checkbox" property="ShowInDashboard" state="on">
 					<label lang="en" value="Show unread channels in summary" />
-					<label lang="ru" value="Показывать непрочитанные каналы в сводке" />
-					<label lang="uk" value="Показувати непрочитані канали у зведенні" />
 				</item>
 				<item type="checkbox" property="ShowIconInTray" state="on">
 					<label lang="en" value="Show icon in tray when there are unread items" />
-					<label lang="ru" value="Показывать иконку в трее при непрочтённых сообщениях" />
-					<label lang="uk" value="Показувати іконку в треї при наявності непрочитаних повідомлень" />
 				</item>
 				<item type="checkbox" property="ShowCategorySelector" state="on">
 					<label lang="en" value="Show items category selector" />
-					<label lang="ru" value="Показывать список категорий новостей" />
-					<label lang="uk" value="Показувати список категорій новин" />
 				</item>
 				<item type="checkbox" property="ShowNavBarInItemsView" state="off">
 					<label lang="en" value="Show navigation bar when showing the news item" />
-					<label lang="ru" value="Показывать навигационную панель при отображении новости" />
-					<label lang="uk" value="Показвати навігаційну панель при відображенні новин" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Items list" />
-				<label lang="ru" value="Список новостей" />
-				<label lang="uk" value="Список новин" />
 				<item type="font" property="UnreadItemsFont">
 					<label lang="en" value="Font for unread:" />
-					<label lang="ru" value="Шрифт для непрочитанных:" />
-					<label lang="uk" value="Шрифт для непрочитаних:" />
 				</item>
 				<item type="groupbox" property="UnreadCustomColor" checkable="true" default="on">
 					<label lang="en" value="Use color to mark unread" />
-					<label lang="ru" value="Выделять непрочитанные цветом" />
-					<label lang="uk" value="Виділяти непрочитані кольором" />
-					<item type="color" property="UnreadItemsColor" default="red">
+					<item type="color" property="UnreadItemsColor" default="06007B">
 						<label lang="en" value="Color:" />
-						<label lang="ru" value="Цвет:" />
-						<label lang="uk" value="Колір:" />
 					</item>
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Feeds handling" />
-			<label lang="ru" value="Обработка лент" />
-			<label lang="uk" value="Обробка стрічок" />
 			<groupbox>
 				<label lang="en" value="Updates" />
-				<label lang="ru" value="Обновления" />
-				<label lang="uk" value="Оновлення" />
 				<item type="checkbox" property="UpdateOnStartup" state="off">
 					<label lang="en" value="Update feeds on startup" />
-					<label lang="ru" value="Обновлять ленты при запуске" />
-					<label lang="uk" value="Оновлювати стрічки під час запуску" />
 				</item>
 				<item type="spinbox" property="UpdateInterval" default="180" minimum="1" maximum="3000" step="5">
-					<lang value="en">
-						<label value="Update interval:" />
-						<suffix value=" min" />
-					</lang>
-					<lang value="ru">
-						<label value="Интервал между обновлениями:" />
-						<suffix value=" мин" />
-					</lang>
-					<lang value="uk">
-						<label value="Інтервал оновлення:" />
-						<suffix value=" хв" />
-					</lang>
+					<label value="Update interval:" />
+					<suffix value=" min" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Automatic downloading" />
-				<label lang="ru" value="Автоматическое скачивание" />
-				<label lang="uk" value="Автоматичне завантаження" />
 				<item type="path" property="EnclosuresDownloadPath">
 					<label lang="en" value="Download directory for enclosures:" />
-					<label lang="ru" value="Директория для вложений:" />
-					<label lang="uk" value="Директорія для вкладень:" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Store" />
-				<label lang="ru" value="Хранение" />
-				<label lang="uk" value="Зберігання" />
 				<item type="spinbox" property="ItemsPerChannel" default="1000" minimum="20" maximum="10000" step="50">
 					<label lang="en" value="Items per channel:" />
-					<label lang="ru" value="Статей в канале:" />
-					<label lang="uk" value="Статей в каналі:" />
 				</item>
 				<item type="spinbox" property="ItemsMaxAge" default="90" minimum="1" maximum="3650">
-					<lang value="en">
-						<label value="Store items for:" />
-						<suffix value=" days" />
-					</lang>
-					<lang value="ru">
-						<label value="Хранить статьи:" />
-						<suffix value=" дней" />
-					</lang>
-					<lang value="uk">
-						<label value="Зберігати статті:" />
-						<suffix value=" днів" />
-					</lang>
+					<label value="Store items for:" />
+					<suffix value=" days" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Storage" />
-			<label lang="ru" value="Хранилище" />
-			<label lang="uk" value="Сховище" />
 			<item type="customwidget" label="own" name="BackendSelector" />
 		</tab>
 	</page>

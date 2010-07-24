@@ -169,6 +169,11 @@
 <context>
     <name>SearchersList</name>
     <message>
+        <location filename="searcherslist.ui" line="14"/>
+        <source>Searchers list</source>
+        <translation>Список пошуковців</translation>
+    </message>
+    <message>
         <location filename="searcherslist.ui" line="24"/>
         <source>Controls</source>
         <translation>Керування</translation>
@@ -233,11 +238,6 @@
         <source>Languages:</source>
         <translation>Мова:</translation>
     </message>
-    <message>
-        <location filename="searcherslist.ui" line="14"/>
-        <source>Searchers list</source>
-        <translation>Список пошуковців</translation>
-    </message>
 </context>
 <context>
     <name>StartupFirstPageWidget</name>
@@ -273,6 +273,30 @@
         <location filename="tagsasker.ui" line="22"/>
         <source>Tags for this searcher:</source>
         <translation>Позначки для цього пошуковця:</translation>
+    </message>
+</context>
+<context>
+    <name>seekthrusettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>SeekThru settings</source>
+        <translation>Налаштування SeekThru</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Searchers</source>
+        <translation>Пошуковці</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Appearance</source>
+        <translation>Вигляд</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Navigation bar visible</source>
+        <translation>Відображати навігаційну панель</translation>
     </message>
 </context>
 </TS>

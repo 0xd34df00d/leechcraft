@@ -609,4 +609,47 @@
         <translation>Remove</translation>
     </message>
 </context>
+<context>
+    <name>poshukucleanwebsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation>General</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Updates</source>
+        <translation>Updates</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Update subscriptions</source>
+        <translation>Update subscriptions</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Update interval:</source>
+        <translation>Update interval:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>User filters</source>
+        <translation>User filters</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="7"/>
+        <source>Subscriptions</source>
+        <translation>Subscriptions</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="8"/>
+        <source>FlashOnClick</source>
+        <translation>FlashOnClick</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="9"/>
+        <source>Enable FlashOnClick</source>
+        <translation>Enable FlashOnClick</translation>
+    </message>
+</context>
 </TS>

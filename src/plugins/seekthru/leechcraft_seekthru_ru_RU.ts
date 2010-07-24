@@ -169,6 +169,11 @@
 <context>
     <name>SearchersList</name>
     <message>
+        <location filename="searcherslist.ui" line="14"/>
+        <source>Searchers list</source>
+        <translation>Список поисковиков</translation>
+    </message>
+    <message>
         <location filename="searcherslist.ui" line="24"/>
         <source>Controls</source>
         <translation>Управление</translation>
@@ -191,7 +196,7 @@
     <message>
         <location filename="searcherslist.ui" line="69"/>
         <source>Long name:</source>
-        <translation>Длинное имя:</translation>
+        <translation>Полное имя:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="83"/>
@@ -201,7 +206,7 @@
     <message>
         <location filename="searcherslist.ui" line="93"/>
         <source>Tags:</source>
-        <translation>Метки:</translation>
+        <translation>Теги:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="100"/>
@@ -226,17 +231,12 @@
     <message>
         <location filename="searcherslist.ui" line="156"/>
         <source>Adult:</source>
-        <translation>Контент для взрослых:</translation>
+        <translation>Взрослость:</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="170"/>
         <source>Languages:</source>
         <translation>Языки:</translation>
-    </message>
-    <message>
-        <location filename="searcherslist.ui" line="14"/>
-        <source>Searchers list</source>
-        <translation>Список поисковиков</translation>
     </message>
 </context>
 <context>
@@ -259,7 +259,7 @@
     <message>
         <location filename="startupfirstpage.ui" line="59"/>
         <source>Engine</source>
-        <translation>Движок</translation>
+        <translation>Поисковик</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="64"/>
@@ -272,7 +272,31 @@
     <message>
         <location filename="tagsasker.ui" line="22"/>
         <source>Tags for this searcher:</source>
-        <translation>Теги для этого движка:</translation>
+        <translation>Теги для этого поисковика:</translation>
+    </message>
+</context>
+<context>
+    <name>seekthrusettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>SeekThru settings</source>
+        <translation>Настройки SeekThru</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Searchers</source>
+        <translation>Поисковики</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Appearance</source>
+        <translation>Внешний вид</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Navigation bar visible</source>
+        <translation>Отображать навигационную панель</translation>
     </message>
 </context>
 </TS>

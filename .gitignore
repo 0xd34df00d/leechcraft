@@ -17,3 +17,4 @@ src/data/leechcraft.1.gz
 *.changes
 *.tar.gz
 *~
+dummyfile.cpp

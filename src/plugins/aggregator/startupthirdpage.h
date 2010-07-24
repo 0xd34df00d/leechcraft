@@ -51,6 +51,8 @@ namespace LeechCraft
 			private slots:
 				void handleAccepted ();
 				void handleCurrentIndexChanged (const QString&);
+				void on_SelectAll__released ();
+				void on_DeselectAll__released ();
 			};
 		};
 	};

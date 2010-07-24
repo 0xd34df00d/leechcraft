@@ -115,18 +115,21 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 	return in;
 }
 
-bool operator< (const LeechCraft::Entity& e1, const LeechCraft::Entity& e2)
+namespace LeechCraft
 {
-	return e1.Mime_ < e2.Mime_ &&
-		e1.Location_ < e2.Location_ &&
-		e1.Parameters_ < e2.Parameters_;
-}
+	bool operator< (const LeechCraft::Entity& e1, const LeechCraft::Entity& e2)
+	{
+		return e1.Mime_ < e2.Mime_ &&
+			e1.Location_ < e2.Location_ &&
+			e1.Parameters_ < e2.Parameters_;
+	}
 
-bool operator== (const LeechCraft::Entity& e1, const LeechCraft::Entity& e2)
-{
-	return e1.Mime_ == e2.Mime_ &&
-		e1.Entity_ == e2.Entity_ &&
-		e1.Location_ == e2.Location_ &&
-		e1.Parameters_ == e2.Parameters_ &&
-		e1.Additional_ == e2.Additional_;
+	bool operator== (const LeechCraft::Entity& e1, const LeechCraft::Entity& e2)
+	{
+		return e1.Mime_ == e2.Mime_ &&
+			e1.Entity_ == e2.Entity_ &&
+			e1.Location_ == e2.Location_ &&
+			e1.Parameters_ == e2.Parameters_ &&
+			e1.Additional_ == e2.Additional_;
+	}
 }

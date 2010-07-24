@@ -24,6 +24,7 @@
 namespace gloox
 {
 	class RosterItem;
+	class MessageSession;
 }
 
 namespace LeechCraft
@@ -38,6 +39,8 @@ namespace LeechCraft
 
 				namespace Xoox
 				{
+					class GlooxAccount;
+
 					class GlooxCLEntry : public QObject
 									   , public ICLEntry
 					{
@@ -46,10 +49,12 @@ namespace LeechCraft
 						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
 
 						IAccount *ParentAccount_;
+						GlooxAccount *ParentAccountObject_;
 						gloox::RosterItem *RI_;
 					public:
-						GlooxCLEntry (gloox::RosterItem*, QObject*);
+						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
 
+						// ICLEntry
 						QObject* GetObject ();
 						IAccount* GetParentAccount () const;
 						Features GetEntryFeatures () const;
@@ -57,6 +62,13 @@ namespace LeechCraft
 						void SetEntryName (const QString&);
 						QByteArray GetEntryID () const;
 						QStringList Groups () const;
+						QStringList Variants () const;
+						IMessage* CreateMessage (IMessage::MessageType,
+								const QString&, const QString&);
+
+						void ReemitMessage (IMessage*);
+					signals:
+						void gotMessage (IMessage*);
 					};
 				}
 			}

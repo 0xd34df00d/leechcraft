@@ -182,6 +182,19 @@
     </message>
 </context>
 <context>
+    <name>chattersettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>Interface</source>
+        <translation>Interface</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Show icon in tray</source>
+        <translation>Show icon in tray</translation>
+    </message>
+</context>
+<context>
     <name>fsIrcView</name>
     <message>
         <location filename="fsircview.ui" line="14"/>

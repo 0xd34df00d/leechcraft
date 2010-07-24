@@ -3,16 +3,10 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Appearance" />
-		<label lang="ru" value="Внешний вид" />
-		<label lang="uk" value="Зовнішній вигляд" />
 		<groupbox>
 			<label lang="en" value="Lyrics view" />
-			<label lang="ru" value="Просмотр текстов" />
-			<label lang="uk" value="Перегляд текстів" />
 			<item type="checkbox" property="UseBrowser" state="on">
 				<label lang="en" value="Use a web browser (if available)" />
-				<label lang="ru" value="Использовать браузер (если доступен)" />
-				<label lang="uk" value="Використовувати браузер (якщо доступний)" />
 			</item>
 		</groupbox>
 	</page>

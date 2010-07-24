@@ -110,10 +110,16 @@ namespace LeechCraft
 						this,
 						SLOT (checkInterpreters (const QString&)));
 
+				RecentFilesMenu_ = new QMenu (tr ("Recent files"));
+				RestoreRecentFiles ();
+
 				QString editor = "view";
 				WindowMenus_ [editor] << Ui_.ActionEnableFolding_;
 				WindowMenus_ [editor] << Ui_.ActionAutoIndent_;
 				WindowMenus_ [editor] << Ui_.ActionShowLineNumbers_;
+
+				WindowMenus_ [editor] << Util::CreateSeparator (this);
+
 				WindowMenus_ [editor] << DoctypeMenu_->menuAction ();
 
 				QMenu *wsVis = new QMenu (tr ("Whitespace visibility"));
@@ -130,11 +136,21 @@ namespace LeechCraft
 				WindowMenus_ [editor] << wrapMode->menuAction ();
 				GroupActions (wrapMode->actions ());
 
+				WindowMenus_ [editor] << Util::CreateSeparator (this);
+
 				WindowMenus_ [editor] << Ui_.ActionShowEOL_;
 				WindowMenus_ [editor] << Ui_.ActionShowCaretLine_;
+				WindowMenus_ [editor] << Util::CreateSeparator (this);
 
 				QString edit = tr ("Edit");
 				WindowMenus_ [edit] << Ui_.ActionReplace_;
+
+				QString file = tr ("File");
+				WindowMenus_ [file] << Ui_.ActionNew_;
+				WindowMenus_ [file] << Ui_.ActionOpen_;
+				WindowMenus_ [file] << RecentFilesMenu_->menuAction ();
+				WindowMenus_ [file] << Ui_.ActionSave_;
+				WindowMenus_ [file] << Ui_.ActionSaveAs_;
 
 				connect (Ui_.ActionShowEOL_,
 						SIGNAL (toggled (bool)),
@@ -279,26 +295,7 @@ namespace LeechCraft
 				if (filename.isEmpty ())
 					return;
 
-				QFile file (filename);
-				if (!file.open (QIODevice::ReadOnly))
-				{
-					QMessageBox::critical (this,
-							"LeechCraft",
-							tr ("Could not open file %1 for reading.")
-								.arg (filename));
-					return;
-				}
-
-				Filename_ = filename;
-				Ui_.TextEditor_->setText (file.readAll ());
-
-				Ui_.TextEditor_->setLexer (GetLexerByLanguage (GetLanguage (Filename_)));
-				emit languageChanged (GetLanguage (Filename_));
-
-				Modified_ = false;
-
-				emit changeTabName (this, QString ("%1 - Popishu")
-						.arg (Filename_));
+				Open (filename);
 			}
 
 			void EditorPage::on_ActionSave__triggered ()
@@ -591,6 +588,29 @@ namespace LeechCraft
 				}
 			}
 
+			void EditorPage::handleRecentFileOpen ()
+			{
+				QAction *sAct = qobject_cast<QAction*> (sender ());
+				if (!sAct)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender is not a QAction"
+							<< sender ();
+					return;
+				}
+
+				QString file = sAct->data ().toString ();
+				if (!QFile::exists (file))
+				{
+					emit gotEntity (Util::MakeNotification (tr ("File not found"),
+							tr ("The requested file doesn't exist anymore."),
+							PWarning_));
+					return;
+				}
+
+				Open (file);
+			}
+
 			void EditorPage::SetWhitespaceVisibility (QsciScintilla::WhitespaceVisibility wv)
 			{
 				Ui_.TextEditor_->setWhitespaceVisibility (wv);
@@ -627,6 +647,35 @@ namespace LeechCraft
 				Modified_ = false;
 
 				return true;
+			}
+
+			void EditorPage::Open (const QString& filename)
+			{
+				QFile file (filename);
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Could not open file %1 for reading.")
+								.arg (filename));
+					return;
+				}
+
+				Filename_ = filename;
+				Ui_.TextEditor_->setText (file.readAll ());
+
+				Ui_.TextEditor_->setLexer (GetLexerByLanguage (GetLanguage (Filename_)));
+				emit languageChanged (GetLanguage (Filename_));
+
+				Modified_ = false;
+
+				emit changeTabName (this, QString ("%1 - Popishu")
+						.arg (Filename_));
+				QStringList path ("Popishu");
+				path += Filename_.split ('/', QString::SkipEmptyParts);
+				setProperty ("WidgetLogicalPath", path);
+
+				PrependRecentFile (filename);
 			}
 
 			QsciLexer* EditorPage::GetLexerByLanguage (const QString& lang) const
@@ -687,6 +736,59 @@ namespace LeechCraft
 				QActionGroup *group = new QActionGroup (this);
 				Q_FOREACH (QAction *action, actions)
 					group->addAction (action);
+			}
+
+			void EditorPage::RestoreRecentFiles ()
+			{
+				QStringList recent = XmlSettingsManager::Instance ()->
+						property ("RecentlyOpenedFiles").toStringList ();
+				int num = XmlSettingsManager::Instance ()->
+						property ("NumRecentlyOpened").toInt ();
+				while (recent.size () > num)
+					recent.removeAt (num);
+
+				std::reverse (recent.begin (), recent.end ());
+				Q_FOREACH (const QString& filePath, recent)
+					PrependRecentFile (filePath, false);
+			}
+
+			void EditorPage::PrependRecentFile (const QString& filePath, bool save)
+			{
+				QAction *action = new QAction (filePath, this);
+				action->setData (filePath);
+				connect (action,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleRecentFileOpen ()));
+
+				QList<QAction*> currentActions = RecentFilesMenu_->actions ();
+				if (!currentActions.size ())
+					RecentFilesMenu_->addAction (action);
+				else
+				{
+					Q_FOREACH (QAction *action, currentActions)
+						if (action->data ().toString () == filePath)
+						{
+							currentActions.removeAll (action);
+							delete action;
+						}
+
+					RecentFilesMenu_->insertAction (currentActions.at (0), action);
+					int num = XmlSettingsManager::Instance ()->
+							property ("NumRecentlyOpened").toInt ();
+					while (currentActions.size () + 1 > num)
+						delete currentActions.takeLast ();
+				}
+
+				if (save)
+				{
+					QStringList recent;
+					currentActions.prepend (action);
+					Q_FOREACH (QAction *action, currentActions)
+						recent << action->data ().toString ();
+					XmlSettingsManager::Instance ()->
+							setProperty ("RecentlyOpenedFiles", recent);
+				}
 			}
 		};
 	};

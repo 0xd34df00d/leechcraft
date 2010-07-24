@@ -49,4 +49,32 @@
         <translation>%v</translation>
     </message>
 </context>
+<context>
+    <name>poshukuwyfvsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation>General</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>WYFV</source>
+        <translation>WYFV</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Enable for these sites:</source>
+        <translation>Enable for these sites:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>YouTube</source>
+        <translation>YouTube</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Vkontakte.ru</source>
+        <translation>Vkontakte.ru</translation>
+    </message>
+</context>
 </TS>

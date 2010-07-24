@@ -22,6 +22,7 @@
 #include <plugininterface/util.h>
 #include "core.h"
 #include "packagesdelegate.h"
+#include "pendingmanager.h"
 
 namespace LeechCraft
 {
@@ -63,6 +64,9 @@ namespace LeechCraft
 				Ui_.Plugins_->setModel (FilterString_);
 				PackagesDelegate *pd = new PackagesDelegate (Ui_.Plugins_);
 				Ui_.Plugins_->setItemDelegate (pd);
+
+				Ui_.PendingTree_->setModel (Core::Instance ()
+						.GetPendingManager ()->GetPendingModel ());
 
 				connect (Ui_.Plugins_->selectionModel (),
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
@@ -133,6 +137,16 @@ namespace LeechCraft
 
 			void Plugin::handleTagsUpdated ()
 			{
+			}
+
+			void Plugin::on_Accept__released ()
+			{
+				Core::Instance ().AcceptPending ();
+			}
+
+			void Plugin::on_Cancel__released ()
+			{
+				Core::Instance ().CancelPending ();
 			}
 		};
 	};

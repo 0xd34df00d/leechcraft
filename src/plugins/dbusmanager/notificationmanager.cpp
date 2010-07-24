@@ -112,6 +112,12 @@ void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 	if (prio == PLog_)
 		return;
 
+	int timeout = 0;
+	if (!uus &&
+			Core::Instance ().GetProxy ())
+		timeout = Core::Instance ().GetProxy ()->GetSettingsManager ()->
+				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+
 	QList<QVariant> arguments;
 	arguments << header
 		<< uint (0)
@@ -120,10 +126,7 @@ void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 		<< text
 		<< fmtActions
 		<< QVariantMap ()
-		<< (uus ?
-				0 :
-				Core::Instance ().GetProxy ()->GetSettingsManager ()->
-				property ("FinishedDownloadMessageTimeout").toInt () * 1000);
+		<< timeout;
 
 	ActionData ad =
 	{

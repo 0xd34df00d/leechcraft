@@ -105,6 +105,8 @@ void ShortcutManager::AddObject (QObject *object,
 
 	settings.endGroup ();
 	settings.endGroup ();
+
+	Ui_.Tree_->resizeColumnToContents (0);
 }
 
 QKeySequence ShortcutManager::GetShortcut (const QObject *object,

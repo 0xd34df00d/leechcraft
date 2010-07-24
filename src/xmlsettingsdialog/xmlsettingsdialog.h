@@ -61,6 +61,7 @@ namespace LeechCraft
 			boost::shared_ptr<QDomDocument> Document_;
 			QList<QWidget*> Customs_;
 			ItemHandlerFactory *HandlersManager_;
+			QString Basename_;
 		public:
 			struct LangElements
 			{

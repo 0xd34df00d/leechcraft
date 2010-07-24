@@ -68,6 +68,10 @@ SET (TRANSLATIONS
 	leechcraft_lcftp_de.ts
 	leechcraft_lcftp_oc.ts
 	leechcraft_lcftp_pl.ts
+	leechcraft_lcftp_en.ts
+	leechcraft_lcftp_ar.ts
+	leechcraft_lcftp_eo.ts
+	leechcraft_lcftp_fr.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lcftp_ru_RU.qm
@@ -75,6 +79,10 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lcftp_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lcftp_oc.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lcftp_pl.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lcftp_en.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lcftp_ar.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lcftp_eo.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lcftp_fr.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

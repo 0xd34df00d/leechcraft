@@ -83,12 +83,6 @@ namespace LeechCraft
 			{
 				return new EntityWrapper (Util::MakeNotification (header, text, priority));
 			}
-
-			QUrl UtilProxy::MakeAbsoluteUrl (QUrl baseUrl,
-					const QString& hrefUrl) const
-			{
-				return Util::MakeAbsoluteUrl (baseUrl, hrefUrl);
-			}
 		};
 	};
 };

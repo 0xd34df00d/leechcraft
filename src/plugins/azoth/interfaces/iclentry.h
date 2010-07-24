@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_ICLENTRY_H
 #define PLUGINS_AZOTH_INTERFACES_ICLENTRY_H
 #include <QFlags>
+#include "imessage.h"
 
 namespace LeechCraft
 {
@@ -29,6 +30,7 @@ namespace LeechCraft
 			namespace Plugins
 			{
 				class IAccount;
+				class IMessage;
 
 				/** @brief Represents a single entry in contact list.
 				 *
@@ -130,6 +132,40 @@ namespace LeechCraft
 					 * @return The list of groups of this item.
 					 */
 					virtual QStringList Groups () const = 0;
+
+					/** @brief Returns the list of destination variants
+					 * for this entry.
+					 *
+					 * For example, for an entry representing a contact
+					 * in XMPP protocol variants would be the list of
+					 * resources for the contact.
+					 *
+					 * Strings in the list should not be null, though
+					 * they may be empty.
+					 *
+					 * @return The list of variants of this entry.
+					 */
+					virtual QStringList Variants () const = 0;
+
+					/** @brief Creates the message of the given type to
+					 * the given variant.
+					 *
+					 * Variant is a string from the list returned by
+					 * Variants(). If a different string is passed,
+					 * particularly, a null one, the implementation must
+					 * choose the best variant itself: for example, the
+					 * resource with the highest priority in XMPP.
+					 *
+					 * @param[in] type The type of the message.
+					 * @param[in] variant The variant to send to.
+					 * @param[in] body Message boxy.
+					 * @return The prepared message.
+					 *
+					 * @sa Variants()
+					 */
+					virtual IMessage* CreateMessage (IMessage::MessageType type,
+							const QString& variant,
+							const QString& body) = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

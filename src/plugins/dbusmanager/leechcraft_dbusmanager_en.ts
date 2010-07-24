@@ -40,4 +40,22 @@
         <translation>Not found job holder %1.</translation>
     </message>
 </context>
+<context>
+    <name>dbusmanagersettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>Environment</source>
+        <translation>Environment</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>KDE</source>
+        <translation>KDE</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Use notifications (KDE â¥ 4.4 or libnotify)</source>
+        <translation>Use notifications (KDE ≥ 4.4 or libnotify)</translation>
+    </message>
+</context>
 </TS>

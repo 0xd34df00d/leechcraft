@@ -67,6 +67,8 @@ namespace LeechCraft
 				void handleRowChanged (const QModelIndex&, const QModelIndex&);
 				void invalidateWidgetPositions ();
 				void hideOverflousActions (const QModelIndex&, int, int);
+			private slots:
+				void handleAction ();
 			};
 		}
 	}

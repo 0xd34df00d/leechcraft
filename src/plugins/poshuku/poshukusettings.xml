@@ -1,377 +1,197 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Browser settings" />
-		<label lang="ru" value="Параметры браузера" />
-		<label lang="uk" value="Параметри браузера" />
 		<tab>
 			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
-			<label lang="uk" value="Поведінка" />
 			<item type="checkbox" property="RestorePreviousSession" state="on">
 				<label lang="en" value="Restore previous session" />
-				<label lang="ru" value="Восстанавливать предыдущую сессию" />
-				<label lang="uk" value="Відновити попередню сесію" />
 			</item>
 			<item type="checkbox" property="StartWithHomeTab" state="off">
 				<label lang="en" value="Always open home tab" />
-				<label lang="ru" value="Всегда открывать домашнюю вкладку" />
-				<label lang="uk" value="Завжди відкривати домашню вкладку" />
 			</item>
 			<item type="checkbox" property="BackgroundNewTabs" state="on">
 				<label lang="en" value="Open new tabs in the background" />
-				<label lang="ru" value="Открывать новые вкладки в фоне" />
-				<label lang="uk" value="Відкривати нові вкладки у фоні" />
 			</item>
 			<item type="checkbox" property="GroupBookmarksByTags" state="on">
 				<label lang="en" value="Group bookmarks by tags" />
-				<label lang="ru" value="Группировать закладки по тегам" />
-				<label lang="uk" value="Групувати закпладки за позначками" />
 			</item>
 			<item type="checkbox" property="ParanoidDownloadsDetection" state="off">
 				<label lang="en" value="Paranoid downloads detection" />
-				<label lang="ru" value="Параноидальное обнаружение загрузок" />
-				<label lang="uk" value="Старане виявлення завантажень" />
 			</item>
 			<item type="checkbox" property="DifferLocationsByExtension" state="on">
 				<label lang="en" value="Differ download locations by file extension" />
-				<label lang="ru" value="Различать папки для скачивания по расширению файла" />
-				<label lang="uk" value="Розрізняти папки для завантажень за розширенями файлів" />
 			</item>
 			<item type="checkbox" property="TryToDetectRSSLinks" state="on">
 				<label lang="en" value="Try to detect links to RSS/Atom feeds" />
-				<label lang="ru" value="Пытаться обнаруживать ссылки на RSS/Atom-ленты" />
-				<label lang="uk" value="Намагатися виявляти посилання на RSS/Atom-стрічки" />
 			</item>
 			<item type="checkbox" property="GenerateTooltips" state="on">
 				<label lang="en" value="Generate tooltips" />
-				<label lang="ru" value="Создавать образ страниц" />
-				<label lang="uk" value="Створювати мініатюри сторінок" />
 			</item>
-			<item type="checkbox" property="NotifyFinishedByDefault" state="on">
+			<item type="checkbox" property="NotifyFinishedByDefault" state="off">
 				<label lang="en" value="Notify about finished loads by default" />
-				<label lang="ru" value="По умолчанию уведомлять о завершенных загрузках" />
-				<label lang="uk" value="Типово повідомляти про завершені завантаження" />
 			</item>
 			<item type="checkbox" property="CloseEmptyDelegatedPages" default="on">
 				<label lang="en" value="Automatically close empty pages with delegated content" />
-				<label lang="ru" value="Автоматически закрывать пустые страницы с делегированным контентом" />
-				<label lang="uk" value="Автоматично закривати порожні сторінки з делегованим вмістом" />
 			</item>
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
-				<label lang="ru" value="Открывать эти схемы внешними приложениями:" />
-				<label lang="uk" value="Обробляти дані схеми зовнішніми додатками: " />
 			</item>
 			<item type="lineedit" property="UserStyleSheet">
 				<label lang="en" value="User CSS URL:" />
-				<label lang="ru" value="URL пользовательского CSS:" />
-				<label lang="uk" value="URL користувацького CSS:" />
 			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Security" />
-			<label lang="ru" value="Безопасность" />
-			<label lang="uk" value="Безпека" />
 			<groupbox>
 				<label lang="en" value="Security" />
-				<label lang="ru" value="Безопасность" />
-				<label lang="uk" value="Безпека" />
 				<item type="checkbox" property="OfflineStorageDB" state="on">
 					<label lang="en" value="Offline storage database" />
-					<label lang="ru" value="Оффлайн-хранилище" />
-					<label lang="uk" value="Автономне сховище" />
 				</item>
 				<item type="checkbox" property="OfflineWebApplicationCache" state="on">
 					<label lang="en" value="Offline web application cache" />
-					<label lang="ru" value="Оффлайн-кэш веб-приложений" />
-					<label lang="uk" value="Автономний кеш веб-додатків" />
 				</item>
 				<item type="checkbox" property="LocalStorageDB" state="on">
 					<label lang="en" value="Local storage database" />
-					<label lang="ru" value="Локальное хранилище" />
-					<label lang="uk" value="Локальне сховище" />
 				</item>
 				<item type="checkbox" property="StoreLocalLinkHistory" state="on">
 					<label lang="en" value="Store local link history" />
-					<label lang="ru" value="Хранить локальную историю ссылок" />
-					<label lang="uk" value="Зберігати локальну історію посилань" />
 				</item>
 				<item type="spinbox" property="HistoryClearOlderThan" minimum="0" maximum="10000" default="30">
-					<lang value="en">
-						<label value="Clear history items older than:" />
-						<suffix value=" days" />
-					</lang>
-					<lang value="ru">
-						<label value="Удалять историю старше, чем:" />
-						<suffix value=" дней" />
-					</lang>
-					<lang value="uk">
-						<label value="Видаляти історію давнішу, ніж:" />
-						<suffix value=" днів" />
-					</lang>
+					<label value="Clear history items older than:" />
+					<suffix value=" days" />
 				</item>
 				<item type="spinbox" property="HistoryKeepLessThan" minimum="0" maximum="100000" default="20000">
-					<lang value="en">
-						<label value="Keep less than: " />
-						<suffix value=" items" />
-					</lang>
-					<lang value="ru">
-						<label value="Хранить не более: " />
-						<suffix value=" записей" />
-					</lang>
-					<lang value="uk">
-						<label value="Зберігати в історії не більше ніж:" />
-						<suffix value=" записів" />
-					</lang>
-
+					<label value="Keep less than: " />
+					<suffix value=" items" />
 				</item>
 				<item type="pushbutton" name="CookiesEdit">
 					<label lang="en" value="Cookies..." />
-					<label lang="ru" value="Куки..." />
-					<label lang="uk" value="Куки..." />
 				</item>
 				<item type="pushbutton" name="ClearIconDatabase">
 					<label lang="en" value="Clear favicon database" />
-					<label lang="ru" value="Очистить базу иконок сайтов" />
-					<label lang="uk" value="Очистити базу іконок сайтів" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Cache" />
-			<label lang="ru" value="Кэш" />
-			<label lang="uk" value="Кеш" />
 			<groupbox>
 				<label lang="en" value="Offline storage" />
-				<label lang="ru" value="Оффлайн-хранилище" />
-				<label lang="uk" value="Автономна пам'ять" />
 				<item type="spinbox" property="OfflineStorageQuota" default="128" minimum="0" maximum="1048576">
-					<lang value="en">
-						<label value="Offline storage default quota:" />
-						<suffix value=" KB" />
-					</lang>
-					<lang value="ru">
-						<label value="Квота оффлайн-хранилища по умолчанию:" />
-						<suffix value=" КБ" />
-					</lang>
-					<lang value="uk">
-						<label value="Макс. розмір автономної пам'яті:" />
-						<suffix value=" КБ" />
-					</lang>
-
+					<label value="Offline storage default quota:" />
+					<suffix value=" KB" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="In-memory" />
-				<label lang="ru" value="В памяти" />
-				<label lang="uk" value="В пам'яті" />
 				<item type="checkbox" property="DNSPrefetchEnabled" default="on">
 					<label lang="en" value="Prefetch DNS entries" />
-					<label lang="ru" value="Предварительно разрешать адреса через DNS" />
-					<label lang="uk" value="Завчасне визначення адрес DNS" />
 				</item>
 				<item type="spinbox" property="MaximumPagesInCache" default="15" minimum="5" maximum="1000" step="5">
 					<label lang="en" value="Maximum pages:" />
-					<label lang="ru" value="Максимум страниц:" />
-					<label lang="uk" value="Максимум сторінок:" />
 				</item>
 				<item type="doublespinbox" property="MinDeadCapacity" minimum="0" maximum="2048" step="8" default="1" precision="1">
-					<lang value="en">
-						<label value="Minimum dead capacity:" />
-						<suffix value=" MB" />
-					</lang>
-					<lang value="ru">
-						<label value="Минимальная мертвая ёмкость:" />
-						<suffix value=" МБ" />
-					</lang>
-					<lang value="uk">
-						<label value="Мінімальний незайнятий об'єм:" />
-						<suffix value=" МБ" />
-					</lang>
-
+					<label value="Minimum dead capacity:" />
+					<suffix value=" MB" />
 				</item>
 				<item type="doublespinbox" property="MaxDeadCapacity" minimum="0" maximum="2048" step="8" default="32" precision="1">
-					<lang value="en">
-						<label value="Maximum dead capacity:" />
-						<suffix value=" MB" />
-					</lang>
-					<lang value="ru">
-						<label value="Максимальная мертвая ёмкость:" />
-						<suffix value=" МБ" />
-					</lang>
-					<lang value="uk">
-						<label value="Максимальний незайнятий об'єм:" />
-						<suffix value=" МБ" />
-					</lang>
-
+					<label value="Maximum dead capacity:" />
+					<suffix value=" MB" />
 				</item>
 				<item type="doublespinbox" property="TotalCapacity" minimum="0" maximum="2048" step="8" default="64" precision="1">
-					<lang value="en">
-						<label value="Total capacity:" />
-						<suffix value=" MB" />
-					</lang>
-					<lang value="ru">
-						<label value="Общая ёмкость:" />
-						<suffix value=" МБ" />
-					</lang>
-					<lang value="uk">
-						<label value="Загальний об'єм:" />
-						<suffix value=" МБ" />
-					</lang>
-
+					<label value="Total capacity:" />
+					<suffix value=" MB" />
 				</item>
 				<item type="pushbutton" name="ClearMemoryCaches">
 					<label lang="en" value="Clear in-memory caches" />
-					<label lang="ru" value="Очистить кеши в памяти" />
-					<label lang="uk" value="Очистити кеш в пам'яті" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Storage" />
-			<label lang="ru" value="Хранилище" />
-			<label lang="uk" value="Сховище" />
 			<item type="customwidget" label="own" name="BackendSelector" />
 		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Viewer settings" />
-		<label lang="ru" value="Параметры просмотрщика" />
-		<label lang="uk" value="Параметри переглядача" />
 		<tab>
 			<label lang="en" value="Dynamic content" />
-			<label lang="ru" value="Динамическое содержимое" />
-			<label lang="uk" value="Динамічний вміст" />
 			<groupbox>
 				<label lang="en" value="Dynamic content" />
-				<label lang="ru" value="Динамическое содержимое" />
-				<label lang="uk" value="Динамічний вміст" />
 				<item type="checkbox" property="AutoLoadImages" state="on">
 					<label lang="en" value="Load images automatically" />
-					<label lang="ru" value="Автоматически загружать изображения" />
-					<label lang="uk" value="Автоматично завантажувати зображення" />
 				</item>
 				<item type="checkbox" property="AllowJavascript" state="on">
 					<label lang="en" value="Allow Javascript" />
-					<label lang="ru" value="Разрешить Javascript" />
-					<label lang="uk" value="Дозволити Javascript" />
 				</item>
 				<item type="checkbox" property="AllowJava" state="on">
 					<label lang="en" value="Allow Java" />
-					<label lang="ru" value="Разрешить Java" />
-					<label lang="uk" value="Дозволити Java" />
 				</item>
 				<item type="checkbox" property="AllowPlugins" state="on">
 					<label lang="en" value="Allow plugins" />
-					<label lang="ru" value="Разрешить плагины" />
-					<label lang="uk" value="Дозволити плагіни" />
 				</item>
 				<item type="checkbox" property="JavascriptCanOpenWindows" state="on">
 					<label lang="en" value="Javascript programs can open new windows" />
-					<label lang="ru" value="Javascript-программы могут открывать новые окна" />
-					<label lang="uk" value="Дозволити Javascript відкривати нові вікна" />
 				</item>
 				<item type="checkbox" property="JavascriptCanAccessClipboard" state="on">
 					<label lang="en" value="Javascript programs can access clipboard" />
-					<label lang="ru" value="Javascript-программам доступен буфер обмена" />
-					<label lang="uk" value="Дозволити Javascript доступ до буфера обміну" />
 				</item>
 				<item type="checkbox" property="DeveloperExtrasEnabled" state="off">
 					<label lang="en" value="Developer extras" />
-					<label lang="ru" value="Дополнения для разработчика" />
-					<label lang="uk" value="Додатки для розробників" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Fonts" />
-			<label lang="ru" value="Шрифты" />
-			<label lang="uk" value="Шрифти" />
 			<groupbox>
 				<label lang="en" value="Fonts" />
-				<label lang="ru" value="Шрифты" />
-				<label lang="uk" value="Шрифти" />
 				<item type="font" property="StandardFont">
 					<label lang="en" value="Standard font:" />
-					<label lang="ru" value="Стандартный шрифт:" />
-					<label lang="uk" value="Стандартний шрифт:" />
 				</item>
 				<item type="font" property="FixedFont">
 					<label lang="en" value="Fixed font:" />
-					<label lang="ru" value="Моноширинный шрифт:" />
-					<label lang="uk" value="Моноширинний шрифт:" />
 				</item>
 				<item type="font" property="SerifFont">
 					<label lang="en" value="Serif font:" />
-					<label lang="ru" value="Шрифт с засечками:" />
-					<label lang="uk" value="Шрифт з зарубками:" />
 				</item>
 				<item type="font" property="SansSerifFont">
 					<label lang="en" value="SansSerif font:" />
-					<label lang="ru" value="Шрифт без засечек:" />
-					<label lang="uk" value="Шрифт без зарубок:" />
 				</item>
 				<item type="font" property="CursiveFont">
 					<label lang="en" value="Cursive font:" />
-					<label lang="ru" value="Курсивный шрифт:" />
-					<label lang="uk" value="Курсивний шрифт:" />
 				</item>
 				<item type="font" property="FantasyFont">
 					<label lang="en" value="Fantasy font:" />
-					<label lang="ru" value="Fantasy-шрифт:" />
-					<label lang="uk" value="Fantasy-шрифт:" />
 				</item>
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Sizes" />
-				<label lang="ru" value="Размеры" />
-				<label lang="uk" value="Разміри" />
 				<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Minimum font size:" />
-					<label lang="ru" value="Минимальный размер шрифта:" />
-					<label lang="uk" value="Мінімальний розмір шрифта:" />
 				</item>
 				<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Default font size:" />
-					<label lang="ru" value="Размер шрифта по умолчанию:" />
-					<label lang="uk" value="Розмірш шрифта за заомвчуванням:" />
 				</item>	
 				<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Default fixed font size:" />
-					<label lang="ru" value="Размер фиксированного шрифта по умолчанию:" />
-					<label lang="uk" value="Розмір фіксованого шрифта за замовчуванням:" />
 				</item>	
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Rendering" />
-			<label lang="ru" value="Рендеринг" />
-			<label lang="uk" value="Рендеринг" />
 			<groupbox>
 				<label lang="en" value="Rendering" />
-				<label lang="ru" value="Рендеринг" />
-				<label lang="uk" value="Рендеринг" />
 				<item type="checkbox" property="PrimitivesAntialiasing" default="off">
 					<label lang="en" value="Antialias primitives if possible" />
-					<label lang="ru" value="По возможности сглаживать примитивы" />
-					<label lang="uk" value="Згладжувати примітиви (якщо можливо)" />
 				</item>
 				<item type="checkbox" property="TextAntialiasing" default="on">
 					<label lang="en" value="Antialias text if possible" />
-					<label lang="ru" value="По возможности сглаживать текст" />
-					<label lang="uk" value="Згаджувати текст (якщо можливо)" />
 				</item>
 				<item type="checkbox" property="SmoothPixmapTransform" default="on">
 					<label lang="en" value="Smooth pixmap transform" />
-					<label lang="ru" value="Гладкое преобразование изображений" />
-					<label lang="uk" value="Плавне перетворення зображень" />
 				</item>
 				<item type="checkbox" property="HighQualityAntialiasing" default="on">
 					<label lang="en" value="High-quality antialiasing" />
-					<label lang="ru" value="Высококачественное сглаживание" />
-					<label lang="uk" value="Високоякісне згладжування" />
 				</item>
 			</groupbox>
 		</tab>

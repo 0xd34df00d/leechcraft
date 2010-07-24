@@ -29,4 +29,19 @@
         <translation>Неизвестный %1 %2</translation>
     </message>
 </context>
+<context>
+    <name>deadlyricssettings</name>
+    <message>
+        <source>Appearance</source>
+        <translation>Внешний вид</translation>
+    </message>
+    <message>
+        <source>Lyrics view</source>
+        <translation>Просмотр текстов</translation>
+    </message>
+    <message>
+        <source>Use a web browser (if available)</source>
+        <translation>Использовать веб-браузер (если доступен)</translation>
+    </message>
+</context>
 </TS>

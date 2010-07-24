@@ -3,64 +3,39 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Local settings" />
-		<label lang="ru" value="Локальные настройки" />
-		<label lang="uk" value="Локальні налаштування" />
 		<groupbox>
 			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
-			<label lang="uk" value="Поведінка" />
 			<item type="checkbox" property="AlertAboutErrors" default="on">
 				<label lang="en" value="Alert about errors" />
-				<label lang="ru" value="Оповещать об ошибках" />
-				<label lang="uk" value="Сповіщати про помилки" />
 			</item>
 		</groupbox>
 	</page>
 	<page>
 		<label lang="en" value="Network settings" />
-		<label lang="ru" value="Сетевые настройки" />
-		<label lang="uk" value="Мережеві налаштування" />
 		<tab>
 			<label lang="en" value="General" />
-			<label lang="ru" value="Общие" />
-			<label lang="uk" value="Загальні" />
 			<groupbox>
 				<label lang="en" value="Behavior" />
-				<label lang="ru" value="Поведение" />
-				<label lang="uk" value="Поведінка" />
 				<item type="lineedit" property="TextTransferMode" default="txt cpp cxx c ui asm htm html css asp vbs js">
 					<label lang="en" value="Use text transfer mode:" />
-					<label lang="ru" value="Использовать текстовый режим передачи:" />
-					<label lang="uk" value="Використовувати текстовий режим передачі:" />
 				</item>
 			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Identification" />
-			<label lang="ru" value="Идентификация" />
-			<label lang="uk" value="Ідентифікація" />
 			<groupbox>
 				<label lang="en" value="HTTP" />
-				<label lang="ru" value="HTTP" />
 				<item type="lineedit" property="HTTPLogin" default="anonymous">
 					<label lang="en" value="Login:" />
-					<label lang="ru" value="Логин:" />
-					<label lang="uk" value="Логін:" />
 				</item>
 				<item type="lineedit" property="HTTPPassword" default="simpleemail@leechcraft.org">
 					<label lang="en" value="Password:" />
-					<label lang="ru" value="Пароль:" />
-					<label lang="uk" value="Пароль:" />
 				</item>
 				<item type="lineedit" property="UserUserAgent">
 					<label lang="en" value="Custom user agent:" />
-					<label lang="ru" value="Пользовательский user agent:" />
-					<label lang="uk" value="Користувацький user agent:" />
 				</item>
 				<item type="combobox" property="PredefinedUserAgent">
 					<label lang="en" value="Predefined user agent:" />
-					<label lang="ru" value="Предустановленный user agent:" />
-					<label lang="uk" value="Популярні user agent&apn;и:" />
 					<option default="true" value="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Firefox/3.0.1">
 						<label lang="en" value="Firefox 3.0.1 on Linux i686" />
 						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/firefox.png</binary>

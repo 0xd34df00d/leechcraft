@@ -122,11 +122,15 @@
     </message>
     <message>
         <source>Paste</source>
-        <translation>Вставити</translation>
+        <translation type="obsolete">Вставити</translation>
     </message>
     <message>
         <source>Location:</source>
         <translation type="obsolete">Місце знаходження:</translation>
+    </message>
+    <message>
+        <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -221,7 +225,7 @@
     </message>
     <message>
         <source>F11</source>
-        <translation type="unfinished"></translation>
+        <translation>F11</translation>
     </message>
     <message>
         <source>exit</source>
@@ -237,7 +241,7 @@
     </message>
     <message>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <source>General</source>
@@ -281,15 +285,15 @@
     </message>
     <message>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>F10</source>
-        <translation type="unfinished"></translation>
+        <translation>F10</translation>
     </message>
     <message>
         <source>Glance...</source>
@@ -430,6 +434,10 @@
         <source>&lt;br /&gt;from %1</source>
         <translation type="obsolete">&lt;br /&gt;з %1</translation>
     </message>
+    <message>
+        <source>Plugin load error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::FancyPopupManager</name>
@@ -541,6 +549,10 @@
         <source>Actions</source>
         <translation>Дії</translation>
     </message>
+    <message>
+        <source>Always</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -597,6 +609,34 @@
     <message>
         <source>LeechCraft</source>
         <translation type="obsolete">LeechCraft</translation>
+    </message>
+    <message>
+        <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: failed to construct plugin instance.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load plugin from %1: unable to get name/info/icon.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -724,7 +764,7 @@
     </message>
     <message>
         <source>Restore tabs</source>
-        <translation>Відновити вкладки</translation>
+        <translation type="obsolete">Відновити вкладки</translation>
     </message>
     <message>
         <source>Close all but this</source>
@@ -958,6 +998,277 @@
     <message>
         <source>Advanced setup</source>
         <translation>Розширені параметри</translation>
+    </message>
+</context>
+<context>
+    <name>coresettings</name>
+    <message>
+        <source>Appearance</source>
+        <translation>Зовнішній вигляд</translation>
+    </message>
+    <message>
+        <source>Use tab scroll buttons</source>
+        <translation>Використовувати кнопки прокручування табів</translation>
+    </message>
+    <message>
+        <source>Show menu bar as button</source>
+        <translation>Показувати панель меню у вигляді кнопок</translation>
+    </message>
+    <message>
+        <source>Try smarter tabs width calculation</source>
+        <translation>Намагатися використовувати досконалий алгоритм розрахунку ширини вкладок</translation>
+    </message>
+    <message>
+        <source>Icon size</source>
+        <translation>Розмір іконок</translation>
+    </message>
+    <message>
+        <source>System default</source>
+        <translation>Системний</translation>
+    </message>
+    <message>
+        <source>16x16</source>
+        <translation>16x16</translation>
+    </message>
+    <message>
+        <source>24x24</source>
+        <translation>24x24</translation>
+    </message>
+    <message>
+        <source>32x32</source>
+        <translation>32x32</translation>
+    </message>
+    <message>
+        <source>Tool button style:</source>
+        <translation>Стиль панелей інструментів:</translation>
+    </message>
+    <message>
+        <source>Only display the icon</source>
+        <translation>Показувати лише іконку</translation>
+    </message>
+    <message>
+        <source>Only display the text</source>
+        <translation>Показувати лише текст</translation>
+    </message>
+    <message>
+        <source>The text appears beside the icon</source>
+        <translation>Текст поряд з іконкою</translation>
+    </message>
+    <message>
+        <source>The text appears under the icon</source>
+        <translation>Текст під іконкою</translation>
+    </message>
+    <message>
+        <source>Tab bar location:</source>
+        <translation>Розташування вкладок:</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation>Зверху</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation>Знизу</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation>Зліва</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation>Зправа</translation>
+    </message>
+    <message>
+        <source>Icon set:</source>
+        <translation>Набір іконок:</translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation>Стиль:</translation>
+    </message>
+    <message>
+        <source>Language:</source>
+        <translation>Мова:</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation>System</translation>
+    </message>
+    <message>
+        <source>Arabic (Ø§ÙØ¹Ø±Ø¨ÙØ©)</source>
+        <translation>Arabic (ﺎﻠﻋﺮﺒﻳﺓ)</translation>
+    </message>
+    <message>
+        <source>German (Deutsch)</source>
+        <translation>German (Deutsch)</translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation>English</translation>
+    </message>
+    <message>
+        <source>Esperanto</source>
+        <translation>Esperanto</translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation>Spanish</translation>
+    </message>
+    <message>
+        <source>Italian (Italiano)</source>
+        <translation>Italian (Italiano)</translation>
+    </message>
+    <message>
+        <source>Polish (Polski)</source>
+        <translation>Polish (Polski)</translation>
+    </message>
+    <message>
+        <source>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</source>
+        <translation>Russian (Русский)</translation>
+    </message>
+    <message>
+        <source>Spanish (EspaÃ±ol)</source>
+        <translation>Spanish (Español)</translation>
+    </message>
+    <message>
+        <source>Ukrainian (Ð£ÐºÑÐ°ÑÐ½ÑÑÐºÐ°)</source>
+        <translation>Ukrainian (Українська)</translation>
+    </message>
+    <message>
+        <source>Maximum log lines:</source>
+        <translation>Максимум рядків в журналі:</translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation>Гарячі клавиші</translation>
+    </message>
+    <message>
+        <source>Behavior</source>
+        <translation>Поведінка</translation>
+    </message>
+    <message>
+        <source>Watch clipboard</source>
+        <translation>Спостерігати за буфером обміну</translation>
+    </message>
+    <message>
+        <source>Ask quit confirmation</source>
+        <translation>Запитувати підтвердження виходу</translation>
+    </message>
+    <message>
+        <source>Exit on close</source>
+        <translation>Виходити при закритті</translation>
+    </message>
+    <message>
+        <source>Open new tab next to current</source>
+        <translation>Відкривати вкладку після поточної</translation>
+    </message>
+    <message>
+        <source>Automatically accept task when there is only one handler</source>
+        <translation>Автоматично додавати задачу, якщо є лише один обробник</translation>
+    </message>
+    <message>
+        <source>Watch directory:</source>
+        <translation>Слідкувати за каталогом:</translation>
+    </message>
+    <message>
+        <source>Show plugin-dependent actions in tab bar context menu</source>
+        <translation>Показувати залежні від плагіна дії у контекстному меню панелі табів</translation>
+    </message>
+    <message>
+        <source>Show as a submenu</source>
+        <translation>Показувати як підменю</translation>
+    </message>
+    <message>
+        <source>Show messages in tray</source>
+        <translation>Показувати повідомленя в треї</translation>
+    </message>
+    <message>
+        <source>Message timeout:</source>
+        <translation>Відображати повідомлення:</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <translation> с</translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation>Позначки</translation>
+    </message>
+    <message>
+        <source>Tags manager</source>
+        <translation>Менеджер позначок</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Cache size:</source>
+        <translation>Розмір кешу:</translation>
+    </message>
+    <message>
+        <source> MB</source>
+        <translation> МБ</translation>
+    </message>
+    <message>
+        <source>Filter tracking cookies</source>
+        <translation>Фільтрувати шпигунські куки</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>Очистити кеш</translation>
+    </message>
+    <message>
+        <source>Clear cookies</source>
+        <translation>Очистити куки</translation>
+    </message>
+    <message>
+        <source>Application-wide proxy</source>
+        <translation>Глобальний проксі</translation>
+    </message>
+    <message>
+        <source>Host:</source>
+        <translation>Хост:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <source>Login:</source>
+        <translation>Логін:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Пароль:</translation>
+    </message>
+    <message>
+        <source>Proxy type:</source>
+        <translation>Тип проксі:</translation>
+    </message>
+    <message>
+        <source>SOCKS5</source>
+        <translation>SOCKS5</translation>
+    </message>
+    <message>
+        <source>Transparent HTTP</source>
+        <translation>Прозорий HTTP</translation>
+    </message>
+    <message>
+        <source>Caching HTTP</source>
+        <translation>HTTP з кешуванням</translation>
+    </message>
+    <message>
+        <source>Caching FTP</source>
+        <translation>FTP з кешуванням</translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation>Плагіни</translation>
+    </message>
+    <message>
+        <source>Plugins manager</source>
+        <translation>Менеджер плагинів</translation>
     </message>
 </context>
 </TS>

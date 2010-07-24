@@ -25,9 +25,12 @@
 #include <QTimer>
 #include <QScrollBar>
 #include <QHBoxLayout>
+#include <QMessageBox>
+#include <QMainWindow>
 #include <QtDebug>
 #include "packagesmodel.h"
 #include "core.h"
+#include "pendingmanager.h"
 
 namespace LeechCraft
 {
@@ -232,10 +235,11 @@ namespace LeechCraft
 				{
 					QAction *action = new QAction (Viewport_);
 					action->setCheckable (true);
+					action->setProperty ("Role", "InstallRemove");
 					connect (action,
 							SIGNAL (triggered ()),
-							&Core::Instance (),
-							SLOT (installRemoveRequested ()));
+							this,
+							SLOT (handleAction ()));
 
 					QToolButton *toolButton = new QToolButton ();
 					toolButton->resize (CActionsSize, CActionsSize);
@@ -263,6 +267,7 @@ namespace LeechCraft
 				action->setText (label);
 				action->setIcon (Core::Instance ().GetProxy ()->GetIcon (iconName));
 				action->setData (index.data (PackagesModel::PMRPackageID));
+				action->setProperty ("Installed", index.data (PackagesModel::PMRInstalled));
 
 				return button;
 			}
@@ -277,10 +282,11 @@ namespace LeechCraft
 							tr ("Update"),
 							Viewport_);
 					action->setCheckable (true);
+					action->setProperty ("Role", "Update");
 					connect (action,
 							SIGNAL (triggered ()),
-							&Core::Instance (),
-							SLOT (updateRequested ()));
+							this,
+							SLOT (handleAction ()));
 
 					QToolButton *toolButton = new QToolButton ();
 					toolButton->resize (CActionsSize, CActionsSize);
@@ -347,6 +353,49 @@ namespace LeechCraft
 				int thisCount = Row2Layout_.size ();
 				for (int i = rowCount; i < thisCount; ++i)
 					Row2Layout_ [i]->hide ();
+			}
+
+			void PackagesDelegate::handleAction ()
+			{
+				QAction *sAction = qobject_cast<QAction*> (sender ());
+				if (!sAction)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender is not an action"
+							<< sender ();
+					return;
+				}
+
+				int packageID = sAction->data ().toInt ();
+				QString role = sAction->property ("Role").toString ();
+				bool checked = sAction->isChecked ();
+
+				try
+				{
+					if (role == "InstallRemove")
+					{
+						bool installed = sAction->property ("Installed").toBool ();
+						Core::Instance ().GetPendingManager ()->ToggleInstallRemove (packageID, checked, installed);
+					}
+					else if (role == "Update")
+						Core::Instance ().GetPendingManager ()->ToggleUpdate (packageID, checked);
+					else
+						qWarning () << Q_FUNC_INFO
+								<< "unknown role"
+								<< role;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
+					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
+							tr ("LeechCraft"),
+							tr ("Unable to mark package, reverting."));
+
+					sAction->blockSignals (true);
+					sAction->setChecked (!checked);
+					sAction->blockSignals (false);
+				}
 			}
 		}
 	}
