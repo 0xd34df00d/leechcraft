@@ -74,8 +74,8 @@ namespace LeechCraft
 
 		/** @brief Return the user-readable representation of the entity.
 		 *
-		 * @param[in] entity The Entity to make the
-		 * user-readable representation from.
+		 * @param[in] entity The Entity from which to make the
+		 * user-readable representation.
 		 * @return The user-readable string describing the entity.
 		 */
 		PLUGININTERFACE_API QString GetUserText (const Entity& entity);
@@ -123,7 +123,35 @@ namespace LeechCraft
 				const QString& prefix = "leechcraft",
 				const QString& appname = "leechcraft");
 
+		/** @brief Returns the current locale name, like en_US.
+		 *
+		 * First, this function checks the locale value stored in
+		 * "Language" key of settings object with organizationName() and
+		 * applicationName(). If it's equal to "system", this function
+		 * queries the LANG environment variable, and if it is empty or
+		 * in invalid format (not like en_US), it takes the value of
+		 * QLocale::system().name().
+		 *
+		 * Then, if the resulting name the name of the language only,
+		 * GetLocaleName() tries to find any countries for that
+		 * language. If any countries are found, the code of the first
+		 * found country is appended, else "_00" is appended.
+		 *
+		 * @return Current locale name.
+		 *
+		 * @sa GetLanguage()
+		 */
 		PLUGININTERFACE_API QString GetLocaleName ();
+
+		/** @brief Returns the current language name.
+		 *
+		 * This function works as GetLocaleName() except it doesn't
+		 * return (and doesn't query for) country name.
+		 *
+		 * @return Current language name.
+		 *
+		 * @sa GetLocaleName()
+		 */
 		PLUGININTERFACE_API QString GetLanguage ();
 
 		/** @brief Creates a path if it isn't existing.
@@ -188,16 +216,21 @@ namespace LeechCraft
 		 * @return The Entity containing the corresponding
 		 * notification.
 		 *
-		 * @sa DownoadEntity, MakeEntity()
+		 * @sa Entity, MakeEntity()
 		 */
 		PLUGININTERFACE_API Entity MakeNotification (const QString& header,
 				const QString& text,
 				Priority priority);
 
-		PLUGININTERFACE_API QUrl MakeAbsoluteUrl (QUrl, const QString& hrefUrl);
-
 		PLUGININTERFACE_API QModelIndexList GetSummarySelectedRows (QObject *sender);
 
+		/** @brief Returns the action that is set to act as a separator.
+		 *
+		 * That is the action with setSeparator(true);
+		 *
+		 * @param[in] parent The parent of the action.
+		 * @return The separator action.
+		 */
 		PLUGININTERFACE_API QAction* CreateSeparator (QObject *parent);
 
 		/** @brief Returns an element for a given tags list.
