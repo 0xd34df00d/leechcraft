@@ -45,6 +45,8 @@ namespace LeechCraft
 				ScheduledInstall_.clear ();
 				ScheduledRemove_.clear ();
 				ScheduledUpdate_.clear ();
+				Deps_.clear ();
+				ID2ModelRow_.clear ();
 			}
 
 			void PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
@@ -63,6 +65,21 @@ namespace LeechCraft
 					DisablePackageFrom (id, ScheduledUpdate_);
 			}
 
+			const QSet<int>& PendingManager::GetPendingInstall () const
+			{
+				return ScheduledInstall_;
+			}
+
+			const QSet<int>& PendingManager::GetPendingRemove () const
+			{
+				return ScheduledRemove_;
+			}
+
+			const QSet<int>& PendingManager::GetPendingUpdate () const
+			{
+				return ScheduledUpdate_;
+			}
+
 			void PendingManager::EnablePackageInto (int id, QSet<int>& container)
 			{
 				DepTreeBuilder builder (id);
@@ -77,6 +94,8 @@ namespace LeechCraft
 
 				QList<int> deps = builder.GetPackagesToInstall ();
 				Deps_ [id] = deps;
+
+				qDebug () << Q_FUNC_INFO << "deps" << deps;
 
 				container << id;
 

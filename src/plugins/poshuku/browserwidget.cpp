@@ -1068,7 +1068,9 @@ namespace LeechCraft
 				ToolBar_->removeAction (ExternalLinks_->menuAction ());
 				ExternalLinks_->clear ();
 
-				QWebElementCollection links = Ui_.WebView_->page ()->mainFrame ()->findAllElements ("link");
+				QWebElementCollection links = Ui_.WebView_->
+						page ()->mainFrame ()->findAllElements ("link");
+				QUrl mainFrameURL = Ui_.WebView_->page ()->mainFrame ()->url ();
 				bool inserted = false;
 				Q_FOREACH (QWebElement link, links)
 				{
@@ -1087,9 +1089,7 @@ namespace LeechCraft
 						entity = entity.toUpper ();
 					}
 
-					QUrl entityUrl = Util::MakeAbsoluteUrl (Ui_.WebView_->
-								page ()->mainFrame ()->url (),
-							link.attribute ("href"));
+					QUrl entityUrl = mainFrameURL.resolved (QUrl (link.attribute ("href")));
 					e.Entity_ = entityUrl;
 					e.Additional_ ["SourceURL"] = entityUrl;
 					e.Parameters_ = LeechCraft::FromUserInitiated |

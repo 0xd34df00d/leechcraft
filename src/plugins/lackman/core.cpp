@@ -318,6 +318,19 @@ namespace LeechCraft
 				}
 			}
 
+			void Core::CancelPending ()
+			{
+				PendingManager_->Reset ();
+			}
+
+			void Core::AcceptPending ()
+			{
+				QSet<int> toInstall = PendingManager_->GetPendingInstall ();
+				QSet<int> toRemove = PendingManager_->GetPendingRemove ();
+				QSet<int> toUpdate = PendingManager_->GetPendingUpdate ();
+				PendingManager_->Reset ();
+			}
+
 			QStringList Core::GetAllTags () const
 			{
 				return Storage_->GetAllTags ();

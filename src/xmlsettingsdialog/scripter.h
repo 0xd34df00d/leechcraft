@@ -33,9 +33,8 @@
 #include <memory>
 #include <QVariant>
 #include <QDomElement>
+#include <QScriptEngine>
 #include "settings.h"
-
-class QScriptEngine;
 
 namespace LeechCraft
 {

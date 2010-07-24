@@ -246,31 +246,6 @@ LeechCraft::Entity LeechCraft::Util::MakeNotification (const QString& header,
 	return result;
 }
 
-QUrl LeechCraft::Util::MakeAbsoluteUrl (QUrl originalUrl, const QString& hrefUrl)
-{
-	if (hrefUrl.indexOf ("://") < 0)
-	{
-		originalUrl.setQueryItems (QList<QPair<QString, QString> > ());
-		if (hrefUrl.size () &&
-				hrefUrl.at (0) == '/')
-			originalUrl.setEncodedPath (hrefUrl.toUtf8 ());
-		else
-		{
-			QString originalPath = originalUrl.path ();
-			if (!originalPath.endsWith ('/'))
-			{
-				int slashIndex = originalPath.lastIndexOf ('/');
-				originalPath = originalPath.left (slashIndex + 1);
-			}
-			originalPath += hrefUrl;
-			originalUrl.setEncodedPath (originalPath.toUtf8 ());
-		}
-		return originalUrl;
-	}
-	else
-		return QUrl::fromEncoded (hrefUrl.toUtf8 ());
-}
-
 QModelIndexList LeechCraft::Util::GetSummarySelectedRows (QObject *sender)
 {
 	QAction *senderAct = qobject_cast<QAction*> (sender);

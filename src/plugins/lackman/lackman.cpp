@@ -138,6 +138,16 @@ namespace LeechCraft
 			void Plugin::handleTagsUpdated ()
 			{
 			}
+
+			void Plugin::on_Accept__released ()
+			{
+				Core::Instance ().AcceptPending ();
+			}
+
+			void Plugin::on_Cancel__released ()
+			{
+				Core::Instance ().CancelPending ();
+			}
 		};
 	};
 };

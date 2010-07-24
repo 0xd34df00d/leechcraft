@@ -56,8 +56,6 @@ namespace LeechCraft
 				QObject* MakeNotification (const QString& header,
 						const QString& text,
 						Priority priority) const;
-				QUrl MakeAbsoluteUrl (QUrl baseUrl,
-						const QString& hrefUrl) const;
 			};
 		};
 	};

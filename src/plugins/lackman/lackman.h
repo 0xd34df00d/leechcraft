@@ -60,6 +60,8 @@ namespace LeechCraft
 				QToolBar* GetToolBar () const;
 			private slots:
 				void handleTagsUpdated ();
+				void on_Accept__released ();
+				void on_Cancel__released ();
 			signals:
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
