@@ -3,70 +3,52 @@
 	<declare defaultlang="en" />
 	<page>
 		<label lang="en" value="Editor settings" />
-		<label lang="ru" value="Параметры редактора" />
 		<groupbox>
 			<label lang="en" value="Editor settings" />
-			<label lang="ru" value="Параметры редактора" />
 			<item type="spinbox" property="TabWidth" default="4">
 				<label lang="en" value="Tab width:" />
-				<label lang="ru" value="Ширина символа табуляции:" />
 			</item>
 			<item type="spinbox" property="IdentationWidth" default="4">
 				<label lang="en" value="Identation width:" />
-				<label lang="ru" value="Ширина отступов:" />
 			</item>
 			<item type="font" property="MonoFont" default="DejaVu Sans Mono">
 				<label lang="en" value="Monospace font:" />
-				<label lang="ru" value="Моноширинный шрифт:" />
-				<label lang="uk" value="Моноширинний шрифт:" />
 			</item>
 		</groupbox>
 		<groupbox>
 			<label lang="en" value="Text wrapping" />
-			<label lang="ru" value="Перенос текста" />
 			<item type="combobox" property="EndLineFlag">
 				<label lang="en" value="End wrap flag location:" />
-				<label lang="ru" value="Положение флага переноса в конце строки:" />
 				<option name="none">
 					<label lang="en" value="No wrap flag" />
-					<label lang="ru" value="Не показывать" />
 				</option>
 				<option name="text" default="true">
 					<label lang="en" value="By text" />
-					<label lang="ru" value="Рядом с текстом" />
 				</option>
 				<option name="border">
 					<label lang="en" value="By border" />
-					<label lang="ru" value="Рядом с границей" />
 				</option>
 			</item>
 			<item type="combobox" property="StartLineFlag">
 				<label lang="en" value="Start wrap flag location:" />
-				<label lang="ru" value="Положение флага переноса в начале строки:" />
 				<option name="none" default="true">
 					<label lang="en" value="No wrap flag" />
-					<label lang="ru" value="Не показывать" />
 				</option>
 				<option name="text">
 					<label lang="en" value="By text" />
-					<label lang="ru" value="Рядом с текстом" />
 				</option>
 				<option name="border">
 					<label lang="en" value="By border" />
-					<label lang="ru" value="Рядом с границей" />
 				</option>
 			</item>
 			<item type="spinbox" property="WrappedIndent" default="0">
 				<label lang="en" value="Indentation of wrapped line" />
-				<label lang="ru" value="Отступ перенесенной строки" />
 			</item>
 		</groupbox>
 		<groupbox>
 			<label lang="en" value="Behavior" />
-			<label lang="ru" value="Поведение" />
 			<item type="spinbox" property="NumRecentlyOpened" default="8">
 				<label lang="en" value="Remember this much recently opened files:" />
-				<label lang="ru" value="Запоминать столько недавно открытых файлов:" />
 			</item>
 		</groupbox>
 	</page>

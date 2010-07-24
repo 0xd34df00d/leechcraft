@@ -263,70 +263,70 @@
         <location filename="dummyfile.cpp" line="2"/>
         <location filename="dummyfile.cpp" line="3"/>
         <source>Editor settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры редактора</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="4"/>
         <source>Tab width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина табуляции:</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="5"/>
         <source>Identation width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина отступов:</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="6"/>
         <source>Monospace font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Моноширинный шрифт:</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="7"/>
         <source>Text wrapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Перенос текста</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="8"/>
         <source>End wrap flag location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Положение флага переноса в конце строки:</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="9"/>
         <location filename="dummyfile.cpp" line="13"/>
         <source>No wrap flag</source>
-        <translation type="unfinished"></translation>
+        <translation>Не показывать</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="10"/>
         <location filename="dummyfile.cpp" line="14"/>
         <source>By text</source>
-        <translation type="unfinished"></translation>
+        <translation>Рядом с текстом</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="11"/>
         <location filename="dummyfile.cpp" line="15"/>
         <source>By border</source>
-        <translation type="unfinished"></translation>
+        <translation>Рядом с границей</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="12"/>
         <source>Start wrap flag location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Положение флага переноса в начале строки:</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="16"/>
         <source>Indentation of wrapped line</source>
-        <translation type="unfinished"></translation>
+        <translation>Отступ перенесенной строки</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="17"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Поведение</translation>
     </message>
     <message>
         <location filename="dummyfile.cpp" line="18"/>
         <source>Remember this much recently opened files:</source>
-        <translation type="unfinished"></translation>
+        <translation>Запоминать столько недавно открытых файлов:</translation>
     </message>
 </context>
 </TS>
