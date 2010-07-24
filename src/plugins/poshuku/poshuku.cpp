@@ -45,13 +45,15 @@ namespace LeechCraft
 		namespace Poshuku
 		{
 			using LeechCraft::Util::TagsCompletionModel;
-			
+
 			void Poshuku::Init (ICoreProxy_ptr coreProxy)
 			{
+				Translator_.reset (Util::InstallTranslator ("poshuku"));
+
 				BrowserWidget::SetParentMultiTabs (this);
 				Core::Instance ().setParent (this);
 				Core::Instance ().SetProxy (coreProxy);
-			
+
 				try
 				{
 					QWebSettings::setIconDatabasePath (
@@ -93,7 +95,7 @@ namespace LeechCraft
 							"LeechCraft",
 							e.what ());
 				}
-			
+
 				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 						"poshukusettings.xml");
@@ -101,9 +103,7 @@ namespace LeechCraft
 						new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 
 				InitConnections ();
-			
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku"));
-			
+
 				bool failed = false;
 				if (!Core::Instance ().Init ())
 				{
@@ -118,9 +118,9 @@ namespace LeechCraft
 
 				if (failed)
 					return;
-			
+
 				RegisterSettings ();
-			
+
 				connect (Core::Instance ().GetFavoritesModel (),
 						SIGNAL (error (const QString&)),
 						this,
@@ -153,7 +153,7 @@ namespace LeechCraft
 				ImportXbel_->setShortcut (proxy->GetShortcut (this, EAImportXbel_));
 				ExportXbel_->setShortcut (proxy->GetShortcut (this, EAExportXbel_));
 				CheckFavorites_->setShortcut (proxy->GetShortcut (this, EACheckFavorites_));
-			
+
 				ToolMenu_ = new QMenu ("Poshuku",
 						Core::Instance ().GetProxy ()->GetMainWindow ());
 				ToolMenu_->setIcon (GetIcon ());
@@ -167,59 +167,59 @@ namespace LeechCraft
 						this,
 						SLOT (createTabFirstTime ()));
 			}
-			
+
 			void Poshuku::Release ()
 			{
 				Core::Instance ().setParent (0);
 				Core::Instance ().Release ();
 				XmlSettingsDialog_.reset ();
 			}
-			
+
 			QString Poshuku::GetName () const
 			{
 				return tr ("Poshuku Browser");
 			}
-			
+
 			QString Poshuku::GetInfo () const
 			{
 				return tr ("Simple yet functional web browser");
 			}
-			
+
 			QStringList Poshuku::Provides () const
 			{
 				return QStringList ("webbrowser");
 			}
-			
+
 			QStringList Poshuku::Needs () const
 			{
 				return QStringList ("*");
 			}
-			
+
 			QStringList Poshuku::Uses () const
 			{
 				return QStringList ();
 			}
-			
+
 			void Poshuku::SetProvider (QObject *object, const QString& feature)
 			{
 				Core::Instance ().SetProvider (object, feature);
 			}
-			
+
 			QIcon Poshuku::GetIcon () const
 			{
 				return QIcon (":/resources/images/poshuku.svg");
 			}
-			
+
 			QSet<QByteArray> Poshuku::GetExpectedPluginClasses () const
 			{
 				return Core::Instance ().GetExpectedPluginClasses ();
 			}
-			
+
 			void Poshuku::AddPlugin (QObject *plugin)
 			{
 				Core::Instance ().AddPlugin (plugin);
 			}
-			
+
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
@@ -244,12 +244,12 @@ namespace LeechCraft
 				QUrl url = e.Entity_.toUrl ();
 				Core::Instance ().NewURL (url, true);
 			}
-			
+
 			void Poshuku::Open (const QString& link)
 			{
 				Core::Instance ().NewURL (link);
 			}
-			
+
 			IWebWidget* Poshuku::GetWidget () const
 			{
 				return Core::Instance ().GetWidget ();
@@ -259,7 +259,7 @@ namespace LeechCraft
 			{
 				return Core::Instance ().MakeWebView ();
 			}
-			
+
 			void Poshuku::SetShortcut (int name, const QKeySequence& sequence)
 			{
 				if (name <= BrowserWidget::ActionMax)
@@ -283,7 +283,7 @@ namespace LeechCraft
 						act->setShortcut (sequence);
 				}
 			}
-			
+
 			QMap<int, LeechCraft::ActionInfo> Poshuku::GetActionInfo () const
 			{
 				BrowserWidget bw;
@@ -322,7 +322,7 @@ namespace LeechCraft
 						SIGNAL (pushButtonClicked (const QString&)),
 						this,
 						SLOT (handleSettingsClicked (const QString&)));
-			
+
 				connect (&Core::Instance (),
 						SIGNAL (addNewTab (const QString&, QWidget*)),
 						this,
@@ -393,10 +393,10 @@ namespace LeechCraft
 
 				XmlSettingsManager::Instance ()->RegisterObject ("DeveloperExtrasEnabled",
 						this, "developerExtrasChanged");
-			
+
 				viewerSettingsChanged ();
 				developerExtrasChanged ();
-			
+
 				QList<QByteArray> cacheSettings;
 				cacheSettings << "MaximumPagesInCache"
 					<< "MinDeadCapacity"
@@ -405,10 +405,10 @@ namespace LeechCraft
 					<< "OfflineStorageQuota";
 				XmlSettingsManager::Instance ()->RegisterObject (cacheSettings,
 						this, "cacheSettingsChanged");
-			
+
 				cacheSettingsChanged ();
 			}
-			
+
 			void Poshuku::createTabFirstTime ()
 			{
 				bool firstTime = XmlSettingsManager::Instance ()->
@@ -435,7 +435,7 @@ namespace LeechCraft
 						XmlSettingsManager::Instance ()->property ("CursiveFont").value<QFont> ().family ());
 				QWebSettings::globalSettings ()->setFontFamily (QWebSettings::FantasyFont,
 						XmlSettingsManager::Instance ()->property ("FantasyFont").value<QFont> ().family ());
-			
+
 				QWebSettings::globalSettings ()->setFontSize (QWebSettings::MinimumFontSize,
 						XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
 				QWebSettings::globalSettings ()->setFontSize (QWebSettings::DefaultFontSize,
@@ -478,7 +478,7 @@ namespace LeechCraft
 							tr ("Please note that Developer Extras would work correctly "
 								"only for pages that are loaded after enabling."));
 			}
-			
+
 			void Poshuku::cacheSettingsChanged ()
 			{
 				QWebSettings::setMaximumPagesInCache (XmlSettingsManager::Instance ()->
@@ -491,17 +491,17 @@ namespace LeechCraft
 				QWebSettings::setOfflineStorageDefaultQuota (XmlSettingsManager::Instance ()->
 						property ("OfflineStorageQuota").toInt () * 1024);
 			}
-			
+
 			void Poshuku::handleError (const QString& msg)
 			{
 				emit gotEntity (Util::MakeNotification ("Poshuku", msg, PWarning_));
 			}
-			
+
 			void Poshuku::handleNewTab ()
 			{
 				Core::Instance ().NewURL ("", true);
 			}
-			
+
 			void Poshuku::handleSettingsClicked (const QString& name)
 			{
 				if (name == "CookiesEdit")
