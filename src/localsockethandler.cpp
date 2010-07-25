@@ -85,7 +85,6 @@ namespace LeechCraft
 		boost::program_options::command_line_parser parser (strings);
 		boost::program_options::variables_map map =
 				qobject_cast<Application*> (qApp)->Parse (parser, &desc);
-		qDebug () << arguments;
 		DoLine (map);
 	}
 
@@ -96,10 +95,6 @@ namespace LeechCraft
 
 	void LocalSocketHandler::DoLine (const boost::program_options::variables_map& map)
 	{
-		qDebug () << Q_FUNC_INFO << map.count ("entity") << map.size ();
-		qDebug () << qobject_cast<Application*> (qApp)->Arguments ();
-		for (boost::program_options::variables_map::const_iterator i = map.begin (); i != map.end (); ++i)
-			qDebug () << i->first.c_str ();
 		if (!map.count ("entity"))
 			return;
 
