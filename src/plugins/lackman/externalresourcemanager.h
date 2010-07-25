@@ -68,6 +68,24 @@ namespace LeechCraft
 				 */
 				boost::optional<QByteArray> GetResourceData (const QUrl& url);
 
+				/** @brief Returns the path of the resource at a given
+				 * url.
+				 *
+				 * This function returns the proper path even if the
+				 * resource hasn't been fetched yet. In this case, there
+				 * would be just no file at the returned path. The file
+				 * at the returned path is guaranteed to exist and be
+				 * valid only after resourceFetched() signal has been
+				 * emitted for this url or if GetResourceData() returns
+				 * proper data.
+				 *
+				 * @param[in] url URL of the resource to get the path
+				 * for.
+				 * @return The local path of the fetched copy of the
+				 * url.
+				 */
+				QString GetResourcePath (const QUrl& url) const;
+
 				/** Clears all fetched resources.
 				 */
 				void ClearCaches ();

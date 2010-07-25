@@ -125,6 +125,11 @@ namespace LeechCraft
 				return boost::optional<QByteArray> ();
 			}
 
+			QString ExternalResourceManager::GetResourcePath (const QUrl& url) const
+			{
+				return ResourcesDir_.filePath (URLToFileName (url));
+			}
+
 			void ExternalResourceManager::ClearCaches ()
 			{
 				Q_FOREACH (const QString& fname, ResourcesDir_.entryList ())
@@ -143,7 +148,7 @@ namespace LeechCraft
 
 				PendingResource pr = PendingResources_.take (id);
 
-				ResourcesDir_ = GetDir ();
+				ResourcesDir_.refresh ();
 
 				emit resourceFetched (pr.URL_);
 			}

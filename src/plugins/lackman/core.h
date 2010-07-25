@@ -27,6 +27,7 @@
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QDir;
 
 namespace LeechCraft
 {
@@ -39,6 +40,7 @@ namespace LeechCraft
 			class Storage;
 			class PackagesModel;
 			class PendingManager;
+			class PackageProcessor;
 
 			class Core : public QObject
 			{
@@ -50,6 +52,7 @@ namespace LeechCraft
 				Storage *Storage_;
 				PackagesModel *PluginsModel_;
 				PendingManager *PendingManager_;
+				PackageProcessor *PackageProcessor_;
 
 				Core ();
 			public:
@@ -61,13 +64,17 @@ namespace LeechCraft
 				ICoreProxy_ptr GetProxy () const;
 				QAbstractItemModel* GetPluginsModel () const;
 				PendingManager* GetPendingManager () const;
+				ExternalResourceManager* GetExtResourceManager () const;
+				Storage* GetStorage () const;
 
 				DependencyList GetDependencies (int) const;
 				QList<ListPackageInfo> GetDependencyFulfillers (const Dependency&) const;
 				bool IsVersionOk (const QString& candidate, QString refVer) const;
 				bool IsFulfilled (const Dependency&) const;
 				QIcon GetIconForLPI (const ListPackageInfo&);
+				QList<QUrl> GetPackageURLs (int) const;
 				ListPackageInfo GetListPackageInfo (int);
+				QDir GetPackageDir (int) const;
 				bool IsInstalled (int) const;
 				bool IsUpgradable (int) const;
 
@@ -76,6 +83,8 @@ namespace LeechCraft
 
 				void CancelPending ();
 				void AcceptPending ();
+
+				QString NormalizePackageName (const QString&) const;
 
 				QStringList GetAllTags () const;
 			private:

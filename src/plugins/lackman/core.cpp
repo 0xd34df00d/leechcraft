@@ -29,6 +29,7 @@
 #include "packagesmodel.h"
 #include "externalresourcemanager.h"
 #include "pendingmanager.h"
+#include "packageprocessor.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,7 @@ namespace LeechCraft
 			, Storage_ (new Storage (this))
 			, PluginsModel_ (new PackagesModel (this))
 			, PendingManager_ (new PendingManager (this))
+			, PackageProcessor_ (new PackageProcessor (this))
 			{
 				Relation2comparator [Dependency::L] = IsVersionLess;
 				Relation2comparator [Dependency::GE] = boost::bind (std::logical_not<bool> (),
@@ -122,6 +124,16 @@ namespace LeechCraft
 			PendingManager* Core::GetPendingManager () const
 			{
 				return PendingManager_;
+			}
+
+			ExternalResourceManager* Core::GetExtResourceManager () const
+			{
+				return ExternalResourceManager_;
+			}
+
+			Storage* Core::GetStorage () const
+			{
+				return Storage_;
 			}
 
 			DependencyList Core::GetDependencies (int packageId) const
@@ -235,6 +247,61 @@ namespace LeechCraft
 				return Storage_->GetSingleListPackageInfo (packageId);
 			}
 
+			QList<QUrl> Core::GetPackageURLs (int packageId) const
+			{
+				QList<QUrl> result;
+
+				QMap<int, QList<QString> > repo2cmpt = Storage_->GetPackageLocations (packageId);
+
+				PackageShortInfo info = Storage_->GetPackage (packageId);
+				QString pathAddition = QString ("dists/%1/all/");
+				QString normalized = NormalizePackageName (pathAddition);
+				pathAddition += QString ("%1/%1-%2.tar.xz")
+						.arg (normalized)
+						.arg (info.Versions_.at (0));
+
+				Q_FOREACH (int repoId, repo2cmpt.keys ())
+				{
+					RepoInfo ri = Storage_->GetRepo (repoId);
+					QUrl url = ri.GetUrl ();
+					QString path = url.path ();
+					if (!path.endsWith ('/'))
+						path += '/';
+
+					Q_FOREACH (const QString& component, repo2cmpt [repoId])
+					{
+						QString pstr = pathAddition.arg (component) + pstr;
+						QUrl tmp = url;
+						tmp.setPath (path + pstr);
+						result << tmp;
+					}
+				}
+
+				return result;
+			}
+
+			QDir Core::GetPackageDir (int packageId) const
+			{
+				ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+				QDir dir = QDir::home ();
+				dir.cd (".leechcraft");
+				switch (info.Type_)
+				{
+				case PackageInfo::TPlugin:
+					dir.cd ("plugins");
+					dir.cd ("scriptable");
+					dir.cd (info.Language_);
+					break;
+				case PackageInfo::TIconset:
+					dir.cd ("icons");
+					break;
+				case PackageInfo::TTranslation:
+					dir.cd ("translations");
+					break;
+				}
+				return dir;
+			}
+
 			void Core::AddRepo (const QUrl& url)
 			{
 				RepoInfoFetcher_->FetchFor (url);
@@ -329,6 +396,56 @@ namespace LeechCraft
 				QSet<int> toRemove = PendingManager_->GetPendingRemove ();
 				QSet<int> toUpdate = PendingManager_->GetPendingUpdate ();
 				PendingManager_->Reset ();
+
+				Q_FOREACH (int packageId, toRemove)
+				{
+					try
+					{
+						PackageProcessor_->Remove (packageId);
+					}
+					catch (const std::exception& e)
+					{
+						QString str = Util::FromStdString (e.what ());
+						qWarning () << Q_FUNC_INFO
+								<< "got"
+								<< str
+								<< "for"
+								<< packageId;
+						emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
+									str,
+									PCritical_));
+						continue;
+					}
+
+					try
+					{
+						Storage_->RemoveFromInstalled (packageId);
+					}
+					catch (const std::exception& e)
+					{
+						QString str = Util::FromStdString (e.what ());
+						qWarning () << Q_FUNC_INFO
+								<< "unable to remove from installed"
+								<< packageId
+								<< str;
+						emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
+									str,
+									PCritical_));
+						continue;
+					}
+				}
+
+				Q_FOREACH (int packageId, toInstall)
+				{
+				}
+			}
+
+			QString Core::NormalizePackageName (const QString& packageName) const
+			{
+				QString normalized = packageName.toLower ().simplified ();
+				normalized.remove (' ');
+				normalized.remove ('\t');
+				return normalized;
 			}
 
 			QStringList Core::GetAllTags () const
@@ -531,9 +648,7 @@ namespace LeechCraft
 				Q_FOREACH (QString packageName, PackageName2NewVersions_.keys ())
 				{
 					QUrl packageUrl = repoUrl;
-					QString normalized = packageName.toLower ().simplified ();
-					normalized.remove (' ');
-					normalized.remove ('\t');
+					QString normalized = NormalizePackageName (packageName);
 					packageUrl.setPath (packageUrl.path () +
 							"/dists/" + component + "/all" +
 							'/' + normalized +

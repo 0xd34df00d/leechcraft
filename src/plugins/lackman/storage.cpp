@@ -646,6 +646,29 @@ namespace LeechCraft
 				lock.Good ();
 			}
 
+			QMap<int, QList<QString> > Storage::GetPackageLocations (int packageId)
+			{
+				QueryGetPackageLocations_.bindValue (":package_id", packageId);
+				if (!QueryGetPackageLocations_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetPackageLocations_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QMap<int, QList<QString> > result;
+				while (QueryGetPackageLocations_.next ())
+				{
+					int repoId = QueryGetPackageLocations_.value (0).toInt ();
+					QString component = QueryGetPackageLocations_.value (1).toString ();
+
+					result [repoId] << component;
+				}
+
+				QueryGetPackageLocations_.finish ();
+
+				return result;
+			}
+
 			QList<int> Storage::GetPackagesInComponent (int componentId)
 			{
 				QueryGetPackagesInComponent_.bindValue (":component_id", componentId);
@@ -685,7 +708,8 @@ namespace LeechCraft
 						QueryGetListPackageInfos_.value (3).toString (),
 						QueryGetListPackageInfos_.value (4).toString (),
 						static_cast<PackageInfo::Type> (QueryGetListPackageInfos_.value (5).toInt ()),
-						QUrl::fromEncoded (QueryGetListPackageInfos_.value (6).toString ().toUtf8 ()),
+						QueryGetListPackageInfos_.value (6).toString (),
+						QUrl::fromEncoded (QueryGetListPackageInfos_.value (7).toString ().toUtf8 ()),
 						GetPackageTags (packageId)
 					};
 
@@ -728,7 +752,8 @@ namespace LeechCraft
 					QueryGetSingleListPackageInfo_.value (3).toString (),
 					QueryGetSingleListPackageInfo_.value (4).toString (),
 					static_cast<PackageInfo::Type> (QueryGetSingleListPackageInfo_.value (5).toInt ()),
-					QUrl::fromEncoded (QueryGetSingleListPackageInfo_.value (6).toString ().toUtf8 ()),
+					QueryGetSingleListPackageInfo_.value (6).toString (),
+					QUrl::fromEncoded (QueryGetSingleListPackageInfo_.value (7).toString ().toUtf8 ()),
 					GetPackageTags (packageId)
 				};
 
@@ -876,6 +901,33 @@ namespace LeechCraft
 				QueryAddLocation_.finish ();
 			}
 
+			void Storage::AddToInstalled (int packageId)
+			{
+				QueryAddToInstalled_.bindValue (":package_id", packageId);
+				if (!QueryAddToInstalled_.exec ())
+				{
+					Util::DBLock::DumpError (QueryAddToInstalled_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QueryAddToInstalled_.finish ();
+			}
+
+			void Storage::RemoveFromInstalled (int packageId)
+			{
+				PackageShortInfo info = GetPackage (packageId);
+
+				QueryRemoveFromInstalled_.bindValue (":name", info.Name_);
+				QueryRemoveFromInstalled_.bindValue (":version", info.Versions_.at (0));
+				if (!QueryRemoveFromInstalled_.exec ())
+				{
+					Util::DBLock::DumpError (QueryRemoveFromInstalled_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				QueryRemoveFromInstalled_.finish ();
+			}
+
 			void Storage::InitTables ()
 			{
 				QSqlQuery query (DB_);
@@ -986,11 +1038,13 @@ namespace LeechCraft
 
 				QueryGetListPackageInfos_ = QSqlQuery (DB_);
 				QueryGetListPackageInfos_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
-						"infos.short_descr, infos.long_descr, infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name;");
+						"infos.short_descr, infos.long_descr, infos.type, infos.language, infos.icon_url FROM packages, infos "
+						"WHERE packages.name = infos.name;");
 
 				QueryGetSingleListPackageInfo_ = QSqlQuery (DB_);
 				QueryGetSingleListPackageInfo_.prepare ("SELECT DISTINCT packages.package_id, packages.name, packages.version, "
-						"infos.short_descr, infos.long_descr, infos.type, infos.icon_url FROM packages, infos WHERE packages.name = infos.name AND packages.package_id = :package_id;");
+						"infos.short_descr, infos.long_descr, infos.type, infos.language, infos.icon_url FROM packages, infos "
+						"WHERE packages.name = infos.name AND packages.package_id = :package_id;");
 
 				QueryGetPackageTags_ = QSqlQuery (DB_);
 				QueryGetPackageTags_.prepare ("SELECT tag FROM tags, packages WHERE tags.name = packages.name AND package_id = :package_id;");
@@ -1003,6 +1057,15 @@ namespace LeechCraft
 
 				QueryGetFulfillerCandidates_ = QSqlQuery (DB_);
 				QueryGetFulfillerCandidates_.prepare ("SELECT package_id, version FROM deps WHERE name = :name;");
+
+				QueryGetPackageLocations_ = QSqlQuery (DB_);
+				QueryGetPackageLocations_.prepare (LoadQuery ("select_package_locations"));
+
+				QueryAddToInstalled_ = QSqlQuery (DB_);
+				QueryAddToInstalled_.prepare (LoadQuery ("insert_installed"));
+
+				QueryRemoveFromInstalled_ = QSqlQuery (DB_);
+				QueryRemoveFromInstalled_.prepare ("DELETE FROM installed WHERE name = :name AND version = :version;");
 			}
 		}
 	}

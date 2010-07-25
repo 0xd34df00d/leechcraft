@@ -69,6 +69,9 @@ namespace LeechCraft
 				QSqlQuery QueryGetInstalledPackages_;
 				QSqlQuery QueryGetDependencies_;
 				QSqlQuery QueryGetFulfillerCandidates_;
+				QSqlQuery QueryGetPackageLocations_;
+				QSqlQuery QueryAddToInstalled_;
+				QSqlQuery QueryRemoveFromInstalled_;
 			public:
 				Storage (QObject* = 0);
 
@@ -90,6 +93,7 @@ namespace LeechCraft
 				void RemovePackage (int packageId);
 				void AddPackages (const PackageInfo&);
 
+				QMap<int, QList<QString> > GetPackageLocations (int);
 				QList<int> GetPackagesInComponent (int);
 				QMap<QString, QList<ListPackageInfo> > GetListPackageInfos ();
 				ListPackageInfo GetSingleListPackageInfo (int);
@@ -101,6 +105,9 @@ namespace LeechCraft
 
 				bool HasLocation (int packageId, int componentId);
 				void AddLocation (int packageId, int componentId);
+
+				void AddToInstalled (int);
+				void RemoveFromInstalled (int);
 			private:
 				void InitTables ();
 				void InitQueries ();
