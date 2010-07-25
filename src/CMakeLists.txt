@@ -63,7 +63,7 @@ SET (LC_SETTINGS_DEST "share/leechcraft/settings")
 # Check modules first in local dir
 SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread signals)
+FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem program_options system thread)
 FIND_PACKAGE (Qt4 REQUIRED)
 #FIND_PACKAGE (Wt)
 
@@ -453,6 +453,7 @@ ENDIF (UNIX)
 
 TARGET_LINK_LIBRARIES(leechcraft
 						${QT_LIBRARIES}
+						${Boost_PROGRAM_OPTIONS_LIBRARY}
 						plugininterface
 						xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)

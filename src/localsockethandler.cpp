@@ -18,6 +18,8 @@
 
 #include "localsockethandler.h"
 #include <cstdlib>
+#include <vector>
+#include <boost/scoped_array.hpp>
 #include <QLocalSocket>
 #include <QUrl>
 #include "plugininterface/util.h"
@@ -75,68 +77,78 @@ namespace LeechCraft
 		QStringList arguments;
 		in >> arguments;
 
-		DoLine (arguments);
+		std::vector<std::string> strings;
+		Q_FOREACH (const QString& arg, arguments)
+			strings.push_back (arg.toStdString ());
+
+		boost::program_options::options_description desc;
+		boost::program_options::command_line_parser parser (strings);
+		boost::program_options::variables_map map =
+				qobject_cast<Application*> (qApp)->Parse (parser, &desc);
+		qDebug () << arguments;
+		DoLine (map);
 	}
 
 	void LocalSocketHandler::pullCommandLine ()
 	{
-		QStringList arguments = qobject_cast<Application*> (qApp)->Arguments ();
-		DoLine (arguments);
+		DoLine (qobject_cast<Application*> (qApp)->GetVarMap ());
 	}
 
-	void LocalSocketHandler::DoLine (const QStringList& arguments)
+	void LocalSocketHandler::DoLine (const boost::program_options::variables_map& map)
 	{
-		if (!(arguments.size () > 1 &&
-				!arguments.last ().startsWith ('-')))
+		qDebug () << Q_FUNC_INFO << map.count ("entity") << map.size ();
+		qDebug () << qobject_cast<Application*> (qApp)->Arguments ();
+		for (boost::program_options::variables_map::const_iterator i = map.begin (); i != map.end (); ++i)
+			qDebug () << i->first.c_str ();
+		if (!map.count ("entity"))
 			return;
 
 		TaskParameters tp;
-		if (!arguments.contains ("-automatic"))
-			tp |= FromUserInitiated;
-		else
+		if (map.count ("automatic"))
 			tp |= AutoAccept;
-		if (arguments.contains ("-handle"))
+		else
+			tp |= FromUserInitiated;
+
+		if (map.count ("handle"))
 		{
 			tp |= OnlyHandle;
 			tp |= AutoAccept;
 		}
-		if (arguments.contains ("-download"))
+
+		if (map.count ("download"))
 		{
 			tp |= OnlyDownload;
 			tp |= AutoAccept;
 		}
 
-		QVariant entity;
-		int typePos = arguments.indexOf ("-type");
-		if (typePos >= 0)
+		QString type;
+		try
 		{
-			if (typePos + 1 < arguments.size ())
-			{
-				QString type = arguments.at (typePos + 1);
-				if (type == "url")
-					entity = QUrl (arguments.last ());
-				else if (type == "url_encoded")
-					entity = QUrl::fromEncoded (arguments.last ().toUtf8 ());
-				else if (type == "file")
-					entity = QUrl::fromLocalFile (arguments.last ());
-				else
-					entity = arguments.last ();
-			}
-			else
-			{
-				qWarning () << Q_FUNC_INFO
-					<< "illegal '-type' option position for"
-					<< arguments;
-				entity = arguments.last ();
-			}
+			type = QString::fromUtf8 (map ["type"].as<std::string> ().c_str ());
 		}
-		else
-			entity = arguments.last ();
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 
-		Entity e = Util::MakeEntity (entity,
-				QString (),
-				tp);
-		emit gotEntity (e);
+		std::vector<std::string> entities = map ["entity"].as<std::vector<std::string> > ();
+		Q_FOREACH (const std::string& entity, entities)
+		{
+			QVariant ve;
+
+			if (type == "url")
+				ve = QUrl (QString::fromUtf8 (entity.c_str ()));
+			else if (type == "url_encoded")
+				ve = QUrl::fromEncoded (entity.c_str ());
+			else
+				ve = QString::fromUtf8 (entity.c_str ());
+
+			Entity e = Util::MakeEntity (ve,
+					QString (),
+					tp);
+			emit gotEntity (e);
+		}
 	}
 };
 
