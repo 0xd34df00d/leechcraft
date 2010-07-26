@@ -81,6 +81,21 @@ namespace LeechCraft
 				return ScheduledUpdate_;
 			}
 
+			void PendingManager::SuccessfullyInstalled (int packageId)
+			{
+				DisablePackageFrom (packageId, ScheduledInstall_);
+			}
+
+			void PendingManager::SuccessfullyRemoved (int packageId)
+			{
+				DisablePackageFrom (packageId, ScheduledRemove_);
+			}
+
+			void PendingManager::SuccessfullyUpdated (int packageId)
+			{
+				DisablePackageFrom (packageId, ScheduledUpdate_);
+			}
+
 			void PendingManager::EnablePackageInto (int id, QSet<int>& container)
 			{
 				DepTreeBuilder builder (id);

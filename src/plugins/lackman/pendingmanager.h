@@ -55,6 +55,10 @@ namespace LeechCraft
 				const QSet<int>& GetPendingInstall () const;
 				const QSet<int>& GetPendingRemove () const;
 				const QSet<int>& GetPendingUpdate () const;
+
+				void SuccessfullyInstalled (int);
+				void SuccessfullyRemoved (int);
+				void SuccessfullyUpdated (int);
 			private:
 				void EnablePackageInto (int, QSet<int>&);
 				void DisablePackageFrom (int, QSet<int>&);

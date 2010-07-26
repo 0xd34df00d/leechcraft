@@ -91,6 +91,10 @@ namespace LeechCraft
 						SIGNAL (packageInstallError (int, const QString&)),
 						this,
 						SLOT (handlePackageInstallError (int, const QString&)));
+				connect (PackageProcessor_,
+						SIGNAL (packageInstalled (int)),
+						this,
+						SLOT (handlePackageInstalled (int)));
 
 				PopulatePluginsModel ();
 			}
@@ -411,7 +415,6 @@ namespace LeechCraft
 				QSet<int> toInstall = PendingManager_->GetPendingInstall ();
 				QSet<int> toRemove = PendingManager_->GetPendingRemove ();
 				QSet<int> toUpdate = PendingManager_->GetPendingUpdate ();
-				PendingManager_->Reset ();
 
 				Q_FOREACH (int packageId, toRemove)
 				{
@@ -449,6 +452,8 @@ namespace LeechCraft
 									PCritical_));
 						continue;
 					}
+
+					PendingManager_->SuccessfullyRemoved (packageId);
 				}
 
 				Q_FOREACH (int packageId, toInstall)
@@ -936,6 +941,55 @@ namespace LeechCraft
 				emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
 							msg,
 							PCritical_));
+			}
+
+			void Core::handlePackageInstalled (int packageId)
+			{
+				try
+				{
+					//Storage_->AddToInstalled (packageId);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while trying to record installed package"
+							<< e.what ();
+					emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
+								tr ("Error recording package to the package DB."),
+								PCritical_));
+
+					try
+					{
+						PackageProcessor_->Remove (packageId);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "while trying to cleanup partially installed package"
+								<< e.what ();
+					}
+					return;
+				}
+
+				PendingManager_->SuccessfullyInstalled (packageId);
+
+				QString packageName;
+				try
+				{
+					packageName = Storage_->GetPackage (packageId).Name_;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while trying to get installed package name"
+							<< e.what ();
+					return;
+				}
+
+				emit gotEntity (Util::MakeNotification (tr ("Package installed"),
+							tr ("Package %1 installed successfully.")
+								.arg (packageName),
+							PInfo_));
 			}
 		}
 	}
