@@ -250,7 +250,6 @@ namespace LeechCraft
 				QToolButton *button = Row2InstallRemove_ [row];
 
 				bool installed = index.data (PackagesModel::PMRInstalled).toBool ();
-				qDebug () << Q_FUNC_INFO << index << installed;
 				QString label;
 				QString iconName;
 				if (installed)
