@@ -306,11 +306,11 @@ namespace LeechCraft
 
 			QWidget* PackagesDelegate::GetLayout (const QModelIndex& index) const
 			{
+				QWidget *instRem = GetInstallRemove (index);
+				QWidget *update = GetUpdate (index);
+
 				if (!Row2Layout_.contains (index.row ()))
 				{
-					QWidget *instRem = GetInstallRemove (index);
-					QWidget *update = GetUpdate (index);
-
 					QWidget *result = new QWidget (Viewport_);
 
 					QHBoxLayout *layout = new QHBoxLayout (result);

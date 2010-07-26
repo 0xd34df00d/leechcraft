@@ -42,89 +42,43 @@
 #include "config.h"
 
 using namespace LeechCraft;
+namespace bpo = boost::program_options;
 
 LeechCraft::Application::Application (int& argc, char **argv)
 : QApplication (argc, argv)
 , CatchExceptions_ (true)
 {
 	Arguments_ = arguments ();
+	bpo::options_description desc ("Allowed options");
+	bpo::command_line_parser parser (argc, argv);
+	VarMap_ = Parse (parser, &desc);
 
-	// Always show help
-	if (Arguments_.contains ("-help"))
+	if (VarMap_.count ("help"))
 	{
-		std::cout << "Usage: "
-			<< Arguments_.at (0).toStdString ()
-			<< " [arguments] [entity]" << std::endl;
+		std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (http://leechcraft.org)" << std::endl;
 		std::cout << std::endl;
-		std::cout
-			<< "Entity is something that could (possibly) be handled by LeechCraft."
-			<< std::endl
-			<< "For example, an URL or a torrent file." << std::endl;
-		std::cout << "Arguments could be:"<< std::endl;
-		std::cout
-			<< "-automatic    Don't consider this entity to be added by the user." << std::endl;
-		std::cout
-			<< "-handle       This entity should be handled, it shouldn't be downloaded."
-			<< std::endl;
-		std::cout
-			<< "-download     This entity should be downloaded but not handled."
-			<< std::endl;
-		std::cout
-			<< "-nolog        Disable custom logger and print everything to the "
-			<< std::endl
-			<< "              stdout/stderr in a raw form."
-			<< std::endl;
-		std::cout
-			<< "-bt           Print backtraces into logs (makes sense only if "
-			<< std::endl
-			<< "              compiled with _GNU_SOURCE defined)." << std::endl;
-		std::cout
-			<< "-clrsckt      Clear stalled socket if previous LeechCraft instance"
-			<< std::endl
-			<< "              terminated not cleanly and there are stale sockets"
-			<< std::endl
-			<< "              that LeechCraft is unable to detect as stale (but"
-			<< std::endl
-			<< "              you are sure they are)."
-			<< std::endl;
-		std::cout
-			<< "-autorestart  Automatically restart application if it's closed (this is"
-			<< std::endl
-			<< "              done via the Session Manager, so it is not guaranteed to"
-			<< std::endl
-			<< "              work everywhere, especially on Windows and Mac OS X)."
-			<< std::endl;
-		std::cout
-			<< "-no-app-catch Don't catch exceptions in QApplication::notify"
-			<< std::endl;
-		std::cout
-			<< "-help         Show this help message." << std::endl;
-		std::cout << std::endl;
-		std::cout
-			<< "Installed plugins may have their own command line options."
-			<< std::endl;
-		std::cout
-			<< "There are maybe some other hidden arguments which alter the program's"
-			<< std::endl
-			<< "behavior in an advanced or experimental way. Hack through the source code"
-			<< std::endl
-			<< "if you want them."
-			<< std::endl;
+		std::cout << desc << std::endl;
 		std::exit (EHelpRequested);
 	}
 
-	if (Arguments_.contains ("-no-app-catch"))
+	if (VarMap_.count ("version"))
+	{
+		std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (http://leechcraft.org)" << std::endl;
+		std::exit (EVersionRequested);
+	}
+
+	if (VarMap_.count ("no-app-catch"))
 		CatchExceptions_ = false;
 
-	if (Arguments_.contains ("-clrsckt"))
+	if (VarMap_.count ("clrsckt"))
 		QLocalServer::removeServer (GetSocketName ());
 
-	if (Arguments_.contains ("-restart"))
+	if (VarMap_.count ("restart"))
 	{
 		EnterRestartMode ();
 		return;
 	}
-	
+
 	// Sanity checks
 	if (IsAlreadyRunning ())
 		std::exit (EAlreadyRunning);
@@ -159,7 +113,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	ParseCommandLine ();
 
 	setWindowIcon (QIcon (":/resources/images/leechcraft.svg"));
-	
+
 	// Say hello to logs
     qDebug () << "======APPLICATION STARTUP======";
     qWarning () << "======APPLICATION STARTUP======";
@@ -171,6 +125,49 @@ LeechCraft::Application::Application (int& argc, char **argv)
 const QStringList& Application::Arguments () const
 {
 	return Arguments_;
+}
+
+bpo::variables_map Application::Parse (bpo::command_line_parser& parser,
+		bpo::options_description *desc) const
+{
+	bpo::variables_map vm;
+	bpo::options_description invisible ("Invisible options");
+	invisible.add_options ()
+			("entity,E", bpo::value<std::vector<std::string> > (), "the entity to handle");
+
+	desc->add_options ()
+			("help", "show the help message")
+			("version,v", "print LC version")
+			("download,D", "only choose downloaders for the entity: it should be downloaded but not handled")
+			("handle,H", "only choose handlers for the entity: it should be handled but not downloaded")
+			("type,T", bpo::value<std::string> (), "the type of the entity: url, url_encoded, file (for file paths) and such")
+			("automatic", "the entity is a result of some automatic stuff, not user's actions")
+			("nolog", "disable custom file logger and print everything to stdout/stderr")
+			("bt", "print backtraces for warning messages into warning.log")
+			("clrsckt", "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly")
+			("no-app-catch", "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes")
+			("autorestart", "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)")
+			("restart", "restart the LC");
+	bpo::positional_options_description pdesc;
+	pdesc.add ("entity", -1);
+
+	bpo::options_description all;
+	all.add (*desc);
+	all.add (invisible);
+
+	bpo::store (parser
+			.options (all)
+			.positional (pdesc)
+			.allow_unregistered ()
+			.run (), vm);
+	bpo::notify (vm);
+
+	return vm;
+}
+
+const bpo::variables_map& Application::GetVarMap () const
+{
+	return VarMap_;
 }
 
 #ifdef Q_WS_WIN
@@ -259,17 +256,7 @@ void Application::checkStillRunning ()
 	if (IsAlreadyRunning ())
 		return;
 
-	QStringList arguments;
-	if (Arguments_.contains ("-autorestart"))
-		arguments << "-autorestart";
-	if (Arguments_.contains ("-nolog"))
-		arguments << "-nolog";
-	if (Arguments_.contains ("-bt"))
-		arguments << "-bt";
-	if (Arguments_.contains ("-no-app-catch"))
-		arguments << "-no-app-catch";
-
-	QProcess::startDetached (applicationFilePath (), arguments);
+	QProcess::startDetached (applicationFilePath (), Arguments_);
 
 	quit ();
 }
@@ -310,18 +297,10 @@ bool Application::IsAlreadyRunning () const
 
 void Application::ParseCommandLine ()
 {
-	if (Arguments_.contains ("-nolog"))
-	{
+	if (VarMap_.count ("nolog"))
 		qInstallMsgHandler (0);
-		Arguments_.removeAll ("-nolog");
-		Arguments_.removeAll ("-bt");
-	}
-
-	if (Arguments_.contains ("-bt"))
-	{
+	else if (VarMap_.count ("bt"))
 		qInstallMsgHandler (DebugHandler::backtraced);
-		Arguments_.removeAll ("-bt");
-	}
 	else
 		qInstallMsgHandler (DebugHandler::simple);
 }
@@ -334,5 +313,5 @@ void Application::EnterRestartMode ()
 			this,
 			SLOT (checkStillRunning ()));
 	timer->start (1000);
-} 
+}
 

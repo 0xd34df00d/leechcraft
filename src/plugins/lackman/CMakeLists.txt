@@ -37,6 +37,7 @@ SET (SRCS
 	xmlparsers.cpp
 	externalresourcemanager.cpp
 	pendingmanager.cpp
+	packageprocessor.cpp
 	)
 SET (HEADERS
 	lackman.h
@@ -50,6 +51,7 @@ SET (HEADERS
 	xmlparsers.h
 	externalresourcemanager.h
 	pendingmanager.h
+	packageprocessor.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts

@@ -41,7 +41,7 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				Ui::StartupFirstPageWidget Ui_;
+				Ui::SeekThruStartupFirstPageWidget Ui_;
 				QMap<QString, EngineInfos_t> Sets_;
 				enum
 				{

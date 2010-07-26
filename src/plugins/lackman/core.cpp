@@ -29,6 +29,7 @@
 #include "packagesmodel.h"
 #include "externalresourcemanager.h"
 #include "pendingmanager.h"
+#include "packageprocessor.h"
 
 namespace LeechCraft
 {
@@ -42,8 +43,9 @@ namespace LeechCraft
 			: RepoInfoFetcher_ (new RepoInfoFetcher (this))
 			, ExternalResourceManager_ (new ExternalResourceManager (this))
 			, Storage_ (new Storage (this))
-			, PluginsModel_ (new PackagesModel (this))
+			, PackagesModel_ (new PackagesModel (this))
 			, PendingManager_ (new PendingManager (this))
+			, PackageProcessor_ (new PackageProcessor (this))
 			{
 				Relation2comparator [Dependency::L] = IsVersionLess;
 				Relation2comparator [Dependency::GE] = boost::bind (std::logical_not<bool> (),
@@ -85,6 +87,14 @@ namespace LeechCraft
 						SIGNAL (packageFetched (const PackageInfo&, int)),
 						this,
 						SLOT (handlePackageFetched (const PackageInfo&, int)));
+				connect (PackageProcessor_,
+						SIGNAL (packageInstallError (int, const QString&)),
+						this,
+						SLOT (handlePackageInstallError (int, const QString&)));
+				connect (PackageProcessor_,
+						SIGNAL (packageInstalled (int)),
+						this,
+						SLOT (handlePackageInstalled (int)));
 
 				PopulatePluginsModel ();
 			}
@@ -116,12 +126,22 @@ namespace LeechCraft
 
 			QAbstractItemModel* Core::GetPluginsModel () const
 			{
-				return PluginsModel_;
+				return PackagesModel_;
 			}
 
 			PendingManager* Core::GetPendingManager () const
 			{
 				return PendingManager_;
+			}
+
+			ExternalResourceManager* Core::GetExtResourceManager () const
+			{
+				return ExternalResourceManager_;
+			}
+
+			Storage* Core::GetStorage () const
+			{
+				return Storage_;
 			}
 
 			DependencyList Core::GetDependencies (int packageId) const
@@ -235,6 +255,73 @@ namespace LeechCraft
 				return Storage_->GetSingleListPackageInfo (packageId);
 			}
 
+			QList<QUrl> Core::GetPackageURLs (int packageId) const
+			{
+				QList<QUrl> result;
+
+				QMap<int, QList<QString> > repo2cmpt = Storage_->GetPackageLocations (packageId);
+
+				PackageShortInfo info = Storage_->GetPackage (packageId);
+				QString pathAddition = QString ("dists/%1/all/");
+				QString normalized = NormalizePackageName (info.Name_);
+				pathAddition += QString ("%1/%1-%2.tar.gz")
+						.arg (normalized)
+						.arg (info.Versions_.at (0));
+
+				Q_FOREACH (int repoId, repo2cmpt.keys ())
+				{
+					RepoInfo ri = Storage_->GetRepo (repoId);
+					QUrl url = ri.GetUrl ();
+					QString path = url.path ();
+					if (!path.endsWith ('/'))
+						path += '/';
+
+					Q_FOREACH (const QString& component, repo2cmpt [repoId])
+					{
+						QUrl tmp = url;
+						tmp.setPath (path + pathAddition.arg (component));
+						result << tmp;
+					}
+				}
+
+				return result;
+			}
+
+			namespace
+			{
+				void SafeCD (QDir& dir, const QString& subdir)
+				{
+					if (!dir.exists (subdir))
+						dir.mkdir (subdir);
+					if (!dir.cd (subdir))
+						throw std::runtime_error (QObject::tr ("Unable to cd into %1.")
+								.arg (subdir)
+								.toUtf8 ().constData ());
+				}
+			}
+
+			QDir Core::GetPackageDir (int packageId) const
+			{
+				ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+				QDir dir = QDir::home ();
+				dir.cd (".leechcraft");
+				switch (info.Type_)
+				{
+				case PackageInfo::TPlugin:
+					SafeCD (dir, "plugins");
+					SafeCD (dir, "scriptable");
+					SafeCD (dir, info.Language_);
+					break;
+				case PackageInfo::TIconset:
+					SafeCD (dir, "icons");
+					break;
+				case PackageInfo::TTranslation:
+					SafeCD (dir, "translations");
+					break;
+				}
+				return dir;
+			}
+
 			void Core::AddRepo (const QUrl& url)
 			{
 				RepoInfoFetcher_->FetchFor (url);
@@ -328,7 +415,38 @@ namespace LeechCraft
 				QSet<int> toInstall = PendingManager_->GetPendingInstall ();
 				QSet<int> toRemove = PendingManager_->GetPendingRemove ();
 				QSet<int> toUpdate = PendingManager_->GetPendingUpdate ();
-				PendingManager_->Reset ();
+
+				Q_FOREACH (int packageId, toRemove)
+					PerformRemoval (packageId);
+
+				Q_FOREACH (int packageId, toInstall)
+				{
+					try
+					{
+						PackageProcessor_->Install (packageId);
+					}
+					catch (const std::exception& e)
+					{
+						QString str = Util::FromStdString (e.what ());
+						qWarning () << Q_FUNC_INFO
+								<< "got"
+								<< str
+								<< "while installing"
+								<< packageId;
+						emit gotEntity (Util::MakeNotification (tr ("Unable to install package"),
+									str,
+									PCritical_));
+						continue;
+					}
+				}
+			}
+
+			QString Core::NormalizePackageName (const QString& packageName) const
+			{
+				QString normalized = packageName.toLower ().simplified ();
+				normalized.remove (' ');
+				normalized.remove ('\t');
+				return normalized;
 			}
 
 			QStringList Core::GetAllTags () const
@@ -451,7 +569,7 @@ namespace LeechCraft
 						break;
 					}
 
-					PluginsModel_->AddRow (last);
+					PackagesModel_->AddRow (last);
 				}
 			}
 
@@ -531,19 +649,71 @@ namespace LeechCraft
 				Q_FOREACH (QString packageName, PackageName2NewVersions_.keys ())
 				{
 					QUrl packageUrl = repoUrl;
-					QString normalized = packageName.toLower ().simplified ();
-					normalized.remove (' ');
-					normalized.remove ('\t');
+					QString normalized = NormalizePackageName (packageName);
 					packageUrl.setPath (packageUrl.path () +
 							"/dists/" + component + "/all" +
 							'/' + normalized +
 							'/' + normalized +
-							".xml.xz");
+							".xml.gz");
 					RepoInfoFetcher_->FetchPackageInfo (packageUrl,
 							packageName,
 							PackageName2NewVersions_ [packageName],
 							componentId);
 				}
+			}
+
+			void Core::PerformRemoval (int packageId)
+			{
+				try
+				{
+					PackageProcessor_->Remove (packageId);
+				}
+				catch (const std::exception& e)
+				{
+					QString str = Util::FromStdString (e.what ());
+					qWarning () << Q_FUNC_INFO
+							<< "got"
+							<< str
+							<< "while removing"
+							<< packageId;
+					emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
+								str,
+								PCritical_));
+					return;
+				}
+
+				try
+				{
+					Storage_->RemoveFromInstalled (packageId);
+				}
+				catch (const std::exception& e)
+				{
+					QString str = Util::FromStdString (e.what ());
+					qWarning () << Q_FUNC_INFO
+							<< "unable to remove from installed"
+							<< packageId
+							<< str;
+					emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
+								str,
+								PCritical_));
+					return;
+				}
+
+				try
+				{
+					ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+					PackagesModel_->UpdateRow (info);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while updating row for package"
+							<< packageId
+							<< "got this exception:"
+							<< e.what ();
+				}
+
+				PendingManager_->SuccessfullyRemoved (packageId);
 			}
 
 			void Core::handleInfoFetched (const RepoInfo& ri)
@@ -704,12 +874,13 @@ namespace LeechCraft
 
 						if (version == greatest)
 						{
-							QString existing = PluginsModel_->FindPackage (pInfo.Name_).Version_;
+							QString existing = PackagesModel_->
+									FindPackage (pInfo.Name_).Version_;
 							if (existing.isEmpty ())
-								PluginsModel_->AddRow (Storage_->
+								PackagesModel_->AddRow (Storage_->
 										GetSingleListPackageInfo (packageId));
 							else if (IsVersionLess (existing, greatest))
-								PluginsModel_->UpdateRow (Storage_->
+								PackagesModel_->UpdateRow (Storage_->
 										GetSingleListPackageInfo (packageId));
 						}
 					}
@@ -762,6 +933,95 @@ namespace LeechCraft
 									.arg (image.URL_),
 								PCritical_));
 					}
+			}
+
+			void Core::handlePackageInstallError (int packageId, const QString& error)
+			{
+				QString packageName;
+				try
+				{
+					packageName = Storage_->GetPackage (packageId).Name_;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while trying to get erroneous package name"
+							<< e.what ();
+				}
+
+				QString prepared = tr ("Error while fetching package %1: %2.");
+				QString msg;
+				if (packageName.size ())
+					msg = prepared.arg (packageName).arg (error);
+				else
+					msg = prepared.arg (packageId).arg (error);
+
+				emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
+							msg,
+							PCritical_));
+			}
+
+			void Core::handlePackageInstalled (int packageId)
+			{
+				try
+				{
+					Storage_->AddToInstalled (packageId);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while trying to record installed package"
+							<< e.what ();
+					emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
+								tr ("Error recording package to the package DB."),
+								PCritical_));
+
+					try
+					{
+						PackageProcessor_->Remove (packageId);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "while trying to cleanup partially installed package"
+								<< e.what ();
+					}
+					return;
+				}
+
+				try
+				{
+					ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+					PackagesModel_->UpdateRow (info);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while updating row for package"
+							<< packageId
+							<< "got this exception:"
+							<< e.what ();
+				}
+
+				PendingManager_->SuccessfullyInstalled (packageId);
+
+				QString packageName;
+				try
+				{
+					packageName = Storage_->GetPackage (packageId).Name_;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while trying to get installed package name"
+							<< e.what ();
+					return;
+				}
+
+				emit gotEntity (Util::MakeNotification (tr ("Package installed"),
+							tr ("Package %1 installed successfully.")
+								.arg (packageName),
+							PInfo_));
 			}
 		}
 	}

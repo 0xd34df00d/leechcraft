@@ -134,7 +134,7 @@ namespace LeechCraft
 			};
 
 			/** This contains those and only those fields which are
-			 * displayed in the Pacakges list.
+			 * displayed in the Packages list.
 			 */
 			struct ListPackageInfo
 			{
@@ -144,6 +144,7 @@ namespace LeechCraft
 				QString ShortDescription_;
 				QString LongDescription_;
 				PackageInfo::Type Type_;
+				QString Language_;
 				QUrl IconURL_;
 				QStringList Tags_;
 				bool HasNewVersion_;

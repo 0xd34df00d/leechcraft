@@ -18,6 +18,7 @@
 
 #include "xoox.h"
 #include <QIcon>
+#include <interfaces/iaccount.h>
 #include "glooxprotocol.h"
 
 namespace LeechCraft
@@ -37,6 +38,8 @@ namespace LeechCraft
 
 					void Plugin::SecondInit ()
 					{
+						Q_FOREACH (IAccount *account, GlooxProtocol_->GetRegisteredAccounts ())
+							account->ChangeState (IAccount::SOnline);
 					}
 
 					void Plugin::Release ()

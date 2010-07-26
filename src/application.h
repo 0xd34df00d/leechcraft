@@ -19,6 +19,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 #include <memory>
+#include <boost/program_options.hpp>
 #include <QApplication>
 #include <QStringList>
 #include <QTranslator>
@@ -36,6 +37,7 @@ namespace LeechCraft
 		QStringList Arguments_;
 
 		std::auto_ptr<QTranslator> Translator_;
+		boost::program_options::variables_map VarMap_;
 		bool CatchExceptions_;
 	public:
 		enum Errors
@@ -43,7 +45,8 @@ namespace LeechCraft
 			EAlreadyRunning = 1,
 			EPaths = 2,
 			EHelpRequested = 3,
-			EGeneralSocketError = 4
+			EGeneralSocketError = 4,
+			EVersionRequested = 5
 		};
 
 		/** Constructs the Application, parses the command line,
@@ -62,6 +65,10 @@ namespace LeechCraft
 		 * @return Cached copy of QCoreApplication::arguments().
 		 */
 		const QStringList& Arguments () const;
+
+		boost::program_options::variables_map Parse (boost::program_options::command_line_parser& parser,
+				boost::program_options::options_description *desc) const;
+		const boost::program_options::variables_map& GetVarMap () const;
 
 		/** Returns the local socket name based on the user name/id and
 		 * such things.

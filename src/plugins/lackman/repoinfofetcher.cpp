@@ -35,16 +35,16 @@ namespace LeechCraft
 			void RepoInfoFetcher::FetchFor (QUrl url)
 			{
 				QString path = url.path ();
-				if (!path.endsWith ("/Repo.xml.xz"))
+				if (!path.endsWith ("/Repo.xml.gz"))
 				{
-					path.append ("/Repo.xml.xz");
+					path.append ("/Repo.xml.gz");
 					url.setPath (path);
 				}
 
-				QString location = Util::GetTemporaryName ("lackman_XXXXXX.xz");
+				QString location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
 
 				QUrl goodUrl = url;
-				goodUrl.setPath (goodUrl.path ().remove ("Repo.xml.xz"));
+				goodUrl.setPath (goodUrl.path ().remove ("Repo.xml.gz"));
 
 				PendingRI pri =
 				{
@@ -92,10 +92,10 @@ namespace LeechCraft
 
 			void RepoInfoFetcher::FetchComponent (QUrl url, int repoId, const QString& component)
 			{
-				if (!url.path ().endsWith ("/Packages.xml.xz"))
-					url.setPath (url.path () + "/Packages.xml.xz");
+				if (!url.path ().endsWith ("/Packages.xml.gz"))
+					url.setPath (url.path () + "/Packages.xml.gz");
 
-				QString location = Util::GetTemporaryName ("lackman_XXXXXX.xz");
+				QString location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
 
 				PendingComponent pc =
 				{
@@ -148,7 +148,7 @@ namespace LeechCraft
 					const QList<QString>& newVersions,
 					int componentId)
 			{
-				QString location = Util::GetTemporaryName ("lackman_XXXXXX.xz");
+				QString location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
 
 				PendingPackage pp =
 				{
@@ -216,7 +216,7 @@ namespace LeechCraft
 						SIGNAL (error (QProcess::ProcessError)),
 						this,
 						SLOT (handleUnarchError (QProcess::ProcessError)));
-				unarch->start ("unxz", QStringList ("-c") << name);
+				unarch->start ("gunzip", QStringList ("-c") << name);
 			}
 
 			void RepoInfoFetcher::handleRIRemoved (int id)
@@ -262,7 +262,7 @@ namespace LeechCraft
 						SIGNAL (error (QProcess::ProcessError)),
 						this,
 						SLOT (handleUnarchError (QProcess::ProcessError)));
-				unarch->start ("unxz", QStringList ("-c") << pc.Location_);
+				unarch->start ("gunzip", QStringList ("-c") << pc.Location_);
 			}
 
 			void RepoInfoFetcher::handleComponentRemoved (int id)
@@ -307,7 +307,7 @@ namespace LeechCraft
 						SIGNAL (error (QProcess::ProcessError)),
 						this,
 						SLOT (handleUnarchError (QProcess::ProcessError)));
-				unarch->start ("unxz", QStringList ("-c") << pp.Location_);
+				unarch->start ("gunzip", QStringList ("-c") << pp.Location_);
 			}
 
 			void RepoInfoFetcher::handlePackageRemoved (int id)
@@ -341,7 +341,7 @@ namespace LeechCraft
 				if (exitCode)
 				{
 					emit gotEntity (Util::MakeNotification (tr ("Repository unpack error"),
-							tr ("Unable to unpack the repository file. unxz error: %1."
+							tr ("Unable to unpack the repository file. gunzip error: %1."
 								"Problematic file is at %2.")
 								.arg (exitCode)
 								.arg (sender ()->property ("Filename").toString ()),
@@ -379,7 +379,7 @@ namespace LeechCraft
 				if (exitCode)
 				{
 					emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
-							tr ("Unable to unpack the component file. unxz error: %1."
+							tr ("Unable to unpack the component file. gunzip error: %1."
 								"Problematic file is at %2.")
 								.arg (exitCode)
 								.arg (sender ()->property ("Filename").toString ()),
@@ -423,7 +423,7 @@ namespace LeechCraft
 				if (exitCode)
 				{
 					emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
-							tr ("Unable to unpack the component file. unxz error: %1."
+							tr ("Unable to unpack the component file. gunzip error: %1."
 								"Problematic file is at %2.")
 								.arg (exitCode)
 								.arg (sender ()->property ("Filename").toString ()),

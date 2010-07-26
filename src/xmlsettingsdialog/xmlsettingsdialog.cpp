@@ -360,6 +360,21 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 			result.toUtf8 ().constData ());
 }
 
+QString XmlSettingsDialog::GetDescription (const QDomElement& item) const
+{
+	QDomElement label = item.firstChildElement ("descr");
+	if (!label.isNull ())
+		return label.text ();
+	return QString ();
+}
+
+void XmlSettingsDialog::SetTooltip (QWidget *widget, const QDomElement& from) const
+{
+	QString descr = GetDescription (from);
+	if (!descr.isEmpty ())
+		widget->setToolTip (descr);
+}
+
 XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomElement& parent) const
 {
 	LangElements returning;

@@ -145,6 +145,10 @@ namespace LeechCraft
 			 */
 			QString GetLabel (const QDomElement& element) const;
 
+			QString GetDescription (const QDomElement& element) const;
+
+			void SetTooltip (QWidget *widget, const QDomElement& element) const;
+
 			/** @brief Returns the current value for the given element.
 			 *
 			 * This function checks the object associated with this

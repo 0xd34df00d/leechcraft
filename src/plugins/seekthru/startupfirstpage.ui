@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>StartupFirstPageWidget</class>
+ <class>SeekThruStartupFirstPageWidget</class>
  <widget class="QWidget" name="StartupFirstPageWidget">
   <property name="geometry">
    <rect>

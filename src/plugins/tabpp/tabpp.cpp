@@ -35,6 +35,8 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				Translator_.reset (Util::InstallTranslator ("tabpp"));
+
 				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 						"tabppsettings.xml");
@@ -42,7 +44,6 @@ namespace LeechCraft
 				Core::Instance ().SetProxy (proxy);
 
 				Dock_ = new TabPPWidget ("Tab++", proxy->GetMainWindow ());
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("tabpp"));
 
 				TabWidget::SetMultiTabsParent (this);
 			}

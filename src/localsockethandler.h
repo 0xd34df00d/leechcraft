@@ -19,6 +19,7 @@
 #ifndef LOCALSOCKETHANDLER_H
 #define LOCALSOCKETHANDLER_H
 #include <memory>
+#include <boost/program_options.hpp>
 #include <QLocalServer>
 
 namespace LeechCraft
@@ -39,7 +40,7 @@ namespace LeechCraft
 		void handleNewLocalServerConnection ();
 		void pullCommandLine ();
 	private:
-		void DoLine (const QStringList&);
+		void DoLine (const boost::program_options::variables_map&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
