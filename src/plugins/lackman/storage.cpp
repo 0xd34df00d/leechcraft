@@ -132,11 +132,12 @@ namespace LeechCraft
 
 				while (QueryGetInstalledPackages_.next ())
 				{
+					PackageShortInfo psi = GetPackage (QueryGetInstalledPackages_.value (0).toInt ());
 					Dependency dep =
 					{
 						Dependency::TProvides,
-						QueryGetInstalledPackages_.value (0).toString (),
-						QueryGetInstalledPackages_.value (1).toString ()
+						psi.Name_,
+						psi.Versions_.at (0)
 					};
 					InstalledDependencyInfo info =
 					{
@@ -757,6 +758,26 @@ namespace LeechCraft
 					GetPackageTags (packageId)
 				};
 
+				QSqlQuery query (DB_);
+				query.prepare ("SELECT COUNT (package_id) FROM installed WHERE package_id = :package_id;");
+				query.bindValue ("package_id", packageId);
+				if (!query.exec ())
+				{
+					Util::DBLock::DumpError (query);
+					qWarning () << Q_FUNC_INFO
+							<< "unable to get installed status";
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				if (!query.next ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to navigate to next record in installed status";
+					throw std::runtime_error ("Unexpected query behavior");
+				}
+
+				info.IsInstalled_ = query.value (0).toInt ();
+
 				QueryGetSingleListPackageInfo_.finish ();
 
 				return info;
@@ -915,10 +936,7 @@ namespace LeechCraft
 
 			void Storage::RemoveFromInstalled (int packageId)
 			{
-				PackageShortInfo info = GetPackage (packageId);
-
-				QueryRemoveFromInstalled_.bindValue (":name", info.Name_);
-				QueryRemoveFromInstalled_.bindValue (":version", info.Versions_.at (0));
+				QueryRemoveFromInstalled_.bindValue (":package_id", packageId);
 				if (!QueryRemoveFromInstalled_.exec ())
 				{
 					Util::DBLock::DumpError (QueryRemoveFromInstalled_);
@@ -1050,7 +1068,7 @@ namespace LeechCraft
 				QueryGetPackageTags_.prepare ("SELECT tag FROM tags, packages WHERE tags.name = packages.name AND package_id = :package_id;");
 
 				QueryGetInstalledPackages_ = QSqlQuery (DB_);
-				QueryGetInstalledPackages_.prepare ("SELECT name, version FROM installed;");
+				QueryGetInstalledPackages_.prepare ("SELECT package_id FROM installed;");
 
 				QueryGetDependencies_ = QSqlQuery (DB_);
 				QueryGetDependencies_.prepare ("SELECT name, version, type FROM deps WHERE package_id = :package_id;");
@@ -1065,7 +1083,7 @@ namespace LeechCraft
 				QueryAddToInstalled_.prepare (LoadQuery ("insert_installed"));
 
 				QueryRemoveFromInstalled_ = QSqlQuery (DB_);
-				QueryRemoveFromInstalled_.prepare ("DELETE FROM installed WHERE name = :name AND version = :version;");
+				QueryRemoveFromInstalled_.prepare ("DELETE FROM installed WHERE package_id = :package_id;");
 			}
 		}
 	}

@@ -1,5 +1,1 @@
-INSERT INTO installed
-(name, version)
-SELECT packages.name, packages.version
-FROM packages
-WHERE packages.package_id = :package_id;
+INSERT INTO installed (package_id) VALUES (:package_id);
