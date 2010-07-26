@@ -40,9 +40,6 @@ namespace LeechCraft
 					, ParentProtocolPlugin_ (qobject_cast<IProtocolPlugin*> (parent))
 					{
 						RestoreAccounts ();
-
-						Q_FOREACH (GlooxAccount *account, Accounts_)
-							account->ChangeState (IAccount::SOnline);
 					}
 
 					GlooxProtocol::~GlooxProtocol ()
