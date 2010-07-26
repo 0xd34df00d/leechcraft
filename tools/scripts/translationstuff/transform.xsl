@@ -4,9 +4,12 @@
 		<xsl:apply-templates/>
 	</xsl:template>
 
-	<xsl:template match="label[@lang='en']">
+	<xsl:template match="label">
 		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@value"/>")
 		<xsl:value-of select="document(.)" />
+	</xsl:template>
+	<xsl:template match="suffix">
+		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@value"/>")
 	</xsl:template>
 
 	<xsl:template match="lang[@value='en']">
