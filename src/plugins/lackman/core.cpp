@@ -691,7 +691,7 @@ namespace LeechCraft
 							"/dists/" + component + "/all" +
 							'/' + normalized +
 							'/' + normalized +
-							".xml.xz");
+							".xml.gz");
 					RepoInfoFetcher_->FetchPackageInfo (packageUrl,
 							packageName,
 							PackageName2NewVersions_ [packageName],
