@@ -55,6 +55,7 @@ namespace LeechCraft
 					EnablePackageInto (id, installed ? ScheduledRemove_ : ScheduledInstall_);
 				else
 					DisablePackageFrom (id, installed ? ScheduledRemove_ : ScheduledInstall_);
+				qDebug () << ScheduledInstall_ << id << enable << installed;
 			}
 
 			void PendingManager::ToggleUpdate (int id, bool enable)

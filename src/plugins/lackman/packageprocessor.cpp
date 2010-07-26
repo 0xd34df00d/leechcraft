@@ -74,25 +74,51 @@ namespace LeechCraft
 
 				QDir packageDir = Core::Instance ().GetPackageDir (packageId);
 
-				QStringList files = QString::fromUtf8 (file.readAll ())
+				QByteArray fileData = file.readAll ();
+				QStringList files = QString::fromUtf8 (fileData)
 						.split ('\n', QString::SkipEmptyParts);
+				files.sort ();
+				std::reverse (files.begin (), files.end ());
 				Q_FOREACH (const QString& packageFilename, files)
 				{
 					QString fullName = packageDir.filePath (packageFilename);
+#ifndef QT_NO_DEBUG
 					qDebug () << Q_FUNC_INFO
 							<< "gonna remove"
 							<< fullName;
-					QFile packageFile (fullName);
-					if (!packageFile.remove ())
+#endif
+					QFileInfo fi (fullName);
+
+					if (fi.isFile ())
 					{
-						qWarning () << Q_FUNC_INFO
-								<< "could not remove file"
-								<< packageFile.fileName ()
-								<< packageFile.errorString ();
-						QString str = tr ("Could not remove file %1: %2.")
-								.arg (packageFile.fileName ())
-								.arg (packageFile.errorString ());
-						throw std::runtime_error (str.toUtf8 ().constData ());
+						QFile packageFile (fullName);
+						if (!packageFile.remove ())
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "could not remove file"
+									<< packageFile.fileName ()
+									<< packageFile.errorString ();
+							QString str = tr ("Could not remove file %1: %2.")
+									.arg (packageFile.fileName ())
+									.arg (packageFile.errorString ());
+							throw std::runtime_error (str.toUtf8 ().constData ());
+						}
+					}
+					else if (fi.isDir ())
+					{
+						if (!QDir (fi.path ()).rmdir (fi.fileName ()))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "could not remove directory"
+									<< fullName
+									<< "→ parent:"
+									<< fi.path ()
+									<< "; child node:"
+									<< fi.fileName ();
+							QString str = tr ("Could not remove directory %1.")
+									.arg (fi.fileName ());
+							throw std::runtime_error (str.toUtf8 ().constData ());
+						}
 					}
 				}
 
@@ -118,6 +144,11 @@ namespace LeechCraft
 							.arg (packageId).toUtf8 ().constData ());
 
 				QUrl url = urls.at (0);
+				qDebug () << Q_FUNC_INFO
+						<< "would fetch"
+						<< packageId
+						<< "from"
+						<< url;
 
 				ExternalResourceManager *erm = Core::Instance ().GetExtResourceManager ();
 				connect (erm,
@@ -150,7 +181,7 @@ namespace LeechCraft
 
 				if (ret)
 				{
-					QByteArray stderr = unarch->readAllStandardError ();
+					QString stderr = QString::fromUtf8 (unarch->readAllStandardError ());
 					qWarning () << Q_FUNC_INFO
 							<< "unpacker exited with"
 							<< ret
@@ -161,7 +192,7 @@ namespace LeechCraft
 
 					QString errorString = tr ("Unable to unpack package archive, unpacker exited with %1: %2.")
 							.arg (ret)
-							.arg (QString::fromUtf8 (stderr));
+							.arg (stderr);
 					emit packageInstallError (packageId, errorString);
 
 					CleanupDir (stagingDir);
@@ -189,7 +220,11 @@ namespace LeechCraft
 				}
 
 				QDirIterator dirIt (stagingDir,
-						QDir::NoDotAndDotDot | QDir::Readable | QDir::NoSymLinks,
+						QDir::NoDotAndDotDot |
+							QDir::Readable |
+							QDir::NoSymLinks |
+							QDir::Dirs |
+							QDir::Files,
 						QDirIterator::Subdirectories);
 				while (dirIt.hasNext ())
 				{
@@ -221,6 +256,8 @@ namespace LeechCraft
 							return;
 						}
 				}
+
+				emit packageInstalled (packageId);
 			}
 
 			void PackageProcessor::handleUnarchError (QProcess::ProcessError error)
@@ -269,6 +306,25 @@ namespace LeechCraft
 				unarch->setProperty ("PackageID", packageId);
 				unarch->setProperty ("StagingDirectory", dirname);
 				unarch->setProperty ("Path", path);
+
+				QFileInfo sdInfo (dirname);
+				QDir stagingParentDir (sdInfo.path ());
+				if (!stagingParentDir.exists (sdInfo.fileName ()) &&
+						!stagingParentDir.mkdir (sdInfo.fileName ()))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to create staging directory"
+							<< sdInfo.fileName ()
+							<< "in"
+							<< sdInfo.path ();
+
+					QString errorString = tr ("Unable to create staging directory %1.")
+							.arg (sdInfo.fileName ());
+					emit packageInstallError (packageId, errorString);
+
+					return;
+				}
+
 				unarch->start ("tar", args);
 			}
 
@@ -276,7 +332,7 @@ namespace LeechCraft
 					const QString& stagingDir, QDir& packageDir)
 			{
 				QFile dbFile (DBDir_.filePath (QString::number (packageId)));
-				if (!dbFile.open (QIODevice::WriteOnly))
+				if (!dbFile.open (QIODevice::WriteOnly | QIODevice::Append))
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "could not open DB file"
@@ -286,7 +342,7 @@ namespace LeechCraft
 					return false;
 				}
 
-				QString sourceName = fi.fileName ();
+				QString sourceName = fi.absoluteFilePath ();
 				sourceName = sourceName.mid (stagingDir.length ());
 				if (sourceName.at (0) == '/')
 					sourceName = sourceName.mid (1);
@@ -294,18 +350,20 @@ namespace LeechCraft
 				if (fi.isFile ())
 				{
 					QString destName = packageDir.filePath (sourceName);
+#ifndef QT_NO_DEBUG
 					qDebug () << Q_FUNC_INFO
 							<< "gotta copy"
-							<< fi.fileName ()
+							<< fi.absoluteFilePath ()
 							<< "to"
 							<< destName;
+#endif
 
-					QFile file (fi.fileName ());
+					QFile file (fi.absoluteFilePath ());
 					if (!file.copy (destName))
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "could not copy"
-								<< fi.fileName ()
+								<< fi.absoluteFilePath ()
 								<< "to"
 								<< destName
 								<< "because of"
@@ -320,11 +378,13 @@ namespace LeechCraft
 				}
 				else if (fi.isDir ())
 				{
+#ifndef QT_NO_DEBUG
 					qDebug () << Q_FUNC_INFO
 							<< "gotta create"
 							<< sourceName
 							<< "for"
-							<< fi.fileName ();
+							<< fi.absoluteFilePath ();
+#endif
 
 					if (!packageDir.mkpath (sourceName))
 					{

@@ -99,6 +99,8 @@ namespace LeechCraft
 				void handleComponentFetched (const PackageShortInfoList&,
 						const QString&, int);
 				void handlePackageFetched (const PackageInfo&, int);
+				void handlePackageInstallError (int, const QString&);
+				void handlePackageInstalled (int);
 			signals:
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);

@@ -65,6 +65,7 @@ namespace LeechCraft
 				void CleanupDir (const QString&);
 			signals:
 				void packageInstallError (int, const QString&);
+				void packageInstalled (int);
 			};
 		}
 	}

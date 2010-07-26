@@ -87,6 +87,10 @@ namespace LeechCraft
 						SIGNAL (packageFetched (const PackageInfo&, int)),
 						this,
 						SLOT (handlePackageFetched (const PackageInfo&, int)));
+				connect (PackageProcessor_,
+						SIGNAL (packageInstallError (int, const QString&)),
+						this,
+						SLOT (handlePackageInstallError (int, const QString&)));
 
 				PopulatePluginsModel ();
 			}
@@ -255,8 +259,8 @@ namespace LeechCraft
 
 				PackageShortInfo info = Storage_->GetPackage (packageId);
 				QString pathAddition = QString ("dists/%1/all/");
-				QString normalized = NormalizePackageName (pathAddition);
-				pathAddition += QString ("%1/%1-%2.tar.xz")
+				QString normalized = NormalizePackageName (info.Name_);
+				pathAddition += QString ("%1/%1-%2.tar.gz")
 						.arg (normalized)
 						.arg (info.Versions_.at (0));
 
@@ -270,9 +274,8 @@ namespace LeechCraft
 
 					Q_FOREACH (const QString& component, repo2cmpt [repoId])
 					{
-						QString pstr = pathAddition.arg (component) + pstr;
 						QUrl tmp = url;
-						tmp.setPath (path + pstr);
+						tmp.setPath (path + pathAddition.arg (component));
 						result << tmp;
 					}
 				}
@@ -422,7 +425,7 @@ namespace LeechCraft
 						qWarning () << Q_FUNC_INFO
 								<< "got"
 								<< str
-								<< "for"
+								<< "while removing"
 								<< packageId;
 						emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
 									str,
@@ -450,6 +453,23 @@ namespace LeechCraft
 
 				Q_FOREACH (int packageId, toInstall)
 				{
+					try
+					{
+						PackageProcessor_->Install (packageId);
+					}
+					catch (const std::exception& e)
+					{
+						QString str = Util::FromStdString (e.what ());
+						qWarning () << Q_FUNC_INFO
+								<< "got"
+								<< str
+								<< "while installing"
+								<< packageId;
+						emit gotEntity (Util::MakeNotification (tr ("Unable to install package"),
+									str,
+									PCritical_));
+						continue;
+					}
 				}
 			}
 
@@ -890,6 +910,32 @@ namespace LeechCraft
 									.arg (image.URL_),
 								PCritical_));
 					}
+			}
+
+			void Core::handlePackageInstallError (int packageId, const QString& error)
+			{
+				QString packageName;
+				try
+				{
+					packageName = Storage_->GetPackage (packageId).Name_;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while trying to get erroneous package name"
+							<< e.what ();
+				}
+
+				QString prepared = tr ("Error while fetching package %1: %2.");
+				QString msg;
+				if (packageName.size ())
+					msg = prepared.arg (packageName).arg (error);
+				else
+					msg = prepared.arg (packageId).arg (error);
+
+				emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
+							msg,
+							PCritical_));
 			}
 		}
 	}
