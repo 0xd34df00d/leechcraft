@@ -139,7 +139,7 @@ namespace LeechCraft
 			{
 			}
 
-			void Plugin::on_Accept__released ()
+			void Plugin::on_Apply__released ()
 			{
 				Core::Instance ().AcceptPending ();
 			}
