@@ -43,7 +43,7 @@ namespace LeechCraft
 			: RepoInfoFetcher_ (new RepoInfoFetcher (this))
 			, ExternalResourceManager_ (new ExternalResourceManager (this))
 			, Storage_ (new Storage (this))
-			, PluginsModel_ (new PackagesModel (this))
+			, PackagesModel_ (new PackagesModel (this))
 			, PendingManager_ (new PendingManager (this))
 			, PackageProcessor_ (new PackageProcessor (this))
 			{
@@ -126,7 +126,7 @@ namespace LeechCraft
 
 			QAbstractItemModel* Core::GetPluginsModel () const
 			{
-				return PluginsModel_;
+				return PackagesModel_;
 			}
 
 			PendingManager* Core::GetPendingManager () const
@@ -417,44 +417,7 @@ namespace LeechCraft
 				QSet<int> toUpdate = PendingManager_->GetPendingUpdate ();
 
 				Q_FOREACH (int packageId, toRemove)
-				{
-					try
-					{
-						PackageProcessor_->Remove (packageId);
-					}
-					catch (const std::exception& e)
-					{
-						QString str = Util::FromStdString (e.what ());
-						qWarning () << Q_FUNC_INFO
-								<< "got"
-								<< str
-								<< "while removing"
-								<< packageId;
-						emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
-									str,
-									PCritical_));
-						continue;
-					}
-
-					try
-					{
-						Storage_->RemoveFromInstalled (packageId);
-					}
-					catch (const std::exception& e)
-					{
-						QString str = Util::FromStdString (e.what ());
-						qWarning () << Q_FUNC_INFO
-								<< "unable to remove from installed"
-								<< packageId
-								<< str;
-						emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
-									str,
-									PCritical_));
-						continue;
-					}
-
-					PendingManager_->SuccessfullyRemoved (packageId);
-				}
+					PerformRemoval (packageId);
 
 				Q_FOREACH (int packageId, toInstall)
 				{
@@ -606,7 +569,7 @@ namespace LeechCraft
 						break;
 					}
 
-					PluginsModel_->AddRow (last);
+					PackagesModel_->AddRow (last);
 				}
 			}
 
@@ -697,6 +660,60 @@ namespace LeechCraft
 							PackageName2NewVersions_ [packageName],
 							componentId);
 				}
+			}
+
+			void Core::PerformRemoval (int packageId)
+			{
+				try
+				{
+					PackageProcessor_->Remove (packageId);
+				}
+				catch (const std::exception& e)
+				{
+					QString str = Util::FromStdString (e.what ());
+					qWarning () << Q_FUNC_INFO
+							<< "got"
+							<< str
+							<< "while removing"
+							<< packageId;
+					emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
+								str,
+								PCritical_));
+					return;
+				}
+
+				try
+				{
+					Storage_->RemoveFromInstalled (packageId);
+				}
+				catch (const std::exception& e)
+				{
+					QString str = Util::FromStdString (e.what ());
+					qWarning () << Q_FUNC_INFO
+							<< "unable to remove from installed"
+							<< packageId
+							<< str;
+					emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
+								str,
+								PCritical_));
+					return;
+				}
+
+				try
+				{
+					ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+					PackagesModel_->UpdateRow (info);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while updating row for package"
+							<< packageId
+							<< "got this exception:"
+							<< e.what ();
+				}
+
+				PendingManager_->SuccessfullyRemoved (packageId);
 			}
 
 			void Core::handleInfoFetched (const RepoInfo& ri)
@@ -857,12 +874,13 @@ namespace LeechCraft
 
 						if (version == greatest)
 						{
-							QString existing = PluginsModel_->FindPackage (pInfo.Name_).Version_;
+							QString existing = PackagesModel_->
+									FindPackage (pInfo.Name_).Version_;
 							if (existing.isEmpty ())
-								PluginsModel_->AddRow (Storage_->
+								PackagesModel_->AddRow (Storage_->
 										GetSingleListPackageInfo (packageId));
 							else if (IsVersionLess (existing, greatest))
-								PluginsModel_->UpdateRow (Storage_->
+								PackagesModel_->UpdateRow (Storage_->
 										GetSingleListPackageInfo (packageId));
 						}
 					}
@@ -947,7 +965,7 @@ namespace LeechCraft
 			{
 				try
 				{
-					//Storage_->AddToInstalled (packageId);
+					Storage_->AddToInstalled (packageId);
 				}
 				catch (const std::exception& e)
 				{
@@ -969,6 +987,20 @@ namespace LeechCraft
 								<< e.what ();
 					}
 					return;
+				}
+
+				try
+				{
+					ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+					PackagesModel_->UpdateRow (info);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while updating row for package"
+							<< packageId
+							<< "got this exception:"
+							<< e.what ();
 				}
 
 				PendingManager_->SuccessfullyInstalled (packageId);

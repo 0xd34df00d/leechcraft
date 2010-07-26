@@ -250,6 +250,7 @@ namespace LeechCraft
 				QToolButton *button = Row2InstallRemove_ [row];
 
 				bool installed = index.data (PackagesModel::PMRInstalled).toBool ();
+				qDebug () << Q_FUNC_INFO << index << installed;
 				QString label;
 				QString iconName;
 				if (installed)
@@ -306,11 +307,11 @@ namespace LeechCraft
 
 			QWidget* PackagesDelegate::GetLayout (const QModelIndex& index) const
 			{
+				QWidget *instRem = GetInstallRemove (index);
+				QWidget *update = GetUpdate (index);
+
 				if (!Row2Layout_.contains (index.row ()))
 				{
-					QWidget *instRem = GetInstallRemove (index);
-					QWidget *update = GetUpdate (index);
-
 					QWidget *result = new QWidget (Viewport_);
 
 					QHBoxLayout *layout = new QHBoxLayout (result);

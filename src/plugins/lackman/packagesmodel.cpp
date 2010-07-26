@@ -106,8 +106,9 @@ namespace LeechCraft
 			{
 				for (int i = 0, size = Packages_.size ();
 						i < size; ++i)
-					if (Packages_.at (i) == lpi)
+					if (Packages_.at (i).Name_ == lpi.Name_)
 					{
+						qDebug () << "found that package" << lpi.IsInstalled_;
 						Packages_ [i] = lpi;
 						emit dataChanged (index (i, 0),
 								index (i, columnCount () - 1));

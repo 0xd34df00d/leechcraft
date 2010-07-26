@@ -50,7 +50,7 @@ namespace LeechCraft
 				RepoInfoFetcher *RepoInfoFetcher_;
 				ExternalResourceManager *ExternalResourceManager_;
 				Storage *Storage_;
-				PackagesModel *PluginsModel_;
+				PackagesModel *PackagesModel_;
 				PendingManager *PendingManager_;
 				PackageProcessor *PackageProcessor_;
 
@@ -94,6 +94,7 @@ namespace LeechCraft
 				void PopulatePluginsModel ();
 				void HandleNewPackages (const PackageShortInfoList& shorts,
 						int componentId, const QString& component, const QUrl& repoUrl);
+				void PerformRemoval (int);
 			private slots:
 				void handleInfoFetched (const RepoInfo&);
 				void handleComponentFetched (const PackageShortInfoList&,
