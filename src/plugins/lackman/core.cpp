@@ -280,6 +280,19 @@ namespace LeechCraft
 				return result;
 			}
 
+			namespace
+			{
+				void SafeCD (QDir& dir, const QString& subdir)
+				{
+					if (!dir.exists (subdir))
+						dir.mkdir (subdir);
+					if (!dir.cd (subdir))
+						throw std::runtime_error (QObject::tr ("Unable to cd into %1.")
+								.arg (subdir)
+								.toUtf8 ().constData ());
+				}
+			}
+
 			QDir Core::GetPackageDir (int packageId) const
 			{
 				ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
@@ -288,15 +301,15 @@ namespace LeechCraft
 				switch (info.Type_)
 				{
 				case PackageInfo::TPlugin:
-					dir.cd ("plugins");
-					dir.cd ("scriptable");
-					dir.cd (info.Language_);
+					SafeCD (dir, "plugins");
+					SafeCD (dir, "scriptable");
+					SafeCD (dir, info.Language_);
 					break;
 				case PackageInfo::TIconset:
-					dir.cd ("icons");
+					SafeCD (dir, "icons");
 					break;
 				case PackageInfo::TTranslation:
-					dir.cd ("translations");
+					SafeCD (dir, "translations");
 					break;
 				}
 				return dir;

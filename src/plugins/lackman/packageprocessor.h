@@ -20,6 +20,9 @@
 #define PLUGINS_LACKMAN_PACKAGEPROCESSOR_H
 #include <QObject>
 #include <QDir>
+#include <QHash>
+#include <QUrl>
+#include <QProcess>
 
 namespace LeechCraft
 {
@@ -32,12 +35,36 @@ namespace LeechCraft
 				Q_OBJECT
 
 				QDir DBDir_;
+				QHash<QUrl, int> URL2Id_;
 			public:
 				PackageProcessor (QObject* = 0);
 
 				void Remove (int);
 				void Install (int);
 				void Update (int);
+			private slots:
+				void handleResourceFetched (const QUrl&);
+				void handlePackageUnarchFinished (int, QProcess::ExitStatus);
+				void handleUnarchError (QProcess::ProcessError);
+			private:
+				/** This does all the heavy duty of installing the
+				 * package identified by its id downloaded from the
+				 * given url.
+				 *
+				 * This function expects that the package at the url is
+				 * already fetched.
+				 *
+				 * @param[in] id The ID of the package.
+				 * @param[in] url The exact URL from which the package
+				 * has been downloaded.
+				 */
+				void HandleFile (int id, const QUrl& url);
+
+				bool HandleEntry (int id, const QFileInfo& fi,
+						const QString& stagingDir, QDir& packageDir);
+				void CleanupDir (const QString&);
+			signals:
+				void packageInstallError (int, const QString&);
 			};
 		}
 	}
