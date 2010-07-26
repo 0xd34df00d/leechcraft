@@ -9,7 +9,9 @@
 	<file>resources/sql/create_table_repos.sql</file>
 	<file>resources/sql/create_table_components.sql</file>
 	<file>resources/sql/create_table_installed.sql</file>
+	<file>resources/sql/insert_installed.sql</file>
 	<file>resources/sql/insert_repo.sql</file>
+	<file>resources/sql/select_package_locations.sql</file>
 	<file>resources/images/lackman.svg</file>
   </qresource>
 </RCC>
