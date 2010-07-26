@@ -662,7 +662,8 @@ namespace LeechCraft
 				}
 
 				Filename_ = filename;
-				Ui_.TextEditor_->setText (file.readAll ());
+				Ui_.TextEditor_->setText (QString::fromUtf8 (file
+							.readAll ().constData ()));
 
 				Ui_.TextEditor_->setLexer (GetLexerByLanguage (GetLanguage (Filename_)));
 				emit languageChanged (GetLanguage (Filename_));
