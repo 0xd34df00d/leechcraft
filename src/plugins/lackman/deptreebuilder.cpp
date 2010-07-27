@@ -102,38 +102,33 @@ namespace LeechCraft
 
 					std::pair<DepTreeBuilder::OutEdgeIterator_t,
 							DepTreeBuilder::OutEdgeIterator_t> range = boost::out_edges (u, G_);
-					if (range.first == range.second)
-						G_ [u].IsFulfilled_ = true;
-					else
+					switch (G_ [u].Type_)
 					{
-						switch (G_ [u].Type_)
-						{
-						case DepTreeBuilder::VertexInfo::TAll:
-							G_ [u].IsFulfilled_ = true;
-							for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
-									i < range.second; ++i)
-								if (!G_ [GetV (i)].IsFulfilled_)
-								{
-									G_ [u].IsFulfilled_ = false;
-									break;
-								}
-							break;
-						case DepTreeBuilder::VertexInfo::TAny:
-							G_ [u].IsFulfilled_ = false;
-							for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
-									i < range.second; ++i)
+					case DepTreeBuilder::VertexInfo::TAll:
+						G_ [u].IsFulfilled_ = true;
+						for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
+								i < range.second; ++i)
+							if (!G_ [GetV (i)].IsFulfilled_)
 							{
-								if (BackEdges_.contains (*i))
-									continue;
-
-								if (G_ [GetV (i)].IsFulfilled_)
-								{
-									G_ [u].IsFulfilled_ = true;
-									break;
-								}
+								G_ [u].IsFulfilled_ = false;
+								break;
 							}
-							break;
+						break;
+					case DepTreeBuilder::VertexInfo::TAny:
+						G_ [u].IsFulfilled_ = false;
+						for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
+								i < range.second; ++i)
+						{
+							if (BackEdges_.contains (*i))
+								continue;
+
+							if (G_ [GetV (i)].IsFulfilled_)
+							{
+								G_ [u].IsFulfilled_ = true;
+								break;
+							}
 						}
+						break;
 					}
 				}
 
