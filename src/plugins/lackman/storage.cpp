@@ -796,27 +796,25 @@ namespace LeechCraft
 
 				while (QueryGetDependencies_.next ())
 				{
+					int typeInt = QueryGetDependencies_.value (2).toInt ();
 					Dependency::Type type;
-					QString typeString = QueryGetDependencies_.value (0).toString ();
-					if (typeString == "depends")
-						type = Dependency::TRequires;
-					else if (typeString == "requires")
-						type = Dependency::TProvides;
+					if (typeInt < Dependency::TMAX)
+						type = static_cast<Dependency::Type> (typeInt);
 					else
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unknown type"
-								<< typeString;
+								<< typeInt;
 						QString err = tr ("Unknown dependency type `%1`.")
-								.arg (typeString);
+								.arg (typeInt);
 						throw std::runtime_error (qPrintable (err));
 					}
 
 					Dependency dep =
 					{
 						type,
-						QueryGetDependencies_.value (1).toString (),
-						QueryGetDependencies_.value (2).toString ()
+						QueryGetDependencies_.value (0).toString (),
+						QueryGetDependencies_.value (1).toString ()
 					};
 					result << dep;
 				}

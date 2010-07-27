@@ -80,7 +80,8 @@ namespace LeechCraft
 				enum Type
 				{
 					TRequires,
-					TProvides
+					TProvides,
+					TMAX
 				} Type_;
 
 				/** Dependency version `relation` candidate version.
