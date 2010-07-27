@@ -178,4 +178,170 @@
         <translation> KiB/s</translation>
     </message>
 </context>
+<context>
+    <name>lcftpsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>General settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Transfer is also triggered by activating an item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Transfer hidden files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Follow symlinks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="7"/>
+        <source>Append to remote files instead of overwriting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="8"/>
+        <source>Identification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="9"/>
+        <location filename="dummyfile.cpp" line="26"/>
+        <source>Login:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="10"/>
+        <location filename="dummyfile.cpp" line="27"/>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="11"/>
+        <source>FTP settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="12"/>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="13"/>
+        <source>Attempt to use EPRT and LPRT instead of PORT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="14"/>
+        <source>Attempt to use EPSV before PASV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="15"/>
+        <source>Skip IP received as the result of PASV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="16"/>
+        <source>Total number of worker threads:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="17"/>
+        <source>Worker threads per domain:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="18"/>
+        <source>Network settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="19"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="20"/>
+        <source>Custom port range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="21"/>
+        <source>Port range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="22"/>
+        <source>Proxy settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="23"/>
+        <source>Application-wide proxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="24"/>
+        <source>Host:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="25"/>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="28"/>
+        <source>Proxy type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="29"/>
+        <source>HTTP</source>
+        <translation>HTTP</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="30"/>
+        <source>HTTP 1.0</source>
+        <translation>HTTP 1.0</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="31"/>
+        <source>SOCKS4</source>
+        <translation>SOCKS4</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="32"/>
+        <source>SOCKS4A</source>
+        <translation>SOCKS4A</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="33"/>
+        <source>SOCKS5</source>
+        <translation>SOCKS5</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="34"/>
+        <source>SOCKS5-HOSTNAME</source>
+        <translation>SOCKS5-HOSTNAME</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="35"/>
+        <source>Tunnel requests through the proxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="36"/>
+        <source>Comma-separated list of exceptions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

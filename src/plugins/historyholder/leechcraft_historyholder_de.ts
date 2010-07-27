@@ -24,7 +24,7 @@
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="180"/>
+        <location filename="core.cpp" line="176"/>
         <source>Binary data</source>
         <translation>Binäre Daten</translation>
     </message>

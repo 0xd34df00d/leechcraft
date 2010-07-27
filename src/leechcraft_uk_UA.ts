@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="uk_UA">
+<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>AboutDialog</name>
     <message>
@@ -11,7 +12,7 @@
         <source>LeechCraft</source>
         <translation type="obsolete">LeechCraft</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
         <translation>LeechCraft - це багатоплатформовий модульний Інтернет-клієнт, що має модулі для перегляду веб-сторінок, чтитання новин, завантаження з мережі BitTorrent та багато інших можливостей.</translation>
     </message>
@@ -1096,7 +1097,7 @@
     </message>
     <message>
         <source>Arabic (Ø§ÙØ¹Ø±Ø¨ÙØ©)</source>
-        <translation>Arabic (ﺎﻠﻋﺮﺒﻳﺓ)</translation>
+        <translation type="obsolete">Arabic (ﺎﻠﻋﺮﺒﻳﺓ)</translation>
     </message>
     <message>
         <source>German (Deutsch)</source>
@@ -1124,15 +1125,15 @@
     </message>
     <message>
         <source>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</source>
-        <translation>Russian (Русский)</translation>
+        <translation type="obsolete">Russian (Русский)</translation>
     </message>
     <message>
         <source>Spanish (EspaÃ±ol)</source>
-        <translation>Spanish (Español)</translation>
+        <translation type="obsolete">Spanish (Español)</translation>
     </message>
     <message>
         <source>Ukrainian (Ð£ÐºÑÐ°ÑÐ½ÑÑÐºÐ°)</source>
-        <translation>Ukrainian (Українська)</translation>
+        <translation type="obsolete">Ukrainian (Українська)</translation>
     </message>
     <message>
         <source>Maximum log lines:</source>
@@ -1269,6 +1270,22 @@
     <message>
         <source>Plugins manager</source>
         <translation>Менеджер плагинів</translation>
+    </message>
+    <message>
+        <source>Arabic (العربية)</source>
+        <translation>Arabic (العربية)</translation>
+    </message>
+    <message>
+        <source>Russian (Русский)</source>
+        <translation>Russian (Русский)</translation>
+    </message>
+    <message>
+        <source>Spanish (Español)</source>
+        <translation>Spanish (Español)</translation>
+    </message>
+    <message>
+        <source>Ukrainian (Українська)</source>
+        <translation>Ukrainian (Українська)</translation>
     </message>
 </context>
 </TS>

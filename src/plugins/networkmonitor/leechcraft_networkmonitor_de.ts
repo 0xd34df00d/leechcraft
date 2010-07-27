@@ -90,12 +90,12 @@
     <message>
         <location filename="networkmonitor.ui" line="74"/>
         <source>Request headers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopfdaten anfordern</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="92"/>
         <source>Response headers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopfdaten der Antwort</translation>
     </message>
 </context>
 </TS>

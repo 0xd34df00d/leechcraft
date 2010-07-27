@@ -4,37 +4,40 @@
 <context>
     <name>LeechCraft::Plugins::Auscrie::Plugin</name>
     <message>
-        <location filename="auscrie.cpp" line="48"/>
+        <location filename="auscrie.cpp" line="45"/>
         <source>Make a screenshot</source>
         <translation>Erstelle einen Screenshot</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="71"/>
+        <location filename="auscrie.cpp" line="68"/>
         <source>Simple auto screenshoter.</source>
         <translation>Einfacher automatischer Screenshotersteller.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="135"/>
+        <location filename="auscrie.cpp" line="132"/>
         <source>Save as</source>
         <translation>Speichern als</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="137"/>
+        <location filename="auscrie.cpp" line="134"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>%1 Dateien (*.%1);;Alle Dateien (*.*)</translation>
     </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::Auscrie::Poster</name>
     <message>
-        <location filename="auscrie.cpp" line="176"/>
+        <location filename="poster.cpp" line="109"/>
         <source>Page parse failed</source>
         <translation>Seitenanalysierung fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="186"/>
+        <location filename="poster.cpp" line="116"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
         <translation>Bild eingefügt: %1, die URL wurde in die Zwischenablage kopiert</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="198"/>
+        <location filename="poster.cpp" line="128"/>
         <source>Upload of screenshot failed: %1</source>
         <translation>Upload von Screenshot fehlgeschlagen: %1</translation>
     </message>

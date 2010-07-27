@@ -2,10 +2,8 @@
 <settings>
 	<page>
 		<label lang="en" value="Appearance" />
-		<label lang="uk" value="Зовнішній вигляд" />
 		<tab>
 			<label lang="en" value="Appearance" />
-			<label lang="uk" value="Зовнішній вигляд" />
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
 			</item>
@@ -32,7 +30,6 @@
 			</item>
 			<item type="combobox" property="ToolButtonStyle">
 				<label lang="en" value="Tool button style:" />
-				<label lang="uk" value="Стиль панелей інструментів:" />
 				<option name="iconOnly" default="true">
 					<label lang="en" value="Only display the icon" />
 				</option>
@@ -48,7 +45,6 @@
 			</item>
 			<item type="combobox" property="TabBarLocation">
 				<label lang="en" value="Tab bar location:" />
-				<label lang="uk" value="Розташування вкладок:" />
 				<option name="north" default="true">
 					<label lang="en" value="Top" />
 				</option>
@@ -155,7 +151,6 @@
     </page>
 	<page>
 		<label lang="en" value="Tags" />
-		<label lang="uk" value="Позначки" />
 		<groupbox>
 			<label lang="en" value="Tags manager" />
 			<item type="customwidget" label="own" name="TagsViewer" />
@@ -192,7 +187,6 @@
 			</item>
 			<item type="combobox" property="ProxyType">
 				<label lang="en" value="Proxy type:" />
-				<label lang="uk" value="Тип проксі:" />
 				<option name="socks5" default="true">
 					<label lang="en" value="SOCKS5" />
 				</option>

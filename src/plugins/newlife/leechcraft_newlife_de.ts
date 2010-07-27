@@ -4,11 +4,6 @@
 <context>
     <name>FeedsSettingsImportPage</name>
     <message>
-        <location filename="feedssettingsimportpage.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation>Assistenten Seite</translation>
-    </message>
-    <message>
         <location filename="feedssettingsimportpage.ui" line="22"/>
         <source>Location:</source>
         <translation>Ort:</translation>
@@ -22,16 +17,11 @@
         <location filename="feedssettingsimportpage.ui" line="45"/>
         <source>Import %1 settings as well</source>
         <extracomment>Application&apos;s name will be placed instead of %1, so please leave it where appropriate.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen für %1 ebenfalls importieren</translation>
     </message>
 </context>
 <context>
     <name>FirstPage</name>
-    <message>
-        <location filename="firstpage.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation>Assistenten Seite</translation>
-    </message>
     <message>
         <location filename="firstpage.ui" line="17"/>
         <source>Choose application</source>
@@ -52,8 +42,8 @@
     <name>ImportWizard</name>
     <message>
         <location filename="importwizard.ui" line="14"/>
-        <source>Wizard</source>
-        <translation>Assistent</translation>
+        <source>Settings Import Wizard</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="importwizard.ui" line="35"/>

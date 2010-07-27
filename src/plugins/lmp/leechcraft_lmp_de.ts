@@ -82,7 +82,7 @@
     <message>
         <location filename="playerwidget.cpp" line="259"/>
         <source>Toggle full screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Vollbildmodus beenden</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="264"/>
@@ -226,6 +226,29 @@
         <location filename="videosettings.ui" line="143"/>
         <source>Saturation:</source>
         <translation>Sättigung:</translation>
+    </message>
+</context>
+<context>
+    <name>lmpsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Plugin communication</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Test only these extensions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Extenstions list:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

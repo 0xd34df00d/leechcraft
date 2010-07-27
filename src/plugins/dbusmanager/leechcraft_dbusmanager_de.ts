@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="de">
+<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>LeechCraft::Plugins::DBusManager::Core</name>
     <message>
@@ -38,6 +39,25 @@
         <location filename="tasks.cpp" line="83"/>
         <source>Not found job holder %1.</source>
         <translation>Job-Eigentümer %1 nicht gefunden.</translation>
+    </message>
+</context>
+<context>
+    <name>dbusmanagersettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>Environment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>KDE</source>
+        <translation>KDE</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Use notifications (KDE ≥ 4.4 or libnotify)</source>
+        <oldsource>Use notifications (KDE â¥ 4.4 or libnotify)</oldsource>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
