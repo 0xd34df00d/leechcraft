@@ -145,6 +145,11 @@ namespace LeechCraft
 				 */
 				bool IsFulfilled () const;
 
+				/** Returns the list of the top-level unfulfilled
+				 * dependencies.
+				 */
+				QStringList GetUnfulfilled () const;
+
 				/** @brief Returns the list of packages that need to be
 				 * installed in order to install the package passed to
 				 * the constructor.

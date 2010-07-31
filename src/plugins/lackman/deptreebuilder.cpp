@@ -272,6 +272,25 @@ namespace LeechCraft
 				return Graph_ [*boost::vertices (Graph_).first].IsFulfilled_;
 			}
 
+			QStringList DepTreeBuilder::GetUnfulfilled () const
+			{
+				if (IsFulfilled ())
+					return QStringList ();
+
+				QStringList result;
+				std::pair<OutEdgeIterator_t,
+						OutEdgeIterator_t> range =
+								boost::out_edges (*boost::vertices (Graph_).first, Graph_);
+				for (OutEdgeIterator_t i = range.first; i < range.second; ++i)
+				{
+					Vertex_t vertex = Edge2Vertices_ [*i].second;
+					if (!Graph_ [vertex].IsFulfilled_)
+						result << Graph_ [vertex].Dependency_;
+				}
+
+				return result;
+			}
+
 			const QList<int>& DepTreeBuilder::GetPackagesToInstall () const
 			{
 				return PackagesToInstall_;
