@@ -48,14 +48,12 @@ namespace LeechCraft
 			, PackageProcessor_ (new PackageProcessor (this))
 			{
 				Relation2comparator [Dependency::L] = IsVersionLess;
-				Relation2comparator [Dependency::GE] = boost::bind (std::logical_not<bool> (),
-						Relation2comparator [Dependency::L]);
-				Relation2comparator [Dependency::E] = std::equal_to<QString> ();
-				Relation2comparator [Dependency::LE] = boost::bind (std::logical_or<bool> (),
-						Relation2comparator [Dependency::L], Relation2comparator [Dependency::E]);
-				Relation2comparator [Dependency::G] = boost::bind (std::logical_not<bool> (),
-						Relation2comparator [Dependency::LE]);
 				Relation2comparator [Dependency::G] = boost::bind (Relation2comparator [Dependency::L], _2, _1);
+				Relation2comparator [Dependency::GE] = boost::bind (std::logical_not<bool> (),
+						boost::bind (Relation2comparator [Dependency::L], _1, _2));
+				Relation2comparator [Dependency::E] = std::equal_to<QString> ();
+				Relation2comparator [Dependency::LE] = boost::bind (std::logical_not<bool> (),
+						boost::bind (Relation2comparator [Dependency::G], _1, _2));
 
 				connect (ExternalResourceManager_,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
