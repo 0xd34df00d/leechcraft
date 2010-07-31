@@ -499,6 +499,8 @@ namespace LeechCraft
 								<< LEECHCRAFT_VERSION;
 						info.Dep_.Version_ = LEECHCRAFT_VERSION;
 					}
+
+					result << info;
 				}
 
 				return result;
