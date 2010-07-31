@@ -59,6 +59,7 @@ ENDIF (IS64BITS AND RESPECTLIB64)
 SET (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins")
 SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
+SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
 
 # Check modules first in local dir
 SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
