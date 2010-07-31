@@ -144,7 +144,7 @@ namespace LeechCraft
 			bool IsVersionLess (const QString& lver, const QString& rver)
 			{
 				VersionVerifier vv;
-				return vv.CompareVersions (lver, rver) < 0;
+				return vv.CompareVersions (lver, rver) > 0;
 			}
 
 			uint qHash (const Dependency& dep)
