@@ -101,11 +101,16 @@ namespace LeechCraft
 				DepTreeBuilder builder (id);
 				if (!builder.IsFulfilled ())
 				{
+					QStringList unful = builder.GetUnfulfilled ();
 					qWarning () << Q_FUNC_INFO
 							<< id
-							<< "isn't fulfilled, aborting";
-					throw std::runtime_error (QString ("Package dependencies "
-							"could not be fulfilled.").toUtf8 ().constData ());
+							<< "isn't fulfilled, aborting:"
+							<< unful;
+					QString list = QString ("<ul><li>%1</li></ul>")
+							.arg (unful.join ("</li><li>"));
+					throw std::runtime_error (tr ("Package dependencies "
+							"could not be fulfilled: %1").arg (list)
+							.toUtf8 ().constData ());
 				}
 
 				QList<int> deps = builder.GetPackagesToInstall ();
