@@ -456,11 +456,29 @@ namespace LeechCraft
 			{
 				InstalledDependencyInfoList result;
 
-				QStringList entries;
+				QFileInfoList infoEntries;
 #if defined(Q_WS_X11)
-				entries += QDir ("/usr/share/leechcraft/installed").entryList ();
-				entries += QDir ("/usr/local/share/leechcraft/installed").entryList ();
+				infoEntries += QDir ("/usr/share/leechcraft/installed")
+						.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+				infoEntries += QDir ("/usr/local/share/leechcraft/installed")
+						.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+#elif defined(Q_WS_WIN)
+				infoEntries += QDir (QApplication::applicationDirPath () + "/share/installed")
+						.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
 #endif
+
+				QStringList entries;
+
+				Q_FOREACH (const QFileInfo& info, infoEntries)
+				{
+					QString path = info.absoluteFilePath ();
+					if (info.isFile ())
+						entries << path;
+					else if (info.isDir ())
+						Q_FOREACH (const QFileInfo& subInfo,
+								QDir (path).entryInfoList (QDir::Files))
+							entries << subInfo.absoluteFilePath ();
+				}
 
 				QString nameStart ("Name: ");
 				QString versionStart ("Version: ");
