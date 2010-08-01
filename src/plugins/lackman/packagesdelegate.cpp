@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QButtonGroup>
+#include <QAbstractProxyModel>
 #include <QtDebug>
 #include "packagesmodel.h"
 #include "core.h"
@@ -59,6 +60,11 @@ namespace LeechCraft
 						SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
 						this,
 						SLOT (hideOverflousActions (const QModelIndex&, int, int)),
+						Qt::QueuedConnection);
+				connect (&Core::Instance (),
+						SIGNAL (packageRowActionFinished (int)),
+						this,
+						SLOT (handleRowActionFinished (int)),
 						Qt::QueuedConnection);
 			}
 
@@ -264,9 +270,9 @@ namespace LeechCraft
 					iconName = "addjob";
 				}
 
+				QAction *action = button->defaultAction ();
 				WasInstalled_ [index] = installed;
 
-				QAction *action = button->defaultAction ();
 				action->setText (label);
 				action->setIcon (Core::Instance ().GetProxy ()->GetIcon (iconName));
 				action->setData (index.data (PackagesModel::PMRPackageID));
@@ -336,16 +342,10 @@ namespace LeechCraft
 					bool isUpgradable = index.data (PackagesModel::PMRUpgradable).toBool ();
 
 					if (isInstalled != WasInstalled_ [index])
-					{
 						GetInstallRemove (index);
-						WasInstalled_ [index] = isInstalled;
-					}
 
 					if (isUpgradable != WasUpgradable_ [index])
-					{
 						GetUpdate (index);
-						WasUpgradable_ [index] = isUpgradable;
-					}
 				}
 
 				return Row2Layout_ [index.row ()];
@@ -383,6 +383,7 @@ namespace LeechCraft
 
 			void PackagesDelegate::handleAction ()
 			{
+				return;
 				QAction *sAction = qobject_cast<QAction*> (sender ());
 				if (!sAction)
 				{
@@ -418,9 +419,38 @@ namespace LeechCraft
 							tr ("LeechCraft"),
 							tr ("Unable to mark package, reverting.") + "<br />" + QString::fromUtf8 (e.what ()));
 
-					sAction->blockSignals (true);
-					sAction->setChecked (!checked);
-					sAction->blockSignals (false);
+					sAction->setChecked (false);
+				}
+			}
+
+			void PackagesDelegate::handleRowActionFinished (int row)
+			{
+				// Front — deepest proxy, back — outermost.
+				QList<QAbstractProxyModel*> proxyChain;
+				QAbstractItemModel *realModel = Model_;
+				QAbstractProxyModel *proxy = 0;
+				while ((proxy = qobject_cast<QAbstractProxyModel*> (realModel)))
+				{
+					proxyChain.push_front (proxy);
+					realModel = proxy->sourceModel ();
+				}
+
+				QModelIndex index = realModel->index (row, 0);
+
+				Q_FOREACH (QAbstractProxyModel *pm, proxyChain)
+					index = pm->mapFromSource (index);
+
+				row = index.row ();
+
+				if (Row2InstallRemove_.contains (row))
+				{
+					Row2InstallRemove_ [row]->setChecked (false);
+					Row2InstallRemove_ [row]->defaultAction ()->setChecked (false);
+					Row2InstallRemove_ [row]->setChecked (false);
+				}
+				if (Row2Update_.contains (row))
+				{
+					Row2Update_ [row]->defaultAction ()->setChecked (false);
 				}
 			}
 		}

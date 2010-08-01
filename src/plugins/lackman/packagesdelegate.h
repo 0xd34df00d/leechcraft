@@ -71,6 +71,7 @@ namespace LeechCraft
 				void hideOverflousActions (const QModelIndex&, int, int);
 			private slots:
 				void handleAction ();
+				void handleRowActionFinished (int);
 			};
 		}
 	}

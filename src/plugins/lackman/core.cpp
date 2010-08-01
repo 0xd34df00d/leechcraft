@@ -722,6 +722,8 @@ namespace LeechCraft
 				UpdateRowFor (packageId);
 
 				PendingManager_->SuccessfullyRemoved (packageId);
+
+				emit packageRowActionFinished (GetPackageRow (packageId));
 			}
 
 			void Core::UpdateRowFor (int packageId)
@@ -792,6 +794,11 @@ namespace LeechCraft
 				}
 
 				return true;
+			}
+
+			int Core::GetPackageRow (int packageId) const
+			{
+				return PackagesModel_->GetRow (packageId);
 			}
 
 			void Core::handleInfoFetched (const RepoInfo& ri)
@@ -1068,6 +1075,8 @@ namespace LeechCraft
 							tr ("Package %1 installed successfully.")
 								.arg (packageName),
 							PInfo_));
+
+				emit packageRowActionFinished (GetPackageRow (packageId));
 			}
 
 			void Core::handlePackageUpdated (int fromId, int packageId)
@@ -1097,6 +1106,8 @@ namespace LeechCraft
 							tr ("Package %1 updated successfully.")
 								.arg (packageName),
 							PInfo_));
+
+				emit packageRowActionFinished (GetPackageRow (packageId));
 			}
 		}
 	}

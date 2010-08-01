@@ -124,6 +124,15 @@ namespace LeechCraft
 				return ListPackageInfo ();
 			}
 
+			int PackagesModel::GetRow (int packageId) const
+			{
+				for (int i = 0, size = Packages_.size (); i < size; ++i)
+					if (Packages_.at (i).PackageID_ == packageId)
+						return i;
+
+				return -1;
+			}
+
 			void PackagesModel::Clear ()
 			{
 				Packages_.clear ();

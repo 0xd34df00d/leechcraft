@@ -98,6 +98,7 @@ namespace LeechCraft
 				void UpdateRowFor (int);
 				bool RecordInstalled (int);
 				bool RecordUninstalled (int);
+				int GetPackageRow (int packageId) const;
 			private slots:
 				void handleInfoFetched (const RepoInfo&);
 				void handleComponentFetched (const PackageShortInfoList&,
@@ -111,6 +112,7 @@ namespace LeechCraft
 						int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
 				void tagsUpdated ();
+				void packageRowActionFinished (int row);
 			};
 		}
 	}
