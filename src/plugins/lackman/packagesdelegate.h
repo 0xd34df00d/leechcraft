@@ -47,6 +47,8 @@ namespace LeechCraft
 				mutable QHash<int, QToolButton*> Row2InstallRemove_;
 				mutable QHash<int, QToolButton*> Row2Update_;
 				mutable QHash<int, QWidget*> Row2Layout_;
+				mutable QHash<QModelIndex, bool> WasInstalled_;
+				mutable QHash<QModelIndex, bool> WasUpgradable_;
 
 				QWidget * const Viewport_;
 				QAbstractItemModel * const Model_;

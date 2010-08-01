@@ -263,6 +263,8 @@ namespace LeechCraft
 					iconName = "addjob";
 				}
 
+				WasInstalled_ [index] = installed;
+
 				QAction *action = button->defaultAction ();
 				action->setText (label);
 				action->setIcon (Core::Instance ().GetProxy ()->GetIcon (iconName));
@@ -301,16 +303,18 @@ namespace LeechCraft
 				action->setEnabled (upgradable);
 				action->setData (index.data (PackagesModel::PMRPackageID));
 
+				WasUpgradable_ [index] = upgradable;
+
 				return button;
 			}
 
 			QWidget* PackagesDelegate::GetLayout (const QModelIndex& index) const
 			{
-				QWidget *instRem = GetInstallRemove (index);
-				QWidget *update = GetUpdate (index);
-
 				if (!Row2Layout_.contains (index.row ()))
 				{
+					QWidget *instRem = GetInstallRemove (index);
+					QWidget *update = GetUpdate (index);
+
 					QWidget *result = new QWidget (Viewport_);
 
 					QHBoxLayout *layout = new QHBoxLayout (result);
@@ -320,6 +324,23 @@ namespace LeechCraft
 					result->setLayout (layout);
 
 					Row2Layout_ [index.row ()] = result;
+				}
+				else
+				{
+					bool isInstalled = index.data (PackagesModel::PMRInstalled).toBool ();
+					bool isUpgradable = index.data (PackagesModel::PMRUpgradable).toBool ();
+
+					if (isInstalled != WasInstalled_ [index])
+					{
+						GetInstallRemove (index);
+						WasInstalled_ [index] = isInstalled;
+					}
+
+					if (isUpgradable != WasUpgradable_ [index])
+					{
+						GetUpdate (index);
+						WasUpgradable_ [index] = isUpgradable;
+					}
 				}
 
 				return Row2Layout_ [index.row ()];
@@ -390,7 +411,7 @@ namespace LeechCraft
 							<< e.what ();
 					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 							tr ("LeechCraft"),
-							tr ("Unable to mark package, reverting."));
+							tr ("Unable to mark package, reverting.") + "<br />" + QString::fromUtf8 (e.what ()));
 
 					sAction->blockSignals (true);
 					sAction->setChecked (!checked);
