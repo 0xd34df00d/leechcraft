@@ -33,11 +33,12 @@ namespace LeechCraft
 						<< "-beta"
 						<< "-alpha";
 				static QStringList replacements;
+				int modsSize = mods.size ();
 				if (replacements.isEmpty ())
-					for (int i = 0; i < mods.size (); ++i)
+					for (int i = 0; i < modsSize; ++i)
 						replacements << QString (".%1.").arg (-i - 1);
 
-				for (int i = 0; i < mods.size (); ++i)
+				for (int i = 0; i < modsSize; ++i)
 					version.replace (mods.at (i), replacements.at (i));
 
 				return version;
