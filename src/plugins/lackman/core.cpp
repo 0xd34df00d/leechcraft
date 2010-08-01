@@ -30,6 +30,7 @@
 #include "externalresourcemanager.h"
 #include "pendingmanager.h"
 #include "packageprocessor.h"
+#include "versioncomparator.h"
 
 namespace LeechCraft
 {

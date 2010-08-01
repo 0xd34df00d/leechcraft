@@ -105,6 +105,8 @@ OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_POPISHU "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
 
+ENABLE_TESTING ()
+
 IF (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
 ENDIF (ENABLE_SUMMARY)

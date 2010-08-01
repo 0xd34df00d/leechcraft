@@ -18,7 +18,6 @@
 
 #include "repoinfo.h"
 #include <QtDebug>
-#include "versionverifier.h"
 
 namespace LeechCraft
 {
@@ -139,12 +138,6 @@ namespace LeechCraft
 			bool operator== (const ListPackageInfo& lpi1, const ListPackageInfo& lpi2)
 			{
 				return lpi1.PackageID_ == lpi2.PackageID_;
-			}
-
-			bool IsVersionLess (const QString& lver, const QString& rver)
-			{
-				VersionVerifier vv;
-				return vv.CompareVersions (lver, rver) > 0;
 			}
 
 			uint qHash (const Dependency& dep)

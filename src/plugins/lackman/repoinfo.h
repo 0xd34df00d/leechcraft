@@ -154,10 +154,6 @@ namespace LeechCraft
 
 			bool operator== (const ListPackageInfo&, const ListPackageInfo&);
 
-			/** Some kind of operator< for version strings.
-			 */
-			bool IsVersionLess (const QString&, const QString&);
-
 			typedef boost::function<bool (const QString&, const QString&)> Comparator_t;
 
 			extern QMap<Dependency::Relation, Comparator_t> Relation2comparator;
