@@ -416,6 +416,24 @@ namespace LeechCraft
 				return result;
 			}
 
+			int Storage::FindInstalledPackage (int packageId)
+			{
+				QueryFindInstalledPackage_.bindValue (":package_id", packageId);
+				if (!QueryFindInstalledPackage_.exec ())
+				{
+					Util::DBLock::DumpError (QueryFindInstalledPackage_);
+					throw std::runtime_error ("Query execution failed");
+				}
+
+				int result = -1;
+				if (QueryFindInstalledPackage_.next ())
+					result = QueryFindInstalledPackage_.value (0).toInt ();
+
+				QueryFindInstalledPackage_.finish ();
+
+				return result;
+			}
+
 			PackageShortInfo Storage::GetPackage (int packageId)
 			{
 				QueryGetPackage_.bindValue (":package_id", packageId);
@@ -998,6 +1016,11 @@ namespace LeechCraft
 				QueryFindPackage_ = QSqlQuery (DB_);
 				QueryFindPackage_.prepare ("SELECT package_id "
 						"FROM packages WHERE name = :name AND version = :version;");
+
+				QueryFindInstalledPackage_ = QSqlQuery (DB_);
+				QueryFindInstalledPackage_.prepare ("SELECT installed.package_id FROM installed, packages, packages AS tmp "
+						"WHERE installed.package_id = packages.package_id "
+						"AND packages.name = tmp.name AND tmp.package_id = :package_id;");
 
 				QueryAddPackage_ = QSqlQuery (DB_);
 				QueryAddPackage_.prepare ("INSERT INTO packages (name, version) "

@@ -48,6 +48,7 @@ namespace LeechCraft
 				QSqlQuery QueryGetRepoComponents_;
 				QSqlQuery QueryFindComponent_;
 				QSqlQuery QueryFindPackage_;
+				QSqlQuery QueryFindInstalledPackage_;
 				QSqlQuery QueryAddPackage_;
 				QSqlQuery QueryGetPackage_;
 				QSqlQuery QueryRemovePackage_;
@@ -89,6 +90,7 @@ namespace LeechCraft
 				void RemoveComponent (int repoId, const QString& component);
 
 				int FindPackage (const QString& name, const QString& version);
+				int FindInstalledPackage (int packageId);
 				PackageShortInfo GetPackage (int packageId);
 				void RemovePackage (int packageId);
 				void AddPackages (const PackageInfo&);
