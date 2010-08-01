@@ -24,6 +24,7 @@
 #include <plugininterface/util.h>
 #include "core.h"
 #include "externalresourcemanager.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -138,29 +139,32 @@ namespace LeechCraft
 
 			void PackageProcessor::Install (int packageId)
 			{
-				QList<QUrl> urls = Core::Instance ().GetPackageURLs (packageId);
-				if (!urls.size ())
-					throw std::runtime_error (tr ("No URLs for package %1.")
-							.arg (packageId).toUtf8 ().constData ());
+				QUrl url = GetURLFor (packageId);
 
-				QUrl url = urls.at (0);
-				qDebug () << Q_FUNC_INFO
-						<< "would fetch"
-						<< packageId
-						<< "from"
-						<< url;
-
-				ExternalResourceManager *erm = Core::Instance ().GetExtResourceManager ();
-				connect (erm,
-						SIGNAL (resourceFetched (const QUrl&)),
-						this,
-						SLOT (handleResourceFetched (const QUrl&)));
+				ExternalResourceManager *erm = PrepareResourceManager ();
 
 				if (QFile::exists (erm->GetResourcePath (url)))
-					HandleFile (packageId, url);
+					HandleFile (packageId, url, MInstall);
 				else
 				{
 					URL2Id_ [url] = packageId;
+					URL2Mode_ [url] = MInstall;
+					erm->GetResourceData (url);
+				}
+			}
+
+			void PackageProcessor::Update (int toPackageId)
+			{
+				QUrl url = GetURLFor (toPackageId);
+
+				ExternalResourceManager *erm = PrepareResourceManager ();
+
+				if (QFile::exists (erm->GetResourcePath (url)))
+					HandleFile (toPackageId, url, MUpdate);
+				else
+				{
+					URL2Id_ [url] = toPackageId;
+					URL2Mode_ [url] = MUpdate;
 					erm->GetResourceData (url);
 				}
 			}
@@ -168,7 +172,7 @@ namespace LeechCraft
 			void PackageProcessor::handleResourceFetched (const QUrl& url)
 			{
 				if (URL2Id_.contains (url))
-					HandleFile (URL2Id_ [url], url);
+					HandleFile (URL2Id_.take (url), url, URL2Mode_.take (url));
 			}
 
 			void PackageProcessor::handlePackageUnarchFinished (int ret, QProcess::ExitStatus status)
@@ -178,6 +182,7 @@ namespace LeechCraft
 				QProcess *unarch = qobject_cast<QProcess*> (sender ());
 				int packageId = unarch->property ("PackageID").toInt ();
 				QString stagingDir = unarch->property ("StagingDirectory").toString ();
+				Mode mode = static_cast<Mode> (unarch->property ("Mode").toInt ());
 
 				if (ret)
 				{
@@ -198,6 +203,17 @@ namespace LeechCraft
 					CleanupDir (stagingDir);
 
 					return;
+				}
+
+				if (mode == MUpdate)
+				{
+					int oldId = Core::Instance ().GetStorage ()->FindInstalledPackage (packageId);
+					if (!CleanupBeforeUpdate (packageId, oldId))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to cleanup";
+						return;
+					}
 				}
 
 				QDir packageDir;
@@ -257,7 +273,14 @@ namespace LeechCraft
 						}
 				}
 
-				emit packageInstalled (packageId);
+				switch (mode)
+				{
+				case MInstall:
+					emit packageInstalled (packageId);
+					break;
+				case MUpdate:
+					emit packageUpdated (packageId);
+				}
 			}
 
 			void PackageProcessor::handleUnarchError (QProcess::ProcessError error)
@@ -282,7 +305,8 @@ namespace LeechCraft
 				CleanupDir (sender ()->property ("StagingDirectory").toString ());
 			}
 
-			void PackageProcessor::HandleFile (int packageId, const QUrl& url)
+			void PackageProcessor::HandleFile (int packageId,
+					const QUrl& url, PackageProcessor::Mode mode)
 			{
 				QString path = Core::Instance ()
 						.GetExtResourceManager ()->GetResourcePath (url);
@@ -306,6 +330,7 @@ namespace LeechCraft
 				unarch->setProperty ("PackageID", packageId);
 				unarch->setProperty ("StagingDirectory", dirname);
 				unarch->setProperty ("Path", path);
+				unarch->setProperty ("Mode", mode);
 
 				QFileInfo sdInfo (dirname);
 				QDir stagingParentDir (sdInfo.path ());
@@ -326,6 +351,33 @@ namespace LeechCraft
 				}
 
 				unarch->start ("tar", args);
+			}
+
+			QUrl PackageProcessor::GetURLFor (int packageId) const
+			{
+				QList<QUrl> urls = Core::Instance ().GetPackageURLs (packageId);
+				if (!urls.size ())
+					throw std::runtime_error (tr ("No URLs for package %1.")
+							.arg (packageId).toUtf8 ().constData ());
+
+				QUrl url = urls.at (0);
+				qDebug () << Q_FUNC_INFO
+						<< "would fetch"
+						<< packageId
+						<< "from"
+						<< url;
+				return url;
+			}
+
+			ExternalResourceManager* PackageProcessor::PrepareResourceManager ()
+			{
+				ExternalResourceManager *erm = Core::Instance ().GetExtResourceManager ();
+				connect (erm,
+						SIGNAL (resourceFetched (const QUrl&)),
+						this,
+						SLOT (handleResourceFetched (const QUrl&)),
+						Qt::UniqueConnection);
+				return erm;
 			}
 
 			bool PackageProcessor::HandleEntry (int packageId, const QFileInfo& fi,
@@ -404,6 +456,31 @@ namespace LeechCraft
 				dbFile.write (sourceName.toUtf8 ());
 				dbFile.write ("\n");
 
+				return true;
+			}
+
+			bool PackageProcessor::CleanupBeforeUpdate (int oldId, int newId)
+			{
+				try
+				{
+					Remove (oldId);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while removing package"
+							<< oldId
+							<< "for update to"
+							<< newId
+							<< "got exception:"
+							<< e.what ();
+					QString str = tr ("Unable to remove package %1 "
+								"when updating to package %2")
+							.arg (oldId)
+							.arg (newId);
+					emit packageInstallError (newId, str);
+					return false;
+				}
 				return true;
 			}
 
