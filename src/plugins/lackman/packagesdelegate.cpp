@@ -27,6 +27,7 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QMainWindow>
+#include <QButtonGroup>
 #include <QtDebug>
 #include "packagesmodel.h"
 #include "core.h"
@@ -228,7 +229,7 @@ namespace LeechCraft
 				SelectableBrowser_->SetNavBarVisible (false);
 			}
 
-			QWidget* PackagesDelegate::GetInstallRemove (const QModelIndex& index) const
+			QToolButton* PackagesDelegate::GetInstallRemove (const QModelIndex& index) const
 			{
 				int row = index.row ();
 				if (!Row2InstallRemove_.contains (row))
@@ -274,7 +275,7 @@ namespace LeechCraft
 				return button;
 			}
 
-			QWidget* PackagesDelegate::GetUpdate (const QModelIndex& index) const
+			QToolButton* PackagesDelegate::GetUpdate (const QModelIndex& index) const
 			{
 				int row = index.row ();
 				if (!Row2Update_.contains (row))
@@ -312,8 +313,12 @@ namespace LeechCraft
 			{
 				if (!Row2Layout_.contains (index.row ()))
 				{
-					QWidget *instRem = GetInstallRemove (index);
-					QWidget *update = GetUpdate (index);
+					QToolButton *instRem = GetInstallRemove (index);
+					QToolButton *update = GetUpdate (index);
+
+					QButtonGroup *group = new QButtonGroup (Viewport_);
+					group->addButton (instRem);
+					group->addButton (update);
 
 					QWidget *result = new QWidget (Viewport_);
 

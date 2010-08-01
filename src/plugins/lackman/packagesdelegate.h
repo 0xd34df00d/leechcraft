@@ -62,8 +62,8 @@ namespace LeechCraft
 				int TextHeight (const QStyleOptionViewItem&) const;
 				int CurrentInfoHeight (const QStyleOptionViewItem&) const;
 				void PrepareSelectableBrowser () const;
-				QWidget* GetInstallRemove (const QModelIndex&) const;
-				QWidget* GetUpdate (const QModelIndex&) const;
+				QToolButton* GetInstallRemove (const QModelIndex&) const;
+				QToolButton* GetUpdate (const QModelIndex&) const;
 				QWidget* GetLayout (const QModelIndex&) const;
 			public slots:
 				void handleRowChanged (const QModelIndex&, const QModelIndex&);
