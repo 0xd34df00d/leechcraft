@@ -57,7 +57,7 @@ namespace LeechCraft
 				Core ();
 			public:
 				static Core& Instance ();
-
+				void FinishInitialization ();
 				void Release ();
 
 				void SetProxy (ICoreProxy_ptr);

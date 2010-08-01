@@ -98,14 +98,18 @@ namespace LeechCraft
 						SIGNAL (packageUpdated (int, int)),
 						this,
 						SLOT (handlePackageUpdated (int, int)));
-
-				PopulatePluginsModel ();
 			}
 
 			Core& Core::Instance ()
 			{
 				static Core c;
 				return c;
+			}
+
+			void Core::FinishInitialization ()
+			{
+				PendingManager_->Reset ();
+				PopulatePluginsModel ();
 			}
 
 			void Core::Release ()

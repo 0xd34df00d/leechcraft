@@ -38,9 +38,15 @@ namespace LeechCraft
 
 				QStandardItemModel *PendingModel_;
 
-				QSet<int> ScheduledInstall_;
-				QSet<int> ScheduledRemove_;
-				QSet<int> ScheduledUpdate_;
+				enum Action
+				{
+					AInstall,
+					ARemove,
+					AUpdate,
+					AMAX
+				};
+				QMap<Action, QSet<int> > ScheduledForAction_;
+				QMap<Action, QStandardItem*> RootItemForAction_;
 
 				QMap<int, QList<int> > Deps_;
 				QMap<int, QStandardItem*> ID2ModelRow_;
@@ -52,16 +58,17 @@ namespace LeechCraft
 				void ToggleInstallRemove (int id, bool enable, bool installed);
 				void ToggleUpdate (int id, bool enable);
 
-				const QSet<int>& GetPendingInstall () const;
-				const QSet<int>& GetPendingRemove () const;
-				const QSet<int>& GetPendingUpdate () const;
+				QSet<int> GetPendingInstall () const;
+				QSet<int> GetPendingRemove () const;
+				QSet<int> GetPendingUpdate () const;
 
 				void SuccessfullyInstalled (int);
 				void SuccessfullyRemoved (int);
 				void SuccessfullyUpdated (int);
 			private:
-				void EnablePackageInto (int, QSet<int>&);
-				void DisablePackageFrom (int, QSet<int>&);
+				void EnablePackageInto (int, Action);
+				void DisablePackageFrom (int, Action);
+				void ReinitRootItems ();
 			};
 		}
 	}

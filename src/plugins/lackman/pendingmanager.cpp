@@ -41,10 +41,9 @@ namespace LeechCraft
 
 			void PendingManager::Reset ()
 			{
-				PendingModel_->clear ();
-				ScheduledInstall_.clear ();
-				ScheduledRemove_.clear ();
-				ScheduledUpdate_.clear ();
+				ReinitRootItems ();
+				for (int i = AInstall; i < AMAX; ++i)
+					ScheduledForAction_ [static_cast<Action> (i)].clear ();
 				Deps_.clear ();
 				ID2ModelRow_.clear ();
 			}
@@ -52,51 +51,50 @@ namespace LeechCraft
 			void PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
 			{
 				if (enable)
-					EnablePackageInto (id, installed ? ScheduledRemove_ : ScheduledInstall_);
+					EnablePackageInto (id, installed ? ARemove : AInstall);
 				else
-					DisablePackageFrom (id, installed ? ScheduledRemove_ : ScheduledInstall_);
-				qDebug () << ScheduledInstall_ << id << enable << installed;
+					DisablePackageFrom (id, installed ? ARemove : AInstall);
 			}
 
 			void PendingManager::ToggleUpdate (int id, bool enable)
 			{
 				if (enable)
-					EnablePackageInto (id, ScheduledUpdate_);
+					EnablePackageInto (id, AUpdate);
 				else
-					DisablePackageFrom (id, ScheduledUpdate_);
+					DisablePackageFrom (id, AUpdate);
 			}
 
-			const QSet<int>& PendingManager::GetPendingInstall () const
+			QSet<int> PendingManager::GetPendingInstall () const
 			{
-				return ScheduledInstall_;
+				return ScheduledForAction_ [AInstall];
 			}
 
-			const QSet<int>& PendingManager::GetPendingRemove () const
+			QSet<int> PendingManager::GetPendingRemove () const
 			{
-				return ScheduledRemove_;
+				return ScheduledForAction_ [ARemove];
 			}
 
-			const QSet<int>& PendingManager::GetPendingUpdate () const
+			QSet<int> PendingManager::GetPendingUpdate () const
 			{
-				return ScheduledUpdate_;
+				return ScheduledForAction_ [AUpdate];
 			}
 
 			void PendingManager::SuccessfullyInstalled (int packageId)
 			{
-				DisablePackageFrom (packageId, ScheduledInstall_);
+				DisablePackageFrom (packageId, AInstall);
 			}
 
 			void PendingManager::SuccessfullyRemoved (int packageId)
 			{
-				DisablePackageFrom (packageId, ScheduledRemove_);
+				DisablePackageFrom (packageId, ARemove);
 			}
 
 			void PendingManager::SuccessfullyUpdated (int packageId)
 			{
-				DisablePackageFrom (packageId, ScheduledUpdate_);
+				DisablePackageFrom (packageId, AUpdate);
 			}
 
-			void PendingManager::EnablePackageInto (int id, QSet<int>& container)
+			void PendingManager::EnablePackageInto (int id, PendingManager::Action action)
 			{
 				DepTreeBuilder builder (id);
 				if (!builder.IsFulfilled ())
@@ -116,14 +114,13 @@ namespace LeechCraft
 				QList<int> deps = builder.GetPackagesToInstall ();
 				Deps_ [id] = deps;
 
-				qDebug () << Q_FUNC_INFO << "deps" << deps;
-
-				container << id;
+				ScheduledForAction_ [action] << id;
 
 				ListPackageInfo info = Core::Instance ().GetListPackageInfo (id);
 				QStandardItem *packageItem = new QStandardItem (QString ("%1 (%2)")
 						.arg (info.Name_)
 						.arg (info.ShortDescription_));
+				packageItem->setIcon (Core::Instance ().GetIconForLPI (info));
 				Q_FOREACH (int dep, deps)
 				{
 					info = Core::Instance ().GetListPackageInfo (dep);
@@ -134,13 +131,13 @@ namespace LeechCraft
 				}
 
 				ID2ModelRow_ [id] = packageItem;
-				PendingModel_->appendRow (packageItem);
+				RootItemForAction_ [action]->appendRow (packageItem);
 			}
 
-			void PendingManager::DisablePackageFrom (int id, QSet<int>& container)
+			void PendingManager::DisablePackageFrom (int id, PendingManager::Action action)
 			{
 				Deps_.remove (id);
-				container.remove (id);
+				ScheduledForAction_ [action].remove (id);
 
 				if (!ID2ModelRow_.contains (id))
 				{
@@ -151,8 +148,34 @@ namespace LeechCraft
 					return;
 				}
 
-				PendingModel_->takeRow (ID2ModelRow_ [id]->row ());
-				delete ID2ModelRow_.take (id);
+				QStandardItem *item = ID2ModelRow_.take (id);
+				item->parent ()->takeRow (item->row ());
+				delete item;
+			}
+
+			void PendingManager::ReinitRootItems ()
+			{
+				PendingModel_->clear ();
+				for (int i = AInstall; i < AMAX; ++i)
+					if (RootItemForAction_.contains (static_cast<Action> (i)))
+						delete RootItemForAction_ [static_cast<Action> (i)];
+
+				RootItemForAction_ [AInstall] =
+						new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("addjob"),
+								tr ("To be installed"));
+				RootItemForAction_ [ARemove] =
+						new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("remove"),
+								tr ("To be removed"));
+				RootItemForAction_ [AUpdate] =
+						new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("update"),
+								tr ("To be updated"));
+
+				for (int i = AInstall; i < AMAX; ++i)
+				{
+					QStandardItem *item = RootItemForAction_ [static_cast<Action> (i)];
+					item->setEditable (false);
+					PendingModel_->appendRow (item);
+				}
 			}
 		}
 	}

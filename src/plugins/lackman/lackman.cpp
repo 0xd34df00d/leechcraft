@@ -37,6 +37,7 @@ namespace LeechCraft
 				Ui_.setupUi (this);
 
 				Core::Instance ().SetProxy (proxy);
+				Core::Instance ().FinishInitialization ();
 
 				connect (&Core::Instance (),
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
