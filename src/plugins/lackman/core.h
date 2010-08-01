@@ -95,6 +95,9 @@ namespace LeechCraft
 				void HandleNewPackages (const PackageShortInfoList& shorts,
 						int componentId, const QString& component, const QUrl& repoUrl);
 				void PerformRemoval (int);
+				void UpdateRowFor (int);
+				bool RecordInstalled (int);
+				bool RecordUninstalled (int);
 			private slots:
 				void handleInfoFetched (const RepoInfo&);
 				void handleComponentFetched (const PackageShortInfoList&,
@@ -102,6 +105,7 @@ namespace LeechCraft
 				void handlePackageFetched (const PackageInfo&, int);
 				void handlePackageInstallError (int, const QString&);
 				void handlePackageInstalled (int);
+				void handlePackageUpdated (int from, int to);
 			signals:
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);

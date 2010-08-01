@@ -94,6 +94,10 @@ namespace LeechCraft
 						SIGNAL (packageInstalled (int)),
 						this,
 						SLOT (handlePackageInstalled (int)));
+				connect (PackageProcessor_,
+						SIGNAL (packageUpdated (int, int)),
+						this,
+						SLOT (handlePackageUpdated (int, int)));
 
 				PopulatePluginsModel ();
 			}
@@ -438,6 +442,27 @@ namespace LeechCraft
 						continue;
 					}
 				}
+
+				Q_FOREACH (int packageId, toUpdate)
+				{
+					try
+					{
+						PackageProcessor_->Update (packageId);
+					}
+					catch (const std::exception& e)
+					{
+						QString str = Util::FromStdString (e.what ());
+						qWarning () << Q_FUNC_INFO
+								<< "got"
+								<< str
+								<< "while updating to"
+								<< packageId;
+						emit gotEntity (Util::MakeNotification (tr ("Unable to update package"),
+									str,
+									PCritical_));
+						continue;
+					}
+				}
 			}
 
 			QString Core::NormalizePackageName (const QString& packageName) const
@@ -574,20 +599,6 @@ namespace LeechCraft
 							break;
 						}
 
-					QString type;
-					switch (last.Type_)
-					{
-					case PackageInfo::TPlugin:
-						type = tr ("plugin");
-						break;
-					case PackageInfo::TIconset:
-						type = tr ("iconset");
-						break;
-					case PackageInfo::TTranslation:
-						type = tr ("translation");
-						break;
-					}
-
 					PackagesModel_->AddRow (last);
 				}
 			}
@@ -701,6 +712,64 @@ namespace LeechCraft
 					return;
 				}
 
+				if (!RecordUninstalled (packageId))
+					return;
+
+				UpdateRowFor (packageId);
+
+				PendingManager_->SuccessfullyRemoved (packageId);
+			}
+
+			void Core::UpdateRowFor (int packageId)
+			{
+				try
+				{
+					ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+					PackagesModel_->UpdateRow (info);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while updating row for package"
+							<< packageId
+							<< "got this exception:"
+							<< e.what ();
+				}
+			}
+
+			bool Core::RecordInstalled (int packageId)
+			{
+				try
+				{
+					Storage_->AddToInstalled (packageId);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while trying to record installed package"
+							<< e.what ();
+					emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
+								tr ("Error recording package to the package DB."),
+								PCritical_));
+
+					try
+					{
+						PackageProcessor_->Remove (packageId);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "while trying to cleanup partially installed package"
+								<< e.what ();
+					}
+					return false;
+				}
+
+				return true;
+			}
+
+			bool Core::RecordUninstalled (int packageId)
+			{
 				try
 				{
 					Storage_->RemoveFromInstalled (packageId);
@@ -715,24 +784,10 @@ namespace LeechCraft
 					emit gotEntity (Util::MakeNotification (tr ("Unable to remove package"),
 								str,
 								PCritical_));
-					return;
+					return false;
 				}
 
-				try
-				{
-					ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
-					PackagesModel_->UpdateRow (info);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "while updating row for package"
-							<< packageId
-							<< "got this exception:"
-							<< e.what ();
-				}
-
-				PendingManager_->SuccessfullyRemoved (packageId);
+				return true;
 			}
 
 			void Core::handleInfoFetched (const RepoInfo& ri)
@@ -899,8 +954,11 @@ namespace LeechCraft
 								PackagesModel_->AddRow (Storage_->
 										GetSingleListPackageInfo (packageId));
 							else if (IsVersionLess (existing, greatest))
-								PackagesModel_->UpdateRow (Storage_->
-										GetSingleListPackageInfo (packageId));
+							{
+								ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+								info.HasNewVersion_ = info.IsInstalled_;
+								PackagesModel_->UpdateRow (info);
+							}
 						}
 					}
 				}
@@ -982,45 +1040,10 @@ namespace LeechCraft
 
 			void Core::handlePackageInstalled (int packageId)
 			{
-				try
-				{
-					Storage_->AddToInstalled (packageId);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "while trying to record installed package"
-							<< e.what ();
-					emit gotEntity (Util::MakeNotification (tr ("Error installing package"),
-								tr ("Error recording package to the package DB."),
-								PCritical_));
-
-					try
-					{
-						PackageProcessor_->Remove (packageId);
-					}
-					catch (const std::exception& e)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "while trying to cleanup partially installed package"
-								<< e.what ();
-					}
+				if (!RecordInstalled (packageId))
 					return;
-				}
 
-				try
-				{
-					ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
-					PackagesModel_->UpdateRow (info);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "while updating row for package"
-							<< packageId
-							<< "got this exception:"
-							<< e.what ();
-				}
+				UpdateRowFor (packageId);
 
 				PendingManager_->SuccessfullyInstalled (packageId);
 
@@ -1039,6 +1062,35 @@ namespace LeechCraft
 
 				emit gotEntity (Util::MakeNotification (tr ("Package installed"),
 							tr ("Package %1 installed successfully.")
+								.arg (packageName),
+							PInfo_));
+			}
+
+			void Core::handlePackageUpdated (int fromId, int packageId)
+			{
+				if (!RecordUninstalled (fromId) ||
+						!RecordInstalled (packageId))
+					return;
+
+				UpdateRowFor (packageId);
+
+				PendingManager_->SuccessfullyUpdated (packageId);
+
+				QString packageName;
+				try
+				{
+					packageName = Storage_->GetPackage (packageId).Name_;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "while trying to get installed package name"
+							<< e.what ();
+					return;
+				}
+
+				emit gotEntity (Util::MakeNotification (tr ("Package updated"),
+							tr ("Package %1 updated successfully.")
 								.arg (packageName),
 							PInfo_));
 			}

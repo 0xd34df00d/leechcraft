@@ -86,7 +86,7 @@ namespace LeechCraft
 			signals:
 				void packageInstallError (int, const QString&);
 				void packageInstalled (int);
-				void packageUpdated (int);
+				void packageUpdated (int from, int to);
 			};
 		}
 	}

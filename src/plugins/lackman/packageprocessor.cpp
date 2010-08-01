@@ -205,10 +205,11 @@ namespace LeechCraft
 					return;
 				}
 
+				int oldId = -1;
 				if (mode == MUpdate)
 				{
-					int oldId = Core::Instance ().GetStorage ()->FindInstalledPackage (packageId);
-					if (!CleanupBeforeUpdate (packageId, oldId))
+					oldId = Core::Instance ().GetStorage ()->FindInstalledPackage (packageId);
+					if (!CleanupBeforeUpdate (oldId, packageId))
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to cleanup";
@@ -279,7 +280,8 @@ namespace LeechCraft
 					emit packageInstalled (packageId);
 					break;
 				case MUpdate:
-					emit packageUpdated (packageId);
+					emit packageUpdated (oldId, packageId);
+					break;
 				}
 			}
 
