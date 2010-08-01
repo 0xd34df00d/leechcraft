@@ -28,12 +28,10 @@ namespace LeechCraft
 		{
 			QString Numerize (QString version)
 			{
-				static QStringList mods;
-				if (mods.isEmpty ())
-					mods << "-rc"
-							<< "-pre"
-							<< "-beta"
-							<< "-alpha";
+				static const QStringList mods = QStringList () << "-rc"
+						<< "-pre"
+						<< "-beta"
+						<< "-alpha";
 				static QStringList replacements;
 				if (replacements.isEmpty ())
 					for (int i = 0; i < mods.size (); ++i)
