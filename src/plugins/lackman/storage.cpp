@@ -777,8 +777,9 @@ namespace LeechCraft
 				};
 
 				QSqlQuery query (DB_);
-				query.prepare ("SELECT COUNT (package_id) FROM installed WHERE package_id = :package_id;");
-				query.bindValue ("package_id", packageId);
+				query.prepare ("SELECT COUNT (installed.package_id) FROM installed, packages "
+						"WHERE installed.package_id = packages.package_id AND packages.name = :name;");
+				query.bindValue (":name", name);
 				if (!query.exec ())
 				{
 					Util::DBLock::DumpError (query);
