@@ -104,6 +104,7 @@ OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
 OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_POPISHU "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
+OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 
 ENABLE_TESTING ()
 
@@ -222,6 +223,10 @@ ENDIF (ENABLE_POPISHU)
 IF (ENABLE_LACKMAN)
 	ADD_SUBDIRECTORY (plugins/lackman)
 ENDIF (ENABLE_LACKMAN)
+
+IF (ENABLE_SYNCER)
+	ADD_SUBDIRECTORY (plugins/syncer)
+ENDIF (ENABLE_SYNCER)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
