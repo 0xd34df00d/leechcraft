@@ -24,13 +24,27 @@
 
 namespace LeechCraft
 {
-	struct Delta
+	namespace Sync
 	{
-		quint64 ID_;
-		QByteArray Payload_;
-	};
+		struct Payload
+		{
+			QByteArray Data_;
+		};
 
-	typedef QByteArray ChainID_t;
+		typedef QList<Payload> Payloads_t;
+
+		struct Delta
+		{
+			quint64 ID_;
+			Payload Payload_;
+		};
+
+		typedef QList<Delta> Deltas_t;
+
+		typedef QByteArray ChainID_t;
+
+		typedef QSet<ChainID_t> ChainIDs_t;
+	}
 }
 
 /** @brief Interface for plugins that have content/data/settings that
@@ -44,11 +58,18 @@ class ISyncable
 public:
 	virtual ~ISyncable () {}
 
-	virtual QSet<ChainID_t> AvailableChains () const = 0;
+	virtual LeechCraft::Sync::ChainIDs_t AvailableChains () const = 0;
 
-	virtual QList<LeechCraft::Delta> GetAllDeltasForChain (const LeechCraft::ChainID_t&) const = 0;
+	virtual LeechCraft::Sync::Payloads_t GetAllDeltas (const LeechCraft::Sync::ChainID_t& chain) const = 0;
+
+	virtual LeechCraft::Sync::Payloads_t GetNewDeltas (const LeechCraft::Sync::ChainID_t& chain) const = 0;
+
+	virtual void PurgeNewDeltas (const LeechCraft::Sync::ChainID_t& chain) = 0;
+
+	virtual void ApplyDeltas (const LeechCraft::Sync::Payloads_t& deltas,
+			const LeechCraft::Sync::ChainID_t& chain) = 0;
 };
 
-Q_DECLARE_INTERFACE (ISyncable, "org.Deviant.LeechCraft.ISyncable/1.0");
+Q_DECLARE_INTERFACE (ISyncable, "org.Deviant.LeechCraft.Sync.ISyncable/1.0");
 
 #endif

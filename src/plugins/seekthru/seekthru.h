@@ -26,6 +26,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/istartupwizard.h>
+#include <interfaces/isyncable.h>
 #include <interfaces/structures.h>
 
 namespace LeechCraft
@@ -40,12 +41,15 @@ namespace LeechCraft
 						   , public IHaveSettings
 						   , public IEntityHandler
 						   , public IStartupWizard
+						   , public ISyncable
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IHaveSettings IEntityHandler IStartupWizard)
+				Q_INTERFACES (IInfo IFinder IHaveSettings IEntityHandler IStartupWizard ISyncable)
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+
+				Sync::ChainIDs_t Chains_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -67,6 +71,12 @@ namespace LeechCraft
 				void Handle (LeechCraft::Entity);
 
 				QList<QWizardPage*> GetWizardPages () const;
+
+				Sync::ChainIDs_t AvailableChains () const;
+				Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
+				Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
+				void PurgeNewDeltas (const Sync::ChainID_t&);
+				void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
 			private slots:
 				void handleError (const QString&);
 				void handleWarning (const QString&);

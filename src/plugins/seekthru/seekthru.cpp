@@ -31,7 +31,7 @@ namespace LeechCraft
 		namespace SeekThru
 		{
 			using namespace LeechCraft::Util;
-			
+
 			void SeekThru::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (LeechCraft::Util::InstallTranslator ("seekthru"));
@@ -64,79 +64,81 @@ namespace LeechCraft
 						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)));
 
 				Core::Instance ().DoDelayedInit ();
-			
+
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 						"seekthrusettings.xml");
 				XmlSettingsDialog_->SetCustomWidget ("SearchersList", new SearchersList);
+
+				Chains_ << Sync::ChainID_t ("osengines");
 			}
 
 			void SeekThru::SecondInit ()
 			{
 			}
-			
+
 			void SeekThru::Release ()
 			{
 				XmlSettingsDialog_.reset ();
 			}
-			
+
 			QString SeekThru::GetName () const
 			{
 				return "SeekThru";
 			}
-			
+
 			QString SeekThru::GetInfo () const
 			{
 				return tr ("Search via OpenSearch-aware search providers.");
 			}
-			
+
 			QIcon SeekThru::GetIcon () const
 			{
 				return QIcon (":/resources/images/seekthru.svg");
 			}
-			
+
 			QStringList SeekThru::Provides () const
 			{
 				return QStringList ("search");
 			}
-			
+
 			QStringList SeekThru::Needs () const
 			{
 				return QStringList ("http");
 			}
-			
+
 			QStringList SeekThru::Uses () const
 			{
 				return QStringList ("webbrowser");
 			}
-			
+
 			void SeekThru::SetProvider (QObject *object, const QString& feature)
 			{
 				Core::Instance ().SetProvider (object, feature);
 			}
-			
+
 			QStringList SeekThru::GetCategories () const
 			{
 				return Core::Instance ().GetCategories ();
 			}
-			
+
 			QList<IFindProxy_ptr> SeekThru::GetProxy (const LeechCraft::Request& r)
 			{
 				QList<IFindProxy_ptr> result;
 				result << Core::Instance ().GetProxy (r);
 				return result;
 			}
-			
+
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}
-			
+
 			bool SeekThru::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return Core::Instance ().CouldHandle (e);
 			}
-			
+
 			void SeekThru::Handle (LeechCraft::Entity e)
 			{
 				Core::Instance ().Add (e.Entity_.toUrl ());
@@ -147,19 +149,42 @@ namespace LeechCraft
 				std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
 				return wg->GetPages ();
 			}
-			
+
+			Sync::ChainIDs_t SeekThru::AvailableChains () const
+			{
+				return Chains_;
+			}
+
+			Sync::Payloads_t SeekThru::GetAllDeltas (const Sync::ChainID_t&) const
+			{
+				return Sync::Payloads_t ();
+			}
+
+			Sync::Payloads_t SeekThru::GetNewDeltas (const Sync::ChainID_t&) const
+			{
+				return Sync::Payloads_t ();
+			}
+
+			void SeekThru::PurgeNewDeltas (const Sync::ChainID_t&)
+			{
+			}
+
+			void SeekThru::ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&)
+			{
+			}
+
 			void SeekThru::handleError (const QString& error)
 			{
 				emit gotEntity (Util::MakeNotification ("SeekThru", error, PCritical_));
 			}
-			
+
 			void SeekThru::handleWarning (const QString& error)
 			{
 				emit gotEntity (Util::MakeNotification ("SeekThru", error, PWarning_));
 			}
-			
+
 			Q_EXPORT_PLUGIN2 (leechcraft_seekthru, SeekThru);
-			
+
 		};
 	};
 };
