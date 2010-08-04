@@ -92,6 +92,11 @@ void FUA::Release ()
 {
 }
 
+QByteArray FUA::GetUniqueID () const
+{
+	return "org.LeechCraft.Poshuku.FUA";
+}
+
 QString FUA::GetName () const
 {
 	return "Poshuku FUA";

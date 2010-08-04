@@ -58,6 +58,11 @@ namespace LeechCraft
 			{
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.Auscrie";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "Auscrie";

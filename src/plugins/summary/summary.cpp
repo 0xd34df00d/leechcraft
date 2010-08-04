@@ -77,6 +77,11 @@ namespace LeechCraft
 				Translator_.reset ();
 			}
 
+			QByteArray Summary::GetUniqueID () const
+			{
+				return "org.LeechCraft.Summary";
+			}
+
 			QString Summary::GetName () const
 			{
 				return "Summary";
@@ -125,7 +130,7 @@ namespace LeechCraft
 			{
 				return Core::Instance ().CouldHandle (e);
 			}
-			
+
 			void Summary::Handle (LeechCraft::Entity e)
 			{
 				Core::Instance ().Handle (e);

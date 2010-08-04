@@ -58,6 +58,11 @@ void LMP::Release ()
 	XmlSettingsManager::Instance ()->Release ();
 }
 
+QByteArray LMP::GetUniqueID () const
+{
+	return "org.LeechCraft.LMP";
+}
+
 QString LMP::GetName () const
 {
 	return "LMP";

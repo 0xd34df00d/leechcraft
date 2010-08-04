@@ -39,6 +39,11 @@ void Plugin::Release ()
 	delete fsIrc;
 }
 
+QByteArray Plugin::GetUniqueID () const
+{
+	return "org.LeechCraft.Chatter";
+}
+
 QString Plugin::GetName () const
 {
 	return "Chatter";

@@ -44,50 +44,55 @@ namespace LeechCraft
 			void DeadLyRicS::SecondInit ()
 			{
 			}
-			
+
 			void DeadLyRicS::Release ()
 			{
 			}
-			
+
+			QByteArray DeadLyRicS::GetUniqueID () const
+			{
+				return "org.LeechCraft.DeadLyrics";
+			}
+
 			QString DeadLyRicS::GetName () const
 			{
 				return "DeadLyRicS";
 			}
-			
+
 			QString DeadLyRicS::GetInfo () const
 			{
 				return tr ("Lyrics Searcher");
 			}
-			
+
 			QIcon DeadLyRicS::GetIcon () const
 			{
 				return QIcon (":/resources/images/deadlyrics.svg");
 			}
-			
+
 			QStringList DeadLyRicS::Provides () const
 			{
 				return QStringList ("search::lyrics");
 			}
-			
+
 			QStringList DeadLyRicS::Needs () const
 			{
 				return QStringList ();
 			}
-			
+
 			QStringList DeadLyRicS::Uses () const
 			{
 				return QStringList ();
 			}
-			
+
 			void DeadLyRicS::SetProvider (QObject*, const QString&)
 			{
 			}
-			
+
 			QStringList DeadLyRicS::GetCategories () const
 			{
 				return Core::Instance ().GetCategories ();
 			}
-			
+
 			QList<IFindProxy_ptr> DeadLyRicS::GetProxy (const LeechCraft::Request& req)
 			{
 				QList<IFindProxy_ptr> result;
@@ -99,7 +104,7 @@ namespace LeechCraft
 			{
 				return SettingsDialog_;
 			}
-			
+
 			Q_EXPORT_PLUGIN2 (leechcraft_deadlyrics, DeadLyRicS);
 		};
 	};

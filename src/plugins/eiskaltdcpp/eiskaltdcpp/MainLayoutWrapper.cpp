@@ -141,6 +141,11 @@ void MainLayoutWrapper::Release ()
 	ReleaseAsAfterExec ();
 }
 
+QByteArray MainLayoutWrapper::GetUniqueID () const
+{
+	return "org.EiskaltDC++";
+}
+
 QString MainLayoutWrapper::GetName () const
 {
 	return "EiskaltDC++";
@@ -1058,7 +1063,7 @@ void MainLayoutWrapper::mapWidgetOnArena(ArenaWidget *awgt){
     tBar->mapped(awgt);
 
     QWidget *wg = arenaMap[awgt];
-    
+
     if (awgt->toolButton())
         awgt->toolButton()->setChecked(true);
 

@@ -50,6 +50,11 @@ namespace LeechCraft
 				Translator_.reset ();
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.AnHero";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "AnHero";

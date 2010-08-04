@@ -41,6 +41,11 @@ namespace LeechCraft
 				Translator_.reset ();
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.YASD";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "YASD";

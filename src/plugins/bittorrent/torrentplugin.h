@@ -126,6 +126,7 @@ namespace LeechCraft
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
 				virtual ~TorrentPlugin ();
+				QByteArray GetUniqueID () const;
 				QString GetName () const;
 				QString GetInfo () const;
 				QStringList Provides () const;

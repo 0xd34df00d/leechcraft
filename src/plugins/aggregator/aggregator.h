@@ -69,6 +69,7 @@ namespace LeechCraft
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
 				void Release ();
+				QByteArray GetUniqueID () const;
 				QString GetName () const;
 				QString GetInfo () const;
 				QStringList Provides () const;

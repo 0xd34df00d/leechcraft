@@ -291,6 +291,11 @@ namespace LeechCraft
 				ScriptAction_->finalize ();
 			}
 
+			QByteArray WrapperObject::GetUniqueID () const
+			{
+				return SCALL (QByteArray) ("GetUniqueID");
+			}
+
 			QString WrapperObject::GetName () const
 			{
 				return SCALL (QString) ("GetName");

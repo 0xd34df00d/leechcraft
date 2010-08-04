@@ -82,6 +82,11 @@ namespace LeechCraft
 				XmlSettingsDialog_.reset ();
 			}
 
+			QByteArray SeekThru::GetUniqueID () const
+			{
+				return "org.LeechCraft.SeekThru";
+			}
+
 			QString SeekThru::GetName () const
 			{
 				return "SeekThru";

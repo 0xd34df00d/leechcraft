@@ -37,6 +37,11 @@ namespace LeechCraft
 			{
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.Syncer";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "Syncer";

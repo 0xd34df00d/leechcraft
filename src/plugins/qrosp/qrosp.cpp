@@ -45,6 +45,11 @@ namespace LeechCraft
 				PluginManager::Instance ().Release ();
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.Qrosp";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "Qrosp";

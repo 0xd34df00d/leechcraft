@@ -79,6 +79,11 @@ namespace LeechCraft
 			{
 			}
 
+			QByteArray TorrentPlugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.BitTorrent";
+			}
+
 			QString TorrentPlugin::GetName () const
 			{
 				return "BitTorrent";

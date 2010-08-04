@@ -73,6 +73,11 @@ namespace LeechCraft
 				Translator_.reset ();
 			}
 
+			QByteArray vGrabber::GetUniqueID () const
+			{
+				return "org.LeechCraft.vGrabber";
+			}
+
 			QString vGrabber::GetName () const
 			{
 				return "vGrabber";

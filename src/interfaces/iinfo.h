@@ -613,11 +613,27 @@ public:
 	 */
 	virtual void SecondInit () = 0;
 
+	/** @brief Returns the unique ID of the plugin.
+	 *
+	 * The ID should never change, event between different versions of
+	 * the plugin and between renames of the plugin. It should be unique
+	 * among all other plugins, thus the Vendor.AppName form is
+	 * suggested. For example, Poshuku Browser plugin would return an ID
+	 * like "org.LeechCraft.Poshuku", and Poshuku CleanWeb, which is
+	 * Poshuku plugin, would return "org.LeechCraft.Poshuku.CleanWeb".
+	 *
+	 * The ID is allowed to consist of upper- and lowercase latin
+	 * letters, numbers, dots¸ plus and minus sign.
+	 *
+	 * @return Unique and persistent ID of the plugin.
+	 */
+	virtual QByteArray GetUniqueID () const = 0;
+
 	/** @brief Returns the name of the plugin.
 	 *
-	 * This name is used only for the UI, all internals communicate with
-	 * each other through pointers to QObjects representing plugin
-	 * instance objects.
+	 * This name is used only for the UI, internal communication is done
+	 * through pointers to QObjects representing plugin instance
+	 * objects.
 	 *
 	 * @note This function should be able to work before Init() is
 	 * called.

@@ -96,6 +96,11 @@ namespace LeechCraft
 				Translator_.reset ();
 			}
 
+			QByteArray LCFTP::GetUniqueID () const
+			{
+				return "org.LeechCraft.LCFTP";
+			}
+
 			QString LCFTP::GetName () const
 			{
 				return "LCFTP";

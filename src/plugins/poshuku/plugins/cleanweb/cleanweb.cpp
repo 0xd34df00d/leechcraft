@@ -81,6 +81,11 @@ void CleanWeb::Release ()
 {
 }
 
+QByteArray CleanWeb::GetUniqueID () const
+{
+	return "org.LeechCraft.Poshuku.CLeanWeb";
+}
+
 QString CleanWeb::GetName () const
 {
 	return "Poshuku CleanWeb";

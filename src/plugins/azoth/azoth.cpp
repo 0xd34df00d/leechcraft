@@ -62,6 +62,11 @@ namespace LeechCraft
 			{
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.Azoth";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "Azoth";

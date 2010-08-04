@@ -41,6 +41,11 @@ namespace LeechCraft
 			{
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.Kinotify";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "Kinotify";
@@ -95,7 +100,7 @@ namespace LeechCraft
 
 				KineticNotification *kn = new KineticNotification (QString::number (rand ()),
 						timeout);
-				
+
 				QString mi = "information";
 				switch (prio)
 				{

@@ -87,6 +87,11 @@ namespace LeechCraft
 			{
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.Popishu";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "Popishu";

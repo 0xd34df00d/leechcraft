@@ -55,6 +55,11 @@ namespace LeechCraft
 					{
 					}
 
+					QByteArray FileScheme::GetUniqueID () const
+					{
+						return "org.LeechCraft.Poshuku.FileScheme";
+					}
+
 					QString FileScheme::GetName () const
 					{
 						return "Poshuku FileScheme";

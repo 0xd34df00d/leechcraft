@@ -56,6 +56,11 @@ namespace LeechCraft
 					{
 					}
 
+					QByteArray WYFV::GetUniqueID () const
+					{
+						return "org.LeechCraft.Poshuku.WYFV";
+					}
+
 					QString WYFV::GetName () const
 					{
 						return "Poshuku WYFV";

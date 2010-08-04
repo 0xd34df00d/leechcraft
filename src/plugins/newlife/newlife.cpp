@@ -43,6 +43,11 @@ namespace LeechCraft
 				Translator_.reset ();
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.NewLife";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "New Life";

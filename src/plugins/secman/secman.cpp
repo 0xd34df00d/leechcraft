@@ -37,6 +37,11 @@ namespace LeechCraft
 			{
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.SecMan";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "SecMan";

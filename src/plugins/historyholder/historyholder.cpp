@@ -41,6 +41,11 @@ void Plugin::Release ()
 	Core::Instance ().Release ();
 }
 
+QByteArray Plugin::GetUniqueID () const
+{
+	return "org.LeechCraft.HistoryHolder";
+}
+
 QString Plugin::GetName () const
 {
 	return "History holder";

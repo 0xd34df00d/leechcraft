@@ -57,6 +57,11 @@ namespace LeechCraft
 				Dock_->Release ();
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.Tab++";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "Tab++";

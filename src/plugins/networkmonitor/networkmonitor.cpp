@@ -95,6 +95,11 @@ namespace LeechCraft
 				qDeleteAll (Actions_);
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.NetworkMonitor";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "NetworkMonitor";
@@ -138,7 +143,7 @@ namespace LeechCraft
 			{
 				Model_->handleCurrentChanged (ProxyModel_->mapToSource (index));
 			}
-			
+
 			void Plugin::filterUpdated ()
 			{
 				QString search = Ui_.SearchString_->text ();

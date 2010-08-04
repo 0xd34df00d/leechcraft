@@ -92,6 +92,11 @@ namespace LeechCraft
 				Core::Instance ().Release ();
 			}
 
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.LackMan";
+			}
+
 			QString Plugin::GetName () const
 			{
 				return "LackMan";

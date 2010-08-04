@@ -49,6 +49,11 @@ namespace LeechCraft
 				Core::Instance ().Release ();
 			}
 
+			QByteArray DBusManager::GetUniqueID () const
+			{
+				return "org.LeechCraft.DBusManager";
+			}
+
 			QString DBusManager::GetName () const
 			{
 				return "DBus Manager";

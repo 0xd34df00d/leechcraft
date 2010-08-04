@@ -47,6 +47,11 @@ namespace LeechCraft
 						GlooxProtocol_.reset ();
 					}
 
+					QByteArray Plugin::GetUniqueID () const
+					{
+						return "org.LeechCraft.Azoth.Xoox";
+					}
+
 					QString Plugin::GetName () const
 					{
 						return "Xoox";

@@ -175,6 +175,11 @@ namespace LeechCraft
 				XmlSettingsDialog_.reset ();
 			}
 
+			QByteArray Poshuku::GetUniqueID () const
+			{
+				return "org.LeechCraft.Poshuku";
+			}
+
 			QString Poshuku::GetName () const
 			{
 				return tr ("Poshuku Browser");
