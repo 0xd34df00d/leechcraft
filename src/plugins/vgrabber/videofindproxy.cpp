@@ -39,7 +39,7 @@ namespace LeechCraft
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				switch (role)
 				{
 					case Qt::DisplayRole:
@@ -84,7 +84,7 @@ namespace LeechCraft
 						return QVariant ();
 				}
 			}
-			
+
 			void VideoFindProxy::UpdateURLActionsData (int row) const
 			{
 				QUrl url;
@@ -131,7 +131,7 @@ namespace LeechCraft
 
 			void VideoFindProxy::HandleSearchResults (const QString& contents)
 			{
-				QRegExp upt (".*><a href=\"video([0-9\\_]*)\">(.*)</a></div>.*",
+				QRegExp upt (".*<a href=\"video(.*)\\?noiphone\">(.*)</a></div>.*",
 						Qt::CaseSensitive,
 						QRegExp::RegExp2);
 				upt.setMinimal (true);
