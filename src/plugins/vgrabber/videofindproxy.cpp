@@ -186,9 +186,9 @@ namespace LeechCraft
 			void VideoFindProxy::HandleVideoPage (const QString& contents)
 			{
 				// http://'host'/assets/videos/'vtag+vkid'.vk.flv
-				QString host = GetStringFromRX (".*host:'([0-9a-z\\.]*)'.*", contents);
-				QString vtag = GetStringFromRX (".*vtag:'([0-9a-f\\-]*)'.*", contents);
-				QString vkid = GetStringFromRX (".*vkid:'([0-9a-f]*)'.*", contents);
+				QString host = GetStringFromRX (".*\"host\":\"([0-9a-z\\.]*)\".*", contents);
+				QString vtag = GetStringFromRX (".*\"vtag\":\"([0-9a-f\\-]*)\".*", contents);
+				QString vkid = GetStringFromRX (".*\"vkid\":\"([0-9a-f]*)\".*", contents);
 
 				if (host.isEmpty () ||
 						vtag.isEmpty () ||
