@@ -131,46 +131,27 @@ namespace LeechCraft
 
 			void VideoFindProxy::HandleSearchResults (const QString& contents)
 			{
-				QRegExp upt (".*<a href=\"video(.*)\\?noiphone\">(.*)</a></div>.*",
+				QRegExp upt ("<div class=\"aname\" style='width:255px; overflow: hidden'><a href=\"video(.*)\\?noiphone\">(.*)</a></div>",
 						Qt::CaseSensitive,
 						QRegExp::RegExp2);
 				upt.setMinimal (true);
 				int pos = 0;
-				while (pos >= 0)
+				while ((pos = upt.indexIn (contents, pos)) >= 0)
 				{
-					if (contents.mid (pos).contains ("<a href=\"video"))
-						pos = upt.indexIn (contents, pos);
-					else
-						pos = -1;
+					QStringList captured = upt.capturedTexts ();
+					QUrl url = QUrl (QString ("http://vkontakte.ru/video%1")
+							.arg (captured.at (1)));
+					QString title = captured.at (2);
+					title.remove ("<span class=\"match\">").remove ("</span>");
 
-					if (pos >= 0)
+					VideoResult vr =
 					{
-						QStringList captured = upt.capturedTexts ();
-						captured.removeFirst ();
-						QUrl url = QUrl (QString ("http://vkontakte.ru/video%1")
-								.arg (captured.at (0)));
-						QString title = captured.at (1);
-						title.replace ("<span class=\"match\">", "").replace ("</span>", "");
-						/*
-						QString descr = captured.at (2);
-						QString length = captured.at (3);
-						QString date = captured.at (4);
-						*/
+						url,
+						title
+					};
 
-						VideoResult vr =
-						{
-							url,
-							title
-							/*
-							length,
-							date,
-							descr
-							*/
-						};
-
-						VideoResults_ << vr;
-						pos += upt.matchedLength ();
-					}
+					VideoResults_ << vr;
+					pos += upt.matchedLength ();
 				}
 
 				if (VideoResults_.size ())
@@ -288,4 +269,3 @@ namespace LeechCraft
 		};
 	};
 };
-
