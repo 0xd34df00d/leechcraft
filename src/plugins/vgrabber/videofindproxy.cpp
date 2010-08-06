@@ -171,7 +171,9 @@ namespace LeechCraft
 				QString GetStringFromRX (const QString& pattern, const QString& contents)
 				{
 					QString result;
-					QRegExp rx (pattern);
+					QRegExp rx (pattern,
+							Qt::CaseSensitive,
+							QRegExp::RegExp2);
 					rx.setMinimal (true);
 					if (rx.indexIn (contents) != -1)
 						result = rx.capturedTexts ().at (1);
@@ -185,29 +187,39 @@ namespace LeechCraft
 
 			void VideoFindProxy::HandleVideoPage (const QString& contents)
 			{
-				// http://'host'/assets/videos/'vtag+vkid'.vk.flv
-				QString host = GetStringFromRX (".*\"host\":\"([0-9a-z\\.]*)\".*", contents);
+				// http://cs12739.vkontakte.ru/u16199765/video/1684dec3e6.240.mp4
+				// -----------$host-----------/--$user--/video/---$vtag--.240.mp4
+				QString host = GetStringFromRX (".*\"host\":\"([0-9a-z/\\:\\.\\\\]*)\".*", contents);
+				QString user = GetStringFromRX (".*\"uid\":\"([0-9]*)\".*", contents);
 				QString vtag = GetStringFromRX (".*\"vtag\":\"([0-9a-f\\-]*)\".*", contents);
-				QString vkid = GetStringFromRX (".*\"vkid\":\"([0-9a-f]*)\".*", contents);
+				// Not needed anymore, but let's have it here just in case.
+				// QString vkid = GetStringFromRX (".*\"vkid\":\"([0-9a-f]*)\".*", contents);
+
+				host.replace ("\\/", "/");
+				if (host.endsWith ('/'))
+					host.chop (1);
 
 				if (host.isEmpty () ||
 						vtag.isEmpty () ||
-						vkid.isEmpty ())
+						user.isEmpty ())
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "one of required attrs is empty"
 						<< host
 						<< vtag
-						<< vkid
+						<< user
 						<< "for"
 						<< contents;
 					return;
 				}
 
-				QString source = "http://HOST/assets/videos/VTAGVKID.vk.flv";
-				source.replace ("HOST", host);
-				source.replace ("VTAG", vtag);
-				source.replace ("VKID", vkid);
+				QString source = QString ("%1/u%2/video/%3.240.mp4")
+						.arg (host)
+						.arg (user)
+						.arg (vtag);
+
+				qDebug () << Q_FUNC_INFO
+						<< source;
 
 				LeechCraft::TaskParameter hd = OnlyHandle;
 				switch (Type_)
