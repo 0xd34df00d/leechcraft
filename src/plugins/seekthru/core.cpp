@@ -30,6 +30,7 @@
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/util.h>
+#include <plugininterface/syncops.h>
 #include "findproxy.h"
 #include "tagsasker.h"
 
@@ -40,8 +41,9 @@ namespace LeechCraft
 		namespace SeekThru
 		{
 			const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
-			
+
 			Core::Core ()
+			: DeltaStorage_ ("org.LeechCraft.SeekThru", this)
 			{
 				qRegisterMetaType<Description> ("LeechCraft::Plugins::SeekThru::Description");
 				qRegisterMetaTypeStreamOperators<UrlDescription> ("LeechCraft::Plugins::SeekThru::UrlDescription");
@@ -54,12 +56,12 @@ namespace LeechCraft
 			{
 				Proxy_ = proxy;
 			}
-			
+
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
 			}
-			
+
 			Core& Core::Instance ()
 			{
 				static Core c;
@@ -70,17 +72,17 @@ namespace LeechCraft
 			{
 				Headers_ << tr ("Short name");
 			}
-			
+
 			int Core::columnCount (const QModelIndex&) const
 			{
 				return Headers_.size ();
 			}
-			
+
 			QVariant Core::data (const QModelIndex& index, int role) const
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				Description d = Descriptions_.at (index.row ());
 				switch (index.column ())
 				{
@@ -125,7 +127,7 @@ namespace LeechCraft
 						return QVariant ();
 				}
 			}
-			
+
 			Qt::ItemFlags Core::flags (const QModelIndex& index) const
 			{
 				if (!index.isValid ())
@@ -133,7 +135,7 @@ namespace LeechCraft
 				else
 					return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 			}
-			
+
 			QVariant Core::headerData (int pos, Qt::Orientation orient, int role) const
 			{
 				if (orient == Qt::Horizontal && role == Qt::DisplayRole)
@@ -141,30 +143,30 @@ namespace LeechCraft
 				else
 					return QVariant ();
 			}
-			
+
 			QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
 			{
 				if (!hasIndex (row, column, parent))
 					return QModelIndex ();
-			
+
 				return createIndex (row, column);
 			}
-			
+
 			QModelIndex Core::parent (const QModelIndex&) const
 			{
 				return QModelIndex ();
 			}
-			
+
 			int Core::rowCount (const QModelIndex& parent) const
 			{
 				return parent.isValid () ? 0 : Descriptions_.size ();
 			}
-			
+
 			void Core::SetProvider (QObject *provider, const QString& feature)
 			{
 				Providers_ [feature] = provider;
 			}
-			
+
 			bool Core::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				if (!e.Entity_.canConvert<QUrl> ())
@@ -174,13 +176,90 @@ namespace LeechCraft
 				if (url.scheme () != "http" &&
 						url.scheme () != "https")
 					return false;
-			
+
 				if (e.Mime_ != "application/opensearchdescription+xml")
 					return false;
-			
+
 				return true;
 			}
-			
+
+			Sync::Payloads_t Core::GetAllDeltas (const Sync::ChainID_t& chainId)
+			{
+				if (chainId != "osengines")
+					return Sync::Payloads_t ();
+
+				Sync::Payloads_t result;
+				Q_FOREACH (const Description& descr, Descriptions_)
+				{
+					QByteArray serialized;
+					{
+						QDataStream s (&serialized, QIODevice::WriteOnly);
+						quint8 version = 0;
+						s << version
+								<< descr;
+					}
+					Sync::Payload payload = Sync::CreatePayload (serialized);
+					result << payload;
+				}
+				return result;
+			}
+
+			Sync::Payloads_t Core::GetNewDeltas (const Sync::ChainID_t& chainId)
+			{
+				return DeltaStorage_.Get (chainId);
+			}
+
+			void Core::PurgeNewDeltas (const Sync::ChainID_t& chainId)
+			{
+				DeltaStorage_.Purge (chainId);
+			}
+
+			void Core::ApplyDeltas (const Sync::Payloads_t& payloads, const Sync::ChainID_t& chainId)
+			{
+				if (chainId != "osengines")
+					return;
+
+				Sync::Payloads_t our = GetNewDeltas (chainId);
+				bool shouldResync = false;
+
+				Q_FOREACH (const Sync::Payload& pl, payloads)
+				{
+					shouldResync = shouldResync || our.removeAll (pl);
+
+					Description descr;
+					QDataStream in (pl.Data_);
+					quint8 version = 0;
+					in >> version;
+					switch (version)
+					{
+					case 0:
+						in >> descr;
+						Descriptions_ << descr;
+						break;
+					default:
+						qWarning () << Q_FUNC_INFO
+								<< "unknown version"
+								<< version;
+						continue;
+					}
+
+					QList<Description>::iterator pos =
+							std::find_if (Descriptions_.begin (), Descriptions_.end (),
+									boost::bind (&Description::ShortName_, _1) == descr.ShortName_);
+					if (pos == Descriptions_.end ())
+						Descriptions_ << descr;
+					else
+						*pos = descr;
+				}
+
+				WriteSettings ();
+				if (shouldResync)
+				{
+					PurgeNewDeltas (chainId);
+					DeltaStorage_.Store (chainId, our);
+				}
+			}
+
 			void Core::Add (const QUrl& url)
 			{
 				QString name = LeechCraft::Util::GetTemporaryName ();
@@ -190,7 +269,7 @@ namespace LeechCraft
 							LeechCraft::DoNotSaveInHistory |
 							LeechCraft::DoNotNotifyUser |
 							LeechCraft::NotPersistent);
-			
+
 				int id = -1;
 				QObject *provider;
 				emit delegateEntity (e, &id, &provider);
@@ -200,11 +279,11 @@ namespace LeechCraft
 							.arg (url.toString ()));
 					return;
 				}
-			
+
 				HandleProvider (provider);
 				Jobs_ [id] = name;
 			}
-			
+
 			void Core::Remove (const QModelIndex& index)
 			{
 				QStringList oldCats = ComputeUniqueCategories ();
@@ -218,7 +297,7 @@ namespace LeechCraft
 				QStringList newCats = ComputeUniqueCategories ();
 				emit categoriesChanged (newCats, oldCats);
 			}
-			
+
 			void Core::SetTags (const QModelIndex& index, const QStringList& tags)
 			{
 				QStringList oldCats = ComputeUniqueCategories ();
@@ -233,7 +312,7 @@ namespace LeechCraft
 				QStringList newCats = ComputeUniqueCategories ();
 				emit categoriesChanged (newCats, oldCats);
 			}
-			
+
 			QStringList Core::GetCategories () const
 			{
 				QStringList result;
@@ -241,13 +320,13 @@ namespace LeechCraft
 						end = Descriptions_.end (); i != end; ++i)
 					Q_FOREACH (QString tag, i->Tags_)
 						result += Proxy_->GetTagsManager ()->GetTag (tag);
-			
+
 				result.sort ();
 				result.erase (std::unique (result.begin (), result.end ()), result.end ());
-			
+
 				return result;
 			}
-			
+
 			IFindProxy_ptr Core::GetProxy (const LeechCraft::Request& r)
 			{
 				QList<SearchHandler_ptr> handlers;
@@ -280,12 +359,12 @@ namespace LeechCraft
 						handlers << sh;
 					}
 				}
-			
+
 				boost::shared_ptr<FindProxy> fp (new FindProxy (r));
 				fp->SetHandlers (handlers);
 				return IFindProxy_ptr (fp);
 			}
-			
+
 			IWebBrowser* Core::GetWebBrowser () const
 			{
 				if (Providers_.contains ("webbrowser"))
@@ -300,7 +379,7 @@ namespace LeechCraft
 					return;
 				QString filename = Jobs_ [id];
 				Jobs_.remove (id);
-			
+
 				QFile file (filename);
 				if (!file.open (QIODevice::ReadOnly))
 				{
@@ -308,16 +387,16 @@ namespace LeechCraft
 							.arg (filename));
 					return;
 				}
-			
+
 				HandleEntity (QTextCodec::codecForName ("UTF-8")->
 						toUnicode (file.readAll ()));
-			
+
 				file.close ();
 				if (!file.remove ())
 					emit warning (tr ("Could not remove temporary file %1.")
 							.arg (filename));
 			}
-			
+
 			void Core::handleJobError (int id)
 			{
 				if (!Jobs_.contains (id))
@@ -326,7 +405,7 @@ namespace LeechCraft
 						.arg (Jobs_ [id]));
 				Jobs_.remove (id);
 			}
-			
+
 			void Core::HandleEntity (const QString& contents, const QString& useTags)
 			{
 				try
@@ -380,11 +459,11 @@ namespace LeechCraft
 							.arg (column));
 					throw std::runtime_error ("Parse error");
 				}
-			
+
 				QDomElement root = doc.documentElement ();
 				if (root.tagName () != "OpenSearchDescription")
 					throw std::runtime_error ("Parse error");
-			
+
 				QDomElement shortNameTag = root.firstChildElement ("ShortName");
 				QDomElement descriptionTag = root.firstChildElement ("Description");
 				QDomElement urlTag = root.firstChildElement ("Url");
@@ -394,11 +473,11 @@ namespace LeechCraft
 						!urlTag.hasAttribute ("template") ||
 						!urlTag.hasAttribute ("type"))
 					throw std::runtime_error ("Parse error");
-			
+
 				Description descr;
 				descr.ShortName_ = shortNameTag.text ();
 				descr.Description_ = descriptionTag.text ();
-			
+
 				while (!urlTag.isNull ())
 				{
 					UrlDescription d =
@@ -409,14 +488,14 @@ namespace LeechCraft
 						urlTag.attribute ("pageOffset", "1").toInt ()
 					};
 					descr.URLs_ << d;
-			
+
 					urlTag = urlTag.nextSiblingElement ("Url");
 				}
-			
+
 				QDomElement contactTag = root.firstChildElement ("Contact");
 				if (!contactTag.isNull ())
 					descr.Contact_ = contactTag.text ();
-			
+
 				if (useTags.isEmpty ())
 				{
 					QDomElement tagsTag = root.firstChildElement ("Tags");
@@ -424,7 +503,7 @@ namespace LeechCraft
 						descr.Tags_ = Proxy_->GetTagsManager ()->Split (tagsTag.text ());
 					else
 						descr.Tags_ = QStringList ("default");
-				
+
 					TagsAsker ta (Proxy_->GetTagsManager ()->Join (descr.Tags_));
 					QString userTags;
 					qDebug () << Q_FUNC_INFO;
@@ -441,11 +520,11 @@ namespace LeechCraft
 				descr.Tags_.clear ();
 				Q_FOREACH (QString tag, hrTags)
 					descr.Tags_ << Proxy_->GetTagsManager ()->GetID (tag);
-			
+
 				QDomElement longNameTag = root.firstChildElement ("LongName");
 				if (!longNameTag.isNull ())
 					descr.LongName_ = longNameTag.text ();
-			
+
 				QDomElement queryTag = root.firstChildElement ("Query");
 				while (!queryTag.isNull () && queryTag.hasAttributeNS (OS_, "role"))
 				{
@@ -468,7 +547,7 @@ namespace LeechCraft
 						queryTag = queryTag.nextSiblingElement ("Query");
 						continue;
 					}
-			
+
 					QueryDescription d =
 					{
 						r,
@@ -485,15 +564,15 @@ namespace LeechCraft
 					descr.Queries_ << d;
 					queryTag = queryTag.nextSiblingElement ("Query");
 				}
-			
+
 				QDomElement developerTag = root.firstChildElement ("Developer");
 				if (!developerTag.isNull ())
 					descr.Developer_ = developerTag.text ();
-			
+
 				QDomElement attributionTag = root.firstChildElement ("Attribution");
 				if (!attributionTag.isNull ())
 					descr.Attribution_ = attributionTag.text ();
-			
+
 				descr.Right_ = Description::SROpen;
 				QDomElement syndicationRightTag = root.firstChildElement ("SyndicationRight");
 				if (!syndicationRightTag.isNull ())
@@ -506,7 +585,7 @@ namespace LeechCraft
 					else if (sr == "closed")
 						descr.Right_ = Description::SRClosed;
 				}
-			
+
 				descr.Adult_ = false;
 				QDomElement adultContentTag = root.firstChildElement ("AdultContent");
 				if (!adultContentTag.isNull ())
@@ -519,7 +598,7 @@ namespace LeechCraft
 							text == "NO"))
 						descr.Adult_ = true;
 				}
-			
+
 				QDomElement languageTag = root.firstChildElement ("Language");
 				bool was = false;;
 				while (!languageTag.isNull ())
@@ -530,7 +609,7 @@ namespace LeechCraft
 				}
 				if (!was)
 					descr.Languages_ << "*";
-			
+
 				QDomElement inputEncodingTag = root.firstChildElement ("InputEncoding");
 				was = false;
 				while (!inputEncodingTag.isNull ())
@@ -541,7 +620,7 @@ namespace LeechCraft
 				}
 				if (!was)
 					descr.InputEncodings_ << "UTF-8";
-			
+
 				QDomElement outputEncodingTag = root.firstChildElement ("OutputEncoding");
 				was = false;
 				while (!outputEncodingTag.isNull ())
@@ -555,12 +634,12 @@ namespace LeechCraft
 
 				return descr;
 			}
-			
+
 			void Core::HandleProvider (QObject *provider)
 			{
 				if (Downloaders_.contains (provider))
 					return;
-				
+
 				Downloaders_ << provider;
 				connect (provider,
 						SIGNAL (jobFinished (int)),
@@ -571,7 +650,7 @@ namespace LeechCraft
 						this,
 						SLOT (handleJobError (int)));
 			}
-			
+
 			void Core::ReadSettings ()
 			{
 				QSettings settings (QCoreApplication::organizationName (),
@@ -584,7 +663,7 @@ namespace LeechCraft
 				}
 				settings.endArray ();
 			}
-			
+
 			void Core::WriteSettings ()
 			{
 				QSettings settings (QCoreApplication::organizationName (),
@@ -598,7 +677,7 @@ namespace LeechCraft
 				}
 				settings.endArray ();
 			}
-			
+
 		};
 	};
 };

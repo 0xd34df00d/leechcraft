@@ -25,6 +25,7 @@
 #include <interfaces/ifinder.h>
 #include "description.h"
 #include "searchhandler.h"
+#include "deltastorage.h"
 
 class IWebBrowser;
 
@@ -44,6 +45,7 @@ namespace LeechCraft
 				QList<Description> Descriptions_;
 				QStringList Headers_;
 				ICoreProxy_ptr Proxy_;
+				DeltaStorage DeltaStorage_;
 
 				static const QString OS_;
 
@@ -79,6 +81,12 @@ namespace LeechCraft
 
 				void SetProvider (QObject*, const QString&);
 				bool CouldHandle (const LeechCraft::Entity&) const;
+
+				Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&);
+				Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&);
+				void PurgeNewDeltas (const Sync::ChainID_t&);
+				void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
+
 				/** Fetches the searcher from the url.
 				 *
 				 * @param[in] url The url with the search description.
