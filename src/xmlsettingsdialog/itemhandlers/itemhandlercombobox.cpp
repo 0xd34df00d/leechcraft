@@ -48,6 +48,7 @@ namespace LeechCraft
 		box->setObjectName (item.attribute ("property"));
 		if (item.hasAttribute ("maxVisibleItems"))
 			box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
+
 		if (item.hasAttribute ("mayHaveDataSource") &&
 				item.attribute ("mayHaveDataSource").toLower () == "true")
 		{
@@ -56,7 +57,6 @@ namespace LeechCraft
 					boost::bind (&ItemHandlerCombobox::SetDataSource, this, _1, _2));
 			Propname2Combobox_ [prop] = box;
 		}
-
 
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
