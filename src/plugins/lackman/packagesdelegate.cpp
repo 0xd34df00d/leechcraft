@@ -383,7 +383,6 @@ namespace LeechCraft
 
 			void PackagesDelegate::handleAction ()
 			{
-				return;
 				QAction *sAction = qobject_cast<QAction*> (sender ());
 				if (!sAction)
 				{

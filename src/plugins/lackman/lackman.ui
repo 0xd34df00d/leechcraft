@@ -27,16 +27,41 @@
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>All</string>
+       <string>Packages</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
-        <number>2</number>
-       </property>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QLineEdit" name="SearchLine_"/>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="SearchLine_"/>
+           </item>
+           <item>
+            <widget class="QComboBox" name="PackageStatus_">
+             <item>
+              <property name="text">
+               <string>All</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Installed</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Upgradable</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Not installed</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
           <widget class="QTreeView" name="Plugins_">
@@ -54,11 +79,6 @@
         </layout>
        </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Installed</string>
-      </attribute>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">

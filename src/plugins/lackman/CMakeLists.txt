@@ -44,6 +44,7 @@ SET (SRCS
 	pendingmanager.cpp
 	packageprocessor.cpp
 	versioncomparator.cpp
+	typefilterproxymodel.cpp
 	)
 SET (HEADERS
 	lackman.h
@@ -59,6 +60,7 @@ SET (HEADERS
 	pendingmanager.h
 	packageprocessor.h
 	versioncomparator.h
+	typefilterproxymodel.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts

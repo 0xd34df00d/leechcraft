@@ -23,6 +23,7 @@
 #include "core.h"
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
+#include "typefilterproxymodel.h"
 
 namespace LeechCraft
 {
@@ -54,9 +55,12 @@ namespace LeechCraft
 						this,
 						SLOT (handleTagsUpdated ()));
 
+				TypeFilter_ = new TypeFilterProxyModel (this);
+				TypeFilter_->setDynamicSortFilter (true);
+				TypeFilter_->setSourceModel (Core::Instance ().GetPluginsModel ());
 				FilterByTags_ = new QSortFilterProxyModel (this);
 				FilterByTags_->setDynamicSortFilter (true);
-				FilterByTags_->setSourceModel (Core::Instance ().GetPluginsModel ());
+				FilterByTags_->setSourceModel (TypeFilter_);
 				FilterString_ = new QSortFilterProxyModel (this);
 				FilterString_->setDynamicSortFilter (true);
 				FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
@@ -153,6 +157,11 @@ namespace LeechCraft
 			void Plugin::on_Cancel__released ()
 			{
 				Core::Instance ().CancelPending ();
+			}
+
+			void Plugin::on_PackageStatus__currentIndexChanged (int index)
+			{
+				TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
 			}
 		};
 	};
