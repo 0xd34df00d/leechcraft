@@ -51,7 +51,7 @@ namespace LeechCraft
  * can be synchronized via other plugins — syncers.
  *
  * To notify about new deltas, the following signal is expected:
- * newDeltasAvailable(const ChainID_t& chain, const QList<LeechCraft::Delta>& deltas)
+ * newDeltasAvailable(const ChainID_t& chain)
  */
 class ISyncable
 {
