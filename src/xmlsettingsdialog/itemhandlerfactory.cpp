@@ -44,7 +44,7 @@ namespace LeechCraft
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinbox ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxDouble ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerRadio ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCombobox ());
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCombobox (this));
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxRange ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerPushButton ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCustomWidget ());
@@ -125,5 +125,25 @@ namespace LeechCraft
 	{
 		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
 			handler->ClearChangedProperties ();
+	}
+
+	void ItemHandlerFactory::SetDataSource (const QString& property, QAbstractItemModel *model)
+	{
+		if (!Propname2DataSourceSetter_.contains (property))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "there is no such registered datasource setter for property"
+					<< property
+					<< "; registered datasources:"
+					<< Propname2DataSourceSetter_.keys ();
+			return;
+		}
+
+		Propname2DataSourceSetter_ [property] (property, model);
+	}
+
+	void ItemHandlerFactory::RegisterDatasourceSetter (const QString& prop, ItemHandlerFactory::DataSourceSetter_t setter)
+	{
+		Propname2DataSourceSetter_ [prop] = setter;
 	}
 };

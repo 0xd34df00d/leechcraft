@@ -17,15 +17,18 @@
  **********************************************************************/
 
 #include "itemhandlercombobox.h"
+#include <boost/bind.hpp>
 #include <QLabel>
 #include <QFormLayout>
 #include <QComboBox>
 #include <QtDebug>
 #include "../scripter.h"
+#include "../itemhandlerfactory.h"
 
 namespace LeechCraft
 {
-	ItemHandlerCombobox::ItemHandlerCombobox ()
+	ItemHandlerCombobox::ItemHandlerCombobox (ItemHandlerFactory *factory)
+	: Factory_ (factory)
 	{
 	}
 
@@ -45,6 +48,15 @@ namespace LeechCraft
 		box->setObjectName (item.attribute ("property"));
 		if (item.hasAttribute ("maxVisibleItems"))
 			box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
+		if (item.hasAttribute ("mayHaveDataSource") &&
+				item.attribute ("mayHaveDataSource").toLower () == "true")
+		{
+			QString prop = item.attribute ("property");
+			Factory_->RegisterDatasourceSetter (prop,
+					boost::bind (&ItemHandlerCombobox::SetDataSource, this, _1, _2));
+			Propname2Combobox_ [prop] = box;
+		}
+
 
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
@@ -131,5 +143,20 @@ namespace LeechCraft
 			return QVariant ();
 		}
 		return combobox->itemData (combobox->currentIndex ());
+	}
+
+	void ItemHandlerCombobox::SetDataSource (const QString& prop, QAbstractItemModel *model)
+	{
+		QComboBox *box = Propname2Combobox_ [prop];
+		if (!box)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "combobox for property"
+					<< prop
+					<< "not found";
+			return;
+		}
+
+		box->setModel (model);
 	}
 }

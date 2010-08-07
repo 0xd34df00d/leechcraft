@@ -18,15 +18,22 @@
 
 #ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
 #define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-
 #include "itemhandleroptionssetvalue.h"
+#include <QHash>
+
+class QComboBox;
 
 namespace LeechCraft
 {
+	class ItemHandlerFactory;
+
 	class ItemHandlerCombobox : public ItemHandlerOptionsSetValue
 	{
+		ItemHandlerFactory *Factory_;
+
+		QHash<QString, QComboBox*> Propname2Combobox_;
 	public:
-		ItemHandlerCombobox ();
+		ItemHandlerCombobox (ItemHandlerFactory*);
 		virtual ~ItemHandlerCombobox ();
 
 		bool CanHandle (const QDomElement&) const;
@@ -34,6 +41,8 @@ namespace LeechCraft
 		void SetValue (QWidget*, const QVariant&) const;
 	protected:
 		QVariant GetValue (QObject*) const;
+	private:
+		void SetDataSource (const QString&, QAbstractItemModel*);
 	};
 };
 
