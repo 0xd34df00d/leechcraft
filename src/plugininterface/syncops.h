@@ -28,10 +28,14 @@ namespace LeechCraft
 {
 	namespace Sync
 	{
+		PLUGININTERFACE_API bool operator== (const Payload&, const Payload&);
+
 		PLUGININTERFACE_API QDataStream& operator<< (QDataStream&, const Payload&);
 		PLUGININTERFACE_API QDataStream& operator>> (QDataStream&, Payload&);
 		PLUGININTERFACE_API QByteArray Serialize (const Payload&);
 		PLUGININTERFACE_API Payload Deserialize (const QByteArray&);
+
+		PLUGININTERFACE_API Payload CreatePayload (const QByteArray&);
 	}
 }
 

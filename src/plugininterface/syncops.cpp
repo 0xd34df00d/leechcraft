@@ -25,6 +25,11 @@ namespace LeechCraft
 {
 	namespace Sync
 	{
+		bool operator== (const Payload& p1, const Payload& p2)
+		{
+			return p1.Data_ == p2.Data_;
+		}
+
 		QDataStream& operator<< (QDataStream& out, const Payload& payload)
 		{
 			quint16 version = 1;
@@ -68,6 +73,12 @@ namespace LeechCraft
 			QDataStream in (data);
 			in >> result;
 			return result;
+		}
+
+		Payload CreatePayload (const QByteArray& from)
+		{
+			Payload p = { from };
+			return p;
 		}
 	}
 }
