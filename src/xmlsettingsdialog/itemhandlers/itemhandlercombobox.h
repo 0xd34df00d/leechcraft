@@ -32,6 +32,7 @@ namespace LeechCraft
 		ItemHandlerFactory *Factory_;
 
 		QHash<QString, QComboBox*> Propname2Combobox_;
+		QHash<QString, QDomElement> Propname2Item_;
 	public:
 		ItemHandlerCombobox (ItemHandlerFactory*);
 		virtual ~ItemHandlerCombobox ();

@@ -56,6 +56,7 @@ namespace LeechCraft
 			Factory_->RegisterDatasourceSetter (prop,
 					boost::bind (&ItemHandlerCombobox::SetDataSource, this, _1, _2));
 			Propname2Combobox_ [prop] = box;
+			Propname2Item_ [prop] = item;
 		}
 
 		QDomElement option = item.firstChildElement ("option");
@@ -158,5 +159,15 @@ namespace LeechCraft
 		}
 
 		box->setModel (model);
+
+		QVariant data = XSD_->GetValue (Propname2Item_ [prop]);
+		int pos = box->findData (data);
+		if (pos != -1)
+			box->setCurrentIndex (pos);
+		else
+			qWarning () << Q_FUNC_INFO
+				<< box
+				<< data
+				<< "not found";
 	}
 }

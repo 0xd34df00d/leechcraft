@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "itemhandlerbase.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {

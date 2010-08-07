@@ -406,7 +406,6 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
 
 QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
 {
-	QString type = item.attribute ("type");
 	QString property = item.attribute ("property");
 
 	QVariant value;
