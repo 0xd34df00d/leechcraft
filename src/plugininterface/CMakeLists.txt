@@ -28,6 +28,7 @@ SET (SRCS
 	basehookinterconnector.cpp
 	fileremoveguard.cpp
 	exceptions.cpp
+	syncops.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -50,6 +51,7 @@ SET (HEADERS
 	basehookinterconnector.h
 	fileremoveguard.h
 	exceptions.h
+	syncops.h
 	idpool.h
 	)
 SET (FORMS
