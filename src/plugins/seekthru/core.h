@@ -56,8 +56,7 @@ namespace LeechCraft
 				{
 					DADescrAdded,
 					DADescrRemoved,
-					DATagsChanged,
-					DAMAX
+					DATagsChanged
 				};
 
 				Util::VersionActionMapper<DeltaAction> ActionMapper_;
