@@ -23,6 +23,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
+#include <interfaces/isyncable.h>
 #include <plugininterface/versionactionmapper.h>
 #include "description.h"
 #include "searchhandler.h"
@@ -104,12 +105,12 @@ namespace LeechCraft
 				void Add (const QUrl& url);
 				void Remove (const QModelIndex&);
 				void SetTags (const QModelIndex&, const QStringList&);
-				void SetTags (int, const QStringList&);
 				QStringList GetCategories () const;
 				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 				IWebBrowser* GetWebBrowser () const;
 				void HandleEntity (const QString&, const QString& = QString ());
 			private:
+				void SetTags (int, const QStringList&);
 				QStringList ComputeUniqueCategories () const;
 				Description ParseData (const QString&, const QString&);
 				void HandleProvider (QObject*);
@@ -129,6 +130,7 @@ namespace LeechCraft
 						int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
 				void categoriesChanged (const QStringList&, const QStringList&);
+				void newDeltasAvailable (const Sync::ChainID_t&);
 			};
 		};
 	};

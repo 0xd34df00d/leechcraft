@@ -21,6 +21,7 @@
 #include <QByteArray>
 #include <QSet>
 #include <QList>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -46,6 +47,8 @@ namespace LeechCraft
 		typedef QSet<ChainID_t> ChainIDs_t;
 	}
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Sync::ChainID_t);
 
 /** @brief Interface for plugins that have content/data/settings that
  * can be synchronized via other plugins — syncers.

@@ -60,6 +60,10 @@ namespace LeechCraft
 						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)),
 						this,
 						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)));
+				connect (&Core::Instance (),
+						SIGNAL (newDeltasAvailable (const Sync::ChainID_t&)),
+						this,
+						SIGNAL (newDeltasAvailable (const Sync::ChainID_t&)));
 
 				Core::Instance ().DoDelayedInit ();
 

@@ -196,14 +196,16 @@ namespace LeechCraft
 				if (chainId != "osengines")
 					return Sync::Payloads_t ();
 
+				quint8 version = 0;
+				quint16 action = DADescrAdded;
 				Sync::Payloads_t result;
 				Q_FOREACH (const Description& descr, Descriptions_)
 				{
 					QByteArray serialized;
 					{
 						QDataStream s (&serialized, QIODevice::WriteOnly);
-						quint8 version = 0;
 						s << version
+								<< action
 								<< descr;
 					}
 					Sync::Payload payload = Sync::CreatePayload (serialized);
@@ -274,6 +276,15 @@ namespace LeechCraft
 			{
 				QStringList oldCats = ComputeUniqueCategories ();
 
+				QByteArray serialized;
+				{
+					QDataStream ds (&serialized, QIODevice::WriteOnly);
+					ds << quint8 (0)
+							<< quint16 (DADescrRemoved)
+							<< Descriptions_.at (index.row ()).ShortName_;
+				}
+				DeltaStorage_.Store ("osengines", Sync::CreatePayload (serialized));
+
 				beginRemoveRows (QModelIndex (), index.row (), index.row ());
 				Descriptions_.removeAt (index.row ());
 				endRemoveRows ();
@@ -282,11 +293,25 @@ namespace LeechCraft
 
 				QStringList newCats = ComputeUniqueCategories ();
 				emit categoriesChanged (newCats, oldCats);
+
+				emit newDeltasAvailable ("osengines");
 			}
 
 			void Core::SetTags (const QModelIndex& index, const QStringList& tags)
 			{
 				SetTags (index.row (), tags);
+
+				QByteArray serialized;
+				{
+					QDataStream ds (&serialized, QIODevice::WriteOnly);
+					ds << quint8 (0)
+							<< quint16 (DATagsChanged)
+							<< Descriptions_.at (index.row ()).ShortName_
+							<< tags;
+				}
+				DeltaStorage_.Store ("osengines", Sync::CreatePayload (serialized));
+
+				emit newDeltasAvailable ("osengines");
 			}
 
 			void Core::SetTags (int pos, const QStringList& tags)

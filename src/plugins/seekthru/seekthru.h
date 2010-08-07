@@ -86,6 +86,7 @@ namespace LeechCraft
 						int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
 				void categoriesChanged (const QStringList&, const QStringList&);
+				void newDeltasAvailable (const Sync::ChainID_t&);
 			};
 		};
 	};

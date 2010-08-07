@@ -18,11 +18,10 @@
 
 #ifndef PLUGININTERFACE_SYNCOPS_H
 #define PLUGININTERFACE_SYNCOPS_H
+#include <QDataStream>
+#include <QByteArray>
 #include <interfaces/isyncable.h>
 #include "piconfig.h"
-
-class QDataStream;
-class QByteArray;
 
 namespace LeechCraft
 {
