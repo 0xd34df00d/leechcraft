@@ -30,7 +30,6 @@ namespace LeechCraft
 		class VersionActionMapper
 		{
 		public:
-			typedef boost::function<void (QDataStream&)> SimpleFunctor_t;
 			typedef boost::function<bool (QDataStream&)> Functor_t;
 		private:
 			typedef QMap<ActionType, Functor_t> Action2Functor_t;
