@@ -59,7 +59,7 @@ namespace LeechCraft
 
 			QStringList Plugin::Provides () const
 			{
-				return QStringList ();
+				return QStringList ("syncplugin");
 			}
 
 			QStringList Plugin::Needs () const
@@ -80,4 +80,3 @@ namespace LeechCraft
 };
 
 Q_EXPORT_PLUGIN2 (leechcraft_syncer, LeechCraft::Plugins::Syncer::Plugin);
-
