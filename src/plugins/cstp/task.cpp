@@ -465,7 +465,7 @@ namespace LeechCraft
 				{
 					quint64 avail = Reply_->bytesAvailable ();
 					quint64 res = To_->write (Reply_->readAll ());
-					if ((-1 == res) ||
+					if ((static_cast<quint64> (-1) == res) ||
 							(res != avail))
 					{
 						qWarning () << Q_FUNC_INFO

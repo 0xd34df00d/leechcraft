@@ -50,9 +50,9 @@ namespace LeechCraft
 					: Type_ (MTChat)
 					, Direction_ (DIn)
 					, Entry_ (entry)
+					, Body_ (QString::fromUtf8 (message.body ().c_str ()))
 					, Variant_ (QString::fromUtf8 (session->target ().resource ().c_str ()))
 					, Session_ (session)
-					, Body_ (QString::fromUtf8 (message.body ().c_str ()))
 					{
 					}
 

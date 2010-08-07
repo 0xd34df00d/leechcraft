@@ -35,8 +35,8 @@ namespace LeechCraft
 			FindProxy::FindProxy (const Request& r, CategoriesSelector *cs, FindProxyType type)
 			: Toolbar_ (new QToolBar)
 			, R_ (r)
-			, CategoriesSelector_ (cs)
 			, FindProxyType_ (type)
+			, CategoriesSelector_ (cs)
 			{
 				ActionDownload_ = Toolbar_->addAction (tr ("Download"));
 				ActionDownload_->setProperty ("ActionIcon", "vgrabber_download");

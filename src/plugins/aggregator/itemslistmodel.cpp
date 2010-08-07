@@ -33,8 +33,8 @@ namespace LeechCraft
 			ItemsListModel::ItemsListModel (QObject *parent)
 			: QAbstractItemModel (parent)
 			, CurrentRow_ (-1)
-			, MayBeRichText_ (false)
 			, CurrentChannel_ (-1)
+			, MayBeRichText_ (false)
 			{
 				ItemHeaders_ << tr ("Name") << tr ("Date");
 			}
@@ -90,7 +90,7 @@ namespace LeechCraft
 				CurrentChannel_ = channel;
 				CurrentRow_ = -1;
 				CurrentItems_.clear ();
-				if (channel != -1)
+				if (channel != static_cast<IDType_t> (-1))
 				{
 					Core::Instance ().GetStorageBackend ()->
 						GetItems (CurrentItems_, channel);

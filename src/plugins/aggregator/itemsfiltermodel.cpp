@@ -31,9 +31,9 @@ namespace LeechCraft
 			ItemsFilterModel::ItemsFilterModel (QObject *parent)
 			: QSortFilterProxyModel (parent)
 			, HideRead_ (false)
-			, ItemsWidget_ (0)
 			, UnreadOnTop_ (XmlSettingsManager::Instance ()->
 					property ("UnreadOnTop").toBool ())
+			, ItemsWidget_ (0)
 			{
 				setDynamicSortFilter (true);
 

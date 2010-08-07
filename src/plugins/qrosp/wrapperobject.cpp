@@ -55,8 +55,8 @@ namespace LeechCraft
 					const QString& path)
 			: Type_ (type)
 			, Path_ (path)
-			, ThisMetaObject_ (0)
 			, ScriptAction_ (new Qross::Action (0, QUrl::fromLocalFile (path)))
+			, ThisMetaObject_ (0)
 			{
 				qRegisterMetaType<QUrl*> ("QUrl*");
 				qRegisterMetaType<QString*> ("QString*");
@@ -213,6 +213,8 @@ namespace LeechCraft
 				if (!strcmp (interfaceName, "IEmbedTab") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IEmbedTab/1.0"))
 					return static_cast<IEmbedTab*> (this);
+
+				return QObject::qt_metacast (interfaceName);
 			}
 
 			const QMetaObject* WrapperObject::metaObject () const
