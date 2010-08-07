@@ -49,6 +49,14 @@ namespace LeechCraft
 				qRegisterMetaTypeStreamOperators<UrlDescription> ("LeechCraft::Plugins::SeekThru::UrlDescription");
 				qRegisterMetaTypeStreamOperators<QueryDescription> ("LeechCraft::Plugins::SeekThru::QueryDescription");
 				qRegisterMetaTypeStreamOperators<Description> ("LeechCraft::Plugins::SeekThru::Description");
+
+				ActionMapper_.AddFunctor (0, DADescrAdded,
+						boost::bind (&Core::HandleDADescrAdded, this, _1));
+				ActionMapper_.AddFunctor (0, DADescrRemoved,
+						boost::bind (&Core::HandleDADescrRemoved, this, _1));
+				ActionMapper_.AddFunctor (0, DATagsChanged,
+						boost::bind (&Core::HandleDATagsChanged, this, _1));
+
 				ReadSettings ();
 			}
 
@@ -225,31 +233,9 @@ namespace LeechCraft
 				Q_FOREACH (const Sync::Payload& pl, payloads)
 				{
 					shouldResync = shouldResync || our.removeAll (pl);
-
-					Description descr;
-					QDataStream in (pl.Data_);
-					quint8 version = 0;
-					in >> version;
-					switch (version)
-					{
-					case 0:
-						in >> descr;
-						Descriptions_ << descr;
-						break;
-					default:
+					if (!ActionMapper_.Process (pl.Data_))
 						qWarning () << Q_FUNC_INFO
-								<< "unknown version"
-								<< version;
-						continue;
-					}
-
-					QList<Description>::iterator pos =
-							std::find_if (Descriptions_.begin (), Descriptions_.end (),
-									boost::bind (&Description::ShortName_, _1) == descr.ShortName_);
-					if (pos == Descriptions_.end ())
-						Descriptions_ << descr;
-					else
-						*pos = descr;
+								<< "failed to process the payload";
 				}
 
 				WriteSettings ();
@@ -300,11 +286,16 @@ namespace LeechCraft
 
 			void Core::SetTags (const QModelIndex& index, const QStringList& tags)
 			{
+				SetTags (index.row (), tags);
+			}
+
+			void Core::SetTags (int pos, const QStringList& tags)
+			{
 				QStringList oldCats = ComputeUniqueCategories ();
 
-				Descriptions_ [index.row ()].Tags_.clear ();
+				Descriptions_ [pos].Tags_.clear ();
 				Q_FOREACH (QString tag, tags)
-					Descriptions_ [index.row ()].Tags_ <<
+					Descriptions_ [pos].Tags_ <<
 						Proxy_->GetTagsManager ()->GetID (tag);
 
 				WriteSettings ();
@@ -678,6 +669,78 @@ namespace LeechCraft
 				settings.endArray ();
 			}
 
+			bool Core::HandleDADescrAdded (QDataStream& in)
+			{
+				Description descr;
+				in >> descr;
+				if (in.status () != QDataStream::Ok)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "bad stream status"
+							<< in.status ();
+					return false;
+				}
+
+				QList<Description>::iterator pos =
+						std::find_if (Descriptions_.begin (), Descriptions_.end (),
+								boost::bind (&Description::ShortName_, _1) == descr.ShortName_);
+				if (pos == Descriptions_.end ())
+					Descriptions_ << descr;
+				else
+					*pos = descr;
+				return true;
+			}
+
+			bool Core::HandleDADescrRemoved (QDataStream& in)
+			{
+				QString shortName;
+				in >> shortName;
+				if (in.status () != QDataStream::Ok)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "bad stream status"
+							<< in.status ();
+					return false;
+				}
+
+				QList<Description>::iterator pos =
+						std::find_if (Descriptions_.begin (), Descriptions_.end (),
+								boost::bind (&Description::ShortName_, _1) == shortName);
+				if (pos != Descriptions_.end ())
+					Descriptions_.erase (pos);
+				return false;
+			}
+
+			bool Core::HandleDATagsChanged (QDataStream& in)
+			{
+				QString shortName;
+				in >> shortName;
+				QStringList tags;
+				in >> tags;
+				if (in.status () != QDataStream::Ok)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "bad stream status"
+							<< in.status ();
+					return false;
+				}
+
+				QList<Description>::iterator pos =
+						std::find_if (Descriptions_.begin (), Descriptions_.end (),
+								boost::bind (&Description::ShortName_, _1) == shortName);
+				if (pos != Descriptions_.end ())
+				{
+					SetTags (std::distance (Descriptions_.begin (), pos), tags);
+					return true;
+				}
+				else
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not find the required description"
+							<< shortName;
+					return false;
+				}
+			}
 		};
 	};
 };

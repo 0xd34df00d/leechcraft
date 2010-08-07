@@ -23,6 +23,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
+#include <plugininterface/versionactionmapper.h>
 #include "description.h"
 #include "searchhandler.h"
 #include "deltastorage.h"
@@ -50,6 +51,16 @@ namespace LeechCraft
 				static const QString OS_;
 
 				Core ();
+
+				enum DeltaAction
+				{
+					DADescrAdded,
+					DADescrRemoved,
+					DATagsChanged,
+					DAMAX
+				};
+
+				Util::VersionActionMapper<DeltaAction> ActionMapper_;
 			public:
 				enum Roles
 				{
@@ -94,6 +105,7 @@ namespace LeechCraft
 				void Add (const QUrl& url);
 				void Remove (const QModelIndex&);
 				void SetTags (const QModelIndex&, const QStringList&);
+				void SetTags (int, const QStringList&);
 				QStringList GetCategories () const;
 				IFindProxy_ptr GetProxy (const LeechCraft::Request&);
 				IWebBrowser* GetWebBrowser () const;
@@ -104,6 +116,10 @@ namespace LeechCraft
 				void HandleProvider (QObject*);
 				void ReadSettings ();
 				void WriteSettings ();
+			public:
+				bool HandleDADescrAdded (QDataStream&);
+				bool HandleDADescrRemoved (QDataStream&);
+				bool HandleDATagsChanged (QDataStream&);
 			private slots:
 				void handleJobFinished (int);
 				void handleJobError (int);
