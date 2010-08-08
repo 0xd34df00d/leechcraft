@@ -41,7 +41,7 @@ namespace LeechCraft
 					<< "WTF? We cannot listen() on the local server but aren't running";
 				std::exit (Application::EGeneralSocketError);
 			}
-			else
+			else if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("plugin"))
 				std::exit (Application::EAlreadyRunning);
 		}
 		connect (Server_.get (),

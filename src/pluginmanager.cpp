@@ -72,13 +72,25 @@ namespace LeechCraft
 		return Object_ == item->Plugin_;
 	}
 
-	PluginManager::PluginManager (QObject *parent)
+	PluginManager::PluginManager (const QStringList& pluginPaths, QObject *parent)
 	: QAbstractItemModel (parent)
 	, DefaultPluginIcon_ (QIcon (":/resources/images/defaultpluginicon.svg"))
 	{
 		Headers_ << tr ("Name")
 			<< tr ("File");
-		FindPlugins ();
+
+		if (pluginPaths.isEmpty ())
+			FindPlugins ();
+		else
+		{
+			qDebug () << Q_FUNC_INFO << "explicit paths given, entering forced loading mode";
+			Q_FOREACH (const QString& path, pluginPaths)
+			{
+				qDebug () << "adding" << path;
+				QPluginLoader_ptr loader (new QPluginLoader (path));
+				PluginContainers_.push_back (loader);
+			}
+		}
 	}
 
 	PluginManager::~PluginManager ()
