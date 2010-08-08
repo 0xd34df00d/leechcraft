@@ -188,14 +188,18 @@ namespace LeechCraft
 							return QVariant ();
 					}
 				}
-				else if (role == Qt::ForegroundRole)
-					if (CurrentItems_ [index.row ()].Unread_ &&
-							XmlSettingsManager::Instance ()->
-							property ("UnreadCustomColor").toBool ())
+                                //Color mark an items as read/unread
+                                else if (role == Qt::ForegroundRole)
+                                       if (CurrentItems_ [index.row ()].Unread_) {
+                                            if (XmlSettingsManager::Instance ()->
+                                                property ("UnreadCustomColor").toBool ())
 						return XmlSettingsManager::Instance ()->
-							property ("UnreadItemsColor").value<QColor> ();
+                                                       property ("UnreadItemsColor").value<QColor> ();
+                                            else
+                                                return QApplication::palette().link().color();
+                                        }
 					else
-						return QVariant ();
+                                                return QApplication::palette().linkVisited().color();
 				else if (role == Qt::FontRole &&
 						CurrentItems_ [index.row ()].Unread_)
 					return XmlSettingsManager::Instance ()->
