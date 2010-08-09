@@ -26,6 +26,7 @@ namespace LeechCraft
 	namespace Util
 	{
 		class XmlSettingsDialog;
+		typedef boost::shared_ptr<XmlSettingsDialog> XmlSettingsDialog_ptr;
 	};
 };
 
@@ -47,7 +48,7 @@ public:
 	 * @return The XmlSettingsDialog object that manages the settings
 	 * dialog of the plugin.
 	 */
-	virtual boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const = 0;
+	virtual LeechCraft::Util::XmlSettingsDialog_ptr GetSettingsDialog () const = 0;
 
 	/** @brief Virtual destructor.
 	 */
