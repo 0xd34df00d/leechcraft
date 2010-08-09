@@ -115,6 +115,24 @@ namespace LeechCraft
 				p.drawText (leftPos, shiftFromTop,
 						textWidth, TitleHeight (option),
 						Qt::AlignBottom | Qt::AlignLeft, title);
+				int titleWidth = QFontMetrics (titleOption.font).width (title) + CPadding;
+
+				QFont tagsFont = option.font;
+				tagsFont.setItalic (true);
+
+				p.setFont (tagsFont);
+				p.drawText (leftPos + titleWidth, shiftFromTop,
+						textWidth - titleWidth, textHeight,
+						Qt::AlignBottom | Qt::AlignLeft, version);
+				titleWidth += QFontMetrics (titleOption.font).width (version) + CPadding;
+
+				QString tagsString = QFontMetrics (tagsFont).elidedText (tags.join ("; "),
+								Qt::ElideMiddle, textWidth - titleWidth);
+
+				p.setFont (tagsFont);
+				p.drawText (leftPos + titleWidth, shiftFromTop,
+						textWidth - titleWidth, textHeight,
+						Qt::AlignBottom | Qt::AlignRight, tagsString);
 
 				shiftFromTop += TitleHeight (option);
 
@@ -127,20 +145,7 @@ namespace LeechCraft
 
 				shiftFromTop += textHeight;
 
-				QFont tagsFont = option.font;
-				tagsFont.setItalic (true);
-				p.setFont (tagsFont);
-				if (selected)
-					p.drawText (leftPos, shiftFromTop,
-							textWidth, textHeight,
-							Qt::AlignBottom | Qt::AlignLeft,
-							tr ("Version %1 available").arg (version));
-				p.drawText (leftPos, shiftFromTop,
-						textWidth, textHeight,
-						Qt::AlignBottom | Qt::AlignRight, tags.join ("; "));
 				style->drawPrimitive (QStyle::PE_FrameGroupBox, &option, &p);
-
-				shiftFromTop += textHeight;
 
 				p.end ();
 
@@ -190,7 +195,7 @@ namespace LeechCraft
 				// one between webview and install/remove actions (if
 				// selected).
 				result.rheight () = TitleHeight (option) +
-						TextHeight (option) * 2 +
+						TextHeight (option) +
 						CActionsSize + CPadding * 2;
 				if (index == CurrentSelection_)
 				{
