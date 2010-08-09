@@ -40,6 +40,8 @@ SET (SRCS
 	itemhandlers/itemhandlernovalue.cpp
 	itemhandlers/itemhandlerpushbutton.cpp
 	itemhandlers/itemhandlercustomwidget.cpp
+	itemhandlers/itemhandlerdataview.cpp
+	widgets/dataviewwidget.cpp
 	)
 SET (HEADERS
     xmlsettingsdialog.h
@@ -76,9 +78,18 @@ SET (HEADERS
 	itemhandlers/itemhandlernovalue.h
 	itemhandlers/itemhandlerpushbutton.h
 	itemhandlers/itemhandlercustomwidget.h
+	itemhandlers/itemhandlerdataview.h
+	widgets/dataviewwidget.h
+	)
+SET (FORMS
+	widgets/dataviewwidget.ui
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ADD_LIBRARY (xmlsettingsdialog SHARED ${SRCS} ${MOC_SRCS})
+QT4_WRAP_UI (UIS_H ${FORMS})
+ADD_LIBRARY (xmlsettingsdialog SHARED
+	${SRCS}
+	${MOC_SRCS}
+	${UIS_H})
 TARGET_LINK_LIBRARIES (xmlsettingsdialog
 	${QT_LIBRARIES}
 	)
