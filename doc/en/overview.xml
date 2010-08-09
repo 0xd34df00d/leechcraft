@@ -5,16 +5,22 @@
 	</bookinfo>
 	<chapter id="architecture">
 		<title>LeechCraft architecture</title>
-		<para>LeechCraft is plugin-based. LeechCraft Core only ensures correct loading order, initializes plugins, interconnects them and routes messages in between. It also performs some common tasks like showing GUI to the user, merging settings from different plugins into one dialog or sharing cache and cookie base.</para>
-		<para>Plugins can communicate with each other either via a set of interfaces (which is based on but not limited to default LeechCraft interfaces found in <filename>/src/interfaces/</filename> directory) or using messaging system.</para>
+		<para>LeechCraft is plugin-based: LeechCraft Core only ensures correct loading and initialization order of plugins, initializes them, interconnects them and routes messages in between, while all the real work like BitTorrent implementation is done by plugins. Core also performs some common tasks like showing GUI to the user, merging settings from different plugins into one dialog or sharing cache and cookie base.</para>
+		<para>When LeechCraft starts up, it searches for plugins in directories relevant to the platform which it runs under. Plugins are basically just dynamic objects (<filename>libleechcraft_*.so</filename> on *NIX and <filename>libleechcraft_*.dll</filename> on Windows) being loaded by LeechCraft core through <function>dlopen</function> on *NIX and <function>LoadLibrary</function> on Windows at runtime. However, a plugin («virtual plugin») may be provided by another plugin («adaptor plugin») instead of being loaded from a shared library by LeechCraft Core. Virtual plugins are subject to the same plugin behavior rules mentioned a couple of paragraphs below.</para>
+		<para>Each plugin should have a class, an object of which is exposed via Qt's <function>Q_EXPORT_PLUGIN2</function> macro. The object of this class is created internally by Qt in that macro and may be obtained via <function>QPluginLoader::instance</function> method, if <classname>QPluginLoader</classname> is used to load the library (and it is in LeechCraft). So let's call that object the <emphasis>plugin instance object</emphasis> or just instance object.</para>
+		<para>The exported class should obviously be a <classname>QObject</classname> and also implement at least <classname>IInfo</classname> interface in order to be recognized by LeechCraft.</para>
+		<para>When LeechCraft starts up, it initializes the plugins it finds. Initialization is done in two passes: first, <function>IInfo::Init</function> is called on each found plugin, then, after all plugins have passed the first pass of initialization, <function>IInfo::SecondInit</function> is called. So, as a consequence, you basically cannot rely on other plugins before <function>IInfo::SecondInit</function>, particularly in <function>IInfo::Init</function>. So, you must not request the list of plugins, emit messages, etc before <function>IInfo::SecondInit</function> is called. However, after <function>IInfo::Init</function> your plugin must be in a correct and usable state, because other plugins may begin to use it. Basically that means that you need to initialize all your datamembers in <function>IInfo::Init</function>.</para>
+	</chapter>
+	<chapter id="communication">
+		<para>Plugins can communicate with each other either via a set of interfaces (which is based on but not limited to default LeechCraft interfaces found in <filename>/src/interfaces/</filename> directory) or using the messaging system.</para>
 		<para>Let's consider each of these methods.</para>
 		<sect1 id="message-communication">
 			<title>Message-based communication</title>
-			<para>This method is more useful when you don't know the exact plugin, or, at least, what does this plugin look like (what interfaces it implements) and just talking by such messages with other plugins is OK for you.</para>
-			<para>Communcation is done using <structname>LeechCraft::Entity</structname> (found in <filename>/src/interfaces/structures.h</filename>) structure which can be considered as a packet or a message. Plugins send these <structname>Entity</structname> messages, LeechCraft Core catches them, andâ¦ Here the story begins.</para>
-			<para>So, you have two types of messages. Same <structname>Entity</structname> is used for both of them, and they differ only by the way of sending them out of your plugin.</para>
+			<para>This method is more useful when you don't know the exact plugin, or, at least, what this plugin looks like (what interfaces it implements) and just talking by such messages with other plugins is OK for you.</para>
+			<para>Communcation is done using <structname>LeechCraft::Entity</structname> (found in <filename>/src/interfaces/structures.h</filename>) structure which can be considered as a packet or a message. Plugins send these <structname>Entity</structname> messages, LeechCraft Core catches them, and… Here the story begins.</para>
+			<para>So, you have two types of messages. Same <structname>Entity</structname> is used for both of them, and they differ only in the way of sending them out of your plugin.</para>
 			<para>First type of messages is <emphasis>notification</emphasis>. It's used to notify Core or other plugins that a new entity appeared, but your plugin doesn't care what would happen with it after the announcement.</para>
-			<para>Let's consider a BitTorrent client that has just finished a download as an example. It would <emphasis>notify</emphasis> other parts of LeechCraft about files it just finished downloading but it doesn't care what would happen with them next, would they be handled or not, etc.</para>
+			<para>Let's consider a BitTorrent client that has just finished a download as an example. It would <emphasis>notify</emphasis> other parts of LeechCraft about files it just finished downloading but it doesn't care what will happen with them next, would they be handled or not, etc.</para>
 			<para>Because the result of such a message isn't required at the point of notification, the signal used to send this message doesn't block. Instead, it queues the message in the main event loop and returns immediately, handling all the delivery duty later, when control gets back to the event loop.</para>
 			<para>To send a <emphasis>notification</emphasis> message, use the
 				<funcsynopsis>
@@ -23,9 +29,9 @@
 						<paramdef>LeechCraft::Entity *<parameter>entity</parameter></paramdef>
 					</funcprototype>
 				</funcsynopsis>
-				signal. Just declare it in your plugin instance object (the one you export with <function>Q_EXPORT_PLUGIN2</function>), and LeechCraft core would automatically detect it at runtime.</para>
+				signal. Just declare it in your plugin instance object (the one you export with <function>Q_EXPORT_PLUGIN2</function>), and LeechCraft core will automatically detect it at runtime.</para>
 			<para>Second type is <emphasis>delegation request</emphasis>. It's used to <emphasis>delegate</emphasis> a task to another plugin and hope there is such plugin that can handle it. This way you get access to the plugin that would actually handle the task and can communicate with it. The corresponding signal blocks.</para>
-			<para>For instance, consider the Aggregator feed reader. It doesn't download feeds itself, instead, it delegates them to another plugin by emitting a <emphasis>delegation request</emphasis>. After returning from the signal used to emit such a message, the sender plugin would know whether the entity was actually delegated, and if it was, which plugin is handling it.</para>
+			<para>For instance, consider the Aggregator feed reader. It doesn't download feeds itself, instead, it delegates them to another plugin by emitting a <emphasis>delegation request</emphasis>. After returning from the signal used to emit such a message, the sender plugin will know whether the entity was actually delegated, and if it was, which plugin is handling it.</para>
 			<para>To send a <emphasis>delegation request</emphasis>, use the
 				<funcsynopsis>
 					<funcprototype>
@@ -35,10 +41,10 @@
 						<paramdef>QObject **<parameter>handler</parameter> = 0</paramdef>
 					</funcprototype>
 				</funcsynopsis>
-				signal. Here, if the delegation was successful, <parameter>handler</parameter> would be set to point to the object that handles this delegation request and <parameter>id</parameter> would be the ID of the task in that handler. It's guaranteed to be a some non-negative value. To check if the delegation request was successful, the following trick is commonly applied: before emitting the <function>delegateEntity</function> signal, set the <parameter>id</parameter> to some negative value like -1 and after emitting check if it is still -1. If it is, the delegation failed.</para>
+				signal. Here, if the delegation was successful, <parameter>handler</parameter> would point to the object that handles this delegation request and <parameter>id</parameter> would be the ID of the task in that handler. It's guaranteed to be a some non-negative value. To check if the delegation request was successful, the following trick is commonly applied: before emitting the <function>delegateEntity</function> signal, set the <parameter>id</parameter> to some negative value like -1 and after emitting check if it is still -1. If it is, the delegation failed.</para>
 				<example>
 					<title>Delegating an entity and checking success of delegation</title>
-					<para>In this example we emit a delegation entity for downloading a given <parameter>url</parameter> to <parameter>location</parameter> with task parameters commonly used for internal LeechCraft tasks (user does not have to know about the process of downloading news feeds, for example). We check if the delegation was successful, and if it failed, we use <function>LeechCraft::Util::MakeNotification</function> to create a user-notification (an <structname>Entity</structname> that represents some notification for the user, not to be confused with notification <structname>Entity</structname>) entity with human-readable error title, message and priority, and we emit it as a notification via <function>gotEntity</function>. Actually, this is a real piece of code from LackMan plugin, the package manager.</para>
+					<para>In this example we emit a delegation entity for downloading a given <parameter>url</parameter> to <parameter>location</parameter> with task parameters commonly used for internal LeechCraft tasks (a user does not have to know about the process of downloading news feeds, for example). We check if the delegation was successful, and if it failed, we use <function>LeechCraft::Util::MakeNotification</function> to create a user-notification (an <structname>Entity</structname> that represents some notification for the user, not to be confused with notification <structname>Entity</structname>) entity with a human-readable error title, message and priority, and we emit it as a notification via <function>gotEntity</function>. Actually, this is a real piece of code from LackMan plugin, the package manager.</para>
 					<programlisting language="c++">
 Entity e = Util::MakeEntity (url,
 		location,
@@ -74,10 +80,10 @@ if (id == -1)
 		</sect1>
 		<sect1>
 			<title>Interfaces-based communication</title>
-			<para>This is much simpler approach, but it is much more "static". Once you have a pointer to <classname>QObject</classname> you want to communicate with, you can try to <function>qobject_cast</function> it to the interface you want.</para>
+			<para>This is a much simpler approach, but it is much more «static» as well. Once you have a pointer to <classname>QObject</classname> you want to communicate with, you can try to <function>qobject_cast</function> it to the interface you want.</para>
 			<para>There are basically three ways to obtain a pointer to another plugin:
 				<itemizedlist>
-					<listitem><para>It may be set by LeechCraft Core in its <function>delegateEntity</function> handler (look at previous section for more information): the third parameter of this signal is the pointer to the pointer to the handler of the entity.</para></listitem>
+					<listitem><para>It may be set by LeechCraft Core in its <function>delegateEntity</function> handler (see previous section for more information): the third parameter of this signal is the pointer to the pointer to the handler of the entity.</para></listitem>
 					<listitem><para>It may be obtained by your plugin in <function>IInfo::SetProvider</function>, have you returned the proper dependencies list from either <function>IInfo::Needs</function> or <function>IInfo::Uses</function>.</para></listitem>
 					<listitem><para>You may obtain the list of all plugins yourself via the plugins manager that you can access via <function>ICoreProxy::GetPluginsManager</function>. The <classname>ICoreProxy</classname> is passed to your <function>IInfo::Init</function>.</para></listitem>
 				</itemizedlist>
@@ -101,7 +107,7 @@ IWebBrowser* Core::GetWebBrowser () const
 			</example>
 			<example>
 				<title>More sophisticated task delegation and error handling.</title>
-				<para>This is another bunch of code taked from the Aggregator. This is how it delegates the downloading of fresh versions of feed files to another plugin.</para>
+				<para>This is another bunch of code taken from the Aggregator. This is how it delegates the downloading of fresh versions of feed files to another plugin.</para>
 				<programlisting language="c++">
 <![CDATA[
 void Core::UpdateFeed (const QString& url)
