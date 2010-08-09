@@ -20,9 +20,11 @@
 #define PLUGINS_LACKMAN_LACKMAN_H
 #include <QWidget>
 #include <QTranslator>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iembedtab.h>
+#include <interfaces/ihavesettings.h>
 #include "ui_lackman.h"
 
 class QSortFilterProxyModel;
@@ -38,15 +40,17 @@ namespace LeechCraft
 			class Plugin : public QWidget
 						 , public IInfo
 						 , public IEmbedTab
+						 , public IHaveSettings
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab)
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings)
 
 				Ui::LackMan Ui_;
 				std::auto_ptr<QTranslator> Translator_;
 				QSortFilterProxyModel *FilterString_;
 				QSortFilterProxyModel *FilterByTags_;
 				TypeFilterProxyModel *TypeFilter_;
+				Util::XmlSettingsDialog_ptr SettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -62,6 +66,8 @@ namespace LeechCraft
 
 				QWidget* GetTabContents ();
 				QToolBar* GetToolBar () const;
+
+				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 			private slots:
 				void handleTagsUpdated ();
 				void on_Apply__released ();

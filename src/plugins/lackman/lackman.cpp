@@ -24,6 +24,7 @@
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
 #include "typefilterproxymodel.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,10 @@ namespace LeechCraft
 				Translator_.reset (Util::InstallTranslator ("lackman"));
 
 				Ui_.setupUi (this);
+
+				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+						"lackmansettings.xml");
 
 				Core::Instance ().SetProxy (proxy);
 				Core::Instance ().FinishInitialization ();
@@ -143,6 +148,11 @@ namespace LeechCraft
 			QToolBar* Plugin::GetToolBar () const
 			{
 				return 0;
+			}
+
+			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+			{
+				return SettingsDialog_;
 			}
 
 			void Plugin::handleTagsUpdated ()

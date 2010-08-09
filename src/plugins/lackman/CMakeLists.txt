@@ -45,6 +45,7 @@ SET (SRCS
 	packageprocessor.cpp
 	versioncomparator.cpp
 	typefilterproxymodel.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	lackman.h
@@ -61,6 +62,7 @@ SET (HEADERS
 	packageprocessor.h
 	versioncomparator.h
 	typefilterproxymodel.h
+	xmlsettingsmanager.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts
@@ -116,3 +118,4 @@ ENDIF (TEST)
 
 INSTALL (TARGETS leechcraft_lackman DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES lackmansettings.xml DESTINATION ${LC_SETTINGS_DEST})
