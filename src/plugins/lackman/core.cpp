@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <boost/bind.hpp>
+#include <QApplication>
 #include <QString>
 #include <QStandardItemModel>
 #include <QDir>
