@@ -186,18 +186,18 @@ namespace LeechCraft
 
 				if (ret)
 				{
-					QString stderr = QString::fromUtf8 (unarch->readAllStandardError ());
+					QString errString = QString::fromUtf8 (unarch->readAllStandardError ());
 					qWarning () << Q_FUNC_INFO
 							<< "unpacker exited with"
 							<< ret
-							<< stderr
+							<< errString
 							<< "for"
 							<< packageId
 							<< unarch->property ("Path").toString ();
 
 					QString errorString = tr ("Unable to unpack package archive, unpacker exited with %1: %2.")
 							.arg (ret)
-							.arg (stderr);
+							.arg (errString);
 					emit packageInstallError (packageId, errorString);
 
 					CleanupDir (stagingDir);
@@ -289,18 +289,18 @@ namespace LeechCraft
 			{
 				sender ()->deleteLater ();
 
-				QByteArray stderr = qobject_cast<QProcess*> (sender ())->readAllStandardError ();
+				QByteArray errString = qobject_cast<QProcess*> (sender ())->readAllStandardError ();
 				qWarning () << Q_FUNC_INFO
 						<< "unable to unpack for"
 						<< sender ()->property ("PackageID").toInt ()
 						<< sender ()->property ("Path").toString ()
 						<< "with"
 						<< error
-						<< stderr;
+						<< errString;
 
 				QString errorString = tr ("Unable to unpack package archive, unpacker died with %1: %2.")
 						.arg (error)
-						.arg (QString::fromUtf8 (stderr));
+						.arg (QString::fromUtf8 (errString));
 				emit packageInstallError (sender ()->property ("PackageID").toInt (),
 						errorString);
 

@@ -32,7 +32,7 @@ namespace LeechCraft
 		namespace LackMan
 		{
 			class RepoInfo;
-			class PackageInfo;
+			struct PackageInfo;
 
 			class Storage : public QObject
 			{
