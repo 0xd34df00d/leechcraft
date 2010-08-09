@@ -61,6 +61,7 @@
 #include "handlerchoicedialog.h"
 #include "tagsmanager.h"
 #include "fancypopupmanager.h"
+#include "application.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -92,7 +93,15 @@ LeechCraft::Core::Core ()
 
 	StorageBackend_->Prepare ();
 
-	PluginManager_ = new PluginManager (this);
+	QStringList paths;
+	boost::program_options::variables_map map = qobject_cast<Application*> (qApp)->GetVarMap ();
+	if (map.count ("plugin"))
+	{
+		std::vector<std::string> plugins = map ["plugin"].as<std::vector<std::string> > ();
+		Q_FOREACH (const std::string& plugin, plugins)
+			paths << QDir (QString::fromUtf8 (plugin.c_str ())).absolutePath ();
+	}
+	PluginManager_ = new PluginManager (paths, this);
 
 	QList<QByteArray> proxyProperties;
 	proxyProperties << "ProxyEnabled"

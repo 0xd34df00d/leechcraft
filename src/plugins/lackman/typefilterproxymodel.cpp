@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,67 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "syncer.h"
-#include <QIcon>
+#include "typefilterproxymodel.h"
+#include "packagesmodel.h"
 
 namespace LeechCraft
 {
 	namespace Plugins
 	{
-		namespace Syncer
+		namespace LackMan
 		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
+			TypeFilterProxyModel::TypeFilterProxyModel (QObject *parent)
+			: QSortFilterProxyModel (parent)
+			, Mode_ (FMAll)
 			{
 			}
 
-			void Plugin::SecondInit ()
+			void TypeFilterProxyModel::SetFilterMode (TypeFilterProxyModel::FilterMode fm)
 			{
+				Mode_ = fm;
+				invalidateFilter ();
 			}
 
-			void Plugin::Release ()
+			bool TypeFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
 			{
+				QModelIndex index = sourceModel ()->index (row, 0, parent);
+				switch (Mode_)
+				{
+				case FMInstalled:
+					return index.data (PackagesModel::PMRInstalled).toBool ();
+				case FMNotInstalled:
+					return !index.data (PackagesModel::PMRInstalled).toBool ();
+				case FMUpgradable:
+					return index.data (PackagesModel::PMRUpgradable).toBool ();
+				case FMAll:
+				default:
+					return true;
+				}
 			}
-
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.Syncer";
-			}
-
-			QString Plugin::GetName () const
-			{
-				return "Syncer";
-			}
-
-			QString Plugin::GetInfo () const
-			{
-				return tr ("Synchronization plugin for LeechCraft");
-			}
-
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon ();
-			}
-
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ("syncplugin");
-			}
-
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
-		};
-	};
-};
-
-Q_EXPORT_PLUGIN2 (leechcraft_syncer, LeechCraft::Plugins::Syncer::Plugin);
+		}
+	}
+}

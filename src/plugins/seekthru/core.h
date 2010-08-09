@@ -23,8 +23,11 @@
 #include <interfaces/structures.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
+#include <interfaces/isyncable.h>
+#include <plugininterface/versionactionmapper.h>
 #include "description.h"
 #include "searchhandler.h"
+#include "deltastorage.h"
 
 class IWebBrowser;
 
@@ -44,10 +47,20 @@ namespace LeechCraft
 				QList<Description> Descriptions_;
 				QStringList Headers_;
 				ICoreProxy_ptr Proxy_;
+				DeltaStorage DeltaStorage_;
 
 				static const QString OS_;
 
 				Core ();
+
+				enum DeltaAction
+				{
+					DADescrAdded,
+					DADescrRemoved,
+					DATagsChanged
+				};
+
+				Util::VersionActionMapper<DeltaAction> ActionMapper_;
 			public:
 				enum Roles
 				{
@@ -79,6 +92,12 @@ namespace LeechCraft
 
 				void SetProvider (QObject*, const QString&);
 				bool CouldHandle (const LeechCraft::Entity&) const;
+
+				Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&);
+				Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&);
+				void PurgeNewDeltas (const Sync::ChainID_t&);
+				void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
+
 				/** Fetches the searcher from the url.
 				 *
 				 * @param[in] url The url with the search description.
@@ -91,11 +110,16 @@ namespace LeechCraft
 				IWebBrowser* GetWebBrowser () const;
 				void HandleEntity (const QString&, const QString& = QString ());
 			private:
+				void SetTags (int, const QStringList&);
 				QStringList ComputeUniqueCategories () const;
 				Description ParseData (const QString&, const QString&);
 				void HandleProvider (QObject*);
 				void ReadSettings ();
 				void WriteSettings ();
+			public:
+				bool HandleDADescrAdded (QDataStream&);
+				bool HandleDADescrRemoved (QDataStream&);
+				bool HandleDATagsChanged (QDataStream&);
 			private slots:
 				void handleJobFinished (int);
 				void handleJobError (int);
@@ -106,6 +130,7 @@ namespace LeechCraft
 						int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
 				void categoriesChanged (const QStringList&, const QStringList&);
+				void newDeltasAvailable (const Sync::ChainID_t&);
 			};
 		};
 	};

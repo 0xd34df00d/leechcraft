@@ -123,6 +123,7 @@ namespace LeechCraft
 		void FillTray ();
 		void FillToolMenu ();
 		void InitializeShortcuts ();
+		void InitializeDataSources ();
 	};
 };
 

@@ -42,16 +42,16 @@ namespace LeechCraft
 			}
 
 			DepTreeBuilder::VertexInfo::VertexInfo (int packageId)
-			: IsFulfilled_ (false)
+			: PackageId_ (packageId)
+			, IsFulfilled_ (false)
 			, Type_ (TAll)
-			, PackageId_ (packageId)
 			{
 			}
 
 			DepTreeBuilder::VertexInfo::VertexInfo (const QString& depName)
-			: IsFulfilled_ (false)
+			: Dependency_ (depName)
+			, IsFulfilled_ (false)
 			, Type_ (TAny)
-			, Dependency_ (depName)
 			{
 			}
 

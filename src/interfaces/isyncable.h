@@ -21,6 +21,7 @@
 #include <QByteArray>
 #include <QSet>
 #include <QList>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -47,11 +48,13 @@ namespace LeechCraft
 	}
 }
 
+Q_DECLARE_METATYPE (LeechCraft::Sync::ChainID_t);
+
 /** @brief Interface for plugins that have content/data/settings that
  * can be synchronized via other plugins — syncers.
  *
  * To notify about new deltas, the following signal is expected:
- * newDeltasAvailable(const ChainID_t& chain, const QList<LeechCraft::Delta>& deltas)
+ * newDeltasAvailable(const ChainID_t& chain)
  */
 class ISyncable
 {

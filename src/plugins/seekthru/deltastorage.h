@@ -16,35 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-#include "itemhandleroptionssetvalue.h"
-#include <QHash>
-
-class QComboBox;
+#ifndef PLUGINS_SEEKTHRU_DELTASTORAGE_H
+#define PLUGINS_SEEKTHRU_DELTASTORAGE_H
+#include <QObject>
+#include <QDir>
+#include <interfaces/isyncable.h>
 
 namespace LeechCraft
 {
-	class ItemHandlerFactory;
-
-	class ItemHandlerCombobox : public ItemHandlerOptionsSetValue
+	namespace Plugins
 	{
-		ItemHandlerFactory *Factory_;
+		namespace SeekThru
+		{
+			class DeltaStorage : public QObject
+			{
+				Q_OBJECT
 
-		QHash<QString, QComboBox*> Propname2Combobox_;
-		QHash<QString, QDomElement> Propname2Item_;
-	public:
-		ItemHandlerCombobox (ItemHandlerFactory*);
-		virtual ~ItemHandlerCombobox ();
+				QString ID_;
+			public:
+				DeltaStorage (const QString&, QObject* = 0);
 
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
-	protected:
-		QVariant GetValue (QObject*) const;
-	private:
-		void SetDataSource (const QString&, QAbstractItemModel*);
-	};
-};
+				void Store (const Sync::ChainID_t&, const Sync::Payload&);
+				void Store (const Sync::ChainID_t&, const Sync::Payloads_t&);
+
+				Sync::Payloads_t Get (const Sync::ChainID_t&) const;
+				void Purge (const Sync::ChainID_t&);
+			private:
+				QDir GetDir (const Sync::ChainID_t&) const;
+				int GetLastFileNum (const Sync::ChainID_t&) const;
+				void SetLastFileNum (const Sync::ChainID_t&, int) const;
+				void StoreImpl (const QString&, const Sync::Payload&);
+			};
+		}
+	}
+}
 
 #endif

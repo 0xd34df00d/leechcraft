@@ -16,35 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-#include "itemhandleroptionssetvalue.h"
-#include <QHash>
-
-class QComboBox;
+#ifndef PLUGININTERFACE_SYNCOPS_H
+#define PLUGININTERFACE_SYNCOPS_H
+#include <QDataStream>
+#include <QByteArray>
+#include <interfaces/isyncable.h>
+#include "piconfig.h"
 
 namespace LeechCraft
 {
-	class ItemHandlerFactory;
-
-	class ItemHandlerCombobox : public ItemHandlerOptionsSetValue
+	namespace Sync
 	{
-		ItemHandlerFactory *Factory_;
+		PLUGININTERFACE_API bool operator== (const Payload&, const Payload&);
 
-		QHash<QString, QComboBox*> Propname2Combobox_;
-		QHash<QString, QDomElement> Propname2Item_;
-	public:
-		ItemHandlerCombobox (ItemHandlerFactory*);
-		virtual ~ItemHandlerCombobox ();
+		PLUGININTERFACE_API QDataStream& operator<< (QDataStream&, const Payload&);
+		PLUGININTERFACE_API QDataStream& operator>> (QDataStream&, Payload&);
+		PLUGININTERFACE_API QByteArray Serialize (const Payload&);
+		PLUGININTERFACE_API Payload Deserialize (const QByteArray&);
 
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
-	protected:
-		QVariant GetValue (QObject*) const;
-	private:
-		void SetDataSource (const QString&, QAbstractItemModel*);
-	};
-};
+		PLUGININTERFACE_API Payload CreatePayload (const QByteArray&);
+	}
+}
 
 #endif

@@ -7,7 +7,7 @@
 			<label lang="en" value="Plugin communication" />
 			<item type="groupbox" property="TestOnly" state="on" checkable="true">
 				<label lang="en" value="Test only these extensions" />
-				<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 ogg">
+				<item type="lineedit" property="TestExtensions" default="avi flac flv mkv mp3 mp4 ogg">
 					<label lang="en" value="Extenstions list:" />
 				</item>
 			</item>

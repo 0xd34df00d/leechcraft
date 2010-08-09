@@ -16,35 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-#include "itemhandleroptionssetvalue.h"
-#include <QHash>
-
-class QComboBox;
+#ifndef TYPEFILTERPROXYMODEL_H
+#define TYPEFILTERPROXYMODEL_H
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
-	class ItemHandlerFactory;
-
-	class ItemHandlerCombobox : public ItemHandlerOptionsSetValue
+	namespace Plugins
 	{
-		ItemHandlerFactory *Factory_;
+		namespace LackMan
+		{
+			class TypeFilterProxyModel : public QSortFilterProxyModel
+			{
+				Q_OBJECT
+			public:
+				enum FilterMode
+				{
+					FMAll,
+					FMInstalled,
+					FMUpgradable,
+					FMNotInstalled
+				};
+			private:
+				FilterMode Mode_;
+			public:
+				TypeFilterProxyModel (QObject* = 0);
 
-		QHash<QString, QComboBox*> Propname2Combobox_;
-		QHash<QString, QDomElement> Propname2Item_;
-	public:
-		ItemHandlerCombobox (ItemHandlerFactory*);
-		virtual ~ItemHandlerCombobox ();
-
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
-	protected:
-		QVariant GetValue (QObject*) const;
-	private:
-		void SetDataSource (const QString&, QAbstractItemModel*);
-	};
-};
+				void SetFilterMode (FilterMode);
+			protected:
+				bool filterAcceptsRow (int, const QModelIndex&) const;
+			};
+		}
+	}
+}
 
 #endif

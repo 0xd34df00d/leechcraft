@@ -33,6 +33,8 @@ namespace LeechCraft
 	{
 		namespace LackMan
 		{
+			class TypeFilterProxyModel;
+
 			class Plugin : public QWidget
 						 , public IInfo
 						 , public IEmbedTab
@@ -44,6 +46,7 @@ namespace LeechCraft
 				std::auto_ptr<QTranslator> Translator_;
 				QSortFilterProxyModel *FilterString_;
 				QSortFilterProxyModel *FilterByTags_;
+				TypeFilterProxyModel *TypeFilter_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -63,6 +66,7 @@ namespace LeechCraft
 				void handleTagsUpdated ();
 				void on_Apply__released ();
 				void on_Cancel__released ();
+				void on_PackageStatus__currentIndexChanged (int);
 			signals:
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);

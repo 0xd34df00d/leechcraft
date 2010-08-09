@@ -477,7 +477,7 @@ namespace LeechCraft
 							<< "got exception:"
 							<< e.what ();
 					QString str = tr ("Unable to remove package %1 "
-								"when updating to package %2")
+								"while updating to package %2")
 							.arg (oldId)
 							.arg (newId);
 					emit packageInstallError (newId, str);

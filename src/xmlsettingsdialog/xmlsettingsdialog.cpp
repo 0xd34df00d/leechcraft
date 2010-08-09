@@ -191,6 +191,12 @@ void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 			SLOT (handleCustomDestroyed ()));
 }
 
+void XmlSettingsDialog::SetDataSource (const QString& property,
+		QAbstractItemModel *dataSource)
+{
+	HandlersManager_->SetDataSource (property, dataSource);
+}
+
 void XmlSettingsDialog::SetPage (int page)
 {
 	Pages_->setCurrentIndex (page);
@@ -400,7 +406,6 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
 
 QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
 {
-	QString type = item.attribute ("type");
 	QString property = item.attribute ("property");
 
 	QVariant value;

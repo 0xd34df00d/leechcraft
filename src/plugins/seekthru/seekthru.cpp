@@ -30,11 +30,9 @@ namespace LeechCraft
 	{
 		namespace SeekThru
 		{
-			using namespace LeechCraft::Util;
-
 			void SeekThru::Init (ICoreProxy_ptr proxy)
 			{
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("seekthru"));
+				Translator_.reset (Util::InstallTranslator ("seekthru"));
 
 				Core::Instance ().SetProxy (proxy);
 
@@ -62,10 +60,14 @@ namespace LeechCraft
 						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)),
 						this,
 						SIGNAL (categoriesChanged (const QStringList&, const QStringList&)));
+				connect (&Core::Instance (),
+						SIGNAL (newDeltasAvailable (const Sync::ChainID_t&)),
+						this,
+						SIGNAL (newDeltasAvailable (const Sync::ChainID_t&)));
 
 				Core::Instance ().DoDelayedInit ();
 
-				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
+				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 						"seekthrusettings.xml");
 				XmlSettingsDialog_->SetCustomWidget ("SearchersList", new SearchersList);
@@ -160,22 +162,25 @@ namespace LeechCraft
 				return Chains_;
 			}
 
-			Sync::Payloads_t SeekThru::GetAllDeltas (const Sync::ChainID_t&) const
+			Sync::Payloads_t SeekThru::GetAllDeltas (const Sync::ChainID_t& chainId) const
 			{
-				return Sync::Payloads_t ();
+				return Core::Instance ().GetAllDeltas (chainId);
 			}
 
-			Sync::Payloads_t SeekThru::GetNewDeltas (const Sync::ChainID_t&) const
+			Sync::Payloads_t SeekThru::GetNewDeltas (const Sync::ChainID_t& chainId) const
 			{
-				return Sync::Payloads_t ();
+				return Core::Instance ().GetNewDeltas (chainId);
 			}
 
-			void SeekThru::PurgeNewDeltas (const Sync::ChainID_t&)
+			void SeekThru::PurgeNewDeltas (const Sync::ChainID_t& chainId)
 			{
+				Core::Instance ().PurgeNewDeltas (chainId);
 			}
 
-			void SeekThru::ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&)
+			void SeekThru::ApplyDeltas (const Sync::Payloads_t& payloads,
+					const Sync::ChainID_t& chainId)
 			{
+				Core::Instance ().ApplyDeltas (payloads, chainId);
 			}
 
 			void SeekThru::handleError (const QString& error)
@@ -187,10 +192,8 @@ namespace LeechCraft
 			{
 				emit gotEntity (Util::MakeNotification ("SeekThru", error, PWarning_));
 			}
-
-			Q_EXPORT_PLUGIN2 (leechcraft_seekthru, SeekThru);
-
 		};
 	};
 };
 
+Q_EXPORT_PLUGIN2 (leechcraft_seekthru, LeechCraft::Plugins::SeekThru::SeekThru);

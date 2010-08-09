@@ -383,7 +383,6 @@ namespace LeechCraft
 
 			void PackagesDelegate::handleAction ()
 			{
-				return;
 				QAction *sAction = qobject_cast<QAction*> (sender ());
 				if (!sAction)
 				{
@@ -416,7 +415,7 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO
 							<< e.what ();
 					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
-							tr ("LeechCraft"),
+							"LeechCraft",
 							tr ("Unable to mark package, reverting.") + "<br />" + QString::fromUtf8 (e.what ()));
 
 					sAction->setChecked (false);

@@ -81,8 +81,8 @@ namespace LeechCraft
 					const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am, QObject *parent)
 			: QObject (parent)
-			, Service_ (service)
 			, Reply_ (0)
+			, Service_ (service)
 			{
 				Workers_ [ImagebinCa] = Worker_ptr (new ImagebinWorker);
 

@@ -43,6 +43,7 @@ class QPushButton;
 class QDomElement;
 class QFormLayout;
 class QDomDocument;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
@@ -117,6 +118,17 @@ namespace LeechCraft
 			 */
 			XMLSETTINGSMANAGER_API void SetCustomWidget (const QString& name,
 					QWidget *widget);
+
+			/** @brief Sets the source model for the given property.
+			 *
+			 * Sets the datasource for the given item with the given
+			 * property name to be the given source model.
+			 *
+			 * @param[in] name The identifier of the property.
+			 * @param[in] source The new datasource.
+			 */
+			XMLSETTINGSMANAGER_API void SetDataSource (const QString& property,
+					QAbstractItemModel *source);
 
 			/** @brief Sets the current page to page.
 			 *

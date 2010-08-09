@@ -33,6 +33,7 @@ SET (SRCS
 	wizardgenerator.cpp
 	startupfirstpage.cpp
 	tagsasker.cpp
+	deltastorage.cpp
 	)
 SET (HEADERS
 	seekthru.h
@@ -45,6 +46,7 @@ SET (HEADERS
 	wizardgenerator.h
 	startupfirstpage.h
 	tagsasker.h
+	deltastorage.h
 	)
 SET (TRANSLATIONS
 	leechcraft_seekthru_ru_RU.ts

@@ -64,40 +64,10 @@
 			<item type="customwidget" name="AppQStyle">
 				<label lang="en" value="Style:" />
 			</item>
-			<item type="combobox" property="Language">
+			<item type="combobox" property="Language" mayHaveDataSource="true">
 				<label lang="en" value="Language:" />
 				<option name="system" default="true">
 					<label lang="en" value="System" />
-				</option>
-				<option name="ar">
-					<label lang="en" value="Arabic (العربية)" />
-				</option>
-				<option name="de">
-					<label lang="en" value="German (Deutsch)" />
-				</option>
-				<option name="en">
-					<label lang="en" value="English" />
-				</option>
-				<option name="eo">
-					<label lang="en" value="Esperanto" />
-				</option>
-				<option name="es">
-					<label lang="en" value="Spanish" />
-				</option>
-				<option name="it">
-					<label lang="en" value="Italian (Italiano)" />
-				</option>
-				<option name="pl">
-					<label lang="en" value="Polish (Polski)" />
-				</option>
-				<option name="ru_RU">
-					<label lang="en" value="Russian (Русский)" />
-				</option>
-				<option name="es">
-					<label lang="en" value="Spanish (Español)" />
-				</option>
-				<option name="uk_UA">
-					<label lang="en" value="Ukrainian (Українська)" />
 				</option>
 			</item>
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">

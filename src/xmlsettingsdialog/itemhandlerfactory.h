@@ -18,8 +18,10 @@
 
 #ifndef XMLSETTINGSDIALOG_ITEMHANDLERFACTORY_H
 #define XMLSETTINGSDIALOG_ITEMHANDLERFACTORY_H
+#include <boost/function.hpp>
 #include <QList>
 #include <QDomElement>
+#include <QHash>
 #include "itemhandlers/itemhandlerbase.h"
 
 namespace LeechCraft
@@ -34,6 +36,10 @@ namespace LeechCraft
 	class ItemHandlerFactory
 	{
 		QList<ItemHandlerBase_ptr> Handlers_;
+	public:
+		typedef boost::function<void (const QString&, QAbstractItemModel*)> DataSourceSetter_t;
+	private:
+		QHash<QString, DataSourceSetter_t> Propname2DataSourceSetter_;
 	public:
 		ItemHandlerFactory ();
 		~ItemHandlerFactory ();
@@ -96,6 +102,14 @@ namespace LeechCraft
 		 * @sa GetNewValues()
 		 */
 		void ClearNewValues ();
+
+		/** @brief Set the datasource for the given property.
+		 *
+		 * @sa XmlSettingsDialog::SetDataSource()
+		 */
+		void SetDataSource (const QString&, QAbstractItemModel*);
+
+		void RegisterDatasourceSetter (const QString&, DataSourceSetter_t);
 	};
 };
 

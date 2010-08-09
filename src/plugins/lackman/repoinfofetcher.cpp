@@ -341,7 +341,7 @@ namespace LeechCraft
 				if (exitCode)
 				{
 					emit gotEntity (Util::MakeNotification (tr ("Repository unpack error"),
-							tr ("Unable to unpack the repository file. gunzip error: %1."
+							tr ("Unable to unpack the repository file. gunzip error: %1. "
 								"Problematic file is at %2.")
 								.arg (exitCode)
 								.arg (sender ()->property ("Filename").toString ()),
@@ -379,7 +379,7 @@ namespace LeechCraft
 				if (exitCode)
 				{
 					emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
-							tr ("Unable to unpack the component file. gunzip error: %1."
+							tr ("Unable to unpack the component file. gunzip error: %1. "
 								"Problematic file is at %2.")
 								.arg (exitCode)
 								.arg (sender ()->property ("Filename").toString ()),
@@ -423,7 +423,7 @@ namespace LeechCraft
 				if (exitCode)
 				{
 					emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
-							tr ("Unable to unpack the component file. gunzip error: %1."
+							tr ("Unable to unpack the component file. gunzip error: %1. "
 								"Problematic file is at %2.")
 								.arg (exitCode)
 								.arg (sender ()->property ("Filename").toString ()),

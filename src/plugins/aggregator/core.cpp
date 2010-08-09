@@ -417,7 +417,7 @@ namespace LeechCraft
 
 			int Core::AddFeed (const QString& url, const QStringList& tags)
 			{
-				if (StorageBackend_->FindFeed (url) != -1)
+				if (StorageBackend_->FindFeed (url) != static_cast<IDType_t> (-1))
 				{
 					ErrorNotification (tr ("Feed addition error"),
 							tr ("The feed %1 is already added")
@@ -791,7 +791,7 @@ namespace LeechCraft
 						end = items.end (); i != end; ++i)
 				{
 					IDType_t feedId = AddFeed (i->URL_, tagsList + i->Categories_);
-					if (feedId == -1)
+					if (feedId == static_cast<IDType_t> (-1))
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "not added feed from OPML:"
@@ -1033,7 +1033,7 @@ namespace LeechCraft
 				IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
 
 				if (pj.Role_ == PendingJob::RFeedUpdated &&
-						feedId == -1)
+						feedId == static_cast<IDType_t> (-1))
 				{
 					ErrorNotification (tr ("Feed error"),
 							tr ("Feed with url %1 not found.").arg (pj.URL_));
@@ -1406,7 +1406,7 @@ namespace LeechCraft
 			{
 				const QString& url = pj.URL_;
 				IDType_t feedId = StorageBackend_->FindFeed (url);
-				if (feedId == -1)
+				if (feedId == static_cast<IDType_t> (-1))
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "skipping"

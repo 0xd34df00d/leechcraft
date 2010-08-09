@@ -35,8 +35,8 @@ namespace LeechCraft
 			FindProxy::FindProxy (const Request& r, CategoriesSelector *cs, FindProxyType type)
 			: Toolbar_ (new QToolBar)
 			, R_ (r)
-			, CategoriesSelector_ (cs)
 			, FindProxyType_ (type)
+			, CategoriesSelector_ (cs)
 			{
 				ActionDownload_ = Toolbar_->addAction (tr ("Download"));
 				ActionDownload_->setProperty ("ActionIcon", "vgrabber_download");
@@ -44,7 +44,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleDownload ()));
-				
+
 				ActionHandle_ =  Toolbar_->addAction (tr ("Handle"));
 				ActionHandle_->setProperty ("ActionIcon", "vgrabber_handle");
 				connect (ActionHandle_,
@@ -66,7 +66,7 @@ namespace LeechCraft
 				ContextMenu_->addSeparator ();
 				ContextMenu_->addAction (ActionCopyToClipboard_);
 			}
-			
+
 			FindProxy::~FindProxy ()
 			{
 				delete Toolbar_;
@@ -106,7 +106,7 @@ namespace LeechCraft
 				Jobs_ [id] = fname;
 				HandleProvider (pr);
 			}
-			
+
 			QAbstractItemModel* FindProxy::GetModel ()
 			{
 				return this;
@@ -128,7 +128,7 @@ namespace LeechCraft
 			{
 				return 3;
 			}
-			
+
 			Qt::ItemFlags FindProxy::flags (const QModelIndex& index) const
 			{
 				if (!index.isValid ())
@@ -136,7 +136,7 @@ namespace LeechCraft
 				else
 					return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 			}
-			
+
 			QVariant FindProxy::headerData (int, Qt::Orientation orient, int role) const
 			{
 				if (orient == Qt::Horizontal && role == Qt::DisplayRole)
@@ -144,20 +144,20 @@ namespace LeechCraft
 				else
 					return QVariant ();
 			}
-			
+
 			QModelIndex FindProxy::index (int row, int column, const QModelIndex& parent) const
 			{
 				if (!hasIndex (row, column, parent))
 					return QModelIndex ();
-			
+
 				return createIndex (row, column);
 			}
-			
+
 			QModelIndex FindProxy::parent (const QModelIndex&) const
 			{
 				return QModelIndex ();
 			}
-			
+
 			void FindProxy::handleCopyToClipboard ()
 			{
 				QUrl url = qobject_cast<QAction*> (sender ())->data ().value<QUrl> ();
@@ -193,7 +193,7 @@ namespace LeechCraft
 			{
 				if (!Jobs_.contains (id))
 					return;
-			
+
 				emit error (tr ("Search request for URL<br />%1<br />was delegated, but it failed.")
 						.arg (GetURL ().toString ()));
 				Jobs_.remove (id);
@@ -223,17 +223,16 @@ namespace LeechCraft
 
 			void FindProxy::EmitWith (LeechCraft::TaskParameter param, const QUrl& url)
 			{
-				QAction *act = qobject_cast<QAction*> (sender ());
 				if (!url.isValid ())
 				{
 					qWarning () << Q_FUNC_INFO
 						<< "url is not valid"
-						<< act;
+						<< url;
 				}
 
 				Entity e = Util::MakeEntity (url,
 						QString (),
-						LeechCraft::FromUserInitiated |
+						FromUserInitiated |
 							param);
 				emit gotEntity (e);
 			}
@@ -242,7 +241,7 @@ namespace LeechCraft
 			{
 				if (Downloaders_.contains (provider))
 					return;
-				
+
 				Downloaders_ << provider;
 				connect (provider,
 						SIGNAL (jobFinished (int)),

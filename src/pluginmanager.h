@@ -86,7 +86,7 @@ namespace LeechCraft
 		QStringList PluginLoadErrors_;
 	public:
 		typedef PluginsContainer_t::size_type Size_t;
-		PluginManager (QObject *parent = 0);
+		PluginManager (const QStringList& pluginPaths, QObject *parent = 0);
 		virtual ~PluginManager ();
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;

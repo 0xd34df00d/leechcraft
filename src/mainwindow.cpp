@@ -23,6 +23,7 @@
 #include <QModelIndex>
 #include <QChildEvent>
 #include <QToolButton>
+#include <QStandardItemModel>
 #include <QCursor>
 #include <QCheckBox>
 #include <QShortcut>
@@ -299,6 +300,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsDialog_ = new XmlSettingsDialog ();
 	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 			"coresettings.xml");
+	InitializeDataSources ();
 	connect (XmlSettingsDialog_,
 			SIGNAL (pushButtonClicked (const QString&)),
 			&Core::Instance (),
@@ -814,4 +816,62 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 				Core::Instance ().GetTabContainer (),
 				SLOT (navigateToTabNumber ()));
 	}
+}
+
+void LeechCraft::MainWindow::InitializeDataSources ()
+{
+	QStringList filenames;
+
+#ifdef Q_WS_WIN
+	filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
+			.entryList (QStringList ("leechcraft_*.qm"));
+#elif defined(Q_WS_MAC)
+	filenames << QDir (QCoreApplication::applicationDirPath () + "../Resources/translations")
+			.entryList (QStringList ("leechcraft_*.qm"));
+#else
+	filenames << QDir ("/usr/local/share/leechcraft/translations")
+			.entryList (QStringList ("leechcraft_*.qm"));
+	filenames << QDir ("/usr/share/leechcraft/translations")
+			.entryList (QStringList ("leechcraft_*.qm"));
+#endif
+
+	int length = QString ("leechcraft_").size ();
+	QMap<QString, QString> Language2Name_;
+	Q_FOREACH (QString fname, filenames)
+	{
+		fname = fname.mid (length);
+		fname.chop (3);					// for .qm
+		QStringList parts = fname.split ('_', QString::SkipEmptyParts);
+
+		QString language;
+		Q_FOREACH (const QString& part, parts)
+		{
+			if (part.size () != 2)
+				continue;
+			if (!part.at (0).isLower ())
+				continue;
+
+			QLocale locale (part);
+			if (locale.language () == QLocale::C)
+				continue;
+
+			language = QLocale::languageToString (locale.language ());
+
+			while (part != parts.at (0))
+				parts.pop_front ();
+
+			Language2Name_ [language] = parts.join ("_");
+			break;
+		}
+	}
+
+	QStandardItemModel *model = new QStandardItemModel (this);
+	Q_FOREACH (const QString& language, Language2Name_.keys ())
+	{
+		QStandardItem *item = new QStandardItem (language);
+		item->setData (Language2Name_ [language], Qt::UserRole);
+		model->appendRow (item);
+	}
+
+	XmlSettingsDialog_->SetDataSource ("Language", model);
 }
