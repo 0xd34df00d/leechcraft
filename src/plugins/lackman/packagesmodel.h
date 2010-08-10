@@ -55,6 +55,7 @@ namespace LeechCraft
 
 				void AddRow (const ListPackageInfo&);
 				void UpdateRow (const ListPackageInfo&);
+				void RemovePackage (int);
 				ListPackageInfo FindPackage (const QString&) const;
 				int GetRow (int packageId) const;
 				void Clear ();

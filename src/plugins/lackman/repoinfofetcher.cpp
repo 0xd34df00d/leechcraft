@@ -44,7 +44,7 @@ namespace LeechCraft
 				QString location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
 
 				QUrl goodUrl = url;
-				goodUrl.setPath (goodUrl.path ().remove ("Repo.xml.gz"));
+				goodUrl.setPath (goodUrl.path ().remove ("/Repo.xml.gz"));
 
 				PendingRI pri =
 				{

@@ -115,6 +115,19 @@ namespace LeechCraft
 					}
 			}
 
+			void PackagesModel::RemovePackage (int packageId)
+			{
+				for (int i = 0, size = Packages_.size ();
+						i < size; ++i)
+					if (Packages_.at (i).PackageID_ == packageId)
+					{
+						beginRemoveRows (QModelIndex (), i, i);
+						Packages_.removeAt (i);
+						endRemoveRows ();
+						break;
+					}
+			}
+
 			ListPackageInfo PackagesModel::FindPackage (const QString& name) const
 			{
 				Q_FOREACH (const ListPackageInfo& lpi, Packages_)

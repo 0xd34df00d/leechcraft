@@ -22,6 +22,7 @@
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
 #include <QObject>
+#include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include "repoinfo.h"
 
@@ -54,6 +55,11 @@ namespace LeechCraft
 				PendingManager *PendingManager_;
 				PackageProcessor *PackageProcessor_;
 				QStandardItemModel *ReposModel_;
+
+				enum ReposColumns
+				{
+					RCURL
+				};
 
 				Core ();
 			public:
@@ -105,6 +111,9 @@ namespace LeechCraft
 				int GetPackageRow (int packageId) const;
 				void ReadSettings ();
 				void WriteSettings ();
+			public slots:
+				void removeRequested (const QString&, const QModelIndexList&);
+				void addRequested (const QString&, const QVariantList&);
 			private slots:
 				void handleInfoFetched (const RepoInfo&);
 				void handleComponentFetched (const PackageShortInfoList&,
@@ -113,6 +122,7 @@ namespace LeechCraft
 				void handlePackageInstallError (int, const QString&);
 				void handlePackageInstalled (int);
 				void handlePackageUpdated (int from, int to);
+				void handlePackageRemoved (int);
 			signals:
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);

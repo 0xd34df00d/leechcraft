@@ -44,6 +44,7 @@ namespace LeechCraft
 				QSqlQuery QueryFindRepo_;
 				QSqlQuery QueryAddRepo_;
 				QSqlQuery QueryGetRepo_;
+				QSqlQuery QueryRemoveRepo_;
 				QSqlQuery QueryAddRepoComponent_;
 				QSqlQuery QueryGetRepoComponents_;
 				QSqlQuery QueryFindComponent_;
@@ -82,6 +83,7 @@ namespace LeechCraft
 
 				int FindRepo (const QUrl& repoUrl);
 				int AddRepo (const RepoInfo& ri);
+				void RemoveRepo (int);
 				RepoInfo GetRepo (int);
 
 				QStringList GetComponents (int repoId);
@@ -113,6 +115,8 @@ namespace LeechCraft
 			private:
 				void InitTables ();
 				void InitQueries ();
+			signals:
+				void packageRemoved (int);
 			};
 		};
 	};

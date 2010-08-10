@@ -60,6 +60,10 @@ namespace LeechCraft
 				Relation2comparator [Dependency::LE] = boost::bind (std::logical_not<bool> (),
 						boost::bind (Relation2comparator [Dependency::G], _1, _2));
 
+				connect (Storage_,
+						SIGNAL (packageRemoved (int)),
+						this,
+						SLOT (handlePackageRemoved (int)));
 				connect (ExternalResourceManager_,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
@@ -349,6 +353,9 @@ namespace LeechCraft
 
 			void Core::AddRepo (const QUrl& url)
 			{
+				QStandardItem *item = new QStandardItem (url.toString ());
+				item->setData (url);
+				ReposModel_->appendRow (item);
 				RepoInfoFetcher_->FetchFor (url);
 			}
 
@@ -821,34 +828,100 @@ namespace LeechCraft
 
 			void Core::ReadSettings ()
 			{
-				QList<QUrl> reposUrls;
-				QVariant var = XmlSettingsManager::Instance ()->property ("ReposList");
-				Q_FOREACH (const QString& str, var.value<QStringList> ())
-					reposUrls << QUrl::fromEncoded (str.toUtf8 ());
-
-				if (var.isNull ())
-					reposUrls << QUrl ("http://leechcraft.org/repo/");
-
-				Q_FOREACH (const QUrl& url, reposUrls)
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_LackMan");
+				int size = settings.beginReadArray ("Repos");
+				for (int i = 0; i < size; ++i)
 				{
-					QStandardItem *item = new QStandardItem (url.toString ());
-					item->setData (url);
-					ReposModel_->appendRow (new QStandardItem (url.toString ()));
-					RepoInfoFetcher_->FetchFor (url);
+					settings.setArrayIndex (i);
+					QUrl url = settings.value ("URL").value<QUrl> ();
+					AddRepo (url);
+				}
+				settings.endArray ();
+
+				if (settings.value ("AddDefault", true).toBool ())
+				{
+					AddRepo (QUrl ("http://leechcraft.org/repo/"));
+					settings.setValue ("AddDefault", false);
+					WriteSettings ();
 				}
 			}
 
 			void Core::WriteSettings ()
 			{
-				QStringList strings;
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_LackMan");
+				settings.beginWriteArray ("Repos");
 				for (int i = 0, size = ReposModel_->rowCount ();
 						i < size; ++i)
 				{
+					settings.setArrayIndex (i);
 					QStandardItem *item = ReposModel_->item (i);
-					strings << item->data ().value<QUrl> ().toEncoded ();
+					QUrl url = item->data ().value<QUrl> ();
+					settings.setValue ("URL", url);
+				}
+				settings.endArray ();
+			}
+
+			void Core::removeRequested (const QString&, const QModelIndexList& list)
+			{
+				QList<int> rows;
+				Q_FOREACH (const QModelIndex& index, list)
+					rows << index.row ();
+
+				std::sort (rows.begin (), rows.end ());
+				std::reverse (rows.begin (), rows.end ());
+
+				Q_FOREACH (int row, rows)
+				{
+					QList<QStandardItem*> items = ReposModel_->takeRow (row);
+					QUrl url = items.at (RCURL)->data ().value<QUrl> ();
+
+					try
+					{
+						int repoId = Storage_->FindRepo (url);
+						Storage_->RemoveRepo (repoId);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to remove repo"
+								<< url
+								<< e.what ();
+					}
+
+					qDeleteAll (items);
 				}
 
-				XmlSettingsManager::Instance ()->setProperty ("ReposList", strings);
+				WriteSettings ();
+			}
+
+			void Core::addRequested (const QString&, const QVariantList& list)
+			{
+				if (!list.size ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "too small list";
+					return;
+				}
+
+				QString str = list.at (0).toString ();
+				QUrl url = QUrl (str);
+				if (!url.isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "incorrect url"
+							<< str;
+					emit gotEntity (Util::MakeNotification (tr ("Repository addition error"),
+							tr ("Incorrect URL %1.")
+								.arg (str),
+							PCritical_));
+					return;
+				}
+
+				AddRepo (url);
+
+				WriteSettings ();
 			}
 
 			void Core::handleInfoFetched (const RepoInfo& ri)
@@ -1158,6 +1231,11 @@ namespace LeechCraft
 							PInfo_));
 
 				emit packageRowActionFinished (GetPackageRow (packageId));
+			}
+
+			void Core::handlePackageRemoved (int packageId)
+			{
+				PackagesModel_->RemovePackage (packageId);
 			}
 		}
 	}

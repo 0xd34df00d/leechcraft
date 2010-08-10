@@ -214,6 +214,20 @@ namespace LeechCraft
 				return repoId;
 			}
 
+			void Storage::RemoveRepo (int repoId)
+			{
+				QStringList components = GetComponents (repoId);
+				Q_FOREACH (const QString& component, components)
+					RemoveComponent (repoId, component);
+
+				QueryRemoveRepo_.bindValue (":repo_id", repoId);
+				if (!QueryRemoveRepo_.exec ())
+				{
+					Util::DBLock::DumpError (QueryRemoveRepo_);
+					throw std::runtime_error ("Query execution failed");
+				}
+			}
+
 			RepoInfo Storage::GetRepo (int repoId)
 			{
 				QueryGetRepo_.bindValue (":repo_id", repoId);
@@ -382,6 +396,8 @@ namespace LeechCraft
 						continue;
 
 					checker.finish ();
+
+					emit packageRemoved (packageId);
 
 					remover.prepare ("DELETE FROM packages WHERE package_id = :package_id;");
 					remover.bindValue (":package_id", packageId);
@@ -1001,6 +1017,9 @@ namespace LeechCraft
 				QueryGetRepo_ = QSqlQuery (DB_);
 				QueryGetRepo_.prepare ("SELECT url, name, description, "
 						"longdescr, maint_name, maint_email FROM repos WHERE repo_id = :repo_id;");
+
+				QueryRemoveRepo_ = QSqlQuery (DB_);
+				QueryRemoveRepo_.prepare ("DELETE FROM repos WHERE repo_id = :repo_id;");
 
 				QueryAddRepoComponent_ = QSqlQuery (DB_);
 				QueryAddRepoComponent_.prepare ("INSERT INTO components (repo_id, component) "
