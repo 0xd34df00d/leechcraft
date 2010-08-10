@@ -40,6 +40,14 @@ namespace LeechCraft
 	{
 		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
 		DataViewWidget *view = new DataViewWidget (XSD_);
+		connect (view,
+				SIGNAL (addRequested ()),
+				this,
+				SLOT (handleAddRequested ()));
+		connect (view,
+				SIGNAL (removeRequested ()),
+				this,
+				SLOT (handleRemoveRequested ()));
 
 		QString prop = item.attribute ("property");
 
@@ -83,5 +91,32 @@ namespace LeechCraft
 		}
 
 		view->SetModel (model);
+	}
+
+	void ItemHandlerDataView::handleAddRequested ()
+	{
+	}
+
+	void ItemHandlerDataView::handleRemoveRequested ()
+	{
+		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
+		if (!view)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a DataViewWidget"
+					<< sender ();
+			return;
+		}
+
+		QModelIndexList indexes = view->GetSelectedRows ();
+		if (!indexes.size ())
+			return;
+
+		if (!QMetaObject::invokeMethod (view->GetModel ()->parent (),
+					"removeRequested",
+					Q_ARG (QString, view->objectName ()),
+					Q_ARG (QModelIndexList, indexes)))
+			qWarning () << Q_FUNC_INFO
+					<< "invokeMethod for \"removeRequested\" failed";
 	}
 }
