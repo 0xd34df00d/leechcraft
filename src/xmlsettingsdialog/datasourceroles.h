@@ -22,11 +22,23 @@
 
 namespace LeechCraft
 {
-	enum DataSourceRole
+	namespace DataSources
 	{
-		DSRFieldName = Qt::UserRole + 1,
-		DSRFieldType
-	};
+		enum DataSourceRole
+		{
+			DSRFieldType = Qt::UserRole + 1,
+			DSRFieldValues
+		};
+
+		enum DataFieldType
+		{
+			DFTNone,
+			DFTString,
+			DFTUrl,
+			DFTInteger,
+			DFTEnum
+		};
+	}
 }
 
 #endif
