@@ -19,6 +19,10 @@
 #include "itemhandlerdataview.h"
 #include <boost/bind.hpp>
 #include <QFormLayout>
+#include <QDialog>
+#include <QSpinBox>
+#include <QLineEdit>
+#include <QDialogButtonBox>
 #include <QtDebug>
 #include "../widgets/dataviewwidget.h"
 #include "../itemhandlerfactory.h"
@@ -93,8 +97,100 @@ namespace LeechCraft
 		view->SetModel (model);
 	}
 
+	namespace
+	{
+		QWidget* GetEditor (DataSources::DataFieldType type)
+		{
+			switch (type)
+			{
+			case DataSources::DFTInteger:
+				return new QSpinBox ();
+			case DataSources::DFTString:
+			case DataSources::DFTUrl:
+				return new QLineEdit ();
+			default:
+				return 0;
+			}
+		}
+
+		QVariant GetData (QWidget *editor, DataSources::DataFieldType type)
+		{
+			switch (type)
+			{
+			case DataSources::DFTInteger:
+				return qobject_cast<QSpinBox*> (editor)->value ();
+			case DataSources::DFTString:
+			case DataSources::DFTUrl:
+				return qobject_cast<QLineEdit*> (editor)->text ();
+			default:
+				return QVariant ();
+			}
+		}
+	}
+
 	void ItemHandlerDataView::handleAddRequested ()
 	{
+		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
+		if (!view)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a DataViewWidget"
+					<< sender ();
+			return;
+		}
+
+		QAbstractItemModel *model = view->GetModel ();
+		QList<DataSources::DataFieldType> types;
+		QStringList names;
+		for (int i = 0, size = model->columnCount (); i < size; ++i)
+		{
+			DataSources::DataFieldType type = static_cast<DataSources::DataFieldType> (model->
+						headerData (i, Qt::Horizontal, DataSources::DSRFieldType).value<int> ());
+			if (type != DataSources::DFTNone)
+			{
+				types << type;
+				names << model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
+			}
+		}
+
+		QDialog *dia = new QDialog (XSD_);
+		QFormLayout *lay = new QFormLayout ();
+		dia->setLayout (lay);
+		for (int i = 0, size = types.size (); i < size; ++i)
+		{
+			QString name = names.at (i);
+			DataSources::DataFieldType type = types.at (i);
+			QWidget *w = GetEditor (type);
+			lay->addRow (name, w);
+		}
+		QDialogButtonBox *buttons = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+				Qt::Horizontal, dia);
+		connect (buttons,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (accept ()));
+		connect (buttons,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (reject ()));
+		lay->addRow (buttons);
+
+		if (dia->exec () == QDialog::Accepted)
+		{
+			QVariantList datas;
+			for (int i = 0, size = types.size (); i < size; ++i)
+			{
+				QWidget *w = lay->itemAt (i, QFormLayout::FieldRole)->widget ();
+				QVariant data = GetData (w, types.at (i));
+				datas << data;
+			}
+			if (!QMetaObject::invokeMethod (model->parent (),
+						"addRequested",
+						Q_ARG (QString, view->objectName ()),
+						Q_ARG (QVariantList, datas)))
+				qWarning () << Q_FUNC_INFO
+						<< "invokeMethod for \"addRequested\" failed";
+		}
 	}
 
 	void ItemHandlerDataView::handleRemoveRequested ()
