@@ -53,6 +53,7 @@ namespace LeechCraft
 				PackagesModel *PackagesModel_;
 				PendingManager *PendingManager_;
 				PackageProcessor *PackageProcessor_;
+				QStandardItemModel *ReposModel_;
 
 				Core ();
 			public:
@@ -60,12 +61,15 @@ namespace LeechCraft
 				void FinishInitialization ();
 				void Release ();
 
+				void SecondInit ();
+
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 				QAbstractItemModel* GetPluginsModel () const;
 				PendingManager* GetPendingManager () const;
 				ExternalResourceManager* GetExtResourceManager () const;
 				Storage* GetStorage () const;
+				QAbstractItemModel* GetRepositoryModel () const;
 
 				DependencyList GetDependencies (int) const;
 				QList<ListPackageInfo> GetDependencyFulfillers (const Dependency&) const;
@@ -99,6 +103,8 @@ namespace LeechCraft
 				bool RecordInstalled (int);
 				bool RecordUninstalled (int);
 				int GetPackageRow (int packageId) const;
+				void ReadSettings ();
+				void WriteSettings ();
 			private slots:
 				void handleInfoFetched (const RepoInfo&);
 				void handleComponentFetched (const PackageShortInfoList&,

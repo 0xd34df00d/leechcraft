@@ -45,6 +45,9 @@ namespace LeechCraft
 				Core::Instance ().SetProxy (proxy);
 				Core::Instance ().FinishInitialization ();
 
+				SettingsDialog_->SetDataSource ("RepositoryList",
+						Core::Instance ().GetRepositoryModel ());
+
 				connect (&Core::Instance (),
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)),
@@ -93,7 +96,7 @@ namespace LeechCraft
 
 			void Plugin::SecondInit ()
 			{
-				Core::Instance ().AddRepo (QUrl::fromLocalFile ("/home/d34df00d/Programming/lcpacks"));
+				Core::Instance ().SecondInit ();
 			}
 
 			void Plugin::Release ()

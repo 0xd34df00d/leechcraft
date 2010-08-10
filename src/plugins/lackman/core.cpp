@@ -24,6 +24,7 @@
 #include <QDir>
 #include <QtDebug>
 #include <plugininterface/util.h>
+#include <xmlsettingsdialog/datasourceroles.h>
 #include <config.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
@@ -32,6 +33,7 @@
 #include "pendingmanager.h"
 #include "packageprocessor.h"
 #include "versioncomparator.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -48,6 +50,7 @@ namespace LeechCraft
 			, PackagesModel_ (new PackagesModel (this))
 			, PendingManager_ (new PendingManager (this))
 			, PackageProcessor_ (new PackageProcessor (this))
+			, ReposModel_ (new QStandardItemModel (this))
 			{
 				Relation2comparator [Dependency::L] = IsVersionLess;
 				Relation2comparator [Dependency::G] = boost::bind (Relation2comparator [Dependency::L], _2, _1);
@@ -99,6 +102,10 @@ namespace LeechCraft
 						SIGNAL (packageUpdated (int, int)),
 						this,
 						SLOT (handlePackageUpdated (int, int)));
+
+				QStandardItem *item = new QStandardItem (tr ("URL"));
+				item->setData (DataSources::DFTUrl, DataSources::DSRFieldType);
+				ReposModel_->setHorizontalHeaderItem (0, item);
 			}
 
 			Core& Core::Instance ()
@@ -120,6 +127,11 @@ namespace LeechCraft
 
 				delete Storage_;
 				Storage_ = 0;
+			}
+
+			void Core::SecondInit ()
+			{
+				ReadSettings ();
 			}
 
 			void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -150,6 +162,11 @@ namespace LeechCraft
 			Storage* Core::GetStorage () const
 			{
 				return Storage_;
+			}
+
+			QAbstractItemModel* Core::GetRepositoryModel () const
+			{
+				return ReposModel_;
 			}
 
 			DependencyList Core::GetDependencies (int packageId) const
@@ -800,6 +817,38 @@ namespace LeechCraft
 			int Core::GetPackageRow (int packageId) const
 			{
 				return PackagesModel_->GetRow (packageId);
+			}
+
+			void Core::ReadSettings ()
+			{
+				QList<QUrl> reposUrls;
+				QVariant var = XmlSettingsManager::Instance ()->property ("ReposList");
+				Q_FOREACH (const QString& str, var.value<QStringList> ())
+					reposUrls << QUrl::fromEncoded (str.toUtf8 ());
+
+				if (var.isNull ())
+					reposUrls << QUrl ("http://leechcraft.org/repo/");
+
+				Q_FOREACH (const QUrl& url, reposUrls)
+				{
+					QStandardItem *item = new QStandardItem (url.toString ());
+					item->setData (url);
+					ReposModel_->appendRow (new QStandardItem (url.toString ()));
+					RepoInfoFetcher_->FetchFor (url);
+				}
+			}
+
+			void Core::WriteSettings ()
+			{
+				QStringList strings;
+				for (int i = 0, size = ReposModel_->rowCount ();
+						i < size; ++i)
+				{
+					QStandardItem *item = ReposModel_->item (i);
+					strings << item->data ().value<QUrl> ().toEncoded ();
+				}
+
+				XmlSettingsManager::Instance ()->setProperty ("ReposList", strings);
 			}
 
 			void Core::handleInfoFetched (const RepoInfo& ri)
