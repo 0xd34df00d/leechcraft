@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include "datastorageserver.h"
 
 namespace LeechCraft
 {
@@ -25,6 +26,7 @@ namespace LeechCraft
 		namespace Syncer
 		{
 			Core::Core ()
+			: DataStorage_ (new DataStorageServer (this))
 			{
 			}
 

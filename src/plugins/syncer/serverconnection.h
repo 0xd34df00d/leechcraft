@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_CORE_H
-#define PLUGINS_SYNCER_CORE_H
+#ifndef PLUGINS_SYNCER_SERVERCONNECTION_H
+#define PLUGINS_SYNCER_SERVERCONNECTION_H
 #include <QObject>
+
+class QTcpSocket;
 
 namespace LeechCraft
 {
@@ -26,17 +28,35 @@ namespace LeechCraft
 	{
 		namespace Syncer
 		{
-			class DataStorageBase;
-
-			class Core : public QObject
+			class ServerConnection : public QObject
 			{
 				Q_OBJECT
 
-				DataStorageBase *DataStorage_;
-
-				Core ();
+				QTcpSocket *Socket_;
+				QString Chain_;
 			public:
-				static Core& Instance ();
+				enum ErrorCode
+				{
+					ECUnknownCommand = 0,
+					ECUserRegistered,
+					ECUserNotRegistered,
+					ECWrongPassword,
+					ECAlreadyConnected,
+					ECOddFilterParameters,
+					ECWrongDeltaID
+				};
+
+				ServerConnection (const QString&, QObject* = 0);
+			public slots:
+				void performLogin ();
+				void reqMaxDelta ();
+			private slots:
+				void handleConnected ();
+				void handleReadyRead ();
+			signals:
+				void success ();
+				void fail ();
+				void deltaOutOfOrder ();
 			};
 		}
 	}

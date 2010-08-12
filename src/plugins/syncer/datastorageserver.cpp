@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_CORE_H
-#define PLUGINS_SYNCER_CORE_H
-#include <QObject>
+#include "datastorageserver.h"
+#include "serverchainhandler.h"
 
 namespace LeechCraft
 {
@@ -26,20 +25,21 @@ namespace LeechCraft
 	{
 		namespace Syncer
 		{
-			class DataStorageBase;
-
-			class Core : public QObject
+			DataStorageServer::DataStorageServer (QObject *parent)
+			: DataStorageBase (parent)
 			{
-				Q_OBJECT
+			}
 
-				DataStorageBase *DataStorage_;
+			void DataStorageServer::sync (const QString& chain)
+			{
+				// TODO correctly throw a correct exception
+				if (ChainHandlers_.contains (chain))
+					return;
 
-				Core ();
-			public:
-				static Core& Instance ();
-			};
+				ServerChainHandler *handler = new ServerChainHandler (chain, this);
+				ChainHandlers_ [chain] = handler;
+				handler->Sync ();
+			}
 		}
 	}
 }
-
-#endif

@@ -15,6 +15,7 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+SET (QT_USE_QTNETWORK TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -24,10 +25,18 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	syncer.cpp
 	core.cpp
+	datastoragebase.cpp
+	datastorageserver.cpp
+	serverconnection.cpp
+	serverchainhandler.cpp
 	)
 SET (HEADERS
 	syncer.h
 	core.h
+	datastoragebase.h
+	datastorageserver.h
+	serverconnection.h
+	serverchainhandler.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 

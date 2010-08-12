@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_CORE_H
-#define PLUGINS_SYNCER_CORE_H
-#include <QObject>
+#ifndef PLUGINS_SYNCER_DATASTORAGESERVER_H
+#define PLUGINS_SYNCER_DATASTORAGESERVER_H
+#include "datastoragebase.h"
+#include <QHash>
 
 namespace LeechCraft
 {
@@ -26,17 +27,17 @@ namespace LeechCraft
 	{
 		namespace Syncer
 		{
-			class DataStorageBase;
+			class ServerChainHandler;
 
-			class Core : public QObject
+			class DataStorageServer : public DataStorageBase
 			{
 				Q_OBJECT
 
-				DataStorageBase *DataStorage_;
-
-				Core ();
+				QHash<QString, ServerChainHandler*> ChainHandlers_;
 			public:
-				static Core& Instance ();
+				DataStorageServer (QObject*);
+			public slots:
+				virtual void sync (const QString&);
 			};
 		}
 	}
