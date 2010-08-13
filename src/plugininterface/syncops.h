@@ -35,6 +35,9 @@ namespace LeechCraft
 		PLUGININTERFACE_API Payload Deserialize (const QByteArray&);
 
 		PLUGININTERFACE_API Payload CreatePayload (const QByteArray&);
+
+		PLUGININTERFACE_API QDataStream& operator<< (QDataStream&, const Delta&);
+		PLUGININTERFACE_API QDataStream& operator>> (QDataStream&, Delta&);
 	}
 }
 

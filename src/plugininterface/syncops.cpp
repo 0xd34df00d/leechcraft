@@ -20,6 +20,7 @@
 #include <QDataStream>
 #include <QByteArray>
 #include <QtDebug>
+#include "plugininterface/exceptions.h"
 
 namespace LeechCraft
 {
@@ -48,9 +49,8 @@ namespace LeechCraft
 				in >> payload.Data_;
 				break;
 			default:
-				qWarning () << Q_FUNC_INFO
-						<< "unknown version"
-						<< version;
+				throw UnknownVersionException (version,
+						"unknown version while deserializing payload");
 			}
 			return in;
 		}
@@ -79,6 +79,28 @@ namespace LeechCraft
 		{
 			Payload p = { from };
 			return p;
+		}
+
+		QDataStream& operator<< (QDataStream& out, const Delta& delta)
+		{
+			quint16 version = 1;
+			out << version
+					<< delta.ID_
+					<< delta.Payload_;
+			return out;
+		}
+
+		QDataStream& operator>> (QDataStream& in, Delta& delta)
+		{
+			quint16 version = 0;
+			in >> version;
+			if (version == 1)
+				in >> delta.ID_
+					>> delta.Payload_;
+			else
+				throw UnknownVersionException (version,
+						"unknown version while deserializing delta");
+			return in;
 		}
 	}
 }
