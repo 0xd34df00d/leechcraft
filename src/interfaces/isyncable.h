@@ -36,7 +36,7 @@ namespace LeechCraft
 
 		struct Delta
 		{
-			quint64 ID_;
+			quint32 ID_;
 			Payload Payload_;
 		};
 
