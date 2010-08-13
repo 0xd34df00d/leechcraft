@@ -27,15 +27,22 @@ class QObject;
 
 namespace LeechCraft
 {
-	class PLUGININTERFACE_API DependencyException : public std::exception
+	class PLUGININTERFACE_API StandardException : public std::exception
 	{
 	protected:
 		QString What_;
 	public:
+		StandardException (const QString& what);
+		virtual ~StandardException () throw ();
+
+		virtual const char* what () const throw ();
+	};
+
+	class PLUGININTERFACE_API DependencyException : public StandardException
+	{
+	public:
 		DependencyException (const QString& what);
 		virtual ~DependencyException () throw ();
-
-		virtual const char* what () const throw();
 	};
 
 	class PLUGININTERFACE_API InjectionFailureException : public DependencyException
@@ -52,6 +59,24 @@ namespace LeechCraft
 		ReleaseFailureException (const QString& what,
 				const QList<QObject*>& holders);
 		virtual ~ReleaseFailureException () throw ();
+
+		virtual const char* what () const throw ();
+	};
+
+	class PLUGININTERFACE_API SerializationException : public StandardException
+	{
+	public:
+		SerializationException (const QString& what);
+		virtual ~SerializationException () throw ();
+	};
+
+	class PLUGININTERFACE_API UnknownVersionException : public SerializationException
+	{
+	protected:
+		qint64 Version_;
+	public:
+		UnknownVersionException (qint64 version, const QString& what);
+		virtual ~UnknownVersionException () throw ();
 
 		virtual const char* what () const throw ();
 	};

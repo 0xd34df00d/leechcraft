@@ -17,22 +17,34 @@
  **********************************************************************/
 
 #include "exceptions.h"
+#include <typeinfo>
 #include <QDebug>
 
 namespace LeechCraft
 {
+	StandardException::StandardException (const QString& what)
+	: What_ (what)
+	{
+	}
+
+	StandardException::~StandardException () throw ()
+	{
+	}
+
+	const char* StandardException::what () const throw ()
+	{
+		return qPrintable (QString ("StandardException (") +
+				typeid (*this).name () + "): " +
+				What_);
+	}
+
 	DependencyException::DependencyException (const QString& de)
-	: What_ (de)
+	: StandardException (de)
 	{
 	}
 
 	DependencyException::~DependencyException () throw ()
 	{
-	}
-
-	const char* DependencyException::what () const throw ()
-	{
-		return qPrintable (What_);
 	}
 
 	InjectionFailureException::InjectionFailureException (const QString& what)
@@ -60,6 +72,36 @@ namespace LeechCraft
 		QString out;
 		QDebug debug (&out);
 		debug << What_ << "; holders:" << Holders_;
+		return qPrintable (out);
+	}
+
+	SerializationException::SerializationException (const QString& what)
+	: StandardException (what)
+	{
+	}
+
+	SerializationException::~SerializationException () throw ()
+	{
+	}
+
+	UnknownVersionException::UnknownVersionException (qint64 version, const QString& what)
+	: SerializationException (what)
+	, Version_ (version)
+	{
+	}
+
+	UnknownVersionException::~UnknownVersionException () throw ()
+	{
+	}
+
+	const char* UnknownVersionException::what () const throw ()
+	{
+		QString out;
+		QDebug debug (&out);
+		debug << "UnknownVersionException: version"
+				<< Version_
+				<< ";"
+				<< What_;
 		return qPrintable (out);
 	}
 };
