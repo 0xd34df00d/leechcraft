@@ -51,8 +51,7 @@ namespace LeechCraft
 			{
 				QFileInfo info (RootPath_->text ());
 				return info.exists () &&
-					info.isReadable () &&
-					AnnounceURL_->text ().size ();
+					info.isReadable ();
 			}
 
 			QString FirstStep::PrepareDirectory () const
@@ -84,13 +83,13 @@ namespace LeechCraft
 						last);
 				if (directory.isEmpty ())
 					return;
-			
+
 				Output_->setText (directory);
 				XmlSettingsManager::Instance ()->
 					setProperty ("LastMakeTorrentDirectory",
 							QFileInfo (directory).absolutePath ());
 			}
-			
+
 			void FirstStep::on_BrowseFile__released ()
 			{
 				QString path = QFileDialog::getOpenFileName (this,
@@ -98,7 +97,7 @@ namespace LeechCraft
 						PrepareDirectory ());
 				if (path.isEmpty ())
 					return;
-			
+
 				RootPath_->setText (path);
 				XmlSettingsManager::Instance ()->
 					setProperty ("LastAddDirectory",
@@ -114,7 +113,7 @@ namespace LeechCraft
 						PrepareDirectory ());
 				if (path.isEmpty ())
 					return;
-			
+
 				RootPath_->setText (path);
 				XmlSettingsManager::Instance ()->
 					setProperty ("LastAddDirectory",
