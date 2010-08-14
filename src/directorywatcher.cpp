@@ -40,7 +40,8 @@ namespace LeechCraft
 		connect (Watcher_.get (),
 				SIGNAL (directoryChanged (const QString&)),
 				this,
-				SLOT (handleDirectoryChanged (const QString&)));
+				SLOT (handleDirectoryChanged (const QString&)),
+				Qt::QueuedConnection);
 	}
 
 	void DirectoryWatcher::settingsChanged ()
@@ -48,7 +49,7 @@ namespace LeechCraft
 		QString path = XmlSettingsManager::Instance ()->
 			property ("WatchDirectory").toString ();
 		QStringList dirs = Watcher_->directories ();
-		if (dirs.size () == 1 && 
+		if (dirs.size () == 1 &&
 				dirs.at (0) == path)
 			return;
 
@@ -58,7 +59,7 @@ namespace LeechCraft
 		if (!path.isEmpty ())
 		{
 			QDir dir (path);
-			Olds_ = dir.entryInfoList ();
+			Olds_ = dir.entryInfoList (QDir::Files);
 
 			Watcher_->addPath (path);
 			handleDirectoryChanged (path);
@@ -68,14 +69,23 @@ namespace LeechCraft
 	void DirectoryWatcher::handleDirectoryChanged (const QString& path)
 	{
 		QDir dir (path);
-		QList<QFileInfo> nl = dir.entryInfoList ();
+		QList<QFileInfo> cur = dir.entryInfoList (QDir::Files);
+		QList<QFileInfo> nl = cur;
 
-		Q_FOREACH (QFileInfo oldFi, Olds_)
-			nl.removeAll (oldFi);
+		Q_FOREACH (const QFileInfo& oldFi, Olds_)
+		{
+			QString fname = oldFi.absoluteFilePath ();
+			Q_FOREACH (const QFileInfo& newFi, nl)
+				if (newFi.absoluteFilePath () == fname)
+				{
+					nl.removeAll (newFi);
+					break;
+				}
+		}
 
-		Olds_ = nl;
+		Olds_ = cur;
 
-		Q_FOREACH (QFileInfo newFi, nl)
+		Q_FOREACH (const QFileInfo& newFi, nl)
 			emit gotEntity (Util::MakeEntity (QUrl::fromLocalFile (newFi.absoluteFilePath ()),
 						path,
 						FromUserInitiated));
