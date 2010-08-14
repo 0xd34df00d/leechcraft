@@ -230,6 +230,7 @@ namespace LeechCraft
 					return;
 
 				Sync::Payloads_t our = GetNewDeltas (chainId);
+				quint32 ourSize = our.size ();
 				bool shouldResync = false;
 
 				Q_FOREACH (const Sync::Payload& pl, payloads)
@@ -243,7 +244,7 @@ namespace LeechCraft
 				WriteSettings ();
 				if (shouldResync)
 				{
-					PurgeNewDeltas (chainId);
+					PurgeNewDeltas (chainId, ourSize);
 					DeltaStorage_.Store (chainId, our);
 				}
 			}
