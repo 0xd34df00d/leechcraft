@@ -33,7 +33,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				QTcpSocket *Socket_;
-				QString Chain_;
+				QByteArray Chain_;
 			public:
 				enum ErrorCode
 				{
@@ -46,17 +46,25 @@ namespace LeechCraft
 					ECWrongDeltaID
 				};
 
-				ServerConnection (const QString&, QObject* = 0);
+				ServerConnection (const QByteArray&, QObject* = 0);
+
+				static QByteArray FmtMsg (const QList<QByteArray>&);
+				static QList<QByteArray> UnfmtMsg (const QByteArray&);
+
 			public slots:
 				void performLogin ();
 				void reqMaxDelta ();
+				void getDeltas (quint32 from);
+				void putDeltas ();
 			private slots:
 				void handleConnected ();
 				void handleReadyRead ();
 			signals:
-				void success ();
+				void success (const QList<QByteArray>&);
 				void fail ();
 				void deltaOutOfOrder ();
+				void maxDeltaIDReceived (quint32);
+				void deltasReceived (const QList<QByteArray>&);
 			};
 		}
 	}

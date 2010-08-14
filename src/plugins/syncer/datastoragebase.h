@@ -34,10 +34,10 @@ namespace LeechCraft
 				DataStorageBase (QObject*);
 				virtual ~DataStorageBase ();
 			public slots:
-				virtual void sync (const QString&) = 0;
+				virtual void sync (const QByteArray&) = 0;
 			signals:
-				void deltasRequired (Sync::Deltas_t*);
-				void handleNewDeltas (const Sync::Deltas_t&);
+				void deltasRequired (Sync::Deltas_t*, const QByteArray&);
+				void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
 			};
 		}
 	}

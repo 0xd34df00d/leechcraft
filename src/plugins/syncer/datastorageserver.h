@@ -33,11 +33,11 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				QHash<QString, ServerChainHandler*> ChainHandlers_;
+				QHash<QByteArray, ServerChainHandler*> ChainHandlers_;
 			public:
 				DataStorageServer (QObject*);
 			public slots:
-				virtual void sync (const QString&);
+				virtual void sync (const QByteArray&);
 			};
 		}
 	}

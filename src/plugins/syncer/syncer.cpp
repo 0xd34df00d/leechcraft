@@ -18,6 +18,7 @@
 
 #include "syncer.h"
 #include <QIcon>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,10 +28,12 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				Core::Instance ().SetProxy (proxy);
 			}
 
 			void Plugin::SecondInit ()
 			{
+				Core::Instance ().SecondInit ();
 			}
 
 			void Plugin::Release ()

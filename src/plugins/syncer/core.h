@@ -19,6 +19,9 @@
 #ifndef PLUGINS_SYNCER_CORE_H
 #define PLUGINS_SYNCER_CORE_H
 #include <QObject>
+#include <QSettings>
+#include <interfaces/iinfo.h>
+#include <interfaces/isyncable.h>
 
 namespace LeechCraft
 {
@@ -33,10 +36,23 @@ namespace LeechCraft
 				Q_OBJECT
 
 				DataStorageBase *DataStorage_;
+				mutable QSettings Settings_;
+
+				ICoreProxy_ptr Proxy_;
+
+				QHash<QString, QObject*> ID2Object_;
 
 				Core ();
 			public:
 				static Core& Instance ();
+				void SetProxy (ICoreProxy_ptr);
+				void SecondInit ();
+
+				quint32 GetLastID (const QByteArray&) const;
+				void SetLastID (const QByteArray&, quint32);
+			private slots:
+				void handleNewDeltas (const Sync::Deltas_t&, const QByteArray&);
+				void handleDeltasRequired (Sync::Deltas_t*, const QByteArray&);
 			};
 		}
 	}

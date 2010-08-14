@@ -19,6 +19,7 @@
 #ifndef PLUGINS_SYNCER_SERVERCHAINHANDLER_H
 #define PLUGINS_SYNCER_SERVERCHAINHANDLER_H
 #include <QStateMachine>
+#include <interfaces/isyncable.h>
 
 namespace LeechCraft
 {
@@ -34,12 +35,38 @@ namespace LeechCraft
 
 				QStateMachine SM_;
 				ServerConnection *ServerConnection_;
+				QByteArray Chain_;
+				QState *Idle_;
+				QState *ConnectionError_;
+				QState *LoginPending_;
+				QState *LoginError_;
+				QState *Running_;
+				QState *ReqMaxDeltaPending_;
+				QState *GetDeltasPending_;
+				QState *ProcessDeltas_;
+				QState *PutDeltasPending_;
 			public:
-				ServerChainHandler (const QString&, QObject*);
+				ServerChainHandler (const QByteArray&, QObject*);
 			public:
 				void Sync ();
+			private slots:
+				void getNewDeltas ();
+				void handleSuccess (const QList<QByteArray>&);
+				void handleMaxDeltaIDReceived (quint32);
+				void handleDeltasReceived (const QList<QByteArray>&);
+				void handlePutDeltas ();
 			signals:
+				void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
+				void deltasRequired (Sync::Deltas_t*, const QByteArray&);
+
+				// Used internally to control the statemachine.
 				void initiated ();
+				void hasNewDeltas ();
+				void noNewDeltas ();
+				void deltasReceived ();
+				void deltasProcessed ();
+				void fail ();
+				void success ();
 			};
 		}
 	}

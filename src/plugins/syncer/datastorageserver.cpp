@@ -30,13 +30,21 @@ namespace LeechCraft
 			{
 			}
 
-			void DataStorageServer::sync (const QString& chain)
+			void DataStorageServer::sync (const QByteArray& chain)
 			{
 				// TODO correctly throw a correct exception
 				if (ChainHandlers_.contains (chain))
 					return;
 
 				ServerChainHandler *handler = new ServerChainHandler (chain, this);
+				connect (handler,
+						SIGNAL (gotNewDeltas (const Sync::Deltas_t&, const QByteArray&)),
+						this,
+						SIGNAL (gotNewDeltas (const Sync::Deltas_t&, const QByteArray&)));
+				connect (handler,
+						SIGNAL (deltasRequired (Sync::Deltas_t*, const QByteArray&)),
+						this,
+						SIGNAL (deltasRequired (Sync::Deltas_t*, const QByteArray&)));
 				ChainHandlers_ [chain] = handler;
 				handler->Sync ();
 			}
