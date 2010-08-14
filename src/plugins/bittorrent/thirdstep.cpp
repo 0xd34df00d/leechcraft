@@ -41,52 +41,59 @@ namespace LeechCraft
 				registerField ("DHTEnabled", DHTEnabled_);
 				registerField ("DHTNodes", DHTNodes_);
 			}
-			
+
 			void ThirdStep::initializePage ()
 			{
 				TotalSize_ = 0;
 				QString path = field ("RootPath").toString ();
-			
-				QDirIterator it (path,
-						QDirIterator::Subdirectories);
-				while (it.hasNext ())
+
+				QFileInfo pathInfo (path);
+				if (pathInfo.isDir ())
 				{
-					it.next ();
-					QFileInfo info = it.fileInfo ();
-					if (info.isFile () && info.isReadable ())
-						TotalSize_ += info.size ();
+					QDirIterator it (path,
+							QDirIterator::Subdirectories);
+					while (it.hasNext ())
+					{
+						it.next ();
+						QFileInfo info = it.fileInfo ();
+						if (info.isFile () && info.isReadable ())
+							TotalSize_ += info.size ();
+					}
 				}
-			
+				else if (pathInfo.isFile () &&
+						pathInfo.isReadable ())
+					TotalSize_ += pathInfo.size ();
+
 				quint64 max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
-			
+
 				quint32 pieceSize = 32 * 1024;
 				int shouldIndex = 0;
 				for (; TotalSize_ / pieceSize >= max; pieceSize *= 2, ++shouldIndex) ;
-			
+
 				if (shouldIndex > PieceSize_->count () - 1)
 					shouldIndex = PieceSize_->count () - 1;
-			
+
 				PieceSize_->setCurrentIndex (shouldIndex);
-			
+
 				on_PieceSize__currentIndexChanged ();
 			}
-			
+
 			void ThirdStep::on_PieceSize__currentIndexChanged ()
 			{
 				quint32 mul = 32 * 1024;
 				int index = PieceSize_->currentIndex ();
 				while (index--)
 					mul *= 2;
-			
+
 				int numPieces = TotalSize_ / mul;
 				if (TotalSize_ % mul)
 					++numPieces;
-			
+
 				NumPieces_->setText (QString::number (numPieces) +
 						tr (" pieces (%1)")
 						.arg (LeechCraft::Util::MakePrettySize (TotalSize_)));
 			}
-			
+
 		};
 	};
 };
