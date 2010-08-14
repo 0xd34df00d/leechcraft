@@ -47,16 +47,16 @@ namespace LeechCraft
 						SIGNAL (on_Destination__textChanged ()),
 						this,
 						SLOT (setOkEnabled ()));
-			
+
 				QString dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
 				Destination_->setText (dir);
-			
+
 				QFontMetrics fm = fontMetrics ();
 				QHeaderView *header = FilesView_->header ();
 				header->resizeSection (0, fm.width ("Thisisanaveragetorrentcontainedfilename,ormaybeevenbiggerthanthat!"));
 				header->resizeSection (1, fm.width ("_999.9 MB_"));
 			}
-			
+
 			void AddTorrent::Reinit ()
 			{
 				FilesModel_->Clear ();
@@ -67,31 +67,31 @@ namespace LeechCraft
 				Comment_->setText (tr ("<unknown>"));
 				Date_->setText (tr ("<unknown>"));
 			}
-			
+
 			void AddTorrent::SetFilename (const QString& filename)
 			{
 				if (filename.isEmpty ())
 					return;
-			
+
 				Reinit ();
-			
+
 				XmlSettingsManager::Instance ()->
 					setProperty ("LastTorrentDirectory", QFileInfo (filename).absolutePath ());
 				TorrentFile_->setText (filename);
-			
+
 				ParseBrowsed ();
 			}
-			
+
 			void AddTorrent::SetSavePath (const QString& path)
 			{
 				Destination_->setText (path);
 			}
-			
+
 			QString AddTorrent::GetFilename () const
 			{
 				return TorrentFile_->text ();
 			}
-			
+
 			QString AddTorrent::GetSavePath () const
 			{
 				return Destination_->text ();
@@ -101,12 +101,12 @@ namespace LeechCraft
 			{
 				return TryLive_->checkState () == Qt::Checked;
 			}
-			
+
 			QVector<bool> AddTorrent::GetSelectedFiles () const
 			{
 				return FilesModel_->GetSelectedFiles ();
 			}
-			
+
 			Core::AddType AddTorrent::GetAddType () const
 			{
 				switch (AddTypeBox_->currentIndex ())
@@ -129,7 +129,7 @@ namespace LeechCraft
 				TagsEdit_->setText (Core::Instance ()->
 						GetProxy ()->GetTagsManager ()->Join (tags));
 			}
-			
+
 			QStringList AddTorrent::GetTags () const
 			{
 				QStringList tags = Core::Instance ()->GetProxy ()->
@@ -140,18 +140,18 @@ namespace LeechCraft
 						GetTagsManager ()->GetID (tag);
 				return result;
 			}
-			
+
 			Util::TagsLineEdit* AddTorrent::GetEdit ()
 			{
 				return TagsEdit_;
 			}
-			
+
 			void AddTorrent::setOkEnabled ()
 			{
 				OK_->setEnabled (QFileInfo (TorrentFile_->text ()).isReadable () &&
 						QFileInfo (Destination_->text ()).exists ());
 			}
-			
+
 			void AddTorrent::on_TorrentBrowse__released ()
 			{
 				  QString filename = QFileDialog::getOpenFileName (this,
@@ -161,16 +161,16 @@ namespace LeechCraft
 							tr ("Torrents (*.torrent);;All files (*.*)"));
 				  if (filename.isEmpty ())
 					return;
-			
+
 				Reinit ();
-			
+
 				XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory",
 						QFileInfo (filename).absolutePath ());
 				TorrentFile_->setText (filename);
-			
+
 				ParseBrowsed ();
 			}
-			
+
 			void AddTorrent::on_DestinationBrowse__released ()
 			{
 				QString dir = QFileDialog::getExistingDirectory (this,
@@ -179,38 +179,41 @@ namespace LeechCraft
 						0);
 				if (dir.isEmpty ())
 					return;
-			
+
 				XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
 				Destination_->setText (dir);
 			}
-			
+
 			void AddTorrent::on_MarkAll__released ()
 			{
 				FilesModel_->MarkAll ();
 			}
-			
+
 			void AddTorrent::on_UnmarkAll__released ()
 			{
 				FilesModel_->UnmarkAll ();
 			}
-			
+
 			void AddTorrent::on_MarkSelected__released ()
 			{
 				FilesModel_->MarkIndexes (FilesView_->selectionModel ()->selectedRows ());
 			}
-			
+
 			void AddTorrent::on_UnmarkSelected__released ()
 			{
 				FilesModel_->UnmarkIndexes (FilesView_->selectionModel ()->selectedRows ());
 			}
-			
+
 			void AddTorrent::ParseBrowsed ()
 			{
 				QString filename = TorrentFile_->text ();
 				libtorrent::torrent_info info = Core::Instance ()->GetTorrentInfo (filename);
 				if (!info.is_valid ())
 					return;
-				TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
+				if (info.trackers ().size ())
+					TrackerURL_->setText (QString::fromStdString (info.trackers ().at (0).url));
+				else
+					TrackerURL_->setText (tr ("<no trackers>"));
 				Size_->setText (Util::MakePrettySize (info.total_size ()));
 
 				QString creator = QString::fromUtf8 (info.creator ().c_str ()),
@@ -236,7 +239,7 @@ namespace LeechCraft
 				FilesModel_->ResetFiles (info.begin_files (), info.end_files ());
 				FilesView_->expandAll ();
 			}
-			
+
 		};
 	};
 };
