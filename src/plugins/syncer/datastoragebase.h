@@ -38,6 +38,11 @@ namespace LeechCraft
 			signals:
 				void deltasRequired (Sync::Deltas_t*, const QByteArray&);
 				void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
+				void successfullySentDeltas (quint32, const QByteArray&);
+
+				void loginError (const QByteArray&);
+				void connectionError (const QByteArray&);
+				void finishedSuccessfully (const QByteArray&);
 			};
 		}
 	}

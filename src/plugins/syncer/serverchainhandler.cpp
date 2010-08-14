@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "serverchainhandler.h"
+#include <QFinalState>
 #include <QtDebug>
 #include <interfaces/isyncable.h>
 #include <plugininterface/syncops.h>
@@ -33,16 +34,18 @@ namespace LeechCraft
 			: QObject (parent)
 			, ServerConnection_ (new ServerConnection (chain, this))
 			, Chain_ (chain)
+			, NumLastSentOut_ (0)
 			{
 				Idle_ = new QState ();
-				ConnectionError_ = new QState ();
+				ConnectionError_ = new QFinalState ();
 				LoginPending_ = new QState ();
-				LoginError_ = new QState ();
+				LoginError_ = new QFinalState ();
 				Running_ = new QState ();
 				ReqMaxDeltaPending_ = new QState ();
 				GetDeltasPending_ = new QState ();
 				ProcessDeltas_ = new QState ();
 				PutDeltasPending_ = new QState ();
+				Finish_ = new QFinalState ();
 
 				SM_.addState (Idle_);
 				SM_.addState (ConnectionError_);
@@ -53,9 +56,9 @@ namespace LeechCraft
 				SM_.addState (GetDeltasPending_);
 				SM_.addState (ProcessDeltas_);
 				SM_.addState (PutDeltasPending_);
+				SM_.addState (Finish_);
 				SM_.setInitialState (Idle_);
 
-				ConnectionError_->addTransition (Idle_);
 				Idle_->addTransition (this,
 						SIGNAL (initiated ()), LoginPending_);
 				connect (LoginPending_,
@@ -64,7 +67,6 @@ namespace LeechCraft
 						SLOT (performLogin ()));
 				LoginPending_->addTransition (this,
 						SIGNAL (fail ()), LoginError_);
-				LoginError_->addTransition (Idle_);
 				LoginPending_->addTransition (this,
 						SIGNAL (success ()), Running_);
 				Running_->addTransition (ReqMaxDeltaPending_);
@@ -90,6 +92,17 @@ namespace LeechCraft
 						SIGNAL (entered ()),
 						this,
 						SLOT (handlePutDeltas ()));
+				PutDeltasPending_->addTransition (ServerConnection_,
+						SIGNAL (deltaOutOfOrder ()), Running_);
+				PutDeltasPending_->addTransition (this,
+						SIGNAL (fail ()), ConnectionError_);
+				PutDeltasPending_->addTransition (this,
+						SIGNAL (success ()), Finish_);
+
+				connect (&SM_,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleFinished ()));
 
 				SM_.start ();
 
@@ -145,6 +158,17 @@ namespace LeechCraft
 					emit deltasReceived ();
 					handleDeltasReceived (data);
 				}
+				else if (conf.contains (PutDeltasPending_))
+				{
+					if (NumLastSentOut_)
+					{
+						emit successfullySentDeltas (NumLastSentOut_, Chain_);
+						NumLastSentOut_ = 0;
+					}
+					emit success ();
+				}
+				else
+					emit success ();
 			}
 
 			void ServerChainHandler::handleMaxDeltaIDReceived (quint32 deltaId)
@@ -193,8 +217,38 @@ namespace LeechCraft
 				Sync::Deltas_t deltas;
 				emit deltasRequired (&deltas, Chain_);
 
+				NumLastSentOut_ = deltas.size ();
+
+				if (!deltas.size ())
+				{
+					emit success ();
+					return;
+				}
+
+				quint32 firstId = deltas.at (0).ID_;
+
 				QList<QByteArray> dBytes;
-				//ServerConnection_->putDeltas (dBytes);
+				Q_FOREACH (const Sync::Delta& delta, deltas)
+				{
+					QByteArray ba;
+					{
+						QDataStream ds (&ba, QIODevice::WriteOnly);
+						ds << delta;
+					}
+					dBytes << ba;
+				}
+				ServerConnection_->putDeltas (dBytes, firstId);
+			}
+
+			void ServerChainHandler::handleFinished ()
+			{
+				QSet<QAbstractState*> conf = SM_.configuration ();
+				if (conf.contains (LoginError_))
+					emit loginError ();
+				else if (conf.contains (ConnectionError_))
+					emit connectionError ();
+				else if (conf.contains (Finish_))
+					emit finishedSuccessfully ();
 			}
 		}
 	}

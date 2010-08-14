@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "datastorageserver.h"
+#include <QtDebug>
 #include "serverchainhandler.h"
 
 namespace LeechCraft
@@ -37,6 +38,7 @@ namespace LeechCraft
 					return;
 
 				ServerChainHandler *handler = new ServerChainHandler (chain, this);
+
 				connect (handler,
 						SIGNAL (gotNewDeltas (const Sync::Deltas_t&, const QByteArray&)),
 						this,
@@ -45,8 +47,88 @@ namespace LeechCraft
 						SIGNAL (deltasRequired (Sync::Deltas_t*, const QByteArray&)),
 						this,
 						SIGNAL (deltasRequired (Sync::Deltas_t*, const QByteArray&)));
+				connect (handler,
+						SIGNAL (successfullySentDeltas (quint32, const QByteArray&)),
+						this,
+						SIGNAL (successfullySentDeltas (quint32, const QByteArray&)));
+
+				connect (handler,
+						SIGNAL (loginError ()),
+						this,
+						SLOT (handleLoginError ()));
+				connect (handler,
+						SIGNAL (connectionError ()),
+						this,
+						SLOT (handleConnectionError ()));
+				connect (handler,
+						SIGNAL (finishedSuccessfully ()),
+						this,
+						SLOT (handleFinishedSuccessfully ()));
+
 				ChainHandlers_ [chain] = handler;
 				handler->Sync ();
+			}
+
+			void DataStorageServer::handleLoginError ()
+			{
+				QByteArray chain = GetChainForSender (sender ());
+				if (chain.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "^^^^^^^^^^^^";
+					return;
+				}
+
+				emit loginError (chain);
+				ChainHandlers_.take (chain)->deleteLater ();
+			}
+
+			void DataStorageServer::handleConnectionError ()
+			{
+				QByteArray chain = GetChainForSender (sender ());
+				if (chain.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "^^^^^^^^^^^^";
+					return;
+				}
+
+				emit connectionError (chain);
+				ChainHandlers_.take (chain)->deleteLater ();
+			}
+
+			void DataStorageServer::handleFinishedSuccessfully ()
+			{
+				QByteArray chain = GetChainForSender (sender ());
+				if (chain.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "^^^^^^^^^^^^";
+					return;
+				}
+
+				emit finishedSuccessfully (chain);
+				ChainHandlers_.take (chain)->deleteLater ();
+			}
+
+			QByteArray DataStorageServer::GetChainForSender (QObject *sender)
+			{
+				ServerChainHandler *handler = qobject_cast<ServerChainHandler*> (sender);
+				if (!handler)
+				{
+					qWarning () << "sender is not a ServerChainHandler"
+							<< sender;
+					return QByteArray ();
+				}
+
+				QByteArray chain = ChainHandlers_.key (handler);
+				if (chain.isEmpty ())
+				{
+					qWarning () << "no chain for handler"
+							<< handler;
+					handler->deleteLater ();
+				}
+				return chain;
 			}
 		}
 	}

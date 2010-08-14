@@ -55,7 +55,7 @@ namespace LeechCraft
 				void performLogin ();
 				void reqMaxDelta ();
 				void getDeltas (quint32 from);
-				void putDeltas ();
+				void putDeltas (const QList<QByteArray>&, quint32);
 			private slots:
 				void handleConnected ();
 				void handleReadyRead ();

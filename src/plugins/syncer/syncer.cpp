@@ -29,6 +29,10 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				Core::Instance ().SetProxy (proxy);
+				connect (&Core::Instance (),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 			}
 
 			void Plugin::SecondInit ()

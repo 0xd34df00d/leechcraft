@@ -38,6 +38,12 @@ namespace LeechCraft
 				DataStorageServer (QObject*);
 			public slots:
 				virtual void sync (const QByteArray&);
+			private slots:
+				void handleLoginError ();
+				void handleConnectionError ();
+				void handleFinishedSuccessfully ();
+			private:
+				QByteArray GetChainForSender (QObject*);
 			};
 		}
 	}

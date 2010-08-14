@@ -44,6 +44,8 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+			signals:
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

@@ -118,6 +118,20 @@ namespace LeechCraft
 				Socket_->write (FmtMsg (lists));
 			}
 
+			void ServerConnection::putDeltas (const QList<QByteArray>& deltas, quint32 firstId)
+			{
+				QList<QByteArray> lists;
+				lists << "PUTDELTA" << Chain_;
+				QByteArray fiData;
+				{
+					QDataStream ds (&fiData, QIODevice::WriteOnly);
+					ds << firstId;
+				}
+				lists << fiData;
+				lists += deltas;
+				Socket_->write (FmtMsg (lists));
+			}
+
 			void ServerConnection::handleConnected ()
 			{
 				QList<QByteArray> lists;

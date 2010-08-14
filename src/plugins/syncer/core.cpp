@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <QCoreApplication>
+#include <plugininterface/util.h>
 #include "datastorageserver.h"
 
 namespace LeechCraft
@@ -39,6 +40,23 @@ namespace LeechCraft
 						SIGNAL (deltasRequired (Sync::Deltas_t*, const QByteArray&)),
 						this,
 						SLOT (handleDeltasRequired (Sync::Deltas_t*, const QByteArray&)));
+				connect (DataStorage_,
+						SIGNAL (successfullySentDeltas (quint32, const QByteArray&)),
+						this,
+						SLOT (handleSuccessfullySentDeltas (quint32, const QByteArray&)));
+
+				connect (DataStorage_,
+						SIGNAL (loginError (const QByteArray&)),
+						this,
+						SLOT (handleLoginError (const QByteArray&)));
+				connect (DataStorage_,
+						SIGNAL (connectionError (const QByteArray&)),
+						this,
+						SLOT (handleConnectionError (const QByteArray&)));
+				connect (DataStorage_,
+						SIGNAL (finishedSuccessfully (const QByteArray&)),
+						this,
+						SLOT (handleFinishedSuccessfully (const QByteArray&)));
 			}
 
 			Core& Core::Instance ()
@@ -128,6 +146,90 @@ namespace LeechCraft
 
 					*deltas << delta;
 				}
+			}
+
+			void Core::handleSuccessfullySentDeltas (quint32 numDeltas, const QByteArray& fullChain)
+			{
+				QList<QByteArray> parts = fullChain.split ('$');
+				QByteArray pluginId = parts.at (0);
+				QByteArray chain = parts.at (1);
+
+				if (!ID2Object_.contains (pluginId))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unknown plugin ID"
+							<< pluginId;
+					return;
+				}
+
+				ISyncable *syncable = qobject_cast<ISyncable*> (ID2Object_ [pluginId]);
+
+				syncable->PurgeNewDeltas (chain, numDeltas);
+				SetLastID (fullChain, GetLastID (fullChain) + numDeltas);
+			}
+
+			void Core::handleLoginError (const QByteArray& chain)
+			{
+				QString name = GetNameForChain (chain);
+				if (name.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "^^^^^^^^^^^^";
+					return;
+				}
+
+				emit gotEntity (Util::MakeNotification (tr ("Sync failure"),
+						tr ("Login error when synchronizing plugin %1.")
+							.arg (name),
+						PCritical_));
+			}
+
+			void Core::handleConnectionError (const QByteArray& chain)
+			{
+				QString name = GetNameForChain (chain);
+				if (name.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "^^^^^^^^^^^^";
+					return;
+				}
+
+				emit gotEntity (Util::MakeNotification (tr ("Sync failure"),
+						tr ("Connection error when synchronizing plugin %1.")
+							.arg (name),
+						PCritical_));
+			}
+
+			void Core::handleFinishedSuccessfully (const QByteArray& chain)
+			{
+				QString name = GetNameForChain (chain);
+				if (name.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "^^^^^^^^^^^^";
+					return;
+				}
+
+				emit gotEntity (Util::MakeNotification (tr ("Sync"),
+						tr ("Successfully synchronized plugin %1.")
+							.arg (name),
+						PInfo_));
+			}
+
+			QString Core::GetNameForChain (const QByteArray& fullChain)
+			{
+				QList<QByteArray> parts = fullChain.split ('$');
+				QByteArray pluginId = parts.at (0);
+
+				if (!ID2Object_.contains (pluginId))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unknown plugin ID"
+							<< pluginId;
+					return QString ();
+				}
+
+				return qobject_cast<IInfo*> (ID2Object_ [pluginId])->GetName ();
 			}
 		}
 	}

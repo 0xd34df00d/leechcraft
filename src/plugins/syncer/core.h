@@ -53,6 +53,14 @@ namespace LeechCraft
 			private slots:
 				void handleNewDeltas (const Sync::Deltas_t&, const QByteArray&);
 				void handleDeltasRequired (Sync::Deltas_t*, const QByteArray&);
+				void handleSuccessfullySentDeltas (quint32, const QByteArray&);
+				void handleLoginError (const QByteArray&);
+				void handleConnectionError (const QByteArray&);
+				void handleFinishedSuccessfully (const QByteArray&);
+			private:
+				QString GetNameForChain (const QByteArray&);
+			signals:
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		}
 	}

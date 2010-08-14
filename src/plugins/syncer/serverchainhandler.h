@@ -21,6 +21,8 @@
 #include <QStateMachine>
 #include <interfaces/isyncable.h>
 
+class QFinalState;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -37,14 +39,17 @@ namespace LeechCraft
 				ServerConnection *ServerConnection_;
 				QByteArray Chain_;
 				QState *Idle_;
-				QState *ConnectionError_;
+				QFinalState *ConnectionError_;
 				QState *LoginPending_;
-				QState *LoginError_;
+				QFinalState *LoginError_;
 				QState *Running_;
 				QState *ReqMaxDeltaPending_;
 				QState *GetDeltasPending_;
 				QState *ProcessDeltas_;
 				QState *PutDeltasPending_;
+				QFinalState *Finish_;
+
+				quint32 NumLastSentOut_;
 			public:
 				ServerChainHandler (const QByteArray&, QObject*);
 			public:
@@ -55,9 +60,15 @@ namespace LeechCraft
 				void handleMaxDeltaIDReceived (quint32);
 				void handleDeltasReceived (const QList<QByteArray>&);
 				void handlePutDeltas ();
+				void handleFinished ();
 			signals:
 				void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
 				void deltasRequired (Sync::Deltas_t*, const QByteArray&);
+				void successfullySentDeltas (quint32, const QByteArray&);
+
+				void loginError ();
+				void connectionError ();
+				void finishedSuccessfully ();
 
 				// Used internally to control the statemachine.
 				void initiated ();
