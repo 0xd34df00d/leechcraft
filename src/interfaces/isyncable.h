@@ -67,7 +67,7 @@ public:
 
 	virtual LeechCraft::Sync::Payloads_t GetNewDeltas (const LeechCraft::Sync::ChainID_t& chain) const = 0;
 
-	virtual void PurgeNewDeltas (const LeechCraft::Sync::ChainID_t& chain) = 0;
+	virtual void PurgeNewDeltas (const LeechCraft::Sync::ChainID_t& chain, quint32 numToPurge) = 0;
 
 	virtual void ApplyDeltas (const LeechCraft::Sync::Payloads_t& deltas,
 			const LeechCraft::Sync::ChainID_t& chain) = 0;

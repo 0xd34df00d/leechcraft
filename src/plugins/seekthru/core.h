@@ -95,7 +95,7 @@ namespace LeechCraft
 
 				Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&);
 				Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&);
-				void PurgeNewDeltas (const Sync::ChainID_t&);
+				void PurgeNewDeltas (const Sync::ChainID_t&, quint32);
 				void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
 
 				/** Fetches the searcher from the url.

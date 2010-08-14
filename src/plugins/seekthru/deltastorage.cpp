@@ -89,14 +89,19 @@ namespace LeechCraft
 				return tmpPayloads.toList ();
 			}
 
-			void DeltaStorage::Purge (const Sync::ChainID_t& chainId)
+			void DeltaStorage::Purge (const Sync::ChainID_t& chainId, quint32 num)
 			{
 				QDir dir = GetDir (chainId);
+				quint32 purged = 0;
 				Q_FOREACH (const QString& filename, dir.entryList (QDir::Files | QDir::NoDotAndDotDot))
+				{
 					if (!dir.remove (filename))
 						qWarning () << Q_FUNC_INFO
 								<< "could not remove"
 								<< filename;
+					if (++purged == num)
+						break;
+				}
 			}
 
 			QDir DeltaStorage::GetDir (const Sync::ChainID_t& chainId) const

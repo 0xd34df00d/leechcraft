@@ -219,9 +219,9 @@ namespace LeechCraft
 				return DeltaStorage_.Get (chainId);
 			}
 
-			void Core::PurgeNewDeltas (const Sync::ChainID_t& chainId)
+			void Core::PurgeNewDeltas (const Sync::ChainID_t& chainId, quint32 num)
 			{
-				DeltaStorage_.Purge (chainId);
+				DeltaStorage_.Purge (chainId, num);
 			}
 
 			void Core::ApplyDeltas (const Sync::Payloads_t& payloads, const Sync::ChainID_t& chainId)

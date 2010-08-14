@@ -172,9 +172,9 @@ namespace LeechCraft
 				return Core::Instance ().GetNewDeltas (chainId);
 			}
 
-			void SeekThru::PurgeNewDeltas (const Sync::ChainID_t& chainId)
+			void SeekThru::PurgeNewDeltas (const Sync::ChainID_t& chainId, quint32 num)
 			{
-				Core::Instance ().PurgeNewDeltas (chainId);
+				Core::Instance ().PurgeNewDeltas (chainId, num);
 			}
 
 			void SeekThru::ApplyDeltas (const Sync::Payloads_t& payloads,

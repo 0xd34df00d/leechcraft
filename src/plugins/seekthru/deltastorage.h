@@ -40,7 +40,7 @@ namespace LeechCraft
 				void Store (const Sync::ChainID_t&, const Sync::Payloads_t&);
 
 				Sync::Payloads_t Get (const Sync::ChainID_t&) const;
-				void Purge (const Sync::ChainID_t&);
+				void Purge (const Sync::ChainID_t&, quint32 num);
 			private:
 				QDir GetDir (const Sync::ChainID_t&) const;
 				int GetLastFileNum (const Sync::ChainID_t&) const;
