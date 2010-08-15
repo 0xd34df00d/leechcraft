@@ -52,6 +52,7 @@ namespace LeechCraft
 			public:
 				enum HostingService
 				{
+					SavepicRu,
 					ImagebinCa
 				};
 			private:

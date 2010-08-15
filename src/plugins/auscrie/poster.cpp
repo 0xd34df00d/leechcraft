@@ -77,6 +77,56 @@ namespace LeechCraft
 				}
 			};
 
+			struct SavepicWorker : Worker
+			{
+				QRegExp RegExp_;
+
+				SavepicWorker ()
+				: RegExp_ (".*<p class=\"img\"><a href=\"/(\\d+).htm\">.*",
+						Qt::CaseSensitive, QRegExp::RegExp2)
+				{
+				}
+
+				QNetworkReply* Post (const QByteArray& data, const QString& format,
+						QNetworkAccessManager *am) const
+				{
+					QUrl url ("http://savepic.ru/");
+
+					RequestBuilder builder;
+					builder.AddPair ("note", "");
+					builder.AddPair ("font1", "decor");
+					builder.AddPair ("font2", "20");
+					builder.AddPair ("orient", "h");
+					builder.AddPair ("size1", "1");
+					builder.AddPair ("size2", "1024x768");
+					builder.AddPair ("rotate", "00");
+					builder.AddPair ("flip", "0");
+					builder.AddPair ("mini", "300x225");
+					builder.AddPair ("opt3[]", "zoom");
+					builder.AddPair ("email", "");
+					builder.AddFile (format, "file", data);
+
+					QByteArray formed = builder.Build ();
+
+					QNetworkRequest request (url);
+					request.setHeader (QNetworkRequest::ContentTypeHeader,
+							QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
+					request.setHeader (QNetworkRequest::ContentLengthHeader,
+							QString::number (formed.size ()));
+					return am->post (request, formed);
+				}
+
+				QString GetLink (const QString& contents) const
+				{
+					qDebug () << Q_FUNC_INFO << contents.toUtf8 ();
+					if (!RegExp_.exactMatch (contents))
+						return QString ();
+
+					QString imageId = RegExp_.cap (1);
+					return "http://savepic.ru/" + imageId + ".jpg";
+				}
+			};
+
 			Poster::Poster (Poster::HostingService service,
 					const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am, QObject *parent)
@@ -84,6 +134,7 @@ namespace LeechCraft
 			, Reply_ (0)
 			, Service_ (service)
 			{
+				Workers_ [SavepicRu] = Worker_ptr (new SavepicWorker);
 				Workers_ [ImagebinCa] = Worker_ptr (new ImagebinWorker);
 
 				Reply_ = Workers_ [Service_]->Post (data, format, am);
@@ -106,7 +157,8 @@ namespace LeechCraft
 
 				if (pasteUrl.isEmpty ())
 				{
-					emit gotEntity (Util::MakeNotification ("Auscrie", tr ("Page parse failed"), PCritical_));
+					emit gotEntity (Util::MakeNotification ("Auscrie",
+							tr ("Page parse failed"), PCritical_));
 					return;
 				}
 

@@ -52,6 +52,8 @@ namespace LeechCraft
 				switch (Ui_.ActionBox_->currentIndex ())
 				{
 					case 0:
+						return Poster::SavepicRu;
+					case 1:
 						return Poster::ImagebinCa;
 					default:
 						qWarning () << Q_FUNC_INFO
