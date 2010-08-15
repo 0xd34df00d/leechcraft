@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book id="writing_simple_plugin_in_20_minutes" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+	<bookinfo>
+		<title>Writing a simple plugin in 20 minutes</title>
+	</bookinfo>
+	<sect1 id="intro">
+		<title>Introduction</title>
+		<para>In this tutorial we will write a simple plugin (called Auscrie for "Auto Screenshooter") for LeechCraft. This way we will illustrate basic concepts of plugin writing. Our plugin would be able to take a screenshot of LeechCraft's window and save it somewhere or upload to a imagebin. Screenshooting would be initiated by a button in the toolbar.</para>
+		<para>We will learn:
+			<itemizedlist>
+				<listitem>how to create dummy new plugins and build them;</listitem>
+				<listitem>how to add UI written in Qt Designer to plugins;</listitem>
+				<listitem>preferable ways of working with network and HTTP in particular in LeechCraft;</listitem>
+				<listitem>using LeechCraft messages to notify user about various events in your plugin.</listitem>
+			</itemizedlist>
+		</para>
+	</sect1>
+	<sect1 id="understanding_plugins">
+		<title>Understanding plugins</title>
+		<para>C++ plugins for LeechCraft are just dynamic libraries with main plugin instance exported from it. Plugin instance is exported with Q_EXPORT_PLUGIN2. Plugin instance should also implement IInfo (<filename>/src/interfaces/iinfo.h</filename> from the repository root) interface to be recognized by LeechCraft as a proper plugin.</para>
+		<para>To know more about writing plugins for C++/Qt applications please visit How to Create Qt Plugins guide.</para>
+		<para>You could also refer to the general LeechCraft overview for more information about plugins and LeechCraft architecture.</para>
+	</sect1>
+	<sect1 id="paths">
+		<title>Paths</title>
+		<para>For our convenience we will work right in source tree, in <filename>/src/plugins/auscrie</filename>. Usually you will develop your plugin separately from the source tree (see Workflow documentation for more information), and the only difference would be that you will need to adjust the paths accordingly. For example, you will need to make sure that <parameter>CMAKE_MODULE_PATH</parameter> points to the directory containing <filename>FindLeechCraft.cmake</filename> when running CMake. CMake variables are set with <option>-D</option> command line switch. For example:<screen><command>cmake -DCMAKE_MODULE_PATH=<replaceable>/some/path/to/LeechCraft/SDK</replaceable></command></screen></para>
+		<para>This is *NIX-oriented tutorial. Refer to the corresponding parts of Windows building guide for the differences in the building process.</para>
+	</sect1>
+	<sect1 id="general_skeleton">
+		<title>General skeleton</title>
+		<para>There is a convenience Python script in LeechCraft repository: <filename>/tools/scripts/genplugin.py</filename> which generates very basic <filename>CMakeLists.txt</filename> file for your plugin and plugin instance declaration/implementation files. It is invoked as:</para>
+		<screen><command>genplugin.py -a "<replaceable>Plugin Author</replaceable>" -p <replaceable>PluginNameWithoutSpaces</replaceable> -i <replaceable>Comma,Separated,List,Of,Base,Interfaces</replaceable></command></screen>
+		<para>It would also give a short help message when run with <option>-h</option> option.</para>
+		<para>So, we create the <filename>/src/plugins/auscrie</filename> directory, <command>cd</command> into it and run the script like this (please note that in your case path to genplugin.py can be different):</para>
+		<screen><command>../../../tools/scripts/genplugin.py -a "Your Name" -p Auscrie -i IToolBarEmbedder</command></screen>
+		<para>We also derive from the <interfacename>IToolBarEmbedder</interfacename> (<filename>/src/interfaces/itoolbarembedder.h</filename>) because we want to embed our button there.</para>
+		<para>This script would generate basic files, but that would be enough to produce a minimal working (more precisely, minimal loading) plugin. Let's try to compile and run it! To do that, we create a directory in which the plugin will be built, run <command>cmake</command> over it, then <command>make</command> to build the plugin and then <command>make install</command> from root to install the plugin. From the directory with the sources issue:</para>
+		<screen>
+		<command>mkdir build</command>
+		<command>cd build</command>
+		<command>cmake ../</command>
+		<command>make</command>
+		<command>sudo make install</command>
+		</screen>
+		<para>Here we used out-of-source builds. Generally, it's preferable to use out-of-source builds since you can easily clean up the source tree (by removing the build directory) or have multiple builds with different configurations simultaneously.</para>
+		<para>Now run LeechCraft and open Settings dialog, then select the Plugins page. You should now see your plugin in the list. If you don't, check the logs (<filename>~/.leechcraft/warning.log</filename>) and contact us.</para>
+	</sect1>
+	<sect1 id="basic_stuff">
+		<title>Basic stuff</title>
+		<para>Now we have a very basic plugin that is recognizable by LeechCraft. Let us fill the gaps.</para>
+		<para>First, we should fill the <function>GetInfo</function> stub with some sensible description, like "Simple auto screenshooter.".</para>
+		<para>Then let's create the action that would make a screenshot. First, we define some internal data members and methods:
+			<itemizedlist>
+				<listitem><varname>Proxy_</varname> of type <classname>ICoreProxy_ptr</classname>, where we will store the pointer to the core proxy object passed to <function>Init</function>. We need this proxy, because it's the object through which all the communication with LeechCraft Core is done, and we will need it later;</listitem>
+				<listitem><classname>QAction</classname> *<varname>ShotAction_</varname>, which would initiate screenshooting;</listitem>
+				<listitem>private slot <function>makeScreenshot</function> which would be invoked when our action fires up.</listitem>
+			</itemizedlist>
+		</para>
+		<para>It's better to do such initialization in our Init function, so we write there the following code for our action:</para>
+		<programlisting language="c++">
+<![CDATA[
+Proxy_ = proxy;
+
+Dialog_ = new ShooterDialog (Proxy_->GetMainWindow ());
+
+ShotAction_ = new QAction (Proxy_->GetIcon ("screenshot"),
+        tr ("Make a screenshot"),
+        this);
+connect (ShotAction_,
+        SIGNAL (triggered ()),
+        this,
+        SLOT (makeScreenshot ()));
+]]>
+		</programlisting>
+		<para>We use <classname>ICoreProxy_ptr</classname> to get the right icon from the right theme for our action. When you will develop your own plugins you will need to carry your icons with you unless you get into the official source tree. We also use the proxy to get the pointer to the main window. The <classname>ShooterDialog</classname> stuff will be explained later.</para>
+		<para>Then, let's fill the <function>GetActions</function> stub and return our <varname>ShotAction_</varname>. <function>GetActions</function> would look like:</para>
+		<programlisting language="c++">
+<![CDATA[
+QList<QAction*> Plugin::GetActions () const
+{
+    QList<QAction*> result;
+    result << ShotAction_;
+    return result;
+}
+]]>
+		</programlisting>
+		<para>If you compile and install your plugin now, you will see the icon of your screenshoter in a toolbar, but it does nothing yet.</para>
+	</sect1>
+	<sect1 id="initiating_screenshooting">
+		<title>Initiating screenshooting</title>
+		<para>In our screenshooting slot we run a simple dialog asking for screenshot parameters. If user accepts the dialog, we disable the shooting action (we will reenable it again when the screenshot is ready) and start a timer according to the timeout set by user in the dialog:</para>
+		<programlisting language="c++">
+<![CDATA[
+void Plugin::makeScreenshot ()
+{
+    if (Dialog_->exec () != QDialog::Accepted)
+        return;
+
+    ShotAction_->setEnabled (false);
+    QTimer::singleShot (Dialog_->GetTimeout () * 1000,
+            this,
+            SLOT (shoot ()));
+}
+]]>
+		</programlisting>
+		<para>We created the Dialog_ in Init() in order to keep it between different calls to makeScreenshot(). Having this dialog avaliable in any function has another benefit: we don't have to store screenshot parameters like format or quality after executing the dialog since we can ask it anytime.</para>
+		<para>Writing this dialog is quite a trivial task for anyone who ever used Qt Designer, so it won't be documented here. However, it's worth noting how forms should be added to CMake-based project. We define a variable which will hold the list of forms (<varname>FORMS</varname> in our case), we add the <filename>.h</filename> and <filename>.cpp</filename>-files to the list of headers and sources, we call the <function>QT4_WRAP_UI</function> to run <command>uic</command> on the forms and we add the result of <command>uic</command> to the list of dependencies of our plugin. So, the middle of the <function>CMakeLists.txt</function> file would look like:</para>
+		<programlisting language="cmake">
+<![CDATA[
+SET (SRCS
+    auscrie.cpp
+    shooterdialog.cpp
+    )
+SET (HEADERS
+    auscrie.h
+    shooterdialog.h
+    )
+SET (FORMS
+    shooterdialog.ui
+    )
+QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
+
+ADD_LIBRARY (leechcraft_auscrie SHARED
+    ${COMPILED_TRANSLATIONS}
+    ${SRCS}                                                                                                                                                                                                                      
+    ${MOC_SRCS}
+    ${UIS_H}
+    )
+]]>
+		</programlisting>
+	</sect1>
+	<sect1 id="shooting_is_fun">
+		<title>Shooting, it's fun!</title>
+		<para>Let's finally take a look at the <function>shoot</function> slot. We will split our discussion of it into logical parts.</para>
+		<para>To grab the window, we use the <varname>Proxy_</varname> object we stored earlier to access the main LeechCraft window. Don't forget to <code>#include</code> the <classname>QMainWindow</classname> header, otherwise casting from <classname>QMainWindow</classname>* to <classname>QWidget</classname>* would fail.</para>
+		<programlisting language="c++">
+<![CDATA[
+void Plugin::shoot ()
+{
+    ShotAction_->setEnabled (true);
+
+    QWidget *mw = Proxy_->GetMainWindow ();
+    QPixmap pm = QPixmap::grabWidget (mw);
+
+    const char *fmt = qPrintable (Dialog_->GetFormat ());
+    int quality = Dialog_->GetQuality ();
+]]>
+		</programlisting>
+		<para>Then we have two options: to save file to the disk and to send it to a pastebin. The first one is a bit easier to implement:</para>
+		<programlisting language="c++">
+<![CDATA[
+    switch (Dialog_->GetAction ())
+    {
+        case ShooterDialog::ASave:
+        {
+            QString path = Proxy_->GetSettingsManager ()->
+                    Property ("PluginsStorage/Auscrie/SavePath",
+                            QDir::currentPath () + "01." + Dialog_->GetFormat ())
+                    .toString ();
+
+            QString filename = QFileDialog::getSaveFileName (mw,
+                    tr ("Save as"),
+                    path,
+                    tr ("%1 files (*.%1);;All files (*.*)")
+                        .arg (Dialog_->GetFormat ()));
+
+            if (!filename.isEmpty ())
+            {
+                pm.save (filename, fmt, quality);
+                Proxy_->GetSettingsManager ()->
+                setProperty ("PluginsStorage/Auscrie/SavePath",
+                        filename);
+            }
+        }
+        break;
+]]>
+		</programlisting>
+		<para>Here we used Core's settings manager which is basically a wrapper around <classname>QSettings</classname>. Keys starting with <emphasis>PluginsStorage</emphasis> can be used by plugins, the Core won't use them for its own tasks. It is generally ok to use Core's settings manager for storing a setting or two, but if you need more, and especially if you need to build your own settings dialogs, you will need to add one for your plugin.</para>
+		<para>If user selected uploading to an imagebin, we call a separate function, Post(), that would take care of it:</para>
+		<programlisting language="c++">
+<![CDATA[
+        case ShooterDialog::AUpload:
+        {
+            QBuffer buf;
+            pm.save (&buf,
+                    fmt,
+                    quality);
+            Post (buf.data ());
+        }
+		break;
+    }
+}
+]]>
+		</programlisting>
+		<para>We also should now add the following to our <filename>CMakeLists.txt</filename> just before <code>INCLUDE (${QT_USE_FILE})</code>:</para>
+		<programlisting language="cmake">
+<![CDATA[
+SET (QT_USE_QTNETWORK TRUE)
+]]>
+		</programlisting>
+		<para>This would add the networking abilities to our plugin, making visible the includes from the QtNetwork module and linking our plugin to the QtNetwork library. We will definitely need it since our plugin uses QtNetwork (for example, <classname>QNetworkAccessManager</classname> and <classname>QNetworkReply</classname>) to do actualy posting of screenshots.</para>
+		<para>Because we aren't interested in uploading implementation now, we've moved all the posting code into separate <classname>Poster</classname> class, so our <function>Post</function> function looks quite simple:</para>
+		<programlisting language="c++">
+<![CDATA[
+void Plugin::Post (const QByteArray& data)
+{
+    Poster *p = new Poster (data,
+            Dialog_->GetFormat (),
+            Proxy_->GetNetworkAccessManager ());
+    connect (p,
+            SIGNAL (finished (QNetworkReply*)),
+            this,
+            SLOT (handleFinished (QNetworkReply*)));
+    connect (p,
+            SIGNAL (error (QNetworkReply*)),
+            this,
+            SLOT (handleError (QNetworkReply*)));
+}
+]]>
+		</programlisting>
+		<para>Here we used <varname>Proxy_</varname> once again to obtain the application-wide instance of the <classname>QNetworkAccessManager</classname> with the <function>GetNetworkAccessManager</function> method. It's always better to use the application-wide <classname>QNetworkAccessManager</classname> thus getting access to the application-wide network cache and cookie database, as well as allowing it to optimize requests by reusing connections, for example.</para>
+		<para>It's also worth noting that in case if you need to just download a file, which is not our case but just a very common task, you can just emit the corresponding signal without caring about network access, managers, replies and stuff. This approach is discusses in details in the Overview document.</para>
+		<para>It is also ok to create the <classname>Poster</classname> on the heap without caring about memory deallocation now. It will be freed in the corresponding slots.</para>
+		<para>We connect to the <classname>Poster</classname>'s signals
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef><function>finished</function></funcdef>
+					<paramdef>QNetworkReply *<parameter>reply</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			and
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef><function>error</function></funcdef>
+					<paramdef>QNetworkReply *<parameter>reply</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			to get notified when our uploading finishes or whether an error occurs. <classname>Poster</classname> emits the <classname>QNetworkReply</classname> that originally emitted the corresponding signal as the parameter of those signals.</para>
+		<para>Let's take a look at
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef><function>handleFinished</function></funcdef>
+					<paramdef>QNetworkReply *<parameter>reply</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			(by the way, don't forget to declare all the introduced members in class definition):</para>
+		<programlisting language="c++">
+<![CDATA[
+void Plugin::handleFinished (QNetworkReply *reply)
+{
+    sender ()->deleteLater ();
+
+    QString result = reply->readAll ();
+
+    QRegExp re ("<p>You can find this at <a href='([^<]+)'>([^<]+)</a></p>");
+    if (!re.exactMatch (result))
+    {
+        Entity e = Util::MakeNotification ("Auscrie",
+                tr ("Page parse failed"),
+                PWarning_);
+        emit gotEntity (e);
+        return;
+    }
+
+    QString pasteUrl = re.cap (1);
+
+    Entity e = Util::MakeNotification ("Auscrie",
+            tr ("Image pasted: %1, the URL was copied to the clipboard")
+                .arg (pasteUrl),
+            PInfo_);
+
+    QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
+    QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
+    
+    emit gotEntity (e);
+}
+]]>
+		</programlisting>
+		<para>First we shedule the sender object (<classname>Poster</classname> instance created earlier) to delete itself once control gets to the event loop. We don't plainly use something like <code>delete sender ();</code> because we can't delete objects inside their signals' handlers.</para>
+		<para>Then we get the page returned by server via <function>readAll</function> and try to get the link to our newly uploaded image by quite a simple regexp. If it fails, we emit a notification about our failure with Warning priority and stop processing. Please note that in your class signals and slots that use LeechCraft's data structures must use fully qualified names with namespaces, like
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>void <function>gotEntity</function></funcdef>
+					<paramdef>const LeechCraft::Entity&amp; <parameter>entity</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			Otherwise Qt's meta object system won't recognize them.</para>
+		<para>Here we also use the LeechCraft messages system to send out a notification about various events in your plugin, like errors or just information messages, to be shown to the user. We use the <function>LeechCraft::Util::MakeNotification</function> (which can be added by <code><![CDATA[#include <plugininterface/util.h>]]></code>) utility function to create such an entity. This function takes three parameters: notification title, notification body, notification priority. Notifications and LeechCraft messages are discussed in details in the Overview document.</para>
+	</sect1>
+	<sect1 id="conclusion">
+		<title>Conclusion</title>
+		<para>Basically that's all. Now we have a working, usable and useful plugin. Of course there is something to extend: for example, we could keep history of all the pasted screenshots or show a fancy progressbar notifying about upload progress, and you will almost surely want to add localization support, but our goal here is to get used to LeechCraft's concept of plugins.</para>
+	</sect1>
+</book>
