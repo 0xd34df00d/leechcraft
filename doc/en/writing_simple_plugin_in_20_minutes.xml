@@ -103,7 +103,7 @@ void Plugin::makeScreenshot ()
 }
 ]]>
 		</programlisting>
-		<para>We created the Dialog_ in Init() in order to keep it between different calls to makeScreenshot(). Having this dialog avaliable in any function has another benefit: we don't have to store screenshot parameters like format or quality after executing the dialog since we can ask it anytime.</para>
+		<para>We created the <varname>Dialog_</varname> in <function>Init</function> in order to keep it between different calls to <function>makeScreenshot</function>. Having this dialog avaliable in any function has another benefit: we don't have to store screenshot parameters like format or quality after executing the dialog since we can ask it anytime.</para>
 		<para>Writing this dialog is quite a trivial task for anyone who ever used Qt Designer, so it won't be documented here. However, it's worth noting how forms should be added to CMake-based project. We define a variable which will hold the list of forms (<varname>FORMS</varname> in our case), we add the <filename>.h</filename> and <filename>.cpp</filename>-files to the list of headers and sources, we call the <function>QT4_WRAP_UI</function> to run <command>uic</command> on the forms and we add the result of <command>uic</command> to the list of dependencies of our plugin. So, the middle of the <function>CMakeLists.txt</function> file would look like:</para>
 		<programlisting language="cmake">
 <![CDATA[

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book id="writing_simple_plugin_in_20_minutes" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+	<bookinfo>
+		<title>Пишем простой плагин за 20 минут</title>
+	</bookinfo>
+	<sect1 id="intro">
+		<title>Введение</title>
+		<para>Из этого руководства вы узнаете, как написать простенький плагин (назовём его Auscrie — от "Auto Screenshoter") для LeechCraft, проилюстрировав, таким образом, базовые концепции написания плагинов. Наш плагин сможет снимать скриншот окна LeechCraft и либо сохранять его на диск, либо постить на imagebin. Процесс будет осуществляться с помощью кнопки на панели инструментов.</para>
+		<para>Вы узнаете:
+			<itemizedlist>
+				<listitem>как создавать "пустые" плагины и собирать их;</listitem>
+				<listitem>как добавлять интерфейс пользователя, созданный с помощью Qt Designer;</listitem>
+				<listitem>о предпочтительных путях взаимодействия с сетью и HTTP в LeechCraft;</listitem>
+				<listitem>как использовать сообщения LeechCraft для оповещения пользователя о событиях, произошедших в вашем плагине.</listitem>
+			</itemizedlist>
+		</para>
+	</sect1>
+	<sect1 id="understanding_plugins">
+		<title>Understanding plugins</title>
+		<para>Плагины, написанные на C++, являются всего лишь динамическими библиотеками, из которых экспортируется главный экземпляр плагина. Экспорт осуществляется с помощью Q_EXPORT_PLUGIN2. Плагин должен содержать реализацию интерфейса IInfo (для чего используется заголовочный файл <filename>/src/interfaces/iinfo.h</filename> в корне репозитория), чтобы распознаваться как плагин для LeechCraft.</para>
+		<para>Чтобы узнать больше о написании плагинов для приложений на C++/Qt, обратитесь к руководству "Как создавать плагины Qt".</para>
+		<para>Также можете обратиться к общему обзору LeechCraft, чтобы узнать больше о его архитектуре и плагинах.</para>
+	</sect1>
+	<sect1 id="paths">
+		<title>Пути</title>
+		<para>Для удобства, будем работать прямо в директории с исходниками, <filename>/src/plugins/auscrie</filename>. Обычно плагины разрабатываются отдельно от дерева сорцов (обратитесь к документации о трудовом процессе, чтобы узнать больше), но единственным отличием является то, что вам придётся соответствующим образом поменять пути. Например, при запуске CMake нужно будет убедиться, что <parameter>CMAKE_MODULE_PATH</parameter> указывает на директорию, содержащую <filename>FindLeechCraft.cmake</filename>. Переменные CMake устанавливаются с помощью опции командной строки <option>-D</option>, например:<screen><command>cmake -DCMAKE_MODULE_PATH=<replaceable>/some/path/to/LeechCraft/SDK</replaceable></command></screen></para>
+		<para>Это руководство ориентировано на *NIX. За деталями касательно сборки под Windows обратитесь к соответствующему руководству.</para>
+	</sect1>
+	<sect1 id="general_skeleton">
+		<title>Каркас</title>
+		<para>В репозитории LeechCraft есть удобный Python-скрипт, <filename>/tools/scripts/genplugin.py</filename>, генерирующий базовый <filename>CMakeLists.txt</filename> и файлы с объявлениями/определениями экземпляра плагина. Запускается он следующим образом:</para>
+		<screen><command>genplugin.py -a "<replaceable>Plugin Author</replaceable>" -p <replaceable>PluginNameWithoutSpaces</replaceable> -i <replaceable>Comma,Separated,List,Of,Base,Interfaces</replaceable></command></screen>
+		<para>При запуске с опцией <option>-h</option> будет выдана краткая справка.</para>
+		<para>Итак, создаём директорию <filename>/src/plugins/auscrie</filename>, переходим в неё и запускаем скрипт (заметьте, что в вашем случае путь к genplugin.py может быть другим):</para>
+		<screen><command>../../../tools/scripts/genplugin.py -a "Your Name" -p Auscrie -i IToolBarEmbedder</command></screen>
+		<para>Наследование от <interfacename>IToolBarEmbedder</interfacename> (<filename>/src/interfaces/itoolbarembedder.h</filename>) необходимо для того, чтобы поместить кнопку на панель инструментов.</para>
+		<para>Этот скрипт сгенерирует базовые файлы, но их будет достаточно для минимального работающего (точнее, загружающегося) плагина. Попробуем-ка собрать и запустить его! Для этого создадим директорию для сборки, запустим в ней <command>cmake</command>, потом <command>make</command>, чтобы собрать плагин, а затем <command>make install</command> от root, чтобы установить его. Из директории с исходниками выполните:</para>
+		<screen>
+		<command>mkdir build</command>
+		<command>cd build</command>
+		<command>cmake ../</command>
+		<command>make</command>
+		<command>sudo make install</command>
+		</screen>
+		<para>Здесь использована сборка вне дерева исходников. Вообще это предпочтительный способ, т.к. можно легко очистить дерево исходников, просто удалив директорию сборки, или содержать несколько сборок с разными конфигурациями.</para>
+		<para>Теперь запустим LeechCraft, откроем диалог Настройки и выберем вкладку Плагины. В списке должен присутствовать наш плагин. Если это не так, проверьте логи (<filename>~/.leechcraft/warning.log</filename>) и свяжитесь с нами.</para>
+	</sect1>
+	<sect1 id="basic_stuff">
+		<title>Базовые вещи</title>
+		<para>Итак, у нас уже есть базовый плагин. Заполним-ка пробелы.</para>
+		<para>Во-первых, нужно вписать в <function>GetInfo</function> какое-то описание типа "Простой плагин для снятия скриншотов".</para>
+		<para>Теперь нужно создать объект QAction, который будет снимать скриншот. Для начала объявим некоторые внутренние переменные и методы:
+			<itemizedlist>
+				<listitem><varname>Proxy_</varname> типа <classname>ICoreProxy_ptr</classname>, которая будет содержать указатель на прокси-объект ядра, передаваемый функции <function>Init</function>. Он нужен нам, т.к. через этот объект осуществляется всё взаимодействие с ядром;</listitem>
+				<listitem><classname>QAction</classname> *<varname>ShotAction_</varname>, который будет инициировать снятие скриншота;</listitem>
+				<listitem>слот <function>makeScreenshot</function>, который будет запускаться по событию.</listitem>
+			</itemizedlist>
+		</para>
+		<para>Эту инициализацию лучше производить в функции Init, так что давайте допишем туда вот такой код для нашего экшена:</para>
+		<programlisting language="c++">
+<![CDATA[
+Proxy_ = proxy;
+
+Dialog_ = new ShooterDialog (Proxy_->GetMainWindow ());
+
+ShotAction_ = new QAction (Proxy_->GetIcon ("screenshot"),
+        tr ("Make a screenshot"),
+        this);
+connect (ShotAction_,
+        SIGNAL (triggered ()),
+        this,
+        SLOT (makeScreenshot ()));
+]]>
+		</programlisting>
+		<para><classname>ICoreProxy_ptr</classname> используется для получения правильной иконки из текущей темы.Когда вы будете разрабатывать свои собственные плагины, вам придётся таскать иконки с собой, пока не попадёте в официальный репозиторий. Прокси также используется для получения указателя на главное окно. О <classname>ShooterDialog</classname> мы поговорим позже.</para>
+		<para>Теперь давайте заполним заглушку <function>GetActions</function>, чтобы она возвращала <varname>ShotAction_</varname>. <function>GetActions</function> будет выглядеть примерно так:</para>
+		<programlisting language="c++">
+<![CDATA[
+QList<QAction*> Plugin::GetActions () const
+{
+    QList<QAction*> result;
+    result << ShotAction_;
+    return result;
+}
+]]>
+		</programlisting>
+		<para>Если сейчас скомпилировать и установить плагин, мы увидим иконку скриншоттера на панели инструментов, но она пока что ничего не делает.</para>
+	</sect1>
+	<sect1 id="initiating_screenshooting">
+		<title>Инициация получения скриншота</tite>
+		<para>В слоте мы запустим простой диалог, запрашивающий опции скриншота. Когда пользователь нажимает ОК, мы отключаем экшн (мы включим его, когда скриншот будет готов) и стартуем таймер в соответствии с таймаутом, заданным пользователем в диалоге:</para>
+		<programlisting language="c++">
+<![CDATA[
+void Plugin::makeScreenshot ()
+{
+    if (Dialog_->exec () != QDialog::Accepted)
+        return;
+
+    ShotAction_->setEnabled (false);
+    QTimer::singleShot (Dialog_->GetTimeout () * 1000,
+            this,
+            SLOT (shoot ()));
+}
+]]>
+		</programlisting>
+		<para>Мы создали Dialog_ в Init() для того, чтобы хранить его между вызовами makeScreenshot(). То, что диалог доступен из любой функции, имеет свои преимущества: например, нет никакой нужды в хранении параметров скриншота, вроде формата или качества, так как мы можем запросить их в любой момент</para>
+		<para>Написание диалога является довольно простой задачей для любого, кто когда-либо использовал Qt Designer, так что я не стану рассматривать это здесь. Впрочем, стоит рассказать о том, как добавлять формы в проекты, работающие с CMake. Нужно определить переменную, которая будет содержать список форм (в нашем случае это <varname>FORMS</varname>), добавить <filename>.h</filename>- и <filename>.cpp</filename>-файлы в список заголовочных файлов и исходников, вызвать функцию <function>QT4_WRAP_UI</function> для запуска на формах команды <command>uic</command>, а затем добавить результаты в список зависимостей плагина. Таким образом, середина <function>CMakeLists.txt</function> будет выглядеть так:</para>
+		<programlisting language="cmake">
+<![CDATA[
+SET (SRCS
+    auscrie.cpp
+    shooterdialog.cpp
+    )
+SET (HEADERS
+    auscrie.h
+    shooterdialog.h
+    )
+SET (FORMS
+    shooterdialog.ui
+    )
+QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
+
+ADD_LIBRARY (leechcraft_auscrie SHARED
+    ${COMPILED_TRANSLATIONS}
+    ${SRCS}                                                                                                                                                                                                                      
+    ${MOC_SRCS}
+    ${UIS_H}
+    )
+]]>
+		</programlisting>
+	</sect1>
+	<sect1 id="shooting_is_fun">
+		<title>Скриншоты — это весело.</title>
+		<para>Давайте наконец взглянем на слот <function>shoot</function>.</para>
+		<para>Для получения доступа к окну мы используем объект <varname>Proxy_</varname>, с помощью которого ранее получали доступ к главному окну. Не забудьте подключить заголовочный файл <classname>QMainWindow</classname>, иначе приведение типов из <classname>QMainWindow</classname>* в <classname>QWidget</classname>* не сработает.</para>
+		<programlisting language="c++">
+<![CDATA[
+void Plugin::shoot ()
+{
+    ShotAction_->setEnabled (true);
+
+    QWidget *mw = Proxy_->GetMainWindow ();
+    QPixmap pm = QPixmap::grabWidget (mw);
+
+    const char *fmt = qPrintable (Dialog_->GetFormat ());
+    int quality = Dialog_->GetQuality ();
+]]>
+		</programlisting>
+		<para>После этого у нас есть два варианта: либо сохранить файл на диск, либо отправить его на pastebin. Первый немного проще:</para>
+		<programlisting language="c++">
+<![CDATA[
+    switch (Dialog_->GetAction ())
+    {
+        case ShooterDialog::ASave:
+        {
+            QString path = Proxy_->GetSettingsManager ()->
+                    Property ("PluginsStorage/Auscrie/SavePath",
+                            QDir::currentPath () + "01." + Dialog_->GetFormat ())
+                    .toString ();
+
+            QString filename = QFileDialog::getSaveFileName (mw,
+                    tr ("Save as"),
+                    path,
+                    tr ("%1 files (*.%1);;All files (*.*)")
+                        .arg (Dialog_->GetFormat ()));
+
+            if (!filename.isEmpty ())
+            {
+                pm.save (filename, fmt, quality);
+                Proxy_->GetSettingsManager ()->
+                setProperty ("PluginsStorage/Auscrie/SavePath",
+                        filename);
+            }
+        }
+        break;
+]]>
+		</programlisting>
+		<para>Здесь использован менеджер настроек из ядра, который, вобщем-то, является обёрткой вокруг <classname>QSettings</classname>. Клавиши, начинающиеся с <emphasis>PluginsStorage</emphasis>, могут быть использованы плагинами, ядро не будет использовать их в своих собственных задачах. Использование менеджера настороек ядра нормально для хранения пары настроек, но если вам нужно больше, особенно если вам нужен отдельный диалог, лучше добавить его в ваш плагин.</para>
+		<para>Если пользовать выбрал загрузку изображения на imagebin, следует вызвать отдельную функцию, Post(), которая обо всём позаботится:</para>
+		<programlisting language="c++">
+<![CDATA[
+        case ShooterDialog::AUpload:
+        {
+            QBuffer buf;
+            pm.save (&buf,
+                    fmt,
+                    quality);
+            Post (buf.data ());
+        }
+		break;
+    }
+}
+]]>
+		</programlisting>
+		<para>Теперь нам также следует добавить в <filename>CMakeLists.txt</filename> следующие строки (прямо перед <code>INCLUDE (${QT_USE_FILE})</code>):</para>
+		<programlisting language="cmake">
+<![CDATA[
+SET (QT_USE_QTNETWORK TRUE)
+]]>
+		</programlisting>
+		<para>Это даст нашему плагину возможность работать с сетью, делая видимыми включения из модуля QtNetwork и линкуя плагин с библиотекой QtNetwork. Нам она определённо понадобится, т.к. плагин использует QtNetwork (например, <classname>QNetworkAccessManager</classname> и <classname>QNetworkReply</classname>) для постинга скриншотов.</para>
+		<para>Так как сейчас нас не интересует имплементация загрузки скриншота на imagebin, мы перенесём этот код в отдельный класс <classname>Poster</classname>, и наша функция <function>Post</function> будет выглядеть очень просто:</para>
+		<programlisting language="c++">
+<![CDATA[
+void Plugin::Post (const QByteArray& data)
+{
+    Poster *p = new Poster (data,
+            Dialog_->GetFormat (),
+            Proxy_->GetNetworkAccessManager ());
+    connect (p,
+            SIGNAL (finished (QNetworkReply*)),
+            this,
+            SLOT (handleFinished (QNetworkReply*)));
+    connect (p,
+            SIGNAL (error (QNetworkReply*)),
+            this,
+            SLOT (handleError (QNetworkReply*)));
+}
+]]>
+		</programlisting>
+		<para>Здесь мы ещё раз использовали <varname>Proxy_</varname>, на этот раз — для получения общего для всего приложения экземпляра <classname>QNetworkAccessManager</classname> с методом <function>GetNetworkAccessManager</function>. Использовать общий экземпляр <classname>QNetworkAccessManager</classname> всегда лучше, так как это позволяет получать доступ к общему кэшу и базе cookie, а также предоставляет возможность оптимизировать запросы путём повтороного использования соединений, например.</para>
+		<para>Следует также отметить, что в случае, когда вам нужно просто скачать файл (в данном плагине это не нужно, но это довольно часто возникающая задача), достаточно просто сгенерировать соответствующий сигнал, не заботясь о доступе к сети, менеджерах, ответах и прочем. Этот подход детально обсуждается в документе Обзор.</para>
+		<para>Считается нормальным создание <classname>Poster</classname> в куче, не заботясь об освобождении памяти. Она будет освобождена соответствующими слотами.</para>
+		<para>Мы подключаемся к сигналам класса <classname>Poster</classname> — 
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef><function>finished</function></funcdef>
+					<paramdef>QNetworkReply *<parameter>reply</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			и
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef><function>error</function></funcdef>
+					<paramdef>QNetworkReply *<parameter>reply</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			— для того, чтобы получать извещения о том, что загрузка завершилась (а также чтобы узнать о возможных ошибках). <classname>Poster</classname> генерирует сигнал с параметром — <classname>QNetworkReply</classname>, который изначально излучил соответствующий сигнал.</para>
+		<para>Взглянем на 
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef><function>handleFinished</function></funcdef>
+					<paramdef>QNetworkReply *<parameter>reply</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			(кстати, не забудьте объявить все представленные члены в определении класса):</para>
+		<programlisting language="c++">
+<![CDATA[
+void Plugin::handleFinished (QNetworkReply *reply)
+{
+    sender ()->deleteLater ();
+
+    QString result = reply->readAll ();
+
+    QRegExp re ("<p>You can find this at <a href='([^<]+)'>([^<]+)</a></p>");
+    if (!re.exactMatch (result))
+    {
+        Entity e = Util::MakeNotification ("Auscrie",
+                tr ("Page parse failed"),
+                PWarning_);
+        emit gotEntity (e);
+        return;
+    }
+
+    QString pasteUrl = re.cap (1);
+
+    Entity e = Util::MakeNotification ("Auscrie",
+            tr ("Image pasted: %1, the URL was copied to the clipboard")
+                .arg (pasteUrl),
+            PInfo_);
+
+    QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
+    QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
+    
+    emit gotEntity (e);
+}
+]]>
+		</programlisting>
+		<para>В первую очередь мы указываем посылающему объекту (экземпляру <classname>Poster</classname>, созданному ранее) удалить себя, как только управление будет возвращено циклу обработки событий. Мы не можем просто написать что-то вроде <code>delete sender ();</code>, потому что объекты не могут быть удалены из их же обработчиков сигналов.</para>
+		<para>После этого мы с помощью <function>readAll</function> получаем страницу, которую вернул сервер, и пытаемся извлечь ссылку на наше свежезагруженное изображение с помощью довольно простого регулярного выражения. Если сделать это не удаётся, мы генерируем уведомление об ошибке с приоритетом Warning и прерываем обработку. Заметьте также, что в сигналах классов и слотов, использующих структуры данных LeechCraft, вы должны использовать полностью определённые имена со всеми пространствами имён, например
+			<funcsynopsis>
+				<funcprototype>
+					<funcdef>void <function>gotEntity</function></funcdef>
+					<paramdef>const LeechCraft::Entity&amp; <parameter>entity</parameter></paramdef>
+				</funcprototype>
+			</funcsynopsis>
+			В противном случае система метаобъектов Qt не распознает их.</para>
+		<para>Здесь также используется система сообщений LeechCraft. С её помощью можно отправлять пользователю оповещения о событиях, происходящих в плагине, вроде ошибок или всяких информационных сообщений. Для создания оповещения используется функция <function>LeechCraft::Util::MakeNotification</function>, которая может быть добавлена с помощью <code><![CDATA[#include <plugininterface/util.h>]]></code>. Эта функция принимает три параметра: заголовок, тело и приоритет оповещения. Более детально оповещения и сообщения LeechCraft обсуждаются в документе Обзор.</para>
+	</sect1>
+	<sect1 id="conclusion">
+		<title>Заключение</title>
+		<para>Вобщем-то, это всё. Теперь у нас есть работающий, полезный плагин. Конечно же, есть вещи, которые стоило бы добавить: например, можно было бы хранить историю всех запощенных скриншотов или показывать красивенький прогрессбар, демонстрирующий загрузку изображения. Также вам наверняка захочется добавить поддержку локализаций, но нашей целью здесь было привыкнуть к концепции плагинов LeechCraft.</para>
+	</sect1>
+</book>
