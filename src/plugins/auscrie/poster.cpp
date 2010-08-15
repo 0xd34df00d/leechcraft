@@ -118,7 +118,6 @@ namespace LeechCraft
 
 				QString GetLink (const QString& contents) const
 				{
-					qDebug () << Q_FUNC_INFO << contents.toUtf8 ();
 					if (!RegExp_.exactMatch (contents))
 						return QString ();
 
