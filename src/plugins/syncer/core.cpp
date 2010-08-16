@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <QCoreApplication>
+#include <QTimer>
 #include <plugininterface/util.h>
 #include "datastorageserver.h"
 
@@ -32,6 +33,8 @@ namespace LeechCraft
 			, Settings_ (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName () + "_Syncer")
 			{
+				qRegisterMetaType<QList<QByteArray> > ("QList<QByteArray>");
+
 				connect (DataStorage_,
 						SIGNAL (gotNewDeltas (const Sync::Deltas_t&, const QByteArray&)),
 						this,
@@ -76,10 +79,13 @@ namespace LeechCraft
 						GetAllCastableRoots<ISyncable*> ();
 				Q_FOREACH (QObject *plugin, plugins)
 					ID2Object_ [qobject_cast<IInfo*> (plugin)->GetUniqueID ()] = plugin;
+
+				QTimer::singleShot (5000, this, SLOT (syncAll ()));
 			}
 
 			quint32 Core::GetLastID (const QByteArray& chain) const
 			{
+				qDebug () << Q_FUNC_INFO << chain;
 				Settings_.beginGroup ("IDs");
 				quint32 value = Settings_.value (chain, 0).value<quint32> ();
 				Settings_.endGroup ();
@@ -88,9 +94,26 @@ namespace LeechCraft
 
 			void Core::SetLastID (const QByteArray& chain, quint32 id)
 			{
+				qDebug () << Q_FUNC_INFO << chain;
 				Settings_.beginGroup ("IDs");
 				Settings_.setValue (chain, id);
 				Settings_.endGroup ();
+			}
+
+			void Core::syncAll ()
+			{
+				QObjectList plugins = ID2Object_.values ();
+				Q_FOREACH (QObject *plugin, ID2Object_.values ())
+				{
+					QByteArray id = qobject_cast<IInfo*> (plugin)->GetUniqueID ();
+					ISyncable *syncable = qobject_cast<ISyncable*> (plugin);
+					Sync::ChainIDs_t chains = syncable->AvailableChains ();
+					Q_FOREACH (const Sync::ChainID_t& cid, chains)
+					{
+						QByteArray fullChain = id + "$" + cid;
+						DataStorage_->sync (fullChain);
+					}
+				}
 			}
 
 			void Core::handleNewDeltas (const Sync::Deltas_t& deltas, const QByteArray& fullChain)
@@ -135,12 +158,14 @@ namespace LeechCraft
 				ISyncable *syncable = qobject_cast<ISyncable*> (ID2Object_ [pluginId]);
 
 				quint32 id = GetLastID (fullChain);
-				Sync::Payloads_t payloads = syncable->GetNewDeltas (chain);
+				Sync::Payloads_t payloads = id ?
+						syncable->GetNewDeltas (chain) :
+						syncable->GetAllDeltas (chain);
 				Q_FOREACH (const Sync::Payload& payload, payloads)
 				{
 					Sync::Delta delta =
 					{
-						id++,
+						++id,
 						payload
 					};
 

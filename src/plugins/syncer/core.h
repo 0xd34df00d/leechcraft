@@ -51,6 +51,8 @@ namespace LeechCraft
 				quint32 GetLastID (const QByteArray&) const;
 				void SetLastID (const QByteArray&, quint32);
 			private slots:
+				void syncAll ();
+
 				void handleNewDeltas (const Sync::Deltas_t&, const QByteArray&);
 				void handleDeltasRequired (Sync::Deltas_t*, const QByteArray&);
 				void handleSuccessfullySentDeltas (quint32, const QByteArray&);

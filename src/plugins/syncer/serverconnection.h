@@ -64,7 +64,6 @@ namespace LeechCraft
 				void fail ();
 				void deltaOutOfOrder ();
 				void maxDeltaIDReceived (quint32);
-				void deltasReceived (const QList<QByteArray>&);
 			};
 		}
 	}

@@ -36,8 +36,10 @@ namespace LeechCraft
 				Q_OBJECT
 
 				QStateMachine SM_;
+
 				ServerConnection *ServerConnection_;
 				QByteArray Chain_;
+
 				QState *Idle_;
 				QFinalState *ConnectionError_;
 				QState *LoginPending_;

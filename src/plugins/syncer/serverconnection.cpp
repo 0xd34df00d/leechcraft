@@ -96,6 +96,7 @@ namespace LeechCraft
 			{
 				if (Socket_->isOpen ())
 					Socket_->close ();
+				qDebug () << Q_FUNC_INFO;
 				Socket_->connectToHost ("127.0.0.1", 1024);
 			}
 
@@ -120,6 +121,7 @@ namespace LeechCraft
 
 			void ServerConnection::putDeltas (const QList<QByteArray>& deltas, quint32 firstId)
 			{
+				qDebug () << Q_FUNC_INFO << "putting" << deltas.size () << "deltas";
 				QList<QByteArray> lists;
 				lists << "PUTDELTA" << Chain_;
 				QByteArray fiData;
@@ -134,6 +136,7 @@ namespace LeechCraft
 
 			void ServerConnection::handleConnected ()
 			{
+				qDebug () << Q_FUNC_INFO;
 				QList<QByteArray> lists;
 				lists << "LOGIN" << "test" << "pass";
 				Socket_->write (FmtMsg (lists));
@@ -141,23 +144,28 @@ namespace LeechCraft
 
 			void ServerConnection::handleReadyRead ()
 			{
+				qDebug () << Q_FUNC_INFO << Socket_->bytesAvailable ();
 				if (Socket_->bytesAvailable () < 4)
 					return;
 
 				// Read first four bytes and check if we have at
 				// least that much of data.
-				QByteArray sizeData = Socket_->peek (4);
-				QDataStream ds (sizeData);
+				QDataStream ds (Socket_->peek (4));
 				quint32 size = 0;
 				ds >> size;
+				size += 4;
+				qDebug () << "size:" << size;
 				if (Socket_->bytesAvailable () < size)
 					return;
 
 				QList<QByteArray> lists = UnfmtMsg (Socket_->read (size));
+				qDebug () << "received:";
+				Q_FOREACH (const QByteArray& list, lists)
+					qDebug () << list.toHex ();
 				if (!lists.size ())
 				{
 					qWarning () << Q_FUNC_INFO
-							<< "empty lists recieved";
+							<< "empty lists received";
 					emit fail ();
 					return;
 				}
@@ -169,12 +177,13 @@ namespace LeechCraft
 				}
 				else if (lists.at (0) == "ERR")
 				{
-					bool ok = false;
-					int code = lists.size () > 1 ?
-							lists.at (1).toInt () :
-							-1;
-					if (!ok)
-						code = -1;
+					quint32 code = -1;
+					if (lists.size () >= 2 &&
+							lists.at (1).size () == 4)
+					{
+						QByteArray l = lists.at (1);
+						code = (l.at (0) << 24) + (l.at (1) << 16) + (l.at (2) << 8) + l.at (3);
+					}
 
 					switch (code)
 					{

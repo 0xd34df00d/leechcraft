@@ -47,18 +47,6 @@ namespace LeechCraft
 				PutDeltasPending_ = new QState ();
 				Finish_ = new QFinalState ();
 
-				SM_.addState (Idle_);
-				SM_.addState (ConnectionError_);
-				SM_.addState (LoginPending_);
-				SM_.addState (LoginError_);
-				SM_.addState (Running_);
-				SM_.addState (ReqMaxDeltaPending_);
-				SM_.addState (GetDeltasPending_);
-				SM_.addState (ProcessDeltas_);
-				SM_.addState (PutDeltasPending_);
-				SM_.addState (Finish_);
-				SM_.setInitialState (Idle_);
-
 				Idle_->addTransition (this,
 						SIGNAL (initiated ()), LoginPending_);
 				connect (LoginPending_,
@@ -104,13 +92,20 @@ namespace LeechCraft
 						this,
 						SLOT (handleFinished ()));
 
+				SM_.addState (Idle_);
+				SM_.addState (ConnectionError_);
+				SM_.addState (LoginPending_);
+				SM_.addState (LoginError_);
+				SM_.addState (Running_);
+				SM_.addState (ReqMaxDeltaPending_);
+				SM_.addState (GetDeltasPending_);
+				SM_.addState (ProcessDeltas_);
+				SM_.addState (PutDeltasPending_);
+				SM_.addState (Finish_);
+				SM_.setInitialState (Idle_);
+
 				SM_.start ();
 
-				connect (ServerConnection_,
-						SIGNAL (deltasReceived (const QList<QByteArray>&)),
-						this,
-						SLOT (handleDeltasReceived (const QList<QByteArray>&)),
-						Qt::QueuedConnection);
 				connect (ServerConnection_,
 						SIGNAL (maxDeltaIDReceived (quint32)),
 						this,
@@ -127,7 +122,15 @@ namespace LeechCraft
 
 			void ServerChainHandler::Sync ()
 			{
-				emit initiated ();
+				qDebug () << Q_FUNC_INFO << Chain_;
+				if (SM_.isRunning ())
+					emit initiated ();
+				else
+					connect (&SM_,
+							SIGNAL (started ()),
+							this,
+							SIGNAL (initiated ()),
+							Qt::QueuedConnection);
 			}
 
 			void ServerChainHandler::getNewDeltas ()
@@ -190,6 +193,10 @@ namespace LeechCraft
 
 			void ServerChainHandler::handleDeltasReceived (const QList<QByteArray>& deltas)
 			{
+				qDebug () << Q_FUNC_INFO << deltas.size ();
+				Q_FOREACH (const QByteArray& ba, deltas)
+					qDebug () << "obtained" << ba.toHex ();
+
 				Sync::Deltas_t parsed;
 				Q_FOREACH (const QByteArray& ba, deltas)
 				{
@@ -235,6 +242,7 @@ namespace LeechCraft
 						QDataStream ds (&ba, QIODevice::WriteOnly);
 						ds << delta;
 					}
+					qDebug () << "serialized" << ba.toHex ();
 					dBytes << ba;
 				}
 				ServerConnection_->putDeltas (dBytes, firstId);
@@ -242,6 +250,7 @@ namespace LeechCraft
 
 			void ServerChainHandler::handleFinished ()
 			{
+				qDebug () << Q_FUNC_INFO;
 				QSet<QAbstractState*> conf = SM_.configuration ();
 				if (conf.contains (LoginError_))
 					emit loginError ();
