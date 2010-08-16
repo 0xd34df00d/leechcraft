@@ -60,11 +60,13 @@ namespace LeechCraft
 			{
 				QVector<Sync::Payload> tmpPayloads;
 				tmpPayloads.resize (GetLastFileNum (chainId));
+				qDebug () << Q_FUNC_INFO << tmpPayloads.size ();
 
 				QDir dir = GetDir (chainId);
 
 				Q_FOREACH (const QString& filename, dir.entryList (QDir::Files | QDir::NoDotAndDotDot))
 				{
+					qDebug () << filename;
 					bool ok = true;
 					int num = filename.toInt (&ok);
 					if (!ok)
@@ -83,7 +85,7 @@ namespace LeechCraft
 
 					QByteArray data = file.readAll ();
 					Sync::Payload payload = Sync::Deserialize (qUncompress (data));
-					tmpPayloads [num] = payload;
+					tmpPayloads [num - 1] = payload;
 				}
 
 				return tmpPayloads.toList ();
