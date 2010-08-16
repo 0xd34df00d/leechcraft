@@ -59,7 +59,7 @@ namespace LeechCraft
 			Sync::Payloads_t DeltaStorage::Get (const Sync::ChainID_t& chainId) const
 			{
 				QVector<Sync::Payload> tmpPayloads;
-				tmpPayloads.resize (GetLastFileNum (chainId) + 1);
+				tmpPayloads.resize (GetLastFileNum (chainId));
 
 				QDir dir = GetDir (chainId);
 
@@ -74,7 +74,7 @@ namespace LeechCraft
 					if (!file.open (QIODevice::ReadOnly))
 					{
 						qWarning () << Q_FUNC_INFO
-								<< "unablet o open"
+								<< "unable to open"
 								<< file.fileName ()
 								<< "for reading:"
 								<< file.errorString ();
@@ -112,7 +112,6 @@ namespace LeechCraft
 			int DeltaStorage::GetLastFileNum (const Sync::ChainID_t& chainId) const
 			{
 				QDir dir = GetDir (chainId);
-				QString fileName = dir.absoluteFilePath ("seq");
 
 				if (!dir.exists ("seq"))
 				{
@@ -120,6 +119,7 @@ namespace LeechCraft
 					return 0;
 				}
 
+				QString fileName = dir.absoluteFilePath ("seq");
 				QFile file (fileName);
 				if (!file.open (QIODevice::ReadOnly))
 				{
