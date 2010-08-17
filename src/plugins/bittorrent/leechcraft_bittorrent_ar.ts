@@ -383,230 +383,235 @@ IPv6 input mask</extracomment>
         <source>Select save directory</source>
         <translation>أختر مكان لحفظ الملف</translation>
     </message>
+    <message>
+        <location filename="addtorrent.cpp" line="216"/>
+        <source>&lt;no trackers&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::Core</name>
     <message>
-        <location filename="core.cpp" line="137"/>
+        <location filename="core.cpp" line="136"/>
         <source>Unknown</source>
         <translation>غير معروف</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="138"/>
+        <location filename="core.cpp" line="137"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="139"/>
+        <location filename="core.cpp" line="138"/>
         <source>Standard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="253"/>
+        <location filename="core.cpp" line="252"/>
         <source>Name</source>
         <translation>الأسم</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="254"/>
+        <location filename="core.cpp" line="253"/>
         <source>Progress</source>
         <translation>التقدّم</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="255"/>
+        <location filename="core.cpp" line="254"/>
         <source>State</source>
         <translation>الحالة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="348"/>
+        <location filename="core.cpp" line="347"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="531"/>
-        <location filename="core.cpp" line="566"/>
-        <location filename="core.cpp" line="673"/>
+        <location filename="core.cpp" line="530"/>
+        <location filename="core.cpp" line="565"/>
+        <location filename="core.cpp" line="672"/>
         <source>Idle</source>
         <translation>عاطل</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="545"/>
+        <location filename="core.cpp" line="544"/>
         <source>%1% (%2 of %3 at %4)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="550"/>
-        <location filename="core.cpp" line="568"/>
-        <location filename="core.cpp" line="570"/>
+        <location filename="core.cpp" line="549"/>
+        <location filename="core.cpp" line="567"/>
+        <location filename="core.cpp" line="569"/>
         <source>/s</source>
         <translation>ثوان</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="557"/>
+        <location filename="core.cpp" line="556"/>
         <source>Name:</source>
         <translation>الأسم:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="558"/>
+        <location filename="core.cpp" line="557"/>
         <source>Destination:</source>
         <translation>مكان الحفظ:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="560"/>
+        <location filename="core.cpp" line="559"/>
         <source>Progress:</source>
         <translation>التقدّم:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="561"/>
+        <location filename="core.cpp" line="560"/>
         <source>%1% (%2 of %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="565"/>
+        <location filename="core.cpp" line="564"/>
         <source>; status:</source>
         <translation>; الحالة:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="567"/>
+        <location filename="core.cpp" line="566"/>
         <source>Downloading speed:</source>
         <translation>سرعة التحميل:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="569"/>
+        <location filename="core.cpp" line="568"/>
         <source>; uploading speed:</source>
         <translation>; سرعة التوزيع:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="571"/>
+        <location filename="core.cpp" line="570"/>
         <source>Peers/seeds: %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="628"/>
+        <location filename="core.cpp" line="627"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>غير قادر على فتح ملف %1 للقراءة:%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="817"/>
+        <location filename="core.cpp" line="816"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>الملف %1 غير موجود أو غير ممكن قراءته</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="844"/>
+        <location filename="core.cpp" line="843"/>
         <source>Runtime error</source>
         <translation>خطأ المعالجة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="919"/>
+        <location filename="core.cpp" line="918"/>
         <source>Do you want to leave this torrent&apos;s files?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="967"/>
+        <location filename="core.cpp" line="966"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>تورنت %1 غير يمكن أن يعاد إعلانه الآن، حاول لاحقاً.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2805"/>
+        <location filename="core.cpp" line="2804"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1298"/>
+        <location filename="core.cpp" line="1297"/>
         <source>Could not open file %1 for reading</source>
         <translation>غير قادر على فتح ملف %1 للقراءة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1307"/>
+        <location filename="core.cpp" line="1306"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
         <translation>غير قادر على تحليل ملف %1.&lt;br /&gt;%1 at %2:%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1317"/>
+        <location filename="core.cpp" line="1316"/>
         <source>There should be only one storage section.</source>
         <translation>يجب أن يكون قفط قسم واحد.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1335"/>
+        <location filename="core.cpp" line="1334"/>
         <source>Unknown storage version</source>
         <translation>الإصدار الخزن غير معروف</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1343"/>
+        <location filename="core.cpp" line="1342"/>
         <source>Could not open file %1 for writing</source>
         <translation>غير قادر على فتح ملف %1 للقراءة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1576"/>
+        <location filename="core.cpp" line="1575"/>
         <source>File finished: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1811"/>
+        <location filename="core.cpp" line="1810"/>
         <source>Queued for checking</source>
         <translation>في الإنتظار للفحص</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1813"/>
+        <location filename="core.cpp" line="1812"/>
         <source>Checking files</source>
         <translation>جاري فحص الملفات</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1815"/>
+        <location filename="core.cpp" line="1814"/>
         <source>Downloading metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1817"/>
+        <location filename="core.cpp" line="1816"/>
         <source>Downloading</source>
         <translation>جاري التحميل</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1819"/>
+        <location filename="core.cpp" line="1818"/>
         <source>Finished</source>
         <translation>انتهى</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1821"/>
+        <location filename="core.cpp" line="1820"/>
         <source>Seeding</source>
         <translation>توزيع</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1823"/>
+        <location filename="core.cpp" line="1822"/>
         <source>Allocating</source>
         <translation>جاري التخصيص</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1825"/>
+        <location filename="core.cpp" line="1824"/>
         <source>Checking resume data</source>
         <translation>جاري فحص البيانات</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1844"/>
+        <location filename="core.cpp" line="1843"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>غير قادر على فتح تورنت المحفوظ %1 للقراءة.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1931"/>
+        <location filename="core.cpp" line="1930"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>التشفير سيئ في بيانات التورنت المحفوظة</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1973"/>
+        <location filename="core.cpp" line="1972"/>
         <source>Torrent finished: %1</source>
         <translation type="unfinished">%1تمّ تحميل التورنت</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2157"/>
+        <location filename="core.cpp" line="2156"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>خطأ رقم %1 من المجموعة:&lt;blockquote&gt;%2&lt;/blockquote&gt; الخطأ:&lt;blockquote&gt;%3&lt;/blockquote&gt; رسالة الإستثناء:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2173"/>
+        <location filename="core.cpp" line="2172"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>غير قادر على إنشاء المكان %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2664"/>
+        <location filename="core.cpp" line="2663"/>
         <source>Wrong announce address %1</source>
         <translation>%1 خطأ في عنوان الإعلان</translation>
     </message>
@@ -644,13 +649,13 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::FirstStep</name>
     <message>
-        <location filename="firststep.cpp" line="83"/>
+        <location filename="firststep.cpp" line="82"/>
         <source>Select where to save torrent file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="firststep.cpp" line="97"/>
-        <location filename="firststep.cpp" line="113"/>
+        <location filename="firststep.cpp" line="96"/>
+        <location filename="firststep.cpp" line="112"/>
         <source>Select torrent contents</source>
         <translation type="unfinished"></translation>
     </message>
@@ -894,63 +899,63 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::TabWidget</name>
     <message>
-        <location filename="tabwidget.cpp" line="163"/>
+        <location filename="tabwidget.cpp" line="161"/>
         <source>Add peer...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="173"/>
+        <location filename="tabwidget.cpp" line="171"/>
         <source>Ban peer...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="184"/>
+        <location filename="tabwidget.cpp" line="182"/>
         <source>Add web seed...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="193"/>
+        <location filename="tabwidget.cpp" line="191"/>
         <source>Remove web seed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="tabwidget.cpp" line="302"/>
         <location filename="tabwidget.cpp" line="304"/>
-        <location filename="tabwidget.cpp" line="306"/>
-        <location filename="tabwidget.cpp" line="386"/>
-        <location filename="tabwidget.cpp" line="387"/>
+        <location filename="tabwidget.cpp" line="384"/>
+        <location filename="tabwidget.cpp" line="385"/>
+        <location filename="tabwidget.cpp" line="429"/>
         <location filename="tabwidget.cpp" line="431"/>
-        <location filename="tabwidget.cpp" line="433"/>
         <source>/s</source>
         <translation type="unfinished">ثوان</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="468"/>
+        <location filename="tabwidget.cpp" line="466"/>
         <source>Wasn&apos;t yet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="494"/>
+        <location filename="tabwidget.cpp" line="498"/>
         <source>Yes</source>
         <translation type="unfinished">نعم</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="495"/>
+        <location filename="tabwidget.cpp" line="499"/>
         <source>No</source>
         <translation type="unfinished">لا</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="518"/>
+        <location filename="tabwidget.cpp" line="522"/>
         <source>Not tracking</source>
         <translation type="unfinished">لا يراقب</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="528"/>
         <location filename="tabwidget.cpp" line="532"/>
+        <location filename="tabwidget.cpp" line="536"/>
         <source>Unknown</source>
         <translation type="unfinished">غير معروف</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="656"/>
+        <location filename="tabwidget.cpp" line="660"/>
         <source>%1% (%2 of %3)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -958,7 +963,7 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::ThirdStep</name>
     <message>
-        <location filename="thirdstep.cpp" line="86"/>
+        <location filename="thirdstep.cpp" line="93"/>
         <source> pieces (%1)</source>
         <translation>(%1) الأجزاء</translation>
     </message>
@@ -1013,37 +1018,37 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::TorrentPlugin</name>
     <message>
-        <location filename="torrentplugin.cpp" line="91"/>
+        <location filename="torrentplugin.cpp" line="94"/>
         <source>Full-featured BitTorrent client.</source>
         <translation>برنامج التورنت كامل المواصفات.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="804"/>
+        <location filename="torrentplugin.cpp" line="809"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>غير قادر على نقل ملفات التورنت من %1 إلى %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="954"/>
+        <location filename="torrentplugin.cpp" line="948"/>
         <source>Open torrent...</source>
         <translation>فتح تورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1077"/>
+        <location filename="torrentplugin.cpp" line="1071"/>
         <source>Change trackers...</source>
         <translation>تغيير مسارات...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1079"/>
+        <location filename="torrentplugin.cpp" line="1073"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="963"/>
+        <location filename="torrentplugin.cpp" line="957"/>
         <source>Create torrent...</source>
         <translation>إنشاء تورنت...</translation>
     </message>
     <message numerus="yes">
-        <location filename="torrentplugin.cpp" line="499"/>
+        <location filename="torrentplugin.cpp" line="500"/>
         <source>Do you really want to delete %n torrent(s)?</source>
         <oldsource>Do you really want to delete %n torrents?</oldsource>
         <translation type="unfinished">
@@ -1056,117 +1061,117 @@ IPv6 input mask</extracomment>
         </translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="819"/>
+        <location filename="torrentplugin.cpp" line="824"/>
         <source>Magnet link:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="965"/>
+        <location filename="torrentplugin.cpp" line="959"/>
         <source>N</source>
         <translation>N</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="972"/>
+        <location filename="torrentplugin.cpp" line="966"/>
         <source>Open multiple torrents...</source>
         <translation>فتح مجموعة التورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="980"/>
+        <location filename="torrentplugin.cpp" line="974"/>
         <source>IP filter...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="988"/>
+        <location filename="torrentplugin.cpp" line="982"/>
         <source>Remove</source>
         <translation>إزالة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="990"/>
+        <location filename="torrentplugin.cpp" line="984"/>
         <source>Del</source>
         <translation>مسح</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="997"/>
+        <location filename="torrentplugin.cpp" line="991"/>
         <source>Resume</source>
         <translation>استمرار</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="999"/>
+        <location filename="torrentplugin.cpp" line="993"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1006"/>
+        <location filename="torrentplugin.cpp" line="1000"/>
         <source>Pause</source>
         <translation>إيقاف مؤقّتاً</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1008"/>
+        <location filename="torrentplugin.cpp" line="1002"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1015"/>
+        <location filename="torrentplugin.cpp" line="1009"/>
         <source>Move up</source>
         <translation>نقل للأعلى</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1024"/>
+        <location filename="torrentplugin.cpp" line="1018"/>
         <source>Move down</source>
         <translation>نقل للأسفل</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1033"/>
+        <location filename="torrentplugin.cpp" line="1027"/>
         <source>Move to top</source>
         <translation>نقل لأعلى القائمة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1042"/>
+        <location filename="torrentplugin.cpp" line="1036"/>
         <source>Move to bottom</source>
         <translation>نقل إلى أسفل القائمة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1051"/>
+        <location filename="torrentplugin.cpp" line="1045"/>
         <source>Reannounce</source>
         <translation>إعادة الإنطاق</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1053"/>
+        <location filename="torrentplugin.cpp" line="1047"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1060"/>
+        <location filename="torrentplugin.cpp" line="1054"/>
         <source>Recheck</source>
         <translation>إعادة الفحص</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1068"/>
+        <location filename="torrentplugin.cpp" line="1062"/>
         <source>Move files...</source>
         <translation>نقل ملفات...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1070"/>
+        <location filename="torrentplugin.cpp" line="1064"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1086"/>
+        <location filename="torrentplugin.cpp" line="1080"/>
         <source>Make magnet link...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1094"/>
+        <location filename="torrentplugin.cpp" line="1088"/>
         <source>Import...</source>
         <translation>إستيراد...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1102"/>
+        <location filename="torrentplugin.cpp" line="1096"/>
         <source>Export...</source>
         <translation>تصدير...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1146"/>
+        <location filename="torrentplugin.cpp" line="1140"/>
         <source>Torrents actions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1419,37 +1424,37 @@ IPv6 input mask</extracomment>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="2359"/>
+        <location filename="core.cpp" line="2358"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2347"/>
+        <location filename="core.cpp" line="2346"/>
         <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2372"/>
+        <location filename="core.cpp" line="2371"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2389"/>
+        <location filename="core.cpp" line="2388"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2403"/>
+        <location filename="core.cpp" line="2402"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2417"/>
+        <location filename="core.cpp" line="2416"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="294"/>
+        <location filename="tabwidget.cpp" line="292"/>
         <source>/s</source>
         <translation>ثوان</translation>
     </message>
@@ -1788,8 +1793,8 @@ IPv6 input mask</extracomment>
     </message>
     <message>
         <location filename="tabwidget.ui" line="978"/>
-        <location filename="tabwidget.ui" line="1647"/>
-        <location filename="tabwidget.ui" line="1841"/>
+        <location filename="tabwidget.ui" line="1657"/>
+        <location filename="tabwidget.ui" line="1851"/>
         <source>Progress:</source>
         <translation>التقدّم:</translation>
     </message>
@@ -1869,82 +1874,87 @@ IPv6 input mask</extracomment>
         <translation>معلومات</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1278"/>
+        <location filename="tabwidget.ui" line="1259"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1285"/>
         <source>Creator:</source>
         <translation>الصانع:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1292"/>
+        <location filename="tabwidget.ui" line="1299"/>
         <source>Comment:</source>
         <translation>تعليق:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1306"/>
+        <location filename="tabwidget.ui" line="1316"/>
         <source>Private:</source>
         <translation>خاص:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1320"/>
+        <location filename="tabwidget.ui" line="1330"/>
         <source>Downloaded pieces:</source>
         <translation>الأجزاء المحمّلة:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1334"/>
+        <location filename="tabwidget.ui" line="1344"/>
         <source>Total pieces:</source>
         <translation>مجموع الأجزاء:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1348"/>
+        <location filename="tabwidget.ui" line="1358"/>
         <source>Piece size:</source>
         <translation>حجم الجزء:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1362"/>
+        <location filename="tabwidget.ui" line="1372"/>
         <source>Block size:</source>
         <translation>حجم البلوك:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1376"/>
+        <location filename="tabwidget.ui" line="1386"/>
         <source>Announce interval:</source>
         <translation>فترة الإعلان:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1390"/>
+        <location filename="tabwidget.ui" line="1400"/>
         <source>Failed:</source>
         <translation>فشل:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1404"/>
+        <location filename="tabwidget.ui" line="1414"/>
         <source>Redundant:</source>
         <translation>الزائدين:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1418"/>
+        <location filename="tabwidget.ui" line="1428"/>
         <source>DHT nodes count:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1432"/>
+        <location filename="tabwidget.ui" line="1442"/>
         <source>Distributed copies:</source>
         <translation>النسخ المصنّفة:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1624"/>
+        <location filename="tabwidget.ui" line="1634"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1633"/>
+        <location filename="tabwidget.ui" line="1643"/>
         <source>Path:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1661"/>
+        <location filename="tabwidget.ui" line="1671"/>
         <source>Priority:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1688"/>
+        <location filename="tabwidget.ui" line="1698"/>
         <source>Standard peers</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1972,158 +1982,158 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1261"/>
+        <location filename="tabwidget.ui" line="1268"/>
         <source>Destination:</source>
         <translation>مكان الحفظ:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1449"/>
-        <location filename="tabwidget.ui" line="1675"/>
+        <location filename="tabwidget.ui" line="1459"/>
+        <location filename="tabwidget.ui" line="1685"/>
         <source>Peers</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1458"/>
+        <location filename="tabwidget.ui" line="1468"/>
         <source>Connected peers:</source>
         <translation>المحمّلين المتصلين:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1472"/>
+        <location filename="tabwidget.ui" line="1482"/>
         <source>Peers in list:</source>
         <translation>المحمّلين في القائمة:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1486"/>
+        <location filename="tabwidget.ui" line="1496"/>
         <source>Peers in swarm:</source>
         <translation>المحمّلين في حشد:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1500"/>
+        <location filename="tabwidget.ui" line="1510"/>
         <source>Connect candidates:</source>
         <translation>مرشّحين للإتّصال:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1514"/>
+        <location filename="tabwidget.ui" line="1524"/>
         <source>Upload queue:</source>
         <translation>دور التوزيع:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1528"/>
+        <location filename="tabwidget.ui" line="1538"/>
         <source>Connected seeds:</source>
         <translation>المرسلين المتّصلين:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1542"/>
+        <location filename="tabwidget.ui" line="1552"/>
         <source>Seeds in list:</source>
         <translation>المرسلين في القائمة:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1556"/>
+        <location filename="tabwidget.ui" line="1566"/>
         <source>Seeds in swarm:</source>
         <translation>المرسلين في حشد:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1570"/>
+        <location filename="tabwidget.ui" line="1580"/>
         <source>Download queue:</source>
         <translation>الدور لتحميل:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1605"/>
+        <location filename="tabwidget.ui" line="1615"/>
         <source>Files</source>
         <translation>الملفات</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1743"/>
+        <location filename="tabwidget.ui" line="1753"/>
         <source>Peer:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1757"/>
+        <location filename="tabwidget.ui" line="1767"/>
         <source>Peer type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1771"/>
+        <location filename="tabwidget.ui" line="1781"/>
         <source>DL/UL speeds:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1785"/>
+        <location filename="tabwidget.ui" line="1795"/>
         <source>Payload DL/UL speeds:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1799"/>
+        <location filename="tabwidget.ui" line="1809"/>
         <source>Peak DL/UL speeds:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1813"/>
+        <location filename="tabwidget.ui" line="1823"/>
         <source>Downloaded/uploaded:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1827"/>
+        <location filename="tabwidget.ui" line="1837"/>
         <source>Remote DL speed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1855"/>
+        <location filename="tabwidget.ui" line="1865"/>
         <source>Seed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1869"/>
+        <location filename="tabwidget.ui" line="1879"/>
         <source>Last request:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1883"/>
+        <location filename="tabwidget.ui" line="1893"/>
         <source>Last active:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1897"/>
+        <location filename="tabwidget.ui" line="1907"/>
         <source>Send buffer:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1911"/>
+        <location filename="tabwidget.ui" line="1921"/>
         <source>Receive buffer:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1925"/>
+        <location filename="tabwidget.ui" line="1935"/>
         <source>Corrupt pieces:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1939"/>
+        <location filename="tabwidget.ui" line="1949"/>
         <source>Download/upload queue:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1953"/>
+        <location filename="tabwidget.ui" line="1963"/>
         <source>Failcount:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1967"/>
+        <location filename="tabwidget.ui" line="1977"/>
         <source>Pending disk bytes:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1981"/>
+        <location filename="tabwidget.ui" line="1991"/>
         <source>Estimated round trip time:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="2004"/>
+        <location filename="tabwidget.ui" line="2014"/>
         <source>Web seeds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="2022"/>
+        <location filename="tabwidget.ui" line="2032"/>
         <source>Pieces</source>
         <translation>الأجزاء</translation>
     </message>
@@ -2214,6 +2224,851 @@ IPv6 input mask</extracomment>
         <location filename="trackerschanger.ui" line="120"/>
         <source>Remove</source>
         <translation type="unfinished">إزالة</translation>
+    </message>
+</context>
+<context>
+    <name>torrentsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>Network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummyfile.cpp" line="4"/>
+        <location filename="dummyfile.cpp" line="147"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Port range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Maximum upload connections:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="7"/>
+        <source>Maximum total connections:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="8"/>
+        <source>Identification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="9"/>
+        <source>HTTP User-Agent:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="10"/>
+        <source>Peer ID string:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="11"/>
+        <source>Ares</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="12"/>
+        <source>Azureus</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="13"/>
+        <source>BitComet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="14"/>
+        <source>BTG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="15"/>
+        <source>DelugeTorrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="16"/>
+        <source>Enhanced CTorrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="17"/>
+        <source>Halite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="18"/>
+        <source>KTorrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="19"/>
+        <source>LeechCraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="20"/>
+        <source>libtorrent-rasterbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="21"/>
+        <source>libtorrent (rtorrent)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="22"/>
+        <source>qBittorrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="23"/>
+        <source>Shareaza</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="24"/>
+        <source>SharkTorrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="25"/>
+        <source>Transmission</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="26"/>
+        <source>ÂµTorrent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="27"/>
+        <source>Override Peer ID version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="28"/>
+        <source>Peer ID version:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="29"/>
+        <source>Fast speed control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="30"/>
+        <source>Enable fast speed control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="31"/>
+        <source>Proxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="32"/>
+        <source>Tracker proxy:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="33"/>
+        <location filename="dummyfile.cpp" line="41"/>
+        <source>Host:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="34"/>
+        <location filename="dummyfile.cpp" line="42"/>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="35"/>
+        <location filename="dummyfile.cpp" line="43"/>
+        <source>Login@Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="36"/>
+        <location filename="dummyfile.cpp" line="44"/>
+        <source>Proxy type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="37"/>
+        <location filename="dummyfile.cpp" line="45"/>
+        <source>SOCKS5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="38"/>
+        <location filename="dummyfile.cpp" line="46"/>
+        <source>SOCKS4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="39"/>
+        <location filename="dummyfile.cpp" line="47"/>
+        <source>HTTP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="40"/>
+        <source>Peer proxy:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="48"/>
+        <source>Advanced network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="49"/>
+        <location filename="dummyfile.cpp" line="50"/>
+        <source>DHT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="51"/>
+        <source>Maximum peers in reply:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="52"/>
+        <source>Search branching:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="53"/>
+        <source>Service port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="54"/>
+        <source>Maximum node fail count:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="55"/>
+        <source>DHT-related options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="56"/>
+        <source>Use DHT as fallback</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="57"/>
+        <source>Features &amp;amp;&amp;amp; extensions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="58"/>
+        <source>Features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="59"/>
+        <source>Enable Local Service Discovery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="60"/>
+        <source>Enable UPnP support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="61"/>
+        <source>Enable NAT-PMP support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="62"/>
+        <source>Extensions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="63"/>
+        <source>Enable PeX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="64"/>
+        <source>Allow to download metadata from the swarm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="65"/>
+        <source>Same as the above, but ÂµTorrent-compatible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="66"/>
+        <source>Enable Smart Ban</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="67"/>
+        <source>Trackers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="68"/>
+        <source>Announce to all trackers of one tier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="69"/>
+        <source>Announce to all tiers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="70"/>
+        <source>Prefer UDP trackers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="71"/>
+        <location filename="dummyfile.cpp" line="160"/>
+        <source>Advanced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="72"/>
+        <source>Scrape enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="73"/>
+        <source>Scrape interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="74"/>
+        <location filename="dummyfile.cpp" line="89"/>
+        <location filename="dummyfile.cpp" line="91"/>
+        <location filename="dummyfile.cpp" line="93"/>
+        <location filename="dummyfile.cpp" line="97"/>
+        <location filename="dummyfile.cpp" line="99"/>
+        <location filename="dummyfile.cpp" line="101"/>
+        <location filename="dummyfile.cpp" line="103"/>
+        <location filename="dummyfile.cpp" line="107"/>
+        <location filename="dummyfile.cpp" line="109"/>
+        <location filename="dummyfile.cpp" line="111"/>
+        <location filename="dummyfile.cpp" line="113"/>
+        <location filename="dummyfile.cpp" line="116"/>
+        <location filename="dummyfile.cpp" line="120"/>
+        <location filename="dummyfile.cpp" line="122"/>
+        <location filename="dummyfile.cpp" line="124"/>
+        <location filename="dummyfile.cpp" line="130"/>
+        <location filename="dummyfile.cpp" line="144"/>
+        <location filename="dummyfile.cpp" line="156"/>
+        <location filename="dummyfile.cpp" line="167"/>
+        <location filename="dummyfile.cpp" line="169"/>
+        <location filename="dummyfile.cpp" line="171"/>
+        <source> s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="75"/>
+        <source>Advanced settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="76"/>
+        <source>Announce IP:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="77"/>
+        <source>Allow multiple connections per IP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="78"/>
+        <source>Ignore limits on local network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="79"/>
+        <source>Don&apos;t count slow torrents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="80"/>
+        <source>Send redundant have messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="81"/>
+        <source>Lazy bitfields</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="82"/>
+        <source>Ignore UPNP-nonrouters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="83"/>
+        <source>Auto upload slots</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="84"/>
+        <source>Use parole mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="85"/>
+        <source>Close redundant connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="86"/>
+        <source>Prioritize partial pieces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="87"/>
+        <source>Strict super seeding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="88"/>
+        <source>Tracker request completion timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="90"/>
+        <source>Tracker data receive timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="92"/>
+        <source>Stop tracker timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="94"/>
+        <source>Tracker maximum response length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="95"/>
+        <location filename="dummyfile.cpp" line="128"/>
+        <location filename="dummyfile.cpp" line="158"/>
+        <location filename="dummyfile.cpp" line="173"/>
+        <source> KB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="96"/>
+        <source>Piece response timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="98"/>
+        <source>Peer connection timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="100"/>
+        <source>Block request timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="102"/>
+        <source>Piece request queue time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="104"/>
+        <source>The number of block requests a peer is allowed to queue up:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="105"/>
+        <source>The number of block requests to a peer in a queue:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="106"/>
+        <source>Peer timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="108"/>
+        <source>Web seed timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="110"/>
+        <source>Minimal scrape interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="112"/>
+        <source>Unchoke interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="114"/>
+        <source>Max peer list size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="115"/>
+        <source>Minimal announce interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="117"/>
+        <source>Max rejects for a choked peer before ban:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="118"/>
+        <source>Seeding piece quota:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="119"/>
+        <source>Web seed retry wait:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="121"/>
+        <source>Minimum peer reconnect time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="123"/>
+        <source>Force download of a piece if it could not be fetched in:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="125"/>
+        <source>Maximum peer connection attempt failcount:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="126"/>
+        <source>Connection attempts per second:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="127"/>
+        <source>Upper send buffer low-watermark:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="129"/>
+        <source>Peer inactivity timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="131"/>
+        <source>Request random pieces while we have less than:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="132"/>
+        <source>How much peers to get from the tracker:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="133"/>
+        <source>Outgoing ports:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="134"/>
+        <source>Optimistic unchoke multiplier:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="135"/>
+        <source>TOS byte:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="136"/>
+        <source>Share ratio limit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="137"/>
+        <source>Seed time ratio limit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="138"/>
+        <source>Seed time limit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="139"/>
+        <location filename="dummyfile.cpp" line="141"/>
+        <source> min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="140"/>
+        <source>Auto scrape interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="142"/>
+        <source>N of pieces to send via fast extensions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="143"/>
+        <source>Handshake timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="145"/>
+        <source>Web seed pipeline size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="146"/>
+        <location filename="dummyfile.cpp" line="148"/>
+        <source>Local settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="149"/>
+        <source>Notify when torrent wasn&apos;t automatically added because its too large size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="150"/>
+        <source>File allocation mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="151"/>
+        <source>Sparse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="152"/>
+        <source>Full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="153"/>
+        <source>Maximum automatically added torrent size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="154"/>
+        <source> MB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="155"/>
+        <source>Autosave interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="157"/>
+        <source>Cache size:</source>
+        <translation type="unfinished">حجم الذاكرة المتوسطة:</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="159"/>
+        <source>Tags for automatic jobs:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="161"/>
+        <source>Accurate but slow file progress calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="162"/>
+        <source>Use read cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="163"/>
+        <source>Unload hashes from memory if seeding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="164"/>
+        <source>Prevent disk cache from swapping out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="165"/>
+        <source>Give slots to seeding torrents in automanaged mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="166"/>
+        <source>Cache expiry:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="168"/>
+        <source>Automanage startup wait:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="170"/>
+        <source>Auto queue manage interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="172"/>
+        <source>Maximum outstanding disk bytes per connection:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="174"/>
+        <source>Allocate this number of blocks at a time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="175"/>
+        <source> blocks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="176"/>
+        <source>Maximum amount of concurrently open files:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="177"/>
+        <source>Logging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="178"/>
+        <source>Logging levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="179"/>
+        <source>Error notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="180"/>
+        <source>Peer events</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="181"/>
+        <source>Port mapping events</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="182"/>
+        <source>Storage events</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="183"/>
+        <source>Tracker events</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="184"/>
+        <source>State change events</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="185"/>
+        <source>Progress events</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="186"/>
+        <source>IP block events</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="187"/>
+        <source>Performance warnings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="188"/>
+        <source>Info pane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="189"/>
+        <source>Active groups</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="190"/>
+        <source>Dashboard</source>
+        <translation type="unfinished">لوحة العدادات</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="191"/>
+        <source>Session stats</source>
+        <translation type="unfinished">إحصائيات الجلسة</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="192"/>
+        <source>Advanced session stats</source>
+        <translation type="unfinished">:إحصائيات الجلسة المتقدّمة</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="193"/>
+        <source>Per-tracker stats</source>
+        <translation type="unfinished">إحصائيات لكل مسار</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="194"/>
+        <source>Cache stats</source>
+        <translation type="unfinished">إحصائيات الذاكرة الوسيطة</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="195"/>
+        <source>Torrent</source>
+        <translation type="unfinished">تورنت</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="196"/>
+        <source>Status</source>
+        <translation type="unfinished">الحالة</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="197"/>
+        <source>Advanced status</source>
+        <translation type="unfinished">الحالة المتقدّمة</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="198"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="199"/>
+        <source>Peers</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
