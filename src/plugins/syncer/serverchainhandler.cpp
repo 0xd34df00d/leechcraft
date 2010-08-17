@@ -34,7 +34,8 @@ namespace LeechCraft
 			: QObject (parent)
 			, ServerConnection_ (new ServerConnection (chain, this))
 			, Chain_ (chain)
-			, NumLastSentOut_ (0)
+			, NumLastSent_ (0)
+			, NumLastReceived_ (0)
 			{
 				Idle_ = new QState ();
 				ConnectionError_ = new QFinalState ();
@@ -163,11 +164,8 @@ namespace LeechCraft
 				}
 				else if (conf.contains (PutDeltasPending_))
 				{
-					if (NumLastSentOut_)
-					{
-						emit successfullySentDeltas (NumLastSentOut_, Chain_);
-						NumLastSentOut_ = 0;
-					}
+					if (NumLastSent_)
+						emit successfullySentDeltas (NumLastSent_, Chain_);
 					emit success ();
 				}
 				else
@@ -215,6 +213,8 @@ namespace LeechCraft
 					parsed << delta;
 				}
 
+				NumLastReceived_ = parsed.size ();
+
 				emit gotNewDeltas (parsed, Chain_);
 				emit deltasProcessed ();
 			}
@@ -224,7 +224,7 @@ namespace LeechCraft
 				Sync::Deltas_t deltas;
 				emit deltasRequired (&deltas, Chain_);
 
-				NumLastSentOut_ = deltas.size ();
+				NumLastSent_ = deltas.size ();
 
 				if (!deltas.size ())
 				{
@@ -257,7 +257,7 @@ namespace LeechCraft
 				else if (conf.contains (ConnectionError_))
 					emit connectionError ();
 				else if (conf.contains (Finish_))
-					emit finishedSuccessfully ();
+					emit finishedSuccessfully (NumLastSent_, NumLastReceived_);
 			}
 		}
 	}

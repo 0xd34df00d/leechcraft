@@ -61,9 +61,9 @@ namespace LeechCraft
 						this,
 						SLOT (handleConnectionError ()));
 				connect (handler,
-						SIGNAL (finishedSuccessfully ()),
+						SIGNAL (finishedSuccessfully (quint32, quint32)),
 						this,
-						SLOT (handleFinishedSuccessfully ()));
+						SLOT (handleFinishedSuccessfully (quint32, quint32)));
 
 				ChainHandlers_ [chain] = handler;
 				handler->Sync ();
@@ -97,7 +97,7 @@ namespace LeechCraft
 				ChainHandlers_.take (chain)->deleteLater ();
 			}
 
-			void DataStorageServer::handleFinishedSuccessfully ()
+			void DataStorageServer::handleFinishedSuccessfully (quint32 sent, quint32 received)
 			{
 				QByteArray chain = GetChainForSender (sender ());
 				if (chain.isEmpty ())
@@ -107,7 +107,7 @@ namespace LeechCraft
 					return;
 				}
 
-				emit finishedSuccessfully (chain);
+				emit finishedSuccessfully (sent, received, chain);
 				ChainHandlers_.take (chain)->deleteLater ();
 			}
 

@@ -51,7 +51,8 @@ namespace LeechCraft
 				QState *PutDeltasPending_;
 				QFinalState *Finish_;
 
-				quint32 NumLastSentOut_;
+				quint32 NumLastSent_;
+				quint32 NumLastReceived_;
 			public:
 				ServerChainHandler (const QByteArray&, QObject*);
 			public:
@@ -70,7 +71,7 @@ namespace LeechCraft
 
 				void loginError ();
 				void connectionError ();
-				void finishedSuccessfully ();
+				void finishedSuccessfully (quint32 sent, quint32 received);
 
 				// Used internally to control the statemachine.
 				void initiated ();

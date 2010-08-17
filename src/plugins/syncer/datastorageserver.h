@@ -41,7 +41,7 @@ namespace LeechCraft
 			private slots:
 				void handleLoginError ();
 				void handleConnectionError ();
-				void handleFinishedSuccessfully ();
+				void handleFinishedSuccessfully (quint32, quint32);
 			private:
 				QByteArray GetChainForSender (QObject*);
 			};

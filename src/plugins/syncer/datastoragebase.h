@@ -42,7 +42,8 @@ namespace LeechCraft
 
 				void loginError (const QByteArray&);
 				void connectionError (const QByteArray&);
-				void finishedSuccessfully (const QByteArray&);
+				void finishedSuccessfully (quint32 sent, quint32 received,
+						const QByteArray& chain);
 			};
 		}
 	}

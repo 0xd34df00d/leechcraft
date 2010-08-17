@@ -58,7 +58,7 @@ namespace LeechCraft
 				void handleSuccessfullySentDeltas (quint32, const QByteArray&);
 				void handleLoginError (const QByteArray&);
 				void handleConnectionError (const QByteArray&);
-				void handleFinishedSuccessfully (const QByteArray&);
+				void handleFinishedSuccessfully (quint32, quint32, const QByteArray&);
 			private:
 				QString GetNameForChain (const QByteArray&);
 			signals:

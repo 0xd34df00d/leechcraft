@@ -57,9 +57,9 @@ namespace LeechCraft
 						this,
 						SLOT (handleConnectionError (const QByteArray&)));
 				connect (DataStorage_,
-						SIGNAL (finishedSuccessfully (const QByteArray&)),
+						SIGNAL (finishedSuccessfully (quint32, quint32, const QByteArray&)),
 						this,
-						SLOT (handleFinishedSuccessfully (const QByteArray&)));
+						SLOT (handleFinishedSuccessfully (quint32, quint32, const QByteArray&)));
 			}
 
 			Core& Core::Instance ()
@@ -225,7 +225,7 @@ namespace LeechCraft
 						PCritical_));
 			}
 
-			void Core::handleFinishedSuccessfully (const QByteArray& chain)
+			void Core::handleFinishedSuccessfully (quint32 sent, quint32 received, const QByteArray& chain)
 			{
 				QString name = GetNameForChain (chain);
 				if (name.isEmpty ())
@@ -235,10 +235,13 @@ namespace LeechCraft
 					return;
 				}
 
-				emit gotEntity (Util::MakeNotification (tr ("Sync"),
-						tr ("Successfully synchronized plugin %1.")
-							.arg (name),
-						PInfo_));
+				if (sent + received)
+					emit gotEntity (Util::MakeNotification (tr ("Sync"),
+							tr ("Successfully synchronized plugin %1: %2 items received, %3 items sent.")
+								.arg (name)
+								.arg (received)
+								.arg (sent),
+							PInfo_));
 			}
 
 			QString Core::GetNameForChain (const QByteArray& fullChain)
