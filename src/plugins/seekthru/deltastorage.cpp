@@ -18,6 +18,7 @@
 
 #include "deltastorage.h"
 #include <stdexcept>
+#include <algorithm>
 #include <QFile>
 #include <QVector>
 #include <plugininterface/util.h>
@@ -58,15 +59,12 @@ namespace LeechCraft
 
 			Sync::Payloads_t DeltaStorage::Get (const Sync::ChainID_t& chainId) const
 			{
-				QVector<Sync::Payload> tmpPayloads;
-				tmpPayloads.resize (GetLastFileNum (chainId));
-				qDebug () << Q_FUNC_INFO << tmpPayloads.size ();
+				QMap<int, Sync::Payload> tmpPayloads;
 
 				QDir dir = GetDir (chainId);
 
 				Q_FOREACH (const QString& filename, dir.entryList (QDir::Files | QDir::NoDotAndDotDot))
 				{
-					qDebug () << filename;
 					bool ok = true;
 					int num = filename.toInt (&ok);
 					if (!ok)
@@ -85,10 +83,16 @@ namespace LeechCraft
 
 					QByteArray data = file.readAll ();
 					Sync::Payload payload = Sync::Deserialize (qUncompress (data));
-					tmpPayloads [num - 1] = payload;
+					tmpPayloads [num] = payload;
 				}
 
-				return tmpPayloads.toList ();
+				QList<Sync::Payload> result;
+				QList<int> keys = tmpPayloads.keys ();
+				std::sort (keys.begin (), keys.end ());
+				Q_FOREACH (int key, keys)
+					result << tmpPayloads [key];
+
+				return result;
 			}
 
 			void DeltaStorage::Purge (const Sync::ChainID_t& chainId, quint32 num)
