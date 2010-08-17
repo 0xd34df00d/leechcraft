@@ -20,6 +20,7 @@
 #define PLUGINS_SEEKTHRU_DELTASTORAGE_H
 #include <QObject>
 #include <QDir>
+#include <QSettings>
 #include <interfaces/isyncable.h>
 
 namespace LeechCraft
@@ -33,18 +34,22 @@ namespace LeechCraft
 				Q_OBJECT
 
 				QString ID_;
+				QSettings Settings_;
 			public:
 				DeltaStorage (const QString&, QObject* = 0);
+				virtual ~DeltaStorage ();
 
 				void Store (const Sync::ChainID_t&, const Sync::Payload&);
 				void Store (const Sync::ChainID_t&, const Sync::Payloads_t&);
 
-				Sync::Payloads_t Get (const Sync::ChainID_t&) const;
+				Sync::Payloads_t Get (const Sync::ChainID_t&);
 				void Purge (const Sync::ChainID_t&, quint32 num);
+
+				void DeltasRequested (const Sync::ChainID_t&);
 			private:
 				QDir GetDir (const Sync::ChainID_t&) const;
-				int GetLastFileNum (const Sync::ChainID_t&) const;
-				void SetLastFileNum (const Sync::ChainID_t&, int) const;
+				int GetLastFileNum (const Sync::ChainID_t&);
+				void SetLastFileNum (const Sync::ChainID_t&, int);
 				void StoreImpl (const QString&, const Sync::Payload&);
 			};
 		}

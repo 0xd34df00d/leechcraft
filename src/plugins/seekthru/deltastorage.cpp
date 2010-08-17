@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <QFile>
 #include <QVector>
+#include <QCoreApplication>
 #include <plugininterface/util.h>
 #include <plugininterface/syncops.h>
 
@@ -33,11 +34,27 @@ namespace LeechCraft
 			DeltaStorage::DeltaStorage (const QString& id, QObject *parent)
 			: QObject (parent)
 			, ID_ (id)
+			, Settings_ (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName ())
 			{
+				Settings_.beginGroup ("DeltaStorage");
+				Settings_.beginGroup (id);
+			}
+
+			DeltaStorage::~DeltaStorage ()
+			{
+				Settings_.endGroup ();
+				Settings_.endGroup ();
 			}
 
 			void DeltaStorage::Store (const Sync::ChainID_t& chainId, const Sync::Payload& payload)
 			{
+				Settings_.beginGroup (chainId);
+				bool shouldStore = Settings_.value ("EverRequested", false).toBool ();
+				Settings_.endGroup ();
+				if (!shouldStore)
+					return;
+
 				QDir dir = GetDir (chainId);
 				int curNum = GetLastFileNum (chainId) + 1;
 
@@ -48,6 +65,12 @@ namespace LeechCraft
 
 			void DeltaStorage::Store (const Sync::ChainID_t& chainId, const Sync::Payloads_t& payloads)
 			{
+				Settings_.beginGroup (chainId);
+				bool shouldStore = Settings_.value ("EverRequested", false).toBool ();
+				Settings_.endGroup ();
+				if (!shouldStore)
+					return;
+
 				QDir dir = GetDir (chainId);
 				int curNum = GetLastFileNum (chainId);
 
@@ -57,8 +80,10 @@ namespace LeechCraft
 				SetLastFileNum (chainId, curNum);
 			}
 
-			Sync::Payloads_t DeltaStorage::Get (const Sync::ChainID_t& chainId) const
+			Sync::Payloads_t DeltaStorage::Get (const Sync::ChainID_t& chainId)
 			{
+				DeltasRequested (chainId);
+
 				QMap<int, Sync::Payload> tmpPayloads;
 
 				QDir dir = GetDir (chainId);
@@ -110,51 +135,31 @@ namespace LeechCraft
 				}
 			}
 
+			void DeltaStorage::DeltasRequested (const Sync::ChainID_t& chainId)
+			{
+				Settings_.beginGroup (chainId);
+				Settings_.setValue ("EverRequested", true);
+				Settings_.endGroup ();
+			}
+
 			QDir DeltaStorage::GetDir (const Sync::ChainID_t& chainId) const
 			{
 				return Util::CreateIfNotExists ("deltastorage/" + ID_ + "/" + chainId);
 			}
 
-			int DeltaStorage::GetLastFileNum (const Sync::ChainID_t& chainId) const
+			int DeltaStorage::GetLastFileNum (const Sync::ChainID_t& chainId)
 			{
-				QDir dir = GetDir (chainId);
-
-				if (!dir.exists ("seq"))
-				{
-					SetLastFileNum (chainId, 0);
-					return 0;
-				}
-
-				QString fileName = dir.absoluteFilePath ("seq");
-				QFile file (fileName);
-				if (!file.open (QIODevice::ReadOnly))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to open file"
-							<< file.fileName ()
-							<< "for reading:"
-							<< file.errorString ();
-					throw std::runtime_error ("Unable to open file for reading.");
-				}
-
-				return file.readAll ().toInt ();
+				Settings_.beginGroup (chainId);
+				int num = Settings_.value ("LastFileNum", 0).toInt ();
+				Settings_.endGroup ();
+				return num;
 			}
 
-			void DeltaStorage::SetLastFileNum (const Sync::ChainID_t& chainId, int num) const
+			void DeltaStorage::SetLastFileNum (const Sync::ChainID_t& chainId, int num)
 			{
-				QString fileName = GetDir (chainId).absoluteFilePath ("seq");
-
-				QFile file (fileName);
-				if (!file.open (QIODevice::WriteOnly))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to open file"
-							<< file.fileName ()
-							<< "for writing:"
-							<< file.errorString ();
-					throw std::runtime_error ("Unable to open file for writing.");
-				}
-				file.write (QByteArray::number (num));
+				Settings_.beginGroup (chainId);
+				Settings_.setValue ("LastFileNum", num);
+				Settings_.endGroup ();
 			}
 
 			void DeltaStorage::StoreImpl (const QString& path, const Sync::Payload& payload)

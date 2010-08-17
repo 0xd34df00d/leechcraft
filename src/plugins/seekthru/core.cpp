@@ -196,11 +196,18 @@ namespace LeechCraft
 				if (chainId != "osengines")
 					return Sync::Payloads_t ();
 
+				DeltaStorage_.DeltasRequested (chainId);
+
 				quint8 version = 0;
 				quint16 action = DADescrAdded;
 				Sync::Payloads_t result;
-				Q_FOREACH (const Description& descr, Descriptions_)
+				Q_FOREACH (Description descr, Descriptions_)
 				{
+					QStringList ids = descr.Tags_;
+					descr.Tags_.clear ();
+					Q_FOREACH (const QString& tag, ids)
+						descr.Tags_ << Proxy_->GetTagsManager ()->GetTag (tag);
+
 					QByteArray serialized;
 					{
 						QDataStream s (&serialized, QIODevice::WriteOnly);
@@ -711,9 +718,15 @@ namespace LeechCraft
 						std::find_if (Descriptions_.begin (), Descriptions_.end (),
 								boost::bind (&Description::ShortName_, _1) == descr.ShortName_);
 				if (pos == Descriptions_.end ())
+				{
 					Descriptions_ << descr;
+					SetTags (Descriptions_.size () - 1, descr.Tags_);
+				}
 				else
+				{
 					*pos = descr;
+					SetTags (std::distance (Descriptions_.begin (), pos), descr.Tags_);
+				}
 				return true;
 			}
 
