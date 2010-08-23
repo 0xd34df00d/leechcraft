@@ -23,6 +23,7 @@
 #include <QAction>
 #include <QtDebug>
 #include <plugininterface/treeitem.h>
+#include <plugininterface/defaulthookproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "poshuku.h"
@@ -34,7 +35,7 @@ namespace LeechCraft
 		namespace Poshuku
 		{
 			using LeechCraft::Util::TreeItem;
-			
+
 			namespace
 			{
 				/** Returns the number of the section for the given date.
@@ -62,17 +63,17 @@ namespace LeechCraft
 						return 2;
 					else if (date.daysTo (current) <= 7)
 						return 3;
-			
+
 					int i = 0;
 					while (true)
 					{
 						current.setDate (orig.addMonths (--i));
-			
+
 						if (date.daysTo (current) <= 0)
 							return -i + 3;
 					}
 				}
-			
+
 				QString SectionName (int number)
 				{
 					switch (number)
@@ -92,7 +93,7 @@ namespace LeechCraft
 					}
 				}
 			};
-			
+
 			HistoryModel::HistoryModel (QObject *parent)
 			: QAbstractItemModel (parent)
 			{
@@ -104,23 +105,23 @@ namespace LeechCraft
 						this,
 						SLOT (loadData ()));
 				RootItem_ = new TreeItem (headers);
-			
+
 				GarbageTimer_ = new QTimer (this);
 				GarbageTimer_->start (15 * 60 * 1000);
 				connect (GarbageTimer_,
 						SIGNAL (timeout ()),
 						this,
 						SLOT (loadData ()));
-			
+
 				FolderIconProxy_ = new QAction (this);
 				FolderIconProxy_->setProperty ("ActionIcon", "poshuku_foldericon");
 			}
-			
+
 			HistoryModel::~HistoryModel ()
 			{
 				delete RootItem_;
 			}
-			
+
 			int HistoryModel::columnCount (const QModelIndex& index) const
 			{
 				if (index.isValid ())
@@ -128,80 +129,94 @@ namespace LeechCraft
 				else
 					return RootItem_->ColumnCount ();
 			}
-			
+
 			QVariant HistoryModel::data (const QModelIndex& index, int role) const
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				return static_cast<TreeItem*> (index.internalPointer ())->Data (index.column (), role);
 			}
-			
+
 			Qt::ItemFlags HistoryModel::flags (const QModelIndex&) const
 			{
 				return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 			}
-			
+
 			QVariant HistoryModel::headerData (int h, Qt::Orientation orient,
 					int role) const
 			{
 				if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 					return RootItem_->Data (h);
-			
+
 				return QVariant ();
 			}
-			
+
 			QModelIndex HistoryModel::index (int row, int col,
 					const QModelIndex& parent) const
 			{
 				if (!hasIndex (row, col, parent))
 					return QModelIndex ();
-			
+
 				TreeItem *parentItem;
-			
+
 				if (!parent.isValid ())
 					parentItem = RootItem_;
 				else
 					parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-			
+
 				TreeItem *childItem = parentItem->Child (row);
 				if (childItem)
 					return createIndex (row, col, childItem);
 				else
 					return QModelIndex ();
 			}
-			
+
 			QModelIndex HistoryModel::parent (const QModelIndex& index) const
 			{
 				if (!index.isValid ())
 					return QModelIndex ();
-			
+
 				TreeItem *childItem = static_cast<TreeItem*> (index.internalPointer ()),
 						 *parentItem = childItem->Parent ();
-			
+
 				if (parentItem == RootItem_)
 					return QModelIndex ();
-			
+
 				return createIndex (parentItem->Row (), 0, parentItem);
 			}
-			
+
 			int HistoryModel::rowCount (const QModelIndex& parent) const
 			{
 				TreeItem *parentItem;
 				if (parent.column () > 0)
 					return 0;
-			
+
 				if (!parent.isValid ())
 					parentItem = RootItem_;
 				else
 					parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-			
+
 				return parentItem->ChildCount ();
 			}
-			
-			void HistoryModel::AddItem (const QString& title, const QString& url,
-					const QDateTime& date)
+
+			void HistoryModel::AddItem (QString title, QString url,
+					QDateTime date)
 			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookAddingToHistory (proxy, title, url, date);
+				if (proxy->IsCancelled ())
+					return;
+
+				QVariantList result = proxy->GetReturnValue ().toList ();
+				int size = result.size ();
+				if (size >= 1)
+					title = result.at (0).toString ();
+				if (size >= 2)
+					url = result.at (1).toString ();
+				if (size >= 3)
+					date = result.at (2).toDateTime ();
+
 				HistoryItem item =
 				{
 					title,
@@ -210,11 +225,11 @@ namespace LeechCraft
 				};
 				Core::Instance ().GetStorageBackend ()->AddToHistory (item);
 			}
-			
+
 			void HistoryModel::Add (const HistoryItem& item)
 			{
 				int section = SectionNumber (item.DateTime_);
-			
+
 				while (section >= RootItem_->ChildCount ())
 				{
 					QList<QVariant> data;
@@ -227,24 +242,24 @@ namespace LeechCraft
 							Qt::DecorationRole);
 					RootItem_->AppendChild (folder);
 				}
-			
+
 				QList<QVariant> data;
 				data << item.Title_
 					<< item.URL_
 					<< item.DateTime_;
-			
+
 				TreeItem *folder = RootItem_->Child (section);
-			
+
 				TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
 				folder->PrependChild (thisItem);
-			
+
 				QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
 				thisItem->ModifyData (0,
 						icon, Qt::DecorationRole);
 			}
-			
+
 			void HistoryModel::loadData ()
-			{ 
+			{
 				while (RootItem_->ChildCount ())
 					RootItem_->RemoveChild (0);
 				int age = XmlSettingsManager::Instance ()->
@@ -252,20 +267,20 @@ namespace LeechCraft
 				int maxItems = XmlSettingsManager::Instance ()->
 					property ("HistoryKeepLessThan").toInt ();
 				Core::Instance ().GetStorageBackend ()->ClearOldHistory (age, maxItems);
-			
+
 				std::vector<HistoryItem> items;
 				Core::Instance ().GetStorageBackend ()->LoadHistory (items);
-			
+
 				if (!items.size ())
 					return;
-			
+
 				for (std::vector<HistoryItem>::const_reverse_iterator i = items.rbegin (),
 						end = items.rend (); i != end; ++i)
 					Add (*i);
-			
+
 				reset ();
 			}
-			
+
 			void HistoryModel::handleItemAdded (const HistoryItem& item)
 			{
 				beginInsertRows (index (SectionNumber (item.DateTime_), 0),

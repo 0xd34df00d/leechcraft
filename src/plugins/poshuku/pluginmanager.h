@@ -21,6 +21,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <QWebPage>
+#include <QDateTime>
 #include <plugininterface/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 #include "interfaces/poshukutypes.h"
@@ -54,6 +55,21 @@ namespace LeechCraft
 						QWebPage::NavigationType type);
 				void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
 						QString title, QString url, QStringList tags);
+
+				/** @brief Called when an entry is going to be added to
+				 * history.
+				 *
+				 * If the proxy is cancelled, no addition takes place
+				 * at all. If it is not, the return value from the proxy
+				 * is considered as a list of QVariants. First element
+				 * (if any) would be converted to string and replace
+				 * title, second element (if any) would be converted to
+				 * string and replace url, third element (if any) would
+				 * be converted to QDateTime and replace the date.
+				 */
+				void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
+						QString title, QString url, QDateTime date);
+
 				void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
 						QString *title, QString *url);
 				void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,

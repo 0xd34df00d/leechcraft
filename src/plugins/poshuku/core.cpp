@@ -150,6 +150,8 @@ namespace LeechCraft
 						HistoryModel_.get (),
 						SLOT (handleItemAdded (const HistoryItem&)));
 
+				PluginManager_->RegisterHookable (HistoryModel_.get ());
+
 				connect (StorageBackend_.get (),
 						SIGNAL (added (const HistoryItem&)),
 						URLCompletionModel_.get (),

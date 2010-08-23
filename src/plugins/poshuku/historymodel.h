@@ -23,6 +23,7 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QDateTime>
+#include <interfaces/iinfo.h>
 
 class QTimer;
 class QAction;
@@ -73,12 +74,27 @@ namespace LeechCraft
 				QModelIndex parent (const QModelIndex&) const;
 				int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-				void AddItem (const QString&, const QString&, const QDateTime&);
+				void AddItem (QString, QString, QDateTime);
 			private:
 				void Add (const HistoryItem&);
 			private slots:
 				void loadData ();
 				void handleItemAdded (const HistoryItem&);
+			signals:
+				// Hook support signals
+				/** @brief Called when an entry is going to be added to
+				 * history.
+				 *
+				 * If the proxy is cancelled, no addition takes place
+				 * at all. If it is not, the return value from the proxy
+				 * is considered as a list of QVariants. First element
+				 * (if any) would be converted to string and replace
+				 * title, second element (if any) would be converted to
+				 * string and replace url, third element (if any) would
+				 * be converted to QDateTime and replace the date.
+				 */
+				void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
+						QString title, QString url, QDateTime date);
 			};
 		};
 	};
