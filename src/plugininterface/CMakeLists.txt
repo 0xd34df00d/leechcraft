@@ -29,6 +29,7 @@ SET (SRCS
 	fileremoveguard.cpp
 	exceptions.cpp
 	syncops.cpp
+	customnetworkreply.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -52,6 +53,7 @@ SET (HEADERS
 	fileremoveguard.h
 	exceptions.h
 	syncops.h
+	customnetworkreply.h
 	idpool.h
 	)
 SET (FORMS
