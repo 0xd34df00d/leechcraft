@@ -51,17 +51,27 @@ namespace LeechCraft
 		class PLUGININTERFACE_API CategorySelector : public QTreeWidget
 		{
 			Q_OBJECT
+
+			QString Caption_;
 		public:
 			/** @brief Constructor.
 			 *
 			 * Sets the default window title and window flags
 			 * (Qt::Tool | Qt::WindowStaysOnTopHint), calculates the
 			 * default geometry.
-			 * 
+			 *
 			 * @param[in] parent Pointer to parent widget.
 			 */
 			CategorySelector (QWidget *parent = 0);
 			virtual ~CategorySelector ();
+
+			/** @brief Sets the caption of this selector.
+			 *
+			 * By default, the selector has no caption.
+			 *
+			 * @param[in] caption The new caption of this selector.
+			 */
+			void SetCaption (const QString& caption);
 
 			/** @brief Sets possible selections.
 			 *

@@ -69,6 +69,12 @@ CategorySelector::~CategorySelector ()
 {
 }
 
+void CategorySelector::SetCaption (const QString& caption)
+{
+	setHeaderLabel (caption);
+	Caption_ = caption;
+}
+
 void CategorySelector::SetPossibleSelections (const QStringList& tags)
 {
 	disconnect (this,
@@ -94,7 +100,7 @@ void CategorySelector::SetPossibleSelections (const QStringList& tags)
 	}
 	addTopLevelItems (items);
 
-	setHeaderLabel (QString ());
+	setHeaderLabel (Caption_);
 
 	connect (this,
 			SIGNAL (itemChanged (QTreeWidgetItem*, int)),
