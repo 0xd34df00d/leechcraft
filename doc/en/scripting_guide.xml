@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book id="scripting guide" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
+	<bookinfo>
+		<title>Scripting guide: writing modules in scripting languages</title>
+	</bookinfo>
+	<chapter id="introduction">
+		<title>Introduction</title>
+		<para>In this document we will learn how to write plugins for LeechCraft in different scripting languages, how to make plugins for other plugins (for example, for the Poshuku web browser) and learn to package this plugins for them to be put in the public plugins repo.</para>
+		<para>The following languages will be considered:
+			<itemizedlist>
+				<listitem>Qt Script (basically, JavaScript or ECMA-262 with minor modifications);</listitem>
+				<listitem>Python.</listitem>
+			</itemizedlist>
+		</para>
+		<note>Please note that only Qt Script scripting backend comes by default on most platforms and has less dependencies then all others, so scripting in Qt Script is encouraged.</note>
+	</chapter>
+	<chapter id="basic_information">
+		<title>Basic information</title>
+		<sect1 id="directory_layout">
+			<title>Directory layout</title>
+			<para>Scripting plugins are located at a directory corresponding to the plugin language in <filename>~/.leechcraft/plugins/scriptable/</filename>. The following list summarizes the mapping from language to subdirectory name:
+				<itemizedlist>
+					<listitem><para>Qt Script (JavaScript, ECMA-262) → <filename>qtscript</filename>;</para></listitem>
+					<listitem><para>Python → <filename>python</filename>.</para></listitem>
+				</itemizedlist>
+				Thus, Python plugins, for example, would be in <filename>~/.leechcraft/plugins/scriptable/python/</filename>.</para>
+			<para>Each separate plugin is located in its own directory. Any directory name is possible allowed, but only those names consisting only of latin letters, numbers, dashes and underscores are encouraged. Then, for the given <filename>directoryname</filename> a file named <filename>directoryname.py</filename> with the extension corresponding to the language is searched and loaded as <emphasis>main plugin file</emphasis> by LeechCraft. If there is no such file, that directory would be skipped. So, for example, if a plugin is named <application>URL Complete</application> and it is written in Python, then one may name the directory as <filename>urlcomplete</filename>, and write the code in <filename>~/.leechcraft/plugins/scriptable/python/urlcomplete/urlcomplete.py</filename>. The following summarizes the mapping from language to possible extensions:
+				<itemizedlist>
+					<listitem>Qt Script → <filename>.es</filename> (encouraged, <filename>.qs</filename>, <filename>.js</filename> are also possible though not recommended);</listitem>
+					<listitem>Python → <filename>.py</filename>.</listitem>
+				</itemizedlist></para>
+			<para>Except this (and a couple of other special files), you may lay out files in the directory of your plugin as you wish. You may have other files with code, load them from your main plugin file, and, of course.</para>
+		</sect1>
+		<sect1 id="prerequesites">
+			<title>Prerequesites</title>
+			<para>For all scripting languages, you will need LeechCraft with Qross plugin, which depends upon Qrosp, found at <ulink url="git://github.com/0xd34df00d/Qross.git" />. Some languages may have additional dependencies.</para>
+			<sect2 id="qtscript">
+				<title>Qt Script</title>
+				<para>For writing modules in Qt Script, you will need the following:
+					<itemizedlist>
+						<listitem>qrossqts module for Qrosp, which usually comes with main Qrosp libraries.</listitem>
+					</itemizedlist>
+				</para>
+			</sect2>
+			<sect2 id="python">
+				<title>Python</title>
+				<para>For writing modules in Python, you will need the following:
+					<itemizedlist>
+						<listitem>qrosspython module for Qrosp;</listitem>
+						<listitem>Python 2.x (Python 3.x is not supported yet).</listitem>
+					</itemizedlist>
+				</para>
+			</sect2>
+		</sect1>
+		<sect1 id="simplest_plugin">
+			<title>Simplest plugin</title>
+			<para>The only functions that any plugin must have are <function>GetName</function> and <function>GetUniqueID</function> from the <interfacename>IInfo</interfacename> interface. First one should return a human-readable name of the plugin (like <application>URL Complete</application> for the plugin mentioned earlier), and the second should return an unique ID among all plugins. URI-like notation is strongly recommended for the ID string, for example <quote>org.SomeCompany.URLComplete</quote> for that plugin. Only upper- and lowercase latin letters, numbers, dots, plus and minus signs are allowed in the ID string.</para>.
+			<para>Of course, you may implement other functions defined in <interfacename>IInfo</interfacename>, but scripting support in LeechCraft would provide reasonable defaults if you don't.</para>
+			<note>
+				<title>Qt Script pecularity</title>
+				<para>Because Qt Scripts cannot request what parts of Qt they want like Python ones can via <function>import</function> directive, Qt Script plugins should implement <function>Requires</function> function that returns list of strings with the required modules. For example:</para>
+				<example>
+					<title>Requiring some Qt parts from Qt Script.</title>
+					<programlisting language="javascript">
+<![CDATA[
+function Requires()
+{
+    return ["qt", "qt.core", "qt.network", "qt.gui"];
+}
+]]>
+					</programlisting>
+				</example>
+			</note>
+			<para>After you've saved the code in the corresponding plugin file, you can start up LeechCraft and see your plugin in the settings in Plugins tab.</para>
+		</sect1>
+		<sect1 id="implementing_interfaces">
+			<title>Implementing interfaces</title>
+			<para>Almost all plugins will need to implement more interfaces than just <interfacename>IInfo</interfacename>. In order to designate that your plugin supports other interfaces, you should implement the <function>SupportedInterfaces</function> function, which should return the list of interfaces supported by your plugin. Both short name (the name of the interface class) and fully-qualified one are requred. If the interface is one of predefined in LeechCraft, you can find the fully-qualified name in the bottom of interface file in <filename>/src/interfaces/</filename>.</para>
+			<example>
+				<title>Example <function>SupportedInterfaces</function> of a Qt Script plugin</title>
+				<programlisting language="python">
+<![CDATA[
+def SupportedInterfaces():
+    return ["IPlugin2", "org.Deviant.LeechCraft.IPlugin2/1.0"]
+]]>
+				</programlisting>
+			</example>
+			<example>
+				<title>Example <function>SupportedInterfaces</function> of a Python plugin</title>
+				<programlisting language="python">
+<![CDATA[
+function SupportedInterfaces()
+{
+    return ["IPlugin2", "org.Deviant.LeechCraft.IPlugin2/1.0"];
+}
+]]>
+				</programlisting>
+			</example>
+		</sect1>
+		<sect1 id="signals_and_slots">
+			<title>Signals &amp; slots</title>
+			<para>Due to restrictions in Python scripting backend, you should explicitly mark which signals and slots your plugin instance object has. This is done via the <filename>ExportedSignals</filename> and <filename>ExportedSlots</filename> files which should be (capitalization is important) in the directory of your plugin. In those files, you write a C++ signatures of signals and slots respectively, one per line, just like you would write it in <function>SIGNAL</function> or <function>SLOT</function> macro.</para>
+			<example>
+				<title>Example <filename>ExportedSlots</filename></title>
+				<para>Example <filename>ExportedSlots</filename> of a plugin with only one exported slot.</para>
+				<programlisting><![CDATA[hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr, QObject*, const QString&, int)]]></programlisting>
+			</example>
+			<para>Then, for each slot you just define the function with the same name and the same number of arguments as the slot, and it gets called whenever needed.</para>
+			<para>To emit signals you exported from your plugin with the <filename>ExportedSignals</filename> file, you need to call the corresponding function (the one with the name of the signal you want to emit and corresponding parameters) on <classname>Signals</classname> object. To use the <classname>Signals</classname> object in Python, you need to <function>import</function> it explicitly.</para>
+			<para>Of course, you don't have to (and in fact, should not) export signals and slots that should not be exposed to the outside world, like the ones you use in your plugin internally.</para>
+		</sect1>
+		<sect1 id="standalone_plugins">
+			<title>Standalone plugins</title>
+			<para>Standalone plugins are pretty self-sufficient: they are not for other plugins, like Poshuku CleanWeb is for the Poshuku browser.</para>
+			<para>Topics like creating tabs in the main LeechCraft window, embedding into toolbars and handling download entities are covered in the corresponding documentation for C++ plugins.</para>
+		</sect1>
+	</chapter>
+	<chapter id="Advanced topics">
+		<title>Advanced topics</title>
+		<sect1 id="translations">
+			<title>Translations</title>
+		</sect1>
+		<sect1 id="packaging">
+			<title>Packaging</title>
+		</sect1>
+	</chapter>
+</book>
