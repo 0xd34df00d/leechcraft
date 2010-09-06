@@ -866,6 +866,9 @@ void LeechCraft::MainWindow::InitializeDataSources ()
 	}
 
 	QStandardItemModel *model = new QStandardItemModel (this);
+	QStandardItem *systemItem = new QStandardItem (tr ("System"));
+	systemItem->setData ("system", Qt::UserRole);
+	model->appendRow (systemItem);
 	Q_FOREACH (const QString& language, Language2Name_.keys ())
 	{
 		QStandardItem *item = new QStandardItem (language);
