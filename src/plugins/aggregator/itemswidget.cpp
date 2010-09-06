@@ -40,7 +40,7 @@ namespace LeechCraft
 		namespace Aggregator
 		{
 			using LeechCraft::Util::CategorySelector;
-			
+
 			struct ItemsWidget_Impl
 			{
 				Ui::ItemsWidget Ui_;
@@ -63,7 +63,7 @@ namespace LeechCraft
 				std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 				std::auto_ptr<CategorySelector> ItemCategorySelector_;
 			};
-			
+
 			ItemsWidget::ItemsWidget (QWidget *parent)
 			: QWidget (parent)
 			, Impl_ (new ItemsWidget_Impl)
@@ -85,9 +85,9 @@ namespace LeechCraft
 
 				Impl_->Ui_.setupUi (this);
 				Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
-			
+
 				Impl_->Ui_.Items_->setAcceptDrops (false);
-			
+
 				Impl_->ItemsFilterModel_.reset (new ItemsFilterModel (this));
 				Impl_->ItemsFilterModel_->SetItemsWidget (this);
 				Impl_->ItemsFilterModel_->setSourceModel (Impl_->ItemLists_.get ());
@@ -99,7 +99,7 @@ namespace LeechCraft
 						SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
 						Impl_->ItemsFilterModel_.get (),
 						SLOT (invalidate ()));
-			
+
 				Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
 				Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 				Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
@@ -111,12 +111,12 @@ namespace LeechCraft
 						SIGNAL (currentIndexChanged (int)),
 						this,
 						SLOT (updateItemsFilter ()));
-			
+
 				connect (this,
 						SIGNAL (currentChannelChanged (const QModelIndex&)),
 						this,
 						SLOT (channelChanged (const QModelIndex&)));
-			
+
 				QHeaderView *itemsHeader = Impl_->Ui_.Items_->header ();
 				QFontMetrics fm = fontMetrics ();
 				int dateTimeSize = fm.width (QDateTime::currentDateTime ()
@@ -130,8 +130,9 @@ namespace LeechCraft
 						SIGNAL (sectionClicked (int)),
 						this,
 						SLOT (makeCurrentItemVisible ()));
-			
+
 				Impl_->ItemCategorySelector_.reset (new CategorySelector ());
+				Impl_->ItemCategorySelector_->SetCaption (tr ("Items categories"));
 				Impl_->ItemCategorySelector_->setWindowFlags (Qt::Widget);
 				Impl_->Ui_.CategoriesSplitter_->addWidget (Impl_->ItemCategorySelector_.get ());
 				Impl_->ItemCategorySelector_->hide ();
@@ -140,14 +141,14 @@ namespace LeechCraft
 						SIGNAL (selectionChanged (const QStringList&)),
 						Impl_->ItemsFilterModel_.get (),
 						SLOT (categorySelectionChanged (const QStringList&)));
-			
+
 				connect (Impl_->Ui_.Items_->selectionModel (),
 						SIGNAL (selectionChanged (const QItemSelection&,
 								const QItemSelection&)),
 						this,
 						SLOT (currentItemChanged (const QItemSelection&)),
 						Qt::QueuedConnection);
-			
+
 				currentItemChanged (QItemSelection ());
 
 				connect (Core::Instance ().GetStorageBackend (),
@@ -165,7 +166,7 @@ namespace LeechCraft
 
 				on_ActionHideReadItems__triggered ();
 			}
-			
+
 			ItemsWidget::~ItemsWidget ()
 			{
 				on_CategoriesSplitter__splitterMoved ();
@@ -206,7 +207,7 @@ namespace LeechCraft
 						this,
 						SLOT (invalidateMergeMode ()));
 			}
-			
+
 			Item_ptr ItemsWidget::GetItem (const QModelIndex& index) const
 			{
 				QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
@@ -242,7 +243,7 @@ namespace LeechCraft
 				XmlSettingsManager::Instance ()->
 						setProperty ("ShowAsTape", tape);
 			}
-			
+
 			void ItemsWidget::SetMergeMode (bool merge)
 			{
 				Impl_->MergeMode_ = merge;
@@ -276,7 +277,7 @@ namespace LeechCraft
 					}
 				}
 			}
-			
+
 			void ItemsWidget::SetMergeModeTags (const QStringList& tags)
 			{
 				if (Impl_->MergeMode_)
@@ -385,20 +386,20 @@ namespace LeechCraft
 				Item_ptr it = GetItem (index);
 				QString commentRSS = it->CommentsLink_;
 				QStringList tags = it->Categories_;
-			
+
 				QStringList addTags = Core::Instance ().GetProxy ()->
 					GetTagsManager ()->Split (XmlSettingsManager::Instance ()->
 							property ("CommentsTags").toString ());
 				Core::Instance ().AddFeed (commentRSS, tags + addTags);
 			}
-			
+
 			void ItemsWidget::CurrentChannelChanged (const QModelIndex& si)
 			{
 				if (Impl_->MergeMode_)
 					return;
 
 				ClearSupplementaryModels ();
-			
+
 				QModelIndex index = si;
 				QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
 				if (f)
@@ -464,17 +465,17 @@ namespace LeechCraft
 						this);
 				Impl_->ActionItemCommentsSubscribe_->setObjectName ("ActionItemCommentsSubscribe_");
 			}
-			
+
 			QToolBar* ItemsWidget::SetupToolBar ()
 			{
 				QToolBar *bar = new QToolBar ();
 				bar->setWindowTitle ("Aggregator");
 				bar->addAction (Impl_->ActionHideReadItems_);
 				bar->addAction (Impl_->ActionShowAsTape_);
-			
+
 				return bar;
 			}
-			
+
 			QString ItemsWidget::GetHex (QPalette::ColorRole role, QPalette::ColorGroup group)
 			{
 				int r, g, b;
@@ -484,7 +485,7 @@ namespace LeechCraft
 				// Fill spare space with zeros.
 				return result.arg (color, 6, 16, QChar ('0'));
 			}
-			
+
 			QString ItemsWidget::ToHtml (const Item_ptr& item)
 			{
 				QString headerBg = GetHex (QPalette::Window);
@@ -502,10 +503,10 @@ namespace LeechCraft
 					"-webkit-border-top-left-radius: 1em; "
 					"-webkit-border-top-right-radius: 1em;'>";
 				firstStartBox.replace ("COLOR", headerText);
-			
+
 				bool linw = XmlSettingsManager::Instance ()->
 						property ("AlwaysUseExternalBrowser").toBool ();
-			
+
 				QString result = QString (
 						"<style>a { color: %2; } a.visited { color: %3 }</style>"
 						"<div style='background: %1; "
@@ -531,7 +532,7 @@ namespace LeechCraft
 						"-webkit-border-radius: 1em;'>");
 
 				result += firstStartBox.arg (headerBg);
-			
+
 				// Link
 				result += ("<a href='" +
 						item->Link_ +
@@ -541,9 +542,9 @@ namespace LeechCraft
 				result += QString (">");
 				result += (QString ("<strong>") +
 						item->Title_ +
-						"</strong>" + 
+						"</strong>" +
 						"</a><br />");
-			
+
 				// Publication date and author
 				if (item->PubDate_.isValid () && !item->Author_.isEmpty ())
 					result += tr ("Published on %1 by %2")
@@ -558,12 +559,12 @@ namespace LeechCraft
 					result += tr ("Published by %1")
 							.arg (item->Author_) +
 						"<br />";
-			
+
 				// Categories
 				if (item->Categories_.size ())
 					result += item->Categories_.join ("; ") +
 						"<br />";
-			
+
 				// Comments stuff
 				if (item->NumComments_ >= 0 && !item->CommentsPageLink_.isEmpty ())
 					result += tr ("%n comment(s), <a href='%1'%2>view them</a><br />",
@@ -591,7 +592,7 @@ namespace LeechCraft
 							.arg (link)
 							.arg (linw ? " target='_blank'" : "");
 				}
-			
+
 				// Description
 				result += QString ("</div><div style='color: %1;"
 						"padding-top: 0.5em; "
@@ -894,10 +895,10 @@ namespace LeechCraft
 
 					result += "</div>";
 				}
-			
+
 				result += "</div>";
 				result += "</div>";
-			
+
 				return result;
 			}
 
@@ -939,7 +940,7 @@ namespace LeechCraft
 					SetMergeMode (true);
 				}
 			}
-			
+
 			void ItemsWidget::channelChanged (const QModelIndex& mapped)
 			{
 				Impl_->Ui_.Items_->scrollToTop ();
@@ -947,7 +948,7 @@ namespace LeechCraft
 
 				if (!isVisible ())
 					return;
-			
+
 				QStringList allCategories = Core::Instance ().GetCategories (mapped);
 				Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
 
@@ -979,7 +980,7 @@ namespace LeechCraft
 			{
 				SetTapeMode (!Impl_->TapeMode_);
 			}
-			
+
 			void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
 			{
 				QModelIndexList indexes = Impl_->Ui_.Items_->
@@ -988,13 +989,13 @@ namespace LeechCraft
 					MarkItemAsUnread (Impl_->
 							ItemsFilterModel_->mapToSource (indexes.at (i)));
 			}
-			
+
 			void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
 			{
 				Impl_->ItemsFilterModel_->setFilterCaseSensitivity (state ?
 						Qt::CaseSensitive : Qt::CaseInsensitive);
 			}
-			
+
 			void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
 			{
 				QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
@@ -1010,7 +1011,7 @@ namespace LeechCraft
 				XmlSettingsManager::Instance ()->
 					setProperty ("CategoriesSplitter2", sizes.at (1));
 			}
-			
+
 			void ItemsWidget::currentItemChanged (const QItemSelection& selection)
 			{
 				if (Impl_->TapeMode_)
@@ -1022,20 +1023,20 @@ namespace LeechCraft
 						QModelIndex index = Impl_->ItemsFilterModel_->index (i, 0);
 						QModelIndex mapped = Impl_->ItemsFilterModel_->mapToSource (index);
 						Item_ptr item = GetItem (mapped);
-			
+
 						html += ToHtml (item);
 					}
-			
+
 					Impl_->Ui_.ItemView_->SetHtml (html);
 				}
 				else
 				{
 					QModelIndexList indexes = selection.indexes ();
-			
+
 					QModelIndex sindex;
 					if (indexes.size ())
 						sindex = Impl_->ItemsFilterModel_->mapToSource (indexes.at (0));
-			
+
 					if (!sindex.isValid () || indexes.size () != 2)
 					{
 						Impl_->Ui_.ItemView_->SetHtml ("");
@@ -1043,26 +1044,26 @@ namespace LeechCraft
 						Impl_->ActionMarkItemAsUnread_->setEnabled (false);
 						return;
 					}
-			
+
 					Selected (sindex);
-			
+
 					Item_ptr item = GetItem (sindex);
-			
+
 					Impl_->Ui_.ItemView_->SetHtml (ToHtml (item));
-			
+
 					QString commentsRSS = item->CommentsLink_;
 					Impl_->ActionItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
 					Impl_->ActionMarkItemAsUnread_->setEnabled (true);
 				}
 			}
-			
+
 			void ItemsWidget::makeCurrentItemVisible ()
 			{
 				QModelIndex item = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
 				if (item.isValid ())
 					Impl_->Ui_.Items_->scrollTo (item);
 			}
-			
+
 			void ItemsWidget::updateItemsFilter ()
 			{
 				int section = Impl_->Ui_.SearchType_->currentIndex ();
