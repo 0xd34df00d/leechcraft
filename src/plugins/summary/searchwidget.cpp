@@ -32,6 +32,7 @@ namespace LeechCraft
 				Ui_.setupUi (this);
 
 				Ui_.SearchStuff_->addWidget (CategorySelector_);
+				CategorySelector_->SetCaption (tr ("Search categories"));
 
 				connect (CategorySelector_,
 						SIGNAL (selectionChanged (const QStringList&)),
