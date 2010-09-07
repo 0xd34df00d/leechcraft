@@ -18,8 +18,10 @@
 
 #include "core.h"
 #include <interfaces/ijobholder.h>
+#include <plugininterface/tagsfiltermodel.h>
 #include "summarywidget.h"
 #include "requestnormalizer.h"
+#include "summarytagsfilter.h"
 
 namespace LeechCraft
 {
@@ -196,7 +198,31 @@ namespace LeechCraft
 				if (query.Categories_.contains ("d") ||
 						query.Categories_.contains ("downloads") ||
 						query.Categories_.isEmpty ())
-					result->AddModel (MergeModel_.get ());
+				{
+					SummaryTagsFilter *filter = new SummaryTagsFilter ();
+					filter->setDynamicSortFilter (true);
+					filter->setSourceModel (MergeModel_.get ());
+					filter->setFilterCaseSensitivity (Qt::CaseInsensitive);
+
+					switch (query.Type_)
+					{
+					case Query2::TString:
+						filter->setFilterFixedString (query.Query_);
+						break;
+					case Query2::TWildcard:
+						filter->setFilterFixedString (query.Query_);
+						break;
+					case Query2::TRegexp:
+						filter->setFilterFixedString (query.Query_);
+						break;
+					case Query2::TTags:
+						filter->setFilterFixedString (query.Query_);
+						filter->setTagsMode (true);
+						break;
+					}
+
+					result->AddModel (filter);
+				}
 
 				QList<IFinder*> finders = Proxy_->
 					GetPluginsManager ()->GetAllCastableTo<IFinder*> ();
