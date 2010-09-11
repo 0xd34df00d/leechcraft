@@ -19,6 +19,7 @@
 #ifndef PLUGINS_SHELLOPEN_SHELLOPEN_H
 #define PLUGINS_SHELLOPEN_SHELLOPEN_H
 #include <QObject>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 
@@ -34,6 +35,8 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 				Q_INTERFACES (IInfo IEntityHandler)
+
+				std::auto_ptr<QTranslator> Translator_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();

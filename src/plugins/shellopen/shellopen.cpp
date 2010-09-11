@@ -21,6 +21,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QFileInfo>
+#include <plugininterface/util.h>
 
 namespace LeechCraft
 {
@@ -28,8 +29,9 @@ namespace LeechCraft
 	{
 		namespace ShellOpen
 		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
+			void Plugin::Init (ICoreProxy_ptr)
 			{
+				Translator_.reset (Util::InstallTranslator ("shellopen"));
 			}
 
 			void Plugin::SecondInit ()
