@@ -352,9 +352,14 @@ namespace LeechCraft
 				if (!url.isValid ())
 					return false;
 
-				QStringList schemes ("http");
-				schemes << "https" << "file";
-				return schemes.contains (url.scheme ());
+				QString scheme = url.scheme ();
+				if (scheme == "file")
+					return !(e.Parameters_ & FromUserInitiated);
+				else
+				{
+					QStringList schemes = QStringList ("http") << "https";
+					return schemes.contains (url.scheme ());
+				}
 			}
 
 			QAbstractItemModel* Core::GetRepresentationModel ()
