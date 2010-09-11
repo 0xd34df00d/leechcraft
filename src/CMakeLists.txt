@@ -105,6 +105,7 @@ OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_POPISHU "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
+OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
 
 ENABLE_TESTING ()
 
@@ -227,6 +228,10 @@ ENDIF (ENABLE_LACKMAN)
 IF (ENABLE_SYNCER)
 	ADD_SUBDIRECTORY (plugins/syncer)
 ENDIF (ENABLE_SYNCER)
+
+IF (ENABLE_SHELLOPEN)
+	ADD_SUBDIRECTORY (plugins/shellopen)
+ENDIF (ENABLE_SHELLOPEN)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
