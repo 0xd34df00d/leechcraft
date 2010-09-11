@@ -83,6 +83,9 @@ namespace LeechCraft
 
 			bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
+				if (!(e.Parameters_ & FromUserInitiated))
+					return false;
+
 				if (!e.Entity_.canConvert<QUrl> ())
 					return false;
 
