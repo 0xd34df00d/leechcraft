@@ -84,6 +84,10 @@ namespace LeechCraft
                         SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
                         this,
                         SLOT (currentFileChanged (const QModelIndex&)));
+                connect (Ui_.FilesView_,
+                		SIGNAL (doubleClicked (const QModelIndex&)),
+                		this,
+                		SLOT (handleFileActivated (const QModelIndex&)));
 
                 currentFileChanged (QModelIndex ());
 
@@ -778,8 +782,12 @@ namespace LeechCraft
 				QModelIndex index = Ui_.WebSeedsView_->currentIndex ();
 				QString url = index.sibling (index.row (), 0).data ().toString ();
 				bool bep19 = index.sibling (index.row (), 1).data ().toString () == "BEP 19";
-				qDebug () << url << bep19;
 				Core::Instance ()->RemoveWebSeed (index.data ().toString (), bep19);
+			}
+
+			void TabWidget::handleFileActivated (const QModelIndex& index)
+			{
+				Core::Instance ()->GetTorrentFilesModel ()->HandleFileActivated (index);
 			}
 		};
 	};

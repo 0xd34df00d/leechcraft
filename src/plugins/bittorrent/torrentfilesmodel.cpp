@@ -19,13 +19,14 @@
 #include "torrentfilesmodel.h"
 #include <iterator>
 #include <boost/functional/hash.hpp>
+#include <QUrl>
 #include <QtDebug>
 #include <plugininterface/treeitem.h>
 #include <plugininterface/util.h>
 #include "core.h"
 
 using namespace LeechCraft::Util;
-			
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -44,12 +45,12 @@ namespace LeechCraft
 					rootData << tr ("Name") << tr ("Priority") << tr ("Progress");
 				RootItem_ = new TreeItem (rootData);
 			}
-			
+
 			TorrentFilesModel::~TorrentFilesModel ()
 			{
 				delete RootItem_;
 			}
-			
+
 			int TorrentFilesModel::columnCount (const QModelIndex& index) const
 			{
 				if (index.isValid ())
@@ -57,12 +58,12 @@ namespace LeechCraft
 				else
 					return RootItem_->ColumnCount ();
 			}
-			
+
 			QVariant TorrentFilesModel::data (const QModelIndex& index, int role) const
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				if (AdditionDialog_)
 				{
 					if (role == Qt::CheckStateRole &&
@@ -91,12 +92,12 @@ namespace LeechCraft
 							return QVariant ();
 					}
 			}
-			
+
 			Qt::ItemFlags TorrentFilesModel::flags (const QModelIndex& index) const
 			{
 				if (!index.isValid ())
 					return 0;
-			
+
 				if (AdditionDialog_ &&
 						index.column () == 0)
 					return Qt::ItemIsSelectable |
@@ -113,67 +114,67 @@ namespace LeechCraft
 					return Qt::ItemIsSelectable |
 						Qt::ItemIsEnabled;
 			}
-			
+
 			QVariant TorrentFilesModel::headerData (int h, Qt::Orientation orient, int role) const
 			{
 				if (orient == Qt::Horizontal && role == Qt::DisplayRole)
 					return RootItem_->Data (h);
-			
+
 				return QVariant ();
 			}
-			
+
 			QModelIndex TorrentFilesModel::index (int row, int col, const QModelIndex& parent) const
 			{
 				if (!hasIndex (row, col, parent))
 					return QModelIndex ();
-			
+
 				TreeItem *parentItem;
-			
+
 				if (!parent.isValid ())
 					parentItem = RootItem_;
 				else
 					parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-			
+
 				TreeItem *childItem = parentItem->Child (row);
 				if (childItem)
 					return createIndex (row, col, childItem);
 				else
 					return QModelIndex ();
 			}
-			
+
 			QModelIndex TorrentFilesModel::parent (const QModelIndex& index) const
 			{
 				if (!index.isValid ())
 					return QModelIndex ();
-			
+
 				TreeItem *childItem = static_cast<TreeItem*> (index.internalPointer ()),
 						 *parentItem = childItem->Parent ();
-			
+
 				if (parentItem == RootItem_)
 					return QModelIndex ();
-			
+
 				return createIndex (parentItem->Row (), 0, parentItem);
 			}
-			
+
 			int TorrentFilesModel::rowCount (const QModelIndex& parent) const
 			{
 				TreeItem *parentItem;
 				if (parent.column () > 0)
 					return 0;
-			
+
 				if (!parent.isValid ())
 					parentItem = RootItem_;
 				else
 					parentItem = static_cast<TreeItem*> (parent.internalPointer ());
-			
+
 				return parentItem->ChildCount ();
 			}
-			
+
 			bool TorrentFilesModel::setData (const QModelIndex& index, const QVariant& value, int role)
 			{
 				if (!index.isValid ())
 					return false;
-			
+
 				if (role == Qt::CheckStateRole)
 				{
 					static_cast<TreeItem*> (index.internalPointer ())->
@@ -253,12 +254,14 @@ namespace LeechCraft
 				else
 					return false;
 			}
-			
+
 			void TorrentFilesModel::Clear ()
 			{
 				if (!RootItem_->ChildCount ())
 					return;
-			
+
+				BasePath_ = boost::filesystem::path ();
+
 				beginRemoveRows (QModelIndex (), 0, RootItem_->ChildCount () - 1);
 				while (RootItem_->ChildCount ())
 					RootItem_->RemoveChild (0);
@@ -266,7 +269,7 @@ namespace LeechCraft
 				FilesInTorrent_ = 0;
 				Path2TreeItem_.clear ();
 			}
-			
+
 			void TorrentFilesModel::ResetFiles (libtorrent::torrent_info::file_iterator begin,
 					const libtorrent::torrent_info::file_iterator& end)
 			{
@@ -286,11 +289,11 @@ namespace LeechCraft
 				{
 					Path2TreeItem_t::key_type parentPath = begin->path.branch_path ();
 					MkParentIfDoesntExist (begin->path);
-			
+
 					QList<QVariant> displayData;
 					displayData << QString::fromUtf8 (begin->path.leaf ().c_str ())
 						<< Util::MakePrettySize (begin->size);
-					
+
 					TreeItem *parentItem = Path2TreeItem_ [parentPath],
 							 *item = new TreeItem (displayData, parentItem);
 					item->ModifyData (2, static_cast<qulonglong> (begin->size), RawDataRole);
@@ -306,10 +309,13 @@ namespace LeechCraft
 
 				endInsertRows ();
 			}
-			
-			void TorrentFilesModel::ResetFiles (const QList<FileInfo>& infos)
+
+			void TorrentFilesModel::ResetFiles (const boost::filesystem::path& basePath,
+					const QList<FileInfo>& infos)
 			{
 				Clear ();
+
+				BasePath_ = basePath;
 
 				beginInsertRows (QModelIndex (), 0, 0);
 				FilesInTorrent_ = infos.size ();
@@ -322,12 +328,12 @@ namespace LeechCraft
 					MkParentIfDoesntExist (fi.Path_);
 
 					QString pathStr = QString::fromUtf8 (fi.Path_.string ().c_str ());
-			
+
 					QList<QVariant> displayData;
 					displayData << QString::fromUtf8 (fi.Path_.leaf ().c_str ())
 						<< QString::number (fi.Priority_)
 						<< QString::number (fi.Progress_, 'f', 3);
-					
+
 					TreeItem *parentItem = Path2TreeItem_ [parentPath],
 							 *item = new TreeItem (displayData, parentItem);
 					item->ModifyData (0, pathStr, RawDataRole);
@@ -345,25 +351,27 @@ namespace LeechCraft
 
 				endInsertRows ();
 			}
-			
-			void TorrentFilesModel::UpdateFiles (const QList<FileInfo>& infos)
+
+			void TorrentFilesModel::UpdateFiles (const boost::filesystem::path& basePath,
+					const QList<FileInfo>& infos)
 			{
+				BasePath_ = basePath;
 				if (Path2TreeItem_.empty () ||
 						Path2TreeItem_.size () == 1)
 				{
-					ResetFiles (infos);
+					ResetFiles (BasePath_, infos);
 					return;
 				}
-			
+
 				for (int i = 0; i < infos.size (); ++i)
 				{
 					FileInfo fi = infos.at (i);
 					if (!Path2TreeItem_.count (fi.Path_))
 					{
 						Path2TreeItem_.clear ();
-						ResetFiles (infos);
+						ResetFiles (BasePath_, infos);
 					}
-			
+
 					TreeItem *item = Path2TreeItem_ [fi.Path_];
 					item->ModifyData (ColumnProgress, QString::number (fi.Progress_, 'f', 3));
 					item->ModifyData (ColumnPath, static_cast<qulonglong> (fi.Size_), RoleSize);
@@ -375,7 +383,7 @@ namespace LeechCraft
 
 				emit dataChanged (index (0, 2), index (RootItem_->ChildCount () - 1, 2));
 			}
-			
+
 			QVector<bool> TorrentFilesModel::GetSelectedFiles () const
 			{
 				QVector<bool> result (FilesInTorrent_);
@@ -388,31 +396,31 @@ namespace LeechCraft
 					}
 				return result;
 			}
-			
+
 			void TorrentFilesModel::MarkAll ()
 			{
 				if (!RootItem_->ChildCount ())
 					return;
-			
+
 				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
 						end = Path2TreeItem_.end (); i != end; ++i)
 					if (!i->second->ChildCount ())
 						i->second->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
 				emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 1));
 			}
-			
+
 			void TorrentFilesModel::UnmarkAll ()
 			{
 				if (!RootItem_->ChildCount ())
 					return;
-			
+
 				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
 						end = Path2TreeItem_.end (); i != end; ++i)
 					if (!i->second->ChildCount ())
 						i->second->ModifyData (0, Qt::Unchecked, Qt::CheckStateRole);
 				emit dataChanged (index (0, 0), index (RootItem_->ChildCount () - 1, 1));
 			}
-			
+
 			void TorrentFilesModel::MarkIndexes (const QList<QModelIndex>& indexes)
 			{
 				for (int i = 0; i < indexes.size (); ++i)
@@ -423,7 +431,7 @@ namespace LeechCraft
 					emit dataChanged (index (indexes.at (i).row (), 0), index (indexes.at (i).row (), 1));
 				}
 			}
-			
+
 			void TorrentFilesModel::UnmarkIndexes (const QList<QModelIndex>& indexes)
 			{
 				for (int i = 0; i < indexes.size (); ++i)
@@ -434,16 +442,53 @@ namespace LeechCraft
 					emit dataChanged (index (indexes.at (i).row (), 0), index (indexes.at (i).row (), 1));
 				}
 			}
-			
+
+			void TorrentFilesModel::HandleFileActivated (QModelIndex index)
+			{
+				if (!index.isValid ())
+					return;
+
+				if (index.column ())
+					index = index.sibling (index.row (), 0);
+
+				TreeItem *item = static_cast<TreeItem*> (index.internalPointer ());
+				for (Path2TreeItem_t::const_iterator i = Path2TreeItem_.begin (),
+						end = Path2TreeItem_.end (); i != end; ++i)
+				{
+					if (i->second == item)
+					{
+						if (item->Data (0, RoleProgress).toDouble () != 1)
+						{
+							QString filename = QString::fromUtf8 (i->first.filename ().c_str ());
+							emit gotEntity (Util::MakeNotification ("BitTorrent",
+									tr ("The file %1 hasn't finished downloading yet.")
+										.arg (filename),
+									PWarning_));
+						}
+						else
+						{
+							boost::filesystem::path full = BasePath_ / i->first;
+							QString path = QString::fromUtf8 (full.string ().c_str ());
+							Entity e = Util::MakeEntity (QUrl::fromLocalFile (path),
+									QString (),
+									FromUserInitiated);
+							emit gotEntity (e);
+						}
+
+						break;
+					}
+				}
+			}
+
 			void TorrentFilesModel::MkParentIfDoesntExist (const boost::filesystem::path& path)
 			{
 				Path2TreeItem_t::key_type parentPath = path.branch_path ();
 				if (Path2TreeItem_.count (parentPath))
 					return;
-			
+
 				MkParentIfDoesntExist (parentPath);
 				TreeItem *parent = Path2TreeItem_ [parentPath.branch_path ()];
-			
+
 				QList<QVariant> data;
 				data << QString::fromUtf8 (parentPath.leaf ().c_str ()) << QString ("");
 				if (!AdditionDialog_)
@@ -452,16 +497,15 @@ namespace LeechCraft
 				if (AdditionDialog_)
 					item->ModifyData (0, Qt::Checked, Qt::CheckStateRole);
                 item->ModifyData (0, QString::fromUtf8 (parentPath.string ().c_str ()), RawDataRole);
-                qDebug () << item->Data (0, RawDataRole);
 				parent->AppendChild (item);
 				Path2TreeItem_ [parentPath] = item;
 			}
-			
+
 			void TorrentFilesModel::UpdateSizeGraph (TreeItem *item)
 			{
 				if (!item->ChildCount ())
 					return;
-			
+
 				qulonglong size = 0;
                 qulonglong done = 0;
 				for (int i = 0; i < item->ChildCount (); ++i)

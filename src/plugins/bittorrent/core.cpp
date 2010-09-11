@@ -141,6 +141,10 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				connect (TorrentFilesModel_.get (),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				qRegisterMetaType<libtorrent::entry> ("libtorrent::entry");
 				qRegisterMetaTypeStreamOperators<libtorrent::entry> ("libtorrent::entry");
@@ -467,7 +471,9 @@ namespace LeechCraft
 
 				try
 				{
-					TorrentFilesModel_->UpdateFiles (GetTorrentFiles ());
+					boost::filesystem::path base = Handles_
+							.at (CurrentTorrent_).Handle_.save_path ();
+					TorrentFilesModel_->UpdateFiles (base, GetTorrentFiles ());
 				}
 				catch (const std::exception& e)
 				{
@@ -486,7 +492,9 @@ namespace LeechCraft
 
 				try
 				{
-					TorrentFilesModel_->ResetFiles (GetTorrentFiles ());
+					boost::filesystem::path base = Handles_
+							.at (CurrentTorrent_).Handle_.save_path ();
+					TorrentFilesModel_->ResetFiles (base, GetTorrentFiles ());
 				}
 				catch (const std::exception& e)
 				{

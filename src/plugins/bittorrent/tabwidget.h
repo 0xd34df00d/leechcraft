@@ -78,6 +78,7 @@ namespace LeechCraft
 				void currentPeerChanged (const QModelIndex&);
 				void currentWebSeedChanged (const QModelIndex&);
 				void handleRemoveWebSeed ();
+				void handleFileActivated (const QModelIndex&);
 			};
 		};
 	};

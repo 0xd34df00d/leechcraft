@@ -21,6 +21,7 @@
 #include <QAbstractItemModel>
 #include <boost/unordered_map.hpp>
 #include <libtorrent/torrent_info.hpp>
+#include <interfaces/structures.h>
 #include "fileinfo.h"
 
 namespace LeechCraft
@@ -74,6 +75,7 @@ namespace LeechCraft
 				Path2TreeItem_t Path2TreeItem_;
 				Path2Position_t Path2OriginalPosition_;
 				int FilesInTorrent_;
+				boost::filesystem::path BasePath_;
 			public:
 				enum
 				{
@@ -104,16 +106,20 @@ namespace LeechCraft
 				void Clear ();
 				void ResetFiles (libtorrent::torrent_info::file_iterator,
 						const libtorrent::torrent_info::file_iterator&);
-				void ResetFiles (const QList<FileInfo>&);
-				void UpdateFiles (const QList<FileInfo>&);
+				void ResetFiles (const boost::filesystem::path&, const QList<FileInfo>&);
+				void UpdateFiles (const boost::filesystem::path&, const QList<FileInfo>&);
 				QVector<bool> GetSelectedFiles () const;
 				void MarkAll ();
 				void UnmarkAll ();
 				void MarkIndexes (const QList<QModelIndex>&);
 				void UnmarkIndexes (const QList<QModelIndex>&);
+
+				void HandleFileActivated (QModelIndex);
 			private:
 				void MkParentIfDoesntExist (const boost::filesystem::path&);
 				void UpdateSizeGraph (LeechCraft::Util::TreeItem*);
+			signals:
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};
