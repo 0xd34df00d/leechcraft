@@ -83,6 +83,7 @@ namespace LeechCraft
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
+				QByteArray GetUniqueID () const;
 				void Release ();
 				QString GetName () const;
 				QString GetInfo () const;
@@ -134,6 +135,11 @@ namespace LeechCraft
 
 			void Plugin::SecondInit ()
 			{
+			}
+
+			QByteArray Plugin::GetUniqueID () const
+			{
+				return "org.LeechCraft.$plug";
 			}
 
 			void Plugin::Release ()
