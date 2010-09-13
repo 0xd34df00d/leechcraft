@@ -27,7 +27,6 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		bool AsResult_;
 		QMap<int, QWidget*> Widgets_;
 		QList<QAction*> TabBarActions_;
 	public:

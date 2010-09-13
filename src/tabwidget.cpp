@@ -38,7 +38,6 @@ using namespace LeechCraft;
 
 TabWidget::TabWidget (QWidget *parent)
 : QTabWidget (parent)
-, AsResult_ (false)
 {
 	setTabBar (new TabBar (this));
 	tabBar ()->setExpanding (false);
