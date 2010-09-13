@@ -255,7 +255,7 @@ SET (SRCS
 	fancypopupmanager.cpp
 	skinengine.cpp
 	childactioneventfilter.cpp
-	tabcontainer.cpp
+	tabmanager.cpp
 	logtoolbox.cpp
 	settingssink.cpp
 	authenticationdialog.cpp
@@ -298,7 +298,7 @@ SET (HEADERS
 	fancypopupmanager.h
 	skinengine.h
 	childactioneventfilter.h
-	tabcontainer.h
+	tabmanager.h
 	logtoolbox.h
 	settingssink.h
 	authenticationdialog.h

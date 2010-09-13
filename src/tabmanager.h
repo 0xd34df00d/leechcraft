@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef TABCONTAINER_H
-#define TABCONTAINER_H
+#ifndef TABMANAGER_H
+#define TABMANAGER_H
 #include <QObject>
 #include <QStringList>
 #include <QMap>
@@ -32,7 +32,7 @@ namespace LeechCraft
 {
 	class TabWidget;
 
-	class TabContainer : public QObject
+	class TabManager : public QObject
 	{
 		Q_OBJECT
 
@@ -46,8 +46,7 @@ namespace LeechCraft
 		QMap<QString, QList<QAction*> > Menus_;
 		QMap<QString, QAction*> ReaddOnRestore_;
 	public:
-		TabContainer (TabWidget*, QObject* = 0);
-		virtual ~TabContainer ();
+		TabManager (TabWidget*, QObject* = 0);
 
 		QWidget* GetWidget (int) const;
 		QToolBar* GetToolBar (int) const;

@@ -196,7 +196,7 @@ StorageBackend* LeechCraft::Core::GetStorageBackend () const
 
 QToolBar* LeechCraft::Core::GetToolBar (int index) const
 {
-	return TabContainer_->GetToolBar (index);
+	return TabManager_->GetToolBar (index);
 }
 
 void LeechCraft::Core::Setup (QObject *plugin)
@@ -224,7 +224,7 @@ void LeechCraft::Core::PostSecondInit (QObject *plugin)
 {
 	if (qobject_cast<IMultiTabs*> (plugin) ||
 			qobject_cast<IEmbedTab*> (plugin))
-		TabContainer_->AddObject (plugin);
+		TabManager_->AddObject (plugin);
 }
 
 void LeechCraft::Core::DelayedInit ()
@@ -234,7 +234,7 @@ void LeechCraft::Core::DelayedInit ()
 			ReallyMainWindow_,
 			SLOT (catchError (QString)));
 
-	TabContainer_.reset (new TabContainer (ReallyMainWindow_->GetTabWidget (),
+	TabManager_.reset (new TabManager (ReallyMainWindow_->GetTabWidget (),
 				ReallyMainWindow_->GetTabWidget ()));
 
 	PluginManager_->Init ();
@@ -351,9 +351,9 @@ QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 	return QModelIndex ();
 }
 
-TabContainer* LeechCraft::Core::GetTabContainer () const
+TabManager* LeechCraft::Core::GetTabManager () const
 {
-	return TabContainer_.get ();
+	return TabManager_.get ();
 }
 
 #define LC_APPENDER(a) a##_.Functors_.append (functor)
@@ -793,7 +793,7 @@ void LeechCraft::Core::embeddedTabWantsToFront ()
 
 	try
 	{
-		TabContainer_->bringToFront (iet->GetTabContents ());
+		TabManager_->bringToFront (iet->GetTabContents ());
 		ReallyMainWindow_->show ();
 	}
 	catch (const std::exception& e)
@@ -993,11 +993,11 @@ void LeechCraft::Core::InitMultiTab (QObject *plugin)
 {
 	connect (plugin,
 			SIGNAL (addNewTab (const QString&, QWidget*)),
-			TabContainer_.get (),
+			TabManager_.get (),
 			SLOT (add (const QString&, QWidget*)));
 	connect (plugin,
 			SIGNAL (removeTab (QWidget*)),
-			TabContainer_.get (),
+			TabManager_.get (),
 			SLOT (remove (QWidget*)));
 
 	InitCommonTab (plugin);
@@ -1007,17 +1007,17 @@ void LeechCraft::Core::InitCommonTab (QObject *plugin)
 {
 	connect (plugin,
 			SIGNAL (changeTabName (QWidget*, const QString&)),
-			TabContainer_.get (),
+			TabManager_.get (),
 			SLOT (changeTabName (QWidget*, const QString&)),
 			Qt::UniqueConnection);
 	connect (plugin,
 			SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-			TabContainer_.get (),
+			TabManager_.get (),
 			SLOT (changeTabIcon (QWidget*, const QIcon&)),
 			Qt::UniqueConnection);
 	connect (plugin,
 			SIGNAL (changeTooltip (QWidget*, QWidget*)),
-			TabContainer_.get (),
+			TabManager_.get (),
 			SLOT (changeTooltip (QWidget*, QWidget*)),
 			Qt::UniqueConnection);
 	connect (plugin,
@@ -1027,7 +1027,7 @@ void LeechCraft::Core::InitCommonTab (QObject *plugin)
 			Qt::UniqueConnection);
 	connect (plugin,
 			SIGNAL (raiseTab (QWidget*)),
-			TabContainer_.get (),
+			TabManager_.get (),
 			SLOT (bringToFront (QWidget*)),
 			Qt::UniqueConnection);
 }

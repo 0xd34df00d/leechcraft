@@ -27,7 +27,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include "pluginmanager.h"
-#include "tabcontainer.h"
+#include "tabmanager.h"
 #include "storagebackend.h"
 #include "networkaccessmanager.h"
 #include "directorywatcher.h"
@@ -53,7 +53,7 @@ namespace LeechCraft
 
 		PluginManager *PluginManager_;
 		MainWindow *ReallyMainWindow_;
-		std::auto_ptr<TabContainer> TabContainer_;
+		std::auto_ptr<TabManager> TabManager_;
 		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::auto_ptr<StorageBackend> StorageBackend_;
 		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
@@ -175,7 +175,7 @@ namespace LeechCraft
 
 		/** Returns the app-wide TabContainer.
 		 */
-		TabContainer* GetTabContainer () const;
+		TabManager* GetTabManager () const;
 
 		/** Sets up connections for the given object which is expected
 		 * to be a plugin instance.

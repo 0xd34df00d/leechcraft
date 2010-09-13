@@ -437,7 +437,7 @@ void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 	else
 	{
 		QMenu *menu = Core::Instance ()
-			.GetTabContainer ()->GetNewTabMenu ();
+			.GetTabManager ()->GetNewTabMenu ();
 		menu->popup (QCursor::pos ());
 	}
 }
@@ -454,7 +454,7 @@ void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 	}
 	else
 		pos = Ui_.MainTabWidget_->currentIndex ();
-	Core::Instance ().GetTabContainer ()->remove (pos);
+	Core::Instance ().GetTabManager ()->remove (pos);
 }
 
 void LeechCraft::MainWindow::on_ActionGlance__triggered ()
@@ -636,7 +636,7 @@ void LeechCraft::MainWindow::handleShowMenuBarAsButton ()
 void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 {
 	QMenu *ntmenu = Core::Instance ()
-			.GetTabContainer ()->GetNewTabMenu ();
+			.GetTabManager ()->GetNewTabMenu ();
 	ntmenu->popup (QCursor::pos ());
 }
 
@@ -782,7 +782,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	}
 
 	QMenu *ntm = Core::Instance ()
-		.GetTabContainer ()->GetNewTabMenu ();
+		.GetTabManager ()->GetNewTabMenu ();
 	NewTabButton_->setMenu (ntm);
 	NewTabButton_->setPopupMode (QToolButton::MenuButtonPopup);
 	int i = 0;
@@ -799,11 +799,11 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 {
 	connect (new QShortcut (QKeySequence ("Ctrl+["), this),
 			SIGNAL (activated ()),
-			Core::Instance ().GetTabContainer (),
+			Core::Instance ().GetTabManager (),
 			SLOT (rotateLeft ()));
 	connect (new QShortcut (QKeySequence ("Ctrl+]"), this),
 			SIGNAL (activated ()),
-			Core::Instance ().GetTabContainer (),
+			Core::Instance ().GetTabManager (),
 			SLOT (rotateRight ()));
 
 	for (int i = 0; i < 10; ++i)
@@ -813,7 +813,7 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 		sc->setProperty ("TabNumber", i);
 		connect (sc,
 				SIGNAL (activated ()),
-				Core::Instance ().GetTabContainer (),
+				Core::Instance ().GetTabManager (),
 				SLOT (navigateToTabNumber ()));
 	}
 }
