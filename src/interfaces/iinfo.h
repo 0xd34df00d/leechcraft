@@ -351,6 +351,16 @@ public:
 		return result;
 	}
 
+	/** @brief Returns plugin identified by its id.
+	 *
+	 * If there is no such plugin with the given id, this function
+	 * returns a null pointer.
+	 *
+	 * @param[in] id The ID of the plugin.
+	 * @return The plugin instance or null if no such plugin exists.
+	 */
+	virtual QObject* GetPluginByID (const QByteArray& id) const = 0;
+
 	/** @brief Returns the library path from which plugin instance
 	 * object was loaded loaded.
 	 *

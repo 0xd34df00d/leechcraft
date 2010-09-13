@@ -320,6 +320,19 @@ namespace LeechCraft
 		return QString ();
 	}
 
+	QObject* PluginManager::GetPluginByID (const QByteArray& id) const
+	{
+		if (!PluginID2PluginCache_.contains (id))
+			Q_FOREACH (QObject *plugin, GetAllPlugins ())
+				if (qobject_cast<IInfo*> (plugin)->GetUniqueID () == id)
+				{
+					PluginID2PluginCache_ [id] = plugin;
+					break;
+				}
+
+		return PluginID2PluginCache_ [id];
+	}
+
 	void PluginManager::InjectPlugin (QObject *object)
 	{
 		DepTreeItem_ptr depItem (new DepTreeItem ());

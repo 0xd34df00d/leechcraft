@@ -80,10 +80,9 @@ namespace LeechCraft
 		UnloadQueue_t UnloadQueue_;
 
 		QStringList Headers_;
-
 		QIcon DefaultPluginIcon_;
-
 		QStringList PluginLoadErrors_;
+		mutable QMap<QByteArray, QObject*> PluginID2PluginCache_;
 	public:
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (const QStringList& pluginPaths, QObject *parent = 0);
@@ -106,6 +105,8 @@ namespace LeechCraft
 
 		QObjectList GetAllPlugins () const;
 		QString GetPluginLibraryPath (const QObject*) const;
+
+		QObject* GetPluginByID (const QByteArray&) const;
 
 		void InjectPlugin (QObject *object);
 		void ReleasePlugin (QObject *object);
