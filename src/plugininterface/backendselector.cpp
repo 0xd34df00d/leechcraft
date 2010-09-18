@@ -34,6 +34,11 @@ BackendSelector::BackendSelector (BaseSettingsManager *m,
 	FillUI ();
 
 	// We should check from last to first
+	if (!QSqlDatabase::isDriverAvailable ("QMYSQL"))
+	{
+		Ui_->MySQLSettings_->setEnabled (false);
+		Ui_->StorageType_->removeItem (2);
+	}
 	if (!QSqlDatabase::isDriverAvailable ("QPSQL"))
 	{
 		Ui_->PostgreSQLSettings_->setEnabled (false);
@@ -73,6 +78,17 @@ void BackendSelector::FillUI ()
 			Property ("PostgresUsername", "").toString ());
 	Ui_->PostgresPassword_->setText (Manager_->
 			Property ("PostgresPassword", "").toString ());
+
+	Ui_->MysqlHostname_->setText (Manager_->
+			Property ("MysqlHostname", "localhost").toString ());
+	Ui_->MysqlPort_->setValue (Manager_->
+			Property ("MysqlPort", 5432).toInt ());
+	Ui_->MysqlDBName_->setText (Manager_->
+			Property ("MysqlDBName", "").toString ());
+	Ui_->MysqlUsername_->setText (Manager_->
+			Property ("MysqlUsername", "").toString ());
+	Ui_->MysqlPassword_->setText (Manager_->
+			Property ("MysqlPassword", "").toString ());
 }
 
 void BackendSelector::accept ()
@@ -99,6 +115,17 @@ void BackendSelector::accept ()
 			Ui_->PostgresUsername_->text ());
 	Manager_->setProperty ("PostgresPassword",
 			Ui_->PostgresPassword_->text ());
+
+	Manager_->setProperty ("MysqlHostname",
+			Ui_->MysqlHostname_->text ());
+	Manager_->setProperty ("PostgresPort",
+			Ui_->MysqlPort_->value ());
+	Manager_->setProperty ("PostgresDBName",
+			Ui_->MysqlDBName_->text ());
+	Manager_->setProperty ("PostgresUsername",
+			Ui_->MysqlUsername_->text ());
+	Manager_->setProperty ("PostgresPassword",
+			Ui_->MysqlPassword_->text ());
 }
 
 void BackendSelector::reject ()
