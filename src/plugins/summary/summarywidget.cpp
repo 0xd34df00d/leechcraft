@@ -305,6 +305,46 @@ namespace LeechCraft
 				Toolbar_->addSeparator ();
 			}
 
+			QList<QAction*> SummaryWidget::CreateProxyActions (const QList<QAction*>& actions) const
+			{
+				QList<QAction*> proxies;
+
+				Q_FOREACH (QAction *action, actions)
+				{
+					QAction *pa = new QAction (action->icon (),
+							action->text (), Toolbar_);
+					if (action->isSeparator ())
+						pa->setSeparator (true);
+					else if (qobject_cast<QWidgetAction*> (action))
+					{
+						proxies << action;
+						continue;
+					}
+					else
+					{
+						pa->setCheckable (action->isCheckable ());
+						pa->setChecked (action->isChecked ());
+						pa->setShortcuts (action->shortcuts ());
+						pa->setStatusTip (action->statusTip ());
+						pa->setToolTip (action->toolTip ());
+						pa->setWhatsThis (action->whatsThis ());
+						pa->setData (QVariant::fromValue<QObject*> (action));
+
+						connect (pa,
+								SIGNAL (hovered ()),
+								action,
+								SIGNAL (hovered ()));
+						connect (pa,
+								SIGNAL (toggled (bool)),
+								action,
+								SIGNAL (toggled (bool)));
+					}
+					proxies << pa;
+				}
+
+				return proxies;
+			}
+
 			void SummaryWidget::SmartDeselect (SummaryWidget *newFocus)
 			{
 #ifdef QT_DEBUG
@@ -366,7 +406,6 @@ namespace LeechCraft
 					ReinitToolbar ();
 					if (controls)
 					{
-						QList<QAction*> proxies;
 						Q_FOREACH (QAction *action, controls->actions ())
 						{
 							QString ai = action->property ("ActionIcon").toString ();
@@ -375,38 +414,7 @@ namespace LeechCraft
 								action->setIcon (Core::Instance ().GetProxy ()->GetIcon (ai));
 						}
 
-						Q_FOREACH (QAction *action, controls->actions ())
-						{
-							QAction *pa = new QAction (action->icon (),
-									action->text (), Toolbar_);
-							if (action->isSeparator ())
-								pa->setSeparator (true);
-							else if (qobject_cast<QWidgetAction*> (action))
-							{
-								proxies << action;
-								continue;
-							}
-							else
-							{
-								pa->setCheckable (action->isCheckable ());
-								pa->setChecked (action->isChecked ());
-								pa->setShortcuts (action->shortcuts ());
-								pa->setStatusTip (action->statusTip ());
-								pa->setToolTip (action->toolTip ());
-								pa->setWhatsThis (action->whatsThis ());
-								pa->setData (QVariant::fromValue<QObject*> (action));
-
-								connect (pa,
-										SIGNAL (hovered ()),
-										action,
-										SIGNAL (hovered ()));
-								connect (pa,
-										SIGNAL (toggled (bool)),
-										action,
-										SIGNAL (toggled (bool)));
-							}
-							proxies << pa;
-						}
+						QList<QAction*> proxies = CreateProxyActions (controls->actions ());
 						Toolbar_->addActions (proxies);
 					}
 					if (addiInfo != Ui_.ControlsDockWidget_->widget ())
@@ -482,9 +490,18 @@ namespace LeechCraft
 			void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
 			{
 				QModelIndex current = Ui_.PluginsTasksTree_->currentIndex ();
-				QMenu *menu = current.data (RoleContextMenu).value<QMenu*> ();
-				if (!menu)
+				QMenu *sourceMenu = current.data (RoleContextMenu).value<QMenu*> ();
+				if (!sourceMenu)
 					return;
+
+				QMenu *menu = new QMenu ();
+				connect (menu,
+						SIGNAL (triggered (QAction*)),
+						this,
+						SLOT (handleActionTriggered (QAction*)));
+				menu->setAttribute (Qt::WA_DeleteOnClose, true);
+				menu->addActions (CreateProxyActions (sourceMenu->actions ()));
+				menu->setTitle (sourceMenu->title ());
 				menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 			}
 

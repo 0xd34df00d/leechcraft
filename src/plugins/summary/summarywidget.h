@@ -70,6 +70,7 @@ namespace LeechCraft
 				QString GetQuery () const;
 				Query2 GetQuery2 () const;
 				void ReinitToolbar ();
+				QList<QAction*> CreateProxyActions (const QList<QAction*>&) const;
 			public slots:
 				void handleCategoriesChanged ();
 			private slots:
