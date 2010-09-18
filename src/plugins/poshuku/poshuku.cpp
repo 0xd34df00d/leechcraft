@@ -104,6 +104,17 @@ namespace LeechCraft
 
 				InitConnections ();
 
+
+				ImportXbel_ = new QAction (tr ("Import XBEL..."),
+						this);
+				ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
+				ExportXbel_ = new QAction (tr ("Export XBEL..."),
+						this);
+				ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
+				CheckFavorites_ = new QAction (tr ("Check favorites..."),
+						this);
+				CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
+
 				bool failed = false;
 				if (!Core::Instance ().Init ())
 				{
@@ -125,16 +136,6 @@ namespace LeechCraft
 						SIGNAL (error (const QString&)),
 						this,
 						SLOT (handleError (const QString&)));
-
-				ImportXbel_ = new QAction (tr ("Import XBEL..."),
-						this);
-				ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
-				ExportXbel_ = new QAction (tr ("Export XBEL..."),
-						this);
-				ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
-				CheckFavorites_ = new QAction (tr ("Check favorites..."),
-						this);
-				CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
 
 				connect (ImportXbel_,
 						SIGNAL (triggered ()),
