@@ -2777,7 +2777,7 @@ namespace LeechCraft
 					Session_->start_dht ();
 				else
 				{
-					writeSettings ();
+					ScheduleSave ();
 					Session_->stop_dht ();
 				}
 
