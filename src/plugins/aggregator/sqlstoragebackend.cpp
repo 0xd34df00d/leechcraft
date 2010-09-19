@@ -372,7 +372,9 @@ namespace LeechCraft
 				{
 					case SBSQLite:
 						cdt = "AND (julianday ('now') - julianday (pub_date) > :age)";
-						cnt = "ORDER BY pub_date DESC LIMIT 10000 OFFSET :number";
+						cnt = "AND item_id IN (SELECT item_id FROM items "
+						      "WHERE channel_id = :channel_id ORDER BY pub_date "
+						      "DESC LIMIT 10000 OFFSET :number)";
 						break;
 					case SBPostgres:
 						cdt = "AND (pub_date - now () > :age * interval '1 day')";
@@ -925,7 +927,6 @@ namespace LeechCraft
 				ItemIDFromTitleURL_.finish ();
 				return result;
 			}
-
 			void SQLStorageBackend::TrimChannel (const IDType_t& channelId,
 					int days, int number)
 			{
@@ -936,6 +937,7 @@ namespace LeechCraft
 
 				ChannelNumberTrimmer_.bindValue (":channel_id", channelId);
 				ChannelNumberTrimmer_.bindValue (":number", number);
+
 				if (!ChannelNumberTrimmer_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
 
