@@ -589,6 +589,7 @@ namespace LeechCraft
 					if (!silence)
 					{
 						tp |= LeechCraft::IsDownloaded;
+						tp &= ~LeechCraft::FromUserInitiated;
 						LeechCraft::Entity e =
 							LeechCraft::Util::MakeEntity (QUrl::fromLocalFile (filename),
 								url,
