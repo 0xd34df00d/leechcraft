@@ -179,8 +179,9 @@ namespace LeechCraft
 				{
 					case SBSQLite:
 						HistoryTruncater_.prepare ("DELETE FROM history "
-								"ORDER BY date DESC "
-								"LIMIT 10000 OFFSET :num");
+								"WHERE date IN "
+								"(SELECT date FROM history ORDER BY date DESC "
+								"LIMIT 10000 OFFSET :num)");
 						break;
 					case SBPostgres:
 						HistoryTruncater_.prepare ("DELETE FROM history "
