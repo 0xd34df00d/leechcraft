@@ -118,13 +118,13 @@ void BackendSelector::accept ()
 
 	Manager_->setProperty ("MysqlHostname",
 			Ui_->MysqlHostname_->text ());
-	Manager_->setProperty ("PostgresPort",
+	Manager_->setProperty ("MysqlPort",
 			Ui_->MysqlPort_->value ());
-	Manager_->setProperty ("PostgresDBName",
+	Manager_->setProperty ("MysqlDBName",
 			Ui_->MysqlDBName_->text ());
-	Manager_->setProperty ("PostgresUsername",
+	Manager_->setProperty ("MysqlUsername",
 			Ui_->MysqlUsername_->text ());
-	Manager_->setProperty ("PostgresPassword",
+	Manager_->setProperty ("MysqlPassword",
 			Ui_->MysqlPassword_->text ());
 }
 
