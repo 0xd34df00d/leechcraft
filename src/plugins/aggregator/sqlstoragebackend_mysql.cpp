@@ -97,7 +97,7 @@ namespace LeechCraft
 				FeedSettingsSetter_ = QSqlQuery (DB_);
 				QString queryStart;
 			
-				FeedSettingsSetter_.prepare (QString ("REPLACE INTO feeds_settings ("
+				FeedSettingsSetter_.prepare ("REPLACE INTO feeds_settings ("
 						"feed_id, "
 						"settings_id, "
 						"update_timeout, "
@@ -111,7 +111,7 @@ namespace LeechCraft
 						"?, "
 						"?, "
 						"?"
-						")").arg (queryStart));
+						")");
 			
 				ChannelsShortSelector_ = QSqlQuery (DB_);
 				ChannelsShortSelector_.prepare ("SELECT "
@@ -310,10 +310,8 @@ namespace LeechCraft
 
 				QString common = "DELETE FROM items "
 					"WHERE channel_id = ? ";
-				QString cdt = "AND DATE_ADD( pub_date, INTERVAL ?  DAY ) < now () ";
-				QString cnt = "AND pub_date IN "
-                    "(SELECT pub_date FROM items WHERE channel_id = ? "
-                    "ORDER BY pub_date DESC LIMIT ?, 1000000000 )";
+				QString cdt = "AND DATE_ADD( pub_date, INTERVAL ?  DAY ) < now() ";
+				QString cnt = "ORDER BY DATE DESC LIMIT ? , 18446744073709551615";
 
 				ChannelDateTrimmer_ = QSqlQuery (DB_);
 				ChannelDateTrimmer_.prepare (common + cdt);
@@ -863,8 +861,8 @@ namespace LeechCraft
 				if (!ChannelDateTrimmer_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ChannelDateTrimmer_);
 
-				ChannelNumberTrimmer_.bindValue (2, channelId);//channel_id
-				ChannelNumberTrimmer_.bindValue (3, number);//number
+				ChannelNumberTrimmer_.bindValue (0, channelId);//channel_id
+				ChannelNumberTrimmer_.bindValue (1, number);//number
 				if (!ChannelNumberTrimmer_.exec ())
 					LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
 
