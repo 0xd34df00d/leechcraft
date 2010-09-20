@@ -27,7 +27,8 @@ void BaseSettingsManager::Init ()
 	QStringList properties = Settings_->childKeys ();
 	Initializing_ = true;
 	for (int i = 0; i < properties.size (); ++i)
-		setProperty (PROP2CHAR (properties.at (i)), Settings_->value (properties.at (i), QVariant ()));
+		setProperty (PROP2CHAR (properties.at (i)),
+				Settings_->value (properties.at (i)));
 	Initializing_ = false;
 }
 

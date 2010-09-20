@@ -37,7 +37,7 @@ namespace LeechCraft
 	{
 		QList<ItemHandlerBase_ptr> Handlers_;
 	public:
-		typedef boost::function<void (const QString&, QAbstractItemModel*)> DataSourceSetter_t;
+		typedef boost::function<void (const QString&, QAbstractItemModel*, Util::XmlSettingsDialog*)> DataSourceSetter_t;
 	private:
 		QHash<QString, DataSourceSetter_t> Propname2DataSourceSetter_;
 	public:
@@ -107,7 +107,7 @@ namespace LeechCraft
 		 *
 		 * @sa XmlSettingsDialog::SetDataSource()
 		 */
-		void SetDataSource (const QString&, QAbstractItemModel*);
+		void SetDataSource (const QString&, QAbstractItemModel*, Util::XmlSettingsDialog*);
 
 		void RegisterDatasourceSetter (const QString&, DataSourceSetter_t);
 	};

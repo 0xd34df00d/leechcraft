@@ -430,6 +430,25 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 
 void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 {
+	QByteArray newTabId = XmlSettingsManager::Instance ()->
+			property ("DefaultNewTab").toString ().toLatin1 ();
+	if (newTabId != "contextdependent")
+	{
+		QObject *plugin = Core::Instance ()
+				.GetPluginManager ()->GetPluginByID (newTabId);
+		IMultiTabs *imtw = qobject_cast<IMultiTabs*> (plugin);
+		if (!imtw)
+			qWarning () << Q_FUNC_INFO
+					<< "plugin with id"
+					<< newTabId
+					<< "is not a IMultiTabs";
+		else
+		{
+			QMetaObject::invokeMethod (plugin, "newTabRequested");
+			return;
+		}
+	}
+
 	IMultiTabsWidget *imtw =
 		qobject_cast<IMultiTabsWidget*> (GetTabWidget ()->currentWidget ());
 	if (imtw)
@@ -711,6 +730,26 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 	setAcceptDrops (true);
 
+	QStandardItemModel *newTabsModel = new QStandardItemModel (this);
+	QStandardItem *defaultItem = new QStandardItem (tr ("Context-dependent"));
+	defaultItem->setData ("contextdependent", Qt::UserRole);
+	newTabsModel->appendRow (defaultItem);
+
+	QObjectList multitabs = Core::Instance ()
+			.GetPluginManager ()->GetAllCastableRoots<IMultiTabs*> ();
+	Q_FOREACH (QObject *object, multitabs)
+	{
+		IInfo *info = qobject_cast<IInfo*> (object);
+
+		QStandardItem *item = new QStandardItem (info->GetName ());
+		item->setData (info->GetUniqueID (), Qt::UserRole);
+		newTabsModel->appendRow (item);
+	}
+
+	qDebug () << Q_FUNC_INFO << "DefaultNewTab" << XmlSettingsManager::Instance ()->property ("DefaultNewTab");
+
+	XmlSettingsDialog_->SetDataSource ("DefaultNewTab", newTabsModel);
+
 	new StartupWizard (this);
 }
 
@@ -818,63 +857,78 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 	}
 }
 
-void LeechCraft::MainWindow::InitializeDataSources ()
+namespace
 {
-	QStringList filenames;
+	QMap<QString, QString> GetInstalledLanguages ()
+	{
+		QStringList filenames;
 
 #ifdef Q_WS_WIN
-	filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
-			.entryList (QStringList ("leechcraft_*.qm"));
+		filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
+				.entryList (QStringList ("leechcraft_*.qm"));
 #elif defined(Q_WS_MAC)
-	filenames << QDir (QCoreApplication::applicationDirPath () + "../Resources/translations")
-			.entryList (QStringList ("leechcraft_*.qm"));
+		filenames << QDir (QCoreApplication::applicationDirPath () + "../Resources/translations")
+				.entryList (QStringList ("leechcraft_*.qm"));
 #else
-	filenames << QDir ("/usr/local/share/leechcraft/translations")
-			.entryList (QStringList ("leechcraft_*.qm"));
-	filenames << QDir ("/usr/share/leechcraft/translations")
-			.entryList (QStringList ("leechcraft_*.qm"));
+		filenames << QDir ("/usr/local/share/leechcraft/translations")
+				.entryList (QStringList ("leechcraft_*.qm"));
+		filenames << QDir ("/usr/share/leechcraft/translations")
+				.entryList (QStringList ("leechcraft_*.qm"));
 #endif
 
-	int length = QString ("leechcraft_").size ();
-	QMap<QString, QString> Language2Name_;
-	Q_FOREACH (QString fname, filenames)
-	{
-		fname = fname.mid (length);
-		fname.chop (3);					// for .qm
-		QStringList parts = fname.split ('_', QString::SkipEmptyParts);
-
-		QString language;
-		Q_FOREACH (const QString& part, parts)
+		int length = QString ("leechcraft_").size ();
+		QMap<QString, QString> languages;
+		Q_FOREACH (QString fname, filenames)
 		{
-			if (part.size () != 2)
-				continue;
-			if (!part.at (0).isLower ())
-				continue;
+			fname = fname.mid (length);
+			fname.chop (3);					// for .qm
+			QStringList parts = fname.split ('_', QString::SkipEmptyParts);
 
-			QLocale locale (part);
-			if (locale.language () == QLocale::C)
-				continue;
+			QString language;
+			Q_FOREACH (const QString& part, parts)
+			{
+				if (part.size () != 2)
+					continue;
+				if (!part.at (0).isLower ())
+					continue;
 
-			language = QLocale::languageToString (locale.language ());
+				QLocale locale (part);
+				if (locale.language () == QLocale::C)
+					continue;
 
-			while (part != parts.at (0))
-				parts.pop_front ();
+				language = QLocale::languageToString (locale.language ());
 
-			Language2Name_ [language] = parts.join ("_");
-			break;
+				while (part != parts.at (0))
+					parts.pop_front ();
+
+				languages [language] = parts.join ("_");
+				break;
+			}
 		}
+
+		return languages;
 	}
 
-	QStandardItemModel *model = new QStandardItemModel (this);
-	QStandardItem *systemItem = new QStandardItem (tr ("System"));
-	systemItem->setData ("system", Qt::UserRole);
-	model->appendRow (systemItem);
-	Q_FOREACH (const QString& language, Language2Name_.keys ())
+	QAbstractItemModel* GetInstalledLangsModel ()
 	{
-		QStandardItem *item = new QStandardItem (language);
-		item->setData (Language2Name_ [language], Qt::UserRole);
-		model->appendRow (item);
-	}
+		QMap<QString, QString> languages = GetInstalledLanguages ();
 
-	XmlSettingsDialog_->SetDataSource ("Language", model);
+		QStandardItemModel *model = new QStandardItemModel ();
+		QStandardItem *systemItem = new QStandardItem (LeechCraft::MainWindow::tr ("System"));
+		systemItem->setData ("system", Qt::UserRole);
+		model->appendRow (systemItem);
+		Q_FOREACH (const QString& language, languages.keys ())
+		{
+			QStandardItem *item = new QStandardItem (language);
+			item->setData (languages [language], Qt::UserRole);
+			model->appendRow (item);
+		}
+		return model;
+	}
+}
+
+void LeechCraft::MainWindow::InitializeDataSources ()
+{
+	XmlSettingsDialog_->SetDataSource ("Language",
+			GetInstalledLangsModel ());
 }

@@ -194,7 +194,7 @@ void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 void XmlSettingsDialog::SetDataSource (const QString& property,
 		QAbstractItemModel *dataSource)
 {
-	HandlersManager_->SetDataSource (property, dataSource);
+	HandlersManager_->SetDataSource (property, dataSource, this);
 }
 
 void XmlSettingsDialog::SetPage (int page)
