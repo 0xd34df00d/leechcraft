@@ -43,7 +43,7 @@ namespace LeechCraft
 	protected:
 		QVariant GetValue (QObject*) const;
 	private:
-		void SetDataSource (const QString&, QAbstractItemModel*);
+		void SetDataSource (const QString&, QAbstractItemModel*, Util::XmlSettingsDialog*);
 	};
 };
 

@@ -54,7 +54,7 @@ namespace LeechCraft
 		{
 			QString prop = item.attribute ("property");
 			Factory_->RegisterDatasourceSetter (prop,
-					boost::bind (&ItemHandlerCombobox::SetDataSource, this, _1, _2));
+					boost::bind (&ItemHandlerCombobox::SetDataSource, this, _1, _2, _3));
 			Propname2Combobox_ [prop] = box;
 			Propname2Item_ [prop] = item;
 		}
@@ -146,7 +146,7 @@ namespace LeechCraft
 		return combobox->itemData (combobox->currentIndex ());
 	}
 
-	void ItemHandlerCombobox::SetDataSource (const QString& prop, QAbstractItemModel *model)
+	void ItemHandlerCombobox::SetDataSource (const QString& prop, QAbstractItemModel *model, Util::XmlSettingsDialog *xsd)
 	{
 		QComboBox *box = Propname2Combobox_ [prop];
 		if (!box)
@@ -160,7 +160,7 @@ namespace LeechCraft
 
 		box->setModel (model);
 
-		QVariant data = XSD_->GetValue (Propname2Item_ [prop]);
+		QVariant data = xsd->GetValue (Propname2Item_ [prop]);
 		int pos = box->findData (data);
 		if (pos != -1)
 			box->setCurrentIndex (pos);

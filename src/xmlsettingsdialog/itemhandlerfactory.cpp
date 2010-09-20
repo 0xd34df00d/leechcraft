@@ -129,7 +129,8 @@ namespace LeechCraft
 			handler->ClearChangedProperties ();
 	}
 
-	void ItemHandlerFactory::SetDataSource (const QString& property, QAbstractItemModel *model)
+	void ItemHandlerFactory::SetDataSource (const QString& property,
+			QAbstractItemModel *model, Util::XmlSettingsDialog *xsd)
 	{
 		if (!Propname2DataSourceSetter_.contains (property))
 		{
@@ -141,7 +142,7 @@ namespace LeechCraft
 			return;
 		}
 
-		Propname2DataSourceSetter_ [property] (property, model);
+		Propname2DataSourceSetter_ [property] (property, model, xsd);
 	}
 
 	void ItemHandlerFactory::RegisterDatasourceSetter (const QString& prop, ItemHandlerFactory::DataSourceSetter_t setter)
