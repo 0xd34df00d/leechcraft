@@ -138,7 +138,14 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	updateIconSet ();
 
 	setUpdatesEnabled (true);
-	show ();
+
+	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
+		show ();
+	else
+	{
+		IsShown_ = false;
+		hide ();
+	}
 
 	WasMaximized_ = isMaximized ();
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
