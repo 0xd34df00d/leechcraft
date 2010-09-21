@@ -70,6 +70,12 @@
 					<label lang="en" value="System" />
 				</option>
 			</item>
+			<item type="combobox" property="DefaultNewTab" mayHaveDataSource="true">
+				<label lang="en" value="Default new tab contents:" />
+				<option name="contextdependent" default="true">
+					<label lang="en" value="Context-dependent" />
+				</option>
+			</item>
 			<item type="spinbox" property="MaxLogLines" default="500" step="250" minimum="10" maximum="50000">
 				<label lang="en" value="Maximum log lines:" />
 			</item>
