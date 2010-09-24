@@ -153,6 +153,7 @@ bpo::variables_map Application::Parse (bpo::command_line_parser& parser,
 			("clrsckt", "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly")
 			("no-app-catch", "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes")
 			("autorestart", "automatically restart LC if it's closed (not guaranteed to work everywhere, especially on Windows and Mac OS X)")
+			("minimized", "start LC minimized to tray")
 			("restart", "restart the LC");
 	bpo::positional_options_description pdesc;
 	pdesc.add ("entity", -1);
