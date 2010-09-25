@@ -54,6 +54,8 @@ namespace LeechCraft
 				virtual ~StorageBackend ();
 				static boost::shared_ptr<StorageBackend> Create (Type);
 
+                static QString LoadQuery (const QString&, const QString&);
+
 				/** @brief Do post-initialization.
 				 *
 				 * This function is called by the Core after all the updates are

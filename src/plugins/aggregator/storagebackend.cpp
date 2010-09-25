@@ -20,12 +20,31 @@
 #include "sqlstoragebackend.h"
 #include "sqlstoragebackend_mysql.h"
 
+#include <QFile>
+#include <QDebug>
+
 namespace LeechCraft
 {
 	namespace Plugins
 	{
 		namespace Aggregator
 		{
+
+            QString StorageBackend::LoadQuery (const QString& engine, const QString& name)
+            {
+                QFile file (QString (":/resources/sql/%1/%2.sql").arg (engine)
+                                        .arg (name));
+                if (!file.open (QIODevice::ReadOnly))
+                {
+                    qWarning () << Q_FUNC_INFO
+                            << "unable to open file"
+                            << name
+                            << "for reading";
+                    return QString ();
+                }
+                return file.readAll ();
+            }
+
 			StorageBackend::StorageBackend (QObject *parent)
 			: QObject (parent)
 			{

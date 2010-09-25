@@ -36,6 +36,7 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
+
 			SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t)
 			: Type_ (t)
 			{
