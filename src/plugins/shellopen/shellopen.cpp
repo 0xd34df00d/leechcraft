@@ -21,6 +21,8 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QFileInfo>
+#include <QMessageBox>
+#include <QMainWindow>
 #include <plugininterface/util.h>
 
 namespace LeechCraft
@@ -29,9 +31,11 @@ namespace LeechCraft
 	{
 		namespace ShellOpen
 		{
-			void Plugin::Init (ICoreProxy_ptr)
+			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (Util::InstallTranslator ("shellopen"));
+
+				Proxy_ = proxy;
 			}
 
 			void Plugin::SecondInit ()
@@ -101,7 +105,17 @@ namespace LeechCraft
 
 			void Plugin::Handle (LeechCraft::Entity e)
 			{
-				QDesktopServices::openUrl (e.Entity_.toUrl ());
+				QUrl url = e.Entity_.toUrl ();
+				if (e.Parameters_ & FromUserInitiated &&
+						e.Parameters_ & IsDownloaded &&
+						QMessageBox::question (Proxy_->GetMainWindow (),
+								"LeechCraft",
+								tr ("Do you want to open %1?")
+									.arg (url.toLocalFile ()),
+								QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					return;
+
+				QDesktopServices::openUrl (url);
 			}
 		};
 	};
