@@ -27,6 +27,7 @@
 #include <QCursor>
 #include <QCheckBox>
 #include <QShortcut>
+#include <QClipboard>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/itraymenu.h>
@@ -942,8 +943,8 @@ void LeechCraft::MainWindow::InitializeDataSources ()
 
 void LeechCraft::NewTabButton::mousePressEvent(QMouseEvent *event)
 {
-	if (event->button() == Qt::MiddleButton)
-		Core::Instance().TryToAddJob(QApplication::clipboard()->text(mode=QClipboard::Selection));
+	if (event->button() == Qt::MidButton)
+		Core::Instance().TryToAddJob(QApplication::clipboard()->text(QClipboard::Selection));
 	else
 		QToolButton::mousePressEvent(event);
 }

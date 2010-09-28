@@ -24,6 +24,7 @@
 #include <QSystemTrayIcon>
 #include <QList>
 #include <QModelIndex>
+#include <QToolButton>
 #include "ui_leechcraft.h"
 
 class QLabel;
@@ -54,6 +55,8 @@ namespace LeechCraft
 	class NewTabButton : public QToolButton
 	{
 		Q_OBJECT
+		public:
+		explicit NewTabButton(QWidget* parent=0) : QToolButton(parent) {};
 		protected:
 		void mousePressEvent(QMouseEvent *event);
 	};
