@@ -49,12 +49,6 @@ namespace LeechCraft
 						strType = "QPSQL";
 						break;
 					case SBMysql:
-						strType = "QMYSQL";
-						qWarning () << Q_FUNC_INFO
-								<< "this is just SQLStorageBackend, "
-								<< "MySQL backend is managed by "
-								<< "another one, something's "
-								<< "really wrong";
 						break;
 				}
 
@@ -85,18 +79,6 @@ namespace LeechCraft
 						}
 						break;
 					case SBMysql:
-						{
-							DB_.setDatabaseName (XmlSettingsManager::Instance ()->
-									property ("MysqlDBName").toString ());
-							DB_.setHostName (XmlSettingsManager::Instance ()->
-									property ("MysqlHostname").toString ());
-							DB_.setPort (XmlSettingsManager::Instance ()->
-									property ("MysqlPort").toInt ());
-							DB_.setUserName (XmlSettingsManager::Instance ()->
-									property ("MysqlUsername").toString ());
-							DB_.setPassword (XmlSettingsManager::Instance ()->
-									property ("MysqlPassword").toString ());
-						}
 						break;
 				}
 
@@ -141,175 +123,76 @@ namespace LeechCraft
 				}
 
 				FeedFinderByURL_ = QSqlQuery (DB_);
-                switch (Type_ )
-                {
-                    case SBMysql:
-        				FeedFinderByURL_.prepare ("SELECT feed_id "
-    						"FROM feeds "
-    						"WHERE url = ?");
-                        break;
-                    default:
-        				FeedFinderByURL_.prepare ("SELECT feed_id "
-    						"FROM feeds "
-    						"WHERE url = :url");
-                        break;
-                }
+				FeedFinderByURL_.prepare ("SELECT feed_id "
+						"FROM feeds "
+						"WHERE url = :url");
 
 				FeedGetter_ = QSqlQuery (DB_);
-                switch (Type_)
-                {
-                    case SBMysql:
-                        FeedGetter_.prepare( "SELECT "
-                                "url, "
-                                "last_update "
-                                "FROM feeds "
-                                "WHERE feed_id = ?");
-                        break;
-                    default:
-    				FeedGetter_.prepare ("SELECT "
-    						"url, "
-    						"last_update "
-    						"FROM feeds "
-    						"WHERE feed_id = :feed_id");
-                }
+				FeedGetter_.prepare ("SELECT "
+						"url, "
+						"last_update "
+						"FROM feeds "
+						"WHERE feed_id = :feed_id");
 
 				FeedSettingsGetter_ = QSqlQuery (DB_);
-                switch (Type_)
-                {
-                    case SBMysql:
-                        FeedSettingsGetter_.prepare("SELECT "
-                                "settings_id, "
-                                "update_timeout, "
-                                "num_items, "
-                                "item_age, "
-                                "auto_download_enclosures "
-                                "FROM feeds_settings "
-                                "WHERE feed_id = ?");
-                        break;
-                    default:
-        				FeedSettingsGetter_.prepare ("SELECT "
-        						"settings_id, "
-        						"update_timeout, "
-        						"num_items, "
-        						"item_age, "
-        						"auto_download_enclosures "
-        						"FROM feeds_settings "
-        						"WHERE feed_id = :feed_id");
-                }
+				FeedSettingsGetter_.prepare ("SELECT "
+						"settings_id, "
+						"update_timeout, "
+						"num_items, "
+						"item_age, "
+						"auto_download_enclosures "
+						"FROM feeds_settings "
+						"WHERE feed_id = :feed_id");
 
 				FeedSettingsSetter_ = QSqlQuery (DB_);
-				QString queryStart;
-                switch ( Type_ )
-                {
-                    case SBSQLite:
-                        queryStart = "INSERT OR REPLACE";
-                        break;
-                    case SBMysql:
-                        queryStart = "REPLACE";
-                        break;
-                    case SBPostgres:
-                        queryStart = "INSERT";
-                        break;
-                }
+				QString orReplace;
+				if (Type_ == SBSQLite)
+					orReplace = "OR REPLACE";
 
-			    switch ( Type_ )
-                {
-                    case SBMysql:
-          				FeedSettingsSetter_.prepare (QString ("%1 INTO feeds_settings ("
-       						"feed_id, "
-       						"settings_id, "
-       						"update_timeout, "
-    						"num_items, "
-    						"item_age, "
-    						"auto_download_enclosures"
-    						") VALUES ("
-    						"?, "
-    						"?, "
-    						"?, "
-    						"?, "
-    						"?, "
-    						"?"
-    						")").arg (queryStart));
-                        break;
-                    default:
-          				FeedSettingsSetter_.prepare (QString ("%1 INTO feeds_settings ("
-       						"feed_id, "
-       						"settings_id, "
-       						"update_timeout, "
-    						"num_items, "
-    						"item_age, "
-    						"auto_download_enclosures"
-    						") VALUES ("
-    						":feed_id, "
-    						":settings_id, "
-    						":update_timeout, "
-    						":num_items, "
-    						":item_age, "
-    						":auto_download_enclosures"
-    						")").arg (queryStart));
-                }
+				FeedSettingsSetter_.prepare (QString ("INSERT %1 INTO feeds_settings ("
+						"feed_id, "
+						"settings_id, "
+						"update_timeout, "
+						"num_items, "
+						"item_age, "
+						"auto_download_enclosures"
+						") VALUES ("
+						":feed_id, "
+						":settings_id, "
+						":update_timeout, "
+						":num_items, "
+						":item_age, "
+						":auto_download_enclosures"
+						")").arg (orReplace));
 
 				ChannelsShortSelector_ = QSqlQuery (DB_);
-                switch ( Type_ )
-                {
-                        case SBMysql:
-            				ChannelsShortSelector_.prepare ("SELECT "
-        						"channel_id, "
-        						"title, "
-        						"url, "
-                                "tags, "
-                                "last_build,"
-                                "favicon, "
-                                "author "
-                                "FROM channels "
-                                "WHERE feed_id = ? "
-                                "ORDER BY title");
-                        default:
-            				ChannelsShortSelector_.prepare ("SELECT "
-        						"channel_id, "
-        						"title, "
-        						"url, "
-                                "tags, "
-                                "last_build,"
-                                "favicon, "
-                                "author "
-                                "FROM channels "
-                                "WHERE feed_id = :feed_id "
-                                "ORDER BY title");
-                }
+				ChannelsShortSelector_.prepare ("SELECT "
+						"channel_id, "
+						"title, "
+						"url, "
+						"tags, "
+						"last_build,"
+						"favicon, "
+						"author "
+						"FROM channels "
+						"WHERE feed_id = :feed_id "
+						"ORDER BY title");
 
 				ChannelsFullSelector_ = QSqlQuery (DB_);
-                switch ( Type_ )
-                {
-                    case SBMysql:
-                        ChannelsFullSelector_.prepare ("SELECT "
-                                "url, "
-                                "title, "
-                                "description, "
-                                "last_build, "
-                                "tags, "
-                                "language, "
-                                "author, "
-                                "pixmap_url, "
-                                "pixmap, "
-                                "favicon "
-                                "FROM channels "
-                                "WHERE channel_id = ? "
-                                "ORDER BY title");
-                        break;
-                    default:
-                        ChannelsShortSelector_.prepare ("SELECT "
-                            "channel_id, "
-                            "title, "
-                            "url, "
-                            "tags, "
-                            "last_build,"
-                            "favicon, "
-                            "author "
-                            "FROM channels "
-                            "WHERE feed_id = :feed_id "
-                            "ORDER BY title");
-                }
+				ChannelsFullSelector_.prepare ("SELECT "
+						"url, "
+						"title, "
+						"description, "
+						"last_build, "
+						"tags, "
+						"language, "
+						"author, "
+						"pixmap_url, "
+						"pixmap, "
+						"favicon "
+						"FROM channels "
+						"WHERE channel_id = :channel_id "
+						"ORDER BY title");
 
 				UnreadItemsCounter_ = QSqlQuery (DB_);
 				switch (Type_)
@@ -326,12 +209,8 @@ namespace LeechCraft
 								"WHERE channel_id = :channel_id "
 								"AND unread");
 						break;
-                    case SBMysql:
-                        UnreadItemsCounter_.prepare ("SELECT COUNT (*) "
-                                "FROM items "
-                                "WHERE channel_id = :channel_id "
-                                "AND unread = 1");
-                        break;
+					case SBMysql:
+						break;
 				}
 
 				ItemsShortSelector_ = QSqlQuery (DB_);
@@ -509,11 +388,8 @@ namespace LeechCraft
 						cnt = "AND pub_date IN "
 							"(SELECT pub_date FROM items WHERE channel_id = :channel_id ORDER BY pub_date DESC OFFSET :number)";
 						break;
-                    case SBMysql:
-                        cdt = "AND DATE_SUB( pub_date, :age 'DAY' ) > now () )";
-                        cnt = "AND pub_date IN "
-                            "(SELECT pub_date FROM items WHERE channel_id = :channel_id ORDER BY pub_date DESC OFFSET :nuber)";
-                        break;
+					case SBMysql:
+						break;
 				}
 
 				ChannelDateTrimmer_ = QSqlQuery (DB_);
@@ -560,7 +436,7 @@ namespace LeechCraft
 						"WHERE item_id = :item_id");
 
 				WriteEnclosure_ = QSqlQuery (DB_);
-				WriteEnclosure_.prepare (QString ("%1 INTO enclosures ("
+				WriteEnclosure_.prepare (QString ("INSERT %1 INTO enclosures ("
 						"url, "
 						"type, "
 						"length, "
@@ -574,10 +450,10 @@ namespace LeechCraft
 						":lang, "
 						":item_id, "
 						":enclosure_id"
-						")").arg (queryStart));
+						")").arg (orReplace));
 
 				WriteMediaRSS_ = QSqlQuery (DB_);
-				WriteMediaRSS_.prepare (QString ("%1 INTO mrss ("
+				WriteMediaRSS_.prepare (QString ("INSERT %1 INTO mrss ("
 						"mrss_id, "
 						"item_id, "
 						"url, "
@@ -641,7 +517,7 @@ namespace LeechCraft
 						":stat_views, "
 						":stat_favs, "
 						":tags"
-						")").arg (queryStart));
+						")").arg (orReplace));
 
 				GetMediaRSSs_ = QSqlQuery (DB_);
 				GetMediaRSSs_.prepare ("SELECT "
@@ -680,7 +556,7 @@ namespace LeechCraft
 						"ORDER BY title");
 
 				WriteMediaRSSThumbnail_ = QSqlQuery (DB_);
-				WriteMediaRSSThumbnail_.prepare (QString ("%1 INTO mrss_thumbnails ("
+				WriteMediaRSSThumbnail_.prepare (QString ("INSERT %1 INTO mrss_thumbnails ("
 						"mrss_thumb_id, "
 						"mrss_id, "
 						"url, "
@@ -694,7 +570,7 @@ namespace LeechCraft
 						":width, "
 						":height, "
 						":time"
-						")").arg (queryStart));
+						")").arg (orReplace));
 
 				GetMediaRSSThumbnails_ = QSqlQuery (DB_);
 				GetMediaRSSThumbnails_.prepare ("SELECT "
@@ -708,7 +584,7 @@ namespace LeechCraft
 						"ORDER BY time");
 
 				WriteMediaRSSCredit_ = QSqlQuery (DB_);
-				WriteMediaRSSCredit_.prepare (QString ("%1 INTO mrss_credits ("
+				WriteMediaRSSCredit_.prepare (QString ("INSERT %1 INTO mrss_credits ("
 						"mrss_credits_id, "
 						"mrss_id, "
 						"role, "
@@ -718,7 +594,7 @@ namespace LeechCraft
 						":mrss_id, "
 						":role, "
 						":who"
-						")").arg (queryStart));
+						")").arg (orReplace));
 
 				GetMediaRSSCredits_ = QSqlQuery (DB_);
 				GetMediaRSSCredits_.prepare ("SELECT "
@@ -730,7 +606,7 @@ namespace LeechCraft
 						"ORDER BY role");
 
 				WriteMediaRSSComment_ = QSqlQuery (DB_);
-				WriteMediaRSSComment_.prepare (QString ("%1 INTO mrss_comments ("
+				WriteMediaRSSComment_.prepare (QString ("INSERT %1 INTO mrss_comments ("
 						"mrss_comment_id, "
 						"mrss_id, "
 						"type, "
@@ -740,7 +616,7 @@ namespace LeechCraft
 						":mrss_id, "
 						":type, "
 						":comment"
-						")").arg (queryStart));
+						")").arg (orReplace));
 
 				GetMediaRSSComments_ = QSqlQuery (DB_);
 				GetMediaRSSComments_.prepare ("SELECT "
@@ -752,7 +628,7 @@ namespace LeechCraft
 						"ORDER BY comment");
 
 				WriteMediaRSSPeerLink_ = QSqlQuery (DB_);
-				WriteMediaRSSPeerLink_.prepare (QString ("%1 INTO mrss_peerlinks ("
+				WriteMediaRSSPeerLink_.prepare (QString ("INSERT %1 INTO mrss_peerlinks ("
 						"mrss_peerlink_id, "
 						"mrss_id, "
 						"type, "
@@ -762,7 +638,7 @@ namespace LeechCraft
 						":mrss_id, "
 						":type, "
 						":link"
-						")").arg (queryStart));
+						")").arg (orReplace));
 
 				GetMediaRSSPeerLinks_ = QSqlQuery (DB_);
 				GetMediaRSSPeerLinks_.prepare ("SELECT "
@@ -774,7 +650,7 @@ namespace LeechCraft
 						"ORDER BY link");
 
 				WriteMediaRSSScene_ = QSqlQuery (DB_);
-				WriteMediaRSSScene_.prepare (QString ("%1 INTO mrss_scenes ("
+				WriteMediaRSSScene_.prepare (QString ("INSERT %1 INTO mrss_scenes ("
 						"mrss_scene_id, "
 						"mrss_id, "
 						"title, "
@@ -788,7 +664,7 @@ namespace LeechCraft
 						":description, "
 						":start_time, "
 						":end_time"
-						")").arg (queryStart));
+						")").arg (orReplace));
 
 				GetMediaRSSScenes_ = QSqlQuery (DB_);
 				GetMediaRSSScenes_.prepare ("SELECT "
@@ -882,15 +758,7 @@ namespace LeechCraft
 
 			IDType_t SQLStorageBackend::FindFeed (const QString& url) const
 			{
-                switch (Type_)
-                {
-                    case SBMysql:
-                        FeedFinderByURL_.bindValue(0,url);
-                        break;
-                    default:
-				        FeedFinderByURL_.bindValue (":url", url);
-                        break;
-                }
+				FeedFinderByURL_.bindValue (":url", url);
 				if (!FeedFinderByURL_.exec ())
 				{
 					Util::DBLock::DumpError (FeedFinderByURL_);
@@ -1698,7 +1566,6 @@ namespace LeechCraft
 				switch (Type_)
 				{
 					case SBSQLite:
-                    case SBMysql:
 						return "TINYINT";
 					case SBPostgres:
 						return "BOOLEAN";
@@ -1712,7 +1579,6 @@ namespace LeechCraft
 				switch (Type_)
 				{
 					case SBSQLite:
-                    case SBMysql:
 						return "BLOB";
 					case SBPostgres:
 						return "BYTEA";
@@ -1726,24 +1592,12 @@ namespace LeechCraft
 				QSqlQuery query (DB_);
 				if (!DB_.tables ().contains ("feeds"))
 				{
-                    bool result;
-                    switch (Type_ )
-                    {
-                        case SBMysql:
-                            result = query.exec ( "CREATE TABLE feeds ("
-                                    "feed_id BIGINT PRIMARY KEY, "
-                                    "url VARCHAR(1000) UNIQUE NOT NULL, "
-                                    "last_update TIMESTAMP );");
-                            break;
-                        default:
-                            result = query.exec ( "CREATE TABLE feeds ("
+					if (!query.exec ("CREATE TABLE feeds ("
 							"feed_id BIGINT PRIMARY KEY, "
 							"url TEXT UNIQUE NOT NULL, "
 							"last_update TIMESTAMP "
-							");");
-                            break;
-                    }
-					if ( ! result ) {
+							");"))
+					{
 						Util::DBLock::DumpError (query);
 						return false;
 					}
@@ -1784,7 +1638,6 @@ namespace LeechCraft
 							return false;
 						}
 					}
-
 				}
 
 				if (!DB_.tables ().contains ("channels"))
@@ -2213,12 +2066,6 @@ namespace LeechCraft
 							adeType = "BOOLEAN";
 							break;
 						case SBMysql:
-							adeType = "BOOLEAN";
-							qWarning () << Q_FUNC_INFO
-									<< "this is just SQLStorageBackend, "
-									<< "MySQL backend is managed by "
-									<< "another one, something's "
-									<< "really wrong";
 							break;
 					}
 
