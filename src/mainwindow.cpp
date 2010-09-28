@@ -941,13 +941,13 @@ void LeechCraft::MainWindow::InitializeDataSources ()
 			GetInstalledLangsModel ());
 }
 
-void LeechCraft::NewTabButton::mousePressEvent(QMouseEvent *event)
+namespace
 {
-	if (event->button() == Qt::MidButton)
+	QVariant ClipboardToEcontent (QString selection)
 	{
-		QString selection;
-		selection = QApplication::clipboard()->text(QClipboard::Selection);
 		QVariant econtent;
+		if (selection=="")
+			return econtent;
 		if (QFile::exists (selection))
 			econtent = QUrl::fromLocalFile (selection);
 		else
@@ -958,10 +958,26 @@ void LeechCraft::NewTabButton::mousePressEvent(QMouseEvent *event)
 			else
 				econtent = selection;
 		}
+		return econtent;
+	}
+};
 
-		Entity e = MakeEntity(econtent,QString(),FromUserInitiated | OnlyHandle,QString());
-		Core::Instance().handleGotEntity (e);
+void LeechCraft::NewTabButton::mousePressEvent (QMouseEvent *event)
+{
+	if (event->button () == Qt::MidButton)
+	{
+		QVariant econtent;
+		econtent = ClipboardToEcontent (QApplication::clipboard ()->text (QClipboard::Selection));
+		if (econtent.isNull ())
+		{
+			econtent = ClipboardToEcontent (QApplication::clipboard ()->text (QClipboard::Clipboard));
+			if (econtent.isNull ())
+				return;
+		}
+
+		Entity e = MakeEntity (econtent,QString (),FromUserInitiated | OnlyHandle,QString ());
+		Core::Instance ().handleGotEntity (e);
 	}
 	else
-		QToolButton::mousePressEvent(event);
+		QToolButton::mousePressEvent (event);
 }
