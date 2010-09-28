@@ -263,7 +263,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.setupUi (this);
 
-	NewTabButton_ = new QToolButton (this);
+	NewTabButton_ = new NewTabButton (this);
 
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
 
@@ -938,4 +938,12 @@ void LeechCraft::MainWindow::InitializeDataSources ()
 {
 	XmlSettingsDialog_->SetDataSource ("Language",
 			GetInstalledLangsModel ());
+}
+
+void LeechCraft::NewTabButton::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::MiddleButton)
+		Core::Instance().TryToAddJob(QApplication::clipboard()->text(mode=QClipboard::Selection));
+	else
+		QToolButton::mousePressEvent(event);
 }

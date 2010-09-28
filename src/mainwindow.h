@@ -51,6 +51,13 @@ namespace LeechCraft
 	class ToolbarGuard;
 	class GlanceShower;
 
+	class NewTabButton : public QToolButton
+	{
+		Q_OBJECT
+		protected:
+		void mousePressEvent(QMouseEvent *event);
+	};
+    
 	class MainWindow : public QMainWindow
 	{
 		Q_OBJECT
