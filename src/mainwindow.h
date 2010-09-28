@@ -54,13 +54,12 @@ namespace LeechCraft
 
 	class NewTabButton : public QToolButton
 	{
-		Q_OBJECT
-		public:
-		explicit NewTabButton(QWidget* parent=0) : QToolButton(parent) {};
-		protected:
-		void mousePressEvent(QMouseEvent *event);
+	public:
+		explicit NewTabButton (QWidget* parent=0) : QToolButton (parent) {};
+	protected:
+		void mousePressEvent (QMouseEvent *event);
 	};
-    
+
 	class MainWindow : public QMainWindow
 	{
 		Q_OBJECT
