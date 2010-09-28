@@ -30,30 +30,33 @@ namespace LeechCraft
 		namespace Aggregator
 		{
 
-            QString StorageBackend::LoadQuery (const QString& engine, const QString& name)
-            {
-                QFile file (QString (":/resources/sql/%1/%2.sql").arg (engine)
-                                        .arg (name));
-                if (!file.open (QIODevice::ReadOnly))
-                {
-                    qWarning () << Q_FUNC_INFO
-                            << "unable to open file"
-                            << name
-                            << "for reading";
-                    return QString ();
-                }
-                return file.readAll ();
-            }
+			QString StorageBackend::LoadQuery (const QString& engine, const QString& name)
+			{
+				QFile file (QString (":/resources/sql/%1/%2.sql")
+						.arg (engine)
+						.arg (name));
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to open file"
+							<< name
+							<< "for engine"
+							<< engine
+							<< "for reading";
+					return QString ();
+				}
+				return file.readAll ();
+			}
 
 			StorageBackend::StorageBackend (QObject *parent)
 			: QObject (parent)
 			{
 			}
-			
+
 			StorageBackend::~StorageBackend ()
 			{
 			}
-			
+
 			boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
 			{
 				boost::shared_ptr<StorageBackend> result;
