@@ -944,7 +944,24 @@ void LeechCraft::MainWindow::InitializeDataSources ()
 void LeechCraft::NewTabButton::mousePressEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::MidButton)
-		Core::Instance().TryToAddJob(QApplication::clipboard()->text(QClipboard::Selection));
+	{
+		QString selection;
+		selection = QApplication::clipboard()->text(QClipboard::Selection);
+		QVariant econtent;
+		if (QFile::exists (selection))
+			econtent = QUrl::fromLocalFile (selection);
+		else
+		{
+			QUrl url (selection);
+			if (url.isValid ())
+				econtent = url;
+			else
+				econtent = selection;
+		}
+
+		Entity e = MakeEntity(econtent,QString(),FromUserInitiated | OnlyHandle,QString());
+		Core::Instance().handleGotEntity (e);
+	}
 	else
 		QToolButton::mousePressEvent(event);
 }
