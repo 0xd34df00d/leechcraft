@@ -47,10 +47,13 @@ namespace LeechCraft
 						break;
 					case SBPostgres:
 						strType = "QPSQL";
+						break;
+					case SBMysql:
+						break;
 				}
-			
+
 				DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection");
-			
+
 				switch (Type_)
 				{
 					case SBSQLite:
@@ -75,8 +78,10 @@ namespace LeechCraft
 									property ("PostgresPassword").toString ());
 						}
 						break;
+					case SBMysql:
+						break;
 				}
-			
+
 				if (!DB_.open ())
 				{
 					qWarning () << Q_FUNC_INFO;
@@ -84,10 +89,10 @@ namespace LeechCraft
 					throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
 								.arg (DB_.lastError ().text ())));
 				}
-			
+
 				InitializeTables ();
 			}
-			
+
 			SQLStorageBackend::~SQLStorageBackend ()
 			{
 				if (Type_ == SBSQLite &&
@@ -97,7 +102,7 @@ namespace LeechCraft
 					vacuum.exec ("VACUUM;");
 				}
 			}
-			
+
 			void SQLStorageBackend::Prepare ()
 			{
 				if (Type_ == SBSQLite)
@@ -143,7 +148,7 @@ namespace LeechCraft
 				QString orReplace;
 				if (Type_ == SBSQLite)
 					orReplace = "OR REPLACE";
-			
+
 				FeedSettingsSetter_.prepare (QString ("INSERT %1 INTO feeds_settings ("
 						"feed_id, "
 						"settings_id, "
@@ -159,7 +164,7 @@ namespace LeechCraft
 						":item_age, "
 						":auto_download_enclosures"
 						")").arg (orReplace));
-			
+
 				ChannelsShortSelector_ = QSqlQuery (DB_);
 				ChannelsShortSelector_.prepare ("SELECT "
 						"channel_id, "
@@ -172,7 +177,7 @@ namespace LeechCraft
 						"FROM channels "
 						"WHERE feed_id = :feed_id "
 						"ORDER BY title");
-			
+
 				ChannelsFullSelector_ = QSqlQuery (DB_);
 				ChannelsFullSelector_.prepare ("SELECT "
 						"url, "
@@ -204,8 +209,10 @@ namespace LeechCraft
 								"WHERE channel_id = :channel_id "
 								"AND unread");
 						break;
+					case SBMysql:
+						break;
 				}
-			
+
 				ItemsShortSelector_ = QSqlQuery (DB_);
 				ItemsShortSelector_.prepare ("SELECT "
 						"item_id, "
@@ -218,7 +225,7 @@ namespace LeechCraft
 						"WHERE channel_id = :channel_id "
 						"ORDER BY pub_date DESC, "
 						"title DESC");
-			
+
 				ItemFullSelector_ = QSqlQuery (DB_);
 				ItemFullSelector_.prepare ("SELECT "
 						"title, "
@@ -238,7 +245,7 @@ namespace LeechCraft
 						"FROM items "
 						"WHERE item_id = :item_id "
 						"ORDER BY pub_date DESC");
-			
+
 				ItemsFullSelector_ = QSqlQuery (DB_);
 				ItemsFullSelector_.prepare ("SELECT "
 						"title, "
@@ -281,7 +288,7 @@ namespace LeechCraft
 
 				InsertFeed_ = QSqlQuery (DB_);
 				InsertFeed_.prepare ("INSERT INTO feeds (feed_id, url, last_update) VALUES (:feed_id, :url, :last_update);");
-			
+
 				InsertChannel_ = QSqlQuery (DB_);
 				InsertChannel_.prepare ("INSERT INTO channels ("
 						"channel_id, "
@@ -310,7 +317,7 @@ namespace LeechCraft
 						":pixmap, "
 						":favicon"
 						");");
-			
+
 				InsertItem_ = QSqlQuery (DB_);
 				InsertItem_.prepare ("INSERT INTO items ("
 						"item_id, "
@@ -351,7 +358,7 @@ namespace LeechCraft
 						"tags = :tags, "
 						"last_build = :last_build "
 						"WHERE channel_id = :channel_id");
-			
+
 				UpdateChannel_ = QSqlQuery (DB_);
 				UpdateChannel_.prepare ("UPDATE channels SET "
 						"description = :description, "
@@ -381,6 +388,8 @@ namespace LeechCraft
 						cnt = "AND pub_date IN "
 							"(SELECT pub_date FROM items WHERE channel_id = :channel_id ORDER BY pub_date DESC OFFSET :number)";
 						break;
+					case SBMysql:
+						break;
 				}
 
 				ChannelDateTrimmer_ = QSqlQuery (DB_);
@@ -388,7 +397,7 @@ namespace LeechCraft
 
 				ChannelNumberTrimmer_ = QSqlQuery (DB_);
 				ChannelNumberTrimmer_.prepare (common + cnt);
-			
+
 				UpdateShortItem_ = QSqlQuery (DB_);
 				UpdateShortItem_.prepare ("UPDATE items SET "
 						"unread = :unread "
@@ -407,25 +416,25 @@ namespace LeechCraft
 						"latitude = :latitude, "
 						"longitude = :longitude "
 						"WHERE item_id = :item_id");
-			
+
 				ToggleChannelUnread_ = QSqlQuery (DB_);
 				ToggleChannelUnread_.prepare ("UPDATE items SET "
 						"unread = :unread "
 						"WHERE channel_id = :channel_id "
 						"AND unread <> :unread");
-			
+
 				RemoveFeed_ = QSqlQuery (DB_);
 				RemoveFeed_.prepare ("DELETE FROM feeds "
 						"WHERE feed_id = :feed_id");
-			
+
 				RemoveChannel_ = QSqlQuery (DB_);
 				RemoveChannel_.prepare ("DELETE FROM channels "
 						"WHERE channel_id = :channel_id");
-			
+
 				RemoveItem_ = QSqlQuery (DB_);
 				RemoveItem_.prepare ("DELETE FROM items "
 						"WHERE item_id = :item_id");
-			
+
 				WriteEnclosure_ = QSqlQuery (DB_);
 				WriteEnclosure_.prepare (QString ("INSERT %1 INTO enclosures ("
 						"url, "
@@ -617,7 +626,7 @@ namespace LeechCraft
 						"FROM mrss_comments "
 						"WHERE mrss_id = :mrss_id "
 						"ORDER BY comment");
-				
+
 				WriteMediaRSSPeerLink_ = QSqlQuery (DB_);
 				WriteMediaRSSPeerLink_.prepare (QString ("INSERT %1 INTO mrss_peerlinks ("
 						"mrss_peerlink_id, "
@@ -667,11 +676,11 @@ namespace LeechCraft
 						"FROM mrss_scenes "
 						"WHERE mrss_id = :mrss_id "
 						"ORDER BY start_time");
-			
+
 				RemoveEnclosures_ = QSqlQuery (DB_);
 				RemoveEnclosures_.prepare ("DELETE FROM enclosures "
 						"WHERE item_id = :item_id");
-			
+
 				GetEnclosures_ = QSqlQuery (DB_);
 				GetEnclosures_.prepare ("SELECT "
 						"enclosure_id, "
@@ -707,7 +716,7 @@ namespace LeechCraft
 				RemoveMediaRSSScenes_.prepare ("DELETE FROM mrss_scenes "
 						"WHERE mrss_scene_id = :mrss_scene_id");
 			}
-			
+
 			void SQLStorageBackend::GetFeedsIDs (ids_t& result) const
 			{
 				QSqlQuery feedSelector (DB_);
@@ -718,11 +727,11 @@ namespace LeechCraft
 					Util::DBLock::DumpError (feedSelector);
 					return;
 				}
-			
+
 				while (feedSelector.next ())
 					result.push_back (feedSelector.value (0).toInt ());
 			}
-			
+
 			Feed_ptr SQLStorageBackend::GetFeed (const IDType_t& feedId) const
 			{
 				FeedGetter_.bindValue (":feed_id", feedId);
@@ -778,10 +787,10 @@ namespace LeechCraft
 					throw std::runtime_error (FeedSettingsGetter_
 							.lastError ().text ().toStdString ());
 				}
-			
+
 				if (!FeedSettingsGetter_.next ())
 					throw FeedSettingsNotFoundError ();
-			
+
 				Feed::FeedSettings result (feedId,
 						FeedSettingsGetter_.value (0).value<IDType_t> (),
 						FeedSettingsGetter_.value (1).toInt (),
@@ -789,10 +798,10 @@ namespace LeechCraft
 						FeedSettingsGetter_.value (3).toInt (),
 						FeedSettingsGetter_.value (4).toBool ());
 				FeedSettingsGetter_.finish ();
-			
+
 				return result;
 			}
-			
+
 			void SQLStorageBackend::SetFeedSettings (const Feed::FeedSettings& settings)
 			{
 				FeedSettingsSetter_.bindValue (":settings_id",
@@ -807,11 +816,11 @@ namespace LeechCraft
 						settings.ItemAge_);
 				FeedSettingsSetter_.bindValue (":auto_download_enclosures",
 						settings.AutoDownloadEnclosures_);
-			
+
 				if (!FeedSettingsSetter_.exec ())
 					LeechCraft::Util::DBLock::DumpError (FeedSettingsSetter_);
 			}
-			
+
 			void SQLStorageBackend::GetChannels (channels_shorts_t& shorts, const IDType_t& feedId) const
 			{
 				ChannelsShortSelector_.bindValue (":feed_id", feedId);
@@ -820,11 +829,11 @@ namespace LeechCraft
 					LeechCraft::Util::DBLock::DumpError (ChannelsShortSelector_);
 					return;
 				}
-			
+
 				while (ChannelsShortSelector_.next ())
 				{
 					int unread = 0;
-			
+
 					IDType_t id = ChannelsShortSelector_.value (0).value<IDType_t> ();
 
 					UnreadItemsCounter_.bindValue (":channel_id", id);
@@ -833,9 +842,9 @@ namespace LeechCraft
 						Util::DBLock::DumpError (UnreadItemsCounter_);
 					else
 						unread = UnreadItemsCounter_.value (0).toInt ();
-			
+
 					UnreadItemsCounter_.finish ();
-			
+
 					QStringList tags = Core::Instance ().GetProxy ()->
 						GetTagsManager ()->Split (ChannelsShortSelector_.value (3).toString ());
 					ChannelShort sh =
@@ -853,22 +862,22 @@ namespace LeechCraft
 					};
 					shorts.push_back (sh);
 				}
-			
+
 				ChannelsShortSelector_.finish ();
 			}
-			
+
 			Channel_ptr SQLStorageBackend::GetChannel (const IDType_t& channelId,
 					const IDType_t& parentFeed) const
 			{
 				ChannelsFullSelector_.bindValue (":channelId", channelId);
 				if (!ChannelsFullSelector_.exec ())
 					Util::DBLock::DumpError (ChannelsFullSelector_);
-					
+
 				if (!ChannelsFullSelector_.next ())
 					throw ChannelNotFoundError ();
-			
+
 				Channel_ptr channel (new Channel (parentFeed, channelId));
-			
+
 				channel->Link_ = ChannelsFullSelector_.value (0).toString ();
 				channel->Title_ = ChannelsFullSelector_.value (1).toString ();
 				channel->Description_ = ChannelsFullSelector_.value (2).toString ();
@@ -882,9 +891,9 @@ namespace LeechCraft
 						.value (8).toByteArray ());
 				channel->Favicon_ = UnserializePixmap (ChannelsFullSelector_
 						.value (9).toByteArray ());
-			
+
 				ChannelsFullSelector_.finish ();
-			
+
 				return channel;
 			}
 
@@ -960,18 +969,18 @@ namespace LeechCraft
 							<< e.what ();
 				}
 			}
-			
+
 			void SQLStorageBackend::GetItems (items_shorts_t& shorts,
 					const IDType_t& channelId) const
 			{
 				ItemsShortSelector_.bindValue (":channel_id", channelId);
-			
+
 				if (!ItemsShortSelector_.exec ())
 				{
 					Util::DBLock::DumpError (ItemsShortSelector_);
 					return;
 				}
-			
+
 				while (ItemsShortSelector_.next ())
 				{
 					ItemShort sh =
@@ -985,13 +994,13 @@ namespace LeechCraft
 						ItemsShortSelector_.value (4).toDateTime (),
 						ItemsShortSelector_.value (5).toBool ()
 					};
-			
+
 					shorts.push_back (sh);
 				}
-			
+
 				ItemsShortSelector_.finish ();
 			}
-			
+
 			int SQLStorageBackend::GetUnreadItems (const IDType_t& channelId) const
 			{
 				int unread = 0;
@@ -1001,11 +1010,11 @@ namespace LeechCraft
 					Util::DBLock::DumpError (UnreadItemsCounter_);
 				else
 					unread = UnreadItemsCounter_.value (0).toInt ();
-			
+
 				UnreadItemsCounter_.finish ();
 				return unread;
 			}
-			
+
 			Item_ptr SQLStorageBackend::GetItem (const IDType_t& itemId) const
 			{
 				ItemFullSelector_.bindValue (":item_id", itemId);
@@ -1014,15 +1023,15 @@ namespace LeechCraft
 
 				if (!ItemFullSelector_.next ())
 					throw ItemNotFoundError ();
-			
+
 				Item_ptr item (new Item (ItemFullSelector_.value (13).toInt (),
 						itemId));
 				FillItem (ItemFullSelector_, item);
 				ItemFullSelector_.finish ();
-			
+
 				GetEnclosures (itemId, item->Enclosures_);
 				GetMRSSEntries (itemId, item->MRSSEntries_);
-			
+
 				return item;
 			}
 
@@ -1035,7 +1044,7 @@ namespace LeechCraft
 					LeechCraft::Util::DBLock::DumpError (ItemsFullSelector_);
 					return;
 				}
-			
+
 				while (ItemsFullSelector_.next ())
 				{
 					IDType_t itemId = ItemsFullSelector_.value (14 ).value<IDType_t> ();
@@ -1044,14 +1053,14 @@ namespace LeechCraft
 					FillItem (ItemsFullSelector_, item);
 					GetEnclosures (itemId, item->Enclosures_);
 					GetMRSSEntries (itemId, item->MRSSEntries_);
-			
+
 					items.push_back (item);
 				}
-			
+
 				ItemsFullSelector_.finish ();
 				GetEnclosures_.finish ();
 			}
-			
+
 			void SQLStorageBackend::AddFeed (Feed_ptr feed)
 			{
 				InsertFeed_.bindValue (":feed_id", feed->FeedID_);
@@ -1062,7 +1071,7 @@ namespace LeechCraft
 					LeechCraft::Util::DBLock::DumpError (InsertFeed_);
 					return;
 				}
-			
+
 				try
 				{
 					std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
@@ -1078,7 +1087,7 @@ namespace LeechCraft
 
 				InsertFeed_.finish ();
 			}
-			
+
 			void SQLStorageBackend::UpdateChannel (Channel_ptr channel)
 			{
 				ChannelFinder_.bindValue (":channel_id", channel->ChannelID_);
@@ -1102,7 +1111,7 @@ namespace LeechCraft
 					return;
 				}
 				ChannelFinder_.finish ();
-			
+
 				UpdateChannel_.bindValue (":channel_id", channel->ChannelID_);
 				UpdateChannel_.bindValue (":description", channel->Description_);
 				UpdateChannel_.bindValue (":last_build", channel->LastBuild_);
@@ -1113,7 +1122,7 @@ namespace LeechCraft
 				UpdateChannel_.bindValue (":pixmap_url", channel->PixmapURL_);
 				UpdateChannel_.bindValue (":pixmap", SerializePixmap (channel->Pixmap_));
 				UpdateChannel_.bindValue (":favicon", SerializePixmap (channel->Favicon_));
-			
+
 				if (!UpdateChannel_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
@@ -1127,12 +1136,12 @@ namespace LeechCraft
 				if (!UpdateChannel_.numRowsAffected ())
 					qWarning () << Q_FUNC_INFO
 						<< "no rows affected by UpdateChannel_";
-			
+
 				UpdateChannel_.finish ();
-			
+
 				emit channelDataUpdated (channel);
 			}
-			
+
 			void SQLStorageBackend::UpdateChannel (const ChannelShort& channel)
 			{
 				ChannelFinder_.bindValue (":channel_id", channel.ChannelID_);
@@ -1155,11 +1164,11 @@ namespace LeechCraft
 								.arg (channel.Link_)));
 				}
 				ChannelFinder_.finish ();
-			
+
 				UpdateShortChannel_.bindValue (":channel_id", channel.ChannelID_);
 				UpdateShortChannel_.bindValue (":last_build", channel.LastBuild_);
 				UpdateShortChannel_.bindValue (":tags", Core::Instance ().GetProxy ()->GetTagsManager ()->Join (channel.Tags_));
-			
+
 				if (!UpdateShortChannel_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
@@ -1173,9 +1182,9 @@ namespace LeechCraft
 				if (!UpdateShortChannel_.numRowsAffected ())
 					qWarning () << Q_FUNC_INFO
 						<< "no rows affected by UpdateShortChannel_";
-			
+
 				UpdateShortChannel_.finish ();
-			
+
 				try
 				{
 					emit channelDataUpdated (GetChannel (channel.ChannelID_,
@@ -1190,7 +1199,7 @@ namespace LeechCraft
 						<< channel.ChannelID_;
 				}
 			}
-			
+
 			void SQLStorageBackend::UpdateItem (Item_ptr item)
 			{
 				UpdateItem_.bindValue (":item_id", item->ItemID_);
@@ -1204,7 +1213,7 @@ namespace LeechCraft
 				UpdateItem_.bindValue (":comments_page_url", item->CommentsPageLink_);
 				UpdateItem_.bindValue (":latitude", QString::number (item->Latitude_));
 				UpdateItem_.bindValue (":longitude", QString::number (item->Longitude_));
-			
+
 				if (!UpdateItem_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
@@ -1219,12 +1228,12 @@ namespace LeechCraft
 				if (!UpdateItem_.numRowsAffected ())
 					qWarning () << Q_FUNC_INFO
 						<< "no rows affected by UpdateItem_";
-			
+
 				UpdateItem_.finish ();
 
 				WriteEnclosures (item->Enclosures_);
 				WriteMRSSEntries (item->MRSSEntries_);
-			
+
 				try
 				{
 					IDType_t cid = item->ChannelID_;
@@ -1240,12 +1249,12 @@ namespace LeechCraft
 						<< item->ChannelID_;
 				}
 			}
-			
+
 			void SQLStorageBackend::UpdateItem (const ItemShort& item)
 			{
 				UpdateShortItem_.bindValue (":item_id", item.ItemID_);
 				UpdateShortItem_.bindValue (":unread", item.Unread_);
-			
+
 				if (!UpdateShortItem_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
@@ -1260,9 +1269,9 @@ namespace LeechCraft
 				if (!UpdateShortItem_.numRowsAffected ())
 					qWarning () << Q_FUNC_INFO
 						<< "no rows affected by UpdateShortItem_";
-			
+
 				UpdateShortItem_.finish ();
-			
+
 				try
 				{
 					IDType_t cid = item.ChannelID_;
@@ -1278,7 +1287,7 @@ namespace LeechCraft
 						<< item.ChannelID_;
 				}
 			}
-			
+
 			void SQLStorageBackend::AddChannel (Channel_ptr channel)
 			{
 				InsertChannel_.bindValue (":channel_id", channel->ChannelID_);
@@ -1294,7 +1303,7 @@ namespace LeechCraft
 				InsertChannel_.bindValue (":pixmap_url", channel->PixmapURL_);
 				InsertChannel_.bindValue (":pixmap", SerializePixmap (channel->Pixmap_));
 				InsertChannel_.bindValue (":favicon", SerializePixmap (channel->Favicon_));
-			
+
 				if (!InsertChannel_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
@@ -1306,15 +1315,15 @@ namespace LeechCraft
 								.arg (channel->Link_)
 								.arg (channel->FeedID_)));
 				}
-			
+
 				InsertChannel_.finish ();
-			
+
 				std::for_each (channel->Items_.begin (), channel->Items_.end (),
 					   boost::bind (&SQLStorageBackend::AddItem,
 						   this,
 						   _1));
 			}
-			
+
 			void SQLStorageBackend::AddItem (Item_ptr item)
 			{
 				InsertItem_.bindValue (":item_id", item->ItemID_);
@@ -1332,7 +1341,7 @@ namespace LeechCraft
 				InsertItem_.bindValue (":comments_page_url", item->CommentsPageLink_);
 				InsertItem_.bindValue (":latitude", QString::number (item->Latitude_));
 				InsertItem_.bindValue (":longitude", QString::number (item->Longitude_));
-			
+
 				if (!InsertItem_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
@@ -1344,7 +1353,7 @@ namespace LeechCraft
 								.arg (item->Title_)
 								.arg (item->Link_)));
 				}
-			
+
 				InsertItem_.finish ();
 
 				WriteEnclosures (item->Enclosures_);
@@ -1377,13 +1386,13 @@ namespace LeechCraft
 						LeechCraft::Util::DBLock::DumpError (query);
 						return false;
 					}
-				
+
 					query.finish ();
 
 					return true;
 				}
 			}
-			
+
 			void SQLStorageBackend::RemoveItem (const IDType_t& itemId)
 			{
 				boost::optional<IDType_t> cid;
@@ -1433,17 +1442,17 @@ namespace LeechCraft
 				}
 
 				RemoveItem_.bindValue (":item_id", itemId);
-			
+
 				if (!RemoveItem_.exec ())
 				{
 					Util::DBLock::DumpError (RemoveItem_);
 					return;
 				}
-			
+
 				RemoveItem_.finish ();
-			
+
 				lock.Good ();
-			
+
 				if (cid)
 				{
 					try
@@ -1460,7 +1469,7 @@ namespace LeechCraft
 					}
 				}
 			}
-			
+
 			void SQLStorageBackend::RemoveFeed (const IDType_t& feedId)
 			{
 				Util::DBLock lock (DB_);
@@ -1474,19 +1483,19 @@ namespace LeechCraft
 							<< e.what ();
 					return;
 				}
-			
+
 				RemoveFeed_.bindValue (":feed_id", feedId);
 				if (!RemoveFeed_.exec ())
 				{
 					Util::DBLock::DumpError (RemoveFeed_);
 					return;
 				}
-			
+
 				RemoveFeed_.finish ();
-			
+
 				lock.Good ();
 			}
-			
+
 			void SQLStorageBackend::ToggleChannelUnread (const IDType_t& channelId,
 					bool state)
 			{
@@ -1496,7 +1505,7 @@ namespace LeechCraft
 				ToggleChannelUnread_.bindValue (0, state);
 				ToggleChannelUnread_.bindValue (1, channelId);
 				ToggleChannelUnread_.bindValue (2, state);
-			
+
 				if (!ToggleChannelUnread_.exec ())
 				{
 					qWarning () << Q_FUNC_INFO;
@@ -1506,9 +1515,9 @@ namespace LeechCraft
 								.arg (channelId)
 								.arg (state)));
 				}
-			
+
 				ToggleChannelUnread_.finish ();
-			
+
 				try
 				{
 					Channel_ptr channel = GetChannel (channelId,
@@ -1528,17 +1537,17 @@ namespace LeechCraft
 						<< channelId;
 				}
 			}
-			
+
 			bool SQLStorageBackend::UpdateFeedsStorage (int, int)
 			{
 				return true;
 			}
-			
+
 			bool SQLStorageBackend::UpdateChannelsStorage (int, int)
 			{
 				return true;
 			}
-			
+
 			bool SQLStorageBackend::UpdateItemsStorage (int oldV, int newV)
 			{
 				bool success = true;
@@ -1548,7 +1557,7 @@ namespace LeechCraft
 					if (!success)
 						break;
 				}
-			
+
 				return success;
 			}
 
@@ -1577,7 +1586,7 @@ namespace LeechCraft
 						return "BLOB";
 				}
 			}
-			
+
 			bool SQLStorageBackend::InitializeTables ()
 			{
 				QSqlQuery query (DB_);
@@ -1593,7 +1602,7 @@ namespace LeechCraft
 						return false;
 					}
 				}
-			
+
 				if (!DB_.tables ().contains ("feeds_settings"))
 				{
 					if (!query.exec (QString ("CREATE TABLE feeds_settings ("
@@ -1608,7 +1617,7 @@ namespace LeechCraft
 						Util::DBLock::DumpError (query);
 						return false;
 					}
-			
+
 					if (Type_ == SBPostgres)
 					{
 						if (!query.exec ("CREATE RULE \"replace_feeds_settings\" AS "
@@ -1630,7 +1639,7 @@ namespace LeechCraft
 						}
 					}
 				}
-			
+
 				if (!DB_.tables ().contains ("channels"))
 				{
 					if (!query.exec (QString ("CREATE TABLE channels ("
@@ -1652,7 +1661,7 @@ namespace LeechCraft
 						return false;
 					}
 				}
-			
+
 				if (!DB_.tables ().contains ("items"))
 				{
 					if (!query.exec (QString ("CREATE TABLE items ("
@@ -1684,7 +1693,7 @@ namespace LeechCraft
 								<< "could not create index, performance would suffer";
 					}
 				}
-			
+
 				if (!DB_.tables ().contains ("enclosures"))
 				{
 					if (!query.exec ("CREATE TABLE enclosures ("
@@ -1699,7 +1708,7 @@ namespace LeechCraft
 						Util::DBLock::DumpError (query);
 						return false;
 					}
-			
+
 					if (Type_ == SBPostgres)
 					{
 						if (!query.exec ("CREATE RULE \"replace_enclosures\" AS "
@@ -1807,7 +1816,7 @@ namespace LeechCraft
 						}
 					}
 				}
-				
+
 				if (!DB_.tables ().contains ("mrss_thumbnails"))
 				{
 					if (!query.exec ("CREATE TABLE mrss_thumbnails ("
@@ -1977,7 +1986,7 @@ namespace LeechCraft
 
 				return true;
 			}
-			
+
 			QByteArray SQLStorageBackend::SerializePixmap (const QPixmap& pixmap) const
 			{
 				QByteArray bytes;
@@ -1989,7 +1998,7 @@ namespace LeechCraft
 				}
 				return bytes;
 			}
-			
+
 			QPixmap SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
 			{
 				QPixmap result;
@@ -1997,7 +2006,7 @@ namespace LeechCraft
 					result.loadFromData (bytes, "PNG");
 				return result;
 			}
-			
+
 			bool SQLStorageBackend::RollItemsStorage (int version)
 			{
 				LeechCraft::Util::DBLock lock (DB_);
@@ -2010,7 +2019,7 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO << e.what ();
 					return false;
 				}
-			
+
 				if (version == 2)
 				{
 					QSqlQuery updateQuery = QSqlQuery (DB_);
@@ -2020,14 +2029,14 @@ namespace LeechCraft
 						LeechCraft::Util::DBLock::DumpError (updateQuery);
 						return false;
 					}
-			
+
 					if (!updateQuery.exec ("ALTER TABLE items "
 								"ADD comments_url TEXT"))
 					{
 						LeechCraft::Util::DBLock::DumpError (updateQuery);
 						return false;
 					}
-			
+
 					if (!updateQuery.exec ("UPDATE items "
 								"SET num_comments = -1"))
 					{
@@ -2055,6 +2064,8 @@ namespace LeechCraft
 							break;
 						case SBPostgres:
 							adeType = "BOOLEAN";
+							break;
+						case SBMysql:
 							break;
 					}
 
@@ -2163,11 +2174,11 @@ namespace LeechCraft
 
 					Core::Instance ().SyncPools ();
 				}
-			
+
 				lock.Good ();
 				return true;
 			}
-			
+
 			void SQLStorageBackend::RemoveTables ()
 			{
 				if (Type_ == SBSQLite)
@@ -2750,25 +2761,25 @@ namespace LeechCraft
 					WriteEnclosure_.bindValue (":type", i->Type_);
 					WriteEnclosure_.bindValue (":length", i->Length_);
 					WriteEnclosure_.bindValue (":lang", i->Lang_);
-			
+
 					if (!WriteEnclosure_.exec ())
 						LeechCraft::Util::DBLock::DumpError (WriteEnclosure_);
 				}
-			
+
 				WriteEnclosure_.finish ();
 			}
-			
+
 			void SQLStorageBackend::GetEnclosures (const IDType_t& itemId,
 					QList<Enclosure>& enclosures) const
 			{
 				GetEnclosures_.bindValue (":item_id", itemId);
-			
+
 				if (!GetEnclosures_.exec ())
 				{
 					LeechCraft::Util::DBLock::DumpError (GetEnclosures_);
 					return;
 				}
-			
+
 				while (GetEnclosures_.next ())
 				{
 					Enclosure e (itemId, GetEnclosures_.value (0).value<IDType_t> ());
@@ -2776,10 +2787,10 @@ namespace LeechCraft
 					e.Type_ = GetEnclosures_.value (2).toString ();
 					e.Length_ = GetEnclosures_.value (3).toLongLong ();
 					e.Lang_ = GetEnclosures_.value (4).toString ();
-			
+
 					enclosures << e;
 				}
-			
+
 				GetEnclosures_.finish ();
 			}
 
@@ -2824,7 +2835,7 @@ namespace LeechCraft
 						Util::DBLock::DumpError (WriteMediaRSS_);
 						continue;
 					}
-					
+
 					WriteMediaRSS_.finish ();
 
 					Q_FOREACH (MRSSThumbnail t, e.Thumbnails_)
@@ -2838,7 +2849,7 @@ namespace LeechCraft
 
 						if (!WriteMediaRSSThumbnail_.exec ())
 							Util::DBLock::DumpError (WriteMediaRSSThumbnail_);
-						
+
 						WriteMediaRSSThumbnail_.finish ();
 					}
 
@@ -2851,7 +2862,7 @@ namespace LeechCraft
 
 						if (!WriteMediaRSSCredit_.exec ())
 							Util::DBLock::DumpError (WriteMediaRSSCredit_);
-						
+
 						WriteMediaRSSCredit_.finish ();
 					}
 
@@ -2864,7 +2875,7 @@ namespace LeechCraft
 
 						if (!WriteMediaRSSComment_.exec ())
 							Util::DBLock::DumpError (WriteMediaRSSComment_);
-						
+
 						WriteMediaRSSComment_.finish ();
 					}
 
@@ -2877,7 +2888,7 @@ namespace LeechCraft
 
 						if (!WriteMediaRSSPeerLink_.exec ())
 							Util::DBLock::DumpError (WriteMediaRSSPeerLink_);
-						
+
 						WriteMediaRSSPeerLink_.finish ();
 					}
 
@@ -2892,7 +2903,7 @@ namespace LeechCraft
 
 						if (!WriteMediaRSSScene_.exec ())
 							Util::DBLock::DumpError (WriteMediaRSSScene_);
-						
+
 						WriteMediaRSSScene_.finish ();
 					}
 				}

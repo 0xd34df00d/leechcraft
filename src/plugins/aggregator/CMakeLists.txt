@@ -65,6 +65,7 @@ SET (SRCS
 	startupthirdpage.cpp
 	export2fb2dialog.cpp
 	actionsstructs.cpp
+	sqlstoragebackend_mysql.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -107,6 +108,7 @@ SET (HEADERS
 	startupthirdpage.h
 	export2fb2dialog.h
 	actionsstructs.h
+	sqlstoragebackend_mysql.h
 	)
 SET (FORMS
     mainwidget.ui

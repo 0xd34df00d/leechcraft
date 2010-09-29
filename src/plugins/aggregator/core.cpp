@@ -258,6 +258,8 @@ namespace LeechCraft
 					type = StorageBackend::SBSQLite;
 				else if (strType == "PostgreSQL")
 					type = StorageBackend::SBPostgres;
+				else if (strType == "MySQL")
+					type = StorageBackend::SBMysql;
 				else
 					throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 								.arg (strType)));

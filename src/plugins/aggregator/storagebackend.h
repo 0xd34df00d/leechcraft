@@ -47,17 +47,20 @@ namespace LeechCraft
 				enum Type
 				{
 					SBSQLite,
-					SBPostgres
+					SBPostgres,
+					SBMysql
 				};
 				StorageBackend (QObject* = 0);
 				virtual ~StorageBackend ();
 				static boost::shared_ptr<StorageBackend> Create (Type);
 
+				static QString LoadQuery (const QString&, const QString&);
+
 				/** @brief Do post-initialization.
 				 *
 				 * This function is called by the Core after all the updates are
 				 * checked and done, if required.
-				 * 
+				 *
 				 * @sa UpdateFeedsStorage
 				 * @sa UpdateChannelsStorage
 				 * @sa UpdateItemsStorage
@@ -303,7 +306,7 @@ namespace LeechCraft
 				 *
 				 * If the specified item doesn't exist, this function should do
 				 * nothing.
-				 * 
+				 *
 				 * @param[in] id ID of the item that should be removed.
 				 */
 				virtual void RemoveItem (const IDType_t& id) = 0;
@@ -321,7 +324,7 @@ namespace LeechCraft
 				 *
 				 * This function is called if feeds storage section format version
 				 * stored in application settings is lower than newer one.
-				 * 
+				 *
 				 * @param[in] oldV Old storage version.
 				 * @param[in] newV New storage version.
 				 *
@@ -333,7 +336,7 @@ namespace LeechCraft
 				 *
 				 * This function is called if channels storage section format version
 				 * stored in application settings is lower than newer one.
-				 * 
+				 *
 				 * @param[in] oldV Old storage version.
 				 * @param[in] newV New storage version.
 				 *
@@ -345,7 +348,7 @@ namespace LeechCraft
 				 *
 				 * This function is called if items storage section format version
 				 * stored in application settings is lower than newer one.
-				 * 
+				 *
 				 * @param[in] oldV Old storage version.
 				 * @param[in] newV New storage version.
 				 *
