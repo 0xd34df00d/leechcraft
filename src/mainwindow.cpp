@@ -852,6 +852,14 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
 			SLOT (rotateRight ()));
+	connect (new QShortcut (QKeySequence ("Ctrl+PgUp"), this),
+			SIGNAL (activated ()),
+			Core::Instance ().GetTabManager (),
+			SLOT (rotateLeft ()));
+	connect (new QShortcut (QKeySequence ("Ctrl+PgDown"), this),
+			SIGNAL (activated ()),
+			Core::Instance ().GetTabManager (),
+			SLOT (rotateRight ()));
 
 	for (int i = 0; i < 10; ++i)
 	{
