@@ -34,7 +34,7 @@ namespace LeechCraft
 			SQLStorageBackendMysql::SQLStorageBackendMysql (StorageBackend::Type type)
 			: Type_ (type)
 			{
-			    strType = "QMYSQL";
+			    QString strType = "QMYSQL";
 			
 				DB_ = QSqlDatabase::addDatabase (strType, "PoshukuConnection");
 				DB_.setDatabaseName (XmlSettingsManager::Instance ()->
@@ -58,12 +58,12 @@ namespace LeechCraft
 				InitializeTables ();
 			}
 			
-			SQLStorageBackend::~SQLStorageBackend ()
+			SQLStorageBackendMysql::~SQLStorageBackendMysql ()
 			{
 
 			}
 			
-			void SQLStorageBackend::Prepare ()
+			void SQLStorageBackendMysql::Prepare ()
 			{
 			
 				HistoryLoader_ = QSqlQuery (DB_);
@@ -80,8 +80,8 @@ namespace LeechCraft
 						"MAX (title) AS title, "
 						"url "
 						"FROM history "
-						"WHERE ( title LIKE :titlebase ) "
-						"OR ( url LIKE :urlbase ) "
+						"WHERE ( title LIKE ? ) "
+						"OR ( url LIKE ? ) "
 						"GROUP BY url "
 						"ORDER BY rating ASC "
 						"LIMIT 100");
@@ -92,31 +92,21 @@ namespace LeechCraft
 						"title, "
 						"url"
 						") VALUES ("
-						":date, "
-						":title, "
-						":url"
+						"? , "
+						"? , "
+						"? "
 						")");
 			
 				HistoryEraser_ = QSqlQuery (DB_);
-				switch (Type_)
-				{
-					case SBSQLite:
-						HistoryEraser_.prepare ("DELETE FROM history "
-								"WHERE "
-								"(julianday ('now') - julianday (date) > :age)");
-						break;
-					case SBPostgres:
-						HistoryEraser_.prepare ("DELETE FROM history "
-								"WHERE "
-								"(date - now () > :age * interval '1 day')");
-						break;
-				}
+				HistoryEraser_.prepare ("DELETE FROM history "
+						"WHERE "
+						" DATE_ADD(date, INTERVAL ? DAY) < now () )");
 			
 				HistoryTruncater_ = QSqlQuery (DB_);
 				HistoryTruncater_.prepare ("DELETE FROM history "
 						"WHERE date IN "
 						"(SELECT date FROM history ORDER BY date DESC "
-						"LIMIT 10000 OFFSET :num)");
+						"LIMIT 10000 OFFSET ?)");
 			
 				FavoritesLoader_ = QSqlQuery (DB_);
 				FavoritesLoader_.prepare ("SELECT "
@@ -193,7 +183,7 @@ namespace LeechCraft
 						"WHERE url = ? ");
 			}
 			
-			void SQLStorageBackend::LoadHistory (history_items_t& items) const
+			void SQLStorageBackendMysql::LoadHistory (history_items_t& items) const
 			{
 				if (!HistoryLoader_.exec ())
 				{
@@ -215,7 +205,7 @@ namespace LeechCraft
 				HistoryLoader_.finish ();
 			}
 			
-			void SQLStorageBackend::LoadResemblingHistory (const QString& base,
+			void SQLStorageBackendMysql::LoadResemblingHistory (const QString& base,
 					history_items_t& items) const
 			{
 				QString bound = "%";
@@ -242,7 +232,7 @@ namespace LeechCraft
 				HistoryRatedLoader_.finish ();
 			}
 			
-			void SQLStorageBackend::AddToHistory (const HistoryItem& item)
+			void SQLStorageBackendMysql::AddToHistory (const HistoryItem& item)
 			{
 				HistoryAdder_.bindValue (0, item.Title_);
 				HistoryAdder_.bindValue (1, item.DateTime_);
@@ -257,7 +247,7 @@ namespace LeechCraft
 				emit added (item);
 			}
 			
-			void SQLStorageBackend::ClearOldHistory (int age, int items)
+			void SQLStorageBackendMysql::ClearOldHistory (int age, int items)
 			{
 				LeechCraft::Util::DBLock lock (DB_);
 				lock.Init ();
@@ -278,7 +268,7 @@ namespace LeechCraft
 				lock.Good ();
 			}
 			
-			void SQLStorageBackend::LoadFavorites (
+			void SQLStorageBackendMysql::LoadFavorites (
 					FavoritesModel::items_t& items
 					) const
 			{
@@ -303,7 +293,7 @@ namespace LeechCraft
 				FavoritesLoader_.finish ();
 			}
 			
-			void SQLStorageBackend::AddToFavorites (const FavoritesModel::FavoritesItem& item)
+			void SQLStorageBackendMysql::AddToFavorites (const FavoritesModel::FavoritesItem& item)
 			{
 				FavoritesAdder_.bindValue (0, item.Title_);
 				FavoritesAdder_.bindValue (1, item.URL_);
@@ -318,7 +308,7 @@ namespace LeechCraft
 				emit added (item);
 			}
 			
-			void SQLStorageBackend::RemoveFromFavorites (const FavoritesModel::FavoritesItem& item)
+			void SQLStorageBackendMysql::RemoveFromFavorites (const FavoritesModel::FavoritesItem& item)
 			{
 				FavoritesRemover_.bindValue (0, item.URL_);
 				if (!FavoritesRemover_.exec ())
@@ -330,7 +320,7 @@ namespace LeechCraft
 				emit removed (item);
 			}
 			
-			void SQLStorageBackend::UpdateFavorites (const FavoritesModel::FavoritesItem& item)
+			void SQLStorageBackendMysql::UpdateFavorites (const FavoritesModel::FavoritesItem& item)
 			{
 				FavoritesUpdater_.bindValue (0, item.Title_);
 				FavoritesUpdater_.bindValue (1, item.URL_);
@@ -345,7 +335,7 @@ namespace LeechCraft
 				emit updated (item);
 			}
 			
-			void SQLStorageBackend::GetFormsData (const QString& url, ElementsData_t& result) const
+			void SQLStorageBackendMysql::GetFormsData (const QString& url, ElementsData_t& result) const
 			{
 				FormsGetter_.bindValue (0, url);
 				if (!FormsGetter_.exec ())
@@ -369,7 +359,7 @@ namespace LeechCraft
 				FormsGetter_.finish ();
 			}
 			
-			void SQLStorageBackend::SetFormsData (const QString& url, const ElementsData_t& data)
+			void SQLStorageBackendMysql::SetFormsData (const QString& url, const ElementsData_t& data)
 			{
 				LeechCraft::Util::DBLock lock (DB_);
 				lock.Init ();
@@ -398,7 +388,7 @@ namespace LeechCraft
 				lock.Good ();
 			}
 			
-			void SQLStorageBackend::SetFormsIgnored (const QString& url, bool ignore)
+			void SQLStorageBackendMysql::SetFormsIgnored (const QString& url, bool ignore)
 			{
 				if (ignore)
 				{
@@ -420,7 +410,7 @@ namespace LeechCraft
 				}
 			}
 			
-			bool SQLStorageBackend::GetFormsIgnored (const QString& url) const
+			bool SQLStorageBackendMysql::GetFormsIgnored (const QString& url) const
 			{
 				FormsIgnoreGetter_.bindValue (0, url);
 				if (!FormsIgnoreGetter_.exec ())
@@ -436,7 +426,7 @@ namespace LeechCraft
 				return ignored;
 			}
 			
-			void SQLStorageBackend::InitializeTables ()
+			void SQLStorageBackendMysql::InitializeTables ()
 			{
 				QSqlQuery query (DB_);
 			
@@ -515,11 +505,11 @@ namespace LeechCraft
 				}
 			}
 			
-			void SQLStorageBackend::CheckVersions ()
+			void SQLStorageBackendMysql::CheckVersions ()
 			{
 			}
 			
-			QString SQLStorageBackend::GetSetting (const QString& key) const
+			QString SQLStorageBackendMysql::GetSetting (const QString& key) const
 			{
 				QSqlQuery query (DB_);
 				query.prepare ("SELECT value "
@@ -529,7 +519,7 @@ namespace LeechCraft
 				if (!query.exec ())
 				{
 					LeechCraft::Util::DBLock::DumpError (query);
-					throw std::runtime_error ("SQLStorageBackend could not query settings");
+					throw std::runtime_error ("SQLStorageBackendMysql could not query settings");
 				}
 			
 				if (!query.next ())
@@ -538,7 +528,7 @@ namespace LeechCraft
 				return query.value (0).toString ();
 			}
 			
-			void SQLStorageBackend::SetSetting (const QString& key, const QString& value)
+			void SQLStorageBackendMysql::SetSetting (const QString& key, const QString& value)
 			{
 				QSqlQuery query (DB_);
 				QString r = "INSERT INTO storage_settings ("
@@ -554,7 +544,7 @@ namespace LeechCraft
 				if (!query.exec ())
 				{
 					LeechCraft::Util::DBLock::DumpError (query);
-					throw std::runtime_error ("SQLStorageBackend could not query settings");
+					throw std::runtime_error ("SQLStorageBackendMysql could not query settings");
 				}
 			}
 		};

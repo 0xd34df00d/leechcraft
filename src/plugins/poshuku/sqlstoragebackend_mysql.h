@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_SQLSTORAGEBACKEND_H
-#define PLUGINS_POSHUKU_SQLSTORAGEBACKEND_H
+#ifndef PLUGINS_POSHUKU_SQLSTORAGEBACKEND_MYSQL_H
+#define PLUGINS_POSHUKU_SQLSTORAGEBACKEND_MYSQL_H
 #include "storagebackend.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
