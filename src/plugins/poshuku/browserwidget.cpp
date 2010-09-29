@@ -935,7 +935,9 @@ namespace LeechCraft
 
 			void BrowserWidget::focusLineEdit ()
 			{
-				Ui_.URLFrame_->GetEdit ()->setFocus (Qt::OtherFocusReason);
+				QLineEdit *edit = Ui_.URLFrame_->GetEdit ();
+				edit->setFocus (Qt::OtherFocusReason);
+				edit->selectAll ();
 			}
 
 			QWebView* BrowserWidget::getWebView () const
