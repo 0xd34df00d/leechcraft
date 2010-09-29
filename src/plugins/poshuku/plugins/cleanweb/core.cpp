@@ -34,10 +34,10 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <plugininterface/util.h>
+#include <plugininterface/customnetworkreply.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
-#include "blockednetworkreply.h"
 #include "userfiltersmodel.h"
 
 using namespace LeechCraft;
@@ -169,7 +169,7 @@ namespace
 				white = true;
 			}
 
-			if (actualLine.startsWith ('/') && 
+			if (actualLine.startsWith ('/') &&
 					actualLine.endsWith ('/'))
 			{
 				actualLine = actualLine.mid (1, actualLine.size () - 2);
@@ -390,7 +390,12 @@ QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 		qDebug () << "rejecting against" << matched;
 		Blocked_ << req->url ().toString ();
 		hook->CancelDefault ();
-		return new BlockedNetworkReply (*req, this);
+		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
+		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
+		result->SetError (QNetworkReply::ContentAccessDenied,
+				tr ("Blocked by Poshuku CleanWeb: %1")
+					.arg (req->url ().toString ()));
+		return result;
 	}
 	return 0;
 }
@@ -481,7 +486,7 @@ bool Core::ShouldReject (const QNetworkRequest& req, QString *matchedFilter) con
 	QString urlStr = url.toString ();
 	QString cinUrlStr = urlStr.toLower ();
 	QString domain = url.host ();
-	
+
 	QList<Filter> allFilters;
 	allFilters << UserFilters_->GetFilter ();
 	allFilters += Filters_;
@@ -616,7 +621,7 @@ void Core::HandleProvider (QObject *provider)
 {
 	if (Downloaders_.contains (provider))
 		return;
-	
+
 	Downloaders_ << provider;
 	connect (provider,
 			SIGNAL (jobFinished (int)),
