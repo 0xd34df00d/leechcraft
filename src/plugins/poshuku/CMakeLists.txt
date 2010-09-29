@@ -48,6 +48,7 @@ SET (SRCS
 	historymodel.cpp
 	storagebackend.cpp
 	sqlstoragebackend.cpp
+	sqlstoragebackend_mysql.cpp
 	urlcompletionmodel.cpp
 	finddialog.cpp
 	screenshotsavedialog.cpp
@@ -95,6 +96,7 @@ SET (HEADERS
 	historymodel.h
 	storagebackend.h
 	sqlstoragebackend.h
+	sqlstoragebackend_mysql.h
 	urlcompletionmodel.h
 	finddialog.h
 	screenshotsavedialog.h

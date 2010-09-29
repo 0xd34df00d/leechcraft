@@ -42,7 +42,8 @@ namespace LeechCraft
 				enum Type
 				{
 					SBSQLite,
-					SBPostgres
+					SBPostgres,
+                    SBMysql
 				};
 
 				StorageBackend (QObject* = 0);

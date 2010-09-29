@@ -18,6 +18,7 @@
 
 #include "storagebackend.h"
 #include "sqlstoragebackend.h"
+#include "sqlstoragebackend_mysql.h"
 
 namespace LeechCraft
 {
@@ -42,6 +43,9 @@ namespace LeechCraft
 					case SBSQLite:
 					case SBPostgres:
 						result.reset (new SQLStorageBackend (type));
+                        break;
+                    case SBMysql:
+						result.reset (new SQLStorageBackendMysql (type));
 				}
 				return result;
 			}
