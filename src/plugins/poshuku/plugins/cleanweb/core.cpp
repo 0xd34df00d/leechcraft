@@ -416,19 +416,21 @@ void Core::HandleExtension (LeechCraft::IHookProxy_ptr proxy,
 
 	QString url = error->url.toString ();
 	if (!Blocked_.contains (url))
-		return;
+	{
+		url = error->frame->url ().toString ();
+		if (!Blocked_.contains (url))
+			return;
+	}
 
 	proxy->CancelDefault ();
 	proxy->SetReturnValue (true);
 
-	QWebFrame *frame = page->mainFrame ();
-	QWebElementCollection elems =
-			frame->findAllElements (QString ("*[src=\"%1\"]").arg (url));
-	if (elems.count ())
-		Q_FOREACH (QWebElement elem, elems)
-			elem.removeFromDocument ();
-	else
-		qWarning () << Q_FUNC_INFO << "not found" << url;
+	// Otherwise things segfault on Qt 4.7.
+	QMetaObject::invokeMethod (this,
+			"delayedRemoveElements",
+			Qt::QueuedConnection,
+			Q_ARG (QWebFrame*, page->mainFrame ()),
+			Q_ARG (QString, url));
 }
 
 void Core::HandleContextMenu (const QWebHitTestResult& r,
@@ -873,5 +875,16 @@ void Core::handleJobError (int id, IDownload::Error)
 		return;
 
 	PendingJobs_.remove (id);
+}
+
+void Core::delayedRemoveElements (QWebFrame *frame, const QString& url)
+{
+	QWebElementCollection elems =
+			frame->findAllElements (QString ("*[src=\"%1\"]").arg (url));
+	if (elems.count ())
+		Q_FOREACH (QWebElement elem, elems)
+			elem.removeFromDocument ();
+	else
+		qWarning () << Q_FUNC_INFO << "not found" << url;
 }
 
