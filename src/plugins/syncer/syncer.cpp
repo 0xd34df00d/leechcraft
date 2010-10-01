@@ -18,6 +18,7 @@
 
 #include "syncer.h"
 #include <QIcon>
+#include <plugininterface/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -28,6 +29,8 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				Translator_.reset (Util::InstallTranslator ("syncer"));
+
 				Core::Instance ().SetProxy (proxy);
 				connect (&Core::Instance (),
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),

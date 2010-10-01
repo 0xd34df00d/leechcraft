@@ -18,7 +18,9 @@
 
 #ifndef PLUGINS_SYNCER_SYNCER_H
 #define PLUGINS_SYNCER_SYNCER_H
+#include <memory>
 #include <QObject>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft
@@ -32,6 +34,8 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 				Q_INTERFACES (IInfo)
+
+				std::auto_ptr<QTranslator> Translator_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
