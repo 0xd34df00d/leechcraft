@@ -41,6 +41,10 @@ FilePicker::FilePicker (FilePicker::Type type, QWidget *parent)
 			SIGNAL (released ()),
 			this,
 			SLOT (chooseFile ()));
+	connect (LineEdit_,
+			SIGNAL (textEdited (const QString&)),
+			this,
+			SIGNAL (textChanged (const QString&)));
 	LineEdit_->setMinimumWidth (QApplication::fontMetrics ()
 			.width ("thisismaybeadefaultsettingstring,dont"));
 }
