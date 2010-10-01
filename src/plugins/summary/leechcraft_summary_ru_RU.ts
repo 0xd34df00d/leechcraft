@@ -4,23 +4,23 @@
 <context>
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
-        <location filename="core.cpp" line="123"/>
-        <location filename="core.cpp" line="327"/>
+        <location filename="core.cpp" line="122"/>
+        <location filename="core.cpp" line="345"/>
         <source>Summary</source>
         <translation>Сводка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="190"/>
+        <location filename="core.cpp" line="189"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="191"/>
+        <location filename="core.cpp" line="190"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="192"/>
+        <location filename="core.cpp" line="191"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
@@ -77,9 +77,17 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Plugins::Summary::SearchWidget</name>
+    <message>
+        <location filename="searchwidget.cpp" line="35"/>
+        <source>Search categories</source>
+        <translation>Категории поиска</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Plugins::Summary::Summary</name>
     <message>
-        <location filename="summary.cpp" line="88"/>
+        <location filename="summary.cpp" line="92"/>
         <source>Summary of downloads and recent events</source>
         <translation>Сводка по закачкам и недавним событиям</translation>
     </message>
@@ -87,24 +95,19 @@
 <context>
     <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="47"/>
+        <location filename="summarywidget.cpp" line="49"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="367"/>
+        <location filename="summarywidget.cpp" line="476"/>
         <source>S: %1 [%2]</source>
         <translation>C: %1 [%2]</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="371"/>
+        <location filename="summarywidget.cpp" line="480"/>
         <source>Summary [%1]</source>
         <translation>Сводка [%1]</translation>
-    </message>
-    <message>
-        <location filename="summarywidget.cpp" line="400"/>
-        <source>Remove this category</source>
-        <translation>Удалить эту категорию</translation>
     </message>
 </context>
 <context>
@@ -115,37 +118,32 @@
         <translation>Параметры поиска</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="33"/>
+        <location filename="searchwidget.ui" line="73"/>
         <source>String</source>
         <translation>Строка</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="38"/>
+        <location filename="searchwidget.ui" line="78"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="43"/>
+        <location filename="searchwidget.ui" line="83"/>
         <source>Regexp</source>
         <translation>Regexp</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="48"/>
+        <location filename="searchwidget.ui" line="88"/>
         <source>Tags</source>
         <translation>Теги</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="104"/>
-        <source>Add</source>
-        <translation>Добавить</translation>
-    </message>
-    <message>
-        <location filename="searchwidget.ui" line="111"/>
+        <location filename="searchwidget.ui" line="39"/>
         <source>AND</source>
         <translation>И</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="118"/>
+        <location filename="searchwidget.ui" line="49"/>
         <source>OR</source>
         <translation>ИЛИ</translation>
     </message>

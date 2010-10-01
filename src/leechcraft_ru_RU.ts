@@ -98,6 +98,10 @@
         <source>Database name:</source>
         <translation>База данных:</translation>
     </message>
+    <message>
+        <source>MySQL</source>
+        <translation>MySQL</translation>
+    </message>
 </context>
 <context>
     <name>CommonJobAdder</name>
@@ -424,6 +428,14 @@
         <source>Always</source>
         <translation>Всегда</translation>
     </message>
+    <message>
+        <source>Context-dependent</source>
+        <translation>В зависимости от контекста</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation>Системный</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -581,15 +593,26 @@
     <name>LeechCraft::TabContainer</name>
     <message>
         <source>Close all but this</source>
-        <translation>Закрыть все кроме этой</translation>
+        <translation type="obsolete">Закрыть все кроме этой</translation>
     </message>
+    <message>
+        <source>New tab menu</source>
+        <translation type="obsolete">Меню создания вкладки</translation>
+    </message>
+    <message>
+        <source>Restore tabs</source>
+        <translation type="obsolete">Восстановить вкладки</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::TabManager</name>
     <message>
         <source>New tab menu</source>
         <translation>Меню создания вкладки</translation>
     </message>
     <message>
-        <source>Restore tabs</source>
-        <translation type="obsolete">Восстановить вкладки</translation>
+        <source>Close all but this</source>
+        <translation>Закрыть все кроме этой</translation>
     </message>
 </context>
 <context>
@@ -896,27 +919,27 @@
     </message>
     <message>
         <source>German (Deutsch)</source>
-        <translation>German (Deutsch)</translation>
+        <translation type="obsolete">German (Deutsch)</translation>
     </message>
     <message>
         <source>English</source>
-        <translation>English</translation>
+        <translation type="obsolete">English</translation>
     </message>
     <message>
         <source>Esperanto</source>
-        <translation>Esperanto</translation>
+        <translation type="obsolete">Esperanto</translation>
     </message>
     <message>
         <source>Spanish</source>
-        <translation>Spanish</translation>
+        <translation type="obsolete">Spanish</translation>
     </message>
     <message>
         <source>Italian (Italiano)</source>
-        <translation>Italian (Italiano)</translation>
+        <translation type="obsolete">Italian (Italiano)</translation>
     </message>
     <message>
         <source>Polish (Polski)</source>
-        <translation>Polish (Polski)</translation>
+        <translation type="obsolete">Polish (Polski)</translation>
     </message>
     <message>
         <source>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</source>
@@ -1068,19 +1091,27 @@
     </message>
     <message>
         <source>Arabic (العربية)</source>
-        <translation>Arabic (العربية)</translation>
+        <translation type="obsolete">Arabic (العربية)</translation>
     </message>
     <message>
         <source>Russian (Русский)</source>
-        <translation>Russian (Русский)</translation>
+        <translation type="obsolete">Russian (Русский)</translation>
     </message>
     <message>
         <source>Spanish (Español)</source>
-        <translation>Spanish (Español)</translation>
+        <translation type="obsolete">Spanish (Español)</translation>
     </message>
     <message>
         <source>Ukrainian (Українська)</source>
-        <translation>Ukrainian (Українська)</translation>
+        <translation type="obsolete">Ukrainian (Українська)</translation>
+    </message>
+    <message>
+        <source>Default new tab contents:</source>
+        <translation>Тип новой вкладки по умолчанию:</translation>
+    </message>
+    <message>
+        <source>Context-dependent</source>
+        <translation>В зависимости от контекста</translation>
     </message>
 </context>
 </TS>

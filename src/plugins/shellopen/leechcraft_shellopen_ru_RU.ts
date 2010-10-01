@@ -4,9 +4,14 @@
 <context>
     <name>LeechCraft::Plugins::ShellOpen::Plugin</name>
     <message>
-        <location filename="shellopen.cpp" line="55"/>
+        <location filename="shellopen.cpp" line="61"/>
         <source>Allows to open files and otherwise handle entities with external applications.</source>
         <translation>Позволяет открывать файлы и обрабатывать сущности при помощи внешних приложений.</translation>
+    </message>
+    <message>
+        <location filename="shellopen.cpp" line="113"/>
+        <source>Do you want to open %1?</source>
+        <translation>Вы хотите открыть %1?</translation>
     </message>
 </context>
 </TS>
