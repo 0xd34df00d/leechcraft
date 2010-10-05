@@ -383,6 +383,11 @@ IPv6 input mask</extracomment>
         <source>Select save directory</source>
         <translation>Оберіть каталог для збереження</translation>
     </message>
+    <message>
+        <location filename="addtorrent.cpp" line="216"/>
+        <source>&lt;no trackers&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::Core</name>
@@ -402,211 +407,211 @@ IPv6 input mask</extracomment>
         <translation>Стандарт</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="252"/>
+        <location filename="core.cpp" line="256"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="253"/>
+        <location filename="core.cpp" line="257"/>
         <source>Progress</source>
         <translation>Прогрес</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="254"/>
+        <location filename="core.cpp" line="258"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="347"/>
+        <location filename="core.cpp" line="351"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
         <translation>Файл %1 не буде оброблено тому, що його розмір більший за поточне обмеження.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="530"/>
-        <location filename="core.cpp" line="565"/>
-        <location filename="core.cpp" line="672"/>
+        <location filename="core.cpp" line="538"/>
+        <location filename="core.cpp" line="573"/>
+        <location filename="core.cpp" line="680"/>
         <source>Idle</source>
         <translation>Бездіяльність</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="544"/>
+        <location filename="core.cpp" line="552"/>
         <source>%1% (%2 of %3 at %4)</source>
         <translation>%1% (%2 з %3 на %4)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="549"/>
-        <location filename="core.cpp" line="567"/>
-        <location filename="core.cpp" line="569"/>
+        <location filename="core.cpp" line="557"/>
+        <location filename="core.cpp" line="575"/>
+        <location filename="core.cpp" line="577"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="556"/>
+        <location filename="core.cpp" line="564"/>
         <source>Name:</source>
         <translation>Назва:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="557"/>
+        <location filename="core.cpp" line="565"/>
         <source>Destination:</source>
         <translation>Місце збереження:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="559"/>
+        <location filename="core.cpp" line="567"/>
         <source>Progress:</source>
         <translation>Прогрес:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="560"/>
+        <location filename="core.cpp" line="568"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 з %3)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="564"/>
+        <location filename="core.cpp" line="572"/>
         <source>; status:</source>
         <translation>; статус:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="566"/>
+        <location filename="core.cpp" line="574"/>
         <source>Downloading speed:</source>
         <translation>Швидкість завантаження:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="568"/>
+        <location filename="core.cpp" line="576"/>
         <source>; uploading speed:</source>
         <translation>; швидкість поширення:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="570"/>
+        <location filename="core.cpp" line="578"/>
         <source>Peers/seeds: %1/%2</source>
         <translation>Завантажують/поширюють: %1/%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="627"/>
+        <location filename="core.cpp" line="635"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Не можу відкрити файл %1 для читання: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="816"/>
+        <location filename="core.cpp" line="824"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>Файл %1 не існує або не може бути прочитаний</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="843"/>
+        <location filename="core.cpp" line="851"/>
         <source>Runtime error</source>
         <translation>Помилка під час виконання</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="918"/>
+        <location filename="core.cpp" line="926"/>
         <source>Do you want to leave this torrent&apos;s files?</source>
         <translation>Чи хочете ви залишити ці торрент файли?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="966"/>
+        <location filename="core.cpp" line="974"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Торрент %1 не може бути повторно анонсований в даний момент. Спробуйте повторити пізніше.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2804"/>
+        <location filename="core.cpp" line="2812"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation>Сповіщеня підсистеми збереження відключені. Відтворення в реальному часі беде недоступне. Якщо у Вас виникли проблеми, увімкніть сповіщення у розділі &quot;Сповіщення&quot; параметрів BitTorrent. Хочете увімкнути їх зараз?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1297"/>
+        <location filename="core.cpp" line="1305"/>
         <source>Could not open file %1 for reading</source>
         <translation>Не можу відкрити файл %1 для читання</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1306"/>
+        <location filename="core.cpp" line="1314"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
         <translation>Не можу розібрати документ з файлу %1 &lt;br /&gt;%1 у %2:%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1316"/>
+        <location filename="core.cpp" line="1324"/>
         <source>There should be only one storage section.</source>
         <translation>Повинно бути лише одне місце сховища.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1334"/>
+        <location filename="core.cpp" line="1342"/>
         <source>Unknown storage version</source>
         <translation>Невідома версія сховища</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1342"/>
+        <location filename="core.cpp" line="1350"/>
         <source>Could not open file %1 for writing</source>
         <translation>Не можу відкрити файл %1 для запису</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1575"/>
+        <location filename="core.cpp" line="1583"/>
         <source>File finished: %1</source>
         <translation>Файл завершений: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1810"/>
+        <location filename="core.cpp" line="1818"/>
         <source>Queued for checking</source>
         <translation>Поставлено в чергу на перевірку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1812"/>
+        <location filename="core.cpp" line="1820"/>
         <source>Checking files</source>
         <translation>Перевіряю файли</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1814"/>
+        <location filename="core.cpp" line="1822"/>
         <source>Downloading metadata</source>
         <translation>Завантажую метадані</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1816"/>
+        <location filename="core.cpp" line="1824"/>
         <source>Downloading</source>
         <translation>Заванажую</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1818"/>
+        <location filename="core.cpp" line="1826"/>
         <source>Finished</source>
         <translation>Закінчено</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1820"/>
+        <location filename="core.cpp" line="1828"/>
         <source>Seeding</source>
         <translation>Розповсюджую</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1822"/>
+        <location filename="core.cpp" line="1830"/>
         <source>Allocating</source>
         <translation>Резервую місце</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1824"/>
+        <location filename="core.cpp" line="1832"/>
         <source>Checking resume data</source>
         <translation>Перевіряю залишкові дані</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1843"/>
+        <location filename="core.cpp" line="1851"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Не можу відкрити збережений торрент %1 для читання.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1930"/>
+        <location filename="core.cpp" line="1938"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Збережений торрент має неправильний формат</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1972"/>
+        <location filename="core.cpp" line="1980"/>
         <source>Torrent finished: %1</source>
         <translation>Торрент завершено: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2156"/>
+        <location filename="core.cpp" line="2164"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>Код помилки %1 категорія:&lt;blockquote&gt;%2&lt;/blockquote&gt;текст помилки:&lt;blockquote&gt;%3&lt;/blockquote&gt;текст виключення:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2172"/>
+        <location filename="core.cpp" line="2180"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>Не можу створити шлях %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2663"/>
+        <location filename="core.cpp" line="2671"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильна адреса для анонсування %1</translation>
     </message>
@@ -644,13 +649,13 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::FirstStep</name>
     <message>
-        <location filename="firststep.cpp" line="83"/>
+        <location filename="firststep.cpp" line="82"/>
         <source>Select where to save torrent file</source>
         <translation>Оберіть, куди зберегти торрент файли</translation>
     </message>
     <message>
-        <location filename="firststep.cpp" line="97"/>
-        <location filename="firststep.cpp" line="113"/>
+        <location filename="firststep.cpp" line="96"/>
+        <location filename="firststep.cpp" line="112"/>
         <source>Select torrent contents</source>
         <translation>Оберіт вміст торрента</translation>
     </message>
@@ -892,63 +897,63 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::TabWidget</name>
     <message>
-        <location filename="tabwidget.cpp" line="161"/>
+        <location filename="tabwidget.cpp" line="165"/>
         <source>Add peer...</source>
         <translation>Додати вузол...</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="171"/>
+        <location filename="tabwidget.cpp" line="175"/>
         <source>Ban peer...</source>
         <translation>Заблокувати вузол...</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="182"/>
+        <location filename="tabwidget.cpp" line="186"/>
         <source>Add web seed...</source>
         <translation>Додати веб поширювач...</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="191"/>
+        <location filename="tabwidget.cpp" line="195"/>
         <source>Remove web seed</source>
         <translation>Видалити веб поширювач</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="302"/>
-        <location filename="tabwidget.cpp" line="304"/>
-        <location filename="tabwidget.cpp" line="384"/>
-        <location filename="tabwidget.cpp" line="385"/>
-        <location filename="tabwidget.cpp" line="429"/>
-        <location filename="tabwidget.cpp" line="431"/>
+        <location filename="tabwidget.cpp" line="306"/>
+        <location filename="tabwidget.cpp" line="308"/>
+        <location filename="tabwidget.cpp" line="388"/>
+        <location filename="tabwidget.cpp" line="389"/>
+        <location filename="tabwidget.cpp" line="433"/>
+        <location filename="tabwidget.cpp" line="435"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="466"/>
+        <location filename="tabwidget.cpp" line="470"/>
         <source>Wasn&apos;t yet</source>
         <translation>Ще не було</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="498"/>
+        <location filename="tabwidget.cpp" line="502"/>
         <source>Yes</source>
         <translation>Так</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="499"/>
+        <location filename="tabwidget.cpp" line="503"/>
         <source>No</source>
         <translation>Ні</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="522"/>
+        <location filename="tabwidget.cpp" line="526"/>
         <source>Not tracking</source>
         <translation>Не відслідковується</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="532"/>
         <location filename="tabwidget.cpp" line="536"/>
+        <location filename="tabwidget.cpp" line="540"/>
         <source>Unknown</source>
         <translation>Невідомо</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="660"/>
+        <location filename="tabwidget.cpp" line="664"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 з %3)</translation>
     </message>
@@ -956,7 +961,7 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::ThirdStep</name>
     <message>
-        <location filename="thirdstep.cpp" line="86"/>
+        <location filename="thirdstep.cpp" line="93"/>
         <source> pieces (%1)</source>
         <translation> частин (%1)</translation>
     </message>
@@ -964,25 +969,30 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::TorrentFilesModel</name>
     <message>
-        <location filename="torrentfilesmodel.cpp" line="42"/>
-        <location filename="torrentfilesmodel.cpp" line="44"/>
+        <location filename="torrentfilesmodel.cpp" line="43"/>
+        <location filename="torrentfilesmodel.cpp" line="45"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="torrentfilesmodel.cpp" line="42"/>
+        <location filename="torrentfilesmodel.cpp" line="43"/>
         <source>Size</source>
         <translation>Розмір</translation>
     </message>
     <message>
-        <location filename="torrentfilesmodel.cpp" line="44"/>
+        <location filename="torrentfilesmodel.cpp" line="45"/>
         <source>Priority</source>
         <translation>Пріорітет</translation>
     </message>
     <message>
-        <location filename="torrentfilesmodel.cpp" line="44"/>
+        <location filename="torrentfilesmodel.cpp" line="45"/>
         <source>Progress</source>
         <translation>Прогрес</translation>
+    </message>
+    <message>
+        <location filename="torrentfilesmodel.cpp" line="464"/>
+        <source>The file %1 hasn&apos;t finished downloading yet.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1011,17 +1021,17 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::TorrentPlugin</name>
     <message>
-        <location filename="torrentplugin.cpp" line="89"/>
+        <location filename="torrentplugin.cpp" line="94"/>
         <source>Full-featured BitTorrent client.</source>
         <translation>Повнофункціональний клієнт для  BitTorrent.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="804"/>
+        <location filename="torrentplugin.cpp" line="809"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>Не можливо перемістити торрент-файли з %1 до %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="torrentplugin.cpp" line="495"/>
+        <location filename="torrentplugin.cpp" line="500"/>
         <source>Do you really want to delete %n torrent(s)?</source>
         <oldsource>Do you really want to delete %n torrents?</oldsource>
         <translation>
@@ -1031,137 +1041,137 @@ IPv6 input mask</extracomment>
         </translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="943"/>
+        <location filename="torrentplugin.cpp" line="948"/>
         <source>Open torrent...</source>
         <translation>Відкрити торрент...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1066"/>
+        <location filename="torrentplugin.cpp" line="1071"/>
         <source>Change trackers...</source>
         <translation>Змінити трекери...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1068"/>
+        <location filename="torrentplugin.cpp" line="1073"/>
         <source>C</source>
         <translation>С</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="952"/>
+        <location filename="torrentplugin.cpp" line="957"/>
         <source>Create torrent...</source>
         <translation>Створити торрент...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="819"/>
+        <location filename="torrentplugin.cpp" line="824"/>
         <source>Magnet link:</source>
         <translation>Магнітне посилання:</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="954"/>
+        <location filename="torrentplugin.cpp" line="959"/>
         <source>N</source>
         <translation>N</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="961"/>
+        <location filename="torrentplugin.cpp" line="966"/>
         <source>Open multiple torrents...</source>
         <translation>Відкрити кілька торрентів...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="969"/>
+        <location filename="torrentplugin.cpp" line="974"/>
         <source>IP filter...</source>
         <translation>IP фільтр...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="977"/>
+        <location filename="torrentplugin.cpp" line="982"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="979"/>
+        <location filename="torrentplugin.cpp" line="984"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="986"/>
+        <location filename="torrentplugin.cpp" line="991"/>
         <source>Resume</source>
         <translation>Продовжити</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="988"/>
+        <location filename="torrentplugin.cpp" line="993"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="995"/>
+        <location filename="torrentplugin.cpp" line="1000"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="997"/>
+        <location filename="torrentplugin.cpp" line="1002"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1004"/>
+        <location filename="torrentplugin.cpp" line="1009"/>
         <source>Move up</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1013"/>
+        <location filename="torrentplugin.cpp" line="1018"/>
         <source>Move down</source>
         <translation>Вниз</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1022"/>
+        <location filename="torrentplugin.cpp" line="1027"/>
         <source>Move to top</source>
         <translation>На початок</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1031"/>
+        <location filename="torrentplugin.cpp" line="1036"/>
         <source>Move to bottom</source>
         <translation>В кінець</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1040"/>
+        <location filename="torrentplugin.cpp" line="1045"/>
         <source>Reannounce</source>
         <translation>Оголосити ще раз</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1042"/>
+        <location filename="torrentplugin.cpp" line="1047"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1049"/>
+        <location filename="torrentplugin.cpp" line="1054"/>
         <source>Recheck</source>
         <translation>Перевірити</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1057"/>
+        <location filename="torrentplugin.cpp" line="1062"/>
         <source>Move files...</source>
         <translation>Пересунути файли...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1059"/>
+        <location filename="torrentplugin.cpp" line="1064"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1075"/>
+        <location filename="torrentplugin.cpp" line="1080"/>
         <source>Make magnet link...</source>
         <translation>Створити магнітне посилання...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1083"/>
+        <location filename="torrentplugin.cpp" line="1088"/>
         <source>Import...</source>
         <translation>Імпортувати...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1091"/>
+        <location filename="torrentplugin.cpp" line="1096"/>
         <source>Export...</source>
         <translation>Експортувати...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1135"/>
+        <location filename="torrentplugin.cpp" line="1140"/>
         <source>Torrents actions</source>
         <translation>Дії над торрентами</translation>
     </message>
@@ -1414,37 +1424,37 @@ IPv6 input mask</extracomment>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="2346"/>
+        <location filename="core.cpp" line="2354"/>
         <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
         <translation>Не вдалося зберегти дані відновлення для торрента:&lt;br /&gt;%1&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2358"/>
+        <location filename="core.cpp" line="2366"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
         <translation>Файл торрента:&lt;br /&gt;%1&lt;br /&gt;був успішно переміщений до:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2371"/>
+        <location filename="core.cpp" line="2379"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
         <translation>Файл торрента:&lt;br /&gt;%1&lt;br /&gt;не вдалося перемістити ув&apos;язку з наступною помилкою:&lt;br /&gt;%2&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2388"/>
+        <location filename="core.cpp" line="2396"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
         <translation>Помилка файлу для торрента:&lt;br /&gt;%1&lt;br /&gt;файл:&lt;br /&gt;%2&lt;br /&gt;помилка:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2402"/>
+        <location filename="core.cpp" line="2410"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
         <translation>Не вдалося переіменувати торрент:&lt;br /&gt;%1&lt;br /&gt;файл %2, помилка:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2416"/>
+        <location filename="core.cpp" line="2424"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
         <translation>Не вдалося видалити торрент:&lt;br /&gt;%1&lt;br /&gt;помилка:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="tabwidget.cpp" line="292"/>
+        <location filename="tabwidget.cpp" line="296"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
@@ -2219,844 +2229,844 @@ IPv6 input mask</extracomment>
 <context>
     <name>torrentsettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummy.cpp" line="2"/>
         <source>Network</source>
         <translation>Мережа</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="3"/>
-        <location filename="dummyfile.cpp" line="4"/>
-        <location filename="dummyfile.cpp" line="147"/>
+        <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="147"/>
         <source>General</source>
         <translation>Загальні</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="5"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Port range:</source>
         <translation>Діапазон портів:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="6"/>
+        <location filename="dummy.cpp" line="6"/>
         <source>Maximum upload connections:</source>
         <translation>Максимальна кількість з&apos;єднань при поширенні:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="7"/>
+        <location filename="dummy.cpp" line="7"/>
         <source>Maximum total connections:</source>
         <translation>Максимальна загальна кількість з&apos;єднань:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="8"/>
+        <location filename="dummy.cpp" line="8"/>
         <source>Identification</source>
         <translation>Ідентифікація</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="9"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>HTTP User-Agent:</source>
         <translation>HTTP User-Agent:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="10"/>
+        <location filename="dummy.cpp" line="10"/>
         <source>Peer ID string:</source>
         <translation>Рядок Peer ID:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="11"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Ares</source>
         <translation>Ares</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="12"/>
+        <location filename="dummy.cpp" line="12"/>
         <source>Azureus</source>
         <translation>Azureus</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="13"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>BitComet</source>
         <translation>BitComet</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="14"/>
+        <location filename="dummy.cpp" line="14"/>
         <source>BTG</source>
         <translation>BTG</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="15"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>DelugeTorrent</source>
         <translation>DelugeTorrent</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="16"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>Enhanced CTorrent</source>
         <translation>Enhanced CTorrent</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="17"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Halite</source>
         <translation>Halite</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="18"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>KTorrent</source>
         <translation>KTorrent</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="19"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="20"/>
+        <location filename="dummy.cpp" line="20"/>
         <source>libtorrent-rasterbar</source>
         <translation>libtorrent-rasterbar</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="21"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>libtorrent (rtorrent)</source>
         <translation>libtorrent (rtorrent)</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="22"/>
+        <location filename="dummy.cpp" line="22"/>
         <source>qBittorrent</source>
         <translation>qBittorrent</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="23"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Shareaza</source>
         <translation>Shareaza</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="24"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>SharkTorrent</source>
         <translation>SharkTorrent</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="25"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Transmission</source>
         <translation>Transmission</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="26"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>ÂµTorrent</source>
         <translation>µTorrent</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="27"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Override Peer ID version</source>
         <translation>Задати версію Peer ID</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="28"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Peer ID version:</source>
         <translation>Версія Peer ID:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="29"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Fast speed control</source>
         <translation>Спрощений контроль швидкості</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="30"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Enable fast speed control</source>
         <translation>Увімкнути спрощений контроль швидкості</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="31"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Proxy</source>
         <translation>Проксі</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="32"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>Tracker proxy:</source>
         <translation>Проксi трекерів:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="33"/>
-        <location filename="dummyfile.cpp" line="41"/>
+        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Host:</source>
         <translation>Комп&apos;ютер:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="34"/>
-        <location filename="dummyfile.cpp" line="42"/>
+        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="42"/>
         <source>Port:</source>
         <translation>Порт:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="35"/>
-        <location filename="dummyfile.cpp" line="43"/>
+        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Login@Password:</source>
         <translation>Логін@Пароль:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="36"/>
-        <location filename="dummyfile.cpp" line="44"/>
+        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Proxy type:</source>
         <translation>Тип проксі:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="37"/>
-        <location filename="dummyfile.cpp" line="45"/>
+        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>SOCKS5</source>
         <translation>SOCKS5</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="38"/>
-        <location filename="dummyfile.cpp" line="46"/>
+        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>SOCKS4</source>
         <translation>SOCKS4</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="39"/>
-        <location filename="dummyfile.cpp" line="47"/>
+        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>HTTP</source>
         <translation>HTTP</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="40"/>
+        <location filename="dummy.cpp" line="40"/>
         <source>Peer proxy:</source>
         <translation>Проксі вузлів:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="48"/>
+        <location filename="dummy.cpp" line="48"/>
         <source>Advanced network</source>
         <translation>Розширені мережеві параметри</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="49"/>
-        <location filename="dummyfile.cpp" line="50"/>
+        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="50"/>
         <source>DHT</source>
         <translation>DHT</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="51"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Maximum peers in reply:</source>
         <translation>Максимум вузлів при відповіді:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="52"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Search branching:</source>
         <translation>Розгалуження пошуку:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="53"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>Service port:</source>
         <translation>Сервісний порт:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="54"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Maximum node fail count:</source>
         <translation>Максимальна кількість невдач вузла:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="55"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>DHT-related options</source>
         <translation>Налаштування DHT</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="56"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Use DHT as fallback</source>
         <translation>Використовувати DHT у разі недоступності трекера</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="57"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Features &amp;amp;&amp;amp; extensions</source>
         <translation>Можливості та розширення</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="58"/>
+        <location filename="dummy.cpp" line="58"/>
         <source>Features</source>
         <translation>Можливості</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="59"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Enable Local Service Discovery</source>
         <translation>Увімкнути виявлення локальних сервісів</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="60"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Enable UPnP support</source>
         <translation>Увімкнути підтримку UPnP</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="61"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Enable NAT-PMP support</source>
         <translation>Увімкнути підтримку NAT-PMP</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="62"/>
+        <location filename="dummy.cpp" line="62"/>
         <source>Extensions</source>
         <translation>Розширення</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="63"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>Enable PeX</source>
         <translation>Увімкнути PeX</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="64"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>Allow to download metadata from the swarm</source>
         <translation>Дозволити завантажувати метадані з рою</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="65"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Same as the above, but ÂµTorrent-compatible</source>
         <translation>Сумісний з µTorrent аналог попереднього</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="66"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Enable Smart Ban</source>
         <translation>Увімкнути інтелектуальне блокування</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="67"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Trackers</source>
         <translation>Трекери</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="68"/>
+        <location filename="dummy.cpp" line="68"/>
         <source>Announce to all trackers of one tier</source>
         <translation>Оновлювати всі трекери одного рівня</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="69"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Announce to all tiers</source>
         <translation>Оголошувати всім рівням</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="70"/>
+        <location filename="dummy.cpp" line="70"/>
         <source>Prefer UDP trackers</source>
         <translation>Віддавати перевагу UDP-трекерам</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="71"/>
-        <location filename="dummyfile.cpp" line="160"/>
+        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="160"/>
         <source>Advanced</source>
         <translation>Розширені</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="72"/>
+        <location filename="dummy.cpp" line="72"/>
         <source>Scrape enabled</source>
         <translation>Scrape увімкнено</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="73"/>
+        <location filename="dummy.cpp" line="73"/>
         <source>Scrape interval</source>
         <translation>Інтервал scrape-запитів</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="74"/>
-        <location filename="dummyfile.cpp" line="89"/>
-        <location filename="dummyfile.cpp" line="91"/>
-        <location filename="dummyfile.cpp" line="93"/>
-        <location filename="dummyfile.cpp" line="97"/>
-        <location filename="dummyfile.cpp" line="99"/>
-        <location filename="dummyfile.cpp" line="101"/>
-        <location filename="dummyfile.cpp" line="103"/>
-        <location filename="dummyfile.cpp" line="107"/>
-        <location filename="dummyfile.cpp" line="109"/>
-        <location filename="dummyfile.cpp" line="111"/>
-        <location filename="dummyfile.cpp" line="113"/>
-        <location filename="dummyfile.cpp" line="116"/>
-        <location filename="dummyfile.cpp" line="120"/>
-        <location filename="dummyfile.cpp" line="122"/>
-        <location filename="dummyfile.cpp" line="124"/>
-        <location filename="dummyfile.cpp" line="130"/>
-        <location filename="dummyfile.cpp" line="144"/>
-        <location filename="dummyfile.cpp" line="156"/>
-        <location filename="dummyfile.cpp" line="167"/>
-        <location filename="dummyfile.cpp" line="169"/>
-        <location filename="dummyfile.cpp" line="171"/>
+        <location filename="dummy.cpp" line="74"/>
+        <location filename="dummy.cpp" line="89"/>
+        <location filename="dummy.cpp" line="91"/>
+        <location filename="dummy.cpp" line="93"/>
+        <location filename="dummy.cpp" line="97"/>
+        <location filename="dummy.cpp" line="99"/>
+        <location filename="dummy.cpp" line="101"/>
+        <location filename="dummy.cpp" line="103"/>
+        <location filename="dummy.cpp" line="107"/>
+        <location filename="dummy.cpp" line="109"/>
+        <location filename="dummy.cpp" line="111"/>
+        <location filename="dummy.cpp" line="113"/>
+        <location filename="dummy.cpp" line="116"/>
+        <location filename="dummy.cpp" line="120"/>
+        <location filename="dummy.cpp" line="122"/>
+        <location filename="dummy.cpp" line="124"/>
+        <location filename="dummy.cpp" line="130"/>
+        <location filename="dummy.cpp" line="144"/>
+        <location filename="dummy.cpp" line="156"/>
+        <location filename="dummy.cpp" line="167"/>
+        <location filename="dummy.cpp" line="169"/>
+        <location filename="dummy.cpp" line="171"/>
         <source> s</source>
         <translation> с</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="75"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>Advanced settings</source>
         <translation>Розширені параметри</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="76"/>
+        <location filename="dummy.cpp" line="76"/>
         <source>Announce IP:</source>
         <translation>IP, що передається трекеру:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="77"/>
+        <location filename="dummy.cpp" line="77"/>
         <source>Allow multiple connections per IP</source>
         <translation>Дозволити кілька з&apos;єднань з одного IP</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="78"/>
+        <location filename="dummy.cpp" line="78"/>
         <source>Ignore limits on local network</source>
         <translation>Ігнорувати обмеження в локальній мережі</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="79"/>
+        <location filename="dummy.cpp" line="79"/>
         <source>Don&apos;t count slow torrents</source>
         <translation>Не враховувати повільні торренти</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="80"/>
+        <location filename="dummy.cpp" line="80"/>
         <source>Send redundant have messages</source>
         <translation>Посилати надлишкові have-повідомлення</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="81"/>
+        <location filename="dummy.cpp" line="81"/>
         <source>Lazy bitfields</source>
         <translation>Ліниві бітові маски</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="82"/>
+        <location filename="dummy.cpp" line="82"/>
         <source>Ignore UPNP-nonrouters</source>
         <translation>Ігнорувати UPnP пристрої, що не є роутерами</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="83"/>
+        <location filename="dummy.cpp" line="83"/>
         <source>Auto upload slots</source>
         <translation>Автоматичні слоти для поширення</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="84"/>
+        <location filename="dummy.cpp" line="84"/>
         <source>Use parole mode</source>
         <translation>Використовувати режим parole</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="85"/>
+        <location filename="dummy.cpp" line="85"/>
         <source>Close redundant connections</source>
         <translation>Закривати непотрібні з&apos;єднання</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="86"/>
+        <location filename="dummy.cpp" line="86"/>
         <source>Prioritize partial pieces</source>
         <translation>Підвищувати пріорітет неповни шматків</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="87"/>
+        <location filename="dummy.cpp" line="87"/>
         <source>Strict super seeding</source>
         <translation>Суворий супер-поширювач</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="88"/>
+        <location filename="dummy.cpp" line="88"/>
         <source>Tracker request completion timeout:</source>
         <translation>Час очікування відповіді від трекера:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="90"/>
+        <location filename="dummy.cpp" line="90"/>
         <source>Tracker data receive timeout:</source>
         <translation>Час очікування даних від трекера:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="92"/>
+        <location filename="dummy.cpp" line="92"/>
         <source>Stop tracker timeout:</source>
         <translation>Таймаут від&apos;єднання від трекера:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="94"/>
+        <location filename="dummy.cpp" line="94"/>
         <source>Tracker maximum response length:</source>
         <translation>Максимальний розмір відповіді від трекера:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="95"/>
-        <location filename="dummyfile.cpp" line="128"/>
-        <location filename="dummyfile.cpp" line="158"/>
-        <location filename="dummyfile.cpp" line="173"/>
+        <location filename="dummy.cpp" line="95"/>
+        <location filename="dummy.cpp" line="128"/>
+        <location filename="dummy.cpp" line="158"/>
+        <location filename="dummy.cpp" line="173"/>
         <source> KB</source>
         <translation> КБ</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="96"/>
+        <location filename="dummy.cpp" line="96"/>
         <source>Piece response timeout:</source>
         <translation>Таймаут очікування відповіді про шматок:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="98"/>
+        <location filename="dummy.cpp" line="98"/>
         <source>Peer connection timeout:</source>
         <translation>Таймаут з&apos;єданная з вузлом:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="100"/>
+        <location filename="dummy.cpp" line="100"/>
         <source>Block request timeout:</source>
         <translation>Час очікування отримання блока:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="102"/>
+        <location filename="dummy.cpp" line="102"/>
         <source>Piece request queue time:</source>
         <translation>Довжина черги запитів для шматка:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="104"/>
+        <location filename="dummy.cpp" line="104"/>
         <source>The number of block requests a peer is allowed to queue up:</source>
         <translation>Максимальне число запитів на блоки від вузлів в черзі:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="105"/>
+        <location filename="dummy.cpp" line="105"/>
         <source>The number of block requests to a peer in a queue:</source>
         <translation>Максимальне число запитів на блоки до вузла в черзі:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="106"/>
+        <location filename="dummy.cpp" line="106"/>
         <source>Peer timeout:</source>
         <translation>Таймаут зв&apos;язку з вузлом:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="108"/>
+        <location filename="dummy.cpp" line="108"/>
         <source>Web seed timeout:</source>
         <translation>Таймаут зв&apos;язку з веб-поширювачем:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="110"/>
+        <location filename="dummy.cpp" line="110"/>
         <source>Minimal scrape interval:</source>
         <translation>Мінімальний інтервал між scrape:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="112"/>
+        <location filename="dummy.cpp" line="112"/>
         <source>Unchoke interval:</source>
         <translation>Інтервал unchoke:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="114"/>
+        <location filename="dummy.cpp" line="114"/>
         <source>Max peer list size:</source>
         <translation>Максимум вузлів у списку:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="115"/>
+        <location filename="dummy.cpp" line="115"/>
         <source>Minimal announce interval:</source>
         <translation>Мінімальний інтервал між оголошеннями:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="117"/>
+        <location filename="dummy.cpp" line="117"/>
         <source>Max rejects for a choked peer before ban:</source>
         <translation>Максимальна кількість відмов вузла перед блокуванням:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="118"/>
+        <location filename="dummy.cpp" line="118"/>
         <source>Seeding piece quota:</source>
         <translation>Квота шматків поширення:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="119"/>
+        <location filename="dummy.cpp" line="119"/>
         <source>Web seed retry wait:</source>
         <translation>Затримка перед повторним з&apos;єднанням з веб-поширювачем:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="121"/>
+        <location filename="dummy.cpp" line="121"/>
         <source>Minimum peer reconnect time:</source>
         <translation>Мінімальний час перед повторним з&apos;єднанням з вузлом:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="123"/>
+        <location filename="dummy.cpp" line="123"/>
         <source>Force download of a piece if it could not be fetched in:</source>
         <translation>Примусове завантаження шматка, якщо він не був завантажени за:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="125"/>
+        <location filename="dummy.cpp" line="125"/>
         <source>Maximum peer connection attempt failcount:</source>
         <translation>Максимум невдалих з&apos;єднань з вузлом:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="126"/>
+        <location filename="dummy.cpp" line="126"/>
         <source>Connection attempts per second:</source>
         <translation>Спроб з&apos;єднань в секунду:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="127"/>
+        <location filename="dummy.cpp" line="127"/>
         <source>Upper send buffer low-watermark:</source>
         <translation>Верхня межа для вихідного буфера:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="129"/>
+        <location filename="dummy.cpp" line="129"/>
         <source>Peer inactivity timeout:</source>
         <translation>Таймаут відключення вузла через неактивність:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="131"/>
+        <location filename="dummy.cpp" line="131"/>
         <source>Request random pieces while we have less than:</source>
         <translation>Завантажувати випадкові шматки доки їм менше:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="132"/>
+        <location filename="dummy.cpp" line="132"/>
         <source>How much peers to get from the tracker:</source>
         <translation>Бажана кількість отриманих від трекера вузлів:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="133"/>
+        <location filename="dummy.cpp" line="133"/>
         <source>Outgoing ports:</source>
         <translation>Порти для вихідних з&apos;єднань:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="134"/>
+        <location filename="dummy.cpp" line="134"/>
         <source>Optimistic unchoke multiplier:</source>
         <translation>Множник для оптимістичного unchoke:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="135"/>
+        <location filename="dummy.cpp" line="135"/>
         <source>TOS byte:</source>
         <translation>TOS-байт:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="136"/>
+        <location filename="dummy.cpp" line="136"/>
         <source>Share ratio limit:</source>
         <translation>Межа рейтинга:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="137"/>
+        <location filename="dummy.cpp" line="137"/>
         <source>Seed time ratio limit:</source>
         <translation>Межа відношення часу поширення:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="138"/>
+        <location filename="dummy.cpp" line="138"/>
         <source>Seed time limit:</source>
         <translation>Межа часу поширення:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="139"/>
-        <location filename="dummyfile.cpp" line="141"/>
+        <location filename="dummy.cpp" line="139"/>
+        <location filename="dummy.cpp" line="141"/>
         <source> min</source>
         <translation> хв</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="140"/>
+        <location filename="dummy.cpp" line="140"/>
         <source>Auto scrape interval:</source>
         <translation>Інтервал автоматичного scrape:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="142"/>
+        <location filename="dummy.cpp" line="142"/>
         <source>N of pieces to send via fast extensions:</source>
         <translation>Кількість шматків, що передаються через швидкі розширення:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="143"/>
+        <location filename="dummy.cpp" line="143"/>
         <source>Handshake timeout:</source>
         <translation>Таймаут рукостискання:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="145"/>
+        <location filename="dummy.cpp" line="145"/>
         <source>Web seed pipeline size:</source>
         <translation>Розмір конвеєра веб-поширювача:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="146"/>
-        <location filename="dummyfile.cpp" line="148"/>
+        <location filename="dummy.cpp" line="146"/>
+        <location filename="dummy.cpp" line="148"/>
         <source>Local settings</source>
         <translation>Локальні налаштування</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="149"/>
+        <location filename="dummy.cpp" line="149"/>
         <source>Notify when torrent wasn&apos;t automatically added because its too large size</source>
         <translation>Повідомляти, коли автоматичне додавання не вдалось чреез наступну опцію</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="150"/>
+        <location filename="dummy.cpp" line="150"/>
         <source>File allocation mode:</source>
         <translation>Режим виділення місця під файли:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="151"/>
+        <location filename="dummy.cpp" line="151"/>
         <source>Sparse</source>
         <translation>Розріджені файли</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="152"/>
+        <location filename="dummy.cpp" line="152"/>
         <source>Full</source>
         <translation>Повне виділення</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="153"/>
+        <location filename="dummy.cpp" line="153"/>
         <source>Maximum automatically added torrent size:</source>
         <translation>Максимальний розмір торрента, що додається автоматично:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="154"/>
+        <location filename="dummy.cpp" line="154"/>
         <source> MB</source>
         <translation> МБ</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="155"/>
+        <location filename="dummy.cpp" line="155"/>
         <source>Autosave interval:</source>
         <translation>Інтервал автоматичного збереження:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="157"/>
+        <location filename="dummy.cpp" line="157"/>
         <source>Cache size:</source>
         <translation>Розмір кешу:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="159"/>
+        <location filename="dummy.cpp" line="159"/>
         <source>Tags for automatic jobs:</source>
         <translation>Позначка для автоматичних задач:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="161"/>
+        <location filename="dummy.cpp" line="161"/>
         <source>Accurate but slow file progress calculation</source>
         <translation>Точне, але повільне обчислення прогресу файла</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="162"/>
+        <location filename="dummy.cpp" line="162"/>
         <source>Use read cache</source>
         <translation>Використовувати кеш для читання</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="163"/>
+        <location filename="dummy.cpp" line="163"/>
         <source>Unload hashes from memory if seeding</source>
         <translation>Вивантажувати хеші з пам&apos;яті при поширенні</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="164"/>
+        <location filename="dummy.cpp" line="164"/>
         <source>Prevent disk cache from swapping out</source>
         <translation>Запобігати скиданню кеша до файлу підкачки</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="165"/>
+        <location filename="dummy.cpp" line="165"/>
         <source>Give slots to seeding torrents in automanaged mode</source>
         <translation>Автоматично давати слот для торрентів, що поширюються</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="166"/>
+        <location filename="dummy.cpp" line="166"/>
         <source>Cache expiry:</source>
         <translation>Час придатності кеша:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="168"/>
+        <location filename="dummy.cpp" line="168"/>
         <source>Automanage startup wait:</source>
         <translation>Затримка перед початком автокерування:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="170"/>
+        <location filename="dummy.cpp" line="170"/>
         <source>Auto queue manage interval:</source>
         <translation>Інтервал автоматичного керування чергою:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="172"/>
+        <location filename="dummy.cpp" line="172"/>
         <source>Maximum outstanding disk bytes per connection:</source>
         <translation>Максимум байт для одного з&apos;єдання, що чекають на запис:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="174"/>
+        <location filename="dummy.cpp" line="174"/>
         <source>Allocate this number of blocks at a time:</source>
         <translation>Виділяти по:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="175"/>
+        <location filename="dummy.cpp" line="175"/>
         <source> blocks</source>
         <translation> блоків</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="176"/>
+        <location filename="dummy.cpp" line="176"/>
         <source>Maximum amount of concurrently open files:</source>
         <translation>Максимальна кількість одночасно відкритих файлів:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="177"/>
+        <location filename="dummy.cpp" line="177"/>
         <source>Logging</source>
         <translation>Журнал</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="178"/>
+        <location filename="dummy.cpp" line="178"/>
         <source>Logging levels</source>
         <translation>Рівень жуналювання</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="179"/>
+        <location filename="dummy.cpp" line="179"/>
         <source>Error notifications</source>
         <translation>Повідомлення про помилки</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="180"/>
+        <location filename="dummy.cpp" line="180"/>
         <source>Peer events</source>
         <translation>Події вузлів</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="181"/>
+        <location filename="dummy.cpp" line="181"/>
         <source>Port mapping events</source>
         <translation>Події призначення портів</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="182"/>
+        <location filename="dummy.cpp" line="182"/>
         <source>Storage events</source>
         <translation>Події сховища</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="183"/>
+        <location filename="dummy.cpp" line="183"/>
         <source>Tracker events</source>
         <translation>Події трекера</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="184"/>
+        <location filename="dummy.cpp" line="184"/>
         <source>State change events</source>
         <translation>Події зміни статусу</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="185"/>
+        <location filename="dummy.cpp" line="185"/>
         <source>Progress events</source>
         <translation>Події поступу завантаження</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="186"/>
+        <location filename="dummy.cpp" line="186"/>
         <source>IP block events</source>
         <translation>Події блокування IP</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="187"/>
+        <location filename="dummy.cpp" line="187"/>
         <source>Performance warnings</source>
         <translation>Попереждення про швидкодію</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="188"/>
+        <location filename="dummy.cpp" line="188"/>
         <source>Info pane</source>
         <translation>Інформаційна панель</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="189"/>
+        <location filename="dummy.cpp" line="189"/>
         <source>Active groups</source>
         <translation>Активні групи</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="190"/>
+        <location filename="dummy.cpp" line="190"/>
         <source>Dashboard</source>
         <translation>Панель керування</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="191"/>
+        <location filename="dummy.cpp" line="191"/>
         <source>Session stats</source>
         <translation>Статус сеансу</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="192"/>
+        <location filename="dummy.cpp" line="192"/>
         <source>Advanced session stats</source>
         <translation>Детальна статистика сеансу</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="193"/>
+        <location filename="dummy.cpp" line="193"/>
         <source>Per-tracker stats</source>
         <translation>Статус по трекерам</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="194"/>
+        <location filename="dummy.cpp" line="194"/>
         <source>Cache stats</source>
         <translation>Статус кешу</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="195"/>
+        <location filename="dummy.cpp" line="195"/>
         <source>Torrent</source>
         <translation>Торрент</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="196"/>
+        <location filename="dummy.cpp" line="196"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="197"/>
+        <location filename="dummy.cpp" line="197"/>
         <source>Advanced status</source>
         <translation>Детальна статистика</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="198"/>
+        <location filename="dummy.cpp" line="198"/>
         <source>Information</source>
         <translation>Інформація</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="199"/>
+        <location filename="dummy.cpp" line="199"/>
         <source>Peers</source>
         <translation>Піри</translation>
     </message>

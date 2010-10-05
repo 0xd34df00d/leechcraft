@@ -106,6 +106,10 @@
         <source>Database name:</source>
         <translation>Назва бази даних:</translation>
     </message>
+    <message>
+        <source>MySQL</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CommonJobAdder</name>
@@ -554,6 +558,14 @@
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Context-dependent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation type="unfinished">System</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -761,7 +773,7 @@
     <name>LeechCraft::TabContainer</name>
     <message>
         <source>New tab menu</source>
-        <translation>Меню створення вкладки</translation>
+        <translation type="obsolete">Меню створення вкладки</translation>
     </message>
     <message>
         <source>Restore tabs</source>
@@ -769,7 +781,7 @@
     </message>
     <message>
         <source>Close all but this</source>
-        <translation>Закрити всі крім поточної</translation>
+        <translation type="obsolete">Закрити всі крім поточної</translation>
     </message>
 </context>
 <context>
@@ -777,6 +789,17 @@
     <message>
         <source>Summary</source>
         <translation type="obsolete">Підсумок</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::TabManager</name>
+    <message>
+        <source>New tab menu</source>
+        <translation type="unfinished">Меню створення вкладки</translation>
+    </message>
+    <message>
+        <source>Close all but this</source>
+        <translation type="unfinished">Закрити всі крім поточної</translation>
     </message>
 </context>
 <context>
@@ -1101,27 +1124,27 @@
     </message>
     <message>
         <source>German (Deutsch)</source>
-        <translation>German (Deutsch)</translation>
+        <translation type="obsolete">German (Deutsch)</translation>
     </message>
     <message>
         <source>English</source>
-        <translation>English</translation>
+        <translation type="obsolete">English</translation>
     </message>
     <message>
         <source>Esperanto</source>
-        <translation>Esperanto</translation>
+        <translation type="obsolete">Esperanto</translation>
     </message>
     <message>
         <source>Spanish</source>
-        <translation>Spanish</translation>
+        <translation type="obsolete">Spanish</translation>
     </message>
     <message>
         <source>Italian (Italiano)</source>
-        <translation>Italian (Italiano)</translation>
+        <translation type="obsolete">Italian (Italiano)</translation>
     </message>
     <message>
         <source>Polish (Polski)</source>
-        <translation>Polish (Polski)</translation>
+        <translation type="obsolete">Polish (Polski)</translation>
     </message>
     <message>
         <source>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</source>
@@ -1273,19 +1296,27 @@
     </message>
     <message>
         <source>Arabic (العربية)</source>
-        <translation>Arabic (العربية)</translation>
+        <translation type="obsolete">Arabic (العربية)</translation>
     </message>
     <message>
         <source>Russian (Русский)</source>
-        <translation>Russian (Русский)</translation>
+        <translation type="obsolete">Russian (Русский)</translation>
     </message>
     <message>
         <source>Spanish (Español)</source>
-        <translation>Spanish (Español)</translation>
+        <translation type="obsolete">Spanish (Español)</translation>
     </message>
     <message>
         <source>Ukrainian (Українська)</source>
-        <translation>Ukrainian (Українська)</translation>
+        <translation type="obsolete">Ukrainian (Українська)</translation>
+    </message>
+    <message>
+        <source>Default new tab contents:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Context-dependent</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
