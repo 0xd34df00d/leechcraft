@@ -24,7 +24,7 @@
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="176"/>
+        <location filename="core.cpp" line="180"/>
         <source>Binary data</source>
         <translation>Двійкові дані</translation>
     </message>
@@ -32,7 +32,7 @@
 <context>
     <name>LeechCraft::Plugins::HistoryHolder::Plugin</name>
     <message>
-        <location filename="historyholder.cpp" line="56"/>
+        <location filename="historyholder.cpp" line="51"/>
         <source>Holds history from various plugins</source>
         <translation>Зберігає історію різних плагінів</translation>
     </message>

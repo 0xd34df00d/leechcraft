@@ -4,23 +4,23 @@
 <context>
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
-        <location filename="core.cpp" line="122"/>
-        <location filename="core.cpp" line="345"/>
+        <location filename="core.cpp" line="123"/>
+        <location filename="core.cpp" line="327"/>
         <source>Summary</source>
         <translation>Зведення</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="189"/>
+        <location filename="core.cpp" line="190"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="190"/>
+        <location filename="core.cpp" line="191"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="191"/>
+        <location filename="core.cpp" line="192"/>
         <source>State</source>
         <translation>Стан</translation>
     </message>
@@ -77,17 +77,9 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Summary::SearchWidget</name>
-    <message>
-        <location filename="searchwidget.cpp" line="35"/>
-        <source>Search categories</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::Summary::Summary</name>
     <message>
-        <location filename="summary.cpp" line="92"/>
+        <location filename="summary.cpp" line="88"/>
         <source>Summary of downloads and recent events</source>
         <translation>Зведенная завантажень та недавніх подій</translation>
     </message>
@@ -95,19 +87,24 @@
 <context>
     <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="49"/>
+        <location filename="summarywidget.cpp" line="47"/>
         <source>Ctrl+F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="476"/>
+        <location filename="summarywidget.cpp" line="367"/>
         <source>S: %1 [%2]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="480"/>
+        <location filename="summarywidget.cpp" line="371"/>
         <source>Summary [%1]</source>
         <translation>Зведення [%1]</translation>
+    </message>
+    <message>
+        <location filename="summarywidget.cpp" line="400"/>
+        <source>Remove this category</source>
+        <translation>Видалити цю категорію</translation>
     </message>
 </context>
 <context>
@@ -118,32 +115,37 @@
         <translation>Параметри пошуку</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="73"/>
+        <location filename="searchwidget.ui" line="33"/>
         <source>String</source>
         <translation>Рядок</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="78"/>
+        <location filename="searchwidget.ui" line="38"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="83"/>
+        <location filename="searchwidget.ui" line="43"/>
         <source>Regexp</source>
         <translation>Регулярний вираз</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="88"/>
+        <location filename="searchwidget.ui" line="48"/>
         <source>Tags</source>
         <translation>Позначки</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="39"/>
+        <location filename="searchwidget.ui" line="104"/>
+        <source>Add</source>
+        <translation>Додати</translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="111"/>
         <source>AND</source>
         <translation>ТА</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="49"/>
+        <location filename="searchwidget.ui" line="118"/>
         <source>OR</source>
         <translation>АБО</translation>
     </message>

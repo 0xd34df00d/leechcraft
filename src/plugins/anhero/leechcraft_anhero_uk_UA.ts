@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::AnHero::Plugin</name>
     <message>
-        <location filename="anhero.cpp" line="65"/>
+        <location filename="anhero.cpp" line="60"/>
         <source>Crash handler</source>
         <translation>Обробник падінь</translation>
     </message>

@@ -228,4 +228,27 @@
         <translation>Насиченість:</translation>
     </message>
 </context>
+<context>
+    <name>lmpsettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <source>General</source>
+        <translation>Загальні</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Plugin communication</source>
+        <translation>Взаємодія з плагінами</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Test only these extensions</source>
+        <translation>Перевіряти лише ці розширення</translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Extenstions list:</source>
+        <translation>Список розширень:</translation>
+    </message>
+</context>
 </TS>

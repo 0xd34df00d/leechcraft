@@ -214,7 +214,7 @@
 <context>
     <name>LeechCraft::Plugins::Popishu::Plugin</name>
     <message>
-        <location filename="popishu.cpp" line="102"/>
+        <location filename="popishu.cpp" line="97"/>
         <source>Plain text editor with syntax highlighting and stuff.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -254,6 +254,78 @@
     <message>
         <location filename="replacedialog.ui" line="73"/>
         <source>Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>popishusettings</name>
+    <message>
+        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummyfile.cpp" line="3"/>
+        <source>Editor settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="4"/>
+        <source>Tab width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="5"/>
+        <source>Identation width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="6"/>
+        <source>Monospace font:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="7"/>
+        <source>Text wrapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="8"/>
+        <source>End wrap flag location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="9"/>
+        <location filename="dummyfile.cpp" line="13"/>
+        <source>No wrap flag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="10"/>
+        <location filename="dummyfile.cpp" line="14"/>
+        <source>By text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="11"/>
+        <location filename="dummyfile.cpp" line="15"/>
+        <source>By border</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="12"/>
+        <source>Start wrap flag location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="16"/>
+        <source>Indentation of wrapped line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="17"/>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummyfile.cpp" line="18"/>
+        <source>Remember this much recently opened files:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

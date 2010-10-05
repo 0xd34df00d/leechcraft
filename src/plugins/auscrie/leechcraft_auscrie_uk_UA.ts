@@ -4,42 +4,39 @@
 <context>
     <name>LeechCraft::Plugins::Auscrie::Plugin</name>
     <message>
-        <location filename="auscrie.cpp" line="45"/>
+        <location filename="auscrie.cpp" line="48"/>
         <source>Make a screenshot</source>
         <translation>Зробити знімок екрану</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="73"/>
+        <location filename="auscrie.cpp" line="71"/>
         <source>Simple auto screenshoter.</source>
         <translation>Простий скріншотер.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="137"/>
+        <location filename="auscrie.cpp" line="135"/>
         <source>Save as</source>
         <translation>Зберегти як</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="139"/>
+        <location filename="auscrie.cpp" line="137"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>Файли %1 (*.%1);;Всі файли (*.*)</translation>
     </message>
-</context>
-<context>
-    <name>LeechCraft::Plugins::Auscrie::Poster</name>
     <message>
-        <location filename="poster.cpp" line="160"/>
+        <location filename="auscrie.cpp" line="176"/>
         <source>Page parse failed</source>
-        <translation type="unfinished">Обробка сторінки зазнала невдачі</translation>
+        <translation>Обробка сторінки зазнала невдачі</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="167"/>
+        <location filename="auscrie.cpp" line="186"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
-        <translation type="unfinished">Картинка завантажена: %1, адреса знаходиться в буфері обміну</translation>
+        <translation>Картинка завантажена: %1, адреса знаходиться в буфері обміну</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="179"/>
+        <location filename="auscrie.cpp" line="198"/>
         <source>Upload of screenshot failed: %1</source>
-        <translation type="unfinished">Завантаження знімку не вдалось: %1</translation>
+        <translation>Завантаження знімку не вдалось: %1</translation>
     </message>
 </context>
 <context>
@@ -55,42 +52,42 @@
         <translation>Дія:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="36"/>
+        <location filename="shooterdialog.ui" line="31"/>
         <source>upload to Imagebin.ca</source>
         <translation>завантажити на Imagebin.ca</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="41"/>
+        <location filename="shooterdialog.ui" line="36"/>
         <source>save</source>
         <translation>зберегти</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="49"/>
+        <location filename="shooterdialog.ui" line="44"/>
         <source>Timeout:</source>
         <translation>Затримка:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="56"/>
+        <location filename="shooterdialog.ui" line="51"/>
         <source> s</source>
         <translation> с</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="63"/>
+        <location filename="shooterdialog.ui" line="58"/>
         <source>Format:</source>
         <translation>Формат:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="71"/>
+        <location filename="shooterdialog.ui" line="66"/>
         <source>JPG</source>
         <translation>JPG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="76"/>
+        <location filename="shooterdialog.ui" line="71"/>
         <source>PNG</source>
         <translation>PNG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="84"/>
+        <location filename="shooterdialog.ui" line="79"/>
         <source>Quality:</source>
         <translation>Якість:</translation>
     </message>

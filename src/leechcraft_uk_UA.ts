@@ -106,10 +106,6 @@
         <source>Database name:</source>
         <translation>Назва бази даних:</translation>
     </message>
-    <message>
-        <source>MySQL</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CommonJobAdder</name>
@@ -558,14 +554,6 @@
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Context-dependent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="unfinished">System</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -773,7 +761,7 @@
     <name>LeechCraft::TabContainer</name>
     <message>
         <source>New tab menu</source>
-        <translation type="obsolete">Меню створення вкладки</translation>
+        <translation>Меню створення вкладки</translation>
     </message>
     <message>
         <source>Restore tabs</source>
@@ -781,7 +769,7 @@
     </message>
     <message>
         <source>Close all but this</source>
-        <translation type="obsolete">Закрити всі крім поточної</translation>
+        <translation>Закрити всі крім поточної</translation>
     </message>
 </context>
 <context>
@@ -789,17 +777,6 @@
     <message>
         <source>Summary</source>
         <translation type="obsolete">Підсумок</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::TabManager</name>
-    <message>
-        <source>New tab menu</source>
-        <translation type="unfinished">Меню створення вкладки</translation>
-    </message>
-    <message>
-        <source>Close all but this</source>
-        <translation type="unfinished">Закрити всі крім поточної</translation>
     </message>
 </context>
 <context>
@@ -1028,95 +1005,95 @@
     <name>coresettings</name>
     <message>
         <source>Appearance</source>
-        <translation type="obsolete">Зовнішній вигляд</translation>
+        <translation>Зовнішній вигляд</translation>
     </message>
     <message>
         <source>Use tab scroll buttons</source>
-        <translation type="obsolete">Використовувати кнопки прокручування табів</translation>
+        <translation>Використовувати кнопки прокручування табів</translation>
     </message>
     <message>
         <source>Show menu bar as button</source>
-        <translation type="obsolete">Показувати панель меню у вигляді кнопок</translation>
+        <translation>Показувати панель меню у вигляді кнопок</translation>
     </message>
     <message>
         <source>Try smarter tabs width calculation</source>
-        <translation type="obsolete">Намагатися використовувати досконалий алгоритм розрахунку ширини вкладок</translation>
+        <translation>Намагатися використовувати досконалий алгоритм розрахунку ширини вкладок</translation>
     </message>
     <message>
         <source>Icon size</source>
-        <translation type="obsolete">Розмір іконок</translation>
+        <translation>Розмір іконок</translation>
     </message>
     <message>
         <source>System default</source>
-        <translation type="obsolete">Системний</translation>
+        <translation>Системний</translation>
     </message>
     <message>
         <source>16x16</source>
-        <translation type="obsolete">16x16</translation>
+        <translation>16x16</translation>
     </message>
     <message>
         <source>24x24</source>
-        <translation type="obsolete">24x24</translation>
+        <translation>24x24</translation>
     </message>
     <message>
         <source>32x32</source>
-        <translation type="obsolete">32x32</translation>
+        <translation>32x32</translation>
     </message>
     <message>
         <source>Tool button style:</source>
-        <translation type="obsolete">Стиль панелей інструментів:</translation>
+        <translation>Стиль панелей інструментів:</translation>
     </message>
     <message>
         <source>Only display the icon</source>
-        <translation type="obsolete">Показувати лише іконку</translation>
+        <translation>Показувати лише іконку</translation>
     </message>
     <message>
         <source>Only display the text</source>
-        <translation type="obsolete">Показувати лише текст</translation>
+        <translation>Показувати лише текст</translation>
     </message>
     <message>
         <source>The text appears beside the icon</source>
-        <translation type="obsolete">Текст поряд з іконкою</translation>
+        <translation>Текст поряд з іконкою</translation>
     </message>
     <message>
         <source>The text appears under the icon</source>
-        <translation type="obsolete">Текст під іконкою</translation>
+        <translation>Текст під іконкою</translation>
     </message>
     <message>
         <source>Tab bar location:</source>
-        <translation type="obsolete">Розташування вкладок:</translation>
+        <translation>Розташування вкладок:</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="obsolete">Зверху</translation>
+        <translation>Зверху</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="obsolete">Знизу</translation>
+        <translation>Знизу</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="obsolete">Зліва</translation>
+        <translation>Зліва</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="obsolete">Зправа</translation>
+        <translation>Зправа</translation>
     </message>
     <message>
         <source>Icon set:</source>
-        <translation type="obsolete">Набір іконок:</translation>
+        <translation>Набір іконок:</translation>
     </message>
     <message>
         <source>Style:</source>
-        <translation type="obsolete">Стиль:</translation>
+        <translation>Стиль:</translation>
     </message>
     <message>
         <source>Language:</source>
-        <translation type="obsolete">Мова:</translation>
+        <translation>Мова:</translation>
     </message>
     <message>
         <source>System</source>
-        <translation type="obsolete">System</translation>
+        <translation>System</translation>
     </message>
     <message>
         <source>Arabic (Ø§ÙØ¹Ø±Ø¨ÙØ©)</source>
@@ -1124,27 +1101,27 @@
     </message>
     <message>
         <source>German (Deutsch)</source>
-        <translation type="obsolete">German (Deutsch)</translation>
+        <translation>German (Deutsch)</translation>
     </message>
     <message>
         <source>English</source>
-        <translation type="obsolete">English</translation>
+        <translation>English</translation>
     </message>
     <message>
         <source>Esperanto</source>
-        <translation type="obsolete">Esperanto</translation>
+        <translation>Esperanto</translation>
     </message>
     <message>
         <source>Spanish</source>
-        <translation type="obsolete">Spanish</translation>
+        <translation>Spanish</translation>
     </message>
     <message>
         <source>Italian (Italiano)</source>
-        <translation type="obsolete">Italian (Italiano)</translation>
+        <translation>Italian (Italiano)</translation>
     </message>
     <message>
         <source>Polish (Polski)</source>
-        <translation type="obsolete">Polish (Polski)</translation>
+        <translation>Polish (Polski)</translation>
     </message>
     <message>
         <source>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</source>
@@ -1160,151 +1137,155 @@
     </message>
     <message>
         <source>Maximum log lines:</source>
-        <translation type="obsolete">Максимум рядків в журналі:</translation>
+        <translation>Максимум рядків в журналі:</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="obsolete">Гарячі клавиші</translation>
+        <translation>Гарячі клавиші</translation>
     </message>
     <message>
         <source>Behavior</source>
-        <translation type="obsolete">Поведінка</translation>
+        <translation>Поведінка</translation>
     </message>
     <message>
         <source>Watch clipboard</source>
-        <translation type="obsolete">Спостерігати за буфером обміну</translation>
+        <translation>Спостерігати за буфером обміну</translation>
     </message>
     <message>
         <source>Ask quit confirmation</source>
-        <translation type="obsolete">Запитувати підтвердження виходу</translation>
+        <translation>Запитувати підтвердження виходу</translation>
     </message>
     <message>
         <source>Exit on close</source>
-        <translation type="obsolete">Виходити при закритті</translation>
+        <translation>Виходити при закритті</translation>
     </message>
     <message>
         <source>Open new tab next to current</source>
-        <translation type="obsolete">Відкривати вкладку після поточної</translation>
+        <translation>Відкривати вкладку після поточної</translation>
     </message>
     <message>
         <source>Automatically accept task when there is only one handler</source>
-        <translation type="obsolete">Автоматично додавати задачу, якщо є лише один обробник</translation>
+        <translation>Автоматично додавати задачу, якщо є лише один обробник</translation>
     </message>
     <message>
         <source>Watch directory:</source>
-        <translation type="obsolete">Слідкувати за каталогом:</translation>
+        <translation>Слідкувати за каталогом:</translation>
     </message>
     <message>
         <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation type="obsolete">Показувати залежні від плагіна дії у контекстному меню панелі табів</translation>
+        <translation>Показувати залежні від плагіна дії у контекстному меню панелі табів</translation>
     </message>
     <message>
         <source>Show as a submenu</source>
-        <translation type="obsolete">Показувати як підменю</translation>
+        <translation>Показувати як підменю</translation>
     </message>
     <message>
         <source>Show messages in tray</source>
-        <translation type="obsolete">Показувати повідомленя в треї</translation>
+        <translation>Показувати повідомленя в треї</translation>
     </message>
     <message>
         <source>Message timeout:</source>
-        <translation type="obsolete">Відображати повідомлення:</translation>
+        <translation>Відображати повідомлення:</translation>
     </message>
     <message>
         <source> s</source>
-        <translation type="obsolete"> с</translation>
+        <translation> с</translation>
     </message>
     <message>
         <source>Tags</source>
-        <translation type="obsolete">Позначки</translation>
+        <translation>Позначки</translation>
     </message>
     <message>
         <source>Tags manager</source>
-        <translation type="obsolete">Менеджер позначок</translation>
+        <translation>Менеджер позначок</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation></translation>
     </message>
     <message>
         <source>Cache size:</source>
-        <translation type="obsolete">Розмір кешу:</translation>
+        <translation>Розмір кешу:</translation>
     </message>
     <message>
         <source> MB</source>
-        <translation type="obsolete"> МБ</translation>
+        <translation> МБ</translation>
     </message>
     <message>
         <source>Filter tracking cookies</source>
-        <translation type="obsolete">Фільтрувати шпигунські куки</translation>
+        <translation>Фільтрувати шпигунські куки</translation>
     </message>
     <message>
         <source>Clear cache</source>
-        <translation type="obsolete">Очистити кеш</translation>
+        <translation>Очистити кеш</translation>
     </message>
     <message>
         <source>Clear cookies</source>
-        <translation type="obsolete">Очистити куки</translation>
+        <translation>Очистити куки</translation>
     </message>
     <message>
         <source>Application-wide proxy</source>
-        <translation type="obsolete">Глобальний проксі</translation>
+        <translation>Глобальний проксі</translation>
     </message>
     <message>
         <source>Host:</source>
-        <translation type="obsolete">Хост:</translation>
+        <translation>Хост:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type="obsolete">Порт:</translation>
+        <translation>Порт:</translation>
     </message>
     <message>
         <source>Login:</source>
-        <translation type="obsolete">Логін:</translation>
+        <translation>Логін:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="obsolete">Пароль:</translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <source>Proxy type:</source>
-        <translation type="obsolete">Тип проксі:</translation>
+        <translation>Тип проксі:</translation>
     </message>
     <message>
         <source>SOCKS5</source>
-        <translation type="obsolete">SOCKS5</translation>
+        <translation>SOCKS5</translation>
     </message>
     <message>
         <source>Transparent HTTP</source>
-        <translation type="obsolete">Прозорий HTTP</translation>
+        <translation>Прозорий HTTP</translation>
     </message>
     <message>
         <source>Caching HTTP</source>
-        <translation type="obsolete">HTTP з кешуванням</translation>
+        <translation>HTTP з кешуванням</translation>
     </message>
     <message>
         <source>Caching FTP</source>
-        <translation type="obsolete">FTP з кешуванням</translation>
+        <translation>FTP з кешуванням</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="obsolete">Плагіни</translation>
+        <translation>Плагіни</translation>
     </message>
     <message>
         <source>Plugins manager</source>
-        <translation type="obsolete">Менеджер плагинів</translation>
+        <translation>Менеджер плагинів</translation>
     </message>
     <message>
         <source>Arabic (العربية)</source>
-        <translation type="obsolete">Arabic (العربية)</translation>
+        <translation>Arabic (العربية)</translation>
     </message>
     <message>
         <source>Russian (Русский)</source>
-        <translation type="obsolete">Russian (Русский)</translation>
+        <translation>Russian (Русский)</translation>
     </message>
     <message>
         <source>Spanish (Español)</source>
-        <translation type="obsolete">Spanish (Español)</translation>
+        <translation>Spanish (Español)</translation>
     </message>
     <message>
         <source>Ukrainian (Українська)</source>
-        <translation type="obsolete">Ukrainian (Українська)</translation>
+        <translation>Ukrainian (Українська)</translation>
     </message>
 </context>
 </TS>
