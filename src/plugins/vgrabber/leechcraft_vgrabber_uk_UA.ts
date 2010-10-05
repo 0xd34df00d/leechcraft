@@ -116,12 +116,12 @@
         <translation>Відео</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="184"/>
+        <location filename="videofindproxy.cpp" line="165"/>
         <source>Nothing found for %1</source>
         <translation>Нічого не знайдено по %1</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="280"/>
+        <location filename="videofindproxy.cpp" line="273"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Завдання на запит&lt;br /&gt;%1&lt;br /&gt;не було делеговано.</translation>
     </message>
@@ -129,37 +129,9 @@
 <context>
     <name>LeechCraft::Plugins::vGrabber::vGrabber</name>
     <message>
-        <location filename="vgrabber.cpp" line="83"/>
+        <location filename="vgrabber.cpp" line="88"/>
         <source>vkontakte.ru audio/video grabber.</source>
         <translation>Завантаження та програванная аудіо та відео з В Контакте.</translation>
-    </message>
-</context>
-<context>
-    <name>vgrabbersettings</name>
-    <message>
-        <location filename="dummyfile.cpp" line="2"/>
-        <source>General settings</source>
-        <translation>Загальні параметри</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="3"/>
-        <source>Audio</source>
-        <translation>Аудіо</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="4"/>
-        <source>Filter files with the same URL</source>
-        <translation>Фільтрувати файли з однаковими адресами</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="5"/>
-        <source>Filter files with same title and length</source>
-        <translation>Фільтрувати файли з однаковми назвами і довжиною</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="6"/>
-        <source>Video</source>
-        <translation>Відео</translation>
     </message>
 </context>
 </TS>

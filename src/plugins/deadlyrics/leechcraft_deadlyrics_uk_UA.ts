@@ -29,19 +29,4 @@
         <translation>Невідомий %1 %2</translation>
     </message>
 </context>
-<context>
-    <name>deadlyricssettings</name>
-    <message>
-        <source>Appearance</source>
-        <translation>Зовнішній вигляд</translation>
-    </message>
-    <message>
-        <source>Lyrics view</source>
-        <translation>Перегляд текстів</translation>
-    </message>
-    <message>
-        <source>Use a web browser (if available)</source>
-        <translation>Використовувати браузер (якщо доступний)</translation>
-    </message>
-</context>
 </TS>

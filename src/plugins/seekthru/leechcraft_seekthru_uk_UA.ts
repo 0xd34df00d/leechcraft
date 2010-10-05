@@ -4,52 +4,52 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="71"/>
+        <location filename="core.cpp" line="81"/>
         <source>Short name</source>
         <translation>Коротка назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="113"/>
+        <location filename="core.cpp" line="123"/>
         <source>Open</source>
         <translation>Відкрити</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="115"/>
+        <location filename="core.cpp" line="125"/>
         <source>Limited</source>
         <translation>Обмежений</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="117"/>
+        <location filename="core.cpp" line="127"/>
         <source>Private</source>
         <translation>Приватний</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="119"/>
+        <location filename="core.cpp" line="129"/>
         <source>Closed</source>
         <translation>Закритий</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="199"/>
+        <location filename="core.cpp" line="274"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation>%1 не було делеговано</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="307"/>
+        <location filename="core.cpp" line="410"/>
         <source>Could not open file %1.</source>
         <translation>Неможливо відкрити файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="317"/>
+        <location filename="core.cpp" line="420"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Неможливо видалити тимчасовий файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="325"/>
+        <location filename="core.cpp" line="428"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Завдання було делеговано, але виникла помилка.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="377"/>
+        <location filename="core.cpp" line="480"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation>Помилка XML: %1 на %2:%3.</translation>
     </message>
@@ -153,7 +153,7 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="90"/>
+        <location filename="seekthru.cpp" line="99"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation>Пошук за допомогою OpenSearch-пошуковців.</translation>
     </message>
@@ -240,16 +240,16 @@
     </message>
 </context>
 <context>
-    <name>StartupFirstPageWidget</name>
+    <name>SeekThruStartupFirstPageWidget</name>
     <message>
         <location filename="startupfirstpage.ui" line="22"/>
         <source>Localized set:</source>
-        <translation>Локалізований набір:</translation>
+        <translation type="unfinished">Локалізований набір:</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="30"/>
         <source>General</source>
-        <translation>Загальний</translation>
+        <translation type="unfinished">Загальний</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="35"/>
@@ -259,12 +259,12 @@
     <message>
         <location filename="startupfirstpage.ui" line="59"/>
         <source>Engine</source>
-        <translation>Рушій</translation>
+        <translation type="unfinished">Рушій</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="64"/>
         <source>Tags</source>
-        <translation>Позначки</translation>
+        <translation type="unfinished">Позначки</translation>
     </message>
 </context>
 <context>
@@ -273,30 +273,6 @@
         <location filename="tagsasker.ui" line="22"/>
         <source>Tags for this searcher:</source>
         <translation>Позначки для цього пошуковця:</translation>
-    </message>
-</context>
-<context>
-    <name>seekthrusettings</name>
-    <message>
-        <location filename="dummyfile.cpp" line="2"/>
-        <source>SeekThru settings</source>
-        <translation>Налаштування SeekThru</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="3"/>
-        <location filename="dummyfile.cpp" line="4"/>
-        <source>Searchers</source>
-        <translation>Пошуковці</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="5"/>
-        <source>Appearance</source>
-        <translation>Вигляд</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="6"/>
-        <source>Navigation bar visible</source>
-        <translation>Відображати навігаційну панель</translation>
     </message>
 </context>
 </TS>

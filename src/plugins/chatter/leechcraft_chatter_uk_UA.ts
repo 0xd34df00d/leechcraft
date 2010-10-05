@@ -154,6 +154,11 @@
         <source>Invalid IRC URI</source>
         <translation>Неправильна адреса IRC</translation>
     </message>
+    <message>
+        <location filename="irc.h" line="47"/>
+        <source>See ya in hell!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IrcServer</name>
@@ -176,22 +181,9 @@
 <context>
     <name>LeechCraft::Plugins::Chatter::Plugin</name>
     <message>
-        <location filename="chatter.cpp" line="49"/>
+        <location filename="chatter.cpp" line="54"/>
         <source>Allows to chat in IRC</source>
         <translation type="unfinished">Дозволяє теревенити в IRC</translation>
-    </message>
-</context>
-<context>
-    <name>chattersettings</name>
-    <message>
-        <location filename="dummyfile.cpp" line="2"/>
-        <source>Interface</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="3"/>
-        <source>Show icon in tray</source>
-        <translation>Показвати іконку в треї</translation>
     </message>
 </context>
 <context>

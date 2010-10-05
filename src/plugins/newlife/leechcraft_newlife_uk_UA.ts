@@ -4,11 +4,6 @@
 <context>
     <name>FeedsSettingsImportPage</name>
     <message>
-        <location filename="feedssettingsimportpage.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation>Сторінка Майстра</translation>
-    </message>
-    <message>
         <location filename="feedssettingsimportpage.ui" line="22"/>
         <source>Location:</source>
         <translation>Розташування:</translation>
@@ -27,11 +22,6 @@
 </context>
 <context>
     <name>FirstPage</name>
-    <message>
-        <location filename="firstpage.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation>Сторінка Майстра</translation>
-    </message>
     <message>
         <location filename="firstpage.ui" line="17"/>
         <source>Choose application</source>
@@ -52,8 +42,8 @@
     <name>ImportWizard</name>
     <message>
         <location filename="importwizard.ui" line="14"/>
-        <source>Wizard</source>
-        <translation>Майстер</translation>
+        <source>Settings Import Wizard</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="importwizard.ui" line="35"/>
@@ -158,12 +148,12 @@
 <context>
     <name>LeechCraft::Plugins::NewLife::Plugin</name>
     <message>
-        <location filename="newlife.cpp" line="53"/>
+        <location filename="newlife.cpp" line="58"/>
         <source>The settings importer.</source>
         <translation>Імпортер налаштувань.</translation>
     </message>
     <message>
-        <location filename="newlife.cpp" line="87"/>
+        <location filename="newlife.cpp" line="92"/>
         <source>Import settings...</source>
         <translation>Імпортувати налаштування...</translation>
     </message>

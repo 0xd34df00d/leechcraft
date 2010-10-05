@@ -28,17 +28,9 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::BlockedNetworkReply</name>
-    <message>
-        <location filename="blockednetworkreply.cpp" line="40"/>
-        <source>Blocked by Poshuku CleanWeb: %1</source>
-        <translation>Заблоковано Poshuku CleanWeb: %1</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="91"/>
+        <location filename="cleanweb.cpp" line="96"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокує небажану рекламу.</translation>
     </message>
@@ -61,17 +53,22 @@
         <translation>Адреса</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="435"/>
+        <location filename="core.cpp" line="396"/>
+        <source>Blocked by Poshuku CleanWeb: %1</source>
+        <translation type="unfinished">Заблоковано Poshuku CleanWeb: %1</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="442"/>
         <source>Block image...</source>
         <translation>Заблокувати зображення...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="691"/>
+        <location filename="core.cpp" line="698"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Підписка %1 була успішно додана.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="726"/>
+        <location filename="core.cpp" line="733"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Підписка %1 не була делегована.</translation>
     </message>
@@ -607,49 +604,6 @@
         <location filename="userfilters.ui" line="49"/>
         <source>Remove</source>
         <translation>Видалити</translation>
-    </message>
-</context>
-<context>
-    <name>poshukucleanwebsettings</name>
-    <message>
-        <location filename="dummyfile.cpp" line="2"/>
-        <source>General</source>
-        <translation>Загальні</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="3"/>
-        <source>Updates</source>
-        <translation>Оновлення</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="4"/>
-        <source>Update subscriptions</source>
-        <translation>Оновлювати підписки</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="5"/>
-        <source>Update interval:</source>
-        <translation>Інтервал оновлення:</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="6"/>
-        <source>User filters</source>
-        <translation>Користувацькі фільтри</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="7"/>
-        <source>Subscriptions</source>
-        <translation>Підписки</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="8"/>
-        <source>FlashOnClick</source>
-        <translation>FlashOnClick</translation>
-    </message>
-    <message>
-        <location filename="dummyfile.cpp" line="9"/>
-        <source>Enable FlashOnClick</source>
-        <translation>Увімкнути FlashOnClick</translation>
     </message>
 </context>
 </TS>
