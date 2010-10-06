@@ -293,7 +293,10 @@ namespace LeechCraft
 				widget->SetUnclosers (Unclosers_);
 				Widgets_.push_back (widget);
 
-				emit addNewTab (tr (""), widget);
+				QString tabTitle = "Poshuku";
+				if (url.host ().size ())
+					tabTitle = url.host ();
+				emit addNewTab (tabTitle, widget);
 
 				ConnectSignals (widget);
 
