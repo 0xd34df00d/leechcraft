@@ -67,7 +67,10 @@ namespace LeechCraft
 
 		int count = TabWidget_->count ();
 		if (count < 2)
+		{
+			emit finished (true);
 			return;
+		}
 
 		QSequentialAnimationGroup *animGroup = new QSequentialAnimationGroup;
 
