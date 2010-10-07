@@ -215,19 +215,20 @@ void TabWidget::handleMoveHappened (int from, int to)
 void TabWidget::mouseMoveEvent (QMouseEvent *event)
 {
 	MainWindow *wnd = Core::Instance ().GetReallyMainWindow ();
-	if(wnd->windowState () == Qt::WindowFullScreen){
-		QMenuBar *menu    = wnd->findChild<QMenuBar*> ("MenuBar_");
+	if (wnd->windowState () == Qt::WindowFullScreen)
+	{
+		QMenuBar *menu = wnd->findChild<QMenuBar*> ("MenuBar_");
 		QToolBar *toolbar = wnd->findChild<QToolBar*> ("MainToolbar_");
-		QToolBar *bar     = Core::Instance ().GetToolBar (this->currentIndex ());
+		QToolBar *bar = Core::Instance ().GetToolBar (currentIndex ());
 		bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
 
 		if (event->y () < 5)
 		{
 			if (asButton)
 				menu->hide ();
-			else
-				if(menu->isHidden ())
-					menu->show ();
+			else if (menu->isHidden ())
+				menu->show ();
+
 			if (toolbar->isHidden ())
 				toolbar->show ();
 			if (bar && bar->isHidden ())
