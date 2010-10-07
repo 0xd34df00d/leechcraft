@@ -584,11 +584,11 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	if (full)
 	{
 		WasMaximized_ = isMaximized ();
-                LeechCraft::MainWindow::Ui_.MenuBar_->setVisible(false);
-                LeechCraft::MainWindow::Ui_.MainToolbar_->setVisible(false);
-                for(int i = 0; i < LeechCraft::MainWindow::Ui_.MainTabWidget_->count(); i++){
-                    Core::Instance ().GetToolBar (i)->setVisible(false);
-                }
+        int tabCount = Ui_.MainTabWidget_->count ();
+        Ui_.MenuBar_->setVisible (false);
+        Ui_.MainToolbar_->setVisible (false);
+        for (int i = 0; i < tabCount; i++)
+            Core::Instance ().GetToolBar (i)->setVisible (false);
 		showFullScreen ();
 		Clock_->show ();
 	}
@@ -617,14 +617,8 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
 	GetGuard ()->AddToolbar (bar);
-        if(bar){
-            if(isFullScreen()){
-                if(LeechCraft::MainWindow::Ui_.MenuBar_->isVisible())
-                    bar->setVisible(true);
-                else
-                    bar->setVisible(false);
-            }
-        }
+    if (bar && isFullScreen ())
+        bar->setVisible(Ui_.MenuBar_->isVisible());
 }
 
 namespace
