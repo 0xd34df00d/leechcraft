@@ -22,14 +22,13 @@
 #include <QAction>
 #include <QMenu>
 #include <QMenuBar>
-#include <QMainWindow>
 #include <QtDebug>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabbar.h"
 #include "interfaces/imultitabs.h"
 #include "3dparty/qxttooltip.h"
-
+#include "mainwindow.h"
 /**
  * Portions of this software derived from Qxt &copy; 2009, licensed
  * under the Common Public License, version 1.0, as published by IBM.
@@ -215,28 +214,33 @@ void TabWidget::handleMoveHappened (int from, int to)
 
 void TabWidget::mouseMoveEvent (QMouseEvent *event)
 {
-	QMainWindow *wnd =  (QMainWindow *)this->parentWidget ()->parentWidget ();
+	MainWindow *wnd = Core::Instance ().GetReallyMainWindow ();
 	if(wnd->windowState () == Qt::WindowFullScreen){
 		QMenuBar *menu    = wnd->findChild<QMenuBar*> ("MenuBar_");
 		QToolBar *toolbar = wnd->findChild<QToolBar*> ("MainToolbar_");
 		QToolBar *bar     = Core::Instance ().GetToolBar (this->currentIndex ());
+		bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
+
 		if (event->y () < 5)
 		{
-			if (!menu->isVisible ())
-				menu->setVisible (true);
-			if (!toolbar->isVisible ())
-				toolbar->setVisible (true);
-			if (bar && !bar->isVisible ())
-				bar->setVisible (true);
+			if (asButton)
+				menu->hide ();
+			else
+				if(menu->isHidden ())
+					menu->show ();
+			if (toolbar->isHidden ())
+				toolbar->show ();
+			if (bar && bar->isHidden ())
+				bar->show ();
 		}
 		else
 		{
-			if (menu->isVisible ())
-				menu->setVisible (false);
-			if (toolbar->isVisible ())
-				toolbar->setVisible (false);
-			if (bar && bar->isVisible ())
-				bar->setVisible (false);
+			if (!menu->isHidden ())
+				menu->hide ();
+			if (!toolbar->isHidden ())
+				toolbar->hide ();
+			if (bar && !bar->isHidden ())
+				bar->hide ();
 		}
 	}
 }
