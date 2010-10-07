@@ -63,8 +63,8 @@ TabWidget::TabWidget (QWidget *parent)
 
 	handleTabBarLocationChanged ();
 
-    if(!hasMouseTracking ())
-        setMouseTracking (true);
+        if(!hasMouseTracking())
+            setMouseTracking(true);
 }
 
 void TabWidget::SetTooltip (int index, QWidget *widget)
@@ -213,30 +213,43 @@ void TabWidget::handleMoveHappened (int from, int to)
 	std::swap (Widgets_ [from], Widgets_ [to]);
 }
 
-void TabWidget::mouseMoveEvent (QMouseEvent *event)
+void TabWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    QMainWindow * wnd = (QMainWindow *)this->parentWidget ()->parentWidget ();
+    QMainWindow *wnd;
+    QMenuBar    *menu;
+    QToolBar    *toolbar;
+    QToolBar    *bar;
 
-    if(wnd->windowState () == Qt::WindowFullScreen){
-        QMenuBar *menu    = wnd->findChild<QMenuBar *> ("MenuBar_");
-        QToolBar *toolbar = wnd->findChild<QToolBar *> ("MainToolbar_");
-        QToolBar *bar     = Core::Instance ().GetToolBar (this->currentIndex());
-        if(event->y () < 5)
-        {
-            if(!menu->isVisible ())
-                menu->setVisible (true);
-            if(!toolbar->isVisible ())
-                toolbar->setVisible (true);
-            if(bar && !bar->isVisible ())
-                    bar->setVisible (true);
-        }else
-        {
-            if(menu->isVisible ())
-                menu->setVisible (false);
-            if(toolbar->isVisible ())
-                toolbar->setVisible (false);
-            if(bar && bar->isVisible ())
-                bar->setVisible (false);
+    wnd =  (QMainWindow *)this->parentWidget()->parentWidget();
+
+    if(wnd->windowState() == Qt::WindowFullScreen){
+        menu    = wnd->findChild<QMenuBar *>("MenuBar_");
+        toolbar = wnd->findChild<QToolBar *>("MainToolbar_");
+        bar     = Core::Instance ().GetToolBar (this->currentIndex());
+        if(event->y() < 5){
+            if(!menu->isVisible()){
+                menu->setVisible(true);
+            }
+            if(!toolbar->isVisible()){
+                toolbar->setVisible(true);
+            }
+            if(bar){
+                if(!bar->isVisible()){
+                    bar->setVisible(true);
+                }
+            }
+        }else{
+            if(menu->isVisible()){
+                menu->setVisible(false);
+            }
+            if(toolbar->isVisible()){
+                toolbar->setVisible(false);
+            }
+            if(bar){
+                if(bar->isVisible()){
+                    bar->setVisible(false);
+                }
+            }
         }
     }
 }
