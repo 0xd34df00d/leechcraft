@@ -588,7 +588,7 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
         Ui_.MenuBar_->setVisible (false);
         Ui_.MainToolbar_->setVisible (false);
         for (int i = 0; i < tabCount; i++)
-            Core::Instance ().GetToolBar (i)->setVisible (false);
+			Core::Instance ().GetToolBar (i)->setVisible (false);
 		showFullScreen ();
 		Clock_->show ();
 	}
@@ -618,7 +618,7 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
 	GetGuard ()->AddToolbar (bar);
     if (bar && isFullScreen ())
-        bar->setVisible(Ui_.MenuBar_->isVisible());
+		bar->setVisible (Ui_.MenuBar_->isVisible ());
 }
 
 namespace
