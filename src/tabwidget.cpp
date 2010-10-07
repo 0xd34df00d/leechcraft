@@ -63,8 +63,8 @@ TabWidget::TabWidget (QWidget *parent)
 
 	handleTabBarLocationChanged ();
 
-    if(!hasMouseTracking ())
-        setMouseTracking (true);
+	if (!hasMouseTracking ())
+		setMouseTracking (true);
 }
 
 void TabWidget::SetTooltip (int index, QWidget *widget)
@@ -215,28 +215,28 @@ void TabWidget::handleMoveHappened (int from, int to)
 
 void TabWidget::mouseMoveEvent (QMouseEvent *event)
 {
-    QMainWindow * wnd = (QMainWindow *)this->parentWidget ()->parentWidget ();
-
-    if(wnd->windowState () == Qt::WindowFullScreen){
-        QMenuBar *menu    = wnd->findChild<QMenuBar *> ("MenuBar_");
-        QToolBar *toolbar = wnd->findChild<QToolBar *> ("MainToolbar_");
-        QToolBar *bar     = Core::Instance ().GetToolBar (this->currentIndex());
-        if(event->y () < 5)
-        {
-            if(!menu->isVisible ())
-                menu->setVisible (true);
-            if(!toolbar->isVisible ())
-                toolbar->setVisible (true);
-            if(bar && !bar->isVisible ())
-                    bar->setVisible (true);
-        }else
-        {
-            if(menu->isVisible ())
-                menu->setVisible (false);
-            if(toolbar->isVisible ())
-                toolbar->setVisible (false);
-            if(bar && bar->isVisible ())
-                bar->setVisible (false);
-        }
-    }
+	QMainWindow *wnd =  (QMainWindow *)this->parentWidget ()->parentWidget ();
+	if(wnd->windowState () == Qt::WindowFullScreen){
+		QMenuBar *menu    = wnd->findChild<QMenuBar*> ("MenuBar_");
+		QToolBar *toolbar = wnd->findChild<QToolBar*> ("MainToolbar_");
+		QToolBar *bar     = Core::Instance ().GetToolBar (this->currentIndex ());
+		if (event->y () < 5)
+		{
+			if (!menu->isVisible ())
+				menu->setVisible (true);
+			if (!toolbar->isVisible ())
+				toolbar->setVisible (true);
+			if (bar && !bar->isVisible ())
+				bar->setVisible (true);
+		}
+		else
+		{
+			if (menu->isVisible ())
+				menu->setVisible (false);
+			if (toolbar->isVisible ())
+				toolbar->setVisible (false);
+			if (bar && bar->isVisible ())
+				bar->setVisible (false);
+		}
+	}
 }
