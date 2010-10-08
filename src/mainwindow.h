@@ -105,7 +105,7 @@ namespace LeechCraft
 		void ReadSettings ();
 		void WriteSettings ();
 	private slots:
-		void on_ShortcutFullscreenMode_triggered();
+		void on_ShortcutFullscreenMode__triggered();
 		void on_ActionAddTask__triggered ();
 		void on_ActionNewTab__triggered ();
 		void on_ActionCloseTab__triggered ();
