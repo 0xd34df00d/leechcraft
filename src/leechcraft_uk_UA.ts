@@ -14,7 +14,7 @@
     </message>
     <message>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation>LeechCraft - це багатоплатформовий модульний Інтернет-клієнт, що має модулі для перегляду веб-сторінок, чтитання новин, завантаження з мережі BitTorrent та багато інших можливостей.</translation>
+        <translation>LeechCraft - багатоплатформовий модульний Інтернет-клієнт, що має модулі для перегляду веб-сторінок, читання новин, завантаження з мережі BitTorrent та багато інших можливостей.</translation>
     </message>
     <message>
         <source>Authors</source>
@@ -41,7 +41,7 @@
     <name>AuthenticationDialog</name>
     <message>
         <source>Authentication required</source>
-        <translation>Необхідна автетнификація</translation>
+        <translation>Необхідна автентификація</translation>
     </message>
     <message>
         <source>Login:</source>
@@ -108,7 +108,7 @@
     </message>
     <message>
         <source>MySQL</source>
-        <translation type="unfinished"></translation>
+        <translation>MySQL</translation>
     </message>
 </context>
 <context>
@@ -135,7 +135,7 @@
     </message>
     <message>
         <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть URL або ім’я файлу, або будь-яку іншу стрічку, яку, по-вашому, LeechCraft зможе обробити.</translation>
     </message>
 </context>
 <context>
@@ -163,16 +163,16 @@
     <message>
         <source>It could be downloaded by:</source>
         <oldsource>This entity could be downloaded by:</oldsource>
-        <translation>Може бути завантажений:</translation>
+        <translation type="unfinished">Може бути завантажений з допомогою:</translation>
     </message>
     <message>
         <source>It could be handled by:</source>
         <oldsource>This entity could also be handled by:</oldsource>
-        <translation>Може бути оброблений:</translation>
+        <translation type="unfinished">Може бути оброблений з допомогою:</translation>
     </message>
     <message>
         <source>Save to:</source>
-        <translation>Зберегти у:</translation>
+        <translation type="unfinished">Зберегти до:</translation>
     </message>
     <message>
         <source>Browse...</source>
@@ -183,7 +183,7 @@
     <name>KeySequencer</name>
     <message>
         <source>Press key sequence</source>
-        <translation>Натисніть послидовність клавіш</translation>
+        <translation type="unfinished">Натисніть послідовність клавіш</translation>
     </message>
     <message>
         <source>background-color: rgb(255, 255, 255);</source>
@@ -306,14 +306,14 @@
     </message>
     <message>
         <source>Show a quick overview of tabs</source>
-        <translation>Поперендій перегляд вмісту вкладок</translation>
+        <translation type="unfinished">Попередній перегляд вмісту вкладок</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
     <message>
         <source>Could not create path %1/.leechcraft</source>
-        <translation>Не вдалося створити %1/.leechcraft</translation>
+        <translation type="unfinished">Не вдалося створити шлях %1/.leechcraft</translation>
     </message>
     <message>
         <source>bytes</source>
@@ -441,7 +441,7 @@
     </message>
     <message>
         <source>Plugin load error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження плагіну</translation>
     </message>
 </context>
 <context>
@@ -532,7 +532,7 @@
     </message>
     <message>
         <source>%1 down, %2 up</source>
-        <translation>%1 вниз, %2 вгору</translation>
+        <translation type="unfinished">%1 вниз, %2 вгору</translation>
     </message>
     <message>
         <source>/s	</source>
@@ -544,7 +544,7 @@
     </message>
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation>Для того, щоб ця зміна вступила в дію необхідно перезапустити LeechCraft. Хочете зробити це негайно?</translation>
+        <translation type="unfinished">Для того, щоб ця зміна вступила в дію, необхідно перезапустити LeechCraft. Хочете зробити це негайно?</translation>
     </message>
     <message>
         <source>LeechCraft menu</source>
@@ -556,15 +556,15 @@
     </message>
     <message>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>Завжди</translation>
     </message>
     <message>
         <source>Context-dependent</source>
-        <translation type="unfinished"></translation>
+        <translation>В залежності від контексту</translation>
     </message>
     <message>
         <source>System</source>
-        <translation type="unfinished">System</translation>
+        <translation type="unfinished">Системний</translation>
     </message>
 </context>
 <context>
@@ -625,31 +625,31 @@
     </message>
     <message>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Плагін %1 не завантажено, тому що це не файл.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не вдалося завантажити плагін з %1: %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не вдалося завантажити плагін з %1: не вдалося створити екземпляр плагіну з виключенням %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не вдалося завантажити плагін з %1: не вдалося створити екземпляр плагіну.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не вдалося завантажити плагін з %1: неможливо перетворити екземпляр плагіну в Iinfo*.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не вдалося заванатажити плагін з %1: не вдалося отримати ім’я/інформацію/значок з виключенням %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не вдалося завантажити плагін %1: не вдалося отримати ім’я/інформацію/значок.</translation>
     </message>
 </context>
 <context>
@@ -762,7 +762,7 @@
     <name>LeechCraft::StartupWizard</name>
     <message>
         <source>Startup wizard</source>
-        <translation>Мейстер першого запуску</translation>
+        <translation type="unfinished">Майстер першого запуску</translation>
     </message>
     <message>
         <source>Would you like to set advanced options?</source>
@@ -813,7 +813,7 @@
     <name>LeechCraft::TagsViewer</name>
     <message>
         <source>Rename</source>
-        <translation>Переіменувати</translation>
+        <translation type="unfinished">Перейменувати</translation>
     </message>
     <message>
         <source>Enter new tag name</source>
@@ -824,7 +824,7 @@
     <name>LeechCraft::Util::CategorySelector</name>
     <message>
         <source>Tags selector</source>
-        <translation>Вибрі позначок</translation>
+        <translation type="unfinished">Вибір позначок</translation>
     </message>
     <message>
         <source>Select all</source>
@@ -887,7 +887,7 @@
     </message>
     <message>
         <source>Too long to show</source>
-        <translation>Занадтодовга для показу</translation>
+        <translation type="unfinished">Занадто довга для показу</translation>
     </message>
     <message>
         <source>Binary entity</source>
@@ -972,7 +972,7 @@
     </message>
     <message>
         <source>Remember my choice for the whole host</source>
-        <translation>Запам&apos;ятати мів вибір для всього комп&apos;ютера</translation>
+        <translation type="unfinished">Запам&apos;ятати мій вибір для всього комп&apos;ютера</translation>
     </message>
     <message>
         <source>Remember my choice for the resource</source>
@@ -1013,7 +1013,7 @@
     </message>
     <message>
         <source>Select the complexity level of options you would like to set during this startup wizard.</source>
-        <translation>Оберіть рівень складоності параметрів, які ви бажаєте встановити.</translation>
+        <translation type="unfinished">Оберіть рівень складності параметрів, які ви бажаєте встановити.</translation>
     </message>
     <message>
         <source>Basic setup</source>
@@ -1224,7 +1224,7 @@
     </message>
     <message>
         <source>Network</source>
-        <translation></translation>
+        <translation type="unfinished">Мережа</translation>
     </message>
     <message>
         <source>Cache size:</source>
@@ -1292,7 +1292,7 @@
     </message>
     <message>
         <source>Plugins manager</source>
-        <translation>Менеджер плагинів</translation>
+        <translation type="unfinished">Менеджер плагінів</translation>
     </message>
     <message>
         <source>Arabic (العربية)</source>
@@ -1312,11 +1312,11 @@
     </message>
     <message>
         <source>Default new tab contents:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Тип нової вкладки по замовчуванню:</translation>
     </message>
     <message>
         <source>Context-dependent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">В залежності від контексту</translation>
     </message>
 </context>
 </TS>

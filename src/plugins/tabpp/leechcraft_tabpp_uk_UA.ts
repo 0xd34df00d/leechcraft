@@ -14,7 +14,7 @@
     <message>
         <location filename="tabpp.cpp" line="72"/>
         <source>Enhances user experience with tabs.</source>
-        <translation>Покращуе взаємодію з вкладками.</translation>
+        <translation type="unfinished">Покращує взаємодію з вкладками.</translation>
     </message>
     <message>
         <location filename="tabpp.cpp" line="130"/>

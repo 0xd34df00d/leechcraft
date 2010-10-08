@@ -315,7 +315,7 @@
     <message>
         <location filename="packagesdelegate.cpp" line="296"/>
         <source>Update</source>
-        <translation>Обновить</translation>
+        <translation type="unfinished">Обновить</translation>
     </message>
     <message>
         <location filename="packagesdelegate.cpp" line="424"/>

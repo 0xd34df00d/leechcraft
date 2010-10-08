@@ -667,7 +667,7 @@
     </message>
     <message>
         <source>Clear</source>
-        <translation>Очистить</translation>
+        <translation type="unfinished">Очистить</translation>
     </message>
 </context>
 <context>
@@ -789,7 +789,7 @@
     </message>
     <message>
         <source>Rename...</source>
-        <translation>Переименовать...</translation>
+        <translation type="unfinished">Переименовать...</translation>
     </message>
     <message>
         <source>Remove</source>
