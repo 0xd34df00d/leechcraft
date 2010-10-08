@@ -396,6 +396,8 @@ void TabManager::handleCurrentChanged (int index)
 		Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
 		Menus_ = menus;
 	}
+	else
+		Menus_.clear ();
 }
 
 void TabManager::handleMoveHappened (int from, int to)
