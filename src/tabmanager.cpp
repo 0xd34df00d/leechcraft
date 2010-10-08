@@ -387,11 +387,12 @@ void TabManager::handleCurrentChanged (int index)
 {
 	InvalidateName ();
 
+	Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
+
 	IMultiTabsWidget *imtw = qobject_cast<IMultiTabsWidget*> (TabWidget_->widget (index));
 	if (imtw)
 	{
 		QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
-		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
 		Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
 		Menus_ = menus;
 	}
