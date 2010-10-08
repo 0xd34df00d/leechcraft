@@ -153,6 +153,18 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	QTimer::singleShot (700,
 			this,
 			SLOT (doDelayedInit ()));
+
+	FullScreenShortcut_ = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
+	FullScreenShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
+	connect (FullScreenShortcut_,
+			SIGNAL (activated ()),
+			this,
+			SLOT (on_ShortcutFullscreenMode__triggered ()));
+}
+
+void LeechCraft::MainWindow::on_ShortcutFullscreenMode__triggered ()
+{
+	on_ActionFullscreenMode__triggered (!isFullScreen ());
 }
 
 LeechCraft::MainWindow::~MainWindow ()
@@ -584,16 +596,13 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	if (full)
 	{
 		WasMaximized_ = isMaximized ();
-		int tabCount = Ui_.MainTabWidget_->count ();
-		Ui_.MenuBar_->setVisible (false);
-		Ui_.MainToolbar_->setVisible (false);
-		for (int i = 0; i < tabCount; i++)
-			Core::Instance ().GetToolBar (i)->setVisible (false);
+		ShowMenuAndBar (false);
 		showFullScreen ();
 		Clock_->show ();
 	}
 	else if (WasMaximized_)
 	{
+		ShowMenuAndBar (true);
 		Clock_->hide ();
 		showMaximized ();
 		// Because shit happens on X11 otherwise
@@ -603,6 +612,7 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 	else
 	{
+		ShowMenuAndBar (true);
 		Clock_->hide ();
 		showNormal ();
 	}
@@ -995,4 +1005,19 @@ void LeechCraft::NewTabButton::mousePressEvent (QMouseEvent *event)
 	}
 	else
 		QToolButton::mousePressEvent (event);
+}
+
+void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
+{
+	bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
+
+	if (!asButton)
+		Ui_.MenuBar_->setVisible (show);
+
+	Ui_.MainToolbar_->setVisible (show);
+
+	int cur = Ui_.MainTabWidget_->currentIndex ();
+	if (Core::Instance ().GetToolBar (cur))
+		Core::Instance ().GetToolBar (cur)->setVisible (show);
+	Ui_.ActionFullscreenMode_->setChecked (!show);
 }

@@ -33,6 +33,7 @@ class QModelIndex;
 class QToolBar;
 class IShortcutProxy;
 class QToolButton;
+class QShortcut;
 
 namespace LeechCraft
 {
@@ -83,6 +84,7 @@ namespace LeechCraft
 		QToolBar *PluginsActionsBar_;
 		GlanceShower *Glance_;
 		QToolButton *NewTabButton_;
+		QShortcut *FullScreenShortcut_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
@@ -118,6 +120,7 @@ namespace LeechCraft
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();
 		void on_MainTabWidget__currentChanged (int);
+		void on_ShortcutFullscreenMode__triggered();
 		void handleToolButtonStyleChanged ();
 		void handleIconSize ();
 		void handleShowMenuBarAsButton ();
@@ -133,6 +136,7 @@ namespace LeechCraft
 		void FillToolMenu ();
 		void InitializeShortcuts ();
 		void InitializeDataSources ();
+		void ShowMenuAndBar (bool);
 	};
 };
 
