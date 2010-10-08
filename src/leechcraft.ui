@@ -154,15 +154,6 @@
    <property name="toolTip">
     <string>Fullscreen mode</string>
    </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::TextHeuristicRole</enum>
-   </property>
-   <property name="priority">
-    <enum>QAction::NormalPriority</enum>
-   </property>
   </action>
   <action name="ActionLogger_">
    <property name="text">

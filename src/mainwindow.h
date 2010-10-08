@@ -66,7 +66,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		Ui::LeechCraft Ui_;
-		QShortcut *FullScreenShortcut;
+
 		QSystemTrayIcon *TrayIcon_;
 		QLabel *DownloadSpeed_;
 		QLabel *UploadSpeed_;
@@ -84,6 +84,7 @@ namespace LeechCraft
 		QToolBar *PluginsActionsBar_;
 		GlanceShower *Glance_;
 		QToolButton *NewTabButton_;
+		QShortcut *FullScreenShortcut;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
@@ -105,7 +106,6 @@ namespace LeechCraft
 		void ReadSettings ();
 		void WriteSettings ();
 	private slots:
-		void on_ShortcutFullscreenMode__triggered();
 		void on_ActionAddTask__triggered ();
 		void on_ActionNewTab__triggered ();
 		void on_ActionCloseTab__triggered ();
@@ -120,6 +120,7 @@ namespace LeechCraft
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();
 		void on_MainTabWidget__currentChanged (int);
+		void on_ShortcutFullscreenMode__triggered();
 		void handleToolButtonStyleChanged ();
 		void handleIconSize ();
 		void handleShowMenuBarAsButton ();

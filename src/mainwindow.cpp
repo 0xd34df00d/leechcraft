@@ -601,7 +601,7 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	{
 		ShowMenuAndBar (true);
 		Clock_->hide ();
-		showMaximized ();		
+		showMaximized ();
 		// Because shit happens on X11 otherwise
 		QTimer::singleShot (200,
 				this,
