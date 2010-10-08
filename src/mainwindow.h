@@ -84,7 +84,7 @@ namespace LeechCraft
 		QToolBar *PluginsActionsBar_;
 		GlanceShower *Glance_;
 		QToolButton *NewTabButton_;
-		QShortcut *FullScreenShortcut;
+		QShortcut *FullScreenShortcut_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();

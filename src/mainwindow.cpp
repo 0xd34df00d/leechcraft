@@ -154,9 +154,9 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			this,
 			SLOT (doDelayedInit ()));
 
-	FullScreenShortcut = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
-	FullScreenShortcut->setContext (Qt::WidgetWithChildrenShortcut);
-	connect (FullScreenShortcut, SIGNAL (activated ()), this, SLOT (on_ShortcutFullscreenMode__triggered ()));
+	FullScreenShortcut_ = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
+	FullScreenShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
+	connect (FullScreenShortcut_, SIGNAL (activated ()), this, SLOT (on_ShortcutFullscreenMode__triggered ()));
 }
 
 void LeechCraft::MainWindow::on_ShortcutFullscreenMode__triggered ()
@@ -1014,7 +1014,7 @@ void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 
 	Ui_.MainToolbar_->setVisible (show);
 
-	if(Core::Instance ().GetToolBar (Ui_.MainTabWidget_->currentIndex ()))
+	if (Core::Instance ().GetToolBar (Ui_.MainTabWidget_->currentIndex ()))
 		Core::Instance ().GetToolBar (Ui_.MainTabWidget_->currentIndex ())->setVisible (show);
 	Ui_.ActionFullscreenMode_->setChecked (!show);
 }
