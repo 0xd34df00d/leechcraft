@@ -156,7 +156,10 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	FullScreenShortcut_ = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
 	FullScreenShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
-	connect (FullScreenShortcut_, SIGNAL (activated ()), this, SLOT (on_ShortcutFullscreenMode__triggered ()));
+	connect (FullScreenShortcut_,
+			SIGNAL (activated ()),
+			this,
+			SLOT (on_ShortcutFullscreenMode__triggered ()));
 }
 
 void LeechCraft::MainWindow::on_ShortcutFullscreenMode__triggered ()
@@ -1007,14 +1010,14 @@ void LeechCraft::NewTabButton::mousePressEvent (QMouseEvent *event)
 void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
 	bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
-	int tabCount = Ui_.MainTabWidget_->count ();
 
 	if (!asButton)
 		Ui_.MenuBar_->setVisible (show);
 
 	Ui_.MainToolbar_->setVisible (show);
 
-	if (Core::Instance ().GetToolBar (Ui_.MainTabWidget_->currentIndex ()))
-		Core::Instance ().GetToolBar (Ui_.MainTabWidget_->currentIndex ())->setVisible (show);
+	int cur = Ui_.MainTabWidget_->currentIndex ();
+	if (Core::Instance ().GetToolBar (cur))
+		Core::Instance ().GetToolBar (cur)->setVisible (show);
 	Ui_.ActionFullscreenMode_->setChecked (!show);
 }
