@@ -33,6 +33,7 @@ class QModelIndex;
 class QToolBar;
 class IShortcutProxy;
 class QToolButton;
+class QShortcut;
 
 namespace LeechCraft
 {
@@ -65,7 +66,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		Ui::LeechCraft Ui_;
-
+		QShortcut *FullScreenShortcut;
 		QSystemTrayIcon *TrayIcon_;
 		QLabel *DownloadSpeed_;
 		QLabel *UploadSpeed_;
@@ -104,6 +105,7 @@ namespace LeechCraft
 		void ReadSettings ();
 		void WriteSettings ();
 	private slots:
+		void on_ShortcutFullscreenMode_triggered();
 		void on_ActionAddTask__triggered ();
 		void on_ActionNewTab__triggered ();
 		void on_ActionCloseTab__triggered ();
@@ -133,6 +135,7 @@ namespace LeechCraft
 		void FillToolMenu ();
 		void InitializeShortcuts ();
 		void InitializeDataSources ();
+		void ShowMenuAndBar (bool);
 	};
 };
 

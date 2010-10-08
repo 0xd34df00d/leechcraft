@@ -14,7 +14,7 @@
    <string>LeechCraft</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="mainresources.qrc">
     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -75,7 +75,7 @@
      <x>0</x>
      <y>0</y>
      <width>1045</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="MenuGeneral_">
@@ -154,8 +154,14 @@
    <property name="toolTip">
     <string>Fullscreen mode</string>
    </property>
-   <property name="shortcut">
-    <string>F11</string>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::TextHeuristicRole</enum>
+   </property>
+   <property name="priority">
+    <enum>QAction::NormalPriority</enum>
    </property>
   </action>
   <action name="ActionLogger_">
@@ -228,6 +234,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="mainresources.qrc"/>
+ </resources>
  <connections/>
 </ui>

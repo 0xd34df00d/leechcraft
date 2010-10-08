@@ -153,6 +153,15 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	QTimer::singleShot (700,
 			this,
 			SLOT (doDelayedInit ()));
+
+	FullScreenShortcut = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
+	FullScreenShortcut->setContext (Qt::WidgetWithChildrenShortcut);
+	connect (FullScreenShortcut, SIGNAL (activated ()), this, SLOT (on_ShortcutFullscreenMode_triggered ()));
+}
+
+void LeechCraft::MainWindow::on_ShortcutFullscreenMode_triggered ()
+{
+	on_ActionFullscreenMode__triggered (!isFullScreen ());
 }
 
 LeechCraft::MainWindow::~MainWindow ()
@@ -584,18 +593,15 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	if (full)
 	{
 		WasMaximized_ = isMaximized ();
-		int tabCount = Ui_.MainTabWidget_->count ();
-		Ui_.MenuBar_->setVisible (false);
-		Ui_.MainToolbar_->setVisible (false);
-		for (int i = 0; i < tabCount; i++)
-			Core::Instance ().GetToolBar (i)->setVisible (false);
+		ShowMenuAndBar (false);
 		showFullScreen ();
 		Clock_->show ();
 	}
 	else if (WasMaximized_)
 	{
+		ShowMenuAndBar (true);
 		Clock_->hide ();
-		showMaximized ();
+		showMaximized ();		
 		// Because shit happens on X11 otherwise
 		QTimer::singleShot (200,
 				this,
@@ -603,6 +609,7 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 	else
 	{
+		ShowMenuAndBar (true);
 		Clock_->hide ();
 		showNormal ();
 	}
@@ -995,4 +1002,19 @@ void LeechCraft::NewTabButton::mousePressEvent (QMouseEvent *event)
 	}
 	else
 		QToolButton::mousePressEvent (event);
+}
+
+void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
+{
+	bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
+	int tabCount = Ui_.MainTabWidget_->count ();
+
+	if (!asButton)
+		Ui_.MenuBar_->setVisible (show);
+
+	Ui_.MainToolbar_->setVisible (show);
+
+	if(Core::Instance ().GetToolBar (Ui_.MainTabWidget_->currentIndex ()))
+		Core::Instance ().GetToolBar (Ui_.MainTabWidget_->currentIndex ())->setVisible (show);
+	Ui_.ActionFullscreenMode_->setChecked (!show);
 }
