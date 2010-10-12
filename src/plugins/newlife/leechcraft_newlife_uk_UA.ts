@@ -43,12 +43,12 @@
     <message>
         <location filename="importwizard.ui" line="14"/>
         <source>Settings Import Wizard</source>
-        <translation type="unfinished"></translation>
+        <translation>Майстер Іморту Налаштувань</translation>
     </message>
     <message>
         <location filename="importwizard.ui" line="35"/>
         <source>Now please prepare for the import of data from the selected application.</source>
-        <translation>Тепер приготуйтесь до імопорту даних з програми-джерела.</translation>
+        <translation>Тепер приготуйтесь до імпорту даних з програми-джерела.</translation>
     </message>
 </context>
 <context>

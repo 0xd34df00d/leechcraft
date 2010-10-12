@@ -29,17 +29,17 @@
     <message>
         <location filename="poster.cpp" line="160"/>
         <source>Page parse failed</source>
-        <translation type="unfinished">Обробка сторінки зазнала невдачі</translation>
+        <translation>Обробка сторінки зазнала невдачі</translation>
     </message>
     <message>
         <location filename="poster.cpp" line="167"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
-        <translation type="unfinished">Картинка завантажена: %1, адреса знаходиться в буфері обміну</translation>
+        <translation>Зображення завантажено: %1, адреса знаходиться в буфері обміну</translation>
     </message>
     <message>
         <location filename="poster.cpp" line="179"/>
         <source>Upload of screenshot failed: %1</source>
-        <translation type="unfinished">Завантаження знімку не вдалось: %1</translation>
+        <translation>Завантаження знімку не вдалось: %1</translation>
     </message>
 </context>
 <context>

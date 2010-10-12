@@ -117,7 +117,7 @@
     <message>
         <location filename="playerwidget.cpp" line="312"/>
         <source>On-screen display</source>
-        <translation>Ніформація на екрані</translation>
+        <translation>Інформація на екрані</translation>
     </message>
     <message>
         <location filename="playerwidget.cpp" line="387"/>

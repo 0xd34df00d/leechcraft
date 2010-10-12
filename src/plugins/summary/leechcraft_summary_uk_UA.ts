@@ -68,12 +68,12 @@
     <message>
         <location filename="requestnormalizer.cpp" line="85"/>
         <source>Request parsing error: %1</source>
-        <translation>Помилка перевірки запиту: %1</translation>
+        <translation>Помилка обробки запиту: %1</translation>
     </message>
     <message>
         <location filename="requestnormalizer.cpp" line="109"/>
         <source>Open/close braces mismatch: %1</source>
-        <translation>Неспівпадіння кількості видкритих та закритих дужок: %1</translation>
+        <translation>Неспівпадіння кількості відкритих та закритих дужок: %1</translation>
     </message>
 </context>
 <context>
@@ -81,7 +81,7 @@
     <message>
         <location filename="searchwidget.cpp" line="35"/>
         <source>Search categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук категорій</translation>
     </message>
 </context>
 <context>
@@ -89,7 +89,7 @@
     <message>
         <location filename="summary.cpp" line="92"/>
         <source>Summary of downloads and recent events</source>
-        <translation>Зведенная завантажень та недавніх подій</translation>
+        <translation>Зведення завантажень та недавніх подій</translation>
     </message>
 </context>
 <context>
@@ -97,12 +97,12 @@
     <message>
         <location filename="summarywidget.cpp" line="49"/>
         <source>Ctrl+F</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <location filename="summarywidget.cpp" line="476"/>
         <source>S: %1 [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>С: %1 [%2]</translation>
     </message>
     <message>
         <location filename="summarywidget.cpp" line="480"/>

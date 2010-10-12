@@ -387,7 +387,7 @@
     <message>
         <location filename="importopml.ui" line="177"/>
         <source>Owner email:</source>
-        <translation type="unfinished">Email власника:</translation>
+        <translation>Email власника:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="146"/>
@@ -493,7 +493,7 @@
     <message>
         <location filename="aggregator.cpp" line="716"/>
         <source>%1 unread messages in %2 channels.</source>
-        <translation type="unfinished">%1 непрочитані статті в %2 каналах.</translation>
+        <translation>%1 непрочитані статті в %2 каналах.</translation>
     </message>
 </context>
 <context>
@@ -511,17 +511,17 @@
     <message>
         <location filename="channelsmodel.cpp" line="46"/>
         <source>Last build</source>
-        <translation type="unfinished">Остання версія</translation>
+        <translation>Остання версія</translation>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="119"/>
         <source>&lt;strong&gt;Author&lt;/strong&gt;: %1</source>
-        <translation type="unfinished">&lt;strong&gt;Автор&lt;/strong&gt;: %1</translation>
+        <translation>&lt;strong&gt;Автор&lt;/strong&gt;: %1</translation>
     </message>
     <message>
         <location filename="channelsmodel.cpp" line="128"/>
         <source>&lt;b&gt;Tags&lt;/b&gt;: %1</source>
-        <translation type="unfinished">&lt;b&gt;Позначки&lt;/b&gt;: %1</translation>
+        <translation>&lt;b&gt;Позначки&lt;/b&gt;: %1</translation>
     </message>
 </context>
 <context>
@@ -544,13 +544,13 @@
     <message>
         <location filename="core.cpp" line="181"/>
         <source>Could not find plugin to download OPML %1.</source>
-        <translation type="unfinished">Неможливо знайти плагін для завантаження OPML %1.</translation>
+        <translation>Неможливо знайти плагін для завантаження OPML %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="273"/>
         <location filename="core.cpp" line="280"/>
         <source>Storage error</source>
-        <translation type="unfinished">Помилка підсистеми збереження даних</translation>
+        <translation>Помилка підсистеми збереження даних</translation>
     </message>
     <message>
         <location filename="core.cpp" line="424"/>
@@ -570,7 +570,7 @@
     <message>
         <location filename="core.cpp" line="461"/>
         <source>Could not find plugin to download feed %1.</source>
-        <translation type="unfinished">Неможливо знайти плагін для завантаження стрічки %1.</translation>
+        <translation>Неможливо знайти плагін для завантаження стрічки %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="484"/>
@@ -592,7 +592,7 @@
     <message>
         <location filename="core.cpp" line="680"/>
         <source>Could not get feed settings: %1</source>
-        <translation type="unfinished">Неможливо отримати налаштування стрічки: %1</translation>
+        <translation>Неможливо отримати налаштування стрічки: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="697"/>
@@ -621,7 +621,7 @@
     <message>
         <location filename="core.cpp" line="763"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
-        <translation type="unfinished">Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текст помилки:&lt;br/&gt;%4</translation>
+        <translation>Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текст помилки:&lt;br/&gt;%4</translation>
     </message>
     <message>
         <location filename="core.cpp" line="775"/>
@@ -661,7 +661,7 @@
     <message>
         <location filename="core.cpp" line="1195"/>
         <source>Could not find plugin to download external file %1.</source>
-        <translation type="unfinished">Неможливо знайти плагіни для завантаження зовнішнього файлу %1.</translation>
+        <translation>Неможливо знайти плагіни для завантаження зовнішнього файлу %1.</translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="1474"/>
@@ -691,7 +691,7 @@
     <message>
         <location filename="core.cpp" line="1672"/>
         <source>Could not find plugin for feed with URL %1</source>
-        <translation type="unfinished">Неможливо знайти плагін для стрічки з URL %1</translation>
+        <translation>Неможливо знайти плагін для стрічки з URL %1</translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="1591"/>
@@ -861,7 +861,7 @@
     <message>
         <location filename="importopml.cpp" line="139"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
-        <translation type="unfinished">Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текст помилки:&lt;br/&gt;%4</translation>
+        <translation>Помилка аналізу XML, файл %1, рядок %2, стовпчик %3, текст помилки:&lt;br/&gt;%4</translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="152"/>
@@ -884,17 +884,17 @@
     <message>
         <location filename="itemslistmodel.cpp" line="211"/>
         <source>&lt;b&gt;Author&lt;/b&gt;: %1</source>
-        <translation type="unfinished">&lt;b&gt;Автор&lt;/b&gt;: %1</translation>
+        <translation>&lt;b&gt;Автор&lt;/b&gt;: %1</translation>
     </message>
     <message>
         <location filename="itemslistmodel.cpp" line="216"/>
         <source>&lt;b&gt;Categories&lt;/b&gt;: %1</source>
-        <translation type="unfinished">&lt;b&gt;Категорії&lt;/b&gt;: %1</translation>
+        <translation>&lt;b&gt;Категорії&lt;/b&gt;: %1</translation>
     </message>
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="221"/>
         <source>%n comment(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n коментар</numerusform>
             <numerusform>%n коментарі</numerusform>
             <numerusform>%n коментарів</numerusform>
@@ -903,7 +903,7 @@
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="226"/>
         <source>%n enclosure(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n вкладення</numerusform>
             <numerusform>%n вкладення</numerusform>
             <numerusform>%n вкладень</numerusform>
@@ -912,7 +912,7 @@
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="231"/>
         <source>%n MediaRSS entry(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n запис MediaRSS</numerusform>
             <numerusform>%n записи MediaRSS</numerusform>
             <numerusform>%n записів MediaRSS</numerusform>
@@ -921,7 +921,7 @@
     <message>
         <location filename="itemslistmodel.cpp" line="236"/>
         <source>RSS with comments is available</source>
-        <translation type="unfinished">Доступний RSS с коментарями</translation>
+        <translation>Доступний RSS с коментарями</translation>
     </message>
 </context>
 <context>
@@ -993,7 +993,7 @@
     <message>
         <location filename="itemswidget.cpp" line="634"/>
         <source>Image </source>
-        <translation type="unfinished">Зображення</translation>
+        <translation>Зображення</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="636"/>
@@ -1032,12 +1032,12 @@
     <message>
         <location filename="itemswidget.cpp" line="135"/>
         <source>Items categories</source>
-        <translation type="unfinished">Категорії статей</translation>
+        <translation>Категорії статей</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="452"/>
         <source>Show items as tape</source>
-        <translation type="unfinished">Показувати статті стрічкою</translation>
+        <translation>Показувати статті стрічкою</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="578"/>
@@ -1227,13 +1227,13 @@
         <location filename="regexpmatcherui.cpp" line="65"/>
         <location filename="regexpmatcherui.cpp" line="110"/>
         <source>This title matcher regexp already exists. Specify another one or modify existing title matcher regexp&apos;s body extractor.</source>
-        <translation type="unfinished">Цей фільтр вже існує. Вкажіть інший, або змініть існуючий.</translation>
+        <translation>Цей фільтр вже існує. Вкажіть інший, або змініть існуючий.</translation>
     </message>
     <message>
         <location filename="regexpmatcherui.cpp" line="75"/>
         <location filename="regexpmatcherui.cpp" line="120"/>
         <source>Either title matcher or body extractor is malformed.</source>
-        <translation type="unfinished">Неправильно заданий фільтр загаловків або змісту.</translation>
+        <translation>Неправильно заданий фільтр загаловків або змісту.</translation>
     </message>
 </context>
 <context>
@@ -1265,7 +1265,7 @@
     <message>
         <location filename="mainwidget.ui" line="36"/>
         <source>Tags:</source>
-        <translation type="unfinished">Позначки:</translation>
+        <translation>Позначки:</translation>
     </message>
     <message>
         <location filename="mainwidget.ui" line="64"/>
@@ -1346,7 +1346,7 @@
     <message>
         <location filename="singleregexp.ui" line="39"/>
         <source>Body matcher:</source>
-        <translation type="unfinished">Фільтр змісту:</translation>
+        <translation>Фільтр змісту:</translation>
     </message>
 </context>
 <context>
@@ -1442,12 +1442,12 @@
     <message>
         <location filename="startupthirdpage.ui" line="92"/>
         <source>Select all</source>
-        <translation type="unfinished">Вибрати все</translation>
+        <translation>Вибрати все</translation>
     </message>
     <message>
         <location filename="startupthirdpage.ui" line="99"/>
         <source>Deselect all</source>
-        <translation type="unfinished">Зняти вибір</translation>
+        <translation>Зняти вибір</translation>
     </message>
 </context>
 <context>
@@ -1482,7 +1482,7 @@
         <location filename="dummy.cpp" line="7"/>
         <location filename="dummyfile.cpp" line="7"/>
         <source>Show unread items on top</source>
-        <translation type="unfinished">Показувати непрочитані статті зверху</translation>
+        <translation>Показувати непрочитані статті зверху</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>

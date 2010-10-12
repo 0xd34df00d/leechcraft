@@ -6,7 +6,7 @@
     <message>
         <location filename="yasd.cpp" line="51"/>
         <source>Yet Another Site Downloader</source>
-        <translation type="unfinished">Yet Another Site Downloader</translation>
+        <translation>Yet Another Site Downloader</translation>
     </message>
 </context>
 </TS>

@@ -223,7 +223,7 @@
     <message>
         <location filename="addwebseeddialog.ui" line="22"/>
         <source>URL:</source>
-        <translation type="unfinished">URL:</translation>
+        <translation>URL:</translation>
     </message>
     <message>
         <location filename="addwebseeddialog.ui" line="34"/>
@@ -371,7 +371,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="addtorrent.cpp" line="158"/>
         <source>Select torrent file</source>
-        <translation type="unfinished">Оберіть торрент файл</translation>
+        <translation>Оберіть торрент файл</translation>
     </message>
     <message>
         <location filename="addtorrent.cpp" line="161"/>
@@ -386,7 +386,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="addtorrent.cpp" line="216"/>
         <source>&lt;no trackers&gt;</source>
-        <translation type="unfinished">&lt;немає трекерів&gt;</translation>
+        <translation>&lt;немає трекерів&gt;</translation>
     </message>
 </context>
 <context>
@@ -503,7 +503,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="926"/>
         <source>Do you want to leave this torrent&apos;s files?</source>
-        <translation type="unfinished">Чи хочете ви залишити файли цього торренту?</translation>
+        <translation>Чи хочете ви залишити файли цього торренту?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="974"/>
@@ -513,7 +513,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="2812"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
-        <translation type="unfinished">Сповіщеня підсистеми збереження відключені. Відтворення в реальному часі буде недоступне. Якщо у Вас виникли проблеми, увімкніть сповіщення у розділі &quot;Сповіщення&quot; параметрів BitTorrent. Хочете увімкнути їх зараз?</translation>
+        <translation>Сповіщеня підсистеми збереження відключені. Відтворення в реальному часі буде недоступне. Якщо у Вас виникли проблеми, увімкніть сповіщення у розділі &quot;Сповіщення&quot; параметрів BitTorrent. Хочете увімкнути їх зараз?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1305"/>
@@ -563,7 +563,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="1824"/>
         <source>Downloading</source>
-        <translation type="unfinished">Завантажую</translation>
+        <translation>Завантажую</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1826"/>
@@ -657,7 +657,7 @@ IPv6 input mask</extracomment>
         <location filename="firststep.cpp" line="96"/>
         <location filename="firststep.cpp" line="112"/>
         <source>Select torrent contents</source>
-        <translation type="unfinished">Оберіть вміст торрента</translation>
+        <translation>Оберіть вміст торрента</translation>
     </message>
 </context>
 <context>
@@ -686,7 +686,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="intropage.cpp" line="33"/>
         <source>This wizard will generate a torrent file. You simply need so specify the torrent name, files to include and optionally few other options to produce your torrent file.</source>
-        <translation type="unfinished">Цей майстер допоможе вам створити торрент-файл. Вам потрібно лише вказати ім&apos;я файлу, що створюється, файли, які необхідно до нього включити і ще декілька необов&apos;язкових параметрів.</translation>
+        <translation>Цей майстер допоможе вам створити торрент-файл. Вам потрібно лише вказати ім&apos;я файлу, що створюється, файли, які необхідно до нього включити і ще декілька необов&apos;язкових параметрів.</translation>
     </message>
 </context>
 <context>
@@ -710,17 +710,17 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="peersmodel.cpp" line="35"/>
         <source>IP</source>
-        <translation type="unfinished">IP</translation>
+        <translation>IP</translation>
     </message>
     <message>
         <location filename="peersmodel.cpp" line="36"/>
         <source>Drate</source>
-        <translation type="unfinished">Швидкість завантаження</translation>
+        <translation>Швидкість завантаження</translation>
     </message>
     <message>
         <location filename="peersmodel.cpp" line="37"/>
         <source>Urate</source>
-        <translation type="unfinished">Швидкість віддачі</translation>
+        <translation>Швидкість віддачі</translation>
     </message>
     <message>
         <location filename="peersmodel.cpp" line="38"/>
@@ -730,7 +730,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="peersmodel.cpp" line="39"/>
         <source>Uploaded</source>
-        <translation type="unfinished">Віддано</translation>
+        <translation>Віддано</translation>
     </message>
     <message>
         <location filename="peersmodel.cpp" line="40"/>
@@ -764,7 +764,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="peerstablinker.cpp" line="120"/>
         <source>Standard BitTorrent peer</source>
-        <translation type="unfinished">Стандартний BitTorrent-пір</translation>
+        <translation>Стандартний BitTorrent-пір</translation>
     </message>
     <message>
         <location filename="peerstablinker.cpp" line="121"/>
@@ -891,7 +891,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="startupfirstpage.cpp" line="35"/>
         <source>Set basic options</source>
-        <translation type="unfinished">Встановити базові параметри</translation>
+        <translation>Встановити базові параметри</translation>
     </message>
 </context>
 <context>
@@ -982,7 +982,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentfilesmodel.cpp" line="45"/>
         <source>Priority</source>
-        <translation type="unfinished">Пріоритет</translation>
+        <translation>Пріоритет</translation>
     </message>
     <message>
         <location filename="torrentfilesmodel.cpp" line="45"/>
@@ -992,7 +992,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentfilesmodel.cpp" line="464"/>
         <source>The file %1 hasn&apos;t finished downloading yet.</source>
-        <translation type="unfinished">Файл %1 ще не завантажено.</translation>
+        <translation>Файл %1 ще не завантажено.</translation>
     </message>
 </context>
 <context>
@@ -1015,7 +1015,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentmaker.cpp" line="134"/>
         <source>Torrent file generated: %1.&lt;br /&gt;Do you want to start seeding now?</source>
-        <translation type="unfinished">файл торренту %1 згенеровано.&lt;br /&gt;Ви хочете розпочати його розповсюдження?</translation>
+        <translation>файл торренту %1 згенеровано.&lt;br /&gt;Ви хочете розпочати його розповсюдження?</translation>
     </message>
 </context>
 <context>
@@ -1023,7 +1023,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentplugin.cpp" line="94"/>
         <source>Full-featured BitTorrent client.</source>
-        <translation type="unfinished">Повнофункціональний клієнт для BitTorrent.</translation>
+        <translation>Повнофункціональний клієнт для BitTorrent.</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="809"/>
@@ -1113,12 +1113,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentplugin.cpp" line="1009"/>
         <source>Move up</source>
-        <translation type="unfinished">Вище</translation>
+        <translation>Вище</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="1018"/>
         <source>Move down</source>
-        <translation type="unfinished">Нижче</translation>
+        <translation>Нижче</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="1027"/>
@@ -1333,7 +1333,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentthirdstep.ui" line="13"/>
         <source>Fine-tune parameters</source>
-        <translation type="unfinished">Коректувати параметри</translation>
+        <translation>Коректувати параметри</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="23"/>
@@ -1446,7 +1446,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="2410"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
-        <translation type="unfinished">Не вдалося перейменувати торрент:&lt;br /&gt;%1&lt;br /&gt;файл %2, помилка:&lt;br /&gt;%3</translation>
+        <translation>Не вдалося перейменувати торрент:&lt;br /&gt;%1&lt;br /&gt;файл %2, помилка:&lt;br /&gt;%3</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2424"/>
@@ -1502,7 +1502,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="startupfirstpage.ui" line="115"/>
         <source>Minimal memory usage</source>
-        <translation type="unfinished">Мінімальне використання пам&apos;яті</translation>
+        <translation>Мінімальне використання пам&apos;яті</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="120"/>
@@ -1667,7 +1667,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1386"/>
         <source>Announce interval:</source>
-        <translation type="unfinished">Інтервал між оголошеннями:</translation>
+        <translation>Інтервал між оголошеннями:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1459"/>
@@ -2218,7 +2218,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="trackerschanger.ui" line="113"/>
         <source>Modify...</source>
-        <translation type="unfinished">Змінити...</translation>
+        <translation>Змінити...</translation>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="120"/>
@@ -2638,7 +2638,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="86"/>
         <source>Prioritize partial pieces</source>
-        <translation type="unfinished">Підвищувати пріоритет неповних шматків</translation>
+        <translation>Підвищувати пріоритет неповних шматків</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="87"/>
@@ -2681,7 +2681,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="98"/>
         <source>Peer connection timeout:</source>
-        <translation type="unfinished">Таймаут з&apos;єднання з вузлом:</translation>
+        <translation>Таймаут з&apos;єднання з вузлом:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="100"/>
@@ -2781,7 +2781,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="131"/>
         <source>Request random pieces while we have less than:</source>
-        <translation type="unfinished">Завантажувати випадкові шматки доки їх менше:</translation>
+        <translation>Завантажувати випадкові шматки доки їх менше:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="132"/>
@@ -2806,7 +2806,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="136"/>
         <source>Share ratio limit:</source>
-        <translation type="unfinished">Межа рейтингу:</translation>
+        <translation>Межа рейтингу:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="137"/>
@@ -2853,7 +2853,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="149"/>
         <source>Notify when torrent wasn&apos;t automatically added because its too large size</source>
-        <translation type="unfinished">Повідомляти, коли автоматичне додавання не вдалось через наступну опцію</translation>
+        <translation>Повідомляти, коли автоматичне додавання не вдалось через наступну опцію</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="150"/>
@@ -2963,7 +2963,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="178"/>
         <source>Logging levels</source>
-        <translation type="unfinished">Рівень журналювання</translation>
+        <translation>Рівень журналювання</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="179"/>

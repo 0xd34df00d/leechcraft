@@ -16,7 +16,7 @@
     <message>
         <location filename="addtask.ui" line="31"/>
         <source>Local path:</source>
-        <translation type="unfinished">Локальний шлях:</translation>
+        <translation>Локальний шлях:</translation>
     </message>
     <message>
         <location filename="addtask.ui" line="43"/>
@@ -44,7 +44,7 @@
     <message>
         <location filename="addtask.cpp" line="110"/>
         <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
-        <translation type="unfinished">Не можу читати з теки %1. Хочете обрати іншу?</translation>
+        <translation>Не можу читати з теки %1. Хочете обрати іншу?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="113"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="core.cpp" line="435"/>
         <source>%1</source>
-        <translation type="unfinished">%1</translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="433"/>
@@ -193,7 +193,7 @@
     <message>
         <location filename="task.cpp" line="476"/>
         <source>Error writing to file %1: %2</source>
-        <translation type="unfinished">Помилку запису до файлу %1: %2</translation>
+        <translation>Помилку запису до файлу %1: %2</translation>
     </message>
 </context>
 <context>
