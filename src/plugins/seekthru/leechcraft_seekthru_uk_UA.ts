@@ -66,9 +66,9 @@
         <source>%n total result(s)</source>
         <oldsource>%1 total results</oldsource>
         <translation>
-            <numerusform>%n рузультат загалом</numerusform>
-            <numerusform>%n рузультати загалом</numerusform>
-            <numerusform>%n рузультатів загалом</numerusform>
+            <numerusform>%n результат загалом</numerusform>
+            <numerusform>%n результати загалом</numerusform>
+            <numerusform>%n результатів загалом</numerusform>
         </translation>
     </message>
     <message>
@@ -244,27 +244,27 @@
     <message>
         <location filename="startupfirstpage.ui" line="22"/>
         <source>Localized set:</source>
-        <translation type="unfinished">Локалізований набір:</translation>
+        <translation>Локалізований набір:</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="30"/>
         <source>General</source>
-        <translation type="unfinished">Загальний</translation>
+        <translation>Загальний</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="35"/>
         <source>Russian (ru)</source>
-        <translation type="unfinished"></translation>
+        <translation>Російський(ru)</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="59"/>
         <source>Engine</source>
-        <translation type="unfinished">Рушій</translation>
+        <translation>Рушій</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="64"/>
         <source>Tags</source>
-        <translation type="unfinished">Позначки</translation>
+        <translation>Позначки</translation>
     </message>
 </context>
 <context>

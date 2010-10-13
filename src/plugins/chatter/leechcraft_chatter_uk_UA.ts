@@ -6,32 +6,32 @@
     <message>
         <location filename="connectiondialog.cpp" line="38"/>
         <source>IRC URI</source>
-        <translation type="unfinished"></translation>
+        <translation>IRC URI</translation>
     </message>
     <message>
         <location filename="connectiondialog.cpp" line="44"/>
         <source>IRC server</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер IRC</translation>
     </message>
     <message>
         <location filename="connectiondialog.cpp" line="54"/>
         <source>Room</source>
-        <translation type="unfinished"></translation>
+        <translation>Кімната</translation>
     </message>
     <message>
         <location filename="connectiondialog.cpp" line="62"/>
         <source>Nick</source>
-        <translation type="unfinished"></translation>
+        <translation>Нік</translation>
     </message>
     <message>
         <location filename="connectiondialog.cpp" line="69"/>
         <source>Encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Кодування</translation>
     </message>
     <message>
         <location filename="connectiondialog.cpp" line="173"/>
         <source>Parameters is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри не вірні</translation>
     </message>
 </context>
 <context>
@@ -49,12 +49,12 @@
     <message>
         <location filename="fsircview.cpp" line="47"/>
         <source>Connect to room</source>
-        <translation type="unfinished"></translation>
+        <translation>Увійти до кімнати</translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="51"/>
         <source>Change nick</source>
-        <translation type="unfinished">Змінити прізвисько</translation>
+        <translation>Змінити нік</translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="229"/>
@@ -119,12 +119,12 @@
     <message>
         <location filename="fsircview.cpp" line="478"/>
         <source>IRC URI</source>
-        <translation type="unfinished"></translation>
+        <translation>IRC URI</translation>
     </message>
     <message>
         <location filename="fsircview.cpp" line="487"/>
         <source>Nick is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Нік пустий</translation>
     </message>
 </context>
 <context>
@@ -157,7 +157,7 @@
     <message>
         <location filename="irc.h" line="47"/>
         <source>See ya in hell!</source>
-        <translation type="unfinished"></translation>
+        <translation>Побачимося в пеклі!</translation>
     </message>
 </context>
 <context>
@@ -183,7 +183,7 @@
     <message>
         <location filename="chatter.cpp" line="54"/>
         <source>Allows to chat in IRC</source>
-        <translation type="unfinished">Дозволяє теревенити в IRC</translation>
+        <translation>Дозволяє теревенити в IRC</translation>
     </message>
 </context>
 <context>
@@ -191,12 +191,12 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтерфейс</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Show icon in tray</source>
-        <translation>Показвати іконку в треї</translation>
+        <translation>Показувати іконку в треї</translation>
     </message>
 </context>
 <context>
@@ -204,17 +204,17 @@
     <message>
         <location filename="fsircview.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="fsircview.ui" line="22"/>
         <source>Topic</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема</translation>
     </message>
     <message>
         <location filename="fsircview.ui" line="36"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="fsircview.ui" line="77"/>
@@ -223,12 +223,16 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;URW Palladio L&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;URW Palladio L&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="fsircview.ui" line="115"/>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Відправити</translation>
     </message>
 </context>
 <context>
@@ -236,7 +240,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="fsmain.ui" line="14"/>
         <source>fsirc</source>
-        <translation type="unfinished"></translation>
+        <translation>fsirc</translation>
     </message>
 </context>
 <context>
@@ -244,22 +248,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="fsirc.cpp" line="43"/>
         <source>New tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Нова вкладка</translation>
     </message>
     <message>
         <location filename="fsirc.cpp" line="44"/>
         <source>Create new tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити нову вкладку</translation>
     </message>
     <message>
         <location filename="fsirc.cpp" line="47"/>
         <source>Close tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити вкладку</translation>
     </message>
     <message>
         <location filename="fsirc.cpp" line="48"/>
         <source>Close current tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити поточну вкладку</translation>
     </message>
 </context>
 </TS>

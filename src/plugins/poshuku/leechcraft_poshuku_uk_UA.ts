@@ -314,7 +314,7 @@
     <message>
         <location filename="browserwidget.cpp" line="237"/>
         <source>External links</source>
-        <translation>Заовнішні посилання</translation>
+        <translation>Зовнішні посилання</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="617"/>
@@ -354,12 +354,12 @@
     <message>
         <location filename="browserwidget.cpp" line="1207"/>
         <source>Page load finished: %1</source>
-        <translation>Завантаження сторіки %1 завершено</translation>
+        <translation>Завантаження сторінки %1 завершено</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1211"/>
         <source>Page load failed: %1</source>
-        <translation>Завантаження сторіки %1 зазнало невдачі</translation>
+        <translation>Завантаження сторінки %1 зазнало невдачі</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="625"/>
@@ -470,83 +470,83 @@
         <location filename="customwebpage.cpp" line="133"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
         <comment>{host} would be substituded with site&apos;s host name.</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;перевірте&lt;/a&gt; чи сайт&lt;strong&gt;{host}&lt;/strong&gt; не працює у всіх чи лише тільки у вас;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="136"/>
         <source>try again later</source>
-        <translation type="unfinished"></translation>
+        <translation>спробуйте ще раз пізніше</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="137"/>
         <source>contact remote server&apos;s administrator (typically at &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>зв&apos;яжіться з адміністратором віддаленого серверу (як правило &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="139"/>
         <source>contact your system/network administrator, especially if you can&apos;t load any single page</source>
-        <translation type="unfinished"></translation>
+        <translation>зв&apos;яжіться з вашим системним адміністратором, особливо, якщо ви не можете завантажити жодної сторінки</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="141"/>
         <source>check your proxy settings</source>
-        <translation type="unfinished"></translation>
+        <translation>перевірте налаштування вашого проксі</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="152"/>
         <location filename="customwebpage.cpp" line="187"/>
         <source>check if the URL is written correctly;</source>
-        <translation type="unfinished"></translation>
+        <translation>перевірте правильність написаного URL</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="153"/>
         <source>try changing your DNS servers;</source>
-        <translation type="unfinished"></translation>
+        <translation>спробуйте змінити ваші DNS-сервери;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="154"/>
         <source>make sure that LeechCraft is allowed to access the Internet and particularly web sites;</source>
-        <translation type="unfinished"></translation>
+        <translation>впевніться, що LeechCraft&apos;у дозволений доступ до Інтернету і, зокрема, до веб-сторінок</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="159"/>
         <source>check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;</source>
-        <translation type="unfinished"></translation>
+        <translation>перевірте, чи деякі завантаження не споживають занадто багато каналу, спробуйте обмежити швидкість або кількість з&apos;єднань;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="164"/>
         <source>try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>спробуйте ще раз.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="166"/>
         <source>make sure that remote server is really what it claims to be;</source>
-        <translation type="unfinished"></translation>
+        <translation>впевніться, що віддалений сервер дійсно той, за кого себе видає;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="188"/>
         <source>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and find the required page from there.</source>
-        <translation type="unfinished"></translation>
+        <translation>перейдіть на &lt;a href=&quot;{schema}://{host}/&quot;&gt;головну сторінку&lt;/a&gt; сайту і спробуйте знайти необхідну інформацію звідти.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="190"/>
         <source>check the login and password you entered and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>перевірте логін і пароль, що ви ввели і спробуйте знову</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="194"/>
         <source>check if the URL is written correctly, particularly, the part before the &apos;://&apos;;</source>
-        <translation type="unfinished"></translation>
+        <translation>перевірте, чи URL правильно написаний, зокрема, частина перед &apos;://&apos;;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="195"/>
         <source>try installing plugins that are known to support this protocol;</source>
-        <translation type="unfinished"></translation>
+        <translation>спробуйте встановити плагін, який підтримує цей протокол;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="482"/>
         <source>Error loading %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка завантаження %1</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="487"/>
@@ -566,7 +566,7 @@
     <message>
         <location filename="customwebpage.cpp" line="501"/>
         <source>Try doing the following:</source>
-        <translation type="unfinished"></translation>
+        <translation>Спробуйте зробити наступне:</translation>
     </message>
 </context>
 <context>
@@ -630,7 +630,7 @@
     <message>
         <location filename="customwebview.cpp" line="273"/>
         <source>Open &amp;here</source>
-        <translation>Відктири &amp;тут</translation>
+        <translation>Відкрити &amp;тут</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="275"/>
@@ -1048,7 +1048,7 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Paranoid downloads detection</source>
-        <translation>Старане виявлення завантажень</translation>
+        <translation>Старанне виявлення завантажень</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
