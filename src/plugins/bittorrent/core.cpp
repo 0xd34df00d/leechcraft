@@ -169,33 +169,25 @@ namespace LeechCraft
 			{
 				try
 				{
-					QString peerIDstring = XmlSettingsManager::Instance ()->
-						property ("PeerIDString").toString ();
+					QString peerIDstring = "LC";
 
-					QString ver;
-					if (XmlSettingsManager::Instance ()->
-							property ("OverridePeerIDVersion").toBool ())
-						ver = XmlSettingsManager::Instance ()->
-							property ("PeerIDVersion").toString ();
-					else
-					{
-						// Build peer_id
-						// Get the tag name.
-						ver = LEECHCRAFT_VERSION;
-						if (ver.isEmpty ())
-							ver = "0.3.65";
-						// Get the part before the '-'.
-						ver = ver.split ('-', QString::SkipEmptyParts).at (0);
-						QStringList vers = ver.split ('.', QString::SkipEmptyParts);
-						if (vers.size () != 3)
-							throw std::runtime_error ("Malformed version string "
-									"(could not split it to three parts)");
-						ver = QString ("%1%2")
-							.arg (vers.at (1).toInt (),
-									2, 10, QChar ('0'))
-							.arg (vers.at (2).toInt (),
-									2, 10, QChar ('0'));
-					}
+					// Build peer_id
+					// Get the tag name.
+					QString ver = LEECHCRAFT_VERSION;
+					ver = LEECHCRAFT_VERSION;
+					if (ver.isEmpty ())
+						ver = "0.3.75";
+					// Get the part before the '-'.
+					ver = ver.split ('-', QString::SkipEmptyParts).at (0);
+					QStringList vers = ver.split ('.', QString::SkipEmptyParts);
+					if (vers.size () != 3)
+						throw std::runtime_error ("Malformed version string "
+								"(could not split it to three parts)");
+					ver = QString ("%1%2")
+						.arg (vers.at (1).toInt (),
+								2, 10, QChar ('0'))
+						.arg (vers.at (2).toInt (),
+								2, 10, QChar ('0'));
 
 
 					if (ver.size () != 4)
@@ -2033,8 +2025,7 @@ namespace LeechCraft
 						this, "setProxySettings");
 
 				QList<QByteArray> generalSettings;
-				generalSettings << "UserAgent"
-					<< "TrackerCompletionTimeout"
+				generalSettings << "TrackerCompletionTimeout"
 					<< "TrackerReceiveTimeout"
 					<< "StopTrackerTimeout"
 					<< "TrackerMaximumResponseLength"
@@ -2605,8 +2596,7 @@ namespace LeechCraft
 			{
 				libtorrent::session_settings settings = Session_->settings ();
 
-				settings.user_agent = XmlSettingsManager::Instance ()->
-					property ("UserAgent").toString ().toStdString ();
+				settings.user_agent = std::string ("LeechCraft BitTorrent/") + LEECHCRAFT_VERSION;
 				settings.tracker_completion_timeout = XmlSettingsManager::Instance ()->
 					property ("TrackerCompletionTimeout").toInt ();
 				settings.tracker_receive_timeout = XmlSettingsManager::Instance ()->
