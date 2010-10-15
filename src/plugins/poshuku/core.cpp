@@ -209,6 +209,57 @@ namespace LeechCraft
 				return Proxy_;
 			}
 
+			bool Core::CouldHandle (const Entity& e) const
+			{
+				if (!(e.Parameters_ & FromUserInitiated) ||
+						e.Parameters_ & Internal)
+					return false;
+
+				if (e.Entity_.canConvert<QUrl> ())
+				{
+					QUrl url = e.Entity_.toUrl ();
+					return (url.isValid () &&
+						(url.scheme () == "http" || url.scheme () == "https"));
+				}
+				else if (e.Mime_ == "x-leechcraft/browser-import-data")
+					return true;
+
+				return false;
+			}
+
+			void Core::Handle (Entity e)
+			{
+				if (e.Entity_.canConvert<QUrl> ())
+				{
+					QUrl url = e.Entity_.toUrl ();
+					NewURL (url, true);
+				}
+				else if (e.Mime_ == "x-leechcraft/browser-import-data")
+				{
+					QList<QVariant> history = e.Additional_ ["BrowserHistory"].toList ();
+					Q_FOREACH (const QVariant& hRowVar, history)
+					{
+						QMap<QString, QVariant> hRow = hRowVar.toMap ();
+						QString title = hRow ["Title"].toString ();
+						QString url = hRow ["URL"].toString ();
+						QDateTime date = hRow ["DateTime"].toDateTime ();
+
+						GetHistoryModel ()->AddItem (title, url, date);
+					}
+
+					QList<QVariant> bookmarks = e.Additional_ ["BrowserBookmarks"].toList ();
+					Q_FOREACH (const QVariant& hBMVar, bookmarks)
+					{
+						QMap<QString, QVariant> hBM = hBMVar.toMap ();
+						QString title = hBM ["Title"].toString ();
+						QString url = hBM ["URL"].toString ();
+						QStringList tags = hBM ["Tags"].toStringList ();
+
+						GetFavoritesModel ()->AddItem (title, url, tags);
+					}
+				}
+			}
+
 			WebPluginFactory* Core::GetWebPluginFactory ()
 			{
 				if (!WebPluginFactory_)
