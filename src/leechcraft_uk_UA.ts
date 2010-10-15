@@ -135,7 +135,7 @@
     </message>
     <message>
         <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
-        <translation>Введіть URL або ім’я файлу, або будь-яку іншу стрічку, яку, по-вашому, LeechCraft зможе обробити.</translation>
+        <translation>Введіть URL або ім’я файлу, або будь-який інший рядок, який, по-вашому, LeechCraft зможе обробити.</translation>
     </message>
 </context>
 <context>
@@ -409,7 +409,7 @@
     </message>
     <message>
         <source>Could not handle download entity %1.</source>
-        <translation>Не вдалося обробити закачувану сутність %1.</translation>
+        <translation>Не вдалося обробити заванатажену сутність %1.</translation>
     </message>
     <message>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
@@ -891,7 +891,7 @@
     </message>
     <message>
         <source>Binary entity</source>
-        <translation>Двійковий об&apos;єкт</translation>
+        <translation>Двійкова сутність</translation>
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
