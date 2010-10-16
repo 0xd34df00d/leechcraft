@@ -72,7 +72,7 @@
     <message>
         <location filename="core.cpp" line="353"/>
         <source>Unable to find repository with URL %1.</source>
-        <translation>Неможливо знайти репозиторій з URL %1.</translation>
+        <translation>Неможливо знайти репозиторій з адресою %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="371"/>
@@ -282,7 +282,7 @@
     <message>
         <location filename="packageprocessor.cpp" line="362"/>
         <source>No URLs for package %1.</source>
-        <translation>Нет URL’ов для пакету %1.</translation>
+        <translation>Немає адрес для пакету %1.</translation>
     </message>
     <message>
         <location filename="packageprocessor.cpp" line="426"/>
@@ -305,7 +305,7 @@
     <message>
         <location filename="packagesdelegate.cpp" line="137"/>
         <source>Version %1 available</source>
-        <translation>Версія %1 доступна</translation>
+        <translation>Доступна версія %1</translation>
     </message>
     <message>
         <location filename="packagesdelegate.cpp" line="264"/>
@@ -481,7 +481,7 @@
     <message>
         <location filename="repoinfofetcher.cpp" line="403"/>
         <source>Unable to parse component %1 description file. More information is available in logs.</source>
-        <translation>Неможливо розібрати опис компоненту %1. Більше інформації можна знайти в логах.</translation>
+        <translation>Неможливо розібрати опис компоненту %1. Більше інформації можна знайти в журналі.</translation>
     </message>
     <message>
         <location filename="repoinfofetcher.cpp" line="446"/>
@@ -499,7 +499,7 @@
     <message>
         <location filename="storage.cpp" line="759"/>
         <source>Package with ID %1 not found.</source>
-        <translation>Пакет з  ID %1 не знайдено.</translation>
+        <translation>Пакет з ID %1 не знайдено.</translation>
     </message>
     <message>
         <location filename="storage.cpp" line="827"/>
@@ -517,7 +517,7 @@
     <message>
         <location filename="xmlparsers.cpp" line="43"/>
         <source>Could not get repo name.</source>
-        <translation>Неможливо отримати ім’я репозиторія.</translation>
+        <translation>Неможливо отримати ім&apos;я репозиторія.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="48"/>
@@ -532,12 +532,12 @@
     <message>
         <location filename="xmlparsers.cpp" line="59"/>
         <source>Could not get maintainer name.</source>
-        <translation>Неможливо отримати ім’я мейнтейнера.</translation>
+        <translation type="unfinished">Неможливо отримати ім&apos;я супроводжувача.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="64"/>
         <source>Could not get maintainer email.</source>
-        <translation>Неможливо отримати пошту мейнтейнера.</translation>
+        <translation>Неможливо отримати пошту супроводжувача.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="76"/>

@@ -633,7 +633,7 @@
     </message>
     <message>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
-        <translation>Не вдалося завантажити плагін з %1: не вдалося створити екземпляр плагіну з виключенням %2.</translation>
+        <translation>Не вдалося завантажити плагін з %1: під час створення екземпляру сталося виключення %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
@@ -1312,7 +1312,7 @@
     </message>
     <message>
         <source>Default new tab contents:</source>
-        <translation>Тип нової вкладки по замовчуванню:</translation>
+        <translation>Типова нова вкладка:</translation>
     </message>
     <message>
         <source>Context-dependent</source>

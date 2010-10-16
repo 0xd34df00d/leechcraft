@@ -485,7 +485,7 @@
     <message>
         <location filename="customwebpage.cpp" line="139"/>
         <source>contact your system/network administrator, especially if you can&apos;t load any single page</source>
-        <translation>зв&apos;яжіться з вашим системним адміністратором, особливо, якщо ви не можете завантажити жодної сторінки</translation>
+        <translation>зв&apos;яжіться з Вашим системним адміністратором, особливо, якщо Ви не можете завантажити жодної сторінки</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="141"/>
@@ -496,7 +496,7 @@
         <location filename="customwebpage.cpp" line="152"/>
         <location filename="customwebpage.cpp" line="187"/>
         <source>check if the URL is written correctly;</source>
-        <translation>перевірте правильність написаного URL</translation>
+        <translation>перевірте правильність написаної адреси;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="153"/>
@@ -531,12 +531,12 @@
     <message>
         <location filename="customwebpage.cpp" line="190"/>
         <source>check the login and password you entered and try again</source>
-        <translation>перевірте логін і пароль, що ви ввели і спробуйте знову</translation>
+        <translation>перевірте логін і пароль, що Ви ввели і спробуйте знову</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="194"/>
         <source>check if the URL is written correctly, particularly, the part before the &apos;://&apos;;</source>
-        <translation>перевірте, чи URL правильно написаний, зокрема, частина перед &apos;://&apos;;</translation>
+        <translation>перевірте, чи адреса правильно написана, зокрема, частина перед &apos;://&apos;;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="195"/>
@@ -1083,7 +1083,7 @@
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>User CSS URL:</source>
-        <translation>URL користувацького CSS:</translation>
+        <translation>Адреса користувацького CSS:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>

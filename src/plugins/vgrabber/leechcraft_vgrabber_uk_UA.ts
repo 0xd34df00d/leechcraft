@@ -70,7 +70,7 @@
     <message>
         <location filename="findproxy.cpp" line="55"/>
         <source>Copy URL to clipboard</source>
-        <translation>Скопіювати URL в буфер</translation>
+        <translation>Скопіювати адресу в буфер</translation>
     </message>
     <message>
         <location filename="findproxy.cpp" line="63"/>

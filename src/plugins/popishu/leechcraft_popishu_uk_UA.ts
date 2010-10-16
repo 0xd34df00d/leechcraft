@@ -6,8 +6,7 @@
     <message>
         <location filename="editorpage.ui" line="32"/>
         <source>Console</source>
-        <translatorcomment>Термінал</translatorcomment>
-        <translation></translation>
+        <translation>Термінал</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="45"/>
@@ -98,7 +97,7 @@
     <message>
         <location filename="editorpage.ui" line="195"/>
         <source>Enable folding</source>
-        <translation>Ввімкнути фолдінг</translation>
+        <translation>Ввімкнути згортання</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="206"/>
@@ -289,7 +288,7 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>End wrap flag location:</source>
-        <translation>Положення флага переносу в кінці рядка:</translation>
+        <translation>Положення позначки переносу в кінці рядка:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
@@ -312,7 +311,7 @@
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Start wrap flag location:</source>
-        <translation>Положення флагу переносу на початку рядку:</translation>
+        <translation>Положення позначки переносу на початку рядка:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>

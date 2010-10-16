@@ -115,7 +115,7 @@
     <message>
         <location filename="addtorrent.ui" line="220"/>
         <source>Tracker URL:</source>
-        <translation>Трекер URL:</translation>
+        <translation>Адреса трекаера:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="234"/>
@@ -223,7 +223,7 @@
     <message>
         <location filename="addwebseeddialog.ui" line="22"/>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation>Адреса:</translation>
     </message>
     <message>
         <location filename="addwebseeddialog.ui" line="34"/>
@@ -686,7 +686,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="intropage.cpp" line="33"/>
         <source>This wizard will generate a torrent file. You simply need so specify the torrent name, files to include and optionally few other options to produce your torrent file.</source>
-        <translation>Цей майстер допоможе вам створити торрент-файл. Вам потрібно лише вказати ім&apos;я файлу, що створюється, файли, які необхідно до нього включити і ще декілька необов&apos;язкових параметрів.</translation>
+        <translation>Цей майстер допоможе Вам створити торрент-файл. Вам потрібно лише вказати ім&apos;я файлу, що створюється; файли, які необхідно до нього включити і ще декілька необов&apos;язкових параметрів.</translation>
     </message>
 </context>
 <context>
@@ -1262,7 +1262,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentfirststep.ui" line="45"/>
         <source>Announce URL:</source>
-        <translation>URL для анонсування:</translation>
+        <translation>Адреса для анонсування:</translation>
     </message>
     <message>
         <location filename="newtorrentfirststep.ui" line="55"/>

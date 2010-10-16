@@ -921,7 +921,7 @@
     <message>
         <location filename="itemslistmodel.cpp" line="236"/>
         <source>RSS with comments is available</source>
-        <translation>Доступний RSS с коментарями</translation>
+        <translation>Доступний RSS з коментарями</translation>
     </message>
 </context>
 <context>
