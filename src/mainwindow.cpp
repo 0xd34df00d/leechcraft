@@ -27,6 +27,7 @@
 #include <QCursor>
 #include <QCheckBox>
 #include <QShortcut>
+#include <QClipboard>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/itraymenu.h>
@@ -152,6 +153,18 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	QTimer::singleShot (700,
 			this,
 			SLOT (doDelayedInit ()));
+
+	FullScreenShortcut_ = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
+	FullScreenShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
+	connect (FullScreenShortcut_,
+			SIGNAL (activated ()),
+			this,
+			SLOT (on_ShortcutFullscreenMode__triggered ()));
+}
+
+void LeechCraft::MainWindow::on_ShortcutFullscreenMode__triggered ()
+{
+	on_ActionFullscreenMode__triggered (!isFullScreen ());
 }
 
 LeechCraft::MainWindow::~MainWindow ()
@@ -263,7 +276,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.setupUi (this);
 
-	NewTabButton_ = new QToolButton (this);
+	NewTabButton_ = new NewTabButton (this);
 
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
 
@@ -583,11 +596,13 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	if (full)
 	{
 		WasMaximized_ = isMaximized ();
+		ShowMenuAndBar (false);
 		showFullScreen ();
 		Clock_->show ();
 	}
 	else if (WasMaximized_)
 	{
+		ShowMenuAndBar (true);
 		Clock_->hide ();
 		showMaximized ();
 		// Because shit happens on X11 otherwise
@@ -597,6 +612,7 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 	else
 	{
+		ShowMenuAndBar (true);
 		Clock_->hide ();
 		showNormal ();
 	}
@@ -611,6 +627,8 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
 	GetGuard ()->AddToolbar (bar);
+	if (bar && isFullScreen ())
+		bar->setVisible (Ui_.MenuBar_->isVisible ());
 }
 
 namespace
@@ -851,6 +869,14 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
 			SLOT (rotateRight ()));
+	connect (new QShortcut (QKeySequence ("Ctrl+PgUp"), this),
+			SIGNAL (activated ()),
+			Core::Instance ().GetTabManager (),
+			SLOT (rotateLeft ()));
+	connect (new QShortcut (QKeySequence ("Ctrl+PgDown"), this),
+			SIGNAL (activated ()),
+			Core::Instance ().GetTabManager (),
+			SLOT (rotateRight ()));
 
 	for (int i = 0; i < 10; ++i)
 	{
@@ -938,4 +964,60 @@ void LeechCraft::MainWindow::InitializeDataSources ()
 {
 	XmlSettingsDialog_->SetDataSource ("Language",
 			GetInstalledLangsModel ());
+}
+
+namespace
+{
+	QVariant ClipboardToEcontent (QString selection)
+	{
+		QVariant econtent;
+		if (selection=="")
+			return econtent;
+		if (QFile::exists (selection))
+			econtent = QUrl::fromLocalFile (selection);
+		else
+		{
+			QUrl url (selection);
+			if (url.isValid ())
+				econtent = url;
+			else
+				econtent = selection;
+		}
+		return econtent;
+	}
+};
+
+void LeechCraft::NewTabButton::mousePressEvent (QMouseEvent *event)
+{
+	if (event->button () == Qt::MidButton)
+	{
+		QVariant econtent;
+		econtent = ClipboardToEcontent (QApplication::clipboard ()->text (QClipboard::Selection));
+		if (econtent.isNull ())
+		{
+			econtent = ClipboardToEcontent (QApplication::clipboard ()->text (QClipboard::Clipboard));
+			if (econtent.isNull ())
+				return;
+		}
+
+		Entity e = MakeEntity (econtent,QString (),FromUserInitiated | OnlyHandle,QString ());
+		Core::Instance ().handleGotEntity (e);
+	}
+	else
+		QToolButton::mousePressEvent (event);
+}
+
+void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
+{
+	bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
+
+	if (!asButton)
+		Ui_.MenuBar_->setVisible (show);
+
+	Ui_.MainToolbar_->setVisible (show);
+
+	int cur = Ui_.MainTabWidget_->currentIndex ();
+	if (Core::Instance ().GetToolBar (cur))
+		Core::Instance ().GetToolBar (cur)->setVisible (show);
+	Ui_.ActionFullscreenMode_->setChecked (!show);
 }

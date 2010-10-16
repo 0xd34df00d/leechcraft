@@ -18,6 +18,10 @@
 
 #include "storagebackend.h"
 #include "sqlstoragebackend.h"
+#include "sqlstoragebackend_mysql.h"
+
+#include <QFile>
+#include <QDebug>
 
 namespace LeechCraft
 {
@@ -25,15 +29,34 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
+
+			QString StorageBackend::LoadQuery (const QString& engine, const QString& name)
+			{
+				QFile file (QString (":/resources/sql/%1/%2.sql")
+						.arg (engine)
+						.arg (name));
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to open file"
+							<< name
+							<< "for engine"
+							<< engine
+							<< "for reading";
+					return QString ();
+				}
+				return file.readAll ();
+			}
+
 			StorageBackend::StorageBackend (QObject *parent)
 			: QObject (parent)
 			{
 			}
-			
+
 			StorageBackend::~StorageBackend ()
 			{
 			}
-			
+
 			boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
 			{
 				boost::shared_ptr<StorageBackend> result;
@@ -42,6 +65,9 @@ namespace LeechCraft
 					case SBSQLite:
 					case SBPostgres:
 						result.reset (new SQLStorageBackend (type));
+                        break;
+                    case SBMysql:
+                        result.reset (new SQLStorageBackendMysql (type));
 				}
 				return result;
 			}

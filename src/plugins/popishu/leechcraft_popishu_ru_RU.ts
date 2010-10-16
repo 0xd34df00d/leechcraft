@@ -214,7 +214,7 @@
 <context>
     <name>LeechCraft::Plugins::Popishu::Plugin</name>
     <message>
-        <location filename="popishu.cpp" line="97"/>
+        <location filename="popishu.cpp" line="102"/>
         <source>Plain text editor with syntax highlighting and stuff.</source>
         <translation>Текстовый редактор с подсветкой синтаксиса и прочим.</translation>
     </message>
@@ -260,71 +260,71 @@
 <context>
     <name>popishusettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
-        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="3"/>
         <source>Editor settings</source>
         <translation>Параметры редактора</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="4"/>
+        <location filename="dummy.cpp" line="4"/>
         <source>Tab width:</source>
         <translation>Ширина табуляции:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="5"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Identation width:</source>
         <translation>Ширина отступов:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="6"/>
+        <location filename="dummy.cpp" line="6"/>
         <source>Monospace font:</source>
         <translation>Моноширинный шрифт:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="7"/>
+        <location filename="dummy.cpp" line="7"/>
         <source>Text wrapping</source>
         <translation>Перенос текста</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="8"/>
+        <location filename="dummy.cpp" line="8"/>
         <source>End wrap flag location:</source>
         <translation>Положение флага переноса в конце строки:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="9"/>
-        <location filename="dummyfile.cpp" line="13"/>
+        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>No wrap flag</source>
         <translation>Не показывать</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="10"/>
-        <location filename="dummyfile.cpp" line="14"/>
+        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="14"/>
         <source>By text</source>
         <translation>Рядом с текстом</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="11"/>
-        <location filename="dummyfile.cpp" line="15"/>
+        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>By border</source>
         <translation>Рядом с границей</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="12"/>
+        <location filename="dummy.cpp" line="12"/>
         <source>Start wrap flag location:</source>
         <translation>Положение флага переноса в начале строки:</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="16"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>Indentation of wrapped line</source>
         <translation>Отступ перенесенной строки</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="17"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Behavior</source>
         <translation>Поведение</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="18"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Remember this much recently opened files:</source>
         <translation>Запоминать столько недавно открытых файлов:</translation>
     </message>

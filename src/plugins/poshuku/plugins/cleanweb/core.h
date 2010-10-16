@@ -159,6 +159,7 @@ namespace LeechCraft
 						void update ();
 						void handleJobFinished (int);
 						void handleJobError (int, IDownload::Error);
+						void delayedRemoveElements (QWebFrame*, const QString&);
 					signals:
 						void delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**);

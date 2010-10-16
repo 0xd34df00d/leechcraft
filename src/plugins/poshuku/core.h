@@ -109,6 +109,9 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
+				bool CouldHandle (const Entity&) const;
+				void Handle (Entity);
+
 				WebPluginFactory* GetWebPluginFactory ();
 
 				void SetProvider (QObject*, const QString&);

@@ -116,12 +116,12 @@
         <translation>Видео</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="184"/>
+        <location filename="videofindproxy.cpp" line="165"/>
         <source>Nothing found for %1</source>
         <translation>Ничего не найдено для %1</translation>
     </message>
     <message>
-        <location filename="videofindproxy.cpp" line="280"/>
+        <location filename="videofindproxy.cpp" line="273"/>
         <source>Job for request&lt;br /&gt;%1&lt;br /&gt;wasn&apos;t delegated.</source>
         <translation>Задача для запроса&lt;br /&gt;%1&lt;br /&gt;не была делегирована.</translation>
     </message>
@@ -129,7 +129,7 @@
 <context>
     <name>LeechCraft::Plugins::vGrabber::vGrabber</name>
     <message>
-        <location filename="vgrabber.cpp" line="83"/>
+        <location filename="vgrabber.cpp" line="88"/>
         <source>vkontakte.ru audio/video grabber.</source>
         <translation>Скачивание и проигрывание медиа-файлов В Контакте.</translation>
     </message>
@@ -137,27 +137,27 @@
 <context>
     <name>vgrabbersettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummy.cpp" line="2"/>
         <source>General settings</source>
         <translation>Общие настройки</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummy.cpp" line="3"/>
         <source>Audio</source>
         <translation>Аудио</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="4"/>
+        <location filename="dummy.cpp" line="4"/>
         <source>Filter files with the same URL</source>
         <translation>Отфильтровывать файлы с одинаковым адресом</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="5"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Filter files with same title and length</source>
         <translation>Отфильтровывать файлы с одинаковыми именами и длинами</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="6"/>
+        <location filename="dummy.cpp" line="6"/>
         <source>Video</source>
         <translation>Видео</translation>
     </message>

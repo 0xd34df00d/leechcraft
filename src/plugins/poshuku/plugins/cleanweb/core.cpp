@@ -34,10 +34,10 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <plugininterface/util.h>
+#include <plugininterface/customnetworkreply.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
-#include "blockednetworkreply.h"
 #include "userfiltersmodel.h"
 
 using namespace LeechCraft;
@@ -169,7 +169,7 @@ namespace
 				white = true;
 			}
 
-			if (actualLine.startsWith ('/') && 
+			if (actualLine.startsWith ('/') &&
 					actualLine.endsWith ('/'))
 			{
 				actualLine = actualLine.mid (1, actualLine.size () - 2);
@@ -390,7 +390,12 @@ QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 		qDebug () << "rejecting against" << matched;
 		Blocked_ << req->url ().toString ();
 		hook->CancelDefault ();
-		return new BlockedNetworkReply (*req, this);
+		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
+		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
+		result->SetError (QNetworkReply::ContentAccessDenied,
+				tr ("Blocked by Poshuku CleanWeb: %1")
+					.arg (req->url ().toString ()));
+		return result;
 	}
 	return 0;
 }
@@ -411,19 +416,21 @@ void Core::HandleExtension (LeechCraft::IHookProxy_ptr proxy,
 
 	QString url = error->url.toString ();
 	if (!Blocked_.contains (url))
-		return;
+	{
+		url = error->frame->url ().toString ();
+		if (!Blocked_.contains (url))
+			return;
+	}
 
 	proxy->CancelDefault ();
 	proxy->SetReturnValue (true);
 
-	QWebFrame *frame = page->mainFrame ();
-	QWebElementCollection elems =
-			frame->findAllElements (QString ("*[src=\"%1\"]").arg (url));
-	if (elems.count ())
-		Q_FOREACH (QWebElement elem, elems)
-			elem.removeFromDocument ();
-	else
-		qWarning () << Q_FUNC_INFO << "not found" << url;
+	// Otherwise things segfault on Qt 4.7.
+	QMetaObject::invokeMethod (this,
+			"delayedRemoveElements",
+			Qt::QueuedConnection,
+			Q_ARG (QWebFrame*, page->mainFrame ()),
+			Q_ARG (QString, url));
 }
 
 void Core::HandleContextMenu (const QWebHitTestResult& r,
@@ -481,7 +488,7 @@ bool Core::ShouldReject (const QNetworkRequest& req, QString *matchedFilter) con
 	QString urlStr = url.toString ();
 	QString cinUrlStr = urlStr.toLower ();
 	QString domain = url.host ();
-	
+
 	QList<Filter> allFilters;
 	allFilters << UserFilters_->GetFilter ();
 	allFilters += Filters_;
@@ -616,7 +623,7 @@ void Core::HandleProvider (QObject *provider)
 {
 	if (Downloaders_.contains (provider))
 		return;
-	
+
 	Downloaders_ << provider;
 	connect (provider,
 			SIGNAL (jobFinished (int)),
@@ -868,5 +875,16 @@ void Core::handleJobError (int id, IDownload::Error)
 		return;
 
 	PendingJobs_.remove (id);
+}
+
+void Core::delayedRemoveElements (QWebFrame *frame, const QString& url)
+{
+	QWebElementCollection elems =
+			frame->findAllElements (QString ("*[src=\"%1\"]").arg (url));
+	if (elems.count ())
+		Q_FOREACH (QWebElement elem, elems)
+			elem.removeFromDocument ();
+	else
+		qWarning () << Q_FUNC_INFO << "not found" << url;
 }
 

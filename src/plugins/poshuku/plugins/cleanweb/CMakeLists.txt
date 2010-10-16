@@ -8,7 +8,6 @@ SET (CLEANWEB_SRCS
 	flashplaceholder.cpp
 	flashonclickplugin.cpp
 	flashonclickwhitelist.cpp
-	blockednetworkreply.cpp
 	userfilters.cpp
 	userfiltersmodel.cpp
 	filter.cpp
@@ -24,7 +23,6 @@ SET (CLEANWEB_HEADERS
 	flashplaceholder.h
 	flashonclickplugin.h
 	flashonclickwhitelist.h
-	blockednetworkreply.h
 	userfilters.h
 	userfiltersmodel.h
 	filter.h

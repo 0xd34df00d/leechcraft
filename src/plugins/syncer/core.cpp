@@ -236,12 +236,16 @@ namespace LeechCraft
 				}
 
 				if (sent + received)
+				{
+					QString text = tr ("Successfully synchronized plugin %1");
+					text += ": ";
+					text += tr ("%n item(s) received", 0, received);
+					text += ", ";
+					text += tr ("%n item(s) sent", 0, received);
 					emit gotEntity (Util::MakeNotification (tr ("Sync"),
-							tr ("Successfully synchronized plugin %1: %2 items received, %3 items sent.")
-								.arg (name)
-								.arg (received)
-								.arg (sent),
+							text,
 							PInfo_));
+				}
 			}
 
 			QString Core::GetNameForChain (const QByteArray& fullChain)
