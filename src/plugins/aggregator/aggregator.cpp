@@ -713,9 +713,8 @@ namespace LeechCraft
 					return;
 				}
 
-				QString tip = tr ("%1 unread messages in %2 channels.")
-					.arg (number)
-					.arg (Core::Instance ().GetUnreadChannelsNumber ());
+				QString tip = tr ("%n unread message(s)", "", number) + " " +
+					      tr ("in %n channel(s).", "", Core::Instance ().GetUnreadChannelsNumber ());
 				Impl_->TrayIcon_->setToolTip (tip);
 				Impl_->TrayIcon_->show ();
 			}

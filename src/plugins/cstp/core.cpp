@@ -432,7 +432,7 @@ namespace LeechCraft
 											.arg (Util::MakePrettySize (total))
 											.arg (Util::MakePrettySize (task->GetSpeed ()) + tr ("/s"));
 									else
-										return QString (tr ("%1"))
+										return QString ("%1")
 											.arg (Util::MakePrettySize (done));
 								}
 								else
