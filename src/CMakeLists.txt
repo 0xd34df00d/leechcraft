@@ -106,7 +106,6 @@ OPTION (ENABLE_POPISHU "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
-
 ENABLE_TESTING ()
 
 IF (ENABLE_SUMMARY)

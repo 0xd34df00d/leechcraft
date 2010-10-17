@@ -21,6 +21,7 @@
 #include "akregatorimporter.h"
 #include "lifereaimporter.h"
 #include "ktorrentimporter.h"
+#include "firefoximporter.h"
 
 namespace LeechCraft
 {
@@ -36,7 +37,8 @@ namespace LeechCraft
 				Importers_ << new AkregatorImporter (this);
 				Importers_ << new LifereaImporter (this);
 				Importers_ << new KTorrentImporter (this);
-				
+				Importers_ << new FirefoxImporter (this);
+
 				connect (this,
 						SIGNAL (accepted ()),
 						this,

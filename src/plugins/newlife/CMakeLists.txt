@@ -16,6 +16,8 @@ IF (NOT QT_USE_FILE)
 ENDIF (NOT QT_USE_FILE)
 
 SET (QT_USE_QTXML TRUE)
+SET (QT_USE_QTSQL TRUE)
+
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -23,6 +25,7 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+
 SET (SRCS
 	newlife.cpp
 	importwizard.cpp
@@ -33,6 +36,8 @@ SET (SRCS
 	lifereaimporter.cpp
 	ktorrentimportpage.cpp
 	ktorrentimporter.cpp
+	firefoximportpage.cpp
+	firefoximporter.cpp
 	)
 SET (HEADERS
 	newlife.h
@@ -45,6 +50,8 @@ SET (HEADERS
 	ktorrentimportpage.h
 	ktorrentimporter.h
 	abstractimporter.h
+	firefoximportpage.h
+	firefoximporter.h
 	)
 SET (FORMS
 	importwizard.ui

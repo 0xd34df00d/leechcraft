@@ -159,7 +159,6 @@ namespace LeechCraft
 								"LeechCraft",
 								tr ("Could not access or parse Akregator settings."));
 				}
-
 				emit gotEntity (e);
 			}
 		};
