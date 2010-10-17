@@ -104,11 +104,10 @@ namespace LeechCraft
 				emit completeChanged ();
 			}
 
-			QString FirefoxImportPage::getProfileDirectory (const QString& ProfilePath)
-			{
-				QString filename = Ui_.FileLocation_->text ();
+			QString FirefoxImportPage::getProfileDirectory (const QString& filename)
+			{			
 				if (!CheckValidity (filename))
-					return "";
+					return QString();
 				else
 				{
 					QSettings settings (filename, QSettings::IniFormat);
@@ -117,7 +116,7 @@ namespace LeechCraft
 					return profileDir;
 				}
 
-				return "";
+				return QString();
 			}
 
 
@@ -142,54 +141,15 @@ namespace LeechCraft
 						FromUserInitiated,
 						"x-leechcraft/browser-import-data");
 
-				setHistory ();
-				if(History_.size () > 0)
-					e.Additional_ ["BrowserHistory"] = History_;
-
-//				if (Ui_.ImportSettings_->checkState () == Qt::Checked)
-//				{
-//					QSettings settings (QDir::homePath () + "/.kde/share/config/akregatorrc",
-//							QSettings::IniFormat);
-//					if (settings.status () == QSettings::NoError)
-//					{
-//						if (settings.contains ("Show Tray Icon"))
-//							e.Additional_ ["ShowTrayIcon"] = settings.value ("Show Tray Icon");
-//						if (settings.contains ("Fetch On Startup"))
-//							e.Additional_ ["UpdateOnStartup"] = settings.value ("Fetch On Startup");
-//						if (settings.contains ("Auto Fetch Interval"))
-//							e.Additional_ ["UpdateTimeout"] = settings.value ("Auto Fetch Interval");
-
-//						settings.beginGroup ("Archive");
-//						if (settings.contains ("Max Article Number"))
-//							e.Additional_ ["MaxArticles"] = settings.value ("Max Article Number");
-//						if (settings.contains ("Max Article Age"))
-//							e.Additional_ ["MaxAge"] = settings.value ("Max Article Age");
-//						settings.endGroup ();
-
-//						e.Additional_ ["UserVisibleName"] = tr ("Akregator settings");
-//					}
-//					else
-//						QMessageBox::critical (0,
-//								"LeechCraft",
-//								tr ("Could not access or parse Akregator settings."));
-//				}
-
-//				QList <QVariant> b = e.Additional_["BrowserHistory"].toList ();
-//				QMap<QString, QVariant> record;
-//				for(int i = 0; i < b.size (); i++){
-//					QMap<QString, QVariant> record = b[i].toMap ();
-//					printf("%s:%s:%s\n", record["URL"].toString ().toStdString ().c_str (),
-//							record["Title"].toString ().toStdString ().c_str (),
-//							record["DateTime"].toString ().toStdString ().c_str ());
-//				}				
+				e.Additional_ ["BrowserHistory"] = getHistory (filename);
 				emit gotEntity (e);
 			}
 
-			bool FirefoxImportPage::setHistory ()
+			QList<QVariant> FirefoxImportPage::getHistory (const QString& filename)
 			{
-				QString filename = Ui_.FileLocation_->text ();
+
 				if (!CheckValidity (filename))
-					return false;
+					return QList<QVariant>();
 
 				QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE");
 				QString profilePath = getProfileDirectory (filename);
@@ -203,26 +163,26 @@ namespace LeechCraft
 						QMessageBox::critical (0,
 									"LeechCraft",
 									 db.lastError ().text ());
-						return false;
+						return QList<QVariant>();
 					}
 					else
 					{
-						QSqlQuery query ("SELECT url, title, last_visit_date FROM moz_places;",
-										QSqlDatabase::connectionNames ().value(0));
-
+						QSqlQuery query ("SELECT url, title, last_visit_date FROM moz_places;", db);
+						QList<QVariant> History;
 						while (query.next ())
 						{
 							QMap <QString, QVariant> record;
 							record ["URL"] = query.value (0);
 							record ["Title"] = query.value (1);
 							record ["DateTime"] = query.value (2);
-							History_.push_back (record);
+							History.push_back (record);
 						}
 						db.close ();
+						return History;
 					}
 				}
 
-				return true;
+				return QList<QVariant>();
 			}
 		};
 	};

@@ -41,10 +41,7 @@ namespace LeechCraft
 				virtual int nextId () const;
 				virtual void initializePage ();
 				QString getProfileDirectory (const QString&);
-				bool setHistory ();
-			private:
-				QList <QVariant> History_;
-
+				QList <QVariant> getHistory (const QString&);
 			private slots:
 				void on_Browse__released ();
 				void on_FileLocation__textEdited (const QString&);
