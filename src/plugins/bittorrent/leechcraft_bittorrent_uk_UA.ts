@@ -115,7 +115,7 @@
     <message>
         <location filename="addtorrent.ui" line="220"/>
         <source>Tracker URL:</source>
-        <translation>Адреса трекаера:</translation>
+        <translation>Адреса трекера:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="234"/>
