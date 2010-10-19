@@ -40,8 +40,9 @@ namespace LeechCraft
 				virtual bool isComplete () const;
 				virtual int nextId () const;
 				virtual void initializePage ();
-				QString getProfileDirectory (const QString&);
-				QList <QVariant> getHistory (const QString&);
+
+				QString GetProfileDirectory (const QString&);
+				QList<QVariant> GetHistory (const QString&);
 			private slots:
 				void on_Browse__released ();
 				void on_FileLocation__textEdited (const QString&);

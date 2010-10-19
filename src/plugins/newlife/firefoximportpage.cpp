@@ -104,10 +104,10 @@ namespace LeechCraft
 				emit completeChanged ();
 			}
 
-			QString FirefoxImportPage::getProfileDirectory (const QString& filename)
+			QString FirefoxImportPage::GetProfileDirectory (const QString& filename)
 			{			
 				if (!CheckValidity (filename))
-					return QString();
+					return QString ();
 				else
 				{
 					QSettings settings (filename, QSettings::IniFormat);
@@ -116,7 +116,7 @@ namespace LeechCraft
 					return profileDir;
 				}
 
-				return QString();
+				return QString ();
 			}
 
 
@@ -126,33 +126,32 @@ namespace LeechCraft
 				if (!CheckValidity (filename))
 					return;
 
-				QFileInfo FfStarted (getProfileDirectory (filename) + "/lock");
+				QFileInfo FfStarted (GetProfileDirectory (filename) + "/lock");
 
 				if (FfStarted.isSymLink ())
 				{
 					QMessageBox::critical (0,
 								"LeechCraft",
-								 tr ("Before import close Firefox, please"));
+								 tr ("Please close Firefox before importing."));
 					return;
 				}
 
-				Entity e = Util::MakeEntity (QUrl::fromLocalFile (getProfileDirectory (filename)),
+				Entity e = Util::MakeEntity (QUrl::fromLocalFile (GetProfileDirectory (filename)),
 						QString (),
 						FromUserInitiated,
 						"x-leechcraft/browser-import-data");
 
-				e.Additional_ ["BrowserHistory"] = getHistory (filename);
+				e.Additional_ ["BrowserHistory"] = GetHistory (filename);
 				emit gotEntity (e);
 			}
 
-			QList<QVariant> FirefoxImportPage::getHistory (const QString& filename)
+			QList<QVariant> FirefoxImportPage::GetHistory (const QString& filename)
 			{
-
 				if (!CheckValidity (filename))
-					return QList<QVariant>();
+					return QList<QVariant> ();
 
 				QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE");
-				QString profilePath = getProfileDirectory (filename);
+				QString profilePath = GetProfileDirectory (filename);
 
 				if (!profilePath.isEmpty ())
 				{
@@ -162,27 +161,28 @@ namespace LeechCraft
 					{
 						QMessageBox::critical (0,
 									"LeechCraft",
-									 db.lastError ().text ());
-						return QList<QVariant>();
+									tr ("Could not open Firefox database: %1.")
+										.arg (db.lastError ().text ()));
+						return QList<QVariant> ();
 					}
 					else
 					{
 						QSqlQuery query ("SELECT url, title, last_visit_date FROM moz_places;", db);
-						QList<QVariant> History;
+						QList<QVariant> history;
 						while (query.next ())
 						{
 							QMap <QString, QVariant> record;
 							record ["URL"] = query.value (0);
 							record ["Title"] = query.value (1);
 							record ["DateTime"] = query.value (2);
-							History.push_back (record);
+							history.push_back (record);
 						}
 						db.close ();
-						return History;
+						return history;
 					}
 				}
 
-				return QList<QVariant>();
+				return QList<QVariant> ();
 			}
 		};
 	};
