@@ -296,7 +296,7 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Navigation bar visible</source>
-        <translation>Відображати навігаційну панель</translation>
+        <translation>Показувати навігаційну панель</translation>
     </message>
 </context>
 </TS>
