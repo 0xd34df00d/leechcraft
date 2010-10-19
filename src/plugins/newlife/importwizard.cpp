@@ -21,7 +21,7 @@
 #include "akregatorimporter.h"
 #include "lifereaimporter.h"
 #include "ktorrentimporter.h"
-#include "firefoximporter.h"
+#include "firefoximporter/firefoximporter.h"
 
 namespace LeechCraft
 {
