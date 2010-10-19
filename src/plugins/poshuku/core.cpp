@@ -215,26 +215,21 @@ namespace LeechCraft
 						e.Parameters_ & Internal)
 					return false;
 
-				if (e.Entity_.canConvert<QUrl> ())
+				if (e.Mime_ == "x-leechcraft/browser-import-data")
+					return true;
+				else if (e.Entity_.canConvert<QUrl> ())
 				{
 					QUrl url = e.Entity_.toUrl ();
 					return (url.isValid () &&
 						(url.scheme () == "http" || url.scheme () == "https"));
 				}
-				else if (e.Mime_ == "x-leechcraft/browser-import-data")
-					return true;
 
 				return false;
 			}
 
 			void Core::Handle (Entity e)
 			{
-				if (e.Entity_.canConvert<QUrl> ())
-				{
-					QUrl url = e.Entity_.toUrl ();
-					NewURL (url, true);
-				}
-				else if (e.Mime_ == "x-leechcraft/browser-import-data")
+				if (e.Mime_ == "x-leechcraft/browser-import-data")
 				{
 					QList<QVariant> history = e.Additional_ ["BrowserHistory"].toList ();
 					Q_FOREACH (const QVariant& hRowVar, history)
@@ -257,6 +252,11 @@ namespace LeechCraft
 
 						GetFavoritesModel ()->AddItem (title, url, tags);
 					}
+				}
+				else if (e.Entity_.canConvert<QUrl> ())
+				{
+					QUrl url = e.Entity_.toUrl ();
+					NewURL (url, true);
 				}
 			}
 
