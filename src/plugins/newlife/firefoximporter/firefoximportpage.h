@@ -19,7 +19,7 @@
 #ifndef PLUGINS_NEWLIFE_FIREFOXIMPORTPAGE_H
 #define PLUGINS_NEWLIFE_FIREFOXIMPORTPAGE_H
 #include <QWizardPage>
-#include "../ui_feedssettingsimportpage.h"
+#include "ui_feedssettingsimportpage.h"
 namespace LeechCraft
 {
 	struct Entity;
