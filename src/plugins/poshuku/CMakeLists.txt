@@ -78,6 +78,7 @@ SET (SRCS
 	bookmarkswidget.cpp
 	historywidget.cpp
 	urlframe.cpp
+	importentityhandler.cpp
 	)
 SET (HEADERS
 	poshuku.h
@@ -126,6 +127,7 @@ SET (HEADERS
 	bookmarkswidget.h
 	historywidget.h
 	urlframe.h
+	importentityhandler.h
 	interfaces/iwebplugin.h
 	interfaces/iflashoverrider.h
 	)

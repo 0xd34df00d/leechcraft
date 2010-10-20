@@ -57,6 +57,7 @@
 #include "config.h"
 #include "favoriteschecker.h"
 #include "webpluginfactory.h"
+#include "importentityhandler.h"
 
 namespace LeechCraft
 {
@@ -231,27 +232,8 @@ namespace LeechCraft
 			{
 				if (e.Mime_ == "x-leechcraft/browser-import-data")
 				{
-					QList<QVariant> history = e.Additional_ ["BrowserHistory"].toList ();
-					Q_FOREACH (const QVariant& hRowVar, history)
-					{
-						QMap<QString, QVariant> hRow = hRowVar.toMap ();
-						QString title = hRow ["Title"].toString ();
-						QString url = hRow ["URL"].toString ();
-						QDateTime date = hRow ["DateTime"].toDateTime ();
-
-						GetHistoryModel ()->AddItem (title, url, date);
-					}
-
-					QList<QVariant> bookmarks = e.Additional_ ["BrowserBookmarks"].toList ();
-					Q_FOREACH (const QVariant& hBMVar, bookmarks)
-					{
-						QMap<QString, QVariant> hBM = hBMVar.toMap ();
-						QString title = hBM ["Title"].toString ();
-						QString url = hBM ["URL"].toString ();
-						QStringList tags = hBM ["Tags"].toStringList ();
-
-						GetFavoritesModel ()->AddItem (title, url, tags);
-					}
+					std::auto_ptr<ImportEntityHandler> eh (new ImportEntityHandler (this));
+					eh->Import (e);
 				}
 				else if (e.Entity_.canConvert<QUrl> ())
 				{
