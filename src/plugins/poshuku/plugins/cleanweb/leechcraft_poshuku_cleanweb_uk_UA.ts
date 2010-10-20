@@ -116,7 +116,7 @@
     <message>
         <location filename="flashplaceholder.cpp" line="189"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Сховати</translation>
     </message>
 </context>
 <context>
@@ -631,7 +631,7 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>User filters</source>
-        <translation>Користувацькі фільтри</translation>
+        <translation>Фільтри користувача</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>

@@ -36,8 +36,8 @@ SET (SRCS
 	lifereaimporter.cpp
 	ktorrentimportpage.cpp
 	ktorrentimporter.cpp
-	firefoximportpage.cpp
-	firefoximporter.cpp
+	firefoximporter/firefoximportpage.cpp
+	firefoximporter/firefoximporter.cpp
 	)
 SET (HEADERS
 	newlife.h
@@ -50,8 +50,8 @@ SET (HEADERS
 	ktorrentimportpage.h
 	ktorrentimporter.h
 	abstractimporter.h
-	firefoximportpage.h
-	firefoximporter.h
+	firefoximporter/firefoximportpage.h
+	firefoximporter/firefoximporter.h
 	)
 SET (FORMS
 	importwizard.ui

@@ -154,7 +154,7 @@
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Filter files with same title and length</source>
-        <translation>Фільтрувати файли з однаковми назвами і довжиною</translation>
+        <translation>Фільтрувати файли з однаковими назвами і довжиною</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
