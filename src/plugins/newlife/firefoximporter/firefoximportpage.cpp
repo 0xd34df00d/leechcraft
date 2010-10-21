@@ -139,9 +139,9 @@ namespace LeechCraft
 				Entity eHistory = Util::MakeEntity (QUrl::fromLocalFile (GetProfileDirectory (filename)),
 						QString (),
 						FromUserInitiated,
-						"x-leechcraft/browser-import-data");
-
+						"x-leechcraft/browser-import-data");				
 				eHistory.Additional_ ["BrowserHistory"] = GetHistory (filename);
+
 				emit gotEntity (eHistory);
 			}
 
@@ -167,16 +167,16 @@ namespace LeechCraft
 					}
 					else
 					{
-						QString sql("select moz_places.url,moz_places.title, moz_historyvisits.visit_date "
+						QString sql ("select moz_places.url,moz_places.title, moz_historyvisits.visit_date "
 								"FROM moz_historyvisits, moz_places WHERE moz_places.id = moz_historyvisits.place_id");
 						QSqlQuery query (sql, db);
 						QList<QVariant> history;
 						while (query.next ())
 						{
 							QMap <QString, QVariant> record;
-							record ["URL"] = query.value (0);
-							record ["Title"] = query.value (1);
-							record ["DateTime"] = query.value (2);
+							record ["URL"] = query.value (0).toString ();
+							record ["Title"] = query.value (1).toString ();
+							record ["DateTime"] = QDateTime::fromMSecsSinceEpoch (query.value (2).toLongLong () / 1000);
 							history.push_back (record);
 						}
 						db.close ();
