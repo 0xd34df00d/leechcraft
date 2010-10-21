@@ -176,7 +176,7 @@ namespace LeechCraft
 							QMap <QString, QVariant> record;
 							record ["URL"] = query.value (0).toString ();
 							record ["Title"] = query.value (1).toString ();
-							record ["DateTime"] = QDateTime::fromMSecsSinceEpoch (query.value (2).toLongLong () / 1000);
+							record ["DateTime"] = QDateTime::fromTime_t (query.value (2).toLongLong () / 1000000);
 							history.push_back (record);
 						}
 						db.close ();
