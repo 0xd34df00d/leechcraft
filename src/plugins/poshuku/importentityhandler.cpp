@@ -48,19 +48,16 @@ namespace LeechCraft
 					qDebug () << "History:" << history.size ();
 					Q_FOREACH (const QVariant& hRowVar, history)
 					{
-						qDebug () << "parsing...";
 						QMap<QString, QVariant> hRow = hRowVar.toMap ();
 						QString title = hRow ["Title"].toString ();
 						QString url = hRow ["URL"].toString ();
 						QDateTime date = hRow ["DateTime"].toDateTime ();
-						qDebug () << cur << "got" << title << url << date;
 
 						if (!date.isValid ())
 							qWarning () << "skipping entity with invalid date" << title << url;
 						else
 							Core::Instance ().GetHistoryModel ()->AddItem (title, url, date);
 
-						qDebug () << "added";
 						progressDia.setValue (++cur);
 						if (progressDia.wasCanceled ())
 							break;
