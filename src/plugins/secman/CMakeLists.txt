@@ -18,14 +18,20 @@ ENDIF (NOT QT_USE_FILE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+	
+ADD_SUBDIRECTORY (storageplugins/simplestorage)
+
 SET (SRCS
 	secman.cpp
+	core.cpp
 	)
 SET (HEADERS
 	secman.h
+	core.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 

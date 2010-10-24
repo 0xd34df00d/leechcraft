@@ -18,6 +18,7 @@
 
 #include "secman.h"
 #include <QIcon>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -74,6 +75,26 @@ namespace LeechCraft
 
 			void Plugin::SetProvider (QObject*, const QString&)
 			{
+			}
+
+			bool Plugin::CouldHandle (const Entity& e) const
+			{
+				return Core::Instance ().CouldHandle (e);
+			}
+
+			void Plugin::Handle (Entity e)
+			{
+				Core::Instance ().Handle (e);
+			}
+
+			QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+			{
+				return Core::Instance ().GetExpectedPluginClasses ();
+			}
+
+			void Plugin::AddPlugin (QObject *plugin)
+			{
+				Core::Instance ().AddPlugin (plugin);
 			}
 		};
 	};
