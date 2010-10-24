@@ -1041,12 +1041,14 @@ namespace LeechCraft
 			bool SQLStorageBackendMysql::UpdateItemsStorage (int oldV, int newV)
 			{
 				bool success = true;
+				/* NOTE No versioning in MySQL yet, so just return true for now.
 				while (oldV < newV)
 				{
 					success = RollItemsStorage (++oldV);
 					if (!success)
 						break;
 				}
+				*/
 
 				return success;
 			}

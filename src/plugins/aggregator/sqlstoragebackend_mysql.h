@@ -556,7 +556,6 @@ namespace LeechCraft
 				bool InitializeTables ();
 				QByteArray SerializePixmap (const QPixmap&) const;
 				QPixmap UnserializePixmap (const QByteArray&) const;
-				bool RollItemsStorage (int);
 
 				void RemoveTables ();
 				Feed::FeedSettings GetFeedSettingsFromVersion5 (Feed_ptr) const;
