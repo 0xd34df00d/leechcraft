@@ -133,7 +133,10 @@ namespace LeechCraft
 						IStoragePlugin::STSecure :
 						IStoragePlugin::STInsecure;
 
-				qobject_cast<IStoragePlugin*> (storage)->Save (keys, values, secure);
+				QList<QPair<QByteArray, QVariant> > data;
+				for (int i = 0; i < keys.size (); ++i)
+					data << qMakePair (keys.at (i), values.at (i));
+				qobject_cast<IStoragePlugin*> (storage)->Save (data, type);
 			}
 
 			QObject* Core::GetStoragePlugin () const
