@@ -93,6 +93,9 @@ namespace LeechCraft
 				if (!e.Entity_.canConvert<QUrl> ())
 					return false;
 
+				if (e.Mime_.startsWith ("x-leechcraft/"))
+					return false;
+
 				QUrl url = e.Entity_.toUrl ();
 				if (url.scheme () != "file")
 					return false;
