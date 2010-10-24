@@ -55,7 +55,7 @@ public:
 	/** @brief Adds second-level plugin to this one.
 	 *
 	 * @note This function should be able to work before IInfo::Init() is
-	 * called.
+	 * called. The second-level plugin also comes uninitialized.
 	 *
 	 * @param[in] plugin The pointer to the plugin instance.
 	 */
