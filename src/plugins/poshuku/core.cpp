@@ -77,6 +77,12 @@ namespace LeechCraft
 			{
 				qRegisterMetaType<BrowserWidgetSettings> ("LeechCraft::Plugins::Poshuku::BrowserWidgetSettings");
 				qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LeechCraft::Plugins::Poshuku::BrowserWidgetSettings");
+
+				qRegisterMetaType<ElementData> ("LeechCraft::Plugins::Poshuku::ElementData");
+				qRegisterMetaTypeStreamOperators<ElementData> ("LeechCraft::Plugins::Poshuku::ElementData");
+				qRegisterMetaType<ElementsData_t> ("LeechCraft::Plugins::Poshuku::ElementsData_t");
+				qRegisterMetaTypeStreamOperators<ElementsData_t> ("LeechCraft::Plugins::Poshuku::ElementsData_t");
+
 				QSettings settings (QCoreApplication::organizationName (),
 						QCoreApplication::applicationName () + "_Poshuku");
 				int size = settings.beginReadArray ("Saved session");

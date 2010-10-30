@@ -40,9 +40,12 @@ namespace LeechCraft
 				QString Value_;
 			};
 
-			typedef QList<ElementData> ElementsData_t;
+			QDataStream& operator<< (QDataStream&, const ElementData&);
+			QDataStream& operator>> (QDataStream&, ElementData&);
 
 			QDebug& operator<< (QDebug&, const ElementData&);
+
+			typedef QList<ElementData> ElementsData_t;
 
 			/** Holds information about all the forms on a page.
 			 *

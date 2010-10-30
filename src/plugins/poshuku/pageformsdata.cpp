@@ -25,10 +25,40 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
+			QDataStream& operator<< (QDataStream& out, const ElementData& ed)
+			{
+				out << static_cast<quint8> (1)
+					<< ed.PageURL_
+					<< ed.FormID_
+					<< ed.Name_
+					<< ed.Type_
+					<< ed.Value_;
+				return out;
+			}
+
+			QDataStream& operator>> (QDataStream& in, ElementData& ed)
+			{
+				quint8 version = 0;
+				in >> version;
+				if (version == 1)
+					in >> ed.PageURL_
+						>> ed.FormID_
+						>> ed.Name_
+						>> ed.Type_
+						>> ed.Value_;
+				else
+					qWarning () << Q_FUNC_INFO
+						<< "unable to deserialize ElementType of version"
+						<< version;
+
+				return in;
+			}
+
 			QDebug& operator<< (QDebug& dbg, const ElementData& ed)
 			{
 				dbg << "Element: {"
 					<< ed.PageURL_
+					<< ed.FormID_
 					<< ed.Name_
 					<< ed.Type_
 					<< ed.Value_
