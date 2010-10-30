@@ -47,6 +47,7 @@ namespace LeechCraft
 				 */
 				void AddStoragePlugin (QObject *object);
 				void Store (const QList<QByteArray>&, const QList<QVariant>&, bool);
+				QList<QVariant> Load (const QList<QByteArray>&, bool);
 
 				QObject* GetStoragePlugin () const;
 			};

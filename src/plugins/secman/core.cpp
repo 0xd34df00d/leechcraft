@@ -20,6 +20,8 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/secman/istorageplugin.h>
 
+Q_DECLARE_METATYPE (QVariant*);
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -49,12 +51,46 @@ namespace LeechCraft
 			{
 				if (e.Mime_ == "x-leechcraft/data-persistent-load")
 				{
+					QList<QVariant> rawKeys = e.Entity_.toList ();
+
+					QVariant valuesList = e.Additional_ ["Values"];
+					if (!valuesList.canConvert<QVariant*> ())
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "could not convert Entity.Additional_ [\"Values\"] "
+									"to QVariant*, sender plugin sucks";
+						return;
+					}
+
+					QVariant *valuesListPtr = valuesList.value<QVariant*> ();
+					if (!valuesListPtr)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "null Entity.Additional_ [\"Values\"] pointer";
+						return;
+					}
+
+					bool secure = e.Additional_.value ("SecureStorage", false).toBool ();
+
+					QList<QByteArray> keys;
+					Q_FOREACH (const QVariant& rKey, rawKeys)
+					{
+						QByteArray key = rKey.toByteArray ();
+						if (key.isEmpty ())
+							continue;
+						keys << key;
+					}
+
+					QList<QVariant> values = Load (keys, secure);
+					if (values.size () != keys.size ())
+						return;
+
+					*valuesListPtr = values;
 				}
 				else if (e.Mime_ == "x-leechcraft/data-persistent-save")
 				{
 					QList<QVariant> rawKeys = e.Entity_.toList ();
 					QList<QVariant> values = e.Additional_ ["Values"].toList ();
-					qDebug () << Q_FUNC_INFO << rawKeys << values;
 
 					QList<QByteArray> keys;
 					Q_FOREACH (const QVariant& rKey, rawKeys)
@@ -138,6 +174,27 @@ namespace LeechCraft
 				for (int i = 0; i < keys.size (); ++i)
 					data << qMakePair (keys.at (i), values.at (i));
 				qobject_cast<IStoragePlugin*> (storage)->Save (data, type);
+			}
+
+			QList<QVariant> Core::Load (const QList<QByteArray>& keys, bool secure)
+			{
+				if (!keys.size ())
+					return QList<QVariant> ();
+
+				QObject *storage = GetStoragePlugin ();
+
+				if (!storage)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "null storage";
+					return QList<QVariant> ();
+				}
+
+				IStoragePlugin::StorageType type = secure ?
+						IStoragePlugin::STSecure :
+						IStoragePlugin::STInsecure;
+
+				return qobject_cast<IStoragePlugin*> (storage)->Load (keys, type);
 			}
 
 			QObject* Core::GetStoragePlugin () const
