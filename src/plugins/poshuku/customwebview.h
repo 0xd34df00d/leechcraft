@@ -99,6 +99,7 @@ namespace LeechCraft
 			signals:
 				void urlChanged (const QString&);
 				void gotEntity (const LeechCraft::Entity&);
+				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void couldHandle (const LeechCraft::Entity&, bool*);
 				void addToFavorites (const QString&, const QString&);
 				void printRequested (QWebFrame*);

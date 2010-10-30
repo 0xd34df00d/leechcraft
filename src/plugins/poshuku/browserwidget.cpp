@@ -335,6 +335,10 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (Ui_.WebView_,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+				connect (Ui_.WebView_,
 						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 						this,
 						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));

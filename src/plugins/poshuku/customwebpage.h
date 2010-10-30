@@ -90,6 +90,7 @@ namespace LeechCraft
 						QWebPage::NavigationType);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
+				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void loadingURL (const QUrl&);
 				void storeFormData (const PageFormsData_t&);
 				void couldHandle (const LeechCraft::Entity&, bool*);

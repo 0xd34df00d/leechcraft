@@ -78,7 +78,7 @@ namespace LeechCraft
 						this,
 						SLOT (handleAutoscroll ()));
 				ScrollTimer_->start (30);
-			
+
 				CustomWebPage *page = new CustomWebPage (this);
 				setPage (page);
 
@@ -90,7 +90,7 @@ namespace LeechCraft
 						SIGNAL (loadFinished (bool)),
 						this,
 						SLOT (handleLoadFinished ()));
-			
+
 				connect (page,
 						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 						this,
@@ -99,6 +99,10 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				connect (page,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 				connect (page,
 						SIGNAL (loadingURL (const QUrl&)),
 						this,
@@ -125,11 +129,11 @@ namespace LeechCraft
 						this, "renderSettingsChanged");
 				renderSettingsChanged ();
 			}
-			
+
 			CustomWebView::~CustomWebView ()
 			{
 			}
-			
+
 			void CustomWebView::SetBrowserWidget (BrowserWidget *widget)
 			{
 				Browser_ = widget;
@@ -139,7 +143,7 @@ namespace LeechCraft
 			{
 				Load (Core::Instance ().MakeURL (string), title);
 			}
-			
+
 			void CustomWebView::Load (const QUrl& url, QString title)
 			{
 				if (url.scheme () == "javascript")
@@ -164,14 +168,14 @@ namespace LeechCraft
 				emit titleChanged (title);
 				load (url);
 			}
-			
+
 			void CustomWebView::Load (const QNetworkRequest& req,
 					QNetworkAccessManager::Operation op, const QByteArray& ba)
 			{
 				emit titleChanged (tr ("Loading..."));
 				QWebView::load (req, op, ba);
 			}
-			
+
 
 			QString CustomWebView::URLToProperString (const QUrl& url)
 			{
@@ -194,14 +198,14 @@ namespace LeechCraft
 
 				return string;
 			}
-			
+
 			void CustomWebView::mousePressEvent (QMouseEvent *e)
 			{
 				qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
 				qobject_cast<CustomWebPage*> (page ())->SetModifiers (e->modifiers ());
 				QWebView::mousePressEvent (e);
 			}
-			
+
 			void CustomWebView::wheelEvent (QWheelEvent *e)
 			{
 				if (e->modifiers () & Qt::ControlModifier)
@@ -214,7 +218,7 @@ namespace LeechCraft
 				else
 					QWebView::wheelEvent (e);
 			}
-			
+
 			void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 			{
 				std::auto_ptr<QMenu> menu (new QMenu (this));
@@ -225,7 +229,7 @@ namespace LeechCraft
 
 				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSStart);
-			
+
 				if (!r.linkUrl ().isEmpty ())
 				{
 					QUrl url = r.linkUrl ();
@@ -277,13 +281,13 @@ namespace LeechCraft
 					menu->addSeparator ();
 					menu->addAction (tr ("&Save link..."),
 							this, SLOT (saveLink ()));
-			
+
 					QList<QVariant> datalist;
 					datalist << url
 						<< text;
 					menu->addAction (tr ("&Bookmark link..."),
 							this, SLOT (bookmarkLink ()))->setData (datalist);
-			
+
 					menu->addSeparator ();
 					if (!page ()->selectedText ().isEmpty ())
 						menu->addAction (pageAction (QWebPage::Copy));
@@ -292,10 +296,10 @@ namespace LeechCraft
 					if (page ()->settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
 						menu->addAction (pageAction (QWebPage::InspectElement));
 				}
-			
+
 				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterLink);
-			
+
 				if (!r.imageUrl ().isEmpty ())
 				{
 					if (!menu->isEmpty ())
@@ -330,7 +334,7 @@ namespace LeechCraft
 
 				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterSelectedText);
-			
+
 				if (menu->isEmpty ())
 					menu.reset (page ()->createStandardContextMenu ());
 
@@ -354,16 +358,16 @@ namespace LeechCraft
 
 				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterFinish);
-			
+
 				if (!menu->isEmpty ())
 				{
 					menu->exec (mapToGlobal (e->pos ()));
 					return;
 				}
-			
+
 				QWebView::contextMenuEvent (e);
 			}
-			
+
 			void CustomWebView::keyReleaseEvent (QKeyEvent *event)
 			{
 				bool handled = false;
@@ -393,26 +397,26 @@ namespace LeechCraft
 			int CustomWebView::LevelForZoom (qreal zoom)
 			{
 				int i = Zooms_.indexOf (zoom);
-			
+
 				if (i >= 0)
 					return i;
-			
+
 				for (i = 0; i < Zooms_.size (); ++i)
 					if (zoom <= Zooms_ [i])
 						break;
-			
+
 				if (i == Zooms_.size ())
 					return i - 1;
-			
+
 				if (i == 0)
 					return i;
-			
+
 				if (zoom - Zooms_ [i - 1] > Zooms_ [i] - zoom)
 					return i;
 				else
 					return i - 1;
 			}
-			
+
 			void CustomWebView::NavigatePlugins ()
 			{
 				QFile pef (":/resources/html/pluginsenum.html");
@@ -458,23 +462,23 @@ namespace LeechCraft
 			void CustomWebView::zoomIn ()
 			{
 				int i = LevelForZoom (zoomFactor ());
-			
+
 				if (i < Zooms_.size () - 1)
 					setZoomFactor (Zooms_ [i + 1]);
 
 				emit invalidateSettings ();
 			}
-			
+
 			void CustomWebView::zoomOut ()
 			{
 				int i = LevelForZoom (zoomFactor ());
-			
+
 				if (i > 0)
 					setZoomFactor (Zooms_ [i - 1]);
 
 				emit invalidateSettings ();
 			}
-			
+
 			void CustomWebView::zoomReset ()
 			{
 				setZoomFactor (1);
@@ -496,17 +500,17 @@ namespace LeechCraft
 			{
 				Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
 			}
-			
+
 			void CustomWebView::openLinkInNewTab ()
 			{
 				pageAction (QWebPage::OpenLinkInNewWindow)->trigger ();
 			}
-			
+
 			void CustomWebView::saveLink ()
 			{
 				pageAction (QWebPage::DownloadLinkToDisk)->trigger ();
 			}
-			
+
 			void CustomWebView::subscribeToLink ()
 			{
 				QList<QVariant> list = qobject_cast<QAction*> (sender ())->data ().toList ();
@@ -516,39 +520,39 @@ namespace LeechCraft
 						list.at (1).toString ());
 				emit gotEntity (e);
 			}
-			
+
 			void CustomWebView::bookmarkLink ()
 			{
 				QList<QVariant> list = qobject_cast<QAction*> (sender ())->data ().toList ();
 				emit addToFavorites (list.at (1).toString (),
 						list.at (0).toUrl ().toString ());
 			}
-			
+
 			void CustomWebView::copyLink ()
 			{
 				pageAction (QWebPage::CopyLinkToClipboard)->trigger ();
 			}
-			
+
 			void CustomWebView::openImageHere ()
 			{
 				Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
 			}
-			
+
 			void CustomWebView::openImageInNewTab ()
 			{
 				pageAction (QWebPage::OpenImageInNewWindow)->trigger ();
 			}
-			
+
 			void CustomWebView::saveImage ()
 			{
 				pageAction (QWebPage::DownloadImageToDisk)->trigger ();
 			}
-			
+
 			void CustomWebView::copyImage ()
 			{
 				pageAction (QWebPage::CopyImageToClipboard)->trigger ();
 			}
-			
+
 			void CustomWebView::copyImageLocation ()
 			{
 				QString url = qobject_cast<QAction*> (sender ())->data ().toUrl ().toString ();
@@ -556,7 +560,7 @@ namespace LeechCraft
 				cb->setText (url, QClipboard::Clipboard);
 				cb->setText (url, QClipboard::Selection);
 			}
-			
+
 			void CustomWebView::searchSelectedText ()
 			{
 				QString text = page ()->selectedText ();
