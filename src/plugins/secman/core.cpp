@@ -54,6 +54,7 @@ namespace LeechCraft
 				{
 					QList<QVariant> rawKeys = e.Entity_.toList ();
 					QList<QVariant> values = e.Additional_ ["Values"].toList ();
+					qDebug () << Q_FUNC_INFO << rawKeys << values;
 
 					QList<QByteArray> keys;
 					Q_FOREACH (const QVariant& rKey, rawKeys)
