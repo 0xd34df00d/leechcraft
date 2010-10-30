@@ -33,14 +33,14 @@ namespace LeechCraft
 				{
 					void Plugin::Init (ICoreProxy_ptr proxy)
 					{
-						Storage_ .reset (new QSettings (QSettings::IniFormat,
-									QSettings::UserScope,
-									QCoreApplication::organizationName (),
-									QCoreApplication::applicationName () + "_SecMan_SimpleStorage"));
 					}
 
 					void Plugin::SecondInit ()
 					{
+						Storage_ .reset (new QSettings (QSettings::IniFormat,
+									QSettings::UserScope,
+									QCoreApplication::organizationName (),
+									QCoreApplication::applicationName () + "_SecMan_SimpleStorage"));
 					}
 
 					QByteArray Plugin::GetUniqueID () const
