@@ -755,15 +755,14 @@ namespace LeechCraft
 							.arg (form.attribute ("name"));
 
 					QWebElementCollection children = form.findAll ("input");
-					Q_FOREACH (const QWebElement& child, children)
+					Q_FOREACH (QWebElement child, children)
 					{
-						qDebug () << "checking" << child.tagName () << child.attributeNames ()
-								<< child.attribute ("name") << child.attribute ("value") << child.toPlainText ();
 						if (child.attribute ("hidden") == "true")
 							continue;
 
 						QString name = child.attribute ("name");
-						QString value = child.attribute ("value");
+						// Ugly workaround for https://bugs.webkit.org/show_bug.cgi?id=32865
+						QString value = child.evaluateJavaScript ("this.value").toString ();
 
 						if (name.isEmpty () || value.isEmpty ())
 							continue;
@@ -781,8 +780,6 @@ namespace LeechCraft
 					}
 				}
 
-				qDebug () << formsData;
-
 				if (!CheckData (formsData, frame, request))
 					return;
 
@@ -790,7 +787,6 @@ namespace LeechCraft
 				if (Core::Instance ().GetStorageBackend ()->GetFormsIgnored (pageUrl.toString ()))
 					return;
 
-				qDebug () << "emitting";
 				emit storeFormData (formsData);
 			}
 
