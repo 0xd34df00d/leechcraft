@@ -28,6 +28,7 @@ namespace LeechCraft
 			QDebug& operator<< (QDebug& dbg, const ElementData& ed)
 			{
 				dbg << "Element: {"
+					<< ed.PageURL_
 					<< ed.Name_
 					<< ed.Type_
 					<< ed.Value_

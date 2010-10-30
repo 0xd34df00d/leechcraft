@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_PAGEFORMSDATA_H
 #define PLUGINS_POSHUKU_PLUGINS_POSHUKU_PAGEFORMSDATA_H
 #include <QMap>
+#include <QUrl>
 #include <QString>
 #include <QVariant>
 
@@ -32,20 +33,22 @@ namespace LeechCraft
 		{
 			struct ElementData
 			{
-				int FormIndex_;
+				QUrl PageURL_;
+				QString FormID_;
 				QString Name_;
 				QString Type_;
-				QVariant Value_;
+				QString Value_;
 			};
+
+			typedef QList<ElementData> ElementsData_t;
 
 			QDebug& operator<< (QDebug&, const ElementData&);
 
-			/** Holds information about all the elements on the single form.
-			 */
-			typedef QList<ElementData> ElementsData_t;
-
-			/** Holds information about all the forms/pages, identified by their
-			 * URL.
+			/** Holds information about all the forms on a page.
+			 *
+			 * The key of the map is the name of the `input' element,
+			 * whereas value is the ElementData structure with the
+			 * information about that element.
 			 */
 			typedef QMap<QString, ElementsData_t> PageFormsData_t;
 
@@ -63,12 +66,16 @@ namespace LeechCraft
 				inline bool operator() (const ElementData& ed) const
 				{
 					return ed.Name_ == ElemName_ &&
-						ed.Type_ == ElemType_;
+							ed.Type_ == ElemType_;
 				}
 			};
 		};
 	};
 };
+
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::ElementData);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::ElementsData_t);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::PageFormsData_t);
 
 #endif
 

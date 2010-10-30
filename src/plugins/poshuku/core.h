@@ -179,6 +179,7 @@ namespace LeechCraft
 				void error (const QString&) const;
 				void statusBarChanged (QWidget*, const QString&);
 				void gotEntity (const LeechCraft::Entity&);
+				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void couldHandle (const LeechCraft::Entity&, bool*);
 				void newUnclose (QAction*);
 

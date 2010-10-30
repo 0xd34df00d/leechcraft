@@ -138,23 +138,6 @@ namespace LeechCraft
 				 */
 				virtual void UpdateFavorites (const FavoritesModel::FavoritesItem& item) = 0;
 
-				/** @brief Gets all forms for an URL.
-				 *
-				 * @param[in] url The url of the page for which the forms should be
-				 * got.
-				 * @param[out] forms The forms of that page.
-				 */
-				virtual void GetFormsData (const QString& url, ElementsData_t& forms) const = 0;
-
-				/** @brief Sets new forms data for an URL.
-				 *
-				 * Clears all the old data and replaces it with new one.
-				 *
-				 * @param[in] url The url of the page with the forms.
-				 * @param[in] forms The forms data for that page.
-				 */
-				virtual void SetFormsData (const QString& url, const ElementsData_t& forms) = 0;
-
 				/** @brief Sets the URL to be ignored by password manager.
 				 *
 				 * @param[in] url The url of the page that should be ignored.

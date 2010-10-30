@@ -135,35 +135,6 @@ namespace LeechCraft
 				FavoritesRemover_.prepare ("DELETE FROM favorites "
 						"WHERE url = ?");
 
-				FormsGetter_ = QSqlQuery (DB_);
-				FormsGetter_.prepare ("SELECT "
-						"form_index, "
-						"name, "
-						"type, "
-						"value "
-						"FROM forms "
-						"WHERE url = ? "
-						"ORDER BY form_index");
-
-				FormsSetter_ = QSqlQuery (DB_);
-				FormsSetter_.prepare ("INSERT INTO forms ("
-						"url, "
-						"form_index, "
-						"name, "
-						"type, "
-						"value"
-						") VALUES ("
-						"? , "
-						"? , "
-						"? , "
-						"? , "
-						"? "
-						")");
-
-				FormsClearer_ = QSqlQuery (DB_);
-				FormsClearer_.prepare ("DELETE FROM forms "
-						"WHERE url = ? ");
-
 				FormsIgnoreSetter_ = QSqlQuery (DB_);
 				FormsIgnoreSetter_.prepare ("INSERT INTO forms_never ("
 						"url"
@@ -331,59 +302,6 @@ namespace LeechCraft
 				}
 
 				emit updated (item);
-			}
-
-			void SQLStorageBackendMysql::GetFormsData (const QString& url, ElementsData_t& result) const
-			{
-				FormsGetter_.bindValue (0, url);
-				if (!FormsGetter_.exec ())
-				{
-					LeechCraft::Util::DBLock::DumpError (FormsGetter_);
-					return;
-				}
-
-				while (FormsGetter_.next ())
-				{
-					ElementData ed =
-					{
-						FormsGetter_.value (0).toInt (),
-						FormsGetter_.value (1).toString (),
-						FormsGetter_.value (2).toString (),
-						FormsGetter_.value (3)
-					};
-					result.push_back (ed);
-				}
-
-				FormsGetter_.finish ();
-			}
-
-			void SQLStorageBackendMysql::SetFormsData (const QString& url, const ElementsData_t& data)
-			{
-				LeechCraft::Util::DBLock lock (DB_);
-				lock.Init ();
-
-				FormsClearer_.bindValue (0, url);
-				if (!FormsClearer_.exec ())
-				{
-					LeechCraft::Util::DBLock::DumpError (FormsClearer_);
-					return;
-				}
-
-				for (int i = 0; i < data.size (); ++i)
-				{
-					FormsSetter_.bindValue (0, url);
-					FormsSetter_.bindValue (1, data [i].FormIndex_);
-					FormsSetter_.bindValue (2, data [i].Name_);
-					FormsSetter_.bindValue (3, data [i].Type_);
-					FormsSetter_.bindValue (4, data [i].Value_);
-					if (!FormsSetter_.exec ())
-					{
-						LeechCraft::Util::DBLock::DumpError (FormsSetter_);
-						return;
-					}
-				}
-
-				lock.Good ();
 			}
 
 			void SQLStorageBackendMysql::SetFormsIgnored (const QString& url, bool ignore)

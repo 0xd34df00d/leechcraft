@@ -88,28 +88,6 @@ namespace LeechCraft
 						FavoritesRemover_,
 						/** Binds:
 						 * - url
-						 *
-						 * Returns:
-						 * - form_index
-						 * - name
-						 * - type
-						 * - value
-						 */
-						FormsGetter_,
-						/** Binds:
-						 * - url
-						 * - form_index
-						 * - name
-						 * - type
-						 * - value
-						 */
-						FormsSetter_,
-						/** Binds:
-						 * - url
-						 */
-						FormsClearer_,
-						/** Binds:
-						 * - url
 						 */
 						FormsIgnoreSetter_,
 						/** Binds:
@@ -135,8 +113,6 @@ namespace LeechCraft
 				virtual void AddToFavorites (const FavoritesModel::FavoritesItem&);
 				virtual void RemoveFromFavorites (const FavoritesModel::FavoritesItem&);
 				virtual void UpdateFavorites (const FavoritesModel::FavoritesItem&);
-				virtual void GetFormsData (const QString&, ElementsData_t&) const;
-				virtual void SetFormsData (const QString&, const ElementsData_t&);
 				virtual void SetFormsIgnored (const QString&, bool);
 				virtual bool GetFormsIgnored (const QString&) const;
 			private:
