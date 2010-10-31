@@ -286,6 +286,7 @@ SET (SRCS
 	tabbar.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
+	label.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -327,6 +328,7 @@ SET (HEADERS
 	glanceshower.h
 	glanceitem.h
 	tabbar.h
+	label.h
 	wizardtypechoicepage.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
