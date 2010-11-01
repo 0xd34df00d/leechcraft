@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+cmake_minimum_required(VERSION 2.6)
 IF (COMMAND cmake_policy)
 	cmake_policy (SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
@@ -286,7 +286,7 @@ SET (SRCS
 	tabbar.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
-	label.cpp
+	fullscreenspacerlabel.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -328,7 +328,7 @@ SET (HEADERS
 	glanceshower.h
 	glanceitem.h
 	tabbar.h
-	label.h
+	fullscreenspacerlabel.h
 	wizardtypechoicepage.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h

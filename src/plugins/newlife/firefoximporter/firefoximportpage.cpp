@@ -28,7 +28,6 @@
 #include <QtSql>
 #include <QFileInfo>
 #include <QtDebug>
-//#include <boost/shared_ptr.hpp>
 
 namespace LeechCraft
 {
@@ -46,13 +45,11 @@ namespace LeechCraft
 				setTitle (tr ("Firefox's data import"));
 				setSubTitle (tr ("Select Firefox's INI file"));
 				DB_.reset ( new QSqlDatabase(QSqlDatabase::addDatabase ("QSQLITE","Import connection")));
-				//db = new QSqlDatabase(QSqlDatabase::addDatabase ("QSQLITE","Import connection"));
 			}
 
 			FirefoxImportPage::~FirefoxImportPage ()
 			{
 				QSqlDatabase::database("Import connection").close();
-//				delete db;
 				QSqlDatabase::removeDatabase("Import connection");
 			}
 
