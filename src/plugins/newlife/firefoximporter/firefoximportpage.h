@@ -38,6 +38,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				Ui::FeedsSettingsImportPage Ui_;				
+				boost::shared_ptr<QSqlDatabase> DB_;
 			public:
 				FirefoxImportPage (QWidget* = 0);
 				~FirefoxImportPage ();
@@ -57,8 +58,7 @@ namespace LeechCraft
 				void handleAccepted ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
-			private:
-				boost::shared_ptr<QSqlDatabase> DB_;
+
 			};
 		};
 	};

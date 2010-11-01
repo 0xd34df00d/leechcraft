@@ -183,7 +183,8 @@ namespace LeechCraft
 						record ["Title"] = query.value (1).toString ();
 						record ["DateTime"] = QDateTime::fromTime_t (query.value (2).toLongLong () / 1000000);
 						history.push_back (record);
-					}while (query.next ());
+					}
+					while (query.next ());
 					DB_->close ();
 					return history;
 				}
@@ -214,8 +215,7 @@ namespace LeechCraft
 					{
 						QString tagsSql = tagsSql_p1 + bookmarksQuery.value (1).toString () + tagsSql_p2;
 						QSqlQuery tagsQuery = GetQuery (filename, tagsSql);						
-						QStringList tmp = record ["Tags"].toStringList ();
-						tmp.clear ();
+						QStringList tmp;
 						do
 							if (!tagsQuery.value (0).toString ().isEmpty ())
 								tmp << tagsQuery.value (0).toString ();
