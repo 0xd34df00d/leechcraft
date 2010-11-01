@@ -20,6 +20,7 @@
 #define PLUGINS_NEWLIFE_FIREFOXIMPORTPAGE_H
 #include <QWizardPage>
 #include "ui_feedssettingsimportpage.h"
+#include <boost/shared_ptr.hpp>
 
 class QSqlDatabase;
 class QSqlQuery;
@@ -46,8 +47,8 @@ namespace LeechCraft
 				virtual int nextId () const;
 				virtual void initializePage ();
 				QString GetProfileDirectory (const QString&);
-				QList <QVariant> GetHistory (const QString&);
-				QList <QVariant> GetBookmarks (const QString&);
+				QList<QVariant> GetHistory (const QString&);
+				QList<QVariant> GetBookmarks (const QString&);
 				QString GetImportOpmlFile (const QString&);
 				QSqlQuery GetQuery (const QString&, const QString&);
 			private slots:
@@ -57,7 +58,7 @@ namespace LeechCraft
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 			private:
-				QSqlDatabase *db;
+				boost::shared_ptr<QSqlDatabase> DB_;
 			};
 		};
 	};

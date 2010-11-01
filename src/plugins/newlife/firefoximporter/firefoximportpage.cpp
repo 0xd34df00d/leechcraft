@@ -28,6 +28,7 @@
 #include <QtSql>
 #include <QFileInfo>
 #include <QtDebug>
+//#include <boost/shared_ptr.hpp>
 
 namespace LeechCraft
 {
@@ -44,14 +45,14 @@ namespace LeechCraft
 
 				setTitle (tr ("Firefox's data import"));
 				setSubTitle (tr ("Select Firefox's INI file"));
-
-				db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE","Import connection"));
+				DB_.reset ( new QSqlDatabase(QSqlDatabase::addDatabase ("QSQLITE","Import connection")));
+				//db = new QSqlDatabase(QSqlDatabase::addDatabase ("QSQLITE","Import connection"));
 			}
 
 			FirefoxImportPage::~FirefoxImportPage ()
 			{
 				QSqlDatabase::database("Import connection").close();
-				delete db;
+//				delete db;
 				QSqlDatabase::removeDatabase("Import connection");
 			}
 
@@ -125,7 +126,6 @@ namespace LeechCraft
 					QString profileDir = QDir::homePath () + "/.mozilla/firefox/" + settings.value ("Path").toString ();
 					return profileDir;
 				}
-
 				return QString ();
 			}
 
@@ -149,113 +149,90 @@ namespace LeechCraft
 				Entity eHistory = Util::MakeEntity (QUrl::fromLocalFile (GetProfileDirectory (filename)),
 						QString (),
 						FromUserInitiated,
-						"x-leechcraft/browser-import-data");				
+						"x-leechcraft/browser-import-data");
 
-//				Entity eBookmarks = Util::MakeEntity (QUrl::fromLocalFile (GetProfileDirectory (filename)),
-//						QString (),
-//						FromUserInitiated,
-//						"x-leechcraft/browser-import-data");
+				Entity eBookmarks = Util::MakeEntity (QUrl::fromLocalFile (GetProfileDirectory (filename)),
+						QString (),
+						FromUserInitiated,
+						"x-leechcraft/browser-import-data");
 
 				QString opmlFile = GetImportOpmlFile (filename);
 				Entity eRss = Util::MakeEntity (QUrl::fromLocalFile (opmlFile),
 						QString (),
 						FromUserInitiated,
 						"text/x-opml");
-				eRss.Additional_ ["RemoveAfterHandling"] = true;
 
+				eRss.Additional_ ["RemoveAfterHandling"] = true;
 				eHistory.Additional_ ["BrowserHistory"] = GetHistory (filename);
-				//eBookmarks.Additional_ ["BrowserBookmarks"] = GetBookmarks (filename);
+				eBookmarks.Additional_ ["BrowserBookmarks"] = GetBookmarks (filename);
 
 				emit gotEntity (eHistory);
-				//emit gotEntity (eBookmarks);
+				emit gotEntity (eBookmarks);
 				emit gotEntity (eRss);
 			}
 
 			QList<QVariant> FirefoxImportPage::GetHistory (const QString& filename)
 			{
-//				if (!CheckValidity (filename))
-//					return QList<QVariant> ();
-
-//				QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE");
-//				QString profilePath = GetProfileDirectory (filename);
-
-//				if (!profilePath.isEmpty ())
-//				{
-//					db.setDatabaseName (profilePath + "/places.sqlite");
-
-//					if (!db.open ())
-//					{
-//						QMessageBox::critical (0,
-//									"LeechCraft",
-//									tr ("Could not open Firefox database: %1.")
-//									.arg (db.lastError ().text ()));
-//						return QList<QVariant> ();
-//					}
-//					else
-//					{
-						QString sql ("select moz_places.url,moz_places.title, moz_historyvisits.visit_date "
-								"FROM moz_historyvisits, moz_places WHERE moz_places.id = moz_historyvisits.place_id");
-//						QSqlQuery query (sql, db);
-						QSqlQuery query = GetQuery (filename, sql);
-						if(query.isValid ())
-						{
-							QList<QVariant> history;
-							while (query.next ())
-							{
-								QMap <QString, QVariant> record;
-								record ["URL"] = query.value (0).toString ();
-								record ["Title"] = query.value (1).toString ();
-								record ["DateTime"] = QDateTime::fromTime_t (query.value (2).toLongLong () / 1000000);
-								history.push_back (record);
-							}
-							db->close ();
-							return history;
-						}
-
-					//}
-				//}
-				return QList <QVariant> ();
+				QString sql ("select moz_places.url,moz_places.title, moz_historyvisits.visit_date "
+						"FROM moz_historyvisits, moz_places WHERE moz_places.id = moz_historyvisits.place_id");
+				QSqlQuery query = GetQuery (filename, sql);
+				if (query.isValid ())
+				{
+					QList<QVariant> history;
+					do
+					{
+						QMap<QString, QVariant> record;
+						record ["URL"] = query.value (0).toString ();
+						record ["Title"] = query.value (1).toString ();
+						record ["DateTime"] = QDateTime::fromTime_t (query.value (2).toLongLong () / 1000000);
+						history.push_back (record);
+					}while (query.next ());
+					DB_->close ();
+					return history;
+				}
+				return QList<QVariant> ();
 			}
 
 			QList<QVariant> FirefoxImportPage::GetBookmarks (const QString& filename)
 			{
-				if (!CheckValidity (filename))
-					return QList<QVariant> ();
-
-				QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE");
-				QString profilePath = GetProfileDirectory (filename);
-
-				if (!profilePath.isEmpty ())
+				QString sql ("select bm.title,pl.url from moz_bookmarks bm,moz_places pl "
+						"where bm.parent not in(select ann.item_id from moz_items_annos "
+						"ann, moz_bookmarks bm where ann.item_id IN(select item_id from "
+						"moz_items_annos where anno_attribute_id=(select id	from "
+						"moz_anno_attributes where name='livemark/feedURI'))AND "
+						"ann.anno_attribute_id<>3 AND ann.anno_attribute_id<>7 AND bm.id"
+						"=ann.item_id)AND bm.fk is not null AND bm.fk in (select id "
+						"from moz_places where url like 'http%' OR url like 'ftp%' OR url "
+						"like 'file%')AND bm.id>100 AND bm.fk=pl.id AND bm.title not null");
+				QSqlQuery bookmarksQuery = GetQuery (filename, sql);
+				if (bookmarksQuery.isValid ())
 				{
-					db.setDatabaseName (profilePath + "/places.sqlite");
+					QList<QVariant> bookmarks;
+					QString tagsSql_p1 ("select title from moz_bookmarks where id in ("
+							"select	bm.parent from moz_bookmarks bm, moz_places pl "
+							" where	pl.url='");
+					QString tagsSql_p2 ("' AND	bm.title is null and bm.fk = pl.id)");
+					QMap<QString, QVariant> record;
+					do
+					{
+						QString tagsSql = tagsSql_p1 + bookmarksQuery.value (1).toString () + tagsSql_p2;
+						QSqlQuery tagsQuery = GetQuery (filename, tagsSql);						
+						QStringList tmp = record ["Tags"].toStringList ();
+						tmp.clear ();
+						do
+							if (!tagsQuery.value (0).toString ().isEmpty ())
+								tmp << tagsQuery.value (0).toString ();
+						while (tagsQuery.next ());
+						record ["Tags"] = tmp;
+						record ["Title"] = bookmarksQuery.value (0).toString ();
+						record ["URL"] = bookmarksQuery.value (1).toString ();
+						bookmarks.push_back (record);
+					}
+					while (bookmarksQuery.next ());
 
-					if (!db.open ())
-					{
-						QMessageBox::critical (0,
-									"LeechCraft",
-									tr ("Could not open Firefox database: %1.")
-									.arg (db.lastError ().text ()));
-						return QList<QVariant> ();
-					}
-					else
-					{
-						QString sql (""
-								"");
-						QSqlQuery query (sql, db);
-						QList<QVariant> bookmarks;
-						while (query.next ())
-						{
-							QMap <QString, QVariant> record;
-							record ["URL"] = query.value (0).toString ();
-							record ["Title"] = query.value (1).toString ();
-							record ["DateTime"] = QDateTime::fromTime_t (query.value (2).toLongLong () / 1000000);
-							bookmarks.push_back (record);
-						}
-						db.close ();
-						return bookmarks;
-					}
+					DB_->close ();
+					return bookmarks;
 				}
-
 				return QList<QVariant> ();
 			}
 
@@ -264,53 +241,40 @@ namespace LeechCraft
 				QString rssSql ("select ann.id,ann.item_id,ann.anno_attribute_id,ann.content,"
 						"bm.title from 	moz_items_annos ann,moz_bookmarks bm where 	ann.item_id"
 						" IN(select item_id from moz_items_annos where anno_attribute_id=(select"
-						" id from moz_anno_attributes where	name = 'livemark/feedURI'))AND "
-						"ann.anno_attribute_id <> 3 AND ann.anno_attribute_id <> 7 AND 	"
+						" id from moz_anno_attributes where	name = 'livemark/feedURI'))AND("
+						"ann.anno_attribute_id = 4 OR ann.anno_attribute_id = 5) AND "
 						"bm.id = ann.item_id");
 				QSqlQuery rssQuery = GetQuery (filename, rssSql);
 
 				if (rssQuery.isValid ())
 				{
-					QSqlQuery query (*db);
-
-					int feed, site;
+					QSqlQuery query (*DB_);
 					query.exec ("select id from moz_anno_attributes where name='livemark/siteURI'");
 					query.next ();
-					site = query.value (0).toInt ();
+					int site = query.value (0).toInt ();
 					query.exec ("select id from moz_anno_attributes where name='livemark/feedURI'");
 					query.next ();
-					feed = query.value (0).toInt ();
+					int feed = query.value (0).toInt ();
 
-					QList <QVariant> opmlData;
-					rssQuery.exec ();
-					rssQuery.next ();
-					int prevId = rssQuery.value (0).toInt ();
-					int prevItemId = rssQuery.value (1).toInt ();
+					QList<QVariant> opmlData;
+					int prevItemId = -1;
 
-					QMap <QString, QVariant> omplLine;
-					if (rssQuery.value (2).toInt () == site)
-						omplLine ["SiteUrl"] = rssQuery.value (3).toString ();
-					if (rssQuery.value (2).toInt () == feed)
-						omplLine ["FeedUrl"] = rssQuery.value (3).toString ();
-					omplLine ["Title"] = rssQuery.value (4).toString ();
-
-					while (rssQuery.next ())
+					QMap<QString, QVariant> omplLine;
+					do
 					{
 						if (rssQuery.value (2).toInt () == site)
 							omplLine ["SiteUrl"] = rssQuery.value (3).toString ();
 						if (rssQuery.value (2).toInt () == feed)
-							omplLine ["FeedUrl"] = rssQuery.value (3).toString ();
+							omplLine ["FeedUrl"] = rssQuery.value (3).toString ();						
 						if (prevItemId == rssQuery.value (1).toInt ())
-						{
 							opmlData.push_back (omplLine);
-						}
 						else
 						{
-							prevId = rssQuery.value (0).toInt ();
 							prevItemId = rssQuery.value (1).toInt ();
 							omplLine ["Title"] = rssQuery.value (4).toString ();
 						}
 					}
+					while (rssQuery.next ());
 
 					QFile file ("firefox.opml");
 					if (file.open (QIODevice::WriteOnly))
@@ -364,19 +328,19 @@ namespace LeechCraft
 
 				if (!profilePath.isEmpty ())
 				{
-					db->setDatabaseName (profilePath + "/places.sqlite");
+					DB_->setDatabaseName (profilePath + "/places.sqlite");
 
-					if (!db->open ())
+					if (!DB_->open ())
 					{
 						QMessageBox::critical (0,
 									"LeechCraft",
 									tr ("Could not open Firefox database: %1.")
-									.arg (db->lastError ().text ()));
+									.arg (DB_->lastError ().text ()));
 						return QSqlQuery ();
 					}
 					else
 					{
-						QSqlQuery query (*db);
+						QSqlQuery query (*DB_);
 						query.exec (sql);
 						if (query.isActive ())
 						{
