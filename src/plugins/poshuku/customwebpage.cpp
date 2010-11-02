@@ -859,7 +859,7 @@ namespace LeechCraft
 
 				QList<QVariant> values = valuesList.toList ();
 
-				int size = keys.size ();
+				const int size = keys.size ();
 				if (values.size () != size)
 					return;
 
@@ -874,14 +874,14 @@ namespace LeechCraft
 						continue;
 					}
 
-					ElementsData_t eds = values.at (i).value<ElementsData_t> ();
+					const ElementsData_t eds = values.at (i).value<ElementsData_t> ();
 					if (!eds.size ())
 						continue;
 
 					// TODO take into account all the possibilities.
-					ElementData ed = eds.at (0);
+					const ElementData ed = eds.at (0);
 
-					ElementsData_t list = pair.first [pairFirstKeys.at (i)];
+					const ElementsData_t list = pair.first [pairFirstKeys.at (i)];
 					ElementsData_t::const_iterator source = FindElement (ed, list);
 					if (source < list.end ())
 						pair.second [*source].setAttribute ("value", ed.Value_);
