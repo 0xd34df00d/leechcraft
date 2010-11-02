@@ -23,11 +23,6 @@
 #include "xmlsettingsmanager.h"
 #include "mainwindow.h"
 #include "tabwidget.h"
-/**
- * Portions of this software derived from Qxt &copy; 2009, licensed
- * under the Common Public License, version 1.0, as published by IBM.
- * You should have received a copy of the CPL along with this software.
- */
 
 using namespace LeechCraft;
 

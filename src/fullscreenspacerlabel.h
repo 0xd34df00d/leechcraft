@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LABEL_H
-#define LABEL_H
+#ifndef FULLSCREENSPACERLABEL_H
+#define FULLSCREENSPACERLABEL_H
 #include <QLabel>
-
 
 namespace LeechCraft
 {
