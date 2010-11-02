@@ -323,30 +323,27 @@ namespace LeechCraft
 
 				QString profilePath = GetProfileDirectory (filename);
 
-				if (!profilePath.isEmpty ())
-				{
-					DB_->setDatabaseName (profilePath + "/places.sqlite");
+				if (profilePath.isEmpty ())
+					return QSqlQuery ();
 
-					if (!DB_->open ())
+				DB_->setDatabaseName (profilePath + "/places.sqlite");
+
+				if (!DB_->open ())
+					QMessageBox::critical (0,
+								"LeechCraft",
+								tr ("Could not open Firefox database: %1.")
+								.arg (DB_->lastError ().text ()));
+				else
+				{
+					QSqlQuery query (*DB_);
+					query.exec (sql);
+					if (query.isActive ())
 					{
-						QMessageBox::critical (0,
-									"LeechCraft",
-									tr ("Could not open Firefox database: %1.")
-									.arg (DB_->lastError ().text ()));
-						return QSqlQuery ();
+						query.next ();
+						return query;
 					}
-					else
-					{
-						QSqlQuery query (*DB_);
-						query.exec (sql);
-						if (query.isActive ())
-						{
-							query.next ();
-							return query;
-						}
-					}
-				return QSqlQuery ();
 				}
+				return QSqlQuery ();
 			}
 		};
 	};
