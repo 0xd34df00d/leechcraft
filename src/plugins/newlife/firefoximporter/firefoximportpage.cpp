@@ -133,9 +133,9 @@ namespace LeechCraft
 				if (!CheckValidity (filename))
 					return;
 
-				QFileInfo FfStarted (GetProfileDirectory (filename) + "/lock");
+				QFileInfo ffStarted (GetProfileDirectory (filename) + "/lock");
 
-				if (FfStarted.isSymLink ())
+				if (ffStarted.isSymLink ())
 				{
 					QMessageBox::critical (0,
 								"LeechCraft",
