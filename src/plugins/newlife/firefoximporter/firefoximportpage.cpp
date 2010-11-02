@@ -310,8 +310,9 @@ namespace LeechCraft
 					}
 					else
 						emit gotEntity (Util::MakeNotification ("Firefox Import",
-								tr ("Import opml file cannot be create: %1").
-								arg (file.errorString ()), PCritical_));
+								tr ("OPML file for the import cannot be created: %1")
+									.arg (file.errorString ()),
+								PCritical_));
 				}
 				return QString ();
 			}
