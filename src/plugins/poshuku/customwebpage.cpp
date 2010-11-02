@@ -811,7 +811,7 @@ namespace LeechCraft
 
 			namespace
 			{
-				ElementData FindElement (const ElementData& filled, const ElementsData_t& list)
+				ElementsData_t::const_iterator FindElement (const ElementData& filled, const ElementsData_t& list)
 				{
 					boost::function<bool (const ElementData&, const ElementData&)> urlChecker =
 							boost::bind (&ElementData::PageURL_, _1) == boost::bind (&ElementData::PageURL_, _2);
@@ -828,22 +828,17 @@ namespace LeechCraft
 					if (pos == list.end ())
 						pos = std::find_if (list.begin (), list.end (),
 								boost::bind (urlChecker, _1, filled));
-					if (pos == list.end ())
-						pos = list.begin ();
 
-					return *pos;
+					return pos;
 				}
 			}
 
 			void CustomWebPage::fillForms (QWebFrame *frame)
 			{
-				qDebug () << Q_FUNC_INFO;
 				PageFormsData_t formsData;
 
 				QPair<PageFormsData_t, QMap<ElementData, QWebElement> > pair =
 						HarvestForms (frame ? frame : mainFrame ());
-
-				qDebug () << pair.first;
 
 				if (pair.first.isEmpty ())
 					return;
@@ -886,8 +881,10 @@ namespace LeechCraft
 					// TODO take into account all the possibilities.
 					ElementData ed = eds.at (0);
 
-					ElementData source = FindElement (ed, pair.first [pairFirstKeys.at (i)]);
-					pair.second [source].setAttribute ("value", ed.Value_);
+					ElementsData_t list = pair.first [pairFirstKeys.at (i)];
+					ElementsData_t::const_iterator source = FindElement (ed, list);
+					if (source < list.end ())
+						pair.second [*source].setAttribute ("value", ed.Value_);
 				}
 
 				Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())
