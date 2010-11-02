@@ -330,10 +330,15 @@ namespace LeechCraft
 				DB_->setDatabaseName (profilePath + "/places.sqlite");
 
 				if (!DB_->open ())
-					QMessageBox::critical (0,
-								"LeechCraft",
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not open database"
+							<< DB_->lastError ().text ();
+					emit gotEntity (Util::MakeNotification (tr ("Firefox Import"),
 								tr ("Could not open Firefox database: %1.")
-								.arg (DB_->lastError ().text ()));
+									.arg (DB_->lastError ().text ()),
+								PCritical_));
+				}
 				else
 				{
 					QSqlQuery query (*DB_);
