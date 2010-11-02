@@ -170,7 +170,7 @@ namespace LeechCraft
 
 			QList<QVariant> FirefoxImportPage::GetHistory (const QString& filename)
 			{
-				QString sql ("select moz_places.url,moz_places.title, moz_historyvisits.visit_date "
+				QString sql ("SELECT moz_places.url, moz_places.title, moz_historyvisits.visit_date "
 						"FROM moz_historyvisits, moz_places WHERE moz_places.id = moz_historyvisits.place_id");
 				QSqlQuery query = GetQuery (filename, sql);
 				if (query.isValid ())
@@ -193,23 +193,23 @@ namespace LeechCraft
 
 			QList<QVariant> FirefoxImportPage::GetBookmarks (const QString& filename)
 			{
-				QString sql ("select bm.title,pl.url from moz_bookmarks bm,moz_places pl "
-						"where bm.parent not in(select ann.item_id from moz_items_annos "
-						"ann, moz_bookmarks bm where ann.item_id IN(select item_id from "
-						"moz_items_annos where anno_attribute_id=(select id	from "
-						"moz_anno_attributes where name='livemark/feedURI'))AND "
-						"ann.anno_attribute_id<>3 AND ann.anno_attribute_id<>7 AND bm.id"
-						"=ann.item_id)AND bm.fk is not null AND bm.fk in (select id "
-						"from moz_places where url like 'http%' OR url like 'ftp%' OR url "
-						"like 'file%')AND bm.id>100 AND bm.fk=pl.id AND bm.title not null");
+				QString sql ("SELECT bm.title, pl.url FROM moz_bookmarks bm, moz_places pl "
+						"WHERE bm.parent NOT IN (SELECT ann.item_id FROM moz_items_annos "
+						"ann, moz_bookmarks bm WHERE ann.item_id IN (SELECT item_id FROM "
+						"moz_items_annos WHERE anno_attribute_id = (SELECT id FROM "
+						"moz_anno_attributes WHERE name='livemark/feedURI')) AND "
+						"ann.anno_attribute_id <> 3 AND ann.anno_attribute_id <> 7 AND bm.id"
+						"= ann.item_id) AND bm.fk IS NOT NULL AND bm.fk IN (SELECT id "
+						"FROM moz_places WHERE url LIKE 'http%' OR url LIKE 'ftp%' OR url "
+						"like 'file%') AND bm.id > 100 AND bm.fk = pl.id AND bm.title NOT NULL");
 				QSqlQuery bookmarksQuery = GetQuery (filename, sql);
 				if (bookmarksQuery.isValid ())
 				{
 					QList<QVariant> bookmarks;
-					QString tagsSql_p1 ("select title from moz_bookmarks where id in ("
-							"select	bm.parent from moz_bookmarks bm, moz_places pl "
-							" where	pl.url='");
-					QString tagsSql_p2 ("' AND	bm.title is null and bm.fk = pl.id)");
+					QString tagsSql_p1 ("SELECT title from moz_bookmarks WHERE id IN ("
+							"SELECT bm.parent FROM moz_bookmarks bm, moz_places pl "
+							" WHERE pl.url='");
+					QString tagsSql_p2 ("' AND bm.title IS NULL AND bm.fk = pl.id)");
 					QMap<QString, QVariant> record;
 					do
 					{
@@ -235,10 +235,10 @@ namespace LeechCraft
 
 			QString FirefoxImportPage::GetImportOpmlFile (const QString& filename)
 			{
-				QString rssSql ("select ann.id,ann.item_id,ann.anno_attribute_id,ann.content,"
-						"bm.title from 	moz_items_annos ann,moz_bookmarks bm where 	ann.item_id"
-						" IN(select item_id from moz_items_annos where anno_attribute_id=(select"
-						" id from moz_anno_attributes where	name = 'livemark/feedURI'))AND("
+				QString rssSql ("SELECT ann.id, ann.item_id, ann.anno_attribute_id, ann.content,"
+						"bm.title FROM moz_items_annos ann,moz_bookmarks bm WHERE ann.item_id"
+						" IN (SELECT item_id FROM moz_items_annos WHERE anno_attribute_id = (SELECT"
+						" id FROM moz_anno_attributes WHERE name = 'livemark/feedURI')) AND ("
 						"ann.anno_attribute_id = 4 OR ann.anno_attribute_id = 5) AND "
 						"bm.id = ann.item_id");
 				QSqlQuery rssQuery = GetQuery (filename, rssSql);
@@ -246,10 +246,10 @@ namespace LeechCraft
 				if (rssQuery.isValid ())
 				{
 					QSqlQuery query (*DB_);
-					query.exec ("select id from moz_anno_attributes where name='livemark/siteURI'");
+					query.exec ("SELECT id FROM moz_anno_attributes WHERE name='livemark/siteURI'");
 					query.next ();
 					int site = query.value (0).toInt ();
-					query.exec ("select id from moz_anno_attributes where name='livemark/feedURI'");
+					query.exec ("SELECT id FROM moz_anno_attributes WHERE name='livemark/feedURI'");
 					query.next ();
 					int feed = query.value (0).toInt ();
 
