@@ -20,6 +20,11 @@
 #define PLUGINS_NEWLIFE_FIREFOXIMPORTPAGE_H
 #include <QWizardPage>
 #include "ui_feedssettingsimportpage.h"
+#include <boost/shared_ptr.hpp>
+
+class QSqlDatabase;
+class QSqlQuery;
+
 namespace LeechCraft
 {
 	struct Entity;
@@ -33,21 +38,27 @@ namespace LeechCraft
 				Q_OBJECT
 
 				Ui::FeedsSettingsImportPage Ui_;				
+				boost::shared_ptr<QSqlDatabase> DB_;
 			public:
 				FirefoxImportPage (QWidget* = 0);
+				~FirefoxImportPage ();
 
 				bool CheckValidity (const QString&) const;
 				virtual bool isComplete () const;
 				virtual int nextId () const;
 				virtual void initializePage ();
 				QString GetProfileDirectory (const QString&);
-				QList <QVariant> GetHistory (const QString&);
+				QList<QVariant> GetHistory (const QString&);
+				QList<QVariant> GetBookmarks (const QString&);
+				QString GetImportOpmlFile (const QString&);
+				QSqlQuery GetQuery (const QString&, const QString&);
 			private slots:
 				void on_Browse__released ();
 				void on_FileLocation__textEdited (const QString&);
 				void handleAccepted ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
+
 			};
 		};
 	};
