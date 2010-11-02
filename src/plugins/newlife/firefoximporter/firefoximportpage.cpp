@@ -215,12 +215,17 @@ namespace LeechCraft
 					{
 						QString tagsSql = tagsSql_p1 + bookmarksQuery.value (1).toString () + tagsSql_p2;
 						QSqlQuery tagsQuery = GetQuery (filename, tagsSql);						
-						QStringList tmp;
+
+						QStringList tags;
 						do
-							if (!tagsQuery.value (0).toString ().isEmpty ())
-								tmp << tagsQuery.value (0).toString ();
+						{
+							QString tag = tagsQuery.value (0).toString ();
+							if (!tag.isEmpty ())
+								tags << tag;
+						}
 						while (tagsQuery.next ());
-						record ["Tags"] = tmp;
+
+						record ["Tags"] = tags;
 						record ["Title"] = bookmarksQuery.value (0).toString ();
 						record ["URL"] = bookmarksQuery.value (1).toString ();
 						bookmarks.push_back (record);
@@ -310,7 +315,7 @@ namespace LeechCraft
 					}
 					else
 						emit gotEntity (Util::MakeNotification ("Firefox Import",
-								tr ("OPML file for the import cannot be created: %1")
+								tr ("OPML file for importing RSS cannot be created: %1")
 									.arg (file.errorString ()),
 								PCritical_));
 				}
