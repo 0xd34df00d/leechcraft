@@ -40,7 +40,7 @@
 #include "webpluginfactory.h"
 #include "browserwidget.h"
 
-Q_DECLARE_METATYPE (QVariant*);
+Q_DECLARE_METATYPE (QVariantList*);
 
 namespace LeechCraft
 {
@@ -813,7 +813,8 @@ namespace LeechCraft
 
 			namespace
 			{
-				ElementsData_t::const_iterator FindElement (const ElementData& filled, const ElementsData_t& list)
+				ElementsData_t::const_iterator FindElement (const ElementData& filled,
+						const ElementsData_t& list, bool strict)
 				{
 					boost::function<bool (const ElementData&, const ElementData&)> typeChecker =
 							boost::bind (&ElementData::Type_, _1) == filled.Type_;
@@ -829,16 +830,19 @@ namespace LeechCraft
 											boost::bind (std::logical_and<bool> (),
 													urlChecker,
 													formIdChecker)));
-					if (pos == list.end ())
-						pos = std::find_if (list.begin (), list.end (),
-								boost::bind (std::logical_and<bool> (),
-										typeChecker,
-										formIdChecker));
-					if (pos == list.end ())
-						pos = std::find_if (list.begin (), list.end (),
-								boost::bind (std::logical_and<bool> (),
-										typeChecker,
-										urlChecker));
+					if (!strict)
+					{
+						if (pos == list.end ())
+							pos = std::find_if (list.begin (), list.end (),
+									boost::bind (std::logical_and<bool> (),
+											typeChecker,
+											formIdChecker));
+						if (pos == list.end ())
+							pos = std::find_if (list.begin (), list.end (),
+									boost::bind (std::logical_and<bool> (),
+											typeChecker,
+											urlChecker));
+					}
 
 					return pos;
 				}
@@ -863,12 +867,10 @@ namespace LeechCraft
 						QString (),
 						Internal,
 						"x-leechcraft/data-persistent-load");
-				QVariant valuesList;
-				e.Additional_ ["Values"] = QVariant::fromValue<QVariant*> (&valuesList);
+				QVariantList values;
+				e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
 
 				emit delegateEntity (e, 0, 0);
-
-				QList<QVariant> values = valuesList.toList ();
 
 				const int size = keys.size ();
 				if (values.size () != size)
@@ -885,17 +887,37 @@ namespace LeechCraft
 						continue;
 					}
 
-					const ElementsData_t eds = values.at (i).value<ElementsData_t> ();
-					if (!eds.size ())
+					const QVariantList vars = values.at (i).toList ();
+					if (!vars.size ())
 						continue;
 
-					// TODO take into account all the possibilities.
-					const ElementData ed = eds.at (0);
-
 					const ElementsData_t list = pair.first [pairFirstKeys.at (i)];
-					ElementsData_t::const_iterator source = FindElement (ed, list);
+					ElementsData_t::const_iterator source = list.end ();
+					QString value;
+					Q_FOREACH (const QVariant& var, vars)
+					{
+						const ElementData ed = var.value<ElementData> ();
+						source = FindElement (ed, list, true);
+						if (source < list.end ())
+						{
+							value = ed.Value_;
+							break;
+						}
+					}
+					if (source >= list.end ())
+						Q_FOREACH (const QVariant& var, vars)
+						{
+							const ElementData ed = var.value<ElementData> ();
+							source = FindElement (ed, list, false);
+							if (source < list.end ())
+							{
+								value = ed.Value_;
+								break;
+							}
+						}
+
 					if (source < list.end ())
-						pair.second [*source].setAttribute ("value", ed.Value_);
+						pair.second [*source].setAttribute ("value", value);
 				}
 
 				Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())

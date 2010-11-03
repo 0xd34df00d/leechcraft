@@ -57,7 +57,10 @@ namespace LeechCraft
 				Q_FOREACH (const QString& key, TempData_.keys ())
 				{
 					keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + key.toUtf8 ();
-					values << QVariant::fromValue<ElementsData_t> (TempData_ [key]);
+					QVariantList value;
+					Q_FOREACH (const ElementData& ed, TempData_ [key])
+						value << QVariant::fromValue<ElementData> (ed);
+					values << QVariant (value);
 				}
 				if (keys.size ())
 				{
