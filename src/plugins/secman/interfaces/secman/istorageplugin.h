@@ -42,10 +42,10 @@ namespace LeechCraft
 
 				virtual StorageTypes GetStorageTypes () const = 0;
 				virtual QList<QByteArray> ListKeys (StorageType st = STInsecure) = 0;
-				virtual void Save (const QByteArray& key, const QVariant& value, StorageType st = STInsecure) = 0;
-				virtual QVariant Load (const QByteArray& key, StorageType st = STInsecure) = 0;
-				virtual void Save (const QList<QPair<QByteArray, QVariant> >& keyValues, StorageType st = STInsecure) = 0;
-				virtual QList<QVariant> Load (const QList<QByteArray>& keys, StorageType st = STInsecure) = 0;
+				virtual void Save (const QByteArray& key, const QVariantList& value, StorageType st = STInsecure) = 0;
+				virtual QVariantList Load (const QByteArray& key, StorageType st = STInsecure) = 0;
+				virtual void Save (const QList<QPair<QByteArray, QVariantList> >& keyValues, StorageType st = STInsecure) = 0;
+				virtual QList<QVariantList> Load (const QList<QByteArray>& keys, StorageType st = STInsecure) = 0;
 			};
 		}
 	}

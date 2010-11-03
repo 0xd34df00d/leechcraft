@@ -46,8 +46,8 @@ namespace LeechCraft
 				 * @param[in] object The storage plugin instance object.
 				 */
 				void AddStoragePlugin (QObject *object);
-				void Store (const QList<QByteArray>&, const QList<QVariant>&, bool);
-				QList<QVariant> Load (const QList<QByteArray>&, bool);
+				void Store (const QList<QByteArray>&, const QList<QVariantList>&, bool);
+				QList<QVariantList> Load (const QList<QByteArray>&, bool);
 
 				QObject* GetStoragePlugin () const;
 			};

@@ -108,32 +108,33 @@ namespace LeechCraft
 						return result;
 					}
 
-					void Plugin::Save (const QByteArray& key, const QVariant& value, IStoragePlugin::StorageType st)
+					void Plugin::Save (const QByteArray& key, const QVariantList& values, IStoragePlugin::StorageType st)
 					{
 						if (st != STInsecure)
 							return;
 
-						Storage_->setValue (key, value);
+						QVariantList oldValues = Load (key, st);
+						Storage_->setValue (key, oldValues + values);
 					}
 
-					QVariant Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType st)
+					QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType st)
 					{
 						if (st != STInsecure)
-							return QVariant ();
+							return QVariantList ();
 
-						return Storage_->value (key);
+						return Storage_->value (key).toList ();
 					}
 
-					void Plugin::Save (const QList<QPair<QByteArray, QVariant> >& keyValues, IStoragePlugin::StorageType st)
+					void Plugin::Save (const QList<QPair<QByteArray, QVariantList> >& keyValues, IStoragePlugin::StorageType st)
 					{
-						QPair<QByteArray, QVariant> keyValue;
+						QPair<QByteArray, QVariantList> keyValue;
 						Q_FOREACH (keyValue, keyValues)
 							Save (keyValue.first, keyValue.second, st);
 					}
 
-					QList<QVariant> Plugin::Load (const QList<QByteArray>& keys, IStoragePlugin::StorageType st)
+					QList<QVariantList> Plugin::Load (const QList<QByteArray>& keys, IStoragePlugin::StorageType st)
 					{
-						QList<QVariant> result;
+						QList<QVariantList> result;
 						Q_FOREACH (const QByteArray& key, keys)
 							result << Load (key, st);
 						return result;

@@ -20,7 +20,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/secman/istorageplugin.h>
 
-Q_DECLARE_METATYPE (QVariant*);
+Q_DECLARE_METATYPE (QVariantList*);
 
 namespace LeechCraft
 {
@@ -54,7 +54,7 @@ namespace LeechCraft
 					QList<QVariant> rawKeys = e.Entity_.toList ();
 
 					QVariant valuesList = e.Additional_ ["Values"];
-					if (!valuesList.canConvert<QVariant*> ())
+					if (!valuesList.canConvert<QVariantList*> ())
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "could not convert Entity.Additional_ [\"Values\"] "
@@ -62,7 +62,7 @@ namespace LeechCraft
 						return;
 					}
 
-					QVariant *valuesListPtr = valuesList.value<QVariant*> ();
+					QVariantList *valuesListPtr = valuesList.value<QVariantList*> ();
 					if (!valuesListPtr)
 					{
 						qWarning () << Q_FUNC_INFO
@@ -81,16 +81,18 @@ namespace LeechCraft
 						keys << key;
 					}
 
-					QList<QVariant> values = Load (keys, secure);
+					QList<QVariantList> values = Load (keys, secure);
 					if (values.size () != keys.size ())
 						return;
 
-					*valuesListPtr = values;
+					valuesListPtr->clear ();
+					Q_FOREACH (const QVariantList& value, values)
+						*valuesListPtr << QVariant (value);
 				}
 				else if (e.Mime_ == "x-leechcraft/data-persistent-save")
 				{
 					QList<QVariant> rawKeys = e.Entity_.toList ();
-					QList<QVariant> values = e.Additional_ ["Values"].toList ();
+					QList<QVariant> rawValues = e.Additional_ ["Values"].toList ();
 
 					QList<QByteArray> keys;
 					Q_FOREACH (const QVariant& rKey, rawKeys)
@@ -100,6 +102,10 @@ namespace LeechCraft
 							continue;
 						keys << key;
 					}
+
+					QList<QVariantList> values;
+					Q_FOREACH (const QVariant& rValue, rawValues)
+						values << rValue.toList ();
 
 					if (values.size () != keys.size ())
 					{
@@ -152,7 +158,7 @@ namespace LeechCraft
 			}
 
 			void Core::Store (const QList<QByteArray>& keys,
-					const QList<QVariant>& values, bool secure)
+					const QList<QVariantList>& values, bool secure)
 			{
 				Q_ASSERT (keys.size () == values.size ());
 				Q_ASSERT (keys.size ());
@@ -170,16 +176,16 @@ namespace LeechCraft
 						IStoragePlugin::STSecure :
 						IStoragePlugin::STInsecure;
 
-				QList<QPair<QByteArray, QVariant> > data;
+				QList<QPair<QByteArray, QVariantList> > data;
 				for (int i = 0; i < keys.size (); ++i)
 					data << qMakePair (keys.at (i), values.at (i));
 				qobject_cast<IStoragePlugin*> (storage)->Save (data, type);
 			}
 
-			QList<QVariant> Core::Load (const QList<QByteArray>& keys, bool secure)
+			QList<QVariantList> Core::Load (const QList<QByteArray>& keys, bool secure)
 			{
 				if (!keys.size ())
-					return QList<QVariant> ();
+					return QList<QVariantList> ();
 
 				QObject *storage = GetStoragePlugin ();
 
@@ -187,7 +193,7 @@ namespace LeechCraft
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "null storage";
-					return QList<QVariant> ();
+					return QList<QVariantList> ();
 				}
 
 				IStoragePlugin::StorageType type = secure ?
