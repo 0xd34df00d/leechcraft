@@ -77,7 +77,7 @@ namespace LeechCraft
 	, DefaultPluginIcon_ (QIcon (":/resources/images/defaultpluginicon.svg"))
 	{
 		Headers_ << tr ("Name")
-			<< tr ("File");
+			<< tr ("Description");
 
 		if (pluginPaths.isEmpty ())
 			FindPlugins ();
