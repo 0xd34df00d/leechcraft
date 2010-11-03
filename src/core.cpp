@@ -62,6 +62,7 @@
 #include "tagsmanager.h"
 #include "fancypopupmanager.h"
 #include "application.h"
+#include "newtabmenumanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -72,6 +73,7 @@ LeechCraft::Core::Core ()
 , DirectoryWatcher_ (new DirectoryWatcher)
 , ClipboardWatcher_ (new ClipboardWatcher)
 , LocalSocketHandler_ (new LocalSocketHandler)
+, NewTabMenuManager_ (new NewTabMenuManager)
 {
 	connect (LocalSocketHandler_.get (),
 			SIGNAL (gotEntity (const LeechCraft::Entity&)),
@@ -354,6 +356,11 @@ QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 TabManager* LeechCraft::Core::GetTabManager () const
 {
 	return TabManager_.get ();
+}
+
+NewTabMenuManager* LeechCraft::Core::GetNewTabMenuManager () const
+{
+	return NewTabMenuManager_.get ();
 }
 
 #define LC_APPENDER(a) a##_.Functors_.append (functor)

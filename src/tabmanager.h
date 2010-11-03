@@ -41,16 +41,13 @@ namespace LeechCraft
 		QList<QKeyEvent*> Events_;
 		QMap<QWidget*, QToolBar*> StaticBars_;
 		QMap<QWidget*, QObject*> EmbedTabs_;
-		QList<QObject*> RegisteredMultiTabs_;
 		QMenu *NewTabMenu_;
 		QMap<QString, QList<QAction*> > Menus_;
-		QMap<QString, QAction*> ReaddOnRestore_;
 	public:
 		TabManager (TabWidget*, QObject* = 0);
 
 		QWidget* GetWidget (int) const;
 		QToolBar* GetToolBar (int) const;
-		QMenu* GetNewTabMenu () const;
 		void SetToolBar (QToolBar*, QWidget*);
 		void ForwardKeyboard (QKeyEvent*);
 
@@ -74,7 +71,7 @@ namespace LeechCraft
 		void handleMoveHappened (int, int);
 		void handleCloseAllButCurrent ();
 	private slots:
-		void restoreEmbedTab ();
+		void restoreEmbedTab (QObject*);
 	private:
 		int FindTabForWidget (QWidget*) const;
 		QString MakeTabName (const QString&) const;

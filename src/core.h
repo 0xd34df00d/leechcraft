@@ -43,6 +43,7 @@ class QToolBar;
 namespace LeechCraft
 {
 	class MainWindow;
+	class NewTabMenuManager;
 
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
@@ -59,6 +60,7 @@ namespace LeechCraft
 		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
 		std::auto_ptr<ClipboardWatcher> ClipboardWatcher_;
 		std::auto_ptr<LocalSocketHandler> LocalSocketHandler_;
+		boost::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
 		QList<Entity> QueuedEntities_;
 
 		Core ();
@@ -176,6 +178,10 @@ namespace LeechCraft
 		/** Returns the app-wide TabContainer.
 		 */
 		TabManager* GetTabManager () const;
+
+		/** Returns the app-wide new tab menu manager.
+		 */
+		NewTabMenuManager* GetNewTabMenuManager () const;
 
 		/** Sets up connections for the given object which is expected
 		 * to be a plugin instance.

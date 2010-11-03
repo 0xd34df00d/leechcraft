@@ -287,6 +287,7 @@ SET (SRCS
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
 	fullscreenspacerlabel.cpp
+	newtabmenumanager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -329,6 +330,7 @@ SET (HEADERS
 	glanceitem.h
 	tabbar.h
 	fullscreenspacerlabel.h
+	newtabmenumanager.h
 	wizardtypechoicepage.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h

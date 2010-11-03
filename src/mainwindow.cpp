@@ -54,6 +54,7 @@
 #include "aboutdialog.h"
 #include "toolbarguard.h"
 #include "glanceshower.h"
+#include "newtabmenumanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -476,7 +477,7 @@ void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 	else
 	{
 		QMenu *menu = Core::Instance ()
-			.GetTabManager ()->GetNewTabMenu ();
+			.GetNewTabMenuManager ()->GetNewTabMenu ();
 		menu->popup (QCursor::pos ());
 	}
 }
@@ -683,7 +684,7 @@ void LeechCraft::MainWindow::handleShowMenuBarAsButton ()
 void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 {
 	QMenu *ntmenu = Core::Instance ()
-			.GetTabManager ()->GetNewTabMenu ();
+			.GetNewTabMenuManager ()->GetNewTabMenu ();
 	ntmenu->popup (QCursor::pos ());
 }
 
@@ -849,7 +850,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	}
 
 	QMenu *ntm = Core::Instance ()
-		.GetTabManager ()->GetNewTabMenu ();
+		.GetNewTabMenuManager ()->GetNewTabMenu ();
 	NewTabButton_->setMenu (ntm);
 	NewTabButton_->setPopupMode (QToolButton::MenuButtonPopup);
 	int i = 0;

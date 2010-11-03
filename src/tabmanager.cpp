@@ -28,6 +28,7 @@
 #include "xmlsettingsmanager.h"
 #include "tabwidget.h"
 #include "mainwindow.h"
+#include "newtabmenumanager.h"
 
 using namespace LeechCraft;
 
@@ -35,8 +36,12 @@ TabManager::TabManager (TabWidget *tabWidget,
 		QObject *parent)
 : QObject (parent)
 , TabWidget_ (tabWidget)
-, NewTabMenu_ (new QMenu (tr ("New tab menu")))
 {
+	connect (Core::Instance ().GetNewTabMenuManager (),
+			SIGNAL (restoreEmbedTabRequested (QObject*)),
+			this,
+			SLOT (restoreEmbedTab (QObject*)));
+
 	for (int i = 0; i < TabWidget_->count (); ++i)
 		OriginalTabNames_ << TabWidget_->tabText (i);
 
@@ -105,11 +110,6 @@ QToolBar* TabManager::GetToolBar (int position) const
 	}
 	else
 		return StaticBars_ [widget];
-}
-
-QMenu* TabManager::GetNewTabMenu () const
-{
-	return NewTabMenu_;
 }
 
 void TabManager::SetToolBar (QToolBar *bar, QWidget *tw)
@@ -196,32 +196,7 @@ void TabManager::AddObject (QObject *obj)
 		}
 	}
 
-	IMultiTabs *imt = qobject_cast<IMultiTabs*> (obj);
-	if (imt && !RegisteredMultiTabs_.contains (obj))
-	{
-		RegisteredMultiTabs_ << obj;
-		try
-		{
-			QString name = ii->GetName ();
-			QString info = ii->GetInfo ();
-			QIcon icon = ii->GetIcon ();
-			NewTabMenu_->addAction (icon,
-					name,
-					obj,
-					SLOT (newTabRequested ()))->setToolTip (info);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< obj;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< obj;
-		}
-	}
+	Core::Instance ().GetNewTabMenuManager ()->AddObject (obj);
 }
 
 void TabManager::add (const QString& name, QWidget *contents)
@@ -283,7 +258,6 @@ void TabManager::remove (int index)
 		try
 		{
 			QString name = ii->GetName ();
-			QIcon icon = ii->GetIcon ();
 
 			XmlSettingsManager::Instance ()->
 					setProperty (qPrintable (QString ("Hide%1").arg (name)),
@@ -291,26 +265,8 @@ void TabManager::remove (int index)
 			EmbedTabs_.remove (widget);
 			remove (widget);
 
-			QAction *action = 0;
-			Q_FOREACH (QAction *act, NewTabMenu_->actions ())
-				if (act->text () == name)
-				{
-					action = new QAction (icon, name, this);
-					connect (action,
-							SIGNAL (triggered ()),
-							this,
-							SLOT (restoreEmbedTab ()));
-					NewTabMenu_->insertAction (act, action);
-					NewTabMenu_->removeAction (act);
-					ReaddOnRestore_ [name] = act;
-					break;
-				}
-
-			if (!action)
-				action = NewTabMenu_->addAction (icon, name,
-						this,
-						SLOT (restoreEmbedTab ()));
-			action->setData (QVariant::fromValue<QObject*> (obj));
+			Core::Instance ().GetNewTabMenuManager ()->
+					HandleEmbedTabRemoved (obj);
 		}
 		catch (const std::exception& e)
 		{
@@ -424,43 +380,16 @@ void TabManager::handleCloseAllButCurrent ()
 			remove (i);
 }
 
-void TabManager::restoreEmbedTab ()
+void TabManager::restoreEmbedTab (QObject *obj)
 {
-	QAction *action = qobject_cast<QAction*> (sender ());
-	if (!action)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "null action, damn"
-			<< sender ();
-		return;
-	}
-
-	QObject *obj = action->data ().value<QObject*> ();
-	if (!obj)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "action's data is not a QObject*"
-			<< action
-			<< action->data ();
-		return;
-	}
-
 	IInfo *ii = qobject_cast<IInfo*> (obj);
 	try
 	{
 		QString name = ii->GetName ();
-		QIcon icon = ii->GetIcon ();
 
 		XmlSettingsManager::Instance ()->
 				setProperty (qPrintable (QString ("Hide%1").arg (name)),
 						false);
-		if (ReaddOnRestore_.contains (action->text ()))
-		{
-			QAction *readd = ReaddOnRestore_ [action->text ()];
-			NewTabMenu_->insertAction (action, readd);
-		}
-
-		action->deleteLater ();
 		AddObject (obj);
 	}
 	catch (const std::exception& e)
