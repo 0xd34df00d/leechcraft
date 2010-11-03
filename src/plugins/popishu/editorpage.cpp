@@ -56,6 +56,7 @@ namespace LeechCraft
 			, Modified_ (false)
 			, DefaultMsgHandler_ (0)
 			, WrappedObject_ (0)
+			, PoshukiPageSourceCode_ (false)
 			{
 #define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
 				DEFPAIR (Bash, sh);
@@ -209,24 +210,25 @@ namespace LeechCraft
 
 			void EditorPage::Remove ()
 			{
-				if (Modified_)
-				{
-					QString name = QFileInfo (Filename_).fileName ();
-					if (name.isEmpty ())
-						name = tr ("Untitled");
-
-					QMessageBox::StandardButton res =
-							QMessageBox::question (this,
-									"LeechCraft",
-									tr ("The document <em>%1</em> is modified. "
-										"Do you want to save it now?")
-										.arg (name),
-									QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-					if (res == QMessageBox::Cancel)
-						return;
-					else if (res == QMessageBox::Yes)
-						on_ActionSave__triggered ();
-				}
+				if (!PoshukiPageSourceCode_)				
+					if (Modified_)
+					{
+						QString name = QFileInfo (Filename_).fileName ();
+						if (name.isEmpty ())
+							name = tr ("Untitled");
+												
+						QMessageBox::StandardButton res =
+								QMessageBox::question (this,
+										"LeechCraft",
+										tr ("The document <em>%1</em> is modified. "
+											"Do you want to save it now?")
+											.arg (name),
+										QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+						if (res == QMessageBox::Cancel)
+							return;
+						else if (res == QMessageBox::Yes)
+							on_ActionSave__triggered ();
+					}
 
 				emit removeTab (this);
 				deleteLater ();
@@ -791,6 +793,12 @@ namespace LeechCraft
 							setProperty ("RecentlyOpenedFiles", recent);
 				}
 			}
+			
+			void EditorPage::SetPoshukiPageSourceCode (bool fromPoshuki)
+			{
+				PoshukiPageSourceCode_ = fromPoshuki;
+			}
+
 		};
 	};
 };

@@ -922,7 +922,7 @@ namespace LeechCraft
 						FromUserInitiated,
 						"x-leechcraft/plain-text-document");
 				e.Additional_ ["Language"] = "HTML";
-
+				e.Additional_ ["FromBrowser"] = true;
 				bool ch = false;
 				emit couldHandle (e, &ch);
 				if (ch)
