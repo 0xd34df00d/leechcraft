@@ -32,6 +32,7 @@ namespace LeechCraft
 		setAcceptHoverEvents (true);
 		setTransformationMode (Qt::SmoothTransformation);
 		setCacheMode (ItemCoordinateCache);
+		current = false;
 	}
 
 	void GlanceItem::SetIndex (int idx)
@@ -56,14 +57,15 @@ namespace LeechCraft
 
 	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
 	{
-		setZValue (1);
-		QueueScaleAnim (scale (), 1);
+		Q_FOREACH (GlanceItem* item, ItemsList_)
+			if (item->isCurrent ())
+				item->setCurrent (false);
+		setCurrent (true);
 	}
 
 	void GlanceItem::hoverLeaveEvent (QGraphicsSceneHoverEvent*)
 	{
-		setZValue (0);
-		QueueScaleAnim (scale (), Scale_);
+		setCurrent (false);
 	}
 
 	void GlanceItem::mousePressEvent (QGraphicsSceneMouseEvent *e)
@@ -75,6 +77,35 @@ namespace LeechCraft
 	void GlanceItem::mouseReleaseEvent (QGraphicsSceneMouseEvent*)
 	{
 		emit clicked (Index_);
+	}
+
+	void GlanceItem::setCurrent (bool cur)
+	{
+		if (cur)
+		{
+			setZValue (1);
+			QueueScaleAnim (scale (), 1);
+		}
+		else
+		{
+			setZValue (0);
+			QueueScaleAnim (scale (), Scale_);
+		}
+		current = cur;
+	}
+
+	bool GlanceItem::isCurrent ()
+	{
+		if (current)
+			return true;
+
+		return false;
+	}
+
+	void GlanceItem::setItemList (QList<QGraphicsItem*> list)
+	{
+		Q_FOREACH (QGraphicsItem* item, list)
+			ItemsList_ << qgraphicsitem_cast<GlanceItem*> (item);
 	}
 };
 

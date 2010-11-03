@@ -34,14 +34,19 @@ namespace LeechCraft
 		Q_PROPERTY (qreal Opacity READ opacity WRITE setOpacity)
 		Q_PROPERTY (qreal Scale READ scale WRITE setScale)
 
-		int Index_;
+		int Index_;		
 		qreal Scale_;
 		QPropertyAnimation *ScaleAnim_;
+		bool current;
+		QList<GlanceItem*> ItemsList_;
 	public:
 		GlanceItem (const QPixmap&, QGraphicsItem* = 0);
 
 		void SetIndex (int);
 		void SetIdealScale (qreal);
+		void setCurrent (bool);
+		void setItemList (QList<QGraphicsItem*>);
+		bool isCurrent ();
 	private:
 		void QueueScaleAnim (qreal, qreal);
 	protected:
