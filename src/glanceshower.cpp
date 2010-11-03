@@ -169,6 +169,13 @@ namespace LeechCraft
 
 		setGeometry (screenGeom);
 		animGroup->start ();
+
+		Q_FOREACH (QGraphicsItem* item, items ())
+		{
+			GlanceItem *itm = qgraphicsitem_cast<GlanceItem*> (item);
+			itm->SetItemList (items ());
+		}
+
 		show ();
 	}
 
@@ -177,11 +184,117 @@ namespace LeechCraft
 		if (e->key () == Qt::Key_Escape)
 			Finalize ();
 		else
-			QGraphicsView::keyPressEvent (e);
+		{
+			QList<GlanceItem*> glanceItemList;
+			Q_FOREACH (QGraphicsItem* item, items ())
+				glanceItemList << qgraphicsitem_cast<GlanceItem*> (item);
+
+			int currentItem = -1;
+			int count = TabWidget_->count ();
+
+			int sqrt = std::sqrt ((double)count);
+			int rows = sqrt;
+			int cols = sqrt;
+			if (rows * cols < count)
+				++cols;
+			if (rows * cols < count)
+				++rows;
+
+			for (int i = 0; i < count; i++)
+				if (glanceItemList [i]->IsCurrent ())
+					currentItem = i;
+
+
+			switch (e->key ())
+			{
+			case Qt::Key_Right:
+				if (currentItem < 0)
+					glanceItemList [0]->SetCurrent (true);
+				else
+					if (currentItem < (count - 1))
+					{
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [currentItem + 1]->SetCurrent (true);
+					}
+					else
+					{
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [0]->SetCurrent (true);
+					}
+				break;
+			case Qt::Key_Left:
+				if (currentItem < 0)
+					glanceItemList [count - 1]->SetCurrent (true);
+				else
+					if (currentItem > 0)
+					{
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [currentItem - 1]->SetCurrent (true);
+					}
+					else
+					{
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [count - 1]->SetCurrent (true);
+					}
+				break;
+			case Qt::Key_Down:
+				if (count < 3)
+				{
+					QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
+					QCoreApplication::postEvent (this, event);
+				}
+				else
+					if (currentItem < 0)
+						glanceItemList [0]->SetCurrent (true);
+					else
+						if (currentItem + cols < count)
+						{
+							glanceItemList [currentItem]->SetCurrent (false);
+							glanceItemList [currentItem + cols]->SetCurrent (true);
+						}
+						else
+						{
+							glanceItemList [currentItem]->SetCurrent (false);
+							while ((currentItem - cols * (rows - 1)) <  0)
+								rows--;
+							glanceItemList [currentItem - cols * (rows - 1)]->SetCurrent (true);
+						}
+				break;
+			case Qt::Key_Up:
+				if (count < 3)
+				{
+					QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
+					QCoreApplication::postEvent (this, event);
+				}
+				else				
+					if (currentItem < 0)
+						glanceItemList [0]->SetCurrent (true);
+					else
+						if (currentItem >= cols)
+						{
+							glanceItemList [currentItem]->SetCurrent (false);
+							glanceItemList [currentItem - cols]->SetCurrent (true);
+						}
+						else
+						{
+							glanceItemList [currentItem]->SetCurrent (false);
+							while ((currentItem + cols * (rows - 1)) > count - 1)
+								rows--;
+							glanceItemList [currentItem + cols * (rows - 1)]->SetCurrent (true);
+						}
+				break;
+			case Qt::Key_Return:
+				if (currentItem >= 0)
+					handleClicked (currentItem);
+				break;
+			default:
+				QGraphicsView::keyPressEvent (e);
+			}
+		}
 	}
 
 	void GlanceShower::handleClicked (int idx)
-	{
+	{		
 		TabWidget_->setCurrentIndex (idx);
 		Finalize ();
 	}
@@ -190,6 +303,14 @@ namespace LeechCraft
 	{
 		emit finished (true);
 		deleteLater ();
+	}
+
+	void GlanceShower::mousePressEvent (QMouseEvent *e)
+	{
+		QGraphicsView::mousePressEvent (e);
+		e->accept ();
+		if (!this->itemAt (e->pos ()))
+			Finalize ();
 	}
 };
 

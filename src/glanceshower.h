@@ -20,10 +20,14 @@
 #define GLANCESHOWER_H
 #include <QGraphicsView>
 
+
 class QTabWidget;
 
 namespace LeechCraft
 {
+
+	class GlanceItem;
+
 	class GlanceShower : public QGraphicsView
 	{
 		Q_OBJECT
@@ -33,13 +37,13 @@ namespace LeechCraft
 		bool Shown_;
 	public:
 		GlanceShower (QWidget* = 0);
-
 		void SetTabWidget (QTabWidget*);
 		void Start ();
 	private:
 		void Finalize ();
 	protected:
 		void keyPressEvent (QKeyEvent*);
+		void mousePressEvent (QMouseEvent *);
 	private slots:
 		void handleClicked (int);
 	signals:
