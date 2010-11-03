@@ -46,7 +46,10 @@ namespace LeechCraft
 						.Property ("LastPanedLocalPath", QDir::homePath ()).toString ();
 
 				TabWidget_ptr w (new TabWidget (url, local));
-				emit addNewTab (url.host (), w);
+				QString tabName = url.host ();
+				if (tabName.isEmpty ())
+					tabName = "LCFTP";
+				emit addNewTab (tabName, w);
 				emit changeTabIcon (w, QIcon (":/resources/images/lcftp.svg"));
 				Widgets_ << w;
 			}
