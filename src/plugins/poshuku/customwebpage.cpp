@@ -816,32 +816,32 @@ namespace LeechCraft
 				ElementsData_t::const_iterator FindElement (const ElementData& filled,
 						const ElementsData_t& list, bool strict)
 				{
-					boost::function<bool (const ElementData&, const ElementData&)> typeChecker =
+					boost::function<bool (const ElementData&)> typeChecker =
 							boost::bind (&ElementData::Type_, _1) == filled.Type_;
-					boost::function<bool (const ElementData&, const ElementData&)> urlChecker =
+					boost::function<bool (const ElementData&)> urlChecker =
 							boost::bind (&ElementData::PageURL_, _1) == filled.PageURL_;
-					boost::function<bool (const ElementData&, const ElementData&)> formIdChecker =
+					boost::function<bool (const ElementData&)> formIdChecker =
 							boost::bind (&ElementData::FormID_, _1) == filled.FormID_;
 
 					ElementsData_t::const_iterator pos =
 							std::find_if (list.begin (), list.end (),
 									boost::bind (std::logical_and<bool> (),
-											typeChecker,
+											boost::bind (typeChecker, _1),
 											boost::bind (std::logical_and<bool> (),
-													urlChecker,
-													formIdChecker)));
+													boost::bind (urlChecker, _1),
+													boost::bind (formIdChecker, _1))));
 					if (!strict)
 					{
 						if (pos == list.end ())
 							pos = std::find_if (list.begin (), list.end (),
 									boost::bind (std::logical_and<bool> (),
-											typeChecker,
-											formIdChecker));
+											boost::bind (typeChecker, _1),
+											boost::bind (formIdChecker, _1)));
 						if (pos == list.end ())
 							pos = std::find_if (list.begin (), list.end (),
 									boost::bind (std::logical_and<bool> (),
-											typeChecker,
-											urlChecker));
+											boost::bind (typeChecker, _1),
+											boost::bind (urlChecker, _1)));
 					}
 
 					return pos;
