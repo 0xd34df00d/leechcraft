@@ -37,16 +37,16 @@ namespace LeechCraft
 		int Index_;		
 		qreal Scale_;
 		QPropertyAnimation *ScaleAnim_;
-		bool current;
+		bool Current_;
 		QList<GlanceItem*> ItemsList_;
 	public:
 		GlanceItem (const QPixmap&, QGraphicsItem* = 0);
 
 		void SetIndex (int);
 		void SetIdealScale (qreal);
-		void setCurrent (bool);
-		void setItemList (QList<QGraphicsItem*>);
-		bool isCurrent ();
+		void SetCurrent (bool);
+		void SetItemList (QList<QGraphicsItem*>);
+		bool IsCurrent () const;
 	private:
 		void QueueScaleAnim (qreal, qreal);
 	protected:

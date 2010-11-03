@@ -28,11 +28,11 @@ namespace LeechCraft
 	: QGraphicsPixmapItem (px, parent)
 	, Scale_ (0)
 	, ScaleAnim_ (new QPropertyAnimation (this, "Scale"))
+	, Current_ (false)
 	{
 		setAcceptHoverEvents (true);
 		setTransformationMode (Qt::SmoothTransformation);
-		setCacheMode (ItemCoordinateCache);
-		current = false;
+		setCacheMode (ItemCoordinateCache);		
 	}
 
 	void GlanceItem::SetIndex (int idx)
@@ -58,14 +58,14 @@ namespace LeechCraft
 	void GlanceItem::hoverEnterEvent (QGraphicsSceneHoverEvent*)
 	{
 		Q_FOREACH (GlanceItem* item, ItemsList_)
-			if (item->isCurrent ())
-				item->setCurrent (false);
-		setCurrent (true);
+			if (item->IsCurrent () && item != this)
+				item->SetCurrent (false);
+		SetCurrent (true);
 	}
 
 	void GlanceItem::hoverLeaveEvent (QGraphicsSceneHoverEvent*)
 	{
-		setCurrent (false);
+		SetCurrent (false);
 	}
 
 	void GlanceItem::mousePressEvent (QGraphicsSceneMouseEvent *e)
@@ -79,7 +79,7 @@ namespace LeechCraft
 		emit clicked (Index_);
 	}
 
-	void GlanceItem::setCurrent (bool cur)
+	void GlanceItem::SetCurrent (bool cur)
 	{
 		if (cur)
 		{
@@ -91,18 +91,15 @@ namespace LeechCraft
 			setZValue (0);
 			QueueScaleAnim (scale (), Scale_);
 		}
-		current = cur;
+		Current_ = cur;
 	}
 
-	bool GlanceItem::isCurrent ()
+	bool GlanceItem::IsCurrent () const
 	{
-		if (current)
-			return true;
-
-		return false;
+		return Current_;
 	}
 
-	void GlanceItem::setItemList (QList<QGraphicsItem*> list)
+	void GlanceItem::SetItemList (QList<QGraphicsItem*> list)
 	{
 		Q_FOREACH (QGraphicsItem* item, list)
 			ItemsList_ << qgraphicsitem_cast<GlanceItem*> (item);

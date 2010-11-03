@@ -172,9 +172,8 @@ namespace LeechCraft
 
 		Q_FOREACH (QGraphicsItem* item, items ())
 		{
-			GlanceItem *itm;
-			itm = qgraphicsitem_cast<GlanceItem*> (item);
-			itm->setItemList (items ());
+			GlanceItem *itm = qgraphicsitem_cast<GlanceItem*> (item);
+			itm->SetItemList (items ());
 		}
 
 		show ();
@@ -202,7 +201,7 @@ namespace LeechCraft
 				++rows;
 
 			for (int i = 0; i < count; i++)
-				if (glanceItemList [i]->isCurrent ())
+				if (glanceItemList [i]->IsCurrent ())
 					currentItem = i;
 
 
@@ -210,32 +209,32 @@ namespace LeechCraft
 			{
 			case Qt::Key_Right:
 				if (currentItem < 0)
-					glanceItemList [0]->setCurrent (true);
+					glanceItemList [0]->SetCurrent (true);
 				else
 					if (currentItem < (count - 1))
 					{
-						glanceItemList [currentItem]->setCurrent (false);
-						glanceItemList [currentItem + 1]->setCurrent (true);
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [currentItem + 1]->SetCurrent (true);
 					}
 					else
 					{
-						glanceItemList [currentItem]->setCurrent (false);
-						glanceItemList [0]->setCurrent (true);
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [0]->SetCurrent (true);
 					}
 				break;
 			case Qt::Key_Left:
 				if (currentItem < 0)
-					glanceItemList [count - 1]->setCurrent (true);
+					glanceItemList [count - 1]->SetCurrent (true);
 				else
 					if (currentItem > 0)
 					{
-						glanceItemList [currentItem]->setCurrent (false);
-						glanceItemList [currentItem - 1]->setCurrent (true);
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [currentItem - 1]->SetCurrent (true);
 					}
 					else
 					{
-						glanceItemList [currentItem]->setCurrent (false);
-						glanceItemList [count - 1]->setCurrent (true);
+						glanceItemList [currentItem]->SetCurrent (false);
+						glanceItemList [count - 1]->SetCurrent (true);
 					}
 				break;
 			case Qt::Key_Down:
@@ -246,19 +245,19 @@ namespace LeechCraft
 				}
 				else
 					if (currentItem < 0)
-						glanceItemList [0]->setCurrent (true);
+						glanceItemList [0]->SetCurrent (true);
 					else
 						if (currentItem + cols < count)
 						{
-							glanceItemList [currentItem]->setCurrent (false);
-							glanceItemList [currentItem + cols]->setCurrent (true);
+							glanceItemList [currentItem]->SetCurrent (false);
+							glanceItemList [currentItem + cols]->SetCurrent (true);
 						}
 						else
 						{
-							glanceItemList [currentItem]->setCurrent (false);
+							glanceItemList [currentItem]->SetCurrent (false);
 							while ((currentItem - cols * (rows - 1)) <  0)
 								rows--;
-							glanceItemList [currentItem - cols * (rows - 1)]->setCurrent (true);
+							glanceItemList [currentItem - cols * (rows - 1)]->SetCurrent (true);
 						}
 				break;
 			case Qt::Key_Up:
@@ -269,19 +268,19 @@ namespace LeechCraft
 				}
 				else				
 					if (currentItem < 0)
-						glanceItemList [0]->setCurrent (true);
+						glanceItemList [0]->SetCurrent (true);
 					else
 						if (currentItem >= cols)
 						{
-							glanceItemList [currentItem]->setCurrent (false);
-							glanceItemList [currentItem - cols]->setCurrent (true);
+							glanceItemList [currentItem]->SetCurrent (false);
+							glanceItemList [currentItem - cols]->SetCurrent (true);
 						}
 						else
 						{
-							glanceItemList [currentItem]->setCurrent (false);
+							glanceItemList [currentItem]->SetCurrent (false);
 							while ((currentItem + cols * (rows - 1)) > count - 1)
 								rows--;
-							glanceItemList [currentItem + cols * (rows - 1)]->setCurrent (true);
+							glanceItemList [currentItem + cols * (rows - 1)]->SetCurrent (true);
 						}
 				break;
 			case Qt::Key_Return:
