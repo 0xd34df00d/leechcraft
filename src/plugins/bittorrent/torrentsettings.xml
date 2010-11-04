@@ -277,7 +277,7 @@
 					<item type="spinbox" property="ConnectionSpeed" default="20" minimum="1" maximum="100" step="10">
 						<label lang="en" value="Connection attempts per second:" />
 					</item>
-					<item type="spinbox" property="SendBufferWatermark" default="80" minimum="1" maximum="100">
+					<item type="spinbox" property="SendBufferWatermark" default="400" minimum="1" maximum="1000">
 						<label value="Upper send buffer low-watermark:" />
 						<suffix value=" KB" />
 					</item>
