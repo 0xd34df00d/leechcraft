@@ -803,6 +803,9 @@ namespace LeechCraft
 
 				QUrl pageUrl = frame->url ();
 
+				if (FilledState_ == formsData)
+					return;
+
 				// Check if this should be emitted at all
 				if (Core::Instance ().GetStorageBackend ()->
 						GetFormsIgnored (pageUrl.toString ()))
@@ -856,7 +859,10 @@ namespace LeechCraft
 						HarvestForms (frame ? frame : mainFrame ());
 
 				if (pair.first.isEmpty ())
+				{
+					FilledState_.clear ();
 					return;
+				}
 
 				QList<QVariant> keys;
 				QStringList pairFirstKeys = pair.first.keys ();
@@ -922,6 +928,8 @@ namespace LeechCraft
 
 				Q_FOREACH (QWebFrame *childFrame, frame->childFrames ())
 					fillForms (childFrame);
+
+				FilledState_ = HarvestForms (frame ? frame : mainFrame ()).first;
 			}
 		};
 	};

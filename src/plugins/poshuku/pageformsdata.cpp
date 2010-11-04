@@ -25,6 +25,15 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
+			bool operator== (const ElementData& left, const ElementData& right)
+			{
+				return left.PageURL_ == right.PageURL_ &&
+						left.FormID_ == right.FormID_ &&
+						left.Name_ == right.Name_ &&
+						left.Type_ == right.Type_ &&
+						left.Value_ == right.Value_;
+			}
+
 			bool operator< (const ElementData& left, const ElementData& right)
 			{
 				if (left.PageURL_ != right.PageURL_)

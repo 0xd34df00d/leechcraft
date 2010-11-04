@@ -40,6 +40,7 @@ namespace LeechCraft
 				QString Value_;
 			};
 
+			bool operator== (const ElementData&, const ElementData&);
 			bool operator< (const ElementData&, const ElementData&);
 
 			QDataStream& operator<< (QDataStream&, const ElementData&);
