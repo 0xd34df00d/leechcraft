@@ -255,6 +255,8 @@ void LeechCraft::Core::DelayedInit ()
 			InitEmbedTab (plugin);
 	}
 
+	NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
+
 	disconnect (LocalSocketHandler_.get (),
 			SIGNAL (gotEntity (const LeechCraft::Entity&)),
 			this,

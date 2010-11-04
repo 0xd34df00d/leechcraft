@@ -107,6 +107,34 @@ namespace LeechCraft
 		}
 	}
 
+	void NewTabMenuManager::SetToolbarActions (QList<QList<QAction*> > lists)
+	{
+		QList<QAction*> ones;
+		Q_FOREACH (QList<QAction*> list, lists)
+			if (list.size () == 1)
+			{
+				ones += list;
+				lists.removeAll (list);
+			}
+
+		if (ones.size ())
+			lists.prepend (ones);
+
+		Q_FOREACH (QList<QAction*> list, lists)
+		{
+			if (!list.size ())
+				continue;
+
+			/*
+			Q_FOREACH (QAction *act, list)
+				act->setParent (this);
+				*/
+
+			NewTabMenu_->addSeparator ();
+			NewTabMenu_->addActions (list);
+		}
+	}
+
 	QMenu* NewTabMenuManager::GetNewTabMenu () const
 	{
 		return NewTabMenu_;

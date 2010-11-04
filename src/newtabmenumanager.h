@@ -39,6 +39,7 @@ namespace LeechCraft
 
 		void AddObject (QObject*);
 		void HandleEmbedTabRemoved (QObject*);
+		void SetToolbarActions (QList<QList<QAction*> >);
 
 		QMenu* GetNewTabMenu () const;
 	private slots:

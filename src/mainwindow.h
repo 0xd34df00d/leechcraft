@@ -81,7 +81,6 @@ namespace LeechCraft
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
 		ToolbarGuard *Guard_;
-		QToolBar *PluginsActionsBar_;
 		GlanceShower *Glance_;
 		QToolButton *NewTabButton_;
 		QShortcut *FullScreenShortcut_;
