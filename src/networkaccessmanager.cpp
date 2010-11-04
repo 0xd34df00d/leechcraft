@@ -34,6 +34,7 @@
 #include "xmlsettingsmanager.h"
 #include "mainwindow.h"
 #include "config.h"
+#include "storagebackend.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -192,7 +193,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 			QCoreApplication::applicationName ());
 	settings.beginGroup ("SSL exceptions");
 	QStringList keys = settings.allKeys ();
-	if (keys.contains (reply->url ().toString ())) 
+	if (keys.contains (reply->url ().toString ()))
 	{
 		if (settings.value (reply->url ().toString ()).toBool ())
 			reply->ignoreSslErrors ();

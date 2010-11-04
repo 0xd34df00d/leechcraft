@@ -55,6 +55,7 @@
 #include "toolbarguard.h"
 #include "glanceshower.h"
 #include "newtabmenumanager.h"
+#include "tabmanager.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;

@@ -63,6 +63,12 @@
 #include "fancypopupmanager.h"
 #include "application.h"
 #include "newtabmenumanager.h"
+#include "networkaccessmanager.h"
+#include "tabmanager.h"
+#include "directorywatcher.h"
+#include "clipboardwatcher.h"
+#include "localsockethandler.h"
+#include "storagebackend.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;

@@ -27,23 +27,23 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include "pluginmanager.h"
-#include "tabmanager.h"
-#include "storagebackend.h"
-#include "networkaccessmanager.h"
-#include "directorywatcher.h"
-#include "localsockethandler.h"
-#include "clipboardwatcher.h"
 
 class QAbstractProxyModel;
 class QAction;
 class IDownload;
 class IShortcutProxy;
 class QToolBar;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
 	class MainWindow;
+	class TabManager;
 	class NewTabMenuManager;
+	class StorageBackend;
+	class ClipboardWatcher;
+	class LocalSocketHandler;
+	class DirectoryWatcher;
 
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
@@ -54,12 +54,12 @@ namespace LeechCraft
 
 		PluginManager *PluginManager_;
 		MainWindow *ReallyMainWindow_;
-		std::auto_ptr<TabManager> TabManager_;
-		std::auto_ptr<QNetworkAccessManager> NetworkAccessManager_;
-		std::auto_ptr<StorageBackend> StorageBackend_;
-		std::auto_ptr<DirectoryWatcher> DirectoryWatcher_;
-		std::auto_ptr<ClipboardWatcher> ClipboardWatcher_;
-		std::auto_ptr<LocalSocketHandler> LocalSocketHandler_;
+		boost::shared_ptr<TabManager> TabManager_;
+		boost::shared_ptr<QNetworkAccessManager> NetworkAccessManager_;
+		boost::shared_ptr<StorageBackend> StorageBackend_;
+		boost::shared_ptr<DirectoryWatcher> DirectoryWatcher_;
+		boost::shared_ptr<ClipboardWatcher> ClipboardWatcher_;
+		boost::shared_ptr<LocalSocketHandler> LocalSocketHandler_;
 		boost::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
 		QList<Entity> QueuedEntities_;
 
