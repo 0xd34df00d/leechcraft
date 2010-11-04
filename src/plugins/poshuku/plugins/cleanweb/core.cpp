@@ -682,6 +682,7 @@ void Core::Parse (const QString& filePath)
 
 bool Core::Add (const QUrl& subscrUrl)
 {
+	qDebug () << Q_FUNC_INFO << subscrUrl;
 	QUrl url;
 	if (subscrUrl.queryItemValue ("location").contains ("%"))
 		url.setUrl (QUrl::fromPercentEncoding (subscrUrl.queryItemValue ("location").toAscii ()));
@@ -692,6 +693,7 @@ bool Core::Add (const QUrl& subscrUrl)
 	if (Exists (subscrName) || Exists (url))
 		return false;
 
+	qDebug () << "adding" << url << "as" << subscrName;
 	bool result = Load (url, subscrName);
 	if (result)
 	{

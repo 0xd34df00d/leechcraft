@@ -80,7 +80,9 @@ namespace LeechCraft
 
 						urlsToAdd << GetChildUrls (Ui_.VariousListsPage_);
 
-						Q_FOREACH (QUrl url, urlsToAdd)
+						qDebug () << urlsToAdd;
+
+						Q_FOREACH (const QUrl& url, urlsToAdd)
 							Core::Instance ().Add (url);
 					}
 				};
