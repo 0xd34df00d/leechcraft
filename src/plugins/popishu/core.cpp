@@ -61,8 +61,17 @@ namespace LeechCraft
 				page->SetText (e.Entity_.toString ());
 
 				QString language = e.Additional_ ["Language"].toString ();
+				bool fromPoshuki = e.Additional_ ["FromPoshuki"].toBool ();
 				if (!language.isEmpty ())
 					page->SetLanguage (language);
+				
+				if (fromPoshuki)
+				{
+					QsciScintilla *ssc = page->findChild<QsciScintilla*> ("TextEditor_");
+					if (ssc)
+						ssc->setReadOnly (fromPoshuki);
+					page->SetPoshukiPageSourceCode (fromPoshuki);
+				}
 			}
 
 			EditorPage* Core::MakeEditorPage ()
