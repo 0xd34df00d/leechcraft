@@ -45,3 +45,4 @@ TARGET_LINK_LIBRARIES (leechcraft_secman
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_secman DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (DIRECTORY interfaces DESTINATION "include/leechcraft")
