@@ -23,7 +23,6 @@
 #include <interfaces/imultitabs.h>
 #include <interfaces/structures.h>
 #include "ui_editorpage.h"
-#include <boost/graph/graph_concepts.hpp>
 
 class QMenu;
 
@@ -53,7 +52,7 @@ namespace LeechCraft
 
 				QtMsgHandler DefaultMsgHandler_;
 				QObject *WrappedObject_;
-				bool PoshukiPageSourceCode_;
+				bool TemporaryDocument_;
 			public:
 				static void SetParentMultiTabs (QObject*);
 
@@ -70,7 +69,8 @@ namespace LeechCraft
 				void SetText (const QString&);
 				void SetLanguage (const QString&);
 				
-				void SetPoshukiPageSourceCode (bool);
+				void SetTemporaryDocument (bool);
+				QsciScintilla* GetTextEditor () const;
 			private slots:
 				void selectDoctype (QAction*);
 				void on_ActionNew__triggered ();

@@ -56,7 +56,7 @@ namespace LeechCraft
 			, Modified_ (false)
 			, DefaultMsgHandler_ (0)
 			, WrappedObject_ (0)
-			, PoshukiPageSourceCode_ (false)
+			, TemporaryDocument_ (false)
 			{
 #define DEFPAIR(l,e) Extension2Lang_ [#e] = #l;
 				DEFPAIR (Bash, sh);
@@ -210,25 +210,24 @@ namespace LeechCraft
 
 			void EditorPage::Remove ()
 			{
-				if (!PoshukiPageSourceCode_)				
-					if (Modified_)
-					{
-						QString name = QFileInfo (Filename_).fileName ();
-						if (name.isEmpty ())
-							name = tr ("Untitled");
-												
-						QMessageBox::StandardButton res =
-								QMessageBox::question (this,
-										"LeechCraft",
-										tr ("The document <em>%1</em> is modified. "
-											"Do you want to save it now?")
-											.arg (name),
-										QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-						if (res == QMessageBox::Cancel)
-							return;
-						else if (res == QMessageBox::Yes)
-							on_ActionSave__triggered ();
-					}
+				if (Modified_ && !TemporaryDocument_)
+				{
+					QString name = QFileInfo (Filename_).fileName ();
+					if (name.isEmpty ())
+						name = tr ("Untitled");
+
+					QMessageBox::StandardButton res =
+							QMessageBox::question (this,
+									"LeechCraft",
+									tr ("The document <em>%1</em> is modified. "
+										"Do you want to save it now?")
+										.arg (name),
+									QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+					if (res == QMessageBox::Cancel)
+						return;
+					else if (res == QMessageBox::Yes)
+						on_ActionSave__triggered ();
+				}
 
 				emit removeTab (this);
 				deleteLater ();
@@ -648,6 +647,8 @@ namespace LeechCraft
 
 				Modified_ = false;
 
+				TemporaryDocument_ = false;
+
 				return true;
 			}
 
@@ -794,11 +795,15 @@ namespace LeechCraft
 				}
 			}
 			
-			void EditorPage::SetPoshukiPageSourceCode (bool fromPoshuki)
+			void EditorPage::SetTemporaryDocument (bool tempDocument)
 			{
-				PoshukiPageSourceCode_ = fromPoshuki;
+				TemporaryDocument_ = tempDocument;
 			}
 
+			QsciScintilla* EditorPage::GetTextEditor () const
+			{
+				return Ui_.TextEditor_;
+			}
 		};
 	};
 };
