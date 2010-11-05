@@ -18,6 +18,7 @@
 
 #include "torrentmaker.h"
 #include <deque>
+#include <boost/filesystem.hpp>
 #include <QFile>
 #include <QFileInfo>
 #include <QProgressDialog>
@@ -49,13 +50,13 @@ namespace LeechCraft
 						return true;
 					return false;
 				}
-			
+
 				void UpdateProgress (int i, QProgressDialog *pd)
 				{
 					pd->setValue (i);
 				}
 			}
-			
+
 			TorrentMaker::TorrentMaker (QObject *parent)
 			: QObject (parent)
 			{
@@ -74,13 +75,13 @@ namespace LeechCraft
 				}
 
 				boost::filesystem::path::default_name_check (boost::filesystem::no_check);
-			
+
 				libtorrent::file_storage fs;
 				boost::filesystem::path fullPath =
 					boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
 				libtorrent::add_files (fs, fullPath, FileFilter);
 				libtorrent::create_torrent ct (fs, params.PieceSize_);
-			
+
 				ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
 							.arg (LEECHCRAFT_VERSION)));
 				if (!params.Comment_.isEmpty ())
@@ -88,7 +89,7 @@ namespace LeechCraft
 				for (int i = 0; i < params.URLSeeds_.size (); ++i)
 					ct.add_url_seed (params.URLSeeds_.at (0).toStdString ());
 				ct.set_priv (!params.DHTEnabled_);
-			
+
 				if (params.DHTEnabled_)
 					for (int i = 0; i < params.DHTNodes_.size (); ++i)
 					{
@@ -96,13 +97,13 @@ namespace LeechCraft
 						ct.add_node (std::pair<std::string, int> (splitted [0].trimmed ().toStdString (),
 									splitted [1].trimmed ().toInt ()));
 					}
-			
+
 				ct.add_tracker (params.AnnounceURL_.toStdString ());
-			
+
 				std::auto_ptr<QProgressDialog> pd (new QProgressDialog ());
 				pd->setWindowTitle (tr ("Hashing torrent..."));
 				pd->setMaximum (ct.num_pieces ());
-			
+
 				boost::system::error_code hashesError;
 				libtorrent::set_piece_hashes (ct, fullPath.branch_path (),
 						boost::bind (&UpdateProgress, _1, pd.get ()), hashesError);
@@ -120,11 +121,11 @@ namespace LeechCraft
 							.arg (message));
 					return;
 				}
-			
+
 				libtorrent::entry e = ct.generate ();
 				std::deque<char> outbuf;
 				libtorrent::bencode (std::back_inserter (outbuf), e);
-			
+
 				for (size_t i = 0; i < outbuf.size (); ++i)
 					file.write (&outbuf.at (i), 1);
 				file.close ();
