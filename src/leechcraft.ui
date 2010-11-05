@@ -228,6 +228,9 @@
    <property name="toolTip">
     <string>Show a quick overview of tabs</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
   </action>
   <action name="ActionNewTab_">
    <property name="text">

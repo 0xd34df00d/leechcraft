@@ -978,3 +978,11 @@ void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 		Core::Instance ().GetToolBar (cur)->setVisible (show);
 	Ui_.ActionFullscreenMode_->setChecked (!show);
 }
+
+void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
+{
+	int index = e->nativeScanCode () - 10;
+	if (index < (Ui_.MainTabWidget_->count ()))
+		Ui_.MainTabWidget_->setCurrentIndex (index);
+}
+
