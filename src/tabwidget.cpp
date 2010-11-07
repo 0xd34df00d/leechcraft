@@ -208,14 +208,3 @@ void TabWidget::handleMoveHappened (int from, int to)
 {
 	std::swap (Widgets_ [from], Widgets_ [to]);
 }
-
-
-
-
-
-
-
-
-
-
-

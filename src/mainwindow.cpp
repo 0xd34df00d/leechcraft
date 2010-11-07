@@ -981,8 +981,11 @@ void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 
 void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
 {
-	int index = e->nativeScanCode () - 10;
-	if (index < (Ui_.MainTabWidget_->count ()))
+	int index = (e->key () & ~Qt::CTRL) - 0x30;
+	if (index == 0)
+		index = 10;
+	index--;
+	if (index >= 0 && index <= std::min (10, Ui_.MainTabWidget_->count ()))
 		Ui_.MainTabWidget_->setCurrentIndex (index);
 }
 
