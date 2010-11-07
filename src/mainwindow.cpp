@@ -120,10 +120,10 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	connect (FullScreenShortcut_,
 			SIGNAL (activated ()),
 			this,
-			SLOT (on_ShortcutFullscreenMode__triggered ()));
+			SLOT (handleShortcutFullscreenMode ()));
 }
 
-void LeechCraft::MainWindow::on_ShortcutFullscreenMode__triggered ()
+void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
 {
 	on_ActionFullscreenMode__triggered (!isFullScreen ());
 }
