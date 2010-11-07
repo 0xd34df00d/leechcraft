@@ -99,6 +99,7 @@ namespace LeechCraft
 		void catchError (QString);
 	protected:
 		virtual void closeEvent (QCloseEvent*);
+		virtual void keyPressEvent (QKeyEvent*);
 	private:
 		void InitializeInterface ();
 		void SetStatusBar ();
