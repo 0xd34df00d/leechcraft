@@ -83,6 +83,7 @@ namespace LeechCraft
 				QString PreviousFindText_;
 				bool HtmlMode_;
 				bool Own_;
+				QMap<QString, QList<QAction*> > WindowMenus_;
 
 				static QObject* S_MultiTabsParent_;
 
@@ -143,6 +144,7 @@ namespace LeechCraft
 				QToolBar* GetToolBar () const;
 				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
+				QMap<QString, QList<QAction*> > GetWindowMenus () const;
 				QObject* ParentMultiTabs () const;
 
 				void SetOnLoadScrollPoint (const QPoint&);

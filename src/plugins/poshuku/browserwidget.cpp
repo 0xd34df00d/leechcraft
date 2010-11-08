@@ -185,39 +185,40 @@ namespace LeechCraft
 				ToolBar_->addAction (Forward_);
 				ToolBar_->addAction (ReloadStop_);
 
-				QMenu *moreMenu = new QMenu (this);
-				QAction *more = moreMenu->menuAction ();
-				connect (more,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (showSendersMenu ()));
-				more->setText (tr ("More..."));
-				more->setProperty ("ActionIcon", "poshuku_more");
-
-				ToolBar_->addAction (more);
-
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				QMenu *moreMenu = new QMenu (this);
 				emit hookMoreMenuFillBegin (proxy, moreMenu, Ui_.WebView_, this);
 				if (!proxy->IsCancelled ())
 				{
-					moreMenu->addAction (Find_);
-					moreMenu->addAction (Add2Favorites_);
-					moreMenu->addSeparator ();
-					moreMenu->addAction (ReloadPeriodically_);
-					moreMenu->addAction (NotifyWhenFinished_);
-					moreMenu->addSeparator ();
-					moreMenu->addAction (ZoomIn_);
-					moreMenu->addAction (ZoomOut_);
-					moreMenu->addAction (ZoomReset_);
-					moreMenu->addSeparator ();
-					moreMenu->addAction (Print_);
-					moreMenu->addAction (PrintPreview_);
-					moreMenu->addAction (ScreenSave_);
-					moreMenu->addSeparator ();
-					moreMenu->addAction (ViewSources_);
+					const QString tools = "tools";
+					WindowMenus_ [tools] << Find_;
+					WindowMenus_ [tools] << Add2Favorites_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+					WindowMenus_ [tools] << ReloadPeriodically_;
+					WindowMenus_ [tools] << NotifyWhenFinished_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+					WindowMenus_ [tools] << Print_;
+					WindowMenus_ [tools] << PrintPreview_;
+					WindowMenus_ [tools] << ScreenSave_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+					WindowMenus_ [tools] << ViewSources_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+
+					const QString view = "view";
+					WindowMenus_ [view] << ZoomIn_;
+					WindowMenus_ [view] << ZoomOut_;
+					WindowMenus_ [view] << ZoomReset_;
+					WindowMenus_ [view] << Util::CreateSeparator (this);
 				}
 				proxy.reset (new Util::DefaultHookProxy ());
 				emit hookMoreMenuFillEnd (proxy, moreMenu, Ui_.WebView_, this);
+
+				if (moreMenu->actions ().size ())
+				{
+					const QString tools = "tools";
+					WindowMenus_ [tools] << moreMenu->actions ();
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+				}
 
 				ChangeEncoding_ = moreMenu->addMenu (tr ("Change encoding"));
 				connect (ChangeEncoding_,
@@ -669,6 +670,11 @@ namespace LeechCraft
 						<< Back_;
 
 				return result;
+			}
+
+			QMap<QString, QList<QAction*> > BrowserWidget::GetWindowMenus () const
+			{
+				return WindowMenus_;
 			}
 
 			QObject* BrowserWidget::ParentMultiTabs () const
