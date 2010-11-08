@@ -194,17 +194,25 @@ namespace LeechCraft
 					{
 					if (XmlSettingsManager::Instance ()->
 						property ("UnreadCustomColor").toBool ())
+					{
 						return XmlSettingsManager::Instance ()->
 								property ("UnreadItemsColor").value<QColor> ();
+					}
 					else
+					{
 						return QApplication::palette().link().color();
+					}
 				}
 				else
+				{
 					return QApplication::palette().linkVisited().color();
+				}
 				else if (role == Qt::FontRole &&
-						CurrentItems_ [index.row ()].Unread_)
+						 CurrentItems_ [index.row ()].Unread_)
+				{
 					return XmlSettingsManager::Instance ()->
-						property ("UnreadItemsFont");
+							property ("UnreadItemsFont");
+				}
 				else if (role == Qt::ToolTipRole)
 				{
 					IDType_t id = CurrentItems_ [index.row ()].ItemID_;
