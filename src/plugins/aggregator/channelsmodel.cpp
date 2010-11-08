@@ -94,18 +94,19 @@ namespace LeechCraft
 						result = QIcon (":/resources/images/rss.png");
 					return result;
 				}
-                                //Color mark a channels as read/unread
-                                else if (role == Qt::ForegroundRole)
-                                    if (Channels_.at (row).Unread_) {
-                                        if (XmlSettingsManager::Instance ()->
-                                            property ("UnreadCustomColor").toBool ())
-                                            return XmlSettingsManager::Instance ()->
-                                                   property ("UnreadItemsColor").value<QColor> ();
-                                        else
-                                            return QApplication::palette().link().color();
-                                    }
-                                    else
-                                            return QApplication::palette().linkVisited().color();
+				//Color mark a channels as read/unread
+				else if (role == Qt::ForegroundRole)
+					if (Channels_.at (row).Unread_)
+					{
+					if (XmlSettingsManager::Instance ()->
+						property ("UnreadCustomColor").toBool ())
+						return XmlSettingsManager::Instance ()->
+								property ("UnreadItemsColor").value<QColor> ();
+					else
+						return QApplication::palette().link().color();
+				}
+				else
+					return QApplication::palette().linkVisited().color();
 				else if (role == Qt::FontRole)
 				{
 					if (Channels_.at (row).Unread_)
