@@ -100,7 +100,7 @@ namespace LeechCraft
 					if (Channels_.at (row).Unread_)
 					{
 						if (XmlSettingsManager::Instance ()->
-							property ("UnreadCustomColor").toBool ())
+								property ("UnreadCustomColor").toBool ())
 							return XmlSettingsManager::Instance ()->
 									property ("UnreadItemsColor").value<QColor> ();
 						else
