@@ -64,6 +64,9 @@
 						<label lang="en" value="Color:" />
 					</item>
 				</item>
+				<item type="checkbox" property="UsePaletteColors" checkable="true" default="off">
+					<label lang="en" value="Use colors from the palette for read/unread items" />
+				</item>
 			</groupbox>
 		</tab>
 		<tab>

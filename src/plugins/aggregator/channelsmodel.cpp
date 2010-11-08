@@ -97,6 +97,8 @@ namespace LeechCraft
 				//Color mark a channels as read/unread
 				else if (role == Qt::ForegroundRole)
 				{
+					bool palette = XmlSettingsManager::Instance ()->
+							property ("UsePaletteColors").toBool ();
 					if (Channels_.at (row).Unread_)
 					{
 						if (XmlSettingsManager::Instance ()->
@@ -104,10 +106,14 @@ namespace LeechCraft
 							return XmlSettingsManager::Instance ()->
 									property ("UnreadItemsColor").value<QColor> ();
 						else
-							return QApplication::palette ().link ().color ();
+							return palette ?
+								QApplication::palette ().link ().color () :
+								QVariant ();
 					}
 					else
-						return QApplication::palette ().linkVisited ().color ();
+						return palette ?
+							QApplication::palette ().linkVisited ().color () :
+							QVariant ();
 				}
 				else if (role == Qt::FontRole)
 				{
