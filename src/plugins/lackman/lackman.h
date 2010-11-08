@@ -81,6 +81,7 @@ namespace LeechCraft
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
 				void raiseTab (QWidget*);
+				void bringToFront ();
 			};
 		};
 	};
