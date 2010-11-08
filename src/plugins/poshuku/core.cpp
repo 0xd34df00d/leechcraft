@@ -310,12 +310,14 @@ namespace LeechCraft
 						result = QUrl (QString ("http://") + url);
 					else
 					{
+						url.replace ('+', "%2B");
 						url.replace (' ', '+');
-						result = QUrl (QString ("http://www.google.com/search?q=%1"
-									"&client=leechcraft_poshuku"
-									"&rls=org.leechcraft:%2")
-								.arg (url)
-								.arg (QLocale::system ().name ().replace ('_', '-')));
+						QString urlStr = QString ("http://www.google.com/search?q=%2"
+								"&client=leechcraft_poshuku"
+								"&rls=org.leechcraft:%1")
+							.arg (QLocale::system ().name ().replace ('_', '-'))
+							.arg (url);
+						result = QUrl::fromEncoded (urlStr.toUtf8 ());
 					}
 				}
 
