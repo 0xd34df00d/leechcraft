@@ -104,24 +104,18 @@ namespace LeechCraft
 							return XmlSettingsManager::Instance ()->
 									property ("UnreadItemsColor").value<QColor> ();
 						else
-							return QApplication::palette().link().color();
+							return QApplication::palette ().link ().color ();
 					}
 					else
-					{
-						return QApplication::palette().linkVisited().color();
-					}
+						return QApplication::palette ().linkVisited ().color ();
 				}
 				else if (role == Qt::FontRole)
 				{
 					if (Channels_.at (row).Unread_)
-					{
 						return XmlSettingsManager::Instance ()->
 								property ("UnreadItemsFont");
-					}
 					else
-					{
 						return QVariant ();
-					}
 				}
 				else if (role == Qt::ToolTipRole)
 				{
