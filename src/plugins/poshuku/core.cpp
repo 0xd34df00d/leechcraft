@@ -314,7 +314,7 @@ namespace LeechCraft
 						url.replace (' ', '+');
 						QString urlStr = QString ("http://www.google.com/search?q=%2"
 								"&client=leechcraft_poshuku"
-                                "&ie=utf-8"
+								"&ie=utf-8"
 								"&rls=org.leechcraft:%1")
 							.arg (QLocale::system ().name ().replace ('_', '-'))
 							.arg (url);
