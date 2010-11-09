@@ -108,6 +108,12 @@ namespace LeechCraft
 
 				// IPlugin2
 				QSet<QByteArray> GetPluginClasses () const;
+
+				// Signals hacks
+				void changeTabName (QWidget*, const QString&);
+				void changeTabIcon (QWidget*, const QIcon&);
+				void statusBarChanged (QWidget*, const QString&);
+				void raiseTab (QWidget*);
 			private:
 				template<typename T>
 				struct Call
