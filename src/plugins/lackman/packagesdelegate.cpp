@@ -49,7 +49,7 @@ namespace LeechCraft
 			PackagesDelegate::PackagesDelegate (QTreeView *parent)
 			: QStyledItemDelegate (parent)
 			, Viewport_ (parent->viewport ())
-			, Model_ (parent->model ())
+			, Model_ (qobject_cast<PackagesModel*> (parent->model ()))
 			{
 				connect (parent->verticalScrollBar (),
 						SIGNAL (valueChanged (int)),
@@ -66,6 +66,11 @@ namespace LeechCraft
 						this,
 						SLOT (handleRowActionFinished (int)),
 						Qt::QueuedConnection);
+
+				connect (&Core::Instance (),
+						SIGNAL (packageUpdateToggled (int, bool)),
+						this,
+						SLOT (handlePackageUpdateToggled (int, bool)));
 			}
 
 			void PackagesDelegate::paint (QPainter *painter,
@@ -453,9 +458,14 @@ namespace LeechCraft
 					Row2InstallRemove_ [row]->setChecked (false);
 				}
 				if (Row2Update_.contains (row))
-				{
 					Row2Update_ [row]->defaultAction ()->setChecked (false);
-				}
+			}
+
+			void PackagesDelegate::handlePackageUpdateToggled (int id, bool enabled)
+			{
+				int row = Model_->GetRow (id);
+				if (Row2Update_.contains (row))
+					Row2Update_ [row]->defaultAction ()->setChecked (enabled);
 			}
 		}
 	}

@@ -32,6 +32,8 @@ namespace LeechCraft
 	{
 		namespace LackMan
 		{
+			class PackagesModel;
+
 			class PackagesDelegate : public QStyledItemDelegate
 			{
 				Q_OBJECT
@@ -51,7 +53,7 @@ namespace LeechCraft
 				mutable QHash<QModelIndex, bool> WasUpgradable_;
 
 				QWidget * const Viewport_;
-				QAbstractItemModel * const Model_;
+				PackagesModel * const Model_;
 			public:
 				PackagesDelegate (QTreeView* = 0);
 
@@ -72,6 +74,7 @@ namespace LeechCraft
 			private slots:
 				void handleAction ();
 				void handleRowActionFinished (int);
+				void handlePackageUpdateToggled (int, bool);
 			};
 		}
 	}

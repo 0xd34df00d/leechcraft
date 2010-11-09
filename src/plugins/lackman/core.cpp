@@ -900,12 +900,18 @@ namespace LeechCraft
 
 			void Core::upgradeAllRequested ()
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "not implemented";
+				for (int i = 0, rows = PackagesModel_->rowCount ();
+						i < rows; ++i)
+				{
+					QModelIndex index = PackagesModel_->index (i, 0);
+					int packageId = PackagesModel_->
+							data (index, PackagesModel::PMRPackageID).toInt ();
+					bool isUpgr = PackagesModel_->
+							data (index, PackagesModel::PMRUpgradable).toBool ();
 
-				emit gotEntity (Util::MakeNotification ("LackMan",
-						"Upgrade all not implemented yet.",
-						PCritical_));
+					if (isUpgr)
+						PendingManager_->ToggleUpdate (packageId, true);
+				}
 			}
 
 			void Core::removeRequested (const QString&, const QModelIndexList& list)

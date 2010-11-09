@@ -69,6 +69,8 @@ namespace LeechCraft
 				void EnablePackageInto (int, Action);
 				void DisablePackageFrom (int, Action);
 				void ReinitRootItems ();
+			signals:
+				void packageUpdateToggled (int, bool);
 			};
 		}
 	}
