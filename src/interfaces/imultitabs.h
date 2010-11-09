@@ -82,27 +82,9 @@ public:
 /** @brief Interface for plugins having (and opening/closing) multiple
  * tabs.
  *
- * Plugin is expected to have a slot 'newTabRequested()' which is
- * similar to IMultiTabsWidget::NewTabRequested() in functionality.
- *
- * When a plugin wants to add a new tab into LeechCraft, it emits the
- * addNewTab(const QString&, QWidget*) signal, where the first parameter
- * is the name of the new tab, and the second one is the pointer to the
- * widget with tab contents. Newly added widget would be reparented by
- * LeechCraft.
- * To remove a tab, it emits removeTab(QWidget*), where the parameter is
- * the pointer to a previously added tab's widget.
- * To change tab's name, plugin emits changeTabName(QWidget*, const
- * QString&), where the first parameter is the pointer to previously
- * inserted tab and the second one is the new name.
- * To change tab's icon, plugin emits changeTabIcon(QWidget*, const
- * QIcon&), where the first parameter is the pointer to previously
- * inserted tab and the seocnd one is the new icon.
- * To bring the tab to front, plugin emits raiseTab(QWidget*) signal,
- * where the first parameter is the pointer to previously inserted tab.
- *
- * @note You can't use the above signals before SecondInit() has been
- * called on your plugin, but you can use them in SecondInit() and later.
+ * @note You can't use the the tab-related signals before SecondInit()
+ * has been called on your plugin, but you can use them in SecondInit()
+ * and later.
  *
  * @sa IEmbedTab
  * @sa IWindow
@@ -113,6 +95,128 @@ public:
 	/** @brief Virtual destructor.
 	 */
 	virtual ~IMultiTabs () {}
+
+	/** @brief This slot is similar to the function
+	 * IMultiTabsWidget::NewTabRequested().
+	 *
+	 * This slot is called when a new tab of this plugin is requested.
+	 *
+	 * @note This function is expected to be a slot in subclasses.
+	 */
+	virtual void newTabRequested () = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to add a
+	 * new tab to the LeechCraft window.
+	 *
+	 * @note The added widget would be reparented by LeechCraft.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] name The name of the tab.
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab that needs to be added.
+	 *
+	 * @sa removeTab(), changeTabName(), changeTabIcon(),
+	 * statusBarChanged(), raiseTab()
+	 */
+	virtual void addNewTab (const QString& name, QWidget *tabContents) = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to remove
+	 * a tab from LeechCraft window.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget previously added to LeechCraft by emitting
+	 * addNewTab() signal.
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab that needs to be removed.
+	 *
+	 * @sa addNewTab(), changeTabName(), changeTabIcon(),
+	 * statusBarChanged(), raiseTab()
+	 */
+	virtual void removeTab (QWidget *tabContents) = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to change
+	 * the name of a tab.
+	 *
+	 * The name of the tab is shown in the tab bar of the tab widget.
+	 * It also may be shown in other places and contexts, like in
+	 * LeechCraft title bar when the corresponding tab is active.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget previously added to LeechCraft by emitting
+	 * addNewTab() signal.
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab for which the name should be updated.
+	 * @param[out] name The new name of the tab.
+	 *
+	 * @sa addNewTab(), removeTab(), changeTabIcon(),
+	 * statusBarChanged(), raiseTab()
+	 */
+	virtual void changeTabName (QWidget *tabContents, const QString& name) = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to
+	 * associate a new icon with a tab.
+	 *
+	 * You can pass a null icon to clear it.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget previously added to LeechCraft by emitting
+	 * addNewTab() signal.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab for which the icon should be updated.
+	 * @param[out] icon The new icon of the tab or null icon.
+	 *
+	 * @sa addNewTab(), removeTab(), changeTabName(),
+	 * statusBarChanged(), raiseTab()
+	 */
+	virtual void changeTabIcon (QWidget *tabContents, const QIcon& icon) = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to set
+	 * new status bar text for a tab.
+	 *
+	 * The text set by this signal would be shown when the tab with
+	 * tabContents is active. To clear the status bar, just emit this
+	 * signal with empty text.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget returned by GetTabContents().
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @note Please note, that user may choose to hide the status bar,
+	 * so no important text should be output this way.
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab for which the status bar text should be
+	 * updated.
+	 * @param[out] text The new status bar text or empty string.
+	 *
+	 * @sa addNewTab(), removeTab(), changeTabName(), changeTabIcon(),
+	 * raiseTab()
+	 */
+	virtual void statusBarChanged (QWidget *tabContents, const QString& text) = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to make
+	 * the widget with tabContents the currently active one.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget previously added to LeechCraft by emitting
+	 * addNewTab() signal.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab that needs to be made current.
+	 *
+	 * @sa addNewTab(), removeTab(), changeTabName(), changeTabIcon(),
+	 * statusBarChanged()
+	 */
+	virtual void raiseTab (QWidget *tabContents) = 0;
 };
 
 Q_DECLARE_INTERFACE (IMultiTabsWidget, "org.Deviant.LeechCraft.IMultiTabsWidget/1.0");

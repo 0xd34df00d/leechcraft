@@ -127,7 +127,7 @@ typedef boost::shared_ptr<IFindProxy> IFindProxy_ptr;
  *
  * Plugin is handled for the supported categories by GetCategories()
  * when needed, and GetProxy() is called for individual sub-requests.
- * 
+ *
  * @sa IFindProxy
  */
 class IFinder
@@ -160,6 +160,15 @@ public:
 	 * @sa IFindProxy
 	 */
 	virtual QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request& r) = 0;
+
+	/** @brief This signal should be emitted by plugin after the list of
+	 * categories has been updated.
+	 *
+	 * @param[out] newCats The list of new categories.
+	 * @param[out] oldCats The list of old categories.
+	 */
+	virtual void categoriesChanged (const QStringList& newCats,
+			const QStringList& oldCats) = 0;
 };
 
 Q_DECLARE_INTERFACE (IFinder, "org.Deviant.LeechCraft.IFinder/1.0");
