@@ -923,47 +923,6 @@ void LeechCraft::Core::InitDynamicSignals (QObject *plugin)
 				this,
 				SLOT (handleGotEntity (LeechCraft::Entity,
 						int*, QObject**)));
-
-	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"notify (const LeechCraft::Notification&)"
-					).constData ()) != -1)
-		connect (plugin,
-				SIGNAL (notify (const LeechCraft::Notification&)),
-				this,
-				SLOT (handleNotify (LeechCraft::Notification)));
-
-	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"log (const QString&)"
-					).constData ()) != -1 ||
-			qmo->indexOfSignal (QMetaObject::normalizedSignature (
-						"downloadFinished (const QString&)"
-						).constData ()) != -1)
-	{
-		QString name;
-		try
-		{
-			name = qobject_cast<IInfo*> (plugin)->GetName ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "while handling old-style notification"
-				<< e.what ()
-				<< plugin;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "while handling old-style notification"
-				<< plugin;
-		}
-
-		qWarning () << Q_FUNC_INFO
-			<< name
-			<< plugin
-			<< "uses old-style log/downloadFinished notifications,"
-			<< "fix it since we are only supporting its detection now";
-	}
 }
 
 void LeechCraft::Core::InitJobHolder (QObject *plugin)
