@@ -7,7 +7,6 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/itoolbarembedder.h>
 #include <interfaces/iembedtab.h>
 
 class fsirc;

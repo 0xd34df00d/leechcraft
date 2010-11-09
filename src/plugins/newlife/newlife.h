@@ -18,12 +18,13 @@
 
 #ifndef PLUGINS_NEWLIFE_NEWLIFE_H
 #define PLUGINS_NEWLIFE_NEWLIFE_H
-#include <memory>
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
-#include <interfaces/imenuembedder.h>
+#include <interfaces/iactionsexporter.h>
+
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -33,12 +34,13 @@ namespace LeechCraft
 		{
 			class Plugin : public QObject
 						 , public IInfo
-						 , public IMenuEmbedder
+						 , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMenuEmbedder)
+				Q_INTERFACES (IInfo IActionsExporter)
 
-				std::auto_ptr<QTranslator> Translator_;
+				boost::shared_ptr<QTranslator> Translator_;
+				boost::shared_ptr<QAction> ImporterAction_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -52,8 +54,7 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			private slots:
 				void runWizard ();
 			signals:

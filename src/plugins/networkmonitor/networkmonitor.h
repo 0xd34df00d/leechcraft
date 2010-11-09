@@ -21,7 +21,7 @@
 #include <QDialog>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
-#include <interfaces/itoolbarembedder.h>
+#include <interfaces/iactionsexporter.h>
 #include "ui_networkmonitor.h"
 
 class QSortFilterProxyModel;
@@ -36,10 +36,10 @@ namespace LeechCraft
 
 			class Plugin : public QDialog
 						 , public IInfo
-						 , public IToolBarEmbedder
+						 , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IToolBarEmbedder)
+				Q_INTERFACES (IInfo IActionsExporter)
 
 				Ui::NetworkMonitor Ui_;
 				RequestModel *Model_;
@@ -60,7 +60,7 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 
-				QList<QAction*> GetActions () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			public slots:
 				void handleCurrentChanged (const QModelIndex&);
 				void filterUpdated ();

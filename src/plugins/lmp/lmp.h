@@ -26,7 +26,7 @@
 #include <interfaces/imediaplayer.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
-#include <interfaces/itoolbarembedder.h>
+#include <interfaces/iactionsexporter.h>
 
 class QToolBar;
 
@@ -41,10 +41,10 @@ namespace LeechCraft
 					  , public IMediaPlayer
 					  , public IHaveSettings
 					  , public IEntityHandler
-					  , public IToolBarEmbedder
+					  , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMediaPlayer IHaveSettings IEntityHandler IToolBarEmbedder)
+				Q_INTERFACES (IInfo IMediaPlayer IHaveSettings IEntityHandler IActionsExporter)
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
@@ -69,7 +69,7 @@ namespace LeechCraft
 				bool CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
-				QList<QAction*> GetActions () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			signals:
 				void bringToFront ();
 				void gotEntity (const LeechCraft::Entity&);

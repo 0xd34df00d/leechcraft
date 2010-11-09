@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,28 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef INTERFACES_IMENUEMBEDDER_H
-#define INTERFACES_IMENUEMBEDDER_H
+#ifndef INTERFACES_IACTIONSEXPORTER_H
+#define INTERFACES_IACTIONSEXPORTER_H
 #include <QList>
-#include <QAction>
+#include <QtPlugin>
 
-/** @brief Interface to embed actions into the Tools menu.
- *
- * Plugins that want to embed their menus into the main LeechCraft's menu
- * should implement this interface. Plugin's menus are inserted into the
- * Tools menu.
+class QAction;
+
+namespace LeechCraft
+{
+	enum ActionsEmbedPlace
+	{
+		AEPToolsMenu,
+		AEPCommonContextMenu,
+		AEPQuickLaunch,
+		AEPTrayMenu
+	};
+}
+
+/** @brief Interface for embedding actions and menus into various
+ * places.
  */
-class IMenuEmbedder
+class IActionsExporter
 {
 public:
-	/** @brief Returns the menus to embed.
-	 *
-	 * Returns the list of menus that will be inserted into the Tools
-	 * menu.
-	 *
-	 * @return The list of menus.
-	 */
-	virtual QList<QMenu*> GetToolMenus () const = 0; 
+	virtual ~IActionsExporter () {}
 
 	/** @brief Returns the actions to embed.
 	 *
@@ -46,12 +49,9 @@ public:
 	 *
 	 * @return The list of actions.
 	 */
-	virtual QList<QAction*> GetToolActions () const = 0; 
-
-	virtual ~IMenuEmbedder () {}
+	virtual QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const = 0;
 };
 
-Q_DECLARE_INTERFACE (IMenuEmbedder, "org.Deviant.LeechCraft.IMenuEmbedder/1.0");
+Q_DECLARE_INTERFACE (IActionsExporter, "org.Deviant.LeechCraft.IActionsExporter/1.0");
 
 #endif
-

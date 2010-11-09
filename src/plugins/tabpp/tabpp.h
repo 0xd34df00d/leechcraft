@@ -23,7 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <interfaces/itoolbarembedder.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/imultitabs.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
@@ -39,16 +39,16 @@ namespace LeechCraft
 
 			class Plugin : public QObject
 						 , public IInfo
-						 , public IToolBarEmbedder
+						 , public IActionsExporter
 						 , public IHaveSettings
 						 , public IHaveShortcuts
 						 , public IMultiTabs
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IToolBarEmbedder IHaveSettings IHaveShortcuts IMultiTabs)
+				Q_INTERFACES (IInfo IActionsExporter IHaveSettings IHaveShortcuts IMultiTabs)
 
 				TabPPWidget *Dock_;
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 
 				std::auto_ptr<QTranslator> Translator_;
 				enum ActionsEnum
@@ -68,9 +68,9 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 
-				QList<QAction*> GetActions () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				void SetShortcut (int, const QKeySequence&);
 				QMap<int, ActionInfo> GetActionInfo () const;

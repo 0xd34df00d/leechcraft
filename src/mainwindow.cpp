@@ -30,8 +30,7 @@
 #include <QClipboard>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
-#include <interfaces/itraymenu.h>
-#include <interfaces/imenuembedder.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/imultitabs.h>
 #include "mainwindow.h"
 #include "view.h"
@@ -747,19 +746,13 @@ void LeechCraft::MainWindow::FillTray ()
 	menu->addMenu (Ui_.MenuHelp_);
 	iconMenu->addSeparator ();
 
-	QObjectList trayMenus = Core::Instance ()
-		.GetPluginManager ()->GetAllCastableRoots<ITrayMenu*> ();
-	for (QObjectList::const_iterator i = trayMenus.begin (),
-			end = trayMenus.end (); i != end; ++i)
+	QList<IActionsExporter*> trayMenus = Core::Instance ()
+			.GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
+	Q_FOREACH (IActionsExporter *o, trayMenus)
 	{
-		ITrayMenu* o = qobject_cast<ITrayMenu*> (*i);
-		QList<QAction*> actions = o->GetTrayActions ();
-		QList<QMenu*> menus = o->GetTrayMenus ();
+		QList<QAction*> actions = o->GetActions (AEPTrayMenu);
 		iconMenu->addActions (actions);
-		Q_FOREACH (QMenu *m, menus)
-			iconMenu->addMenu (m);
-
-		if (actions.size () || menus.size ())
+		if (actions.size ())
 			iconMenu->addSeparator ();
 	}
 
@@ -777,29 +770,16 @@ void LeechCraft::MainWindow::FillTray ()
 
 void LeechCraft::MainWindow::FillToolMenu ()
 {
-	QList<QMenu*> toolMenus;
-	QList<QAction*> toolActions;
-	Q_FOREACH (QObject *tool,
+	Q_FOREACH (IActionsExporter *e,
 			Core::Instance ().GetPluginManager ()->
-				GetAllCastableRoots<IMenuEmbedder*> ())
+				GetAllCastableTo<IActionsExporter*> ())
 	{
-		IMenuEmbedder *e = qobject_cast<IMenuEmbedder*> (tool);
-		toolMenus += e->GetToolMenus ();
-		toolActions += e->GetToolActions ();
-	}
+		QList<QAction*> acts = e->GetActions (AEPToolsMenu);
 
-	if (toolActions.size ())
-	{
-		Q_FOREACH (QAction *action, toolActions)
+		Q_FOREACH (QAction *action, acts)
 			Ui_.MenuTools_->insertAction (Ui_.ActionLogger_, action);
-		Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
-	}
-
-	if (toolMenus.size ())
-	{
-		Q_FOREACH (QMenu *menu, toolMenus)
-			Ui_.MenuTools_->insertMenu (Ui_.ActionLogger_, menu);
-		Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
+		if (acts.size ())
+			Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
 	}
 
 	QMenu *ntm = Core::Instance ()

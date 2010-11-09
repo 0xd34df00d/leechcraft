@@ -207,9 +207,9 @@ namespace LeechCraft
 				if (!strcmp (interfaceName, "IJobHolder") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IJobHolder/1.0"))
 					return static_cast<IJobHolder*> (this);
-				if (!strcmp (interfaceName, "IMenuEmbedder") ||
-						!strcmp (interfaceName, "org.Deviant.LeechCraft.IMenuEmbedder/1.0"))
-					return static_cast<IMenuEmbedder*> (this);
+				if (!strcmp (interfaceName, "IActionsExporter") ||
+						!strcmp (interfaceName, "org.Deviant.LeechCraft.IActionsExporter/1.0"))
+					return static_cast<IActionsExporter*> (this);
 				if (!strcmp (interfaceName, "IEmbedTab") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IEmbedTab/1.0"))
 					return static_cast<IEmbedTab*> (this);
@@ -365,29 +365,25 @@ namespace LeechCraft
 				return SCALL (QAbstractItemModel*) ("GetRepresentation");
 			}
 
-			QList<QMenu*> WrapperObject::GetToolMenus () const
+			QList<QAction*> WrapperObject::GetActions (ActionsEmbedPlace place) const
 			{
-				return SCALL (QList<QMenu*>) ("GetToolMenus");
-			}
-
-			QList<QAction*> WrapperObject::GetToolActions () const
-			{
-				return SCALL (QList<QAction*>) ("GetToolActions");
-			}
-
-			QList<QAction*> WrapperObject::GetActions () const
-			{
-				return SCALL (QList<QAction*>) ("GetActions");
-			}
-
-			QList<QAction*> WrapperObject::GetTrayActions () const
-			{
-				return SCALL (QList<QAction*>) ("GetTrayActions");
-			}
-
-			QList<QMenu*> WrapperObject::GetTrayMenus () const
-			{
-				return SCALL (QList<QMenu*>) ("GetTrayMenus");
+				QVariantList args;
+				switch (place)
+				{
+				case AEPCommonContextMenu:
+					args << "AEPCommonContextMenu";
+					break;
+				case AEPQuickLaunch:
+					args << "AEPQuickLaunch";
+					break;
+				case AEPToolsMenu:
+					args << "AEPToolsMenu";
+					break;
+				case AEPTrayMenu:
+					args << "AEPTrayMenu";
+					break;
+				}
+				return SCALL (QList<QAction*>) ("GetActions", args);
 			}
 
 			QSet<QByteArray> WrapperObject::GetPluginClasses () const

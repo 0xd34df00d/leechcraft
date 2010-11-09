@@ -134,9 +134,12 @@ namespace LeechCraft
 			{
 			}
 
-			QList<QAction*> Plugin::GetActions () const
+			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 			{
-				return Actions_;
+				if (place == AEPToolsMenu)
+					return Actions_;
+
+				return QList<QAction*> ();
 			}
 
 			void Plugin::handleCurrentChanged (const QModelIndex& index)

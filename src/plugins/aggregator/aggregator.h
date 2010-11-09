@@ -28,9 +28,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
-#include <interfaces/itoolbarembedder.h>
-#include <interfaces/imenuembedder.h>
-#include <interfaces/itraymenu.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/istartupwizard.h>
 
 class QSystemTrayIcon;
@@ -55,13 +53,11 @@ namespace LeechCraft
 							 , public IJobHolder
 							 , public IEntityHandler
 							 , public IHaveShortcuts
-							 , public IToolBarEmbedder
+							 , public IActionsExporter
 							 , public IStartupWizard
-							 , public ITrayMenu
-							 , public IMenuEmbedder
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder IStartupWizard ITrayMenu IMenuEmbedder)
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IStartupWizard IActionsExporter)
 
 				Aggregator_Impl *Impl_;
 			public:
@@ -92,13 +88,7 @@ namespace LeechCraft
 
 				QList<QWizardPage*> GetWizardPages () const;
 
-				QList<QAction*> GetActions () const;
-
-				QList<QAction*> GetTrayActions () const;
-				QList<QMenu*> GetTrayMenus () const;
-
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			protected:
 				virtual void keyPressEvent (QKeyEvent*);
 			private:

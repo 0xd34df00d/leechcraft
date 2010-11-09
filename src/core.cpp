@@ -49,7 +49,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/iwindow.h>
-#include <interfaces/itoolbarembedder.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/isummaryrepresentation.h>
 #include <interfaces/structures.h>
 #include "application.h"
@@ -180,10 +180,16 @@ QObjectList LeechCraft::Core::GetShortcuts () const
 
 QList<QList<QAction*> > LeechCraft::Core::GetActions2Embed () const
 {
-	QList<IToolBarEmbedder*> plugins = PluginManager_->GetAllCastableTo<IToolBarEmbedder*> ();
+	QList<IActionsExporter*> plugins =
+			PluginManager_->GetAllCastableTo<IActionsExporter*> ();
 	QList<QList<QAction*> > actions;
-	Q_FOREACH (IToolBarEmbedder *plugin, plugins)
-		actions << plugin->GetActions ();
+	Q_FOREACH (IActionsExporter *plugin, plugins)
+	{
+		QList<QAction*> list = plugin->GetActions (AEPCommonContextMenu);
+		if (!list.size ())
+			continue;
+		actions << list;
+	}
 	return actions;
 }
 

@@ -427,38 +427,28 @@ namespace LeechCraft
 				return wg->GetPages ();
 			}
 
-			QList<QAction*> Aggregator::GetActions () const
+			QList<QAction*> Aggregator::GetActions (ActionsEmbedPlace place) const
 			{
 				QList<QAction*> result;
-				result += Impl_->AppWideActions_.ActionAddFeed_;
-				result += Impl_->AppWideActions_.ActionUpdateFeeds_;
-				return result;
-			}
 
-			QList<QAction*> Aggregator::GetTrayActions () const
-			{
-				QList<QAction*> result;
-				result += Impl_->AppWideActions_.ActionAddFeed_;
-				result += Impl_->AppWideActions_.ActionUpdateFeeds_;
-				return result;
-			}
+				switch (place)
+				{
+				case AEPToolsMenu:
+					result << Impl_->ToolMenu_->menuAction ();
+					result << Impl_->AppWideActions_.ActionRegexpMatcher_;
+					break;
+				case AEPCommonContextMenu:
+					result << Impl_->AppWideActions_.ActionAddFeed_;
+					result << Impl_->AppWideActions_.ActionUpdateFeeds_;
+					break;
+				case AEPTrayMenu:
+					result << Impl_->AppWideActions_.ActionAddFeed_;
+					result << Impl_->AppWideActions_.ActionUpdateFeeds_;
+					break;
+				case AEPQuickLaunch:
+					break;
+				}
 
-			QList<QMenu*> Aggregator::GetTrayMenus () const
-			{
-				return QList<QMenu*> ();
-			}
-
-			QList<QMenu*> Aggregator::GetToolMenus () const
-			{
-				QList<QMenu*> result;
-				result << Impl_->ToolMenu_;
-				return result;
-			}
-
-			QList<QAction*> Aggregator::GetToolActions () const
-			{
-				QList<QAction*> result;
-				result << Impl_->AppWideActions_.ActionRegexpMatcher_;
 				return result;
 			}
 

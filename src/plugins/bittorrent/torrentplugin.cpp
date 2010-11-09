@@ -391,11 +391,23 @@ namespace LeechCraft
 				return wg->GetPages ();
 			}
 
-			QList<QAction*> TorrentPlugin::GetActions () const
+			QList<QAction*> TorrentPlugin::GetActions (ActionsEmbedPlace place) const
 			{
 				QList<QAction*> result;
-				result += CreateTorrent_.get ();
-				result += OpenMultipleTorrents_.get ();
+
+				switch (place)
+				{
+				case AEPCommonContextMenu:
+					result += CreateTorrent_.get ();
+					break;
+				case AEPToolsMenu:
+					result += OpenMultipleTorrents_.get ();
+					result += IPFilter_.get ();
+					break;
+				default:
+					break;
+				}
+
 				return result;
 			}
 

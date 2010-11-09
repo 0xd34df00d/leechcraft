@@ -96,10 +96,13 @@ namespace LeechCraft
 			{
 			}
 
-			QList<QAction*> Plugin::GetActions () const
+			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 			{
 				QList<QAction*> result;
-				result << Dock_->GetActivatorAction ();
+
+				if (place == AEPCommonContextMenu ||
+						place == AEPQuickLaunch)
+					result << Dock_->GetActivatorAction ();
 				return result;
 			}
 

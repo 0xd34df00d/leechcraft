@@ -349,10 +349,8 @@ SET (HEADERS
 	interfaces/ipluginready.h
 	interfaces/iplugin2.h
 	interfaces/ihaveshortcuts.h
-	interfaces/itoolbarembedder.h
 	interfaces/istartupwizard.h
 	interfaces/ipluginadaptor.h
-	interfaces/imenuembedder.h
 	interfaces/isummaryrepresentation.h
 	interfaces/structures.h
 	)

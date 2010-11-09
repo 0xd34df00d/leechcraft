@@ -300,10 +300,20 @@ namespace LeechCraft
 				return result;
 			}
 
-			QList<QAction*> Poshuku::GetToolActions () const
+			QList<QAction*> Poshuku::GetActions (ActionsEmbedPlace place) const
 			{
 				QList<QAction*> result;
-				result << CheckFavorites_;
+
+				switch (place)
+				{
+				case AEPToolsMenu:
+					result << CheckFavorites_;
+					result << ToolMenu_->menuAction ();
+					break;
+				default:
+					break;
+				}
+
 				return result;
 			}
 

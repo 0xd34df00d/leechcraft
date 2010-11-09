@@ -26,7 +26,7 @@
 #include <interfaces/imultitabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ipluginready.h>
-#include <interfaces/imenuembedder.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -49,10 +49,10 @@ namespace LeechCraft
 						  , public IEntityHandler
 						  , public IHaveShortcuts
 						  , public IWebBrowser
-						  , public IMenuEmbedder
+						  , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IMenuEmbedder)
+				Q_INTERFACES (IInfo IMultiTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IActionsExporter)
 
 				QMenu *ToolMenu_;
 				QAction *ImportXbel_;
@@ -96,7 +96,7 @@ namespace LeechCraft
 				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
 
 				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			public slots:
 				void newTabRequested ();
 			private:
