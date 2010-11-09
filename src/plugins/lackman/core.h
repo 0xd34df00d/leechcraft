@@ -112,6 +112,8 @@ namespace LeechCraft
 				void ReadSettings ();
 				void WriteSettings ();
 			public slots:
+				void updateAllRequested ();
+				void upgradeAllRequested ();
 				void removeRequested (const QString&, const QModelIndexList&);
 				void addRequested (const QString&, const QVariantList&);
 			private slots:

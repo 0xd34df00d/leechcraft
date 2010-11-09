@@ -91,6 +91,8 @@ namespace LeechCraft
 						FilterString_,
 						SLOT (setFilterFixedString (const QString&)));
 
+				BuildActions ();
+
 				handleTagsUpdated ();
 			}
 
@@ -150,12 +152,23 @@ namespace LeechCraft
 
 			QToolBar* Plugin::GetToolBar () const
 			{
-				return 0;
+				return Toolbar_;
 			}
 
 			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 			{
 				return SettingsDialog_;
+			}
+
+			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
+			{
+				QList<QAction*> result;
+				if (place == AEPToolsMenu)
+				{
+					result << UpdateAll_;
+					result << UpgradeAll_;
+				}
+				return result;
 			}
 
 			void Plugin::handleTagsUpdated ()
@@ -175,6 +188,26 @@ namespace LeechCraft
 			void Plugin::on_PackageStatus__currentIndexChanged (int index)
 			{
 				TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
+			}
+
+			void Plugin::BuildActions ()
+			{
+				UpdateAll_ = new QAction (tr ("Update all repos"), this);
+				UpdateAll_->setProperty ("ActionIcon", "refreshall");
+				connect (UpdateAll_,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (updateAllRequested ()));
+				UpgradeAll_ = new QAction (tr ("Upgrade all packages"), this);
+				UpgradeAll_->setProperty ("ActionIcon", "fetchall");
+				connect (UpgradeAll_,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (upgradeAllRequested ()));
+
+				Toolbar_ = new QToolBar (GetName ());
+				Toolbar_->addAction (UpdateAll_);
+				Toolbar_->addAction (UpgradeAll_);
 			}
 		};
 	};

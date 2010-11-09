@@ -863,6 +863,51 @@ namespace LeechCraft
 				settings.endArray ();
 			}
 
+			void Core::updateAllRequested ()
+			{
+				for (int i = 0, size = ReposModel_->rowCount ();
+						i < size; ++i)
+				{
+					QStandardItem *item = ReposModel_->item (i);
+					QUrl url = item->data ().value<QUrl> ();
+					QStringList components;
+
+					try
+					{
+						int id = Storage_->FindRepo (url);
+						components = Storage_->GetRepo (id).GetComponents ();
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "while trying to get repo components for"
+								<< url
+								<< e.what ();
+						continue;
+					}
+					catch (...)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "general error while trying to get repo components for"
+								<< url;
+						continue;
+					}
+
+					qDebug () << "would update" << url << components;
+					UpdateRepo (url, components);
+				}
+			}
+
+			void Core::upgradeAllRequested ()
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "not implemented";
+
+				emit gotEntity (Util::MakeNotification ("LackMan",
+						"Upgrade all not implemented yet.",
+						PCritical_));
+			}
+
 			void Core::removeRequested (const QString&, const QModelIndexList& list)
 			{
 				QList<int> rows;

@@ -25,6 +25,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iembedtab.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/iactionsexporter.h>
 #include "ui_lackman.h"
 
 class QSortFilterProxyModel;
@@ -41,9 +42,10 @@ namespace LeechCraft
 						 , public IInfo
 						 , public IEmbedTab
 						 , public IHaveSettings
+						 , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings)
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IActionsExporter)
 
 				Ui::LackMan Ui_;
 				std::auto_ptr<QTranslator> Translator_;
@@ -51,6 +53,10 @@ namespace LeechCraft
 				QSortFilterProxyModel *FilterByTags_;
 				TypeFilterProxyModel *TypeFilter_;
 				Util::XmlSettingsDialog_ptr SettingsDialog_;
+
+				QAction *UpdateAll_;
+				QAction *UpgradeAll_;
+				QToolBar *Toolbar_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -68,11 +74,15 @@ namespace LeechCraft
 				QToolBar* GetToolBar () const;
 
 				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			private slots:
 				void handleTagsUpdated ();
 				void on_Apply__released ();
 				void on_Cancel__released ();
 				void on_PackageStatus__currentIndexChanged (int);
+			private:
+				void BuildActions ();
 			signals:
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
