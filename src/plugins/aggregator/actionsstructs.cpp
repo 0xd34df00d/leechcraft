@@ -32,31 +32,31 @@ namespace LeechCraft
 						parent);
 				ActionAddFeed_->setObjectName ("ActionAddFeed_");
 				ActionAddFeed_->setProperty ("ActionIcon", "aggregator_add");
-			
+
 				ActionUpdateFeeds_ = new QAction (tr ("Update all feeds"),
 						parent);
-				ActionUpdateFeeds_->setProperty ("ActionIcon", "aggregator_updateallfeeds");
+				ActionUpdateFeeds_->setProperty ("ActionIcon", "fetchall");
 
 				ActionRegexpMatcher_ = new QAction (tr ("Regexp matcher..."),
 						parent);
 				ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");
 				ActionRegexpMatcher_->setProperty ("ActionIcon", "aggregator_filter");
-			
+
 				ActionImportOPML_ = new QAction (tr ("Import from OPML..."),
 						parent);
 				ActionImportOPML_->setObjectName ("ActionImportOPML_");
 				ActionImportOPML_->setProperty ("ActionIcon", "aggregator_importopml");
-			
+
 				ActionExportOPML_ = new QAction (tr ("Export to OPML..."),
 						parent);
 				ActionExportOPML_->setObjectName ("ActionExportOPML_");
 				ActionExportOPML_->setProperty ("ActionIcon", "aggregator_exportopml");
-			
+
 				ActionImportBinary_ = new QAction (tr ("Import from binary..."),
 						parent);
 				ActionImportBinary_->setObjectName ("ActionImportBinary_");
 				ActionImportBinary_->setProperty ("ActionIcon", "aggregator_importbinary");
-			
+
 				ActionExportBinary_ = new QAction (tr ("Export to binary..."),
 						parent);
 				ActionExportBinary_->setObjectName ("ActionExportBinary_");
@@ -83,11 +83,11 @@ namespace LeechCraft
 				ActionMarkChannelAsRead_ = new QAction (tr ("Mark channel as read"),
 						parent);
 				ActionMarkChannelAsRead_->setObjectName ("ActionMarkChannelAsRead_");
-			
+
 				ActionMarkChannelAsUnread_ = new QAction (tr ("Mark channel as unread"),
 						parent);
 				ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
-			
+
 				ActionChannelSettings_ = new QAction (tr ("Settings..."),
 						parent);
 				ActionChannelSettings_->setObjectName ("ActionChannelSettings_");
