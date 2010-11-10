@@ -439,23 +439,23 @@ namespace LeechCraft
 				const IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
 				QObject *object = Core::Instance ().parent ();
 
-				Cut_->setShortcut (proxy->GetShortcut (object, EACut_));
-				Copy_->setShortcut (proxy->GetShortcut (object, EACopy_));
-				Paste_->setShortcut (proxy->GetShortcut (object, EAPaste_));
-				Back_->setShortcut (proxy->GetShortcut (object, EABack_));
-				Forward_->setShortcut (proxy->GetShortcut (object, EAForward_));
-				Reload_->setShortcut (proxy->GetShortcut (object, EAReload_));
-				Stop_->setShortcut (proxy->GetShortcut (object, EAStop_));
-				Add2Favorites_->setShortcut (proxy->GetShortcut (object, EAAdd2Favorites_));
-				Find_->setShortcut (proxy->GetShortcut (object, EAFind_));
-				Print_->setShortcut (proxy->GetShortcut (object, EAPrint_));
-				PrintPreview_->setShortcut (proxy->GetShortcut (object, EAPrintPreview_));
-				ScreenSave_->setShortcut (proxy->GetShortcut (object, EAScreenSave_));
-				ViewSources_->setShortcut (proxy->GetShortcut (object, EAViewSources_));
-				ZoomIn_->setShortcut (proxy->GetShortcut (object, EAZoomIn_));
-				ZoomOut_->setShortcut (proxy->GetShortcut (object, EAZoomOut_));
-				ZoomReset_->setShortcut (proxy->GetShortcut (object, EAZoomReset_));
-				RecentlyClosedAction_->setShortcut (proxy->GetShortcut (object, EARecentlyClosedAction_));
+				Cut_->setShortcuts (proxy->GetShortcuts (object, "BrowserCut_"));
+				Copy_->setShortcuts (proxy->GetShortcuts (object, "BrowserCopy_"));
+				Paste_->setShortcuts (proxy->GetShortcuts (object, "BrowserPaste_"));
+				Back_->setShortcuts (proxy->GetShortcuts (object, "BrowserBack_"));
+				Forward_->setShortcuts (proxy->GetShortcuts (object, "BrowserForward_"));
+				Reload_->setShortcuts (proxy->GetShortcuts (object, "BrowserReload_"));
+				Stop_->setShortcuts (proxy->GetShortcuts (object, "BrowserStop_"));
+				Add2Favorites_->setShortcuts (proxy->GetShortcuts (object, "BrowserAdd2Favorites_"));
+				Find_->setShortcuts (proxy->GetShortcuts (object, "BrowserFind_"));
+				Print_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrint_"));
+				PrintPreview_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrintPreview_"));
+				ScreenSave_->setShortcuts (proxy->GetShortcuts (object, "BrowserScreenSave_"));
+				ViewSources_->setShortcuts (proxy->GetShortcuts (object, "BrowserViewSources_"));
+				ZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomIn_"));
+				ZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomOut_"));
+				ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
+				RecentlyClosedAction_->setShortcuts (proxy->GetShortcuts (object, "BrowserRecentlyClosedAction_"));
 			}
 
 			void BrowserWidget::SetUnclosers (const QList<QAction*>& unclosers)
@@ -578,23 +578,19 @@ namespace LeechCraft
 				return this;
 			}
 
-#define _LC_MERGE(a) EA##a
+#define _LC_MERGE(a) "Browser"#a
 
 #define _LC_SINGLE(a) \
-				case _LC_MERGE(a): \
-					a->setShortcut (shortcut); \
-					break;
+				name2act [_LC_MERGE(a)] = a;
 
 #define _LC_TRAVERSER(z,i,array) \
 				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
 
 #define _LC_EXPANDER(Names) \
-				switch (name) \
-				{ \
-					BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names) \
-				}
-			void BrowserWidget::SetShortcut (int name, const QKeySequence& shortcut)
+				BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names)
+			void BrowserWidget::SetShortcut (const QString& name, const QKeySequences_t& sequences)
 			{
+				QMap<QString, QAction*> name2act;
 				_LC_EXPANDER ((Add2Favorites_)
 						(Find_)
 						(Print_)
@@ -612,19 +608,21 @@ namespace LeechCraft
 						(Reload_)
 						(Stop_)
 						(RecentlyClosedAction_));
+				if (name2act.contains (name))
+					name2act [name]->setShortcuts (sequences);
 			}
 
-#define _L(a,b) result [EA##a] = ActionInfo (a->text (), \
+#define _L(a,b) result ["Browser"#a] = ActionInfo (a->text (), \
 					b, a->icon ())
-			QMap<int, ActionInfo> BrowserWidget::GetActionInfo () const
+			QMap<QString, ActionInfo> BrowserWidget::GetActionInfo () const
 			{
-				QMap<int, ActionInfo> result;
+				QMap<QString, ActionInfo> result;
 				_L (Add2Favorites_, tr ("Ctrl+D"));
 				_L (Find_, tr ("Ctrl+F"));
 				_L (Print_, tr ("Ctrl+P"));
 				_L (PrintPreview_, tr ("Ctrl+Shift+P"));
 				_L (ScreenSave_, Qt::Key_F12);
-				_L (ViewSources_, QKeySequence ());
+				_L (ViewSources_, tr ("Ctrl+Shift+V"));
 				_L (ZoomIn_, Qt::CTRL + Qt::Key_Plus);
 				_L (ZoomOut_, Qt::CTRL + Qt::Key_Minus);
 				_L (ZoomReset_, tr ("Ctrl+0"));

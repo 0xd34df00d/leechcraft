@@ -64,8 +64,8 @@ namespace LeechCraft
 				ICoreProxy_ptr GetCoreProxy () const;
 				void Handle (const LeechCraft::Entity&);
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, ActionInfo> GetActionInfo () const;
 
 				int columnCount (const QModelIndex&) const;
 				QVariant data (const QModelIndex&, int) const;

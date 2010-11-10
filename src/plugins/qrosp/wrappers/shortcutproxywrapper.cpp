@@ -29,9 +29,9 @@ namespace LeechCraft
 			{
 			}
 
-			QKeySequence ShortcutProxyWrapper::GetShortcut (const QObject *object, int id) const
+			QList<QKeySequence> ShortcutProxyWrapper::GetShortcuts (const QObject *object, const QString& id) const
 			{
-				return ShortcutProxy_->GetShortcut (object, id);
+				return ShortcutProxy_->GetShortcuts (object, id);
 			}
 		};
 	};

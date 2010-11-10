@@ -83,8 +83,8 @@ namespace LeechCraft
 				bool CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
 
 				QList<QWizardPage*> GetWizardPages () const;
 
@@ -95,6 +95,7 @@ namespace LeechCraft
 				void ScheduleShowError ();
 				bool IsRepr () const;
 				QModelIndex GetRelevantIndex () const;
+				void BuildID2ActionTupleMap ();
 			public slots:
 				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 			private slots:

@@ -92,8 +92,8 @@ namespace LeechCraft
 				IWebWidget* GetWidget () const;
 				QWebView* CreateWindow ();
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, ActionInfo> GetActionInfo () const;
 
 				QList<QMenu*> GetToolMenus () const;
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;

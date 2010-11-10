@@ -80,15 +80,18 @@ void ShortcutManager::AddObject (QObject *object,
 	parent->setData (0, RoleObject,
 			QVariant::fromValue<QObject*> (object));
 
-	QMap<int, ActionInfo> info = ihs->GetActionInfo ();
-
-	QList<int> names = info.keys ();
+	QMap<QString, ActionInfo> info = ihs->GetActionInfo ();
 
 	settings.beginGroup (objName);
-	Q_FOREACH (int name, names)
+	Q_FOREACH (const QString& name, info.keys ())
 	{
-		QKeySequence sequence = settings.value (QString::number (name),
-				info [name].Default_).value<QKeySequence> ();
+		// FIXME use all the sequences here, not the first one
+		QKeySequences_t sequences = settings.value (name,
+				QVariant::fromValue<QKeySequences_t> (info [name].Seqs_)).value<QKeySequences_t> ();
+
+		qDebug () << "read" << sequences << "for" << name;
+
+		QKeySequence sequence = sequences.value (0);
 
 		QStringList strings;
 		strings << info [name].UserVisibleText_
@@ -96,11 +99,11 @@ void ShortcutManager::AddObject (QObject *object,
 		QTreeWidgetItem *item = new QTreeWidgetItem (parent, strings);
 		item->setIcon (0, info [name].Icon_);
 		item->setData (0, RoleOriginalName, name);
-		item->setData (0, RoleSequence, sequence);
+		item->setData (0, RoleSequence, QVariant::fromValue<QKeySequences_t> (sequences));
 		parent->setExpanded (true);
 
-		if (sequence != info [name].Default_)
-			ihs->SetShortcut (name, sequence);
+		if (sequences != info [name].Seqs_)
+			ihs->SetShortcut (name, sequences);
 	}
 
 	settings.endGroup ();
@@ -109,8 +112,8 @@ void ShortcutManager::AddObject (QObject *object,
 	Ui_.Tree_->resizeColumnToContents (0);
 }
 
-QKeySequence ShortcutManager::GetShortcut (const QObject *object,
-		int originalName) const
+QKeySequences_t ShortcutManager::GetShortcuts (const QObject *object,
+		const QString& originalName) const
 {
 	for (int i = 0, size = Ui_.Tree_->topLevelItemCount ();
 			i < size; ++i)
@@ -123,13 +126,13 @@ QKeySequence ShortcutManager::GetShortcut (const QObject *object,
 				j < namesSize; ++j)
 		{
 			QTreeWidgetItem *item = objectItem->child (j);
-			if (item->data (0, RoleOriginalName).toInt () == originalName)
-				return item->data (0, RoleSequence).value<QKeySequence> ();
+			if (item->data (0, RoleOriginalName).toString () == originalName)
+				return item->data (0, RoleSequence).value<QKeySequences_t> ();
 		}
-		return QKeySequence ();
+		return QKeySequences_t ();
 	}
 	const_cast<ShortcutManager*> (this)->AddObject (const_cast<QObject*> (object));
-	return GetShortcut (object, originalName);
+	return GetShortcuts (object, originalName);
 }
 
 void ShortcutManager::on_Tree__itemActivated (QTreeWidgetItem *item)
@@ -142,12 +145,14 @@ void ShortcutManager::on_Tree__itemActivated (QTreeWidgetItem *item)
 	if (dia->exec () == QDialog::Rejected)
 		return;
 
-	QKeySequence newSeq = dia->GetResult ();
+	QKeySequences_t newSeqs;
+	newSeqs << dia->GetResult ();
 	if (item->data (0, RoleOldSequence).isNull ())
 		item->setData (0, RoleOldSequence,
 				item->data (0, RoleSequence));
-	item->setData (0, RoleSequence, newSeq);
-	item->setText (1, newSeq.toString ());
+	item->setData (0, RoleSequence,
+			QVariant::fromValue<QKeySequences_t> (newSeqs));
+	item->setText (1, newSeqs.value (0).toString ());
 }
 
 void ShortcutManager::accept ()
@@ -169,12 +174,14 @@ void ShortcutManager::accept ()
 			QTreeWidgetItem *item = objectItem->child (j);
 			if (!item->data (0, RoleOldSequence).isNull ())
 			{
-				int name = item->data (0, RoleOriginalName).toInt ();
-				QKeySequence sequence = item->data (0, RoleSequence).value<QKeySequence> ();
+				QString name = item->data (0, RoleOriginalName).toString ();
+				QKeySequences_t sequences = item->
+						data (0, RoleSequence).value<QKeySequences_t> ();
 
-				settings.setValue (QString::number (name), sequence);
+				settings.setValue (name,
+						QVariant::fromValue<QKeySequences_t> (sequences));
 				item->setData (0, RoleOldSequence, QVariant ());
-				ihs->SetShortcut (name, sequence);
+				ihs->SetShortcut (name, sequences);
 			}
 
 			settings.endGroup ();

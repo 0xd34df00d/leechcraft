@@ -320,49 +320,17 @@ namespace LeechCraft
 				return XmlSettingsDialog_;
 			}
 
-#define _LC_MERGE(a) EA##a
-
-#define _LC_SINGLE(a) \
-				case _LC_MERGE(a): \
-					a->setShortcut (shortcut); \
-					break;
-
-#define _LC_TRAVERSER(z,i,array) \
-				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
-
-#define _LC_EXPANDER(Names) \
-				switch (name) \
-				{ \
-					BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names) \
-				}
-			void TorrentPlugin::SetShortcut (int name,
-					const QKeySequence& shortcut)
+			void TorrentPlugin::SetShortcut (const QString& name,
+					const QKeySequences_t& shortcuts)
 			{
-				_LC_EXPANDER ((OpenTorrent_)
-						(ChangeTrackers_)
-						(CreateTorrent_)
-						(OpenMultipleTorrents_)
-						(IPFilter_)
-						(RemoveTorrent_)
-						(Resume_)
-						(Stop_)
-						(MoveUp_)
-						(MoveDown_)
-						(MoveToTop_)
-						(MoveToBottom_)
-						(ForceReannounce_)
-						(ForceRecheck_)
-						(MoveFiles_)
-						(Import_)
-						(Export_)
-						(MakeMagnetLink_));
+				ActionID2Action_ [name]->setShortcuts (shortcuts);
 			}
 
-#define _L(a) result [EA##a] = ActionInfo (a->text (), \
+#define _L(a) result ["Torrent"#a] = ActionInfo (a->text (), \
 					a->shortcut (), a->icon ())
-			QMap<int, ActionInfo> TorrentPlugin::GetActionInfo () const
+			QMap<QString, ActionInfo> TorrentPlugin::GetActionInfo () const
 			{
-				QMap<int, ActionInfo> result;
+				QMap<QString, ActionInfo> result;
 				_L (OpenTorrent_);
 				_L (ChangeTrackers_);
 				_L (CreateTorrent_);
@@ -950,6 +918,36 @@ namespace LeechCraft
 				XmlSettingsManager::Instance ()->
 					RegisterObject ("EnableFastSpeedControl",
 						UpSelectorAction_, "handleSpeedsChanged");
+
+#define _LC_MERGE(a) "Torrent"#a
+
+#define _LC_SINGLE(a) \
+				ActionID2Action_ [_LC_MERGE(a)] = a.get ();
+
+#define _LC_TRAVERSER(z,i,array) \
+				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
+
+#define _LC_EXPANDER(Names) \
+				BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names)
+
+				_LC_EXPANDER ((OpenTorrent_)
+						(ChangeTrackers_)
+						(CreateTorrent_)
+						(OpenMultipleTorrents_)
+						(IPFilter_)
+						(RemoveTorrent_)
+						(Resume_)
+						(Stop_)
+						(MoveUp_)
+						(MoveDown_)
+						(MoveToTop_)
+						(MoveToBottom_)
+						(ForceReannounce_)
+						(ForceRecheck_)
+						(MoveFiles_)
+						(Import_)
+						(Export_)
+						(MakeMagnetLink_));
 			}
 
 			void TorrentPlugin::SetupActions ()

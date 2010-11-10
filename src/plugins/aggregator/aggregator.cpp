@@ -58,6 +58,7 @@
 #include "wizardgenerator.h"
 #include "export2fb2dialog.h"
 #include "actionsstructs.h"
+#include <boost/graph/graph_concepts.hpp>
 
 namespace LeechCraft
 {
@@ -76,6 +77,8 @@ namespace LeechCraft
 				AppWideActions AppWideActions_;
 				ChannelActions ChannelActions_;
 
+				QMap<QString, QPair<QAction*, ActionInfo> > ID2ActionTuple_;
+
 				QMenu *ToolMenu_;
 
 				boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
@@ -86,25 +89,6 @@ namespace LeechCraft
 				std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 
 				QModelIndex SelectedRepr_;
-
-				enum
-				{
-					EAActionAddFeed_,
-					EAActionUpdateFeeds_,
-					EAActionRemoveFeed_,
-					EAActionMarkChannelAsRead_,
-					EAActionMarkChannelAsUnread_,
-					EAActionChannelSettings_,
-					EAActionUpdateSelectedFeed_,
-					EAActionUNUSED1_,
-					EAActionRegexpMatcher_,
-					EAActionHideReadItems_,
-					EAActionImportOPML_,
-					EAActionExportOPML_,
-					EAActionImportBinary_,
-					EAActionExportBinary_,
-					EAActionExportFB2_
-				};
 			};
 
 			Aggregator::~Aggregator ()
@@ -279,6 +263,8 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				currentChannelChanged ();
+
+				BuildID2ActionTupleMap ();
 			}
 
 			void Aggregator::SecondInit ()
@@ -376,48 +362,23 @@ namespace LeechCraft
 				Core::Instance ().Handle (e);
 			}
 
-#define _LC_MERGE(a) EA##a
-
-#define _LC_SINGLE(a) \
-				case Aggregator_Impl::_LC_MERGE(a): \
-					Impl_->AppWideActions_.a->setShortcut (shortcut); \
-					break;
-
-#define _LC_TRAVERSER(z,i,array) \
-				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
-
-#define _LC_EXPANDER(Names) \
-				switch (name) \
-				{ \
-					BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names) \
-				}
-			void Aggregator::SetShortcut (int name,
-					const QKeySequence& shortcut)
+			void Aggregator::SetShortcut (const QString& name,
+					const QKeySequences_t& shortcuts)
 			{
-				_LC_EXPANDER ((ActionAddFeed_)
-						(ActionUpdateFeeds_)
-						(ActionRegexpMatcher_)
-						(ActionImportOPML_)
-						(ActionExportOPML_)
-						(ActionImportBinary_)
-						(ActionExportBinary_)
-						(ActionExportFB2_));
+				if (!Impl_->ID2ActionTuple_.contains (name))
+					return;
+
+				Impl_->ID2ActionTuple_ [name].first->
+						setShortcuts (shortcuts);
 			}
 
-#define _L(a) result [Aggregator_Impl::EA##a] = ActionInfo (Impl_->AppWideActions_.a->text (), \
-		Impl_->AppWideActions_.a->shortcut (), \
-		Impl_->AppWideActions_.a->icon ())
-			QMap<int, ActionInfo> Aggregator::GetActionInfo () const
+			QMap<QString, ActionInfo> Aggregator::GetActionInfo () const
 			{
-				QMap<int, ActionInfo> result;
-				_L (ActionAddFeed_);
-				_L (ActionUpdateFeeds_);
-				_L (ActionRegexpMatcher_);
-				_L (ActionImportOPML_);
-				_L (ActionExportOPML_);
-				_L (ActionImportBinary_);
-				_L (ActionExportBinary_);
-				_L (ActionExportFB2_);
+				QMap<QString, ActionInfo> result;
+
+				Q_FOREACH (const QString& key, Impl_->ID2ActionTuple_.keys ())
+					result [key] = Impl_->ID2ActionTuple_ [key].second;
+
 				return result;
 			}
 
@@ -537,6 +498,48 @@ namespace LeechCraft
 						index = Impl_->FlatToFolders_->MapToSource (index);
 					return Core::Instance ().GetChannelsModel ()->mapToSource (index);
 				}
+			}
+
+			namespace
+			{
+				QPair<QAction*, ActionInfo> MakeInfoPair (QAction *act)
+				{
+					ActionInfo info = ActionInfo (act->text (),
+							act->shortcuts (),
+							act->icon ());
+					return qMakePair (act, info);
+				}
+			}
+
+			void Aggregator::BuildID2ActionTupleMap ()
+			{
+				Impl_->ID2ActionTuple_ ["ActionAddFeed_"] =
+						MakeInfoPair (Impl_->AppWideActions_.ActionAddFeed_);
+				Impl_->ID2ActionTuple_ ["ActionUpdateFeeds_"] =
+						MakeInfoPair (Impl_->AppWideActions_.ActionUpdateFeeds_);
+				Impl_->ID2ActionTuple_ ["ActionRegexpMatcher_"] =
+						MakeInfoPair (Impl_->AppWideActions_.ActionRegexpMatcher_);
+				Impl_->ID2ActionTuple_ ["ActionImportOPML_"] =
+						MakeInfoPair (Impl_->AppWideActions_.ActionImportOPML_);
+				Impl_->ID2ActionTuple_ ["ActionExportOPML_"] =
+						MakeInfoPair (Impl_->AppWideActions_.ActionExportOPML_);
+				Impl_->ID2ActionTuple_ ["ActionImportBinary_"] =
+						MakeInfoPair (Impl_->AppWideActions_.ActionImportBinary_);
+				Impl_->ID2ActionTuple_ ["ActionExportBinary_"] =
+						MakeInfoPair (Impl_->AppWideActions_.ActionExportBinary_);
+				Impl_->ID2ActionTuple_ ["ActionExportFB2_"] =
+						MakeInfoPair (Impl_->AppWideActions_.ActionExportFB2_);
+
+				Impl_->ID2ActionTuple_ ["ActionRemoveFeed_"] =
+						MakeInfoPair (Impl_->ChannelActions_.ActionRemoveFeed_);
+				Impl_->ID2ActionTuple_ ["ActionUpdateSelectedFeed_"] =
+						MakeInfoPair (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
+				Impl_->ID2ActionTuple_ ["ActionMarkChannelAsRead_"] =
+						MakeInfoPair (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
+				Impl_->ID2ActionTuple_ ["ActionMarkChannelAsUnread_"] =
+						MakeInfoPair (Impl_->ChannelActions_.ActionMarkChannelAsUnread_);
+				Impl_->ID2ActionTuple_ ["ActionChannelSettings_"] =
+						MakeInfoPair (Impl_->ChannelActions_.ActionChannelSettings_);
 			}
 
 			void Aggregator::on_ActionAddFeed__triggered ()

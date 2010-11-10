@@ -26,6 +26,7 @@
 #include <plugininterface/tagscompletionmodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaveshortcuts.h>
 #include "favoritesmodel.h"
 #include "historymodel.h"
 #include "storagebackend.h"
@@ -139,7 +140,7 @@ namespace LeechCraft
 				QNetworkAccessManager* GetNetworkAccessManager () const;
 				StorageBackend* GetStorageBackend () const;
 				PluginManager* GetPluginManager () const;
-				void SetShortcut (int name, const QKeySequence& shortcut);
+				void SetShortcut (const QString& name, const QKeySequences_t& shortcut);
 				const IShortcutProxy* GetShortcutProxy () const;
 
 				QIcon GetIcon (const QUrl&) const;

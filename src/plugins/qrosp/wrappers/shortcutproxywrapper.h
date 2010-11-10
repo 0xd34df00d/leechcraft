@@ -35,7 +35,7 @@ namespace LeechCraft
 			public:
 				ShortcutProxyWrapper (const IShortcutProxy*);
 			public slots:
-				QKeySequence GetShortcut (const QObject*, int) const;
+				QList<QKeySequence> GetShortcuts (const QObject*, const QString&) const;
 			};
 		};
 	};

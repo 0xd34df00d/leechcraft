@@ -137,8 +137,8 @@ namespace LeechCraft
 				void SetNavBarVisible (bool);
 				QWidget* Widget ();
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, ActionInfo> GetActionInfo () const;
 
 				void Remove ();
 				QToolBar* GetToolBar () const;

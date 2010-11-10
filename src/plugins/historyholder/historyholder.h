@@ -58,8 +58,8 @@ namespace LeechCraft
 				bool CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, ActionInfo> GetActionInfo () const;
 			public slots:
 				void handleTasksTreeActivated (const QModelIndex&);
 			signals:

@@ -35,6 +35,7 @@
 #include <QProcess>
 #include <QTimer>
 #include <interfaces/isyncable.h>
+#include <interfaces/ihaveshortcuts.h>
 #include <plugininterface/util.h>
 #include <plugininterface/structuresops.h>
 #include "debugmessagehandler.h"
@@ -112,6 +113,8 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("LeechCraft::Sync::ChainID_t");
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("Sync::ChainID_t");
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("ChainID_t");
+	qRegisterMetaType<QKeySequences_t> ("QKeySequences_t");
+	qRegisterMetaTypeStreamOperators<QKeySequences_t> ();
 	qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaTypeStreamOperators<LeechCraft::Entity> ("LeechCraft::Entity");
 

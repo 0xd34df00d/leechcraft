@@ -100,6 +100,8 @@ namespace LeechCraft
 				SpeedSelectorAction *DownSelectorAction_,
 						*UpSelectorAction_;
 
+				QMap<QString, QAction*> ActionID2Action_;
+
 				enum
 				{
 					EAOpenTorrent_,
@@ -165,8 +167,8 @@ namespace LeechCraft
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				// IHaveShortcuts
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, ActionInfo> GetActionInfo () const;
 
 				// IStartupWizard
 				QList<QWizardPage*> GetWizardPages () const;

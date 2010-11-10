@@ -72,8 +72,8 @@ namespace LeechCraft
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, ActionInfo> GetActionInfo () const;
 			public slots:
 				void newTabRequested ();
 			signals:

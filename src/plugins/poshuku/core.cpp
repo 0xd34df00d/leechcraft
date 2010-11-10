@@ -451,7 +451,7 @@ namespace LeechCraft
 				return PluginManager_.get ();
 			}
 
-			void Core::SetShortcut (int name, const QKeySequence& shortcut)
+			void Core::SetShortcut (const QString& name, const QKeySequences_t& shortcut)
 			{
 				Q_FOREACH (BrowserWidget *widget, Widgets_)
 					widget->SetShortcut (name, shortcut);

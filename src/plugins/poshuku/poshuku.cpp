@@ -151,9 +151,9 @@ namespace LeechCraft
 						SLOT (handleCheckFavorites ()));
 
 				const IShortcutProxy *proxy = coreProxy->GetShortcutProxy ();
-				ImportXbel_->setShortcut (proxy->GetShortcut (this, EAImportXbel_));
-				ExportXbel_->setShortcut (proxy->GetShortcut (this, EAExportXbel_));
-				CheckFavorites_->setShortcut (proxy->GetShortcut (this, EACheckFavorites_));
+				ImportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAImportXbel_"));
+				ExportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAExportXbel_"));
+				CheckFavorites_->setShortcuts (proxy->GetShortcuts (this, "EACheckFavorites_"));
 
 				ToolMenu_ = new QMenu ("Poshuku",
 						Core::Instance ().GetProxy ()->GetMainWindow ());
@@ -256,39 +256,33 @@ namespace LeechCraft
 				return Core::Instance ().MakeWebView ();
 			}
 
-			void Poshuku::SetShortcut (int name, const QKeySequence& sequence)
+			void Poshuku::SetShortcut (const QString& name, const QKeySequences_t& sequences)
 			{
-				if (name <= BrowserWidget::ActionMax)
-					Core::Instance ().SetShortcut (name, sequence);
+				if (name.startsWith ("Browser"))
+					Core::Instance ().SetShortcut (name, sequences);
 				else
 				{
 					QAction *act = 0;
-					switch (name)
-					{
-						case EAImportXbel_:
-							act = ImportXbel_;
-							break;
-						case EAExportXbel_:
-							act = ExportXbel_;
-							break;
-						case EACheckFavorites_:
-							act = CheckFavorites_;
-							break;
-					}
+					if (name == "EAImportXbel_")
+						act = ImportXbel_;
+					else if (name == "EAExportXbel_")
+						act = ExportXbel_;
+					else if (name == "EACheckFavorites_")
+						act = CheckFavorites_;
 					if (act)
-						act->setShortcut (sequence);
+						act->setShortcuts (sequences);
 				}
 			}
 
-			QMap<int, LeechCraft::ActionInfo> Poshuku::GetActionInfo () const
+			QMap<QString, ActionInfo> Poshuku::GetActionInfo () const
 			{
 				BrowserWidget bw;
-				QMap<int, LeechCraft::ActionInfo> result = bw.GetActionInfo ();
-				result [EAImportXbel_] = ActionInfo (ImportXbel_->text (),
+				QMap<QString, ActionInfo> result = bw.GetActionInfo ();
+				result ["EAImportXbel_"] = ActionInfo (ImportXbel_->text (),
 						QKeySequence (), ImportXbel_->icon ());
-				result [EAExportXbel_] = ActionInfo (ExportXbel_->text (),
+				result ["EAExportXbel_"] = ActionInfo (ExportXbel_->text (),
 						QKeySequence (), ExportXbel_->icon ());
-				result [EACheckFavorites_] = ActionInfo (CheckFavorites_->text (),
+				result ["EACheckFavorites_"] = ActionInfo (CheckFavorites_->text (),
 						QKeySequence (), CheckFavorites_->icon ());
 				return result;
 			}
