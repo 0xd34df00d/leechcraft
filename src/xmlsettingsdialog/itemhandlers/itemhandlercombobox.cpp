@@ -50,8 +50,9 @@ namespace LeechCraft
 		if (item.hasAttribute ("maxVisibleItems"))
 			box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
 
-		if (item.hasAttribute ("mayHaveDataSource") &&
-				item.attribute ("mayHaveDataSource").toLower () == "true")
+		bool mayHaveDataSource = item.hasAttribute ("mayHaveDataSource") &&
+				item.attribute ("mayHaveDataSource").toLower () == "true";
+		if (mayHaveDataSource)
 		{
 			QString prop = item.attribute ("property");
 			Factory_->RegisterDatasourceSetter (prop,
@@ -98,11 +99,11 @@ namespace LeechCraft
 		int pos = box->findData (XSD_->GetValue (item));
 		if (pos != -1)
 			box->setCurrentIndex (pos);
-		else
+		else if (!mayHaveDataSource)
 			qWarning () << Q_FUNC_INFO
 				<< box
 				<< XSD_->GetValue (item)
-				<< "not found";
+				<< "not found (and this item may not have a datasource)";
 
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
