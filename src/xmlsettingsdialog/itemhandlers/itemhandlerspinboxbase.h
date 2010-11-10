@@ -90,7 +90,7 @@ namespace LeechCraft
 			box->setProperty ("ItemHandler",
 					QVariant::fromValue<QObject*> (this));
 			int row = lay->rowCount ();
-			lay->addWidget (label, row, 0);
+			lay->addWidget (label, row, 0, Qt::AlignRight);
 			lay->addWidget (box, row, 1);
 		}
 
