@@ -54,7 +54,7 @@ namespace LeechCraft
 		 * the class that created in in order to retrieve it later.
 		 *
 		 * pwidget is guaranteed to have a layout, and the layout is
-		 * QFormLayout.
+		 * QGridLayout.
 		 *
 		 * @param[in] element The element to make representation for.
 		 * @param[in] pwidget The parent widget of the representation

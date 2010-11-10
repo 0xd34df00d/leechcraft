@@ -19,7 +19,7 @@
 #include "itemhandlercombobox.h"
 #include <boost/bind.hpp>
 #include <QLabel>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QComboBox>
 #include <QtDebug>
 #include "../scripter.h"
@@ -44,7 +44,7 @@ namespace LeechCraft
 
 	void ItemHandlerCombobox::Handle (const QDomElement& item, QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QComboBox *box = new QComboBox (XSD_);
 		box->setObjectName (item.attribute ("property"));
 		if (item.hasAttribute ("maxVisibleItems"))
@@ -111,7 +111,10 @@ namespace LeechCraft
 		box->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
-		lay->addRow (label, box);
+		int row = lay->rowCount ();
+		lay->addWidget (label, row, 0, Qt::AlignRight);
+		lay->addWidget (box, row, 1);
+		
 	}
 
 	void ItemHandlerCombobox::SetValue (QWidget *widget, const QVariant& value) const

@@ -17,7 +17,7 @@
  **********************************************************************/
 #include "itemhandlerspinboxrange.h"
 #include <QLabel>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QtDebug>
 #include "../rangewidget.h"
 
@@ -39,7 +39,7 @@ namespace LeechCraft
 	void ItemHandlerSpinboxRange::Handle (const QDomElement& item,
 			QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 		RangeWidget *widget = new RangeWidget ();
@@ -58,7 +58,9 @@ namespace LeechCraft
 		widget->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
-		lay->addRow (label, widget);
+		int row = lay->rowCount ();
+		lay->addWidget (label, row, 0, Qt::AlignRight);
+		lay->addWidget (widget, row, 1);
 	}
 
 	QVariant ItemHandlerSpinboxRange::GetValue (const QDomElement& item,

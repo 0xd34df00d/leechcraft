@@ -21,7 +21,7 @@
 
 #include "itemhandlerstringgetvalue.h"
 #include <boost/function.hpp>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QLabel>
 #include <QtDebug>
 #include "../xmlsettingsdialog.h"
@@ -57,7 +57,7 @@ namespace LeechCraft
 
 		void Handle (const QDomElement& item, QWidget *pwidget)
 		{
-			QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+			QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 			QLabel *label = new QLabel (XSD_->GetLabel (item));
 			label->setWordWrap (false);
 			WidgetType *box = new WidgetType (XSD_);
@@ -89,8 +89,9 @@ namespace LeechCraft
 
 			box->setProperty ("ItemHandler",
 					QVariant::fromValue<QObject*> (this));
-
-			lay->addRow (label, box);
+			int row = lay->rowCount ();
+			lay->addWidget (label, row, 0);
+			lay->addWidget (box, row, 1);
 		}
 
 		void SetValue (QWidget *widget,

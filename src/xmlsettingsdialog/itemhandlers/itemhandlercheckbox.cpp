@@ -19,7 +19,7 @@
 #include "itemhandlercheckbox.h"
 #include <QCheckBox>
 #include <QLabel>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -40,7 +40,7 @@ namespace LeechCraft
 	void ItemHandlerCheckbox::Handle (const QDomElement& item,
 			QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QCheckBox *box = new QCheckBox (XSD_->GetLabel (item));
 		box->setObjectName (item.attribute ("property"));
 
@@ -55,7 +55,7 @@ namespace LeechCraft
 		box->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
-		lay->addRow (box);
+		lay->addWidget (box, lay->rowCount (), 0, 1, 2, Qt::AlignTop);
 	}
 
 	void ItemHandlerCheckbox::SetValue (QWidget *widget,

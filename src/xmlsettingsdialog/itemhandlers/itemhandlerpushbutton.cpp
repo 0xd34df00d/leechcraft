@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "itemhandlerpushbutton.h"
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QPushButton>
 
 namespace LeechCraft
@@ -37,11 +37,11 @@ namespace LeechCraft
 
 	void ItemHandlerPushButton::Handle (const QDomElement& item, QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QPushButton *button = new QPushButton (XSD_);
 		button->setObjectName (item.attribute ("name"));
 		button->setText (XSD_->GetLabel (item));
-		lay->addRow (button);
+		lay->addWidget (button, lay->rowCount (), 0, 1, 2);
 		connect (button,
 				SIGNAL (released ()),
 				XSD_,

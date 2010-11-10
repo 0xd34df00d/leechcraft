@@ -54,7 +54,7 @@ namespace LeechCraft
 		 *
 		 * When laying out the widgets in the visual representation,
 		 * widget should be used as a parent widget. It's guaranteed to
-		 * have QFormLayout as layout() set.
+		 * have QGridLayout as layout() set.
 		 *
 		 * The widget that is named after property name (defined in the
 		 * element) would be used later in SetValue().

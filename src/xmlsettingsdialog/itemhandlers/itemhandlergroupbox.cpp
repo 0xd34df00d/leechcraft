@@ -19,7 +19,7 @@
 #include "itemhandlergroupbox.h"
 #include <QLabel>
 #include <QGroupBox>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -42,9 +42,7 @@ namespace LeechCraft
 	{
 		QGroupBox *box = new QGroupBox (XSD_->GetLabel (item));
 		box->setObjectName (item.attribute ("property"));
-		QFormLayout *groupLayout = new QFormLayout ();
-		groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
-		groupLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+		QGridLayout *groupLayout = new QGridLayout ();
 		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
 		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -62,8 +60,8 @@ namespace LeechCraft
 
 		XSD_->ParseEntity (item, box);
 
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
-		lay->addRow (box);
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
+		lay->addWidget (box, lay->rowCount (), 0, 1, 2);
 	}
 
 	void ItemHandlerGroupbox::SetValue (QWidget *widget,

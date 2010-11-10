@@ -41,7 +41,7 @@ class QStackedWidget;
 class QListWidget;
 class QPushButton;
 class QDomElement;
-class QFormLayout;
+class QGridLayout;
 class QDomDocument;
 class QAbstractItemModel;
 

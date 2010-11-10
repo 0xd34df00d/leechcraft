@@ -19,7 +19,7 @@
 #include "itemhandlerpath.h"
 #include <QDir>
 #include <QLabel>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QtDebug>
 #include "../filepicker.h"
 
@@ -41,7 +41,7 @@ namespace LeechCraft
 	void ItemHandlerPath::Handle (const QDomElement& item,
 			QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
@@ -68,7 +68,9 @@ namespace LeechCraft
 		picker->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
-		lay->addRow (label, picker);
+		int row = lay->rowCount ();
+		lay->addWidget (label, row, 0);
+		lay->addWidget (picker, row, 1);
 	}
 
 	QVariant ItemHandlerPath::GetValue (const QDomElement& item,

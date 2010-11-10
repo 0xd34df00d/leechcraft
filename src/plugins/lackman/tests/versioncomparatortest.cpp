@@ -88,6 +88,6 @@ private slots:
 };
 
 
-#include "moc_versioncomparatortest.cxx"
+#include "moc_versioncomparatortest.cxx"	
 
 QTEST_MAIN (TestVersionComparator)

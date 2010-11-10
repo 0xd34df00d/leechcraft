@@ -19,7 +19,7 @@
 #include "itemhandlerlineedit.h"
 #include <QLabel>
 #include <QLineEdit>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QApplication>
 #include <QtDebug>
 
@@ -41,7 +41,7 @@ namespace LeechCraft
 	void ItemHandlerLineEdit::Handle (const QDomElement& item,
 			QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
@@ -63,7 +63,10 @@ namespace LeechCraft
 		edit->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
-		lay->addRow (label, edit);
+		int row = lay->rowCount ();
+		lay->addWidget (label, row, 0, Qt::AlignRight);
+		lay->addWidget (edit, row, 1);
+		
 	}
 
 	void ItemHandlerLineEdit::SetValue (QWidget *widget, const QVariant& value) const
