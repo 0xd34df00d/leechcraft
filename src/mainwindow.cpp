@@ -24,6 +24,7 @@
 #include <QChildEvent>
 #include <QToolButton>
 #include <QStandardItemModel>
+#include <QStringListModel>
 #include <QCursor>
 #include <QCheckBox>
 #include <QShortcut>
@@ -43,7 +44,6 @@
 #include "childactioneventfilter.h"
 #include "logtoolbox.h"
 #include "settingssink.h"
-#include "iconchooser.h"
 #include "graphwidget.h"
 #include "shortcutmanager.h"
 #include "appstyler.h"
@@ -309,14 +309,9 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	menu->addMenu (Ui_.MenuHelp_);
 	Ui_.ActionMenu_->setMenu (menu);
 
-	IconChooser *ic = new IconChooser (SkinEngine::Instance ().ListIcons (),
-			this);
-	connect (ic,
-			SIGNAL (requestNewIconSet ()),
-			this,
-			SLOT (updateIconSet ()));
-
-	XmlSettingsDialog_->SetCustomWidget ("IconSet", ic);
+	XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
+	XmlSettingsDialog_->SetDataSource ("IconSet",
+			new QStringListModel (SkinEngine::Instance ().ListIcons ()));
 
 	SettingsSink_ = new SettingsSink ("LeechCraft",
 			XmlSettingsDialog_,
@@ -711,6 +706,13 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 	setAcceptDrops (true);
 
+	SetNewTabDataSource ();
+
+	new StartupWizard (this);
+}
+
+void LeechCraft::MainWindow::SetNewTabDataSource ()
+{
 	QStandardItemModel *newTabsModel = new QStandardItemModel (this);
 	QStandardItem *defaultItem = new QStandardItem (tr ("Context-dependent"));
 	defaultItem->setData ("contextdependent", Qt::UserRole);
@@ -727,11 +729,11 @@ void LeechCraft::MainWindow::doDelayedInit ()
 		newTabsModel->appendRow (item);
 	}
 
-	qDebug () << Q_FUNC_INFO << "DefaultNewTab" << XmlSettingsManager::Instance ()->property ("DefaultNewTab");
+	qDebug () << Q_FUNC_INFO
+			<< "DefaultNewTab"
+			<< XmlSettingsManager::Instance ()->property ("DefaultNewTab");
 
 	XmlSettingsDialog_->SetDataSource ("DefaultNewTab", newTabsModel);
-
-	new StartupWizard (this);
 }
 
 void LeechCraft::MainWindow::FillTray ()

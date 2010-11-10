@@ -263,7 +263,6 @@ SET (SRCS
 	sqlstoragebackend.cpp
 	debugmessagehandler.cpp
 	application.cpp
-	iconchooser.cpp
 	handlerchoicedialog.cpp
 	tabwidget.cpp
 	graphwidget.cpp
@@ -308,7 +307,6 @@ SET (HEADERS
 	sqlstoragebackend.h
 	debugmessagehandler.h
 	application.h
-	iconchooser.h
 	handlerchoicedialog.h
 	tabwidget.h
 	graphwidget.h

@@ -132,6 +132,7 @@ namespace LeechCraft
 		void updateIconSet ();
 		void doDelayedInit ();
 	private:
+		void SetNewTabDataSource ();
 		void FillTray ();
 		void FillToolMenu ();
 		void InitializeShortcuts ();

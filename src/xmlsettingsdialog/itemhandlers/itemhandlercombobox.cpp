@@ -124,14 +124,14 @@ namespace LeechCraft
 			return;
 		}
 
-		int pos = combobox->findData (value);		
+		int pos = combobox->findData (value);
 		if (pos == -1)
 		{
 			QString text = value.toString ();
 			if (!text.isNull ())
 				pos = combobox->findText (text);
 		}
-		
+
 		if (pos != -1)
 			combobox->setCurrentIndex (pos);
 		else

@@ -58,8 +58,11 @@
 					<label lang="en" value="Right" />
 				</option>
 			</item>
-			<item type="customwidget" name="IconSet">
+			<item type="combobox" property="IconSet" mayHaveDataSource="true">
 				<label lang="en" value="Icon set:" />
+				<option name="oxygen" default="true">
+					<label lang="en" value="Oxygen" />
+				</option>
 			</item>
 			<item type="customwidget" name="AppQStyle">
 				<label lang="en" value="Style:" />
