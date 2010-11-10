@@ -275,6 +275,8 @@ namespace LeechCraft
 				case PackageInfo::TTranslation:
 					result = Proxy_->GetIcon ("lackman_translation");
 					break;
+				case PackageInfo::TData:
+					result = Proxy_->GetIcon ("lackman_data");
 				}
 				return result;
 			}
@@ -346,6 +348,9 @@ namespace LeechCraft
 					break;
 				case PackageInfo::TTranslation:
 					SafeCD (dir, "translations");
+					break;
+				case PackageInfo::TData:
+					SafeCD (dir, "data");
 					break;
 				}
 				return dir;

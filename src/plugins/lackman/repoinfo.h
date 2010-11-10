@@ -117,9 +117,32 @@ namespace LeechCraft
 			{
 				enum Type
 				{
+					/** @brief Package with a plugin for LeechCraft.
+					 * 
+					 * Contents of packages of this type would be
+					 * installed into ~/.leechcraft/plugins/scriptable/$language
+					 */
 					TPlugin,
+					/** @brief Translation (or a set of translations).
+					 * 
+					 * Contents of packages of this type would be
+					 * installed into ~/.leechcraft/translations
+					 */
 					TTranslation,
-					TIconset
+					/** @brief Iconset package.
+					 * 
+					 * Contents of packages of this type would be
+					 * installed into ~/.leechcraft/icons
+					 */
+					TIconset,
+					/** @brief Plain data package.
+					 * 
+					 * Use this if none of the above applies.
+					 * 
+					 * Contents of packages of this type would be
+					 * installed into ~/.leechcraft/data
+					 */
+					TData
 				} Type_;
 				QString Language_;
 				QString Description_;
