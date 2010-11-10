@@ -193,7 +193,7 @@ namespace LeechCraft
 			void Plugin::BuildActions ()
 			{
 				UpdateAll_ = new QAction (tr ("Update all repos"), this);
-				UpdateAll_->setProperty ("ActionIcon", "refreshall");
+				UpdateAll_->setProperty ("ActionIcon", "refresh");
 				connect (UpdateAll_,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
