@@ -271,7 +271,6 @@ SET (SRCS
 	networkdiskcache.cpp
 	networkaccessmanager.cpp
 	coreproxy.cpp
-	appstyler.cpp
 	tagsmanager.cpp
 	tagsviewer.cpp
 	directorywatcher.cpp
@@ -315,7 +314,6 @@ SET (HEADERS
 	networkdiskcache.h
 	networkaccessmanager.h
 	coreproxy.h
-	appstyler.h
 	tagsmanager.h
 	tagsviewer.h
 	directorywatcher.h

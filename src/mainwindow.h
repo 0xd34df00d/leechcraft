@@ -116,6 +116,7 @@ namespace LeechCraft
 		void on_ActionShowStatusBar__triggered ();
 		void on_ActionMenu__triggered ();
 		void handleQuit ();
+		void handleAppStyle ();
 		void handleLanguage ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_ActionLogger__triggered ();

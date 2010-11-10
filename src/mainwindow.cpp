@@ -25,6 +25,7 @@
 #include <QToolButton>
 #include <QStandardItemModel>
 #include <QStringListModel>
+#include <QStyleFactory>
 #include <QCursor>
 #include <QCheckBox>
 #include <QShortcut>
@@ -46,7 +47,6 @@
 #include "settingssink.h"
 #include "graphwidget.h"
 #include "shortcutmanager.h"
-#include "appstyler.h"
 #include "tagsviewer.h"
 #include "application.h"
 #include "startupwizard.h"
@@ -286,7 +286,12 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			&Core::Instance (),
 			SLOT (handleSettingClicked (const QString&)));
 
-	XmlSettingsDialog_->SetCustomWidget ("AppQStyle", new AppStyler (this));
+	XmlSettingsManager::Instance ()->RegisterObject ("AppQStyle",
+			this, "handleAppStyle");
+	XmlSettingsDialog_->SetDataSource ("AppQStyle",
+			new QStringListModel (QStyleFactory::keys ()));
+	handleAppStyle ();
+
 	XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
 
 	XmlSettingsManager::Instance ()->RegisterObject ("Language",
@@ -521,6 +526,23 @@ void LeechCraft::MainWindow::handleQuit ()
 #ifdef QT_DEBUG
 	qDebug () << "Destroyed fine";
 #endif
+}
+
+void LeechCraft::MainWindow::handleAppStyle ()
+{
+	QString style = XmlSettingsManager::Instance ()->
+			property ("AppQStyle").toString ();
+
+	if (style.isEmpty ())
+	{
+#ifdef Q_WS_WIN
+		style = "Plastique";
+		XmlSettingsManager::Instance ()->
+		setProperty ("AppQStyle", style);
+#endif
+	}
+
+	QApplication::setStyle (style);
 }
 
 void LeechCraft::MainWindow::handleLanguage ()
@@ -970,4 +992,3 @@ void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
 	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->count ()))
 		Ui_.MainTabWidget_->setCurrentIndex (index);
 }
-

@@ -64,8 +64,11 @@
 					<label lang="en" value="Oxygen" />
 				</option>
 			</item>
-			<item type="customwidget" name="AppQStyle">
+			<item type="combobox" property="AppQStyle" mayHaveDataSource="true">
 				<label lang="en" value="Style:" />
+				<option name="Plastique" default="true">
+					<label lang="en" value="Plastique" />
+				</option>
 			</item>
 			<item type="combobox" property="Language" mayHaveDataSource="true">
 				<label lang="en" value="Language:" />
