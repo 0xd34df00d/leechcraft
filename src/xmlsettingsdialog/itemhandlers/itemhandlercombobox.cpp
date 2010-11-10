@@ -24,6 +24,7 @@
 #include <QtDebug>
 #include "../scripter.h"
 #include "../itemhandlerfactory.h"
+#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -123,7 +124,14 @@ namespace LeechCraft
 			return;
 		}
 
-		int pos = combobox->findData (value);
+		int pos = combobox->findData (value);		
+		if (pos == -1)
+		{
+			QString text = value.toString ();
+			if (!text.isNull ())
+				pos = combobox->findText (text);
+		}
+		
 		if (pos != -1)
 			combobox->setCurrentIndex (pos);
 		else
@@ -143,7 +151,10 @@ namespace LeechCraft
 				<< object;
 			return QVariant ();
 		}
-		return combobox->itemData (combobox->currentIndex ());
+		QVariant result = combobox->itemData (combobox->currentIndex ());
+		if (result.isNull ())
+			result = combobox->currentText ();
+		return result;
 	}
 
 	void ItemHandlerCombobox::SetDataSource (const QString& prop, QAbstractItemModel *model, Util::XmlSettingsDialog *xsd)
@@ -162,6 +173,13 @@ namespace LeechCraft
 
 		QVariant data = xsd->GetValue (Propname2Item_ [prop]);
 		int pos = box->findData (data);
+		if (pos == -1)
+		{
+			QString text = data.toString ();
+			if (!text.isNull ())
+				pos = box->findText (text);
+		}
+
 		if (pos != -1)
 			box->setCurrentIndex (pos);
 		else
