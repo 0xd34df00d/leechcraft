@@ -58,8 +58,11 @@ namespace LeechCraft
 				QVariant::fromValue<QObject*> (this));
 
 		int row = lay->rowCount ();
+		lay->setColumnMinimumWidth (0, 10);
+		lay->setColumnStretch (0, 1);
+		lay->setColumnStretch (1, 10);
 		lay->addWidget (label, row, 0);
-		lay->addWidget (picker, row, 1);
+		lay->addWidget (picker, row, 1, Qt::AlignLeft);
 	}
 
 	QVariant ItemHandlerColor::GetValue (const QDomElement& item, QVariant value) const
