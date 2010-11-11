@@ -66,7 +66,6 @@ namespace LeechCraft
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignRight);
 		lay->addWidget (edit, row, 1);
-		
 	}
 
 	void ItemHandlerLineEdit::SetValue (QWidget *widget, const QVariant& value) const
