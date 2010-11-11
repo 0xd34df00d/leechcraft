@@ -53,7 +53,7 @@ namespace LeechCraft
 				mutable QHash<QModelIndex, bool> WasUpgradable_;
 
 				QWidget * const Viewport_;
-				PackagesModel * const Model_;
+				QAbstractItemModel * const Model_;
 			public:
 				PackagesDelegate (QTreeView* = 0);
 

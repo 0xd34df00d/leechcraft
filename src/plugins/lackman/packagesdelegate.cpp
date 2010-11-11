@@ -49,8 +49,9 @@ namespace LeechCraft
 			PackagesDelegate::PackagesDelegate (QTreeView *parent)
 			: QStyledItemDelegate (parent)
 			, Viewport_ (parent->viewport ())
-			, Model_ (qobject_cast<PackagesModel*> (parent->model ()))
+			, Model_ (parent->model ())
 			{
+				qDebug () << Q_FUNC_INFO << parent->model ();
 				connect (parent->verticalScrollBar (),
 						SIGNAL (valueChanged (int)),
 						this,
@@ -67,7 +68,7 @@ namespace LeechCraft
 						SLOT (handleRowActionFinished (int)),
 						Qt::QueuedConnection);
 
-				connect (&Core::Instance (),
+				connect (Core::Instance ().GetPendingManager (),
 						SIGNAL (packageUpdateToggled (int, bool)),
 						this,
 						SLOT (handlePackageUpdateToggled (int, bool)));
@@ -432,17 +433,27 @@ namespace LeechCraft
 				}
 			}
 
+			namespace
+			{
+				QAbstractItemModel* GetRealModel (QAbstractItemModel *source,
+							QList<QAbstractProxyModel*> *proxyChain = 0)
+				{
+					QAbstractProxyModel *proxy = 0;
+					while ((proxy = qobject_cast<QAbstractProxyModel*> (source)))
+					{
+						if (proxyChain)
+							proxyChain->push_front (proxy);
+						source = proxy->sourceModel ();
+					}
+					return source;
+				}
+			}
+
 			void PackagesDelegate::handleRowActionFinished (int row)
 			{
 				// Front — deepest proxy, back — outermost.
 				QList<QAbstractProxyModel*> proxyChain;
-				QAbstractItemModel *realModel = Model_;
-				QAbstractProxyModel *proxy = 0;
-				while ((proxy = qobject_cast<QAbstractProxyModel*> (realModel)))
-				{
-					proxyChain.push_front (proxy);
-					realModel = proxy->sourceModel ();
-				}
+				QAbstractItemModel *realModel = GetRealModel (Model_, &proxyChain);
 
 				QModelIndex index = realModel->index (row, 0);
 
@@ -463,7 +474,9 @@ namespace LeechCraft
 
 			void PackagesDelegate::handlePackageUpdateToggled (int id, bool enabled)
 			{
-				int row = Model_->GetRow (id);
+				PackagesModel *realModel =
+						qobject_cast<PackagesModel*> (GetRealModel (Model_));
+				int row = realModel->GetRow (id);
 				if (Row2Update_.contains (row))
 					Row2Update_ [row]->defaultAction ()->setChecked (enabled);
 			}
