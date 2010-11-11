@@ -89,8 +89,6 @@ void ShortcutManager::AddObject (QObject *object,
 		QKeySequences_t sequences = settings.value (name,
 				QVariant::fromValue<QKeySequences_t> (info [name].Seqs_)).value<QKeySequences_t> ();
 
-		qDebug () << "read" << sequences << "for" << name;
-
 		QKeySequence sequence = sequences.value (0);
 
 		QStringList strings;
