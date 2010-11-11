@@ -16,10 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_SUBSCRIPTIONSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_SUBSCRIPTIONSMANAGER_H
-#include <QWidget>
-#include "ui_subscriptionsmanager.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_CLEANWEB_SUBSCRIPTIONADDDIALOG_H
+#define PLUGINS_POSHUKU_PLUGINS_CLEANWEB_SUBSCRIPTIONADDDIALOG_H
+#include <QDialog>
+#include "ui_subscriptionadddialog.h"
+
+class QStandardItem;
+class QDomElement;
 
 namespace LeechCraft
 {
@@ -31,24 +34,26 @@ namespace LeechCraft
 			{
 				namespace CleanWeb
 				{
-					class SubscriptionsManager : public QWidget
+					class SubscriptionAddDialog : public QDialog
 					{
 						Q_OBJECT
 
-						Ui::SubscriptionsManager Ui_;
+						Ui::SubscriptionAddDialog Ui_;
+						QList<QStandardItem*> Items_;
 					public:
-						SubscriptionsManager (QWidget* = 0);
+						SubscriptionAddDialog (QWidget* = 0);
+
+						QString GetURL () const;
+						QString GetName () const;
+
+						QList<QUrl> GetAdditionalSubscriptions () const;
 					private:
-						void AddCustom (const QString&, const QString&);
-					private slots:
-						void on_AddButton__released ();
-						void on_RemoveButton__released ();
+						void Iterate (const QDomElement&, QStandardItem*);
 					};
-				};
-			};
-		};
-	};
-};
+				}
+			}
+		}
+	}
+}
 
 #endif
-
