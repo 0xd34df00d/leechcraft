@@ -215,7 +215,7 @@ QDir LeechCraft::Util::GetUserDir (const QString& opath)
 
 	if (!home.exists (path))
 		throw std::runtime_error (qPrintable (QString ("The specified path doesn't exist: %1")
-					.arg (QDir::toNativeSeparators (home.filePath (path))));
+					.arg (QDir::toNativeSeparators (home.filePath (path)))));
 
 	if (home.cd (path))
 		return home;
