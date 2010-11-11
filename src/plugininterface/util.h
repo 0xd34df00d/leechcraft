@@ -154,7 +154,7 @@ namespace LeechCraft
 		 */
 		PLUGININTERFACE_API QString GetLanguage ();
 
-		/** @brief Creates a path if it isn't existing.
+		/** @brief Creates a path if it doesn't exist.
 		 *
 		 * Creates a relative path ~/.leechcraft/path and throws an
 		 * exception if this could not be done or if such path already
@@ -166,6 +166,18 @@ namespace LeechCraft
 		 * created.
 		 */
 		PLUGININTERFACE_API QDir CreateIfNotExists (const QString& path);
+
+		/** @brief Returns the path relative to user directory.
+		 *
+		 * Returns a QDir object that represents the ~/.leechcraft/path
+		 * or throws an exceptions if this path doesn't exist.
+		 *
+		 * @param[in] path The path to return relative to ~/.leechcraft
+		 * @return The QDir object for that path.
+		 * @exception std::runtime_error Throws if the path doesn't
+		 * exist.
+		 */
+		PLUGININTERFACE_API QDir GetUserDir (const QString& path);
 
 		/** @brief Returns a temporary filename.
 		 *

@@ -188,27 +188,40 @@ QString LeechCraft::Util::GetLanguage ()
 	return GetLocaleName ().left (2);
 }
 
-QDir LeechCraft::Util::CreateIfNotExists (const QString& path)
+QDir LeechCraft::Util::CreateIfNotExists (const QString& opath)
 {
+	QString path = opath;
+
 	QDir home = QDir::home ();
-	home.cd (".leechcraft");
-	if (home.exists (path) && !home.cd (path))
-	{
-		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
-					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-	}
-	home = QDir::home ();
-	home.cd (".leechcraft");
-	if (!home.exists (path) && !home.mkpath (path))
-	{
+	path.prepend (".leechcraft/");
+
+	if (!home.exists (path) &&
+			!home.mkpath (path))
 		throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
 					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-	}
 
-	home = QDir::home ();
-	home.cd (".leechcraft");
-	home.cd (path);
-	return home;
+	if (home.cd (path))
+		return home;
+	else
+		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+					.arg (QDir::toNativeSeparators (home.filePath (path)))));
+}
+
+QDir LeechCraft::Util::GetUserDir (const QString& opath)
+{
+	QString path = opath;
+	QDir home = QDir::home ();
+	path.prepend (".leechcraft/");
+
+	if (!home.exists (path))
+		throw std::runtime_error (qPrintable (QString ("The specified path doesn't exist: %1")
+					.arg (QDir::toNativeSeparators (home.filePath (path))));
+
+	if (home.cd (path))
+		return home;
+	else
+		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+		.arg (QDir::toNativeSeparators (home.filePath (path)))));
 }
 
 QString LeechCraft::Util::GetTemporaryName (const QString& pattern)
