@@ -62,6 +62,8 @@ namespace LeechCraft
 
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		lay->addWidget (box, lay->rowCount (), 0, 1, 2);
+		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+		lay->addItem (verticalSpacer, lay->rowCount (), 0);
 	}
 
 	void ItemHandlerGroupbox::SetValue (QWidget *widget,
