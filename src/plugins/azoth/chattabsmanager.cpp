@@ -61,7 +61,8 @@ namespace LeechCraft
 					return;
 				}
 
-				QPointer<ChatTab> tab (new ChatTab (idx));
+				// TODO don't hardcode the first variant
+				QPointer<ChatTab> tab (new ChatTab (idx, entry->Variants ().first ()));
 				Index2Tab_ [idx] = tab;
 				emit addNewTab (entry->GetEntryName(), tab);
 			}

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "chattab.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -31,9 +32,11 @@ namespace LeechCraft
 				S_ParentMultiTabs_ = obj;
 			}
 
-			ChatTab::ChatTab (const QPersistentModelIndex& idx, QWidget *parent)
+			ChatTab::ChatTab (const QPersistentModelIndex& idx,
+					const QString& variant, QWidget *parent)
 			: QWidget (parent)
 			, Index_ (idx)
+			, Variant_ (variant)
 			{
 				Ui_.setupUi (this);
 			}
@@ -59,6 +62,47 @@ namespace LeechCraft
 
 			void ChatTab::Remove ()
 			{
+			}
+
+			void ChatTab::on_MsgEdit__returnPressed ()
+			{
+				if (!Index_.isValid ())
+					return;
+
+				QString text = Ui_.MsgEdit_->text ();
+				if (text.isEmpty ())
+					return;
+
+				Ui_.MsgEdit_->clear ();
+
+				Plugins::ICLEntry *e = GetEntry ();
+				QStringList currentVariants = e->Variants ();
+				QString variant = currentVariants.contains (Variant_) ?
+						Variant_ :
+						currentVariants.first ();
+				Plugins::IMessage *msg = e->CreateMessage (Plugins::IMessage::MTChat, variant, text);
+				msg->Send ();
+			}
+
+			Plugins::ICLEntry* ChatTab::GetEntry ()
+			{
+				if (!Index_.isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "stored persistent index is invalid";
+					return 0;
+				}
+
+				QObject *entryObj = Index_.data (Core::CLREntryObject).value<QObject*> ();
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
+				if (!entry)
+					qWarning () << Q_FUNC_INFO
+							<< "object"
+							<< entryObj
+							<< "from the index"
+							<< Index_
+							<< "doesn't implement Plugins::ICLEntry";
+				return entry;
 			}
 		}
 	}

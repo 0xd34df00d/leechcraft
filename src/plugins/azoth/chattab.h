@@ -22,6 +22,7 @@
 #include <QPointer>
 #include <interfaces/imultitabs.h>
 #include <QPersistentModelIndex>
+#include "interfaces/iclentry.h"
 #include "ui_chattab.h"
 
 namespace LeechCraft
@@ -40,16 +41,21 @@ namespace LeechCraft
 
 				Ui::ChatTab Ui_;
 				QPersistentModelIndex Index_;
+				QString Variant_;
 			public:
 				static void SetParentMultiTabs (QObject*);
 
-				ChatTab (const QPersistentModelIndex&, QWidget* = 0);
+				ChatTab (const QPersistentModelIndex&, const QString&, QWidget* = 0);
 
 				QList<QAction*> GetTabBarContextMenuActions () const;
 				QObject* ParentMultiTabs () const;
 				void NewTabRequested ();
 				QToolBar* GetToolBar () const;
 				void Remove ();
+			private slots:
+				void on_MsgEdit__returnPressed ();
+			private:
+				Plugins::ICLEntry* GetEntry ();
 			};
 
 			typedef QPointer<ChatTab> ChatTab_ptr;
