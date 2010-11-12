@@ -143,6 +143,11 @@ namespace LeechCraft
 					 * Strings in the list should not be null, though
 					 * they may be empty.
 					 *
+					 * The strings in the returned list should be sorted
+					 * in descending order according to importance. For
+					 * example, for XMPP protocol, the first variant
+					 * should be the resource with the highest priority.
+					 *
 					 * @return The list of variants of this entry.
 					 */
 					virtual QStringList Variants () const = 0;
@@ -155,6 +160,10 @@ namespace LeechCraft
 					 * particularly, a null one, the implementation must
 					 * choose the best variant itself: for example, the
 					 * resource with the highest priority in XMPP.
+					 *
+					 * No message should be sent as result of
+					 * CreateMessage(). Instead, one should later call
+					 * IMessage::Send() on the returned message.
 					 *
 					 * @param[in] type The type of the message.
 					 * @param[in] variant The variant to send to.
