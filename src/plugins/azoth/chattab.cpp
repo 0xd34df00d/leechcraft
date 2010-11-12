@@ -150,7 +150,9 @@ namespace LeechCraft
 					break;
 				}
 
-				string.append (msg->GetBody ());
+				QString body = msg->GetBody ();
+				body.replace ('\n', "<br />");
+				string.append (body);
 
 				QWebElement elem = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
 				elem.appendInside (QString ("<div>%1</div").arg (string));

@@ -296,6 +296,7 @@ namespace LeechCraft
 
 						GlooxCLEntry *entry = JID2CLEntry_ [jid];
 						GlooxMessage *gm = new GlooxMessage (msg, entry, session);
+						gm->SetDateTime (QDateTime::currentDateTime ());
 
 						entry->ReemitMessage (gm);
 					}
