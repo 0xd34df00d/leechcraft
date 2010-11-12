@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IMESSAGE_H
 #include <QString>
 #include <QDateTime>
+#include <QtPlugin>
 
 class QObject;
 
@@ -64,5 +65,8 @@ namespace LeechCraft
 		}
 	}
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IMessage,
+	"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IMessage/1.0");
 
 #endif

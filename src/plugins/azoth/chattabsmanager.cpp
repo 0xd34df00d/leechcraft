@@ -65,6 +65,7 @@ namespace LeechCraft
 				QPointer<ChatTab> tab (new ChatTab (idx, entry->Variants ().first ()));
 				Index2Tab_ [idx] = tab;
 				emit addNewTab (entry->GetEntryName(), tab);
+				emit raiseTab (tab);
 			}
 		}
 	}

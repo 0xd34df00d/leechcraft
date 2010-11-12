@@ -21,15 +21,25 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QMap>
+#include <QHash>
 #include <gloox/connectionlistener.h>
 #include <gloox/rosterlistener.h>
+#include <gloox/messagesessionhandler.h>
+#include <gloox/messagehandler.h>
+#include <gloox/jid.h>
+#include <interfaces/imessage.h>
 
 class QTimer;
 
 namespace gloox
 {
 	class Client;
-	class JID;
+	class RosterItem;
+
+	inline uint qHash (const JID& jid)
+	{
+		return qHash (QByteArray (jid.full ().c_str ()));
+	}
 }
 
 namespace LeechCraft
@@ -46,17 +56,23 @@ namespace LeechCraft
 
 					class GlooxAccount;
 					class GlooxCLEntry;
+					class GlooxMessage;
 
 					class ClientConnection : public QObject
 										   , public gloox::ConnectionListener
 										   , public gloox::RosterListener
+										   , public gloox::MessageSessionHandler
+										   , public gloox::MessageHandler
 					{
 						Q_OBJECT
 
 						boost::shared_ptr<gloox::Client> Client_;
 						QTimer *PollTimer_;
 						GlooxAccount *Account_;
-						QMap<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
+						QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
+
+						// Bare JID → resource → session.
+						QHash<gloox::JID, QMap<QString, gloox::MessageSession*> > Sessions_;
 					public:
 						ClientConnection (const gloox::JID&,
 								const QString&,
@@ -67,6 +83,8 @@ namespace LeechCraft
 						void Synchronize ();
 						gloox::Client* GetClient () const;
 						GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
+						GlooxMessage* CreateMessage (IMessage::MessageType,
+								const QString&, const QString&, gloox::RosterItem*);
 					protected:
 						// ConnectionListener
 						virtual void onConnect ();
@@ -92,6 +110,12 @@ namespace LeechCraft
 						virtual bool handleUnsubscriptionRequest (const gloox::JID&, const std::string&);
 						virtual void handleNonrosterPresence (const gloox::Presence&);
 						virtual void handleRosterError (const gloox::IQ&);
+
+						// MessageSessionHandler
+						virtual void handleMessageSession (gloox::MessageSession*);
+
+						// MessageHandler
+						virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
 					private slots:
 						void handlePollTimer ();
 					signals:

@@ -43,6 +43,7 @@ namespace LeechCraft
 									   , public IMessage
 					{
 						Q_OBJECT
+						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage)
 
 						MessageType Type_;
 						Direction Direction_;

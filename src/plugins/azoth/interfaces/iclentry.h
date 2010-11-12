@@ -175,6 +175,27 @@ namespace LeechCraft
 					virtual IMessage* CreateMessage (IMessage::MessageType type,
 							const QString& variant,
 							const QString& body) = 0;
+
+					/** @brief Returns all already sent or received
+					 * messages.
+					 *
+					 * Returns the list of all messages sent or received
+					 * during the session.
+					 *
+					 * @return The list of messages.
+					 */
+					virtual QList<IMessage*> GetAllMessages () const = 0;
+
+					/** @brief This signal is emitted when a new message
+					 * was received.
+					 *
+					 * @note This function is expected to be a signal in
+					 * subclasses.
+					 *
+					 * @param[out] msg The message that was just
+					 * received.
+					 */
+					virtual void gotMessage (QObject *msg) = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

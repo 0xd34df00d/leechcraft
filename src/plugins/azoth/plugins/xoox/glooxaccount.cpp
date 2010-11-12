@@ -182,61 +182,12 @@ namespace LeechCraft
 							const QString& variant, const QString& body,
 							gloox::RosterItem *ri)
 					{
-						gloox::JID jid = gloox::JID (ri->jid ());
-						gloox::JID bareJid = jid.bareJID ();
-						if (!Sessions_ [bareJid].contains (variant))
-						{
-							const std::string resource = variant.toUtf8 ().constData ();
-							if (ri->resource (resource))
-								jid.setResource (resource);
-
-							gloox::MessageSession *ses =
-									new gloox::MessageSession (ClientConnection_->GetClient (), jid);
-							InitializeSession (ses);
-							Sessions_ [bareJid] [variant] = ses;
-						}
-
-						GlooxMessage *msg = new GlooxMessage (type, IMessage::DOut,
-								ClientConnection_->GetCLEntry (bareJid),
-								Sessions_ [bareJid] [variant]);
-						msg->SetBody (body);
-						msg->SetDateTime (QDateTime::currentDateTime ());
-						return msg;
-					}
-
-					void GlooxAccount::handleMessage (const gloox::Message& msg,
-							gloox::MessageSession *ses)
-					{
-						gloox::JID bareJid = msg.from ().bareJID ();
-						QString variant = QString::fromUtf8 (msg.from ().resource ().c_str ());
-						if (!Sessions_ [bareJid].contains (variant))
-						{
-							InitializeSession (ses);
-							Sessions_ [bareJid] [variant] = ses;
-						}
-
-						GlooxCLEntry *entry = ClientConnection_->GetCLEntry (bareJid);
-						if (!entry)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "no JID for msg from"
-									<< bareJid.full ().c_str ();
-							return;
-						}
-
-						GlooxMessage *gm = new GlooxMessage (msg, entry, ses);
-
-						entry->ReemitMessage (gm);
+						return ClientConnection_->CreateMessage (type, variant, body, ri);
 					}
 
 					void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
 					{
 						emit gotCLItems (items);
-					}
-
-					void GlooxAccount::InitializeSession (gloox::MessageSession *ses)
-					{
-						ses->registerMessageHandler (this);
 					}
 				}
 			}

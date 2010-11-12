@@ -39,6 +39,8 @@ namespace LeechCraft
 			: CLModel_ (new QStandardItemModel (this))
 			, ChatTabsManager_ (new ChatTabsManager (this))
 			{
+				qRegisterMetaType<Plugins::IMessage*> ("LeechCraft::Plugins::Azoth::Plugins::IMessage*");
+				qRegisterMetaType<Plugins::IMessage*> ("Plugins::IMessage*");
 			}
 
 			Core& Core::Instance ()

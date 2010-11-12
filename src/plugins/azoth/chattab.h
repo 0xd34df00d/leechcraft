@@ -22,7 +22,6 @@
 #include <QPointer>
 #include <interfaces/imultitabs.h>
 #include <QPersistentModelIndex>
-#include "interfaces/iclentry.h"
 #include "ui_chattab.h"
 
 namespace LeechCraft
@@ -31,6 +30,12 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
+			namespace Plugins
+			{
+				class ICLEntry;
+				class IMessage;
+			}
+
 			class ChatTab : public QWidget
 						  , public IMultiTabsWidget
 			{
@@ -54,8 +59,13 @@ namespace LeechCraft
 				void Remove ();
 			private slots:
 				void on_MsgEdit__returnPressed ();
+				void handleEntryMessage (QObject*);
 			private:
 				Plugins::ICLEntry* GetEntry ();
+
+				/** Appends the message to the message view area.
+				 */
+				void AppendMessage (Plugins::IMessage*);
 			};
 
 			typedef QPointer<ChatTab> ChatTab_ptr;

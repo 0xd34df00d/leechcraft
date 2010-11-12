@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/azoth">
+    <file>resources/html/viewcontents.html</file>
+  </qresource>
+</RCC>

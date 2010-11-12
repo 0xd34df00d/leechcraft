@@ -95,13 +95,21 @@ namespace LeechCraft
 					}
 
 					IMessage* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
-							const QString& variant, const QString& msg)
+							const QString& variant, const QString& text)
 					{
-						return ParentAccountObject_->CreateMessage (type, variant, msg, RI_);
+						IMessage *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
+						Messages_ << msg;
+						return msg;
 					}
 
-					void GlooxCLEntry::ReemitMessage (IMessage *msg)
+					QList<IMessage*> GlooxCLEntry::GetAllMessages() const
 					{
+						return Messages_;
+					}
+
+					void GlooxCLEntry::ReemitMessage (QObject *msg)
+					{
+						Messages_ << qobject_cast<IMessage*> (msg);
 						emit gotMessage (msg);
 					}
 				}

@@ -29,6 +29,7 @@
 #include "glooxaccount.h"
 #include "config.h"
 #include "glooxclentry.h"
+#include "glooxmessage.h"
 
 namespace LeechCraft
 {
@@ -47,6 +48,8 @@ namespace LeechCraft
 					: Account_ (account)
 					{
 						Client_.reset (new gloox::Client (jid, pwd.toUtf8 ().constData ()));
+
+						Client_->registerMessageSessionHandler (this);
 
 						Client_->registerConnectionListener (this);
 						Client_->rosterManager ()->registerRosterListener (this, false);
@@ -93,6 +96,31 @@ namespace LeechCraft
 					GlooxCLEntry* ClientConnection::GetCLEntry (const gloox::JID& bareJid) const
 					{
 						return JID2CLEntry_ [bareJid];
+					}
+
+					GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
+							const QString& variant, const QString& body, gloox::RosterItem *ri)
+					{
+						gloox::JID jid = gloox::JID (ri->jid ());
+						gloox::JID bareJid = jid.bareJID ();
+						if (!Sessions_ [bareJid].contains (variant))
+						{
+							const std::string resource = variant.toUtf8 ().constData ();
+							if (ri->resource (resource))
+								jid.setResource (resource);
+
+							gloox::MessageSession *ses =
+									new gloox::MessageSession (Client_.get (), jid);
+							ses->registerMessageHandler (this);
+							Sessions_ [bareJid] [variant] = ses;
+						}
+
+						GlooxMessage *msg = new GlooxMessage (type, IMessage::DOut,
+								JID2CLEntry_ [bareJid],
+								Sessions_ [bareJid] [variant]);
+						msg->SetBody (body);
+						msg->SetDateTime (QDateTime::currentDateTime ());
+						return msg;
 					}
 
 					void ClientConnection::onConnect ()
@@ -197,7 +225,8 @@ namespace LeechCraft
 							GlooxCLEntry *entry = new GlooxCLEntry (i->second, Account_);
 							entries << entry;
 
-							JID2CLEntry_ [i->first] = entry;
+							gloox::JID jid (i->first);
+							JID2CLEntry_ [jid.bareJID ()] = entry;
 						}
 
 						if (entries.size ())
@@ -240,6 +269,35 @@ namespace LeechCraft
 					void ClientConnection::handleRosterError (const gloox::IQ&)
 					{
 						// TODO
+					}
+
+					void ClientConnection::handleMessageSession (gloox::MessageSession *session)
+					{
+						gloox::JID jid = session->target ();
+						gloox::JID bareJid = jid.bareJID ();
+						QString resource = QString::fromUtf8 (jid.resource ().c_str ());
+						if (!Sessions_ [bareJid].contains (resource))
+							Sessions_ [bareJid] [resource] = session;
+
+						session->registerMessageHandler (this);
+					}
+
+					void ClientConnection::handleMessage (const gloox::Message& msg, gloox::MessageSession *session)
+					{
+						gloox::JID jid = session->target ().bareJID ();
+
+						if (!JID2CLEntry_.contains (jid))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "map doesn't contain"
+									<< QString::fromUtf8 (jid.full ().c_str());
+							return;
+						}
+
+						GlooxCLEntry *entry = JID2CLEntry_ [jid];
+						GlooxMessage *gm = new GlooxMessage (msg, entry, session);
+
+						entry->ReemitMessage (gm);
 					}
 				}
 			}

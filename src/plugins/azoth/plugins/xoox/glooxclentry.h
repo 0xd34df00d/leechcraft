@@ -51,6 +51,7 @@ namespace LeechCraft
 						IAccount *ParentAccount_;
 						GlooxAccount *ParentAccountObject_;
 						gloox::RosterItem *RI_;
+						QList<IMessage*> Messages_;
 					public:
 						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
 
@@ -65,10 +66,11 @@ namespace LeechCraft
 						QStringList Variants () const;
 						IMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
+						QList<IMessage*> GetAllMessages () const;
 
-						void ReemitMessage (IMessage*);
+						void ReemitMessage (QObject*);
 					signals:
-						void gotMessage (IMessage*);
+						void gotMessage (QObject*);
 					};
 				}
 			}

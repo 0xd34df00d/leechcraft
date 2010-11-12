@@ -17,6 +17,10 @@
  **********************************************************************/
 
 #include "chattab.h"
+#include <QWebFrame>
+#include <QWebElement>
+#include "interfaces/iclentry.h"
+#include "interfaces/imessage.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -39,6 +43,16 @@ namespace LeechCraft
 			, Variant_ (variant)
 			{
 				Ui_.setupUi (this);
+
+				QObject *entryObj = Index_.data (Core::CLREntryObject).value<QObject*> ();
+				connect (entryObj,
+						SIGNAL (gotMessage (QObject*)),
+						this,
+						SLOT (handleEntryMessage (QObject*)));
+
+				Plugins::ICLEntry *e = GetEntry ();
+				Q_FOREACH (Plugins::IMessage *msg, e->GetAllMessages ())
+					AppendMessage (msg);
 			}
 
 			QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
@@ -82,6 +96,22 @@ namespace LeechCraft
 						currentVariants.first ();
 				Plugins::IMessage *msg = e->CreateMessage (Plugins::IMessage::MTChat, variant, text);
 				msg->Send ();
+				AppendMessage (msg);
+			}
+
+			void ChatTab::handleEntryMessage (QObject *msgObj)
+			{
+				Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
+				if (!msg)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< msgObj
+							<< "doesn't implement IMessage"
+							<< sender ();
+					return;
+				}
+
+				AppendMessage (msg);
 			}
 
 			Plugins::ICLEntry* ChatTab::GetEntry ()
@@ -103,6 +133,27 @@ namespace LeechCraft
 							<< Index_
 							<< "doesn't implement Plugins::ICLEntry";
 				return entry;
+			}
+
+			void ChatTab::AppendMessage (Plugins::IMessage *msg)
+			{
+				QString string = QString ("[%1] ")
+						.arg (msg->GetDateTime ().time ().toString ());
+				switch (msg->GetDirection ())
+				{
+				case Plugins::IMessage::DIn:
+					string.append (msg->OtherPart ()->GetEntryName ());
+					string.append (": ");
+					break;
+				case Plugins::IMessage::DOut:
+					string.append ("R: ");
+					break;
+				}
+
+				string.append (msg->GetBody ());
+
+				QWebElement elem = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
+				elem.appendInside (QString ("<div>%1</div").arg (string));
 			}
 		}
 	}
