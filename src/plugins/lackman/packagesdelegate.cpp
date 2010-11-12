@@ -27,12 +27,12 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <QButtonGroup>
 #include <QAbstractProxyModel>
 #include <QtDebug>
 #include "packagesmodel.h"
 #include "core.h"
 #include "pendingmanager.h"
+#include "delegatebuttongroup.h"
 
 namespace LeechCraft
 {
@@ -333,9 +333,9 @@ namespace LeechCraft
 					QToolButton *instRem = GetInstallRemove (index);
 					QToolButton *update = GetUpdate (index);
 
-					QButtonGroup *group = new QButtonGroup (Viewport_);
-					group->addButton (instRem);
-					group->addButton (update);
+					DelegateButtonGroup *group = new DelegateButtonGroup (Viewport_);
+					group->AddButton (instRem);
+					group->AddButton (update);
 
 					QWidget *result = new QWidget (Viewport_);
 

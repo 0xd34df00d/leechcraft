@@ -46,6 +46,7 @@ SET (SRCS
 	versioncomparator.cpp
 	typefilterproxymodel.cpp
 	xmlsettingsmanager.cpp
+	delegatebuttongroup.cpp
 	)
 SET (HEADERS
 	lackman.h
@@ -63,6 +64,7 @@ SET (HEADERS
 	versioncomparator.h
 	typefilterproxymodel.h
 	xmlsettingsmanager.h
+	delegatebuttongroup.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts
@@ -112,7 +114,7 @@ IF (TEST)
 		${QT_LIBRARIES}
 		${LEECHCRAFT_LIBRARIES}
 	)
-	
+
 	ADD_TEST (VersionComparator lc_lackman_versioncomparatortest)
 ENDIF (TEST)
 
