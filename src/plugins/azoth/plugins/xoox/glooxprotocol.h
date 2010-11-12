@@ -46,6 +46,7 @@ namespace LeechCraft
 						virtual ~GlooxProtocol ();
 
 						QObject* GetObject ();
+						ProtocolFeatures GetFeatures () const;
 						QList<IAccount*> GetRegisteredAccounts ();
 						IProtocolPlugin* GetParentProtocolPlugin () const;
 						QString GetProtocolName () const;

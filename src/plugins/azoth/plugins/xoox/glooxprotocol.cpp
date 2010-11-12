@@ -51,6 +51,11 @@ namespace LeechCraft
 						return this;
 					}
 
+					IProtocol::ProtocolFeatures GlooxProtocol::GetFeatures() const
+					{
+						return PFSupportsMUCs | PFMUCsJoinable;
+					}
+
 					QList<IAccount*> GlooxProtocol::GetRegisteredAccounts ()
 					{
 						QList<IAccount*> result;

@@ -50,6 +50,12 @@ namespace LeechCraft
 
 					enum ProtocolFeature
 					{
+						/** Multiuser chats are possible in this proto.
+						 */
+						PFSupportsMUCs,
+						/** One could join MUCs as he wishes.
+						 */
+						PFMUCsJoinable
 					};
 
 					Q_DECLARE_FLAGS (ProtocolFeatures, ProtocolFeature);
@@ -59,6 +65,11 @@ namespace LeechCraft
 					 * @return Protocol object as QObject.
 					 */
 					virtual QObject* GetObject () = 0;
+
+					/** Returns the list of features supported by this
+					 * protocol.
+					 */
+					virtual ProtocolFeatures GetFeatures () const = 0;
 
 					/** Returns the accounts registered within this
 					 * protocol.
