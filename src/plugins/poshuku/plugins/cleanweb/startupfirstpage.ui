@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>527</width>
-    <height>445</height>
+    <height>290</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,9 +20,6 @@
    <string>Select ad blocking lists that you would like to add to the Poshuku CleanWeb plugin.</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
-    <number>3</number>
-   </property>
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
@@ -40,92 +37,67 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
    <item>
-    <widget class="QToolBox" name="toolBox">
-     <property name="currentIndex">
-      <number>0</number>
+    <widget class="QGroupBox" name="EasyList_">
+     <property name="title">
+      <string>Enable EasyList</string>
      </property>
-     <widget class="QWidget" name="EasyListPage_">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>521</width>
-        <height>277</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>EasyList</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QGroupBox" name="EasyList_">
-         <property name="title">
-          <string>Enable EasyList</string>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="ListURL" stdset="0">
+      <url>
+       <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;title=EasyList</string>
+      </url>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QScrollArea" name="scrollArea">
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>493</width>
+           <height>95</height>
+          </rect>
          </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-         <property name="ListURL" stdset="0">
-          <url>
-           <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;title=EasyList</string>
-          </url>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QScrollArea" name="scrollArea">
-            <property name="widgetResizable">
-             <bool>true</bool>
+           <widget class="QCheckBox" name="checkBox_8">
+            <property name="text">
+             <string>+ EasyPrivacy (privacy protection)</string>
             </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>501</width>
-               <height>235</height>
-              </rect>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <widget class="QCheckBox" name="checkBox_8">
-                <property name="text">
-                 <string>+ EasyPrivacy (privacy protection)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasyprivacy%2Etxt&amp;title=EasyPrivacy&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
+            <property name="ListURL" stdset="0">
+             <url>
+              <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasyprivacy%2Etxt&amp;title=EasyPrivacy&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
+             </url>
+            </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
-       </item>
-      </layout>
-     </widget>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

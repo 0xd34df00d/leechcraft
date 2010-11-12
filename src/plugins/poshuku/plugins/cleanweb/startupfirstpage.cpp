@@ -78,8 +78,6 @@ namespace LeechCraft
 								urlsToAdd << GetChildUrls (box);
 							}
 
-						urlsToAdd << GetChildUrls (Ui_.VariousListsPage_);
-
 						qDebug () << urlsToAdd;
 
 						Q_FOREACH (const QUrl& url, urlsToAdd)
