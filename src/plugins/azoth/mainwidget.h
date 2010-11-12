@@ -43,6 +43,7 @@ namespace LeechCraft
 				MainWidget (QWidget* = 0);
 
 				void AddAccountCreators (const QList<QAction*>&);
+				void AddMUCJoiners (const QList<QAction*>&);
 			private slots:
 				void on_CLTree__activated (const QModelIndex&);
 			};

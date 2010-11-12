@@ -108,6 +108,11 @@ namespace LeechCraft
 					 * the accountAdded(QObject*) signal.
 					 */
 					virtual void InitiateAccountRegistration () = 0;
+
+					/** @brief Notifies the plugin that a MUC join
+					 * dialog should be opened.
+					 */
+					virtual void InitiateMUCJoin () = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (IProtocol::ProtocolFeatures);

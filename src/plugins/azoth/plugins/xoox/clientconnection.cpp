@@ -26,10 +26,12 @@
 #include <gloox/error.h>
 #include <gloox/capabilities.h>
 #include <gloox/rostermanager.h>
+#include <gloox/mucroom.h>
 #include "glooxaccount.h"
 #include "config.h"
 #include "glooxclentry.h"
 #include "glooxmessage.h"
+#include "roomhandler.h"
 
 namespace LeechCraft
 {
@@ -41,6 +43,7 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
+
 					ClientConnection::ClientConnection (const gloox::JID& jid,
 							const QString& pwd,
 							const GlooxAccountState& state,
@@ -86,6 +89,16 @@ namespace LeechCraft
 					void ClientConnection::Synchronize ()
 					{
 						Client_->rosterManager ()->synchronize ();
+					}
+
+					RoomCLEntry* ClientConnection::JoinRoom (const gloox::JID& jid)
+					{
+						RoomHandler *rh = new RoomHandler (Account_);
+						gloox::MUCRoom *room = new gloox::MUCRoom (Client_.get (), jid, rh, 0);
+						room->join ();
+						rh->SetRoom (room);
+
+						return rh->GetCLEntry ();
 					}
 
 					gloox::Client* ClientConnection::GetClient () const

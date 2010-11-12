@@ -13,6 +13,10 @@ SET (XOOX_SRCS
 	clientconnection.cpp
 	glooxclentry.cpp
 	glooxmessage.cpp
+	joingroupchatdialog.cpp
+	roomhandler.cpp
+	roomclentry.cpp
+	roompublicmessage.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -22,9 +26,14 @@ SET (XOOX_HEADERS
 	clientconnection.h
 	glooxclentry.h
 	glooxmessage.h
+	joingroupchatdialog.h
+	roomhandler.h
+	roomclentry.h
+	roompublicmessage.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
+	glooxjoingroupchatdialog.ui
 	)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})

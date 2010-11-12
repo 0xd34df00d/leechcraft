@@ -137,6 +137,10 @@ namespace LeechCraft
 
 			void ChatTab::AppendMessage (Plugins::IMessage *msg)
 			{
+				if (msg->GetDirection () == Plugins::IMessage::DOut &&
+						msg->OtherPart ()->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC)
+					return;
+
 				QString string = QString ("[%1] ")
 						.arg (msg->GetDateTime ().time ().toString ());
 				switch (msg->GetDirection ())

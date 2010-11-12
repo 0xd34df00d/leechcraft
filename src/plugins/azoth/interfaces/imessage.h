@@ -51,9 +51,26 @@ namespace LeechCraft
 					};
 
 					virtual QObject* GetObject () = 0;
+
+					/** Please note that if the other part is a MUC, it
+					 * should send back this message with the "IN"
+					 * direction set.
+					 */
 					virtual void Send () = 0;
 					virtual Direction GetDirection () const = 0;
 					virtual MessageType GetMessageType () const = 0;
+
+					/** The contact list entry from which this message
+					 * originates.
+					 *
+					 * For normal, single user chats, this should always
+					 * equal to the ICLEntry that was (and will be) used
+					 * to send the message back.
+					 *
+					 * For multiuser chats this should be equal to the
+					 * contact list representation of the participant
+					 * that sent the message.
+					 */
 					virtual ICLEntry* OtherPart () const = 0;
 					virtual QString GetOtherVariant () const = 0;
 					virtual QString GetBody () const = 0;

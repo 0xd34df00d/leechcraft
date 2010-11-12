@@ -146,6 +146,16 @@ namespace LeechCraft
 					 * the server, if applicable.
 					 */
 					virtual void Synchronize () = 0;
+
+					/** @brief This signal is emitted when a new group
+					 * chat has been joined.
+					 *
+					 * @note This function is expected to be a signal.
+					 *
+					 * @param[out] groupchat Pointer to the contact list
+					 * entry representing the groupchat.
+					 */
+					virtual void joinedGroupchat (QObject *groupchat) = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (IAccount::AccountFeatures);

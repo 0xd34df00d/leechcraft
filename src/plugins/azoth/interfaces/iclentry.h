@@ -182,6 +182,9 @@ namespace LeechCraft
 					 * Returns the list of all messages sent or received
 					 * during the session.
 					 *
+					 * If the entry represents a MUC, all the messages
+					 * in the returned list should have "IN" direction.
+					 *
 					 * @return The list of messages.
 					 */
 					virtual QList<IMessage*> GetAllMessages () const = 0;

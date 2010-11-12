@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
-#include <QObject>
-#include "interfaces/iprotocol.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATDIALOG_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATDIALOG_H
+#include <QDialog>
+#include "ui_glooxjoingroupchatdialog.h"
 
 namespace LeechCraft
 {
@@ -33,31 +33,21 @@ namespace LeechCraft
 				{
 					class GlooxAccount;
 
-					class GlooxProtocol : public QObject
-										, public IProtocol
+					class JoinGroupchatDialog : public QDialog
 					{
 						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
 
-						IProtocolPlugin *ParentProtocolPlugin_;
+						Ui::GlooxJoinGroupchatDialog Ui_;
 						QList<GlooxAccount*> Accounts_;
 					public:
-						GlooxProtocol (QObject*);
-						virtual ~GlooxProtocol ();
+						JoinGroupchatDialog (const QList<GlooxAccount*>&, QWidget* = 0);
 
-						QObject* GetObject ();
-						ProtocolFeatures GetFeatures () const;
-						QList<IAccount*> GetRegisteredAccounts ();
-						IProtocolPlugin* GetParentProtocolPlugin () const;
-						QString GetProtocolName () const;
-						QByteArray GetProtocolID () const;
-						void InitiateAccountRegistration ();
-						void InitiateMUCJoin ();
-					private:
-						void SaveAccounts () const;
-						void RestoreAccounts ();
-					signals:
-						void accountAdded (QObject*);
+						QString GetServer () const;
+						QString GetRoom () const;
+						QString GetNickname () const;
+						GlooxAccount* GetSelectedAccount () const;
+					private slots:
+						void on_Account__currentIndexChanged (int);
 					};
 				}
 			}

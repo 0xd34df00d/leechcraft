@@ -57,6 +57,12 @@ namespace LeechCraft
 						this,
 						SLOT (handleAccountCreatorActionsAdded (const QList<QAction*>&)));
 
+				handleMUCJoinActionsAdded (Core::Instance ().GetMUCJoinActions ());
+				connect (&Core::Instance (),
+						SIGNAL (mucJoinActionsAdded (const QList<QAction*>&)),
+						this,
+						SLOT (handleMUCJoinActionsAdded (const QList<QAction*>&)));
+
 				connect (Core::Instance ().GetChatTabsManager (),
 						SIGNAL (addNewTab (const QString&, QWidget*)),
 						this,
@@ -127,6 +133,11 @@ namespace LeechCraft
 			void Plugin::handleAccountCreatorActionsAdded (const QList<QAction*>& actions)
 			{
 				MW_->AddAccountCreators (actions);
+			}
+
+			void Plugin::handleMUCJoinActionsAdded (const QList<QAction*>& actions)
+			{
+				MW_->AddMUCJoiners (actions);
 			}
 
 			void Plugin::newTabRequested ()

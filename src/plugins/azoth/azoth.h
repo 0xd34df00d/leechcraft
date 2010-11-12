@@ -59,6 +59,7 @@ namespace LeechCraft
 				void newTabRequested ();
 			private slots:
 				void handleAccountCreatorActionsAdded (const QList<QAction*>&);
+				void handleMUCJoinActionsAdded (const QList<QAction*>&);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 

@@ -28,6 +28,7 @@
 #include "clientconnection.h"
 #include "glooxmessage.h"
 #include "glooxclentry.h"
+#include "roomclentry.h"
 
 namespace LeechCraft
 {
@@ -132,6 +133,22 @@ namespace LeechCraft
 					void GlooxAccount::Synchronize ()
 					{
 						ClientConnection_->Synchronize ();
+					}
+
+					QString GlooxAccount::GetJID () const
+					{
+						return JID_;
+					}
+
+					void GlooxAccount::JoinRoom (const QString& server,
+							const QString& room, const QString& nick)
+					{
+						QString jidStr = QString ("%1@%2/%3")
+								.arg (room, server, nick);
+						gloox::JID roomJID (jidStr.toUtf8 ().constData ());
+
+						RoomCLEntry *entry = ClientConnection_->JoinRoom (roomJID);
+						emit gotCLItems (QList<QObject*> () << entry);
 					}
 
 					QByteArray GlooxAccount::Serialize () const

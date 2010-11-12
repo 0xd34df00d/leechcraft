@@ -24,6 +24,7 @@
 #include <interfaces/iprotocolplugin.h>
 #include "glooxaccount.h"
 #include "core.h"
+#include "joingroupchatdialog.h"
 
 namespace LeechCraft
 {
@@ -96,6 +97,24 @@ namespace LeechCraft
 						emit accountAdded (account);
 
 						account->ChangeState (IAccount::SOnline);
+					}
+
+					void GlooxProtocol::InitiateMUCJoin ()
+					{
+						JoinGroupchatDialog dlg (Accounts_);
+						if (dlg.exec () != QDialog::Accepted)
+							return;
+
+						GlooxAccount *account = dlg.GetSelectedAccount ();
+						if (!account)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "no account has been selected";
+							return;
+						}
+
+						account->JoinRoom (dlg.GetServer (),
+								dlg.GetRoom (), dlg.GetNickname ());
 					}
 
 					void GlooxProtocol::SaveAccounts () const

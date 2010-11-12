@@ -85,6 +85,9 @@ namespace LeechCraft
 						void ChangeState (State, const QString& = QString ());
 						void Synchronize ();
 
+						QString GetJID () const;
+						void JoinRoom (const QString&, const QString&, const QString&);
+
 						QByteArray Serialize () const;
 						static GlooxAccount* Deserialize (const QByteArray&, QObject*);
 
@@ -95,6 +98,7 @@ namespace LeechCraft
 						void handleGotRosterItems (const QList<QObject*>&);
 					signals:
 						void gotCLItems (const QList<QObject*>);
+						void joinedGroupchat (QObject*);
 					};
 				}
 			}

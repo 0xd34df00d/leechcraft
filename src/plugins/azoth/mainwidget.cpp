@@ -49,6 +49,11 @@ namespace LeechCraft
 				MenuNewAccount_->addActions (actions);
 			}
 
+			void MainWidget::AddMUCJoiners (const QList<QAction*>& actions)
+			{
+				MenuGeneral_->addActions (actions);
+			}
+
 			void MainWidget::on_CLTree__activated (const QModelIndex& index)
 			{
 				if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)

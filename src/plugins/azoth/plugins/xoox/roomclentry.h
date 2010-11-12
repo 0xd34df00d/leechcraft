@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
 #include <QObject>
-#include "interfaces/iprotocol.h"
+#include <QStringList>
+#include <interfaces/iclentry.h>
+
+namespace gloox
+{
+	class MUCRoom;
+}
 
 namespace LeechCraft
 {
@@ -32,32 +38,37 @@ namespace LeechCraft
 				namespace Xoox
 				{
 					class GlooxAccount;
+					class RoomPublicMessage;
 
-					class GlooxProtocol : public QObject
-										, public IProtocol
+					class RoomCLEntry : public QObject
+									  , public ICLEntry
 					{
 						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
+						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry);
 
-						IProtocolPlugin *ParentProtocolPlugin_;
-						QList<GlooxAccount*> Accounts_;
+						GlooxAccount *Account_;
+						gloox::MUCRoom *Room_;
+						QList<IMessage*> AllMessages_;
 					public:
-						GlooxProtocol (QObject*);
-						virtual ~GlooxProtocol ();
+						RoomCLEntry (gloox::MUCRoom*, GlooxAccount*);
 
 						QObject* GetObject ();
-						ProtocolFeatures GetFeatures () const;
-						QList<IAccount*> GetRegisteredAccounts ();
-						IProtocolPlugin* GetParentProtocolPlugin () const;
-						QString GetProtocolName () const;
-						QByteArray GetProtocolID () const;
-						void InitiateAccountRegistration ();
-						void InitiateMUCJoin ();
-					private:
-						void SaveAccounts () const;
-						void RestoreAccounts ();
+						IAccount* GetParentAccount () const ;
+						Features GetEntryFeatures () const;
+						QString GetEntryName () const;
+						void SetEntryName (const QString&);
+						QByteArray GetEntryID () const;
+						QStringList Groups () const;
+						QStringList Variants () const;
+						IMessage* CreateMessage (IMessage::MessageType,
+								const QString&, const QString&);
+						QList<IMessage*> GetAllMessages () const;
+
+						gloox::MUCRoom* GetRoom ();
+
+						void HandleMessage (RoomPublicMessage*);
 					signals:
-						void accountAdded (QObject*);
+						void gotMessage (QObject*);
 					};
 				}
 			}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPUBLICMESSAGE_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPUBLICMESSAGE_H
 #include <QObject>
-#include "interfaces/iprotocol.h"
+#include <gloox/message.h>
+#include <interfaces/imessage.h>
 
 namespace LeechCraft
 {
@@ -31,33 +32,37 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
-					class GlooxAccount;
+					class RoomCLEntry;
 
-					class GlooxProtocol : public QObject
-										, public IProtocol
+					class RoomPublicMessage : public QObject
+											, public IMessage
 					{
 						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
+						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage);
 
-						IProtocolPlugin *ParentProtocolPlugin_;
-						QList<GlooxAccount*> Accounts_;
+						RoomCLEntry *ParentEntry_;
+						QString Message_;
+						QDateTime Datetime_;
+						Direction Direction_;
+						gloox::JID FromJID_;
 					public:
-						GlooxProtocol (QObject*);
-						virtual ~GlooxProtocol ();
+						RoomPublicMessage (const QString&, RoomCLEntry* );
+						RoomPublicMessage (const gloox::Message&, RoomCLEntry*);
 
 						QObject* GetObject ();
-						ProtocolFeatures GetFeatures () const;
-						QList<IAccount*> GetRegisteredAccounts ();
-						IProtocolPlugin* GetParentProtocolPlugin () const;
-						QString GetProtocolName () const;
-						QByteArray GetProtocolID () const;
-						void InitiateAccountRegistration ();
-						void InitiateMUCJoin ();
-					private:
-						void SaveAccounts () const;
-						void RestoreAccounts ();
-					signals:
-						void accountAdded (QObject*);
+						void Send ();
+						Direction GetDirection () const;
+						MessageType GetMessageType () const;
+
+						/** Since it's outgoing message, the other part
+						 * always equals to the room entry.
+						 */
+						ICLEntry* OtherPart () const;
+						QString GetOtherVariant () const;
+						QString GetBody () const;
+						void SetBody (const QString&);
+						QDateTime GetDateTime () const;
+						void SetDateTime (const QDateTime&);
 					};
 				}
 			}

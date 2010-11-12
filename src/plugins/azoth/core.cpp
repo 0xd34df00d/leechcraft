@@ -92,6 +92,11 @@ namespace LeechCraft
 				return AccountCreatorActions_;
 			}
 
+			QList<QAction*> Core::GetMUCJoinActions () const
+			{
+				return MUCJoinActions_;
+			}
+
 			QAbstractItemModel* Core::GetCLModel () const
 			{
 				return CLModel_;
@@ -121,7 +126,8 @@ namespace LeechCraft
 					ProtocolPlugins_ << plugin;
 
 					QIcon icon = qobject_cast<IInfo*> (plugin)->GetIcon ();
-					QList<QAction*> bunch;
+					QList<QAction*> creators;
+					QList<QAction*> mucJoiners;
 					Q_FOREACH (Plugins::IProtocol *proto, ipp->GetProtocols ())
 					{
 						QAction *accountCreator = new QAction (icon,
@@ -132,7 +138,20 @@ namespace LeechCraft
 								this,
 								SLOT (handleAccountCreatorTriggered ()));
 
-						bunch << accountCreator;
+						creators << accountCreator;
+
+						if (proto->GetFeatures () & Plugins::IProtocol::PFMUCsJoinable)
+						{
+							QAction *mucJoiner = new QAction (icon,
+									proto->GetProtocolName (), this);
+							mucJoiner->setData (QVariant::fromValue<QObject*> (proto->GetObject ()));
+							connect (mucJoiner,
+									 SIGNAL (triggered ()),
+									 this,
+									 SLOT (handleMucJoinRequested ()));
+
+							mucJoiners << mucJoiner;
+						}
 
 						Q_FOREACH (Plugins::IAccount *account,
 								proto->GetRegisteredAccounts ())
@@ -144,9 +163,17 @@ namespace LeechCraft
 								SLOT (addAccount (QObject*)));
 					}
 
-					emit accountCreatorActionsAdded (bunch);
+					if (creators.size ())
+					{
+						emit accountCreatorActionsAdded (creators);
+						AccountCreatorActions_ += creators;
+					}
 
-					AccountCreatorActions_ += bunch;
+					if (mucJoiners.size ())
+					{
+						emit mucJoinActionsAdded (mucJoiners);
+						MUCJoinActions_ += mucJoiners;
+					}
 				}
 			}
 
@@ -206,6 +233,39 @@ namespace LeechCraft
 				}
 
 				proto->InitiateAccountRegistration ();
+			}
+
+			void Core::handleMucJoinRequested()
+			{
+				QAction *sa = qobject_cast<QAction*> (sender ());
+				if (!sa)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender is not an action"
+							<< sender ();
+					return;
+				}
+
+				QObject *protoObject = sa->data ().value<QObject*> ();
+				if (!protoObject)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender data is not QObject*"
+							<< sa->data ();
+					return;
+				}
+
+				Plugins::IProtocol *proto =
+						qobject_cast<Plugins::IProtocol*> (protoObject);
+				if (!proto)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to case protoObject to proto"
+							<< protoObject;
+					return;
+				}
+
+				proto->InitiateMUCJoin ();
 			}
 
 			void Core::addAccount (QObject *accObject)

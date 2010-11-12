@@ -57,6 +57,7 @@ namespace LeechCraft
 					class GlooxAccount;
 					class GlooxCLEntry;
 					class GlooxMessage;
+					class RoomCLEntry;
 
 					class ClientConnection : public QObject
 										   , public gloox::ConnectionListener
@@ -81,6 +82,11 @@ namespace LeechCraft
 
 						void SetState (const GlooxAccountState&);
 						void Synchronize ();
+						/** Joins the room and returns the contact list
+						 * entry representing that room.
+						 */
+						RoomCLEntry* JoinRoom (const gloox::JID&);
+
 						gloox::Client* GetClient () const;
 						GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
 						GlooxMessage* CreateMessage (IMessage::MessageType,
