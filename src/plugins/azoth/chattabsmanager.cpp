@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "mainwidget.h"
-#include <QToolBar>
-#include <QMenu>
-#include <QVBoxLayout>
+#include "chattabsmanager.h"
+#include <QtDebug>
+#include "interfaces/iclentry.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -28,33 +27,43 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			MainWidget::MainWidget (QWidget *parent)
-			: QWidget (parent)
-			, UpperBar_ (new QToolBar)
-			, MenuGeneral_ (new QMenu (tr ("General")))
-			, MenuNewAccount_ (new QMenu (tr ("New account")))
+			ChatTabsManager::ChatTabsManager(QObject *parent)
+			: QObject (parent)
 			{
-				Ui_.setupUi (this);
-				Ui_.CLTree_->setModel (Core::Instance ().GetCLModel ());
-
-				QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
-				lay->insertWidget (0, UpperBar_);
-
-				MenuGeneral_->addMenu (MenuNewAccount_);
-				UpperBar_->addAction (MenuGeneral_->menuAction ());
 			}
 
-			void MainWidget::AddAccountCreators (const QList<QAction*>& actions)
+			void ChatTabsManager::OpenChat (const QModelIndex& ti)
 			{
-				MenuNewAccount_->addActions (actions);
-			}
-
-			void MainWidget::on_CLTree__activated (const QModelIndex& index)
-			{
-				if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+				if (!ti.isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "tried to open a chat with invalid index";
 					return;
+				}
 
-				Core::Instance ().OpenChat (index);
+				QPersistentModelIndex idx (ti);
+				if (Index2Tab_.contains (idx))
+				{
+					emit raiseTab (Index2Tab_ [idx]);
+					return;
+				}
+
+				QObject *entryObj = ti.data (Core::CLREntryObject).value<QObject*> ();
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "object"
+							<< entryObj
+							<< "from the index"
+							<< ti
+							<< "doesn't implement Plugins::ICLEntry";
+					return;
+				}
+
+				QPointer<ChatTab> tab (new ChatTab (idx));
+				Index2Tab_ [idx] = tab;
+				emit addNewTab (entry->GetEntryName(), tab);
 			}
 		}
 	}

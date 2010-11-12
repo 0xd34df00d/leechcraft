@@ -27,6 +27,7 @@
 #include "interfaces/iprotocol.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
+#include "chattabsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace LeechCraft
 		{
 			Core::Core ()
 			: CLModel_ (new QStandardItemModel (this))
+			, ChatTabsManager_ (new ChatTabsManager (this))
 			{
 			}
 
@@ -91,6 +93,16 @@ namespace LeechCraft
 			QAbstractItemModel* Core::GetCLModel () const
 			{
 				return CLModel_;
+			}
+
+			ChatTabsManager* Core::GetChatTabsManager () const
+			{
+				return ChatTabsManager_;
+			}
+
+			void Core::OpenChat (const QModelIndex& contactIndex)
+			{
+				ChatTabsManager_->OpenChat (contactIndex);
 			}
 
 			void Core::AddProtocolPlugin (QObject *plugin)

@@ -23,6 +23,8 @@
 #include <QVBoxLayout>
 #include "core.h"
 #include "mainwidget.h"
+#include "chattabsmanager.h"
+#include "chattab.h"
 
 namespace LeechCraft
 {
@@ -32,6 +34,8 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				ChatTab::SetParentMultiTabs (this);
+
 				Core::Instance ().SetProxy (proxy);
 
 				QMainWindow *mainWin = proxy->GetMainWindow ();
@@ -52,6 +56,15 @@ namespace LeechCraft
 						SIGNAL (accountCreatorActionsAdded (const QList<QAction*>&)),
 						this,
 						SLOT (handleAccountCreatorActionsAdded (const QList<QAction*>&)));
+
+				connect (Core::Instance ().GetChatTabsManager (),
+						SIGNAL (addNewTab (const QString&, QWidget*)),
+						this,
+						SIGNAL (addNewTab (const QString&, QWidget*)));
+				connect (Core::Instance ().GetChatTabsManager (),
+						SIGNAL (raiseTab (QWidget*)),
+						this,
+						SIGNAL (raiseTab (QWidget*)));
 			}
 
 			void Plugin::SecondInit ()

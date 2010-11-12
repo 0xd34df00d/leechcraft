@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "mainwidget.h"
-#include <QToolBar>
-#include <QMenu>
-#include <QVBoxLayout>
-#include "core.h"
+#include "chattab.h"
 
 namespace LeechCraft
 {
@@ -28,34 +24,43 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			MainWidget::MainWidget (QWidget *parent)
+			QObject *ChatTab::S_ParentMultiTabs_ = 0;
+
+			void ChatTab::SetParentMultiTabs (QObject *obj)
+			{
+				S_ParentMultiTabs_ = obj;
+			}
+
+			ChatTab::ChatTab (const QPersistentModelIndex& idx, QWidget *parent)
 			: QWidget (parent)
-			, UpperBar_ (new QToolBar)
-			, MenuGeneral_ (new QMenu (tr ("General")))
-			, MenuNewAccount_ (new QMenu (tr ("New account")))
+			, Index_ (idx)
 			{
 				Ui_.setupUi (this);
-				Ui_.CLTree_->setModel (Core::Instance ().GetCLModel ());
-
-				QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
-				lay->insertWidget (0, UpperBar_);
-
-				MenuGeneral_->addMenu (MenuNewAccount_);
-				UpperBar_->addAction (MenuGeneral_->menuAction ());
 			}
 
-			void MainWidget::AddAccountCreators (const QList<QAction*>& actions)
+			QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
 			{
-				MenuNewAccount_->addActions (actions);
+				return QList<QAction*> ();
 			}
 
-			void MainWidget::on_CLTree__activated (const QModelIndex& index)
+			QObject* ChatTab::ParentMultiTabs () const
 			{
-				if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
-					return;
+				return S_ParentMultiTabs_;
+			}
 
-				Core::Instance ().OpenChat (index);
+			void ChatTab::NewTabRequested ()
+			{
+			}
+
+			QToolBar* ChatTab::GetToolBar () const
+			{
+				return 0;
+			}
+
+			void ChatTab::Remove ()
+			{
 			}
 		}
 	}
 }
+

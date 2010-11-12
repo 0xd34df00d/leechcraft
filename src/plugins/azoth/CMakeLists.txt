@@ -27,11 +27,15 @@ SET (SRCS
 	azoth.cpp
 	core.cpp
 	mainwidget.cpp
+	chattabsmanager.cpp
+	chattab.cpp
 	)
 SET (HEADERS
 	azoth.h
 	core.h
 	mainwidget.h
+	chattabsmanager.h
+	chattab.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
@@ -39,6 +43,7 @@ SET (HEADERS
 	)
 SET (FORMS
 	mainwidget.ui
+	chattab.ui
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})

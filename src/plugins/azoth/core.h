@@ -31,6 +31,8 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
+			class ChatTabsManager;
+
 			class Core : public QObject
 			{
 				Q_OBJECT
@@ -41,6 +43,7 @@ namespace LeechCraft
 				QList<QAction*> AccountCreatorActions_;
 
 				QStandardItemModel *CLModel_;
+				ChatTabsManager *ChatTabsManager_;
 
 				typedef QMap<QString, QStandardItem*> Category2Item_t;
 				typedef QMap<QStandardItem*, Category2Item_t> Account2Category2Item_t;
@@ -80,6 +83,14 @@ namespace LeechCraft
 
 				QList<QAction*> GetAccountCreatorActions () const;
 				QAbstractItemModel* GetCLModel () const;
+				ChatTabsManager* GetChatTabsManager () const;
+
+				/** Opens chat with the remote contact identified by
+				 * index (which is from GetCLModel() model). If the
+				 * index identifies account or category, this function
+				 * does nothing.
+				 */
+				void OpenChat (const QModelIndex& index);
 			private:
 				void AddProtocolPlugin (QObject*);
 
