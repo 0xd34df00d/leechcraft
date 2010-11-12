@@ -84,6 +84,7 @@ namespace LeechCraft
 		GlanceShower *Glance_;
 		QToolButton *NewTabButton_;
 		QShortcut *FullScreenShortcut_;
+		const QString DefaultSystemStyleName_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();

@@ -65,6 +65,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , IsShown_ (true)
 , WasMaximized_ (false)
 , Glance_ (0)
+, DefaultSystemStyleName_(QApplication::style()->objectName())
 {
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
@@ -288,8 +289,10 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	XmlSettingsManager::Instance ()->RegisterObject ("AppQStyle",
 			this, "handleAppStyle");
+	QStringList appQStype_qsl = QStyleFactory::keys ();
+	appQStype_qsl.insert(0, "Default");
 	XmlSettingsDialog_->SetDataSource ("AppQStyle",
-			new QStringListModel (QStyleFactory::keys ()));
+			new QStringListModel (appQStype_qsl));
 	handleAppStyle ();
 
 	XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
@@ -533,6 +536,11 @@ void LeechCraft::MainWindow::handleAppStyle ()
 	QString style = XmlSettingsManager::Instance ()->
 			property ("AppQStyle").toString ();
 
+	if (style == "Default")
+	{
+		style = DefaultSystemStyleName_;
+	}
+	
 	if (style.isEmpty ())
 	{
 #ifdef Q_WS_WIN
@@ -542,7 +550,7 @@ void LeechCraft::MainWindow::handleAppStyle ()
 #endif
 	}
 
-	QApplication::setStyle (style);
+	QApplication::setStyle (style);	
 }
 
 void LeechCraft::MainWindow::handleLanguage ()
