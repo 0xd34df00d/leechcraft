@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "glooxclentry.h"
+#include <boost/bind.hpp>
 #include <QStringList>
 #include <QtDebug>
 #include <gloox/rosteritem.h>
@@ -88,9 +89,19 @@ namespace LeechCraft
 					{
 						QStringList result;
 						gloox::RosterItem::ResourceMap rmap = RI_->resources ();
+
+						QList<gloox::Resource*> resources;
 						for (gloox::RosterItem::ResourceMap::const_iterator i = rmap.begin (),
 								end = rmap.end (); i != end; ++i)
-							result << QString::fromUtf8 (i->second->message ().c_str ());
+							resources << i->second;
+
+						std::sort (resources.begin (), resources.end (),
+								boost::bind (std::less<int> (),
+										boost::bind (&gloox::Resource::priority, _2),
+										boost::bind (&gloox::Resource::priority, _1)));
+
+						Q_FOREACH (gloox::Resource *res, resources)
+							result << QString::fromUtf8 (res->message ().c_str ());
 						return result;
 					}
 
