@@ -115,6 +115,10 @@ namespace LeechCraft
 			{
 				MW_->AddAccountCreators (actions);
 			}
+
+			void Plugin::newTabRequested ()
+			{
+			}
 		};
 	};
 };

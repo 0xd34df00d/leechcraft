@@ -37,11 +37,14 @@ namespace LeechCraft
 				Ui::MainWidget Ui_;
 
 				QToolBar *UpperBar_;
+				QMenu *MenuGeneral_;
 				QMenu *MenuNewAccount_;
 			public:
 				MainWidget (QWidget* = 0);
 
 				void AddAccountCreators (const QList<QAction*>&);
+			private slots:
+				void on_CLTree__activated (const QModelIndex&);
 			};
 		}
 	}

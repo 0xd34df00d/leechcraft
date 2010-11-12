@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/imultitabs.h>
 
 namespace LeechCraft
 {
@@ -33,9 +34,10 @@ namespace LeechCraft
 			class Plugin : public QObject
 						 , public IInfo
 						 , public IPluginReady
+						 , public IMultiTabs
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady)
+				Q_INTERFACES (IInfo IPluginReady IMultiTabs)
 
 				MainWidget *MW_;
 			public:
@@ -53,10 +55,19 @@ namespace LeechCraft
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
+			public slots:
+				void newTabRequested ();
 			private slots:
 				void handleAccountCreatorActionsAdded (const QList<QAction*>&);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
+
+				void addNewTab (const QString&, QWidget*);
+				void removeTab (QWidget*);
+				void changeTabName (QWidget*, const QString&);
+				void changeTabIcon (QWidget*, const QIcon&);
+				void statusBarChanged (QWidget*, const QString&);
+				void raiseTab (QWidget*);
 			};
 		};
 	};

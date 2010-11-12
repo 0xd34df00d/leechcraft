@@ -19,6 +19,7 @@
 #include "mainwidget.h"
 #include <QToolBar>
 #include <QMenu>
+#include <QVBoxLayout>
 #include "core.h"
 
 namespace LeechCraft
@@ -30,19 +31,30 @@ namespace LeechCraft
 			MainWidget::MainWidget (QWidget *parent)
 			: QWidget (parent)
 			, UpperBar_ (new QToolBar)
-			, MenuNewAccount_ (new QMenu)
+			, MenuGeneral_ (new QMenu (tr ("General")))
+			, MenuNewAccount_ (new QMenu (tr ("New account")))
 			{
 				Ui_.setupUi (this);
 				Ui_.CLTree_->setModel (Core::Instance ().GetCLModel ());
 
-				layout ()->addWidget (UpperBar_);
+				QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
+				lay->insertWidget (0, UpperBar_);
 
-				UpperBar_->addAction (MenuNewAccount_->menuAction ());
+				MenuGeneral_->addMenu (MenuNewAccount_);
+				UpperBar_->addAction (MenuGeneral_->menuAction ());
 			}
 
 			void MainWidget::AddAccountCreators (const QList<QAction*>& actions)
 			{
 				MenuNewAccount_->addActions (actions);
+			}
+
+			void MainWidget::on_CLTree__activated (const QModelIndex& index)
+			{
+				if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+					return;
+
+				qDebug () << index;
 			}
 		}
 	}

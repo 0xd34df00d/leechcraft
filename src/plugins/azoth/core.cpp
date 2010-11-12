@@ -149,6 +149,8 @@ namespace LeechCraft
 						QStandardItem *catItem = new QStandardItem (cat);
 						catItem->setEditable (false);
 						catItem->setData (account->data (CLRAccountObject), CLRAccountObject);
+						catItem->setData (QVariant::fromValue<CLEntryType> (CLETCategory),
+								CLREntryType);
 						Account2Category2Item_ [account] [cat] = catItem;
 						account->appendRow (catItem);
 					}
@@ -208,6 +210,8 @@ namespace LeechCraft
 				QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
 				accItem->setData (QVariant::fromValue<QObject*> (account->GetObject ()),
 						CLRAccountObject);
+				accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount),
+						CLREntryType);
 				CLModel_->appendRow (accItem);
 
 				accItem->setEditable (false);
@@ -226,6 +230,8 @@ namespace LeechCraft
 								CLRAccountObject);
 						clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
 								CLREntryObject);
+						clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
+								CLREntryType);
 						catItem->appendRow (clItem);
 					}
 				}
@@ -304,6 +310,8 @@ namespace LeechCraft
 								CLREntryObject);
 						clItem->setData (QVariant::fromValue<QObject*> (accountObj),
 								CLRAccountObject);
+						clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
+								CLREntryType);
 						catItem->appendRow (clItem);
 					}
 				}

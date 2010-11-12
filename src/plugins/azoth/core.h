@@ -47,13 +47,27 @@ namespace LeechCraft
 				Account2Category2Item_t Account2Category2Item_;
 
 				Core ();
-
+			public:
 				enum CLRoles
 				{
 					CLRAccountObject = Qt::UserRole + 1,
-					CLREntryObject
+					CLREntryObject,
+					CLREntryType
 				};
-			public:
+
+				enum CLEntryType
+				{
+					/** Self account.
+					 */
+					CLETAccount,
+					/** Category (under self account).
+					 */
+					CLETCategory,
+					/** Remote contact.
+					 */
+					CLETContact
+				};
+
 				static Core& Instance ();
 
 				void SetProxy (ICoreProxy_ptr);
@@ -68,18 +82,51 @@ namespace LeechCraft
 				QAbstractItemModel* GetCLModel () const;
 			private:
 				void AddProtocolPlugin (QObject*);
-				QList<QStandardItem*> GetCategoriesItems (QStringList, QStandardItem*);
+
+				/** Returns the list of category items for the given
+				 * account and categories list. Creates the items if
+				 * needed. The items returned are child of account item.
+				 *
+				 * Categories could be, for example, tags/groups in XMPP
+				 * client and such.
+				 */
+				QList<QStandardItem*> GetCategoriesItems (QStringList categories, QStandardItem *account);
 			private slots:
+				/** Initiates account registration process.
+				 */
 				void handleAccountCreatorTriggered ();
-				void addAccount (QObject*);
-				void handleGotCLItems (const QList<QObject*>&);
+
+				/** Handles a new account. This account may be both a
+				 * new one (added as a result of user's actions) and
+				 * already existing one (in case it was just read from
+				 * settings).
+				 *
+				 * account is expected to implement Plugins::IAccount
+				 * interface.
+				 */
+				void addAccount (QObject *account);
+
+				/** Handles newly added contact list items. Each item is
+				 * expected to implement Plugins::ICLEntry. This slot
+				 * appends the items to already existing ones, so only
+				 * really new ones (during the session lifetime) should
+				 * be in the items list.
+				 */
+				void handleGotCLItems (const QList<QObject*>& items);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
+
+				/** Emitted after some new account creation actions have
+				 * been received from a plugin and thus should be shown
+				 * in the UI.
+				 */
 				void accountCreatorActionsAdded (const QList<QAction*>&);
 			};
 		};
 	};
 };
+
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Core::CLEntryType);
 
 #endif
 

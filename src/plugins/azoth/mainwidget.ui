@@ -14,14 +14,8 @@
    <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>2</number>
-   </property>
-   <property name="topMargin">
-    <number>2</number>
-   </property>
-   <property name="rightMargin">
-    <number>2</number>
+   <property name="margin">
+    <number>1</number>
    </property>
    <item>
     <widget class="QTreeView" name="CLTree_">
