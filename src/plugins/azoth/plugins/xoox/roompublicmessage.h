@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPUBLICMESSAGE_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPUBLICMESSAGE_H
 #include <QObject>
+#include <QPointer>
 #include <gloox/message.h>
 #include <interfaces/imessage.h>
 
@@ -33,6 +34,7 @@ namespace LeechCraft
 				namespace Xoox
 				{
 					class RoomCLEntry;
+					class RoomParticipantEntry;
 
 					class RoomPublicMessage : public QObject
 											, public IMessage
@@ -40,14 +42,15 @@ namespace LeechCraft
 						Q_OBJECT
 						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage);
 
-						RoomCLEntry *ParentEntry_;
+						QPointer<RoomCLEntry> ParentEntry_;
+						QPointer<RoomParticipantEntry> ParticipantEntry_;
 						QString Message_;
 						QDateTime Datetime_;
 						Direction Direction_;
 						gloox::JID FromJID_;
 					public:
 						RoomPublicMessage (const QString&, RoomCLEntry* );
-						RoomPublicMessage (const gloox::Message&, RoomCLEntry*);
+						RoomPublicMessage (const gloox::Message&, RoomCLEntry*, RoomParticipantEntry*);
 
 						QObject* GetObject ();
 						void Send ();

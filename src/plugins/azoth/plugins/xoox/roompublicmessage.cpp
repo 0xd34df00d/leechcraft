@@ -17,9 +17,11 @@
  **********************************************************************/
 
 #include "roompublicmessage.h"
+#include <QtDebug>
 #include <gloox/mucroom.h>
 #include <gloox/delayeddelivery.h>
 #include "roomclentry.h"
+#include "roomparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -34,15 +36,18 @@ namespace LeechCraft
 					RoomPublicMessage::RoomPublicMessage (const QString& msg, RoomCLEntry *entry)
 					: QObject (entry)
 					, ParentEntry_ (entry)
+					, ParticipantEntry_ (0)
 					, Message_ (msg)
 					, Datetime_ (QDateTime::currentDateTime ())
 					, Direction_ (DOut)
 					{
 					}
 
-					RoomPublicMessage::RoomPublicMessage (const gloox::Message& msg, RoomCLEntry *entry)
+					RoomPublicMessage::RoomPublicMessage (const gloox::Message& msg,
+							RoomCLEntry *entry, RoomParticipantEntry *partEntry)
 					: QObject (entry)
 					, ParentEntry_ (entry)
+					, ParticipantEntry_ (partEntry)
 					, Message_ (QString::fromUtf8 (msg.body ().c_str ()))
 					, Direction_ (DIn)
 					, FromJID_ (msg.from ())
@@ -60,6 +65,9 @@ namespace LeechCraft
 
 					void RoomPublicMessage::Send ()
 					{
+						if (!ParentEntry_)
+							return;
+
 						ParentEntry_->GetRoom ()->
 								send (Message_.toUtf8 ().constData ());
 						Datetime_ = QDateTime::currentDateTime ();
@@ -77,7 +85,13 @@ namespace LeechCraft
 
 					ICLEntry* RoomPublicMessage::OtherPart () const
 					{
-						return ParentEntry_;
+						switch (Direction_)
+						{
+						case DIn:
+							return ParticipantEntry_;
+						case DOut:
+							return ParentEntry_;
+						}
 					}
 
 					QString RoomPublicMessage::GetOtherVariant() const

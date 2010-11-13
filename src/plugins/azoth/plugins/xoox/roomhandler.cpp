@@ -17,9 +17,12 @@
  **********************************************************************/
 
 #include "roomhandler.h"
+#include <QtDebug>
 #include "glooxaccount.h"
 #include "roomclentry.h"
 #include "roompublicmessage.h"
+#include "roomparticipantentry.h"
+#include <gloox/mucroom.h>
 
 namespace LeechCraft
 {
@@ -41,6 +44,7 @@ namespace LeechCraft
 					void RoomHandler::SetRoom (gloox::MUCRoom *room)
 					{
 						CLEntry_ = new RoomCLEntry (room, Account_);
+						room->getRoomItems ();
 					}
 
 					RoomCLEntry* RoomHandler::GetCLEntry ()
@@ -49,13 +53,24 @@ namespace LeechCraft
 					}
 
 					void RoomHandler::handleMUCParticipantPresence (gloox::MUCRoom *room,
-							const gloox::MUCRoomParticipant participant, const gloox::Presence &presence)
+							const gloox::MUCRoomParticipant participant, const gloox::Presence& presence)
 					{
 					}
 
 					void RoomHandler::handleMUCMessage (gloox::MUCRoom *room, const gloox::Message& msg, bool priv)
 					{
-						RoomPublicMessage *message = new RoomPublicMessage (msg, CLEntry_);
+						// TODO
+						if (priv)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "we don't support private msgs yet";
+							return;
+						}
+
+						const QString nick = NickFromJID (msg.from ());
+						if (!Nick2Entry_.contains (nick))
+							CreateParticipantEntry (nick);
+						RoomPublicMessage *message = new RoomPublicMessage (msg, CLEntry_, Nick2Entry_ [nick]);
 						CLEntry_->HandleMessage (message);
 					}
 
@@ -82,6 +97,23 @@ namespace LeechCraft
 
 					void RoomHandler::handleMUCItems (gloox::MUCRoom *room, const gloox::Disco::ItemList& items)
 					{
+						Q_FOREACH (gloox::Disco::Item *item, items)
+						{
+							const QString nick = QString::fromUtf8 (item->name ().c_str ());
+							CreateParticipantEntry (nick);
+						}
+					}
+
+					void RoomHandler::CreateParticipantEntry (const QString& nick)
+					{
+						RoomParticipantEntry *entry = new RoomParticipantEntry (nick,
+								CLEntry_->GetRoom (), Account_);
+						Nick2Entry_ [nick] = entry;
+					}
+
+					QString RoomHandler::NickFromJID (const gloox::JID& jid) const
+					{
+						return QString::fromUtf8 (jid.resource ().c_str ());
 					}
 				}
 			}

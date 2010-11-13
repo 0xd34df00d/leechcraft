@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMHANDLER_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMHANDLER_H
 #include <QObject>
+#include <QMap>
 #include <gloox/mucroomhandler.h>
 
 namespace LeechCraft
@@ -33,6 +34,7 @@ namespace LeechCraft
 				{
 					class RoomCLEntry;
 					class GlooxAccount;
+					class RoomParticipantEntry;
 
 					class RoomHandler : public QObject
 									  , public gloox::MUCRoomHandler
@@ -41,6 +43,7 @@ namespace LeechCraft
 
 						GlooxAccount *Account_;
 						RoomCLEntry *CLEntry_;
+						QMap<QString, RoomParticipantEntry*> Nick2Entry_;
 					public:
 						RoomHandler (GlooxAccount* = 0);
 
@@ -65,6 +68,9 @@ namespace LeechCraft
 								const std::string&, const gloox::DataForm*);
 						virtual void handleMUCItems (gloox::MUCRoom*,
 								const gloox::Disco::ItemList&);
+					private:
+						void CreateParticipantEntry (const QString&);
+						QString NickFromJID (const gloox::JID&) const;
 					};
 				}
 			}

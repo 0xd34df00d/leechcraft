@@ -47,7 +47,8 @@ namespace LeechCraft
 
 					enum MessageType
 					{
-						MTChat
+						MTChat,
+						MTService
 					};
 
 					virtual QObject* GetObject () = 0;

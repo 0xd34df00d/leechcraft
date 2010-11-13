@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "roomclentry.h"
+#include "roomparticipantentry.h"
 #include <QtDebug>
 #include <gloox/mucroom.h>
 #include "glooxaccount.h"
@@ -32,80 +32,68 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
-					RoomCLEntry::RoomCLEntry (gloox::MUCRoom *room, GlooxAccount *account)
+					RoomParticipantEntry::RoomParticipantEntry (const QString& nick,
+							gloox::MUCRoom *room, GlooxAccount *account)
 					: QObject (account)
+					, Nick_ (nick)
 					, Account_ (account)
 					, Room_ (room)
 					{
 					}
 
-					QObject* RoomCLEntry::GetObject ()
+					QObject* RoomParticipantEntry::GetObject ()
 					{
 						return this;
 					}
 
-					IAccount* RoomCLEntry::GetParentAccount () const
+					IAccount* RoomParticipantEntry::GetParentAccount () const
 					{
 						return Account_;
 					}
 
-					ICLEntry::Features RoomCLEntry::GetEntryFeatures () const
+					ICLEntry::Features RoomParticipantEntry::GetEntryFeatures () const
 					{
-						return FSessionEntry |
-							FIsMUC;
+						return FIsPrivateChat | FSessionEntry;
 					}
 
-					QString RoomCLEntry::GetEntryName () const
+					QString RoomParticipantEntry::GetEntryName () const
 					{
-						return QString::fromUtf8 (Room_->name ().c_str ());
+						return Nick_;
 					}
 
-					void RoomCLEntry::SetEntryName (const QString&)
+					void RoomParticipantEntry::SetEntryName (const QString&)
 					{
 					}
 
-					QByteArray RoomCLEntry::GetEntryID () const
+					QByteArray RoomParticipantEntry::GetEntryID () const
 					{
 						return (Room_->service () + "/" +
-									Room_->name () + "/" +
-									Room_->nick ()).c_str ();
+								Room_->name () + "/" +
+								Nick_.toUtf8 ().constData ()).c_str ();
 					}
 
-					QStringList RoomCLEntry::Groups () const
+					QStringList RoomParticipantEntry::Groups () const
 					{
-						return QStringList () << tr ("Multiuser chatrooms");
+						return QStringList (tr ("%1@%2 participants")
+								.arg (QString::fromUtf8 (Room_->name ().c_str ())
+								.arg (QString::fromUtf8 (Room_->service ().c_str ()))));
 					}
 
-					QStringList RoomCLEntry::Variants () const
+					QStringList RoomParticipantEntry::Variants () const
 					{
-						QStringList result;
-						result << "";
-						return result;
+						return QStringList ("");
 					}
 
-					IMessage* RoomCLEntry::CreateMessage (IMessage::MessageType type,
-							const QString& variant, const QString& text)
+					IMessage* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
+							const QString& variant, const QString& body)
 					{
-						if (variant == "")
-							return new RoomPublicMessage (text, this);
-						else
-							return 0;
+						qWarning () << Q_FUNC_INFO << "not implemented, gonna crash now";
+						return 0;
 					}
 
-					QList<IMessage*> RoomCLEntry::GetAllMessages () const
+					QList<IMessage*> RoomParticipantEntry::GetAllMessages () const
 					{
 						return AllMessages_;
-					}
-
-					gloox::MUCRoom* RoomCLEntry::GetRoom ()
-					{
-						return Room_;
-					}
-
-					void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)
-					{
-						AllMessages_ << msg;
-						emit gotMessage (msg);
 					}
 				}
 			}
