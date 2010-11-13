@@ -141,21 +141,32 @@ namespace LeechCraft
 						msg->OtherPart ()->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC)
 					return;
 
+				QString body = msg->GetBody ();
+				body.replace ('\n', "<br />");
+
 				QString string = QString ("[%1] ")
 						.arg (msg->GetDateTime ().time ().toString ());
 				switch (msg->GetDirection ())
 				{
 				case Plugins::IMessage::DIn:
-					string.append (msg->OtherPart ()->GetEntryName ());
-					string.append (": ");
+					if (body.startsWith ("/me "))
+					{
+						body = body.mid (3);
+						string.append ("*** ");
+						string.append (msg->OtherPart ()->GetEntryName ());
+						string.append (' ');
+					}
+					else
+					{
+						string.append (msg->OtherPart ()->GetEntryName ());
+						string.append (": ");
+					}
 					break;
 				case Plugins::IMessage::DOut:
 					string.append ("R: ");
 					break;
 				}
 
-				QString body = msg->GetBody ();
-				body.replace ('\n', "<br />");
 				string.append (body);
 
 				QWebElement elem = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
