@@ -109,7 +109,7 @@ namespace LeechCraft
 						Q_FOREACH (gloox::Disco::Item *item, items)
 						{
 							const QString nick = QString::fromUtf8 (item->name ().c_str ());
-							CreateParticipantEntry (nick);
+							GetParticipantEntry (nick);
 						}
 					}
 
