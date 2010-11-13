@@ -18,6 +18,7 @@
 
 #include "firefoximporter.h"
 #include "firefoximportpage.h"
+#include "firefoxprofileselectpage.h"
 
 namespace LeechCraft
 {
@@ -29,6 +30,7 @@ namespace LeechCraft
 			: AbstractImporter (parent)
 			{				
 				ImportPage_ = new FirefoxImportPage ();
+				ProfileSelectPage_ = new FirefoxProfileSelectPage (); 
 			}
 
 			QStringList FirefoxImporter::GetNames () const
@@ -40,6 +42,7 @@ namespace LeechCraft
 			{
 				QList<QWizardPage*> result;
 				result << ImportPage_;
+				result << ProfileSelectPage_;
 				return result;
 			}
 		};

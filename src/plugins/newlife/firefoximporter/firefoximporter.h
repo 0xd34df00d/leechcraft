@@ -19,6 +19,8 @@
 #ifndef PLUGINS_NEWLIFE_FIREFOXIMPORTER_H
 #define PLUGINS_NEWLIFE_FIREFOXIMPORTER_H
 #include "abstractimporter.h"
+#include "firefoxprofileselectpage.h"
+
 
 namespace LeechCraft
 {
@@ -32,7 +34,8 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				FirefoxImportPage *ImportPage_;
+				FirefoxImportPage* ImportPage_;
+				FirefoxProfileSelectPage* ProfileSelectPage_;
 			public:
 				FirefoxImporter (QWidget* = 0);
 				virtual QStringList GetNames () const;
