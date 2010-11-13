@@ -107,6 +107,11 @@ namespace LeechCraft
 				return ChatTabsManager_;
 			}
 
+			void Core::SendEntity (const LeechCraft::Entity& e)
+			{
+				emit gotEntity (e);
+			}
+
 			void Core::OpenChat (const QModelIndex& contactIndex)
 			{
 				ChatTabsManager_->OpenChat (contactIndex);

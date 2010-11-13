@@ -86,6 +86,7 @@ namespace LeechCraft
 				QList<QAction*> GetMUCJoinActions () const;
 				QAbstractItemModel* GetCLModel () const;
 				ChatTabsManager* GetChatTabsManager () const;
+				void SendEntity (const Entity&);
 
 				/** Opens chat with the remote contact identified by
 				 * index (which is from GetCLModel() model). If the

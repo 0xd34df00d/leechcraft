@@ -19,9 +19,13 @@
 #include "chattab.h"
 #include <QWebFrame>
 #include <QWebElement>
+#include <QTextDocument>
+#include <plugininterface/defaulthookproxy.h>
+#include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
 #include "core.h"
+#include "interfaces/iaccount.h"
 
 namespace LeechCraft
 {
@@ -41,8 +45,16 @@ namespace LeechCraft
 			: QWidget (parent)
 			, Index_ (idx)
 			, Variant_ (variant)
+			, LinkRegexp_ ("\\b((https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(\\)\\+\\-\\~\\*\\,]+")
 			{
+				LinkRegexp_.setCaseSensitivity (Qt::CaseInsensitive);
 				Ui_.setupUi (this);
+				Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
+
+				connect (Ui_.View_->page (),
+						SIGNAL (linkClicked (const QUrl&)),
+						this,
+						SLOT (handleViewLinkClicked (const QUrl&)));
 
 				QObject *entryObj = Index_.data (Core::CLREntryObject).value<QObject*> ();
 				connect (entryObj,
@@ -114,6 +126,24 @@ namespace LeechCraft
 				AppendMessage (msg);
 			}
 
+			void ChatTab::handleViewLinkClicked (const QUrl& url)
+			{
+				qDebug () << url.scheme () << url.host () << url.path ();
+				if (url.scheme () != "azoth")
+				{
+					Entity e = Util::MakeEntity (url,
+							QString (), FromUserInitiated);
+					Core::Instance ().SendEntity (e);
+					return;
+				}
+
+				if (url.host () == "msgedit")
+				{
+					Ui_.MsgEdit_->setText (url.path ().mid (1) + ": ");
+					Ui_.MsgEdit_->setFocus ();
+				}
+			}
+
 			Plugins::ICLEntry* ChatTab::GetEntry ()
 			{
 				if (!Index_.isValid ())
@@ -145,27 +175,35 @@ namespace LeechCraft
 				bool shouldScrollFurther = (frame->scrollBarMaximum (Qt::Vertical) ==
 								frame->scrollBarValue (Qt::Vertical));
 
-				QString body = msg->GetBody ();
-				body.replace ('\n', "<br />");
+				QString body = FormatBody (msg->GetBody (), msg->GetObject ());
 
 				QString string = QString ("[%1] ")
 						.arg (msg->GetDateTime ().time ().toString ());
 				switch (msg->GetDirection ())
 				{
 				case Plugins::IMessage::DIn:
+				{
+					QString entryName = Qt::escape (msg->OtherPart ()->GetEntryName ());
 					if (body.startsWith ("/me "))
 					{
 						body = body.mid (3);
 						string.append ("*** ");
-						string.append (msg->OtherPart ()->GetEntryName ());
+						string.append (entryName);
 						string.append (' ');
 					}
 					else
 					{
-						string.append (msg->OtherPart ()->GetEntryName ());
-						string.append (": ");
+						QUrl url (QString ("azoth://msgedit/%1")
+								.arg (entryName));
+
+						string.append ("<a href=\"");
+						string.append (url.toString ());
+						string.append ("\">");
+						string.append (entryName);
+						string.append ("</a>: ");
 					}
 					break;
+				}
 				case Plugins::IMessage::DOut:
 					string.append ("R: ");
 					break;
@@ -173,16 +211,32 @@ namespace LeechCraft
 
 				string.append (body);
 
-				{
-					QWebElement elem = frame->findFirstElement ("body");
-					elem.appendInside (QString ("<div>%1</div").arg (string));
-				}
+				QWebElement elem = frame->findFirstElement ("body");
+				elem.appendInside (QString ("<div>%1</div").arg (string));
 
 				if (shouldScrollFurther)
 				{
 					int scrollMax = frame->scrollBarMaximum (Qt::Vertical);
 					frame->setScrollBarValue (Qt::Vertical, scrollMax);
 				}
+			}
+
+			QString ChatTab::FormatBody (QString body, QObject *msgObj)
+			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				emit hookFormatBodyBegin (proxy, &body, msgObj);
+				if (!proxy->IsCancelled ())
+				{
+					body = Qt::escape (body);
+					body.replace ('\n', "<br />");
+					body.replace ("  ", "&nbsp; ");
+
+					emit hookFormatBodyEnd (proxy, &body, msgObj);
+				}
+
+				return proxy->IsCancelled () ?
+						proxy->GetReturnValue ().toString () :
+						body;
 			}
 		}
 	}

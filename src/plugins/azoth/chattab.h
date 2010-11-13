@@ -20,8 +20,9 @@
 #define PLUGINS_AZOTH_CHATTAB_H
 #include <QWidget>
 #include <QPointer>
-#include <interfaces/imultitabs.h>
 #include <QPersistentModelIndex>
+#include <interfaces/iinfo.h>
+#include <interfaces/imultitabs.h>
 #include "ui_chattab.h"
 
 namespace LeechCraft
@@ -47,6 +48,7 @@ namespace LeechCraft
 				Ui::ChatTab Ui_;
 				QPersistentModelIndex Index_;
 				QString Variant_;
+				QRegExp LinkRegexp_;
 			public:
 				static void SetParentMultiTabs (QObject*);
 
@@ -60,12 +62,23 @@ namespace LeechCraft
 			private slots:
 				void on_MsgEdit__returnPressed ();
 				void handleEntryMessage (QObject*);
+				void handleViewLinkClicked (const QUrl&);
 			private:
 				Plugins::ICLEntry* GetEntry ();
 
 				/** Appends the message to the message view area.
 				 */
 				void AppendMessage (Plugins::IMessage*);
+
+				QString FormatBody (QString, QObject*);
+			signals:
+				// Hooks
+				void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
+						QString *string,
+						QObject *message);
+				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+						QString *string,
+						QObject *message);
 			};
 
 			typedef QPointer<ChatTab> ChatTab_ptr;
