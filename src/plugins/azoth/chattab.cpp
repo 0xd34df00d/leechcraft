@@ -65,6 +65,8 @@ namespace LeechCraft
 				Plugins::ICLEntry *e = GetEntry ();
 				Q_FOREACH (Plugins::IMessage *msg, e->GetAllMessages ())
 					AppendMessage (msg);
+
+				Ui_.MsgEdit_->setFocus ();
 			}
 
 			QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
