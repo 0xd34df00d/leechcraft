@@ -141,6 +141,10 @@ namespace LeechCraft
 						msg->OtherPart ()->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC)
 					return;
 
+				QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
+				bool shouldScrollFurther = (frame->scrollBarMaximum (Qt::Vertical) ==
+								frame->scrollBarValue (Qt::Vertical));
+
 				QString body = msg->GetBody ();
 				body.replace ('\n', "<br />");
 
@@ -169,8 +173,16 @@ namespace LeechCraft
 
 				string.append (body);
 
-				QWebElement elem = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-				elem.appendInside (QString ("<div>%1</div").arg (string));
+				{
+					QWebElement elem = frame->findFirstElement ("body");
+					elem.appendInside (QString ("<div>%1</div").arg (string));
+				}
+
+				if (shouldScrollFurther)
+				{
+					int scrollMax = frame->scrollBarMaximum (Qt::Vertical);
+					frame->setScrollBarValue (Qt::Vertical, scrollMax);
+				}
 			}
 		}
 	}
