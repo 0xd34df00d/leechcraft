@@ -45,9 +45,9 @@ namespace LeechCraft
 			: QWidget (parent)
 			, Index_ (idx)
 			, Variant_ (variant)
-			, LinkRegexp_ ("\\b((https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(\\)\\+\\-\\~\\*\\,]+")
+			, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+					Qt::CaseInsensitive, QRegExp::RegExp2)
 			{
-				LinkRegexp_.setCaseSensitivity (Qt::CaseInsensitive);
 				Ui_.setupUi (this);
 				Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 
@@ -232,6 +232,17 @@ namespace LeechCraft
 					body = Qt::escape (body);
 					body.replace ('\n', "<br />");
 					body.replace ("  ", "&nbsp; ");
+
+					int pos = 0;
+					while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+					{
+						QString link = LinkRegexp_.cap (1);
+						QString str = QString ("<a href=\"%1\">%1</a>")
+								.arg (link);
+						body.replace (pos, link.length (), str);
+
+						pos += str.length ();
+					}
 
 					emit hookFormatBodyEnd (proxy, &body, msgObj);
 				}
