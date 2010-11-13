@@ -69,7 +69,7 @@ namespace LeechCraft
 						virtual void handleMUCItems (gloox::MUCRoom*,
 								const gloox::Disco::ItemList&);
 					private:
-						void CreateParticipantEntry (const QString&);
+						RoomParticipantEntry* CreateParticipantEntry (const QString&);
 						QString NickFromJID (const gloox::JID&) const;
 					};
 				}

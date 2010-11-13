@@ -74,9 +74,11 @@ namespace LeechCraft
 
 					QStringList RoomParticipantEntry::Groups () const
 					{
-						return QStringList (tr ("%1@%2 participants")
-								.arg (QString::fromUtf8 (Room_->name ().c_str ())
-								.arg (QString::fromUtf8 (Room_->service ().c_str ()))));
+						QString room = QString::fromUtf8 (Room_->name ().c_str ()) +
+								"@" +
+								QString::fromUtf8 (Room_->service ().c_str ());
+						return QStringList (tr ("%1 participants")
+								.arg (room));
 					}
 
 					QStringList RoomParticipantEntry::Variants () const

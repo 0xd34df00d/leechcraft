@@ -69,7 +69,10 @@ namespace LeechCraft
 
 						const QString nick = NickFromJID (msg.from ());
 						if (!Nick2Entry_.contains (nick))
-							CreateParticipantEntry (nick);
+						{
+							RoomParticipantEntry *entry = CreateParticipantEntry (nick);
+							Account_->handleGotRosterItems (QList<QObject*> () << entry);
+						}
 						RoomPublicMessage *message = new RoomPublicMessage (msg, CLEntry_, Nick2Entry_ [nick]);
 						CLEntry_->HandleMessage (message);
 					}
@@ -97,18 +100,21 @@ namespace LeechCraft
 
 					void RoomHandler::handleMUCItems (gloox::MUCRoom *room, const gloox::Disco::ItemList& items)
 					{
+						QList<QObject*> entries;
 						Q_FOREACH (gloox::Disco::Item *item, items)
 						{
 							const QString nick = QString::fromUtf8 (item->name ().c_str ());
-							CreateParticipantEntry (nick);
+							entries << CreateParticipantEntry (nick);
 						}
+						Account_->handleGotRosterItems (entries);
 					}
 
-					void RoomHandler::CreateParticipantEntry (const QString& nick)
+					RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick)
 					{
 						RoomParticipantEntry *entry = new RoomParticipantEntry (nick,
 								CLEntry_->GetRoom (), Account_);
 						Nick2Entry_ [nick] = entry;
+						return entry;
 					}
 
 					QString RoomHandler::NickFromJID (const gloox::JID& jid) const

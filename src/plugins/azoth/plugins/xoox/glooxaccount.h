@@ -94,7 +94,7 @@ namespace LeechCraft
 						IMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&,
 								gloox::RosterItem*);
-					private slots:
+					public slots:
 						void handleGotRosterItems (const QList<QObject*>&);
 					signals:
 						void gotCLItems (const QList<QObject*>);
