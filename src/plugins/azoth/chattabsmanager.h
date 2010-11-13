@@ -42,8 +42,11 @@ namespace LeechCraft
 				ChatTabsManager(QObject* = 0);
 
 				void OpenChat (const QModelIndex&);
+			private slots:
+				void handleNeedToClose (ChatTab*);
 			signals:
 				void addNewTab (const QString&, QWidget*);
+				void removeTab (QWidget*);
 				void raiseTab (QWidget*);
 			};
 		}

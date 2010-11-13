@@ -72,6 +72,8 @@ namespace LeechCraft
 
 				QString FormatBody (QString, QObject*);
 			signals:
+				void needToClose (ChatTab*);
+
 				// Hooks
 				void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
 						QString *string,

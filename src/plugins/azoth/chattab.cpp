@@ -88,6 +88,7 @@ namespace LeechCraft
 
 			void ChatTab::Remove ()
 			{
+				emit needToClose (this);
 			}
 
 			void ChatTab::on_MsgEdit__returnPressed ()
@@ -128,7 +129,6 @@ namespace LeechCraft
 
 			void ChatTab::handleViewLinkClicked (const QUrl& url)
 			{
-				qDebug () << url.scheme () << url.host () << url.path ();
 				if (url.scheme () != "azoth")
 				{
 					Entity e = Util::MakeEntity (url,

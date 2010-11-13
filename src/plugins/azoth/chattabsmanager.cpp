@@ -64,8 +64,22 @@ namespace LeechCraft
 				// TODO don't hardcode the first variant
 				QPointer<ChatTab> tab (new ChatTab (idx, entry->Variants ().first ()));
 				Index2Tab_ [idx] = tab;
+				connect (tab,
+						SIGNAL (needToClose (ChatTab*)),
+						this,
+						SLOT (handleNeedToClose (ChatTab*)));
 				emit addNewTab (entry->GetEntryName(), tab);
 				emit raiseTab (tab);
+			}
+
+			void ChatTabsManager::handleNeedToClose (ChatTab *tab)
+			{
+				emit removeTab (tab);
+
+				QPersistentModelIndex idx = Index2Tab_.key (tab);
+				Index2Tab_.remove (idx);
+
+				tab->deleteLater ();
 			}
 		}
 	}
