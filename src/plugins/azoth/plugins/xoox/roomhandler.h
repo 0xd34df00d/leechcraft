@@ -19,8 +19,10 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMHANDLER_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMHANDLER_H
 #include <QObject>
-#include <QMap>
+#include <QHash>
 #include <gloox/mucroomhandler.h>
+#include <gloox/messagehandler.h>
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -38,12 +40,14 @@ namespace LeechCraft
 
 					class RoomHandler : public QObject
 									  , public gloox::MUCRoomHandler
+									  , public gloox::MessageHandler
 					{
 						Q_OBJECT
 
 						GlooxAccount *Account_;
 						RoomCLEntry *CLEntry_;
-						QMap<QString, RoomParticipantEntry*> Nick2Entry_;
+						QHash<QString, RoomParticipantEntry*> Nick2Entry_;
+						QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
 					public:
 						RoomHandler (GlooxAccount* = 0);
 
@@ -68,9 +72,25 @@ namespace LeechCraft
 								const std::string&, const gloox::DataForm*);
 						virtual void handleMUCItems (gloox::MUCRoom*,
 								const gloox::Disco::ItemList&);
+
+						// MessageHandler
+						virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
+
+						GlooxMessage* CreateMessage (IMessage::MessageType,
+								const QString&, const QString&);
 					private:
-						RoomParticipantEntry* CreateParticipantEntry (const QString&);
+						/** Creates a new entry for the given nick.
+						 */
+						RoomParticipantEntry* CreateParticipantEntry (const QString& nick);
+						/** Creates a new entry for the given nick if it
+						 * doesn't exist already (and does so by calling
+						 * CreateParticipantEntry()) or just returns the
+						 * already existing one.
+						 */
+						RoomParticipantEntry* GetParticipantEntry (const QString& nick);
+						gloox::MessageSession* GetSessionWith (const gloox::JID&);
 						QString NickFromJID (const gloox::JID&) const;
+						gloox::JID JIDForNick (const QString&) const;
 					};
 				}
 			}

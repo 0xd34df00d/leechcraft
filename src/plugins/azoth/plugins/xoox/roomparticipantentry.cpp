@@ -21,6 +21,9 @@
 #include <gloox/mucroom.h>
 #include "glooxaccount.h"
 #include "roompublicmessage.h"
+#include "glooxmessage.h"
+#include "roomhandler.h"
+#include "roomclentry.h"
 
 namespace LeechCraft
 {
@@ -33,11 +36,11 @@ namespace LeechCraft
 				namespace Xoox
 				{
 					RoomParticipantEntry::RoomParticipantEntry (const QString& nick,
-							gloox::MUCRoom *room, GlooxAccount *account)
+							RoomHandler *rh, GlooxAccount *account)
 					: QObject (account)
 					, Nick_ (nick)
 					, Account_ (account)
-					, Room_ (room)
+					, RoomHandler_ (rh)
 					{
 					}
 
@@ -67,18 +70,20 @@ namespace LeechCraft
 
 					QByteArray RoomParticipantEntry::GetEntryID () const
 					{
-						return (Room_->service () + "/" +
-								Room_->name () + "/" +
+						gloox::MUCRoom *room = RoomHandler_->GetCLEntry ()->GetRoom ();
+						return (room->name () + "/" +
+								room->service () + "/" +
 								Nick_.toUtf8 ().constData ()).c_str ();
 					}
 
 					QStringList RoomParticipantEntry::Groups () const
 					{
-						QString room = QString::fromUtf8 (Room_->name ().c_str ()) +
+						gloox::MUCRoom *room = RoomHandler_->GetCLEntry ()->GetRoom ();
+						QString roomName = QString::fromUtf8 (room->name ().c_str ()) +
 								"@" +
-								QString::fromUtf8 (Room_->service ().c_str ());
+								QString::fromUtf8 (room->service ().c_str ());
 						return QStringList (tr ("%1 participants")
-								.arg (room));
+								.arg (roomName));
 					}
 
 					QStringList RoomParticipantEntry::Variants () const
@@ -87,15 +92,20 @@ namespace LeechCraft
 					}
 
 					IMessage* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
-							const QString& variant, const QString& body)
+							const QString&, const QString& body)
 					{
-						qWarning () << Q_FUNC_INFO << "not implemented, gonna crash now";
-						return 0;
+						return RoomHandler_->CreateMessage (type, Nick_, body);
 					}
 
 					QList<IMessage*> RoomParticipantEntry::GetAllMessages () const
 					{
 						return AllMessages_;
+					}
+
+					void RoomParticipantEntry::HandleMessage (GlooxMessage *msg)
+					{
+						AllMessages_ << msg;
+						emit gotMessage (msg);
 					}
 				}
 			}

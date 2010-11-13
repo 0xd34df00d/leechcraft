@@ -151,6 +151,11 @@ namespace LeechCraft
 						emit gotCLItems (QList<QObject*> () << entry);
 					}
 
+					boost::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
+					{
+						return ClientConnection_;
+					}
+
 					QByteArray GlooxAccount::Serialize () const
 					{
 						quint16 version = 1;

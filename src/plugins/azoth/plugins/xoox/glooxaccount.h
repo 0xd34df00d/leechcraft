@@ -87,6 +87,7 @@ namespace LeechCraft
 
 						QString GetJID () const;
 						void JoinRoom (const QString&, const QString&, const QString&);
+						boost::shared_ptr<ClientConnection> GetClientConnection () const;
 
 						QByteArray Serialize () const;
 						static GlooxAccount* Deserialize (const QByteArray&, QObject*);

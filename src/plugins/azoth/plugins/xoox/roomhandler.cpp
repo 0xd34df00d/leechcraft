@@ -18,11 +18,15 @@
 
 #include "roomhandler.h"
 #include <QtDebug>
+#include <gloox/mucroom.h>
+#include <gloox/messagesession.h>
+#include <gloox/client.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
 #include "roompublicmessage.h"
 #include "roomparticipantentry.h"
-#include <gloox/mucroom.h>
+#include "clientconnection.h"
+#include "glooxmessage.h"
 
 namespace LeechCraft
 {
@@ -59,22 +63,23 @@ namespace LeechCraft
 
 					void RoomHandler::handleMUCMessage (gloox::MUCRoom *room, const gloox::Message& msg, bool priv)
 					{
-						// TODO
+						const QString& nick = NickFromJID (msg.from ());
+						RoomParticipantEntry *entry = GetParticipantEntry (nick);
+
 						if (priv)
 						{
-							qWarning () << Q_FUNC_INFO
-									<< "we don't support private msgs yet";
-							return;
+							gloox::MessageSession *session = GetSessionWith (msg.from ());
+							GlooxMessage *message = new GlooxMessage (msg,
+									entry, session);
+							message->SetDateTime (QDateTime::currentDateTime ());
+							entry->HandleMessage (message);;
 						}
-
-						const QString nick = NickFromJID (msg.from ());
-						if (!Nick2Entry_.contains (nick))
+						else
 						{
-							RoomParticipantEntry *entry = CreateParticipantEntry (nick);
-							Account_->handleGotRosterItems (QList<QObject*> () << entry);
+							RoomPublicMessage *message =
+									new RoomPublicMessage (msg, CLEntry_, entry);
+							CLEntry_->HandleMessage (message);
 						}
-						RoomPublicMessage *message = new RoomPublicMessage (msg, CLEntry_, Nick2Entry_ [nick]);
-						CLEntry_->HandleMessage (message);
 					}
 
 					bool RoomHandler::handleMUCRoomCreation (gloox::MUCRoom *room)
@@ -109,17 +114,75 @@ namespace LeechCraft
 						Account_->handleGotRosterItems (entries);
 					}
 
+					void RoomHandler::handleMessage (const gloox::Message& msg, gloox::MessageSession *session)
+					{
+						const gloox::JID& from = msg.from ();
+						const QString& nick = NickFromJID (from);
+						RoomParticipantEntry *entry = GetParticipantEntry (nick);
+
+						GlooxMessage *message = new GlooxMessage (msg,
+								entry, session);
+						entry->HandleMessage (message);
+					}
+
+					GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType type,
+							const QString& nick, const QString& body)
+					{
+						GlooxMessage *message = new GlooxMessage (IMessage::MTChat,
+								IMessage::DOut,
+								GetParticipantEntry (nick),
+								GetSessionWith (JIDForNick (nick)));
+						message->SetBody (body);
+						message->SetDateTime (QDateTime::currentDateTime ());
+						return message;
+					}
+
 					RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick)
 					{
 						RoomParticipantEntry *entry = new RoomParticipantEntry (nick,
-								CLEntry_->GetRoom (), Account_);
+								this, Account_);
 						Nick2Entry_ [nick] = entry;
 						return entry;
+					}
+
+					RoomParticipantEntry* RoomHandler::GetParticipantEntry (const QString& nick)
+					{
+						if (!Nick2Entry_.contains (nick))
+						{
+							RoomParticipantEntry *entry = CreateParticipantEntry (nick);
+							Account_->handleGotRosterItems (QList<QObject*> () << entry);
+							return entry;
+						}
+						else
+							return Nick2Entry_ [nick];
+					}
+
+					gloox::MessageSession* RoomHandler::GetSessionWith (const gloox::JID& with)
+					{
+						if (!JID2Session_.contains (with))
+						{
+							gloox::MessageSession *session =
+									new gloox::MessageSession (Account_->GetClientConnection ()->GetClient (),
+											with);
+							session->registerMessageHandler (this);
+							JID2Session_ [with] = session;
+							return session;
+						}
+						else
+							return JID2Session_ [with];
 					}
 
 					QString RoomHandler::NickFromJID (const gloox::JID& jid) const
 					{
 						return QString::fromUtf8 (jid.resource ().c_str ());
+					}
+
+					gloox::JID RoomHandler::JIDForNick (const QString& nick) const
+					{
+						gloox::MUCRoom *room = CLEntry_->GetRoom ();
+						return gloox::JID (room->name () + "@" +
+								room->service () + "/" +
+								nick.toUtf8 ().constData ());
 					}
 				}
 			}

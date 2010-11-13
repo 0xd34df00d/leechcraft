@@ -36,10 +36,7 @@ namespace gloox
 	class Client;
 	class RosterItem;
 
-	inline uint qHash (const JID& jid)
-	{
-		return qHash (QByteArray (jid.full ().c_str ()));
-	}
+	uint qHash (const JID& jid);
 }
 
 namespace LeechCraft

@@ -33,6 +33,11 @@
 #include "glooxmessage.h"
 #include "roomhandler.h"
 
+uint gloox::qHash (const gloox::JID& jid)
+{
+	return qHash (QByteArray (jid.full ().c_str ()));
+}
+
 namespace LeechCraft
 {
 	namespace Plugins

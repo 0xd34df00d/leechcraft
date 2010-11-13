@@ -22,11 +22,6 @@
 #include <QStringList>
 #include <interfaces/iclentry.h>
 
-namespace gloox
-{
-	class MUCRoom;
-}
-
 namespace LeechCraft
 {
 	namespace Plugins
@@ -39,6 +34,8 @@ namespace LeechCraft
 				{
 					class GlooxAccount;
 					class RoomPublicMessage;
+					class GlooxMessage;
+					class RoomHandler;
 
 					class RoomParticipantEntry : public QObject
 											   , public ICLEntry
@@ -48,10 +45,10 @@ namespace LeechCraft
 
 						QString Nick_;
 						GlooxAccount *Account_;
-						gloox::MUCRoom *Room_;
+						RoomHandler *RoomHandler_;
 						QList<IMessage*> AllMessages_;
 					public:
-						RoomParticipantEntry (const QString&, gloox::MUCRoom*, GlooxAccount*);
+						RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
 						QObject* GetObject ();
 						IAccount* GetParentAccount () const ;
@@ -64,6 +61,8 @@ namespace LeechCraft
 						IMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 						QList<IMessage*> GetAllMessages () const;
+
+						void HandleMessage (GlooxMessage*);
 					signals:
 						void gotMessage (QObject*);
 					};

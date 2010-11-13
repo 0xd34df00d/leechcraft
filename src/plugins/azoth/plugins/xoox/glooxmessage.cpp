@@ -34,7 +34,7 @@ namespace LeechCraft
 				{
 					GlooxMessage::GlooxMessage (IMessage::MessageType type,
 							IMessage::Direction direction,
-							GlooxCLEntry *entry,
+							ICLEntry *entry,
 							gloox::MessageSession *session)
 					: Type_ (type)
 					, Direction_ (direction)
@@ -45,7 +45,7 @@ namespace LeechCraft
 					}
 
 					GlooxMessage::GlooxMessage (const gloox::Message& message,
-							GlooxCLEntry *entry,
+							ICLEntry *entry,
 							gloox::MessageSession *session)
 					: Type_ (MTChat)
 					, Direction_ (DIn)
