@@ -1,7 +1,6 @@
-
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2009  Georg Rudoy
+ * Copyright (C) 2010  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,14 +66,14 @@ namespace LeechCraft
 						SIGNAL (currentIdChanged (int)),
 						this,
 						SLOT (handleAccepted (int)));				
-			#ifdef Q_WS_WIN
+#ifdef Q_WS_WIN
 				QString defaultFile = QDir::homePath () + "\Application Data\Mozilla\Firefox\profiles.ini";
-			#elif defined Q_WS_MAC
-			#warning Please check location of stuff on Mac OS X
+#elif defined Q_WS_MAC
+#warning Please check location of stuff on Mac OS X
 				QString defaultFile = QDir::homePath () + "/.mozilla/firefox/profiles.ini";
-			#else
+#else
 				QString defaultFile = QDir::homePath () + "/.mozilla/firefox/profiles.ini";
-			#endif
+#endif
 				if (CheckValidity (defaultFile))
 					Ui_.FileLocation_->setText (defaultFile);
 			}

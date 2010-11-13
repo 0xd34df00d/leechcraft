@@ -1,23 +1,24 @@
-/*
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/**********************************************************************
+ * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2010  Oleg Linkin
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **********************************************************************/
 
 
 #include "firefoxprofileselectpage.h"
+#include <boost/bind.hpp>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -28,9 +29,8 @@
 #include <QUrl>
 #include <QDateTime>
 #include <QXmlStreamWriter>
-
 #include <plugininterface/util.h>
-#include "boost/bind.hpp"
+
 
 
 namespace LeechCraft
@@ -43,7 +43,7 @@ namespace LeechCraft
 			: QWizardPage (parent)
 			{
 				Ui_.setupUi (this);
- 				DB_.reset (new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE","Import connection")));
+				DB_.reset (new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE", "Import connection")));
 			}
 
 			FirefoxProfileSelectPage::~FirefoxProfileSelectPage ()
@@ -82,7 +82,7 @@ namespace LeechCraft
 			{
 				QSettings settings (filename, QSettings::IniFormat);
 				Ui_.ProfileList_->clear ();
-				Ui_.ProfileList_->addItem ("");
+				Ui_.ProfileList_->addItem (tr ("Default"));
 				Q_FOREACH (const QString& name, settings.childGroups ())
 				{
 					settings.beginGroup (name);
@@ -97,7 +97,8 @@ namespace LeechCraft
 				Ui_.BookmarksImport_->setChecked (false);
 				Ui_.RssImport_->setChecked (false);
 
-				if (!index){
+				if (!index)
+				{
 					Ui_.HistoryImport_->setEnabled (false);
 					Ui_.BookmarksImport_->setEnabled (false);
 					Ui_.RssImport_->setEnabled (false);
@@ -136,31 +137,16 @@ namespace LeechCraft
 					return;
 				
 				QSqlQuery query = GetQuery (bookmarksSql);
-				QSqlRecord record = query.record();
-				int count = record.value (0).toInt ();
-				
-				if (!count)
-					Ui_.BookmarksImport_->setEnabled (false);
-				else
-					Ui_.BookmarksImport_->setEnabled (true);
+				QSqlRecord record = query.record();				
+				Ui_.BookmarksImport_->setEnabled (record.value (0).toInt ());
 				
 				query = GetQuery (historySql);
-				record = query.record();
-				count = record.value (0).toInt ();
-				
-				if (!count)
-					Ui_.HistoryImport_->setEnabled (false);
-				else
-					Ui_.HistoryImport_->setEnabled (true);
+				record = query.record();				
+				Ui_.HistoryImport_->setEnabled (record.value (0).toInt ());
 				
 				query = GetQuery (bookmarksSql);
 				record = query.record();
-				count = record.value (0).toInt ();
-				
-				if (!count)
-					Ui_.RssImport_->setEnabled (false);
-				else
-					Ui_.RssImport_->setEnabled (true);
+				Ui_.RssImport_->setEnabled (record.value (0).toInt ());
 			}
 
 			
@@ -185,7 +171,7 @@ namespace LeechCraft
 					return QString ();
 				
 				QFileInfo file (profilesFile);
-				profilePath = file.absolutePath  ().append ("/").append (profilePath);
+				profilePath = file.absolutePath ().append ("/").append (profilePath);
 				
 				return profilePath; 
 			}
@@ -416,13 +402,9 @@ namespace LeechCraft
 			
 			bool FirefoxProfileSelectPage::IsFirefoxRunning()
 			{
-				
 				QFileInfo ffStarted (GetProfileDirectory (Ui_.ProfileList_->currentText ()) + "/lock");
 
-				if (ffStarted.isSymLink ())
-					return true;
-				
-				return false;
+				return ffStarted.isSymLink ();
 			}
 		};
 	};
