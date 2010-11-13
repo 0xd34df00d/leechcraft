@@ -72,7 +72,7 @@ namespace LeechCraft
 							GlooxMessage *message = new GlooxMessage (msg,
 									entry, session);
 							message->SetDateTime (QDateTime::currentDateTime ());
-							entry->HandleMessage (message);;
+							entry->HandleMessage (message);
 						}
 						else
 						{
@@ -109,9 +109,8 @@ namespace LeechCraft
 						Q_FOREACH (gloox::Disco::Item *item, items)
 						{
 							const QString nick = QString::fromUtf8 (item->name ().c_str ());
-							entries << CreateParticipantEntry (nick);
+							CreateParticipantEntry (nick);
 						}
-						Account_->handleGotRosterItems (entries);
 					}
 
 					void RoomHandler::handleMessage (const gloox::Message& msg, gloox::MessageSession *session)
@@ -122,6 +121,7 @@ namespace LeechCraft
 
 						GlooxMessage *message = new GlooxMessage (msg,
 								entry, session);
+						message->SetDateTime (QDateTime::currentDateTime ());
 						entry->HandleMessage (message);
 					}
 
@@ -142,6 +142,7 @@ namespace LeechCraft
 						RoomParticipantEntry *entry = new RoomParticipantEntry (nick,
 								this, Account_);
 						Nick2Entry_ [nick] = entry;
+						Account_->handleGotRosterItems (QList<QObject*> () << entry);
 						return entry;
 					}
 
@@ -150,7 +151,6 @@ namespace LeechCraft
 						if (!Nick2Entry_.contains (nick))
 						{
 							RoomParticipantEntry *entry = CreateParticipantEntry (nick);
-							Account_->handleGotRosterItems (QList<QObject*> () << entry);
 							return entry;
 						}
 						else
