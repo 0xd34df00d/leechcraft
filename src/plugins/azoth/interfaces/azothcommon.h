@@ -29,13 +29,12 @@ namespace LeechCraft
 			{
 				enum State
 				{
-					SOffline,
 					SOnline,
 					SChat,
 					SAway,
 					SDND,
 					SXA,
-					SUnavailable,
+					SOffline,
 					SProbe,
 					SError,
 					SInvalid

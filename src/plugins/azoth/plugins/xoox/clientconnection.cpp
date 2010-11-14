@@ -91,9 +91,8 @@ namespace LeechCraft
 
 					void ClientConnection::SetState (const GlooxAccountState& state)
 					{
-						gloox::Presence::PresenceType pres = state.State_ > 0 ?
-								static_cast<gloox::Presence::PresenceType> (state.State_ - 1) :
-								gloox::Presence::Invalid;
+						gloox::Presence::PresenceType pres =
+								static_cast<gloox::Presence::PresenceType> (state.State_);
 						Client_->setPresence (pres, state.Priority_,
 								state.Status_.toUtf8 ().constData ());
 					}
