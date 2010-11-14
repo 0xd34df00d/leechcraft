@@ -27,6 +27,7 @@
 #include "interfaces/imessage.h"
 #include "core.h"
 #include "interfaces/iaccount.h"
+#include <boost/graph/graph_concepts.hpp>
 
 namespace LeechCraft
 {
@@ -110,7 +111,11 @@ namespace LeechCraft
 				QString variant = currentVariants.contains (Variant_) ?
 						Variant_ :
 						currentVariants.first ();
-				Plugins::IMessage *msg = e->CreateMessage (Plugins::IMessage::MTChat, variant, text);
+				Plugins::IMessage::MessageType type =
+						e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC ?
+								Plugins::IMessage::MTMUCMessage :
+								Plugins::IMessage::MTChatMessage;
+				Plugins::IMessage *msg = e->CreateMessage (type, variant, text);
 				msg->Send ();
 				AppendMessage (msg);
 			}
@@ -132,6 +137,7 @@ namespace LeechCraft
 
 			void ChatTab::handleViewLinkClicked (const QUrl& url)
 			{
+				qDebug () << url.scheme () << url.host () << url.path ();
 				if (url.scheme () != "azoth")
 				{
 					Entity e = Util::MakeEntity (url,
@@ -140,9 +146,9 @@ namespace LeechCraft
 					return;
 				}
 
-				if (url.host () == "msgedit")
+				if (url.host () == "msgeditreplace")
 				{
-					Ui_.MsgEdit_->setText (url.path ().mid (1) + ": ");
+					Ui_.MsgEdit_->setText (url.path ().mid (1));
 					Ui_.MsgEdit_->setFocus ();
 				}
 			}
@@ -185,7 +191,7 @@ namespace LeechCraft
 				bool shouldScrollFurther = (frame->scrollBarMaximum (Qt::Vertical) ==
 								frame->scrollBarValue (Qt::Vertical));
 
-				QString body = FormatBody (msg->GetBody (), msg->GetObject ());
+				QString body = FormatBody (msg->GetBody (), msg);
 
 				QString string = QString ("[%1] ")
 						.arg (msg->GetDateTime ().time ().toString ());
@@ -194,6 +200,8 @@ namespace LeechCraft
 				case Plugins::IMessage::DIn:
 				{
 					QString entryName = Qt::escape (msg->OtherPart ()->GetEntryName ());
+					entryName = FormatNickname (entryName, msg);
+
 					if (body.startsWith ("/me "))
 					{
 						body = body.mid (3);
@@ -203,19 +211,14 @@ namespace LeechCraft
 					}
 					else
 					{
-						QUrl url (QString ("azoth://msgedit/%1")
-								.arg (entryName));
-
-						string.append ("<a href=\"");
-						string.append (url.toString ());
-						string.append ("\">");
 						string.append (entryName);
-						string.append ("</a>: ");
+						string.append (": ");
 					}
 					break;
 				}
 				case Plugins::IMessage::DOut:
-					string.append ("R: ");
+					string.append (FormatNickname ("R", msg));
+					string.append (": ");
 					break;
 				}
 
@@ -230,9 +233,11 @@ namespace LeechCraft
 							SLOT (scrollToEnd ()));
 			}
 
-			QString ChatTab::FormatBody (QString body, QObject *msgObj)
+			QString ChatTab::FormatBody (QString body, Plugins::IMessage *msg)
 			{
-				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				QObject *msgObj = msg->GetObject ();
+
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 				emit hookFormatBodyBegin (proxy, &body, msgObj);
 				if (!proxy->IsCancelled ())
 				{
@@ -258,7 +263,49 @@ namespace LeechCraft
 						proxy->GetReturnValue ().toString () :
 						body;
 			}
+
+			QString ChatTab::FormatNickname (QString nick, Plugins::IMessage *msg)
+			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookFormatNickname (proxy, &nick, msg->GetObject ());
+				if (proxy->IsCancelled ())
+					return nick;
+
+				QString string;
+
+				QString color = "green";
+				if (msg->GetMessageType () == Plugins::IMessage::MTMUCMessage)
+				{
+					QUrl url (QString ("azoth://msgeditreplace/%1")
+							.arg (nick + ":"));
+
+					string.append ("<span class='nickname'><a href='");
+					string.append (url.toString () + "%20");
+					string.append ("' class='nicklink' style='color:");
+					string.append (color);
+					string.append ("'>");
+					string.append (nick);
+					string.append ("</a></span>");
+				}
+				else
+				{
+					switch (msg->GetDirection ())
+					{
+						case Plugins::IMessage::DIn:
+							color = "blue";
+							break;
+						case Plugins::IMessage::DOut:
+							color = "red";
+							break;
+					}
+
+					string = QString ("<span class='nickname' style='color:%2'>%1</span>")
+							.arg (nick)
+							.arg (color);
+				}
+
+				return string;
+			}
 		}
 	}
 }
-

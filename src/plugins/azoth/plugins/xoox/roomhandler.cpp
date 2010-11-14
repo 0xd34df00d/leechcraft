@@ -128,7 +128,7 @@ namespace LeechCraft
 					GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType type,
 							const QString& nick, const QString& body)
 					{
-						GlooxMessage *message = new GlooxMessage (IMessage::MTChat,
+						GlooxMessage *message = new GlooxMessage (IMessage::MTChatMessage,
 								IMessage::DOut,
 								GetParticipantEntry (nick),
 								GetSessionWith (JIDForNick (nick)));

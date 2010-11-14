@@ -47,7 +47,7 @@ namespace LeechCraft
 					GlooxMessage::GlooxMessage (const gloox::Message& message,
 							ICLEntry *entry,
 							gloox::MessageSession *session)
-					: Type_ (MTChat)
+					: Type_ (MTChatMessage)
 					, Direction_ (DIn)
 					, Entry_ (entry)
 					, Body_ (QString::fromUtf8 (message.body ().c_str ()))
@@ -72,9 +72,15 @@ namespace LeechCraft
 
 						switch (Type_)
 						{
-						case MTChat:
+						case MTChatMessage:
+						case MTMUCMessage:
 							Session_->send (Body_.toUtf8 ().constData (), std::string ());
 							return;
+						case MTService:
+							qWarning () << Q_FUNC_INFO
+									<< this
+									<< "cannot send a service message";
+							break;
 						}
 					}
 

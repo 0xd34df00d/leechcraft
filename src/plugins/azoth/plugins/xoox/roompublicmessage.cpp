@@ -80,7 +80,7 @@ namespace LeechCraft
 
 					IMessage::MessageType RoomPublicMessage::GetMessageType () const
 					{
-						return MTChat;
+						return MTMUCMessage;
 					}
 
 					ICLEntry* RoomPublicMessage::OtherPart () const

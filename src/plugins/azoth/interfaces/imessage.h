@@ -47,7 +47,8 @@ namespace LeechCraft
 
 					enum MessageType
 					{
-						MTChat,
+						MTChatMessage,
+						MTMUCMessage,
 						MTService
 					};
 

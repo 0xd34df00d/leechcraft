@@ -71,7 +71,8 @@ namespace LeechCraft
 				 */
 				void AppendMessage (Plugins::IMessage*);
 
-				QString FormatBody (QString, QObject*);
+				QString FormatBody (QString, Plugins::IMessage*);
+				QString FormatNickname (QString, Plugins::IMessage*);
 			signals:
 				void needToClose (ChatTab*);
 
@@ -80,6 +81,9 @@ namespace LeechCraft
 						QString *string,
 						QObject *message);
 				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+						QString *string,
+						QObject *message);
+				void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
 						QString *string,
 						QObject *message);
 			};
