@@ -23,6 +23,7 @@
 #include <QStandardItem>
 #include <QDir>
 #include <QtDebug>
+#include <plugininterface/resourceloader.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -39,7 +40,10 @@ namespace LeechCraft
 			Core::Core ()
 			: CLModel_ (new QStandardItemModel (this))
 			, ChatTabsManager_ (new ChatTabsManager (this))
+			, CLIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 			{
+				CLIconLoader_->AddLocalPrefix ();
+
 				qRegisterMetaType<Plugins::IMessage*> ("LeechCraft::Plugins::Azoth::Plugins::IMessage*");
 				qRegisterMetaType<Plugins::IMessage*> ("Plugins::IMessage*");
 			}
@@ -261,20 +265,15 @@ namespace LeechCraft
 					break;
 				}
 
-				/** @todo Don't hardcode this stuff. Instead, write a
-				 * general loader.
-				 */
-				QDir dir = QDir::home ();
-				dir.cd (".leechcraft/data/azoth/iconsets/roster/oxygen");
-				QString fileName;
-				if (dir.exists (iconName + ".svg"))
-					fileName = dir.filePath (iconName + ".svg");
-				else if (dir.exists (iconName + ".png"))
-					fileName = dir.filePath (iconName + ".png");
-				else
-					return QIcon ();
+				QString filename = "oxygen/" + iconName;
+				QStringList variants;
+				variants << filename + ".svg"
+						<< filename + ".png"
+						<< filename + ".jpg";
 
-				return QIcon (fileName);
+				QString path = CLIconLoader_->GetPath (variants);
+				qDebug () << "got path" << path;
+				return QIcon (path);
 			}
 
 			void Core::handleAccountCreatorTriggered ()

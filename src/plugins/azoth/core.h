@@ -28,6 +28,11 @@ class QStandardItem;
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class ResourceLoader;
+	}
+
 	namespace Plugins
 	{
 		namespace Azoth
@@ -59,6 +64,8 @@ namespace LeechCraft
 
 				typedef QHash<Plugins::ICLEntry*, QList<QStandardItem*> > Entry2Items_t;
 				Entry2Items_t Entry2Items_;
+
+				Util::ResourceLoader *CLIconLoader_;
 
 				Core ();
 			public:
