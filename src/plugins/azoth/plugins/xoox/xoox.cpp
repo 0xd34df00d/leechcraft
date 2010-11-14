@@ -34,6 +34,10 @@ namespace LeechCraft
 					void Plugin::Init (ICoreProxy_ptr proxy)
 					{
 						GlooxProtocol_.reset (new GlooxProtocol (this));
+						connect (GlooxProtocol_.get (),
+								SIGNAL (gotEntity (const LeechCraft::Entity&)),
+								this,
+								SIGNAL (gotEntity (const LeechCraft::Entity&)));
 					}
 
 					void Plugin::SecondInit ()

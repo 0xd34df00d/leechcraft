@@ -62,6 +62,8 @@ namespace LeechCraft
 
 						QObject* GetObject ();
 						QList<IProtocol*> GetProtocols () const;
+					signals:
+						void gotEntity (const LeechCraft::Entity&);
 					};
 				}
 			}

@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+	struct Entity;
+
 	namespace Plugins
 	{
 		namespace Azoth
@@ -58,6 +60,7 @@ namespace LeechCraft
 						void RestoreAccounts ();
 					signals:
 						void accountAdded (QObject*);
+						void gotEntity (const LeechCraft::Entity&);
 					};
 				}
 			}

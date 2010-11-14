@@ -41,6 +41,8 @@ namespace gloox
 
 namespace LeechCraft
 {
+	struct Entity;
+
 	namespace Plugins
 	{
 		namespace Azoth
@@ -125,6 +127,8 @@ namespace LeechCraft
 						void gotRosterItems (const QList<QObject*>&);
 						void rosterItemRemoved (QObject*);
 						void rosterItemUpdated (QObject*);
+
+						void gotEntity (const LeechCraft::Entity&);
 					};
 				}
 			}
