@@ -65,7 +65,7 @@ namespace LeechCraft
 			return;
 		}
 
-		int count = TabWidget_->count ();
+		const int count = TabWidget_->count ();
 		if (count < 2)
 		{
 			emit finished (true);
@@ -74,7 +74,7 @@ namespace LeechCraft
 
 		QSequentialAnimationGroup *animGroup = new QSequentialAnimationGroup;
 
-		int sqr = std::sqrt ((double)count);
+		const int sqr = std::sqrt ((double)count);
 		int rows = sqr;
 		int cols = sqr;
 		if (rows * cols < count)
@@ -82,21 +82,21 @@ namespace LeechCraft
 		if (rows * cols < count)
 			++rows;
 
-		QRect screenGeom = QApplication::desktop ()->
+		const QRect& screenGeom = QApplication::desktop ()->
 				screenGeometry (Core::Instance ().GetReallyMainWindow ());
-		int width = screenGeom.width ();
-		int height = screenGeom.height ();
+		const int width = screenGeom.width ();
+		const int height = screenGeom.height ();
 
-		int singleW = width / cols;
-		int singleH = height / rows;
+		const int singleW = width / cols;
+		const int singleH = height / rows;
 
-		int wW = singleW * 4 / 5;
-		int wH = singleH * 4 / 5;
+		const int wW = singleW * 4 / 5;
+		const int wH = singleH * 4 / 5;
 
 		qreal scaleFactor = 0;
 		QSize sSize;
 
-		int animLength = 500 / (sqr);
+		const int animLength = 500 / (sqr);
 
 		QProgressDialog pg;
 		pg.setMinimumDuration (1000);
@@ -107,7 +107,7 @@ namespace LeechCraft
 					column < cols && column + row * cols < count;
 					++column)
 			{
-				int idx = column + row * cols;
+				const int idx = column + row * cols;
 				pg.setValue (idx);
 				QWidget *w = TabWidget_->widget (idx);
 
@@ -190,9 +190,9 @@ namespace LeechCraft
 				glanceItemList << qgraphicsitem_cast<GlanceItem*> (item);
 
 			int currentItem = -1;
-			int count = TabWidget_->count ();
+			const int count = TabWidget_->count ();
 
-			int sqrt = std::sqrt ((double)count);
+			const int sqrt = std::sqrt ((double)count);
 			int rows = sqrt;
 			int cols = sqrt;
 			if (rows * cols < count)
@@ -200,7 +200,7 @@ namespace LeechCraft
 			if (rows * cols < count)
 				++rows;
 
-			for (int i = 0; i < count; i++)
+			for (int i = 0; i < count; ++i)
 				if (glanceItemList [i]->IsCurrent ())
 					currentItem = i;
 
@@ -266,7 +266,7 @@ namespace LeechCraft
 					QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
 					QCoreApplication::postEvent (this, event);
 				}
-				else				
+				else
 					if (currentItem < 0)
 						glanceItemList [0]->SetCurrent (true);
 					else
@@ -294,7 +294,7 @@ namespace LeechCraft
 	}
 
 	void GlanceShower::handleClicked (int idx)
-	{		
+	{
 		TabWidget_->setCurrentIndex (idx);
 		Finalize ();
 	}
