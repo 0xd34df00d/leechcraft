@@ -21,6 +21,8 @@
 #include <QWebElement>
 #include <QTextDocument>
 #include <QTimer>
+#include <QPalette>
+#include <QApplication>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
@@ -49,9 +51,26 @@ namespace LeechCraft
 			, Variant_ (variant)
 			, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 					Qt::CaseInsensitive, QRegExp::RegExp2)
+			, BgColor_ (QApplication::palette ().color (QPalette::Base))
 			{
 				Ui_.setupUi (this);
 				Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
+				QFile file (":/plugins/azoth/resources/html/viewcontents.html");
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not open resource file"
+							<< file.errorString ();
+				}
+				else
+				{
+					QString data = file.readAll ();
+					data.replace ("BACKGROUNDCOLOR",
+							BgColor_.name ());
+					data.replace ("FOREGROUNDCOLOR",
+							QApplication::palette ().color (QPalette::Text).name ());
+					Ui_.View_->setHtml (data);
+				}
 
 				connect (Ui_.View_->page (),
 						SIGNAL (linkClicked (const QUrl&)),
@@ -258,12 +277,24 @@ namespace LeechCraft
 				QString color = "green";
 				if (msg->GetMessageType () == Plugins::IMessage::MTMUCMessage)
 				{
+					if (NickColors_.isEmpty ())
+						GenerateColors ();
+
+					if (!NickColors_.isEmpty ())
+					{
+						int hash = 0;
+						for (int i = 0; i < nick.length (); ++i)
+							hash += nick.at (i).unicode ();
+						QColor nc = NickColors_.at (hash % NickColors_.size ());
+						color = nc.name ();
+					}
+
 					QUrl url (QString ("azoth://msgeditreplace/%1")
 							.arg (nick + ":"));
 
 					string.append ("<span class='nickname'><a href='");
 					string.append (url.toString () + "%20");
-					string.append ("' class='nicklink' style='color:");
+					string.append ("' class='nicklink' style='text-decoration:none; color:");
 					string.append (color);
 					string.append ("'>");
 					string.append (nick);
@@ -318,6 +349,43 @@ namespace LeechCraft
 				return proxy->IsCancelled () ?
 						proxy->GetReturnValue ().toString () :
 						body;
+			}
+
+			namespace
+			{
+				qreal Fix (qreal h)
+				{
+					while (h < 0)
+						h += 1;
+					while (h >= 1)
+						h -= 1;
+					return h;
+				}
+			}
+
+			void ChatTab::GenerateColors ()
+			{
+				const qreal lower = 50. / 360.;
+				const qreal higher = 160. / 360.;
+				const qreal delta = 25. / 360.;
+
+				const qreal alpha = BgColor_.alphaF ();
+
+				qreal s = BgColor_.saturationF ();
+				s += (1 - s) / 2;
+				qreal v = BgColor_.valueF ();
+				v = 0.95 - v / 2;
+
+				qreal h = BgColor_.hueF ();
+
+				QColor color;
+				for (qreal d = lower; d <= higher; d += delta)
+				{
+					color.setHsvF (Fix (h + d), s, v, alpha);
+					NickColors_ << color;
+					color.setHsvF (Fix (h - d), s, v, alpha);
+					NickColors_ << color;
+				}
 			}
 		}
 	}

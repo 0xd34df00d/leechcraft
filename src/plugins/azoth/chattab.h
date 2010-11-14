@@ -49,6 +49,8 @@ namespace LeechCraft
 				QPersistentModelIndex Index_;
 				QString Variant_;
 				QRegExp LinkRegexp_;
+				QColor BgColor_;
+				QList<QColor> NickColors_;
 			public:
 				static void SetParentMultiTabs (QObject*);
 
@@ -74,6 +76,8 @@ namespace LeechCraft
 				QString FormatDate (QDateTime, Plugins::IMessage*);
 				QString FormatNickname (QString, Plugins::IMessage*);
 				QString FormatBody (QString, Plugins::IMessage*);
+
+				void GenerateColors ();
 			signals:
 				void needToClose (ChatTab*);
 
