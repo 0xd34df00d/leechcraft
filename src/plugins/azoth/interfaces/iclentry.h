@@ -19,7 +19,9 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_ICLENTRY_H
 #define PLUGINS_AZOTH_INTERFACES_ICLENTRY_H
 #include <QFlags>
+#include <QMetaType>
 #include "imessage.h"
+#include "azothcommon.h"
 
 namespace LeechCraft
 {
@@ -31,6 +33,12 @@ namespace LeechCraft
 			{
 				class IAccount;
 				class IMessage;
+
+				struct EntryStatus
+				{
+					State State_;
+					QString StatusString_;
+				};
 
 				/** @brief Represents a single entry in contact list.
 				 *
@@ -189,8 +197,8 @@ namespace LeechCraft
 					 */
 					virtual QList<IMessage*> GetAllMessages () const = 0;
 
-					/** @brief This signal is emitted when a new message
-					 * was received.
+					/** @brief This signal is emitted whenever a new
+					 * message is received.
 					 *
 					 * @note This function is expected to be a signal in
 					 * subclasses.
@@ -199,6 +207,16 @@ namespace LeechCraft
 					 * received.
 					 */
 					virtual void gotMessage (QObject *msg) = 0;
+
+					/** @brief This signal is emitted whenever the
+					 * status of this CL entry changes.
+					 *
+					 * @note This function is expected to be a signal in
+					 * in subclasses.
+					 *
+					 * @param[out] st The new status of this entry.
+					 */
+					virtual void statusChanged (const EntryStatus&) = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);
@@ -206,6 +224,8 @@ namespace LeechCraft
 		}
 	}
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::EntryStatus);
 
 Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::ICLEntry,
 		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.ICLEntry/1.0");

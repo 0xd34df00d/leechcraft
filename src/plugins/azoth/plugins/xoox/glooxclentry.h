@@ -71,6 +71,7 @@ namespace LeechCraft
 						void ReemitMessage (QObject*);
 					signals:
 						void gotMessage (QObject*);
+						void statusChanged (const EntryStatus&);
 					};
 				}
 			}

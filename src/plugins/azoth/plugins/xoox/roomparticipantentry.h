@@ -65,6 +65,7 @@ namespace LeechCraft
 						void HandleMessage (GlooxMessage*);
 					signals:
 						void gotMessage (QObject*);
+						void statusChanged (const EntryStatus&);
 					};
 				}
 			}

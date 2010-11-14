@@ -69,6 +69,7 @@ namespace LeechCraft
 						void HandleMessage (RoomPublicMessage*);
 					signals:
 						void gotMessage (QObject*);
+						void statusChanged (const EntryStatus&);
 					};
 				}
 			}
