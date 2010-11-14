@@ -30,6 +30,7 @@ SET (SRCS
 	exceptions.cpp
 	syncops.cpp
 	customnetworkreply.cpp
+	resourceloader.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -54,6 +55,7 @@ SET (HEADERS
 	exceptions.h
 	syncops.h
 	customnetworkreply.h
+	resourceloader.h
 	idpool.h
 	)
 SET (FORMS
