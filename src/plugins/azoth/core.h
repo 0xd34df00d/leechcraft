@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSet>
 #include <interfaces/iinfo.h>
+#include <interfaces/azothcommon.h>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -119,6 +120,8 @@ namespace LeechCraft
 						QMap<const QObject*, QStandardItem*>& accountItemCache);
 
 				void HandleStatusChanged (const Plugins::EntryStatus&, Plugins::ICLEntry*);
+
+				QIcon GetIconForState (Plugins::State) const;
 			private slots:
 				/** Initiates account registration process.
 				 */

@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QDir>
 #include <QtDebug>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
@@ -228,10 +229,49 @@ namespace LeechCraft
 			void Core::HandleStatusChanged (const Plugins::EntryStatus& status,
 					Plugins::ICLEntry *entry)
 			{
-				qDebug () << Q_FUNC_INFO << entry->GetEntryName () << status.StatusString_;
 				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+					item->setIcon (GetIconForState (status.State_));
+			}
+
+			QIcon Core::GetIconForState (Plugins::State state) const
+			{
+				QString iconName;
+				switch (state)
 				{
+				case Plugins::SOnline:
+					iconName = "online";
+					break;
+				case Plugins::SChat:
+					iconName = "chatty";
+					break;
+				case Plugins::SAway:
+					iconName = "away";
+					break;
+				case Plugins::SDND:
+					iconName = "dnd";
+					break;
+				case Plugins::SXA:
+					iconName = "xa";
+					break;
+				case Plugins::SOffline:
+					iconName = "offline";
+					break;
+				default:
+					iconName = "perr";
+					break;
 				}
+
+				QDir dir = QDir::home ();
+				dir.cd (".leechcraft/data/azoth/iconsets/roster/oxygen");
+				QString fileName;
+				if (dir.exists (iconName + ".svg"))
+					fileName = dir.filePath (iconName + ".svg");
+				else if (dir.exists (iconName + ".png"))
+					fileName = dir.filePath (iconName + ".png");
+				else
+					return QIcon ();
+
+				return QIcon (fileName);
 			}
 
 			void Core::handleAccountCreatorTriggered ()
