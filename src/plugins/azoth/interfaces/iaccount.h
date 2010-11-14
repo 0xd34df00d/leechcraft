@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
 #define PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
 #include <QFlags>
+#include <interfaces/azothcommon.h>
 
 namespace LeechCraft
 {
@@ -50,20 +51,6 @@ namespace LeechCraft
 					};
 
 					Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);
-
-					enum State
-					{
-						SOffline,
-						SOnline,
-						SChat,
-						SAway,
-						SDND,
-						SXA,
-						SUnavailable,
-						SProbe,
-						SError,
-						SInvalid
-					};
 
 					/** Returns the account object as a QObject.
 					 *

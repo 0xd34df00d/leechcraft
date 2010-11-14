@@ -48,7 +48,7 @@ namespace LeechCraft
 
 					struct GlooxAccountState
 					{
-						IAccount::State State_;
+						State State_;
 						QString Status_;
 						int Priority_;
 					};

@@ -96,7 +96,7 @@ namespace LeechCraft
 
 						emit accountAdded (account);
 
-						account->ChangeState (IAccount::SOnline);
+						account->ChangeState (SOnline);
 					}
 
 					void GlooxProtocol::InitiateMUCJoin ()

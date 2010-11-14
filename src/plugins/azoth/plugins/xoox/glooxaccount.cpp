@@ -98,7 +98,7 @@ namespace LeechCraft
 
 					void GlooxAccount::ChangeState (State accState, const QString& status)
 					{
-						if (accState == IAccount::SOffline)
+						if (accState == SOffline)
 						{
 							ClientConnection_.reset ();
 							return;

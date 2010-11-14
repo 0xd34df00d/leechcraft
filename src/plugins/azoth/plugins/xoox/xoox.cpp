@@ -39,7 +39,7 @@ namespace LeechCraft
 					void Plugin::SecondInit ()
 					{
 						Q_FOREACH (IAccount *account, GlooxProtocol_->GetRegisteredAccounts ())
-							account->ChangeState (IAccount::SOnline);
+							account->ChangeState (SOnline);
 					}
 
 					void Plugin::Release ()
