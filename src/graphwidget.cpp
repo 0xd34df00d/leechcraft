@@ -42,8 +42,8 @@ void GraphWidget::PushSpeed (quint64 ds, quint64 us)
 {
 	if (DownSpeeds_.size () == width ())
 	{
-		DownSpeeds_.removeAt (0);
-		UpSpeeds_.removeAt (0);
+		DownSpeeds_.removeFirst ();
+		UpSpeeds_.removeFirst ();
 	}
 	DownSpeeds_.append (ds);
 	UpSpeeds_.append (us);
@@ -53,12 +53,13 @@ void GraphWidget::PushSpeed (quint64 ds, quint64 us)
 void GraphWidget::paintEvent (QPaintEvent*)
 {
 	quint64 max = 0;
-	for (int i = 0; i < DownSpeeds_.size (); ++i)
+
+	for (QList <quint64>::const_iterator dsIt = DownSpeeds_.begin (), dsEnd = DownSpeeds_.end (),
+		 usIt = UpSpeeds_.begin (), usEnd = UpSpeeds_.end ();
+		 dsIt != dsEnd && usIt != usEnd;
+		 ++dsIt, ++usIt)
 	{
-		if (DownSpeeds_.at (i) > max)
-			max = DownSpeeds_.at (i);
-		if (UpSpeeds_.at (i) > max)
-			max = UpSpeeds_.at (i);
+		max = qMax (max, qMax (*dsIt, *usIt));
 	}
 
 	QPainter painter (this);
@@ -76,16 +77,15 @@ void GraphWidget::paintEvent (QPaintEvent*)
 void GraphWidget::PaintSingle (quint64 max, const QList<quint64>& speeds,
 		QPainter *painter)
 {
-	int prevX = width () - 1;
+	const int prevX = width () - 1;
 	int i = speeds.size () - 1;
-	double prevY = height () * (1 - static_cast<double> (speeds.at (i)) / static_cast<double> (max));
+	const double prevY = height () * (1 - static_cast<double> (speeds.at (i)) / static_cast<double> (max));
+
 	for ( ; i >= 0; --i)
 	{
-		int x = width () - speeds.size () + i;
-		double y = height () * (1 - static_cast<double> (speeds.at (i)) / static_cast<double> (max));
+		const int x = width () - speeds.size () + i;
+		const double y = height () * (1 - static_cast<double> (speeds.at (i)) / static_cast<double> (max));
 		painter->drawLine (QPointF (prevX, prevY), QPointF (x, y));
-		prevX = x;
-		prevY = y;
 	}
 }
 
