@@ -97,6 +97,11 @@ namespace LeechCraft
 						return AllMessages_;
 					}
 
+					EntryStatus RoomCLEntry::GetStatus () const
+					{
+						return EntryStatus ();
+					}
+
 					gloox::MUCRoom* RoomCLEntry::GetRoom ()
 					{
 						return Room_;

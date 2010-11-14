@@ -63,6 +63,7 @@ namespace LeechCraft
 						IMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 						QList<IMessage*> GetAllMessages () const;
+						EntryStatus GetStatus () const;
 
 						gloox::MUCRoom* GetRoom ();
 

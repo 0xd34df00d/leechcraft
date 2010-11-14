@@ -297,6 +297,9 @@ namespace LeechCraft
 
 					bool ClientConnection::onTLSConnect (const gloox::CertInfo& info)
 					{
+						/** @todo show a dialog about certificate and
+						 * whether it should be accepted.
+						 */
 						qDebug () << Q_FUNC_INFO << info.server.c_str ();
 						return true;
 					}
@@ -310,8 +313,7 @@ namespace LeechCraft
 					{
 						gloox::RosterItem *ri = Client_->rosterManager ()->getRosterItem (jid);
 
-						GlooxCLEntry *entry = new GlooxCLEntry (ri, Account_);
-						JID2CLEntry_ [jid.bareJID ()] = entry;
+						GlooxCLEntry *entry = CreateCLEntry (ri);
 						emit gotRosterItems (QList<QObject*> () << entry);
 					}
 
@@ -360,11 +362,8 @@ namespace LeechCraft
 						for (gloox::Roster::const_iterator i = roster.begin (),
 								end = roster.end (); i != end; ++i)
 						{
-							GlooxCLEntry *entry = new GlooxCLEntry (i->second, Account_);
+							GlooxCLEntry *entry = CreateCLEntry (i->second);
 							entries << entry;
-
-							gloox::JID jid (i->first);
-							JID2CLEntry_ [jid.bareJID ()] = entry;
 						}
 
 						if (entries.size ())
@@ -376,7 +375,21 @@ namespace LeechCraft
 								gloox::Presence::PresenceType type,
 								const std::string& msg)
 					{
-						// TODO
+						gloox::JID jid (item.jid ());
+						if (!JID2CLEntry_.contains (jid))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "no GlooxCLEntry for item"
+									<< item.jid ().c_str ();
+							return;
+						}
+
+						GlooxCLEntry *entry = JID2CLEntry_ [jid];
+
+						EntryStatus status (static_cast<State> (type),
+								QString::fromUtf8 (msg.c_str ()));
+
+						entry->SetStatus (status);
 					}
 
 					void ClientConnection::handleSelfPresence (const gloox::RosterItem& item,
@@ -437,6 +450,14 @@ namespace LeechCraft
 						gm->SetDateTime (QDateTime::currentDateTime ());
 
 						entry->ReemitMessage (gm);
+					}
+
+					GlooxCLEntry* ClientConnection::CreateCLEntry (gloox::RosterItem *ri)
+					{
+						GlooxCLEntry *entry = new GlooxCLEntry (ri, Account_);
+						gloox::JID jid (ri->jid ());
+						JID2CLEntry_ [jid.bareJID ()] = entry;
+						return entry;
 					}
 				}
 			}

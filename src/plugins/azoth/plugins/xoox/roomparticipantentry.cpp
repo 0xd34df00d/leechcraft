@@ -102,6 +102,11 @@ namespace LeechCraft
 						return AllMessages_;
 					}
 
+					EntryStatus RoomParticipantEntry::GetStatus () const
+					{
+						return CurrentStatus_;
+					}
+
 					void RoomParticipantEntry::HandleMessage (GlooxMessage *msg)
 					{
 						AllMessages_ << msg;

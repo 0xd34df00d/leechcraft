@@ -47,6 +47,7 @@ namespace LeechCraft
 						GlooxAccount *Account_;
 						RoomHandler *RoomHandler_;
 						QList<IMessage*> AllMessages_;
+						EntryStatus CurrentStatus_;
 					public:
 						RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
@@ -61,6 +62,7 @@ namespace LeechCraft
 						IMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 						QList<IMessage*> GetAllMessages () const;
+						EntryStatus GetStatus () const;
 
 						void HandleMessage (GlooxMessage*);
 					signals:

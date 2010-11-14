@@ -38,7 +38,24 @@ namespace LeechCraft
 				{
 					State State_;
 					QString StatusString_;
+
+					EntryStatus ()
+					: State_ (SOffline)
+					{
+					}
+
+					EntryStatus (State state, const QString& str)
+					: State_ (state)
+					, StatusString_ (str)
+					{
+					}
 				};
+
+				inline bool operator== (const EntryStatus& es1, const EntryStatus& es2)
+				{
+					return es1.State_ == es2.State_ &&
+							es1.StatusString_ == es2.StatusString_;
+				}
 
 				/** @brief Represents a single entry in contact list.
 				 *
@@ -196,6 +213,12 @@ namespace LeechCraft
 					 * @return The list of messages.
 					 */
 					virtual QList<IMessage*> GetAllMessages () const = 0;
+
+					/** @brief Returns the current status of the item.
+					 *
+					 * @return The current status.
+					 */
+					virtual EntryStatus GetStatus () const = 0;
 
 					/** @brief This signal is emitted whenever a new
 					 * message is received.

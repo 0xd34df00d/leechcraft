@@ -52,6 +52,7 @@ namespace LeechCraft
 						GlooxAccount *ParentAccountObject_;
 						gloox::RosterItem *RI_;
 						QList<IMessage*> Messages_;
+						EntryStatus CurrentStatus_;
 					public:
 						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
 
@@ -67,11 +68,13 @@ namespace LeechCraft
 						IMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 						QList<IMessage*> GetAllMessages () const;
+						EntryStatus GetStatus () const;
 
+						void SetStatus (const EntryStatus&);
 						void ReemitMessage (QObject*);
 					signals:
 						void gotMessage (QObject*);
-						void statusChanged (const EntryStatus&);
+						void statusChanged (const Plugins::EntryStatus&);
 						void availableVariantsChanged (const QStringList&);
 					};
 				}

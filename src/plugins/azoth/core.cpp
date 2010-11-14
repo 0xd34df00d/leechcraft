@@ -207,6 +207,33 @@ namespace LeechCraft
 				return result;
 			}
 
+			QStandardItem* Core::GetAccountItem (const QObject *accountObj,
+					QMap<const QObject*, QStandardItem*>& accountItemCache)
+			{
+				if (accountItemCache.contains (accountObj))
+					return accountItemCache [accountObj];
+				else
+					for (int i = 0, size = CLModel_->rowCount ();
+							i < size; ++i)
+						if (CLModel_->item (i)->
+									data (CLRAccountObject).value<QObject*> () ==
+								accountObj)
+						{
+							QStandardItem *accountItem = CLModel_->item (i);
+							accountItemCache [accountObj] = accountItem;
+							return accountItem;
+						}
+			}
+
+			void Core::HandleStatusChanged (const Plugins::EntryStatus& status,
+					Plugins::ICLEntry *entry)
+			{
+				qDebug () << Q_FUNC_INFO << entry->GetEntryName () << status.StatusString_;
+				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+				{
+				}
+			}
+
 			void Core::handleAccountCreatorTriggered ()
 			{
 				QAction *sa = qobject_cast<QAction*> (sender ());
@@ -323,7 +350,7 @@ namespace LeechCraft
 
 			void Core::handleGotCLItems (const QList<QObject*>& items)
 			{
-				QMap<QObject*, QStandardItem*> accountItemCache;
+				QMap<const QObject*, QStandardItem*> accountItemCache;
 				Q_FOREACH (QObject *item, items)
 				{
 					Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (item);
@@ -355,20 +382,7 @@ namespace LeechCraft
 						continue;
 					}
 
-					QStandardItem *accountItem = 0;
-					if (accountItemCache.contains (accountObj))
-						accountItem = accountItemCache [accountObj];
-					else
-						for (int i = 0, size = CLModel_->rowCount ();
-								i < size; ++i)
-							if (CLModel_->item (i)->
-										data (CLRAccountObject).value<QObject*> () ==
-									accountObj)
-							{
-								accountItem = CLModel_->item (i);
-								accountItemCache [accountObj] = accountItem;
-								break;
-							}
+					QStandardItem *accountItem = GetAccountItem (accountObj, accountItemCache);
 
 					if (!accountItem)
 					{
@@ -376,8 +390,13 @@ namespace LeechCraft
 								<< "could not find account item for"
 								<< item
 								<< accountObj;
-						break;
+						continue;
 					}
+
+					connect (item,
+							SIGNAL (statusChanged (const Plugins::EntryStatus&)),
+							this,
+							SLOT (handleStatusChanged (const Plugins::EntryStatus&)));
 
 					QList<QStandardItem*> catItems =
 							GetCategoriesItems (entry->Groups (), accountItem);
@@ -392,8 +411,26 @@ namespace LeechCraft
 						clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
 								CLREntryType);
 						catItem->appendRow (clItem);
+
+						Entry2Items_ [entry] << clItem;
 					}
+
+					HandleStatusChanged (entry->GetStatus(), entry);
 				}
+			}
+
+			void Core::handleStatusChanged (const Plugins::EntryStatus& status)
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender is not a ICLEntry:"
+							<< sender ();
+					return;
+				}
+
+				HandleStatusChanged (status, entry);
 			}
 		};
 	};

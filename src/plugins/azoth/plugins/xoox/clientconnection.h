@@ -72,7 +72,7 @@ namespace LeechCraft
 						QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
 
 						// Bare JID → resource → session.
-						QHash<gloox::JID, QMap<QString, gloox::MessageSession*> > Sessions_;
+						QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
 					public:
 						ClientConnection (const gloox::JID&,
 								const QString&,
@@ -123,6 +123,8 @@ namespace LeechCraft
 						virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
 					private slots:
 						void handlePollTimer ();
+					private:
+						GlooxCLEntry* CreateCLEntry (gloox::RosterItem*);
 					signals:
 						void gotRosterItems (const QList<QObject*>&);
 						void rosterItemRemoved (QObject*);
