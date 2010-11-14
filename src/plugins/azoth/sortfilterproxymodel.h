@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_AZOTHCOMMON_H
-#define PLUGINS_AZOTH_INTERFACES_AZOTHCOMMON_H
+#ifndef PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
+#define PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
@@ -25,26 +26,14 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			namespace Plugins
+			class SortFilterProxyModel : public QSortFilterProxyModel
 			{
-				enum State
-				{
-					SOnline,
-					SChat,
-					SAway,
-					SDND,
-					SXA,
-					SOffline,
-					SProbe,
-					SError,
-					SInvalid
-				};
-
-				inline bool IsLess (State s1, State s2)
-				{
-					return static_cast<int> (s1) < static_cast<int> (s2);
-				}
-			}
+				Q_OBJECT
+			public:
+				SortFilterProxyModel (QObject* = 0);
+			protected:
+				virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
+			};
 		}
 	}
 }

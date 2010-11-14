@@ -261,6 +261,9 @@ namespace LeechCraft
 					break;
 				}
 
+				/** @todo Don't hardcode this stuff. Instead, write a
+				 * general loader.
+				 */
 				QDir dir = QDir::home ();
 				dir.cd (".leechcraft/data/azoth/iconsets/roster/oxygen");
 				QString fileName;

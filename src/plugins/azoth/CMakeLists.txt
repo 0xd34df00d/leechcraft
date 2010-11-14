@@ -30,6 +30,7 @@ SET (SRCS
 	mainwidget.cpp
 	chattabsmanager.cpp
 	chattab.cpp
+	sortfilterproxymodel.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -37,6 +38,7 @@ SET (HEADERS
 	mainwidget.h
 	chattabsmanager.h
 	chattab.h
+	sortfilterproxymodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h

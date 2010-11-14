@@ -30,6 +30,8 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
+			class SortFilterProxyModel;
+
 			class MainWidget : public QWidget
 			{
 				Q_OBJECT
@@ -39,6 +41,7 @@ namespace LeechCraft
 				QToolBar *UpperBar_;
 				QMenu *MenuGeneral_;
 				QMenu *MenuNewAccount_;
+				SortFilterProxyModel *ProxyModel_;
 			public:
 				MainWidget (QWidget* = 0);
 

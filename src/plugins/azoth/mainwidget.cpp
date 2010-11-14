@@ -21,6 +21,7 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include "core.h"
+#include "sortfilterproxymodel.h"
 
 namespace LeechCraft
 {
@@ -33,9 +34,11 @@ namespace LeechCraft
 			, UpperBar_ (new QToolBar)
 			, MenuGeneral_ (new QMenu (tr ("General")))
 			, MenuNewAccount_ (new QMenu (tr ("New account")))
+			, ProxyModel_ (new SortFilterProxyModel ())
 			{
 				Ui_.setupUi (this);
-				Ui_.CLTree_->setModel (Core::Instance ().GetCLModel ());
+				ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
+				Ui_.CLTree_->setModel (ProxyModel_);
 
 				QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
 				lay->insertWidget (0, UpperBar_);
@@ -59,7 +62,7 @@ namespace LeechCraft
 				if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 					return;
 
-				Core::Instance ().OpenChat (index);
+				Core::Instance ().OpenChat (ProxyModel_->mapToSource (index));
 			}
 		}
 	}
