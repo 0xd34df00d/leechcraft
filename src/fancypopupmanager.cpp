@@ -62,13 +62,14 @@ void LeechCraft::FancyPopupManager::ShowMessage (const LeechCraft::Entity& e)
 
 void LeechCraft::FancyPopupManager::timerTimeout ()
 {
-	QDateTime current = QDateTime::currentDateTime ();
+	const QDateTime& current = QDateTime::currentDateTime ();
 
-	Q_FOREACH (Entity e, Popups_)
+	const int secsTo_ = XmlSettingsManager::Instance ()->
+			property ("FinishedDownloadMessageTimeout").toInt ();
+
+	Q_FOREACH (const Entity& e, Popups_)
 	{
-		if (Dates_ [e].secsTo (current) >=
-				XmlSettingsManager::Instance ()->
-				property ("FinishedDownloadMessageTimeout").toInt ())
+		if (Dates_ [e].secsTo (current) >= secsTo_)
 		{
 			Popups_.removeAll (e);
 			Dates_.remove (e);
@@ -91,13 +92,12 @@ void LeechCraft::FancyPopupManager::UpdateMessage ()
 
 	QString message;
 	for (popups_t::const_iterator i = Popups_.begin (),
-			begin = Popups_.begin (),
 			end = Popups_.end (); i != end; ++i)
 	{
 		message += i->Additional_ ["Text"].toString ();
 		message += "\r\n";
 
-		Priority prio = static_cast<Priority> (i->Additional_ ["Priority"].toInt ());
+		const Priority prio = static_cast<Priority> (i->Additional_ ["Priority"].toInt ());
 		if (prio > maxPriority)
 			maxPriority = prio;
 	}
