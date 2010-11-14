@@ -41,13 +41,13 @@ void KeySequencer::keyPressEvent (QKeyEvent *event)
 	if (event->modifiers () & Qt::ShiftModifier)
 		code += Qt::SHIFT;
 
-	int key = event->key ();
+	const int key = event->key ();
 	if (key != Qt::Key_Control &&
 			key != Qt::Key_Alt &&
 			key != Qt::Key_Shift)
 		code += key;
 
-	QKeySequence ts (code);
+	const QKeySequence& ts (code);
 
 	Ui_.Shortcut_->setText (ts.toString ());
 	QDialog::keyPressEvent (event);
@@ -55,7 +55,7 @@ void KeySequencer::keyPressEvent (QKeyEvent *event)
 
 void KeySequencer::keyReleaseEvent (QKeyEvent *event)
 {
-	int key = event->key ();
+	const int key = event->key ();
 	if (key == Qt::Key_Control ||
 			key == Qt::Key_Alt ||
 			key == Qt::Key_Shift)
