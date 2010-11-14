@@ -78,13 +78,16 @@ namespace LeechCraft
 				void needToClose (ChatTab*);
 
 				// Hooks
+				void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
+						QDateTime *dateTime,
+						QObject *message);
+				void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
+						QString *string,
+						QObject *message);
 				void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
 						QString *string,
 						QObject *message);
 				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-						QString *string,
-						QObject *message);
-				void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
 						QString *string,
 						QObject *message);
 			};

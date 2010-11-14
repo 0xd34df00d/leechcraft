@@ -234,8 +234,13 @@ namespace LeechCraft
 							SLOT (scrollToEnd ()));
 			}
 
-			QString ChatTab::FormatDate (QDateTime dt, Plugins::IMessage*)
+			QString ChatTab::FormatDate (QDateTime dt, Plugins::IMessage *msg)
 			{
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookFormatDateTime (proxy, &dt, msg->GetObject ());
+				if (proxy->IsCancelled ())
+					return proxy->GetReturnValue ().toString ();
+
 				QString str = dt.time ().toString ();
 				return QString ("<span class='datetime' style='color:green'>[" +
 						str + "]</span>");
