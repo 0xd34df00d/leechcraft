@@ -193,8 +193,9 @@ namespace LeechCraft
 
 				QString body = FormatBody (msg->GetBody (), msg);
 
-				QString string = QString ("[%1] ")
-						.arg (msg->GetDateTime ().time ().toString ());
+				QString string = QString ("%1 ")
+						.arg (FormatDate (msg->GetDateTime (), msg));
+				string.append (' ');
 				switch (msg->GetDirection ())
 				{
 				case Plugins::IMessage::DIn:
@@ -233,35 +234,11 @@ namespace LeechCraft
 							SLOT (scrollToEnd ()));
 			}
 
-			QString ChatTab::FormatBody (QString body, Plugins::IMessage *msg)
+			QString ChatTab::FormatDate (QDateTime dt, Plugins::IMessage*)
 			{
-				QObject *msgObj = msg->GetObject ();
-
-				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				emit hookFormatBodyBegin (proxy, &body, msgObj);
-				if (!proxy->IsCancelled ())
-				{
-					body = Qt::escape (body);
-					body.replace ('\n', "<br />");
-					body.replace ("  ", "&nbsp; ");
-
-					int pos = 0;
-					while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
-					{
-						QString link = LinkRegexp_.cap (1);
-						QString str = QString ("<a href=\"%1\">%1</a>")
-								.arg (link);
-						body.replace (pos, link.length (), str);
-
-						pos += str.length ();
-					}
-
-					emit hookFormatBodyEnd (proxy, &body, msgObj);
-				}
-
-				return proxy->IsCancelled () ?
-						proxy->GetReturnValue ().toString () :
-						body;
+				QString str = dt.time ().toString ();
+				return QString ("<span class='datetime' style='color:green'>[" +
+						str + "]</span>");
 			}
 
 			QString ChatTab::FormatNickname (QString nick, Plugins::IMessage *msg)
@@ -305,6 +282,37 @@ namespace LeechCraft
 				}
 
 				return string;
+			}
+
+			QString ChatTab::FormatBody (QString body, Plugins::IMessage *msg)
+			{
+				QObject *msgObj = msg->GetObject ();
+
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookFormatBodyBegin (proxy, &body, msgObj);
+				if (!proxy->IsCancelled ())
+				{
+					body = Qt::escape (body);
+					body.replace ('\n', "<br />");
+					body.replace ("  ", "&nbsp; ");
+
+					int pos = 0;
+					while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+					{
+						QString link = LinkRegexp_.cap (1);
+						QString str = QString ("<a href=\"%1\">%1</a>")
+								.arg (link);
+						body.replace (pos, link.length (), str);
+
+						pos += str.length ();
+					}
+
+					emit hookFormatBodyEnd (proxy, &body, msgObj);
+				}
+
+				return proxy->IsCancelled () ?
+						proxy->GetReturnValue ().toString () :
+						body;
 			}
 		}
 	}

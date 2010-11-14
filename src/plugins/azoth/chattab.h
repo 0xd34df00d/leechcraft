@@ -71,8 +71,9 @@ namespace LeechCraft
 				 */
 				void AppendMessage (Plugins::IMessage*);
 
-				QString FormatBody (QString, Plugins::IMessage*);
+				QString FormatDate (QDateTime, Plugins::IMessage*);
 				QString FormatNickname (QString, Plugins::IMessage*);
+				QString FormatBody (QString, Plugins::IMessage*);
 			signals:
 				void needToClose (ChatTab*);
 
