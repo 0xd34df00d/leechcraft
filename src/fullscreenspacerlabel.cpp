@@ -38,14 +38,26 @@ FullscreenSpacerLabel::FullscreenSpacerLabel (QWidget *parent)
 void FullscreenSpacerLabel::mouseMoveEvent (QMouseEvent *event)
 {
 	MainWindow *wnd = Core::Instance ().GetReallyMainWindow ();
-	if (wnd->windowState () == Qt::WindowFullScreen)
+	if (wnd && (wnd->windowState () == Qt::WindowFullScreen))
 	{
 		QMenuBar *menu = wnd->findChild<QMenuBar*> ("MenuBar_");
+		if (!menu) {
+			return;
+		}
 		QToolBar *toolbar = wnd->findChild<QToolBar*> ("MainToolbar_");
+		if (!toolbar) {
+			return;
+		}
 		LeechCraft::TabWidget *tabwidget = wnd->GetTabWidget ();
+		if (!tabwidget) {
+			return;
+		}
 		QToolBar *bar = Core::Instance ().GetToolBar (tabwidget->currentIndex ());
+		if (!bar) {
+			return;
+		}
 
-		bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
+		const bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
 
 		if (event->y () < 5)
 		{
