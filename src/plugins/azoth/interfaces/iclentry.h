@@ -212,11 +212,22 @@ namespace LeechCraft
 					 * status of this CL entry changes.
 					 *
 					 * @note This function is expected to be a signal in
-					 * in subclasses.
+					 * subclasses.
 					 *
 					 * @param[out] st The new status of this entry.
 					 */
 					virtual void statusChanged (const EntryStatus&) = 0;
+
+					/** @brief This signal is emitted whenever the
+					 * list of available variants changes.
+					 *
+					 * @note This functions is expected to be a signal in
+					 * subclasses.
+					 *
+					 * @param[out] newVars The list of new variants, as
+					 * returned by GetVariants().
+					 */
+					virtual void availableVariantsChanged (const QStringList& newVars) = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

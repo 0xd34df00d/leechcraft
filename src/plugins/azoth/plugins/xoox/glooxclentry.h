@@ -72,6 +72,7 @@ namespace LeechCraft
 					signals:
 						void gotMessage (QObject*);
 						void statusChanged (const EntryStatus&);
+						void availableVariantsChanged (const QStringList&);
 					};
 				}
 			}
