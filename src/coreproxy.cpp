@@ -81,13 +81,13 @@ ITagsManager* CoreProxy::GetTagsManager () const
 
 QStringList CoreProxy::GetSearchCategories () const
 {
-	QList<IFinder*> finders = Core::Instance ().GetPluginManager ()->
+	const QList<IFinder*>& finders = Core::Instance ().GetPluginManager ()->
 		GetAllCastableTo<IFinder*> ();
 
 	QStringList result;
-	for (QList<IFinder*>::iterator i = finders.begin (),
+	for (QList<IFinder*>::const_iterator i = finders.begin (),
 			end = finders.end (); i != end; ++i)
-		result += (*i)->GetCategories (); 
+		result += (*i)->GetCategories ();
 	result.removeDuplicates ();
 	std::sort (result.begin (), result.end ());
 	return result;
