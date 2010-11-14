@@ -102,6 +102,10 @@ namespace LeechCraft
 
 						Q_FOREACH (gloox::Resource *res, resources)
 							result << QString::fromUtf8 (res->message ().c_str ());
+
+						if (result.isEmpty ())
+							result << "";
+
 						return result;
 					}
 
