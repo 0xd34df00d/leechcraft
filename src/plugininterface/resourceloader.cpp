@@ -18,6 +18,7 @@
 
 #include "resourceloader.h"
 #include <QFile>
+#include <QDir>
 #include <QtDebug>
 
 namespace LeechCraft
