@@ -20,6 +20,7 @@
 #include <QWebFrame>
 #include <QWebElement>
 #include <QTextDocument>
+#include <QTimer>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
@@ -146,6 +147,13 @@ namespace LeechCraft
 				}
 			}
 
+			void ChatTab::scrollToEnd()
+			{
+				QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
+				int scrollMax = frame->scrollBarMaximum (Qt::Vertical);
+				frame->setScrollBarValue (Qt::Vertical, scrollMax);
+			}
+
 			Plugins::ICLEntry* ChatTab::GetEntry ()
 			{
 				if (!Index_.isValid ())
@@ -217,10 +225,9 @@ namespace LeechCraft
 				elem.appendInside (QString ("<div>%1</div").arg (string));
 
 				if (shouldScrollFurther)
-				{
-					int scrollMax = frame->scrollBarMaximum (Qt::Vertical);
-					frame->setScrollBarValue (Qt::Vertical, scrollMax);
-				}
+					QTimer::singleShot (100,
+							this,
+							SLOT (scrollToEnd ()));
 			}
 
 			QString ChatTab::FormatBody (QString body, QObject *msgObj)

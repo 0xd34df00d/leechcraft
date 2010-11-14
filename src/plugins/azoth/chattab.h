@@ -63,6 +63,7 @@ namespace LeechCraft
 				void on_MsgEdit__returnPressed ();
 				void handleEntryMessage (QObject*);
 				void handleViewLinkClicked (const QUrl&);
+				void scrollToEnd ();
 			private:
 				Plugins::ICLEntry* GetEntry ();
 
