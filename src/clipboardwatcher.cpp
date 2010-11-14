@@ -44,13 +44,13 @@ namespace LeechCraft
 
 	void ClipboardWatcher::handleClipboardTimer ()
 	{
-		QString text = QApplication::clipboard ()->text ();
+		const QString& text = QApplication::clipboard ()->text ();
 		if (text.isEmpty () || text == PreviousClipboardContents_)
 			return;
 
 		PreviousClipboardContents_ = text;
 
-		Entity e = Util::MakeEntity (text.toUtf8 (),
+		const Entity& e = Util::MakeEntity (text.toUtf8 (),
 				QString (),
 				FromUserInitiated);
 
