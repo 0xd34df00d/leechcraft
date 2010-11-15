@@ -77,15 +77,17 @@ void GraphWidget::paintEvent (QPaintEvent*)
 void GraphWidget::PaintSingle (quint64 max, const QList<quint64>& speeds,
 		QPainter *painter)
 {
-	const int prevX = width () - 1;
+	int prevX = width () - 1;
 	int i = speeds.size () - 1;
-	const double prevY = height () * (1 - static_cast<double> (speeds.at (i)) / static_cast<double> (max));
+	double prevY = height () * (1 - static_cast<double> (speeds.at (i)) / static_cast<double> (max));
 
 	for ( ; i >= 0; --i)
 	{
 		const int x = width () - speeds.size () + i;
 		const double y = height () * (1 - static_cast<double> (speeds.at (i)) / static_cast<double> (max));
 		painter->drawLine (QPointF (prevX, prevY), QPointF (x, y));
+		prevX = x;
+		prevY = y;
 	}
 }
 

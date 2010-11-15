@@ -64,12 +64,12 @@ void LeechCraft::FancyPopupManager::timerTimeout ()
 {
 	const QDateTime& current = QDateTime::currentDateTime ();
 
-	const int secsTo_ = XmlSettingsManager::Instance ()->
+	const int secsTo = XmlSettingsManager::Instance ()->
 			property ("FinishedDownloadMessageTimeout").toInt ();
 
 	Q_FOREACH (const Entity& e, Popups_)
 	{
-		if (Dates_ [e].secsTo (current) >= secsTo_)
+		if (Dates_ [e].secsTo (current) >= secsTo)
 		{
 			Popups_.removeAll (e);
 			Dates_.remove (e);
