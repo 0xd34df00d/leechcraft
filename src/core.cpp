@@ -105,7 +105,7 @@ LeechCraft::Core::Core ()
 	boost::program_options::variables_map map = qobject_cast<Application*> (qApp)->GetVarMap ();
 	if (map.count ("plugin"))
 	{
-		std::vector<std::string> plugins = map ["plugin"].as<std::vector<std::string> > ();
+		const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string> > ();
 		Q_FOREACH (const std::string& plugin, plugins)
 			paths << QDir (QString::fromUtf8 (plugin.c_str ())).absolutePath ();
 	}
@@ -180,12 +180,12 @@ QObjectList LeechCraft::Core::GetShortcuts () const
 
 QList<QList<QAction*> > LeechCraft::Core::GetActions2Embed () const
 {
-	QList<IActionsExporter*> plugins =
+	const QList<IActionsExporter*>& plugins =
 			PluginManager_->GetAllCastableTo<IActionsExporter*> ();
 	QList<QList<QAction*> > actions;
-	Q_FOREACH (IActionsExporter *plugin, plugins)
+	Q_FOREACH (const IActionsExporter *plugin, plugins)
 	{
-		QList<QAction*> list = plugin->GetActions (AEPCommonContextMenu);
+		const QList<QAction*>& list = plugin->GetActions (AEPCommonContextMenu);
 		if (!list.size ())
 			continue;
 		actions << list;
@@ -215,9 +215,9 @@ QToolBar* LeechCraft::Core::GetToolBar (int index) const
 
 void LeechCraft::Core::Setup (QObject *plugin)
 {
-	IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-	IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
-	IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
+	const IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+	const IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
+	const IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
 
 	InitDynamicSignals (plugin);
 
@@ -253,8 +253,7 @@ void LeechCraft::Core::DelayedInit ()
 
 	PluginManager_->Init ();
 
-	QObjectList plugins = PluginManager_->GetAllPlugins ();
-	foreach (QObject *plugin, plugins)
+	foreach (QObject *plugin, PluginManager_->GetAllPlugins ())
 	{
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 		if (iet)
@@ -303,11 +302,8 @@ void LeechCraft::Core::TryToAddJob (QString name)
 		e.Entity_ = QUrl::fromLocalFile (name);
 	else
 	{
-		QUrl url (name);
-		if (url.isValid ())
-			e.Entity_ = url;
-		else
-			e.Entity_ = name;
+		const QUrl url (name);
+		e.Entity_ = url.isValid () ? url : name;
 	}
 	e.Parameters_ = FromUserInitiated;
 
@@ -319,8 +315,8 @@ QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
 {
 	qint64 download = 0;
 	qint64 upload = 0;
-	QObjectList plugins = PluginManager_->GetAllPlugins ();
-	foreach (QObject *plugin, plugins)
+
+	foreach (QObject *plugin, PluginManager_->GetAllPlugins ())
 	{
 		IDownload *di = qobject_cast<IDownload*> (plugin);
 		if (di)
@@ -356,11 +352,11 @@ QNetworkAccessManager* LeechCraft::Core::GetNetworkAccessManager () const
 
 QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
 {
-	QList<ISummaryRepresentation*> summaries =
+	const QList<ISummaryRepresentation*>& summaries =
 		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-	Q_FOREACH (ISummaryRepresentation *summary, summaries)
+	Q_FOREACH (const ISummaryRepresentation *summary, summaries)
 	{
-		QModelIndex mapped = summary->MapToSource (index);
+		const QModelIndex& mapped = summary->MapToSource (index);
 		if (mapped.isValid ())
 			return mapped;
 	}
@@ -407,9 +403,9 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 		{
 			QDragEnterEvent *event = static_cast<QDragEnterEvent*> (e);
 
-			Q_FOREACH (QString format, event->mimeData ()->formats ())
+			Q_FOREACH (const QString& format, event->mimeData ()->formats ())
 			{
-				Entity e = Util::MakeEntity (event->
+				const Entity& e = Util::MakeEntity (event->
 							mimeData ()->data (format),
 						QString (),
 						LeechCraft::FromUserInitiated,
@@ -428,9 +424,9 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 		{
 			QDropEvent *event = static_cast<QDropEvent*> (e);
 
-			Q_FOREACH (QString format, event->mimeData ()->formats ())
+			Q_FOREACH (const QString& format, event->mimeData ()->formats ())
 			{
-				Entity e = Util::MakeEntity (event->
+				const Entity& e = Util::MakeEntity (event->
 							mimeData ()->data (format),
 						QString (),
 						LeechCraft::FromUserInitiated,
@@ -451,7 +447,7 @@ bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
 
 void LeechCraft::Core::handleProxySettings () const
 {
-	bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
+	const bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
 	QNetworkProxy pr;
 	if (enabled)
 	{
@@ -459,7 +455,7 @@ void LeechCraft::Core::handleProxySettings () const
 		pr.setPort (XmlSettingsManager::Instance ()->property ("ProxyPort").toInt ());
 		pr.setUser (XmlSettingsManager::Instance ()->property ("ProxyLogin").toString ());
 		pr.setPassword (XmlSettingsManager::Instance ()->property ("ProxyPassword").toString ());
-		QString type = XmlSettingsManager::Instance ()->property ("ProxyType").toString ();
+		const QString& type = XmlSettingsManager::Instance ()->property ("ProxyType").toString ();
 		QNetworkProxy::ProxyType pt = QNetworkProxy::HttpProxy;
 		if (type == "socks5")
 			pt = QNetworkProxy::Socks5Proxy;
@@ -508,10 +504,10 @@ void LeechCraft::Core::handleSettingClicked (const QString& name)
 bool LeechCraft::Core::CouldHandle (LeechCraft::Entity e) const
 {
 	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-	Q_FOREACH (HookSignature<HIDCouldHandle>::Signature_t f,
+	Q_FOREACH (const HookSignature<HIDCouldHandle>::Signature_t& f,
 			GetHooks<HIDCouldHandle> ())
 	{
-		bool result = f (proxy, &e);
+		const bool result = f (proxy, &e);
 
 		if (proxy->IsCancelled ())
 			return result;
@@ -558,7 +554,7 @@ namespace
 			*id = l;
 		if (pr)
 		{
-			QObjectList plugins = Core::Instance ().GetPluginManager ()->
+			const QObjectList& plugins = Core::Instance ().GetPluginManager ()->
 				GetAllCastableRoots<IDownload*> ();
 			*pr = *std::find_if (plugins.begin (), plugins.end (),
 					boost::bind (std::equal_to<IDownload*> (),
@@ -611,9 +607,9 @@ QList<QObject*> LeechCraft::Core::GetObjects (const Entity& p,
 	}
 
 	QObjectList result;
-	for (int i = 0; i < plugins.size (); ++i)
+	for (QObjectList::const_iterator it = plugins.begin (), end = plugins.end (); it != end; ++it)
 	{
-		if (plugins.at (i) == sender () &&
+		if (*it == sender () &&
 				!(p.Parameters_ & ShouldQuerySource))
 			continue;
 
@@ -623,16 +619,16 @@ QList<QObject*> LeechCraft::Core::GetObjects (const Entity& p,
 			{
 				case OTDownloaders:
 					{
-						IDownload *id = qobject_cast<IDownload*> (plugins.at (i));
+						IDownload *id = qobject_cast<IDownload*> (*it);
 						if (id->CouldDownload (p))
-							result << plugins.at (i);
+							result.append (*it);
 					}
 					break;
 				case OTHandlers:
 					{
-						IEntityHandler *ih = qobject_cast<IEntityHandler*> (plugins.at (i));
+						IEntityHandler *ih = qobject_cast<IEntityHandler*> (*it);
 						if (ih->CouldHandle (p))
-							result << plugins.at (i);
+							result.append (*it);
 					}
 					break;
 			}
@@ -645,13 +641,13 @@ QList<QObject*> LeechCraft::Core::GetObjects (const Entity& p,
 			qWarning () << Q_FUNC_INFO
 				<< "could not query"
 				<< e.what ()
-				<< plugins.at (i);
+				<< *it;
 		}
 		catch (...)
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "could not query"
-				<< plugins.at (i);
+				<< *it;
 		}
 	}
 
@@ -661,16 +657,16 @@ QList<QObject*> LeechCraft::Core::GetObjects (const Entity& p,
 bool LeechCraft::Core::handleGotEntity (Entity p, int *id, QObject **pr)
 {
 	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-	Q_FOREACH (HookSignature<HIDGotEntity>::Signature_t f,
+	Q_FOREACH (const HookSignature<HIDGotEntity>::Signature_t& f,
 			GetHooks<HIDGotEntity> ())
 	{
-		bool result = f (proxy, &p, id, pr, sender ());
+		const bool result = f (proxy, &p, id, pr, sender ());
 
 		if (proxy->IsCancelled ())
 			return result;
 	}
 
-	QString string = Util::GetUserText (p);
+	const QString& string = Util::GetUserText (p);
 
 	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string, ReallyMainWindow_));
 
@@ -716,7 +712,7 @@ bool LeechCraft::Core::handleGotEntity (Entity p, int *id, QObject **pr)
 
 		if (sd)
 		{
-			QString dir = dia->GetFilename ();
+			const QString& dir = dia->GetFilename ();
 			if (dir.isEmpty ())
 				return false;
 
@@ -794,7 +790,7 @@ void LeechCraft::Core::queueEntity (LeechCraft::Entity e)
 
 void LeechCraft::Core::pullEntityQueue ()
 {
-	Q_FOREACH (Entity e, QueuedEntities_)
+	Q_FOREACH (const Entity& e, QueuedEntities_)
 		handleGotEntity (e);
 	QueuedEntities_.clear ();
 }
@@ -834,7 +830,7 @@ void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString&
 {
 	QString msg = origMessage;
 	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-	Q_FOREACH (HookSignature<HIDStatusBarChanged>::Signature_t f,
+	Q_FOREACH (const HookSignature<HIDStatusBarChanged>::Signature_t& f,
 			GetHooks<HIDStatusBarChanged> ())
 	{
 		f (proxy, contents, &msg);
@@ -851,7 +847,7 @@ void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString&
 
 void LeechCraft::Core::HandleNotify (const LeechCraft::Entity& entity)
 {
-	bool show = XmlSettingsManager::Instance ()->
+	const bool show = XmlSettingsManager::Instance ()->
 		property ("ShowFinishedDownloadMessages").toBool ();
 
 	QString pname;
@@ -875,22 +871,20 @@ void LeechCraft::Core::HandleNotify (const LeechCraft::Entity& entity)
 		}
 	}
 
-	QString nheader = entity.Entity_.toString ();
-	QString ntext = entity.Additional_ ["Text"].toString ();
-	int priority = entity.Additional_ ["Priority"].toInt ();
+	const QString& nheader = entity.Entity_.toString ();
+	const QString& ntext = entity.Additional_ ["Text"].toString ();
+	const int priority = entity.Additional_ ["Priority"].toInt ();
 
 	QString header;
-	if (pname.isEmpty () && nheader.isEmpty ()) {}
+
+	const QString str ("%1: %2");
+
 	if (pname.isEmpty () || nheader.isEmpty ())
 		header = pname + nheader;
 	else
-		header = QString ("%1: %2")
-			.arg (pname)
-			.arg (nheader);
+		header = str.arg (pname).arg (nheader);
 
-	QString text = QString ("%1: %2")
-		.arg (header)
-		.arg (ntext);
+	const QString& text = str.arg (header).arg (ntext);
 
 	emit log (text);
 
