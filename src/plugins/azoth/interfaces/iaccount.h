@@ -134,6 +134,16 @@ namespace LeechCraft
 					 */
 					virtual void Synchronize () = 0;
 
+					/** @brief This signal is emitted when new contact
+					 * list items appear in this account.
+					 *
+					 * @note This function is expected to be a signal.
+					 *
+					 * @param[out] items The list of newly appeared
+					 * items.
+					 */
+					virtual void gotCLItems (const QList<QObject*> items) = 0;
+
 					/** @brief This signal is emitted when a new group
 					 * chat has been joined.
 					 *
