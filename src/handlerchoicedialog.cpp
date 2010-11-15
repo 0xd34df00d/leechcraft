@@ -187,7 +187,7 @@ namespace LeechCraft
 					Suggestion_,
 					QFileDialog::Option (~QFileDialog::ShowDirsOnly));
 			if (result.isEmpty ())
-				return result;
+				return QString ();
 		}
 		else
 			result = Ui_.LocationsBox_->currentText ();

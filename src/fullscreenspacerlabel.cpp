@@ -41,25 +41,29 @@ void FullscreenSpacerLabel::mouseMoveEvent (QMouseEvent *event)
 	if (wnd && (wnd->windowState () == Qt::WindowFullScreen))
 	{
 		QMenuBar *menu = wnd->findChild<QMenuBar*> ("MenuBar_");
-		if (!menu) {
+		if (!menu)
+		{
 			qWarning () << Q_FUNC_INFO
 						<< "menu is null";
 			return;
 		}
 		QToolBar *toolbar = wnd->findChild<QToolBar*> ("MainToolbar_");
-		if (!toolbar) {
+		if (!toolbar)
+		{
 			qWarning () << Q_FUNC_INFO
 						<< "toolbar is null";
 			return;
 		}
 		LeechCraft::TabWidget *tabwidget = wnd->GetTabWidget ();
-		if (!tabwidget) {
+		if (!tabwidget)
+		{
 			qWarning () << Q_FUNC_INFO
 						<< "tabwidget is null";
 			return;
 		}
 		QToolBar *bar = Core::Instance ().GetToolBar (tabwidget->currentIndex ());
-		if (!bar) {
+		if (!bar)
+		{
 			qWarning () << Q_FUNC_INFO
 						<< "bar is null";
 			return;
