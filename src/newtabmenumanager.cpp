@@ -161,12 +161,8 @@ namespace LeechCraft
 			return;
 		}
 
-		IInfo *ii = qobject_cast<IInfo*> (obj);
 		try
 		{
-			QString name = ii->GetName ();
-			QIcon icon = ii->GetIcon ();
-
 			if (ReaddOnRestore_.contains (action->text ()))
 			{
 				QAction *readd = ReaddOnRestore_ [action->text ()];
