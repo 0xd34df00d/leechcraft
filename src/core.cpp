@@ -253,7 +253,7 @@ void LeechCraft::Core::DelayedInit ()
 
 	PluginManager_->Init ();
 
-	foreach (QObject *plugin, PluginManager_->GetAllPlugins ())
+	Q_FOREACH (QObject *plugin, PluginManager_->GetAllPlugins ())
 	{
 		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
 		if (iet)
@@ -316,7 +316,7 @@ QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
 	qint64 download = 0;
 	qint64 upload = 0;
 
-	foreach (QObject *plugin, PluginManager_->GetAllPlugins ())
+	Q_FOREACH (QObject *plugin, PluginManager_->GetAllPlugins ())
 	{
 		IDownload *di = qobject_cast<IDownload*> (plugin);
 		if (di)
