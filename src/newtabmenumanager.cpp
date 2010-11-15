@@ -44,7 +44,7 @@ namespace LeechCraft
 				QString info = ii->GetInfo ();
 				QIcon icon = ii->GetIcon ();
 				NewTabMenu_->addAction (icon,
-						name,
+						AccelerateName (name),
 						obj,
 						SLOT (newTabRequested ()))->setToolTip (info);
 			}
@@ -138,6 +138,22 @@ namespace LeechCraft
 	QMenu* NewTabMenuManager::GetNewTabMenu () const
 	{
 		return NewTabMenu_;
+	}
+
+	QString NewTabMenuManager::AccelerateName (QString name)
+	{
+		for (int i = 0, length = name.length ();
+				i < length; ++i)
+		{
+			QChar c = name.at (i);
+			if (UsedAccelerators_.contains (c))
+				continue;
+
+			UsedAccelerators_ << c;
+			name.insert (i, '&');
+			break;
+		}
+		return name;
 	}
 
 	void NewTabMenuManager::restoreEmbedTab ()

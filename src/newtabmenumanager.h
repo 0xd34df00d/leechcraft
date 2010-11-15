@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QMap>
 #include <QString>
+#include <QSet>
 
 class QMenu;
 class QAction;
@@ -34,6 +35,7 @@ namespace LeechCraft
 		QMenu *NewTabMenu_;
 		QList<QObject*> RegisteredMultiTabs_;
 		QMap<QString, QAction*> ReaddOnRestore_;
+		QSet<QChar> UsedAccelerators_;
 	public:
 		NewTabMenuManager (QObject* = 0);
 
@@ -42,6 +44,8 @@ namespace LeechCraft
 		void SetToolbarActions (QList<QList<QAction*> >);
 
 		QMenu* GetNewTabMenu () const;
+	private:
+		QString AccelerateName (QString);
 	private slots:
 		void restoreEmbedTab ();
 	signals:
