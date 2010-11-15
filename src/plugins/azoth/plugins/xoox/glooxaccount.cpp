@@ -115,7 +115,7 @@ namespace LeechCraft
 						{
 							// TODO nonmodal
 							QString pwd = QInputDialog::getText (0,
-									tr ("LeechCraft"),
+									"LeechCraft",
 									tr ("Enter password for %1:").arg (JID_));
 
 							gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());

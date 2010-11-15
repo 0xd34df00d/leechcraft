@@ -72,7 +72,7 @@ namespace LeechCraft
 
 					QString GlooxProtocol::GetProtocolName () const
 					{
-						return tr ("XMPP");
+						return "XMPP";
 					}
 
 					QByteArray GlooxProtocol::GetProtocolID () const
@@ -83,7 +83,7 @@ namespace LeechCraft
 					void GlooxProtocol::InitiateAccountRegistration ()
 					{
 						QString name = QInputDialog::getText (0,
-								tr ("LeechCraft"),
+								"LeechCraft",
 								tr ("Enter new account name"));
 						if (name.isEmpty ())
 							return;

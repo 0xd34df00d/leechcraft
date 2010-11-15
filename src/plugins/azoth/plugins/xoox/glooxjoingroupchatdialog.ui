@@ -39,7 +39,7 @@
      <item row="1" column="1">
       <widget class="QLineEdit" name="Server_">
        <property name="text">
-        <string>conference.jabber.ru</string>
+        <string notr="true">conference.jabber.ru</string>
        </property>
       </widget>
      </item>
@@ -53,7 +53,7 @@
      <item row="2" column="1">
       <widget class="QLineEdit" name="Room_">
        <property name="text">
-        <string>c_plus_plus</string>
+        <string notr="true">c_plus_plus</string>
        </property>
       </widget>
      </item>
