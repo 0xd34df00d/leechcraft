@@ -217,7 +217,10 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());
 		settings.beginGroup ("SavePaths");
-		return settings.value (plugin).toStringList ();
+		
+		const QStringList& l = settings.value (plugin).toStringList ();
+		settings.endGroup ();
+		return l;
 	}
 
 	void HandlerChoiceDialog::populateLocationsBox ()
