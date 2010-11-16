@@ -272,7 +272,6 @@ namespace LeechCraft
 						<< filename + ".jpg";
 
 				QString path = CLIconLoader_->GetPath (variants);
-				qDebug () << "got path" << path;
 				return QIcon (path);
 			}
 
