@@ -80,7 +80,7 @@ namespace LeechCraft
 						void HandleNewParticipants (const QList<ICLEntry*>&);
 					signals:
 						void gotMessage (QObject*);
-						void statusChanged (const EntryStatus&);
+						void statusChanged (const Plugins::EntryStatus&);
 						void availableVariantsChanged (const QStringList&);
 
 						void gotNewParticipants (const QList<Plugins::ICLEntry*>&);
