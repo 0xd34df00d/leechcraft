@@ -42,13 +42,20 @@ namespace LeechCraft
 					: QObject (account)
 					, Account_ (account)
 					, CLEntry_ (0)
+					, Room_ (0)
 					{
 					}
 
 					void RoomHandler::SetRoom (gloox::MUCRoom *room)
 					{
-						CLEntry_ = new RoomCLEntry (room, Account_);
+						Room_ = room;
+						CLEntry_ = new RoomCLEntry (this, Account_);
 						room->getRoomItems ();
+					}
+
+					gloox::MUCRoom* RoomHandler::GetRoom () const
+					{
+						return Room_;
 					}
 
 					RoomCLEntry* RoomHandler::GetCLEntry ()
@@ -135,6 +142,14 @@ namespace LeechCraft
 						message->SetBody (body);
 						message->SetDateTime (QDateTime::currentDateTime ());
 						return message;
+					}
+
+					QList<ICLEntry*> RoomHandler::GetParticipants () const
+					{
+						QList<ICLEntry*> result;
+						Q_FOREACH (RoomParticipantEntry *rpe, Nick2Entry_.values ())
+							result << rpe;
+						return result;
 					}
 
 					RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick)

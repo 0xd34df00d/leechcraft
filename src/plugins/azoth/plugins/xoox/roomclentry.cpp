@@ -21,6 +21,7 @@
 #include <gloox/mucroom.h>
 #include "glooxaccount.h"
 #include "roompublicmessage.h"
+#include "roomhandler.h"
 
 namespace LeechCraft
 {
@@ -32,10 +33,10 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
-					RoomCLEntry::RoomCLEntry (gloox::MUCRoom *room, GlooxAccount *account)
+					RoomCLEntry::RoomCLEntry (RoomHandler *rh, GlooxAccount *account)
 					: QObject (account)
 					, Account_ (account)
-					, Room_ (room)
+					, RH_ (rh)
 					{
 					}
 
@@ -57,7 +58,7 @@ namespace LeechCraft
 
 					QString RoomCLEntry::GetEntryName () const
 					{
-						return QString::fromUtf8 (Room_->name ().c_str ());
+						return QString::fromUtf8 (RH_->GetRoom ()->name ().c_str ());
 					}
 
 					void RoomCLEntry::SetEntryName (const QString&)
@@ -66,9 +67,10 @@ namespace LeechCraft
 
 					QByteArray RoomCLEntry::GetEntryID () const
 					{
-						return (Room_->service () + "/" +
-									Room_->name () + "/" +
-									Room_->nick ()).c_str ();
+						gloox::MUCRoom *r = RH_->GetRoom ();
+						return (r->service () + "/" +
+									r->name () + "/" +
+									r->nick ()).c_str ();
 					}
 
 					QStringList RoomCLEntry::Groups () const
@@ -102,9 +104,19 @@ namespace LeechCraft
 						return EntryStatus ();
 					}
 
+					IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
+					{
+						return MUCFCanBeConfigured;
+					}
+
+					QList<ICLEntry*> RoomCLEntry::GetParticipants ()
+					{
+						return RH_->GetParticipants ();
+					}
+
 					gloox::MUCRoom* RoomCLEntry::GetRoom ()
 					{
-						return Room_;
+						return RH_->GetRoom ();
 					}
 
 					void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)

@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QStringList>
 #include <interfaces/iclentry.h>
+#include <interfaces/imucentry.h>
 
 namespace gloox
 {
@@ -39,19 +40,23 @@ namespace LeechCraft
 				{
 					class GlooxAccount;
 					class RoomPublicMessage;
+					class RoomHandler;
 
 					class RoomCLEntry : public QObject
 									  , public ICLEntry
+									  , public IMUCEntry
 					{
 						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry);
+						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry
+									  LeechCraft::Plugins::Azoth::Plugins::IMUCEntry);
 
 						GlooxAccount *Account_;
-						gloox::MUCRoom *Room_;
 						QList<IMessage*> AllMessages_;
+						RoomHandler *RH_;
 					public:
-						RoomCLEntry (gloox::MUCRoom*, GlooxAccount*);
+						RoomCLEntry (RoomHandler*, GlooxAccount*);
 
+						// ICLEntry
 						QObject* GetObject ();
 						IAccount* GetParentAccount () const ;
 						Features GetEntryFeatures () const;
@@ -64,6 +69,10 @@ namespace LeechCraft
 								const QString&, const QString&);
 						QList<IMessage*> GetAllMessages () const;
 						EntryStatus GetStatus () const;
+
+						// IMUCEntry
+						MUCFeatures GetMUCFeatures () const;
+						QList<ICLEntry*> GetParticipants ();
 
 						gloox::MUCRoom* GetRoom ();
 

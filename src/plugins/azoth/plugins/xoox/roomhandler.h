@@ -48,6 +48,7 @@ namespace LeechCraft
 						RoomCLEntry *CLEntry_;
 						QHash<QString, RoomParticipantEntry*> Nick2Entry_;
 						QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
+						gloox::MUCRoom *Room_;
 					public:
 						RoomHandler (GlooxAccount* = 0);
 
@@ -55,6 +56,7 @@ namespace LeechCraft
 						 * GetCLEntry().
 						 */
 						void SetRoom (gloox::MUCRoom*);
+						gloox::MUCRoom* GetRoom () const;
 						RoomCLEntry* GetCLEntry ();
 
 						// MUCRoomHandler
@@ -78,6 +80,7 @@ namespace LeechCraft
 
 						GlooxMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
+						QList<ICLEntry*> GetParticipants () const;
 					private:
 						/** Creates a new entry for the given nick.
 						 */
