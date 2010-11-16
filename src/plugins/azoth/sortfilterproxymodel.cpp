@@ -59,7 +59,7 @@ namespace LeechCraft
 				Plugins::State lState = lE->GetStatus ().State_;
 				Plugins::State rState = rE->GetStatus ().State_;
 				if (lState == rState)
-					return lE->GetEntryName () < rE->GetEntryName ();
+					return lE->GetEntryName ().localeAwareCompare (rE->GetEntryName ()) < 0;
 				else
 					return IsLess (lState, rState);
 			}
