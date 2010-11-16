@@ -41,13 +41,6 @@ namespace LeechCraft
 					return;
 				}
 
-				QPersistentModelIndex idx (ti);
-				if (Index2Tab_.contains (idx))
-				{
-					emit raiseTab (Index2Tab_ [idx]);
-					return;
-				}
-
 				QObject *entryObj = ti.data (Core::CLREntryObject).value<QObject*> ();
 				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
 				if (!entry)
@@ -61,9 +54,15 @@ namespace LeechCraft
 					return;
 				}
 
+				if (Index2Tab_.contains (entry))
+				{
+					emit raiseTab (Index2Tab_ [entry]);
+					return;
+				}
+
 				// TODO don't hardcode the first variant
-				QPointer<ChatTab> tab (new ChatTab (idx, entry->Variants ().first ()));
-				Index2Tab_ [idx] = tab;
+				QPointer<ChatTab> tab (new ChatTab (entryObj, entry->Variants ().first ()));
+				Index2Tab_ [entry] = tab;
 				connect (tab,
 						SIGNAL (needToClose (ChatTab*)),
 						this,
@@ -76,8 +75,8 @@ namespace LeechCraft
 			{
 				emit removeTab (tab);
 
-				QPersistentModelIndex idx = Index2Tab_.key (tab);
-				Index2Tab_.remove (idx);
+				Plugins::ICLEntry *entry = Index2Tab_.key (tab);
+				Index2Tab_.remove (entry);
 
 				tab->deleteLater ();
 			}

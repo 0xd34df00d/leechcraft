@@ -31,13 +31,18 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
+			namespace Plugins
+			{
+				class ICLEntry;
+			}
+
 			class ChatTab;
 
 			class ChatTabsManager : public QObject
 			{
 				Q_OBJECT
 
-				QHash<QPersistentModelIndex, ChatTab_ptr> Index2Tab_;
+				QHash<Plugins::ICLEntry*, ChatTab_ptr> Index2Tab_;
 			public:
 				ChatTabsManager(QObject* = 0);
 

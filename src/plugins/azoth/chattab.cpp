@@ -44,10 +44,10 @@ namespace LeechCraft
 				S_ParentMultiTabs_ = obj;
 			}
 
-			ChatTab::ChatTab (const QPersistentModelIndex& idx,
+			ChatTab::ChatTab (QObject *entryObj,
 					const QString& variant, QWidget *parent)
 			: QWidget (parent)
-			, Index_ (idx)
+			, Entry_ (entryObj)
 			, Variant_ (variant)
 			, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 					Qt::CaseInsensitive, QRegExp::RegExp2)
@@ -77,7 +77,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleViewLinkClicked (const QUrl&)));
 
-				QObject *entryObj = Index_.data (Core::CLREntryObject).value<QObject*> ();
 				connect (entryObj,
 						SIGNAL (gotMessage (QObject*)),
 						this,
@@ -118,9 +117,6 @@ namespace LeechCraft
 
 			void ChatTab::on_MsgEdit__returnPressed ()
 			{
-				if (!Index_.isValid ())
-					return;
-
 				QString text = Ui_.MsgEdit_->text ();
 				if (text.isEmpty ())
 					return;
@@ -184,21 +180,11 @@ namespace LeechCraft
 			template<typename T>
 			T* ChatTab::GetEntry () const
 			{
-				if (!Index_.isValid ())
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "stored persistent index is invalid";
-					return 0;
-				}
-
-				QObject *entryObj = Index_.data (Core::CLREntryObject).value<QObject*> ();
-				T *entry = qobject_cast<T*> (entryObj);
+				T *entry = qobject_cast<T*> (Entry_);
 				if (!entry)
 					qWarning () << Q_FUNC_INFO
 							<< "object"
-							<< entryObj
-							<< "from the index"
-							<< Index_
+							<< Entry_
 							<< "doesn't implement the required interface";
 				return entry;
 			}
