@@ -449,7 +449,7 @@ namespace LeechCraft
 						GlooxMessage *gm = new GlooxMessage (msg, entry, session);
 						gm->SetDateTime (QDateTime::currentDateTime ());
 
-						entry->ReemitMessage (gm);
+						entry->HandleMessage (gm);
 					}
 
 					GlooxCLEntry* ClientConnection::CreateCLEntry (gloox::RosterItem *ri)

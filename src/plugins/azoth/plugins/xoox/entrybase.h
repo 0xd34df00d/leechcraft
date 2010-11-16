@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,16 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
 #include <QObject>
-#include "entrybase.h"
-
-namespace gloox
-{
-	class RosterItem;
-	class MessageSession;
-}
+#include <interfaces/iclentry.h>
 
 namespace LeechCraft
 {
@@ -35,38 +29,29 @@ namespace LeechCraft
 		{
 			namespace Plugins
 			{
-				class IAccount;
-
 				namespace Xoox
 				{
-					class GlooxAccount;
+					class GlooxMessage;
 
-					class GlooxCLEntry : public EntryBase
+					class EntryBase : public QObject
+									, public ICLEntry
 					{
 						Q_OBJECT
-
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
-
-						IAccount *ParentAccount_;
-						GlooxAccount *ParentAccountObject_;
-						gloox::RosterItem *RI_;
-						QList<IMessage*> Messages_;
+					protected:
+						QList<IMessage*> AllMessages_;
 						EntryStatus CurrentStatus_;
 					public:
-						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
+						EntryBase (QObject* = 0);
 
-						// ICLEntry
-						IAccount* GetParentAccount () const;
-						Features GetEntryFeatures () const;
-						QString GetEntryName () const;
-						void SetEntryName (const QString&);
-						QByteArray GetEntryID () const;
-						QStringList Groups () const;
-						QStringList Variants () const;
-						IMessage* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
+						virtual QObject* GetObject ();
+						virtual QList<IMessage*> GetAllMessages () const;
+						EntryStatus GetStatus () const;
+
+						void HandleMessage (GlooxMessage*);
+						void SetStatus (const EntryStatus&);
 					signals:
-						void availableVariantsChanged (const QStringList&);
+						void gotMessage (QObject*);
+						void statusChanged (const Plugins::EntryStatus&);
 					};
 				}
 			}

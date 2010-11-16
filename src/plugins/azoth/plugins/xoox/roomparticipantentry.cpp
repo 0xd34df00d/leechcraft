@@ -37,16 +37,11 @@ namespace LeechCraft
 				{
 					RoomParticipantEntry::RoomParticipantEntry (const QString& nick,
 							RoomHandler *rh, GlooxAccount *account)
-					: QObject (account)
+					: EntryBase (account)
 					, Nick_ (nick)
 					, Account_ (account)
 					, RoomHandler_ (rh)
 					{
-					}
-
-					QObject* RoomParticipantEntry::GetObject ()
-					{
-						return this;
 					}
 
 					IAccount* RoomParticipantEntry::GetParentAccount () const
@@ -95,22 +90,6 @@ namespace LeechCraft
 							const QString&, const QString& body)
 					{
 						return RoomHandler_->CreateMessage (type, Nick_, body);
-					}
-
-					QList<IMessage*> RoomParticipantEntry::GetAllMessages () const
-					{
-						return AllMessages_;
-					}
-
-					EntryStatus RoomParticipantEntry::GetStatus () const
-					{
-						return CurrentStatus_;
-					}
-
-					void RoomParticipantEntry::HandleMessage (GlooxMessage *msg)
-					{
-						AllMessages_ << msg;
-						emit gotMessage (msg);
 					}
 				}
 			}

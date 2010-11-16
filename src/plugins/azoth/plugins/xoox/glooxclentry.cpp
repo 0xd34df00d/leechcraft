@@ -37,16 +37,11 @@ namespace LeechCraft
 				namespace Xoox
 				{
 					GlooxCLEntry::GlooxCLEntry (gloox::RosterItem *ri, GlooxAccount *parent)
-					: QObject (parent)
+					: EntryBase (parent)
 					, ParentAccount_ (qobject_cast<IAccount*> (parent))
 					, ParentAccountObject_ (parent)
 					, RI_ (ri)
 					{
-					}
-
-					QObject* GlooxCLEntry::GetObject ()
-					{
-						return this;
 					}
 
 					IAccount* GlooxCLEntry::GetParentAccount () const
@@ -116,31 +111,6 @@ namespace LeechCraft
 						IMessage *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
 						Messages_ << msg;
 						return msg;
-					}
-
-					QList<IMessage*> GlooxCLEntry::GetAllMessages() const
-					{
-						return Messages_;
-					}
-
-					EntryStatus GlooxCLEntry::GetStatus () const
-					{
-						return CurrentStatus_;
-					}
-
-					void GlooxCLEntry::SetStatus (const EntryStatus& status)
-					{
-						if (status == CurrentStatus_)
-							return;
-
-						CurrentStatus_ = status;
-						emit statusChanged (CurrentStatus_);
-					}
-
-					void GlooxCLEntry::ReemitMessage (QObject *msg)
-					{
-						Messages_ << qobject_cast<IMessage*> (msg);
-						emit gotMessage (msg);
 					}
 				}
 			}

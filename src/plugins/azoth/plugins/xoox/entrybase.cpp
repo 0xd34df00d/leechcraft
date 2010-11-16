@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPARTICIPANTENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPARTICIPANTENTRY_H
-#include <QObject>
-#include <QStringList>
 #include "entrybase.h"
+#include "glooxmessage.h"
 
 namespace LeechCraft
 {
@@ -32,38 +29,44 @@ namespace LeechCraft
 			{
 				namespace Xoox
 				{
-					class GlooxAccount;
-					class RoomPublicMessage;
-					class GlooxMessage;
-					class RoomHandler;
-
-					class RoomParticipantEntry : public EntryBase
+					EntryBase::EntryBase (QObject* parent)
+					: QObject (parent)
 					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry);
 
-						QString Nick_;
-						GlooxAccount *Account_;
-						RoomHandler *RoomHandler_;
-					public:
-						RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
+					}
 
-						IAccount* GetParentAccount () const ;
-						Features GetEntryFeatures () const;
-						QString GetEntryName () const;
-						void SetEntryName (const QString&);
-						QByteArray GetEntryID () const;
-						QStringList Groups () const;
-						QStringList Variants () const;
-						IMessage* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
-					signals:
-						void availableVariantsChanged (const QStringList&);
-					};
+					QObject* EntryBase::GetObject ()
+					{
+						return this;
+					}
+
+
+					QList<IMessage*> EntryBase::GetAllMessages () const
+					{
+						return AllMessages_;
+					}
+
+					EntryStatus EntryBase::GetStatus () const
+					{
+						return CurrentStatus_;
+					}
+
+					void EntryBase::HandleMessage (GlooxMessage *msg)
+					{
+						AllMessages_ << msg;
+						emit gotMessage (msg);
+					}
+
+					void EntryBase::SetStatus (const EntryStatus& status)
+					{
+						if (status == CurrentStatus_)
+							return;
+
+						CurrentStatus_ = status;
+						emit statusChanged (CurrentStatus_);
+					}
 				}
 			}
 		}
 	}
 }
-
-#endif

@@ -18,6 +18,7 @@ SET (XOOX_SRCS
 	roomclentry.cpp
 	roompublicmessage.cpp
 	roomparticipantentry.cpp
+	entrybase.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -32,6 +33,7 @@ SET (XOOX_HEADERS
 	roomclentry.h
 	roompublicmessage.h
 	roomparticipantentry.h
+	entrybase.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
