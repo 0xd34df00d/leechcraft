@@ -86,7 +86,7 @@ namespace LeechCraft
 					void RoomHandler::handleMUCMessage (gloox::MUCRoom *room, const gloox::Message& msg, bool priv)
 					{
 						const QString& nick = NickFromJID (msg.from ());
-						RoomParticipantEntry *entry = GetParticipantEntry (nick);
+						RoomParticipantEntry *entry = GetParticipantEntry (nick, false);
 
 						if (priv)
 						{
@@ -170,20 +170,21 @@ namespace LeechCraft
 						return result;
 					}
 
-					RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick)
+					RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
 					{
 						RoomParticipantEntry *entry = new RoomParticipantEntry (nick,
 								this, Account_);
 						Nick2Entry_ [nick] = entry;
-						Account_->handleGotRosterItems (QList<QObject*> () << entry);
+						if (announce)
+							Account_->handleGotRosterItems (QList<QObject*> () << entry);
 						return entry;
 					}
 
-					RoomParticipantEntry* RoomHandler::GetParticipantEntry (const QString& nick)
+					RoomParticipantEntry* RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
 					{
 						if (!Nick2Entry_.contains (nick))
 						{
-							RoomParticipantEntry *entry = CreateParticipantEntry (nick);
+							RoomParticipantEntry *entry = CreateParticipantEntry (nick, announce);
 							return entry;
 						}
 						else

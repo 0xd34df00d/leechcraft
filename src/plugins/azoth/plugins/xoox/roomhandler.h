@@ -84,13 +84,13 @@ namespace LeechCraft
 					private:
 						/** Creates a new entry for the given nick.
 						 */
-						RoomParticipantEntry* CreateParticipantEntry (const QString& nick);
+						RoomParticipantEntry* CreateParticipantEntry (const QString& nick, bool announce);
 						/** Creates a new entry for the given nick if it
 						 * doesn't exist already (and does so by calling
 						 * CreateParticipantEntry()) or just returns the
 						 * already existing one.
 						 */
-						RoomParticipantEntry* GetParticipantEntry (const QString& nick);
+						RoomParticipantEntry* GetParticipantEntry (const QString& nick, bool announce = true);
 						gloox::MessageSession* GetSessionWith (const gloox::JID&);
 						QString NickFromJID (const gloox::JID&) const;
 						gloox::JID JIDForNick (const QString&) const;
