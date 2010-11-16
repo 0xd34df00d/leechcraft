@@ -472,8 +472,8 @@ namespace LeechCraft
 					if (!entry)
 					{
 						qWarning () << Q_FUNC_INFO
-						<< clitem
-						<< "is not a valid ICLEntry";
+								<< clitem
+								<< "is not a valid ICLEntry";
 						continue;
 					}
 
