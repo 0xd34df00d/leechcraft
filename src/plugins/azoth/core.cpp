@@ -77,8 +77,8 @@ namespace LeechCraft
 				if (!plugin2)
 				{
 					qWarning () << Q_FUNC_INFO
-						<< plugin
-						<< "isn't a IPlugin2";
+							<< plugin
+							<< "isn't a IPlugin2";
 					return;
 				}
 
