@@ -64,8 +64,23 @@ namespace LeechCraft
 					}
 
 					void RoomHandler::handleMUCParticipantPresence (gloox::MUCRoom *room,
-							const gloox::MUCRoomParticipant participant, const gloox::Presence& presence)
+							const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
 					{
+						const QString& nick = NickFromJID (*part.nick);
+						RoomParticipantEntry *entry = GetParticipantEntry (nick);
+
+						if (presence.presence () == gloox::Presence::Unavailable)
+						{
+							Account_->HandleEntryRemoved (entry);
+							Nick2Entry_.remove (nick);
+							JID2Session_.remove (JIDForNick (nick));
+							entry->deleteLater ();
+							return;
+						}
+
+						EntryStatus status (static_cast<State> (presence.presence ()),
+								QString::fromUtf8 (presence.status ().c_str ()));
+						entry->SetStatus (status);
 					}
 
 					void RoomHandler::handleMUCMessage (gloox::MUCRoom *room, const gloox::Message& msg, bool priv)

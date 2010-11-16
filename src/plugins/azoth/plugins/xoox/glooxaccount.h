@@ -95,6 +95,7 @@ namespace LeechCraft
 						IMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&,
 								gloox::RosterItem*);
+						void HandleEntryRemoved (QObject*);
 					public slots:
 						void handleGotRosterItems (const QList<QObject*>&);
 					signals:

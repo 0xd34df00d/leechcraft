@@ -207,6 +207,11 @@ namespace LeechCraft
 						return ClientConnection_->CreateMessage (type, variant, body, ri);
 					}
 
+					void GlooxAccount::HandleEntryRemoved (QObject *entry)
+					{
+						emit removedCLItems (QObjectList () << entry);
+					}
+
 					void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
 					{
 						emit gotCLItems (items);
