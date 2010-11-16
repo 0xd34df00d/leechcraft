@@ -34,6 +34,7 @@ namespace LeechCraft
 			namespace Plugins
 			{
 				class ICLEntry;
+				class IMUCEntry;
 				class IMessage;
 			}
 
@@ -67,7 +68,8 @@ namespace LeechCraft
 				void handleViewLinkClicked (const QUrl&);
 				void scrollToEnd ();
 			private:
-				Plugins::ICLEntry* GetEntry ();
+				template<typename T>
+				T* GetEntry () const;
 
 				/** Appends the message to the message view area.
 				 */

@@ -14,14 +14,17 @@
    <string/>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>2</number>
-   </property>
    <property name="margin">
     <number>0</number>
    </property>
    <item>
-    <widget class="QWebView" name="View_"/>
+    <widget class="QSplitter" name="ViewSplitter_">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QWebView" name="View_"/>
+     <widget class="QTreeView" name="Participants_"/>
+    </widget>
    </item>
    <item>
     <widget class="QLineEdit" name="MsgEdit_"/>

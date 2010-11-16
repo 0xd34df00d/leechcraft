@@ -27,9 +27,9 @@
 #include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
-#include "core.h"
 #include "interfaces/iaccount.h"
-#include <boost/graph/graph_concepts.hpp>
+#include "interfaces/imucentry.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -83,9 +83,26 @@ namespace LeechCraft
 						this,
 						SLOT (handleEntryMessage (QObject*)));
 
-				Plugins::ICLEntry *e = GetEntry ();
+				Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
 				Q_FOREACH (Plugins::IMessage *msg, e->GetAllMessages ())
 					AppendMessage (msg);
+
+				bool hideParticipants = false;
+				if (!(e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC))
+					hideParticipants = true;
+
+				if (e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC &&
+						!GetEntry<Plugins::IMUCEntry> ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e->GetEntryName ()
+							<< "declares itself to be a MUC, "
+								"but doesn't implement IMUCEntry";
+					hideParticipants = true;
+				}
+
+				if (hideParticipants)
+					Ui_.Participants_->setVisible (false);
 
 				Ui_.MsgEdit_->setFocus ();
 			}
@@ -125,7 +142,7 @@ namespace LeechCraft
 
 				Ui_.MsgEdit_->clear ();
 
-				Plugins::ICLEntry *e = GetEntry ();
+				Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
 				QStringList currentVariants = e->Variants ();
 				QString variant = currentVariants.contains (Variant_) ?
 						Variant_ :
@@ -179,7 +196,8 @@ namespace LeechCraft
 				frame->setScrollBarValue (Qt::Vertical, scrollMax);
 			}
 
-			Plugins::ICLEntry* ChatTab::GetEntry ()
+			template<typename T>
+			T* ChatTab::GetEntry () const
 			{
 				if (!Index_.isValid ())
 				{
@@ -189,14 +207,14 @@ namespace LeechCraft
 				}
 
 				QObject *entryObj = Index_.data (Core::CLREntryObject).value<QObject*> ();
-				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
+				T *entry = qobject_cast<T*> (entryObj);
 				if (!entry)
 					qWarning () << Q_FUNC_INFO
 							<< "object"
 							<< entryObj
 							<< "from the index"
 							<< Index_
-							<< "doesn't implement Plugins::ICLEntry";
+							<< "doesn't implement the required interface";
 				return entry;
 			}
 
