@@ -87,22 +87,7 @@ namespace LeechCraft
 				Q_FOREACH (Plugins::IMessage *msg, e->GetAllMessages ())
 					AppendMessage (msg);
 
-				bool hideParticipants = false;
-				if (!(e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC))
-					hideParticipants = true;
-
-				if (e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC &&
-						!GetEntry<Plugins::IMUCEntry> ())
-				{
-					qWarning () << Q_FUNC_INFO
-							<< e->GetEntryName ()
-							<< "declares itself to be a MUC, "
-								"but doesn't implement IMUCEntry";
-					hideParticipants = true;
-				}
-
-				if (hideParticipants)
-					Ui_.Participants_->setVisible (false);
+				CheckMUC ();
 
 				Ui_.MsgEdit_->setFocus ();
 			}
@@ -216,6 +201,33 @@ namespace LeechCraft
 							<< Index_
 							<< "doesn't implement the required interface";
 				return entry;
+			}
+
+			void ChatTab::CheckMUC ()
+			{
+				Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
+
+				bool isGoodMUC = true;
+				if (!(e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC))
+					isGoodMUC = false;
+
+				if (e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC &&
+						!GetEntry<Plugins::IMUCEntry> ())
+				{
+					qWarning () << Q_FUNC_INFO
+						<< e->GetEntryName ()
+						<< "declares itself to be a MUC, "
+							"but doesn't implement IMUCEntry";
+					isGoodMUC = false;
+				}
+
+				if (isGoodMUC)
+					HandleMUC ();
+			}
+
+			void ChatTab::HandleMUC ()
+			{
+				// TODO
 			}
 
 			void ChatTab::AppendMessage (Plugins::IMessage *msg)

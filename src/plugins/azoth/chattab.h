@@ -25,6 +25,7 @@
 #include <interfaces/imultitabs.h>
 #include "ui_chattab.h"
 
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -70,6 +71,9 @@ namespace LeechCraft
 			private:
 				template<typename T>
 				T* GetEntry () const;
+
+				void CheckMUC ();
+				void HandleMUC ();
 
 				/** Appends the message to the message view area.
 				 */

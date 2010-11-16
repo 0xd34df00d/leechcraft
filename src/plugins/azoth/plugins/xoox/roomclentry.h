@@ -77,10 +77,13 @@ namespace LeechCraft
 						gloox::MUCRoom* GetRoom ();
 
 						void HandleMessage (RoomPublicMessage*);
+						void HandleNewParticipants (const QList<ICLEntry*>&);
 					signals:
 						void gotMessage (QObject*);
 						void statusChanged (const EntryStatus&);
 						void availableVariantsChanged (const QStringList&);
+
+						void gotNewParticipants (const QList<Plugins::ICLEntry*>&);
 					};
 				}
 			}

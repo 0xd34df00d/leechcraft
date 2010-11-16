@@ -75,6 +75,8 @@ namespace LeechCraft
 					 * @return The list of participants of this MUC.
 					 */
 					virtual QList<ICLEntry*> GetParticipants () = 0;
+
+					virtual void gotNewParticipants (const QList<ICLEntry*>&) = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);

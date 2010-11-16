@@ -18,13 +18,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QSplitter" name="ViewSplitter_">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <widget class="QWebView" name="View_"/>
-     <widget class="QTreeView" name="Participants_"/>
-    </widget>
+    <widget class="QWebView" name="View_"/>
    </item>
    <item>
     <widget class="QLineEdit" name="MsgEdit_"/>

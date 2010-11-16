@@ -124,6 +124,11 @@ namespace LeechCraft
 						AllMessages_ << msg;
 						emit gotMessage (msg);
 					}
+
+					void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
+					{
+						emit gotNewParticipants (parts);
+					}
 				}
 			}
 		}

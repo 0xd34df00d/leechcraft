@@ -112,12 +112,15 @@ namespace LeechCraft
 
 					void RoomHandler::handleMUCItems (gloox::MUCRoom *room, const gloox::Disco::ItemList& items)
 					{
-						QList<QObject*> entries;
+						QList<ICLEntry*> parts;
 						Q_FOREACH (gloox::Disco::Item *item, items)
 						{
 							const QString nick = QString::fromUtf8 (item->name ().c_str ());
-							GetParticipantEntry (nick);
+							if (!Nick2Entry_.contains (nick))
+								parts << GetParticipantEntry (nick);
 						}
+
+						CLEntry_->HandleNewParticipants (parts);
 					}
 
 					void RoomHandler::handleMessage (const gloox::Message& msg, gloox::MessageSession *session)
