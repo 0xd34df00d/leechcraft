@@ -53,6 +53,8 @@ namespace LeechCraft
 				QRegExp LinkRegexp_;
 				QColor BgColor_;
 				QList<QColor> NickColors_;
+				QList<QString> MsgHistory_;
+				int CurrentHistoryPosition_;
 			public:
 				static void SetParentMultiTabs (QObject*);
 
@@ -68,6 +70,8 @@ namespace LeechCraft
 				void handleEntryMessage (QObject*);
 				void handleViewLinkClicked (const QUrl&);
 				void scrollToEnd ();
+				void handleHistoryUp ();
+				void handleHistoryDown ();
 			private:
 				template<typename T>
 				T* GetEntry () const;

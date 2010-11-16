@@ -23,6 +23,7 @@
 #include <QTimer>
 #include <QPalette>
 #include <QApplication>
+#include <QShortcut>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
@@ -52,6 +53,7 @@ namespace LeechCraft
 			, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 					Qt::CaseInsensitive, QRegExp::RegExp2)
 			, BgColor_ (QApplication::palette ().color (QPalette::Base))
+			, CurrentHistoryPosition_ (-1)
 			{
 				Ui_.setupUi (this);
 				Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
@@ -88,6 +90,20 @@ namespace LeechCraft
 
 				CheckMUC ();
 
+				QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
+						Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
+				connect (histUp,
+						SIGNAL (activated ()),
+						this,
+						SLOT (handleHistoryUp ()));
+
+				QShortcut *histDown = new QShortcut (Qt::CTRL + Qt::Key_Down,
+						Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
+				connect (histDown,
+						SIGNAL (activated ()),
+						this,
+						SLOT (handleHistoryDown ()));
+
 				Ui_.MsgEdit_->setFocus ();
 			}
 
@@ -122,6 +138,8 @@ namespace LeechCraft
 					return;
 
 				Ui_.MsgEdit_->clear ();
+				CurrentHistoryPosition_ = -1;
+				MsgHistory_.prepend (text);
 
 				Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
 				QStringList currentVariants = e->Variants ();
@@ -170,11 +188,32 @@ namespace LeechCraft
 				}
 			}
 
-			void ChatTab::scrollToEnd()
+			void ChatTab::scrollToEnd ()
 			{
 				QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
 				int scrollMax = frame->scrollBarMaximum (Qt::Vertical);
 				frame->setScrollBarValue (Qt::Vertical, scrollMax);
+			}
+
+			void ChatTab::handleHistoryUp ()
+			{
+				if (CurrentHistoryPosition_ == MsgHistory_.size () - 1)
+					return;
+
+				Ui_.MsgEdit_->setText (MsgHistory_
+							.at (++CurrentHistoryPosition_));
+			}
+
+			void ChatTab::handleHistoryDown ()
+			{
+				if (CurrentHistoryPosition_ == -1)
+					return;
+
+				if (CurrentHistoryPosition_-- == 0)
+					Ui_.MsgEdit_->clear ();
+				else
+					Ui_.MsgEdit_->setText (MsgHistory_
+								.at (CurrentHistoryPosition_));
 			}
 
 			template<typename T>
