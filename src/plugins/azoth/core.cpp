@@ -387,6 +387,10 @@ namespace LeechCraft
 						SIGNAL (gotCLItems (const QList<QObject*>&)),
 						this,
 						SLOT (handleGotCLItems (const QList<QObject*>&)));
+				connect (accObject,
+						SIGNAL (removedCLItems (const QList<QObject*>&)),
+						this,
+						SLOT (handleRemovedCLItems (const QList<QObject*>&)));
 			}
 
 			void Core::handleGotCLItems (const QList<QObject*>& items)
@@ -457,6 +461,33 @@ namespace LeechCraft
 					}
 
 					HandleStatusChanged (entry->GetStatus(), entry);
+				}
+			}
+
+			void Core::handleRemovedCLItems (const QList<QObject*>& items)
+			{
+				Q_FOREACH (QObject *clitem, items)
+				{
+					Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (clitem);
+					if (!entry)
+					{
+						qWarning () << Q_FUNC_INFO
+						<< clitem
+						<< "is not a valid ICLEntry";
+						continue;
+					}
+
+					Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+					{
+						QStandardItem *parent = item->parent ();
+						parent->removeRow (item->row ());
+
+						if (!parent->rowCount ())
+						{
+							QStandardItem *parentParent = parent->parent ();
+							parentParent->removeRow (parent->row ());
+						}
+					}
 				}
 			}
 

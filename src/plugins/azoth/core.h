@@ -155,6 +155,7 @@ namespace LeechCraft
 				 * be in the items list.
 				 */
 				void handleGotCLItems (const QList<QObject*>& items);
+				void handleRemovedCLItems (const QList<QObject*>&);
 
 				void handleStatusChanged (const Plugins::EntryStatus&);
 			signals:
