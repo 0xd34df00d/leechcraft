@@ -142,7 +142,20 @@ namespace LeechCraft
 					 * @param[out] items The list of newly appeared
 					 * items.
 					 */
-					virtual void gotCLItems (const QList<QObject*> items) = 0;
+					virtual void gotCLItems (const QList<QObject*>& items) = 0;
+
+					/** @brief This signal is emitted when contact list
+					 * items are removed.
+					 *
+					 * The reason for removal doesn't matter. It could
+					 * be a groupchat participant that exited or changed
+					 * nickname, or some other stuff.
+					 *
+					 * @note This functions is expected to be a signal.
+					 *
+					 * @param[out] items The list of removed items.
+					 */
+					virtual void removedCLItems (const QList<QObject*>& items) = 0;
 
 					/** @brief This signal is emitted when a new group
 					 * chat has been joined.

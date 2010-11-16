@@ -98,7 +98,8 @@ namespace LeechCraft
 					public slots:
 						void handleGotRosterItems (const QList<QObject*>&);
 					signals:
-						void gotCLItems (const QList<QObject*>);
+						void gotCLItems (const QList<QObject*>&);
+						void removedCLItems (const QList<QObject*>&);
 						void joinedGroupchat (QObject*);
 					};
 				}
