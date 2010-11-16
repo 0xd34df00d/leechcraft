@@ -461,6 +461,12 @@ namespace LeechCraft
 					}
 
 					HandleStatusChanged (entry->GetStatus(), entry);
+
+					if (entry->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC)
+					{
+						QStandardItem *item = Entry2Items_ [entry].first ();
+						OpenChat (CLModel_->indexFromItem (item));
+					}
 				}
 			}
 
