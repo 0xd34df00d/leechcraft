@@ -25,7 +25,6 @@
 #include <interfaces/imultitabs.h>
 #include "ui_chattab.h"
 
-
 namespace LeechCraft
 {
 	namespace Plugins

@@ -51,12 +51,6 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
-				handleAccountCreatorActionsAdded (Core::Instance ().GetAccountCreatorActions ());
-				connect (&Core::Instance (),
-						SIGNAL (accountCreatorActionsAdded (const QList<QAction*>&)),
-						this,
-						SLOT (handleAccountCreatorActionsAdded (const QList<QAction*>&)));
-
 				handleMUCJoinActionsAdded (Core::Instance ().GetMUCJoinActions ());
 				connect (&Core::Instance (),
 						SIGNAL (mucJoinActionsAdded (const QList<QAction*>&)),
@@ -132,11 +126,6 @@ namespace LeechCraft
 			void Plugin::AddPlugin (QObject *object)
 			{
 				Core::Instance ().AddPlugin (object);
-			}
-
-			void Plugin::handleAccountCreatorActionsAdded (const QList<QAction*>& actions)
-			{
-				MW_->AddAccountCreators (actions);
 			}
 
 			void Plugin::handleMUCJoinActionsAdded (const QList<QAction*>& actions)

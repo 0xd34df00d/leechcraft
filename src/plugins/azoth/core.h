@@ -41,6 +41,7 @@ namespace LeechCraft
 			{
 				struct EntryStatus;
 				class ICLEntry;
+				class IAccount;
 			}
 
 			class ChatTabsManager;
@@ -103,6 +104,7 @@ namespace LeechCraft
 				QList<QAction*> GetMUCJoinActions () const;
 				QAbstractItemModel* GetCLModel () const;
 				ChatTabsManager* GetChatTabsManager () const;
+				QList<Plugins::IAccount*> GetAccounts () const;
 				void SendEntity (const Entity&);
 
 				/** Opens chat with the remote contact identified by

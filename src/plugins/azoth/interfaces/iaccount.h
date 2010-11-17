@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
 #define PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
 #include <QFlags>
+#include <QMetaType>
 #include <interfaces/azothcommon.h>
 
 namespace LeechCraft
@@ -173,6 +174,8 @@ namespace LeechCraft
 		}
 	}
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::IAccount*);
 
 Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IAccount,
 		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IAccount/1.0");

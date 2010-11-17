@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MAINWIDGET_H
-#define PLUGINS_AZOTH_MAINWIDGET_H
-#include <QWidget>
-#include "ui_mainwidget.h"
-
-class QToolBar;
-class QMenu;
+#include "accountslistdialog.h"
+#include <QMenu>
+#include <QStandardItemModel>
+#include "interfaces/iaccount.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -30,27 +28,27 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class SortFilterProxyModel;
-
-			class MainWidget : public QWidget
+			AccountsListDialog::AccountsListDialog (QWidget* parent)
+			: QDialog (parent)
 			{
-				Q_OBJECT
+				Ui_.setupUi (this);
+				QMenu *addMenu = new QMenu (tr ("Add account"));
 
-				Ui::MainWidget Ui_;
+				addMenu->addActions (Core::Instance ().GetAccountCreatorActions ());
 
-				QToolBar *UpperBar_;
-				QMenu *MenuGeneral_;
-				SortFilterProxyModel *ProxyModel_;
-			public:
-				MainWidget (QWidget* = 0);
+				Ui_.Add_->setMenu (addMenu);
 
-				void AddMUCJoiners (const QList<QAction*>&);
-			private slots:
-				void on_CLTree__activated (const QModelIndex&);
-				void showAccountsList ();
-			};
+				QStandardItemModel *accModel = new QStandardItemModel ();
+				Q_FOREACH (Plugins::IAccount *acc,
+						Core::Instance ().GetAccounts ())
+				{
+					QStandardItem *item = new QStandardItem (acc->GetAccountName ());
+					item->setData (QVariant::fromValue<Plugins::IAccount*> (acc));
+					item->setEditable (false);
+					accModel->appendRow (item);
+				}
+				Ui_.Accounts_->setModel (accModel);
+			}
 		}
 	}
 }
-
-#endif

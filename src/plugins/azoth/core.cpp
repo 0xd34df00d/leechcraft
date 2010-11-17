@@ -112,6 +112,19 @@ namespace LeechCraft
 				return ChatTabsManager_;
 			}
 
+			QList<Plugins::IAccount*> Core::GetAccounts () const
+			{
+				QList<Plugins::IAccount*> result;
+				Q_FOREACH (QObject *protoObj, ProtocolPlugins_)
+				{
+					Plugins::IProtocolPlugin *protoPlug =
+							qobject_cast<Plugins::IProtocolPlugin*> (protoObj);
+					Q_FOREACH (Plugins::IProtocol *proto, protoPlug->GetProtocols ())
+						result << proto->GetRegisteredAccounts ();
+				}
+				return result;
+			}
+
 			void Core::SendEntity (const LeechCraft::Entity& e)
 			{
 				emit gotEntity (e);

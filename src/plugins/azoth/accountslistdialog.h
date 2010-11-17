@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MAINWIDGET_H
-#define PLUGINS_AZOTH_MAINWIDGET_H
-#include <QWidget>
-#include "ui_mainwidget.h"
-
-class QToolBar;
-class QMenu;
+#ifndef PLUGINS_AZOTH_ACCOUNTSLISTDIALOG_H
+#define PLUGINS_AZOTH_ACCOUNTSLISTDIALOG_H
+#include <QDialog>
+#include "ui_accountslistdialog.h"
 
 namespace LeechCraft
 {
@@ -30,24 +27,14 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			class SortFilterProxyModel;
-
-			class MainWidget : public QWidget
+			class AccountsListDialog : public QDialog
 			{
 				Q_OBJECT
 
-				Ui::MainWidget Ui_;
-
-				QToolBar *UpperBar_;
-				QMenu *MenuGeneral_;
-				SortFilterProxyModel *ProxyModel_;
+				Ui::AccountsListDialog Ui_;
 			public:
-				MainWidget (QWidget* = 0);
-
-				void AddMUCJoiners (const QList<QAction*>&);
+				AccountsListDialog (QWidget* = 0);
 			private slots:
-				void on_CLTree__activated (const QModelIndex&);
-				void showAccountsList ();
 			};
 		}
 	}

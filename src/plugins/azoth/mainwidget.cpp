@@ -22,6 +22,7 @@
 #include <QVBoxLayout>
 #include "core.h"
 #include "sortfilterproxymodel.h"
+#include "accountslistdialog.h"
 
 namespace LeechCraft
 {
@@ -33,7 +34,6 @@ namespace LeechCraft
 			: QWidget (parent)
 			, UpperBar_ (new QToolBar)
 			, MenuGeneral_ (new QMenu (tr ("General")))
-			, MenuNewAccount_ (new QMenu (tr ("New account")))
 			, ProxyModel_ (new SortFilterProxyModel ())
 			{
 				Ui_.setupUi (this);
@@ -43,13 +43,15 @@ namespace LeechCraft
 				QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
 				lay->insertWidget (0, UpperBar_);
 
-				MenuGeneral_->addMenu (MenuNewAccount_);
-				UpperBar_->addAction (MenuGeneral_->menuAction ());
-			}
+				QAction *accountsList = new QAction (tr ("Accounts..."),
+						this);
+				connect (accountsList,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (showAccountsList ()));
+				MenuGeneral_->addAction (accountsList);
 
-			void MainWidget::AddAccountCreators (const QList<QAction*>& actions)
-			{
-				MenuNewAccount_->addActions (actions);
+				UpperBar_->addAction (MenuGeneral_->menuAction ());
 			}
 
 			void MainWidget::AddMUCJoiners (const QList<QAction*>& actions)
@@ -63,6 +65,13 @@ namespace LeechCraft
 					return;
 
 				Core::Instance ().OpenChat (ProxyModel_->mapToSource (index));
+			}
+
+			void MainWidget::showAccountsList ()
+			{
+				AccountsListDialog *dia = new AccountsListDialog (this);
+				dia->setAttribute (Qt::WA_DeleteOnClose, true);
+				dia->exec ();
 			}
 		}
 	}
