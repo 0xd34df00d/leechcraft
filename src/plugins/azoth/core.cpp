@@ -152,8 +152,10 @@ namespace LeechCraft
 
 						if (proto->GetFeatures () & Plugins::IProtocol::PFMUCsJoinable)
 						{
+							QString text = tr ("Join chatroom (%1)")
+									.arg (proto->GetProtocolName ());
 							QAction *mucJoiner = new QAction (icon,
-									proto->GetProtocolName (), this);
+									text, this);
 							mucJoiner->setData (QVariant::fromValue<QObject*> (proto->GetObject ()));
 							connect (mucJoiner,
 									 SIGNAL (triggered ()),
