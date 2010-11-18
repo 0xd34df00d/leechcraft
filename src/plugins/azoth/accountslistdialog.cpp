@@ -21,6 +21,8 @@
 #include <QStandardItemModel>
 #include "interfaces/iaccount.h"
 #include "core.h"
+#include <boost/graph/graph_concepts.hpp>
+#include "interfaces/iprotocol.h"
 
 namespace LeechCraft
 {
@@ -30,6 +32,7 @@ namespace LeechCraft
 		{
 			AccountsListDialog::AccountsListDialog (QWidget* parent)
 			: QDialog (parent)
+			, AccModel_ (new QStandardItemModel ())
 			{
 				Ui_.setupUi (this);
 				QMenu *addMenu = new QMenu (tr ("Add account"));
@@ -38,16 +41,35 @@ namespace LeechCraft
 
 				Ui_.Add_->setMenu (addMenu);
 
-				QStandardItemModel *accModel = new QStandardItemModel ();
+
 				Q_FOREACH (Plugins::IAccount *acc,
 						Core::Instance ().GetAccounts ())
-				{
-					QStandardItem *item = new QStandardItem (acc->GetAccountName ());
-					item->setData (QVariant::fromValue<Plugins::IAccount*> (acc), RAccObj);
-					item->setEditable (false);
-					accModel->appendRow (item);
-				}
-				Ui_.Accounts_->setModel (accModel);
+					AddAccount (acc);
+
+				Ui_.Accounts_->setModel (AccModel_);
+			}
+
+			void AccountsListDialog::AddAccount (Plugins::IAccount *acc)
+			{
+				QStandardItem *item = new QStandardItem (acc->GetAccountName ());
+				item->setData (QVariant::fromValue<Plugins::IAccount*> (acc), RAccObj);
+				item->setEditable (false);
+				AccModel_->appendRow (item);
+
+				Plugins::IProtocol *proto = acc->GetParentProtocol ();
+				QObject *protoObj = proto->GetObject ();
+				connect (protoObj,
+						SIGNAL (accountAdded (QObject*)),
+						this,
+						SLOT (handleAccountAdded (QObject*)),
+						Qt::UniqueConnection);
+				connect (protoObj,
+						SIGNAL (accountRemoved (QObject*)),
+						this,
+						SLOT (handleAccountRemoved (QObject*)),
+						Qt::UniqueConnection);
+
+				Account2Item_ [acc] = item;
 			}
 
 			void AccountsListDialog::on_Modify__released ()
@@ -60,6 +82,62 @@ namespace LeechCraft
 				Plugins::IAccount *acc = index
 						.data (RAccObj).value<Plugins::IAccount*> ();
 				acc->OpenConfigurationDialog ();
+			}
+
+			void AccountsListDialog::on_Delete__released()
+			{
+				QModelIndex index = Ui_.Accounts_->
+				selectionModel ()->currentIndex ();
+				if (!index.isValid ())
+					return;
+
+				Plugins::IAccount *acc = index
+						.data (RAccObj).value<Plugins::IAccount*> ();
+				Plugins::IProtocol *proto = acc->GetParentProtocol ();
+				proto->RemoveAccount (acc);
+			}
+
+			void AccountsListDialog::handleAccountAdded (QObject *accObj)
+			{
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
+				if (!acc)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< accObj
+							<< "doesn't implement IAccount, got from"
+							<< sender ();
+					return;
+				}
+
+				AddAccount (acc);
+			}
+
+			void AccountsListDialog::handleAccountRemoved (QObject *accObj)
+			{
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
+				if (!acc)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< accObj
+							<< "doesn't implement IAccount, got from"
+							<< sender ();
+					return;
+				}
+
+				if (!Account2Item_.contains (acc))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "account"
+							<< acc->GetAccountName ()
+							<< accObj
+							<< "from"
+							<< sender ()
+							<< "not found here";
+					return;
+				}
+
+				AccModel_->removeRow (Account2Item_ [acc]->row ());
+				Account2Item_.remove (acc);
 			}
 		}
 	}

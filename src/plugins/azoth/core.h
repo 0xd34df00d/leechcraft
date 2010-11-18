@@ -172,6 +172,14 @@ namespace LeechCraft
 				 */
 				void addAccount (QObject *account);
 
+				/** Handles account removal. Basically, just removes it
+				 * and its children from the contact list.
+				 *
+				 * account is expected to implement Plugins::IAccount
+				 * interface.
+				 */
+				void handleAccountRemoved (QObject *account);
+
 				/** Handles newly added contact list items. Each item is
 				 * expected to implement Plugins::ICLEntry. This slot
 				 * appends the items to already existing ones, so only

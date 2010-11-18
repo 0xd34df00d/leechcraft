@@ -20,6 +20,8 @@
 #define PLUGINS_AZOTH_INTERFACES_IPROTOCOL_H
 #include <QFlags>
 
+class QObject;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -113,6 +115,19 @@ namespace LeechCraft
 					 * dialog should be opened.
 					 */
 					virtual void InitiateMUCJoin () = 0;
+
+					/** @brief Removes the given account.
+					 *
+					 * This function shouldn't ask anything from the
+					 * user, just remove the account.
+					 *
+					 * If the account is not registered, this function
+					 * should do nothing.
+					 */
+					virtual void RemoveAccount (IAccount *account) = 0;
+
+					virtual void accountAdded (QObject *account) = 0;
+					virtual void accountRemoved (QObject *account) = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (IProtocol::ProtocolFeatures);

@@ -55,12 +55,14 @@ namespace LeechCraft
 						QByteArray GetProtocolID () const;
 						void InitiateAccountRegistration ();
 						void InitiateMUCJoin ();
+						void RemoveAccount (IAccount*);
 					private:
 						void RestoreAccounts ();
 					private slots:
 						void saveAccounts () const;
 					signals:
 						void accountAdded (QObject*);
+						void accountRemoved (QObject*);
 						void gotEntity (const LeechCraft::Entity&);
 					};
 				}

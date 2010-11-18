@@ -187,6 +187,10 @@ namespace LeechCraft
 								SIGNAL (accountAdded (QObject*)),
 								this,
 								SLOT (addAccount (QObject*)));
+						connect (proto->GetObject (),
+								SIGNAL (accountRemoved (QObject*)),
+								this,
+								SLOT (handleAccountRemoved (QObject*)));
 					}
 
 					if (creators.size ())
@@ -404,7 +408,7 @@ namespace LeechCraft
 				}
 
 				QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
-				accItem->setData (QVariant::fromValue<QObject*> (account->GetObject ()),
+				accItem->setData (QVariant::fromValue<QObject*> (accObject),
 						CLRAccountObject);
 				accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount),
 						CLREntryType);
@@ -425,6 +429,20 @@ namespace LeechCraft
 						SIGNAL (removedCLItems (const QList<QObject*>&)),
 						this,
 						SLOT (handleRemovedCLItems (const QList<QObject*>&)));
+			}
+
+			void Core::handleAccountRemoved (QObject *account)
+			{
+				for (int i = 0; i < CLModel_->rowCount (); ++i)
+				{
+					QStandardItem *item = CLModel_->item (i);
+					QObject *obj = item->data (CLRAccountObject).value<QObject*> ();
+					if (obj == account)
+					{
+						CLModel_->removeRow (i);
+						break;
+					}
+				}
 			}
 
 			void Core::handleGotCLItems (const QList<QObject*>& items)

@@ -19,7 +19,11 @@
 #ifndef PLUGINS_AZOTH_ACCOUNTSLISTDIALOG_H
 #define PLUGINS_AZOTH_ACCOUNTSLISTDIALOG_H
 #include <QDialog>
+#include <QHash>
 #include "ui_accountslistdialog.h"
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -27,11 +31,18 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
+			namespace Plugins
+			{
+				class IAccount;
+			}
+
 			class AccountsListDialog : public QDialog
 			{
 				Q_OBJECT
 
 				Ui::AccountsListDialog Ui_;
+				QStandardItemModel *AccModel_;
+				QHash<Plugins::IAccount*, QStandardItem*> Account2Item_;
 
 				enum Roles
 				{
@@ -39,8 +50,14 @@ namespace LeechCraft
 				};
 			public:
 				AccountsListDialog (QWidget* = 0);
+			private:
+				void AddAccount (Plugins::IAccount*);
 			private slots:
 				void on_Modify__released ();
+				void on_Delete__released ();
+
+				void handleAccountAdded (QObject*);
+				void handleAccountRemoved (QObject*);
 			};
 		}
 	}

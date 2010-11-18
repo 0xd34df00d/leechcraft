@@ -122,6 +122,15 @@ namespace LeechCraft
 								dlg.GetRoom (), dlg.GetNickname ());
 					}
 
+					void GlooxProtocol::RemoveAccount (IAccount *acc)
+					{
+						GlooxAccount *accObj = qobject_cast<GlooxAccount*> (acc->GetObject ());
+						Accounts_.removeAll (accObj);
+						emit accountRemoved (accObj);
+						accObj->deleteLater ();
+						saveAccounts ();
+					}
+
 					void GlooxProtocol::saveAccounts () const
 					{
 						QSettings settings (QSettings::IniFormat, QSettings::UserScope,
