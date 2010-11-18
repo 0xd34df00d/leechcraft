@@ -114,7 +114,15 @@ namespace LeechCraft
 				 */
 				void OpenChat (const QModelIndex& index);
 			private:
-				void AddProtocolPlugin (QObject*);
+				/** Adds the protocol object. The object must implement
+				 * Plugins::IProtocolPlugin interface.
+				 *
+				 * Creates an entry in the contact list for accounts
+				 * from the protocol plugin and creates the actions for
+				 * adding a new account in this protocol or joining
+				 * groupchats.
+				 */
+				void AddProtocolPlugin (QObject *object);
 
 				/** Returns the list of category items for the given
 				 * account and categories list. Creates the items if
@@ -125,18 +133,30 @@ namespace LeechCraft
 				 */
 				QList<QStandardItem*> GetCategoriesItems (QStringList categories, QStandardItem *account);
 
+				/** Returns the QStandardItem for the given account and
+				 * adds it into accountItemCache.
+				 */
 				QStandardItem* GetAccountItem (const QObject *accountObj,
 						QMap<const QObject*, QStandardItem*>& accountItemCache);
 
-				void HandleStatusChanged (const Plugins::EntryStatus&, Plugins::ICLEntry*);
+				/** Handles the event of status changes in a contact
+				 * list entry.
+				 */
+				void HandleStatusChanged (const Plugins::EntryStatus& status,
+						Plugins::ICLEntry *entry);
 
-				QIcon GetIconForState (Plugins::State) const;
+				/** Returns an icon from the current iconset for the
+				 * given contact list entry state.
+				 */
+				QIcon GetIconForState (Plugins::State state) const;
 			private slots:
 				/** Initiates account registration process.
 				 */
 				void handleAccountCreatorTriggered ();
 
-				/** Initiates MUC join.
+				/** Initiates MUC join by calling the corresponding
+				 * protocol plugin's IProtocol::InitiateMUCJoin()
+				 * function.
 				 */
 				void handleMucJoinRequested ();
 
@@ -157,9 +177,21 @@ namespace LeechCraft
 				 * be in the items list.
 				 */
 				void handleGotCLItems (const QList<QObject*>& items);
-				void handleRemovedCLItems (const QList<QObject*>&);
 
-				void handleStatusChanged (const Plugins::EntryStatus&);
+				/** Handles removal of items previously added to the
+				 * contact list. Each item is expected to implement the
+				 * Plugins::ICLEntry interface.
+				 *
+				 * This slot removes the model items corresponding to
+				 * the items removed and also removes those categories
+				 * that became empty because of items removal, if any.
+				 */
+				void handleRemovedCLItems (const QList<QObject*>& items);
+
+				/** Handles the event of status changes in plugin to new
+				 * status.
+				 */
+				void handleStatusChanged (const Plugins::EntryStatus& status);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 
