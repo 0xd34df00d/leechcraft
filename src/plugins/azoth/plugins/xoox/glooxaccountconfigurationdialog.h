@@ -40,9 +40,13 @@ namespace LeechCraft
 						GlooxAccountConfigurationDialog (QWidget* = 0);
 
 						QString GetJID () const;
+						void SetJID (const QString&);
 						QString GetNick () const;
+						void SetNick (const QString&);
 						QString GetResource () const;
+						void SetResource (const QString&);
 						short GetPriority () const;
+						void SetPriority (short);
 					};
 				}
 			}

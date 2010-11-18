@@ -45,6 +45,7 @@ namespace LeechCraft
 					: QObject (parent)
 					, Name_ (name)
 					, ParentProtocol_ (qobject_cast<IProtocol*> (parent))
+					, Priority_ (-1)
 					{
 					}
 
@@ -87,6 +88,13 @@ namespace LeechCraft
 					{
 						// TODO nonmodal
 						std::auto_ptr<GlooxAccountConfigurationDialog> dia (new GlooxAccountConfigurationDialog (0));
+						if (!JID_.isEmpty ())
+							dia->SetJID (JID_);
+						if (!Nick_.isEmpty ())
+							dia->SetNick (Nick_);
+						if (!Resource_.isEmpty ())
+							dia->SetResource (Resource_);
+						dia->SetPriority (Priority_);
 						if (dia->exec () == QDialog::Rejected)
 							return;
 
