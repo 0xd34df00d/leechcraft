@@ -24,6 +24,7 @@
 #include <QDir>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
+#include <plugininterface/util.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -209,6 +210,10 @@ namespace LeechCraft
 						SIGNAL (statusChanged (const Plugins::EntryStatus&)),
 						this,
 						SLOT (handleStatusChanged (const Plugins::EntryStatus&)));
+				connect (clEntry->GetObject (),
+						SIGNAL (gotMessage (QObject*)),
+						this,
+						SLOT (handleEntryGotMessage (QObject*)));
 
 				QList<QStandardItem*> catItems =
 						GetCategoriesItems (clEntry->Groups (), accItem);
@@ -517,7 +522,31 @@ namespace LeechCraft
 
 				HandleStatusChanged (status, entry);
 			}
+
+			void Core::handleEntryGotMessage (QObject *msgObj)
+			{
+				Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
+				if (!msg)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< msgObj
+							<< "doesn't implement Plugins::IMessage";
+					return;
+				}
+
+				bool shouldShow = msg->GetDirection () == Plugins::IMessage::DIn &&
+						msg->GetMessageType () != Plugins::IMessage::MTMUCMessage &&
+						!ChatTabsManager_->IsActiveChat (msg->OtherPart ());
+
+				if (shouldShow)
+				{
+					Entity e = Util::MakeNotification ("Azoth",
+							tr ("Incoming chat message from %1.")
+								.arg (msg->OtherPart ()->GetEntryName ()),
+							PInfo_);
+					emit gotEntity (e);
+				}
+			}
 		};
 	};
 };
-

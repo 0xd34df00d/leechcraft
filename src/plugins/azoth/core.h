@@ -194,6 +194,11 @@ namespace LeechCraft
 				 * status.
 				 */
 				void handleStatusChanged (const Plugins::EntryStatus& status);
+
+				/** Handles the message receival from contact list
+				 * entries.
+				 */
+				void handleEntryGotMessage (QObject *msg);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 

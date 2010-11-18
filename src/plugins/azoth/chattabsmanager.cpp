@@ -71,6 +71,14 @@ namespace LeechCraft
 				emit raiseTab (tab);
 			}
 
+			bool ChatTabsManager::IsActiveChat (Plugins::ICLEntry *entry) const
+			{
+				if (!Index2Tab_.contains (entry))
+					return false;
+
+				return Index2Tab_ [entry]->isVisible ();
+			}
+
 			void ChatTabsManager::handleNeedToClose (ChatTab *tab)
 			{
 				emit removeTab (tab);
