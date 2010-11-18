@@ -62,7 +62,7 @@ namespace LeechCraft
 						GlooxMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 						QList<ICLEntry*> GetParticipants () const;
-						void Kick (const QString&);
+						void Kick (const QString& nick, const QString& reason = QString ());
 
 						// MUCRoomHandler
 						virtual void handleMUCParticipantPresence (gloox::MUCRoom*,
