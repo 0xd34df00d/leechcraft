@@ -104,6 +104,11 @@ namespace LeechCraft
 						return EntryStatus (SOnline, QString ());
 					}
 
+					QList<QAction*> RoomCLEntry::GetActions ()
+					{
+						return QList<QAction*> ();
+					}
+
 					IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 					{
 						return MUCFCanBeConfigured;

@@ -40,12 +40,14 @@ namespace LeechCraft
 					protected:
 						QList<IMessage*> AllMessages_;
 						EntryStatus CurrentStatus_;
+						QList<QAction*> Actions_;
 					public:
 						EntryBase (QObject* = 0);
 
 						virtual QObject* GetObject ();
 						virtual QList<IMessage*> GetAllMessages () const;
 						EntryStatus GetStatus () const;
+						QList<QAction*> GetActions ();
 
 						void HandleMessage (GlooxMessage*);
 						void SetStatus (const EntryStatus&);

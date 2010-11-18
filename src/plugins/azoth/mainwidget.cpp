@@ -20,6 +20,7 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QVBoxLayout>
+#include "interfaces/iclentry.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "accountslistdialog.h"
@@ -65,6 +66,32 @@ namespace LeechCraft
 					return;
 
 				Core::Instance ().OpenChat (ProxyModel_->mapToSource (index));
+			}
+
+			void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)
+			{
+				QModelIndex index = Ui_.CLTree_->indexAt (pos);
+				if (!index.isValid ())
+					return;
+
+				QList<QAction*> actions;
+				switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
+				{
+				case Core::CLETContact:
+				{
+					QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
+					Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (obj);
+					actions << entry->GetActions ();
+				}
+				default:
+					break;
+				}
+				if (!actions.size ())
+					return;
+
+				QMenu *menu = new QMenu (tr ("Entry context menu"));
+				menu->addActions (actions);
+				menu->exec (Ui_.CLTree_->mapToGlobal (pos));
 			}
 
 			void MainWidget::showAccountsList ()

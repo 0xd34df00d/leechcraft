@@ -23,6 +23,8 @@
 #include "imessage.h"
 #include "azothcommon.h"
 
+class QAction;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -219,6 +221,17 @@ namespace LeechCraft
 					 * @return The current status.
 					 */
 					virtual EntryStatus GetStatus () const = 0;
+
+					/** @brief Returns the list of actions for the item.
+					 *
+					 * The list is showed, for example, when user calls
+					 * the context menu on the item, or such. You may
+					 * want to place actions like "Info", etc, in this
+					 * list.
+					 *
+					 * @return The list of actions.
+					 */
+					virtual QList<QAction*> GetActions () = 0;
 
 					/** @brief This signal is emitted whenever a new
 					 * message is received.

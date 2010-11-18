@@ -51,6 +51,11 @@ namespace LeechCraft
 						return CurrentStatus_;
 					}
 
+					QList<QAction*> EntryBase::GetActions ()
+					{
+						return Actions_;
+					}
+
 					void EntryBase::HandleMessage (GlooxMessage *msg)
 					{
 						AllMessages_ << msg;

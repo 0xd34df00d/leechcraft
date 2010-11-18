@@ -69,6 +69,7 @@ namespace LeechCraft
 								const QString&, const QString&);
 						QList<IMessage*> GetAllMessages () const;
 						EntryStatus GetStatus () const;
+						QList<QAction*> GetActions ();
 
 						// IMUCEntry
 						MUCFeatures GetMUCFeatures () const;

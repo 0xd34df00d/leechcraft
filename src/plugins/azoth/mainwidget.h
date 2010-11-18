@@ -47,6 +47,7 @@ namespace LeechCraft
 				void AddMUCJoiners (const QList<QAction*>&);
 			private slots:
 				void on_CLTree__activated (const QModelIndex&);
+				void on_CLTree__customContextMenuRequested (const QPoint&);
 				void showAccountsList ();
 			};
 		}
