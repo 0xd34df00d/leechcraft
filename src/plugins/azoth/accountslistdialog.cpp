@@ -43,11 +43,23 @@ namespace LeechCraft
 						Core::Instance ().GetAccounts ())
 				{
 					QStandardItem *item = new QStandardItem (acc->GetAccountName ());
-					item->setData (QVariant::fromValue<Plugins::IAccount*> (acc));
+					item->setData (QVariant::fromValue<Plugins::IAccount*> (acc), RAccObj);
 					item->setEditable (false);
 					accModel->appendRow (item);
 				}
 				Ui_.Accounts_->setModel (accModel);
+			}
+
+			void AccountsListDialog::on_Modify__released ()
+			{
+				QModelIndex index = Ui_.Accounts_->
+						selectionModel ()->currentIndex ();
+				if (!index.isValid ())
+					return;
+
+				Plugins::IAccount *acc = index
+						.data (RAccObj).value<Plugins::IAccount*> ();
+				acc->OpenConfigurationDialog ();
 			}
 		}
 	}

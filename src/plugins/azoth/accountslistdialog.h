@@ -32,9 +32,15 @@ namespace LeechCraft
 				Q_OBJECT
 
 				Ui::AccountsListDialog Ui_;
+
+				enum Roles
+				{
+					RAccObj = Qt::UserRole + 1
+				};
 			public:
 				AccountsListDialog (QWidget* = 0);
 			private slots:
+				void on_Modify__released ();
 			};
 		}
 	}
