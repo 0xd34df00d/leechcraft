@@ -56,8 +56,9 @@ namespace LeechCraft
 						void InitiateAccountRegistration ();
 						void InitiateMUCJoin ();
 					private:
-						void SaveAccounts () const;
 						void RestoreAccounts ();
+					private slots:
+						void saveAccounts () const;
 					signals:
 						void accountAdded (QObject*);
 						void gotEntity (const LeechCraft::Entity&);

@@ -102,6 +102,7 @@ namespace LeechCraft
 						void gotCLItems (const QList<QObject*>&);
 						void removedCLItems (const QList<QObject*>&);
 						void joinedGroupchat (QObject*);
+						void accountSettingsChanged ();
 					};
 				}
 			}

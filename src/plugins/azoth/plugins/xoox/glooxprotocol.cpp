@@ -91,8 +91,13 @@ namespace LeechCraft
 						GlooxAccount *account = new GlooxAccount (name, this);
 						account->OpenConfigurationDialog ();
 
+						connect (account,
+								SIGNAL (accountSettingsChanged ()),
+								this,
+								SLOT (saveAccounts ()));
+
 						Accounts_ << account;
-						SaveAccounts ();
+						saveAccounts ();
 
 						emit accountAdded (account);
 
@@ -117,7 +122,7 @@ namespace LeechCraft
 								dlg.GetRoom (), dlg.GetNickname ());
 					}
 
-					void GlooxProtocol::SaveAccounts () const
+					void GlooxProtocol::saveAccounts () const
 					{
 						QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 								QCoreApplication::organizationName (),
@@ -151,6 +156,12 @@ namespace LeechCraft
 										<< i;
 								continue;
 							}
+
+							connect (acc,
+									SIGNAL (accountSettingsChanged ()),
+									this,
+									SLOT (saveAccounts ()));
+
 							Accounts_ << acc;
 						}
 						settings.endArray ();

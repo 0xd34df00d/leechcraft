@@ -94,6 +94,13 @@ namespace LeechCraft
 						Nick_ = dia->GetNick ();
 						Resource_ = dia->GetResource ();
 						Priority_ = dia->GetPriority ();
+
+						emit accountSettingsChanged ();
+
+						// TODO use SetState() later.
+						const gloox::Presence& pres = ClientConnection_->GetClient ()->presence ();
+						ClientConnection_->GetClient ()->
+								setPresence (pres.presence (), Priority_, pres.status ());
 					}
 
 					void GlooxAccount::ChangeState (State accState, const QString& status)
