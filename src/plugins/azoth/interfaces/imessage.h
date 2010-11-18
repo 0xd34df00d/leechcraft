@@ -71,7 +71,9 @@ namespace LeechCraft
 						 *
 						 * Messages of this type are for notifying
 						 * about, for example, topic changes, kicks,
-						 * bans, etc.
+						 * bans, etc. Generally, there is no other part
+						 * in such messages, so the message of this type
+						 * can return NULL from OtherPart().
 						 */
 						MTEventMessage,
 
