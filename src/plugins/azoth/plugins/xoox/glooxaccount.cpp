@@ -147,6 +147,11 @@ namespace LeechCraft
 						return JID_;
 					}
 
+					QString GlooxAccount::GetNick () const
+					{
+						return Nick_;
+					}
+
 					void GlooxAccount::JoinRoom (const QString& server,
 							const QString& room, const QString& nick)
 					{
