@@ -47,9 +47,37 @@ namespace LeechCraft
 
 					enum MessageType
 					{
+						/** @brief Standard one-to-one message.
+						 */
 						MTChatMessage,
+
+						/** @brief Message in a multiuser conference.
+						 *
+						 * This kind of message is only for messages
+						 * that originate from participants and are
+						 * human-generated. Thus, status changes, topic
+						 * changes and such should have a different type.
+						 */
 						MTMUCMessage,
-						MTService
+
+						/** @brief Status changes in a chat.
+						 *
+						 * This type of message contains information
+						 * about participant's status/presence changes.
+						 */
+						MTStatusMessage,
+
+						/** @brief Various events in a chat.
+						 *
+						 * Messages of this type are for notifying
+						 * about, for example, topic changes, kicks,
+						 * bans, etc.
+						 */
+						MTEventMessage,
+
+						/** @brief Other.
+						 */
+						MTServiceMessage
 					};
 
 					virtual QObject* GetObject () = 0;

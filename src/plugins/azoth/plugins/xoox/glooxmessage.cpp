@@ -76,7 +76,7 @@ namespace LeechCraft
 						case MTMUCMessage:
 							Session_->send (Body_.toUtf8 ().constData (), std::string ());
 							return;
-						case MTService:
+						case MTServiceMessage:
 							qWarning () << Q_FUNC_INFO
 									<< this
 									<< "cannot send a service message";
