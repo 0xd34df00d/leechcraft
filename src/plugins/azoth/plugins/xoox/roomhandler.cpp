@@ -170,6 +170,11 @@ namespace LeechCraft
 						return result;
 					}
 
+					void RoomHandler::Kick (const QString& nick)
+					{
+						Room_->kick (nick.toUtf8 ().constData ());
+					}
+
 					RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
 					{
 						RoomParticipantEntry *entry = new RoomParticipantEntry (nick,

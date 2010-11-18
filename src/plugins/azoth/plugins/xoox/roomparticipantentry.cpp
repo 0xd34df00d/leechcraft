@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "roomparticipantentry.h"
+#include <QAction>
 #include <QtDebug>
 #include <gloox/mucroom.h>
 #include "glooxaccount.h"
@@ -42,6 +43,12 @@ namespace LeechCraft
 					, Account_ (account)
 					, RoomHandler_ (rh)
 					{
+						QAction *kick = new QAction (tr ("Kick"), this);
+						connect (kick,
+								SIGNAL (triggered ()),
+								this,
+								SLOT (handleKickRequested ()));
+						Actions_ << kick;
 					}
 
 					IAccount* RoomParticipantEntry::GetParentAccount () const
@@ -90,6 +97,11 @@ namespace LeechCraft
 							const QString&, const QString& body)
 					{
 						return RoomHandler_->CreateMessage (type, Nick_, body);
+					}
+
+					void RoomParticipantEntry::handleKickRequested()
+					{
+						RoomHandler_->Kick (Nick_);
 					}
 				}
 			}

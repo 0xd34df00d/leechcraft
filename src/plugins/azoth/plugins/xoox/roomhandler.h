@@ -59,6 +59,11 @@ namespace LeechCraft
 						gloox::MUCRoom* GetRoom () const;
 						RoomCLEntry* GetCLEntry ();
 
+						GlooxMessage* CreateMessage (IMessage::MessageType,
+								const QString&, const QString&);
+						QList<ICLEntry*> GetParticipants () const;
+						void Kick (const QString&);
+
 						// MUCRoomHandler
 						virtual void handleMUCParticipantPresence (gloox::MUCRoom*,
 								const gloox::MUCRoomParticipant, const gloox::Presence&);
@@ -77,10 +82,6 @@ namespace LeechCraft
 
 						// MessageHandler
 						virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
-
-						GlooxMessage* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
-						QList<ICLEntry*> GetParticipants () const;
 					private:
 						/** Creates a new entry for the given nick.
 						 */

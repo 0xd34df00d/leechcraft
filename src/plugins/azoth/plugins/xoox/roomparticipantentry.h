@@ -57,6 +57,8 @@ namespace LeechCraft
 						QStringList Variants () const;
 						IMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
+					private slots:
+						void handleKickRequested ();
 					signals:
 						void availableVariantsChanged (const QStringList&);
 					};
