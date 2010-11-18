@@ -274,20 +274,31 @@ namespace LeechCraft
 				{
 				case Plugins::IMessage::DIn:
 				{
-					QString entryName = Qt::escape (msg->OtherPart ()->GetEntryName ());
-					entryName = FormatNickname (entryName, msg);
+					switch (msg->GetMessageType ())
+					{
+					case Plugins::IMessage::MTChatMessage:
+					case Plugins::IMessage::MTMUCMessage:
+					{
+						QString entryName = Qt::escape (msg->OtherPart ()->GetEntryName ());
+						entryName = FormatNickname (entryName, msg);
 
-					if (body.startsWith ("/me "))
-					{
-						body = body.mid (3);
-						string.append ("*** ");
-						string.append (entryName);
-						string.append (' ');
+						if (body.startsWith ("/me "))
+						{
+							body = body.mid (3);
+							string.append ("*** ");
+							string.append (entryName);
+							string.append (' ');
+						}
+						else
+						{
+							string.append (entryName);
+							string.append (": ");
+						}
+						break;
 					}
-					else
-					{
-						string.append (entryName);
-						string.append (": ");
+					case Plugins::IMessage::MTEventMessage:
+						string.append ("! ");
+						break;
 					}
 					break;
 				}

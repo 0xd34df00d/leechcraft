@@ -553,7 +553,7 @@ namespace LeechCraft
 				}
 
 				bool shouldShow = msg->GetDirection () == Plugins::IMessage::DIn &&
-						msg->GetMessageType () != Plugins::IMessage::MTMUCMessage &&
+						msg->GetMessageType () == Plugins::IMessage::MTChatMessage &&
 						!ChatTabsManager_->IsActiveChat (msg->OtherPart ());
 
 				if (shouldShow)
