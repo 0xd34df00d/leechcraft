@@ -78,10 +78,7 @@ namespace LeechCraft
 					void JoinGroupchatDialog::on_Account__currentIndexChanged (int index)
 					{
 						GlooxAccount *acc = Accounts_.at (index);
-						gloox::JID jid (acc->GetJID ().toUtf8 ().constData ());
-						QString nick = QString::fromUtf8 (jid.username ().c_str ());
-
-						Ui_.Nickname_->setText (nick);
+						Ui_.Nickname_->setText (acc->GetNick ());
 					}
 				}
 			}
