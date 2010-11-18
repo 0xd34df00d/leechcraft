@@ -124,6 +124,8 @@ namespace LeechCraft
 				 */
 				void AddProtocolPlugin (QObject *object);
 
+				void AddCLEntry (Plugins::ICLEntry *entry, QStandardItem *accItem);
+
 				/** Returns the list of category items for the given
 				 * account and categories list. Creates the items if
 				 * needed. The items returned are child of account item.

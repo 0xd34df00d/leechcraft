@@ -202,6 +202,35 @@ namespace LeechCraft
 				}
 			}
 
+			void Core::AddCLEntry (Plugins::ICLEntry *clEntry,
+					QStandardItem *accItem)
+			{
+				connect (clEntry->GetObject (),
+						SIGNAL (statusChanged (const Plugins::EntryStatus&)),
+						this,
+						SLOT (handleStatusChanged (const Plugins::EntryStatus&)));
+
+				QList<QStandardItem*> catItems =
+						GetCategoriesItems (clEntry->Groups (), accItem);
+				Q_FOREACH (QStandardItem *catItem, catItems)
+				{
+					QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
+					clItem->setEditable (false);
+					QObject *accObj = clEntry->GetParentAccount ()->GetObject ();
+					clItem->setData (QVariant::fromValue<QObject*> (accObj),
+							CLRAccountObject);
+					clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
+							CLREntryObject);
+					clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
+							CLREntryType);
+					catItem->appendRow (clItem);
+
+					Entry2Items_ [clEntry] << clItem;
+				}
+
+				HandleStatusChanged (clEntry->GetStatus(), clEntry);
+			}
+
 			QList<QStandardItem*> Core::GetCategoriesItems (QStringList cats, QStandardItem *account)
 			{
 				if (cats.isEmpty ())
@@ -381,22 +410,7 @@ namespace LeechCraft
 				QList<QStandardItem*> clItems;
 				Q_FOREACH (Plugins::ICLEntry *clEntry,
 						account->GetCLEntries ())
-				{
-					QList<QStandardItem*> catItems =
-							GetCategoriesItems (clEntry->Groups (), accItem);
-					Q_FOREACH (QStandardItem *catItem, catItems)
-					{
-						QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
-						clItem->setEditable (false);
-						clItem->setData (QVariant::fromValue<QObject*> (account->GetObject ()),
-								CLRAccountObject);
-						clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
-								CLREntryObject);
-						clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
-								CLREntryType);
-						catItem->appendRow (clItem);
-					}
-				}
+					AddCLEntry (clEntry, accItem);
 
 				connect (accObject,
 						SIGNAL (gotCLItems (const QList<QObject*>&)),
@@ -453,29 +467,7 @@ namespace LeechCraft
 						continue;
 					}
 
-					connect (item,
-							SIGNAL (statusChanged (const Plugins::EntryStatus&)),
-							this,
-							SLOT (handleStatusChanged (const Plugins::EntryStatus&)));
-
-					QList<QStandardItem*> catItems =
-							GetCategoriesItems (entry->Groups (), accountItem);
-					Q_FOREACH (QStandardItem *catItem, catItems)
-					{
-						QStandardItem *clItem = new QStandardItem (entry->GetEntryName ());
-						clItem->setEditable (false);
-						clItem->setData (QVariant::fromValue<QObject*> (item),
-								CLREntryObject);
-						clItem->setData (QVariant::fromValue<QObject*> (accountObj),
-								CLRAccountObject);
-						clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
-								CLREntryType);
-						catItem->appendRow (clItem);
-
-						Entry2Items_ [entry] << clItem;
-					}
-
-					HandleStatusChanged (entry->GetStatus(), entry);
+					AddCLEntry (entry, accountItem);
 
 					if (entry->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC)
 					{
