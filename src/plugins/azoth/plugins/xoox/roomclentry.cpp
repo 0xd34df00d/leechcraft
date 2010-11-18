@@ -58,7 +58,8 @@ namespace LeechCraft
 
 					QString RoomCLEntry::GetEntryName () const
 					{
-						return QString::fromUtf8 (RH_->GetRoom ()->name ().c_str ());
+						gloox::MUCRoom *r = RH_->GetRoom ();
+						return QString::fromUtf8 ((r->name () + "@" + r->service ()).c_str ());
 					}
 
 					void RoomCLEntry::SetEntryName (const QString&)
