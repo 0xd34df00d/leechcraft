@@ -109,8 +109,24 @@ namespace LeechCraft
 						return true;
 					}
 
-					void RoomHandler::handleMUCSubject (gloox::MUCRoom *room, const std::string& nick, const std::string& subject)
+					void RoomHandler::handleMUCSubject (gloox::MUCRoom *room,
+							const std::string& nickStr, const std::string& subject)
 					{
+						QString nick = QString::fromUtf8 (nickStr.c_str ());
+						QString subj = QString::fromUtf8 (subject.c_str ());
+						QString string;
+						if (!nick.isEmpty ())
+							string = tr ("%1 set subject to %2")
+									.arg (nick)
+									.arg (subj);
+						else
+							string = tr ("Room subject is %1")
+									.arg (subj);
+
+						RoomPublicMessage *message =
+								new RoomPublicMessage (string, IMessage::DIn,
+										CLEntry_, IMessage::MTEventMessage);
+						CLEntry_->HandleMessage (message);
 					}
 
 					void RoomHandler::handleMUCInviteDecline (gloox::MUCRoom* room, const gloox::JID& invitee, const std::string&reason)

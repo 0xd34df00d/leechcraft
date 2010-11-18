@@ -48,8 +48,11 @@ namespace LeechCraft
 						QDateTime Datetime_;
 						Direction Direction_;
 						gloox::JID FromJID_;
+						MessageType Type_;
 					public:
-						RoomPublicMessage (const QString&, RoomCLEntry* );
+						RoomPublicMessage (const QString&, RoomCLEntry*);
+						RoomPublicMessage (const QString&, Direction,
+								RoomCLEntry*, MessageType, RoomParticipantEntry* = 0);
 						RoomPublicMessage (const gloox::Message&, RoomCLEntry*, RoomParticipantEntry*);
 
 						QObject* GetObject ();

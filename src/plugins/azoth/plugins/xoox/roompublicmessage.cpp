@@ -40,6 +40,22 @@ namespace LeechCraft
 					, Message_ (msg)
 					, Datetime_ (QDateTime::currentDateTime ())
 					, Direction_ (DOut)
+					, Type_ (MTMUCMessage)
+					{
+					}
+
+					RoomPublicMessage::RoomPublicMessage (const QString& msg,
+							IMessage::Direction direction,
+							RoomCLEntry *entry,
+							IMessage::MessageType type,
+							RoomParticipantEntry *part)
+					: QObject (entry)
+					, ParentEntry_ (entry)
+					, ParticipantEntry_ (part)
+					, Message_ (msg)
+					, Datetime_ (QDateTime::currentDateTime ())
+					, Direction_ (direction)
+					, Type_ (type)
 					{
 					}
 
@@ -51,6 +67,7 @@ namespace LeechCraft
 					, Message_ (QString::fromUtf8 (msg.body ().c_str ()))
 					, Direction_ (DIn)
 					, FromJID_ (msg.from ())
+					, Type_ (MTMUCMessage)
 					{
 						const gloox::DelayedDelivery *dd = msg.when ();
 						Datetime_ = dd ?
@@ -80,7 +97,7 @@ namespace LeechCraft
 
 					IMessage::MessageType RoomPublicMessage::GetMessageType () const
 					{
-						return MTMUCMessage;
+						return Type_;
 					}
 
 					ICLEntry* RoomPublicMessage::OtherPart () const
