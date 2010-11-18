@@ -101,7 +101,7 @@ namespace LeechCraft
 
 					EntryStatus RoomCLEntry::GetStatus () const
 					{
-						return EntryStatus ();
+						return EntryStatus (SOnline, QString ());
 					}
 
 					IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
