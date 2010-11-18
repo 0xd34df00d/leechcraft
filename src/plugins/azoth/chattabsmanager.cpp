@@ -54,15 +54,15 @@ namespace LeechCraft
 					return;
 				}
 
-				if (Index2Tab_.contains (entry))
+				if (Entry2Tab_.contains (entry))
 				{
-					emit raiseTab (Index2Tab_ [entry]);
+					emit raiseTab (Entry2Tab_ [entry]);
 					return;
 				}
 
 				// TODO don't hardcode the first variant
 				QPointer<ChatTab> tab (new ChatTab (entryObj, entry->Variants ().first ()));
-				Index2Tab_ [entry] = tab;
+				Entry2Tab_ [entry] = tab;
 				connect (tab,
 						SIGNAL (needToClose (ChatTab*)),
 						this,
@@ -73,18 +73,18 @@ namespace LeechCraft
 
 			bool ChatTabsManager::IsActiveChat (Plugins::ICLEntry *entry) const
 			{
-				if (!Index2Tab_.contains (entry))
+				if (!Entry2Tab_.contains (entry))
 					return false;
 
-				return Index2Tab_ [entry]->isVisible ();
+				return Entry2Tab_ [entry]->isVisible ();
 			}
 
 			void ChatTabsManager::handleNeedToClose (ChatTab *tab)
 			{
 				emit removeTab (tab);
 
-				Plugins::ICLEntry *entry = Index2Tab_.key (tab);
-				Index2Tab_.remove (entry);
+				Plugins::ICLEntry *entry = Entry2Tab_.key (tab);
+				Entry2Tab_.remove (entry);
 
 				tab->deleteLater ();
 			}

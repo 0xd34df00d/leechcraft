@@ -42,7 +42,7 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				QHash<Plugins::ICLEntry*, ChatTab_ptr> Index2Tab_;
+				QHash<Plugins::ICLEntry*, ChatTab_ptr> Entry2Tab_;
 			public:
 				ChatTabsManager(QObject* = 0);
 
