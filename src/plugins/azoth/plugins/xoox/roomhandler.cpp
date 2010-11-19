@@ -88,7 +88,7 @@ namespace LeechCraft
 						const QString& nick = NickFromJID (msg.from ());
 						RoomParticipantEntry *entry = GetParticipantEntry (nick, false);
 
-						if (priv)
+						if (priv && !nick.isEmpty ())
 						{
 							gloox::MessageSession *session = GetSessionWith (msg.from ());
 							GlooxMessage *message = new GlooxMessage (msg,
@@ -98,8 +98,12 @@ namespace LeechCraft
 						}
 						else
 						{
-							RoomPublicMessage *message =
-									new RoomPublicMessage (msg, CLEntry_, entry);
+							RoomPublicMessage *message = 0;
+							if (!nick.isEmpty ())
+								message = new RoomPublicMessage (msg, CLEntry_, entry);
+							else
+								message = new RoomPublicMessage (QString::fromUtf8 (msg.body ().c_str ()),
+										IMessage::DIn, CLEntry_, IMessage::MTEventMessage);
 							CLEntry_->HandleMessage (message);
 						}
 					}
