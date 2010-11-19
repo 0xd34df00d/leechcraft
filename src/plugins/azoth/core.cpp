@@ -417,9 +417,20 @@ namespace LeechCraft
 				accItem->setEditable (false);
 
 				QList<QStandardItem*> clItems;
-				Q_FOREACH (Plugins::ICLEntry *clEntry,
-						account->GetCLEntries ())
+				Q_FOREACH (QObject *clObj, account->GetCLEntries ())
+				{
+					Plugins::ICLEntry *clEntry = qobject_cast<Plugins::ICLEntry*> (clObj);
+					if (!clEntry)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "entry doesn't implement ICLEntry"
+								<< clObj
+								<< account;
+						continue;
+					}
+
 					AddCLEntry (clEntry, accItem);
+				}
 
 				connect (accObject,
 						SIGNAL (gotCLItems (const QList<QObject*>&)),

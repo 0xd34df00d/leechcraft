@@ -60,7 +60,7 @@ namespace LeechCraft
 					{
 						connect (this,
 								SIGNAL (gotEntity (const LeechCraft::Entity&)),
-								Account_->GetParentProtocol ()->GetObject (),
+								Account_->GetParentProtocol (),
 								SIGNAL (gotEntity (const LeechCraft::Entity&)));
 						Client_.reset (new gloox::Client (jid, pwd.toUtf8 ().constData ()));
 

@@ -64,7 +64,7 @@ namespace LeechCraft
 					 *
 					 * @return The parent protocol of this account.
 					 */
-					virtual IProtocol* GetParentProtocol () const = 0;
+					virtual QObject* GetParentProtocol () const = 0;
 
 					/** Returns the OR-ed combination of features of
 					 * this account.
@@ -82,7 +82,7 @@ namespace LeechCraft
 					 * @return The list of contact list entries of this
 					 * account.
 					 */
-					virtual QList<ICLEntry*> GetCLEntries () = 0;
+					virtual QList<QObject*> GetCLEntries () = 0;
 
 					/** @brief Returns the human-readable name of this
 					 * account.

@@ -54,9 +54,9 @@ namespace LeechCraft
 						return this;
 					}
 
-					IProtocol* GlooxAccount::GetParentProtocol () const
+					QObject* GlooxAccount::GetParentProtocol () const
 					{
-						return ParentProtocol_;
+						return ParentProtocol_->GetObject ();
 					}
 
 					IAccount::AccountFeatures GlooxAccount::GetAccountFeatures () const
@@ -64,9 +64,9 @@ namespace LeechCraft
 						return FRenamable | FSupportsXA;
 					}
 
-					QList<ICLEntry*> GlooxAccount::GetCLEntries ()
+					QList<QObject*> GlooxAccount::GetCLEntries ()
 					{
-						return QList<ICLEntry*> ();
+						return QList<QObject*> ();
 					}
 
 					QString GlooxAccount::GetAccountName () const

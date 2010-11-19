@@ -75,9 +75,9 @@ namespace LeechCraft
 						GlooxAccount (const QString&, QObject*);
 
 						QObject* GetObject ();
-						IProtocol* GetParentProtocol () const;
+						QObject* GetParentProtocol () const;
 						AccountFeatures GetAccountFeatures () const;
-						QList<ICLEntry*> GetCLEntries ();
+						QList<QObject*> GetCLEntries ();
 						QString GetAccountName () const;
 						void RenameAccount (const QString&);
 						QByteArray GetAccountID () const;

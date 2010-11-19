@@ -56,8 +56,7 @@ namespace LeechCraft
 				item->setEditable (false);
 				AccModel_->appendRow (item);
 
-				Plugins::IProtocol *proto = acc->GetParentProtocol ();
-				QObject *protoObj = proto->GetObject ();
+				QObject *protoObj = acc->GetParentProtocol ();
 				connect (protoObj,
 						SIGNAL (accountAdded (QObject*)),
 						this,
@@ -93,7 +92,16 @@ namespace LeechCraft
 
 				Plugins::IAccount *acc = index
 						.data (RAccObj).value<Plugins::IAccount*> ();
-				Plugins::IProtocol *proto = acc->GetParentProtocol ();
+				QObject *protoObj = acc->GetParentProtocol ();
+				Plugins::IProtocol *proto = qobject_cast<Plugins::IProtocol*> (protoObj);;
+				if (!proto)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "parent protocol for"
+							<< acc->GetAccountID ()
+							<< "doesn't implement IProtocol";
+					return;
+				}
 				proto->RemoveAccount (acc);
 			}
 
