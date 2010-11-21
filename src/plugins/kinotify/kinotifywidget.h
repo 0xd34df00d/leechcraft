@@ -46,7 +46,7 @@ namespace LeechCraft
 					QTimer *CloseTimer_;
 					QTimer *CheckTimer_;
 					QStateMachine Machine_;
-					QByteArray MakeImage (const QString& imgPath = QString ());
+					const QByteArray MakeImage (const QString& imgPath = QString ());
 					void CreateWidget ();
 					void SetTheme (const QString&);
 					QSize SetData ();
@@ -54,7 +54,6 @@ namespace LeechCraft
 					void ShowNotification ();
 			public:
 					KinotifyWidget (int timeout = 0, const QWidget *widget = 0, int animationTimeout = 300);
-					~KinotifyWidget ();
 					void SetContent (const QString&, const QString&, const QString&, const QSize& size = QSize (350, 70));
 					void PrepareNotification ();
 				protected:

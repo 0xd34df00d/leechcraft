@@ -17,12 +17,12 @@
  **********************************************************************/
 
 #include "kinotify.h"
-#include "kinotifywidget.h"
 #include <boost/bind.hpp>
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include "kinotifywidget.h"
 
 namespace LeechCraft
 {
@@ -98,11 +98,14 @@ namespace LeechCraft
 				QString text = e.Additional_ ["Text"].toString ();
 
 				int timeout = Proxy_->GetSettingsManager ()->
-					property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+						property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
  				KinotifyWidget *notificationWidget = new KinotifyWidget (timeout, Proxy_->GetMainWindow());
 				
-				connect (notificationWidget, SIGNAL (checkNotificationQueue ()), this, SLOT (pushNotification ()));
+				connect (notificationWidget, 
+						SIGNAL (checkNotificationQueue ()), 
+						this, 
+						SLOT (pushNotification ()));
 				
 				QString mi = "information";
 				switch (prio)

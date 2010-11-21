@@ -46,7 +46,7 @@ namespace LeechCraft
 				else
 					CurrentDesktop_ = -1;
 				
-				setWindowOpacity(0.0);
+				setWindowOpacity (0.0);
 				
 				CloseTimer_ = new QTimer (this);
 				CheckTimer_ = new QTimer (this);
@@ -68,9 +68,11 @@ namespace LeechCraft
 				closeFinishState->assignProperty (this, "opacity", 0.0);
 				
 				showStartState->addTransition (showFinishState);
-				showFinishState->addTransition (this, SIGNAL (initiateCloseNotification ()), closeStartState);
+				showFinishState->addTransition (this, 
+						SIGNAL (initiateCloseNotification ()), closeStartState);
 				closeStartState->addTransition (closeFinishState);
-				closeFinishState->addTransition (closeFinishState, SIGNAL (propertiesAssigned ()), finalState);
+				closeFinishState->addTransition (closeFinishState, 
+						SIGNAL (propertiesAssigned ()), finalState);
 				
 				Machine_.addState (showStartState);
 				Machine_.addState (showFinishState);
@@ -102,11 +104,6 @@ namespace LeechCraft
 						SIGNAL (checkNotificationQueue ()));
 			}
 
-			KinotifyWidget::~KinotifyWidget ()
-			{
-				deleteLater ();
-			}
-
 			void KinotifyWidget::SetContent (const QString& title, const QString& body, 
 					const QString& imgPath, const QSize& size)
 			{
@@ -116,7 +113,7 @@ namespace LeechCraft
 				DefaultSize_ = size;
 			}
 
-			QByteArray KinotifyWidget::MakeImage (const QString& imgPath)
+			const QByteArray KinotifyWidget::MakeImage (const QString& imgPath)
 			{
 				QBuffer iconBuffer;
 				QPixmap pixmap; 
@@ -172,7 +169,6 @@ namespace LeechCraft
 
 			QSize KinotifyWidget::SetData ()
 			{
-				
 				QString data = Theme_;
 				data.replace ("{title}", Title_);
 				data.replace ("{body}", Body_);
@@ -188,7 +184,7 @@ namespace LeechCraft
 				if (cheight > height)
 					height = cheight;
 				
-				return QSize (width,height);
+				return QSize (width, height);
 			}
 
 			void KinotifyWidget::SetWidgetPlace ()
