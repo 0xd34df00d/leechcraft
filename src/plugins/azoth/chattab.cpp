@@ -176,7 +176,7 @@ namespace LeechCraft
 				if (url.scheme () != "azoth")
 				{
 					Entity e = Util::MakeEntity (url,
-							QString (), FromUserInitiated);
+							QString (), FromUserInitiated | OnlyHandle);
 					Core::Instance ().SendEntity (e);
 					return;
 				}
