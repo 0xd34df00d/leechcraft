@@ -17,10 +17,12 @@
  **********************************************************************/
 
 #include "kinotify.h"
+#include "kinotifywidget.h"
 #include <boost/bind.hpp>
+#include <QMainWindow>
 #include <QIcon>
+#include <QTimer>
 #include <xmlsettingsdialog/basesettingsmanager.h>
-#include "kineticnotification.h"
 
 namespace LeechCraft
 {
@@ -98,9 +100,10 @@ namespace LeechCraft
 				int timeout = Proxy_->GetSettingsManager ()->
 					property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
-				KineticNotification *kn = new KineticNotification (QString::number (rand ()),
-						timeout);
-
+ 				KinotifyWidget *notificationWidget = new KinotifyWidget (timeout, Proxy_->GetMainWindow());
+				
+				connect (notificationWidget, SIGNAL (checkNotificationQueue ()), this, SLOT (pushNotification ()));
+				
 				QString mi = "information";
 				switch (prio)
 				{
@@ -122,8 +125,23 @@ namespace LeechCraft
 						size = sizes.keys ().last ();
 					path = sizes [size];
 				}
-				kn->setMessage (header, text, path);
-				kn->send ();
+
+				notificationWidget->SetContent (header, text, path);
+
+				if (!ActiveNotifications_.size ())
+					notificationWidget->PrepareNotification ();
+				
+				ActiveNotifications_ << notificationWidget;
+			}
+
+			void Plugin::pushNotification ()
+			{
+				if (!ActiveNotifications_.size ())
+					return;
+				
+				ActiveNotifications_.removeFirst ();
+				if (ActiveNotifications_.size ())
+					ActiveNotifications_.first ()->PrepareNotification ();
 			}
 		};
 	};

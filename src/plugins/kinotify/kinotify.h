@@ -28,6 +28,9 @@ namespace LeechCraft
 	{
 		namespace Kinotify
 		{
+			
+			class KinotifyWidget;
+			
 			class Plugin : public QObject
 						 , public IInfo
 						 , public IEntityHandler
@@ -36,6 +39,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IEntityHandler)
 
 				ICoreProxy_ptr Proxy_;
+				QList<KinotifyWidget*> ActiveNotifications_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -48,9 +52,10 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
-
 				bool CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
+			public slots:
+				void pushNotification ();
 			};
 		};
 	};

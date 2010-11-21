@@ -439,7 +439,6 @@ namespace LeechCraft
 						XmlSettingsManager::Instance ()->property ("CursiveFont").value<QFont> ().family ());
 				QWebSettings::globalSettings ()->setFontFamily (QWebSettings::FantasyFont,
 						XmlSettingsManager::Instance ()->property ("FantasyFont").value<QFont> ().family ());
-
 				QWebSettings::globalSettings ()->setFontSize (QWebSettings::MinimumFontSize,
 						XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
 				QWebSettings::globalSettings ()->setFontSize (QWebSettings::DefaultFontSize,
@@ -473,9 +472,9 @@ namespace LeechCraft
 			void Poshuku::developerExtrasChanged ()
 			{
 				bool enabled = XmlSettingsManager::Instance ()->
-					property ("DeveloperExtrasEnabled").toBool ();
+						property ("DeveloperExtrasEnabled").toBool ();
 				QWebSettings::globalSettings ()->
-					setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
+						setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
 				if (enabled && sender ())
 					QMessageBox::information (Core::Instance ().GetProxy ()->GetMainWindow (),
 							"LeechCraft",

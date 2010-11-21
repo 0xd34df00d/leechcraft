@@ -24,15 +24,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	kinotify.cpp
-	kineticnotification.cpp
-	notificationwidget.cpp
-	notificationsmanager.cpp
+	kinotifywidget.cpp 
 	)
 SET (HEADERS
 	kinotify.h
-	kineticnotification.h
-	notificationwidget.h
-	notificationsmanager.h
+	kinotifywidget.h 
 	)
 SET (TRANSLATIONS
 	leechcraft_kinotify_ru_RU.ts
