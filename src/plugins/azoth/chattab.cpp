@@ -432,7 +432,7 @@ namespace LeechCraft
 			void ChatTab::GenerateColors ()
 			{
 				const qreal lower = 50. / 360.;
-				const qreal higher = 160. / 360.;
+				const qreal higher = 180. / 360.;
 				const qreal delta = 25. / 360.;
 
 				const qreal alpha = BgColor_.alphaF ();
