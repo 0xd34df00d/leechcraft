@@ -438,7 +438,7 @@ namespace LeechCraft
 				const qreal alpha = BgColor_.alphaF ();
 
 				qreal s = BgColor_.saturationF ();
-				s += (1 - s) / 2;
+				s += 15 * (1 - s) / 16;
 				qreal v = BgColor_.valueF ();
 				v = 0.95 - v / 2;
 
