@@ -65,9 +65,9 @@ namespace LeechCraft
 				connect (wizard (),
 						SIGNAL (currentIdChanged (int)),
 						this,
-						SLOT (handleAccepted (int)));				
+						SLOT (handleAccepted (int)));
 #ifdef Q_WS_WIN
-				QString defaultFile = QDir::homePath () + "\Application Data\Mozilla\Firefox\profiles.ini";
+				QString defaultFile = QDir::homePath () + "/Application Data/Mozilla/Firefox/profiles.ini";
 #elif defined Q_WS_MAC
 #warning Please check location of stuff on Mac OS X
 				QString defaultFile = QDir::homePath () + "/.mozilla/firefox/profiles.ini";
@@ -103,7 +103,7 @@ namespace LeechCraft
 			}
 
 			void FirefoxImportPage::handleAccepted (int index)
-			{				
+			{
 				setField ("ProfileFile", Ui_.FileLocation_->text ());
 			}
 		};
