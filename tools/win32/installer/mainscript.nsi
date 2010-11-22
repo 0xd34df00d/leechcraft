@@ -45,6 +45,7 @@ SectionGroup "Core"
 		File plugininterface.dll
 		File xmlsettingsdialog.dll
 		File leechcraft.exe
+		File boost_program_options-vc90-mt-1_45.dll
 		File /r icons
 		File /r leechcraft
 		File /r oxygen
@@ -116,21 +117,14 @@ SectionGroup "Plugins"
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-vc90-mt-1_42.dll
-		File boost_filesystem-vc90-mt-1_42.dll
-		File boost_system-vc90-mt-1_42.dll
-		File boost_thread-vc90-mt-1_42.dll
+		File boost_date_time-vc90-mt-1_45.dll
+		File boost_filesystem-vc90-mt-1_45.dll
+		File boost_system-vc90-mt-1_45.dll
+		File boost_thread-vc90-mt-1_45.dll
 		SetOutPath $INSTDIR\settings
 		File settings\torrentsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_bittorrent.dll
-		SectionIn 1
-	SectionEnd
-	Section "Chatter" CHATTERPLUGIN
-		SetOutPath $INSTDIR\settings
-		File settings\chattersettings.xml
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_chatter.dll
 		SectionIn 1
 	SectionEnd
 	Section "CSTP" HTTPPLUGIN
@@ -157,32 +151,23 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_kinotify.dll
 		SectionIn 1
 	SectionEnd
-    Section "LCFTP" LCFTPPLUGIN
+	Section "LackMan" LACKMANPLUGIN
 		SetOutPath $INSTDIR\settings
-		File settings\lcftpsettings.xml
-        SetOutPath $INSTDIR
-		File libcurl.dll
+		File settings\lackmansettings.xml
 		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_lcftp.dll
+		File plugins\bin\leechcraft_lackman.dll
 		SectionIn 1
 	SectionEnd
-    Section "LMP" LMPPLUGIN
-		SetOutPath $INSTDIR\settings
-		File settings\lmpsettings.xml
-        SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_lmp.dll
-        SectionIn 1
-    SectionEnd
 	Section "NetworkMonitor" NETWORKMONITORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_networkmonitor.dll
 		SectionIn 1
 	SectionEnd
-    Section "NewLife" NEWLIFEPLUGIN
-        SetOutPath $INSTDIR\plugins\bin
+	Section "New Life" NEWLIFEPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_newlife.dll
 		SectionIn 1
-    SectionEnd
+	SectionEnd
 	Section "Poshuku" POSHUKUPLUGIN
 		SetOutPath $INSTDIR\settings
 		File settings\poshukusettings.xml
@@ -209,11 +194,17 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_poshuku_fua.dll
 		SectionIn 1
 	SectionEnd
-    Section "Poshuku WYFV" POSHUKUWYFVPLUGIN
+	Section "Poshuku WYFV" POSHUKUWYFVPLUGIN
 		SetOutPath $INSTDIR\settings
 		File settings\poshukuwyfvsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku_wyfv.dll
+		SectionIn 1
+	SectionEnd
+	Section "SecMan" SECMANPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_secman.dll
+		File plugins\bin\leechcraft_secman_simplestorage.dll
 		SectionIn 1
 	SectionEnd
 	Section "SeekThru" SEEKTHRUPLUGIN
@@ -223,7 +214,12 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_seekthru.dll
 		SectionIn 1
 	SectionEnd
-    Section "Summary" SUMMARYPLUGIN
+	Section "ShellOpen" SHELLOPENPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_shellopen.dll
+		SectionIn 1
+	SectionEnd
+	Section "Summary" SUMMARYPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_summary.dll
 		SectionIn 1
@@ -235,13 +231,13 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_tabpp.dll
 		SectionIn 1
 	SectionEnd
-    Section "vGrabber" VGRABBERPLUGIN
+	Section "vGrabber" VGRABBERPLUGIN
 		SetOutPath $INSTDIR\settings
 		File settings\vgrabbersettings.xml
-        SetOutPath $INSTDIR\plugins\bin
+		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_vgrabber.dll
 		SectionIn 1
-    SectionEnd
+	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Translations"
@@ -250,17 +246,17 @@ SectionGroup "Translations"
 		File /r *_ar.qm
 		SectionIn 1
 	SectionEnd
-    Section "German"
+	Section "German"
 		SetOutPath $INSTDIR
-		File /r *_de_DE.qm
+		File /r *_de.qm
 		SectionIn 1
 	SectionEnd
-    Section "Esperanto"
+	Section "Esperanto"
 		SetOutPath $INSTDIR
 		File /r *_eo.qm
 		SectionIn 1
 	SectionEnd
-    Section "French"
+	Section "French"
 		SetOutPath $INSTDIR
 		File /r *_fr.qm
 		SectionIn 1
@@ -278,7 +274,7 @@ SectionGroup "Translations"
 	Section "Russian"
 		SetOutPath $INSTDIR
 		File /r *_ru_RU.qm
-        File /r *_ru.qm
+		File /r *_ru.qm
 		SectionIn 1
 	SectionEnd
 	Section "Spanish"
@@ -290,6 +286,29 @@ SectionGroup "Translations"
 		SetOutPath $INSTDIR
 		File /r *_uk_UA.qm
 		SectionIn 1
+	SectionEnd
+SectionGroupEnd
+
+SectionGroup "Unsupported plugins"
+	Section "Chatter" CHATTERPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\chattersettings.xml
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_chatter.dll
+	SectionEnd
+	Section "LCFTP" LCFTPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\lcftpsettings.xml
+		SetOutPath $INSTDIR
+		File libcurl.dll
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_lcftp.dll
+	SectionEnd
+	Section "LMP" LMPPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\lmpsettings.xml
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_lmp.dll
 	SectionEnd
 SectionGroupEnd
 
@@ -337,10 +356,13 @@ LangString DESC_POSHUKUWYFVPLUGIN ${LANG_ENGLISH} "Alternate media player for Yo
 LangString DESC_DEADLYRICSPLUGIN ${LANG_ENGLISH} "Fetches lyrics from various sites."
 LangString DESC_SEEKTHRUPLUGIN ${LANG_ENGLISH} "Client for OpenSearch-aware search engines."
 LangString DESC_SUMMARYPLUGIN ${LANG_ENGLISH} "Summary tab with current downloads, events and status."
-LangString DESC_VGRABBERPLUGIN ${LANG_ENGLISH} "VKontakte.ru stuff grabber."
+LangString DESC_VGRABBERPLUGIN ${LANG_ENGLISH} "VKontakte.ru audio/video grabber."
 LangString DESC_AUSCRIEPLUGIN ${LANG_ENGLISH} "Auto Screenshooter."
-LangString DESC_KINOTIFYPLUGIN ${LANG_ENGLISH} "Kinotify provides fancy notifications instead of plain default ones."
-LangString DESC_TABPPPLUGIN ${LANG_ENGLISH} "Tab++ enhances tabbed navigation experience."
+LangString DESC_KINOTIFYPLUGIN ${LANG_ENGLISH} "Provides fancy notifications instead of plain default ones."
+LangString DESC_TABPPPLUGIN ${LANG_ENGLISH} "Enhances tabbed navigation experience."
+LangString DESC_LACKMANPLUGIN ${LANG_ENGLISH} "LeechCraft Package Manager allows to install additional plugins, extensions, icons and various other data."
+LangString DESC_SECMANPLUGIN ${LANG_ENGLISH} "Security Manager stores passwords and various other data."
+LangString DESC_SHELLOPENPLUGIN ${LANG_ENGLISH} "Allows to open unhandled entities via other applications."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Ядро LeechCraft."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
@@ -367,6 +389,9 @@ LangString DESC_VGRABBERPLUGIN ${LANG_RUSSIAN} "Плагин для скачивания и проигрыв
 LangString DESC_AUSCRIEPLUGIN ${LANG_RUSSIAN} "Плагин для создания и загрузки снимков окна LeechCraft в один клик."
 LangString DESC_KINOTIFYPLUGIN ${LANG_RUSSIAN} "Kinotify предоставляет красивые уведомления вместо обычных уведомлений по умолчанию."
 LangString DESC_TABPPPLUGIN ${LANG_RUSSIAN} "Tab++ улучшает работу с вкладками."
+LangString DESC_LACKMANPLUGIN ${LANG_ENGLISH} "LeechCraft Package Manager позволяет устанавливать дополнительные плагины, расширения, иконки и прочие данные."
+LangString DESC_SECMANPLUGIN ${LANG_ENGLISH} "Security Manager сохраняет пароли и прочую информацию."
+LangString DESC_SHELLOPENPLUGIN ${LANG_ENGLISH} "Позволяет открывать необработанные сущности другими приложениями."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
@@ -377,7 +402,7 @@ LangString DESC_TABPPPLUGIN ${LANG_RUSSIAN} "Tab++ улучшает работу с вкладками."
 	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
-    !insertmacro MUI_DESCRIPTION_TEXT ${NEWLIFEPLUGIN} $(DESC_NEWLIFEPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${NEWLIFEPLUGIN} $(DESC_NEWLIFEPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUPLUGIN} $(DESC_POSHUKUPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFILESCHEMEPLUGIN} $(DESC_POSHUKUFILESCHEMEPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFUAPLUGIN} $(DESC_POSHUKUFUAPLUGIN)
@@ -387,13 +412,16 @@ LangString DESC_TABPPPLUGIN ${LANG_RUSSIAN} "Tab++ улучшает работу с вкладками."
 	!insertmacro MUI_DESCRIPTION_TEXT ${SEEKTHRUPLUGIN} $(DESC_SEEKTHRUPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HISTORYHOLDERPLUGIN} $(DESC_HISTORYHOLDERPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${NETWORKMONITORPLUGIN} $(DESC_NETWORKMONITORPLUGIN)
-    !insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
-    !insertmacro MUI_DESCRIPTION_TEXT ${LCFTPPLUGIN} $(DESC_LCFTPPLUGIN)
-    !insertmacro MUI_DESCRIPTION_TEXT ${VGRABBERPLUGIN} $(DESC_VGRABBERPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${CHATTERPLUGIN} $(DESC_CHATTERPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${LCFTPPLUGIN} $(DESC_LCFTPPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${VGRABBERPLUGIN} $(DESC_VGRABBERPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${SUMMARYPLUGIN} $(DESC_SUMMARYPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${AUSCRIEPLUGIN} $(DESC_AUSCRIEPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${KINOTIFYPLUGIN} $(DESC_KINOTIFYPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TABPPPLUGIN} $(DESC_TABPPPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${LACKMANPLUGIN} $(DESC_LACKMANPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${SECMANPLUGIN} $(DESC_SECMANPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${SHELLOPENPLUGIN} $(DESC_SHELLOPENPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
