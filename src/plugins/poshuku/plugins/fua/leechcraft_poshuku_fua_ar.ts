@@ -51,7 +51,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="102"/>
+        <location filename="fua.cpp" line="107"/>
         <source>Allows to set fake user agents for different sites.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -77,6 +77,14 @@
         <location filename="settings.ui" line="65"/>
         <source>Changes would be applied immediately</source>
         <translation type="unfinished">التغييرات ستطبق فوراً</translation>
+    </message>
+</context>
+<context>
+    <name>poshukufuasettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>FUA settings</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

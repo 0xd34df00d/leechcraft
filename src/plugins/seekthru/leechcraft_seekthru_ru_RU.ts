@@ -4,52 +4,52 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="71"/>
+        <location filename="core.cpp" line="81"/>
         <source>Short name</source>
         <translation>Короткое имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="113"/>
+        <location filename="core.cpp" line="123"/>
         <source>Open</source>
         <translation>Открытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="115"/>
+        <location filename="core.cpp" line="125"/>
         <source>Limited</source>
         <translation>Ограниченный</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="117"/>
+        <location filename="core.cpp" line="127"/>
         <source>Private</source>
         <translation>Частный</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="119"/>
+        <location filename="core.cpp" line="129"/>
         <source>Closed</source>
         <translation>Закрытый</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="199"/>
+        <location filename="core.cpp" line="274"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation>%1 не был делегирован</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="307"/>
+        <location filename="core.cpp" line="410"/>
         <source>Could not open file %1.</source>
         <translation>Невозможно открыть файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="317"/>
+        <location filename="core.cpp" line="420"/>
         <source>Could not remove temporary file %1.</source>
         <translation>Невозможно удалить временный файл %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="325"/>
+        <location filename="core.cpp" line="428"/>
         <source>A job was delegated, but it failed.</source>
         <translation>Задача была делегирована неудачно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="377"/>
+        <location filename="core.cpp" line="480"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation>Ошибка парсинга XML %1 в %2:%3.</translation>
     </message>
@@ -153,7 +153,7 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="90"/>
+        <location filename="seekthru.cpp" line="99"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation>Поиск при помощи OpenSearch-поисковиков.</translation>
     </message>
@@ -240,7 +240,7 @@
     </message>
 </context>
 <context>
-    <name>StartupFirstPageWidget</name>
+    <name>SeekThruStartupFirstPageWidget</name>
     <message>
         <location filename="startupfirstpage.ui" line="22"/>
         <source>Localized set:</source>
@@ -278,23 +278,23 @@
 <context>
     <name>seekthrusettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummy.cpp" line="2"/>
         <source>SeekThru settings</source>
         <translation>Настройки SeekThru</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="3"/>
-        <location filename="dummyfile.cpp" line="4"/>
+        <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="4"/>
         <source>Searchers</source>
         <translation>Поисковики</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="5"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Appearance</source>
         <translation>Внешний вид</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="6"/>
+        <location filename="dummy.cpp" line="6"/>
         <source>Navigation bar visible</source>
         <translation>Отображать навигационную панель</translation>
     </message>

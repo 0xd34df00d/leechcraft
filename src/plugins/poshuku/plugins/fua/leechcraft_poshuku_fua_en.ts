@@ -55,7 +55,7 @@
         <translation>Identification string</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="102"/>
+        <location filename="fua.cpp" line="107"/>
         <source>Allows to set fake user agents for different sites.</source>
         <translation>Allows to set fake user agents for different sites.</translation>
     </message>
@@ -86,7 +86,7 @@
 <context>
     <name>poshukufuasettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummy.cpp" line="2"/>
         <source>FUA settings</source>
         <translation>FUA settings</translation>
     </message>

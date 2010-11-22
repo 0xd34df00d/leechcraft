@@ -195,7 +195,7 @@
     </message>
     <message>
         <source>F11</source>
-        <translation>F11</translation>
+        <translation type="obsolete">F11</translation>
     </message>
     <message>
         <source>exit</source>
@@ -272,6 +272,10 @@
     <message>
         <source>Show a quick overview of tabs</source>
         <translation>Показать миниатюры вкладок</translation>
+    </message>
+    <message>
+        <source>Ctrl+G</source>
+        <translation>Ctrl+G</translation>
     </message>
 </context>
 <context>
@@ -422,7 +426,7 @@
     </message>
     <message>
         <source>Actions</source>
-        <translation>Действия</translation>
+        <translation type="obsolete">Действия</translation>
     </message>
     <message>
         <source>Always</source>
@@ -435,6 +439,11 @@
     <message>
         <source>System</source>
         <translation>Системный</translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <comment>FullScreen</comment>
+        <translation>F11</translation>
     </message>
 </context>
 <context>
@@ -457,6 +466,13 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::NewTabMenuManager</name>
+    <message>
+        <source>New tab menu</source>
+        <translation>Меню создания вкладки</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::PluginManager</name>
     <message>
         <source>Name</source>
@@ -464,7 +480,7 @@
     </message>
     <message>
         <source>File</source>
-        <translation>Файл</translation>
+        <translation type="obsolete">Файл</translation>
     </message>
     <message>
         <source>Release of one or more plugins failed.</source>
@@ -497,6 +513,10 @@
     <message>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
         <translation>Невозможно загрузить плагин из %1: не удалось получить имя/информацию/иконку.</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation>Описание</translation>
     </message>
 </context>
 <context>
@@ -608,7 +628,7 @@
     <name>LeechCraft::TabManager</name>
     <message>
         <source>New tab menu</source>
-        <translation>Меню создания вкладки</translation>
+        <translation type="obsolete">Меню создания вкладки</translation>
     </message>
     <message>
         <source>Close all but this</source>
@@ -667,7 +687,7 @@
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Очистить</translation>
+        <translation>Очистить</translation>
     </message>
 </context>
 <context>
@@ -789,7 +809,7 @@
     </message>
     <message>
         <source>Rename...</source>
-        <translation type="unfinished">Переименовать...</translation>
+        <translation>Переименовать...</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -1112,6 +1132,14 @@
     <message>
         <source>Context-dependent</source>
         <translation>В зависимости от контекста</translation>
+    </message>
+    <message>
+        <source>Oxygen</source>
+        <translation>Oxygen</translation>
+    </message>
+    <message>
+        <source>Plastique</source>
+        <translation>Plastique</translation>
     </message>
 </context>
 </TS>

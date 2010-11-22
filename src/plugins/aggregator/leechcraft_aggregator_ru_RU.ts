@@ -436,61 +436,74 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="183"/>
+        <location filename="aggregator.cpp" line="167"/>
         <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation>Aggregator не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Или проверьте настройки хранилища данных и перезапустите LeechCraft.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="236"/>
+        <location filename="aggregator.cpp" line="220"/>
         <source>Feeds actions</source>
         <translation>Действия над лентами</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="312"/>
+        <location filename="aggregator.cpp" line="298"/>
         <source>RSS/Atom feed reader.</source>
         <translation>Чтение RSS/Atom-лент.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="125"/>
+        <location filename="aggregator.cpp" line="109"/>
         <source>Aggregator</source>
         <translation>Aggregator</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="570"/>
+        <location filename="aggregator.cpp" line="563"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removing confirmation</comment>
         <translation>Вы собираетесь навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Вы уверены?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="628"/>
+        <location filename="aggregator.cpp" line="621"/>
         <source>Export to OPML</source>
         <translation>Экспорт в OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="629"/>
-        <location filename="aggregator.cpp" line="659"/>
+        <location filename="aggregator.cpp" line="622"/>
+        <location filename="aggregator.cpp" line="652"/>
         <source>Select save file</source>
         <translation>Выберите файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="630"/>
+        <location filename="aggregator.cpp" line="623"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML-файлы (*.opml);;XML-файлы (*.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="658"/>
+        <location filename="aggregator.cpp" line="651"/>
         <source>Export to binary file</source>
         <translation>Экспорт в бинарный файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="660"/>
+        <location filename="aggregator.cpp" line="653"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Файл обмена Aggregator (*.lcae);;Все файлы (*.*)</translation>
     </message>
-    <message>
-        <location filename="aggregator.cpp" line="716"/>
-        <source>%1 unread messages in %2 channels.</source>
-        <translation>%1 непрочитанных статей в %2 каналах.</translation>
+    <message numerus="yes">
+        <location filename="aggregator.cpp" line="709"/>
+        <source>%n unread message(s)</source>
+        <translation>
+            <numerusform>%n непрочитанное сообщение</numerusform>
+            <numerusform>%n непрочитанных сообщения</numerusform>
+            <numerusform>%n непрочитанных сообщений</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="aggregator.cpp" line="710"/>
+        <source>in %n channel(s).</source>
+        <translation>
+            <numerusform>в %n канале.</numerusform>
+            <numerusform>в %n каналах.</numerusform>
+            <numerusform>в %n каналах.</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -511,12 +524,12 @@
         <translation>Последнее обновление</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="119"/>
+        <location filename="channelsmodel.cpp" line="132"/>
         <source>&lt;strong&gt;Author&lt;/strong&gt;: %1</source>
         <translation>&lt;strong&gt;Автор&lt;/strong&gt;: %1</translation>
     </message>
     <message>
-        <location filename="channelsmodel.cpp" line="128"/>
+        <location filename="channelsmodel.cpp" line="141"/>
         <source>&lt;b&gt;Tags&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Теги&lt;/b&gt;: %1</translation>
     </message>
@@ -880,17 +893,17 @@
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="211"/>
+        <location filename="itemslistmodel.cpp" line="224"/>
         <source>&lt;b&gt;Author&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Автор&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="216"/>
+        <location filename="itemslistmodel.cpp" line="229"/>
         <source>&lt;b&gt;Categories&lt;/b&gt;: %1</source>
         <translation>&lt;b&gt;Категории&lt;/b&gt;: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="221"/>
+        <location filename="itemslistmodel.cpp" line="234"/>
         <source>%n comment(s)</source>
         <translation>
             <numerusform>%n комментарий</numerusform>
@@ -899,7 +912,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="226"/>
+        <location filename="itemslistmodel.cpp" line="239"/>
         <source>%n enclosure(s)</source>
         <translation>
             <numerusform>%n вложение</numerusform>
@@ -908,7 +921,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="231"/>
+        <location filename="itemslistmodel.cpp" line="244"/>
         <source>%n MediaRSS entry(s)</source>
         <translation>
             <numerusform>%n запись MediaRSS</numerusform>
@@ -917,7 +930,7 @@
         </translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="236"/>
+        <location filename="itemslistmodel.cpp" line="249"/>
         <source>RSS with comments is available</source>
         <translation>Доступен RSS с комментариями</translation>
     </message>
@@ -1578,72 +1591,77 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
+        <source>Use colors from the palette for read/unread items</source>
+        <translation>Использовать цвета из палитры для прочитанных/непрочитанных статей</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="25"/>
         <location filename="dummyfile.cpp" line="24"/>
         <source>Feeds handling</source>
         <translation>Обработка лент</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="26"/>
         <location filename="dummyfile.cpp" line="25"/>
         <source>Updates</source>
         <translation>Обновления</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="27"/>
         <location filename="dummyfile.cpp" line="26"/>
         <source>Update feeds on startup</source>
         <translation>Обновлять ленты при запуске</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="28"/>
         <location filename="dummyfile.cpp" line="27"/>
         <source>Update interval:</source>
         <translation>Интервал обновления:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="29"/>
         <location filename="dummyfile.cpp" line="28"/>
         <source> min</source>
         <translation> мин</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="30"/>
         <location filename="dummyfile.cpp" line="29"/>
         <source>Automatic downloading</source>
         <translation>Автоматическое скачивание</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="31"/>
         <location filename="dummyfile.cpp" line="30"/>
         <source>Download directory for enclosures:</source>
         <translation>Директория для вложений:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="32"/>
         <location filename="dummyfile.cpp" line="31"/>
         <source>Store</source>
         <translation>Хранение</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="33"/>
         <location filename="dummyfile.cpp" line="32"/>
         <source>Items per channel:</source>
         <translation>Статей в канале:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="34"/>
         <location filename="dummyfile.cpp" line="33"/>
         <source>Store items for:</source>
         <translation>Хранить статьи:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="35"/>
         <location filename="dummyfile.cpp" line="34"/>
         <source> days</source>
         <translation> дней</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="36"/>
         <location filename="dummyfile.cpp" line="35"/>
         <source>Storage</source>
         <translation>Хранилище</translation>

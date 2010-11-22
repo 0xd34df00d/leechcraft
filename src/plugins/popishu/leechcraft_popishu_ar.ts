@@ -99,63 +99,114 @@
         <source>Enable folding</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="editorpage.ui" line="206"/>
+        <source>No wrap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.ui" line="214"/>
+        <source>Word</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.ui" line="222"/>
+        <location filename="editorpage.ui" line="225"/>
+        <source>Character</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.ui" line="230"/>
+        <source>Replace...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.ui" line="233"/>
+        <source>Ctrl+R</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Popishu::EditorPage</name>
     <message>
-        <location filename="editorpage.cpp" line="88"/>
+        <location filename="editorpage.cpp" line="90"/>
         <source>Document type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="112"/>
-        <source>Editor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="118"/>
+        <location filename="editorpage.cpp" line="126"/>
         <source>Whitespace visibility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="180"/>
-        <location filename="editorpage.cpp" line="252"/>
+        <location filename="editorpage.cpp" line="133"/>
+        <source>Wrapping mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="146"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="149"/>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="217"/>
+        <location filename="editorpage.cpp" line="289"/>
         <source>Untitled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="185"/>
+        <location filename="editorpage.cpp" line="222"/>
         <source>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="258"/>
+        <location filename="editorpage.cpp" line="295"/>
         <source>Select file to open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="267"/>
+        <location filename="editorpage.cpp" line="606"/>
+        <source>File not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="607"/>
+        <source>The requested file doesn&apos;t exist anymore.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="662"/>
         <source>Could not open file %1 for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="386"/>
+        <location filename="editorpage.cpp" line="450"/>
         <source>Script wrapping failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="407"/>
-        <location filename="editorpage.cpp" line="443"/>
+        <location filename="editorpage.cpp" line="114"/>
+        <source>Recent files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="471"/>
+        <location filename="editorpage.cpp" line="507"/>
         <source>Script injection failed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="519"/>
+        <location filename="editorpage.cpp" line="625"/>
         <source>Select file to save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="532"/>
+        <location filename="editorpage.cpp" line="638"/>
         <source>Could not open file %1 for writing.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -163,8 +214,118 @@
 <context>
     <name>LeechCraft::Plugins::Popishu::Plugin</name>
     <message>
-        <location filename="popishu.cpp" line="93"/>
+        <location filename="popishu.cpp" line="102"/>
         <source>Plain text editor with syntax highlighting and stuff.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ReplaceDialog</name>
+    <message>
+        <location filename="replacedialog.ui" line="14"/>
+        <source>Replace</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="replacedialog.ui" line="25"/>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="replacedialog.ui" line="35"/>
+        <source>Replace with:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="replacedialog.ui" line="47"/>
+        <source>Case sensitive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="replacedialog.ui" line="57"/>
+        <source>Scope</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="replacedialog.ui" line="63"/>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="replacedialog.ui" line="73"/>
+        <source>Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>popishusettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Editor settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Tab width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Identation width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Monospace font:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Text wrapping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>End wrap flag location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="13"/>
+        <source>No wrap flag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="14"/>
+        <source>By text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="15"/>
+        <source>By border</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="12"/>
+        <source>Start wrap flag location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="16"/>
+        <source>Indentation of wrapped line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="17"/>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="18"/>
+        <source>Remember this much recently opened files:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

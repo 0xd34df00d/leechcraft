@@ -4,11 +4,6 @@
 <context>
     <name>FeedsSettingsImportPage</name>
     <message>
-        <location filename="feedssettingsimportpage.ui" line="14"/>
-        <source>WizardPage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="feedssettingsimportpage.ui" line="22"/>
         <source>Location:</source>
         <translation type="unfinished"></translation>
@@ -26,12 +21,30 @@
     </message>
 </context>
 <context>
-    <name>FirstPage</name>
+    <name>FirefoxProfileSelectPage</name>
     <message>
-        <location filename="firstpage.ui" line="14"/>
-        <source>WizardPage</source>
+        <location filename="firefoximporter/firefoxprofileselectpage.ui" line="24"/>
+        <source>Select profile to import</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="firefoximporter/firefoxprofileselectpage.ui" line="38"/>
+        <source>Import history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoxprofileselectpage.ui" line="45"/>
+        <source>Import bookmarks </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoxprofileselectpage.ui" line="52"/>
+        <source>Import rss</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FirstPage</name>
     <message>
         <location filename="firstpage.ui" line="17"/>
         <source>Choose application</source>
@@ -52,7 +65,7 @@
     <name>ImportWizard</name>
     <message>
         <location filename="importwizard.ui" line="14"/>
-        <source>Wizard</source>
+        <source>Settings Import Wizard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -96,6 +109,58 @@
     <message>
         <location filename="akregatorimportpage.cpp" line="160"/>
         <source>Could not access or parse Akregator settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::NewLife::FirefoxImportPage</name>
+    <message>
+        <location filename="firefoximporter/firefoximportpage.cpp" line="39"/>
+        <source>Firefox&apos;s data import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoximportpage.cpp" line="40"/>
+        <location filename="firefoximporter/firefoximportpage.cpp" line="84"/>
+        <source>Select Firefox&apos;s INI file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoximportpage.cpp" line="86"/>
+        <source>INI files (*.ini);;All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoximportpage.cpp" line="93"/>
+        <source>The file you&apos;ve selected is not a valid INI file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Plugins::NewLife::FirefoxProfileSelectPage</name>
+    <message>
+        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="85"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="112"/>
+        <source>Please close Firefox before importing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="323"/>
+        <source>OPML file for importing RSS cannot be created: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="344"/>
+        <source>Firefox Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="345"/>
+        <source>Could not open Firefox database: %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -158,12 +223,12 @@
 <context>
     <name>LeechCraft::Plugins::NewLife::Plugin</name>
     <message>
-        <location filename="newlife.cpp" line="53"/>
+        <location filename="newlife.cpp" line="68"/>
         <source>The settings importer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="newlife.cpp" line="87"/>
+        <location filename="newlife.cpp" line="37"/>
         <source>Import settings...</source>
         <translation type="unfinished"></translation>
     </message>

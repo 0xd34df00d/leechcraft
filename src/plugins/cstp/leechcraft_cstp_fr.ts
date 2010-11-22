@@ -108,52 +108,47 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Core</name>
     <message>
-        <location filename="core.cpp" line="60"/>
+        <location filename="core.cpp" line="61"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="61"/>
+        <location filename="core.cpp" line="62"/>
         <source>State</source>
         <translation>État</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="62"/>
+        <location filename="core.cpp" line="63"/>
         <source>Progress</source>
         <translation>Avancement</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="276"/>
+        <location filename="core.cpp" line="277"/>
         <source>Could not truncate file </source>
         <translation>Impossible de découper le fichier </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="405"/>
+        <location filename="core.cpp" line="417"/>
         <source>%1 (ETA: %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="417"/>
+        <location filename="core.cpp" line="429"/>
         <source>%1% (%2 of %3 at %4)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="421"/>
+        <location filename="core.cpp" line="433"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="423"/>
-        <source>%1</source>
-        <translation>%1</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="509"/>
+        <location filename="core.cpp" line="521"/>
         <source>Could not open file %1: %2</source>
         <translation>Impossible d&apos;ouvrir le fichier %1: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="568"/>
+        <location filename="core.cpp" line="580"/>
         <source>Download finished: %1
 %2</source>
         <translation type="unfinished"></translation>
@@ -170,28 +165,147 @@
 <context>
     <name>LeechCraft::Plugins::CSTP::Task</name>
     <message>
-        <location filename="task.cpp" line="202"/>
+        <location filename="task.cpp" line="213"/>
         <source>Stopped</source>
         <translation>Arrêté</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="204"/>
+        <location filename="task.cpp" line="215"/>
         <source>Finished</source>
         <translation>Terminé</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="206"/>
+        <location filename="task.cpp" line="217"/>
         <source>Running</source>
         <translation>En cours</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="227"/>
+        <location filename="task.cpp" line="238"/>
         <source>Task isn&apos;t initialized properly</source>
         <translation>La tâche n&apos;est pas initialisée correctement</translation>
     </message>
     <message>
-        <location filename="task.cpp" line="406"/>
+        <location filename="task.cpp" line="476"/>
         <source>Error writing to file %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>cstpsettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>Local settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Alert about errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Network settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>Use text transfer mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>Identification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>HTTP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>Login:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="12"/>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="13"/>
+        <source>Custom user agent:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="14"/>
+        <source>Predefined user agent:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="15"/>
+        <source>Firefox 3.0.1 on Linux i686</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="16"/>
+        <source>Internet Explorer 6.0 on Windows XP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="17"/>
+        <source>Internet Explorer 7.0 on Windows Vista</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="18"/>
+        <source>Internet Explorer 4.0 on Windows 98</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="19"/>
+        <source>Internet Explorer 2.0 on Windows 95</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="20"/>
+        <source>Konqueror 4.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="21"/>
+        <source>SeaMonkey 1.1.11 on Linux i686</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="22"/>
+        <source>Opera 9.52 on Linux x86_64</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="23"/>
+        <source>Wget 1.9.1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="24"/>
+        <source>w3m 0.5.2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="25"/>
+        <source>Lynx 2.8.7 with OpenSSL</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

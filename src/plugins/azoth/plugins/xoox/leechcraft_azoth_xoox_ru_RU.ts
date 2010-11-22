@@ -223,7 +223,7 @@
 <context>
     <name>LeechCraft::Plugins::Azoth::Plugins::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="119"/>
+        <location filename="glooxaccount.cpp" line="139"/>
         <source>Enter password for %1:</source>
         <translation>Введите пароль для %1:</translation>
     </message>
@@ -247,15 +247,33 @@
 <context>
     <name>LeechCraft::Plugins::Azoth::Plugins::Xoox::RoomCLEntry</name>
     <message>
-        <location filename="roomclentry.cpp" line="76"/>
+        <location filename="roomclentry.cpp" line="79"/>
         <source>Multiuser chatrooms</source>
         <translation>Конференции</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Plugins::Azoth::Plugins::Xoox::RoomHandler</name>
+    <message>
+        <location filename="roomhandler.cpp" line="123"/>
+        <source>%1 set subject to %2</source>
+        <translation>%1 установил тему в %2</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="127"/>
+        <source>Room subject is %1</source>
+        <translation>Тема комнаты: %1</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Plugins::Azoth::Plugins::Xoox::RoomParticipantEntry</name>
     <message>
-        <location filename="roomparticipantentry.cpp" line="85"/>
+        <location filename="roomparticipantentry.cpp" line="46"/>
+        <source>Kick</source>
+        <translation>Выкинуть</translation>
+    </message>
+    <message>
+        <location filename="roomparticipantentry.cpp" line="87"/>
         <source>%1 participants</source>
         <translation>Участники %1</translation>
     </message>
