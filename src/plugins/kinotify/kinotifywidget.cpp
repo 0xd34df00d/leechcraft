@@ -62,8 +62,8 @@ namespace LeechCraft
 				opacityAmination->setDuration (AnimationTime_);
 
 				showStartState->assignProperty (this, "opacity", 0.0);
-				showFinishState->assignProperty (this, "opacity", 1.0);
-				closeStartState->assignProperty (this, "opacity", 1.0);
+				showFinishState->assignProperty (this, "opacity", 0.8);
+				closeStartState->assignProperty (this, "opacity", 0.8);
 				closeFinishState->assignProperty (this, "opacity", 0.0);
 
 				showStartState->addTransition (showFinishState);
