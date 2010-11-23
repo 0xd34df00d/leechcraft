@@ -70,6 +70,8 @@ namespace LeechCraft
 						QTimer *PollTimer_;
 						GlooxAccount *Account_;
 						QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
+						bool IsConnected_;
+						bool ShouldRefillRoster_;
 
 						// Bare JID → resource → session.
 						QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;

@@ -57,6 +57,8 @@ namespace LeechCraft
 							const GlooxAccountState& state,
 							GlooxAccount *account)
 					: Account_ (account)
+					, IsConnected_ (false)
+					, ShouldRefillRoster_ (false)
 					{
 						connect (this,
 								SIGNAL (gotEntity (const LeechCraft::Entity&)),
@@ -86,7 +88,7 @@ namespace LeechCraft
 								SLOT (handlePollTimer ()));
 						pollTimer->start (50);
 
-						Client_->connect (false);
+						IsConnected_ = Client_->connect (false);
 					}
 
 					void ClientConnection::SetState (const GlooxAccountState& state)
@@ -96,13 +98,22 @@ namespace LeechCraft
 						Client_->setPresence (pres, state.Priority_,
 								state.Status_.toUtf8 ().constData ());
 
+						if (!IsConnected_ &&
+								state.State_ != SOffline)
+						{
+							IsConnected_ = Client_->connect (false);
+							if (ShouldRefillRoster_)
+								Client_->rosterManager ()->fill ();
+						}
+
 						if (state.State_ == SOffline)
 						{
-							qDebug () << JID2CLEntry_.values ();
 							QList<QObject*> objs;
 							Q_FOREACH (QObject *obj, JID2CLEntry_.values ())
 								objs << obj;
 							emit rosterItemsRemoved (objs);
+							IsConnected_ = false;
+							ShouldRefillRoster_ = true;
 						}
 					}
 
@@ -158,11 +169,13 @@ namespace LeechCraft
 
 					void ClientConnection::onConnect ()
 					{
-						qDebug () << Q_FUNC_INFO;
+						IsConnected_ = true;
 					}
 
 					void ClientConnection::onDisconnect (gloox::ConnectionError e)
 					{
+						IsConnected_ = false;
+
 						if (e == gloox::ConnNoError)
 							return;
 
@@ -436,7 +449,8 @@ namespace LeechCraft
 						gloox::JID jid = session->target ();
 						gloox::JID bareJid = jid.bareJID ();
 						QString resource = QString::fromUtf8 (jid.resource ().c_str ());
-						if (!Sessions_ [bareJid].contains (resource))
+						if (!Sessions_ [bareJid].contains (resource) ||
+								Sessions_ [bareJid] [resource] != session)
 							Sessions_ [bareJid] [resource] = session;
 
 						session->registerMessageHandler (this);
@@ -463,9 +477,18 @@ namespace LeechCraft
 
 					GlooxCLEntry* ClientConnection::CreateCLEntry (gloox::RosterItem *ri)
 					{
-						GlooxCLEntry *entry = new GlooxCLEntry (ri, Account_);
+						GlooxCLEntry *entry = 0;
 						gloox::JID jid (ri->jid ());
-						JID2CLEntry_ [jid.bareJID ()] = entry;
+						if (!JID2CLEntry_.contains (jid.bareJID ()))
+						{
+							entry = new GlooxCLEntry (ri, Account_);
+							JID2CLEntry_ [jid.bareJID ()] = entry;
+						}
+						else
+						{
+							entry = JID2CLEntry_ [jid.bareJID ()];
+							entry->UpdateRI (ri);
+						}
 						return entry;
 					}
 				}

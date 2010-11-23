@@ -55,6 +55,8 @@ namespace LeechCraft
 					public:
 						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
 
+						void UpdateRI (gloox::RosterItem*);
+
 						// ICLEntry
 						IAccount* GetParentAccount () const;
 						Features GetEntryFeatures () const;

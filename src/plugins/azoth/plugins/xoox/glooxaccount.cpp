@@ -154,12 +154,6 @@ namespace LeechCraft
 						}
 						else
 							ClientConnection_->SetState (state);
-
-						if (accState == SOffline)
-						{
-							ClientConnection_.reset ();
-							return;
-						}
 					}
 
 					void GlooxAccount::Synchronize ()

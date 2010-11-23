@@ -44,6 +44,11 @@ namespace LeechCraft
 					{
 					}
 
+					void GlooxCLEntry::UpdateRI (gloox::RosterItem *ri)
+					{
+						RI_ = ri;
+					}
+
 					IAccount* GlooxCLEntry::GetParentAccount () const
 					{
 						return ParentAccount_;
