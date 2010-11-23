@@ -224,7 +224,8 @@ namespace LeechCraft
 						this,
 						SLOT (handleEntryGotMessage (QObject*)));
 
-				ID2Entry_ [clEntry->GetEntryID ()] = clEntry->GetObject ();
+				QByteArray id = clEntry->GetEntryID ();
+				ID2Entry_ [id] = clEntry->GetObject ();
 
 				QList<QStandardItem*> catItems =
 						GetCategoriesItems (clEntry->Groups (), accItem);
@@ -244,7 +245,10 @@ namespace LeechCraft
 					Entry2Items_ [clEntry] << clItem;
 				}
 
-				HandleStatusChanged (clEntry->GetStatus(), clEntry);
+				HandleStatusChanged (clEntry->GetStatus (), clEntry);
+
+				ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
+				ChatTabsManager_->SetChatEnabled (id, true);
 			}
 
 			QList<QStandardItem*> Core::GetCategoriesItems (QStringList cats, QStandardItem *account)
@@ -530,6 +534,8 @@ namespace LeechCraft
 								<< "is not a valid ICLEntry";
 						continue;
 					}
+
+					ChatTabsManager_->SetChatEnabled (entry->GetEntryID (), false);
 
 					Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 					{

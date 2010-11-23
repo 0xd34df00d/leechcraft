@@ -80,6 +80,26 @@ namespace LeechCraft
 				return Entry2Tab_ [entry->GetEntryID ()]->isVisible ();
 			}
 
+			void ChatTabsManager::UpdateEntryMapping (const QByteArray& id, QObject *obj)
+			{
+				if (!Entry2Tab_.contains (id))
+					return;
+
+				connect (obj,
+						SIGNAL (gotMessage (QObject*)),
+						Entry2Tab_ [id],
+						SLOT (handleEntryMessage (QObject*)),
+						Qt::UniqueConnection);
+			}
+
+			void ChatTabsManager::SetChatEnabled (const QByteArray& id, bool enabled)
+			{
+				if (!Entry2Tab_.contains (id))
+					return;
+
+				Entry2Tab_ [id]->setEnabled (enabled);
+			}
+
 			void ChatTabsManager::handleNeedToClose (ChatTab *tab)
 			{
 				emit removeTab (tab);
