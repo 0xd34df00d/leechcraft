@@ -50,7 +50,6 @@ namespace LeechCraft
 						IAccount *ParentAccount_;
 						GlooxAccount *ParentAccountObject_;
 						gloox::RosterItem *RI_;
-						QList<IMessage*> Messages_;
 						EntryStatus CurrentStatus_;
 					public:
 						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);

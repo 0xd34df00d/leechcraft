@@ -114,7 +114,7 @@ namespace LeechCraft
 							const QString& variant, const QString& text)
 					{
 						IMessage *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
-						Messages_ << msg;
+						AllMessages_ << msg;
 						return msg;
 					}
 				}
