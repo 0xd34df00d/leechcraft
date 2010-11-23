@@ -45,10 +45,10 @@ namespace LeechCraft
 				S_ParentMultiTabs_ = obj;
 			}
 
-			ChatTab::ChatTab (QObject *entryObj,
+			ChatTab::ChatTab (const QByteArray& entryId,
 					const QString& variant, QWidget *parent)
 			: QWidget (parent)
-			, Entry_ (entryObj)
+			, EntryID_ (entryId)
 			, Variant_ (variant)
 			, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 					Qt::CaseInsensitive, QRegExp::RegExp2)
@@ -79,7 +79,7 @@ namespace LeechCraft
 						this,
 						SLOT (handleViewLinkClicked (const QUrl&)));
 
-				connect (entryObj,
+				connect (GetEntry<QObject> (),
 						SIGNAL (gotMessage (QObject*)),
 						this,
 						SLOT (handleEntryMessage (QObject*)));
@@ -219,11 +219,12 @@ namespace LeechCraft
 			template<typename T>
 			T* ChatTab::GetEntry () const
 			{
-				T *entry = qobject_cast<T*> (Entry_);
+				QObject *obj = Core::Instance ().GetEntry (EntryID_);
+				T *entry = qobject_cast<T*> (obj);
 				if (!entry)
 					qWarning () << Q_FUNC_INFO
 							<< "object"
-							<< Entry_
+							<< obj
 							<< "doesn't implement the required interface";
 				return entry;
 			}

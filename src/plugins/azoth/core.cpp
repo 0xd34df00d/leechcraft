@@ -131,6 +131,11 @@ namespace LeechCraft
 				emit gotEntity (e);
 			}
 
+			QObject* Core::GetEntry (const QByteArray& id) const
+			{
+				return ID2Entry_.value (id);
+			}
+
 			void Core::OpenChat (const QModelIndex& contactIndex)
 			{
 				ChatTabsManager_->OpenChat (contactIndex);
@@ -218,6 +223,8 @@ namespace LeechCraft
 						SIGNAL (gotMessage (QObject*)),
 						this,
 						SLOT (handleEntryGotMessage (QObject*)));
+
+				ID2Entry_ [clEntry->GetEntryID ()] = clEntry->GetObject ();
 
 				QList<QStandardItem*> catItems =
 						GetCategoriesItems (clEntry->Groups (), accItem);
@@ -538,6 +545,8 @@ namespace LeechCraft
 						}
 					}
 					Entry2Items_.remove (entry);
+
+					ID2Entry_.remove (entry->GetEntryID ());
 				}
 			}
 

@@ -47,7 +47,7 @@ namespace LeechCraft
 				static QObject *S_ParentMultiTabs_;
 
 				Ui::ChatTab Ui_;
-				QObject *Entry_;
+				QByteArray EntryID_;
 				QString Variant_;
 				QRegExp LinkRegexp_;
 				QColor BgColor_;
@@ -57,7 +57,7 @@ namespace LeechCraft
 			public:
 				static void SetParentMultiTabs (QObject*);
 
-				ChatTab (QObject*, const QString&, QWidget* = 0);
+				ChatTab (const QByteArray&, const QString&, QWidget* = 0);
 
 				QList<QAction*> GetTabBarContextMenuActions () const;
 				QObject* ParentMultiTabs () const;

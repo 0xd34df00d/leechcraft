@@ -54,36 +54,37 @@ namespace LeechCraft
 					return;
 				}
 
-				if (Entry2Tab_.contains (entry))
+				const QByteArray& id = entry->GetEntryID ();
+				if (Entry2Tab_.contains (id))
 				{
-					emit raiseTab (Entry2Tab_ [entry]);
+					emit raiseTab (Entry2Tab_ [id]);
 					return;
 				}
 
 				// TODO don't hardcode the first variant
-				QPointer<ChatTab> tab (new ChatTab (entryObj, entry->Variants ().first ()));
-				Entry2Tab_ [entry] = tab;
+				QPointer<ChatTab> tab (new ChatTab (id, entry->Variants ().first ()));
+				Entry2Tab_ [id] = tab;
 				connect (tab,
 						SIGNAL (needToClose (ChatTab*)),
 						this,
 						SLOT (handleNeedToClose (ChatTab*)));
-				emit addNewTab (entry->GetEntryName(), tab);
+				emit addNewTab (entry->GetEntryName (), tab);
 				emit raiseTab (tab);
 			}
 
 			bool ChatTabsManager::IsActiveChat (Plugins::ICLEntry *entry) const
 			{
-				if (!Entry2Tab_.contains (entry))
+				if (!Entry2Tab_.contains (entry->GetEntryID ()))
 					return false;
 
-				return Entry2Tab_ [entry]->isVisible ();
+				return Entry2Tab_ [entry->GetEntryID ()]->isVisible ();
 			}
 
 			void ChatTabsManager::handleNeedToClose (ChatTab *tab)
 			{
 				emit removeTab (tab);
 
-				Plugins::ICLEntry *entry = Entry2Tab_.key (tab);
+				QByteArray entry = Entry2Tab_.key (tab);
 				Entry2Tab_.remove (entry);
 
 				tab->deleteLater ();

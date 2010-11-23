@@ -66,6 +66,9 @@ namespace LeechCraft
 				typedef QHash<Plugins::ICLEntry*, QList<QStandardItem*> > Entry2Items_t;
 				Entry2Items_t Entry2Items_;
 
+				typedef QHash<QByteArray, QObject*> ID2Entry_t;
+				ID2Entry_t ID2Entry_;
+
 				Util::ResourceLoader *CLIconLoader_;
 
 				Core ();
@@ -106,6 +109,12 @@ namespace LeechCraft
 				ChatTabsManager* GetChatTabsManager () const;
 				QList<Plugins::IAccount*> GetAccounts () const;
 				void SendEntity (const Entity&);
+
+				/** Returns contact list entry with the given id. The id
+				 * is the same as returned by ICLEntry::GetEntryID(). If
+				 * no such entry could be found, NULL is returned.
+				 */
+				QObject* GetEntry (const QByteArray& id) const;
 
 				/** Opens chat with the remote contact identified by
 				 * index (which is from GetCLModel() model). If the
