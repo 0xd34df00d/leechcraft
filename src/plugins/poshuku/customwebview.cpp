@@ -320,12 +320,19 @@ namespace LeechCraft
 				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterImage);
 
-				if (!page ()->selectedText ().isEmpty ())
+				bool hasSelected = !page ()->selectedText ().isEmpty ();
+				if (hasSelected)
 				{
 					if (!menu->isEmpty ())
 						menu->addSeparator ();
-
 					menu->addAction (pageAction (QWebPage::Copy));
+				}
+
+				if (r.isContentEditable ())
+					menu->addAction (pageAction (QWebPage::Paste));
+
+				if (hasSelected)
+				{
 					Browser_->Find_->setData (page ()->selectedText ());
 					menu->addAction (Browser_->Find_);
 					menu->addAction (tr ("Search..."),
