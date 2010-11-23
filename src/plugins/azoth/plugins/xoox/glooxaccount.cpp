@@ -118,11 +118,9 @@ namespace LeechCraft
 
 					void GlooxAccount::ChangeState (State accState, const QString& status)
 					{
-						if (accState == SOffline)
-						{
-							ClientConnection_.reset ();
+						if (accState == SOffline &&
+								!ClientConnection_)
 							return;
-						}
 
 						struct GlooxAccountState state =
 						{
@@ -148,6 +146,12 @@ namespace LeechCraft
 						}
 						else
 							ClientConnection_->SetState (state);
+
+						if (accState == SOffline)
+						{
+							ClientConnection_.reset ();
+							return;
+						}
 					}
 
 					void GlooxAccount::Synchronize ()
