@@ -25,6 +25,7 @@
 #include "core.h"
 #include "externalresourcemanager.h"
 #include "storage.h"
+#include <boost/concept_check.hpp>
 
 #if QT_VERSION < 0x040700
 uint qHash (const QUrl& url)
@@ -332,9 +333,17 @@ namespace LeechCraft
 
 				QString dirname = Util::GetTemporaryName ("lackman_stagingarea");
 				QStringList args;
-				args << "xvzf";
+#ifdef Q_WS_WIN
+				args << "x";
+#else
+				args << "xzf";
+#endif
 				args << path;
+#ifdef Q_WS_WIN
+				args << "-o";
+#else
 				args << "-C";
+#endif
 				args << dirname;
 				unarch->setProperty ("PackageID", packageId);
 				unarch->setProperty ("StagingDirectory", dirname);
@@ -359,7 +368,12 @@ namespace LeechCraft
 					return;
 				}
 
-				unarch->start ("tar", args);
+#ifdef Q_WS_WIN
+				QString command = "7za";
+#else
+				QString command = "tar";
+#endif
+				unarch->start (command, args);
 			}
 
 			QUrl PackageProcessor::GetURLFor (int packageId) const
