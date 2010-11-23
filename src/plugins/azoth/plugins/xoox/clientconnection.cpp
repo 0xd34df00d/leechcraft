@@ -95,6 +95,15 @@ namespace LeechCraft
 								static_cast<gloox::Presence::PresenceType> (state.State_);
 						Client_->setPresence (pres, state.Priority_,
 								state.Status_.toUtf8 ().constData ());
+
+						if (state.State_ == SOffline)
+						{
+							qDebug () << JID2CLEntry_.values ();
+							QList<QObject*> objs;
+							Q_FOREACH (QObject *obj, JID2CLEntry_.values ())
+								objs << obj;
+							emit rosterItemsRemoved (objs);
+						}
 					}
 
 					void ClientConnection::Synchronize ()

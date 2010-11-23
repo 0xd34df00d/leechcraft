@@ -143,6 +143,14 @@ namespace LeechCraft
 									SIGNAL (gotRosterItems (const QList<QObject*>&)),
 									this,
 									SLOT (handleGotRosterItems (const QList<QObject*>&)));
+							connect (ClientConnection_.get (),
+									SIGNAL (rosterItemRemoved (QObject*)),
+									this,
+									SLOT (handleEntryRemoved (QObject*)));
+							connect (ClientConnection_.get (),
+									SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
+									this,
+									SIGNAL (removedCLItems (const QList<QObject*>&)));
 						}
 						else
 							ClientConnection_->SetState (state);
@@ -236,7 +244,7 @@ namespace LeechCraft
 						return ClientConnection_->CreateMessage (type, variant, body, ri);
 					}
 
-					void GlooxAccount::HandleEntryRemoved (QObject *entry)
+					void GlooxAccount::handleEntryRemoved (QObject *entry)
 					{
 						emit removedCLItems (QObjectList () << entry);
 					}

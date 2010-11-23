@@ -71,7 +71,7 @@ namespace LeechCraft
 
 						if (presence.presence () == gloox::Presence::Unavailable)
 						{
-							Account_->HandleEntryRemoved (entry);
+							Account_->handleEntryRemoved (entry);
 							Nick2Entry_.remove (nick);
 							JID2Session_.remove (JIDForNick (nick));
 							entry->deleteLater ();

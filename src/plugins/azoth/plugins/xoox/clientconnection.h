@@ -128,6 +128,7 @@ namespace LeechCraft
 					signals:
 						void gotRosterItems (const QList<QObject*>&);
 						void rosterItemRemoved (QObject*);
+						void rosterItemsRemoved (const QList<QObject*>&);
 						void rosterItemUpdated (QObject*);
 
 						void gotEntity (const LeechCraft::Entity&);
