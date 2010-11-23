@@ -389,9 +389,9 @@ LangString DESC_VGRABBERPLUGIN ${LANG_RUSSIAN} "ѕлагин дл€ скачивани€ и проигрыв
 LangString DESC_AUSCRIEPLUGIN ${LANG_RUSSIAN} "ѕлагин дл€ создани€ и загрузки снимков окна LeechCraft в один клик."
 LangString DESC_KINOTIFYPLUGIN ${LANG_RUSSIAN} "Kinotify предоставл€ет красивые уведомлени€ вместо обычных уведомлений по умолчанию."
 LangString DESC_TABPPPLUGIN ${LANG_RUSSIAN} "Tab++ улучшает работу с вкладками."
-LangString DESC_LACKMANPLUGIN ${LANG_ENGLISH} "LeechCraft Package Manager позвол€ет устанавливать дополнительные плагины, расширени€, иконки и прочие данные."
-LangString DESC_SECMANPLUGIN ${LANG_ENGLISH} "Security Manager сохран€ет пароли и прочую информацию."
-LangString DESC_SHELLOPENPLUGIN ${LANG_ENGLISH} "ѕозвол€ет открывать необработанные сущности другими приложени€ми."
+LangString DESC_LACKMANPLUGIN ${LANG_RUSSIAN} "LeechCraft Package Manager позвол€ет устанавливать дополнительные плагины, расширени€, иконки и прочие данные."
+LangString DESC_SECMANPLUGIN ${LANG_RUSSIAN} "Security Manager сохран€ет пароли и прочую информацию."
+LangString DESC_SHELLOPENPLUGIN ${LANG_RUSSIAN} "ѕозвол€ет открывать необработанные сущности другими приложени€ми."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
