@@ -21,9 +21,11 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include "interfaces/iclentry.h"
+#include "interfaces/iaccount.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "accountslistdialog.h"
+#include "setstatusdialog.h"
 
 namespace LeechCraft
 {
@@ -53,6 +55,12 @@ namespace LeechCraft
 				MenuGeneral_->addAction (accountsList);
 
 				UpperBar_->addAction (MenuGeneral_->menuAction ());
+
+				ActionChangeStatus_ = new QAction (tr ("Change status..."), this);
+				connect (ActionChangeStatus_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleChangeStatusRequested ()));
 			}
 
 			void MainWidget::AddMUCJoiners (const QList<QAction*>& actions)
@@ -82,6 +90,14 @@ namespace LeechCraft
 					QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
 					Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (obj);
 					actions << entry->GetActions ();
+					break;
+				}
+				case Core::CLETAccount:
+				{
+					QVariant objVar = index.data (Core::CLRAccountObject);
+					ActionChangeStatus_->setData (objVar);
+					actions << ActionChangeStatus_;
+					break;
 				}
 				default:
 					break;
@@ -92,6 +108,33 @@ namespace LeechCraft
 				QMenu *menu = new QMenu (tr ("Entry context menu"));
 				menu->addActions (actions);
 				menu->exec (Ui_.CLTree_->mapToGlobal (pos));
+			}
+
+			void MainWidget::handleChangeStatusRequested ()
+			{
+				QObject *obj = ActionChangeStatus_->data ().value<QObject*> ();
+				if (!obj)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no object is set";
+					return;
+				}
+
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (obj);
+				if (!acc)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cast"
+							<< obj
+							<< "to IAccount";
+					return;
+				}
+
+				SetStatusDialog *ssd = new SetStatusDialog (this);
+				if (ssd->exec () != QDialog::Accepted)
+					return;
+
+				acc->ChangeState (ssd->GetState (), ssd->GetStatusText ());
 			}
 
 			void MainWidget::showAccountsList ()

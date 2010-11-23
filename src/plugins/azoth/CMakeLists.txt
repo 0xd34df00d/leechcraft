@@ -32,6 +32,7 @@ SET (SRCS
 	chattab.cpp
 	sortfilterproxymodel.cpp
 	accountslistdialog.cpp
+	setstatusdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -41,6 +42,7 @@ SET (HEADERS
 	chattab.h
 	sortfilterproxymodel.h
 	accountslistdialog.h
+	setstatusdialog.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
@@ -50,6 +52,7 @@ SET (FORMS
 	mainwidget.ui
 	chattab.ui
 	accountslistdialog.ui
+	setstatusdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS

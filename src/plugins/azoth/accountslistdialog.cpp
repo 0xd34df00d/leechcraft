@@ -93,7 +93,7 @@ namespace LeechCraft
 				Plugins::IAccount *acc = index
 						.data (RAccObj).value<Plugins::IAccount*> ();
 				QObject *protoObj = acc->GetParentProtocol ();
-				Plugins::IProtocol *proto = qobject_cast<Plugins::IProtocol*> (protoObj);;
+				Plugins::IProtocol *proto = qobject_cast<Plugins::IProtocol*> (protoObj);
 				if (!proto)
 				{
 					qWarning () << Q_FUNC_INFO

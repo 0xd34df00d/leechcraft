@@ -41,6 +41,8 @@ namespace LeechCraft
 				QToolBar *UpperBar_;
 				QMenu *MenuGeneral_;
 				SortFilterProxyModel *ProxyModel_;
+
+				QAction *ActionChangeStatus_;
 			public:
 				MainWidget (QWidget* = 0);
 
@@ -48,6 +50,7 @@ namespace LeechCraft
 			private slots:
 				void on_CLTree__activated (const QModelIndex&);
 				void on_CLTree__customContextMenuRequested (const QPoint&);
+				void handleChangeStatusRequested ();
 				void showAccountsList ();
 			};
 		}
