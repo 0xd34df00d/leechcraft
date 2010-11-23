@@ -30,7 +30,7 @@
     <message>
         <location filename="youtubeplayer.cpp" line="221"/>
         <source>This format is unavailable, please select another one.</source>
-        <translation>Этот формат недоступен. Пожалуйста, выберитте другой.</translation>
+        <translation>Этот формат недоступен. Пожалуйста, выберите другой.</translation>
     </message>
 </context>
 <context>
