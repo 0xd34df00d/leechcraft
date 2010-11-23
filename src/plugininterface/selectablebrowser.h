@@ -42,6 +42,8 @@ namespace LeechCraft
 			void SetHtml (const QString&, const QUrl& = QString ());
 
 			void SetNavBarVisible (bool);
+		private:
+			void PrepareInternal ();
 		};
 	};
 };
