@@ -526,15 +526,18 @@ namespace LeechCraft
 
 					Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 					{
-						QStandardItem *parent = item->parent ();
-						parent->removeRow (item->row ());
+						QStandardItem *category = item->parent ();
+						QString text = category->text ();
+						category->removeRow (item->row ());
 
-						if (!parent->rowCount ())
+						if (!category->rowCount ())
 						{
-							QStandardItem *parentParent = parent->parent ();
-							parentParent->removeRow (parent->row ());
+							QStandardItem *account = category->parent ();
+							account->removeRow (category->row ());
+							Account2Category2Item_ [account].remove (text);
 						}
 					}
+					Entry2Items_.remove (entry);
 				}
 			}
 
