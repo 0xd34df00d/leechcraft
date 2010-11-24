@@ -573,6 +573,13 @@ namespace LeechCraft
 				ToolBar_->setVisible (visible);
 			}
 
+			void BrowserWidget::SetEverythingElseVisible (bool visible)
+			{
+				if (visible)
+					Ui_.Sidebar_->hide ();
+				Ui_.Splitter_->handle (1)->setVisible (visible);
+			}
+
 			QWidget* BrowserWidget::Widget ()
 			{
 				return this;

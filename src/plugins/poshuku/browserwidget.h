@@ -135,6 +135,7 @@ namespace LeechCraft
 				void Load (const QString&);
 				void SetHtml (const QString&, const QUrl& = QUrl ());
 				void SetNavBarVisible (bool);
+				void SetEverythingElseVisible (bool);
 				QWidget* Widget ();
 
 				void SetShortcut (const QString&, const QKeySequences_t&);
