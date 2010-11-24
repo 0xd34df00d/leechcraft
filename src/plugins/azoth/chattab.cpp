@@ -94,6 +94,8 @@ namespace LeechCraft
 				Q_FOREACH (Plugins::IMessage *msg, e->GetAllMessages ())
 					AppendMessage (msg);
 
+				Ui_.AccountName_->setText (e->GetParentAccount ()->GetAccountName ());
+
 				CheckMUC ();
 
 				QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
