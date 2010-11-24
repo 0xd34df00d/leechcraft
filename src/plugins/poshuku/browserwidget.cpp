@@ -575,7 +575,7 @@ namespace LeechCraft
 
 			void BrowserWidget::SetEverythingElseVisible (bool visible)
 			{
-				if (visible)
+				if (!visible)
 					Ui_.Sidebar_->hide ();
 				Ui_.Splitter_->handle (1)->setVisible (visible);
 			}
