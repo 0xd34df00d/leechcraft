@@ -72,6 +72,7 @@ namespace LeechCraft
 				void scrollToEnd ();
 				void handleHistoryUp ();
 				void handleHistoryDown ();
+				void setSubject (QString);
 			private:
 				template<typename T>
 				T* GetEntry () const;

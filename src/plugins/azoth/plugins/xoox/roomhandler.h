@@ -49,6 +49,7 @@ namespace LeechCraft
 						QHash<QString, RoomParticipantEntry*> Nick2Entry_;
 						QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
 						gloox::MUCRoom *Room_;
+						QString Subject_;
 					public:
 						RoomHandler (GlooxAccount* = 0);
 
@@ -62,6 +63,7 @@ namespace LeechCraft
 						GlooxMessage* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 						QList<ICLEntry*> GetParticipants () const;
+						QString GetSubject () const;
 						void Kick (const QString& nick, const QString& reason = QString ());
 
 						// MUCRoomHandler

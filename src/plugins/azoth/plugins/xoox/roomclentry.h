@@ -74,18 +74,21 @@ namespace LeechCraft
 
 						// IMUCEntry
 						MUCFeatures GetMUCFeatures () const;
+						QString GetMUCSubject () const;
 						QList<ICLEntry*> GetParticipants ();
 
 						gloox::MUCRoom* GetRoom ();
 
 						void HandleMessage (RoomPublicMessage*);
 						void HandleNewParticipants (const QList<ICLEntry*>&);
+						void HandleSubjectChanged (const QString&);
 					signals:
 						void gotMessage (QObject*);
 						void statusChanged (const Plugins::EntryStatus&);
 						void availableVariantsChanged (const QStringList&);
 
 						void gotNewParticipants (const QList<Plugins::ICLEntry*>&);
+						void mucSubjectChanged (const QString&);
 					};
 				}
 			}

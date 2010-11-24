@@ -119,6 +119,11 @@ namespace LeechCraft
 						return MUCFCanBeConfigured;
 					}
 
+					QString RoomCLEntry::GetMUCSubject () const
+					{
+						return RH_->GetSubject ();
+					}
+
 					QList<ICLEntry*> RoomCLEntry::GetParticipants ()
 					{
 						return RH_->GetParticipants ();
@@ -138,6 +143,11 @@ namespace LeechCraft
 					void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
 					{
 						emit gotNewParticipants (parts);
+					}
+
+					void RoomCLEntry::HandleSubjectChanged (const QString& subj)
+					{
+						emit mucSubjectChanged (subj);
 					}
 				}
 			}

@@ -52,7 +52,11 @@ namespace LeechCraft
 						/** This room has a configuration dialog and can
 						 * be configured.
 						 */
-						MUCFCanBeConfigured
+						MUCFCanBeConfigured,
+						/** Room can have a (possibly empty) subject
+						 * which may be retrieved by GetMUCSubject().
+						 */
+						MUCFCanHaveSubject
 					};
 
 					Q_DECLARE_FLAGS (MUCFeatures, MUCFeature);
@@ -63,6 +67,15 @@ namespace LeechCraft
 					 * MUC.
 					 */
 					virtual MUCFeatures GetMUCFeatures () const = 0;
+
+					/** @brief The subject of this MUC.
+					 *
+					 * Returns the subject/topic of this MUC room,
+					 * possibly empty. If the protocol or smth doesn't
+					 * support subjects for MUCs, this function should
+					 * return an empty string.
+					 */
+					virtual QString GetMUCSubject () const = 0;
 
 					/** @brief The list of participants of this MUC.
 					 *
@@ -76,7 +89,23 @@ namespace LeechCraft
 					 */
 					virtual QList<ICLEntry*> GetParticipants () = 0;
 
+					/** @brief Notifies about new participants in the room.
+					 *
+					 * This signal should emitted when new participants
+					 * join this room.
+					 *
+					 * @note This function is expected to be a signal.
+					 */
 					virtual void gotNewParticipants (const QList<ICLEntry*>&) = 0;
+
+					/** @brief Notifies about subject change.
+					 *
+					 * This signal should be emitted when room subject
+					 * is changed to newSubj.
+					 *
+					 * @note This function is expected to be a signal.
+					 */
+					virtual void mucSubjectChanged (const QString& newSubj) = 0;
 				};
 
 				Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);

@@ -117,20 +117,22 @@ namespace LeechCraft
 							const std::string& nickStr, const std::string& subject)
 					{
 						QString nick = QString::fromUtf8 (nickStr.c_str ());
-						QString subj = QString::fromUtf8 (subject.c_str ());
+						Subject_ = QString::fromUtf8 (subject.c_str ());
 						QString string;
 						if (!nick.isEmpty ())
 							string = tr ("%1 set subject to %2")
 									.arg (nick)
-									.arg (subj);
+									.arg (Subject_);
 						else
 							string = tr ("Room subject is %1")
-									.arg (subj);
+									.arg (Subject_);
 
 						RoomPublicMessage *message =
 								new RoomPublicMessage (string, IMessage::DIn,
 										CLEntry_, IMessage::MTEventMessage);
 						CLEntry_->HandleMessage (message);
+
+						CLEntry_->HandleSubjectChanged (Subject_);
 					}
 
 					void RoomHandler::handleMUCInviteDecline (gloox::MUCRoom* room, const gloox::JID& invitee, const std::string&reason)
@@ -188,6 +190,11 @@ namespace LeechCraft
 						Q_FOREACH (RoomParticipantEntry *rpe, Nick2Entry_.values ())
 							result << rpe;
 						return result;
+					}
+
+					QString RoomHandler::GetSubject () const
+					{
+						return Subject_;
 					}
 
 					void RoomHandler::Kick (const QString& nick, const QString& reason)

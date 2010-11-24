@@ -229,6 +229,14 @@ namespace LeechCraft
 								.at (CurrentHistoryPosition_));
 			}
 
+			void ChatTab::setSubject (QString subj)
+			{
+				subj.replace ('\n', " .|. ");
+				QString elided = fontMetrics ().elidedText (subj,
+						Qt::ElideRight, Ui_.EntryInfo_->width () - 10);
+				Ui_.EntryInfo_->setText (elided);
+			}
+
 			template<typename T>
 			T* ChatTab::GetEntry () const
 			{
@@ -264,15 +272,18 @@ namespace LeechCraft
 				if (isGoodMUC)
 					HandleMUC ();
 				else
-				{
-					QString entryInfo;
-					Ui_.EntryInfo_->setText (entryInfo);
-				}
+					Ui_.EntryInfo_->setText (e->GetEntryName ());
 			}
 
 			void ChatTab::HandleMUC ()
 			{
-				// TODO
+				Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
+				setSubject (me->GetMUCSubject ());
+
+				connect (GetEntry<QObject> (),
+						SIGNAL (mucSubjectChanged (const QString&)),
+						this,
+						SLOT (setSubject (const QString&)));
 			}
 
 			void ChatTab::AppendMessage (Plugins::IMessage *msg)
