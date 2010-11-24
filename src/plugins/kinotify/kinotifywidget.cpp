@@ -37,8 +37,9 @@ namespace LeechCraft
 	{
 		namespace Kinotify
 		{
-			KinotifyWidget::KinotifyWidget (int timeout, const QWidget *widget, int animationTimout)
-			: Timeout_ (timeout)
+			KinotifyWidget::KinotifyWidget (int timeout, QWidget *widget, int animationTimout)
+			: QWebView (widget)
+			, Timeout_ (timeout)
 			, AnimationTime_ (animationTimout)
 			{
 				CurrentDesktop_ = widget ?

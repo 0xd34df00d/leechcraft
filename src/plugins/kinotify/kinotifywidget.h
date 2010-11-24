@@ -53,7 +53,7 @@ namespace LeechCraft
 					void SetWidgetPlace ();
 					void ShowNotification ();
 			public:
-					KinotifyWidget (int timeout = 0, const QWidget *widget = 0, int animationTimeout = 300);
+					KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
 					void SetContent (const QString&, const QString&, const QString&, const QSize& size = QSize (350, 70));
 					void PrepareNotification ();
 				protected:
