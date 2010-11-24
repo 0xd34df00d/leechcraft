@@ -42,10 +42,6 @@ namespace LeechCraft
 			, Timeout_ (timeout)
 			, AnimationTime_ (animationTimout)
 			{
-				CurrentDesktop_ = widget ?
-						QApplication::desktop ()->screenNumber (widget) :
-						-1;
-
 				setWindowOpacity (0.0);
 
 				CloseTimer_ = new QTimer (this);
@@ -190,10 +186,14 @@ namespace LeechCraft
 
 			void KinotifyWidget::SetWidgetPlace ()
 			{
-				QSize desktopSize = QApplication::desktop ()->
-						screenGeometry (CurrentDesktop_).size ();
+				const QRect& geometry = QApplication::desktop ()->
+						availableGeometry (parentWidget ());
+				const QSize& desktopSize = geometry.size ();
+
 				QPoint point (desktopSize.width () - DefaultSize_.width () - 5,
-						desktopSize.height () - DefaultSize_.height () - 5);
+						desktopSize.height () - DefaultSize_.height () - 20);
+				point += geometry.topLeft ();
+
 				QRect place (point, DefaultSize_);
 				setGeometry (place);
 			}

@@ -100,13 +100,14 @@ namespace LeechCraft
 				int timeout = Proxy_->GetSettingsManager ()->
 						property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
- 				KinotifyWidget *notificationWidget = new KinotifyWidget (timeout, Proxy_->GetMainWindow());
-				
-				connect (notificationWidget, 
-						SIGNAL (checkNotificationQueue ()), 
-						this, 
+ 				KinotifyWidget *notificationWidget =
+						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
+
+				connect (notificationWidget,
+						SIGNAL (checkNotificationQueue ()),
+						this,
 						SLOT (pushNotification ()));
-				
+
 				QString mi = "information";
 				switch (prio)
 				{
@@ -133,7 +134,7 @@ namespace LeechCraft
 
 				if (!ActiveNotifications_.size ())
 					notificationWidget->PrepareNotification ();
-				
+
 				ActiveNotifications_ << notificationWidget;
 			}
 
@@ -141,7 +142,7 @@ namespace LeechCraft
 			{
 				if (!ActiveNotifications_.size ())
 					return;
-				
+
 				ActiveNotifications_.removeFirst ();
 				if (ActiveNotifications_.size ())
 					ActiveNotifications_.first ()->PrepareNotification ();

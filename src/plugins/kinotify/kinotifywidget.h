@@ -34,14 +34,13 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 					Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity);
-				
+
 					QString Title_;
 					QString Body_;
 					QString ImagePath_;
 					QString Theme_;
 					QSize DefaultSize_;
 					int Timeout_;
-					int CurrentDesktop_;
 					int AnimationTime_;
 					QTimer *CloseTimer_;
 					QTimer *CheckTimer_;
