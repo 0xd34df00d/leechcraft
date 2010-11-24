@@ -50,6 +50,7 @@ namespace LeechCraft
 
 						IAccount* GetParentAccount () const ;
 						Features GetEntryFeatures () const;
+						EntryType GetEntryType () const;
 						QString GetEntryName () const;
 						void SetEntryName (const QString&);
 						QByteArray GetEntryID () const;

@@ -58,7 +58,12 @@ namespace LeechCraft
 
 					ICLEntry::Features RoomParticipantEntry::GetEntryFeatures () const
 					{
-						return FIsPrivateChat | FSessionEntry;
+						return FSessionEntry;
+					}
+
+					ICLEntry::EntryType RoomParticipantEntry::GetEntryType () const
+					{
+						return ETPrivateChat;
 					}
 
 					QString RoomParticipantEntry::GetEntryName () const

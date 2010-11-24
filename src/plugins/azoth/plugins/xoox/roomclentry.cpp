@@ -52,8 +52,12 @@ namespace LeechCraft
 
 					ICLEntry::Features RoomCLEntry::GetEntryFeatures () const
 					{
-						return FSessionEntry |
-							FIsMUC;
+						return FSessionEntry;
+					}
+
+					ICLEntry::EntryType RoomCLEntry::GetEntryType () const
+					{
+						return ETMUC;
 					}
 
 					QString RoomCLEntry::GetEntryName () const

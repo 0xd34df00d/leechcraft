@@ -514,7 +514,7 @@ namespace LeechCraft
 
 					AddCLEntry (entry, accountItem);
 
-					if (entry->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC)
+					if (entry->GetEntryType () & Plugins::ICLEntry::ETMUC)
 					{
 						QStandardItem *item = Entry2Items_ [entry].first ();
 						OpenChat (CLModel_->indexFromItem (item));

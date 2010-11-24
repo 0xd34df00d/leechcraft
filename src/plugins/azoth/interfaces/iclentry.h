@@ -88,16 +88,22 @@ namespace LeechCraft
 					 */
 					enum Feature
 					{
-						FPermanentEntry			= 0x0001, //!< FPermanentEntry If this entry is permanent and would appear in the next session too.
-						FSessionEntry			= 0x0002, //!< FSessionEntry If this entry is not permament and is for this session only.
-						FIsChat					= 0x0040, //!< FIsChat This entry represents a standard chat.
-						FIsMUC					= 0x0400, //!< FIsMUC This entry represents a multi-user chatroom.
-						FIsPrivateChat			= 0x4000, //!< FIsPrivateChat This entry represents a private conversation in a multi-user chatroom.
-						FSupportsRenames		= 0x0010, //!< FSupportsRenames This entry supports renaming, so calls to SetEntryName() are not senseless.
-						FHasCustomChatWidget	= 0x0020  //!< FHasCustomChatWidget This entry has a custom chat widget.
+						FPermanentEntry			= 0x0000,	//!< FPermanentEntry If this entry is permanent and would appear in the next session too.
+						FSessionEntry			= 0x0001,	//!< FSessionEntry If this entry is not permament and is for this session only.
+						FMaskLongetivity		= 0x0003,	//!< 0000011
+						FSupportsRenames		= 0x0020,	//!< FSupportsRenames This entry supports renaming, so calls to SetEntryName() are not senseless.
+						FHasCustomChatWidget	= 0x0040,	//!< FHasCustomChatWidget This entry has a custom chat widget.
+						FCanHaveMultiVariants	= 0x0080	//!< FCanHaveMultiVariants This entry may have multiple delivery variants.
 					};
 
 					Q_DECLARE_FLAGS (Features, Feature);
+
+					enum EntryType
+					{
+						ETChat,			//!< CTChat This entry represents a standard chat.
+						ETMUC,			//!< CTMUC This entry represents a multi-user chatroom.
+						ETPrivateChat	//!< CTPrivateChat This entry represents a private conversation in a multi-user chatroom.
+					};
 
 					/** Returns the entry as a QObject.
 					 *
@@ -119,6 +125,12 @@ namespace LeechCraft
 					 * @return The features supported by this entry.
 					 */
 					virtual Features GetEntryFeatures () const = 0;
+
+					/** Returns the type of this entry.
+					 *
+					 * @return The type of this entry.
+					 */
+					virtual EntryType GetEntryType () const = 0;
 
 					/** Returns the human-readable name of this entry.
 					 *

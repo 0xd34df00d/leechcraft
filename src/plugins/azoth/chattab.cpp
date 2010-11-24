@@ -155,7 +155,7 @@ namespace LeechCraft
 						Variant_ :
 						currentVariants.first ();
 				Plugins::IMessage::MessageType type =
-						e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC ?
+						e->GetEntryType () == Plugins::ICLEntry::ETMUC ?
 								Plugins::IMessage::MTMUCMessage :
 								Plugins::IMessage::MTChatMessage;
 				Plugins::IMessage *msg = e->CreateMessage (type, variant, text);
@@ -246,11 +246,12 @@ namespace LeechCraft
 			{
 				Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
 
+				bool claimsMUC = e->GetEntryType () == Plugins::ICLEntry::ETMUC;
 				bool isGoodMUC = true;
-				if (!(e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC))
+				if (!(claimsMUC))
 					isGoodMUC = false;
 
-				if (e->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC &&
+				if (claimsMUC &&
 						!GetEntry<Plugins::IMUCEntry> ())
 				{
 					qWarning () << Q_FUNC_INFO
@@ -262,6 +263,11 @@ namespace LeechCraft
 
 				if (isGoodMUC)
 					HandleMUC ();
+				else
+				{
+					QString entryInfo;
+					Ui_.EntryInfo_->setText (entryInfo);
+				}
 			}
 
 			void ChatTab::HandleMUC ()
@@ -272,7 +278,7 @@ namespace LeechCraft
 			void ChatTab::AppendMessage (Plugins::IMessage *msg)
 			{
 				if (msg->GetDirection () == Plugins::IMessage::DOut &&
-						msg->OtherPart ()->GetEntryFeatures () & Plugins::ICLEntry::FIsMUC)
+						msg->OtherPart ()->GetEntryType () == Plugins::ICLEntry::ETMUC)
 					return;
 
 				QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
