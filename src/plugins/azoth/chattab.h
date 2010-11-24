@@ -67,12 +67,12 @@ namespace LeechCraft
 			private slots:
 				void on_MsgEdit__returnPressed ();
 				void on_MsgEdit__textChanged (const QString&);
+				void on_SubjectButton__released ();
 				void handleEntryMessage (QObject*);
 				void handleViewLinkClicked (const QUrl&);
 				void scrollToEnd ();
 				void handleHistoryUp ();
 				void handleHistoryDown ();
-				void setSubject (QString);
 			private:
 				template<typename T>
 				T* GetEntry () const;

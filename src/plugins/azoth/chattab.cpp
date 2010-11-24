@@ -31,6 +31,7 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
 #include "core.h"
+#include "mucsubjectdialog.h"
 
 namespace LeechCraft
 {
@@ -112,6 +113,8 @@ namespace LeechCraft
 						this,
 						SLOT (handleHistoryDown ()));
 
+				Ui_.EntryInfo_->setText (e->GetEntryName ());
+
 				Ui_.MsgEdit_->setFocus ();
 			}
 
@@ -166,6 +169,17 @@ namespace LeechCraft
 			void ChatTab::on_MsgEdit__textChanged (const QString& text)
 			{
 				Ui_.CharCounter_->setText (QString::number (text.size ()));
+			}
+
+			void ChatTab::on_SubjectButton__released ()
+			{
+				Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
+				if (!me)
+					return;
+
+				const QString& subject = me->GetMUCSubject ();
+				MUCSubjectDialog dia (subject, this);
+				dia.exec ();
 			}
 
 			void ChatTab::handleEntryMessage (QObject *msgObj)
@@ -229,14 +243,6 @@ namespace LeechCraft
 								.at (CurrentHistoryPosition_));
 			}
 
-			void ChatTab::setSubject (QString subj)
-			{
-				subj.replace ('\n', " .|. ");
-				QString elided = fontMetrics ().elidedText (subj,
-						Qt::ElideRight, Ui_.EntryInfo_->width () - 10);
-				Ui_.EntryInfo_->setText (elided);
-			}
-
 			template<typename T>
 			T* ChatTab::GetEntry () const
 			{
@@ -272,18 +278,11 @@ namespace LeechCraft
 				if (isGoodMUC)
 					HandleMUC ();
 				else
-					Ui_.EntryInfo_->setText (e->GetEntryName ());
+					Ui_.SubjectButton_->hide ();
 			}
 
 			void ChatTab::HandleMUC ()
 			{
-				Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
-				setSubject (me->GetMUCSubject ());
-
-				connect (GetEntry<QObject> (),
-						SIGNAL (mucSubjectChanged (const QString&)),
-						this,
-						SLOT (setSubject (const QString&)));
 			}
 
 			void ChatTab::AppendMessage (Plugins::IMessage *msg)

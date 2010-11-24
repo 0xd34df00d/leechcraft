@@ -33,6 +33,7 @@ SET (SRCS
 	sortfilterproxymodel.cpp
 	accountslistdialog.cpp
 	setstatusdialog.cpp
+	mucsubjectdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -43,6 +44,7 @@ SET (HEADERS
 	sortfilterproxymodel.h
 	accountslistdialog.h
 	setstatusdialog.h
+	mucsubjectdialog.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
@@ -53,6 +55,7 @@ SET (FORMS
 	chattab.ui
 	accountslistdialog.ui
 	setstatusdialog.ui
+	mucsubjectdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS
