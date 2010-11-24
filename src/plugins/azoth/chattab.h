@@ -66,6 +66,7 @@ namespace LeechCraft
 				void Remove ();
 			private slots:
 				void on_MsgEdit__returnPressed ();
+				void on_MsgEdit__textChanged (const QString&);
 				void handleEntryMessage (QObject*);
 				void handleViewLinkClicked (const QUrl&);
 				void scrollToEnd ();

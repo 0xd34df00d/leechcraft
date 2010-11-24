@@ -56,7 +56,13 @@ namespace LeechCraft
 			, CurrentHistoryPosition_ (-1)
 			{
 				Ui_.setupUi (this);
+
+				QSize ccSize = Ui_.CharCounter_->size ();
+				ccSize.setWidth (QApplication::fontMetrics ().width (" 9999"));
+				Ui_.CharCounter_->resize (ccSize);
+
 				Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
+
 				QFile file (":/plugins/azoth/resources/html/viewcontents.html");
 				if (!file.open (QIODevice::ReadOnly))
 				{
@@ -153,6 +159,11 @@ namespace LeechCraft
 				Plugins::IMessage *msg = e->CreateMessage (type, variant, text);
 				msg->Send ();
 				AppendMessage (msg);
+			}
+
+			void ChatTab::on_MsgEdit__textChanged (const QString& text)
+			{
+				Ui_.CharCounter_->setText (QString::number (text.size ()));
 			}
 
 			void ChatTab::handleEntryMessage (QObject *msgObj)
