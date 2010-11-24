@@ -244,6 +244,7 @@ namespace LeechCraft
 					SelectableBrowser_->Construct (browsers.at (0));
 				SelectableBrowser_->setParent (Viewport_);
 				SelectableBrowser_->SetNavBarVisible (false);
+				SelectableBrowser_->SetEverythingElseVisible (false);
 			}
 
 			QToolButton* PackagesDelegate::GetInstallRemove (const QModelIndex& index) const
