@@ -66,6 +66,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 , Glance_ (0)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
+, IsQuitting_ (false)
 {
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
@@ -185,6 +186,9 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& me
 
 void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*> >& menus)
 {
+	if (IsQuitting_)
+		return;
+
 	Q_FOREACH (const QString& menuName, menus.keys ())
 	{
 		QMenu *toRemove = 0;
@@ -516,6 +520,9 @@ void LeechCraft::MainWindow::handleQuit ()
 {
 	WriteSettings ();
 	hide ();
+
+	IsQuitting_ = true;
+
 	Core::Instance ().Release ();
 
 	TrayIcon_->hide ();
@@ -538,7 +545,7 @@ void LeechCraft::MainWindow::handleAppStyle ()
 
 	if (style == "Default")
 		style = DefaultSystemStyleName_;
-	
+
 	if (style.isEmpty ())
 	{
 #ifdef Q_WS_WIN

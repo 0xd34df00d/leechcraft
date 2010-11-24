@@ -85,6 +85,7 @@ namespace LeechCraft
 		QToolButton *NewTabButton_;
 		QShortcut *FullScreenShortcut_;
 		const QString DefaultSystemStyleName_;
+		bool IsQuitting_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
