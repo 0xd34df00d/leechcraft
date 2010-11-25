@@ -386,15 +386,19 @@ namespace LeechCraft
 						SLOT (updateFeeds ()));
 
 				int updateDiff = lastUpdated.secsTo (currentDateTime);
-				if ((XmlSettingsManager::Instance ()->
-							property ("UpdateOnStartup").toBool ()) ||
-					(updateDiff > XmlSettingsManager::Instance ()->
-							property ("UpdateInterval").toInt () * 60))
-					QTimer::singleShot (7000,
-							this,
-							SLOT (updateFeeds ()));
-				else
-					UpdateTimer_->start (updateDiff * 1000);
+				int interval = XmlSettingsManager::Instance ()->
+					property ("UpdateInterval").toInt ();
+				if (interval)
+				{
+					if ((XmlSettingsManager::Instance ()->
+								property ("UpdateOnStartup").toBool ()) ||
+							(updateDiff > interval * 60))
+						QTimer::singleShot (7000,
+								this,
+								SLOT (updateFeeds ()));
+					else
+						UpdateTimer_->start (updateDiff * 1000);
+				}
 
 				QTimer *saveTimer = new QTimer (this);
 				saveTimer->start (60 * 1000);
@@ -1164,8 +1168,10 @@ namespace LeechCraft
 				}
 				XmlSettingsManager::Instance ()->
 					setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-				UpdateTimer_->start (XmlSettingsManager::Instance ()->
-						property ("UpdateInterval").toInt () * 60 * 1000);
+				int interval = XmlSettingsManager::Instance ()->
+					property ("UpdateInterval").toInt ();
+				if (interval)
+					UpdateTimer_->start (interval * 60 * 1000);
 			}
 
 			void Core::fetchExternalFile (const QString& url, const QString& where)
@@ -1217,8 +1223,17 @@ namespace LeechCraft
 
 			void Core::updateIntervalChanged ()
 			{
-				UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->
-						property ("UpdateInterval").toInt () * 60 * 1000);
+				int min = XmlSettingsManager::Instance ()->
+					property ("UpdateInterval").toInt ();
+				if (min)
+				{
+					if (UpdateTimer_->isActive ())
+						UpdateTimer_->setInterval (min * 60 * 1000);
+					else
+						UpdateTimer_->start (min * 60 * 1000);
+				}
+				else
+					UpdateTimer_->stop ();
 			}
 
 			void Core::showIconInTrayChanged ()

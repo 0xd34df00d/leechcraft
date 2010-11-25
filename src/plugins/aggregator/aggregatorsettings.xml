@@ -76,7 +76,7 @@
 				<item type="checkbox" property="UpdateOnStartup" state="off">
 					<label lang="en" value="Update feeds on startup" />
 				</item>
-				<item type="spinbox" property="UpdateInterval" default="180" minimum="1" maximum="3000" step="5">
+				<item type="spinbox" property="UpdateInterval" default="180" minimum="0" maximum="30000" step="5">
 					<label value="Update interval:" />
 					<suffix value=" min" />
 				</item>
