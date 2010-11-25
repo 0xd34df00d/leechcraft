@@ -203,9 +203,11 @@ namespace LeechCraft
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionMarkChannelAsUnread_);
 				QAction *sep1 = new QAction (Impl_->Ui_.Feeds_),
-						*sep2 = new QAction (Impl_->Ui_.Feeds_);
+						*sep2 = new QAction (Impl_->Ui_.Feeds_),
+						*sep3 = new QAction (Impl_->Ui_.Feeds_);
 				sep1->setSeparator (true);
 				sep2->setSeparator (true);
+				sep3->setSeparator (true);
 				Impl_->Ui_.Feeds_->addAction (sep1);
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionRemoveFeed_);
@@ -214,6 +216,9 @@ namespace LeechCraft
 				Impl_->Ui_.Feeds_->addAction (sep2);
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionChannelSettings_);
+				Impl_->Ui_.Feeds_->addAction (sep3);
+				Impl_->Ui_.Feeds_->addAction (Impl_->
+						AppWideActions_.ActionAddFeed_);
 				Impl_->Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
 				QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 
@@ -230,6 +235,9 @@ namespace LeechCraft
 				contextMenu->addSeparator ();
 				contextMenu->addAction (Impl_->
 						ChannelActions_.ActionChannelSettings_);
+				contextMenu->addSeparator ();
+				contextMenu->addAction (Impl_->
+						AppWideActions_.ActionAddFeed_);
 				Core::Instance ().SetContextMenu (contextMenu);
 
 				QFontMetrics fm = fontMetrics ();
