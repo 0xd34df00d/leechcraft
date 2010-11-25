@@ -583,7 +583,7 @@ namespace LeechCraft
 				return QString ("LeechCraft (%1; %2; %3; %4) (LeechCraft/Poshuku %5; WebKit %6/%7)")
 					// %1 platform
 #ifdef Q_WS_MAC
-					.arg ("Macintosh")
+					.arg ("MacOS")
 #elif defined (Q_WS_WIN)
 					.arg ("Windows")
 #elif defined (Q_WS_X11)

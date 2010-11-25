@@ -71,9 +71,9 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 		filename = QString ("settings/") + basename;
 #elif defined (Q_WS_MAC)
 	else if (QFile::exists (QApplication::applicationDirPath () +
-			"../Resources/settings/" + basename))
+			"/../Resources/settings/" + basename))
 		filename = QApplication::applicationDirPath () +
-				"../Resources/settings/" + basename;
+				"/../Resources/settings/" + basename;
 #else
 	else if (QFile::exists (QString ("/usr/local/share/leechcraft/settings/") + basename))
 		filename = QString ("/usr/local/share/leechcraft/settings/") + basename;

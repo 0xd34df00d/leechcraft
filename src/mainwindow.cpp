@@ -874,7 +874,7 @@ namespace
 		filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
 				.entryList (QStringList ("leechcraft_*.qm"));
 #elif defined(Q_WS_MAC)
-		filenames << QDir (QCoreApplication::applicationDirPath () + "../Resources/translations")
+		filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
 				.entryList (QStringList ("leechcraft_*.qm"));
 #else
 		filenames << QDir ("/usr/local/share/leechcraft/translations")

@@ -525,6 +525,10 @@ namespace LeechCraft
 #elif defined(Q_WS_WIN)
 				infoEntries += QDir (QApplication::applicationDirPath () + "/share/installed")
 						.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+#elif defined(Q_WS_MAC)
+				infoEntries += QDir (QCoreApplication::applicationDirPath () + "/../installed")
+						.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+
 #endif
 
 				QStringList entries;
