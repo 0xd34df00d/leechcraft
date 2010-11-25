@@ -360,6 +360,10 @@ namespace LeechCraft
 									ChannelsModel_,
 									_1));
 					}
+
+					Pools_[PTFeed].SetID (StorageBackend_->GetHighestFeedID () + 1);
+					Pools_[PTFeedSettings].SetID (StorageBackend_->GetHighestFeedSettingsID () + 1);
+					Pools_[PTChannel].SetID (StorageBackend_->GetHighestChannelID () + 1);
 				}
 
 				ReprWidget_ = new ItemsWidget ();

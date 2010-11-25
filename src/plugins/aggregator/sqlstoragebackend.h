@@ -511,7 +511,12 @@ namespace LeechCraft
 								  /** Binds:
 								   * - item_id
 								   */
-								  RemoveMediaRSSScenes_;
+								  RemoveMediaRSSScenes_,
+								  /** Binds:
+								   * - id_name
+								   * - table_name
+								   */
+								  FindHighestID_;
 			public:
 				SQLStorageBackend (Type);
 				virtual ~SQLStorageBackend ();
@@ -550,6 +555,10 @@ namespace LeechCraft
 				virtual bool UpdateChannelsStorage (int, int);
 				virtual bool UpdateItemsStorage (int, int);
 				virtual void ToggleChannelUnread (const IDType_t&, bool);
+				virtual IDType_t GetHighestChannelID () const;
+				virtual IDType_t GetHighestFeedID () const;
+				virtual IDType_t GetHighestFeedSettingsID () const;
+
 			private:
 				QString GetBoolType () const;
 				QString GetBlobType () const;
@@ -578,6 +587,7 @@ namespace LeechCraft
 				void GetEnclosures (const IDType_t&, QList<Enclosure>&) const;
 				void WriteMRSSEntries (const QList<MRSSEntry>&);
 				void GetMRSSEntries (const IDType_t&, QList<MRSSEntry>&) const;
+				IDType_t GetHighestID (const QString&, const QString&) const;
 			};
 		};
 	};

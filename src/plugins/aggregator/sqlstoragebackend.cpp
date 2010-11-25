@@ -715,6 +715,12 @@ namespace LeechCraft
 				RemoveMediaRSSScenes_ = QSqlQuery (DB_);
 				RemoveMediaRSSScenes_.prepare ("DELETE FROM mrss_scenes "
 						"WHERE mrss_scene_id = :mrss_scene_id");
+
+				FindHighestID_ = QSqlQuery (DB_);
+				if(!FindHighestID_.prepare ("SELECT MAX( ? ) FROM ?"))
+					qDebug () << Q_FUNC_INFO
+						  << FindHighestID_.lastQuery ()
+						  << "preparation failed";
 			}
 
 			void SQLStorageBackend::GetFeedsIDs (ids_t& result) const
@@ -730,6 +736,34 @@ namespace LeechCraft
 
 				while (feedSelector.next ())
 					result.push_back (feedSelector.value (0).toInt ());
+			}
+			
+			IDType_t SQLStorageBackend::GetHighestFeedID () const
+			{
+				return GetHighestID (QString ("feed_id"), QString ("feeds"));
+			}
+	
+			IDType_t SQLStorageBackend::GetHighestChannelID () const
+			{
+				return GetHighestID (QString ("channel_id"), QString ("channels"));
+			}
+
+			IDType_t SQLStorageBackend::GetHighestFeedSettingsID () const
+			{
+				return GetHighestID (QString ("settings_id"), QString ("feeds_settings"));
+			}
+		
+			IDType_t SQLStorageBackend::GetHighestID (const QString &idName, const QString &tableName) const
+			{
+				FindHighestID_.bindValue (0, idName);
+				FindHighestID_.bindValue (1, tableName);
+				if (!FindHighestID_.exec ())
+				{
+					Util::DBLock::DumpError (FindHighestID_);
+					return 0;
+				}
+
+				return FindHighestID_.value (0).toInt ();
 			}
 
 			Feed_ptr SQLStorageBackend::GetFeed (const IDType_t& feedId) const

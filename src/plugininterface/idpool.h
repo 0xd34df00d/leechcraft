@@ -33,8 +33,8 @@ namespace LeechCraft
 		{
 			T CurrentID_;
 		public:
-			IDPool ()
-			: CurrentID_ (0)
+			IDPool (T id=T ())
+			: CurrentID_ (id)
 			{
 			}
 
@@ -45,6 +45,11 @@ namespace LeechCraft
 			T GetID ()
 			{
 				return CurrentID_++;
+			}
+
+			void SetID(T id)
+			{
+				CurrentID_ = id;
 			}
 
 			void FreeID (T id)
