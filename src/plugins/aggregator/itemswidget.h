@@ -77,7 +77,7 @@ namespace LeechCraft
 				void SetHideRead (bool);
 				bool IsItemCurrent (int) const;
 				void Selected (const QModelIndex&);
-				void MarkItemAsUnread (const QModelIndex&);
+				void MarkItemReadStatus (const QModelIndex&, bool);
 				bool IsItemRead (int) const;
 				bool IsItemReadNotCurrent (int) const;
 				QStringList GetItemCategories (int) const;
@@ -100,8 +100,10 @@ namespace LeechCraft
 				void on_ActionHideReadItems__triggered ();
 				void on_ActionShowAsTape__triggered ();
 				void on_ActionMarkItemAsUnread__triggered ();
+				void on_ActionMarkItemAsRead__triggered ();
 				void on_CaseSensitiveSearch__stateChanged (int);
 				void on_ActionItemCommentsSubscribe__triggered ();
+				void on_ActionItemLinkOpen__triggered ();
 				void on_CategoriesSplitter__splitterMoved ();
 				void currentItemChanged (const QItemSelection&);
 				void makeCurrentItemVisible ();

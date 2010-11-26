@@ -46,7 +46,7 @@ namespace LeechCraft
 				const IDType_t& GetCurrentChannel () const;
 				void SetCurrentChannel (const IDType_t&);
 				void Selected (const QModelIndex&);
-				void MarkItemAsUnread (const QModelIndex&);
+				void MarkItemReadStatus (const QModelIndex&, bool);
 				const ItemShort& GetItem (const QModelIndex&) const;
 				bool IsItemRead (int) const;
 				QStringList GetCategories (int) const;

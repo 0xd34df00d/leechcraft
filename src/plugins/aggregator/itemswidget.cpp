@@ -50,7 +50,9 @@ namespace LeechCraft
 				QAction *ActionShowAsTape_;
 
 				QAction *ActionMarkItemAsUnread_;
+				QAction *ActionMarkItemAsRead_;
 				QAction *ActionItemCommentsSubscribe_;
+				QAction *ActionItemLinkOpen_;
 
 				bool TapeMode_;
 				bool MergeMode_;
@@ -101,7 +103,9 @@ namespace LeechCraft
 						SLOT (invalidate ()));
 
 				Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
+				Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsRead_);
 				Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
+				Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
 				Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 				connect (Impl_->Ui_.SearchLine_,
 						SIGNAL (textChanged (const QString&)),
@@ -343,11 +347,12 @@ namespace LeechCraft
 						GetModelForRow (index.row ())->data ())->Selected (mapped);
 			}
 
-			void ItemsWidget::MarkItemAsUnread (const QModelIndex& i)
+			void ItemsWidget::MarkItemReadStatus (const QModelIndex& i, bool read)
 			{
 				QModelIndex mapped = Impl_->ItemLists_->mapToSource (i);
 				static_cast<ItemsListModel*> (Impl_->ItemLists_->
-						GetModelForRow (i.row ())->data ())->MarkItemAsUnread (mapped);
+						GetModelForRow (i.row ())->data ())->
+								MarkItemReadStatus (mapped, read);
 			}
 
 			bool ItemsWidget::IsItemRead (int item) const
@@ -461,9 +466,17 @@ namespace LeechCraft
 						this);
 				Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
 
+				Impl_->ActionMarkItemAsRead_ = new QAction (tr ("Mark item as read"),
+															  this);
+				Impl_->ActionMarkItemAsRead_->setObjectName ("ActionMarkItemAsRead_");
+
 				Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
 						this);
 				Impl_->ActionItemCommentsSubscribe_->setObjectName ("ActionItemCommentsSubscribe_");
+
+				Impl_->ActionItemLinkOpen_ = new QAction (tr ("Open in new tab"),
+						this);
+				Impl_->ActionItemLinkOpen_->setObjectName ("ActionItemLinkOpen_");
 			}
 
 			QToolBar* ItemsWidget::SetupToolBar ()
@@ -986,8 +999,19 @@ namespace LeechCraft
 				QModelIndexList indexes = Impl_->Ui_.Items_->
 					selectionModel ()->selectedRows ();
 				for (int i = 0; i < indexes.size (); ++i)
-					MarkItemAsUnread (Impl_->
-							ItemsFilterModel_->mapToSource (indexes.at (i)));
+					MarkItemReadStatus (Impl_->
+								ItemsFilterModel_->mapToSource (indexes.at (i)),
+							false);
+			}
+
+			void ItemsWidget::on_ActionMarkItemAsRead__triggered ()
+			{
+				QModelIndexList indexes = Impl_->Ui_.Items_->
+					selectionModel ()->selectedRows ();
+				for (int i = 0; i < indexes.size (); ++i)
+					MarkItemReadStatus (Impl_->
+								ItemsFilterModel_->mapToSource (indexes.at (i)),
+							true);
 			}
 
 			void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
@@ -998,9 +1022,28 @@ namespace LeechCraft
 
 			void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
 			{
-				QModelIndex selected = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
+				QModelIndex selected = Impl_->Ui_.Items_->
+						selectionModel ()->currentIndex ();
 				SubscribeToComments (Impl_->ItemsFilterModel_->
 						mapToSource (selected));
+			}
+
+			void ItemsWidget::on_ActionItemLinkOpen__triggered ()
+			{
+				QModelIndex selected = Impl_->Ui_.Items_->
+						selectionModel ()->currentIndex ();
+				QModelIndex index = Impl_->
+						ItemsFilterModel_->mapToSource (selected);
+
+				Item_ptr it = GetItem (index);
+
+				Entity e = Util::MakeEntity (QUrl (it->Link_),
+						QString (),
+						FromUserInitiated | OnlyHandle);
+				QMetaObject::invokeMethod (&Core::Instance (),
+						"gotEntity",
+						Qt::QueuedConnection,
+						Q_ARG (LeechCraft::Entity, e));
 			}
 
 			void ItemsWidget::on_CategoriesSplitter__splitterMoved ()

@@ -63,10 +63,10 @@ namespace LeechCraft
 				Core::Instance ().GetStorageBackend ()->UpdateItem (item);
 			}
 
-			void ItemsListModel::MarkItemAsUnread (const QModelIndex& i)
+			void ItemsListModel::MarkItemReadStatus (const QModelIndex& i, bool read)
 			{
 				ItemShort is = CurrentItems_ [i.row ()];
-				is.Unread_ = true;
+				is.Unread_ = !read;
 				Core::Instance ().GetStorageBackend ()->UpdateItem (is);
 			}
 
