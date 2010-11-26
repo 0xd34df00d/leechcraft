@@ -150,10 +150,14 @@ namespace LeechCraft
 						SIGNAL (selectionChanged (const QItemSelection&,
 								const QItemSelection&)),
 						this,
-						SLOT (currentItemChanged (const QItemSelection&)),
+						SLOT (currentItemChanged ()),
 						Qt::QueuedConnection);
+				connect (Impl_->ItemsFilterModel_.get (),
+						SIGNAL (reset ()),
+						this,
+						SLOT (currentItemChanged ()));
 
-				currentItemChanged (QItemSelection ());
+				currentItemChanged ();
 
 				connect (Core::Instance ().GetStorageBackend (),
 						SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
@@ -234,15 +238,15 @@ namespace LeechCraft
 							SIGNAL (selectionChanged (const QItemSelection&,
 									const QItemSelection&)),
 							this,
-							SLOT (currentItemChanged (const QItemSelection&)));
+							SLOT (currentItemChanged ()));
 				else
 					connect (Impl_->Ui_.Items_->selectionModel (),
 							SIGNAL (selectionChanged (const QItemSelection&,
 									const QItemSelection&)),
 							this,
-							SLOT (currentItemChanged (const QItemSelection&)),
+							SLOT (currentItemChanged ()),
 							Qt::QueuedConnection);
-				currentItemChanged (QItemSelection ());
+				currentItemChanged ();
 
 				XmlSettingsManager::Instance ()->
 						setProperty ("ShowAsTape", tape);
@@ -957,7 +961,7 @@ namespace LeechCraft
 			void ItemsWidget::channelChanged (const QModelIndex& mapped)
 			{
 				Impl_->Ui_.Items_->scrollToTop ();
-				currentItemChanged (QItemSelection ());
+				currentItemChanged ();
 
 				if (!isVisible ())
 					return;
@@ -1055,7 +1059,7 @@ namespace LeechCraft
 					setProperty ("CategoriesSplitter2", sizes.at (1));
 			}
 
-			void ItemsWidget::currentItemChanged (const QItemSelection& selection)
+			void ItemsWidget::currentItemChanged ()
 			{
 				if (Impl_->TapeMode_)
 				{
@@ -1074,29 +1078,42 @@ namespace LeechCraft
 				}
 				else
 				{
-					QModelIndexList indexes = selection.indexes ();
-
-					QModelIndex sindex;
-					if (indexes.size ())
-						sindex = Impl_->ItemsFilterModel_->mapToSource (indexes.at (0));
-
-					if (!sindex.isValid () || indexes.size () != 2)
+					QString html;
+					Q_FOREACH (const QModelIndex& selIndex,
+							Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
 					{
-						Impl_->Ui_.ItemView_->SetHtml ("");
-						Impl_->ActionItemCommentsSubscribe_->setEnabled (false);
-						Impl_->ActionMarkItemAsUnread_->setEnabled (false);
-						return;
+						const QModelIndex& sindex = Impl_->
+								ItemsFilterModel_->mapToSource (selIndex);
+						if (!sindex.isValid ())
+							continue;
+
+						html += ToHtml (GetItem (sindex));
 					}
 
-					Selected (sindex);
+					Impl_->Ui_.ItemView_->SetHtml (html);
 
-					Item_ptr item = GetItem (sindex);
+					QModelIndex cIndex = Impl_->Ui_.Items_->currentIndex ();
+					QModelIndex mappedCIndex = Impl_->
+							ItemsFilterModel_->mapToSource (cIndex);
+					if (html.isEmpty () ||
+							!mappedCIndex.isValid ())
+					{
+						Impl_->ActionItemCommentsSubscribe_->setEnabled (false);
+						Impl_->ActionMarkItemAsUnread_->setEnabled (false);
+						Impl_->ActionMarkItemAsRead_->setEnabled (false);
+						Impl_->ActionItemLinkOpen_->setEnabled (false);
+					}
+					else
+					{
+						Selected (cIndex);
 
-					Impl_->Ui_.ItemView_->SetHtml (ToHtml (item));
+						QString commentsRSS = GetItem (cIndex)->CommentsLink_;
+						Impl_->ActionItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
 
-					QString commentsRSS = item->CommentsLink_;
-					Impl_->ActionItemCommentsSubscribe_->setEnabled (!commentsRSS.isEmpty ());
-					Impl_->ActionMarkItemAsUnread_->setEnabled (true);
+						Impl_->ActionMarkItemAsUnread_->setEnabled (true);
+						Impl_->ActionMarkItemAsRead_->setEnabled (true);
+						Impl_->ActionItemLinkOpen_->setEnabled (true);
+					}
 				}
 			}
 

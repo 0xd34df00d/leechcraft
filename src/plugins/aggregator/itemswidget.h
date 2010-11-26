@@ -105,7 +105,7 @@ namespace LeechCraft
 				void on_ActionItemCommentsSubscribe__triggered ();
 				void on_ActionItemLinkOpen__triggered ();
 				void on_CategoriesSplitter__splitterMoved ();
-				void currentItemChanged (const QItemSelection&);
+				void currentItemChanged ();
 				void makeCurrentItemVisible ();
 				void updateItemsFilter ();
 				void selectorVisiblityChanged ();
