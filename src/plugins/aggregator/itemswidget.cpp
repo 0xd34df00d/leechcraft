@@ -936,6 +936,22 @@ namespace LeechCraft
 					Impl_->Ui_.CategoriesSplitter_->setSizes (sizes);
 			}
 
+			QModelIndexList ItemsWidget::GetSelected () const
+			{
+				QModelIndexList result;
+				Q_FOREACH (const QModelIndex& idx,
+						Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
+				{
+					const QModelIndex& mapped = Impl_->
+							ItemsFilterModel_->mapToSource (idx);
+					if (!mapped.isValid ())
+						continue;
+
+					result << mapped;
+				}
+				return result;
+			}
+
 			void ItemsWidget::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
 			{
 				if (Impl_->CurrentItemsModel_->GetCurrentChannel () == channel->ChannelID_)
@@ -1000,22 +1016,14 @@ namespace LeechCraft
 
 			void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
 			{
-				QModelIndexList indexes = Impl_->Ui_.Items_->
-					selectionModel ()->selectedRows ();
-				for (int i = 0; i < indexes.size (); ++i)
-					MarkItemReadStatus (Impl_->
-								ItemsFilterModel_->mapToSource (indexes.at (i)),
-							false);
+				Q_FOREACH (const QModelIndex& idx, GetSelected ())
+					MarkItemReadStatus (idx, false);
 			}
 
 			void ItemsWidget::on_ActionMarkItemAsRead__triggered ()
 			{
-				QModelIndexList indexes = Impl_->Ui_.Items_->
-					selectionModel ()->selectedRows ();
-				for (int i = 0; i < indexes.size (); ++i)
-					MarkItemReadStatus (Impl_->
-								ItemsFilterModel_->mapToSource (indexes.at (i)),
-							true);
+				Q_FOREACH (const QModelIndex& idx, GetSelected ())
+					MarkItemReadStatus (idx, true);
 			}
 
 			void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
@@ -1026,28 +1034,22 @@ namespace LeechCraft
 
 			void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
 			{
-				QModelIndex selected = Impl_->Ui_.Items_->
-						selectionModel ()->currentIndex ();
-				SubscribeToComments (Impl_->ItemsFilterModel_->
-						mapToSource (selected));
+				Q_FOREACH (const QModelIndex& idx, GetSelected ())
+					SubscribeToComments (idx);
 			}
 
 			void ItemsWidget::on_ActionItemLinkOpen__triggered ()
 			{
-				QModelIndex selected = Impl_->Ui_.Items_->
-						selectionModel ()->currentIndex ();
-				QModelIndex index = Impl_->
-						ItemsFilterModel_->mapToSource (selected);
-
-				Item_ptr it = GetItem (index);
-
-				Entity e = Util::MakeEntity (QUrl (it->Link_),
-						QString (),
-						FromUserInitiated | OnlyHandle);
-				QMetaObject::invokeMethod (&Core::Instance (),
-						"gotEntity",
-						Qt::QueuedConnection,
-						Q_ARG (LeechCraft::Entity, e));
+				Q_FOREACH (const QModelIndex& idx, GetSelected ())
+				{
+					Entity e = Util::MakeEntity (QUrl (GetItem (idx)->Link_),
+							QString (),
+							FromUserInitiated | OnlyHandle);
+					QMetaObject::invokeMethod (&Core::Instance (),
+							"gotEntity",
+							Qt::QueuedConnection,
+							Q_ARG (LeechCraft::Entity, e));
+				}
 			}
 
 			void ItemsWidget::on_CategoriesSplitter__splitterMoved ()
