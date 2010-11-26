@@ -150,8 +150,7 @@ namespace LeechCraft
 						SIGNAL (selectionChanged (const QItemSelection&,
 								const QItemSelection&)),
 						this,
-						SLOT (currentItemChanged ()),
-						Qt::QueuedConnection);
+						SLOT (currentItemChanged ()));
 				connect (Impl_->ItemsFilterModel_.get (),
 						SIGNAL (reset ()),
 						this,
@@ -244,8 +243,7 @@ namespace LeechCraft
 							SIGNAL (selectionChanged (const QItemSelection&,
 									const QItemSelection&)),
 							this,
-							SLOT (currentItemChanged ()),
-							Qt::QueuedConnection);
+							SLOT (currentItemChanged ()));
 				currentItemChanged ();
 
 				XmlSettingsManager::Instance ()->
@@ -1094,11 +1092,11 @@ namespace LeechCraft
 
 					Impl_->Ui_.ItemView_->SetHtml (html);
 
-					QModelIndex cIndex = Impl_->Ui_.Items_->currentIndex ();
-					QModelIndex mappedCIndex = Impl_->
-							ItemsFilterModel_->mapToSource (cIndex);
-					if (html.isEmpty () ||
-							!mappedCIndex.isValid ())
+					const QModelIndex& sourceIndex =
+							Impl_->Ui_.Items_->currentIndex ();
+					const QModelIndex& cIndex =
+							Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
+					if (html.isEmpty ())
 					{
 						Impl_->ActionItemCommentsSubscribe_->setEnabled (false);
 						Impl_->ActionMarkItemAsUnread_->setEnabled (false);
