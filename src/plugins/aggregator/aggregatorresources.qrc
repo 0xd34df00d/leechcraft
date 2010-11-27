@@ -60,6 +60,5 @@
     <file>resources/sql/mysql/WriteMediaRSS_query.sql</file>
     <file>resources/sql/mysql/WriteMediaRSSScene_query.sql</file>
     <file>resources/sql/mysql/WriteMediaRSSThumbnail_query.sql</file>
-    <file>resources/sql/mysql/FindHighestID_query.sql</file>
   </qresource>
 </RCC>

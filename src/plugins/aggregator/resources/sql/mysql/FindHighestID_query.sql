@@ -1,1 +1,0 @@
-SELECT MAX(?) FROM ?

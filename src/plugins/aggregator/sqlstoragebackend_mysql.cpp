@@ -205,8 +205,6 @@ namespace LeechCraft
 
 				RemoveMediaRSSScenes_ = QSqlQuery (DB_);
 				RemoveMediaRSSScenes_.prepare (StorageBackend::LoadQuery ("mysql", "RemoveMediaRSSScenes_query"));
-				FindHighestID_ = QSqlQuery (DB_);
-				FindHighestID_.prepare (StorageBackend::LoadQuery ("mysql","FindHighestID_query"));
 			}
 
 			void SQLStorageBackendMysql::GetFeedsIDs (ids_t& result) const
@@ -241,15 +239,21 @@ namespace LeechCraft
 		
 			IDType_t SQLStorageBackendMysql::GetHighestID (const QString &idName, const QString &tableName) const
 			{
-				FindHighestID_.bindValue (0, idName);
-				FindHighestID_.bindValue (1, tableName);
-				if (!FindHighestID_.exec ())
+				QSqlQuery findHighestID (DB_);
+				//due to some strange troubles with QSqlQuery::bindValue ()
+				//we'll bind values by ourselves. It should be safe as this is our
+				//internal function.
+				if (!findHighestID.exec (QString("SELECT MAX (%1) FROM %2")
+							  .arg (idName).arg (tableName)))
 				{
-					Util::DBLock::DumpError (FindHighestID_);
+					Util::DBLock::DumpError (findHighestID);
 					return 0;
 				}
 
-				return FindHighestID_.value (0).toInt ();
+				if (findHighestID.first ())
+					return findHighestID.value (0).toInt ();
+				else
+					return 0;
 			}
 
 			Feed_ptr SQLStorageBackendMysql::GetFeed (const IDType_t& feedId) const

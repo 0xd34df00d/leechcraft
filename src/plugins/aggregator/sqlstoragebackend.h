@@ -511,12 +511,7 @@ namespace LeechCraft
 								  /** Binds:
 								   * - item_id
 								   */
-								  RemoveMediaRSSScenes_,
-								  /** Binds:
-								   * - id_name
-								   * - table_name
-								   */
-								  FindHighestID_;
+								  RemoveMediaRSSScenes_;
 			public:
 				SQLStorageBackend (Type);
 				virtual ~SQLStorageBackend ();
