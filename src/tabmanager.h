@@ -61,7 +61,16 @@ namespace LeechCraft
 		void add (const QString&, QWidget*,
 				const QIcon& icon);
 		void remove (QWidget*);
-		void remove (int);
+
+		/** Removes the tab at the given index. Calls
+		 * remove(QWidget*) internally.
+		 */
+		void remove (int index);
+
+		/** Translates the given widget into index and calls
+		 * remove(int) internally.
+		 */
+		void removeByContents (QWidget*);
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
 		void changeTooltip (QWidget*, QWidget*);

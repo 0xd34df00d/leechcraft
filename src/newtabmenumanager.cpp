@@ -68,12 +68,14 @@ namespace LeechCraft
 
 		try
 		{
-			QString name = ii->GetName ();
-			QIcon icon = ii->GetIcon ();
+			const QString& name = ii->GetName ();
+			const QIcon& icon = ii->GetIcon ();
 
 			QAction *action = 0;
 			Q_FOREACH (QAction *act, NewTabMenu_->actions ())
-				if (act->text () == name)
+			{
+				QString actText = act->text ();
+				if (actText.remove ('&') == name)
 				{
 					action = new QAction (icon, name, this);
 					connect (action,
@@ -85,6 +87,7 @@ namespace LeechCraft
 					ReaddOnRestore_ [name] = act;
 					break;
 				}
+			}
 
 			if (!action)
 				action = NewTabMenu_->addAction (icon, name,
