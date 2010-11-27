@@ -111,22 +111,6 @@ namespace LeechCraft
 				ItemsWidget *ReprWidget_;
 
 				Core ();
-			public:
-				enum PoolType
-				{
-					PTFeed,
-					PTChannel,
-					PTItem,
-					PTFeedSettings,
-					PTEnclosure,
-					PTMRSSEntry,
-					PTMRSSThumbnail,
-					PTMRSSCredit,
-					PTMRSSComment,
-					PTMRSSPeerLink,
-					PTMRSSScene,
-					PTMAX
-				};
 			private:
 				QHash<PoolType, Util::IDPool<IDType_t> > Pools_;
 			public:
@@ -148,7 +132,6 @@ namespace LeechCraft
 				ICoreProxy_ptr GetProxy () const;
 
 				Util::IDPool<IDType_t>& GetPool (PoolType);
-				void SyncPools () const;
 
 				bool CouldHandle (const LeechCraft::Entity&);
 				void Handle (LeechCraft::Entity);

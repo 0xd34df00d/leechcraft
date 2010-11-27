@@ -78,7 +78,6 @@ namespace LeechCraft
 
 			void Core::Release ()
 			{
-				SyncPools ();
 				delete JobHolderRepresentation_;
 				delete ChannelsFilterModel_;
 				delete ChannelsModel_;
@@ -98,18 +97,9 @@ namespace LeechCraft
 				return Proxy_;
 			}
 
-			Util::IDPool<IDType_t>& Core::GetPool (Core::PoolType type)
+			Util::IDPool<IDType_t>& Core::GetPool (PoolType type)
 			{
 				return Pools_ [type];
-			}
-
-			void Core::SyncPools () const
-			{
-				QList<PoolType> types = Pools_.keys ();
-				Q_FOREACH (PoolType type, types)
-					XmlSettingsManager::Instance ()->
-							setProperty (QString ("PoolState_%1").arg (type).toLatin1 (),
-									Pools_ [type].SaveState ());
 			}
 
 			bool Core::CouldHandle (const LeechCraft::Entity& e)
@@ -282,15 +272,6 @@ namespace LeechCraft
 					return false;
 				}
 
-				for (int type = 0; type < PTMAX; ++type)
-				{
-					Util::IDPool<IDType_t> pool;
-					QByteArray state = XmlSettingsManager::Instance ()->
-							property (QString ("PoolState_%1").arg (type).toLatin1 ()).toByteArray ();
-					pool.LoadState (state);
-					Pools_ [static_cast<PoolType> (type)] = pool;
-				}
-
 				ChannelsModel_ = new ChannelsModel ();
 				ChannelsFilterModel_ = new ChannelsFilterModel ();
 				ChannelsFilterModel_->setSourceModel (ChannelsModel_);
@@ -361,9 +342,12 @@ namespace LeechCraft
 									_1));
 					}
 
-					Pools_[PTFeed].SetID (StorageBackend_->GetHighestFeedID () + 1);
-					Pools_[PTFeedSettings].SetID (StorageBackend_->GetHighestFeedSettingsID () + 1);
-					Pools_[PTChannel].SetID (StorageBackend_->GetHighestChannelID () + 1);
+					for (int type = 0; type < PTMAX; ++type)
+					{
+						Util::IDPool<IDType_t> pool;
+						pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
+						Pools_ [static_cast<PoolType> (type)] = pool;
+					}
 				}
 
 				ReprWidget_ = new ItemsWidget ();
@@ -958,8 +942,6 @@ namespace LeechCraft
 
 					StorageBackend_->AddFeed (feed);
 				}
-
-				SyncPools ();
 			}
 
 			void Core::SetContextMenu (QMenu *menu)
@@ -1207,7 +1189,6 @@ namespace LeechCraft
 			void Core::saveSettings ()
 			{
 				SaveScheduled_ = false;
-				SyncPools ();
 			}
 
 			void Core::handleChannelDataUpdated (Channel_ptr channel)

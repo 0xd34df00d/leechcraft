@@ -550,9 +550,7 @@ namespace LeechCraft
 				virtual bool UpdateChannelsStorage (int, int);
 				virtual bool UpdateItemsStorage (int, int);
 				virtual void ToggleChannelUnread (const IDType_t&, bool);
-				virtual IDType_t GetHighestChannelID () const;
-				virtual IDType_t GetHighestFeedID () const;
-				virtual IDType_t GetHighestFeedSettingsID () const;
+				virtual IDType_t GetHighestID (const PoolType&) const;
 
 			private:
 				QString GetBoolType () const;

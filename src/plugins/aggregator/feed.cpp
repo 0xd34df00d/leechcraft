@@ -30,7 +30,7 @@ namespace LeechCraft
 		{
 			Feed::FeedSettings::FeedSettings (IDType_t feedId,
 					int ut, int ni, int ia, bool ade)
-			: SettingsID_ (Core::Instance ().GetPool (Core::PTFeedSettings).GetID ())
+			: SettingsID_ (Core::Instance ().GetPool (PTFeedSettings).GetID ())
 			, FeedID_ (feedId)
 			, UpdateTimeout_ (ut)
 			, NumItems_ (ni)
@@ -51,7 +51,7 @@ namespace LeechCraft
 			}
 			
 			Feed::Feed ()
-			: FeedID_ (Core::Instance ().GetPool (Core::PTFeed).GetID ())
+			: FeedID_ (Core::Instance ().GetPool (PTFeed).GetID ())
 			{
 			}
 			

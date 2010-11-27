@@ -28,6 +28,21 @@ namespace LeechCraft
 		{
 			typedef quint64 IDType_t;
 			typedef QList<IDType_t> ids_t;
+			enum PoolType
+			{
+				PTFeed,
+				PTChannel,
+				PTItem,
+				PTFeedSettings,
+				PTEnclosure,
+				PTMRSSEntry,
+				PTMRSSThumbnail,
+				PTMRSSCredit,
+				PTMRSSComment,
+				PTMRSSPeerLink,
+				PTMRSSScene,
+				PTMAX
+			};
 		};
 	};
 };
