@@ -365,16 +365,20 @@ namespace LeechCraft
 				 */
 				virtual void ToggleChannelUnread (const IDType_t& id,
 						bool state) = 0;
+
 				/** @brief Searches for highest channel id in the database
 				 *
 				 * @return highest channels id in the database or 0 if empty
 				 */
+
 				virtual IDType_t GetHighestChannelID () const = 0;
+
 				/** @brief Searches for highest feed id in the database
 				 *
 				 * @return highest feed id in the database or 0 if empty
 				 */
 				virtual IDType_t GetHighestFeedID () const = 0;
+
 				/** @brief Searches for highest feed settings id in the database
 				 *
 				 * @return highest feed settings id in the database or 0 if empty
@@ -389,6 +393,7 @@ namespace LeechCraft
 				 * @param[out] channel Pointer to the updated channel.
 				 */
 				void channelDataUpdated (Channel_ptr channel) const;
+
 				/** @brief Notifies about updated item information.
 				 *
 				 * This signal is emitted when a single item is updated.

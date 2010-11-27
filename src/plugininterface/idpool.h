@@ -47,7 +47,7 @@ namespace LeechCraft
 				return CurrentID_++;
 			}
 
-			void SetID(T id)
+			void SetID (T id)
 			{
 				CurrentID_ = id;
 			}

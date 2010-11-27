@@ -226,7 +226,7 @@ namespace LeechCraft
 			{
 				return GetHighestID (QString ("feed_id"), QString ("feeds"));
 			}
-	
+
 			IDType_t SQLStorageBackendMysql::GetHighestChannelID () const
 			{
 				return GetHighestID (QString ("channel_id"), QString ("channels"));
@@ -236,7 +236,7 @@ namespace LeechCraft
 			{
 				return GetHighestID (QString ("settings_id"), QString ("feeds_settings"));
 			}
-		
+
 			IDType_t SQLStorageBackendMysql::GetHighestID (const QString &idName, const QString &tableName) const
 			{
 				QSqlQuery findHighestID (DB_);

@@ -731,12 +731,12 @@ namespace LeechCraft
 				while (feedSelector.next ())
 					result.push_back (feedSelector.value (0).toInt ());
 			}
-			
+
 			IDType_t SQLStorageBackend::GetHighestFeedID () const
 			{
 				return GetHighestID (QString ("feed_id"), QString ("feeds"));
 			}
-	
+
 			IDType_t SQLStorageBackend::GetHighestChannelID () const
 			{
 				return GetHighestID (QString ("channel_id"), QString ("channels"));
@@ -746,7 +746,7 @@ namespace LeechCraft
 			{
 				return GetHighestID (QString ("settings_id"), QString ("feeds_settings"));
 			}
-		
+
 			IDType_t SQLStorageBackend::GetHighestID (const QString &idName, const QString &tableName) const
 			{
 				QSqlQuery findHighestID (DB_);
