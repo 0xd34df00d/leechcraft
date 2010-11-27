@@ -1,0 +1,15 @@
+#! /bin/sh
+
+sed -i 's/<pre class="programlisting">/<code>/g' *.html
+sed -i 's/<pre class="screen">/<code type="bash">/g' *.html
+sed -i 's/<\/pre>/<\/code>/g' *.html
+sed -i 's/<span class="structname">\([a-zA-Z:]*\)<\/span>/<code>\1<\/code>/g' *.html
+sed -i 's/<span class="[a-z]*">//g' *.html
+sed -i 's/<\/span>//g' *.html
+sed -i 's/<a id="id[0-9]+"><\/a>//g' *.html
+sed -i 's/<div class="sect1" title="\(.*\)"><div class="titlepage"><div><div><h2 class="title" style="clear: both">.*<\/h2><\/div><\/div><\/div>/<h2>\1<\/h2>/g' *.html
+sed -i 's/<em class="replaceable"><code>\([^<>]*\)<\/code><\/em>/\1/g' *.html
+sed -i 's/<code type="bash"><strong>/<code type="bash">/g' *.html
+sed -i 's/<\/strong><\/code>/<\/code>/g' *.html
+sed -i 's/&lt;/</g' *.html
+sed -i 's/&gt;/>/g' *.html
