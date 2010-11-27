@@ -33,7 +33,7 @@ namespace LeechCraft
 		{
 			T CurrentID_;
 		public:
-			IDPool (const T &id = T ())
+			IDPool (const T& id = T ())
 			: CurrentID_ (id)
 			{
 			}
