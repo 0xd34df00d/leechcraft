@@ -180,7 +180,10 @@ void TabManager::AddObject (QObject *obj)
 
 				if (XmlSettingsManager::Instance ()->
 						Property (QString ("Hide%1").arg (name), false).toBool ())
-					remove (TabWidget_->indexOf (contents));
+					QMetaObject::invokeMethod (this,
+							"remove",
+							Qt::QueuedConnection,
+							Q_ARG (QWidget*, contents));
 			}
 		}
 		catch (const std::exception& e)
