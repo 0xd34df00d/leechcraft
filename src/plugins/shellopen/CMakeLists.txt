@@ -28,10 +28,12 @@ SET (HEADERS
 	shellopen.h
 	)
 SET (TRANSLATIONS
+	leechcraft_shellopen_uk_UA.ts
 	leechcraft_shellopen_ru_RU.ts
 	leechcraft_shellopen_en.ts
 	)
 SET (COMPILED_TRANSLATIONS
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_shellopen_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_shellopen_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_shellopen_en.qm
 	)

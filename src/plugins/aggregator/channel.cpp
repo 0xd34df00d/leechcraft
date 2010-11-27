@@ -31,7 +31,7 @@ namespace LeechCraft
 		namespace Aggregator
 		{
 			Channel::Channel (const IDType_t& id)
-			: ChannelID_ (Core::Instance ().GetPool (Core::PTChannel).GetID ())
+			: ChannelID_ (Core::Instance ().GetPool (PTChannel).GetID ())
 			, FeedID_ (id)
 			{
 			}

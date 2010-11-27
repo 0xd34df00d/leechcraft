@@ -124,7 +124,7 @@ namespace LeechCraft
 			}
 
 			Enclosure::Enclosure (const IDType_t& item)
-			: EnclosureID_ (Core::Instance ().GetPool (Core::PTEnclosure).GetID ())
+			: EnclosureID_ (Core::Instance ().GetPool (PTEnclosure).GetID ())
 			, ItemID_ (item)
 			{
 			}
@@ -146,7 +146,7 @@ namespace LeechCraft
 #define MRSS_IDMEM(a) MRSS##a##ID_
 #define MRSS_DEFINE_CTORS(a) \
 			MRSS_CN(a)::MRSS_CN(a) (const IDType_t& mrssEntry) \
-			: MRSS_IDMEM(a) (Core::Instance ().GetPool (Core::MRSS_ENUM(a)).GetID ()) \
+			: MRSS_IDMEM(a) (Core::Instance ().GetPool (MRSS_ENUM(a)).GetID ()) \
 			, MRSSEntryID_ (mrssEntry) \
 			{ \
 			} \
@@ -175,7 +175,7 @@ namespace LeechCraft
 #undef MRSS_EXPANDER
 
 			MRSSEntry::MRSSEntry (const IDType_t& itemId)
-			: MRSSEntryID_ (Core::Instance ().GetPool (Core::PTMRSSEntry).GetID ())
+			: MRSSEntryID_ (Core::Instance ().GetPool (PTMRSSEntry).GetID ())
 			, ItemID_ (itemId)
 			{
 			}
@@ -193,7 +193,7 @@ namespace LeechCraft
 			}
 
 			Item::Item (const IDType_t& channel)
-			: ItemID_ (Core::Instance ().GetPool (Core::PTItem).GetID ())
+			: ItemID_ (Core::Instance ().GetPool (PTItem).GetID ())
 			, ChannelID_ (channel)
 			{
 			}
