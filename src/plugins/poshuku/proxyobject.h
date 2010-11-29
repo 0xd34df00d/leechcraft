@@ -33,6 +33,8 @@ namespace LeechCraft
 				Q_OBJECT
 				Q_INTERFACES (LeechCraft::Plugins::Poshuku::IProxyObject);
 			public slots:
+				QObject* GetHistoryModel () const;
+				QObject* GetFavoritesModel () const;
 			};
 		};
 	};

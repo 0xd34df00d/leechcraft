@@ -755,7 +755,7 @@ namespace LeechCraft
 
 				if (!view->title ().isEmpty () &&
 						!url.isEmpty () && url != "about:blank")
-					HistoryModel_->AddItem (view->title (),
+					HistoryModel_->addItem (view->title (),
 							url, QDateTime::currentDateTime ());
 			}
 
@@ -919,7 +919,7 @@ namespace LeechCraft
 					if (dia->exec () == QDialog::Rejected)
 						return;
 
-					result = FavoritesModel_->AddItem (dia->GetTitle (),
+					result = FavoritesModel_->addItem (dia->GetTitle (),
 							url, dia->GetTags ());
 				}
 				while (!result);

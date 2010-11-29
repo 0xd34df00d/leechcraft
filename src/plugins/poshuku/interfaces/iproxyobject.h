@@ -32,6 +32,8 @@ namespace LeechCraft
 			class IProxyObject
 			{
 			public:
+				virtual QObject* GetHistoryModel () const = 0;
+				virtual QObject* GetFavoritesModel () const = 0;
 			};
 		};
 	};

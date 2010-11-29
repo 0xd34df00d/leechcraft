@@ -55,6 +55,7 @@ namespace LeechCraft
 				QTimer *GarbageTimer_;
 				Util::TreeItem *RootItem_;
 				QAction *FolderIconProxy_;
+				history_items_t Items_;
 			public:
 				enum Columns
 				{
@@ -73,8 +74,9 @@ namespace LeechCraft
 				QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 				QModelIndex parent (const QModelIndex&) const;
 				int rowCount (const QModelIndex& = QModelIndex ()) const;
-
-				void AddItem (QString, QString, QDateTime);
+			public slots:
+				void addItem (QString, QString, QDateTime);
+				QList<QMap<QString, QVariant> > getItemsMap () const;
 			private:
 				void Add (const HistoryItem&);
 			private slots:

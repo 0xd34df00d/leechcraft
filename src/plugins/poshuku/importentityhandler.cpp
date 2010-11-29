@@ -56,7 +56,7 @@ namespace LeechCraft
 						if (!date.isValid ())
 							qWarning () << "skipping entity with invalid date" << title << url;
 						else
-							Core::Instance ().GetHistoryModel ()->AddItem (title, url, date);
+							Core::Instance ().GetHistoryModel ()->addItem (title, url, date);
 
 						progressDia.setValue (++cur);
 						if (progressDia.wasCanceled ())
@@ -80,7 +80,7 @@ namespace LeechCraft
 						QString url = hBM ["URL"].toString ();
 						QStringList tags = hBM ["Tags"].toStringList ();
 
-						Core::Instance ().GetFavoritesModel ()->AddItem (title, url, tags);
+						Core::Instance ().GetFavoritesModel ()->addItem (title, url, tags);
 						progressDia.setValue (++cur);
 						if (progressDia.wasCanceled ())
 							break;
