@@ -49,6 +49,7 @@ namespace LeechCraft
 				virtual ~CustomWebView ();
 
 				void SetBrowserWidget (BrowserWidget*);
+				BrowserWidget* GetBrowserWidget () const;
 				void Load (const QString&, QString = QString ());
 				void Load (const QUrl&, QString = QString ());
 				void Load (const QNetworkRequest&,

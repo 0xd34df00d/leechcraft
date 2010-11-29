@@ -201,10 +201,10 @@ namespace LeechCraft
 			}
 
 			void HistoryModel::addItem (QString title, QString url,
-					QDateTime date)
+					QDateTime date, QObject *browserWidget)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				emit hookAddingToHistory (proxy, title, url, date);
+				emit hookAddingToHistory (proxy, title, url, date, browserWidget);
 				if (proxy->IsCancelled ())
 					return;
 

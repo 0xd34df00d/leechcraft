@@ -75,7 +75,8 @@ namespace LeechCraft
 				QModelIndex parent (const QModelIndex&) const;
 				int rowCount (const QModelIndex& = QModelIndex ()) const;
 			public slots:
-				void addItem (QString, QString, QDateTime);
+				void addItem (QString title, QString url,
+						QDateTime datetime, QObject *browserwidget = 0);
 				QList<QMap<QString, QVariant> > getItemsMap () const;
 			private:
 				void Add (const HistoryItem&);
@@ -96,7 +97,8 @@ namespace LeechCraft
 				 * be converted to QDateTime and replace the date.
 				 */
 				void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
-						QString title, QString url, QDateTime date);
+						QString title, QString url, QDateTime date,
+						QObject *browserWidget);
 			};
 		};
 	};

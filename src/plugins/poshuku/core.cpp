@@ -756,7 +756,9 @@ namespace LeechCraft
 				if (!view->title ().isEmpty () &&
 						!url.isEmpty () && url != "about:blank")
 					HistoryModel_->addItem (view->title (),
-							url, QDateTime::currentDateTime ());
+							url,
+							QDateTime::currentDateTime (),
+							view->GetBrowserWidget ());
 			}
 
 			void Core::SetupConnections (BrowserWidget *widget)
