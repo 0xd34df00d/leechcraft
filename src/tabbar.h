@@ -28,7 +28,6 @@ namespace LeechCraft
 	public:
 		TabBar (QWidget* = 0);
 	protected:
-		virtual QSize tabSizeHint (int) const;
 		virtual void tabInserted (int);
 		virtual void tabRemoved (int);
 	signals:

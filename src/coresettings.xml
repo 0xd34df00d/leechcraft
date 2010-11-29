@@ -10,9 +10,6 @@
 			<item type="checkbox" property="ShowMenuBarAsButton" state="off">
 				<label lang="en" value="Show menu bar as button" />
 			</item>
-			<item type="checkbox" property="TrySmarterTabsWidth" state="on">
-				<label lang="en" value="Try smarter tabs width calculation" />
-			</item>
 			<item type="combobox" property="IconSize">
 				<label lang="en" value="Icon size" />
 				<option name="0" default="true">
