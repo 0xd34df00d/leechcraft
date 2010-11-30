@@ -33,8 +33,9 @@ namespace LeechCraft
 				Ui_.setupUi (this);
 				Ui_.Label_->setText (tr ("Search %1 with:").arg (text));
 
-				QStringList categories = Core::Instance ().GetProxy ()->GetSearchCategories ();
-				Q_FOREACH (QString cat, categories)
+				const QStringList& categories = Core::Instance ()
+						.GetProxy ()->GetSearchCategories ();
+				Q_FOREACH (const QString& cat, categories)
 					new QTreeWidgetItem (Ui_.Tree_, QStringList (cat));
 
 				on_MarkAll__released ();
