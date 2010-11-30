@@ -75,7 +75,7 @@ namespace LeechCraft
 						// IMUCEntry
 						MUCFeatures GetMUCFeatures () const;
 						QString GetMUCSubject () const;
-						QList<ICLEntry*> GetParticipants ();
+						QList<QObject*> GetParticipants ();
 
 						gloox::MUCRoom* GetRoom ();
 

@@ -38,7 +38,7 @@ namespace LeechCraft
 				{
 					GlooxProtocol::GlooxProtocol (QObject *parent)
 					: QObject (parent)
-					, ParentProtocolPlugin_ (qobject_cast<IProtocolPlugin*> (parent))
+					, ParentProtocolPlugin_ (parent)
 					{
 						RestoreAccounts ();
 					}
@@ -57,15 +57,15 @@ namespace LeechCraft
 						return PFSupportsMUCs | PFMUCsJoinable;
 					}
 
-					QList<IAccount*> GlooxProtocol::GetRegisteredAccounts ()
+					QList<QObject*> GlooxProtocol::GetRegisteredAccounts ()
 					{
-						QList<IAccount*> result;
+						QList<QObject*> result;
 						Q_FOREACH (GlooxAccount *acc, Accounts_)
-							result << static_cast<IAccount*> (acc);
+							result << acc;
 						return result;
 					}
 
-					IProtocolPlugin* GlooxProtocol::GetParentProtocolPlugin () const
+					QObject* GlooxProtocol::GetParentProtocolPlugin () const
 					{
 						return ParentProtocolPlugin_;
 					}
@@ -122,9 +122,9 @@ namespace LeechCraft
 								dlg.GetRoom (), dlg.GetNickname ());
 					}
 
-					void GlooxProtocol::RemoveAccount (IAccount *acc)
+					void GlooxProtocol::RemoveAccount (QObject *acc)
 					{
-						GlooxAccount *accObj = qobject_cast<GlooxAccount*> (acc->GetObject ());
+						GlooxAccount *accObj = qobject_cast<GlooxAccount*> (acc);
 						Accounts_.removeAll (accObj);
 						emit accountRemoved (accObj);
 						accObj->deleteLater ();

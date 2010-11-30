@@ -41,7 +41,7 @@ namespace LeechCraft
 						Q_OBJECT
 						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
 
-						IProtocolPlugin *ParentProtocolPlugin_;
+						QObject *ParentProtocolPlugin_;
 						QList<GlooxAccount*> Accounts_;
 					public:
 						GlooxProtocol (QObject*);
@@ -49,13 +49,13 @@ namespace LeechCraft
 
 						QObject* GetObject ();
 						ProtocolFeatures GetFeatures () const;
-						QList<IAccount*> GetRegisteredAccounts ();
-						IProtocolPlugin* GetParentProtocolPlugin () const;
+						QList<QObject*> GetRegisteredAccounts ();
+						QObject* GetParentProtocolPlugin () const;
 						QString GetProtocolName () const;
 						QByteArray GetProtocolID () const;
 						void InitiateAccountRegistration ();
 						void InitiateMUCJoin ();
-						void RemoveAccount (IAccount*);
+						void RemoveAccount (QObject*);
 					private:
 						void RestoreAccounts ();
 					private slots:

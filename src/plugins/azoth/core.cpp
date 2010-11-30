@@ -121,7 +121,20 @@ namespace LeechCraft
 					Plugins::IProtocolPlugin *protoPlug =
 							qobject_cast<Plugins::IProtocolPlugin*> (protoObj);
 					Q_FOREACH (Plugins::IProtocol *proto, protoPlug->GetProtocols ())
-						result << proto->GetRegisteredAccounts ();
+						Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+						{
+							Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
+							if (!acc)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "account object from protocol"
+										<< proto->GetProtocolID ()
+										<< "doesn't implement IAccount"
+										<< accObj;
+								continue;
+							}
+							result << acc;
+						}
 				}
 				return result;
 			}
@@ -184,9 +197,9 @@ namespace LeechCraft
 							mucJoiners << mucJoiner;
 						}
 
-						Q_FOREACH (Plugins::IAccount *account,
+						Q_FOREACH (QObject *accObj,
 								proto->GetRegisteredAccounts ())
-							addAccount (account->GetObject ());
+							addAccount (accObj);
 
 						connect (proto->GetObject (),
 								SIGNAL (accountAdded (QObject*)),

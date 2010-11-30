@@ -87,7 +87,7 @@ namespace LeechCraft
 					 *
 					 * @return The list of participants of this MUC.
 					 */
-					virtual QList<ICLEntry*> GetParticipants () = 0;
+					virtual QList<QObject*> GetParticipants () = 0;
 
 					/** @brief Notifies about new participants in the room.
 					 *

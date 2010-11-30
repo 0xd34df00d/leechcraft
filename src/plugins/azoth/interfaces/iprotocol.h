@@ -78,7 +78,7 @@ namespace LeechCraft
 					 *
 					 * @return The list of accoutns of this protocol.
 					 */
-					virtual QList<IAccount*> GetRegisteredAccounts () = 0;
+					virtual QList<QObject*> GetRegisteredAccounts () = 0;
 
 					/** Returns the pointer to the parent protocol
 					 * plugin that this protocol belongs to.
@@ -86,7 +86,7 @@ namespace LeechCraft
 					 * @return The parent protocol plugin of this
 					 * protocol.
 					 */
-					virtual IProtocolPlugin* GetParentProtocolPlugin () const = 0;
+					virtual QObject* GetParentProtocolPlugin () const = 0;
 
 					/** Returns the human-readable name of this
 					 * protocol, like "Jabber" or "ICQ".
@@ -124,7 +124,7 @@ namespace LeechCraft
 					 * If the account is not registered, this function
 					 * should do nothing.
 					 */
-					virtual void RemoveAccount (IAccount *account) = 0;
+					virtual void RemoveAccount (QObject *account) = 0;
 
 					virtual void accountAdded (QObject *account) = 0;
 					virtual void accountRemoved (QObject *account) = 0;

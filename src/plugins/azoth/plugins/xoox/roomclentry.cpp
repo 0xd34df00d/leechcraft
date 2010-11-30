@@ -124,7 +124,7 @@ namespace LeechCraft
 						return RH_->GetSubject ();
 					}
 
-					QList<ICLEntry*> RoomCLEntry::GetParticipants ()
+					QList<QObject*> RoomCLEntry::GetParticipants ()
 					{
 						return RH_->GetParticipants ();
 					}

@@ -184,9 +184,9 @@ namespace LeechCraft
 						return message;
 					}
 
-					QList<ICLEntry*> RoomHandler::GetParticipants () const
+					QList<QObject*> RoomHandler::GetParticipants () const
 					{
-						QList<ICLEntry*> result;
+						QList<QObject*> result;
 						Q_FOREACH (RoomParticipantEntry *rpe, Nick2Entry_.values ())
 							result << rpe;
 						return result;

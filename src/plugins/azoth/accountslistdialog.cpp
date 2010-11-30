@@ -102,7 +102,7 @@ namespace LeechCraft
 							<< "doesn't implement IProtocol";
 					return;
 				}
-				proto->RemoveAccount (acc);
+				proto->RemoveAccount (acc->GetObject ());
 			}
 
 			void AccountsListDialog::handleAccountAdded (QObject *accObj)
