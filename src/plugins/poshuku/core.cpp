@@ -272,7 +272,7 @@ namespace LeechCraft
 				PluginManager_->AddPlugin (plugin);
 			}
 
-			QUrl Core::MakeURL (QString url) const
+			QUrl Core::MakeURL (QString url)
 			{
 				if (url.isEmpty ())
 					return QUrl ();
@@ -280,6 +280,12 @@ namespace LeechCraft
 				url = url.trimmed ();
 				if (url == "localhost")
 					return QUrl ("http://localhost");
+
+				if (url.startsWith ('!'))
+				{
+					HandleSearchRequest (url);
+					return QUrl ();
+				}
 
 				QHostAddress testAddress;
 				bool success = testAddress.setAddress (url);
@@ -790,6 +796,20 @@ namespace LeechCraft
 						SIGNAL (urlChanged (const QString&)),
 						this,
 						SLOT (handleURLChanged (const QString&)));
+			}
+
+			void Core::HandleSearchRequest (const QString& url)
+			{
+				const int pos = url.indexOf (' ');
+				const QString& category = url.mid (1, pos - 1);
+				const QString& query = url.mid (pos + 1);
+
+				Entity e = Util::MakeEntity (query,
+						QString (),
+						FromUserInitiated,
+						"x-leechcraft/category-search-request");
+				e.Additional_ ["Categories"] = QStringList (category);
+				emit gotEntity (e);
 			}
 
 			void Core::importXbel ()

@@ -119,7 +119,7 @@ namespace LeechCraft
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
 
-				QUrl MakeURL (QString) const;
+				QUrl MakeURL (QString);
 				BrowserWidget* NewURL (const QUrl&, bool = false);
 				BrowserWidget* NewURL (const QString&, bool = false);
 				IWebWidget* GetWidget ();
@@ -154,6 +154,7 @@ namespace LeechCraft
 				 * and deown mode.
 				 */
 				void SetupConnections (BrowserWidget *widget);
+				void HandleSearchRequest (const QString&);
 			public slots:
 				void importXbel ();
 				void exportXbel ();

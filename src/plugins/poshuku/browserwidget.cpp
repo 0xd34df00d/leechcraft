@@ -549,7 +549,7 @@ namespace LeechCraft
 				if (proxy->IsCancelled ())
 					return;
 
-				if (!url.isEmpty ())
+				if (!url.isEmpty () && url.isValid ())
 				{
 					HtmlMode_ = false;
 					Ui_.WebView_->Load (url);
