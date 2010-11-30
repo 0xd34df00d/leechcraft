@@ -58,16 +58,11 @@ namespace LeechCraft
 				QAction *ImportXbel_;
 				QAction *ExportXbel_;
 				QAction *CheckFavorites_;
+				QAction *ReloadAll_;
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 			public:
-				enum Actions
-				{
-					EAImportXbel_ = BrowserWidget::ActionMax + 1,
-					EAExportXbel_,
-					EACheckFavorites_
-				};
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
 				void Release ();
@@ -110,6 +105,7 @@ namespace LeechCraft
 				void handleNewTab ();
 				void handleSettingsClicked (const QString&);
 				void handleCheckFavorites ();
+				void handleReloadAll ();
 			signals:
 				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);

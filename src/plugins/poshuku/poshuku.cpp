@@ -108,12 +108,18 @@ namespace LeechCraft
 				ImportXbel_ = new QAction (tr ("Import XBEL..."),
 						this);
 				ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
+
 				ExportXbel_ = new QAction (tr ("Export XBEL..."),
 						this);
 				ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
+
 				CheckFavorites_ = new QAction (tr ("Check favorites..."),
 						this);
 				CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
+
+				ReloadAll_ = new QAction (tr ("Reload all pages"),
+						this);
+				ReloadAll_->setProperty ("ActionIcon", "poshuku_reloadall");
 
 				bool failed = false;
 				if (!Core::Instance ().Init ())
@@ -149,11 +155,16 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleCheckFavorites ()));
+				connect (ReloadAll_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleReloadAll ()));
 
 				const IShortcutProxy *proxy = coreProxy->GetShortcutProxy ();
 				ImportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAImportXbel_"));
 				ExportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAExportXbel_"));
 				CheckFavorites_->setShortcuts (proxy->GetShortcuts (this, "EACheckFavorites_"));
+				ReloadAll_->setShortcuts (proxy->GetShortcuts (this, "EAReloadAll_"));
 
 				ToolMenu_ = new QMenu ("Poshuku",
 						Core::Instance ().GetProxy ()->GetMainWindow ());
@@ -296,6 +307,9 @@ namespace LeechCraft
 				case AEPToolsMenu:
 					result << CheckFavorites_;
 					result << ToolMenu_->menuAction ();
+					break;
+				case AEPCommonContextMenu:
+					result << ReloadAll_;
 					break;
 				default:
 					break;
@@ -520,6 +534,11 @@ namespace LeechCraft
 			void Poshuku::handleCheckFavorites ()
 			{
 				Core::Instance ().CheckFavorites ();
+			}
+
+			void Poshuku::handleReloadAll ()
+			{
+				Core::Instance ().ReloadAll ();
 			}
 		};
 	};

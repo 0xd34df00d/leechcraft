@@ -421,6 +421,13 @@ namespace LeechCraft
 				FavoritesChecker_->Check ();
 			}
 
+			void Core::ReloadAll ()
+			{
+				Q_FOREACH (BrowserWidget *widget, Widgets_)
+					widget->GetWebView ()->
+							pageAction (QWebPage::Reload)->trigger ();
+			}
+
 			FavoritesModel* Core::GetFavoritesModel () const
 			{
 				return FavoritesModel_.get ();

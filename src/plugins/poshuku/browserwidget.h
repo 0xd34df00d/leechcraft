@@ -89,32 +89,6 @@ namespace LeechCraft
 
 				friend class CustomWebView;
 			public:
-				enum Actions
-				{
-					EAAdd2Favorites_,
-					EAFind_,
-					EAPrint_,
-					EAPrintPreview_,
-					EAScreenSave_,
-					EAViewSources_,
-					EAUnused0,
-					EAUnused1,
-					EAZoomIn_,
-					EAZoomOut_,
-					EAZoomReset_,
-					EAUnused2,
-					EAUnused3,
-					EACut_,
-					EACopy_,
-					EAPaste_,
-					EABack_,
-					EAForward_,
-					EAReload_,
-					EAStop_,
-					EARecentlyClosedAction_,
-					ActionMax = 2000
-				};
-
 				BrowserWidget (QWidget* = 0);
 				virtual ~BrowserWidget ();
 				static void SetParentMultiTabs (QObject*);

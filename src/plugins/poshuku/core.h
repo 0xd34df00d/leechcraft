@@ -133,6 +133,7 @@ namespace LeechCraft
 				void ConnectSignals (BrowserWidget *widget);
 
 				void CheckFavorites ();
+				void ReloadAll ();
 
 				FavoritesModel* GetFavoritesModel () const;
 				HistoryModel* GetHistoryModel () const;
