@@ -61,7 +61,7 @@ namespace LeechCraft
 						QSet<QByteArray> GetPluginClasses () const;
 
 						QObject* GetObject ();
-						QList<IProtocol*> GetProtocols () const;
+						QList<QObject*> GetProtocols () const;
 					signals:
 						void gotEntity (const LeechCraft::Entity&);
 					};

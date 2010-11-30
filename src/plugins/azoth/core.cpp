@@ -120,7 +120,9 @@ namespace LeechCraft
 				{
 					Plugins::IProtocolPlugin *protoPlug =
 							qobject_cast<Plugins::IProtocolPlugin*> (protoObj);
-					Q_FOREACH (Plugins::IProtocol *proto, protoPlug->GetProtocols ())
+					Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+					{
+						Plugins::IProtocol *proto = qobject_cast<Plugins::IProtocol*> (protoObj);
 						Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
 						{
 							Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
@@ -135,6 +137,7 @@ namespace LeechCraft
 							}
 							result << acc;
 						}
+					}
 				}
 				return result;
 			}
@@ -170,8 +173,9 @@ namespace LeechCraft
 					QIcon icon = qobject_cast<IInfo*> (plugin)->GetIcon ();
 					QList<QAction*> creators;
 					QList<QAction*> mucJoiners;
-					Q_FOREACH (Plugins::IProtocol *proto, ipp->GetProtocols ())
+					Q_FOREACH (QObject *protoObj, ipp->GetProtocols ())
 					{
+						Plugins::IProtocol *proto = qobject_cast<Plugins::IProtocol*> (protoObj);
 						QAction *accountCreator = new QAction (icon,
 								proto->GetProtocolName (), this);
 						accountCreator->setData (QVariant::fromValue<QObject*> (proto->GetObject ()));

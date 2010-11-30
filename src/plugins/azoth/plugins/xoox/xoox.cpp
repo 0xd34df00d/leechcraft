@@ -103,10 +103,10 @@ namespace LeechCraft
 						return this;
 					}
 
-					QList<IProtocol*> Plugin::GetProtocols () const
+					QList<QObject*> Plugin::GetProtocols () const
 					{
-						QList<IProtocol*> result;
-						result << qobject_cast<IProtocol*> (GlooxProtocol_.get ());
+						QList<QObject*> result;
+						result << qobject_cast<QObject*> (GlooxProtocol_.get ());
 						return result;
 					}
 				}
