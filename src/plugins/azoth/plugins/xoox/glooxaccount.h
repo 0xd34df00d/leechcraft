@@ -93,7 +93,7 @@ namespace LeechCraft
 						QByteArray Serialize () const;
 						static GlooxAccount* Deserialize (const QByteArray&, QObject*);
 
-						IMessage* CreateMessage (IMessage::MessageType,
+						QObject* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&,
 								gloox::RosterItem*);
 					public slots:

@@ -45,7 +45,7 @@ namespace LeechCraft
 						return this;
 					}
 
-					IAccount* RoomCLEntry::GetParentAccount () const
+					QObject* RoomCLEntry::GetParentAccount () const
 					{
 						return Account_;
 					}
@@ -90,7 +90,7 @@ namespace LeechCraft
 						return result;
 					}
 
-					IMessage* RoomCLEntry::CreateMessage (IMessage::MessageType type,
+					QObject* RoomCLEntry::CreateMessage (IMessage::MessageType type,
 							const QString& variant, const QString& text)
 					{
 						if (variant == "")
@@ -99,7 +99,7 @@ namespace LeechCraft
 							return 0;
 					}
 
-					QList<IMessage*> RoomCLEntry::GetAllMessages () const
+					QList<QObject*> RoomCLEntry::GetAllMessages () const
 					{
 						return AllMessages_;
 					}
@@ -142,7 +142,10 @@ namespace LeechCraft
 
 					void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
 					{
-						emit gotNewParticipants (parts);
+						QObjectList objs;
+						Q_FOREACH (ICLEntry *e, parts)
+							objs << e->GetObject ();
+						emit gotNewParticipants (objs);
 					}
 
 					void RoomCLEntry::HandleSubjectChanged (const QString& subj)

@@ -116,7 +116,7 @@ namespace LeechCraft
 					 *
 					 * @return The parent account of this entry.
 					 */
-					virtual IAccount* GetParentAccount () const = 0;
+					virtual QObject* GetParentAccount () const = 0;
 
 					/** Returns the OR-ed combination of Feature flags
 					 * that describes the features supported by this
@@ -211,7 +211,7 @@ namespace LeechCraft
 					 *
 					 * @sa Variants()
 					 */
-					virtual IMessage* CreateMessage (IMessage::MessageType type,
+					virtual QObject* CreateMessage (IMessage::MessageType type,
 							const QString& variant,
 							const QString& body) = 0;
 
@@ -226,7 +226,7 @@ namespace LeechCraft
 					 *
 					 * @return The list of messages.
 					 */
-					virtual QList<IMessage*> GetAllMessages () const = 0;
+					virtual QList<QObject*> GetAllMessages () const = 0;
 
 					/** @brief Returns the current status of the item.
 					 *

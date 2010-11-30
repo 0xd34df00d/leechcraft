@@ -233,7 +233,7 @@ namespace LeechCraft
 				{
 					QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
 					clItem->setEditable (false);
-					QObject *accObj = clEntry->GetParentAccount ()->GetObject ();
+					QObject *accObj = clEntry->GetParentAccount ();
 					clItem->setData (QVariant::fromValue<QObject*> (accObj),
 							CLRAccountObject);
 					clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
@@ -481,17 +481,7 @@ namespace LeechCraft
 						continue;
 					}
 
-					Plugins::IAccount *account = entry->GetParentAccount ();
-					if (!account)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "parent account of"
-								<< item
-								<< "is null";
-						continue;
-					}
-
-					QObject *accountObj = account->GetObject ();
+					QObject *accountObj = entry->GetParentAccount ();
 					if (!accountObj)
 					{
 						qWarning () << Q_FUNC_INFO

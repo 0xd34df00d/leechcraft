@@ -47,7 +47,6 @@ namespace LeechCraft
 
 						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
 
-						IAccount *ParentAccount_;
 						GlooxAccount *ParentAccountObject_;
 						gloox::RosterItem *RI_;
 						EntryStatus CurrentStatus_;
@@ -57,7 +56,7 @@ namespace LeechCraft
 						void UpdateRI (gloox::RosterItem*);
 
 						// ICLEntry
-						IAccount* GetParentAccount () const;
+						QObject* GetParentAccount () const;
 						Features GetEntryFeatures () const;
 						EntryType GetEntryType () const;
 						QString GetEntryName () const;
@@ -65,7 +64,7 @@ namespace LeechCraft
 						QByteArray GetEntryID () const;
 						QStringList Groups () const;
 						QStringList Variants () const;
-						IMessage* CreateMessage (IMessage::MessageType,
+						QObject* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 					signals:
 						void availableVariantsChanged (const QStringList&);

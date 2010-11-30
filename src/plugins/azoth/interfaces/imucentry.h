@@ -96,7 +96,7 @@ namespace LeechCraft
 					 *
 					 * @note This function is expected to be a signal.
 					 */
-					virtual void gotNewParticipants (const QList<ICLEntry*>&) = 0;
+					virtual void gotNewParticipants (const QList<QObject*>&) = 0;
 
 					/** @brief Notifies about subject change.
 					 *

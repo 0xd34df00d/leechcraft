@@ -231,7 +231,7 @@ namespace LeechCraft
 						return result;
 					}
 
-					IMessage* GlooxAccount::CreateMessage (IMessage::MessageType type,
+					QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
 							const QString& variant, const QString& body,
 							gloox::RosterItem *ri)
 					{

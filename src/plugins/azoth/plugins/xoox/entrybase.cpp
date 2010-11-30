@@ -41,7 +41,7 @@ namespace LeechCraft
 					}
 
 
-					QList<IMessage*> EntryBase::GetAllMessages () const
+					QList<QObject*> EntryBase::GetAllMessages () const
 					{
 						return AllMessages_;
 					}

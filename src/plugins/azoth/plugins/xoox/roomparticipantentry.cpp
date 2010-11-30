@@ -51,7 +51,7 @@ namespace LeechCraft
 						Actions_ << kick;
 					}
 
-					IAccount* RoomParticipantEntry::GetParentAccount () const
+					QObject* RoomParticipantEntry::GetParentAccount () const
 					{
 						return Account_;
 					}
@@ -98,7 +98,7 @@ namespace LeechCraft
 						return QStringList ("");
 					}
 
-					IMessage* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
+					QObject* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
 							const QString&, const QString& body)
 					{
 						return RoomHandler_->CreateMessage (type, Nick_, body);

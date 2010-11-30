@@ -38,14 +38,14 @@ namespace LeechCraft
 					{
 						Q_OBJECT
 					protected:
-						QList<IMessage*> AllMessages_;
+						QList<QObject*> AllMessages_;
 						EntryStatus CurrentStatus_;
 						QList<QAction*> Actions_;
 					public:
 						EntryBase (QObject* = 0);
 
 						virtual QObject* GetObject ();
-						virtual QList<IMessage*> GetAllMessages () const;
+						virtual QList<QObject*> GetAllMessages () const;
 						EntryStatus GetStatus () const;
 						QList<QAction*> GetActions ();
 

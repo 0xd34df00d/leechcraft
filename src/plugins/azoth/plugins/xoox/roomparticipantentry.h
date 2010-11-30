@@ -48,7 +48,7 @@ namespace LeechCraft
 					public:
 						RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
-						IAccount* GetParentAccount () const ;
+						QObject* GetParentAccount () const ;
 						Features GetEntryFeatures () const;
 						EntryType GetEntryType () const;
 						QString GetEntryName () const;
@@ -56,7 +56,7 @@ namespace LeechCraft
 						QByteArray GetEntryID () const;
 						QStringList Groups () const;
 						QStringList Variants () const;
-						IMessage* CreateMessage (IMessage::MessageType,
+						QObject* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 					private slots:
 						void handleKickRequested ();

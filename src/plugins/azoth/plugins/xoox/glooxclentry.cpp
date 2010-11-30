@@ -38,7 +38,6 @@ namespace LeechCraft
 				{
 					GlooxCLEntry::GlooxCLEntry (gloox::RosterItem *ri, GlooxAccount *parent)
 					: EntryBase (parent)
-					, ParentAccount_ (qobject_cast<IAccount*> (parent))
 					, ParentAccountObject_ (parent)
 					, RI_ (ri)
 					{
@@ -49,9 +48,9 @@ namespace LeechCraft
 						RI_ = ri;
 					}
 
-					IAccount* GlooxCLEntry::GetParentAccount () const
+					QObject* GlooxCLEntry::GetParentAccount () const
 					{
-						return ParentAccount_;
+						return ParentAccountObject_;
 					}
 
 					ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
@@ -75,7 +74,7 @@ namespace LeechCraft
 					void GlooxCLEntry::SetEntryName (const QString& name)
 					{
 						RI_->setName (name.toUtf8 ().constData ());
-						ParentAccount_->Synchronize ();
+						ParentAccountObject_->Synchronize ();
 					}
 
 					QByteArray GlooxCLEntry::GetEntryID () const
@@ -115,10 +114,10 @@ namespace LeechCraft
 						return result;
 					}
 
-					IMessage* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
+					QObject* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
 							const QString& variant, const QString& text)
 					{
-						IMessage *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
+						QObject *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
 						AllMessages_ << msg;
 						return msg;
 					}

@@ -51,14 +51,14 @@ namespace LeechCraft
 									  LeechCraft::Plugins::Azoth::Plugins::IMUCEntry);
 
 						GlooxAccount *Account_;
-						QList<IMessage*> AllMessages_;
+						QList<QObject*> AllMessages_;
 						RoomHandler *RH_;
 					public:
 						RoomCLEntry (RoomHandler*, GlooxAccount*);
 
 						// ICLEntry
 						QObject* GetObject ();
-						IAccount* GetParentAccount () const ;
+						QObject* GetParentAccount () const ;
 						Features GetEntryFeatures () const;
 						EntryType GetEntryType () const;
 						QString GetEntryName () const;
@@ -66,9 +66,9 @@ namespace LeechCraft
 						QByteArray GetEntryID () const;
 						QStringList Groups () const;
 						QStringList Variants () const;
-						IMessage* CreateMessage (IMessage::MessageType,
+						QObject* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
-						QList<IMessage*> GetAllMessages () const;
+						QList<QObject*> GetAllMessages () const;
 						EntryStatus GetStatus () const;
 						QList<QAction*> GetActions ();
 
@@ -87,7 +87,7 @@ namespace LeechCraft
 						void statusChanged (const Plugins::EntryStatus&);
 						void availableVariantsChanged (const QStringList&);
 
-						void gotNewParticipants (const QList<Plugins::ICLEntry*>&);
+						void gotNewParticipants (const QList<QObject*>&);
 						void mucSubjectChanged (const QString&);
 					};
 				}

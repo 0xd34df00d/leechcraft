@@ -92,10 +92,23 @@ namespace LeechCraft
 						SLOT (handleEntryMessage (QObject*)));
 
 				Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
-				Q_FOREACH (Plugins::IMessage *msg, e->GetAllMessages ())
+				Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
+				{
+					Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
+					if (!msg)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to cast message to IMessage"
+								<< msgObj;
+						continue;
+					}
 					AppendMessage (msg);
+				}
 
-				Ui_.AccountName_->setText (e->GetParentAccount ()->GetAccountName ());
+				const QString& accName =
+						qobject_cast<Plugins::IAccount*> (e->GetParentAccount ())->
+								GetAccountName ();
+				Ui_.AccountName_->setText (accName);
 
 				CheckMUC ();
 
@@ -161,7 +174,17 @@ namespace LeechCraft
 						e->GetEntryType () == Plugins::ICLEntry::ETMUC ?
 								Plugins::IMessage::MTMUCMessage :
 								Plugins::IMessage::MTChatMessage;
-				Plugins::IMessage *msg = e->CreateMessage (type, variant, text);
+				QObject *msgObj = e->CreateMessage (type, variant, text);
+				Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
+				if (!msg)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cast message from"
+							<< e->GetEntryID ()
+							<< "to IMessage"
+							<< msgObj;
+					return;
+				}
 				msg->Send ();
 				AppendMessage (msg);
 			}
