@@ -47,7 +47,7 @@ namespace LeechCraft
 
 						MessageType Type_;
 						Direction Direction_;
-						ICLEntry *Entry_;
+						QObject *Entry_;
 						QString Body_;
 						QString Variant_;
 						gloox::MessageSession *Session_;
@@ -55,17 +55,17 @@ namespace LeechCraft
 					public:
 						GlooxMessage (IMessage::MessageType type,
 								IMessage::Direction direction,
-								ICLEntry *entry,
+								QObject *entry,
 								gloox::MessageSession *session);
 						GlooxMessage (const gloox::Message& msg,
-								ICLEntry *entry,
+								QObject *entry,
 								gloox::MessageSession *session);
 
 						QObject* GetObject ();
 						void Send ();
 						Direction GetDirection () const;
 						MessageType GetMessageType () const;
-						ICLEntry* OtherPart () const;
+						QObject* OtherPart () const;
 						QString GetOtherVariant () const;
 						QString GetBody () const;
 						void SetBody (const QString&);

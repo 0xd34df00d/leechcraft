@@ -310,8 +310,18 @@ namespace LeechCraft
 
 			void ChatTab::AppendMessage (Plugins::IMessage *msg)
 			{
+				Plugins::ICLEntry *other = qobject_cast<Plugins::ICLEntry*> (msg->OtherPart ());
+				if (!other && msg->OtherPart ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "message's other part doesn't implement ICLEntry"
+							<< msg->GetObject ()
+							<< msg->OtherPart ();
+					return;
+				}
+
 				if (msg->GetDirection () == Plugins::IMessage::DOut &&
-						msg->OtherPart ()->GetEntryType () == Plugins::ICLEntry::ETMUC)
+						other->GetEntryType () == Plugins::ICLEntry::ETMUC)
 					return;
 
 				QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
@@ -332,7 +342,7 @@ namespace LeechCraft
 					case Plugins::IMessage::MTChatMessage:
 					case Plugins::IMessage::MTMUCMessage:
 					{
-						QString entryName = Qt::escape (msg->OtherPart ()->GetEntryName ());
+						QString entryName = Qt::escape (other->GetEntryName ());
 						entryName = FormatNickname (entryName, msg);
 
 						if (body.startsWith ("/me "))

@@ -103,7 +103,7 @@ namespace LeechCraft
 					 * contact list representation of the participant
 					 * that sent the message.
 					 */
-					virtual ICLEntry* OtherPart () const = 0;
+					virtual QObject* OtherPart () const = 0;
 					virtual QString GetOtherVariant () const = 0;
 					virtual QString GetBody () const = 0;
 					virtual void SetBody (const QString&) = 0;

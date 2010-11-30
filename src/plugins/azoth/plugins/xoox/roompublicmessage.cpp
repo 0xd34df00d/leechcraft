@@ -100,7 +100,7 @@ namespace LeechCraft
 						return Type_;
 					}
 
-					ICLEntry* RoomPublicMessage::OtherPart () const
+					QObject* RoomPublicMessage::OtherPart () const
 					{
 						switch (Direction_)
 						{

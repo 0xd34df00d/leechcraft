@@ -571,15 +571,24 @@ namespace LeechCraft
 					return;
 				}
 
+				Plugins::ICLEntry *other = qobject_cast<Plugins::ICLEntry*> (msg->OtherPart ());
+				if (!other && msg->OtherPart ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "message's other part cannot be cast to ICLEntry"
+							<< msg->OtherPart ();
+					return;
+				}
+
 				bool shouldShow = msg->GetDirection () == Plugins::IMessage::DIn &&
 						msg->GetMessageType () == Plugins::IMessage::MTChatMessage &&
-						!ChatTabsManager_->IsActiveChat (msg->OtherPart ());
+						!ChatTabsManager_->IsActiveChat (other);
 
 				if (shouldShow)
 				{
 					Entity e = Util::MakeNotification ("Azoth",
 							tr ("Incoming chat message from %1.")
-								.arg (msg->OtherPart ()->GetEntryName ()),
+								.arg (other->GetEntryName ()),
 							PInfo_);
 					emit gotEntity (e);
 				}

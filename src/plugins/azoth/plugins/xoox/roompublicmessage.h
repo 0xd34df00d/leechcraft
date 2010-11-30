@@ -63,7 +63,7 @@ namespace LeechCraft
 						/** Since it's outgoing message, the other part
 						 * always equals to the room entry.
 						 */
-						ICLEntry* OtherPart () const;
+						QObject* OtherPart () const;
 						QString GetOtherVariant () const;
 						QString GetBody () const;
 						void SetBody (const QString&);
