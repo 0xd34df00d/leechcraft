@@ -151,6 +151,9 @@ namespace LeechCraft
 
 			void CustomWebView::Load (const QUrl& url, QString title)
 			{
+				if (url.isEmpty () || !url.isValid ())
+					return;
+
 				if (url.scheme () == "javascript")
 				{
 					QVariant result = page ()->mainFrame ()->
