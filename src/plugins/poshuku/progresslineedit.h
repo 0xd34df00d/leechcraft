@@ -39,6 +39,8 @@ namespace LeechCraft
 				ProgressLineEdit (QWidget* = 0);
 				virtual ~ProgressLineEdit ();
 				bool IsCompleting () const;
+			private slots:
+				void handleCompleterActivated ();
 			};
 		};
 	};
