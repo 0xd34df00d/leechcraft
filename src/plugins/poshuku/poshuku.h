@@ -95,7 +95,6 @@ namespace LeechCraft
 				void SetShortcut (const QString&, const QKeySequences_t&);
 				QMap<QString, ActionInfo> GetActionInfo () const;
 
-				QList<QMenu*> GetToolMenus () const;
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			public slots:
 				void newTabRequested ();

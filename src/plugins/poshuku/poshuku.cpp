@@ -287,13 +287,6 @@ namespace LeechCraft
 				return result;
 			}
 
-			QList<QMenu*> Poshuku::GetToolMenus () const
-			{
-				QList<QMenu*> result;
-				result << ToolMenu_;
-				return result;
-			}
-
 			QList<QAction*> Poshuku::GetActions (ActionsEmbedPlace place) const
 			{
 				QList<QAction*> result;
