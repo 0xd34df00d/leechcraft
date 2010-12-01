@@ -507,6 +507,9 @@ namespace LeechCraft
 					return proxy->GetReturnValue ().toString ();
 				}
 
+				return QString ();
+
+				/*
 #if defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
 				QString winver = "unknown Windows";
 				switch (QSysInfo::windowsVersion ())
@@ -672,6 +675,7 @@ namespace LeechCraft
 					.arg (LEECHCRAFT_VERSION)
 					.arg (QT_VERSION_STR)
 					.arg (qVersion ());
+					*/
 			}
 
 			void Core::Unregister (BrowserWidget *widget)
