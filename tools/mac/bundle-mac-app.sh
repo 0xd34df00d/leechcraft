@@ -24,5 +24,6 @@ cp -r $BUILD_DIR/lib/leechcraft/plugins                   leechcraft.app/Content
 cp -r $BUILD_DIR/share/leechcraft/installed/              leechcraft.app/Contents/
 
 
-#AHTUNG!!111 Setup your own path to boost dylibs
-cp ~/Library/boost-trunk/stage/lib/libboost_*.dylib       leechcraft.app/Contents/MacOS/
+#AHTUNG!!111 Setup your own path to dylibs
+cp /usr/local/lib/libboost_*.dylib   leechcraft.app/Contents/MacOS/
+cp /usr/local/lib/libtorrent-rasterbar*dylib   leechcraft.app/Contents/MacOS/
