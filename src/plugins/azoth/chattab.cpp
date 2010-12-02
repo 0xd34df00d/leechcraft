@@ -243,7 +243,6 @@ namespace LeechCraft
 
 			void ChatTab::handleViewLinkClicked (const QUrl& url)
 			{
-				qDebug () << url.scheme () << url.host () << url.path ();
 				if (url.scheme () != "azoth")
 				{
 					Entity e = Util::MakeEntity (url,

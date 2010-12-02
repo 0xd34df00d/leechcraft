@@ -44,15 +44,15 @@ namespace LeechCraft
 						QObject *message);
 				void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
 						QObject *chatTab,
-						QString string,
+						QString nick,
 						QObject *message);
 				void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
 						QObject *chatTab,
-						QString string,
+						QString body,
 						QObject *message);
 				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 						QObject *chatTab,
-						QString string,
+						QString body,
 						QObject *message);
 				void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 						QObject *chatTab,
