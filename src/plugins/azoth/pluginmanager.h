@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINMANAGER_H
 #define PLUGINS_AZOTH_PLUGINMANAGER_H
 #include <QString>
+#include <QDateTime>
 #include <plugininterface/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 
@@ -38,16 +39,20 @@ namespace LeechCraft
 				PluginManager (QObject* = 0);
 			signals:
 				void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
-						QDateTime *dateTime,
+						QObject *chatTab,
+						QDateTime dateTime,
 						QObject *message);
 				void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
-						QString *string,
+						QObject *chatTab,
+						QString string,
 						QObject *message);
 				void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
-						QString *string,
+						QObject *chatTab,
+						QString string,
 						QObject *message);
 				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-						QString *string,
+						QObject *chatTab,
+						QString string,
 						QObject *message);
 				void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 						QObject *chatTab,

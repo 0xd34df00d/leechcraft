@@ -43,6 +43,11 @@ namespace LeechCraft
 			{
 				Proxy_->SetReturnValue (val);
 			}
+
+			void HookProxyWrapper::SetValue (const QByteArray& name, const QVariant& value)
+			{
+				Proxy_->SetValue (name, value);
+			}
 		};
 	};
 };

@@ -66,6 +66,8 @@ namespace LeechCraft
 		 * @param[in] value The new return value of this hook.
 		 */
 		virtual void SetReturnValue (const QVariant& value) = 0;
+
+		virtual void SetValue (const QByteArray& name, const QVariant& value) = 0;
 	};
 
 	typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;

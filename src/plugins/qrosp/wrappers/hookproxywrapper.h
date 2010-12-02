@@ -39,6 +39,7 @@ namespace LeechCraft
 				void CancelDefault ();
 				const QVariant& GetReturnValue () const;
 				void SetReturnValue (const QVariant&);
+				void SetValue (const QByteArray&, const QVariant&);
 			};
 		};
 	};

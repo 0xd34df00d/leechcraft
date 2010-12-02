@@ -177,9 +177,18 @@ namespace LeechCraft
 								Plugins::IMessage::MTMUCMessage :
 								Plugins::IMessage::MTChatMessage;
 
-				QObject *msgObj = e->CreateMessage (type, variant, text);
-
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				emit hookMessageWillCreated (proxy, this, type, variant, text);
+				if (proxy->IsCancelled ())
+					return;
+
+				int intType = type;
+				proxy->FillValue ("type", intType);
+				type = static_cast<Plugins::IMessage::MessageType> (intType);
+				proxy->FillValue ("variant", variant);
+				proxy->FillValue ("text", text);
+
+				QObject *msgObj = e->CreateMessage (type, variant, text);
 
 				Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
 				if (!msg)
@@ -192,7 +201,10 @@ namespace LeechCraft
 					return;
 				}
 
+				proxy.reset (new Util::DefaultHookProxy ());
 				emit hookMessageCreated (proxy, this, msg->GetObject ());
+				if (proxy->IsCancelled ())
+					return;
 
 				msg->Send ();
 				AppendMessage (msg);
@@ -394,9 +406,11 @@ namespace LeechCraft
 			QString ChatTab::FormatDate (QDateTime dt, Plugins::IMessage *msg)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				emit hookFormatDateTime (proxy, &dt, msg->GetObject ());
+				emit hookFormatDateTime (proxy, this, dt, msg->GetObject ());
 				if (proxy->IsCancelled ())
 					return proxy->GetReturnValue ().toString ();
+
+				proxy->FillValue ("dateTime", dt);
 
 				QString str = dt.time ().toString ();
 				return QString ("<span class='datetime' style='color:green'>[" +
@@ -406,9 +420,11 @@ namespace LeechCraft
 			QString ChatTab::FormatNickname (QString nick, Plugins::IMessage *msg)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				emit hookFormatNickname (proxy, &nick, msg->GetObject ());
+				emit hookFormatNickname (proxy, this, nick, msg->GetObject ());
 				if (proxy->IsCancelled ())
-					return nick;
+					return proxy->GetReturnValue ().toString ();
+
+				proxy->FillValue ("nick", nick);
 
 				QString string;
 
@@ -463,9 +479,10 @@ namespace LeechCraft
 				QObject *msgObj = msg->GetObject ();
 
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				emit hookFormatBodyBegin (proxy, &body, msgObj);
+				emit hookFormatBodyBegin (proxy, this, body, msgObj);
 				if (!proxy->IsCancelled ())
 				{
+					proxy->FillValue ("body", body);
 					body = Qt::escape (body);
 					body.replace ('\n', "<br />");
 					body.replace ("  ", "&nbsp; ");
@@ -481,7 +498,9 @@ namespace LeechCraft
 						pos += str.length ();
 					}
 
-					emit hookFormatBodyEnd (proxy, &body, msgObj);
+					proxy.reset (new Util::DefaultHookProxy);
+					emit hookFormatBodyEnd (proxy, this, body, msgObj);
+					proxy->FillValue ("body", body);
 				}
 
 				return proxy->IsCancelled () ?

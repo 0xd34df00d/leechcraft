@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QPointer>
 #include <QPersistentModelIndex>
+#include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/imultitabs.h>
 #include "ui_chattab.h"
@@ -94,16 +95,20 @@ namespace LeechCraft
 
 				// Hooks
 				void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
-						QDateTime *dateTime,
+						QObject *chatTab,
+						QDateTime dateTime,
 						QObject *message);
 				void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
-						QString *string,
+						QObject *chatTab,
+						QString string,
 						QObject *message);
 				void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
-						QString *string,
+						QObject *chatTab,
+						QString string,
 						QObject *message);
 				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-						QString *string,
+						QObject *chatTab,
+						QString string,
 						QObject *message);
 				void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 						QObject *chatTab,
