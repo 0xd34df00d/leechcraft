@@ -21,6 +21,7 @@
 #include <QApplication>
 #include <KDE/KGlobal>
 #include <KDE/KCrash>
+#include <kdeversion.h>
 #include <plugininterface/util.h>
 
 namespace LeechCraft
@@ -37,7 +38,11 @@ namespace LeechCraft
 				{
 					KCrash::setApplicationPath (qApp->applicationDirPath ());
 					KCrash::setApplicationName ("LeechCraft");
+#if KDE_VERSION_MINOR < 5
 					KCrash::setCrashHandler (KCrash::defaultCrashHandler);
+#else
+					KCrash::setDrKonqiEnabled (true);;
+#endif
 				}
 			}
 
