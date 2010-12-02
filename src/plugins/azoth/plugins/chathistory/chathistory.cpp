@@ -87,9 +87,9 @@ namespace LeechCraft
 						return result;
 					}
 
-					void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject* chatTab, QObject* message)
+					void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
+							QObject *chatTab, QObject *message)
 					{
-						qDebug () << Q_FUNC_INFO;
 					}
 				}
 			}
