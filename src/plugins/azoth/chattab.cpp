@@ -80,6 +80,8 @@ namespace LeechCraft
 							BgColor_.name ());
 					data.replace ("FOREGROUNDCOLOR",
 							QApplication::palette ().color (QPalette::Text).name ());
+					data.replace ("LINKCOLOR",
+							QApplication::palette ().color (QPalette::Link).name ());
 					Ui_.View_->setHtml (data);
 				}
 
