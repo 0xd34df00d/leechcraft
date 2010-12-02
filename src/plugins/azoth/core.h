@@ -45,6 +45,7 @@ namespace LeechCraft
 			}
 
 			class ChatTabsManager;
+			class PluginManager;
 
 			class Core : public QObject
 			{
@@ -70,6 +71,8 @@ namespace LeechCraft
 				ID2Entry_t ID2Entry_;
 
 				Util::ResourceLoader *CLIconLoader_;
+
+				boost::shared_ptr<PluginManager> PluginManager_;
 
 				Core ();
 			public:
@@ -100,6 +103,7 @@ namespace LeechCraft
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
+				void RegisterHookable (QObject*);
 
 				const QObjectList& GetProtocolPlugins () const;
 

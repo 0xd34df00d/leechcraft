@@ -58,6 +58,8 @@ namespace LeechCraft
 			{
 				Ui_.setupUi (this);
 
+				Core::Instance ().RegisterHookable (this);
+
 				QSize ccSize = Ui_.CharCounter_->size ();
 				ccSize.setWidth (QApplication::fontMetrics ().width (" 9999"));
 				Ui_.CharCounter_->resize (ccSize);
@@ -174,7 +176,11 @@ namespace LeechCraft
 						e->GetEntryType () == Plugins::ICLEntry::ETMUC ?
 								Plugins::IMessage::MTMUCMessage :
 								Plugins::IMessage::MTChatMessage;
+
 				QObject *msgObj = e->CreateMessage (type, variant, text);
+
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+
 				Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
 				if (!msg)
 				{
@@ -185,6 +191,9 @@ namespace LeechCraft
 							<< msgObj;
 					return;
 				}
+
+				emit hookMessageCreated (proxy, this, msg->GetObject ());
+
 				msg->Send ();
 				AppendMessage (msg);
 			}

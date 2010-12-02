@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
 
 namespace LeechCraft
 {
@@ -33,9 +34,10 @@ namespace LeechCraft
 				{
 					class Plugin : public QObject
 								 , public IInfo
+								 , public IPlugin2
 					{
 						Q_OBJECT
-						Q_INTERFACES (IInfo)
+						Q_INTERFACES (IInfo IPlugin2)
 					public:
 						void Init (ICoreProxy_ptr);
 						void SecondInit ();
@@ -48,6 +50,12 @@ namespace LeechCraft
 						QStringList Needs () const;
 						QStringList Uses () const;
 						void SetProvider (QObject*, const QString&);
+
+						QSet<QByteArray> GetPluginClasses () const;
+					public slots:
+						void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+								QObject *chatTab,
+								QObject *message);
 					};
 				}
 			}

@@ -79,6 +79,18 @@ namespace LeechCraft
 					void Plugin::SetProvider (QObject*, const QString&)
 					{
 					}
+
+					QSet<QByteArray> Plugin::GetPluginClasses () const
+					{
+						QSet<QByteArray> result;
+						result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
+						return result;
+					}
+
+					void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject* chatTab, QObject* message)
+					{
+						qDebug () << Q_FUNC_INFO;
+					}
 				}
 			}
 		}

@@ -31,6 +31,7 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
 #include "chattabsmanager.h"
+#include "pluginmanager.h"
 
 namespace LeechCraft
 {
@@ -42,7 +43,10 @@ namespace LeechCraft
 			: CLModel_ (new QStandardItemModel (this))
 			, ChatTabsManager_ (new ChatTabsManager (this))
 			, CLIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
+			, PluginManager_ (new PluginManager)
 			{
+				PluginManager_->RegisterHookable (this);
+
 				CLIconLoader_->AddLocalPrefix ();
 
 				qRegisterMetaType<Plugins::IMessage*> ("LeechCraft::Plugins::Azoth::Plugins::IMessage*");
@@ -68,6 +72,7 @@ namespace LeechCraft
 			QSet<QByteArray> Core::GetExpectedPluginClasses () const
 			{
 				QSet<QByteArray> classes;
+				classes << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 				classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
 				return classes;
 			}
@@ -83,9 +88,16 @@ namespace LeechCraft
 					return;
 				}
 
+				PluginManager_->AddPlugin (plugin);
+
 				QSet<QByteArray> classes = plugin2->GetPluginClasses ();
 				if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin"))
 					AddProtocolPlugin (plugin);
+			}
+
+			void Core::RegisterHookable (QObject *object)
+			{
+				PluginManager_->RegisterHookable (object);
 			}
 
 			const QObjectList& Core::GetProtocolPlugins () const

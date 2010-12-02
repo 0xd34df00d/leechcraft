@@ -34,6 +34,7 @@ SET (SRCS
 	accountslistdialog.cpp
 	setstatusdialog.cpp
 	mucsubjectdialog.cpp
+	pluginmanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -45,6 +46,7 @@ SET (HEADERS
 	accountslistdialog.h
 	setstatusdialog.h
 	mucsubjectdialog.h
+	pluginmanager.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h

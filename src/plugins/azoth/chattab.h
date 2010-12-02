@@ -105,6 +105,14 @@ namespace LeechCraft
 				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 						QString *string,
 						QObject *message);
+				void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+						QObject *chatTab,
+						int type,
+						QString variant,
+						QString text);
+				void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+						QObject *chatTab,
+						QObject *message);
 			};
 
 			typedef QPointer<ChatTab> ChatTab_ptr;
