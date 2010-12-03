@@ -45,8 +45,14 @@ namespace LeechCraft
 					: QObject (parent)
 					, Name_ (name)
 					, ParentProtocol_ (qobject_cast<IProtocol*> (parent))
-					, Priority_ (-1)
 					{
+						AccState_.Priority_ = -1;
+
+						connect (this,
+								SIGNAL (scheduleClientDestruction ()),
+								this,
+								SLOT (handleDestroyClient ()),
+								Qt::QueuedConnection);
 					}
 
 					QObject* GlooxAccount::GetObject ()
@@ -94,26 +100,18 @@ namespace LeechCraft
 							dia->SetNick (Nick_);
 						if (!Resource_.isEmpty ())
 							dia->SetResource (Resource_);
-						dia->SetPriority (Priority_);
+						dia->SetPriority (AccState_.Priority_);
 						if (dia->exec () == QDialog::Rejected)
 							return;
 
 						JID_ = dia->GetJID ();
 						Nick_ = dia->GetNick ();
 						Resource_ = dia->GetResource ();
-						Priority_ = dia->GetPriority ();
+						AccState_.Priority_ = dia->GetPriority ();
 
 						emit accountSettingsChanged ();
 
-						State state = SOnline;
-						QString status;
-						if (ClientConnection_)
-						{
-							const gloox::Presence& pres = ClientConnection_->GetClient ()->presence ();
-							state = static_cast<State> (pres.presence ());
-							status = QString::fromUtf8 (pres.status ().c_str ());
-						}
-						ChangeState (state, status);
+						ChangeState (AccState_.State_, AccState_.Status_);
 					}
 
 					void GlooxAccount::ChangeState (State accState, const QString& status)
@@ -122,22 +120,18 @@ namespace LeechCraft
 								!ClientConnection_)
 							return;
 
-						struct GlooxAccountState state =
-						{
-							accState,
-							status,
-							Priority_
-						};
+						AccState_.State_ = accState;
+						AccState_.Status_ = status;
 
 						if (!ClientConnection_)
 						{
-							// TODO nonmodal
-							QString pwd = QInputDialog::getText (0,
-									"LeechCraft",
-									tr ("Enter password for %1:").arg (JID_));
-
+							const QString& pwd = GetPassword ();
 							gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
-							ClientConnection_.reset (new ClientConnection (jid, pwd, state, this));
+							ClientConnection_.reset (new ClientConnection (jid, pwd, AccState_, this));
+							connect (ClientConnection_.get (),
+									SIGNAL (serverAuthFailed ()),
+									this,
+									SLOT (handleServerAuthFailed ()));
 
 							connect (ClientConnection_.get (),
 									SIGNAL (gotRosterItems (const QList<QObject*>&)),
@@ -153,7 +147,7 @@ namespace LeechCraft
 									SIGNAL (removedCLItems (const QList<QObject*>&)));
 						}
 						else
-							ClientConnection_->SetState (state);
+							ClientConnection_->SetState (AccState_);
 					}
 
 					void GlooxAccount::Synchronize ()
@@ -199,7 +193,7 @@ namespace LeechCraft
 									<< JID_
 									<< Nick_
 									<< Resource_
-									<< Priority_;
+									<< AccState_.Priority_;
 						}
 
 						return result;
@@ -226,7 +220,7 @@ namespace LeechCraft
 						in >> result->JID_
 								>> result->Nick_
 								>> result->Resource_
-								>> result->Priority_;
+								>> result->AccState_.Priority_;
 
 						return result;
 					}
@@ -238,6 +232,14 @@ namespace LeechCraft
 						return ClientConnection_->CreateMessage (type, variant, body, ri);
 					}
 
+					QString GlooxAccount::GetPassword ()
+					{
+						QString result = QInputDialog::getText (0,
+								"LeechCraft",
+								tr ("Enter password for %1:").arg (JID_));
+						return result;
+					}
+
 					void GlooxAccount::handleEntryRemoved (QObject *entry)
 					{
 						emit removedCLItems (QObjectList () << entry);
@@ -246,6 +248,23 @@ namespace LeechCraft
 					void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
 					{
 						emit gotCLItems (items);
+					}
+
+					void GlooxAccount::handleServerAuthFailed ()
+					{
+						const QString& pwd = GetPassword ();
+						if (pwd.isNull ())
+							emit scheduleClientDestruction ();
+						else
+						{
+							ClientConnection_->SetPassword (pwd);
+							ChangeState (AccState_.State_, AccState_.Status_);
+						}
+					}
+
+					void GlooxAccount::handleDestroyClient ()
+					{
+						ClientConnection_.reset ();
 					}
 				}
 			}

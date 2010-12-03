@@ -122,6 +122,11 @@ namespace LeechCraft
 						Client_->rosterManager ()->synchronize ();
 					}
 
+					void ClientConnection::SetPassword (const QString& pwd)
+					{
+						Client_->setPassword (pwd.toUtf8 ().constData ());
+					}
+
 					RoomCLEntry* ClientConnection::JoinRoom (const gloox::JID& jid)
 					{
 						RoomHandler *rh = new RoomHandler (Account_);
@@ -269,6 +274,7 @@ namespace LeechCraft
 								case gloox::SaslNotAuthorized:
 								case gloox::NonSaslNotAuthorized:
 									ae = tr ("initiating entity did not provide valid credentials");
+									emit serverAuthFailed ();
 									break;
 								case gloox::SaslTemporaryAuthFailure:
 									ae = tr ("temporary error withing receiving entity");

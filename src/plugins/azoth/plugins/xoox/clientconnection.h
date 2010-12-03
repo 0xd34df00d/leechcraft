@@ -83,6 +83,9 @@ namespace LeechCraft
 
 						void SetState (const GlooxAccountState&);
 						void Synchronize ();
+
+						void SetPassword (const QString&);
+
 						/** Joins the room and returns the contact list
 						 * entry representing that room.
 						 */
@@ -134,6 +137,8 @@ namespace LeechCraft
 						void rosterItemUpdated (QObject*);
 
 						void gotEntity (const LeechCraft::Entity&);
+
+						void serverAuthFailed ();
 					};
 				}
 			}

@@ -68,9 +68,10 @@ namespace LeechCraft
 						QString JID_;
 						QString Nick_;
 						QString Resource_;
-						qint16 Priority_;
 
 						boost::shared_ptr<ClientConnection> ClientConnection_;
+
+						GlooxAccountState AccState_;
 					public:
 						GlooxAccount (const QString&, QObject*);
 
@@ -96,14 +97,21 @@ namespace LeechCraft
 						QObject* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&,
 								gloox::RosterItem*);
+					private:
+						QString GetPassword ();
 					public slots:
 						void handleEntryRemoved (QObject*);
 						void handleGotRosterItems (const QList<QObject*>&);
+					private slots:
+						void handleServerAuthFailed ();
+						void handleDestroyClient ();
 					signals:
 						void gotCLItems (const QList<QObject*>&);
 						void removedCLItems (const QList<QObject*>&);
 						void joinedGroupchat (QObject*);
 						void accountSettingsChanged ();
+
+						void scheduleClientDestruction ();
 					};
 				}
 			}
