@@ -33,6 +33,7 @@
 #include <QtDebug>
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);
+Q_DECLARE_METATYPE (QVariantList*);
 
 QString LeechCraft::Util::GetUserText (const Entity& p)
 {
@@ -282,4 +283,23 @@ QAction* LeechCraft::Util::CreateSeparator (QObject *parent)
 	QAction *result = new QAction (parent);
 	result->setSeparator (true);
 	return result;
+}
+
+QVariantList LeechCraft::Util::GetPersistentData (const QList<QVariant>& keys,
+		QObject* object)
+{
+	Entity e = MakeEntity (keys,
+			QString (),
+			Internal,
+			"x-leechcraft/data-persistent-load");
+	QVariantList values;
+	e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
+
+	QMetaObject::invokeMethod (object,
+			"delegateEntity",
+			Q_ARG (LeechCraft::Entity, e),
+			Q_ARG (int*, 0),
+			Q_ARG (QObject**, 0));
+
+	return values;
 }

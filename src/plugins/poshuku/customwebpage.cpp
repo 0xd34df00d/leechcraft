@@ -869,14 +869,7 @@ namespace LeechCraft
 				Q_FOREACH (QString name, pairFirstKeys)
 					keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + name.toUtf8 ();
 
-				Entity e = Util::MakeEntity (keys,
-						QString (),
-						Internal,
-						"x-leechcraft/data-persistent-load");
-				QVariantList values;
-				e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
-
-				emit delegateEntity (e, 0, 0);
+				QVariantList values = Util::GetPersistentData (keys, this);
 
 				const int size = keys.size ();
 				if (values.size () != size)

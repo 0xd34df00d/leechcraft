@@ -245,6 +245,9 @@ namespace LeechCraft
 		 */
 		PLUGININTERFACE_API QAction* CreateSeparator (QObject *parent);
 
+		PLUGININTERFACE_API QVariantList GetPersistentData (const QList<QVariant>& keys,
+				QObject *object);
+
 		/** @brief Returns an element for a given tags list.
 		 *
 		 * This function tries to implement projection from tags to a
