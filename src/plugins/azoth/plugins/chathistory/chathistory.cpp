@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "chathistory.h"
-#include "../../interfaces/imessage.h"
+#include <interfaces/imessage.h>
 #include <QIcon>
 
 namespace LeechCraft
@@ -30,8 +30,6 @@ namespace LeechCraft
 			{
 				namespace ChatHistory
 				{
-					class IMessage;
-
 					void Plugin::Init (ICoreProxy_ptr proxy)
 					{
 					}
@@ -93,29 +91,28 @@ namespace LeechCraft
 					void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
 							QObject *chatTab, QObject *message)
 					{
-					    qDebug () << Q_FUNC_INFO;
-					    using LeechCraft::Plugins::Azoth::Plugins::IMessage;
-					    IMessage *msg = qobject_cast<IMessage*> (message);
-					    if (!msg)
-					    {
-						qWarning () << Q_FUNC_INFO
-								<< message
-								<< "doesn't implement IMessage"
-								<< sender ();
-						return;
-					    }
-					    IMessage::Direction direction = msg->GetDirection ();
-					    switch (direction)
-					    {
-						DIn  : qDebug() << "direction : IN";
-						DOut : qDebug() << "direction : OUT";
-					    }
-					    IMessage::MessageType messageType = msg->GetMessageType ();
-					    QObject* otherPart = msg->OtherPart ();
-					    QString otherVariant = msg->GetOtherVariant ();
-					    QString body = msg->GetBody ();
-					    qDebug() << "message body: " << body;
-					    QDateTime timestamp = msg->GetDateTime ();
+						qDebug () << Q_FUNC_INFO;
+						IMessage *msg = qobject_cast<IMessage*> (message);
+						if (!msg)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< message
+									<< "doesn't implement IMessage"
+									<< sender ();
+							return;
+						}
+						IMessage::Direction direction = msg->GetDirection ();
+						switch (direction)
+						{
+							DIn  : qDebug() << "direction : IN";
+							DOut : qDebug() << "direction : OUT";
+						}
+						IMessage::MessageType messageType = msg->GetMessageType ();
+						QObject *otherPart = msg->OtherPart ();
+						QString otherVariant = msg->GetOtherVariant ();
+						QString body = msg->GetBody ();
+						qDebug () << "message body:" << body;
+						QDateTime timestamp = msg->GetDateTime ();
 					}
 				}
 			}
