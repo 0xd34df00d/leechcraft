@@ -33,6 +33,7 @@ namespace LeechCraft
 				{
 					void Plugin::Init (ICoreProxy_ptr proxy)
 					{
+						Proxy_ = 0;
 						GlooxProtocol_.reset (new GlooxProtocol (this));
 						connect (GlooxProtocol_.get (),
 								SIGNAL (gotEntity (const LeechCraft::Entity&)),
@@ -42,6 +43,8 @@ namespace LeechCraft
 
 					void Plugin::SecondInit ()
 					{
+						GlooxProtocol_->SetProxyObject (Proxy_);
+						GlooxProtocol_->Prepare ();
 						Q_FOREACH (QObject *account,
 								GlooxProtocol_->GetRegisteredAccounts ())
 							qobject_cast<IAccount*> (account)->ChangeState (SOnline);
@@ -108,6 +111,11 @@ namespace LeechCraft
 						QList<QObject*> result;
 						result << qobject_cast<QObject*> (GlooxProtocol_.get ());
 						return result;
+					}
+
+					void Plugin::initPlugin (QObject *proxy)
+					{
+						Proxy_ = proxy;
 					}
 				}
 			}

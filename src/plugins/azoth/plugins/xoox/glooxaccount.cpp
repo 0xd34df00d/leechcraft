@@ -23,6 +23,8 @@
 #include <gloox/client.h>
 #include <gloox/message.h>
 #include <interfaces/iprotocol.h>
+#include <interfaces/iproxyobject.h>
+#include "glooxprotocol.h"
 #include "glooxaccountconfigurationdialog.h"
 #include "core.h"
 #include "clientconnection.h"
@@ -44,7 +46,7 @@ namespace LeechCraft
 							QObject *parent)
 					: QObject (parent)
 					, Name_ (name)
-					, ParentProtocol_ (qobject_cast<IProtocol*> (parent))
+					, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 					{
 						AccState_.Priority_ = -1;
 
@@ -62,7 +64,7 @@ namespace LeechCraft
 
 					QObject* GlooxAccount::GetParentProtocol () const
 					{
-						return ParentProtocol_->GetObject ();
+						return ParentProtocol_;
 					}
 
 					IAccount::AccountFeatures GlooxAccount::GetAccountFeatures () const
@@ -232,11 +234,22 @@ namespace LeechCraft
 						return ClientConnection_->CreateMessage (type, variant, body, ri);
 					}
 
-					QString GlooxAccount::GetPassword ()
+					QString GlooxAccount::GetPassword (bool authfailure)
 					{
+						IProxyObject *proxy =
+							qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
+						if (!authfailure)
+						{
+							const QString& result = proxy->GetPassword (this);
+							if (!result.isNull ())
+								return result;
+						}
+
 						QString result = QInputDialog::getText (0,
 								"LeechCraft",
 								tr ("Enter password for %1:").arg (JID_));
+						if (!result.isNull ())
+							proxy->SetPassword (result, this);
 						return result;
 					}
 
@@ -252,7 +265,7 @@ namespace LeechCraft
 
 					void GlooxAccount::handleServerAuthFailed ()
 					{
-						const QString& pwd = GetPassword ();
+						const QString& pwd = GetPassword (true);
 						if (pwd.isNull ())
 							emit scheduleClientDestruction ();
 						else

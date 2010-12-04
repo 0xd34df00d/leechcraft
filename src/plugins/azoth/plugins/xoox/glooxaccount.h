@@ -53,8 +53,7 @@ namespace LeechCraft
 						int Priority_;
 					};
 
-					class GlooxAccount;
-					typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
+					class GlooxProtocol;
 
 					class GlooxAccount : public QObject
 									   , public IAccount
@@ -63,7 +62,7 @@ namespace LeechCraft
 						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
 
 						QString Name_;
-						IProtocol *ParentProtocol_;
+						GlooxProtocol *ParentProtocol_;
 
 						QString JID_;
 						QString Nick_;
@@ -98,7 +97,7 @@ namespace LeechCraft
 								const QString&, const QString&,
 								gloox::RosterItem*);
 					private:
-						QString GetPassword ();
+						QString GetPassword (bool authFailure = false);
 					public slots:
 						void handleEntryRemoved (QObject*);
 						void handleGotRosterItems (const QList<QObject*>&);
@@ -113,6 +112,8 @@ namespace LeechCraft
 
 						void scheduleClientDestruction ();
 					};
+
+					typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
 				}
 			}
 		}

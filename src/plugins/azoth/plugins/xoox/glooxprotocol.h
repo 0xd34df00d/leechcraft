@@ -43,9 +43,15 @@ namespace LeechCraft
 
 						QObject *ParentProtocolPlugin_;
 						QList<GlooxAccount*> Accounts_;
+						QObject *ProxyObject_;
 					public:
 						GlooxProtocol (QObject*);
 						virtual ~GlooxProtocol ();
+
+						void Prepare ();
+
+						QObject* GetProxyObject () const;
+						void SetProxyObject (QObject*);
 
 						QObject* GetObject ();
 						ProtocolFeatures GetFeatures () const;

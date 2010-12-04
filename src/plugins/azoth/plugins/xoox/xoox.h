@@ -45,6 +45,7 @@ namespace LeechCraft
 						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin)
 
 						boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
+						QObject *Proxy_;
 					public:
 						void Init (ICoreProxy_ptr);
 						void SecondInit ();
@@ -62,6 +63,8 @@ namespace LeechCraft
 
 						QObject* GetObject ();
 						QList<QObject*> GetProtocols () const;
+					public slots:
+						void initPlugin (QObject*);
 					signals:
 						void gotEntity (const LeechCraft::Entity&);
 					};

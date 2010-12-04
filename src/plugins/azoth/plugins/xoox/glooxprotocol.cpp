@@ -39,12 +39,27 @@ namespace LeechCraft
 					GlooxProtocol::GlooxProtocol (QObject *parent)
 					: QObject (parent)
 					, ParentProtocolPlugin_ (parent)
+					, ProxyObject_ (0)
 					{
-						RestoreAccounts ();
 					}
 
 					GlooxProtocol::~GlooxProtocol ()
 					{
+					}
+
+					void GlooxProtocol::Prepare ()
+					{
+						RestoreAccounts ();
+					}
+
+					QObject* GlooxProtocol::GetProxyObject () const
+					{
+						return ProxyObject_;
+					}
+
+					void GlooxProtocol::SetProxyObject (QObject *po)
+					{
+						ProxyObject_ = po;
 					}
 
 					QObject* GlooxProtocol::GetObject ()
@@ -172,6 +187,8 @@ namespace LeechCraft
 									SLOT (saveAccounts ()));
 
 							Accounts_ << acc;
+
+							emit accountAdded (acc);
 						}
 						settings.endArray ();
 					}
