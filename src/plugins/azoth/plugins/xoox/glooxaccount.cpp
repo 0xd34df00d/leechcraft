@@ -87,7 +87,7 @@ namespace LeechCraft
 
 					QByteArray GlooxAccount::GetAccountID () const
 					{
-						return ParentProtocol_->GetProtocolID () + JID_.toUtf8 ();
+						return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
 					}
 
 					void GlooxAccount::OpenConfigurationDialog ()
