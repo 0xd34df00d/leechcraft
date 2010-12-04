@@ -105,9 +105,9 @@ namespace LeechCraft
 					/** @brief Returns the ID of this account.
 					 *
 					 * The returned ID should be unique among all
-					 * accounts and should not depend on the value of
-					 * GetAccountName() (the human-readable name of the
-					 * account).
+					 * accounts of all protocols and should not depend
+					 * on the value of GetAccountName() (the
+					 * human-readable name of the account).
 					 *
 					 * @return The unique and persistent account ID.
 					 */
