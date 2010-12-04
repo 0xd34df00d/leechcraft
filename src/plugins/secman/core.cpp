@@ -120,7 +120,8 @@ namespace LeechCraft
 						return;
 
 					bool secure = e.Additional_.value ("SecureStorage", false).toBool ();
-					Store (keys, values, secure);
+					bool overwrite = e.Additional_.value ("Overwrite", false).toBool ();
+					Store (keys, values, secure, overwrite);
 				}
 			}
 
@@ -158,7 +159,7 @@ namespace LeechCraft
 			}
 
 			void Core::Store (const QList<QByteArray>& keys,
-					const QList<QVariantList>& values, bool secure)
+					const QList<QVariantList>& values, bool secure, bool overwrite)
 			{
 				Q_ASSERT (keys.size () == values.size ());
 				Q_ASSERT (keys.size ());
@@ -179,7 +180,7 @@ namespace LeechCraft
 				QList<QPair<QByteArray, QVariantList> > data;
 				for (int i = 0; i < keys.size (); ++i)
 					data << qMakePair (keys.at (i), values.at (i));
-				qobject_cast<IStoragePlugin*> (storage)->Save (data, type);
+				qobject_cast<IStoragePlugin*> (storage)->Save (data, type, overwrite);
 			}
 
 			QList<QVariantList> Core::Load (const QList<QByteArray>& keys, bool secure)
