@@ -60,7 +60,7 @@
 				</item>
 				<item type="groupbox" property="UnreadCustomColor" checkable="true" default="on">
 					<label lang="en" value="Use color to mark unread" />
-					<item type="color" property="UnreadItemsColor" default="06007B">
+					<item type="color" property="UnreadItemsColor" default="#06007B">
 						<label lang="en" value="Color:" />
 					</item>
 				</item>
