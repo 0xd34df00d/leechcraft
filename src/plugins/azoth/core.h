@@ -46,6 +46,7 @@ namespace LeechCraft
 
 			class ChatTabsManager;
 			class PluginManager;
+			class ProxyObject;
 
 			class Core : public QObject
 			{
@@ -73,6 +74,7 @@ namespace LeechCraft
 				Util::ResourceLoader *CLIconLoader_;
 
 				boost::shared_ptr<PluginManager> PluginManager_;
+				boost::shared_ptr<ProxyObject> PluginProxyObject_;
 
 				Core ();
 			public:
@@ -222,6 +224,7 @@ namespace LeechCraft
 				void handleEntryGotMessage (QObject *msg);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
+				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 
 				/** Emitted after some new account creation actions have
 				 * been received from a plugin and thus should be shown

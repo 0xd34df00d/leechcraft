@@ -32,6 +32,7 @@
 #include "interfaces/iclentry.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
+#include "proxyobject.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,7 @@ namespace LeechCraft
 			, ChatTabsManager_ (new ChatTabsManager (this))
 			, CLIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 			, PluginManager_ (new PluginManager)
+			, PluginProxyObject_ (new ProxyObject)
 			{
 				PluginManager_->RegisterHookable (this);
 
@@ -87,6 +89,12 @@ namespace LeechCraft
 							<< "isn't a IPlugin2";
 					return;
 				}
+
+				QByteArray sig = QMetaObject::normalizedSignature ("initPlugin (QObject*)");
+				if (plugin->metaObject ()->indexOfMethod (sig) != -1)
+					QMetaObject::invokeMethod (plugin,
+							"initPlugin",
+							Q_ARG (QObject*, PluginProxyObject_.get ()));
 
 				PluginManager_->AddPlugin (plugin);
 

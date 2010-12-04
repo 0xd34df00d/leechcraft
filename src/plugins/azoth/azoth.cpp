@@ -50,6 +50,10 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				connect (&Core::Instance (),
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+						this,
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 
 				handleMUCJoinActionsAdded (Core::Instance ().GetMUCJoinActions ());
 				connect (&Core::Instance (),
