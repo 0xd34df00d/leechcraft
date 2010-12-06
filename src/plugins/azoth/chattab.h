@@ -66,8 +66,8 @@ namespace LeechCraft
 				QToolBar* GetToolBar () const;
 				void Remove ();
 			private slots:
-				void on_MsgEdit__returnPressed ();
-				void on_MsgEdit__textChanged (const QString&);
+				void messageSend ();
+				void on_MsgEdit__textChanged ();
 				void on_SubjectButton__released ();
 				void handleEntryMessage (QObject*);
 				void handleViewLinkClicked (const QUrl&);

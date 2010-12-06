@@ -36,6 +36,7 @@ SET (SRCS
 	mucsubjectdialog.cpp
 	pluginmanager.cpp
 	proxyobject.cpp
+	textedit.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -49,6 +50,7 @@ SET (HEADERS
 	mucsubjectdialog.h
 	pluginmanager.h
 	proxyobject.h
+	textedit.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h

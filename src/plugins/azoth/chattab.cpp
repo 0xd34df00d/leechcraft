@@ -32,6 +32,7 @@
 #include "interfaces/imucentry.h"
 #include "core.h"
 #include "mucsubjectdialog.h"
+#include "textedit.h"
 
 namespace LeechCraft
 {
@@ -129,9 +130,17 @@ namespace LeechCraft
 						SIGNAL (activated ()),
 						this,
 						SLOT (handleHistoryDown ()));
-
+				
+				connect (Ui_.MsgEdit_,
+						SIGNAL (keyReturnPressed ()),
+						this,
+						SLOT (messageSend ()));
+				
 				Ui_.EntryInfo_->setText (e->GetEntryName ());
-
+				
+				Ui_.MsgEdit_->setMaximumHeight (height () / 4);
+				Ui_.MsgEdit_->setMinimumHeight (25);
+				
 				Ui_.MsgEdit_->setFocus ();
 			}
 
@@ -159,9 +168,9 @@ namespace LeechCraft
 				emit needToClose (this);
 			}
 
-			void ChatTab::on_MsgEdit__returnPressed ()
+			void ChatTab::messageSend ()
 			{
-				QString text = Ui_.MsgEdit_->text ();
+				QString text = Ui_.MsgEdit_->toPlainText ();
 				if (text.isEmpty ())
 					return;
 
@@ -212,9 +221,18 @@ namespace LeechCraft
 				AppendMessage (msg);
 			}
 
-			void ChatTab::on_MsgEdit__textChanged (const QString& text)
-			{
-				Ui_.CharCounter_->setText (QString::number (text.size ()));
+			void ChatTab::on_MsgEdit__textChanged ()
+			{	
+				Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
+				
+				int height = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
+				
+				if (height + 10 < 25)
+					Ui_.MsgEdit_->setMinimumHeight (25);
+				else if (height + 10 < Ui_.MsgEdit_->maximumHeight ())
+					Ui_.MsgEdit_->setMinimumHeight (height + 10);
+				else
+					Ui_.MsgEdit_->setMinimumHeight (Ui_.MsgEdit_->maximumHeight ());
 			}
 
 			void ChatTab::on_SubjectButton__released ()
