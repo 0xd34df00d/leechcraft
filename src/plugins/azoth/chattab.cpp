@@ -139,7 +139,11 @@ namespace LeechCraft
 				Ui_.EntryInfo_->setText (e->GetEntryName ());
 				
 				Ui_.MsgEdit_->setMaximumHeight (height () / 4);
-				Ui_.MsgEdit_->setMinimumHeight (25);
+				
+				if (Ui_.MsgEdit_->document ()->size ().toSize ().height () + 
+						Ui_.MsgEdit_->fontMetrics ().height () 
+						< Ui_.MsgEdit_->maximumHeight ())
+					Ui_.MsgEdit_->setMinimumHeight (height);
 				
 				Ui_.MsgEdit_->setFocus ();
 			}
@@ -226,11 +230,11 @@ namespace LeechCraft
 				Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
 				
 				int height = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
-				
-				if (height + 10 < 25)
-					Ui_.MsgEdit_->setMinimumHeight (25);
-				else if (height + 10 < Ui_.MsgEdit_->maximumHeight ())
-					Ui_.MsgEdit_->setMinimumHeight (height + 10);
+				int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
+				if (height < fontHeight)
+					Ui_.MsgEdit_->setMinimumHeight (fontHeight);
+				else if (height + fontHeight < Ui_.MsgEdit_->maximumHeight ())
+					Ui_.MsgEdit_->setMinimumHeight (height);
 				else
 					Ui_.MsgEdit_->setMinimumHeight (Ui_.MsgEdit_->maximumHeight ());
 			}

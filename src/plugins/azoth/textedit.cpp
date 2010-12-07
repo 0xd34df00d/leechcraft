@@ -26,12 +26,12 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
-			TextEdit::TextEdit (QWidget* parent)
+			TextEdit::TextEdit (QWidget *parent)
 			: QTextEdit (parent)
 			{
 			}
 
-			void TextEdit::keyPressEvent (QKeyEvent* event)
+			void TextEdit::keyPressEvent (QKeyEvent *event)
 			{
 				if (event->key () == Qt::Key_Return && event->modifiers () == Qt::NoModifier)
 					emit keyReturnPressed ();

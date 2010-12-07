@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef TEXTEDIT_H
-#define TEXTEDIT_H
+#ifndef PLUGINS_AZOTH_TEXTEDIT_H
+#define PLUGINS_AZOTH_TEXTEDIT_H
 
 #include <QTextEdit>
 
@@ -31,14 +31,14 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 				
-				public:
-					TextEdit (QWidget *parent = 0);
-				protected:
-					void keyPressEvent (QKeyEvent*);
-				signals:
-					void keyReturnPressed ();
+			public:
+				TextEdit (QWidget *parent = 0);
+			protected:
+				void keyPressEvent (QKeyEvent*);
+			signals:
+				void keyReturnPressed ();
 			};
 		}
 	}
 }
-#endif // TEXTEDIT_H
+#endif // PLUGINS_AZOTH_TEXTEDIT_H
