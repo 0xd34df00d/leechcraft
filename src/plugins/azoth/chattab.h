@@ -80,7 +80,7 @@ namespace LeechCraft
 
 				void CheckMUC ();
 				void HandleMUC ();
-
+				
 				/** Appends the message to the message view area.
 				 */
 				void AppendMessage (Plugins::IMessage*);

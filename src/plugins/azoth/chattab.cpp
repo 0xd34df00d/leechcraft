@@ -139,10 +139,9 @@ namespace LeechCraft
 				Ui_.EntryInfo_->setText (e->GetEntryName ());
 				
 				Ui_.MsgEdit_->setMaximumHeight (height () / 4);
+				int height = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
 				
-				if (Ui_.MsgEdit_->document ()->size ().toSize ().height () + 
-						Ui_.MsgEdit_->fontMetrics ().height () 
-						< Ui_.MsgEdit_->maximumHeight ())
+				if (height + Ui_.MsgEdit_->fontMetrics ().height () < Ui_.MsgEdit_->maximumHeight ())
 					Ui_.MsgEdit_->setMinimumHeight (height);
 				
 				Ui_.MsgEdit_->setFocus ();
