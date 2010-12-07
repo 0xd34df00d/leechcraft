@@ -108,7 +108,7 @@
     </widget>
    </item>
    <item>
-    <widget class="TextEdit" name="MsgEdit_">
+    <widget class="LeechCraft::Plugins::Azoth::TextEdit" name="MsgEdit_">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -141,7 +141,7 @@
    <header>QtWebKit/QWebView</header>
   </customwidget>
   <customwidget>
-   <class>TextEdit</class>
+   <class>LeechCraft::Plugins::Azoth::TextEdit</class>
    <extends>QTextEdit</extends>
    <header>textedit.h</header>
   </customwidget>
