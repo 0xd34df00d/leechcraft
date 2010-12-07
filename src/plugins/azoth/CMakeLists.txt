@@ -37,6 +37,7 @@ SET (SRCS
 	pluginmanager.cpp
 	proxyobject.cpp
 	textedit.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -51,6 +52,7 @@ SET (HEADERS
 	pluginmanager.h
 	proxyobject.h
 	textedit.h
+	xmlsettingsmanager.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
@@ -95,6 +97,7 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth
 	)
 INSTALL (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 SET (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 ADD_SUBDIRECTORY (plugins/xoox)

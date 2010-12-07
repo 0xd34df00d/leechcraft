@@ -22,6 +22,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/imultitabs.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -35,11 +36,13 @@ namespace LeechCraft
 						 , public IInfo
 						 , public IPluginReady
 						 , public IMultiTabs
+						 , public IHaveSettings
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady IMultiTabs)
+				Q_INTERFACES (IInfo IPluginReady IMultiTabs IHaveSettings)
 
 				MainWidget *MW_;
+				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -55,6 +58,8 @@ namespace LeechCraft
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
+
+				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 			public slots:
 				void newTabRequested ();
 			private slots:

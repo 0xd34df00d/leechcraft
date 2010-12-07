@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label lang="en" value="Appearance" />
+		<tab>
+			<label lang="en" value="Iconsets" />
+			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
+				<label lang="en" value="Status icons:" />
+			</item>
+		</tab>
+	</page>
+	<page>
+		<label lang="en" value="Behavior" />
+		<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
+			<label lang="en" value="Jump to new tab on open" />
+		</item>
+	</page>
+</settings>

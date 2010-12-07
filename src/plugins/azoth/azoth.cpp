@@ -21,10 +21,12 @@
 #include <QDockWidget>
 #include <QMainWindow>
 #include <QVBoxLayout>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "mainwidget.h"
 #include "chattabsmanager.h"
 #include "chattab.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -37,6 +39,10 @@ namespace LeechCraft
 				ChatTab::SetParentMultiTabs (this);
 
 				Core::Instance ().SetProxy (proxy);
+
+				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+						"azothsettings.xml");
 
 				QMainWindow *mainWin = proxy->GetMainWindow ();
 				QDockWidget *dw = new QDockWidget (mainWin);
@@ -130,6 +136,11 @@ namespace LeechCraft
 			void Plugin::AddPlugin (QObject *object)
 			{
 				Core::Instance ().AddPlugin (object);
+			}
+
+			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+			{
+				return XmlSettingsDialog_;
 			}
 
 			void Plugin::handleMUCJoinActionsAdded (const QList<QAction*>& actions)
