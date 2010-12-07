@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include "interfaces/iclentry.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -69,7 +70,10 @@ namespace LeechCraft
 						this,
 						SLOT (handleNeedToClose (ChatTab*)));
 				emit addNewTab (entry->GetEntryName (), tab);
-				emit raiseTab (tab);
+
+				if (XmlSettingsManager::Instance ()
+						.property ("JumpToNewTabOnOpen").toBool ())
+					emit raiseTab (tab);
 			}
 
 			bool ChatTabsManager::IsActiveChat (Plugins::ICLEntry *entry) const
