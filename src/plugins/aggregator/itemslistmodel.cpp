@@ -58,7 +58,10 @@ namespace LeechCraft
 			void ItemsListModel::Selected (const QModelIndex& index)
 			{
 				CurrentRow_ = index.row ();
-				ItemShort item = CurrentItems_ [index.row ()];
+				if (!index.isValid ())
+					return;
+
+				ItemShort item = CurrentItems_ [CurrentRow_];
 				item.Unread_ = false;
 				Core::Instance ().GetStorageBackend ()->UpdateItem (item);
 			}
