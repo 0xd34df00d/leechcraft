@@ -50,9 +50,9 @@ namespace LeechCraft
 			void CSTP::Init (ICoreProxy_ptr coreProxy)
 			{
 				Core::Instance ().SetCoreProxy (coreProxy);
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("cstp"));
+				Translator_.reset (Util::InstallTranslator ("cstp"));
 
-				XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
+				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 						"cstpsettings.xml");
 
@@ -182,7 +182,7 @@ namespace LeechCraft
 				Core::Instance ().ItemSelected (index);
 			}
 
-			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> CSTP::GetSettingsDialog () const
+			Util::XmlSettingsDialog_ptr CSTP::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}

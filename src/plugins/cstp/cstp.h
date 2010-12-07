@@ -58,7 +58,7 @@ namespace LeechCraft
 
 				QMenu *Plugins_;
 				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 				std::auto_ptr<QToolBar> Toolbar_;
 			public:
 				virtual ~CSTP ();
@@ -84,7 +84,7 @@ namespace LeechCraft
 
 				QAbstractItemModel* GetRepresentation () const;
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 			private:
 				template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 				void SetupToolbar ();
