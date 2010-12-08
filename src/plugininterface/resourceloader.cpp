@@ -58,15 +58,18 @@ namespace LeechCraft
 		void ResourceLoader::AddGlobalPrefix ()
 		{
 #ifdef Q_WS_MAC
-			QString prefix = QApplication::applicationDirPath () + "/../Resources/";
+			QStringList prefixes = QStirngList (QApplication::applicationDirPath () + "/../Resources/");
 #elif defined Q_WS_WIN
-			QString prefix = "share/";
+			QStringList prefixes = QStringList ("share/");
 #else
-			QString prefix = "/usr/share/leechcraft/";
+			QStringList prefixes = QStringList ("/usr/local/share/leechcraft/")
+					<< "/usr/share/leechcraft/";
 #endif
-			GlobalPrefixesChain_ << prefix;
-
-			ScanPath (prefix + RelativePath_);
+			Q_FOREACH (const QString& prefix, prefixes)
+			{
+				GlobalPrefixesChain_ << prefix;
+				ScanPath (prefix + RelativePath_);
+			}
 		}
 
 		QString ResourceLoader::GetPath (const QStringList& pathVariants) const
