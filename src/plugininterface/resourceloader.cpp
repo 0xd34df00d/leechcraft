@@ -58,7 +58,7 @@ namespace LeechCraft
 		void ResourceLoader::AddGlobalPrefix ()
 		{
 #ifdef Q_WS_MAC
-			QStringList prefixes = QStirngList (QApplication::applicationDirPath () + "/../Resources/");
+			QStringList prefixes = QStringList (QApplication::applicationDirPath () + "/../Resources/");
 #elif defined Q_WS_WIN
 			QStringList prefixes = QStringList ("share/");
 #else
