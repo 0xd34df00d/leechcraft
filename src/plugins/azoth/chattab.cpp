@@ -638,7 +638,9 @@ namespace LeechCraft
 					if (AvailableNickList_.isEmpty())
 						return;
 					
-					text.replace (pos + 1, NickFirstPart_.length (), AvailableNickList_ [CurrentNickIndex_]);
+					text.replace (pos + 1, 
+							NickFirstPart_.length (), 
+							AvailableNickList_ [CurrentNickIndex_]);
 				}
 				else
 				{
@@ -664,14 +666,20 @@ namespace LeechCraft
  					}
 					
 					if (CurrentNickIndex_ < AvailableNickList_.count () && CurrentNickIndex_)
-						text.replace (pos + 1, AvailableNickList_ [CurrentNickIndex_ - 1].length (), AvailableNickList_ [CurrentNickIndex_]);
+						text.replace (pos + 1,
+								AvailableNickList_ [CurrentNickIndex_ - 1].length (), 
+								AvailableNickList_ [CurrentNickIndex_]);
 					else if (CurrentNickIndex_)
 					{
 						CurrentNickIndex_ = 0;
-						text.replace (pos + 1, AvailableNickList_.last ().length (), AvailableNickList_ [CurrentNickIndex_]);
+						text.replace (pos + 1, 
+								AvailableNickList_.last ().length (),
+								AvailableNickList_ [CurrentNickIndex_]);
 					}
 					else
-						text.replace (pos + 1, lastNickLen, AvailableNickList_ [CurrentNickIndex_]);
+						text.replace (pos + 1, 
+								lastNickLen,
+								AvailableNickList_ [CurrentNickIndex_]);
 				}
 				CurrentNickIndex_++;
 				
