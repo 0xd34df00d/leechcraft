@@ -19,6 +19,8 @@
 #include "resourceloader.h"
 #include <QFile>
 #include <QDir>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -28,11 +30,18 @@ namespace LeechCraft
 		ResourceLoader::ResourceLoader (const QString& relPath, QObject* parent)
 		: QObject (parent)
 		, RelativePath_ (relPath)
+		, SubElemModel_ (new QStandardItemModel (this))
+		, SortModel_ (new QSortFilterProxyModel (this))
+		, AttrFilters_ (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable)
 		{
 			if (RelativePath_.startsWith ('/'))
 				RelativePath_ = RelativePath_.mid (1);
 			if (!RelativePath_.endsWith ('/'))
 				RelativePath_.append ('/');
+
+			SortModel_->setDynamicSortFilter (true);
+			SortModel_->setSourceModel (SubElemModel_);
+			SortModel_->sort (0);
 		}
 
 		void ResourceLoader::AddLocalPrefix (QString prefix)
@@ -40,7 +49,10 @@ namespace LeechCraft
 			if (!prefix.isEmpty () &&
 					!prefix.endsWith ('/'))
 				prefix.append ('/');
-			LocalPrefixesChain_ << (QDir::homePath () + "/.leechcraft/data/" + prefix);
+			QString result = QDir::homePath () + "/.leechcraft/data/" + prefix;
+			LocalPrefixesChain_ << result;
+
+			ScanPath (result + RelativePath_);
 		}
 
 		void ResourceLoader::AddGlobalPrefix (QString prefix)
@@ -48,6 +60,8 @@ namespace LeechCraft
 			if (!prefix.endsWith ('/'))
 				prefix.append ('/');
 			GlobalPrefixesChain_ << prefix;
+
+			ScanPath (prefix + RelativePath_);
 		}
 
 		QString ResourceLoader::GetPath (const QStringList& pathVariants) const
@@ -69,6 +83,33 @@ namespace LeechCraft
 
 			boost::shared_ptr<QFile> result (new QFile (path));
 			return result;
+		}
+
+		QAbstractItemModel* ResourceLoader::GetSubElemModel () const
+		{
+			return SortModel_;
+		}
+
+		void ResourceLoader::SetAttrFilters (QDir::Filters filters)
+		{
+			AttrFilters_ = filters;
+		}
+
+		void ResourceLoader::SetNameFilters (const QStringList& filters)
+		{
+			NameFilters_ = filters;
+		}
+
+		void ResourceLoader::ScanPath (const QString& path)
+		{
+			Q_FOREACH (const QString& entry,
+					QDir (path).entryList (NameFilters_, AttrFilters_))
+			{
+				if (SubElemModel_->findItems (entry).size ())
+					continue;
+
+				SubElemModel_->appendRow (new QStandardItem (entry));
+			}
 		}
 	}
 }

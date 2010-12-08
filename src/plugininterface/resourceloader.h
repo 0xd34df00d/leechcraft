@@ -21,7 +21,12 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
+#include <QDir>
 #include "piconfig.h"
+
+class QAbstractItemModel;
+class QStandardItemModel;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -36,6 +41,11 @@ namespace LeechCraft
 			QStringList LocalPrefixesChain_;
 			QStringList GlobalPrefixesChain_;
 			QString RelativePath_;
+
+			QStandardItemModel *SubElemModel_;
+			QStringList NameFilters_;
+			QDir::Filters AttrFilters_;
+			QSortFilterProxyModel *SortModel_;
 		public:
 			ResourceLoader (const QString& relPath, QObject* = 0);
 
@@ -44,6 +54,13 @@ namespace LeechCraft
 
 			QString GetPath (const QStringList& pathVariants) const;
 			QIODevice_ptr Load (const QStringList& pathVariants) const;
+
+			QAbstractItemModel* GetSubElemModel () const;
+
+			void SetAttrFilters (QDir::Filters);
+			void SetNameFilters (const QStringList&);
+		private:
+			void ScanPath (const QString&);
 		};
 	}
 }
