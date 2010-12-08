@@ -49,7 +49,7 @@ namespace LeechCraft
 		public:
 			ResourceLoader (const QString& relPath, QObject* = 0);
 
-			void AddGlobalPrefix (QString prefix);
+			void AddGlobalPrefix ();
 			void AddLocalPrefix (QString prefix = QString ());
 
 			QString GetPath (const QStringList& pathVariants) const;

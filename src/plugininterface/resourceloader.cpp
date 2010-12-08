@@ -55,10 +55,15 @@ namespace LeechCraft
 			ScanPath (result + RelativePath_);
 		}
 
-		void ResourceLoader::AddGlobalPrefix (QString prefix)
+		void ResourceLoader::AddGlobalPrefix ()
 		{
-			if (!prefix.endsWith ('/'))
-				prefix.append ('/');
+#ifdef Q_WS_MAC
+			QString prefix = QApplication::applicationDirPath () + "/../Resources/";
+#elif defined Q_WS_WIN
+			QString prefix = "share/";
+#else
+			QString prefix = "/usr/share/leechcraft/";
+#endif
 			GlobalPrefixesChain_ << prefix;
 
 			ScanPath (prefix + RelativePath_);
