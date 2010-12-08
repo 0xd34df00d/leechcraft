@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_AZOTH_H
 #define PLUGINS_AZOTH_AZOTH_H
 #include <QObject>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/imultitabs.h>
@@ -43,6 +44,7 @@ namespace LeechCraft
 
 				MainWidget *MW_;
 				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+				std::auto_ptr<QTranslator> Translator_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();

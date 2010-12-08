@@ -23,6 +23,7 @@
 #include <QVBoxLayout>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/resourceloader.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "mainwidget.h"
 #include "chattabsmanager.h"
@@ -37,6 +38,8 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				Translator_.reset (Util::InstallTranslator ("azoth"));
+
 				ChatTab::SetParentMultiTabs (this);
 
 				Core::Instance ().SetProxy (proxy);
