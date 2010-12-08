@@ -25,7 +25,6 @@
 #include <plugininterface/categoryselector.h>
 #include "core.h"
 #include "channelsmodel.h"
-#include "config.h"
 
 namespace LeechCraft
 {
@@ -91,7 +90,7 @@ namespace LeechCraft
 				Q_FOREACH (QModelIndex index, selected.indexes ())
 					addedCategories << Core::Instance ().GetCategories (index);
 				CurrentCategories_ << addedCategories;
-				
+
 				CurrentCategories_.removeDuplicates ();
 
 				Selector_->SetPossibleSelections (CurrentCategories_);
@@ -174,7 +173,7 @@ namespace LeechCraft
 						w.writeEndElement ();
 						w.writeTextElement ("program-used",
 								QString ("LeechCraft Aggregator %1")
-									.arg (LEECHCRAFT_VERSION));
+									.arg (Core::Instance ().GetProxy ()->GetVersion ()));
 						w.writeTextElement ("id",
 								QUuid::createUuid ().toString ());
 						w.writeTextElement ("version", "1.0");
@@ -220,7 +219,7 @@ namespace LeechCraft
 
 					items_shorts_t items;
 					sb->GetItems (items, cs.ChannelID_);
-			
+
 					for (items_shorts_t::const_iterator i = items.begin (),
 							end = items.end (); i != end; ++i)
 					{

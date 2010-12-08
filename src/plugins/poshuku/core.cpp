@@ -54,7 +54,6 @@
 #include "xbelparser.h"
 #include "xbelgenerator.h"
 #include "linkhistory.h"
-#include "config.h"
 #include "favoriteschecker.h"
 #include "webpluginfactory.h"
 #include "importentityhandler.h"

@@ -83,7 +83,7 @@ namespace LeechCraft
 				libtorrent::create_torrent ct (fs, params.PieceSize_);
 
 				ct.set_creator (qPrintable (QString ("LeechCraft BitTorrent %1")
-							.arg (LEECHCRAFT_VERSION)));
+							.arg (Core::Instance ()->GetProxy ()->GetVersion ())));
 				if (!params.Comment_.isEmpty ())
 					ct.set_comment (params.Comment_.toUtf8 ());
 				for (int i = 0; i < params.URLSeeds_.size (); ++i)

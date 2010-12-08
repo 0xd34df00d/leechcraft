@@ -25,7 +25,6 @@
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
-#include <config.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
 #include "packagesmodel.h"
@@ -578,8 +577,8 @@ namespace LeechCraft
 								<< "dependency version for"
 								<< info.Dep_.Name_
 								<< "not filled, defaulting to"
-								<< LEECHCRAFT_VERSION;
-						info.Dep_.Version_ = LEECHCRAFT_VERSION;
+								<< Proxy_->GetVersion ();
+						info.Dep_.Version_ = Proxy_->GetVersion ();
 					}
 
 					result << info;
