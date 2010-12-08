@@ -72,8 +72,6 @@ namespace LeechCraft
 			
 			private slots:
 				void clearAvailableNick ();
-				
-			private slots:
 				void messageSend ();
 				void nickComplete ();
 				void on_MsgEdit__textChanged ();

@@ -56,6 +56,8 @@ namespace LeechCraft
 					Qt::CaseInsensitive, QRegExp::RegExp2)
 			, BgColor_ (QApplication::palette ().color (QPalette::Base))
 			, CurrentHistoryPosition_ (-1)
+			, CurrentNickIndex_ (0)
+			, LastSpacePosition_(-1)
 			{
 				Ui_.setupUi (this);
 
@@ -155,8 +157,6 @@ namespace LeechCraft
 						SIGNAL (clearAvailableNicks ()),
 						this,
 						SLOT (clearAvailableNick ()));
-				
-				CurrentNickIndex_ = 0;
 			}
 
 			QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
@@ -593,10 +593,8 @@ namespace LeechCraft
 				if (entry->GetEntryType() != Plugins::ICLEntry::ETMUC)
 					return;
 				
-				QString text = Ui_.MsgEdit_->toPlainText ();
-				QStringList newAvailableNick;
 				QStringList currentMUCParticipants = GetMUCParticipants ();
-				if (currentMUCParticipants.isEmpty())
+				if (currentMUCParticipants.isEmpty ())
 					return;
 
 				QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
@@ -605,12 +603,14 @@ namespace LeechCraft
 				int pos = -1;
 				int lastNickLen = -1;
 				
+				QString text = Ui_.MsgEdit_->toPlainText ();
+				
 				if (AvailableNickList_.isEmpty ())
 				{
 					if (cursorPosition)
-						pos = text.lastIndexOf (" ", cursorPosition - 1);
+						pos = text.lastIndexOf (' ', cursorPosition - 1);
 					else
-						pos = text.lastIndexOf (" ", cursorPosition);
+						pos = text.lastIndexOf (' ', cursorPosition);
 					LastSpacePosition_ = pos;
 				}
 				else
@@ -628,14 +628,9 @@ namespace LeechCraft
 				{
 					Q_FOREACH (const QString& item, currentMUCParticipants)
 						if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-						{
-							if (pos == -1)
-								AvailableNickList_ << item + ": ";
-							else
-								AvailableNickList_ << item + " ";
-						}
+							AvailableNickList_ << item + (pos == -1 ? ": " : " ");
 						
-					if (AvailableNickList_.isEmpty())
+					if (AvailableNickList_.isEmpty ())
 						return;
 					
 					text.replace (pos + 1, 
@@ -644,26 +639,23 @@ namespace LeechCraft
 				}
 				else
 				{
+					QStringList newAvailableNick;
+					
 					Q_FOREACH (const QString& item, currentMUCParticipants)
-  						if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-						{
-							if (pos == -1)
-  								newAvailableNick << item + ": ";
-  							else
-  								newAvailableNick << item + " ";
-						}
-						
+						if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
+							newAvailableNick << item + (pos == -1 ? ": " : " ");
+
 					if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
- 					{
- 						int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);
+					{
+						int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);
 						lastNickLen = AvailableNickList_ [CurrentNickIndex_ - 1].length ();
 						
 						while (newIndex == -1 && CurrentNickIndex_ > 0)
- 							newIndex = newAvailableNick.indexOf (AvailableNickList_ [--CurrentNickIndex_]);
- 	
- 						CurrentNickIndex_ = (newIndex == -1 ? 0 : newIndex);
- 						AvailableNickList_ = newAvailableNick;
- 					}
+							newIndex = newAvailableNick.indexOf (AvailableNickList_ [--CurrentNickIndex_]);
+	
+						CurrentNickIndex_ = (newIndex == -1 ? 0 : newIndex);
+						AvailableNickList_ = newAvailableNick;
+					}
 					
 					if (CurrentNickIndex_ < AvailableNickList_.count () && CurrentNickIndex_)
 						text.replace (pos + 1,
@@ -681,7 +673,7 @@ namespace LeechCraft
 								lastNickLen,
 								AvailableNickList_ [CurrentNickIndex_]);
 				}
-				CurrentNickIndex_++;
+				++CurrentNickIndex_;
 				
 				Ui_.MsgEdit_->setPlainText (text);
 				cursor.setPosition (pos + 1 + AvailableNickList_ [CurrentNickIndex_ - 1].length ());
@@ -710,7 +702,7 @@ namespace LeechCraft
 						qWarning () << Q_FUNC_INFO
 								<< "unable to cast message from"
 								<< part->GetEntryID ()
-								<<  "to ICLEntry"
+								<< "to ICLEntry"
 								<< item;
 						return QStringList ();
 					}
@@ -728,7 +720,6 @@ namespace LeechCraft
 					CurrentNickIndex_ = 0;
 				}
 			}	
-
 		}
 	}
 }
