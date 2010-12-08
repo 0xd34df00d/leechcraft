@@ -535,6 +535,10 @@ public:
 	 */
 	virtual IPluginsManager* GetPluginsManager () const = 0;
 
+	/** @brief Returns the version of LeechCraft core and base system.
+	 */
+	virtual QString GetVersion () const = 0;
+
 	/** @brief Returns the pointer to itself as QObject*.
 	 *
 	 * Just to avoid nasty reinterpret_casts.

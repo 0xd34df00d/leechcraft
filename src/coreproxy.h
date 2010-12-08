@@ -48,6 +48,7 @@ namespace LeechCraft
 		int GetID ();
 		void FreeID (int);
 		IPluginsManager* GetPluginsManager () const;
+		QString GetVersion () const;
 		QObject* GetSelf ();
 
 #define LC_DEFINE_REGISTER(a) void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);

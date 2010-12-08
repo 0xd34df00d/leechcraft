@@ -25,6 +25,7 @@
 #include "skinengine.h"
 #include "tagsmanager.h"
 #include "tabwidget.h"
+#include "config.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -106,6 +107,11 @@ void CoreProxy::FreeID (int id)
 IPluginsManager* CoreProxy::GetPluginsManager () const
 {
 	return Core::Instance ().GetPluginManager ();
+}
+
+QString CoreProxy::GetVersion () const
+{
+	return LEECHCRAFT_VERSION;
 }
 
 QObject* CoreProxy::GetSelf ()
