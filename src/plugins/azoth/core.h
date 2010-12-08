@@ -71,7 +71,7 @@ namespace LeechCraft
 				typedef QHash<QByteArray, QObject*> ID2Entry_t;
 				ID2Entry_t ID2Entry_;
 
-				Util::ResourceLoader *CLIconLoader_;
+				Util::ResourceLoader *StatusIconLoader_;
 
 				boost::shared_ptr<PluginManager> PluginManager_;
 				boost::shared_ptr<ProxyObject> PluginProxyObject_;
@@ -98,10 +98,17 @@ namespace LeechCraft
 					CLETContact
 				};
 
+				enum ResourceLoaderType
+				{
+					RLTStatusIconLoader
+				};
+
 				static Core& Instance ();
 
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
+
+				Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
@@ -222,6 +229,11 @@ namespace LeechCraft
 				 * entries.
 				 */
 				void handleEntryGotMessage (QObject *msg);
+
+				/** Is registered in the XmlSettingsManager as handler
+				 * for changes of the "StatusIcons" property.
+				 */
+				void updateStatusIconset ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

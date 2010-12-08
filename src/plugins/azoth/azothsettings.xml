@@ -7,6 +7,9 @@
 			<label lang="en" value="Iconsets" />
 			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
 				<label lang="en" value="Status icons:" />
+				<option name="oxygen" default="true">
+					<label lang="en" value="Oxygen" />
+				</option>
 			</item>
 		</tab>
 	</page>

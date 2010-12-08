@@ -33,6 +33,7 @@
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -43,16 +44,20 @@ namespace LeechCraft
 			Core::Core ()
 			: CLModel_ (new QStandardItemModel (this))
 			, ChatTabsManager_ (new ChatTabsManager (this))
-			, CLIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
+			, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 			, PluginManager_ (new PluginManager)
 			, PluginProxyObject_ (new ProxyObject)
 			{
 				PluginManager_->RegisterHookable (this);
 
-				CLIconLoader_->AddLocalPrefix ();
+				StatusIconLoader_->AddLocalPrefix ();
+				StatusIconLoader_->AddGlobalPrefix ();
 
 				qRegisterMetaType<Plugins::IMessage*> ("LeechCraft::Plugins::Azoth::Plugins::IMessage*");
 				qRegisterMetaType<Plugins::IMessage*> ("Plugins::IMessage*");
+
+				XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
+						this, "updateStatusIconset");
 			}
 
 			Core& Core::Instance ()
@@ -69,6 +74,15 @@ namespace LeechCraft
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
+			}
+
+			Util::ResourceLoader* Core::GetResourceLoader (Core::ResourceLoaderType type) const
+			{
+				switch (type)
+				{
+				case RLTStatusIconLoader:
+					return StatusIconLoader_;
+				}
 			}
 
 			QSet<QByteArray> Core::GetExpectedPluginClasses () const
@@ -366,13 +380,16 @@ namespace LeechCraft
 					break;
 				}
 
-				QString filename = "oxygen/" + iconName;
+				QString filename = XmlSettingsManager::Instance ()
+						.property ("StatusIcons").toString ();
+				filename += '/';
+				filename += iconName;
 				QStringList variants;
 				variants << filename + ".svg"
 						<< filename + ".png"
 						<< filename + ".jpg";
 
-				QString path = CLIconLoader_->GetPath (variants);
+				QString path = StatusIconLoader_->GetPath (variants);
 				return QIcon (path);
 			}
 
@@ -628,6 +645,20 @@ namespace LeechCraft
 								.arg (other->GetEntryName ()),
 							PInfo_);
 					emit gotEntity (e);
+				}
+			}
+
+			void Core::updateStatusIconset ()
+			{
+				QMap<Plugins::State, QIcon> State2IconCache_;
+				Q_FOREACH (Plugins::ICLEntry *entry, Entry2Items_.keys ())
+				{
+					Plugins::State state = entry->GetStatus ().State_;
+					if (!State2IconCache_.contains (state))
+						State2IconCache_ [state] = GetIconForState (state);
+
+					Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+						item->setIcon (State2IconCache_ [state]);
 				}
 			}
 		};

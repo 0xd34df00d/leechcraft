@@ -22,6 +22,7 @@
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/resourceloader.h>
 #include "core.h"
 #include "mainwidget.h"
 #include "chattabsmanager.h"
@@ -43,6 +44,11 @@ namespace LeechCraft
 				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 						"azothsettings.xml");
+
+				Util::ResourceLoader *statIcnLdr = Core::Instance ()
+						.GetResourceLoader (Core::RLTStatusIconLoader);
+				XmlSettingsDialog_->SetDataSource ("StatusIcons",
+						statIcnLdr->GetSubElemModel ());
 
 				QMainWindow *mainWin = proxy->GetMainWindow ();
 				QDockWidget *dw = new QDockWidget (mainWin);
