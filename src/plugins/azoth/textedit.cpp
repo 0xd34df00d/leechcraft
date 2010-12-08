@@ -35,8 +35,13 @@ namespace LeechCraft
 			{
 				if (event->key () == Qt::Key_Return && event->modifiers () == Qt::NoModifier)
 					emit keyReturnPressed ();
+				else if (event->key () == Qt::Key_Tab)
+					emit keyTabPressed ();
 				else
+				{
+					emit clearAvailableNicks ();
 					QTextEdit::keyPressEvent (event);
+				}
 			}
 		}
 	}

@@ -136,6 +136,11 @@ namespace LeechCraft
 						this,
 						SLOT (messageSend ()));
 				
+				connect (Ui_.MsgEdit_,
+						SIGNAL (keyTabPressed ()),
+						this,
+						SLOT (nickComplete ()));
+				
 				Ui_.EntryInfo_->setText (e->GetEntryName ());
 				
 				Ui_.MsgEdit_->setMaximumHeight (height () / 4);
@@ -145,6 +150,13 @@ namespace LeechCraft
 					Ui_.MsgEdit_->setMinimumHeight (height);
 				
 				Ui_.MsgEdit_->setFocus ();
+				
+				connect (Ui_.MsgEdit_,
+						SIGNAL (clearAvailableNicks ()),
+						this,
+						SLOT (clearAvailableNick ()));
+				
+				CurrentNickIndex_ = 0;
 			}
 
 			QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
@@ -566,6 +578,149 @@ namespace LeechCraft
 					NickColors_ << color;
 				}
 			}
+		
+			void ChatTab::nickComplete ()
+			{
+				Plugins::ICLEntry *entry = GetEntry<Plugins::ICLEntry> ();
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entry
+							<< "doesn't implement ICLEntry";
+
+					return;
+				}				
+				if (entry->GetEntryType() != Plugins::ICLEntry::ETMUC)
+					return;
+				
+				QString text = Ui_.MsgEdit_->toPlainText ();
+				QStringList newAvailableNick;
+				QStringList currentMUCParticipants = GetMUCParticipants ();
+				if (currentMUCParticipants.isEmpty())
+					return;
+
+				QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
+
+				int cursorPosition = cursor.position ();
+				int pos = -1;
+				int lastNickLen = -1;
+				
+				if (AvailableNickList_.isEmpty ())
+				{
+					if (cursorPosition)
+						pos = text.lastIndexOf (" ", cursorPosition - 1);
+					else
+						pos = text.lastIndexOf (" ", cursorPosition);
+					LastSpacePosition_ = pos;
+				}
+				else
+					pos = LastSpacePosition_;
+				
+				if (NickFirstPart_.isNull ())
+				{
+					if (!cursorPosition)
+						NickFirstPart_ = "";
+					else
+						NickFirstPart_ = text.mid (pos + 1, cursorPosition - pos -1);
+				}
+				
+				if (AvailableNickList_.isEmpty ())
+				{
+					Q_FOREACH (const QString& item, currentMUCParticipants)
+						if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
+						{
+							if (pos == -1)
+								AvailableNickList_ << item + ": ";
+							else
+								AvailableNickList_ << item + " ";
+						}
+						
+					if (AvailableNickList_.isEmpty())
+						return;
+					
+					text.replace (pos + 1, NickFirstPart_.length (), AvailableNickList_ [CurrentNickIndex_]);
+				}
+				else
+				{
+					Q_FOREACH (const QString& item, currentMUCParticipants)
+  						if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
+						{
+							if (pos == -1)
+  								newAvailableNick << item + ": ";
+  							else
+  								newAvailableNick << item + " ";
+						}
+						
+					if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
+ 					{
+ 						int newIndex = newAvailableNick.indexOf (AvailableNickList_ [CurrentNickIndex_ - 1]);
+						lastNickLen = AvailableNickList_ [CurrentNickIndex_ - 1].length ();
+						
+						while (newIndex == -1 && CurrentNickIndex_ > 0)
+ 							newIndex = newAvailableNick.indexOf (AvailableNickList_ [--CurrentNickIndex_]);
+ 	
+ 						CurrentNickIndex_ = (newIndex == -1 ? 0 : newIndex);
+ 						AvailableNickList_ = newAvailableNick;
+ 					}
+					
+					if (CurrentNickIndex_ < AvailableNickList_.count () && CurrentNickIndex_)
+						text.replace (pos + 1, AvailableNickList_ [CurrentNickIndex_ - 1].length (), AvailableNickList_ [CurrentNickIndex_]);
+					else if (CurrentNickIndex_)
+					{
+						CurrentNickIndex_ = 0;
+						text.replace (pos + 1, AvailableNickList_.last ().length (), AvailableNickList_ [CurrentNickIndex_]);
+					}
+					else
+						text.replace (pos + 1, lastNickLen, AvailableNickList_ [CurrentNickIndex_]);
+				}
+				CurrentNickIndex_++;
+				
+				Ui_.MsgEdit_->setPlainText (text);
+				cursor.setPosition (pos + 1 + AvailableNickList_ [CurrentNickIndex_ - 1].length ());
+				Ui_.MsgEdit_->setTextCursor (cursor);
+			}
+			
+			QStringList ChatTab::GetMUCParticipants () const
+			{
+				Plugins::IMUCEntry *entry = GetEntry<Plugins::IMUCEntry> ();
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entry
+							<< "doesn't implement IMUCEntry";
+					
+					return QStringList ();
+				}
+				
+				QStringList participantsList;
+				
+				Q_FOREACH (QObject *item, entry->GetParticipants ())
+				{
+					Plugins::ICLEntry *part = qobject_cast<Plugins::ICLEntry*> (item);
+					if (!part)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to cast message from"
+								<< part->GetEntryID ()
+								<<  "to ICLEntry"
+								<< item;
+						return QStringList ();
+					}
+					participantsList << part->GetEntryName ();
+				}
+				return participantsList;
+			}
+
+			void ChatTab::clearAvailableNick ()
+			{
+				NickFirstPart_.clear ();
+				if (!AvailableNickList_.isEmpty ())
+				{
+					AvailableNickList_.clear ();
+					CurrentNickIndex_ = 0;
+				}
+			}	
+
 		}
 	}
 }

@@ -55,6 +55,10 @@ namespace LeechCraft
 				QList<QColor> NickColors_;
 				QList<QString> MsgHistory_;
 				int CurrentHistoryPosition_;
+				QStringList AvailableNickList_;
+				int CurrentNickIndex_;
+				int LastSpacePosition_;
+				QString NickFirstPart_;
 			public:
 				static void SetParentMultiTabs (QObject*);
 
@@ -65,8 +69,13 @@ namespace LeechCraft
 				void NewTabRequested ();
 				QToolBar* GetToolBar () const;
 				void Remove ();
+			
+			private slots:
+				void clearAvailableNick ();
+				
 			private slots:
 				void messageSend ();
+				void nickComplete ();
 				void on_MsgEdit__textChanged ();
 				void on_SubjectButton__released ();
 				void handleEntryMessage (QObject*);
@@ -77,9 +86,9 @@ namespace LeechCraft
 			private:
 				template<typename T>
 				T* GetEntry () const;
-
 				void CheckMUC ();
 				void HandleMUC ();
+				QStringList GetMUCParticipants () const;
 				
 				/** Appends the message to the message view area.
 				 */

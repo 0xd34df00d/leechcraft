@@ -37,6 +37,8 @@ namespace LeechCraft
 				void keyPressEvent (QKeyEvent*);
 			signals:
 				void keyReturnPressed ();
+				void keyTabPressed ();
+				void clearAvailableNicks ();
 			};
 		}
 	}
