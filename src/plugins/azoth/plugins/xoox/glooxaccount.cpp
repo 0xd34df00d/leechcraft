@@ -247,7 +247,7 @@ namespace LeechCraft
 
 						QString result = QInputDialog::getText (0,
 								"LeechCraft",
-								tr ("Enter password for %1:").arg (JID_));
+								tr ("Enter password for %1:").arg (JID_), QLineEdit::Password);
 						if (!result.isNull ())
 							proxy->SetPassword (result, this);
 						return result;
