@@ -22,6 +22,8 @@
 #include <QMessageBox>
 #include <QUuid>
 #include <QDate>
+#include <interfaces/structures.h>
+#include <plugininterface/util.h>
 #include <plugininterface/categoryselector.h>
 #include "core.h"
 #include "channelsmodel.h"
@@ -258,6 +260,10 @@ namespace LeechCraft
 					WriteChannel (w, cs, items2write [cs]);
 				w.writeEndElement ();
 				w.writeEndDocument ();
+
+				emit gotEntity (Util::MakeNotification ("Aggregator",
+							tr ("FB2 export complete."),
+							PInfo_));
 			}
 		};
 	};

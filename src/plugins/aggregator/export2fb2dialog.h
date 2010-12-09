@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+	struct Entity;
+
 	namespace Util
 	{
 		class CategorySelector;
@@ -46,6 +48,8 @@ namespace LeechCraft
 				void on_File__textChanged (const QString&);
 				void handleChannelsSelectionChanged (const QItemSelection&, const QItemSelection&);
 				void handleAccepted ();
+			signals:
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};
