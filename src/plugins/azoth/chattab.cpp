@@ -274,17 +274,6 @@ namespace LeechCraft
 				}
 
 				AppendMessage (msg);
-
-				if (msg->GetDirection () == Plugins::IMessage::DIn &&
-						msg->GetMessageType () != Plugins::IMessage::MTMUCMessage &&
-						!isVisible ())
-				{
-					Entity e = Util::MakeNotification ("Azoth",
-							tr ("Incoming chat message from %1.")
-								.arg (msg->OtherPart ()->GetEntryName ()),
-							PInfo_);
-					Core::Instance ().SendEntity (e);
-				}
 			}
 
 			void ChatTab::handleViewLinkClicked (const QUrl& url)
