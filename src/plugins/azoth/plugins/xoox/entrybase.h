@@ -19,6 +19,8 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
 #include <QObject>
+#include <QImage>
+#include <gloox/vcard.h>
 #include <interfaces/iclentry.h>
 
 namespace LeechCraft
@@ -41,6 +43,8 @@ namespace Xoox
 		QList<QObject*> AllMessages_;
 		EntryStatus CurrentStatus_;
 		QList<QAction*> Actions_;
+
+		QImage Avatar_;
 	public:
 		EntryBase (QObject* = 0);
 
@@ -52,6 +56,7 @@ namespace Xoox
 
 		void HandleMessage (GlooxMessage*);
 		void SetStatus (const EntryStatus&);
+		void SetPhoto (const gloox::VCard::Photo&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const Plugins::EntryStatus&);

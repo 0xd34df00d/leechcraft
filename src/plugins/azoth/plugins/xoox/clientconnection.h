@@ -27,6 +27,7 @@
 #include <gloox/messagesessionhandler.h>
 #include <gloox/messagehandler.h>
 #include <gloox/jid.h>
+#include <gloox/vcardhandler.h>
 #include <interfaces/imessage.h>
 
 class QTimer;
@@ -35,6 +36,7 @@ namespace gloox
 {
 	class Client;
 	class RosterItem;
+	class VCardManager;
 
 	uint qHash (const JID& jid);
 }
@@ -63,6 +65,7 @@ namespace Xoox
 							, public gloox::RosterListener
 							, public gloox::MessageSessionHandler
 							, public gloox::MessageHandler
+							, public gloox::VCardHandler
 	{
 		Q_OBJECT
 
@@ -72,6 +75,8 @@ namespace Xoox
 		QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
 		bool IsConnected_;
 		bool ShouldRefillRoster_;
+
+		boost::shared_ptr<gloox::VCardManager> VCardManager_;
 
 		// Bare JID → resource → session.
 		QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
@@ -126,6 +131,11 @@ namespace Xoox
 
 		// MessageHandler
 		virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
+
+		// VCardHandler
+		virtual void handleVCard (const gloox::JID&, const gloox::VCard*);
+		virtual void handleVCardResult (gloox::VCardHandler::VCardContext,
+				const gloox::JID&, gloox::StanzaError);
 	private slots:
 		void handlePollTimer ();
 	private:

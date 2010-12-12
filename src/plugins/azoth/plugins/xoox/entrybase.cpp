@@ -18,6 +18,7 @@
 
 #include "entrybase.h"
 #include <QImage>
+#include <QtDebug>
 #include "glooxmessage.h"
 
 namespace LeechCraft
@@ -59,7 +60,7 @@ namespace Xoox
 
 	QImage EntryBase::GetAvatar () const
 	{
-		return QImage ();
+		return Avatar_;
 	}
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
@@ -75,6 +76,19 @@ namespace Xoox
 
 		CurrentStatus_ = status;
 		emit statusChanged (CurrentStatus_);
+	}
+
+	void EntryBase::SetPhoto (const gloox::VCard::Photo& photo)
+	{
+		if (!photo.type.size ())
+			Avatar_ = QImage ();
+		else
+		{
+			QByteArray data (photo.binval.c_str(), photo.binval.size ());
+			Avatar_ = QImage::fromData (data);
+		}
+
+		emit avatarChanged (Avatar_);
 	}
 }
 }
