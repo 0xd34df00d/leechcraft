@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "roomclentry.h"
+#include <QImage>
 #include <QtDebug>
 #include <gloox/mucroom.h>
 #include "glooxaccount.h"
@@ -112,6 +113,11 @@ namespace LeechCraft
 					QList<QAction*> RoomCLEntry::GetActions ()
 					{
 						return QList<QAction*> ();
+					}
+
+					QImage RoomCLEntry::GetAvatar() const
+					{
+						return QImage ();
 					}
 
 					IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const

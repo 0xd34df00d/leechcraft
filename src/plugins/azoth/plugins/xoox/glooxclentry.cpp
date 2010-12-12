@@ -58,7 +58,7 @@ namespace LeechCraft
 						return FPermanentEntry | FSupportsRenames;
 					}
 
-					ICLEntry::EntryType GlooxCLEntry::GetEntryType() const
+					ICLEntry::EntryType GlooxCLEntry::GetEntryType () const
 					{
 						return ETChat;
 					}

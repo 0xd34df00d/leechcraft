@@ -48,12 +48,14 @@ namespace LeechCraft
 						virtual QList<QObject*> GetAllMessages () const;
 						EntryStatus GetStatus () const;
 						QList<QAction*> GetActions ();
+						QImage GetAvatar () const;
 
 						void HandleMessage (GlooxMessage*);
 						void SetStatus (const EntryStatus&);
 					signals:
 						void gotMessage (QObject*);
 						void statusChanged (const Plugins::EntryStatus&);
+						void avatarChanged (const QImage&);
 					};
 				}
 			}
