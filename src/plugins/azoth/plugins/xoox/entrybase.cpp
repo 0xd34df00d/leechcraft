@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "entrybase.h"
+#include <QImage>
 #include "glooxmessage.h"
 
 namespace LeechCraft
@@ -54,6 +55,11 @@ namespace LeechCraft
 					QList<QAction*> EntryBase::GetActions ()
 					{
 						return Actions_;
+					}
+
+					QImage EntryBase::GetAvatar () const
+					{
+						return QImage ();
 					}
 
 					void EntryBase::HandleMessage (GlooxMessage *msg)
