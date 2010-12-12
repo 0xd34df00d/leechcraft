@@ -77,6 +77,11 @@ public:
 	{
 		return QMap<QString, QList<QAction*> > ();
 	}
+
+	/** This function is called when the corresponding widget becomes
+	 * current.
+	 */
+	virtual void TabMadeCurrent () {}
 };
 
 /** @brief Interface for plugins having (and opening/closing) multiple
