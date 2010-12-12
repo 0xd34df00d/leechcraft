@@ -359,6 +359,8 @@ void TabManager::handleCurrentChanged (int index)
 		QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
 		Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
 		Menus_ = menus;
+
+		imtw->TabMadeCurrent ();
 	}
 	else
 		Menus_.clear ();
