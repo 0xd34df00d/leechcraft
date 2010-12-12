@@ -41,6 +41,27 @@ namespace LeechCraft
 	{
 		namespace Azoth
 		{
+			QString ToString (Plugins::State st)
+			{
+				switch (st)
+				{
+					case Plugins::SOnline:
+						return Core::tr ("Online");
+					case Plugins::SChat:
+						return Core::tr ("Free to chat");
+					case Plugins::SAway:
+						return Core::tr ("Away");
+					case Plugins::SDND:
+						return Core::tr ("Do not disturb");
+					case Plugins::SXA:
+						return Core::tr ("Extended away");
+					case Plugins::SOffline:
+						return Core::tr ("Offline");
+					default:
+						return Core::tr ("Error");
+				}
+			}
+
 			Core::Core ()
 			: CLModel_ (new QStandardItemModel (this))
 			, ChatTabsManager_ (new ChatTabsManager (this))
@@ -352,8 +373,29 @@ namespace LeechCraft
 			void Core::HandleStatusChanged (const Plugins::EntryStatus& status,
 					Plugins::ICLEntry *entry)
 			{
+				QString tip = QString ("%1 (%2)<hr />%3 (%4)<hr />%5")
+						.arg (entry->GetEntryName ())
+						.arg (QString (entry->GetEntryID ()))
+						.arg (ToString (entry->GetStatus ().State_))
+						.arg (entry->GetStatus ().StatusString_)
+						.arg (tr ("In groups: ") + entry->Groups ().join ("; "));
+				Q_FOREACH (const QString& variant, entry->Variants ())
+				{
+					if (variant.isEmpty ())
+						continue;
+
+					qDebug () << variant << entry->Variants ();
+					tip += QString ("<hr /><strong>%1</strong>: %2 (%3)")
+							.arg (variant)
+							.arg (ToString (entry->GetStatus ().State_))
+							.arg (entry->GetStatus ().StatusString_);
+				}
+
 				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+				{
+					item->setToolTip (tip);
 					item->setIcon (GetIconForState (status.State_));
+				}
 			}
 
 			QIcon Core::GetIconForState (Plugins::State state) const
@@ -668,7 +710,6 @@ namespace LeechCraft
 
 			void Core::updateItem ()
 			{
-				qDebug () << "generally updating item...";
 				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
 				if (!entry)
 				{
