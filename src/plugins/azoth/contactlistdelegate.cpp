@@ -50,9 +50,36 @@ namespace Azoth
 		case Core::CLETAccount:
 			option.font.setBold (true);
 		case Core::CLETCategory:
+		{
+			int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 			option.rect.setLeft (0);
+			if (unread)
+			{
+				painter->save ();
+
+				const bool selected = option.state & QStyle::State_Selected;
+				const QRect& r = option.rect;
+
+				const QString& text = QString (" %1 :: ").arg (unread);
+
+				QFont unreadFont = option.font;
+				unreadFont.setBold (true);
+
+				int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
+
+				painter->setFont (unreadFont);
+				painter->drawText (r.left () + CPadding, r.top () + CPadding,
+						unreadSpace, r.height () - 2 * CPadding,
+						Qt::AlignVCenter | Qt::AlignLeft,
+						text);
+
+				painter->restore ();
+
+				option.rect.setLeft (unreadSpace);
+			}
 			QStyledItemDelegate::paint (painter, option, index);
 			break;
+		}
 		case Core::CLETContact:
 			DrawContact (painter, option, index);
 			break;
@@ -107,7 +134,6 @@ namespace Azoth
 
 			unreadSpace = CPadding + QFontMetrics (unreadFont).width (unreadStr);
 		}
-		qDebug () << "unread" << unreadNum << unreadStr << unreadSpace;
 
 		const int textShift = r.left () + 2 * CPadding + iconSize + unreadSpace;
 		const int textWidth = r.width () - textShift -

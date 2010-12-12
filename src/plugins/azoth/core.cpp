@@ -446,6 +446,16 @@ namespace LeechCraft
 				return QIcon (path);
 			}
 
+			void Core::RecalculateUnreadForParents (QStandardItem *clItem)
+			{
+				QStandardItem *category = clItem->parent ();
+				int sum = 0;
+				for (int i = 0, rc = category->rowCount ();
+						i < rc; ++i)
+					sum += category->child (i)->data (CLRUnreadMsgCount).toInt ();
+				category->setData (sum, CLRUnreadMsgCount);
+			}
+
 			void Core::handleAccountCreatorTriggered ()
 			{
 				QAction *sa = qobject_cast<QAction*> (sender ());
@@ -693,6 +703,7 @@ namespace LeechCraft
 					{
 						int prevValue = item->data (CLRUnreadMsgCount).toInt ();
 						item->setData (prevValue + 1, CLRUnreadMsgCount);
+						RecalculateUnreadForParents (item);
 					}
 
 				bool shouldShow = msg->GetDirection () == Plugins::IMessage::DIn &&
@@ -749,10 +760,11 @@ namespace LeechCraft
 					return;
 				}
 
-				qDebug () << Q_FUNC_INFO << object << entry->GetEntryName ();
-
 				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+				{
 					item->setData (0, CLRUnreadMsgCount);
+					RecalculateUnreadForParents (item);
+				}
 			}
 		};
 	};

@@ -176,6 +176,12 @@ namespace LeechCraft
 				 * given contact list entry state.
 				 */
 				QIcon GetIconForState (Plugins::State state) const;
+
+				/** This functions calculates new value of number of
+				 * unread items for the chain of parents of the given
+				 * item.
+				 */
+				void RecalculateUnreadForParents (QStandardItem*);
 			private slots:
 				/** Initiates account registration process.
 				 */
