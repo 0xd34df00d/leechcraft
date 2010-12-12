@@ -20,61 +20,61 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	GlooxAccountConfigurationDialog::GlooxAccountConfigurationDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					GlooxAccountConfigurationDialog::GlooxAccountConfigurationDialog (QWidget *parent)
-					: QDialog (parent)
-					{
-						Ui_.setupUi (this);
-					}
-
-					QString GlooxAccountConfigurationDialog::GetJID () const
-					{
-						return Ui_.JID_->text ();
-					}
-
-					void GlooxAccountConfigurationDialog::SetJID (const QString& jid)
-					{
-						Ui_.JID_->setText (jid);
-					}
-
-					QString GlooxAccountConfigurationDialog::GetNick () const
-					{
-						return Ui_.Nick_->text ();
-					}
-
-					void GlooxAccountConfigurationDialog::SetNick (const QString& nick)
-					{
-						Ui_.Nick_->setText (nick);
-					}
-
-					QString GlooxAccountConfigurationDialog::GetResource () const
-					{
-						return Ui_.Resource_->text ();
-					}
-
-					void GlooxAccountConfigurationDialog::SetResource (const QString& res)
-					{
-						Ui_.Resource_->setText (res);
-					}
-
-					short GlooxAccountConfigurationDialog::GetPriority () const
-					{
-						return Ui_.Priority_->value ();
-					}
-
-					void GlooxAccountConfigurationDialog::SetPriority (short priority)
-					{
-						Ui_.Priority_->setValue (priority);
-					}
-				}
-			}
-		}
+		Ui_.setupUi (this);
 	}
+
+	QString GlooxAccountConfigurationDialog::GetJID () const
+	{
+		return Ui_.JID_->text ();
+	}
+
+	void GlooxAccountConfigurationDialog::SetJID (const QString& jid)
+	{
+		Ui_.JID_->setText (jid);
+	}
+
+	QString GlooxAccountConfigurationDialog::GetNick () const
+	{
+		return Ui_.Nick_->text ();
+	}
+
+	void GlooxAccountConfigurationDialog::SetNick (const QString& nick)
+	{
+		Ui_.Nick_->setText (nick);
+	}
+
+	QString GlooxAccountConfigurationDialog::GetResource () const
+	{
+		return Ui_.Resource_->text ();
+	}
+
+	void GlooxAccountConfigurationDialog::SetResource (const QString& res)
+	{
+		Ui_.Resource_->setText (res);
+	}
+
+	short GlooxAccountConfigurationDialog::GetPriority () const
+	{
+		return Ui_.Priority_->value ();
+	}
+
+	void GlooxAccountConfigurationDialog::SetPriority (short priority)
+	{
+		Ui_.Priority_->setValue (priority);
+	}
+}
+}
+}
+}
 }

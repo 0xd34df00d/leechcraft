@@ -34,90 +34,90 @@ namespace gloox
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+class IProtocol;
+
+namespace Xoox
+{
+	class ClientConnection;
+
+	struct GlooxAccountState
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				class IProtocol;
+		State State_;
+		QString Status_;
+		int Priority_;
+	};
 
-				namespace Xoox
-				{
-					class ClientConnection;
+	class GlooxProtocol;
 
-					struct GlooxAccountState
-					{
-						State State_;
-						QString Status_;
-						int Priority_;
-					};
+	class GlooxAccount : public QObject
+						, public IAccount
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
 
-					class GlooxProtocol;
+		QString Name_;
+		GlooxProtocol *ParentProtocol_;
 
-					class GlooxAccount : public QObject
-									   , public IAccount
-					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
+		QString JID_;
+		QString Nick_;
+		QString Resource_;
 
-						QString Name_;
-						GlooxProtocol *ParentProtocol_;
+		boost::shared_ptr<ClientConnection> ClientConnection_;
 
-						QString JID_;
-						QString Nick_;
-						QString Resource_;
+		GlooxAccountState AccState_;
+	public:
+		GlooxAccount (const QString&, QObject*);
 
-						boost::shared_ptr<ClientConnection> ClientConnection_;
+		QObject* GetObject ();
+		QObject* GetParentProtocol () const;
+		AccountFeatures GetAccountFeatures () const;
+		QList<QObject*> GetCLEntries ();
+		QString GetAccountName () const;
+		void RenameAccount (const QString&);
+		QByteArray GetAccountID () const;
+		void OpenConfigurationDialog ();
+		void ChangeState (State, const QString& = QString ());
+		void Synchronize ();
 
-						GlooxAccountState AccState_;
-					public:
-						GlooxAccount (const QString&, QObject*);
+		QString GetJID () const;
+		QString GetNick () const;
+		void JoinRoom (const QString&, const QString&, const QString&);
+		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 
-						QObject* GetObject ();
-						QObject* GetParentProtocol () const;
-						AccountFeatures GetAccountFeatures () const;
-						QList<QObject*> GetCLEntries ();
-						QString GetAccountName () const;
-						void RenameAccount (const QString&);
-						QByteArray GetAccountID () const;
-						void OpenConfigurationDialog ();
-						void ChangeState (State, const QString& = QString ());
-						void Synchronize ();
+		QByteArray Serialize () const;
+		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
 
-						QString GetJID () const;
-						QString GetNick () const;
-						void JoinRoom (const QString&, const QString&, const QString&);
-						boost::shared_ptr<ClientConnection> GetClientConnection () const;
+		QObject* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&,
+				gloox::RosterItem*);
+	private:
+		QString GetPassword (bool authFailure = false);
+	public slots:
+		void handleEntryRemoved (QObject*);
+		void handleGotRosterItems (const QList<QObject*>&);
+	private slots:
+		void handleServerAuthFailed ();
+		void handleDestroyClient ();
+	signals:
+		void gotCLItems (const QList<QObject*>&);
+		void removedCLItems (const QList<QObject*>&);
+		void joinedGroupchat (QObject*);
+		void accountSettingsChanged ();
 
-						QByteArray Serialize () const;
-						static GlooxAccount* Deserialize (const QByteArray&, QObject*);
+		void scheduleClientDestruction ();
+	};
 
-						QObject* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&,
-								gloox::RosterItem*);
-					private:
-						QString GetPassword (bool authFailure = false);
-					public slots:
-						void handleEntryRemoved (QObject*);
-						void handleGotRosterItems (const QList<QObject*>&);
-					private slots:
-						void handleServerAuthFailed ();
-						void handleDestroyClient ();
-					signals:
-						void gotCLItems (const QList<QObject*>&);
-						void removedCLItems (const QList<QObject*>&);
-						void joinedGroupchat (QObject*);
-						void accountSettingsChanged ();
-
-						void scheduleClientDestruction ();
-					};
-
-					typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
-				}
-			}
-		}
-	}
+	typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
+}
+}
+}
+}
 }
 
 #endif

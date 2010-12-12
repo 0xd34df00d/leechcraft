@@ -23,35 +23,35 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxAccountConfigurationDialog : public QDialog
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxAccountConfigurationDialog : public QDialog
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Ui::GlooxAccountConfigurationDialog Ui_;
-					public:
-						GlooxAccountConfigurationDialog (QWidget* = 0);
+		Ui::GlooxAccountConfigurationDialog Ui_;
+	public:
+		GlooxAccountConfigurationDialog (QWidget* = 0);
 
-						QString GetJID () const;
-						void SetJID (const QString&);
-						QString GetNick () const;
-						void SetNick (const QString&);
-						QString GetResource () const;
-						void SetResource (const QString&);
-						short GetPriority () const;
-						void SetPriority (short);
-					};
-				}
-			}
-		}
-	}
+		QString GetJID () const;
+		void SetJID (const QString&);
+		QString GetNick () const;
+		void SetNick (const QString&);
+		QString GetResource () const;
+		void SetResource (const QString&);
+		short GetPriority () const;
+		void SetPriority (short);
+	};
+}
+}
+}
+}
 }
 
 #endif
