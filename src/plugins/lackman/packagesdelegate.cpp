@@ -88,8 +88,6 @@ namespace LeechCraft
 				const QRect& r = option.rect;
 				bool ltr = (painter->layoutDirection () == Qt::LeftToRight);
 				bool selected = option.state & QStyle::State_Selected;
-				if (selected)
-					painter->fillRect (option.rect, option.palette.highlight ());
 
 				QString title = index.data (Qt::DisplayRole).toString ();
 				QString shortDescr = index.data (PackagesModel::PMRShortDescription).toString ();
@@ -109,6 +107,10 @@ namespace LeechCraft
 				pixmap.fill (Qt::transparent);
 				QPainter p (&pixmap);
 				p.translate (-option.rect.topLeft ());
+
+				if (selected ||
+						(option.state & QStyle::State_MouseOver))
+					style->drawPrimitive (QStyle::PE_PanelItemViewItem, &opt, &p, opt.widget);
 
 				int textShift = 2 * CPadding + CIconSize;
 				int leftPos = r.left () + (ltr ? textShift : 0);
