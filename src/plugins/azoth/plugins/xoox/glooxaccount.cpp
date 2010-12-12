@@ -34,253 +34,253 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	GlooxAccount::GlooxAccount (const QString& name,
+			QObject *parent)
+	: QObject (parent)
+	, Name_ (name)
+	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 	{
-		namespace Azoth
+		AccState_.Priority_ = -1;
+
+		connect (this,
+				SIGNAL (scheduleClientDestruction ()),
+				this,
+				SLOT (handleDestroyClient ()),
+				Qt::QueuedConnection);
+	}
+
+	QObject* GlooxAccount::GetObject ()
+	{
+		return this;
+	}
+
+	QObject* GlooxAccount::GetParentProtocol () const
+	{
+		return ParentProtocol_;
+	}
+
+	IAccount::AccountFeatures GlooxAccount::GetAccountFeatures () const
+	{
+		return FRenamable | FSupportsXA;
+	}
+
+	QList<QObject*> GlooxAccount::GetCLEntries ()
+	{
+		return QList<QObject*> ();
+	}
+
+	QString GlooxAccount::GetAccountName () const
+	{
+		return Name_;
+	}
+
+	void GlooxAccount::RenameAccount (const QString& name)
+	{
+		Name_ = name;
+	}
+
+	QByteArray GlooxAccount::GetAccountID () const
+	{
+		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
+	}
+
+	void GlooxAccount::OpenConfigurationDialog ()
+	{
+		// TODO nonmodal
+		std::auto_ptr<GlooxAccountConfigurationDialog> dia (new GlooxAccountConfigurationDialog (0));
+		if (!JID_.isEmpty ())
+			dia->SetJID (JID_);
+		if (!Nick_.isEmpty ())
+			dia->SetNick (Nick_);
+		if (!Resource_.isEmpty ())
+			dia->SetResource (Resource_);
+		dia->SetPriority (AccState_.Priority_);
+		if (dia->exec () == QDialog::Rejected)
+			return;
+
+		JID_ = dia->GetJID ();
+		Nick_ = dia->GetNick ();
+		Resource_ = dia->GetResource ();
+		AccState_.Priority_ = dia->GetPriority ();
+
+		emit accountSettingsChanged ();
+
+		ChangeState (AccState_.State_, AccState_.Status_);
+	}
+
+	void GlooxAccount::ChangeState (State accState, const QString& status)
+	{
+		if (accState == SOffline &&
+				!ClientConnection_)
+			return;
+
+		AccState_.State_ = accState;
+		AccState_.Status_ = status;
+
+		if (!ClientConnection_)
 		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					GlooxAccount::GlooxAccount (const QString& name,
-							QObject *parent)
-					: QObject (parent)
-					, Name_ (name)
-					, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
-					{
-						AccState_.Priority_ = -1;
+			const QString& pwd = GetPassword ();
+			gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
+			ClientConnection_.reset (new ClientConnection (jid, pwd, AccState_, this));
+			connect (ClientConnection_.get (),
+					SIGNAL (serverAuthFailed ()),
+					this,
+					SLOT (handleServerAuthFailed ()));
 
-						connect (this,
-								SIGNAL (scheduleClientDestruction ()),
-								this,
-								SLOT (handleDestroyClient ()),
-								Qt::QueuedConnection);
-					}
+			connect (ClientConnection_.get (),
+					SIGNAL (gotRosterItems (const QList<QObject*>&)),
+					this,
+					SLOT (handleGotRosterItems (const QList<QObject*>&)));
+			connect (ClientConnection_.get (),
+					SIGNAL (rosterItemRemoved (QObject*)),
+					this,
+					SLOT (handleEntryRemoved (QObject*)));
+			connect (ClientConnection_.get (),
+					SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
+					this,
+					SIGNAL (removedCLItems (const QList<QObject*>&)));
+		}
+		else
+			ClientConnection_->SetState (AccState_);
+	}
 
-					QObject* GlooxAccount::GetObject ()
-					{
-						return this;
-					}
+	void GlooxAccount::Synchronize ()
+	{
+		ClientConnection_->Synchronize ();
+	}
 
-					QObject* GlooxAccount::GetParentProtocol () const
-					{
-						return ParentProtocol_;
-					}
+	QString GlooxAccount::GetJID () const
+	{
+		return JID_;
+	}
 
-					IAccount::AccountFeatures GlooxAccount::GetAccountFeatures () const
-					{
-						return FRenamable | FSupportsXA;
-					}
+	QString GlooxAccount::GetNick () const
+	{
+		return Nick_;
+	}
 
-					QList<QObject*> GlooxAccount::GetCLEntries ()
-					{
-						return QList<QObject*> ();
-					}
+	void GlooxAccount::JoinRoom (const QString& server,
+			const QString& room, const QString& nick)
+	{
+		QString jidStr = QString ("%1@%2/%3")
+				.arg (room, server, nick);
+		gloox::JID roomJID (jidStr.toUtf8 ().constData ());
 
-					QString GlooxAccount::GetAccountName () const
-					{
-						return Name_;
-					}
+		RoomCLEntry *entry = ClientConnection_->JoinRoom (roomJID);
+		emit gotCLItems (QList<QObject*> () << entry);
+	}
 
-					void GlooxAccount::RenameAccount (const QString& name)
-					{
-						Name_ = name;
-					}
+	boost::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
+	{
+		return ClientConnection_;
+	}
 
-					QByteArray GlooxAccount::GetAccountID () const
-					{
-						return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
-					}
+	QByteArray GlooxAccount::Serialize () const
+	{
+		quint16 version = 1;
 
-					void GlooxAccount::OpenConfigurationDialog ()
-					{
-						// TODO nonmodal
-						std::auto_ptr<GlooxAccountConfigurationDialog> dia (new GlooxAccountConfigurationDialog (0));
-						if (!JID_.isEmpty ())
-							dia->SetJID (JID_);
-						if (!Nick_.isEmpty ())
-							dia->SetNick (Nick_);
-						if (!Resource_.isEmpty ())
-							dia->SetResource (Resource_);
-						dia->SetPriority (AccState_.Priority_);
-						if (dia->exec () == QDialog::Rejected)
-							return;
+		QByteArray result;
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			ostr << version
+				<< Name_
+				<< JID_
+				<< Nick_
+				<< Resource_
+				<< AccState_.Priority_;
+		}
 
-						JID_ = dia->GetJID ();
-						Nick_ = dia->GetNick ();
-						Resource_ = dia->GetResource ();
-						AccState_.Priority_ = dia->GetPriority ();
+		return result;
+	}
 
-						emit accountSettingsChanged ();
+	GlooxAccount* GlooxAccount::Deserialize (const QByteArray& data, QObject *parent)
+	{
+		quint16 version = 0;
 
-						ChangeState (AccState_.State_, AccState_.Status_);
-					}
+		QDataStream in (data);
+		in >> version;
 
-					void GlooxAccount::ChangeState (State accState, const QString& status)
-					{
-						if (accState == SOffline &&
-								!ClientConnection_)
-							return;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return 0;
+		}
 
-						AccState_.State_ = accState;
-						AccState_.Status_ = status;
+		QString name;
+		in >> name;
+		GlooxAccount *result = new GlooxAccount (name, parent);
+		in >> result->JID_
+			>> result->Nick_
+			>> result->Resource_
+			>> result->AccState_.Priority_;
 
-						if (!ClientConnection_)
-						{
-							const QString& pwd = GetPassword ();
-							gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
-							ClientConnection_.reset (new ClientConnection (jid, pwd, AccState_, this));
-							connect (ClientConnection_.get (),
-									SIGNAL (serverAuthFailed ()),
-									this,
-									SLOT (handleServerAuthFailed ()));
+		return result;
+	}
 
-							connect (ClientConnection_.get (),
-									SIGNAL (gotRosterItems (const QList<QObject*>&)),
-									this,
-									SLOT (handleGotRosterItems (const QList<QObject*>&)));
-							connect (ClientConnection_.get (),
-									SIGNAL (rosterItemRemoved (QObject*)),
-									this,
-									SLOT (handleEntryRemoved (QObject*)));
-							connect (ClientConnection_.get (),
-									SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
-									this,
-									SIGNAL (removedCLItems (const QList<QObject*>&)));
-						}
-						else
-							ClientConnection_->SetState (AccState_);
-					}
+	QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
+			const QString& variant, const QString& body,
+			gloox::RosterItem *ri)
+	{
+		return ClientConnection_->CreateMessage (type, variant, body, ri);
+	}
 
-					void GlooxAccount::Synchronize ()
-					{
-						ClientConnection_->Synchronize ();
-					}
+	QString GlooxAccount::GetPassword (bool authfailure)
+	{
+		IProxyObject *proxy =
+			qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
+		if (!authfailure)
+		{
+			const QString& result = proxy->GetPassword (this);
+			if (!result.isNull ())
+				return result;
+		}
 
-					QString GlooxAccount::GetJID () const
-					{
-						return JID_;
-					}
+		QString result = QInputDialog::getText (0,
+				"LeechCraft",
+				tr ("Enter password for %1:").arg (JID_), QLineEdit::Password);
+		if (!result.isNull ())
+			proxy->SetPassword (result, this);
+		return result;
+	}
 
-					QString GlooxAccount::GetNick () const
-					{
-						return Nick_;
-					}
+	void GlooxAccount::handleEntryRemoved (QObject *entry)
+	{
+		emit removedCLItems (QObjectList () << entry);
+	}
 
-					void GlooxAccount::JoinRoom (const QString& server,
-							const QString& room, const QString& nick)
-					{
-						QString jidStr = QString ("%1@%2/%3")
-								.arg (room, server, nick);
-						gloox::JID roomJID (jidStr.toUtf8 ().constData ());
+	void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
+	{
+		emit gotCLItems (items);
+	}
 
-						RoomCLEntry *entry = ClientConnection_->JoinRoom (roomJID);
-						emit gotCLItems (QList<QObject*> () << entry);
-					}
-
-					boost::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
-					{
-						return ClientConnection_;
-					}
-
-					QByteArray GlooxAccount::Serialize () const
-					{
-						quint16 version = 1;
-
-						QByteArray result;
-						{
-							QDataStream ostr (&result, QIODevice::WriteOnly);
-							ostr << version
-									<< Name_
-									<< JID_
-									<< Nick_
-									<< Resource_
-									<< AccState_.Priority_;
-						}
-
-						return result;
-					}
-
-					GlooxAccount* GlooxAccount::Deserialize (const QByteArray& data, QObject *parent)
-					{
-						quint16 version = 0;
-
-						QDataStream in (data);
-						in >> version;
-
-						if (version != 1)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "unknown version"
-									<< version;
-							return 0;
-						}
-
-						QString name;
-						in >> name;
-						GlooxAccount *result = new GlooxAccount (name, parent);
-						in >> result->JID_
-								>> result->Nick_
-								>> result->Resource_
-								>> result->AccState_.Priority_;
-
-						return result;
-					}
-
-					QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
-							const QString& variant, const QString& body,
-							gloox::RosterItem *ri)
-					{
-						return ClientConnection_->CreateMessage (type, variant, body, ri);
-					}
-
-					QString GlooxAccount::GetPassword (bool authfailure)
-					{
-						IProxyObject *proxy =
-							qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
-						if (!authfailure)
-						{
-							const QString& result = proxy->GetPassword (this);
-							if (!result.isNull ())
-								return result;
-						}
-
-						QString result = QInputDialog::getText (0,
-								"LeechCraft",
-								tr ("Enter password for %1:").arg (JID_), QLineEdit::Password);
-						if (!result.isNull ())
-							proxy->SetPassword (result, this);
-						return result;
-					}
-
-					void GlooxAccount::handleEntryRemoved (QObject *entry)
-					{
-						emit removedCLItems (QObjectList () << entry);
-					}
-
-					void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
-					{
-						emit gotCLItems (items);
-					}
-
-					void GlooxAccount::handleServerAuthFailed ()
-					{
-						const QString& pwd = GetPassword (true);
-						if (pwd.isNull ())
-							emit scheduleClientDestruction ();
-						else
-						{
-							ClientConnection_->SetPassword (pwd);
-							ChangeState (AccState_.State_, AccState_.Status_);
-						}
-					}
-
-					void GlooxAccount::handleDestroyClient ()
-					{
-						ClientConnection_.reset ();
-					}
-				}
-			}
+	void GlooxAccount::handleServerAuthFailed ()
+	{
+		const QString& pwd = GetPassword (true);
+		if (pwd.isNull ())
+			emit scheduleClientDestruction ();
+		else
+		{
+			ClientConnection_->SetPassword (pwd);
+			ChangeState (AccState_.State_, AccState_.Status_);
 		}
 	}
+
+	void GlooxAccount::handleDestroyClient ()
+	{
+		ClientConnection_.reset ();
+	}
+}
+}
+}
+}
 }
