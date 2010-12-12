@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MAINWIDGET_H
-#define PLUGINS_AZOTH_MAINWIDGET_H
-#include <QWidget>
-#include "ui_mainwidget.h"
-
-class QToolBar;
-class QMenu;
+#ifndef PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
+#define PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
+#include <QStyledItemDelegate>
 
 namespace LeechCraft
 {
@@ -30,28 +26,18 @@ namespace Plugins
 {
 namespace Azoth
 {
-	class SortFilterProxyModel;
-
-	class MainWidget : public QWidget
+	class ContactListDelegate : public QStyledItemDelegate
 	{
 		Q_OBJECT
-
-		Ui::MainWidget Ui_;
-
-		QToolBar *UpperBar_;
-		QMenu *MenuGeneral_;
-		SortFilterProxyModel *ProxyModel_;
-
-		QAction *ActionChangeStatus_;
 	public:
-		MainWidget (QWidget* = 0);
-
-		void AddMUCJoiners (const QList<QAction*>&);
-	private slots:
-		void on_CLTree__activated (const QModelIndex&);
-		void on_CLTree__customContextMenuRequested (const QPoint&);
-		void handleChangeStatusRequested ();
-		void showAccountsList ();
+		ContactListDelegate (QObject* = 0);
+		virtual void paint (QPainter*,
+				const QStyleOptionViewItem&, const QModelIndex&) const;
+		virtual QSize sizeHint (const QStyleOptionViewItem&,
+				const QModelIndex&) const;
+	private:
+		void DrawContact (QPainter*,
+				QStyleOptionViewItemV4, const QModelIndex&) const;
 	};
 }
 }

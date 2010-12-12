@@ -38,6 +38,7 @@ SET (SRCS
 	proxyobject.cpp
 	textedit.cpp
 	xmlsettingsmanager.cpp
+	contactlistdelegate.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -53,6 +54,7 @@ SET (HEADERS
 	proxyobject.h
 	textedit.h
 	xmlsettingsmanager.h
+	contactlistdelegate.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h

@@ -28,108 +28,108 @@
 
 namespace LeechCraft
 {
+namespace Plugins
+{
+namespace Azoth
+{
 	namespace Plugins
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				class ICLEntry;
-				class IMUCEntry;
-				class IMessage;
-			}
-
-			class ChatTab : public QWidget
-						  , public IMultiTabsWidget
-			{
-				Q_OBJECT
-				Q_INTERFACES (IMultiTabsWidget)
-
-				static QObject *S_ParentMultiTabs_;
-
-				Ui::ChatTab Ui_;
-				QByteArray EntryID_;
-				QString Variant_;
-				QRegExp LinkRegexp_;
-				QColor BgColor_;
-				QList<QColor> NickColors_;
-				QList<QString> MsgHistory_;
-				int CurrentHistoryPosition_;
-				QStringList AvailableNickList_;
-				int CurrentNickIndex_;
-				int LastSpacePosition_;
-				QString NickFirstPart_;
-			public:
-				static void SetParentMultiTabs (QObject*);
-
-				ChatTab (const QByteArray&, const QString&, QWidget* = 0);
-
-				QList<QAction*> GetTabBarContextMenuActions () const;
-				QObject* ParentMultiTabs () const;
-				void NewTabRequested ();
-				QToolBar* GetToolBar () const;
-				void Remove ();
-			
-			private slots:
-				void clearAvailableNick ();
-				void messageSend ();
-				void nickComplete ();
-				void on_MsgEdit__textChanged ();
-				void on_SubjectButton__released ();
-				void handleEntryMessage (QObject*);
-				void handleViewLinkClicked (const QUrl&);
-				void scrollToEnd ();
-				void handleHistoryUp ();
-				void handleHistoryDown ();
-			private:
-				template<typename T>
-				T* GetEntry () const;
-				void CheckMUC ();
-				void HandleMUC ();
-				QStringList GetMUCParticipants () const;
-				
-				/** Appends the message to the message view area.
-				 */
-				void AppendMessage (Plugins::IMessage*);
-
-				QString FormatDate (QDateTime, Plugins::IMessage*);
-				QString FormatNickname (QString, Plugins::IMessage*);
-				QString FormatBody (QString, Plugins::IMessage*);
-
-				void GenerateColors ();
-			signals:
-				void needToClose (ChatTab*);
-
-				// Hooks
-				void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QDateTime dateTime,
-						QObject *message);
-				void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QString nick,
-						QObject *message);
-				void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QString body,
-						QObject *message);
-				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QString body,
-						QObject *message);
-				void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						int type,
-						QString variant,
-						QString text);
-				void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QObject *message);
-			};
-
-			typedef QPointer<ChatTab> ChatTab_ptr;
-		}
+		class ICLEntry;
+		class IMUCEntry;
+		class IMessage;
 	}
+
+	class ChatTab : public QWidget
+					, public IMultiTabsWidget
+	{
+		Q_OBJECT
+		Q_INTERFACES (IMultiTabsWidget)
+
+		static QObject *S_ParentMultiTabs_;
+
+		Ui::ChatTab Ui_;
+		QByteArray EntryID_;
+		QString Variant_;
+		QRegExp LinkRegexp_;
+		QColor BgColor_;
+		QList<QColor> NickColors_;
+		QList<QString> MsgHistory_;
+		int CurrentHistoryPosition_;
+		QStringList AvailableNickList_;
+		int CurrentNickIndex_;
+		int LastSpacePosition_;
+		QString NickFirstPart_;
+	public:
+		static void SetParentMultiTabs (QObject*);
+
+		ChatTab (const QByteArray&, const QString&, QWidget* = 0);
+
+		QList<QAction*> GetTabBarContextMenuActions () const;
+		QObject* ParentMultiTabs () const;
+		void NewTabRequested ();
+		QToolBar* GetToolBar () const;
+		void Remove ();
+
+	private slots:
+		void clearAvailableNick ();
+		void messageSend ();
+		void nickComplete ();
+		void on_MsgEdit__textChanged ();
+		void on_SubjectButton__released ();
+		void handleEntryMessage (QObject*);
+		void handleViewLinkClicked (const QUrl&);
+		void scrollToEnd ();
+		void handleHistoryUp ();
+		void handleHistoryDown ();
+	private:
+		template<typename T>
+		T* GetEntry () const;
+		void CheckMUC ();
+		void HandleMUC ();
+		QStringList GetMUCParticipants () const;
+
+		/** Appends the message to the message view area.
+		 */
+		void AppendMessage (Plugins::IMessage*);
+
+		QString FormatDate (QDateTime, Plugins::IMessage*);
+		QString FormatNickname (QString, Plugins::IMessage*);
+		QString FormatBody (QString, Plugins::IMessage*);
+
+		void GenerateColors ();
+	signals:
+		void needToClose (ChatTab*);
+
+		// Hooks
+		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QDateTime dateTime,
+				QObject *message);
+		void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString nick,
+				QObject *message);
+		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString body,
+				QObject *message);
+		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString body,
+				QObject *message);
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				int type,
+				QString variant,
+				QString text);
+		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *message);
+	};
+
+	typedef QPointer<ChatTab> ChatTab_ptr;
+}
+}
 }
 
 #endif
