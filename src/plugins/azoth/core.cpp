@@ -274,6 +274,10 @@ namespace LeechCraft
 						SIGNAL (gotMessage (QObject*)),
 						this,
 						SLOT (handleEntryGotMessage (QObject*)));
+				connect (clEntry->GetObject (),
+						SIGNAL (avatarChanged (const QImage&)),
+						this,
+						SLOT (updateItem ()));
 
 				QByteArray id = clEntry->GetEntryID ();
 				ID2Entry_ [id] = clEntry->GetObject ();
@@ -660,6 +664,22 @@ namespace LeechCraft
 					Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 						item->setIcon (State2IconCache_ [state]);
 				}
+			}
+
+			void Core::updateItem ()
+			{
+				qDebug () << "generally updating item...";
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender doesn't implement ICLEntry"
+							<< sender ();
+					return;
+				}
+
+				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+					item->setText (entry->GetEntryName ());
 			}
 		};
 	};

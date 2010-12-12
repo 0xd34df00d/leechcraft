@@ -234,6 +234,12 @@ namespace LeechCraft
 				 * for changes of the "StatusIcons" property.
 				 */
 				void updateStatusIconset ();
+
+				/** This slot is used to update the model item which is
+				 * corresponding to the sender() which is expected to be
+				 * a ICLEntry.
+				 */
+				void updateItem ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

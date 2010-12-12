@@ -119,6 +119,10 @@ namespace Azoth
 		p.drawPixmap (r.topLeft () + QPoint (CPadding, CPadding),
 				stateIcon.pixmap (iconSize, iconSize));
 
+		if (!avatarImg.isNull ())
+			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + CPadding, CPadding),
+					QPixmap::fromImage (avatarImg.scaled (iconSize, iconSize)));
+
 		painter->drawPixmap (option.rect, pixmap);
 	}
 }
