@@ -105,7 +105,7 @@ namespace LeechCraft
 						return AllMessages_;
 					}
 
-					EntryStatus RoomCLEntry::GetStatus () const
+					EntryStatus RoomCLEntry::GetStatus (const QString&) const
 					{
 						return EntryStatus (SOnline, QString ());
 					}

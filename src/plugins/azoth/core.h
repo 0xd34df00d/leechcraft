@@ -169,7 +169,7 @@ namespace LeechCraft
 				 * list entry.
 				 */
 				void HandleStatusChanged (const Plugins::EntryStatus& status,
-						Plugins::ICLEntry *entry);
+						Plugins::ICLEntry *entry, const QString& variant);
 
 				/** Returns an icon from the current iconset for the
 				 * given contact list entry state.
@@ -225,7 +225,7 @@ namespace LeechCraft
 				/** Handles the event of status changes in plugin to new
 				 * status.
 				 */
-				void handleStatusChanged (const Plugins::EntryStatus& status);
+				void handleStatusChanged (const Plugins::EntryStatus& status, const QString& variant);
 
 				/** Handles the message receival from contact list
 				 * entries.

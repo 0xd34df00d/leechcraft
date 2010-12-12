@@ -48,6 +48,19 @@ namespace Xoox
 		RI_ = ri;
 	}
 
+	gloox::RosterItem* GlooxCLEntry::GetRI () const
+	{
+		return RI_;
+	}
+
+	QList<const gloox::Resource*> GlooxCLEntry::GetResourcesDesc () const
+	{
+		QList<const gloox::Resource*> result;
+		Q_FOREACH (const std::string& str, VariantsImpl ())
+			result << RI_->resource (str);
+		return result;
+	}
+
 	QObject* GlooxCLEntry::GetParentAccount () const
 	{
 		return ParentAccountObject_;
@@ -90,19 +103,14 @@ namespace Xoox
 		return result;
 	}
 
-	QStringList GlooxCLEntry::Variants () const
+	QList<std::string> GlooxCLEntry::VariantsImpl () const
 	{
-		QStringList result;
-
-		QMap<int, QString> prio2resource;
+		QMap<int, std::string> prio2resource;
 		std::pair<std::string, gloox::Resource*> pair;
 		Q_FOREACH (pair, RI_->resources ())
-		{
-			std::string origStr = pair.first;
-			int prio = pair.second->priority ();
+			prio2resource [pair.second->priority ()] = pair.first;
 
-			prio2resource [prio] = QString::fromUtf8 (origStr.c_str ());
-		}
+		QList<std::string> result;
 
 		QList<int> keys = prio2resource.keys ();
 		if (keys.size ())
@@ -113,8 +121,18 @@ namespace Xoox
 				result << prio2resource [key];
 		}
 
+		return result;
+	}
+
+	QStringList GlooxCLEntry::Variants () const
+	{
+		QStringList result;
+
+		Q_FOREACH (const std::string& str, VariantsImpl ())
+			result << QString::fromUtf8 (str.c_str ());
+
 		if (result.isEmpty ())
-			result << "";
+			result << QString ();
 
 		return result;
 	}

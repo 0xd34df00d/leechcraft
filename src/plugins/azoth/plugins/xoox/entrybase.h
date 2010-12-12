@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
 #include <QObject>
 #include <QImage>
+#include <QMap>
 #include <gloox/vcard.h>
 #include <interfaces/iclentry.h>
 
@@ -41,7 +42,7 @@ namespace Xoox
 		Q_OBJECT
 	protected:
 		QList<QObject*> AllMessages_;
-		EntryStatus CurrentStatus_;
+		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
 
 		QImage Avatar_;
@@ -50,16 +51,16 @@ namespace Xoox
 
 		virtual QObject* GetObject ();
 		virtual QList<QObject*> GetAllMessages () const;
-		EntryStatus GetStatus () const;
+		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions ();
 		QImage GetAvatar () const;
 
 		void HandleMessage (GlooxMessage*);
-		void SetStatus (const EntryStatus&);
+		void SetStatus (const EntryStatus&, const QString&);
 		void SetPhoto (const gloox::VCard::Photo&);
 	signals:
 		void gotMessage (QObject*);
-		void statusChanged (const Plugins::EntryStatus&);
+		void statusChanged (const Plugins::EntryStatus&, const QString&);
 		void avatarChanged (const QImage&);
 	};
 }

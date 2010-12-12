@@ -418,7 +418,7 @@ namespace Xoox
 		EntryStatus status (static_cast<State> (type),
 				QString::fromUtf8 (msg.c_str ()));
 
-		entry->SetStatus (status);
+		entry->SetStatus (status, QString::fromUtf8 (resource.c_str ()));
 	}
 
 	void ClientConnection::handleSelfPresence (const gloox::RosterItem& item,

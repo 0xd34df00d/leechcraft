@@ -221,11 +221,18 @@ namespace Plugins
 		 */
 		virtual QList<QObject*> GetAllMessages () const = 0;
 
-		/** @brief Returns the current status of the item.
+		/** @brief Returns the current status of a variant of the item.
 		 *
+		 * Since different variants may have different status, this
+		 * function should return the proper status for the given
+		 * variant. If no such variant exists, an empty status structure
+		 * should be returned.
+		 *
+		 * @param[in] variant The variant to return status for or null
+		 * string for most important variant.
 		 * @return The current status.
 		 */
-		virtual EntryStatus GetStatus () const = 0;
+		virtual EntryStatus GetStatus (const QString& variant = QString ()) const = 0;
 
 		/** @brief Returns the avatar of this item.
 		 *
@@ -253,13 +260,15 @@ namespace Plugins
 		virtual void gotMessage (QObject *msg) = 0;
 
 		/** @brief This signal should be emitted whenever the status of
-		 * this entry changes.
+		 * a variant in this entry changes.
 		 *
 		 * @note This function is expected to be a signal in subclasses.
 		 *
 		 * @param[out] st The new status of this entry.
+		 * @param[out] variant What variant is subject to change.
 		 */
-		virtual void statusChanged (const EntryStatus&) = 0;
+		virtual void statusChanged (const EntryStatus& st,
+				const QString& variant) = 0;
 
 		/** @brief This signal should be emitted whenever the list of
 		 * available variants changes.

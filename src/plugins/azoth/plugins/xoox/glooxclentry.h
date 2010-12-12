@@ -25,6 +25,7 @@ namespace gloox
 {
 	class RosterItem;
 	class MessageSession;
+	class Resource;
 }
 
 namespace LeechCraft
@@ -49,11 +50,12 @@ namespace Xoox
 
 		GlooxAccount *ParentAccountObject_;
 		gloox::RosterItem *RI_;
-		EntryStatus CurrentStatus_;
 	public:
 		GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
 
 		void UpdateRI (gloox::RosterItem*);
+		gloox::RosterItem* GetRI () const;
+		QList<const gloox::Resource*> GetResourcesDesc () const;
 
 		// ICLEntry
 		QObject* GetParentAccount () const;
@@ -66,6 +68,8 @@ namespace Xoox
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+	private:
+		QList<std::string> VariantsImpl () const;
 	signals:
 		void availableVariantsChanged (const QStringList&);
 	};

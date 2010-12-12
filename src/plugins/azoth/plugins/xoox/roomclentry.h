@@ -69,7 +69,7 @@ namespace LeechCraft
 						QObject* CreateMessage (IMessage::MessageType,
 								const QString&, const QString&);
 						QList<QObject*> GetAllMessages () const;
-						EntryStatus GetStatus () const;
+						EntryStatus GetStatus (const QString&) const;
 						QList<QAction*> GetActions ();
 						QImage GetAvatar () const;
 
@@ -85,7 +85,7 @@ namespace LeechCraft
 						void HandleSubjectChanged (const QString&);
 					signals:
 						void gotMessage (QObject*);
-						void statusChanged (const Plugins::EntryStatus&);
+						void statusChanged (const Plugins::EntryStatus&, const QString&);
 						void availableVariantsChanged (const QStringList&);
 						void avatarChanged (const QImage&);
 

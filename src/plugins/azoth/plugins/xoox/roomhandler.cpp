@@ -80,7 +80,7 @@ namespace LeechCraft
 
 						EntryStatus status (static_cast<State> (presence.presence ()),
 								QString::fromUtf8 (presence.status ().c_str ()));
-						entry->SetStatus (status);
+						entry->SetStatus (status, QString ());
 					}
 
 					void RoomHandler::handleMUCMessage (gloox::MUCRoom *room, const gloox::Message& msg, bool priv)

@@ -18,8 +18,11 @@
 
 #include "entrybase.h"
 #include <QImage>
+#include <QStringList>
 #include <QtDebug>
+#include <gloox/rosteritem.h>
 #include "glooxmessage.h"
+#include "glooxclentry.h"
 
 namespace LeechCraft
 {
@@ -48,9 +51,19 @@ namespace Xoox
 		return AllMessages_;
 	}
 
-	EntryStatus EntryBase::GetStatus () const
+	EntryStatus EntryBase::GetStatus (const QString& variant) const
 	{
-		return CurrentStatus_;
+		const GlooxCLEntry *entry = qobject_cast<const GlooxCLEntry*> (this);
+		const gloox::Resource *hr = entry ? entry->GetRI ()->highestResource () : 0;
+		if (CurrentStatus_.contains (variant))
+			return CurrentStatus_ [variant];
+		else if (hr)
+			return EntryStatus (static_cast<State> (hr->presence ()),
+					QString::fromUtf8 (hr->message ().c_str ()));
+		else if (CurrentStatus_.size ())
+			return *CurrentStatus_.begin ();
+		else
+			return EntryStatus ();
 	}
 
 	QList<QAction*> EntryBase::GetActions ()
@@ -69,13 +82,13 @@ namespace Xoox
 		emit gotMessage (msg);
 	}
 
-	void EntryBase::SetStatus (const EntryStatus& status)
+	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant)
 	{
-		if (status == CurrentStatus_)
+		if (status == CurrentStatus_ [variant])
 			return;
 
-		CurrentStatus_ = status;
-		emit statusChanged (CurrentStatus_);
+		CurrentStatus_ [variant] = status;
+		emit statusChanged (status, variant);
 	}
 
 	void EntryBase::SetPhoto (const gloox::VCard::Photo& photo)

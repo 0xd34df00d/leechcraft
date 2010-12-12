@@ -288,9 +288,9 @@ namespace LeechCraft
 					QStandardItem *accItem)
 			{
 				connect (clEntry->GetObject (),
-						SIGNAL (statusChanged (const Plugins::EntryStatus&)),
+						SIGNAL (statusChanged (const Plugins::EntryStatus&, const QString&)),
 						this,
-						SLOT (handleStatusChanged (const Plugins::EntryStatus&)));
+						SLOT (handleStatusChanged (const Plugins::EntryStatus&, const QString&)));
 				connect (clEntry->GetObject (),
 						SIGNAL (gotMessage (QObject*)),
 						this,
@@ -321,7 +321,7 @@ namespace LeechCraft
 					Entry2Items_ [clEntry] << clItem;
 				}
 
-				HandleStatusChanged (clEntry->GetStatus (), clEntry);
+				HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
 
 				ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 				ChatTabsManager_->SetChatEnabled (id, true);
@@ -371,7 +371,7 @@ namespace LeechCraft
 			}
 
 			void Core::HandleStatusChanged (const Plugins::EntryStatus& status,
-					Plugins::ICLEntry *entry)
+					Plugins::ICLEntry *entry, const QString& variant)
 			{
 				QString tip = QString ("%1 (%2)<hr />%3 (%4)<hr />%5")
 						.arg (entry->GetEntryName ())
@@ -387,14 +387,18 @@ namespace LeechCraft
 					qDebug () << variant << entry->Variants ();
 					tip += QString ("<hr /><strong>%1</strong>: %2 (%3)")
 							.arg (variant)
-							.arg (ToString (entry->GetStatus ().State_))
-							.arg (entry->GetStatus ().StatusString_);
+							.arg (ToString (entry->GetStatus (variant).State_))
+							.arg (entry->GetStatus (variant).StatusString_);
 				}
+
+				bool isPrimary = variant.isNull () ||
+						entry->Variants ().first () == variant;
 
 				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 				{
 					item->setToolTip (tip);
-					item->setIcon (GetIconForState (status.State_));
+					if (isPrimary)
+						item->setIcon (GetIconForState (status.State_));
 				}
 			}
 
@@ -646,7 +650,7 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::handleStatusChanged (const Plugins::EntryStatus& status)
+			void Core::handleStatusChanged (const Plugins::EntryStatus& status, const QString& variant)
 			{
 				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
 				if (!entry)
@@ -657,7 +661,7 @@ namespace LeechCraft
 					return;
 				}
 
-				HandleStatusChanged (status, entry);
+				HandleStatusChanged (status, entry, variant);
 			}
 
 			void Core::handleEntryGotMessage (QObject *msgObj)
