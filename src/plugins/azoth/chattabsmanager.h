@@ -54,8 +54,11 @@ namespace LeechCraft
 				void handleNeedToClose (ChatTab*);
 			signals:
 				void addNewTab (const QString&, QWidget*);
+				void changeTabName (QWidget*, const QString&);
 				void removeTab (QWidget*);
 				void raiseTab (QWidget*);
+
+				void clearUnreadMsgCount (QObject*);
 			};
 		}
 	}

@@ -513,7 +513,7 @@ namespace Xoox
 			entry = JID2CLEntry_ [jid.bareJID ()];
 			entry->UpdateRI (ri);
 		}
-		VCardManager_->fetchVCard (jid, this);
+		//VCardManager_->fetchVCard (jid, this);
 		return entry;
 	}
 }

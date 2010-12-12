@@ -81,6 +81,10 @@ namespace LeechCraft
 						this,
 						SIGNAL (addNewTab (const QString&, QWidget*)));
 				connect (Core::Instance ().GetChatTabsManager (),
+						SIGNAL (changeTabName (QWidget*, const QString&)),
+						this,
+						SIGNAL (changeTabName (QWidget*, const QString&)));
+				connect (Core::Instance ().GetChatTabsManager (),
 						SIGNAL (removeTab (QWidget*)),
 						this,
 						SIGNAL (removeTab (QWidget*)));

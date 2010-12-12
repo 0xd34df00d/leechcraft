@@ -104,6 +104,19 @@ namespace LeechCraft
 					 * that sent the message.
 					 */
 					virtual QObject* OtherPart () const = 0;
+
+					/** This is the same that OtherPart() for single
+					 * user chats. For multiuser chats it should be the
+					 * contact list entry representing the MUC room.
+					 *
+					 * By default this function calls OtherPart() and
+					 * returns its result.
+					 */
+					virtual QObject* ParentCLEntry () const
+					{
+						return OtherPart ();
+					}
+
 					virtual QString GetOtherVariant () const = 0;
 					virtual QString GetBody () const = 0;
 					virtual void SetBody (const QString&) = 0;

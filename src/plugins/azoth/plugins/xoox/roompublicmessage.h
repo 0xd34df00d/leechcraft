@@ -64,6 +64,7 @@ namespace LeechCraft
 						 * always equals to the room entry.
 						 */
 						QObject* OtherPart () const;
+						QObject* ParentCLEntry () const;
 						QString GetOtherVariant () const;
 						QString GetBody () const;
 						void SetBody (const QString&);

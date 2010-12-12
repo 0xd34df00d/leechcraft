@@ -40,7 +40,7 @@ namespace Azoth
 	}
 
 	class ChatTab : public QWidget
-					, public IMultiTabsWidget
+				  , public IMultiTabsWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (IMultiTabsWidget)
@@ -59,6 +59,7 @@ namespace Azoth
 		int CurrentNickIndex_;
 		int LastSpacePosition_;
 		QString NickFirstPart_;
+		int NumUnreadMsgs_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
@@ -69,7 +70,7 @@ namespace Azoth
 		void NewTabRequested ();
 		QToolBar* GetToolBar () const;
 		void Remove ();
-
+		void TabMadeCurrent ();
 	private slots:
 		void clearAvailableNick ();
 		void messageSend ();
@@ -88,6 +89,8 @@ namespace Azoth
 		void HandleMUC ();
 		QStringList GetMUCParticipants () const;
 
+		void ReformatTitle ();
+
 		/** Appends the message to the message view area.
 		 */
 		void AppendMessage (Plugins::IMessage*);
@@ -98,7 +101,9 @@ namespace Azoth
 
 		void GenerateColors ();
 	signals:
+		void changeTabName (QWidget*, const QString&);
 		void needToClose (ChatTab*);
+		void clearUnreadMsgCount (QObject*);
 
 		// Hooks
 		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
@@ -117,6 +122,8 @@ namespace Azoth
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+		void hookMadeCurrent (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				int type,

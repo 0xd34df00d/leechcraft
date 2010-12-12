@@ -69,6 +69,10 @@ namespace LeechCraft
 			, PluginManager_ (new PluginManager)
 			, PluginProxyObject_ (new ProxyObject)
 			{
+				connect (ChatTabsManager_,
+						SIGNAL (clearUnreadMsgCount (QObject*)),
+						this,
+						SLOT (handleClearUnreadMsgCount (QObject*)));
 				PluginManager_->RegisterHookable (this);
 
 				StatusIconLoader_->AddLocalPrefix ();
@@ -683,6 +687,14 @@ namespace LeechCraft
 					return;
 				}
 
+				Plugins::ICLEntry *parentCL = qobject_cast<Plugins::ICLEntry*> (msg->ParentCLEntry ());
+				if (!ChatTabsManager_->IsActiveChat (parentCL))
+					Q_FOREACH (QStandardItem *item, Entry2Items_ [parentCL])
+					{
+						int prevValue = item->data (CLRUnreadMsgCount).toInt ();
+						item->setData (prevValue + 1, CLRUnreadMsgCount);
+					}
+
 				bool shouldShow = msg->GetDirection () == Plugins::IMessage::DIn &&
 						msg->GetMessageType () == Plugins::IMessage::MTChatMessage &&
 						!ChatTabsManager_->IsActiveChat (other);
@@ -724,6 +736,23 @@ namespace LeechCraft
 
 				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 					item->setText (entry->GetEntryName ());
+			}
+
+			void Core::handleClearUnreadMsgCount (QObject *object)
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (object);
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< object
+							<< "doesn't implement ICLEntry";
+					return;
+				}
+
+				qDebug () << Q_FUNC_INFO << object << entry->GetEntryName ();
+
+				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+					item->setData (0, CLRUnreadMsgCount);
 			}
 		};
 	};

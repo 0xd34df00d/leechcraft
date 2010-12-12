@@ -84,7 +84,8 @@ namespace LeechCraft
 				{
 					CLRAccountObject = Qt::UserRole + 1,
 					CLREntryObject,
-					CLREntryType
+					CLREntryType,
+					CLRUnreadMsgCount
 				};
 
 				enum CLEntryType
@@ -242,6 +243,12 @@ namespace LeechCraft
 				 * a ICLEntry.
 				 */
 				void updateItem ();
+
+				/** Handles the number of unread messages for the given
+				 * contact list entry identified by object. Object should
+				 * implement ICLEntry, obviously.
+				 */
+				void handleClearUnreadMsgCount (QObject *object);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

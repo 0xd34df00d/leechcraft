@@ -33,6 +33,7 @@
 #include "core.h"
 #include "mucsubjectdialog.h"
 #include "textedit.h"
+#include "chattabsmanager.h"
 
 namespace LeechCraft
 {
@@ -58,6 +59,7 @@ namespace Azoth
 	, CurrentHistoryPosition_ (-1)
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
+	, NumUnreadMsgs_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -183,6 +185,20 @@ namespace Azoth
 		emit needToClose (this);
 	}
 
+	void ChatTab::TabMadeCurrent ()
+	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookMadeCurrent (proxy, this);
+		if (proxy->IsCancelled ())
+			return;
+
+		emit clearUnreadMsgCount (GetEntry<QObject> ());
+
+		NumUnreadMsgs_ = 0;
+
+		ReformatTitle ();
+	}
+
 	void ChatTab::messageSend ()
 	{
 		QString text = Ui_.MsgEdit_->toPlainText ();
@@ -271,6 +287,13 @@ namespace Azoth
 					<< "doesn't implement IMessage"
 					<< sender ();
 			return;
+		}
+
+		if (!Core::Instance ().GetChatTabsManager ()->
+				IsActiveChat (GetEntry<Plugins::ICLEntry> ()))
+		{
+			++NumUnreadMsgs_;
+			ReformatTitle ();
 		}
 
 		AppendMessage (msg);
@@ -709,6 +732,15 @@ namespace Azoth
 			participantsList << part->GetEntryName ();
 		}
 		return participantsList;
+	}
+
+	void ChatTab::ReformatTitle()
+	{
+		QString title = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
+		if (NumUnreadMsgs_)
+			title.prepend (QString ("(%1) ")
+					.arg (NumUnreadMsgs_));
+		emit changeTabName (this, title);
 	}
 
 	void ChatTab::clearAvailableNick ()

@@ -83,6 +83,10 @@ namespace Azoth
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString& status = entry->GetStatus ().StatusString_;
 		const QImage& avatarImg = entry->GetAvatar ();
+		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
+		const QString& unreadStr = unreadNum ?
+				QString (" %1 :: ").arg (unreadNum) :
+				QString ();
 		if (!status.isEmpty ())
 			name += " (" + status + ")";
 
@@ -93,7 +97,19 @@ namespace Azoth
 		const QRect& r = option.rect;
 		const int sHeight = r.height ();
 		const int iconSize = sHeight - 2 * CPadding;
-		const int textShift = r.left () + 2 * CPadding + iconSize;
+
+		QFont unreadFont;
+		int unreadSpace = 0;
+		if (unreadNum)
+		{
+			unreadFont = option.font;
+			unreadFont.setBold (true);
+
+			unreadSpace = CPadding + QFontMetrics (unreadFont).width (unreadStr);
+		}
+		qDebug () << "unread" << unreadNum << unreadStr << unreadSpace;
+
+		const int textShift = r.left () + 2 * CPadding + iconSize + unreadSpace;
 		const int textWidth = r.width () - textShift -
 				(avatarImg.isNull () ?
 					CPadding :
@@ -110,6 +126,16 @@ namespace Azoth
 					&option, &p, option.widget);
 
 		p.setPen (fgColor);
+
+		if (unreadNum)
+		{
+			p.setFont (unreadFont);
+			p.drawText (textShift - unreadSpace, r.top () + CPadding,
+					textWidth, r.height () - 2 * CPadding,
+					Qt::AlignVCenter | Qt::AlignLeft,
+					unreadStr);
+		}
+
 		p.setFont (option.font);
 		p.drawText (textShift, r.top () + CPadding,
 				textWidth, r.height () - 2 * CPadding,

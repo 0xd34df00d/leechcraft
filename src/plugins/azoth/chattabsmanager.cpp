@@ -69,6 +69,14 @@ namespace LeechCraft
 						SIGNAL (needToClose (ChatTab*)),
 						this,
 						SLOT (handleNeedToClose (ChatTab*)));
+				connect (tab,
+						SIGNAL (clearUnreadMsgCount (QObject*)),
+						this,
+						SIGNAL (clearUnreadMsgCount (QObject*)));
+				connect (tab,
+						SIGNAL (changeTabName (QWidget*, const QString&)),
+						this,
+						SIGNAL (changeTabName (QWidget*, const QString&)));
 				emit addNewTab (entry->GetEntryName (), tab);
 
 				if (XmlSettingsManager::Instance ()

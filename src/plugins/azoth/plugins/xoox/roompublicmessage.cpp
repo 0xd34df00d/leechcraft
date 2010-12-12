@@ -111,6 +111,11 @@ namespace LeechCraft
 						}
 					}
 
+					QObject* RoomPublicMessage::ParentCLEntry () const
+					{
+						return ParentEntry_;
+					}
+
 					QString RoomPublicMessage::GetOtherVariant() const
 					{
 						return "";
