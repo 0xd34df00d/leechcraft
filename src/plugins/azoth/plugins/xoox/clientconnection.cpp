@@ -27,6 +27,7 @@
 #include <gloox/capabilities.h>
 #include <gloox/rostermanager.h>
 #include <gloox/mucroom.h>
+#include <gloox/vcardmanager.h>
 #include <plugininterface/util.h>
 #include <interfaces/iprotocol.h>
 #include "glooxaccount.h"
@@ -64,6 +65,7 @@ namespace Xoox
 				Account_->GetParentProtocol (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		Client_.reset (new gloox::Client (jid, pwd.toUtf8 ().constData ()));
+		VCardManager_.reset (new gloox::VCardManager (Client_.get ()));
 
 		Client_->registerMessageSessionHandler (this);
 
@@ -480,6 +482,23 @@ namespace Xoox
 		entry->HandleMessage (gm);
 	}
 
+	void ClientConnection::handleVCard (const gloox::JID& jid, const gloox::VCard *vcard)
+	{
+		if (!vcard)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got null vcard";
+			return;
+		}
+		JID2CLEntry_ [jid]->SetPhoto (vcard->photo ());
+	}
+
+	void ClientConnection::handleVCardResult (gloox::VCardHandler::VCardContext ctx,
+			const gloox::JID& jid, gloox::StanzaError er)
+	{
+		// TODO
+	}
+
 	GlooxCLEntry* ClientConnection::CreateCLEntry (gloox::RosterItem *ri)
 	{
 		GlooxCLEntry *entry = 0;
@@ -494,6 +513,7 @@ namespace Xoox
 			entry = JID2CLEntry_ [jid.bareJID ()];
 			entry->UpdateRI (ri);
 		}
+		VCardManager_->fetchVCard (jid, this);
 		return entry;
 	}
 }
