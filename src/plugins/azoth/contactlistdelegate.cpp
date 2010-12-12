@@ -79,6 +79,13 @@ namespace Azoth
 
 		option.rect.setLeft (CContactShift);
 
+		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
+		QString name = index.data (Qt::DisplayRole).value<QString> ();
+		const QString& status = entry->GetStatus ().StatusString_;
+		const QImage& avatarImg = entry->GetAvatar ();
+		if (!status.isEmpty ())
+			name += " (" + status + ")";
+
 		const bool selected = option.state & QStyle::State_Selected;
 		const QColor fgColor = selected ?
 				option.palette.color (QPalette::HighlightedText) :
@@ -86,14 +93,11 @@ namespace Azoth
 		const QRect& r = option.rect;
 		const int sHeight = r.height ();
 		const int iconSize = sHeight - 2 * CPadding;
-		const int textShift = r.left () + 3 * CPadding + iconSize;
-		const int textWidth = r.width () - textShift - (iconSize + 2 * CPadding);
-
-		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
-		QString name = index.data (Qt::DisplayRole).value<QString> ();
-		const QString& status = entry->GetStatus ().StatusString_;
-		if (!status.isEmpty ())
-			name += " (" + status + ")";
+		const int textShift = r.left () + 2 * CPadding + iconSize;
+		const int textWidth = r.width () - textShift -
+				(avatarImg.isNull () ?
+					CPadding :
+					iconSize + 2 * CPadding);
 
 		QPixmap pixmap (r.size ());
 		pixmap.fill (Qt::transparent);
