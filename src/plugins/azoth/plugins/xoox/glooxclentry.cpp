@@ -93,20 +93,25 @@ namespace Xoox
 	QStringList GlooxCLEntry::Variants () const
 	{
 		QStringList result;
-		gloox::RosterItem::ResourceMap rmap = RI_->resources ();
 
-		QList<gloox::Resource*> resources;
-		for (gloox::RosterItem::ResourceMap::const_iterator i = rmap.begin (),
-				end = rmap.end (); i != end; ++i)
-			resources << i->second;
+		QMap<int, QString> prio2resource;
+		std::pair<std::string, gloox::Resource*> pair;
+		Q_FOREACH (pair, RI_->resources ())
+		{
+			std::string origStr = pair.first;
+			int prio = pair.second->priority ();
 
-		std::sort (resources.begin (), resources.end (),
-				boost::bind (std::less<int> (),
-						boost::bind (&gloox::Resource::priority, _2),
-						boost::bind (&gloox::Resource::priority, _1)));
+			prio2resource [prio] = QString::fromUtf8 (origStr.c_str ());
+		}
 
-		Q_FOREACH (gloox::Resource *res, resources)
-			result << QString::fromUtf8 (res->message ().c_str ());
+		QList<int> keys = prio2resource.keys ();
+		if (keys.size ())
+		{
+			std::sort (keys.begin (), keys.end ());
+			std::reverse (keys.begin (), keys.end ());
+			Q_FOREACH (int key, keys)
+				result << prio2resource [key];
+		}
 
 		if (result.isEmpty ())
 			result << "";
