@@ -384,7 +384,6 @@ namespace LeechCraft
 					if (variant.isEmpty ())
 						continue;
 
-					qDebug () << variant << entry->Variants ();
 					tip += QString ("<hr /><strong>%1</strong>: %2 (%3)")
 							.arg (variant)
 							.arg (ToString (entry->GetStatus (variant).State_))
