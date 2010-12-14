@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/" >
-        <file>resources/images/remoter.svg</file>
-		<file>leechcraft_remoter_ru_RU.qm</file>
-    </qresource>
-</RCC>
