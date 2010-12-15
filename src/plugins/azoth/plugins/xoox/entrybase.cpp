@@ -17,61 +17,81 @@
  **********************************************************************/
 
 #include "entrybase.h"
+#include <QImage>
+#include <QtDebug>
 #include "glooxmessage.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	EntryBase::EntryBase (QObject* parent)
+	: QObject (parent)
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					EntryBase::EntryBase (QObject* parent)
-					: QObject (parent)
-					{
 
-					}
-
-					QObject* EntryBase::GetObject ()
-					{
-						return this;
-					}
-
-
-					QList<QObject*> EntryBase::GetAllMessages () const
-					{
-						return AllMessages_;
-					}
-
-					EntryStatus EntryBase::GetStatus () const
-					{
-						return CurrentStatus_;
-					}
-
-					QList<QAction*> EntryBase::GetActions ()
-					{
-						return Actions_;
-					}
-
-					void EntryBase::HandleMessage (GlooxMessage *msg)
-					{
-						AllMessages_ << msg;
-						emit gotMessage (msg);
-					}
-
-					void EntryBase::SetStatus (const EntryStatus& status)
-					{
-						if (status == CurrentStatus_)
-							return;
-
-						CurrentStatus_ = status;
-						emit statusChanged (CurrentStatus_);
-					}
-				}
-			}
-		}
 	}
+
+	QObject* EntryBase::GetObject ()
+	{
+		return this;
+	}
+
+
+	QList<QObject*> EntryBase::GetAllMessages () const
+	{
+		return AllMessages_;
+	}
+
+	EntryStatus EntryBase::GetStatus () const
+	{
+		return CurrentStatus_;
+	}
+
+	QList<QAction*> EntryBase::GetActions ()
+	{
+		return Actions_;
+	}
+
+	QImage EntryBase::GetAvatar () const
+	{
+		return Avatar_;
+	}
+
+	void EntryBase::HandleMessage (GlooxMessage *msg)
+	{
+		AllMessages_ << msg;
+		emit gotMessage (msg);
+	}
+
+	void EntryBase::SetStatus (const EntryStatus& status)
+	{
+		if (status == CurrentStatus_)
+			return;
+
+		CurrentStatus_ = status;
+		emit statusChanged (CurrentStatus_);
+	}
+
+	void EntryBase::SetPhoto (const gloox::VCard::Photo& photo)
+	{
+		if (!photo.type.size ())
+			Avatar_ = QImage ();
+		else
+		{
+			QByteArray data (photo.binval.c_str(), photo.binval.size ());
+			Avatar_ = QImage::fromData (data);
+		}
+
+		emit avatarChanged (Avatar_);
+	}
+}
+}
+}
+}
 }

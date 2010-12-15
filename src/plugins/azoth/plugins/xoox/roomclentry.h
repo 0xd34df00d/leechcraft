@@ -71,6 +71,7 @@ namespace LeechCraft
 						QList<QObject*> GetAllMessages () const;
 						EntryStatus GetStatus () const;
 						QList<QAction*> GetActions ();
+						QImage GetAvatar () const;
 
 						// IMUCEntry
 						MUCFeatures GetMUCFeatures () const;
@@ -86,6 +87,7 @@ namespace LeechCraft
 						void gotMessage (QObject*);
 						void statusChanged (const Plugins::EntryStatus&);
 						void availableVariantsChanged (const QStringList&);
+						void avatarChanged (const QImage&);
 
 						void gotNewParticipants (const QList<QObject*>&);
 						void mucSubjectChanged (const QString&);

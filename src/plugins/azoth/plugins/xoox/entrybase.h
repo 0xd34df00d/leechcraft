@@ -19,46 +19,53 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ENTRYBASE_H
 #include <QObject>
+#include <QImage>
+#include <gloox/vcard.h>
 #include <interfaces/iclentry.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxMessage;
+
+	class EntryBase : public QObject
+					, public ICLEntry
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxMessage;
+		Q_OBJECT
+	protected:
+		QList<QObject*> AllMessages_;
+		EntryStatus CurrentStatus_;
+		QList<QAction*> Actions_;
 
-					class EntryBase : public QObject
-									, public ICLEntry
-					{
-						Q_OBJECT
-					protected:
-						QList<QObject*> AllMessages_;
-						EntryStatus CurrentStatus_;
-						QList<QAction*> Actions_;
-					public:
-						EntryBase (QObject* = 0);
+		QImage Avatar_;
+	public:
+		EntryBase (QObject* = 0);
 
-						virtual QObject* GetObject ();
-						virtual QList<QObject*> GetAllMessages () const;
-						EntryStatus GetStatus () const;
-						QList<QAction*> GetActions ();
+		virtual QObject* GetObject ();
+		virtual QList<QObject*> GetAllMessages () const;
+		EntryStatus GetStatus () const;
+		QList<QAction*> GetActions ();
+		QImage GetAvatar () const;
 
-						void HandleMessage (GlooxMessage*);
-						void SetStatus (const EntryStatus&);
-					signals:
-						void gotMessage (QObject*);
-						void statusChanged (const Plugins::EntryStatus&);
-					};
-				}
-			}
-		}
-	}
+		void HandleMessage (GlooxMessage*);
+		void SetStatus (const EntryStatus&);
+		void SetPhoto (const gloox::VCard::Photo&);
+	signals:
+		void gotMessage (QObject*);
+		void statusChanged (const Plugins::EntryStatus&);
+		void avatarChanged (const QImage&);
+	};
+}
+}
+}
+}
 }
 
 #endif

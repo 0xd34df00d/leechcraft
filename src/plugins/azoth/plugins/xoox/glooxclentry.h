@@ -29,50 +29,50 @@ namespace gloox
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+class IAccount;
+
+namespace Xoox
+{
+	class GlooxAccount;
+
+	class GlooxCLEntry : public EntryBase
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				class IAccount;
+		Q_OBJECT
 
-				namespace Xoox
-				{
-					class GlooxAccount;
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
 
-					class GlooxCLEntry : public EntryBase
-					{
-						Q_OBJECT
+		GlooxAccount *ParentAccountObject_;
+		gloox::RosterItem *RI_;
+		EntryStatus CurrentStatus_;
+	public:
+		GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
 
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
+		void UpdateRI (gloox::RosterItem*);
 
-						GlooxAccount *ParentAccountObject_;
-						gloox::RosterItem *RI_;
-						EntryStatus CurrentStatus_;
-					public:
-						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
-
-						void UpdateRI (gloox::RosterItem*);
-
-						// ICLEntry
-						QObject* GetParentAccount () const;
-						Features GetEntryFeatures () const;
-						EntryType GetEntryType () const;
-						QString GetEntryName () const;
-						void SetEntryName (const QString&);
-						QByteArray GetEntryID () const;
-						QStringList Groups () const;
-						QStringList Variants () const;
-						QObject* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
-					signals:
-						void availableVariantsChanged (const QStringList&);
-					};
-				}
-			}
-		}
-	}
+		// ICLEntry
+		QObject* GetParentAccount () const;
+		Features GetEntryFeatures () const;
+		EntryType GetEntryType () const;
+		QString GetEntryName () const;
+		void SetEntryName (const QString&);
+		QByteArray GetEntryID () const;
+		QStringList Groups () const;
+		QStringList Variants () const;
+		QObject* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&);
+	signals:
+		void availableVariantsChanged (const QStringList&);
+	};
+}
+}
+}
+}
 }
 
 #endif

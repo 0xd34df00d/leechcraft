@@ -27,6 +27,7 @@
 #include <gloox/messagesessionhandler.h>
 #include <gloox/messagehandler.h>
 #include <gloox/jid.h>
+#include <gloox/vcardhandler.h>
 #include <interfaces/imessage.h>
 
 class QTimer;
@@ -35,115 +36,124 @@ namespace gloox
 {
 	class Client;
 	class RosterItem;
+	class VCardManager;
 
 	uint qHash (const JID& jid);
 }
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	struct GlooxAccountState;
+
+	class GlooxAccount;
+	class GlooxCLEntry;
+	class GlooxMessage;
+	class RoomCLEntry;
+
+	class ClientConnection : public QObject
+							, public gloox::ConnectionListener
+							, public gloox::RosterListener
+							, public gloox::MessageSessionHandler
+							, public gloox::MessageHandler
+							, public gloox::VCardHandler
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					struct GlooxAccountState;
+		Q_OBJECT
 
-					class GlooxAccount;
-					class GlooxCLEntry;
-					class GlooxMessage;
-					class RoomCLEntry;
+		boost::shared_ptr<gloox::Client> Client_;
+		QTimer *PollTimer_;
+		GlooxAccount *Account_;
+		QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
+		bool IsConnected_;
+		bool ShouldRefillRoster_;
 
-					class ClientConnection : public QObject
-										   , public gloox::ConnectionListener
-										   , public gloox::RosterListener
-										   , public gloox::MessageSessionHandler
-										   , public gloox::MessageHandler
-					{
-						Q_OBJECT
+		boost::shared_ptr<gloox::VCardManager> VCardManager_;
 
-						boost::shared_ptr<gloox::Client> Client_;
-						QTimer *PollTimer_;
-						GlooxAccount *Account_;
-						QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
-						bool IsConnected_;
-						bool ShouldRefillRoster_;
+		// Bare JID → resource → session.
+		QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
+	public:
+		ClientConnection (const gloox::JID&,
+				const QString&,
+				const GlooxAccountState&,
+				GlooxAccount*);
 
-						// Bare JID → resource → session.
-						QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
-					public:
-						ClientConnection (const gloox::JID&,
-								const QString&,
-								const GlooxAccountState&,
-								GlooxAccount*);
+		void SetState (const GlooxAccountState&);
+		void Synchronize ();
 
-						void SetState (const GlooxAccountState&);
-						void Synchronize ();
+		void SetPassword (const QString&);
 
-						void SetPassword (const QString&);
+		/** Joins the room and returns the contact list
+		 * entry representing that room.
+		 */
+		RoomCLEntry* JoinRoom (const gloox::JID&);
 
-						/** Joins the room and returns the contact list
-						 * entry representing that room.
-						 */
-						RoomCLEntry* JoinRoom (const gloox::JID&);
+		gloox::Client* GetClient () const;
+		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
+		GlooxMessage* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&, gloox::RosterItem*);
+	protected:
+		// ConnectionListener
+		virtual void onConnect ();
+		virtual void onDisconnect (gloox::ConnectionError);
+		virtual void onResourceBind (const std::string&);
+		virtual void onResourceBindError (const gloox::Error*);
+		virtual void onSessionCreateError (const gloox::Error*);
+		virtual void onStreamEvent (gloox::StreamEvent);
+		virtual bool onTLSConnect (const gloox::CertInfo&);
 
-						gloox::Client* GetClient () const;
-						GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
-						GlooxMessage* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&, gloox::RosterItem*);
-					protected:
-						// ConnectionListener
-						virtual void onConnect ();
-						virtual void onDisconnect (gloox::ConnectionError);
-						virtual void onResourceBind (const std::string&);
-						virtual void onResourceBindError (const gloox::Error*);
-						virtual void onSessionCreateError (const gloox::Error*);
-						virtual void onStreamEvent (gloox::StreamEvent);
-						virtual bool onTLSConnect (const gloox::CertInfo&);
+		// RosterListener
+		virtual void handleItemAdded (const gloox::JID&);
+		virtual void handleItemSubscribed (const gloox::JID&);
+		virtual void handleItemRemoved (const gloox::JID&);
+		virtual void handleItemUpdated (const gloox::JID&);
+		virtual void handleItemUnsubscribed (const gloox::JID&);
+		virtual void handleRoster (const gloox::Roster&);
+		virtual void handleRosterPresence (const gloox::RosterItem&,
+				const std::string&, gloox::Presence::PresenceType, const std::string&);
+		virtual void handleSelfPresence (const gloox::RosterItem&,
+				const std::string&, gloox::Presence::PresenceType, const std::string&);
+		virtual bool handleSubscriptionRequest (const gloox::JID&, const std::string&);
+		virtual bool handleUnsubscriptionRequest (const gloox::JID&, const std::string&);
+		virtual void handleNonrosterPresence (const gloox::Presence&);
+		virtual void handleRosterError (const gloox::IQ&);
 
-						// RosterListener
-						virtual void handleItemAdded (const gloox::JID&);
-						virtual void handleItemSubscribed (const gloox::JID&);
-						virtual void handleItemRemoved (const gloox::JID&);
-						virtual void handleItemUpdated (const gloox::JID&);
-						virtual void handleItemUnsubscribed (const gloox::JID&);
-						virtual void handleRoster (const gloox::Roster&);
-						virtual void handleRosterPresence (const gloox::RosterItem&,
-								const std::string&, gloox::Presence::PresenceType, const std::string&);
-						virtual void handleSelfPresence (const gloox::RosterItem&,
-								const std::string&, gloox::Presence::PresenceType, const std::string&);
-						virtual bool handleSubscriptionRequest (const gloox::JID&, const std::string&);
-						virtual bool handleUnsubscriptionRequest (const gloox::JID&, const std::string&);
-						virtual void handleNonrosterPresence (const gloox::Presence&);
-						virtual void handleRosterError (const gloox::IQ&);
+		// MessageSessionHandler
+		virtual void handleMessageSession (gloox::MessageSession*);
 
-						// MessageSessionHandler
-						virtual void handleMessageSession (gloox::MessageSession*);
+		// MessageHandler
+		virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
 
-						// MessageHandler
-						virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
-					private slots:
-						void handlePollTimer ();
-					private:
-						GlooxCLEntry* CreateCLEntry (gloox::RosterItem*);
-					signals:
-						void gotRosterItems (const QList<QObject*>&);
-						void rosterItemRemoved (QObject*);
-						void rosterItemsRemoved (const QList<QObject*>&);
-						void rosterItemUpdated (QObject*);
+		// VCardHandler
+		virtual void handleVCard (const gloox::JID&, const gloox::VCard*);
+		virtual void handleVCardResult (gloox::VCardHandler::VCardContext,
+				const gloox::JID&, gloox::StanzaError);
+	private slots:
+		void handlePollTimer ();
+	private:
+		GlooxCLEntry* CreateCLEntry (gloox::RosterItem*);
+	signals:
+		void gotRosterItems (const QList<QObject*>&);
+		void rosterItemRemoved (QObject*);
+		void rosterItemsRemoved (const QList<QObject*>&);
+		void rosterItemUpdated (QObject*);
 
-						void gotEntity (const LeechCraft::Entity&);
+		void gotEntity (const LeechCraft::Entity&);
 
-						void serverAuthFailed ();
-					};
-				}
-			}
-		}
-	}
+		void serverAuthFailed ();
+	};
+}
+}
+}
+}
 }
 
 #endif
