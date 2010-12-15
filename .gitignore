@@ -18,3 +18,4 @@ src/data/leechcraft.1.gz
 *.tar.gz
 *~
 dummyfile.cpp
+*.kdev4

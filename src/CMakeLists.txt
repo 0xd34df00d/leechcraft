@@ -103,6 +103,7 @@ OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
 OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" OFF)
+OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 ENABLE_TESTING ()
 
 IF (ENABLE_SUMMARY)
@@ -216,6 +217,10 @@ ENDIF (ENABLE_SHELLOPEN)
 IF (ENABLE_POTORCHU)
 	ADD_SUBDIRECTORY (plugins/potorchu)
 ENDIF (ENABLE_POTORCHU)
+
+IF (ENABLE_TRANSPARENTARCH)
+	ADD_SUBDIRECTORY (plugins/transparentarch)
+ENDIF (ENABLE_TRANSPARENTARCH)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
