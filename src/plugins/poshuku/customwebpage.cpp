@@ -772,7 +772,7 @@ namespace LeechCraft
 
 							ElementData ed =
 							{
-								url,
+								pageUrl,
 								formId,
 								name,
 								elemType,
@@ -794,6 +794,12 @@ namespace LeechCraft
 				if (type != NavigationTypeFormSubmitted)
 					return;
 
+				QUrl pageUrl = frame->url ();
+				// Check if this should be emitted at all
+				if (Core::Instance ().GetStorageBackend ()->
+						GetFormsIgnored (pageUrl.toString ()))
+					return;
+
 				PageFormsData_t formsData =
 						HarvestForms (frame ? frame : mainFrame (),
 								request.url ()).first;
@@ -801,14 +807,7 @@ namespace LeechCraft
 				if (!CheckData (formsData, frame, request))
 					return;
 
-				QUrl pageUrl = frame->url ();
-
 				if (FilledState_ == formsData)
-					return;
-
-				// Check if this should be emitted at all
-				if (Core::Instance ().GetStorageBackend ()->
-						GetFormsIgnored (pageUrl.toString ()))
 					return;
 
 				emit storeFormData (formsData);
