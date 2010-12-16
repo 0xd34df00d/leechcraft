@@ -82,6 +82,7 @@ namespace LeechCraft
 					QString URL_;
 					QString Filename_;
 					QStringList Tags_;
+					boost::shared_ptr<Feed::FeedSettings> FeedSettings_;
 				};
 				struct ExternalData
 				{
@@ -139,8 +140,9 @@ namespace LeechCraft
 				void SetAppWideActions (const AppWideActions&);
 				const AppWideActions& GetAppWideActions () const;
 				bool DoDelayedInit ();
-				int AddFeed (const QString&, const QString&);
-				int AddFeed (const QString&, const QStringList&);
+				void AddFeed (const QString&, const QString&);
+				void AddFeed (const QString&, const QStringList&,
+						FeedSettings_ptr = FeedSettings_ptr ());
 				void RemoveFeed (const QModelIndex&);
 				ItemsWidget* GetReprWidget () const;
 

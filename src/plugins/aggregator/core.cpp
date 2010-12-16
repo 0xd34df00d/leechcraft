@@ -404,19 +404,20 @@ namespace LeechCraft
 				return true;
 			}
 
-			int Core::AddFeed (const QString& url, const QString& tagString)
+			void Core::AddFeed (const QString& url, const QString& tagString)
 			{
-				return AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
+				AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 			}
 
-			int Core::AddFeed (const QString& url, const QStringList& tags)
+			void Core::AddFeed (const QString& url, const QStringList& tags,
+					boost::shared_ptr<Feed::FeedSettings> fs)
 			{
 				if (StorageBackend_->FindFeed (url) != static_cast<IDType_t> (-1))
 				{
 					ErrorNotification (tr ("Feed addition error"),
 							tr ("The feed %1 is already added")
 							.arg (url));
-					return -1;
+					return;
 				}
 
 				QString name = LeechCraft::Util::GetTemporaryName ();
@@ -437,12 +438,9 @@ namespace LeechCraft
 					PendingJob::RFeedAdded,
 					url,
 					name,
-					tagIds
+					tagIds,
+					fs
 				};
-
-				Feed_ptr feed (new Feed ());
-				feed->URL_ = pj.URL_;
-				StorageBackend_->AddFeed (feed);
 
 				int id = -1;
 				QObject *pr;
@@ -453,12 +451,11 @@ namespace LeechCraft
 							tr ("Could not find plugin to download feed %1.")
 								.arg (url),
 							false);
-					return -1;
+					return;
 				}
 
 				HandleProvider (pr, id);
 				PendingJobs_ [id] = pj;
-				return feed->FeedID_;
 			}
 
 			void Core::RemoveFeed (const QModelIndex& index)
@@ -784,28 +781,13 @@ namespace LeechCraft
 				for (OPMLParser::items_container_t::const_iterator i = items.begin (),
 						end = items.end (); i != end; ++i)
 				{
-					IDType_t feedId = AddFeed (i->URL_, tagsList + i->Categories_);
-					if (feedId == static_cast<IDType_t> (-1))
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "not added feed from OPML:"
-								<< i->URL_;
-						continue;
-					}
+					int interval = 0;
+					if (i->CustomFetchInterval_)
+						interval = i->FetchInterval_;
+					FeedSettings_ptr s (new Feed::FeedSettings (-1, -1,
+							interval, i->MaxArticleNumber_, i->MaxArticleAge_, false));
 
-					try
-					{
-						int interval = 0;
-						if (i->CustomFetchInterval_)
-							interval = i->FetchInterval_;
-						Feed::FeedSettings s (feedId, interval, i->MaxArticleNumber_, i->MaxArticleAge_);
-						StorageBackend_->SetFeedSettings (s);
-					}
-					catch (const std::exception& e)
-					{
-						ErrorNotification (tr ("OPML import error"),
-								tr ("Could not update feed settings"));
-					}
+					AddFeed (i->URL_, tagsList + i->Categories_, s);
 				}
 			}
 
@@ -1022,16 +1004,6 @@ namespace LeechCraft
 					return;
 				}
 
-				IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
-
-				if (pj.Role_ == PendingJob::RFeedUpdated &&
-						feedId == static_cast<IDType_t> (-1))
-				{
-					ErrorNotification (tr ("Feed error"),
-							tr ("Feed with url %1 not found.").arg (pj.URL_));
-					return;
-				}
-
 				channels_container_t channels;
 				if (pj.Role_ != PendingJob::RFeedExternalData)
 				{
@@ -1062,6 +1034,23 @@ namespace LeechCraft
 								.arg (pj.URL_));
 						return;
 					}
+
+					if (pj.Role_ == PendingJob::RFeedAdded)
+					{
+						Feed_ptr feed (new Feed ());
+						feed->URL_ = pj.URL_;
+						StorageBackend_->AddFeed (feed);
+					}
+
+					IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
+
+					if (feedId == static_cast<IDType_t> (-1))
+					{
+						ErrorNotification (tr ("Feed error"),
+								tr ("Feed with url %1 not found.").arg (pj.URL_));
+						return;
+					}
+
 					channels = parser->ParseFeed (doc, feedId);
 				}
 
@@ -1400,6 +1389,27 @@ namespace LeechCraft
 				{
 					FetchPixmap (channels [i]);
 					FetchFavicon (channels [i]);
+				}
+
+				if (pj.FeedSettings_)
+				{
+					IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
+					Feed::FeedSettings fs (feedId,
+							pj.FeedSettings_->UpdateTimeout_,
+							pj.FeedSettings_->NumItems_,
+							pj.FeedSettings_->ItemAge_,
+							pj.FeedSettings_->AutoDownloadEnclosures_);
+					try
+					{
+						StorageBackend_->SetFeedSettings (fs);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to set settings for just added feed"
+								<< pj.URL_
+								<< e.what ();
+					}
 				}
 			}
 
