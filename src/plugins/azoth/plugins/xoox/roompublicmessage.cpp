@@ -25,123 +25,123 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	RoomPublicMessage::RoomPublicMessage (const QString& msg, RoomCLEntry *entry)
+	: QObject (entry)
+	, ParentEntry_ (entry)
+	, ParticipantEntry_ (0)
+	, Message_ (msg)
+	, Datetime_ (QDateTime::currentDateTime ())
+	, Direction_ (DOut)
+	, Type_ (MTMUCMessage)
 	{
-		namespace Azoth
+	}
+
+	RoomPublicMessage::RoomPublicMessage (const QString& msg,
+			IMessage::Direction direction,
+			RoomCLEntry *entry,
+			IMessage::MessageType type,
+			RoomParticipantEntry *part)
+	: QObject (entry)
+	, ParentEntry_ (entry)
+	, ParticipantEntry_ (part)
+	, Message_ (msg)
+	, Datetime_ (QDateTime::currentDateTime ())
+	, Direction_ (direction)
+	, Type_ (type)
+	{
+	}
+
+	RoomPublicMessage::RoomPublicMessage (const gloox::Message& msg,
+			RoomCLEntry *entry, RoomParticipantEntry *partEntry)
+	: QObject (entry)
+	, ParentEntry_ (entry)
+	, ParticipantEntry_ (partEntry)
+	, Message_ (QString::fromUtf8 (msg.body ().c_str ()))
+	, Direction_ (DIn)
+	, FromJID_ (msg.from ())
+	, Type_ (MTMUCMessage)
+	{
+		const gloox::DelayedDelivery *dd = msg.when ();
+		Datetime_ = dd ?
+				QDateTime::fromString (dd->stamp ().c_str (), Qt::ISODate).toLocalTime () :
+				QDateTime::currentDateTime ();
+	}
+
+	QObject* RoomPublicMessage::GetObject ()
+	{
+		return this;
+	}
+
+	void RoomPublicMessage::Send ()
+	{
+		if (!ParentEntry_)
+			return;
+
+		ParentEntry_->GetRoom ()->
+				send (Message_.toUtf8 ().constData ());
+		Datetime_ = QDateTime::currentDateTime ();
+	}
+
+	IMessage::Direction RoomPublicMessage::GetDirection () const
+	{
+		return Direction_;
+	}
+
+	IMessage::MessageType RoomPublicMessage::GetMessageType () const
+	{
+		return Type_;
+	}
+
+	QObject* RoomPublicMessage::OtherPart () const
+	{
+		switch (Direction_)
 		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					RoomPublicMessage::RoomPublicMessage (const QString& msg, RoomCLEntry *entry)
-					: QObject (entry)
-					, ParentEntry_ (entry)
-					, ParticipantEntry_ (0)
-					, Message_ (msg)
-					, Datetime_ (QDateTime::currentDateTime ())
-					, Direction_ (DOut)
-					, Type_ (MTMUCMessage)
-					{
-					}
-
-					RoomPublicMessage::RoomPublicMessage (const QString& msg,
-							IMessage::Direction direction,
-							RoomCLEntry *entry,
-							IMessage::MessageType type,
-							RoomParticipantEntry *part)
-					: QObject (entry)
-					, ParentEntry_ (entry)
-					, ParticipantEntry_ (part)
-					, Message_ (msg)
-					, Datetime_ (QDateTime::currentDateTime ())
-					, Direction_ (direction)
-					, Type_ (type)
-					{
-					}
-
-					RoomPublicMessage::RoomPublicMessage (const gloox::Message& msg,
-							RoomCLEntry *entry, RoomParticipantEntry *partEntry)
-					: QObject (entry)
-					, ParentEntry_ (entry)
-					, ParticipantEntry_ (partEntry)
-					, Message_ (QString::fromUtf8 (msg.body ().c_str ()))
-					, Direction_ (DIn)
-					, FromJID_ (msg.from ())
-					, Type_ (MTMUCMessage)
-					{
-						const gloox::DelayedDelivery *dd = msg.when ();
-						Datetime_ = dd ?
-								QDateTime::fromString (dd->stamp ().c_str (), Qt::ISODate) :
-								QDateTime::currentDateTime ();
-					}
-
-					QObject* RoomPublicMessage::GetObject ()
-					{
-						return this;
-					}
-
-					void RoomPublicMessage::Send ()
-					{
-						if (!ParentEntry_)
-							return;
-
-						ParentEntry_->GetRoom ()->
-								send (Message_.toUtf8 ().constData ());
-						Datetime_ = QDateTime::currentDateTime ();
-					}
-
-					IMessage::Direction RoomPublicMessage::GetDirection () const
-					{
-						return Direction_;
-					}
-
-					IMessage::MessageType RoomPublicMessage::GetMessageType () const
-					{
-						return Type_;
-					}
-
-					QObject* RoomPublicMessage::OtherPart () const
-					{
-						switch (Direction_)
-						{
-						case DIn:
-							return ParticipantEntry_;
-						case DOut:
-							return ParentEntry_;
-						}
-					}
-
-					QObject* RoomPublicMessage::ParentCLEntry () const
-					{
-						return ParentEntry_;
-					}
-
-					QString RoomPublicMessage::GetOtherVariant() const
-					{
-						return "";
-					}
-
-					QString RoomPublicMessage::GetBody () const
-					{
-						return Message_;
-					}
-
-					void RoomPublicMessage::SetBody (const QString& msg)
-					{
-						Message_ = msg;
-					}
-
-					QDateTime RoomPublicMessage::GetDateTime () const
-					{
-						return Datetime_;
-					}
-
-					void RoomPublicMessage::SetDateTime (const QDateTime& dt)
-					{
-						Datetime_ = dt;
-					}
-				}
-			}
+		case DIn:
+			return ParticipantEntry_;
+		case DOut:
+			return ParentEntry_;
 		}
 	}
+
+	QObject* RoomPublicMessage::ParentCLEntry () const
+	{
+		return ParentEntry_;
+	}
+
+	QString RoomPublicMessage::GetOtherVariant() const
+	{
+		return "";
+	}
+
+	QString RoomPublicMessage::GetBody () const
+	{
+		return Message_;
+	}
+
+	void RoomPublicMessage::SetBody (const QString& msg)
+	{
+		Message_ = msg;
+	}
+
+	QDateTime RoomPublicMessage::GetDateTime () const
+	{
+		return Datetime_;
+	}
+
+	void RoomPublicMessage::SetDateTime (const QDateTime& dt)
+	{
+		Datetime_ = dt;
+	}
+}
+}
+}
+}
 }

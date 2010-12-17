@@ -25,56 +25,56 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class RoomCLEntry;
+	class RoomParticipantEntry;
+
+	class RoomPublicMessage : public QObject
+							, public IMessage
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class RoomCLEntry;
-					class RoomParticipantEntry;
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage);
 
-					class RoomPublicMessage : public QObject
-											, public IMessage
-					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage);
+		QPointer<RoomCLEntry> ParentEntry_;
+		QPointer<RoomParticipantEntry> ParticipantEntry_;
+		QString Message_;
+		QDateTime Datetime_;
+		Direction Direction_;
+		gloox::JID FromJID_;
+		MessageType Type_;
+	public:
+		RoomPublicMessage (const QString&, RoomCLEntry*);
+		RoomPublicMessage (const QString&, Direction,
+				RoomCLEntry*, MessageType, RoomParticipantEntry* = 0);
+		RoomPublicMessage (const gloox::Message&, RoomCLEntry*, RoomParticipantEntry*);
 
-						QPointer<RoomCLEntry> ParentEntry_;
-						QPointer<RoomParticipantEntry> ParticipantEntry_;
-						QString Message_;
-						QDateTime Datetime_;
-						Direction Direction_;
-						gloox::JID FromJID_;
-						MessageType Type_;
-					public:
-						RoomPublicMessage (const QString&, RoomCLEntry*);
-						RoomPublicMessage (const QString&, Direction,
-								RoomCLEntry*, MessageType, RoomParticipantEntry* = 0);
-						RoomPublicMessage (const gloox::Message&, RoomCLEntry*, RoomParticipantEntry*);
+		QObject* GetObject ();
+		void Send ();
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
 
-						QObject* GetObject ();
-						void Send ();
-						Direction GetDirection () const;
-						MessageType GetMessageType () const;
-
-						/** Since it's outgoing message, the other part
-						 * always equals to the room entry.
-						 */
-						QObject* OtherPart () const;
-						QObject* ParentCLEntry () const;
-						QString GetOtherVariant () const;
-						QString GetBody () const;
-						void SetBody (const QString&);
-						QDateTime GetDateTime () const;
-						void SetDateTime (const QDateTime&);
-					};
-				}
-			}
-		}
-	}
+		/** Since it's outgoing message, the other part
+		 * always equals to the room entry.
+		 */
+		QObject* OtherPart () const;
+		QObject* ParentCLEntry () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString&);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime&);
+	};
+}
+}
+}
+}
 }
 
 #endif
