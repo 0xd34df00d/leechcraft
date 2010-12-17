@@ -864,15 +864,12 @@ namespace LeechCraft
 			Q_FOREACH (Plugins_t::iterator p,
 					providers)
 			{
-				// It's initialized already.
-				if (p < pos)
-				{
-					DepTreeItem_ptr depprov = GetDependency (*p);
-					if (depprov)
-						newDep->Used_.insert (use, depprov);
-				}
-				else if (p > pos)
-					newDep->Used_.insert (use, CalculateSingle (p));
+				// If p < pos, it's initialized already.
+				DepTreeItem_ptr depprov = p < pos ?
+						GetDependency (*p) :
+						CalculateSingle (p);
+				if (depprov)
+					newDep->Used_.insert (use, depprov);
 			}
 		}
 
@@ -884,15 +881,12 @@ namespace LeechCraft
 			Q_FOREACH (Plugins_t::iterator p,
 					providers)
 			{
-				// It's initialized already.
-				if (p < pos)
-				{
-					DepTreeItem_ptr depprov = GetDependency (*p);
-					if (depprov)
-						newDep->Used_.insert ("__lc_plugin2", depprov);
-				}
-				else if (p > pos)
-					newDep->Used_.insert ("__lc_plugin2", CalculateSingle (p));
+				// If p < pos, it's initialized already.
+				DepTreeItem_ptr depprov = p < pos ?
+						GetDependency (*p) :
+						CalculateSingle (p);
+				if (depprov)
+					newDep->Used_.insert ("__lc_plugin2", depprov);
 			}
 		}
 
