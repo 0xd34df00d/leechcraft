@@ -619,7 +619,7 @@ namespace LeechCraft
 	}
 
 	QList<PluginManager::Plugins_t::iterator>
-		PluginManager::FindProviders (const QString& feature)
+	PluginManager::FindProviders (const QString& feature)
 	{
 		QList<Plugins_t::iterator> result;
 		for (Plugins_t::iterator i = Plugins_.begin ();
@@ -652,7 +652,7 @@ namespace LeechCraft
 	}
 
 	QList<PluginManager::Plugins_t::iterator>
-		PluginManager::FindProviders (const QSet<QByteArray>& expecteds)
+	PluginManager::FindProviders (const QSet<QByteArray>& expecteds)
 	{
 		QList<Plugins_t::iterator> result;
 		for (Plugins_t::iterator i = Plugins_.begin ();
@@ -690,8 +690,7 @@ namespace LeechCraft
 	}
 
 	PluginManager::DepTreeItem_ptr
-		PluginManager::GetDependency
-			(QObject *entity)
+	PluginManager::GetDependency (QObject *entity)
 	{
 		struct Finder
 		{
@@ -792,8 +791,7 @@ namespace LeechCraft
 	}
 
 	PluginManager::DepTreeItem_ptr
-		PluginManager::CalculateSingle
-			(PluginManager::Plugins_t::iterator i)
+	PluginManager::CalculateSingle (PluginManager::Plugins_t::iterator i)
 	{
 		QObject *entity = *i;
 #ifdef QT_DEBUG
@@ -824,7 +822,7 @@ namespace LeechCraft
 	}
 
 	PluginManager::DepTreeItem_ptr
-		PluginManager::CalculateSingle (QObject *entity,
+	PluginManager::CalculateSingle (QObject *entity,
 				PluginManager::Plugins_t::iterator pos)
 	{
 		DepTreeItem_ptr possibly = GetDependency (entity);
