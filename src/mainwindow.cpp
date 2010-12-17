@@ -523,6 +523,11 @@ void LeechCraft::MainWindow::handleQuit ()
 
 	IsQuitting_ = true;
 
+	disconnect (Ui_.MainTabWidget_,
+				0,
+				0,
+				0);
+
 	Core::Instance ().Release ();
 
 	TrayIcon_->hide ();
