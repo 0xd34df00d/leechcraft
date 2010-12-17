@@ -23,58 +23,58 @@
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxAccount;
+
+	class GlooxProtocol : public QObject
+						, public IProtocol
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxAccount;
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
 
-					class GlooxProtocol : public QObject
-										, public IProtocol
-					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
+		QObject *ParentProtocolPlugin_;
+		QList<GlooxAccount*> Accounts_;
+		QObject *ProxyObject_;
+	public:
+		GlooxProtocol (QObject*);
+		virtual ~GlooxProtocol ();
 
-						QObject *ParentProtocolPlugin_;
-						QList<GlooxAccount*> Accounts_;
-						QObject *ProxyObject_;
-					public:
-						GlooxProtocol (QObject*);
-						virtual ~GlooxProtocol ();
+		void Prepare ();
 
-						void Prepare ();
+		QObject* GetProxyObject () const;
+		void SetProxyObject (QObject*);
 
-						QObject* GetProxyObject () const;
-						void SetProxyObject (QObject*);
-
-						QObject* GetObject ();
-						ProtocolFeatures GetFeatures () const;
-						QList<QObject*> GetRegisteredAccounts ();
-						QObject* GetParentProtocolPlugin () const;
-						QString GetProtocolName () const;
-						QByteArray GetProtocolID () const;
-						void InitiateAccountRegistration ();
-						void InitiateMUCJoin ();
-						void RemoveAccount (QObject*);
-					private:
-						void RestoreAccounts ();
-					private slots:
-						void saveAccounts () const;
-					signals:
-						void accountAdded (QObject*);
-						void accountRemoved (QObject*);
-						void gotEntity (const LeechCraft::Entity&);
-					};
-				}
-			}
-		}
-	}
+		QObject* GetObject ();
+		ProtocolFeatures GetFeatures () const;
+		QList<QObject*> GetRegisteredAccounts ();
+		QObject* GetParentProtocolPlugin () const;
+		QString GetProtocolName () const;
+		QByteArray GetProtocolID () const;
+		void InitiateAccountRegistration ();
+		void InitiateMUCJoin ();
+		void RemoveAccount (QObject*);
+	private:
+		void RestoreAccounts ();
+	private slots:
+		void saveAccounts () const;
+	signals:
+		void accountAdded (QObject*);
+		void accountRemoved (QObject*);
+		void gotEntity (const LeechCraft::Entity&);
+	};
+}
+}
+}
+}
 }
 
 #endif

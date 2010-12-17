@@ -28,88 +28,88 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	RoomParticipantEntry::RoomParticipantEntry (const QString& nick,
+			RoomHandler *rh, GlooxAccount *account)
+	: EntryBase (account)
+	, Nick_ (nick)
+	, Account_ (account)
+	, RoomHandler_ (rh)
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					RoomParticipantEntry::RoomParticipantEntry (const QString& nick,
-							RoomHandler *rh, GlooxAccount *account)
-					: EntryBase (account)
-					, Nick_ (nick)
-					, Account_ (account)
-					, RoomHandler_ (rh)
-					{
-						QAction *kick = new QAction (tr ("Kick"), this);
-						connect (kick,
-								SIGNAL (triggered ()),
-								this,
-								SLOT (handleKickRequested ()));
-						Actions_ << kick;
-					}
-
-					QObject* RoomParticipantEntry::GetParentAccount () const
-					{
-						return Account_;
-					}
-
-					ICLEntry::Features RoomParticipantEntry::GetEntryFeatures () const
-					{
-						return FSessionEntry;
-					}
-
-					ICLEntry::EntryType RoomParticipantEntry::GetEntryType () const
-					{
-						return ETPrivateChat;
-					}
-
-					QString RoomParticipantEntry::GetEntryName () const
-					{
-						return Nick_;
-					}
-
-					void RoomParticipantEntry::SetEntryName (const QString&)
-					{
-					}
-
-					QByteArray RoomParticipantEntry::GetEntryID () const
-					{
-						gloox::MUCRoom *room = RoomHandler_->GetCLEntry ()->GetRoom ();
-						return (room->name () + "/" +
-								room->service () + "/" +
-								Nick_.toUtf8 ().constData ()).c_str ();
-					}
-
-					QStringList RoomParticipantEntry::Groups () const
-					{
-						gloox::MUCRoom *room = RoomHandler_->GetCLEntry ()->GetRoom ();
-						QString roomName = QString::fromUtf8 (room->name ().c_str ()) +
-								"@" +
-								QString::fromUtf8 (room->service ().c_str ());
-						return QStringList (tr ("%1 participants")
-								.arg (roomName));
-					}
-
-					QStringList RoomParticipantEntry::Variants () const
-					{
-						return QStringList ("");
-					}
-
-					QObject* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
-							const QString&, const QString& body)
-					{
-						return RoomHandler_->CreateMessage (type, Nick_, body);
-					}
-
-					void RoomParticipantEntry::handleKickRequested()
-					{
-						RoomHandler_->Kick (Nick_);
-					}
-				}
-			}
-		}
+		QAction *kick = new QAction (tr ("Kick"), this);
+		connect (kick,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleKickRequested ()));
+		Actions_ << kick;
 	}
+
+	QObject* RoomParticipantEntry::GetParentAccount () const
+	{
+		return Account_;
+	}
+
+	ICLEntry::Features RoomParticipantEntry::GetEntryFeatures () const
+	{
+		return FSessionEntry;
+	}
+
+	ICLEntry::EntryType RoomParticipantEntry::GetEntryType () const
+	{
+		return ETPrivateChat;
+	}
+
+	QString RoomParticipantEntry::GetEntryName () const
+	{
+		return Nick_;
+	}
+
+	void RoomParticipantEntry::SetEntryName (const QString&)
+	{
+	}
+
+	QByteArray RoomParticipantEntry::GetEntryID () const
+	{
+		gloox::MUCRoom *room = RoomHandler_->GetCLEntry ()->GetRoom ();
+		return (room->name () + "/" +
+				room->service () + "/" +
+				Nick_.toUtf8 ().constData ()).c_str ();
+	}
+
+	QStringList RoomParticipantEntry::Groups () const
+	{
+		gloox::MUCRoom *room = RoomHandler_->GetCLEntry ()->GetRoom ();
+		QString roomName = QString::fromUtf8 (room->name ().c_str ()) +
+				"@" +
+				QString::fromUtf8 (room->service ().c_str ());
+		return QStringList (tr ("%1 participants")
+				.arg (roomName));
+	}
+
+	QStringList RoomParticipantEntry::Variants () const
+	{
+		return QStringList ("");
+	}
+
+	QObject* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
+			const QString&, const QString& body)
+	{
+		return RoomHandler_->CreateMessage (type, Nick_, body);
+	}
+
+	void RoomParticipantEntry::handleKickRequested()
+	{
+		RoomHandler_->Kick (Nick_);
+	}
+}
+}
+}
+}
 }

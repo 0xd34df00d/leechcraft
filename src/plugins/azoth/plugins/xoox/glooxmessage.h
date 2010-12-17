@@ -29,53 +29,53 @@ namespace gloox
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxCLEntry;
+
+	class GlooxMessage : public QObject
+						, public IMessage
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxCLEntry;
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage)
 
-					class GlooxMessage : public QObject
-									   , public IMessage
-					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage)
+		MessageType Type_;
+		Direction Direction_;
+		QObject *Entry_;
+		QString Body_;
+		QString Variant_;
+		gloox::MessageSession *Session_;
+		QDateTime DateTime_;
+	public:
+		GlooxMessage (IMessage::MessageType type,
+				IMessage::Direction direction,
+				QObject *entry,
+				gloox::MessageSession *session);
+		GlooxMessage (const gloox::Message& msg,
+				QObject *entry,
+				gloox::MessageSession *session);
 
-						MessageType Type_;
-						Direction Direction_;
-						QObject *Entry_;
-						QString Body_;
-						QString Variant_;
-						gloox::MessageSession *Session_;
-						QDateTime DateTime_;
-					public:
-						GlooxMessage (IMessage::MessageType type,
-								IMessage::Direction direction,
-								QObject *entry,
-								gloox::MessageSession *session);
-						GlooxMessage (const gloox::Message& msg,
-								QObject *entry,
-								gloox::MessageSession *session);
-
-						QObject* GetObject ();
-						void Send ();
-						Direction GetDirection () const;
-						MessageType GetMessageType () const;
-						QObject* OtherPart () const;
-						QString GetOtherVariant () const;
-						QString GetBody () const;
-						void SetBody (const QString&);
-						QDateTime GetDateTime () const;
-						void SetDateTime (const QDateTime&);
-					};
-				}
-			}
-		}
-	}
+		QObject* GetObject ();
+		void Send ();
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
+		QObject* OtherPart () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString&);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime&);
+	};
+}
+}
+}
+}
 }
 
 #endif

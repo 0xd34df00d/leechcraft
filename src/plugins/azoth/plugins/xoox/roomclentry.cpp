@@ -26,140 +26,140 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	RoomCLEntry::RoomCLEntry (RoomHandler *rh, GlooxAccount *account)
+	: QObject (account)
+	, Account_ (account)
+	, RH_ (rh)
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					RoomCLEntry::RoomCLEntry (RoomHandler *rh, GlooxAccount *account)
-					: QObject (account)
-					, Account_ (account)
-					, RH_ (rh)
-					{
-					}
-
-					QObject* RoomCLEntry::GetObject ()
-					{
-						return this;
-					}
-
-					QObject* RoomCLEntry::GetParentAccount () const
-					{
-						return Account_;
-					}
-
-					ICLEntry::Features RoomCLEntry::GetEntryFeatures () const
-					{
-						return FSessionEntry;
-					}
-
-					ICLEntry::EntryType RoomCLEntry::GetEntryType () const
-					{
-						return ETMUC;
-					}
-
-					QString RoomCLEntry::GetEntryName () const
-					{
-						gloox::MUCRoom *r = RH_->GetRoom ();
-						return QString::fromUtf8 ((r->name () + "@" + r->service ()).c_str ());
-					}
-
-					void RoomCLEntry::SetEntryName (const QString&)
-					{
-					}
-
-					QByteArray RoomCLEntry::GetEntryID () const
-					{
-						gloox::MUCRoom *r = RH_->GetRoom ();
-						return (r->service () + "/" +
-									r->name () + "/" +
-									r->nick ()).c_str ();
-					}
-
-					QStringList RoomCLEntry::Groups () const
-					{
-						return QStringList () << tr ("Multiuser chatrooms");
-					}
-
-					QStringList RoomCLEntry::Variants () const
-					{
-						QStringList result;
-						result << "";
-						return result;
-					}
-
-					QObject* RoomCLEntry::CreateMessage (IMessage::MessageType type,
-							const QString& variant, const QString& text)
-					{
-						if (variant == "")
-							return new RoomPublicMessage (text, this);
-						else
-							return 0;
-					}
-
-					QList<QObject*> RoomCLEntry::GetAllMessages () const
-					{
-						return AllMessages_;
-					}
-
-					EntryStatus RoomCLEntry::GetStatus (const QString&) const
-					{
-						return EntryStatus (SOnline, QString ());
-					}
-
-					QList<QAction*> RoomCLEntry::GetActions ()
-					{
-						return QList<QAction*> ();
-					}
-
-					QImage RoomCLEntry::GetAvatar() const
-					{
-						return QImage ();
-					}
-
-					IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
-					{
-						return MUCFCanBeConfigured;
-					}
-
-					QString RoomCLEntry::GetMUCSubject () const
-					{
-						return RH_->GetSubject ();
-					}
-
-					QList<QObject*> RoomCLEntry::GetParticipants ()
-					{
-						return RH_->GetParticipants ();
-					}
-
-					gloox::MUCRoom* RoomCLEntry::GetRoom ()
-					{
-						return RH_->GetRoom ();
-					}
-
-					void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)
-					{
-						AllMessages_ << msg;
-						emit gotMessage (msg);
-					}
-
-					void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
-					{
-						QObjectList objs;
-						Q_FOREACH (ICLEntry *e, parts)
-							objs << e->GetObject ();
-						emit gotNewParticipants (objs);
-					}
-
-					void RoomCLEntry::HandleSubjectChanged (const QString& subj)
-					{
-						emit mucSubjectChanged (subj);
-					}
-				}
-			}
-		}
 	}
+
+	QObject* RoomCLEntry::GetObject ()
+	{
+		return this;
+	}
+
+	QObject* RoomCLEntry::GetParentAccount () const
+	{
+		return Account_;
+	}
+
+	ICLEntry::Features RoomCLEntry::GetEntryFeatures () const
+	{
+		return FSessionEntry;
+	}
+
+	ICLEntry::EntryType RoomCLEntry::GetEntryType () const
+	{
+		return ETMUC;
+	}
+
+	QString RoomCLEntry::GetEntryName () const
+	{
+		gloox::MUCRoom *r = RH_->GetRoom ();
+		return QString::fromUtf8 ((r->name () + "@" + r->service ()).c_str ());
+	}
+
+	void RoomCLEntry::SetEntryName (const QString&)
+	{
+	}
+
+	QByteArray RoomCLEntry::GetEntryID () const
+	{
+		gloox::MUCRoom *r = RH_->GetRoom ();
+		return (r->service () + "/" +
+					r->name () + "/" +
+					r->nick ()).c_str ();
+	}
+
+	QStringList RoomCLEntry::Groups () const
+	{
+		return QStringList () << tr ("Multiuser chatrooms");
+	}
+
+	QStringList RoomCLEntry::Variants () const
+	{
+		QStringList result;
+		result << "";
+		return result;
+	}
+
+	QObject* RoomCLEntry::CreateMessage (IMessage::MessageType type,
+			const QString& variant, const QString& text)
+	{
+		if (variant == "")
+			return new RoomPublicMessage (text, this);
+		else
+			return 0;
+	}
+
+	QList<QObject*> RoomCLEntry::GetAllMessages () const
+	{
+		return AllMessages_;
+	}
+
+	EntryStatus RoomCLEntry::GetStatus (const QString&) const
+	{
+		return EntryStatus (SOnline, QString ());
+	}
+
+	QList<QAction*> RoomCLEntry::GetActions ()
+	{
+		return QList<QAction*> ();
+	}
+
+	QImage RoomCLEntry::GetAvatar() const
+	{
+		return QImage ();
+	}
+
+	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
+	{
+		return MUCFCanBeConfigured;
+	}
+
+	QString RoomCLEntry::GetMUCSubject () const
+	{
+		return RH_->GetSubject ();
+	}
+
+	QList<QObject*> RoomCLEntry::GetParticipants ()
+	{
+		return RH_->GetParticipants ();
+	}
+
+	gloox::MUCRoom* RoomCLEntry::GetRoom ()
+	{
+		return RH_->GetRoom ();
+	}
+
+	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)
+	{
+		AllMessages_ << msg;
+		emit gotMessage (msg);
+	}
+
+	void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
+	{
+		QObjectList objs;
+		Q_FOREACH (ICLEntry *e, parts)
+			objs << e->GetObject ();
+		emit gotNewParticipants (objs);
+	}
+
+	void RoomCLEntry::HandleSubjectChanged (const QString& subj)
+	{
+		emit mucSubjectChanged (subj);
+	}
+}
+}
+}
+}
 }

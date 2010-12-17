@@ -22,66 +22,66 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	JoinGroupchatDialog::JoinGroupchatDialog (const QList<GlooxAccount*>& accounts,
+			QWidget *parent)
+	: QDialog (parent)
+	, Accounts_ (accounts)
 	{
-		namespace Azoth
+		Ui_.setupUi (this);
+
+		if (!accounts.size ())
+			return;
+
+		Q_FOREACH (GlooxAccount *acc, accounts)
 		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					JoinGroupchatDialog::JoinGroupchatDialog (const QList<GlooxAccount*>& accounts,
-							QWidget *parent)
-					: QDialog (parent)
-					, Accounts_ (accounts)
-					{
-						Ui_.setupUi (this);
-
-						if (!accounts.size ())
-							return;
-
-						Q_FOREACH (GlooxAccount *acc, accounts)
-						{
-							QString text = QString ("%1 (%2)")
-									.arg (acc->GetAccountName ())
-									.arg (acc->GetJID ());
-							Ui_.Account_->addItem (text);
-						}
-
-						on_Account__currentIndexChanged (0);
-					}
-
-					QString JoinGroupchatDialog::GetNickname () const
-					{
-						return Ui_.Nickname_->text ();
-					}
-
-					QString JoinGroupchatDialog::GetRoom () const
-					{
-						return Ui_.Room_->text ();
-					}
-
-					QString JoinGroupchatDialog::GetServer () const
-					{
-						return Ui_.Server_->text ();
-					}
-
-					GlooxAccount* JoinGroupchatDialog::GetSelectedAccount () const
-					{
-						int idx = Ui_.Account_->currentIndex ();
-						if (idx >= 0)
-							return Accounts_.at (idx);
-						else
-							return 0;
-					}
-
-					void JoinGroupchatDialog::on_Account__currentIndexChanged (int index)
-					{
-						GlooxAccount *acc = Accounts_.at (index);
-						Ui_.Nickname_->setText (acc->GetNick ());
-					}
-				}
-			}
+			QString text = QString ("%1 (%2)")
+					.arg (acc->GetAccountName ())
+					.arg (acc->GetJID ());
+			Ui_.Account_->addItem (text);
 		}
+
+		on_Account__currentIndexChanged (0);
 	}
+
+	QString JoinGroupchatDialog::GetNickname () const
+	{
+		return Ui_.Nickname_->text ();
+	}
+
+	QString JoinGroupchatDialog::GetRoom () const
+	{
+		return Ui_.Room_->text ();
+	}
+
+	QString JoinGroupchatDialog::GetServer () const
+	{
+		return Ui_.Server_->text ();
+	}
+
+	GlooxAccount* JoinGroupchatDialog::GetSelectedAccount () const
+	{
+		int idx = Ui_.Account_->currentIndex ();
+		if (idx >= 0)
+			return Accounts_.at (idx);
+		else
+			return 0;
+	}
+
+	void JoinGroupchatDialog::on_Account__currentIndexChanged (int index)
+	{
+		GlooxAccount *acc = Accounts_.at (index);
+		Ui_.Nickname_->setText (acc->GetNick ());
+	}
+}
+}
+}
+}
 }

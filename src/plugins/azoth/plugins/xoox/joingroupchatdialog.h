@@ -23,36 +23,36 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxAccount;
+
+	class JoinGroupchatDialog : public QDialog
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxAccount;
+		Q_OBJECT
 
-					class JoinGroupchatDialog : public QDialog
-					{
-						Q_OBJECT
+		Ui::GlooxJoinGroupchatDialog Ui_;
+		QList<GlooxAccount*> Accounts_;
+	public:
+		JoinGroupchatDialog (const QList<GlooxAccount*>&, QWidget* = 0);
 
-						Ui::GlooxJoinGroupchatDialog Ui_;
-						QList<GlooxAccount*> Accounts_;
-					public:
-						JoinGroupchatDialog (const QList<GlooxAccount*>&, QWidget* = 0);
-
-						QString GetServer () const;
-						QString GetRoom () const;
-						QString GetNickname () const;
-						GlooxAccount* GetSelectedAccount () const;
-					private slots:
-						void on_Account__currentIndexChanged (int);
-					};
-				}
-			}
-		}
-	}
+		QString GetServer () const;
+		QString GetRoom () const;
+		QString GetNickname () const;
+		GlooxAccount* GetSelectedAccount () const;
+	private slots:
+		void on_Account__currentIndexChanged (int);
+	};
+}
+}
+}
+}
 }
 
 #endif

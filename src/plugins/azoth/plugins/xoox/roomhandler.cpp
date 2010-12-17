@@ -30,229 +30,228 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	RoomHandler::RoomHandler (GlooxAccount* account)
+	: QObject (account)
+	, Account_ (account)
+	, CLEntry_ (0)
+	, Room_ (0)
 	{
-		namespace Azoth
+	}
+
+	void RoomHandler::SetRoom (gloox::MUCRoom *room)
+	{
+		Room_ = room;
+		CLEntry_ = new RoomCLEntry (this, Account_);
+		room->getRoomItems ();
+	}
+
+	gloox::MUCRoom* RoomHandler::GetRoom () const
+	{
+		return Room_;
+	}
+
+	RoomCLEntry* RoomHandler::GetCLEntry ()
+	{
+		return CLEntry_;
+	}
+
+	void RoomHandler::handleMUCParticipantPresence (gloox::MUCRoom *room,
+			const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
+	{
+		const QString& nick = NickFromJID (*part.nick);
+		RoomParticipantEntry *entry = GetParticipantEntry (nick);
+
+		if (presence.presence () == gloox::Presence::Unavailable)
 		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					RoomHandler::RoomHandler (GlooxAccount* account)
-					: QObject (account)
-					, Account_ (account)
-					, CLEntry_ (0)
-					, Room_ (0)
-					{
-					}
+			Account_->handleEntryRemoved (entry);
+			Nick2Entry_.remove (nick);
+			JID2Session_.remove (JIDForNick (nick));
+			entry->deleteLater ();
+			return;
+		}
 
-					void RoomHandler::SetRoom (gloox::MUCRoom *room)
-					{
-						Room_ = room;
-						CLEntry_ = new RoomCLEntry (this, Account_);
-						room->getRoomItems ();
-					}
+		EntryStatus status (static_cast<State> (presence.presence ()),
+				QString::fromUtf8 (presence.status ().c_str ()));
+		entry->SetStatus (status, QString ());
+	}
 
-					gloox::MUCRoom* RoomHandler::GetRoom () const
-					{
-						return Room_;
-					}
+	void RoomHandler::handleMUCMessage (gloox::MUCRoom *room, const gloox::Message& msg, bool priv)
+	{
+		const QString& nick = NickFromJID (msg.from ());
+		RoomParticipantEntry *entry = GetParticipantEntry (nick, false);
 
-					RoomCLEntry* RoomHandler::GetCLEntry ()
-					{
-						return CLEntry_;
-					}
-
-					void RoomHandler::handleMUCParticipantPresence (gloox::MUCRoom *room,
-							const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
-					{
-						const QString& nick = NickFromJID (*part.nick);
-						RoomParticipantEntry *entry = GetParticipantEntry (nick);
-
-						if (presence.presence () == gloox::Presence::Unavailable)
-						{
-							Account_->handleEntryRemoved (entry);
-							Nick2Entry_.remove (nick);
-							JID2Session_.remove (JIDForNick (nick));
-							entry->deleteLater ();
-							return;
-						}
-
-						EntryStatus status (static_cast<State> (presence.presence ()),
-								QString::fromUtf8 (presence.status ().c_str ()));
-						entry->SetStatus (status, QString ());
-					}
-
-					void RoomHandler::handleMUCMessage (gloox::MUCRoom *room, const gloox::Message& msg, bool priv)
-					{
-						const QString& nick = NickFromJID (msg.from ());
-						RoomParticipantEntry *entry = GetParticipantEntry (nick, false);
-
-						if (priv && !nick.isEmpty ())
-						{
-							gloox::MessageSession *session = GetSessionWith (msg.from ());
-							GlooxMessage *message = new GlooxMessage (msg,
-									entry, session);
-							message->SetDateTime (QDateTime::currentDateTime ());
-							entry->HandleMessage (message);
-						}
-						else
-						{
-							RoomPublicMessage *message = 0;
-							if (!nick.isEmpty ())
-								message = new RoomPublicMessage (msg, CLEntry_, entry);
-							else
-								message = new RoomPublicMessage (QString::fromUtf8 (msg.body ().c_str ()),
-										IMessage::DIn, CLEntry_, IMessage::MTEventMessage);
-							CLEntry_->HandleMessage (message);
-						}
-					}
-
-					bool RoomHandler::handleMUCRoomCreation (gloox::MUCRoom *room)
-					{
-						return true;
-					}
-
-					void RoomHandler::handleMUCSubject (gloox::MUCRoom *room,
-							const std::string& nickStr, const std::string& subject)
-					{
-						QString nick = QString::fromUtf8 (nickStr.c_str ());
-						Subject_ = QString::fromUtf8 (subject.c_str ());
-						QString string;
-						if (!nick.isEmpty ())
-							string = tr ("%1 set subject to %2")
-									.arg (nick)
-									.arg (Subject_);
-						else
-							string = tr ("Room subject is %1")
-									.arg (Subject_);
-
-						RoomPublicMessage *message =
-								new RoomPublicMessage (string, IMessage::DIn,
-										CLEntry_, IMessage::MTEventMessage);
-						CLEntry_->HandleMessage (message);
-
-						CLEntry_->HandleSubjectChanged (Subject_);
-					}
-
-					void RoomHandler::handleMUCInviteDecline (gloox::MUCRoom* room, const gloox::JID& invitee, const std::string&reason)
-					{
-					}
-
-					void RoomHandler::handleMUCError (gloox::MUCRoom* room, gloox::StanzaError error)
-					{
-					}
-
-					void RoomHandler::handleMUCInfo (gloox::MUCRoom *room, int features, const std::string& name, const gloox::DataForm *infoForm)
-					{
-					}
-
-					void RoomHandler::handleMUCItems (gloox::MUCRoom *room, const gloox::Disco::ItemList& items)
-					{
-						QList<ICLEntry*> parts;
-						Q_FOREACH (gloox::Disco::Item *item, items)
-						{
-							const QString nick = QString::fromUtf8 (item->name ().c_str ());
-							if (!Nick2Entry_.contains (nick))
-								parts << GetParticipantEntry (nick);
-						}
-
-						CLEntry_->HandleNewParticipants (parts);
-					}
-
-					void RoomHandler::handleMessage (const gloox::Message& msg, gloox::MessageSession *session)
-					{
-						const gloox::JID& from = msg.from ();
-						const QString& nick = NickFromJID (from);
-						RoomParticipantEntry *entry = GetParticipantEntry (nick);
-
-						GlooxMessage *message = new GlooxMessage (msg,
-								entry, session);
-						message->SetDateTime (QDateTime::currentDateTime ());
-						entry->HandleMessage (message);
-					}
-
-					GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType type,
-							const QString& nick, const QString& body)
-					{
-						GlooxMessage *message = new GlooxMessage (IMessage::MTChatMessage,
-								IMessage::DOut,
-								GetParticipantEntry (nick),
-								GetSessionWith (JIDForNick (nick)));
-						message->SetBody (body);
-						message->SetDateTime (QDateTime::currentDateTime ());
-						return message;
-					}
-
-					QList<QObject*> RoomHandler::GetParticipants () const
-					{
-						QList<QObject*> result;
-						Q_FOREACH (RoomParticipantEntry *rpe, Nick2Entry_.values ())
-							result << rpe;
-						return result;
-					}
-
-					QString RoomHandler::GetSubject () const
-					{
-						return Subject_;
-					}
-
-					void RoomHandler::Kick (const QString& nick, const QString& reason)
-					{
-						Room_->kick (nick.toUtf8 ().constData (),
-								reason.toUtf8 ().constData ());
-					}
-
-					RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
-					{
-						RoomParticipantEntry *entry = new RoomParticipantEntry (nick,
-								this, Account_);
-						Nick2Entry_ [nick] = entry;
-						if (announce)
-							Account_->handleGotRosterItems (QList<QObject*> () << entry);
-						return entry;
-					}
-
-					RoomParticipantEntry* RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
-					{
-						if (!Nick2Entry_.contains (nick))
-						{
-							RoomParticipantEntry *entry = CreateParticipantEntry (nick, announce);
-							return entry;
-						}
-						else
-							return Nick2Entry_ [nick];
-					}
-
-					gloox::MessageSession* RoomHandler::GetSessionWith (const gloox::JID& with)
-					{
-						if (!JID2Session_.contains (with))
-						{
-							gloox::MessageSession *session =
-									new gloox::MessageSession (Account_->GetClientConnection ()->GetClient (),
-											with);
-							session->registerMessageHandler (this);
-							JID2Session_ [with] = session;
-							return session;
-						}
-						else
-							return JID2Session_ [with];
-					}
-
-					QString RoomHandler::NickFromJID (const gloox::JID& jid) const
-					{
-						return QString::fromUtf8 (jid.resource ().c_str ());
-					}
-
-					gloox::JID RoomHandler::JIDForNick (const QString& nick) const
-					{
-						gloox::MUCRoom *room = CLEntry_->GetRoom ();
-						return gloox::JID (room->name () + "@" +
-								room->service () + "/" +
-								nick.toUtf8 ().constData ());
-					}
-				}
-			}
+		if (priv && !nick.isEmpty ())
+		{
+			gloox::MessageSession *session = GetSessionWith (msg.from ());
+			GlooxMessage *message = new GlooxMessage (msg, entry, session);
+			message->SetDateTime (QDateTime::currentDateTime ());
+			entry->HandleMessage (message);
+		}
+		else
+		{
+			RoomPublicMessage *message = 0;
+			if (!nick.isEmpty ())
+				message = new RoomPublicMessage (msg, CLEntry_, entry);
+			else
+				message = new RoomPublicMessage (QString::fromUtf8 (msg.body ().c_str ()),
+						IMessage::DIn, CLEntry_, IMessage::MTEventMessage);
+			CLEntry_->HandleMessage (message);
 		}
 	}
+
+	bool RoomHandler::handleMUCRoomCreation (gloox::MUCRoom *room)
+	{
+		return true;
+	}
+
+	void RoomHandler::handleMUCSubject (gloox::MUCRoom *room,
+			const std::string& nickStr, const std::string& subject)
+	{
+		QString nick = QString::fromUtf8 (nickStr.c_str ());
+		Subject_ = QString::fromUtf8 (subject.c_str ());
+		QString string;
+		if (!nick.isEmpty ())
+			string = tr ("%1 set subject to %2")
+					.arg (nick)
+					.arg (Subject_);
+		else
+			string = tr ("Room subject is %1")
+					.arg (Subject_);
+
+		RoomPublicMessage *message =
+				new RoomPublicMessage (string, IMessage::DIn,
+						CLEntry_, IMessage::MTEventMessage);
+		CLEntry_->HandleMessage (message);
+
+		CLEntry_->HandleSubjectChanged (Subject_);
+	}
+
+	void RoomHandler::handleMUCInviteDecline (gloox::MUCRoom* room, const gloox::JID& invitee, const std::string&reason)
+	{
+	}
+
+	void RoomHandler::handleMUCError (gloox::MUCRoom* room, gloox::StanzaError error)
+	{
+	}
+
+	void RoomHandler::handleMUCInfo (gloox::MUCRoom *room, int features, const std::string& name, const gloox::DataForm *infoForm)
+	{
+	}
+
+	void RoomHandler::handleMUCItems (gloox::MUCRoom *room, const gloox::Disco::ItemList& items)
+	{
+		QList<ICLEntry*> parts;
+		Q_FOREACH (gloox::Disco::Item *item, items)
+		{
+			const QString nick = QString::fromUtf8 (item->name ().c_str ());
+			if (!Nick2Entry_.contains (nick))
+				parts << GetParticipantEntry (nick);
+		}
+
+		CLEntry_->HandleNewParticipants (parts);
+	}
+
+	void RoomHandler::handleMessage (const gloox::Message& msg, gloox::MessageSession *session)
+	{
+		const gloox::JID& from = msg.from ();
+		const QString& nick = NickFromJID (from);
+		RoomParticipantEntry *entry = GetParticipantEntry (nick);
+
+		GlooxMessage *message = new GlooxMessage (msg,
+				entry, session);
+		message->SetDateTime (QDateTime::currentDateTime ());
+		entry->HandleMessage (message);
+	}
+
+	GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType type,
+			const QString& nick, const QString& body)
+	{
+		GlooxMessage *message = new GlooxMessage (IMessage::MTChatMessage,
+				IMessage::DOut,
+				GetParticipantEntry (nick),
+				GetSessionWith (JIDForNick (nick)));
+		message->SetBody (body);
+		message->SetDateTime (QDateTime::currentDateTime ());
+		return message;
+	}
+
+	QList<QObject*> RoomHandler::GetParticipants () const
+	{
+		QList<QObject*> result;
+		Q_FOREACH (RoomParticipantEntry *rpe, Nick2Entry_.values ())
+			result << rpe;
+		return result;
+	}
+
+	QString RoomHandler::GetSubject () const
+	{
+		return Subject_;
+	}
+
+	void RoomHandler::Kick (const QString& nick, const QString& reason)
+	{
+		Room_->kick (nick.toUtf8 ().constData (),
+				reason.toUtf8 ().constData ());
+	}
+
+	RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
+	{
+		RoomParticipantEntry *entry = new RoomParticipantEntry (nick,
+				this, Account_);
+		Nick2Entry_ [nick] = entry;
+		if (announce)
+			Account_->handleGotRosterItems (QList<QObject*> () << entry);
+		return entry;
+	}
+
+	RoomParticipantEntry* RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
+	{
+		if (!Nick2Entry_.contains (nick))
+		{
+			RoomParticipantEntry *entry = CreateParticipantEntry (nick, announce);
+			return entry;
+		}
+		else
+			return Nick2Entry_ [nick];
+	}
+
+	gloox::MessageSession* RoomHandler::GetSessionWith (const gloox::JID& with)
+	{
+		if (!JID2Session_.contains (with))
+		{
+			gloox::MessageSession *session =
+					new gloox::MessageSession (Account_->GetClientConnection ()->GetClient (),
+							with);
+			session->registerMessageHandler (this);
+			JID2Session_ [with] = session;
+			return session;
+		}
+		else
+			return JID2Session_ [with];
+	}
+
+	QString RoomHandler::NickFromJID (const gloox::JID& jid) const
+	{
+		return QString::fromUtf8 (jid.resource ().c_str ());
+	}
+
+	gloox::JID RoomHandler::JIDForNick (const QString& nick) const
+	{
+		gloox::MUCRoom *room = CLEntry_->GetRoom ();
+		return gloox::JID (room->name () + "@" +
+				room->service () + "/" +
+				nick.toUtf8 ().constData ());
+	}
+}
+}
+}
+}
 }

@@ -26,82 +26,82 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class RoomCLEntry;
+	class GlooxAccount;
+	class RoomParticipantEntry;
+
+	class RoomHandler : public QObject
+						, public gloox::MUCRoomHandler
+						, public gloox::MessageHandler
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class RoomCLEntry;
-					class GlooxAccount;
-					class RoomParticipantEntry;
+		Q_OBJECT
 
-					class RoomHandler : public QObject
-									  , public gloox::MUCRoomHandler
-									  , public gloox::MessageHandler
-					{
-						Q_OBJECT
+		GlooxAccount *Account_;
+		RoomCLEntry *CLEntry_;
+		QHash<QString, RoomParticipantEntry*> Nick2Entry_;
+		QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
+		gloox::MUCRoom *Room_;
+		QString Subject_;
+	public:
+		RoomHandler (GlooxAccount* = 0);
 
-						GlooxAccount *Account_;
-						RoomCLEntry *CLEntry_;
-						QHash<QString, RoomParticipantEntry*> Nick2Entry_;
-						QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
-						gloox::MUCRoom *Room_;
-						QString Subject_;
-					public:
-						RoomHandler (GlooxAccount* = 0);
+		/** This must be called before any calls to
+		 * GetCLEntry().
+		 */
+		void SetRoom (gloox::MUCRoom*);
+		gloox::MUCRoom* GetRoom () const;
+		RoomCLEntry* GetCLEntry ();
 
-						/** This must be called before any calls to
-						 * GetCLEntry().
-						 */
-						void SetRoom (gloox::MUCRoom*);
-						gloox::MUCRoom* GetRoom () const;
-						RoomCLEntry* GetCLEntry ();
+		GlooxMessage* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&);
+		QList<QObject*> GetParticipants () const;
+		QString GetSubject () const;
+		void Kick (const QString& nick, const QString& reason = QString ());
 
-						GlooxMessage* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
-						QList<QObject*> GetParticipants () const;
-						QString GetSubject () const;
-						void Kick (const QString& nick, const QString& reason = QString ());
+		// MUCRoomHandler
+		virtual void handleMUCParticipantPresence (gloox::MUCRoom*,
+				const gloox::MUCRoomParticipant, const gloox::Presence&);
+		virtual void handleMUCMessage (gloox::MUCRoom*,
+				const gloox::Message&, bool);
+		virtual bool handleMUCRoomCreation (gloox::MUCRoom*);
+		virtual void handleMUCSubject (gloox::MUCRoom*,
+				const std::string&, const std::string&);
+		virtual void handleMUCInviteDecline (gloox::MUCRoom*,
+				const gloox::JID&, const std::string&);
+		virtual void handleMUCError (gloox::MUCRoom*, gloox::StanzaError);
+		virtual void handleMUCInfo (gloox::MUCRoom*, int,
+				const std::string&, const gloox::DataForm*);
+		virtual void handleMUCItems (gloox::MUCRoom*,
+				const gloox::Disco::ItemList&);
 
-						// MUCRoomHandler
-						virtual void handleMUCParticipantPresence (gloox::MUCRoom*,
-								const gloox::MUCRoomParticipant, const gloox::Presence&);
-						virtual void handleMUCMessage (gloox::MUCRoom*,
-								const gloox::Message&, bool);
-						virtual bool handleMUCRoomCreation (gloox::MUCRoom*);
-						virtual void handleMUCSubject (gloox::MUCRoom*,
-								const std::string&, const std::string&);
-						virtual void handleMUCInviteDecline (gloox::MUCRoom*,
-								const gloox::JID&, const std::string&);
-						virtual void handleMUCError (gloox::MUCRoom*, gloox::StanzaError);
-						virtual void handleMUCInfo (gloox::MUCRoom*, int,
-								const std::string&, const gloox::DataForm*);
-						virtual void handleMUCItems (gloox::MUCRoom*,
-								const gloox::Disco::ItemList&);
-
-						// MessageHandler
-						virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
-					private:
-						/** Creates a new entry for the given nick.
-						 */
-						RoomParticipantEntry* CreateParticipantEntry (const QString& nick, bool announce);
-						/** Creates a new entry for the given nick if it
-						 * doesn't exist already (and does so by calling
-						 * CreateParticipantEntry()) or just returns the
-						 * already existing one.
-						 */
-						RoomParticipantEntry* GetParticipantEntry (const QString& nick, bool announce = true);
-						gloox::MessageSession* GetSessionWith (const gloox::JID&);
-						QString NickFromJID (const gloox::JID&) const;
-						gloox::JID JIDForNick (const QString&) const;
-					};
-				}
-			}
-		}
-	}
+		// MessageHandler
+		virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
+	private:
+		/** Creates a new entry for the given nick.
+		 */
+		RoomParticipantEntry* CreateParticipantEntry (const QString& nick, bool announce);
+		/** Creates a new entry for the given nick if it
+		 * doesn't exist already (and does so by calling
+		 * CreateParticipantEntry()) or just returns the
+		 * already existing one.
+		 */
+		RoomParticipantEntry* GetParticipantEntry (const QString& nick, bool announce = true);
+		gloox::MessageSession* GetSessionWith (const gloox::JID&);
+		QString NickFromJID (const gloox::JID&) const;
+		gloox::JID JIDForNick (const QString&) const;
+	};
+}
+}
+}
+}
 }
 
 #endif

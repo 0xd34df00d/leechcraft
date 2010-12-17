@@ -24,49 +24,49 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxAccount;
+	class RoomPublicMessage;
+	class GlooxMessage;
+	class RoomHandler;
+
+	class RoomParticipantEntry : public EntryBase
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxAccount;
-					class RoomPublicMessage;
-					class GlooxMessage;
-					class RoomHandler;
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry);
 
-					class RoomParticipantEntry : public EntryBase
-					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry);
+		QString Nick_;
+		GlooxAccount *Account_;
+		RoomHandler *RoomHandler_;
+	public:
+		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
-						QString Nick_;
-						GlooxAccount *Account_;
-						RoomHandler *RoomHandler_;
-					public:
-						RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
-
-						QObject* GetParentAccount () const ;
-						Features GetEntryFeatures () const;
-						EntryType GetEntryType () const;
-						QString GetEntryName () const;
-						void SetEntryName (const QString&);
-						QByteArray GetEntryID () const;
-						QStringList Groups () const;
-						QStringList Variants () const;
-						QObject* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
-					private slots:
-						void handleKickRequested ();
-					signals:
-						void availableVariantsChanged (const QStringList&);
-					};
-				}
-			}
-		}
-	}
+		QObject* GetParentAccount () const ;
+		Features GetEntryFeatures () const;
+		EntryType GetEntryType () const;
+		QString GetEntryName () const;
+		void SetEntryName (const QString&);
+		QByteArray GetEntryID () const;
+		QStringList Groups () const;
+		QStringList Variants () const;
+		QObject* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&);
+	private slots:
+		void handleKickRequested ();
+	signals:
+		void availableVariantsChanged (const QStringList&);
+	};
+}
+}
+}
+}
 }
 
 #endif

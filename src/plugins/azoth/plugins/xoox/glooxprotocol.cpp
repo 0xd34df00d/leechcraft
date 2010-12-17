@@ -28,172 +28,172 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	GlooxProtocol::GlooxProtocol (QObject *parent)
+	: QObject (parent)
+	, ParentProtocolPlugin_ (parent)
+	, ProxyObject_ (0)
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					GlooxProtocol::GlooxProtocol (QObject *parent)
-					: QObject (parent)
-					, ParentProtocolPlugin_ (parent)
-					, ProxyObject_ (0)
-					{
-					}
-
-					GlooxProtocol::~GlooxProtocol ()
-					{
-					}
-
-					void GlooxProtocol::Prepare ()
-					{
-						RestoreAccounts ();
-					}
-
-					QObject* GlooxProtocol::GetProxyObject () const
-					{
-						return ProxyObject_;
-					}
-
-					void GlooxProtocol::SetProxyObject (QObject *po)
-					{
-						ProxyObject_ = po;
-					}
-
-					QObject* GlooxProtocol::GetObject ()
-					{
-						return this;
-					}
-
-					IProtocol::ProtocolFeatures GlooxProtocol::GetFeatures() const
-					{
-						return PFSupportsMUCs | PFMUCsJoinable;
-					}
-
-					QList<QObject*> GlooxProtocol::GetRegisteredAccounts ()
-					{
-						QList<QObject*> result;
-						Q_FOREACH (GlooxAccount *acc, Accounts_)
-							result << acc;
-						return result;
-					}
-
-					QObject* GlooxProtocol::GetParentProtocolPlugin () const
-					{
-						return ParentProtocolPlugin_;
-					}
-
-					QString GlooxProtocol::GetProtocolName () const
-					{
-						return "XMPP";
-					}
-
-					QByteArray GlooxProtocol::GetProtocolID () const
-					{
-						return "Xoox.Gloox.XMPP";
-					}
-
-					void GlooxProtocol::InitiateAccountRegistration ()
-					{
-						QString name = QInputDialog::getText (0,
-								"LeechCraft",
-								tr ("Enter new account name"));
-						if (name.isEmpty ())
-							return;
-
-						GlooxAccount *account = new GlooxAccount (name, this);
-						account->OpenConfigurationDialog ();
-
-						connect (account,
-								SIGNAL (accountSettingsChanged ()),
-								this,
-								SLOT (saveAccounts ()));
-
-						Accounts_ << account;
-						saveAccounts ();
-
-						emit accountAdded (account);
-
-						account->ChangeState (SOnline);
-					}
-
-					void GlooxProtocol::InitiateMUCJoin ()
-					{
-						JoinGroupchatDialog dlg (Accounts_);
-						if (dlg.exec () != QDialog::Accepted)
-							return;
-
-						GlooxAccount *account = dlg.GetSelectedAccount ();
-						if (!account)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "no account has been selected";
-							return;
-						}
-
-						account->JoinRoom (dlg.GetServer (),
-								dlg.GetRoom (), dlg.GetNickname ());
-					}
-
-					void GlooxProtocol::RemoveAccount (QObject *acc)
-					{
-						GlooxAccount *accObj = qobject_cast<GlooxAccount*> (acc);
-						Accounts_.removeAll (accObj);
-						emit accountRemoved (accObj);
-						accObj->deleteLater ();
-						saveAccounts ();
-					}
-
-					void GlooxProtocol::saveAccounts () const
-					{
-						QSettings settings (QSettings::IniFormat, QSettings::UserScope,
-								QCoreApplication::organizationName (),
-								QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
-						settings.beginWriteArray ("Accounts");
-						for (int i = 0, size = Accounts_.size ();
-								i < size; ++i)
-						{
-							settings.setArrayIndex (i);
-							settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
-						}
-						settings.endArray ();
-						settings.sync ();
-					}
-
-					void GlooxProtocol::RestoreAccounts ()
-					{
-						QSettings settings (QSettings::IniFormat, QSettings::UserScope,
-								QCoreApplication::organizationName (),
-								QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
-						int size = settings.beginReadArray ("Accounts");
-						for (int i = 0; i < size; ++i)
-						{
-							settings.setArrayIndex (i);
-							QByteArray data = settings.value ("SerializedData").toByteArray ();
-							GlooxAccount *acc = GlooxAccount::Deserialize (data, this);
-							if (!acc)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "unserializable acount"
-										<< i;
-								continue;
-							}
-
-							connect (acc,
-									SIGNAL (accountSettingsChanged ()),
-									this,
-									SLOT (saveAccounts ()));
-
-							Accounts_ << acc;
-
-							emit accountAdded (acc);
-						}
-						settings.endArray ();
-					}
-				}
-			}
-		}
 	}
+
+	GlooxProtocol::~GlooxProtocol ()
+	{
+	}
+
+	void GlooxProtocol::Prepare ()
+	{
+		RestoreAccounts ();
+	}
+
+	QObject* GlooxProtocol::GetProxyObject () const
+	{
+		return ProxyObject_;
+	}
+
+	void GlooxProtocol::SetProxyObject (QObject *po)
+	{
+		ProxyObject_ = po;
+	}
+
+	QObject* GlooxProtocol::GetObject ()
+	{
+		return this;
+	}
+
+	IProtocol::ProtocolFeatures GlooxProtocol::GetFeatures() const
+	{
+		return PFSupportsMUCs | PFMUCsJoinable;
+	}
+
+	QList<QObject*> GlooxProtocol::GetRegisteredAccounts ()
+	{
+		QList<QObject*> result;
+		Q_FOREACH (GlooxAccount *acc, Accounts_)
+			result << acc;
+		return result;
+	}
+
+	QObject* GlooxProtocol::GetParentProtocolPlugin () const
+	{
+		return ParentProtocolPlugin_;
+	}
+
+	QString GlooxProtocol::GetProtocolName () const
+	{
+		return "XMPP";
+	}
+
+	QByteArray GlooxProtocol::GetProtocolID () const
+	{
+		return "Xoox.Gloox.XMPP";
+	}
+
+	void GlooxProtocol::InitiateAccountRegistration ()
+	{
+		QString name = QInputDialog::getText (0,
+				"LeechCraft",
+				tr ("Enter new account name"));
+		if (name.isEmpty ())
+			return;
+
+		GlooxAccount *account = new GlooxAccount (name, this);
+		account->OpenConfigurationDialog ();
+
+		connect (account,
+				SIGNAL (accountSettingsChanged ()),
+				this,
+				SLOT (saveAccounts ()));
+
+		Accounts_ << account;
+		saveAccounts ();
+
+		emit accountAdded (account);
+
+		account->ChangeState (SOnline);
+	}
+
+	void GlooxProtocol::InitiateMUCJoin ()
+	{
+		JoinGroupchatDialog dlg (Accounts_);
+		if (dlg.exec () != QDialog::Accepted)
+			return;
+
+		GlooxAccount *account = dlg.GetSelectedAccount ();
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no account has been selected";
+			return;
+		}
+
+		account->JoinRoom (dlg.GetServer (),
+				dlg.GetRoom (), dlg.GetNickname ());
+	}
+
+	void GlooxProtocol::RemoveAccount (QObject *acc)
+	{
+		GlooxAccount *accObj = qobject_cast<GlooxAccount*> (acc);
+		Accounts_.removeAll (accObj);
+		emit accountRemoved (accObj);
+		accObj->deleteLater ();
+		saveAccounts ();
+	}
+
+	void GlooxProtocol::saveAccounts () const
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0, size = Accounts_.size ();
+				i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
+		settings.sync ();
+	}
+
+	void GlooxProtocol::RestoreAccounts ()
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
+		int size = settings.beginReadArray ("Accounts");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			QByteArray data = settings.value ("SerializedData").toByteArray ();
+			GlooxAccount *acc = GlooxAccount::Deserialize (data, this);
+			if (!acc)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unserializable acount"
+						<< i;
+				continue;
+			}
+
+			connect (acc,
+					SIGNAL (accountSettingsChanged ()),
+					this,
+					SLOT (saveAccounts ()));
+
+			Accounts_ << acc;
+
+			emit accountAdded (acc);
+		}
+		settings.endArray ();
+	}
+}
+}
+}
+}
 }

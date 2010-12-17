@@ -30,72 +30,72 @@ namespace gloox
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxAccount;
+	class RoomPublicMessage;
+	class RoomHandler;
+
+	class RoomCLEntry : public QObject
+						, public ICLEntry
+						, public IMUCEntry
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxAccount;
-					class RoomPublicMessage;
-					class RoomHandler;
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry
+						LeechCraft::Plugins::Azoth::Plugins::IMUCEntry);
 
-					class RoomCLEntry : public QObject
-									  , public ICLEntry
-									  , public IMUCEntry
-					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry
-									  LeechCraft::Plugins::Azoth::Plugins::IMUCEntry);
+		GlooxAccount *Account_;
+		QList<QObject*> AllMessages_;
+		RoomHandler *RH_;
+	public:
+		RoomCLEntry (RoomHandler*, GlooxAccount*);
 
-						GlooxAccount *Account_;
-						QList<QObject*> AllMessages_;
-						RoomHandler *RH_;
-					public:
-						RoomCLEntry (RoomHandler*, GlooxAccount*);
+		// ICLEntry
+		QObject* GetObject ();
+		QObject* GetParentAccount () const ;
+		Features GetEntryFeatures () const;
+		EntryType GetEntryType () const;
+		QString GetEntryName () const;
+		void SetEntryName (const QString&);
+		QByteArray GetEntryID () const;
+		QStringList Groups () const;
+		QStringList Variants () const;
+		QObject* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&);
+		QList<QObject*> GetAllMessages () const;
+		EntryStatus GetStatus (const QString&) const;
+		QList<QAction*> GetActions ();
+		QImage GetAvatar () const;
 
-						// ICLEntry
-						QObject* GetObject ();
-						QObject* GetParentAccount () const ;
-						Features GetEntryFeatures () const;
-						EntryType GetEntryType () const;
-						QString GetEntryName () const;
-						void SetEntryName (const QString&);
-						QByteArray GetEntryID () const;
-						QStringList Groups () const;
-						QStringList Variants () const;
-						QObject* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
-						QList<QObject*> GetAllMessages () const;
-						EntryStatus GetStatus (const QString&) const;
-						QList<QAction*> GetActions ();
-						QImage GetAvatar () const;
+		// IMUCEntry
+		MUCFeatures GetMUCFeatures () const;
+		QString GetMUCSubject () const;
+		QList<QObject*> GetParticipants ();
 
-						// IMUCEntry
-						MUCFeatures GetMUCFeatures () const;
-						QString GetMUCSubject () const;
-						QList<QObject*> GetParticipants ();
+		gloox::MUCRoom* GetRoom ();
 
-						gloox::MUCRoom* GetRoom ();
+		void HandleMessage (RoomPublicMessage*);
+		void HandleNewParticipants (const QList<ICLEntry*>&);
+		void HandleSubjectChanged (const QString&);
+	signals:
+		void gotMessage (QObject*);
+		void statusChanged (const Plugins::EntryStatus&, const QString&);
+		void availableVariantsChanged (const QStringList&);
+		void avatarChanged (const QImage&);
 
-						void HandleMessage (RoomPublicMessage*);
-						void HandleNewParticipants (const QList<ICLEntry*>&);
-						void HandleSubjectChanged (const QString&);
-					signals:
-						void gotMessage (QObject*);
-						void statusChanged (const Plugins::EntryStatus&, const QString&);
-						void availableVariantsChanged (const QStringList&);
-						void avatarChanged (const QImage&);
-
-						void gotNewParticipants (const QList<QObject*>&);
-						void mucSubjectChanged (const QString&);
-					};
-				}
-			}
-		}
-	}
+		void gotNewParticipants (const QList<QObject*>&);
+		void mucSubjectChanged (const QString&);
+	};
+}
+}
+}
+}
 }
 
 #endif
