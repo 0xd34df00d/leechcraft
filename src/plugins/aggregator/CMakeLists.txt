@@ -170,7 +170,6 @@ ADD_LIBRARY (leechcraft_aggregator SHARED
 	)
 LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_aggregator
-	${Boost_DATE_TIME_LIBRARY}
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
