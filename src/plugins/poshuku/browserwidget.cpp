@@ -63,6 +63,8 @@
 #include "bookmarkswidget.h"
 #include "historywidget.h"
 
+#include <QShortcut>
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -416,6 +418,20 @@ namespace LeechCraft
 						SLOT (add (const PageFormsData_t&)));
 
 				updateLogicalPath ();
+				
+				HistoryShortcut_ = new QShortcut (QKeySequence (tr ("Ctrl+h", "History")), this);
+				HistoryShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
+				connect (HistoryShortcut_,
+						SIGNAL (activated ()),
+						this,
+						SLOT (handleShortcutHistory ()));
+				
+				BookmarksShortcut_ = new QShortcut (QKeySequence (tr ("Ctrl+b", "Bookmarks")), this);
+				BookmarksShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
+				connect (BookmarksShortcut_,
+						SIGNAL (activated ()),
+						this,
+						SLOT (handleShortcutBookmarks ()));
 			}
 
 			BrowserWidget::~BrowserWidget ()
@@ -1367,6 +1383,32 @@ namespace LeechCraft
 				}
 #endif
 				Ui_.URLFrame_->GetEdit ()->setText (userText);
+			}
+			
+			void BrowserWidget::handleShortcutHistory ()
+			{
+				if (!Ui_.Splitter_->sizes().at (0))
+				{
+					Ui_.Splitter_->setSizes (QList<int> () << 1000 << 1000);
+					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (1);
+				}
+				else if (!Ui_.Sidebar_->GetMainTabBar ()->currentIndex ())
+					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (1);
+				else
+					Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
+			}
+			
+			void BrowserWidget::handleShortcutBookmarks ()
+			{
+				if (!Ui_.Splitter_->sizes().at (0))
+				{
+					Ui_.Splitter_->setSizes (QList<int> () << 1000 << 1000);
+					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (0);
+				}
+				else if (Ui_.Sidebar_->GetMainTabBar ()->currentIndex ())
+					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (0);
+				else
+					Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
 			}
 		};
 	};
