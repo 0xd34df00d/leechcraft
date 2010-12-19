@@ -30,6 +30,7 @@
 
 class QToolBar;
 class QDataStream;
+class QShortcut;
 
 namespace LeechCraft
 {
@@ -80,6 +81,8 @@ namespace LeechCraft
 				FindDialog *FindDialog_;
 				PasswordRemember *RememberDialog_;
 				QTimer *ReloadTimer_;
+				QShortcut *HistoryShortcut_;
+				QShortcut *BookmarksShortcut_;
 				QString PreviousFindText_;
 				bool HtmlMode_;
 				bool Own_;
@@ -129,6 +132,8 @@ namespace LeechCraft
 			public slots:
 				void notificationActionTriggered (int);
 				void focusLineEdit ();
+				void handleShortcutHistory ();
+				void handleShortcutBookmarks ();
 				QWebView* getWebView () const;
 				QLineEdit* getAddressBar () const;
 				QWidget* getSideBar () const;

@@ -61,6 +61,11 @@ namespace LeechCraft
 				TabBar_->addTab (name);
 				Ui_.Stack_->addWidget (widget);
 			}
+			
+			QTabBar* HideableTabWidget::GetMainTabBar () const
+			{
+				return TabBar_;
+			}
 		};
 	};
 };

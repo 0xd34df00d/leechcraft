@@ -79,7 +79,7 @@ namespace LeechCraft
 
 			bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
-
+				return false;
 			}
 
 			void Plugin::Handle (LeechCraft::Entity e)

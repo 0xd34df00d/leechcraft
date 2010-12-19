@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
-
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
@@ -31,8 +31,11 @@ namespace LeechCraft
 		{
 			class Plugin : public QObject
 						 , public IInfo
+						 , public IEntityHandler
 			{
 				Q_OBJECT
+				Q_INTERFACES (IInfo IEntityHandler)
+				
 				ICoreProxy_ptr Proxy_;
 			public:
 				void Init (ICoreProxy_ptr);
