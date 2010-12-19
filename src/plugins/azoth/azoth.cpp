@@ -124,7 +124,7 @@ namespace LeechCraft
 
 			QStringList Plugin::Provides () const
 			{
-				return QStringList ();
+				return QStringList (GetUniqueID ());
 			}
 
 			QStringList Plugin::Needs () const

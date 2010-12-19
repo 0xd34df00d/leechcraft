@@ -119,7 +119,7 @@ namespace Xoox
 	}
 }
 }
-};
+}
 }
 }
 
