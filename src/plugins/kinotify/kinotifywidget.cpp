@@ -138,6 +138,7 @@ namespace LeechCraft
 				pal.setBrush (QPalette::Base, Qt::transparent);
 				page ()->setPalette (pal);
 				setAttribute (Qt::WA_OpaquePaintEvent, false);
+				setAttribute (Qt::WA_DeleteOnClose);
 				settings ()->setAttribute (QWebSettings::AutoLoadImages, true);
 				setAttribute (Qt::WA_TranslucentBackground);
 
