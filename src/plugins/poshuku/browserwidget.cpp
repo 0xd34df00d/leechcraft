@@ -1387,26 +1387,23 @@ namespace LeechCraft
 			
 			void BrowserWidget::handleShortcutHistory ()
 			{
-				if (!Ui_.Splitter_->sizes().at (0))
-				{
-					Ui_.Splitter_->setSizes (QList<int> () << 1000 << 1000);
-					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (1);
-				}
-				else if (!Ui_.Sidebar_->GetMainTabBar ()->currentIndex ())
-					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (1);
-				else
-					Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
+				SetSplitterSizes (1);
 			}
 			
 			void BrowserWidget::handleShortcutBookmarks ()
 			{
-				if (!Ui_.Splitter_->sizes().at (0))
+				SetSplitterSizes (0);
+			}
+			
+			void BrowserWidget::SetSplitterSizes (int currentIndex)
+			{
+				if (!Ui_.Splitter_->sizes ().at (0))
 				{
 					Ui_.Splitter_->setSizes (QList<int> () << 1000 << 1000);
-					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (0);
+					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (currentIndex);
 				}
-				else if (Ui_.Sidebar_->GetMainTabBar ()->currentIndex ())
-					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (0);
+				else if (Ui_.Sidebar_->GetMainTabBar ()->currentIndex () != currentIndex)
+					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (currentIndex);
 				else
 					Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
 			}
