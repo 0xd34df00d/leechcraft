@@ -129,6 +129,7 @@ namespace LeechCraft
 			private:
 				void PrintImpl (bool, QWebFrame*);
 				void SetActualReloadInterval (const QTime&);
+				void SetSplitterSizes (int);
 			public slots:
 				void notificationActionTriggered (int);
 				void focusLineEdit ();

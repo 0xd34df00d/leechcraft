@@ -45,18 +45,4 @@ TARGET_LINK_LIBRARIES (leechcraft_transparentarch
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-IF (TRANSPARENTARCH_TEST)
-	INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/tests)
-	QT4_WRAP_CPP (ZIPTEST_MOC "tests/ziptest.h")
-	ADD_EXECUTABLE (lc_transparentarch_ziptest WIN32
-		tests/ziptest.cpp
-	)
-	TARGET_LINK_LIBRARIES (lc_transparentarch_ziptest
-		${QT_LIBRARIES}
-		${LEECHCRAFT_LIBRARIES}
-	)
-
-	ADD_TEST (ZipTest lc_transparentarch_ziptest)
-ENDIF (TRANSPARENTARCH_TEST)
-
 INSTALL (TARGETS leechcraft_transparentarch DESTINATION ${LC_PLUGINS_DEST})

@@ -40,7 +40,7 @@ namespace LeechCraft
 			public:
 				HideableTabWidget (QWidget* = 0);
 				void AddPage (const QString&, QWidget*);
-				QTabBar *GetMainTabBar () const;
+				QTabBar* GetMainTabBar () const;
 			};
 		};
 	};
