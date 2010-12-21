@@ -327,7 +327,7 @@ namespace LeechCraft
 
 			QStringList WrapperObject::Needs () const
 			{
-				return SCALL (QStringList) ("Needs");
+				return SCALL (QStringList) ("Needs") << "qrosp";
 			}
 
 			QStringList WrapperObject::Uses () const

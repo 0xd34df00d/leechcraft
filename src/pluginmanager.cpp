@@ -411,6 +411,8 @@ namespace LeechCraft
 
 		try
 		{
+			qDebug () << "Releasing"
+					<< qobject_cast<IInfo*> (object)->GetName ();
 			qobject_cast<IInfo*> (object)->Release ();
 		}
 		catch (const std::exception& e)
@@ -619,7 +621,7 @@ namespace LeechCraft
 	}
 
 	QList<PluginManager::Plugins_t::iterator>
-		PluginManager::FindProviders (const QString& feature)
+	PluginManager::FindProviders (const QString& feature)
 	{
 		QList<Plugins_t::iterator> result;
 		for (Plugins_t::iterator i = Plugins_.begin ();
@@ -652,7 +654,7 @@ namespace LeechCraft
 	}
 
 	QList<PluginManager::Plugins_t::iterator>
-		PluginManager::FindProviders (const QSet<QByteArray>& expecteds)
+	PluginManager::FindProviders (const QSet<QByteArray>& expecteds)
 	{
 		QList<Plugins_t::iterator> result;
 		for (Plugins_t::iterator i = Plugins_.begin ();
@@ -690,8 +692,7 @@ namespace LeechCraft
 	}
 
 	PluginManager::DepTreeItem_ptr
-		PluginManager::GetDependency
-			(QObject *entity)
+	PluginManager::GetDependency (QObject *entity)
 	{
 		struct Finder
 		{
@@ -792,8 +793,7 @@ namespace LeechCraft
 	}
 
 	PluginManager::DepTreeItem_ptr
-		PluginManager::CalculateSingle
-			(PluginManager::Plugins_t::iterator i)
+	PluginManager::CalculateSingle (PluginManager::Plugins_t::iterator i)
 	{
 		QObject *entity = *i;
 #ifdef QT_DEBUG
@@ -824,7 +824,7 @@ namespace LeechCraft
 	}
 
 	PluginManager::DepTreeItem_ptr
-		PluginManager::CalculateSingle (QObject *entity,
+	PluginManager::CalculateSingle (QObject *entity,
 				PluginManager::Plugins_t::iterator pos)
 	{
 		DepTreeItem_ptr possibly = GetDependency (entity);
@@ -847,16 +847,15 @@ namespace LeechCraft
 			Q_FOREACH (Plugins_t::iterator p,
 					providers)
 			{
-				// It's initialized already.
-				if (p < pos)
+				// If p < pos, it's initialized already.
+				DepTreeItem_ptr depprov = p < pos ?
+						GetDependency (*p) :
+						CalculateSingle (p);
+				if (depprov)
 				{
-					DepTreeItem_ptr depprov = GetDependency (*p);
-					// TODO register entity in depprov->Belongs_
-					if (depprov)
-						newDep->Needed_.insert (need, depprov);
+					newDep->Needed_.insert (need, depprov);
+					depprov->Belongs_ << newDep;
 				}
-				else if (p > pos)
-					newDep->Needed_.insert (need, CalculateSingle (p));
 			}
 		}
 
@@ -866,35 +865,35 @@ namespace LeechCraft
 			Q_FOREACH (Plugins_t::iterator p,
 					providers)
 			{
-				// It's initialized already.
-				if (p < pos)
+				// If p < pos, it's initialized already.
+				DepTreeItem_ptr depprov = p < pos ?
+						GetDependency (*p) :
+						CalculateSingle (p);
+				if (depprov)
 				{
-					DepTreeItem_ptr depprov = GetDependency (*p);
-					if (depprov)
-						newDep->Used_.insert (use, depprov);
+					newDep->Used_.insert (use, depprov);
+					depprov->Belongs_ << newDep;
 				}
-				else if (p > pos)
-					newDep->Used_.insert (use, CalculateSingle (p));
 			}
 		}
 
 		IPluginReady *ipr = qobject_cast<IPluginReady*> (entity);
 		if (ipr)
 		{
-			QList<Plugins_t::iterator> providers =
+			QList<Plugins_t::iterator> plugin2s =
 				FindProviders (ipr->GetExpectedPluginClasses ());
 			Q_FOREACH (Plugins_t::iterator p,
-					providers)
+					plugin2s)
 			{
-				// It's initialized already.
-				if (p < pos)
+				// If p < pos, it's initialized already.
+				DepTreeItem_ptr depprov = p < pos ?
+						GetDependency (*p) :
+						CalculateSingle (p);
+				if (depprov)
 				{
-					DepTreeItem_ptr depprov = GetDependency (*p);
-					if (depprov)
-						newDep->Used_.insert ("__lc_plugin2", depprov);
+					newDep->Used_.insert ("__lc_plugin2", depprov);
+					depprov->Belongs_ << newDep;
 				}
-				else if (p > pos)
-					newDep->Used_.insert ("__lc_plugin2", CalculateSingle (p));
 			}
 		}
 
@@ -919,7 +918,7 @@ namespace LeechCraft
 			{
 				if (!item ||
 						!item->Initialized_)
-					return false;;
+					return false;
 
 				try
 				{
@@ -990,7 +989,7 @@ namespace LeechCraft
 		}
 
 		keys = item->Used_.uniqueKeys ();
-		Q_FOREACH (QString key, keys)
+		Q_FOREACH (const QString& key, keys)
 		{
 			QList<DepTreeItem_ptr> providers = item->Used_.values (key);
 			for (QList<DepTreeItem_ptr>::const_iterator i = providers.begin (),
@@ -1063,6 +1062,8 @@ namespace LeechCraft
 			PluginsContainer_t::iterator i = Find (item);
 			try
 			{
+				qDebug () << "Releasing"
+						<< ii->GetName ();
 				ii->Release ();
 				item->Initialized_ = false;
 			}
