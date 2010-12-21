@@ -30,6 +30,7 @@
 #include <gloox/vcardmanager.h>
 #include <plugininterface/util.h>
 #include <interfaces/iprotocol.h>
+#include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
 #include "config.h"
 #include "glooxclentry.h"
@@ -57,9 +58,14 @@ namespace Xoox
 			const GlooxAccountState& state,
 			GlooxAccount *account)
 	: Account_ (account)
+	, ProxyObject_ (0)
 	, IsConnected_ (false)
 	, ShouldRefillRoster_ (false)
 	{
+		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
+					GetParentProtocol ())->GetProxyObject ();
+		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
+
 		connect (this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				Account_->GetParentProtocol (),
@@ -76,7 +82,9 @@ namespace Xoox
 		caps->setNode ("http://leechcraft.org/azoth");
 		Client_->addPresenceExtension (caps);
 
-		Client_->disco ()->setVersion ("LeechCraft Azoth", LEECHCRAFT_VERSION, "Gentŏŏ Linux");
+		Client_->disco ()->setVersion ("LeechCraft Azoth",
+				LEECHCRAFT_VERSION,
+				ProxyObject_->GetOSName ().toUtf8 ().constData ());
 		Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
 		Client_->disco ()->addFeature ("jabber:iq:roster");
 

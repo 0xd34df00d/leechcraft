@@ -38,6 +38,7 @@ namespace Azoth
 
 		QString GetPassword (QObject*);
 		void SetPassword (const QString&, QObject*);
+		QString GetOSName ();
 	};
 }
 }
