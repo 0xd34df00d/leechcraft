@@ -74,6 +74,8 @@ namespace LeechCraft
 				QAction *ReloadPeriodically_;
 				QAction *NotifyWhenFinished_;
 				QAction *RecentlyClosedAction_;
+				QAction *HistoryAction_;
+				QAction *BookmarksAction_;
 				QPoint OnLoadPos_;
 				QMenu *ChangeEncoding_;
 				QMenu *RecentlyClosed_;
@@ -81,8 +83,6 @@ namespace LeechCraft
 				FindDialog *FindDialog_;
 				PasswordRemember *RememberDialog_;
 				QTimer *ReloadTimer_;
-				QShortcut *HistoryShortcut_;
-				QShortcut *BookmarksShortcut_;
 				QString PreviousFindText_;
 				bool HtmlMode_;
 				bool Own_;
