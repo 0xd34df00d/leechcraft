@@ -49,6 +49,7 @@
 #include <qwebelement.h>
 #include <QDataStream>
 #include <QRegExp>
+#include <QKeySequence>
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
 #include "core.h"
@@ -62,8 +63,6 @@
 #include "browserwidgetsettings.h"
 #include "bookmarkswidget.h"
 #include "historywidget.h"
-
-#include <QShortcut>
 
 namespace LeechCraft
 {
@@ -183,18 +182,32 @@ namespace LeechCraft
 						this);
 				ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
 
+				HistoryAction_ = new QAction (tr ("Open history"), 
+						this);
+				HistoryAction_->setCheckable (true);
+				HistoryAction_->setShortcut (QKeySequence (tr ("Ctrl+h")));
+				
+				BookmarksAction_ = new QAction (tr ("Open bookmarks"), 
+						this);
+				BookmarksAction_->setCheckable (true);
+				BookmarksAction_->setShortcut (QKeySequence (tr ("Ctrl+b")));
+				
+				
 				ToolBar_->addAction (Back_);
 				ToolBar_->addAction (Forward_);
 				ToolBar_->addAction (ReloadStop_);
-
+				
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 				QMenu *moreMenu = new QMenu (this);
 				emit hookMoreMenuFillBegin (proxy, moreMenu, Ui_.WebView_, this);
 				if (!proxy->IsCancelled ())
 				{
-					const QString tools = "tools";
+					const QString tools = "Poshuku";
 					WindowMenus_ [tools] << Find_;
 					WindowMenus_ [tools] << Add2Favorites_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+					WindowMenus_ [tools] << HistoryAction_;
+					WindowMenus_ [tools] << BookmarksAction_;
 					WindowMenus_ [tools] << Util::CreateSeparator (this);
 					WindowMenus_ [tools] << ReloadPeriodically_;
 					WindowMenus_ [tools] << NotifyWhenFinished_;
@@ -397,6 +410,16 @@ namespace LeechCraft
 						this,
 						SLOT (handleNewUnclose (QAction*)));
 
+				connect (HistoryAction_,
+						SIGNAL (triggered (bool)),
+						this,
+						SLOT (handleShortcutHistory ()));
+
+				connect (BookmarksAction_,
+						SIGNAL (triggered (bool)),
+						this,
+						SLOT (handleShortcutBookmarks ()));
+				
 				QTimer::singleShot (100,
 						this,
 						SLOT (focusLineEdit ()));
@@ -418,20 +441,6 @@ namespace LeechCraft
 						SLOT (add (const PageFormsData_t&)));
 
 				updateLogicalPath ();
-				
-				HistoryShortcut_ = new QShortcut (QKeySequence (tr ("Ctrl+h", "History")), this);
-				HistoryShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
-				connect (HistoryShortcut_,
-						SIGNAL (activated ()),
-						this,
-						SLOT (handleShortcutHistory ()));
-				
-				BookmarksShortcut_ = new QShortcut (QKeySequence (tr ("Ctrl+b", "Bookmarks")), this);
-				BookmarksShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
-				connect (BookmarksShortcut_,
-						SIGNAL (activated ()),
-						this,
-						SLOT (handleShortcutBookmarks ()));
 			}
 
 			BrowserWidget::~BrowserWidget ()
@@ -1387,11 +1396,29 @@ namespace LeechCraft
 			
 			void BrowserWidget::handleShortcutHistory ()
 			{
+				if (!HistoryAction_->isChecked ())
+					HistoryAction_->setChecked (false);
+				else
+				{
+					HistoryAction_->setChecked (true);
+					BookmarksAction_->setChecked (false);
+				}
+				
 				SetSplitterSizes (1);
 			}
 			
 			void BrowserWidget::handleShortcutBookmarks ()
 			{
+				if (!BookmarksAction_->isChecked ())
+				{
+					BookmarksAction_->setChecked (false);
+				}
+				else
+				{
+					HistoryAction_->setChecked (false);
+					BookmarksAction_->setChecked (true);					
+				}
+				
 				SetSplitterSizes (0);
 			}
 			
