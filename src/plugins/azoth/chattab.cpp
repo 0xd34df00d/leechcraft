@@ -734,13 +734,31 @@ namespace Azoth
 		return participantsList;
 	}
 
-	void ChatTab::ReformatTitle()
+	void ChatTab::ReformatTitle ()
 	{
 		QString title = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
 		if (NumUnreadMsgs_)
 			title.prepend (QString ("(%1) ")
 					.arg (NumUnreadMsgs_));
 		emit changeTabName (this, title);
+
+		QStringList path ("Azoth");
+		switch (GetEntry<Plugins::ICLEntry> ()->GetEntryType ())
+		{
+		case Plugins::ICLEntry::ETChat:
+			path << tr ("Chat");
+			break;
+		case Plugins::ICLEntry::ETMUC:
+			path << tr ("Conference");
+			break;
+		case Plugins::ICLEntry::ETPrivateChat:
+			path << tr ("Private chat");
+			break;
+		}
+
+		path << title;
+
+		setProperty ("WidgetLogicalPath", path);
 	}
 
 	void ChatTab::clearAvailableNick ()
