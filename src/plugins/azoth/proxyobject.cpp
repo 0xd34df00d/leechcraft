@@ -17,6 +17,13 @@
  **********************************************************************/
 
 #include "proxyobject.h"
+
+#if defined(Q_WS_X11)
+#include <sys/utsname.h>
+#endif
+
+#include <QProcess>
+#include <QTextStream>
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include "interfaces/iaccount.h"
@@ -96,6 +103,120 @@ namespace Azoth
 		e.Additional_ ["Overwrite"] = true;
 
 		Core::Instance ().SendEntity (e);
+	}
+
+	QString ProxyObject::GetOSName ()
+	{
+#if defined(Q_WS_X11)
+		QProcess proc;
+		proc.start (QString ("/bin/sh"),
+					QStringList ("-c") << "lsb_release -ds", QIODevice::ReadOnly);
+		if (proc.waitForStarted ())
+		{
+			QTextStream stream (&proc);
+			QString ret;
+			while (proc.waitForReadyRead ())
+				ret += stream.readAll ();
+			proc.close ();
+			if (!ret.isEmpty ())
+				return ret.remove ('"').trimmed ();
+		}
+
+		const int bufSize = 128;
+		struct OsInfo_t
+		{
+			char path [bufSize];
+			char name [bufSize];
+		} OsInfo [] =
+		{
+			{ "/etc/mandrake-release", "Mandrake Linux" },
+			{ "/etc/debian_version", "Debian GNU/Linux" },
+			{ "/etc/gentoo-release", "Gentoo Linux" },
+			{ "/etc/exherbo-release", "Exherbo" },
+			{ "/etc/arch-release", "Arch Linux" },
+			{ "/etc/slackware-version", "Slackware Linux" },
+			{ "/etc/pld-release", "" },
+			{ "/etc/lfs-release", "LFS" },
+			{ "/etc/SuSE-release", "SuSE linux" },
+			{ "/etc/conectiva-release", "Connectiva" },
+			{ "/etc/.installed", "" },
+			{ "/etc/redhat-release", "" },
+			{ "", "" }
+		};
+		OsInfo_t *osptr = OsInfo;
+		while (osptr->path [0])
+		{
+			QFileInfo fi (osptr->path);
+			if (fi.exists ())
+			{
+				char buf [bufSize];
+				QFile f (osptr->path);
+				f.open (QIODevice::ReadOnly);
+				f.readLine (buf, 128);
+				if (!osptr->name [0])
+					return QString::fromLatin1 (buf);
+				else
+				{
+					char nbuf [bufSize * 2 + 4];
+					snprintf (nbuf, bufSize * 2 + 4, "%s (%s)", osptr->name, buf);
+					return QString::fromLatin1 (nbuf);
+				}
+			}
+			++osptr;
+		}
+		utsname u;
+		uname (&u);
+		return QString ("%1 %2 %3 %4")
+			.arg (u.sysname)
+			.arg (u.machine)
+			.arg (u.release)
+			.arg (u.version);
+#endif
+#if defined(Q_WS_MAC)
+		QSysInfo::MacVersion v = QSysInfo::MacintoshVersion;
+		if (v == QSysInfo::MV_10_3)
+			return "Mac OS X 10.3";
+		else if(v == QSysInfo::MV_10_4)
+			return "Mac OS X 10.4";
+		else if(v == QSysInfo::MV_10_5)
+			return "Mac OS X 10.5";
+#if QT_VERSION >= 0x040500
+		else if(v == QSysInfo::MV_10_6)
+			return "Mac OS X 10.6";
+#endif
+		else
+			return "Mac OS X";
+#endif
+
+#if defined(Q_WS_WIN)
+		QSysInfo::WinVersion v = QSysInfo::WindowsVersion;
+		if (v == QSysInfo::WV_95)
+			return "Windows 95";
+		else if (v == QSysInfo::WV_98)
+			return "Windows 98";
+		else if (v == QSysInfo::WV_Me)
+			return "Windows Me";
+		else if (v == QSysInfo::WV_DOS_based)
+			return "Windows 9x/Me";
+		else if (v == QSysInfo::WV_NT)
+			return "Windows NT 4.x";
+		else if (v == QSysInfo::WV_2000)
+			return "Windows 2000";
+		else if (v == QSysInfo::WV_XP)
+			return "Windows XP";
+		else if (v == QSysInfo::WV_2003)
+			return "Windows Server 2003";
+		else if (v == QSysInfo::WV_VISTA)
+			return "Windows Vista";
+#if QT_VERSION >= 0x040500
+		else if (v == QSysInfo::WV_WINDOWS7)
+			return "Windows 7";
+#endif
+		else if (v == QSysInfo::WV_NT_based)
+			return "Windows NT";
+#endif
+
+		return tr ("Unknown OS");
 	}
 }
 }

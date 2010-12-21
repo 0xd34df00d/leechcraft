@@ -51,6 +51,8 @@ namespace Azoth
 {
 namespace Plugins
 {
+class IProxyObject;
+
 namespace Xoox
 {
 	struct GlooxAccountState;
@@ -72,6 +74,7 @@ namespace Xoox
 		boost::shared_ptr<gloox::Client> Client_;
 		QTimer *PollTimer_;
 		GlooxAccount *Account_;
+		IProxyObject *ProxyObject_;
 		QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
 		bool IsConnected_;
 		bool ShouldRefillRoster_;

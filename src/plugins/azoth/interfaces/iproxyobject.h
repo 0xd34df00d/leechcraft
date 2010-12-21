@@ -77,6 +77,12 @@ namespace Plugins
 		 * @sa GetPassword(), IAccount
 		 */
 		virtual void SetPassword (const QString& password, QObject *account) = 0;
+
+		/** @brief Returns the name of the OS Azoth runs under.
+		 *
+		 * @return The name of the operating system.
+		 */
+		virtual QString GetOSName () = 0;
 	};
 }
 }
