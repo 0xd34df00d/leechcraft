@@ -122,11 +122,10 @@ namespace Azoth
 				return ret.remove ('"').trimmed ();
 		}
 
-		const int bufSize = 128;
 		struct OsInfo_t
 		{
-			char path [bufSize];
-			char name [bufSize];
+			QString path;
+			QString name;
 		} OsInfo [] =
 		{
 			{ "/etc/mandrake-release", "Mandrake Linux" },
@@ -144,23 +143,21 @@ namespace Azoth
 			{ "", "" }
 		};
 		OsInfo_t *osptr = OsInfo;
-		while (osptr->path [0])
+		while (!osptr->path.isEmpty ())
 		{
 			QFileInfo fi (osptr->path);
 			if (fi.exists ())
 			{
-				char buf [bufSize];
+				char buf [128];
 				QFile f (osptr->path);
 				f.open (QIODevice::ReadOnly);
 				f.readLine (buf, 128);
-				if (!osptr->name [0])
+				if (osptr->name.isEmpty ())
 					return QString::fromLatin1 (buf);
 				else
-				{
-					char nbuf [bufSize * 2 + 4];
-					snprintf (nbuf, bufSize * 2 + 4, "%s (%s)", osptr->name, buf);
-					return QString::fromLatin1 (nbuf);
-				}
+					return QString ("%1 (%2)")
+							.arg (osptr->name)
+							.arg (buf);
 			}
 			++osptr;
 		}
