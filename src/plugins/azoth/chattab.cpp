@@ -452,7 +452,7 @@ namespace Azoth
 		string.append (body);
 
 		QWebElement elem = frame->findFirstElement ("body");
-		elem.appendInside (QString ("<div>%1</div").arg (string));
+		elem.appendInside (QString ("<div>%1</div>").arg (string));
 
 		if (shouldScrollFurther)
 			QTimer::singleShot (100,
