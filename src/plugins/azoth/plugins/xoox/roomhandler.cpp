@@ -83,7 +83,7 @@ namespace Xoox
 		entry->SetStatus (status, QString ());
 	}
 
-	void RoomHandler::handleMUCMessage (gloox::MUCRoom *room, const gloox::Message& msg, bool priv)
+	void RoomHandler::handleMUCMessage (gloox::MUCRoom*, const gloox::Message& msg, bool priv)
 	{
 		const QString& nick = NickFromJID (msg.from ());
 		RoomParticipantEntry *entry = GetParticipantEntry (nick, false);
@@ -163,12 +163,21 @@ namespace Xoox
 	{
 		const gloox::JID& from = msg.from ();
 		const QString& nick = NickFromJID (from);
-		RoomParticipantEntry *entry = GetParticipantEntry (nick);
-
-		GlooxMessage *message = new GlooxMessage (msg,
-				entry, session);
-		message->SetDateTime (QDateTime::currentDateTime ());
-		entry->HandleMessage (message);
+		switch (msg.subtype ())
+		{
+		case gloox::Message::Groupchat:
+		case gloox::Message::Headline:
+			handleMUCMessage (Room_, msg, false);
+			break;
+		default:
+		{
+			RoomParticipantEntry *entry = GetParticipantEntry (nick);
+			GlooxMessage *message = new GlooxMessage (msg,
+					entry, session);
+			message->SetDateTime (QDateTime::currentDateTime ());
+			entry->HandleMessage (message);
+		}
+		}
 	}
 
 	GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType type,
