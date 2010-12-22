@@ -36,7 +36,6 @@ namespace Xoox
 	RoomPublicMessage::RoomPublicMessage (const QString& msg, RoomCLEntry *entry)
 	: QObject (entry)
 	, ParentEntry_ (entry)
-	, ParticipantEntry_ (0)
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (DOut)
@@ -48,7 +47,7 @@ namespace Xoox
 			IMessage::Direction direction,
 			RoomCLEntry *entry,
 			IMessage::MessageType type,
-			RoomParticipantEntry *part)
+			RoomParticipantEntry_ptr part)
 	: QObject (entry)
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (part)
@@ -60,7 +59,7 @@ namespace Xoox
 	}
 
 	RoomPublicMessage::RoomPublicMessage (const gloox::Message& msg,
-			RoomCLEntry *entry, RoomParticipantEntry *partEntry)
+			RoomCLEntry *entry, RoomParticipantEntry_ptr partEntry)
 	: QObject (entry)
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (partEntry)
@@ -105,7 +104,7 @@ namespace Xoox
 		switch (Direction_)
 		{
 		case DIn:
-			return ParticipantEntry_;
+			return ParticipantEntry_.get ();
 		case DOut:
 			return ParentEntry_;
 		}

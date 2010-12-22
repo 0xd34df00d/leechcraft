@@ -67,14 +67,13 @@ namespace Xoox
 			const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
 	{
 		const QString& nick = NickFromJID (*part.nick);
-		RoomParticipantEntry *entry = GetParticipantEntry (nick);
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
 		if (presence.presence () == gloox::Presence::Unavailable)
 		{
-			Account_->handleEntryRemoved (entry);
+			Account_->handleEntryRemoved (entry.get ());
 			Nick2Entry_.remove (nick);
 			JID2Session_.remove (JIDForNick (nick));
-			entry->deleteLater ();
 			return;
 		}
 
@@ -86,12 +85,12 @@ namespace Xoox
 	void RoomHandler::handleMUCMessage (gloox::MUCRoom*, const gloox::Message& msg, bool priv)
 	{
 		const QString& nick = NickFromJID (msg.from ());
-		RoomParticipantEntry *entry = GetParticipantEntry (nick, false);
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 
 		if (priv && !nick.isEmpty ())
 		{
 			gloox::MessageSession *session = GetSessionWith (msg.from ());
-			GlooxMessage *message = new GlooxMessage (msg, entry, session);
+			GlooxMessage *message = new GlooxMessage (msg, entry.get (), session);
 			message->SetDateTime (QDateTime::currentDateTime ());
 			entry->HandleMessage (message);
 		}
@@ -153,7 +152,7 @@ namespace Xoox
 		{
 			const QString nick = QString::fromUtf8 (item->name ().c_str ());
 			if (!Nick2Entry_.contains (nick))
-				parts << GetParticipantEntry (nick);
+				parts << GetParticipantEntry (nick).get ();
 		}
 
 		CLEntry_->HandleNewParticipants (parts);
@@ -171,9 +170,9 @@ namespace Xoox
 			break;
 		default:
 		{
-			RoomParticipantEntry *entry = GetParticipantEntry (nick);
+			RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 			GlooxMessage *message = new GlooxMessage (msg,
-					entry, session);
+					entry.get (), session);
 			message->SetDateTime (QDateTime::currentDateTime ());
 			entry->HandleMessage (message);
 		}
@@ -185,7 +184,7 @@ namespace Xoox
 	{
 		GlooxMessage *message = new GlooxMessage (IMessage::MTChatMessage,
 				IMessage::DOut,
-				GetParticipantEntry (nick),
+				GetParticipantEntry (nick).get (),
 				GetSessionWith (JIDForNick (nick)));
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
@@ -195,8 +194,8 @@ namespace Xoox
 	QList<QObject*> RoomHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (RoomParticipantEntry *rpe, Nick2Entry_.values ())
-			result << rpe;
+		Q_FOREACH (RoomParticipantEntry_ptr rpe, Nick2Entry_.values ())
+			result << rpe.get ();
 		return result;
 	}
 
@@ -211,21 +210,22 @@ namespace Xoox
 				reason.toUtf8 ().constData ());
 	}
 
-	RoomParticipantEntry* RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
+	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
 	{
-		RoomParticipantEntry *entry = new RoomParticipantEntry (nick,
-				this, Account_);
+		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
+					this, Account_));
 		Nick2Entry_ [nick] = entry;
 		if (announce)
-			Account_->handleGotRosterItems (QList<QObject*> () << entry);
+			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
 		return entry;
 	}
 
-	RoomParticipantEntry* RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
+	RoomParticipantEntry_ptr RoomHandler::GetParticipantEntry (const QString& nick, bool announce)
 	{
 		if (!Nick2Entry_.contains (nick))
 		{
-			RoomParticipantEntry *entry = CreateParticipantEntry (nick, announce);
+			RoomParticipantEntry_ptr entry (CreateParticipantEntry (nick, announce));
+			Nick2Entry_ [nick] = entry;
 			return entry;
 		}
 		else

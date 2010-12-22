@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPARTICIPANTENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPARTICIPANTENTRY_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
 #include "entrybase.h"
@@ -63,6 +64,8 @@ namespace Xoox
 	signals:
 		void availableVariantsChanged (const QStringList&);
 	};
+
+	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;
 }
 }
 }

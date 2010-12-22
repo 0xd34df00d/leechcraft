@@ -23,6 +23,7 @@
 #include <gloox/mucroomhandler.h>
 #include <gloox/messagehandler.h>
 #include "clientconnection.h"
+#include "roomparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -46,7 +47,7 @@ namespace Xoox
 
 		GlooxAccount *Account_;
 		RoomCLEntry *CLEntry_;
-		QHash<QString, RoomParticipantEntry*> Nick2Entry_;
+		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
 		QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
 		gloox::MUCRoom *Room_;
 		QString Subject_;
@@ -87,13 +88,13 @@ namespace Xoox
 	private:
 		/** Creates a new entry for the given nick.
 		 */
-		RoomParticipantEntry* CreateParticipantEntry (const QString& nick, bool announce);
+		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
 		/** Creates a new entry for the given nick if it
 		 * doesn't exist already (and does so by calling
 		 * CreateParticipantEntry()) or just returns the
 		 * already existing one.
 		 */
-		RoomParticipantEntry* GetParticipantEntry (const QString& nick, bool announce = true);
+		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
 		gloox::MessageSession* GetSessionWith (const gloox::JID&);
 		QString NickFromJID (const gloox::JID&) const;
 		gloox::JID JIDForNick (const QString&) const;
