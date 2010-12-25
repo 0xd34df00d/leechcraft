@@ -1410,13 +1410,11 @@ namespace LeechCraft
 			void BrowserWidget::handleShortcutBookmarks ()
 			{
 				if (!BookmarksAction_->isChecked ())
-				{
 					BookmarksAction_->setChecked (false);
-				}
 				else
 				{
 					HistoryAction_->setChecked (false);
-					BookmarksAction_->setChecked (true);					
+					BookmarksAction_->setChecked (true);
 				}
 				
 				SetSplitterSizes (0);
@@ -1424,17 +1422,25 @@ namespace LeechCraft
 			
 			void BrowserWidget::SetSplitterSizes (int currentIndex)
 			{
+				int splitterSize = XmlSettingsManager::Instance ()->
+						Property ("HistoryBoormarksPanelSize", 250).toInt ();
+				int wSize = Ui_.WebView_->width ();
+				
 				if (!Ui_.Splitter_->sizes ().at (0))
 				{
-					Ui_.Splitter_->setSizes (QList<int> () << 1000 << 1000);
+					Ui_.Splitter_->setSizes (QList<int> () << splitterSize << wSize - splitterSize);
 					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (currentIndex);
 				}
 				else if (Ui_.Sidebar_->GetMainTabBar ()->currentIndex () != currentIndex)
 					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (currentIndex);
 				else
-					Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
+				{
+					XmlSettingsManager::Instance ()->
+						setProperty ("HistoryBoormarksPanelSize", Ui_.Splitter_->sizes ().at (0));
+					Ui_.Splitter_->setSizes (QList<int> () <<  0 << wSize);
+				}
 			}
 		};
 	};
 };
-
+	
