@@ -400,7 +400,8 @@ namespace LeechCraft
 				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 				{
 					item->setToolTip (tip);
-					if (isPrimary)
+					if (isPrimary ||
+							status.State_ == Plugins::SOffline)
 						item->setIcon (GetIconForState (status.State_));
 				}
 			}
