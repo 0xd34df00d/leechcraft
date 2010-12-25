@@ -30,6 +30,7 @@ namespace LeechCraft
 		{
 			ChatTabsManager::ChatTabsManager(QObject *parent)
 			: QObject (parent)
+			, TabIcon_ (":/plugins/azoth/resources/images/azoth.svg")
 			{
 			}
 
@@ -78,6 +79,7 @@ namespace LeechCraft
 						this,
 						SIGNAL (changeTabName (QWidget*, const QString&)));
 				emit addNewTab (entry->GetEntryName (), tab);
+				emit changeTabIcon (tab, TabIcon_);
 
 				if (XmlSettingsManager::Instance ()
 						.property ("JumpToNewTabOnOpen").toBool ())

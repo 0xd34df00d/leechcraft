@@ -43,6 +43,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				QHash<QByteArray, ChatTab_ptr> Entry2Tab_;
+				QIcon TabIcon_;
 			public:
 				ChatTabsManager(QObject* = 0);
 
@@ -55,6 +56,7 @@ namespace LeechCraft
 			signals:
 				void addNewTab (const QString&, QWidget*);
 				void changeTabName (QWidget*, const QString&);
+				void changeTabIcon (QWidget*, const QIcon&);
 				void removeTab (QWidget*);
 				void raiseTab (QWidget*);
 
