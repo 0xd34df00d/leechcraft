@@ -94,6 +94,11 @@ namespace Xoox
 		return Type_;
 	}
 
+	IMessage::MessageSubType GlooxMessage::GetMessageSubType () const
+	{
+		return MSTOther;
+	}
+
 	QObject* GlooxMessage::OtherPart () const
 	{
 		return Entry_;

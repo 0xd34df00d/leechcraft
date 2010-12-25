@@ -50,10 +50,13 @@ namespace Xoox
 		Direction Direction_;
 		gloox::JID FromJID_;
 		MessageType Type_;
+		MessageSubType SubType_;
 	public:
 		RoomPublicMessage (const QString&, RoomCLEntry*);
 		RoomPublicMessage (const QString&, Direction,
-				RoomCLEntry*, MessageType,
+				RoomCLEntry*,
+				MessageType,
+				MessageSubType,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
 		RoomPublicMessage (const gloox::Message&, RoomCLEntry*,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
@@ -62,6 +65,7 @@ namespace Xoox
 		void Send ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
 
 		/** Since it's outgoing message, the other part
 		 * always equals to the room entry.

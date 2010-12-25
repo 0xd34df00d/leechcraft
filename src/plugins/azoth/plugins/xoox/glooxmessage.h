@@ -40,7 +40,7 @@ namespace Xoox
 	class GlooxCLEntry;
 
 	class GlooxMessage : public QObject
-						, public IMessage
+					   , public IMessage
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage)
@@ -65,6 +65,7 @@ namespace Xoox
 		void Send ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
 		QObject* OtherPart () const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;

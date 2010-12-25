@@ -27,6 +27,8 @@
 #include "roomparticipantentry.h"
 #include "clientconnection.h"
 #include "glooxmessage.h"
+#include <boost/concept_check.hpp>
+#include <boost/graph/graph_concepts.hpp>
 
 namespace LeechCraft
 {
@@ -43,6 +45,7 @@ namespace Xoox
 	, Account_ (account)
 	, CLEntry_ (0)
 	, Room_ (0)
+	, RoomHasBeenEntered_ (false)
 	{
 	}
 
@@ -67,14 +70,86 @@ namespace Xoox
 			const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
 	{
 		const QString& nick = NickFromJID (*part.nick);
+		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
 		if (presence.presence () == gloox::Presence::Unavailable)
 		{
+			const QString& msg = tr ("%1 has left the room").arg (nick);
+			RoomPublicMessage *message = new RoomPublicMessage (msg,
+					IMessage::DIn,
+					CLEntry_,
+					IMessage::MTStatusMessage,
+					IMessage::MSTParticipantLeave);
+
 			Account_->handleEntryRemoved (entry.get ());
 			Nick2Entry_.remove (nick);
 			JID2Session_.remove (JIDForNick (nick));
+
+			CLEntry_->HandleMessage (message);
 			return;
+		}
+
+		if (RoomHasBeenEntered_)
+		{
+			QString msg;
+			if (existed)
+				msg = tr ("%1 changed status")
+					.arg (nick);
+			else
+			{
+				QString role;
+				switch (part.role)
+				{
+				case gloox::RoleNone:
+				case gloox::RoleInvalid:
+					role = tr ("invalid role");
+					break;
+				case gloox::RoleVisitor:
+					role = tr ("visitor");
+					break;
+				case gloox::RoleParticipant:
+					role = tr ("participant");
+					break;
+				case gloox::RoleModerator:
+					role = tr ("moderator");
+					break;
+				}
+
+				QString aff;
+				switch (part.affiliation)
+				{
+				case gloox::AffiliationInvalid:
+					aff = tr ("invalid affiliation");
+					break;
+				case gloox::AffiliationNone:
+					aff = tr ("guest");
+					break;
+				case gloox::AffiliationOutcast:
+					aff = tr ("banned");
+					break;
+				case gloox::AffiliationMember:
+					aff = tr ("member");
+					break;
+				case gloox::AffiliationAdmin:
+					aff = tr ("administrator");
+					break;
+				case gloox::AffiliationOwner:
+					aff = tr ("owner");
+					break;
+				}
+				msg = tr ("%1 joined the room as %2 and %3")
+						.arg (nick)
+						.arg (role)
+						.arg (aff);
+			}
+			RoomPublicMessage *message = new RoomPublicMessage (msg,
+					IMessage::DIn,
+					CLEntry_,
+					IMessage::MTStatusMessage,
+					existed ? IMessage::MSTParticipantStatusChange :
+						IMessage::MSTParticipantJoin);
+			CLEntry_->HandleMessage (message);
 		}
 
 		EntryStatus status (static_cast<State> (presence.presence ()),
@@ -101,7 +176,10 @@ namespace Xoox
 				message = new RoomPublicMessage (msg, CLEntry_, entry);
 			else
 				message = new RoomPublicMessage (QString::fromUtf8 (msg.body ().c_str ()),
-						IMessage::DIn, CLEntry_, IMessage::MTEventMessage);
+						IMessage::DIn,
+						CLEntry_,
+						IMessage::MTEventMessage,
+						IMessage::MSTOther);
 			CLEntry_->HandleMessage (message);
 		}
 	}
@@ -114,6 +192,8 @@ namespace Xoox
 	void RoomHandler::handleMUCSubject (gloox::MUCRoom *room,
 			const std::string& nickStr, const std::string& subject)
 	{
+		RoomHasBeenEntered_ = true;
+
 		QString nick = QString::fromUtf8 (nickStr.c_str ());
 		Subject_ = QString::fromUtf8 (subject.c_str ());
 		QString string;
@@ -127,7 +207,9 @@ namespace Xoox
 
 		RoomPublicMessage *message =
 				new RoomPublicMessage (string, IMessage::DIn,
-						CLEntry_, IMessage::MTEventMessage);
+						CLEntry_,
+						IMessage::MTEventMessage,
+						IMessage::MSTRoomSubjectChange);
 		CLEntry_->HandleMessage (message);
 
 		CLEntry_->HandleSubjectChanged (Subject_);

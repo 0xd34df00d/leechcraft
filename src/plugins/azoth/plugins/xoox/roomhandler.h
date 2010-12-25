@@ -51,6 +51,7 @@ namespace Xoox
 		QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
 		gloox::MUCRoom *Room_;
 		QString Subject_;
+		bool RoomHasBeenEntered_;
 	public:
 		RoomHandler (GlooxAccount* = 0);
 

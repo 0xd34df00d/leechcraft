@@ -40,6 +40,7 @@ namespace Xoox
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (DOut)
 	, Type_ (MTMUCMessage)
+	, SubType_ (MSTOther)
 	{
 	}
 
@@ -47,6 +48,7 @@ namespace Xoox
 			IMessage::Direction direction,
 			RoomCLEntry *entry,
 			IMessage::MessageType type,
+			IMessage::MessageSubType subType,
 			RoomParticipantEntry_ptr part)
 	: QObject (entry)
 	, ParentEntry_ (entry)
@@ -55,6 +57,7 @@ namespace Xoox
 	, Datetime_ (QDateTime::currentDateTime ())
 	, Direction_ (direction)
 	, Type_ (type)
+	, SubType_ (subType)
 	{
 	}
 
@@ -67,6 +70,7 @@ namespace Xoox
 	, Direction_ (DIn)
 	, FromJID_ (msg.from ())
 	, Type_ (MTMUCMessage)
+	, SubType_ (MSTOther)
 	{
 		const gloox::DelayedDelivery *dd = msg.when ();
 		Datetime_ = dd ?
@@ -97,6 +101,11 @@ namespace Xoox
 	IMessage::MessageType RoomPublicMessage::GetMessageType () const
 	{
 		return Type_;
+	}
+
+	IMessage::MessageSubType RoomPublicMessage::GetMessageSubType () const
+	{
+		return SubType_;
 	}
 
 	QObject* RoomPublicMessage::OtherPart () const
