@@ -42,8 +42,6 @@ namespace LeechCraft
 			, Timeout_ (timeout)
 			, AnimationTime_ (animationTimout)
 			{
-				setWindowOpacity (0.0);
-
 				CloseTimer_ = new QTimer (this);
 				CheckTimer_ = new QTimer (this);
 				CloseTimer_->setSingleShot (true);
@@ -232,6 +230,7 @@ namespace LeechCraft
 			void KinotifyWidget::ShowNotification ()
 			{
 				show ();
+				setWindowOpacity (0.0);
 				Machine_.start ();
 			}
 
