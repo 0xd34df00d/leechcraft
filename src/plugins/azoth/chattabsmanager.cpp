@@ -30,7 +30,6 @@ namespace LeechCraft
 		{
 			ChatTabsManager::ChatTabsManager(QObject *parent)
 			: QObject (parent)
-			, TabIcon_ (":/plugins/azoth/resources/images/azoth.svg")
 			{
 			}
 
@@ -66,6 +65,7 @@ namespace LeechCraft
 				// TODO don't hardcode the first variant
 				QPointer<ChatTab> tab (new ChatTab (id, entry->Variants ().first ()));
 				Entry2Tab_ [id] = tab;
+
 				connect (tab,
 						SIGNAL (needToClose (ChatTab*)),
 						this,
@@ -78,8 +78,14 @@ namespace LeechCraft
 						SIGNAL (changeTabName (QWidget*, const QString&)),
 						this,
 						SIGNAL (changeTabName (QWidget*, const QString&)));
+				connect (tab,
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+						this,
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+
 				emit addNewTab (entry->GetEntryName (), tab);
-				emit changeTabIcon (tab, TabIcon_);
+
+				tab->HasBeenAdded ();
 
 				if (XmlSettingsManager::Instance ()
 						.property ("JumpToNewTabOnOpen").toBool ())

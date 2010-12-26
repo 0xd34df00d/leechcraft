@@ -34,6 +34,7 @@ namespace Azoth
 {
 	namespace Plugins
 	{
+		struct EntryStatus;
 		class ICLEntry;
 		class IMUCEntry;
 		class IMessage;
@@ -60,10 +61,15 @@ namespace Azoth
 		int LastSpacePosition_;
 		QString NickFirstPart_;
 		int NumUnreadMsgs_;
+		QIcon TabIcon_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
 		ChatTab (const QByteArray&, const QString&, QWidget* = 0);
+		/** Is called after the tab has been added to the tabwidget so
+		 * that it could set its icon and various other stuff.
+		 */
+		void HasBeenAdded ();
 
 		QList<QAction*> GetTabBarContextMenuActions () const;
 		QObject* ParentMultiTabs () const;
@@ -78,6 +84,7 @@ namespace Azoth
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__released ();
 		void handleEntryMessage (QObject*);
+		void handleStatusChanged (const Plugins::EntryStatus&, const QString&);
 		void handleViewLinkClicked (const QUrl&);
 		void scrollToEnd ();
 		void handleHistoryUp ();
@@ -100,8 +107,14 @@ namespace Azoth
 		QString FormatBody (QString, Plugins::IMessage*);
 
 		void GenerateColors ();
+
+		/** Updates the tab icon and other usages of state icon from the
+		 * TabIcon_.
+		 */
+		void UpdateStateIcon ();
 	signals:
 		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
 		void needToClose (ChatTab*);
 		void clearUnreadMsgCount (QObject*);
 

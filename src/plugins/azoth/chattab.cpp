@@ -99,6 +99,10 @@ namespace Azoth
 				SIGNAL (gotMessage (QObject*)),
 				this,
 				SLOT (handleEntryMessage (QObject*)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (statusChanged (const Plugins::EntryStatus&, const QString&)),
+				this,
+				SLOT (handleStatusChanged (const Plugins::EntryStatus&, const QString&)));
 
 		Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
 		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
@@ -159,6 +163,11 @@ namespace Azoth
 				SIGNAL (clearAvailableNicks ()),
 				this,
 				SLOT (clearAvailableNick ()));
+	}
+
+	void ChatTab::HasBeenAdded ()
+	{
+		UpdateStateIcon ();
 	}
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
@@ -298,6 +307,18 @@ namespace Azoth
 		AppendMessage (msg);
 	}
 
+	void ChatTab::handleStatusChanged (const Plugins::EntryStatus& status,
+			const QString& variant)
+	{
+		if (variant != Variant_ &&
+				!variant.isEmpty () &&
+				GetEntry<Plugins::ICLEntry> ()->Variants ().value (0) == variant)
+			return;
+
+		TabIcon_ = Core::Instance ().GetIconForState (status.State_);
+		UpdateStateIcon ();
+	}
+
 	void ChatTab::handleViewLinkClicked (const QUrl& url)
 	{
 		if (url.scheme () != "azoth")
@@ -378,11 +399,16 @@ namespace Azoth
 		if (isGoodMUC)
 			HandleMUC ();
 		else
+		{
 			Ui_.SubjectButton_->hide ();
+			TabIcon_ = Core::Instance ()
+					.GetIconForState (e->GetStatus (Variant_).State_);
+		}
 	}
 
 	void ChatTab::HandleMUC ()
 	{
+		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
 	}
 
 	void ChatTab::AppendMessage (Plugins::IMessage *msg)
@@ -768,6 +794,11 @@ namespace Azoth
 			AvailableNickList_.clear ();
 			CurrentNickIndex_ = 0;
 		}
+	}
+
+	void ChatTab::UpdateStateIcon ()
+	{
+		emit changeTabIcon (this, TabIcon_);
 	}
 }
 }

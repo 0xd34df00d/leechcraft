@@ -145,6 +145,11 @@ namespace LeechCraft
 				 */
 				bool ShouldCountUnread (const Plugins::ICLEntry *entry,
 						const Plugins::IMessage *message);
+
+				/** Returns an icon from the current iconset for the
+				 * given contact list entry state.
+				 */
+				QIcon GetIconForState (Plugins::State state) const;
 			private:
 				/** Adds the protocol object. The object must implement
 				 * Plugins::IProtocolPlugin interface.
@@ -178,11 +183,6 @@ namespace LeechCraft
 				 */
 				void HandleStatusChanged (const Plugins::EntryStatus& status,
 						Plugins::ICLEntry *entry, const QString& variant);
-
-				/** Returns an icon from the current iconset for the
-				 * given contact list entry state.
-				 */
-				QIcon GetIconForState (Plugins::State state) const;
 
 				/** This functions calculates new value of number of
 				 * unread items for the chain of parents of the given
