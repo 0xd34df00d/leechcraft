@@ -43,7 +43,7 @@ namespace OnlineBookmarks
 				"poshukuonlinebookmarkssettings.xml");
 		
 		SettingsDialog_->SetCustomWidget ("Settings", 
-				new Settings (Core::Instance ().CreateAccountModel (), this));
+				new Settings (Core::Instance ().GetAccountModel (), this));
 		
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
