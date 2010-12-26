@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_IPROXYOBJECT_H
 #define PLUGINS_AZOTH_INTERFACES_IPROXYOBJECT_H
 #include <QString>
+#include "azothcommon.h"
 
 class QObject;
 
@@ -83,6 +84,12 @@ namespace Plugins
 		 * @return The name of the operating system.
 		 */
 		virtual QString GetOSName () = 0;
+
+		/** @brief Returns a human-readable string for the given state.
+		 *
+		 * @return Human-readable string describing state.
+		 */
+		virtual QString StateToString (Plugins::State state) const = 0;
 	};
 }
 }

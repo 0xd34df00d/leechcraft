@@ -48,8 +48,6 @@ namespace LeechCraft
 			class PluginManager;
 			class ProxyObject;
 
-			QString ToString (Plugins::State);
-
 			class Core : public QObject
 			{
 				Q_OBJECT

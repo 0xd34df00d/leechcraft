@@ -78,15 +78,17 @@ namespace Xoox
 		Client_->registerConnectionListener (this);
 		Client_->rosterManager ()->registerRosterListener (this, false);
 
-		gloox::Capabilities *caps = new gloox::Capabilities (Client_->disco ());
-		caps->setNode ("http://leechcraft.org/azoth");
-		Client_->addPresenceExtension (caps);
-
 		Client_->disco ()->setVersion ("LeechCraft Azoth",
 				LEECHCRAFT_VERSION,
 				ProxyObject_->GetOSName ().toUtf8 ().constData ());
 		Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
-		Client_->disco ()->addFeature ("jabber:iq:roster");
+		Client_->disco ()->addFeature (gloox::XMLNS_ROSTER);
+		Client_->disco ()->addFeature (gloox::XMLNS_COMPRESSION);
+		Client_->disco ()->addFeature (gloox::XMLNS_STREAM_COMPRESS);
+
+		gloox::Capabilities *caps = new gloox::Capabilities (Client_->disco ());
+		caps->setNode ("http://leechcraft.org/azoth");
+		Client_->addPresenceExtension (caps);
 
 		SetState (state);
 

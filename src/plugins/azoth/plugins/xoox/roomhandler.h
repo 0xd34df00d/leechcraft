@@ -90,12 +90,18 @@ namespace Xoox
 		/** Creates a new entry for the given nick.
 		 */
 		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
+
 		/** Creates a new entry for the given nick if it
 		 * doesn't exist already (and does so by calling
 		 * CreateParticipantEntry()) or just returns the
 		 * already existing one.
 		 */
 		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
+
+		void MakeLeaveMessage (const gloox::MUCRoomParticipant);
+		void MakeStatusChangedMessage (const gloox::MUCRoomParticipant, const gloox::Presence&);
+		void MakeJoinMessage (const gloox::MUCRoomParticipant);
+
 		gloox::MessageSession* GetSessionWith (const gloox::JID&);
 		QString NickFromJID (const gloox::JID&) const;
 		gloox::JID JIDForNick (const QString&) const;

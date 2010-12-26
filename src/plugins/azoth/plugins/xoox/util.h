@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PROXYOBJECT_H
-#define PLUGINS_AZOTH_PROXYOBJECT_H
-#include <QObject>
-#include "interfaces/iproxyobject.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_UTIL_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_UTIL_H
+#include <QString>
+#include <gloox/mucroom.h>
 
 namespace LeechCraft
 {
@@ -27,20 +27,17 @@ namespace Plugins
 {
 namespace Azoth
 {
-	class ProxyObject : public QObject
-					  , public Plugins::IProxyObject
-	{
-		Q_OBJECT
-
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProxyObject)
-	public:
-		ProxyObject (QObject* = 0);
-
-		QString GetPassword (QObject*);
-		void SetPassword (const QString&, QObject*);
-		QString GetOSName ();
-		QString StateToString (Plugins::State) const;
-	};
+namespace Plugins
+{
+namespace Xoox
+{
+namespace Util
+{
+	QString RoleToString (const gloox::MUCRoomRole&);
+	QString AffiliationToString (const gloox::MUCRoomAffiliation&);
+}
+}
+}
 }
 }
 }

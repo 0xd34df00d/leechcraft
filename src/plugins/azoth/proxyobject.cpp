@@ -215,6 +215,27 @@ namespace Azoth
 
 		return tr ("Unknown OS");
 	}
+
+	QString ProxyObject::StateToString (Plugins::State st) const
+	{
+		switch (st)
+		{
+		case Plugins::SOnline:
+			return Core::tr ("Online");
+		case Plugins::SChat:
+			return Core::tr ("Free to chat");
+		case Plugins::SAway:
+			return Core::tr ("Away");
+		case Plugins::SDND:
+			return Core::tr ("Do not disturb");
+		case Plugins::SXA:
+			return Core::tr ("Extended away");
+		case Plugins::SOffline:
+			return Core::tr ("Offline");
+		default:
+			return Core::tr ("Error");
+		}
+	}
 }
 }
 }
