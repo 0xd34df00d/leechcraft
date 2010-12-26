@@ -371,7 +371,7 @@ void Settings::checkServiceAnswer (bool valid)
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
 		
-		settings.beginGroup ("Accaunts");
+		settings.beginGroup ("Accounts");
 		if (settings.value (service).isNull ())
 			settings.setValue (service, Login_->text ());
 		else
@@ -383,13 +383,16 @@ void Settings::checkServiceAnswer (bool valid)
 		settings.endGroup ();
 		
 		QList<QStandardItem*> items = Model_->findItems (service);
-		
+		QStandardItem *serviceItem;
 		if (!items.size ())
-			Model_->appendRow (new QStandardItem (service));
+		{	
+			serviceItem = new QStandardItem (service);
+			Model_->appendRow (serviceItem);
+		}
+		else
+			 serviceItem = items.at (0);
 		
-		QList<QStandardItem*> items2 = Model_->findItems (service);
-		QModelIndex index = items2.at (0)->index ();
-		Model_->itemFromIndex (index)->appendRow (new QStandardItem (Login_->text ()));
+		serviceItem->appendRow (new QStandardItem (Login_->text ()));
 		
 		SetPassword (Password_->text (), Login_->text (), GetSelectedName ());		
 	}
