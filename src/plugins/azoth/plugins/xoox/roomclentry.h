@@ -77,6 +77,7 @@ namespace Xoox
 		MUCFeatures GetMUCFeatures () const;
 		QString GetMUCSubject () const;
 		QList<QObject*> GetParticipants ();
+		void Leave (const QString&);
 
 		gloox::MUCRoom* GetRoom ();
 

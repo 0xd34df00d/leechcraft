@@ -135,6 +135,10 @@ namespace Xoox
 		return RH_->GetParticipants ();
 	}
 
+	void RoomCLEntry::Leave (const QString& msg)
+	{
+	}
+
 	gloox::MUCRoom* RoomCLEntry::GetRoom ()
 	{
 		return RH_->GetRoom ();

@@ -89,6 +89,21 @@ namespace LeechCraft
 					 */
 					virtual QList<QObject*> GetParticipants () = 0;
 
+					/** @brief Requests to leave the room.
+					 *
+					 * The protocol implementation is expected to leave
+					 * the room with the given leave message. If leaving
+					 * is impossible for some reason, it's ok to stay.
+					 *
+					 * If the room is successfully left, the parent
+					 * account should take care of removing the contact
+					 * list entries corresponding to its participants
+					 * and the room itself.
+					 *
+					 * @param[in] msg The leave message (if applicable).
+					 */
+					virtual void Leave (const QString& msg = QString ()) = 0;
+
 					/** @brief Notifies about new participants in the room.
 					 *
 					 * This signal should emitted when new participants
