@@ -36,13 +36,13 @@ namespace LeechCraft
 						Q_OBJECT
 					public:
 						AbstractBookmarksService (QObject *parent = 0) : QObject (parent) {}
-						virtual ~AbstractBookmarksService () {}
+						~AbstractBookmarksService () {}
 
 						virtual QString GetName () const = 0;
 						virtual QIcon GetIcon () const = 0;
 						virtual void CheckValidAccountData (const QString&, const QString&) = 0;
 					signals:
-						void getValidReply (bool);
+						void gotValidReply (bool);
 					};
 				};
 			};
