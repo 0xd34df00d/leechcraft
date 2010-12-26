@@ -36,7 +36,7 @@ ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks SHARED
 	${ONLINEBOOKMARKS_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_onlinebookmarks
-	${QT_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
 	plugininterface
 	xmlsettingsdialog
 	)

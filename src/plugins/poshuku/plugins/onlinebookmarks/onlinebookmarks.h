@@ -19,7 +19,6 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
 
-#include <memory.h>
 #include <QObject>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
@@ -44,22 +43,22 @@ namespace LeechCraft
 						Q_OBJECT
 						Q_INTERFACES (IInfo IHaveSettings IPlugin2)
 						
-						boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+						Util::XmlSettingsDialog_ptr SettingsDialog_;
 						
 					public:
-						QIcon GetIcon () const;
-						void Release ();
-						void SetProvider (QObject*, const QString&);
-						QStringList Uses () const;
-						QStringList Needs () const;
-						QStringList Provides () const;
-						QString GetInfo () const;
-						QString GetName () const;
-						QByteArray GetUniqueID () const;
-						void SecondInit ();
 						void Init (ICoreProxy_ptr);
+						void SecondInit ();
+						void Release ();
+						QByteArray GetUniqueID () const;
+						QString GetName () const;
+						QString GetInfo () const;
+						QIcon GetIcon () const;
+						QStringList Provides () const;
+						QStringList Needs () const;
+						QStringList Uses () const;
+						void SetProvider (QObject*, const QString&);
+						Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 						QSet<QByteArray> GetPluginClasses () const;
-						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 					signals:
 						void gotEntity (LeechCraft::Entity);
 						void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

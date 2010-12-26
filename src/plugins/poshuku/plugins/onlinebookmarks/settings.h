@@ -60,17 +60,17 @@ namespace LeechCraft
 						QLineEdit *Login_;
 						QLineEdit *Password_;
 						QList<AbstractBookmarksService*> BookmarksServices_;
-						QFrame *CreateLoginWidget (QWidget *parent = 0);
+					public:
+						Settings (QStandardItemModel*, OnlineBookmarks*);
+						QString GetSelectedName () const;
+					private:
+						QFrame* CreateLoginWidget (QWidget *parent = 0);
 						void ClearFrameState ();
 						void SetupServices ();
 						void SetPassword (const QString&, const QString&, const QString&);
 						QString GetPassword (const QString&, const QString&);
 						bool ConfirmDelete (const QString&, const QString&);
 						void ReadSettings ();
-					public:
-						Settings (QStandardItemModel*, OnlineBookmarks*);
-						~Settings ();
-						QString GetSelectedName () const;
 					public slots:
 						void accept ();
 					private slots:
