@@ -208,6 +208,15 @@ void Settings::ReadSettings ()
 	settings.endGroup ();
 }
 
+void Settings::SetApplyEnabled (const QString& firestString, const QString& secondString)
+{
+	Apply_->setEnabled (!(firestString.isEmpty () || 
+			secondString.isEmpty () ||
+			!Ui_.Edit_->isChecked () &&
+			!Model_->findItems (Login_->text (), 
+					Qt::MatchFixedString | Qt::MatchRecursive).isEmpty ()));
+}
+
 QString Settings::GetSelectedName () const
 {
 	return Ui_.Services_->currentText ();
@@ -320,20 +329,12 @@ void Settings::handleStuff ()
 
 void Settings::handleLoginTextChanged (const QString& text)
 {
-	Apply_->setEnabled (!(text.isEmpty () || 
-			Password_->text ().isEmpty () ||
-			!Ui_.Edit_->isChecked () &&
-			!Model_->findItems (text, 
-					Qt::MatchFixedString | Qt::MatchRecursive).isEmpty ()));
+	SetApplyEnabled (text, Password_->text ());
 }
 
 void Settings::handlePasswordTextChanged (const QString& text)
 {
-	Apply_->setEnabled (!(text.isEmpty () ||
-			Login_->text ().isEmpty () ||
-			!Ui_.Edit_->isChecked () && 
-			!Model_->findItems (Login_->text (), 
-					Qt::MatchFixedString | Qt::MatchRecursive).isEmpty ()));
+	SetApplyEnabled (text, Login_->text ());
 }
 
 void Settings::on_Services__currentIndexChanged (const QString& text)

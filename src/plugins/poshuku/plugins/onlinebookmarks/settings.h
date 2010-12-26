@@ -69,8 +69,8 @@ namespace LeechCraft
 						void SetupServices ();
 						void SetPassword (const QString&, const QString&, const QString&);
 						QString GetPassword (const QString&, const QString&);
-						bool ConfirmDelete (const QString&, const QString&);
 						void ReadSettings ();
+						void SetApplyEnabled (const QString&, const QString&);
 					public slots:
 						void accept ();
 					private slots:
