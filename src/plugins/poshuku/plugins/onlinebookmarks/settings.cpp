@@ -191,68 +191,6 @@ QString Settings::GetPassword (const QString& account, const QString& service)
 	return strVarList.at (0).toString ();
 }
 
-bool Settings::ConfirmDelete (const QString& account, const QString& service)
-{
-	QDialog *dlg = new QDialog (this);
-	
-	QString labelString = "Enter password for " + account + " in " + service;
-	QLabel *label = new QLabel (labelString);
-	
-	QLineEdit *passwordEdit = new QLineEdit;
-	passwordEdit->setEchoMode (QLineEdit::PasswordEchoOnEdit);
-	
-	QPushButton *confirm = new QPushButton ("Ok");
-	QPushButton *cancel = new QPushButton ("Cancel");
-	
-	QGridLayout *gridLay = new QGridLayout (dlg);
-	gridLay->setMargin (0);
-    gridLay->addWidget (label, 0, 0, 1, 2);
-    gridLay->addWidget (passwordEdit, 1, 0, 1, 2);
-	gridLay->addWidget (confirm, 2, 0);
-    gridLay->addWidget (cancel, 2, 1);
-	confirm->show ();
-	cancel->show ();
-	
-	connect (confirm,
-		SIGNAL (clicked ()),
-		dlg,
-		SLOT (accept ()));
-	
-	connect (cancel,
-		SIGNAL (clicked ()),
-		dlg,
-		SLOT (reject ()));
-	
-	switch (dlg->exec ())
-	{
-	case QDialog::Rejected:
-		dlg->close ();
-	case QDialog::Accepted:
-		if (GetPassword (account, service) == passwordEdit->text ())
-		{
-			QList<QVariant> keys;
-			keys << "org.LeechCraft.Poshuku.OnlineBookmarks." + 
-					service + "/" + account;
-			Entity e = Util::MakeEntity (keys,
-					QString (),
-					Internal,
-					"x-leechcraft/data-persistent-clear");
-			
-			LoginFrame_->hide ();
-			
-			if (Ui_.Add_->isChecked ())
-				Ui_.Add_->toggle ();
-			else if (Ui_.Edit_->isChecked ())
-				Ui_.Edit_->toggle ();
-			
-			Core::Instance ().SendEntity (e);
-			
-			return true;
-		}
-	}
-	return false;
-}
-
 void Settings::ReadSettings ()
 {
 	QSettings settings (QCoreApplication::organizationName (),
@@ -333,16 +271,26 @@ void Settings::on_Delete__released ()
 		return;
 	else
 	{
-		QString account = Ui_.AccauntsView_->currentIndex ().
-				data ().toString ();
-		QString service = Ui_.AccauntsView_->currentIndex ().parent ().
-				data ().toString ();
+		QList<QVariant> keys;
+		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." + 
+				Ui_.AccauntsView_->currentIndex ().parent ().data ().toString () + 
+				"/" + Ui_.AccauntsView_->currentIndex ().data ().toString ();
 		
-		if (ConfirmDelete (account, service))
-		{
-			QModelIndex parent = Ui_.AccauntsView_->currentIndex ().parent ();
-			Model_->removeRow (Ui_.AccauntsView_->currentIndex ().row (), parent);
-		}
+		Entity e = Util::MakeEntity (keys,
+				QString (),
+				Internal,
+				"x-leechcraft/data-persistent-clear");
+		
+		LoginFrame_->hide ();
+		Model_->removeRow (Ui_.AccauntsView_->currentIndex ().row (), 
+				Ui_.AccauntsView_->currentIndex ().parent ());
+		
+		if (Ui_.Add_->isChecked ())
+			Ui_.Add_->toggle ();
+		else if (Ui_.Edit_->isChecked ())
+			Ui_.Edit_->toggle ();
+		
+		Core::Instance ().SendEntity (e);
 	}
 }
 
@@ -404,10 +352,12 @@ void Settings::on_AccauntsView__clicked (const QModelIndex& index)
 			Ui_.Edit_->toggle ();
 		
 		Ui_.Edit_->setEnabled (false);
+		Ui_.Delete_->setEnabled (false);
 	}
 	else
 	{
 		Ui_.Edit_->setEnabled (true);
+		Ui_.Delete_->setEnabled (true);
 		Login_->setText (Ui_.AccauntsView_->currentIndex ().data ().toString ());
 	}
 }
