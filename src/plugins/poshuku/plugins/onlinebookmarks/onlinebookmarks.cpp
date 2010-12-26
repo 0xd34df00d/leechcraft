@@ -36,57 +36,6 @@ namespace LeechCraft
 			{
 				namespace OnlineBookmarks
 				{
-					QIcon OnlineBookmarks::GetIcon () const
-					{
-						return QIcon (":resources/images/defaultpluginicon.svg");
-					}
-
-					void OnlineBookmarks::Release ()
-					{
-
-					}
-
-					void OnlineBookmarks::SetProvider (QObject *object, const QString& feature)
-					{
-
-					}
-
-					QStringList OnlineBookmarks::Uses () const
-					{
-						return QStringList ();
-					}
-
-					QStringList OnlineBookmarks::Needs () const
-					{
-						return QStringList ();
-					}
-
-					QStringList OnlineBookmarks::Provides () const
-					{
-						return QStringList ();
-					}
-
-					QString OnlineBookmarks::GetInfo () const
-					{
-						return tr ("Sync local bookmarks with your accaunt in the",
-								"online bookmarks service such as Delicious.");
-					}
-
-					QString OnlineBookmarks::GetName () const
-					{
-						return "Poshuku OnlineBookmarks";
-					}
-
-					QByteArray OnlineBookmarks::GetUniqueID () const
-					{
-						return "org.LeechCraft.Poshuku.OnlineBookmarks";
-					}
-
-					void OnlineBookmarks::SecondInit ()
-					{
-
-					}
-
 					void OnlineBookmarks::Init (ICoreProxy_ptr proxy)
 					{
 						SettingsDialog_.reset (new Util::XmlSettingsDialog);
@@ -96,24 +45,21 @@ namespace LeechCraft
 						QStandardItemModel *model = new QStandardItemModel;
 						QSettings settings (QCoreApplication::organizationName (),
 								QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-						settings.beginGroup ("Accaunts");
-						QStringList services = settings.childKeys ();
+						settings.beginGroup ("Accounts");
 						
-						Q_FOREACH (const QString& item, services)
+						Q_FOREACH (const QString& item, settings.childKeys ())
 						{
-							QStringList loginList = settings.value (item).toStringList ();
-							
 							QList<QStandardItem*> itemList;
 							
-							Q_FOREACH (const QString& login, loginList)
-							{	
+							Q_FOREACH (const QString& login, settings.value (item).toStringList ())
+							{
 								QStandardItem *loginItem = new QStandardItem (login);
 								loginItem->setCheckable (true);
 								itemList << loginItem;
 							}
 							QStandardItem *service = new QStandardItem (item);
 							model->appendRow (service);
-							model->itemFromIndex (model->indexFromItem (service))->appendRows (itemList);
+							service->appendRows (itemList);
 						}
 						settings.endGroup ();
 						
@@ -130,16 +76,65 @@ namespace LeechCraft
 								SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 					}
 					
+					void OnlineBookmarks::SecondInit ()
+					{
+					}
+					
+					void OnlineBookmarks::Release ()
+					{
+					}
+
+					QByteArray OnlineBookmarks::GetUniqueID () const
+					{
+						return "org.LeechCraft.Poshuku.OnlineBookmarks";
+					}
+					
+					QString OnlineBookmarks::GetName () const
+					{
+						return "Poshuku OnlineBookmarks";
+					}
+
+					QString OnlineBookmarks::GetInfo () const
+					{
+						return tr ("Sync local bookmarks with your accaunt in the"
+									"online bookmarks service such as Delicious.");
+					}
+
+					QIcon OnlineBookmarks::GetIcon () const
+					{
+						return QIcon ();
+					}
+
+					QStringList OnlineBookmarks::Provides () const
+					{
+						return QStringList ();
+					}
+
+					QStringList OnlineBookmarks::Needs () const
+					{
+						return QStringList ();
+					}
+
+					QStringList OnlineBookmarks::Uses () const
+					{
+						return QStringList ();
+					}
+
+					void OnlineBookmarks::SetProvider (QObject *object, const QString& feature)
+					{
+
+					}
+					
+					Util::XmlSettingsDialog_ptr OnlineBookmarks::GetSettingsDialog () const
+					{
+						return SettingsDialog_;
+					}
+					
 					QSet<QByteArray> OnlineBookmarks::GetPluginClasses () const
 					{
 						QSet<QByteArray> result;
 						result << "org.LeechCraft.Poshuku.Plugins/1.0";
 						return result;
-					}
-					
-					boost::shared_ptr< Util::XmlSettingsDialog > OnlineBookmarks::GetSettingsDialog () const
-					{
-						return SettingsDialog_;
 					}
 				};
 			};

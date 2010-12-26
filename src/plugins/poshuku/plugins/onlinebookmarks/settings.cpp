@@ -30,12 +30,12 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QDialog>
+#include <QDateTime>
+#include <plugininterface/util.h>
 #include "onlinebookmarks.h"
 #include "delicious/deliciousbookmarksservice.h"
-#include "plugininterface/util.h"
 #include "interfaces/structures.h"
 #include "core.h"
-#include <QDateTime>
 
 using namespace LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks;
 
@@ -60,11 +60,6 @@ Settings::Settings (QStandardItemModel *model, OnlineBookmarks *parent)
 	BookmarksServices_ << new DeliciousBookmarksService (this);
 	
 	SetupServices ();
-}
-
-Settings::~Settings ()
-{
-	delete LoginFrame_;
 }
 
 QFrame *Settings::CreateLoginWidget (QWidget *parent)
@@ -129,20 +124,20 @@ void Settings::ClearFrameState ()
 
 void Settings::SetupServices ()
 {
-	ServicesModel_ = new QStandardItemModel;
+	ServicesModel_ = new QStandardItemModel (this);
 	Ui_.ActiveServices_->setModel (ServicesModel_);
 	
 	Q_FOREACH (AbstractBookmarksService *as, BookmarksServices_)
 	{	
 		Ui_.Services_->addItem (as->GetIcon (), as->GetName (),
-				QVariant::fromValue<QObject*> (const_cast<AbstractBookmarksService*> (as)));
+				QVariant::fromValue<QObject*> (as));
 
 		QStandardItem *item = new QStandardItem (as->GetIcon (), as->GetName ());
 		item->setCheckable (true);
 		ServicesModel_->appendRow (item);
 		
 		connect (as,
-				SIGNAL (getValidReply (bool)),
+				SIGNAL (gotValidReply (bool)),
 				this,
 				SLOT (checkServiceAnswer (bool)));
 	}
@@ -198,7 +193,7 @@ QString Settings::GetPassword (const QString& account, const QString& service)
 
 bool Settings::ConfirmDelete (const QString& account, const QString& service)
 {
-	QDialog *dlg = new QDialog (this, Qt::Dialog);
+	QDialog *dlg = new QDialog (this);
 	
 	QString labelString = "Enter password for " + account + " in " + service;
 	QLabel *label = new QLabel (labelString);
@@ -452,6 +447,5 @@ void Settings::checkServiceAnswer (bool valid)
 		QMessageBox::warning (0,
 				tr ("LeechCraft"),
 				tr ("Invalid account data"));
-		return;
 	}
 }

@@ -18,8 +18,6 @@
 
 #include "core.h"
 #include <QtDebug>
-#include <plugininterface/util.h>
-
 
 namespace LeechCraft
 {
