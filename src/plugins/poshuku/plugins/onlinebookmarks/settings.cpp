@@ -398,8 +398,7 @@ void Settings::checkServiceAnswer (bool valid)
 	}
 	else
 	{	
-		QMessageBox::warning (0,
-				tr ("LeechCraft"),
-				tr ("Invalid account data"));
+		Entity e = Util::MakeNotification ("Poshuku", tr("Invalid account data"), PWarning_);
+		gotEntity (e);
 	}
 }
