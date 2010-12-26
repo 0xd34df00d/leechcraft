@@ -38,10 +38,12 @@ namespace OnlineBookmarks
 		Q_OBJECT
 
 		Core ();
+		QStandardItemModel *Model_;
 	public:
 		static Core& Instance ();
 		void SendEntity (const Entity&);
-		QStandardItemModel* CreateAccountModel ();
+		void Init ();
+		QStandardItemModel* GetAccountModel () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

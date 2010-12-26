@@ -34,6 +34,7 @@ namespace OnlineBookmarks
 {
 	Core::Core ()
 	{
+		 Init ();
 	}
 
 	Core& Core::Instance ()
@@ -47,9 +48,9 @@ namespace OnlineBookmarks
 		emit gotEntity (e);
 	}
 
-	QStandardItemModel* Core::CreateAccountModel ()
+	void Core::Init()
 	{
-		QStandardItemModel *model = new QStandardItemModel;
+		Model_ = new QStandardItemModel;
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
 		settings.beginGroup ("Accounts");
@@ -65,12 +66,15 @@ namespace OnlineBookmarks
 				itemList << loginItem;
 			}
 			QStandardItem *service = new QStandardItem (item);
-			model->appendRow (service);
+			Model_->appendRow (service);
 			service->appendRows (itemList);
 		}
 		settings.endGroup ();
-		
-		return model;
+	}
+
+	QStandardItemModel* Core::GetAccountModel () const
+	{
+		return Model_;
 	}
 };
 };
