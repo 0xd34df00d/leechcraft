@@ -22,10 +22,6 @@
 #include "interfaces/structures.h"
 #include "ui_settings.h"
 
-namespace Ui {
-	class Settings_;
-}
-
 class QStandardItemModel;
 class QFrame;
 class QCheckBox;
@@ -83,6 +79,8 @@ namespace LeechCraft
 						void on_Services__currentIndexChanged (const QString&);
 						void on_AccauntsView__clicked (const QModelIndex&);
 						void checkServiceAnswer (bool);
+					signals:
+						void gotEntity (const LeechCraft::Entity&);
 					};
 				};
 			};
