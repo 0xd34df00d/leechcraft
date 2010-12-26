@@ -70,7 +70,7 @@ namespace Xoox
 				const QString&, const QString&);
 		QList<QObject*> GetAllMessages () const;
 		EntryStatus GetStatus (const QString&) const;
-		QList<QAction*> GetActions ();
+		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
 
 		// IMUCEntry

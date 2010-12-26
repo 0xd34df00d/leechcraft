@@ -248,7 +248,7 @@ namespace Plugins
 		 *
 		 * @return The list of actions.
 		 */
-		virtual QList<QAction*> GetActions () = 0;
+		virtual QList<QAction*> GetActions () const = 0;
 
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.

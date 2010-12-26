@@ -52,7 +52,7 @@ namespace Xoox
 		virtual QObject* GetObject ();
 		virtual QList<QObject*> GetAllMessages () const;
 		EntryStatus GetStatus (const QString&) const;
-		QList<QAction*> GetActions ();
+		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
 
 		void HandleMessage (GlooxMessage*);

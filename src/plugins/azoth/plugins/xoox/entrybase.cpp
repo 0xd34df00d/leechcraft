@@ -66,7 +66,7 @@ namespace Xoox
 			return EntryStatus ();
 	}
 
-	QList<QAction*> EntryBase::GetActions ()
+	QList<QAction*> EntryBase::GetActions () const
 	{
 		return Actions_;
 	}

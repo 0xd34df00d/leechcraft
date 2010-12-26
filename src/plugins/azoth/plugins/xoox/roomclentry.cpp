@@ -110,7 +110,7 @@ namespace Xoox
 		return EntryStatus (SOnline, QString ());
 	}
 
-	QList<QAction*> RoomCLEntry::GetActions ()
+	QList<QAction*> RoomCLEntry::GetActions () const
 	{
 		return QList<QAction*> ();
 	}
