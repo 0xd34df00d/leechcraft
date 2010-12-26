@@ -21,6 +21,8 @@
 #include <QObject>
 #include <interfaces/structures.h>
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -39,6 +41,7 @@ namespace LeechCraft
 					public:
 						static Core& Instance ();
 						void SendEntity (const Entity&);
+						QStandardItemModel* CreateAccountModel ();
 					signals:
 						void gotEntity (const LeechCraft::Entity&);
 						void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

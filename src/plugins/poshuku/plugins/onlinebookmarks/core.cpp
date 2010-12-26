@@ -18,6 +18,9 @@
 
 #include "core.h"
 #include <QtDebug>
+#include <QCoreApplication>
+#include <QStandardItemModel>
+#include <QSettings>
 
 namespace LeechCraft
 {
@@ -42,6 +45,32 @@ namespace LeechCraft
 					void Core::SendEntity (const LeechCraft::Entity& e)
 					{
 						emit gotEntity (e);
+					}
+					
+					QStandardItemModel* Core::CreateAccountModel ()
+					{
+						QStandardItemModel *model = new QStandardItemModel;
+						QSettings settings (QCoreApplication::organizationName (),
+								QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
+						settings.beginGroup ("Accounts");
+						
+						Q_FOREACH (const QString& item, settings.childKeys ())
+						{
+							QList<QStandardItem*> itemList;
+							
+							Q_FOREACH (const QString& login, settings.value (item).toStringList ())
+							{
+								QStandardItem *loginItem = new QStandardItem (login);
+								loginItem->setCheckable (true);
+								itemList << loginItem;
+							}
+							QStandardItem *service = new QStandardItem (item);
+							model->appendRow (service);
+							service->appendRows (itemList);
+						}
+						settings.endGroup ();
+						
+						return model;
 					}
 				};
 			};

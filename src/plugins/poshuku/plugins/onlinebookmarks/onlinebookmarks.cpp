@@ -42,28 +42,8 @@ namespace LeechCraft
 						SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 								"poshukuonlinebookmarkssettings.xml");
 						
-						QStandardItemModel *model = new QStandardItemModel;
-						QSettings settings (QCoreApplication::organizationName (),
-								QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-						settings.beginGroup ("Accounts");
-						
-						Q_FOREACH (const QString& item, settings.childKeys ())
-						{
-							QList<QStandardItem*> itemList;
-							
-							Q_FOREACH (const QString& login, settings.value (item).toStringList ())
-							{
-								QStandardItem *loginItem = new QStandardItem (login);
-								loginItem->setCheckable (true);
-								itemList << loginItem;
-							}
-							QStandardItem *service = new QStandardItem (item);
-							model->appendRow (service);
-							service->appendRows (itemList);
-						}
-						settings.endGroup ();
-						
-						SettingsDialog_->SetCustomWidget ("Settings", new Settings (model, this));
+						SettingsDialog_->SetCustomWidget ("Settings", 
+								new Settings (Core::Instance ().CreateAccountModel (), this));
 						
 						connect (&Core::Instance (),
 								SIGNAL (gotEntity (const LeechCraft::Entity&)),
