@@ -55,6 +55,11 @@ namespace LeechCraft
 					return;
 				}
 
+				OpenChat (entry);
+			}
+
+			void ChatTabsManager::OpenChat (const Plugins::ICLEntry *entry)
+			{
 				const QByteArray& id = entry->GetEntryID ();
 				if (Entry2Tab_.contains (id))
 				{

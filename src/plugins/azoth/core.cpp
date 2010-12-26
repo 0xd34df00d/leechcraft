@@ -30,6 +30,7 @@
 #include "interfaces/iprotocol.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
+#include "interfaces/imucentry.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -434,6 +435,29 @@ namespace LeechCraft
 				return QIcon (path);
 			}
 
+			QList<QAction*> Core::GetEntryActions (Plugins::ICLEntry *entry)
+			{
+				if (!Entry2Actions_.contains (entry))
+					CreateActionsForEntry (entry);
+				UpdateActionsForEntry (entry);
+
+				const QHash<QByteArray, QAction*>& id2action = Entry2Actions_ [entry];
+				QList<QAction*> result;
+				result << id2action.value ("openchat");
+				result << id2action.value ("kick");
+				result << id2action.value ("ban");
+				result << id2action.value ("leave");
+				result << entry->GetActions ();
+				result.removeAll (0);
+				return result;
+			}
+
+			QList<Core::CLEntryActionArea> Core::GetAreasForAction (const QAction *action) const
+			{
+				return Action2Areas_.value (action,
+						QList<CLEntryActionArea> () << CLEAAContactListCtxtMenu);
+			}
+
 			void Core::RecalculateUnreadForParents (QStandardItem *clItem)
 			{
 				QStandardItem *category = clItem->parent ();
@@ -442,6 +466,61 @@ namespace LeechCraft
 						i < rc; ++i)
 					sum += category->child (i)->data (CLRUnreadMsgCount).toInt ();
 				category->setData (sum, CLRUnreadMsgCount);
+			}
+
+			void Core::CreateActionsForEntry (Plugins::ICLEntry *entry)
+			{
+				if (Entry2Actions_.contains (entry))
+					Q_FOREACH (const QAction *action,
+								Entry2Actions_.take (entry).values ())
+					{
+						Action2Areas_.remove (action);
+						delete action;
+					}
+
+				QAction *openChat = new QAction (tr ("Open chat"), this);
+				openChat->setProperty ("ActionIcon", "azoth_openchat");
+				connect (openChat,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleActionOpenChatTriggered ()));
+				Entry2Actions_ [entry] ["openchat"] = openChat;
+				Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
+
+				if (entry->GetEntryType () == Plugins::ICLEntry::ETPrivateChat)
+				{
+					QAction *kick = new QAction (tr ("Kick"), this);
+					kick->setProperty ("ActionIcon", "azoth_kick");
+					kick->setEnabled (false);
+					Entry2Actions_ [entry] ["kick"] = kick;
+					Action2Areas_ [kick] << CLEAAContactListCtxtMenu;
+
+					QAction *ban = new QAction (tr ("Ban"), this);
+					ban->setProperty ("ActionIcon", "azoth_ban");
+					ban->setEnabled (false);
+					Entry2Actions_ [entry] ["ban"] = ban;
+					Action2Areas_ [ban] << CLEAAContactListCtxtMenu;
+				}
+				else if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC)
+				{
+					QAction *leave = new QAction (tr ("Leave"), this);
+					leave->setProperty ("ActionIcon", "azoth_leave");
+					connect (leave,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionLeaveTriggered ()));
+					Entry2Actions_ [entry] ["leave"] = leave;
+					Action2Areas_ [leave] << CLEAAContactListCtxtMenu
+							<< CLEAATabCtxtMenu;
+				}
+
+				Q_FOREACH (QAction *act, Entry2Actions_ [entry].values ())
+					act->setProperty ("Azoth/Entry",
+							QVariant::fromValue<Plugins::ICLEntry*> (entry));
+			}
+
+			void Core::UpdateActionsForEntry (Plugins::ICLEntry *entry)
+			{
 			}
 
 			void Core::handleAccountCreatorTriggered ()
@@ -647,6 +726,8 @@ namespace LeechCraft
 					}
 					Entry2Items_.remove (entry);
 
+					Entry2Actions_.remove (entry);
+
 					ID2Entry_.remove (entry->GetEntryID ());
 				}
 			}
@@ -753,6 +834,48 @@ namespace LeechCraft
 				{
 					item->setData (0, CLRUnreadMsgCount);
 					RecalculateUnreadForParents (item);
+				}
+			}
+
+			void Core::handleActionOpenChatTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				ChatTabsManager_->OpenChat (entry);
+			}
+
+			void Core::handleActionLeaveTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IMUCEntry *mucEntry =
+						qobject_cast<Plugins::IMUCEntry*> (entry->GetObject ());
+				if (!mucEntry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "hm, requested `leave' on an entry"
+							<< entry->GetObject ()
+							<< "that doesn't implement IMUCEntry"
+							<< sender ();
+					return;
 				}
 			}
 		};

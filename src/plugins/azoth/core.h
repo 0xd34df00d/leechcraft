@@ -52,6 +52,7 @@ namespace LeechCraft
 			class Core : public QObject
 			{
 				Q_OBJECT
+				Q_ENUMS (CLRoles CLEntryType CLEntryActionArea)
 
 				ICoreProxy_ptr Proxy_;
 
@@ -68,6 +69,9 @@ namespace LeechCraft
 
 				typedef QHash<Plugins::ICLEntry*, QList<QStandardItem*> > Entry2Items_t;
 				Entry2Items_t Entry2Items_;
+
+				typedef QHash<const Plugins::ICLEntry*, QHash<QByteArray, QAction*> > Entry2Actions_t;
+				Entry2Actions_t Entry2Actions_;
 
 				typedef QHash<QByteArray, QObject*> ID2Entry_t;
 				ID2Entry_t ID2Entry_;
@@ -104,6 +108,17 @@ namespace LeechCraft
 				{
 					RLTStatusIconLoader
 				};
+
+				enum CLEntryActionArea
+				{
+					CLEAATabCtxtMenu,
+					CLEAAContactListCtxtMenu,
+					CLEAAApplicationMenu
+				};
+			private:
+				typedef QHash<const QAction*, QList<CLEntryActionArea> > Action2Areas_t;
+				Action2Areas_t Action2Areas_;
+			public:
 
 				static Core& Instance ();
 
@@ -150,6 +165,20 @@ namespace LeechCraft
 				 * given contact list entry state.
 				 */
 				QIcon GetIconForState (Plugins::State state) const;
+
+				/** Returns an up-to-date list of actions suitable for
+				 * the given entry.
+				 */
+				QList<QAction*> GetEntryActions (Plugins::ICLEntry *entry);
+
+				/** Returns the list of preferred areas for the given
+				 * action.
+				 *
+				 * The action should be the one returned from
+				 * GetEntryActions(), otherwise an empty list would be
+				 * returned.
+				 */
+				QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
 			private:
 				/** Adds the protocol object. The object must implement
 				 * Plugins::IProtocolPlugin interface.
@@ -161,6 +190,9 @@ namespace LeechCraft
 				 */
 				void AddProtocolPlugin (QObject *object);
 
+				/** Adds the given contact list entry to the given
+				 * account and performs common initialization tasks.
+				 */
 				void AddCLEntry (Plugins::ICLEntry *entry, QStandardItem *accItem);
 
 				/** Returns the list of category items for the given
@@ -189,6 +221,9 @@ namespace LeechCraft
 				 * item.
 				 */
 				void RecalculateUnreadForParents (QStandardItem*);
+
+				void CreateActionsForEntry (Plugins::ICLEntry*);
+				void UpdateActionsForEntry (Plugins::ICLEntry*);
 			private slots:
 				/** Initiates account registration process.
 				 */
@@ -262,6 +297,9 @@ namespace LeechCraft
 				 * implement ICLEntry, obviously.
 				 */
 				void handleClearUnreadMsgCount (QObject *object);
+
+				void handleActionOpenChatTriggered ();
+				void handleActionLeaveTriggered ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
@@ -282,6 +320,8 @@ namespace LeechCraft
 };
 
 Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Core::CLEntryType);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Core::CLEntryActionArea);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::ICLEntry*);
 
 #endif
 

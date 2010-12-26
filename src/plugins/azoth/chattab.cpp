@@ -172,7 +172,17 @@ namespace Azoth
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
 	{
-		return QList<QAction*> ();
+		QList<QAction*> allActions = Core::Instance ()
+				.GetEntryActions (GetEntry<Plugins::ICLEntry> ());
+		QList<QAction*> result;
+		Q_FOREACH (QAction *act, allActions)
+		{
+			if (Core::Instance ().GetAreasForAction (act)
+					.contains (Core::CLEAATabCtxtMenu) ||
+				act->isSeparator ())
+				result << act;
+		}
+		return result;
 	}
 
 	QObject* ChatTab::ParentMultiTabs () const
@@ -362,6 +372,8 @@ namespace Azoth
 		else
 			Ui_.MsgEdit_->setText (MsgHistory_
 						.at (CurrentHistoryPosition_));
+
+		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
 
 	template<typename T>

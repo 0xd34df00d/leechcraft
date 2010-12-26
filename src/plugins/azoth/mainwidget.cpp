@@ -80,7 +80,7 @@ namespace Azoth
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)
 	{
-		QModelIndex index = Ui_.CLTree_->indexAt (pos);
+		const QModelIndex& index = Ui_.CLTree_->indexAt (pos);
 		if (!index.isValid ())
 			return;
 
@@ -91,7 +91,12 @@ namespace Azoth
 		{
 			QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
 			Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (obj);
-			actions << entry->GetActions ();
+			const QList<QAction*>& allActions = Core::Instance ().GetEntryActions (entry);
+			Q_FOREACH (QAction *action, allActions)
+				if (Core::Instance ().GetAreasForAction (action)
+						.contains (Core::CLEAAContactListCtxtMenu) ||
+					action->isSeparator ())
+					actions << action;
 			break;
 		}
 		case Core::CLETAccount:
