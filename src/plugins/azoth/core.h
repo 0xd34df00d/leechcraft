@@ -42,6 +42,7 @@ namespace LeechCraft
 				struct EntryStatus;
 				class ICLEntry;
 				class IAccount;
+				class IMessage;
 			}
 
 			class ChatTabsManager;
@@ -136,6 +137,14 @@ namespace LeechCraft
 				 * does nothing.
 				 */
 				void OpenChat (const QModelIndex& index);
+
+				/** Whether the given from the given entry should be
+				 * counted as unread message. For example, messages in
+				 * currently visible chat session or status messages
+				 * shouldn't be counted as unread.
+				 */
+				bool ShouldCountUnread (const Plugins::ICLEntry *entry,
+						const Plugins::IMessage *message);
 			private:
 				/** Adds the protocol object. The object must implement
 				 * Plugins::IProtocolPlugin interface.

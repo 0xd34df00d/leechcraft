@@ -195,6 +195,14 @@ namespace LeechCraft
 				ChatTabsManager_->OpenChat (contactIndex);
 			}
 
+			bool Core::ShouldCountUnread (const Plugins::ICLEntry *entry,
+					const Plugins::IMessage *msg)
+			{
+				return !ChatTabsManager_->IsActiveChat (entry) &&
+						(msg->GetMessageType () == Plugins::IMessage::MTChatMessage ||
+						 msg->GetMessageType () == Plugins::IMessage::MTMUCMessage);
+			}
+
 			void Core::AddProtocolPlugin (QObject *plugin)
 			{
 				Plugins::IProtocolPlugin *ipp =
@@ -678,7 +686,8 @@ namespace LeechCraft
 				}
 
 				Plugins::ICLEntry *parentCL = qobject_cast<Plugins::ICLEntry*> (msg->ParentCLEntry ());
-				if (!ChatTabsManager_->IsActiveChat (parentCL))
+
+				if (ShouldCountUnread (parentCL, msg))
 					Q_FOREACH (QStandardItem *item, Entry2Items_ [parentCL])
 					{
 						int prevValue = item->data (CLRUnreadMsgCount).toInt ();

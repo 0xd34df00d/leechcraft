@@ -289,8 +289,7 @@ namespace Azoth
 			return;
 		}
 
-		if (!Core::Instance ().GetChatTabsManager ()->
-				IsActiveChat (GetEntry<Plugins::ICLEntry> ()))
+		if (Core::Instance ().ShouldCountUnread (GetEntry<Plugins::ICLEntry> (), msg))
 		{
 			++NumUnreadMsgs_;
 			ReformatTitle ();

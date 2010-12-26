@@ -86,7 +86,7 @@ namespace LeechCraft
 					emit raiseTab (tab);
 			}
 
-			bool ChatTabsManager::IsActiveChat (Plugins::ICLEntry *entry) const
+			bool ChatTabsManager::IsActiveChat (const Plugins::ICLEntry *entry) const
 			{
 				if (!Entry2Tab_.contains (entry->GetEntryID ()))
 					return false;

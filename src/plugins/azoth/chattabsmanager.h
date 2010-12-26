@@ -48,7 +48,7 @@ namespace LeechCraft
 				ChatTabsManager(QObject* = 0);
 
 				void OpenChat (const QModelIndex&);
-				bool IsActiveChat (Plugins::ICLEntry*) const;
+				bool IsActiveChat (const Plugins::ICLEntry*) const;
 				void UpdateEntryMapping (const QByteArray&, QObject*);
 				void SetChatEnabled (const QByteArray&, bool);
 			private slots:
