@@ -36,9 +36,8 @@ ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks SHARED
 	${ONLINEBOOKMARKS_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_onlinebookmarks
+	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
 	)
 INSTALL (TARGETS leechcraft_poshuku_onlinebookmarks DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES poshukuonlinebookmarkssettings.xml DESTINATION ${LC_SETTINGS_DEST})
