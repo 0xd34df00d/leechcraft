@@ -300,7 +300,7 @@ void Settings::handleStuff ()
 	Q_FOREACH (AbstractBookmarksService *item, BookmarksServices_)
 		names << item->GetName ();
 
-	int indexService;
+	int indexService = -1;
 	if (Ui_.Add_->isChecked ())
 		indexService = names.indexOf (GetSelectedName ());
 	else if (Ui_.Edit_->isChecked ())
