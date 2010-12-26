@@ -23,10 +23,6 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
-#define LOGIN_URL "https://secure.delicious.com/login"
-#define AUTH_OK "secure.del.ac4.yahoo.net uncompressed/chunked"
-
-
 namespace LeechCraft
 {
 	namespace Plugins
@@ -37,8 +33,11 @@ namespace LeechCraft
 			{
 				namespace OnlineBookmarks
 				{
+					const QString LogiUrl = "https://secure.delicious.com/login";
+					const QString AuthOk = "secure.del.ac4.yahoo.net uncompressed/chunked";
+					
 					DeliciousBookmarksService::DeliciousBookmarksService (QWidget *parent)
-					:ApiUrl_ (QUrl (LOGIN_URL))
+					: ApiUrl_ (QUrl (LogiUrl))
 					{
 					}
 
@@ -82,8 +81,8 @@ namespace LeechCraft
 
 					void DeliciousBookmarksService::readyReadReply ()
 					{
-						emit getValidReply (QString::fromUtf8 (Reply_->readAll ()).
-								contains (AUTH_OK, Qt::CaseInsensitive));
+						emit gotValidReply (QString::fromUtf8 (Reply_->readAll ()).
+								contains (AuthOk, Qt::CaseInsensitive));
 					}
 				};
 			};

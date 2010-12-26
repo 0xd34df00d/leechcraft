@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUSBOOKMARKSSERVICE_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUSBOOKMARKSSERVICE_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUSBOOKMARKSSERVICE_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUSBOOKMARKSSERVICE_H
 
-#include "abstractbookmarksservice.h"
 #include <QIcon>
 #include <QUrl>
 #include <QNetworkAccessManager>
+#include "abstractbookmarksservice.h"
 
 class QNetworkReply;
 
@@ -55,7 +55,7 @@ namespace LeechCraft
 						void getReplyFinished ();
 						void readyReadReply ();
 					signals:
-						void getValidReply (bool);
+						void gotValidReply (bool);
 					};
 				};
 			};
