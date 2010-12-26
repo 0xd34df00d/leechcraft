@@ -25,31 +25,31 @@ class QStandardItemModel;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
+	class Core : public QObject
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace OnlineBookmarks
-				{
-					class Core : public QObject
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Core ();
-					public:
-						static Core& Instance ();
-						void SendEntity (const Entity&);
-						QStandardItemModel* CreateAccountModel ();
-					signals:
-						void gotEntity (const LeechCraft::Entity&);
-						void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-					};
-				};
-			};
-		};
+		Core ();
+	public:
+		static Core& Instance ();
+		void SendEntity (const Entity&);
+		QStandardItemModel* CreateAccountModel ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
+};
+};
+};
+};
 };
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H

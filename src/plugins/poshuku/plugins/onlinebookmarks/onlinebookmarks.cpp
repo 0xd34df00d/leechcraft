@@ -28,98 +28,98 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
+	void OnlineBookmarks::Init (ICoreProxy_ptr proxy)
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace OnlineBookmarks
-				{
-					void OnlineBookmarks::Init (ICoreProxy_ptr proxy)
-					{
-						SettingsDialog_.reset (new Util::XmlSettingsDialog);
-						SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-								"poshukuonlinebookmarkssettings.xml");
-						
-						SettingsDialog_->SetCustomWidget ("Settings", 
-								new Settings (Core::Instance ().CreateAccountModel (), this));
-						
-						connect (&Core::Instance (),
-								SIGNAL (gotEntity (const LeechCraft::Entity&)),
-								this,
-								SIGNAL (gotEntity (const LeechCraft::Entity&)));
-						
-						connect (&Core::Instance (),
-								SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-								this,
-								SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-					}
-					
-					void OnlineBookmarks::SecondInit ()
-					{
-					}
-					
-					void OnlineBookmarks::Release ()
-					{
-					}
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"poshukuonlinebookmarkssettings.xml");
+		
+		SettingsDialog_->SetCustomWidget ("Settings", 
+				new Settings (Core::Instance ().CreateAccountModel (), this));
+		
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+	}
+	
+	void OnlineBookmarks::SecondInit ()
+	{
+	}
+	
+	void OnlineBookmarks::Release ()
+	{
+	}
 
-					QByteArray OnlineBookmarks::GetUniqueID () const
-					{
-						return "org.LeechCraft.Poshuku.OnlineBookmarks";
-					}
-					
-					QString OnlineBookmarks::GetName () const
-					{
-						return "Poshuku OnlineBookmarks";
-					}
+	QByteArray OnlineBookmarks::GetUniqueID () const
+	{
+		return "org.LeechCraft.Poshuku.OnlineBookmarks";
+	}
+	
+	QString OnlineBookmarks::GetName () const
+	{
+		return "Poshuku OnlineBookmarks";
+	}
 
-					QString OnlineBookmarks::GetInfo () const
-					{
-						return tr ("Sync local bookmarks with your accaunt in the"
-									"online bookmarks service such as Delicious.");
-					}
+	QString OnlineBookmarks::GetInfo () const
+	{
+		return tr ("Sync local bookmarks with your accaunt in the"
+					"online bookmarks service such as Delicious.");
+	}
 
-					QIcon OnlineBookmarks::GetIcon () const
-					{
-						return QIcon ();
-					}
+	QIcon OnlineBookmarks::GetIcon () const
+	{
+		return QIcon ();
+	}
 
-					QStringList OnlineBookmarks::Provides () const
-					{
-						return QStringList ();
-					}
+	QStringList OnlineBookmarks::Provides () const
+	{
+		return QStringList ();
+	}
 
-					QStringList OnlineBookmarks::Needs () const
-					{
-						return QStringList ();
-					}
+	QStringList OnlineBookmarks::Needs () const
+	{
+		return QStringList ();
+	}
 
-					QStringList OnlineBookmarks::Uses () const
-					{
-						return QStringList ();
-					}
+	QStringList OnlineBookmarks::Uses () const
+	{
+		return QStringList ();
+	}
 
-					void OnlineBookmarks::SetProvider (QObject *object, const QString& feature)
-					{
+	void OnlineBookmarks::SetProvider (QObject *object, const QString& feature)
+	{
 
-					}
-					
-					Util::XmlSettingsDialog_ptr OnlineBookmarks::GetSettingsDialog () const
-					{
-						return SettingsDialog_;
-					}
-					
-					QSet<QByteArray> OnlineBookmarks::GetPluginClasses () const
-					{
-						QSet<QByteArray> result;
-						result << "org.LeechCraft.Poshuku.Plugins/1.0";
-						return result;
-					}
-				};
-			};
-		};
-	};
+	}
+	
+	Util::XmlSettingsDialog_ptr OnlineBookmarks::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+	
+	QSet<QByteArray> OnlineBookmarks::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		return result;
+	}
+};
+};
+};
+};
 };
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_onlinebookmarks, LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::OnlineBookmarks);

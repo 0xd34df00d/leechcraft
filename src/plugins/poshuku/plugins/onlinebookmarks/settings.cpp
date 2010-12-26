@@ -37,8 +37,16 @@
 #include "interfaces/structures.h"
 #include "core.h"
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks;
-
+namespace LeechCraft
+{
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
 Settings::Settings (QStandardItemModel *model, OnlineBookmarks *parent)
 : OnlineBookmarks_ (parent)
 , Model_ (model)
@@ -402,3 +410,8 @@ void Settings::checkServiceAnswer (bool valid)
 		gotEntity (e);
 	}
 }
+};
+};
+};
+};
+};

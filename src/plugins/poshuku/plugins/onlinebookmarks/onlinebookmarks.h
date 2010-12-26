@@ -27,45 +27,45 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
+	class OnlineBookmarks 	: public QObject
+							, public IInfo
+							, public IHaveSettings
+							, public IPlugin2
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace OnlineBookmarks
-				{
-					class OnlineBookmarks 	: public QObject
-											, public IInfo
-											, public IHaveSettings
-											, public IPlugin2
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IHaveSettings IPlugin2)
-						
-						Util::XmlSettingsDialog_ptr SettingsDialog_;
-						
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						void Release ();
-						QByteArray GetUniqueID () const;
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
-						Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-						QSet<QByteArray> GetPluginClasses () const;
-					signals:
-						void gotEntity (LeechCraft::Entity);
-						void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-					};
-				};
-			};
-		};
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings IPlugin2)
+		
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		QSet<QByteArray> GetPluginClasses () const;
+	signals:
+		void gotEntity (LeechCraft::Entity);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
+};
+};
+};
+};
 };
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H

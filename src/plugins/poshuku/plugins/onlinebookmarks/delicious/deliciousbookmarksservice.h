@@ -28,39 +28,39 @@ class QNetworkReply;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
+	class DeliciousBookmarksService : public AbstractBookmarksService
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace OnlineBookmarks
-				{
-					class DeliciousBookmarksService : public AbstractBookmarksService
-					{
-						Q_OBJECT
-						
-						bool YahooID_;
-						QNetworkAccessManager Manager_;
-						QNetworkReply *Reply_;
-						QUrl ApiUrl_;
-						QByteArray RequestString_;
-					public:
-						DeliciousBookmarksService (QWidget* = 0);
-						QString GetName () const;
-						QIcon GetIcon () const;
-						void CheckValidAccountData (const QString&, const QString&);
-						void SetYahooID (bool);
-					public slots:
-						void getReplyFinished ();
-						void readyReadReply ();
-					signals:
-						void gotValidReply (bool);
-					};
-				};
-			};
-		};
+		Q_OBJECT
+		
+		bool YahooID_;
+		QNetworkAccessManager Manager_;
+		QNetworkReply *Reply_;
+		QUrl ApiUrl_;
+		QByteArray RequestString_;
+	public:
+		DeliciousBookmarksService (QWidget* = 0);
+		QString GetName () const;
+		QIcon GetIcon () const;
+		void CheckValidAccountData (const QString&, const QString&);
+		void SetYahooID (bool);
+	public slots:
+		void getReplyFinished ();
+		void readyReadReply ();
+	signals:
+		void gotValidReply (bool);
 	};
+};
+};
+};
+};
 };
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUSBOOKMARKSSERVICE_H

@@ -25,67 +25,67 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
+	const QString LogiUrl = "https://secure.delicious.com/login";
+	const QString AuthOk = "secure.del.ac4.yahoo.net uncompressed/chunked";
+	
+	DeliciousBookmarksService::DeliciousBookmarksService (QWidget *parent)
+	: ApiUrl_ (QUrl (LogiUrl))
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace OnlineBookmarks
-				{
-					const QString LogiUrl = "https://secure.delicious.com/login";
-					const QString AuthOk = "secure.del.ac4.yahoo.net uncompressed/chunked";
-					
-					DeliciousBookmarksService::DeliciousBookmarksService (QWidget *parent)
-					: ApiUrl_ (QUrl (LogiUrl))
-					{
-					}
+	}
 
-					QString DeliciousBookmarksService::GetName () const
-					{
-						return QString ("Del.icio.us");
-					}
-					
-					QIcon DeliciousBookmarksService::GetIcon () const
-					{
-						return QIcon (":delicious/resources/images/delicious.png");
-					}
-					
-					void DeliciousBookmarksService::CheckValidAccountData (const QString& login, const QString& pass)
-					{
-						QString loginString = "username=" + login + "&password=" + pass;
-						RequestString_ = QByteArray (loginString.toStdString ().c_str ());
-						QNetworkRequest request (ApiUrl_);
-						Reply_ = Manager_.post (request, RequestString_);
-						
-						connect (Reply_, 
-								SIGNAL (finished ()),
-								this,
-								SLOT (getReplyFinished ()));
-						
-						connect (Reply_, 
-								SIGNAL (readyRead ()),
-								this, 
-								SLOT (readyReadReply ()));
-					}
-					
-					void DeliciousBookmarksService::SetYahooID (bool yahooId)
-					{
-						YahooID_ = yahooId;
-					}
-					
-					void DeliciousBookmarksService::getReplyFinished ()
-					{
-						Reply_->deleteLater ();
-					}
+	QString DeliciousBookmarksService::GetName () const
+	{
+		return QString ("Del.icio.us");
+	}
+	
+	QIcon DeliciousBookmarksService::GetIcon () const
+	{
+		return QIcon (":delicious/resources/images/delicious.png");
+	}
+	
+	void DeliciousBookmarksService::CheckValidAccountData (const QString& login, const QString& pass)
+	{
+		QString loginString = "username=" + login + "&password=" + pass;
+		RequestString_ = QByteArray (loginString.toStdString ().c_str ());
+		QNetworkRequest request (ApiUrl_);
+		Reply_ = Manager_.post (request, RequestString_);
+		
+		connect (Reply_, 
+				SIGNAL (finished ()),
+				this,
+				SLOT (getReplyFinished ()));
+		
+		connect (Reply_, 
+				SIGNAL (readyRead ()),
+				this, 
+				SLOT (readyReadReply ()));
+	}
+	
+	void DeliciousBookmarksService::SetYahooID (bool yahooId)
+	{
+		YahooID_ = yahooId;
+	}
+	
+	void DeliciousBookmarksService::getReplyFinished ()
+	{
+		Reply_->deleteLater ();
+	}
 
-					void DeliciousBookmarksService::readyReadReply ()
-					{
-						emit gotValidReply (QString::fromUtf8 (Reply_->readAll ()).
-								contains (AuthOk, Qt::CaseInsensitive));
-					}
-				};
-			};
-		};
-	};
+	void DeliciousBookmarksService::readyReadReply ()
+	{
+		emit gotValidReply (QString::fromUtf8 (Reply_->readAll ()).
+				contains (AuthOk, Qt::CaseInsensitive));
+	}
+};
+};
+};
+};
 };
