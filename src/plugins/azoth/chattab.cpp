@@ -482,6 +482,9 @@ namespace Azoth
 			case Plugins::IMessage::MTEventMessage:
 				string.append ("! ");
 				break;
+			case Plugins::IMessage::MTStatusMessage:
+				string.append ("* ");
+				break;
 			}
 			break;
 		}
