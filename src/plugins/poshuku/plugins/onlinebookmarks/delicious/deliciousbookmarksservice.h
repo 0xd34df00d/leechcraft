@@ -16,12 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
-#include <QObject>
-#include <interfaces/structures.h>
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUSBOOKMARKSSERVICE_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUSBOOKMARKSSERVICE_H
 
-class QStandardItemModel;
+#include <QIcon>
+#include <QUrl>
+#include <QNetworkAccessManager>
+#include "abstractbookmarksservice.h"
+
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -33,21 +36,26 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class Core : public QObject
+	class DeliciousBookmarksService : public AbstractBookmarksService
 	{
 		Q_OBJECT
-
-		QStandardItemModel *Model_;
-
-		Core ();
+		
+		bool YahooID_;
+		QNetworkAccessManager Manager_;
+		QNetworkReply *Reply_;
+		QUrl ApiUrl_;
+		QByteArray RequestString_;
 	public:
-		static Core& Instance ();
-		void Init ();
-		void SendEntity (const Entity&);
-		QStandardItemModel* GetAccountModel () const;
+		DeliciousBookmarksService (QWidget* = 0);
+		QString GetName () const;
+		QIcon GetIcon () const;
+		void CheckValidAccountData (const QString&, const QString&);
+		void SetYahooID (bool);
+	public slots:
+		void getReplyFinished ();
+		void readyReadReply ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void gotValidReply (bool);
 	};
 };
 };
@@ -55,4 +63,4 @@ namespace OnlineBookmarks
 };
 };
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUSBOOKMARKSSERVICE_H

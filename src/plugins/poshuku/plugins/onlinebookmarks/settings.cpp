@@ -28,7 +28,6 @@
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QMessageBox>
-#include <QSettings>
 #include <QDialog>
 #include <QDateTime>
 #include <plugininterface/util.h>
@@ -36,9 +35,18 @@
 #include "delicious/deliciousbookmarksservice.h"
 #include "interfaces/structures.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks;
-
+namespace LeechCraft
+{
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
 Settings::Settings (QStandardItemModel *model, OnlineBookmarks *parent)
 : OnlineBookmarks_ (parent)
 , Model_ (model)
@@ -193,19 +201,14 @@ QString Settings::GetPassword (const QString& account, const QString& service)
 
 void Settings::ReadSettings ()
 {
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-	
-	settings.beginGroup ("Sync");
-	Ui_.Bookmarks2Services_->setChecked (settings.
-			value ("IsLocal2Service", 0).toBool ());
-	Ui_.Bookmarks2ServicesPeriod_->setCurrentIndex (settings.
-			value ("IsLocal2ServicePeriod", 0).toInt ());
-	Ui_.Services2Bookmarks_->setChecked (settings.
-			value ("IsService2Local", 1).toBool ());
-	Ui_.Services2BookmarksPeriod_->setCurrentIndex (settings.
-			value ("IsService2LocalPeriod", 0).toInt ());
-	settings.endGroup ();
+	Ui_.Bookmarks2Services_->setChecked (XmlSettingsManager::Instance ()->
+			Property ("Sync/IsLocal2Service", 0).toBool ());
+	Ui_.Bookmarks2ServicesPeriod_->setCurrentIndex (XmlSettingsManager::Instance ()->
+			Property ("Sync/IsLocal2ServicePeriod", 0).toInt ());
+	Ui_.Services2Bookmarks_->setChecked (XmlSettingsManager::Instance ()->
+			Property ("Sync/IsService2Local", 1).toBool ());
+	Ui_.Services2BookmarksPeriod_->setCurrentIndex (XmlSettingsManager::Instance ()->
+			Property ("Sync/IsService2LocalPeriod", 0).toInt ());
 }
 
 void Settings::SetApplyEnabled (const QString& firestString, const QString& secondString)
@@ -224,17 +227,18 @@ QString Settings::GetSelectedName () const
 
 void Settings::accept ()
 {
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-	
-	settings.beginGroup ("Sync");
-	settings.setValue ("IsLocal2Service", Ui_.Bookmarks2Services_->isChecked ());
-	settings.setValue ("IsLocal2ServicePeriod", Ui_.Bookmarks2ServicesPeriod_->currentIndex ());
-	settings.setValue ("IsLocal2ServiceLastSyncDate", QDateTime::currentDateTime ());
-	settings.setValue ("IsService2Local", Ui_.Services2Bookmarks_->isChecked ());
-	settings.setValue ("IsService2LocalPeriod", Ui_.Services2BookmarksPeriod_->currentIndex ());
-	settings.setValue ("IsService2LocalLastSyncDate", QDateTime::currentDateTime ());
-	settings.endGroup ();
+	XmlSettingsManager::Instance ()->
+			setProperty ("Sync/IsLocal2Service", Ui_.Bookmarks2Services_->isChecked ());
+	XmlSettingsManager::Instance ()->
+			setProperty ("Sync/IsLocal2ServicePeriod", Ui_.Bookmarks2ServicesPeriod_->currentIndex ());
+	XmlSettingsManager::Instance ()->
+			setProperty ("Sync/IsLocal2ServiceLastSyncDate", QDateTime::currentDateTime ());
+	XmlSettingsManager::Instance ()->
+			setProperty ("Sync/IsService2Local", Ui_.Services2Bookmarks_->isChecked ());
+	XmlSettingsManager::Instance ()->
+			setProperty ("Sync/IsService2LocalPeriod", Ui_.Services2BookmarksPeriod_->currentIndex ());
+	XmlSettingsManager::Instance ()->
+			setProperty ("Sync/IsService2LocalLastSyncDate", QDateTime::currentDateTime ());
 }
 
 void Settings::on_Add__toggled (bool checked)
@@ -252,7 +256,7 @@ void Settings::on_Add__toggled (bool checked)
         LoginFrame_->hide ();
 		ClearFrameState ();
     }
-}
+} 
 
 void Settings::on_Edit__toggled (bool checked)
 {
@@ -367,21 +371,19 @@ void Settings::checkServiceAnswer (bool valid)
 {
 	if (valid)
 	{
-		QString service = Ui_.Services_->currentText ();
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-		
-		settings.beginGroup ("Accounts");
-		if (settings.value (service).isNull ())
-			settings.setValue (service, Login_->text ());
+		QString service = "Account/" + Ui_.Services_->currentText ();
+		if (XmlSettingsManager::Instance ()->property (service.toStdString ().c_str ()).isNull ())
+			XmlSettingsManager::Instance ()->
+					setProperty (service.toStdString ().c_str (), Login_->text ());
 		else
 		{
-			QStringList loginList = settings.value (service).toStringList ();
+			QStringList loginList = XmlSettingsManager::Instance ()->
+					property (service.toStdString ().c_str ()).toStringList ();
 			loginList << Login_->text ();
-			settings.setValue (service, loginList);
+			XmlSettingsManager::Instance ()->
+					setProperty (service.toStdString ().c_str (), loginList);
 		}
-		settings.endGroup ();
-		
+
 		QList<QStandardItem*> items = Model_->findItems (service);
 		QStandardItem *serviceItem;
 		if (!items.size ())
@@ -402,3 +404,8 @@ void Settings::checkServiceAnswer (bool valid)
 		gotEntity (e);
 	}
 }
+};
+};
+};
+};
+};

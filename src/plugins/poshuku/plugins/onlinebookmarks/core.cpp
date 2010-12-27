@@ -24,56 +24,60 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
+	Core::Core ()
 	{
-		namespace Poshuku
+		 Init ();
+	}
+
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
+
+	void Core::SendEntity (const LeechCraft::Entity& e)
+	{
+		emit gotEntity (e);
+	}
+
+	void Core::Init ()
+	{
+		Model_ = new QStandardItemModel;
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
+		settings.beginGroup ("Accounts");
+		
+		Q_FOREACH (const QString& item, settings.childKeys ())
 		{
-			namespace Plugins
+			QList<QStandardItem*> itemList;
+			
+			Q_FOREACH (const QString& login, settings.value (item).toStringList ())
 			{
-				namespace OnlineBookmarks
-				{
-					Core::Core ()
-					{
-					}
-					
-					Core& Core::Instance ()
-					{
-						static Core c;
-						return c;
-					}
-					
-					void Core::SendEntity (const LeechCraft::Entity& e)
-					{
-						emit gotEntity (e);
-					}
-					
-					QStandardItemModel* Core::CreateAccountModel ()
-					{
-						QStandardItemModel *model = new QStandardItemModel;
-						QSettings settings (QCoreApplication::organizationName (),
-								QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-						settings.beginGroup ("Accounts");
-						
-						Q_FOREACH (const QString& item, settings.childKeys ())
-						{
-							QList<QStandardItem*> itemList;
-							
-							Q_FOREACH (const QString& login, settings.value (item).toStringList ())
-							{
-								QStandardItem *loginItem = new QStandardItem (login);
-								loginItem->setCheckable (true);
-								itemList << loginItem;
-							}
-							QStandardItem *service = new QStandardItem (item);
-							model->appendRow (service);
-							service->appendRows (itemList);
-						}
-						settings.endGroup ();
-						
-						return model;
-					}
-				};
-			};
-		};
-	};
+				QStandardItem *loginItem = new QStandardItem (login);
+				loginItem->setCheckable (true);
+				itemList << loginItem;
+			}
+			QStandardItem *service = new QStandardItem (item);
+			Model_->appendRow (service);
+			service->appendRows (itemList);
+		}
+		settings.endGroup ();
+	}
+
+	QStandardItemModel* Core::GetAccountModel () const
+	{
+		return Model_;
+	}
+};
+};
+};
+};
 };
