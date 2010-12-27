@@ -92,6 +92,7 @@ namespace Xoox
 				const QString&,
 				const GlooxAccountState&,
 				GlooxAccount*);
+		virtual ~ClientConnection ();
 
 		void SetState (const GlooxAccountState&);
 		void Synchronize ();

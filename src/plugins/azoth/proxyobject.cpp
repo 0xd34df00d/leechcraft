@@ -148,16 +148,15 @@ namespace Azoth
 			QFileInfo fi (osptr->path);
 			if (fi.exists ())
 			{
-				char buf [128];
 				QFile f (osptr->path);
 				f.open (QIODevice::ReadOnly);
-				f.readLine (buf, 128);
+				QString data = QString (f.read (1024)).trimmed ();
 				if (osptr->name.isEmpty ())
-					return QString::fromLatin1 (buf);
+					return data;
 				else
 					return QString ("%1 (%2)")
 							.arg (osptr->name)
-							.arg (QString::fromUtf8 (buf).trimmed ());
+							.arg (data);
 			}
 			++osptr;
 		}

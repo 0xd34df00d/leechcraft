@@ -102,6 +102,11 @@ namespace Xoox
 		IsConnected_ = Client_->connect (false);
 	}
 
+	ClientConnection::~ClientConnection ()
+	{
+		qDeleteAll (RoomHandlers_);
+	}
+
 	void ClientConnection::SetState (const GlooxAccountState& state)
 	{
 		gloox::Presence::PresenceType pres =

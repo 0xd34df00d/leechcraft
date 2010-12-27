@@ -71,6 +71,19 @@ namespace LeechCraft
 				return c;
 			}
 
+			void Core::Release ()
+			{
+				Q_FOREACH (Plugins::ICLEntry *entry, Entry2Items_.keys ())
+				{
+					if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
+						continue;
+
+					Plugins::IMUCEntry *mucEntry =
+							qobject_cast<Plugins::IMUCEntry*> (entry->GetObject ());
+					mucEntry->Leave ();
+				}
+			}
+
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;

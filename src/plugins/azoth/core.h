@@ -119,8 +119,8 @@ namespace LeechCraft
 				typedef QHash<const QAction*, QList<CLEntryActionArea> > Action2Areas_t;
 				Action2Areas_t Action2Areas_;
 			public:
-
 				static Core& Instance ();
+				void Release ();
 
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;

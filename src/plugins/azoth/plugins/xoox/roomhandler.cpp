@@ -42,8 +42,7 @@ namespace Plugins
 namespace Xoox
 {
 	RoomHandler::RoomHandler (GlooxAccount* account)
-	: QObject (account)
-	, Account_ (account)
+	: Account_ (account)
 	, CLEntry_ (0)
 	, RoomHasBeenEntered_ (false)
 	{
@@ -313,6 +312,8 @@ namespace Xoox
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
 
+		Nick2Entry_.clear ();
+
 		Room_->leave (msg.toUtf8 ().constData ());
 		RemoveThis ();
 	}
@@ -371,8 +372,9 @@ namespace Xoox
 	{
 		Account_->handleEntryRemoved (CLEntry_);
 
-		Account_->GetClientConnection ()->Unregister (this);;
+		Account_->GetClientConnection ()->Unregister (this);
 
+		Room_.reset ();
 		deleteLater ();
 	}
 }

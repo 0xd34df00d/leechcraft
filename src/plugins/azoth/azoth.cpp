@@ -104,6 +104,7 @@ namespace LeechCraft
 
 			void Plugin::Release ()
 			{
+				Core::Instance ().Release ();
 			}
 
 			QByteArray Plugin::GetUniqueID () const
