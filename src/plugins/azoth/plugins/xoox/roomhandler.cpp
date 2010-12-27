@@ -373,7 +373,7 @@ namespace Xoox
 
 		Account_->GetClientConnection ()->Unregister (this);;
 
-		CLEntry_->deleteLater ();
+		deleteLater ();
 	}
 }
 }
