@@ -18,8 +18,6 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
-
-#include <QObject>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
@@ -42,9 +40,9 @@ namespace OnlineBookmarks
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IPlugin2)
-		
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		
+		boost::shared_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

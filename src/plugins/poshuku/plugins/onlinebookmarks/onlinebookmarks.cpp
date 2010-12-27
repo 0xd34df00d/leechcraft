@@ -38,28 +38,30 @@ namespace OnlineBookmarks
 {
 	void OnlineBookmarks::Init (ICoreProxy_ptr proxy)
 	{
+		Translator_.reset (Util::InstallTranslator ("poshuku_onlinebookmarks"));
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
-		
-		SettingsDialog_->SetCustomWidget ("Settings", 
+
+		SettingsDialog_->SetCustomWidget ("Settings",
 				new Settings (Core::Instance ().GetAccountModel (), this));
-		
+
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		
+
 		connect (&Core::Instance (),
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 	}
-	
+
 	void OnlineBookmarks::SecondInit ()
 	{
 	}
-	
+
 	void OnlineBookmarks::Release ()
 	{
 	}
@@ -68,7 +70,7 @@ namespace OnlineBookmarks
 	{
 		return "org.LeechCraft.Poshuku.OnlineBookmarks";
 	}
-	
+
 	QString OnlineBookmarks::GetName () const
 	{
 		return "Poshuku OnlineBookmarks";
@@ -103,12 +105,12 @@ namespace OnlineBookmarks
 	{
 
 	}
-	
+
 	Util::XmlSettingsDialog_ptr OnlineBookmarks::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
-	
+
 	QSet<QByteArray> OnlineBookmarks::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
