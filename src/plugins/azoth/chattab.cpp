@@ -34,6 +34,7 @@
 #include "mucsubjectdialog.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -437,6 +438,10 @@ namespace Azoth
 
 		if (msg->GetDirection () == Plugins::IMessage::DOut &&
 				other->GetEntryType () == Plugins::ICLEntry::ETMUC)
+			return;
+
+		if (msg->GetMessageSubType () == Plugins::IMessage::MSTParticipantStatusChange &&
+				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();

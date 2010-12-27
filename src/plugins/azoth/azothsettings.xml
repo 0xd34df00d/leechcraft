@@ -19,4 +19,10 @@
 			<label lang="en" value="Jump to new tab on open" />
 		</item>
 	</page>
+	<page>
+		<label lang="en" value="Chat windows" />
+		<item type="checkbox" property="ShowStatusChangesEvents" default="false">
+			<label lang="en" value="Show status changes events in chat window" />
+		</item>
+	</page>
 </settings>
