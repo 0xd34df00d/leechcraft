@@ -27,6 +27,7 @@
 class QAbstractItemModel;
 class QStandardItemModel;
 class QSortFilterProxyModel;
+class QFileSystemWatcher;
 
 namespace LeechCraft
 {
@@ -46,6 +47,8 @@ namespace LeechCraft
 			QStringList NameFilters_;
 			QDir::Filters AttrFilters_;
 			QSortFilterProxyModel *SortModel_;
+
+			QFileSystemWatcher *Watcher_;
 		public:
 			ResourceLoader (const QString& relPath, QObject* = 0);
 
@@ -61,6 +64,8 @@ namespace LeechCraft
 			void SetNameFilters (const QStringList&);
 		private:
 			void ScanPath (const QString&);
+		private slots:
+			void handleDirectoryChanged (const QString&);
 		};
 	}
 }

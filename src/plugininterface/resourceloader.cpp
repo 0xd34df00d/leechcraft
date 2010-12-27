@@ -21,6 +21,7 @@
 #include <QDir>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QFileSystemWatcher>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -33,6 +34,7 @@ namespace LeechCraft
 		, SubElemModel_ (new QStandardItemModel (this))
 		, SortModel_ (new QSortFilterProxyModel (this))
 		, AttrFilters_ (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable)
+		, Watcher_ (new QFileSystemWatcher (this))
 		{
 			if (RelativePath_.startsWith ('/'))
 				RelativePath_ = RelativePath_.mid (1);
@@ -42,6 +44,11 @@ namespace LeechCraft
 			SortModel_->setDynamicSortFilter (true);
 			SortModel_->setSourceModel (SubElemModel_);
 			SortModel_->sort (0);
+
+			connect (Watcher_,
+					SIGNAL (directoryChanged (const QString&)),
+					this,
+					SLOT (handleDirectoryChanged (const QString&)));
 		}
 
 		void ResourceLoader::AddLocalPrefix (QString prefix)
@@ -53,6 +60,8 @@ namespace LeechCraft
 			LocalPrefixesChain_ << result;
 
 			ScanPath (result + RelativePath_);
+
+			Watcher_->addPath (result + RelativePath_);
 		}
 
 		void ResourceLoader::AddGlobalPrefix ()
@@ -69,6 +78,8 @@ namespace LeechCraft
 			{
 				GlobalPrefixesChain_ << prefix;
 				ScanPath (prefix + RelativePath_);
+
+				Watcher_->addPath (prefix + RelativePath_);
 			}
 		}
 
@@ -118,6 +129,15 @@ namespace LeechCraft
 
 				SubElemModel_->appendRow (new QStandardItem (entry));
 			}
+		}
+
+		void ResourceLoader::handleDirectoryChanged (const QString& path)
+		{
+			QFileInfo fi (path);
+			if (fi.exists () &&
+					fi.isDir () &&
+					fi.isReadable ())
+				ScanPath (path);
 		}
 	}
 }
