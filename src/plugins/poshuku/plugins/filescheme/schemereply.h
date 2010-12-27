@@ -23,36 +23,36 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace FileScheme
+{
+	class SchemeReply : public QNetworkReply
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace FileScheme
-				{
-					class SchemeReply : public QNetworkReply
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						QBuffer Buffer_;
-					public:
-						SchemeReply (const QNetworkRequest&, QObject* = 0);
-						virtual ~SchemeReply ();
+		QBuffer Buffer_;
+	public:
+		SchemeReply (const QNetworkRequest&, QObject* = 0);
+		virtual ~SchemeReply ();
 
-						virtual qint64 bytesAvailable () const;
-						virtual void abort ();
-						virtual void close ();
-					protected:
-						virtual qint64 readData (char*, qint64);
-					private slots:
-						void list ();
-					};
-				};
-			};
-		};
+		virtual qint64 bytesAvailable () const;
+		virtual void abort ();
+		virtual void close ();
+	protected:
+		virtual qint64 readData (char*, qint64);
+	private slots:
+		void list ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
 
