@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="/delicious" >
+  <qresource prefix="/plugins/poshuku/plugins/delicious" >
     <file>resources/images/delicious.png</file>
   </qresource>
 </RCC>

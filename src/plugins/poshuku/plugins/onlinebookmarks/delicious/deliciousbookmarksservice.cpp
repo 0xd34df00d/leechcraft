@@ -35,7 +35,7 @@ namespace OnlineBookmarks
 {
 	const QString LogiUrl = "https://secure.delicious.com/login";
 	const QString AuthOk = "secure.del.ac4.yahoo.net uncompressed/chunked";
-	
+
 	DeliciousBookmarksService::DeliciousBookmarksService (QWidget *parent)
 	: ApiUrl_ (QUrl (LogiUrl))
 	{
@@ -45,35 +45,35 @@ namespace OnlineBookmarks
 	{
 		return QString ("Del.icio.us");
 	}
-	
+
 	QIcon DeliciousBookmarksService::GetIcon () const
 	{
-		return QIcon (":delicious/resources/images/delicious.png");
+		return QIcon (":plugins/poshuku/plugins/delicious/resources/images/delicious.png");
 	}
-	
+
 	void DeliciousBookmarksService::CheckValidAccountData (const QString& login, const QString& pass)
 	{
 		QString loginString = "username=" + login + "&password=" + pass;
-		RequestString_ = QByteArray (loginString.toStdString ().c_str ());
+		RequestString_ = QByteArray (loginString.toUtf8 ());
 		QNetworkRequest request (ApiUrl_);
 		Reply_ = Manager_.post (request, RequestString_);
-		
-		connect (Reply_, 
+
+		connect (Reply_,
 				SIGNAL (finished ()),
 				this,
 				SLOT (getReplyFinished ()));
-		
-		connect (Reply_, 
+
+		connect (Reply_,
 				SIGNAL (readyRead ()),
-				this, 
+				this,
 				SLOT (readyReadReply ()));
 	}
-	
+
 	void DeliciousBookmarksService::SetYahooID (bool yahooId)
 	{
 		YahooID_ = yahooId;
 	}
-	
+
 	void DeliciousBookmarksService::getReplyFinished ()
 	{
 		Reply_->deleteLater ();

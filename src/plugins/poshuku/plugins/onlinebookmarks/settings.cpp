@@ -52,21 +52,21 @@ namespace OnlineBookmarks
 	, Model_ (model)
 	{
 		Ui_.setupUi (this);
-		
+
 		Ui_.AccauntsView_->setModel (model);
 		Ui_.AccauntsView_->expandAll ();
-		
+
 		Ui_.Edit_->setEnabled (false);
-		
+
 		Ui_.Services_->setCurrentIndex (0);
-		
+
 		ReadSettings ();
-		
+
 		LoginFrame_ = CreateLoginWidget (parentWidget ());
 		LoginFrame_->hide ();
-		
+
 		BookmarksServices_ << new DeliciousBookmarksService (this);
-		
+
 		SetupServices ();
 	}
 
@@ -74,28 +74,28 @@ namespace OnlineBookmarks
 	{
 		QFrame *frame = new QFrame (parent);
 		frame->setMaximumWidth (200);
-		
+
 		QGridLayout *gridMainLay = new QGridLayout (frame);
 		gridMainLay->setMargin (0);
-		
+
 		QGroupBox *groupBox = new QGroupBox;
 		gridMainLay->addWidget (groupBox);
 
 		QGridLayout *gridLay = new QGridLayout (groupBox);
-		
-		YahooID_ = new QCheckBox ("Yahoo ID"); 
-		
+
+		YahooID_ = new QCheckBox ("Yahoo ID");
+
 		QLabel *loginLable = new QLabel ("Login");
 		Login_ = new QLineEdit;
-		
+
 		QLabel *passwordLable = new QLabel ("Password");
 		Password_ = new QLineEdit;
 		Password_->setEchoMode (QLineEdit::PasswordEchoOnEdit);
-		
+
 		Apply_ = new QPushButton ("Apply");
 		Apply_->setEnabled (false);
 		Apply_->show ();
-		
+
 		gridLay->setMargin (0);
 		gridLay->addWidget (loginLable, 0, 0);
 		gridLay->addWidget (Login_, 0, 1);
@@ -103,23 +103,23 @@ namespace OnlineBookmarks
 		gridLay->addWidget (passwordLable, 2, 0);
 		gridLay->addWidget (Password_, 2, 1);
 		gridLay->addWidget (Apply_, 3, 0, 1, 2);
-		
+
 
 		connect (Login_,
 				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (handleLoginTextChanged (QString)));
-		
+
 		connect (Password_,
 				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (handlePasswordTextChanged (QString)));
-		
+
 		connect (Apply_,
 				SIGNAL (released ()),
 				this,
 				SLOT (handleStuff ()));
-		
+
 		return frame;
 	}
 
@@ -134,16 +134,16 @@ namespace OnlineBookmarks
 	{
 		ServicesModel_ = new QStandardItemModel (this);
 		Ui_.ActiveServices_->setModel (ServicesModel_);
-		
+
 		Q_FOREACH (AbstractBookmarksService *as, BookmarksServices_)
-		{	
+		{
 			Ui_.Services_->addItem (as->GetIcon (), as->GetName (),
 					QVariant::fromValue<QObject*> (as));
 
 			QStandardItem *item = new QStandardItem (as->GetIcon (), as->GetName ());
 			item->setCheckable (true);
 			ServicesModel_->appendRow (item);
-			
+
 			connect (as,
 					SIGNAL (gotValidReply (bool)),
 					this,
@@ -152,16 +152,16 @@ namespace OnlineBookmarks
 	}
 
 	void Settings::SetPassword (const QString& password, const QString& account, const QString& service)
-	{ 
+	{
 		QList<QVariant> keys;
-		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." + 
+		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." +
 				service + "/" + account;
 
 		QList<QVariant> passwordVar;
 		passwordVar << password;
 		QList<QVariant> values;
 		values << QVariant (passwordVar);
-		
+
 		Entity e = Util::MakeEntity (keys,
 				QString (),
 				Internal,
@@ -213,10 +213,10 @@ namespace OnlineBookmarks
 
 	void Settings::SetApplyEnabled (const QString& firestString, const QString& secondString)
 	{
-		Apply_->setEnabled (!(firestString.isEmpty () || 
+		Apply_->setEnabled (!(firestString.isEmpty () ||
 				secondString.isEmpty () ||
 				!Ui_.Edit_->isChecked () &&
-				!Model_->findItems (Login_->text (), 
+				!Model_->findItems (Login_->text (),
 						Qt::MatchFixedString | Qt::MatchRecursive).isEmpty ()));
 	}
 
@@ -256,7 +256,7 @@ namespace OnlineBookmarks
 			LoginFrame_->hide ();
 			ClearFrameState ();
 		}
-	} 
+	}
 
 	void Settings::on_Edit__toggled (bool checked)
 	{
@@ -267,7 +267,7 @@ namespace OnlineBookmarks
 			Ui_.verticalLayout_2->insertWidget (2, LoginFrame_);
 			LoginFrame_->show ();
 			Login_->setText (Ui_.AccauntsView_->currentIndex ().data ().toString ());
-			Password_->setText (GetPassword (Login_->text (), 
+			Password_->setText (GetPassword (Login_->text (),
 					Ui_.AccauntsView_->currentIndex ().parent ().data ().toString ()));
 		}
 		else
@@ -285,24 +285,24 @@ namespace OnlineBookmarks
 		else
 		{
 			QList<QVariant> keys;
-			keys << "org.LeechCraft.Poshuku.OnlineBookmarks." + 
-					Ui_.AccauntsView_->currentIndex ().parent ().data ().toString () + 
+			keys << "org.LeechCraft.Poshuku.OnlineBookmarks." +
+					Ui_.AccauntsView_->currentIndex ().parent ().data ().toString () +
 					"/" + Ui_.AccauntsView_->currentIndex ().data ().toString ();
-			
+
 			Entity e = Util::MakeEntity (keys,
 					QString (),
 					Internal,
 					"x-leechcraft/data-persistent-clear");
-			
+
 			LoginFrame_->hide ();
-			Model_->removeRow (Ui_.AccauntsView_->currentIndex ().row (), 
+			Model_->removeRow (Ui_.AccauntsView_->currentIndex ().row (),
 					Ui_.AccauntsView_->currentIndex ().parent ());
-			
+
 			if (Ui_.Add_->isChecked ())
 				Ui_.Add_->toggle ();
 			else if (Ui_.Edit_->isChecked ())
 				Ui_.Edit_->toggle ();
-			
+
 			Core::Instance ().SendEntity (e);
 		}
 	}
@@ -322,9 +322,9 @@ namespace OnlineBookmarks
 
 		BookmarksServices_.at (indexService)->
 				CheckValidAccountData (Login_->text (), Password_->text ());
-		
+
 		ClearFrameState ();
-		
+
 		if (Ui_.Add_->isChecked ())
 			Ui_.Add_->toggle ();
 		else if (Ui_.Edit_->isChecked ())
@@ -355,7 +355,7 @@ namespace OnlineBookmarks
 		{
 			if (Ui_.Edit_->isChecked ())
 				Ui_.Edit_->toggle ();
-			
+
 			Ui_.Edit_->setEnabled (false);
 			Ui_.Delete_->setEnabled (false);
 		}
@@ -387,20 +387,20 @@ namespace OnlineBookmarks
 			QList<QStandardItem*> items = Model_->findItems (service);
 			QStandardItem *serviceItem;
 			if (!items.size ())
-			{	
+			{
 				serviceItem = new QStandardItem (service);
 				Model_->appendRow (serviceItem);
 			}
 			else
 				 serviceItem = items.at (0);
-			
+
 			serviceItem->appendRow (new QStandardItem (Login_->text ()));
-			
-			SetPassword (Password_->text (), Login_->text (), GetSelectedName ());		
+
+			SetPassword (Password_->text (), Login_->text (), GetSelectedName ());
 		}
 		else
-		{	
-			Entity e = Util::MakeNotification ("Poshuku", tr("Invalid account data"), PWarning_);
+		{
+			Entity e = Util::MakeNotification ("Poshuku", tr ("Invalid account data"), PWarning_);
 			gotEntity (e);
 		}
 	}
