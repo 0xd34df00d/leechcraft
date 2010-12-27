@@ -23,32 +23,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
+	class AbstractBookmarksService : public QObject
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace OnlineBookmarks
-				{
-					class AbstractBookmarksService : public QObject
-					{
-						Q_OBJECT
-					public:
-						AbstractBookmarksService (QObject *parent = 0) : QObject (parent) {}
-						~AbstractBookmarksService () {}
+		Q_OBJECT
+	public:
+		AbstractBookmarksService (QObject *parent = 0) : QObject (parent) {}
+		~AbstractBookmarksService () {}
 
-						virtual QString GetName () const = 0;
-						virtual QIcon GetIcon () const = 0;
-						virtual void CheckValidAccountData (const QString&, const QString&) = 0;
-					signals:
-						void gotValidReply (bool);
-					};
-				};
-			};
-		};
+		virtual QString GetName () const = 0;
+		virtual QIcon GetIcon () const = 0;
+		virtual void CheckValidAccountData (const QString&, const QString&) = 0;
+	signals:
+		void gotValidReply (bool);
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
 

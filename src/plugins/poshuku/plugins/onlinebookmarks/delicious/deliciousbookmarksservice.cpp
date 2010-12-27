@@ -84,8 +84,9 @@ namespace OnlineBookmarks
 		emit gotValidReply (QString::fromUtf8 (Reply_->readAll ()).
 				contains (AuthOk, Qt::CaseInsensitive));
 	}
-};
-};
-};
-};
-};
+}
+}
+}
+}
+}
+

@@ -63,9 +63,11 @@ namespace OnlineBookmarks
 		void gotEntity (LeechCraft::Entity);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
-};
-};
-};
-};
-};
+}
+}
+}
+}
+}
+
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
+

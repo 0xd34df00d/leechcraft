@@ -41,3 +41,4 @@ QSettings *XmlSettingsManager::BeginSettings () const
 	return new QSettings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
 }
+

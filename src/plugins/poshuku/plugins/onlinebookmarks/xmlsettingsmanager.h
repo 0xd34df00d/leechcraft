@@ -23,30 +23,31 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace OnlineBookmarks
+{
+	class XmlSettingsManager 
+			: public LeechCraft::Util::BaseSettingsManager
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace OnlineBookmarks
-				{
-					class XmlSettingsManager 
-							: public LeechCraft::Util::BaseSettingsManager
-					{
-						Q_OBJECT
-						
-						XmlSettingsManager ();
-					protected:
-						virtual void EndSettings (QSettings*) const;
-						virtual QSettings *BeginSettings() const;
-					public:
-						static XmlSettingsManager *Instance ();
-					};
-				};
-			};
-		};
+		Q_OBJECT
+		
+		XmlSettingsManager ();
+	protected:
+		virtual void EndSettings (QSettings*) const;
+		virtual QSettings *BeginSettings() const;
+	public:
+		static XmlSettingsManager *Instance ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+

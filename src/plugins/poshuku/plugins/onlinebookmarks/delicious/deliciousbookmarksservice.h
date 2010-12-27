@@ -57,10 +57,11 @@ namespace OnlineBookmarks
 	signals:
 		void gotValidReply (bool);
 	};
-};
-};
-};
-};
-};
+}
+}
+}
+}
+}
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUSBOOKMARKSSERVICE_H
+

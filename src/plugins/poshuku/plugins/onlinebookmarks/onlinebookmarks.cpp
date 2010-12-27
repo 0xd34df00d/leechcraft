@@ -116,10 +116,11 @@ namespace OnlineBookmarks
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
 	}
-};
-};
-};
-};
-};
+}
+}
+}
+}
+}
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_onlinebookmarks, LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::OnlineBookmarks);
+
