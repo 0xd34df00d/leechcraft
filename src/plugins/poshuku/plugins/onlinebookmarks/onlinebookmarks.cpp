@@ -76,8 +76,7 @@ namespace OnlineBookmarks
 
 	QString OnlineBookmarks::GetInfo () const
 	{
-		return tr ("Sync local bookmarks with your accaunt in the"
-					"online bookmarks service such as Delicious.");
+		return tr ("Sync local bookmarks with your account in online bookmark services like Del.icio.us.");
 	}
 
 	QIcon OnlineBookmarks::GetIcon () const
