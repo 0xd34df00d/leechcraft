@@ -350,8 +350,8 @@ namespace Azoth
 	void ChatTab::scrollToEnd ()
 	{
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
-		int scrollMax = frame->scrollBarMaximum (Qt::Vertical);
-		frame->setScrollBarValue (Qt::Vertical, scrollMax);
+		int height = frame->contentsSize ().height ();
+		frame->scroll (0, height);
 	}
 
 	void ChatTab::handleHistoryUp ()
@@ -450,6 +450,7 @@ namespace Azoth
 
 		QString body = FormatBody (msg->GetBody (), msg);
 
+		QString divClass;
 		QString string = QString ("%1 ")
 				.arg (FormatDate (msg->GetDateTime (), msg));
 		string.append (' ');
@@ -468,22 +469,26 @@ namespace Azoth
 				if (body.startsWith ("/me "))
 				{
 					body = body.mid (3);
-					string.append ("*** ");
+					string.append ("* ");
 					string.append (entryName);
 					string.append (' ');
+					divClass = "slashmechatmsg";
 				}
 				else
 				{
 					string.append (entryName);
 					string.append (": ");
+					divClass = "chatmsg";
 				}
 				break;
 			}
 			case Plugins::IMessage::MTEventMessage:
 				string.append ("! ");
+				divClass = "eventmsg";
 				break;
 			case Plugins::IMessage::MTStatusMessage:
 				string.append ("* ");
+				divClass = "statusmsg";
 				break;
 			}
 			break;
@@ -491,16 +496,19 @@ namespace Azoth
 		case Plugins::IMessage::DOut:
 			string.append (FormatNickname ("R", msg));
 			string.append (": ");
+			divClass = "chatmsg";
 			break;
 		}
 
 		string.append (body);
 
 		QWebElement elem = frame->findFirstElement ("body");
-		elem.appendInside (QString ("<div>%1</div>").arg (string));
+		elem.appendInside (QString ("<div class='%2'>%1</div>")
+					.arg (string)
+					.arg (divClass));
 
 		if (shouldScrollFurther)
-			QTimer::singleShot (100,
+			QTimer::singleShot (50,
 					this,
 					SLOT (scrollToEnd ()));
 	}
