@@ -19,54 +19,66 @@
 #include "changer.h"
 #include <QPushButton>
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
-
-Changer::Changer (const QMap<QString, QString>& ids,
-		const QString& suggestedDomain,
-		const QString& selectedID,
-		QWidget *parent)
-: QDialog (parent)
-, IDs_ (ids)
+namespace LeechCraft
 {
-	Ui_.setupUi (this);
-
-	Ui_.Agent_->addItems (ids.keys ());
-	Ui_.Domain_->setText (suggestedDomain);
-	Ui_.IDString_->setText (selectedID);
-	Ui_.Agent_->setCurrentIndex (Ui_.Agent_->findText (IDs_.key (selectedID)));
-	SetEnabled ();
-}
-
-QString Changer::GetDomain () const
+namespace Plugins
 {
-	return Ui_.Domain_->text ();
-}
-
-QString Changer::GetID () const
+namespace Poshuku
 {
-	return Ui_.IDString_->text ();
-}
-
-void Changer::on_Domain__textChanged ()
+namespace Plugins
 {
-	SetEnabled ();
-}
-
-void Changer::on_IDString__textChanged ()
+namespace Fua
 {
-	SetEnabled ();
-}
+	Changer::Changer (const QMap<QString, QString>& ids,
+			const QString& suggestedDomain,
+			const QString& selectedID,
+			QWidget *parent)
+	: QDialog (parent)
+	, IDs_ (ids)
+	{
+		Ui_.setupUi (this);
 
-void Changer::on_Agent__currentIndexChanged (const QString& agent)
-{
-	if (!agent.isEmpty ())
-		Ui_.IDString_->setText (IDs_ [agent]);
-}
+		Ui_.Agent_->addItems (ids.keys ());
+		Ui_.Domain_->setText (suggestedDomain);
+		Ui_.IDString_->setText (selectedID);
+		Ui_.Agent_->setCurrentIndex (Ui_.Agent_->findText (IDs_.key (selectedID)));
+		SetEnabled ();
+	}
 
-void Changer::SetEnabled ()
-{
-	Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->
-		setEnabled (Ui_.Domain_->text ().size () &&
-				Ui_.IDString_->text ().size ());
-}
+	QString Changer::GetDomain () const
+	{
+		return Ui_.Domain_->text ();
+	}
 
+	QString Changer::GetID () const
+	{
+		return Ui_.IDString_->text ();
+	}
+
+	void Changer::on_Domain__textChanged ()
+	{
+		SetEnabled ();
+	}
+
+	void Changer::on_IDString__textChanged ()
+	{
+		SetEnabled ();
+	}
+
+	void Changer::on_Agent__currentIndexChanged (const QString& agent)
+	{
+		if (!agent.isEmpty ())
+			Ui_.IDString_->setText (IDs_ [agent]);
+	}
+
+	void Changer::SetEnabled ()
+	{
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->
+			setEnabled (Ui_.Domain_->text ().size () &&
+					Ui_.IDString_->text ().size ());
+	}
+}
+}
+}
+}
+}
