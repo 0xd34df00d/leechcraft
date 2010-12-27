@@ -31,7 +31,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Select bookmarks service</string>
+              <string>Bookmarks service</string>
              </property>
             </widget>
            </item>
@@ -185,12 +185,7 @@
            </item>
            <item>
             <property name="text">
-             <string>ByAction</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>On sturtup</string>
+             <string>On startup</string>
             </property>
            </item>
            <item>
@@ -230,7 +225,7 @@
            </item>
            <item>
             <property name="text">
-             <string>Monthe</string>
+             <string>Month</string>
             </property>
            </item>
            <item>
@@ -259,11 +254,6 @@
            <item>
             <property name="text">
              <string>Never</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>By Action</string>
             </property>
            </item>
            <item>
@@ -308,7 +298,7 @@
            </item>
            <item>
             <property name="text">
-             <string>Monthe</string>
+             <string>Month</string>
             </property>
            </item>
            <item>
