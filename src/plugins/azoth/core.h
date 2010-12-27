@@ -314,6 +314,10 @@ namespace LeechCraft
 				 * Chatrooms have been added.
 				 */
 				void mucJoinActionsAdded (const QList<QAction*>&);
+
+				// Plugin API
+				void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+						QObject *message);
 			};
 		};
 	};

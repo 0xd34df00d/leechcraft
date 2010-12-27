@@ -38,6 +38,8 @@ namespace LeechCraft
 			public:
 				PluginManager (QObject* = 0);
 			signals:
+				void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+						QObject *message);
 				void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
 						QObject *chatTab,
 						QDateTime dateTime,

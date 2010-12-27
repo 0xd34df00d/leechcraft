@@ -25,6 +25,7 @@
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
+#include <plugininterface/defaulthookproxy.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -789,6 +790,11 @@ namespace LeechCraft
 							<< msg->OtherPart ();
 					return;
 				}
+
+				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+				emit hookGotMessage (proxy, msgObj);
+				if (proxy->IsCancelled ())
+					return;
 
 				Plugins::ICLEntry *parentCL = qobject_cast<Plugins::ICLEntry*> (msg->ParentCLEntry ());
 
