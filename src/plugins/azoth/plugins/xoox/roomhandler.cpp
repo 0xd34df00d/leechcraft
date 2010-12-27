@@ -45,19 +45,18 @@ namespace Xoox
 	: QObject (account)
 	, Account_ (account)
 	, CLEntry_ (0)
-	, Room_ (0)
 	, RoomHasBeenEntered_ (false)
 	{
 	}
 
-	void RoomHandler::SetRoom (gloox::MUCRoom *room)
+	void RoomHandler::SetRoom (boost::shared_ptr<gloox::MUCRoom> room)
 	{
 		Room_ = room;
 		CLEntry_ = new RoomCLEntry (this, Account_);
 		room->getRoomItems ();
 	}
 
-	gloox::MUCRoom* RoomHandler::GetRoom () const
+	boost::shared_ptr<gloox::MUCRoom> RoomHandler::GetRoom () const
 	{
 		return Room_;
 	}
@@ -265,7 +264,7 @@ namespace Xoox
 		{
 		case gloox::Message::Groupchat:
 		case gloox::Message::Headline:
-			handleMUCMessage (Room_, msg, false);
+			handleMUCMessage (Room_.get (), msg, false);
 			break;
 		default:
 		{
@@ -362,7 +361,7 @@ namespace Xoox
 
 	gloox::JID RoomHandler::JIDForNick (const QString& nick) const
 	{
-		gloox::MUCRoom *room = CLEntry_->GetRoom ();
+		boost::shared_ptr<gloox::MUCRoom> room = CLEntry_->GetRoom ();
 		return gloox::JID (room->name () + "@" +
 				room->service () + "/" +
 				nick.toUtf8 ().constData ());
@@ -371,6 +370,8 @@ namespace Xoox
 	void RoomHandler::RemoveThis ()
 	{
 		Account_->handleEntryRemoved (CLEntry_);
+
+		Account_->GetClientConnection ()->Unregister (this);;
 
 		CLEntry_->deleteLater ();
 	}

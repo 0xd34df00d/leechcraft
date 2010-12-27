@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCLENTRY_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
 #include <interfaces/iclentry.h>
@@ -79,7 +80,7 @@ namespace Xoox
 		QList<QObject*> GetParticipants ();
 		void Leave (const QString&);
 
-		gloox::MUCRoom* GetRoom ();
+		boost::shared_ptr<gloox::MUCRoom> GetRoom ();
 
 		void HandleMessage (RoomPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);

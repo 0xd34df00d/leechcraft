@@ -106,8 +106,10 @@ namespace Xoox
 	{
 		gloox::Presence::PresenceType pres =
 				static_cast<gloox::Presence::PresenceType> (state.State_);
-		Client_->setPresence (pres, state.Priority_,
-				state.Status_.toUtf8 ().constData ());
+		std::string stdStatus (state.Status_.toUtf8 ().constData ());
+		Client_->setPresence (pres, state.Priority_, stdStatus);
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+			rh->GetRoom ()->setPresence (pres, stdStatus);
 
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
@@ -141,11 +143,18 @@ namespace Xoox
 	RoomCLEntry* ClientConnection::JoinRoom (const gloox::JID& jid)
 	{
 		RoomHandler *rh = new RoomHandler (Account_);
-		gloox::MUCRoom *room = new gloox::MUCRoom (Client_.get (), jid, rh, 0);
+		boost::shared_ptr<gloox::MUCRoom> room (new gloox::MUCRoom (Client_.get (), jid, rh, 0));
 		room->join ();
 		rh->SetRoom (room);
 
+		RoomHandlers_ << rh;
+
 		return rh->GetCLEntry ();
+	}
+
+	void ClientConnection::Unregister (RoomHandler *rh)
+	{
+		RoomHandlers_.remove (rh);
 	}
 
 	gloox::Client* ClientConnection::GetClient () const

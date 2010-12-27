@@ -77,15 +77,15 @@ namespace Xoox
 
 	QByteArray RoomParticipantEntry::GetEntryID () const
 	{
-		gloox::MUCRoom *room = RoomHandler_->GetCLEntry ()->GetRoom ();
-		return (room->name () + "/" +
+		boost::shared_ptr<gloox::MUCRoom> room = RoomHandler_->GetCLEntry ()->GetRoom ();
+		return (room->name () + "@" +
 				room->service () + "/" +
 				Nick_.toUtf8 ().constData ()).c_str ();
 	}
 
 	QStringList RoomParticipantEntry::Groups () const
 	{
-		gloox::MUCRoom *room = RoomHandler_->GetCLEntry ()->GetRoom ();
+		boost::shared_ptr<gloox::MUCRoom> room = RoomHandler_->GetCLEntry ()->GetRoom ();
 		QString roomName = QString::fromUtf8 (room->name ().c_str ()) +
 				"@" +
 				QString::fromUtf8 (room->service ().c_str ());

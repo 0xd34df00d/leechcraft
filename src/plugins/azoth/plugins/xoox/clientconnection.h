@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QMap>
 #include <QHash>
+#include <QSet>
 #include <gloox/connectionlistener.h>
 #include <gloox/rosterlistener.h>
 #include <gloox/messagesessionhandler.h>
@@ -61,6 +62,7 @@ namespace Xoox
 	class GlooxCLEntry;
 	class GlooxMessage;
 	class RoomCLEntry;
+	class RoomHandler;
 
 	class ClientConnection : public QObject
 							, public gloox::ConnectionListener
@@ -83,6 +85,8 @@ namespace Xoox
 
 		// Bare JID → resource → session.
 		QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
+
+		QSet<RoomHandler*> RoomHandlers_;
 	public:
 		ClientConnection (const gloox::JID&,
 				const QString&,
@@ -98,6 +102,8 @@ namespace Xoox
 		 * entry representing that room.
 		 */
 		RoomCLEntry* JoinRoom (const gloox::JID&);
+
+		void Unregister (RoomHandler*);
 
 		gloox::Client* GetClient () const;
 		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;

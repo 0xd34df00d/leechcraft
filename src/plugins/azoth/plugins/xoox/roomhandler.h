@@ -49,17 +49,17 @@ namespace Xoox
 		RoomCLEntry *CLEntry_;
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
 		QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
-		gloox::MUCRoom *Room_;
+		boost::shared_ptr<gloox::MUCRoom> Room_;
 		QString Subject_;
 		bool RoomHasBeenEntered_;
 	public:
-		RoomHandler (GlooxAccount* = 0);
+		RoomHandler (GlooxAccount*);
 
 		/** This must be called before any calls to
 		 * GetCLEntry().
 		 */
-		void SetRoom (gloox::MUCRoom*);
-		gloox::MUCRoom* GetRoom () const;
+		void SetRoom (boost::shared_ptr<gloox::MUCRoom>);
+		boost::shared_ptr<gloox::MUCRoom> GetRoom () const;
 		RoomCLEntry* GetCLEntry ();
 
 		GlooxMessage* CreateMessage (IMessage::MessageType,

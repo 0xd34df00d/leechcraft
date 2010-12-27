@@ -63,7 +63,7 @@ namespace Xoox
 
 	QString RoomCLEntry::GetEntryName () const
 	{
-		gloox::MUCRoom *r = RH_->GetRoom ();
+		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
 		return QString::fromUtf8 ((r->name () + "@" + r->service ()).c_str ());
 	}
 
@@ -73,9 +73,9 @@ namespace Xoox
 
 	QByteArray RoomCLEntry::GetEntryID () const
 	{
-		gloox::MUCRoom *r = RH_->GetRoom ();
-		return (r->service () + "/" +
-					r->name () + "/" +
+		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
+		return (r->name () + "@" +
+					r->service () + "/" +
 					r->nick ()).c_str ();
 	}
 
@@ -140,7 +140,7 @@ namespace Xoox
 		RH_->Leave (msg);
 	}
 
-	gloox::MUCRoom* RoomCLEntry::GetRoom ()
+	boost::shared_ptr<gloox::MUCRoom> RoomCLEntry::GetRoom ()
 	{
 		return RH_->GetRoom ();
 	}
