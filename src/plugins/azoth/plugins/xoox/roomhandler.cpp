@@ -309,6 +309,15 @@ namespace Xoox
 				reason.toUtf8 ().constData ());
 	}
 
+	void RoomHandler::Leave (const QString& msg)
+	{
+		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
+			Account_->handleEntryRemoved (entry.get ());
+
+		Room_->leave (msg.toUtf8 ().constData ());
+		RemoveThis ();
+	}
+
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
 	{
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
@@ -357,6 +366,13 @@ namespace Xoox
 		return gloox::JID (room->name () + "@" +
 				room->service () + "/" +
 				nick.toUtf8 ().constData ());
+	}
+
+	void RoomHandler::RemoveThis ()
+	{
+		Account_->handleEntryRemoved (CLEntry_);
+
+		CLEntry_->deleteLater ();
 	}
 }
 }

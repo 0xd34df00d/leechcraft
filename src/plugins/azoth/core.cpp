@@ -877,6 +877,8 @@ namespace LeechCraft
 							<< sender ();
 					return;
 				}
+
+				mucEntry->Leave ();
 			}
 		};
 	};

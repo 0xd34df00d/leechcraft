@@ -137,6 +137,7 @@ namespace Xoox
 
 	void RoomCLEntry::Leave (const QString& msg)
 	{
+		RH_->Leave (msg);
 	}
 
 	gloox::MUCRoom* RoomCLEntry::GetRoom ()

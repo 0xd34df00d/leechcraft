@@ -67,6 +67,7 @@ namespace Xoox
 		QList<QObject*> GetParticipants () const;
 		QString GetSubject () const;
 		void Kick (const QString& nick, const QString& reason = QString ());
+		void Leave (const QString& msg);
 
 		// MUCRoomHandler
 		virtual void handleMUCParticipantPresence (gloox::MUCRoom*,
@@ -105,6 +106,8 @@ namespace Xoox
 		gloox::MessageSession* GetSessionWith (const gloox::JID&);
 		QString NickFromJID (const gloox::JID&) const;
 		gloox::JID JIDForNick (const QString&) const;
+
+		void RemoveThis ();
 	};
 }
 }
