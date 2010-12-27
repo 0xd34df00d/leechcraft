@@ -548,7 +548,13 @@ namespace Azoth
 			{
 				int hash = 0;
 				for (int i = 0; i < nick.length (); ++i)
-					hash += nick.at (i).unicode ();
+				{
+					const QChar& c = nick.at (i);
+					hash += c.toLatin1 () ?
+							c.toLatin1 () :
+							c.unicode ();
+					hash += nick.length ();
+				}
 				QColor nc = NickColors_.at (hash % NickColors_.size ());
 				color = nc.name ();
 			}
@@ -632,16 +638,16 @@ namespace Azoth
 
 	void ChatTab::GenerateColors ()
 	{
-		const qreal lower = 50. / 360.;
-		const qreal higher = 180. / 360.;
+		const qreal lower = 25. / 360.;
 		const qreal delta = 25. / 360.;
+		const qreal higher = 180. / 360. - delta / 2;
 
 		const qreal alpha = BgColor_.alphaF ();
 
 		qreal s = BgColor_.saturationF ();
-		s += 15 * (1 - s) / 16;
+		s += 31 * (1 - s) / 32;
 		qreal v = BgColor_.valueF ();
-		v = 0.95 - v / 2;
+		v = 0.95 - 2 * v / 5;
 
 		qreal h = BgColor_.hueF ();
 
