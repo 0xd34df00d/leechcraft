@@ -26,11 +26,6 @@
 #include "settings.h"
 #include "xmlsettingsmanager.h"
 
-using namespace LeechCraft::Plugins::Poshuku;
-using namespace LeechCraft::Plugins::Poshuku::Plugins;
-using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
-using namespace LeechCraft::Util;
-
 namespace LeechCraft
 {
 namespace Util
@@ -47,7 +42,7 @@ namespace Fua
 {
 	void FUA::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_fua"));
+		Translator_.reset (Util::InstallTranslator ("poshuku_fua"));
 
 		Browser2ID_ ["Chromium 5 on Linux x86"] = "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/533.4 (KHTML, like Gecko) Chrome/5.0.375.70 Safari/533.4";
 		Browser2ID_ ["Chromium 6 on Linux x86"] = "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.1 (KHTML, like Gecko) Chrome/6.0.427.0 Safari/534.1";
@@ -92,7 +87,7 @@ namespace Fua
 		}
 		settings.endArray ();
 
-		XmlSettingsDialog_.reset (new XmlSettingsDialog ());
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukufuasettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("Settings", new Settings (Model_.get (), this));
@@ -199,4 +194,4 @@ namespace Fua
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fua, FUA);
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fua, LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA);
