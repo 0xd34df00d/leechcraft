@@ -157,7 +157,7 @@ namespace Azoth
 				else
 					return QString ("%1 (%2)")
 							.arg (osptr->name)
-							.arg (buf);
+							.arg (QString::fromUtf8 (buf).trimmed ());
 			}
 			++osptr;
 		}
