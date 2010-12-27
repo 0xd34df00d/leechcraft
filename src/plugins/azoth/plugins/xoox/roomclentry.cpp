@@ -75,7 +75,7 @@ namespace Xoox
 	{
 		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
 		return (r->name () + "@" +
-					r->service () + "/" +
+					r->service () + "_" +
 					r->nick ()).c_str ();
 	}
 
