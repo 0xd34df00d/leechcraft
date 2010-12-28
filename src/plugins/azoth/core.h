@@ -76,7 +76,7 @@ namespace LeechCraft
 				typedef QHash<QByteArray, QObject*> ID2Entry_t;
 				ID2Entry_t ID2Entry_;
 
-				Util::ResourceLoader *StatusIconLoader_;
+				boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 
 				boost::shared_ptr<PluginManager> PluginManager_;
 				boost::shared_ptr<ProxyObject> PluginProxyObject_;

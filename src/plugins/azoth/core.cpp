@@ -94,6 +94,8 @@ namespace LeechCraft
 
 				Q_FOREACH (Plugins::IMUCEntry *mucEntry, mucs)
 					mucEntry->Leave ();
+
+				StatusIconLoader_.reset ();
 			}
 
 			void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -111,7 +113,7 @@ namespace LeechCraft
 				switch (type)
 				{
 				case RLTStatusIconLoader:
-					return StatusIconLoader_;
+					return StatusIconLoader_.get ();
 				}
 			}
 
@@ -796,6 +798,10 @@ namespace LeechCraft
 				if (proxy->IsCancelled ())
 					return;
 
+				if (msg->GetMessageType () != Plugins::IMessage::MTMUCMessage &&
+						msg->GetMessageType () != Plugins::IMessage::MTChatMessage)
+					return;
+
 				Plugins::ICLEntry *parentCL = qobject_cast<Plugins::ICLEntry*> (msg->ParentCLEntry ());
 
 				if (ShouldCountUnread (parentCL, msg))
@@ -806,17 +812,38 @@ namespace LeechCraft
 						RecalculateUnreadForParents (item);
 					}
 
-				bool shouldShow = msg->GetDirection () == Plugins::IMessage::DIn &&
-						msg->GetMessageType () == Plugins::IMessage::MTChatMessage &&
-						!ChatTabsManager_->IsActiveChat (other);
-
-				if (shouldShow)
+				if (msg->GetDirection () == Plugins::IMessage::DIn &&
+						!ChatTabsManager_->IsActiveChat (parentCL))
 				{
-					Entity e = Util::MakeNotification ("Azoth",
-							tr ("Incoming chat message from %1.")
-								.arg (other->GetEntryName ()),
-							PInfo_);
-					emit gotEntity (e);
+					QString msgString;
+					switch (msg->GetMessageType ())
+					{
+					case Plugins::IMessage::MTChatMessage:
+						msgString = tr ("Incoming chat message from <em>%1</em>.")
+								.arg (other->GetEntryName ());
+						break;
+					case Plugins::IMessage::MTMUCMessage:
+					{
+						Plugins::IMUCEntry *mucEntry =
+								qobject_cast<Plugins::IMUCEntry*> (msg->ParentCLEntry ());
+						if (mucEntry &&
+								msg->GetBody ().contains (mucEntry->GetNick ()))
+							msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
+									.arg (parentCL->GetEntryName ())
+									.arg (other->GetEntryName ());
+						break;
+					}
+					default:
+						break;
+					}
+
+					if (msgString.size ())
+					{
+						Entity e = Util::MakeNotification ("Azoth",
+								msgString,
+								PInfo_);
+						emit gotEntity (e);
+					}
 				}
 			}
 
