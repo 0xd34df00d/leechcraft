@@ -104,6 +104,23 @@ namespace LeechCraft
 					 */
 					virtual void Leave (const QString& msg = QString ()) = 0;
 
+					/** @brief Returns the nick of our participant.
+					 *
+					 * @return The nickname or null string if not
+					 * applicable.
+					 */
+					virtual QString GetNick () const = 0;
+
+					/** @brief Changes the nick of our participant.
+					 *
+					 * If changing nicks is not allowed or is not
+					 * supported, nothing should be done.
+					 *
+					 * @param[in] nick New nick for our participant in
+					 * this room.
+					 */
+					virtual void SetNick (const QString& nick) = 0;
+
 					/** @brief Notifies about new participants in the room.
 					 *
 					 * This signal should emitted when new participants

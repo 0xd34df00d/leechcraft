@@ -79,6 +79,8 @@ namespace Xoox
 		QString GetMUCSubject () const;
 		QList<QObject*> GetParticipants ();
 		void Leave (const QString&);
+		QString GetNick () const;
+		void SetNick (const QString&);
 
 		boost::shared_ptr<gloox::MUCRoom> GetRoom ();
 

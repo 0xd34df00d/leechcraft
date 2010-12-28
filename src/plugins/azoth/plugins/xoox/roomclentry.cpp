@@ -140,6 +140,16 @@ namespace Xoox
 		RH_->Leave (msg);
 	}
 
+	QString RoomCLEntry::GetNick () const
+	{
+		return QString::fromUtf8 (RH_->GetRoom ()->nick ().c_str ());
+	}
+
+	void RoomCLEntry::SetNick (const QString& nick)
+	{
+		RH_->GetRoom ()->setNick (nick.toUtf8 ().constData ());
+	}
+
 	boost::shared_ptr<gloox::MUCRoom> RoomCLEntry::GetRoom ()
 	{
 		return RH_->GetRoom ();
