@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <interfaces/iaccount.h>
 #include "glooxprotocol.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -33,9 +34,17 @@ namespace Xoox
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Core::Instance ().SetProxy (proxy);
+
 		Proxy_ = 0;
 		GlooxProtocol_.reset (new GlooxProtocol (this));
+
 		connect (GlooxProtocol_.get (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+
+		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));

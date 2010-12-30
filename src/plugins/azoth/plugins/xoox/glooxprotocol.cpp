@@ -21,6 +21,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QtDebug>
 #include <interfaces/iprotocolplugin.h>
 #include "glooxaccount.h"
 #include "core.h"

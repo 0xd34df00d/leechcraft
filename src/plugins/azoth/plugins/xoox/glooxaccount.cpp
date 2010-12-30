@@ -19,6 +19,7 @@
 #include "glooxaccount.h"
 #include <memory>
 #include <QInputDialog>
+#include <QtDebug>
 #include <gloox/messagesession.h>
 #include <gloox/client.h>
 #include <gloox/message.h>
