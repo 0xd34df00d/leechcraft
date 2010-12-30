@@ -179,7 +179,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& me
 		{
 			QMenu *menu = new QMenu (menuName);
 			menu->addActions (menus [menuName]);
-			Ui_.ActionMenu_->menu ()->insertMenu (Ui_.ActionAboutLeechCraft_, menu);
+			Ui_.ActionMenu_->menu ()->insertMenu (MenuTools_->menuAction (), menu);
 		}
 	}
 }
