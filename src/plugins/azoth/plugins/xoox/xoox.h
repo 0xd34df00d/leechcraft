@@ -34,8 +34,6 @@ namespace Plugins
 {
 namespace Xoox
 {
-	class GlooxProtocol;
-
 	class Plugin : public QObject
 					, public IInfo
 					, public IPlugin2
@@ -43,9 +41,6 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin)
-
-		boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
-		QObject *Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

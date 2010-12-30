@@ -32,16 +32,25 @@ namespace Plugins
 {
 namespace Xoox
 {
+	class GlooxProtocol;
+
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
+		boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
+		QObject *PluginProxy_;
 
 		Core ();
 	public:
 		static Core& Instance ();
 
+		void SecondInit ();
+		void Release ();
+		QList<QObject*> GetProtocols () const;
+
+		void SetPluginProxy (QObject*);
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 

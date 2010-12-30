@@ -18,8 +18,6 @@
 
 #include "xoox.h"
 #include <QIcon>
-#include <interfaces/iaccount.h>
-#include "glooxprotocol.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -36,9 +34,6 @@ namespace Xoox
 	{
 		Core::Instance ().SetProxy (proxy);
 
-		Proxy_ = 0;
-		GlooxProtocol_.reset (new GlooxProtocol (this));
-
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -47,16 +42,12 @@ namespace Xoox
 
 	void Plugin::SecondInit ()
 	{
-		GlooxProtocol_->SetProxyObject (Proxy_);
-		GlooxProtocol_->Prepare ();
-		Q_FOREACH (QObject *account,
-				GlooxProtocol_->GetRegisteredAccounts ())
-			qobject_cast<IAccount*> (account)->ChangeState (SOnline);
+		Core::Instance ().SecondInit ();
 	}
 
 	void Plugin::Release ()
 	{
-		GlooxProtocol_.reset ();
+		Core::Instance ().Release ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -112,14 +103,12 @@ namespace Xoox
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		QList<QObject*> result;
-		result << qobject_cast<QObject*> (GlooxProtocol_.get ());
-		return result;
+		return Core::Instance ().GetProtocols ();
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
-		Proxy_ = proxy;
+		Core::Instance ().SetPluginProxy (proxy);
 	}
 }
 }
@@ -129,4 +118,3 @@ namespace Xoox
 
 Q_EXPORT_PLUGIN2 (leechcraft_azoth_xoox,
 		LeechCraft::Plugins::Azoth::Plugins::Xoox::Plugin);
-

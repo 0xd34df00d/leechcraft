@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "core.h"
+#include <interfaces/iaccount.h>
+#include "glooxprotocol.h"
 
 namespace LeechCraft
 {
@@ -29,13 +31,41 @@ namespace Plugins
 namespace Xoox
 {
 	Core::Core ()
+	: PluginProxy_ (0)
 	{
+		GlooxProtocol_.reset (new GlooxProtocol (this));
 	}
 
 	Core& Core::Instance ()
 	{
 		static Core c;
 		return c;
+	}
+
+	void Core::SecondInit ()
+	{
+		GlooxProtocol_->SetProxyObject (PluginProxy_);
+		GlooxProtocol_->Prepare ();
+		Q_FOREACH (QObject *account,
+				GlooxProtocol_->GetRegisteredAccounts ())
+			qobject_cast<IAccount*> (account)->ChangeState (SOnline);
+	}
+
+	void Core::Release ()
+	{
+		GlooxProtocol_.reset ();
+	}
+
+	QList<QObject*> Core::GetProtocols () const
+	{
+		QList<QObject*> result;
+		result << qobject_cast<QObject*> (GlooxProtocol_.get ());
+		return result;
+	}
+
+	void Core::SetPluginProxy (QObject *proxy)
+	{
+		PluginProxy_ = proxy;
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
