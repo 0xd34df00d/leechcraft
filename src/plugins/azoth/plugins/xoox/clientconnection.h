@@ -155,8 +155,7 @@ namespace Xoox
 		void rosterItemRemoved (QObject*);
 		void rosterItemsRemoved (const QList<QObject*>&);
 		void rosterItemUpdated (QObject*);
-
-		void gotEntity (const LeechCraft::Entity&);
+		void rosterItemSubscribed (QObject*);
 
 		void serverAuthFailed ();
 	};

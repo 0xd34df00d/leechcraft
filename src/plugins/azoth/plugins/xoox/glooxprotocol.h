@@ -69,7 +69,6 @@ namespace Xoox
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

@@ -37,6 +37,7 @@
 #include "glooxmessage.h"
 #include "roomhandler.h"
 #include "glooxprotocol.h"
+#include "core.h"
 
 uint gloox::qHash (const gloox::JID& jid)
 {
@@ -66,10 +67,6 @@ namespace Xoox
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
-		connect (this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				Account_->GetParentProtocol (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		Client_.reset (new gloox::Client (jid, pwd.toUtf8 ().constData ()));
 		VCardManager_.reset (new gloox::VCardManager (Client_.get ()));
 
@@ -321,7 +318,7 @@ namespace Xoox
 		Entity e = Util::MakeNotification (tr ("Azoth connection error"),
 				message,
 				PCritical_);
-		emit gotEntity (e);
+		Core::Instance ().SendEntity (e);
 	}
 
 	void ClientConnection::onResourceBind (const std::string& resource)
@@ -372,7 +369,10 @@ namespace Xoox
 
 	void ClientConnection::handleItemSubscribed (const gloox::JID& jid)
 	{
-		// TODO
+		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
+		handleItemAdded (jid);
+
+		emit rosterItemSubscribed (JID2CLEntry_ [jid.bareJID ()]);
 	}
 
 	void ClientConnection::handleItemRemoved (const gloox::JID& jid)
