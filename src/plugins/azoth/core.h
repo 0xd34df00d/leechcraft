@@ -161,6 +161,11 @@ namespace LeechCraft
 				bool ShouldCountUnread (const Plugins::ICLEntry *entry,
 						const Plugins::IMessage *message);
 
+				/** Whether this message should be considered as a the
+				 * one that highlights the participant.
+				 */
+				bool IsHighlightMessage (const Plugins::IMessage*);
+
 				/** Returns an icon from the current iconset for the
 				 * given contact list entry state.
 				 */

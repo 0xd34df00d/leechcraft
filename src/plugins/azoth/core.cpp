@@ -231,6 +231,16 @@ namespace LeechCraft
 						 msg->GetMessageType () == Plugins::IMessage::MTMUCMessage);
 			}
 
+			bool Core::IsHighlightMessage (const Plugins::IMessage *msg)
+			{
+				Plugins::IMUCEntry *mucEntry =
+						qobject_cast<Plugins::IMUCEntry*> (msg->ParentCLEntry ());
+				if (!mucEntry)
+					return false;
+
+				return msg->GetBody ().contains (mucEntry->GetNick ());
+			}
+
 			void Core::AddProtocolPlugin (QObject *plugin)
 			{
 				Plugins::IProtocolPlugin *ipp =
@@ -824,10 +834,7 @@ namespace LeechCraft
 						break;
 					case Plugins::IMessage::MTMUCMessage:
 					{
-						Plugins::IMUCEntry *mucEntry =
-								qobject_cast<Plugins::IMUCEntry*> (msg->ParentCLEntry ());
-						if (mucEntry &&
-								msg->GetBody ().contains (mucEntry->GetNick ()))
+						if (IsHighlightMessage (msg))
 							msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
 									.arg (parentCL->GetEntryName ())
 									.arg (other->GetEntryName ());
