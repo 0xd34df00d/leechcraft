@@ -478,7 +478,9 @@ namespace Azoth
 				{
 					string.append (entryName);
 					string.append (": ");
-					divClass = "chatmsg";
+					divClass = Core::Instance ().IsHighlightMessage (msg) ?
+							"highlightchatmsg" :
+							"chatmsg";
 				}
 				break;
 			}
