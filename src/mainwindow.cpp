@@ -30,6 +30,7 @@
 #include <QCheckBox>
 #include <QShortcut>
 #include <QClipboard>
+#include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/iactionsexporter.h>
@@ -167,9 +168,9 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& me
 	{
 		QMenu *toInsert = 0;
 		if (menuName == "view")
-			toInsert = Ui_.MenuView_;
+			toInsert = MenuView_;
 		else if (menuName == "tools")
-			toInsert = Ui_.MenuTools_;
+			toInsert = MenuTools_;
 
 		if (toInsert)
 			toInsert->insertActions (toInsert->actions ().at (0),
@@ -178,8 +179,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& me
 		{
 			QMenu *menu = new QMenu (menuName);
 			menu->addActions (menus [menuName]);
-			menuBar ()->insertMenu (Ui_.MenuHelp_->menuAction (), menu);
-			Ui_.ActionMenu_->menu ()->insertMenu (Ui_.MenuHelp_->menuAction (), menu);
+			Ui_.ActionMenu_->menu ()->insertMenu (Ui_.ActionAboutLeechCraft_, menu);
 		}
 	}
 }
@@ -193,18 +193,17 @@ void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*> >&
 	{
 		QMenu *toRemove = 0;
 		if (menuName == "view")
-			toRemove = Ui_.MenuView_;
+			toRemove = MenuView_;
 		else if (menuName == "tools")
-			toRemove = Ui_.MenuTools_;
+			toRemove = MenuTools_;
 
 		if (toRemove)
 			Q_FOREACH (QAction *action, menus [menuName])
 				toRemove->removeAction (action);
 		else
-			Q_FOREACH (QAction *action, menuBar ()->actions ())
+			Q_FOREACH (QAction *action, Ui_.ActionMenu_->menu ()->actions ())
 				if (action->text () == menuName)
 				{
-					menuBar ()->removeAction (action);
 					Ui_.ActionMenu_->menu ()->removeAction (action);
 					break;
 				}
@@ -249,6 +248,9 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SIGNAL (triggered ()),
 			qApp,
 			SLOT (aboutQt ()));
+
+	MenuView_ = new QMenu (tr ("View"), this);
+	MenuTools_ = new QMenu (tr ("Tools"), this);
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
 	NewTabButton_->setDefaultAction (Ui_.ActionNewTab_);
@@ -306,8 +308,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
 	handleToolButtonStyleChanged ();
-	XmlSettingsManager::Instance ()->RegisterObject ("ShowMenuBarAsButton",
-			this, "handleShowMenuBarAsButton");
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSize",
 			this, "handleIconSize");
 	handleIconSize ();
@@ -315,10 +315,15 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	LanguageOnLoad_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
 
 	QMenu *menu = new QMenu (this);
-	menu->addMenu (Ui_.MenuGeneral_);
-	menu->addMenu (Ui_.MenuView_);
-	menu->addMenu (Ui_.MenuTools_);
-	menu->addMenu (Ui_.MenuHelp_);
+	menu->addAction (Ui_.ActionAddTask_);
+	menu->addSeparator ();
+	menu->addMenu (MenuTools_);
+	menu->addSeparator ();
+	menu->addAction (Ui_.ActionSettings_);
+	menu->addSeparator ();
+	menu->addAction (Ui_.ActionAboutLeechCraft_);
+	menu->addSeparator ();
+	menu->addAction (Ui_.ActionQuit_);
 	Ui_.ActionMenu_->setMenu (menu);
 
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
@@ -619,7 +624,7 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
 	GetGuard ()->AddToolbar (bar);
 	if (bar && isFullScreen ())
-		bar->setVisible (Ui_.MenuBar_->isVisible ());
+		bar->setVisible (Ui_.MainToolbar_->isVisible ());
 }
 
 namespace
@@ -650,22 +655,6 @@ void LeechCraft::MainWindow::handleIconSize ()
 		property ("IconSize").toInt ();
 	if (size)
 		setIconSize (QSize (size, size));
-}
-
-void LeechCraft::MainWindow::handleShowMenuBarAsButton ()
-{
-	bool asButton = XmlSettingsManager::Instance ()->
-		property ("ShowMenuBarAsButton").toBool ();
-	if (asButton)
-	{
-		Ui_.MenuBar_->hide ();
-		Ui_.MainToolbar_->insertAction (Ui_.ActionSettings_, Ui_.ActionMenu_);
-	}
-	else
-	{
-		Ui_.MainToolbar_->removeAction (Ui_.ActionMenu_);
-		Ui_.MenuBar_->show ();
-	}
 }
 
 void LeechCraft::MainWindow::handleNewTabMenuRequested ()
@@ -738,8 +727,6 @@ void LeechCraft::MainWindow::doDelayedInit ()
 			end = shortcuts.end (); i != end; ++i)
 		ShortcutManager_->AddObject (*i);
 
-	handleShowMenuBarAsButton ();
-
 	FillTray ();
 	FillToolMenu ();
 	InitializeShortcuts ();
@@ -782,10 +769,9 @@ void LeechCraft::MainWindow::FillTray ()
 	iconMenu->addAction (Ui_.ActionAddTask_);
 	iconMenu->addSeparator ();
 	QMenu *menu = iconMenu->addMenu (tr ("LeechCraft menu"));
-	menu->addMenu (Ui_.MenuGeneral_);
-	menu->addMenu (Ui_.MenuView_);
-	menu->addMenu (Ui_.MenuTools_);
-	menu->addMenu (Ui_.MenuHelp_);
+	menu->addAction (Ui_.ActionAddTask_);
+	menu->addMenu (MenuView_);
+	menu->addMenu (MenuTools_);
 	iconMenu->addSeparator ();
 
 	QList<IActionsExporter*> trayMenus = Core::Instance ()
@@ -819,9 +805,9 @@ void LeechCraft::MainWindow::FillToolMenu ()
 		QList<QAction*> acts = e->GetActions (AEPToolsMenu);
 
 		Q_FOREACH (QAction *action, acts)
-			Ui_.MenuTools_->insertAction (Ui_.ActionLogger_, action);
+			MenuTools_->insertAction (Ui_.ActionLogger_, action);
 		if (acts.size ())
-			Ui_.MenuTools_->insertSeparator (Ui_.ActionLogger_);
+			MenuTools_->insertSeparator (Ui_.ActionLogger_);
 	}
 
 	QMenu *ntm = Core::Instance ()
@@ -831,9 +817,6 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	int i = 0;
 	Q_FOREACH (QAction *act, ntm->actions ())
 		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
-
-	Ui_.MenuGeneral_->insertMenu (Ui_.ActionQuit_, ntm);
-	Ui_.MenuGeneral_->insertSeparator (Ui_.ActionQuit_);
 
 	on_MainTabWidget__currentChanged (0);
 }
@@ -988,11 +971,6 @@ void LeechCraft::NewTabButton::mousePressEvent (QMouseEvent *event)
 
 void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
-	bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
-
-	if (!asButton)
-		Ui_.MenuBar_->setVisible (show);
-
 	Ui_.MainToolbar_->setVisible (show);
 
 	int cur = Ui_.MainTabWidget_->currentIndex ();
