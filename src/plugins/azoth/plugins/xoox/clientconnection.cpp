@@ -169,14 +169,18 @@ namespace Xoox
 		return JID2CLEntry_ [bareJid];
 	}
 
-	void ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr)
+	void ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods)
 	{
+		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
+		ODSEntries_ [gloox::JID (ods->ID_.constData ())] = entry;
+
+		emit gotRosterItems (QList<QObject*> () << entry);
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (GlooxCLEntry *entry, JID2CLEntry_.values ())
+		Q_FOREACH (GlooxCLEntry *entry, JID2CLEntry_.values () + ODSEntries_.values ())
 			result << entry;
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 		{
@@ -544,14 +548,21 @@ namespace Xoox
 	{
 		GlooxCLEntry *entry = 0;
 		gloox::JID jid (ri->jid ());
-		if (!JID2CLEntry_.contains (jid.bareJID ()))
+		const gloox::JID& bareJID = jid.bareJID ();
+		if (!JID2CLEntry_.contains (bareJID))
 		{
-			entry = new GlooxCLEntry (ri, Account_);
-			JID2CLEntry_ [jid.bareJID ()] = entry;
+			if (ODSEntries_.contains (bareJID))
+			{
+				entry = ODSEntries_.take (bareJID);
+				entry->UpdateRI (ri);
+			}
+			else
+				entry = new GlooxCLEntry (ri, Account_);
+			JID2CLEntry_ [bareJID] = entry;
 		}
 		else
 		{
-			entry = JID2CLEntry_ [jid.bareJID ()];
+			entry = JID2CLEntry_ [bareJID];
 			entry->UpdateRI (ri);
 		}
 		//VCardManager_->fetchVCard (jid, this);

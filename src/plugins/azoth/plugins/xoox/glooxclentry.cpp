@@ -151,6 +151,9 @@ namespace Xoox
 	{
 		QStringList result;
 
+		if (ODS_)
+			return result;
+
 		Q_FOREACH (const std::string& str, VariantsImpl ())
 			result << QString::fromUtf8 (str.c_str ());
 

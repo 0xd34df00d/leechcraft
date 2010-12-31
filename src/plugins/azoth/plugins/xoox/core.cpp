@@ -56,7 +56,7 @@ namespace Xoox
 		Q_FOREACH (QObject *account,
 				GlooxProtocol_->GetRegisteredAccounts ())
 		{
-			qobject_cast<IAccount*> (account)->ChangeState (SOnline);
+			//qobject_cast<IAccount*> (account)->ChangeState (SOnline);
 			connect (account,
 					SIGNAL (gotCLItems (const QList<QObject*>&)),
 					this,

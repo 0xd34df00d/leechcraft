@@ -80,13 +80,11 @@ namespace Xoox
 		QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
 		bool IsConnected_;
 		bool FirstTimeConnect_;
-
 		boost::shared_ptr<gloox::VCardManager> VCardManager_;
-
+		QSet<RoomHandler*> RoomHandlers_;
+		QHash<gloox::JID, GlooxCLEntry*> ODSEntries_;
 		// Bare JID → resource → session.
 		QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
-
-		QSet<RoomHandler*> RoomHandlers_;
 	public:
 		ClientConnection (const gloox::JID&,
 				const GlooxAccountState&,

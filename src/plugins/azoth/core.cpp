@@ -702,6 +702,9 @@ namespace LeechCraft
 						continue;
 					}
 
+					if (Entry2Items_.contains (entry))
+						continue;
+
 					QObject *accountObj = entry->GetParentAccount ();
 					if (!accountObj)
 					{
