@@ -96,12 +96,17 @@ namespace Xoox
 	void EntryBase::SetPhoto (const gloox::VCard::Photo& photo)
 	{
 		if (!photo.type.size ())
-			Avatar_ = QImage ();
+			SetPhoto (QImage ());
 		else
 		{
 			QByteArray data (photo.binval.c_str(), photo.binval.size ());
-			Avatar_ = QImage::fromData (data);
+			SetPhoto (QImage::fromData (data));
 		}
+	}
+
+	void EntryBase::SetPhoto (const QImage& avatar)
+	{
+		Avatar_ = avatar;
 
 		emit avatarChanged (Avatar_);
 	}

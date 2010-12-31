@@ -58,6 +58,7 @@ namespace Xoox
 		void HandleMessage (GlooxMessage*);
 		void SetStatus (const EntryStatus&, const QString&);
 		void SetPhoto (const gloox::VCard::Photo&);
+		void SetPhoto (const QImage&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const Plugins::EntryStatus&, const QString&);
