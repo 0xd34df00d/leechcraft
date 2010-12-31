@@ -18,7 +18,9 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <QStringList>
 #include "entrybase.h"
 
 namespace gloox
@@ -51,7 +53,27 @@ namespace Xoox
 		GlooxAccount *ParentAccountObject_;
 		gloox::RosterItem *RI_;
 	public:
+		struct OfflineDataSource
+		{
+			QByteArray ID_;
+			QString Name_;
+			QStringList Groups_;
+		};
+		typedef boost::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
+	private:
+		OfflineDataSource_ptr ODS_;
+
+		struct MessageQueueItem
+		{
+			IMessage::MessageType Type_;
+			QString Variant_;
+			QString Text_;
+			QDateTime DateTime_;
+		};
+		QList<MessageQueueItem> MessageQueue_;
+	public:
 		GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
+		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
 
 		void UpdateRI (gloox::RosterItem*);
 		gloox::RosterItem* GetRI () const;
@@ -63,6 +85,8 @@ namespace Xoox
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
 		void SetEntryName (const QString&);
+		/** Entry ID for GlooxCLEntry is its jid.
+		 */
 		QByteArray GetEntryID () const;
 		QStringList Groups () const;
 		QStringList Variants () const;

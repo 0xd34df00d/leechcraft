@@ -38,6 +38,7 @@
 #include "roomhandler.h"
 #include "glooxprotocol.h"
 #include "core.h"
+#include "roomclentry.h"
 
 uint gloox::qHash (const gloox::JID& jid)
 {
@@ -55,19 +56,18 @@ namespace Plugins
 namespace Xoox
 {
 	ClientConnection::ClientConnection (const gloox::JID& jid,
-			const QString& pwd,
 			const GlooxAccountState& state,
 			GlooxAccount *account)
 	: Account_ (account)
 	, ProxyObject_ (0)
 	, IsConnected_ (false)
-	, ShouldRefillRoster_ (false)
+	, FirstTimeConnect_ (true)
 	{
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
-		Client_.reset (new gloox::Client (jid, pwd.toUtf8 ().constData ()));
+		Client_.reset (new gloox::Client (jid, std::string ()));
 		VCardManager_.reset (new gloox::VCardManager (Client_.get ()));
 
 		Client_->registerMessageSessionHandler (this);
@@ -87,16 +87,12 @@ namespace Xoox
 		caps->setNode ("http://leechcraft.org/azoth");
 		Client_->addPresenceExtension (caps);
 
-		SetState (state);
-
 		QTimer *pollTimer = new QTimer (this);
 		connect (pollTimer,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handlePollTimer ()));
 		pollTimer->start (50);
-
-		IsConnected_ = Client_->connect (false);
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -116,9 +112,14 @@ namespace Xoox
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
 		{
+			if (FirstTimeConnect_)
+				emit needPassword ();
+
 			IsConnected_ = Client_->connect (false);
-			if (ShouldRefillRoster_)
+			if (!FirstTimeConnect_)
 				Client_->rosterManager ()->fill ();
+
+			FirstTimeConnect_ = false;
 		}
 
 		if (state.State_ == SOffline)
@@ -128,7 +129,6 @@ namespace Xoox
 				objs << obj;
 			emit rosterItemsRemoved (objs);
 			IsConnected_ = false;
-			ShouldRefillRoster_ = true;
 		}
 	}
 
@@ -167,6 +167,23 @@ namespace Xoox
 	GlooxCLEntry* ClientConnection::GetCLEntry (const gloox::JID& bareJid) const
 	{
 		return JID2CLEntry_ [bareJid];
+	}
+
+	void ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr)
+	{
+	}
+
+	QList<QObject*> ClientConnection::GetCLEntries () const
+	{
+		QList<QObject*> result;
+		Q_FOREACH (GlooxCLEntry *entry, JID2CLEntry_.values ())
+			result << entry;
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+		{
+			result << rh->GetCLEntry ();
+			result << rh->GetParticipants ();
+		}
+		return result;
 	}
 
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,

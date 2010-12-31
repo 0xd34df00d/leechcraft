@@ -25,6 +25,7 @@
 #include <gloox/jid.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
+#include "glooxclentry.h"
 
 namespace gloox
 {
@@ -73,6 +74,7 @@ namespace Xoox
 		GlooxAccountState AccState_;
 	public:
 		GlooxAccount (const QString&, QObject*);
+		void Init ();
 
 		QObject* GetObject ();
 		QObject* GetParentProtocol () const;
@@ -89,6 +91,7 @@ namespace Xoox
 		QString GetNick () const;
 		void JoinRoom (const QString&, const QString&, const QString&);
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
+		void CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
 
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
@@ -103,6 +106,7 @@ namespace Xoox
 		void handleGotRosterItems (const QList<QObject*>&);
 	private slots:
 		void handleServerAuthFailed ();
+		void feedClientPassword ();
 		void handleDestroyClient ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);

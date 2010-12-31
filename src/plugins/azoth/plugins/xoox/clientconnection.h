@@ -30,6 +30,7 @@
 #include <gloox/jid.h>
 #include <gloox/vcardhandler.h>
 #include <interfaces/imessage.h>
+#include "glooxclentry.h"
 
 class QTimer;
 
@@ -59,7 +60,6 @@ namespace Xoox
 	struct GlooxAccountState;
 
 	class GlooxAccount;
-	class GlooxCLEntry;
 	class GlooxMessage;
 	class RoomCLEntry;
 	class RoomHandler;
@@ -79,7 +79,7 @@ namespace Xoox
 		IProxyObject *ProxyObject_;
 		QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
 		bool IsConnected_;
-		bool ShouldRefillRoster_;
+		bool FirstTimeConnect_;
 
 		boost::shared_ptr<gloox::VCardManager> VCardManager_;
 
@@ -89,7 +89,6 @@ namespace Xoox
 		QSet<RoomHandler*> RoomHandlers_;
 	public:
 		ClientConnection (const gloox::JID&,
-				const QString&,
 				const GlooxAccountState&,
 				GlooxAccount*);
 		virtual ~ClientConnection ();
@@ -108,6 +107,8 @@ namespace Xoox
 
 		gloox::Client* GetClient () const;
 		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
+		void AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
+		QList<QObject*> GetCLEntries () const;
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, gloox::RosterItem*);
 	protected:
@@ -158,6 +159,7 @@ namespace Xoox
 		void rosterItemSubscribed (QObject*);
 
 		void serverAuthFailed ();
+		void needPassword ();
 	};
 }
 }

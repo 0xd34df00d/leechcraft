@@ -43,9 +43,20 @@ namespace Xoox
 	{
 	}
 
+	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
+	: EntryBase (parent)
+	, ParentAccountObject_ (parent)
+	, RI_ (0)
+	, ODS_ (ods)
+	{
+	}
+
 	void GlooxCLEntry::UpdateRI (gloox::RosterItem *ri)
 	{
 		RI_ = ri;
+		ODS_.reset ();
+
+		emit availableVariantsChanged (Variants ());
 	}
 
 	gloox::RosterItem* GlooxCLEntry::GetRI () const
@@ -78,6 +89,9 @@ namespace Xoox
 
 	QString GlooxCLEntry::GetEntryName () const
 	{
+		if (ODS_)
+			return ODS_->Name_;
+
 		std::string name = RI_->name ();
 		if (!name.size ())
 			name = RI_->jid ();
@@ -86,17 +100,26 @@ namespace Xoox
 
 	void GlooxCLEntry::SetEntryName (const QString& name)
 	{
+		if (ODS_)
+			return;
+
 		RI_->setName (name.toUtf8 ().constData ());
 		ParentAccountObject_->Synchronize ();
 	}
 
 	QByteArray GlooxCLEntry::GetEntryID () const
 	{
+		if (ODS_)
+			return ODS_->ID_;
+
 		return RI_->jid ().c_str ();
 	}
 
 	QStringList GlooxCLEntry::Groups () const
 	{
+		if (ODS_)
+			return ODS_->Groups_;
+
 		QStringList result;
 		Q_FOREACH (const std::string& string, RI_->groups ())
 			result << QString::fromUtf8 (string.c_str ());
@@ -140,6 +163,12 @@ namespace Xoox
 	QObject* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
 			const QString& variant, const QString& text)
 	{
+		if (ODS_)
+		{
+			// TODO
+			return 0;
+		}
+
 		QObject *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
 		AllMessages_ << msg;
 		return msg;

@@ -58,6 +58,33 @@ namespace Xoox
 				Qt::QueuedConnection);
 	}
 
+	void GlooxAccount::Init ()
+	{
+		gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
+		ClientConnection_.reset (new ClientConnection (jid, AccState_, this));
+		connect (ClientConnection_.get (),
+				SIGNAL (serverAuthFailed ()),
+				this,
+				SLOT (handleServerAuthFailed ()));
+		connect (ClientConnection_.get (),
+				SIGNAL (needPassword ()),
+				this,
+				SLOT (feedClientPassword ()));
+
+		connect (ClientConnection_.get (),
+				SIGNAL (gotRosterItems (const QList<QObject*>&)),
+				this,
+				SLOT (handleGotRosterItems (const QList<QObject*>&)));
+		connect (ClientConnection_.get (),
+				SIGNAL (rosterItemRemoved (QObject*)),
+				this,
+				SLOT (handleEntryRemoved (QObject*)));
+		connect (ClientConnection_.get (),
+				SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
+				this,
+				SIGNAL (removedCLItems (const QList<QObject*>&)));
+	}
+
 	QObject* GlooxAccount::GetObject ()
 	{
 		return this;
@@ -75,7 +102,9 @@ namespace Xoox
 
 	QList<QObject*> GlooxAccount::GetCLEntries ()
 	{
-		return QList<QObject*> ();
+		return ClientConnection_ ?
+				ClientConnection_->GetCLEntries () :
+				QList<QObject*> ();
 	}
 
 	QString GlooxAccount::GetAccountName () const
@@ -127,30 +156,9 @@ namespace Xoox
 		AccState_.Status_ = status;
 
 		if (!ClientConnection_)
-		{
-			const QString& pwd = GetPassword ();
-			gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
-			ClientConnection_.reset (new ClientConnection (jid, pwd, AccState_, this));
-			connect (ClientConnection_.get (),
-					SIGNAL (serverAuthFailed ()),
-					this,
-					SLOT (handleServerAuthFailed ()));
+			Init ();
 
-			connect (ClientConnection_.get (),
-					SIGNAL (gotRosterItems (const QList<QObject*>&)),
-					this,
-					SLOT (handleGotRosterItems (const QList<QObject*>&)));
-			connect (ClientConnection_.get (),
-					SIGNAL (rosterItemRemoved (QObject*)),
-					this,
-					SLOT (handleEntryRemoved (QObject*)));
-			connect (ClientConnection_.get (),
-					SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
-					this,
-					SIGNAL (removedCLItems (const QList<QObject*>&)));
-		}
-		else
-			ClientConnection_->SetState (AccState_);
+		ClientConnection_->SetState (AccState_);
 	}
 
 	void GlooxAccount::Synchronize ()
@@ -182,6 +190,11 @@ namespace Xoox
 	boost::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
+	}
+
+	void GlooxAccount::CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr ods)
+	{
+		ClientConnection_->AddODSCLEntry (ods);
 	}
 
 	QByteArray GlooxAccount::Serialize () const
@@ -224,6 +237,7 @@ namespace Xoox
 			>> result->Nick_
 			>> result->Resource_
 			>> result->AccState_.Priority_;
+		result->Init ();
 
 		return result;
 	}
@@ -274,6 +288,11 @@ namespace Xoox
 			ClientConnection_->SetPassword (pwd);
 			ChangeState (AccState_.State_, AccState_.Status_);
 		}
+	}
+
+	void GlooxAccount::feedClientPassword ()
+	{
+		ClientConnection_->SetPassword (GetPassword ());
 	}
 
 	void GlooxAccount::handleDestroyClient ()

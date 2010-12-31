@@ -55,6 +55,10 @@ namespace Xoox
 		ICoreProxy_ptr GetProxy () const;
 
 		void SendEntity (const Entity&);
+	private:
+		void LoadRoster ();
+	private slots:
+		void saveRoster ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

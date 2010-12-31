@@ -17,8 +17,14 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QFile>
+#include <QXmlStreamWriter>
+#include <QDomDocument>
+#include <plugininterface/util.h>
 #include <interfaces/iaccount.h>
 #include "glooxprotocol.h"
+#include "glooxclentry.h"
+#include "glooxaccount.h"
 
 namespace LeechCraft
 {
@@ -46,9 +52,16 @@ namespace Xoox
 	{
 		GlooxProtocol_->SetProxyObject (PluginProxy_);
 		GlooxProtocol_->Prepare ();
+		LoadRoster ();
 		Q_FOREACH (QObject *account,
 				GlooxProtocol_->GetRegisteredAccounts ())
+		{
 			qobject_cast<IAccount*> (account)->ChangeState (SOnline);
+			connect (account,
+					SIGNAL (gotCLItems (const QList<QObject*>&)),
+					this,
+					SLOT (saveRoster ()));
+		}
 	}
 
 	void Core::Release ()
@@ -81,6 +94,162 @@ namespace Xoox
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);
+	}
+
+	namespace
+	{
+		struct EntryData
+		{
+			QByteArray ID_;
+			QString Name_;
+		};
+	}
+
+	void Core::LoadRoster ()
+	{
+		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
+					.absoluteFilePath ("roster.dat"));
+		if (!rosterFile.exists ())
+			return;
+		if (!rosterFile.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open roster file"
+					<< rosterFile.fileName ()
+					<< rosterFile.errorString ();
+			return;
+		}
+
+		QDomDocument doc;
+		QString errStr;
+		int errLine = 0;
+		int errCol = 0;
+		if (!doc.setContent (&rosterFile, &errStr, &errLine, &errCol))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errStr
+					<< errLine
+					<< ":"
+					<< errCol;
+			return;
+		}
+
+		QDomElement root = doc.firstChildElement ("roster");
+		if (root.attribute ("formatversion") != "1")
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown format version"
+					<< root.attribute ("formatversion");
+			return;
+		}
+
+		QMap<QByteArray, GlooxAccount*> id2account;
+		Q_FOREACH (QObject *accObj,
+				GlooxProtocol_->GetRegisteredAccounts ())
+		{
+			GlooxAccount *acc = qobject_cast<GlooxAccount*> (accObj);
+			id2account [acc->GetAccountID ()] = acc;
+		}
+
+		QDomElement account = root.firstChildElement ("account");
+		while (!account.isNull ())
+		{
+			const QByteArray& id = account.firstChildElement ("id").text ().toUtf8 ();
+			if (id.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "empty ID";
+				continue;
+			}
+
+			if (!id2account.contains (id))
+				continue;
+
+			QDomElement entry = account
+					.firstChildElement ("entries")
+					.firstChildElement ("entry");
+			while (!entry.isNull ())
+			{
+				const QByteArray& entryID = entry.firstChildElement ("id").text ().toUtf8 ();
+				const QString& name = entry.firstChildElement ("name").text ();
+
+				QStringList groups;
+				QDomElement group = entry
+						.firstChildElement ("groups")
+						.firstChildElement ("group");
+				while (!group.isNull ())
+				{
+					const QString& text = group.text ();
+					if (!text.isEmpty ())
+						groups << text;
+					group = group.nextSiblingElement ("group");
+				}
+
+				if (entryID.isEmpty ())
+					qWarning () << Q_FUNC_INFO
+							<< "entry ID is empty";
+				else
+				{
+					GlooxCLEntry::OfflineDataSource_ptr ods (new GlooxCLEntry::OfflineDataSource);
+					ods->Name_ = name;
+					ods->ID_ = entryID;
+					ods->Groups_ = groups;
+					id2account [id]->CreateFromODS (ods);
+				}
+				entry = entry.nextSiblingElement ("entry");
+			}
+
+			account = account.nextSiblingElement ("account");
+		}
+	}
+
+	void Core::saveRoster ()
+	{
+		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
+					.absoluteFilePath ("roster.dat"));
+		if (!rosterFile.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file"
+					<< rosterFile.fileName ()
+					<< rosterFile.errorString ();
+			return;
+		}
+
+		QXmlStreamWriter w (&rosterFile);
+		w.setAutoFormatting (true);
+		w.setAutoFormattingIndent (2);
+		w.writeStartDocument ();
+		w.writeStartElement ("roster");
+		w.writeAttribute ("formatversion", "1");
+		Q_FOREACH (QObject *accObj,
+				GlooxProtocol_->GetRegisteredAccounts ())
+		{
+			IAccount *acc = qobject_cast<IAccount*> (accObj);
+			w.writeStartElement ("account");
+				w.writeTextElement ("id", acc->GetAccountID ());
+				w.writeStartElement ("entries");
+				Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+				{
+					GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+					if (!entry ||
+							(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
+						continue;
+
+					w.writeStartElement ("entry");
+						w.writeTextElement ("id", entry->GetEntryID ());
+						w.writeTextElement ("name", entry->GetEntryName ());
+						w.writeStartElement ("groups");
+						Q_FOREACH (const QString& group, entry->Groups ())
+							w.writeTextElement ("group", group);
+						w.writeEndElement ();
+					w.writeEndElement ();
+				}
+				w.writeEndElement ();
+			w.writeEndElement ();
+		}
+		w.writeEndElement ();
+		w.writeEndDocument ();
 	}
 }
 }

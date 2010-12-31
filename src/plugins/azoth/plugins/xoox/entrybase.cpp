@@ -54,7 +54,9 @@ namespace Xoox
 	EntryStatus EntryBase::GetStatus (const QString& variant) const
 	{
 		const GlooxCLEntry *entry = qobject_cast<const GlooxCLEntry*> (this);
-		const gloox::Resource *hr = entry ? entry->GetRI ()->highestResource () : 0;
+		const gloox::Resource *hr = 0;
+		if (entry && entry->GetRI ())
+			hr = entry->GetRI ()->highestResource ();
 		if (CurrentStatus_.contains (variant))
 			return CurrentStatus_ [variant];
 		else if (hr)
