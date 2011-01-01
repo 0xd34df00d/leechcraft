@@ -149,6 +149,7 @@ namespace Xoox
 		void handlePollTimer ();
 	private:
 		GlooxCLEntry* CreateCLEntry (gloox::RosterItem*);
+		GlooxCLEntry* ConvertFromODS (const gloox::JID&, gloox::RosterItem*);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

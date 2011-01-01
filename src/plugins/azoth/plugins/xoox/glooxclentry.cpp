@@ -66,10 +66,11 @@ namespace Xoox
 
 	void GlooxCLEntry::Convert2ODS ()
 	{
-		emit availableVariantsChanged (QStringList ());
-		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 		ODS_ = ToOfflineDataSource ();
 		RI_ = 0;
+		emit availableVariantsChanged (QStringList ());
+		CurrentStatus_.clear ();
+		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
 
 	void GlooxCLEntry::UpdateRI (gloox::RosterItem *ri)

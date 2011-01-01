@@ -86,7 +86,8 @@ namespace Xoox
 
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant)
 	{
-		if (status == CurrentStatus_ [variant])
+		if (CurrentStatus_.contains (variant) &&
+				status == CurrentStatus_ [variant])
 			return;
 
 		CurrentStatus_ [variant] = status;

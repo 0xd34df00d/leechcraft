@@ -116,19 +116,19 @@ namespace Xoox
 				emit needPassword ();
 
 			IsConnected_ = Client_->connect (false);
-			if (!FirstTimeConnect_)
-				Client_->rosterManager ()->fill ();
 
 			FirstTimeConnect_ = false;
 		}
 
 		if (state.State_ == SOffline)
 		{
-			QList<QObject*> objs;
-			Q_FOREACH (QObject *obj, JID2CLEntry_.values ())
-				objs << obj;
-			emit rosterItemsRemoved (objs);
 			IsConnected_ = false;
+			Q_FOREACH (const gloox::JID& jid, JID2CLEntry_.keys ())
+			{
+				GlooxCLEntry *entry = JID2CLEntry_.take (jid);
+				ODSEntries_ [jid] = entry;
+				entry->Convert2ODS ();
+			}
 		}
 	}
 
@@ -382,6 +382,7 @@ namespace Xoox
 
 	void ClientConnection::handleItemAdded (const gloox::JID& jid)
 	{
+		qDebug () << Q_FUNC_INFO;
 		gloox::RosterItem *ri = Client_->rosterManager ()->getRosterItem (jid);
 
 		GlooxCLEntry *entry = CreateCLEntry (ri);
@@ -398,6 +399,7 @@ namespace Xoox
 
 	void ClientConnection::handleItemRemoved (const gloox::JID& jid)
 	{
+		qDebug () << Q_FUNC_INFO;
 		if (!JID2CLEntry_.contains (jid.bareJID ()))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -413,6 +415,7 @@ namespace Xoox
 
 	void ClientConnection::handleItemUpdated (const gloox::JID& jid)
 	{
+		qDebug () << Q_FUNC_INFO;
 		if (!JID2CLEntry_.contains (jid.bareJID ()))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -427,6 +430,7 @@ namespace Xoox
 
 	void ClientConnection::handleItemUnsubscribed (const gloox::JID& jid)
 	{
+		qDebug () << Q_FUNC_INFO;
 		// TODO
 	}
 
@@ -452,10 +456,15 @@ namespace Xoox
 		gloox::JID jid (item.jid ());
 		if (!JID2CLEntry_.contains (jid))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "no GlooxCLEntry for item"
-					<< item.jid ().c_str ();
-			return;
+			if (ODSEntries_.contains (jid))
+				ConvertFromODS (jid.bareJID (), Client_->rosterManager ()->getRosterItem (jid));
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no GlooxCLEntry for item"
+						<< item.jid ().c_str ();
+				return;
+			}
 		}
 
 		GlooxCLEntry *entry = JID2CLEntry_ [jid];
@@ -476,23 +485,27 @@ namespace Xoox
 
 	bool ClientConnection::handleSubscriptionRequest (const gloox::JID&, const std::string&)
 	{
+		qDebug () << Q_FUNC_INFO;
 		// TODO
 		return false;
 	}
 
 	bool ClientConnection::handleUnsubscriptionRequest (const gloox::JID&, const std::string&)
 	{
+		qDebug () << Q_FUNC_INFO;
 		// TODO
 		return false;
 	}
 
 	void ClientConnection::handleNonrosterPresence (const gloox::Presence&)
 	{
+		qDebug () << Q_FUNC_INFO;
 		// TODO
 	}
 
 	void ClientConnection::handleRosterError (const gloox::IQ&)
 	{
+		qDebug () << Q_FUNC_INFO;
 		// TODO
 	}
 
@@ -552,13 +565,12 @@ namespace Xoox
 		if (!JID2CLEntry_.contains (bareJID))
 		{
 			if (ODSEntries_.contains (bareJID))
-			{
-				entry = ODSEntries_.take (bareJID);
-				entry->UpdateRI (ri);
-			}
+				entry = ConvertFromODS (bareJID, ri);
 			else
+			{
 				entry = new GlooxCLEntry (ri, Account_);
-			JID2CLEntry_ [bareJID] = entry;
+				JID2CLEntry_ [bareJID] = entry;
+			}
 		}
 		else
 		{
@@ -566,6 +578,15 @@ namespace Xoox
 			entry->UpdateRI (ri);
 		}
 		//VCardManager_->fetchVCard (jid, this);
+		return entry;
+	}
+
+	GlooxCLEntry* ClientConnection::ConvertFromODS (const gloox::JID& bareJID,
+			gloox::RosterItem *ri)
+	{
+		GlooxCLEntry *entry = ODSEntries_.take (bareJID);
+		entry->UpdateRI (ri);
+		JID2CLEntry_ [bareJID] = entry;
 		return entry;
 	}
 }
