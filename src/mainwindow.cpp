@@ -173,7 +173,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& me
 			toInsert = MenuTools_;
 
 		if (toInsert)
-			toInsert->insertActions (toInsert->actions ().at (0),
+			toInsert->insertActions (toInsert->actions ().value (0, 0),
 					menus [menuName]);
 		else
 		{
@@ -250,6 +250,8 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SLOT (aboutQt ()));
 
 	MenuView_ = new QMenu (tr ("View"), this);
+	MenuView_->addAction (Ui_.ActionShowStatusBar_);
+	MenuView_->addAction (Ui_.ActionFullscreenMode_);
 	MenuTools_ = new QMenu (tr ("Tools"), this);
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
@@ -318,6 +320,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	menu->addAction (Ui_.ActionAddTask_);
 	menu->addSeparator ();
 	menu->addMenu (MenuTools_);
+	menu->addMenu (MenuView_);
 	menu->addSeparator ();
 	menu->addAction (Ui_.ActionSettings_);
 	menu->addSeparator ();
