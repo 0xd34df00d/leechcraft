@@ -105,7 +105,7 @@ namespace Xoox
 
 		gloox::Client* GetClient () const;
 		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
-		void AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
+		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, gloox::RosterItem*);

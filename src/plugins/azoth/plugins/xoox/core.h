@@ -33,6 +33,7 @@ namespace Plugins
 namespace Xoox
 {
 	class GlooxProtocol;
+	class GlooxCLEntry;
 
 	class Core : public QObject
 	{
@@ -59,6 +60,8 @@ namespace Xoox
 		void LoadRoster ();
 	private slots:
 		void saveRoster ();
+		void saveAvatarFor (GlooxCLEntry* = 0);
+		void handleItemsAdded (const QList<QObject*>&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

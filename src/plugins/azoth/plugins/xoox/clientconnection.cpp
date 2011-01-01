@@ -169,12 +169,14 @@ namespace Xoox
 		return JID2CLEntry_ [bareJid];
 	}
 
-	void ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods)
+	GlooxCLEntry* ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods)
 	{
 		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
 		ODSEntries_ [gloox::JID (ods->ID_.constData ())] = entry;
 
 		emit gotRosterItems (QList<QObject*> () << entry);
+
+		return entry;
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const
@@ -425,6 +427,8 @@ namespace Xoox
 			return;
 		}
 
+		VCardManager_->fetchVCard (jid, this);
+
 		emit rosterItemUpdated (JID2CLEntry_ [jid.bareJID ()]);
 	}
 
@@ -548,7 +552,7 @@ namespace Xoox
 					<< "got null vcard";
 			return;
 		}
-		JID2CLEntry_ [jid]->SetPhoto (vcard->photo ());
+		JID2CLEntry_ [jid]->SetAvatar (vcard->photo ());
 	}
 
 	void ClientConnection::handleVCardResult (gloox::VCardHandler::VCardContext ctx,
@@ -570,6 +574,7 @@ namespace Xoox
 			{
 				entry = new GlooxCLEntry (ri, Account_);
 				JID2CLEntry_ [bareJID] = entry;
+				VCardManager_->fetchVCard (jid, this);
 			}
 		}
 		else
@@ -577,7 +582,6 @@ namespace Xoox
 			entry = JID2CLEntry_ [bareJID];
 			entry->UpdateRI (ri);
 		}
-		//VCardManager_->fetchVCard (jid, this);
 		return entry;
 	}
 
@@ -587,6 +591,8 @@ namespace Xoox
 		GlooxCLEntry *entry = ODSEntries_.take (bareJID);
 		entry->UpdateRI (ri);
 		JID2CLEntry_ [bareJID] = entry;
+		if (entry->GetAvatar ().isNull ())
+			VCardManager_->fetchVCard (bareJID, this);
 		return entry;
 	}
 }

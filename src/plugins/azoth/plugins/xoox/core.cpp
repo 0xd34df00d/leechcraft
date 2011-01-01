@@ -61,6 +61,10 @@ namespace Xoox
 					SIGNAL (gotCLItems (const QList<QObject*>&)),
 					this,
 					SLOT (saveRoster ()));
+			connect (account,
+					SIGNAL (gotCLItems (const QList<QObject*>&)),
+					this,
+					SLOT (handleItemsAdded (const QList<QObject*>&)));
 		}
 	}
 
@@ -108,7 +112,7 @@ namespace Xoox
 	void Core::LoadRoster ()
 	{
 		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
-					.absoluteFilePath ("roster.dat"));
+					.absoluteFilePath ("roster.xml"));
 		if (!rosterFile.exists ())
 			return;
 		if (!rosterFile.open (QIODevice::ReadOnly))
@@ -194,7 +198,11 @@ namespace Xoox
 					ods->Name_ = name;
 					ods->ID_ = entryID;
 					ods->Groups_ = groups;
-					id2account [id]->CreateFromODS (ods);
+					GlooxCLEntry *entry = id2account [id]->CreateFromODS (ods);
+
+					const QString& path = Util::CreateIfNotExists ("azoth/xoox/avatars")
+							.absoluteFilePath (entryID.toBase64 ());
+					entry->SetAvatar (QImage (path, "PNG"));
 				}
 				entry = entry.nextSiblingElement ("entry");
 			}
@@ -206,7 +214,7 @@ namespace Xoox
 	void Core::saveRoster ()
 	{
 		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
-					.absoluteFilePath ("roster.dat"));
+					.absoluteFilePath ("roster.xml"));
 		if (!rosterFile.open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -244,12 +252,50 @@ namespace Xoox
 							w.writeTextElement ("group", group);
 						w.writeEndElement ();
 					w.writeEndElement ();
+
+					saveAvatarFor (entry);
 				}
 				w.writeEndElement ();
 			w.writeEndElement ();
 		}
 		w.writeEndElement ();
 		w.writeEndDocument ();
+	}
+
+	void Core::handleItemsAdded (const QList<QObject*>& items)
+	{
+		Q_FOREACH (QObject *clEntry, items)
+		{
+			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (clEntry);
+			if (!entry ||
+					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
+				continue;
+
+			connect (entry,
+					SIGNAL (avatarChanged (const QImage&)),
+					this,
+					SLOT (saveAvatarFor ()),
+					Qt::UniqueConnection);
+		}
+	}
+
+	void Core::saveAvatarFor (GlooxCLEntry *entry)
+	{
+		if (!entry)
+			entry = qobject_cast<GlooxCLEntry*> (sender ());
+
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null parameter and wrong sender():"
+					<< sender ();
+			return;
+		}
+
+		const QByteArray& filename = entry->GetEntryID ().toBase64 ();
+		const QString& path = Util::CreateIfNotExists ("azoth/xoox/avatars")
+				.absoluteFilePath (filename);
+		entry->GetAvatar ().save (path, "PNG");
 	}
 }
 }

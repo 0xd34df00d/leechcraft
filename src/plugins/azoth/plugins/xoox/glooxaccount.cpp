@@ -192,9 +192,9 @@ namespace Xoox
 		return ClientConnection_;
 	}
 
-	void GlooxAccount::CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr ods)
+	GlooxCLEntry* GlooxAccount::CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr ods)
 	{
-		ClientConnection_->AddODSCLEntry (ods);
+		return ClientConnection_->AddODSCLEntry (ods);
 	}
 
 	QByteArray GlooxAccount::Serialize () const

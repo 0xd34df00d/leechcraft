@@ -91,7 +91,7 @@ namespace Xoox
 		QString GetNick () const;
 		void JoinRoom (const QString&, const QString&, const QString&);
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
-		void CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
+		GlooxCLEntry* CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
 
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
