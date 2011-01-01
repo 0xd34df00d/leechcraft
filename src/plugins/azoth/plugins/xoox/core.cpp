@@ -60,10 +60,6 @@ namespace Xoox
 			connect (account,
 					SIGNAL (gotCLItems (const QList<QObject*>&)),
 					this,
-					SLOT (saveRoster ()));
-			connect (account,
-					SIGNAL (gotCLItems (const QList<QObject*>&)),
-					this,
 					SLOT (handleItemsAdded (const QList<QObject*>&)));
 		}
 	}
@@ -264,6 +260,7 @@ namespace Xoox
 
 	void Core::handleItemsAdded (const QList<QObject*>& items)
 	{
+		bool shouldSave = false;
 		Q_FOREACH (QObject *clEntry, items)
 		{
 			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (clEntry);
@@ -271,12 +268,17 @@ namespace Xoox
 					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 				continue;
 
+			shouldSave = true;
+
 			connect (entry,
 					SIGNAL (avatarChanged (const QImage&)),
 					this,
 					SLOT (saveAvatarFor ()),
 					Qt::UniqueConnection);
 		}
+
+		if (shouldSave)
+			saveRoster ();
 	}
 
 	void Core::saveAvatarFor (GlooxCLEntry *entry)
