@@ -192,6 +192,17 @@ namespace Xoox
 		return result;
 	}
 
+	void ClientConnection::FetchVCard (const gloox::JID& jid)
+	{
+		VCardManager_->fetchVCard (jid, this);
+	}
+
+	void ClientConnection::FetchVCard (const gloox::JID& jid, RoomHandler *rh)
+	{
+		VCardRequests_ [jid] = rh;
+		FetchVCard (jid);
+	}
+
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
 			const QString& variant, const QString& body, gloox::RosterItem *ri)
 	{
@@ -427,7 +438,7 @@ namespace Xoox
 			return;
 		}
 
-		VCardManager_->fetchVCard (jid, this);
+		FetchVCard (jid);
 
 		emit rosterItemUpdated (JID2CLEntry_ [jid.bareJID ()]);
 	}
@@ -549,10 +560,21 @@ namespace Xoox
 		if (!vcard)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "got null vcard";
+					<< "got null vcard"
+					<< "for jid"
+					<< jid.full ().c_str ();
 			return;
 		}
-		JID2CLEntry_ [jid]->SetAvatar (vcard->photo ());
+
+		if (VCardRequests_.contains (jid))
+			VCardRequests_.take (jid)->HandleVCard (vcard,
+					QString::fromUtf8 (jid.resource ().c_str ()));
+		else if (JID2CLEntry_.contains (jid))
+			JID2CLEntry_ [jid]->SetAvatar (vcard->photo ());
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "vcard reply for unknown request for jid"
+					<< jid.full ().c_str ();
 	}
 
 	void ClientConnection::handleVCardResult (gloox::VCardHandler::VCardContext ctx,
@@ -574,7 +596,7 @@ namespace Xoox
 			{
 				entry = new GlooxCLEntry (ri, Account_);
 				JID2CLEntry_ [bareJID] = entry;
-				VCardManager_->fetchVCard (jid, this);
+				FetchVCard (jid);
 			}
 		}
 		else
@@ -592,7 +614,7 @@ namespace Xoox
 		entry->UpdateRI (ri);
 		JID2CLEntry_ [bareJID] = entry;
 		if (entry->GetAvatar ().isNull ())
-			VCardManager_->fetchVCard (bareJID, this);
+			FetchVCard (bareJID);
 		return entry;
 	}
 }

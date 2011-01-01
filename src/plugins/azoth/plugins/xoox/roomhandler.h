@@ -60,7 +60,9 @@ namespace Xoox
 		 */
 		void SetRoom (boost::shared_ptr<gloox::MUCRoom>);
 		boost::shared_ptr<gloox::MUCRoom> GetRoom () const;
+		gloox::JID GetRoomJID () const;
 		RoomCLEntry* GetCLEntry ();
+		void HandleVCard (const gloox::VCard*, const QString&);
 
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);

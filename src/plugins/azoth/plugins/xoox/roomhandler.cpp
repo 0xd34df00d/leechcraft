@@ -60,9 +60,29 @@ namespace Xoox
 		return Room_;
 	}
 
+	gloox::JID RoomHandler::GetRoomJID () const
+	{
+		return Room_->name () + "@" + Room_->service ();
+	}
+
 	RoomCLEntry* RoomHandler::GetCLEntry ()
 	{
 		return CLEntry_;
+	}
+
+	void RoomHandler::HandleVCard (const gloox::VCard *card, const QString& nick)
+	{
+		if (!Nick2Entry_.contains (nick))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such nick"
+					<< nick
+					<< "; available:"
+					<< Nick2Entry_.keys ();
+			return;
+		}
+
+		Nick2Entry_ [nick]->SetAvatar (card->photo ());
 	}
 
 	void RoomHandler::MakeLeaveMessage (const gloox::MUCRoomParticipant part)
@@ -164,7 +184,10 @@ namespace Xoox
 			if (existed)
 				MakeStatusChangedMessage (part, presence);
 			else
+			{
 				MakeJoinMessage (part);
+				Account_->GetClientConnection ()->FetchVCard (JIDForNick (nick), this);
+			}
 		}
 
 		EntryStatus status (static_cast<State> (presence.presence ()),
