@@ -75,6 +75,9 @@ namespace Xoox
 		GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
 		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
 
+		OfflineDataSource_ptr ToOfflineDataSource () const;
+		void Convert2ODS ();
+
 		void UpdateRI (gloox::RosterItem*);
 		gloox::RosterItem* GetRI () const;
 		QList<const gloox::Resource*> GetResourcesDesc () const;

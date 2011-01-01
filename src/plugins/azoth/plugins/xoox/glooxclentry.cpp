@@ -51,6 +51,27 @@ namespace Xoox
 	{
 	}
 
+	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
+	{
+		if (ODS_)
+			return ODS_;
+
+		OfflineDataSource_ptr ods (new OfflineDataSource);
+		ods->ID_ = GetEntryID ();
+		ods->Name_ = GetEntryName ();
+		ods->Groups_ = Groups ();
+
+		return ods;
+	}
+
+	void GlooxCLEntry::Convert2ODS ()
+	{
+		emit availableVariantsChanged (QStringList ());
+		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
+		ODS_ = ToOfflineDataSource ();
+		RI_ = 0;
+	}
+
 	void GlooxCLEntry::UpdateRI (gloox::RosterItem *ri)
 	{
 		RI_ = ri;
