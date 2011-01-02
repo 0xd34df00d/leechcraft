@@ -152,6 +152,11 @@
    <header>textedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>MsgEdit_</tabstop>
+  <tabstop>View_</tabstop>
+  <tabstop>SubjectButton_</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
