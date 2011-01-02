@@ -68,7 +68,7 @@ namespace Xoox
 	{
 		ODS_ = ToOfflineDataSource ();
 		RI_ = 0;
-		emit availableVariantsChanged (QStringList ());
+		emit availableVariantsChanged (QStringList () << QString ());
 		CurrentStatus_.clear ();
 		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
@@ -174,7 +174,7 @@ namespace Xoox
 		QStringList result;
 
 		if (ODS_)
-			return result;
+			return result << QString ();
 
 		Q_FOREACH (const std::string& str, VariantsImpl ())
 			result << QString::fromUtf8 (str.c_str ());
