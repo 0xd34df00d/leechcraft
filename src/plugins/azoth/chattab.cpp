@@ -335,6 +335,7 @@ namespace Azoth
 		if (url.host () == "msgeditreplace")
 		{
 			Ui_.MsgEdit_->setText (url.path ().mid (1));
+			Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 			Ui_.MsgEdit_->setFocus ();
 		}
 	}
