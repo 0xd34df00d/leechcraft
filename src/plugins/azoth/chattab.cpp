@@ -152,18 +152,13 @@ namespace Azoth
 
 		Ui_.EntryInfo_->setText (e->GetEntryName ());
 
-		Ui_.MsgEdit_->setMaximumHeight (height () / 4);
-		int height = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
-
-		if (height + Ui_.MsgEdit_->fontMetrics ().height () < Ui_.MsgEdit_->maximumHeight ())
-			Ui_.MsgEdit_->setMinimumHeight (height);
-
 		Ui_.MsgEdit_->setFocus ();
 
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
 				this,
 				SLOT (clearAvailableNick ()));
+		on_MsgEdit__textChanged ();
 	}
 
 	void ChatTab::HasBeenAdded ()
@@ -276,14 +271,11 @@ namespace Azoth
 	{
 		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
 
-		int height = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
-		int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
-		if (height < fontHeight)
-			Ui_.MsgEdit_->setMinimumHeight (fontHeight);
-		else if (height + fontHeight < Ui_.MsgEdit_->maximumHeight ())
-			Ui_.MsgEdit_->setMinimumHeight (height);
-		else
-			Ui_.MsgEdit_->setMinimumHeight (Ui_.MsgEdit_->maximumHeight ());
+		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
+		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
+		const int resHeight = std::min (height () / 4, std::max (docHeight, fontHeight));
+		Ui_.MsgEdit_->setMinimumHeight (resHeight);
+		Ui_.MsgEdit_->setMaximumHeight (resHeight);
 	}
 
 	void ChatTab::on_SubjectButton__released ()
