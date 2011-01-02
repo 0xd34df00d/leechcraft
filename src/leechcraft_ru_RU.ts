@@ -353,7 +353,7 @@
     </message>
     <message>
         <source>Select directory</source>
-        <translation>Выберите директорию</translation>
+        <translation>Выберите каталог</translation>
     </message>
     <message>
         <source>Select file</source>
@@ -454,7 +454,7 @@
     </message>
     <message>
         <source>Could not create Core directory.</source>
-        <translation>Невозможно создать директорию для Ядра.</translation>
+        <translation>Невозможно создать каталог Ядра.</translation>
     </message>
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
@@ -717,7 +717,7 @@
     </message>
     <message>
         <source> b</source>
-        <translation> b</translation>
+        <translation> Б</translation>
     </message>
     <message>
         <source> KiB</source>
@@ -1007,7 +1007,7 @@
     </message>
     <message>
         <source>Watch directory:</source>
-        <translation>Следить за директорией:</translation>
+        <translation>Следить за каталогом:</translation>
     </message>
     <message>
         <source>Show plugin-dependent actions in tab bar context menu</source>
