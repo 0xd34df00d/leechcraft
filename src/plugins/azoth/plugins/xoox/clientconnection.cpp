@@ -160,6 +160,20 @@ namespace Xoox
 		RoomHandlers_.remove (rh);
 	}
 
+	void ClientConnection::AckAuth (QObject *entryObj, bool ack)
+	{
+		UnauthCLEntry *entry = qobject_cast<UnauthCLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "is not an UnauthCLEntry";
+			return;
+		}
+		Client_->rosterManager ()->ackSubscriptionRequest (entry->GetJID (), ack);
+		emit rosterItemRemoved (entry);
+	}
+
 	gloox::Client* ClientConnection::GetClient () const
 	{
 		return Client_.get ();
@@ -396,7 +410,7 @@ namespace Xoox
 
 	void ClientConnection::handleItemAdded (const gloox::JID& jid)
 	{
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
 		gloox::RosterItem *ri = Client_->rosterManager ()->getRosterItem (jid);
 
 		GlooxCLEntry *entry = CreateCLEntry (ri);
@@ -413,7 +427,7 @@ namespace Xoox
 
 	void ClientConnection::handleItemRemoved (const gloox::JID& jid)
 	{
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
 		if (!JID2CLEntry_.contains (jid.bareJID ()))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -429,7 +443,7 @@ namespace Xoox
 
 	void ClientConnection::handleItemUpdated (const gloox::JID& jid)
 	{
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
 		if (!JID2CLEntry_.contains (jid.bareJID ()))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -446,7 +460,7 @@ namespace Xoox
 
 	void ClientConnection::handleItemUnsubscribed (const gloox::JID& jid)
 	{
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
 		// TODO
 	}
 

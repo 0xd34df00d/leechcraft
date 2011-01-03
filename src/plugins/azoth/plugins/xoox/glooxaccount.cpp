@@ -32,6 +32,7 @@
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "roomclentry.h"
+#include "unauthclentry.h"
 
 namespace LeechCraft
 {
@@ -168,6 +169,16 @@ namespace Xoox
 	void GlooxAccount::Synchronize ()
 	{
 		ClientConnection_->Synchronize ();
+	}
+
+	void GlooxAccount::Authorize (QObject *entryObj)
+	{
+		ClientConnection_->AckAuth (entryObj, true);
+	}
+
+	void GlooxAccount::DenyAuth (QObject *entryObj)
+	{
+		ClientConnection_->AckAuth (entryObj, false);
 	}
 
 	QString GlooxAccount::GetJID () const

@@ -495,6 +495,8 @@ namespace LeechCraft
 				result << id2action.value ("kick");
 				result << id2action.value ("ban");
 				result << id2action.value ("leave");
+				result << id2action.value ("authorize");
+				result << id2action.value ("denyauth");
 				result << entry->GetActions ();
 				result.removeAll (0);
 				return result;
@@ -560,6 +562,26 @@ namespace LeechCraft
 					Entry2Actions_ [entry] ["leave"] = leave;
 					Action2Areas_ [leave] << CLEAAContactListCtxtMenu
 							<< CLEAATabCtxtMenu;
+				}
+				else if (entry->GetEntryType () == Plugins::ICLEntry::ETUnauthEntry)
+				{
+					QAction *authorize = new QAction (tr ("Authorize"), this);
+					authorize->setProperty ("ActionIcon", "azoth_authorize");
+					connect (authorize,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionAuthorizeTriggered ()));
+					Entry2Actions_ [entry] ["authorize"] = authorize;
+					Action2Areas_ [authorize] << CLEAAContactListCtxtMenu;
+
+					QAction *denyAuth = new QAction (tr ("Deny authorization"), this);
+					denyAuth->setProperty ("ActionIcon", "azoth_denyauth");
+					connect (denyAuth,
+							 SIGNAL (triggered ()),
+							 this,
+							 SLOT (handleActionDenyAuthTriggered ()));
+					Entry2Actions_ [entry] ["denyauth"] = denyAuth;
+					Action2Areas_ [denyAuth] << CLEAAContactListCtxtMenu;
 				}
 
 				Q_FOREACH (QAction *act, Entry2Actions_ [entry].values ())
@@ -992,6 +1014,56 @@ namespace LeechCraft
 				}
 
 				mucEntry->Leave ();
+			}
+
+			void Core::handleActionAuthorizeTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IAccount *account =
+						qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+				if (!account)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "parent account doesn't implement IAccount:"
+							<< entry->GetParentAccount ();
+					return;
+				}
+				account->Authorize (entry->GetObject ());
+			}
+
+			void Core::handleActionDenyAuthTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IAccount *account =
+						qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+				if (!account)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "parent account doesn't implement IAccount:"
+							<< entry->GetParentAccount ();
+					return;
+				}
+				account->DenyAuth (entry->GetObject ());
 			}
 		};
 	};

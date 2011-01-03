@@ -86,6 +86,8 @@ namespace Xoox
 		void OpenConfigurationDialog ();
 		void ChangeState (State, const QString& = QString ());
 		void Synchronize ();
+		void Authorize (QObject*);
+		void DenyAuth (QObject*);
 
 		QString GetJID () const;
 		QString GetNick () const;

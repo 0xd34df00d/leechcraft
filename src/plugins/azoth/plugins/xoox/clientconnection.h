@@ -101,8 +101,9 @@ namespace Xoox
 		 * entry representing that room.
 		 */
 		RoomCLEntry* JoinRoom (const gloox::JID&);
-
 		void Unregister (RoomHandler*);
+
+		void AckAuth (QObject*, bool);
 
 		gloox::Client* GetClient () const;
 		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;

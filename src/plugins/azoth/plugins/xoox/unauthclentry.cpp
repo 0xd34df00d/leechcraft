@@ -80,6 +80,11 @@ namespace Xoox
 	{
 		return 0;
 	}
+
+	gloox::JID UnauthCLEntry::GetJID () const
+	{
+		return JID_;
+	}
 }
 }
 }

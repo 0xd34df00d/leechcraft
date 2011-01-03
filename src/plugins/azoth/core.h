@@ -313,6 +313,8 @@ namespace LeechCraft
 
 				void handleActionOpenChatTriggered ();
 				void handleActionLeaveTriggered ();
+				void handleActionAuthorizeTriggered ();
+				void handleActionDenyAuthTriggered ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

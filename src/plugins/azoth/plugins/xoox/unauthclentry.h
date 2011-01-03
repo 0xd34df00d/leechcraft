@@ -54,6 +54,8 @@ namespace Xoox
 		QStringList Groups () const;
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType, const QString&, const QString&);
+
+		gloox::JID GetJID () const;
 	};
 }
 }

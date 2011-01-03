@@ -130,6 +130,18 @@ namespace Plugins
 		 */
 		virtual void Synchronize () = 0;
 
+		/** @brief Grants authorization to the given entry.
+		 *
+		 * @param[in] entry Entry object implementing ICLEntry.
+		 */
+		virtual void Authorize (QObject *entry) = 0;
+
+		/** @brief Denies authorization for the given entry.
+		 *
+		 * @param[in] entry Entry object implementing ICLEntry.
+		 */
+		virtual void DenyAuth (QObject *entry) = 0;
+
 		/** @brief This signal should be emitted when new contact list
 		 * items appear in this account.
 		 *
