@@ -1038,7 +1038,9 @@ namespace LeechCraft
 							<< entry->GetParentAccount ();
 					return;
 				}
+				const QString& id = entry->GetHumanReadableID ();
 				account->Authorize (entry->GetObject ());
+				account->RequestAuth (id);
 			}
 
 			void Core::handleActionDenyAuthTriggered ()

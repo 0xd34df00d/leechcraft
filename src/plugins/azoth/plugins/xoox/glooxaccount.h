@@ -88,6 +88,8 @@ namespace Xoox
 		void Synchronize ();
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);
+		void RequestAuth (const QString&, const QString&,
+				const QString&, const QStringList&);
 
 		QString GetJID () const;
 		QString GetNick () const;

@@ -172,6 +172,20 @@ namespace Xoox
 		}
 		Client_->rosterManager ()->ackSubscriptionRequest (entry->GetJID (), ack);
 		emit rosterItemRemoved (entry);
+		entry->deleteLater ();
+	}
+
+	void ClientConnection::Subscribe (const QString& id,
+			const QString& msg, const QString& name, const QStringList& groups)
+	{
+		gloox::JID jid (id.toUtf8 ().constData ());
+		gloox::StringList strings;
+		Q_FOREACH (const QString& group, groups)
+			strings.push_back (group.toUtf8 ().constData ());
+		Client_->rosterManager ()->subscribe (jid,
+				name.toUtf8 ().constData (),
+				strings,
+				msg.toUtf8 ().constData ());
 	}
 
 	gloox::Client* ClientConnection::GetClient () const

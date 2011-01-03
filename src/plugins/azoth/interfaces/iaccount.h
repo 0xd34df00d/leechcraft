@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
 #include <QFlags>
 #include <QMetaType>
+#include <QStringList>
 #include <interfaces/azothcommon.h>
 
 namespace LeechCraft
@@ -132,15 +133,49 @@ namespace Plugins
 
 		/** @brief Grants authorization to the given entry.
 		 *
+		 * entry is expected to be deleted in this function.
+		 *
 		 * @param[in] entry Entry object implementing ICLEntry.
 		 */
 		virtual void Authorize (QObject *entry) = 0;
 
 		/** @brief Denies authorization for the given entry.
 		 *
+		 * entry is expected to be deleted in this function.
+		 *
 		 * @param[in] entry Entry object implementing ICLEntry.
 		 */
 		virtual void DenyAuth (QObject *entry) = 0;
+
+		/** @brief Requests authorization from the given entry.
+		 *
+		 * entry is a human-readable identifier of the remote, as
+		 * returned by ICLEntry::GetHumanReadableID().
+		 *
+		 * If applicable and msg is a non-empty string, the msg should
+		 * be sent to the entry as the message sent along with the
+		 * request.
+		 *
+		 * name should be the name under which the entry is added to the
+		 * contact list, if applicable. If name is an empty string, a
+		 * sane default should be used, like the human-readable ID —
+		 * entry.
+		 *
+		 * groups is the list of groups that this entry is added to. If
+		 * groups is an emptry list, the behavior should be defined by
+		 * the plugin - the entry should either be added to some kind of
+		 * default group or have no assigned groups at all. If protocol
+		 * supports only one group per entry, the first one in the list
+		 * should be used.
+		 *
+		 * @param[in] entry Human-readable ID of the remote.
+		 * @param[in] msg Optional request string to display to remote,
+		 * if applicable.
+		 */
+		virtual void RequestAuth (const QString& entry,
+				const QString& msg = QString (),
+				const QString& name = QString (),
+				const QStringList& groups = QStringList ()) = 0;
 
 		/** @brief This signal should be emitted when new contact list
 		 * items appear in this account.

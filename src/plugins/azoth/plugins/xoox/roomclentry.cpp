@@ -79,6 +79,13 @@ namespace Xoox
 					r->nick ()).c_str ();
 	}
 
+	QString RoomCLEntry::GetHumanReadableID () const
+	{
+		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
+		return (r->name () + "@" +
+					r->service ()).c_str ();
+	}
+
 	QStringList RoomCLEntry::Groups () const
 	{
 		return QStringList () << tr ("Multiuser chatrooms");

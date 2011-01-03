@@ -65,6 +65,11 @@ namespace Xoox
 		return QByteArray (JID_.bare ().c_str ()) + "_unauth";
 	}
 
+	QString UnauthCLEntry::GetHumanReadableID () const
+	{
+		return QString::fromUtf8 (JID_.bare ().c_str ());
+	}
+
 	QStringList UnauthCLEntry::Groups () const
 	{
 		return QStringList ();

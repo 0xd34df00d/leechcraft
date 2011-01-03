@@ -104,6 +104,8 @@ namespace Xoox
 		void Unregister (RoomHandler*);
 
 		void AckAuth (QObject*, bool);
+		void Subscribe (const QString&, const QString&,
+				const QString&, const QStringList&);
 
 		gloox::Client* GetClient () const;
 		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;

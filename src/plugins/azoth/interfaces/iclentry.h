@@ -158,9 +158,44 @@ namespace Plugins
 		 * should not depend on the value returned by GetEntryName()
 		 * (the human-readable name).
 		 *
+		 * The main difference between this and GetHumanReadableID() is
+		 * that GetEntryID() is used for distinguishing different items
+		 * in the contact list (and there may be several items for one
+		 * remote), while GetHumanReadableID() is used to distinguish
+		 * different remotes between each other.
+		 *
 		 * @return The unique and persistent ID of this entry.
+		 *
+		 * @sa GetHumanReadableID()
 		 */
 		virtual QByteArray GetEntryID () const = 0;
+
+		/** @brief Returns the human-readable ID of this entry.
+		 *
+		 * This function is used to obtain the human-readable identifier
+		 * of this entry (for example, Jabber ID in case of XMPP), which
+		 * may be not so unique as GetEntryID(). For example, if an
+		 * entry exists in the roster, but it has also requested auth,
+		 * there would be two entries with the same human-readable ID,
+		 * but they would still be distinguished by the result of the
+		 * GetEntryID() function.
+		 *
+		 * Various operations like buddy searches (in protocols that
+		 * support this feature like Skype or ICQ) are expected to
+		 * operate on strings that are among possible return values of
+		 * this function. Also, when initiating entry addition, the
+		 * entry is expected to be identified by a similar string.
+		 *
+		 * The default implementation returns GetEntryID().
+		 *
+		 * @return Human-readable persistent ID of this entry.
+		 *
+		 * @sa GetEntryID()
+		 */
+		virtual QString GetHumanReadableID () const
+		{
+			return GetEntryID ();
+		}
 
 		/** @brief Returns the list of human-readable names of the
 		 * groups that this entry belongs to.

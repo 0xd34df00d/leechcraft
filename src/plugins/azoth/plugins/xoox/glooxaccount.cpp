@@ -181,6 +181,12 @@ namespace Xoox
 		ClientConnection_->AckAuth (entryObj, false);
 	}
 
+	void GlooxAccount::RequestAuth (const QString& entryId,
+			const QString& msg, const QString& name, const QStringList& groups)
+	{
+		ClientConnection_->Subscribe (entryId, msg, name, groups);
+	}
+
 	QString GlooxAccount::GetJID () const
 	{
 		return JID_;
