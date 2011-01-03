@@ -69,11 +69,6 @@ namespace OnlineBookmarks
 				SLOT (readyReadReply ()));
 	}
 
-	void DeliciousBookmarksService::SetYahooID (bool yahooId)
-	{
-		YahooID_ = yahooId;
-	}
-
 	void DeliciousBookmarksService::getReplyFinished ()
 	{
 		Reply_->deleteLater ();

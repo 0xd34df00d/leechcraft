@@ -59,75 +59,34 @@ namespace OnlineBookmarks
 		Ui_.Edit_->setEnabled (false);
 
 		Ui_.Services_->setCurrentIndex (0);
+		Ui_.LoginFrame_->hide ();
+	
+		connect (Ui_.Login_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (handleLoginTextChanged (QString)));
 
+		connect (Ui_.Password_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (handlePasswordTextChanged (QString)));
+
+		connect (Ui_.Apply_,
+				SIGNAL (released ()),
+				this,
+				SLOT (handleStuff ()));
+		
 		ReadSettings ();
-
-		LoginFrame_ = CreateLoginWidget (parentWidget ());
-		LoginFrame_->hide ();
 
 		BookmarksServices_ << new DeliciousBookmarksService (this);
 
 		SetupServices ();
 	}
 
-	QFrame *Settings::CreateLoginWidget (QWidget *parent)
-	{
-		QFrame *frame = new QFrame (parent);
-		frame->setMaximumWidth (200);
-
-		QGridLayout *gridMainLay = new QGridLayout (frame);
-		gridMainLay->setMargin (0);
-
-		QGroupBox *groupBox = new QGroupBox;
-		gridMainLay->addWidget (groupBox);
-
-		QGridLayout *gridLay = new QGridLayout (groupBox);
-
-		YahooID_ = new QCheckBox ("Yahoo ID");
-
-		QLabel *loginLable = new QLabel ("Login");
-		Login_ = new QLineEdit;
-
-		QLabel *passwordLable = new QLabel ("Password");
-		Password_ = new QLineEdit;
-		Password_->setEchoMode (QLineEdit::PasswordEchoOnEdit);
-
-		Apply_ = new QPushButton ("Apply");
-		Apply_->setEnabled (false);
-		Apply_->show ();
-
-		gridLay->setMargin (0);
-		gridLay->addWidget (loginLable, 0, 0);
-		gridLay->addWidget (Login_, 0, 1);
-		gridLay->addWidget (YahooID_, 1, 1);
-		gridLay->addWidget (passwordLable, 2, 0);
-		gridLay->addWidget (Password_, 2, 1);
-		gridLay->addWidget (Apply_, 3, 0, 1, 2);
-
-
-		connect (Login_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (handleLoginTextChanged (QString)));
-
-		connect (Password_,
-				SIGNAL (textChanged (QString)),
-				this,
-				SLOT (handlePasswordTextChanged (QString)));
-
-		connect (Apply_,
-				SIGNAL (released ()),
-				this,
-				SLOT (handleStuff ()));
-
-		return frame;
-	}
-
 	void Settings::ClearFrameState ()
 	{
-		Login_->setText (QString ());
-		Password_->setText (QString ());
-		YahooID_->setChecked (false);
+		Ui_.Login_->setText (QString ());
+		Ui_.Password_->setText (QString ());
 	}
 
 	void Settings::SetupServices ()
@@ -213,10 +172,10 @@ namespace OnlineBookmarks
 
 	void Settings::SetApplyEnabled (const QString& firestString, const QString& secondString)
 	{
-		Apply_->setEnabled (!(firestString.isEmpty () ||
+		Ui_.Apply_->setEnabled (!(firestString.isEmpty () ||
 				secondString.isEmpty () ||
 				!Ui_.Edit_->isChecked () &&
-				!Model_->findItems (Login_->text (),
+				!Model_->findItems (Ui_.Login_->text (),
 						Qt::MatchFixedString | Qt::MatchRecursive).isEmpty ()));
 	}
 
@@ -247,13 +206,13 @@ namespace OnlineBookmarks
 		{
 			if (Ui_.Edit_->isChecked ())
 				Ui_.Edit_->toggle ();
-			Ui_.verticalLayout_2->insertWidget (1, LoginFrame_);
-			LoginFrame_->show ();
+			Ui_.verticalLayout_2->insertWidget (1, Ui_.LoginFrame_);
+			Ui_.LoginFrame_->show ();
 		}
 		else
 		{
-			Ui_.verticalLayout_2->removeWidget (LoginFrame_);
-			LoginFrame_->hide ();
+			Ui_.verticalLayout_2->removeWidget (Ui_.LoginFrame_);
+			Ui_.LoginFrame_->hide ();
 			ClearFrameState ();
 		}
 	}
@@ -264,16 +223,16 @@ namespace OnlineBookmarks
 		{
 			if (Ui_.Add_->isChecked ())
 				Ui_.Add_->toggle ();
-			Ui_.verticalLayout_2->insertWidget (2, LoginFrame_);
-			LoginFrame_->show ();
-			Login_->setText (Ui_.AccauntsView_->currentIndex ().data ().toString ());
-			Password_->setText (GetPassword (Login_->text (),
+			Ui_.verticalLayout_2->insertWidget (2, Ui_.LoginFrame_);
+			Ui_.LoginFrame_->show ();
+			Ui_.Login_->setText (Ui_.AccauntsView_->currentIndex ().data ().toString ());
+			Ui_.Password_->setText (GetPassword (Ui_.Login_->text (),
 					Ui_.AccauntsView_->currentIndex ().parent ().data ().toString ()));
 		}
 		else
 		{
-			Ui_.verticalLayout_2->removeWidget (LoginFrame_);
-			LoginFrame_->hide ();
+			Ui_.verticalLayout_2->removeWidget (Ui_.LoginFrame_);
+			Ui_.LoginFrame_->hide ();
 			ClearFrameState ();
 		}
 	}
@@ -294,7 +253,7 @@ namespace OnlineBookmarks
 					Internal,
 					"x-leechcraft/data-persistent-clear");
 
-			LoginFrame_->hide ();
+			Ui_.LoginFrame_->hide ();
 			Model_->removeRow (Ui_.AccauntsView_->currentIndex ().row (),
 					Ui_.AccauntsView_->currentIndex ().parent ());
 
@@ -321,7 +280,7 @@ namespace OnlineBookmarks
 					data ().toString ());
 
 		BookmarksServices_.at (indexService)->
-				CheckValidAccountData (Login_->text (), Password_->text ());
+				CheckValidAccountData (Ui_.Login_->text (), Ui_.Password_->text ());
 
 		ClearFrameState ();
 
@@ -333,20 +292,12 @@ namespace OnlineBookmarks
 
 	void Settings::handleLoginTextChanged (const QString& text)
 	{
-		SetApplyEnabled (text, Password_->text ());
+		SetApplyEnabled (text, Ui_.Password_->text ());
 	}
 
 	void Settings::handlePasswordTextChanged (const QString& text)
 	{
-		SetApplyEnabled (text, Login_->text ());
-	}
-
-	void Settings::on_Services__currentIndexChanged (const QString& text)
-	{
-		if (text == "Del.icio.us")
-			YahooID_->show ();
-		else
-			YahooID_->hide ();
+		SetApplyEnabled (text, Ui_.Login_->text ());
 	}
 
 	void Settings::on_AccauntsView__clicked (const QModelIndex& index)
@@ -363,7 +314,7 @@ namespace OnlineBookmarks
 		{
 			Ui_.Edit_->setEnabled (true);
 			Ui_.Delete_->setEnabled (true);
-			Login_->setText (Ui_.AccauntsView_->currentIndex ().data ().toString ());
+			Ui_.Login_->setText (Ui_.AccauntsView_->currentIndex ().data ().toString ());
 		}
 	}
 
@@ -374,12 +325,12 @@ namespace OnlineBookmarks
 			QString service = "Account/" + Ui_.Services_->currentText ();
 			if (XmlSettingsManager::Instance ()->property (service.toStdString ().c_str ()).isNull ())
 				XmlSettingsManager::Instance ()->
-						setProperty (service.toStdString ().c_str (), Login_->text ());
+						setProperty (service.toStdString ().c_str (), Ui_.Login_->text ());
 			else
 			{
 				QStringList loginList = XmlSettingsManager::Instance ()->
 						property (service.toStdString ().c_str ()).toStringList ();
-				loginList << Login_->text ();
+				loginList << Ui_.Login_->text ();
 				XmlSettingsManager::Instance ()->
 						setProperty (service.toStdString ().c_str (), loginList);
 			}
@@ -394,13 +345,15 @@ namespace OnlineBookmarks
 			else
 				 serviceItem = items.at (0);
 
-			serviceItem->appendRow (new QStandardItem (Login_->text ()));
+			serviceItem->appendRow (new QStandardItem (Ui_.Login_->text ()));
 
-			SetPassword (Password_->text (), Login_->text (), GetSelectedName ());
+			SetPassword (Ui_.Password_->text (), Ui_.Login_->text (), GetSelectedName ());
 		}
 		else
 		{
-			Entity e = Util::MakeNotification ("Poshuku", tr ("Invalid account data"), PWarning_);
+			Entity e = Util::MakeNotification ("Poshuku", 
+					tr ("Invalid account data"), 
+					PWarning_);
 			gotEntity (e);
 		}
 	}

@@ -39,8 +39,7 @@ namespace OnlineBookmarks
 	class DeliciousBookmarksService : public AbstractBookmarksService
 	{
 		Q_OBJECT
-		
-		bool YahooID_;
+
 		QNetworkAccessManager Manager_;
 		QNetworkReply *Reply_;
 		QUrl ApiUrl_;
@@ -49,8 +48,7 @@ namespace OnlineBookmarks
 		DeliciousBookmarksService (QWidget* = 0);
 		QString GetName () const;
 		QIcon GetIcon () const;
-		void CheckValidAccountData (const QString&, const QString&);
-		void SetYahooID (bool);
+		void CheckValidAccountData (const QString&, const QString&);		
 	public slots:
 		void getReplyFinished ();
 		void readyReadReply ();
