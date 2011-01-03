@@ -808,6 +808,9 @@ namespace Azoth
 		case Plugins::ICLEntry::ETPrivateChat:
 			path << tr ("Private chat");
 			break;
+		case Plugins::ICLEntry::ETUnauthEntry:
+			path << tr ("Unauthorized user");
+			break;
 		}
 
 		path << title;

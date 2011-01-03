@@ -167,17 +167,17 @@ namespace Plugins
 		 *
 		 * When a remote user requests authorization (or subscription in
 		 * terms of XMPP, for example) from this account, this signal
-		 * should be emitted. The entryID would be later used to notify
-		 * the account about the choice made by the user — whether to
-		 * allow, deny or ignore the request.
+		 * should be emitted. The entry is expected to represent the
+		 * remote that requested the authorization and it must implement
+		 * ICLEntry.
 		 *
 		 * @note This function is expected to be a signal.
 		 *
-		 * @param[in] entryID The ID of the user that requested the
-		 * authorization.
-		 * @param[in] message Optional request message, if applicable.
+		 * @param[out] entry The object representing the requesting
+		 * entry, must be an ICLEntry.
+		 * @param[out] message Optional request message, if applicable.
 		 */
-		virtual void authorizationRequested (const QByteArray& entryID,
+		virtual void authorizationRequested (QObject *entry,
 				const QString& message) = 0;
 	};
 

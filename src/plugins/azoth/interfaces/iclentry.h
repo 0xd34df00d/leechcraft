@@ -102,9 +102,10 @@ namespace Plugins
 
 		enum EntryType
 		{
-			ETChat,			//!< CTChat This entry represents a standard chat.
-			ETMUC,			//!< CTMUC This entry represents a multi-user chatroom.
-			ETPrivateChat	//!< CTPrivateChat This entry represents a private conversation in a multi-user chatroom.
+			ETChat,			//!< ETChat This entry represents a standard chat.
+			ETMUC,			//!< ETMUC This entry represents a multi-user chatroom.
+			ETPrivateChat,	//!< ETPrivateChat This entry represents a private conversation in a multi-user chatroom.
+			ETUnauthEntry	//!< ETUnauthEntry This entry represents an unauthorized user that has requested authorization.
 		};
 
 		/** Returns the entry as a QObject.

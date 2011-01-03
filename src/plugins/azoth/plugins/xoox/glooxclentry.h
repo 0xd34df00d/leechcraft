@@ -48,8 +48,6 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
-
 		GlooxAccount *ParentAccountObject_;
 		gloox::RosterItem *RI_;
 	public:
@@ -97,8 +95,6 @@ namespace Xoox
 				const QString&, const QString&);
 	private:
 		QList<std::string> VariantsImpl () const;
-	signals:
-		void availableVariantsChanged (const QStringList&);
 	};
 }
 }

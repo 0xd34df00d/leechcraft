@@ -329,11 +329,15 @@ namespace LeechCraft
 						this,
 						SLOT (updateItem ()));
 
-				QByteArray id = clEntry->GetEntryID ();
+				const QByteArray& id = clEntry->GetEntryID ();
 				ID2Entry_ [id] = clEntry->GetObject ();
 
+				const QStringList& groups =
+					clEntry->GetEntryType () == Plugins::ICLEntry::ETUnauthEntry ?
+							QStringList (tr ("Unauthorized users")) :
+							clEntry->Groups ();
 				QList<QStandardItem*> catItems =
-						GetCategoriesItems (clEntry->Groups (), accItem);
+						GetCategoriesItems (groups, accItem);
 				Q_FOREACH (QStandardItem *catItem, catItems)
 				{
 					QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
@@ -381,22 +385,29 @@ namespace LeechCraft
 				return result;
 			}
 
+			QStandardItem* Core::GetAccountItem (const QObject *accountObj)
+			{
+				for (int i = 0, size = CLModel_->rowCount ();
+						i < size; ++i)
+					if (CLModel_->item (i)->
+								data (CLRAccountObject).value<QObject*> () ==
+							accountObj)
+						return CLModel_->item (i);
+				return 0;
+			}
+
 			QStandardItem* Core::GetAccountItem (const QObject *accountObj,
 					QMap<const QObject*, QStandardItem*>& accountItemCache)
 			{
 				if (accountItemCache.contains (accountObj))
 					return accountItemCache [accountObj];
 				else
-					for (int i = 0, size = CLModel_->rowCount ();
-							i < size; ++i)
-						if (CLModel_->item (i)->
-									data (CLRAccountObject).value<QObject*> () ==
-								accountObj)
-						{
-							QStandardItem *accountItem = CLModel_->item (i);
-							accountItemCache [accountObj] = accountItem;
-							return accountItem;
-						}
+				{
+					QStandardItem *accountItem = GetAccountItem (accountObj);
+					if (accountItem)
+						accountItemCache [accountObj] = accountItem;
+					return accountItem;
+				}
 			}
 
 			void Core::HandleStatusChanged (const Plugins::EntryStatus& status,
@@ -672,6 +683,10 @@ namespace LeechCraft
 						SIGNAL (removedCLItems (const QList<QObject*>&)),
 						this,
 						SLOT (handleRemovedCLItems (const QList<QObject*>&)));
+				connect (accObject,
+						SIGNAL (authorizationRequested (QObject*, const QString&)),
+						this,
+						SLOT (handleAuthorizationRequested (QObject*, const QString&)));
 			}
 
 			void Core::handleAccountRemoved (QObject *account)
@@ -855,6 +870,37 @@ namespace LeechCraft
 						emit gotEntity (e);
 					}
 				}
+			}
+
+			void Core::handleAuthorizationRequested (QObject *entryObj, const QString& msg)
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entryObj
+							<< "doesn't implement ICLEntry";
+					return;
+				}
+
+				QStandardItem *accItem = GetAccountItem (sender ());
+				if (!accItem)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no account item for"
+							<< sender ();
+					return;
+				}
+
+				AddCLEntry (entry, accItem);
+
+				QString str = msg.isEmpty () ?
+						tr ("Subscription requested by %1.")
+							.arg (entry->GetEntryName ()) :
+						tr ("Subscription requested by %1: %2.")
+							.arg (entry->GetEntryName ())
+							.arg (msg);
+				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
 			}
 
 			void Core::updateStatusIconset ()

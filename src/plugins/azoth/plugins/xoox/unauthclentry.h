@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2009  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPARTICIPANTENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPARTICIPANTENTRY_H
-#include <boost/shared_ptr.hpp>
-#include <QObject>
-#include <QStringList>
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
 #include "entrybase.h"
+#include <gloox/jid.h>
 
 namespace LeechCraft
 {
@@ -34,21 +32,20 @@ namespace Plugins
 namespace Xoox
 {
 	class GlooxAccount;
-	class RoomPublicMessage;
-	class GlooxMessage;
-	class RoomHandler;
 
-	class RoomParticipantEntry : public EntryBase
+	/** Represents an entry in the contact list that has requested the
+	 * authorization but hasn't been granted nor denied yet.
+	 */
+	class UnauthCLEntry : public EntryBase
 	{
 		Q_OBJECT
 
-		QString Nick_;
+		gloox::JID JID_;
 		GlooxAccount *Account_;
-		RoomHandler *RoomHandler_;
 	public:
-		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
+		UnauthCLEntry (const gloox::JID&, GlooxAccount*);
 
-		QObject* GetParentAccount () const ;
+		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -56,13 +53,8 @@ namespace Xoox
 		QByteArray GetEntryID () const;
 		QStringList Groups () const;
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType,
-				const QString&, const QString&);
-	private slots:
-		void handleKickRequested ();
+		QObject* CreateMessage (IMessage::MessageType, const QString&, const QString&);
 	};
-
-	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;
 }
 }
 }

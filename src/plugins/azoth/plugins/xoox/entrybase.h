@@ -40,6 +40,8 @@ namespace Xoox
 					, public ICLEntry
 	{
 		Q_OBJECT
+
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
 	protected:
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
@@ -63,6 +65,7 @@ namespace Xoox
 		void gotMessage (QObject*);
 		void statusChanged (const Plugins::EntryStatus&, const QString&);
 		void avatarChanged (const QImage&);
+		void availableVariantsChanged (const QStringList&);
 	};
 }
 }

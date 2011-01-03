@@ -209,6 +209,10 @@ namespace LeechCraft
 				 */
 				QList<QStandardItem*> GetCategoriesItems (QStringList categories, QStandardItem *account);
 
+				/** Returns the QStandardItem for the given account.
+				 */
+				QStandardItem* GetAccountItem (const QObject *accountObj);
+
 				/** Returns the QStandardItem for the given account and
 				 * adds it into accountItemCache.
 				 */
@@ -285,6 +289,10 @@ namespace LeechCraft
 				 * entries.
 				 */
 				void handleEntryGotMessage (QObject *msg);
+
+				/** Handles the authorization requests from accounts.
+				 */
+				void handleAuthorizationRequested (QObject*, const QString&);
 
 				/** Is registered in the XmlSettingsManager as handler
 				 * for changes of the "StatusIcons" property.

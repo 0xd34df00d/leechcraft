@@ -39,6 +39,7 @@
 #include "glooxprotocol.h"
 #include "core.h"
 #include "roomclentry.h"
+#include "unauthclentry.h"
 
 uint gloox::qHash (const gloox::JID& jid)
 {
@@ -498,10 +499,12 @@ namespace Xoox
 		// TODO
 	}
 
-	bool ClientConnection::handleSubscriptionRequest (const gloox::JID&, const std::string&)
+	bool ClientConnection::handleSubscriptionRequest (const gloox::JID& jid, const std::string& msg)
 	{
-		qDebug () << Q_FUNC_INFO;
-		// TODO
+		const std::string& bare = jid.bare ();
+		qDebug () << Q_FUNC_INFO << bare.c_str ();
+		emit gotSubscriptionRequest (new UnauthCLEntry (jid, Account_),
+				QString::fromUtf8 (msg.c_str ()));
 		return false;
 	}
 

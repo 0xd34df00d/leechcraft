@@ -83,6 +83,10 @@ namespace Xoox
 				SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
 				this,
 				SIGNAL (removedCLItems (const QList<QObject*>&)));
+		connect (ClientConnection_.get (),
+				SIGNAL (gotSubscriptionRequest (QObject*, const QString&)),
+				this,
+				SIGNAL (authorizationRequested (QObject*, const QString&)));
 	}
 
 	QObject* GlooxAccount::GetObject ()

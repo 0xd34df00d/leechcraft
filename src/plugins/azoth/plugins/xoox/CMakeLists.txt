@@ -21,6 +21,7 @@ SET (XOOX_SRCS
 	entrybase.cpp
 	util.cpp
 	core.cpp
+	unauthclentry.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -38,6 +39,7 @@ SET (XOOX_HEADERS
 	entrybase.h
 	util.h
 	core.h
+	unauthclentry.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
