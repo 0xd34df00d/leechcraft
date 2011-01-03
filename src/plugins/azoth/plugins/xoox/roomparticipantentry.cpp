@@ -43,12 +43,6 @@ namespace Xoox
 	, Account_ (account)
 	, RoomHandler_ (rh)
 	{
-		QAction *kick = new QAction (tr ("Kick"), this);
-		connect (kick,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleKickRequested ()));
-		Actions_ << kick;
 	}
 
 	QObject* RoomParticipantEntry::GetParentAccount () const
@@ -102,11 +96,6 @@ namespace Xoox
 			const QString&, const QString& body)
 	{
 		return RoomHandler_->CreateMessage (type, Nick_, body);
-	}
-
-	void RoomParticipantEntry::handleKickRequested()
-	{
-		RoomHandler_->Kick (Nick_);
 	}
 }
 }
