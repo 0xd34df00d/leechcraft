@@ -415,7 +415,7 @@ namespace LeechCraft
 			{
 				QString tip = QString ("%1 (%2)<hr />%3 (%4)<hr />%5")
 						.arg (entry->GetEntryName ())
-						.arg (QString (entry->GetEntryID ()))
+						.arg (entry->GetHumanReadableID ())
 						.arg (PluginProxyObject_->StateToString (entry->GetStatus ().State_))
 						.arg (entry->GetStatus ().StatusString_)
 						.arg (tr ("In groups: ") + entry->Groups ().join ("; "));

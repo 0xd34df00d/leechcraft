@@ -22,6 +22,7 @@
 #include <QDomDocument>
 #include <plugininterface/util.h>
 #include <interfaces/iaccount.h>
+#include <interfaces/iproxyobject.h>
 #include "glooxprotocol.h"
 #include "glooxclentry.h"
 #include "glooxaccount.h"
@@ -194,11 +195,13 @@ namespace Xoox
 					ods->Name_ = name;
 					ods->ID_ = entryID;
 					ods->Groups_ = groups;
-					GlooxCLEntry *entry = id2account [id]->CreateFromODS (ods);
+					ods->AuthStatus_ = qobject_cast<IProxyObject*> (PluginProxy_)->
+							AuthStatusFromString (entry.firstChildElement ("authstatus").text ());
+					GlooxCLEntry *clEntry = id2account [id]->CreateFromODS (ods);
 
 					const QString& path = Util::CreateIfNotExists ("azoth/xoox/avatars")
 							.absoluteFilePath (entryID.toBase64 ());
-					entry->SetAvatar (QImage (path, "PNG"));
+					clEntry->SetAvatar (QImage (path, "PNG"));
 				}
 				entry = entry.nextSiblingElement ("entry");
 			}
@@ -243,6 +246,9 @@ namespace Xoox
 					w.writeStartElement ("entry");
 						w.writeTextElement ("id", entry->GetEntryID ());
 						w.writeTextElement ("name", entry->GetEntryName ());
+						w.writeTextElement ("authstatus",
+								qobject_cast<IProxyObject*> (PluginProxy_)->
+									AuthStatusToString (entry->GetAuthStatus ()));
 						w.writeStartElement ("groups");
 						Q_FOREACH (const QString& group, entry->Groups ())
 							w.writeTextElement ("group", group);

@@ -74,6 +74,7 @@ namespace Xoox
 		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
+		AuthStatus GetAuthStatus () const;
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;

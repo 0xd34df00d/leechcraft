@@ -186,7 +186,8 @@ namespace Plugins
 		 * this function. Also, when initiating entry addition, the
 		 * entry is expected to be identified by a similar string.
 		 *
-		 * The default implementation returns GetEntryID().
+		 * The default implementation returns GetEntryID() as an unicode
+		 * string.
 		 *
 		 * @return Human-readable persistent ID of this entry.
 		 *
@@ -194,7 +195,7 @@ namespace Plugins
 		 */
 		virtual QString GetHumanReadableID () const
 		{
-			return GetEntryID ();
+			return QString::fromUtf8 (GetEntryID ().constData ());
 		}
 
 		/** @brief Returns the list of human-readable names of the
@@ -285,6 +286,15 @@ namespace Plugins
 		 * @return The list of actions.
 		 */
 		virtual QList<QAction*> GetActions () const = 0;
+
+		/** @brief Returns the AuthStatus between our user and this
+		 * remote.
+		 *
+		 * If auth status is not applicable, ASNone should be returned.
+		 *
+		 * @return AuthStatus or ASNone if not applicable.
+		 */
+		virtual AuthStatus GetAuthStatus () const = 0;
 
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.

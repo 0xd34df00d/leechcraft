@@ -122,9 +122,14 @@ namespace Xoox
 		return QList<QAction*> ();
 	}
 
-	QImage RoomCLEntry::GetAvatar() const
+	QImage RoomCLEntry::GetAvatar () const
 	{
 		return QImage ();
+	}
+
+	AuthStatus RoomCLEntry::GetAuthStatus () const
+	{
+		return ASNone;
 	}
 
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const

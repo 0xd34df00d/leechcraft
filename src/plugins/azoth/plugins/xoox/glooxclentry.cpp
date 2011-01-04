@@ -60,6 +60,7 @@ namespace Xoox
 		ods->ID_ = GetEntryID ();
 		ods->Name_ = GetEntryName ();
 		ods->Groups_ = Groups ();
+		ods->AuthStatus_ = GetAuthStatus ();
 
 		return ods;
 	}
@@ -197,6 +198,14 @@ namespace Xoox
 		QObject *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
 		AllMessages_ << msg;
 		return msg;
+	}
+
+	AuthStatus GlooxCLEntry::GetAuthStatus () const
+	{
+		if (ODS_)
+			return ODS_->AuthStatus_;
+
+		return static_cast<AuthStatus> (RI_->subscription ());
 	}
 }
 }

@@ -97,6 +97,11 @@ namespace Xoox
 	{
 		return RoomHandler_->CreateMessage (type, Nick_, body);
 	}
+
+	AuthStatus RoomParticipantEntry::GetAuthStatus () const
+	{
+		return ASNone;
+	}
 }
 }
 }
