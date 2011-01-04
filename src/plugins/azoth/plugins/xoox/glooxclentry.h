@@ -56,6 +56,7 @@ namespace Xoox
 			QByteArray ID_;
 			QString Name_;
 			QStringList Groups_;
+			AuthStatus AuthStatus_;
 		};
 		typedef boost::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
 	private:
@@ -93,6 +94,7 @@ namespace Xoox
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+		AuthStatus GetAuthStatus () const;
 	private:
 		QList<std::string> VariantsImpl () const;
 	};

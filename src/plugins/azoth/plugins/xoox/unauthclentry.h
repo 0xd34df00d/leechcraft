@@ -54,7 +54,9 @@ namespace Xoox
 		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType, const QString&, const QString&);
+		QObject* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&);
+		AuthStatus GetAuthStatus () const;
 
 		gloox::JID GetJID () const;
 	};

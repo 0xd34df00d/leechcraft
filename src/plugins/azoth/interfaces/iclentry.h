@@ -286,6 +286,15 @@ namespace Plugins
 		 */
 		virtual QList<QAction*> GetActions () const = 0;
 
+		/** @brief Returns the AuthStatus between our user and this
+		 * remote.
+		 *
+		 * If auth status is not applicable, ASNone should be returned.
+		 *
+		 * @return AuthStatus or ASNone if not applicable.
+		 */
+		virtual AuthStatus GetAuthStatus () const = 0;
+
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.
 		 *
