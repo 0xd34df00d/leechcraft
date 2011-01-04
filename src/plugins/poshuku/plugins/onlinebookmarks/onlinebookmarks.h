@@ -23,6 +23,10 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 
+
+class QWebView;
+class QMenu;
+
 namespace LeechCraft
 {
 namespace Plugins
@@ -57,6 +61,11 @@ namespace OnlineBookmarks
 		void SetProvider (QObject*, const QString&);
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 		QSet<QByteArray> GetPluginClasses () const;
+	public slots:
+		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QWebView*, QObject*);
+		void syncBookmarks (bool);
+		void uploadBookmarks (bool);
+		void downloadBookmarks (bool);
 	signals:
 		void gotEntity (LeechCraft::Entity);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

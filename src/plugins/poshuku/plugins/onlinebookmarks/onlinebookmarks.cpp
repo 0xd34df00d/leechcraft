@@ -21,6 +21,8 @@
 #include <typeinfo>
 #include <QIcon>
 #include <QStandardItemModel>
+#include <QWebView>
+#include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
@@ -116,6 +118,41 @@ namespace OnlineBookmarks
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
+	}
+
+	void OnlineBookmarks::hookMoreMenuFillEnd (IHookProxy_ptr proxy, QMenu *menu, QWebView *view, QObject *parent8)
+	{
+		QMenu *menuBookmarksSyn = menu->addMenu (tr ("Bookmarks Sync"));
+		QAction *sync = menuBookmarksSyn->addAction (tr ("Sync"));
+		QAction *uploadOnly = menuBookmarksSyn->addAction (tr ("Upload only"));
+		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
+		
+		connect (sync,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (syncBookmarks (bool)));
+		
+		connect (uploadOnly,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (uploadBookmarks (bool)));
+		
+		connect (downloadOnly,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (downloadBookmarks (bool)));
+	}
+	
+	void OnlineBookmarks::syncBookmarks (bool checkable)
+	{
+	}
+
+	void OnlineBookmarks::uploadBookmarks (bool checkable)
+	{
+	}
+
+	void OnlineBookmarks::downloadBookmarks (bool checkable)
+	{
 	}
 }
 }
