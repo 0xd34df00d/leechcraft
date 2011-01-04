@@ -18,15 +18,6 @@
 
 #include "settings.h"
 #include <QStandardItemModel>
-#include <QFrame>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QCheckBox>
 #include <QMessageBox>
 #include <QDialog>
 #include <QDateTime>
@@ -53,8 +44,8 @@ namespace OnlineBookmarks
 	{
 		Ui_.setupUi (this);
 
-		Ui_.AccauntsView_->setModel (model);
-		Ui_.AccauntsView_->expandAll ();
+		Ui_.AccountsView_->setModel (model);
+		Ui_.AccountsView_->expandAll ();
 
 		Ui_.Edit_->setEnabled (false);
 
@@ -206,12 +197,12 @@ namespace OnlineBookmarks
 		{
 			if (Ui_.Edit_->isChecked ())
 				Ui_.Edit_->toggle ();
-			Ui_.verticalLayout_2->insertWidget (1, Ui_.LoginFrame_);
+			Ui_.ControlLayout_->insertWidget (1, Ui_.LoginFrame_);
 			Ui_.LoginFrame_->show ();
 		}
 		else
 		{
-			Ui_.verticalLayout_2->removeWidget (Ui_.LoginFrame_);
+			Ui_.ControlLayout_->removeWidget (Ui_.LoginFrame_);
 			Ui_.LoginFrame_->hide ();
 			ClearFrameState ();
 		}
@@ -223,15 +214,15 @@ namespace OnlineBookmarks
 		{
 			if (Ui_.Add_->isChecked ())
 				Ui_.Add_->toggle ();
-			Ui_.verticalLayout_2->insertWidget (2, Ui_.LoginFrame_);
+			Ui_.ControlLayout_->insertWidget (2, Ui_.LoginFrame_);
 			Ui_.LoginFrame_->show ();
-			Ui_.Login_->setText (Ui_.AccauntsView_->currentIndex ().data ().toString ());
+			Ui_.Login_->setText (Ui_.AccountsView_->currentIndex ().data ().toString ());
 			Ui_.Password_->setText (GetPassword (Ui_.Login_->text (),
-					Ui_.AccauntsView_->currentIndex ().parent ().data ().toString ()));
+					Ui_.AccountsView_->currentIndex ().parent ().data ().toString ()));
 		}
 		else
 		{
-			Ui_.verticalLayout_2->removeWidget (Ui_.LoginFrame_);
+			Ui_.ControlLayout_->removeWidget (Ui_.LoginFrame_);
 			Ui_.LoginFrame_->hide ();
 			ClearFrameState ();
 		}
@@ -239,14 +230,14 @@ namespace OnlineBookmarks
 
 	void Settings::on_Delete__released ()
 	{
-		if (Ui_.AccauntsView_->currentIndex ().parent () == QModelIndex ())
+		if (Ui_.AccountsView_->currentIndex ().parent () == QModelIndex ())
 			return;
 		else
 		{
 			QList<QVariant> keys;
 			keys << "org.LeechCraft.Poshuku.OnlineBookmarks." +
-					Ui_.AccauntsView_->currentIndex ().parent ().data ().toString () +
-					"/" + Ui_.AccauntsView_->currentIndex ().data ().toString ();
+					Ui_.AccountsView_->currentIndex ().parent ().data ().toString () +
+					"/" + Ui_.AccountsView_->currentIndex ().data ().toString ();
 
 			Entity e = Util::MakeEntity (keys,
 					QString (),
@@ -254,8 +245,8 @@ namespace OnlineBookmarks
 					"x-leechcraft/data-persistent-clear");
 
 			Ui_.LoginFrame_->hide ();
-			Model_->removeRow (Ui_.AccauntsView_->currentIndex ().row (),
-					Ui_.AccauntsView_->currentIndex ().parent ());
+			Model_->removeRow (Ui_.AccountsView_->currentIndex ().row (),
+					Ui_.AccountsView_->currentIndex ().parent ());
 
 			if (Ui_.Add_->isChecked ())
 				Ui_.Add_->toggle ();
@@ -276,7 +267,7 @@ namespace OnlineBookmarks
 		if (Ui_.Add_->isChecked ())
 			indexService = names.indexOf (GetSelectedName ());
 		else if (Ui_.Edit_->isChecked ())
-			indexService = names.indexOf (Ui_.AccauntsView_->currentIndex ().parent ().
+			indexService = names.indexOf (Ui_.AccountsView_->currentIndex ().parent ().
 					data ().toString ());
 
 		BookmarksServices_.at (indexService)->
@@ -300,7 +291,7 @@ namespace OnlineBookmarks
 		SetApplyEnabled (text, Ui_.Login_->text ());
 	}
 
-	void Settings::on_AccauntsView__clicked (const QModelIndex& index)
+	void Settings::on_AccountsView__clicked (const QModelIndex& index)
 	{
 		if (index.parent() == QModelIndex ())
 		{
@@ -314,7 +305,7 @@ namespace OnlineBookmarks
 		{
 			Ui_.Edit_->setEnabled (true);
 			Ui_.Delete_->setEnabled (true);
-			Ui_.Login_->setText (Ui_.AccauntsView_->currentIndex ().data ().toString ());
+			Ui_.Login_->setText (Ui_.AccountsView_->currentIndex ().data ().toString ());
 		}
 	}
 
@@ -353,7 +344,7 @@ namespace OnlineBookmarks
 		{
 			Entity e = Util::MakeNotification ("Poshuku", 
 					tr ("Invalid account data"), 
-					PWarning_);
+					PCritical_);
 			gotEntity (e);
 		}
 	}

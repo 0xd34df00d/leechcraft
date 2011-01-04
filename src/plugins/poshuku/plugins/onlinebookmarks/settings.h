@@ -70,7 +70,7 @@ namespace OnlineBookmarks
 		void handleStuff ();
 		void handleLoginTextChanged (const QString&);
 		void handlePasswordTextChanged (const QString&);
-		void on_AccauntsView__clicked (const QModelIndex&);
+		void on_AccountsView__clicked (const QModelIndex&);
 		void checkServiceAnswer (bool);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
