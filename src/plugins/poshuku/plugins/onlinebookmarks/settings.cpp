@@ -272,13 +272,6 @@ namespace OnlineBookmarks
 
 		BookmarksServices_.at (indexService)->
 				CheckValidAccountData (Ui_.Login_->text (), Ui_.Password_->text ());
-
-		ClearFrameState ();
-
-		if (Ui_.Add_->isChecked ())
-			Ui_.Add_->toggle ();
-		else if (Ui_.Edit_->isChecked ())
-			Ui_.Edit_->toggle ();
 	}
 
 	void Settings::handleLoginTextChanged (const QString& text)
@@ -339,6 +332,13 @@ namespace OnlineBookmarks
 			serviceItem->appendRow (new QStandardItem (Ui_.Login_->text ()));
 
 			SetPassword (Ui_.Password_->text (), Ui_.Login_->text (), GetSelectedName ());
+			
+			ClearFrameState ();
+
+			if (Ui_.Add_->isChecked ())
+				Ui_.Add_->toggle ();
+			else if (Ui_.Edit_->isChecked ())
+				Ui_.Edit_->toggle ();
 		}
 		else
 		{
