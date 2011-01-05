@@ -24,7 +24,7 @@ using namespace LeechCraft::Util;
 void BaseSettingsManager::Init ()
 {
 	Settings_ = BeginSettings ();
-	QStringList properties = Settings_->childKeys ();
+	QStringList properties = Settings_->allKeys ();
 	Initializing_ = true;
 	for (int i = 0; i < properties.size (); ++i)
 		setProperty (PROP2CHAR (properties.at (i)),
