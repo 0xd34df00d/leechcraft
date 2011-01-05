@@ -43,7 +43,7 @@ namespace Xoox
 		gloox::JID JID_;
 		GlooxAccount *Account_;
 	public:
-		UnauthCLEntry (const gloox::JID&, GlooxAccount*);
+		UnauthCLEntry (const gloox::JID&, const QString&, GlooxAccount*);
 
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;

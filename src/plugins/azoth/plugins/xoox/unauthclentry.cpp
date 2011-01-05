@@ -29,11 +29,13 @@ namespace Plugins
 {
 namespace Xoox
 {
-	UnauthCLEntry::UnauthCLEntry (const gloox::JID& jid, GlooxAccount *accountObj)
+	UnauthCLEntry::UnauthCLEntry (const gloox::JID& jid,
+			const QString& str, GlooxAccount *accountObj)
 	: EntryBase (accountObj)
 	, JID_ (jid)
 	, Account_ (accountObj)
 	{
+		SetStatus (EntryStatus (SOffline, str), QString ());
 	}
 
 	QObject* UnauthCLEntry::GetParentAccount () const

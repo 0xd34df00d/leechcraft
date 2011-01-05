@@ -531,8 +531,9 @@ namespace Xoox
 	{
 		const std::string& bare = jid.bare ();
 		qDebug () << Q_FUNC_INFO << bare.c_str ();
-		emit gotSubscriptionRequest (new UnauthCLEntry (jid, Account_),
-				QString::fromUtf8 (msg.c_str ()));
+		const QString& str = QString::fromUtf8 (msg.c_str ());
+		emit gotSubscriptionRequest (new UnauthCLEntry (jid, str, Account_),
+				str);
 		return false;
 	}
 
