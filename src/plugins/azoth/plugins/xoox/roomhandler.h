@@ -22,6 +22,7 @@
 #include <QHash>
 #include <gloox/mucroomhandler.h>
 #include <gloox/messagehandler.h>
+#include <gloox/vcardhandler.h>
 #include "clientconnection.h"
 #include "roomparticipantentry.h"
 
@@ -42,6 +43,7 @@ namespace Xoox
 	class RoomHandler : public QObject
 						, public gloox::MUCRoomHandler
 						, public gloox::MessageHandler
+						, public gloox::VCardHandler
 	{
 		Q_OBJECT
 
@@ -86,6 +88,10 @@ namespace Xoox
 				const std::string&, const gloox::DataForm*);
 		virtual void handleMUCItems (gloox::MUCRoom*,
 				const gloox::Disco::ItemList&);
+		virtual void handleVCard (const gloox::JID&,
+				const gloox::VCard*);
+		virtual void handleVCardResult (gloox::VCardHandler::VCardContext,
+				const gloox::JID&, gloox::StanzaError);
 
 		// MessageHandler
 		virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);

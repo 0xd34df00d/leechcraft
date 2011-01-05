@@ -538,6 +538,18 @@ namespace LeechCraft
 				Entry2Actions_ [entry] ["openchat"] = openChat;
 				Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
 
+				if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
+				{
+					QAction *vcard = new QAction (tr ("VCard"), this);
+					connect (vcard,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionVCardTriggered ()));
+					vcard->setProperty ("ActionIcon", "azoth_vcard");
+					Entry2Actions_ [entry] ["vcard"] = vcard;
+					Action2Areas_ [vcard] << CLEAAContactListCtxtMenu;
+				}
+
 				if (entry->GetEntryType () == Plugins::ICLEntry::ETPrivateChat)
 				{
 					QAction *kick = new QAction (tr ("Kick"), this);
@@ -551,15 +563,6 @@ namespace LeechCraft
 					ban->setEnabled (false);
 					Entry2Actions_ [entry] ["ban"] = ban;
 					Action2Areas_ [ban] << CLEAAContactListCtxtMenu;
-
-					QAction *vcard = new QAction (tr ("VCard"), this);
-					connect (vcard,
-							SIGNAL (triggered ()),
-							this,
-							SLOT (handleActionVCardTriggered ()));
-					vcard->setProperty ("ActionIcon", "azoth_vcard");
-					Entry2Actions_ [entry] ["vcard"] = vcard;
-					Action2Areas_ [vcard] << CLEAAContactListCtxtMenu;
 				}
 				else if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC)
 				{

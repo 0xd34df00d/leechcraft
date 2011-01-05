@@ -162,6 +162,16 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
+	void RoomHandler::handleVCard (const gloox::JID& jid,
+			const gloox::VCard* vcard)
+	{
+	}
+
+	void RoomHandler::handleVCardResult (gloox::VCardHandler::VCardContext ctx,
+			const gloox::JID& jid, gloox::StanzaError sterr)
+	{
+	}
+
 	void RoomHandler::handleMUCParticipantPresence (gloox::MUCRoom *room,
 			const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
 	{
@@ -400,6 +410,7 @@ namespace Xoox
 		Room_.reset ();
 		deleteLater ();
 	}
+
 }
 }
 }
