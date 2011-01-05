@@ -307,9 +307,9 @@ namespace OnlineBookmarks
 		if (valid)
 		{
 			QString service = "Account/" + Ui_.Services_->currentText ();
-			if (XmlSettingsManager::Instance ()->property (service.toStdString ().c_str ()).isNull ())
+			if (XmlSettingsManager::Instance ()->property (service.toUtf8 ()).isNull ())
 				XmlSettingsManager::Instance ()->
-						setProperty (service.toStdString ().c_str (), Ui_.Login_->text ());
+						setProperty (service.toUtf8 (), Ui_.Login_->text ());
 			else
 			{
 				QStringList loginList = XmlSettingsManager::Instance ()->
@@ -319,11 +319,11 @@ namespace OnlineBookmarks
 						setProperty (service.toStdString ().c_str (), loginList);
 			}
 
-			QList<QStandardItem*> items = Model_->findItems (service);
+			QList<QStandardItem*> items = Model_->findItems (Ui_.Services_->currentText ());
 			QStandardItem *serviceItem;
 			if (!items.size ())
 			{
-				serviceItem = new QStandardItem (service);
+				serviceItem = new QStandardItem (Ui_.Services_->currentText ());
 				Model_->appendRow (serviceItem);
 			}
 			else

@@ -23,7 +23,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 
-
 class QWebView;
 class QMenu;
 

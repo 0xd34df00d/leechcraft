@@ -19,6 +19,7 @@
 #include "onlinebookmarks.h"
 #include "settings.h"
 #include <typeinfo>
+#include <QAction>
 #include <QIcon>
 #include <QStandardItemModel>
 #include <QWebView>
@@ -26,7 +27,6 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
-#include <qvarlengtharray.h>
 #include "core.h"
 #include "syncbookmarks.h"
 
@@ -131,6 +131,21 @@ namespace OnlineBookmarks
 		uploadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_upload");
 		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
 		downloadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_download");
+		
+		connect (sync,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBookmarksSyncManager (),
+				SLOT (syncBookmarks ()));
+
+		connect (uploadOnly,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBookmarksSyncManager (),
+				SLOT (uploadBookmarks ()));
+		
+		connect (downloadOnly,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBookmarksSyncManager (),
+				SLOT (downloadBookmarks ()));
 	}
 }
 }

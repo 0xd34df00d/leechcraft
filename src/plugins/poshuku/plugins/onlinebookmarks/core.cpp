@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 #include <QStandardItemModel>
 #include <QSettings>
+#include "syncbookmarks.h"
 
 namespace LeechCraft
 {
@@ -53,7 +54,7 @@ namespace OnlineBookmarks
 		Model_ = new QStandardItemModel;
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-		settings.beginGroup ("Accounts");
+		settings.beginGroup ("Account");
 		
 		Q_FOREACH (const QString& item, settings.childKeys ())
 		{
@@ -62,7 +63,6 @@ namespace OnlineBookmarks
 			Q_FOREACH (const QString& login, settings.value (item).toStringList ())
 			{
 				QStandardItem *loginItem = new QStandardItem (login);
-				loginItem->setCheckable (true);
 				itemList << loginItem;
 			}
 			QStandardItem *service = new QStandardItem (item);
@@ -70,12 +70,20 @@ namespace OnlineBookmarks
 			service->appendRows (itemList);
 		}
 		settings.endGroup ();
+		
+		BookmarksSyncManager_ = new SyncBookmarks;
 	}
 
 	QStandardItemModel* Core::GetAccountModel () const
 	{
 		return Model_;
 	}
+	
+	SyncBookmarks *Core::GetBookmarksSyncManager () const
+	{
+		return BookmarksSyncManager_;
+	}
+
 }
 }
 }

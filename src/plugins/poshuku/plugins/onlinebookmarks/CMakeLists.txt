@@ -7,6 +7,7 @@ SET (ONLINEBOOKMARKS_SRCS
 	onlinebookmarks.cpp
 	xmlsettingsmanager.cpp
 	settings.cpp
+	syncbookmarks.cpp
 	core.cpp
 	delicious/deliciousbookmarksservice.cpp
 	)
@@ -15,6 +16,7 @@ SET (ONLINEBOOKMARKS_HEADERS
 	xmlsettingsmanager.h
 	abstractbookmarksservice.h
 	settings.h
+	syncbookmarks.h
 	core.h
 	delicious/deliciousbookmarksservice.h
 	)
