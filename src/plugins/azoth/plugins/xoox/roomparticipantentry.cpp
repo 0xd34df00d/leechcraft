@@ -95,7 +95,9 @@ namespace Xoox
 	QObject* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
 			const QString&, const QString& body)
 	{
-		return RoomHandler_->CreateMessage (type, Nick_, body);
+		GlooxMessage *msg = RoomHandler_->CreateMessage (type, Nick_, body);
+		AllMessages_ << msg;
+		return msg;
 	}
 
 	AuthStatus RoomParticipantEntry::GetAuthStatus () const
