@@ -302,9 +302,7 @@ namespace Xoox
 	void GlooxAccount::handleServerAuthFailed ()
 	{
 		const QString& pwd = GetPassword (true);
-		if (pwd.isNull ())
-			emit scheduleClientDestruction ();
-		else
+		if (!pwd.isNull ())
 		{
 			ClientConnection_->SetPassword (pwd);
 			ChangeState (AccState_.State_, AccState_.Status_);
