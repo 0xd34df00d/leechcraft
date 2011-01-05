@@ -494,6 +494,7 @@ namespace LeechCraft
 				result << id2action.value ("openchat");
 				result << id2action.value ("kick");
 				result << id2action.value ("ban");
+				result << id2action.value ("vcard");
 				result << id2action.value ("leave");
 				result << id2action.value ("authorize");
 				result << id2action.value ("denyauth");
@@ -550,6 +551,15 @@ namespace LeechCraft
 					ban->setEnabled (false);
 					Entry2Actions_ [entry] ["ban"] = ban;
 					Action2Areas_ [ban] << CLEAAContactListCtxtMenu;
+
+					QAction *vcard = new QAction (tr ("VCard"), this);
+					connect (vcard,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionVCardTriggered ()));
+					vcard->setProperty ("ActionIcon", "azoth_vcard");
+					Entry2Actions_ [entry] ["vcard"] = vcard;
+					Action2Areas_ [vcard] << CLEAAContactListCtxtMenu;
 				}
 				else if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC)
 				{
@@ -986,6 +996,20 @@ namespace LeechCraft
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
 				ChatTabsManager_->OpenChat (entry);
+			}
+
+			void Core::handleActionVCardTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
 			}
 
 			void Core::handleActionLeaveTriggered ()
