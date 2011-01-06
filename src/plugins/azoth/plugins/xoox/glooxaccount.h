@@ -57,7 +57,7 @@ namespace Xoox
 	class GlooxProtocol;
 
 	class GlooxAccount : public QObject
-						, public IAccount
+					   , public IAccount
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);

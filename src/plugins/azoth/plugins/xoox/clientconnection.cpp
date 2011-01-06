@@ -145,6 +145,16 @@ namespace Xoox
 
 	RoomCLEntry* ClientConnection::JoinRoom (const gloox::JID& jid)
 	{
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+			if (rh->GetRoomJID () == jid.bareJID ())
+			{
+				Entity e = Util::MakeNotification ("Azoth",
+						tr ("This room is already joined."),
+						PCritical_);
+				Core::Instance ().SendEntity (e);
+				return 0;
+			}
+
 		RoomHandler *rh = new RoomHandler (Account_);
 		boost::shared_ptr<gloox::MUCRoom> room (new gloox::MUCRoom (Client_.get (), jid, rh, 0));
 		room->join ();

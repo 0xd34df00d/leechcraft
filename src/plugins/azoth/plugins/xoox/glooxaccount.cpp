@@ -205,6 +205,8 @@ namespace Xoox
 		gloox::JID roomJID (jidStr.toUtf8 ().constData ());
 
 		RoomCLEntry *entry = ClientConnection_->JoinRoom (roomJID);
+		if (!entry)
+			return;
 		emit gotCLItems (QList<QObject*> () << entry);
 	}
 

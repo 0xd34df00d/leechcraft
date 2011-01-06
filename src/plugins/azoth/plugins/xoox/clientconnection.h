@@ -65,11 +65,11 @@ namespace Xoox
 	class RoomHandler;
 
 	class ClientConnection : public QObject
-							, public gloox::ConnectionListener
-							, public gloox::RosterListener
-							, public gloox::MessageSessionHandler
-							, public gloox::MessageHandler
-							, public gloox::VCardHandler
+						   , public gloox::ConnectionListener
+						   , public gloox::RosterListener
+						   , public gloox::MessageSessionHandler
+						   , public gloox::MessageHandler
+						   , public gloox::VCardHandler
 	{
 		Q_OBJECT
 
