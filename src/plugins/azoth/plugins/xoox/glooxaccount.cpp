@@ -150,6 +150,14 @@ namespace Xoox
 
 		ChangeState (AccState_.State_, AccState_.Status_);
 	}
+	
+	void GlooxAccount::HollyQuery (AccountQuery qtype, const QString& addr)
+	{
+		if (qtype == FQWhois)
+		{
+			ClientConnection_->FetchVCard (gloox::JID (addr.toUtf8 ().constData ()));
+		}
+	}
 
 	void GlooxAccount::ChangeState (State accState, const QString& status)
 	{

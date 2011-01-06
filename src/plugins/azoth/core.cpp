@@ -1011,8 +1011,42 @@ namespace LeechCraft
 							<< "is not a QAction";
 					return;
 				}
+
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IAccount *account =
+						qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+				if (!account)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "parent account doesn't implement IAccount:"
+							<< entry->GetParentAccount ();
+					return;
+				}
+
+				QStringList currentVariants = entry->Variants ();
+				QString variant = currentVariants.first ();
+				QString text;
+				Plugins::EntryStatus status;
+
+				text += tr ("WhoIs") + QString (": %1\n")
+											.arg (entry->GetHumanReadableID ());
+				Q_FOREACH (const QString& vari, currentVariants)
+				{
+					status = entry->GetStatus (vari);
+					text += QString ("%1: %2\n")
+								.arg (vari)
+								.arg (status.StatusString_);
+				}
+
+				QObject *msgObj = entry->CreateMessage (Plugins::IMessage::MTChatMessage,
+						variant,
+						text);
+
+				emit entry->gotMessage (msgObj);
+
+				account->HollyQuery (Plugins::IAccount::FQWhois, entry->GetHumanReadableID ());
+				ChatTabsManager_->OpenChat (entry);
 			}
 
 			void Core::handleActionLeaveTriggered ()
