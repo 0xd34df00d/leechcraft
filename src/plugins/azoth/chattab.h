@@ -52,6 +52,7 @@ namespace Azoth
 		QByteArray EntryID_;
 		QString Variant_;
 		QRegExp LinkRegexp_;
+		QRegExp ImageRegexp_;
 		QColor BgColor_;
 		QList<QColor> NickColors_;
 		QList<QString> MsgHistory_;

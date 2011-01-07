@@ -127,6 +127,11 @@ namespace Xoox
 		return QImage ();
 	}
 
+	QString RoomCLEntry::GetRawInfo () const
+	{
+		return QString ();
+	}
+
 	AuthStatus RoomCLEntry::GetAuthStatus () const
 	{
 		return ASNone;

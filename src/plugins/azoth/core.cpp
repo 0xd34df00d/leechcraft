@@ -328,6 +328,10 @@ namespace LeechCraft
 						SIGNAL (avatarChanged (const QImage&)),
 						this,
 						SLOT (updateItem ()));
+				connect (clEntry->GetObject (),
+						SIGNAL (rawinfoChanged (const QString&)),
+						this,
+						SLOT ( showVCard()));
 
 				const QByteArray& id = clEntry->GetEntryID ();
 				ID2Entry_ [id] = clEntry->GetObject ();
@@ -952,6 +956,30 @@ namespace LeechCraft
 				}
 			}
 
+			void Core::showVCard ()
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender doesn't implement ICLEntry"
+							<< sender ();
+					return;
+				}
+
+				if (ChatTabsManager_->IsActiveChat (entry, false))
+				{
+					QStringList currentVariants = entry->Variants ();
+					QString variant = currentVariants.first ();
+
+					QObject *msgObj = entry->CreateMessage (Plugins::IMessage::MTChatMessage,
+							variant,
+							QString ("/leechcraft ") + entry->GetRawInfo ());
+
+					emit entry->gotMessage (msgObj);
+				}
+			}
+
 			void Core::updateItem ()
 			{
 				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
@@ -1029,14 +1057,20 @@ namespace LeechCraft
 				QString text;
 				Plugins::EntryStatus status;
 
-				text += tr ("WhoIs") + QString (": %1\n")
-											.arg (entry->GetHumanReadableID ());
+				text += QString ("/leechcraft ") + tr ("Card Info")
+								+ QString (": %1\n")
+								.arg (entry->GetHumanReadableID ());
+
 				Q_FOREACH (const QString& vari, currentVariants)
 				{
 					status = entry->GetStatus (vari);
-					text += QString ("%1: %2\n")
-								.arg (vari)
-								.arg (status.StatusString_);
+					if (!vari.isEmpty ())
+						text += QString ("%1: %2\n")
+									.arg (vari)
+									.arg (status.StatusString_);
+					else
+					if (!status.StatusString_.isEmpty ())
+						text += status.StatusString_;
 				}
 
 				QObject *msgObj = entry->CreateMessage (Plugins::IMessage::MTChatMessage,

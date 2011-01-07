@@ -304,6 +304,7 @@ namespace LeechCraft
 				 * a ICLEntry.
 				 */
 				void updateItem ();
+				void showVCard ();
 
 				/** Handles the number of unread messages for the given
 				 * contact list entry identified by object. Object should

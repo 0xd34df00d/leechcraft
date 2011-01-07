@@ -48,6 +48,7 @@ namespace Xoox
 		QList<QAction*> Actions_;
 
 		QImage Avatar_;
+		QString RawInfo_;
 	public:
 		EntryBase (QObject* = 0);
 
@@ -56,15 +57,19 @@ namespace Xoox
 		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
+		QString GetRawInfo () const;
 
 		void HandleMessage (GlooxMessage*);
 		void SetStatus (const EntryStatus&, const QString&);
 		void SetAvatar (const gloox::VCard::Photo&);
 		void SetAvatar (const QImage&);
+		void SetRawInfo (const gloox::VCard*);
+		void SetRawInfo (const QString&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const Plugins::EntryStatus&, const QString&);
 		void avatarChanged (const QImage&);
+		void rawinfoChanged (const QString&);
 		void availableVariantsChanged (const QStringList&);
 	};
 }

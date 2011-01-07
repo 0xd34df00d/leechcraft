@@ -83,6 +83,7 @@ namespace Xoox
 		}
 
 		Nick2Entry_ [nick]->SetAvatar (card->photo ());
+		Nick2Entry_ [nick]->SetRawInfo (card);
 	}
 
 	void RoomHandler::MakeLeaveMessage (const gloox::MUCRoomParticipant part)
@@ -186,7 +187,7 @@ namespace Xoox
 			else
 			{
 				MakeJoinMessage (part);
-				Account_->GetClientConnection ()->FetchVCard (JIDForNick (nick), this);
+				Account_->GetClientConnection ()->FetchVCard (JIDForNick (nick));
 			}
 		}
 

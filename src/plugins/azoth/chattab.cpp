@@ -56,6 +56,8 @@ namespace Azoth
 	, Variant_ (variant)
 	, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
+	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
 	, CurrentNickIndex_ (0)
@@ -489,8 +491,16 @@ namespace Azoth
 			break;
 		}
 		case Plugins::IMessage::DOut:
-			string.append (FormatNickname ("R", msg));
-			string.append (": ");
+			if (body.startsWith ("/leechcraft "))
+			{
+				body = body.mid (12);
+				string.append ("* ");
+			}
+			else
+			{
+				string.append (FormatNickname ("R", msg));
+				string.append (": ");
+			}
 			divClass = "chatmsg";
 			break;
 		}
@@ -606,6 +616,15 @@ namespace Azoth
 						.arg (link);
 				body.replace (pos, link.length (), str);
 
+				pos += str.length ();
+			}
+			pos = 0;
+			while ((pos = ImageRegexp_.indexIn (body, pos)) != -1)
+			{
+				QString image = ImageRegexp_.cap (1);
+				QString str = QString ("<img src=\"data:image/%1\" alt=\"data:image/%1\" />")
+						.arg (image);
+				body.replace (pos, image.length (), str);
 				pos += str.length ();
 			}
 

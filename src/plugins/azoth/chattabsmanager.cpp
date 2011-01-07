@@ -97,12 +97,15 @@ namespace LeechCraft
 					emit raiseTab (tab);
 			}
 
-			bool ChatTabsManager::IsActiveChat (const Plugins::ICLEntry *entry) const
+			bool ChatTabsManager::IsActiveChat (const Plugins::ICLEntry *entry, bool CheckHidden) const
 			{
 				if (!Entry2Tab_.contains (entry->GetEntryID ()))
 					return false;
 
-				return Entry2Tab_ [entry->GetEntryID ()]->isVisible ();
+				if (CheckHidden)
+					return Entry2Tab_ [entry->GetEntryID ()]->isVisible ();
+				else
+					return true;
 			}
 
 			void ChatTabsManager::UpdateEntryMapping (const QByteArray& id, QObject *obj)

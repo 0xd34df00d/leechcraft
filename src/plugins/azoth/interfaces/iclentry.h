@@ -276,6 +276,7 @@ namespace Plugins
 		 * @return The image with the avatar.
 		 */
 		virtual QImage GetAvatar () const = 0;
+		virtual QString GetRawInfo () const = 0;
 
 		/** @brief Returns the list of actions for the item.
 		 *
@@ -332,6 +333,7 @@ namespace Plugins
 		 * @note This function is expected to be a signal in subclasses.
 		 */
 		virtual void avatarChanged (const QImage&) = 0;
+		virtual void rawinfoChanged (const QString&) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

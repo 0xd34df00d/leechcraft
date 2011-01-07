@@ -236,12 +236,6 @@ namespace Xoox
 		VCardManager_->fetchVCard (jid, this);
 	}
 
-	void ClientConnection::FetchVCard (const gloox::JID& jid, RoomHandler *rh)
-	{
-		VCardRequests_ [jid] = rh;
-		FetchVCard (jid);
-	}
-
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
 			const QString& variant, const QString& body, gloox::RosterItem *ri)
 	{
@@ -608,11 +602,21 @@ namespace Xoox
 			return;
 		}
 
-		if (VCardRequests_.contains (jid))
-			VCardRequests_.take (jid)->HandleVCard (vcard,
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+		{
+			if (rh->GetRoomJID () == jid.bare ())
+			{
+				rh->HandleVCard (vcard,
 					QString::fromUtf8 (jid.resource ().c_str ()));
-		else if (JID2CLEntry_.contains (jid))
+				return;
+			}
+		}
+
+		if (JID2CLEntry_.contains (jid))
+		{
+			JID2CLEntry_ [jid]->SetRawInfo (vcard);
 			JID2CLEntry_ [jid]->SetAvatar (vcard->photo ());
+		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "vcard reply for unknown request for jid"

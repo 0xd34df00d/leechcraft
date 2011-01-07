@@ -85,7 +85,6 @@ namespace Xoox
 		QHash<gloox::JID, GlooxCLEntry*> ODSEntries_;
 		// Bare JID → resource → session.
 		QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
-		QHash<gloox::JID, RoomHandler*> VCardRequests_;
 	public:
 		ClientConnection (const gloox::JID&,
 				const GlooxAccountState&,
@@ -112,7 +111,6 @@ namespace Xoox
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
 		void FetchVCard (const gloox::JID&);
-		void FetchVCard (const gloox::JID&, RoomHandler*);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, gloox::RosterItem*);
 	protected:
