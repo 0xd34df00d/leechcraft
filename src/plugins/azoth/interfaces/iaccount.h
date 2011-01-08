@@ -50,23 +50,8 @@ namespace Plugins
 			FSupportsXA				= 0x02, //!< FSupportsXA This account supports Extended Away statuses.
 			FHasConfigurationDialog	= 0x04  //!< FHasConfigurationDialog This account has configuration dialog.
 		};
-		
-		/** Query's type for HollyQuery
-		 */
-		enum AccountQuery
-		{
-			FQWhois		= 0x01,	// whois, vcard
-			FQConfig	= 0x02,	// alias for OpenConfigurationDialog ?
-			FQSync		= 0x03,	// alias for Synchronize ?
-		};
 
 		Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);
-
-		/** @brief Holly Query!
-		 * Typically assian messageming
-		 * @return void
-		 */
-		virtual void HollyQuery (AccountQuery qtype, const QString& addr) = 0;
 
 		/** @brief Returns the account object as a QObject.
 		 *
@@ -125,6 +110,15 @@ namespace Plugins
 		 * @return The unique and persistent account ID.
 		 */
 		virtual QByteArray GetAccountID () const = 0;
+
+		/** @brief Request message w/ info/vcard information for the given address.
+		 *
+		 * The address should be in format compatible with the result of
+		 * ICLEntry::GetHumanReadableID() function whenever possible.
+		 *
+		 * @param[in] address Address or entry ID to query.
+		 */
+		virtual void QueryInfo (const QString& address) = 0;
 
 		/** @brief Requests the account to open its configuration dialog.
 		 */

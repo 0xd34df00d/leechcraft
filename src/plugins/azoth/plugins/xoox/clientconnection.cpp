@@ -615,14 +615,12 @@ namespace Xoox
 		}
 
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-		{
 			if (rh->GetRoomJID () == jid.bare ())
 			{
 				rh->HandleVCard (vcard,
 					QString::fromUtf8 (jid.resource ().c_str ()));
 				return;
 			}
-		}
 
 		if (JID2CLEntry_.contains (jid))
 		{

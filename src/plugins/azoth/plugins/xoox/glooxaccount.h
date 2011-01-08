@@ -83,7 +83,7 @@ namespace Xoox
 		QString GetAccountName () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
-		void HollyQuery (AccountQuery, const QString&);
+		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
 		void ChangeState (State, const QString& = QString ());
 		void Synchronize ();

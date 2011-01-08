@@ -331,7 +331,7 @@ namespace LeechCraft
 				connect (clEntry->GetObject (),
 						SIGNAL (rawinfoChanged (const QString&)),
 						this,
-						SLOT ( showVCard()));
+						SLOT (showVCard ()));
 
 				const QByteArray& id = clEntry->GetEntryID ();
 				ID2Entry_ [id] = clEntry->GetObject ();
@@ -1079,7 +1079,7 @@ namespace LeechCraft
 
 				emit entry->gotMessage (msgObj);
 
-				account->HollyQuery (Plugins::IAccount::FQWhois, entry->GetHumanReadableID ());
+				account->QueryInfo (entry->GetHumanReadableID ());
 				ChatTabsManager_->OpenChat (entry);
 			}
 

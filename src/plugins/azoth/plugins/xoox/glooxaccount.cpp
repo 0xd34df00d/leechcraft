@@ -127,6 +127,11 @@ namespace Xoox
 		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
 	}
 
+	void GlooxAccount::QueryInfo (const QString& entryId)
+	{
+		ClientConnection_->FetchVCard (gloox::JID (entryId.toUtf8 ().constData ()));
+	}
+
 	void GlooxAccount::OpenConfigurationDialog ()
 	{
 		// TODO nonmodal
@@ -149,14 +154,6 @@ namespace Xoox
 		emit accountSettingsChanged ();
 
 		ChangeState (AccState_.State_, AccState_.Status_);
-	}
-	
-	void GlooxAccount::HollyQuery (AccountQuery qtype, const QString& addr)
-	{
-		if (qtype == FQWhois)
-		{
-			ClientConnection_->FetchVCard (gloox::JID (addr.toUtf8 ().constData ()));
-		}
 	}
 
 	void GlooxAccount::ChangeState (State accState, const QString& status)
