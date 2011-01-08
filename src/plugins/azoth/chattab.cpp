@@ -275,7 +275,7 @@ namespace Azoth
 
 		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
 		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
-		const int resHeight = std::min (height () / 4, std::max (docHeight, fontHeight));
+		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
 	}
