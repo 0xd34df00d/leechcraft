@@ -336,8 +336,6 @@ namespace Xoox
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
 
-		Nick2Entry_.clear ();
-
 		Room_->leave (msg.toUtf8 ().constData ());
 		RemoveThis ();
 	}
@@ -394,6 +392,12 @@ namespace Xoox
 
 	void RoomHandler::RemoveThis ()
 	{
+		Nick2Entry_.clear ();
+
+		Q_FOREACH (gloox::MessageSession *ses, JID2Session_.values ())
+			Account_->GetClientConnection ()->
+					GetClient ()->disposeMessageSession (ses);
+
 		Account_->handleEntryRemoved (CLEntry_);
 
 		Account_->GetClientConnection ()->Unregister (this);
