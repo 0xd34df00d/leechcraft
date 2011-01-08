@@ -622,7 +622,12 @@ namespace Azoth
 			while ((pos = ImageRegexp_.indexIn (body, pos)) != -1)
 			{
 				QString image = ImageRegexp_.cap (1);
-				QString str = QString ("<img src=\"data:image/%1\" alt=\"data:image/%1\" />")
+				// webkit not copy <img alt> to buffer with all text
+				//  fix it in new <div ...
+				QString str = QString ("<img src=\"%1\" alt=\"%1\" />\
+						<div style='width: 1px; overflow: hidden;\
+									height: 1px; float: left;\
+									font-size: 1px;'>%1</div>")
 						.arg (image);
 				body.replace (pos, image.length (), str);
 				pos += str.length ();
@@ -809,6 +814,8 @@ namespace Azoth
 
 	void ChatTab::ReformatTitle ()
 	{
+		if (!GetEntry<Plugins::ICLEntry> ())
+			return;
 		QString title = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
 		if (NumUnreadMsgs_)
 			title.prepend (QString ("(%1) ")
