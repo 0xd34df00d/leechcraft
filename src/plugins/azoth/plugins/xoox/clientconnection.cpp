@@ -263,6 +263,18 @@ namespace Xoox
 
 	void ClientConnection::onConnect ()
 	{
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+		{
+			gloox::JID jid = rh->GetRoomJID ();
+			// cache room inits
+			QString server = QString (jid.server().c_str ());
+			QString room = QString (jid.username ().c_str ());
+			QString nick = rh->GetCLEntry ()->GetNick ();
+			// leave conference
+			rh->GetCLEntry ()->Leave (QString ());
+			// join agane
+			Account_->JoinRoom (server, room, nick);
+		}
 		IsConnected_ = true;
 	}
 
