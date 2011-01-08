@@ -247,6 +247,9 @@ namespace Azoth
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
 
+		if (ProcessOutgoingMsg (e, text))
+			return;
+
 		QObject *msgObj = e->CreateMessage (type, variant, text);
 
 		Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
@@ -641,6 +644,20 @@ namespace Azoth
 		return proxy->IsCancelled () ?
 				proxy->GetReturnValue ().toString () :
 				body;
+	}
+
+	bool ChatTab::ProcessOutgoingMsg (Plugins::ICLEntry *entry, QString& text)
+	{
+		Plugins::IMUCEntry *mucEntry = qobject_cast<Plugins::IMUCEntry*> (entry->GetObject ());
+		if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC &&
+				mucEntry &&
+				text.startsWith ("/nick "))
+		{
+			mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
+			return true;
+		}
+
+		return false;
 	}
 
 	namespace
