@@ -22,6 +22,7 @@ SET (XOOX_SRCS
 	util.cpp
 	core.cpp
 	unauthclentry.cpp
+	vcarddialog.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -40,10 +41,12 @@ SET (XOOX_HEADERS
 	util.h
 	core.h
 	unauthclentry.h
+	vcarddialog.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
 	glooxjoingroupchatdialog.ui
+	vcarddialog.ui
 	)
 SET (XOOX_TRANSLATIONS
 	leechcraft_azoth_xoox_ru_RU.ts

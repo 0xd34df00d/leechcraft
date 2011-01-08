@@ -43,7 +43,6 @@ namespace Xoox
 		Q_OBJECT
 
 		QString Nick_;
-		GlooxAccount *Account_;
 		RoomHandler *RoomHandler_;
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
@@ -59,6 +58,8 @@ namespace Xoox
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 		AuthStatus GetAuthStatus () const;
+
+		gloox::JID GetJID () const;
 	};
 
 	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;

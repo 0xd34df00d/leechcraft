@@ -283,6 +283,10 @@ namespace Plugins
 		 */
 		virtual QString GetRawInfo () const = 0;
 
+		/** @brief Requests the entry to show dialog with info about it.
+		 */
+		virtual void ShowInfo () = 0;
+
 		/** @brief Returns the list of actions for the item.
 		 *
 		 * The list is showed, for example, when user calls the context

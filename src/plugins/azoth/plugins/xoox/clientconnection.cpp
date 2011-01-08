@@ -624,7 +624,7 @@ namespace Xoox
 
 		if (JID2CLEntry_.contains (jid))
 		{
-			JID2CLEntry_ [jid]->SetRawInfo (vcard);
+			JID2CLEntry_ [jid]->SetVCard (vcard);
 			JID2CLEntry_ [jid]->SetAvatar (vcard->photo ());
 		}
 		else

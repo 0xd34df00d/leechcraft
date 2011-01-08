@@ -328,10 +328,6 @@ namespace LeechCraft
 						SIGNAL (avatarChanged (const QImage&)),
 						this,
 						SLOT (updateItem ()));
-				connect (clEntry->GetObject (),
-						SIGNAL (rawinfoChanged (const QString&)),
-						this,
-						SLOT (showVCard ()));
 
 				const QByteArray& id = clEntry->GetEntryID ();
 				ID2Entry_ [id] = clEntry->GetObject ();
@@ -967,17 +963,7 @@ namespace LeechCraft
 					return;
 				}
 
-				if (ChatTabsManager_->IsActiveChat (entry, false))
-				{
-					QStringList currentVariants = entry->Variants ();
-					QString variant = currentVariants.first ();
-
-					QObject *msgObj = entry->CreateMessage (Plugins::IMessage::MTChatMessage,
-							variant,
-							QString ("/leechcraft ") + entry->GetRawInfo ());
-
-					emit entry->gotMessage (msgObj);
-				}
+				entry->ShowInfo ();
 			}
 
 			void Core::updateItem ()
@@ -1042,45 +1028,7 @@ namespace LeechCraft
 
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
-				Plugins::IAccount *account =
-						qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
-				if (!account)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "parent account doesn't implement IAccount:"
-							<< entry->GetParentAccount ();
-					return;
-				}
-
-				QStringList currentVariants = entry->Variants ();
-				QString variant = currentVariants.first ();
-				QString text;
-				Plugins::EntryStatus status;
-
-				text += QString ("/leechcraft ") + tr ("Card Info")
-								+ QString (": %1\n")
-								.arg (entry->GetHumanReadableID ());
-
-				Q_FOREACH (const QString& vari, currentVariants)
-				{
-					status = entry->GetStatus (vari);
-					if (!vari.isEmpty ())
-						text += QString ("%1: %2\n")
-									.arg (vari)
-									.arg (status.StatusString_);
-					else
-					if (!status.StatusString_.isEmpty ())
-						text += status.StatusString_;
-				}
-
-				QObject *msgObj = entry->CreateMessage (Plugins::IMessage::MTChatMessage,
-						variant,
-						text);
-
-				emit entry->gotMessage (msgObj);
-
-				account->QueryInfo (entry->GetHumanReadableID ());
-				ChatTabsManager_->OpenChat (entry);
+				entry->ShowInfo ();
 			}
 
 			void Core::handleActionLeaveTriggered ()

@@ -83,7 +83,7 @@ namespace Xoox
 		}
 
 		Nick2Entry_ [nick]->SetAvatar (card->photo ());
-		Nick2Entry_ [nick]->SetRawInfo (card);
+		Nick2Entry_ [nick]->SetVCard (card);
 	}
 
 	void RoomHandler::MakeLeaveMessage (const gloox::MUCRoomParticipant part)

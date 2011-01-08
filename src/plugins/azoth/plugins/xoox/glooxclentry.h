@@ -48,7 +48,6 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		GlooxAccount *ParentAccountObject_;
 		gloox::RosterItem *RI_;
 	public:
 		struct OfflineDataSource
@@ -95,6 +94,8 @@ namespace Xoox
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 		AuthStatus GetAuthStatus () const;
+
+		gloox::JID GetJID () const;
 	private:
 		QList<std::string> VariantsImpl () const;
 	};
