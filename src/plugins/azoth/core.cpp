@@ -529,7 +529,7 @@ namespace LeechCraft
 						delete action;
 					}
 
-				QAction *openChat = new QAction (tr ("Open chat"), this);
+				QAction *openChat = new QAction (tr ("Open chat"), entry->GetObject ());
 				openChat->setProperty ("ActionIcon", "azoth_openchat");
 				connect (openChat,
 						SIGNAL (triggered ()),
@@ -540,7 +540,7 @@ namespace LeechCraft
 
 				if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
 				{
-					QAction *vcard = new QAction (tr ("VCard"), this);
+					QAction *vcard = new QAction (tr ("VCard"), entry->GetObject ());
 					connect (vcard,
 							SIGNAL (triggered ()),
 							this,
@@ -552,13 +552,13 @@ namespace LeechCraft
 
 				if (entry->GetEntryType () == Plugins::ICLEntry::ETPrivateChat)
 				{
-					QAction *kick = new QAction (tr ("Kick"), this);
+					QAction *kick = new QAction (tr ("Kick"), entry->GetObject ());
 					kick->setProperty ("ActionIcon", "azoth_kick");
 					kick->setEnabled (false);
 					Entry2Actions_ [entry] ["kick"] = kick;
 					Action2Areas_ [kick] << CLEAAContactListCtxtMenu;
 
-					QAction *ban = new QAction (tr ("Ban"), this);
+					QAction *ban = new QAction (tr ("Ban"), entry->GetObject ());
 					ban->setProperty ("ActionIcon", "azoth_ban");
 					ban->setEnabled (false);
 					Entry2Actions_ [entry] ["ban"] = ban;
@@ -566,7 +566,7 @@ namespace LeechCraft
 				}
 				else if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC)
 				{
-					QAction *leave = new QAction (tr ("Leave"), this);
+					QAction *leave = new QAction (tr ("Leave"), entry->GetObject ());
 					leave->setProperty ("ActionIcon", "azoth_leave");
 					connect (leave,
 							SIGNAL (triggered ()),
@@ -578,7 +578,7 @@ namespace LeechCraft
 				}
 				else if (entry->GetEntryType () == Plugins::ICLEntry::ETUnauthEntry)
 				{
-					QAction *authorize = new QAction (tr ("Authorize"), this);
+					QAction *authorize = new QAction (tr ("Authorize"), entry->GetObject ());
 					authorize->setProperty ("ActionIcon", "azoth_authorize");
 					connect (authorize,
 							SIGNAL (triggered ()),
@@ -587,7 +587,7 @@ namespace LeechCraft
 					Entry2Actions_ [entry] ["authorize"] = authorize;
 					Action2Areas_ [authorize] << CLEAAContactListCtxtMenu;
 
-					QAction *denyAuth = new QAction (tr ("Deny authorization"), this);
+					QAction *denyAuth = new QAction (tr ("Deny authorization"), entry->GetObject ());
 					denyAuth->setProperty ("ActionIcon", "azoth_denyauth");
 					connect (denyAuth,
 							 SIGNAL (triggered ()),
