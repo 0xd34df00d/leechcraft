@@ -81,6 +81,7 @@ namespace Xoox
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 		QString GetAccountName () const;
+		QString GetOurNick () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
 		void QueryInfo (const QString&);

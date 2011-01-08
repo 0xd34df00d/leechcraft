@@ -499,9 +499,20 @@ namespace Azoth
 				body = body.mid (12);
 				string.append ("* ");
 			}
+			else if (body.startsWith ("/me ") &&
+					msg->GetMessageType () != Plugins::IMessage::MTMUCMessage)
+			{
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (other->GetParentAccount ());
+				body = body.mid (3);
+				string.append ("* ");
+				string.append (acc->GetOurNick ());
+				string.append (' ');
+				divClass = "slashmechatmsg";
+			}
 			else
 			{
-				string.append (FormatNickname ("R", msg));
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (other->GetParentAccount ());
+				string.append (FormatNickname (acc->GetOurNick (), msg));
 				string.append (": ");
 			}
 			divClass = "chatmsg";

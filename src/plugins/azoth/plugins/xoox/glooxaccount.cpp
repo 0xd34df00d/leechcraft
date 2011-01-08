@@ -117,6 +117,11 @@ namespace Xoox
 		return Name_;
 	}
 
+	QString GlooxAccount::GetOurNick () const
+	{
+		return Nick_;
+	}
+
 	void GlooxAccount::RenameAccount (const QString& name)
 	{
 		Name_ = name;

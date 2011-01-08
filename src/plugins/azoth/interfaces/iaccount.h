@@ -92,6 +92,12 @@ namespace Plugins
 		 */
 		virtual QString GetAccountName () const = 0;
 
+		/** @brief Returns the nickname of our user.
+		 *
+		 * @return Nickname of our user.
+		 */
+		virtual QString GetOurNick () const = 0;
+
 		/** @brief Sets the human-readable name of this account to the
 		 * new name.
 		 *

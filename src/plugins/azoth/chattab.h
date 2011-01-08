@@ -107,6 +107,17 @@ namespace Azoth
 		QString FormatNickname (QString, Plugins::IMessage*);
 		QString FormatBody (QString, Plugins::IMessage*);
 
+		/** Processes the outgoing messages, replacing /nick with calls
+		 * to the entity to change nick, for example, etc.
+		 *
+		 * If this function returns true, processing (and sending) the
+		 * message should be aborted.
+		 *
+		 * @return true if the processing should be aborted, false
+		 * otherwise.
+		 */
+		bool ProcessOutgoingMsg (Plugins::ICLEntry*, QString&);
+
 		void GenerateColors ();
 
 		/** Updates the tab icon and other usages of state icon from the
