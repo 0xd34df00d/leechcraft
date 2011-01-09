@@ -27,6 +27,7 @@
 #include "accountslistdialog.h"
 #include "setstatusdialog.h"
 #include "contactlistdelegate.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,25 @@ namespace Azoth
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (this));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
+
+		connect (Core::Instance ().GetCLModel (),
+				SIGNAL (rowsInserted (const QModelIndex&, int, int)),
+				this,
+				SLOT (handleRowsInserted (const QModelIndex&, int, int)));
+		connect (Core::Instance ().GetCLModel (),
+				SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
+				this,
+				SLOT (rebuildTreeExpansions ()));
+		connect (Core::Instance ().GetCLModel (),
+				SIGNAL (modelReset ()),
+				this,
+				SLOT (rebuildTreeExpansions ()));
+
+		Ui_.CLTree_->expandAll ();
+
+		if (Core::Instance ().GetCLModel ()->rowCount ())
+			handleRowsInserted (QModelIndex (),
+					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
 
 		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
 		lay->insertWidget (0, UpperBar_);
@@ -149,6 +169,63 @@ namespace Azoth
 		AccountsListDialog *dia = new AccountsListDialog (this);
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->exec ();
+	}
+
+	namespace
+	{
+		QString BuildPath (const QModelIndex& index)
+		{
+			QString path = index.data ().toString ();
+			QModelIndex parent = index;
+			while ((parent = parent.parent ()).isValid ())
+				path.prepend (parent.data ().toString () + "/");
+			path.prepend ("CLTreeState/Expanded/");
+			return path;
+		}
+	}
+
+	void MainWidget::handleRowsInserted (const QModelIndex& parent, int begin, int end)
+	{
+		for (int i = begin; i <= end; ++i)
+		{
+			const QModelIndex& index = Core::Instance ().GetCLModel ()->index (i, 0, parent);
+			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETContact)
+				continue;
+
+			QString path = BuildPath (index);
+
+			bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
+			if (expanded)
+				Ui_.CLTree_->setExpanded (index, true);
+
+			if (index.model ()->rowCount (index))
+				handleRowsInserted (index, 0, index.model ()->rowCount (index) - 1);
+		}
+	}
+
+	void MainWidget::rebuildTreeExpansions ()
+	{
+		if (Core::Instance ().GetCLModel ()->rowCount ())
+			handleRowsInserted (QModelIndex (),
+					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
+	}
+
+	namespace
+	{
+		void SetExpanded (const QModelIndex& idx, bool expanded)
+		{
+			XmlSettingsManager::Instance ().setProperty (BuildPath (idx).toUtf8 ().constData (), true);
+		}
+	}
+
+	void MainWidget::on_CLTree__collapsed (const QModelIndex& idx)
+	{
+		SetExpanded (idx, false);
+	}
+
+	void MainWidget::on_CLTree__expanded (const QModelIndex& idx)
+	{
+		SetExpanded (idx, true);
 	}
 }
 }

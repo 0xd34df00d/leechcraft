@@ -52,6 +52,10 @@ namespace Azoth
 		void on_CLTree__customContextMenuRequested (const QPoint&);
 		void handleChangeStatusRequested ();
 		void showAccountsList ();
+		void handleRowsInserted (const QModelIndex&, int, int);
+		void rebuildTreeExpansions ();
+		void on_CLTree__expanded (const QModelIndex&);
+		void on_CLTree__collapsed (const QModelIndex&);
 	};
 }
 }
