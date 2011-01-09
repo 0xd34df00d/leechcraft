@@ -40,8 +40,8 @@ namespace Xoox
 	class RoomParticipantEntry;
 
 	class RoomHandler : public QObject
-						, public gloox::MUCRoomHandler
-						, public gloox::MessageHandler
+					  , public gloox::MUCRoomHandler
+					  , public gloox::MessageHandler
 	{
 		Q_OBJECT
 
