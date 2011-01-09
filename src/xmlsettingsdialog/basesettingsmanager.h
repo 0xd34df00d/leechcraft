@@ -27,7 +27,7 @@
 #include <QPointer>
 #include "xsdconfig.h"
 
-#define PROP2CHAR(a) (a.toLatin1 ().constData ())
+#define PROP2CHAR(a) (a.toUtf8 ().constData ())
 
 namespace LeechCraft
 {

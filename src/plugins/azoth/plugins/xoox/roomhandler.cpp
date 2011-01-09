@@ -83,6 +83,7 @@ namespace Xoox
 		}
 
 		Nick2Entry_ [nick]->SetAvatar (card->photo ());
+		Nick2Entry_ [nick]->SetVCard (card);
 	}
 
 	void RoomHandler::MakeLeaveMessage (const gloox::MUCRoomParticipant part)
@@ -162,6 +163,20 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
+	void RoomHandler::MakeNickChangeMessage (const QString& oldNick, const QString& newNick)
+	{
+		QString msg = tr ("%1 changed nick to %2")
+				.arg (oldNick)
+				.arg (newNick);
+
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantNickChange);
+		CLEntry_->HandleMessage (message);
+	}
+
 	void RoomHandler::handleMUCParticipantPresence (gloox::MUCRoom *room,
 			const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
 	{
@@ -171,22 +186,44 @@ namespace Xoox
 
 		if (presence.presence () == gloox::Presence::Unavailable)
 		{
-			MakeLeaveMessage (part);
-
 			Account_->handleEntryRemoved (entry.get ());
-			Nick2Entry_.remove (nick);
-			JID2Session_.remove (JIDForNick (nick));
-			return;
+			if (part.newNick.empty ())
+			{
+				MakeLeaveMessage (part);
+
+				Nick2Entry_.remove (nick);
+				JID2Session_.remove (JIDForNick (nick));
+				return;
+			}
+			else
+			{
+				const QString& newNick = QString::fromUtf8 (part.newNick.c_str ());
+
+				PendingNickChanges_ << newNick;
+
+				MakeNickChangeMessage (nick, newNick);
+				entry->SetEntryName (newNick);
+				Nick2Entry_ [newNick] = Nick2Entry_.take (nick);
+				JID2Session_ [JIDForNick (newNick)] = JID2Session_.take (JIDForNick (nick));
+
+				Account_->handleGotRosterItems (QObjectList () << entry.get ());
+				return;
+			}
 		}
 
 		if (RoomHasBeenEntered_)
 		{
 			if (existed)
-				MakeStatusChangedMessage (part, presence);
+			{
+				if (!PendingNickChanges_.contains (nick))
+					MakeStatusChangedMessage (part, presence);
+				else
+					PendingNickChanges_.remove (nick);
+			}
 			else
 			{
 				MakeJoinMessage (part);
-				Account_->GetClientConnection ()->FetchVCard (JIDForNick (nick), this);
+				Account_->GetClientConnection ()->FetchVCard (JIDForNick (nick));
 			}
 		}
 
@@ -335,8 +372,6 @@ namespace Xoox
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
 
-		Nick2Entry_.clear ();
-
 		Room_->leave (msg.toUtf8 ().constData ());
 		RemoveThis ();
 	}
@@ -393,6 +428,12 @@ namespace Xoox
 
 	void RoomHandler::RemoveThis ()
 	{
+		Nick2Entry_.clear ();
+
+		Q_FOREACH (gloox::MessageSession *ses, JID2Session_.values ())
+			Account_->GetClientConnection ()->
+					GetClient ()->disposeMessageSession (ses);
+
 		Account_->handleEntryRemoved (CLEntry_);
 
 		Account_->GetClientConnection ()->Unregister (this);
@@ -400,6 +441,7 @@ namespace Xoox
 		Room_.reset ();
 		deleteLater ();
 	}
+
 }
 }
 }

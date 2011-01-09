@@ -145,6 +145,16 @@ namespace Xoox
 
 	RoomCLEntry* ClientConnection::JoinRoom (const gloox::JID& jid)
 	{
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+			if (rh->GetRoomJID () == jid.bareJID ())
+			{
+				Entity e = Util::MakeNotification ("Azoth",
+						tr ("This room is already joined."),
+						PCritical_);
+				Core::Instance ().SendEntity (e);
+				return 0;
+			}
+
 		RoomHandler *rh = new RoomHandler (Account_);
 		boost::shared_ptr<gloox::MUCRoom> room (new gloox::MUCRoom (Client_.get (), jid, rh, 0));
 		room->join ();
@@ -226,12 +236,6 @@ namespace Xoox
 		VCardManager_->fetchVCard (jid, this);
 	}
 
-	void ClientConnection::FetchVCard (const gloox::JID& jid, RoomHandler *rh)
-	{
-		VCardRequests_ [jid] = rh;
-		FetchVCard (jid);
-	}
-
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
 			const QString& variant, const QString& body, gloox::RosterItem *ri)
 	{
@@ -259,6 +263,18 @@ namespace Xoox
 
 	void ClientConnection::onConnect ()
 	{
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+		{
+			gloox::JID jid = rh->GetRoomJID ();
+			// cache room inits
+			QString server = QString (jid.server().c_str ());
+			QString room = QString (jid.username ().c_str ());
+			QString nick = rh->GetCLEntry ()->GetNick ();
+			// leave conference
+			rh->GetCLEntry ()->Leave (QString ());
+			// join agane
+			Account_->JoinRoom (server, room, nick);
+		}
 		IsConnected_ = true;
 	}
 
@@ -598,11 +614,19 @@ namespace Xoox
 			return;
 		}
 
-		if (VCardRequests_.contains (jid))
-			VCardRequests_.take (jid)->HandleVCard (vcard,
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+			if (rh->GetRoomJID () == jid.bare ())
+			{
+				rh->HandleVCard (vcard,
 					QString::fromUtf8 (jid.resource ().c_str ()));
-		else if (JID2CLEntry_.contains (jid))
+				return;
+			}
+
+		if (JID2CLEntry_.contains (jid))
+		{
+			JID2CLEntry_ [jid]->SetVCard (vcard);
 			JID2CLEntry_ [jid]->SetAvatar (vcard->photo ());
+		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "vcard reply for unknown request for jid"

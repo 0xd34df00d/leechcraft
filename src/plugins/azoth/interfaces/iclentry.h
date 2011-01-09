@@ -277,6 +277,16 @@ namespace Plugins
 		 */
 		virtual QImage GetAvatar () const = 0;
 
+		/** @brief Return string with raw information about the entry.
+		 *
+		 * @return Human-readable string with information about the entry.
+		 */
+		virtual QString GetRawInfo () const = 0;
+
+		/** @brief Requests the entry to show dialog with info about it.
+		 */
+		virtual void ShowInfo () = 0;
+
 		/** @brief Returns the list of actions for the item.
 		 *
 		 * The list is showed, for example, when user calls the context
@@ -332,6 +342,13 @@ namespace Plugins
 		 * @note This function is expected to be a signal in subclasses.
 		 */
 		virtual void avatarChanged (const QImage&) = 0;
+
+		/** @brief This signal should be emitted whenever our copy of
+		 * raw information is updated.
+		 *
+		 * @note This function is expected to be a signal in subclesses.
+		 */
+		virtual void rawinfoChanged (const QString&) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

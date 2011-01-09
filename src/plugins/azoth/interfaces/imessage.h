@@ -95,6 +95,7 @@ namespace Plugins
 			MSTParticipantStatusChange,
 			MSTParticipantJoin,
 			MSTParticipantLeave,
+			MSTParticipantNickChange,
 			MSTRoomSubjectChange
 		};
 

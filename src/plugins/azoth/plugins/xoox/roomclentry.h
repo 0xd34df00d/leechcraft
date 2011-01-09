@@ -74,6 +74,8 @@ namespace Xoox
 		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
+		QString GetRawInfo () const;
+		void ShowInfo ();
 		AuthStatus GetAuthStatus () const;
 
 		// IMUCEntry
@@ -94,6 +96,7 @@ namespace Xoox
 		void statusChanged (const Plugins::EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
 		void avatarChanged (const QImage&);
+		void rawinfoChanged (const QString&);
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);

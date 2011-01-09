@@ -56,6 +56,8 @@ namespace Azoth
 	, Variant_ (variant)
 	, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
+	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
 	, CurrentNickIndex_ (0)
@@ -245,6 +247,9 @@ namespace Azoth
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
 
+		if (ProcessOutgoingMsg (e, text))
+			return;
+
 		QObject *msgObj = e->CreateMessage (type, variant, text);
 
 		Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
@@ -273,7 +278,7 @@ namespace Azoth
 
 		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
 		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
-		const int resHeight = std::min (height () / 4, std::max (docHeight, fontHeight));
+		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
 	}
@@ -489,8 +494,27 @@ namespace Azoth
 			break;
 		}
 		case Plugins::IMessage::DOut:
-			string.append (FormatNickname ("R", msg));
-			string.append (": ");
+			if (body.startsWith ("/leechcraft "))
+			{
+				body = body.mid (12);
+				string.append ("* ");
+			}
+			else if (body.startsWith ("/me ") &&
+					msg->GetMessageType () != Plugins::IMessage::MTMUCMessage)
+			{
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (other->GetParentAccount ());
+				body = body.mid (3);
+				string.append ("* ");
+				string.append (acc->GetOurNick ());
+				string.append (' ');
+				divClass = "slashmechatmsg";
+			}
+			else
+			{
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (other->GetParentAccount ());
+				string.append (FormatNickname (acc->GetOurNick (), msg));
+				string.append (": ");
+			}
 			divClass = "chatmsg";
 			break;
 		}
@@ -608,6 +632,20 @@ namespace Azoth
 
 				pos += str.length ();
 			}
+			pos = 0;
+			while ((pos = ImageRegexp_.indexIn (body, pos)) != -1)
+			{
+				QString image = ImageRegexp_.cap (1);
+				// webkit not copy <img alt> to buffer with all text
+				//  fix it in new <div ...
+				QString str = QString ("<img src=\"%1\" alt=\"%1\" />\
+						<div style='width: 1px; overflow: hidden;\
+									height: 1px; float: left;\
+									font-size: 1px;'>%1</div>")
+						.arg (image);
+				body.replace (pos, image.length (), str);
+				pos += str.length ();
+			}
 
 			proxy.reset (new Util::DefaultHookProxy);
 			emit hookFormatBodyEnd (proxy, this, body, msgObj);
@@ -617,6 +655,20 @@ namespace Azoth
 		return proxy->IsCancelled () ?
 				proxy->GetReturnValue ().toString () :
 				body;
+	}
+
+	bool ChatTab::ProcessOutgoingMsg (Plugins::ICLEntry *entry, QString& text)
+	{
+		Plugins::IMUCEntry *mucEntry = qobject_cast<Plugins::IMUCEntry*> (entry->GetObject ());
+		if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC &&
+				mucEntry &&
+				text.startsWith ("/nick "))
+		{
+			mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
+			return true;
+		}
+
+		return false;
 	}
 
 	namespace
@@ -790,6 +842,13 @@ namespace Azoth
 
 	void ChatTab::ReformatTitle ()
 	{
+		if (!GetEntry<Plugins::ICLEntry> ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "GetEntry<Plugins::ICLEntry> returned NULL";
+			return;
+		}
+
 		QString title = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
 		if (NumUnreadMsgs_)
 			title.prepend (QString ("(%1) ")

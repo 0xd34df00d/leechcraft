@@ -117,6 +117,11 @@ namespace Xoox
 		return Name_;
 	}
 
+	QString GlooxAccount::GetOurNick () const
+	{
+		return Nick_;
+	}
+
 	void GlooxAccount::RenameAccount (const QString& name)
 	{
 		Name_ = name;
@@ -125,6 +130,11 @@ namespace Xoox
 	QByteArray GlooxAccount::GetAccountID () const
 	{
 		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
+	}
+
+	void GlooxAccount::QueryInfo (const QString& entryId)
+	{
+		ClientConnection_->FetchVCard (gloox::JID (entryId.toUtf8 ().constData ()));
 	}
 
 	void GlooxAccount::OpenConfigurationDialog ()
@@ -205,6 +215,8 @@ namespace Xoox
 		gloox::JID roomJID (jidStr.toUtf8 ().constData ());
 
 		RoomCLEntry *entry = ClientConnection_->JoinRoom (roomJID);
+		if (!entry)
+			return;
 		emit gotCLItems (QList<QObject*> () << entry);
 	}
 

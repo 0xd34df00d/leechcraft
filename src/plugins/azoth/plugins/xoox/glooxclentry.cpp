@@ -38,14 +38,12 @@ namespace Xoox
 {
 	GlooxCLEntry::GlooxCLEntry (gloox::RosterItem *ri, GlooxAccount *parent)
 	: EntryBase (parent)
-	, ParentAccountObject_ (parent)
 	, RI_ (ri)
 	{
 	}
 
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
-	, ParentAccountObject_ (parent)
 	, RI_ (0)
 	, ODS_ (ods)
 	{
@@ -97,7 +95,7 @@ namespace Xoox
 
 	QObject* GlooxCLEntry::GetParentAccount () const
 	{
-		return ParentAccountObject_;
+		return Account_;
 	}
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
@@ -127,7 +125,7 @@ namespace Xoox
 			return;
 
 		RI_->setName (name.toUtf8 ().constData ());
-		ParentAccountObject_->Synchronize ();
+		Account_->Synchronize ();
 	}
 
 	QByteArray GlooxCLEntry::GetEntryID () const
@@ -195,7 +193,7 @@ namespace Xoox
 			return 0;
 		}
 
-		QObject *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
+		QObject *msg = Account_->CreateMessage (type, variant, text, RI_);
 		AllMessages_ << msg;
 		return msg;
 	}
@@ -206,6 +204,11 @@ namespace Xoox
 			return ODS_->AuthStatus_;
 
 		return static_cast<AuthStatus> (RI_->subscription ());
+	}
+
+	gloox::JID GlooxCLEntry::GetJID () const
+	{
+		return gloox::JID (RI_->jid ()).bareJID ();
 	}
 }
 }

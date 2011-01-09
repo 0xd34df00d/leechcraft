@@ -40,7 +40,6 @@ namespace Xoox
 			RoomHandler *rh, GlooxAccount *account)
 	: EntryBase (account)
 	, Nick_ (nick)
-	, Account_ (account)
 	, RoomHandler_ (rh)
 	{
 	}
@@ -65,8 +64,9 @@ namespace Xoox
 		return Nick_;
 	}
 
-	void RoomParticipantEntry::SetEntryName (const QString&)
+	void RoomParticipantEntry::SetEntryName (const QString& nick)
 	{
+		Nick_ = nick;
 	}
 
 	QByteArray RoomParticipantEntry::GetEntryID () const
@@ -103,6 +103,13 @@ namespace Xoox
 	AuthStatus RoomParticipantEntry::GetAuthStatus () const
 	{
 		return ASNone;
+	}
+
+	gloox::JID RoomParticipantEntry::GetJID () const
+	{
+		gloox::JID jid = RoomHandler_->GetRoomJID ();
+		jid.setResource (Nick_.toUtf8 ().constData ());
+		return jid;
 	}
 }
 }

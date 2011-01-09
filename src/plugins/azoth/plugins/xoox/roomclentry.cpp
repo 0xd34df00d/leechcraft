@@ -75,8 +75,7 @@ namespace Xoox
 	{
 		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
 		return (r->name () + "@" +
-					r->service () + "_" +
-					r->nick ()).c_str ();
+					r->service ()).c_str ();
 	}
 
 	QString RoomCLEntry::GetHumanReadableID () const
@@ -125,6 +124,15 @@ namespace Xoox
 	QImage RoomCLEntry::GetAvatar () const
 	{
 		return QImage ();
+	}
+
+	QString RoomCLEntry::GetRawInfo () const
+	{
+		return QString ();
+	}
+
+	void RoomCLEntry::ShowInfo ()
+	{
 	}
 
 	AuthStatus RoomCLEntry::GetAuthStatus () const

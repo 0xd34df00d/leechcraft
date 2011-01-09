@@ -57,7 +57,7 @@ namespace Xoox
 	class GlooxProtocol;
 
 	class GlooxAccount : public QObject
-						, public IAccount
+					   , public IAccount
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
@@ -81,8 +81,10 @@ namespace Xoox
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 		QString GetAccountName () const;
+		QString GetOurNick () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
+		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
 		void ChangeState (State, const QString& = QString ());
 		void Synchronize ();

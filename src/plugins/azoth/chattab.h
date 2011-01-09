@@ -52,6 +52,7 @@ namespace Azoth
 		QByteArray EntryID_;
 		QString Variant_;
 		QRegExp LinkRegexp_;
+		QRegExp ImageRegexp_;
 		QColor BgColor_;
 		QList<QColor> NickColors_;
 		QList<QString> MsgHistory_;
@@ -105,6 +106,17 @@ namespace Azoth
 		QString FormatDate (QDateTime, Plugins::IMessage*);
 		QString FormatNickname (QString, Plugins::IMessage*);
 		QString FormatBody (QString, Plugins::IMessage*);
+
+		/** Processes the outgoing messages, replacing /nick with calls
+		 * to the entity to change nick, for example, etc.
+		 *
+		 * If this function returns true, processing (and sending) the
+		 * message should be aborted.
+		 *
+		 * @return true if the processing should be aborted, false
+		 * otherwise.
+		 */
+		bool ProcessOutgoingMsg (Plugins::ICLEntry*, QString&);
 
 		void GenerateColors ();
 
