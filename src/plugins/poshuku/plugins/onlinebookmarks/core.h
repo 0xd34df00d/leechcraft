@@ -53,6 +53,8 @@ namespace OnlineBookmarks
 		SyncBookmarks *GetBookmarksSyncManager () const;
 		void SetActiveBookmarksServices (QList<AbstractBookmarksService*>);
 		QList<AbstractBookmarksService*> GetActiveBookmarksServices () const;
+		void SetPassword (const QString&, const QString&, const QString&);
+		QString GetPassword (const QString&, const QString&) const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

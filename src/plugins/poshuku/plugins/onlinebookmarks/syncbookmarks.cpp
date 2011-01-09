@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "syncbookmarks.h"
-
-#include <QtDebug>
+#include <plugininterface/util.h>
+#include "core.h"
+#include "abstractbookmarksservice.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,19 +38,54 @@ namespace OnlineBookmarks
 
 	void SyncBookmarks::syncBookmarks ()
 	{
-		qDebug () << "sync";
 	}
 
 	void SyncBookmarks::uploadBookmarks ()
 	{
-		qDebug () << "sync2";
 	} 
 
 	void SyncBookmarks::downloadBookmarks ()
 	{
-		
-		
+		QMap<AbstractBookmarksService *, QStringList> accountData;
+		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
+		{
+			service->DownloadBookmarks (XmlSettingsManager::Instance ()->
+					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (), 
+					XmlSettingsManager::Instance ()->property ("Sync/IsService2LocalLastSyncDate").toInt ());
+			
+			connect (service,
+					SIGNAL (gotDownloadReply (const QList<QVariant>&, const QUrl&)),
+					this,
+					SLOT (readDownloadReply (const QList<QVariant>&, const QUrl&)));
+			
+			connect (service,
+					SIGNAL (gotParseError (const QString&)),
+					this,
+					SLOT (readErrorReply (const QString&)));
+			
+		}
 	}
+	
+	void SyncBookmarks::readDownloadReply (const QList<QVariant>& importBookmarks, const QUrl &url)
+	{
+		Entity eBookmarks = Util::MakeEntity (QVariant (),
+				QString (),
+				FromUserInitiated | OnlyHandle,
+				"x-leechcraft/browser-import-data");
+				
+		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
+		emit gotEntity (eBookmarks);
+	}
+	
+	void SyncBookmarks::readErrorReply(const QString& errorReply)
+	{
+		Entity e = Util::MakeNotification ("Poshuku", 
+				errorReply, 
+				PCritical_);
+		
+		gotEntity (e);
+	}
+
 }
 }
 }

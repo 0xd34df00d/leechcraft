@@ -57,8 +57,6 @@ namespace OnlineBookmarks
 	private:
 		void ClearFrameState ();
 		void SetupServices ();
-		void SetPassword (const QString&, const QString&, const QString&);
-		QString GetPassword (const QString&, const QString&);
 		void ReadSettings ();
 		void SetApplyEnabled (const QString&, const QString&);
 	public slots:

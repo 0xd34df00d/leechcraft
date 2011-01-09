@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUSBOOKMARKSSERVICE_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUSBOOKMARKSSERVICE_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATERBOOKMARKSSERVICE_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATERBOOKMARKSSERVICE_H
 
 #include <QIcon>
 #include <QUrl>
@@ -36,24 +36,38 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class DeliciousBookmarksService : public AbstractBookmarksService
+	class ReadItLaterBookmarksService : public AbstractBookmarksService
 	{
 		Q_OBJECT
-
+		
+		enum ConnectionType
+		{
+			Auth_ = 0x01,
+			Download_ = 0x02,
+			Upload_ = 0x03,
+			Sync_ = 0x04
+		};
+		
+		ConnectionType Type_;
 		QNetworkAccessManager Manager_;
 		QNetworkReply *Reply_;
 		QUrl ApiUrl_;
 		QByteArray RequestString_;
+		void FetchBookmarks (const QString&, const QString&, int);
+		void ParseDownloadReply (const QByteArray&);
 	public:
-		DeliciousBookmarksService (QWidget* = 0);
+		ReadItLaterBookmarksService (QWidget* = 0);
 		QString GetName () const;
 		QIcon GetIcon () const;
-		void CheckValidAccountData (const QString&, const QString&);		
+		void CheckValidAccountData (const QString&, const QString&);
+		void DownloadBookmarks (QStringList, int);
 	public slots:
 		void getReplyFinished ();
 		void readyReadReply ();
 	signals:
 		void gotValidReply (bool);
+		void gotParseError (const QString&);
+		void gotDownloadReply (const QList<QVariant>&, const QUrl&);
 	};
 }
 }
@@ -61,5 +75,5 @@ namespace OnlineBookmarks
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUSBOOKMARKSSERVICE_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATERBOOKMARKSSERVICE_H
 

@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
 
 #include <QObject>
+#include "interfaces/structures.h"
 
 namespace LeechCraft
 {
@@ -41,10 +42,14 @@ namespace OnlineBookmarks
 		void syncBookmarks ();
 		void uploadBookmarks ();
 		void downloadBookmarks ();
+		void readDownloadReply (const QList<QVariant>&, const QUrl&);
+		void readErrorReply (const QString&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
 }
 }
 }
-#endif // SYNCBOOKMARKS_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H

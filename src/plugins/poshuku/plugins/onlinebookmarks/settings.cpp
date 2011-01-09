@@ -23,10 +23,10 @@
 #include <QDateTime>
 #include <plugininterface/util.h>
 #include "onlinebookmarks.h"
-#include "delicious/deliciousbookmarksservice.h"
-#include "interfaces/structures.h"
+#include "readitlater/readitlaterbookmarksservice.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "abstractbookmarksservice.h"
 
 namespace LeechCraft
 {
@@ -69,7 +69,7 @@ namespace OnlineBookmarks
 		
 		ReadSettings ();
 
-		BookmarksServices_ << new DeliciousBookmarksService (this);
+		BookmarksServices_ << new ReadItLaterBookmarksService (this);
 
 		SetupServices ();
 	}
@@ -99,54 +99,6 @@ namespace OnlineBookmarks
 					this,
 					SLOT (checkServiceAnswer (bool)));
 		}
-	}
-
-	void Settings::SetPassword (const QString& password, const QString& account, const QString& service)
-	{
-		QList<QVariant> keys;
-		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." +
-				service + "/" + account;
-
-		QList<QVariant> passwordVar;
-		passwordVar << password;
-		QList<QVariant> values;
-		values << QVariant (passwordVar);
-
-		Entity e = Util::MakeEntity (keys,
-				QString (),
-				Internal,
-				"x-leechcraft/data-persistent-save");
-		e.Additional_ ["Values"] = values;
-		e.Additional_ ["Overwrite"] = true;
-
-		Core::Instance ().SendEntity (e);
-	}
-
-	QString Settings::GetPassword (const QString& account, const QString& service)
-	{
-		QList<QVariant> keys;
-		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." + service + "/" + account;
-		const QVariantList& result =
-				Util::GetPersistentData (keys, &Core::Instance ());
-		if (result.size () != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "incorrect result size"
-					<< result;
-			return QString ();
-		}
-
-		const QVariantList& strVarList = result.at (0).toList ();
-		if (strVarList.isEmpty () ||
-				!strVarList.at (0).canConvert<QString> ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid string variant list"
-					<< strVarList;
-			return QString ();
-		}
-
-		return strVarList.at (0).toString ();
 	}
 
 	void Settings::ReadSettings ()
@@ -182,13 +134,21 @@ namespace OnlineBookmarks
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/IsLocal2ServicePeriod", Ui_.Bookmarks2ServicesPeriod_->currentIndex ());
 		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/IsLocal2ServiceLastSyncDate", QDateTime::currentDateTime ());
+				setProperty ("Sync/IsLocal2ServiceLastSyncDate", QDateTime::currentDateTime ().toTime_t ());
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/IsService2Local", Ui_.Services2Bookmarks_->isChecked ());
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/IsService2LocalPeriod", Ui_.Services2BookmarksPeriod_->currentIndex ());
 		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/IsService2LocalLastSyncDate", QDateTime::currentDateTime ());
+				setProperty ("Sync/IsService2LocalLastSyncDate", QDateTime::currentDateTime ().toTime_t());
+		
+		QList<AbstractBookmarksService*> activeServices; 
+		for (int i = 0; i < ServicesModel_->rowCount (); i++)
+			if (ServicesModel_->item (i)->checkState () == Qt::Checked)
+				activeServices << BookmarksServices_.at (i);
+		
+		if (activeServices.size () > 0)
+			Core::Instance ().SetActiveBookmarksServices (activeServices);
 	}
 
 	void Settings::on_Add__toggled (bool checked)
@@ -217,7 +177,7 @@ namespace OnlineBookmarks
 			Ui_.ControlLayout_->insertWidget (2, Ui_.LoginFrame_);
 			Ui_.LoginFrame_->show ();
 			Ui_.Login_->setText (Ui_.AccountsView_->currentIndex ().data ().toString ());
-			Ui_.Password_->setText (GetPassword (Ui_.Login_->text (),
+			Ui_.Password_->setText (Core::Instance ().GetPassword (Ui_.Login_->text (),
 					Ui_.AccountsView_->currentIndex ().parent ().data ().toString ()));
 		}
 		else
@@ -331,7 +291,7 @@ namespace OnlineBookmarks
 
 			serviceItem->appendRow (new QStandardItem (Ui_.Login_->text ()));
 
-			SetPassword (Ui_.Password_->text (), Ui_.Login_->text (), GetSelectedName ());
+			Core::Instance ().SetPassword (Ui_.Password_->text (), Ui_.Login_->text (), GetSelectedName ());
 			
 			ClearFrameState ();
 
