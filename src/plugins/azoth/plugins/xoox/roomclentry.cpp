@@ -75,8 +75,7 @@ namespace Xoox
 	{
 		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
 		return (r->name () + "@" +
-					r->service () + "_" +
-					r->nick ()).c_str ();
+					r->service ()).c_str ();
 	}
 
 	QString RoomCLEntry::GetHumanReadableID () const

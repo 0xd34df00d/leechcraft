@@ -52,6 +52,8 @@ namespace Xoox
 		boost::shared_ptr<gloox::MUCRoom> Room_;
 		QString Subject_;
 		bool RoomHasBeenEntered_;
+		// contains new nicks
+		QSet<QString> PendingNickChanges_;
 	public:
 		RoomHandler (GlooxAccount*);
 
@@ -104,6 +106,7 @@ namespace Xoox
 		void MakeLeaveMessage (const gloox::MUCRoomParticipant);
 		void MakeStatusChangedMessage (const gloox::MUCRoomParticipant, const gloox::Presence&);
 		void MakeJoinMessage (const gloox::MUCRoomParticipant);
+		void MakeNickChangeMessage (const QString& oldNick, const QString& newNick);
 
 		gloox::MessageSession* GetSessionWith (const gloox::JID&);
 		QString NickFromJID (const gloox::JID&) const;

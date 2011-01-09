@@ -64,8 +64,9 @@ namespace Xoox
 		return Nick_;
 	}
 
-	void RoomParticipantEntry::SetEntryName (const QString&)
+	void RoomParticipantEntry::SetEntryName (const QString& nick)
 	{
+		Nick_ = nick;
 	}
 
 	QByteArray RoomParticipantEntry::GetEntryID () const
