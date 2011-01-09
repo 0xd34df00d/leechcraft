@@ -66,12 +66,9 @@ namespace OnlineBookmarks
 				SIGNAL (released ()),
 				this,
 				SLOT (handleStuff ()));
-		
-		ReadSettings ();
-
 		BookmarksServices_ << new ReadItLaterBookmarksService (this);
-
 		SetupServices ();
+		ReadSettings ();
 	}
 
 	void Settings::ClearFrameState ()
@@ -111,6 +108,12 @@ namespace OnlineBookmarks
 				Property ("Sync/IsService2Local", 1).toBool ());
 		Ui_.Services2BookmarksPeriod_->setCurrentIndex (XmlSettingsManager::Instance ()->
 				Property ("Sync/IsService2LocalPeriod", 0).toInt ());
+		QStringList  activeServicesNames = XmlSettingsManager::Instance ()->
+				Property ("Sync/ActiveServices", QString ("")).toStringList ();
+		if (activeServicesNames.size () > 0)
+			for (int i = 0; i < ServicesModel_->rowCount (); i++)
+				if (activeServicesNames.contains (ServicesModel_->item (i)->text ()))
+					ServicesModel_->item (i)->setCheckState (Qt::Checked);
 	}
 
 	void Settings::SetApplyEnabled (const QString& firestString, const QString& secondString)
@@ -143,10 +146,17 @@ namespace OnlineBookmarks
 				setProperty ("Sync/IsService2LocalLastSyncDate", QDateTime::currentDateTime ().toTime_t());
 		
 		QList<AbstractBookmarksService*> activeServices; 
+		QStringList activeServicesNames;
 		for (int i = 0; i < ServicesModel_->rowCount (); i++)
 			if (ServicesModel_->item (i)->checkState () == Qt::Checked)
+			{
 				activeServices << BookmarksServices_.at (i);
+				activeServicesNames << ServicesModel_->item (i)->text ();
+			}
 		
+		XmlSettingsManager::Instance ()->
+				setProperty ("Sync/ActiveServices", activeServicesNames);
+				
 		if (activeServices.size () > 0)
 			Core::Instance ().SetActiveBookmarksServices (activeServices);
 	}
