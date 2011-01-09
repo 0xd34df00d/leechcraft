@@ -843,7 +843,12 @@ namespace Azoth
 	void ChatTab::ReformatTitle ()
 	{
 		if (!GetEntry<Plugins::ICLEntry> ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "GetEntry<Plugins::ICLEntry> returned NULL";
 			return;
+		}
+
 		QString title = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
 		if (NumUnreadMsgs_)
 			title.prepend (QString ("(%1) ")
