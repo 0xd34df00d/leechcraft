@@ -228,7 +228,7 @@ namespace Xoox
 		{
 			gloox::VCard::Photo photo = vcard->photo ();
 			QByteArray data (photo.binval.c_str(), photo.binval.size ());
-			text += tr ("Photo:\ndata:%1;base64,%2\n")
+			text += tr ("Photo:") + QString ("\ndata:%1;base64,%2\n")
 						.arg (photo.type .c_str ())
 						.arg (data.toBase64 ().constData ());
 		}
@@ -237,7 +237,7 @@ namespace Xoox
 		{
 			gloox::VCard::Photo photo = vcard->photo ();
 			QByteArray data (photo.binval.c_str(), photo.binval.size ());
-			text += tr ("Photo:\ndata:%1;base64,%2\n")
+			text += tr ("Photo:") + QString ("\ndata:%1;base64,%2\n")
 						.arg (photo.type .c_str ())
 						.arg (data.toBase64 ().constData ());
 		}
