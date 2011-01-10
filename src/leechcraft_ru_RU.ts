@@ -215,15 +215,15 @@
     </message>
     <message>
         <source>General</source>
-        <translation>Общее</translation>
+        <translation type="obsolete">Общее</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation>Инструменты</translation>
+        <translation type="obsolete">Инструменты</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Помощь</translation>
+        <translation type="obsolete">Помощь</translation>
     </message>
     <message>
         <source>About LeechCraft...</source>
@@ -235,7 +235,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation>Вид</translation>
+        <translation type="obsolete">Вид</translation>
     </message>
     <message>
         <source>Menu</source>
@@ -444,6 +444,14 @@
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation>F11</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation>Вид</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation>Инструменты</translation>
     </message>
 </context>
 <context>
@@ -851,11 +859,11 @@
     </message>
     <message>
         <source>Show menu bar as button</source>
-        <translation>Показывать панель меню в виде кнопки</translation>
+        <translation type="obsolete">Показывать панель меню в виде кнопки</translation>
     </message>
     <message>
         <source>Try smarter tabs width calculation</source>
-        <translation>Пытаться использовать умный алгоритм расчета ширины вкладок</translation>
+        <translation type="obsolete">Пытаться использовать умный алгоритм расчета ширины вкладок</translation>
     </message>
     <message>
         <source>Icon size</source>

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.0" language="uk_UA">
 <context>
     <name>AccountsListDialog</name>
     <message>
         <location filename="accountslistdialog.ui" line="14"/>
         <source>Accounts</source>
-        <translation>Accounts</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="accountslistdialog.ui" line="37"/>
         <source>Add...</source>
-        <translation>Add...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="accountslistdialog.ui" line="51"/>
         <source>Modify...</source>
-        <translation>Modify...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="accountslistdialog.ui" line="58"/>
         <source>Delete</source>
-        <translation>Delete</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29,12 +29,12 @@
     <message>
         <location filename="chattab.ui" line="28"/>
         <source>Subject...</source>
-        <translation>Subject...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="chattab.ui" line="72"/>
         <source>0</source>
-        <translation>0</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42,7 +42,7 @@
     <message>
         <location filename="accountslistdialog.cpp" line="38"/>
         <source>Add account</source>
-        <translation>Add account</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50,22 +50,22 @@
     <message>
         <location filename="chattab.cpp" line="862"/>
         <source>Chat</source>
-        <translation>Chat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="865"/>
         <source>Conference</source>
-        <translation>Conference</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="868"/>
         <source>Private chat</source>
-        <translation>Private chat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="871"/>
         <source>Unauthorized user</source>
-        <translation>Unauthorized user</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -73,157 +73,157 @@
     <message>
         <location filename="core.cpp" line="277"/>
         <source>Join chatroom (%1)</source>
-        <translation>Join chatroom (%1)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="339"/>
         <source>Unauthorized users</source>
-        <translation>Unauthorized users</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="368"/>
         <source>General</source>
-        <translation>General</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="423"/>
         <source>In groups: </source>
-        <translation>In groups: </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="537"/>
         <source>Open chat</source>
-        <translation>Open chat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="548"/>
         <source>VCard</source>
-        <translation>VCard</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="560"/>
         <source>Kick</source>
-        <translation>Kick</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="571"/>
         <source>Ban</source>
-        <translation>Ban</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="586"/>
         <source>Change role</source>
-        <translation>Change role</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="591"/>
         <source>Visitor</source>
-        <translation>Visitor</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="598"/>
         <source>Participant</source>
-        <translation>Participant</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="605"/>
         <source>Moderator</source>
-        <translation>Moderator</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="612"/>
         <source>Change affiliation</source>
-        <translation>Change affiliation</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="617"/>
         <source>None</source>
-        <translation>None</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="624"/>
         <source>Member</source>
-        <translation>Member</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="631"/>
         <source>Admin</source>
-        <translation>Admin</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="638"/>
         <source>Owner</source>
-        <translation>Owner</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="647"/>
         <source>Leave</source>
-        <translation>Leave</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="659"/>
         <source>Authorize</source>
-        <translation>Authorize</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="668"/>
         <source>Deny authorization</source>
-        <translation>Deny authorization</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="1015"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
-        <translation>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="1021"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</source>
-        <translation>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="1063"/>
         <source>Subscription requested by %1.</source>
-        <translation>Subscription requested by %1.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="1065"/>
         <source>Subscription requested by %1: %2.</source>
-        <translation>Subscription requested by %1: %2.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="232"/>
         <source>Online</source>
-        <translation>Online</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="234"/>
         <source>Free to chat</source>
-        <translation>Free to chat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="236"/>
         <source>Away</source>
-        <translation>Away</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="238"/>
         <source>Do not disturb</source>
-        <translation>Do not disturb</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="240"/>
         <source>Extended away</source>
-        <translation>Extended away</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="242"/>
         <source>Offline</source>
-        <translation>Offline</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="244"/>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -231,22 +231,22 @@
     <message>
         <location filename="mainwidget.cpp" line="41"/>
         <source>General</source>
-        <translation>General</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="71"/>
         <source>Accounts...</source>
-        <translation>Accounts...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="81"/>
         <source>Change status...</source>
-        <translation>Change status...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="135"/>
         <source>Entry context menu</source>
-        <translation>Entry context menu</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -254,7 +254,7 @@
     <message>
         <location filename="azoth.cpp" line="122"/>
         <source>Extensible IM client for LeechCraft.</source>
-        <translation>Extensible IM client for LeechCraft.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -262,7 +262,7 @@
     <message>
         <location filename="proxyobject.cpp" line="224"/>
         <source>Unknown OS</source>
-        <translation>Unknown OS</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -270,7 +270,7 @@
     <message>
         <location filename="mucsubjectdialog.ui" line="14"/>
         <source>Room subject</source>
-        <translation>Room subject</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -278,7 +278,7 @@
     <message>
         <location filename="mainwidget.ui" line="54"/>
         <source>Add account</source>
-        <translation>Add account</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -286,42 +286,42 @@
     <message>
         <location filename="setstatusdialog.ui" line="14"/>
         <source>Set status</source>
-        <translation>Set status</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="22"/>
         <source>Status:</source>
-        <translation>Status:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="36"/>
         <source>Online</source>
-        <translation>Online</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="41"/>
         <source>Free to chat</source>
-        <translation>Free to chat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="46"/>
         <source>Away</source>
-        <translation>Away</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="51"/>
         <source>DND</source>
-        <translation>DND</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="56"/>
         <source>Extended away</source>
-        <translation>Extended away</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="61"/>
         <source>Offline</source>
-        <translation>Offline</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -329,42 +329,42 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Appearance</source>
-        <translation>Appearance</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Iconsets</source>
-        <translation>Iconsets</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Status icons:</source>
-        <translation>Status icons:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Oxygen</source>
-        <translation>Oxygen</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Behavior</source>
-        <translation>Behavior</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Jump to new tab on open</source>
-        <translation>Jump to new tab on open</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Chat windows</source>
-        <translation>Chat windows</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Show status changes events in chat window</source>
-        <translation>Show status changes events in chat window</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

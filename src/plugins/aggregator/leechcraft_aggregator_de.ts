@@ -446,49 +446,49 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="220"/>
+        <location filename="aggregator.cpp" line="225"/>
         <source>Feeds actions</source>
         <translation>Aktionen des Feeds</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="298"/>
+        <location filename="aggregator.cpp" line="306"/>
         <source>RSS/Atom feed reader.</source>
         <translation>RSS/Atom Feedreader.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="563"/>
+        <location filename="aggregator.cpp" line="571"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removing confirmation</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="621"/>
+        <location filename="aggregator.cpp" line="629"/>
         <source>Export to OPML</source>
         <translation>Nach OPML exportieren</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="622"/>
-        <location filename="aggregator.cpp" line="652"/>
+        <location filename="aggregator.cpp" line="630"/>
+        <location filename="aggregator.cpp" line="660"/>
         <source>Select save file</source>
         <translation>Wähle gespeicherte Datei</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="623"/>
+        <location filename="aggregator.cpp" line="631"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML Dateien (*.opml);;XML Dateien (*.xml);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="651"/>
+        <location filename="aggregator.cpp" line="659"/>
         <source>Export to binary file</source>
         <translation>In eine binäre Datei exportieren</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="653"/>
+        <location filename="aggregator.cpp" line="661"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="aggregator.cpp" line="709"/>
+        <location filename="aggregator.cpp" line="721"/>
         <source>%n unread message(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -496,7 +496,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="aggregator.cpp" line="710"/>
+        <location filename="aggregator.cpp" line="722"/>
         <source>in %n channel(s).</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -535,199 +535,193 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::Core</name>
     <message>
-        <location filename="core.cpp" line="180"/>
+        <location filename="core.cpp" line="170"/>
         <source>Import error</source>
         <translation>Importfehler</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="273"/>
-        <location filename="core.cpp" line="280"/>
+        <location filename="core.cpp" line="263"/>
+        <location filename="core.cpp" line="270"/>
         <source>Storage error</source>
         <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="281"/>
+        <location filename="core.cpp" line="271"/>
         <source>Aggregator: general storage initialization error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="424"/>
+        <location filename="core.cpp" line="417"/>
         <source>Feed addition error</source>
         <translation>Fehler beim Hinzufügen des Feeds</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="425"/>
+        <location filename="core.cpp" line="418"/>
         <source>The feed %1 is already added</source>
         <translation>Der Feed %1 ist schon hinzugefügt worden</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="460"/>
+        <location filename="core.cpp" line="450"/>
         <source>Plugin error</source>
         <translation>Fehler einer Erweiterung</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="181"/>
+        <location filename="core.cpp" line="171"/>
         <source>Could not find plugin to download OPML %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="461"/>
+        <location filename="core.cpp" line="451"/>
         <source>Could not find plugin to download feed %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="484"/>
+        <location filename="core.cpp" line="473"/>
         <source>Feed removal error</source>
         <translation>Fehler beim entfernen des Feed</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="485"/>
+        <location filename="core.cpp" line="474"/>
         <source>Could not remove the feed: %1</source>
         <translation>Kann den Feed nicht entfernen: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="679"/>
-        <location filename="core.cpp" line="696"/>
-        <location filename="core.cpp" line="1613"/>
+        <location filename="core.cpp" line="668"/>
+        <location filename="core.cpp" line="685"/>
+        <location filename="core.cpp" line="1623"/>
         <source>Aggregator error</source>
         <translation>Aggregator Fehler</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="680"/>
+        <location filename="core.cpp" line="669"/>
         <source>Could not get feed settings: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="697"/>
+        <location filename="core.cpp" line="686"/>
         <source>Could not update feed settings: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="718"/>
+        <location filename="core.cpp" line="707"/>
         <source>Feed update error</source>
         <translation>Fehler beim Aktualisieren</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="719"/>
+        <location filename="core.cpp" line="708"/>
         <source>Could not update feed</source>
         <translation>Kann Feed nicht aktualisieren</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="744"/>
-        <location filename="core.cpp" line="762"/>
-        <location filename="core.cpp" line="774"/>
-        <location filename="core.cpp" line="814"/>
-        <location filename="core.cpp" line="1104"/>
+        <location filename="core.cpp" line="733"/>
+        <location filename="core.cpp" line="751"/>
+        <location filename="core.cpp" line="763"/>
+        <location filename="core.cpp" line="1083"/>
         <source>OPML import error</source>
         <translation>Fehler beim importieren von OPML</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="745"/>
+        <location filename="core.cpp" line="734"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Kann Datei %1 nicht zum Lesen öffnen.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="763"/>
+        <location filename="core.cpp" line="752"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="775"/>
+        <location filename="core.cpp" line="764"/>
         <source>OPML from file %1 is not valid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="815"/>
-        <source>Could not update feed settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="845"/>
+        <location filename="core.cpp" line="819"/>
         <source>OPML export error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="846"/>
-        <location filename="core.cpp" line="877"/>
+        <location filename="core.cpp" line="820"/>
+        <location filename="core.cpp" line="851"/>
         <source>Could not open file %1 for write.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="876"/>
+        <location filename="core.cpp" line="850"/>
         <source>Binary export error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1030"/>
-        <location filename="core.cpp" line="1040"/>
-        <location filename="core.cpp" line="1055"/>
-        <location filename="core.cpp" line="1069"/>
-        <location filename="core.cpp" line="1194"/>
+        <location filename="core.cpp" line="1002"/>
+        <location filename="core.cpp" line="1017"/>
+        <location filename="core.cpp" line="1031"/>
+        <location filename="core.cpp" line="1049"/>
+        <location filename="core.cpp" line="1175"/>
         <source>Feed error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1031"/>
+        <location filename="core.cpp" line="1003"/>
         <source>Downloaded file from url %1 has null size.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1041"/>
+        <location filename="core.cpp" line="1050"/>
         <source>Feed with url %1 not found.</source>
         <translation>Der Feed mit der Adresse %1 wurde nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1056"/>
+        <location filename="core.cpp" line="1018"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1070"/>
+        <location filename="core.cpp" line="1032"/>
         <source>Could not find parser to parse file %1 from %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1105"/>
+        <location filename="core.cpp" line="1084"/>
         <source>Unable to download the OPML file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1120"/>
+        <location filename="core.cpp" line="1099"/>
         <source>Address not found:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1123"/>
+        <location filename="core.cpp" line="1102"/>
         <source>Access denied:&lt;br /&gt;%1</source>
         <translation>Zugriff fehlgeschlagen:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1126"/>
+        <location filename="core.cpp" line="1105"/>
         <source>Local error for:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1129"/>
+        <location filename="core.cpp" line="1108"/>
         <source>Unknown error for:&lt;br /&gt;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1132"/>
+        <location filename="core.cpp" line="1111"/>
         <source>Download error</source>
         <translation>Downloadfehler</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1195"/>
+        <location filename="core.cpp" line="1176"/>
         <source>Could not find plugin to download external file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1672"/>
+        <location filename="core.cpp" line="1682"/>
         <source>Could not find plugin for feed with URL %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1474"/>
+        <location filename="core.cpp" line="1484"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -735,12 +729,12 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1590"/>
+        <location filename="core.cpp" line="1600"/>
         <source>Updated channel &quot;%1&quot; (%2, %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1591"/>
+        <location filename="core.cpp" line="1601"/>
         <source>%n new item(s)</source>
         <comment>Channel update</comment>
         <translation type="unfinished">
@@ -749,7 +743,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1592"/>
+        <location filename="core.cpp" line="1602"/>
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
         <translation type="unfinished">
@@ -758,7 +752,7 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1614"/>
+        <location filename="core.cpp" line="1624"/>
         <source>Could not mark channel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -766,17 +760,17 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::Export2FB2Dialog</name>
     <message>
-        <location filename="export2fb2dialog.cpp" line="66"/>
+        <location filename="export2fb2dialog.cpp" line="67"/>
         <source>Select save file</source>
         <translation>Wähle gespeicherte Datei</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="68"/>
+        <location filename="export2fb2dialog.cpp" line="69"/>
         <source>fb2 files (*.fb2);;XML files (*.xml);;All files (*.*)</source>
         <translation>fb2 Dateien (*.fb2);;XML Dateien (*.xml);;Alle Dateien (*.*)</translation>
     </message>
     <message numerus="yes">
-        <location filename="export2fb2dialog.cpp" line="110"/>
+        <location filename="export2fb2dialog.cpp" line="111"/>
         <source>%n unread item(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -784,18 +778,23 @@
         </translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="124"/>
+        <location filename="export2fb2dialog.cpp" line="125"/>
         <source>Published on %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="128"/>
+        <location filename="export2fb2dialog.cpp" line="129"/>
         <source>By %1</source>
         <translation>Von %1</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="196"/>
+        <location filename="export2fb2dialog.cpp" line="197"/>
         <source>Could not open file %1 for write:&lt;br /&gt;%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.cpp" line="265"/>
+        <source>FB2 export complete.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -882,17 +881,17 @@
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="224"/>
+        <location filename="itemslistmodel.cpp" line="227"/>
         <source>&lt;b&gt;Author&lt;/b&gt;: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="229"/>
+        <location filename="itemslistmodel.cpp" line="232"/>
         <source>&lt;b&gt;Categories&lt;/b&gt;: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="234"/>
+        <location filename="itemslistmodel.cpp" line="237"/>
         <source>%n comment(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -900,7 +899,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="239"/>
+        <location filename="itemslistmodel.cpp" line="242"/>
         <source>%n enclosure(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -908,7 +907,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="244"/>
+        <location filename="itemslistmodel.cpp" line="247"/>
         <source>%n MediaRSS entry(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -916,7 +915,7 @@
         </translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="249"/>
+        <location filename="itemslistmodel.cpp" line="252"/>
         <source>RSS with comments is available</source>
         <translation type="unfinished"></translation>
     </message>
@@ -924,57 +923,67 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::ItemsWidget</name>
     <message>
-        <location filename="itemswidget.cpp" line="81"/>
+        <location filename="itemswidget.cpp" line="83"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="82"/>
+        <location filename="itemswidget.cpp" line="84"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="135"/>
+        <location filename="itemswidget.cpp" line="139"/>
         <source>Items categories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="444"/>
+        <location filename="itemswidget.cpp" line="451"/>
         <source>Hide read items</source>
         <translation>Verstecke gelesene Nachrichten</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="452"/>
+        <location filename="itemswidget.cpp" line="459"/>
         <source>Show items as tape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="460"/>
+        <location filename="itemswidget.cpp" line="467"/>
         <source>Mark item as unread</source>
         <translation>Markiere alle Nachrichten als ungelesen</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="464"/>
+        <location filename="itemswidget.cpp" line="471"/>
+        <source>Mark item as read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="475"/>
         <source>Subscribe to comments</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="550"/>
+        <location filename="itemswidget.cpp" line="479"/>
+        <source>Open in new tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="itemswidget.cpp" line="565"/>
         <source>Published on %1 by %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="555"/>
+        <location filename="itemswidget.cpp" line="570"/>
         <source>Published on %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="559"/>
+        <location filename="itemswidget.cpp" line="574"/>
         <source>Published by %1</source>
         <translation>Veröffentlicht von %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="570"/>
+        <location filename="itemswidget.cpp" line="585"/>
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -982,7 +991,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="575"/>
+        <location filename="itemswidget.cpp" line="590"/>
         <source>%n comment(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -990,112 +999,112 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="578"/>
+        <location filename="itemswidget.cpp" line="593"/>
         <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="589"/>
+        <location filename="itemswidget.cpp" line="604"/>
         <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="610"/>
+        <location filename="itemswidget.cpp" line="625"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="614"/>
+        <location filename="itemswidget.cpp" line="629"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="620"/>
+        <location filename="itemswidget.cpp" line="635"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="634"/>
+        <location filename="itemswidget.cpp" line="649"/>
         <source>Image </source>
         <translation>Bild </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="636"/>
+        <location filename="itemswidget.cpp" line="651"/>
         <source>Audio </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="638"/>
+        <location filename="itemswidget.cpp" line="653"/>
         <source>Video </source>
         <translation>Video </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="640"/>
+        <location filename="itemswidget.cpp" line="655"/>
         <source>Document </source>
         <translation>Document </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="642"/>
+        <location filename="itemswidget.cpp" line="657"/>
         <source>Executable </source>
         <translation>Ausführbar </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="710"/>
+        <location filename="itemswidget.cpp" line="725"/>
         <source>&lt;hr /&gt;Thumbnail at %1:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="734"/>
+        <location filename="itemswidget.cpp" line="749"/>
         <source>&lt;strong&gt;Keywords:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="738"/>
+        <location filename="itemswidget.cpp" line="753"/>
         <source>&lt;strong&gt;Language:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Sprache:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="742"/>
+        <location filename="itemswidget.cpp" line="757"/>
         <source>Sample</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="744"/>
+        <location filename="itemswidget.cpp" line="759"/>
         <source>Continuous stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="746"/>
+        <location filename="itemswidget.cpp" line="761"/>
         <source>Full version</source>
         <translation>Volle Version</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="754"/>
+        <location filename="itemswidget.cpp" line="769"/>
         <source>Title: %1&lt;br /&gt;</source>
         <translation>Titel: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="757"/>
+        <location filename="itemswidget.cpp" line="772"/>
         <source>Start time: %1&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="760"/>
+        <location filename="itemswidget.cpp" line="775"/>
         <source>End time: %1&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="773"/>
+        <location filename="itemswidget.cpp" line="788"/>
         <source>&lt;strong&gt;Scenes:&lt;/strong&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="782"/>
+        <location filename="itemswidget.cpp" line="797"/>
         <source>&lt;strong&gt;Views:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="785"/>
+        <location filename="itemswidget.cpp" line="800"/>
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1103,92 +1112,92 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="788"/>
+        <location filename="itemswidget.cpp" line="803"/>
         <source>&lt;strong&gt;Average rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Durchschnittliche Bewertung:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="791"/>
+        <location filename="itemswidget.cpp" line="806"/>
         <source>&lt;strong&gt;Number of marks:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="794"/>
+        <location filename="itemswidget.cpp" line="809"/>
         <source>&lt;strong&gt;Minimal rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Minimale Bewertung:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="797"/>
+        <location filename="itemswidget.cpp" line="812"/>
         <source>&lt;strong&gt;Maximal rating:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Maximale Bewertung:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="801"/>
+        <location filename="itemswidget.cpp" line="816"/>
         <source>&lt;strong&gt;User tags:&lt;/strong&gt; %1</source>
         <translation>&lt;strong&gt;Benutzer Tags:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="806"/>
+        <location filename="itemswidget.cpp" line="821"/>
         <source>&lt;li&gt;&lt;strong&gt;Duration:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Dauer:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="809"/>
+        <location filename="itemswidget.cpp" line="824"/>
         <source>&lt;li&gt;&lt;strong&gt;Channels:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Kanäle:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="813"/>
+        <location filename="itemswidget.cpp" line="828"/>
         <source>&lt;li&gt;&lt;strong&gt;Size:&lt;/strong&gt; %1x%2&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Größe:&lt;/strong&gt; %1x%2&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="817"/>
+        <location filename="itemswidget.cpp" line="832"/>
         <source>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="820"/>
+        <location filename="itemswidget.cpp" line="835"/>
         <source>&lt;li&gt;&lt;strong&gt;Framerate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="823"/>
+        <location filename="itemswidget.cpp" line="838"/>
         <source>&lt;li&gt;&lt;strong&gt;Sampling rate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="826"/>
+        <location filename="itemswidget.cpp" line="841"/>
         <source>&lt;li&gt;&lt;strong&gt;MIME type:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation>&lt;li&gt;&lt;strong&gt;MIME Typ:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="831"/>
+        <location filename="itemswidget.cpp" line="846"/>
         <source>&lt;strong&gt;Technical information:&lt;/strong&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="841"/>
+        <location filename="itemswidget.cpp" line="856"/>
         <source>&lt;strong&gt;Rating:&lt;/strong&gt; %1 (according to %2 scheme)&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="865"/>
+        <location filename="itemswidget.cpp" line="880"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="869"/>
+        <location filename="itemswidget.cpp" line="884"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="873"/>
+        <location filename="itemswidget.cpp" line="888"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="888"/>
+        <location filename="itemswidget.cpp" line="903"/>
         <source>&lt;strong&gt;Credits:&lt;/strong&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1296,7 +1305,7 @@
         <translation>Backlinks</translation>
     </message>
     <message>
-        <location filename="rss20parser.cpp" line="110"/>
+        <location filename="rss20parser.cpp" line="109"/>
         <source>Duration: %1</source>
         <translation>Dauer: %1</translation>
     </message>
@@ -1445,125 +1454,103 @@
     <name>aggregatorsettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
-        <location filename="dummyfile.cpp" line="2"/>
         <source>General settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <location filename="dummy.cpp" line="4"/>
-        <location filename="dummyfile.cpp" line="3"/>
-        <location filename="dummyfile.cpp" line="4"/>
         <source>Behavior</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
-        <location filename="dummyfile.cpp" line="5"/>
         <source>Be silent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
-        <location filename="dummyfile.cpp" line="6"/>
         <source>Always use external browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
-        <location filename="dummyfile.cpp" line="7"/>
         <source>Show unread items on top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
-        <location filename="dummyfile.cpp" line="8"/>
         <source>Notifications on feed update:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
-        <location filename="dummyfile.cpp" line="9"/>
         <source>all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
-        <location filename="dummyfile.cpp" line="10"/>
         <source>only about new items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
-        <location filename="dummyfile.cpp" line="11"/>
         <source>don&apos;t show</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
-        <location filename="dummyfile.cpp" line="12"/>
         <source>Additional tags for comment feeds:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <location filename="dummy.cpp" line="14"/>
-        <location filename="dummyfile.cpp" line="13"/>
-        <location filename="dummyfile.cpp" line="14"/>
         <source>Appearance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
-        <location filename="dummyfile.cpp" line="15"/>
         <source>Group channels by tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
-        <location filename="dummyfile.cpp" line="16"/>
         <source>Show unread channels in summary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
-        <location filename="dummyfile.cpp" line="17"/>
         <source>Show icon in tray when there are unread items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="18"/>
-        <location filename="dummyfile.cpp" line="18"/>
         <source>Show items category selector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
-        <location filename="dummyfile.cpp" line="19"/>
         <source>Show navigation bar when showing the news item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
-        <location filename="dummyfile.cpp" line="20"/>
         <source>Items list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
-        <location filename="dummyfile.cpp" line="21"/>
         <source>Font for unread:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
-        <location filename="dummyfile.cpp" line="22"/>
         <source>Use color to mark unread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
-        <location filename="dummyfile.cpp" line="23"/>
         <source>Color:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1574,73 +1561,61 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
-        <location filename="dummyfile.cpp" line="24"/>
         <source>Feeds handling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
-        <location filename="dummyfile.cpp" line="25"/>
         <source>Updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
-        <location filename="dummyfile.cpp" line="26"/>
         <source>Update feeds on startup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
-        <location filename="dummyfile.cpp" line="27"/>
         <source>Update interval:</source>
         <translation>Aktualisierungs-Intervall:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
-        <location filename="dummyfile.cpp" line="28"/>
         <source> min</source>
         <translation> min</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>
-        <location filename="dummyfile.cpp" line="29"/>
         <source>Automatic downloading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
-        <location filename="dummyfile.cpp" line="30"/>
         <source>Download directory for enclosures:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
-        <location filename="dummyfile.cpp" line="31"/>
         <source>Store</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
-        <location filename="dummyfile.cpp" line="32"/>
         <source>Items per channel:</source>
         <translation>Nachrichten pro Kanal:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="34"/>
-        <location filename="dummyfile.cpp" line="33"/>
         <source>Store items for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
-        <location filename="dummyfile.cpp" line="34"/>
         <source> days</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="36"/>
-        <location filename="dummyfile.cpp" line="35"/>
         <source>Storage</source>
         <translation>Speicher</translation>
     </message>

@@ -238,22 +238,6 @@
         <translation>Ctrl+T</translation>
     </message>
     <message>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
@@ -550,6 +534,14 @@
     </message>
     <message>
         <source>System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1001,14 +993,6 @@
     </message>
     <message>
         <source>Use tab scroll buttons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show menu bar as button</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Try smarter tabs width calculation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
