@@ -44,10 +44,14 @@ namespace Xoox
 
 		QString Nick_;
 		RoomHandler *RoomHandler_;
+
+		gloox::MUCRoomAffiliation Affiliation_;
+		gloox::MUCRoomRole Role_;
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
 		QObject* GetParentAccount () const ;
+		QObject* GetParentCLEntry () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -60,6 +64,11 @@ namespace Xoox
 		AuthStatus GetAuthStatus () const;
 
 		gloox::JID GetJID () const;
+
+		gloox::MUCRoomAffiliation GetAffiliation () const;
+		void SetAffiliation (gloox::MUCRoomAffiliation);
+		gloox::MUCRoomRole GetRole () const;
+		void SetRole (gloox::MUCRoomRole);
 	};
 
 	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;

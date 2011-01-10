@@ -44,8 +44,8 @@ namespace Xoox
 	class RoomHandler;
 
 	class RoomCLEntry : public QObject
-						, public ICLEntry
-						, public IMUCEntry
+					  , public ICLEntry
+					  , public IMUCEntry
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry
@@ -85,6 +85,12 @@ namespace Xoox
 		void Leave (const QString&);
 		QString GetNick () const;
 		void SetNick (const QString&);
+		bool MayChangeAffiliation (QObject*, MUCAffiliation) const;
+		bool MayChangeRole (QObject*, MUCRole) const;
+		MUCAffiliation GetAffiliation (QObject*) const;
+		void SetAffiliation (QObject*, MUCAffiliation, const QString&);
+		MUCRole GetRole (QObject*) const;
+		void SetRole (QObject*, MUCRole, const QString&);
 
 		boost::shared_ptr<gloox::MUCRoom> GetRoom ();
 
@@ -100,6 +106,9 @@ namespace Xoox
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
+
+		void participantAffiliationChanged (QObject*, MUCAffiliation);
+		void participantRoleChanged (QObject*, MUCRole);
 	};
 }
 }

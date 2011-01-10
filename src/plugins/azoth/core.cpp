@@ -22,6 +22,8 @@
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QDir>
+#include <QMenu>
+#include <QMetaMethod>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -494,6 +496,9 @@ namespace LeechCraft
 				result << id2action.value ("openchat");
 				result << id2action.value ("kick");
 				result << id2action.value ("ban");
+				result << id2action.value ("sep_afterban");
+				result << id2action.value ("changerole");
+				result << id2action.value ("changeaffiliation");
 				result << id2action.value ("vcard");
 				result << id2action.value ("leave");
 				result << id2action.value ("authorize");
@@ -563,6 +568,35 @@ namespace LeechCraft
 					ban->setEnabled (false);
 					Entry2Actions_ [entry] ["ban"] = ban;
 					Action2Areas_ [ban] << CLEAAContactListCtxtMenu;
+
+					QAction *sep = Util::CreateSeparator (entry->GetObject ());
+					Entry2Actions_ [entry] ["sep_afterban"] = sep;
+					Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
+
+					QMenu *changeRole = new QMenu (tr ("Change role"));
+					changeRole->menuAction ()->setProperty ("ActionIcon", "azoth_menu_changerole");
+					Entry2Actions_ [entry] ["changerole"] = changeRole->menuAction ();
+					Action2Areas_ [changeRole->menuAction ()] << CLEAAContactListCtxtMenu;
+
+					QAction *visitorRole = changeRole->addAction (tr ("Visitor"),
+							this, SLOT (handleActionVisitorRoleTriggered ()));
+					visitorRole->setProperty ("ActionIcon", "azoth_role_visitor");
+					visitorRole->setParent (entry->GetObject ());
+
+					QAction *participantRole = changeRole->addAction (tr ("Participant"),
+							this, SLOT (handleActionParticipantRoleTriggered ()));
+					participantRole->setProperty ("ActionIcon", "azoth_role_participant");
+					participantRole->setParent (entry->GetObject ());
+
+					QAction *moderatorRole = changeRole->addAction (tr ("Moderator"),
+							this, SLOT (handleActionModeratorRoleTriggered ()));
+					moderatorRole->setProperty ("ActionIcon", "azoth_role_moderator");
+					moderatorRole->setParent (entry->GetObject ());
+
+					QMenu *changeAff = new QMenu (tr ("Change affiliation"));
+					changeAff->menuAction ()->setProperty ("ActionIcon", "azoth_menu_changeaffiliation");
+					Entry2Actions_ [entry] ["changeaffiliation"] = changeAff->menuAction ();
+					Action2Areas_ [changeAff->menuAction ()] << CLEAAContactListCtxtMenu;
 				}
 				else if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC)
 				{
@@ -597,9 +631,27 @@ namespace LeechCraft
 					Action2Areas_ [denyAuth] << CLEAAContactListCtxtMenu;
 				}
 
-				Q_FOREACH (QAction *act, Entry2Actions_ [entry].values ())
-					act->setProperty ("Azoth/Entry",
-							QVariant::fromValue<Plugins::ICLEntry*> (entry));
+				struct Entrifier
+				{
+					QVariant Entry_;
+
+					Entrifier (const QVariant& entry)
+					: Entry_ (entry)
+					{
+					}
+
+					void Do (const QList<QAction*>& actions)
+					{
+						Q_FOREACH (QAction *act, actions)
+						{
+							act->setProperty ("Azoth/Entry", Entry_);
+							QMenu *menu = act->menu ();
+							if (menu)
+								Do (menu->actions ());
+						}
+					}
+				} entrifier (QVariant::fromValue<Plugins::ICLEntry*> (entry));
+				entrifier.Do (Entry2Actions_ [entry].values ());
 			}
 
 			void Core::UpdateActionsForEntry (Plugins::ICLEntry *entry)
@@ -1109,6 +1161,51 @@ namespace LeechCraft
 					return;
 				}
 				account->DenyAuth (entry->GetObject ());
+			}
+
+			void Core::handleActionVisitorRoleTriggered ()
+			{
+				MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRVisitor);
+			}
+
+			void Core::handleActionParticipantRoleTriggered ()
+			{
+				MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRParticipant);
+			}
+
+			void Core::handleActionModeratorRoleTriggered ()
+			{
+				MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRModerator);
+			}
+
+			void Core::MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRole role)
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IMUCEntry *mucEntry =
+						qobject_cast<Plugins::IMUCEntry*> (entry->GetParentCLEntry ());
+				if (!mucEntry)
+				{
+					int idx = metaObject ()->indexOfEnumerator ("MUCRole");
+					qWarning () << Q_FUNC_INFO
+							<< entry->GetParentCLEntry ()
+							<< "doesn't implement IMUCEntry, tried role "
+							<< (idx >= 0 ?
+									metaObject ()->enumerator (idx).valueToKey (role) :
+									"<unknown enum>");
+					return;
+				}
+
+				mucEntry->SetRole (entry->GetObject (), role);
 			}
 		};
 	};

@@ -22,6 +22,7 @@
 #include <QSet>
 #include <interfaces/iinfo.h>
 #include <interfaces/azothcommon.h>
+#include <interfaces/imucentry.h>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -318,6 +319,11 @@ namespace LeechCraft
 				void handleActionLeaveTriggered ();
 				void handleActionAuthorizeTriggered ();
 				void handleActionDenyAuthTriggered ();
+				void handleActionVisitorRoleTriggered ();
+				void handleActionParticipantRoleTriggered ();
+				void handleActionModeratorRoleTriggered ();
+			private:
+				void MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRole);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

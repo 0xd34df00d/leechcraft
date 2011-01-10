@@ -121,6 +121,25 @@ namespace Plugins
 		 */
 		virtual QObject* GetParentAccount () const = 0;
 
+		/** Returns the pointer to the parent CL entry, if any.
+		 *
+		 * This currently only makes sense for private chat entries,
+		 * thus private chat entries (those that are of type
+		 * ETPrivateChat) should return their parent room CL entry (of
+		 * type ETMUC).
+		 *
+		 * If parent CL entry is not applicable, NULL should be
+		 * returned.
+		 *
+		 * The default implementation returns NULL.
+		 *
+		 * @return Parent CL entry if applicable, NULL otherwise.
+		 */
+		virtual QObject* GetParentCLEntry () const
+		{
+			return 0;
+		}
+
 		/** Returns the OR-ed combination of Feature flags that
 		 * describes the features supported by this contact list entry.
 		 *

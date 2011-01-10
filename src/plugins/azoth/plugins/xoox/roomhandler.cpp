@@ -184,6 +184,9 @@ namespace Xoox
 		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
+		entry->SetAffiliation (part.affiliation);
+		entry->SetRole (part.role);
+
 		if (presence.presence () == gloox::Presence::Unavailable)
 		{
 			Account_->handleEntryRemoved (entry.get ());
@@ -193,6 +196,7 @@ namespace Xoox
 
 				Nick2Entry_.remove (nick);
 				JID2Session_.remove (JIDForNick (nick));
+
 				return;
 			}
 			else
@@ -374,6 +378,20 @@ namespace Xoox
 
 		Room_->leave (msg.toUtf8 ().constData ());
 		RemoveThis ();
+	}
+
+	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
+			IMUCEntry::MUCAffiliation newAff, const QString& reason)
+	{
+		Room_->setAffiliation (entry->GetEntryName ().toUtf8 ().constData (),
+				static_cast<gloox::MUCRoomAffiliation> (newAff), reason.toUtf8 ().constData ());
+	}
+
+	void RoomHandler::SetRole (RoomParticipantEntry *entry,
+			IMUCEntry::MUCRole newRole, const QString& reason)
+	{
+		Room_->setRole (entry->GetEntryName ().toUtf8 ().constData (),
+				static_cast<gloox::MUCRoomRole> (newRole), reason.toUtf8 ().constData ());
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)

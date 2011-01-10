@@ -22,6 +22,7 @@
 #include <QHash>
 #include <gloox/mucroomhandler.h>
 #include <gloox/messagehandler.h>
+#include <interfaces/imucentry.h>
 #include "clientconnection.h"
 #include "roomparticipantentry.h"
 
@@ -72,6 +73,11 @@ namespace Xoox
 		QString GetSubject () const;
 		void Kick (const QString& nick, const QString& reason = QString ());
 		void Leave (const QString& msg);
+
+		void SetAffiliation (RoomParticipantEntry*,
+				IMUCEntry::MUCAffiliation, const QString&);
+		void SetRole (RoomParticipantEntry*,
+				IMUCEntry::MUCRole, const QString&);
 
 		// MUCRoomHandler
 		virtual void handleMUCParticipantPresence (gloox::MUCRoom*,

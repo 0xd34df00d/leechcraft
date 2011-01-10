@@ -170,6 +170,110 @@ namespace Xoox
 		RH_->GetRoom ()->setNick (nick.toUtf8 ().constData ());
 	}
 
+	bool RoomCLEntry::MayChangeAffiliation (QObject *participant, MUCAffiliation aff) const
+	{
+		MUCAffiliation ourAff = GetAffiliation (0);
+		if (ourAff < MUCAAdmin)
+			return false;
+
+		MUCAffiliation partAff = GetAffiliation (participant);
+		if (partAff > ourAff)
+			return false;
+		return true;
+	}
+
+	bool RoomCLEntry::MayChangeRole (QObject *participant, MUCRole newRole) const
+	{
+		MUCAffiliation ourAff = GetAffiliation (0);
+		MUCRole ourRole = GetRole (0);
+
+		if (ourAff == MUCAAdmin ||
+				ourAff == MUCAOwner)
+			return true;
+
+		MUCAffiliation aff = GetAffiliation (participant);
+		MUCRole role = GetRole (participant);
+
+		if (role == MUCRInvalid ||
+				ourRole == MUCRInvalid ||
+				newRole == MUCRInvalid ||
+				aff == MUCAInvalid ||
+				ourAff == MUCAInvalid)
+			return false;
+
+		if (ourRole != MUCRModerator)
+			return false;
+
+		if (ourAff <= aff)
+			return false;
+
+		return true;
+	}
+
+	IMUCEntry::MUCAffiliation RoomCLEntry::GetAffiliation (QObject *participant) const
+	{
+		if (!participant)
+			return static_cast<MUCAffiliation> (RH_->GetRoom ()->affiliation ());
+
+		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< participant
+					<< "is not a RoomParticipantEntry";
+			return static_cast<MUCAffiliation> (RH_->GetRoom ()->affiliation ());
+		}
+
+		return static_cast<MUCAffiliation> (entry->GetAffiliation ());
+	}
+
+	void RoomCLEntry::SetAffiliation (QObject *participant,
+			MUCAffiliation newAff, const QString& reason)
+	{
+		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< participant
+					<< "is not a RoomParticipantEntry";
+			return;
+		}
+
+		RH_->SetAffiliation (entry, newAff, reason);
+	}
+
+	IMUCEntry::MUCRole RoomCLEntry::GetRole (QObject *participant) const
+	{
+		if (!participant)
+			return static_cast<MUCRole> (RH_->GetRoom ()->role ());
+
+		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< participant
+					<< "is not a RoomParticipantEntry";
+			return static_cast<MUCRole> (RH_->GetRoom ()->role ());
+		}
+
+		return static_cast<MUCRole> (entry->GetRole ());
+	}
+
+	void RoomCLEntry::SetRole (QObject *participant,
+			MUCRole newRole, const QString& reason)
+	{
+		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< participant
+					<< "is not a RoomParticipantEntry";
+			return;
+		}
+
+		RH_->SetRole (entry, newRole, reason);
+	}
+
 	boost::shared_ptr<gloox::MUCRoom> RoomCLEntry::GetRoom ()
 	{
 		return RH_->GetRoom ();
