@@ -176,9 +176,16 @@ namespace Xoox
 		if (ourAff < MUCAAdmin)
 			return false;
 
+		if (ourAff == MUCAOwner)
+			return true;
+
 		MUCAffiliation partAff = GetAffiliation (participant);
-		if (partAff > ourAff)
+		if (partAff >= ourAff)
 			return false;
+
+		if (aff >= MUCAAdmin)
+			return false;
+
 		return true;
 	}
 
@@ -186,10 +193,6 @@ namespace Xoox
 	{
 		MUCAffiliation ourAff = GetAffiliation (0);
 		MUCRole ourRole = GetRole (0);
-
-		if (ourAff == MUCAAdmin ||
-				ourAff == MUCAOwner)
-			return true;
 
 		MUCAffiliation aff = GetAffiliation (participant);
 		MUCRole role = GetRole (participant);
@@ -213,7 +216,7 @@ namespace Xoox
 	IMUCEntry::MUCAffiliation RoomCLEntry::GetAffiliation (QObject *participant) const
 	{
 		if (!participant)
-			return static_cast<MUCAffiliation> (RH_->GetRoom ()->affiliation ());
+			participant = RH_->GetSelf ();
 
 		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
 		if (!entry)
@@ -245,7 +248,7 @@ namespace Xoox
 	IMUCEntry::MUCRole RoomCLEntry::GetRole (QObject *participant) const
 	{
 		if (!participant)
-			return static_cast<MUCRole> (RH_->GetRoom ()->role ());
+			participant = RH_->GetSelf ();
 
 		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
 		if (!entry)

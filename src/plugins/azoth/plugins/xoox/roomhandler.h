@@ -73,6 +73,7 @@ namespace Xoox
 		QString GetSubject () const;
 		void Kick (const QString& nick, const QString& reason = QString ());
 		void Leave (const QString& msg);
+		RoomParticipantEntry* GetSelf () const;
 
 		void SetAffiliation (RoomParticipantEntry*,
 				IMUCEntry::MUCAffiliation, const QString&);

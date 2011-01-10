@@ -380,6 +380,18 @@ namespace Xoox
 		RemoveThis ();
 	}
 
+	RoomParticipantEntry* RoomHandler::GetSelf () const
+	{
+		Q_FOREACH (QObject *partObj, GetParticipants ())
+		{
+			RoomParticipantEntry *part =
+					qobject_cast<RoomParticipantEntry*> (partObj);
+			if (part->GetEntryName () == CLEntry_->GetNick ())
+				return part;
+		}
+		return 0;
+	}
+
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
 			IMUCEntry::MUCAffiliation newAff, const QString& reason)
 	{

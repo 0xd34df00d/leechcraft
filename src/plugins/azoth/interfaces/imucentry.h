@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IMUCENTRY_H
 #include <QFlags>
 #include <QMetaType>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -60,7 +61,8 @@ namespace Plugins
 		/** This enum represents possible affiliations of a participant
 		 * in a room.
 		 *
-		 * Modelled after XMPP MUC room affiliations.
+		 * Modelled after XMPP MUC room affiliations, ordered to reflect
+		 * Gloox's order and thus to allow direct static_casts.
 		 */
 		enum MUCAffiliation
 		{
@@ -324,6 +326,31 @@ namespace Plugins
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);
+
+	inline bool operator< (IMUCEntry::MUCAffiliation left, IMUCEntry::MUCAffiliation right)
+	{
+		if (right == IMUCEntry::MUCAOwner && left != IMUCEntry::MUCAOwner)
+			return true;
+		if (left == IMUCEntry::MUCAOwner && right != IMUCEntry::MUCAOwner)
+			return false;
+
+		return static_cast<int> (left) < static_cast<int> (right);
+	}
+
+	inline bool operator<= (IMUCEntry::MUCAffiliation left, IMUCEntry::MUCAffiliation right)
+	{
+		return left < right || left == right;
+	}
+
+	inline bool operator> (IMUCEntry::MUCAffiliation left, IMUCEntry::MUCAffiliation right)
+	{
+		return right < left;
+	}
+
+	inline bool operator>= (IMUCEntry::MUCAffiliation left, IMUCEntry::MUCAffiliation right)
+	{
+		return !(left < right);
+	}
 }
 }
 }
@@ -331,5 +358,7 @@ namespace Plugins
 
 Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IMUCEntry,
 		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IMUCEntry/1.0");
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::IMUCEntry::MUCRole);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::IMUCEntry::MUCAffiliation);
 
 #endif
