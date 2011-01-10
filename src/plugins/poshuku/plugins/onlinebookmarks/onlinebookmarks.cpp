@@ -19,12 +19,16 @@
 #include "onlinebookmarks.h"
 #include "settings.h"
 #include <typeinfo>
+#include <QAction>
 #include <QIcon>
 #include <QStandardItemModel>
+#include <QWebView>
+#include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "syncbookmarks.h"
 
 namespace LeechCraft
 {
@@ -116,6 +120,32 @@ namespace OnlineBookmarks
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
+	}
+
+	void OnlineBookmarks::hookMoreMenuFillEnd (IHookProxy_ptr proxy, QMenu *menu, QWebView *view, QObject *parent)
+	{
+		QMenu *menuBookmarksSyn = menu->addMenu (tr ("Bookmarks Sync"));
+		QAction *sync = menuBookmarksSyn->addAction (tr ("Sync"));
+		sync->setProperty ("ActionIcon", "poshuku_onlinebookmarks_sync");
+		QAction *uploadOnly = menuBookmarksSyn->addAction (tr ("Upload only"));
+		uploadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_upload");
+		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
+		downloadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_download");
+		
+		connect (sync,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBookmarksSyncManager (),
+				SLOT (syncBookmarks ()));
+
+		connect (uploadOnly,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBookmarksSyncManager (),
+				SLOT (uploadBookmarks ()));
+		
+		connect (downloadOnly,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBookmarksSyncManager (),
+				SLOT (downloadBookmarks ()));
 	}
 }
 }

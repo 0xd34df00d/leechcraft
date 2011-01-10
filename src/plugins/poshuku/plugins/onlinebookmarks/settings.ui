@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>480</height>
+    <height>479</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,39 +22,32 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="Account_">
       <attribute name="title">
        <string>Accounts</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <property name="margin">
-        <number>3</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="HorizontalLayout_">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Bookmarks service</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="Services_">
-             <property name="minimumSize">
-              <size>
-               <width>200</width>
-               <height>0</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QLabel" name="Label1_">
+           <property name="text">
+            <string>Bookmarks service</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
+          <widget class="QComboBox" name="Services_">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="HorizontalSpacer_">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -69,12 +62,12 @@
         </layout>
        </item>
        <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <layout class="QHBoxLayout" name="MainLayout_">
          <item>
-          <widget class="QTreeView" name="AccauntsView_"/>
+          <widget class="QTreeView" name="AccountsView_"/>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <layout class="QVBoxLayout" name="ControlLayout_">
            <property name="sizeConstraint">
             <enum>QLayout::SetDefaultConstraint</enum>
            </property>
@@ -133,7 +126,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer">
+            <spacer name="VerticalSpacer_">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -145,37 +138,94 @@
              </property>
             </spacer>
            </item>
+           <item>
+            <widget class="QFrame" name="LoginFrame_">
+             <property name="maximumSize">
+              <size>
+               <width>200</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="AuthGroup_">
+                <property name="title">
+                 <string/>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_2">
+                   <property name="text">
+                    <string>Login</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLineEdit" name="Login_"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_4">
+                   <property name="text">
+                    <string>Password</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLineEdit" name="Password_">
+                   <property name="echoMode">
+                    <enum>QLineEdit::PasswordEchoOnEdit</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <widget class="QPushButton" name="Apply_">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Apply</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="SyncSettings_">
       <attribute name="title">
        <string>Sync settings</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <property name="margin">
-        <number>3</number>
-       </property>
        <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Select active services</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QListView" name="ActiveServices_"/>
-         </item>
-        </layout>
+        <widget class="QLabel" name="Label_">
+         <property name="text">
+          <string>Select active services</string>
+         </property>
+        </widget>
        </item>
        <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
-         <item>
+        <widget class="QListView" name="ActiveServices_"/>
+       </item>
+       <item row="2" column="0">
+        <layout class="QGridLayout" name="SyncOptionsLayout_">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
+         <item row="0" column="0">
           <widget class="QCheckBox" name="Bookmarks2Services_">
            <property name="text">
             <string>Send bookmarks to active services every</string>
@@ -185,7 +235,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="2">
           <widget class="QComboBox" name="Bookmarks2ServicesPeriod_">
            <item>
             <property name="text">
@@ -244,11 +294,7 @@
            </item>
           </widget>
          </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_8">
-         <item>
+         <item row="1" column="0" colspan="2">
           <widget class="QCheckBox" name="Services2Bookmarks_">
            <property name="text">
             <string>Receive bookmarks from active services every</string>
@@ -258,7 +304,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="1" column="2">
           <widget class="QComboBox" name="Services2BookmarksPeriod_">
            <item>
             <property name="text">

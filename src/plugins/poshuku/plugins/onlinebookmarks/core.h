@@ -33,18 +33,28 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
+	class SyncBookmarks;
+	class AbstractBookmarksService;
+	
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
-
+		SyncBookmarks *BookmarksSyncManager_;
+		QList<AbstractBookmarksService*> ActiveBookmarksServices_;
+		
 		Core ();
 	public:
 		static Core& Instance ();
 		void Init ();
 		void SendEntity (const Entity&);
 		QStandardItemModel* GetAccountModel () const;
+		SyncBookmarks *GetBookmarksSyncManager () const;
+		void SetActiveBookmarksServices (QList<AbstractBookmarksService*>);
+		QList<AbstractBookmarksService*> GetActiveBookmarksServices () const;
+		void SetPassword (const QString&, const QString&, const QString&);
+		QString GetPassword (const QString&, const QString&) const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

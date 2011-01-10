@@ -16,12 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ABSTRACTBOOKMARKSSERVICE_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ABSTRACTBOOKMARKSSERVICE_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATERBOOKMARKSSERVICE_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATERBOOKMARKSSERVICE_H
 
-#include <QObject>
 #include <QIcon>
 #include <QUrl>
+#include <QNetworkAccessManager>
+#include "abstractbookmarksservice.h"
+
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -33,22 +36,34 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class AbstractBookmarksService : public QObject
+	class ReadItLaterBookmarksService : public AbstractBookmarksService
 	{
 		Q_OBJECT
 		
-		virtual void ParseDownloadReply (const QByteArray&) = 0;
+		enum ConnectionType
+		{
+			Auth_ = 0x01,
+			Download_ = 0x02,
+			Upload_ = 0x03,
+			Sync_ = 0x04
+		};
+		
+		ConnectionType Type_;
+		QNetworkAccessManager Manager_;
+		QNetworkReply *Reply_;
+		QUrl ApiUrl_;
+		QByteArray RequestString_;
+		void FetchBookmarks (const QString&, const QString&, int);
+		void ParseDownloadReply (const QByteArray&);
 	public:
-		AbstractBookmarksService (QObject *parent = 0) : QObject (parent) {}
-		~AbstractBookmarksService () {}
-
-		virtual QString GetName () const = 0;
-		virtual QIcon GetIcon () const = 0;
-		virtual void CheckValidAccountData (const QString&, const QString&) = 0;
-		virtual void DownloadBookmarks (QStringList, int) = 0;
+		ReadItLaterBookmarksService (QWidget* = 0);
+		QString GetName () const;
+		QIcon GetIcon () const;
+		void CheckValidAccountData (const QString&, const QString&);
+		void DownloadBookmarks (QStringList, int);
 	public slots:
-		virtual void getReplyFinished () = 0;
-		virtual void readyReadReply () = 0;
+		void getReplyFinished ();
+		void readyReadReply ();
 	signals:
 		void gotValidReply (bool);
 		void gotParseError (const QString&);
@@ -60,5 +75,5 @@ namespace OnlineBookmarks
 }
 }
 
-#endif
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATERBOOKMARKSSERVICE_H
 

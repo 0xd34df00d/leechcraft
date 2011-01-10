@@ -21,6 +21,8 @@
 #include <QCoreApplication>
 #include <QStandardItemModel>
 #include <QSettings>
+#include <plugininterface/util.h>
+#include "syncbookmarks.h"
 
 namespace LeechCraft
 {
@@ -53,7 +55,7 @@ namespace OnlineBookmarks
 		Model_ = new QStandardItemModel;
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-		settings.beginGroup ("Accounts");
+		settings.beginGroup ("Account");
 		
 		Q_FOREACH (const QString& item, settings.childKeys ())
 		{
@@ -62,7 +64,6 @@ namespace OnlineBookmarks
 			Q_FOREACH (const QString& login, settings.value (item).toStringList ())
 			{
 				QStandardItem *loginItem = new QStandardItem (login);
-				loginItem->setCheckable (true);
 				itemList << loginItem;
 			}
 			QStandardItem *service = new QStandardItem (item);
@@ -70,12 +71,78 @@ namespace OnlineBookmarks
 			service->appendRows (itemList);
 		}
 		settings.endGroup ();
+		
+		BookmarksSyncManager_ = new SyncBookmarks;
 	}
 
 	QStandardItemModel* Core::GetAccountModel () const
 	{
 		return Model_;
 	}
+	
+	SyncBookmarks *Core::GetBookmarksSyncManager () const
+	{
+		return BookmarksSyncManager_;
+	}
+	
+	void Core::SetActiveBookmarksServices (QList<AbstractBookmarksService*> list)
+	{
+		ActiveBookmarksServices_ = list;
+	}
+	
+	QList<AbstractBookmarksService*> Core::GetActiveBookmarksServices () const
+	{
+		return ActiveBookmarksServices_;
+	}
+
+	void Core::SetPassword (const QString& password, const QString& account, const QString& service)
+	{
+		QList<QVariant> keys;
+		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." +
+				service + "/" + account;
+
+		QList<QVariant> passwordVar;
+		passwordVar << password;
+		QList<QVariant> values;
+		values << QVariant (passwordVar);
+
+		Entity e = Util::MakeEntity (keys,
+				QString (),
+				Internal,
+				"x-leechcraft/data-persistent-save");
+		e.Additional_ ["Values"] = values;
+		e.Additional_ ["Overwrite"] = true;
+
+		Core::Instance ().SendEntity (e);
+	}
+
+	QString Core::GetPassword (const QString& account, const QString& service) const
+	{
+		QList<QVariant> keys;
+		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." + service + "/" + account;
+		const QVariantList& result =
+				Util::GetPersistentData (keys, &Core::Instance ());
+		if (result.size () != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect result size"
+					<< result;
+			return QString ();
+		}
+
+		const QVariantList& strVarList = result.at (0).toList ();
+		if (strVarList.isEmpty () ||
+				!strVarList.at (0).canConvert<QString> ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid string variant list"
+					<< strVarList;
+			return QString ();
+		}
+
+		return strVarList.at (0).toString ();
+	}
+
 }
 }
 }

@@ -16,15 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUSBOOKMARKSSERVICE_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUSBOOKMARKSSERVICE_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
 
-#include <QIcon>
-#include <QUrl>
-#include <QNetworkAccessManager>
-#include "abstractbookmarksservice.h"
-
-class QNetworkReply;
+#include <QObject>
+#include "interfaces/structures.h"
 
 namespace LeechCraft
 {
@@ -36,32 +32,24 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class DeliciousBookmarksService : public AbstractBookmarksService
+	class SyncBookmarks : public QObject
 	{
 		Q_OBJECT
 		
-		bool YahooID_;
-		QNetworkAccessManager Manager_;
-		QNetworkReply *Reply_;
-		QUrl ApiUrl_;
-		QByteArray RequestString_;
 	public:
-		DeliciousBookmarksService (QWidget* = 0);
-		QString GetName () const;
-		QIcon GetIcon () const;
-		void CheckValidAccountData (const QString&, const QString&);
-		void SetYahooID (bool);
+		SyncBookmarks ();
 	public slots:
-		void getReplyFinished ();
-		void readyReadReply ();
+		void syncBookmarks ();
+		void uploadBookmarks ();
+		void downloadBookmarks ();
+		void readDownloadReply (const QList<QVariant>&, const QUrl&);
+		void readErrorReply (const QString&);
 	signals:
-		void gotValidReply (bool);
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
 }
 }
 }
-
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUSBOOKMARKSSERVICE_H
-
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
