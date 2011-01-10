@@ -121,13 +121,13 @@ namespace OnlineBookmarks
 		}
 	}
 	
-		void ReadItLaterBookmarksService::FetchBookmarks (const QString& login, const QString& pass, int lastDonaloadTime)
+		void ReadItLaterBookmarksService::FetchBookmarks (const QString& login, const QString& pass, int lastDownloadTime)
 	{
 		ApiUrl_ = GetBookmarksUrl + 
 				"username=" + login + 
 				"&password=" + pass + 
 				"&apikey=" + ApiKey + 
-				"&since=" + lastDonaloadTime +
+				"&since=" + lastDownloadTime +
 				"&tags=1";
 		QNetworkRequest request (ApiUrl_);
 		Reply_ = Core::Instance ().GetNetworkAccessManager ()->get (request);
@@ -147,7 +147,7 @@ namespace OnlineBookmarks
 		QJson::Parser parser;
 		bool ok;
 		
-		QVariantMap result = parser.parse (reply, &ok).toMap ();
+		const QVariantMap result = parser.parse (reply, &ok).toMap ();
 		
 		if (!ok)
 		{
@@ -155,7 +155,7 @@ namespace OnlineBookmarks
 			return;
 		}
 
-		QVariantMap nestedMap = result ["list"].toMap ();
+		const QVariantMap nestedMap = result ["list"].toMap ();
 		
 		QList<QVariant> bookmarks;
 		Q_FOREACH (const QVariant& var, nestedMap)
