@@ -23,6 +23,7 @@
 #include <QStandardItemModel>
 #include <QSettings>
 #include <plugininterface/util.h>
+//#include <interfaces/iinfo.h>
 #include "syncbookmarks.h"
 
 namespace LeechCraft
@@ -74,7 +75,6 @@ namespace OnlineBookmarks
 		settings.endGroup ();
 		
 		BookmarksSyncManager_ = new SyncBookmarks (this);
-		Manager_ = new QNetworkAccessManager (this);
 	}
 
 	QStandardItemModel* Core::GetAccountModel () const
@@ -145,14 +145,19 @@ namespace OnlineBookmarks
 		return strVarList.at (0).toString ();
 	}
 	
-	void Core::SetNetworkAccessManager (QNetworkAccessManager* manager)
-	{
-		Manager_ = manager;
-	}
-
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	{
-		return Manager_;
+		return Proxy_->GetNetworkAccessManager ();
+	}
+
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+	
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
 	}
 
 }
