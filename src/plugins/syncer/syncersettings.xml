@@ -10,6 +10,9 @@
 				<item type="lineedit" property="ServerLogin">
 					<label value="Login:" />
 				</item>
+				<item type="lineedit" property="ServerPass">
+					<label value="Password:" />
+				</item>
 			</groupbox>
 			<groupbox>
 				<label value="Connection" />
