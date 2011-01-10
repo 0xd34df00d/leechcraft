@@ -179,6 +179,7 @@ namespace Azoth
 			QModelIndex parent = index;
 			while ((parent = parent.parent ()).isValid ())
 				path.prepend (parent.data ().toString () + "/");
+			path = path.toUtf8 ().toBase64 ();
 			path.prepend ("CLTreeState/Expanded/");
 			return path;
 		}
