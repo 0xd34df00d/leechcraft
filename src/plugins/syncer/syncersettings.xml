@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<declare defaultlang="en" />
+	<page>
+		<label value="Sync settings" />
+		<tab>
+			<label value="Sync settings" />
+			<groupbox>
+				<label value="Server" />
+				<item type="lineedit" property="ServerLogin">
+					<label value="Login:" />
+				</item>
+			</groupbox>
+			<groupbox>
+				<label value="Connection" />
+				<item type="lineedit" property="ServerHost" default="sync.leechcraft.org">
+					<label value="Host:" />
+				</item>
+				<item type="spinbox" property="ServerPort" default="1024" minimum="1" maximum="65535">
+					<label value="Port:" />
+				</item>
+			</groupbox>
+		</tab>
+	</page>
+</settings>

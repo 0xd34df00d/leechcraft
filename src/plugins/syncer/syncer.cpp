@@ -19,7 +19,9 @@
 #include "syncer.h"
 #include <QIcon>
 #include <plugininterface/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -32,6 +34,11 @@ namespace LeechCraft
 				Translator_.reset (Util::InstallTranslator ("syncer"));
 
 				Core::Instance ().SetProxy (proxy);
+
+				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+						"syncersettings.xml");
+
 				connect (&Core::Instance (),
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
@@ -84,6 +91,11 @@ namespace LeechCraft
 
 			void Plugin::SetProvider (QObject*, const QString&)
 			{
+			}
+
+			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+			{
+				return XmlSettingsDialog_;
 			}
 		};
 	};

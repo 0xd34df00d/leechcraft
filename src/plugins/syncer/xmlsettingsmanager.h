@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_SYNCER_H
-#define PLUGINS_SYNCER_SYNCER_H
-#include <memory>
-#include <QObject>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+#ifndef PLUGINS_SYNCER_XMLSETTINGSMANAGER_H
+#define PLUGINS_SYNCER_XMLSETTINGSMANAGER_H
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -30,35 +26,18 @@ namespace LeechCraft
 	{
 		namespace Syncer
 		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IHaveSettings
+			class XmlSettingsManager : public Util::BaseSettingsManager
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveSettings)
-
-				std::auto_ptr<QTranslator> Translator_;
-				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+				XmlSettingsManager ();
 			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-
-				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
+				static XmlSettingsManager& Instance ();
+			protected:
+				virtual QSettings* BeginSettings () const;
+				virtual void EndSettings (QSettings*) const;
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif
-
