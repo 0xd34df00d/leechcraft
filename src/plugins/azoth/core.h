@@ -319,11 +319,19 @@ namespace LeechCraft
 				void handleActionLeaveTriggered ();
 				void handleActionAuthorizeTriggered ();
 				void handleActionDenyAuthTriggered ();
+
 				void handleActionVisitorRoleTriggered ();
 				void handleActionParticipantRoleTriggered ();
 				void handleActionModeratorRoleTriggered ();
 			private:
 				void MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRole);
+			private slots:
+				void handleActionNoneAffTriggered ();
+				void handleActionMemberAffTriggered ();
+				void handleActionAdminAffTriggered ();
+				void handleActionOwnerAffTriggered ();
+			private:
+				void MUCAffChangeImpl (Plugins::IMUCEntry::MUCAffiliation);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

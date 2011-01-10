@@ -597,6 +597,26 @@ namespace LeechCraft
 					changeAff->menuAction ()->setProperty ("ActionIcon", "azoth_menu_changeaffiliation");
 					Entry2Actions_ [entry] ["changeaffiliation"] = changeAff->menuAction ();
 					Action2Areas_ [changeAff->menuAction ()] << CLEAAContactListCtxtMenu;
+
+					QAction *noneAff = changeAff->addAction (tr ("None"),
+							this, SLOT (handleActionNoneAffTriggered ()));
+					noneAff->setProperty ("ActionIcon", "azoth_affiliation_none");
+					noneAff->setParent (entry->GetObject ());
+
+					QAction *memberAff = changeAff->addAction (tr ("Member"),
+							this, SLOT (handleActionMemberAffTriggered ()));
+					memberAff->setProperty ("ActionIcon", "azoth_affiliation_member");
+					memberAff->setParent (entry->GetObject ());
+
+					QAction *adminAff = changeAff->addAction (tr ("Admin"),
+							this, SLOT (handleActionAdminAffTriggered ()));
+					adminAff->setProperty ("ActionIcon", "azoth_affiliation_admin");
+					adminAff->setParent (entry->GetObject ());
+
+					QAction *ownerAff = changeAff->addAction (tr ("Owner"),
+							this, SLOT (handleActionOwnerAffTriggered ()));
+					ownerAff->setProperty ("ActionIcon", "azoth_affiliation_owner");
+					ownerAff->setParent (entry->GetObject ());
 				}
 				else if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC)
 				{
@@ -1207,6 +1227,56 @@ namespace LeechCraft
 
 				mucEntry->SetRole (entry->GetObject (), role);
 			}
-		};
-	};
-};
+
+			void Core::handleActionNoneAffTriggered ()
+			{
+				MUCAffChangeImpl (Plugins::IMUCEntry::MUCANone);
+			}
+
+			void Core::handleActionMemberAffTriggered ()
+			{
+				MUCAffChangeImpl (Plugins::IMUCEntry::MUCAMember);
+			}
+
+			void Core::handleActionAdminAffTriggered ()
+			{
+				MUCAffChangeImpl (Plugins::IMUCEntry::MUCAAdmin);
+			}
+
+			void Core::handleActionOwnerAffTriggered ()
+			{
+				MUCAffChangeImpl (Plugins::IMUCEntry::MUCAOwner);
+			}
+
+			void Core::MUCAffChangeImpl (Plugins::IMUCEntry::MUCAffiliation aff)
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IMUCEntry *mucEntry =
+						qobject_cast<Plugins::IMUCEntry*> (entry->GetParentCLEntry ());
+				if (!mucEntry)
+				{
+					int idx = metaObject ()->indexOfEnumerator ("MUCAffiliation");
+					qWarning () << Q_FUNC_INFO
+							<< entry->GetParentCLEntry ()
+							<< "doesn't implement IMUCEntry, tried role "
+							<< (idx >= 0 ?
+									metaObject ()->enumerator (idx).valueToKey (aff) :
+									"<unknown enum>");
+					return;
+				}
+
+				mucEntry->SetAffiliation (entry->GetObject (), aff);
+			}
+		}
+	}
+}
