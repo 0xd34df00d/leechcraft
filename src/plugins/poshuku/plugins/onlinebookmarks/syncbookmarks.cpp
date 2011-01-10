@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "syncbookmarks.h"
+#include <QDateTime>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "abstractbookmarksservice.h"
@@ -32,7 +33,7 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	SyncBookmarks::SyncBookmarks ()
+	SyncBookmarks::SyncBookmarks (QObject *parent)
 	{
 	}
 
@@ -42,6 +43,7 @@ namespace OnlineBookmarks
 
 	void SyncBookmarks::uploadBookmarks ()
 	{
+		
 	} 
 
 	void SyncBookmarks::downloadBookmarks ()
@@ -51,7 +53,7 @@ namespace OnlineBookmarks
 		{
 			service->DownloadBookmarks (XmlSettingsManager::Instance ()->
 					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (), 
-					XmlSettingsManager::Instance ()->property ("Sync/IsService2LocalLastSyncDate").toInt ());
+					XmlSettingsManager::Instance ()->property ("Sync/Service2LocalLastSyncDate").toInt ());
 			
 			connect (service,
 					SIGNAL (gotDownloadReply (const QList<QVariant>&, const QUrl&)),
@@ -72,12 +74,15 @@ namespace OnlineBookmarks
 				QString (),
 				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/browser-import-data");
-				
+
+		XmlSettingsManager::Instance ()->
+				setProperty("Sync/Service2LocalLastSyncDate", QDateTime::currentDateTime().toTime_t ());
+		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		emit gotEntity (eBookmarks);
 	}
 	
-	void SyncBookmarks::readErrorReply(const QString& errorReply)
+	void SyncBookmarks::readErrorReply (const QString& errorReply)
 	{
 		Entity e = Util::MakeNotification ("Poshuku", 
 				errorReply, 

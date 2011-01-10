@@ -50,59 +50,6 @@ namespace OnlineBookmarks
 	{
 	}
 
-	void ReadItLaterBookmarksService::FetchBookmarks (const QString& login, const QString& pass, int lastDonaloadTime)
-	{
-		ApiUrl_ = GetBookmarksUrl + 
-				"username=" + login + 
-				"&password=" + pass + 
-				"&apikey=" + ApiKey + 
-				"&since=" + lastDonaloadTime +
-				"&tags=1";
-		QNetworkRequest request (ApiUrl_);
-		Reply_ = Manager_.get (request);
-		
-		connect (Reply_, 
-				SIGNAL (finished ()),
-				this, 
-				SLOT (getReplyFinished ()));
-		
-		connect (Reply_, 
-				SIGNAL (readyRead ()), 
-				this, 
-				SLOT (readyReadReply ()));
-	}
-
-	void ReadItLaterBookmarksService::ParseDownloadReply (const QByteArray& reply)
-	{
-		QJson::Parser parser;
-		bool ok;
-		
-		QVariantMap result = parser.parse (reply, &ok).toMap ();
-		
-		if (!ok)
-		{
-			emit gotParseError ("An error occurred during parsing");
-			return;
-		}
-
-		QVariantMap nestedMap = result ["list"].toMap ();
-		
-		QList<QVariant> bookmarks;
-		Q_FOREACH (const QVariant& var, nestedMap)
-		{
-			QMap<QString, QVariant> record;
-			QMap<QString, QVariant> map = var.toMap ();
-			
-			record ["Tags"] = map [tag].toStringList ();
-			record ["Title"] = map [name].toString ();
-			record ["URL"] = map [link].toString ();
-			
-			bookmarks.push_back (record);
-		}
-		
-		emit gotDownloadReply (bookmarks, QUrl (ServiceUrl));
-	}
-
 	QString ReadItLaterBookmarksService::GetName () const
 	{
 		return QString ("Read It Later");
@@ -123,7 +70,7 @@ namespace OnlineBookmarks
 		
 		RequestString_ = QByteArray (loginString.toUtf8 ());
 		QNetworkRequest request (ApiUrl_);
-		Reply_ = Manager_.post (request, RequestString_);
+		Reply_ =  Core::Instance ().GetNetworkAccessManager ()->post (request, RequestString_);
 
 		connect (Reply_,
 				SIGNAL (finished ()),
@@ -136,10 +83,9 @@ namespace OnlineBookmarks
 				SLOT (readyReadReply ()));
 	}
 	
-	void ReadItLaterBookmarksService::DownloadBookmarks (QStringList logins, int lastDownloadTime)
+	void ReadItLaterBookmarksService::DownloadBookmarks (const QStringList& logins, int lastDownloadTime)
 	{
 		Type_ = Download_;
-		
 		Q_FOREACH (const QString& login, logins)
 		{
 			QString password = Core::Instance ().GetPassword (login, "Read It Later");
@@ -173,6 +119,58 @@ namespace OnlineBookmarks
 		case Sync_:
 			break;
 		}
+	}
+	
+		void ReadItLaterBookmarksService::FetchBookmarks (const QString& login, const QString& pass, int lastDonaloadTime)
+	{
+		ApiUrl_ = GetBookmarksUrl + 
+				"username=" + login + 
+				"&password=" + pass + 
+				"&apikey=" + ApiKey + 
+				"&since=" + lastDonaloadTime +
+				"&tags=1";
+		QNetworkRequest request (ApiUrl_);
+		Reply_ = Core::Instance ().GetNetworkAccessManager ()->get (request);
+		connect (Reply_, 
+				SIGNAL (finished ()),
+				this, 
+				SLOT (getReplyFinished ()));
+		
+		connect (Reply_, 
+				SIGNAL (readyRead ()), 
+				this, 
+				SLOT (readyReadReply ()));
+	}
+
+	void ReadItLaterBookmarksService::ParseDownloadReply (const QByteArray& reply)
+	{
+		QJson::Parser parser;
+		bool ok;
+		
+		QVariantMap result = parser.parse (reply, &ok).toMap ();
+		
+		if (!ok)
+		{
+			emit gotParseError (tr ("An error occurred during parsing"));
+			return;
+		}
+
+		QVariantMap nestedMap = result ["list"].toMap ();
+		
+		QList<QVariant> bookmarks;
+		Q_FOREACH (const QVariant& var, nestedMap)
+		{
+			QMap<QString, QVariant> record;
+			QMap<QString, QVariant> map = var.toMap ();
+			
+			record ["Tags"] = map [tag].toStringList ();
+			record ["Title"] = map [name].toString ();
+			record ["URL"] = map [link].toString ();
+			
+			bookmarks.push_back (record);
+		}
+		
+		emit gotDownloadReply (bookmarks, QUrl (ServiceUrl));
 	}
 }
 }

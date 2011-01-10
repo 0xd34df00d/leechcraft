@@ -21,7 +21,6 @@
 
 #include <QIcon>
 #include <QUrl>
-#include <QNetworkAccessManager>
 #include "abstractbookmarksservice.h"
 
 class QNetworkReply;
@@ -49,21 +48,21 @@ namespace OnlineBookmarks
 		};
 		
 		ConnectionType Type_;
-		QNetworkAccessManager Manager_;
 		QNetworkReply *Reply_;
 		QUrl ApiUrl_;
 		QByteArray RequestString_;
-		void FetchBookmarks (const QString&, const QString&, int);
-		void ParseDownloadReply (const QByteArray&);
 	public:
 		ReadItLaterBookmarksService (QWidget* = 0);
 		QString GetName () const;
 		QIcon GetIcon () const;
 		void CheckValidAccountData (const QString&, const QString&);
-		void DownloadBookmarks (QStringList, int);
+		void DownloadBookmarks (const QStringList&, int);
 	public slots:
 		void getReplyFinished ();
 		void readyReadReply ();
+	private:
+		void FetchBookmarks (const QString&, const QString&, int);
+		void ParseDownloadReply (const QByteArray&);
 	signals:
 		void gotValidReply (bool);
 		void gotParseError (const QString&);

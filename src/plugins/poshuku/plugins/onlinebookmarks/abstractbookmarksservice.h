@@ -37,18 +37,18 @@ namespace OnlineBookmarks
 	{
 		Q_OBJECT
 		
-		virtual void ParseDownloadReply (const QByteArray&) = 0;
 	public:
 		AbstractBookmarksService (QObject *parent = 0) : QObject (parent) {}
-		~AbstractBookmarksService () {}
 
 		virtual QString GetName () const = 0;
 		virtual QIcon GetIcon () const = 0;
 		virtual void CheckValidAccountData (const QString&, const QString&) = 0;
-		virtual void DownloadBookmarks (QStringList, int) = 0;
+		virtual void DownloadBookmarks (const QStringList&, int) = 0;
 	public slots:
 		virtual void getReplyFinished () = 0;
 		virtual void readyReadReply () = 0;
+	private:
+		virtual void ParseDownloadReply (const QByteArray&) = 0;
 	signals:
 		void gotValidReply (bool);
 		void gotParseError (const QString&);

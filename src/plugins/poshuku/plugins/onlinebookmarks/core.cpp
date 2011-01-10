@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QtDebug>
 #include <QCoreApplication>
+#include <QNetworkAccessManager>
 #include <QStandardItemModel>
 #include <QSettings>
 #include <plugininterface/util.h>
@@ -72,7 +73,8 @@ namespace OnlineBookmarks
 		}
 		settings.endGroup ();
 		
-		BookmarksSyncManager_ = new SyncBookmarks;
+		BookmarksSyncManager_ = new SyncBookmarks (this);
+		Manager_ = new QNetworkAccessManager (this);
 	}
 
 	QStandardItemModel* Core::GetAccountModel () const
@@ -141,6 +143,16 @@ namespace OnlineBookmarks
 		}
 
 		return strVarList.at (0).toString ();
+	}
+	
+	void Core::SetNetworkAccessManager (QNetworkAccessManager* manager)
+	{
+		Manager_ = manager;
+	}
+
+	QNetworkAccessManager* Core::GetNetworkAccessManager () const
+	{
+		return Manager_;
 	}
 
 }

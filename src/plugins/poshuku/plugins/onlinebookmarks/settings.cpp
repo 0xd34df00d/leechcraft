@@ -66,6 +66,7 @@ namespace OnlineBookmarks
 				SIGNAL (released ()),
 				this,
 				SLOT (handleStuff ()));
+		
 		BookmarksServices_ << new ReadItLaterBookmarksService (this);
 		SetupServices ();
 		ReadSettings ();
@@ -103,17 +104,26 @@ namespace OnlineBookmarks
 		Ui_.Bookmarks2Services_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("Sync/IsLocal2Service", 0).toBool ());
 		Ui_.Bookmarks2ServicesPeriod_->setCurrentIndex (XmlSettingsManager::Instance ()->
-				Property ("Sync/IsLocal2ServicePeriod", 0).toInt ());
+				Property ("Sync/Local2ServicePeriod", 0).toInt ());
 		Ui_.Services2Bookmarks_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("Sync/IsService2Local", 1).toBool ());
 		Ui_.Services2BookmarksPeriod_->setCurrentIndex (XmlSettingsManager::Instance ()->
-				Property ("Sync/IsService2LocalPeriod", 0).toInt ());
+				Property ("Sync/Service2LocalPeriod", 0).toInt ());
 		QStringList  activeServicesNames = XmlSettingsManager::Instance ()->
 				Property ("Sync/ActiveServices", QString ("")).toStringList ();
+		
+		QList<AbstractBookmarksService*> activeServices;
+		
 		if (activeServicesNames.size () > 0)
 			for (int i = 0; i < ServicesModel_->rowCount (); i++)
 				if (activeServicesNames.contains (ServicesModel_->item (i)->text ()))
+				{
 					ServicesModel_->item (i)->setCheckState (Qt::Checked);
+					activeServices << BookmarksServices_.at (i);
+				}
+		
+		if (activeServices.size () > 0)
+			Core::Instance ().SetActiveBookmarksServices (activeServices);
 	}
 
 	void Settings::SetApplyEnabled (const QString& firestString, const QString& secondString)
@@ -135,15 +145,11 @@ namespace OnlineBookmarks
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/IsLocal2Service", Ui_.Bookmarks2Services_->isChecked ());
 		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/IsLocal2ServicePeriod", Ui_.Bookmarks2ServicesPeriod_->currentIndex ());
-		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/IsLocal2ServiceLastSyncDate", QDateTime::currentDateTime ().toTime_t ());
+				setProperty ("Sync/Local2ServicePeriod", Ui_.Bookmarks2ServicesPeriod_->currentIndex ());
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/IsService2Local", Ui_.Services2Bookmarks_->isChecked ());
 		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/IsService2LocalPeriod", Ui_.Services2BookmarksPeriod_->currentIndex ());
-		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/IsService2LocalLastSyncDate", QDateTime::currentDateTime ().toTime_t());
+				setProperty ("Sync/Service2LocalPeriod", Ui_.Services2BookmarksPeriod_->currentIndex ());
 		
 		QList<AbstractBookmarksService*> activeServices; 
 		QStringList activeServicesNames;

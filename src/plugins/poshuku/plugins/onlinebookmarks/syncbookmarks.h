@@ -37,7 +37,7 @@ namespace OnlineBookmarks
 		Q_OBJECT
 		
 	public:
-		SyncBookmarks ();
+		SyncBookmarks (QObject *parent = 0);
 	public slots:
 		void syncBookmarks ();
 		void uploadBookmarks ();

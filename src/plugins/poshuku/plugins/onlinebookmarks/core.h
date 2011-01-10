@@ -22,6 +22,7 @@
 #include <interfaces/structures.h>
 
 class QStandardItemModel;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -41,6 +42,7 @@ namespace OnlineBookmarks
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
+		QNetworkAccessManager *Manager_;
 		SyncBookmarks *BookmarksSyncManager_;
 		QList<AbstractBookmarksService*> ActiveBookmarksServices_;
 		
@@ -50,11 +52,13 @@ namespace OnlineBookmarks
 		void Init ();
 		void SendEntity (const Entity&);
 		QStandardItemModel* GetAccountModel () const;
-		SyncBookmarks *GetBookmarksSyncManager () const;
+		SyncBookmarks* GetBookmarksSyncManager () const;
 		void SetActiveBookmarksServices (QList<AbstractBookmarksService*>);
 		QList<AbstractBookmarksService*> GetActiveBookmarksServices () const;
 		void SetPassword (const QString&, const QString&, const QString&);
 		QString GetPassword (const QString&, const QString&) const;
+		void SetNetworkAccessManager (QNetworkAccessManager *manager);
+		QNetworkAccessManager* GetNetworkAccessManager () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
