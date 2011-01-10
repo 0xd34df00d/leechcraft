@@ -68,6 +68,10 @@ namespace Plugins
 			 */
 			MUCANone,
 			/** The user has been banned from the room.
+			 *
+			 * Setting this affiliation on a user should effectively ban
+			 * it from entering the room if applicable to the protocol
+			 * and room type.
 			 */
 			MUCAOutcast,
 			/** The user is a member of the room.
@@ -94,9 +98,16 @@ namespace Plugins
 		enum MUCRole
 		{
 			/** Not present in room.
+			 *
+			 * Setting this role on a user should effectively kick it
+			 * from the room if applicable to the protocol and room
+			 * type.
 			 */
 			MUCRNone,
 			/** The user visits a room.
+			 *
+			 * Setting this role on a user should effectively devoice
+			 * the user if applicable to the protocol and room type.
 			 */
 			MUCRVisitor,
 			/** The user has voice in a moderated room.
