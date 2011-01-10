@@ -558,6 +558,10 @@ namespace LeechCraft
 				if (entry->GetEntryType () == Plugins::ICLEntry::ETPrivateChat)
 				{
 					QAction *kick = new QAction (tr ("Kick"), entry->GetObject ());
+					connect (kick,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionRoleTriggered ()));
 					kick->setProperty ("ActionIcon", "azoth_kick");
 					kick->setProperty ("Azoth/TargetRole",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCRole> (Plugins::IMUCEntry::MUCRNone));
@@ -565,6 +569,10 @@ namespace LeechCraft
 					Action2Areas_ [kick] << CLEAAContactListCtxtMenu;
 
 					QAction *ban = new QAction (tr ("Ban"), entry->GetObject ());
+					connect (ban,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionAffTriggered ()));
 					ban->setProperty ("ActionIcon", "azoth_ban");
 					ban->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCAOutcast));
@@ -581,21 +589,21 @@ namespace LeechCraft
 					Action2Areas_ [changeRole->menuAction ()] << CLEAAContactListCtxtMenu;
 
 					QAction *visitorRole = changeRole->addAction (tr ("Visitor"),
-							this, SLOT (handleActionVisitorRoleTriggered ()));
+							this, SLOT (handleActionRoleTriggered ()));
 					visitorRole->setProperty ("ActionIcon", "azoth_role_visitor");
 					visitorRole->setParent (entry->GetObject ());
 					visitorRole->setProperty ("Azoth/TargetRole",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCRole> (Plugins::IMUCEntry::MUCRVisitor));
 
 					QAction *participantRole = changeRole->addAction (tr ("Participant"),
-							this, SLOT (handleActionParticipantRoleTriggered ()));
+							this, SLOT (handleActionRoleTriggered ()));
 					participantRole->setProperty ("ActionIcon", "azoth_role_participant");
 					participantRole->setParent (entry->GetObject ());
 					participantRole->setProperty ("Azoth/TargetRole",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCRole> (Plugins::IMUCEntry::MUCRParticipant));
 
 					QAction *moderatorRole = changeRole->addAction (tr ("Moderator"),
-							this, SLOT (handleActionModeratorRoleTriggered ()));
+							this, SLOT (handleActionRoleTriggered ()));
 					moderatorRole->setProperty ("ActionIcon", "azoth_role_moderator");
 					moderatorRole->setParent (entry->GetObject ());
 					moderatorRole->setProperty ("Azoth/TargetRole",
@@ -607,28 +615,28 @@ namespace LeechCraft
 					Action2Areas_ [changeAff->menuAction ()] << CLEAAContactListCtxtMenu;
 
 					QAction *noneAff = changeAff->addAction (tr ("None"),
-							this, SLOT (handleActionNoneAffTriggered ()));
+							this, SLOT (handleActionAffTriggered ()));
 					noneAff->setProperty ("ActionIcon", "azoth_affiliation_none");
 					noneAff->setParent (entry->GetObject ());
 					noneAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCANone));
 
 					QAction *memberAff = changeAff->addAction (tr ("Member"),
-							this, SLOT (handleActionMemberAffTriggered ()));
+							this, SLOT (handleActionAffTriggered ()));
 					memberAff->setProperty ("ActionIcon", "azoth_affiliation_member");
 					memberAff->setParent (entry->GetObject ());
 					memberAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCAMember));
 
 					QAction *adminAff = changeAff->addAction (tr ("Admin"),
-							this, SLOT (handleActionAdminAffTriggered ()));
+							this, SLOT (handleActionAffTriggered ()));
 					adminAff->setProperty ("ActionIcon", "azoth_affiliation_admin");
 					adminAff->setParent (entry->GetObject ());
 					adminAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCAAdmin));
 
 					QAction *ownerAff = changeAff->addAction (tr ("Owner"),
-							this, SLOT (handleActionOwnerAffTriggered ()));
+							this, SLOT (handleActionAffTriggered ()));
 					ownerAff->setProperty ("ActionIcon", "azoth_affiliation_owner");
 					ownerAff->setParent (entry->GetObject ());
 					ownerAff->setProperty ("Azoth/TargetAffiliation",
@@ -1233,22 +1241,7 @@ namespace LeechCraft
 				account->DenyAuth (entry->GetObject ());
 			}
 
-			void Core::handleActionVisitorRoleTriggered ()
-			{
-				MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRVisitor);
-			}
-
-			void Core::handleActionParticipantRoleTriggered ()
-			{
-				MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRParticipant);
-			}
-
-			void Core::handleActionModeratorRoleTriggered ()
-			{
-				MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRModerator);
-			}
-
-			void Core::MUCRoleChangeImpl (Plugins::IMUCEntry::MUCRole role)
+			void Core::handleActionRoleTriggered ()
 			{
 				QAction *action = qobject_cast<QAction*> (sender ());
 				if (!action)
@@ -1258,6 +1251,19 @@ namespace LeechCraft
 							<< "is not a QAction";
 					return;
 				}
+
+				QVariant property = action->property ("Azoth/TargetRole");
+				if (!property.canConvert<Plugins::IMUCEntry::MUCRole> ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "can't convert"
+							<< property
+							<< "to MUCRole";
+					return;
+				}
+
+				Plugins::IMUCEntry::MUCRole role =
+						property.value<Plugins::IMUCEntry::MUCRole> ();
 
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
@@ -1278,27 +1284,7 @@ namespace LeechCraft
 				mucEntry->SetRole (entry->GetObject (), role);
 			}
 
-			void Core::handleActionNoneAffTriggered ()
-			{
-				MUCAffChangeImpl (Plugins::IMUCEntry::MUCANone);
-			}
-
-			void Core::handleActionMemberAffTriggered ()
-			{
-				MUCAffChangeImpl (Plugins::IMUCEntry::MUCAMember);
-			}
-
-			void Core::handleActionAdminAffTriggered ()
-			{
-				MUCAffChangeImpl (Plugins::IMUCEntry::MUCAAdmin);
-			}
-
-			void Core::handleActionOwnerAffTriggered ()
-			{
-				MUCAffChangeImpl (Plugins::IMUCEntry::MUCAOwner);
-			}
-
-			void Core::MUCAffChangeImpl (Plugins::IMUCEntry::MUCAffiliation aff)
+			void Core::handleActionAffTriggered ()
 			{
 				QAction *action = qobject_cast<QAction*> (sender ());
 				if (!action)
@@ -1308,6 +1294,19 @@ namespace LeechCraft
 							<< "is not a QAction";
 					return;
 				}
+
+				QVariant property = action->property ("Azoth/TargetAffiliation");
+				if (!property.canConvert<Plugins::IMUCEntry::MUCAffiliation> ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "can't convert"
+							<< property
+							<< "to MUCAffiliation";
+					return;
+				}
+
+				Plugins::IMUCEntry::MUCAffiliation aff =
+						property.value<Plugins::IMUCEntry::MUCAffiliation> ();
 
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
