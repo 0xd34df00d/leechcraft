@@ -22,6 +22,7 @@
 #include "core.h"
 #include "abstractbookmarksservice.h"
 #include "xmlsettingsmanager.h"
+#include <sys/socket.h>
 
 namespace LeechCraft
 {
@@ -53,17 +54,19 @@ namespace OnlineBookmarks
 		{
 			service->DownloadBookmarks (XmlSettingsManager::Instance ()->
 					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (), 
-					XmlSettingsManager::Instance ()->property ("Sync/Service2LocalLastSyncDate").toInt ());
+					XmlSettingsManager::Instance ()->property ((service->GetName () + "/LastDownload").toUtf8 ()).toInt ());
 			
 			connect (service,
 					SIGNAL (gotDownloadReply (const QList<QVariant>&, const QUrl&)),
 					this,
-					SLOT (readDownloadReply (const QList<QVariant>&, const QUrl&)));
+					SLOT (readDownloadReply (const QList<QVariant>&, const QUrl&)),
+					Qt::UniqueConnection);
 			
 			connect (service,
 					SIGNAL (gotParseError (const QString&)),
 					this,
-					SLOT (readErrorReply (const QString&)));
+					SLOT (readErrorReply (const QString&)),
+					Qt::UniqueConnection);
 			
 		}
 	}
@@ -76,7 +79,8 @@ namespace OnlineBookmarks
 				"x-leechcraft/browser-import-data");
 
 		XmlSettingsManager::Instance ()->
-				setProperty("Sync/Service2LocalLastSyncDate", QDateTime::currentDateTime().toTime_t ());
+				setProperty ((qobject_cast<AbstractBookmarksService*>(sender ())->GetName () + "/LastDownload").toUtf8 (), 
+				QDateTime::currentDateTime().toTime_t ());
 		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		emit gotEntity (eBookmarks);

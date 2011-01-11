@@ -113,16 +113,17 @@ namespace OnlineBookmarks
 				Property ("Sync/ActiveServices", QString ("")).toStringList ();
 		
 		QList<AbstractBookmarksService*> activeServices;
-		
-		if (activeServicesNames.size () > 0)
-			for (int i = 0; i < ServicesModel_->rowCount (); i++)
+
+        int rows = ServicesModel_->rowCount ();
+		if (activeServicesNames.size ())
+			for (int i = 0; i < rows; i++)
 				if (activeServicesNames.contains (ServicesModel_->item (i)->text ()))
 				{
 					ServicesModel_->item (i)->setCheckState (Qt::Checked);
 					activeServices << BookmarksServices_.at (i);
 				}
 		
-		if (activeServices.size () > 0)
+		if (!activeServices.isEmpty ())
 			Core::Instance ().SetActiveBookmarksServices (activeServices);
 	}
 
@@ -153,7 +154,8 @@ namespace OnlineBookmarks
 		
 		QList<AbstractBookmarksService*> activeServices; 
 		QStringList activeServicesNames;
-		for (int i = 0; i < ServicesModel_->rowCount (); i++)
+		int rows = ServicesModel_->rowCount ();
+		for (int i = 0; i < rows; i++)
 			if (ServicesModel_->item (i)->checkState () == Qt::Checked)
 			{
 				activeServices << BookmarksServices_.at (i);
@@ -163,7 +165,7 @@ namespace OnlineBookmarks
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/ActiveServices", activeServicesNames);
 				
-		if (activeServices.size () > 0)
+		if (!activeServices.isEmpty ())
 			Core::Instance ().SetActiveBookmarksServices (activeServices);
 	}
 
@@ -315,6 +317,11 @@ namespace OnlineBookmarks
 				Ui_.Add_->toggle ();
 			else if (Ui_.Edit_->isChecked ())
 				Ui_.Edit_->toggle ();
+			
+			int rows = ServicesModel_->rowCount ();
+			for (int i = 0; i < rows; i++)
+				if (ServicesModel_->item (i)->text () == Ui_.Services_->currentText ())
+					ServicesModel_->item (i)->setCheckState (Qt::Checked);
 		}
 		else
 		{

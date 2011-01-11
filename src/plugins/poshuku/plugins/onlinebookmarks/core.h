@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
 #include <QObject>
 #include <interfaces/structures.h>
+#include <interfaces/iinfo.h>
 
 class QStandardItemModel;
 class QNetworkAccessManager;
@@ -42,9 +43,9 @@ namespace OnlineBookmarks
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
-		QNetworkAccessManager *Manager_;
 		SyncBookmarks *BookmarksSyncManager_;
 		QList<AbstractBookmarksService*> ActiveBookmarksServices_;
+		ICoreProxy_ptr Proxy_;
 		
 		Core ();
 	public:
@@ -57,8 +58,9 @@ namespace OnlineBookmarks
 		QList<AbstractBookmarksService*> GetActiveBookmarksServices () const;
 		void SetPassword (const QString&, const QString&, const QString&);
 		QString GetPassword (const QString&, const QString&) const;
-		void SetNetworkAccessManager (QNetworkAccessManager *manager);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
