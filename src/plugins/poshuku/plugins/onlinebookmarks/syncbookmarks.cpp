@@ -18,11 +18,11 @@
 
 #include "syncbookmarks.h"
 #include <QDateTime>
+#include <QMetaObject>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "abstractbookmarksservice.h"
 #include "xmlsettingsmanager.h"
-#include <sys/socket.h>
 
 namespace LeechCraft
 {
@@ -44,7 +44,6 @@ namespace OnlineBookmarks
 
 	void SyncBookmarks::uploadBookmarks ()
 	{
-		
 	} 
 
 	void SyncBookmarks::downloadBookmarks ()
@@ -78,9 +77,18 @@ namespace OnlineBookmarks
 				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/browser-import-data");
 
+		AbstractBookmarksService *service = qobject_cast<AbstractBookmarksService*> (sender ());
+		if (!service)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a AbstractBookmarksService"
+					<< sender ();
+			return;
+		}
+		
 		XmlSettingsManager::Instance ()->
-				setProperty ((qobject_cast<AbstractBookmarksService*>(sender ())->GetName () + "/LastDownload").toUtf8 (), 
-				QDateTime::currentDateTime().toTime_t ());
+				setProperty ((service->GetName () + "/LastDownload").toUtf8 ().toBase64 (), 
+				QDateTime::currentDateTime ().toTime_t ());
 		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		emit gotEntity (eBookmarks);

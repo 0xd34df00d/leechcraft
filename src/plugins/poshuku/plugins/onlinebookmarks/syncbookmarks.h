@@ -35,7 +35,6 @@ namespace OnlineBookmarks
 	class SyncBookmarks : public QObject
 	{
 		Q_OBJECT
-		
 	public:
 		SyncBookmarks (QObject *parent = 0);
 	public slots:

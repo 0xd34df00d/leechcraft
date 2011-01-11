@@ -114,9 +114,8 @@ namespace OnlineBookmarks
 		
 		QList<AbstractBookmarksService*> activeServices;
 
-        int rows = ServicesModel_->rowCount ();
 		if (activeServicesNames.size ())
-			for (int i = 0; i < rows; i++)
+			for (int i = 0, rows = ServicesModel_->rowCount (); i < rows; i++)
 				if (activeServicesNames.contains (ServicesModel_->item (i)->text ()))
 				{
 					ServicesModel_->item (i)->setCheckState (Qt::Checked);
@@ -159,7 +158,7 @@ namespace OnlineBookmarks
 			if (ServicesModel_->item (i)->checkState () == Qt::Checked)
 			{
 				activeServices << BookmarksServices_.at (i);
-				activeServicesNames << ServicesModel_->item (i)->text ();
+				activeServicesNames << ServicesModel_->item (i)->text ().toUtf8 ().toBase64 ();
 			}
 		
 		XmlSettingsManager::Instance ()->
@@ -287,12 +286,12 @@ namespace OnlineBookmarks
 			QString service = "Account/" + Ui_.Services_->currentText ();
 			if (XmlSettingsManager::Instance ()->property (service.toUtf8 ()).isNull ())
 				XmlSettingsManager::Instance ()->
-						setProperty (service.toUtf8 (), Ui_.Login_->text ());
+						setProperty (service.toUtf8 (), Ui_.Login_->text ().toUtf8 ().toBase64 ());
 			else
 			{
 				QStringList loginList = XmlSettingsManager::Instance ()->
 						property (service.toStdString ().c_str ()).toStringList ();
-				loginList << Ui_.Login_->text ();
+				loginList << Ui_.Login_->text ().toUtf8 ().toBase64 ();
 				XmlSettingsManager::Instance ()->
 						setProperty (service.toStdString ().c_str (), loginList);
 			}

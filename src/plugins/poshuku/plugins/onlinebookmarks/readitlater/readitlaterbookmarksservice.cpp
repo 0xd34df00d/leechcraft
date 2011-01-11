@@ -147,7 +147,7 @@ namespace OnlineBookmarks
 		QJson::Parser parser;
 		bool ok;
 		
-		const QVariantMap result = parser.parse (reply, &ok).toMap ();
+		const QVariantMap& result = parser.parse (reply, &ok).toMap ();
 		
 		if (!ok)
 		{
@@ -155,7 +155,7 @@ namespace OnlineBookmarks
 			return;
 		}
 
-		const QVariantMap nestedMap = result ["list"].toMap ();
+		const QVariantMap& nestedMap = result ["list"].toMap ();
 		
 		QList<QVariant> bookmarks;
 		Q_FOREACH (const QVariant& var, nestedMap)
