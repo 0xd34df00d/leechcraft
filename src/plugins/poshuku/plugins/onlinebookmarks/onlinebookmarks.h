@@ -62,6 +62,7 @@ namespace OnlineBookmarks
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QWebView*, QObject*);
+		void initPlugin (QObject*);
 	signals:
 		void gotEntity (LeechCraft::Entity);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

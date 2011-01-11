@@ -23,7 +23,7 @@
 #include <QStandardItemModel>
 #include <QSettings>
 #include <plugininterface/util.h>
-//#include <interfaces/iinfo.h>
+#include <interfaces/iproxyobject.h>
 #include "syncbookmarks.h"
 
 namespace LeechCraft
@@ -159,7 +159,11 @@ namespace OnlineBookmarks
 	{
 		return Proxy_;
 	}
-
+	
+	void Core::SetPluginProxy (QObject *proxy)
+	{
+		PluginProxy_ = proxy;
+	}
 }
 }
 }

@@ -46,6 +46,7 @@ namespace OnlineBookmarks
 		SyncBookmarks *BookmarksSyncManager_;
 		QList<AbstractBookmarksService*> ActiveBookmarksServices_;
 		ICoreProxy_ptr Proxy_;
+		QObject *PluginProxy_;
 		
 		Core ();
 	public:
@@ -61,6 +62,7 @@ namespace OnlineBookmarks
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		void SetPluginProxy (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

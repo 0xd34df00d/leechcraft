@@ -147,6 +147,11 @@ namespace OnlineBookmarks
 				Core::Instance ().GetBookmarksSyncManager (),
 				SLOT (downloadBookmarks ()));
 	}
+	
+	void OnlineBookmarks::initPlugin (QObject *proxy)
+	{
+		Core::Instance ().SetPluginProxy (proxy);
+	}
 }
 }
 }
