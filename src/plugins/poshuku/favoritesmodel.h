@@ -78,7 +78,7 @@ namespace LeechCraft
 				QStringList GetVisibleTags (int) const;
 			public slots:
 				bool addItem (const QString&, const QString&, const QStringList&);
-				QList<QMap<QString, QVariant> > getItemsMap () const;
+				QList<QVariant> getItemsMap () const;
 				void removeItem (const QModelIndex&);
 				void handleItemAdded (const FavoritesModel::FavoritesItem&);
 				void handleItemUpdated (const FavoritesModel::FavoritesItem&);
