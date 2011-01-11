@@ -45,7 +45,10 @@ namespace LeechCraft
 			QMap<QByteArray, QPair<QPointer<QObject>, QByteArray> > Properties2Object_;
 			bool Initializing_;
 			QSettings *Settings_;
+		protected:
+			bool ReadAllKeys_;
 		public:
+			BaseSettingsManager (bool readAllKeys = false, QObject* = 0);
 		 /** @brief Initalizes the settings manager.
 		  *
 		  * Loads all settings from the QSettings created by BeginSettings and
