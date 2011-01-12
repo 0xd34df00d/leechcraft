@@ -152,7 +152,7 @@ namespace LeechCraft
 						this,
 						SLOT (currentItemChanged ()));
 				connect (Impl_->ItemsFilterModel_.get (),
-						SIGNAL (reset ()),
+						SIGNAL (modelReset ()),
 						this,
 						SLOT (currentItemChanged ()));
 
