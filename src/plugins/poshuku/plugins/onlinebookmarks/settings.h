@@ -41,7 +41,7 @@ namespace OnlineBookmarks
 {
 	class OnlineBookmarks;
 	class AbstractBookmarksService;
-	
+
 	class Settings : public QWidget
 	{
 		Q_OBJECT
@@ -70,8 +70,6 @@ namespace OnlineBookmarks
 		void handlePasswordTextChanged (const QString&);
 		void on_AccountsView__clicked (const QModelIndex&);
 		void checkServiceAnswer (bool);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

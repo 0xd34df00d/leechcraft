@@ -52,7 +52,7 @@ namespace OnlineBookmarks
 				new Settings (Core::Instance ().GetAccountModel (), this));
 
 		Core::Instance ().SetProxy (proxy);
-		
+
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -133,7 +133,7 @@ namespace OnlineBookmarks
 		uploadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_upload");
 		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
 		downloadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_download");
-		
+
 		connect (sync,
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
@@ -143,13 +143,13 @@ namespace OnlineBookmarks
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
 				SLOT (uploadBookmarks ()));
-		
+
 		connect (downloadOnly,
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
 				SLOT (downloadBookmarks ()));
 	}
-	
+
 	void OnlineBookmarks::initPlugin (QObject *proxy)
 	{
 		Core::Instance ().SetPluginProxy (proxy);

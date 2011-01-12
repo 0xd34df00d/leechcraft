@@ -51,7 +51,7 @@ namespace OnlineBookmarks
 
 		Ui_.Services_->setCurrentIndex (0);
 		Ui_.LoginFrame_->hide ();
-	
+
 		connect (Ui_.Login_,
 				SIGNAL (textChanged (QString)),
 				this,
@@ -66,7 +66,7 @@ namespace OnlineBookmarks
 				SIGNAL (released ()),
 				this,
 				SLOT (handleStuff ()));
-		
+
 		BookmarksServices_ << new ReadItLaterBookmarksService (this);
 		SetupServices ();
 		ReadSettings ();
@@ -111,7 +111,7 @@ namespace OnlineBookmarks
 				Property ("Sync/Service2LocalPeriod", 0).toInt ());
 		QStringList  activeServicesNames = XmlSettingsManager::Instance ()->
 				Property ("Sync/ActiveServices", QString ("")).toStringList ();
-		
+
 		QList<AbstractBookmarksService*> activeServices;
 
 		if (activeServicesNames.size ())
@@ -121,7 +121,7 @@ namespace OnlineBookmarks
 					ServicesModel_->item (i)->setCheckState (Qt::Checked);
 					activeServices << BookmarksServices_.at (i);
 				}
-		
+
 		if (!activeServices.isEmpty ())
 			Core::Instance ().SetActiveBookmarksServices (activeServices);
 	}
@@ -150,8 +150,8 @@ namespace OnlineBookmarks
 				setProperty ("Sync/IsService2Local", Ui_.Services2Bookmarks_->isChecked ());
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/Service2LocalPeriod", Ui_.Services2BookmarksPeriod_->currentIndex ());
-		
-		QList<AbstractBookmarksService*> activeServices; 
+
+		QList<AbstractBookmarksService*> activeServices;
 		QStringList activeServicesNames;
 		int rows = ServicesModel_->rowCount ();
 		for (int i = 0; i < rows; i++)
@@ -160,10 +160,10 @@ namespace OnlineBookmarks
 				activeServices << BookmarksServices_.at (i);
 				activeServicesNames << ServicesModel_->item (i)->text ();
 			}
-		
+
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/ActiveServices", activeServicesNames);
-				
+
 		if (!activeServices.isEmpty ())
 			Core::Instance ().SetActiveBookmarksServices (activeServices);
 	}
@@ -281,54 +281,53 @@ namespace OnlineBookmarks
 
 	void Settings::checkServiceAnswer (bool valid)
 	{
-		if (valid)
+		if (!valid)
 		{
-			QString service = "Account/" + Ui_.Services_->currentText ();
-			if (XmlSettingsManager::Instance ()->property (service.toUtf8 ()).isNull ())
-				XmlSettingsManager::Instance ()->
-						setProperty (service.toUtf8 (), Ui_.Login_->text ());
-			else
-			{
-				QStringList loginList = XmlSettingsManager::Instance ()->
-						property (service.toStdString ().c_str ()).toStringList ();
-				loginList << Ui_.Login_->text ();
-				XmlSettingsManager::Instance ()->
-						setProperty (service.toStdString ().c_str (), loginList);
-			}
-
-			QList<QStandardItem*> items = Model_->findItems (Ui_.Services_->currentText ());
-			QStandardItem *serviceItem;
-			if (!items.size ())
-			{
-				serviceItem = new QStandardItem (Ui_.Services_->currentText ());
-				Model_->appendRow (serviceItem);
-			}
-			else
-				 serviceItem = items.at (0);
-
-			serviceItem->appendRow (new QStandardItem (Ui_.Login_->text ()));
-
-			Core::Instance ().SetPassword (Ui_.Password_->text (), Ui_.Login_->text (), GetSelectedName ());
-			
-			ClearFrameState ();
-
-			if (Ui_.Add_->isChecked ())
-				Ui_.Add_->toggle ();
-			else if (Ui_.Edit_->isChecked ())
-				Ui_.Edit_->toggle ();
-			
-			int rows = ServicesModel_->rowCount ();
-			for (int i = 0; i < rows; i++)
-				if (ServicesModel_->item (i)->text () == Ui_.Services_->currentText ())
-					ServicesModel_->item (i)->setCheckState (Qt::Checked);
+			Entity e = Util::MakeNotification ("Poshuku",
+					tr ("Invalid account data"),
+					PCritical_);
+			Core::Instance ().SendEntity (e);
 		}
+
+		QString service = "Account/" + Ui_.Services_->currentText ();
+		// FIXME
+		if (XmlSettingsManager::Instance ()->property (service.toUtf8 ()).isNull ())
+			XmlSettingsManager::Instance ()->
+					setProperty (service.toUtf8 (), Ui_.Login_->text ());
 		else
 		{
-			Entity e = Util::MakeNotification ("Poshuku", 
-					tr ("Invalid account data"), 
-					PCritical_);
-			gotEntity (e);
+			// FIXME
+			QStringList loginList = XmlSettingsManager::Instance ()->
+					property (service.toStdString ().c_str ()).toStringList ();
+			loginList << Ui_.Login_->text ();
+			XmlSettingsManager::Instance ()->
+					setProperty (service.toStdString ().c_str (), loginList);
 		}
+
+		QList<QStandardItem*> items = Model_->findItems (Ui_.Services_->currentText ());
+		QStandardItem *serviceItem;
+		if (!items.size ())
+		{
+			serviceItem = new QStandardItem (Ui_.Services_->currentText ());
+			Model_->appendRow (serviceItem);
+		}
+		else
+			serviceItem = items.at (0);
+
+		serviceItem->appendRow (new QStandardItem (Ui_.Login_->text ()));
+
+		Core::Instance ().SetPassword (Ui_.Password_->text (), Ui_.Login_->text (), GetSelectedName ());
+
+		ClearFrameState ();
+
+		if (Ui_.Add_->isChecked ())
+			Ui_.Add_->toggle ();
+		else if (Ui_.Edit_->isChecked ())
+			Ui_.Edit_->toggle ();
+
+		for (int i = 0, rows = ServicesModel_->rowCount (); i < rows; i++)
+			if (ServicesModel_->item (i)->text () == Ui_.Services_->currentText ())
+				ServicesModel_->item (i)->setCheckState (Qt::Checked);
 	}
 }
 }
