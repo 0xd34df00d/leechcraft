@@ -52,7 +52,7 @@ namespace OnlineBookmarks
 				new Settings (Core::Instance ().GetAccountModel (), this));
 
 		Core::Instance ().SetProxy (proxy);
-				
+		
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,

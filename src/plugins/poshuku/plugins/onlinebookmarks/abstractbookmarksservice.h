@@ -50,6 +50,7 @@ namespace OnlineBookmarks
 		virtual void readyReadReply () = 0;
 	private:
 		virtual void ParseDownloadReply (const QByteArray&) = 0;
+		virtual void ParseUploadReply (bool) = 0;
 	signals:
 		void gotValidReply (bool);
 		void gotParseError (const QString&);

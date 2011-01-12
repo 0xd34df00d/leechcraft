@@ -46,40 +46,46 @@ namespace OnlineBookmarks
 	{
 		QList<QVariant> result;
 		
-		if (QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
+		if (!QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
 					"getItemsMap", 
 					Q_RETURN_ARG ( QList<QVariant>, result)))
 		{
-			QMap<AbstractBookmarksService *, QStringList> accountData;
-			Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
-			{
-				service->UploadBookmarks (XmlSettingsManager::Instance ()->
-					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (),
-					result);
-				
-			connect (service,
-					SIGNAL (gotUploadReply (bool)),
-					this,
-					SLOT (readUploadReply (bool)),
-					Qt::UniqueConnection);
+			qWarning () << Q_FUNC_INFO
+					<< tr ("getItemsMap() metacall failed")
+					<< result;
+			return;
+		}
+		
+		QMap<AbstractBookmarksService*, QStringList> accountData;
+		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
+		{
+			service->UploadBookmarks (XmlSettingsManager::Instance ()->
+				property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (),
+				result);
 			
-			connect (service,
-					SIGNAL (gotParseError (const QString&)),
-					this,
-					SLOT (readErrorReply (const QString&)),
-					Qt::UniqueConnection);
-			}
+		connect (service,
+				SIGNAL (gotUploadReply (bool)),
+				this,
+				SLOT (readUploadReply (bool)),
+				Qt::UniqueConnection);
+		
+		connect (service,
+				SIGNAL (gotParseError (const QString&)),
+				this,
+				SLOT (readErrorReply (const QString&)),
+				Qt::UniqueConnection);
 		}
 	} 
 
 	void SyncBookmarks::downloadBookmarks ()
 	{
-		QMap<AbstractBookmarksService *, QStringList> accountData;
+		QMap<AbstractBookmarksService*, QStringList> accountData;
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
 		{
 			service->DownloadBookmarks (XmlSettingsManager::Instance ()->
 					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (), 
-					XmlSettingsManager::Instance ()->property ((service->GetName () + "/LastDownload").toUtf8 ()).toInt ());
+					XmlSettingsManager::Instance ()->
+					property ((service->GetName () + "/LastDownload").toUtf8 ()).toInt ());
 			
 			connect (service,
 					SIGNAL (gotDownloadReply (const QList<QVariant>&, const QUrl&)),
@@ -92,7 +98,6 @@ namespace OnlineBookmarks
 					this,
 					SLOT (readErrorReply (const QString&)),
 					Qt::UniqueConnection);
-			
 		}
 	}
 	
@@ -107,13 +112,13 @@ namespace OnlineBookmarks
 		if (!service)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "sender is not a AbstractBookmarksService"
+					<< tr ("sender is not a AbstractBookmarksService")
 					<< sender ();
 			return;
 		}
 		
 		XmlSettingsManager::Instance ()->
-				setProperty ((service->GetName () + "/LastDownload").toUtf8 ().toBase64 (), 
+				setProperty ((service->GetName () + "/LastDownload").toUtf8 (), 
 				QDateTime::currentDateTime ().toTime_t ());
 		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
@@ -123,19 +128,33 @@ namespace OnlineBookmarks
 	void SyncBookmarks::readUploadReply (bool code)
 	{
 		Entity e;
+		
 		if (code)
+		{
+			AbstractBookmarksService *service = qobject_cast<AbstractBookmarksService*> (sender ());
+			if (!service)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< tr ("sender is not a AbstractBookmarksService")
+						<< sender ();
+				return;
+			}
+			
+			XmlSettingsManager::Instance ()->
+					setProperty ((service->GetName () + "/LastUpload").toUtf8 (), 
+					QDateTime::currentDateTime ().toTime_t ());
+		
 			e = Util::MakeNotification ("Poshuku", 
-					"Bookmarks send", 
+					tr ("Bookmarks sent successfully"), 
 					PInfo_);
+		}
 		else
 			e = Util::MakeNotification ("Poshuku", 
-				"Error", 
+				tr ("Error while sending bookmarks"), 
 				PCritical_);
 		
 		gotEntity (e);
-
 	}
-
 	
 	void SyncBookmarks::readErrorReply (const QString& errorReply)
 	{
@@ -145,7 +164,6 @@ namespace OnlineBookmarks
 		
 		gotEntity (e);
 	}
-
 }
 }
 }

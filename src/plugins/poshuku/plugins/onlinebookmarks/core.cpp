@@ -82,7 +82,7 @@ namespace OnlineBookmarks
 		return Model_;
 	}
 	
-	SyncBookmarks *Core::GetBookmarksSyncManager () const
+	SyncBookmarks* Core::GetBookmarksSyncManager () const
 	{
 		return BookmarksSyncManager_;
 	}
@@ -127,7 +127,7 @@ namespace OnlineBookmarks
 		if (result.size () != 1)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "incorrect result size"
+					<< tr ("incorrect result size")
 					<< result;
 			return QString ();
 		}
@@ -137,7 +137,7 @@ namespace OnlineBookmarks
 				!strVarList.at (0).canConvert<QString> ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "invalid string variant list"
+					<< tr ("invalid string variant list")
 					<< strVarList;
 			return QString ();
 		}
@@ -171,7 +171,7 @@ namespace OnlineBookmarks
 		if (!obj)
 		{	
 			qWarning () << Q_FUNC_INFO
-					<< "obj is not an IProxyObject"
+					<< tr ("obj is not an IProxyObject")
 					<< PluginProxy_;
 			return 0;
 		}

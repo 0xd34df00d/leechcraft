@@ -38,7 +38,7 @@ namespace OnlineBookmarks
 	const QString ServiceUrl = "http://readitlaterlist.com";
 
 	const QString LoginUrl = "https://readitlaterlist.com/v2/auth?";
-	const QString GetBookmarksUrl = "https://readitlaterlist.com/v2/get?";
+	const QString GetBookmarksUrl = "https://readitlaterlist.com/v2/get";
 	const QString SetBookmarksUrl = "https://readitlaterlist.com/v2/send";
 	
 	const QString AuthOk = "200";
@@ -46,6 +46,7 @@ namespace OnlineBookmarks
 	const QString name = "title";
 	const QString link = "url";
 	const QString tag = "tags";
+	const QString list = "list";
 	
 	ReadItLaterBookmarksService::ReadItLaterBookmarksService (QWidget *parent)
 	: ApiUrl_ (QUrl (LoginUrl))
@@ -88,6 +89,7 @@ namespace OnlineBookmarks
 	void ReadItLaterBookmarksService::DownloadBookmarks (const QStringList& logins, int lastDownloadTime)
 	{
 		Type_ = Download_;
+		
 		Q_FOREACH (const QString& login, logins)
 		{
 			QString password = Core::Instance ().GetPassword (login, "Read It Later");
@@ -103,6 +105,7 @@ namespace OnlineBookmarks
 	void ReadItLaterBookmarksService::UploadBookmarks (const QStringList& logins, const QList<QVariant>& bookamrks)
 	{
 		Type_ = Upload_;
+		
 		Q_FOREACH (const QString& login, logins)
 		{
 			QString password = Core::Instance ().GetPassword (login, "Read It Later");
@@ -111,11 +114,9 @@ namespace OnlineBookmarks
 				gotParseError (tr ("Invalid password"));
 				return;
 			}
-			
 			SendBookmarks (login, password, bookamrks);
 		}
 	}
-
 
 	void ReadItLaterBookmarksService::getReplyFinished ()
 	{
@@ -127,8 +128,7 @@ namespace OnlineBookmarks
 		switch (Type_)
 		{
 		case Auth_:
-			emit gotValidReply ((Reply_->attribute (QNetworkRequest::HttpStatusCodeAttribute) == 200) 
-					? true : false);
+			emit gotValidReply ((Reply_->attribute (QNetworkRequest::HttpStatusCodeAttribute) == 200));
 			break;
 		case Download_:
 			ParseDownloadReply (Reply_->readAll ());
@@ -141,16 +141,18 @@ namespace OnlineBookmarks
 		}
 	}
 	
-		void ReadItLaterBookmarksService::FetchBookmarks (const QString& login, const QString& pass, int lastDownloadTime)
+	void ReadItLaterBookmarksService::FetchBookmarks (const QString& login, const QString& pass, int lastDownloadTime)
 	{
 		ApiUrl_ = GetBookmarksUrl + 
-				"username=" + login + 
+				"?username=" + login + 
 				"&password=" + pass + 
 				"&apikey=" + ApiKey + 
 				"&since=" + lastDownloadTime +
 				"&tags=1";
+				
 		QNetworkRequest request (ApiUrl_);
 		Reply_ = Core::Instance ().GetNetworkAccessManager ()->get (request);
+		
 		connect (Reply_, 
 				SIGNAL (finished ()),
 				this, 
@@ -162,22 +164,23 @@ namespace OnlineBookmarks
 				SLOT (readyReadReply ()));
 	}
 
-	void ReadItLaterBookmarksService::SendBookmarks(const QString& login, const QString& pass, 
+	void ReadItLaterBookmarksService::SendBookmarks (const QString& login, const QString& pass, 
 			const QList< QVariant >& bookmarks)
 	{
 		QVariantMap exportBookmarks, exportTags;
 		int i = 0;
 		int j = 0;
+		
 		Q_FOREACH (const QVariant& record, bookmarks)
 		{
 			QVariantMap bookmark, tags;
-			bookmark.insert ("url", record.toMap () ["URL"].toString ());
-			bookmark.insert ("title", record.toMap () ["Title"].toString ());
+			bookmark.insert (link, record.toMap () ["URL"].toString ());
+			bookmark.insert (name, record.toMap () ["Title"].toString ());
 			
 			if (!(record.toMap () ["Tags"].toStringList ().isEmpty ()))
 			{
-				tags.insert ("url", record.toMap () ["URL"].toString ());
-				tags.insert ("tags", record.toMap () ["Tags"].toString ());
+				tags.insert (link, record.toMap () ["URL"].toString ());
+				tags.insert (tag, record.toMap () ["Tags"].toString ());
 				exportTags.insert (QString::number (j), tags);
 				j++;
 			}
@@ -188,26 +191,26 @@ namespace OnlineBookmarks
 		QJson::Serializer serializer;
 		QByteArray jsonBookmarks = serializer.serialize (exportBookmarks);
 		QByteArray jsonTags = serializer.serialize (exportTags);
-		qDebug () << jsonTags;
-		ApiUrl_ = SetBookmarksUrl +
+		
+		ApiUrl_ = SetBookmarksUrl + 
 				"?username=" + login + 
 				"&password=" + pass +
 				"&apikey=" + ApiKey +
 				"&new=" + QString::fromUtf8 (jsonBookmarks.constData ()) + 
 				"&update_tags=" + QString::fromUtf8 (jsonTags.constData ());
+
+		QNetworkRequest request (ApiUrl_);
+		Reply_ = Core::Instance ().GetNetworkAccessManager ()->get (request);
+
+		connect (Reply_, 
+				SIGNAL (finished ()),
+				this, 
+				SLOT (getReplyFinished ()));
 		
-// 		QNetworkRequest request (ApiUrl_);
-// 		Reply_ = Core::Instance ().GetNetworkAccessManager ()->get (request);
-// 		
-// 		connect (Reply_, 
-// 				SIGNAL (finished ()),
-// 				this, 
-// 				SLOT (getReplyFinished ()));
-// 		
-// 		connect (Reply_, 
-// 				SIGNAL (readyRead ()), 
-// 				this, 
-// 				SLOT (readyReadReply ()));
+		connect (Reply_, 
+				SIGNAL (readyRead ()), 
+				this, 
+				SLOT (readyReadReply ()));
 	}
 
 	void ReadItLaterBookmarksService::ParseDownloadReply (const QByteArray& reply)
@@ -223,7 +226,7 @@ namespace OnlineBookmarks
 			return;
 		}
 
-		const QVariantMap& nestedMap = result ["list"].toMap ();
+		const QVariantMap& nestedMap = result [list].toMap ();
 		
 		QList<QVariant> bookmarks;
 		Q_FOREACH (const QVariant& var, nestedMap)
