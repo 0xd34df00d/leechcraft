@@ -102,7 +102,7 @@ namespace OnlineBookmarks
 
 	void ReadItLaterBookmarksService::UploadBookmarks (const QStringList& logins, const QList<QVariant>& bookamrks)
 	{
-		Type_ = Upload_;		
+		Type_ = Upload_;
 		Q_FOREACH (const QString& login, logins)
 		{
 			QString password = Core::Instance ().GetPassword (login, "Read It Later");
@@ -165,44 +165,49 @@ namespace OnlineBookmarks
 	void ReadItLaterBookmarksService::SendBookmarks(const QString& login, const QString& pass, 
 			const QList< QVariant >& bookmarks)
 	{
-		QVariantMap exportBookmarks;
+		QVariantMap exportBookmarks, exportTags;
 		int i = 0;
+		int j = 0;
 		Q_FOREACH (const QVariant& record, bookmarks)
 		{
 			QVariantMap bookmark, tags;
 			bookmark.insert ("url", record.toMap () ["URL"].toString ());
 			bookmark.insert ("title", record.toMap () ["Title"].toString ());
-// 			if (!record.toMap () ["Tags"].toStringList ().isEmpty ())
-// 			{
-// 				tags.insert ("url", record.toMap () ["URL"].toString ());
-// 				tags.insert ("tags", record.toMap () ["Tags"].toStringList ());
-// 			}
 			
+			if (!(record.toMap () ["Tags"].toStringList ().isEmpty ()))
+			{
+				tags.insert ("url", record.toMap () ["URL"].toString ());
+				tags.insert ("tags", record.toMap () ["Tags"].toString ());
+				exportTags.insert (QString::number (j), tags);
+				j++;
+			}
 			exportBookmarks.insert(QString::number (i), bookmark);
 			i++;
-			if (i == 3)
-				break;
 		}
+		
 		QJson::Serializer serializer;
-		QByteArray json = serializer.serialize (exportBookmarks);
-
+		QByteArray jsonBookmarks = serializer.serialize (exportBookmarks);
+		QByteArray jsonTags = serializer.serialize (exportTags);
+		qDebug () << jsonTags;
 		ApiUrl_ = SetBookmarksUrl +
 				"?username=" + login + 
 				"&password=" + pass +
 				"&apikey=" + ApiKey +
-				"&new=" + QString::fromUtf8 (json.constData ());
-		QNetworkRequest request (ApiUrl_);
-		Reply_ = Core::Instance ().GetNetworkAccessManager ()->get (request);
+				"&new=" + QString::fromUtf8 (jsonBookmarks.constData ()) + 
+				"&update_tags=" + QString::fromUtf8 (jsonTags.constData ());
 		
-		connect (Reply_, 
-				SIGNAL (finished ()),
-				this, 
-				SLOT (getReplyFinished ()));
-		
-		connect (Reply_, 
-				SIGNAL (readyRead ()), 
-				this, 
-				SLOT (readyReadReply ()));
+// 		QNetworkRequest request (ApiUrl_);
+// 		Reply_ = Core::Instance ().GetNetworkAccessManager ()->get (request);
+// 		
+// 		connect (Reply_, 
+// 				SIGNAL (finished ()),
+// 				this, 
+// 				SLOT (getReplyFinished ()));
+// 		
+// 		connect (Reply_, 
+// 				SIGNAL (readyRead ()), 
+// 				this, 
+// 				SLOT (readyReadReply ()));
 	}
 
 	void ReadItLaterBookmarksService::ParseDownloadReply (const QByteArray& reply)

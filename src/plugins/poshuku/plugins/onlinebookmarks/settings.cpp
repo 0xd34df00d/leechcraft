@@ -158,7 +158,7 @@ namespace OnlineBookmarks
 			if (ServicesModel_->item (i)->checkState () == Qt::Checked)
 			{
 				activeServices << BookmarksServices_.at (i);
-				activeServicesNames << ServicesModel_->item (i)->text ().toUtf8 ().toBase64 ();
+				activeServicesNames << ServicesModel_->item (i)->text ();
 			}
 		
 		XmlSettingsManager::Instance ()->
@@ -286,12 +286,12 @@ namespace OnlineBookmarks
 			QString service = "Account/" + Ui_.Services_->currentText ();
 			if (XmlSettingsManager::Instance ()->property (service.toUtf8 ()).isNull ())
 				XmlSettingsManager::Instance ()->
-						setProperty (service.toUtf8 (), Ui_.Login_->text ().toUtf8 ().toBase64 ());
+						setProperty (service.toUtf8 (), Ui_.Login_->text ());
 			else
 			{
 				QStringList loginList = XmlSettingsManager::Instance ()->
 						property (service.toStdString ().c_str ()).toStringList ();
-				loginList << Ui_.Login_->text ().toUtf8 ().toBase64 ();
+				loginList << Ui_.Login_->text ();
 				XmlSettingsManager::Instance ()->
 						setProperty (service.toStdString ().c_str (), loginList);
 			}
