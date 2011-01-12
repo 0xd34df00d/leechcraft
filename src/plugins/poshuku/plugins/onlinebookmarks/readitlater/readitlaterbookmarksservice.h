@@ -57,16 +57,20 @@ namespace OnlineBookmarks
 		QIcon GetIcon () const;
 		void CheckValidAccountData (const QString&, const QString&);
 		void DownloadBookmarks (const QStringList&, int);
+		void UploadBookmarks (const QStringList&, const QList<QVariant>&);
 	public slots:
 		void getReplyFinished ();
 		void readyReadReply ();
 	private:
 		void FetchBookmarks (const QString&, const QString&, int);
+		void SendBookmarks (const QString&, const QString&, const QList<QVariant>&);
 		void ParseDownloadReply (const QByteArray&);
+		void ParseUploadReply (bool);
 	signals:
 		void gotValidReply (bool);
 		void gotParseError (const QString&);
 		void gotDownloadReply (const QList<QVariant>&, const QUrl&);
+		void gotUploadReply (bool);
 	};
 }
 }

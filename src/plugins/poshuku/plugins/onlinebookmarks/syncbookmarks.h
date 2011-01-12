@@ -42,6 +42,7 @@ namespace OnlineBookmarks
 		void uploadBookmarks ();
 		void downloadBookmarks ();
 		void readDownloadReply (const QList<QVariant>&, const QUrl&);
+		void readUploadReply (bool);
 		void readErrorReply (const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

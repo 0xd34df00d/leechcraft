@@ -44,6 +44,32 @@ namespace OnlineBookmarks
 
 	void SyncBookmarks::uploadBookmarks ()
 	{
+		QList<QVariant> result;
+		
+		if (QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
+					"getItemsMap", 
+					Q_RETURN_ARG ( QList<QVariant>, result)))
+		{
+			QMap<AbstractBookmarksService *, QStringList> accountData;
+			Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
+			{
+				service->UploadBookmarks (XmlSettingsManager::Instance ()->
+					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (),
+					result);
+				
+			connect (service,
+					SIGNAL (gotUploadReply (bool)),
+					this,
+					SLOT (readUploadReply (bool)),
+					Qt::UniqueConnection);
+			
+			connect (service,
+					SIGNAL (gotParseError (const QString&)),
+					this,
+					SLOT (readErrorReply (const QString&)),
+					Qt::UniqueConnection);
+			}
+		}
 	} 
 
 	void SyncBookmarks::downloadBookmarks ()
@@ -93,6 +119,23 @@ namespace OnlineBookmarks
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		emit gotEntity (eBookmarks);
 	}
+	
+	void SyncBookmarks::readUploadReply (bool code)
+	{
+		Entity e;
+		if (code)
+			e = Util::MakeNotification ("Poshuku", 
+					"Bookmarks send", 
+					PInfo_);
+		else
+			e = Util::MakeNotification ("Poshuku", 
+				"Error", 
+				PCritical_);
+		
+		gotEntity (e);
+
+	}
+
 	
 	void SyncBookmarks::readErrorReply (const QString& errorReply)
 	{

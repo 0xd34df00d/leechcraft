@@ -213,7 +213,6 @@ namespace LeechCraft
 					result << map;
 				}
 				
-				qDebug () << result;
 				return result;
 			}
 

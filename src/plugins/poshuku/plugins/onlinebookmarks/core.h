@@ -63,6 +63,7 @@ namespace OnlineBookmarks
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 		void SetPluginProxy (QObject*);
+		QObject *GetBookmarksModel () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

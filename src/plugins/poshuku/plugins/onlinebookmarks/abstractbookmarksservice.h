@@ -44,6 +44,7 @@ namespace OnlineBookmarks
 		virtual QIcon GetIcon () const = 0;
 		virtual void CheckValidAccountData (const QString&, const QString&) = 0;
 		virtual void DownloadBookmarks (const QStringList&, int) = 0;
+		virtual void UploadBookmarks (const QStringList&, const QList<QVariant>&) = 0;
 	public slots:
 		virtual void getReplyFinished () = 0;
 		virtual void readyReadReply () = 0;
@@ -53,6 +54,7 @@ namespace OnlineBookmarks
 		void gotValidReply (bool);
 		void gotParseError (const QString&);
 		void gotDownloadReply (const QList<QVariant>&, const QUrl&);
+		void gotUploadReply (bool);
 	};
 }
 }

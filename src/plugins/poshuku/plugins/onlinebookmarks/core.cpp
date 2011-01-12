@@ -164,6 +164,21 @@ namespace OnlineBookmarks
 	{
 		PluginProxy_ = proxy;
 	}
+
+	QObject* Core::GetBookmarksModel () const
+	{
+		IProxyObject *obj = qobject_cast<IProxyObject*> (PluginProxy_);
+		if (!obj)
+		{	
+			qWarning () << Q_FUNC_INFO
+					<< "obj is not an IProxyObject"
+					<< PluginProxy_;
+			return 0;
+		}
+		
+		return obj->GetFavoritesModel ();
+	}
+
 }
 }
 }
