@@ -83,7 +83,8 @@ namespace Azoth
 		void messageSend ();
 		void nickComplete ();
 		void on_MsgEdit__textChanged ();
-		void on_SubjectButton__released ();
+		void on_SubjectButton__toggled (bool);
+		void on_SubjChange__released ();
 		void handleEntryMessage (QObject*);
 		void handleStatusChanged (const Plugins::EntryStatus&, const QString&);
 		void handleViewLinkClicked (const QUrl&);

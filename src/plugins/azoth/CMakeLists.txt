@@ -34,7 +34,6 @@ SET (SRCS
 	sortfilterproxymodel.cpp
 	accountslistdialog.cpp
 	setstatusdialog.cpp
-	mucsubjectdialog.cpp
 	pluginmanager.cpp
 	proxyobject.cpp
 	textedit.cpp
@@ -50,7 +49,6 @@ SET (HEADERS
 	sortfilterproxymodel.h
 	accountslistdialog.h
 	setstatusdialog.h
-	mucsubjectdialog.h
 	pluginmanager.h
 	proxyobject.h
 	textedit.h
@@ -66,7 +64,6 @@ SET (FORMS
 	chattab.ui
 	accountslistdialog.ui
 	setstatusdialog.ui
-	mucsubjectdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS

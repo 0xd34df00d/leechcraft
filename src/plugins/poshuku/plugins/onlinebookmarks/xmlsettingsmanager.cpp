@@ -22,6 +22,7 @@
 using namespace LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks;
 
 XmlSettingsManager::XmlSettingsManager ()
+: Util::BaseSettingsManager (true)
 {
 	Util::BaseSettingsManager::Init ();
 }

@@ -131,13 +131,25 @@ namespace Plugins
 		 */
 		virtual MUCFeatures GetMUCFeatures () const = 0;
 
-		/** @brief The subject of this MUC.
+		/** @brief Returns subject of this MUC.
 		 *
 		 * Returns the subject/topic of this MUC room, possibly empty.
 		 * If the protocol or smth doesn't support subjects for MUCs,
 		 * this function should return an empty string.
+		 *
+		 * @return The subject of this MUC.
 		 */
 		virtual QString GetMUCSubject () const = 0;
+
+		/** @brief Updates the subject of this MUC.
+		 *
+		 * Sets the subject of the conference. If it fails for some
+		 * reason, for example, due to insufficient rights, this
+		 * function should do nothing.
+		 *
+		 * @param[in] subject The new subject of this room to set.
+		 */
+		virtual void SetMUCSubject (const QString& subject) = 0;
 
 		/** @brief The list of participants of this MUC.
 		 *
