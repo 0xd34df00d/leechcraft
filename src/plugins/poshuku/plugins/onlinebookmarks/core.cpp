@@ -127,7 +127,7 @@ namespace OnlineBookmarks
 		if (result.size () != 1)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("incorrect result size")
+					<< "incorrect result size"
 					<< result;
 			return QString ();
 		}
@@ -137,7 +137,7 @@ namespace OnlineBookmarks
 				!strVarList.at (0).canConvert<QString> ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("invalid string variant list")
+					<< "invalid string variant list"
 					<< strVarList;
 			return QString ();
 		}
@@ -171,14 +171,23 @@ namespace OnlineBookmarks
 		if (!obj)
 		{	
 			qWarning () << Q_FUNC_INFO
-					<< tr ("obj is not an IProxyObject")
+					<< "obj is not an IProxyObject"
 					<< PluginProxy_;
 			return 0;
 		}
 		
 		return obj->GetFavoritesModel ();
 	}
+	
+	QDir Core::GetBookmarksDir () const
+	{
+		return BookmarksDir_;
+	}
 
+	void Core::SetBookamrksDir (const QDir& path)
+	{
+		BookmarksDir_ = path;
+	}
 }
 }
 }

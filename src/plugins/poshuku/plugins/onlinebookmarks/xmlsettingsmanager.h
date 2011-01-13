@@ -31,8 +31,7 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class XmlSettingsManager 
-			: public LeechCraft::Util::BaseSettingsManager
+	class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
 	{
 		Q_OBJECT
 		

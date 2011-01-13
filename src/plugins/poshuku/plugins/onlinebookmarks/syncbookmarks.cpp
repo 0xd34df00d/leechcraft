@@ -40,22 +40,12 @@ namespace OnlineBookmarks
 
 	void SyncBookmarks::syncBookmarks ()
 	{
+		
 	}
 
 	void SyncBookmarks::uploadBookmarks ()
 	{
-		QList<QVariant> result;
-		
-		if (!QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
-					"getItemsMap", 
-					Q_RETURN_ARG ( QList<QVariant>, result)))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< tr ("getItemsMap() metacall failed")
-					<< result;
-			return;
-		}
-		
+		QList<QVariant> result = GetBookmarksForUpload ();
 		QMap<AbstractBookmarksService*, QStringList> accountData;
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
 		{
@@ -112,7 +102,7 @@ namespace OnlineBookmarks
 		if (!service)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("sender is not a AbstractBookmarksService")
+					<< "sender is not a AbstractBookmarksService"
 					<< sender ();
 			return;
 		}
@@ -125,17 +115,17 @@ namespace OnlineBookmarks
 		emit gotEntity (eBookmarks);
 	}
 	
-	void SyncBookmarks::readUploadReply (bool code)
+	void SyncBookmarks::readUploadReply (bool success)
 	{
 		Entity e;
 		
-		if (code)
+		if (success)
 		{
 			AbstractBookmarksService *service = qobject_cast<AbstractBookmarksService*> (sender ());
 			if (!service)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< tr ("sender is not a AbstractBookmarksService")
+						<< "sender is not a AbstractBookmarksService"
 						<< sender ();
 				return;
 			}
@@ -164,6 +154,67 @@ namespace OnlineBookmarks
 		
 		gotEntity (e);
 	}
+	
+	QList<QVariant> SyncBookmarks::GetBookmarksForUpload ()
+	{
+		QList<QVariant> result;
+		
+		if (!QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
+					"getItemsMap", 
+					Q_RETURN_ARG ( QList<QVariant>, result)))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< tr ("getItemsMap() metacall failed")
+					<< result;
+			return QList<QVariant> ();
+		}
+		
+		QDir dir = Core::Instance ().GetBookmarksDir ();
+		QFile file(dir.absolutePath () + "/uploadBookmarks");
+		
+		if (!file.open (QIODevice::ReadWrite))
+		{
+			Entity e = Util::MakeNotification ("Poshuku", 
+					tr ("Unable to open upload bookmarks file."), 
+					PCritical_);
+			
+			gotEntity (e);
+		}
+		else
+		{
+			if (file.readAll ().isEmpty ())
+			{
+				QStringList urls;
+				Q_FOREACH (const QVariant& var, result)
+					urls << var.toMap () ["URL"].toString ();
+				
+				file.write (urls.join ("\n").toUtf8 ());
+				file.close ();
+			}
+			else
+			{
+				qDebug () << "yes";
+				QStringList urls = QString::fromUtf8 (file.readAll ()).split ("\n");
+				QList<QVariant> newBookmarks;
+				QStringList newBookmarksUrl;
+				Q_FOREACH (const QVariant& var, result)
+				{
+					QString url = var.toMap () ["URL"].toString ();
+					if (!urls.contains (url, Qt::CaseInsensitive))
+					{
+						qDebug () << url;
+						newBookmarks << var;
+						newBookmarksUrl << url;
+					}
+				}
+				file.write("\n");
+				file.write (newBookmarksUrl.join ("\n").toUtf8 ());
+				return newBookmarks;
+			}
+		}
+		return result;
+	}
+	
 }
 }
 }

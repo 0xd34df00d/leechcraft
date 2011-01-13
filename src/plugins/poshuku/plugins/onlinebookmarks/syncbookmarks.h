@@ -44,6 +44,8 @@ namespace OnlineBookmarks
 		void readDownloadReply (const QList<QVariant>&, const QUrl&);
 		void readUploadReply (bool);
 		void readErrorReply (const QString&);
+	private:
+		QList<QVariant> GetBookmarksForUpload ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

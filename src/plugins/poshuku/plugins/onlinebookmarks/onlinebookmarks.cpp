@@ -53,6 +53,8 @@ namespace OnlineBookmarks
 
 		Core::Instance ().SetProxy (proxy);
 		
+		Core::Instance ().SetBookamrksDir(Util::CreateIfNotExists ("poshuku/onlinebookmarks"));
+		
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
