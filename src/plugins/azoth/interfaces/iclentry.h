@@ -60,6 +60,11 @@ namespace Plugins
 				es1.StatusString_ == es2.StatusString_;
 	}
 
+	inline bool operator!= (const EntryStatus& es1, const EntryStatus& es2)
+	{
+		return !(es1 == es2);
+	}
+
 	/** @brief Represents a single entry in contact list.
 	 *
 	 * Everything that should go to the contact list should implement

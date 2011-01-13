@@ -113,6 +113,7 @@ namespace Xoox
 
 		void MakeLeaveMessage (const gloox::MUCRoomParticipant);
 		void MakeStatusChangedMessage (const gloox::MUCRoomParticipant, const gloox::Presence&);
+		void MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant);
 		void MakeJoinMessage (const gloox::MUCRoomParticipant);
 		void MakeNickChangeMessage (const QString& oldNick, const QString& newNick);
 

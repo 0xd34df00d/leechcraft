@@ -145,6 +145,28 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
+	void RoomHandler::MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant part)
+	{
+		const QString& nick = NickFromJID (*part.nick);
+
+		const QString& byStr = part.actor ?
+				tr ("by %1").arg (NickFromJID (*part.actor)) :
+				QString ();
+
+		const QString& msg = tr ("%1 changed affiliation/role to %2/%3 %4")
+				.arg (nick)
+				.arg (Util::AffiliationToString (part.affiliation))
+				.arg (Util::RoleToString (part.role))
+				.arg (byStr);
+
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantStatusChange);
+		CLEntry_->HandleMessage (message);
+	}
+
 	void RoomHandler::MakeJoinMessage (const gloox::MUCRoomParticipant part)
 	{
 		const QString& nick = NickFromJID (*part.nick);
@@ -184,6 +206,8 @@ namespace Xoox
 		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
+		const gloox::MUCRoomAffiliation aff = entry->GetAffiliation ();
+		const gloox::MUCRoomRole role = entry->GetRole ();
 		entry->SetAffiliation (part.affiliation);
 		entry->SetRole (part.role);
 
@@ -215,14 +239,20 @@ namespace Xoox
 			}
 		}
 
+		EntryStatus status (static_cast<State> (presence.presence ()),
+						QString::fromUtf8 (presence.status ().c_str ()));
 		if (RoomHasBeenEntered_)
 		{
 			if (existed)
 			{
-				if (!PendingNickChanges_.contains (nick))
-					MakeStatusChangedMessage (part, presence);
-				else
+				if (PendingNickChanges_.contains (nick))
 					PendingNickChanges_.remove (nick);
+				else if (entry->GetStatus (QString ()) != status)
+					MakeStatusChangedMessage (part, presence);
+
+				if (aff != part.affiliation ||
+						role != part.role)
+					MakeRoleAffChangedMessage (part);
 			}
 			else
 			{
@@ -231,8 +261,6 @@ namespace Xoox
 			}
 		}
 
-		EntryStatus status (static_cast<State> (presence.presence ()),
-				QString::fromUtf8 (presence.status ().c_str ()));
 		entry->SetStatus (status, QString ());
 	}
 
