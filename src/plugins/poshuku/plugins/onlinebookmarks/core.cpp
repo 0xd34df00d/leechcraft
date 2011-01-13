@@ -58,11 +58,11 @@ namespace OnlineBookmarks
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
 		settings.beginGroup ("Account");
-		
+
 		Q_FOREACH (const QString& item, settings.childKeys ())
 		{
 			QList<QStandardItem*> itemList;
-			
+
 			Q_FOREACH (const QString& login, settings.value (item).toStringList ())
 			{
 				QStandardItem *loginItem = new QStandardItem (login);
@@ -73,7 +73,7 @@ namespace OnlineBookmarks
 			service->appendRows (itemList);
 		}
 		settings.endGroup ();
-		
+
 		BookmarksSyncManager_ = new SyncBookmarks (this);
 	}
 
@@ -81,17 +81,17 @@ namespace OnlineBookmarks
 	{
 		return Model_;
 	}
-	
+
 	SyncBookmarks* Core::GetBookmarksSyncManager () const
 	{
 		return BookmarksSyncManager_;
 	}
-	
+
 	void Core::SetActiveBookmarksServices (QList<AbstractBookmarksService*> list)
 	{
 		ActiveBookmarksServices_ = list;
 	}
-	
+
 	QList<AbstractBookmarksService*> Core::GetActiveBookmarksServices () const
 	{
 		return ActiveBookmarksServices_;
@@ -127,7 +127,7 @@ namespace OnlineBookmarks
 		if (result.size () != 1)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("incorrect result size")
+					<< "incorrect result size"
 					<< result;
 			return QString ();
 		}
@@ -137,14 +137,14 @@ namespace OnlineBookmarks
 				!strVarList.at (0).canConvert<QString> ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("invalid string variant list")
+					<< "invalid string variant list"
 					<< strVarList;
 			return QString ();
 		}
 
 		return strVarList.at (0).toString ();
 	}
-	
+
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
 	{
 		return Proxy_->GetNetworkAccessManager ();
@@ -154,12 +154,12 @@ namespace OnlineBookmarks
 	{
 		Proxy_ = proxy;
 	}
-	
+
 	ICoreProxy_ptr Core::GetProxy () const
 	{
 		return Proxy_;
 	}
-	
+
 	void Core::SetPluginProxy (QObject *proxy)
 	{
 		PluginProxy_ = proxy;
@@ -169,13 +169,13 @@ namespace OnlineBookmarks
 	{
 		IProxyObject *obj = qobject_cast<IProxyObject*> (PluginProxy_);
 		if (!obj)
-		{	
+		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("obj is not an IProxyObject")
+					<< "obj is not an IProxyObject"
 					<< PluginProxy_;
 			return 0;
 		}
-		
+
 		return obj->GetFavoritesModel ();
 	}
 

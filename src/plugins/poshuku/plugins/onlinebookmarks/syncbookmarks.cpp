@@ -51,7 +51,7 @@ namespace OnlineBookmarks
 					Q_RETURN_ARG ( QList<QVariant>, result)))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("getItemsMap() metacall failed")
+					<< "getItemsMap() metacall failed"
 					<< result;
 			return;
 		}
@@ -112,7 +112,7 @@ namespace OnlineBookmarks
 		if (!service)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("sender is not a AbstractBookmarksService")
+					<< "sender is not a AbstractBookmarksService"
 					<< sender ();
 			return;
 		}
@@ -139,7 +139,7 @@ namespace OnlineBookmarks
 		if (!service)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("sender is not a AbstractBookmarksService")
+					<< "sender is not a AbstractBookmarksService"
 					<< sender ();
 			return;
 		}
