@@ -298,7 +298,7 @@ namespace Azoth
 			return;
 
 		/* TODO enable depending on whether we have enough rights to
-		 * change the subject. And, if we don't set the SubjEdit_ to
+		 * change the subject. And, if we don't, set the SubjEdit_ to
 		 * readOnly() mode.
 		 */
 		Ui_.SubjEdit_->setText (me->GetMUCSubject ());
