@@ -111,7 +111,11 @@ namespace OnlineBookmarks
 				Property ("Sync/Service2LocalPeriod", 0).toInt ());
 		QStringList  activeServicesNames = XmlSettingsManager::Instance ()->
 				Property ("Sync/ActiveServices", QString ("")).toStringList ();
-
+		Ui_.ConfirmSend_->setChecked (XmlSettingsManager::Instance ()->
+				Property ("ConfirmOnAddition", false).toBool ());
+		Ui_.ShowServices_->setChecked (XmlSettingsManager::Instance ()->
+				Property ("ShowServices", false).toBool ());
+		
 		QList<AbstractBookmarksService*> activeServices;
 
 		if (activeServicesNames.size ())
@@ -150,6 +154,10 @@ namespace OnlineBookmarks
 				setProperty ("Sync/IsService2Local", Ui_.Services2Bookmarks_->isChecked ());
 		XmlSettingsManager::Instance ()->
 				setProperty ("Sync/Service2LocalPeriod", Ui_.Services2BookmarksPeriod_->currentIndex ());
+		XmlSettingsManager::Instance ()->
+				setProperty ("ConfirmOnAddition", Ui_.ConfirmSend_->isChecked ());
+		XmlSettingsManager::Instance ()->
+				setProperty ("ShowServices", Ui_.ShowServices_->isChecked ());
 
 		QList<AbstractBookmarksService*> activeServices;
 		QStringList activeServicesNames;

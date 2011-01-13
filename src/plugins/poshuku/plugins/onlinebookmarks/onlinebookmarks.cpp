@@ -155,6 +155,11 @@ namespace OnlineBookmarks
 	{
 		Core::Instance ().SetPluginProxy (proxy);
 	}
+	
+	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr proxy, QString title, QString url, QStringList tags)
+	{
+		
+	}
 }
 }
 }

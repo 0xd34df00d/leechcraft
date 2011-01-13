@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>479</height>
+    <height>503</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -221,6 +221,13 @@
         <widget class="QListView" name="ActiveServices_"/>
        </item>
        <item row="2" column="0">
+        <widget class="QCheckBox" name="ConfirmSend_">
+         <property name="text">
+          <string>Confirm sending bookmarks on addition</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
         <layout class="QGridLayout" name="SyncOptionsLayout_">
          <property name="sizeConstraint">
           <enum>QLayout::SetMinAndMaxSize</enum>
@@ -364,6 +371,13 @@
           </widget>
          </item>
         </layout>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="ShowServices_">
+         <property name="text">
+          <string>Ask user about services witch bookmarks send should be</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

@@ -43,9 +43,19 @@ namespace OnlineBookmarks
 		
 	}
 
-	void SyncBookmarks::uploadBookmarks ()
+	void SyncBookmarks::uploadBookmarks (const QString& title, const QString& url, const QStringList& tags)
 	{
-		QList<QVariant> result = GetBookmarksForUpload ();
+		QList<QVariant> result;
+		QMap<QString, QVariant> link;
+		link ["Title"] = title;
+		link ["URL"] = url;
+		link ["Tags"] = tags;
+		
+		if (title.isEmpty () && url.isEmpty () && tags.isEmpty ())
+			result = GetBookmarksForUpload (url);
+		else
+			result << link;
+		
 		QMap<AbstractBookmarksService*, QStringList> accountData;
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
 		{
@@ -119,29 +129,32 @@ namespace OnlineBookmarks
 	{
 		Entity e;
 		
-		if (success)
+		if (!success)
 		{
-			AbstractBookmarksService *service = qobject_cast<AbstractBookmarksService*> (sender ());
-			if (!service)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "sender is not a AbstractBookmarksService"
-						<< sender ();
-				return;
-			}
-			
-			XmlSettingsManager::Instance ()->
-					setProperty ((service->GetName () + "/LastUpload").toUtf8 (), 
-					QDateTime::currentDateTime ().toTime_t ());
-		
-			e = Util::MakeNotification ("Poshuku", 
-					tr ("Bookmarks sent successfully"), 
-					PInfo_);
-		}
-		else
 			e = Util::MakeNotification ("Poshuku", 
 				tr ("Error while sending bookmarks"), 
 				PCritical_);
+		
+			gotEntity (e);
+			return;
+		}
+		
+		AbstractBookmarksService *service = qobject_cast<AbstractBookmarksService*> (sender ());
+		if (!service)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a AbstractBookmarksService"
+					<< sender ();
+			return;
+		}
+		
+		XmlSettingsManager::Instance ()->
+				setProperty ((service->GetName () + "/LastUpload").toUtf8 (), 
+				QDateTime::currentDateTime ().toTime_t ());
+	
+		e = Util::MakeNotification ("Poshuku", 
+				tr ("Bookmarks sent successfully"), 
+				PInfo_);
 		
 		gotEntity (e);
 	}
@@ -155,18 +168,26 @@ namespace OnlineBookmarks
 		gotEntity (e);
 	}
 	
-	QList<QVariant> SyncBookmarks::GetBookmarksForUpload ()
+	QList<QVariant> SyncBookmarks::GetBookmarksForUpload (const QString& url)
 	{
 		QList<QVariant> result;
-		
-		if (!QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
-					"getItemsMap", 
-					Q_RETURN_ARG (QList<QVariant>, result)))
+		if (url.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "getItemsMap() metacall failed"
-					<< result;
-			return QList<QVariant> ();
+			if (!QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
+						"getItemsMap", 
+						Q_RETURN_ARG (QList<QVariant>, result)))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "getItemsMap() metacall failed"
+						<< result;
+				return QList<QVariant> ();
+			}
+		}
+		else
+		{
+			QMap <QString, QVariant> link;
+			link ["URL"] = url;
+			result << link;
 		}
 		
 		QDir dir = Core::Instance ().GetBookmarksDir ();
@@ -179,41 +200,41 @@ namespace OnlineBookmarks
 					PCritical_);
 			
 			gotEntity (e);
+			return result;
+		}
+		
+		const QByteArray& data = file.readAll ();
+		if (data.isEmpty ())
+		{
+			QStringList urls;
+			Q_FOREACH (const QVariant& var, result)
+				urls << var.toMap () ["URL"].toString ();
+			
+			file.write (urls.join ("\n").toUtf8 ());
+			file.write ("\n");
+			file.close ();
 		}
 		else
 		{
-			const QByteArray& data = file.readAll ();
-			if (data.isEmpty ())
+			QStringList urls = QString::fromUtf8 (data).split ("\n");
+			QList<QVariant> newBookmarks;
+			QStringList newBookmarksUrl;
+			
+			Q_FOREACH (const QVariant& var, result)
 			{
-				QStringList urls;
-				Q_FOREACH (const QVariant& var, result)
-					urls << var.toMap () ["URL"].toString ();
-				
-				file.write (urls.join ("\n").toUtf8 ());
-				file.write ("\n");
-				file.close ();
-			}
-			else
-			{
-				QStringList urls = QString::fromUtf8 (data).split ("\n");
-				QList<QVariant> newBookmarks;
-				QStringList newBookmarksUrl;
-				
-				Q_FOREACH (const QVariant& var, result)
+				QString currentUrl = var.toMap () ["URL"].toString ();
+				if (!urls.contains (currentUrl, Qt::CaseInsensitive))
 				{
-					QString url = var.toMap () ["URL"].toString ();
-					if (!urls.contains (url, Qt::CaseInsensitive))
-					{
-						newBookmarks << var;
-						newBookmarksUrl << url;
-					}
+					newBookmarks << var;
+					newBookmarksUrl << currentUrl;
 				}
-				file.write (newBookmarksUrl.join ("\n").toUtf8 ());
-				file.write ("\n");
-				
-				return newBookmarks;
 			}
+			file.write (newBookmarksUrl.join ("\n").toUtf8 ());
+			file.write ("\n");
+			
+			return newBookmarks;
 		}
+		
 		return result;
 	}
 	

@@ -39,13 +39,14 @@ namespace OnlineBookmarks
 		SyncBookmarks (QObject *parent = 0);
 	public slots:
 		void syncBookmarks ();
-		void uploadBookmarks ();
+		void uploadBookmarks (const QString& title = QString (), const QString& url = QString (), 
+				const QStringList& tags = QStringList ());
 		void downloadBookmarks ();
 		void readDownloadReply (const QList<QVariant>&, const QUrl&);
 		void readUploadReply (bool);
 		void readErrorReply (const QString&);
 	private:
-		QList<QVariant> GetBookmarksForUpload ();
+		QList<QVariant> GetBookmarksForUpload (const QString& url = QString ());
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
