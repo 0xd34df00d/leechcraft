@@ -337,6 +337,16 @@ namespace LeechCraft
 				 */
 				void mucJoinActionsAdded (const QList<QAction*>&);
 
+				/** Convenient signal for rethrowing the event of an
+				 * account being added.
+				 */
+				void accountAdded (Plugins::IAccount*);
+
+				/** Convenient signal for rethrowing the event of an
+				 * account being removed.
+				 */
+				void accountRemoved (Plugins::IAccount*);
+
 				// Plugin API
 				void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 						QObject *message);

@@ -50,14 +50,12 @@ namespace LeechCraft
 				};
 			public:
 				AccountsListDialog (QWidget* = 0);
-			private:
-				void AddAccount (Plugins::IAccount*);
 			private slots:
+				void addAccount (Plugins::IAccount*);
 				void on_Modify__released ();
 				void on_Delete__released ();
 
-				void handleAccountAdded (QObject*);
-				void handleAccountRemoved (QObject*);
+				void handleAccountRemoved (Plugins::IAccount*);
 			};
 		}
 	}

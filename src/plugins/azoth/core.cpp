@@ -824,6 +824,8 @@ namespace LeechCraft
 					return;
 				}
 
+				emit accountAdded (account);
+
 				QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
 				accItem->setData (QVariant::fromValue<QObject*> (accObject),
 						CLRAccountObject);
@@ -865,6 +867,19 @@ namespace LeechCraft
 
 			void Core::handleAccountRemoved (QObject *account)
 			{
+				Plugins::IAccount *accFace =
+						qobject_cast<Plugins::IAccount*> (account);
+						if (!accFace)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "account doesn't implement Plugins::IAccount*"
+							<< account
+							<< sender ();
+					return;
+				}
+
+				emit accountRemoved (accFace);
+
 				for (int i = 0; i < CLModel_->rowCount (); ++i)
 				{
 					QStandardItem *item = CLModel_->item (i);
