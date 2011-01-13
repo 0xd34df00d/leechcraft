@@ -197,6 +197,8 @@ namespace Xoox
 				Nick2Entry_.remove (nick);
 				JID2Session_.remove (JIDForNick (nick));
 
+				entry->deleteLater ();
+
 				return;
 			}
 			else
