@@ -81,6 +81,7 @@ namespace Xoox
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;
 		QString GetMUCSubject () const;
+		void SetMUCSubject (const QString&);
 		QList<QObject*> GetParticipants ();
 		void Leave (const QString&);
 		QString GetNick () const;

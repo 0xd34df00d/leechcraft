@@ -71,6 +71,7 @@ namespace Xoox
 				const QString&, const QString&);
 		QList<QObject*> GetParticipants () const;
 		QString GetSubject () const;
+		void SetSubject (const QString&);
 		void Kick (const QString& nick, const QString& reason = QString ());
 		void Leave (const QString& msg);
 		RoomParticipantEntry* GetSelf () const;

@@ -150,6 +150,11 @@ namespace Xoox
 		return RH_->GetSubject ();
 	}
 
+	void RoomCLEntry::SetMUCSubject (const QString& subj)
+	{
+		RH_->SetSubject (subj);
+	}
+
 	QList<QObject*> RoomCLEntry::GetParticipants ()
 	{
 		return RH_->GetParticipants ();

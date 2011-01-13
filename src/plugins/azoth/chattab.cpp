@@ -306,11 +306,13 @@ namespace Azoth
 
 	void ChatTab::on_SubjChange__released()
 	{
+		Ui_.SubjectButton_->setChecked (false);
+
 		Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
 		if (!me)
 			return;
 
-		Ui_.SubjectButton_->setChecked (false);
+		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
 	}
 
 	void ChatTab::handleEntryMessage (QObject *msgObj)

@@ -365,6 +365,11 @@ namespace Xoox
 		return Subject_;
 	}
 
+	void RoomHandler::SetSubject (const QString& subj)
+	{
+		Room_->setSubject (subj.toUtf8 ().constData ());
+	}
+
 	void RoomHandler::Kick (const QString& nick, const QString& reason)
 	{
 		Room_->kick (nick.toUtf8 ().constData (),
