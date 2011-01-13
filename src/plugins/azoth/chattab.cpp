@@ -31,7 +31,6 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
 #include "core.h"
-#include "mucsubjectdialog.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -65,6 +64,9 @@ namespace Azoth
 	, NumUnreadMsgs_ (0)
 	{
 		Ui_.setupUi (this);
+
+		Ui_.SubjBox_->setVisible (false);
+		Ui_.SubjChange_->setEnabled (false);
 
 		Core::Instance ().RegisterHookable (this);
 
@@ -283,15 +285,32 @@ namespace Azoth
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
 	}
 
-	void ChatTab::on_SubjectButton__released ()
+	void ChatTab::on_SubjectButton__toggled (bool show)
+	{
+		Ui_.SubjBox_->setVisible (show);
+		Ui_.SubjChange_->setEnabled (show);
+
+		if (!show)
+			return;
+
+		Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
+		if (!me)
+			return;
+
+		/* TODO enable depending on whether we have enough rights to
+		 * change the subject. And, if we don't set the SubjEdit_ to
+		 * readOnly() mode.
+		 */
+		Ui_.SubjEdit_->setText (me->GetMUCSubject ());
+	}
+
+	void ChatTab::on_SubjChange__released()
 	{
 		Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
 		if (!me)
 			return;
 
-		const QString& subject = me->GetMUCSubject ();
-		MUCSubjectDialog dia (subject, this);
-		dia.exec ();
+		Ui_.SubjectButton_->setChecked (false);
 	}
 
 	void ChatTab::handleEntryMessage (QObject *msgObj)
