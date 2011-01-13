@@ -93,6 +93,7 @@ namespace Plugins
 			MSTKickNotification,
 			MSTBanNotification,
 			MSTParticipantStatusChange,
+			MSTParticipantRoleAffiliationChange,
 			MSTParticipantJoin,
 			MSTParticipantLeave,
 			MSTParticipantNickChange,

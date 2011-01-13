@@ -163,7 +163,7 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantStatusChange);
+				IMessage::MSTParticipantRoleAffiliationChange);
 		CLEntry_->HandleMessage (message);
 	}
 

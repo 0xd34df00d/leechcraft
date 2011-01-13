@@ -592,6 +592,7 @@ namespace LeechCraft
 							this, SLOT (handleActionRoleTriggered ()));
 					visitorRole->setProperty ("ActionIcon", "azoth_role_visitor");
 					visitorRole->setParent (entry->GetObject ());
+					visitorRole->setCheckable (true);
 					visitorRole->setProperty ("Azoth/TargetRole",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCRole> (Plugins::IMUCEntry::MUCRVisitor));
 
@@ -599,6 +600,7 @@ namespace LeechCraft
 							this, SLOT (handleActionRoleTriggered ()));
 					participantRole->setProperty ("ActionIcon", "azoth_role_participant");
 					participantRole->setParent (entry->GetObject ());
+					participantRole->setCheckable (true);
 					participantRole->setProperty ("Azoth/TargetRole",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCRole> (Plugins::IMUCEntry::MUCRParticipant));
 
@@ -606,6 +608,7 @@ namespace LeechCraft
 							this, SLOT (handleActionRoleTriggered ()));
 					moderatorRole->setProperty ("ActionIcon", "azoth_role_moderator");
 					moderatorRole->setParent (entry->GetObject ());
+					moderatorRole->setCheckable (true);
 					moderatorRole->setProperty ("Azoth/TargetRole",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCRole> (Plugins::IMUCEntry::MUCRModerator));
 
@@ -618,6 +621,7 @@ namespace LeechCraft
 							this, SLOT (handleActionAffTriggered ()));
 					noneAff->setProperty ("ActionIcon", "azoth_affiliation_none");
 					noneAff->setParent (entry->GetObject ());
+					noneAff->setCheckable (true);
 					noneAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCANone));
 
@@ -625,6 +629,7 @@ namespace LeechCraft
 							this, SLOT (handleActionAffTriggered ()));
 					memberAff->setProperty ("ActionIcon", "azoth_affiliation_member");
 					memberAff->setParent (entry->GetObject ());
+					memberAff->setCheckable (true);
 					memberAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCAMember));
 
@@ -632,6 +637,7 @@ namespace LeechCraft
 							this, SLOT (handleActionAffTriggered ()));
 					adminAff->setProperty ("ActionIcon", "azoth_affiliation_admin");
 					adminAff->setParent (entry->GetObject ());
+					adminAff->setCheckable (true);
 					adminAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCAAdmin));
 
@@ -639,6 +645,7 @@ namespace LeechCraft
 							this, SLOT (handleActionAffTriggered ()));
 					ownerAff->setProperty ("ActionIcon", "azoth_affiliation_owner");
 					ownerAff->setParent (entry->GetObject ());
+					ownerAff->setCheckable (true);
 					ownerAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCAOwner));
 				}
@@ -721,6 +728,7 @@ namespace LeechCraft
 						Plugins::IMUCEntry::MUCRole target =
 								act->property ("Azoth/TargetRole").value<Plugins::IMUCEntry::MUCRole> ();
 						act->setEnabled (mucEntry->MayChangeRole (entry->GetObject (), target));
+						act->setChecked (mucEntry->GetRole (entry->GetObject ()) == target);
 					}
 
 					QList<QAction*> changeAffActions;
@@ -732,6 +740,7 @@ namespace LeechCraft
 						Plugins::IMUCEntry::MUCAffiliation target =
 								act->property ("Azoth/TargetAffiliation").value<Plugins::IMUCEntry::MUCAffiliation> ();
 						act->setEnabled (mucEntry->MayChangeAffiliation (entry->GetObject (), target));
+						act->setChecked (mucEntry->GetAffiliation (entry->GetObject ()) == target);
 					}
 				}
 			}
