@@ -161,54 +161,56 @@ namespace OnlineBookmarks
 		
 		if (!QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
 					"getItemsMap", 
-					Q_RETURN_ARG ( QList<QVariant>, result)))
+					Q_RETURN_ARG (QList<QVariant>, result)))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< tr ("getItemsMap() metacall failed")
+					<< "getItemsMap() metacall failed"
 					<< result;
 			return QList<QVariant> ();
 		}
 		
 		QDir dir = Core::Instance ().GetBookmarksDir ();
-		QFile file(dir.absolutePath () + "/uploadBookmarks");
+		QFile file (dir.absolutePath () + "/uploadBookmarks");
 		
 		if (!file.open (QIODevice::ReadWrite))
 		{
 			Entity e = Util::MakeNotification ("Poshuku", 
-					tr ("Unable to open upload bookmarks file."), 
+					tr ("Unable to open upload configuration file."), 
 					PCritical_);
 			
 			gotEntity (e);
 		}
 		else
 		{
-			if (file.readAll ().isEmpty ())
+			const QByteArray& data = file.readAll ();
+			if (data.isEmpty ())
 			{
 				QStringList urls;
 				Q_FOREACH (const QVariant& var, result)
 					urls << var.toMap () ["URL"].toString ();
 				
 				file.write (urls.join ("\n").toUtf8 ());
+				file.write ("\n");
 				file.close ();
 			}
 			else
 			{
-				qDebug () << "yes";
-				QStringList urls = QString::fromUtf8 (file.readAll ()).split ("\n");
+				QStringList urls = QString::fromUtf8 (data).split ("\n");
 				QList<QVariant> newBookmarks;
 				QStringList newBookmarksUrl;
+				
 				Q_FOREACH (const QVariant& var, result)
 				{
 					QString url = var.toMap () ["URL"].toString ();
 					if (!urls.contains (url, Qt::CaseInsensitive))
 					{
-						qDebug () << url;
 						newBookmarks << var;
 						newBookmarksUrl << url;
 					}
 				}
-				file.write("\n");
 				file.write (newBookmarksUrl.join ("\n").toUtf8 ());
+				file.write ("\n");
+				
 				return newBookmarks;
 			}
 		}
