@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
 #include <QObject>
+#include <QDir>
 #include <interfaces/structures.h>
 #include <interfaces/iinfo.h>
 
@@ -47,6 +48,7 @@ namespace OnlineBookmarks
 		QList<AbstractBookmarksService*> ActiveBookmarksServices_;
 		ICoreProxy_ptr Proxy_;
 		QObject *PluginProxy_;
+		QDir BookmarksDir_;
 		
 		Core ();
 	public:
@@ -64,6 +66,8 @@ namespace OnlineBookmarks
 		ICoreProxy_ptr GetProxy () const;
 		void SetPluginProxy (QObject*);
 		QObject* GetBookmarksModel () const;
+		QDir GetBookmarksDir () const;
+		void SetBookamrksDir (const QDir&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

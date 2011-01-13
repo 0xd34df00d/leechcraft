@@ -178,7 +178,16 @@ namespace OnlineBookmarks
 
 		return obj->GetFavoritesModel ();
 	}
+	
+	QDir Core::GetBookmarksDir () const
+	{
+		return BookmarksDir_;
+	}
 
+	void Core::SetBookamrksDir (const QDir& path)
+	{
+		BookmarksDir_ = path;
+	}
 }
 }
 }

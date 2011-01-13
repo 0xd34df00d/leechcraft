@@ -40,42 +40,32 @@ namespace OnlineBookmarks
 
 	void SyncBookmarks::syncBookmarks ()
 	{
+		
 	}
 
 	void SyncBookmarks::uploadBookmarks ()
 	{
-		QList<QVariant> result;
-
-		if (!QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (),
-					"getItemsMap",
-					Q_RETURN_ARG ( QList<QVariant>, result)))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "getItemsMap() metacall failed"
-					<< result;
-			return;
-		}
-
+		QList<QVariant> result = GetBookmarksForUpload ();
 		QMap<AbstractBookmarksService*, QStringList> accountData;
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
 		{
 			service->UploadBookmarks (XmlSettingsManager::Instance ()->
 				property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (),
 				result);
-
-			connect (service,
-					SIGNAL (gotUploadReply (bool)),
-					this,
-					SLOT (readUploadReply (bool)),
-					Qt::UniqueConnection);
-
-			connect (service,
-					SIGNAL (gotParseError (const QString&)),
-					this,
-					SLOT (readErrorReply (const QString&)),
-					Qt::UniqueConnection);
+			
+		connect (service,
+				SIGNAL (gotUploadReply (bool)),
+				this,
+				SLOT (readUploadReply (bool)),
+				Qt::UniqueConnection);
+		
+		connect (service,
+				SIGNAL (gotParseError (const QString&)),
+				this,
+				SLOT (readErrorReply (const QString&)),
+				Qt::UniqueConnection);
 		}
-	}
+	} 
 
 	void SyncBookmarks::downloadBookmarks ()
 	{
@@ -83,16 +73,16 @@ namespace OnlineBookmarks
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
 		{
 			service->DownloadBookmarks (XmlSettingsManager::Instance ()->
-					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (),
+					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (), 
 					XmlSettingsManager::Instance ()->
 					property ((service->GetName () + "/LastDownload").toUtf8 ()).toInt ());
-
+			
 			connect (service,
 					SIGNAL (gotDownloadReply (const QList<QVariant>&, const QUrl&)),
 					this,
 					SLOT (readDownloadReply (const QList<QVariant>&, const QUrl&)),
 					Qt::UniqueConnection);
-
+			
 			connect (service,
 					SIGNAL (gotParseError (const QString&)),
 					this,
@@ -100,7 +90,7 @@ namespace OnlineBookmarks
 					Qt::UniqueConnection);
 		}
 	}
-
+	
 	void SyncBookmarks::readDownloadReply (const QList<QVariant>& importBookmarks, const QUrl &url)
 	{
 		Entity eBookmarks = Util::MakeEntity (QVariant (),
@@ -116,49 +106,115 @@ namespace OnlineBookmarks
 					<< sender ();
 			return;
 		}
-
+		
 		XmlSettingsManager::Instance ()->
-				setProperty ((service->GetName () + "/LastDownload").toUtf8 (),
+				setProperty ((service->GetName () + "/LastDownload").toUtf8 (), 
 				QDateTime::currentDateTime ().toTime_t ());
-
+		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
-		Core::Instance ().SendEntity (eBookmarks);
+		emit gotEntity (eBookmarks);
 	}
-
+	
 	void SyncBookmarks::readUploadReply (bool success)
 	{
-		if (!success)
+		Entity e;
+		
+		if (success)
 		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("Poshuku",
-						tr ("Error while sending bookmarks"),
-						PCritical_));
-			return;
+			AbstractBookmarksService *service = qobject_cast<AbstractBookmarksService*> (sender ());
+			if (!service)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "sender is not a AbstractBookmarksService"
+						<< sender ();
+				return;
+			}
+			
+			XmlSettingsManager::Instance ()->
+					setProperty ((service->GetName () + "/LastUpload").toUtf8 (), 
+					QDateTime::currentDateTime ().toTime_t ());
+		
+			e = Util::MakeNotification ("Poshuku", 
+					tr ("Bookmarks sent successfully"), 
+					PInfo_);
 		}
-
-		AbstractBookmarksService *service = qobject_cast<AbstractBookmarksService*> (sender ());
-		if (!service)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a AbstractBookmarksService"
-					<< sender ();
-			return;
-		}
-
-		XmlSettingsManager::Instance ()->
-				setProperty ((service->GetName () + "/LastUpload").toUtf8 (),
-				QDateTime::currentDateTime ().toTime_t ());
-
-		Core::Instance ().SendEntity (Util::MakeNotification ("Poshuku",
-					tr ("Bookmarks sent successfully"),
-					PInfo_));
+		else
+			e = Util::MakeNotification ("Poshuku", 
+				tr ("Error while sending bookmarks"), 
+				PCritical_);
+		
+		gotEntity (e);
 	}
-
+	
 	void SyncBookmarks::readErrorReply (const QString& errorReply)
 	{
-		Core::Instance ().SendEntity (Util::MakeNotification ("Poshuku",
-					errorReply,
-					PCritical_));
+		Entity e = Util::MakeNotification ("Poshuku", 
+				errorReply, 
+				PCritical_);
+		
+		gotEntity (e);
 	}
+	
+	QList<QVariant> SyncBookmarks::GetBookmarksForUpload ()
+	{
+		QList<QVariant> result;
+		
+		if (!QMetaObject::invokeMethod (Core::Instance ().GetBookmarksModel (), 
+					"getItemsMap", 
+					Q_RETURN_ARG ( QList<QVariant>, result)))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< tr ("getItemsMap() metacall failed")
+					<< result;
+			return QList<QVariant> ();
+		}
+		
+		QDir dir = Core::Instance ().GetBookmarksDir ();
+		QFile file(dir.absolutePath () + "/uploadBookmarks");
+		
+		if (!file.open (QIODevice::ReadWrite))
+		{
+			Entity e = Util::MakeNotification ("Poshuku", 
+					tr ("Unable to open upload bookmarks file."), 
+					PCritical_);
+			
+			gotEntity (e);
+		}
+		else
+		{
+			if (file.readAll ().isEmpty ())
+			{
+				QStringList urls;
+				Q_FOREACH (const QVariant& var, result)
+					urls << var.toMap () ["URL"].toString ();
+				
+				file.write (urls.join ("\n").toUtf8 ());
+				file.close ();
+			}
+			else
+			{
+				qDebug () << "yes";
+				QStringList urls = QString::fromUtf8 (file.readAll ()).split ("\n");
+				QList<QVariant> newBookmarks;
+				QStringList newBookmarksUrl;
+				Q_FOREACH (const QVariant& var, result)
+				{
+					QString url = var.toMap () ["URL"].toString ();
+					if (!urls.contains (url, Qt::CaseInsensitive))
+					{
+						qDebug () << url;
+						newBookmarks << var;
+						newBookmarksUrl << url;
+					}
+				}
+				file.write("\n");
+				file.write (newBookmarksUrl.join ("\n").toUtf8 ());
+				return newBookmarks;
+			}
+		}
+		return result;
+	}
+	
 }
 }
 }
