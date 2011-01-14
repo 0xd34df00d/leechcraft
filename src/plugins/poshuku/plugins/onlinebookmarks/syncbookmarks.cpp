@@ -154,7 +154,7 @@ namespace OnlineBookmarks
 				QDateTime::currentDateTime ().toTime_t ());
 	
 		e = Util::MakeNotification ("Poshuku", 
-				tr ("Bookmarks sent successfully"), 
+				tr ("Bookmarks have been sent successfully"), 
 				PInfo_);
 		
 		Core::Instance ().SendEntity (e);
@@ -217,7 +217,7 @@ namespace OnlineBookmarks
 		}
 		else
 		{
-			QStringList urls = QString::fromUtf8 (data).split ("\n");
+			QStringList urls = QString::fromUtf8 (data).split ('\n');
 			QList<QVariant> newBookmarks;
 			QStringList newBookmarksUrl;
 			

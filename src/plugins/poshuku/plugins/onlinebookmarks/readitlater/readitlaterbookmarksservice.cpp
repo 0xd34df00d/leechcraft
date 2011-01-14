@@ -244,9 +244,9 @@ namespace OnlineBookmarks
 		emit gotDownloadReply (bookmarks, QUrl (ServiceUrl));
 	}
 	
-	void ReadItLaterBookmarksService::ParseUploadReply (bool code)
+	void ReadItLaterBookmarksService::ParseUploadReply (bool success)
 	{
-		emit gotUploadReply (code);
+		emit gotUploadReply (success);
 	}
 
 }
