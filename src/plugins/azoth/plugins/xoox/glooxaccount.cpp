@@ -50,6 +50,7 @@ namespace Xoox
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 	{
+		AccState_.State_ = SOffline;
 		AccState_.Priority_ = -1;
 
 		connect (this,
