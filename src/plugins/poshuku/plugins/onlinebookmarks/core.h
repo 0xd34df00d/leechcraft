@@ -26,6 +26,7 @@
 class QStandardItemModel;
 class QNetworkAccessManager;
 
+
 namespace LeechCraft
 {
 namespace Plugins
@@ -38,6 +39,7 @@ namespace OnlineBookmarks
 {
 	class SyncBookmarks;
 	class AbstractBookmarksService;
+	class Settings;
 	
 	class Core : public QObject
 	{
@@ -50,6 +52,7 @@ namespace OnlineBookmarks
 		QObject *PluginProxy_;
 		QDir BookmarksDir_;
 		QStandardItemModel *ServiceModel_;
+		Settings *SettingsWidget_;
 		Core ();
 	public:
 		static Core& Instance ();
@@ -68,8 +71,9 @@ namespace OnlineBookmarks
 		QObject* GetBookmarksModel () const;
 		QDir GetBookmarksDir () const;
 		void SetBookamrksDir (const QDir&);
-		void SetServiceModel (QStandardItemModel*);
 		QStandardItemModel* GetServiceModel () const;
+		void SetSettingsWidget (Settings*);
+		Settings* GetSettingsWidget () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

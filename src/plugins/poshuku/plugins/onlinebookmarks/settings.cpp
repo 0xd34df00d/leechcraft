@@ -70,6 +70,8 @@ namespace OnlineBookmarks
 		BookmarksServices_ << new ReadItLaterBookmarksService (this);
 		SetupServices ();
 		ReadSettings ();
+		
+		Core::Instance().SetSettingsWidget (this);
 	}
 
 	void Settings::ClearFrameState ()
@@ -137,6 +139,12 @@ namespace OnlineBookmarks
 				!Model_->findItems (Ui_.Login_->text (),
 						Qt::MatchFixedString | Qt::MatchRecursive).isEmpty ()));
 	}
+
+	void Settings::SetConfirmSend (bool confirm)
+	{
+		Ui_.ConfirmSend_->setChecked (confirm);
+	}
+
 
 	QString Settings::GetSelectedName () const
 	{

@@ -53,6 +53,7 @@ namespace OnlineBookmarks
 	public:
 		Settings (QStandardItemModel*, OnlineBookmarks*);
 		QString GetSelectedName () const;
+		void SetConfirmSend (bool);
 	private:
 		void ClearFrameState ();
 		void SetupServices ();

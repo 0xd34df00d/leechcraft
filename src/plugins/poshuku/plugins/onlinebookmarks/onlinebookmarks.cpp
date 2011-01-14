@@ -135,6 +135,8 @@ namespace OnlineBookmarks
 		uploadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_upload");
 		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
 		downloadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_download");
+		QAction *downloadAll = menuBookmarksSyn->addAction (tr ("Download all"));
+		//sync->setProperty ("ActionIcon", "");
 
 		connect (sync,
 				SIGNAL (triggered ()),
@@ -144,12 +146,18 @@ namespace OnlineBookmarks
 		connect (uploadOnly,
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
-				SLOT (uploadBookmarks ()));
+				SLOT (uploadBookmarksAction ()));
 
 		connect (downloadOnly,
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
-				SLOT (downloadBookmarks ()));
+				SLOT (downloadBookmarksAction()));
+		
+		connect (downloadAll,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBookmarksSyncManager (),
+				SLOT (downloadAllBookmarksAction ()));
+	
 	}
 
 	void OnlineBookmarks::initPlugin (QObject *proxy)
@@ -163,8 +171,18 @@ namespace OnlineBookmarks
 		{
 			BookmarksDialog bd;
 			bd.SetBookmark (title, url, tags);
-			bd.exec ();
+			switch (bd.exec ())
+			{
+			case QDialog::Accepted:
+				bd.SendBookmark ();
+				break;
+			case QDialog::Rejected:
+				bd.reject ();
+				break;
+			}
 		}
+		else
+			Core::Instance ().GetBookmarksSyncManager ()->uploadBookmarksAction (title, url, tags);
 	}
 }
 }

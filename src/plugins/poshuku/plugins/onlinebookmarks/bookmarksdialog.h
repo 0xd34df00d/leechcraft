@@ -41,9 +41,8 @@ namespace OnlineBookmarks
 	public:
 		BookmarksDialog (QWidget* parent = 0, Qt::WindowFlags f = 0);
 		void SetBookmark (const QString&, const QString&, const QStringList&);
+		void SendBookmark ();
 	public slots:
-		void SendBookmark (bool);
-		void rejectSendBookmark (bool);
 		void sendBookmarkWithoutConfirm (bool);
 	};
 }

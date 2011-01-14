@@ -21,7 +21,9 @@
 #include <QPushButton>
 #include "core.h"
 #include "syncbookmarks.h"
+#include "settings.h"
 #include "xmlsettingsmanager.h"
+
 
 namespace LeechCraft
 {
@@ -38,20 +40,8 @@ namespace OnlineBookmarks
 	{
 		Ui_.setupUi (this);
 		
-		if (XmlSettingsManager::Instance ()->Property ("ShowServices", false).toBool ())
-			Ui_.ServicesView_->show ();
-		else
-			Ui_.ServicesView_->hide ();;
-		
-		connect (Ui_.Buttons_->button (QDialogButtonBox::Ok), 
-				SIGNAL (clicked (bool)),
-				this,
-				SLOT (sendBookmark (bool)));
-		
-		connect (Ui_.Buttons_->button (QDialogButtonBox::No), 
-				SIGNAL (clicked (bool)),
-				this,
-				SLOT (rejectSendBookmark (bool)));
+		Ui_.ServicesView_->setVisible (XmlSettingsManager::Instance ()->
+				Property ("ShowServices", false).toBool ());
 		
 		connect (Ui_.Buttons_->button (QDialogButtonBox::YesToAll), 
 				SIGNAL (clicked (bool)),
@@ -63,25 +53,24 @@ namespace OnlineBookmarks
 	{
 		Ui_.Title_->setText (title);
 		Ui_.URL_->setText (url);
-		Ui_.Tags_->setText (tags.join (","));
+		Ui_.Tags_->setText (tags.join (";"));
 		Ui_.Ask_->setText (tr ("Please check the services you would like to add the bookmark %1 to, if any.").arg (url));
 		Ui_.ServicesView_->setModel (Core::Instance ().GetServiceModel());
 	}
 
-	void BookmarksDialog::SendBookmark (bool checked)
+	void BookmarksDialog::SendBookmark ()
 	{
+		qDebug () << Ui_.Title_->text () << Ui_.URL_->text () << 
+				Ui_.Tags_->text ().split (';');
 		Core::Instance ().GetBookmarksSyncManager ()->
-				uploadBookmarks (Ui_.Title_->text (), Ui_.URL_->text (), Ui_.Tags_->text ().split (","));
-	}
-
-	void BookmarksDialog::rejectSendBookmark (bool checked)
-	{
-		QDialog::reject ();
+				uploadBookmarksAction (Ui_.Title_->text (), Ui_.URL_->text (), 
+				Ui_.Tags_->text ().split (';'));
 	}
 
 	void BookmarksDialog::sendBookmarkWithoutConfirm (bool checked)
 	{
-
+		Core::Instance ().GetSettingsWidget ()->SetConfirmSend (checked);
+		Core::Instance ().GetSettingsWidget ()->accept ();
 	}
 }
 }
