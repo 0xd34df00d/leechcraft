@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_IPROTOCOL_H
 #define PLUGINS_AZOTH_INTERFACES_IPROTOCOL_H
 #include <QFlags>
+#include <QMetaType>
 
 class QObject;
 
@@ -136,6 +137,7 @@ namespace LeechCraft
 	}
 }
 
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::IProtocol*);
 Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IProtocol,
 		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProtocol/1.0");
 
