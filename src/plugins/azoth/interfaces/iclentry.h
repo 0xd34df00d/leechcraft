@@ -117,11 +117,7 @@ namespace Plugins
 
 			/** This entry has a custom chat widget.
 			 */
-			FHasCustomChatWidget	= 0x0040,
-
-			/** This entry may have multiple delivery variants.
-			 */
-			FCanHaveMultiVariants	= 0x0080
+			FHasCustomChatWidget	= 0x0040
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature);
