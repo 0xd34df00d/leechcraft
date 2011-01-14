@@ -23,6 +23,7 @@
 #include "core.h"
 #include "abstractbookmarksservice.h"
 #include "xmlsettingsmanager.h"
+#include <sys/socket.h>
 
 namespace LeechCraft
 {
@@ -35,16 +36,17 @@ namespace Plugins
 namespace OnlineBookmarks
 {
 	SyncBookmarks::SyncBookmarks (QObject *parent)
+	: IsSync_ (false)
 	{
 	}
 
 	void SyncBookmarks::syncBookmarks ()
 	{
-		downloadBookmarks ();
-		uploadBookmarks ();
+		downloadBookmarksAction ();
+		IsSync_ = true;
 	}
 
-	void SyncBookmarks::uploadBookmarks (const QString& title, const QString& url, const QStringList& tags)
+	void SyncBookmarks::uploadBookmarksAction (const QString& title, const QString& url, const QStringList& tags)
 	{
 		QList<QVariant> result;
 		QMap<QString, QVariant> link;
@@ -52,10 +54,7 @@ namespace OnlineBookmarks
 		link ["URL"] = url;
 		link ["Tags"] = tags;
 		
-		if (title.isEmpty () && url.isEmpty () && tags.isEmpty ())
-			result = GetBookmarksForUpload (url);
-		else
-			result << link;
+		result = GetBookmarksForUpload (url);
 		
 		QMap<AbstractBookmarksService*, QStringList> accountData;
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
@@ -64,34 +63,10 @@ namespace OnlineBookmarks
 				property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (),
 				result);
 			
-		connect (service,
-				SIGNAL (gotUploadReply (bool)),
-				this,
-				SLOT (readUploadReply (bool)),
-				Qt::UniqueConnection);
-		
-		connect (service,
-				SIGNAL (gotParseError (const QString&)),
-				this,
-				SLOT (readErrorReply (const QString&)),
-				Qt::UniqueConnection);
-		}
-	} 
-
-	void SyncBookmarks::downloadBookmarks ()
-	{
-		QMap<AbstractBookmarksService*, QStringList> accountData;
-		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
-		{
-			service->DownloadBookmarks (XmlSettingsManager::Instance ()->
-					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (), 
-					XmlSettingsManager::Instance ()->
-					property ((service->GetName () + "/LastDownload").toUtf8 ()).toInt ());
-			
 			connect (service,
-					SIGNAL (gotDownloadReply (const QList<QVariant>&, const QUrl&)),
+					SIGNAL (gotUploadReply (bool)),
 					this,
-					SLOT (readDownloadReply (const QList<QVariant>&, const QUrl&)),
+					SLOT (readUploadReply (bool)),
 					Qt::UniqueConnection);
 			
 			connect (service,
@@ -99,9 +74,29 @@ namespace OnlineBookmarks
 					this,
 					SLOT (readErrorReply (const QString&)),
 					Qt::UniqueConnection);
+					
+			connect (service,
+					SIGNAL (gotInformationMessage (const QString&)),
+					this,
+					SLOT (readInformationMessage (const QString&)));
 		}
+	} 
+
+	void SyncBookmarks::downloadBookmarksAction ()
+	{
+		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
+			downloadBookmarks(service, XmlSettingsManager::Instance ()->
+					Property ((service->GetName () + "/LastDownload").toUtf8 (), 
+					QVariant (QDateTime::fromString ("01.01.1970", "dd.MM.yyyy").toTime_t ())).toInt ());
 	}
-	
+
+	void SyncBookmarks::downloadAllBookmarksAction ()
+	{
+		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
+			downloadBookmarks(service, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy").toTime_t ());
+	}
+
+
 	void SyncBookmarks::readDownloadReply (const QList<QVariant>& importBookmarks, const QUrl &url)
 	{
 		Entity eBookmarks = Util::MakeEntity (QVariant (),
@@ -118,12 +113,57 @@ namespace OnlineBookmarks
 			return;
 		}
 		
+		QDir dir = Core::Instance ().GetBookmarksDir ();
+		QFile file (dir.absolutePath () + "/uploadBookmarks");
+		
+		if (!file.open (QIODevice::ReadWrite))
+		{
+			Entity e = Util::MakeNotification ("Poshuku", 
+					tr ("Unable to open upload configuration file."), 
+					PCritical_);
+			
+			Core::Instance ().SendEntity (e);
+			return;
+		}
+		
+		const QByteArray& data = file.readAll ();
+		if (data.isEmpty ())
+		{
+			QStringList urls;
+			Q_FOREACH (const QVariant& var, importBookmarks)
+				urls << var.toMap () ["URL"].toString ();
+			
+			file.write (urls.join ("\n").toUtf8 ());
+			file.write ("\n");
+		}
+		else
+		{
+			QStringList urls = QString::fromUtf8 (data).split ('\n');
+			QStringList newBookmarksUrl;
+			
+			Q_FOREACH (const QVariant& var, importBookmarks)
+			{
+				QString currentUrl = var.toMap () ["URL"].toString ();
+				if (!urls.contains (currentUrl, Qt::CaseInsensitive))
+					newBookmarksUrl << currentUrl;
+			}
+			file.write (newBookmarksUrl.join ("\n").toUtf8 ());
+			file.write ("\n");
+		}
+		file.close ();
+		
 		XmlSettingsManager::Instance ()->
 				setProperty ((service->GetName () + "/LastDownload").toUtf8 (), 
 				QDateTime::currentDateTime ().toTime_t ());
 		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		Core::Instance ().SendEntity (eBookmarks);
+		
+		if (IsSync_)
+		{
+			uploadBookmarksAction ();
+			IsSync_ = false;
+		}
 	}
 	
 	void SyncBookmarks::readUploadReply (bool success)
@@ -152,9 +192,9 @@ namespace OnlineBookmarks
 		XmlSettingsManager::Instance ()->
 				setProperty ((service->GetName () + "/LastUpload").toUtf8 (), 
 				QDateTime::currentDateTime ().toTime_t ());
-	
+
 		e = Util::MakeNotification ("Poshuku", 
-				tr ("Bookmarks sent successfully"), 
+				tr ("Bookmarks have been sent successfully"), 
 				PInfo_);
 		
 		Core::Instance ().SendEntity (e);
@@ -217,7 +257,7 @@ namespace OnlineBookmarks
 		}
 		else
 		{
-			QStringList urls = QString::fromUtf8 (data).split ("\n");
+			QStringList urls = QString::fromUtf8 (data).split ('\n');
 			QList<QVariant> newBookmarks;
 			QStringList newBookmarksUrl;
 			
@@ -232,6 +272,7 @@ namespace OnlineBookmarks
 			}
 			file.write (newBookmarksUrl.join ("\n").toUtf8 ());
 			file.write ("\n");
+			file.close ();
 			
 			return newBookmarks;
 		}
@@ -239,6 +280,24 @@ namespace OnlineBookmarks
 		return result;
 	}
 	
+	void SyncBookmarks::downloadBookmarks (AbstractBookmarksService *service, uint fromTime)
+	{
+		service->DownloadBookmarks (XmlSettingsManager::Instance ()->
+					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (), 
+					fromTime);
+			
+		connect (service,
+				SIGNAL (gotDownloadReply (const QList<QVariant>&, const QUrl&)),
+				this,
+				SLOT (readDownloadReply (const QList<QVariant>&, const QUrl&)),
+				Qt::UniqueConnection);
+		
+		connect (service,
+				SIGNAL (gotParseError (const QString&)),
+				this,
+				SLOT (readErrorReply (const QString&)),
+				Qt::UniqueConnection);
+	}
 }
 }
 }

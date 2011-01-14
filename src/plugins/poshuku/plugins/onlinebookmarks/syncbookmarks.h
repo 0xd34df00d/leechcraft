@@ -32,21 +32,27 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
+	class AbstractBookmarksService;
+	
 	class SyncBookmarks : public QObject
 	{
 		Q_OBJECT
+		
+		bool IsSync_;
 	public:
 		SyncBookmarks (QObject *parent = 0);
 	public slots:
 		void syncBookmarks ();
-		void uploadBookmarks (const QString& title = QString (), const QString& url = QString (), 
+		void uploadBookmarksAction (const QString& title = QString (), const QString& url = QString (), 
 				const QStringList& tags = QStringList ());
-		void downloadBookmarks ();
+		void downloadBookmarksAction ();
+		void downloadAllBookmarksAction ();
 		void readDownloadReply (const QList<QVariant>&, const QUrl&);
 		void readUploadReply (bool);
 		void readErrorReply (const QString&);
 	private:
 		QList<QVariant> GetBookmarksForUpload (const QString& url = QString ());
+		void downloadBookmarks (AbstractBookmarksService*, uint);
 	};
 }
 }

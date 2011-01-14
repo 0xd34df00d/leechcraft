@@ -102,7 +102,7 @@ namespace OnlineBookmarks
 		}
 	}
 
-	void ReadItLaterBookmarksService::UploadBookmarks (const QStringList& logins, const QList<QVariant>& bookamrks)
+	void ReadItLaterBookmarksService::UploadBookmarks (const QStringList& logins, const QList<QVariant>& bookmarks)
 	{
 		Type_ = Upload_;
 		
@@ -114,7 +114,7 @@ namespace OnlineBookmarks
 				gotParseError (tr ("Invalid password"));
 				return;
 			}
-			SendBookmarks (login, password, bookamrks);
+			SendBookmarks (login, password, bookmarks);
 		}
 	}
 
@@ -135,8 +135,6 @@ namespace OnlineBookmarks
 			break;
 		case Upload_:
 			ParseUploadReply ((Reply_->attribute (QNetworkRequest::HttpStatusCodeAttribute) == 200));
-			break;
-		case Sync_:
 			break;
 		}
 	}
@@ -188,6 +186,11 @@ namespace OnlineBookmarks
 			i++;
 		}
 		
+		if (exportBookmarks.isEmpty ())
+		{
+			return;
+		}
+			
 		QJson::Serializer serializer;
 		QByteArray jsonBookmarks = serializer.serialize (exportBookmarks);
 		QByteArray jsonTags = serializer.serialize (exportTags);
