@@ -210,6 +210,19 @@ namespace LeechCraft
 				return result;
 			}
 
+			QList<Plugins::IProtocol*> Core::GetProtocols () const
+			{
+				QList<Plugins::IProtocol*> result;
+				Q_FOREACH (QObject *protoPlugin, ProtocolPlugins_)
+				{
+					QObjectList protos = qobject_cast<Plugins::IProtocolPlugin*> (protoPlugin)->GetProtocols ();
+					Q_FOREACH (QObject *obj, protos)
+						result << qobject_cast<Plugins::IProtocol*> (obj);
+				}
+				result.removeAll (0);
+				return result;
+			}
+
 			void Core::SendEntity (const LeechCraft::Entity& e)
 			{
 				emit gotEntity (e);

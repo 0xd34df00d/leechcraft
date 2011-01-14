@@ -28,6 +28,7 @@
 #include "setstatusdialog.h"
 #include "contactlistdelegate.h"
 #include "xmlsettingsmanager.h"
+#include "addcontactdialog.h"
 
 namespace LeechCraft
 {
@@ -68,13 +69,13 @@ namespace Azoth
 		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
 		lay->insertWidget (0, UpperBar_);
 
-		QAction *accountsList = new QAction (tr ("Accounts..."),
-				this);
-		connect (accountsList,
-				SIGNAL (triggered ()),
+		MenuGeneral_->addAction (tr ("Accounts..."),
 				this,
 				SLOT (showAccountsList ()));
-		MenuGeneral_->addAction (accountsList);
+		MenuGeneral_->addSeparator ();
+		MenuGeneral_->addAction (tr ("Add contact..."),
+				this,
+				SLOT (handleAddContactRequested ()));
 
 		UpperBar_->addAction (MenuGeneral_->menuAction ());
 
@@ -169,6 +170,18 @@ namespace Azoth
 		AccountsListDialog *dia = new AccountsListDialog (this);
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->exec ();
+	}
+
+	void MainWidget::handleAddContactRequested ()
+	{
+		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+
+		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
+					dia->GetReason (),
+					dia->GetNick (),
+					dia->GetGroups ());
 	}
 
 	namespace

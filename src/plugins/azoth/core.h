@@ -20,9 +20,10 @@
 #define PLUGINS_AZOTH_CORE_H
 #include <QObject>
 #include <QSet>
-#include <interfaces/iinfo.h>
-#include <interfaces/azothcommon.h>
-#include <interfaces/imucentry.h>
+#include "interfaces/iinfo.h"
+#include "interfaces/azothcommon.h"
+#include "interfaces/imucentry.h"
+#include "interfaces/iprotocol.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -139,6 +140,8 @@ namespace LeechCraft
 				QAbstractItemModel* GetCLModel () const;
 				ChatTabsManager* GetChatTabsManager () const;
 				QList<Plugins::IAccount*> GetAccounts () const;
+				QList<Plugins::IProtocol*> GetProtocols () const;
+
 				void SendEntity (const Entity&);
 
 				/** Returns contact list entry with the given id. The id

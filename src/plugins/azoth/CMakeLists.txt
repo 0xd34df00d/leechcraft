@@ -39,6 +39,7 @@ SET (SRCS
 	textedit.cpp
 	xmlsettingsmanager.cpp
 	contactlistdelegate.cpp
+	addcontactdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -54,6 +55,7 @@ SET (HEADERS
 	textedit.h
 	xmlsettingsmanager.h
 	contactlistdelegate.h
+	addcontactdialog.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
@@ -64,6 +66,7 @@ SET (FORMS
 	chattab.ui
 	accountslistdialog.ui
 	setstatusdialog.ui
+	addcontactdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS

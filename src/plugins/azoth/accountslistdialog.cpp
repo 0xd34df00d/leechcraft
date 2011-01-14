@@ -20,9 +20,8 @@
 #include <QMenu>
 #include <QStandardItemModel>
 #include "interfaces/iaccount.h"
-#include "core.h"
-#include <boost/graph/graph_concepts.hpp>
 #include "interfaces/iprotocol.h"
+#include "core.h"
 
 namespace LeechCraft
 {
