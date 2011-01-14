@@ -289,6 +289,10 @@ namespace LeechCraft
 				 */
 				void handleStatusChanged (const Plugins::EntryStatus& status, const QString& variant);
 
+				/** Handles the event of name changes in plugin.
+				 */
+				void handleEntryNameChanged (const QString& newName);
+
 				/** Handles the message receival from contact list
 				 * entries.
 				 */
@@ -308,6 +312,7 @@ namespace LeechCraft
 				 * a ICLEntry.
 				 */
 				void updateItem ();
+
 				void showVCard ();
 
 				/** Handles the number of unread messages for the given

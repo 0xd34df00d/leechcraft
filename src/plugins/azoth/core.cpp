@@ -340,6 +340,10 @@ namespace LeechCraft
 						this,
 						SLOT (handleEntryGotMessage (QObject*)));
 				connect (clEntry->GetObject (),
+						SIGNAL (nameChanged (const QString&)),
+						this,
+						SLOT (handleEntryNameChanged (const QString&)));
+				connect (clEntry->GetObject (),
 						SIGNAL (avatarChanged (const QImage&)),
 						this,
 						SLOT (updateItem ()));
@@ -1001,6 +1005,21 @@ namespace LeechCraft
 				}
 
 				HandleStatusChanged (status, entry, variant);
+			}
+
+			void Core::handleEntryNameChanged (const QString& newName)
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender is not a ICLEntry:"
+							<< sender ();
+					return;
+				}
+
+				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+					item->setText (newName);
 			}
 
 			void Core::handleEntryGotMessage (QObject *msgObj)
