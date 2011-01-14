@@ -86,7 +86,8 @@ namespace Xoox
 		QByteArray GetAccountID () const;
 		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
-		void ChangeState (State, const QString& = QString ());
+		EntryStatus GetState () const;
+		void ChangeState (const EntryStatus&);
 		void Synchronize ();
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);

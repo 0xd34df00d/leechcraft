@@ -22,6 +22,7 @@
 #include <QMetaType>
 #include <QStringList>
 #include <interfaces/azothcommon.h>
+#include "iclentry.h"
 
 namespace LeechCraft
 {
@@ -46,9 +47,22 @@ namespace Plugins
 		 */
 		enum AccountFeature
 		{
-			FRenamable				= 0x01, //!< FRenamable This account can be renamed, so calls to RenameAccount() would not be senseless.
-			FSupportsXA				= 0x02, //!< FSupportsXA This account supports Extended Away statuses.
-			FHasConfigurationDialog	= 0x04  //!< FHasConfigurationDialog This account has configuration dialog.
+			/** This account can be renamed, so calls to RenameAccount()
+			 * would not be senseless.
+			 */
+			FRenamable = 0x01,
+
+			/** This account supports Extended Away statuses.
+			 */
+			FSupportsXA = 0x02,
+
+			/** This account has configuration dialog.
+			 */
+			FHasConfigurationDialog = 0x04,
+
+			/** This account can add accounts to CL while being offline.
+			 */
+			FCanAddContactsInOffline = 0x08
 		};
 
 		Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);
@@ -130,16 +144,20 @@ namespace Plugins
 		 */
 		virtual void OpenConfigurationDialog () = 0;
 
-		/** @brief Sets the state of this account.
+		/** @brief Returns the current status of this account.
+		 *
+		 * @return Current status of this account.
+		 */
+		virtual EntryStatus GetState () const = 0;
+
+		/** @brief Sets the status of this account.
 		 *
 		 * If the account was offline, it is expected to connect at this
 		 * point automatically.
 		 *
-		 * @param[in] state The new state of the account.
-		 * @param[in] msg The status message, if applicable.
+		 * @param[in] status The new status of this account.
 		 */
-		virtual void ChangeState (State state,
-				const QString& msg = QString ()) = 0;
+		virtual void ChangeState (const EntryStatus& status) = 0;
 
 		/** @brief Synchronizes changes made to this account locally
 		 * with any remote, if applicable.

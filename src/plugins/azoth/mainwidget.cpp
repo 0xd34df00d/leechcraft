@@ -162,7 +162,7 @@ namespace Azoth
 		if (ssd->exec () != QDialog::Accepted)
 			return;
 
-		acc->ChangeState (ssd->GetState (), ssd->GetStatusText ());
+		acc->ChangeState (Plugins::EntryStatus (ssd->GetState (), ssd->GetStatusText ()));
 	}
 
 	void MainWidget::showAccountsList ()
