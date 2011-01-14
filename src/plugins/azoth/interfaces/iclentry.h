@@ -403,6 +403,15 @@ namespace Plugins
 		 * @note This function is expected to be a signal in subclesses.
 		 */
 		virtual void rawinfoChanged (const QString&) = 0;
+
+		/** @brief This signal should be emitted whenever the entry
+		 * changes name.
+		 *
+		 * @note This function is expected to be a signal in subclasses.
+		 *
+		 * @param[out] name The new name of this entry.
+		 */
+		virtual void nameChanged (const QString& name) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);
