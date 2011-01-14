@@ -54,7 +54,9 @@ namespace OnlineBookmarks
 
 	void Core::Init ()
 	{
-		Model_ = new QStandardItemModel;
+		Model_ = new QStandardItemModel (this);
+		ServiceModel_ = new QStandardItemModel (this);
+		
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
 		settings.beginGroup ("Account");
@@ -115,7 +117,7 @@ namespace OnlineBookmarks
 		e.Additional_ ["Values"] = values;
 		e.Additional_ ["Overwrite"] = true;
 
-		Core::Instance ().SendEntity (e);
+		SendEntity (e);
 	}
 
 	QString Core::GetPassword (const QString& account, const QString& service) const
@@ -188,6 +190,17 @@ namespace OnlineBookmarks
 	{
 		BookmarksDir_ = path;
 	}
+	
+	void Core::SetServiceModel (QStandardItemModel *model)
+	{
+		ServiceModel_ = model;
+	}
+	
+	QStandardItemModel* Core::GetServiceModel () const
+	{
+		return ServiceModel_;
+	}
+
 }
 }
 }

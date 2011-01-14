@@ -40,7 +40,8 @@ namespace OnlineBookmarks
 
 	void SyncBookmarks::syncBookmarks ()
 	{
-		
+		downloadBookmarks ();
+		uploadBookmarks ();
 	}
 
 	void SyncBookmarks::uploadBookmarks (const QString& title, const QString& url, const QStringList& tags)
@@ -122,7 +123,7 @@ namespace OnlineBookmarks
 				QDateTime::currentDateTime ().toTime_t ());
 		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
-		emit gotEntity (eBookmarks);
+		Core::Instance ().SendEntity (eBookmarks);
 	}
 	
 	void SyncBookmarks::readUploadReply (bool success)
@@ -135,7 +136,7 @@ namespace OnlineBookmarks
 				tr ("Error while sending bookmarks"), 
 				PCritical_);
 		
-			gotEntity (e);
+			Core::Instance ().SendEntity (e);
 			return;
 		}
 		
@@ -156,7 +157,7 @@ namespace OnlineBookmarks
 				tr ("Bookmarks sent successfully"), 
 				PInfo_);
 		
-		gotEntity (e);
+		Core::Instance ().SendEntity (e);
 	}
 	
 	void SyncBookmarks::readErrorReply (const QString& errorReply)
@@ -165,7 +166,7 @@ namespace OnlineBookmarks
 				errorReply, 
 				PCritical_);
 		
-		gotEntity (e);
+		Core::Instance ().SendEntity (e);
 	}
 	
 	QList<QVariant> SyncBookmarks::GetBookmarksForUpload (const QString& url)
@@ -199,7 +200,7 @@ namespace OnlineBookmarks
 					tr ("Unable to open upload configuration file."), 
 					PCritical_);
 			
-			gotEntity (e);
+			Core::Instance ().SendEntity (e);
 			return result;
 		}
 		

@@ -1,4 +1,4 @@
-/*******************************************************************
+/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010  Oleg Linkin
  *
@@ -16,11 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
 
-#include <QObject>
-#include "interfaces/structures.h"
+#include <QDialog>
+
+#include "ui_bookmarksdialog.h"
 
 namespace LeechCraft
 {
@@ -32,25 +33,22 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class SyncBookmarks : public QObject
+	class BookmarksDialog : public QDialog
 	{
 		Q_OBJECT
+		
+		Ui::BookmarksDialog_ Ui_;
 	public:
-		SyncBookmarks (QObject *parent = 0);
+		BookmarksDialog (QWidget* parent = 0, Qt::WindowFlags f = 0);
+		void SetBookmark (const QString&, const QString&, const QStringList&);
 	public slots:
-		void syncBookmarks ();
-		void uploadBookmarks (const QString& title = QString (), const QString& url = QString (), 
-				const QStringList& tags = QStringList ());
-		void downloadBookmarks ();
-		void readDownloadReply (const QList<QVariant>&, const QUrl&);
-		void readUploadReply (bool);
-		void readErrorReply (const QString&);
-	private:
-		QList<QVariant> GetBookmarksForUpload (const QString& url = QString ());
+		void SendBookmark (bool);
+		void rejectSendBookmark (bool);
+		void sendBookmarkWithoutConfirm (bool);
 	};
 }
 }
 }
 }
 }
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H

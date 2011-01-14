@@ -9,6 +9,7 @@ SET (ONLINEBOOKMARKS_SRCS
 	settings.cpp
 	syncbookmarks.cpp
 	core.cpp
+	bookmarksdialog.cpp
 	readitlater/readitlaterbookmarksservice.cpp
 	)
 SET (ONLINEBOOKMARKS_HEADERS
@@ -17,11 +18,13 @@ SET (ONLINEBOOKMARKS_HEADERS
 	abstractbookmarksservice.h
 	settings.h
 	syncbookmarks.h
+	bookmarksdialog.h
 	core.h
 	readitlater/readitlaterbookmarksservice.h
 	)
 SET (ONLINEBOOKMARKS_FORMS
 	settings.ui
+	bookmarksdialog.ui
 	)
 SET (ONLINEBOOKMARKS_RESOURCES poshukuonlinebookmarksresources.qrc
 	readitlater/onlinebookmarksreaditlater.qrc

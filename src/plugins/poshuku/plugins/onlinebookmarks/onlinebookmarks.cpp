@@ -29,6 +29,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "syncbookmarks.h"
+#include "bookmarksdialog.h"
 
 namespace LeechCraft
 {
@@ -158,7 +159,12 @@ namespace OnlineBookmarks
 	
 	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr proxy, QString title, QString url, QStringList tags)
 	{
-		
+		if (XmlSettingsManager::Instance ()->Property ("ConfirmOnAddition", false).toBool ())
+		{
+			BookmarksDialog bd;
+			bd.SetBookmark (title, url, tags);
+			bd.exec ();
+		}
 	}
 }
 }

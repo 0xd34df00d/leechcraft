@@ -80,8 +80,7 @@ namespace OnlineBookmarks
 
 	void Settings::SetupServices ()
 	{
-		ServicesModel_ = new QStandardItemModel (this);
-		Ui_.ActiveServices_->setModel (ServicesModel_);
+		Ui_.ActiveServices_->setModel (Core::Instance ().GetServiceModel ());
 
 		Q_FOREACH (AbstractBookmarksService *as, BookmarksServices_)
 		{
@@ -90,7 +89,7 @@ namespace OnlineBookmarks
 
 			QStandardItem *item = new QStandardItem (as->GetIcon (), as->GetName ());
 			item->setCheckable (true);
-			ServicesModel_->appendRow (item);
+			Core::Instance ().GetServiceModel ()->appendRow (item);
 
 			connect (as,
 					SIGNAL (gotValidReply (bool)),
@@ -119,10 +118,10 @@ namespace OnlineBookmarks
 		QList<AbstractBookmarksService*> activeServices;
 
 		if (activeServicesNames.size ())
-			for (int i = 0, rows = ServicesModel_->rowCount (); i < rows; i++)
-				if (activeServicesNames.contains (ServicesModel_->item (i)->text ()))
+			for (int i = 0, rows = Core::Instance ().GetServiceModel ()->rowCount (); i < rows; i++)
+				if (activeServicesNames.contains (Core::Instance ().GetServiceModel ()->item (i)->text ()))
 				{
-					ServicesModel_->item (i)->setCheckState (Qt::Checked);
+					Core::Instance ().GetServiceModel ()->item (i)->setCheckState (Qt::Checked);
 					activeServices << BookmarksServices_.at (i);
 				}
 
@@ -161,12 +160,12 @@ namespace OnlineBookmarks
 
 		QList<AbstractBookmarksService*> activeServices;
 		QStringList activeServicesNames;
-		int rows = ServicesModel_->rowCount ();
+		int rows = Core::Instance ().GetServiceModel ()->rowCount ();
 		for (int i = 0; i < rows; i++)
-			if (ServicesModel_->item (i)->checkState () == Qt::Checked)
+			if (Core::Instance ().GetServiceModel ()->item (i)->checkState () == Qt::Checked)
 			{
 				activeServices << BookmarksServices_.at (i);
-				activeServicesNames << ServicesModel_->item (i)->text ();
+				activeServicesNames << Core::Instance ().GetServiceModel ()->item (i)->text ();
 			}
 
 		XmlSettingsManager::Instance ()->
@@ -333,9 +332,9 @@ namespace OnlineBookmarks
 		else if (Ui_.Edit_->isChecked ())
 			Ui_.Edit_->toggle ();
 
-		for (int i = 0, rows = ServicesModel_->rowCount (); i < rows; i++)
-			if (ServicesModel_->item (i)->text () == Ui_.Services_->currentText ())
-				ServicesModel_->item (i)->setCheckState (Qt::Checked);
+		for (int i = 0, rows = Core::Instance ().GetServiceModel ()->rowCount (); i < rows; i++)
+			if (Core::Instance ().GetServiceModel ()->item (i)->text () == Ui_.Services_->currentText ())
+				Core::Instance ().GetServiceModel ()->item (i)->setCheckState (Qt::Checked);
 	}
 }
 }

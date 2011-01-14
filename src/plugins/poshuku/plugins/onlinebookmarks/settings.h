@@ -49,7 +49,6 @@ namespace OnlineBookmarks
 		Ui::Settings_ Ui_;
 		OnlineBookmarks *OnlineBookmarks_;
 		QStandardItemModel *Model_;
-		QStandardItemModel *ServicesModel_;
 		QList<AbstractBookmarksService*> BookmarksServices_;
 	public:
 		Settings (QStandardItemModel*, OnlineBookmarks*);

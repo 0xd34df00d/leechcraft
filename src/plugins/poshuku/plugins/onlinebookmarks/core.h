@@ -49,7 +49,7 @@ namespace OnlineBookmarks
 		ICoreProxy_ptr Proxy_;
 		QObject *PluginProxy_;
 		QDir BookmarksDir_;
-		
+		QStandardItemModel *ServiceModel_;
 		Core ();
 	public:
 		static Core& Instance ();
@@ -68,6 +68,8 @@ namespace OnlineBookmarks
 		QObject* GetBookmarksModel () const;
 		QDir GetBookmarksDir () const;
 		void SetBookamrksDir (const QDir&);
+		void SetServiceModel (QStandardItemModel*);
+		QStandardItemModel* GetServiceModel () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
