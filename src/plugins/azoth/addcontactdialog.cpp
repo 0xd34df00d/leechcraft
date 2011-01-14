@@ -88,6 +88,10 @@ namespace Azoth
 				continue;
 			}
 
+			if (acc->GetState ().State_ == Plugins::SOffline &&
+					!(acc->GetAccountFeatures () & Plugins::IAccount::FCanAddContactsInOffline))
+				continue;
+
 			Ui_.Account_->addItem (QString ("%1 (%2)")
 						.arg (acc->GetAccountName ())
 						.arg (acc->GetOurNick ()),
