@@ -321,6 +321,7 @@ namespace LeechCraft
 				 */
 				void handleClearUnreadMsgCount (QObject *object);
 
+				void handleActionRenameTriggered ();
 				void handleActionVCardTriggered ();
 
 				void handleActionOpenChatTriggered ();

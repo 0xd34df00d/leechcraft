@@ -38,6 +38,7 @@
 #include "pluginmanager.h"
 #include "proxyobject.h"
 #include "xmlsettingsmanager.h"
+#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -511,11 +512,13 @@ namespace LeechCraft
 				const QHash<QByteArray, QAction*>& id2action = Entry2Actions_ [entry];
 				QList<QAction*> result;
 				result << id2action.value ("openchat");
+				result << id2action.value ("rename");
 				result << id2action.value ("kick");
 				result << id2action.value ("ban");
 				result << id2action.value ("sep_afterban");
 				result << id2action.value ("changerole");
 				result << id2action.value ("changeaffiliation");
+				result << id2action.value ("sep_afterroles");
 				result << id2action.value ("vcard");
 				result << id2action.value ("leave");
 				result << id2action.value ("authorize");
@@ -559,6 +562,18 @@ namespace LeechCraft
 						SLOT (handleActionOpenChatTriggered ()));
 				Entry2Actions_ [entry] ["openchat"] = openChat;
 				Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
+
+				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSupportsRenames)
+				{
+					QAction *rename = new QAction (tr ("Rename"), entry->GetObject ());
+					connect (rename,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionRenameTriggered ()));
+					rename->setProperty ("ActionIcon", "azoth_rename");
+					Entry2Actions_ [entry] ["rename"] = rename;
+					Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
+				}
 
 				if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
 				{
@@ -665,6 +680,10 @@ namespace LeechCraft
 					ownerAff->setCheckable (true);
 					ownerAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCAOwner));
+
+					sep = Util::CreateSeparator (entry->GetObject ());
+					Entry2Actions_ [entry] ["sep_afterroles"] = sep;
+					Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 				}
 				else if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC)
 				{
@@ -1199,6 +1218,35 @@ namespace LeechCraft
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
 				ChatTabsManager_->OpenChat (entry);
+			}
+
+			void Core::handleActionRenameTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+
+				const QString& oldName = entry->GetEntryName ();
+				const QString& newName = QInputDialog::getText (0,
+						tr ("Rename contact"),
+						tr ("Please enter new name for the contact %1:")
+							.arg (oldName),
+						QLineEdit::Normal,
+						oldName);
+
+				if (newName.isEmpty () ||
+						oldName == newName)
+					return;
+
+				entry->SetEntryName (newName);
 			}
 
 			void Core::handleActionVCardTriggered ()
