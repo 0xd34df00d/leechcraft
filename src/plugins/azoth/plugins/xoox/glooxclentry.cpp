@@ -25,6 +25,7 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/azothcommon.h>
 #include "glooxaccount.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,10 @@ namespace Xoox
 	: EntryBase (parent)
 	, RI_ (ri)
 	{
+		connect (this,
+				SIGNAL (nameChanged (const QString&)),
+				&Core::Instance (),
+				SLOT (saveRoster ()));
 	}
 
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
@@ -47,6 +52,10 @@ namespace Xoox
 	, RI_ (0)
 	, ODS_ (ods)
 	{
+		connect (this,
+				SIGNAL (nameChanged (const QString&)),
+				&Core::Instance (),
+				SLOT (saveRoster ()));
 	}
 
 	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const

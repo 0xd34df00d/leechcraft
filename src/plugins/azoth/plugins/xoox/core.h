@@ -58,8 +58,9 @@ namespace Xoox
 		void SendEntity (const Entity&);
 	private:
 		void LoadRoster ();
-	private slots:
+	public slots:
 		void saveRoster ();
+	private slots:
 		void saveAvatarFor (GlooxCLEntry* = 0);
 		void handleItemsAdded (const QList<QObject*>&);
 	signals:
