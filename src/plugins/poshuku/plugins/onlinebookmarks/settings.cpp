@@ -79,8 +79,15 @@ namespace OnlineBookmarks
 
 	void Settings::SetupServices ()
 	{
-		Ui_.ActiveServices_->setModel (Core::Instance ().GetServiceModel ());
-
+		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Core::Instance ().GetServiceModel ());
+		if (!model)
+		{
+			qWarning() << Q_FUNC_INFO
+					<< "model is not QAbstractItemModel"
+					<< Core::Instance ().GetServiceModel ();
+			return;
+		}
+		
 		Q_FOREACH (AbstractBookmarksService *as, BookmarksServices_)
 		{
 			Ui_.Services_->addItem (as->GetIcon (), as->GetName (),
@@ -88,7 +95,7 @@ namespace OnlineBookmarks
 
 			QStandardItem *item = new QStandardItem (as->GetIcon (), as->GetName ());
 			item->setCheckable (true);
-			Core::Instance ().GetServiceModel ()->appendRow (item);
+			model->appendRow (item);
 
 			connect (as,
 					SIGNAL (gotValidReply (bool)),
@@ -99,28 +106,24 @@ namespace OnlineBookmarks
 
 	void Settings::ReadSettings ()
 	{
-		Ui_.Bookmarks2Services_->setChecked (XmlSettingsManager::Instance ()->
-				Property ("Sync/IsLocal2Service", 0).toBool ());
-		Ui_.Bookmarks2ServicesPeriod_->setCurrentIndex (XmlSettingsManager::Instance ()->
-				Property ("Sync/Local2ServicePeriod", 0).toInt ());
-		Ui_.Services2Bookmarks_->setChecked (XmlSettingsManager::Instance ()->
-				Property ("Sync/IsService2Local", 1).toBool ());
-		Ui_.Services2BookmarksPeriod_->setCurrentIndex (XmlSettingsManager::Instance ()->
-				Property ("Sync/Service2LocalPeriod", 0).toInt ());
 		QStringList  activeServicesNames = XmlSettingsManager::Instance ()->
 				Property ("Sync/ActiveServices", QString ("")).toStringList ();
-		Ui_.ConfirmSend_->setChecked (XmlSettingsManager::Instance ()->
-				Property ("ConfirmOnAddition", false).toBool ());
-		Ui_.ShowServices_->setChecked (XmlSettingsManager::Instance ()->
-				Property ("ShowServices", false).toBool ());
 		
 		QList<AbstractBookmarksService*> activeServices;
-
+		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Core::Instance ().GetServiceModel ());
+		if (!model)
+		{
+			qWarning() << Q_FUNC_INFO
+					<< "model is not QAbstractItemModel"
+					<< Core::Instance ().GetServiceModel ();
+			return;
+		}
+		
 		if (activeServicesNames.size ())
-			for (int i = 0, rows = Core::Instance ().GetServiceModel ()->rowCount (); i < rows; i++)
-				if (activeServicesNames.contains (Core::Instance ().GetServiceModel ()->item (i)->text ()))
+			for (int i = 0, rows = model->rowCount (); i < rows; i++)
+				if (activeServicesNames.contains (model->item (i)->text ()))
 				{
-					Core::Instance ().GetServiceModel ()->item (i)->setCheckState (Qt::Checked);
+					model->item (i)->setCheckState (Qt::Checked);
 					activeServices << BookmarksServices_.at (i);
 				}
 
@@ -139,7 +142,6 @@ namespace OnlineBookmarks
 
 	void Settings::SetConfirmSend (bool confirm)
 	{
-		Ui_.ConfirmSend_->setChecked (confirm);
 	}
 
 
@@ -150,27 +152,22 @@ namespace OnlineBookmarks
 
 	void Settings::accept ()
 	{
-		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/IsLocal2Service", Ui_.Bookmarks2Services_->isChecked ());
-		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/Local2ServicePeriod", Ui_.Bookmarks2ServicesPeriod_->currentIndex ());
-		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/IsService2Local", Ui_.Services2Bookmarks_->isChecked ());
-		XmlSettingsManager::Instance ()->
-				setProperty ("Sync/Service2LocalPeriod", Ui_.Services2BookmarksPeriod_->currentIndex ());
-		XmlSettingsManager::Instance ()->
-				setProperty ("ConfirmOnAddition", Ui_.ConfirmSend_->isChecked ());
-		XmlSettingsManager::Instance ()->
-				setProperty ("ShowServices", Ui_.ShowServices_->isChecked ());
-
 		QList<AbstractBookmarksService*> activeServices;
 		QStringList activeServicesNames;
-		int rows = Core::Instance ().GetServiceModel ()->rowCount ();
+		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Core::Instance ().GetServiceModel ());
+		if (!model)
+		{
+			qWarning() << Q_FUNC_INFO
+					<< "model is not QAbstractItemModel"
+					<< Core::Instance ().GetServiceModel ();
+			return;
+		}
+		int rows = model->rowCount ();
 		for (int i = 0; i < rows; i++)
-			if (Core::Instance ().GetServiceModel ()->item (i)->checkState () == Qt::Checked)
+			if (model->item (i)->checkState () == Qt::Checked)
 			{
 				activeServices << BookmarksServices_.at (i);
-				activeServicesNames << Core::Instance ().GetServiceModel ()->item (i)->text ();
+				activeServicesNames << model->item (i)->text ();
 			}
 
 		XmlSettingsManager::Instance ()->
@@ -336,10 +333,19 @@ namespace OnlineBookmarks
 			Ui_.Add_->toggle ();
 		else if (Ui_.Edit_->isChecked ())
 			Ui_.Edit_->toggle ();
-
-		for (int i = 0, rows = Core::Instance ().GetServiceModel ()->rowCount (); i < rows; i++)
-			if (Core::Instance ().GetServiceModel ()->item (i)->text () == Ui_.Services_->currentText ())
-				Core::Instance ().GetServiceModel ()->item (i)->setCheckState (Qt::Checked);
+	
+		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Core::Instance ().GetServiceModel ());
+		if (!model)
+		{
+			qWarning() << Q_FUNC_INFO
+					<< "model is not QAbstractItemModel"
+					<< Core::Instance ().GetServiceModel ();
+			return;
+		}
+		
+		for (int i = 0, rows = model->rowCount (); i < rows; i++)
+			if (model->item (i)->text () == Ui_.Services_->currentText ())
+				model->item (i)->setCheckState (Qt::Checked);
 	}
 }
 }

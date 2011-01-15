@@ -48,9 +48,11 @@ namespace OnlineBookmarks
 				"poshukuonlinebookmarkssettings.xml");
 		
 		Core::Instance ().Init ();
-		SettingsDialog_->SetCustomWidget ("Settings", Core::Instance ().GetSettingsWidget ());
-		
 		Core::Instance ().SetProxy (proxy);
+		
+		SettingsDialog_->SetCustomWidget ("Accounts", Core::Instance ().GetSettingsWidget ());
+		SettingsDialog_->SetDataSource ("ActiveServices", Core::Instance ().GetServiceModel ());
+		
 		Core::Instance ().SetBookamrksDir(Util::CreateIfNotExists ("poshuku/onlinebookmarks"));
 		
 		connect (&Core::Instance (),

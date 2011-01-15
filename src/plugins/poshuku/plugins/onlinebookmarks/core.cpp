@@ -192,7 +192,7 @@ namespace OnlineBookmarks
 		BookmarksDir_ = path;
 	}
 	
-	QStandardItemModel* Core::GetServiceModel ()
+	QAbstractItemModel* Core::GetServiceModel () const
 	{
 		return ServiceModel_;
 	}
@@ -201,7 +201,6 @@ namespace OnlineBookmarks
 	{
 		return SettingsWidget_;
 	}
-
 }
 }
 }

@@ -23,7 +23,7 @@ SET (ONLINEBOOKMARKS_HEADERS
 	readitlater/readitlaterbookmarksservice.h
 	)
 SET (ONLINEBOOKMARKS_FORMS
-	settings.ui
+	accounts.ui
 	bookmarksdialog.ui
 	)
 SET (ONLINEBOOKMARKS_RESOURCES poshukuonlinebookmarksresources.qrc

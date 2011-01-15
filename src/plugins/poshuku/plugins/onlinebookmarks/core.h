@@ -72,7 +72,7 @@ namespace OnlineBookmarks
 		QObject* GetBookmarksModel () const;
 		QDir GetBookmarksDir () const;
 		void SetBookamrksDir (const QDir&);
-		QStandardItemModel* GetServiceModel ();
+		QAbstractItemModel* GetServiceModel () const;
 		Settings* GetSettingsWidget ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

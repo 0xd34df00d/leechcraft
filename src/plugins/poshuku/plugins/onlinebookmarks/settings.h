@@ -20,7 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
 #include <QWidget>
 #include "interfaces/structures.h"
-#include "ui_settings.h"
+#include "ui_accounts.h"
 
 class QStandardItemModel;
 class QFrame;
@@ -46,7 +46,7 @@ namespace OnlineBookmarks
 	{
 		Q_OBJECT
 
-		Ui::Settings_ Ui_;
+		Ui::Accounts_ Ui_;
 		OnlineBookmarks *OnlineBookmarks_;
 		QStandardItemModel *Model_;
 		QList<AbstractBookmarksService*> BookmarksServices_;

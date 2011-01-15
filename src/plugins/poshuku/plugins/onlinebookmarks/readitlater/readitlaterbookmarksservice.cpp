@@ -251,7 +251,6 @@ namespace OnlineBookmarks
 	{
 		emit gotUploadReply (success);
 	}
-
 }
 }
 }

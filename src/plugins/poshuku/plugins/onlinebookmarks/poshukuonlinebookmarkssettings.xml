@@ -1,7 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-  <page>
-    <label lang="en" value="OnlineBookmarks" />
-		<item type="customwidget" label="own" name="Settings" />
-  </page>
+	<page>
+		<label lang="en" value="OnlineBookmarks" />
+		<tab>
+			<label lang="en" value="Accounts" />
+			<item type="customwidget" label="own" name="Accounts" />
+		</tab>
+		<tab>
+			<label lang="en" value="Sync Options" />
+			<item type="listview" property="ActiveServices">
+				<label lang="en" value="Select services" />
+			</item>
+			<item type="checkbox" property="ConfirmSend" state="off">
+				<label lang="en" value="Confirm sending bookmarks on addition" />
+			</item>
+			<item type="checkbox" property="ShowServices" state="off">
+				<label lang="en" value="Ask user about services witch bookmarks send should be" />
+			</item>
+			<item type="groupbox" property="DownloadGroup" checkable="true" state="off">
+				<label lang="en" value="Download option" />
+				<item type="combobox" property="DownloadPeriod">
+					<label lang="en" value="Send bookmarks to active services every"/>
+					<option name="Never" default="true">
+						<label lang="en" value="Never" />
+					</option>
+					<option name="OnAction">
+						<label lang="en" value="OnAction" />
+					</option>
+					<option name="EveryDay">
+						<label lang="en" value="Day" />
+					</option>
+					<option name="Every2Day" default="true">
+						<label lang="en" value="2 days" />
+					</option>
+					<option name="Every3Day">
+						<label lang="en" value="3 days" />
+					</option>
+					<option name="Every4Day">
+						<label lang="en" value="4 days" />
+					</option>
+					<option name="Every5Day" default="true">
+						<label lang="en" value="5 days" />
+					</option>
+					<option name="Every6Day">
+						<label lang="en" value="6 days" />
+					</option>
+					<option name="EveryWeek" default="true">
+						<label lang="en" value="Week" />
+					</option>
+					<option name="EveryMonthe">
+						<label lang="en" value="Monthe" />
+					</option>
+					<option name="EveryYear">
+						<label lang="en" value="Year" />
+					</option>
+				</item>
+			</item>
+			<item type="groupbox" property="UploadGroup" checkable="true" state="off">
+				<label lang="en" value="Upload option" />
+				<item type="combobox" property="UploadPeriod" >
+					<label lang="en" value="Send bookmarks to active services every"/>
+					<option name="Never" default="true">
+						<label lang="en" value="Never" />
+					</option>
+					<option name="OnAction">
+						<label lang="en" value="OnAction" />
+					</option>
+					<option name="EveryDay">
+						<label lang="en" value="Day" />
+					</option>
+					<option name="Every2Day" default="true">
+						<label lang="en" value="2 days" />
+					</option>
+					<option name="Every3Day">
+						<label lang="en" value="3 days" />
+					</option>
+					<option name="Every4Day">
+						<label lang="en" value="4 days" />
+					</option>
+					<option name="Every5Day" default="true">
+						<label lang="en" value="5 days" />
+					</option>
+					<option name="Every6Day">
+						<label lang="en" value="6 days" />
+					</option>
+					<option name="EveryWeek" default="true">
+						<label lang="en" value="Week" />
+					</option>
+					<option name="EveryMonthe">
+						<label lang="en" value="Monthe" />
+					</option>
+					<option name="EveryYear">
+						<label lang="en" value="Year" />
+					</option>
+				</item>
+			</item>
+		</tab>
+	</page>
 </settings>
