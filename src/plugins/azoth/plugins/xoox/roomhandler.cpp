@@ -213,15 +213,14 @@ namespace Xoox
 
 		if (presence.presence () == gloox::Presence::Unavailable)
 		{
-			Account_->handleEntryRemoved (entry.get ());
 			if (part.newNick.empty ())
 			{
 				MakeLeaveMessage (part);
 
+				Account_->handleEntryRemoved (entry.get ());
+
 				Nick2Entry_.remove (nick);
 				JID2Session_.remove (JIDForNick (nick));
-
-				return;
 			}
 			else
 			{
@@ -233,10 +232,8 @@ namespace Xoox
 				entry->SetEntryName (newNick);
 				Nick2Entry_ [newNick] = Nick2Entry_.take (nick);
 				JID2Session_ [JIDForNick (newNick)] = JID2Session_.take (JIDForNick (nick));
-
-				Account_->handleGotRosterItems (QObjectList () << entry.get ());
-				return;
 			}
+			return;
 		}
 
 		EntryStatus status (static_cast<State> (presence.presence ()),

@@ -104,6 +104,7 @@ namespace Xoox
 		void availableVariantsChanged (const QStringList&);
 		void avatarChanged (const QImage&);
 		void rawinfoChanged (const QString&);
+		void nameChanged (const QString&);
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);

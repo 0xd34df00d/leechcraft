@@ -50,6 +50,7 @@ namespace Xoox
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 	{
+		AccState_.State_ = SOffline;
 		AccState_.Priority_ = -1;
 
 		connect (this,
@@ -158,17 +159,22 @@ namespace Xoox
 
 		emit accountSettingsChanged ();
 
-		ChangeState (AccState_.State_, AccState_.Status_);
+		ChangeState (EntryStatus (AccState_.State_, AccState_.Status_));
 	}
 
-	void GlooxAccount::ChangeState (State accState, const QString& status)
+	EntryStatus GlooxAccount::GetState () const
 	{
-		if (accState == SOffline &&
+		return EntryStatus (AccState_.State_, AccState_.Status_);
+	}
+
+	void GlooxAccount::ChangeState (const EntryStatus& status)
+	{
+		if (status.State_ == SOffline &&
 				!ClientConnection_)
 			return;
 
-		AccState_.State_ = accState;
-		AccState_.Status_ = status;
+		AccState_.State_ = status.State_;
+		AccState_.Status_ = status.StatusString_;
 
 		if (!ClientConnection_)
 			Init ();
@@ -317,7 +323,7 @@ namespace Xoox
 		if (!pwd.isNull ())
 		{
 			ClientConnection_->SetPassword (pwd);
-			ChangeState (AccState_.State_, AccState_.Status_);
+			ChangeState (EntryStatus (AccState_.State_, AccState_.Status_));
 		}
 	}
 

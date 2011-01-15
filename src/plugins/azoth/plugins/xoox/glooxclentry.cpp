@@ -126,6 +126,8 @@ namespace Xoox
 
 		RI_->setName (name.toUtf8 ().constData ());
 		Account_->Synchronize ();
+
+		emit nameChanged (name);
 	}
 
 	QByteArray GlooxCLEntry::GetEntryID () const

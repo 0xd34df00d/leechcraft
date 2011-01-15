@@ -91,26 +91,56 @@ namespace Plugins
 	public:
 		virtual ~ICLEntry () {}
 
-		/** Represents the features that may be supported by a contant list entry.
+		/** Represents the features that may be supported by a contant
+		 * list entry.
 		 */
 		enum Feature
 		{
-			FPermanentEntry			= 0x0000,	//!< FPermanentEntry If this entry is permanent and would appear in the next session too.
-			FSessionEntry			= 0x0001,	//!< FSessionEntry If this entry is not permament and is for this session only.
-			FMaskLongetivity		= 0x0003,	//!< 0000011
-			FSupportsRenames		= 0x0020,	//!< FSupportsRenames This entry supports renaming, so calls to SetEntryName() are not senseless.
-			FHasCustomChatWidget	= 0x0040,	//!< FHasCustomChatWidget This entry has a custom chat widget.
-			FCanHaveMultiVariants	= 0x0080	//!< FCanHaveMultiVariants This entry may have multiple delivery variants.
+			/** This entry is permanent and would appear in the next
+			 * session too. It makes sense to save it to disk, for
+			 * example, when shutting down.
+			 */
+			FPermanentEntry			= 0x0000,
+
+			/** This entry is not permament and for this session only.
+			 */
+			FSessionEntry			= 0x0001,
+
+			/** Mask (0000011) for FPermanentEntry and FSessionEntry.
+			 */
+			FMaskLongetivity		= 0x0003,
+
+			/** This entry supports renaming, so calls to SetEntryName()
+			 * are not in vain.
+			 */
+			FSupportsRenames		= 0x0020,
+
+			/** This entry has a custom chat widget.
+			 */
+			FHasCustomChatWidget	= 0x0040
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature);
 
 		enum EntryType
 		{
-			ETChat,			//!< ETChat This entry represents a standard chat.
-			ETMUC,			//!< ETMUC This entry represents a multi-user chatroom.
-			ETPrivateChat,	//!< ETPrivateChat This entry represents a private conversation in a multi-user chatroom.
-			ETUnauthEntry	//!< ETUnauthEntry This entry represents an unauthorized user that has requested authorization.
+			/** This entry represents a standard chat.
+			 */
+			ETChat,
+
+			/** This entry represents a multi-user chatroom.
+			 */
+			ETMUC,
+
+			/** This entry represents a private conversation in a
+			 * multi-user chatroom.
+			 */
+			ETPrivateChat,
+
+			/** This entry represents an unauthorized user that has
+			 * requested authorization.
+			 */
+			ETUnauthEntry
 		};
 
 		/** Returns the entry as a QObject.
@@ -373,6 +403,15 @@ namespace Plugins
 		 * @note This function is expected to be a signal in subclesses.
 		 */
 		virtual void rawinfoChanged (const QString&) = 0;
+
+		/** @brief This signal should be emitted whenever the entry
+		 * changes name.
+		 *
+		 * @note This function is expected to be a signal in subclasses.
+		 *
+		 * @param[out] name The new name of this entry.
+		 */
+		virtual void nameChanged (const QString& name) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

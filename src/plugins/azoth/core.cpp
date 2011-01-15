@@ -210,6 +210,19 @@ namespace LeechCraft
 				return result;
 			}
 
+			QList<Plugins::IProtocol*> Core::GetProtocols () const
+			{
+				QList<Plugins::IProtocol*> result;
+				Q_FOREACH (QObject *protoPlugin, ProtocolPlugins_)
+				{
+					QObjectList protos = qobject_cast<Plugins::IProtocolPlugin*> (protoPlugin)->GetProtocols ();
+					Q_FOREACH (QObject *obj, protos)
+						result << qobject_cast<Plugins::IProtocol*> (obj);
+				}
+				result.removeAll (0);
+				return result;
+			}
+
 			void Core::SendEntity (const LeechCraft::Entity& e)
 			{
 				emit gotEntity (e);
@@ -326,6 +339,10 @@ namespace LeechCraft
 						SIGNAL (gotMessage (QObject*)),
 						this,
 						SLOT (handleEntryGotMessage (QObject*)));
+				connect (clEntry->GetObject (),
+						SIGNAL (nameChanged (const QString&)),
+						this,
+						SLOT (handleEntryNameChanged (const QString&)));
 				connect (clEntry->GetObject (),
 						SIGNAL (avatarChanged (const QImage&)),
 						this,
@@ -988,6 +1005,21 @@ namespace LeechCraft
 				}
 
 				HandleStatusChanged (status, entry, variant);
+			}
+
+			void Core::handleEntryNameChanged (const QString& newName)
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "sender is not a ICLEntry:"
+							<< sender ();
+					return;
+				}
+
+				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+					item->setText (newName);
 			}
 
 			void Core::handleEntryGotMessage (QObject *msgObj)

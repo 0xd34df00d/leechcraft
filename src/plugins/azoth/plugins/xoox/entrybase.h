@@ -88,6 +88,7 @@ namespace Xoox
 		void avatarChanged (const QImage&);
 		void rawinfoChanged (const QString&);
 		void availableVariantsChanged (const QStringList&);
+		void nameChanged (const QString&);
 	};
 }
 }

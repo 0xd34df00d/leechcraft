@@ -16,13 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MAINWIDGET_H
-#define PLUGINS_AZOTH_MAINWIDGET_H
-#include <QWidget>
-#include "ui_mainwidget.h"
-
-class QToolBar;
-class QMenu;
+#ifndef PLUGINS_AZOTH_ADDCONTACTDIALOG_H
+#define PLUGINS_AZOTH_ADDCONTACTDIALOG_H
+#include <QDialog>
+#include "ui_addcontactdialog.h"
 
 namespace LeechCraft
 {
@@ -30,35 +27,26 @@ namespace Plugins
 {
 namespace Azoth
 {
-	class SortFilterProxyModel;
+namespace Plugins
+{
+	class IAccount;
+}
 
-	class MainWidget : public QWidget
+	class AddContactDialog : public QDialog
 	{
 		Q_OBJECT
 
-		Ui::MainWidget Ui_;
-
-		QToolBar *UpperBar_;
-		QMenu *MenuGeneral_;
-		SortFilterProxyModel *ProxyModel_;
-
-		QAction *ActionChangeStatus_;
+		Ui::AddContactDialog Ui_;
 	public:
-		MainWidget (QWidget* = 0);
+		AddContactDialog (QWidget* = 0);
 
-		void AddMUCJoiners (const QList<QAction*>&);
+		Plugins::IAccount* GetSelectedAccount () const;
+		QString GetContactID () const;
+		QString GetNick () const;
+		QString GetReason () const;
+		QStringList GetGroups () const;
 	private slots:
-		void on_CLTree__activated (const QModelIndex&);
-		void on_CLTree__customContextMenuRequested (const QPoint&);
-		void handleChangeStatusRequested ();
-
-		void showAccountsList ();
-		void handleAddContactRequested ();
-
-		void handleRowsInserted (const QModelIndex&, int, int);
-		void rebuildTreeExpansions ();
-		void on_CLTree__expanded (const QModelIndex&);
-		void on_CLTree__collapsed (const QModelIndex&);
+		void on_Protocol__currentIndexChanged (int);
 	};
 }
 }
