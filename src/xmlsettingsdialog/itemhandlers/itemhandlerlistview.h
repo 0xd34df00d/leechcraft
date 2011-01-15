@@ -31,7 +31,6 @@ namespace LeechCraft
 	class ItemHandlerListView : public ItemHandlerBase
 	{
 		ItemHandlerFactory *Factory_;
-
 		QHash<QString, QListView*> Propname2Listview_;
 	public:
 		ItemHandlerListView (ItemHandlerFactory*);

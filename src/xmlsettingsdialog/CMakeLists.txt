@@ -80,7 +80,7 @@ SET (HEADERS
 	itemhandlers/itemhandlerpushbutton.h
 	itemhandlers/itemhandlercustomwidget.h
 	itemhandlers/itemhandlerdataview.h
-	itemhandlers/itemhandlerlistview.cpp
+	itemhandlers/itemhandlerlistview.h
 	widgets/dataviewwidget.h
 	)
 SET (FORMS
