@@ -28,6 +28,7 @@ namespace LeechCraft
 		{
 			SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
 			: QSortFilterProxyModel (parent)
+			, ShowOffline_ (true)
 			{
 				setDynamicSortFilter (true);
 			}
@@ -44,6 +45,28 @@ namespace LeechCraft
 					return qobject_cast<Plugins::ICLEntry*> (idx
 								.data (Core::CLREntryObject).value<QObject*> ());
 				}
+			}
+
+			void SortFilterProxyModel::showOfflineContacts (bool show)
+			{
+				ShowOffline_ = show;
+
+				invalidate ();
+			}
+
+			bool SortFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
+			{
+				if (!ShowOffline_)
+				{
+					const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
+					if (GetType (idx) == Core::CLETContact)
+					{
+						const Plugins::State state = GetEntry (idx)->GetStatus ().State_;
+						if (state == Plugins::SOffline)
+							return false;
+					}
+				}
+				return QSortFilterProxyModel::filterAcceptsRow (row, parent);
 			}
 
 			bool SortFilterProxyModel::lessThan (const QModelIndex& right,
