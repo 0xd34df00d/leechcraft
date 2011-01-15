@@ -72,6 +72,7 @@ namespace Xoox
 		VCardManager_.reset (new gloox::VCardManager (Client_.get ()));
 
 		Client_->registerMessageSessionHandler (this);
+		Client_->registerPresenceHandler (this);
 
 		Client_->registerConnectionListener (this);
 		Client_->rosterManager ()->registerRosterListener (this, false);
@@ -647,6 +648,13 @@ namespace Xoox
 			const gloox::JID& jid, gloox::StanzaError er)
 	{
 		// TODO
+	}
+
+	void ClientConnection::handlePresence (const gloox::Presence& presence)
+	{
+		const gloox::Capabilities *caps = presence.capabilities ();
+		if (!caps)
+			return;
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (gloox::RosterItem *ri)

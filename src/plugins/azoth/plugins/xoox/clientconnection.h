@@ -29,6 +29,7 @@
 #include <gloox/messagehandler.h>
 #include <gloox/jid.h>
 #include <gloox/vcardhandler.h>
+#include <gloox/presencehandler.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
 
@@ -70,6 +71,7 @@ namespace Xoox
 						   , public gloox::MessageSessionHandler
 						   , public gloox::MessageHandler
 						   , public gloox::VCardHandler
+						   , public gloox::PresenceHandler
 	{
 		Q_OBJECT
 
@@ -151,6 +153,9 @@ namespace Xoox
 		virtual void handleVCard (const gloox::JID&, const gloox::VCard*);
 		virtual void handleVCardResult (gloox::VCardHandler::VCardContext,
 				const gloox::JID&, gloox::StanzaError);
+
+		// PresenceHandler
+		virtual void handlePresence (const gloox::Presence&);
 	private slots:
 		void handlePollTimer ();
 	private:
