@@ -51,7 +51,7 @@ namespace OnlineBookmarks
 		QStandardItemModel *Model_;
 		QList<AbstractBookmarksService*> BookmarksServices_;
 	public:
-		Settings (QStandardItemModel*, OnlineBookmarks*);
+		Settings (QStandardItemModel*);
 		QString GetSelectedName () const;
 		void SetConfirmSend (bool);
 	private:

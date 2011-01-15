@@ -38,9 +38,8 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	Settings::Settings (QStandardItemModel *model, OnlineBookmarks *parent)
-	: OnlineBookmarks_ (parent)
-	, Model_ (model)
+	Settings::Settings (QStandardItemModel *model)
+	: Model_ (model)
 	{
 		Ui_.setupUi (this);
 
@@ -70,8 +69,6 @@ namespace OnlineBookmarks
 		BookmarksServices_ << new ReadItLaterBookmarksService (this);
 		SetupServices ();
 		ReadSettings ();
-		
-		Core::Instance().SetSettingsWidget (this);
 	}
 
 	void Settings::ClearFrameState ()

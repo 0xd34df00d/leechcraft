@@ -17,19 +17,18 @@
  **********************************************************************/
 
 #include "onlinebookmarks.h"
-#include "settings.h"
 #include <typeinfo>
 #include <QAction>
 #include <QIcon>
-#include <QStandardItemModel>
 #include <QWebView>
 #include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
-#include "xmlsettingsmanager.h"
+#include "bookmarksdialog.h"
 #include "core.h"
 #include "syncbookmarks.h"
-#include "bookmarksdialog.h"
+#include "settings.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -44,14 +43,13 @@ namespace OnlineBookmarks
 	void OnlineBookmarks::Init (ICoreProxy_ptr proxy)
 	{
 		Translator_.reset (Util::InstallTranslator ("poshuku_onlinebookmarks"));
-
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
-
-		SettingsDialog_->SetCustomWidget ("Settings",
-				new Settings (Core::Instance ().GetAccountModel (), this));
-
+		
+		Core::Instance ().Init ();
+		SettingsDialog_->SetCustomWidget ("Settings", Core::Instance ().GetSettingsWidget ());
+		
 		Core::Instance ().SetProxy (proxy);
 		Core::Instance ().SetBookamrksDir(Util::CreateIfNotExists ("poshuku/onlinebookmarks"));
 		
@@ -171,15 +169,10 @@ namespace OnlineBookmarks
 		{
 			BookmarksDialog bd;
 			bd.SetBookmark (title, url, tags);
-			switch (bd.exec ())
-			{
-			case QDialog::Accepted:
+			if (bd.exec () == QDialog::Accepted)
 				bd.SendBookmark ();
-				break;
-			case QDialog::Rejected:
-				bd.reject ();
-				break;
-			}
+			else if (bd.exec () == QDialog::Rejected)
+				return;
 		}
 		else
 			Core::Instance ().GetBookmarksSyncManager ()->uploadBookmarksAction (title, url, tags);

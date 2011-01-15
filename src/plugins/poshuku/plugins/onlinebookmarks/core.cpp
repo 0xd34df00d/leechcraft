@@ -25,6 +25,7 @@
 #include <plugininterface/util.h>
 #include <interfaces/iproxyobject.h>
 #include "syncbookmarks.h"
+#include "settings.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,6 @@ namespace OnlineBookmarks
 {
 	Core::Core ()
 	{
-		 Init ();
 	}
 
 	Core& Core::Instance ()
@@ -56,6 +56,7 @@ namespace OnlineBookmarks
 	{
 		Model_ = new QStandardItemModel (this);
 		ServiceModel_ = new QStandardItemModel (this);
+		SettingsWidget_ =  new Settings (Model_);
 		
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
@@ -191,17 +192,12 @@ namespace OnlineBookmarks
 		BookmarksDir_ = path;
 	}
 	
-	QStandardItemModel* Core::GetServiceModel () const
+	QStandardItemModel* Core::GetServiceModel ()
 	{
 		return ServiceModel_;
 	}
 
-	void Core::SetSettingsWidget (Settings *stngs)
-	{
-		SettingsWidget_ = stngs;
-	}
-
-	Settings* Core::GetSettingsWidget () const
+	Settings* Core::GetSettingsWidget ()
 	{
 		return SettingsWidget_;
 	}
