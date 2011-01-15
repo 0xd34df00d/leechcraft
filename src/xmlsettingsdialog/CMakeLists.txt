@@ -41,6 +41,7 @@ SET (SRCS
 	itemhandlers/itemhandlerpushbutton.cpp
 	itemhandlers/itemhandlercustomwidget.cpp
 	itemhandlers/itemhandlerdataview.cpp
+	itemhandlers/itemhandlerlistview.cpp
 	widgets/dataviewwidget.cpp
 	)
 SET (HEADERS
@@ -79,6 +80,7 @@ SET (HEADERS
 	itemhandlers/itemhandlerpushbutton.h
 	itemhandlers/itemhandlercustomwidget.h
 	itemhandlers/itemhandlerdataview.h
+	itemhandlers/itemhandlerlistview.cpp
 	widgets/dataviewwidget.h
 	)
 SET (FORMS

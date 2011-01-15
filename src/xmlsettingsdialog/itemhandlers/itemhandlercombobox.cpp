@@ -114,7 +114,6 @@ namespace LeechCraft
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignRight);
 		lay->addWidget (box, row, 1);
-		
 	}
 
 	void ItemHandlerCombobox::SetValue (QWidget *widget, const QVariant& value) const
