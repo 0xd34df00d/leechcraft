@@ -19,6 +19,7 @@
 #include "itemhandlerlistview.h"
 #include <boost/bind.hpp>
 #include <QDomElement>
+#include <QLabel>
 #include <QListView>
 #include <QGridLayout>
 #include <QtDebug>
@@ -53,11 +54,15 @@ namespace LeechCraft
 				boost::bind (&ItemHandlerListView::SetDataSource, this, _1, _2));
 		Propname2Listview_ [prop] = list;
 		
+		QLabel *label = new QLabel (XSD_->GetLabel (item));
+		label->setWordWrap (false);
+
 		list->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
-
+		
 		int row = lay->rowCount ();
-		lay->addWidget (list, row, 0);
+		lay->addWidget (label, row, 0, Qt::AlignLeft);
+		lay->addWidget (list, row + 1, 0);
 	}
 	
 	QVariant ItemHandlerListView::GetValue (const QDomElement&, QVariant) const
