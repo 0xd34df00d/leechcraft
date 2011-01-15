@@ -100,24 +100,30 @@ namespace Plugins
 			 * session too. It makes sense to save it to disk, for
 			 * example, when shutting down.
 			 */
-			FPermanentEntry			= 0x0000,
+			FPermanentEntry = 0x0000,
 
 			/** This entry is not permament and for this session only.
 			 */
-			FSessionEntry			= 0x0001,
+			FSessionEntry = 0x0001,
 
 			/** Mask (0000011) for FPermanentEntry and FSessionEntry.
 			 */
-			FMaskLongetivity		= 0x0003,
+			FMaskLongetivity = 0x0003,
 
 			/** This entry supports renaming, so calls to SetEntryName()
 			 * are not in vain.
 			 */
-			FSupportsRenames		= 0x0020,
+			FSupportsRenames = 0x0020,
 
 			/** This entry has a custom chat widget.
 			 */
-			FHasCustomChatWidget	= 0x0040
+			FHasCustomChatWidget = 0x0040,
+
+			/** This entry supports auth manipulations. It makes sense
+			 * to request, remove, give, etc auth. In this case the
+			 * entry should also implement IAuthable.
+			 */
+			FSuportsAuth = 0x0080
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature);
@@ -350,15 +356,6 @@ namespace Plugins
 		 * @return The list of actions.
 		 */
 		virtual QList<QAction*> GetActions () const = 0;
-
-		/** @brief Returns the AuthStatus between our user and this
-		 * remote.
-		 *
-		 * If auth status is not applicable, ASNone should be returned.
-		 *
-		 * @return AuthStatus or ASNone if not applicable.
-		 */
-		virtual AuthStatus GetAuthStatus () const = 0;
 
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.

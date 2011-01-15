@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
+#include <interfaces/iauthable.h>
 #include "entrybase.h"
 
 namespace gloox
@@ -45,8 +46,10 @@ namespace Xoox
 	class GlooxAccount;
 
 	class GlooxCLEntry : public EntryBase
+					   , public IAuthable
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAuthable);
 
 		gloox::RosterItem *RI_;
 	public:
