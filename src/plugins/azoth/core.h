@@ -18,12 +18,14 @@
 
 #ifndef PLUGINS_AZOTH_CORE_H
 #define PLUGINS_AZOTH_CORE_H
+#include <boost/function.hpp>
 #include <QObject>
 #include <QSet>
 #include "interfaces/iinfo.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/iprotocol.h"
+#include "interfaces/iauthable.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -237,6 +239,23 @@ namespace LeechCraft
 
 				void CreateActionsForEntry (Plugins::ICLEntry*);
 				void UpdateActionsForEntry (Plugins::ICLEntry*);
+
+				/** Asks user for reason for the given action, possibly
+				 * showing the given text. The id may be used to
+				 * distinguish between different reason contexts (like
+				 * kick/ban and authentication request), for example, to
+				 * keep history of reasons and to allow the user to
+				 * choose one.
+				 */
+				QString GetReason (const QString& id, const QString& text);
+
+				/** Calls the given func on the sending entry, asking
+				 * for reason for the action, if it should. The text may
+				 * contains %1, in which case it'd be replaced with the
+				 * result if ICLEntry::GetEntryName().
+				 */
+				void ManipulateAuth (const QString& id, const QString& text,
+						boost::function<void (Plugins::IAuthable*, const QString&)> func);
 			private slots:
 				/** Initiates account registration process.
 				 */
@@ -322,6 +341,9 @@ namespace LeechCraft
 				void handleClearUnreadMsgCount (QObject *object);
 
 				void handleActionRenameTriggered ();
+				void handleActionRevokeAuthTriggered ();
+				void handleActionUnsubscribeTriggered ();
+				void handleActionRerequestTriggered ();
 				void handleActionVCardTriggered ();
 
 				void handleActionOpenChatTriggered ();

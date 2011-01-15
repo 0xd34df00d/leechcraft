@@ -96,7 +96,12 @@ namespace Xoox
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+
+		// IAuthable
 		AuthStatus GetAuthStatus () const;
+		void RevokeAuth (const QString&);
+		void Unsubscribe (const QString&);
+		void RerequestAuth (const QString&);
 
 		gloox::JID GetJID () const;
 	private:
