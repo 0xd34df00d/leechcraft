@@ -54,12 +54,11 @@ namespace OnlineBookmarks
 		SettingsDialog_->SetDataSource ("ActiveServices", Core::Instance ().GetServiceModel ());
 		
 		if (XmlSettingsManager::Instance ()->property ("DownloadGroup").toBool () && 
-				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString () != "OnAction")
+				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toInt ())
 			Core::Instance ().GetBookmarksSyncManager()->CheckDownloadPeriod ();
 		
 		if (XmlSettingsManager::Instance ()->property ("UploadGroup").toBool () && 
-				(XmlSettingsManager::Instance ()->property ("UploadPeriod").toString () != "Never") && 
-				(XmlSettingsManager::Instance ()->property ("UploadPeriod").toString () != "OnAction"))
+				(XmlSettingsManager::Instance ()->property ("UploadPeriod").toInt()))
 			Core::Instance ().GetBookmarksSyncManager()->CheckUploadPeriod ();
 		
 		Core::Instance ().SetBookamrksDir(Util::CreateIfNotExists ("poshuku/onlinebookmarks"));

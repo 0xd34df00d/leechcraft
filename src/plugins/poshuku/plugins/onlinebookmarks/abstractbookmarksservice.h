@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QIcon>
 #include <QUrl>
+#include <QDateEdit>
 
 namespace LeechCraft
 {
@@ -43,7 +44,7 @@ namespace OnlineBookmarks
 		virtual QString GetName () const = 0;
 		virtual QIcon GetIcon () const = 0;
 		virtual void CheckValidAccountData (const QString&, const QString&) = 0;
-		virtual void DownloadBookmarks (const QStringList&, int) = 0;
+		virtual void DownloadBookmarks (const QStringList&, QDateTime) = 0;
 		virtual void UploadBookmarks (const QStringList&, const QList<QVariant>&) = 0;
 	public slots:
 		virtual void getReplyFinished () = 0;

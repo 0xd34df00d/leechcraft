@@ -21,34 +21,34 @@
 				<label lang="en" value="Download option" />
 				<item type="combobox" property="DownloadPeriod">
 					<label lang="en" value="Send bookmarks to active services every"/>
-					<option name="OnAction" default="true">
+					<option name="0" default="true">
 						<label lang="en" value="On Action" />
 					</option>
-					<option name="EveryDay">
+					<option name="1">
 						<label lang="en" value="Day" />
 					</option>
-					<option name="Every2Day">
+					<option name="2">
 						<label lang="en" value="2 days" />
 					</option>
-					<option name="Every3Day">
+					<option name="3">
 						<label lang="en" value="3 days" />
 					</option>
-					<option name="Every4Day">
+					<option name="4">
 						<label lang="en" value="4 days" />
 					</option>
-					<option name="Every5Day">
+					<option name="5">
 						<label lang="en" value="5 days" />
 					</option>
-					<option name="Every6Day">
+					<option name="6">
 						<label lang="en" value="6 days" />
 					</option>
-					<option name="EveryWeek">
+					<option name="7">
 						<label lang="en" value="Week" />
 					</option>
-					<option name="EveryMonth">
+					<option name="30">
 						<label lang="en" value="Month" />
 					</option>
-					<option name="EveryYear">
+					<option name="365">
 						<label lang="en" value="Year" />
 					</option>
 				</item>
@@ -57,34 +57,34 @@
 				<label lang="en" value="Upload option" />
 				<item type="combobox" property="UploadPeriod" >
 					<label lang="en" value="Send bookmarks to active services every"/>
-					<option name="OnAction" default="true">
+					<option name="0" default="true">
 						<label lang="en" value="On Action" />
 					</option>
-					<option name="EveryDay">
+					<option name="1">
 						<label lang="en" value="Day" />
 					</option>
-					<option name="Every2Day">
+					<option name="2">
 						<label lang="en" value="2 days" />
 					</option>
-					<option name="Every3Day">
+					<option name="3">
 						<label lang="en" value="3 days" />
 					</option>
-					<option name="Every4Day">
+					<option name="4">
 						<label lang="en" value="4 days" />
 					</option>
-					<option name="Every5Day">
+					<option name="5">
 						<label lang="en" value="5 days" />
 					</option>
-					<option name="Every6Day">
+					<option name="6">
 						<label lang="en" value="6 days" />
 					</option>
-					<option name="EveryWeek">
+					<option name="7">
 						<label lang="en" value="Week" />
 					</option>
-					<option name="EveryMonth">
+					<option name="30">
 						<label lang="en" value="Month" />
 					</option>
-					<option name="EveryYear">
+					<option name="365">
 						<label lang="en" value="Year" />
 					</option>
 				</item>

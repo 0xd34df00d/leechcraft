@@ -68,6 +68,7 @@ namespace OnlineBookmarks
 		
 		QMap<AbstractBookmarksService*, QStringList> accountData;
 		QList<AbstractBookmarksService*> serviceList;
+		
 		if (as)
 			serviceList << as;
 		else
@@ -98,13 +99,13 @@ namespace OnlineBookmarks
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
 			downloadBookmarks(service, XmlSettingsManager::Instance ()->
 					Property (service->GetName ().toUtf8 ().toBase64 () + "/LastDownload", 
-					QVariant (QDateTime::fromString ("01.01.1970", "dd.MM.yyyy").toTime_t ())).toInt ());
+					QDateTime::fromString ("01.01.1970", "dd.MM.yyyy")).toDateTime ());
 	}
 
 	void SyncBookmarks::downloadAllBookmarksAction ()
 	{
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
-			downloadBookmarks(service, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy").toTime_t ());
+			downloadBookmarks(service, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy"));
 	}
 
 	void SyncBookmarks::readDownloadReply (const QList<QVariant>& importBookmarks, const QUrl &url)
@@ -150,8 +151,9 @@ namespace OnlineBookmarks
 		}
 		else
 		{
-			QStringList urls = Core::Instance ().
-					SanitizeTagsList (QString::fromUtf8 (data).split ('\n', QString::SkipEmptyParts));
+			QStringList urls = Core::Instance ()
+					.SanitizeTagsList (QString::fromUtf8 (data)
+					.split ('\n', QString::SkipEmptyParts));
 			
 				
 			QStringList newBookmarksUrl;
@@ -172,7 +174,7 @@ namespace OnlineBookmarks
 		
 		XmlSettingsManager::Instance ()->
 				setProperty (service->GetName ().toUtf8 ().toBase64 () + "/LastDownload", 
-				QDateTime::currentDateTime ().toTime_t ());
+				QDateTime::currentDateTime ());
 		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		Core::Instance ().SendEntity (eBookmarks);
@@ -184,10 +186,9 @@ namespace OnlineBookmarks
 		}
 		
 		if (XmlSettingsManager::Instance ()->property ("DownloadGroup").toBool () && 
-				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString () != "OnAction")
+				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toInt ())
 		{
-			uint time = Core::Instance ().String2Time (XmlSettingsManager::Instance ()->
-					property ("DownloadPeriod").toString ());
+			int time = XmlSettingsManager::Instance ()->property ("DownloadPeriod").toInt () * 86400;
 			QTimer::singleShot (time * 1000, this, SLOT (CheckDownloadPeriod ()));
 		}
 	}
@@ -217,7 +218,7 @@ namespace OnlineBookmarks
 		
 		XmlSettingsManager::Instance ()->
 				setProperty (service->GetName ().toUtf8 ().toBase64 () + "/LastUpload", 
-				QDateTime::currentDateTime ().toTime_t ());
+				QDateTime::currentDateTime ());
 
 		e = Util::MakeNotification ("Poshuku", 
 				tr ("Bookmarks have been sent successfully"), 
@@ -226,10 +227,9 @@ namespace OnlineBookmarks
 		Core::Instance ().SendEntity (e);
 		
 		if (XmlSettingsManager::Instance ()->property ("UploadGroup").toBool () && 
-				XmlSettingsManager::Instance ()->property ("UploadPeriod").toString () != "OnAction")
+				XmlSettingsManager::Instance ()->property ("UploadPeriod").toInt ())
 		{
-			uint time = Core::Instance ().String2Time (XmlSettingsManager::Instance ()->
-					property ("UploadPeriod").toString ());
+			uint time = XmlSettingsManager::Instance ()->property ("UploadPeriod").toInt () * 86400;
 			QTimer::singleShot (time * 1000, this, SLOT (
 					uploadBookmarksAction (QString (), QString (), QString (), sender ())));
 		}
@@ -295,8 +295,9 @@ namespace OnlineBookmarks
 		}
 		else
 		{
-			QStringList urls = Core::Instance ().
-					SanitizeTagsList (QString::fromUtf8 (data).split ('\n', QString::SkipEmptyParts));
+			QStringList urls = Core::Instance ()
+					.SanitizeTagsList (QString::fromUtf8 (data)
+					.split ('\n', QString::SkipEmptyParts));
 			QList<QVariant> newBookmarks;
 			QStringList newBookmarksUrl;
 			
@@ -322,7 +323,7 @@ namespace OnlineBookmarks
 		return result;
 	}
 	
-	void SyncBookmarks::downloadBookmarks (AbstractBookmarksService *service, uint fromTime)
+	void SyncBookmarks::downloadBookmarks (AbstractBookmarksService *service, QDateTime fromTime)
 	{
 		service->DownloadBookmarks (XmlSettingsManager::Instance ()->
 					property ("Account/" + service->GetName ().toUtf8 ().toBase64 ()).toStringList (), 
@@ -358,23 +359,25 @@ namespace OnlineBookmarks
 		
 		const QByteArray& data = file.readAll ();
 		
-		return Core::Instance ().
-				SanitizeTagsList (QString::fromUtf8 (data).split ('\n', QString::SkipEmptyParts));
+		return Core::Instance ()
+				.SanitizeTagsList (QString::fromUtf8 (data)
+				.split ('\n', QString::SkipEmptyParts));
 	}
 	
 	void SyncBookmarks::CheckDownloadPeriod ()
 	{
 		Q_FOREACH (AbstractBookmarksService *as, Core::Instance ().GetActiveBookmarksServices ())
 		{
-			uint lastDownload = XmlSettingsManager::Instance ()->
-					property(as->GetName().toUtf8 ().toBase64 () + "/LastDownload").toInt ();
-			uint currentTime = QDateTime::currentDateTime ().toTime_t ();
-			uint diff = currentTime - lastDownload;
-			if (diff >= Core::Instance ().String2Time (
-					XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString ()))
+			QDateTime lastDownload = XmlSettingsManager::Instance ()->
+					Property(as->GetName().toUtf8 ().toBase64 () + "/LastDownload",
+					QDateTime::fromString ("01.01.1970", "dd.MM.yyyy")).toDateTime ();
+			int diff = lastDownload.secsTo (QDateTime::currentDateTime ());
+			
+			if (diff >= XmlSettingsManager::Instance ()->
+					property ("DownloadPeriod").toInt () * 86400)
 					downloadBookmarks (as, lastDownload);
 			else
-				QTimer::singleShot (diff * 1000, this, SLOT (DownloadBookmarks (as, lastDownload)));
+				QTimer::singleShot (diff * 1000, this, SLOT (downloadBookmarks (as, lastDownload)));
 		}
 	}
 
@@ -382,15 +385,16 @@ namespace OnlineBookmarks
 	{
 		Q_FOREACH (AbstractBookmarksService *as, Core::Instance ().GetActiveBookmarksServices ())
 		{
-			uint lastUpload = XmlSettingsManager::Instance ()->
-					property(as->GetName().toUtf8 ().toBase64 () + "/LastUpload").toInt ();
-			uint currentTime = QDateTime::currentDateTime ().toTime_t ();
-			uint diff = currentTime - lastUpload;
-			if (diff >= Core::Instance ().String2Time (
-					XmlSettingsManager::Instance ()->property ("UpPeriod").toString ()))
-					uploadBookmarksAction (QString (), QString (), QStringList(), as);
+			QDateTime lastUpload = XmlSettingsManager::Instance ()->
+					Property (as->GetName ().toUtf8 ().toBase64 () + "/LastUpload",
+					QDateTime::fromString ("01.01.1970", "dd.MM.yyyy")).toDateTime ();
+			int diff = lastUpload.secsTo (QDateTime::currentDateTime ());
+			
+			if (diff >= XmlSettingsManager::Instance ()->
+					property ("UpPeriod").toInt () * 86400)
+				uploadBookmarksAction (QString (), QString (), QStringList(), as);
 			else
-				QTimer::singleShot (diff * 1000, this, SLOT (UploadBookmarks (as, lastUpload)));
+				QTimer::singleShot (diff * 1000, this, SLOT (uploadBookmarksAction (QString (), QString (), QStringList(), as));
 		}
 	}
 }

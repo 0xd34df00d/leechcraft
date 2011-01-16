@@ -20,7 +20,9 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
 
 #include <QObject>
+#include <QDateTime>
 #include "interfaces/structures.h"
+
 
 namespace LeechCraft
 {
@@ -54,7 +56,7 @@ namespace OnlineBookmarks
 		void CheckDownloadPeriod ();
 		void CheckUploadPeriod ();
 	private slots:
-		void downloadBookmarks (AbstractBookmarksService*, uint);
+		void downloadBookmarks (AbstractBookmarksService*, QDateTime);
 	private:
 		QList<QVariant> GetBookmarksForUpload (const QString& url = QString ());
 		QStringList GetUrlsFromUploadFile () const;

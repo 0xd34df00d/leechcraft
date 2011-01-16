@@ -86,7 +86,7 @@ namespace OnlineBookmarks
 				SLOT (readyReadReply ()));
 	}
 	
-	void ReadItLaterBookmarksService::DownloadBookmarks (const QStringList& logins, int lastDownloadTime)
+	void ReadItLaterBookmarksService::DownloadBookmarks (const QStringList& logins, QDateTime lastDownloadTime)
 	{
 		Type_ = Download_;
 		
@@ -98,7 +98,7 @@ namespace OnlineBookmarks
 				gotParseError (tr ("Invalid password"));
 				return;
 			}
-			FetchBookmarks (login, password, lastDownloadTime);
+			FetchBookmarks (login, password, lastDownloadTime.toTime_t ());
 		}
 	}
 

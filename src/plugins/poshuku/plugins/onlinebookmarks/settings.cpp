@@ -140,11 +140,6 @@ namespace OnlineBookmarks
 						Qt::MatchFixedString | Qt::MatchRecursive).isEmpty ()));
 	}
 
-	void Settings::SetConfirmSend (bool confirm)
-	{
-	}
-
-
 	QString Settings::GetSelectedName () const
 	{
 		return Ui_.Services_->currentText ();
