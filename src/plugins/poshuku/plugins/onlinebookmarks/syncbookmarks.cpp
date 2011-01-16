@@ -132,9 +132,11 @@ namespace OnlineBookmarks
 			QStringList urls;
 			Q_FOREACH (const QVariant& var, importBookmarks)
 				urls << var.toMap () ["URL"].toString ();
-			
-			file.write (urls.join ("\n").toUtf8 ());
-			file.write ("\n");
+			if (!urls.isEmpty ())
+			{
+				file.write (urls.join ("\n").toUtf8 ());
+				file.write ("\n");
+			}
 		}
 		else
 		{
@@ -147,8 +149,11 @@ namespace OnlineBookmarks
 				if (!urls.contains (currentUrl, Qt::CaseInsensitive))
 					newBookmarksUrl << currentUrl;
 			}
-			file.write (newBookmarksUrl.join ("\n").toUtf8 ());
-			file.write ("\n");
+			if (!newBookmarksUrl.isEmpty ())
+			{
+				file.write (newBookmarksUrl.join ("\n").toUtf8 ());
+				file.write ("\n");
+			}
 		}
 		file.close ();
 		
@@ -251,8 +256,11 @@ namespace OnlineBookmarks
 			Q_FOREACH (const QVariant& var, result)
 				urls << var.toMap () ["URL"].toString ();
 			
-			file.write (urls.join ("\n").toUtf8 ());
-			file.write ("\n");
+			if (!urls.isEmpty ())
+			{
+				file.write (urls.join ("\n").toUtf8 ());
+				file.write ("\n");
+			}
 			file.close ();
 		}
 		else
@@ -270,8 +278,11 @@ namespace OnlineBookmarks
 					newBookmarksUrl << currentUrl;
 				}
 			}
-			file.write (newBookmarksUrl.join ("\n").toUtf8 ());
-			file.write ("\n");
+			if (!newBookmarksUrl.isEmpty ())
+			{
+				file.write (newBookmarksUrl.join ("\n").toUtf8 ());
+				file.write ("\n");
+			}
 			file.close ();
 			
 			return newBookmarks;
