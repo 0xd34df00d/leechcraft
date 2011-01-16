@@ -303,7 +303,12 @@ namespace LeechCraft
 				 */
 				void handleRemovedCLItems (const QList<QObject*>& items);
 
-				/** Handles the event of status changes in plugin to new
+				/** Handles the status change of an account to new
+				 * status.
+				 */
+				void handleAccountStatusChanged (const Plugins::EntryStatus& status);
+
+				/** Handles the status change of a CL entry to new
 				 * status.
 				 */
 				void handleStatusChanged (const Plugins::EntryStatus& status, const QString& variant);

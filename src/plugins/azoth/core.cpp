@@ -949,6 +949,7 @@ namespace LeechCraft
 						CLRAccountObject);
 				accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount),
 						CLREntryType);
+				accItem->setIcon (GetIconForState (account->GetState ().State_));
 				CLModel_->appendRow (accItem);
 
 				accItem->setEditable (false);
@@ -981,6 +982,10 @@ namespace LeechCraft
 						SIGNAL (authorizationRequested (QObject*, const QString&)),
 						this,
 						SLOT (handleAuthorizationRequested (QObject*, const QString&)));
+				connect (accObject,
+						SIGNAL (statusChanged (const Plugins::EntryStatus&)),
+						this,
+						SLOT (handleAccountStatusChanged (const Plugins::EntryStatus&)));
 			}
 
 			void Core::handleAccountRemoved (QObject *account)
@@ -1092,6 +1097,24 @@ namespace LeechCraft
 
 					ID2Entry_.remove (entry->GetEntryID ());
 				}
+			}
+
+			void Core::handleAccountStatusChanged (const Plugins::EntryStatus& status)
+			{
+				for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
+				{
+					QStandardItem *item = CLModel_->item (i);
+					if (item->data (CLRAccountObject).value<QObject*> () != sender ())
+						continue;
+
+					item->setIcon (GetIconForState (status.State_));
+					return;
+				}
+
+				qWarning () << Q_FUNC_INFO
+						<< "item for account"
+						<< sender ()
+						<< "not found";
 			}
 
 			void Core::handleStatusChanged (const Plugins::EntryStatus& status, const QString& variant)
