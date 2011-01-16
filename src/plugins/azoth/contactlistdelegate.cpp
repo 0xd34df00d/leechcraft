@@ -149,6 +149,8 @@ namespace Azoth
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString& status = entry->GetStatus ().StatusString_;
 		const QImage& avatarImg = entry->GetAvatar ();
+		const QList<QIcon>& clientIcons = Core::Instance ()
+				.GetClientIconForEntry (entry).values ();
 		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
 				QString (" %1 :: ").arg (unreadNum) :
@@ -175,10 +177,17 @@ namespace Azoth
 		}
 
 		const int textShift = r.left () + 2 * CPadding + iconSize + unreadSpace;
+		const int clientsIconsWidth = clientIcons.size () * (iconSize + CPadding) - CPadding;
+		/* text for width is total width minus shift of the text from
+		 * the left (textShift) minus space for avatar (if present) with
+		 * paddings minus space for client icons and paddings between
+		 * them: there are N-1 paddings inbetween if there are N icons.
+		 */
 		const int textWidth = r.width () - textShift -
 				(avatarImg.isNull () ?
 					CPadding :
-					iconSize + 2 * CPadding);
+					iconSize + 2 * CPadding) -
+				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
 		pixmap.fill (Qt::transparent);
@@ -211,9 +220,17 @@ namespace Azoth
 				stateIcon.pixmap (iconSize, iconSize));
 
 		if (!avatarImg.isNull ())
-			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + CPadding, CPadding),
+			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
 					QPixmap::fromImage (avatarImg.scaled (iconSize, iconSize,
 							Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+
+		int currentShift = textShift + textWidth + CPadding;
+		Q_FOREACH (const QIcon& icon, clientIcons)
+		{
+			p.drawPixmap (r.topLeft () + QPoint (currentShift, CPadding),
+					icon.pixmap (iconSize, iconSize));
+			currentShift += iconSize + CPadding;
+		}
 
 		painter->drawPixmap (option.rect, pixmap);
 	}
