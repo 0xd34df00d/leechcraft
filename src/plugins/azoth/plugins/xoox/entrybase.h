@@ -21,9 +21,15 @@
 #include <QObject>
 #include <QImage>
 #include <QMap>
+#include <QVariant>
 #include <gloox/vcard.h>
 #include <gloox/jid.h>
 #include <interfaces/iclentry.h>
+
+namespace gloox
+{
+	class Capabilities;
+}
 
 namespace LeechCraft
 {
@@ -51,7 +57,6 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
-
 	protected:
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
@@ -61,6 +66,8 @@ namespace Xoox
 		QString RawInfo_;
 		GlooxAccount *Account_;
 		QPointer<VCardDialog> VCardDialog_;
+
+		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
 	public:
 		EntryBase (GlooxAccount* = 0);
 
@@ -71,6 +78,7 @@ namespace Xoox
 		QImage GetAvatar () const;
 		QString GetRawInfo () const;
 		void ShowInfo ();
+		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 
 		virtual gloox::JID GetJID () const = 0;
 
@@ -80,6 +88,9 @@ namespace Xoox
 		void SetAvatar (const QImage&);
 		void SetVCard (const gloox::VCard*);
 		void SetRawInfo (const QString&);
+
+		void SetClientInfo (const QString&, const QString&, const QString&);
+		void SetClientInfo (const QString&, const gloox::Capabilities*);
 	private:
 		QString FormatRawInfo (const gloox::VCard*);
 	signals:

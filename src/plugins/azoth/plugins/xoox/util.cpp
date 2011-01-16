@@ -18,6 +18,7 @@
 
 #include "util.h"
 #include <QObject>
+#include <QHash>
 
 namespace LeechCraft
 {
@@ -65,6 +66,54 @@ namespace Util
 		case gloox::AffiliationOwner:
 			return QObject::tr ("owner");
 		}
+	}
+
+	namespace
+	{
+		struct Node2ClientID
+		{
+			QHash<QString, QString> Node2ClientID_;
+
+			Node2ClientID ()
+			{
+				Node2ClientID_ ["http://gajim.org"] = "gajim";
+				Node2ClientID_ ["http://leechcraft.org/azoth"] = "leechcraft-azoth";
+				Node2ClientID_ ["http://pidgin.im/"] = "pidgin";
+				Node2ClientID_ ["http://psi-im.org/caps"] = "psi";
+				Node2ClientID_ ["http://psi-dev.googlecode.com/caps"] = "psiplus";
+				Node2ClientID_ ["http://pyicqt.googlecode.com//protocol/caps"] = "pyicq-t";
+			}
+		};
+	}
+
+	QString GetClientIDName (const QString& node)
+	{
+		static Node2ClientID n2ci;
+		return n2ci.Node2ClientID_.value (node);
+	}
+
+	namespace
+	{
+		struct Node2ClientHR
+		{
+			QHash<QString, QString> Node2ClientHR_;
+
+			Node2ClientHR ()
+			{
+				Node2ClientHR_ ["http://gajim.org"] = "Gajim";
+				Node2ClientHR_ ["http://leechcraft.org/azoth"] = "LeechCraft Azoth";
+				Node2ClientHR_ ["http://pidgin.im/"] = "Pidgin IM";
+				Node2ClientHR_ ["http://psi-im.org/caps"] = "Psi";
+				Node2ClientHR_ ["http://psi-dev.googlecode.com/caps"] = "Psi+";
+				Node2ClientHR_ ["http://pyicqt.googlecode.com//protocol/caps"] = "PyICQ-t";
+			}
+		};
+	}
+
+	QString GetClientHRName (const QString& node)
+	{
+		static Node2ClientHR n2ch;
+		return n2ch.Node2ClientHR_.value (node);
 	}
 }
 }

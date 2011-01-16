@@ -211,6 +211,10 @@ namespace Xoox
 		entry->SetAffiliation (part.affiliation);
 		entry->SetRole (part.role);
 
+		const gloox::Capabilities *caps = presence.capabilities ();
+		if (caps)
+			entry->SetClientInfo ("", caps);
+
 		if (presence.presence () == gloox::Presence::Unavailable)
 		{
 			if (part.newNick.empty ())

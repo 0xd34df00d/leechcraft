@@ -514,7 +514,8 @@ namespace LeechCraft
 				QMap<QString, QIcon> result;
 				Q_FOREACH (const QString& variant, entry->Variants ())
 				{
-					QString filename = "default/psi";
+					QString filename = "default/";
+					filename += entry->GetClientInfo (variant) ["client_type"].toString ();
 					QStringList variants;
 					variants << filename + ".svg"
 							<< filename + ".png"

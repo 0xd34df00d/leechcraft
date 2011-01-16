@@ -655,6 +655,13 @@ namespace Xoox
 		const gloox::Capabilities *caps = presence.capabilities ();
 		if (!caps)
 			return;
+
+		const gloox::JID& from = presence.from ();
+		if (JID2CLEntry_.contains (from.bareJID ()))
+		{
+			const QString& var = QString::fromUtf8 (from.resource ().c_str ());
+			JID2CLEntry_ [from.bareJID ()]->SetClientInfo (var, caps);
+		}
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (gloox::RosterItem *ri)

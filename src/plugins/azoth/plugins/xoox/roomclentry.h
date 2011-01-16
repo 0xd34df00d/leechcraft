@@ -76,6 +76,7 @@ namespace Xoox
 		QImage GetAvatar () const;
 		QString GetRawInfo () const;
 		void ShowInfo ();
+		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;
