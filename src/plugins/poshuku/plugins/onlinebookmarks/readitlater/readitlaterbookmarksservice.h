@@ -56,7 +56,7 @@ namespace OnlineBookmarks
 		QString GetName () const;
 		QIcon GetIcon () const;
 		void CheckValidAccountData (const QString&, const QString&);
-		void DownloadBookmarks (const QStringList&, QDateTime);
+		void DownloadBookmarks (const QStringList&, const QDateTime&);
 		void UploadBookmarks (const QStringList&, const QList<QVariant>&);
 	public slots:
 		void getReplyFinished ();

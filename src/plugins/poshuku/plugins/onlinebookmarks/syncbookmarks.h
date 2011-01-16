@@ -53,8 +53,8 @@ namespace OnlineBookmarks
 		void readDownloadReply (const QList<QVariant>&, const QUrl&);
 		void readUploadReply (bool);
 		void readErrorReply (const QString&);
-		void CheckDownloadPeriod ();
-		void CheckUploadPeriod ();
+		void checkDownloadPeriod ();
+		void checkUploadPeriod ();
 	private slots:
 		void downloadBookmarks (AbstractBookmarksService*, QDateTime);
 	private:
