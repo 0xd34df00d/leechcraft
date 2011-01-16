@@ -17,18 +17,18 @@
  **********************************************************************/
 
 #include "onlinebookmarks.h"
-#include "settings.h"
 #include <typeinfo>
 #include <QAction>
 #include <QIcon>
-#include <QStandardItemModel>
 #include <QWebView>
 #include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
-#include "xmlsettingsmanager.h"
+#include "bookmarksdialog.h"
 #include "core.h"
 #include "syncbookmarks.h"
+#include "settings.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -43,15 +43,24 @@ namespace OnlineBookmarks
 	void OnlineBookmarks::Init (ICoreProxy_ptr proxy)
 	{
 		Translator_.reset (Util::InstallTranslator ("poshuku_onlinebookmarks"));
-
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
-
-		SettingsDialog_->SetCustomWidget ("Settings",
-				new Settings (Core::Instance ().GetAccountModel (), this));
-
+		
+		Core::Instance ().Init ();
 		Core::Instance ().SetProxy (proxy);
+		
+		SettingsDialog_->SetCustomWidget ("Accounts", Core::Instance ().GetAccountsWidget ());
+		SettingsDialog_->SetDataSource ("ActiveServices", Core::Instance ().GetServiceModel ());
+		
+		if (XmlSettingsManager::Instance ()->property ("DownloadGroup").toBool () && 
+				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toInt ())
+			Core::Instance ().GetBookmarksSyncManager()->CheckDownloadPeriod ();
+		
+		if (XmlSettingsManager::Instance ()->property ("UploadGroup").toBool () && 
+				(XmlSettingsManager::Instance ()->property ("UploadPeriod").toInt()))
+			Core::Instance ().GetBookmarksSyncManager()->CheckUploadPeriod ();
+		
 		Core::Instance ().SetBookamrksDir(Util::CreateIfNotExists ("poshuku/onlinebookmarks"));
 		
 		connect (&Core::Instance (),
@@ -134,6 +143,8 @@ namespace OnlineBookmarks
 		uploadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_upload");
 		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
 		downloadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_download");
+		QAction *downloadAll = menuBookmarksSyn->addAction (tr ("Download all"));
+		//sync->setProperty ("ActionIcon", "");
 
 		connect (sync,
 				SIGNAL (triggered ()),
@@ -143,17 +154,38 @@ namespace OnlineBookmarks
 		connect (uploadOnly,
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
-				SLOT (uploadBookmarks ()));
+				SLOT (uploadBookmarksAction ()));
 
 		connect (downloadOnly,
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
-				SLOT (downloadBookmarks ()));
+				SLOT (downloadBookmarksAction()));
+		
+		connect (downloadAll,
+				SIGNAL (triggered ()),
+				Core::Instance ().GetBookmarksSyncManager (),
+				SLOT (downloadAllBookmarksAction ()));
+	
 	}
 
 	void OnlineBookmarks::initPlugin (QObject *proxy)
 	{
 		Core::Instance ().SetPluginProxy (proxy);
+	}
+	
+	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr proxy, QString title, QString url, QStringList tags)
+	{
+		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool () && 
+				(!Core::Instance ().GetBookmarksSyncManager ()->IsUrlInUploadFile (url)))
+		{
+			BookmarksDialog bd;
+			bd.SetBookmark (title, url, tags);
+			if (bd.exec () != QDialog::Accepted)
+				return;
+			bd.SendBookmark ();
+		}
+		else
+			Core::Instance ().GetBookmarksSyncManager ()->uploadBookmarksAction (title, url, tags);
 	}
 }
 }

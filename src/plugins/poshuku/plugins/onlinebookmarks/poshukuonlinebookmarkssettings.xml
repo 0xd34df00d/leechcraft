@@ -1,7 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-  <page>
-    <label lang="en" value="OnlineBookmarks" />
-		<item type="customwidget" label="own" name="Settings" />
-  </page>
+	<page>
+		<label lang="en" value="OnlineBookmarks" />
+		<tab>
+			<label lang="en" value="Accounts" />
+			<item type="customwidget" label="own" name="Accounts" />
+		</tab>
+		<tab>
+			<label lang="en" value="Sync Options" />
+			<item type="listview" property="ActiveServices">
+				<label lang="en" value="Select services" />
+			</item>
+			<item type="checkbox" property="ConfirmSend" state="off">
+				<label lang="en" value="Confirm sending bookmarks on addition" />
+			</item>
+			<item type="checkbox" property="ShowServices" state="off">
+				<label lang="en" value="Ask user about services witch bookmarks send should be" />
+			</item>
+			<item type="groupbox" property="DownloadGroup" checkable="true" state="off">
+				<label lang="en" value="Download option" />
+				<item type="combobox" property="DownloadPeriod">
+					<label lang="en" value="Send bookmarks to active services every"/>
+					<option name="0" default="true">
+						<label lang="en" value="On Action" />
+					</option>
+					<option name="1">
+						<label lang="en" value="Day" />
+					</option>
+					<option name="2">
+						<label lang="en" value="2 days" />
+					</option>
+					<option name="3">
+						<label lang="en" value="3 days" />
+					</option>
+					<option name="4">
+						<label lang="en" value="4 days" />
+					</option>
+					<option name="5">
+						<label lang="en" value="5 days" />
+					</option>
+					<option name="6">
+						<label lang="en" value="6 days" />
+					</option>
+					<option name="7">
+						<label lang="en" value="Week" />
+					</option>
+					<option name="30">
+						<label lang="en" value="Month" />
+					</option>
+					<option name="365">
+						<label lang="en" value="Year" />
+					</option>
+				</item>
+			</item>
+			<item type="groupbox" property="UploadGroup" checkable="true" state="off">
+				<label lang="en" value="Upload option" />
+				<item type="combobox" property="UploadPeriod" >
+					<label lang="en" value="Send bookmarks to active services every"/>
+					<option name="0" default="true">
+						<label lang="en" value="On Action" />
+					</option>
+					<option name="1">
+						<label lang="en" value="Day" />
+					</option>
+					<option name="2">
+						<label lang="en" value="2 days" />
+					</option>
+					<option name="3">
+						<label lang="en" value="3 days" />
+					</option>
+					<option name="4">
+						<label lang="en" value="4 days" />
+					</option>
+					<option name="5">
+						<label lang="en" value="5 days" />
+					</option>
+					<option name="6">
+						<label lang="en" value="6 days" />
+					</option>
+					<option name="7">
+						<label lang="en" value="Week" />
+					</option>
+					<option name="30">
+						<label lang="en" value="Month" />
+					</option>
+					<option name="365">
+						<label lang="en" value="Year" />
+					</option>
+				</item>
+			</item>
+		</tab>
+	</page>
 </settings>

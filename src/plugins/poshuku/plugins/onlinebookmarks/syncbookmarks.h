@@ -20,7 +20,9 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
 
 #include <QObject>
+#include <QDateTime>
 #include "interfaces/structures.h"
+
 
 namespace LeechCraft
 {
@@ -32,22 +34,32 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
+	class AbstractBookmarksService;
+	
 	class SyncBookmarks : public QObject
 	{
 		Q_OBJECT
+		
+		bool IsSync_;
 	public:
 		SyncBookmarks (QObject *parent = 0);
+		bool IsUrlInUploadFile (const QString&);
 	public slots:
 		void syncBookmarks ();
-		void uploadBookmarks ();
-		void downloadBookmarks ();
+		void uploadBookmarksAction (const QString& title = QString (), const QString& url = QString (), 
+				const QStringList& tags = QStringList (), AbstractBookmarksService *as = 0);
+		void downloadBookmarksAction ();
+		void downloadAllBookmarksAction ();
 		void readDownloadReply (const QList<QVariant>&, const QUrl&);
 		void readUploadReply (bool);
 		void readErrorReply (const QString&);
+		void CheckDownloadPeriod ();
+		void CheckUploadPeriod ();
+	private slots:
+		void downloadBookmarks (AbstractBookmarksService*, QDateTime);
 	private:
-		QList<QVariant> GetBookmarksForUpload ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		QList<QVariant> GetBookmarksForUpload (const QString& url = QString ());
+		QStringList GetUrlsFromUploadFile () const;
 	};
 }
 }

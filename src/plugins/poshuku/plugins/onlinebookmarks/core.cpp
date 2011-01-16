@@ -25,6 +25,7 @@
 #include <plugininterface/util.h>
 #include <interfaces/iproxyobject.h>
 #include "syncbookmarks.h"
+#include "settings.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,6 @@ namespace OnlineBookmarks
 {
 	Core::Core ()
 	{
-		 Init ();
 	}
 
 	Core& Core::Instance ()
@@ -54,7 +54,10 @@ namespace OnlineBookmarks
 
 	void Core::Init ()
 	{
-		Model_ = new QStandardItemModel;
+		Model_ = new QStandardItemModel (this);
+		ServiceModel_ = new QStandardItemModel (this);
+		AccountsWidget_ =  new Settings (Model_);
+		
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
 		settings.beginGroup ("Account");
@@ -68,7 +71,7 @@ namespace OnlineBookmarks
 				QStandardItem *loginItem = new QStandardItem (login);
 				itemList << loginItem;
 			}
-			QStandardItem *service = new QStandardItem (item);
+			QStandardItem *service = new QStandardItem (QString::fromUtf8 (QByteArray::fromBase64 (item.toUtf8 ())));
 			Model_->appendRow (service);
 			service->appendRows (itemList);
 		}
@@ -115,7 +118,7 @@ namespace OnlineBookmarks
 		e.Additional_ ["Values"] = values;
 		e.Additional_ ["Overwrite"] = true;
 
-		Core::Instance ().SendEntity (e);
+		SendEntity (e);
 	}
 
 	QString Core::GetPassword (const QString& account, const QString& service) const
@@ -187,6 +190,25 @@ namespace OnlineBookmarks
 	void Core::SetBookamrksDir (const QDir& path)
 	{
 		BookmarksDir_ = path;
+	}
+	
+	QAbstractItemModel* Core::GetServiceModel () const
+	{
+		return ServiceModel_;
+	}
+
+	Settings* Core::GetAccountsWidget ()
+	{
+		return AccountsWidget_;
+	}
+	
+	QStringList Core::SanitizeTagsList (const QStringList& list)
+	{
+		QStringList newList;
+		Q_FOREACH (const QString& str, list)
+			newList << str.trimmed ();
+		
+		return newList;
 	}
 }
 }

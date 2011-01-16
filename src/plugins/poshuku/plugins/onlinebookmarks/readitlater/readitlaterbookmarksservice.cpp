@@ -86,7 +86,7 @@ namespace OnlineBookmarks
 				SLOT (readyReadReply ()));
 	}
 	
-	void ReadItLaterBookmarksService::DownloadBookmarks (const QStringList& logins, int lastDownloadTime)
+	void ReadItLaterBookmarksService::DownloadBookmarks (const QStringList& logins, QDateTime lastDownloadTime)
 	{
 		Type_ = Download_;
 		
@@ -98,11 +98,11 @@ namespace OnlineBookmarks
 				gotParseError (tr ("Invalid password"));
 				return;
 			}
-			FetchBookmarks (login, password, lastDownloadTime);
+			FetchBookmarks (login, password, lastDownloadTime.toTime_t ());
 		}
 	}
 
-	void ReadItLaterBookmarksService::UploadBookmarks (const QStringList& logins, const QList<QVariant>& bookamrks)
+	void ReadItLaterBookmarksService::UploadBookmarks (const QStringList& logins, const QList<QVariant>& bookmarks)
 	{
 		Type_ = Upload_;
 		
@@ -114,7 +114,7 @@ namespace OnlineBookmarks
 				gotParseError (tr ("Invalid password"));
 				return;
 			}
-			SendBookmarks (login, password, bookamrks);
+			SendBookmarks (login, password, bookmarks);
 		}
 	}
 
@@ -135,8 +135,6 @@ namespace OnlineBookmarks
 			break;
 		case Upload_:
 			ParseUploadReply ((Reply_->attribute (QNetworkRequest::HttpStatusCodeAttribute) == 200));
-			break;
-		case Sync_:
 			break;
 		}
 	}
@@ -188,6 +186,11 @@ namespace OnlineBookmarks
 			i++;
 		}
 		
+		if (exportBookmarks.isEmpty ())
+		{
+			return;
+		}
+			
 		QJson::Serializer serializer;
 		QByteArray jsonBookmarks = serializer.serialize (exportBookmarks);
 		QByteArray jsonTags = serializer.serialize (exportTags);
@@ -244,11 +247,10 @@ namespace OnlineBookmarks
 		emit gotDownloadReply (bookmarks, QUrl (ServiceUrl));
 	}
 	
-	void ReadItLaterBookmarksService::ParseUploadReply (bool code)
+	void ReadItLaterBookmarksService::ParseUploadReply (bool success)
 	{
-		emit gotUploadReply (code);
+		emit gotUploadReply (success);
 	}
-
 }
 }
 }
