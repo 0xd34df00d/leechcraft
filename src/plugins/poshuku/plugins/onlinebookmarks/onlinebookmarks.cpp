@@ -171,10 +171,9 @@ namespace OnlineBookmarks
 		{
 			BookmarksDialog bd;
 			bd.SetBookmark (title, url, tags);
-			if (bd.exec () == QDialog::Accepted)
-				bd.SendBookmark ();
-			else if (bd.exec () == QDialog::Rejected)
+			if (bd.exec () != QDialog::Accepted)
 				return;
+			bd.SendBookmark ();
 		}
 		else
 			Core::Instance ().GetBookmarksSyncManager ()->uploadBookmarksAction (title, url, tags);
