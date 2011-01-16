@@ -167,7 +167,7 @@ namespace OnlineBookmarks
 	
 	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr proxy, QString title, QString url, QStringList tags)
 	{
-		if (XmlSettingsManager::Instance ()->Property ("ConfirmOnAddition", false).toBool ())
+		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool ())
 		{
 			BookmarksDialog bd;
 			bd.SetBookmark (title, url, tags);

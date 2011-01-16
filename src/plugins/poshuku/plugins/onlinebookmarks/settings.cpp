@@ -296,21 +296,21 @@ namespace OnlineBookmarks
 					tr ("Invalid account data"),
 					PCritical_);
 			Core::Instance ().SendEntity (e);
+		
+			return;
 		}
-
-		QString service = "Account/" + Ui_.Services_->currentText ();
-		// FIXME
-		if (XmlSettingsManager::Instance ()->property (service.toUtf8 ()).isNull ())
+		
+		QString service = "Account/" + Ui_.Services_->currentText ().toUtf8 ().toBase64 ();
+		if (XmlSettingsManager::Instance ()->property (service.toLatin1 ()).isNull ())
 			XmlSettingsManager::Instance ()->
-					setProperty (service.toUtf8 (), Ui_.Login_->text ());
+					setProperty (service.toLatin1 (), Ui_.Login_->text ());
 		else
 		{
-			// FIXME
 			QStringList loginList = XmlSettingsManager::Instance ()->
-					property (service.toStdString ().c_str ()).toStringList ();
+					property (service.toLatin1 ()).toStringList();
 			loginList << Ui_.Login_->text ();
 			XmlSettingsManager::Instance ()->
-					setProperty (service.toStdString ().c_str (), loginList);
+					setProperty (service.toLatin1 (), loginList);
 		}
 
 		QList<QStandardItem*> items = Model_->findItems (Ui_.Services_->currentText ());

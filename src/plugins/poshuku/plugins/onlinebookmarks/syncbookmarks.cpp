@@ -60,7 +60,7 @@ namespace OnlineBookmarks
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
 		{
 			service->UploadBookmarks (XmlSettingsManager::Instance ()->
-				property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (),
+				property ("Account/" + service->GetName ().toUtf8 ().toBase64 ()).toStringList (),
 				result);
 			
 			connect (service,
@@ -86,7 +86,7 @@ namespace OnlineBookmarks
 	{
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
 			downloadBookmarks(service, XmlSettingsManager::Instance ()->
-					Property ((service->GetName () + "/LastDownload").toUtf8 (), 
+					Property (service->GetName ().toUtf8 ().toBase64 () + "/LastDownload", 
 					QVariant (QDateTime::fromString ("01.01.1970", "dd.MM.yyyy").toTime_t ())).toInt ());
 	}
 
@@ -153,7 +153,7 @@ namespace OnlineBookmarks
 		file.close ();
 		
 		XmlSettingsManager::Instance ()->
-				setProperty ((service->GetName () + "/LastDownload").toUtf8 (), 
+				setProperty (service->GetName ().toUtf8 ().toBase64 () + "/LastDownload", 
 				QDateTime::currentDateTime ().toTime_t ());
 		
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
@@ -190,7 +190,7 @@ namespace OnlineBookmarks
 		}
 		
 		XmlSettingsManager::Instance ()->
-				setProperty ((service->GetName () + "/LastUpload").toUtf8 (), 
+				setProperty (service->GetName ().toUtf8 ().toBase64 () + "/LastUpload", 
 				QDateTime::currentDateTime ().toTime_t ());
 
 		e = Util::MakeNotification ("Poshuku", 
@@ -283,7 +283,7 @@ namespace OnlineBookmarks
 	void SyncBookmarks::downloadBookmarks (AbstractBookmarksService *service, uint fromTime)
 	{
 		service->DownloadBookmarks (XmlSettingsManager::Instance ()->
-					property (("Account/" + service->GetName ()).toUtf8 ()).toStringList (), 
+					property ("Account/" + service->GetName ().toUtf8 ().toBase64 ()).toStringList (), 
 					fromTime);
 			
 		connect (service,

@@ -59,9 +59,7 @@ namespace OnlineBookmarks
 	}
 
 	void BookmarksDialog::SendBookmark ()
-	{
-		qDebug () << Ui_.Title_->text () << Ui_.URL_->text () << 
-				Ui_.Tags_->text ().split (';');
+	{;
 		Core::Instance ().GetBookmarksSyncManager ()->
 				uploadBookmarksAction (Ui_.Title_->text (), Ui_.URL_->text (), 
 				Ui_.Tags_->text ().split (';'));

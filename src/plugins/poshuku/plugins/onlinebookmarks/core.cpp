@@ -71,7 +71,7 @@ namespace OnlineBookmarks
 				QStandardItem *loginItem = new QStandardItem (login);
 				itemList << loginItem;
 			}
-			QStandardItem *service = new QStandardItem (item);
+			QStandardItem *service = new QStandardItem (QString::fromUtf8 (QByteArray::fromBase64 (item.toUtf8 ())));
 			Model_->appendRow (service);
 			service->appendRows (itemList);
 		}
