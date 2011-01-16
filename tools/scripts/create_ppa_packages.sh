@@ -11,23 +11,24 @@ build_for_distr(){
 	cd debian
 	git checkout $DIST_BRANCH
 
-	OLDCONTROL=`cat control`
+	mv changelog changelog.old
 	{
-	echo "leechcraft ($DESC-$DIST~ppa1) $DIST; urgency=low ;"
+	echo "leechcraft ($DESC-$DIST~ppa1) $DIST; urgency=low"
 	echo
 	echo '  * New upstream release.'
 	echo 
-	echo "-- Georg Rudoy <0xd34df00d@gmail.com>  `date -R`"
+	echo " -- Georg Rudoy <0xd34df00d@gmail.com>  `date -R`"
 	echo
-	echo -n $OLDCONTROL
-	} >control
+	} >changelog
+	cat changelog.old >> changelog
+	rm changelog.old
 
-	#git commit -a -m "New upstream release"
+	git commit -a -m "New upstream release"
 	cd ..
 	debuild -S -sa
 	cd ..
-	#dput ppa leechcraft_$DESC-$DIST\~ppa1_source.changes
+	dput ppa leechcraft_$DESC-$DIST\~ppa1_source.changes
 }
 
 build_for_distr lucid ubuntu
-#build_for_distr maverick ubuntu_10.10
+build_for_distr maverick ubuntu_10.10
