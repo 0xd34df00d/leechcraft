@@ -38,9 +38,8 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	Settings::Settings (QStandardItemModel *model, Core *parent)
+	Settings::Settings (QStandardItemModel *model)
 	: Model_ (model)
-	, Core_ (parent)
 	{
 		Ui_.setupUi (this);
 
@@ -302,17 +301,11 @@ namespace OnlineBookmarks
 		}
 		
 		QString service = "Account/" + Ui_.Services_->currentText ().toUtf8 ().toBase64 ();
-		if (XmlSettingsManager::Instance ()->property (service.toLatin1 ()).isNull ())
-			XmlSettingsManager::Instance ()->
-					setProperty (service.toLatin1 (), Ui_.Login_->text ());
-		else
-		{
-			QStringList loginList = XmlSettingsManager::Instance ()->
-					property (service.toLatin1 ()).toStringList();
-			loginList << Ui_.Login_->text ();
-			XmlSettingsManager::Instance ()->
-					setProperty (service.toLatin1 (), loginList);
-		}
+		QStringList loginList = XmlSettingsManager::Instance ()->
+				property (service.toLatin1 ()).toStringList();
+		loginList << Ui_.Login_->text ();
+		XmlSettingsManager::Instance ()->
+				setProperty (service.toLatin1 (), loginList);
 
 		QList<QStandardItem*> items = Model_->findItems (Ui_.Services_->currentText ());
 		QStandardItem *serviceItem;

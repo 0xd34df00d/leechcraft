@@ -53,6 +53,16 @@ namespace OnlineBookmarks
 		SettingsDialog_->SetCustomWidget ("Accounts", Core::Instance ().GetAccountsWidget ());
 		SettingsDialog_->SetDataSource ("ActiveServices", Core::Instance ().GetServiceModel ());
 		
+		if (XmlSettingsManager::Instance ()->property ("DownloadGroup").toBool () && 
+				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString () != "Never" && 
+				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString () != "OnAction")
+			Core::Instance ().GetBookmarksSyncManager()->CheckDownloadPeriod ();
+		
+		if (XmlSettingsManager::Instance ()->property ("UploadGroup").toBool () && 
+				(XmlSettingsManager::Instance ()->property ("UploadPeriod").toString () != "Never") && 
+				(XmlSettingsManager::Instance ()->property ("UploadPeriod").toString () != "OnAction"))
+			Core::Instance ().GetBookmarksSyncManager()->CheckUploadPeriod ();
+		
 		Core::Instance ().SetBookamrksDir(Util::CreateIfNotExists ("poshuku/onlinebookmarks"));
 		
 		connect (&Core::Instance (),
@@ -167,7 +177,8 @@ namespace OnlineBookmarks
 	
 	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr proxy, QString title, QString url, QStringList tags)
 	{
-		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool () && (!Core::Instance ().GetBookmarksSyncManager ()->IsUrlInUploadFile (url)))
+		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool () && 
+				(!Core::Instance ().GetBookmarksSyncManager ()->IsUrlInUploadFile (url)))
 		{
 			BookmarksDialog bd;
 			bd.SetBookmark (title, url, tags);

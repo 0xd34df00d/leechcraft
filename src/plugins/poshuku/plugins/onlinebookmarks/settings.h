@@ -47,11 +47,10 @@ namespace OnlineBookmarks
 		Q_OBJECT
 
 		Ui::Accounts_ Ui_;
-		Core *Core_;
 		QStandardItemModel *Model_;
 		QList<AbstractBookmarksService*> BookmarksServices_;
 	public:
-		Settings (QStandardItemModel*, Core*);
+		Settings (QStandardItemModel*);
 		QString GetSelectedName () const;
 		void SetConfirmSend (bool);
 	private:

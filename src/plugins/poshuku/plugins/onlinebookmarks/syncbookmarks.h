@@ -51,10 +51,12 @@ namespace OnlineBookmarks
 		void readDownloadReply (const QList<QVariant>&, const QUrl&);
 		void readUploadReply (bool);
 		void readErrorReply (const QString&);
+		void CheckDownloadPeriod ();
+		void CheckUploadPeriod ();
 	private:
 		QList<QVariant> GetBookmarksForUpload (const QString& url = QString ());
-		void downloadBookmarks (AbstractBookmarksService*, uint);
-		QStringList getUrlsFromUploadFile () const;
+		void DownloadBookmarks (AbstractBookmarksService*, uint);
+		QStringList GetUrlsFromUploadFile () const;
 	};
 }
 }

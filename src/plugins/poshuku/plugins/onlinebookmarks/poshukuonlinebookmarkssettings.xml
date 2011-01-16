@@ -25,7 +25,7 @@
 						<label lang="en" value="Never" />
 					</option>
 					<option name="OnAction">
-						<label lang="en" value="OnAction" />
+						<label lang="en" value="On Action" />
 					</option>
 					<option name="EveryDay">
 						<label lang="en" value="Day" />
@@ -48,8 +48,8 @@
 					<option name="EveryWeek">
 						<label lang="en" value="Week" />
 					</option>
-					<option name="EveryMonthe">
-						<label lang="en" value="Monthe" />
+					<option name="EveryMonth">
+						<label lang="en" value="Month" />
 					</option>
 					<option name="EveryYear">
 						<label lang="en" value="Year" />
@@ -64,7 +64,7 @@
 						<label lang="en" value="Never" />
 					</option>
 					<option name="OnAction">
-						<label lang="en" value="OnAction" />
+						<label lang="en" value="On Action" />
 					</option>
 					<option name="EveryDay">
 						<label lang="en" value="Day" />
@@ -87,8 +87,8 @@
 					<option name="EveryWeek">
 						<label lang="en" value="Week" />
 					</option>
-					<option name="EveryMonthe">
-						<label lang="en" value="Monthe" />
+					<option name="EveryMonth">
+						<label lang="en" value="Month" />
 					</option>
 					<option name="EveryYear">
 						<label lang="en" value="Year" />

@@ -56,7 +56,7 @@ namespace OnlineBookmarks
 	{
 		Model_ = new QStandardItemModel (this);
 		ServiceModel_ = new QStandardItemModel (this);
-		AccountsWidget_ =  new Settings (Model_, this);
+		AccountsWidget_ =  new Settings (Model_);
 		
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
@@ -200,6 +200,41 @@ namespace OnlineBookmarks
 	Settings* Core::GetAccountsWidget ()
 	{
 		return AccountsWidget_;
+	}
+	
+	QStringList Core::SanitizeTagsList (const QStringList& list)
+	{
+		QStringList newList;
+		Q_FOREACH (const QString& str, list)
+			newList << str.trimmed ();
+		
+		return newList;
+	}
+
+	
+	uint Core::String2Time (const QString& value)
+	{
+		uint time;
+		if (value == "EveryDay")
+			time = 84600;
+		if (value == "Every2Day")
+			time = 169200;
+		if (value == "Every3Day")
+			time = 2592200;
+		if (value == "Every4Day")
+			time = 345600;
+		if (value == "Every5Day")
+			time = 432000;
+		if (value == "Every6Day")
+			time = 518400;
+		if (value == "EveryWeek")
+			time = 604800;
+		if (value == "EveryMonth")
+			time = 2592000;
+		if (value == "EveryYear")
+			time = 31536000;
+		
+		return time;
 	}
 }
 }

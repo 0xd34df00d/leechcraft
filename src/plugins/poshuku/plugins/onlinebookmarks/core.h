@@ -74,6 +74,8 @@ namespace OnlineBookmarks
 		void SetBookamrksDir (const QDir&);
 		QAbstractItemModel* GetServiceModel () const;
 		Settings* GetAccountsWidget ();
+		uint String2Time (const QString&);
+		QStringList SanitizeTagsList (const QStringList&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

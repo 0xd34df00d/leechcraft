@@ -48,13 +48,11 @@ namespace OnlineBookmarks
 
 	bool SyncBookmarks::IsUrlInUploadFile (const QString& url)
 	{
-		QStringList urls;
-		if ((urls = getUrlsFromUploadFile ()).isEmpty ())
-			return false;
-		
-			Q_FOREACH (const QVariant& var, urls)
-				if (urls.contains (url, Qt::CaseInsensitive))
-					return true;
+		const QStringList& urls = GetUrlsFromUploadFile();
+		Q_FOREACH (const QVariant& var, urls)
+			if (urls.contains (url, Qt::CaseInsensitive))
+				return true;
+		return false;
 	}
 
 	void SyncBookmarks::uploadBookmarksAction (const QString& title, const QString& url, const QStringList& tags)
@@ -96,7 +94,7 @@ namespace OnlineBookmarks
 	void SyncBookmarks::downloadBookmarksAction ()
 	{
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
-			downloadBookmarks(service, XmlSettingsManager::Instance ()->
+			DownloadBookmarks(service, XmlSettingsManager::Instance ()->
 					Property (service->GetName ().toUtf8 ().toBase64 () + "/LastDownload", 
 					QVariant (QDateTime::fromString ("01.01.1970", "dd.MM.yyyy").toTime_t ())).toInt ());
 	}
@@ -104,7 +102,7 @@ namespace OnlineBookmarks
 	void SyncBookmarks::downloadAllBookmarksAction ()
 	{
 		Q_FOREACH (AbstractBookmarksService *service, Core::Instance ().GetActiveBookmarksServices ())
-			downloadBookmarks(service, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy").toTime_t ());
+			DownloadBookmarks(service, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy").toTime_t ());
 	}
 
 
@@ -307,7 +305,7 @@ namespace OnlineBookmarks
 		return result;
 	}
 	
-	void SyncBookmarks::downloadBookmarks (AbstractBookmarksService *service, uint fromTime)
+	void SyncBookmarks::DownloadBookmarks (AbstractBookmarksService *service, uint fromTime)
 	{
 		service->DownloadBookmarks (XmlSettingsManager::Instance ()->
 					property ("Account/" + service->GetName ().toUtf8 ().toBase64 ()).toStringList (), 
@@ -326,7 +324,7 @@ namespace OnlineBookmarks
 				Qt::UniqueConnection);
 	}
 
-	QStringList SyncBookmarks::getUrlsFromUploadFile () const
+	QStringList SyncBookmarks::GetUrlsFromUploadFile () const
 	{
 		QDir dir = Core::Instance ().GetBookmarksDir ();
 		QFile file (dir.absolutePath () + "/uploadBookmarks");
@@ -347,7 +345,27 @@ namespace OnlineBookmarks
 				str.trimmed ();
 		return urls;
 	}
+	
+	void SyncBookmarks::CheckDownloadPeriod ()
+	{
+// 		Q_FOREACH (AbstractBookmarksService *as, Core::Instance ().GetActiveBookmarksServices ())
+// 		{
+// 			uint lastDownload = XmlSettingsManager::Instance ()->
+// 					property(as->GetName().toUtf8 ().toBase64 () + "/LastDownload").toInt ();
+// 			uint  currentTime = QDateTime::currentDateTime ().toTime_t ();
+// 			
+// 			if (currentTime - lastDownload < Core::Instance ().String2Time (
+// 					XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString ()))
+// 			{
+// 					downloadBookmarksAction ();
+// 			}
+// 		}
+	}
 
+	void SyncBookmarks::CheckUploadPeriod ()
+	{
+
+	}
 }
 }
 }
