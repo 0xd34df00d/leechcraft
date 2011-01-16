@@ -76,12 +76,24 @@ namespace Util
 
 			Node2ClientID ()
 			{
+				Node2ClientID_ ["http://bombusmod.net.ru/caps"] = "bombusmod";
 				Node2ClientID_ ["http://gajim.org"] = "gajim";
+				Node2ClientID_ ["http://jabiru.mzet.net/caps"] = "jabiru";
+				Node2ClientID_ ["http://kopete.kde.org/jabber/caps"] = "kopete";
 				Node2ClientID_ ["http://leechcraft.org/azoth"] = "leechcraft-azoth";
+				Node2ClientID_ ["http://mcabber.com/caps"] = "mcabber";
+				Node2ClientID_ ["http://miranda-im.org/caps"] = "miranda";
 				Node2ClientID_ ["http://pidgin.im/"] = "pidgin";
 				Node2ClientID_ ["http://psi-im.org/caps"] = "psi";
 				Node2ClientID_ ["http://psi-dev.googlecode.com/caps"] = "psiplus";
 				Node2ClientID_ ["http://pyicqt.googlecode.com//protocol/caps"] = "pyicq-t";
+				Node2ClientID_ ["http://qip.ru/caps"] = "qipinfium";
+				Node2ClientID_ ["http://qutim.org"] = "qutim";
+				Node2ClientID_ ["http://qutim.org/"] = "qutim";
+				Node2ClientID_ ["http://telepathy.freedesktop.org/caps"] = "telepathy.freedesktop.org";
+				Node2ClientID_ ["http://tkabber.jabber.ru/"] = "tkabber";
+				Node2ClientID_ ["http://vacuum-im.googlecode.com"] = "vacuum";
+				Node2ClientID_ ["http://www.google.com/xmpp/client/caps"] = "talk.google.com";
 			}
 		};
 	}
@@ -100,12 +112,24 @@ namespace Util
 
 			Node2ClientHR ()
 			{
+				Node2ClientHR_ ["http://bombusmod.net.ru/caps"] = "BombusMod";
 				Node2ClientHR_ ["http://gajim.org"] = "Gajim";
+				Node2ClientHR_ ["http://jabiru.mzet.net/caps"] = "Jabiru";
+				Node2ClientHR_ ["http://kopete.kde.org/jabber/caps"] = "Kopete";
 				Node2ClientHR_ ["http://leechcraft.org/azoth"] = "LeechCraft Azoth";
+				Node2ClientHR_ ["http://mcabber.com/caps"] = "MCabber";
+				Node2ClientHR_ ["http://miranda-im.org/caps"] = "Miranda IM";
 				Node2ClientHR_ ["http://pidgin.im/"] = "Pidgin IM";
 				Node2ClientHR_ ["http://psi-im.org/caps"] = "Psi";
 				Node2ClientHR_ ["http://psi-dev.googlecode.com/caps"] = "Psi+";
 				Node2ClientHR_ ["http://pyicqt.googlecode.com//protocol/caps"] = "PyICQ-t";
+				Node2ClientHR_ ["http://qip.ru/caps"] = "QIP Infium";
+				Node2ClientHR_ ["http://qutim.org"] = "QutIM";
+				Node2ClientHR_ ["http://qutim.org/"] = "QutIM";
+				Node2ClientHR_ ["http://telepathy.freedesktop.org/caps"] = "Telepathy";
+				Node2ClientHR_ ["http://tkabber.jabber.ru/"] = "Tkabber";
+				Node2ClientHR_ ["http://vacuum-im.googlecode.com"] = "Vacuum-IM";
+				Node2ClientHR_ ["http://www.google.com/xmpp/client/caps"] = "Google Talk";
 			}
 		};
 	}
