@@ -180,6 +180,8 @@ namespace Xoox
 			Init ();
 
 		ClientConnection_->SetState (AccState_);
+
+		emit statusChanged (status);
 	}
 
 	void GlooxAccount::Synchronize ()
