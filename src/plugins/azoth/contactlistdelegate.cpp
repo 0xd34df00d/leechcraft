@@ -20,6 +20,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QApplication>
+#include <QAbstractProxyModel>
 #include "interfaces/iclentry.h"
 #include "core.h"
 
@@ -77,13 +78,12 @@ namespace Azoth
 	void ContactListDelegate::DrawCategory (QPainter *painter,
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
+		const QRect& r = o.rect;
+
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
 		{
 			painter->save ();
-
-			const bool selected = o.state & QStyle::State_Selected;
-			const QRect& r = o.rect;
 
 			const QString& text = QString (" %1 :: ").arg (unread);
 
@@ -104,6 +104,35 @@ namespace Azoth
 		}
 
 		QStyledItemDelegate::paint (painter, o, index);
+
+		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
+		if (textWidth <= r.width ())
+		{
+			painter->save ();
+
+			const int visibleCount = index.model ()->rowCount (index);
+
+			const QAbstractItemModel *model = index.model ();
+			QModelIndex sourceIndex = index;
+			while (const QAbstractProxyModel *proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
+			{
+				model = proxyModel->sourceModel ();
+				sourceIndex = proxyModel->mapToSource (sourceIndex);
+			}
+
+			const QString& str = QString (" (%1/%2)")
+					.arg (visibleCount)
+					.arg (model->rowCount (sourceIndex));
+
+			if (o.state & QStyle::State_Selected)
+				painter->setPen (o.palette.color (QPalette::HighlightedText));
+			painter->drawText (r.left () + textWidth, r.top () + CPadding,
+					o.fontMetrics.width (str), r.height () - 2 * CPadding,
+					Qt::AlignVCenter | Qt::AlignLeft,
+					str);
+
+			painter->restore ();
+		}
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
