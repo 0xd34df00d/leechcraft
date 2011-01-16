@@ -86,7 +86,7 @@ namespace OnlineBookmarks
 				SLOT (readyReadReply ()));
 	}
 	
-	void ReadItLaterBookmarksService::DownloadBookmarks (const QStringList& logins, QDateTime lastDownloadTime)
+	void ReadItLaterBookmarksService::DownloadBookmarks (const QStringList& logins, const QDateTime& lastDownloadTime)
 	{
 		Type_ = Download_;
 		
