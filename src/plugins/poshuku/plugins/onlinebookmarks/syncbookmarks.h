@@ -45,7 +45,7 @@ namespace OnlineBookmarks
 	public slots:
 		void syncBookmarks ();
 		void uploadBookmarksAction (const QString& title = QString (), const QString& url = QString (), 
-				const QStringList& tags = QStringList ());
+				const QStringList& tags = QStringList (), AbstractBookmarksService *as = 0);
 		void downloadBookmarksAction ();
 		void downloadAllBookmarksAction ();
 		void readDownloadReply (const QList<QVariant>&, const QUrl&);
@@ -53,9 +53,10 @@ namespace OnlineBookmarks
 		void readErrorReply (const QString&);
 		void CheckDownloadPeriod ();
 		void CheckUploadPeriod ();
+	private slots:
+		void downloadBookmarks (AbstractBookmarksService*, uint);
 	private:
 		QList<QVariant> GetBookmarksForUpload (const QString& url = QString ());
-		void DownloadBookmarks (AbstractBookmarksService*, uint);
 		QStringList GetUrlsFromUploadFile () const;
 	};
 }

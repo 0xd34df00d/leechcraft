@@ -54,19 +54,16 @@ namespace OnlineBookmarks
 		Ui_.Title_->setText (title);
 		Ui_.URL_->setText (url);
 		Ui_.Tags_->setText (tags.join (";"));
-		Ui_.Ask_->setText (tr ("Please check the services you would like to add the bookmark %1 to, if any.").arg (url));
+		Ui_.Ask_->setText (tr ("Please check the services you would like to add the bookmark %1 to, if any.").
+				arg (url));
 		Ui_.ServicesView_->setModel (Core::Instance ().GetServiceModel());
 	}
 
 	void BookmarksDialog::SendBookmark ()
 	{
-		QStringList list = Ui_.Tags_->text ().split (';', QString::SkipEmptyParts);
-	
-		Q_FOREACH (QString str, list)
-			str.trimmed ();
-			
 		Core::Instance ().GetBookmarksSyncManager ()->
-				uploadBookmarksAction (Ui_.Title_->text (), Ui_.URL_->text (), list);
+				uploadBookmarksAction (Ui_.Title_->text (), Ui_.URL_->text (), 
+				Core::Instance ().SanitizeTagsList (Ui_.Tags_->text ().split (';', QString::SkipEmptyParts)));
 	}
 
 	void BookmarksDialog::sendBookmarkWithoutConfirm (bool checked)

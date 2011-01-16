@@ -68,7 +68,6 @@ namespace OnlineBookmarks
 		void ParseUploadReply (bool);
 	signals:
 		void gotValidReply (bool);
-		void gotMesssage (const QString&, const QString&);
 		void gotDownloadReply (const QList<QVariant>&, const QUrl&);
 		void gotUploadReply (bool);
 	};
