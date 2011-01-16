@@ -212,7 +212,8 @@ namespace Azoth
 
 		if (!avatarImg.isNull ())
 			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + CPadding, CPadding),
-					QPixmap::fromImage (avatarImg.scaled (iconSize, iconSize)));
+					QPixmap::fromImage (avatarImg.scaled (iconSize, iconSize,
+							Qt::KeepAspectRatio, Qt::SmoothTransformation)));
 
 		painter->drawPixmap (option.rect, pixmap);
 	}
