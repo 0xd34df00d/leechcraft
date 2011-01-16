@@ -151,7 +151,10 @@ namespace OnlineBookmarks
 		}
 		else
 		{
-			QStringList urls = QString::fromUtf8 (data).split ('\n');
+			QStringList urls = QString::fromUtf8 (data).split ('\n', QString::SkipEmptyParts);
+			Q_FOREACH (QString str, urls)
+				str.trimmed ();
+				
 			QStringList newBookmarksUrl;
 			
 			Q_FOREACH (const QVariant& var, importBookmarks)
@@ -276,7 +279,9 @@ namespace OnlineBookmarks
 		}
 		else
 		{
-			QStringList urls = QString::fromUtf8 (data).split ('\n');
+			QStringList urls = QString::fromUtf8 (data).split ('\n', QString::SkipEmptyParts);
+			Q_FOREACH (QString str, urls)
+				str.trimmed ();
 			QList<QVariant> newBookmarks;
 			QStringList newBookmarksUrl;
 			
@@ -337,7 +342,10 @@ namespace OnlineBookmarks
 		}
 		
 		const QByteArray& data = file.readAll ();
-		return QString::fromUtf8 (data).split ('\n');
+		QStringList urls = QString::fromUtf8 (data).split ('\n', QString::SkipEmptyParts);
+		Q_FOREACH (QString str, urls)
+				str.trimmed ();
+		return urls;
 	}
 
 }

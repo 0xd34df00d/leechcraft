@@ -59,10 +59,14 @@ namespace OnlineBookmarks
 	}
 
 	void BookmarksDialog::SendBookmark ()
-	{;
+	{
+		QStringList list = Ui_.Tags_->text ().split (';', QString::SkipEmptyParts);
+	
+		Q_FOREACH (QString str, list)
+			str.trimmed ();
+			
 		Core::Instance ().GetBookmarksSyncManager ()->
-				uploadBookmarksAction (Ui_.Title_->text (), Ui_.URL_->text (), 
-				Ui_.Tags_->text ().split (';'));
+				uploadBookmarksAction (Ui_.Title_->text (), Ui_.URL_->text (), list);
 	}
 
 	void BookmarksDialog::sendBookmarkWithoutConfirm (bool checked)
