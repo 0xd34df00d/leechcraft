@@ -54,7 +54,6 @@ namespace OnlineBookmarks
 		SettingsDialog_->SetDataSource ("ActiveServices", Core::Instance ().GetServiceModel ());
 		
 		if (XmlSettingsManager::Instance ()->property ("DownloadGroup").toBool () && 
-				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString () != "Never" && 
 				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString () != "OnAction")
 			Core::Instance ().GetBookmarksSyncManager()->CheckDownloadPeriod ();
 		

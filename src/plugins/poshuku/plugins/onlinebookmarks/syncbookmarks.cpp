@@ -184,7 +184,6 @@ namespace OnlineBookmarks
 		}
 		
 		if (XmlSettingsManager::Instance ()->property ("DownloadGroup").toBool () && 
-				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString () != "Never" && 
 				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toString () != "OnAction")
 		{
 			uint time = Core::Instance ().String2Time (XmlSettingsManager::Instance ()->
@@ -227,7 +226,6 @@ namespace OnlineBookmarks
 		Core::Instance ().SendEntity (e);
 		
 		if (XmlSettingsManager::Instance ()->property ("UploadGroup").toBool () && 
-				XmlSettingsManager::Instance ()->property ("UploadPeriod").toString () != "Never" && 
 				XmlSettingsManager::Instance ()->property ("UploadPeriod").toString () != "OnAction")
 		{
 			uint time = Core::Instance ().String2Time (XmlSettingsManager::Instance ()->
