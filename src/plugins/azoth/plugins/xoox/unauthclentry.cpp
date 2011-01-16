@@ -88,11 +88,6 @@ namespace Xoox
 		return 0;
 	}
 
-	AuthStatus UnauthCLEntry::GetAuthStatus () const
-	{
-		return ASNone;
-	}
-
 	gloox::JID UnauthCLEntry::GetJID () const
 	{
 		return JID_;

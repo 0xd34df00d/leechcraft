@@ -198,6 +198,16 @@ namespace Xoox
 				msg.toUtf8 ().constData ());
 	}
 
+	void ClientConnection::RevokeSubscription (const gloox::JID& jid, const QString& reason)
+	{
+		Client_->rosterManager ()->cancel (jid, reason.toUtf8 ().constData ());
+	}
+
+	void ClientConnection::Unsubscribe (const gloox::JID& jid, const QString& reason)
+	{
+		Client_->rosterManager ()->unsubscribe (jid, reason.toUtf8 ().constData ());
+	}
+
 	gloox::Client* ClientConnection::GetClient () const
 	{
 		return Client_.get ();

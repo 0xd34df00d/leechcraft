@@ -25,6 +25,8 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/azothcommon.h>
 #include "glooxaccount.h"
+#include "core.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -40,6 +42,10 @@ namespace Xoox
 	: EntryBase (parent)
 	, RI_ (ri)
 	{
+		connect (this,
+				SIGNAL (nameChanged (const QString&)),
+				&Core::Instance (),
+				SLOT (saveRoster ()));
 	}
 
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
@@ -47,6 +53,10 @@ namespace Xoox
 	, RI_ (0)
 	, ODS_ (ods)
 	{
+		connect (this,
+				SIGNAL (nameChanged (const QString&)),
+				&Core::Instance (),
+				SLOT (saveRoster ()));
 	}
 
 	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
@@ -100,7 +110,7 @@ namespace Xoox
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
-		return FPermanentEntry | FSupportsRenames;
+		return FPermanentEntry | FSupportsRenames | FSuportsAuth;
 	}
 
 	ICLEntry::EntryType GlooxCLEntry::GetEntryType () const
@@ -206,6 +216,34 @@ namespace Xoox
 			return ODS_->AuthStatus_;
 
 		return static_cast<AuthStatus> (RI_->subscription ());
+	}
+
+	void GlooxCLEntry::RevokeAuth (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		Account_->GetClientConnection ()->RevokeSubscription (GetJID (), reason);
+	}
+
+	void GlooxCLEntry::Unsubscribe (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		Account_->GetClientConnection ()->Unsubscribe (GetJID (), reason);;
+	}
+
+	void GlooxCLEntry::RerequestAuth (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		const QString& id = QString::fromUtf8 (GetJID ().bare ().c_str ());
+		Account_->GetClientConnection ()->Subscribe (id,
+				reason,
+				GetEntryName (),
+				Groups ());
 	}
 
 	gloox::JID GlooxCLEntry::GetJID () const

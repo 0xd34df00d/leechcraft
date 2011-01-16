@@ -24,6 +24,7 @@
 #include <QDir>
 #include <QMenu>
 #include <QMetaMethod>
+#include <QInputDialog>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -34,6 +35,7 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
 #include "interfaces/imucentry.h"
+#include "interfaces/iauthable.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -511,11 +513,14 @@ namespace LeechCraft
 				const QHash<QByteArray, QAction*>& id2action = Entry2Actions_ [entry];
 				QList<QAction*> result;
 				result << id2action.value ("openchat");
+				result << id2action.value ("rename");
+				result << id2action.value ("authorization");
 				result << id2action.value ("kick");
 				result << id2action.value ("ban");
 				result << id2action.value ("sep_afterban");
 				result << id2action.value ("changerole");
 				result << id2action.value ("changeaffiliation");
+				result << id2action.value ("sep_afterroles");
 				result << id2action.value ("vcard");
 				result << id2action.value ("leave");
 				result << id2action.value ("authorize");
@@ -559,6 +564,56 @@ namespace LeechCraft
 						SLOT (handleActionOpenChatTriggered ()));
 				Entry2Actions_ [entry] ["openchat"] = openChat;
 				Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
+
+				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSupportsRenames)
+				{
+					QAction *rename = new QAction (tr ("Rename"), entry->GetObject ());
+					connect (rename,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionRenameTriggered ()));
+					rename->setProperty ("ActionIcon", "azoth_rename");
+					Entry2Actions_ [entry] ["rename"] = rename;
+					Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
+				}
+
+				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSuportsAuth)
+				{
+					QMenu *authMenu = new QMenu (tr ("Authorization"));
+					authMenu->menuAction ()->setProperty ("ActionIcon", "azoth_menu_authorization");
+					Entry2Actions_ [entry] ["authorization"] = authMenu->menuAction ();
+					Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu;
+
+					QAction *revokeAuth = authMenu->addAction (tr ("Revoke"),
+							this, SLOT (handleActionRevokeAuthTriggered ()));
+					revokeAuth->setProperty ("ActionIcon", "azoth_auth_revoke");
+					revokeAuth->setProperty ("Azoth/WithReason", false);
+
+					QAction *revokeAuthReason = authMenu->addAction (tr ("Revoke with reason..."),
+							this, SLOT (handleActionRevokeAuthTriggered ()));
+					revokeAuthReason->setProperty ("ActionIcon", "azoth_auth_revoke_reason");
+					revokeAuthReason->setProperty ("Azoth/WithReason", true);
+
+					QAction *unsubscribe = authMenu->addAction (tr ("Unsubscribe"),
+							this, SLOT (handleActionUnsubscribeTriggered ()));
+					unsubscribe->setProperty ("ActionIcon", "azoth_auth_unsubscribe");
+					unsubscribe->setProperty ("Azoth/WithReason", false);
+
+					QAction *unsubscribeReason = authMenu->addAction (tr ("Unsubscribe with reason..."),
+							this, SLOT (handleActionUnsubscribeTriggered ()));
+					unsubscribeReason->setProperty ("ActionIcon", "azoth_auth_unsubscribe");
+					unsubscribeReason->setProperty ("Azoth/WithReason", true);
+
+					QAction *rerequest = authMenu->addAction (tr ("Rerequest authentication"),
+							this, SLOT (handleActionRerequestTriggered ()));
+					rerequest->setProperty ("ActionIcon", "azoth_auth_rerequest");
+					rerequest->setProperty ("Azoth/WithReason", false);
+
+					QAction *rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason.."),
+							this, SLOT (handleActionRerequestTriggered ()));
+					rerequestReason->setProperty ("ActionIcon", "azoth_auth_rerequest");
+					rerequestReason->setProperty ("Azoth/WithReason", true);
+				}
 
 				if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
 				{
@@ -665,6 +720,10 @@ namespace LeechCraft
 					ownerAff->setCheckable (true);
 					ownerAff->setProperty ("Azoth/TargetAffiliation",
 							QVariant::fromValue<Plugins::IMUCEntry::MUCAffiliation> (Plugins::IMUCEntry::MUCAOwner));
+
+					sep = Util::CreateSeparator (entry->GetObject ());
+					Entry2Actions_ [entry] ["sep_afterroles"] = sep;
+					Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 				}
 				else if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC)
 				{
@@ -713,6 +772,7 @@ namespace LeechCraft
 						Q_FOREACH (QAction *act, actions)
 						{
 							act->setProperty ("Azoth/Entry", Entry_);
+							act->setParent (Entry_.value<Plugins::ICLEntry*> ()->GetObject ());
 							QMenu *menu = act->menu ();
 							if (menu)
 								Do (menu->actions ());
@@ -760,6 +820,47 @@ namespace LeechCraft
 						act->setChecked (mucEntry->GetAffiliation (entry->GetObject ()) == target);
 					}
 				}
+			}
+
+			QString Core::GetReason (const QString& id, const QString& text)
+			{
+				return QInputDialog::getText (0,
+							tr ("Enter reason"),
+							text);
+			}
+
+			void Core::ManipulateAuth (const QString& id, const QString& text,
+					boost::function<void (Plugins::IAuthable*, const QString&)> func)
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IAuthable *authable =
+						qobject_cast<Plugins::IAuthable*> (entry->GetObject ());
+				if (!authable)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entry->GetObject ()
+							<< "doesn't implement IAuthable";
+					return;
+				}
+
+				QString reason;
+				if (action->property ("Azoth/WithReason").toBool ())
+				{
+					reason = GetReason (id, text.arg (entry->GetEntryName ()));
+					if (reason.isEmpty ())
+						return;
+				}
+				func (authable, reason);
 			}
 
 			void Core::handleAccountCreatorTriggered ()
@@ -1199,6 +1300,56 @@ namespace LeechCraft
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
 				ChatTabsManager_->OpenChat (entry);
+			}
+
+			void Core::handleActionRenameTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+
+				const QString& oldName = entry->GetEntryName ();
+				const QString& newName = QInputDialog::getText (0,
+						tr ("Rename contact"),
+						tr ("Please enter new name for the contact %1:")
+							.arg (oldName),
+						QLineEdit::Normal,
+						oldName);
+
+				if (newName.isEmpty () ||
+						oldName == newName)
+					return;
+
+				entry->SetEntryName (newName);
+			}
+
+			void Core::handleActionRevokeAuthTriggered ()
+			{
+				ManipulateAuth ("revokeauth",
+						tr ("Enter reason for revoking authorization from %1:"),
+						&Plugins::IAuthable::RevokeAuth);
+			}
+
+			void Core::handleActionUnsubscribeTriggered ()
+			{
+				ManipulateAuth ("unsubscribe",
+						tr ("Enter reason for unsubscribing from %1:"),
+						&Plugins::IAuthable::Unsubscribe);
+			}
+
+			void Core::handleActionRerequestTriggered ()
+			{
+				ManipulateAuth ("rerequestauth",
+						tr ("Enter reason for rerequesting authorization from %1:"),
+						&Plugins::IAuthable::RerequestAuth);
 			}
 
 			void Core::handleActionVCardTriggered ()

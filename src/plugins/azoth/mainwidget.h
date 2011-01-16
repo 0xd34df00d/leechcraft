@@ -55,6 +55,8 @@ namespace Azoth
 		void showAccountsList ();
 		void handleAddContactRequested ();
 
+		void handleShowOffline (bool);
+
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void rebuildTreeExpansions ();
 		void on_CLTree__expanded (const QModelIndex&);

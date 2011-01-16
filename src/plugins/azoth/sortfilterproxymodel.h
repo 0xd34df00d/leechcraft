@@ -29,10 +29,15 @@ namespace LeechCraft
 			class SortFilterProxyModel : public QSortFilterProxyModel
 			{
 				Q_OBJECT
+
+				bool ShowOffline_;
 			public:
 				SortFilterProxyModel (QObject* = 0);
+			public slots:
+				void showOfflineContacts (bool);
 			protected:
-				virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
+				bool filterAcceptsRow (int, const QModelIndex&) const;
+				bool lessThan (const QModelIndex&, const QModelIndex&) const;
 			};
 		}
 	}

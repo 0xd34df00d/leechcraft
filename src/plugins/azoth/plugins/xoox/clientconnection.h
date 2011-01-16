@@ -105,6 +105,8 @@ namespace Xoox
 		void AckAuth (QObject*, bool);
 		void Subscribe (const QString&, const QString&,
 				const QString&, const QStringList&);
+		void RevokeSubscription (const gloox::JID&, const QString&);
+		void Unsubscribe (const gloox::JID&, const QString&);
 
 		gloox::Client* GetClient () const;
 		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;

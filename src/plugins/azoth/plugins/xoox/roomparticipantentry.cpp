@@ -108,11 +108,6 @@ namespace Xoox
 		return msg;
 	}
 
-	AuthStatus RoomParticipantEntry::GetAuthStatus () const
-	{
-		return ASNone;
-	}
-
 	gloox::JID RoomParticipantEntry::GetJID () const
 	{
 		gloox::JID jid = RoomHandler_->GetRoomJID ();

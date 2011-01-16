@@ -79,6 +79,21 @@ namespace Azoth
 
 		UpperBar_->addAction (MenuGeneral_->menuAction ());
 
+		QMenu *menuView = new QMenu (tr ("View"));
+		UpperBar_->addAction (menuView->menuAction ());
+
+		QAction *showOffline = menuView->addAction (tr ("Show offline contacts"));
+		showOffline->setProperty ("ActionIcon", "azoth_showoffline");
+		showOffline->setCheckable (true);
+		bool show = XmlSettingsManager::Instance ()
+				.Property ("ShowOfflineContacts", true).toBool ();
+		ProxyModel_->showOfflineContacts (show);
+		showOffline->setChecked (show);
+		connect (showOffline,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleShowOffline (bool)));
+
 		ActionChangeStatus_ = new QAction (tr ("Change status..."), this);
 		connect (ActionChangeStatus_,
 				SIGNAL (triggered ()),
@@ -182,6 +197,13 @@ namespace Azoth
 					dia->GetReason (),
 					dia->GetNick (),
 					dia->GetGroups ());
+	}
+
+	void MainWidget::handleShowOffline (bool show)
+	{
+		XmlSettingsManager::Instance ().setProperty ("ShowOfflineContacts", show);
+
+		ProxyModel_->showOfflineContacts (show);
 	}
 
 	namespace

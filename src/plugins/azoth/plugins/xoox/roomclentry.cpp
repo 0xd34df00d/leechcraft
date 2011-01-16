@@ -135,11 +135,6 @@ namespace Xoox
 	{
 	}
 
-	AuthStatus RoomCLEntry::GetAuthStatus () const
-	{
-		return ASNone;
-	}
-
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 	{
 		return MUCFCanBeConfigured;
