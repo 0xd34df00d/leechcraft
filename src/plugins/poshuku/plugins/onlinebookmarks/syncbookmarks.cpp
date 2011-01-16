@@ -230,8 +230,7 @@ namespace OnlineBookmarks
 				XmlSettingsManager::Instance ()->property ("UploadPeriod").toInt ())
 		{
 			uint time = XmlSettingsManager::Instance ()->property ("UploadPeriod").toInt () * 86400;
-			QTimer::singleShot (time * 1000, this, SLOT (
-					uploadBookmarksAction (QString (), QString (), QString (), sender ())));
+			QTimer::singleShot (time * 1000, this, SLOT (CheckUploadPeriod ()));
 		}
 	}
 	
@@ -377,7 +376,7 @@ namespace OnlineBookmarks
 					property ("DownloadPeriod").toInt () * 86400)
 					downloadBookmarks (as, lastDownload);
 			else
-				QTimer::singleShot (diff * 1000, this, SLOT (downloadBookmarks (as, lastDownload)));
+				QTimer::singleShot (diff * 1000, this, SLOT (CheckDownloadPeriod ()));
 		}
 	}
 
@@ -394,7 +393,7 @@ namespace OnlineBookmarks
 					property ("UpPeriod").toInt () * 86400)
 				uploadBookmarksAction (QString (), QString (), QStringList(), as);
 			else
-				QTimer::singleShot (diff * 1000, this, SLOT (uploadBookmarksAction (QString (), QString (), QStringList(), as));
+				QTimer::singleShot (diff * 1000, this, SLOT (CheckUploadPeriod ()));
 		}
 	}
 }
