@@ -259,6 +259,15 @@ namespace Plugins
 		 */
 		virtual void authorizationRequested (QObject *entry,
 				const QString& message) = 0;
+
+		/** @brief This signal should be emitted when state of this
+		 * account changes for whatever reason.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] state New state of this account.
+		 */
+		virtual void statusChanged (const EntryStatus&) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IAccount::AccountFeatures);

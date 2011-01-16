@@ -35,6 +35,10 @@ namespace Util
 {
 	QString RoleToString (const gloox::MUCRoomRole&);
 	QString AffiliationToString (const gloox::MUCRoomAffiliation&);
+
+	QString GetClientIDName (const QString&);
+	QString GetClientHRName (const QString&);
+	//QString GetClientVersion (const QString&, const QString&);
 }
 }
 }

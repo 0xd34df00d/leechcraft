@@ -1,0 +1,39 @@
+	FREEWARE LICENSE 
+ of Fingerprit Plus plugin for Miranda IM. 
+
+ Copyright (C) 2006-2007 Artem Shpynov, Bio, Angeli-Ka, Nullbie.
+
+ THIS PRODUCT IS PROVIDED 'AS-IS', WITHOUT ANY EXPRESSED OR IMPLIED WARRANTY.
+ IN NO EVENT WILL THE AUTHOR(S) BE HELD LIABLE FOR ANY DAMAGES ARISING FROM THE USE OF FP.
+
+ By using, copying, or distributing the
+ Fingerprit Plus ("FP")plugin you indicate your acceptance of the following
+ Freeware License Agreement ("Agreement"):
+ 
+ - You can:
+  a.use the FP on any computer in your possession.
+  b.make copies of the FP and share it with your friends.
+  c.obtain support and assistance on Miranda IM forum http://forums.miranda-im.org/showthread.php?t=6465
+ 
+ - Permission is granted to anyone to distribute the FP ONLY as Miranda IM plugin in any custom 
+ Miranda IM packs or compilation that identifies itself as "Miranda IM" in all user dialogs.
+
+ 	LIMITATIONS ON LICENSE
+ - You will not, and will not permit others to reverse engineer, decompile, disassemble, derive the source code of,
+ modify, or create derivative works from FP, copy, distribute, publicly display, 
+ or publicly perform content contained in FP other than as expressly authorized by this Agreement.
+
+ - You will not use FP to engage in or allow others to engage in any
+ illegal activity.
+
+ - You will not sell FP or charge others for use of it (either for profit
+ or merely to recover your media and distribution costs) whether as a stand-alone
+ product, or as part of a compilation or anthology, without explicit prior written permission.
+
+ - You will not use FP to engage in any activity that will violate the rights of
+ third parties, including, without limitation, through the use, public display, public
+ performance, reproduction, distribution, or modification of communications or materials
+ that infringe copyrights, trademarks, publicity rights, privacy rights, other proprietary rights,
+ or rights against defamation of third parties.
+ 
+ - This Agreement may not be removed or altered from any form of distribution.

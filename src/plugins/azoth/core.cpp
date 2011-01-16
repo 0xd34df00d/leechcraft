@@ -51,6 +51,7 @@ namespace LeechCraft
 			: CLModel_ (new QStandardItemModel (this))
 			, ChatTabsManager_ (new ChatTabsManager (this))
 			, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
+			, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
 			, PluginManager_ (new PluginManager)
 			, PluginProxyObject_ (new ProxyObject)
 			{
@@ -62,6 +63,9 @@ namespace LeechCraft
 
 				StatusIconLoader_->AddLocalPrefix ();
 				StatusIconLoader_->AddGlobalPrefix ();
+
+				ClientIconLoader_->AddLocalPrefix ();
+				ClientIconLoader_->AddGlobalPrefix ();
 
 				qRegisterMetaType<Plugins::IMessage*> ("LeechCraft::Plugins::Azoth::Plugins::IMessage*");
 				qRegisterMetaType<Plugins::IMessage*> ("Plugins::IMessage*");
@@ -100,6 +104,7 @@ namespace LeechCraft
 					mucEntry->Leave ();
 
 				StatusIconLoader_.reset ();
+				ClientIconLoader_.reset ();
 			}
 
 			void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -502,6 +507,22 @@ namespace LeechCraft
 
 				QString path = StatusIconLoader_->GetPath (variants);
 				return QIcon (path);
+			}
+
+			QMap<QString, QIcon> Core::GetClientIconForEntry (Plugins::ICLEntry *entry)
+			{
+				QMap<QString, QIcon> result;
+				Q_FOREACH (const QString& variant, entry->Variants ())
+				{
+					QString filename = "default/";
+					filename += entry->GetClientInfo (variant) ["client_type"].toString ();
+					QStringList variants;
+					variants << filename + ".svg"
+							<< filename + ".png"
+							<< filename + ".jpg";
+					result [variant] = QIcon (ClientIconLoader_->GetPath (variants));
+				}
+				return result;
 			}
 
 			QList<QAction*> Core::GetEntryActions (Plugins::ICLEntry *entry)
@@ -949,6 +970,7 @@ namespace LeechCraft
 						CLRAccountObject);
 				accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount),
 						CLREntryType);
+				accItem->setIcon (GetIconForState (account->GetState ().State_));
 				CLModel_->appendRow (accItem);
 
 				accItem->setEditable (false);
@@ -981,6 +1003,10 @@ namespace LeechCraft
 						SIGNAL (authorizationRequested (QObject*, const QString&)),
 						this,
 						SLOT (handleAuthorizationRequested (QObject*, const QString&)));
+				connect (accObject,
+						SIGNAL (statusChanged (const Plugins::EntryStatus&)),
+						this,
+						SLOT (handleAccountStatusChanged (const Plugins::EntryStatus&)));
 			}
 
 			void Core::handleAccountRemoved (QObject *account)
@@ -1092,6 +1118,24 @@ namespace LeechCraft
 
 					ID2Entry_.remove (entry->GetEntryID ());
 				}
+			}
+
+			void Core::handleAccountStatusChanged (const Plugins::EntryStatus& status)
+			{
+				for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
+				{
+					QStandardItem *item = CLModel_->item (i);
+					if (item->data (CLRAccountObject).value<QObject*> () != sender ())
+						continue;
+
+					item->setIcon (GetIconForState (status.State_));
+					return;
+				}
+
+				qWarning () << Q_FUNC_INFO
+						<< "item for account"
+						<< sender ()
+						<< "not found";
 			}
 
 			void Core::handleStatusChanged (const Plugins::EntryStatus& status, const QString& variant)

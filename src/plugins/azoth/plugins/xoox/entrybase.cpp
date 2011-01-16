@@ -21,11 +21,13 @@
 #include <QStringList>
 #include <QtDebug>
 #include <gloox/rosteritem.h>
+#include <gloox/capabilities.h>
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "vcarddialog.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -95,6 +97,11 @@ namespace Xoox
 		VCardDialog_->show ();
 	}
 
+	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString& var) const
+	{
+		return Variant2ClientInfo_ [var];
+	}
+
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
 		AllMessages_ << msg;
@@ -145,6 +152,37 @@ namespace Xoox
 		RawInfo_ = rawinfo;
 
 		emit rawinfoChanged (RawInfo_);
+	}
+
+	void EntryBase::SetClientInfo (const QString& variant,
+			const QString& node, const QString& ver)
+	{
+		QString type = Util::GetClientIDName (node);
+		if (type.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown client type for"
+					<< node;
+			type = "unknown";
+		}
+		Variant2ClientInfo_ [variant] ["client_type"] = type;
+
+		QString name = Util::GetClientHRName (node);
+		if (name.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown client name for"
+					<< node;
+			name = "Unknown";
+		}
+		Variant2ClientInfo_ [variant] ["client_name"] = name;
+	}
+
+	void EntryBase::SetClientInfo (const QString& variant, const gloox::Capabilities *caps)
+	{
+		const QString& client = QString::fromUtf8 (caps->node ().c_str ());
+		const QString& ver = QString::fromUtf8 (caps->ver ().c_str ());
+		SetClientInfo (variant, client, ver);
 	}
 
 	QString EntryBase::FormatRawInfo (const gloox::VCard *vcard)

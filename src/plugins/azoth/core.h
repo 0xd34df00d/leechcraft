@@ -81,6 +81,7 @@ namespace LeechCraft
 				ID2Entry_t ID2Entry_;
 
 				boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
+				boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
 
 				boost::shared_ptr<PluginManager> PluginManager_;
 				boost::shared_ptr<ProxyObject> PluginProxyObject_;
@@ -176,6 +177,22 @@ namespace LeechCraft
 				 * given contact list entry state.
 				 */
 				QIcon GetIconForState (Plugins::State state) const;
+
+				/** @brief Returns icons for the given CL entry.
+				 *
+				 * This function returns an icon for each variant of
+				 * the entry, since different variants may have
+				 * different clients. If the protocol which the entry
+				 * belongs doesn't support variants, the map would have
+				 * only one key/value pair of null QString and
+				 * corresponding icon.
+				 *
+				 * This function returns the icons from the currently
+				 * selected (in settings) iconset.
+				 *
+				 * @param[in] entry Entry for which to return the icons.
+				 */
+				QMap<QString, QIcon> GetClientIconForEntry (Plugins::ICLEntry *entry);
 
 				/** Returns an up-to-date list of actions suitable for
 				 * the given entry.
@@ -303,7 +320,12 @@ namespace LeechCraft
 				 */
 				void handleRemovedCLItems (const QList<QObject*>& items);
 
-				/** Handles the event of status changes in plugin to new
+				/** Handles the status change of an account to new
+				 * status.
+				 */
+				void handleAccountStatusChanged (const Plugins::EntryStatus& status);
+
+				/** Handles the status change of a CL entry to new
 				 * status.
 				 */
 				void handleStatusChanged (const Plugins::EntryStatus& status, const QString& variant);

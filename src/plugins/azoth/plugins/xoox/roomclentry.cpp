@@ -135,6 +135,11 @@ namespace Xoox
 	{
 	}
 
+	QMap<QString, QVariant> RoomCLEntry::GetClientInfo (const QString& var) const
+	{
+		return QMap<QString, QVariant> ();
+	}
+
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 	{
 		return MUCFCanBeConfigured;

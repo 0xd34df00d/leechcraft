@@ -357,6 +357,25 @@ namespace Plugins
 		 */
 		virtual QList<QAction*> GetActions () const = 0;
 
+		/** @brief Returns the client information for the given variant.
+		 *
+		 * The returned map should have the following keys:
+		 * - client_type
+		 *   The corresponding key is a QString with a client ID.
+		 * - client_name
+		 *   The corresponding key is a QString with human-readable name
+		 *   of the client.
+		 * - client_version
+		 *   The corresponding key is a QString with human-readable
+		 *   version of the client.
+		 *
+		 * @param[in] variant Variant for which to return the client
+		 * info.
+		 *
+		 * @return Human-readable client name of the variant.
+		 */
+		virtual QMap<QString, QVariant> GetClientInfo (const QString& variant) const = 0;
+
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.
 		 *
