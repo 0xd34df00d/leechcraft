@@ -77,8 +77,6 @@ namespace Azoth
 	void ContactListDelegate::DrawCategory (QPainter *painter,
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
-		o.rect.setLeft (o.rect.left () + 5);
-
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
 		{
@@ -117,8 +115,6 @@ namespace Azoth
 		QStyle *style = option.widget ?
 				option.widget->style () :
 				QApplication::style ();
-
-		option.rect.setLeft (CContactShift);
 
 		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
