@@ -51,6 +51,7 @@ namespace LeechCraft
 			: CLModel_ (new QStandardItemModel (this))
 			, ChatTabsManager_ (new ChatTabsManager (this))
 			, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
+			, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
 			, PluginManager_ (new PluginManager)
 			, PluginProxyObject_ (new ProxyObject)
 			{
@@ -62,6 +63,9 @@ namespace LeechCraft
 
 				StatusIconLoader_->AddLocalPrefix ();
 				StatusIconLoader_->AddGlobalPrefix ();
+
+				ClientIconLoader_->AddLocalPrefix ();
+				ClientIconLoader_->AddGlobalPrefix ();
 
 				qRegisterMetaType<Plugins::IMessage*> ("LeechCraft::Plugins::Azoth::Plugins::IMessage*");
 				qRegisterMetaType<Plugins::IMessage*> ("Plugins::IMessage*");
@@ -100,6 +104,7 @@ namespace LeechCraft
 					mucEntry->Leave ();
 
 				StatusIconLoader_.reset ();
+				ClientIconLoader_.reset ();
 			}
 
 			void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -502,6 +507,21 @@ namespace LeechCraft
 
 				QString path = StatusIconLoader_->GetPath (variants);
 				return QIcon (path);
+			}
+
+			QMap<QString, QIcon> Core::GetClientIconForEntry (Plugins::ICLEntry *entry)
+			{
+				QMap<QString, QIcon> result;
+				Q_FOREACH (const QString& variant, entry->Variants ())
+				{
+					QString filename = "default/psi";
+					QStringList variants;
+					variants << filename + ".svg"
+							<< filename + ".png"
+							<< filename + ".jpg";
+					result [variant] = QIcon (ClientIconLoader_->GetPath (variants));
+				}
+				return result;
 			}
 
 			QList<QAction*> Core::GetEntryActions (Plugins::ICLEntry *entry)
