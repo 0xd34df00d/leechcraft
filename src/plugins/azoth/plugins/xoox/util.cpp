@@ -76,8 +76,10 @@ namespace Util
 
 			Node2ClientID ()
 			{
+				Node2ClientID_ ["http://2010.qip.ru/caps"] = "qipinfium";
 				Node2ClientID_ ["http://bombusmod.net.ru/caps"] = "bombusmod";
 				Node2ClientID_ ["http://gajim.org"] = "gajim";
+				Node2ClientID_ ["http://isida-bot.com"] = "isida-bot";
 				Node2ClientID_ ["http://jabiru.mzet.net/caps"] = "jabiru";
 				Node2ClientID_ ["http://kopete.kde.org/jabber/caps"] = "kopete";
 				Node2ClientID_ ["http://leechcraft.org/azoth"] = "leechcraft-azoth";
@@ -112,8 +114,10 @@ namespace Util
 
 			Node2ClientHR ()
 			{
+				Node2ClientHR_ ["http://2010.qip.ru/caps"] = "QIP Infium";
 				Node2ClientHR_ ["http://bombusmod.net.ru/caps"] = "BombusMod";
 				Node2ClientHR_ ["http://gajim.org"] = "Gajim";
+				Node2ClientHR_ ["http://isida-bot.com"] = "iSida Bot";
 				Node2ClientHR_ ["http://jabiru.mzet.net/caps"] = "Jabiru";
 				Node2ClientHR_ ["http://kopete.kde.org/jabber/caps"] = "Kopete";
 				Node2ClientHR_ ["http://leechcraft.org/azoth"] = "LeechCraft Azoth";
