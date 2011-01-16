@@ -51,7 +51,7 @@ namespace OnlineBookmarks
 		QObject *PluginProxy_;
 		QStandardItemModel *Model_;
 		QStandardItemModel *ServiceModel_;
-		Settings *SettingsWidget_;
+		Settings *AccountsWidget_;
 		SyncBookmarks *BookmarksSyncManager_;
 		
 		Core ();
@@ -73,7 +73,7 @@ namespace OnlineBookmarks
 		QDir GetBookmarksDir () const;
 		void SetBookamrksDir (const QDir&);
 		QAbstractItemModel* GetServiceModel () const;
-		Settings* GetSettingsWidget ();
+		Settings* GetAccountsWidget ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

@@ -39,7 +39,7 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class OnlineBookmarks;
+	class Core;
 	class AbstractBookmarksService;
 
 	class Settings : public QWidget
@@ -47,11 +47,11 @@ namespace OnlineBookmarks
 		Q_OBJECT
 
 		Ui::Accounts_ Ui_;
-		OnlineBookmarks *OnlineBookmarks_;
+		Core *Core_;
 		QStandardItemModel *Model_;
 		QList<AbstractBookmarksService*> BookmarksServices_;
 	public:
-		Settings (QStandardItemModel*);
+		Settings (QStandardItemModel*, Core*);
 		QString GetSelectedName () const;
 		void SetConfirmSend (bool);
 	private:

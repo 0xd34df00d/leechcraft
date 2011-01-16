@@ -38,8 +38,9 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	Settings::Settings (QStandardItemModel *model)
+	Settings::Settings (QStandardItemModel *model, Core *parent)
 	: Model_ (model)
+	, Core_ (parent)
 	{
 		Ui_.setupUi (this);
 

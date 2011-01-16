@@ -50,7 +50,7 @@ namespace OnlineBookmarks
 		Core::Instance ().Init ();
 		Core::Instance ().SetProxy (proxy);
 		
-		SettingsDialog_->SetCustomWidget ("Accounts", Core::Instance ().GetSettingsWidget ());
+		SettingsDialog_->SetCustomWidget ("Accounts", Core::Instance ().GetAccountsWidget ());
 		SettingsDialog_->SetDataSource ("ActiveServices", Core::Instance ().GetServiceModel ());
 		
 		Core::Instance ().SetBookamrksDir(Util::CreateIfNotExists ("poshuku/onlinebookmarks"));
@@ -167,7 +167,7 @@ namespace OnlineBookmarks
 	
 	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr proxy, QString title, QString url, QStringList tags)
 	{
-		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool ())
+		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool () && (!Core::Instance ().GetBookmarksSyncManager ()->IsUrlInUploadFile (url)))
 		{
 			BookmarksDialog bd;
 			bd.SetBookmark (title, url, tags);

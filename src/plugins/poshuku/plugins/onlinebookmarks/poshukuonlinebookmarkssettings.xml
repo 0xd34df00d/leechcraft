@@ -30,7 +30,7 @@
 					<option name="EveryDay">
 						<label lang="en" value="Day" />
 					</option>
-					<option name="Every2Day" default="true">
+					<option name="Every2Day">
 						<label lang="en" value="2 days" />
 					</option>
 					<option name="Every3Day">
@@ -39,13 +39,13 @@
 					<option name="Every4Day">
 						<label lang="en" value="4 days" />
 					</option>
-					<option name="Every5Day" default="true">
+					<option name="Every5Day">
 						<label lang="en" value="5 days" />
 					</option>
 					<option name="Every6Day">
 						<label lang="en" value="6 days" />
 					</option>
-					<option name="EveryWeek" default="true">
+					<option name="EveryWeek">
 						<label lang="en" value="Week" />
 					</option>
 					<option name="EveryMonthe">
@@ -69,7 +69,7 @@
 					<option name="EveryDay">
 						<label lang="en" value="Day" />
 					</option>
-					<option name="Every2Day" default="true">
+					<option name="Every2Day">
 						<label lang="en" value="2 days" />
 					</option>
 					<option name="Every3Day">
@@ -78,13 +78,13 @@
 					<option name="Every4Day">
 						<label lang="en" value="4 days" />
 					</option>
-					<option name="Every5Day" default="true">
+					<option name="Every5Day">
 						<label lang="en" value="5 days" />
 					</option>
 					<option name="Every6Day">
 						<label lang="en" value="6 days" />
 					</option>
-					<option name="EveryWeek" default="true">
+					<option name="EveryWeek">
 						<label lang="en" value="Week" />
 					</option>
 					<option name="EveryMonthe">

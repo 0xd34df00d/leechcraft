@@ -56,7 +56,7 @@ namespace OnlineBookmarks
 	{
 		Model_ = new QStandardItemModel (this);
 		ServiceModel_ = new QStandardItemModel (this);
-		SettingsWidget_ =  new Settings (Model_);
+		AccountsWidget_ =  new Settings (Model_, this);
 		
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
@@ -197,9 +197,9 @@ namespace OnlineBookmarks
 		return ServiceModel_;
 	}
 
-	Settings* Core::GetSettingsWidget ()
+	Settings* Core::GetAccountsWidget ()
 	{
-		return SettingsWidget_;
+		return AccountsWidget_;
 	}
 }
 }

@@ -41,6 +41,7 @@ namespace OnlineBookmarks
 		bool IsSync_;
 	public:
 		SyncBookmarks (QObject *parent = 0);
+		bool IsUrlInUploadFile (const QString&);
 	public slots:
 		void syncBookmarks ();
 		void uploadBookmarksAction (const QString& title = QString (), const QString& url = QString (), 
@@ -53,6 +54,7 @@ namespace OnlineBookmarks
 	private:
 		QList<QVariant> GetBookmarksForUpload (const QString& url = QString ());
 		void downloadBookmarks (AbstractBookmarksService*, uint);
+		QStringList getUrlsFromUploadFile () const;
 	};
 }
 }

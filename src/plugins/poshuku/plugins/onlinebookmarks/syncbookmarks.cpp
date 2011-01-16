@@ -46,6 +46,17 @@ namespace OnlineBookmarks
 		IsSync_ = true;
 	}
 
+	bool SyncBookmarks::IsUrlInUploadFile (const QString& url)
+	{
+		QStringList urls;
+		if ((urls = getUrlsFromUploadFile ()).isEmpty ())
+			return false;
+		
+			Q_FOREACH (const QVariant& var, urls)
+				if (urls.contains (url, Qt::CaseInsensitive))
+					return true;
+	}
+
 	void SyncBookmarks::uploadBookmarksAction (const QString& title, const QString& url, const QStringList& tags)
 	{
 		QList<QVariant> result;
@@ -309,6 +320,26 @@ namespace OnlineBookmarks
 				SLOT (readErrorReply (const QString&)),
 				Qt::UniqueConnection);
 	}
+
+	QStringList SyncBookmarks::getUrlsFromUploadFile () const
+	{
+		QDir dir = Core::Instance ().GetBookmarksDir ();
+		QFile file (dir.absolutePath () + "/uploadBookmarks");
+		
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			Entity e = Util::MakeNotification ("Poshuku", 
+					tr ("Unable to open upload configuration file."), 
+					PCritical_);
+			
+			Core::Instance ().SendEntity (e);
+			return QStringList ();
+		}
+		
+		const QByteArray& data = file.readAll ();
+		return QString::fromUtf8 (data).split ('\n');
+	}
+
 }
 }
 }
