@@ -40,7 +40,7 @@ namespace Azoth
 	void ContactListDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& sopt, const QModelIndex& index) const
 	{
-		QStyleOptionViewItemV4 option = sopt;
+		QStyleOptionViewItemV4 o = sopt;
 		Core::CLEntryType type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
 
 		painter->save ();
@@ -48,40 +48,13 @@ namespace Azoth
 		switch (type)
 		{
 		case Core::CLETAccount:
-			option.font.setBold (true);
-		case Core::CLETCategory:
-		{
-			int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
-			option.rect.setLeft (0);
-			if (unread)
-			{
-				painter->save ();
-
-				const bool selected = option.state & QStyle::State_Selected;
-				const QRect& r = option.rect;
-
-				const QString& text = QString (" %1 :: ").arg (unread);
-
-				QFont unreadFont = option.font;
-				unreadFont.setBold (true);
-
-				int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
-
-				painter->setFont (unreadFont);
-				painter->drawText (r.left () + CPadding, r.top () + CPadding,
-						unreadSpace, r.height () - 2 * CPadding,
-						Qt::AlignVCenter | Qt::AlignLeft,
-						text);
-
-				painter->restore ();
-
-				option.rect.setLeft (unreadSpace);
-			}
-			QStyledItemDelegate::paint (painter, option, index);
+			DrawAccount (painter, o, index);
 			break;
-		}
+		case Core::CLETCategory:
+			DrawCategory (painter, o, index);
+			break;
 		case Core::CLETContact:
-			DrawContact (painter, option, index);
+			DrawContact (painter, o, index);
 			break;
 		}
 
@@ -92,6 +65,47 @@ namespace Azoth
 	{
 		QSize size = QStyledItemDelegate::sizeHint (option, index);
 		return size;
+	}
+
+	void ContactListDelegate::DrawAccount (QPainter *painter,
+			QStyleOptionViewItemV4 o, const QModelIndex& index) const
+	{
+		o.font.setBold (true);
+		QStyledItemDelegate::paint (painter, o, index);
+	}
+
+	void ContactListDelegate::DrawCategory (QPainter *painter,
+			QStyleOptionViewItemV4 o, const QModelIndex& index) const
+	{
+		o.rect.setLeft (o.rect.left () + 5);
+
+		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
+		if (unread)
+		{
+			painter->save ();
+
+			const bool selected = o.state & QStyle::State_Selected;
+			const QRect& r = o.rect;
+
+			const QString& text = QString (" %1 :: ").arg (unread);
+
+			QFont unreadFont = o.font;
+			unreadFont.setBold (true);
+
+			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
+
+			painter->setFont (unreadFont);
+			painter->drawText (r.left () + CPadding, r.top () + CPadding,
+					unreadSpace, r.height () - 2 * CPadding,
+					Qt::AlignVCenter | Qt::AlignLeft,
+					text);
+
+			painter->restore ();
+
+			o.rect.setLeft (unreadSpace);
+		}
+
+		QStyledItemDelegate::paint (painter, o, index);
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,

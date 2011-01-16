@@ -36,6 +36,10 @@ namespace Azoth
 		virtual QSize sizeHint (const QStyleOptionViewItem&,
 				const QModelIndex&) const;
 	private:
+		void DrawAccount (QPainter*,
+				QStyleOptionViewItemV4, const QModelIndex&) const;
+		void DrawCategory (QPainter*,
+				QStyleOptionViewItemV4, const QModelIndex&) const;
 		void DrawContact (QPainter*,
 				QStyleOptionViewItemV4, const QModelIndex&) const;
 	};
