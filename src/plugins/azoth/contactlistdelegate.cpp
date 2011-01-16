@@ -184,9 +184,7 @@ namespace Azoth
 		 * them: there are N-1 paddings inbetween if there are N icons.
 		 */
 		const int textWidth = r.width () - textShift -
-				(avatarImg.isNull () ?
-					CPadding :
-					iconSize + 2 * CPadding) -
+				(iconSize + 2 * CPadding) -
 				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
