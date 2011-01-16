@@ -77,4 +77,3 @@ namespace OnlineBookmarks
 }
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
-

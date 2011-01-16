@@ -22,6 +22,7 @@
 #include <QIcon>
 #include <QWebView>
 #include <QMenu>
+#include <QStandardItemModel>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include "bookmarksdialog.h"
@@ -46,23 +47,23 @@ namespace OnlineBookmarks
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
-		
+
 		Core::Instance ().Init ();
 		Core::Instance ().SetProxy (proxy);
-		
+
 		SettingsDialog_->SetCustomWidget ("Accounts", Core::Instance ().GetAccountsWidget ());
 		SettingsDialog_->SetDataSource ("ActiveServices", Core::Instance ().GetServiceModel ());
-		
-		if (XmlSettingsManager::Instance ()->property ("DownloadGroup").toBool () && 
+
+		if (XmlSettingsManager::Instance ()->property ("DownloadGroup").toBool () &&
 				XmlSettingsManager::Instance ()->property ("DownloadPeriod").toInt ())
-			Core::Instance ().GetBookmarksSyncManager()->checkDownloadPeriod ();
-		
-		if (XmlSettingsManager::Instance ()->property ("UploadGroup").toBool () && 
-				(XmlSettingsManager::Instance ()->property ("UploadPeriod").toInt ()))
-			Core::Instance ().GetBookmarksSyncManager()->checkUploadPeriod ();
-		
-		Core::Instance ().SetBookamrksDir(Util::CreateIfNotExists ("poshuku/onlinebookmarks"));
-		
+			Core::Instance ().GetBookmarksSyncManager ()->checkDownloadPeriod ();
+
+		if (XmlSettingsManager::Instance ()->property ("UploadGroup").toBool () &&
+				XmlSettingsManager::Instance ()->property ("UploadPeriod").toInt ())
+			Core::Instance ().GetBookmarksSyncManager ()->checkUploadPeriod ();
+
+		Core::Instance ().SetBookmarksDir (Util::CreateIfNotExists ("poshuku/onlinebookmarks"));
+
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -160,22 +161,21 @@ namespace OnlineBookmarks
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
 				SLOT (downloadBookmarksAction()));
-		
+
 		connect (downloadAll,
 				SIGNAL (triggered ()),
 				Core::Instance ().GetBookmarksSyncManager (),
 				SLOT (downloadAllBookmarksAction ()));
-	
 	}
 
 	void OnlineBookmarks::initPlugin (QObject *proxy)
 	{
 		Core::Instance ().SetPluginProxy (proxy);
 	}
-	
+
 	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr proxy, QString title, QString url, QStringList tags)
 	{
-		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool () && 
+		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool () &&
 				(!Core::Instance ().GetBookmarksSyncManager ()->IsUrlInUploadFile (url)))
 		{
 			BookmarksDialog bd;

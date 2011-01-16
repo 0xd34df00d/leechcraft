@@ -26,7 +26,6 @@
 class QStandardItemModel;
 class QNetworkAccessManager;
 
-
 namespace LeechCraft
 {
 namespace Plugins
@@ -40,7 +39,7 @@ namespace OnlineBookmarks
 	class SyncBookmarks;
 	class AbstractBookmarksService;
 	class Settings;
-	
+
 	class Core : public QObject
 	{
 		Q_OBJECT
@@ -53,7 +52,7 @@ namespace OnlineBookmarks
 		QStandardItemModel *ServiceModel_;
 		Settings *AccountsWidget_;
 		SyncBookmarks *BookmarksSyncManager_;
-		
+
 		Core ();
 	public:
 		static Core& Instance ();
@@ -71,8 +70,8 @@ namespace OnlineBookmarks
 		void SetPluginProxy (QObject*);
 		QObject* GetBookmarksModel () const;
 		QDir GetBookmarksDir () const;
-		void SetBookamrksDir (const QDir&);
-		QAbstractItemModel* GetServiceModel () const;
+		void SetBookmarksDir (const QDir&);
+		QStandardItemModel* GetServiceModel () const;
 		Settings* GetAccountsWidget ();
 		QStringList SanitizeTagsList (const QStringList&);
 	signals:

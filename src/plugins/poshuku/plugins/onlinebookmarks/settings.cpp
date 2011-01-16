@@ -79,15 +79,8 @@ namespace OnlineBookmarks
 
 	void Settings::SetupServices ()
 	{
-		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Core::Instance ().GetServiceModel ());
-		if (!model)
-		{
-			qWarning() << Q_FUNC_INFO
-					<< "model is not QAbstractItemModel"
-					<< Core::Instance ().GetServiceModel ();
-			return;
-		}
-		
+		QStandardItemModel *model = Core::Instance ().GetServiceModel ();
+
 		Q_FOREACH (AbstractBookmarksService *as, BookmarksServices_)
 		{
 			Ui_.Services_->addItem (as->GetIcon (), as->GetName (),
@@ -106,19 +99,12 @@ namespace OnlineBookmarks
 
 	void Settings::ReadSettings ()
 	{
-		QStringList  activeServicesNames = XmlSettingsManager::Instance ()->
+		QStringList activeServicesNames = XmlSettingsManager::Instance ()->
 				Property ("Sync/ActiveServices", QString ("")).toStringList ();
-		
+
 		QList<AbstractBookmarksService*> activeServices;
-		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Core::Instance ().GetServiceModel ());
-		if (!model)
-		{
-			qWarning() << Q_FUNC_INFO
-					<< "model is not QAbstractItemModel"
-					<< Core::Instance ().GetServiceModel ();
-			return;
-		}
-		
+		QStandardItemModel *model = Core::Instance ().GetServiceModel ();
+
 		if (activeServicesNames.size ())
 			for (int i = 0, rows = model->rowCount (); i < rows; i++)
 				if (activeServicesNames.contains (model->item (i)->text ()))
@@ -149,14 +135,8 @@ namespace OnlineBookmarks
 	{
 		QList<AbstractBookmarksService*> activeServices;
 		QStringList activeServicesNames;
-		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Core::Instance ().GetServiceModel ());
-		if (!model)
-		{
-			qWarning() << Q_FUNC_INFO
-					<< "model is not QAbstractItemModel"
-					<< Core::Instance ().GetServiceModel ();
-			return;
-		}
+		QStandardItemModel *model = Core::Instance ().GetServiceModel ();
+
 		int rows = model->rowCount ();
 		for (int i = 0; i < rows; i++)
 			if (model->item (i)->checkState () == Qt::Checked)
@@ -213,29 +193,27 @@ namespace OnlineBookmarks
 	{
 		if (Ui_.AccountsView_->currentIndex ().parent () == QModelIndex ())
 			return;
-		else
-		{
-			QList<QVariant> keys;
-			keys << "org.LeechCraft.Poshuku.OnlineBookmarks." +
-					Ui_.AccountsView_->currentIndex ().parent ().data ().toString () +
-					"/" + Ui_.AccountsView_->currentIndex ().data ().toString ();
 
-			Entity e = Util::MakeEntity (keys,
-					QString (),
-					Internal,
-					"x-leechcraft/data-persistent-clear");
+		QList<QVariant> keys;
+		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." +
+				Ui_.AccountsView_->currentIndex ().parent ().data ().toString () +
+				"/" + Ui_.AccountsView_->currentIndex ().data ().toString ();
 
-			Ui_.LoginFrame_->hide ();
-			Model_->removeRow (Ui_.AccountsView_->currentIndex ().row (),
-					Ui_.AccountsView_->currentIndex ().parent ());
+		Entity e = Util::MakeEntity (keys,
+				QString (),
+				Internal,
+				"x-leechcraft/data-persistent-clear");
 
-			if (Ui_.Add_->isChecked ())
-				Ui_.Add_->toggle ();
-			else if (Ui_.Edit_->isChecked ())
-				Ui_.Edit_->toggle ();
+		Ui_.LoginFrame_->hide ();
+		Model_->removeRow (Ui_.AccountsView_->currentIndex ().row (),
+				Ui_.AccountsView_->currentIndex ().parent ());
 
-			Core::Instance ().SendEntity (e);
-		}
+		if (Ui_.Add_->isChecked ())
+			Ui_.Add_->toggle ();
+		else if (Ui_.Edit_->isChecked ())
+			Ui_.Edit_->toggle ();
+
+		Core::Instance ().SendEntity (e);
 	}
 
 	void Settings::handleStuff ()
@@ -291,10 +269,10 @@ namespace OnlineBookmarks
 					tr ("Invalid account data"),
 					PCritical_);
 			Core::Instance ().SendEntity (e);
-		
+
 			return;
 		}
-		
+
 		QString service = "Account/" + Ui_.Services_->currentText ().toUtf8 ().toBase64 ();
 		QStringList loginList = XmlSettingsManager::Instance ()->
 				property (service.toLatin1 ()).toStringList();
@@ -322,16 +300,9 @@ namespace OnlineBookmarks
 			Ui_.Add_->toggle ();
 		else if (Ui_.Edit_->isChecked ())
 			Ui_.Edit_->toggle ();
-	
-		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Core::Instance ().GetServiceModel ());
-		if (!model)
-		{
-			qWarning() << Q_FUNC_INFO
-					<< "model is not QAbstractItemModel"
-					<< Core::Instance ().GetServiceModel ();
-			return;
-		}
-		
+
+		QStandardItemModel *model = Core::Instance ().GetServiceModel ();
+
 		for (int i = 0, rows = model->rowCount (); i < rows; i++)
 			if (model->item (i)->text () == Ui_.Services_->currentText ())
 				model->item (i)->setCheckState (Qt::Checked);

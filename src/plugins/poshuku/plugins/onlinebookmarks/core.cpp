@@ -57,7 +57,7 @@ namespace OnlineBookmarks
 		Model_ = new QStandardItemModel (this);
 		ServiceModel_ = new QStandardItemModel (this);
 		AccountsWidget_ =  new Settings (Model_);
-		
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
 		settings.beginGroup ("Account");
@@ -181,18 +181,18 @@ namespace OnlineBookmarks
 
 		return obj->GetFavoritesModel ();
 	}
-	
+
 	QDir Core::GetBookmarksDir () const
 	{
 		return BookmarksDir_;
 	}
 
-	void Core::SetBookamrksDir (const QDir& path)
+	void Core::SetBookmarksDir (const QDir& path)
 	{
 		BookmarksDir_ = path;
 	}
-	
-	QAbstractItemModel* Core::GetServiceModel () const
+
+	QStandardItemModel* Core::GetServiceModel () const
 	{
 		return ServiceModel_;
 	}
@@ -201,13 +201,13 @@ namespace OnlineBookmarks
 	{
 		return AccountsWidget_;
 	}
-	
+
 	QStringList Core::SanitizeTagsList (const QStringList& list)
 	{
 		QStringList newList;
 		Q_FOREACH (const QString& str, list)
 			newList << str.trimmed ();
-		
+
 		return newList;
 	}
 }

@@ -39,11 +39,11 @@ namespace OnlineBookmarks
 	: QDialog (parent, f)
 	{
 		Ui_.setupUi (this);
-		
+
 		Ui_.ServicesView_->setVisible (XmlSettingsManager::Instance ()->
 				Property ("ShowServices", false).toBool ());
-		
-		connect (Ui_.Buttons_->button (QDialogButtonBox::YesToAll), 
+
+		connect (Ui_.Buttons_->button (QDialogButtonBox::YesToAll),
 				SIGNAL (clicked (bool)),
 				this,
 				SLOT (sendBookmarkWithoutConfirm (bool)));
@@ -53,18 +53,21 @@ namespace OnlineBookmarks
 	{
 		Ui_.Title_->setText (title);
 		Ui_.URL_->setText (url);
-		Ui_.Tags_->setText (tags.join (";"));
+		Ui_.Tags_->setText (tags.join ("; "));
 		Ui_.Ask_->setText (tr ("Please check the services you would like to add the bookmark %1 to, if any.")
 				.arg (url));
-		Ui_.ServicesView_->setModel (Core::Instance ().GetServiceModel());
+		Ui_.ServicesView_->setModel (Core::Instance ().GetServiceModel ());
 	}
 
 	void BookmarksDialog::SendBookmark ()
 	{
-		Core::Instance ().GetBookmarksSyncManager ()->
-				uploadBookmarksAction (Ui_.Title_->text (), Ui_.URL_->text (), 
+		const QStringList& tagsList =
 				Core::Instance ().SanitizeTagsList (Ui_.Tags_->text ()
-				.split (';', QString::SkipEmptyParts)));
+						.split (';', QString::SkipEmptyParts));
+		Core::Instance ().GetBookmarksSyncManager ()->
+				uploadBookmarksAction (Ui_.Title_->text (),
+						Ui_.URL_->text (),
+						tagsList);
 	}
 
 	void BookmarksDialog::sendBookmarkWithoutConfirm (bool checked)
