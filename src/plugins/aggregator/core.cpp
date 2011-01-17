@@ -480,7 +480,10 @@ namespace LeechCraft
 				StorageBackend_->GetChannels (shorts, channel.FeedID_);
 
 				for (size_t i = 0, size = shorts.size (); i < size; ++i)
+				{
 					ChannelsModel_->RemoveChannel (shorts [i]);
+					emit channelRemoved (shorts [i].ChannelID_);
+				}
 				StorageBackend_->RemoveFeed (channel.FeedID_);
 
 				UpdateUnreadItemsNumber ();
@@ -1717,7 +1720,6 @@ namespace LeechCraft
 				e.Additional_ ["UntilUserSees"] = wait;
 				emit const_cast<Core*> (this)->gotEntity (e);
 			}
-		};
-	};
-};
-
+		}
+	}
+}

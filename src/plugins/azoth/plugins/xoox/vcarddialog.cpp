@@ -57,9 +57,16 @@ namespace Xoox
 
 		const gloox::VCard::Photo& photo = vcard->photo ();
 		QByteArray data (photo.binval.c_str(), photo.binval.size ());
+
 		QPixmap px = QPixmap::fromImage (QImage::fromData (data));
 		if (!px.isNull ())
+		{
+			const QSize& maxPx = Ui_.LabelPhoto_->maximumSize ();
+			if (px.width () > maxPx.width () ||
+					px.height () > maxPx.height ())
+				px = px.scaled (maxPx, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			Ui_.LabelPhoto_->setPixmap (px);
+		}
 		else
 			Ui_.LabelPhoto_->setText (tr ("No photo"));
 	}

@@ -21,6 +21,7 @@
 #include <boost/function.hpp>
 #include <QObject>
 #include <QSet>
+#include <QIcon>
 #include "interfaces/iinfo.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
@@ -80,6 +81,12 @@ namespace LeechCraft
 				typedef QHash<QByteArray, QObject*> ID2Entry_t;
 				ID2Entry_t ID2Entry_;
 
+				typedef QHash<Plugins::ICLEntry*, QMap<QString, QIcon> > EntryClientIconCache_t;
+				EntryClientIconCache_t EntryClientIconCache_;
+
+				typedef QHash<Plugins::ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
+				Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
+
 				boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 				boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
 
@@ -111,7 +118,8 @@ namespace LeechCraft
 
 				enum ResourceLoaderType
 				{
-					RLTStatusIconLoader
+					RLTStatusIconLoader,
+					RLTClientIconLoader
 				};
 
 				enum CLEntryActionArea
@@ -191,8 +199,21 @@ namespace LeechCraft
 				 * selected (in settings) iconset.
 				 *
 				 * @param[in] entry Entry for which to return the icons.
+				 * @return Map from entity variant to corresponding
+				 * client icon.
 				 */
 				QMap<QString, QIcon> GetClientIconForEntry (Plugins::ICLEntry *entry);
+
+				/** @brief Returns the avatar for the given CL entry
+				 * scaled to the given size.
+				 *
+				 * The scale is performed using SmoothTransform and
+				 * keeping the aspect ratio.
+				 *
+				 * @param[in] entry Entry for which to get the avatar.
+				 * @return Entry's avatar scaled to the given size.
+				 */
+				QImage GetAvatar (Plugins::ICLEntry *entry, int size);
 
 				/** Returns an up-to-date list of actions suitable for
 				 * the given entry.
@@ -354,6 +375,9 @@ namespace LeechCraft
 				 */
 				void updateItem ();
 
+				/** Asks the corresponding CL entry to show its dialog
+				 * with information about the user.
+				 */
 				void showVCard ();
 
 				/** Handles the number of unread messages for the given
@@ -362,7 +386,20 @@ namespace LeechCraft
 				 */
 				void handleClearUnreadMsgCount (QObject *object);
 
+				/** Removes the entries in the client icon cache for the
+				 * sender, if obj is null, or for obj, if it is not
+				 * null.
+				 *
+				 * If the object can't be casted to Plugins::ICLEntry,
+				 * this function does nothing.
+				 */
+				void invalidateClientsIconCache (QObject *obj = 0);
+				void invalidateClientsIconCache (Plugins::ICLEntry*);
+
+				void invalidateSmoothAvatarCache ();
+
 				void handleActionRenameTriggered ();
+				void handleActionRemoveTriggered ();
 				void handleActionRevokeAuthTriggered ();
 				void handleActionUnsubscribeTriggered ();
 				void handleActionRerequestTriggered ();

@@ -61,8 +61,10 @@ namespace LeechCraft
 					const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
 					if (GetType (idx) == Core::CLETContact)
 					{
-						const Plugins::State state = GetEntry (idx)->GetStatus ().State_;
-						if (state == Plugins::SOffline)
+						Plugins::ICLEntry *entry = GetEntry (idx);
+						const Plugins::State state = entry->GetStatus ().State_;
+						if (state == Plugins::SOffline &&
+								!idx.data (Core::CLRUnreadMsgCount).toInt ())
 							return false;
 					}
 				}

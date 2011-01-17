@@ -123,6 +123,8 @@ namespace LeechCraft
 				{
 				case RLTStatusIconLoader:
 					return StatusIconLoader_.get ();
+				case RLTClientIconLoader:
+					return ClientIconLoader_.get ();
 				}
 			}
 
@@ -343,6 +345,10 @@ namespace LeechCraft
 						this,
 						SLOT (handleStatusChanged (const Plugins::EntryStatus&, const QString&)));
 				connect (clEntry->GetObject (),
+						SIGNAL (availableVariantsChanged (const QStringList&)),
+						this,
+						SLOT (invalidateClientsIconCache ()));
+				connect (clEntry->GetObject (),
 						SIGNAL (gotMessage (QObject*)),
 						this,
 						SLOT (handleEntryGotMessage (QObject*)));
@@ -350,6 +356,10 @@ namespace LeechCraft
 						SIGNAL (nameChanged (const QString&)),
 						this,
 						SLOT (handleEntryNameChanged (const QString&)));
+				connect (clEntry->GetObject (),
+						SIGNAL (avatarChanged (const QImage&)),
+						this,
+						SLOT (invalidateSmoothAvatarCache ()));
 				connect (clEntry->GetObject (),
 						SIGNAL (avatarChanged (const QImage&)),
 						this,
@@ -439,6 +449,7 @@ namespace LeechCraft
 			void Core::HandleStatusChanged (const Plugins::EntryStatus& status,
 					Plugins::ICLEntry *entry, const QString& variant)
 			{
+				invalidateClientsIconCache (entry);
 				QString tip = QString ("%1 (%2)<hr />%3 (%4)<hr />%5")
 						.arg (entry->GetEntryName ())
 						.arg (entry->GetHumanReadableID ())
@@ -511,7 +522,11 @@ namespace LeechCraft
 
 			QMap<QString, QIcon> Core::GetClientIconForEntry (Plugins::ICLEntry *entry)
 			{
+				if (EntryClientIconCache_.contains (entry))
+					return EntryClientIconCache_ [entry];
+
 				QMap<QString, QIcon> result;
+
 				Q_FOREACH (const QString& variant, entry->Variants ())
 				{
 					QString filename = "default/";
@@ -522,7 +537,26 @@ namespace LeechCraft
 							<< filename + ".jpg";
 					result [variant] = QIcon (ClientIconLoader_->GetPath (variants));
 				}
+
+				EntryClientIconCache_ [entry] = result;
 				return result;
+			}
+
+			QImage Core::GetAvatar (Plugins::ICLEntry* entry, int size)
+			{
+				if (Entry2SmoothAvatarCache_.contains (entry) &&
+						(Entry2SmoothAvatarCache_ [entry].width () == size ||
+						 Entry2SmoothAvatarCache_ [entry].height () == size))
+					return Entry2SmoothAvatarCache_ [entry];
+
+				const QImage& avatar = entry->GetAvatar ();
+				if (avatar.isNull () || !avatar.width ())
+					return avatar;
+
+				const QImage& scaled = avatar.scaled (size, size,
+						Qt::KeepAspectRatio, Qt::SmoothTransformation);
+				Entry2SmoothAvatarCache_ [entry] = scaled;
+				return scaled;
 			}
 
 			QList<QAction*> Core::GetEntryActions (Plugins::ICLEntry *entry)
@@ -535,6 +569,7 @@ namespace LeechCraft
 				QList<QAction*> result;
 				result << id2action.value ("openchat");
 				result << id2action.value ("rename");
+				result << id2action.value ("remove");
 				result << id2action.value ("authorization");
 				result << id2action.value ("kick");
 				result << id2action.value ("ban");
@@ -598,7 +633,7 @@ namespace LeechCraft
 					Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
 				}
 
-				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSuportsAuth)
+				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSupportsAuth)
 				{
 					QMenu *authMenu = new QMenu (tr ("Authorization"));
 					authMenu->menuAction ()->setProperty ("ActionIcon", "azoth_menu_authorization");
@@ -778,6 +813,17 @@ namespace LeechCraft
 					Entry2Actions_ [entry] ["denyauth"] = denyAuth;
 					Action2Areas_ [denyAuth] << CLEAAContactListCtxtMenu;
 				}
+				else if (entry->GetEntryType () == Plugins::ICLEntry::ETChat)
+				{
+					QAction *remove = new QAction (tr ("Remove"), entry->GetObject ());
+					remove->setProperty ("ActionIcon", "remove");
+					connect (remove,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionRemoveTriggered ()));
+					Entry2Actions_ [entry] ["remove"] = remove;
+					Action2Areas_ [remove] << CLEAAContactListCtxtMenu;
+				}
 
 				struct Entrifier
 				{
@@ -805,6 +851,23 @@ namespace LeechCraft
 
 			void Core::UpdateActionsForEntry (Plugins::ICLEntry *entry)
 			{
+				Plugins::IAccount *account = qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+				const bool isOnline = account->GetState ().State_ != Plugins::SOffline;
+				if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
+				{
+					bool enableVCard =
+							account->GetAccountFeatures () & Plugins::IAccount::FCanViewContactsInfoInOffline ||
+							isOnline;
+					Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
+				}
+
+				if (entry->GetEntryType () == Plugins::ICLEntry::ETChat)
+				{
+					Entry2Actions_ [entry] ["remove"]->setEnabled (isOnline);
+					if (Entry2Actions_ [entry] ["authorization"])
+						Entry2Actions_ [entry] ["authorization"]->setEnabled (isOnline);
+				}
+
 				Plugins::IMUCEntry *mucEntry =
 						qobject_cast<Plugins::IMUCEntry*> (entry->GetParentCLEntry ());
 				if (entry->GetEntryType () == Plugins::ICLEntry::ETPrivateChat &&
@@ -1117,6 +1180,8 @@ namespace LeechCraft
 					Entry2Actions_.remove (entry);
 
 					ID2Entry_.remove (entry->GetEntryID ());
+
+					invalidateClientsIconCache (clitem);
 				}
 			}
 
@@ -1330,6 +1395,40 @@ namespace LeechCraft
 				}
 			}
 
+			void Core::invalidateClientsIconCache (QObject *passedObj)
+			{
+				QObject *obj = obj ? obj : sender ();
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (obj);
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< obj
+							<< "could not be casted to ICLEntry";
+					return;
+				}
+
+				invalidateClientsIconCache (entry);
+			}
+
+			void Core::invalidateClientsIconCache (Plugins::ICLEntry *entry)
+			{
+				EntryClientIconCache_.remove (entry);
+			}
+
+			void Core::invalidateSmoothAvatarCache ()
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "could not be casted to ICLEntry";
+					return;
+				}
+
+				Entry2SmoothAvatarCache_.remove (entry);
+			}
+
 			void Core::handleActionOpenChatTriggered ()
 			{
 				QAction *action = qobject_cast<QAction*> (sender ());
@@ -1373,6 +1472,33 @@ namespace LeechCraft
 					return;
 
 				entry->SetEntryName (newName);
+			}
+
+			void Core::handleActionRemoveTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IAccount *account =
+						qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+				if (!account)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entry->GetObject ()
+							<< "doesn't return proper IAccount:"
+							<< entry->GetParentAccount ();
+					return;
+				}
+
+				account->RemoveEntry (entry->GetObject ());
 			}
 
 			void Core::handleActionRevokeAuthTriggered ()

@@ -28,7 +28,11 @@
 #include <gloox/rostermanager.h>
 #include <gloox/mucroom.h>
 #include <gloox/vcardmanager.h>
+#include <gloox/connectiontcpclient.h>
+#include <gloox/connectionhttpproxy.h>
+#include <gloox/connectionsocks5proxy.h>
 #include <plugininterface/util.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
@@ -69,6 +73,9 @@ namespace Xoox
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
 		Client_.reset (new gloox::Client (jid, std::string ()));
+
+		HandleProxy ();
+
 		VCardManager_.reset (new gloox::VCardManager (Client_.get ()));
 
 		Client_->registerMessageSessionHandler (this);
@@ -207,6 +214,11 @@ namespace Xoox
 	void ClientConnection::Unsubscribe (const gloox::JID& jid, const QString& reason)
 	{
 		Client_->rosterManager ()->unsubscribe (jid, reason.toUtf8 ().constData ());
+	}
+
+	void ClientConnection::Remove (GlooxCLEntry *entry)
+	{
+		Client_->rosterManager ()->remove (entry->GetJID ());
 	}
 
 	gloox::Client* ClientConnection::GetClient () const
@@ -697,6 +709,48 @@ namespace Xoox
 		if (entry->GetAvatar ().isNull ())
 			FetchVCard (bareJID);
 		return entry;
+	}
+
+	void ClientConnection::HandleProxy ()
+	{
+		Util::BaseSettingsManager *mgr =
+				Core::Instance ().GetProxy ()->GetSettingsManager ();
+		const QString& proxyType = mgr->property ("ProxyType").toString ();
+
+		const QString& host = mgr->property ("ProxyHost").toString ();
+		const int port = mgr->property ("ProxyPort").toInt ();
+		const QString& login = mgr->property ("ProxyLogin").toString ();
+		const QString& password = mgr->property ("ProxyPassword").toString ();
+
+		const std::string& xmppServer = Client_->server ();
+		const int xmppPort = Client_->port ();
+
+		if (proxyType.endsWith ("http"))
+		{
+			gloox::ConnectionTCPClient *connTcp =
+					new gloox::ConnectionTCPClient (Client_->logInstance (),
+							host.toUtf8 ().constData (), port);
+			gloox::ConnectionHTTPProxy *connProxy =
+					new gloox::ConnectionHTTPProxy (Client_.get (),
+							connTcp, Client_->logInstance (),
+							xmppServer, xmppPort);
+			connProxy->setProxyAuth (login.toUtf8 ().constData (),
+					password.toUtf8 ().constData ());
+			Client_->setConnectionImpl (connProxy);
+		}
+		else if (proxyType == "socks5")
+		{
+			gloox::ConnectionTCPClient *connTcp =
+					new gloox::ConnectionTCPClient (Client_->logInstance (),
+							host.toUtf8 ().constData (), port);
+			gloox::ConnectionSOCKS5Proxy *connProxy =
+					new gloox::ConnectionSOCKS5Proxy (Client_.get (),
+							connTcp, Client_->logInstance (),
+							xmppServer, xmppPort);
+			connProxy->setProxyAuth (login.toUtf8 ().constData (),
+					password.toUtf8 ().constData ());
+			Client_->setConnectionImpl (connProxy);
+		}
 	}
 }
 }

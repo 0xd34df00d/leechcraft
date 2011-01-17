@@ -109,6 +109,7 @@ namespace Xoox
 				const QString&, const QStringList&);
 		void RevokeSubscription (const gloox::JID&, const QString&);
 		void Unsubscribe (const gloox::JID&, const QString&);
+		void Remove (GlooxCLEntry*);
 
 		gloox::Client* GetClient () const;
 		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
@@ -161,6 +162,7 @@ namespace Xoox
 	private:
 		GlooxCLEntry* CreateCLEntry (gloox::RosterItem*);
 		GlooxCLEntry* ConvertFromODS (const gloox::JID&, gloox::RosterItem*);
+		void HandleProxy ();
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

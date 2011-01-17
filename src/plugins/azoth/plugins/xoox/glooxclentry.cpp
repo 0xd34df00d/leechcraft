@@ -110,7 +110,7 @@ namespace Xoox
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
-		return FPermanentEntry | FSupportsRenames | FSuportsAuth;
+		return FPermanentEntry | FSupportsRenames | FSupportsAuth;
 	}
 
 	ICLEntry::EntryType GlooxCLEntry::GetEntryType () const

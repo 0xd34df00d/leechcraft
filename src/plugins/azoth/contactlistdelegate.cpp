@@ -145,10 +145,14 @@ namespace Azoth
 				option.widget->style () :
 				QApplication::style ();
 
+		const QRect& r = option.rect;
+		const int sHeight = r.height ();
+		const int iconSize = sHeight - 2 * CPadding;
+
 		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString& status = entry->GetStatus ().StatusString_;
-		const QImage& avatarImg = entry->GetAvatar ();
+		const QImage& avatarImg = Core::Instance ().GetAvatar (entry, iconSize);
 		const QList<QIcon>& clientIcons = Core::Instance ()
 				.GetClientIconForEntry (entry).values ();
 		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
@@ -162,9 +166,6 @@ namespace Azoth
 		const QColor fgColor = selected ?
 				option.palette.color (QPalette::HighlightedText) :
 				option.palette.color (QPalette::Text);
-		const QRect& r = option.rect;
-		const int sHeight = r.height ();
-		const int iconSize = sHeight - 2 * CPadding;
 
 		QFont unreadFont;
 		int unreadSpace = 0;
@@ -219,8 +220,7 @@ namespace Azoth
 
 		if (!avatarImg.isNull ())
 			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
-					QPixmap::fromImage (avatarImg.scaled (iconSize, iconSize,
-							Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+					QPixmap::fromImage (avatarImg));
 
 		int currentShift = textShift + textWidth + CPadding;
 		Q_FOREACH (const QIcon& icon, clientIcons)

@@ -230,10 +230,11 @@ namespace LeechCraft
 				void unreadNumberChanged (int) const;
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
+				void channelRemoved (IDType_t);
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif
 

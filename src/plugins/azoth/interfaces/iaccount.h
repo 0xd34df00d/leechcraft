@@ -62,7 +62,12 @@ namespace Plugins
 
 			/** This account can add accounts to CL while being offline.
 			 */
-			FCanAddContactsInOffline = 0x08
+			FCanAddContactsInOffline = 0x08,
+
+			/** This account supports viewing contacts information while
+			 * offline.
+			 */
+			FCanViewContactsInfoInOffline = 0x10
 		};
 
 		Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);
@@ -209,6 +214,18 @@ namespace Plugins
 				const QString& msg = QString (),
 				const QString& name = QString (),
 				const QStringList& groups = QStringList ()) = 0;
+
+		/** @brief Removes the given entry from the contact list.
+		 *
+		 * Removes the entry from the contact list and automatically
+		 * synchronizes the changes in the contact list, if applicable.
+		 *
+		 * If the entry could not be removed at the moment, or if the
+		 * parameter is invalid, this function should do nothing.
+		 *
+		 * @param[in] entry The entry to remove.
+		 */
+		virtual void RemoveEntry (QObject *entry) = 0;
 
 		/** @brief This signal should be emitted when new contact list
 		 * items appear in this account.
