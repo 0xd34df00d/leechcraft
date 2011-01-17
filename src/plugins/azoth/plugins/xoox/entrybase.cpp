@@ -22,12 +22,14 @@
 #include <QtDebug>
 #include <gloox/rosteritem.h>
 #include <gloox/capabilities.h>
+#include <plugininterface/util.h>
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "vcarddialog.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "util.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -90,6 +92,16 @@ namespace Xoox
 
 	void EntryBase::ShowInfo ()
 	{
+		if (Account_->GetState ().State_ == SOffline)
+		{
+			Entity e = LeechCraft::Util::MakeNotification ("Azoth",
+					tr ("Can't view info while offline"),
+					PCritical_);
+			Core::Instance ().SendEntity (e);
+
+			return;
+		}
+
 		if (!VCardDialog_)
 			VCardDialog_ = new VCardDialog ();
 

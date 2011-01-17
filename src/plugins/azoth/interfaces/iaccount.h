@@ -62,7 +62,12 @@ namespace Plugins
 
 			/** This account can add accounts to CL while being offline.
 			 */
-			FCanAddContactsInOffline = 0x08
+			FCanAddContactsInOffline = 0x08,
+
+			/** This account supports viewing contacts information while
+			 * offline.
+			 */
+			FCanViewContactsInfoInOffline = 0x10
 		};
 
 		Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);

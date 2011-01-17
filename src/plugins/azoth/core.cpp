@@ -807,6 +807,15 @@ namespace LeechCraft
 
 			void Core::UpdateActionsForEntry (Plugins::ICLEntry *entry)
 			{
+				Plugins::IAccount *account = qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+				if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
+				{
+					bool enableVCard =
+							account->GetAccountFeatures () & Plugins::IAccount::FCanViewContactsInfoInOffline ||
+							account->GetState ().State_ != Plugins::SOffline;
+					Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
+				}
+
 				Plugins::IMUCEntry *mucEntry =
 						qobject_cast<Plugins::IMUCEntry*> (entry->GetParentCLEntry ());
 				if (entry->GetEntryType () == Plugins::ICLEntry::ETPrivateChat &&
