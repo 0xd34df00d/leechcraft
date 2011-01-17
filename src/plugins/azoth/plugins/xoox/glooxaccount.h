@@ -93,6 +93,7 @@ namespace Xoox
 		void DenyAuth (QObject*);
 		void RequestAuth (const QString&, const QString&,
 				const QString&, const QStringList&);
+		void RemoveEntry (QObject*);
 
 		QString GetJID () const;
 		QString GetNick () const;

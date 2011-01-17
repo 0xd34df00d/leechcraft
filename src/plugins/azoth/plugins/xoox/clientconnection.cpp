@@ -209,6 +209,11 @@ namespace Xoox
 		Client_->rosterManager ()->unsubscribe (jid, reason.toUtf8 ().constData ());
 	}
 
+	void ClientConnection::Remove (GlooxCLEntry *entry)
+	{
+		Client_->rosterManager ()->remove (entry->GetJID ());
+	}
+
 	gloox::Client* ClientConnection::GetClient () const
 	{
 		return Client_.get ();

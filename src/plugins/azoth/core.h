@@ -399,6 +399,7 @@ namespace LeechCraft
 				void invalidateSmoothAvatarCache ();
 
 				void handleActionRenameTriggered ();
+				void handleActionRemoveTriggered ();
 				void handleActionRevokeAuthTriggered ();
 				void handleActionUnsubscribeTriggered ();
 				void handleActionRerequestTriggered ();

@@ -123,7 +123,7 @@ namespace Plugins
 			 * to request, remove, give, etc auth. In this case the
 			 * entry should also implement IAuthable.
 			 */
-			FSuportsAuth = 0x0080
+			FSupportsAuth = 0x0080
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature);

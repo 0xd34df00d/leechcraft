@@ -205,6 +205,20 @@ namespace Xoox
 		ClientConnection_->Subscribe (entryId, msg, name, groups);
 	}
 
+	void GlooxAccount::RemoveEntry (QObject *entryObj)
+	{
+		GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "is not a GlooxCLEntry";
+			return;
+		}
+
+		ClientConnection_->Remove (entry);
+	}
+
 	QString GlooxAccount::GetJID () const
 	{
 		return JID_;

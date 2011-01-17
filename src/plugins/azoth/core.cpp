@@ -569,6 +569,7 @@ namespace LeechCraft
 				QList<QAction*> result;
 				result << id2action.value ("openchat");
 				result << id2action.value ("rename");
+				result << id2action.value ("remove");
 				result << id2action.value ("authorization");
 				result << id2action.value ("kick");
 				result << id2action.value ("ban");
@@ -632,7 +633,7 @@ namespace LeechCraft
 					Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
 				}
 
-				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSuportsAuth)
+				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSupportsAuth)
 				{
 					QMenu *authMenu = new QMenu (tr ("Authorization"));
 					authMenu->menuAction ()->setProperty ("ActionIcon", "azoth_menu_authorization");
@@ -812,6 +813,17 @@ namespace LeechCraft
 					Entry2Actions_ [entry] ["denyauth"] = denyAuth;
 					Action2Areas_ [denyAuth] << CLEAAContactListCtxtMenu;
 				}
+				else if (entry->GetEntryType () == Plugins::ICLEntry::ETChat)
+				{
+					QAction *remove = new QAction (tr ("Remove"), entry->GetObject ());
+					remove->setProperty ("ActionIcon", "remove");
+					connect (remove,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionRemoveTriggered ()));
+					Entry2Actions_ [entry] ["remove"] = remove;
+					Action2Areas_ [remove] << CLEAAContactListCtxtMenu;
+				}
 
 				struct Entrifier
 				{
@@ -840,12 +852,20 @@ namespace LeechCraft
 			void Core::UpdateActionsForEntry (Plugins::ICLEntry *entry)
 			{
 				Plugins::IAccount *account = qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+				const bool isOnline = account->GetState ().State_ != Plugins::SOffline;
 				if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
 				{
 					bool enableVCard =
 							account->GetAccountFeatures () & Plugins::IAccount::FCanViewContactsInfoInOffline ||
-							account->GetState ().State_ != Plugins::SOffline;
+							isOnline;
 					Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
+				}
+
+				if (entry->GetEntryType () == Plugins::ICLEntry::ETChat)
+				{
+					Entry2Actions_ [entry] ["remove"]->setEnabled (isOnline);
+					if (Entry2Actions_ [entry] ["authorization"])
+						Entry2Actions_ [entry] ["authorization"]->setEnabled (isOnline);
 				}
 
 				Plugins::IMUCEntry *mucEntry =
@@ -1452,6 +1472,33 @@ namespace LeechCraft
 					return;
 
 				entry->SetEntryName (newName);
+			}
+
+			void Core::handleActionRemoveTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+				Plugins::IAccount *account =
+						qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+				if (!account)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entry->GetObject ()
+							<< "doesn't return proper IAccount:"
+							<< entry->GetParentAccount ();
+					return;
+				}
+
+				account->RemoveEntry (entry->GetObject ());
 			}
 
 			void Core::handleActionRevokeAuthTriggered ()
