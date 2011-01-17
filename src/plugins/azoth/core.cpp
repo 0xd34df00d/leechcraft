@@ -545,10 +545,15 @@ namespace LeechCraft
 			QImage Core::GetAvatar (Plugins::ICLEntry* entry, int size)
 			{
 				if (Entry2SmoothAvatarCache_.contains (entry) &&
-						Entry2SmoothAvatarCache_ [entry].width () == size)
+						(Entry2SmoothAvatarCache_ [entry].width () == size ||
+						 Entry2SmoothAvatarCache_ [entry].height () == size))
 					return Entry2SmoothAvatarCache_ [entry];
 
-				const QImage& scaled = entry->GetAvatar ().scaled (size, size,
+				const QImage& avatar = entry->GetAvatar ();
+				if (avatar.isNull () || !avatar.width ())
+					return avatar;
+
+				const QImage& scaled = avatar.scaled (size, size,
 						Qt::KeepAspectRatio, Qt::SmoothTransformation);
 				Entry2SmoothAvatarCache_ [entry] = scaled;
 				return scaled;
