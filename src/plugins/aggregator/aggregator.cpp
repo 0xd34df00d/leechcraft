@@ -202,24 +202,21 @@ namespace LeechCraft
 						ChannelActions_.ActionMarkChannelAsRead_);
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionMarkChannelAsUnread_);
-				QAction *sep1 = new QAction (Impl_->Ui_.Feeds_),
-						*sep2 = new QAction (Impl_->Ui_.Feeds_),
-						*sep3 = new QAction (Impl_->Ui_.Feeds_);
-				sep1->setSeparator (true);
-				sep2->setSeparator (true);
-				sep3->setSeparator (true);
-				Impl_->Ui_.Feeds_->addAction (sep1);
+				Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionRemoveFeed_);
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionUpdateSelectedFeed_);
-				Impl_->Ui_.Feeds_->addAction (sep2);
+				Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						ChannelActions_.ActionChannelSettings_);
-				Impl_->Ui_.Feeds_->addAction (sep3);
+				Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 				Impl_->Ui_.Feeds_->addAction (Impl_->
 						AppWideActions_.ActionAddFeed_);
-				Impl_->Ui_.Feeds_->setContextMenuPolicy (Qt::ActionsContextMenu);
+				connect (Impl_->Ui_.Feeds_,
+						SIGNAL (customContextMenuRequested (const QPoint&)),
+						this,
+						SLOT (handleFeedsContextMenuRequested (const QPoint&)));
 				QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 
 				QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
@@ -597,6 +594,28 @@ namespace LeechCraft
 
 				std::auto_ptr<FeedSettings> dia (new FeedSettings (index, this));
 				dia->exec ();
+			}
+
+			void Aggregator::handleFeedsContextMenuRequested (const QPoint& pos)
+			{
+				bool enable = Impl_->Ui_.Feeds_->indexAt (pos).isValid ();
+				QList<QAction*> toToggle;
+				toToggle << Impl_->ChannelActions_.ActionMarkChannelAsRead_
+						<< Impl_->ChannelActions_.ActionMarkChannelAsUnread_
+						<< Impl_->ChannelActions_.ActionRemoveFeed_
+						<< Impl_->ChannelActions_.ActionChannelSettings_
+						<< Impl_->ChannelActions_.ActionUpdateSelectedFeed_;
+
+				Q_FOREACH (QAction *act, toToggle)
+					act->setEnabled (enable);
+
+				QMenu *menu = new QMenu;
+				menu->setAttribute (Qt::WA_DeleteOnClose, true);
+				menu->addActions (Impl_->Ui_.Feeds_->actions ());
+				menu->exec (Impl_->Ui_.Feeds_->mapToGlobal (pos));
+
+				Q_FOREACH (QAction *act, toToggle)
+					act->setEnabled (true);
 			}
 
 			void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
