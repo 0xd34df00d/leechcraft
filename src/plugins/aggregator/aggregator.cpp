@@ -19,6 +19,7 @@
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
+#include <boost/bind.hpp>
 #include <QMessageBox>
 #include <QtDebug>
 #include <QSortFilterProxyModel>
@@ -494,11 +495,11 @@ namespace LeechCraft
 				if (IsRepr ())
 					return Core::Instance ()
 						.GetJobHolderRepresentation ()->
-						mapToSource (Impl_->SelectedRepr_);
+							mapToSource (Impl_->SelectedRepr_);
 				else
 				{
 					QModelIndex index = Impl_->Ui_.Feeds_->
-						selectionModel ()->currentIndex ();
+							selectionModel ()->currentIndex ();
 					if (Impl_->FlatToFolders_->GetSourceModel ())
 						index = Impl_->FlatToFolders_->MapToSource (index);
 					return Core::Instance ().GetChannelsModel ()->mapToSource (index);
@@ -576,14 +577,33 @@ namespace LeechCraft
 					Core::Instance ().RemoveFeed (ds);
 			}
 
+			void Aggregator::MarkReadUnread (boost::function<void (const QModelIndex&)> func)
+			{
+				QModelIndex index = GetRelevantIndex ();
+				if (index.isValid ())
+					func (index);
+				else if (Impl_->FlatToFolders_->GetSourceModel ())
+				{
+					index = Impl_->Ui_.Feeds_->
+					selectionModel ()->currentIndex ();
+					for (int i = 0, size = Impl_->FlatToFolders_->rowCount (index);
+						 i < size; ++i)
+						 {
+							 QModelIndex source = Impl_->FlatToFolders_->index (i, 0, index);
+							 source = Impl_->FlatToFolders_->MapToSource (source);
+							 func (source);
+						 }
+				}
+			}
+
 			void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 			{
-				Core::Instance ().MarkChannelAsRead (GetRelevantIndex ());
+				MarkReadUnread (boost::bind (&Core::MarkChannelAsRead, &Core::Instance (), _1));
 			}
 
 			void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 			{
-				Core::Instance ().MarkChannelAsUnread (GetRelevantIndex ());
+				MarkReadUnread (boost::bind (&Core::MarkChannelAsUnread, &Core::Instance (), _1));
 			}
 
 			void Aggregator::on_ActionChannelSettings__triggered ()
