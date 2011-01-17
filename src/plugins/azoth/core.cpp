@@ -345,6 +345,10 @@ namespace LeechCraft
 						this,
 						SLOT (handleStatusChanged (const Plugins::EntryStatus&, const QString&)));
 				connect (clEntry->GetObject (),
+						SIGNAL (availableVariantsChanged (const QStringList&)),
+						this,
+						SLOT (invalidateClientsIconCache ()));
+				connect (clEntry->GetObject (),
 						SIGNAL (gotMessage (QObject*)),
 						this,
 						SLOT (handleEntryGotMessage (QObject*)));
@@ -441,6 +445,7 @@ namespace LeechCraft
 			void Core::HandleStatusChanged (const Plugins::EntryStatus& status,
 					Plugins::ICLEntry *entry, const QString& variant)
 			{
+				invalidateClientsIconCache (entry);
 				QString tip = QString ("%1 (%2)<hr />%3 (%4)<hr />%5")
 						.arg (entry->GetEntryName ())
 						.arg (entry->GetHumanReadableID ())
@@ -513,7 +518,11 @@ namespace LeechCraft
 
 			QMap<QString, QIcon> Core::GetClientIconForEntry (Plugins::ICLEntry *entry)
 			{
+				if (EntryClientIconCache_.contains (entry))
+					return EntryClientIconCache_ [entry];
+
 				QMap<QString, QIcon> result;
+
 				Q_FOREACH (const QString& variant, entry->Variants ())
 				{
 					QString filename = "default/";
@@ -524,6 +533,8 @@ namespace LeechCraft
 							<< filename + ".jpg";
 					result [variant] = QIcon (ClientIconLoader_->GetPath (variants));
 				}
+
+				EntryClientIconCache_ [entry] = result;
 				return result;
 			}
 
@@ -1128,6 +1139,8 @@ namespace LeechCraft
 					Entry2Actions_.remove (entry);
 
 					ID2Entry_.remove (entry->GetEntryID ());
+
+					invalidateClientsIconCache (clitem);
 				}
 			}
 
@@ -1339,6 +1352,26 @@ namespace LeechCraft
 					item->setData (0, CLRUnreadMsgCount);
 					RecalculateUnreadForParents (item);
 				}
+			}
+
+			void Core::invalidateClientsIconCache (QObject *passedObj)
+			{
+				QObject *obj = obj ? obj : sender ();
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (obj);
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< obj
+							<< "could not be casted to ICLEntry";
+					return;
+				}
+
+				invalidateClientsIconCache (entry);
+			}
+
+			void Core::invalidateClientsIconCache (Plugins::ICLEntry *entry)
+			{
+				EntryClientIconCache_.remove (entry);
 			}
 
 			void Core::handleActionOpenChatTriggered ()

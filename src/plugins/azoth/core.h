@@ -21,6 +21,7 @@
 #include <boost/function.hpp>
 #include <QObject>
 #include <QSet>
+#include <QIcon>
 #include "interfaces/iinfo.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
@@ -79,6 +80,9 @@ namespace LeechCraft
 
 				typedef QHash<QByteArray, QObject*> ID2Entry_t;
 				ID2Entry_t ID2Entry_;
+
+				typedef QHash<Plugins::ICLEntry*, QMap<QString, QIcon> > EntryClientIconCache_t;
+				EntryClientIconCache_t EntryClientIconCache_;
 
 				boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 				boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
@@ -355,6 +359,9 @@ namespace LeechCraft
 				 */
 				void updateItem ();
 
+				/** Asks the corresponding CL entry to show its dialog
+				 * with information about the user.
+				 */
 				void showVCard ();
 
 				/** Handles the number of unread messages for the given
@@ -362,6 +369,16 @@ namespace LeechCraft
 				 * implement ICLEntry, obviously.
 				 */
 				void handleClearUnreadMsgCount (QObject *object);
+
+				/** Removes the entries in the client icon cache for the
+				 * sender, if obj is null, or for obj, if it is not
+				 * null.
+				 *
+				 * If the object can't be casted to Plugins::ICLEntry,
+				 * this function does nothing.
+				 */
+				void invalidateClientsIconCache (QObject *obj = 0);
+				void invalidateClientsIconCache (Plugins::ICLEntry*);
 
 				void handleActionRenameTriggered ();
 				void handleActionRevokeAuthTriggered ();
