@@ -162,6 +162,7 @@ namespace Xoox
 	private:
 		GlooxCLEntry* CreateCLEntry (gloox::RosterItem*);
 		GlooxCLEntry* ConvertFromODS (const gloox::JID&, gloox::RosterItem*);
+		void HandleProxy ();
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
