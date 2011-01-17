@@ -60,10 +60,11 @@ namespace LeechCraft
 				QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
 				QModelIndex parent (const QModelIndex&) const;
 				int rowCount (const QModelIndex& = QModelIndex ()) const;
+			private slots:
+				void handleChannelRemoved (IDType_t);
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif
-

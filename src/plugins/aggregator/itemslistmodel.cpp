@@ -37,6 +37,10 @@ namespace LeechCraft
 			, MayBeRichText_ (false)
 			{
 				ItemHeaders_ << tr ("Name") << tr ("Date");
+				connect (&Core::Instance (),
+						SIGNAL (channelRemoved (IDType_t)),
+						this,
+						SLOT (handleChannelRemoved (IDType_t)));
 			}
 
 			int ItemsListModel::GetSelectedRow () const
@@ -301,7 +305,14 @@ namespace LeechCraft
 			{
 				return parent.isValid () ? 0 : CurrentItems_.size ();
 			}
-		};
-	};
-};
+
+			void ItemsListModel::handleChannelRemoved (IDType_t id)
+			{
+				if (id != CurrentChannel_)
+					return;
+				Reset (-1);
+			}
+		}
+	}
+}
 
