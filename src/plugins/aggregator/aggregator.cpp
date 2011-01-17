@@ -612,7 +612,7 @@ namespace LeechCraft
 				QMenu *menu = new QMenu;
 				menu->setAttribute (Qt::WA_DeleteOnClose, true);
 				menu->addActions (Impl_->Ui_.Feeds_->actions ());
-				menu->exec (Impl_->Ui_.Feeds_->mapToGlobal (pos));
+				menu->exec (Impl_->Ui_.Feeds_->viewport ()->mapToGlobal (pos));
 
 				Q_FOREACH (QAction *act, toToggle)
 					act->setEnabled (true);
