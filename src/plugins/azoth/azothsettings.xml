@@ -11,18 +11,27 @@
 					<label lang="en" value="Oxygen" />
 				</option>
 			</item>
+			<item type="combobox" property="ClientIcons" mayHaveDataSource="true">
+				<label lang="en" value="Client icons:" />
+				<option name="default" default="true">
+					<label lang="en" value="default" />
+				</option>
+			</item>
 		</tab>
 	</page>
 	<page>
 		<label lang="en" value="Behavior" />
-		<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
-			<label lang="en" value="Jump to new tab on open" />
-		</item>
-	</page>
-	<page>
-		<label lang="en" value="Chat windows" />
-		<item type="checkbox" property="ShowStatusChangesEvents" default="false">
-			<label lang="en" value="Show status changes events in chat window" />
-		</item>
+		<tab>
+			<label lang="en" value="Behavior" />
+			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
+				<label lang="en" value="Jump to new tab on open" />
+			</item>
+		</tab>
+		<tab>
+			<label lang="en" value="Chat windows" />
+			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
+				<label lang="en" value="Show status changes" />
+			</item>
+		</tab>
 	</page>
 </settings>

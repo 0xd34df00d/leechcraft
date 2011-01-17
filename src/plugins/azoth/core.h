@@ -111,7 +111,8 @@ namespace LeechCraft
 
 				enum ResourceLoaderType
 				{
-					RLTStatusIconLoader
+					RLTStatusIconLoader,
+					RLTClientIconLoader
 				};
 
 				enum CLEntryActionArea

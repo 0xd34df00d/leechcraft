@@ -123,6 +123,8 @@ namespace LeechCraft
 				{
 				case RLTStatusIconLoader:
 					return StatusIconLoader_.get ();
+				case RLTClientIconLoader:
+					return ClientIconLoader_.get ();
 				}
 			}
 
