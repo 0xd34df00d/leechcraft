@@ -84,6 +84,9 @@ namespace LeechCraft
 				typedef QHash<Plugins::ICLEntry*, QMap<QString, QIcon> > EntryClientIconCache_t;
 				EntryClientIconCache_t EntryClientIconCache_;
 
+				typedef QHash<Plugins::ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
+				Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
+
 				boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 				boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
 
@@ -196,8 +199,21 @@ namespace LeechCraft
 				 * selected (in settings) iconset.
 				 *
 				 * @param[in] entry Entry for which to return the icons.
+				 * @return Map from entity variant to corresponding
+				 * client icon.
 				 */
 				QMap<QString, QIcon> GetClientIconForEntry (Plugins::ICLEntry *entry);
+
+				/** @brief Returns the avatar for the given CL entry
+				 * scaled to the given size.
+				 *
+				 * The scale is performed using SmoothTransform and
+				 * keeping the aspect ratio.
+				 *
+				 * @param[in] entry Entry for which to get the avatar.
+				 * @return Entry's avatar scaled to the given size.
+				 */
+				QImage GetAvatar (Plugins::ICLEntry *entry, int size);
 
 				/** Returns an up-to-date list of actions suitable for
 				 * the given entry.
@@ -379,6 +395,8 @@ namespace LeechCraft
 				 */
 				void invalidateClientsIconCache (QObject *obj = 0);
 				void invalidateClientsIconCache (Plugins::ICLEntry*);
+
+				void invalidateSmoothAvatarCache ();
 
 				void handleActionRenameTriggered ();
 				void handleActionRevokeAuthTriggered ();

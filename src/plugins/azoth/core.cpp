@@ -359,6 +359,10 @@ namespace LeechCraft
 				connect (clEntry->GetObject (),
 						SIGNAL (avatarChanged (const QImage&)),
 						this,
+						SLOT (invalidateSmoothAvatarCache ()));
+				connect (clEntry->GetObject (),
+						SIGNAL (avatarChanged (const QImage&)),
+						this,
 						SLOT (updateItem ()));
 
 				const QByteArray& id = clEntry->GetEntryID ();
@@ -536,6 +540,18 @@ namespace LeechCraft
 
 				EntryClientIconCache_ [entry] = result;
 				return result;
+			}
+
+			QImage Core::GetAvatar (Plugins::ICLEntry* entry, int size)
+			{
+				if (Entry2SmoothAvatarCache_.contains (entry) &&
+						Entry2SmoothAvatarCache_ [entry].width () == size)
+					return Entry2SmoothAvatarCache_ [entry];
+
+				const QImage& scaled = entry->GetAvatar ().scaled (size, size,
+						Qt::KeepAspectRatio, Qt::SmoothTransformation);
+				Entry2SmoothAvatarCache_ [entry] = scaled;
+				return scaled;
 			}
 
 			QList<QAction*> Core::GetEntryActions (Plugins::ICLEntry *entry)
@@ -1372,6 +1388,20 @@ namespace LeechCraft
 			void Core::invalidateClientsIconCache (Plugins::ICLEntry *entry)
 			{
 				EntryClientIconCache_.remove (entry);
+			}
+
+			void Core::invalidateSmoothAvatarCache ()
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "could not be casted to ICLEntry";
+					return;
+				}
+
+				Entry2SmoothAvatarCache_.remove (entry);
 			}
 
 			void Core::handleActionOpenChatTriggered ()
