@@ -69,6 +69,52 @@ namespace Azoth
 		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
 		lay->insertWidget (0, UpperBar_);
 
+		CreateMenu ();
+
+		MenuChangeStatus_ = new QMenu (tr ("Change status"));
+		MenuChangeStatus_->addAction (tr ("Online"),
+				this,
+				SLOT (handleChangeStatusRequested ()))->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<Plugins::State> (Plugins::SOnline));
+		MenuChangeStatus_->addAction (tr ("Free to chat"),
+				this,
+				SLOT (handleChangeStatusRequested ()))->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<Plugins::State> (Plugins::SChat));
+		MenuChangeStatus_->addAction (tr ("Away"),
+				this,
+				SLOT (handleChangeStatusRequested ()))->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<Plugins::State> (Plugins::SAway));
+		MenuChangeStatus_->addAction (tr ("DND"),
+				this,
+				SLOT (handleChangeStatusRequested ()))->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<Plugins::State> (Plugins::SDND));
+		MenuChangeStatus_->addAction (tr ("Extended away"),
+				this,
+				SLOT (handleChangeStatusRequested ()))->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<Plugins::State> (Plugins::SXA));
+		MenuChangeStatus_->addAction (tr ("Offline"),
+				this,
+				SLOT (handleChangeStatusRequested ()))->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<Plugins::State> (Plugins::SOffline));
+		MenuChangeStatus_->addSeparator ();
+		MenuChangeStatus_->addAction (tr ("Custom..."),
+				this,
+				SLOT (handleChangeStatusRequested ()));
+	}
+
+	void MainWidget::AddMUCJoiners (const QList<QAction*>& actions)
+	{
+		MenuGeneral_->addActions (actions);
+	}
+
+	void MainWidget::CreateMenu ()
+	{
 		MenuGeneral_->addAction (tr ("Accounts..."),
 				this,
 				SLOT (showAccountsList ()));
@@ -93,17 +139,6 @@ namespace Azoth
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleShowOffline (bool)));
-
-		ActionChangeStatus_ = new QAction (tr ("Change status..."), this);
-		connect (ActionChangeStatus_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleChangeStatusRequested ()));
-	}
-
-	void MainWidget::AddMUCJoiners (const QList<QAction*>& actions)
-	{
-		MenuGeneral_->addActions (actions);
 	}
 
 	void MainWidget::on_CLTree__activated (const QModelIndex& index)
@@ -138,8 +173,21 @@ namespace Azoth
 		case Core::CLETAccount:
 		{
 			QVariant objVar = index.data (Core::CLRAccountObject);
-			ActionChangeStatus_->setData (objVar);
-			actions << ActionChangeStatus_;
+			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
+			{
+				if (act->isSeparator ())
+					continue;
+
+				act->setData (objVar);
+
+				QVariant stateVar = act->property ("Azoth/TargetState");
+				if (!stateVar.isNull ())
+				{
+					Plugins::State state = stateVar.value<Plugins::State> ();
+					act->setIcon (Core::Instance ().GetIconForState (state));
+				}
+			}
+			actions << MenuChangeStatus_->menuAction ();
 			break;
 		}
 		default:
@@ -155,7 +203,15 @@ namespace Azoth
 
 	void MainWidget::handleChangeStatusRequested ()
 	{
-		QObject *obj = ActionChangeStatus_->data ().value<QObject*> ();
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not an action";
+			return;
+		}
+		QObject *obj = action->data ().value<QObject*> ();
 		if (!obj)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -173,11 +229,19 @@ namespace Azoth
 			return;
 		}
 
-		SetStatusDialog *ssd = new SetStatusDialog (this);
-		if (ssd->exec () != QDialog::Accepted)
-			return;
+		QVariant stateVar = action->property ("Azoth/TargetState");
+		if (!stateVar.isNull ())
+			acc->ChangeState (Plugins::EntryStatus (stateVar.value<Plugins::State> (),
+							QString ()));
+		else
+		{
+			SetStatusDialog *ssd = new SetStatusDialog (this);
+			if (ssd->exec () != QDialog::Accepted)
+				return;
 
-		acc->ChangeState (Plugins::EntryStatus (ssd->GetState (), ssd->GetStatusText ()));
+			acc->ChangeState (Plugins::EntryStatus (ssd->GetState (),
+							ssd->GetStatusText ()));
+		}
 	}
 
 	void MainWidget::showAccountsList ()

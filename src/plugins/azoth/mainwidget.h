@@ -42,11 +42,13 @@ namespace Azoth
 		QMenu *MenuGeneral_;
 		SortFilterProxyModel *ProxyModel_;
 
-		QAction *ActionChangeStatus_;
+		QMenu *MenuChangeStatus_;
 	public:
 		MainWidget (QWidget* = 0);
 
 		void AddMUCJoiners (const QList<QAction*>&);
+	private:
+		void CreateMenu ();
 	private slots:
 		void on_CLTree__activated (const QModelIndex&);
 		void on_CLTree__customContextMenuRequested (const QPoint&);

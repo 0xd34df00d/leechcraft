@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_INTERFACES_AZOTHCOMMON_H
 #define PLUGINS_AZOTH_INTERFACES_AZOTHCOMMON_H
-#include <boost/graph/graph_concepts.hpp>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -103,5 +103,7 @@ namespace Plugins
 }
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::State);
 
 #endif

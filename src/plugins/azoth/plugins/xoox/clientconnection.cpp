@@ -715,6 +715,9 @@ namespace Xoox
 	{
 		Util::BaseSettingsManager *mgr =
 				Core::Instance ().GetProxy ()->GetSettingsManager ();
+		if (!mgr->property ("ProxyEnabled").toBool ())
+			return;
+
 		const QString& proxyType = mgr->property ("ProxyType").toString ();
 
 		const QString& host = mgr->property ("ProxyHost").toString ();
