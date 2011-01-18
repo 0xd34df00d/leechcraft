@@ -231,8 +231,14 @@ namespace Azoth
 
 		QVariant stateVar = action->property ("Azoth/TargetState");
 		if (!stateVar.isNull ())
-			acc->ChangeState (Plugins::EntryStatus (stateVar.value<Plugins::State> (),
-							QString ()));
+		{
+			Plugins::State state = stateVar.value<Plugins::State> ();
+			const QString& propName = "DefaultStatus" + QString::number (state);
+			const QString& text = XmlSettingsManager::Instance ()
+					.property (propName.toLatin1 ()).toString ();
+			acc->ChangeState (Plugins::EntryStatus (state,
+							text));
+		}
 		else
 		{
 			SetStatusDialog *ssd = new SetStatusDialog (this);
