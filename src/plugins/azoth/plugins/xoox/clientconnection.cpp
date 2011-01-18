@@ -68,6 +68,8 @@ namespace Xoox
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
 	{
+		LastState_.State_ == SOffline;
+
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
@@ -111,12 +113,14 @@ namespace Xoox
 
 	void ClientConnection::SetState (const GlooxAccountState& state)
 	{
+		LastState_ = state;
+
 		gloox::Presence::PresenceType pres =
 				static_cast<gloox::Presence::PresenceType> (state.State_);
 		std::string stdStatus (state.Status_.toUtf8 ().constData ());
 		Client_->setPresence (pres, state.Priority_, stdStatus);
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-			rh->GetRoom ()->setPresence (pres, stdStatus);
+			rh->SetState (state);
 
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
@@ -167,6 +171,7 @@ namespace Xoox
 		boost::shared_ptr<gloox::MUCRoom> room (new gloox::MUCRoom (Client_.get (), jid, rh, 0));
 		room->join ();
 		rh->SetRoom (room);
+		rh->SetState (LastState_);
 
 		RoomHandlers_ << rh;
 
@@ -289,13 +294,13 @@ namespace Xoox
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 		{
 			gloox::JID jid = rh->GetRoomJID ();
-			// cache room inits
+			// cache room parameters
 			QString server = QString (jid.server().c_str ());
 			QString room = QString (jid.username ().c_str ());
 			QString nick = rh->GetCLEntry ()->GetNick ();
 			// leave conference
 			rh->GetCLEntry ()->Leave (QString ());
-			// join agane
+			// join again
 			Account_->JoinRoom (server, room, nick);
 		}
 		IsConnected_ = true;

@@ -32,6 +32,7 @@
 #include <gloox/presencehandler.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
+#include "glooxaccount.h"
 
 class QTimer;
 
@@ -58,8 +59,6 @@ class IProxyObject;
 
 namespace Xoox
 {
-	struct GlooxAccountState;
-
 	class GlooxAccount;
 	class GlooxMessage;
 	class RoomCLEntry;
@@ -87,6 +86,7 @@ namespace Xoox
 		QHash<gloox::JID, GlooxCLEntry*> ODSEntries_;
 		// Bare JID → resource → session.
 		QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
+		GlooxAccountState LastState_;
 	public:
 		ClientConnection (const gloox::JID&,
 				const GlooxAccountState&,

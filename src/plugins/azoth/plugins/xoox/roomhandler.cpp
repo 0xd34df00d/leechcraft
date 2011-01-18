@@ -86,6 +86,14 @@ namespace Xoox
 		Nick2Entry_ [nick]->SetVCard (card);
 	}
 
+	void RoomHandler::SetState (const GlooxAccountState& state)
+	{
+		gloox::Presence::PresenceType pres =
+				static_cast<gloox::Presence::PresenceType> (state.State_);
+		std::string stdStatus (state.Status_.toUtf8 ().constData ());
+		Room_->setPresence (pres, stdStatus);
+	}
+
 	void RoomHandler::MakeLeaveMessage (const gloox::MUCRoomParticipant part)
 	{
 		const QString& nick = NickFromJID (*part.nick);
