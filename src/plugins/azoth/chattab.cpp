@@ -62,6 +62,8 @@ namespace Azoth
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
 	, NumUnreadMsgs_ (0)
+	, IsMUC_ (false)
+	, HasBeenAppended_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -206,6 +208,8 @@ namespace Azoth
 
 	void ChatTab::TabMadeCurrent ()
 	{
+		HasBeenAppended_ = false;
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookMadeCurrent (proxy, this);
 		if (proxy->IsCancelled ())
@@ -414,9 +418,9 @@ namespace Azoth
 		Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
 
 		bool claimsMUC = e->GetEntryType () == Plugins::ICLEntry::ETMUC;
-		bool isGoodMUC = true;
+		IsMUC_ = true;
 		if (!(claimsMUC))
-			isGoodMUC = false;
+			IsMUC_ = false;
 
 		if (claimsMUC &&
 				!GetEntry<Plugins::IMUCEntry> ())
@@ -425,10 +429,10 @@ namespace Azoth
 				<< e->GetEntryName ()
 				<< "declares itself to be a MUC, "
 					"but doesn't implement IMUCEntry";
-			isGoodMUC = false;
+			IsMUC_  = false;
 		}
 
-		if (isGoodMUC)
+		if (IsMUC_ )
 			HandleMUC ();
 		else
 		{
@@ -543,6 +547,21 @@ namespace Azoth
 		string.append (body);
 
 		QWebElement elem = frame->findFirstElement ("body");
+
+		Plugins::ICLEntry *entry =
+				qobject_cast<Plugins::ICLEntry*> (Core::Instance ().GetEntry (EntryID_));
+		if (!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) &&
+				!HasBeenAppended_)
+		{
+			QWebElement elem = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
+			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
+			if (hr.isNull ())
+				elem.appendInside ("<hr class=\"lastSeparator\" />");
+			else
+				elem.appendInside (hr.takeFromDocument ());
+			HasBeenAppended_ = true;
+		}
+
 		elem.appendInside (QString ("<div class='%1'>%2</div>")
 					.arg (divClass)
 					.arg (string));

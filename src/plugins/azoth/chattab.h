@@ -49,20 +49,30 @@ namespace Azoth
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::ChatTab Ui_;
+
 		QByteArray EntryID_;
 		QString Variant_;
+
 		QRegExp LinkRegexp_;
 		QRegExp ImageRegexp_;
+
 		QColor BgColor_;
 		QList<QColor> NickColors_;
+
 		QList<QString> MsgHistory_;
 		int CurrentHistoryPosition_;
 		QStringList AvailableNickList_;
 		int CurrentNickIndex_;
 		int LastSpacePosition_;
 		QString NickFirstPart_;
+
 		int NumUnreadMsgs_;
+
 		QIcon TabIcon_;
+
+		bool IsMUC_;
+
+		bool HasBeenAppended_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
