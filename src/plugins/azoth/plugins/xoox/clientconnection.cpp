@@ -178,6 +178,7 @@ namespace Xoox
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
 	{
 		QXmppRosterIq iq;
+		iq.setType (QXmppIq::Set);
 		iq.addItem (item);
 		Client_->sendPacket (iq);
 	}
@@ -185,6 +186,7 @@ namespace Xoox
 	void ClientConnection::Update (const QXmppMucAdminIq::Item& item)
 	{
 		QXmppMucAdminIq iq;
+		iq.setType (QXmppIq::Set);
 		iq.setItems (QList<QXmppMucAdminIq::Item> () << item);
 		Client_->sendPacket (iq);
 	}
@@ -200,11 +202,10 @@ namespace Xoox
 			return;
 		}
 
-		QXmppRosterIq::Item item;
-		item.setBareJid (entry->GetJID ());
-		item.setSubscriptionStatus (ack ? "subscribe" : "unsubscribe");
-		item.setSubscriptionType (QXmppRosterIq::Item::Both);
-		Update (item);
+		QXmppPresence pres;
+		pres.setType (ack ? QXmppPresence::Subscribed : QXmppPresence::Unsubscribed);
+		pres.setTo (entry->GetJID ());
+		Client_->sendPacket (pres);
 
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
@@ -213,40 +214,31 @@ namespace Xoox
 	void ClientConnection::Subscribe (const QString& id,
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
-		QXmppRosterIq::Item item;
-		item.setBareJid (id);
-		item.setGroups (QSet<QString>::fromList (groups));
-		item.setName (name);
-		item.setSubscriptionType (QXmppRosterIq::Item::To);
-		Update (item);
+		QXmppPresence pres;
+		pres.setType (QXmppPresence::Subscribe);
+		pres.setTo (id);
+		Client_->sendPacket (pres);
 	}
 
 	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
 	{
-		QXmppRosterIq::Item item = Client_->rosterManager ().getRosterEntry (jid);
-		if (item.subscriptionType () == QXmppRosterIq::Item::None ||
-				item.subscriptionType () == QXmppRosterIq::Item::From)
-			return;
-
-		QXmppRosterIq::Item::SubscriptionType newSub = QXmppRosterIq::Item::None;
-		if (item.subscriptionType () == QXmppRosterIq::Item::Both)
-			newSub = QXmppRosterIq::Item::To;
-		item.setSubscriptionType (newSub);
-		if (!reason.isEmpty ())
-			item.setSubscriptionStatus (reason);
-
-		Update (item);
+		QXmppPresence pres;
+		pres.setType (QXmppPresence::Unsubscribe);
+		pres.setTo (jid);
+		Client_->sendPacket (pres);
 	}
 
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
 	{
+		QXmppPresence presence;
+		presence.setType (QXmppPresence::Unsubscribed);
+		presence.setTo (jid);
+		Client_->sendPacket (presence);
 	}
 
 	void ClientConnection::Remove (GlooxCLEntry *entry)
 	{
-		QXmppRosterIq::Item item = entry->GetRI ();
-		item.setSubscriptionType (QXmppRosterIq::Item::Remove);
-		Update (item);
+		Client_->rosterManager ().removeRosterEntry (entry->GetJID ());
 	}
 
 	QXmppClient* ClientConnection::GetClient () const

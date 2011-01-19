@@ -46,7 +46,6 @@ namespace Xoox
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
 				jid + "/" + variant;
-		Message_.setFrom (dir == DIn ? remoteJid : conn->GetOurJID ());
 		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
 	}
 

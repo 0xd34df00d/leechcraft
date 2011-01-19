@@ -82,7 +82,6 @@ namespace Xoox
 	{
 		QXmppPresence pres;
 		pres.setTo (GetRoomJID ());
-		pres.setFrom (Account_->GetJID ());
 		pres.setType (QXmppPresence::Available);
 		pres.setStatus (QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
 				state.Status_,
