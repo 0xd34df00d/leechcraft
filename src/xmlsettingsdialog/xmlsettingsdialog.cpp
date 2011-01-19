@@ -404,13 +404,24 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
 	return returning;
 }
 
+QString XmlSettingsDialog::GetBasename () const
+{
+	return Basename_;
+}
+
 QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
 {
 	QString property = item.attribute ("property");
 
 	QVariant value;
 	if (ignoreObject)
-		value = item.attribute ("default");
+	{
+		QString def = item.attribute ("default");
+		if (item.attribute ("translatable") == "true")
+			def = QCoreApplication::translate (qPrintable (Basename_),
+					def.toUtf8 ().constData ());
+		value = def;
+	}
 	else
 	{
 		QVariant tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
