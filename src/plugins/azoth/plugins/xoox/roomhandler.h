@@ -105,14 +105,14 @@ namespace Xoox
 		/** Creates a new entry for the given nick.
 		 */
 		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
-
+	public:
 		/** Creates a new entry for the given nick if it
 		 * doesn't exist already (and does so by calling
 		 * CreateParticipantEntry()) or just returns the
 		 * already existing one.
 		 */
 		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
-
+	private:
 		/*
 		void MakeLeaveMessage (const gloox::MUCRoomParticipant);
 		void MakeStatusChangedMessage (const gloox::MUCRoomParticipant, const gloox::Presence&);

@@ -103,7 +103,7 @@ namespace Xoox
 		void Remove (GlooxCLEntry*);
 
 		QXmppClient* GetClient () const;
-		GlooxCLEntry* GetCLEntry (const QString& bareJid) const;
+		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
 		void FetchVCard (const QString&);

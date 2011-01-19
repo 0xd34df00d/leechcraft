@@ -296,7 +296,8 @@ namespace Xoox
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
 		{
-			GlooxMessage *message = new GlooxMessage (msg, Account_->GetClientConnection ().get ());
+			GlooxMessage *message = new GlooxMessage (msg,
+					Account_->GetClientConnection ().get ());
 			entry->HandleMessage (message);
 		}
 		else

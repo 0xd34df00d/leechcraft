@@ -254,9 +254,12 @@ namespace Xoox
 		return Client_;
 	}
 
-	GlooxCLEntry* ClientConnection::GetCLEntry (const QString& bareJid) const
+	QObject* ClientConnection::GetCLEntry (const QString& bareJid, const QString& variant) const
 	{
-		return JID2CLEntry_ [bareJid];
+		if (RoomHandlers_.contains (bareJid))
+			return RoomHandlers_ [bareJid]->GetParticipantEntry (variant).get ();
+		else
+			return JID2CLEntry_ [bareJid];
 	}
 
 	GlooxCLEntry* ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods)

@@ -40,11 +40,14 @@ namespace Xoox
 	: Type_ (type)
 	, Direction_ (dir)
 	, Connection_ (conn)
+	, BareJID_ (jid)
+	, Variant_ (variant)
 	{
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
 				jid + "/" + variant;
 		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
+		Message_.setStamp (QDateTime::currentDateTime ());
 	}
 
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
@@ -54,6 +57,11 @@ namespace Xoox
 	, Message_ (message)
 	, Connection_ (conn)
 	{
+		const QStringList& split = message.from ().split ('/', QString::SkipEmptyParts);
+		BareJID_ = split.at (0);
+		Variant_ = split.value (1);
+		if (!Message_.stamp ().isValid ())
+			Message_.setStamp (QDateTime::currentDateTime ());
 	}
 
 	QObject* GlooxMessage::GetObject ()
@@ -101,7 +109,7 @@ namespace Xoox
 
 	QObject* GlooxMessage::OtherPart () const
 	{
-		return Connection_->GetCLEntry (BareJID_);
+		return Connection_->GetCLEntry (BareJID_, Variant_);
 	}
 
 	QString GlooxMessage::GetOtherVariant () const
