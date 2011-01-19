@@ -66,10 +66,10 @@ namespace Xoox
 			return CurrentStatus_ [variant];
 
 		const GlooxCLEntry *entry = qobject_cast<const GlooxCLEntry*> (this);
-		if (entry)
+		QXmppRosterManager& rm = Account_->
+				GetClientConnection ()->GetClient ()->rosterManager ();
+		if (entry && rm.isRosterReceived ())
 		{
-			QXmppRosterManager& rm = Account_->
-					GetClientConnection ()->GetClient ()->rosterManager ();
 			QList<QXmppPresence> press = rm.getAllPresencesForBareJid (GetJID ()).values ();
 			if (press.size ())
 			{
