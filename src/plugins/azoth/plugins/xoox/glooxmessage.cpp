@@ -19,8 +19,6 @@
 #include "glooxmessage.h"
 #include <QtDebug>
 #include <QXmppClient.h>
-#include <gloox/messagesession.h>
-#include <gloox/message.h>
 #include "glooxclentry.h"
 #include "clientconnection.h"
 

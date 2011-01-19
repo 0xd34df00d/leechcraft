@@ -44,7 +44,7 @@ namespace Xoox
 	RoomHandler::RoomHandler (const QString& jid,
 			const QString& ourNick, GlooxAccount* account)
 	: Account_ (account)
-	, CLEntry_ (0)
+	, CLEntry_ (new RoomCLEntry (this, Account_))
 	, RoomHasBeenEntered_ (false)
 	, RoomJID_ (jid)
 	, OurNick_ (ourNick)

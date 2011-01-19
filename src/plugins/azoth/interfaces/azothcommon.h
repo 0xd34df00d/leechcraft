@@ -28,6 +28,14 @@ namespace Azoth
 {
 namespace Plugins
 {
+
+
+
+
+
+
+
+
 	enum State
 	{
 		SOffline,
@@ -44,7 +52,8 @@ namespace Plugins
 
 	inline bool IsLess (State s1, State s2)
 	{
-		return static_cast<int> (s1) < static_cast<int> (s2);
+		static int order [] = { 7, 3, 4, 5, 6, 1, 2, 8, 9, 10 };
+		return order [s1] < order [s2];
 	}
 
 	/** Represents possible state of authorizations between two

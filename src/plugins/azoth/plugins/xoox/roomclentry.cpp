@@ -19,7 +19,6 @@
 #include "roomclentry.h"
 #include <QImage>
 #include <QtDebug>
-#include <gloox/mucroom.h>
 #include "glooxaccount.h"
 #include "roompublicmessage.h"
 #include "roomhandler.h"
@@ -39,6 +38,11 @@ namespace Xoox
 	, Account_ (account)
 	, RH_ (rh)
 	{
+	}
+
+	RoomHandler* RoomCLEntry::GetRoomHandler () const
+	{
+		return RH_;
 	}
 
 	QObject* RoomCLEntry::GetObject ()

@@ -162,7 +162,7 @@ namespace Xoox
 
 		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
 		MUCManager_->joinRoom (jid, nick);
-		rh->SetState (LastState_);
+		//rh->SetState (LastState_);
 
 		RoomHandlers_ [jid] = rh;
 
@@ -303,6 +303,10 @@ namespace Xoox
 
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
 	{
+		if (pres.type () != QXmppPresence::Unavailable &&
+				pres.type () != QXmppPresence::Available)
+			return;
+
 		const QStringList& split = pres.from ().split ('/', QString::SkipEmptyParts);
 		const QString& jid = split.at (0);
 		const QString& resource = split.value (1);
@@ -323,6 +327,8 @@ namespace Xoox
 
 		const QXmppPresence::Status& status = pres.status ();
 		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
+		if (pres.type () == QXmppPresence::Unavailable)
+			st.State_ = SOffline;
 		JID2CLEntry_ [jid]->SetStatus (st, resource);
 	}
 
@@ -598,14 +604,6 @@ namespace Xoox
 		entry->SetStatus (status, QString::fromUtf8 (resource.c_str ()));
 	}
 
-	void ClientConnection::handleSelfPresence (const gloox::RosterItem& item,
-				const std::string& resource,
-				gloox::Presence::PresenceType type,
-				const std::string& msg)
-	{
-		// TODO
-	}
-
 	bool ClientConnection::handleSubscriptionRequest (const gloox::JID& jid, const std::string& msg)
 	{
 		const std::string& bare = jid.bare ();
@@ -614,25 +612,6 @@ namespace Xoox
 		emit gotSubscriptionRequest (new UnauthCLEntry (jid, str, Account_),
 				str);
 		return false;
-	}
-
-	bool ClientConnection::handleUnsubscriptionRequest (const gloox::JID&, const std::string&)
-	{
-		qDebug () << Q_FUNC_INFO;
-		// TODO
-		return false;
-	}
-
-	void ClientConnection::handleNonrosterPresence (const gloox::Presence&)
-	{
-		qDebug () << Q_FUNC_INFO;
-		// TODO
-	}
-
-	void ClientConnection::handleRosterError (const gloox::IQ&)
-	{
-		qDebug () << Q_FUNC_INFO;
-		// TODO
 	}
 
 	void ClientConnection::handleMessageSession (gloox::MessageSession *session)
@@ -694,12 +673,6 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "vcard reply for unknown request for jid"
 					<< jid.full ().c_str ();
-	}
-
-	void ClientConnection::handleVCardResult (gloox::VCardHandler::VCardContext ctx,
-			const gloox::JID& jid, gloox::StanzaError er)
-	{
-		// TODO
 	}
 
 	void ClientConnection::handlePresence (const gloox::Presence& presence)

@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 #include <QDomDocument>
+#include <QXmppLogger.h>
 #include <plugininterface/util.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/iproxyobject.h>
@@ -40,6 +41,9 @@ namespace Xoox
 	Core::Core ()
 	: PluginProxy_ (0)
 	{
+		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
+		QXmppLogger::getLogger ()->setLogFilePath ("~/.leechcraft/qxmpp.log");
+		QXmppLogger::getLogger ()->setMessageTypes (QXmppLogger::AnyMessage);
 		GlooxProtocol_.reset (new GlooxProtocol (this));
 	}
 

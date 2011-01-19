@@ -17,11 +17,14 @@
  **********************************************************************/
 
 #include "roompublicmessage.h"
+#include <QXmppMessage.h>
+#include <QXmppClient.h>
 #include <QtDebug>
-#include <gloox/mucroom.h>
-#include <gloox/delayeddelivery.h>
 #include "roomclentry.h"
 #include "roomparticipantentry.h"
+#include "glooxaccount.h"
+#include "clientconnection.h"
+#include "roomhandler.h"
 
 namespace LeechCraft
 {
@@ -61,21 +64,18 @@ namespace Xoox
 	{
 	}
 
-	RoomPublicMessage::RoomPublicMessage (const gloox::Message& msg,
+	RoomPublicMessage::RoomPublicMessage (const QXmppMessage& msg,
 			RoomCLEntry *entry, RoomParticipantEntry_ptr partEntry)
 	: QObject (entry)
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (partEntry)
-	, Message_ (QString::fromUtf8 (msg.body ().c_str ()))
+	, Message_ (msg.body ())
+	, Datetime_ (msg.stamp ())
 	, Direction_ (DIn)
 	, FromJID_ (msg.from ())
 	, Type_ (MTMUCMessage)
 	, SubType_ (MSTOther)
 	{
-		const gloox::DelayedDelivery *dd = msg.when ();
-		Datetime_ = dd ?
-				QDateTime::fromString (dd->stamp ().c_str (), Qt::ISODate).toLocalTime () :
-				QDateTime::currentDateTime ();
 	}
 
 	QObject* RoomPublicMessage::GetObject ()
@@ -88,8 +88,10 @@ namespace Xoox
 		if (!ParentEntry_)
 			return;
 
-		ParentEntry_->GetRoom ()->
-				send (Message_.toUtf8 ().constData ());
+		QXmppClient *client =
+				qobject_cast<GlooxAccount*> (ParentEntry_->GetParentAccount ())->
+						GetClientConnection ()->GetClient ();
+		client->sendMessage (ParentEntry_->GetRoomHandler ()->GetRoomJID (), Message_);
 		Datetime_ = QDateTime::currentDateTime ();
 	}
 
