@@ -30,12 +30,13 @@ namespace Plugins
 {
 	enum State
 	{
-		SOnline,
-		SChat,
-		SAway,
-		SDND,
-		SXA,
 		SOffline,
+		SOnline,
+		SAway,
+		SXA,
+		SDND,
+		SChat,
+		SInvisible,
 		SProbe,
 		SError,
 		SInvalid

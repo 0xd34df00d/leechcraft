@@ -81,10 +81,11 @@ namespace Xoox
 						max.status ().statusText ());
 			}
 		}
-		else if (CurrentStatus_.size ())
+
+		if (CurrentStatus_.size ())
 			return *CurrentStatus_.begin ();
-		else
-			return EntryStatus ();
+
+		return EntryStatus ();
 	}
 
 	QList<QAction*> EntryBase::GetActions () const

@@ -110,6 +110,7 @@ namespace Xoox
 				const QString&, const QString&, const QXmppRosterIq::Item&);
 	private slots:
 		void handleConnected ();
+		void handlePresenceChanged (const QXmppPresence&);
 		/*
 	protected:
 		// ConnectionListener

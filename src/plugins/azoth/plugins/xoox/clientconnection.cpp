@@ -75,6 +75,10 @@ namespace Xoox
 				SIGNAL (connected ()),
 				this,
 				SLOT (handleConnected ()));
+		connect (Client_,
+				SIGNAL (presenceReceived (const QXmppPresence&)),
+				this,
+				SLOT (handlePresenceChanged (const QXmppPresence&)));
 
 		/*
 		Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
@@ -295,6 +299,31 @@ namespace Xoox
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
+	}
+
+	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
+	{
+		const QStringList& split = pres.from ().split ('/', QString::SkipEmptyParts);
+		const QString& jid = split.at (0);
+		const QString& resource = split.value (1);
+
+		if (!JID2CLEntry_.contains (jid))
+		{
+			if (ODSEntries_.contains (jid))
+				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no entry for"
+						<< jid
+						<< resource;
+				return;
+			}
+		}
+
+		const QXmppPresence::Status& status = pres.status ();
+		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
+		JID2CLEntry_ [jid]->SetStatus (st, resource);
 	}
 
 	/*

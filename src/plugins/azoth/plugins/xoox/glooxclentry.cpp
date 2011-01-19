@@ -51,6 +51,7 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
 	, ODS_ (ods)
+	, BareJID_ (ods->ID_)
 	{
 		connect (this,
 				SIGNAL (nameChanged (const QString&)),
