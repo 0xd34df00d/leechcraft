@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "itemhandlerstringgetvalue.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -31,6 +32,10 @@ namespace LeechCraft
 	QVariant ItemHandlerStringGetValue::GetValue (const QDomElement& item,
 			QVariant value) const
 	{
-		return item.attribute ("default");
+		QString def = item.attribute ("default");
+		if (item.attribute ("translatable") == "true")
+			def = QCoreApplication::translate (qPrintable (XSD_->GetBasename ()),
+					def.toUtf8 ().constData ());
+		return def;
 	}
 };
