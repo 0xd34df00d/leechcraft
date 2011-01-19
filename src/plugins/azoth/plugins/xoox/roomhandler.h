@@ -78,6 +78,9 @@ namespace Xoox
 				IMUCEntry::MUCAffiliation, const QString&);
 		void SetRole (RoomParticipantEntry*,
 				IMUCEntry::MUCRole, const QString&);
+
+		void HandlePresence (const QXmppPresence&, const QString&);
+		void HandleMessage (const QXmppMessage&, const QString&);
 		/*
 		// MUCRoomHandler
 		virtual void handleMUCParticipantPresence (gloox::MUCRoom*,

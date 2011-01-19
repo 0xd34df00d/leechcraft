@@ -28,6 +28,7 @@
 #include "glooxclentry.h"
 #include "glooxaccount.h"
 
+class QXmppMessage;
 class QXmppMucManager;
 class QXmppClient;
 
@@ -111,6 +112,7 @@ namespace Xoox
 	private slots:
 		void handleConnected ();
 		void handlePresenceChanged (const QXmppPresence&);
+		void handleMessageReceived (const QXmppMessage&);
 		/*
 	protected:
 		// ConnectionListener

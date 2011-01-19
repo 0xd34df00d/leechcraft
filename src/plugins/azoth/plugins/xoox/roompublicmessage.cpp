@@ -70,7 +70,7 @@ namespace Xoox
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (partEntry)
 	, Message_ (msg.body ())
-	, Datetime_ (msg.stamp ())
+	, Datetime_ (msg.stamp ().isValid () ? msg.stamp () : QDateTime::currentDateTime ())
 	, Direction_ (DIn)
 	, FromJID_ (msg.from ())
 	, Type_ (MTMUCMessage)
@@ -91,8 +91,14 @@ namespace Xoox
 		QXmppClient *client =
 				qobject_cast<GlooxAccount*> (ParentEntry_->GetParentAccount ())->
 						GetClientConnection ()->GetClient ();
-		client->sendMessage (ParentEntry_->GetRoomHandler ()->GetRoomJID (), Message_);
+
+		QXmppMessage msg;
+		msg.setBody (Message_);
 		Datetime_ = QDateTime::currentDateTime ();
+		msg.setStamp (Datetime_);
+		msg.setTo (ParentEntry_->GetRoomHandler ()->GetRoomJID ());
+		msg.setType (QXmppMessage::GroupChat);
+		client->sendPacket (msg);
 	}
 
 	IMessage::Direction RoomPublicMessage::GetDirection () const

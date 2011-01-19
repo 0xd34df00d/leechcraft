@@ -202,7 +202,29 @@ namespace Xoox
 				IMessage::MSTParticipantNickChange);
 		CLEntry_->HandleMessage (message);
 	}
+	*/
 
+	void RoomHandler::HandlePresence (const QXmppPresence& pres, const QString& nick)
+	{
+		const bool existed = Nick2Entry_.contains (nick);
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+
+		if (pres.type () == QXmppPresence::Unavailable)
+		{
+			Account_->handleEntryRemoved (entry.get ());
+
+			Nick2Entry_.remove (nick);
+
+			return;
+		}
+
+		const QXmppPresence::Status& xmppSt = pres.status ();
+		EntryStatus status (static_cast<State> (xmppSt.type ()),
+				xmppSt.statusText ());
+		entry->SetStatus (status, QString ());
+	}
+
+	/*
 	void RoomHandler::handleMUCParticipantPresence (gloox::MUCRoom *room,
 			const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
 	{
@@ -268,7 +290,31 @@ namespace Xoox
 
 		entry->SetStatus (status, QString ());
 	}
+	*/
+	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
+	{
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
+		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
+		{
+			GlooxMessage *message = new GlooxMessage (msg, Account_->GetClientConnection ().get ());
+			entry->HandleMessage (message);
+		}
+		else
+		{
+			RoomPublicMessage *message = 0;
+			if (!nick.isEmpty ())
+				message = new RoomPublicMessage (msg, CLEntry_, entry);
+			else
+				message = new RoomPublicMessage (msg.body (),
+					IMessage::DIn,
+					CLEntry_,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
+			CLEntry_->HandleMessage (message);
+		}
+	}
 
+	/*
 	void RoomHandler::handleMUCMessage (gloox::MUCRoom*, const gloox::Message& msg, bool priv)
 	{
 		const QString& nick = NickFromJID (msg.from ());

@@ -79,6 +79,10 @@ namespace Xoox
 				SIGNAL (presenceReceived (const QXmppPresence&)),
 				this,
 				SLOT (handlePresenceChanged (const QXmppPresence&)));
+		connect (Client_,
+				SIGNAL (messageReceived (const QXmppMessage&)),
+				this,
+				SLOT (handleMessageReceived (const QXmppMessage&)));
 
 		/*
 		Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
@@ -315,6 +319,11 @@ namespace Xoox
 		{
 			if (ODSEntries_.contains (jid))
 				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
+			else if (RoomHandlers_.contains (jid))
+			{
+				RoomHandlers_ [jid]->HandlePresence (pres, resource);
+				return;
+			}
 			else
 			{
 				qWarning () << Q_FUNC_INFO
@@ -330,6 +339,26 @@ namespace Xoox
 		if (pres.type () == QXmppPresence::Unavailable)
 			st.State_ = SOffline;
 		JID2CLEntry_ [jid]->SetStatus (st, resource);
+	}
+
+	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
+	{
+		const QStringList& split = msg.from ().split ('/', QString::SkipEmptyParts);
+		const QString& jid = split.at (0);
+		const QString& resource = split.value (1);
+		qDebug () << "received" << split << msg.body ();
+
+		if (RoomHandlers_.contains (jid))
+			RoomHandlers_ [jid]->HandleMessage (msg, resource);
+		else if (JID2CLEntry_.contains (jid))
+		{
+			GlooxMessage *gm = new GlooxMessage (msg, this);
+			JID2CLEntry_ [jid]->HandleMessage (gm);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "could not find source for"
+					<< msg.from ();
 	}
 
 	/*
@@ -472,41 +501,6 @@ namespace Xoox
 		Core::Instance ().SendEntity (e);
 	}
 
-	void ClientConnection::onResourceBind (const std::string& resource)
-	{
-		qDebug () << Q_FUNC_INFO << resource.c_str ();
-	}
-
-	void ClientConnection::onResourceBindError (const gloox::Error *error)
-	{
-		qWarning () << Q_FUNC_INFO;
-		if (error)
-			qWarning () << error->text ().c_str ();
-	}
-
-	void ClientConnection::onSessionCreateError (const gloox::Error *error)
-	{
-		qWarning () << Q_FUNC_INFO;
-		if (error)
-			qWarning () << error->text ().c_str ();
-	}
-
-	void ClientConnection::onStreamEvent (gloox::StreamEvent e)
-	{
-		qDebug () << Q_FUNC_INFO;
-	}
-
-	bool ClientConnection::onTLSConnect (const gloox::CertInfo& info)
-	{
-		qDebug () << Q_FUNC_INFO << info.server.c_str ();
-		return true;
-	}
-
-	void ClientConnection::handlePollTimer ()
-	{
-		Client_->recv (1000);
-	}
-
 	void ClientConnection::handleItemAdded (const gloox::JID& jid)
 	{
 		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
@@ -575,33 +569,6 @@ namespace Xoox
 
 		if (entries.size ())
 			emit gotRosterItems (entries);
-	}
-
-	void ClientConnection::handleRosterPresence (const gloox::RosterItem& item,
-				const std::string& resource,
-				gloox::Presence::PresenceType type,
-				const std::string& msg)
-	{
-		gloox::JID jid (item.jid ());
-		if (!JID2CLEntry_.contains (jid))
-		{
-			if (ODSEntries_.contains (jid))
-				ConvertFromODS (jid.bareJID (), Client_->rosterManager ()->getRosterItem (jid));
-			else
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no GlooxCLEntry for item"
-						<< item.jid ().c_str ();
-				return;
-			}
-		}
-
-		GlooxCLEntry *entry = JID2CLEntry_ [jid];
-
-		EntryStatus status (static_cast<State> (type),
-				QString::fromUtf8 (msg.c_str ()));
-
-		entry->SetStatus (status, QString::fromUtf8 (resource.c_str ()));
 	}
 
 	bool ClientConnection::handleSubscriptionRequest (const gloox::JID& jid, const std::string& msg)
@@ -673,20 +640,6 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "vcard reply for unknown request for jid"
 					<< jid.full ().c_str ();
-	}
-
-	void ClientConnection::handlePresence (const gloox::Presence& presence)
-	{
-		const gloox::Capabilities *caps = presence.capabilities ();
-		if (!caps)
-			return;
-
-		const gloox::JID& from = presence.from ();
-		if (JID2CLEntry_.contains (from.bareJID ()))
-		{
-			const QString& var = QString::fromUtf8 (from.resource ().c_str ());
-			JID2CLEntry_ [from.bareJID ()]->SetClientInfo (var, caps);
-		}
 	}
 	*/
 
