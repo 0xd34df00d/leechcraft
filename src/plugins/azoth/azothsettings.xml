@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
 	<page>
-		<label lang="en" value="Appearance" />
+		<label value="Appearance" />
 		<tab>
-			<label lang="en" value="Iconsets" />
+			<label value="Iconsets" />
 			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
-				<label lang="en" value="Status icons:" />
+				<label value="Status icons:" />
 				<option name="oxygen" default="true">
-					<label lang="en" value="Oxygen" />
+					<label value="Oxygen" />
 				</option>
 			</item>
 			<item type="combobox" property="ClientIcons" mayHaveDataSource="true">
-				<label lang="en" value="Client icons:" />
+				<label value="Client icons:" />
 				<option name="default" default="true">
-					<label lang="en" value="default" />
+					<label value="default" />
 				</option>
 			</item>
 		</tab>
@@ -38,22 +37,22 @@
 		<label value="Statuses" />
 		<groupbox>
 			<label value="Default status texts" />
-			<item type="lineedit" property="DefaultStatus0" default="I'm online!">
+			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I'm online!">
 				<label value="Online:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus1" default="Wanna chat :3">
+			<item type="lineedit" property="DefaultStatus1" translatable="true" default="Wanna chat :3">
 				<label value="Free to chat:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus2" default="Oh, seems like I'm away">
+			<item type="lineedit" property="DefaultStatus2" translatable="true" default="Oh, seems like I'm away">
 				<label value="Away:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus3" default="Please leave me alone now">
+			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Please leave me alone now">
 				<label value="DND:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus4" default="Extended away is okay">
+			<item type="lineedit" property="DefaultStatus4" translatable="true" default="Extended away is okay">
 				<label value="XA:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus5" default="I turned off my machine to get some life">
+			<item type="lineedit" property="DefaultStatus5" translatable="true" default="I turned off my machine to get some life">
 				<label value="Offline:" />
 			</item>
 		</groupbox>
