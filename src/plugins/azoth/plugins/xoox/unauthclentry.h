@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
 #include "entrybase.h"
-#include <gloox/jid.h>
 
 namespace LeechCraft
 {
@@ -40,10 +39,10 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		gloox::JID JID_;
+		QString JID_;
 		GlooxAccount *Account_;
 	public:
-		UnauthCLEntry (const gloox::JID&, const QString&, GlooxAccount*);
+		UnauthCLEntry (const QString&, const QString&, GlooxAccount*);
 
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
@@ -57,7 +56,7 @@ namespace Xoox
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
-		gloox::JID GetJID () const;
+		QString GetJID () const;
 	};
 }
 }

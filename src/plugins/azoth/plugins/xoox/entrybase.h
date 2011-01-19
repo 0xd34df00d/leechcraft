@@ -22,14 +22,10 @@
 #include <QImage>
 #include <QMap>
 #include <QVariant>
-#include <gloox/vcard.h>
-#include <gloox/jid.h>
 #include <interfaces/iclentry.h>
 
-namespace gloox
-{
-	class Capabilities;
-}
+class QXmppVCardIq;
+class QXmppPresence;
 
 namespace LeechCraft
 {
@@ -80,19 +76,19 @@ namespace Xoox
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 
-		virtual gloox::JID GetJID () const = 0;
+		virtual QString GetJID () const = 0;
 
 		void HandleMessage (GlooxMessage*);
 		void SetStatus (const EntryStatus&, const QString&);
-		void SetAvatar (const gloox::VCard::Photo&);
+		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
-		void SetVCard (const gloox::VCard*);
+		void SetVCard (const QXmppVCardIq&);
 		void SetRawInfo (const QString&);
 
 		void SetClientInfo (const QString&, const QString&, const QString&);
-		void SetClientInfo (const QString&, const gloox::Capabilities*);
+		void SetClientInfo (const QString&, const QXmppPresence&);
 	private:
-		QString FormatRawInfo (const gloox::VCard*);
+		QString FormatRawInfo (const QXmppVCardIq&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const Plugins::EntryStatus&, const QString&);

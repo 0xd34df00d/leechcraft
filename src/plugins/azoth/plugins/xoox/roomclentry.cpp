@@ -63,8 +63,7 @@ namespace Xoox
 
 	QString RoomCLEntry::GetEntryName () const
 	{
-		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
-		return QString::fromUtf8 ((r->name () + "@" + r->service ()).c_str ());
+		return RH_->GetRoomJID ();
 	}
 
 	void RoomCLEntry::SetEntryName (const QString&)
@@ -73,16 +72,12 @@ namespace Xoox
 
 	QByteArray RoomCLEntry::GetEntryID () const
 	{
-		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
-		return (r->name () + "@" +
-					r->service ()).c_str ();
+		return RH_->GetRoomJID ().toUtf8 ();
 	}
 
 	QString RoomCLEntry::GetHumanReadableID () const
 	{
-		boost::shared_ptr<gloox::MUCRoom> r = RH_->GetRoom ();
-		return (r->name () + "@" +
-					r->service ()).c_str ();
+		return RH_->GetRoomJID ();
 	}
 
 	QStringList RoomCLEntry::Groups () const
@@ -167,12 +162,12 @@ namespace Xoox
 
 	QString RoomCLEntry::GetNick () const
 	{
-		return QString::fromUtf8 (RH_->GetRoom ()->nick ().c_str ());
+		return RH_->GetOurNick ();
 	}
 
 	void RoomCLEntry::SetNick (const QString& nick)
 	{
-		RH_->GetRoom ()->setNick (nick.toUtf8 ().constData ());
+		RH_->SetOurNick (nick);
 	}
 
 	bool RoomCLEntry::MayChangeAffiliation (QObject *participant, MUCAffiliation aff) const
@@ -229,7 +224,7 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< participant
 					<< "is not a RoomParticipantEntry";
-			return static_cast<MUCAffiliation> (RH_->GetRoom ()->affiliation ());
+			return MUCAInvalid;
 		}
 
 		return static_cast<MUCAffiliation> (entry->GetAffiliation ());
@@ -261,7 +256,7 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< participant
 					<< "is not a RoomParticipantEntry";
-			return static_cast<MUCRole> (RH_->GetRoom ()->role ());
+			return MUCRInvalid;
 		}
 
 		return static_cast<MUCRole> (entry->GetRole ());
@@ -280,11 +275,6 @@ namespace Xoox
 		}
 
 		RH_->SetRole (entry, newRole, reason);
-	}
-
-	boost::shared_ptr<gloox::MUCRoom> RoomCLEntry::GetRoom ()
-	{
-		return RH_->GetRoom ();
 	}
 
 	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)

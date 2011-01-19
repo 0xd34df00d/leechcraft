@@ -1,10 +1,8 @@
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-FIND_PACKAGE (Gloox REQUIRED)
-
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
-	${GLOOX_INCLUDE_DIR})
+	/usr/include/qxmpp)
 SET (XOOX_SRCS
 	xoox.cpp
 	glooxprotocol.cpp
@@ -73,9 +71,9 @@ ADD_LIBRARY (leechcraft_azoth_xoox SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_xoox
 	${QT_LIBRARIES}
-	${GLOOX_LIBRARIES}
 	plugininterface
 	xmlsettingsdialog
+	qxmpp
 	)
 INSTALL (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${XOOX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

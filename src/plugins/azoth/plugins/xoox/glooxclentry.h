@@ -21,15 +21,9 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
+#include <QXmppRosterIq.h>
 #include <interfaces/iauthable.h>
 #include "entrybase.h"
-
-namespace gloox
-{
-	class RosterItem;
-	class MessageSession;
-	class Resource;
-}
 
 namespace LeechCraft
 {
@@ -51,7 +45,7 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAuthable);
 
-		gloox::RosterItem *RI_;
+		QString BareJID_;
 	public:
 		struct OfflineDataSource
 		{
@@ -73,15 +67,15 @@ namespace Xoox
 		};
 		QList<MessageQueueItem> MessageQueue_;
 	public:
-		GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
+		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
 		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
 
 		OfflineDataSource_ptr ToOfflineDataSource () const;
 		void Convert2ODS ();
 
-		void UpdateRI (gloox::RosterItem*);
-		gloox::RosterItem* GetRI () const;
-		QList<const gloox::Resource*> GetResourcesDesc () const;
+		void UpdateRI (const QXmppRosterIq::Item&);
+		QXmppRosterIq::Item GetRI () const;
+		//QList<const gloox::Resource*> GetResourcesDesc () const;
 
 		// ICLEntry
 		QObject* GetParentAccount () const;
@@ -103,9 +97,7 @@ namespace Xoox
 		void Unsubscribe (const QString&);
 		void RerequestAuth (const QString&);
 
-		gloox::JID GetJID () const;
-	private:
-		QList<std::string> VariantsImpl () const;
+		QString GetJID () const;
 	};
 }
 }

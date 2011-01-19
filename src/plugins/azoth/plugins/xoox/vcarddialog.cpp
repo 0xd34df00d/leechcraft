@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "vcarddialog.h"
-#include <gloox/vcard.h>
+#include <QXmppVCardIq.h>
 
 namespace LeechCraft
 {
@@ -36,29 +36,23 @@ namespace Xoox
 		Ui_.EditBirthday_->setVisible (false);
 	}
 
-	void VCardDialog::UpdateInfo (const gloox::VCard *vcard)
+	void VCardDialog::UpdateInfo (const QXmppVCardIq& vcard)
 	{
 		setWindowTitle (tr ("VCard for %1")
-					.arg (QString::fromUtf8 (vcard->nickname ().c_str ())));
+					.arg (vcard.nickName()));
 
-		Ui_.EditRealName_->setText (GetName (vcard));
-		Ui_.EditNick_->setText (QString::fromUtf8 (vcard->nickname ().c_str ()));
-		QDate date = QDate::fromString (QString::fromUtf8 (vcard->bday ().c_str ()), Qt::ISODate);
+		Ui_.EditRealName_->setText (vcard.fullName ());
+		Ui_.EditNick_->setText (vcard.nickName ());
+		const QDate& date = vcard.birthday ();
 		if (date.isValid ())
 			Ui_.EditBirthday_->setDate (date);
 		Ui_.EditBirthday_->setVisible (date.isValid ());
 
-		QStringList phones;
-		Q_FOREACH (const gloox::VCard::Telephone& phone, const_cast<gloox::VCard*> (vcard)->telephone ())
-			phones << QString::fromUtf8 (phone.number.c_str ());
-		Ui_.EditPhone_->setText (phones.join ("; "));
+		Ui_.EditPhone_->setText ("<phones not supported yet>");
 
-		Ui_.EditURL_->setText (QString::fromUtf8 (vcard->url ().c_str ()));
+		Ui_.EditURL_->setText (vcard.url ());
 
-		const gloox::VCard::Photo& photo = vcard->photo ();
-		QByteArray data (photo.binval.c_str(), photo.binval.size ());
-
-		QPixmap px = QPixmap::fromImage (QImage::fromData (data));
+		QPixmap px = QPixmap::fromImage (QImage::fromData (vcard.photo ()));
 		if (!px.isNull ())
 		{
 			const QSize& maxPx = Ui_.LabelPhoto_->maximumSize ();
@@ -69,23 +63,6 @@ namespace Xoox
 		}
 		else
 			Ui_.LabelPhoto_->setText (tr ("No photo"));
-	}
-
-	QString VCardDialog::GetName (const gloox::VCard *vcard)
-	{
-		const gloox::VCard::Name& name = vcard->name ();
-		QString result;
-		if (name.prefix.size ())
-			result += QString (" ") + QString::fromUtf8 (name.prefix.c_str ());
-		if (name.family.size ())
-			result += QString (" ") + QString::fromUtf8 (name.family.c_str ());
-		if (name.given.size ())
-			result += QString (" ") + QString::fromUtf8 (name.given.c_str ());
-		if (name.middle.size ())
-			result += QString (" ") + QString::fromUtf8 (name.middle.c_str ());
-		if (name.suffix.size ())
-			result += QString (" ") + QString::fromUtf8 (name.suffix.c_str ());
-		return result;
 	}
 }
 }

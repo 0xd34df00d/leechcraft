@@ -66,9 +66,9 @@ namespace Plugins
 		 */
 		enum MUCAffiliation
 		{
-			/** No affiliation with the room.
+			/** Invalid affiliation.
 			 */
-			MUCANone,
+			MUCAInvalid,
 			/** The user has been banned from the room.
 			 *
 			 * Setting this affiliation on a user should effectively ban
@@ -76,18 +76,18 @@ namespace Plugins
 			 * and room type.
 			 */
 			MUCAOutcast,
+			/** No affiliation with the room.
+			 */
+			MUCANone,
 			/** The user is a member of the room.
 			 */
 			MUCAMember,
-			/** The user is a room owner.
-			 */
-			MUCAOwner,
 			/** The user is a room admin.
 			 */
 			MUCAAdmin,
-			/** Invalid affiliation.
+			/** The user is a room owner.
 			 */
-			MUCAInvalid
+			MUCAOwner
 		};
 
 		Q_ENUMS (MUCAffiliation);
@@ -99,6 +99,9 @@ namespace Plugins
 		 */
 		enum MUCRole
 		{
+			/** Invalid role.
+			 */
+			MUCRInvalid,
 			/** Not present in room.
 			 *
 			 * Setting this role on a user should effectively kick it
@@ -117,10 +120,7 @@ namespace Plugins
 			MUCRParticipant,
 			/** The user is a room moderator.
 			 */
-			MUCRModerator,
-			/** Invalid role.
-			 */
-			MUCRInvalid
+			MUCRModerator
 		};
 
 		Q_ENUMS (MUCRole);
@@ -338,31 +338,6 @@ namespace Plugins
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);
-
-	inline bool operator< (IMUCEntry::MUCAffiliation left, IMUCEntry::MUCAffiliation right)
-	{
-		if (right == IMUCEntry::MUCAOwner && left != IMUCEntry::MUCAOwner)
-			return true;
-		if (left == IMUCEntry::MUCAOwner && right != IMUCEntry::MUCAOwner)
-			return false;
-
-		return static_cast<int> (left) < static_cast<int> (right);
-	}
-
-	inline bool operator<= (IMUCEntry::MUCAffiliation left, IMUCEntry::MUCAffiliation right)
-	{
-		return left < right || left == right;
-	}
-
-	inline bool operator> (IMUCEntry::MUCAffiliation left, IMUCEntry::MUCAffiliation right)
-	{
-		return right < left;
-	}
-
-	inline bool operator>= (IMUCEntry::MUCAffiliation left, IMUCEntry::MUCAffiliation right)
-	{
-		return !(left < right);
-	}
 }
 }
 }

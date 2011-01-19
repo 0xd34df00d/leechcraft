@@ -20,9 +20,6 @@
 #include <memory>
 #include <QInputDialog>
 #include <QtDebug>
-#include <gloox/messagesession.h>
-#include <gloox/client.h>
-#include <gloox/message.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxprotocol.h"
@@ -62,8 +59,8 @@ namespace Xoox
 
 	void GlooxAccount::Init ()
 	{
-		gloox::JID jid ((JID_ + '/' + Resource_).toUtf8 ().constData ());
-		ClientConnection_.reset (new ClientConnection (jid, AccState_, this));
+		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
+						AccState_, this));
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
 				this,
@@ -135,7 +132,7 @@ namespace Xoox
 
 	void GlooxAccount::QueryInfo (const QString& entryId)
 	{
-		ClientConnection_->FetchVCard (gloox::JID (entryId.toUtf8 ().constData ()));
+		ClientConnection_->FetchVCard (entryId);
 	}
 
 	void GlooxAccount::OpenConfigurationDialog ()
@@ -232,11 +229,10 @@ namespace Xoox
 	void GlooxAccount::JoinRoom (const QString& server,
 			const QString& room, const QString& nick)
 	{
-		QString jidStr = QString ("%1@%2/%3")
-				.arg (room, server, nick);
-		gloox::JID roomJID (jidStr.toUtf8 ().constData ());
+		QString jidStr = QString ("%1@%2")
+				.arg (room, server);
 
-		RoomCLEntry *entry = ClientConnection_->JoinRoom (roomJID);
+		RoomCLEntry *entry = ClientConnection_->JoinRoom (jidStr, nick);
 		if (!entry)
 			return;
 		emit gotCLItems (QList<QObject*> () << entry);
@@ -298,8 +294,9 @@ namespace Xoox
 	}
 
 	QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
-			const QString& variant, const QString& body,
-			gloox::RosterItem *ri)
+			const QString& variant,
+			const QString& body,
+			const QXmppRosterIq::Item& ri)
 	{
 		return ClientConnection_->CreateMessage (type, variant, body, ri);
 	}

@@ -19,13 +19,8 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXMESSAGE_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXMESSAGE_H
 #include <QObject>
+#include <QXmppMessage.h>
 #include <interfaces/imessage.h>
-
-namespace gloox
-{
-	class MessageSession;
-	class Message;
-}
 
 namespace LeechCraft
 {
@@ -38,6 +33,7 @@ namespace Plugins
 namespace Xoox
 {
 	class GlooxCLEntry;
+	class ClientConnection;
 
 	class GlooxMessage : public QObject
 					   , public IMessage
@@ -47,19 +43,18 @@ namespace Xoox
 
 		MessageType Type_;
 		Direction Direction_;
-		QObject *Entry_;
-		QString Body_;
+		QString BareJID_;
 		QString Variant_;
-		gloox::MessageSession *Session_;
-		QDateTime DateTime_;
+		QXmppMessage Message_;
+		ClientConnection *Connection_;
 	public:
 		GlooxMessage (IMessage::MessageType type,
 				IMessage::Direction direction,
-				QObject *entry,
-				gloox::MessageSession *session);
-		GlooxMessage (const gloox::Message& msg,
-				QObject *entry,
-				gloox::MessageSession *session);
+				const QString& jid,
+				const QString& variant,
+				ClientConnection *conn);
+		GlooxMessage (const QXmppMessage& msg,
+				ClientConnection *conn);
 
 		QObject* GetObject ();
 		void Send ();

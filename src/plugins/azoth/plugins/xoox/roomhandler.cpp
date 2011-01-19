@@ -18,9 +18,9 @@
 
 #include "roomhandler.h"
 #include <QtDebug>
-#include <gloox/mucroom.h>
-#include <gloox/messagesession.h>
-#include <gloox/client.h>
+#include <QXmppVCardIq.h>
+#include <QXmppMucManager.h>
+#include <QXmppClient.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
@@ -41,28 +41,20 @@ namespace Plugins
 {
 namespace Xoox
 {
-	RoomHandler::RoomHandler (GlooxAccount* account)
+	RoomHandler::RoomHandler (const QString& jid,
+			const QString& ourNick, GlooxAccount* account)
 	: Account_ (account)
 	, CLEntry_ (0)
 	, RoomHasBeenEntered_ (false)
+	, RoomJID_ (jid)
+	, OurNick_ (ourNick)
+	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
 	{
 	}
 
-	void RoomHandler::SetRoom (boost::shared_ptr<gloox::MUCRoom> room)
+	QString RoomHandler::GetRoomJID () const
 	{
-		Room_ = room;
-		CLEntry_ = new RoomCLEntry (this, Account_);
-		room->getRoomItems ();
-	}
-
-	boost::shared_ptr<gloox::MUCRoom> RoomHandler::GetRoom () const
-	{
-		return Room_;
-	}
-
-	gloox::JID RoomHandler::GetRoomJID () const
-	{
-		return Room_->name () + "@" + Room_->service ();
+		return RoomJID_;
 	}
 
 	RoomCLEntry* RoomHandler::GetCLEntry ()
@@ -70,7 +62,7 @@ namespace Xoox
 		return CLEntry_;
 	}
 
-	void RoomHandler::HandleVCard (const gloox::VCard *card, const QString& nick)
+	void RoomHandler::HandleVCard (const QXmppVCardIq& card, const QString& nick)
 	{
 		if (!Nick2Entry_.contains (nick))
 		{
@@ -82,18 +74,23 @@ namespace Xoox
 			return;
 		}
 
-		Nick2Entry_ [nick]->SetAvatar (card->photo ());
+		Nick2Entry_ [nick]->SetAvatar (card.photo ());
 		Nick2Entry_ [nick]->SetVCard (card);
 	}
 
 	void RoomHandler::SetState (const GlooxAccountState& state)
 	{
-		gloox::Presence::PresenceType pres =
-				static_cast<gloox::Presence::PresenceType> (state.State_);
-		std::string stdStatus (state.Status_.toUtf8 ().constData ());
-		Room_->setPresence (pres, stdStatus);
+		QXmppPresence pres;
+		pres.setTo (GetRoomJID ());
+		pres.setFrom (Account_->GetJID ());
+		pres.setType (QXmppPresence::Available);
+		pres.setStatus (QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
+				state.Status_,
+				state.Priority_));
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
 	}
 
+	/*
 	void RoomHandler::MakeLeaveMessage (const gloox::MUCRoomParticipant part)
 	{
 		const QString& nick = NickFromJID (*part.nick);
@@ -376,14 +373,16 @@ namespace Xoox
 		}
 		}
 	}
+	*/
 
 	GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType type,
 			const QString& nick, const QString& body)
 	{
 		GlooxMessage *message = new GlooxMessage (IMessage::MTChatMessage,
 				IMessage::DOut,
-				GetParticipantEntry (nick).get (),
-				GetSessionWith (JIDForNick (nick)));
+				GetRoomJID (),
+				nick,
+				Account_->GetClientConnection ().get ());
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
 		return message;
@@ -404,13 +403,7 @@ namespace Xoox
 
 	void RoomHandler::SetSubject (const QString& subj)
 	{
-		Room_->setSubject (subj.toUtf8 ().constData ());
-	}
-
-	void RoomHandler::Kick (const QString& nick, const QString& reason)
-	{
-		Room_->kick (nick.toUtf8 ().constData (),
-				reason.toUtf8 ().constData ());
+		MUCManager_->setRoomSubject (GetRoomJID (), subj);
 	}
 
 	void RoomHandler::Leave (const QString& msg)
@@ -418,7 +411,9 @@ namespace Xoox
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
 
-		Room_->leave (msg.toUtf8 ().constData ());
+		// TODO use msg
+		MUCManager_->leaveRoom (GetRoomJID ());
+
 		RemoveThis ();
 	}
 
@@ -428,24 +423,44 @@ namespace Xoox
 		{
 			RoomParticipantEntry *part =
 					qobject_cast<RoomParticipantEntry*> (partObj);
-			if (part->GetEntryName () == CLEntry_->GetNick ())
+			if (part->GetEntryName () == OurNick_)
 				return part;
 		}
 		return 0;
 	}
 
+	QString RoomHandler::GetOurNick () const
+	{
+		return OurNick_;
+	}
+
+	void RoomHandler::SetOurNick (const QString& nick)
+	{
+		OurNick_ = nick;
+
+		QXmppMucAdminIq::Item item;
+		item.setNick (nick);
+		Account_->GetClientConnection ()->Update (item);
+	}
+
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
 			IMUCEntry::MUCAffiliation newAff, const QString& reason)
 	{
-		Room_->setAffiliation (entry->GetEntryName ().toUtf8 ().constData (),
-				static_cast<gloox::MUCRoomAffiliation> (newAff), reason.toUtf8 ().constData ());
+		QXmppMucAdminIq::Item item;
+		item.setNick (entry->GetNick ());
+		item.setReason (reason);
+		item.setAffiliation (static_cast<QXmppMucAdminIq::Item::Affiliation> (newAff));
+		Account_->GetClientConnection ()->Update (item);
 	}
 
 	void RoomHandler::SetRole (RoomParticipantEntry *entry,
 			IMUCEntry::MUCRole newRole, const QString& reason)
 	{
-		Room_->setRole (entry->GetEntryName ().toUtf8 ().constData (),
-				static_cast<gloox::MUCRoomRole> (newRole), reason.toUtf8 ().constData ());
+		QXmppMucAdminIq::Item item;
+		item.setNick (entry->GetNick ());
+		item.setReason (reason);
+		item.setRole (static_cast<QXmppMucAdminIq::Item::Role> (newRole));
+		Account_->GetClientConnection ()->Update (item);
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
@@ -470,47 +485,14 @@ namespace Xoox
 			return Nick2Entry_ [nick];
 	}
 
-	gloox::MessageSession* RoomHandler::GetSessionWith (const gloox::JID& with)
-	{
-		if (!JID2Session_.contains (with))
-		{
-			gloox::MessageSession *session =
-					new gloox::MessageSession (Account_->GetClientConnection ()->GetClient (),
-							with);
-			session->registerMessageHandler (this);
-			JID2Session_ [with] = session;
-			return session;
-		}
-		else
-			return JID2Session_ [with];
-	}
-
-	QString RoomHandler::NickFromJID (const gloox::JID& jid) const
-	{
-		return QString::fromUtf8 (jid.resource ().c_str ());
-	}
-
-	gloox::JID RoomHandler::JIDForNick (const QString& nick) const
-	{
-		boost::shared_ptr<gloox::MUCRoom> room = CLEntry_->GetRoom ();
-		return gloox::JID (room->name () + "@" +
-				room->service () + "/" +
-				nick.toUtf8 ().constData ());
-	}
-
 	void RoomHandler::RemoveThis ()
 	{
 		Nick2Entry_.clear ();
-
-		Q_FOREACH (gloox::MessageSession *ses, JID2Session_.values ())
-			Account_->GetClientConnection ()->
-					GetClient ()->disposeMessageSession (ses);
 
 		Account_->handleEntryRemoved (CLEntry_);
 
 		Account_->GetClientConnection ()->Unregister (this);
 
-		Room_.reset ();
 		deleteLater ();
 	}
 

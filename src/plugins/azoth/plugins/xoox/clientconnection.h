@@ -23,27 +23,13 @@
 #include <QMap>
 #include <QHash>
 #include <QSet>
-#include <gloox/connectionlistener.h>
-#include <gloox/rosterlistener.h>
-#include <gloox/messagesessionhandler.h>
-#include <gloox/messagehandler.h>
-#include <gloox/jid.h>
-#include <gloox/vcardhandler.h>
-#include <gloox/presencehandler.h>
+#include <QXmppMucIq.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
 
-class QTimer;
-
-namespace gloox
-{
-	class Client;
-	class RosterItem;
-	class VCardManager;
-
-	uint qHash (const JID& jid);
-}
+class QXmppMucManager;
+class QXmppClient;
 
 namespace LeechCraft
 {
@@ -65,30 +51,27 @@ namespace Xoox
 	class RoomHandler;
 
 	class ClientConnection : public QObject
-						   , public gloox::ConnectionListener
-						   , public gloox::RosterListener
-						   , public gloox::MessageSessionHandler
-						   , public gloox::MessageHandler
-						   , public gloox::VCardHandler
-						   , public gloox::PresenceHandler
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<gloox::Client> Client_;
-		QTimer *PollTimer_;
+		QXmppClient *Client_;
+		QXmppMucManager *MUCManager_;
+		QString OurJID_;
+
 		GlooxAccount *Account_;
 		IProxyObject *ProxyObject_;
-		QHash<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
+
+		QHash<QString, GlooxCLEntry*> JID2CLEntry_;
+		QHash<QString, GlooxCLEntry*> ODSEntries_;
+
 		bool IsConnected_;
 		bool FirstTimeConnect_;
-		boost::shared_ptr<gloox::VCardManager> VCardManager_;
-		QSet<RoomHandler*> RoomHandlers_;
-		QHash<gloox::JID, GlooxCLEntry*> ODSEntries_;
-		// Bare JID → resource → session.
-		QHash<gloox::JID, QHash<QString, gloox::MessageSession*> > Sessions_;
+
+		QHash<QString, RoomHandler*> RoomHandlers_;
 		GlooxAccountState LastState_;
+		QString Password_;
 	public:
-		ClientConnection (const gloox::JID&,
+		ClientConnection (const QString&,
 				const GlooxAccountState&,
 				GlooxAccount*);
 		virtual ~ClientConnection ();
@@ -98,26 +81,36 @@ namespace Xoox
 
 		void SetPassword (const QString&);
 
+		QString GetOurJID () const;
+
 		/** Joins the room and returns the contact list
 		 * entry representing that room.
 		 */
-		RoomCLEntry* JoinRoom (const gloox::JID&);
+		RoomCLEntry* JoinRoom (const QString& room, const QString& user);
 		void Unregister (RoomHandler*);
+
+		QXmppMucManager* GetMUCManager () const;
+
+		void Update (const QXmppRosterIq::Item&);
+		void Update (const QXmppMucAdminIq::Item&);
 
 		void AckAuth (QObject*, bool);
 		void Subscribe (const QString&, const QString&,
 				const QString&, const QStringList&);
-		void RevokeSubscription (const gloox::JID&, const QString&);
-		void Unsubscribe (const gloox::JID&, const QString&);
+		void RevokeSubscription (const QString&, const QString&);
+		void Unsubscribe (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
 
-		gloox::Client* GetClient () const;
-		GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
+		QXmppClient* GetClient () const;
+		GlooxCLEntry* GetCLEntry (const QString& bareJid) const;
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
-		void FetchVCard (const gloox::JID&);
+		void FetchVCard (const QString&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
-				const QString&, const QString&, gloox::RosterItem*);
+				const QString&, const QString&, const QXmppRosterIq::Item&);
+	private slots:
+		void handleConnected ();
+		/*
 	protected:
 		// ConnectionListener
 		virtual void onConnect ();
@@ -157,12 +150,10 @@ namespace Xoox
 
 		// PresenceHandler
 		virtual void handlePresence (const gloox::Presence&);
-	private slots:
-		void handlePollTimer ();
+		*/
 	private:
-		GlooxCLEntry* CreateCLEntry (gloox::RosterItem*);
-		GlooxCLEntry* ConvertFromODS (const gloox::JID&, gloox::RosterItem*);
-		void HandleProxy ();
+		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
+		GlooxCLEntry* ConvertFromODS (const QString&, const QXmppRosterIq::Item&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
