@@ -86,9 +86,6 @@ namespace Xoox
 
 		/*
 		Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
-		Client_->disco ()->addFeature (gloox::XMLNS_ROSTER);
-		Client_->disco ()->addFeature (gloox::XMLNS_COMPRESSION);
-		Client_->disco ()->addFeature (gloox::XMLNS_STREAM_COMPRESS);
 
 		gloox::Capabilities *caps = new gloox::Capabilities (Client_->disco ());
 		caps->setNode ("http://leechcraft.org/azoth");
@@ -430,20 +427,6 @@ namespace Xoox
 		FetchVCard (jid);
 
 		emit rosterItemUpdated (JID2CLEntry_ [jid.bareJID ()]);
-	}
-
-	void ClientConnection::handleRoster (const gloox::Roster& roster)
-	{
-		QList<QObject*> entries;
-		for (gloox::Roster::const_iterator i = roster.begin (),
-				end = roster.end (); i != end; ++i)
-		{
-			GlooxCLEntry *entry = CreateCLEntry (i->second);
-			entries << entry;
-		}
-
-		if (entries.size ())
-			emit gotRosterItems (entries);
 	}
 
 	bool ClientConnection::handleSubscriptionRequest (const gloox::JID& jid, const std::string& msg)
