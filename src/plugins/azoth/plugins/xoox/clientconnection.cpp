@@ -407,13 +407,18 @@ namespace Xoox
 		qDebug () << iq.features ();
 		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
 			qDebug () << item.jid () << item.name () << item.node ();
+		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
+			qDebug () << id.name () << id.type () << id.category () << id.language ();
 	}
 
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
 	{
 		if (pres.type () != QXmppPresence::Unavailable &&
 				pres.type () != QXmppPresence::Available)
+		{
+			HandleOtherPresence (pres);
 			return;
+		}
 
 		QString jid;
 		QString resource;
@@ -475,6 +480,15 @@ namespace Xoox
 
 		RoomHandlers_ [roomJid]->SetState (LastState_);
 		RoomHandlers_ [roomJid]->UpdatePerms (perms);
+	}
+
+	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)
+	{
+		switch (pres.type ())
+		{
+		case QXmppPresence::Subscribe:
+			break;
+		}
 	}
 
 	/*
