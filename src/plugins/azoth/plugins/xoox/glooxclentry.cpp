@@ -42,10 +42,6 @@ namespace Xoox
 	: EntryBase (parent)
 	, BareJID_ (jid)
 	{
-		connect (this,
-				SIGNAL (nameChanged (const QString&)),
-				&Core::Instance (),
-				SLOT (saveRoster ()));
 	}
 
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
@@ -53,10 +49,6 @@ namespace Xoox
 	, ODS_ (ods)
 	, BareJID_ (ods->ID_)
 	{
-		connect (this,
-				SIGNAL (nameChanged (const QString&)),
-				&Core::Instance (),
-				SLOT (saveRoster ()));
 	}
 
 	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
