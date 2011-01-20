@@ -68,42 +68,13 @@ namespace Plugins
 		 */
 		ASNone,
 
-		/** Contact and user are not subscribed to each other, and
-		 * user has sent contact a subscription request but contact has
-		 * not replied yet.
-		 */
-		ASNoneOut,
-
-		/** Contact and user are not subscribed to each other, and
-		 * contact has sent user a subscription request but user has not
-		 * replied yet.
-		 */
-		ASNoneIn,
-
-		/** Contact and user are not subscribed to each other, contact
-		 * has sent user a subscription request but user has not replied
-		 * yet, and user has sent contact a subscription request but
-		 * contact has not replied yet.
-		 */
-		ASNoneOutIn,
-
-		/** User is subscribed to contact (one-way).
-		 */
-		ASTo,
-
-		/** User is subscribed to contact, and contact has sent user a
-		 * subscription request but user has not replied yet.
-		 */
-		ASToIn,
-
 		/** Contact is subscribed to user (one-way).
 		 */
 		ASFrom,
 
-		/** Contact is subscribed to user, and user has sent contact a
-		 * subscription request but contact has not replied yet.
+		/** User is subscribed to contact (one-way).
 		 */
-		ASFromIn,
+		ASTo,
 
 		/** User and contact are subscribed to each other (two-way).
 		 */
