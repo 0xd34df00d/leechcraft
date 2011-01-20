@@ -328,14 +328,12 @@ namespace Xoox
 
 	void ClientConnection::handleRosterReceived ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		QXmppRosterManager& rm = Client_->rosterManager ();
+		QObjectList items;
 		Q_FOREACH (const QString& bareJid,
 				rm.getRosterBareJids ())
-		{
-			GlooxCLEntry *entry = CreateCLEntry (rm.getRosterEntry (bareJid));
-			emit gotRosterItems (QList<QObject*> () << entry);
-		}
+			items << CreateCLEntry (rm.getRosterEntry (bareJid));
+		emit gotRosterItems (items);
 	}
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
@@ -405,7 +403,6 @@ namespace Xoox
 	void ClientConnection::handleRoomPermissionsReceived (const QString& roomJid,
 			const QList<QXmppMucAdminIq::Item>& perms)
 	{
-		qDebug () << Q_FUNC_INFO << roomJid;
 		if (!RoomHandlers_.contains (roomJid))
 		{
 			qWarning () << Q_FUNC_INFO
