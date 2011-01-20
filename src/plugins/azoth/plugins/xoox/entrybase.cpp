@@ -165,6 +165,7 @@ namespace Xoox
 		if (!text.isEmpty ())
 			text = QString ("gloox VCard:\n") + text;
 		SetRawInfo (text);
+		SetAvatar (vcard.photo ());
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
