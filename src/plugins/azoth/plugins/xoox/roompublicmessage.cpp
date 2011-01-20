@@ -94,8 +94,6 @@ namespace Xoox
 
 		QXmppMessage msg;
 		msg.setBody (Message_);
-		Datetime_ = QDateTime::currentDateTime ();
-		msg.setStamp (Datetime_);
 		msg.setTo (ParentEntry_->GetRoomHandler ()->GetRoomJID ());
 		msg.setType (QXmppMessage::GroupChat);
 		client->sendPacket (msg);
