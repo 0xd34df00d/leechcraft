@@ -218,6 +218,8 @@ namespace Xoox
 			return;
 		}
 
+		entry->SetClientInfo ("", pres);
+
 		const QXmppPresence::Status& xmppSt = pres.status ();
 		EntryStatus status (static_cast<State> (xmppSt.type ()),
 				xmppSt.statusText ());
@@ -312,6 +314,24 @@ namespace Xoox
 					IMessage::MTEventMessage,
 					IMessage::MSTOther);
 			CLEntry_->HandleMessage (message);
+		}
+	}
+
+	void RoomHandler::UpdatePerms (const QList<QXmppMucAdminIq::Item>& perms)
+	{
+		Q_FOREACH (const QXmppMucAdminIq::Item& item, perms)
+		{
+			if (!Nick2Entry_.contains (item.nick ()))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no participant with nick"
+						<< item.nick ()
+						<< Nick2Entry_.keys ();
+				continue;
+			}
+
+			Nick2Entry_ [item.nick ()]->SetAffiliation (item.affiliation ());
+			Nick2Entry_ [item.nick ()]->SetRole (item.role ());
 		}
 	}
 

@@ -83,6 +83,10 @@ namespace Xoox
 				SIGNAL (messageReceived (const QXmppMessage&)),
 				this,
 				SLOT (handleMessageReceived (const QXmppMessage&)));
+		connect (MUCManager_,
+				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
+				this,
+				SLOT (handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)));
 
 		/*
 		Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
@@ -338,6 +342,7 @@ namespace Xoox
 		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
 		if (pres.type () == QXmppPresence::Unavailable)
 			st.State_ = SOffline;
+		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (st, resource);
 	}
 
@@ -346,7 +351,6 @@ namespace Xoox
 		const QStringList& split = msg.from ().split ('/', QString::SkipEmptyParts);
 		const QString& jid = split.at (0);
 		const QString& resource = split.value (1);
-		qDebug () << "received" << split << msg.body ();
 
 		if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
@@ -359,6 +363,23 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
 					<< msg.from ();
+	}
+
+	void ClientConnection::handleRoomPermissionsReceived (const QString& roomJid,
+			const QList<QXmppMucAdminIq::Item>& perms)
+	{
+		qDebug () << Q_FUNC_INFO << roomJid;
+		if (!RoomHandlers_.contains (roomJid))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no RoomHandler for"
+					<< roomJid
+					<< RoomHandlers_.keys ();
+			return;
+		}
+
+		RoomHandlers_ [roomJid]->SetState (LastState_);
+		RoomHandlers_ [roomJid]->UpdatePerms (perms);
 	}
 
 	/*

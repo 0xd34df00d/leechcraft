@@ -81,6 +81,7 @@ namespace Xoox
 
 		void HandlePresence (const QXmppPresence&, const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
+		void UpdatePerms (const QList<QXmppMucAdminIq::Item>&);
 		/*
 		// MUCRoomHandler
 		virtual void handleMUCParticipantPresence (gloox::MUCRoom*,

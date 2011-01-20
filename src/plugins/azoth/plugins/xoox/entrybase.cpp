@@ -202,11 +202,9 @@ namespace Xoox
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
-		/*
 		const QString& client = pres.capabilityNode ();
 		const QString& ver = pres.capabilityVer ();
 		SetClientInfo (variant, client, ver);
-		*/
 	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)

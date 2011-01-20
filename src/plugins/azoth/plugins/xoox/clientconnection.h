@@ -113,6 +113,7 @@ namespace Xoox
 		void handleConnected ();
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
+		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
 		/*
 	protected:
 		// ConnectionListener
