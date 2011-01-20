@@ -102,11 +102,7 @@ namespace Xoox
 		// MessageHandler
 		virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
 		*/
-	private:
-		/** Creates a new entry for the given nick.
-		 */
-		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
-	public:
+
 		/** Creates a new entry for the given nick if it
 		 * doesn't exist already (and does so by calling
 		 * CreateParticipantEntry()) or just returns the
@@ -114,6 +110,12 @@ namespace Xoox
 		 */
 		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
 	private:
+		/** Creates a new entry for the given nick.
+		 */
+		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
+		void MakeLeaveMessage (const QXmppPresence&, const QString&);
+		void MakeJoinMessage (const QXmppPresence&, const QString&);
+		void MakeStatusChangedMessage (const QXmppPresence&, const QString&);
 		/*
 		void MakeLeaveMessage (const gloox::MUCRoomParticipant);
 		void MakeStatusChangedMessage (const gloox::MUCRoomParticipant, const gloox::Presence&);
