@@ -224,6 +224,10 @@ namespace Xoox
 		EntryStatus status (static_cast<State> (xmppSt.type ()),
 				xmppSt.statusText ());
 		entry->SetStatus (status, QString ());
+
+		if (!existed)
+			Account_->GetClientConnection ()->
+					FetchVCard (RoomJID_ + "/" + nick);
 	}
 
 	/*
