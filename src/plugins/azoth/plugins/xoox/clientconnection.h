@@ -111,10 +111,13 @@ namespace Xoox
 				const QString&, const QString&, const QXmppRosterIq::Item&);
 	private:
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
+		void Split (const QString& full,
+				QString *bare, QString *resource) const;
 	private slots:
 		void handleConnected ();
 		void handleRosterReceived ();
 		void handleRosterChanged (const QString&);
+		void handleVCardReceived (const QXmppVCardIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
 		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);

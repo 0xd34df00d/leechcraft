@@ -86,6 +86,7 @@ namespace Xoox
 		ODS_.reset ();
 
 		emit availableVariantsChanged (Variants ());
+		emit nameChanged (GetEntryName ());
 	}
 
 	QXmppRosterIq::Item GlooxCLEntry::GetRI () const

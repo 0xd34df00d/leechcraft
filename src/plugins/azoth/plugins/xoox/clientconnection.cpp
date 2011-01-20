@@ -75,14 +75,6 @@ namespace Xoox
 				SIGNAL (connected ()),
 				this,
 				SLOT (handleConnected ()));
-		connect (&Client_->rosterManager (),
-				SIGNAL (rosterReceived ()),
-				this,
-				SLOT (handleRosterReceived ()));
-		connect (&Client_->rosterManager (),
-				SIGNAL (rosterChanged (const QString&)),
-				this,
-				SLOT (handleRosterChanged (const QString&)));
 		connect (Client_,
 				SIGNAL (presenceReceived (const QXmppPresence&)),
 				this,
@@ -91,6 +83,21 @@ namespace Xoox
 				SIGNAL (messageReceived (const QXmppMessage&)),
 				this,
 				SLOT (handleMessageReceived (const QXmppMessage&)));
+
+		connect (&Client_->rosterManager (),
+				SIGNAL (rosterReceived ()),
+				this,
+				SLOT (handleRosterReceived ()));
+		connect (&Client_->rosterManager (),
+				SIGNAL (rosterChanged (const QString&)),
+				this,
+				SLOT (handleRosterChanged (const QString&)));
+
+		connect (&Client_->vCardManager (),
+				SIGNAL (vCardReceived (const QXmppVCardIq&)),
+				this,
+				SLOT (handleVCardReceived (const QXmppVCardIq&)));
+
 		connect (MUCManager_,
 				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
 				this,
@@ -321,6 +328,14 @@ namespace Xoox
 		return st;
 	}
 
+	void ClientConnection::Split (const QString& jid,
+			QString *bare, QString *resource) const
+	{
+		const QStringList& splitted = jid.split ('/', QString::SkipEmptyParts);
+		*bare = splitted.at (0);
+		*resource = splitted.value (1);
+	}
+
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
@@ -340,12 +355,30 @@ namespace Xoox
 	{
 		QXmppRosterManager& rm = Client_->rosterManager ();
 		QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (bareJid);
+		GlooxCLEntry *entry = JID2CLEntry_ [bareJid];
 		Q_FOREACH (const QString& resource, presences.keys ())
 		{
 			const QXmppPresence& pres = presences [resource];
-			JID2CLEntry_ [bareJid]->SetClientInfo (resource, pres);
-			JID2CLEntry_ [bareJid]->SetStatus (PresenceToStatus (pres), resource);
+			entry->SetClientInfo (resource, pres);
+			entry->SetStatus (PresenceToStatus (pres), resource);
 		}
+		entry->UpdateRI (rm.getRosterEntry (bareJid));
+		Core::Instance ().saveRoster ();
+	}
+
+	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)
+	{
+		QString jid;
+		QString nick;
+		Split (vcard.from (), &jid, &nick);
+		if (JID2CLEntry_.contains (jid))
+			JID2CLEntry_ [jid]->SetVCard (vcard);
+		else if (RoomHandlers_.contains (jid))
+			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetVCard (vcard);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "could not find entry for"
+					<< vcard.from ();
 	}
 
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
@@ -354,9 +387,9 @@ namespace Xoox
 				pres.type () != QXmppPresence::Available)
 			return;
 
-		const QStringList& split = pres.from ().split ('/', QString::SkipEmptyParts);
-		const QString& jid = split.at (0);
-		const QString& resource = split.value (1);
+		QString jid;
+		QString resource;
+		Split (pres.from (), &jid, &resource);
 
 		if (!JID2CLEntry_.contains (jid))
 		{
@@ -383,9 +416,9 @@ namespace Xoox
 
 	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
 	{
-		const QStringList& split = msg.from ().split ('/', QString::SkipEmptyParts);
-		const QString& jid = split.at (0);
-		const QString& resource = split.value (1);
+		QString jid;
+		QString resource;
+		Split (msg.from (), &jid, &resource);
 
 		if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
