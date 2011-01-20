@@ -94,16 +94,6 @@ namespace Xoox
 				rosterManager ().getRosterEntry (BareJID_);
 	}
 
-	/** CHECKIFNEEDED
-	QList<const gloox::Resource*> GlooxCLEntry::GetResourcesDesc () const
-	{
-		QList<const gloox::Resource*> result;
-		Q_FOREACH (const std::string& str, VariantsImpl ())
-			result << GetRI ()->resource (str);
-		return result;
-	}
-	*/
-
 	QObject* GlooxCLEntry::GetParentAccount () const
 	{
 		return Account_;

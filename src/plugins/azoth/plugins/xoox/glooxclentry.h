@@ -75,7 +75,6 @@ namespace Xoox
 
 		void UpdateRI (const QXmppRosterIq::Item&);
 		QXmppRosterIq::Item GetRI () const;
-		//QList<const gloox::Resource*> GetResourcesDesc () const;
 
 		// ICLEntry
 		QObject* GetParentAccount () const;
