@@ -75,6 +75,14 @@ namespace Xoox
 				SIGNAL (connected ()),
 				this,
 				SLOT (handleConnected ()));
+		connect (&Client_->rosterManager (),
+				SIGNAL (rosterReceived ()),
+				this,
+				SLOT (handleRosterReceived ()));
+		connect (&Client_->rosterManager (),
+				SIGNAL (rosterChanged (const QString&)),
+				this,
+				SLOT (handleRosterChanged (const QString&)));
 		connect (Client_,
 				SIGNAL (presenceReceived (const QXmppPresence&)),
 				this,
@@ -304,9 +312,42 @@ namespace Xoox
 		return msg;
 	}
 
+	EntryStatus ClientConnection::PresenceToStatus (const QXmppPresence& pres) const
+	{
+		const QXmppPresence::Status& status = pres.status ();
+		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
+		if (pres.type () == QXmppPresence::Unavailable)
+			st.State_ = SOffline;
+		return st;
+	}
+
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
+	}
+
+	void ClientConnection::handleRosterReceived ()
+	{
+		qDebug () << Q_FUNC_INFO;
+		QXmppRosterManager& rm = Client_->rosterManager ();
+		Q_FOREACH (const QString& bareJid,
+				rm.getRosterBareJids ())
+		{
+			GlooxCLEntry *entry = CreateCLEntry (rm.getRosterEntry (bareJid));
+			emit gotRosterItems (QList<QObject*> () << entry);
+		}
+	}
+
+	void ClientConnection::handleRosterChanged (const QString& bareJid)
+	{
+		QXmppRosterManager& rm = Client_->rosterManager ();
+		QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (bareJid);
+		Q_FOREACH (const QString& resource, presences.keys ())
+		{
+			const QXmppPresence& pres = presences [resource];
+			JID2CLEntry_ [bareJid]->SetClientInfo (resource, pres);
+			JID2CLEntry_ [bareJid]->SetStatus (PresenceToStatus (pres), resource);
+		}
 	}
 
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
@@ -338,12 +379,8 @@ namespace Xoox
 			}
 		}
 
-		const QXmppPresence::Status& status = pres.status ();
-		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
-		if (pres.type () == QXmppPresence::Unavailable)
-			st.State_ = SOffline;
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
-		JID2CLEntry_ [jid]->SetStatus (st, resource);
+		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
 	}
 
 	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)

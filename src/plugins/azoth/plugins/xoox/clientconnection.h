@@ -109,8 +109,12 @@ namespace Xoox
 		void FetchVCard (const QString&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, const QXmppRosterIq::Item&);
+	private:
+		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 	private slots:
 		void handleConnected ();
+		void handleRosterReceived ();
+		void handleRosterChanged (const QString&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
 		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
