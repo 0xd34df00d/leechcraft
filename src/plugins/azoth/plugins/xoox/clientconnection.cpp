@@ -24,6 +24,7 @@
 #include <QXmppVersionManager.h>
 #include <QXmppRosterManager.h>
 #include <QXmppVCardManager.h>
+#include <QXmppDiscoveryManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -58,6 +59,7 @@ namespace Xoox
 	, OurJID_ (jid)
 	, Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
+	, DiscoveryManager_ (0)
 	{
 		LastState_.State_ == SOffline;
 
@@ -97,6 +99,17 @@ namespace Xoox
 				SIGNAL (vCardReceived (const QXmppVCardIq&)),
 				this,
 				SLOT (handleVCardReceived (const QXmppVCardIq&)));
+
+		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
+		if (!DiscoveryManager_)
+		{
+			DiscoveryManager_ = new QXmppDiscoveryManager ();
+			Client_->addExtension (DiscoveryManager_);
+		}
+		connect (DiscoveryManager_,
+				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleInfoReceived (const QXmppDiscoveryIq&)));
 
 		connect (MUCManager_,
 				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
@@ -197,6 +210,12 @@ namespace Xoox
 	QXmppMucManager* ClientConnection::GetMUCManager () const
 	{
 		return MUCManager_;
+	}
+
+	void ClientConnection::RequestInfo (const QString& jid) const
+	{
+		qDebug () << "requesting info for" << jid;
+		DiscoveryManager_->requestInfo (jid);
 	}
 
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
@@ -363,6 +382,7 @@ namespace Xoox
 			entry->SetStatus (PresenceToStatus (pres), resource);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
+		qDebug () << "roster changed" << bareJid;
 		Core::Instance ().saveRoster ();
 	}
 
@@ -379,6 +399,14 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "could not find entry for"
 					<< vcard.from ();
+	}
+
+	void ClientConnection::handleInfoReceived (const QXmppDiscoveryIq& iq)
+	{
+		qDebug () << Q_FUNC_INFO << iq.from ();
+		qDebug () << iq.features ();
+		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
+			qDebug () << item.jid () << item.name () << item.node ();
 	}
 
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)

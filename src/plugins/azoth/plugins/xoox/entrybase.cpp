@@ -118,7 +118,8 @@ namespace Xoox
 		if (!VCardDialog_)
 			VCardDialog_ = new VCardDialog ();
 
-		Account_->GetClientConnection ()->FetchVCard (GetJID ());;
+		Account_->GetClientConnection ()->RequestInfo (GetJID ());
+		Account_->GetClientConnection ()->FetchVCard (GetJID ());
 		VCardDialog_->show ();
 	}
 
@@ -187,6 +188,7 @@ namespace Xoox
 					<< node;
 			type = "unknown";
 		}
+		qDebug () << GetJID () << type << node;
 		Variant2ClientInfo_ [variant] ["client_type"] = type;
 
 		QString name = Util::GetClientHRName (node);

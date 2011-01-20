@@ -31,6 +31,8 @@
 class QXmppMessage;
 class QXmppMucManager;
 class QXmppClient;
+class QXmppDiscoveryManager;
+class QXmppDiscoveryIq;
 
 namespace LeechCraft
 {
@@ -57,6 +59,8 @@ namespace Xoox
 
 		QXmppClient *Client_;
 		QXmppMucManager *MUCManager_;
+		QXmppDiscoveryManager *DiscoveryManager_;
+
 		QString OurJID_;
 
 		GlooxAccount *Account_;
@@ -91,6 +95,7 @@ namespace Xoox
 		void Unregister (RoomHandler*);
 
 		QXmppMucManager* GetMUCManager () const;
+		void RequestInfo (const QString&) const;
 
 		void Update (const QXmppRosterIq::Item&);
 		void Update (const QXmppMucAdminIq::Item&);
@@ -118,6 +123,7 @@ namespace Xoox
 		void handleRosterReceived ();
 		void handleRosterChanged (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
+		void handleInfoReceived (const QXmppDiscoveryIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
 		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
