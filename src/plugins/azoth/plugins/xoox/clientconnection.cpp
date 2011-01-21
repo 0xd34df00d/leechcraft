@@ -106,6 +106,7 @@ namespace Xoox
 			DiscoveryManager_ = new QXmppDiscoveryManager ();
 			Client_->addExtension (DiscoveryManager_);
 		}
+		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
 				this,
@@ -115,14 +116,6 @@ namespace Xoox
 				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
 				this,
 				SLOT (handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)));
-
-		/*
-		Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
-
-		gloox::Capabilities *caps = new gloox::Capabilities (Client_->disco ());
-		caps->setNode ("http://leechcraft.org/azoth");
-		Client_->addPresenceExtension (caps);
-		*/
 	}
 
 	ClientConnection::~ClientConnection ()
