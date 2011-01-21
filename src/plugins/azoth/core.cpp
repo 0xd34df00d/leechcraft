@@ -1397,7 +1397,7 @@ namespace LeechCraft
 
 			void Core::invalidateClientsIconCache (QObject *passedObj)
 			{
-				QObject *obj = obj ? obj : sender ();
+				QObject *obj = passedObj ? passedObj : sender ();
 				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (obj);
 				if (!entry)
 				{
