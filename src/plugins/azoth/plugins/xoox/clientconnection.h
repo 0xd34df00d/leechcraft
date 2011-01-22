@@ -137,7 +137,9 @@ namespace Xoox
 		void rosterItemRemoved (QObject*);
 		void rosterItemsRemoved (const QList<QObject*>&);
 		void rosterItemUpdated (QObject*);
-		void rosterItemSubscribed (QObject*);
+		void rosterItemSubscribed (QObject*, const QString&);
+		void rosterItemUnsubscribed (QObject*, const QString&);
+		void rosterItemUnsubscribed (const QString&, const QString&);
 		void gotSubscriptionRequest (QObject*, const QString&);
 
 		void serverAuthFailed ();

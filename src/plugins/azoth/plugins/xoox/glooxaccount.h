@@ -114,6 +114,9 @@ namespace Xoox
 		void removedCLItems (const QList<QObject*>&);
 		void joinedGroupchat (QObject*);
 		void authorizationRequested (QObject*, const QString&);
+		void itemSubscribed (QObject*, const QString&);
+		void itemUnsubscribed (QObject*, const QString&);
+		void itemUnsubscribed (const QString&, const QString&);
 		void statusChanged (const Plugins::EntryStatus&);
 
 		void accountSettingsChanged ();
