@@ -274,6 +274,7 @@ namespace Xoox
 
 	void ClientConnection::Remove (GlooxCLEntry *entry)
 	{
+		emit rosterItemRemoved (entry);
 		Client_->rosterManager ().removeRosterEntry (entry->GetJID ());
 	}
 
