@@ -36,9 +36,8 @@
 #include "mainwindow.h"
 #include "xmlsettingsmanager.h"
 #include "coreproxy.h"
+#include "plugintreebuilder.h"
 #include "config.h"
-
-using namespace LeechCraft;
 
 namespace LeechCraft
 {
@@ -75,6 +74,7 @@ namespace LeechCraft
 	PluginManager::PluginManager (const QStringList& pluginPaths, QObject *parent)
 	: QAbstractItemModel (parent)
 	, DefaultPluginIcon_ (QIcon (":/resources/images/defaultpluginicon.svg"))
+	, PluginTreeBuilder_ (new PluginTreeBuilder)
 	{
 		Headers_ << tr ("Name")
 			<< tr ("Description");
@@ -254,7 +254,15 @@ namespace LeechCraft
 			if (ipa)
 				Plugins_ << ipa->GetPlugins ();
 		}
+
+		PluginTreeBuilder_->AddObjects (Plugins_);
+		qDebug () << "their begin";
+		PluginTreeBuilder_->Calculate ();
+		qDebug () << "their end";
+
+		qDebug () << "our begin";
 		CalculateDependencies ();
+		qDebug () << "our end";
 		InitializePlugins ();
 	}
 

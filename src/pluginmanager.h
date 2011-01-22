@@ -30,6 +30,8 @@
 namespace LeechCraft
 {
 	class MainWindow;
+	class PluginTreeBuilder;
+
 	class PluginManager : public QAbstractItemModel
 						, public IPluginsManager
 	{
@@ -83,6 +85,8 @@ namespace LeechCraft
 		QIcon DefaultPluginIcon_;
 		QStringList PluginLoadErrors_;
 		mutable QMap<QByteArray, QObject*> PluginID2PluginCache_;
+
+		boost::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
 	public:
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (const QStringList& pluginPaths, QObject *parent = 0);
