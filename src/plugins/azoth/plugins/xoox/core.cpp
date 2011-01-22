@@ -175,7 +175,9 @@ namespace Xoox
 					.firstChildElement ("entry");
 			while (!entry.isNull ())
 			{
-				const QByteArray& entryID = entry.firstChildElement ("id").text ().toUtf8 ();
+				const QByteArray& entryID =
+						QByteArray::fromPercentEncoding (entry
+								.firstChildElement ("id").text ().toLatin1 ());
 				const QString& name = entry.firstChildElement ("name").text ();
 
 				QStringList groups;
@@ -248,7 +250,7 @@ namespace Xoox
 						continue;
 
 					w.writeStartElement ("entry");
-						w.writeTextElement ("id", entry->GetEntryID ());
+						w.writeTextElement ("id", entry->GetEntryID ().toPercentEncoding ("@"));
 						w.writeTextElement ("name", entry->GetEntryName ());
 						w.writeTextElement ("authstatus",
 								qobject_cast<IProxyObject*> (PluginProxy_)->

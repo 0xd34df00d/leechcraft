@@ -47,7 +47,7 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
 	, ODS_ (ods)
-	, BareJID_ (ods->ID_)
+	, BareJID_ (QString::fromUtf8 (ods->ID_.constData ()))
 	{
 	}
 
