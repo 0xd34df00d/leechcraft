@@ -34,6 +34,7 @@
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerruby.h>
 #include <Qsci/qscilexersql.h>
+#include <Qsci/qscilexertex.h>
 #include <Qsci/qscilexerxml.h>
 #include <plugininterface/util.h>
 #include "core.h"
@@ -75,6 +76,7 @@ namespace LeechCraft
 				DEFPAIR (Python, py);
 				DEFPAIR (Ruby, rb);
 				DEFPAIR (SQL, sql);
+				DEFPAIR (TeX, tex);
 				DEFPAIR (XML, xml);
 #undef DEFPAIR
 				Ui_.setupUi (this);
@@ -97,6 +99,7 @@ namespace LeechCraft
 				DoctypeMenu_->addAction ("Python")->setCheckable (true);
 				DoctypeMenu_->addAction ("Ruby")->setCheckable (true);
 				DoctypeMenu_->addAction ("SQL")->setCheckable (true);
+				DoctypeMenu_->addAction ("TeX")->setCheckable (true);
 				DoctypeMenu_->addAction ("XML")->setCheckable (true);
 				connect (DoctypeMenu_,
 						SIGNAL (triggered (QAction*)),
@@ -703,6 +706,8 @@ namespace LeechCraft
 					result = new QsciLexerRuby (Ui_.TextEditor_);
 				else if (lang == "SQL")
 					result = new QsciLexerSQL (Ui_.TextEditor_);
+				else if (lang == "TeX")
+					result = new QsciLexerTeX (Ui_.TextEditor_);
 				else if (lang == "XML")
 					result = new QsciLexerXML (Ui_.TextEditor_);
 
@@ -794,7 +799,7 @@ namespace LeechCraft
 							setProperty ("RecentlyOpenedFiles", recent);
 				}
 			}
-			
+
 			void EditorPage::SetTemporaryDocument (bool tempDocument)
 			{
 				TemporaryDocument_ = tempDocument;

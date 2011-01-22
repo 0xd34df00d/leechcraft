@@ -966,7 +966,6 @@ namespace LeechCraft
 
 				CreateTorrent_.reset (new QAction (tr ("Create torrent..."),
 							Toolbar_.get ()));
-				CreateTorrent_->setShortcut (tr ("N"));
 				CreateTorrent_->setProperty ("ActionIcon", "torrent_create");
 				connect (CreateTorrent_.get (),
 						SIGNAL (triggered ()),
