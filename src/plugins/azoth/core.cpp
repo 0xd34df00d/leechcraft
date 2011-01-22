@@ -82,27 +82,6 @@ namespace LeechCraft
 
 			void Core::Release ()
 			{
-				QList<Plugins::IMUCEntry*> mucs;
-				Q_FOREACH (Plugins::ICLEntry *entry, Entry2Items_.keys ())
-				{
-					if (entry->GetEntryType () != Plugins::ICLEntry::ETMUC)
-						continue;
-
-					Plugins::IMUCEntry *mucEntry =
-							qobject_cast<Plugins::IMUCEntry*> (entry->GetObject ());
-					if (!mucEntry)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< entry->GetObject ()
-								<< "doesn't implement IMUCEntry";
-						continue;
-					}
-					mucs << mucEntry;
-				}
-
-				Q_FOREACH (Plugins::IMUCEntry *mucEntry, mucs)
-					mucEntry->Leave ();
-
 				StatusIconLoader_.reset ();
 				ClientIconLoader_.reset ();
 			}
