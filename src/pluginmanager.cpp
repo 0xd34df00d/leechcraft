@@ -256,37 +256,94 @@ namespace LeechCraft
 		}
 
 		PluginTreeBuilder_->AddObjects (Plugins_);
-		qDebug () << "their begin";
 		PluginTreeBuilder_->Calculate ();
-		qDebug () << "their end";
+		QObjectList ordered = PluginTreeBuilder_->GetResult ();
 
-		qDebug () << "our begin";
-		CalculateDependencies ();
-		qDebug () << "our end";
-		InitializePlugins ();
+		Q_FOREACH (QObject *obj, ordered)
+		{
+			IInfo *ii = qobject_cast<IInfo*> (obj);
+			try
+			{
+				qDebug () << "Initializing" << ii->GetName ();
+				ii->Init (ICoreProxy_ptr (new CoreProxy ()));
+				Core::Instance ().Setup (obj);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "while initializing"
+						<< obj
+						<< "got"
+						<< e.what ();
+				continue;
+			}
+		}
+
+		QObjectList plugins2 = GetAllCastableRoots<IPlugin2*> ();
+		Q_FOREACH (IPluginReady *provider, GetAllCastableTo<IPluginReady*> ())
+		{
+			const QSet<QByteArray>& expected = provider->GetExpectedPluginClasses ();
+			Q_FOREACH (QObject *ip2, plugins2)
+				if (qobject_cast<IPlugin2*> (ip2)->
+						GetPluginClasses ().intersect (expected).size ())
+					provider->AddPlugin (ip2);
+		}
+
+		Q_FOREACH (QObject *obj, ordered)
+		{
+			IInfo *ii = qobject_cast<IInfo*> (obj);
+			try
+			{
+				ii->SecondInit ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "while initializing"
+						<< obj
+						<< "got"
+						<< e.what ();
+				continue;
+			}
+		}
+
+		Q_FOREACH (QObject *plugin, GetAllPlugins ())
+		Core::Instance ().PostSecondInit (plugin);
 	}
 
 	void PluginManager::Release ()
 	{
-		while (Roots_.size ())
+		QObjectList ordered = PluginTreeBuilder_->GetResult ();
+		std::reverse (ordered.begin (), ordered.end ());
+		Q_FOREACH (QObject *obj, ordered)
 		{
 			try
 			{
-				Release (Roots_.takeAt (0));
+				IInfo *ii = qobject_cast<IInfo*> (obj);
+				if (!ii)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cast"
+							<< obj
+							<< "to IInfo";
+					continue;
+				}
+				qDebug () << "Releasing" << ii->GetName ();
+				ii->Release ();
 			}
 			catch (const std::exception& e)
 			{
-				qWarning () << Q_FUNC_INFO << e.what ();
+				qWarning () << Q_FUNC_INFO
+						<< obj
+						<< e.what ();
 			}
 			catch (...)
 			{
-				QMessageBox::warning (Core::Instance ().GetReallyMainWindow (),
-						"LeechCraft",
-						tr ("Release of one or more plugins failed."));
+				qWarning () << Q_FUNC_INFO
+						<< "unknown release error for"
+						<< obj;
 			}
 		}
-
-		Plugins_.clear ();
 	}
 
 	QString PluginManager::Name (const PluginManager::Size_t& pos) const
