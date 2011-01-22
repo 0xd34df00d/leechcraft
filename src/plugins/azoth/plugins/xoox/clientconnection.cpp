@@ -343,9 +343,9 @@ namespace Xoox
 	void ClientConnection::Split (const QString& jid,
 			QString *bare, QString *resource) const
 	{
-		const QStringList& splitted = jid.split ('/', QString::SkipEmptyParts);
-		*bare = splitted.at (0);
-		*resource = splitted.value (1);
+		const int pos = jid.indexOf ('/');
+		*bare = jid.left (pos);
+		*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
 	}
 
 	void ClientConnection::handleConnected ()
