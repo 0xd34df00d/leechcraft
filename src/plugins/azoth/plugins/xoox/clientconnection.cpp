@@ -475,11 +475,27 @@ namespace Xoox
 		RoomHandlers_ [roomJid]->UpdatePerms (perms);
 	}
 
+	/** @todo Handle action reasons in QXmppPresence::Subscribe and
+	 * QXmppPresence::Unsubscribe cases.
+	 */
 	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)
 	{
+		const QString& jid = pres.from ();
 		switch (pres.type ())
 		{
 		case QXmppPresence::Subscribe:
+			emit gotSubscriptionRequest (new UnauthCLEntry (jid, QString (), Account_),
+					QString ());
+			break;
+		case QXmppPresence::Subscribed:
+			emit gotRosterItems (QObjectList () << CreateCLEntry (jid));
+			emit rosterItemSubscribed (JID2CLEntry_ [jid]);
+			break;
+		case QXmppPresence::Unsubscribe:
+			qDebug () << Q_FUNC_INFO << pres.from () << "unsubscribe";
+			break;
+		case QXmppPresence::Unsubscribed:
+			qDebug () << Q_FUNC_INFO << pres.from () << "unsubscribed";
 			break;
 		}
 	}
@@ -501,97 +517,12 @@ namespace Xoox
 		}
 		IsConnected_ = true;
 	}
-
-	void ClientConnection::handleItemAdded (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		gloox::RosterItem *ri = Client_->rosterManager ()->getRosterItem (jid);
-
-		GlooxCLEntry *entry = CreateCLEntry (ri);
-		emit gotRosterItems (QList<QObject*> () << entry);
-	}
-
-	void ClientConnection::handleItemSubscribed (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		handleItemAdded (jid);
-
-		emit rosterItemSubscribed (JID2CLEntry_ [jid.bareJID ()]);
-	}
-
-	void ClientConnection::handleItemRemoved (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		if (!JID2CLEntry_.contains (jid.bareJID ()))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "strange, we have no"
-					<< jid.full ().c_str ()
-					<< "in our JID2CLEntry_";
-			return;
-		}
-
-		GlooxCLEntry *entry = JID2CLEntry_.take (jid.bareJID ());
-		emit rosterItemRemoved (entry);
-	}
-
-	void ClientConnection::handleItemUpdated (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		if (!JID2CLEntry_.contains (jid.bareJID ()))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "strange, we have no"
-					<< jid.full ().c_str ()
-					<< "in our JID2CLEntry_";
-			return;
-		}
-
-		FetchVCard (jid);
-
-		emit rosterItemUpdated (JID2CLEntry_ [jid.bareJID ()]);
-	}
-
-	bool ClientConnection::handleSubscriptionRequest (const gloox::JID& jid, const std::string& msg)
-	{
-		const std::string& bare = jid.bare ();
-		qDebug () << Q_FUNC_INFO << bare.c_str ();
-		const QString& str = QString::fromUtf8 (msg.c_str ());
-		emit gotSubscriptionRequest (new UnauthCLEntry (jid, str, Account_),
-				str);
-		return false;
-	}
-
-	void ClientConnection::handleVCard (const gloox::JID& jid, const gloox::VCard *vcard)
-	{
-		if (!vcard)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got null vcard"
-					<< "for jid"
-					<< jid.full ().c_str ();
-			return;
-		}
-
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-			if (rh->GetRoomJID () == jid.bare ())
-			{
-				rh->HandleVCard (vcard,
-					QString::fromUtf8 (jid.resource ().c_str ()));
-				return;
-			}
-
-		if (JID2CLEntry_.contains (jid))
-		{
-			JID2CLEntry_ [jid]->SetVCard (vcard);
-			JID2CLEntry_ [jid]->SetAvatar (vcard->photo ());
-		}
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "vcard reply for unknown request for jid"
-					<< jid.full ().c_str ();
-	}
 	*/
+
+	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
+	{
+		return CreateCLEntry (Client_->rosterManager ().getRosterEntry (jid));
+	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QXmppRosterIq::Item& ri)
 	{

@@ -128,24 +128,8 @@ namespace Xoox
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
 		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
-		/*
-		// RosterListener
-		virtual void handleItemAdded (const gloox::JID&);
-		virtual void handleItemSubscribed (const gloox::JID&);
-		virtual void handleItemRemoved (const gloox::JID&);
-		virtual void handleItemUpdated (const gloox::JID&);
-		virtual void handleItemUnsubscribed (const gloox::JID&);
-		virtual void handleRoster (const gloox::Roster&);
-		virtual void handleRosterPresence (const gloox::RosterItem&,
-				const std::string&, gloox::Presence::PresenceType, const std::string&);
-		virtual void handleSelfPresence (const gloox::RosterItem&,
-				const std::string&, gloox::Presence::PresenceType, const std::string&);
-		virtual bool handleSubscriptionRequest (const gloox::JID&, const std::string&);
-		virtual bool handleUnsubscriptionRequest (const gloox::JID&, const std::string&);
-		virtual void handleNonrosterPresence (const gloox::Presence&);
-		virtual void handleRosterError (const gloox::IQ&);
-		*/
 	private:
+		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
 		GlooxCLEntry* ConvertFromODS (const QString&, const QXmppRosterIq::Item&);
 	signals:
