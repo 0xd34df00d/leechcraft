@@ -107,7 +107,10 @@ namespace Xoox
 		if (ODS_)
 			return ODS_->Name_;
 
-		return GetRI ().name ();
+		QString name = GetRI ().name ();
+		if (name.isEmpty ())
+			return BareJID_;
+		return name;
 	}
 
 	void GlooxCLEntry::SetEntryName (const QString& name)
