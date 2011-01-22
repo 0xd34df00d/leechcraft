@@ -273,9 +273,60 @@ namespace Plugins
 		 * @param[out] entry The object representing the requesting
 		 * entry, must be an ICLEntry.
 		 * @param[out] message Optional request message, if applicable.
+		 *
+		 * @sa Authorize(), DenyAuth(), RequestAuth(),
+		 * itemSubscribed(), itemUnsubscribed()
 		 */
 		virtual void authorizationRequested (QObject *entry,
 				const QString& message) = 0;
+
+		/** @brief This signal should be emitted when an already added
+		 * entry has just subscribed to us.
+		 *
+		 * If the item didn't previously exist, the proper gotCLItems()
+		 * signal should be emitted before this one, of course.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] entry The object representing the just subscribed
+		 * entry in the contact list, must be an ICLEntry.
+		 * @param[out] message An optional reason message.
+		 *
+		 * @sa Authorize(), DenyAuth(), RequestAuth(),
+		 * authorizationRequested(), itemUnsubscribed()
+		 */
+		virtual void itemSubscribed (QObject *entry, const QString& message) = 0;
+
+		/** @brief This signal should be emitted when an already added
+		 * entry has just unsubscribed from us.
+		 *
+		 * If the item didn't exist in the roster, another overload of
+		 * itemUnsubscribed() should be used, which takes the entry's ID
+		 * as first parameter.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] entry The object representing the unsubscribed
+		 * entry in the contact list, must be an ICLEntry.
+		 * @param[out] message An optional reason message.
+		 *
+		 * @sa Authorize(), DenyAuth(), RequestAuth(),
+		 * authorizationRequested(), itemSubscribed()
+		 */
+		virtual void itemUnsubscribed (QObject *entry, const QString& message) = 0;
+
+		/** @brief This signal should be emitted when a non-roster item
+		 * has just unsubscribed from us.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] entryID The ID of just unsubscribed entry.
+		 * @param[out] message An optional reason message.
+		 *
+		 * @sa Authorize(), DenyAuth(), RequestAuth(),
+		 * authorizationRequested(), itemSubscribed()
+		 */
+		virtual void itemUnsubscribed (const QString& entryID, const QString& message) = 0;
 
 		/** @brief This signal should be emitted when state of this
 		 * account changes for whatever reason.
