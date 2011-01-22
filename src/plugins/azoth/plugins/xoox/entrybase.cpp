@@ -189,7 +189,6 @@ namespace Xoox
 					<< node;
 			type = "unknown";
 		}
-		qDebug () << GetJID () << type << node;
 		Variant2ClientInfo_ [variant] ["client_type"] = type;
 
 		QString name = Util::GetClientHRName (node);
