@@ -443,6 +443,14 @@ namespace Xoox
 
 	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
 	{
+		if (msg.type () == QXmppMessage::Error)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "got error message from"
+					<< msg.from ();
+			return;
+		}
+
 		QString jid;
 		QString resource;
 		Split (msg.from (), &jid, &resource);
