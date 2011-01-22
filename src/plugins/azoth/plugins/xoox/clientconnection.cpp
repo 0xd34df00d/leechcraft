@@ -175,6 +175,10 @@ namespace Xoox
 		return OurJID_;
 	}
 
+	/** @todo Set the correct state on join.
+	 *
+	 * Requires proper support for this from the QXmpp part.
+	 */
 	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
 	{
 		if (RoomHandlers_.contains (jid))
@@ -376,7 +380,6 @@ namespace Xoox
 			entry->SetStatus (PresenceToStatus (pres), resource);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
-		qDebug () << "roster changed" << bareJid;
 		Core::Instance ().saveRoster ();
 	}
 
