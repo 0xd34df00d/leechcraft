@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
+#include <QXmppMucIq.h>
 #include "entrybase.h"
 
 namespace LeechCraft
@@ -45,8 +46,8 @@ namespace Xoox
 		QString Nick_;
 		RoomHandler *RoomHandler_;
 
-		gloox::MUCRoomAffiliation Affiliation_;
-		gloox::MUCRoomRole Role_;
+		QXmppMucAdminIq::Item::Affiliation Affiliation_;
+		QXmppMucAdminIq::Item::Role Role_;
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
@@ -62,12 +63,13 @@ namespace Xoox
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
-		gloox::JID GetJID () const;
+		QString GetJID () const;
+		QString GetNick () const;
 
-		gloox::MUCRoomAffiliation GetAffiliation () const;
-		void SetAffiliation (gloox::MUCRoomAffiliation);
-		gloox::MUCRoomRole GetRole () const;
-		void SetRole (gloox::MUCRoomRole);
+		QXmppMucAdminIq::Item::Affiliation GetAffiliation () const;
+		void SetAffiliation (QXmppMucAdminIq::Item::Affiliation);
+		QXmppMucAdminIq::Item::Role GetRole () const;
+		void SetRole (QXmppMucAdminIq::Item::Role);
 	};
 
 	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;

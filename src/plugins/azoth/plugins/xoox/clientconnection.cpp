@@ -19,18 +19,12 @@
 #include "clientconnection.h"
 #include <QTimer>
 #include <QtDebug>
-#include <gloox/presence.h>
-#include <gloox/client.h>
-#include <gloox/message.h>
-#include <gloox/messagesession.h>
-#include <gloox/error.h>
-#include <gloox/capabilities.h>
-#include <gloox/rostermanager.h>
-#include <gloox/mucroom.h>
-#include <gloox/vcardmanager.h>
-#include <gloox/connectiontcpclient.h>
-#include <gloox/connectionhttpproxy.h>
-#include <gloox/connectionsocks5proxy.h>
+#include <QXmppClient.h>
+#include <QXmppMucManager.h>
+#include <QXmppVersionManager.h>
+#include <QXmppRosterManager.h>
+#include <QXmppVCardManager.h>
+#include <QXmppDiscoveryManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -45,11 +39,6 @@
 #include "roomclentry.h"
 #include "unauthclentry.h"
 
-uint gloox::qHash (const gloox::JID& jid)
-{
-	return qHash (QByteArray (jid.full ().c_str ()));
-}
-
 namespace LeechCraft
 {
 namespace Plugins
@@ -60,13 +49,17 @@ namespace Plugins
 {
 namespace Xoox
 {
-	ClientConnection::ClientConnection (const gloox::JID& jid,
+	ClientConnection::ClientConnection (const QString& jid,
 			const GlooxAccountState& state,
 			GlooxAccount *account)
 	: Account_ (account)
 	, ProxyObject_ (0)
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
+	, OurJID_ (jid)
+	, Client_ (new QXmppClient (this))
+	, MUCManager_ (new QXmppMucManager)
+	, DiscoveryManager_ (0)
 	{
 		LastState_.State_ == SOffline;
 
@@ -74,36 +67,55 @@ namespace Xoox
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
-		Client_.reset (new gloox::Client (jid, std::string ()));
+		Client_->addExtension (MUCManager_);
 
-		HandleProxy ();
+		Client_->versionManager ().setClientName ("LeechCraft Azoth");
+		Client_->versionManager ().setClientVersion (LEECHCRAFT_VERSION);
+		Client_->versionManager ().setClientOs (ProxyObject_->GetOSName ());
 
-		VCardManager_.reset (new gloox::VCardManager (Client_.get ()));
-
-		Client_->registerMessageSessionHandler (this);
-		Client_->registerPresenceHandler (this);
-
-		Client_->registerConnectionListener (this);
-		Client_->rosterManager ()->registerRosterListener (this, false);
-
-		Client_->disco ()->setVersion ("LeechCraft Azoth",
-				LEECHCRAFT_VERSION,
-				ProxyObject_->GetOSName ().toUtf8 ().constData ());
-		Client_->disco ()->setIdentity ("client", "pc", "LeechCraft Azoth");
-		Client_->disco ()->addFeature (gloox::XMLNS_ROSTER);
-		Client_->disco ()->addFeature (gloox::XMLNS_COMPRESSION);
-		Client_->disco ()->addFeature (gloox::XMLNS_STREAM_COMPRESS);
-
-		gloox::Capabilities *caps = new gloox::Capabilities (Client_->disco ());
-		caps->setNode ("http://leechcraft.org/azoth");
-		Client_->addPresenceExtension (caps);
-
-		QTimer *pollTimer = new QTimer (this);
-		connect (pollTimer,
-				SIGNAL (timeout ()),
+		connect (Client_,
+				SIGNAL (connected ()),
 				this,
-				SLOT (handlePollTimer ()));
-		pollTimer->start (50);
+				SLOT (handleConnected ()));
+		connect (Client_,
+				SIGNAL (presenceReceived (const QXmppPresence&)),
+				this,
+				SLOT (handlePresenceChanged (const QXmppPresence&)));
+		connect (Client_,
+				SIGNAL (messageReceived (const QXmppMessage&)),
+				this,
+				SLOT (handleMessageReceived (const QXmppMessage&)));
+
+		connect (&Client_->rosterManager (),
+				SIGNAL (rosterReceived ()),
+				this,
+				SLOT (handleRosterReceived ()));
+		connect (&Client_->rosterManager (),
+				SIGNAL (rosterChanged (const QString&)),
+				this,
+				SLOT (handleRosterChanged (const QString&)));
+
+		connect (&Client_->vCardManager (),
+				SIGNAL (vCardReceived (const QXmppVCardIq&)),
+				this,
+				SLOT (handleVCardReceived (const QXmppVCardIq&)));
+
+		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
+		if (!DiscoveryManager_)
+		{
+			DiscoveryManager_ = new QXmppDiscoveryManager ();
+			Client_->addExtension (DiscoveryManager_);
+		}
+		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
+		connect (DiscoveryManager_,
+				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleInfoReceived (const QXmppDiscoveryIq&)));
+
+		connect (MUCManager_,
+				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
+				this,
+				SLOT (handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -115,10 +127,14 @@ namespace Xoox
 	{
 		LastState_ = state;
 
-		gloox::Presence::PresenceType pres =
-				static_cast<gloox::Presence::PresenceType> (state.State_);
-		std::string stdStatus (state.Status_.toUtf8 ().constData ());
-		Client_->setPresence (pres, state.Priority_, stdStatus);
+		QXmppPresence::Type presType = state.State_ == SOffline ?
+				QXmppPresence::Unavailable :
+				QXmppPresence::Available;
+		QXmppPresence pres (presType,
+				QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
+						state.Status_,
+						state.Priority_));
+		Client_->setClientPresence (pres);
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			rh->SetState (state);
 
@@ -128,7 +144,7 @@ namespace Xoox
 			if (FirstTimeConnect_)
 				emit needPassword ();
 
-			IsConnected_ = Client_->connect (false);
+			Client_->connectToServer (OurJID_, Password_);
 
 			FirstTimeConnect_ = false;
 		}
@@ -136,7 +152,7 @@ namespace Xoox
 		if (state.State_ == SOffline)
 		{
 			IsConnected_ = false;
-			Q_FOREACH (const gloox::JID& jid, JID2CLEntry_.keys ())
+			Q_FOREACH (const QString& jid, JID2CLEntry_.keys ())
 			{
 				GlooxCLEntry *entry = JID2CLEntry_.take (jid);
 				ODSEntries_ [jid] = entry;
@@ -147,40 +163,72 @@ namespace Xoox
 
 	void ClientConnection::Synchronize ()
 	{
-		Client_->rosterManager ()->synchronize ();
 	}
 
 	void ClientConnection::SetPassword (const QString& pwd)
 	{
-		Client_->setPassword (pwd.toUtf8 ().constData ());
+		Password_ = pwd;
 	}
 
-	RoomCLEntry* ClientConnection::JoinRoom (const gloox::JID& jid)
+	QString ClientConnection::GetOurJID () const
 	{
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-			if (rh->GetRoomJID () == jid.bareJID ())
-			{
-				Entity e = Util::MakeNotification ("Azoth",
-						tr ("This room is already joined."),
-						PCritical_);
-				Core::Instance ().SendEntity (e);
-				return 0;
-			}
+		return OurJID_;
+	}
 
-		RoomHandler *rh = new RoomHandler (Account_);
-		boost::shared_ptr<gloox::MUCRoom> room (new gloox::MUCRoom (Client_.get (), jid, rh, 0));
-		room->join ();
-		rh->SetRoom (room);
-		rh->SetState (LastState_);
+	/** @todo Set the correct state on join.
+	 *
+	 * Requires proper support for this from the QXmpp part.
+	 */
+	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
+	{
+		if (RoomHandlers_.contains (jid))
+		{
+			Entity e = Util::MakeNotification ("Azoth",
+					tr ("This room is already joined."),
+					PCritical_);
+			Core::Instance ().SendEntity (e);
+			return 0;
+		}
 
-		RoomHandlers_ << rh;
+		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
+		MUCManager_->joinRoom (jid, nick);
+		//rh->SetState (LastState_);
+
+		RoomHandlers_ [jid] = rh;
 
 		return rh->GetCLEntry ();
 	}
 
 	void ClientConnection::Unregister (RoomHandler *rh)
 	{
-		RoomHandlers_.remove (rh);
+		RoomHandlers_.remove (rh->GetRoomJID ());
+	}
+
+	QXmppMucManager* ClientConnection::GetMUCManager () const
+	{
+		return MUCManager_;
+	}
+
+	void ClientConnection::RequestInfo (const QString& jid) const
+	{
+		qDebug () << "requesting info for" << jid;
+		DiscoveryManager_->requestInfo (jid);
+	}
+
+	void ClientConnection::Update (const QXmppRosterIq::Item& item)
+	{
+		QXmppRosterIq iq;
+		iq.setType (QXmppIq::Set);
+		iq.addItem (item);
+		Client_->sendPacket (iq);
+	}
+
+	void ClientConnection::Update (const QXmppMucAdminIq::Item& item)
+	{
+		QXmppMucAdminIq iq;
+		iq.setType (QXmppIq::Set);
+		iq.setItems (QList<QXmppMucAdminIq::Item> () << item);
+		Client_->sendPacket (iq);
 	}
 
 	void ClientConnection::AckAuth (QObject *entryObj, bool ack)
@@ -193,7 +241,12 @@ namespace Xoox
 					<< "is not an UnauthCLEntry";
 			return;
 		}
-		Client_->rosterManager ()->ackSubscriptionRequest (entry->GetJID (), ack);
+
+		QXmppPresence pres;
+		pres.setType (ack ? QXmppPresence::Subscribed : QXmppPresence::Unsubscribed);
+		pres.setTo (entry->GetJID ());
+		Client_->sendPacket (pres);
+
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
 	}
@@ -201,45 +254,51 @@ namespace Xoox
 	void ClientConnection::Subscribe (const QString& id,
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
-		gloox::JID jid (id.toUtf8 ().constData ());
-		gloox::StringList strings;
-		Q_FOREACH (const QString& group, groups)
-			strings.push_back (group.toUtf8 ().constData ());
-		Client_->rosterManager ()->subscribe (jid,
-				name.toUtf8 ().constData (),
-				strings,
-				msg.toUtf8 ().constData ());
+		QXmppPresence pres;
+		pres.setType (QXmppPresence::Subscribe);
+		pres.setTo (id);
+		Client_->sendPacket (pres);
 	}
 
-	void ClientConnection::RevokeSubscription (const gloox::JID& jid, const QString& reason)
+	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
 	{
-		Client_->rosterManager ()->cancel (jid, reason.toUtf8 ().constData ());
+		QXmppPresence pres;
+		pres.setType (QXmppPresence::Unsubscribe);
+		pres.setTo (jid);
+		Client_->sendPacket (pres);
 	}
 
-	void ClientConnection::Unsubscribe (const gloox::JID& jid, const QString& reason)
+	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
 	{
-		Client_->rosterManager ()->unsubscribe (jid, reason.toUtf8 ().constData ());
+		QXmppPresence presence;
+		presence.setType (QXmppPresence::Unsubscribed);
+		presence.setTo (jid);
+		Client_->sendPacket (presence);
 	}
 
 	void ClientConnection::Remove (GlooxCLEntry *entry)
 	{
-		Client_->rosterManager ()->remove (entry->GetJID ());
+		emit rosterItemRemoved (entry);
+		Client_->rosterManager ().removeRosterEntry (entry->GetJID ());
 	}
 
-	gloox::Client* ClientConnection::GetClient () const
+	QXmppClient* ClientConnection::GetClient () const
 	{
-		return Client_.get ();
+		return Client_;
 	}
 
-	GlooxCLEntry* ClientConnection::GetCLEntry (const gloox::JID& bareJid) const
+	QObject* ClientConnection::GetCLEntry (const QString& bareJid, const QString& variant) const
 	{
-		return JID2CLEntry_ [bareJid];
+		if (RoomHandlers_.contains (bareJid))
+			return RoomHandlers_ [bareJid]->GetParticipantEntry (variant).get ();
+		else
+			return JID2CLEntry_ [bareJid];
 	}
 
 	GlooxCLEntry* ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods)
 	{
 		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
-		ODSEntries_ [gloox::JID (ods->ID_.constData ())] = entry;
+		ODSEntries_ [QString::fromUtf8 (ods->ID_.constData ())] = entry;
 
 		emit gotRosterItems (QList<QObject*> () << entry);
 
@@ -259,36 +318,204 @@ namespace Xoox
 		return result;
 	}
 
-	void ClientConnection::FetchVCard (const gloox::JID& jid)
+	void ClientConnection::FetchVCard (const QString& jid)
 	{
-		VCardManager_->fetchVCard (jid, this);
+		Client_->vCardManager ().requestVCard (jid);
 	}
 
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
-			const QString& variant, const QString& body, gloox::RosterItem *ri)
+			const QString& resource, const QString& body, const QXmppRosterIq::Item& item)
 	{
-		gloox::JID jid = gloox::JID (ri->jid ());
-		gloox::JID bareJid = jid.bareJID ();
-		if (!Sessions_ [bareJid].contains (variant))
-		{
-			const std::string resource = variant.toUtf8 ().constData ();
-			if (ri->resource (resource))
-				jid.setResource (resource);
-
-			gloox::MessageSession *ses =
-					new gloox::MessageSession (Client_.get (), jid);
-			ses->registerMessageHandler (this);
-			Sessions_ [bareJid] [variant] = ses;
-		}
-
-		GlooxMessage *msg = new GlooxMessage (type, IMessage::DOut,
-				JID2CLEntry_ [bareJid],
-				Sessions_ [bareJid] [variant]);
+		GlooxMessage *msg = new GlooxMessage (type,
+				IMessage::DOut,
+				item.bareJid (),
+				resource,
+				this);
 		msg->SetBody (body);
 		msg->SetDateTime (QDateTime::currentDateTime ());
 		return msg;
 	}
 
+	EntryStatus ClientConnection::PresenceToStatus (const QXmppPresence& pres) const
+	{
+		const QXmppPresence::Status& status = pres.status ();
+		EntryStatus st (static_cast<State> (status.type ()), status.statusText ());
+		if (pres.type () == QXmppPresence::Unavailable)
+			st.State_ = SOffline;
+		return st;
+	}
+
+	void ClientConnection::Split (const QString& jid,
+			QString *bare, QString *resource) const
+	{
+		const int pos = jid.indexOf ('/');
+		*bare = jid.left (pos);
+		*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
+	}
+
+	void ClientConnection::handleConnected ()
+	{
+		IsConnected_ = true;
+	}
+
+	void ClientConnection::handleRosterReceived ()
+	{
+		QXmppRosterManager& rm = Client_->rosterManager ();
+		QObjectList items;
+		Q_FOREACH (const QString& bareJid,
+				rm.getRosterBareJids ())
+			items << CreateCLEntry (rm.getRosterEntry (bareJid));
+		emit gotRosterItems (items);
+	}
+
+	void ClientConnection::handleRosterChanged (const QString& bareJid)
+	{
+		QXmppRosterManager& rm = Client_->rosterManager ();
+		QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (bareJid);
+		GlooxCLEntry *entry = JID2CLEntry_ [bareJid];
+		Q_FOREACH (const QString& resource, presences.keys ())
+		{
+			const QXmppPresence& pres = presences [resource];
+			entry->SetClientInfo (resource, pres);
+			entry->SetStatus (PresenceToStatus (pres), resource);
+		}
+		entry->UpdateRI (rm.getRosterEntry (bareJid));
+		Core::Instance ().saveRoster ();
+	}
+
+	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)
+	{
+		QString jid;
+		QString nick;
+		Split (vcard.from (), &jid, &nick);
+		if (JID2CLEntry_.contains (jid))
+			JID2CLEntry_ [jid]->SetVCard (vcard);
+		else if (RoomHandlers_.contains (jid))
+			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetVCard (vcard);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "could not find entry for"
+					<< vcard.from ();
+	}
+
+	void ClientConnection::handleInfoReceived (const QXmppDiscoveryIq& iq)
+	{
+		qDebug () << Q_FUNC_INFO << iq.from ();
+		qDebug () << iq.features ();
+		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
+			qDebug () << item.jid () << item.name () << item.node ();
+		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
+			qDebug () << id.name () << id.type () << id.category () << id.language ();
+	}
+
+	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
+	{
+		if (pres.type () != QXmppPresence::Unavailable &&
+				pres.type () != QXmppPresence::Available)
+		{
+			HandleOtherPresence (pres);
+			return;
+		}
+
+		QString jid;
+		QString resource;
+		Split (pres.from (), &jid, &resource);
+
+		if (!JID2CLEntry_.contains (jid))
+		{
+			if (ODSEntries_.contains (jid))
+				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
+			else if (RoomHandlers_.contains (jid))
+			{
+				RoomHandlers_ [jid]->HandlePresence (pres, resource);
+				return;
+			}
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no entry for"
+						<< jid
+						<< resource;
+				return;
+			}
+		}
+
+		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
+		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
+	}
+
+	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
+	{
+		if (msg.type () == QXmppMessage::Error)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "got error message from"
+					<< msg.from ();
+			return;
+		}
+
+		QString jid;
+		QString resource;
+		Split (msg.from (), &jid, &resource);
+
+		if (RoomHandlers_.contains (jid))
+			RoomHandlers_ [jid]->HandleMessage (msg, resource);
+		else if (JID2CLEntry_.contains (jid))
+		{
+			GlooxMessage *gm = new GlooxMessage (msg, this);
+			JID2CLEntry_ [jid]->HandleMessage (gm);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "could not find source for"
+					<< msg.from ();
+	}
+
+	void ClientConnection::handleRoomPermissionsReceived (const QString& roomJid,
+			const QList<QXmppMucAdminIq::Item>& perms)
+	{
+		if (!RoomHandlers_.contains (roomJid))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no RoomHandler for"
+					<< roomJid
+					<< RoomHandlers_.keys ();
+			return;
+		}
+
+		RoomHandlers_ [roomJid]->SetState (LastState_);
+		RoomHandlers_ [roomJid]->UpdatePerms (perms);
+	}
+
+	/** @todo Handle action reasons in QXmppPresence::Subscribe and
+	 * QXmppPresence::Unsubscribe cases.
+	 */
+	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)
+	{
+		const QString& jid = pres.from ();
+		switch (pres.type ())
+		{
+		case QXmppPresence::Subscribe:
+			emit gotSubscriptionRequest (new UnauthCLEntry (jid, QString (), Account_),
+					QString ());
+			break;
+		case QXmppPresence::Subscribed:
+			emit gotRosterItems (QObjectList () << CreateCLEntry (jid));
+			emit rosterItemSubscribed (JID2CLEntry_ [jid], QString ());
+			break;
+		case QXmppPresence::Unsubscribe:
+			qDebug () << Q_FUNC_INFO << pres.from () << "unsubscribe";
+			break;
+		case QXmppPresence::Unsubscribed:
+			if (JID2CLEntry_.contains (jid))
+				emit rosterItemUnsubscribed (JID2CLEntry_ [jid], QString ());
+			else
+				emit rosterItemUnsubscribed (jid, QString ());
+			break;
+		}
+	}
+
+	/*
 	void ClientConnection::onConnect ()
 	{
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
@@ -305,396 +532,26 @@ namespace Xoox
 		}
 		IsConnected_ = true;
 	}
+	*/
 
-	void ClientConnection::onDisconnect (gloox::ConnectionError e)
+	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
 	{
-		IsConnected_ = false;
-
-		if (e == gloox::ConnNoError)
-			return;
-
-		QString error;
-		switch (e)
-		{
-		case gloox::ConnStreamError:
-			error = tr ("stream error: %1")
-					.arg (QString::fromUtf8 (Client_->
-									streamErrorText ().c_str ()));
-			break;
-		case gloox::ConnStreamVersionError:
-			error = tr ("stream version not supported");
-			break;
-		case gloox::ConnStreamClosed:
-			error = tr ("stream has been closed by the server");
-			break;
-		case gloox::ConnProxyAuthRequired:
-			error = tr ("proxy server requires authentication");
-			break;
-		case gloox::ConnProxyAuthFailed:
-			error = tr ("proxy server authentication failed");
-			break;
-		case gloox::ConnProxyNoSupportedAuth:
-			error = tr ("proxy server requires an unsupported authentication method");
-			break;
-		case gloox::ConnIoError:
-			error = tr ("an I/O error occured");
-			break;
-		case gloox::ConnParseError:
-			error = tr ("XML parse error occured");
-			break;
-		case gloox::ConnConnectionRefused:
-			error = tr ("connection was refused by the server");
-			break;
-		case gloox::ConnDnsError:
-			error = tr ("resolving the server's hostname failed");
-			break;
-		case gloox::ConnOutOfMemory:
-			error = tr ("out of memory");
-			break;
-		case gloox::ConnNoSupportedAuth:
-			error = tr ("authentication mechanisms offered by the server are not supported");
-			break;
-		case gloox::ConnTlsFailed:
-			error = tr ("server's certificate could not be verified or TLS handshake failed");
-			break;
-		case gloox::ConnTlsNotAvailable:
-			error = tr ("server didn't offer TLS");
-			break;
-		case gloox::ConnCompressionFailed:
-			error = tr ("initializing compression failed");
-			break;
-		case gloox::ConnAuthenticationFailed:
-			error = tr ("authentication failed, %1");
-			break;
-		case gloox::ConnUserDisconnected:
-			error = tr ("user disconnect requested");
-			break;
-		case gloox::ConnNotConnected:
-			error = tr ("no active connection");
-			break;
-		}
-
-		if (e == gloox::ConnAuthenticationFailed)
-		{
-			QString ae;
-			switch (Client_->authError ())
-			{
-				case gloox::AuthErrorUndefined:
-					ae = tr ("error condition is unknown");
-					break;
-				case gloox::SaslAborted:
-					ae = tr ("SASL aborted");
-					break;
-				case gloox::SaslIncorrectEncoding:
-					ae = tr ("incorrect encoding");
-					break;
-				case gloox::SaslInvalidAuthzid:
-					ae = tr ("authzid provided by initiating entity is invalid");
-					break;
-				case gloox::SaslInvalidMechanism:
-					ae = tr ("initiating entity provided a mechanism not supported by the receiving entity");
-					break;
-				case gloox::SaslMalformedRequest:
-					ae = tr ("malformed request");
-					break;
-				case gloox::SaslMechanismTooWeak:
-					ae = tr ("mechanism requested by initiating entity is weaker than server policy permits");
-					break;
-				case gloox::SaslNotAuthorized:
-				case gloox::NonSaslNotAuthorized:
-					ae = tr ("initiating entity did not provide valid credentials");
-					emit serverAuthFailed ();
-					break;
-				case gloox::SaslTemporaryAuthFailure:
-					ae = tr ("temporary error withing receiving entity");
-					break;
-				case gloox::NonSaslConflict:
-					ae = tr ("resource conflict");
-					break;
-				case gloox::NonSaslNotAcceptable:
-					ae = tr ("required information not provided");
-					break;
-			}
-			error = error.arg (ae);
-		}
-
-		QString message = tr ("Disconnected, %1.")
-				.arg (error);
-		qWarning () << Q_FUNC_INFO << message;
-
-		Entity e = Util::MakeNotification (tr ("Azoth connection error"),
-				message,
-				PCritical_);
-		Core::Instance ().SendEntity (e);
+		return CreateCLEntry (Client_->rosterManager ().getRosterEntry (jid));
 	}
 
-	void ClientConnection::onResourceBind (const std::string& resource)
-	{
-		qDebug () << Q_FUNC_INFO << resource.c_str ();
-	}
-
-	void ClientConnection::onResourceBindError (const gloox::Error *error)
-	{
-		qWarning () << Q_FUNC_INFO;
-		if (error)
-			qWarning () << error->text ().c_str ();
-	}
-
-	void ClientConnection::onSessionCreateError (const gloox::Error *error)
-	{
-		qWarning () << Q_FUNC_INFO;
-		if (error)
-			qWarning () << error->text ().c_str ();
-	}
-
-	void ClientConnection::onStreamEvent (gloox::StreamEvent e)
-	{
-		qDebug () << Q_FUNC_INFO;
-	}
-
-	bool ClientConnection::onTLSConnect (const gloox::CertInfo& info)
-	{
-		/** TODO show a dialog about certificate and
-		 * whether it should be accepted.
-		 */
-		qDebug () << Q_FUNC_INFO << info.server.c_str ();
-		return true;
-	}
-
-	void ClientConnection::handlePollTimer ()
-	{
-		Client_->recv (1000);
-	}
-
-	void ClientConnection::handleItemAdded (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		gloox::RosterItem *ri = Client_->rosterManager ()->getRosterItem (jid);
-
-		GlooxCLEntry *entry = CreateCLEntry (ri);
-		emit gotRosterItems (QList<QObject*> () << entry);
-	}
-
-	void ClientConnection::handleItemSubscribed (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		handleItemAdded (jid);
-
-		emit rosterItemSubscribed (JID2CLEntry_ [jid.bareJID ()]);
-	}
-
-	void ClientConnection::handleItemRemoved (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		if (!JID2CLEntry_.contains (jid.bareJID ()))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "strange, we have no"
-					<< jid.full ().c_str ()
-					<< "in our JID2CLEntry_";
-			return;
-		}
-
-		GlooxCLEntry *entry = JID2CLEntry_.take (jid.bareJID ());
-		emit rosterItemRemoved (entry);
-	}
-
-	void ClientConnection::handleItemUpdated (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		if (!JID2CLEntry_.contains (jid.bareJID ()))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "strange, we have no"
-					<< jid.full ().c_str ()
-					<< "in our JID2CLEntry_";
-			return;
-		}
-
-		FetchVCard (jid);
-
-		emit rosterItemUpdated (JID2CLEntry_ [jid.bareJID ()]);
-	}
-
-	void ClientConnection::handleItemUnsubscribed (const gloox::JID& jid)
-	{
-		qDebug () << Q_FUNC_INFO << jid.full ().c_str ();
-		// TODO
-	}
-
-	void ClientConnection::handleRoster (const gloox::Roster& roster)
-	{
-		QList<QObject*> entries;
-		for (gloox::Roster::const_iterator i = roster.begin (),
-				end = roster.end (); i != end; ++i)
-		{
-			GlooxCLEntry *entry = CreateCLEntry (i->second);
-			entries << entry;
-		}
-
-		if (entries.size ())
-			emit gotRosterItems (entries);
-	}
-
-	void ClientConnection::handleRosterPresence (const gloox::RosterItem& item,
-				const std::string& resource,
-				gloox::Presence::PresenceType type,
-				const std::string& msg)
-	{
-		gloox::JID jid (item.jid ());
-		if (!JID2CLEntry_.contains (jid))
-		{
-			if (ODSEntries_.contains (jid))
-				ConvertFromODS (jid.bareJID (), Client_->rosterManager ()->getRosterItem (jid));
-			else
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no GlooxCLEntry for item"
-						<< item.jid ().c_str ();
-				return;
-			}
-		}
-
-		GlooxCLEntry *entry = JID2CLEntry_ [jid];
-
-		EntryStatus status (static_cast<State> (type),
-				QString::fromUtf8 (msg.c_str ()));
-
-		entry->SetStatus (status, QString::fromUtf8 (resource.c_str ()));
-	}
-
-	void ClientConnection::handleSelfPresence (const gloox::RosterItem& item,
-				const std::string& resource,
-				gloox::Presence::PresenceType type,
-				const std::string& msg)
-	{
-		// TODO
-	}
-
-	bool ClientConnection::handleSubscriptionRequest (const gloox::JID& jid, const std::string& msg)
-	{
-		const std::string& bare = jid.bare ();
-		qDebug () << Q_FUNC_INFO << bare.c_str ();
-		const QString& str = QString::fromUtf8 (msg.c_str ());
-		emit gotSubscriptionRequest (new UnauthCLEntry (jid, str, Account_),
-				str);
-		return false;
-	}
-
-	bool ClientConnection::handleUnsubscriptionRequest (const gloox::JID&, const std::string&)
-	{
-		qDebug () << Q_FUNC_INFO;
-		// TODO
-		return false;
-	}
-
-	void ClientConnection::handleNonrosterPresence (const gloox::Presence&)
-	{
-		qDebug () << Q_FUNC_INFO;
-		// TODO
-	}
-
-	void ClientConnection::handleRosterError (const gloox::IQ&)
-	{
-		qDebug () << Q_FUNC_INFO;
-		// TODO
-	}
-
-	void ClientConnection::handleMessageSession (gloox::MessageSession *session)
-	{
-		gloox::JID jid = session->target ();
-		gloox::JID bareJid = jid.bareJID ();
-		QString resource = QString::fromUtf8 (jid.resource ().c_str ());
-		if (!Sessions_ [bareJid].contains (resource) ||
-				Sessions_ [bareJid] [resource] != session)
-			Sessions_ [bareJid] [resource] = session;
-
-		session->registerMessageHandler (this);
-	}
-
-	void ClientConnection::handleMessage (const gloox::Message& msg, gloox::MessageSession *session)
-	{
-		gloox::JID jid = session->target ().bareJID ();
-
-		if (!JID2CLEntry_.contains (jid))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "map doesn't contain"
-					<< QString::fromUtf8 (jid.full ().c_str());
-			return;
-		}
-
-		GlooxCLEntry *entry = JID2CLEntry_ [jid];
-		GlooxMessage *gm = new GlooxMessage (msg, entry, session);
-		gm->SetDateTime (QDateTime::currentDateTime ());
-
-		entry->HandleMessage (gm);
-	}
-
-	void ClientConnection::handleVCard (const gloox::JID& jid, const gloox::VCard *vcard)
-	{
-		if (!vcard)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got null vcard"
-					<< "for jid"
-					<< jid.full ().c_str ();
-			return;
-		}
-
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-			if (rh->GetRoomJID () == jid.bare ())
-			{
-				rh->HandleVCard (vcard,
-					QString::fromUtf8 (jid.resource ().c_str ()));
-				return;
-			}
-
-		if (JID2CLEntry_.contains (jid))
-		{
-			JID2CLEntry_ [jid]->SetVCard (vcard);
-			JID2CLEntry_ [jid]->SetAvatar (vcard->photo ());
-		}
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "vcard reply for unknown request for jid"
-					<< jid.full ().c_str ();
-	}
-
-	void ClientConnection::handleVCardResult (gloox::VCardHandler::VCardContext ctx,
-			const gloox::JID& jid, gloox::StanzaError er)
-	{
-		// TODO
-	}
-
-	void ClientConnection::handlePresence (const gloox::Presence& presence)
-	{
-		const gloox::Capabilities *caps = presence.capabilities ();
-		if (!caps)
-			return;
-
-		const gloox::JID& from = presence.from ();
-		if (JID2CLEntry_.contains (from.bareJID ()))
-		{
-			const QString& var = QString::fromUtf8 (from.resource ().c_str ());
-			JID2CLEntry_ [from.bareJID ()]->SetClientInfo (var, caps);
-		}
-	}
-
-	GlooxCLEntry* ClientConnection::CreateCLEntry (gloox::RosterItem *ri)
+	GlooxCLEntry* ClientConnection::CreateCLEntry (const QXmppRosterIq::Item& ri)
 	{
 		GlooxCLEntry *entry = 0;
-		gloox::JID jid (ri->jid ());
-		const gloox::JID& bareJID = jid.bareJID ();
+		const QString& bareJID = ri.bareJid ();
 		if (!JID2CLEntry_.contains (bareJID))
 		{
 			if (ODSEntries_.contains (bareJID))
 				entry = ConvertFromODS (bareJID, ri);
 			else
 			{
-				entry = new GlooxCLEntry (ri, Account_);
+				entry = new GlooxCLEntry (bareJID, Account_);
 				JID2CLEntry_ [bareJID] = entry;
-				FetchVCard (jid);
+				FetchVCard (bareJID);
 			}
 		}
 		else
@@ -705,8 +562,8 @@ namespace Xoox
 		return entry;
 	}
 
-	GlooxCLEntry* ClientConnection::ConvertFromODS (const gloox::JID& bareJID,
-			gloox::RosterItem *ri)
+	GlooxCLEntry* ClientConnection::ConvertFromODS (const QString& bareJID,
+			const QXmppRosterIq::Item& ri)
 	{
 		GlooxCLEntry *entry = ODSEntries_.take (bareJID);
 		entry->UpdateRI (ri);
@@ -714,51 +571,6 @@ namespace Xoox
 		if (entry->GetAvatar ().isNull ())
 			FetchVCard (bareJID);
 		return entry;
-	}
-
-	void ClientConnection::HandleProxy ()
-	{
-		Util::BaseSettingsManager *mgr =
-				Core::Instance ().GetProxy ()->GetSettingsManager ();
-		if (!mgr->property ("ProxyEnabled").toBool ())
-			return;
-
-		const QString& proxyType = mgr->property ("ProxyType").toString ();
-
-		const QString& host = mgr->property ("ProxyHost").toString ();
-		const int port = mgr->property ("ProxyPort").toInt ();
-		const QString& login = mgr->property ("ProxyLogin").toString ();
-		const QString& password = mgr->property ("ProxyPassword").toString ();
-
-		const std::string& xmppServer = Client_->server ();
-		const int xmppPort = Client_->port ();
-
-		if (proxyType.endsWith ("http"))
-		{
-			gloox::ConnectionTCPClient *connTcp =
-					new gloox::ConnectionTCPClient (Client_->logInstance (),
-							host.toUtf8 ().constData (), port);
-			gloox::ConnectionHTTPProxy *connProxy =
-					new gloox::ConnectionHTTPProxy (Client_.get (),
-							connTcp, Client_->logInstance (),
-							xmppServer, xmppPort);
-			connProxy->setProxyAuth (login.toUtf8 ().constData (),
-					password.toUtf8 ().constData ());
-			Client_->setConnectionImpl (connProxy);
-		}
-		else if (proxyType == "socks5")
-		{
-			gloox::ConnectionTCPClient *connTcp =
-					new gloox::ConnectionTCPClient (Client_->logInstance (),
-							host.toUtf8 ().constData (), port);
-			gloox::ConnectionSOCKS5Proxy *connProxy =
-					new gloox::ConnectionSOCKS5Proxy (Client_.get (),
-							connTcp, Client_->logInstance (),
-							xmppServer, xmppPort);
-			connProxy->setProxyAuth (login.toUtf8 ().constData (),
-					password.toUtf8 ().constData ());
-			Client_->setConnectionImpl (connProxy);
-		}
 	}
 }
 }

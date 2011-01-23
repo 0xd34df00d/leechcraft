@@ -364,6 +364,10 @@ namespace LeechCraft
 				 */
 				void handleAuthorizationRequested (QObject*, const QString&);
 
+				void handleItemSubscribed (QObject*, const QString&);
+				void handleItemUnsubscribed (QObject*, const QString&);
+				void handleItemUnsubscribed (const QString&, const QString&);
+
 				/** Is registered in the XmlSettingsManager as handler
 				 * for changes of the "StatusIcons" property.
 				 */

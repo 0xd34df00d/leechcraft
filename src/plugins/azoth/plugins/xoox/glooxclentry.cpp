@@ -20,8 +20,8 @@
 #include <boost/bind.hpp>
 #include <QStringList>
 #include <QtDebug>
-#include <gloox/rosteritem.h>
-#include <gloox/resource.h>
+#include <QXmppClient.h>
+#include <QXmppRosterManager.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/azothcommon.h>
 #include "glooxaccount.h"
@@ -38,25 +38,17 @@ namespace Plugins
 {
 namespace Xoox
 {
-	GlooxCLEntry::GlooxCLEntry (gloox::RosterItem *ri, GlooxAccount *parent)
+	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
 	: EntryBase (parent)
-	, RI_ (ri)
+	, BareJID_ (jid)
 	{
-		connect (this,
-				SIGNAL (nameChanged (const QString&)),
-				&Core::Instance (),
-				SLOT (saveRoster ()));
 	}
 
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
-	, RI_ (0)
 	, ODS_ (ods)
+	, BareJID_ (QString::fromUtf8 (ods->ID_.constData ()))
 	{
-		connect (this,
-				SIGNAL (nameChanged (const QString&)),
-				&Core::Instance (),
-				SLOT (saveRoster ()));
 	}
 
 	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
@@ -76,31 +68,23 @@ namespace Xoox
 	void GlooxCLEntry::Convert2ODS ()
 	{
 		ODS_ = ToOfflineDataSource ();
-		RI_ = 0;
 		emit availableVariantsChanged (QStringList () << QString ());
 		CurrentStatus_.clear ();
 		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
 
-	void GlooxCLEntry::UpdateRI (gloox::RosterItem *ri)
+	void GlooxCLEntry::UpdateRI (const QXmppRosterIq::Item&)
 	{
-		RI_ = ri;
 		ODS_.reset ();
 
 		emit availableVariantsChanged (Variants ());
+		emit nameChanged (GetEntryName ());
 	}
 
-	gloox::RosterItem* GlooxCLEntry::GetRI () const
+	QXmppRosterIq::Item GlooxCLEntry::GetRI () const
 	{
-		return RI_;
-	}
-
-	QList<const gloox::Resource*> GlooxCLEntry::GetResourcesDesc () const
-	{
-		QList<const gloox::Resource*> result;
-		Q_FOREACH (const std::string& str, VariantsImpl ())
-			result << RI_->resource (str);
-		return result;
+		return Account_->GetClientConnection ()->GetClient ()->
+				rosterManager ().getRosterEntry (BareJID_);
 	}
 
 	QObject* GlooxCLEntry::GetParentAccount () const
@@ -123,10 +107,10 @@ namespace Xoox
 		if (ODS_)
 			return ODS_->Name_;
 
-		std::string name = RI_->name ();
-		if (!name.size ())
-			name = RI_->jid ();
-		return QString::fromUtf8 (name.c_str ());
+		QString name = GetRI ().name ();
+		if (name.isEmpty ())
+			return BareJID_;
+		return name;
 	}
 
 	void GlooxCLEntry::SetEntryName (const QString& name)
@@ -134,8 +118,9 @@ namespace Xoox
 		if (ODS_)
 			return;
 
-		RI_->setName (name.toUtf8 ().constData ());
-		Account_->Synchronize ();
+		QXmppRosterIq::Item item = GetRI ();
+		item.setName (name);
+		Account_->GetClientConnection ()->Update (item);
 
 		emit nameChanged (name);
 	}
@@ -145,7 +130,7 @@ namespace Xoox
 		if (ODS_)
 			return ODS_->ID_;
 
-		return RI_->jid ().c_str ();
+		return BareJID_.toUtf8 ();
 	}
 
 	QStringList GlooxCLEntry::Groups () const
@@ -153,42 +138,16 @@ namespace Xoox
 		if (ODS_)
 			return ODS_->Groups_;
 
-		QStringList result;
-		Q_FOREACH (const std::string& string, RI_->groups ())
-			result << QString::fromUtf8 (string.c_str ());
-		return result;
-	}
-
-	QList<std::string> GlooxCLEntry::VariantsImpl () const
-	{
-		QMap<int, std::string> prio2resource;
-		std::pair<std::string, gloox::Resource*> pair;
-		Q_FOREACH (pair, RI_->resources ())
-			prio2resource [pair.second->priority ()] = pair.first;
-
-		QList<std::string> result;
-
-		QList<int> keys = prio2resource.keys ();
-		if (keys.size ())
-		{
-			std::sort (keys.begin (), keys.end ());
-			std::reverse (keys.begin (), keys.end ());
-			Q_FOREACH (int key, keys)
-				result << prio2resource [key];
-		}
-
-		return result;
+		return GetRI ().groups ().toList ();
 	}
 
 	QStringList GlooxCLEntry::Variants () const
 	{
 		QStringList result;
 
-		if (ODS_)
-			return result << QString ();
-
-		Q_FOREACH (const std::string& str, VariantsImpl ())
-			result << QString::fromUtf8 (str.c_str ());
+		if (!ODS_)
+			result << Account_->GetClientConnection ()->
+					GetClient ()->rosterManager ().getResources (BareJID_);
 
 		if (result.isEmpty ())
 			result << QString ();
@@ -205,7 +164,7 @@ namespace Xoox
 			return 0;
 		}
 
-		QObject *msg = Account_->CreateMessage (type, variant, text, RI_);
+		QObject *msg = Account_->CreateMessage (type, variant, text, GetRI ());
 		AllMessages_ << msg;
 		return msg;
 	}
@@ -215,7 +174,7 @@ namespace Xoox
 		if (ODS_)
 			return ODS_->AuthStatus_;
 
-		return static_cast<AuthStatus> (RI_->subscription ());
+		return static_cast<AuthStatus> (GetRI ().subscriptionType ());
 	}
 
 	void GlooxCLEntry::RevokeAuth (const QString& reason)
@@ -239,16 +198,15 @@ namespace Xoox
 		if (ODS_)
 			return;
 
-		const QString& id = QString::fromUtf8 (GetJID ().bare ().c_str ());
-		Account_->GetClientConnection ()->Subscribe (id,
+		Account_->GetClientConnection ()->Subscribe (GetJID (),
 				reason,
 				GetEntryName (),
 				Groups ());
 	}
 
-	gloox::JID GlooxCLEntry::GetJID () const
+	QString GlooxCLEntry::GetJID () const
 	{
-		return gloox::JID (RI_->jid ()).bareJID ();
+		return BareJID_;
 	}
 }
 }

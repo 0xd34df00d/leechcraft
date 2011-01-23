@@ -18,9 +18,9 @@
 
 #include "glooxmessage.h"
 #include <QtDebug>
-#include <gloox/messagesession.h>
-#include <gloox/message.h>
+#include <QXmppClient.h>
 #include "glooxclentry.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -33,27 +33,35 @@ namespace Plugins
 namespace Xoox
 {
 	GlooxMessage::GlooxMessage (IMessage::MessageType type,
-			IMessage::Direction direction,
-			QObject *entry,
-			gloox::MessageSession *session)
+			IMessage::Direction dir,
+			const QString& jid,
+			const QString& variant,
+			ClientConnection *conn)
 	: Type_ (type)
-	, Direction_ (direction)
-	, Entry_ (entry)
-	, Variant_ (QString::fromUtf8 (session->target ().resource ().c_str ()))
-	, Session_ (session)
+	, Direction_ (dir)
+	, Connection_ (conn)
+	, BareJID_ (jid)
+	, Variant_ (variant)
 	{
+		const QString& remoteJid = variant.isEmpty () ?
+				jid :
+				jid + "/" + variant;
+		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
+		Message_.setStamp (QDateTime::currentDateTime ());
 	}
 
-	GlooxMessage::GlooxMessage (const gloox::Message& message,
-			QObject *entry,
-			gloox::MessageSession *session)
+	GlooxMessage::GlooxMessage (const QXmppMessage& message,
+			ClientConnection *conn)
 	: Type_ (MTChatMessage)
 	, Direction_ (DIn)
-	, Entry_ (entry)
-	, Body_ (QString::fromUtf8 (message.body ().c_str ()))
-	, Variant_ (QString::fromUtf8 (session->target ().resource ().c_str ()))
-	, Session_ (session)
+	, Message_ (message)
+	, Connection_ (conn)
 	{
+		const QStringList& split = message.from ().split ('/', QString::SkipEmptyParts);
+		BareJID_ = split.at (0);
+		Variant_ = split.value (1);
+		if (!Message_.stamp ().isValid ())
+			Message_.setStamp (QDateTime::currentDateTime ());
 	}
 
 	QObject* GlooxMessage::GetObject ()
@@ -74,7 +82,7 @@ namespace Xoox
 		{
 		case MTChatMessage:
 		case MTMUCMessage:
-			Session_->send (Body_.toUtf8 ().constData (), std::string ());
+			Connection_->GetClient ()->sendPacket (Message_);
 			return;
 		case MTServiceMessage:
 			qWarning () << Q_FUNC_INFO
@@ -101,7 +109,7 @@ namespace Xoox
 
 	QObject* GlooxMessage::OtherPart () const
 	{
-		return Entry_;
+		return Connection_->GetCLEntry (BareJID_, Variant_);
 	}
 
 	QString GlooxMessage::GetOtherVariant () const
@@ -111,22 +119,22 @@ namespace Xoox
 
 	QString GlooxMessage::GetBody () const
 	{
-		return Body_;
+		return Message_.body ();
 	}
 
 	void GlooxMessage::SetBody (const QString& body)
 	{
-		Body_ = body;
+		Message_.setBody (body);
 	}
 
 	QDateTime GlooxMessage::GetDateTime () const
 	{
-		return DateTime_;
+		return Message_.stamp ();
 	}
 
 	void GlooxMessage::SetDateTime (const QDateTime& dateTime)
 	{
-		DateTime_ = dateTime;
+		Message_.setStamp (dateTime);
 	}
 }
 }

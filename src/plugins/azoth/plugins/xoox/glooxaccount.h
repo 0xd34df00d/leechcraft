@@ -21,17 +21,10 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QMap>
-#include <gloox/messagehandler.h>
-#include <gloox/jid.h>
+#include <QXmppRosterIq.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
-
-namespace gloox
-{
-	class Client;
-	class RosterItem;
-}
 
 namespace LeechCraft
 {
@@ -106,7 +99,7 @@ namespace Xoox
 
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&,
-				gloox::RosterItem*);
+				const QXmppRosterIq::Item&);
 	private:
 		QString GetPassword (bool authFailure = false);
 	public slots:
@@ -121,6 +114,9 @@ namespace Xoox
 		void removedCLItems (const QList<QObject*>&);
 		void joinedGroupchat (QObject*);
 		void authorizationRequested (QObject*, const QString&);
+		void itemSubscribed (QObject*, const QString&);
+		void itemUnsubscribed (QObject*, const QString&);
+		void itemUnsubscribed (const QString&, const QString&);
 		void statusChanged (const Plugins::EntryStatus&);
 
 		void accountSettingsChanged ();

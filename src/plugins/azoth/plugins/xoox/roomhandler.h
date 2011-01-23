@@ -20,11 +20,12 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMHANDLER_H
 #include <QObject>
 #include <QHash>
-#include <gloox/mucroomhandler.h>
-#include <gloox/messagehandler.h>
 #include <interfaces/imucentry.h>
 #include "clientconnection.h"
 #include "roomparticipantentry.h"
+
+class QXmppVCardIq;
+class QXmppMucManager;
 
 namespace LeechCraft
 {
@@ -41,31 +42,25 @@ namespace Xoox
 	class RoomParticipantEntry;
 
 	class RoomHandler : public QObject
-					  , public gloox::MUCRoomHandler
-					  , public gloox::MessageHandler
 	{
 		Q_OBJECT
 
 		GlooxAccount *Account_;
+		QXmppMucManager *MUCManager_;
 		RoomCLEntry *CLEntry_;
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
-		QHash<gloox::JID, gloox::MessageSession*> JID2Session_;
-		boost::shared_ptr<gloox::MUCRoom> Room_;
 		QString Subject_;
 		bool RoomHasBeenEntered_;
+		QString RoomJID_;
+		QString OurNick_;
 		// contains new nicks
 		QSet<QString> PendingNickChanges_;
 	public:
-		RoomHandler (GlooxAccount*);
+		RoomHandler (const QString& roomJID, const QString& ourNick, GlooxAccount*);
 
-		/** This must be called before any calls to
-		 * GetCLEntry().
-		 */
-		void SetRoom (boost::shared_ptr<gloox::MUCRoom>);
-		boost::shared_ptr<gloox::MUCRoom> GetRoom () const;
-		gloox::JID GetRoomJID () const;
+		QString GetRoomJID () const;
 		RoomCLEntry* GetCLEntry ();
-		void HandleVCard (const gloox::VCard*, const QString&);
+		void HandleVCard (const QXmppVCardIq&, const QString&);
 
 		void SetState (const GlooxAccountState&);
 
@@ -74,15 +69,20 @@ namespace Xoox
 		QList<QObject*> GetParticipants () const;
 		QString GetSubject () const;
 		void SetSubject (const QString&);
-		void Kick (const QString& nick, const QString& reason = QString ());
 		void Leave (const QString& msg);
 		RoomParticipantEntry* GetSelf () const;
+		QString GetOurNick () const;
+		void SetOurNick (const QString&);
 
 		void SetAffiliation (RoomParticipantEntry*,
 				IMUCEntry::MUCAffiliation, const QString&);
 		void SetRole (RoomParticipantEntry*,
 				IMUCEntry::MUCRole, const QString&);
 
+		void HandlePresence (const QXmppPresence&, const QString&);
+		void HandleMessage (const QXmppMessage&, const QString&);
+		void UpdatePerms (const QList<QXmppMucAdminIq::Item>&);
+		/*
 		// MUCRoomHandler
 		virtual void handleMUCParticipantPresence (gloox::MUCRoom*,
 				const gloox::MUCRoomParticipant, const gloox::Presence&);
@@ -101,10 +101,7 @@ namespace Xoox
 
 		// MessageHandler
 		virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
-	private:
-		/** Creates a new entry for the given nick.
-		 */
-		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
+		*/
 
 		/** Creates a new entry for the given nick if it
 		 * doesn't exist already (and does so by calling
@@ -112,16 +109,20 @@ namespace Xoox
 		 * already existing one.
 		 */
 		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
-
+	private:
+		/** Creates a new entry for the given nick.
+		 */
+		RoomParticipantEntry_ptr CreateParticipantEntry (const QString& nick, bool announce);
+		void MakeLeaveMessage (const QXmppPresence&, const QString&);
+		void MakeJoinMessage (const QXmppPresence&, const QString&);
+		void MakeStatusChangedMessage (const QXmppPresence&, const QString&);
+		/*
 		void MakeLeaveMessage (const gloox::MUCRoomParticipant);
 		void MakeStatusChangedMessage (const gloox::MUCRoomParticipant, const gloox::Presence&);
 		void MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant);
 		void MakeJoinMessage (const gloox::MUCRoomParticipant);
 		void MakeNickChangeMessage (const QString& oldNick, const QString& newNick);
-
-		gloox::MessageSession* GetSessionWith (const gloox::JID&);
-		QString NickFromJID (const gloox::JID&) const;
-		gloox::JID JIDForNick (const QString&) const;
+		*/
 
 		void RemoveThis ();
 	};
