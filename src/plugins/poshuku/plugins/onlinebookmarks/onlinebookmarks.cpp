@@ -145,7 +145,7 @@ namespace OnlineBookmarks
 		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
 		downloadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_download");
 		QAction *downloadAll = menuBookmarksSyn->addAction (tr ("Download all"));
-		//sync->setProperty ("ActionIcon", "");
+		downloadAll->setProperty ("ActionIcon", "poshuku_onlinebookmarks_downloadall");
 
 		connect (sync,
 				SIGNAL (triggered ()),
