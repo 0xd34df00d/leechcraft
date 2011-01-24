@@ -30,39 +30,47 @@ namespace LeechCraft
 	{
 		namespace Kinotify
 		{
+			class NotificationAction;
+
 			class KinotifyWidget : public QWebView
 			{
 				Q_OBJECT
-					Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity);
+				Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity);
 
-					QString Title_;
-					QString Body_;
-					QString ImagePath_;
-					QString Theme_;
-					QSize DefaultSize_;
-					int Timeout_;
-					int AnimationTime_;
-					QTimer *CloseTimer_;
-					QTimer *CheckTimer_;
-					QStateMachine Machine_;
-					const QByteArray MakeImage (const QString& imgPath = QString ());
-					void CreateWidget ();
-					void SetTheme (const QString&);
-					QSize SetData ();
-					void SetWidgetPlace ();
-					void ShowNotification ();
+				QString Title_;
+				QString Body_;
+				QString ImagePath_;
+				QString Theme_;
+				QSize DefaultSize_;
+				int Timeout_;
+				int AnimationTime_;
+				QTimer *CloseTimer_;
+				QTimer *CheckTimer_;
+				QStateMachine Machine_;
+				const QByteArray MakeImage (const QString& imgPath = QString ());
+				QStringList ActionsNames_;
+				NotificationAction *Action_;
 			public:
-					KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
-					void SetContent (const QString&, const QString&, const QString&, const QSize& size = QSize (350, 70));
-					void PrepareNotification ();
-				protected:
-					virtual void mouseReleaseEvent (QMouseEvent*);
-				public slots:
-					void stateMachinePause ();
-					void closeNotification ();
-				signals:
-					void initiateCloseNotification ();
-					void checkNotificationQueue ();
+				KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
+				void SetContent (const QString&, const QString&, const QString&, const QSize& size = QSize (350, 70));
+				void PrepareNotification ();
+				void SetActions (const QStringList&, QObject*);
+			protected:
+				virtual void mousePressEvent (QMouseEvent*);
+			public slots:
+				void stateMachinePause ();
+				void closeNotification ();
+				void closeNotificationWidget ();
+				void initJavaScript ();
+			private:
+				void CreateWidget ();
+				void SetTheme (const QString&);
+				QSize SetData ();
+				void SetWidgetPlace ();
+				void ShowNotification ();
+			signals:
+				void initiateCloseNotification ();
+				void checkNotificationQueue ();
 			};
 		};
 	};

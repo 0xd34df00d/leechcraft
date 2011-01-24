@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QWebFrame>
+#include <QWebElement>
 #include <QFrame>
 #include <QBuffer>
 #include <QFile>
@@ -30,6 +31,8 @@
 #include <QState>
 #include <QPropertyAnimation>
 #include <QFinalState>
+#include <QWebHitTestResult>
+#include "notificationaction.h"
 
 namespace LeechCraft
 {
@@ -41,6 +44,7 @@ namespace LeechCraft
 			: QWebView (widget)
 			, Timeout_ (timeout)
 			, AnimationTime_ (animationTimout)
+			, Action_ (new NotificationAction (this))
 			{
 				CloseTimer_ = new QTimer (this);
 				CheckTimer_ = new QTimer (this);
@@ -96,6 +100,17 @@ namespace LeechCraft
 						SIGNAL (timeout ()),
 						this,
 						SIGNAL (checkNotificationQueue ()));
+				
+				initJavaScript ();
+				connect (page ()->mainFrame (),
+						SIGNAL (javaScriptWindowObjectCleared ()),
+						this,
+						SLOT (initJavaScript ()));
+				
+				connect (Action_,
+						SIGNAL (actionPressed ()),
+						this,
+						SLOT (closeNotificationWidget ()));
 			}
 
 			void KinotifyWidget::SetContent (const QString& title, const QString& body,
@@ -123,6 +138,77 @@ namespace LeechCraft
 						iconBuffer.buffer ().toBase64 ();
 			}
 
+			void KinotifyWidget::mousePressEvent (QMouseEvent *event)
+			{
+				QWebElement elem =  page ()->mainFrame ()->hitTestContent (event->pos ()).element ();
+				if ((elem.isNull ()) || (elem.attribute ("type") != "button"))
+				{
+					disconnect (CheckTimer_,
+							SIGNAL (timeout ()),
+							this,
+							SIGNAL (checkNotificationQueue ()));
+
+					disconnect (&Machine_,
+							SIGNAL (finished ()),
+							this,
+							SLOT (closeNotification ()));
+
+					emit checkNotificationQueue ();
+					closeNotification ();
+				}
+				else
+				{
+					mouseReleaseEvent (event);
+					event->ignore ();
+				}
+			}
+
+			void KinotifyWidget::PrepareNotification ()
+			{
+				CreateWidget ();
+				DefaultSize_ = SetData ();
+				SetWidgetPlace ();
+				ShowNotification ();
+			}
+
+			void KinotifyWidget::SetActions (const QStringList& actions, QObject *object)
+			{
+				ActionsNames_ = actions;
+				Action_->SetActionObject (object);
+			}
+			
+			void KinotifyWidget::stateMachinePause ()
+			{
+				CloseTimer_->start (Timeout_);
+				CheckTimer_->start (Timeout_);
+			}
+
+			void KinotifyWidget::closeNotificationWidget()
+			{
+				disconnect (CheckTimer_,
+						SIGNAL (timeout ()),
+						this,
+						SIGNAL (checkNotificationQueue ()));
+
+				disconnect (&Machine_,
+						SIGNAL (finished ()),
+						this,
+						SLOT (closeNotification()));
+
+				emit checkNotificationQueue ();
+				closeNotification ();
+			}
+
+			void KinotifyWidget::closeNotification ()
+			{
+				close ();
+			}
+			
+			void KinotifyWidget::initJavaScript ()
+			{
+				page ()->mainFrame ()->addToJavaScriptWindowObject (QString ("Action"), Action_);
+			}
+			
 			void KinotifyWidget::CreateWidget ()
 			{
 				SetTheme (":/plugins/kinotify/resources/notification/commie");
@@ -170,13 +256,24 @@ namespace LeechCraft
 				data.replace ("{body}", Body_);
 				data.replace ("{imagepath}", MakeImage (ImagePath_));
 				setHtml (data);
+				
+				if (!ActionsNames_.isEmpty ())
+				{
+					QWebElement button = page ()->mainFrame ()->documentElement ().findFirst ("form");
+					if (!button.isNull ())
+						Q_FOREACH (const QString& name, ActionsNames_)
+							button.appendInside (QString ("<input type=\"button\" id=\"%1\" value=\"%2\""
+									" onclick=\"Action.sendActionOnClick(id)\" />")
+											.arg (ActionsNames_.indexOf (name))
+											.arg (name));
+				}
 
 				int width = size ().width ();
 				int height = size ().height ();
 
 				QSize contents = page ()->mainFrame ()->contentsSize ();
 				int cheight = contents.height ();
-
+				
 				if (cheight > height)
 					height = cheight;
 
@@ -197,46 +294,11 @@ namespace LeechCraft
 				setGeometry (place);
 			}
 
-			void KinotifyWidget::mouseReleaseEvent (QMouseEvent *event)
-			{
-				disconnect (CheckTimer_,
-						SIGNAL (timeout ()),
-						this,
-						SIGNAL (checkNotificationQueue ()));
-
-				disconnect (&Machine_,
-						SIGNAL (finished ()),
-						this,
-						SLOT (closeNotification()));
-
-				emit checkNotificationQueue ();
-				closeNotification ();
-			}
-
-			void KinotifyWidget::PrepareNotification ()
-			{
-				CreateWidget ();
-				DefaultSize_ = SetData ();
-				SetWidgetPlace ();
-				ShowNotification ();
-			}
-
-			void KinotifyWidget::stateMachinePause ()
-			{
-				CloseTimer_->start (Timeout_);
-				CheckTimer_->start (Timeout_);
-			}
-
 			void KinotifyWidget::ShowNotification ()
 			{
 				show ();
 				setWindowOpacity (0.0);
 				Machine_.start ();
-			}
-
-			void KinotifyWidget::closeNotification ()
-			{
-				close ();
 			}
 		};
 	};
