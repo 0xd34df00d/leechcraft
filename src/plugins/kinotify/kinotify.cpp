@@ -108,11 +108,9 @@ namespace LeechCraft
 				{
 					QObject *actionObject = e.Additional_ ["HandlingObject"].value<QObject*> ();
 					if (!actionObject)
-					{
 						qWarning () << Q_FUNC_INFO
 								<< "value is not QObject*"
 								<< e.Additional_ ["HandlingObject"];
-					}
 					else
 						notificationWidget->SetActions (actionsNames, actionObject);
 				}
