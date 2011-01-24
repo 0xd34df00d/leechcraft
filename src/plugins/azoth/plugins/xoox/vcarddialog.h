@@ -21,10 +21,7 @@
 #include <QDialog>
 #include "ui_vcarddialog.h"
 
-namespace gloox
-{
-	class VCard;
-}
+class QXmppVCardIq;
 
 namespace LeechCraft
 {
@@ -44,9 +41,7 @@ namespace Xoox
 	public:
 		VCardDialog (QWidget* = 0);
 
-		void UpdateInfo (const gloox::VCard*);
-
-		static QString GetName (const gloox::VCard*);
+		void UpdateInfo (const QXmppVCardIq&);
 	};
 }
 }

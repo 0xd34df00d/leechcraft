@@ -20,9 +20,10 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPUBLICMESSAGE_H
 #include <QObject>
 #include <QPointer>
-#include <gloox/message.h>
 #include <interfaces/imessage.h>
 #include "roomparticipantentry.h"
+
+class QXmppMessage;
 
 namespace LeechCraft
 {
@@ -48,7 +49,7 @@ namespace Xoox
 		QString Message_;
 		QDateTime Datetime_;
 		Direction Direction_;
-		gloox::JID FromJID_;
+		QString FromJID_;
 		MessageType Type_;
 		MessageSubType SubType_;
 	public:
@@ -58,7 +59,7 @@ namespace Xoox
 				MessageType,
 				MessageSubType,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
-		RoomPublicMessage (const gloox::Message&, RoomCLEntry*,
+		RoomPublicMessage (const QXmppMessage&, RoomCLEntry*,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
 
 		QObject* GetObject ();

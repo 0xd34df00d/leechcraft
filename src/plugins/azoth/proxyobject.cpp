@@ -39,13 +39,8 @@ namespace Azoth
 	: QObject (parent)
 	{
 		SerializedStr2AuthStatus_ ["None"] = Plugins::ASNone;
-		SerializedStr2AuthStatus_ ["NoneOut"] = Plugins::ASNoneOut;
-		SerializedStr2AuthStatus_ ["NoneIn"] = Plugins::ASNoneIn;
-		SerializedStr2AuthStatus_ ["NoneOutIn"] = Plugins::ASNoneOutIn;
 		SerializedStr2AuthStatus_ ["To"] = Plugins::ASTo;
-		SerializedStr2AuthStatus_ ["ToIn"] = Plugins::ASToIn;
 		SerializedStr2AuthStatus_ ["From"] = Plugins::ASFrom;
-		SerializedStr2AuthStatus_ ["FromIn"] = Plugins::ASFromIn;
 		SerializedStr2AuthStatus_ ["Both"] = Plugins::ASBoth;
 	}
 
@@ -251,20 +246,10 @@ namespace Azoth
 		{
 		case Plugins::ASNone:
 			return "None";
-		case Plugins::ASNoneOut:
-			return "NoneOut";
-		case Plugins::ASNoneIn:
-			return "NoneIn";
-		case Plugins::ASNoneOutIn:
-			return "NoneOutIn";
 		case Plugins::ASTo:
 			return "To";
-		case Plugins::ASToIn:
-			return "ToIn";
 		case Plugins::ASFrom:
 			return "From";
-		case Plugins::ASFromIn:
-			return "FromIn";
 		case Plugins::ASBoth:
 			return "Both";
 		}

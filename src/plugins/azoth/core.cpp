@@ -1046,6 +1046,18 @@ namespace LeechCraft
 						this,
 						SLOT (handleAuthorizationRequested (QObject*, const QString&)));
 				connect (accObject,
+						SIGNAL (itemSubscribed (QObject*, const QString&)),
+						this,
+						SLOT (handleItemSubscribed (QObject*, const QString&)));
+				connect (accObject,
+						SIGNAL (itemUnsubscribed (QObject*, const QString&)),
+						this,
+						SLOT (handleItemUnsubscribed (QObject*, const QString&)));
+				connect (accObject,
+						SIGNAL (itemUnsubscribed (const QString&, const QString&)),
+						this,
+						SLOT (handleItemUnsubscribed (const QString&, const QString&)));
+				connect (accObject,
 						SIGNAL (statusChanged (const Plugins::EntryStatus&)),
 						this,
 						SLOT (handleAccountStatusChanged (const Plugins::EntryStatus&)));
@@ -1309,6 +1321,68 @@ namespace LeechCraft
 							.arg (entry->GetEntryName ()) :
 						tr ("Subscription requested by %1: %2.")
 							.arg (entry->GetEntryName ())
+							.arg (msg);
+				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
+			}
+
+			/** @todo Option for disabling notifications of subscription events.
+			 */
+			void Core::handleItemSubscribed (QObject *entryObj, const QString& msg)
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entryObj
+							<< "doesn't implement ICLEntry";
+					return;
+				}
+
+				QString str = msg.isEmpty () ?
+						tr ("%1 (%2) subscribed to us.")
+							.arg (entry->GetEntryName ())
+							.arg (entry->GetHumanReadableID ()) :
+						tr ("%1 (%2) subscribed to us: %3.")
+							.arg (entry->GetEntryName ())
+							.arg (entry->GetHumanReadableID ())
+							.arg (msg);
+				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
+			}
+
+			/** @todo Option for disabling notifications of unsubscription events.
+			 */
+			void Core::handleItemUnsubscribed (QObject *entryObj, const QString& msg)
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entryObj
+							<< "doesn't implement ICLEntry";
+					return;
+				}
+
+				QString str = msg.isEmpty () ?
+						tr ("%1 (%2) unsubscribed from us.")
+							.arg (entry->GetEntryName ())
+							.arg (entry->GetHumanReadableID ()) :
+						tr ("%1 (%2) unsubscribed from us: %3.")
+							.arg (entry->GetEntryName ())
+							.arg (entry->GetHumanReadableID ())
+							.arg (msg);
+				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
+			}
+
+			/** @todo Option for disabling notifications of unsubscription events from
+			 * non-roster items.
+			 */
+			void Core::handleItemUnsubscribed (const QString& entryId, const QString& msg)
+			{
+				QString str = msg.isEmpty () ?
+						tr ("%1 unsubscribed from us.")
+							.arg (entryId) :
+						tr ("%1 unsubscribed from us: %2.")
+							.arg (entryId)
 							.arg (msg);
 				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
 			}

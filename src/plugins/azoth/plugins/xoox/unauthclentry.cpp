@@ -29,7 +29,7 @@ namespace Plugins
 {
 namespace Xoox
 {
-	UnauthCLEntry::UnauthCLEntry (const gloox::JID& jid,
+	UnauthCLEntry::UnauthCLEntry (const QString& jid,
 			const QString& str, GlooxAccount *accountObj)
 	: EntryBase (accountObj)
 	, JID_ (jid)
@@ -55,7 +55,7 @@ namespace Xoox
 
 	QString UnauthCLEntry::GetEntryName () const
 	{
-		return QString::fromUtf8 (JID_.bare ().c_str ());
+		return JID_;
 	}
 
 	void UnauthCLEntry::SetEntryName (const QString&)
@@ -64,12 +64,12 @@ namespace Xoox
 
 	QByteArray UnauthCLEntry::GetEntryID () const
 	{
-		return QByteArray (JID_.bare ().c_str ()) + "_unauth";
+		return JID_.toUtf8 () + "_unauth";
 	}
 
 	QString UnauthCLEntry::GetHumanReadableID () const
 	{
-		return QString::fromUtf8 (JID_.bare ().c_str ());
+		return JID_;
 	}
 
 	QStringList UnauthCLEntry::Groups () const
@@ -88,7 +88,7 @@ namespace Xoox
 		return 0;
 	}
 
-	gloox::JID UnauthCLEntry::GetJID () const
+	QString UnauthCLEntry::GetJID () const
 	{
 		return JID_;
 	}

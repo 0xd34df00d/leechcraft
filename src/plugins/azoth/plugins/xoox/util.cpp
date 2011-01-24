@@ -32,6 +32,7 @@ namespace Xoox
 {
 namespace Util
 {
+	/*
 	QString RoleToString (const gloox::MUCRoomRole& role)
 	{
 		switch (role)
@@ -67,6 +68,7 @@ namespace Util
 			return QObject::tr ("owner");
 		}
 	}
+	*/
 
 	namespace
 	{

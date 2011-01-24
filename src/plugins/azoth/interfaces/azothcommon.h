@@ -28,14 +28,23 @@ namespace Azoth
 {
 namespace Plugins
 {
+
+
+
+
+
+
+
+
 	enum State
 	{
-		SOnline,
-		SChat,
-		SAway,
-		SDND,
-		SXA,
 		SOffline,
+		SOnline,
+		SAway,
+		SXA,
+		SDND,
+		SChat,
+		SInvisible,
 		SProbe,
 		SError,
 		SInvalid
@@ -43,7 +52,8 @@ namespace Plugins
 
 	inline bool IsLess (State s1, State s2)
 	{
-		return static_cast<int> (s1) < static_cast<int> (s2);
+		static int order [] = { 7, 3, 4, 5, 6, 1, 2, 8, 9, 10 };
+		return order [s1] < order [s2];
 	}
 
 	/** Represents possible state of authorizations between two
@@ -58,42 +68,13 @@ namespace Plugins
 		 */
 		ASNone,
 
-		/** Contact and user are not subscribed to each other, and
-		 * user has sent contact a subscription request but contact has
-		 * not replied yet.
-		 */
-		ASNoneOut,
-
-		/** Contact and user are not subscribed to each other, and
-		 * contact has sent user a subscription request but user has not
-		 * replied yet.
-		 */
-		ASNoneIn,
-
-		/** Contact and user are not subscribed to each other, contact
-		 * has sent user a subscription request but user has not replied
-		 * yet, and user has sent contact a subscription request but
-		 * contact has not replied yet.
-		 */
-		ASNoneOutIn,
-
-		/** User is subscribed to contact (one-way).
-		 */
-		ASTo,
-
-		/** User is subscribed to contact, and contact has sent user a
-		 * subscription request but user has not replied yet.
-		 */
-		ASToIn,
-
 		/** Contact is subscribed to user (one-way).
 		 */
 		ASFrom,
 
-		/** Contact is subscribed to user, and user has sent contact a
-		 * subscription request but contact has not replied yet.
+		/** User is subscribed to contact (one-way).
 		 */
-		ASFromIn,
+		ASTo,
 
 		/** User and contact are subscribed to each other (two-way).
 		 */

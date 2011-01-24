@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 #include <QDomDocument>
+#include <QXmppLogger.h>
 #include <plugininterface/util.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/iproxyobject.h>
@@ -40,6 +41,9 @@ namespace Xoox
 	Core::Core ()
 	: PluginProxy_ (0)
 	{
+		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
+		QXmppLogger::getLogger ()->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
+		QXmppLogger::getLogger ()->setMessageTypes (QXmppLogger::AnyMessage);
 		GlooxProtocol_.reset (new GlooxProtocol (this));
 	}
 
@@ -171,7 +175,9 @@ namespace Xoox
 					.firstChildElement ("entry");
 			while (!entry.isNull ())
 			{
-				const QByteArray& entryID = entry.firstChildElement ("id").text ().toUtf8 ();
+				const QByteArray& entryID =
+						QByteArray::fromPercentEncoding (entry
+								.firstChildElement ("id").text ().toLatin1 ());
 				const QString& name = entry.firstChildElement ("name").text ();
 
 				QStringList groups;
@@ -244,7 +250,7 @@ namespace Xoox
 						continue;
 
 					w.writeStartElement ("entry");
-						w.writeTextElement ("id", entry->GetEntryID ());
+						w.writeTextElement ("id", entry->GetEntryID ().toPercentEncoding ("@"));
 						w.writeTextElement ("name", entry->GetEntryName ());
 						w.writeTextElement ("authstatus",
 								qobject_cast<IProxyObject*> (PluginProxy_)->

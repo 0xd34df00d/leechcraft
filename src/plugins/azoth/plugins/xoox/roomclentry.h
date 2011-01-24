@@ -24,11 +24,6 @@
 #include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
 
-namespace gloox
-{
-	class MUCRoom;
-}
-
 namespace LeechCraft
 {
 namespace Plugins
@@ -56,6 +51,8 @@ namespace Xoox
 		RoomHandler *RH_;
 	public:
 		RoomCLEntry (RoomHandler*, GlooxAccount*);
+
+		RoomHandler* GetRoomHandler () const;
 
 		// ICLEntry
 		QObject* GetObject ();
@@ -92,8 +89,6 @@ namespace Xoox
 		void SetAffiliation (QObject*, MUCAffiliation, const QString&);
 		MUCRole GetRole (QObject*) const;
 		void SetRole (QObject*, MUCRole, const QString&);
-
-		boost::shared_ptr<gloox::MUCRoom> GetRoom ();
 
 		void HandleMessage (RoomPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);

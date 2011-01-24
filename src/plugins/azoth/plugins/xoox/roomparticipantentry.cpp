@@ -19,7 +19,6 @@
 #include "roomparticipantentry.h"
 #include <QAction>
 #include <QtDebug>
-#include <gloox/mucroom.h>
 #include "glooxaccount.h"
 #include "roompublicmessage.h"
 #include "glooxmessage.h"
@@ -41,8 +40,8 @@ namespace Xoox
 	: EntryBase (account)
 	, Nick_ (nick)
 	, RoomHandler_ (rh)
-	, Affiliation_ (gloox::AffiliationInvalid)
-	, Role_ (gloox::RoleInvalid)
+	, Affiliation_ (QXmppMucAdminIq::Item::UnspecifiedAffiliation)
+	, Role_ (QXmppMucAdminIq::Item::UnspecifiedRole)
 	{
 	}
 
@@ -79,20 +78,13 @@ namespace Xoox
 
 	QByteArray RoomParticipantEntry::GetEntryID () const
 	{
-		boost::shared_ptr<gloox::MUCRoom> room = RoomHandler_->GetCLEntry ()->GetRoom ();
-		return (room->name () + "@" +
-				room->service () + "/" +
-				Nick_.toUtf8 ().constData ()).c_str ();
+		return (RoomHandler_->GetRoomJID () + "/" + Nick_).toUtf8 ();
 	}
 
 	QStringList RoomParticipantEntry::Groups () const
 	{
-		boost::shared_ptr<gloox::MUCRoom> room = RoomHandler_->GetCLEntry ()->GetRoom ();
-		QString roomName = QString::fromUtf8 (room->name ().c_str ()) +
-				"@" +
-				QString::fromUtf8 (room->service ().c_str ());
 		return QStringList (tr ("%1 participants")
-				.arg (roomName));
+				.arg (RoomHandler_->GetRoomJID ()));
 	}
 
 	QStringList RoomParticipantEntry::Variants () const
@@ -108,29 +100,32 @@ namespace Xoox
 		return msg;
 	}
 
-	gloox::JID RoomParticipantEntry::GetJID () const
+	QString RoomParticipantEntry::GetJID () const
 	{
-		gloox::JID jid = RoomHandler_->GetRoomJID ();
-		jid.setResource (Nick_.toUtf8 ().constData ());
-		return jid;
+		return RoomHandler_->GetRoomJID () + "/" + Nick_;
 	}
 
-	gloox::MUCRoomAffiliation RoomParticipantEntry::GetAffiliation () const
+	QString RoomParticipantEntry::GetNick () const
+	{
+		return Nick_;
+	}
+
+	QXmppMucAdminIq::Item::Affiliation RoomParticipantEntry::GetAffiliation () const
 	{
 		return Affiliation_;
 	}
 
-	void RoomParticipantEntry::SetAffiliation (gloox::MUCRoomAffiliation aff)
+	void RoomParticipantEntry::SetAffiliation (QXmppMucAdminIq::Item::Affiliation aff)
 	{
 		Affiliation_ = aff;
 	}
 
-	gloox::MUCRoomRole RoomParticipantEntry::GetRole () const
+	QXmppMucAdminIq::Item::Role RoomParticipantEntry::GetRole () const
 	{
 		return Role_;
 	}
 
-	void RoomParticipantEntry::SetRole (gloox::MUCRoomRole role)
+	void RoomParticipantEntry::SetRole (QXmppMucAdminIq::Item::Role role)
 	{
 		Role_ = role;
 	}

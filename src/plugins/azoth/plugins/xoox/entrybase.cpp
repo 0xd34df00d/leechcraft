@@ -20,8 +20,8 @@
 #include <QImage>
 #include <QStringList>
 #include <QtDebug>
-#include <gloox/rosteritem.h>
-#include <gloox/capabilities.h>
+#include <QXmppVCardIq.h>
+#include <QXmppPresence.h>
 #include <plugininterface/util.h>
 #include "glooxmessage.h"
 #include "glooxclentry.h"
@@ -30,6 +30,8 @@
 #include "clientconnection.h"
 #include "util.h"
 #include "core.h"
+#include <QXmppClient.h>
+#include <QXmppRosterManager.h>
 
 namespace LeechCraft
 {
@@ -60,19 +62,30 @@ namespace Xoox
 
 	EntryStatus EntryBase::GetStatus (const QString& variant) const
 	{
-		const GlooxCLEntry *entry = qobject_cast<const GlooxCLEntry*> (this);
-		const gloox::Resource *hr = 0;
-		if (entry && entry->GetRI ())
-			hr = entry->GetRI ()->highestResource ();
 		if (CurrentStatus_.contains (variant))
 			return CurrentStatus_ [variant];
-		else if (hr)
-			return EntryStatus (static_cast<State> (hr->presence ()),
-					QString::fromUtf8 (hr->message ().c_str ()));
-		else if (CurrentStatus_.size ())
+
+		const GlooxCLEntry *entry = qobject_cast<const GlooxCLEntry*> (this);
+		QXmppRosterManager& rm = Account_->
+				GetClientConnection ()->GetClient ()->rosterManager ();
+		if (entry && rm.isRosterReceived ())
+		{
+			QList<QXmppPresence> press = rm.getAllPresencesForBareJid (GetJID ()).values ();
+			if (press.size ())
+			{
+				QXmppPresence max = press.first ();
+				Q_FOREACH (const QXmppPresence& pres, press)
+					if (pres.status ().priority () > max.status ().priority ())
+						max = pres;
+				return EntryStatus (static_cast<State> (max.status ().type ()),
+						max.status ().statusText ());
+			}
+		}
+
+		if (CurrentStatus_.size ())
 			return *CurrentStatus_.begin ();
-		else
-			return EntryStatus ();
+
+		return EntryStatus ();
 	}
 
 	QList<QAction*> EntryBase::GetActions () const
@@ -105,7 +118,8 @@ namespace Xoox
 		if (!VCardDialog_)
 			VCardDialog_ = new VCardDialog ();
 
-		Account_->GetClientConnection ()->FetchVCard (GetJID ());;
+		Account_->GetClientConnection ()->RequestInfo (GetJID ());
+		Account_->GetClientConnection ()->FetchVCard (GetJID ());
 		VCardDialog_->show ();
 	}
 
@@ -130,15 +144,12 @@ namespace Xoox
 		emit statusChanged (status, variant);
 	}
 
-	void EntryBase::SetAvatar (const gloox::VCard::Photo& photo)
+	void EntryBase::SetAvatar (const QByteArray& data)
 	{
-		if (!photo.type.size ())
+		if (!data.size ())
 			SetAvatar (QImage ());
 		else
-		{
-			QByteArray data (photo.binval.c_str(), photo.binval.size ());
 			SetAvatar (QImage::fromData (data));
-		}
 	}
 
 	void EntryBase::SetAvatar (const QImage& avatar)
@@ -148,12 +159,13 @@ namespace Xoox
 		emit avatarChanged (Avatar_);
 	}
 
-	void EntryBase::SetVCard (const gloox::VCard* vcard)
+	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
 	{
 		QString text = FormatRawInfo (vcard);
 		if (!text.isEmpty ())
 			text = QString ("gloox VCard:\n") + text;
 		SetRawInfo (text);
+		SetAvatar (vcard.photo ());
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
@@ -190,106 +202,38 @@ namespace Xoox
 		Variant2ClientInfo_ [variant] ["client_name"] = name;
 	}
 
-	void EntryBase::SetClientInfo (const QString& variant, const gloox::Capabilities *caps)
+	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
-		const QString& client = QString::fromUtf8 (caps->node ().c_str ());
-		const QString& ver = QString::fromUtf8 (caps->ver ().c_str ());
+		const QString& client = pres.capabilityNode ();
+		const QString& ver = pres.capabilityVer ();
 		SetClientInfo (variant, client, ver);
 	}
 
-	QString EntryBase::FormatRawInfo (const gloox::VCard *vcard)
+	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)
 	{
 		QString text;
-		text += tr ("Name:");
-		text += VCardDialog::GetName (vcard);
+		text += tr ("Name: %1")
+				.arg (vcard.fullName ());
 		text += "\n";
 
-		if (vcard->nickname ().size ())
+		if (vcard.nickName ().size ())
 			text += tr ("Nickname: %1\n")
-					.arg (QString::fromUtf8 (vcard->nickname ().c_str ()));
-		if (vcard->url ().size ())
+					.arg (vcard.nickName ());
+		if (vcard.url ().size ())
 			text += tr ("URL: %1\n")
-					.arg (QString::fromUtf8 (vcard->url ().c_str ()));
-		if (vcard->bday ().size ())
-			text += tr ("Burthday: %1\n")
-					.arg (QString::fromUtf8 (vcard->bday ().c_str ()));
-		if (vcard->title ().size ())
-			text += tr ("Title: %1\n")
-					.arg (QString::fromUtf8 (vcard->title ().c_str ()));
-		if (vcard->role ().size ())
-			text += tr ("Role: %1\n")
-					.arg (QString::fromUtf8 (vcard->role ().c_str ()));
-		if (vcard->note ().size ())
-			text += tr ("Note: %1\n")
-					.arg (QString::fromUtf8 (vcard->note ().c_str ()));
-		if (vcard->desc ().size ())
-			text += tr ("Description: %1\n")
-					.arg (QString::fromUtf8 (vcard->desc ().c_str ()));
-		if (vcard->tz ().size ())
-			text += tr ("Timezone: %1\n")
-					.arg (QString::fromUtf8 (vcard->tz ().c_str ()));
-		if (vcard->mailer ().size ())
-			text += tr ("Mailer: %1\n")
-					.arg (QString::fromUtf8 (vcard->mailer ().c_str ()));
-		if (vcard->rev ().size ())
-			text += tr ("Rev: %1\n")
-				.arg (QString::fromUtf8 (vcard->rev ().c_str ()));
-		if (vcard->uid ().size ())
-			text += tr ("UID: %1\n")
-					.arg (QString::fromUtf8 (vcard->uid ().c_str ()));
+					.arg (vcard.url ());
+		if (vcard.birthday ().isValid ())
+			text += tr ("Birthday: %1\n")
+					.arg (vcard.birthday ().toString ());
+		if (vcard.email ().size ())
+			text += tr ("Email: %1\n")
+					.arg (vcard.email ());
 
-		// Bug in gloox: emailAddresses should be const
-		const gloox::VCard::EmailList& emails =
-				const_cast<gloox::VCard*> (vcard)->emailAddresses ();
-		Q_FOREACH (const gloox::VCard::Email& email, emails)
+		if (vcard.photoType ().size ())
 		{
-			text += QString::fromUtf8 (email.userid.c_str ());
-			if (email.home || email.work || email.internet || email.pref || email.x400)
-			{
-				text += QString ("[");
-
-				QStringList cats;
-				if (email.home)
-					cats << tr ("Home");
-				if (email.work)
-					cats << tr (" Work");
-				if (email.internet)
-					cats << tr ("Internet");
-				if (email.pref)
-					cats << tr ("Preferred");
-				if (email.x400)
-					cats << tr ("X.400");
-
-				text += QString ("[%1]")
-						.arg (cats.join ("; "));
-			}
-			text += "\n";
-		}
-		// TODO: Org, Label Address, Address,
-		if (vcard->geo ().latitude.size () || vcard->geo ().longitude.size ())
-		{
-			text += tr ("Latitude: %1\n")
-					.arg (QString::fromUtf8 (vcard->geo ().latitude.c_str ()));
-			text += tr ("Longitude: %1\n")
-				.arg (QString::fromUtf8 (vcard->geo ().longitude.c_str ()));
-		}
-
-		if (vcard->photo ().type.size ())
-		{
-			gloox::VCard::Photo photo = vcard->photo ();
-			QByteArray data (photo.binval.c_str(), photo.binval.size ());
 			text += tr ("Photo:") + QString ("\ndata:%1;base64,%2\n")
-						.arg (photo.type .c_str ())
-						.arg (data.toBase64 ().constData ());
-		}
-
-		if (vcard->logo ().type.size ())
-		{
-			gloox::VCard::Photo photo = vcard->photo ();
-			QByteArray data (photo.binval.c_str(), photo.binval.size ());
-			text += tr ("Photo:") + QString ("\ndata:%1;base64,%2\n")
-						.arg (photo.type .c_str ())
-						.arg (data.toBase64 ().constData ());
+						.arg (vcard.photoType ())
+						.arg (vcard.photo ().constData ());
 		}
 
 		return text;

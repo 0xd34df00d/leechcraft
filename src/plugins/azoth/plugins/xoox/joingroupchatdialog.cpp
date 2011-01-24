@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "joingroupchatdialog.h"
-#include <gloox/jid.h>
 #include "glooxaccount.h"
 
 namespace LeechCraft
