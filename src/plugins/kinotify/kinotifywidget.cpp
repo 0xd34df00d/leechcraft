@@ -140,8 +140,8 @@ namespace LeechCraft
 
 			void KinotifyWidget::mousePressEvent (QMouseEvent *event)
 			{
-				QWebElement elem =  page ()->mainFrame ()->hitTestContent (event->pos ()).element ();
-				if ((elem.isNull ()) || (elem.attribute ("type") != "button"))
+				QWebElement elem = page ()->mainFrame ()->hitTestContent (event->pos ()).element ();
+				if (elem.isNull () || elem.attribute ("type") != "button")
 				{
 					disconnect (CheckTimer_,
 							SIGNAL (timeout ()),
@@ -157,10 +157,7 @@ namespace LeechCraft
 					closeNotification ();
 				}
 				else
-				{
 					mouseReleaseEvent (event);
-					event->ignore ();
-				}
 			}
 
 			void KinotifyWidget::PrepareNotification ()
@@ -206,7 +203,7 @@ namespace LeechCraft
 			
 			void KinotifyWidget::initJavaScript ()
 			{
-				page ()->mainFrame ()->addToJavaScriptWindowObject (QString ("Action"), Action_);
+				page ()->mainFrame ()->addToJavaScriptWindowObject ("Action", Action_);
 			}
 			
 			void KinotifyWidget::CreateWidget ()

@@ -18,9 +18,6 @@
 
 #include "notificationaction.h"
 
-#include <QObject>
-#include <QtDebug>
-
 namespace LeechCraft
 {
 	namespace Plugins
@@ -30,7 +27,6 @@ namespace LeechCraft
 			NotificationAction::NotificationAction (QObject *parent) 
 			: QObject (parent)
 			{
-
 			}
 			
 			void NotificationAction::SetActionObject (QObject* obj)
