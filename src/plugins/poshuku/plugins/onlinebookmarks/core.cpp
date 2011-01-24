@@ -19,8 +19,13 @@
 #include "core.h"
 #include <QtDebug>
 #include <QCoreApplication>
+#include <QNetworkAccessManager>
 #include <QStandardItemModel>
 #include <QSettings>
+#include <plugininterface/util.h>
+#include <interfaces/iproxyobject.h>
+#include "syncbookmarks.h"
+#include "settings.h"
 
 namespace LeechCraft
 {
@@ -34,7 +39,6 @@ namespace OnlineBookmarks
 {
 	Core::Core ()
 	{
-		 Init ();
 	}
 
 	Core& Core::Instance ()
@@ -50,31 +54,161 @@ namespace OnlineBookmarks
 
 	void Core::Init ()
 	{
-		Model_ = new QStandardItemModel;
+		Model_ = new QStandardItemModel (this);
+		ServiceModel_ = new QStandardItemModel (this);
+		AccountsWidget_ =  new Settings (Model_);
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-		settings.beginGroup ("Accounts");
-		
+		settings.beginGroup ("Account");
+
 		Q_FOREACH (const QString& item, settings.childKeys ())
 		{
 			QList<QStandardItem*> itemList;
-			
+
 			Q_FOREACH (const QString& login, settings.value (item).toStringList ())
 			{
 				QStandardItem *loginItem = new QStandardItem (login);
-				loginItem->setCheckable (true);
 				itemList << loginItem;
 			}
-			QStandardItem *service = new QStandardItem (item);
+			QStandardItem *service = new QStandardItem (QString::fromUtf8 (QByteArray::fromBase64 (item.toUtf8 ())));
 			Model_->appendRow (service);
 			service->appendRows (itemList);
 		}
 		settings.endGroup ();
+
+		BookmarksSyncManager_ = new SyncBookmarks (this);
 	}
 
 	QStandardItemModel* Core::GetAccountModel () const
 	{
 		return Model_;
+	}
+
+	SyncBookmarks* Core::GetBookmarksSyncManager () const
+	{
+		return BookmarksSyncManager_;
+	}
+
+	void Core::SetActiveBookmarksServices (QList<AbstractBookmarksService*> list)
+	{
+		ActiveBookmarksServices_ = list;
+	}
+
+	QList<AbstractBookmarksService*> Core::GetActiveBookmarksServices () const
+	{
+		return ActiveBookmarksServices_;
+	}
+
+	void Core::SetPassword (const QString& password, const QString& account, const QString& service)
+	{
+		QList<QVariant> keys;
+		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." +
+				service + "/" + account;
+
+		QList<QVariant> passwordVar;
+		passwordVar << password;
+		QList<QVariant> values;
+		values << QVariant (passwordVar);
+
+		Entity e = Util::MakeEntity (keys,
+				QString (),
+				Internal,
+				"x-leechcraft/data-persistent-save");
+		e.Additional_ ["Values"] = values;
+		e.Additional_ ["Overwrite"] = true;
+
+		SendEntity (e);
+	}
+
+	QString Core::GetPassword (const QString& account, const QString& service) const
+	{
+		QList<QVariant> keys;
+		keys << "org.LeechCraft.Poshuku.OnlineBookmarks." + service + "/" + account;
+		const QVariantList& result =
+				Util::GetPersistentData (keys, &Core::Instance ());
+		if (result.size () != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect result size"
+					<< result;
+			return QString ();
+		}
+
+		const QVariantList& strVarList = result.at (0).toList ();
+		if (strVarList.isEmpty () ||
+				!strVarList.at (0).canConvert<QString> ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid string variant list"
+					<< strVarList;
+			return QString ();
+		}
+
+		return strVarList.at (0).toString ();
+	}
+
+	QNetworkAccessManager* Core::GetNetworkAccessManager () const
+	{
+		return Proxy_->GetNetworkAccessManager ();
+	}
+
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
+
+	void Core::SetPluginProxy (QObject *proxy)
+	{
+		PluginProxy_ = proxy;
+	}
+
+	QObject* Core::GetBookmarksModel () const
+	{
+		IProxyObject *obj = qobject_cast<IProxyObject*> (PluginProxy_);
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "obj is not an IProxyObject"
+					<< PluginProxy_;
+			return 0;
+		}
+
+		return obj->GetFavoritesModel ();
+	}
+
+	QDir Core::GetBookmarksDir () const
+	{
+		return BookmarksDir_;
+	}
+
+	void Core::SetBookmarksDir (const QDir& path)
+	{
+		BookmarksDir_ = path;
+	}
+
+	QStandardItemModel* Core::GetServiceModel () const
+	{
+		return ServiceModel_;
+	}
+
+	Settings* Core::GetAccountsWidget ()
+	{
+		return AccountsWidget_;
+	}
+
+	QStringList Core::SanitizeTagsList (const QStringList& list)
+	{
+		QStringList newList;
+		Q_FOREACH (const QString& str, list)
+			newList << str.trimmed ();
+
+		return newList;
 	}
 }
 }

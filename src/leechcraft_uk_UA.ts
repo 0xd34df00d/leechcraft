@@ -250,19 +250,19 @@
     </message>
     <message>
         <source>General</source>
-        <translation>Загальні</translation>
+        <translation type="obsolete">Загальні</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation>Засоби</translation>
+        <translation type="obsolete">Засоби</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Допомога</translation>
+        <translation type="obsolete">Допомога</translation>
     </message>
     <message>
         <source>View</source>
-        <translation>Перегляд</translation>
+        <translation type="obsolete">Перегляд</translation>
     </message>
     <message>
         <source>About LeechCraft...</source>
@@ -310,7 +310,7 @@
     </message>
     <message>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
 </context>
 <context>
@@ -573,7 +573,15 @@
     <message>
         <source>F11</source>
         <comment>FullScreen</comment>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation>Перегляд</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation>Засоби</translation>
     </message>
 </context>
 <context>
@@ -599,7 +607,7 @@
     <name>LeechCraft::NewTabMenuManager</name>
     <message>
         <source>New tab menu</source>
-        <translation type="unfinished">Меню створення вкладки</translation>
+        <translation>Меню створення вкладки</translation>
     </message>
 </context>
 <context>
@@ -1056,11 +1064,11 @@
     </message>
     <message>
         <source>Show menu bar as button</source>
-        <translation>Показувати панель меню у вигляді кнопок</translation>
+        <translation type="obsolete">Показувати панель меню у вигляді кнопок</translation>
     </message>
     <message>
         <source>Try smarter tabs width calculation</source>
-        <translation>Намагатися використовувати досконалий алгоритм розрахунку ширини вкладок</translation>
+        <translation type="obsolete">Намагатися використовувати досконалий алгоритм розрахунку ширини вкладок</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -1340,11 +1348,11 @@
     </message>
     <message>
         <source>Oxygen</source>
-        <translation type="unfinished"></translation>
+        <translation>Oxygen</translation>
     </message>
     <message>
         <source>Plastique</source>
-        <translation type="unfinished"></translation>
+        <translation>Plastique</translation>
     </message>
 </context>
 </TS>

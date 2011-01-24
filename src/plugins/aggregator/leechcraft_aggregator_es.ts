@@ -435,10 +435,6 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::Core</name>
     <message>
-        <source>Could not update feed settings</source>
-        <translation>No se pudieron actualizar los ajustes del feed</translation>
-    </message>
-    <message>
         <source>Could not update feed</source>
         <translation>No se pudo cargar el feed</translation>
     </message>
@@ -638,6 +634,10 @@
             <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>FB2 export complete.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -955,6 +955,14 @@
     </message>
     <message>
         <source>Items categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mark item as read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open in new tab</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

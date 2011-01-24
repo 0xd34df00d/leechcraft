@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <QPointer>
 #include "xsdconfig.h"
 
-#define PROP2CHAR(a) (a.toLatin1 ().constData ())
+#define PROP2CHAR(a) (a.toUtf8 ().constData ())
 
 namespace LeechCraft
 {
@@ -45,7 +45,10 @@ namespace LeechCraft
 			QMap<QByteArray, QPair<QPointer<QObject>, QByteArray> > Properties2Object_;
 			bool Initializing_;
 			QSettings *Settings_;
+		protected:
+			bool ReadAllKeys_;
 		public:
+			BaseSettingsManager (bool readAllKeys = false, QObject* = 0);
 		 /** @brief Initalizes the settings manager.
 		  *
 		  * Loads all settings from the QSettings created by BeginSettings and

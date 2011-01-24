@@ -40,20 +40,20 @@ namespace Xoox
 			RoomHandler *rh, GlooxAccount *account)
 	: EntryBase (account)
 	, Nick_ (nick)
-	, Account_ (account)
 	, RoomHandler_ (rh)
+	, Affiliation_ (gloox::AffiliationInvalid)
+	, Role_ (gloox::RoleInvalid)
 	{
-		QAction *kick = new QAction (tr ("Kick"), this);
-		connect (kick,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleKickRequested ()));
-		Actions_ << kick;
 	}
 
 	QObject* RoomParticipantEntry::GetParentAccount () const
 	{
 		return Account_;
+	}
+
+	QObject* RoomParticipantEntry::GetParentCLEntry () const
+	{
+		return RoomHandler_->GetCLEntry ();
 	}
 
 	ICLEntry::Features RoomParticipantEntry::GetEntryFeatures () const
@@ -71,8 +71,10 @@ namespace Xoox
 		return Nick_;
 	}
 
-	void RoomParticipantEntry::SetEntryName (const QString&)
+	void RoomParticipantEntry::SetEntryName (const QString& nick)
 	{
+		Nick_ = nick;
+		emit nameChanged (Nick_);
 	}
 
 	QByteArray RoomParticipantEntry::GetEntryID () const
@@ -101,12 +103,36 @@ namespace Xoox
 	QObject* RoomParticipantEntry::CreateMessage (IMessage::MessageType type,
 			const QString&, const QString& body)
 	{
-		return RoomHandler_->CreateMessage (type, Nick_, body);
+		GlooxMessage *msg = RoomHandler_->CreateMessage (type, Nick_, body);
+		AllMessages_ << msg;
+		return msg;
 	}
 
-	void RoomParticipantEntry::handleKickRequested()
+	gloox::JID RoomParticipantEntry::GetJID () const
 	{
-		RoomHandler_->Kick (Nick_);
+		gloox::JID jid = RoomHandler_->GetRoomJID ();
+		jid.setResource (Nick_.toUtf8 ().constData ());
+		return jid;
+	}
+
+	gloox::MUCRoomAffiliation RoomParticipantEntry::GetAffiliation () const
+	{
+		return Affiliation_;
+	}
+
+	void RoomParticipantEntry::SetAffiliation (gloox::MUCRoomAffiliation aff)
+	{
+		Affiliation_ = aff;
+	}
+
+	gloox::MUCRoomRole RoomParticipantEntry::GetRole () const
+	{
+		return Role_;
+	}
+
+	void RoomParticipantEntry::SetRole (gloox::MUCRoomRole role)
+	{
+		Role_ = role;
 	}
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PROXYOBJECT_H
 #define PLUGINS_AZOTH_PROXYOBJECT_H
 #include <QObject>
+#include <QHash>
 #include "interfaces/iproxyobject.h"
 
 namespace LeechCraft
@@ -33,6 +34,8 @@ namespace Azoth
 		Q_OBJECT
 
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProxyObject)
+
+		QHash<QString, Plugins::AuthStatus> SerializedStr2AuthStatus_;
 	public:
 		ProxyObject (QObject* = 0);
 
@@ -40,6 +43,8 @@ namespace Azoth
 		void SetPassword (const QString&, QObject*);
 		QString GetOSName ();
 		QString StateToString (Plugins::State) const;
+		QString AuthStatusToString (Plugins::AuthStatus) const;
+		Plugins::AuthStatus AuthStatusFromString (const QString&) const;
 	};
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,19 +49,30 @@ namespace Azoth
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::ChatTab Ui_;
+
 		QByteArray EntryID_;
 		QString Variant_;
+
 		QRegExp LinkRegexp_;
+		QRegExp ImageRegexp_;
+
 		QColor BgColor_;
 		QList<QColor> NickColors_;
+
 		QList<QString> MsgHistory_;
 		int CurrentHistoryPosition_;
 		QStringList AvailableNickList_;
 		int CurrentNickIndex_;
 		int LastSpacePosition_;
 		QString NickFirstPart_;
+
 		int NumUnreadMsgs_;
+
 		QIcon TabIcon_;
+
+		bool IsMUC_;
+
+		bool HasBeenAppended_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
@@ -82,7 +93,8 @@ namespace Azoth
 		void messageSend ();
 		void nickComplete ();
 		void on_MsgEdit__textChanged ();
-		void on_SubjectButton__released ();
+		void on_SubjectButton__toggled (bool);
+		void on_SubjChange__released ();
 		void handleEntryMessage (QObject*);
 		void handleStatusChanged (const Plugins::EntryStatus&, const QString&);
 		void handleViewLinkClicked (const QUrl&);
@@ -105,6 +117,17 @@ namespace Azoth
 		QString FormatDate (QDateTime, Plugins::IMessage*);
 		QString FormatNickname (QString, Plugins::IMessage*);
 		QString FormatBody (QString, Plugins::IMessage*);
+
+		/** Processes the outgoing messages, replacing /nick with calls
+		 * to the entity to change nick, for example, etc.
+		 *
+		 * If this function returns true, processing (and sending) the
+		 * message should be aborted.
+		 *
+		 * @return true if the processing should be aborted, false
+		 * otherwise.
+		 */
+		bool ProcessOutgoingMsg (Plugins::ICLEntry*, QString&);
 
 		void GenerateColors ();
 

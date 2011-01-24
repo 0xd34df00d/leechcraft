@@ -29,7 +29,7 @@
       </size>
      </property>
      <property name="indentation">
-      <number>0</number>
+      <number>5</number>
      </property>
      <property name="rootIsDecorated">
       <bool>false</bool>

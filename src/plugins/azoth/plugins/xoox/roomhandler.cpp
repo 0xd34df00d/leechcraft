@@ -60,9 +60,38 @@ namespace Xoox
 		return Room_;
 	}
 
+	gloox::JID RoomHandler::GetRoomJID () const
+	{
+		return Room_->name () + "@" + Room_->service ();
+	}
+
 	RoomCLEntry* RoomHandler::GetCLEntry ()
 	{
 		return CLEntry_;
+	}
+
+	void RoomHandler::HandleVCard (const gloox::VCard *card, const QString& nick)
+	{
+		if (!Nick2Entry_.contains (nick))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such nick"
+					<< nick
+					<< "; available:"
+					<< Nick2Entry_.keys ();
+			return;
+		}
+
+		Nick2Entry_ [nick]->SetAvatar (card->photo ());
+		Nick2Entry_ [nick]->SetVCard (card);
+	}
+
+	void RoomHandler::SetState (const GlooxAccountState& state)
+	{
+		gloox::Presence::PresenceType pres =
+				static_cast<gloox::Presence::PresenceType> (state.State_);
+		std::string stdStatus (state.Status_.toUtf8 ().constData ());
+		Room_->setPresence (pres, stdStatus);
 	}
 
 	void RoomHandler::MakeLeaveMessage (const gloox::MUCRoomParticipant part)
@@ -124,6 +153,28 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
+	void RoomHandler::MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant part)
+	{
+		const QString& nick = NickFromJID (*part.nick);
+
+		const QString& byStr = part.actor ?
+				tr ("by %1").arg (NickFromJID (*part.actor)) :
+				QString ();
+
+		const QString& msg = tr ("%1 changed affiliation/role to %2/%3 %4")
+				.arg (nick)
+				.arg (Util::AffiliationToString (part.affiliation))
+				.arg (Util::RoleToString (part.role))
+				.arg (byStr);
+
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantRoleAffiliationChange);
+		CLEntry_->HandleMessage (message);
+	}
+
 	void RoomHandler::MakeJoinMessage (const gloox::MUCRoomParticipant part)
 	{
 		const QString& nick = NickFromJID (*part.nick);
@@ -142,6 +193,20 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
+	void RoomHandler::MakeNickChangeMessage (const QString& oldNick, const QString& newNick)
+	{
+		QString msg = tr ("%1 changed nick to %2")
+				.arg (oldNick)
+				.arg (newNick);
+
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantNickChange);
+		CLEntry_->HandleMessage (message);
+	}
+
 	void RoomHandler::handleMUCParticipantPresence (gloox::MUCRoom *room,
 			const gloox::MUCRoomParticipant part, const gloox::Presence& presence)
 	{
@@ -149,26 +214,62 @@ namespace Xoox
 		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
+		const gloox::MUCRoomAffiliation aff = entry->GetAffiliation ();
+		const gloox::MUCRoomRole role = entry->GetRole ();
+		entry->SetAffiliation (part.affiliation);
+		entry->SetRole (part.role);
+
+		const gloox::Capabilities *caps = presence.capabilities ();
+		if (caps)
+			entry->SetClientInfo ("", caps);
+
 		if (presence.presence () == gloox::Presence::Unavailable)
 		{
-			MakeLeaveMessage (part);
+			if (part.newNick.empty ())
+			{
+				MakeLeaveMessage (part);
 
-			Account_->handleEntryRemoved (entry.get ());
-			Nick2Entry_.remove (nick);
-			JID2Session_.remove (JIDForNick (nick));
+				Account_->handleEntryRemoved (entry.get ());
+
+				Nick2Entry_.remove (nick);
+				JID2Session_.remove (JIDForNick (nick));
+			}
+			else
+			{
+				const QString& newNick = QString::fromUtf8 (part.newNick.c_str ());
+
+				PendingNickChanges_ << newNick;
+
+				MakeNickChangeMessage (nick, newNick);
+				entry->SetEntryName (newNick);
+				Nick2Entry_ [newNick] = Nick2Entry_.take (nick);
+				JID2Session_ [JIDForNick (newNick)] = JID2Session_.take (JIDForNick (nick));
+			}
 			return;
 		}
 
+		EntryStatus status (static_cast<State> (presence.presence ()),
+						QString::fromUtf8 (presence.status ().c_str ()));
 		if (RoomHasBeenEntered_)
 		{
 			if (existed)
-				MakeStatusChangedMessage (part, presence);
+			{
+				if (PendingNickChanges_.contains (nick))
+					PendingNickChanges_.remove (nick);
+				else if (entry->GetStatus (QString ()) != status)
+					MakeStatusChangedMessage (part, presence);
+
+				if (aff != part.affiliation ||
+						role != part.role)
+					MakeRoleAffChangedMessage (part);
+			}
 			else
+			{
 				MakeJoinMessage (part);
+				Account_->GetClientConnection ()->FetchVCard (JIDForNick (nick));
+			}
 		}
 
-		EntryStatus status (static_cast<State> (presence.presence ()),
-				QString::fromUtf8 (presence.status ().c_str ()));
 		entry->SetStatus (status, QString ());
 	}
 
@@ -301,6 +402,11 @@ namespace Xoox
 		return Subject_;
 	}
 
+	void RoomHandler::SetSubject (const QString& subj)
+	{
+		Room_->setSubject (subj.toUtf8 ().constData ());
+	}
+
 	void RoomHandler::Kick (const QString& nick, const QString& reason)
 	{
 		Room_->kick (nick.toUtf8 ().constData (),
@@ -312,10 +418,34 @@ namespace Xoox
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
 
-		Nick2Entry_.clear ();
-
 		Room_->leave (msg.toUtf8 ().constData ());
 		RemoveThis ();
+	}
+
+	RoomParticipantEntry* RoomHandler::GetSelf () const
+	{
+		Q_FOREACH (QObject *partObj, GetParticipants ())
+		{
+			RoomParticipantEntry *part =
+					qobject_cast<RoomParticipantEntry*> (partObj);
+			if (part->GetEntryName () == CLEntry_->GetNick ())
+				return part;
+		}
+		return 0;
+	}
+
+	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
+			IMUCEntry::MUCAffiliation newAff, const QString& reason)
+	{
+		Room_->setAffiliation (entry->GetEntryName ().toUtf8 ().constData (),
+				static_cast<gloox::MUCRoomAffiliation> (newAff), reason.toUtf8 ().constData ());
+	}
+
+	void RoomHandler::SetRole (RoomParticipantEntry *entry,
+			IMUCEntry::MUCRole newRole, const QString& reason)
+	{
+		Room_->setRole (entry->GetEntryName ().toUtf8 ().constData (),
+				static_cast<gloox::MUCRoomRole> (newRole), reason.toUtf8 ().constData ());
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
@@ -370,6 +500,12 @@ namespace Xoox
 
 	void RoomHandler::RemoveThis ()
 	{
+		Nick2Entry_.clear ();
+
+		Q_FOREACH (gloox::MessageSession *ses, JID2Session_.values ())
+			Account_->GetClientConnection ()->
+					GetClient ()->disposeMessageSession (ses);
+
 		Account_->handleEntryRemoved (CLEntry_);
 
 		Account_->GetClientConnection ()->Unregister (this);
@@ -377,6 +513,7 @@ namespace Xoox
 		Room_.reset ();
 		deleteLater ();
 	}
+
 }
 }
 }

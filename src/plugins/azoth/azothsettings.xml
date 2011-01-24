@@ -1,28 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
 	<page>
-		<label lang="en" value="Appearance" />
+		<label value="Appearance" />
 		<tab>
-			<label lang="en" value="Iconsets" />
+			<label value="Iconsets" />
 			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
-				<label lang="en" value="Status icons:" />
+				<label value="Status icons:" />
 				<option name="oxygen" default="true">
-					<label lang="en" value="Oxygen" />
+					<label value="Oxygen" />
+				</option>
+			</item>
+			<item type="combobox" property="ClientIcons" mayHaveDataSource="true">
+				<label value="Client icons:" />
+				<option name="default" default="true">
+					<label value="default" />
 				</option>
 			</item>
 		</tab>
 	</page>
 	<page>
-		<label lang="en" value="Behavior" />
-		<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
-			<label lang="en" value="Jump to new tab on open" />
-		</item>
+		<label value="Behavior" />
+		<tab>
+			<label value="Behavior" />
+			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
+				<label value="Jump to new tab on open" />
+			</item>
+		</tab>
+		<tab>
+			<label value="Chat windows" />
+			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
+				<label value="Show status changes" />
+			</item>
+		</tab>
 	</page>
 	<page>
-		<label lang="en" value="Chat windows" />
-		<item type="checkbox" property="ShowStatusChangesEvents" default="false">
-			<label lang="en" value="Show status changes events in chat window" />
-		</item>
+		<label value="Statuses" />
+		<groupbox>
+			<label value="Default status texts" />
+			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I'm online!">
+				<label value="Online:" />
+			</item>
+			<item type="lineedit" property="DefaultStatus1" translatable="true" default="Wanna chat :3">
+				<label value="Free to chat:" />
+			</item>
+			<item type="lineedit" property="DefaultStatus2" translatable="true" default="Oh, seems like I'm away">
+				<label value="Away:" />
+			</item>
+			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Please leave me alone now">
+				<label value="DND:" />
+			</item>
+			<item type="lineedit" property="DefaultStatus4" translatable="true" default="Extended away is okay">
+				<label value="XA:" />
+			</item>
+			<item type="lineedit" property="DefaultStatus5" translatable="true" default="I turned off my machine to get some life">
+				<label value="Offline:" />
+			</item>
+		</groupbox>
 	</page>
 </settings>

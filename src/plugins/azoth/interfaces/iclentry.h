@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,11 @@ namespace Plugins
 				es1.StatusString_ == es2.StatusString_;
 	}
 
+	inline bool operator!= (const EntryStatus& es1, const EntryStatus& es2)
+	{
+		return !(es1 == es2);
+	}
+
 	/** @brief Represents a single entry in contact list.
 	 *
 	 * Everything that should go to the contact list should implement
@@ -86,25 +91,62 @@ namespace Plugins
 	public:
 		virtual ~ICLEntry () {}
 
-		/** Represents the features that may be supported by a contant list entry.
+		/** Represents the features that may be supported by a contant
+		 * list entry.
 		 */
 		enum Feature
 		{
-			FPermanentEntry			= 0x0000,	//!< FPermanentEntry If this entry is permanent and would appear in the next session too.
-			FSessionEntry			= 0x0001,	//!< FSessionEntry If this entry is not permament and is for this session only.
-			FMaskLongetivity		= 0x0003,	//!< 0000011
-			FSupportsRenames		= 0x0020,	//!< FSupportsRenames This entry supports renaming, so calls to SetEntryName() are not senseless.
-			FHasCustomChatWidget	= 0x0040,	//!< FHasCustomChatWidget This entry has a custom chat widget.
-			FCanHaveMultiVariants	= 0x0080	//!< FCanHaveMultiVariants This entry may have multiple delivery variants.
+			/** This entry is permanent and would appear in the next
+			 * session too. It makes sense to save it to disk, for
+			 * example, when shutting down.
+			 */
+			FPermanentEntry = 0x0000,
+
+			/** This entry is not permament and for this session only.
+			 */
+			FSessionEntry = 0x0001,
+
+			/** Mask (0000011) for FPermanentEntry and FSessionEntry.
+			 */
+			FMaskLongetivity = 0x0003,
+
+			/** This entry supports renaming, so calls to SetEntryName()
+			 * are not in vain.
+			 */
+			FSupportsRenames = 0x0020,
+
+			/** This entry has a custom chat widget.
+			 */
+			FHasCustomChatWidget = 0x0040,
+
+			/** This entry supports auth manipulations. It makes sense
+			 * to request, remove, give, etc auth. In this case the
+			 * entry should also implement IAuthable.
+			 */
+			FSupportsAuth = 0x0080
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature);
 
 		enum EntryType
 		{
-			ETChat,			//!< CTChat This entry represents a standard chat.
-			ETMUC,			//!< CTMUC This entry represents a multi-user chatroom.
-			ETPrivateChat	//!< CTPrivateChat This entry represents a private conversation in a multi-user chatroom.
+			/** This entry represents a standard chat.
+			 */
+			ETChat,
+
+			/** This entry represents a multi-user chatroom.
+			 */
+			ETMUC,
+
+			/** This entry represents a private conversation in a
+			 * multi-user chatroom.
+			 */
+			ETPrivateChat,
+
+			/** This entry represents an unauthorized user that has
+			 * requested authorization.
+			 */
+			ETUnauthEntry
 		};
 
 		/** Returns the entry as a QObject.
@@ -119,6 +161,25 @@ namespace Plugins
 		 * @return The parent account of this entry.
 		 */
 		virtual QObject* GetParentAccount () const = 0;
+
+		/** Returns the pointer to the parent CL entry, if any.
+		 *
+		 * This currently only makes sense for private chat entries,
+		 * thus private chat entries (those that are of type
+		 * ETPrivateChat) should return their parent room CL entry (of
+		 * type ETMUC).
+		 *
+		 * If parent CL entry is not applicable, NULL should be
+		 * returned.
+		 *
+		 * The default implementation returns NULL.
+		 *
+		 * @return Parent CL entry if applicable, NULL otherwise.
+		 */
+		virtual QObject* GetParentCLEntry () const
+		{
+			return 0;
+		}
 
 		/** Returns the OR-ed combination of Feature flags that
 		 * describes the features supported by this contact list entry.
@@ -157,9 +218,45 @@ namespace Plugins
 		 * should not depend on the value returned by GetEntryName()
 		 * (the human-readable name).
 		 *
+		 * The main difference between this and GetHumanReadableID() is
+		 * that GetEntryID() is used for distinguishing different items
+		 * in the contact list (and there may be several items for one
+		 * remote), while GetHumanReadableID() is used to distinguish
+		 * different remotes between each other.
+		 *
 		 * @return The unique and persistent ID of this entry.
+		 *
+		 * @sa GetHumanReadableID()
 		 */
 		virtual QByteArray GetEntryID () const = 0;
+
+		/** @brief Returns the human-readable ID of this entry.
+		 *
+		 * This function is used to obtain the human-readable identifier
+		 * of this entry (for example, Jabber ID in case of XMPP), which
+		 * may be not so unique as GetEntryID(). For example, if an
+		 * entry exists in the roster, but it has also requested auth,
+		 * there would be two entries with the same human-readable ID,
+		 * but they would still be distinguished by the result of the
+		 * GetEntryID() function.
+		 *
+		 * Various operations like buddy searches (in protocols that
+		 * support this feature like Skype or ICQ) are expected to
+		 * operate on strings that are among possible return values of
+		 * this function. Also, when initiating entry addition, the
+		 * entry is expected to be identified by a similar string.
+		 *
+		 * The default implementation returns GetEntryID() as an unicode
+		 * string.
+		 *
+		 * @return Human-readable persistent ID of this entry.
+		 *
+		 * @sa GetEntryID()
+		 */
+		virtual QString GetHumanReadableID () const
+		{
+			return QString::fromUtf8 (GetEntryID ().constData ());
+		}
 
 		/** @brief Returns the list of human-readable names of the
 		 * groups that this entry belongs to.
@@ -240,6 +337,16 @@ namespace Plugins
 		 */
 		virtual QImage GetAvatar () const = 0;
 
+		/** @brief Return string with raw information about the entry.
+		 *
+		 * @return Human-readable string with information about the entry.
+		 */
+		virtual QString GetRawInfo () const = 0;
+
+		/** @brief Requests the entry to show dialog with info about it.
+		 */
+		virtual void ShowInfo () = 0;
+
 		/** @brief Returns the list of actions for the item.
 		 *
 		 * The list is showed, for example, when user calls the context
@@ -249,6 +356,25 @@ namespace Plugins
 		 * @return The list of actions.
 		 */
 		virtual QList<QAction*> GetActions () const = 0;
+
+		/** @brief Returns the client information for the given variant.
+		 *
+		 * The returned map should have the following keys:
+		 * - client_type
+		 *   The corresponding key is a QString with a client ID.
+		 * - client_name
+		 *   The corresponding key is a QString with human-readable name
+		 *   of the client.
+		 * - client_version
+		 *   The corresponding key is a QString with human-readable
+		 *   version of the client.
+		 *
+		 * @param[in] variant Variant for which to return the client
+		 * info.
+		 *
+		 * @return Human-readable client name of the variant.
+		 */
+		virtual QMap<QString, QVariant> GetClientInfo (const QString& variant) const = 0;
 
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.
@@ -286,6 +412,22 @@ namespace Plugins
 		 * @note This function is expected to be a signal in subclasses.
 		 */
 		virtual void avatarChanged (const QImage&) = 0;
+
+		/** @brief This signal should be emitted whenever our copy of
+		 * raw information is updated.
+		 *
+		 * @note This function is expected to be a signal in subclesses.
+		 */
+		virtual void rawinfoChanged (const QString&) = 0;
+
+		/** @brief This signal should be emitted whenever the entry
+		 * changes name.
+		 *
+		 * @note This function is expected to be a signal in subclasses.
+		 *
+		 * @param[out] name The new name of this entry.
+		 */
+		virtual void nameChanged (const QString& name) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

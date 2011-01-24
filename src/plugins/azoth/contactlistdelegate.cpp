@@ -20,6 +20,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QApplication>
+#include <QAbstractProxyModel>
 #include "interfaces/iclentry.h"
 #include "core.h"
 
@@ -40,7 +41,7 @@ namespace Azoth
 	void ContactListDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& sopt, const QModelIndex& index) const
 	{
-		QStyleOptionViewItemV4 option = sopt;
+		QStyleOptionViewItemV4 o = sopt;
 		Core::CLEntryType type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
 
 		painter->save ();
@@ -48,40 +49,13 @@ namespace Azoth
 		switch (type)
 		{
 		case Core::CLETAccount:
-			option.font.setBold (true);
-		case Core::CLETCategory:
-		{
-			int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
-			option.rect.setLeft (0);
-			if (unread)
-			{
-				painter->save ();
-
-				const bool selected = option.state & QStyle::State_Selected;
-				const QRect& r = option.rect;
-
-				const QString& text = QString (" %1 :: ").arg (unread);
-
-				QFont unreadFont = option.font;
-				unreadFont.setBold (true);
-
-				int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
-
-				painter->setFont (unreadFont);
-				painter->drawText (r.left () + CPadding, r.top () + CPadding,
-						unreadSpace, r.height () - 2 * CPadding,
-						Qt::AlignVCenter | Qt::AlignLeft,
-						text);
-
-				painter->restore ();
-
-				option.rect.setLeft (unreadSpace);
-			}
-			QStyledItemDelegate::paint (painter, option, index);
+			DrawAccount (painter, o, index);
 			break;
-		}
+		case Core::CLETCategory:
+			DrawCategory (painter, o, index);
+			break;
 		case Core::CLETContact:
-			DrawContact (painter, option, index);
+			DrawContact (painter, o, index);
 			break;
 		}
 
@@ -94,6 +68,73 @@ namespace Azoth
 		return size;
 	}
 
+	void ContactListDelegate::DrawAccount (QPainter *painter,
+			QStyleOptionViewItemV4 o, const QModelIndex& index) const
+	{
+		o.font.setBold (true);
+		QStyledItemDelegate::paint (painter, o, index);
+	}
+
+	void ContactListDelegate::DrawCategory (QPainter *painter,
+			QStyleOptionViewItemV4 o, const QModelIndex& index) const
+	{
+		const QRect& r = o.rect;
+
+		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
+		if (unread)
+		{
+			painter->save ();
+
+			const QString& text = QString (" %1 :: ").arg (unread);
+
+			QFont unreadFont = o.font;
+			unreadFont.setBold (true);
+
+			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
+
+			painter->setFont (unreadFont);
+			painter->drawText (r.left () + CPadding, r.top () + CPadding,
+					unreadSpace, r.height () - 2 * CPadding,
+					Qt::AlignVCenter | Qt::AlignLeft,
+					text);
+
+			painter->restore ();
+
+			o.rect.setLeft (unreadSpace);
+		}
+
+		QStyledItemDelegate::paint (painter, o, index);
+
+		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
+		if (textWidth <= r.width ())
+		{
+			painter->save ();
+
+			const int visibleCount = index.model ()->rowCount (index);
+
+			const QAbstractItemModel *model = index.model ();
+			QModelIndex sourceIndex = index;
+			while (const QAbstractProxyModel *proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
+			{
+				model = proxyModel->sourceModel ();
+				sourceIndex = proxyModel->mapToSource (sourceIndex);
+			}
+
+			const QString& str = QString (" (%1/%2)")
+					.arg (visibleCount)
+					.arg (model->rowCount (sourceIndex));
+
+			if (o.state & QStyle::State_Selected)
+				painter->setPen (o.palette.color (QPalette::HighlightedText));
+			painter->drawText (r.left () + textWidth, r.top () + CPadding,
+					o.fontMetrics.width (str), r.height () - 2 * CPadding,
+					Qt::AlignVCenter | Qt::AlignLeft,
+					str);
+
+			painter->restore ();
+		}
+	}
+
 	void ContactListDelegate::DrawContact (QPainter *painter,
 			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
@@ -104,12 +145,16 @@ namespace Azoth
 				option.widget->style () :
 				QApplication::style ();
 
-		option.rect.setLeft (CContactShift);
+		const QRect& r = option.rect;
+		const int sHeight = r.height ();
+		const int iconSize = sHeight - 2 * CPadding;
 
 		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString& status = entry->GetStatus ().StatusString_;
-		const QImage& avatarImg = entry->GetAvatar ();
+		const QImage& avatarImg = Core::Instance ().GetAvatar (entry, iconSize);
+		const QList<QIcon>& clientIcons = Core::Instance ()
+				.GetClientIconForEntry (entry).values ();
 		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
 				QString (" %1 :: ").arg (unreadNum) :
@@ -121,9 +166,6 @@ namespace Azoth
 		const QColor fgColor = selected ?
 				option.palette.color (QPalette::HighlightedText) :
 				option.palette.color (QPalette::Text);
-		const QRect& r = option.rect;
-		const int sHeight = r.height ();
-		const int iconSize = sHeight - 2 * CPadding;
 
 		QFont unreadFont;
 		int unreadSpace = 0;
@@ -136,10 +178,15 @@ namespace Azoth
 		}
 
 		const int textShift = r.left () + 2 * CPadding + iconSize + unreadSpace;
+		const int clientsIconsWidth = clientIcons.size () * (iconSize + CPadding) - CPadding;
+		/* text for width is total width minus shift of the text from
+		 * the left (textShift) minus space for avatar (if present) with
+		 * paddings minus space for client icons and paddings between
+		 * them: there are N-1 paddings inbetween if there are N icons.
+		 */
 		const int textWidth = r.width () - textShift -
-				(avatarImg.isNull () ?
-					CPadding :
-					iconSize + 2 * CPadding);
+				(iconSize + 2 * CPadding) -
+				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
 		pixmap.fill (Qt::transparent);
@@ -172,8 +219,16 @@ namespace Azoth
 				stateIcon.pixmap (iconSize, iconSize));
 
 		if (!avatarImg.isNull ())
-			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + CPadding, CPadding),
-					QPixmap::fromImage (avatarImg.scaled (iconSize, iconSize)));
+			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
+					QPixmap::fromImage (avatarImg));
+
+		int currentShift = textShift + textWidth + CPadding;
+		Q_FOREACH (const QIcon& icon, clientIcons)
+		{
+			p.drawPixmap (r.topLeft () + QPoint (currentShift, CPadding),
+					icon.pixmap (iconSize, iconSize));
+			currentShift += iconSize + CPadding;
+		}
 
 		painter->drawPixmap (option.rect, pixmap);
 	}

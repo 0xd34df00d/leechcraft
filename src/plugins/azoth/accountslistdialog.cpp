@@ -20,9 +20,8 @@
 #include <QMenu>
 #include <QStandardItemModel>
 #include "interfaces/iaccount.h"
-#include "core.h"
-#include <boost/graph/graph_concepts.hpp>
 #include "interfaces/iprotocol.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -41,15 +40,23 @@ namespace LeechCraft
 
 				Ui_.Add_->setMenu (addMenu);
 
+				connect (&Core::Instance (),
+						SIGNAL (accountAdded (Plugins::IAccount*)),
+						this,
+						SLOT (addAccount (Plugins::IAccount*)));
+				connect (&Core::Instance (),
+						SIGNAL (accountRemoved (Plugins::IAccount*)),
+						this,
+						SLOT (handleAccountRemoved (Plugins::IAccount*)));
 
 				Q_FOREACH (Plugins::IAccount *acc,
 						Core::Instance ().GetAccounts ())
-					AddAccount (acc);
+					addAccount (acc);
 
 				Ui_.Accounts_->setModel (AccModel_);
 			}
 
-			void AccountsListDialog::AddAccount (Plugins::IAccount *acc)
+			void AccountsListDialog::addAccount (Plugins::IAccount *acc)
 			{
 				QStandardItem *item = new QStandardItem (acc->GetAccountName ());
 				item->setData (QVariant::fromValue<Plugins::IAccount*> (acc), RAccObj);
@@ -105,39 +112,14 @@ namespace LeechCraft
 				proto->RemoveAccount (acc->GetObject ());
 			}
 
-			void AccountsListDialog::handleAccountAdded (QObject *accObj)
+			void AccountsListDialog::handleAccountRemoved (Plugins::IAccount *acc)
 			{
-				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
-				if (!acc)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< accObj
-							<< "doesn't implement IAccount, got from"
-							<< sender ();
-					return;
-				}
-
-				AddAccount (acc);
-			}
-
-			void AccountsListDialog::handleAccountRemoved (QObject *accObj)
-			{
-				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
-				if (!acc)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< accObj
-							<< "doesn't implement IAccount, got from"
-							<< sender ();
-					return;
-				}
-
 				if (!Account2Item_.contains (acc))
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "account"
 							<< acc->GetAccountName ()
-							<< accObj
+							<< acc->GetObject ()
 							<< "from"
 							<< sender ()
 							<< "not found here";

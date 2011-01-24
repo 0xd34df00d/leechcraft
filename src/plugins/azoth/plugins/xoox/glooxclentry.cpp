@@ -25,6 +25,8 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/azothcommon.h>
 #include "glooxaccount.h"
+#include "core.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -38,14 +40,54 @@ namespace Xoox
 {
 	GlooxCLEntry::GlooxCLEntry (gloox::RosterItem *ri, GlooxAccount *parent)
 	: EntryBase (parent)
-	, ParentAccountObject_ (parent)
 	, RI_ (ri)
 	{
+		connect (this,
+				SIGNAL (nameChanged (const QString&)),
+				&Core::Instance (),
+				SLOT (saveRoster ()));
+	}
+
+	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
+	: EntryBase (parent)
+	, RI_ (0)
+	, ODS_ (ods)
+	{
+		connect (this,
+				SIGNAL (nameChanged (const QString&)),
+				&Core::Instance (),
+				SLOT (saveRoster ()));
+	}
+
+	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
+	{
+		if (ODS_)
+			return ODS_;
+
+		OfflineDataSource_ptr ods (new OfflineDataSource);
+		ods->ID_ = GetEntryID ();
+		ods->Name_ = GetEntryName ();
+		ods->Groups_ = Groups ();
+		ods->AuthStatus_ = GetAuthStatus ();
+
+		return ods;
+	}
+
+	void GlooxCLEntry::Convert2ODS ()
+	{
+		ODS_ = ToOfflineDataSource ();
+		RI_ = 0;
+		emit availableVariantsChanged (QStringList () << QString ());
+		CurrentStatus_.clear ();
+		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
 
 	void GlooxCLEntry::UpdateRI (gloox::RosterItem *ri)
 	{
 		RI_ = ri;
+		ODS_.reset ();
+
+		emit availableVariantsChanged (Variants ());
 	}
 
 	gloox::RosterItem* GlooxCLEntry::GetRI () const
@@ -63,12 +105,12 @@ namespace Xoox
 
 	QObject* GlooxCLEntry::GetParentAccount () const
 	{
-		return ParentAccountObject_;
+		return Account_;
 	}
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
-		return FPermanentEntry | FSupportsRenames;
+		return FPermanentEntry | FSupportsRenames | FSupportsAuth;
 	}
 
 	ICLEntry::EntryType GlooxCLEntry::GetEntryType () const
@@ -78,6 +120,9 @@ namespace Xoox
 
 	QString GlooxCLEntry::GetEntryName () const
 	{
+		if (ODS_)
+			return ODS_->Name_;
+
 		std::string name = RI_->name ();
 		if (!name.size ())
 			name = RI_->jid ();
@@ -86,17 +131,28 @@ namespace Xoox
 
 	void GlooxCLEntry::SetEntryName (const QString& name)
 	{
+		if (ODS_)
+			return;
+
 		RI_->setName (name.toUtf8 ().constData ());
-		ParentAccountObject_->Synchronize ();
+		Account_->Synchronize ();
+
+		emit nameChanged (name);
 	}
 
 	QByteArray GlooxCLEntry::GetEntryID () const
 	{
+		if (ODS_)
+			return ODS_->ID_;
+
 		return RI_->jid ().c_str ();
 	}
 
 	QStringList GlooxCLEntry::Groups () const
 	{
+		if (ODS_)
+			return ODS_->Groups_;
+
 		QStringList result;
 		Q_FOREACH (const std::string& string, RI_->groups ())
 			result << QString::fromUtf8 (string.c_str ());
@@ -128,6 +184,9 @@ namespace Xoox
 	{
 		QStringList result;
 
+		if (ODS_)
+			return result << QString ();
+
 		Q_FOREACH (const std::string& str, VariantsImpl ())
 			result << QString::fromUtf8 (str.c_str ());
 
@@ -140,9 +199,56 @@ namespace Xoox
 	QObject* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
 			const QString& variant, const QString& text)
 	{
-		QObject *msg = ParentAccountObject_->CreateMessage (type, variant, text, RI_);
+		if (ODS_)
+		{
+			// TODO
+			return 0;
+		}
+
+		QObject *msg = Account_->CreateMessage (type, variant, text, RI_);
 		AllMessages_ << msg;
 		return msg;
+	}
+
+	AuthStatus GlooxCLEntry::GetAuthStatus () const
+	{
+		if (ODS_)
+			return ODS_->AuthStatus_;
+
+		return static_cast<AuthStatus> (RI_->subscription ());
+	}
+
+	void GlooxCLEntry::RevokeAuth (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		Account_->GetClientConnection ()->RevokeSubscription (GetJID (), reason);
+	}
+
+	void GlooxCLEntry::Unsubscribe (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		Account_->GetClientConnection ()->Unsubscribe (GetJID (), reason);;
+	}
+
+	void GlooxCLEntry::RerequestAuth (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		const QString& id = QString::fromUtf8 (GetJID ().bare ().c_str ());
+		Account_->GetClientConnection ()->Subscribe (id,
+				reason,
+				GetEntryName (),
+				Groups ());
+	}
+
+	gloox::JID GlooxCLEntry::GetJID () const
+	{
+		return gloox::JID (RI_->jid ()).bareJID ();
 	}
 }
 }

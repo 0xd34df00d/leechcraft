@@ -31,7 +31,6 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
 #include "core.h"
-#include "mucsubjectdialog.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
@@ -56,13 +55,20 @@ namespace Azoth
 	, Variant_ (variant)
 	, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
+	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
 	, NumUnreadMsgs_ (0)
+	, IsMUC_ (false)
+	, HasBeenAppended_ (false)
 	{
 		Ui_.setupUi (this);
+
+		Ui_.SubjBox_->setVisible (false);
+		Ui_.SubjChange_->setEnabled (false);
 
 		Core::Instance ().RegisterHookable (this);
 
@@ -152,18 +158,13 @@ namespace Azoth
 
 		Ui_.EntryInfo_->setText (e->GetEntryName ());
 
-		Ui_.MsgEdit_->setMaximumHeight (height () / 4);
-		int height = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
-
-		if (height + Ui_.MsgEdit_->fontMetrics ().height () < Ui_.MsgEdit_->maximumHeight ())
-			Ui_.MsgEdit_->setMinimumHeight (height);
-
-		Ui_.MsgEdit_->setFocus ();
+		QTimer::singleShot (0, Ui_.MsgEdit_, SLOT (setFocus ()));
 
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
 				this,
 				SLOT (clearAvailableNick ()));
+		on_MsgEdit__textChanged ();
 	}
 
 	void ChatTab::HasBeenAdded ()
@@ -207,6 +208,8 @@ namespace Azoth
 
 	void ChatTab::TabMadeCurrent ()
 	{
+		HasBeenAppended_ = false;
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookMadeCurrent (proxy, this);
 		if (proxy->IsCancelled ())
@@ -250,6 +253,9 @@ namespace Azoth
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
 
+		if (ProcessOutgoingMsg (e, text))
+			return;
+
 		QObject *msgObj = e->CreateMessage (type, variant, text);
 
 		Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
@@ -276,25 +282,41 @@ namespace Azoth
 	{
 		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
 
-		int height = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
-		int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
-		if (height < fontHeight)
-			Ui_.MsgEdit_->setMinimumHeight (fontHeight);
-		else if (height + fontHeight < Ui_.MsgEdit_->maximumHeight ())
-			Ui_.MsgEdit_->setMinimumHeight (height);
-		else
-			Ui_.MsgEdit_->setMinimumHeight (Ui_.MsgEdit_->maximumHeight ());
+		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
+		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
+		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
+		Ui_.MsgEdit_->setMinimumHeight (resHeight);
+		Ui_.MsgEdit_->setMaximumHeight (resHeight);
 	}
 
-	void ChatTab::on_SubjectButton__released ()
+	void ChatTab::on_SubjectButton__toggled (bool show)
 	{
+		Ui_.SubjBox_->setVisible (show);
+		Ui_.SubjChange_->setEnabled (show);
+
+		if (!show)
+			return;
+
 		Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
 		if (!me)
 			return;
 
-		const QString& subject = me->GetMUCSubject ();
-		MUCSubjectDialog dia (subject, this);
-		dia.exec ();
+		/* TODO enable depending on whether we have enough rights to
+		 * change the subject. And, if we don't, set the SubjEdit_ to
+		 * readOnly() mode.
+		 */
+		Ui_.SubjEdit_->setText (me->GetMUCSubject ());
+	}
+
+	void ChatTab::on_SubjChange__released()
+	{
+		Ui_.SubjectButton_->setChecked (false);
+
+		Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
+		if (!me)
+			return;
+
+		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
 	}
 
 	void ChatTab::handleEntryMessage (QObject *msgObj)
@@ -343,6 +365,7 @@ namespace Azoth
 		if (url.host () == "msgeditreplace")
 		{
 			Ui_.MsgEdit_->setText (url.path ().mid (1));
+			Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 			Ui_.MsgEdit_->setFocus ();
 		}
 	}
@@ -395,9 +418,9 @@ namespace Azoth
 		Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
 
 		bool claimsMUC = e->GetEntryType () == Plugins::ICLEntry::ETMUC;
-		bool isGoodMUC = true;
+		IsMUC_ = true;
 		if (!(claimsMUC))
-			isGoodMUC = false;
+			IsMUC_ = false;
 
 		if (claimsMUC &&
 				!GetEntry<Plugins::IMUCEntry> ())
@@ -406,10 +429,10 @@ namespace Azoth
 				<< e->GetEntryName ()
 				<< "declares itself to be a MUC, "
 					"but doesn't implement IMUCEntry";
-			isGoodMUC = false;
+			IsMUC_  = false;
 		}
 
-		if (isGoodMUC)
+		if (IsMUC_ )
 			HandleMUC ();
 		else
 		{
@@ -478,7 +501,9 @@ namespace Azoth
 				{
 					string.append (entryName);
 					string.append (": ");
-					divClass = "chatmsg";
+					divClass = Core::Instance ().IsHighlightMessage (msg) ?
+							"highlightchatmsg" :
+							"chatmsg";
 				}
 				break;
 			}
@@ -494,8 +519,27 @@ namespace Azoth
 			break;
 		}
 		case Plugins::IMessage::DOut:
-			string.append (FormatNickname ("R", msg));
-			string.append (": ");
+			if (body.startsWith ("/leechcraft "))
+			{
+				body = body.mid (12);
+				string.append ("* ");
+			}
+			else if (body.startsWith ("/me ") &&
+					msg->GetMessageType () != Plugins::IMessage::MTMUCMessage)
+			{
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (other->GetParentAccount ());
+				body = body.mid (3);
+				string.append ("* ");
+				string.append (acc->GetOurNick ());
+				string.append (' ');
+				divClass = "slashmechatmsg";
+			}
+			else
+			{
+				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (other->GetParentAccount ());
+				string.append (FormatNickname (acc->GetOurNick (), msg));
+				string.append (": ");
+			}
 			divClass = "chatmsg";
 			break;
 		}
@@ -503,9 +547,24 @@ namespace Azoth
 		string.append (body);
 
 		QWebElement elem = frame->findFirstElement ("body");
-		elem.appendInside (QString ("<div class='%2'>%1</div>")
-					.arg (string)
-					.arg (divClass));
+
+		Plugins::ICLEntry *entry =
+				qobject_cast<Plugins::ICLEntry*> (Core::Instance ().GetEntry (EntryID_));
+		if (!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) &&
+				!HasBeenAppended_)
+		{
+			QWebElement elem = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
+			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
+			if (hr.isNull ())
+				elem.appendInside ("<hr class=\"lastSeparator\" />");
+			else
+				elem.appendInside (hr.takeFromDocument ());
+			HasBeenAppended_ = true;
+		}
+
+		elem.appendInside (QString ("<div class='%1'>%2</div>")
+					.arg (divClass)
+					.arg (string));
 
 		if (shouldScrollFurther)
 			QTimer::singleShot (50,
@@ -613,6 +672,20 @@ namespace Azoth
 
 				pos += str.length ();
 			}
+			pos = 0;
+			while ((pos = ImageRegexp_.indexIn (body, pos)) != -1)
+			{
+				QString image = ImageRegexp_.cap (1);
+				// webkit not copy <img alt> to buffer with all text
+				//  fix it in new <div ...
+				QString str = QString ("<img src=\"%1\" alt=\"%1\" />\
+						<div style='width: 1px; overflow: hidden;\
+									height: 1px; float: left;\
+									font-size: 1px;'>%1</div>")
+						.arg (image);
+				body.replace (pos, image.length (), str);
+				pos += str.length ();
+			}
 
 			proxy.reset (new Util::DefaultHookProxy);
 			emit hookFormatBodyEnd (proxy, this, body, msgObj);
@@ -622,6 +695,20 @@ namespace Azoth
 		return proxy->IsCancelled () ?
 				proxy->GetReturnValue ().toString () :
 				body;
+	}
+
+	bool ChatTab::ProcessOutgoingMsg (Plugins::ICLEntry *entry, QString& text)
+	{
+		Plugins::IMUCEntry *mucEntry = qobject_cast<Plugins::IMUCEntry*> (entry->GetObject ());
+		if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC &&
+				mucEntry &&
+				text.startsWith ("/nick "))
+		{
+			mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
+			return true;
+		}
+
+		return false;
 	}
 
 	namespace
@@ -795,6 +882,13 @@ namespace Azoth
 
 	void ChatTab::ReformatTitle ()
 	{
+		if (!GetEntry<Plugins::ICLEntry> ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "GetEntry<Plugins::ICLEntry> returned NULL";
+			return;
+		}
+
 		QString title = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
 		if (NumUnreadMsgs_)
 			title.prepend (QString ("(%1) ")
@@ -812,6 +906,9 @@ namespace Azoth
 			break;
 		case Plugins::ICLEntry::ETPrivateChat:
 			path << tr ("Private chat");
+			break;
+		case Plugins::ICLEntry::ETUnauthEntry:
+			path << tr ("Unauthorized user");
 			break;
 		}
 

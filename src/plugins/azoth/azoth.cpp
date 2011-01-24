@@ -48,10 +48,12 @@ namespace LeechCraft
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 						"azothsettings.xml");
 
-				Util::ResourceLoader *statIcnLdr = Core::Instance ()
-						.GetResourceLoader (Core::RLTStatusIconLoader);
 				XmlSettingsDialog_->SetDataSource ("StatusIcons",
-						statIcnLdr->GetSubElemModel ());
+						Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
+							GetSubElemModel ());
+				XmlSettingsDialog_->SetDataSource ("ClientIcons",
+						Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
+							GetSubElemModel ());
 
 				QMainWindow *mainWin = proxy->GetMainWindow ();
 				QDockWidget *dw = new QDockWidget (mainWin);

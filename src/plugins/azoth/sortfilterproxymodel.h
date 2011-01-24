@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,10 +29,15 @@ namespace LeechCraft
 			class SortFilterProxyModel : public QSortFilterProxyModel
 			{
 				Q_OBJECT
+
+				bool ShowOffline_;
 			public:
 				SortFilterProxyModel (QObject* = 0);
+			public slots:
+				void showOfflineContacts (bool);
 			protected:
-				virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
+				bool filterAcceptsRow (int, const QModelIndex&) const;
+				bool lessThan (const QModelIndex&, const QModelIndex&) const;
 			};
 		}
 	}

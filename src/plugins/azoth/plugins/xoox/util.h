@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,10 @@ namespace Util
 {
 	QString RoleToString (const gloox::MUCRoomRole&);
 	QString AffiliationToString (const gloox::MUCRoomAffiliation&);
+
+	QString GetClientIDName (const QString&);
+	QString GetClientHRName (const QString&);
+	//QString GetClientVersion (const QString&, const QString&);
 }
 }
 }

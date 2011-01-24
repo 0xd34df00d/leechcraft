@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,9 @@ namespace LeechCraft
 		QShortcut *FullScreenShortcut_;
 		const QString DefaultSystemStyleName_;
 		bool IsQuitting_;
+
+		QMenu *MenuView_;
+		QMenu *MenuTools_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
@@ -126,7 +129,6 @@ namespace LeechCraft
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();
 		void handleIconSize ();
-		void handleShowMenuBarAsButton ();
 		void handleNewTabMenuRequested ();
 		void updateSpeedIndicators ();
 		void updateClock ();

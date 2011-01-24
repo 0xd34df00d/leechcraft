@@ -18,10 +18,15 @@
 
 #ifndef PLUGINS_AZOTH_CORE_H
 #define PLUGINS_AZOTH_CORE_H
+#include <boost/function.hpp>
 #include <QObject>
 #include <QSet>
-#include <interfaces/iinfo.h>
-#include <interfaces/azothcommon.h>
+#include <QIcon>
+#include "interfaces/iinfo.h"
+#include "interfaces/azothcommon.h"
+#include "interfaces/imucentry.h"
+#include "interfaces/iprotocol.h"
+#include "interfaces/iauthable.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -76,7 +81,14 @@ namespace LeechCraft
 				typedef QHash<QByteArray, QObject*> ID2Entry_t;
 				ID2Entry_t ID2Entry_;
 
-				Util::ResourceLoader *StatusIconLoader_;
+				typedef QHash<Plugins::ICLEntry*, QMap<QString, QIcon> > EntryClientIconCache_t;
+				EntryClientIconCache_t EntryClientIconCache_;
+
+				typedef QHash<Plugins::ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
+				Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
+
+				boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
+				boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
 
 				boost::shared_ptr<PluginManager> PluginManager_;
 				boost::shared_ptr<ProxyObject> PluginProxyObject_;
@@ -106,7 +118,8 @@ namespace LeechCraft
 
 				enum ResourceLoaderType
 				{
-					RLTStatusIconLoader
+					RLTStatusIconLoader,
+					RLTClientIconLoader
 				};
 
 				enum CLEntryActionArea
@@ -138,6 +151,8 @@ namespace LeechCraft
 				QAbstractItemModel* GetCLModel () const;
 				ChatTabsManager* GetChatTabsManager () const;
 				QList<Plugins::IAccount*> GetAccounts () const;
+				QList<Plugins::IProtocol*> GetProtocols () const;
+
 				void SendEntity (const Entity&);
 
 				/** Returns contact list entry with the given id. The id
@@ -161,10 +176,44 @@ namespace LeechCraft
 				bool ShouldCountUnread (const Plugins::ICLEntry *entry,
 						const Plugins::IMessage *message);
 
+				/** Whether this message should be considered as a the
+				 * one that highlights the participant.
+				 */
+				bool IsHighlightMessage (const Plugins::IMessage*);
+
 				/** Returns an icon from the current iconset for the
 				 * given contact list entry state.
 				 */
 				QIcon GetIconForState (Plugins::State state) const;
+
+				/** @brief Returns icons for the given CL entry.
+				 *
+				 * This function returns an icon for each variant of
+				 * the entry, since different variants may have
+				 * different clients. If the protocol which the entry
+				 * belongs doesn't support variants, the map would have
+				 * only one key/value pair of null QString and
+				 * corresponding icon.
+				 *
+				 * This function returns the icons from the currently
+				 * selected (in settings) iconset.
+				 *
+				 * @param[in] entry Entry for which to return the icons.
+				 * @return Map from entity variant to corresponding
+				 * client icon.
+				 */
+				QMap<QString, QIcon> GetClientIconForEntry (Plugins::ICLEntry *entry);
+
+				/** @brief Returns the avatar for the given CL entry
+				 * scaled to the given size.
+				 *
+				 * The scale is performed using SmoothTransform and
+				 * keeping the aspect ratio.
+				 *
+				 * @param[in] entry Entry for which to get the avatar.
+				 * @return Entry's avatar scaled to the given size.
+				 */
+				QImage GetAvatar (Plugins::ICLEntry *entry, int size);
 
 				/** Returns an up-to-date list of actions suitable for
 				 * the given entry.
@@ -204,6 +253,10 @@ namespace LeechCraft
 				 */
 				QList<QStandardItem*> GetCategoriesItems (QStringList categories, QStandardItem *account);
 
+				/** Returns the QStandardItem for the given account.
+				 */
+				QStandardItem* GetAccountItem (const QObject *accountObj);
+
 				/** Returns the QStandardItem for the given account and
 				 * adds it into accountItemCache.
 				 */
@@ -224,6 +277,23 @@ namespace LeechCraft
 
 				void CreateActionsForEntry (Plugins::ICLEntry*);
 				void UpdateActionsForEntry (Plugins::ICLEntry*);
+
+				/** Asks user for reason for the given action, possibly
+				 * showing the given text. The id may be used to
+				 * distinguish between different reason contexts (like
+				 * kick/ban and authentication request), for example, to
+				 * keep history of reasons and to allow the user to
+				 * choose one.
+				 */
+				QString GetReason (const QString& id, const QString& text);
+
+				/** Calls the given func on the sending entry, asking
+				 * for reason for the action, if it should. The text may
+				 * contains %1, in which case it'd be replaced with the
+				 * result if ICLEntry::GetEntryName().
+				 */
+				void ManipulateAuth (const QString& id, const QString& text,
+						boost::function<void (Plugins::IAuthable*, const QString&)> func);
 			private slots:
 				/** Initiates account registration process.
 				 */
@@ -271,15 +341,28 @@ namespace LeechCraft
 				 */
 				void handleRemovedCLItems (const QList<QObject*>& items);
 
-				/** Handles the event of status changes in plugin to new
+				/** Handles the status change of an account to new
+				 * status.
+				 */
+				void handleAccountStatusChanged (const Plugins::EntryStatus& status);
+
+				/** Handles the status change of a CL entry to new
 				 * status.
 				 */
 				void handleStatusChanged (const Plugins::EntryStatus& status, const QString& variant);
+
+				/** Handles the event of name changes in plugin.
+				 */
+				void handleEntryNameChanged (const QString& newName);
 
 				/** Handles the message receival from contact list
 				 * entries.
 				 */
 				void handleEntryGotMessage (QObject *msg);
+
+				/** Handles the authorization requests from accounts.
+				 */
+				void handleAuthorizationRequested (QObject*, const QString&);
 
 				/** Is registered in the XmlSettingsManager as handler
 				 * for changes of the "StatusIcons" property.
@@ -292,14 +375,43 @@ namespace LeechCraft
 				 */
 				void updateItem ();
 
+				/** Asks the corresponding CL entry to show its dialog
+				 * with information about the user.
+				 */
+				void showVCard ();
+
 				/** Handles the number of unread messages for the given
 				 * contact list entry identified by object. Object should
 				 * implement ICLEntry, obviously.
 				 */
 				void handleClearUnreadMsgCount (QObject *object);
 
+				/** Removes the entries in the client icon cache for the
+				 * sender, if obj is null, or for obj, if it is not
+				 * null.
+				 *
+				 * If the object can't be casted to Plugins::ICLEntry,
+				 * this function does nothing.
+				 */
+				void invalidateClientsIconCache (QObject *obj = 0);
+				void invalidateClientsIconCache (Plugins::ICLEntry*);
+
+				void invalidateSmoothAvatarCache ();
+
+				void handleActionRenameTriggered ();
+				void handleActionRemoveTriggered ();
+				void handleActionRevokeAuthTriggered ();
+				void handleActionUnsubscribeTriggered ();
+				void handleActionRerequestTriggered ();
+				void handleActionVCardTriggered ();
+
 				void handleActionOpenChatTriggered ();
 				void handleActionLeaveTriggered ();
+				void handleActionAuthorizeTriggered ();
+				void handleActionDenyAuthTriggered ();
+
+				void handleActionRoleTriggered ();
+				void handleActionAffTriggered ();
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
@@ -314,6 +426,16 @@ namespace LeechCraft
 				 * Chatrooms have been added.
 				 */
 				void mucJoinActionsAdded (const QList<QAction*>&);
+
+				/** Convenient signal for rethrowing the event of an
+				 * account being added.
+				 */
+				void accountAdded (Plugins::IAccount*);
+
+				/** Convenient signal for rethrowing the event of an
+				 * account being removed.
+				 */
+				void accountRemoved (Plugins::IAccount*);
 
 				// Plugin API
 				void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,

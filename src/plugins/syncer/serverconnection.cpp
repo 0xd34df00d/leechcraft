@@ -18,6 +18,7 @@
 
 #include "serverconnection.h"
 #include <QTcpSocket>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -96,8 +97,13 @@ namespace LeechCraft
 			{
 				if (Socket_->isOpen ())
 					Socket_->close ();
-				qDebug () << Q_FUNC_INFO;
-				Socket_->connectToHost ("127.0.0.1", 1024);
+
+				const QString& host = XmlSettingsManager::Instance ()
+						.property ("ServerHost").toString ();
+				int port = XmlSettingsManager::Instance ()
+						.property ("ServerPort").toInt ();
+				qDebug () << Q_FUNC_INFO << host << port;
+				Socket_->connectToHost (host, port);
 			}
 
 			void ServerConnection::reqMaxDelta ()
@@ -136,9 +142,13 @@ namespace LeechCraft
 
 			void ServerConnection::handleConnected ()
 			{
-				qDebug () << Q_FUNC_INFO;
+				const QString& login =
+						XmlSettingsManager::Instance ().property ("ServerLogin").toString ();
+				const QString& pass =
+						XmlSettingsManager::Instance ().property ("ServerPass").toString ();
+				qDebug () << Q_FUNC_INFO << login;
 				QList<QByteArray> lists;
-				lists << "LOGIN" << "test" << "pass";
+				lists << "LOGIN" << login.toUtf8 () << pass.toUtf8 ();
 				Socket_->write (FmtMsg (lists));
 			}
 

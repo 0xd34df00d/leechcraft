@@ -230,7 +230,7 @@ namespace LeechCraft
 
 				if (moreMenu->actions ().size ())
 				{
-					const QString tools = "tools";
+					const QString tools = "Poshuku";
 					WindowMenus_ [tools] << moreMenu->actions ();
 					WindowMenus_ [tools] << Util::CreateSeparator (this);
 				}

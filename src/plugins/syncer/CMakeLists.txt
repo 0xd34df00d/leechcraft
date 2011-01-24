@@ -29,6 +29,7 @@ SET (SRCS
 	datastorageserver.cpp
 	serverconnection.cpp
 	serverchainhandler.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	syncer.h
@@ -37,6 +38,7 @@ SET (HEADERS
 	datastorageserver.h
 	serverconnection.h
 	serverchainhandler.h
+	xmlsettingsmanager.h
 	)
 SET (TRANSLATIONS
 	leechcraft_syncer_ru_RU.ts
@@ -65,3 +67,4 @@ TARGET_LINK_LIBRARIES (leechcraft_syncer
 	)
 INSTALL (TARGETS leechcraft_syncer DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES syncersettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -18,8 +18,11 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ABSTRACTBOOKMARKSSERVICE_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ABSTRACTBOOKMARKSSERVICE_H
+
 #include <QObject>
 #include <QIcon>
+#include <QUrl>
+#include <QDateEdit>
 
 namespace LeechCraft
 {
@@ -34,15 +37,26 @@ namespace OnlineBookmarks
 	class AbstractBookmarksService : public QObject
 	{
 		Q_OBJECT
+		
 	public:
 		AbstractBookmarksService (QObject *parent = 0) : QObject (parent) {}
-		~AbstractBookmarksService () {}
 
 		virtual QString GetName () const = 0;
 		virtual QIcon GetIcon () const = 0;
 		virtual void CheckValidAccountData (const QString&, const QString&) = 0;
+		virtual void DownloadBookmarks (const QStringList&, const QDateTime&) = 0;
+		virtual void UploadBookmarks (const QStringList&, const QList<QVariant>&) = 0;
+	public slots:
+		virtual void getReplyFinished () = 0;
+		virtual void readyReadReply () = 0;
+	private:
+		virtual void ParseDownloadReply (const QByteArray&) = 0;
+		virtual void ParseUploadReply (bool) = 0;
 	signals:
 		void gotValidReply (bool);
+		void gotParseError (const QString&);
+		void gotDownloadReply (const QList<QVariant>&, const QUrl&);
+		void gotUploadReply (bool);
 	};
 }
 }

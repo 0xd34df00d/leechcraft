@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,6 +96,7 @@ namespace LeechCraft
 				bool IsRepr () const;
 				QModelIndex GetRelevantIndex () const;
 				void BuildID2ActionTupleMap ();
+				void MarkReadUnread (boost::function<void (const QModelIndex&)>);
 			public slots:
 				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 			private slots:
@@ -111,6 +112,7 @@ namespace LeechCraft
 				void on_ActionMarkChannelAsRead__triggered ();
 				void on_ActionMarkChannelAsUnread__triggered ();
 				void on_ActionChannelSettings__triggered ();
+				void handleFeedsContextMenuRequested (const QPoint&);
 				void on_MergeItems__toggled (bool);
 				void currentChannelChanged ();
 				void unreadNumberChanged (int);

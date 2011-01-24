@@ -34,6 +34,7 @@
 #include "itemhandlers/itemhandlerpushbutton.h"
 #include "itemhandlers/itemhandlercustomwidget.h"
 #include "itemhandlers/itemhandlerdataview.h"
+#include "itemhandlers/itemhandlerlistview.h"
 
 namespace LeechCraft
 {
@@ -53,6 +54,7 @@ namespace LeechCraft
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerFont ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerColor ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerDataView (this));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerListView (this));
 	}
 
 	ItemHandlerFactory::~ItemHandlerFactory ()

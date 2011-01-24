@@ -40,13 +40,6 @@ void FullscreenSpacerLabel::mouseMoveEvent (QMouseEvent *event)
 	MainWindow *wnd = Core::Instance ().GetReallyMainWindow ();
 	if (wnd && (wnd->windowState () == Qt::WindowFullScreen))
 	{
-		QMenuBar *menu = wnd->findChild<QMenuBar*> ("MenuBar_");
-		if (!menu)
-		{
-			qWarning () << Q_FUNC_INFO
-						<< "menu is null";
-			return;
-		}
 		QToolBar *toolbar = wnd->findChild<QToolBar*> ("MainToolbar_");
 		if (!toolbar)
 		{
@@ -73,11 +66,6 @@ void FullscreenSpacerLabel::mouseMoveEvent (QMouseEvent *event)
 
 		if (event->y () < 5)
 		{
-			if (asButton)
-				menu->hide ();
-			else if (menu->isHidden ())
-				menu->show ();
-
 			if (toolbar->isHidden ())
 				toolbar->show ();
 			if (bar && bar->isHidden ())
@@ -85,8 +73,6 @@ void FullscreenSpacerLabel::mouseMoveEvent (QMouseEvent *event)
 		}
 		else
 		{
-			if (!menu->isHidden ())
-				menu->hide ();
 			if (!toolbar->isHidden ())
 				toolbar->hide ();
 			if (bar && !bar->isHidden ())

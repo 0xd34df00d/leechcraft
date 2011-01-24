@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <QHash>
 #include <gloox/mucroomhandler.h>
 #include <gloox/messagehandler.h>
+#include <interfaces/imucentry.h>
 #include "clientconnection.h"
 #include "roomparticipantentry.h"
 
@@ -40,8 +41,8 @@ namespace Xoox
 	class RoomParticipantEntry;
 
 	class RoomHandler : public QObject
-						, public gloox::MUCRoomHandler
-						, public gloox::MessageHandler
+					  , public gloox::MUCRoomHandler
+					  , public gloox::MessageHandler
 	{
 		Q_OBJECT
 
@@ -52,6 +53,8 @@ namespace Xoox
 		boost::shared_ptr<gloox::MUCRoom> Room_;
 		QString Subject_;
 		bool RoomHasBeenEntered_;
+		// contains new nicks
+		QSet<QString> PendingNickChanges_;
 	public:
 		RoomHandler (GlooxAccount*);
 
@@ -60,14 +63,25 @@ namespace Xoox
 		 */
 		void SetRoom (boost::shared_ptr<gloox::MUCRoom>);
 		boost::shared_ptr<gloox::MUCRoom> GetRoom () const;
+		gloox::JID GetRoomJID () const;
 		RoomCLEntry* GetCLEntry ();
+		void HandleVCard (const gloox::VCard*, const QString&);
+
+		void SetState (const GlooxAccountState&);
 
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 		QList<QObject*> GetParticipants () const;
 		QString GetSubject () const;
+		void SetSubject (const QString&);
 		void Kick (const QString& nick, const QString& reason = QString ());
 		void Leave (const QString& msg);
+		RoomParticipantEntry* GetSelf () const;
+
+		void SetAffiliation (RoomParticipantEntry*,
+				IMUCEntry::MUCAffiliation, const QString&);
+		void SetRole (RoomParticipantEntry*,
+				IMUCEntry::MUCRole, const QString&);
 
 		// MUCRoomHandler
 		virtual void handleMUCParticipantPresence (gloox::MUCRoom*,
@@ -101,7 +115,9 @@ namespace Xoox
 
 		void MakeLeaveMessage (const gloox::MUCRoomParticipant);
 		void MakeStatusChangedMessage (const gloox::MUCRoomParticipant, const gloox::Presence&);
+		void MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant);
 		void MakeJoinMessage (const gloox::MUCRoomParticipant);
+		void MakeNickChangeMessage (const QString& oldNick, const QString& newNick);
 
 		gloox::MessageSession* GetSessionWith (const gloox::JID&);
 		QString NickFromJID (const gloox::JID&) const;

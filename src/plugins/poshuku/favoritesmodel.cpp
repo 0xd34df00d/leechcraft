@@ -197,9 +197,9 @@ namespace LeechCraft
 				return true;
 			}
 
-			QList<QMap<QString, QVariant> > FavoritesModel::getItemsMap() const
+			QList<QVariant> FavoritesModel::getItemsMap() const
 			{
-				QList<QMap<QString, QVariant> > result;
+				QList<QVariant> result;
 				Q_FOREACH (const FavoritesItem& item, Items_)
 				{
 					QMap<QString, QVariant> map;
@@ -212,6 +212,7 @@ namespace LeechCraft
 					map ["Tags"] = tags;
 					result << map;
 				}
+				
 				return result;
 			}
 

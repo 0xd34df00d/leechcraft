@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,15 +41,17 @@ namespace Xoox
 	class RoomParticipantEntry : public EntryBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry);
 
 		QString Nick_;
-		GlooxAccount *Account_;
 		RoomHandler *RoomHandler_;
+
+		gloox::MUCRoomAffiliation Affiliation_;
+		gloox::MUCRoomRole Role_;
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
 		QObject* GetParentAccount () const ;
+		QObject* GetParentCLEntry () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -59,10 +61,13 @@ namespace Xoox
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
-	private slots:
-		void handleKickRequested ();
-	signals:
-		void availableVariantsChanged (const QStringList&);
+
+		gloox::JID GetJID () const;
+
+		gloox::MUCRoomAffiliation GetAffiliation () const;
+		void SetAffiliation (gloox::MUCRoomAffiliation);
+		gloox::MUCRoomRole GetRole () const;
+		void SetRole (gloox::MUCRoomRole);
 	};
 
 	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;

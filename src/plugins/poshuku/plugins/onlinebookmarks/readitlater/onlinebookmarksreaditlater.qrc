@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/poshuku/plugins/readitlater" >
+    <file>resources/images/readitlater.ico</file>
+  </qresource>
+</RCC>

@@ -215,15 +215,15 @@
     </message>
     <message>
         <source>General</source>
-        <translation>Общее</translation>
+        <translation type="obsolete">Общее</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation>Инструменты</translation>
+        <translation type="obsolete">Инструменты</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Помощь</translation>
+        <translation type="obsolete">Помощь</translation>
     </message>
     <message>
         <source>About LeechCraft...</source>
@@ -235,7 +235,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation>Вид</translation>
+        <translation type="obsolete">Вид</translation>
     </message>
     <message>
         <source>Menu</source>
@@ -353,7 +353,7 @@
     </message>
     <message>
         <source>Select directory</source>
-        <translation>Выберите директорию</translation>
+        <translation>Выберите каталог</translation>
     </message>
     <message>
         <source>Select file</source>
@@ -445,6 +445,14 @@
         <comment>FullScreen</comment>
         <translation>F11</translation>
     </message>
+    <message>
+        <source>View</source>
+        <translation>Вид</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation>Инструменты</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -454,7 +462,7 @@
     </message>
     <message>
         <source>Could not create Core directory.</source>
-        <translation>Невозможно создать директорию для Ядра.</translation>
+        <translation>Невозможно создать каталог Ядра.</translation>
     </message>
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
@@ -717,7 +725,7 @@
     </message>
     <message>
         <source> b</source>
-        <translation> b</translation>
+        <translation> Б</translation>
     </message>
     <message>
         <source> KiB</source>
@@ -851,11 +859,11 @@
     </message>
     <message>
         <source>Show menu bar as button</source>
-        <translation>Показывать панель меню в виде кнопки</translation>
+        <translation type="obsolete">Показывать панель меню в виде кнопки</translation>
     </message>
     <message>
         <source>Try smarter tabs width calculation</source>
-        <translation>Пытаться использовать умный алгоритм расчета ширины вкладок</translation>
+        <translation type="obsolete">Пытаться использовать умный алгоритм расчета ширины вкладок</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -1007,7 +1015,7 @@
     </message>
     <message>
         <source>Watch directory:</source>
-        <translation>Следить за директорией:</translation>
+        <translation>Следить за каталогом:</translation>
     </message>
     <message>
         <source>Show plugin-dependent actions in tab bar context menu</source>

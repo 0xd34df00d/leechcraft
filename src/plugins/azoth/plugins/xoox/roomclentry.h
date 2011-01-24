@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,8 @@ namespace Xoox
 	class RoomHandler;
 
 	class RoomCLEntry : public QObject
-						, public ICLEntry
-						, public IMUCEntry
+					  , public ICLEntry
+					  , public IMUCEntry
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry
@@ -65,6 +65,7 @@ namespace Xoox
 		QString GetEntryName () const;
 		void SetEntryName (const QString&);
 		QByteArray GetEntryID () const;
+		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
@@ -73,12 +74,24 @@ namespace Xoox
 		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
+		QString GetRawInfo () const;
+		void ShowInfo ();
+		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;
 		QString GetMUCSubject () const;
+		void SetMUCSubject (const QString&);
 		QList<QObject*> GetParticipants ();
 		void Leave (const QString&);
+		QString GetNick () const;
+		void SetNick (const QString&);
+		bool MayChangeAffiliation (QObject*, MUCAffiliation) const;
+		bool MayChangeRole (QObject*, MUCRole) const;
+		MUCAffiliation GetAffiliation (QObject*) const;
+		void SetAffiliation (QObject*, MUCAffiliation, const QString&);
+		MUCRole GetRole (QObject*) const;
+		void SetRole (QObject*, MUCRole, const QString&);
 
 		boost::shared_ptr<gloox::MUCRoom> GetRoom ();
 
@@ -90,9 +103,14 @@ namespace Xoox
 		void statusChanged (const Plugins::EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
 		void avatarChanged (const QImage&);
+		void rawinfoChanged (const QString&);
+		void nameChanged (const QString&);
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
+
+		void participantAffiliationChanged (QObject*, MUCAffiliation);
+		void participantRoleChanged (QObject*, MUCRole);
 	};
 }
 }

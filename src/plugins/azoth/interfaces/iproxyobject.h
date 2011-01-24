@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,28 @@ namespace Plugins
 		 * @return Human-readable string describing state.
 		 */
 		virtual QString StateToString (Plugins::State state) const = 0;
+
+		/** @brief Returns serialized name of the authorization status.
+		 *
+		 * @return Serialized name of the auth status.
+		 *
+		 * @sa AuthStatusFromString()
+		 */
+		virtual QString AuthStatusToString (Plugins::AuthStatus status) const = 0;
+
+		/** @brief Converts string representation to AuthStatus element.
+		 *
+		 * The string that's passed should be the one previously
+		 * returned from AuthStatusToString().
+		 *
+		 * @param[in] str String previously returned from
+		 * AuthStatusToString().
+		 *
+		 * @return AuthStatus element or ASNone if str is invalid.
+		 *
+		 * @sa AuthStatusToString()
+		 */
+		virtual Plugins::AuthStatus AuthStatusFromString (const QString& str) const = 0;
 	};
 }
 }

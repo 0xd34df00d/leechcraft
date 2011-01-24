@@ -20,7 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
 #include <QWidget>
 #include "interfaces/structures.h"
-#include "ui_settings.h"
+#include "ui_accounts.h"
 
 class QStandardItemModel;
 class QFrame;
@@ -39,32 +39,23 @@ namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class OnlineBookmarks;
+	class Core;
 	class AbstractBookmarksService;
-	
+
 	class Settings : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::Settings_ Ui_;
-		OnlineBookmarks *OnlineBookmarks_;
+		Ui::Accounts_ Ui_;
 		QStandardItemModel *Model_;
-		QStandardItemModel *ServicesModel_;
-		QFrame *LoginFrame_;
-		QCheckBox *YahooID_;
-		QPushButton *Apply_;
-		QLineEdit *Login_;
-		QLineEdit *Password_;
 		QList<AbstractBookmarksService*> BookmarksServices_;
 	public:
-		Settings (QStandardItemModel*, OnlineBookmarks*);
+		Settings (QStandardItemModel*);
 		QString GetSelectedName () const;
+		void SetConfirmSend (bool);
 	private:
-		QFrame* CreateLoginWidget (QWidget *parent = 0);
 		void ClearFrameState ();
 		void SetupServices ();
-		void SetPassword (const QString&, const QString&, const QString&);
-		QString GetPassword (const QString&, const QString&);
 		void ReadSettings ();
 		void SetApplyEnabled (const QString&, const QString&);
 	public slots:
@@ -76,11 +67,8 @@ namespace OnlineBookmarks
 		void handleStuff ();
 		void handleLoginTextChanged (const QString&);
 		void handlePasswordTextChanged (const QString&);
-		void on_Services__currentIndexChanged (const QString&);
-		void on_AccauntsView__clicked (const QModelIndex&);
+		void on_AccountsView__clicked (const QModelIndex&);
 		void checkServiceAnswer (bool);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
@@ -89,4 +77,3 @@ namespace OnlineBookmarks
 }
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
-

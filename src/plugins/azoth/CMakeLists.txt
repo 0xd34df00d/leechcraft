@@ -18,6 +18,8 @@ ENDIF (NOT QT_USE_FILE)
 SET (QT_USE_QTDBUS TRUE)
 SET (QT_USE_QTWEBKIT TRUE)
 SET (QT_USE_QTSQL TRUE)
+SET (QT_USE_QTXML TRUE)
+
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -34,12 +36,12 @@ SET (SRCS
 	sortfilterproxymodel.cpp
 	accountslistdialog.cpp
 	setstatusdialog.cpp
-	mucsubjectdialog.cpp
 	pluginmanager.cpp
 	proxyobject.cpp
 	textedit.cpp
 	xmlsettingsmanager.cpp
 	contactlistdelegate.cpp
+	addcontactdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -50,12 +52,12 @@ SET (HEADERS
 	sortfilterproxymodel.h
 	accountslistdialog.h
 	setstatusdialog.h
-	mucsubjectdialog.h
 	pluginmanager.h
 	proxyobject.h
 	textedit.h
 	xmlsettingsmanager.h
 	contactlistdelegate.h
+	addcontactdialog.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
@@ -66,15 +68,17 @@ SET (FORMS
 	chattab.ui
 	accountslistdialog.ui
 	setstatusdialog.ui
-	mucsubjectdialog.ui
+	addcontactdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS
 	leechcraft_azoth_ru_RU.ts
+	leechcraft_azoth_uk_UA.ts
 	leechcraft_azoth_en.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_en.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

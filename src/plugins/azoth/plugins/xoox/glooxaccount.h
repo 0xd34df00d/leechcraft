@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <gloox/jid.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
+#include "glooxclentry.h"
 
 namespace gloox
 {
@@ -56,7 +57,7 @@ namespace Xoox
 	class GlooxProtocol;
 
 	class GlooxAccount : public QObject
-						, public IAccount
+					   , public IAccount
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
@@ -73,22 +74,32 @@ namespace Xoox
 		GlooxAccountState AccState_;
 	public:
 		GlooxAccount (const QString&, QObject*);
+		void Init ();
 
 		QObject* GetObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 		QString GetAccountName () const;
+		QString GetOurNick () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
+		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
-		void ChangeState (State, const QString& = QString ());
+		EntryStatus GetState () const;
+		void ChangeState (const EntryStatus&);
 		void Synchronize ();
+		void Authorize (QObject*);
+		void DenyAuth (QObject*);
+		void RequestAuth (const QString&, const QString&,
+				const QString&, const QStringList&);
+		void RemoveEntry (QObject*);
 
 		QString GetJID () const;
 		QString GetNick () const;
 		void JoinRoom (const QString&, const QString&, const QString&);
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
+		GlooxCLEntry* CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
 
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
@@ -103,11 +114,15 @@ namespace Xoox
 		void handleGotRosterItems (const QList<QObject*>&);
 	private slots:
 		void handleServerAuthFailed ();
+		void feedClientPassword ();
 		void handleDestroyClient ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
 		void joinedGroupchat (QObject*);
+		void authorizationRequested (QObject*, const QString&);
+		void statusChanged (const Plugins::EntryStatus&);
+
 		void accountSettingsChanged ();
 
 		void scheduleClientDestruction ();

@@ -21,6 +21,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QtDebug>
 #include <interfaces/iprotocolplugin.h>
 #include "glooxaccount.h"
 #include "core.h"
@@ -116,7 +117,7 @@ namespace Xoox
 
 		emit accountAdded (account);
 
-		account->ChangeState (SOnline);
+		account->ChangeState (EntryStatus (SOnline, QString ()));
 	}
 
 	void GlooxProtocol::InitiateMUCJoin ()

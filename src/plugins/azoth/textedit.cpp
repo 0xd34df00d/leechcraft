@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2006-2011  Oleg Linkin
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +34,17 @@ namespace LeechCraft
 
 			void TextEdit::keyPressEvent (QKeyEvent *event)
 			{
-				if (event->key () == Qt::Key_Return && event->modifiers () == Qt::NoModifier)
+				bool sendMsgButton = event->key () == Qt::Key_Return ||
+						event->key () == Qt::Key_Enter;
+				if (sendMsgButton && event->modifiers () == Qt::NoModifier)
 					emit keyReturnPressed ();
 				else if (event->key () == Qt::Key_Tab)
-					emit keyTabPressed ();
+				{
+					if (event->modifiers () == Qt::NoModifier)
+						emit keyTabPressed ();
+					else
+						event->ignore ();
+				}
 				else
 				{
 					emit clearAvailableNicks ();

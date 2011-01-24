@@ -7,22 +7,27 @@ SET (ONLINEBOOKMARKS_SRCS
 	onlinebookmarks.cpp
 	xmlsettingsmanager.cpp
 	settings.cpp
+	syncbookmarks.cpp
 	core.cpp
-	delicious/deliciousbookmarksservice.cpp
+	bookmarksdialog.cpp
+	readitlater/readitlaterbookmarksservice.cpp
 	)
 SET (ONLINEBOOKMARKS_HEADERS
 	onlinebookmarks.h
 	xmlsettingsmanager.h
 	abstractbookmarksservice.h
 	settings.h
+	syncbookmarks.h
+	bookmarksdialog.h
 	core.h
-	delicious/deliciousbookmarksservice.h
+	readitlater/readitlaterbookmarksservice.h
 	)
 SET (ONLINEBOOKMARKS_FORMS
-	settings.ui
+	accounts.ui
+	bookmarksdialog.ui
 	)
 SET (ONLINEBOOKMARKS_RESOURCES poshukuonlinebookmarksresources.qrc
-	delicious/onlinebookmarksdelicious.qrc
+	readitlater/onlinebookmarksreaditlater.qrc
 	)
 SET (ONLINEBOOKMARKS_TRANSLATIONS
 	leechcraft_poshuku_onlinebookmarks_ru_RU.ts
@@ -51,6 +56,7 @@ ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks SHARED
 	${ONLINEBOOKMARKS_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_onlinebookmarks
+	qjson
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
