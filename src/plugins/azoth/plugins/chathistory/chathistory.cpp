@@ -44,29 +44,27 @@ namespace LeechCraft
 					void Plugin::SecondInit ()
 					{
 						DB_.reset (new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE", "History connection")));
-						QString dbpath = QDir::homePath() + ".leechcraft/azoth";
-						Util::CreateIfNotExists(dbpath);
-						DB_->setDatabaseName (dbpath + "/history.sqlite");
+						Util::CreateIfNotExists ("azoth");
+						// TODO get rid of the hardcoded path below somehow
+						DB_->setDatabaseName (QDir::homePath () + ".leechcraft/azoth/history.sqlite");
 						if (!DB_->tables ().contains ("history"))
 							InitializeTables ();
 						UserSelecter_ = QSqlQuery (*DB_);
-						UserSelecter_.prepare("SELECT EntryID FROM azoth_users ");
+						UserSelecter_.prepare ("SELECT EntryID FROM azoth_users ");
 						UserIdSelecter_ = QSqlQuery (*DB_);
-						UserIdSelecter_.prepare("SELECT Id FROM azoth_users WHERE EntryID = :entry_id");
+						UserIdSelecter_.prepare ("SELECT Id FROM azoth_users WHERE EntryID = :entry_id");
 						UserInserter_ = QSqlQuery (*DB_);
-						UserInserter_.prepare("INSERT INTO azoth_users (EntryID) VALUES (:entry_id);");
+						UserInserter_.prepare ("INSERT INTO azoth_users (EntryID) VALUES (:entry_id);");
 						MessageDumper_ = QSqlQuery (*DB_);
-						MessageDumper_.prepare("INSERT INTO azoth_history (Id, Date, Direction, Message, Variant, Type) "
-											   "VALUES (:id, :date, :direction, :message, :variant, :type);");
-						if (!UserSelecter_.exec())
-						{
+						MessageDumper_.prepare ("INSERT INTO azoth_history (Id, Date, Direction, Message, Variant, Type) "
+								"VALUES (:id, :date, :direction, :message, :variant, :type);");
+						if (!UserSelecter_.exec ())
 							LeechCraft::Util::DBLock::DumpError (UserSelecter_);
-						}
 						else
 						{
-							while (UserSelecter_.next()){
-								QString entryId = UserSelecter_.value(0).toString();
-								Users_.insert(entryId);
+							while (UserSelecter_.next ()){
+								QString entryId = UserSelecter_.value (0).toString ();
+								Users_.insert (entryId);
 							}
 						}
 					}
@@ -79,7 +77,7 @@ namespace LeechCraft
 					void Plugin::Release ()
 					{
 						QSqlDatabase::database ("History connection").close ();
-						DB_.reset ();
+						DB_->close ();
 						QSqlDatabase::removeDatabase ("History connection");
 					}
 
@@ -139,15 +137,23 @@ namespace LeechCraft
 						}
 						QObject *otherPart = msg->OtherPart ();
 						ICLEntry *entry = qobject_cast<ICLEntry*> (otherPart);
+						if (!entry)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "message's other part doesn't implement ICLEntry"
+									<< msg->GetObject ()
+									<< msg->OtherPart ();
+							return;
+						}
 						QString entryName = entry->GetEntryName ();
 						IMessage::Direction direction = msg->GetDirection ();
 						IMessage::MessageType messageType = msg->GetMessageType ();
 						QString otherVariant = msg->GetOtherVariant ();
 						QString body = msg->GetBody ();
 						QDateTime timestamp = msg->GetDateTime ();
-						if (Users_.find(entryName) == Users_.constEnd())
+						if (Users_.contains (entryName))
 						{
-							UserInserter_.bindValue(":entry_id", entryName);
+							UserInserter_.bindValue (":entry_id", entryName);
 							if (!UserInserter_.exec ())
 							{
 								LeechCraft::Util::DBLock::DumpError (UserInserter_);
@@ -157,22 +163,22 @@ namespace LeechCraft
 						}
 						else
 						{
-							UserIdSelecter_.bindValue(":entry_id", entryName);
-							if (!UserIdSelecter_.exec())
+							UserIdSelecter_.bindValue (":entry_id", entryName);
+							if (!UserIdSelecter_.exec ())
 							{
 								LeechCraft::Util::DBLock::DumpError (UserIdSelecter_);
 								return;
 							}
 							else
 							{
-								UserSelecter_.first();
-								int id = UserSelecter_.value(0).toInt();
-								MessageDumper_.bindValue(":id", id);
-								//MessageDumper_.bindValue(":date", entryName);
-								MessageDumper_.bindValue(":direction", direction);
-								MessageDumper_.bindValue(":message", body);
-								//MessageDumper_.bindValue(":variant", entryName);
-								MessageDumper_.bindValue(":type", messageType);
+								UserSelecter_.first ();
+								int id = UserSelecter_.value (0).toInt ();
+								MessageDumper_.bindValue (":id", id);
+								//MessageDumper_.bindValue (":date", entryName);
+								MessageDumper_.bindValue (":direction", direction);
+								MessageDumper_.bindValue (":message", body);
+								//MessageDumper_.bindValue (":variant", entryName);
+								MessageDumper_.bindValue (":type", messageType);
 							}
 						}
 					}
@@ -184,16 +190,16 @@ namespace LeechCraft
 						if (!msg)
 						{
 							qWarning () << Q_FUNC_INFO
-							<< message
-							<< "doesn't implement IMessage"
-							   << sender ();
-							   return;
+									<< message
+									<< "doesn't implement IMessage"
+									<< sender ();
+							return;
 						}
 						IMessage::Direction direction = msg->GetDirection ();
 						switch (direction)
 						{
-							case IMessage::DIn  : qDebug() << "direction : IN"; break;
-							case IMessage::DOut : qDebug() << "direction : OUT"; break;
+							case IMessage::DIn  : qDebug () << "direction : IN"; break;
+							case IMessage::DOut : qDebug () << "direction : OUT"; break;
 						}
 						IMessage::MessageType messageType = msg->GetMessageType ();
 						QObject *otherPart = msg->OtherPart ();
@@ -215,16 +221,16 @@ namespace LeechCraft
 								"EntryID TEXT "
 								");");
 						query.exec ("CREATE UNIQUE INDEX azoth_users_id "
-									"ON azoth_users (Id);");
+								"ON azoth_users (Id);");
 						query.exec ("CREATE TABLE azoth_history ("
-									"Id INTEGER, "
-									"Date DATETIME, "
-									"Direction INTEGER, "
-									"Message TEXT, "
-									"OtherPart TEXT, "
-									"Variant TEXT, "
-									"Type INTEGER "
-									");");
+								"Id INTEGER, "
+								"Date DATETIME, "
+								"Direction INTEGER, "
+								"Message TEXT, "
+								"OtherPart TEXT, "
+								"Variant TEXT, "
+								"Type INTEGER "
+								");");
 					}
 				}
 			}
