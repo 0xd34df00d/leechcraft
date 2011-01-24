@@ -139,6 +139,15 @@ namespace Azoth
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleShowOffline (bool)));
+
+		QMenu *menuHistory = new QMenu (tr ("History"));
+		UpperBar_->addAction (menuHistory->menuAction ());
+
+		QAction *showHistory = menuHistory->addAction (tr ("Show contacts history"),
+				this,
+				SLOT (handleShowHistory ()));
+
+
 	}
 
 	void MainWidget::on_CLTree__activated (const QModelIndex& index)
@@ -314,6 +323,14 @@ namespace Azoth
 		if (Core::Instance ().GetCLModel ()->rowCount ())
 			handleRowsInserted (QModelIndex (),
 					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
+	}
+
+	void MainWidget::handleShowHistory ()
+	{
+		qDebug () << Q_FUNC_INFO
+				<< sender ()
+				<< "IN handleShowHistory ()";
+		return;
 	}
 
 	namespace

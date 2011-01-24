@@ -63,6 +63,8 @@ namespace Azoth
 		void rebuildTreeExpansions ();
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
+
+		void handleShowHistory ();
 	};
 }
 }
