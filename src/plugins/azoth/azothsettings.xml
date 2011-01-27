@@ -37,22 +37,22 @@
 		<label value="Statuses" />
 		<groupbox>
 			<label value="Default status texts" />
-			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I'm online!">
+			<item type="lineedit" property="DefaultStatus1" translatable="true" default="I'm online!">
 				<label value="Online:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus1" translatable="true" default="Wanna chat :3">
+			<item type="lineedit" property="DefaultStatus5" translatable="true" default="Wanna chat :3">
 				<label value="Free to chat:" />
 			</item>
 			<item type="lineedit" property="DefaultStatus2" translatable="true" default="Oh, seems like I'm away">
 				<label value="Away:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Please leave me alone now">
+			<item type="lineedit" property="DefaultStatus4" translatable="true" default="Please leave me alone now">
 				<label value="DND:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus4" translatable="true" default="Extended away is okay">
+			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Extended away is okay">
 				<label value="XA:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus5" translatable="true" default="I turned off my machine to get some life">
+			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I turned off my machine to get some life">
 				<label value="Offline:" />
 			</item>
 		</groupbox>

@@ -28,9 +28,6 @@
        <height>32</height>
       </size>
      </property>
-     <property name="indentation">
-      <number>5</number>
-     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
