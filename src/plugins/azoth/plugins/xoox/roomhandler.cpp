@@ -80,6 +80,12 @@ namespace Xoox
 
 	void RoomHandler::SetState (const GlooxAccountState& state)
 	{
+		if (state.State_ == SOffline)
+		{
+			Leave (state.Status_);
+			return;
+		}
+
 		QXmppPresence pres;
 		pres.setTo (GetRoomJID ());
 		pres.setType (QXmppPresence::Available);
