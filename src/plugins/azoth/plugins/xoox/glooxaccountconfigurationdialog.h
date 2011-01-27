@@ -47,6 +47,11 @@ namespace Xoox
 		void SetResource (const QString&);
 		short GetPriority () const;
 		void SetPriority (short);
+
+		QString GetHost () const;
+		void SetHost (const QString&);
+		int GetPort () const;
+		void SetPort (int);
 	};
 }
 }

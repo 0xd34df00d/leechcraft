@@ -87,6 +87,7 @@ namespace Xoox
 		void SetPassword (const QString&);
 
 		QString GetOurJID () const;
+		void SetOurJID (const QString&);
 
 		/** Joins the room and returns the contact list
 		 * entry representing that room.

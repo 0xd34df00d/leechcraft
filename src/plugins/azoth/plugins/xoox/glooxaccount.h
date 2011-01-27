@@ -61,6 +61,8 @@ namespace Xoox
 		QString JID_;
 		QString Nick_;
 		QString Resource_;
+		QString Host_;
+		int Port_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;
 
@@ -75,6 +77,8 @@ namespace Xoox
 		QList<QObject*> GetCLEntries ();
 		QString GetAccountName () const;
 		QString GetOurNick () const;
+		QString GetHost () const;
+		int GetPort () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
 		void QueryInfo (const QString&);

@@ -144,7 +144,10 @@ namespace Xoox
 			if (FirstTimeConnect_)
 				emit needPassword ();
 
-			Client_->connectToServer (OurJID_, Password_);
+			QXmppConfiguration conf;
+			conf.setJid (OurJID_);
+			conf.setPassword (Password_);
+			Client_->connectToServer (conf);
 
 			FirstTimeConnect_ = false;
 		}
@@ -173,6 +176,11 @@ namespace Xoox
 	QString ClientConnection::GetOurJID () const
 	{
 		return OurJID_;
+	}
+
+	void ClientConnection::SetOurJID (const QString& jid)
+	{
+		OurJID_ = jid;
 	}
 
 	/** @todo Set the correct state on join.

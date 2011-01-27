@@ -46,6 +46,7 @@ namespace Xoox
 	: QObject (parent)
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
+	, Port_ (-1)
 	{
 		AccState_.State_ = SOffline;
 		AccState_.Priority_ = -1;
@@ -133,6 +134,16 @@ namespace Xoox
 		return Nick_;
 	}
 
+	QString GlooxAccount::GetHost () const
+	{
+		return Host_;
+	}
+
+	int GlooxAccount::GetPort () const
+	{
+		return Port_;
+	}
+
 	void GlooxAccount::RenameAccount (const QString& name)
 	{
 		Name_ = name;
@@ -150,7 +161,6 @@ namespace Xoox
 
 	void GlooxAccount::OpenConfigurationDialog ()
 	{
-		// TODO nonmodal
 		std::auto_ptr<GlooxAccountConfigurationDialog> dia (new GlooxAccountConfigurationDialog (0));
 		if (!JID_.isEmpty ())
 			dia->SetJID (JID_);
@@ -158,18 +168,38 @@ namespace Xoox
 			dia->SetNick (Nick_);
 		if (!Resource_.isEmpty ())
 			dia->SetResource (Resource_);
+		if (!Host_.isEmpty ())
+			dia->SetHost (Host_);
+		if (Port_ >= 0)
+			dia->SetPort (Port_);
 		dia->SetPriority (AccState_.Priority_);
+
 		if (dia->exec () == QDialog::Rejected)
 			return;
+
+		State lastState = AccState_.State_;
+		if (lastState != SOffline &&
+			(JID_ != dia->GetJID () ||
+			 Nick_ != dia->GetNick () ||
+			 Resource_ != dia->GetResource () ||
+			 Host_ != dia->GetHost () ||
+			 Port_ != dia->GetPort ()))
+		{
+			ChangeState (EntryStatus (SOffline, AccState_.Status_));
+			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
+		}
 
 		JID_ = dia->GetJID ();
 		Nick_ = dia->GetNick ();
 		Resource_ = dia->GetResource ();
 		AccState_.Priority_ = dia->GetPriority ();
+		Host_ = dia->GetHost ();
+		Port_ = dia->GetPort ();
+
+		if (lastState != SOffline)
+			ChangeState (EntryStatus (lastState, AccState_.Status_));
 
 		emit accountSettingsChanged ();
-
-		ChangeState (EntryStatus (AccState_.State_, AccState_.Status_));
 	}
 
 	EntryStatus GlooxAccount::GetState () const
@@ -263,7 +293,7 @@ namespace Xoox
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 1;
+		quint16 version = 2;
 
 		QByteArray result;
 		{
@@ -273,7 +303,9 @@ namespace Xoox
 				<< JID_
 				<< Nick_
 				<< Resource_
-				<< AccState_.Priority_;
+				<< AccState_.Priority_
+				<< Host_
+				<< Port_;
 		}
 
 		return result;
@@ -286,7 +318,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -301,6 +333,9 @@ namespace Xoox
 			>> result->Nick_
 			>> result->Resource_
 			>> result->AccState_.Priority_;
+		if (version >= 2)
+			in >> result->Host_
+				>> result->Port_;
 		result->Init ();
 
 		return result;

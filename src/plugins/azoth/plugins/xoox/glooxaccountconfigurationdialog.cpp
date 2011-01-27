@@ -73,6 +73,32 @@ namespace Xoox
 	{
 		Ui_.Priority_->setValue (priority);
 	}
+
+	QString GlooxAccountConfigurationDialog::GetHost () const
+	{
+		return Ui_.CustomAddress_->isChecked () ?
+			Ui_.ConnectionHost_->text () :
+			QString ();
+	}
+
+	void GlooxAccountConfigurationDialog::SetHost (const QString& host)
+	{
+		Ui_.CustomAddress_->setChecked (host.size ());
+		Ui_.ConnectionHost_->setText (host);
+	}
+
+	int GlooxAccountConfigurationDialog::GetPort () const
+	{
+		return Ui_.CustomAddress_->isChecked () ?
+			Ui_.ConnectionPort_->value () :
+			-1;
+	}
+
+	void GlooxAccountConfigurationDialog::SetPort (int port)
+	{
+		Ui_.CustomAddress_->setChecked (port > 0);
+		Ui_.ConnectionPort_->setValue (port);
+	}
 }
 }
 }
