@@ -100,7 +100,7 @@ namespace Azoth
 
 			painter->restore ();
 
-			o.rect.setLeft (unreadSpace);
+			o.rect.setLeft (unreadSpace + o.rect.left ());
 		}
 
 		QStyledItemDelegate::paint (painter, o, index);
