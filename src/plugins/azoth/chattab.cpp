@@ -220,6 +220,7 @@ namespace Azoth
 		NumUnreadMsgs_ = 0;
 
 		ReformatTitle ();
+		Ui_.MsgEdit_->setFocus ();
 	}
 
 	void ChatTab::messageSend ()
