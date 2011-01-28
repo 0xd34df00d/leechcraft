@@ -251,7 +251,26 @@ namespace Xoox
 		else
 		{
 			RoomPublicMessage *message = 0;
-			if (!nick.isEmpty ())
+			if (msg.type () == QXmppMessage::GroupChat &&
+				!msg.subject ().isEmpty () &&
+				msg.body ().isEmpty ())
+			{
+				Subject_ = msg.subject ();
+				CLEntry_->HandleSubjectChanged (Subject_);
+
+				const QString& string = nick.isEmpty () ?
+						msg.subject () :
+						tr ("%1 changed subject to %2")
+							.arg (nick)
+							.arg (msg.subject ());
+
+				message = new RoomPublicMessage (string,
+					IMessage::DIn,
+					CLEntry_,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
+			}
+			else if (!nick.isEmpty ())
 				message = new RoomPublicMessage (msg, CLEntry_, entry);
 			else
 				message = new RoomPublicMessage (msg.body (),
@@ -259,7 +278,9 @@ namespace Xoox
 					CLEntry_,
 					IMessage::MTEventMessage,
 					IMessage::MSTOther);
-			CLEntry_->HandleMessage (message);
+
+			if (message)
+				CLEntry_->HandleMessage (message);
 		}
 	}
 
