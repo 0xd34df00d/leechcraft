@@ -34,7 +34,7 @@ namespace Plugins
 namespace Xoox
 {
 	RoomCLEntry::RoomCLEntry (RoomHandler *rh, GlooxAccount *account)
-	: QObject (account)
+	: QObject (rh)
 	, Account_ (account)
 	, RH_ (rh)
 	{

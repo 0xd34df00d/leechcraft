@@ -401,7 +401,6 @@ namespace Xoox
 
 		deleteLater ();
 	}
-
 }
 }
 }
