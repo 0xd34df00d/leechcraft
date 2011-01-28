@@ -147,6 +147,12 @@ namespace Xoox
 			QXmppConfiguration conf;
 			conf.setJid (OurJID_);
 			conf.setPassword (Password_);
+			const QString& host = Account_->GetHost ();
+			const int port = Account_->GetPort ();
+			if (!host.isEmpty ())
+				conf.setHost (host);
+			if (port >= 0)
+				conf.setPort (port);
 			Client_->connectToServer (conf);
 
 			FirstTimeConnect_ = false;
