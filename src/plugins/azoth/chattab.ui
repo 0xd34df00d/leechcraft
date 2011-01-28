@@ -129,6 +129,9 @@
           <height>20</height>
          </size>
         </property>
+        <property name="acceptRichText">
+         <bool>false</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -139,9 +142,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>SubjEdit_</zorder>
-     <zorder>SubjEdit_</zorder>
-     <zorder>SubjChange_</zorder>
     </widget>
    </item>
    <item>
