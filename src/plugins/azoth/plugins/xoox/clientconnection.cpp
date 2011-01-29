@@ -482,13 +482,7 @@ namespace Xoox
 				return;
 			}
 			else
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no entry for"
-						<< jid
-						<< resource;
 				return;
-			}
 		}
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
@@ -513,8 +507,22 @@ namespace Xoox
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
 		else if (JID2CLEntry_.contains (jid))
 		{
-			GlooxMessage *gm = new GlooxMessage (msg, this);
-			JID2CLEntry_ [jid]->HandleMessage (gm);
+			if (msg.body ().isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "got message with empty body:"
+						<< msg.from ()
+						<< msg.subject ()
+						<< msg.stamp ()
+						<< msg.thread ()
+						<< msg.type ()
+						<< msg.state ();
+			}
+			else
+			{
+				GlooxMessage *gm = new GlooxMessage (msg, this);
+				JID2CLEntry_ [jid]->HandleMessage (gm);
+			}
 		}
 		else
 			qWarning () << Q_FUNC_INFO
