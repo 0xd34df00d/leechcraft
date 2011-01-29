@@ -64,7 +64,7 @@ namespace LeechCraft
 				void initJavaScript ();
 			private:
 				void CreateWidget ();
-				void SetTheme (const QString&);
+				void LoadTheme (const QString&);
 				QSize SetData ();
 				void SetWidgetPlace ();
 				void ShowNotification ();

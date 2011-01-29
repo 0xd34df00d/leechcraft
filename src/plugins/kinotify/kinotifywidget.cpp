@@ -33,6 +33,7 @@
 #include <QFinalState>
 #include <QWebHitTestResult>
 #include "notificationaction.h"
+#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -208,7 +209,7 @@ namespace LeechCraft
 
 			void KinotifyWidget::CreateWidget ()
 			{
-				SetTheme (":/plugins/kinotify/resources/notification/commie");
+				LoadTheme (":/plugins/kinotify/resources/notification/commie");
 				setStyleSheet ("background: transparent");
 				page ()->mainFrame ()->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 				page ()->mainFrame ()->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
@@ -228,22 +229,25 @@ namespace LeechCraft
 				page ()->setPreferredContentsSize (size ());
 			}
 
-			void KinotifyWidget::SetTheme (const QString& themePath)
+			void KinotifyWidget::LoadTheme (const QString& themePath)
 			{
+				Theme_.clear ();
 				QFile content (themePath + "/tmp.html");
-				QString output;
-
-				if (content.open (QIODevice::ReadOnly))
+				if (!content.open (QIODevice::ReadOnly))
 				{
-					output = content.readAll ();
-					QStringList elements;
-					elements << "back";
-					Q_FOREACH (QString elem, elements)
-						output.replace (QString ("{%1}").arg (elem),
-								MakeImage (QString (themePath + "/img/%1.png").arg (elem)));
-					content.close ();
-					Theme_ = output;
+					qWarning () << Q_FUNC_INFO
+							<< "could not open theme file at"
+							<< content.fileName ()
+							<< content.errorString ();
+					return;
 				}
+
+				Theme_ = content.readAll ();
+				QStringList elements;
+				elements << "back";
+				Q_FOREACH (QString elem, elements)
+					Theme_.replace (QString ("{%1}").arg (elem),
+							MakeImage (QString (themePath + "/img/%1.png").arg (elem)));
 			}
 
 			QSize KinotifyWidget::SetData ()
