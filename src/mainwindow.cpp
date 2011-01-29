@@ -86,6 +86,11 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
 
+	connect (Core::Instance ().GetNewTabMenuManager (),
+			SIGNAL (restoreTabActionAdded (QAction*)),
+			this,
+			SLOT (handleRestoreActionAdded (QAction*)));
+
 	QTimer *speedUpd = new QTimer (this);
 	speedUpd->setInterval (1000);
 	connect (speedUpd,
@@ -665,6 +670,11 @@ void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 	QMenu *ntmenu = Core::Instance ()
 			.GetNewTabMenuManager ()->GetNewTabMenu ();
 	ntmenu->popup (QCursor::pos ());
+}
+
+void MainWindow::handleRestoreActionAdded (QAction *act)
+{
+	Ui_.MainTabWidget_->InsertAction2TabBar (Ui_.ActionCloseTab_, act);
 }
 
 void LeechCraft::MainWindow::updateSpeedIndicators ()

@@ -49,6 +49,7 @@ namespace LeechCraft
 	private slots:
 		void restoreEmbedTab ();
 	signals:
+		void restoreTabActionAdded (QAction*);
 		void restoreEmbedTabRequested (QObject*);
 	};
 }

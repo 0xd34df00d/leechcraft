@@ -37,6 +37,7 @@ namespace LeechCraft
 		int TabAt (const QPoint&) const;
 		void AddAction2TabBar (QAction*);
 		void InsertAction2TabBar (int, QAction*);
+		void InsertAction2TabBar (QAction *before, QAction *action);
 	protected:
 		virtual bool event (QEvent*);
 		virtual void mouseDoubleClickEvent (QMouseEvent*);

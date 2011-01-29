@@ -90,9 +90,12 @@ namespace LeechCraft
 			}
 
 			if (!action)
+			{
 				action = NewTabMenu_->addAction (icon, name,
 						this,
 						SLOT (restoreEmbedTab ()));
+				emit restoreTabActionAdded (action);
+			}
 			action->setData (QVariant::fromValue<QObject*> (obj));
 		}
 		catch (const std::exception& e)

@@ -92,6 +92,14 @@ void TabWidget::InsertAction2TabBar (int index, QAction *act)
 			SLOT (handleActionDestroyed ()));
 }
 
+void TabWidget::InsertAction2TabBar (QAction* before, QAction* action)
+{
+	int idx = TabBarActions_.indexOf (before);
+	if (idx < 0)
+		idx = TabBarActions_.size ();
+	InsertAction2TabBar (idx, action);
+}
+
 bool TabWidget::event (QEvent *e)
 {
 	if (e->type () == QEvent::ToolTip)
