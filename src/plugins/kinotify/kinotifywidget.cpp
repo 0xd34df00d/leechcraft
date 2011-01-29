@@ -100,13 +100,13 @@ namespace LeechCraft
 						SIGNAL (timeout ()),
 						this,
 						SIGNAL (checkNotificationQueue ()));
-				
+
 				initJavaScript ();
 				connect (page ()->mainFrame (),
 						SIGNAL (javaScriptWindowObjectCleared ()),
 						this,
 						SLOT (initJavaScript ()));
-				
+
 				connect (Action_,
 						SIGNAL (actionPressed ()),
 						this,
@@ -173,7 +173,7 @@ namespace LeechCraft
 				ActionsNames_ = actions;
 				Action_->SetActionObject (object);
 			}
-			
+
 			void KinotifyWidget::stateMachinePause ()
 			{
 				CloseTimer_->start (Timeout_);
@@ -200,12 +200,12 @@ namespace LeechCraft
 			{
 				close ();
 			}
-			
+
 			void KinotifyWidget::initJavaScript ()
 			{
 				page ()->mainFrame ()->addToJavaScriptWindowObject ("Action", Action_);
 			}
-			
+
 			void KinotifyWidget::CreateWidget ()
 			{
 				SetTheme (":/plugins/kinotify/resources/notification/commie");
@@ -253,16 +253,20 @@ namespace LeechCraft
 				data.replace ("{body}", Body_);
 				data.replace ("{imagepath}", MakeImage (ImagePath_));
 				setHtml (data);
-				
+
 				if (!ActionsNames_.isEmpty ())
 				{
 					QWebElement button = page ()->mainFrame ()->documentElement ().findFirst ("form");
 					if (!button.isNull ())
-						Q_FOREACH (const QString& name, ActionsNames_)
+					{
+						QStringList reversed = ActionsNames_;
+						std::reverse (reversed.begin (), reversed.end ());
+						Q_FOREACH (const QString& name, reversed)
 							button.appendInside (QString ("<input type=\"button\" id=\"%1\" value=\"%2\""
 									" onclick=\"Action.sendActionOnClick(id)\" />")
 											.arg (ActionsNames_.indexOf (name))
 											.arg (name));
+					}
 				}
 
 				int width = size ().width ();
@@ -270,7 +274,7 @@ namespace LeechCraft
 
 				QSize contents = page ()->mainFrame ()->contentsSize ();
 				int cheight = contents.height ();
-				
+
 				if (cheight > height)
 					height = cheight;
 
