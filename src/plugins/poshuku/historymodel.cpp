@@ -200,11 +200,11 @@ namespace LeechCraft
 				return parentItem->ChildCount ();
 			}
 
-			void HistoryModel::AddItem (QString title, QString url,
-					QDateTime date)
+			void HistoryModel::addItem (QString title, QString url,
+					QDateTime date, QObject *browserWidget)
 			{
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-				emit hookAddingToHistory (proxy, title, url, date);
+				emit hookAddingToHistory (proxy, title, url, date, browserWidget);
 				if (proxy->IsCancelled ())
 					return;
 
@@ -224,6 +224,20 @@ namespace LeechCraft
 					url
 				};
 				Core::Instance ().GetStorageBackend ()->AddToHistory (item);
+			}
+
+			QList<QMap<QString, QVariant> > HistoryModel::getItemsMap () const
+			{
+				QList<QMap<QString, QVariant> > result;
+				Q_FOREACH (const HistoryItem& item, Items_)
+				{
+					QMap<QString, QVariant> map;
+					map ["Title"] = item.Title_;
+					map ["DateTime"] = item.DateTime_;
+					map ["URL"] = item.URL_;
+					result << map;
+				}
+				return result;
 			}
 
 			void HistoryModel::Add (const HistoryItem& item)
@@ -268,14 +282,14 @@ namespace LeechCraft
 					property ("HistoryKeepLessThan").toInt ();
 				Core::Instance ().GetStorageBackend ()->ClearOldHistory (age, maxItems);
 
-				std::vector<HistoryItem> items;
-				Core::Instance ().GetStorageBackend ()->LoadHistory (items);
+				Items_.clear ();
+				Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
 
-				if (!items.size ())
+				if (!Items_.size ())
 					return;
 
-				for (std::vector<HistoryItem>::const_reverse_iterator i = items.rbegin (),
-						end = items.rend (); i != end; ++i)
+				for (std::vector<HistoryItem>::const_reverse_iterator i = Items_.rbegin (),
+						end = Items_.rend (); i != end; ++i)
 					Add (*i);
 
 				reset ();
@@ -283,6 +297,7 @@ namespace LeechCraft
 
 			void HistoryModel::handleItemAdded (const HistoryItem& item)
 			{
+				Items_.push_back (item);
 				beginInsertRows (index (SectionNumber (item.DateTime_), 0),
 						0, 0);
 				Add (item);

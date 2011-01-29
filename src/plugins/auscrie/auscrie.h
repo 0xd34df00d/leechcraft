@@ -21,7 +21,7 @@
 #include <QObject>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
-#include <interfaces/itoolbarembedder.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
@@ -33,10 +33,10 @@ namespace LeechCraft
 
 			class Plugin : public QObject
 						 , public IInfo
-						 , public IToolBarEmbedder
+						 , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IToolBarEmbedder)
+				Q_INTERFACES (IInfo IActionsExporter)
 
 				std::auto_ptr<QTranslator> Translator_;
 				ICoreProxy_ptr Proxy_;
@@ -54,7 +54,8 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
-				QList<QAction*> GetActions () const;
+
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			private slots:
 				void makeScreenshot ();
 				void shoot ();

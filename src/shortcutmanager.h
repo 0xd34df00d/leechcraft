@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ namespace LeechCraft
 		void AddObject (QObject*);
 		void AddObject (QObject*, const QString&,
 				const QString&, const QIcon&);
-		QKeySequence GetShortcut (const QObject*, int) const ;
+		QKeySequences_t GetShortcuts (const QObject*, const QString&) const ;
 	public slots:
 		void on_Tree__itemActivated (QTreeWidgetItem*);
 		virtual void accept ();

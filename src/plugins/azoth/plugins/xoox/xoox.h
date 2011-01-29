@@ -26,47 +26,47 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IPlugin2
+					, public IProtocolPlugin
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxProtocol;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin)
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-					class Plugin : public QObject
-								 , public IInfo
-								 , public IPlugin2
-								 , public IProtocolPlugin
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin)
+		QSet<QByteArray> GetPluginClasses () const;
 
-						boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						void Release ();
-						QByteArray GetUniqueID () const;
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
-
-						QSet<QByteArray> GetPluginClasses () const;
-
-						QObject* GetObject ();
-						QList<IProtocol*> GetProtocols () const;
-					};
-				}
-			}
-		}
-	}
+		QObject* GetObject ();
+		QList<QObject*> GetProtocols () const;
+	public slots:
+		void initPlugin (QObject*);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+	};
+}
+}
+}
+}
 }
 
 #endif

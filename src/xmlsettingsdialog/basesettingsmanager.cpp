@@ -21,10 +21,19 @@
 
 using namespace LeechCraft::Util;
 
+BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
+: QObject (parent)
+, Settings_ (0)
+, ReadAllKeys_ (readAllKeys)
+{
+}
+
 void BaseSettingsManager::Init ()
 {
 	Settings_ = BeginSettings ();
-	QStringList properties = Settings_->childKeys ();
+	QStringList properties = ReadAllKeys_ ?
+			Settings_->allKeys () :
+			Settings_->childKeys ();
 	Initializing_ = true;
 	for (int i = 0; i < properties.size (); ++i)
 		setProperty (PROP2CHAR (properties.at (i)),
@@ -74,6 +83,16 @@ QVariant BaseSettingsManager::Property (const QString& propName, const QVariant&
 	}
 
 	return result;
+}
+
+void BaseSettingsManager::SetRawValue (const QString& path, const QVariant& val)
+{
+	Settings_->setValue (path, val);
+}
+
+QVariant BaseSettingsManager::GetRawValue (const QString& path, const QVariant& def) const
+{
+	return Settings_->value (path, def);
 }
 
 bool BaseSettingsManager::event (QEvent *e)

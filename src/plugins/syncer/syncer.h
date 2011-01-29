@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -31,11 +32,13 @@ namespace LeechCraft
 		{
 			class Plugin : public QObject
 						 , public IInfo
+						 , public IHaveSettings
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo)
+				Q_INTERFACES (IInfo IHaveSettings)
 
 				std::auto_ptr<QTranslator> Translator_;
+				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -48,6 +51,8 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
+
+				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 			};

@@ -18,98 +18,103 @@
 
 #include "xoox.h"
 #include <QIcon>
-#include <interfaces/iaccount.h>
-#include "glooxprotocol.h"
+#include "core.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					void Plugin::Init (ICoreProxy_ptr proxy)
-					{
-						GlooxProtocol_.reset (new GlooxProtocol (this));
-					}
+		Core::Instance ().SetProxy (proxy);
 
-					void Plugin::SecondInit ()
-					{
-						Q_FOREACH (IAccount *account, GlooxProtocol_->GetRegisteredAccounts ())
-							account->ChangeState (IAccount::SOnline);
-					}
-
-					void Plugin::Release ()
-					{
-						GlooxProtocol_.reset ();
-					}
-
-					QByteArray Plugin::GetUniqueID () const
-					{
-						return "org.LeechCraft.Azoth.Xoox";
-					}
-
-					QString Plugin::GetName () const
-					{
-						return "Xoox";
-					}
-
-					QString Plugin::GetInfo () const
-					{
-						return tr ("XMPP (Jabber) protocol support via Gloox library.");
-					}
-
-					QIcon Plugin::GetIcon () const
-					{
-						return QIcon ();
-					}
-
-					QStringList Plugin::Provides () const
-					{
-						return QStringList ();
-					}
-
-					QStringList Plugin::Needs () const
-					{
-						return QStringList ();
-					}
-
-					QStringList Plugin::Uses () const
-					{
-						return QStringList ();
-					}
-
-					void Plugin::SetProvider (QObject*, const QString&)
-					{
-					}
-
-					QSet<QByteArray> Plugin::GetPluginClasses () const
-					{
-						QSet<QByteArray> classes;
-						classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
-						return classes;
-					}
-
-					QObject* Plugin::GetObject ()
-					{
-						return this;
-					}
-
-					QList<IProtocol*> Plugin::GetProtocols () const
-					{
-						QList<IProtocol*> result;
-						result << qobject_cast<IProtocol*> (GlooxProtocol_.get ());
-						return result;
-					}
-				}
-			}
-		};
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 	}
+
+	void Plugin::SecondInit ()
+	{
+		Core::Instance ().SecondInit ();
+	}
+
+	void Plugin::Release ()
+	{
+		Core::Instance ().Release ();
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Azoth.Xoox";
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Xoox";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("XMPP (Jabber) protocol support via Gloox library.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
+
+	QStringList Plugin::Provides () const
+	{
+		return QStringList ();
+	}
+
+	QStringList Plugin::Needs () const
+	{
+		return QStringList ();
+	}
+
+	QStringList Plugin::Uses () const
+	{
+		return QStringList ();
+	}
+
+	void Plugin::SetProvider (QObject*, const QString&)
+	{
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		return classes;
+	}
+
+	QObject* Plugin::GetObject ()
+	{
+		return this;
+	}
+
+	QList<QObject*> Plugin::GetProtocols () const
+	{
+		return Core::Instance ().GetProtocols ();
+	}
+
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		Core::Instance ().SetPluginProxy (proxy);
+	}
+}
+}
+}
+}
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_azoth_xoox,
 		LeechCraft::Plugins::Azoth::Plugins::Xoox::Plugin);
-

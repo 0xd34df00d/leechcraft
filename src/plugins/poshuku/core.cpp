@@ -54,7 +54,6 @@
 #include "xbelparser.h"
 #include "xbelgenerator.h"
 #include "linkhistory.h"
-#include "config.h"
 #include "favoriteschecker.h"
 #include "webpluginfactory.h"
 #include "importentityhandler.h"
@@ -272,7 +271,7 @@ namespace LeechCraft
 				PluginManager_->AddPlugin (plugin);
 			}
 
-			QUrl Core::MakeURL (QString url) const
+			QUrl Core::MakeURL (QString url)
 			{
 				if (url.isEmpty ())
 					return QUrl ();
@@ -280,6 +279,12 @@ namespace LeechCraft
 				url = url.trimmed ();
 				if (url == "localhost")
 					return QUrl ("http://localhost");
+
+				if (url.startsWith ('!'))
+				{
+					HandleSearchRequest (url);
+					return QUrl ();
+				}
 
 				QHostAddress testAddress;
 				bool success = testAddress.setAddress (url);
@@ -314,7 +319,7 @@ namespace LeechCraft
 						url.replace (' ', '+');
 						QString urlStr = QString ("http://www.google.com/search?q=%2"
 								"&client=leechcraft_poshuku"
-                                "&ie=utf-8"
+								"&ie=utf-8"
 								"&rls=org.leechcraft:%1")
 							.arg (QLocale::system ().name ().replace ('_', '-'))
 							.arg (url);
@@ -421,6 +426,13 @@ namespace LeechCraft
 				FavoritesChecker_->Check ();
 			}
 
+			void Core::ReloadAll ()
+			{
+				Q_FOREACH (BrowserWidget *widget, Widgets_)
+					widget->GetWebView ()->
+							pageAction (QWebPage::Reload)->trigger ();
+			}
+
 			FavoritesModel* Core::GetFavoritesModel () const
 			{
 				return FavoritesModel_.get ();
@@ -451,7 +463,7 @@ namespace LeechCraft
 				return PluginManager_.get ();
 			}
 
-			void Core::SetShortcut (int name, const QKeySequence& shortcut)
+			void Core::SetShortcut (const QString& name, const QKeySequences_t& shortcut)
 			{
 				Q_FOREACH (BrowserWidget *widget, Widgets_)
 					widget->SetShortcut (name, shortcut);
@@ -494,6 +506,9 @@ namespace LeechCraft
 					return proxy->GetReturnValue ().toString ();
 				}
 
+				return QString ();
+
+				/*
 #if defined (Q_OS_WINCE) || defined (Q_OS_WIN32) || defined (Q_OS_MSDOS)
 				QString winver = "unknown Windows";
 				switch (QSysInfo::windowsVersion ())
@@ -583,7 +598,7 @@ namespace LeechCraft
 				return QString ("LeechCraft (%1; %2; %3; %4) (LeechCraft/Poshuku %5; WebKit %6/%7)")
 					// %1 platform
 #ifdef Q_WS_MAC
-					.arg ("Macintosh")
+					.arg ("MacOS")
 #elif defined (Q_WS_WIN)
 					.arg ("Windows")
 #elif defined (Q_WS_X11)
@@ -659,6 +674,7 @@ namespace LeechCraft
 					.arg (LEECHCRAFT_VERSION)
 					.arg (QT_VERSION_STR)
 					.arg (qVersion ());
+					*/
 			}
 
 			void Core::Unregister (BrowserWidget *widget)
@@ -755,8 +771,10 @@ namespace LeechCraft
 
 				if (!view->title ().isEmpty () &&
 						!url.isEmpty () && url != "about:blank")
-					HistoryModel_->AddItem (view->title (),
-							url, QDateTime::currentDateTime ());
+					HistoryModel_->addItem (view->title (),
+							url,
+							QDateTime::currentDateTime (),
+							view->GetBrowserWidget ());
 			}
 
 			void Core::SetupConnections (BrowserWidget *widget)
@@ -781,6 +799,20 @@ namespace LeechCraft
 						SIGNAL (urlChanged (const QString&)),
 						this,
 						SLOT (handleURLChanged (const QString&)));
+			}
+
+			void Core::HandleSearchRequest (const QString& url)
+			{
+				const int pos = url.indexOf (' ');
+				const QString& category = url.mid (1, pos - 1);
+				const QString& query = url.mid (pos + 1);
+
+				Entity e = Util::MakeEntity (query,
+						QString (),
+						FromUserInitiated,
+						"x-leechcraft/category-search-request");
+				e.Additional_ ["Categories"] = QStringList (category);
+				emit gotEntity (e);
 			}
 
 			void Core::importXbel ()
@@ -919,7 +951,7 @@ namespace LeechCraft
 					if (dia->exec () == QDialog::Rejected)
 						return;
 
-					result = FavoritesModel_->AddItem (dia->GetTitle (),
+					result = FavoritesModel_->addItem (dia->GetTitle (),
 							url, dia->GetTags ());
 				}
 				while (!result);

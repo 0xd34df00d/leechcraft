@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,25 +26,44 @@ class QMenu;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+	class SortFilterProxyModel;
+
+	class MainWidget : public QWidget
 	{
-		namespace Azoth
-		{
-			class MainWidget : public QWidget
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::MainWidget Ui_;
+		Ui::MainWidget Ui_;
 
-				QToolBar *UpperBar_;
-				QMenu *MenuNewAccount_;
-			public:
-				MainWidget (QWidget* = 0);
+		QToolBar *UpperBar_;
+		QMenu *MenuGeneral_;
+		SortFilterProxyModel *ProxyModel_;
 
-				void AddAccountCreators (const QList<QAction*>&);
-			};
-		}
-	}
+		QMenu *MenuChangeStatus_;
+	public:
+		MainWidget (QWidget* = 0);
+	private:
+		void CreateMenu ();
+	private slots:
+		void on_CLTree__activated (const QModelIndex&);
+		void on_CLTree__customContextMenuRequested (const QPoint&);
+		void handleChangeStatusRequested ();
+
+		void showAccountsList ();
+		void handleAddContactRequested ();
+
+		void handleShowOffline (bool);
+
+		void handleRowsInserted (const QModelIndex&, int, int);
+		void rebuildTreeExpansions ();
+		void on_CLTree__expanded (const QModelIndex&);
+		void on_CLTree__collapsed (const QModelIndex&);
+	};
+}
+}
 }
 
 #endif

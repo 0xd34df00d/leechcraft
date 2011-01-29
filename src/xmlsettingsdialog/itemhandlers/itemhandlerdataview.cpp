@@ -18,10 +18,11 @@
 
 #include "itemhandlerdataview.h"
 #include <boost/bind.hpp>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QDialog>
 #include <QSpinBox>
 #include <QLineEdit>
+#include <QLabel>
 #include <QDialogButtonBox>
 #include <QtDebug>
 #include "../widgets/dataviewwidget.h"
@@ -42,7 +43,7 @@ namespace LeechCraft
 
 	void ItemHandlerDataView::Handle (const QDomElement& item, QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		DataViewWidget *view = new DataViewWidget (XSD_);
 		connect (view,
 				SIGNAL (addRequested ()),
@@ -61,7 +62,7 @@ namespace LeechCraft
 				boost::bind (&ItemHandlerDataView::SetDataSource, this, _1, _2));
 		Propname2DataView_ [prop] = view;
 
-		lay->addRow (view);
+		lay->addWidget (view, lay->rowCount (), 0);
 	}
 
 	QVariant ItemHandlerDataView::GetValue (const QDomElement&, QVariant) const
@@ -154,14 +155,16 @@ namespace LeechCraft
 		}
 
 		QDialog *dia = new QDialog (XSD_);
-		QFormLayout *lay = new QFormLayout ();
+		QGridLayout *lay = new QGridLayout ();
 		dia->setLayout (lay);
 		for (int i = 0, size = types.size (); i < size; ++i)
 		{
-			QString name = names.at (i);
+			QLabel *name = new QLabel (names.at (i));
 			DataSources::DataFieldType type = types.at (i);
 			QWidget *w = GetEditor (type);
-			lay->addRow (name, w);
+			int row = lay->rowCount ();
+			lay->addWidget (name, row, 0, Qt::AlignRight);
+			lay->addWidget (w, row, 1);
 		}
 		QDialogButtonBox *buttons = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
 				Qt::Horizontal, dia);
@@ -173,14 +176,14 @@ namespace LeechCraft
 				SIGNAL (rejected ()),
 				dia,
 				SLOT (reject ()));
-		lay->addRow (buttons);
+		lay->addWidget (buttons, lay->rowCount (), 0, 1, 2);
 
 		if (dia->exec () == QDialog::Accepted)
 		{
 			QVariantList datas;
 			for (int i = 0, size = types.size (); i < size; ++i)
 			{
-				QWidget *w = lay->itemAt (i, QFormLayout::FieldRole)->widget ();
+				QWidget *w = lay->itemAt (i)->widget ();
 				QVariant data = GetData (w, types.at (i));
 				datas << data;
 			}

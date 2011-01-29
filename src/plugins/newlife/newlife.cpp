@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <QMenu>
 #include <QAction>
+#include <QTranslator>
 #include <plugininterface/util.h>
 #include "importwizard.h"
 
@@ -32,6 +33,14 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr)
 			{
 				Translator_.reset (Util::InstallTranslator ("newlife"));
+
+				ImporterAction_.reset (new QAction (tr ("Import settings..."), 0));
+				ImporterAction_->setProperty ("ActionIcon",
+						"newlife_importsettings");
+				connect (ImporterAction_.get (),
+						SIGNAL (triggered ()),
+						this,
+						SLOT (runWizard ()));
 			}
 
 			void Plugin::SecondInit ()
@@ -41,6 +50,7 @@ namespace LeechCraft
 			void Plugin::Release ()
 			{
 				Translator_.reset ();
+				ImporterAction_.reset ();
 			}
 
 			QByteArray Plugin::GetUniqueID () const
@@ -82,22 +92,13 @@ namespace LeechCraft
 			{
 			}
 
-			QList<QMenu*> Plugin::GetToolMenus () const
+			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 			{
-				return QList<QMenu*> ();
-			}
-
-			QList<QAction*> Plugin::GetToolActions () const
-			{
-				QAction *importStuff = new QAction (tr ("Import settings..."), 0);
-				importStuff->setProperty ("ActionIcon", "newlife_importsettings");
-				connect (importStuff,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (runWizard ()));
-
 				QList<QAction*> result;
-				result << importStuff;
+
+				if (place == AEPToolsMenu)
+					result << ImporterAction_.get ();
+
 				return result;
 			}
 

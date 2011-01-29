@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,9 @@
 
 class QAction;
 
+typedef QList<QKeySequence> QKeySequences_t;
+Q_DECLARE_METATYPE (QKeySequences_t);
+
 namespace LeechCraft
 {
 	/** Contains information about the action that could be handled by
@@ -36,8 +39,8 @@ namespace LeechCraft
 	{
 		/// User-visible name of the action.
 		QString UserVisibleText_;
-		/// Default key sequence.
-		QKeySequence Default_;
+		/// List of key sequences for this action.
+		QKeySequences_t Seqs_;
 		/// Icon of the action.
 		QIcon Icon_;
 
@@ -46,10 +49,19 @@ namespace LeechCraft
 		}
 
 		ActionInfo (const QString& uvt,
-				QKeySequence seq,
+				const QKeySequence& seq,
 				const QIcon& icon)
 		: UserVisibleText_ (uvt)
-		, Default_ (seq)
+		, Icon_ (icon)
+		{
+			Seqs_ << seq;
+		}
+
+		ActionInfo (const QString& uvt,
+				const QKeySequences_t& seqs,
+				const QIcon& icon)
+		: UserVisibleText_ (uvt)
+		, Seqs_ (seqs)
 		, Icon_ (icon)
 		{
 		}
@@ -70,33 +82,35 @@ class IShortcutProxy
 public:
 	/** @brief Returns a QKeySequence for the given action.
 	 *
-	 * Returns a QKeySequence for the action with given id for the given
-	 * object which is currently set in the shortcut manager. The id
-	 * is the same as in return value of
+	 * Returns a list of key sequences for the action with given id for
+	 * the given object which is currently set in the shortcut manager.
+	 * The id is the same as in return value of
 	 * IHaveShortcuts::GetActionInfo().
 	 *
 	 * The object is used to distinguish between ids of different
-	 * plugins. It can be said that object defines the context for id.
+	 * plugins. It can be said that object defines the context for the
+	 * id.
 	 *
 	 * @param[in] object The object that should be checked.
 	 * @param[in] id ID of the action.
-	 * @return The key sequence for the passed action.
+	 * @return The key sequences for the passed action.
 	 */
-	virtual QKeySequence GetShortcut (const QObject *object, int id) const = 0;
+	virtual QKeySequences_t GetShortcuts (const QObject *object, const QString& id) const = 0;
+
 	virtual ~IShortcutProxy () { }
 };
 
 class IHaveShortcuts
 {
 public:
-	/** @brief Sets shortcut's sequence if it has changed.
+	/** @brief Sets shortcut's list of key sequences if it has been changed.
 	 *
 	 * The id is the same as in the return value of GetActionInfo().
 	 *
 	 * @param[in] id The id of the action.
-	 * @param[in] sequence The new key sequence.
+	 * @param[in] sequences The new key sequences.
 	 */
-	virtual void SetShortcut (int id, const QKeySequence& sequence) = 0;
+	virtual void SetShortcut (const QString& id, const QKeySequences_t& sequences) = 0;
 
 	/** @brief Returns information about all the shortcuts.
 	 *
@@ -106,7 +120,7 @@ public:
 	 *
 	 * @return Shortcut IDs mapped to the corresponding ActionInfo.
 	 */
-	virtual QMap<int, LeechCraft::ActionInfo> GetActionInfo () const = 0;
+	virtual QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const = 0;
 
 	virtual ~IHaveShortcuts () { }
 };

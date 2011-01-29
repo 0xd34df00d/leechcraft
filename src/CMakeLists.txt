@@ -17,6 +17,8 @@ IF (MSVC)
 ENDIF (MSVC)
 IF (UNIX)
 	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing")
+	SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
+	SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed")
 	IF (EXTRA_WARNINGS)
 		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 	ENDIF (EXTRA_WARNINGS)
@@ -80,7 +82,6 @@ OPTION (ENABLE_SUMMARY "Build Summary, the plugin that shows a handy summary of 
 OPTION (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ON)
 OPTION (ENABLE_AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ON)
 OPTION (ENABLE_POSHUKU "Build Poshuku, the WWW Browser" ON)
-OPTION (ENABLE_NUFELLA "Build Nufella, the Gnutella/Gnutella2 client" OFF)
 OPTION (ENABLE_HTTP "Build CSTP, the HTTP implementation" ON)
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
 OPTION (ENABLE_LMP "Build LMP, the LeechCraft Media Previewer" ON)
@@ -90,12 +91,9 @@ OPTION (ENABLE_SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web
 OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ON)
 OPTION (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ON)
 OPTION (ENABLE_CHATTER "Build Chatter, simple IRC client" ON)
-OPTION (ENABLE_YASD "Build YASD, Yet Another Site Downloader" OFF)
-OPTION (ENABLE_REMOTER "Build Remoter, the remote access manager" OFF)
 OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
 OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
 OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
-OPTION (ENABLE_POC "Build PoC, text editor" OFF)
 OPTION (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ON)
 OPTION (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ON)
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" ON)
@@ -107,6 +105,8 @@ OPTION (ENABLE_POPISHU "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
+OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" OFF)
+OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 ENABLE_TESTING ()
 
 IF (ENABLE_SUMMARY)
@@ -124,10 +124,6 @@ ENDIF (ENABLE_AGGREGATOR)
 IF (ENABLE_POSHUKU)
 	ADD_SUBDIRECTORY (plugins/poshuku)
 ENDIF (ENABLE_POSHUKU)
-
-IF (ENABLE_NUFELLA)
-	ADD_SUBDIRECTORY (plugins/nufella)
-ENDIF (ENABLE_NUFELLA)
 
 IF (ENABLE_CHATTER)
 	ADD_SUBDIRECTORY (plugins/chatter)
@@ -165,14 +161,6 @@ IF (ENABLE_HISTORYHOLDER)
 	ADD_SUBDIRECTORY (plugins/historyholder)
 ENDIF (ENABLE_HISTORYHOLDER)
 
-IF (ENABLE_YASD)
-	ADD_SUBDIRECTORY (plugins/yasd)
-ENDIF (ENABLE_YASD)
-
-IF (ENABLE_REMOTER)
-	ADD_SUBDIRECTORY (plugins/remoter)
-ENDIF (ENABLE_REMOTER)
-
 IF (ENABLE_NEWLIFE)
 	ADD_SUBDIRECTORY (plugins/newlife)
 ENDIF (ENABLE_NEWLIFE)
@@ -184,10 +172,6 @@ ENDIF (ENABLE_ANHERO)
 IF (ENABLE_VGRABBER)
 	ADD_SUBDIRECTORY (plugins/vgrabber)
 ENDIF (ENABLE_VGRABBER)
-
-IF (ENABLE_POC)
-	ADD_SUBDIRECTORY (plugins/poc)
-ENDIF (ENABLE_POC)
 
 IF (ENABLE_KINOTIFY)
 	ADD_SUBDIRECTORY (plugins/kinotify)
@@ -233,6 +217,14 @@ IF (ENABLE_SHELLOPEN)
 	ADD_SUBDIRECTORY (plugins/shellopen)
 ENDIF (ENABLE_SHELLOPEN)
 
+IF (ENABLE_POTORCHU)
+	ADD_SUBDIRECTORY (plugins/potorchu)
+ENDIF (ENABLE_POTORCHU)
+
+IF (ENABLE_TRANSPARENTARCH)
+	ADD_SUBDIRECTORY (plugins/transparentarch)
+ENDIF (ENABLE_TRANSPARENTARCH)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTSQL TRUE)
@@ -264,7 +256,6 @@ SET (SRCS
 	sqlstoragebackend.cpp
 	debugmessagehandler.cpp
 	application.cpp
-	iconchooser.cpp
 	handlerchoicedialog.cpp
 	tabwidget.cpp
 	graphwidget.cpp
@@ -273,7 +264,6 @@ SET (SRCS
 	networkdiskcache.cpp
 	networkaccessmanager.cpp
 	coreproxy.cpp
-	appstyler.cpp
 	tagsmanager.cpp
 	tagsviewer.cpp
 	directorywatcher.cpp
@@ -289,6 +279,7 @@ SET (SRCS
 	3dparty/qxttooltip.cpp
 	fullscreenspacerlabel.cpp
 	newtabmenumanager.cpp
+	plugintreebuilder.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -309,7 +300,6 @@ SET (HEADERS
 	sqlstoragebackend.h
 	debugmessagehandler.h
 	application.h
-	iconchooser.h
 	handlerchoicedialog.h
 	tabwidget.h
 	graphwidget.h
@@ -318,7 +308,6 @@ SET (HEADERS
 	networkdiskcache.h
 	networkaccessmanager.h
 	coreproxy.h
-	appstyler.h
 	tagsmanager.h
 	tagsviewer.h
 	directorywatcher.h
@@ -333,6 +322,7 @@ SET (HEADERS
 	fullscreenspacerlabel.h
 	newtabmenumanager.h
 	wizardtypechoicepage.h
+	plugintreebuilder.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/iinfo.h
@@ -350,10 +340,8 @@ SET (HEADERS
 	interfaces/ipluginready.h
 	interfaces/iplugin2.h
 	interfaces/ihaveshortcuts.h
-	interfaces/itoolbarembedder.h
 	interfaces/istartupwizard.h
 	interfaces/ipluginadaptor.h
-	interfaces/imenuembedder.h
 	interfaces/isummaryrepresentation.h
 	interfaces/structures.h
 	)
@@ -401,8 +389,8 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_fr.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_pl.qm
 	)
-    
-ADD_DEFINITIONS (-DBOOST_ALL_NO_LIB)
+
+ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})

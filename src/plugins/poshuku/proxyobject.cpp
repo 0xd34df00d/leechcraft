@@ -25,6 +25,15 @@ namespace LeechCraft
 	{
 		namespace Poshuku
 		{
+			QObject* ProxyObject::GetHistoryModel () const
+			{
+				return Core::Instance ().GetHistoryModel ();
+			}
+
+			QObject* ProxyObject::GetFavoritesModel () const
+			{
+				return Core::Instance ().GetFavoritesModel ();
+			}
 		};
 	};
 };

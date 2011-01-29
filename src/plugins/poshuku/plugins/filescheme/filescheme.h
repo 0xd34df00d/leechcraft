@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,48 +27,48 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace FileScheme
+{
+	class FileScheme : public QObject
+					 , public IInfo
+					 , public IPlugin2
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace FileScheme
-				{
-					class FileScheme : public QObject
-									 , public IInfo
-									 , public IPlugin2
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2)
 
-						std::auto_ptr<QTranslator> Translator_;
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						void Release ();
-						QByteArray GetUniqueID () const;
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
+		std::auto_ptr<QTranslator> Translator_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-						QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const;
 
-						QNetworkReply* CreateRequest (IHookProxy_ptr,
-								QNetworkAccessManager*,
-								QNetworkAccessManager::Operation*,
-								const QNetworkRequest*,
-								QIODevice**);
-					};
-				};
-			};
-		};
+		QNetworkReply* CreateRequest (IHookProxy_ptr,
+				QNetworkAccessManager*,
+				QNetworkAccessManager::Operation*,
+				const QNetworkRequest*,
+				QIODevice**);
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
 

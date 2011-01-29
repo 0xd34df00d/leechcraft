@@ -46,9 +46,9 @@ namespace LeechCraft
 
 	void DirectoryWatcher::settingsChanged ()
 	{
-		QString path = XmlSettingsManager::Instance ()->
+		const QString& path = XmlSettingsManager::Instance ()->
 			property ("WatchDirectory").toString ();
-		QStringList dirs = Watcher_->directories ();
+		const QStringList& dirs = Watcher_->directories ();
 		if (dirs.size () == 1 &&
 				dirs.at (0) == path)
 			return;
@@ -69,16 +69,16 @@ namespace LeechCraft
 	void DirectoryWatcher::handleDirectoryChanged (const QString& path)
 	{
 		QDir dir (path);
-		QList<QFileInfo> cur = dir.entryInfoList (QDir::Files);
+		const QList<QFileInfo>& cur = dir.entryInfoList (QDir::Files);
 		QList<QFileInfo> nl = cur;
 
 		Q_FOREACH (const QFileInfo& oldFi, Olds_)
 		{
-			QString fname = oldFi.absoluteFilePath ();
+			const QString& fname = oldFi.absoluteFilePath ();
 			Q_FOREACH (const QFileInfo& newFi, nl)
 				if (newFi.absoluteFilePath () == fname)
 				{
-					nl.removeAll (newFi);
+					nl.removeOne (newFi);
 					break;
 				}
 		}

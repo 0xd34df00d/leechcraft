@@ -18,7 +18,7 @@
 
 #include "itemhandlerradio.h"
 #include <QLabel>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QtDebug>
@@ -41,7 +41,7 @@ namespace LeechCraft
 
 	void ItemHandlerRadio::Handle (const QDomElement& item, QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		RadioGroup *group = new RadioGroup (XSD_);
 		group->setObjectName (item.attribute ("property"));
 
@@ -71,7 +71,7 @@ namespace LeechCraft
 		group->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
-		lay->addRow (box);
+		lay->addWidget (box, lay->rowCount (), 0);
 	}
 
 	void ItemHandlerRadio::SetValue (QWidget *widget, const QVariant& value) const

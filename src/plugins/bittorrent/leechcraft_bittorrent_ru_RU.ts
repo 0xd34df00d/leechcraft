@@ -392,226 +392,226 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::Core</name>
     <message>
-        <location filename="core.cpp" line="136"/>
+        <location filename="core.cpp" line="135"/>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="137"/>
+        <location filename="core.cpp" line="136"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="138"/>
+        <location filename="core.cpp" line="137"/>
         <source>Standard</source>
         <translation>Стандарт</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="256"/>
+        <location filename="core.cpp" line="246"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="257"/>
+        <location filename="core.cpp" line="247"/>
         <source>Progress</source>
         <translation>Прогресс</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="258"/>
+        <location filename="core.cpp" line="248"/>
         <source>State</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="351"/>
+        <location filename="core.cpp" line="341"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
         <translation>Файл %1 отклонен из-за слишком большого размера.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="538"/>
-        <location filename="core.cpp" line="573"/>
-        <location filename="core.cpp" line="680"/>
+        <location filename="core.cpp" line="528"/>
+        <location filename="core.cpp" line="563"/>
+        <location filename="core.cpp" line="670"/>
         <source>Idle</source>
         <translation>Простаивает</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="552"/>
+        <location filename="core.cpp" line="542"/>
         <source>%1% (%2 of %3 at %4)</source>
         <translation>%1% (%2 из %3, %4)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="557"/>
-        <location filename="core.cpp" line="575"/>
-        <location filename="core.cpp" line="577"/>
+        <location filename="core.cpp" line="547"/>
+        <location filename="core.cpp" line="565"/>
+        <location filename="core.cpp" line="567"/>
         <source>/s</source>
         <translation>/с</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="564"/>
+        <location filename="core.cpp" line="554"/>
         <source>Name:</source>
         <translation>Имя:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="565"/>
+        <location filename="core.cpp" line="555"/>
         <source>Destination:</source>
         <translation>Директория сохранения:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="567"/>
+        <location filename="core.cpp" line="557"/>
         <source>Progress:</source>
         <translation>Прогресс:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="568"/>
+        <location filename="core.cpp" line="558"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 из %3)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="572"/>
+        <location filename="core.cpp" line="562"/>
         <source>; status:</source>
         <translation>; статус:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="574"/>
+        <location filename="core.cpp" line="564"/>
         <source>Downloading speed:</source>
         <translation>Скорость закачки:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="576"/>
+        <location filename="core.cpp" line="566"/>
         <source>; uploading speed:</source>
         <translation>; скорость отдачи:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="578"/>
+        <location filename="core.cpp" line="568"/>
         <source>Peers/seeds: %1/%2</source>
         <translation>Пиров/сидов: %1/%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="635"/>
+        <location filename="core.cpp" line="625"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Невозможно открыть файл %1 на чтение: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="824"/>
+        <location filename="core.cpp" line="814"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>Файл %1 не существует или не может быть прочитан</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="851"/>
+        <location filename="core.cpp" line="841"/>
         <source>Runtime error</source>
         <translation>Ошибка выполнения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="926"/>
+        <location filename="core.cpp" line="916"/>
         <source>Do you want to leave this torrent&apos;s files?</source>
         <translation>Вы хотите оставить файлы этого торрента?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="974"/>
+        <location filename="core.cpp" line="964"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Торрент %1 не может быть переобъявлен сейчас, попробуйте позже.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1980"/>
+        <location filename="core.cpp" line="1970"/>
         <source>Torrent finished: %1</source>
         <translation>Торрент завершен: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2812"/>
+        <location filename="core.cpp" line="2801"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation>Уведомления хранилища отключены. Проигрывание на лету точно не будет работать без них, поэтому если Вы испытываете проблемы, включите уведомления хранилища в секции &quot;Уведомления&quot; настроек BitTorrent. Вы хотите включить их сейчас?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1305"/>
+        <location filename="core.cpp" line="1295"/>
         <source>Could not open file %1 for reading</source>
         <translation>Невозможно открыть файл %1 для чтения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1314"/>
+        <location filename="core.cpp" line="1304"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
         <translation>Невозможно обработать документ из файла %1.&lt;br /&gt;%1 в %2:%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1324"/>
+        <location filename="core.cpp" line="1314"/>
         <source>There should be only one storage section.</source>
         <translation>Должна быть только одна секция с хранилищем.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1342"/>
+        <location filename="core.cpp" line="1332"/>
         <source>Unknown storage version</source>
         <translation>Неизвестная версия хранилища</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1350"/>
+        <location filename="core.cpp" line="1340"/>
         <source>Could not open file %1 for writing</source>
         <translation>Не могу открыть файл %1 на запись</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1583"/>
+        <location filename="core.cpp" line="1573"/>
         <source>File finished: %1</source>
         <translation>Файл завершен: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1818"/>
+        <location filename="core.cpp" line="1808"/>
         <source>Queued for checking</source>
         <translation>В очереди на проверку</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1820"/>
+        <location filename="core.cpp" line="1810"/>
         <source>Checking files</source>
         <translation>Проверяются файлы</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1822"/>
+        <location filename="core.cpp" line="1812"/>
         <source>Downloading metadata</source>
         <translation>Скачивание метаданных</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1824"/>
+        <location filename="core.cpp" line="1814"/>
         <source>Downloading</source>
         <translation>Скачивание</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1826"/>
+        <location filename="core.cpp" line="1816"/>
         <source>Finished</source>
         <translation>Закончен</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1828"/>
+        <location filename="core.cpp" line="1818"/>
         <source>Seeding</source>
         <translation>Раздача</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1830"/>
+        <location filename="core.cpp" line="1820"/>
         <source>Allocating</source>
         <translation>Аллоцирование</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1832"/>
+        <location filename="core.cpp" line="1822"/>
         <source>Checking resume data</source>
         <translation>Проверка данных для продолжения</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1851"/>
+        <location filename="core.cpp" line="1841"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Невозможно открыть сохраненный торрент %1 на чтение.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1938"/>
+        <location filename="core.cpp" line="1928"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Плохой код в сохраненном торренте</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2164"/>
+        <location filename="core.cpp" line="2153"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>Код ошибки %1 категории &lt;blockquote&gt;%2&lt;/blockquote&gt;Сообщение об ошибке:&lt;blockquote&gt;%3&lt;/blockquote&gt;Исходное сообщение исключения:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2180"/>
+        <location filename="core.cpp" line="2169"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>Не могу создать путь %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2671"/>
+        <location filename="core.cpp" line="2660"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильный адрес объявления %1</translation>
     </message>
@@ -997,22 +997,22 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::Plugins::BitTorrent::TorrentMaker</name>
     <message>
-        <location filename="torrentmaker.cpp" line="72"/>
+        <location filename="torrentmaker.cpp" line="73"/>
         <source>Could not open file %1 for write!</source>
         <translation>Невозможно открыть файл %1 на запись!</translation>
     </message>
     <message>
-        <location filename="torrentmaker.cpp" line="103"/>
+        <location filename="torrentmaker.cpp" line="104"/>
         <source>Hashing torrent...</source>
         <translation>Хеширование торрента...</translation>
     </message>
     <message>
-        <location filename="torrentmaker.cpp" line="119"/>
+        <location filename="torrentmaker.cpp" line="120"/>
         <source>Torrent creation failed: %1</source>
         <translation>Создание торрента не удалось: %1</translation>
     </message>
     <message>
-        <location filename="torrentmaker.cpp" line="134"/>
+        <location filename="torrentmaker.cpp" line="135"/>
         <source>Torrent file generated: %1.&lt;br /&gt;Do you want to start seeding now?</source>
         <translation>Торрент-файл создан: %1&lt;br /&gt;Вы хотите начать сидировать сейчас?</translation>
     </message>
@@ -1025,32 +1025,32 @@ IPv6 input mask</extracomment>
         <translation>Полнофункциональный BitTorrent-клиент.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="809"/>
+        <location filename="torrentplugin.cpp" line="789"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>Ошибка при перемещении файлов торрента из %1 в %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="948"/>
+        <location filename="torrentplugin.cpp" line="958"/>
         <source>Open torrent...</source>
         <translation>Открыть торрент...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1071"/>
+        <location filename="torrentplugin.cpp" line="1081"/>
         <source>Change trackers...</source>
         <translation>Поменять трекеры...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1073"/>
+        <location filename="torrentplugin.cpp" line="1083"/>
         <source>C</source>
         <translation>С</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="957"/>
+        <location filename="torrentplugin.cpp" line="967"/>
         <source>Create torrent...</source>
         <translation>Создать торрент...</translation>
     </message>
     <message numerus="yes">
-        <location filename="torrentplugin.cpp" line="500"/>
+        <location filename="torrentplugin.cpp" line="480"/>
         <source>Do you really want to delete %n torrent(s)?</source>
         <oldsource>Do you really want to delete %n torrents?</oldsource>
         <translation>
@@ -1060,117 +1060,117 @@ IPv6 input mask</extracomment>
         </translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="824"/>
+        <location filename="torrentplugin.cpp" line="804"/>
         <source>Magnet link:</source>
         <translation>Magnet-ссылка:</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="959"/>
+        <location filename="torrentplugin.cpp" line="969"/>
         <source>N</source>
         <translation>Т</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="966"/>
+        <location filename="torrentplugin.cpp" line="976"/>
         <source>Open multiple torrents...</source>
         <translation>Открыть несколько торрентов...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="974"/>
+        <location filename="torrentplugin.cpp" line="984"/>
         <source>IP filter...</source>
         <translation>IP-фильтр...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="982"/>
+        <location filename="torrentplugin.cpp" line="992"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="984"/>
+        <location filename="torrentplugin.cpp" line="994"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="991"/>
+        <location filename="torrentplugin.cpp" line="1001"/>
         <source>Resume</source>
         <translation>Продолжить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="993"/>
+        <location filename="torrentplugin.cpp" line="1003"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1000"/>
+        <location filename="torrentplugin.cpp" line="1010"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1002"/>
+        <location filename="torrentplugin.cpp" line="1012"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1009"/>
+        <location filename="torrentplugin.cpp" line="1019"/>
         <source>Move up</source>
         <translation>Переместить вверх</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1018"/>
+        <location filename="torrentplugin.cpp" line="1028"/>
         <source>Move down</source>
         <translation>Переместить вниз</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1027"/>
+        <location filename="torrentplugin.cpp" line="1037"/>
         <source>Move to top</source>
         <translation>Переместить в начало</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1036"/>
+        <location filename="torrentplugin.cpp" line="1046"/>
         <source>Move to bottom</source>
         <translation>Переместить в конец</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1045"/>
+        <location filename="torrentplugin.cpp" line="1055"/>
         <source>Reannounce</source>
         <translation>Переобъявить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1047"/>
+        <location filename="torrentplugin.cpp" line="1057"/>
         <source>F</source>
         <translation>А</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1054"/>
+        <location filename="torrentplugin.cpp" line="1064"/>
         <source>Recheck</source>
         <translation>Перепроверить</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1062"/>
+        <location filename="torrentplugin.cpp" line="1072"/>
         <source>Move files...</source>
         <translation>Переместить файлы...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1064"/>
+        <location filename="torrentplugin.cpp" line="1074"/>
         <source>M</source>
         <translation>Ь</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1080"/>
+        <location filename="torrentplugin.cpp" line="1090"/>
         <source>Make magnet link...</source>
         <translation>Сделать magnet-ссылку...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1088"/>
+        <location filename="torrentplugin.cpp" line="1098"/>
         <source>Import...</source>
         <translation>Импортировать...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1096"/>
+        <location filename="torrentplugin.cpp" line="1106"/>
         <source>Export...</source>
         <translation>Экспортировать...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1140"/>
+        <location filename="torrentplugin.cpp" line="1150"/>
         <source>Torrents actions</source>
         <translation>Действия над торрентом</translation>
     </message>
@@ -1423,32 +1423,32 @@ IPv6 input mask</extracomment>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="2354"/>
+        <location filename="core.cpp" line="2343"/>
         <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
         <translation>Сохранение данных для восстановления для торрента завершилось неудачно:&lt;br /&gt;%1&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2366"/>
+        <location filename="core.cpp" line="2355"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
         <translation>Файлы торрента:&lt;br /&gt;%1&lt;br /&gt;успешно перемещены в:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2379"/>
+        <location filename="core.cpp" line="2368"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
         <translation>Не удалось переместить файлы торрента:&lt;br /&gt;%1&lt;br /&gt;возникла ошибка:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2396"/>
+        <location filename="core.cpp" line="2385"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
         <translation>Файловая ошибка для торрента:&lt;br /&gt;%1&lt;br /&gt;файл:&lt;br /&gt;%2&lt;br /&gt;ошибка:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2410"/>
+        <location filename="core.cpp" line="2399"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
         <translation>Не удалось переименовать файл торрента:&lt;br /&gt;%1&lt;br /&gt;%2, ошибка:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2424"/>
+        <location filename="core.cpp" line="2413"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
         <translation>Не удалось удалить торрент:&lt;br /&gt;%1&lt;br /&gt;ошибка:&lt;br /&gt;%2</translation>
     </message>
@@ -2235,7 +2235,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <location filename="dummy.cpp" line="4"/>
-        <location filename="dummy.cpp" line="147"/>
+        <location filename="dummy.cpp" line="126"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
@@ -2256,816 +2256,711 @@ IPv6 input mask</extracomment>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
-        <source>Identification</source>
-        <translation>Идентификация</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="9"/>
-        <source>HTTP User-Agent:</source>
-        <translation>HTTP User-Agent:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="10"/>
-        <source>Peer ID string:</source>
-        <translation>Строка Peer ID:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="11"/>
-        <source>Ares</source>
-        <translation>Ares</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="12"/>
-        <source>Azureus</source>
-        <translation>Azureus</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="13"/>
-        <source>BitComet</source>
-        <translation>BitComet</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="14"/>
-        <source>BTG</source>
-        <translation>BTG</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="15"/>
-        <source>DelugeTorrent</source>
-        <translation>DelugeTorrent</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="16"/>
-        <source>Enhanced CTorrent</source>
-        <translation>Enhanced CTorrent</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="17"/>
-        <source>Halite</source>
-        <translation>Halite</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="18"/>
-        <source>KTorrent</source>
-        <translation>KTorrent</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="19"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="20"/>
-        <source>libtorrent-rasterbar</source>
-        <translation>libtorrent-rasterbar</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="21"/>
-        <source>libtorrent (rtorrent)</source>
-        <translation>libtorrent (rtorrent)</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="22"/>
-        <source>qBittorrent</source>
-        <translation>qBittorrent</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="23"/>
-        <source>Shareaza</source>
-        <translation>Shareaza</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="24"/>
-        <source>SharkTorrent</source>
-        <translation>SharkTorrent</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="25"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="26"/>
-        <source>ÂµTorrent</source>
-        <translation>µTorrent</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="27"/>
-        <source>Override Peer ID version</source>
-        <translation>Переопределить версию Peer ID</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="28"/>
-        <source>Peer ID version:</source>
-        <translation>Версия Peer ID:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="29"/>
         <source>Fast speed control</source>
         <translation>Быстрый контроль скорости</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="9"/>
         <source>Enable fast speed control</source>
         <translation>Включить быстрый контроль скорости</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="10"/>
         <source>Proxy</source>
         <translation>Прокси</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Tracker proxy:</source>
         <translation>Прокси трекеров:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="20"/>
         <source>Host:</source>
         <translation>Хост:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
-        <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Port:</source>
         <translation>Порт:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="22"/>
         <source>Login@Password:</source>
         <translation>Логин@Пароль:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Proxy type:</source>
         <translation>Тип прокси:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="16"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>SOCKS5</source>
         <translation>SOCKS5</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="17"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>SOCKS4</source>
         <translation>SOCKS4</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>HTTP</source>
         <translation>HTTP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>Peer proxy:</source>
         <translation>Прокси пиров:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Advanced network</source>
         <translation>Расширенные сетевые</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>DHT</source>
         <translation>DHT</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Maximum peers in reply:</source>
         <translation>Максимум пиров в ответе:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Search branching:</source>
         <translation>Ветвление поиска:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>Service port:</source>
         <translation>Сервисный порт:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Maximum node fail count:</source>
         <translation>Максимально неудач узла:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>DHT-related options</source>
         <translation>Относящиеся к DHT опции</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Use DHT as fallback</source>
         <translation>Использовать при недоступном трекере</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>Features &amp;amp;&amp;amp; extensions</source>
         <translation>Возможности и расширения</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Features</source>
         <translation>Возможности</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="59"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Enable Local Service Discovery</source>
         <translation>Включить Local Service Discovery</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="60"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Enable UPnP support</source>
         <translation>Включить поддержку UPnP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="61"/>
+        <location filename="dummy.cpp" line="40"/>
         <source>Enable NAT-PMP support</source>
         <translation>Включить поддержку NAT-PMP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Extensions</source>
         <translation>Расширения</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="42"/>
         <source>Enable PeX</source>
         <translation>Включить PeX</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="64"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Allow to download metadata from the swarm</source>
         <translation>Скачивать метаданные из роя</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Same as the above, but ÂµTorrent-compatible</source>
         <translation>То же, что и выше, но совместимо с µTorrent</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Enable Smart Ban</source>
         <translation>Включить Smart Ban</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>Trackers</source>
         <translation>Трекеры</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="68"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Announce to all trackers of one tier</source>
         <translation>Объявлять всем трекерам одного уровня сразу</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="48"/>
         <source>Announce to all tiers</source>
         <translation>Объявлять всем уровням</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Prefer UDP trackers</source>
         <translation>Предпочитать UDP-трекеры</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="71"/>
-        <location filename="dummy.cpp" line="160"/>
+        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="139"/>
         <source>Advanced</source>
         <translation>Расширенные</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Scrape enabled</source>
         <translation>Включить Scrape</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="73"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Scrape interval</source>
         <translation>Интервал scrape-запросов</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="74"/>
-        <location filename="dummy.cpp" line="89"/>
-        <location filename="dummy.cpp" line="91"/>
-        <location filename="dummy.cpp" line="93"/>
-        <location filename="dummy.cpp" line="97"/>
+        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="68"/>
+        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="76"/>
+        <location filename="dummy.cpp" line="78"/>
+        <location filename="dummy.cpp" line="80"/>
+        <location filename="dummy.cpp" line="82"/>
+        <location filename="dummy.cpp" line="86"/>
+        <location filename="dummy.cpp" line="88"/>
+        <location filename="dummy.cpp" line="90"/>
+        <location filename="dummy.cpp" line="92"/>
+        <location filename="dummy.cpp" line="95"/>
         <location filename="dummy.cpp" line="99"/>
         <location filename="dummy.cpp" line="101"/>
         <location filename="dummy.cpp" line="103"/>
-        <location filename="dummy.cpp" line="107"/>
         <location filename="dummy.cpp" line="109"/>
-        <location filename="dummy.cpp" line="111"/>
-        <location filename="dummy.cpp" line="113"/>
-        <location filename="dummy.cpp" line="116"/>
-        <location filename="dummy.cpp" line="120"/>
-        <location filename="dummy.cpp" line="122"/>
-        <location filename="dummy.cpp" line="124"/>
-        <location filename="dummy.cpp" line="130"/>
-        <location filename="dummy.cpp" line="144"/>
-        <location filename="dummy.cpp" line="156"/>
-        <location filename="dummy.cpp" line="167"/>
-        <location filename="dummy.cpp" line="169"/>
-        <location filename="dummy.cpp" line="171"/>
+        <location filename="dummy.cpp" line="123"/>
+        <location filename="dummy.cpp" line="135"/>
+        <location filename="dummy.cpp" line="146"/>
+        <location filename="dummy.cpp" line="148"/>
+        <location filename="dummy.cpp" line="150"/>
         <source> s</source>
         <translation> с</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="75"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Advanced settings</source>
         <translation>Расширенные настройки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="76"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Announce IP:</source>
         <translation>Передаваемый трекеру IP:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="77"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Allow multiple connections per IP</source>
         <translation>Разрешать множественные соединения с одним IP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="78"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Ignore limits on local network</source>
         <translation>Игнорировать ограничения в локальной сети</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="79"/>
+        <location filename="dummy.cpp" line="58"/>
         <source>Don&apos;t count slow torrents</source>
         <translation>Не учитывать медленные торренты</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="80"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Send redundant have messages</source>
         <translation>Посылать ненужные have-сообщения</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="81"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Lazy bitfields</source>
         <translation>Ленивые битовые маски</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="82"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Ignore UPNP-nonrouters</source>
         <translation>Игнорировать не роутеры UPnP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="83"/>
+        <location filename="dummy.cpp" line="62"/>
         <source>Auto upload slots</source>
         <translation>Автоматические слоты на отдачу</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="84"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>Use parole mode</source>
         <translation>Использовать parole-режим</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="85"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>Close redundant connections</source>
         <translation>Закрывать ненужные соединения</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="86"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Prioritize partial pieces</source>
         <translation>Повышать приоритет неполных кусков</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="87"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Strict super seeding</source>
         <translation>Строгий супер-сид</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="88"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Tracker request completion timeout:</source>
         <translation>Время ожидания результата запроса от трекера:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="90"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Tracker data receive timeout:</source>
         <translation>Время ожидания получения данных от трекера:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="92"/>
+        <location filename="dummy.cpp" line="71"/>
         <source>Stop tracker timeout:</source>
         <translation>Таймаут отсоединения от трекера:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="94"/>
+        <location filename="dummy.cpp" line="73"/>
         <source>Tracker maximum response length:</source>
         <translation>Максимальный размер ответа от трекера:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="95"/>
-        <location filename="dummy.cpp" line="128"/>
-        <location filename="dummy.cpp" line="158"/>
-        <location filename="dummy.cpp" line="173"/>
+        <location filename="dummy.cpp" line="74"/>
+        <location filename="dummy.cpp" line="107"/>
+        <location filename="dummy.cpp" line="137"/>
+        <location filename="dummy.cpp" line="152"/>
         <source> KB</source>
         <translation> КБ</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="96"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>Piece response timeout:</source>
         <translation>Таймаут получения ответа о части:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="98"/>
+        <location filename="dummy.cpp" line="77"/>
         <source>Peer connection timeout:</source>
         <translation>Таймаут соединения с пиром:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="100"/>
+        <location filename="dummy.cpp" line="79"/>
         <source>Block request timeout:</source>
         <translation>Время ожидания получения блока:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="102"/>
+        <location filename="dummy.cpp" line="81"/>
         <source>Piece request queue time:</source>
         <translation>Длина очереди запросов для части:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="104"/>
+        <location filename="dummy.cpp" line="83"/>
         <source>The number of block requests a peer is allowed to queue up:</source>
         <translation>Максимальное число запросов в очереди блоков от пира:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="105"/>
+        <location filename="dummy.cpp" line="84"/>
         <source>The number of block requests to a peer in a queue:</source>
         <translation>Максимальное число запросов в очереди блоков пиру:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="106"/>
+        <location filename="dummy.cpp" line="85"/>
         <source>Peer timeout:</source>
         <translation>Таймаут связи с пиром:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="108"/>
+        <location filename="dummy.cpp" line="87"/>
         <source>Web seed timeout:</source>
         <translation>Таймаут связи с web-сидом:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="110"/>
+        <location filename="dummy.cpp" line="89"/>
         <source>Minimal scrape interval:</source>
         <translation>Минимальный интервал scrape:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="112"/>
+        <location filename="dummy.cpp" line="91"/>
         <source>Unchoke interval:</source>
         <translation>Интервал unchoke:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="114"/>
+        <location filename="dummy.cpp" line="93"/>
         <source>Max peer list size:</source>
         <translation>Максимальный размер списка пиров:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="115"/>
+        <location filename="dummy.cpp" line="94"/>
         <source>Minimal announce interval:</source>
         <translation>Минимальный интервал объявлений:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="117"/>
+        <location filename="dummy.cpp" line="96"/>
         <source>Max rejects for a choked peer before ban:</source>
         <translation>Максимум отказов заглушенному пиру перед баном:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="118"/>
+        <location filename="dummy.cpp" line="97"/>
         <source>Seeding piece quota:</source>
         <translation>Квота частей сидирования:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="119"/>
+        <location filename="dummy.cpp" line="98"/>
         <source>Web seed retry wait:</source>
         <translation>Задержка перед повторным соединением с web-сидом:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="121"/>
+        <location filename="dummy.cpp" line="100"/>
         <source>Minimum peer reconnect time:</source>
         <translation>Задержка перед повторным соединением с пиром:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="123"/>
+        <location filename="dummy.cpp" line="102"/>
         <source>Force download of a piece if it could not be fetched in:</source>
         <translation>Форсировать закачку куска, если он не скачан в течение:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="125"/>
+        <location filename="dummy.cpp" line="104"/>
         <source>Maximum peer connection attempt failcount:</source>
         <translation>Максимум неудачных соединений с пиром:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="126"/>
+        <location filename="dummy.cpp" line="105"/>
         <source>Connection attempts per second:</source>
         <translation>Попыток соединения в секунду:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="127"/>
+        <location filename="dummy.cpp" line="106"/>
         <source>Upper send buffer low-watermark:</source>
         <translation>Верхняя отметка исходящего буфера:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="129"/>
+        <location filename="dummy.cpp" line="108"/>
         <source>Peer inactivity timeout:</source>
         <translation>Таймаут отсоединения пира из-за неактивности:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="131"/>
+        <location filename="dummy.cpp" line="110"/>
         <source>Request random pieces while we have less than:</source>
         <translation>Запрашивать случайные части, пока их меньше чем:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="132"/>
+        <location filename="dummy.cpp" line="111"/>
         <source>How much peers to get from the tracker:</source>
         <translation>Желаемое количество пиров в ответе трекера:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="133"/>
+        <location filename="dummy.cpp" line="112"/>
         <source>Outgoing ports:</source>
         <translation>Порты исходящих соединений:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="134"/>
+        <location filename="dummy.cpp" line="113"/>
         <source>Optimistic unchoke multiplier:</source>
         <translation>Множитель оптимистичного unchoke:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="135"/>
+        <location filename="dummy.cpp" line="114"/>
         <source>TOS byte:</source>
         <translation>TOS-байт:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="136"/>
+        <location filename="dummy.cpp" line="115"/>
         <source>Share ratio limit:</source>
         <translation>Предел рейтинга:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="137"/>
+        <location filename="dummy.cpp" line="116"/>
         <source>Seed time ratio limit:</source>
         <translation>Предел отношения времени раздачи:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="138"/>
+        <location filename="dummy.cpp" line="117"/>
         <source>Seed time limit:</source>
         <translation>Предел времени раздачи:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="139"/>
-        <location filename="dummy.cpp" line="141"/>
+        <location filename="dummy.cpp" line="118"/>
+        <location filename="dummy.cpp" line="120"/>
         <source> min</source>
         <translation> мин</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="140"/>
+        <location filename="dummy.cpp" line="119"/>
         <source>Auto scrape interval:</source>
         <translation>Интервал автоматического scrape:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="142"/>
+        <location filename="dummy.cpp" line="121"/>
         <source>N of pieces to send via fast extensions:</source>
         <translation>Посылать столько кусков через быстрые расширения:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="143"/>
+        <location filename="dummy.cpp" line="122"/>
         <source>Handshake timeout:</source>
         <translation>Таймаут рукопожатия:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="145"/>
+        <location filename="dummy.cpp" line="124"/>
         <source>Web seed pipeline size:</source>
         <translation>Размер конвеера web-сида:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="146"/>
-        <location filename="dummy.cpp" line="148"/>
+        <location filename="dummy.cpp" line="125"/>
+        <location filename="dummy.cpp" line="127"/>
         <source>Local settings</source>
         <translation>Локальные настройки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="149"/>
+        <location filename="dummy.cpp" line="128"/>
         <source>Notify when torrent wasn&apos;t automatically added because its too large size</source>
         <translation>Уведомлять, когда торрент не добавлен из-за размера</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="150"/>
+        <location filename="dummy.cpp" line="129"/>
         <source>File allocation mode:</source>
         <translation>Режим выделения места под файлы:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="151"/>
+        <location filename="dummy.cpp" line="130"/>
         <source>Sparse</source>
         <translation>Sparse</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="152"/>
+        <location filename="dummy.cpp" line="131"/>
         <source>Full</source>
         <translation>Полный</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="153"/>
+        <location filename="dummy.cpp" line="132"/>
         <source>Maximum automatically added torrent size:</source>
         <translation>Макс. размер автоматически добавляемого торрента:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="154"/>
+        <location filename="dummy.cpp" line="133"/>
         <source> MB</source>
         <translation> МБ</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="155"/>
+        <location filename="dummy.cpp" line="134"/>
         <source>Autosave interval:</source>
         <translation>Интервал автоматического сохранения:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="157"/>
+        <location filename="dummy.cpp" line="136"/>
         <source>Cache size:</source>
         <translation>Размер кэша:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="159"/>
+        <location filename="dummy.cpp" line="138"/>
         <source>Tags for automatic jobs:</source>
         <translation>Теги для автоматически добавленных торрентов:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="161"/>
+        <location filename="dummy.cpp" line="140"/>
         <source>Accurate but slow file progress calculation</source>
         <translation>Точный, но медленный расчет прогресса файлов</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="162"/>
+        <location filename="dummy.cpp" line="141"/>
         <source>Use read cache</source>
         <translation>Использовать кеш чтения</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="163"/>
+        <location filename="dummy.cpp" line="142"/>
         <source>Unload hashes from memory if seeding</source>
         <translation>Выгружать хеши из памяти при сидировании</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="164"/>
+        <location filename="dummy.cpp" line="143"/>
         <source>Prevent disk cache from swapping out</source>
         <translation>Предотвращать сброс кеша в своп</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="165"/>
+        <location filename="dummy.cpp" line="144"/>
         <source>Give slots to seeding torrents in automanaged mode</source>
         <translation>Давать слоты раздающимся торрентам в авторежиме</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="166"/>
+        <location filename="dummy.cpp" line="145"/>
         <source>Cache expiry:</source>
         <translation>Годность кеша:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="168"/>
+        <location filename="dummy.cpp" line="147"/>
         <source>Automanage startup wait:</source>
         <translation>Ожидание начала торрента для авторежима:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="170"/>
+        <location filename="dummy.cpp" line="149"/>
         <source>Auto queue manage interval:</source>
         <translation>Интервал планирования очереди:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="172"/>
+        <location filename="dummy.cpp" line="151"/>
         <source>Maximum outstanding disk bytes per connection:</source>
         <translation>Максимум байт в очереди на запись на соединение:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="174"/>
+        <location filename="dummy.cpp" line="153"/>
         <source>Allocate this number of blocks at a time:</source>
         <translation>Выделять по:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="175"/>
+        <location filename="dummy.cpp" line="154"/>
         <source> blocks</source>
         <translation> блоков</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="176"/>
+        <location filename="dummy.cpp" line="155"/>
         <source>Maximum amount of concurrently open files:</source>
         <translation>Максимум одновременно открытых файлов:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="177"/>
+        <location filename="dummy.cpp" line="156"/>
         <source>Logging</source>
         <translation>Логгирование</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="178"/>
+        <location filename="dummy.cpp" line="157"/>
         <source>Logging levels</source>
         <translation>Уровни логгирования</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="179"/>
+        <location filename="dummy.cpp" line="158"/>
         <source>Error notifications</source>
         <translation>Уведомления об ошибках</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="180"/>
+        <location filename="dummy.cpp" line="159"/>
         <source>Peer events</source>
         <translation>События пиров</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="181"/>
+        <location filename="dummy.cpp" line="160"/>
         <source>Port mapping events</source>
         <translation>События назначения портов</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="182"/>
+        <location filename="dummy.cpp" line="161"/>
         <source>Storage events</source>
         <translation>События хранилища</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="183"/>
+        <location filename="dummy.cpp" line="162"/>
         <source>Tracker events</source>
         <translation>События трекера</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="184"/>
+        <location filename="dummy.cpp" line="163"/>
         <source>State change events</source>
         <translation>Изменения статуса</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="185"/>
+        <location filename="dummy.cpp" line="164"/>
         <source>Progress events</source>
         <translation>События прогресса торрентов</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="186"/>
+        <location filename="dummy.cpp" line="165"/>
         <source>IP block events</source>
         <translation>Блокировка IP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="187"/>
+        <location filename="dummy.cpp" line="166"/>
         <source>Performance warnings</source>
         <translation>Предупреждения производительности</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="188"/>
+        <location filename="dummy.cpp" line="167"/>
         <source>Info pane</source>
         <translation>Информационная панель</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="189"/>
+        <location filename="dummy.cpp" line="168"/>
         <source>Active groups</source>
         <translation>Активные группы</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="190"/>
+        <location filename="dummy.cpp" line="169"/>
         <source>Dashboard</source>
         <translation>Панель управления</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="191"/>
+        <location filename="dummy.cpp" line="170"/>
         <source>Session stats</source>
         <translation>Статистика сессии</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="192"/>
+        <location filename="dummy.cpp" line="171"/>
         <source>Advanced session stats</source>
         <translation>Продвинутая статистика сессии</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="193"/>
+        <location filename="dummy.cpp" line="172"/>
         <source>Per-tracker stats</source>
         <translation>Статистика по трекерам</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="194"/>
+        <location filename="dummy.cpp" line="173"/>
         <source>Cache stats</source>
         <translation>Статистика кеша</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="195"/>
+        <location filename="dummy.cpp" line="174"/>
         <source>Torrent</source>
         <translation>Торрент</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="196"/>
+        <location filename="dummy.cpp" line="175"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="197"/>
+        <location filename="dummy.cpp" line="176"/>
         <source>Advanced status</source>
         <translation>Продвинутый статус</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="198"/>
+        <location filename="dummy.cpp" line="177"/>
         <source>Information</source>
         <translation>Информация</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="199"/>
+        <location filename="dummy.cpp" line="178"/>
         <source>Peers</source>
         <translation>Пиры</translation>
     </message>

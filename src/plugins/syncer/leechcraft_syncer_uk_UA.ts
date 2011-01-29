@@ -52,9 +52,48 @@
 <context>
     <name>LeechCraft::Plugins::Syncer::Plugin</name>
     <message>
-        <location filename="syncer.cpp" line="59"/>
+        <location filename="syncer.cpp" line="69"/>
         <source>Synchronization plugin for LeechCraft</source>
         <translation>Плагін синхронізації для LeechCraft</translation>
+    </message>
+</context>
+<context>
+    <name>syncersettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Sync settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Login:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>Host:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>Port:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

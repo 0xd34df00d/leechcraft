@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 
 #include "itemhandlerstringgetvalue.h"
 #include <boost/function.hpp>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QLabel>
 #include <QtDebug>
 #include "../xmlsettingsdialog.h"
@@ -57,7 +57,7 @@ namespace LeechCraft
 
 		void Handle (const QDomElement& item, QWidget *pwidget)
 		{
-			QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+			QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 			QLabel *label = new QLabel (XSD_->GetLabel (item));
 			label->setWordWrap (false);
 			WidgetType *box = new WidgetType (XSD_);
@@ -89,8 +89,13 @@ namespace LeechCraft
 
 			box->setProperty ("ItemHandler",
 					QVariant::fromValue<QObject*> (this));
-
-			lay->addRow (label, box);
+			
+			int row = lay->rowCount ();
+			lay->setColumnMinimumWidth (0, 10);
+			lay->setColumnStretch (0, 1);
+			lay->setColumnStretch (1, 5);
+			lay->addWidget (label, row, 0, Qt::AlignRight);
+			lay->addWidget (box, row, 1);
 		}
 
 		void SetValue (QWidget *widget,

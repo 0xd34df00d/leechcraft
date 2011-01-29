@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,93 +21,118 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QMap>
-#include <gloox/messagehandler.h>
-#include <gloox/jid.h>
+#include <QXmppRosterIq.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
-
-namespace gloox
-{
-	class Client;
-	class RosterItem;
-}
+#include "glooxclentry.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+class IProtocol;
+
+namespace Xoox
+{
+	class ClientConnection;
+
+	struct GlooxAccountState
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				class IProtocol;
+		State State_;
+		QString Status_;
+		int Priority_;
+	};
 
-				namespace Xoox
-				{
-					class ClientConnection;
+	class GlooxProtocol;
 
-					struct GlooxAccountState
-					{
-						IAccount::State State_;
-						QString Status_;
-						int Priority_;
-					};
+	class GlooxAccount : public QObject
+					   , public IAccount
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
 
-					class GlooxAccount;
-					typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
+		QString Name_;
+		GlooxProtocol *ParentProtocol_;
 
-					class GlooxAccount : public QObject
-									   , public IAccount
-									   , public gloox::MessageHandler
-					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
+		QString JID_;
+		QString Nick_;
+		QString Resource_;
+		QString Host_;
+		int Port_;
 
-						QString Name_;
-						IProtocol *ParentProtocol_;
+		boost::shared_ptr<ClientConnection> ClientConnection_;
 
-						QString JID_;
-						QString Nick_;
-						QString Resource_;
-						qint16 Priority_;
+		GlooxAccountState AccState_;
+	public:
+		GlooxAccount (const QString&, QObject*);
+		void Init ();
 
-						boost::shared_ptr<ClientConnection> ClientConnection_;
-						// Bare JID → resource → session.
-						QMap<gloox::JID, QMap<QString, gloox::MessageSession*> > Sessions_;
-					public:
-						GlooxAccount (const QString&, QObject*);
+		QObject* GetObject ();
+		QObject* GetParentProtocol () const;
+		AccountFeatures GetAccountFeatures () const;
+		QList<QObject*> GetCLEntries ();
+		QString GetAccountName () const;
+		QString GetOurNick () const;
+		QString GetHost () const;
+		int GetPort () const;
+		void RenameAccount (const QString&);
+		QByteArray GetAccountID () const;
+		void QueryInfo (const QString&);
+		void OpenConfigurationDialog ();
+		EntryStatus GetState () const;
+		void ChangeState (const EntryStatus&);
+		void Synchronize ();
+		void Authorize (QObject*);
+		void DenyAuth (QObject*);
+		void RequestAuth (const QString&, const QString&,
+				const QString&, const QStringList&);
+		void RemoveEntry (QObject*);
 
-						QObject* GetObject ();
-						IProtocol* GetParentProtocol () const;
-						AccountFeatures GetAccountFeatures () const;
-						QList<ICLEntry*> GetCLEntries ();
-						QString GetAccountName () const;
-						void RenameAccount (const QString&);
-						QByteArray GetAccountID () const;
-						void OpenConfigurationDialog ();
-						void ChangeState (State, const QString& = QString ());
-						void Synchronize ();
+		QString GetJID () const;
+		QString GetNick () const;
+		void JoinRoom (const QString&, const QString&, const QString&);
+		boost::shared_ptr<ClientConnection> GetClientConnection () const;
+		GlooxCLEntry* CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
 
-						QByteArray Serialize () const;
-						static GlooxAccount* Deserialize (const QByteArray&, QObject*);
+		QByteArray Serialize () const;
+		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
 
-						IMessage* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&,
-								gloox::RosterItem*);
+		QObject* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&,
+				const QXmppRosterIq::Item&);
+	private:
+		QString GetPassword (bool authFailure = false);
+	public slots:
+		void handleEntryRemoved (QObject*);
+		void handleGotRosterItems (const QList<QObject*>&);
+	private slots:
+		void handleServerAuthFailed ();
+		void feedClientPassword ();
+		void handleDestroyClient ();
+	signals:
+		void gotCLItems (const QList<QObject*>&);
+		void removedCLItems (const QList<QObject*>&);
+		void joinedGroupchat (QObject*);
+		void authorizationRequested (QObject*, const QString&);
+		void itemSubscribed (QObject*, const QString&);
+		void itemUnsubscribed (QObject*, const QString&);
+		void itemUnsubscribed (const QString&, const QString&);
+		void statusChanged (const Plugins::EntryStatus&);
 
-						// MessageHandler
-						void handleMessage (const gloox::Message&, gloox::MessageSession*);
-					private slots:
-						void handleGotRosterItems (const QList<QObject*>&);
-					private:
-						void InitializeSession (gloox::MessageSession*);
-					signals:
-						void gotCLItems (const QList<QObject*>);
-					};
-				}
-			}
-		}
-	}
+		void accountSettingsChanged ();
+
+		void scheduleClientDestruction ();
+	};
+
+	typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
+}
+}
+}
+}
 }
 
 #endif

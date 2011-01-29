@@ -96,10 +96,13 @@ namespace LeechCraft
 			{
 			}
 
-			QList<QAction*> Plugin::GetActions () const
+			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 			{
 				QList<QAction*> result;
-				result << Dock_->GetActivatorAction ();
+
+				if (place == AEPCommonContextMenu ||
+						place == AEPQuickLaunch)
+					result << Dock_->GetActivatorAction ();
 				return result;
 			}
 
@@ -108,26 +111,16 @@ namespace LeechCraft
 				return XmlSettingsDialog_;
 			}
 
-			void Plugin::SetShortcut (int id, const QKeySequence& seq)
+			void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
 			{
-				switch (id)
-				{
-					case AEActivator:
-						Dock_->GetActivatorAction ()->setShortcut (seq);
-						break;
-					default:
-						qWarning () << Q_FUNC_INFO
-							<< "unknown id"
-							<< id
-							<< seq;
-						break;
-				}
+				if (id == "TabPPActivator")
+					Dock_->GetActivatorAction ()->setShortcuts (seqs);
 			}
 
-			QMap<int, ActionInfo> Plugin::GetActionInfo () const
+			QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 			{
-				QMap<int, ActionInfo> result;
-				result [AEActivator] = ActionInfo (tr ("Show tab switcher"),
+				QMap<QString, ActionInfo> result;
+				result ["TabPPActivator"] = ActionInfo (tr ("Show tab switcher"),
 						Dock_->GetActivatorAction ()->shortcut (),
 						Dock_->GetActivatorAction ()->icon ());
 				return result;

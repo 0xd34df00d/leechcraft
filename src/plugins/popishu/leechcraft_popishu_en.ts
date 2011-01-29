@@ -129,84 +129,84 @@
 <context>
     <name>LeechCraft::Plugins::Popishu::EditorPage</name>
     <message>
-        <location filename="editorpage.cpp" line="89"/>
+        <location filename="editorpage.cpp" line="90"/>
         <source>Document type</source>
         <translation>Document type</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="125"/>
+        <location filename="editorpage.cpp" line="126"/>
         <source>Whitespace visibility</source>
         <translation>Whitespace visibility</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="132"/>
+        <location filename="editorpage.cpp" line="133"/>
         <source>Wrapping mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="145"/>
+        <location filename="editorpage.cpp" line="146"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="148"/>
+        <location filename="editorpage.cpp" line="149"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="216"/>
-        <location filename="editorpage.cpp" line="288"/>
+        <location filename="editorpage.cpp" line="217"/>
+        <location filename="editorpage.cpp" line="289"/>
         <source>Untitled</source>
         <translation>Untitled</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="221"/>
+        <location filename="editorpage.cpp" line="222"/>
         <source>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</source>
         <translation>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="294"/>
+        <location filename="editorpage.cpp" line="295"/>
         <source>Select file to open</source>
         <translation>Select file to open</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="605"/>
+        <location filename="editorpage.cpp" line="606"/>
         <source>File not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="606"/>
+        <location filename="editorpage.cpp" line="607"/>
         <source>The requested file doesn&apos;t exist anymore.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="659"/>
+        <location filename="editorpage.cpp" line="662"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Could not open file %1 for reading.</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="449"/>
+        <location filename="editorpage.cpp" line="450"/>
         <source>Script wrapping failed.</source>
         <translation>Script wrapping failed.</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="113"/>
+        <location filename="editorpage.cpp" line="114"/>
         <source>Recent files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="470"/>
-        <location filename="editorpage.cpp" line="506"/>
+        <location filename="editorpage.cpp" line="471"/>
+        <location filename="editorpage.cpp" line="507"/>
         <source>Script injection failed: %1</source>
         <translation>Script injection failed: %1</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="624"/>
+        <location filename="editorpage.cpp" line="625"/>
         <source>Select file to save</source>
         <translation>Select file to save</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="637"/>
+        <location filename="editorpage.cpp" line="638"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Could not open file %1 for writing.</translation>
     </message>
@@ -214,7 +214,7 @@
 <context>
     <name>LeechCraft::Plugins::Popishu::Plugin</name>
     <message>
-        <location filename="popishu.cpp" line="97"/>
+        <location filename="popishu.cpp" line="102"/>
         <source>Plain text editor with syntax highlighting and stuff.</source>
         <translation>Plain text editor with syntax highlighting and stuff.</translation>
     </message>
@@ -260,71 +260,71 @@
 <context>
     <name>popishusettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
-        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="3"/>
         <source>Editor settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="4"/>
+        <location filename="dummy.cpp" line="4"/>
         <source>Tab width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="5"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Identation width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="6"/>
+        <location filename="dummy.cpp" line="6"/>
         <source>Monospace font:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="7"/>
+        <location filename="dummy.cpp" line="7"/>
         <source>Text wrapping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="8"/>
+        <location filename="dummy.cpp" line="8"/>
         <source>End wrap flag location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="9"/>
-        <location filename="dummyfile.cpp" line="13"/>
+        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>No wrap flag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="10"/>
-        <location filename="dummyfile.cpp" line="14"/>
+        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="14"/>
         <source>By text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="11"/>
-        <location filename="dummyfile.cpp" line="15"/>
+        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>By border</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="12"/>
+        <location filename="dummy.cpp" line="12"/>
         <source>Start wrap flag location:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="16"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>Indentation of wrapped line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="17"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Behavior</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="18"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Remember this much recently opened files:</source>
         <translation type="unfinished"></translation>
     </message>

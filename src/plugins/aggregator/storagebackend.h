@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -365,6 +365,13 @@ namespace LeechCraft
 				 */
 				virtual void ToggleChannelUnread (const IDType_t& id,
 						bool state) = 0;
+
+				/** @brief Searches for highest id of given type in the database
+				 *
+				 * @param[in] type of id to find
+				 * @return highest channels id in the database or 0 if empty
+				 */
+				virtual IDType_t GetHighestID (const PoolType& type) const = 0;
 			signals:
 				/** @brief Notifies about updated channel information.
 				 *
@@ -373,6 +380,7 @@ namespace LeechCraft
 				 * @param[out] channel Pointer to the updated channel.
 				 */
 				void channelDataUpdated (Channel_ptr channel) const;
+
 				/** @brief Notifies about updated item information.
 				 *
 				 * This signal is emitted when a single item is updated.

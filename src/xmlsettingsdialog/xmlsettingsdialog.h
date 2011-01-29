@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-/*
-	Copyright (c) 2008-2009 by Rudoy Georg <0xd34df00d@gmail.com>
-
- ***************************************************************************
- *																		 *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or	 *
- *   (at your option) any later version.								   *
- *																		 *
- ***************************************************************************
-*/
 #ifndef XMLSETTINGSDIALOG_XMLSETTINGSDIALOG_H
 #define XMLSETTINGSDIALOG_XMLSETTINGSDIALOG_H
 #include <QWidget>
@@ -41,7 +29,7 @@ class QStackedWidget;
 class QListWidget;
 class QPushButton;
 class QDomElement;
-class QFormLayout;
+class QGridLayout;
 class QDomDocument;
 class QAbstractItemModel;
 
@@ -215,6 +203,10 @@ namespace LeechCraft
 			 * @sa GetLabel()
 			 */
 			LangElements GetLangElements (const QDomElement& element) const;
+
+			/** @brief Get XML base name of this XML settings dialog.
+			 */
+			QString GetBasename () const;
 		private:
 			void HandleDeclaration (const QDomElement&);
 			void ParsePage (const QDomElement&);

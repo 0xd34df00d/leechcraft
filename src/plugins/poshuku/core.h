@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <plugininterface/tagscompletionmodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaveshortcuts.h>
 #include "favoritesmodel.h"
 #include "historymodel.h"
 #include "storagebackend.h"
@@ -118,7 +119,7 @@ namespace LeechCraft
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
 
-				QUrl MakeURL (QString) const;
+				QUrl MakeURL (QString);
 				BrowserWidget* NewURL (const QUrl&, bool = false);
 				BrowserWidget* NewURL (const QString&, bool = false);
 				IWebWidget* GetWidget ();
@@ -132,6 +133,7 @@ namespace LeechCraft
 				void ConnectSignals (BrowserWidget *widget);
 
 				void CheckFavorites ();
+				void ReloadAll ();
 
 				FavoritesModel* GetFavoritesModel () const;
 				HistoryModel* GetHistoryModel () const;
@@ -139,7 +141,7 @@ namespace LeechCraft
 				QNetworkAccessManager* GetNetworkAccessManager () const;
 				StorageBackend* GetStorageBackend () const;
 				PluginManager* GetPluginManager () const;
-				void SetShortcut (int name, const QKeySequence& shortcut);
+				void SetShortcut (const QString& name, const QKeySequences_t& shortcut);
 				const IShortcutProxy* GetShortcutProxy () const;
 
 				QIcon GetIcon (const QUrl&) const;
@@ -152,6 +154,7 @@ namespace LeechCraft
 				 * and deown mode.
 				 */
 				void SetupConnections (BrowserWidget *widget);
+				void HandleSearchRequest (const QString&);
 			public slots:
 				void importXbel ();
 				void exportXbel ();

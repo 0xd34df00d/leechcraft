@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,60 +32,60 @@ class QWebPage;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class XmlSettingsDialog;
-	};
-	namespace Plugins
-	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace Fua
-				{
-					class Settings;
-
-					class FUA : public QObject
-							  , public IInfo
-							  , public IPlugin2
-							  , public IHaveSettings
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
-
-						boost::shared_ptr<QStandardItemModel> Model_;
-						boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-						std::auto_ptr<QTranslator> Translator_;
-						QMap<QString, QString> Browser2ID_;
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						void Release ();
-						QByteArray GetUniqueID () const;
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
-
-						QSet<QByteArray> GetPluginClasses () const;
-
-						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-
-						void Save () const;
-						const QMap<QString, QString>& GetBrowser2ID () const;
-					public slots:
-						void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
-								const QUrl&, const QWebPage*);
-					};
-				};
-			};
-		};
-	};
+namespace Util
+{
+	class XmlSettingsDialog;
 };
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace Fua
+{
+	class Settings;
+
+	class FUA : public QObject
+			  , public IInfo
+			  , public IPlugin2
+			  , public IHaveSettings
+	{
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+
+		boost::shared_ptr<QStandardItemModel> Model_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		std::auto_ptr<QTranslator> Translator_;
+		QMap<QString, QString> Browser2ID_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
+
+		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		void Save () const;
+		const QMap<QString, QString>& GetBrowser2ID () const;
+	public slots:
+		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
+				const QUrl&, const QWebPage*);
+	};
+}
+}
+}
+}
+}
 
 #endif
 

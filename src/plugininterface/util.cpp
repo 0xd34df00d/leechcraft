@@ -33,6 +33,7 @@
 #include <QtDebug>
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);
+Q_DECLARE_METATYPE (QVariantList*);
 
 QString LeechCraft::Util::GetUserText (const Entity& p)
 {
@@ -135,7 +136,7 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 #elif defined (Q_WS_MAC)
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
-					QCoreApplication::applicationDirPath () + "../Resources/translations"))
+					QCoreApplication::applicationDirPath () + "/../Resources/translations"))
 #else
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
@@ -188,27 +189,40 @@ QString LeechCraft::Util::GetLanguage ()
 	return GetLocaleName ().left (2);
 }
 
-QDir LeechCraft::Util::CreateIfNotExists (const QString& path)
+QDir LeechCraft::Util::CreateIfNotExists (const QString& opath)
 {
+	QString path = opath;
+
 	QDir home = QDir::home ();
-	home.cd (".leechcraft");
-	if (home.exists (path) && !home.cd (path))
-	{
-		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
-					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-	}
-	home = QDir::home ();
-	home.cd (".leechcraft");
-	if (!home.exists (path) && !home.mkpath (path))
-	{
+	path.prepend (".leechcraft/");
+
+	if (!home.exists (path) &&
+			!home.mkpath (path))
 		throw std::runtime_error (qPrintable (QObject::tr ("Could not create %1")
 					.arg (QDir::toNativeSeparators (home.filePath (path)))));
-	}
 
-	home = QDir::home ();
-	home.cd (".leechcraft");
-	home.cd (path);
-	return home;
+	if (home.cd (path))
+		return home;
+	else
+		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+					.arg (QDir::toNativeSeparators (home.filePath (path)))));
+}
+
+QDir LeechCraft::Util::GetUserDir (const QString& opath)
+{
+	QString path = opath;
+	QDir home = QDir::home ();
+	path.prepend (".leechcraft/");
+
+	if (!home.exists (path))
+		throw std::runtime_error (qPrintable (QString ("The specified path doesn't exist: %1")
+					.arg (QDir::toNativeSeparators (home.filePath (path)))));
+
+	if (home.cd (path))
+		return home;
+	else
+		throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+		.arg (QDir::toNativeSeparators (home.filePath (path)))));
 }
 
 QString LeechCraft::Util::GetTemporaryName (const QString& pattern)
@@ -269,4 +283,23 @@ QAction* LeechCraft::Util::CreateSeparator (QObject *parent)
 	QAction *result = new QAction (parent);
 	result->setSeparator (true);
 	return result;
+}
+
+QVariantList LeechCraft::Util::GetPersistentData (const QList<QVariant>& keys,
+		QObject* object)
+{
+	Entity e = MakeEntity (keys,
+			QString (),
+			Internal,
+			"x-leechcraft/data-persistent-load");
+	QVariantList values;
+	e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
+
+	QMetaObject::invokeMethod (object,
+			"delegateEntity",
+			Q_ARG (LeechCraft::Entity, e),
+			Q_ARG (int*, 0),
+			Q_ARG (QObject**, 0));
+
+	return values;
 }

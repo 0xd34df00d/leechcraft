@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,8 @@ namespace LeechCraft
 		 * @param[in] value The new return value of this hook.
 		 */
 		virtual void SetReturnValue (const QVariant& value) = 0;
+
+		virtual void SetValue (const QByteArray& name, const QVariant& value) = 0;
 	};
 
 	typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;
@@ -533,6 +535,10 @@ public:
 	 */
 	virtual IPluginsManager* GetPluginsManager () const = 0;
 
+	/** @brief Returns the version of LeechCraft core and base system.
+	 */
+	virtual QString GetVersion () const = 0;
+
 	/** @brief Returns the pointer to itself as QObject*.
 	 *
 	 * Just to avoid nasty reinterpret_casts.
@@ -576,20 +582,6 @@ typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
  * plugin depends on others - move it to SecondInit(), leaving in Init()
  * only basic initialization/allocation stuff like allocation memory for
  * the objects.
- *
- * This interface can also have following signals which will be
- * autodetected by LeechCraft:
- * - couldHandle (const LeechCraft::Entity& entity, bool *could);
- *   Checks whether given entity could be handled.
- * - gotEntity (const LeechCraft::Entity& entity);
- *   Notifies other plugins about a new entity.
- * - delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **provider);
- *   Entity delegation request. If a suitable provider is found, the
- *   entity is delegated to it, id is set according to the task ID
- *   returned from the provider, and provider is set to point to the
- *   provider object.
- * - notify (const LeechCraft::Notification& notification);
- *   Notifies the user about an event.
  */
 class IInfo
 {
@@ -786,8 +778,82 @@ public:
 	virtual QIcon GetIcon () const = 0;
 
 	/** @brief Virtual destructor.
+	 *
+ * - gotEntity (const LeechCraft::Entity& entity);
+ *   Notifies other plugins about a new entity.
+ * - delegateEntity (const LeechCraft::Entity& entity, int *id, QObject **provider);
+ *   Entity delegation request. If a suitable provider is found, the
+ *   entity is delegated to it, id is set according to the task ID
+ *   returned from the provider, and provider is set to point to the
+ *   provider object.
 	 */
 	virtual ~IInfo () {}
+
+	/** @brief This signal is emitted by plugin to query if the given
+	 * entity could be handled.
+	 *
+	 * If there is at least one plugin that can handle the given entity,
+	 * the could is set to true, otherwise it is set to false.
+	 *
+	 * @param[out] entity The entity to check if could be handled.
+	 * @param[in] could The pointer to the variable that would contain
+	 * the result of the check.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @sa gotEntity(), delegateEntity()
+	 */
+	virtual void couldHandle (const LeechCraft::Entity& entity, bool *could) {}
+
+	/** @brief This signal is emitted by plugin to notify the Core and
+	 * other plugins about an entity.
+	 *
+	 * In this case, the plugin doesn't care what would happen next to
+	 * the entity after the announcement and whether it would be catched
+	 * by any other plugin at all. This is the opposite to the semantics
+	 * of delegateEntity().
+	 *
+	 * This signal is typically emitted, for example, when a plugin has
+	 * just finished downloading something and wants to notify other
+	 * plugins about newly created files.
+	 *
+	 * This signal is asynchronous: the handling happends after the
+	 * control gets back to the event loop.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] entity The entity.
+	 */
+	virtual void gotEntity (const LeechCraft::Entity& entity) {}
+
+	/** @brief This signal is emitted by plugin to delegate the entity
+	 * to an another plugin.
+	 *
+	 * In this case, the plugin actually cares whether the entity would
+	 * be handled. This signal is typically used, for example, to
+	 * delegate a download request.
+	 *
+	 * id and provider are used in download delegation requests. If
+	 * these parameters are not NULL and the entity is handled, they are
+	 * set to the task ID returned by the corresponding IDownload
+	 * instance and the main plugin instance of the handling plugin,
+	 * respectively. Thus, setting the id to a non-NULL value means that
+	 * only downloading may occur as result but no handling.
+	 *
+	 * Nevertheless, if you need to enable entity handlers to handle
+	 * your request as well, you may leave the id parameter as NULL and
+	 * just set the provider to a non-NULL value.
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] entity The entity to delegate.
+	 * @param[in] id The pointer to the variable that would contain the
+	 * task ID of this delegate request, or NULL.
+	 * @param[in] provider The pointer to the main plugin instance of
+	 * the plugin that handles this delegate request, or NULL.
+	 */
+	virtual void delegateEntity (const LeechCraft::Entity& entity,
+			int *id, QObject **provider) {}
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
@@ -796,4 +862,3 @@ Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0");
 Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0");
 
 #endif
-

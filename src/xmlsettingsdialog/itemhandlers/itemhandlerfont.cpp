@@ -18,7 +18,7 @@
 
 #include "itemhandlerfont.h"
 #include <QLabel>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QApplication>
 #include <QtDebug>
 #include "../fontpicker.h"
@@ -40,7 +40,7 @@ namespace LeechCraft
 
 	void ItemHandlerFont::Handle (const QDomElement& item, QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QString labelString = XSD_->GetLabel (item);
 		QLabel *label = new QLabel (labelString);
 		label->setWordWrap (false);
@@ -56,8 +56,10 @@ namespace LeechCraft
 
 		picker->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
-
-		lay->addRow (label, picker);
+		
+		int row = lay->rowCount ();
+		lay->addWidget (label, row, 0);
+		lay->addWidget (picker, row, 1);
 	}
 
 	QVariant ItemHandlerFont::GetValue (const QDomElement& element,

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,44 +23,57 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+struct Entity;
+
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxAccount;
+
+	class GlooxProtocol : public QObject
+						, public IProtocol
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxAccount;
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
 
-					class GlooxProtocol : public QObject
-										, public IProtocol
-					{
-						Q_OBJECT
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
+		QObject *ParentProtocolPlugin_;
+		QList<GlooxAccount*> Accounts_;
+		QObject *ProxyObject_;
+	public:
+		GlooxProtocol (QObject*);
+		virtual ~GlooxProtocol ();
 
-						IProtocolPlugin *ParentProtocolPlugin_;
-						QList<GlooxAccount*> Accounts_;
-					public:
-						GlooxProtocol (QObject*);
-						virtual ~GlooxProtocol ();
+		void Prepare ();
 
-						QObject* GetObject ();
-						QList<IAccount*> GetRegisteredAccounts ();
-						IProtocolPlugin* GetParentProtocolPlugin () const;
-						QString GetProtocolName () const;
-						QByteArray GetProtocolID () const;
-						void InitiateAccountRegistration ();
-					private:
-						void SaveAccounts () const;
-						void RestoreAccounts ();
-					signals:
-						void accountAdded (QObject*);
-					};
-				}
-			}
-		}
-	}
+		QObject* GetProxyObject () const;
+		void SetProxyObject (QObject*);
+
+		QObject* GetObject ();
+		ProtocolFeatures GetFeatures () const;
+		QList<QObject*> GetRegisteredAccounts ();
+		QObject* GetParentProtocolPlugin () const;
+		QString GetProtocolName () const;
+		QByteArray GetProtocolID () const;
+		void InitiateAccountRegistration ();
+		QWidget* GetMUCJoinWidget ();
+		void RemoveAccount (QObject*);
+	private:
+		void RestoreAccounts ();
+	private slots:
+		void saveAccounts () const;
+	signals:
+		void accountAdded (QObject*);
+		void accountRemoved (QObject*);
+	};
+}
+}
+}
+}
 }
 
 #endif

@@ -33,4 +33,19 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
+<context>
+    <name>dbusmanagersettings</name>
+    <message>
+        <source>Environment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>KDE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use notifications (KDE â¥ 4.4 or libnotify)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 </TS>

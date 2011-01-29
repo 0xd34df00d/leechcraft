@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
-#include <interfaces/itoolbarembedder.h>
-#include <interfaces/imenuembedder.h>
-#include <interfaces/itraymenu.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/istartupwizard.h>
 
 class QSystemTrayIcon;
@@ -55,13 +53,11 @@ namespace LeechCraft
 							 , public IJobHolder
 							 , public IEntityHandler
 							 , public IHaveShortcuts
-							 , public IToolBarEmbedder
+							 , public IActionsExporter
 							 , public IStartupWizard
-							 , public ITrayMenu
-							 , public IMenuEmbedder
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IToolBarEmbedder IStartupWizard ITrayMenu IMenuEmbedder)
+				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IStartupWizard IActionsExporter)
 
 				Aggregator_Impl *Impl_;
 			public:
@@ -87,24 +83,20 @@ namespace LeechCraft
 				bool CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
 
 				QList<QWizardPage*> GetWizardPages () const;
 
-				QList<QAction*> GetActions () const;
-
-				QList<QAction*> GetTrayActions () const;
-				QList<QMenu*> GetTrayMenus () const;
-
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			protected:
 				virtual void keyPressEvent (QKeyEvent*);
 			private:
 				void ScheduleShowError ();
 				bool IsRepr () const;
 				QModelIndex GetRelevantIndex () const;
+				void BuildID2ActionTupleMap ();
+				void MarkReadUnread (boost::function<void (const QModelIndex&)>);
 			public slots:
 				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 			private slots:
@@ -120,6 +112,7 @@ namespace LeechCraft
 				void on_ActionMarkChannelAsRead__triggered ();
 				void on_ActionMarkChannelAsUnread__triggered ();
 				void on_ActionChannelSettings__triggered ();
+				void handleFeedsContextMenuRequested (const QPoint&);
 				void on_MergeItems__toggled (bool);
 				void currentChannelChanged ();
 				void unreadNumberChanged (int);

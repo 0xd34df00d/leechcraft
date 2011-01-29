@@ -21,8 +21,14 @@
 #include <QDockWidget>
 #include <QMainWindow>
 #include <QVBoxLayout>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/resourceloader.h>
+#include <plugininterface/util.h>
 #include "core.h"
 #include "mainwidget.h"
+#include "chattabsmanager.h"
+#include "chattab.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -32,7 +38,22 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
+				Translator_.reset (Util::InstallTranslator ("azoth"));
+
+				ChatTab::SetParentMultiTabs (this);
+
 				Core::Instance ().SetProxy (proxy);
+
+				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+						"azothsettings.xml");
+
+				XmlSettingsDialog_->SetDataSource ("StatusIcons",
+						Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
+							GetSubElemModel ());
+				XmlSettingsDialog_->SetDataSource ("ClientIcons",
+						Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
+							GetSubElemModel ());
 
 				QMainWindow *mainWin = proxy->GetMainWindow ();
 				QDockWidget *dw = new QDockWidget (mainWin);
@@ -46,12 +67,31 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
-				handleAccountCreatorActionsAdded (Core::Instance ().GetAccountCreatorActions ());
 				connect (&Core::Instance (),
-						SIGNAL (accountCreatorActionsAdded (const QList<QAction*>&)),
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 						this,
-						SLOT (handleAccountCreatorActionsAdded (const QList<QAction*>&)));
+						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+
+				connect (Core::Instance ().GetChatTabsManager (),
+						SIGNAL (addNewTab (const QString&, QWidget*)),
+						this,
+						SIGNAL (addNewTab (const QString&, QWidget*)));
+				connect (Core::Instance ().GetChatTabsManager (),
+						SIGNAL (changeTabName (QWidget*, const QString&)),
+						this,
+						SIGNAL (changeTabName (QWidget*, const QString&)));
+				connect (Core::Instance ().GetChatTabsManager (),
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+						this,
+						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+				connect (Core::Instance ().GetChatTabsManager (),
+						SIGNAL (removeTab (QWidget*)),
+						this,
+						SIGNAL (removeTab (QWidget*)));
+				connect (Core::Instance ().GetChatTabsManager (),
+						SIGNAL (raiseTab (QWidget*)),
+						this,
+						SIGNAL (raiseTab (QWidget*)));
 			}
 
 			void Plugin::SecondInit ()
@@ -60,6 +100,7 @@ namespace LeechCraft
 
 			void Plugin::Release ()
 			{
+				Core::Instance ().Release ();
 			}
 
 			QByteArray Plugin::GetUniqueID () const
@@ -79,12 +120,12 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/plugins/azoth/resources/images/azoth.svg");
 			}
 
 			QStringList Plugin::Provides () const
 			{
-				return QStringList ();
+				return QStringList (GetUniqueID ());
 			}
 
 			QStringList Plugin::Needs () const
@@ -111,9 +152,13 @@ namespace LeechCraft
 				Core::Instance ().AddPlugin (object);
 			}
 
-			void Plugin::handleAccountCreatorActionsAdded (const QList<QAction*>& actions)
+			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 			{
-				MW_->AddAccountCreators (actions);
+				return XmlSettingsDialog_;
+			}
+
+			void Plugin::newTabRequested ()
+			{
 			}
 		};
 	};

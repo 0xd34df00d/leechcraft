@@ -38,6 +38,7 @@ SET (SRCS
 	ktorrentimporter.cpp
 	firefoximporter/firefoximportpage.cpp
 	firefoximporter/firefoximporter.cpp
+	firefoximporter/firefoxprofileselectpage.cpp
 	)
 SET (HEADERS
 	newlife.h
@@ -52,11 +53,13 @@ SET (HEADERS
 	abstractimporter.h
 	firefoximporter/firefoximportpage.h
 	firefoximporter/firefoximporter.h
+	firefoximporter/firefoxprofileselectpage.h
 	)
 SET (FORMS
 	importwizard.ui
 	feedssettingsimportpage.ui
 	firstpage.ui
+	firefoximporter/firefoxprofileselectpage.ui
 	)
 SET (TRANSLATIONS
 	leechcraft_newlife_ru_RU.ts

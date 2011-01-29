@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,9 +66,17 @@ namespace LeechCraft
 				 * title, second element (if any) would be converted to
 				 * string and replace url, third element (if any) would
 				 * be converted to QDateTime and replace the date.
+				 *
+				 * @param proxy The standard hook proxy class.
+				 * @param title The title of the item that's going to be
+				 * added to history.
+				 * @param url The URL of the item.
+				 * @param date Datetime of visit (usually current one).
+				 * @param browserWidget The BrowserWidget from which
+				 * this request came.
 				 */
 				void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
-						QString title, QString url, QDateTime date);
+						QString title, QString url, QDateTime date, QObject *browserWidget);
 
 				void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
 						QString *title, QString *url);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ namespace LeechCraft
 	{
 		namespace LackMan
 		{
+			class PackagesModel;
+
 			class PackagesDelegate : public QStyledItemDelegate
 			{
 				Q_OBJECT
@@ -72,6 +74,7 @@ namespace LeechCraft
 			private slots:
 				void handleAction ();
 				void handleRowActionFinished (int);
+				void handlePackageUpdateToggled (int, bool);
 			};
 		}
 	}

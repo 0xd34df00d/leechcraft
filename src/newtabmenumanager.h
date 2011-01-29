@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QMap>
 #include <QString>
+#include <QSet>
 
 class QMenu;
 class QAction;
@@ -34,6 +35,7 @@ namespace LeechCraft
 		QMenu *NewTabMenu_;
 		QList<QObject*> RegisteredMultiTabs_;
 		QMap<QString, QAction*> ReaddOnRestore_;
+		QSet<QChar> UsedAccelerators_;
 	public:
 		NewTabMenuManager (QObject* = 0);
 
@@ -42,9 +44,12 @@ namespace LeechCraft
 		void SetToolbarActions (QList<QList<QAction*> >);
 
 		QMenu* GetNewTabMenu () const;
+	private:
+		QString AccelerateName (QString);
 	private slots:
 		void restoreEmbedTab ();
 	signals:
+		void restoreTabActionAdded (QAction*);
 		void restoreEmbedTabRequested (QObject*);
 	};
 }

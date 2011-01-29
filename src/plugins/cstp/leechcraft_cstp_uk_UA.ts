@@ -150,11 +150,6 @@
         <translation>Не можу обрізати файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="435"/>
-        <source>%1</source>
-        <translation>%1</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="433"/>
         <source>/s</source>
         <translation>/с</translation>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,36 +23,36 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace FileScheme
+{
+	class SchemeReply : public QNetworkReply
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace FileScheme
-				{
-					class SchemeReply : public QNetworkReply
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						QBuffer Buffer_;
-					public:
-						SchemeReply (const QNetworkRequest&, QObject* = 0);
-						virtual ~SchemeReply ();
+		QBuffer Buffer_;
+	public:
+		SchemeReply (const QNetworkRequest&, QObject* = 0);
+		virtual ~SchemeReply ();
 
-						virtual qint64 bytesAvailable () const;
-						virtual void abort ();
-						virtual void close ();
-					protected:
-						virtual qint64 readData (char*, qint64);
-					private slots:
-						void list ();
-					};
-				};
-			};
-		};
+		virtual qint64 bytesAvailable () const;
+		virtual void abort ();
+		virtual void close ();
+	protected:
+		virtual qint64 readData (char*, qint64);
+	private slots:
+		void list ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
 

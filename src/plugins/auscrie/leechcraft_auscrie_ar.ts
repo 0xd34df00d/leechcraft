@@ -14,12 +14,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="137"/>
+        <location filename="auscrie.cpp" line="140"/>
         <source>Save as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="139"/>
+        <location filename="auscrie.cpp" line="142"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -52,6 +52,11 @@
     <message>
         <location filename="shooterdialog.ui" line="23"/>
         <source>Action:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="31"/>
+        <source>upload to Savepic.ru</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

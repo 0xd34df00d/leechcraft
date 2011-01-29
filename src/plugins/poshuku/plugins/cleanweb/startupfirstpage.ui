@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>527</width>
-    <height>445</height>
+    <height>290</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,13 +20,16 @@
    <string>Select ad blocking lists that you would like to add to the Poshuku CleanWeb plugin.</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
-    <number>3</number>
-   </property>
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Please note that having too many lists may slow down browsing. Moreover, one doesn't usually need more than two or three lists.</string>
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You may choose to add EasyList ad blocking subscription to Poshuku CleanWeb if you wish.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You may also add the required subscriptions later, either by directly entering their URL in CleanWeb's settings or by navigating to &lt;a href=&quot;http://adblockplus.org/en/subscriptions&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#1a619f;&quot;&gt;http://adblockplus.org/en/subscriptions&lt;/span&gt;&lt;/a&gt; for example and selecting the subscriptions you would like to be enabled there.&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Please note that if you have enabled the &lt;span style=&quot; font-weight:600;&quot;&gt;LackMan &lt;/span&gt;plugin for LeechCraft and installed the &lt;span style=&quot; font-style:italic;&quot;&gt;Poshuku CleanWeb Subscriptions&lt;/span&gt; through it, you may also choose between various predefined subscriptions in the CleanWeb's settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -34,620 +37,67 @@
     </widget>
    </item>
    <item>
-    <widget class="QToolBox" name="toolBox">
-     <property name="currentIndex">
-      <number>0</number>
+    <widget class="QGroupBox" name="EasyList_">
+     <property name="title">
+      <string>Enable EasyList</string>
      </property>
-     <widget class="QWidget" name="VariousListsPage_">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>521</width>
-        <height>336</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Various lists</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QScrollArea" name="scrollArea_2">
-         <property name="widgetResizable">
-          <bool>true</bool>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="ListURL" stdset="0">
+      <url>
+       <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;title=EasyList</string>
+      </url>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QScrollArea" name="scrollArea">
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>493</width>
+           <height>95</height>
+          </rect>
          </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents_2">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>521</width>
-            <height>336</height>
-           </rect>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <item>
-            <widget class="QCheckBox" name="checkBox">
-             <property name="text">
-              <string notr="true">ChinaList (汉语)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fadblock%2Dchinalist%2Egooglecode%2Ecom%2Fsvn%2Ftrunk%2Fadblock%2Etxt&amp;title=ChinaList</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="radioButton_4">
-             <property name="text">
-              <string notr="true">Filter von Dr.Evil (Deutsch)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fadblock%2Emaltekraus%2Ede%2Fadblock%2Etxt&amp;title=Filter von Dr%2EEvil</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="radioButton_2">
-             <property name="text">
-              <string notr="true">RuAdList (русский, українська)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fruadlist%2Egooglecode%2Ecom%2Fsvn%2Ftrunk%2Fadblock%2Etxt&amp;title=RuAdList</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="radioButton_5">
-             <property name="text">
-              <string notr="true">AdblockRules.org (svensk, English)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fadblockrules%2Eorg%2Fdownload%2Ephp%3Ftype%3Dall&amp;title=AdblockRules%2Eorg</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="radioButton_6">
-             <property name="text">
-              <string notr="true">BSI Lista Polska (polski)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fwww%2Ebsi%2Einfo%2Epl%2FfiltrABP%2Etxt&amp;title=BSI Lista Polska</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="radioButton_7">
-             <property name="text">
-              <string notr="true">Czech List (čeština)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fadblock%2Edajbych%2Enet%2Fadblock%2Etxt&amp;title=Czech List</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="radioButton_8">
-             <property name="text">
-              <string notr="true">Cédrics Liste (Deutsch)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fchewey%2Ede%2Fmozilla%2Fdata%2Fadblock%2Etxt&amp;title=C%C3%A9drics Liste</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_13">
-             <property name="text">
-              <string notr="true">Dutchblock (Nederlands)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fdutchmega%2Enl%2Fdutchblock%2Flist%2Etxt&amp;title=dutchblock</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_14">
-             <property name="text">
-              <string notr="true">Filtros Nauscopicos (español)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fs3%2Eamazonaws%2Ecom%2Flcp%2Fmaty%2Fmyfiles%2FAdBlock%2DNauscopio%2Dmaty%2Etxt&amp;title=Filtros Nauscopicos</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_27">
-             <property name="text">
-              <string notr="true">IsraelList (עברית)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fisraellist%2Egooglecode%2Ecom%2Ffiles%2FIsraelList%2Etxt&amp;title=IsraelList</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_15">
-             <property name="text">
-              <string notr="true">Japanese General Filter (日本語)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fadblock%2Dplus%2Djapanese%2Dfilter%2Egooglecode%2Ecom%2Fsvn%2Ftrunk%2Fabp_jp_general%2Etxt&amp;title=Japanese General Filter</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="radioButton_3">
-             <property name="text">
-              <string notr="true">Xfiles (italiano)</string>
-             </property>
-             <property name="ListURL" stdset="0">
-              <url>
-               <string>abp:subscribe?location=http%3A%2F%2Fmozilla%2Egfsolone%2Ecom%2Ffiltri%2Etxt&amp;title=Xfiles</string>
-              </url>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </widget>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="EasyListPage_">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>521</width>
-        <height>336</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>EasyList</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QGroupBox" name="EasyList_">
-         <property name="title">
-          <string>Enable EasyList</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-         <property name="ListURL" stdset="0">
-          <url>
-           <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;title=EasyList</string>
-          </url>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
-           <widget class="QScrollArea" name="scrollArea">
-            <property name="widgetResizable">
-             <bool>true</bool>
+           <widget class="QCheckBox" name="checkBox_8">
+            <property name="text">
+             <string>+ EasyPrivacy (privacy protection)</string>
             </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>501</width>
-               <height>294</height>
-              </rect>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <widget class="QCheckBox" name="checkBox_8">
-                <property name="text">
-                 <string>+ EasyPrivacy (privacy protection)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasyprivacy%2Etxt&amp;title=EasyPrivacy&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox">
-                <property name="text">
-                 <string notr="true">+ EasyList Germany (Deutsch)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylistgermany%2Etxt&amp;title=EasyList Germany&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_2">
-                <property name="text">
-                 <string notr="true">+ Liste FR (français)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Flian%2Einfo%2Etm%2Fliste_fr%2Etxt&amp;title=Liste FR&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_4">
-                <property name="text">
-                 <string notr="true">+ ROList (românesc)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Epicpoc%2Ero%2Fmenetzrolist%2Etxt&amp;title=ROList&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_3">
-                <property name="text">
-                 <string notr="true">+ Việt Nam List (Việt)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fadblockplus%2Dvietnam%2Egooglecode%2Ecom%2Fsvn%2Ftrunk%2Fabpvn%2Etxt&amp;title=Vi%E1%BB%87t Nam List&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_5">
-                <property name="text">
-                 <string notr="true">+ AdBlockList.org (polski)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fadblocklist%2Eorg%2Fadblock%2Dpxf%2Dpolish%2Etxt&amp;title=AdblockList%2Eorg&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_6">
-                <property name="text">
-                 <string notr="true">+ Bulgarian list (български)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fstanev%2Eorg%2Fabp%2Fadblock_bg%2Etxt&amp;title=Bulgarian list&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_7">
-                <property name="text">
-                 <string notr="true">+ Corset (한국어)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fabp%2Dcorset%2Egooglecode%2Ecom%2Fhg%2Fcorset%2Etxt&amp;title=Corset&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_12">
-                <property name="text">
-                 <string notr="true">+ Norsk adblockliste (norsk)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fhome%2Eonline%2Eno%2F%7Emlangsho%2Fadblock%2Etxt&amp;title=Norsk adblockliste&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_11">
-                <property name="text">
-                 <string notr="true">+ TamilFriends List (தமிழ்)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Ftamilfriends%2Dlist%2Egooglecode%2Ecom%2Fsvn%2Fadblock%2Etxt&amp;title=TamilFriends List&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_10">
-                <property name="text">
-                 <string notr="true">+ void.gr (ελληνικά)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Evoid%2Egr%2Fkargig%2Fvoid%2Dgr%2Dfilters%2Etxt&amp;title=void%2Egr&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_9">
-                <property name="text">
-                 <string notr="true">+ Wiltteri (suomi)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Ewiltteri%2Enet%2Fwiltteri%2Etxt&amp;title=Wiltteri&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
+            <property name="ListURL" stdset="0">
+             <url>
+              <string>abp:subscribe?location=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasyprivacy%2Etxt&amp;title=EasyPrivacy&amp;requiresLocation=https%3A%2F%2Feasylist%2Ddownloads%2Eadblockplus%2Eorg%2Feasylist%2Etxt&amp;requiresTitle=EasyList</string>
+             </url>
+            </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="FanboyListPage_">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>521</width>
-        <height>336</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Fanboy's List</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QGroupBox" name="groupBox">
-         <property name="title">
-          <string>Enable Fanboy's List</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-         <property name="ListURL" stdset="0">
-          <url>
-           <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;title=Fanboy%27s List</string>
-          </url>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <item>
-           <widget class="QScrollArea" name="scrollArea_3">
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents_3">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>501</width>
-               <height>294</height>
-              </rect>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_9">
-              <item>
-               <widget class="QCheckBox" name="checkBox_16">
-                <property name="text">
-                 <string>Fanboy's Adult/Dating List (blocks adverts on adult websites)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dadult%2Etxt&amp;title=Fanboy%27s Adult%2FDating List&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_17">
-                <property name="text">
-                 <string notr="true">Fanboy's Chinese (汉语)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dchn%2Etxt&amp;title=Fanboy%27s Chinese&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_18">
-                <property name="text">
-                 <string notr="true">Fanboy's Czech (čeština)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcz%2Etxt&amp;title=Fanboy%27s Czech&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_19">
-                <property name="text">
-                 <string notr="true">Fanboy's Espanol/Portuguese (español, português)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Desp%2Etxt&amp;title=Fanboy%27s Espanol%2FPortuguese&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_20">
-                <property name="text">
-                 <string notr="true">Fanboy's Japanese (日本語)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Djpn%2Etxt&amp;title=Fanboy%27s Japanese&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_21">
-                <property name="text">
-                 <string notr="true">Fanboy's Korean (한국어)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dkrn%2Etxt&amp;title=Fanboy%27s Korean&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_22">
-                <property name="text">
-                 <string>Fanboy's Object Dimensions (blocks popular advert dimensions)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Ddimensions%2Etxt&amp;title=Fanboy%27s Object Dimensions&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_23">
-                <property name="text">
-                 <string>Fanboy's P2P (blocks adverts on P2P websites)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dp2p%2Etxt&amp;title=Fanboy%27s P2P&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_24">
-                <property name="text">
-                 <string notr="true">Fanboy's Swedish (svensk)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dswe%2Etxt&amp;title=Fanboy%27s Swedish&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_25">
-                <property name="text">
-                 <string notr="true">Fanboy's Tracking/Stats Blocking (privacy protection)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dstats%2Etxt&amp;title=Fanboy%27s Tracking%2FStats Blocking&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBox_26">
-                <property name="text">
-                 <string notr="true">Fanboy's Turkish (Türkçe)</string>
-                </property>
-                <property name="ListURL" stdset="0">
-                 <url>
-                  <string>abp:subscribe?location=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dtky%2Etxt&amp;title=Fanboy%27s Turkish&amp;requiresLocation=http%3A%2F%2Fwww%2Efanboy%2Eco%2Enz%2Fadblock%2Ffanboy%2Dadblocklist%2Dcurrent%2Dexpanded%2Etxt&amp;requiresTitle=Fanboy%27s List</string>
-                 </url>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_3">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

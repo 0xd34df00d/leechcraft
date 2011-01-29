@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+               "docbook/dtd/xml/4.2/docbookx.dtd">
 <book id="general_overview" xmlns="http://docbook.org/ns/docbook" version="5.0" xml:lang="en">
 	<bookinfo>
 		<title>General overview</title>

@@ -37,7 +37,7 @@ namespace LeechCraft
 					URL_ == item.URL_ &&
 					Tags_ == item.Tags_;
 			}
-			
+
 			FavoritesModel::FavoritesModel (QObject *parent)
 			: QAbstractItemModel (parent)
 			{
@@ -49,21 +49,21 @@ namespace LeechCraft
 				Core::Instance ().GetPluginManager ()->
 						RegisterHookable (this);
 			}
-			
+
 			FavoritesModel::~FavoritesModel ()
 			{
 			}
-			
+
 			int FavoritesModel::columnCount (const QModelIndex&) const
 			{
 				return ItemHeaders_.size ();
 			}
-			
+
 			QVariant FavoritesModel::data (const QModelIndex& index, int role) const
 			{
 				if (!index.isValid ())
 					return QVariant ();
-			
+
 				switch (role)
 				{
 					case Qt::DisplayRole:
@@ -93,7 +93,7 @@ namespace LeechCraft
 						return QVariant ();
 				}
 			}
-			
+
 			Qt::ItemFlags FavoritesModel::flags (const QModelIndex& index) const
 			{
 				Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -101,7 +101,7 @@ namespace LeechCraft
 					result |= Qt::ItemIsEditable;
 				return result;
 			}
-			
+
 			QVariant FavoritesModel::headerData (int column, Qt::Orientation orient,
 					int role) const
 			{
@@ -110,26 +110,26 @@ namespace LeechCraft
 				else
 					return QVariant ();
 			}
-			
+
 			QModelIndex FavoritesModel::index (int row, int column,
 					const QModelIndex& parent) const
 			{
 				if (!hasIndex (row, column, parent))
 					return QModelIndex ();
-			
+
 				return createIndex (row, column);
 			}
-			
+
 			QModelIndex FavoritesModel::parent (const QModelIndex&) const
 			{
 				return QModelIndex ();
 			}
-			
+
 			int FavoritesModel::rowCount (const QModelIndex& index) const
 			{
 				return index.isValid () ? 0 : Items_.size ();
 			}
-			
+
 			/** The passed value is a string list with user-visible tags.
 			 */
 			bool FavoritesModel::setData (const QModelIndex& index,
@@ -141,7 +141,7 @@ namespace LeechCraft
 						{
 							QStringList userTags = value.toStringList ();
 							Items_ [index.row ()].Tags_.clear ();
-							Q_FOREACH (QString ut, userTags) 
+							Q_FOREACH (QString ut, userTags)
 								Items_ [index.row ()].Tags_.append (Core::Instance ().GetProxy ()->
 										GetTagsManager ()->GetID (ut));
 							Core::Instance ().GetStorageBackend ()->
@@ -164,20 +164,21 @@ namespace LeechCraft
 						return false;
 				}
 			}
-			
-			bool FavoritesModel::AddItem (const QString& title, const QString& url,
+
+			bool FavoritesModel::addItem (const QString& title, const QString& url,
 				   const QStringList& visibleTags)
 			{
 				QStringList tags;
-				Q_FOREACH (QString vt, visibleTags)
-					tags << Core::Instance ().GetProxy ()->GetTagsManager ()->GetID (vt);
+				Q_FOREACH (const QString& vt, visibleTags)
+					tags << Core::Instance ().GetProxy ()->
+							GetTagsManager ()->GetID (vt);
 				FavoritesItem item =
 				{
 					title,
 					url,
 					tags
 				};
-			
+
 				try
 				{
 					Core::Instance ().GetStorageBackend ()->AddToFavorites (item);
@@ -196,6 +197,25 @@ namespace LeechCraft
 				return true;
 			}
 
+			QList<QVariant> FavoritesModel::getItemsMap() const
+			{
+				QList<QVariant> result;
+				Q_FOREACH (const FavoritesItem& item, Items_)
+				{
+					QMap<QString, QVariant> map;
+					map ["Title"] = item.Title_;
+					map ["URL"] = item.URL_;
+					QStringList tags;
+					Q_FOREACH (const QString& id, item.Tags_)
+						tags << Core::Instance ().GetProxy ()->
+								GetTagsManager ()->GetTag (id);
+					map ["Tags"] = tags;
+					result << map;
+				}
+				
+				return result;
+			}
+
 			void FavoritesModel::ChangeURL (const QModelIndex& index,
 					const QString& url)
 			{
@@ -207,7 +227,7 @@ namespace LeechCraft
 				item.URL_ = url;
 				Core::Instance ().GetStorageBackend ()->AddToFavorites (item);
 			}
-			
+
 			const FavoritesModel::items_t& FavoritesModel::GetItems () const
 			{
 				return Items_;
@@ -218,46 +238,46 @@ namespace LeechCraft
 				struct ItemFinder
 				{
 					const QString& URL_;
-			
+
 					ItemFinder (const QString& url)
 					: URL_ (url)
 					{
 					}
-			
+
 					bool operator() (const FavoritesModel::FavoritesItem& item) const
 					{
 						return item.URL_ == URL_;
 					}
 				};
 			};
-			
+
 			void FavoritesModel::SetCheckResults (const QMap<QString, QString>& res)
 			{
 				CheckResults_ = res;
 			}
-			
+
 			QStringList FavoritesModel::GetVisibleTags (int index) const
 			{
 				QStringList user;
-				Q_FOREACH (QString id, Items_ [index].Tags_)
+				Q_FOREACH (const QString& id, Items_ [index].Tags_)
 					user.append (Core::Instance ().GetProxy ()->GetTagsManager ()->
 							GetTag (id));
 				return user;
 			}
-			
+
 			void FavoritesModel::removeItem (const QModelIndex& index)
 			{
 				Core::Instance ().GetStorageBackend ()->
 					RemoveFromFavorites (Items_ [index.row ()]);
 			}
-			
+
 			void FavoritesModel::handleItemAdded (const FavoritesModel::FavoritesItem& item)
 			{
 				beginInsertRows (QModelIndex (), rowCount (), rowCount ());
 				Items_.push_back (item);
 				endInsertRows ();
 			}
-			
+
 			void FavoritesModel::handleItemUpdated (const FavoritesModel::FavoritesItem& item)
 			{
 				items_t::iterator pos =
@@ -267,14 +287,14 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO << "not found updated item";
 					return;
 				}
-			
+
 				*pos = item;
-			
+
 				int n = std::distance (Items_.begin (), pos);
-			
+
 				emit dataChanged (index (n, 0), index (n, 2));
 			}
-			
+
 			void FavoritesModel::handleItemRemoved (const FavoritesModel::FavoritesItem& item)
 			{
 				items_t::iterator pos =
@@ -284,26 +304,26 @@ namespace LeechCraft
 					qWarning () << Q_FUNC_INFO << "not found removed item";
 					return;
 				}
-			
+
 				int n = std::distance (Items_.begin (), pos);
 				beginRemoveRows (QModelIndex (), n, n);
 				Items_.erase (pos);
 				endRemoveRows ();
 			}
-			
+
 			void FavoritesModel::loadData ()
 			{
 				items_t items;
 				Core::Instance ().GetStorageBackend ()->LoadFavorites (items);
-			
+
 				if (!items.size ())
 					return;
-			
+
 				beginInsertRows (QModelIndex (), 0, items.size () - 1);
 				for (items_t::iterator i = items.begin (),
 						end = items.end (); i != end; ++i)
 				{
-					Q_FOREACH (QString tag, i->Tags_)
+					Q_FOREACH (const QString& tag, i->Tags_)
 					{
 						QString ut = Core::Instance ().GetProxy ()->
 							GetTagsManager ()->GetTag (tag);

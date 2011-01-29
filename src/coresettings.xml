@@ -7,12 +7,6 @@
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
 			</item>
-			<item type="checkbox" property="ShowMenuBarAsButton" state="off">
-				<label lang="en" value="Show menu bar as button" />
-			</item>
-			<item type="checkbox" property="TrySmarterTabsWidth" state="on">
-				<label lang="en" value="Try smarter tabs width calculation" />
-			</item>
 			<item type="combobox" property="IconSize">
 				<label lang="en" value="Icon size" />
 				<option name="0" default="true">
@@ -58,11 +52,17 @@
 					<label lang="en" value="Right" />
 				</option>
 			</item>
-			<item type="customwidget" name="IconSet">
+			<item type="combobox" property="IconSet" mayHaveDataSource="true">
 				<label lang="en" value="Icon set:" />
+				<option name="oxygen" default="true">
+					<label lang="en" value="Oxygen" />
+				</option>
 			</item>
-			<item type="customwidget" name="AppQStyle">
+			<item type="combobox" property="AppQStyle" mayHaveDataSource="true">
 				<label lang="en" value="Style:" />
+				<option name="Plastique" default="true">
+					<label lang="en" value="Plastique" />
+				</option>
 			</item>
 			<item type="combobox" property="Language" mayHaveDataSource="true">
 				<label lang="en" value="Language:" />

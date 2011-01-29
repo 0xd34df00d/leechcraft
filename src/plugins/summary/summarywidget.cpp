@@ -29,6 +29,7 @@
 #include <interfaces/ijobholder.h>
 #include "core.h"
 #include "searchwidget.h"
+#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -388,6 +389,27 @@ namespace LeechCraft
 				action->activate (QAction::Trigger);
 			}
 
+			void SummaryWidget::checkDataChanged (const QModelIndex& topLeft, const QModelIndex& bottomRight)
+			{
+				const QModelIndex& cur = Ui_.PluginsTasksTree_->
+						selectionModel ()->currentIndex ();
+				if (topLeft.row () <= cur.row () && bottomRight.row () >= cur.row ())
+					updatePanes (cur, cur);
+			}
+
+			void SummaryWidget::handleReset ()
+			{
+				Ui_.PluginsTasksTree_->selectionModel ()->clear ();
+			}
+
+			void SummaryWidget::checkRowsToBeRemoved (const QModelIndex&, int begin, int end)
+			{
+				const QModelIndex& cur = Ui_.PluginsTasksTree_->
+						selectionModel ()->currentIndex ();
+				if (begin <= cur.row () && end >= cur.row ())
+					Ui_.PluginsTasksTree_->selectionModel ()->clear ();
+			}
+
 			void SummaryWidget::updatePanes (const QModelIndex& newIndex,
 					const QModelIndex& oldIndex)
 			{
@@ -401,9 +423,9 @@ namespace LeechCraft
 						addiInfo != Ui_.ControlsDockWidget_->widget ())
 					Ui_.ControlsDockWidget_->hide ();
 
+				ReinitToolbar ();
 				if (newIndex.isValid ())
 				{
-					ReinitToolbar ();
 					if (controls)
 					{
 						Q_FOREACH (QAction *action, controls->actions ())
@@ -449,6 +471,18 @@ namespace LeechCraft
 				Ui_.PluginsTasksTree_->setModel (tasksModel);
 				delete old;
 
+				connect (tasksModel,
+						SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+						this,
+						SLOT (checkDataChanged (const QModelIndex&, const QModelIndex&)));
+				connect (tasksModel,
+						SIGNAL (modelAboutToBeReset ()),
+						this,
+						SLOT (handleReset ()));
+				connect (tasksModel,
+						SIGNAL (rowsAboutToBeRemoved (const QModelIndex&, int, int)),
+						this,
+						SLOT (checkRowsToBeRemoved (const QModelIndex&, int, int)));
 				connect (Ui_.PluginsTasksTree_->selectionModel (),
 						SIGNAL (currentRowChanged (const QModelIndex&,
 								const QModelIndex&)),

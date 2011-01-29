@@ -17,7 +17,7 @@
         <translation>Улучшает взаимодействие пользователя с вкладками.</translation>
     </message>
     <message>
-        <location filename="tabpp.cpp" line="130"/>
+        <location filename="tabpp.cpp" line="123"/>
         <source>Show tab switcher</source>
         <translation>Показать переключатель табов</translation>
     </message>

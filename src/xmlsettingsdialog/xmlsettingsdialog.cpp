@@ -26,7 +26,7 @@
 #include <QListWidget>
 #include <QStackedWidget>
 #include <QLabel>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QApplication>
 #include <QUrl>
 #include <QScrollArea>
@@ -71,9 +71,9 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 		filename = QString ("settings/") + basename;
 #elif defined (Q_WS_MAC)
 	else if (QFile::exists (QApplication::applicationDirPath () +
-			"../Resources/settings/" + basename))
+			"/../Resources/settings/" + basename))
 		filename = QApplication::applicationDirPath () +
-				"../Resources/settings/" + basename;
+				"/../Resources/settings/" + basename;
 #else
 	else if (QFile::exists (QString ("/usr/local/share/leechcraft/settings/") + basename))
 		filename = QString ("/usr/local/share/leechcraft/settings/") + basename;
@@ -220,14 +220,14 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 
 	QWidget *baseWidget = new QWidget;
 	Pages_->addWidget (baseWidget);
-	QFormLayout *lay = new QFormLayout;
-	lay->setRowWrapPolicy (QFormLayout::DontWrapRows);
-	lay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+	QGridLayout *lay = new QGridLayout;
 	lay->setContentsMargins (0, 0, 0, 0);
 	baseWidget->setLayout (lay);
 	baseWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	ParseEntity (page, baseWidget);
+	QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Minimum);
+	lay->addItem (verticalSpacer, lay->rowCount (), 0);
 }
 
 void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWidget)
@@ -243,18 +243,19 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 	while (!gbox.isNull ())
 	{
 		QGroupBox *box = new QGroupBox (GetLabel (gbox));
-		QFormLayout *groupLayout = new QFormLayout ();
-		groupLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
-		groupLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+		QGridLayout *groupLayout = new QGridLayout ();
 		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
 		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 		ParseEntity (gbox, box);
 
-		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
-		lay->addRow (box);
+		QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+		lay->addWidget (box, lay->rowCount (), 0);
 
 		gbox = gbox.nextSiblingElement ("groupbox");
+
+		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+		groupLayout->addItem (verticalSpacer, groupLayout->rowCount (), 0);
 	}
 
 	QDomElement scroll = entity.firstChildElement ("scrollarea");
@@ -279,39 +280,38 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		}
 
 		QFrame *areaWidget = new QFrame;
-		QFormLayout *areaLayout = new QFormLayout;
-		areaLayout->setRowWrapPolicy (QFormLayout::DontWrapRows);
-		areaLayout->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+		QGridLayout *areaLayout = new QGridLayout;
 		areaWidget->setLayout (areaLayout);
-
 		ParseEntity (scroll, areaWidget);
 		area->setWidget (areaWidget);
 		areaWidget->show ();
 
-		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
-		lay->addRow (area);
+		QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+		lay->addWidget (area, lay->rowCount (), 0, 1, 2);
 
 		scroll = scroll.nextSiblingElement ("scrollarea");
+		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+		lay->addItem (verticalSpacer, lay->rowCount (), 0, 1, 1);
 	}
 
 	QDomElement tab = entity.firstChildElement ("tab");
 	if (!tab.isNull ())
 	{
 		QTabWidget *tabs = new QTabWidget;
-		QFormLayout *lay = qobject_cast<QFormLayout*> (baseWidget->layout ());
-		lay->addRow (tabs);
+		QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+		lay->addWidget (tabs, lay->rowCount (), 0, 1, 2);
 		while (!tab.isNull ())
 		{
 			QWidget *page = new QWidget;
-			QFormLayout *widgetLay = new QFormLayout;
-			widgetLay->setRowWrapPolicy (QFormLayout::DontWrapRows);
-			widgetLay->setFieldGrowthPolicy (QFormLayout::AllNonFixedFieldsGrow);
+			QGridLayout *widgetLay = new QGridLayout;
 			widgetLay->setContentsMargins (0, 0, 0, 0);
 			page->setLayout (widgetLay);
 			page->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 			tabs->addTab (page, GetLabel (tab));
 			ParseEntity (tab, page);
 			tab = tab.nextSiblingElement ("tab");
+			QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+			widgetLay->addItem (verticalSpacer, widgetLay->rowCount (), 0, 1, 1);
 		}
 	}
 }
@@ -404,13 +404,24 @@ XmlSettingsDialog::LangElements XmlSettingsDialog::GetLangElements (const QDomEl
 	return returning;
 }
 
+QString XmlSettingsDialog::GetBasename () const
+{
+	return Basename_;
+}
+
 QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
 {
 	QString property = item.attribute ("property");
 
 	QVariant value;
 	if (ignoreObject)
-		value = item.attribute ("default");
+	{
+		QString def = item.attribute ("default");
+		if (item.attribute ("translatable") == "true")
+			def = QCoreApplication::translate (qPrintable (Basename_),
+					def.toUtf8 ().constData ());
+		value = def;
+	}
 	else
 	{
 		QVariant tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());

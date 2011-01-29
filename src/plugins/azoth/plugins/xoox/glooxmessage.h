@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,62 +19,59 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXMESSAGE_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXMESSAGE_H
 #include <QObject>
+#include <QXmppMessage.h>
 #include <interfaces/imessage.h>
-
-namespace gloox
-{
-	class MessageSession;
-	class Message;
-}
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxCLEntry;
+	class ClientConnection;
+
+	class GlooxMessage : public QObject
+					   , public IMessage
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxCLEntry;
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage)
 
-					class GlooxMessage : public QObject
-									   , public IMessage
-					{
-						Q_OBJECT
+		MessageType Type_;
+		Direction Direction_;
+		QString BareJID_;
+		QString Variant_;
+		QXmppMessage Message_;
+		ClientConnection *Connection_;
+	public:
+		GlooxMessage (IMessage::MessageType type,
+				IMessage::Direction direction,
+				const QString& jid,
+				const QString& variant,
+				ClientConnection *conn);
+		GlooxMessage (const QXmppMessage& msg,
+				ClientConnection *conn);
 
-						MessageType Type_;
-						Direction Direction_;
-						GlooxCLEntry *Entry_;
-						QString Body_;
-						QString Variant_;
-						gloox::MessageSession *Session_;
-						QDateTime DateTime_;
-					public:
-						GlooxMessage (IMessage::MessageType type,
-								IMessage::Direction direction,
-								GlooxCLEntry *entry,
-								gloox::MessageSession *session);
-						GlooxMessage (const gloox::Message& msg,
-								GlooxCLEntry *entry,
-								gloox::MessageSession *session);
-
-						QObject* GetObject ();
-						void Send ();
-						Direction GetDirection () const;
-						MessageType GetMessageType () const;
-						ICLEntry* OtherPart () const;
-						QString GetOtherVariant () const;
-						QString GetBody () const;
-						void SetBody (const QString&);
-						QDateTime GetDateTime () const;
-						void SetDateTime (const QDateTime&);
-					};
-				}
-			}
-		}
-	}
+		QObject* GetObject ();
+		void Send ();
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
+		QObject* OtherPart () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString&);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime&);
+	};
+}
+}
+}
+}
 }
 
 #endif

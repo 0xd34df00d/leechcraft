@@ -18,107 +18,126 @@
 
 #include "glooxmessage.h"
 #include <QtDebug>
-#include <gloox/messagesession.h>
-#include <gloox/message.h>
+#include <QXmppClient.h>
 #include "glooxclentry.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	GlooxMessage::GlooxMessage (IMessage::MessageType type,
+			IMessage::Direction dir,
+			const QString& jid,
+			const QString& variant,
+			ClientConnection *conn)
+	: Type_ (type)
+	, Direction_ (dir)
+	, Connection_ (conn)
+	, BareJID_ (jid)
+	, Variant_ (variant)
 	{
-		namespace Azoth
+		const QString& remoteJid = variant.isEmpty () ?
+				jid :
+				jid + "/" + variant;
+		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
+		Message_.setStamp (QDateTime::currentDateTime ());
+	}
+
+	GlooxMessage::GlooxMessage (const QXmppMessage& message,
+			ClientConnection *conn)
+	: Type_ (MTChatMessage)
+	, Direction_ (DIn)
+	, Message_ (message)
+	, Connection_ (conn)
+	{
+		const QStringList& split = message.from ().split ('/', QString::SkipEmptyParts);
+		BareJID_ = split.at (0);
+		Variant_ = split.value (1);
+		if (!Message_.stamp ().isValid ())
+			Message_.setStamp (QDateTime::currentDateTime ());
+	}
+
+	QObject* GlooxMessage::GetObject ()
+	{
+		return this;
+	}
+
+	void GlooxMessage::Send ()
+	{
+		if (Direction_ == DIn)
 		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					GlooxMessage::GlooxMessage (IMessage::MessageType type,
-							IMessage::Direction direction,
-							GlooxCLEntry *entry,
-							gloox::MessageSession *session)
-					: Type_ (type)
-					, Direction_ (direction)
-					, Entry_ (entry)
-					, Variant_ (QString::fromUtf8 (session->target ().resource ().c_str ()))
-					, Session_ (session)
-					{
-					}
+			qWarning () << Q_FUNC_INFO
+					<< "tried to send incoming message";
+			return;
+		}
 
-					GlooxMessage::GlooxMessage (const gloox::Message& message,
-							GlooxCLEntry *entry,
-							gloox::MessageSession *session)
-					: Type_ (MTChat)
-					, Direction_ (DIn)
-					, Entry_ (entry)
-					, Body_ (QString::fromUtf8 (message.body ().c_str ()))
-					, Variant_ (QString::fromUtf8 (session->target ().resource ().c_str ()))
-					, Session_ (session)
-					{
-					}
-
-					QObject* GlooxMessage::GetObject ()
-					{
-						return this;
-					}
-
-					void GlooxMessage::Send ()
-					{
-						if (Direction_ == DIn)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "tried to send incoming message";
-							return;
-						}
-
-						switch (Type_)
-						{
-						case MTChat:
-							Session_->send (Body_.toUtf8 ().constData (), std::string ());
-							return;
-						}
-					}
-
-					IMessage::Direction GlooxMessage::GetDirection () const
-					{
-						return Direction_;
-					}
-
-					IMessage::MessageType GlooxMessage::GetMessageType () const
-					{
-						return Type_;
-					}
-
-					ICLEntry* GlooxMessage::OtherPart () const
-					{
-						return Entry_;
-					}
-
-					QString GlooxMessage::GetOtherVariant () const
-					{
-						return Variant_;
-					}
-
-					QString GlooxMessage::GetBody () const
-					{
-						return Body_;
-					}
-
-					void GlooxMessage::SetBody (const QString& body)
-					{
-						Body_ = body;
-					}
-
-					QDateTime GlooxMessage::GetDateTime () const
-					{
-						return DateTime_;
-					}
-
-					void GlooxMessage::SetDateTime (const QDateTime& dateTime)
-					{
-						DateTime_ = dateTime;
-					}
-				}
-			}
+		switch (Type_)
+		{
+		case MTChatMessage:
+		case MTMUCMessage:
+			Connection_->GetClient ()->sendPacket (Message_);
+			return;
+		case MTServiceMessage:
+			qWarning () << Q_FUNC_INFO
+					<< this
+					<< "cannot send a service message";
+			break;
 		}
 	}
+
+	IMessage::Direction GlooxMessage::GetDirection () const
+	{
+		return Direction_;
+	}
+
+	IMessage::MessageType GlooxMessage::GetMessageType () const
+	{
+		return Type_;
+	}
+
+	IMessage::MessageSubType GlooxMessage::GetMessageSubType () const
+	{
+		return MSTOther;
+	}
+
+	QObject* GlooxMessage::OtherPart () const
+	{
+		return Connection_->GetCLEntry (BareJID_, Variant_);
+	}
+
+	QString GlooxMessage::GetOtherVariant () const
+	{
+		return Variant_;
+	}
+
+	QString GlooxMessage::GetBody () const
+	{
+		return Message_.body ();
+	}
+
+	void GlooxMessage::SetBody (const QString& body)
+	{
+		Message_.setBody (body);
+	}
+
+	QDateTime GlooxMessage::GetDateTime () const
+	{
+		return Message_.stamp ();
+	}
+
+	void GlooxMessage::SetDateTime (const QDateTime& dateTime)
+	{
+		Message_.setStamp (dateTime);
+	}
+}
+}
+}
+}
 }

@@ -108,12 +108,18 @@ namespace LeechCraft
 				ImportXbel_ = new QAction (tr ("Import XBEL..."),
 						this);
 				ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
+
 				ExportXbel_ = new QAction (tr ("Export XBEL..."),
 						this);
 				ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
+
 				CheckFavorites_ = new QAction (tr ("Check favorites..."),
 						this);
 				CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
+
+				ReloadAll_ = new QAction (tr ("Reload all pages"),
+						this);
+				ReloadAll_->setProperty ("ActionIcon", "poshuku_reloadall");
 
 				bool failed = false;
 				if (!Core::Instance ().Init ())
@@ -149,11 +155,16 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleCheckFavorites ()));
+				connect (ReloadAll_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleReloadAll ()));
 
 				const IShortcutProxy *proxy = coreProxy->GetShortcutProxy ();
-				ImportXbel_->setShortcut (proxy->GetShortcut (this, EAImportXbel_));
-				ExportXbel_->setShortcut (proxy->GetShortcut (this, EAExportXbel_));
-				CheckFavorites_->setShortcut (proxy->GetShortcut (this, EACheckFavorites_));
+				ImportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAImportXbel_"));
+				ExportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAExportXbel_"));
+				CheckFavorites_->setShortcuts (proxy->GetShortcuts (this, "EACheckFavorites_"));
+				ReloadAll_->setShortcuts (proxy->GetShortcuts (this, "EAReloadAll_"));
 
 				ToolMenu_ = new QMenu ("Poshuku",
 						Core::Instance ().GetProxy ()->GetMainWindow ());
@@ -256,54 +267,54 @@ namespace LeechCraft
 				return Core::Instance ().MakeWebView ();
 			}
 
-			void Poshuku::SetShortcut (int name, const QKeySequence& sequence)
+			void Poshuku::SetShortcut (const QString& name, const QKeySequences_t& sequences)
 			{
-				if (name <= BrowserWidget::ActionMax)
-					Core::Instance ().SetShortcut (name, sequence);
+				if (name.startsWith ("Browser"))
+					Core::Instance ().SetShortcut (name, sequences);
 				else
 				{
 					QAction *act = 0;
-					switch (name)
-					{
-						case EAImportXbel_:
-							act = ImportXbel_;
-							break;
-						case EAExportXbel_:
-							act = ExportXbel_;
-							break;
-						case EACheckFavorites_:
-							act = CheckFavorites_;
-							break;
-					}
+					if (name == "EAImportXbel_")
+						act = ImportXbel_;
+					else if (name == "EAExportXbel_")
+						act = ExportXbel_;
+					else if (name == "EACheckFavorites_")
+						act = CheckFavorites_;
 					if (act)
-						act->setShortcut (sequence);
+						act->setShortcuts (sequences);
 				}
 			}
 
-			QMap<int, LeechCraft::ActionInfo> Poshuku::GetActionInfo () const
+			QMap<QString, ActionInfo> Poshuku::GetActionInfo () const
 			{
 				BrowserWidget bw;
-				QMap<int, LeechCraft::ActionInfo> result = bw.GetActionInfo ();
-				result [EAImportXbel_] = ActionInfo (ImportXbel_->text (),
+				QMap<QString, ActionInfo> result = bw.GetActionInfo ();
+				result ["EAImportXbel_"] = ActionInfo (ImportXbel_->text (),
 						QKeySequence (), ImportXbel_->icon ());
-				result [EAExportXbel_] = ActionInfo (ExportXbel_->text (),
+				result ["EAExportXbel_"] = ActionInfo (ExportXbel_->text (),
 						QKeySequence (), ExportXbel_->icon ());
-				result [EACheckFavorites_] = ActionInfo (CheckFavorites_->text (),
+				result ["EACheckFavorites_"] = ActionInfo (CheckFavorites_->text (),
 						QKeySequence (), CheckFavorites_->icon ());
 				return result;
 			}
 
-			QList<QMenu*> Poshuku::GetToolMenus () const
-			{
-				QList<QMenu*> result;
-				result << ToolMenu_;
-				return result;
-			}
-
-			QList<QAction*> Poshuku::GetToolActions () const
+			QList<QAction*> Poshuku::GetActions (ActionsEmbedPlace place) const
 			{
 				QList<QAction*> result;
-				result << CheckFavorites_;
+
+				switch (place)
+				{
+				case AEPToolsMenu:
+					result << CheckFavorites_;
+					result << ToolMenu_->menuAction ();
+					break;
+				case AEPCommonContextMenu:
+					result << ReloadAll_;
+					break;
+				default:
+					break;
+				}
+
 				return result;
 			}
 
@@ -435,7 +446,6 @@ namespace LeechCraft
 						XmlSettingsManager::Instance ()->property ("CursiveFont").value<QFont> ().family ());
 				QWebSettings::globalSettings ()->setFontFamily (QWebSettings::FantasyFont,
 						XmlSettingsManager::Instance ()->property ("FantasyFont").value<QFont> ().family ());
-
 				QWebSettings::globalSettings ()->setFontSize (QWebSettings::MinimumFontSize,
 						XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
 				QWebSettings::globalSettings ()->setFontSize (QWebSettings::DefaultFontSize,
@@ -469,9 +479,9 @@ namespace LeechCraft
 			void Poshuku::developerExtrasChanged ()
 			{
 				bool enabled = XmlSettingsManager::Instance ()->
-					property ("DeveloperExtrasEnabled").toBool ();
+						property ("DeveloperExtrasEnabled").toBool ();
 				QWebSettings::globalSettings ()->
-					setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
+						setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
 				if (enabled && sender ())
 					QMessageBox::information (Core::Instance ().GetProxy ()->GetMainWindow (),
 							"LeechCraft",
@@ -524,6 +534,11 @@ namespace LeechCraft
 			void Poshuku::handleCheckFavorites ()
 			{
 				Core::Instance ().CheckFavorites ();
+			}
+
+			void Poshuku::handleReloadAll ()
+			{
+				Core::Instance ().ReloadAll ();
 			}
 		};
 	};

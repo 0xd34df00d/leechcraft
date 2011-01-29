@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,18 +28,8 @@ class QToolBar;
  *
  * Implementing this interface means that plugin wants to embed a tab
  * into LeechCraft's main window. IInfo::GetName() would be used as a
- * name for the tab. If your plugin could open/close multiple tabs, have
- * a look at IMultiTabs.
- *
- * Plugin is expected to implement following signals:
- * - changeTabName(QWidget*,const QString&) which changes tab name of
- *   the tab with the given widget.
- * - changeTabIcon(QWidget*,const QIcon&) which changes the icon of the
- *   tab with the given widget.
- * - statusBarChanged(QWidget*,const QString&) notifies that the status
- *   bar message of the given widget is changed. Note that the message
- *   would be updated only if the given widget is visible.
- * - raiseTab(QWidget*) brings the tab to front.
+ * name for the tab. If your plugin needs to open/close multiple tabs,
+ * take a look at IMultiTabs.
  *
  * @sa IMultiTabs
  * @sa IWindow
@@ -71,6 +61,73 @@ public:
 	/** @brief Virtual destructor.
 	 */
 	virtual ~IEmbedTab () {}
+
+	/** @brief This signal is emitted by plugin when it wants to change
+	 * the name of its tab.
+	 *
+	 * The name of the tab is shown in the tab bar of the tab widget.
+	 * It also may be shown in other places and contexts, like in
+	 * LeechCraft title bar when the corresponding tab is active.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget returned by GetTabContents().
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab for which the name should be updated.
+	 * @param[out] name The new name of the tab.
+	 */
+	virtual void changeTabName (QWidget *tabContents, const QString& name) = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to
+	 * associate a new icon with a tab.
+	 *
+	 * You can pass a null icon to clear it.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget returned by GetTabContents().
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab for which the icon should be updated.
+	 * @param[out] icon The new icon of the tab or null icon.
+	 */
+	virtual void changeTabIcon (QWidget *tabContents, const QIcon& icon) = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to set
+	 * new status bar text for a tab.
+	 *
+	 * The text set by this signal would be shown when the tab with
+	 * tabContents is active. To clear the status bar, just emit this
+	 * signal with empty text.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget returned by GetTabContents().
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @note Please note, that user may choose to hide the status bar,
+	 * so no important text should be output this way.
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab for which the status bar text should be
+	 * updated.
+	 * @param[out] text The new status bar text or empty string.
+	 */
+	virtual void statusBarChanged (QWidget *tabContents, const QString& text) = 0;
+
+	/** @brief This signal is emitted by plugin when it wants to make
+	 * the widget with tabContents the currently active one.
+	 *
+	 * The tab is identified by the tabContents, which should be the
+	 * pointer to a widget returned by GetTabContents().
+	 *
+	 * @note This function is expected to be a signal in subclasses.
+	 *
+	 * @param[out] tabContents The pointer to the widget with the
+	 * contents of the tab that needs to be made current.
+	 */
+	virtual void raiseTab (QWidget *widget) = 0;
 };
 
 Q_DECLARE_INTERFACE (IEmbedTab, "org.Deviant.LeechCraft.IEmbedTab/1.0");

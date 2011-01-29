@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,8 @@ namespace LeechCraft
 		{
 			T CurrentID_;
 		public:
-			IDPool ()
-			: CurrentID_ (0)
+			IDPool (const T& id = T ())
+			: CurrentID_ (id)
 			{
 			}
 
@@ -45,6 +45,11 @@ namespace LeechCraft
 			T GetID ()
 			{
 				return CurrentID_++;
+			}
+
+			void SetID (T id)
+			{
+				CurrentID_ = id;
 			}
 
 			void FreeID (T id)

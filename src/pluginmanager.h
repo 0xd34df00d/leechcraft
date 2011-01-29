@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,39 +30,13 @@
 namespace LeechCraft
 {
 	class MainWindow;
+	class PluginTreeBuilder;
+
 	class PluginManager : public QAbstractItemModel
 						, public IPluginsManager
 	{
 		Q_OBJECT
 		Q_INTERFACES (IPluginsManager);
-
-		struct DepTreeItem;
-		typedef boost::shared_ptr<DepTreeItem> DepTreeItem_ptr;
-		struct DepTreeItem
-		{
-			QObject *Plugin_;
-			bool Initialized_;
-			// This plugin depends upon.
-			QMultiMap<QString, DepTreeItem_ptr> Needed_;
-			QMultiMap<QString, DepTreeItem_ptr> Used_;
-			// What depends on this plugin.
-			QList<DepTreeItem_ptr> Belongs_;
-
-			DepTreeItem ();
-			void Print (int = 0);
-		};
-
-		struct Finder
-		{
-			QObject *Object_;
-
-			Finder (QObject*);
-			bool operator() (DepTreeItem_ptr) const;
-		};
-
-		// No plugins depend on these, thus, these's Belongs_ field is
-		// empty.
-		QList<DepTreeItem_ptr> Roots_;
 
 		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
 		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
@@ -76,13 +50,12 @@ namespace LeechCraft
 		PluginsContainer_t AvailablePlugins_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
 
-		typedef QList<PluginsContainer_t::iterator> UnloadQueue_t;
-		UnloadQueue_t UnloadQueue_;
-
 		QStringList Headers_;
 		QIcon DefaultPluginIcon_;
 		QStringList PluginLoadErrors_;
 		mutable QMap<QByteArray, QObject*> PluginID2PluginCache_;
+
+		boost::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
 	public:
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (const QStringList& pluginPaths, QObject *parent = 0);
@@ -114,7 +87,6 @@ namespace LeechCraft
 		QObject* GetObject ();
 
 		QObject* GetProvider (const QString&) const;
-		void Unload (QObject*);
 
 		const QStringList& GetPluginLoadErrors () const;
 	private:
@@ -127,30 +99,6 @@ namespace LeechCraft
 
 		QList<Plugins_t::iterator> FindProviders (const QString&);
 		QList<Plugins_t::iterator> FindProviders (const QSet<QByteArray>&);
-
-		/** Returns dependency item that matches the given object.
-		 */
-		DepTreeItem_ptr GetDependency (QObject *object);
-
-		/** Calculates the deps.
-		 */
-		void CalculateDependencies ();
-		DepTreeItem_ptr CalculateSingle (Plugins_t::iterator);
-		DepTreeItem_ptr CalculateSingle (QObject*, Plugins_t::iterator);
-
-		/** Preinitializes the plugins, pushes second-level plugins to
-		 * first-level ones and calls IInfo::Init() on each one.
-		 */
-		void InitializePlugins ();
-		bool InitializeSingle (DepTreeItem_ptr);
-		void Release (DepTreeItem_ptr);
-		void DumpTree ();
-		DepTreeItem_ptr FindTreeItem (QObject*);
-		PluginsContainer_t::iterator Find (DepTreeItem_ptr);
-		PluginsContainer_t::iterator Find (QObject*);
-		void Unload (PluginsContainer_t::iterator);
-	private slots:
-		void processUnloadQueue ();
 	signals:
 		void pluginInjected (QObject*);
 	};

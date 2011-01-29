@@ -14,6 +14,7 @@ SET (CLEANWEB_SRCS
 	ruleoptiondialog.cpp
 	wizardgenerator.cpp
 	startupfirstpage.cpp
+	subscriptionadddialog.cpp
 	)
 SET (CLEANWEB_HEADERS
 	cleanweb.h
@@ -29,6 +30,7 @@ SET (CLEANWEB_HEADERS
 	ruleoptiondialog.h
 	wizardgenerator.h
 	startupfirstpage.h
+	subscriptionadddialog.h
 	)
 SET (CLEANWEB_FORMS
 	subscriptionsmanager.ui

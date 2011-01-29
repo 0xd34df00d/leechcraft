@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,31 +23,40 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	class GlooxAccountConfigurationDialog : public QDialog
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					class GlooxAccountConfigurationDialog : public QDialog
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Ui::GlooxAccountConfigurationDialog Ui_;
-					public:
-						GlooxAccountConfigurationDialog (QWidget* = 0);
+		Ui::GlooxAccountConfigurationDialog Ui_;
+	public:
+		GlooxAccountConfigurationDialog (QWidget* = 0);
 
-						QString GetJID () const;
-						QString GetNick () const;
-						QString GetResource () const;
-						short GetPriority () const;
-					};
-				}
-			}
-		}
-	}
+		QString GetJID () const;
+		void SetJID (const QString&);
+		QString GetNick () const;
+		void SetNick (const QString&);
+		QString GetResource () const;
+		void SetResource (const QString&);
+		short GetPriority () const;
+		void SetPriority (short);
+
+		QString GetHost () const;
+		void SetHost (const QString&);
+		int GetPort () const;
+		void SetPort (int);
+	};
+}
+}
+}
+}
 }
 
 #endif

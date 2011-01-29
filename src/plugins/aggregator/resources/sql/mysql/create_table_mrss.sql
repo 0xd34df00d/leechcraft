@@ -1,6 +1,6 @@
 CREATE TABLE mrss (
     mrss_id BIGINT PRIMARY KEY, 
-    item_id BIGINT NOT NULL REFERENCES items ON DELETE CASCADE, 
+    item_id BIGINT NOT NULL, 
     url TEXT, 
     size BIGINT, 
     type TEXT, 
@@ -35,3 +35,8 @@ CREATE TABLE mrss (
     item_url TEXT
 ) Engine=InnoDB;
 
+ALTER TABLE mrss ADD 
+  FOREIGN KEY ( item_id ) 
+    REFERENCES items ( item_id )
+      ON DELETE CASCADE 
+      ON UPDATE CASCADE ;

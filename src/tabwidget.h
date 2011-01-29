@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 #include <QTabWidget>
+#include <QPointer>
+#include <QAction>
 #include <QMap>
 
 namespace LeechCraft
@@ -28,13 +30,14 @@ namespace LeechCraft
 		Q_OBJECT
 
 		QMap<int, QWidget*> Widgets_;
-		QList<QAction*> TabBarActions_;
+		QList<QPointer<QAction> > TabBarActions_;
 	public:
 		TabWidget (QWidget* = 0);
 		void SetTooltip (int, QWidget*);
 		int TabAt (const QPoint&) const;
 		void AddAction2TabBar (QAction*);
 		void InsertAction2TabBar (int, QAction*);
+		void InsertAction2TabBar (QAction *before, QAction *action);
 	protected:
 		virtual bool event (QEvent*);
 		virtual void mouseDoubleClickEvent (QMouseEvent*);
@@ -44,6 +47,7 @@ namespace LeechCraft
 		void handleTabBarLocationChanged ();
 		void handleTabBarContextMenu (const QPoint&);
 		void handleMoveHappened (int, int);
+		void handleActionDestroyed ();
 	signals:
 		void moveHappened (int, int);
 		void newTabRequested ();

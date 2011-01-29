@@ -1,6 +1,6 @@
 CREATE TABLE channels (
     channel_id BIGINT PRIMARY KEY, 
-    feed_id BIGINT NOT NULL REFERENCES feeds ON DELETE CASCADE, 
+    feed_id BIGINT NOT NULL, 
     url TEXT, 
     title TEXT, 
     description TEXT, 
@@ -12,3 +12,9 @@ CREATE TABLE channels (
     pixmap BLOB, 
     favicon BLOB 
 ) Engine=InnoDB;
+
+ALTER TABLE channels ADD 
+  FOREIGN KEY ( channel_id ) 
+    REFERENCES feeds ( feed_id )
+      ON DELETE CASCADE 
+      ON UPDATE CASCADE ;

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,10 @@
 
 #ifndef PLUGININTERFACE_DEFAULTHOOKPROXY_H
 #define PLUGININTERFACE_DEFAULTHOOKPROXY_H
-
+#include <QMap>
 #include "interfaces/iinfo.h"
 #include "piconfig.h"
+#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -30,6 +31,8 @@ namespace LeechCraft
 		{
 			bool Cancelled_;
 			QVariant ReturnValue_;
+
+			QMap<QByteArray, QVariant> Name2NewVal_;
 		public:
 			DefaultHookProxy ();
 
@@ -37,6 +40,21 @@ namespace LeechCraft
 			bool IsCancelled () const;
 			const QVariant& GetReturnValue () const;
 			void SetReturnValue (const QVariant&);
+
+			template<typename T>
+			void FillValue (const QByteArray& name, T& val)
+			{
+				if (!Name2NewVal_.contains (name))
+					return;
+
+				const QVariant& newVal = Name2NewVal_ [name];
+				if (!newVal.isValid ())
+					return;
+
+				val = newVal.value<T> ();
+			}
+
+			void SetValue (const QByteArray&, const QVariant&);
 		};
 
 		typedef boost::shared_ptr<DefaultHookProxy> DefaultHookProxy_ptr;

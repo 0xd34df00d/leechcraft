@@ -40,11 +40,6 @@ namespace LeechCraft
 
 			void PasswordRemember::add (const PageFormsData_t& data)
 			{
-				// If there is already some data awaiting for user
-				// response, don't add new one.
-				if (TempData_.size ())
-					return;
-
 				TempData_ = data;
 
 				show ();

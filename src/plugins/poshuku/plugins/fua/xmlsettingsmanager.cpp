@@ -19,27 +19,39 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::Fua;
-
-XmlSettingsManager::XmlSettingsManager ()
+namespace LeechCraft
 {
-	LeechCraft::Util::BaseSettingsManager::Init ();
-}
-
-XmlSettingsManager* XmlSettingsManager::Instance ()
+namespace Plugins
 {
-	static XmlSettingsManager manager;
-	return &manager;
-}
-
-QSettings* XmlSettingsManager::BeginSettings () const
+namespace Poshuku
 {
-	QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_FUA");
-	return settings;
-}
-
-void XmlSettingsManager::EndSettings (QSettings*) const
+namespace Plugins
 {
-}
+namespace Fua
+{
+	XmlSettingsManager::XmlSettingsManager ()
+	{
+		Util::BaseSettingsManager::Init ();
+	}
 
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_FUA");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}
+}
+}
+}

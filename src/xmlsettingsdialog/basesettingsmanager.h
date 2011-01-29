@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <QPointer>
 #include "xsdconfig.h"
 
-#define PROP2CHAR(a) (a.toLatin1 ().constData ())
+#define PROP2CHAR(a) (a.toUtf8 ().constData ())
 
 namespace LeechCraft
 {
@@ -45,7 +45,10 @@ namespace LeechCraft
 			QMap<QByteArray, QPair<QPointer<QObject>, QByteArray> > Properties2Object_;
 			bool Initializing_;
 			QSettings *Settings_;
+		protected:
+			bool ReadAllKeys_;
 		public:
+			BaseSettingsManager (bool readAllKeys = false, QObject* = 0);
 		 /** @brief Initalizes the settings manager.
 		  *
 		  * Loads all settings from the QSettings created by BeginSettings and
@@ -93,7 +96,7 @@ namespace LeechCraft
 				QObject* object, const QByteArray& funcName);
 		 /** @brief Gets a property with default value.
 		  *
-		  * This is a wrapper around standart QObject::property() function.
+		  * This is a wrapper around standard QObject::property() function.
 		  * It checks whether specified property exists, and if so, it
 		  * returns its value, otherwise it creates this property, sets its
 		  * value to def and returns def.
@@ -104,6 +107,32 @@ namespace LeechCraft
 		  * @return Resulting value of the property.
 		  */
 			QVariant Property (const QString& propName, const QVariant& def);
+
+			/** @brief Sets the value directly, without metaproperties system.
+			 *
+			 * This function just plainly calls setValue() on the
+			 * corresponding QSettings object, without all this
+			 * properties machinery.
+			 *
+			 * @param[in] path The key path.
+			 * @param[in] val The value to set.
+			 *
+			 * @sa GetRawValue()
+			 */
+			void SetRawValue (const QString& path, const QVariant& val);
+
+			/** @brief Gets the value that is set directly.
+			 *
+			 * This function plainly returns the value that is set
+			 * previously with SetRawValue().
+			 *
+			 * @param[in] path The key path.
+			 * @param[in] def The default value to return.
+			 * @return The stored value.
+			 *
+			 * @sa SetRawValue()
+			 */
+			QVariant GetRawValue (const QString& path, const QVariant& def = QVariant ()) const;
 		protected:
 			virtual bool event (QEvent*);
 		 /*! @brief Allocates and returns a QSettings object suitable for

@@ -17,95 +17,199 @@
  **********************************************************************/
 
 #include "glooxclentry.h"
+#include <boost/bind.hpp>
 #include <QStringList>
 #include <QtDebug>
-#include <gloox/rosteritem.h>
-#include <gloox/resource.h>
+#include <QXmppClient.h>
+#include <QXmppRosterManager.h>
 #include <interfaces/iaccount.h>
+#include <interfaces/azothcommon.h>
 #include "glooxaccount.h"
+#include "core.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+namespace Xoox
+{
+	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
+	: EntryBase (parent)
+	, BareJID_ (jid)
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					GlooxCLEntry::GlooxCLEntry (gloox::RosterItem *ri, GlooxAccount *parent)
-					: QObject (parent)
-					, ParentAccount_ (qobject_cast<IAccount*> (parent))
-					, ParentAccountObject_ (parent)
-					, RI_ (ri)
-					{
-					}
-
-					QObject* GlooxCLEntry::GetObject ()
-					{
-						return this;
-					}
-
-					IAccount* GlooxCLEntry::GetParentAccount () const
-					{
-						return ParentAccount_;
-					}
-
-					ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
-					{
-						return FPermanentEntry | FSupportsRenames | FIsChat;
-					}
-
-					QString GlooxCLEntry::GetEntryName () const
-					{
-						std::string name = RI_->name ();
-						if (!name.size ())
-							name = RI_->jid ();
-						return QString::fromUtf8 (name.c_str ());
-					}
-
-					void GlooxCLEntry::SetEntryName (const QString& name)
-					{
-						RI_->setName (name.toUtf8 ().constData ());
-						ParentAccount_->Synchronize ();
-					}
-
-					QByteArray GlooxCLEntry::GetEntryID () const
-					{
-						return RI_->jid ().c_str ();
-					}
-
-					QStringList GlooxCLEntry::Groups () const
-					{
-						QStringList result;
-						Q_FOREACH (const std::string& string, RI_->groups ())
-							result << QString::fromUtf8 (string.c_str ());
-						return result;
-					}
-
-					QStringList GlooxCLEntry::Variants () const
-					{
-						QStringList result;
-						gloox::RosterItem::ResourceMap rmap = RI_->resources ();
-						for (gloox::RosterItem::ResourceMap::const_iterator i = rmap.begin (),
-								end = rmap.end (); i != end; ++i)
-							result << QString::fromUtf8 (i->second->message ().c_str ());
-						return result;
-					}
-
-					IMessage* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
-							const QString& variant, const QString& msg)
-					{
-						return ParentAccountObject_->CreateMessage (type, variant, msg, RI_);
-					}
-
-					void GlooxCLEntry::ReemitMessage (IMessage *msg)
-					{
-						emit gotMessage (msg);
-					}
-				}
-			}
-		}
 	}
+
+	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
+	: EntryBase (parent)
+	, ODS_ (ods)
+	, BareJID_ (QString::fromUtf8 (ods->ID_.constData ()))
+	{
+	}
+
+	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
+	{
+		if (ODS_)
+			return ODS_;
+
+		OfflineDataSource_ptr ods (new OfflineDataSource);
+		ods->ID_ = GetEntryID ();
+		ods->Name_ = GetEntryName ();
+		ods->Groups_ = Groups ();
+		ods->AuthStatus_ = GetAuthStatus ();
+
+		return ods;
+	}
+
+	void GlooxCLEntry::Convert2ODS ()
+	{
+		ODS_ = ToOfflineDataSource ();
+		emit availableVariantsChanged (QStringList () << QString ());
+		CurrentStatus_.clear ();
+		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
+	}
+
+	void GlooxCLEntry::UpdateRI (const QXmppRosterIq::Item&)
+	{
+		ODS_.reset ();
+
+		emit availableVariantsChanged (Variants ());
+		emit nameChanged (GetEntryName ());
+	}
+
+	QXmppRosterIq::Item GlooxCLEntry::GetRI () const
+	{
+		return Account_->GetClientConnection ()->GetClient ()->
+				rosterManager ().getRosterEntry (BareJID_);
+	}
+
+	QObject* GlooxCLEntry::GetParentAccount () const
+	{
+		return Account_;
+	}
+
+	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
+	{
+		return FPermanentEntry | FSupportsRenames | FSupportsAuth;
+	}
+
+	ICLEntry::EntryType GlooxCLEntry::GetEntryType () const
+	{
+		return ETChat;
+	}
+
+	QString GlooxCLEntry::GetEntryName () const
+	{
+		if (ODS_)
+			return ODS_->Name_;
+
+		QString name = GetRI ().name ();
+		if (name.isEmpty ())
+			return BareJID_;
+		return name;
+	}
+
+	void GlooxCLEntry::SetEntryName (const QString& name)
+	{
+		if (ODS_)
+			return;
+
+		QXmppRosterIq::Item item = GetRI ();
+		item.setName (name);
+		Account_->GetClientConnection ()->Update (item);
+
+		emit nameChanged (name);
+	}
+
+	QByteArray GlooxCLEntry::GetEntryID () const
+	{
+		if (ODS_)
+			return ODS_->ID_;
+
+		return BareJID_.toUtf8 ();
+	}
+
+	QStringList GlooxCLEntry::Groups () const
+	{
+		if (ODS_)
+			return ODS_->Groups_;
+
+		return GetRI ().groups ().toList ();
+	}
+
+	QStringList GlooxCLEntry::Variants () const
+	{
+		QStringList result;
+
+		if (!ODS_)
+			result << Account_->GetClientConnection ()->
+					GetClient ()->rosterManager ().getResources (BareJID_);
+
+		if (result.isEmpty ())
+			result << QString ();
+
+		return result;
+	}
+
+	QObject* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
+			const QString& variant, const QString& text)
+	{
+		if (ODS_)
+		{
+			// TODO
+			return 0;
+		}
+
+		QObject *msg = Account_->CreateMessage (type, variant, text, GetRI ());
+		AllMessages_ << msg;
+		return msg;
+	}
+
+	AuthStatus GlooxCLEntry::GetAuthStatus () const
+	{
+		if (ODS_)
+			return ODS_->AuthStatus_;
+
+		return static_cast<AuthStatus> (GetRI ().subscriptionType ());
+	}
+
+	void GlooxCLEntry::RevokeAuth (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		Account_->GetClientConnection ()->RevokeSubscription (GetJID (), reason);
+	}
+
+	void GlooxCLEntry::Unsubscribe (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		Account_->GetClientConnection ()->Unsubscribe (GetJID (), reason);;
+	}
+
+	void GlooxCLEntry::RerequestAuth (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		Account_->GetClientConnection ()->Subscribe (GetJID (),
+				reason,
+				GetEntryName (),
+				Groups ());
+	}
+
+	QString GlooxCLEntry::GetJID () const
+	{
+		return BareJID_;
+	}
+}
+}
+}
+}
 }

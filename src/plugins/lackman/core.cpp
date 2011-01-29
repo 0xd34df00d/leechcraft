@@ -25,7 +25,6 @@
 #include <QtDebug>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
-#include <config.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
 #include "packagesmodel.h"
@@ -275,6 +274,8 @@ namespace LeechCraft
 				case PackageInfo::TTranslation:
 					result = Proxy_->GetIcon ("lackman_translation");
 					break;
+				case PackageInfo::TData:
+					result = Proxy_->GetIcon ("lackman_data");
 				}
 				return result;
 			}
@@ -346,6 +347,9 @@ namespace LeechCraft
 					break;
 				case PackageInfo::TTranslation:
 					SafeCD (dir, "translations");
+					break;
+				case PackageInfo::TData:
+					SafeCD (dir, "data");
 					break;
 				}
 				return dir;
@@ -520,6 +524,10 @@ namespace LeechCraft
 #elif defined(Q_WS_WIN)
 				infoEntries += QDir (QApplication::applicationDirPath () + "/share/installed")
 						.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+#elif defined(Q_WS_MAC)
+				infoEntries += QDir (QCoreApplication::applicationDirPath () + "/../installed")
+						.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+
 #endif
 
 				QStringList entries;
@@ -569,8 +577,8 @@ namespace LeechCraft
 								<< "dependency version for"
 								<< info.Dep_.Name_
 								<< "not filled, defaulting to"
-								<< LEECHCRAFT_VERSION;
-						info.Dep_.Version_ = LEECHCRAFT_VERSION;
+								<< Proxy_->GetVersion ();
+						info.Dep_.Version_ = Proxy_->GetVersion ();
 					}
 
 					result << info;
@@ -861,6 +869,57 @@ namespace LeechCraft
 					settings.setValue ("URL", url);
 				}
 				settings.endArray ();
+			}
+
+			void Core::updateAllRequested ()
+			{
+				for (int i = 0, size = ReposModel_->rowCount ();
+						i < size; ++i)
+				{
+					QStandardItem *item = ReposModel_->item (i);
+					QUrl url = item->data ().value<QUrl> ();
+					QStringList components;
+
+					try
+					{
+						int id = Storage_->FindRepo (url);
+						components = Storage_->GetRepo (id).GetComponents ();
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "while trying to get repo components for"
+								<< url
+								<< e.what ();
+						continue;
+					}
+					catch (...)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "general error while trying to get repo components for"
+								<< url;
+						continue;
+					}
+
+					qDebug () << "would update" << url << components;
+					UpdateRepo (url, components);
+				}
+			}
+
+			void Core::upgradeAllRequested ()
+			{
+				for (int i = 0, rows = PackagesModel_->rowCount ();
+						i < rows; ++i)
+				{
+					QModelIndex index = PackagesModel_->index (i, 0);
+					int packageId = PackagesModel_->
+							data (index, PackagesModel::PMRPackageID).toInt ();
+					bool isUpgr = PackagesModel_->
+							data (index, PackagesModel::PMRUpgradable).toBool ();
+
+					if (isUpgr)
+						PendingManager_->ToggleUpdate (packageId, true);
+				}
 			}
 
 			void Core::removeRequested (const QString&, const QModelIndexList& list)

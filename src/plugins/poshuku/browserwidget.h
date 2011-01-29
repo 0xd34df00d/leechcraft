@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 
 class QToolBar;
 class QDataStream;
+class QShortcut;
 
 namespace LeechCraft
 {
@@ -73,6 +74,8 @@ namespace LeechCraft
 				QAction *ReloadPeriodically_;
 				QAction *NotifyWhenFinished_;
 				QAction *RecentlyClosedAction_;
+				QAction *HistoryAction_;
+				QAction *BookmarksAction_;
 				QPoint OnLoadPos_;
 				QMenu *ChangeEncoding_;
 				QMenu *RecentlyClosed_;
@@ -83,37 +86,12 @@ namespace LeechCraft
 				QString PreviousFindText_;
 				bool HtmlMode_;
 				bool Own_;
+				QMap<QString, QList<QAction*> > WindowMenus_;
 
 				static QObject* S_MultiTabsParent_;
 
 				friend class CustomWebView;
 			public:
-				enum Actions
-				{
-					EAAdd2Favorites_,
-					EAFind_,
-					EAPrint_,
-					EAPrintPreview_,
-					EAScreenSave_,
-					EAViewSources_,
-					EAUnused0,
-					EAUnused1,
-					EAZoomIn_,
-					EAZoomOut_,
-					EAZoomReset_,
-					EAUnused2,
-					EAUnused3,
-					EACut_,
-					EACopy_,
-					EAPaste_,
-					EABack_,
-					EAForward_,
-					EAReload_,
-					EAStop_,
-					EARecentlyClosedAction_,
-					ActionMax = 2000
-				};
-
 				BrowserWidget (QWidget* = 0);
 				virtual ~BrowserWidget ();
 				static void SetParentMultiTabs (QObject*);
@@ -134,24 +112,29 @@ namespace LeechCraft
 				void Load (const QString&);
 				void SetHtml (const QString&, const QUrl& = QUrl ());
 				void SetNavBarVisible (bool);
+				void SetEverythingElseVisible (bool);
 				QWidget* Widget ();
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, ActionInfo> GetActionInfo () const;
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
 				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
+				QMap<QString, QList<QAction*> > GetWindowMenus () const;
 				QObject* ParentMultiTabs () const;
 
 				void SetOnLoadScrollPoint (const QPoint&);
 			private:
 				void PrintImpl (bool, QWebFrame*);
 				void SetActualReloadInterval (const QTime&);
+				void SetSplitterSizes (int);
 			public slots:
 				void notificationActionTriggered (int);
 				void focusLineEdit ();
+				void handleShortcutHistory ();
+				void handleShortcutBookmarks ();
 				QWebView* getWebView () const;
 				QLineEdit* getAddressBar () const;
 				QWidget* getSideBar () const;

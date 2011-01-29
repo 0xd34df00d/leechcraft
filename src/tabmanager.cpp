@@ -163,8 +163,8 @@ void TabManager::AddObject (QObject *obj)
 	{
 		try
 		{
-			QString name = ii->GetName ();
-			QIcon icon = ii->GetIcon ();
+			const QString& name = ii->GetName ();
+			const QIcon& icon = ii->GetIcon ();
 			QToolBar *tb = iet->GetToolBar ();
 			QWidget *contents = iet->GetTabContents ();
 
@@ -180,7 +180,10 @@ void TabManager::AddObject (QObject *obj)
 
 				if (XmlSettingsManager::Instance ()->
 						Property (QString ("Hide%1").arg (name), false).toBool ())
-					remove (TabWidget_->indexOf (contents));
+					QMetaObject::invokeMethod (this,
+							"removeByContents",
+							Qt::QueuedConnection,
+							Q_ARG (QWidget*, contents));
 			}
 		}
 		catch (const std::exception& e)
@@ -210,7 +213,7 @@ void TabManager::add (const QString& name, QWidget *contents,
 	if (XmlSettingsManager::Instance ()->
 			property ("OpenTabNext").toBool ())
 	{
-		int current = TabWidget_->currentIndex ();
+		const int current = TabWidget_->currentIndex ();
 		OriginalTabNames_.insert (current + 1, name);
 		TabWidget_->insertTab (current + 1,
 				contents,
@@ -232,7 +235,7 @@ void TabManager::remove (QWidget *contents)
 	if (TabWidget_->count () == 1)
 		return;
 
-	int tabNumber = FindTabForWidget (contents);
+	const int tabNumber = FindTabForWidget (contents);
 	if (tabNumber == -1)
 		return;
 	TabWidget_->removeTab (tabNumber);
@@ -302,6 +305,11 @@ void TabManager::remove (int index)
 	}
 }
 
+void TabManager::removeByContents (QWidget *contents)
+{
+	remove (TabWidget_->indexOf (contents));
+}
+
 void TabManager::changeTabName (QWidget *contents, const QString& name)
 {
 	int tabNumber = FindTabForWidget (contents);
@@ -351,6 +359,8 @@ void TabManager::handleCurrentChanged (int index)
 		QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
 		Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
 		Menus_ = menus;
+
+		imtw->TabMadeCurrent ();
 	}
 	else
 		Menus_.clear ();
@@ -374,7 +384,7 @@ void TabManager::handleCloseAllButCurrent ()
 		return;
 	}
 
-	int cur = TabWidget_->TabAt (act->data ().value<QPoint> ());
+	int cur = TabWidget_->TabAt (act->property ("_Core/ClickPos").value<QPoint> ());
 	for (int i = TabWidget_->count () - 1; i >= 0; --i)
 		if (i != cur)
 			remove (i);

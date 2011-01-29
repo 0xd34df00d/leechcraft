@@ -36,22 +36,22 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA</name>
     <message>
-        <location filename="fua.cpp" line="60"/>
+        <location filename="fua.cpp" line="61"/>
         <source>Domain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="61"/>
+        <location filename="fua.cpp" line="62"/>
         <source>Agent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="62"/>
+        <location filename="fua.cpp" line="63"/>
         <source>Identification string</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="101"/>
+        <location filename="fua.cpp" line="107"/>
         <source>Allows to set fake user agents for different sites.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -76,6 +76,14 @@
     <message>
         <location filename="settings.ui" line="65"/>
         <source>Changes would be applied immediately</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>poshukufuasettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>FUA settings</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

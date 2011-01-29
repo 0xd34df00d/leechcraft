@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,21 @@ namespace LeechCraft
 		{
 			typedef quint64 IDType_t;
 			typedef QList<IDType_t> ids_t;
+			enum PoolType
+			{
+				PTFeed,
+				PTChannel,
+				PTItem,
+				PTFeedSettings,
+				PTEnclosure,
+				PTMRSSEntry,
+				PTMRSSThumbnail,
+				PTMRSSCredit,
+				PTMRSSComment,
+				PTMRSSPeerLink,
+				PTMRSSScene,
+				PTMAX
+			};
 		};
 	};
 };

@@ -26,7 +26,7 @@ Settings::Settings ()
 #ifdef Q_WS_WIN
 	ConfigDir_ = QCoreApplication::applicationDirPath () + "/leechcraft/";
 #elif defined (Q_WS_MAC)
-	ConfigDir_ = QCoreApplication::applicationDirPath () + "../Resources/config";
+	ConfigDir_ = QCoreApplication::applicationDirPath () + "/../Resources/config";
 #else
 	ConfigDir_ = "/etc/leechcraft/";
 #endif

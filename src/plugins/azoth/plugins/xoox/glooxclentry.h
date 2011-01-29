@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,62 +18,90 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXCLENTRY_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <interfaces/iclentry.h>
-
-namespace gloox
-{
-	class RosterItem;
-	class MessageSession;
-}
+#include <QStringList>
+#include <QXmppRosterIq.h>
+#include <interfaces/iauthable.h>
+#include "entrybase.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+class IAccount;
+
+namespace Xoox
+{
+	class GlooxAccount;
+
+	class GlooxCLEntry : public EntryBase
+					   , public IAuthable
 	{
-		namespace Azoth
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAuthable);
+
+		QString BareJID_;
+	public:
+		struct OfflineDataSource
 		{
-			namespace Plugins
-			{
-				class IAccount;
+			QByteArray ID_;
+			QString Name_;
+			QStringList Groups_;
+			AuthStatus AuthStatus_;
+		};
+		typedef boost::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
+	private:
+		OfflineDataSource_ptr ODS_;
 
-				namespace Xoox
-				{
-					class GlooxAccount;
+		struct MessageQueueItem
+		{
+			IMessage::MessageType Type_;
+			QString Variant_;
+			QString Text_;
+			QDateTime DateTime_;
+		};
+		QList<MessageQueueItem> MessageQueue_;
+	public:
+		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
+		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
 
-					class GlooxCLEntry : public QObject
-									   , public ICLEntry
-					{
-						Q_OBJECT
+		OfflineDataSource_ptr ToOfflineDataSource () const;
+		void Convert2ODS ();
 
-						Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
+		void UpdateRI (const QXmppRosterIq::Item&);
+		QXmppRosterIq::Item GetRI () const;
 
-						IAccount *ParentAccount_;
-						GlooxAccount *ParentAccountObject_;
-						gloox::RosterItem *RI_;
-					public:
-						GlooxCLEntry (gloox::RosterItem*, GlooxAccount*);
+		// ICLEntry
+		QObject* GetParentAccount () const;
+		Features GetEntryFeatures () const;
+		EntryType GetEntryType () const;
+		QString GetEntryName () const;
+		void SetEntryName (const QString&);
+		/** Entry ID for GlooxCLEntry is its jid.
+		 */
+		QByteArray GetEntryID () const;
+		QStringList Groups () const;
+		QStringList Variants () const;
+		QObject* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&);
 
-						// ICLEntry
-						QObject* GetObject ();
-						IAccount* GetParentAccount () const;
-						Features GetEntryFeatures () const;
-						QString GetEntryName () const;
-						void SetEntryName (const QString&);
-						QByteArray GetEntryID () const;
-						QStringList Groups () const;
-						QStringList Variants () const;
-						IMessage* CreateMessage (IMessage::MessageType,
-								const QString&, const QString&);
+		// IAuthable
+		AuthStatus GetAuthStatus () const;
+		void RevokeAuth (const QString&);
+		void Unsubscribe (const QString&);
+		void RerequestAuth (const QString&);
 
-						void ReemitMessage (IMessage*);
-					signals:
-						void gotMessage (IMessage*);
-					};
-				}
-			}
-		}
-	}
+		QString GetJID () const;
+	};
+}
+}
+}
+}
 }
 
 #endif

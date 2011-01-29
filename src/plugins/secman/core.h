@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace LeechCraft
 				 * @param[in] object The storage plugin instance object.
 				 */
 				void AddStoragePlugin (QObject *object);
-				void Store (const QList<QByteArray>&, const QList<QVariantList>&, bool);
+				void Store (const QList<QByteArray>&, const QList<QVariantList>&, bool, bool);
 				QList<QVariantList> Load (const QList<QByteArray>&, bool);
 
 				QObject* GetStoragePlugin () const;

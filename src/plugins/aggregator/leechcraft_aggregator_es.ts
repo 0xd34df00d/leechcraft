@@ -378,10 +378,6 @@
         <translation>Archivos del agergador de intercambos (*.lcae);;Todos los archivos(*.*)</translation>
     </message>
     <message>
-        <source>%1 unread messages in %2 channels.</source>
-        <translation>%1 mensajes no leídos en %2 canales.</translation>
-    </message>
-    <message>
         <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -398,6 +394,20 @@
         <source>Aggregator</source>
         <translation>Aggregator</translation>
     </message>
+    <message numerus="yes">
+        <source>%n unread message(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>in %n channel(s).</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::ChannelsModel</name>
@@ -413,17 +423,17 @@
         <source>Last build</source>
         <translation>Ultima construcción</translation>
     </message>
+    <message>
+        <source>&lt;strong&gt;Author&lt;/strong&gt;: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Tags&lt;/b&gt;: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::Core</name>
-    <message>
-        <source>Job for feed %1 wasn&apos;t delegated.</source>
-        <translation>Trabajo para el feed %1 no fue delegado.</translation>
-    </message>
-    <message>
-        <source>Could not update feed settings</source>
-        <translation>No se pudieron actualizar los ajustes del feed</translation>
-    </message>
     <message>
         <source>Could not update feed</source>
         <translation>No se pudo cargar el feed</translation>
@@ -469,20 +479,12 @@
         <translation>Error desconocido para:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <source>External file %1 wasn&apos;t delegated.</source>
-        <translation>El archivo externo %1 no fue delegado.</translation>
-    </message>
-    <message>
         <source>Could not mark channel</source>
         <translation>No se pudo marcar el canal</translation>
     </message>
     <message>
         <source>Import error</source>
         <translation>Error de importación</translation>
-    </message>
-    <message>
-        <source>Task for OPML %1 wasn&apos;t delegated.</source>
-        <translation>La tarea para OPML %1 no fue delegado.</translation>
     </message>
     <message>
         <source>Storage error</source>
@@ -587,6 +589,22 @@
             <numerusform></numerusform>
         </translation>
     </message>
+    <message>
+        <source>Could not find plugin to download OPML %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not find plugin to download feed %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not find plugin to download external file %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not find plugin for feed with URL %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::Export2FB2Dialog</name>
@@ -616,6 +634,10 @@
             <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>FB2 export complete.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -681,6 +703,39 @@
     <message>
         <source>Date</source>
         <translation>Fecha</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Author&lt;/b&gt;: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Categories&lt;/b&gt;: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>%n comment(s)</source>
+        <translation type="unfinished">
+            <numerusform>%n comentario</numerusform>
+            <numerusform>%n comentarios</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n enclosure(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n MediaRSS entry(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>RSS with comments is available</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -898,6 +953,18 @@
             <numerusform></numerusform>
         </translation>
     </message>
+    <message>
+        <source>Items categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mark item as read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open in new tab</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Aggregator::RegexpMatcherManager</name>
@@ -1090,6 +1157,149 @@
     <message>
         <source>URL</source>
         <translation>URL</translation>
+    </message>
+    <message>
+        <source>Select all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deselect all</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>aggregatorsettings</name>
+    <message>
+        <source>General settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Be silent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always use external browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show unread items on top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Notifications on feed update:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>only about new items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>don&apos;t show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional tags for comment feeds:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group channels by tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show unread channels in summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show icon in tray when there are unread items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show items category selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show navigation bar when showing the news item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Items list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font for unread:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use color to mark unread</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use colors from the palette for read/unread items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feeds handling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update feeds on startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update interval:</source>
+        <translation type="unfinished">Intervalo de actualización:</translation>
+    </message>
+    <message>
+        <source> min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatic downloading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download directory for enclosures:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Store</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Items per channel:</source>
+        <translation type="unfinished">Objetos por canal:</translation>
+    </message>
+    <message>
+        <source>Store items for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Storage</source>
+        <translation type="unfinished">Almacenamiento</translation>
     </message>
 </context>
 </TS>

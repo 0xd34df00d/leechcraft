@@ -58,10 +58,15 @@ namespace LeechCraft
 
 			void PendingManager::ToggleUpdate (int id, bool enable)
 			{
+				if (ScheduledForAction_ [AUpdate].contains (id))
+					return;
+
 				if (enable)
 					EnablePackageInto (id, AUpdate);
 				else
 					DisablePackageFrom (id, AUpdate);
+
+				emit packageUpdateToggled (id, enable);
 			}
 
 			QSet<int> PendingManager::GetPendingInstall () const

@@ -29,20 +29,6 @@ namespace LeechCraft
 		setObjectName ("org_LeechCraft_MainWindow_CentralTabBar");
 	}
 
-	QSize TabBar::tabSizeHint (int index) const
-	{
-		QSize result = QTabBar::tabSizeHint (index);
-		if (XmlSettingsManager::Instance ()->
-				property ("TrySmarterTabsWidth").toBool ())
-		{
-			int maxWidth = parentWidget ()->width () / count ();
-			if (maxWidth < 50)
-				maxWidth = 50;
-			result.setWidth (std::min (maxWidth, result.width ()));
-		}
-		return result;
-	}
-
 	void TabBar::tabInserted (int idx)
 	{
 		QTabBar::tabInserted (idx);

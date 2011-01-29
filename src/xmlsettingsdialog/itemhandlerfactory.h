@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ namespace LeechCraft
 		 *
 		 * When laying out the widgets in the visual representation,
 		 * widget should be used as a parent widget. It's guaranteed to
-		 * have QFormLayout as layout() set.
+		 * have QGridLayout as layout() set.
 		 *
 		 * The widget that is named after property name (defined in the
 		 * element) would be used later in SetValue().

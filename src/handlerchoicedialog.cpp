@@ -79,7 +79,7 @@ namespace LeechCraft
 		but->setProperty ("AddedAs", "IDownload");
 		but->setProperty ("PluginName", name);
 
-		if (!Buttons_->buttons ().size ())
+		if (Buttons_->buttons ().isEmpty ())
 			but->setChecked (true);
 
 		Buttons_->addButton (but);
@@ -127,7 +127,7 @@ namespace LeechCraft
 		but->setProperty ("AddedAs", "IEntityHandler");
 		but->setProperty ("PluginName", name);
 
-		if (!Buttons_->buttons ().size ())
+		if (Buttons_->buttons ().isEmpty ())
 			but->setChecked (true);
 
 		Buttons_->addButton (but);
@@ -144,47 +144,36 @@ namespace LeechCraft
 
 	IDownload* HandlerChoiceDialog::GetDownload ()
 	{
-		IDownload *result = 0;
 		if (!Buttons_->checkedButton () ||
 				Buttons_->checkedButton ()->
 					property ("AddedAs").toString () != "IDownload")
 			return 0;
-		downloaders_t::iterator rit = Downloaders_.find (Buttons_->
+
+		const downloaders_t::const_iterator& rit = Downloaders_.find (Buttons_->
 				checkedButton ()->text ());
-		if (rit != Downloaders_.end ())
-			result = rit->second;
-		return result;
+		return rit != Downloaders_.end () ? rit->second : 0;
 	}
 
 	IDownload* HandlerChoiceDialog::GetFirstDownload ()
 	{
-		if (Downloaders_.size ())
-			return Downloaders_.begin ()->second;
-		else
-			return 0;
+		return Downloaders_.empty () ? 0 : Downloaders_.begin ()->second;
 	}
 
 	IEntityHandler* HandlerChoiceDialog::GetEntityHandler ()
 	{
-		IEntityHandler *result = 0;
-		handlers_t::iterator rit = Handlers_.find (Buttons_->
+		const handlers_t::const_iterator& rit = Handlers_.find (Buttons_->
 				checkedButton ()->text ());
-		if (rit != Handlers_.end ())
-			result = rit->second;
-		return result;
+		return rit != Handlers_.end () ? rit->second : 0;
 	}
 
 	IEntityHandler* HandlerChoiceDialog::GetFirstEntityHandler ()
 	{
-		if (Handlers_.size ())
-			return Handlers_.begin ()->second;
-		else
-			return 0;
+		return Handlers_.empty () ? 0 : Handlers_.begin ()->second;
 	}
 
 	QString HandlerChoiceDialog::GetFilename () const
 	{
-		QString name = Buttons_->checkedButton ()->
+		const QString& name = Buttons_->checkedButton ()->
 			property ("PluginName").toString ();
 
 		QString result;
@@ -228,9 +217,10 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());
 		settings.beginGroup ("SavePaths");
-		QStringList pluginTexts = settings.value (plugin).toStringList ();
+		
+		const QStringList& l = settings.value (plugin).toStringList ();
 		settings.endGroup ();
-		return pluginTexts;
+		return l;
 	}
 
 	void HandlerChoiceDialog::populateLocationsBox ()
@@ -254,32 +244,35 @@ namespace LeechCraft
 		if (Suggestion_.size ())
 			Ui_.LocationsBox_->addItem (Suggestion_);
 
-		QString plugin = checked->property ("PluginName").toString ();
-		QStringList pluginTexts = GetPluginSavePaths (plugin).mid (0, 7);
+		const QString& plugin = checked->property ("PluginName").toString ();
+		const QStringList& pluginTexts = GetPluginSavePaths (plugin).mid (0, 7);
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());
 		settings.beginGroup ("SavePaths");
 		QStringList otherPlugins = settings.childKeys ();
 		settings.endGroup ();
-		QStringList otherTexts;
+
 		otherPlugins.removeAll (plugin);
 		QList<QStringList> otherTextsList;
-		Q_FOREACH (QString otherPlugin, otherPlugins)
+		Q_FOREACH (const QString& otherPlugin, otherPlugins)
 			otherTextsList.append (GetPluginSavePaths (otherPlugin));
 
-		for (int i = 0; i < otherTextsList.size (); ++i)
-			Q_FOREACH (QString ptext, pluginTexts)
-				otherTextsList [i].removeAll (ptext);
+		for (QList<QStringList>::iterator it = otherTextsList.begin (), end = otherTextsList.end ();
+			 it != end; ++it)
+			Q_FOREACH (const QString& ptext, pluginTexts)
+				it->removeAll (ptext);
 
+		QStringList otherTexts;
 		while (otherTexts.size () < 16)
 		{
 			bool added = false;
-			for (int i = 0; i < otherTextsList.size (); ++i)
+			for (QList<QStringList>::iterator it = otherTextsList.begin (), end = otherTextsList.end ();
+				 it != end; ++it)
 			{
-				if (otherTextsList.at (i).size ())
+				if (!it->isEmpty ())
 				{
-					otherTexts += otherTextsList [i].takeFirst ();
+					otherTexts += it->takeFirst ();
 					added = true;
 				}
 			}
@@ -287,27 +280,27 @@ namespace LeechCraft
 				break;
 		}
 
-		if (pluginTexts.size ())
+		if (!pluginTexts.isEmpty ())
 		{
 			Ui_.LocationsBox_->addItems (pluginTexts);
-			if (otherTexts.size ())
+			if (!otherTexts.isEmpty ())
 				Ui_.LocationsBox_->insertSeparator (pluginTexts.size () + 2);
 		}
 		Ui_.LocationsBox_->addItems (otherTexts);
 
-		if (Suggestion_.size ())
+		if (!Suggestion_.isEmpty ())
 			Ui_.LocationsBox_->setCurrentIndex (1);
 		else
 		{
-			QString prev = settings.value ("PreviousEntitySavePath").toString ();
-			if (prev.size () &&
+			const QString& prev = settings.value ("PreviousEntitySavePath").toString ();
+			if (!prev.isEmpty () &&
 					pluginTexts.contains (prev))
 			{
-				int pos = Ui_.LocationsBox_->findText (prev);
+				const int pos = Ui_.LocationsBox_->findText (prev);
 				if (pos != -1)
 					Ui_.LocationsBox_->setCurrentIndex (pos);
 			}
-			else if (pluginTexts.size ())
+			else if (!pluginTexts.isEmpty ())
 				Ui_.LocationsBox_->setCurrentIndex (2);
 		}
 	}

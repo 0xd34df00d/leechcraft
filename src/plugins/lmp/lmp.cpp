@@ -126,10 +126,13 @@ void LMP::Handle (LeechCraft::Entity e)
 	Core::Instance ().Handle (e);
 }
 
-QList<QAction*> LMP::GetActions () const
+QList<QAction*> LMP::GetActions (ActionsEmbedPlace place) const
 {
 	QList<QAction*> result;
-	result += Core::Instance ().GetShowAction ();
+
+	if (place == AEPCommonContextMenu)
+		result += Core::Instance ().GetShowAction ();
+
 	return result;
 }
 

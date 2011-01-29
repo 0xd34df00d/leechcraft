@@ -78,7 +78,6 @@ namespace LeechCraft
 
 			void Core::Release ()
 			{
-				SyncPools ();
 				delete JobHolderRepresentation_;
 				delete ChannelsFilterModel_;
 				delete ChannelsModel_;
@@ -98,18 +97,9 @@ namespace LeechCraft
 				return Proxy_;
 			}
 
-			Util::IDPool<IDType_t>& Core::GetPool (Core::PoolType type)
+			Util::IDPool<IDType_t>& Core::GetPool (PoolType type)
 			{
 				return Pools_ [type];
-			}
-
-			void Core::SyncPools () const
-			{
-				QList<PoolType> types = Pools_.keys ();
-				Q_FOREACH (PoolType type, types)
-					XmlSettingsManager::Instance ()->
-							setProperty (QString ("PoolState_%1").arg (type).toLatin1 (),
-									Pools_ [type].SaveState ());
 			}
 
 			bool Core::CouldHandle (const LeechCraft::Entity& e)
@@ -282,15 +272,6 @@ namespace LeechCraft
 					return false;
 				}
 
-				for (int type = 0; type < PTMAX; ++type)
-				{
-					Util::IDPool<IDType_t> pool;
-					QByteArray state = XmlSettingsManager::Instance ()->
-							property (QString ("PoolState_%1").arg (type).toLatin1 ()).toByteArray ();
-					pool.LoadState (state);
-					Pools_ [static_cast<PoolType> (type)] = pool;
-				}
-
 				ChannelsModel_ = new ChannelsModel ();
 				ChannelsFilterModel_ = new ChannelsFilterModel ();
 				ChannelsFilterModel_->setSourceModel (ChannelsModel_);
@@ -360,6 +341,13 @@ namespace LeechCraft
 									ChannelsModel_,
 									_1));
 					}
+
+					for (int type = 0; type < PTMAX; ++type)
+					{
+						Util::IDPool<IDType_t> pool;
+						pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
+						Pools_ [static_cast<PoolType> (type)] = pool;
+					}
 				}
 
 				ReprWidget_ = new ItemsWidget ();
@@ -386,15 +374,19 @@ namespace LeechCraft
 						SLOT (updateFeeds ()));
 
 				int updateDiff = lastUpdated.secsTo (currentDateTime);
-				if ((XmlSettingsManager::Instance ()->
-							property ("UpdateOnStartup").toBool ()) ||
-					(updateDiff > XmlSettingsManager::Instance ()->
-							property ("UpdateInterval").toInt () * 60))
-					QTimer::singleShot (7000,
-							this,
-							SLOT (updateFeeds ()));
-				else
-					UpdateTimer_->start (updateDiff * 1000);
+				int interval = XmlSettingsManager::Instance ()->
+					property ("UpdateInterval").toInt ();
+				if (interval)
+				{
+					if ((XmlSettingsManager::Instance ()->
+								property ("UpdateOnStartup").toBool ()) ||
+							(updateDiff > interval * 60))
+						QTimer::singleShot (7000,
+								this,
+								SLOT (updateFeeds ()));
+					else
+						UpdateTimer_->start (updateDiff * 1000);
+				}
 
 				QTimer *saveTimer = new QTimer (this);
 				saveTimer->start (60 * 1000);
@@ -412,19 +404,20 @@ namespace LeechCraft
 				return true;
 			}
 
-			int Core::AddFeed (const QString& url, const QString& tagString)
+			void Core::AddFeed (const QString& url, const QString& tagString)
 			{
-				return AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
+				AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 			}
 
-			int Core::AddFeed (const QString& url, const QStringList& tags)
+			void Core::AddFeed (const QString& url, const QStringList& tags,
+					boost::shared_ptr<Feed::FeedSettings> fs)
 			{
 				if (StorageBackend_->FindFeed (url) != static_cast<IDType_t> (-1))
 				{
 					ErrorNotification (tr ("Feed addition error"),
 							tr ("The feed %1 is already added")
 							.arg (url));
-					return -1;
+					return;
 				}
 
 				QString name = LeechCraft::Util::GetTemporaryName ();
@@ -445,12 +438,9 @@ namespace LeechCraft
 					PendingJob::RFeedAdded,
 					url,
 					name,
-					tagIds
+					tagIds,
+					fs
 				};
-
-				Feed_ptr feed (new Feed ());
-				feed->URL_ = pj.URL_;
-				StorageBackend_->AddFeed (feed);
 
 				int id = -1;
 				QObject *pr;
@@ -461,12 +451,11 @@ namespace LeechCraft
 							tr ("Could not find plugin to download feed %1.")
 								.arg (url),
 							false);
-					return -1;
+					return;
 				}
 
 				HandleProvider (pr, id);
 				PendingJobs_ [id] = pj;
-				return feed->FeedID_;
 			}
 
 			void Core::RemoveFeed (const QModelIndex& index)
@@ -491,7 +480,10 @@ namespace LeechCraft
 				StorageBackend_->GetChannels (shorts, channel.FeedID_);
 
 				for (size_t i = 0, size = shorts.size (); i < size; ++i)
+				{
 					ChannelsModel_->RemoveChannel (shorts [i]);
+					emit channelRemoved (shorts [i].ChannelID_);
+				}
 				StorageBackend_->RemoveFeed (channel.FeedID_);
 
 				UpdateUnreadItemsNumber ();
@@ -792,28 +784,13 @@ namespace LeechCraft
 				for (OPMLParser::items_container_t::const_iterator i = items.begin (),
 						end = items.end (); i != end; ++i)
 				{
-					IDType_t feedId = AddFeed (i->URL_, tagsList + i->Categories_);
-					if (feedId == static_cast<IDType_t> (-1))
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "not added feed from OPML:"
-								<< i->URL_;
-						continue;
-					}
+					int interval = 0;
+					if (i->CustomFetchInterval_)
+						interval = i->FetchInterval_;
+					FeedSettings_ptr s (new Feed::FeedSettings (-1, -1,
+							interval, i->MaxArticleNumber_, i->MaxArticleAge_, false));
 
-					try
-					{
-						int interval = 0;
-						if (i->CustomFetchInterval_)
-							interval = i->FetchInterval_;
-						Feed::FeedSettings s (feedId, interval, i->MaxArticleNumber_, i->MaxArticleAge_);
-						StorageBackend_->SetFeedSettings (s);
-					}
-					catch (const std::exception& e)
-					{
-						ErrorNotification (tr ("OPML import error"),
-								tr ("Could not update feed settings"));
-					}
+					AddFeed (i->URL_, tagsList + i->Categories_, s);
 				}
 			}
 
@@ -954,8 +931,6 @@ namespace LeechCraft
 
 					StorageBackend_->AddFeed (feed);
 				}
-
-				SyncPools ();
 			}
 
 			void Core::SetContextMenu (QMenu *menu)
@@ -1032,16 +1007,6 @@ namespace LeechCraft
 					return;
 				}
 
-				IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
-
-				if (pj.Role_ == PendingJob::RFeedUpdated &&
-						feedId == static_cast<IDType_t> (-1))
-				{
-					ErrorNotification (tr ("Feed error"),
-							tr ("Feed with url %1 not found.").arg (pj.URL_));
-					return;
-				}
-
 				channels_container_t channels;
 				if (pj.Role_ != PendingJob::RFeedExternalData)
 				{
@@ -1072,6 +1037,23 @@ namespace LeechCraft
 								.arg (pj.URL_));
 						return;
 					}
+
+					if (pj.Role_ == PendingJob::RFeedAdded)
+					{
+						Feed_ptr feed (new Feed ());
+						feed->URL_ = pj.URL_;
+						StorageBackend_->AddFeed (feed);
+					}
+
+					IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
+
+					if (feedId == static_cast<IDType_t> (-1))
+					{
+						ErrorNotification (tr ("Feed error"),
+								tr ("Feed with url %1 not found.").arg (pj.URL_));
+						return;
+					}
+
 					channels = parser->ParseFeed (doc, feedId);
 				}
 
@@ -1164,8 +1146,10 @@ namespace LeechCraft
 				}
 				XmlSettingsManager::Instance ()->
 					setProperty ("LastUpdateDateTime", QDateTime::currentDateTime ());
-				UpdateTimer_->start (XmlSettingsManager::Instance ()->
-						property ("UpdateInterval").toInt () * 60 * 1000);
+				int interval = XmlSettingsManager::Instance ()->
+					property ("UpdateInterval").toInt ();
+				if (interval)
+					UpdateTimer_->start (interval * 60 * 1000);
 			}
 
 			void Core::fetchExternalFile (const QString& url, const QString& where)
@@ -1203,7 +1187,6 @@ namespace LeechCraft
 			void Core::saveSettings ()
 			{
 				SaveScheduled_ = false;
-				SyncPools ();
 			}
 
 			void Core::handleChannelDataUpdated (Channel_ptr channel)
@@ -1217,8 +1200,17 @@ namespace LeechCraft
 
 			void Core::updateIntervalChanged ()
 			{
-				UpdateTimer_->setInterval (XmlSettingsManager::Instance ()->
-						property ("UpdateInterval").toInt () * 60 * 1000);
+				int min = XmlSettingsManager::Instance ()->
+					property ("UpdateInterval").toInt ();
+				if (min)
+				{
+					if (UpdateTimer_->isActive ())
+						UpdateTimer_->setInterval (min * 60 * 1000);
+					else
+						UpdateTimer_->start (min * 60 * 1000);
+				}
+				else
+					UpdateTimer_->stop ();
 			}
 
 			void Core::showIconInTrayChanged ()
@@ -1400,6 +1392,27 @@ namespace LeechCraft
 				{
 					FetchPixmap (channels [i]);
 					FetchFavicon (channels [i]);
+				}
+
+				if (pj.FeedSettings_)
+				{
+					IDType_t feedId = StorageBackend_->FindFeed (pj.URL_);
+					Feed::FeedSettings fs (feedId,
+							pj.FeedSettings_->UpdateTimeout_,
+							pj.FeedSettings_->NumItems_,
+							pj.FeedSettings_->ItemAge_,
+							pj.FeedSettings_->AutoDownloadEnclosures_);
+					try
+					{
+						StorageBackend_->SetFeedSettings (fs);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to set settings for just added feed"
+								<< pj.URL_
+								<< e.what ();
+					}
 				}
 			}
 
@@ -1707,7 +1720,6 @@ namespace LeechCraft
 				e.Additional_ ["UntilUserSees"] = wait;
 				emit const_cast<Core*> (this)->gotEntity (e);
 			}
-		};
-	};
-};
-
+		}
+	}
+}

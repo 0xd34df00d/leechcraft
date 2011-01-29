@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::FileScheme::FileScheme</name>
     <message>
-        <location filename="filescheme.cpp" line="65"/>
+        <location filename="filescheme.cpp" line="70"/>
         <source>Provides support for file:// scheme.</source>
         <translation>Обеспечивает поддержку file://.</translation>
     </message>

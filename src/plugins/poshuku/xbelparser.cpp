@@ -40,14 +40,14 @@ namespace LeechCraft
 								.arg (errorString)
 								.arg (errorLine)
 								.arg (errorColumn)));
-			
+
 				QDomElement root = document.documentElement ();
 				if (root.tagName () != "xbel")
 					throw std::runtime_error (qPrintable (QObject::tr ("Not an XBEL entity.")));
 				else if (root.hasAttribute ("version") &&
 						root.attribute ("version") != "1.0")
 					throw std::runtime_error (qPrintable (QObject::tr ("This XBEL is not 1.0.")));
-			
+
 				QDomElement child = root.firstChildElement ("folder");
 				while (!child.isNull ())
 				{
@@ -55,13 +55,13 @@ namespace LeechCraft
 					child = child.nextSiblingElement ("folder");
 				}
 			}
-			
+
 			void XbelParser::ParseFolder (const QDomElement& element, QStringList previous)
 			{
 				QString tag = element.firstChildElement ("title").text ();
 				if (!tag.isEmpty () && !previous.contains (tag))
 					previous << tag;
-			
+
 				QDomElement child = element.firstChildElement ();
 				while (!child.isNull ())
 				{
@@ -69,10 +69,10 @@ namespace LeechCraft
 						ParseFolder (child, previous);
 					else if (child.tagName () == "bookmark")
 						Core::Instance ().GetFavoritesModel ()->
-							AddItem (child.firstChildElement ("title").text (),
+							addItem (child.firstChildElement ("title").text (),
 									child.attribute ("href"),
 									previous);
-			
+
 					child = child.nextSiblingElement ();
 				}
 			}

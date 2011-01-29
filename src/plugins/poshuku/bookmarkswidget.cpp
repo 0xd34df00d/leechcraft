@@ -56,7 +56,7 @@ namespace LeechCraft
 						SIGNAL (deleteSelected (const QModelIndex&)),
 						this,
 						SLOT (translateRemoveFavoritesItem (const QModelIndex&)));
-			
+
 				FavoritesFilterLineCompleter_.reset (
 						new Util::TagsCompleter (Ui_.FavoritesFilterLine_, this)
 						);
@@ -160,12 +160,31 @@ namespace LeechCraft
 
 				translateRemoveFavoritesItem (current);
 			}
-			
+
 			void BookmarksWidget::translateRemoveFavoritesItem (const QModelIndex& sourceIndex)
 			{
 				QModelIndex index = sourceIndex;
 				if (FlatToFolders_->GetSourceModel ())
+				{
 					index = FlatToFolders_->MapToSource (index);
+					if (!index.isValid ())
+					{
+						QList<QPersistentModelIndex> toDelete;
+						for (int i = 0, rows = FlatToFolders_->rowCount (sourceIndex);
+								i < rows; ++i)
+						{
+							index = FlatToFolders_->index (i, 0, sourceIndex);
+							index = FlatToFolders_->MapToSource (index);
+							index = FavoritesFilterModel_->mapToSource (index);
+							toDelete << QPersistentModelIndex (index);
+						}
+
+						Q_FOREACH (const QPersistentModelIndex& pIndex, toDelete)
+							Core::Instance ().GetFavoritesModel ()->removeItem (pIndex);
+
+						return;
+					}
+				}
 				index = FavoritesFilterModel_->mapToSource (index);
 				Core::Instance ().GetFavoritesModel ()->removeItem (index);
 			}
@@ -174,7 +193,7 @@ namespace LeechCraft
 			{
 				int section = Ui_.FavoritesFilterType_->currentIndex ();
 				QString text = Ui_.FavoritesFilterLine_->text ();
-			
+
 				switch (section)
 				{
 					case 1:
@@ -194,13 +213,13 @@ namespace LeechCraft
 						FavoritesFilterModel_->setFilterFixedString (text);
 						break;
 				}
-			
+
 				FavoritesFilterModel_->
 					setFilterCaseSensitivity ((Ui_.FavoritesFilterCaseSensitivity_->
 								checkState () == Qt::Checked) ? Qt::CaseSensitive :
 							Qt::CaseInsensitive);
 			}
-			
+
 			void BookmarksWidget::on_FavoritesView__activated (const QModelIndex& act)
 			{
 				QModelIndex index;
@@ -224,10 +243,10 @@ namespace LeechCraft
 								MapToSource (idx).data ().toString ());
 					}
 			}
-			
+
 			void BookmarksWidget::on_OpenInTabs__released ()
 			{
-				for (int i = 0, size = FavoritesFilterModel_->rowCount (); 
+				for (int i = 0, size = FavoritesFilterModel_->rowCount ();
 						i < size; ++i)
 					Core::Instance ().NewURL (FavoritesFilterModel_->
 							index (i, FavoritesModel::ColumnURL).data ().toString ());

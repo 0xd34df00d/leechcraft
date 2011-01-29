@@ -60,9 +60,12 @@
 				</item>
 				<item type="groupbox" property="UnreadCustomColor" checkable="true" default="on">
 					<label lang="en" value="Use color to mark unread" />
-					<item type="color" property="UnreadItemsColor" default="06007B">
+					<item type="color" property="UnreadItemsColor" default="#06007B">
 						<label lang="en" value="Color:" />
 					</item>
+				</item>
+				<item type="checkbox" property="UsePaletteColors" checkable="true" default="off">
+					<label lang="en" value="Use colors from the palette for read/unread items" />
 				</item>
 			</groupbox>
 		</tab>
@@ -73,7 +76,7 @@
 				<item type="checkbox" property="UpdateOnStartup" state="off">
 					<label lang="en" value="Update feeds on startup" />
 				</item>
-				<item type="spinbox" property="UpdateInterval" default="180" minimum="1" maximum="3000" step="5">
+				<item type="spinbox" property="UpdateInterval" default="180" minimum="0" maximum="30000" step="5">
 					<label value="Update interval:" />
 					<suffix value=" min" />
 				</item>

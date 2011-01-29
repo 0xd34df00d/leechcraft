@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,39 +24,39 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace Fua
+{
+	class Changer : public QDialog
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace Fua
-				{
-						class Changer : public QDialog
-						{
-							Q_OBJECT
+		Q_OBJECT
 
-							Ui::Changer Ui_;
-							QMap<QString, QString> IDs_;
-						public:
-							Changer (const QMap<QString, QString>&,
-									const QString& = QString (),
-									const QString& = QString (),
-									QWidget* = 0);
-							QString GetDomain () const;
-							QString GetID () const;
-						private slots:
-							void on_Domain__textChanged ();
-							void on_IDString__textChanged ();
-							void on_Agent__currentIndexChanged (const QString&);
-						private:
-							void SetEnabled ();
-						};
-				};
-			};
-		};
+		Ui::Changer Ui_;
+		QMap<QString, QString> IDs_;
+	public:
+		Changer (const QMap<QString, QString>&,
+				const QString& = QString (),
+				const QString& = QString (),
+				QWidget* = 0);
+		QString GetDomain () const;
+		QString GetID () const;
+	private slots:
+		void on_Domain__textChanged ();
+		void on_IDString__textChanged ();
+		void on_Agent__currentIndexChanged (const QString&);
+	private:
+		void SetEnabled ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
 

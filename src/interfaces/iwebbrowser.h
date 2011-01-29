@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,16 @@ public:
 	 */
 	virtual void SetNavBarVisible (bool visible) = 0;
 
+	/** @brief Shows or hides every other panel in the browser but navbar.
+	 *
+	 * If the IWebBrowser implementation has additional panels,
+	 * toolbars, sidebars and similar stuff, it should be set visible
+	 * according to the visible parameter.
+	 *
+	 * @param[in] visible Whether additional stuff should be visible.
+	 */
+	virtual void SetEverythingElseVisible (bool visible) = 0;
+
 	/** @brief Returns the IWebWidget as a QWidget.
 	 *
 	 * @return A widget corresponding to this IWebWidget.
@@ -78,7 +88,7 @@ class IWebBrowser
 {
 public:
 	/** @brief Opens the url in the web browser itself.
-	 * 
+	 *
 	 * @param[in] url The URL to open.
 	 */
 	virtual void Open (const QString& url) = 0;

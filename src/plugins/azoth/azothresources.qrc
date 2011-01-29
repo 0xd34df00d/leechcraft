@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/plugins/azoth">
+    <file>resources/html/viewcontents.html</file>
+    <file>resources/images/azoth.svg</file>
+  </qresource>
+</RCC>

@@ -44,7 +44,7 @@ namespace LeechCraft
 				QString info = ii->GetInfo ();
 				QIcon icon = ii->GetIcon ();
 				NewTabMenu_->addAction (icon,
-						name,
+						AccelerateName (name),
 						obj,
 						SLOT (newTabRequested ()))->setToolTip (info);
 			}
@@ -68,12 +68,14 @@ namespace LeechCraft
 
 		try
 		{
-			QString name = ii->GetName ();
-			QIcon icon = ii->GetIcon ();
+			const QString& name = ii->GetName ();
+			const QIcon& icon = ii->GetIcon ();
 
 			QAction *action = 0;
 			Q_FOREACH (QAction *act, NewTabMenu_->actions ())
-				if (act->text () == name)
+			{
+				QString actText = act->text ();
+				if (actText.remove ('&') == name)
 				{
 					action = new QAction (icon, name, this);
 					connect (action,
@@ -85,11 +87,15 @@ namespace LeechCraft
 					ReaddOnRestore_ [name] = act;
 					break;
 				}
+			}
 
 			if (!action)
+			{
 				action = NewTabMenu_->addAction (icon, name,
 						this,
 						SLOT (restoreEmbedTab ()));
+				emit restoreTabActionAdded (action);
+			}
 			action->setData (QVariant::fromValue<QObject*> (obj));
 		}
 		catch (const std::exception& e)
@@ -140,6 +146,22 @@ namespace LeechCraft
 		return NewTabMenu_;
 	}
 
+	QString NewTabMenuManager::AccelerateName (QString name)
+	{
+		for (int i = 0, length = name.length ();
+				i < length; ++i)
+		{
+			QChar c = name.at (i);
+			if (UsedAccelerators_.contains (c))
+				continue;
+
+			UsedAccelerators_ << c;
+			name.insert (i, '&');
+			break;
+		}
+		return name;
+	}
+
 	void NewTabMenuManager::restoreEmbedTab ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -161,12 +183,8 @@ namespace LeechCraft
 			return;
 		}
 
-		IInfo *ii = qobject_cast<IInfo*> (obj);
 		try
 		{
-			QString name = ii->GetName ();
-			QIcon icon = ii->GetIcon ();
-
 			if (ReaddOnRestore_.contains (action->text ()))
 			{
 				QAction *readd = ReaddOnRestore_ [action->text ()];

@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "itemhandlercustomwidget.h"
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QLabel>
 
 namespace LeechCraft
@@ -37,7 +37,7 @@ namespace LeechCraft
 
 	void ItemHandlerCustomWidget::Handle (const QDomElement& item, QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QWidget *widget = new QWidget (XSD_);
 		widget->setObjectName (item.attribute ("name"));
 		QVBoxLayout *layout = new QVBoxLayout ();
@@ -47,13 +47,9 @@ namespace LeechCraft
 				QSizePolicy::Expanding);
 
 		if (item.attribute ("label") == "own")
-			lay->addRow (widget);
-		else
 		{
-			QLabel *label = new QLabel (XSD_->GetLabel (item));
-			label->setWordWrap (false);
-
-			lay->addRow (label, widget);
+			lay->setRowStretch (0, 1);
+			lay->addWidget (widget, 0, 0);
 		}
 	}
 };

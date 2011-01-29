@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ namespace LeechCraft
 		 * the class that created in in order to retrieve it later.
 		 *
 		 * pwidget is guaranteed to have a layout, and the layout is
-		 * QFormLayout.
+		 * QGridLayout.
 		 *
 		 * @param[in] element The element to make representation for.
 		 * @param[in] pwidget The parent widget of the representation

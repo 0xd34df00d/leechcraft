@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ namespace LeechCraft
 						Ui::SubscriptionsManager Ui_;
 					public:
 						SubscriptionsManager (QWidget* = 0);
+					private:
+						void AddCustom (const QString&, const QString&);
 					private slots:
 						void on_AddButton__released ();
 						void on_RemoveButton__released ();

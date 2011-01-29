@@ -33,14 +33,14 @@ namespace LeechCraft
 				{
 					void Plugin::Init (ICoreProxy_ptr proxy)
 					{
-					}
-
-					void Plugin::SecondInit ()
-					{
 						Storage_ .reset (new QSettings (QSettings::IniFormat,
 									QSettings::UserScope,
 									QCoreApplication::organizationName (),
 									QCoreApplication::applicationName () + "_SecMan_SimpleStorage"));
+					}
+
+					void Plugin::SecondInit ()
+					{
 					}
 
 					QByteArray Plugin::GetUniqueID () const
@@ -108,12 +108,15 @@ namespace LeechCraft
 						return result;
 					}
 
-					void Plugin::Save (const QByteArray& key, const QVariantList& values, IStoragePlugin::StorageType st)
+					void Plugin::Save (const QByteArray& key, const QVariantList& values,
+							IStoragePlugin::StorageType st, bool overwrite)
 					{
 						if (st != STInsecure)
 							return;
 
-						QVariantList oldValues = Load (key, st);
+						QVariantList oldValues;
+						if (!overwrite)
+							oldValues = Load (key, st);
 						Storage_->setValue (key, oldValues + values);
 					}
 
@@ -125,11 +128,12 @@ namespace LeechCraft
 						return Storage_->value (key).toList ();
 					}
 
-					void Plugin::Save (const QList<QPair<QByteArray, QVariantList> >& keyValues, IStoragePlugin::StorageType st)
+					void Plugin::Save (const QList<QPair<QByteArray, QVariantList> >& keyValues,
+							IStoragePlugin::StorageType st, bool overwrite)
 					{
 						QPair<QByteArray, QVariantList> keyValue;
 						Q_FOREACH (keyValue, keyValues)
-							Save (keyValue.first, keyValue.second, st);
+							Save (keyValue.first, keyValue.second, st, overwrite);
 					}
 
 					QList<QVariantList> Plugin::Load (const QList<QByteArray>& keys, IStoragePlugin::StorageType st)

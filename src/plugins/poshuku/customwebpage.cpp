@@ -772,7 +772,7 @@ namespace LeechCraft
 
 							ElementData ed =
 							{
-								url,
+								pageUrl,
 								formId,
 								name,
 								elemType,
@@ -794,6 +794,12 @@ namespace LeechCraft
 				if (type != NavigationTypeFormSubmitted)
 					return;
 
+				QUrl pageUrl = frame->url ();
+				// Check if this should be emitted at all
+				if (Core::Instance ().GetStorageBackend ()->
+						GetFormsIgnored (pageUrl.toString ()))
+					return;
+
 				PageFormsData_t formsData =
 						HarvestForms (frame ? frame : mainFrame (),
 								request.url ()).first;
@@ -801,14 +807,7 @@ namespace LeechCraft
 				if (!CheckData (formsData, frame, request))
 					return;
 
-				QUrl pageUrl = frame->url ();
-
 				if (FilledState_ == formsData)
-					return;
-
-				// Check if this should be emitted at all
-				if (Core::Instance ().GetStorageBackend ()->
-						GetFormsIgnored (pageUrl.toString ()))
 					return;
 
 				emit storeFormData (formsData);
@@ -869,14 +868,7 @@ namespace LeechCraft
 				Q_FOREACH (QString name, pairFirstKeys)
 					keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + name.toUtf8 ();
 
-				Entity e = Util::MakeEntity (keys,
-						QString (),
-						Internal,
-						"x-leechcraft/data-persistent-load");
-				QVariantList values;
-				e.Additional_ ["Values"] = QVariant::fromValue<QVariantList*> (&values);
-
-				emit delegateEntity (e, 0, 0);
+				QVariantList values = Util::GetPersistentData (keys, this);
 
 				const int size = keys.size ();
 				if (values.size () != size)

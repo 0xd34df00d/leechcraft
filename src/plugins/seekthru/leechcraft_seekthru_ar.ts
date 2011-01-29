@@ -4,52 +4,52 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::Core</name>
     <message>
-        <location filename="core.cpp" line="71"/>
+        <location filename="core.cpp" line="81"/>
         <source>Short name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="113"/>
+        <location filename="core.cpp" line="123"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="115"/>
+        <location filename="core.cpp" line="125"/>
         <source>Limited</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="117"/>
+        <location filename="core.cpp" line="127"/>
         <source>Private</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="119"/>
+        <location filename="core.cpp" line="129"/>
         <source>Closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="199"/>
+        <location filename="core.cpp" line="274"/>
         <source>%1 wasn&apos;t delegated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="307"/>
+        <location filename="core.cpp" line="410"/>
         <source>Could not open file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="317"/>
+        <location filename="core.cpp" line="420"/>
         <source>Could not remove temporary file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="325"/>
+        <location filename="core.cpp" line="428"/>
         <source>A job was delegated, but it failed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="377"/>
+        <location filename="core.cpp" line="480"/>
         <source>XML parse error %1 at %2:%3.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -151,7 +151,7 @@
 <context>
     <name>LeechCraft::Plugins::SeekThru::SeekThru</name>
     <message>
-        <location filename="seekthru.cpp" line="90"/>
+        <location filename="seekthru.cpp" line="99"/>
         <source>Search via OpenSearch-aware search providers.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -238,7 +238,7 @@
     </message>
 </context>
 <context>
-    <name>StartupFirstPageWidget</name>
+    <name>SeekThruStartupFirstPageWidget</name>
     <message>
         <location filename="startupfirstpage.ui" line="22"/>
         <source>Localized set:</source>
@@ -270,6 +270,30 @@
     <message>
         <location filename="tagsasker.ui" line="22"/>
         <source>Tags for this searcher:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>seekthrusettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>SeekThru settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Searchers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Navigation bar visible</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

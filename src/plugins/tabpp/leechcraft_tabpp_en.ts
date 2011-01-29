@@ -12,12 +12,12 @@
 <context>
     <name>LeechCraft::Plugins::TabPP::Plugin</name>
     <message>
-        <location filename="tabpp.cpp" line="66"/>
+        <location filename="tabpp.cpp" line="72"/>
         <source>Enhances user experience with tabs.</source>
         <translation>Enhances user experience with tabs.</translation>
     </message>
     <message>
-        <location filename="tabpp.cpp" line="124"/>
+        <location filename="tabpp.cpp" line="123"/>
         <source>Show tab switcher</source>
         <translation>Show tab switcher</translation>
     </message>
@@ -33,27 +33,27 @@
 <context>
     <name>tabppsettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummy.cpp" line="2"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummy.cpp" line="3"/>
         <source>Behavior</source>
         <translation>Behavior</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="4"/>
+        <location filename="dummy.cpp" line="4"/>
         <source>Show on action hover</source>
         <translation>Show on action hover</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="5"/>
+        <location filename="dummy.cpp" line="5"/>
         <source>Focus on the tab list after show</source>
         <translation>Focus on the tab list after show</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="6"/>
+        <location filename="dummy.cpp" line="6"/>
         <source>Hide on Ctrl+Enter</source>
         <translation>Hide on Ctrl+Enter</translation>
     </message>

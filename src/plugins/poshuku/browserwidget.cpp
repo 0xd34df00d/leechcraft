@@ -49,6 +49,7 @@
 #include <qwebelement.h>
 #include <QDataStream>
 #include <QRegExp>
+#include <QKeySequence>
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
 #include "core.h"
@@ -181,43 +182,58 @@ namespace LeechCraft
 						this);
 				ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
 
+				HistoryAction_ = new QAction (tr ("Open history"), 
+						this);
+				HistoryAction_->setCheckable (true);
+				HistoryAction_->setShortcut (QKeySequence (tr ("Ctrl+h")));
+				
+				BookmarksAction_ = new QAction (tr ("Open bookmarks"), 
+						this);
+				BookmarksAction_->setCheckable (true);
+				BookmarksAction_->setShortcut (QKeySequence (tr ("Ctrl+b")));
+				
+				
 				ToolBar_->addAction (Back_);
 				ToolBar_->addAction (Forward_);
 				ToolBar_->addAction (ReloadStop_);
-
-				QMenu *moreMenu = new QMenu (this);
-				QAction *more = moreMenu->menuAction ();
-				connect (more,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (showSendersMenu ()));
-				more->setText (tr ("More..."));
-				more->setProperty ("ActionIcon", "poshuku_more");
-
-				ToolBar_->addAction (more);
-
+				
 				Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+				QMenu *moreMenu = new QMenu (this);
 				emit hookMoreMenuFillBegin (proxy, moreMenu, Ui_.WebView_, this);
 				if (!proxy->IsCancelled ())
 				{
-					moreMenu->addAction (Find_);
-					moreMenu->addAction (Add2Favorites_);
-					moreMenu->addSeparator ();
-					moreMenu->addAction (ReloadPeriodically_);
-					moreMenu->addAction (NotifyWhenFinished_);
-					moreMenu->addSeparator ();
-					moreMenu->addAction (ZoomIn_);
-					moreMenu->addAction (ZoomOut_);
-					moreMenu->addAction (ZoomReset_);
-					moreMenu->addSeparator ();
-					moreMenu->addAction (Print_);
-					moreMenu->addAction (PrintPreview_);
-					moreMenu->addAction (ScreenSave_);
-					moreMenu->addSeparator ();
-					moreMenu->addAction (ViewSources_);
+					const QString tools = "Poshuku";
+					WindowMenus_ [tools] << Find_;
+					WindowMenus_ [tools] << Add2Favorites_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+					WindowMenus_ [tools] << HistoryAction_;
+					WindowMenus_ [tools] << BookmarksAction_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+					WindowMenus_ [tools] << ReloadPeriodically_;
+					WindowMenus_ [tools] << NotifyWhenFinished_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+					WindowMenus_ [tools] << Print_;
+					WindowMenus_ [tools] << PrintPreview_;
+					WindowMenus_ [tools] << ScreenSave_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+					WindowMenus_ [tools] << ViewSources_;
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+
+					const QString view = "view";
+					WindowMenus_ [view] << ZoomIn_;
+					WindowMenus_ [view] << ZoomOut_;
+					WindowMenus_ [view] << ZoomReset_;
+					WindowMenus_ [view] << Util::CreateSeparator (this);
 				}
 				proxy.reset (new Util::DefaultHookProxy ());
 				emit hookMoreMenuFillEnd (proxy, moreMenu, Ui_.WebView_, this);
+
+				if (moreMenu->actions ().size ())
+				{
+					const QString tools = "Poshuku";
+					WindowMenus_ [tools] << moreMenu->actions ();
+					WindowMenus_ [tools] << Util::CreateSeparator (this);
+				}
 
 				ChangeEncoding_ = moreMenu->addMenu (tr ("Change encoding"));
 				connect (ChangeEncoding_,
@@ -394,6 +410,16 @@ namespace LeechCraft
 						this,
 						SLOT (handleNewUnclose (QAction*)));
 
+				connect (HistoryAction_,
+						SIGNAL (triggered (bool)),
+						this,
+						SLOT (handleShortcutHistory ()));
+
+				connect (BookmarksAction_,
+						SIGNAL (triggered (bool)),
+						this,
+						SLOT (handleShortcutBookmarks ()));
+				
 				QTimer::singleShot (100,
 						this,
 						SLOT (focusLineEdit ()));
@@ -438,23 +464,23 @@ namespace LeechCraft
 				const IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
 				QObject *object = Core::Instance ().parent ();
 
-				Cut_->setShortcut (proxy->GetShortcut (object, EACut_));
-				Copy_->setShortcut (proxy->GetShortcut (object, EACopy_));
-				Paste_->setShortcut (proxy->GetShortcut (object, EAPaste_));
-				Back_->setShortcut (proxy->GetShortcut (object, EABack_));
-				Forward_->setShortcut (proxy->GetShortcut (object, EAForward_));
-				Reload_->setShortcut (proxy->GetShortcut (object, EAReload_));
-				Stop_->setShortcut (proxy->GetShortcut (object, EAStop_));
-				Add2Favorites_->setShortcut (proxy->GetShortcut (object, EAAdd2Favorites_));
-				Find_->setShortcut (proxy->GetShortcut (object, EAFind_));
-				Print_->setShortcut (proxy->GetShortcut (object, EAPrint_));
-				PrintPreview_->setShortcut (proxy->GetShortcut (object, EAPrintPreview_));
-				ScreenSave_->setShortcut (proxy->GetShortcut (object, EAScreenSave_));
-				ViewSources_->setShortcut (proxy->GetShortcut (object, EAViewSources_));
-				ZoomIn_->setShortcut (proxy->GetShortcut (object, EAZoomIn_));
-				ZoomOut_->setShortcut (proxy->GetShortcut (object, EAZoomOut_));
-				ZoomReset_->setShortcut (proxy->GetShortcut (object, EAZoomReset_));
-				RecentlyClosedAction_->setShortcut (proxy->GetShortcut (object, EARecentlyClosedAction_));
+				Cut_->setShortcuts (proxy->GetShortcuts (object, "BrowserCut_"));
+				Copy_->setShortcuts (proxy->GetShortcuts (object, "BrowserCopy_"));
+				Paste_->setShortcuts (proxy->GetShortcuts (object, "BrowserPaste_"));
+				Back_->setShortcuts (proxy->GetShortcuts (object, "BrowserBack_"));
+				Forward_->setShortcuts (proxy->GetShortcuts (object, "BrowserForward_"));
+				Reload_->setShortcuts (proxy->GetShortcuts (object, "BrowserReload_"));
+				Stop_->setShortcuts (proxy->GetShortcuts (object, "BrowserStop_"));
+				Add2Favorites_->setShortcuts (proxy->GetShortcuts (object, "BrowserAdd2Favorites_"));
+				Find_->setShortcuts (proxy->GetShortcuts (object, "BrowserFind_"));
+				Print_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrint_"));
+				PrintPreview_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrintPreview_"));
+				ScreenSave_->setShortcuts (proxy->GetShortcuts (object, "BrowserScreenSave_"));
+				ViewSources_->setShortcuts (proxy->GetShortcuts (object, "BrowserViewSources_"));
+				ZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomIn_"));
+				ZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomOut_"));
+				ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
+				RecentlyClosedAction_->setShortcuts (proxy->GetShortcuts (object, "BrowserRecentlyClosedAction_"));
 			}
 
 			void BrowserWidget::SetUnclosers (const QList<QAction*>& unclosers)
@@ -548,7 +574,7 @@ namespace LeechCraft
 				if (proxy->IsCancelled ())
 					return;
 
-				if (!url.isEmpty ())
+				if (!url.isEmpty () && url.isValid ())
 				{
 					HtmlMode_ = false;
 					Ui_.WebView_->Load (url);
@@ -572,28 +598,31 @@ namespace LeechCraft
 				ToolBar_->setVisible (visible);
 			}
 
+			void BrowserWidget::SetEverythingElseVisible (bool visible)
+			{
+				if (!visible)
+					Ui_.Sidebar_->hide ();
+				Ui_.Splitter_->handle (1)->setVisible (visible);
+			}
+
 			QWidget* BrowserWidget::Widget ()
 			{
 				return this;
 			}
 
-#define _LC_MERGE(a) EA##a
+#define _LC_MERGE(a) "Browser"#a
 
 #define _LC_SINGLE(a) \
-				case _LC_MERGE(a): \
-					a->setShortcut (shortcut); \
-					break;
+				name2act [_LC_MERGE(a)] = a;
 
 #define _LC_TRAVERSER(z,i,array) \
 				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
 
 #define _LC_EXPANDER(Names) \
-				switch (name) \
-				{ \
-					BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names) \
-				}
-			void BrowserWidget::SetShortcut (int name, const QKeySequence& shortcut)
+				BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names)
+			void BrowserWidget::SetShortcut (const QString& name, const QKeySequences_t& sequences)
 			{
+				QMap<QString, QAction*> name2act;
 				_LC_EXPANDER ((Add2Favorites_)
 						(Find_)
 						(Print_)
@@ -611,19 +640,21 @@ namespace LeechCraft
 						(Reload_)
 						(Stop_)
 						(RecentlyClosedAction_));
+				if (name2act.contains (name))
+					name2act [name]->setShortcuts (sequences);
 			}
 
-#define _L(a,b) result [EA##a] = ActionInfo (a->text (), \
+#define _L(a,b) result ["Browser"#a] = ActionInfo (a->text (), \
 					b, a->icon ())
-			QMap<int, ActionInfo> BrowserWidget::GetActionInfo () const
+			QMap<QString, ActionInfo> BrowserWidget::GetActionInfo () const
 			{
-				QMap<int, ActionInfo> result;
+				QMap<QString, ActionInfo> result;
 				_L (Add2Favorites_, tr ("Ctrl+D"));
 				_L (Find_, tr ("Ctrl+F"));
 				_L (Print_, tr ("Ctrl+P"));
 				_L (PrintPreview_, tr ("Ctrl+Shift+P"));
 				_L (ScreenSave_, Qt::Key_F12);
-				_L (ViewSources_, QKeySequence ());
+				_L (ViewSources_, tr ("Ctrl+Shift+V"));
 				_L (ZoomIn_, Qt::CTRL + Qt::Key_Plus);
 				_L (ZoomOut_, Qt::CTRL + Qt::Key_Minus);
 				_L (ZoomReset_, tr ("Ctrl+0"));
@@ -669,6 +700,11 @@ namespace LeechCraft
 						<< Back_;
 
 				return result;
+			}
+
+			QMap<QString, QList<QAction*> > BrowserWidget::GetWindowMenus () const
+			{
+				return WindowMenus_;
 			}
 
 			QObject* BrowserWidget::ParentMultiTabs () const
@@ -1357,7 +1393,54 @@ namespace LeechCraft
 #endif
 				Ui_.URLFrame_->GetEdit ()->setText (userText);
 			}
+			
+			void BrowserWidget::handleShortcutHistory ()
+			{
+				if (!HistoryAction_->isChecked ())
+					HistoryAction_->setChecked (false);
+				else
+				{
+					HistoryAction_->setChecked (true);
+					BookmarksAction_->setChecked (false);
+				}
+				
+				SetSplitterSizes (1);
+			}
+			
+			void BrowserWidget::handleShortcutBookmarks ()
+			{
+				if (!BookmarksAction_->isChecked ())
+					BookmarksAction_->setChecked (false);
+				else
+				{
+					HistoryAction_->setChecked (false);
+					BookmarksAction_->setChecked (true);
+				}
+				
+				SetSplitterSizes (0);
+			}
+			
+			void BrowserWidget::SetSplitterSizes (int currentIndex)
+			{
+				int splitterSize = XmlSettingsManager::Instance ()->
+						Property ("HistoryBoormarksPanelSize", 250).toInt ();
+				int wSize = Ui_.WebView_->width ();
+				
+				if (!Ui_.Splitter_->sizes ().at (0))
+				{
+					Ui_.Splitter_->setSizes (QList<int> () << splitterSize << wSize - splitterSize);
+					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (currentIndex);
+				}
+				else if (Ui_.Sidebar_->GetMainTabBar ()->currentIndex () != currentIndex)
+					Ui_.Sidebar_->GetMainTabBar ()->setCurrentIndex (currentIndex);
+				else
+				{
+					XmlSettingsManager::Instance ()->
+						setProperty ("HistoryBoormarksPanelSize", Ui_.Splitter_->sizes ().at (0));
+					Ui_.Splitter_->setSizes (QList<int> () <<  0 << wSize);
+				}
+			}
 		};
 	};
 };
-
+	

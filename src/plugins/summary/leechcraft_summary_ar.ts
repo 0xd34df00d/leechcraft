@@ -4,23 +4,23 @@
 <context>
     <name>LeechCraft::Plugins::Summary::Core</name>
     <message>
-        <location filename="core.cpp" line="116"/>
-        <location filename="core.cpp" line="319"/>
+        <location filename="core.cpp" line="122"/>
+        <location filename="core.cpp" line="345"/>
         <source>Summary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="183"/>
+        <location filename="core.cpp" line="189"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="184"/>
+        <location filename="core.cpp" line="190"/>
         <source>Status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="185"/>
+        <location filename="core.cpp" line="191"/>
         <source>State</source>
         <translation type="unfinished"></translation>
     </message>
@@ -77,9 +77,17 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Plugins::Summary::SearchWidget</name>
+    <message>
+        <location filename="searchwidget.cpp" line="35"/>
+        <source>Search categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Plugins::Summary::Summary</name>
     <message>
-        <location filename="summary.cpp" line="87"/>
+        <location filename="summary.cpp" line="92"/>
         <source>Summary of downloads and recent events</source>
         <translation type="unfinished"></translation>
     </message>
@@ -92,12 +100,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="471"/>
+        <location filename="summarywidget.cpp" line="476"/>
         <source>S: %1 [%2]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="475"/>
+        <location filename="summarywidget.cpp" line="480"/>
         <source>Summary [%1]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -110,32 +118,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="33"/>
+        <location filename="searchwidget.ui" line="73"/>
         <source>String</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="38"/>
+        <location filename="searchwidget.ui" line="78"/>
         <source>Wildcard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="43"/>
+        <location filename="searchwidget.ui" line="83"/>
         <source>Regexp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="48"/>
+        <location filename="searchwidget.ui" line="88"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="65"/>
+        <location filename="searchwidget.ui" line="39"/>
         <source>AND</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="72"/>
+        <location filename="searchwidget.ui" line="49"/>
         <source>OR</source>
         <translation type="unfinished"></translation>
     </message>

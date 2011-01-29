@@ -102,12 +102,12 @@ void Plugin::Handle (LeechCraft::Entity)
 {
 }
 
-void Plugin::SetShortcut (int id, const QKeySequence& seq)
+void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
 {
-	Core::Instance ().SetShortcut (id, seq);
+	Core::Instance ().SetShortcut (id, seqs);
 }
 
-QMap<int, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
+QMap<QString, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
 {
 	return Core::Instance ().GetActionInfo ();
 }

@@ -63,7 +63,6 @@
 #include "peersmodel.h"
 #include "torrentfilesmodel.h"
 #include "livestreammanager.h"
-#include "config.h"
 #include "torrentmaker.h"
 
 using namespace LeechCraft::Util;
@@ -173,10 +172,9 @@ namespace LeechCraft
 
 					// Build peer_id
 					// Get the tag name.
-					QString ver = LEECHCRAFT_VERSION;
-					ver = LEECHCRAFT_VERSION;
+					QString ver = Proxy_->GetVersion ();
 					if (ver.isEmpty ())
-						ver = "0.3.75";
+						ver = "0.5.0";
 					// Get the part before the '-'.
 					ver = ver.split ('-', QString::SkipEmptyParts).at (0);
 					QStringList vers = ver.split ('.', QString::SkipEmptyParts);
@@ -2596,7 +2594,8 @@ namespace LeechCraft
 			{
 				libtorrent::session_settings settings = Session_->settings ();
 
-				settings.user_agent = std::string ("LeechCraft BitTorrent/") + LEECHCRAFT_VERSION;
+				settings.user_agent = std::string ("LeechCraft BitTorrent/") +
+						Proxy_->GetVersion ().toStdString ();
 				settings.tracker_completion_timeout = XmlSettingsManager::Instance ()->
 					property ("TrackerCompletionTimeout").toInt ();
 				settings.tracker_receive_timeout = XmlSettingsManager::Instance ()->

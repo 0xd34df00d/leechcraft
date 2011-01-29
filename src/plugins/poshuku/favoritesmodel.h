@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,13 +71,14 @@ namespace LeechCraft
 				virtual bool setData (const QModelIndex&, const QVariant&,
 						int = Qt::EditRole);
 
-				bool AddItem (const QString&, const QString&, const QStringList&);
 				void ChangeURL (const QModelIndex&, const QString&);
 				const items_t& GetItems () const;
 				void SetCheckResults (const QMap<QString, QString>&);
 			private:
 				QStringList GetVisibleTags (int) const;
 			public slots:
+				bool addItem (const QString&, const QString&, const QStringList&);
+				QList<QVariant> getItemsMap () const;
 				void removeItem (const QModelIndex&);
 				void handleItemAdded (const FavoritesModel::FavoritesItem&);
 				void handleItemUpdated (const FavoritesModel::FavoritesItem&);

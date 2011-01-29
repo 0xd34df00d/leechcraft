@@ -129,20 +129,16 @@ void Core::Handle (const LeechCraft::Entity& entity)
 	WriteSettings ();
 }
 
-void Core::SetShortcut (int id, const QKeySequence& seq)
+void Core::SetShortcut (const QString& id, const QKeySequences_t& seq)
 {
-	switch (id)
-	{
-		case SRemove:
-			Remove_->setShortcut (seq);
-			break;
-	}
+	if (id == "HistHolderRemove")
+		Remove_->setShortcuts (seq);
 }
 
-QMap<int, LeechCraft::ActionInfo> Core::GetActionInfo () const
+QMap<QString, LeechCraft::ActionInfo> Core::GetActionInfo () const
 {
-	QMap<int, ActionInfo> result;
-	result [SRemove] = ActionInfo (Remove_->text (),
+	QMap<QString, ActionInfo> result;
+	result ["HistHolderRemove"] = ActionInfo (Remove_->text (),
 			Remove_->shortcut (), Remove_->icon ());
 	return result;
 }
@@ -277,7 +273,7 @@ void Core::remove ()
 				<< index;
 			continue;
 		}
-		
+
 		const FindProxy *sm = qobject_cast<const FindProxy*> (index.model ());
 		if (!sm)
 			continue;
@@ -308,7 +304,7 @@ void Core::handleTasksTreeActivated (const QModelIndex& si)
 			<< index;
 		return;
 	}
-	
+
 	const FindProxy *sm = qobject_cast<const FindProxy*> (index.model ());
 	if (!sm)
 		return;

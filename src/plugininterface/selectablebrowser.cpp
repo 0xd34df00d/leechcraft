@@ -30,8 +30,10 @@ namespace LeechCraft
 			QVBoxLayout *lay = new QVBoxLayout ();
 			lay->setContentsMargins (0, 0, 0, 0);
 			setLayout (lay);
+
+			PrepareInternal ();
 		}
-		
+
 		void SelectableBrowser::Construct (IWebBrowser *browser)
 		{
 			if (browser &&
@@ -44,14 +46,12 @@ namespace LeechCraft
 			}
 			else
 			{
-				Internal_ = true;
-				InternalBrowser_.reset (new QTextBrowser (this));
-				InternalBrowser_->setOpenExternalLinks (true);
+				PrepareInternal ();
 				ExternalBrowser_.reset ();
 				layout ()->addWidget (InternalBrowser_.get ());
 			}
 		}
-		
+
 		void SelectableBrowser::SetHtml (const QString& html, const QUrl& base)
 		{
 			if (Internal_)
@@ -64,6 +64,19 @@ namespace LeechCraft
 		{
 			if (!Internal_)
 				ExternalBrowser_->SetNavBarVisible (visible);
+		}
+
+		void SelectableBrowser::SetEverythingElseVisible (bool visible)
+		{
+			if (!Internal_)
+				ExternalBrowser_->SetEverythingElseVisible (visible);
+		}
+
+		void SelectableBrowser::PrepareInternal ()
+		{
+			Internal_ = true;
+			InternalBrowser_.reset (new QTextBrowser (this));
+			InternalBrowser_->setOpenExternalLinks (true);
 		}
 	};
 };

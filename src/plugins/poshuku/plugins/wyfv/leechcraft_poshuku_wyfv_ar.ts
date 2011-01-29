@@ -20,7 +20,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::WYFV::WYFV</name>
     <message>
-        <location filename="wyfv.cpp" line="66"/>
+        <location filename="wyfv.cpp" line="71"/>
         <source>Replaces Flash-based video player to play video without Flash installed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -46,6 +46,34 @@
     <message>
         <location filename="relateditem.ui" line="130"/>
         <source>%v</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>poshukuwyfvsettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <source>WYFV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Enable for these sites:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>YouTube</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Vkontakte.ru</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

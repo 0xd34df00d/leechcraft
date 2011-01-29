@@ -4,10 +4,10 @@
  <widget class="QWidget" name="MainWidget">
   <property name="geometry">
    <rect>
-	<x>0</x>
-	<y>0</y>
-	<width>634</width>
-	<height>429</height>
+    <x>0</x>
+    <y>0</y>
+    <width>634</width>
+    <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,60 +15,63 @@
   </property>
   <property name="windowIcon">
    <iconset resource="aggregatorresources.qrc">
-	<normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
+    <normaloff>:/resources/images/aggregator.svg</normaloff>:/resources/images/aggregator.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="margin">
-	<number>0</number>
+    <number>0</number>
    </property>
    <item>
-	<widget class="QSplitter" name="MainSplitter_">
-	 <property name="orientation">
-	  <enum>Qt::Horizontal</enum>
-	 </property>
-	 <widget class="QWidget" name="layoutWidget">
-	  <layout class="QVBoxLayout" name="verticalLayout_2">
-	   <item>
-		<layout class="QHBoxLayout" name="_2">
-		 <item>
-		  <widget class="QLabel" name="label">
-		   <property name="text">
-			<string>Tags:</string>
-		   </property>
-		  </widget>
-		 </item>
-		 <item>
-		  <widget class="LeechCraft::Util::TagsLineEdit" name="TagsLine_"/>
-		 </item>
-		</layout>
-	   </item>
-	   <item>
-		<widget class="QTreeView" name="Feeds_">
-		 <property name="minimumSize">
-		  <size>
-		   <width>250</width>
-		   <height>0</height>
-		  </size>
-		 </property>
-		 <property name="iconSize">
-		  <size>
-		   <width>16</width>
-		   <height>16</height>
-		  </size>
-		 </property>
-		</widget>
-	   </item>
-	   <item>
-		<widget class="QCheckBox" name="MergeItems_">
-		 <property name="text">
-		  <string>Merge items</string>
-		 </property>
-		</widget>
-	   </item>
-	  </layout>
-	 </widget>
-	 <widget class="LeechCraft::Plugins::Aggregator::ItemsWidget" name="ItemsWidget_" native="true"/>
-	</widget>
+    <widget class="QSplitter" name="MainSplitter_">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="_2">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Tags:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="LeechCraft::Util::TagsLineEdit" name="TagsLine_"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeView" name="Feeds_">
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="MergeItems_">
+         <property name="text">
+          <string>Merge items</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="LeechCraft::Plugins::Aggregator::ItemsWidget" name="ItemsWidget_" native="true"/>
+    </widget>
    </item>
   </layout>
  </widget>

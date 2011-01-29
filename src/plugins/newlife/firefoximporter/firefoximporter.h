@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2009  Georg Rudoy
+ * Copyright (C) 2010  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 #ifndef PLUGINS_NEWLIFE_FIREFOXIMPORTER_H
 #define PLUGINS_NEWLIFE_FIREFOXIMPORTER_H
 #include "abstractimporter.h"
+#include "firefoxprofileselectpage.h"
+
 
 namespace LeechCraft
 {
@@ -33,6 +35,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				FirefoxImportPage *ImportPage_;
+				FirefoxProfileSelectPage *ProfileSelectPage_;
 			public:
 				FirefoxImporter (QWidget* = 0);
 				virtual QStringList GetNames () const;

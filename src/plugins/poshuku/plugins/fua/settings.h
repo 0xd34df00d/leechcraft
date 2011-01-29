@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,35 +25,35 @@ class QStandardItemModel;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace Fua
+{
+	class FUA;
+
+	class Settings : public QWidget
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace Fua
-				{
-					class FUA;
+		Q_OBJECT
 
-					class Settings : public QWidget
-					{
-						Q_OBJECT
-
-						Ui::Settings Ui_;
-						FUA *Fua_;
-						QStandardItemModel *Model_;
-					public:
-						Settings (QStandardItemModel*, FUA*);
-					private slots:
-						void on_Add__released ();
-						void on_Modify__released ();
-						void on_Remove__released ();
-					};
-				};
-			};
-		};
+		Ui::Settings Ui_;
+		FUA *Fua_;
+		QStandardItemModel *Model_;
+	public:
+		Settings (QStandardItemModel*, FUA*);
+	private slots:
+		void on_Add__released ();
+		void on_Modify__released ();
+		void on_Remove__released ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
 

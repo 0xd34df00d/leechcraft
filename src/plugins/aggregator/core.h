@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ namespace LeechCraft
 					QString URL_;
 					QString Filename_;
 					QStringList Tags_;
+					boost::shared_ptr<Feed::FeedSettings> FeedSettings_;
 				};
 				struct ExternalData
 				{
@@ -111,22 +112,6 @@ namespace LeechCraft
 				ItemsWidget *ReprWidget_;
 
 				Core ();
-			public:
-				enum PoolType
-				{
-					PTFeed,
-					PTChannel,
-					PTItem,
-					PTFeedSettings,
-					PTEnclosure,
-					PTMRSSEntry,
-					PTMRSSThumbnail,
-					PTMRSSCredit,
-					PTMRSSComment,
-					PTMRSSPeerLink,
-					PTMRSSScene,
-					PTMAX
-				};
 			private:
 				QHash<PoolType, Util::IDPool<IDType_t> > Pools_;
 			public:
@@ -148,7 +133,6 @@ namespace LeechCraft
 				ICoreProxy_ptr GetProxy () const;
 
 				Util::IDPool<IDType_t>& GetPool (PoolType);
-				void SyncPools () const;
 
 				bool CouldHandle (const LeechCraft::Entity&);
 				void Handle (LeechCraft::Entity);
@@ -156,8 +140,9 @@ namespace LeechCraft
 				void SetAppWideActions (const AppWideActions&);
 				const AppWideActions& GetAppWideActions () const;
 				bool DoDelayedInit ();
-				int AddFeed (const QString&, const QString&);
-				int AddFeed (const QString&, const QStringList&);
+				void AddFeed (const QString&, const QString&);
+				void AddFeed (const QString&, const QStringList&,
+						FeedSettings_ptr = FeedSettings_ptr ());
 				void RemoveFeed (const QModelIndex&);
 				ItemsWidget* GetReprWidget () const;
 
@@ -245,10 +230,11 @@ namespace LeechCraft
 				void unreadNumberChanged (int) const;
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
+				void channelRemoved (IDType_t);
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif
 

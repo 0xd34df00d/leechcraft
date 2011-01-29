@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace LeechCraft
 			struct Feed
 			{
 				/** @brief Contains settings for a feed.
-				 * 
+				 *
 				 * If a feed overrides default settings like update timeout, number of
 				 * stored items or max items age, this structure is used to store these
 				 * settings in the storage backend.
@@ -134,6 +134,7 @@ namespace LeechCraft
 				Feed (const IDType_t& id);
 			};
 
+			typedef boost::shared_ptr<Feed::FeedSettings> FeedSettings_ptr;
 			typedef boost::shared_ptr<Feed> Feed_ptr;
 			typedef std::vector<Feed_ptr> feeds_container_t;
 			typedef std::vector<QString> feeds_urls_t;

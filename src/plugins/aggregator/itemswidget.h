@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ namespace LeechCraft
 				void SetHideRead (bool);
 				bool IsItemCurrent (int) const;
 				void Selected (const QModelIndex&);
-				void MarkItemAsUnread (const QModelIndex&);
+				void MarkItemReadStatus (const QModelIndex&, bool);
 				bool IsItemRead (int) const;
 				bool IsItemReadNotCurrent (int) const;
 				QStringList GetItemCategories (int) const;
@@ -92,6 +92,7 @@ namespace LeechCraft
 						QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 				QString ToHtml (const Item_ptr&);
 				void RestoreSplitter ();
+				QModelIndexList GetSelected () const;
 			public slots:
 				void handleItemDataUpdated (Item_ptr, Channel_ptr);
 			private slots:
@@ -100,10 +101,12 @@ namespace LeechCraft
 				void on_ActionHideReadItems__triggered ();
 				void on_ActionShowAsTape__triggered ();
 				void on_ActionMarkItemAsUnread__triggered ();
+				void on_ActionMarkItemAsRead__triggered ();
 				void on_CaseSensitiveSearch__stateChanged (int);
 				void on_ActionItemCommentsSubscribe__triggered ();
+				void on_ActionItemLinkOpen__triggered ();
 				void on_CategoriesSplitter__splitterMoved ();
-				void currentItemChanged (const QItemSelection&);
+				void currentItemChanged ();
 				void makeCurrentItemVisible ();
 				void updateItemsFilter ();
 				void selectorVisiblityChanged ();

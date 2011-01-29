@@ -230,7 +230,7 @@
     </message>
     <message>
         <source>F11</source>
-        <translation>F11</translation>
+        <translation type="obsolete">F11</translation>
     </message>
     <message>
         <source>exit</source>
@@ -250,19 +250,19 @@
     </message>
     <message>
         <source>General</source>
-        <translation>Загальні</translation>
+        <translation type="obsolete">Загальні</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation>Засоби</translation>
+        <translation type="obsolete">Засоби</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Допомога</translation>
+        <translation type="obsolete">Допомога</translation>
     </message>
     <message>
         <source>View</source>
-        <translation>Перегляд</translation>
+        <translation type="obsolete">Перегляд</translation>
     </message>
     <message>
         <source>About LeechCraft...</source>
@@ -307,6 +307,10 @@
     <message>
         <source>Show a quick overview of tabs</source>
         <translation>Попередній перегляд вмісту вкладок</translation>
+    </message>
+    <message>
+        <source>Ctrl+G</source>
+        <translation>Ctrl+G</translation>
     </message>
 </context>
 <context>
@@ -552,7 +556,7 @@
     </message>
     <message>
         <source>Actions</source>
-        <translation>Дії</translation>
+        <translation type="obsolete">Дії</translation>
     </message>
     <message>
         <source>Always</source>
@@ -565,6 +569,19 @@
     <message>
         <source>System</source>
         <translation>Системний</translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <comment>FullScreen</comment>
+        <translation>F11</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation>Перегляд</translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation>Засоби</translation>
     </message>
 </context>
 <context>
@@ -584,6 +601,13 @@
     <message>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;вимагає аутентифікацію.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::NewTabMenuManager</name>
+    <message>
+        <source>New tab menu</source>
+        <translation>Меню створення вкладки</translation>
     </message>
 </context>
 <context>
@@ -609,7 +633,7 @@
     </message>
     <message>
         <source>File</source>
-        <translation>Файл</translation>
+        <translation type="obsolete">Файл</translation>
     </message>
     <message>
         <source>Release of one or more plugins failed.</source>
@@ -650,6 +674,10 @@
     <message>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
         <translation>Не вдалося завантажити плагін %1: не вдалося отримати ім’я/інформацію/значок.</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -795,7 +823,7 @@
     <name>LeechCraft::TabManager</name>
     <message>
         <source>New tab menu</source>
-        <translation>Меню створення вкладки</translation>
+        <translation type="obsolete">Меню створення вкладки</translation>
     </message>
     <message>
         <source>Close all but this</source>
@@ -1036,11 +1064,11 @@
     </message>
     <message>
         <source>Show menu bar as button</source>
-        <translation>Показувати панель меню у вигляді кнопок</translation>
+        <translation type="obsolete">Показувати панель меню у вигляді кнопок</translation>
     </message>
     <message>
         <source>Try smarter tabs width calculation</source>
-        <translation>Намагатися використовувати досконалий алгоритм розрахунку ширини вкладок</translation>
+        <translation type="obsolete">Намагатися використовувати досконалий алгоритм розрахунку ширини вкладок</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -1317,6 +1345,14 @@
     <message>
         <source>Context-dependent</source>
         <translation>В залежності від контексту</translation>
+    </message>
+    <message>
+        <source>Oxygen</source>
+        <translation>Oxygen</translation>
+    </message>
+    <message>
+        <source>Plastique</source>
+        <translation>Plastique</translation>
     </message>
 </context>
 </TS>

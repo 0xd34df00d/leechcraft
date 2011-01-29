@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,8 @@
 #include <qross/core/action.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ijobholder.h>
-#include <interfaces/imenuembedder.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/itoolbarembedder.h>
-#include <interfaces/itraymenu.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/iembedtab.h>
 #include <interfaces/ientityhandler.h>
 
@@ -43,10 +41,8 @@ namespace LeechCraft
 								, public IEmbedTab
 								, public IEntityHandler
 								, public IJobHolder
-								, public IMenuEmbedder
 								, public IPlugin2
-								, public IToolBarEmbedder
-								, public ITrayMenu
+								, public IActionsExporter
 			{
 				QString Type_;
 				QString Path_;
@@ -95,19 +91,17 @@ namespace LeechCraft
 				// IJobHolder
 				QAbstractItemModel* GetRepresentation () const;
 
-				// IMenuEmbedder
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
-
 				// IToolBarEmbedder
-				QList<QAction*> GetActions () const;
-
-				// ITrayMenu
-				QList<QAction*> GetTrayActions () const;
-				QList<QMenu*> GetTrayMenus () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
 				// IPlugin2
 				QSet<QByteArray> GetPluginClasses () const;
+
+				// Signals hacks
+				void changeTabName (QWidget*, const QString&);
+				void changeTabIcon (QWidget*, const QIcon&);
+				void statusBarChanged (QWidget*, const QString&);
+				void raiseTab (QWidget*);
 			private:
 				template<typename T>
 				struct Call

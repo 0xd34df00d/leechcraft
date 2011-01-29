@@ -27,12 +27,12 @@
 #include <QHBoxLayout>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <QButtonGroup>
 #include <QAbstractProxyModel>
 #include <QtDebug>
 #include "packagesmodel.h"
 #include "core.h"
 #include "pendingmanager.h"
+#include "delegatebuttongroup.h"
 
 namespace LeechCraft
 {
@@ -51,6 +51,7 @@ namespace LeechCraft
 			, Viewport_ (parent->viewport ())
 			, Model_ (parent->model ())
 			{
+				qDebug () << Q_FUNC_INFO << parent->model ();
 				connect (parent->verticalScrollBar (),
 						SIGNAL (valueChanged (int)),
 						this,
@@ -66,6 +67,11 @@ namespace LeechCraft
 						this,
 						SLOT (handleRowActionFinished (int)),
 						Qt::QueuedConnection);
+
+				connect (Core::Instance ().GetPendingManager (),
+						SIGNAL (packageUpdateToggled (int, bool)),
+						this,
+						SLOT (handlePackageUpdateToggled (int, bool)));
 			}
 
 			void PackagesDelegate::paint (QPainter *painter,
@@ -82,8 +88,6 @@ namespace LeechCraft
 				const QRect& r = option.rect;
 				bool ltr = (painter->layoutDirection () == Qt::LeftToRight);
 				bool selected = option.state & QStyle::State_Selected;
-				if (selected)
-					painter->fillRect (option.rect, option.palette.highlight ());
 
 				QString title = index.data (Qt::DisplayRole).toString ();
 				QString shortDescr = index.data (PackagesModel::PMRShortDescription).toString ();
@@ -103,6 +107,10 @@ namespace LeechCraft
 				pixmap.fill (Qt::transparent);
 				QPainter p (&pixmap);
 				p.translate (-option.rect.topLeft ());
+
+				if (selected ||
+						(option.state & QStyle::State_MouseOver))
+					style->drawPrimitive (QStyle::PE_PanelItemViewItem, &opt, &p, opt.widget);
 
 				int textShift = 2 * CPadding + CIconSize;
 				int leftPos = r.left () + (ltr ? textShift : 0);
@@ -238,6 +246,7 @@ namespace LeechCraft
 					SelectableBrowser_->Construct (browsers.at (0));
 				SelectableBrowser_->setParent (Viewport_);
 				SelectableBrowser_->SetNavBarVisible (false);
+				SelectableBrowser_->SetEverythingElseVisible (false);
 			}
 
 			QToolButton* PackagesDelegate::GetInstallRemove (const QModelIndex& index) const
@@ -327,9 +336,9 @@ namespace LeechCraft
 					QToolButton *instRem = GetInstallRemove (index);
 					QToolButton *update = GetUpdate (index);
 
-					QButtonGroup *group = new QButtonGroup (Viewport_);
-					group->addButton (instRem);
-					group->addButton (update);
+					DelegateButtonGroup *group = new DelegateButtonGroup (Viewport_);
+					group->AddButton (instRem);
+					group->AddButton (update);
 
 					QWidget *result = new QWidget (Viewport_);
 
@@ -369,7 +378,8 @@ namespace LeechCraft
 
 			void PackagesDelegate::invalidateWidgetPositions ()
 			{
-				SelectableBrowser_->hide ();
+				if (SelectableBrowser_)
+					SelectableBrowser_->hide ();
 				QTreeView *view = qobject_cast<QTreeView*> (parent ());
 				QAbstractItemModel *model = view->model ();
 				for (int i = 0, rows = model->rowCount ();
@@ -427,17 +437,27 @@ namespace LeechCraft
 				}
 			}
 
+			namespace
+			{
+				QAbstractItemModel* GetRealModel (QAbstractItemModel *source,
+							QList<QAbstractProxyModel*> *proxyChain = 0)
+				{
+					QAbstractProxyModel *proxy = 0;
+					while ((proxy = qobject_cast<QAbstractProxyModel*> (source)))
+					{
+						if (proxyChain)
+							proxyChain->push_front (proxy);
+						source = proxy->sourceModel ();
+					}
+					return source;
+				}
+			}
+
 			void PackagesDelegate::handleRowActionFinished (int row)
 			{
 				// Front — deepest proxy, back — outermost.
 				QList<QAbstractProxyModel*> proxyChain;
-				QAbstractItemModel *realModel = Model_;
-				QAbstractProxyModel *proxy = 0;
-				while ((proxy = qobject_cast<QAbstractProxyModel*> (realModel)))
-				{
-					proxyChain.push_front (proxy);
-					realModel = proxy->sourceModel ();
-				}
+				QAbstractItemModel *realModel = GetRealModel (Model_, &proxyChain);
 
 				QModelIndex index = realModel->index (row, 0);
 
@@ -453,9 +473,16 @@ namespace LeechCraft
 					Row2InstallRemove_ [row]->setChecked (false);
 				}
 				if (Row2Update_.contains (row))
-				{
 					Row2Update_ [row]->defaultAction ()->setChecked (false);
-				}
+			}
+
+			void PackagesDelegate::handlePackageUpdateToggled (int id, bool enabled)
+			{
+				PackagesModel *realModel =
+						qobject_cast<PackagesModel*> (GetRealModel (Model_));
+				int row = realModel->GetRow (id);
+				if (Row2Update_.contains (row))
+					Row2Update_ [row]->defaultAction ()->setChecked (enabled);
 			}
 		}
 	}

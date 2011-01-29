@@ -159,10 +159,7 @@ void SkinEngine::FindIconSets ()
 	 * %APP_DIR%/icons
 	 */
 #if defined (Q_WS_MAC)
-	QDir dir (QApplication::applicationDirPath ());
-	dir.cdUp ();
-	dir.cd ("Resources");
-	dir.cd ("icons");
+	QDir dir (QApplication::applicationDirPath () + "/../Resources/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 #elif defined (Q_WS_X11)
 	QDir dir = QDir ("/usr/share/leechcraft/icons");
@@ -212,8 +209,8 @@ void SkinEngine::FindIcons ()
 		CollectDir (QDir::homePath () + "/.leechcraft/icons", iconSet);
 
 #if defined (Q_WS_MAC)
-		FillMapping (QApplication::applicationDirPath () + "../Resources/icons", iconSet);
-		CollectDir (QApplication::applicationDirPath () + "../Resources/icons", iconSet);
+		FillMapping (QApplication::applicationDirPath () + "/../Resources/icons", iconSet);
+		CollectDir (QApplication::applicationDirPath () + "/../Resources/icons", iconSet);
 #elif defined (Q_WS_X11)
 		FillMapping ("/usr/share/leechcraft/icons", iconSet);
 		FillMapping ("/usr/local/share/leechcraft/icons", iconSet);

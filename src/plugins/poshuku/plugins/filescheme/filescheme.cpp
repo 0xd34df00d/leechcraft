@@ -25,104 +25,104 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace FileScheme
+{
+	void FileScheme::Init (ICoreProxy_ptr proxy)
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace FileScheme
-				{
-					void FileScheme::Init (ICoreProxy_ptr proxy)
-					{
-						Translator_.reset (Util::InstallTranslator ("poshuku_filescheme"));
+		Translator_.reset (Util::InstallTranslator ("poshuku_filescheme"));
 
-						proxy->RegisterHook (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t (
-									boost::bind (&FileScheme::CreateRequest,
-										this,
-										_1,
-										_2,
-										_3,
-										_4,
-										_5)));
-					}
+		proxy->RegisterHook (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t (
+					boost::bind (&FileScheme::CreateRequest,
+						this,
+						_1,
+						_2,
+						_3,
+						_4,
+						_5)));
+	}
 
-					void FileScheme::SecondInit ()
-					{
-					}
+	void FileScheme::SecondInit ()
+	{
+	}
 
-					void FileScheme::Release ()
-					{
-					}
+	void FileScheme::Release ()
+	{
+	}
 
-					QByteArray FileScheme::GetUniqueID () const
-					{
-						return "org.LeechCraft.Poshuku.FileScheme";
-					}
+	QByteArray FileScheme::GetUniqueID () const
+	{
+		return "org.LeechCraft.Poshuku.FileScheme";
+	}
 
-					QString FileScheme::GetName () const
-					{
-						return "Poshuku FileScheme";
-					}
+	QString FileScheme::GetName () const
+	{
+		return "Poshuku FileScheme";
+	}
 
-					QString FileScheme::GetInfo () const
-					{
-						return tr ("Provides support for file:// scheme.");
-					}
+	QString FileScheme::GetInfo () const
+	{
+		return tr ("Provides support for file:// scheme.");
+	}
 
-					QIcon FileScheme::GetIcon () const
-					{
-						return QIcon (":/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
-					}
+	QIcon FileScheme::GetIcon () const
+	{
+		return QIcon (":/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
+	}
 
-					QStringList FileScheme::Provides () const
-					{
-						return QStringList ("file://");
-					}
+	QStringList FileScheme::Provides () const
+	{
+		return QStringList ("file://");
+	}
 
-					QStringList FileScheme::Needs () const
-					{
-						return QStringList ();
-					}
+	QStringList FileScheme::Needs () const
+	{
+		return QStringList ();
+	}
 
-					QStringList FileScheme::Uses () const
-					{
-						return QStringList ();
-					}
+	QStringList FileScheme::Uses () const
+	{
+		return QStringList ();
+	}
 
-					void FileScheme::SetProvider (QObject*, const QString&)
-					{
-					}
+	void FileScheme::SetProvider (QObject*, const QString&)
+	{
+	}
 
-					QSet<QByteArray> FileScheme::GetPluginClasses () const
-					{
-						QSet<QByteArray> result;
-						result << "org.LeechCraft.Poshuku.Plugins/1.0";
-						return result;
-					}
+	QSet<QByteArray> FileScheme::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		return result;
+	}
 
-					QNetworkReply* FileScheme::CreateRequest (IHookProxy_ptr proxy,
-							QNetworkAccessManager*,
-							QNetworkAccessManager::Operation *op,
-							const QNetworkRequest *req,
-							QIODevice **)
-					{
-						if (*op != QNetworkAccessManager::GetOperation)
-							return 0;
+	QNetworkReply* FileScheme::CreateRequest (IHookProxy_ptr proxy,
+			QNetworkAccessManager*,
+			QNetworkAccessManager::Operation *op,
+			const QNetworkRequest *req,
+			QIODevice **)
+	{
+		if (*op != QNetworkAccessManager::GetOperation)
+			return 0;
 
-						QString path = req->url ().toLocalFile ();
+		QString path = req->url ().toLocalFile ();
 
-						if (!QFileInfo (path).isDir ())
-							return 0;
+		if (!QFileInfo (path).isDir ())
+			return 0;
 
-						proxy->CancelDefault ();
-						return new SchemeReply (*req, this);
-					}
-				};
-			};
-		};
-	};
-};
+		proxy->CancelDefault ();
+		return new SchemeReply (*req, this);
+	}
+}
+}
+}
+}
+}
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_filescheme,
 		LeechCraft::Plugins::Poshuku::Plugins::FileScheme::FileScheme);

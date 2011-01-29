@@ -47,182 +47,181 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::Core</name>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
+        <location filename="core.cpp" line="109"/>
+        <source>URL</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Type</source>
-        <translation type="obsolete">Type</translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation type="obsolete">Tags</translation>
-    </message>
-    <message>
-        <source>Last version</source>
-        <translation type="obsolete">Last version</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="352"/>
-        <location filename="core.cpp" line="370"/>
-        <location filename="core.cpp" line="396"/>
+        <location filename="core.cpp" line="381"/>
+        <location filename="core.cpp" line="399"/>
+        <location filename="core.cpp" line="425"/>
         <source>Error updating repository</source>
         <translation>Помилка оновлення репозиторія</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="353"/>
+        <location filename="core.cpp" line="382"/>
         <source>Unable to find repository with URL %1.</source>
         <translation>Неможливо знайти репозиторій з адресою %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="371"/>
+        <location filename="core.cpp" line="400"/>
         <source>While trying to update the repository: %1.</source>
         <translation>Під час оновлення репозиторію: %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="397"/>
+        <location filename="core.cpp" line="426"/>
         <source>Unable to remove the component `%1` which disappeared from the list of components for repo %2.</source>
         <translation>Неможливо видалити компонент `%1`, який зник із списку компонентів для репозиторію %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="443"/>
+        <location filename="core.cpp" line="472"/>
         <source>Unable to install package</source>
         <translation>Неможливо встановити пакет</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="464"/>
+        <location filename="core.cpp" line="493"/>
         <source>Unable to update package</source>
         <translation>Неможливо оновити пакет</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="630"/>
-        <location filename="core.cpp" line="650"/>
-        <location filename="core.cpp" line="671"/>
-        <location filename="core.cpp" line="863"/>
+        <location filename="core.cpp" line="663"/>
+        <location filename="core.cpp" line="683"/>
+        <location filename="core.cpp" line="704"/>
+        <location filename="core.cpp" line="1045"/>
         <source>Error parsing component</source>
         <translation>Помилка розбору компоненту</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="631"/>
+        <location filename="core.cpp" line="664"/>
         <source>Unable to load package ID for package `%1`-%2</source>
         <translation>Неможливо завантажити ідентифікатор пакету для пакету `%1`-%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="651"/>
+        <location filename="core.cpp" line="684"/>
         <source>Unable to save package `%1`-%2</source>
         <translation>Неможливо зберегти пакет `%1`-%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="672"/>
+        <location filename="core.cpp" line="705"/>
         <source>Unable to save package location for package `%1`-%2 and component %3</source>
         <translation>Неможливо зберегти положення пакету для пакету`%1`-%2 і компоненту %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="713"/>
-        <location filename="core.cpp" line="790"/>
+        <location filename="core.cpp" line="746"/>
+        <location filename="core.cpp" line="823"/>
         <source>Unable to remove package</source>
         <translation>Неможливо видалити пакет</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="757"/>
-        <location filename="core.cpp" line="1047"/>
+        <location filename="core.cpp" line="790"/>
+        <location filename="core.cpp" line="1229"/>
         <source>Error installing package</source>
         <translation>Помилка встановлення пакету</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="758"/>
+        <location filename="core.cpp" line="791"/>
         <source>Error recording package to the package DB.</source>
         <translation>Помилка запису пакету в базу даних пакетів.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="824"/>
+        <location filename="core.cpp" line="974"/>
+        <source>Repository addition error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="975"/>
+        <source>Incorrect URL %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1006"/>
         <source>Error adding/updating repository</source>
         <translation>Помилка додавання/оновлення репозиторію</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="825"/>
+        <location filename="core.cpp" line="1007"/>
         <source>While trying to add or update the repository: %1.</source>
         <translation>Під час додавання чи оновлення репозиторію: %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="864"/>
+        <location filename="core.cpp" line="1046"/>
         <source>Unable to load component ID for component %1.</source>
         <translation>Неможливо завантажити ідентифікатор компоненту для компоненту %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="880"/>
-        <location filename="core.cpp" line="899"/>
-        <location filename="core.cpp" line="931"/>
+        <location filename="core.cpp" line="1062"/>
+        <location filename="core.cpp" line="1081"/>
+        <location filename="core.cpp" line="1113"/>
         <source>Error handling component</source>
         <translation>Помилка обробки компоненту</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="881"/>
+        <location filename="core.cpp" line="1063"/>
         <source>Unable to load packages already present in the component %1.</source>
         <translation>Неможливо завантажити пакети, уже присутні в компоненті %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="900"/>
+        <location filename="core.cpp" line="1082"/>
         <source>Unable to load package already present in the component %1.</source>
         <translation>Неможливо завантажити пакет, уже присутній в компоненті %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="932"/>
+        <location filename="core.cpp" line="1114"/>
         <source>Unable to remove package which has been removed upstream from %1.</source>
         <translation>Неможливо видалити пакет, який був видалений в репозиторії з %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="981"/>
+        <location filename="core.cpp" line="1163"/>
         <source>Error retrieving package</source>
         <translation>Помилка отримання пакету</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="982"/>
+        <location filename="core.cpp" line="1164"/>
         <source>Unable to save package %1.</source>
         <translation>Неможливо зберегти пакет %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="999"/>
+        <location filename="core.cpp" line="1181"/>
         <source>Error retrieving package icon</source>
         <translation>Помилка отримання іконки пакету</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1000"/>
+        <location filename="core.cpp" line="1182"/>
         <source>Unable to retrieve icon for package %1.</source>
         <translation>Неможливо отримати іконку для пакету %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1018"/>
+        <location filename="core.cpp" line="1200"/>
         <source>Error retrieving image</source>
         <translation>Помилка отримання зображення</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1019"/>
+        <location filename="core.cpp" line="1201"/>
         <source>Unable to retrieve image for package %1 from %2.</source>
         <translation>Неможливо отримати зображення для пакету %1 з %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1040"/>
+        <location filename="core.cpp" line="1222"/>
         <source>Error while fetching package %1: %2.</source>
         <translation>Помилка отримання пакету %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1074"/>
+        <location filename="core.cpp" line="1256"/>
         <source>Package installed</source>
         <translation>Пакет встановлено</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1075"/>
+        <location filename="core.cpp" line="1257"/>
         <source>Package %1 installed successfully.</source>
         <translation>Пакет %1 встановлено успішно.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1105"/>
+        <location filename="core.cpp" line="1287"/>
         <source>Package updated</source>
         <translation>Пакет оновлено</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1106"/>
+        <location filename="core.cpp" line="1288"/>
         <source>Package %1 updated successfully.</source>
         <translation>Пакет %1 оновлено успішно.</translation>
     </message>
@@ -230,72 +229,72 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::PackageProcessor</name>
     <message>
-        <location filename="packageprocessor.cpp" line="58"/>
+        <location filename="packageprocessor.cpp" line="66"/>
         <source>Could not find database file for package %1.</source>
         <translation>Неможливо знайти базу даних для пакету %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="70"/>
+        <location filename="packageprocessor.cpp" line="78"/>
         <source>Could not open database file %1: %2.</source>
         <translation>Неможливо відкрити файл бази даних %1: %2.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="102"/>
+        <location filename="packageprocessor.cpp" line="110"/>
         <source>Could not remove file %1: %2.</source>
         <translation>Неможливо видалити файл %1: %2.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="119"/>
+        <location filename="packageprocessor.cpp" line="127"/>
         <source>Could not remove directory %1.</source>
         <translation>Неможливо видалити теку %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="133"/>
+        <location filename="packageprocessor.cpp" line="141"/>
         <source>Could not remove database file %1: %2.</source>
         <translation>Неможливо видалити %1: %2.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="198"/>
+        <location filename="packageprocessor.cpp" line="206"/>
         <source>Unable to unpack package archive, unpacker exited with %1: %2.</source>
         <translation>Неможливо розпакувати архів з пакетом, розпаковщик вийшов з кодом %1: %2.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="232"/>
+        <location filename="packageprocessor.cpp" line="240"/>
         <source>Unable to get directory for the package: %1.</source>
         <translation>Неможливо отримати папку для пакету: %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="268"/>
+        <location filename="packageprocessor.cpp" line="276"/>
         <source>Unable to copy files from staging area to destination directory.</source>
         <translation>Неможливо скопіювати файли з тимчасової теки в теку призначення.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="301"/>
+        <location filename="packageprocessor.cpp" line="309"/>
         <source>Unable to unpack package archive, unpacker died with %1: %2.</source>
         <translation>Неможливо розпакувати архів з пакетом, розпаковщик помер з кодом %1: %2.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="348"/>
+        <location filename="packageprocessor.cpp" line="364"/>
         <source>Unable to create staging directory %1.</source>
         <translation>Неможливо створити тимчасову теку %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="362"/>
+        <location filename="packageprocessor.cpp" line="383"/>
         <source>No URLs for package %1.</source>
         <translation>Немає адрес для пакету %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="426"/>
+        <location filename="packageprocessor.cpp" line="447"/>
         <source>Could not copy file %1 because of %2.</source>
         <translation>Невомжливо скопіювати файл %1 через %2.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="451"/>
+        <location filename="packageprocessor.cpp" line="472"/>
         <source>Unable to create directory %1.</source>
         <translation>Неможливо створити теку %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="479"/>
+        <location filename="packageprocessor.cpp" line="500"/>
         <source>Unable to remove package %1 while updating to package %2</source>
         <translation>Неможливо видалити пакет %1 при оновленні до пакету %2</translation>
     </message>
@@ -303,27 +302,22 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::PackagesDelegate</name>
     <message>
-        <location filename="packagesdelegate.cpp" line="137"/>
-        <source>Version %1 available</source>
-        <translation>Доступна версія %1</translation>
-    </message>
-    <message>
-        <location filename="packagesdelegate.cpp" line="264"/>
+        <location filename="packagesdelegate.cpp" line="278"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="269"/>
+        <location filename="packagesdelegate.cpp" line="283"/>
         <source>Install</source>
         <translation>Встановити</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="291"/>
+        <location filename="packagesdelegate.cpp" line="305"/>
         <source>Update</source>
         <translation>Оновити</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="419"/>
+        <location filename="packagesdelegate.cpp" line="434"/>
         <source>Unable to mark package, reverting.</source>
         <translation>Неможливо помітити пакет, повертаємося.</translation>
     </message>
@@ -331,22 +325,22 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::PendingManager</name>
     <message>
-        <location filename="pendingmanager.cpp" line="109"/>
+        <location filename="pendingmanager.cpp" line="114"/>
         <source>Package dependencies could not be fulfilled: %1</source>
         <translation>Залежності пакету не задоволені: %1</translation>
     </message>
     <message>
-        <location filename="pendingmanager.cpp" line="165"/>
+        <location filename="pendingmanager.cpp" line="170"/>
         <source>To be installed</source>
         <translation>Будуть встановлені</translation>
     </message>
     <message>
-        <location filename="pendingmanager.cpp" line="168"/>
+        <location filename="pendingmanager.cpp" line="173"/>
         <source>To be removed</source>
         <translation>Будуть видалені</translation>
     </message>
     <message>
-        <location filename="pendingmanager.cpp" line="171"/>
+        <location filename="pendingmanager.cpp" line="176"/>
         <source>To be updated</source>
         <translation>Будуть оновлені</translation>
     </message>
@@ -354,9 +348,19 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::Plugin</name>
     <message>
-        <location filename="lackman.cpp" line="111"/>
+        <location filename="lackman.cpp" line="121"/>
         <source>LeechCraft Package Manager.</source>
         <translation>Пакетний менеджер для LeechCraft.</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="195"/>
+        <source>Update all repos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="201"/>
+        <source>Upgrade all packages</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -426,34 +430,6 @@
         <translation>Нможливо розпакувати файл компоненту. Помилка gunzip: %1. Проблемний файл в %2.</translation>
     </message>
     <message>
-        <source>Unable to unpack the repository file. unxz error: %1.Problematic file is at %2.</source>
-        <translation type="obsolete">Unable to unpack the repository file. unxz error: %1. Problematic file is at %2.</translation>
-    </message>
-    <message>
-        <source>Could not get repo name.</source>
-        <translation type="obsolete">Could not get repo name.</translation>
-    </message>
-    <message>
-        <source>Could not get repo description.</source>
-        <translation type="obsolete">Could not get repo description.</translation>
-    </message>
-    <message>
-        <source>Could not get long repo description.</source>
-        <translation type="obsolete">Could not get long repo description.</translation>
-    </message>
-    <message>
-        <source>Could not get maintainer name.</source>
-        <translation type="obsolete">Could not get maintainer name.</translation>
-    </message>
-    <message>
-        <source>Could not get maintainer email.</source>
-        <translation type="obsolete">Could not get maintainer email.</translation>
-    </message>
-    <message>
-        <source>Could not get components.</source>
-        <translation type="obsolete">Could not get components.</translation>
-    </message>
-    <message>
         <location filename="repoinfofetcher.cpp" line="364"/>
         <source>Repository parse error</source>
         <translation>Помилка розбору репозиторію</translation>
@@ -468,10 +444,6 @@
         <location filename="repoinfofetcher.cpp" line="425"/>
         <source>Component unpack error</source>
         <translation>Помилка розпакування компоненту</translation>
-    </message>
-    <message>
-        <source>Unable to unpack the component file. unxz error: %1.Problematic file is at %2.</source>
-        <translation type="obsolete">Unable to unpack the component file. unxz error: %1. Problematic file is at %2.</translation>
     </message>
     <message>
         <location filename="repoinfofetcher.cpp" line="402"/>
@@ -497,12 +469,12 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::Storage</name>
     <message>
-        <location filename="storage.cpp" line="759"/>
+        <location filename="storage.cpp" line="775"/>
         <source>Package with ID %1 not found.</source>
         <translation>Пакет з ID %1 не знайдено.</translation>
     </message>
     <message>
-        <location filename="storage.cpp" line="827"/>
+        <location filename="storage.cpp" line="843"/>
         <source>Unknown dependency type `%1`.</source>
         <translation>Невідомий тип залежності `%1`.</translation>
     </message>
@@ -510,7 +482,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="304"/>
+        <location filename="core.cpp" line="327"/>
         <source>Unable to cd into %1.</source>
         <translation>Неможливо перейти в %1.</translation>
     </message>
@@ -543,6 +515,15 @@
         <location filename="xmlparsers.cpp" line="76"/>
         <source>Could not get components.</source>
         <translation>Неможливо отримати список компонентів.</translation>
+    </message>
+</context>
+<context>
+    <name>lackmansettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Packages</source>
+        <translation type="unfinished">Пакети</translation>
     </message>
 </context>
 </TS>

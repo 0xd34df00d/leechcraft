@@ -9,7 +9,7 @@
         <translation>Дозволяє відкривати файли і обробляти сутності з допомогою зовнішніх програм.</translation>
     </message>
     <message>
-        <location filename="shellopen.cpp" line="113"/>
+        <location filename="shellopen.cpp" line="116"/>
         <source>Do you want to open %1?</source>
         <translation>Ви хочете відкрити %1?</translation>
     </message>

@@ -41,19 +41,29 @@ namespace LeechCraft
 				completer->setCompletionMode (QCompleter::UnfilteredPopupCompletion);
 				setCompleter (completer);
 
+				connect (completer,
+						SIGNAL (activated (const QModelIndex&)),
+						this,
+						SLOT (handleCompleterActivated ()));
+
 				connect (this,
 						SIGNAL (textEdited (const QString&)),
 						Core::Instance ().GetURLCompletionModel (),
 						SLOT (setBase (const QString&)));
 			}
-			
+
 			ProgressLineEdit::~ProgressLineEdit ()
 			{
 			}
-			
+
 			bool ProgressLineEdit::IsCompleting () const
 			{
 				return IsCompleting_;
+			}
+
+			void ProgressLineEdit::handleCompleterActivated ()
+			{
+				emit returnPressed ();
 			}
 		};
 	};

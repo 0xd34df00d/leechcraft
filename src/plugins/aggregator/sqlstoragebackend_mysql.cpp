@@ -222,6 +222,96 @@ namespace LeechCraft
 					result.push_back (feedSelector.value (0).toInt ());
 			}
 
+			IDType_t SQLStorageBackendMysql::GetHighestID (const PoolType& type) const
+			{
+				QString field, table;
+				switch (type)
+				{
+					case PTFeed:
+						field = "feed_id";
+						table = "feeds";
+						break;
+
+					case PTChannel:
+						field = "channel_id";
+						table = "channels";
+						break;
+
+					case PTItem:
+						field = "item_id";
+						table = "items";
+						break;
+
+					case PTFeedSettings:
+						field = "settings_id";
+						table = "feeds_settings";
+						break;
+
+					case PTEnclosure:
+						field = "enclosure_id";
+						table = "enclosures";
+						break;
+
+					case PTMRSSEntry:
+						field = "mrss_id";
+						table = "mrss";
+						break;
+
+					case PTMRSSThumbnail:
+						field = "mrss_thumb_id";
+						table = "mrss_thumbnails";
+						break;
+
+					case PTMRSSCredit:
+						field = "mrss_credits_id";
+						table = "mrss_credits";
+						break;
+
+					case PTMRSSComment:
+						field = "mrss_comment_id";
+						table = "mrss_comments";
+						break;
+
+					case PTMRSSPeerLink:
+						field = "mrss_peerlink_id";
+						table = "mrss_peerlinks";
+						break;
+
+					case PTMRSSScene:
+						field = "mrss_scene_id";
+						table = "mrss_scenes";
+						break;
+
+					default:
+						qWarning () << Q_FUNC_INFO
+							    << "supplied unknown type"
+							    << type;
+						return 0;
+				}
+
+				return GetHighestID (field, table);
+
+			}
+
+			IDType_t SQLStorageBackendMysql::GetHighestID (const QString& idName, const QString& tableName) const
+			{
+				QSqlQuery findHighestID (DB_);
+				//due to some strange troubles with QSqlQuery::bindValue ()
+				//we'll bind values by ourselves. It should be safe as this is our
+				//internal function.
+				if (!findHighestID.exec (QString ("SELECT MAX (%1) FROM %2")
+							  .arg (idName).arg (tableName)))
+				{
+					Util::DBLock::DumpError (findHighestID);
+					return 0;
+				}
+
+				if (findHighestID.first ())
+					return findHighestID.value (0).toInt ();
+				else
+					return 0;
+			}
+
 			Feed_ptr SQLStorageBackendMysql::GetFeed (const IDType_t& feedId) const
 			{
 				FeedGetter_.bindValue (0, feedId);

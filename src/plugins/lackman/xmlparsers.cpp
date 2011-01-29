@@ -151,8 +151,10 @@ namespace LeechCraft
 					packageInfo.Type_ = PackageInfo::TIconset;
 				else if (type == "translation")
 					packageInfo.Type_ = PackageInfo::TTranslation;
-				else
+				else if (type == "plugin")
 					packageInfo.Type_ = PackageInfo::TPlugin;
+				else
+					packageInfo.Type_ = PackageInfo::TData;
 
 				packageInfo.Language_ = package.attribute ("language");
 				packageInfo.Name_ = packageName;

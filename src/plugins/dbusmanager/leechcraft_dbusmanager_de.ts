@@ -13,7 +13,7 @@
 <context>
     <name>LeechCraft::Plugins::DBusManager::DBusManager</name>
     <message>
-        <location filename="dbusmanager.cpp" line="59"/>
+        <location filename="dbusmanager.cpp" line="64"/>
         <source>DBus support for LeechCraft</source>
         <translation>DBus Unterstützung für LeechCraft</translation>
     </message>
@@ -44,19 +44,18 @@
 <context>
     <name>dbusmanagersettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummy.cpp" line="2"/>
         <source>Environment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummy.cpp" line="3"/>
         <source>KDE</source>
         <translation>KDE</translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="4"/>
-        <source>Use notifications (KDE ≥ 4.4 or libnotify)</source>
-        <oldsource>Use notifications (KDE â¥ 4.4 or libnotify)</oldsource>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Use notifications (KDE â¥ 4.4 or libnotify)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

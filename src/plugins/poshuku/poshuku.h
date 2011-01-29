@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 #include <interfaces/imultitabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ipluginready.h>
-#include <interfaces/imenuembedder.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -49,25 +49,20 @@ namespace LeechCraft
 						  , public IEntityHandler
 						  , public IHaveShortcuts
 						  , public IWebBrowser
-						  , public IMenuEmbedder
+						  , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IMenuEmbedder)
+				Q_INTERFACES (IInfo IMultiTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IActionsExporter)
 
 				QMenu *ToolMenu_;
 				QAction *ImportXbel_;
 				QAction *ExportXbel_;
 				QAction *CheckFavorites_;
+				QAction *ReloadAll_;
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 			public:
-				enum Actions
-				{
-					EAImportXbel_ = BrowserWidget::ActionMax + 1,
-					EAExportXbel_,
-					EACheckFavorites_
-				};
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
 				void Release ();
@@ -92,11 +87,10 @@ namespace LeechCraft
 				IWebWidget* GetWidget () const;
 				QWebView* CreateWindow ();
 
-				void SetShortcut (int, const QKeySequence&);
-				QMap<int, LeechCraft::ActionInfo> GetActionInfo () const;
+				void SetShortcut (const QString&, const QKeySequences_t&);
+				QMap<QString, ActionInfo> GetActionInfo () const;
 
-				QList<QMenu*> GetToolMenus () const;
-				QList<QAction*> GetToolActions () const;
+				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			public slots:
 				void newTabRequested ();
 			private:
@@ -111,6 +105,7 @@ namespace LeechCraft
 				void handleNewTab ();
 				void handleSettingsClicked (const QString&);
 				void handleCheckFavorites ();
+				void handleReloadAll ();
 			signals:
 				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);

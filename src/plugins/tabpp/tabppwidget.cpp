@@ -105,9 +105,9 @@ namespace LeechCraft
 								this);
 						break;
 					default:
-						mw->addDockWidget (Qt::LeftDockWidgetArea,
+						mw->addDockWidget (Qt::RightDockWidgetArea,
 								this);
-						ShouldFloat_ = true;
+						ShouldFloat_ = false;
 						break;
 				}
 

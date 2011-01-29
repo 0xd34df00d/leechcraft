@@ -19,11 +19,12 @@
 #include "itemhandlercombobox.h"
 #include <boost/bind.hpp>
 #include <QLabel>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QComboBox>
 #include <QtDebug>
 #include "../scripter.h"
 #include "../itemhandlerfactory.h"
+#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -43,14 +44,15 @@ namespace LeechCraft
 
 	void ItemHandlerCombobox::Handle (const QDomElement& item, QWidget *pwidget)
 	{
-		QFormLayout *lay = qobject_cast<QFormLayout*> (pwidget->layout ());
+		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QComboBox *box = new QComboBox (XSD_);
 		box->setObjectName (item.attribute ("property"));
 		if (item.hasAttribute ("maxVisibleItems"))
 			box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());
 
-		if (item.hasAttribute ("mayHaveDataSource") &&
-				item.attribute ("mayHaveDataSource").toLower () == "true")
+		bool mayHaveDataSource = item.hasAttribute ("mayHaveDataSource") &&
+				item.attribute ("mayHaveDataSource").toLower () == "true";
+		if (mayHaveDataSource)
 		{
 			QString prop = item.attribute ("property");
 			Factory_->RegisterDatasourceSetter (prop,
@@ -97,11 +99,11 @@ namespace LeechCraft
 		int pos = box->findData (XSD_->GetValue (item));
 		if (pos != -1)
 			box->setCurrentIndex (pos);
-		else
+		else if (!mayHaveDataSource)
 			qWarning () << Q_FUNC_INFO
 				<< box
 				<< XSD_->GetValue (item)
-				<< "not found";
+				<< "not found (and this item may not have a datasource)";
 
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
@@ -109,7 +111,9 @@ namespace LeechCraft
 		box->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
 
-		lay->addRow (label, box);
+		int row = lay->rowCount ();
+		lay->addWidget (label, row, 0, Qt::AlignRight);
+		lay->addWidget (box, row, 1);
 	}
 
 	void ItemHandlerCombobox::SetValue (QWidget *widget, const QVariant& value) const
@@ -124,6 +128,13 @@ namespace LeechCraft
 		}
 
 		int pos = combobox->findData (value);
+		if (pos == -1)
+		{
+			QString text = value.toString ();
+			if (!text.isNull ())
+				pos = combobox->findText (text);
+		}
+
 		if (pos != -1)
 			combobox->setCurrentIndex (pos);
 		else
@@ -143,7 +154,10 @@ namespace LeechCraft
 				<< object;
 			return QVariant ();
 		}
-		return combobox->itemData (combobox->currentIndex ());
+		QVariant result = combobox->itemData (combobox->currentIndex ());
+		if (result.isNull ())
+			result = combobox->currentText ();
+		return result;
 	}
 
 	void ItemHandlerCombobox::SetDataSource (const QString& prop, QAbstractItemModel *model, Util::XmlSettingsDialog *xsd)
@@ -162,6 +176,13 @@ namespace LeechCraft
 
 		QVariant data = xsd->GetValue (Propname2Item_ [prop]);
 		int pos = box->findData (data);
+		if (pos == -1)
+		{
+			QString text = data.toString ();
+			if (!text.isNull ())
+				pos = box->findText (text);
+		}
+
 		if (pos != -1)
 			box->setCurrentIndex (pos);
 		else

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,88 +21,135 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QMap>
-#include <gloox/connectionlistener.h>
-#include <gloox/rosterlistener.h>
+#include <QHash>
+#include <QSet>
+#include <QXmppMucIq.h>
+#include <interfaces/imessage.h>
+#include "glooxclentry.h"
+#include "glooxaccount.h"
 
-class QTimer;
-
-namespace gloox
-{
-	class Client;
-	class JID;
-}
+class QXmppMessage;
+class QXmppMucManager;
+class QXmppClient;
+class QXmppDiscoveryManager;
+class QXmppDiscoveryIq;
 
 namespace LeechCraft
 {
-	namespace Plugins
+struct Entity;
+
+namespace Plugins
+{
+namespace Azoth
+{
+namespace Plugins
+{
+class IProxyObject;
+
+namespace Xoox
+{
+	class GlooxAccount;
+	class GlooxMessage;
+	class RoomCLEntry;
+	class RoomHandler;
+
+	class ClientConnection : public QObject
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				namespace Xoox
-				{
-					struct GlooxAccountState;
+		Q_OBJECT
 
-					class GlooxAccount;
-					class GlooxCLEntry;
+		QXmppClient *Client_;
+		QXmppMucManager *MUCManager_;
+		QXmppDiscoveryManager *DiscoveryManager_;
 
-					class ClientConnection : public QObject
-										   , public gloox::ConnectionListener
-										   , public gloox::RosterListener
-					{
-						Q_OBJECT
+		QString OurJID_;
 
-						boost::shared_ptr<gloox::Client> Client_;
-						QTimer *PollTimer_;
-						GlooxAccount *Account_;
-						QMap<gloox::JID, GlooxCLEntry*> JID2CLEntry_;
-					public:
-						ClientConnection (const gloox::JID&,
-								const QString&,
-								const GlooxAccountState&,
-								GlooxAccount*);
+		GlooxAccount *Account_;
+		IProxyObject *ProxyObject_;
 
-						void SetState (const GlooxAccountState&);
-						void Synchronize ();
-						gloox::Client* GetClient () const;
-						GlooxCLEntry* GetCLEntry (const gloox::JID& bareJid) const;
-					protected:
-						// ConnectionListener
-						virtual void onConnect ();
-						virtual void onDisconnect (gloox::ConnectionError);
-						virtual void onResourceBind (const std::string&);
-						virtual void onResourceBindError (const gloox::Error*);
-						virtual void onSessionCreateError (const gloox::Error*);
-						virtual void onStreamEvent (gloox::StreamEvent);
-						virtual bool onTLSConnect (const gloox::CertInfo&);
+		QHash<QString, GlooxCLEntry*> JID2CLEntry_;
+		QHash<QString, GlooxCLEntry*> ODSEntries_;
 
-						// RosterListener
-						virtual void handleItemAdded (const gloox::JID&);
-						virtual void handleItemSubscribed (const gloox::JID&);
-						virtual void handleItemRemoved (const gloox::JID&);
-						virtual void handleItemUpdated (const gloox::JID&);
-						virtual void handleItemUnsubscribed (const gloox::JID&);
-						virtual void handleRoster (const gloox::Roster&);
-						virtual void handleRosterPresence (const gloox::RosterItem&,
-								const std::string&, gloox::Presence::PresenceType, const std::string&);
-						virtual void handleSelfPresence (const gloox::RosterItem&,
-								const std::string&, gloox::Presence::PresenceType, const std::string&);
-						virtual bool handleSubscriptionRequest (const gloox::JID&, const std::string&);
-						virtual bool handleUnsubscriptionRequest (const gloox::JID&, const std::string&);
-						virtual void handleNonrosterPresence (const gloox::Presence&);
-						virtual void handleRosterError (const gloox::IQ&);
-					private slots:
-						void handlePollTimer ();
-					signals:
-						void gotRosterItems (const QList<QObject*>&);
-						void rosterItemRemoved (QObject*);
-						void rosterItemUpdated (QObject*);
-					};
-				}
-			}
-		}
-	}
+		bool IsConnected_;
+		bool FirstTimeConnect_;
+
+		QHash<QString, RoomHandler*> RoomHandlers_;
+		GlooxAccountState LastState_;
+		QString Password_;
+	public:
+		ClientConnection (const QString&,
+				const GlooxAccountState&,
+				GlooxAccount*);
+		virtual ~ClientConnection ();
+
+		void SetState (const GlooxAccountState&);
+		void Synchronize ();
+
+		void SetPassword (const QString&);
+
+		QString GetOurJID () const;
+		void SetOurJID (const QString&);
+
+		/** Joins the room and returns the contact list
+		 * entry representing that room.
+		 */
+		RoomCLEntry* JoinRoom (const QString& room, const QString& user);
+		void Unregister (RoomHandler*);
+
+		QXmppMucManager* GetMUCManager () const;
+		void RequestInfo (const QString&) const;
+
+		void Update (const QXmppRosterIq::Item&);
+		void Update (const QXmppMucAdminIq::Item&);
+
+		void AckAuth (QObject*, bool);
+		void Subscribe (const QString&, const QString&,
+				const QString&, const QStringList&);
+		void RevokeSubscription (const QString&, const QString&);
+		void Unsubscribe (const QString&, const QString&);
+		void Remove (GlooxCLEntry*);
+
+		QXmppClient* GetClient () const;
+		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
+		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
+		QList<QObject*> GetCLEntries () const;
+		void FetchVCard (const QString&);
+		GlooxMessage* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&, const QXmppRosterIq::Item&);
+	private:
+		EntryStatus PresenceToStatus (const QXmppPresence&) const;
+		void Split (const QString& full,
+				QString *bare, QString *resource) const;
+		void HandleOtherPresence (const QXmppPresence&);
+	private slots:
+		void handleConnected ();
+		void handleRosterReceived ();
+		void handleRosterChanged (const QString&);
+		void handleVCardReceived (const QXmppVCardIq&);
+		void handleInfoReceived (const QXmppDiscoveryIq&);
+		void handlePresenceChanged (const QXmppPresence&);
+		void handleMessageReceived (const QXmppMessage&);
+		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
+	private:
+		GlooxCLEntry* CreateCLEntry (const QString&);
+		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
+		GlooxCLEntry* ConvertFromODS (const QString&, const QXmppRosterIq::Item&);
+	signals:
+		void gotRosterItems (const QList<QObject*>&);
+		void rosterItemRemoved (QObject*);
+		void rosterItemsRemoved (const QList<QObject*>&);
+		void rosterItemUpdated (QObject*);
+		void rosterItemSubscribed (QObject*, const QString&);
+		void rosterItemUnsubscribed (QObject*, const QString&);
+		void rosterItemUnsubscribed (const QString&, const QString&);
+		void gotSubscriptionRequest (QObject*, const QString&);
+
+		void serverAuthFailed ();
+		void needPassword ();
+	};
+}
+}
+}
+}
 }
 
 #endif
