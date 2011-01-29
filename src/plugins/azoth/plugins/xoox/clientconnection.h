@@ -121,7 +121,7 @@ namespace Xoox
 		void Split (const QString& full,
 				QString *bare, QString *resource) const;
 		void HandleOtherPresence (const QXmppPresence&);
-		void HandleError (const QXmppStanza::Error&);
+		void HandleError (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	private slots:
 		void handleConnected ();

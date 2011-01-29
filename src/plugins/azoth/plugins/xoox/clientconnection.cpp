@@ -406,7 +406,7 @@ namespace Xoox
 	void ClientConnection::handleIqReceived (const QXmppIq& iq)
 	{
 		if (iq.error ().isValid ())
-			HandleError (iq.error ());
+			HandleError (iq);
 	}
 
 	void ClientConnection::handleRosterReceived ()
@@ -574,14 +574,19 @@ namespace Xoox
 		}
 	}
 
-	void ClientConnection::HandleError (const QXmppStanza::Error& error)
+	void ClientConnection::HandleError (const QXmppIq& iq)
 	{
+		const QXmppStanza::Error& error = iq.error ();
 		if (error.condition () == QXmppStanza::Error::FeatureNotImplemented)
 		{
 			// Whatever it is, it just keeps appearing, hz.
 			return;
 		}
-		QString typeText = HandleErrorCondition (error.condition ());
+		QString typeText;
+		if (!iq.from ().isEmpty ())
+			typeText = tr ("Error from %1: ")
+					.arg (iq.from ());
+		typeText += HandleErrorCondition (error.condition ());
 
 		if (!error.text ().isEmpty ())
 			typeText += " " + tr ("Error text: %1.")
