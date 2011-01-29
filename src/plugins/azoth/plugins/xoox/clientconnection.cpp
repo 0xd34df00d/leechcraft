@@ -568,14 +568,12 @@ namespace Xoox
 
 	void ClientConnection::HandleError (const QXmppStanza::Error& error)
 	{
-		QString typeText;
-		if (error.type () == QXmppStanza::Error::Auth)
+		if (error.condition () == QXmppStanza::Error::FeatureNotImplemented)
 		{
-			emit serverAuthFailed ();
-			typeText = tr ("Authorization error. ");
+			// Whatever it is, it just keeps appearing, hz.
+			return;
 		}
-
-		typeText += HandleErrorCondition (error.condition ());
+		QString typeText = HandleErrorCondition (error.condition ());
 
 		if (!error.text ().isEmpty ())
 			typeText += " " + tr ("Error text: %1.")
@@ -611,6 +609,7 @@ namespace Xoox
 		case QXmppStanza::Error::NotAllowed:
 			return tr ("Action is not allowed.");
 		case QXmppStanza::Error::NotAuthorized:
+			emit serverAuthFailed ();
 			return tr ("Not authorized.");
 		case QXmppStanza::Error::PaymentRequired:
 			return tr ("Payment required.");
