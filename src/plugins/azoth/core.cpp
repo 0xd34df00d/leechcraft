@@ -1267,6 +1267,40 @@ namespace LeechCraft
 				}
 			}
 
+
+			namespace
+			{
+				void AuthorizeEntry (Plugins::ICLEntry *entry)
+				{
+					Plugins::IAccount *account =
+							qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+					if (!account)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "parent account doesn't implement IAccount:"
+								<< entry->GetParentAccount ();
+						return;
+					}
+					const QString& id = entry->GetHumanReadableID ();
+					account->Authorize (entry->GetObject ());
+					account->RequestAuth (id);
+				}
+
+				void DenyAuthForEntry (Plugins::ICLEntry *entry)
+				{
+					Plugins::IAccount *account =
+							qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
+					if (!account)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "parent account doesn't implement IAccount:"
+								<< entry->GetParentAccount ();
+						return;
+					}
+					account->DenyAuth (entry->GetObject ());
+				}
+			}
+
 			void Core::handleAuthorizationRequested (QObject *entryObj, const QString& msg)
 			{
 				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
@@ -1295,7 +1329,16 @@ namespace LeechCraft
 						tr ("Subscription requested by %1: %2.")
 							.arg (entry->GetEntryName ())
 							.arg (msg);
-				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
+				Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
+				NotificationActionHandler *nh =
+						new NotificationActionHandler (e, this);
+				nh->AddFunction (tr ("Authorize"),
+						boost::bind (AuthorizeEntry,
+								entry));
+				nh->AddFunction (tr ("Deny"),
+						boost::bind (DenyAuthForEntry,
+								entry));
+				emit gotEntity (e);
 			}
 
 			/** @todo Option for disabling notifications of subscription events.
@@ -1605,18 +1648,7 @@ namespace LeechCraft
 
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
-				Plugins::IAccount *account =
-						qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
-				if (!account)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "parent account doesn't implement IAccount:"
-							<< entry->GetParentAccount ();
-					return;
-				}
-				const QString& id = entry->GetHumanReadableID ();
-				account->Authorize (entry->GetObject ());
-				account->RequestAuth (id);
+				AuthorizeEntry (entry);
 			}
 
 			void Core::handleActionDenyAuthTriggered ()
@@ -1632,16 +1664,7 @@ namespace LeechCraft
 
 				Plugins::ICLEntry *entry = action->
 						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
-				Plugins::IAccount *account =
-						qobject_cast<Plugins::IAccount*> (entry->GetParentAccount ());
-				if (!account)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "parent account doesn't implement IAccount:"
-							<< entry->GetParentAccount ();
-					return;
-				}
-				account->DenyAuth (entry->GetObject ());
+				DenyAuthForEntry (entry);
 			}
 
 			void Core::handleActionRoleTriggered ()
