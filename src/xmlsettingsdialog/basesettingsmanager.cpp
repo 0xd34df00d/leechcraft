@@ -85,6 +85,16 @@ QVariant BaseSettingsManager::Property (const QString& propName, const QVariant&
 	return result;
 }
 
+void BaseSettingsManager::SetRawValue (const QString& path, const QVariant& val)
+{
+	Settings_->setValue (path, val);
+}
+
+QVariant BaseSettingsManager::GetRawValue (const QString& path, const QVariant& def) const
+{
+	return Settings_->value (path, def);
+}
+
 bool BaseSettingsManager::event (QEvent *e)
 {
 	if (e->type () != QEvent::DynamicPropertyChange)
