@@ -78,6 +78,14 @@ namespace Xoox
 				this,
 				SLOT (handleConnected ()));
 		connect (Client_,
+				SIGNAL (error (QXmppClient::Error)),
+				this,
+				SLOT (handleError (QXmppClient::Error)));
+		connect (Client_,
+				 SIGNAL (iqReceived (const QXmppIq&)),
+				this,
+				SLOT (handleIqReceived (const QXmppIq&)));
+		connect (Client_,
 				SIGNAL (presenceReceived (const QXmppPresence&)),
 				this,
 				SLOT (handlePresenceChanged (const QXmppPresence&)));
@@ -372,6 +380,35 @@ namespace Xoox
 		IsConnected_ = true;
 	}
 
+	void ClientConnection::handleError (QXmppClient::Error error)
+	{
+		QString str;
+		switch (error)
+		{
+		case QXmppClient::SocketError:
+			str = tr ("Socket error.");
+			break;
+		case QXmppClient::KeepAliveError:
+			str = tr ("Keep-alive error.");
+			break;
+		case QXmppClient::XmppStreamError:
+			str = tr ("Error while connecting: ");
+			str += HandleErrorCondition (Client_->xmppStreamError ());
+			break;
+		}
+
+		const Entity& e = Util::MakeNotification ("Azoth",
+				str,
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void ClientConnection::handleIqReceived (const QXmppIq& iq)
+	{
+		if (iq.error ().isValid ())
+			HandleError (iq.error ());
+	}
+
 	void ClientConnection::handleRosterReceived ()
 	{
 		QXmppRosterManager& rm = Client_->rosterManager ();
@@ -526,6 +563,77 @@ namespace Xoox
 			else
 				emit rosterItemUnsubscribed (jid, QString ());
 			break;
+		}
+	}
+
+	void ClientConnection::HandleError (const QXmppStanza::Error& error)
+	{
+		QString typeText;
+		if (error.type () == QXmppStanza::Error::Auth)
+		{
+			emit serverAuthFailed ();
+			typeText = tr ("Authorization error. ");
+		}
+
+		typeText += HandleErrorCondition (error.condition ());
+
+		if (!error.text ().isEmpty ())
+			typeText += " " + tr ("Error text: %1.")
+					.arg (error.text ());
+
+		const Entity& e = Util::MakeNotification ("Azoth",
+				typeText,
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	QString ClientConnection::HandleErrorCondition (const QXmppStanza::Error::Condition& condition)
+	{
+		switch (condition)
+		{
+		case QXmppStanza::Error::BadRequest:
+			return tr ("Bad request.");
+		case QXmppStanza::Error::Conflict:
+			return tr ("Conflict (possibly, resource conflict).");
+		case QXmppStanza::Error::FeatureNotImplemented:
+			return tr ("Feature not implemented.");
+		case QXmppStanza::Error::Forbidden:
+			return tr ("Forbidden.");
+			//case QXmppStanza::Error::Gone:
+		case QXmppStanza::Error::InternalServerError:
+			return tr ("Internal server error.");
+		case QXmppStanza::Error::ItemNotFound:
+			return tr ("Item not found.");
+		case QXmppStanza::Error::JidMalformed:
+			return tr ("JID is malformed.");
+		case QXmppStanza::Error::NotAcceptable:
+			return tr ("Data is not acceptable.");
+		case QXmppStanza::Error::NotAllowed:
+			return tr ("Action is not allowed.");
+		case QXmppStanza::Error::NotAuthorized:
+			return tr ("Not authorized.");
+		case QXmppStanza::Error::PaymentRequired:
+			return tr ("Payment required.");
+		case QXmppStanza::Error::RecipientUnavailable:
+			return tr ("Recipient unavailable.");
+		case QXmppStanza::Error::Redirect:
+			return tr ("Got redirect.");
+		case QXmppStanza::Error::RegistrationRequired:
+			return tr ("Registration required.");
+		case QXmppStanza::Error::RemoteServerNotFound:
+			return tr ("Remote server not found.");
+		case QXmppStanza::Error::RemoteServerTimeout:
+			return tr ("Timeout contacting remote server.");
+		case QXmppStanza::Error::ResourceConstraint:
+			return tr ("Error due to resource constraint.");
+		case QXmppStanza::Error::ServiceUnavailable:
+			return tr ("Service is unavailable at the moment.");
+		case QXmppStanza::Error::SubscriptionRequired:
+			return tr ("Subscription is required to perform this action.");
+			//case QXmppStanza::Error::UndefinedCondition:
+			//case QXmppStanza::Error::UnexpectedRequest:
+		default:
+			return tr ("Other error.");
 		}
 	}
 

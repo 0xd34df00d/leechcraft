@@ -23,6 +23,7 @@
 #include <QMap>
 #include <QHash>
 #include <QSet>
+#include <QXmppClient.h>
 #include <QXmppMucIq.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
@@ -120,8 +121,12 @@ namespace Xoox
 		void Split (const QString& full,
 				QString *bare, QString *resource) const;
 		void HandleOtherPresence (const QXmppPresence&);
+		void HandleError (const QXmppStanza::Error&);
+		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	private slots:
 		void handleConnected ();
+		void handleError (QXmppClient::Error);
+		void handleIqReceived (const QXmppIq&);
 		void handleRosterReceived ();
 		void handleRosterChanged (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
