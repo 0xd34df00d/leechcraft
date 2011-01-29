@@ -96,13 +96,13 @@ namespace LeechCraft
 
 				QString header = e.Entity_.toString ();
 				QString text = e.Additional_ ["Text"].toString ();
-				
+
 				int timeout = Proxy_->GetSettingsManager ()->
 						property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
  				KinotifyWidget *notificationWidget =
 						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
-				
+
 				QStringList actionsNames = e.Additional_ ["NotificationActions"].toStringList ();
 				if (!actionsNames.isEmpty ())
 				{
@@ -112,9 +112,13 @@ namespace LeechCraft
 								<< "value is not QObject*"
 								<< e.Additional_ ["HandlingObject"];
 					else
+					{
 						notificationWidget->SetActions (actionsNames, actionObject);
+						if (e.Additional_ ["HandlingObjectXferOwnership"].toBool ())
+							actionObject->setParent (notificationWidget);
+					}
 				}
-				
+
 				connect (notificationWidget,
 						SIGNAL (checkNotificationQueue ()),
 						this,
