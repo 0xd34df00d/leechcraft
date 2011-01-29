@@ -384,7 +384,7 @@ void TabManager::handleCloseAllButCurrent ()
 		return;
 	}
 
-	int cur = TabWidget_->TabAt (act->data ().value<QPoint> ());
+	int cur = TabWidget_->TabAt (act->property ("_Core/ClickPos").value<QPoint> ());
 	for (int i = TabWidget_->count () - 1; i >= 0; --i)
 		if (i != cur)
 			remove (i);

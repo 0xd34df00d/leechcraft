@@ -77,11 +77,19 @@ int TabWidget::TabAt (const QPoint& pos) const
 void TabWidget::AddAction2TabBar (QAction *act)
 {
 	TabBarActions_ << act;
+	connect (act,
+			SIGNAL (destroyed (QObject*)),
+			this,
+			SLOT (handleActionDestroyed ()));
 }
 
 void TabWidget::InsertAction2TabBar (int index, QAction *act)
 {
-	TabBarActions_.insert(index, act);
+	TabBarActions_.insert (index, act);
+	connect (act,
+			SIGNAL (destroyed (QObject*)),
+			this,
+			SLOT (handleActionDestroyed ()));
 }
 
 bool TabWidget::event (QEvent *e)
@@ -117,8 +125,7 @@ void TabWidget::mouseDoubleClickEvent (QMouseEvent *e)
 void TabWidget::mouseReleaseEvent (QMouseEvent *e)
 {
 	int tabIndex = tabBar ()->tabAt (e->pos ());
-	if (e->button () == Qt::RightButton &&
-			tabIndex == -1)
+	if (e->button () == Qt::RightButton)
 	{
 		emit newTabMenuRequested ();
 		e->accept ();
@@ -192,14 +199,28 @@ void TabWidget::handleTabBarContextMenu (const QPoint& pos)
 
 	Q_FOREACH (QAction *act, TabBarActions_)
 	{
-		act->setData (tabBar ()->mapToGlobal (pos));
+		if (!act)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "detected null pointer";
+			continue;
+		}
+		act->setProperty ("_Core/ClickPos", tabBar ()->mapToGlobal (pos));
 		menu->addAction (act);
 	}
 
 	menu->exec (tabBar ()->mapToGlobal (pos));
 
 	Q_FOREACH (QAction *act, TabBarActions_)
-		act->setData (QVariant ());
+	{
+		if (!act)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "detected null pointer";
+			continue;
+		}
+		act->setProperty ("_Core/ClickPos", QVariant ());
+	}
 
 	delete menu;
 }
@@ -207,4 +228,11 @@ void TabWidget::handleTabBarContextMenu (const QPoint& pos)
 void TabWidget::handleMoveHappened (int from, int to)
 {
 	std::swap (Widgets_ [from], Widgets_ [to]);
+}
+
+void TabWidget::handleActionDestroyed ()
+{
+	Q_FOREACH (QPointer<QAction> act, TabBarActions_)
+		if (!act || act == sender ())
+			TabBarActions_.removeAll (act);
 }

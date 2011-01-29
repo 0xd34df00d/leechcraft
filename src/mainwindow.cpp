@@ -454,9 +454,9 @@ void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 	QAction *act = qobject_cast<QAction*> (sender ());
 	int pos = -1;
 	if (act &&
-			act->data ().canConvert<QPoint> ())
+			act->property ("_Core/ClickPos").canConvert<QPoint> ())
 	{
-		pos = Ui_.MainTabWidget_->TabAt (act->data ().value<QPoint> ());
+		pos = Ui_.MainTabWidget_->TabAt (act->property ("_Core/ClickPos").value<QPoint> ());
 		act->setData (QVariant ());
 	}
 	else

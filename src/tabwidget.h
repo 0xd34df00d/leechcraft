@@ -19,6 +19,8 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 #include <QTabWidget>
+#include <QPointer>
+#include <QAction>
 #include <QMap>
 
 namespace LeechCraft
@@ -28,7 +30,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		QMap<int, QWidget*> Widgets_;
-		QList<QAction*> TabBarActions_;
+		QList<QPointer<QAction> > TabBarActions_;
 	public:
 		TabWidget (QWidget* = 0);
 		void SetTooltip (int, QWidget*);
@@ -44,6 +46,7 @@ namespace LeechCraft
 		void handleTabBarLocationChanged ();
 		void handleTabBarContextMenu (const QPoint&);
 		void handleMoveHappened (int, int);
+		void handleActionDestroyed ();
 	signals:
 		void moveHappened (int, int);
 		void newTabRequested ();
