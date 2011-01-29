@@ -21,6 +21,7 @@
 #include <QtDebug>
 #include "interfaces/iprotocol.h"
 #include "interfaces/imucjoinwidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -64,6 +65,24 @@ namespace LeechCraft
 								.arg (acc->GetOurNick ())
 								.arg (proto->GetProtocolName ()),
 							QVariant::fromValue<QObject*> (acc->GetObject ()));
+
+					const QString& key = "JoinHistory/" + acc->GetAccountID ();
+					QVariantList list = XmlSettingsManager::Instance ()
+							.GetRawValue (key).toList ();
+
+					Q_FOREACH (const QVariant& var, list)
+					{
+						const QVariantMap& map = var.toMap ();
+						const QString& name = map ["HumanReadableName"].toString ();
+						if (name.isEmpty ())
+							continue;
+
+						Ui_.HistoryBox_->addItem (QString ("%1 (%2 [%3])")
+									.arg (name)
+									.arg (acc->GetAccountName ())
+									.arg (proto->GetProtocolName ()),
+								map);
+					}
 				}
 			}
 
@@ -94,6 +113,35 @@ namespace LeechCraft
 								<< "to IMUCJoinWidget";
 						return;
 					}
+
+					const QVariantMap& data = imjw->GetIdentifyingData ();
+					Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
+					if (acc)
+					{
+						const QString& key = "JoinHistory/" + acc->GetAccountID ();
+						QVariantList list = XmlSettingsManager::Instance ()
+								.GetRawValue (key).toList ();
+
+						bool found = false;
+						Q_FOREACH (const QVariant& var, list)
+							if (var.toMap () ["HumanReadableName"] == data ["HumanReadableName"])
+							{
+								found = true;
+								break;
+							}
+
+						if (!found)
+						{
+							list << QVariant (data);
+							XmlSettingsManager::Instance ().SetRawValue (key, list);
+						}
+					}
+					else
+						qWarning () << Q_FUNC_INFO
+								<< "could not cast"
+								<< accObj
+								<< "to IAccount";
+
 					imjw->Join (accObj);
 				}
 			}
