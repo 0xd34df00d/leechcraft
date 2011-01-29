@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <boost/bind.hpp>
 #include <QIcon>
 #include <QAction>
 #include <QStandardItemModel>
@@ -42,6 +43,7 @@
 #include "proxyobject.h"
 #include "xmlsettingsmanager.h"
 #include "joinconferencedialog.h"
+#include "notificationactionhandler.h"
 
 namespace LeechCraft
 {
@@ -1254,6 +1256,12 @@ namespace LeechCraft
 						Entity e = Util::MakeNotification ("Azoth",
 								msgString,
 								PInfo_);
+						NotificationActionHandler *nh =
+								new NotificationActionHandler (e, this);
+						nh->AddFunction (tr ("Open chat"),
+								boost::bind (static_cast<void (ChatTabsManager::*) (const Plugins::ICLEntry*)> (&ChatTabsManager::OpenChat),
+										ChatTabsManager_,
+										parentCL));
 						emit gotEntity (e);
 					}
 				}

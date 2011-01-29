@@ -42,6 +42,7 @@ SET (SRCS
 	contactlistdelegate.cpp
 	addcontactdialog.cpp
 	joinconferencedialog.cpp
+	notificationactionhandler.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -59,6 +60,7 @@ SET (HEADERS
 	contactlistdelegate.h
 	addcontactdialog.h
 	joinconferencedialog.h
+	notificationactionhandler.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
