@@ -60,7 +60,7 @@ namespace Xoox
 		QString GetProtocolName () const;
 		QByteArray GetProtocolID () const;
 		void InitiateAccountRegistration ();
-		void InitiateMUCJoin ();
+		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
 	private:
 		void RestoreAccounts ();

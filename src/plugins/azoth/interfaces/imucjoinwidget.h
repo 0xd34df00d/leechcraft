@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MAINWIDGET_H
-#define PLUGINS_AZOTH_MAINWIDGET_H
-#include <QWidget>
-#include "ui_mainwidget.h"
-
-class QToolBar;
-class QMenu;
+#ifndef PLUGINS_AZOTH_INTERFACES_IMUCJOINWIDGET_H
+#define PLUGINS_AZOTH_INTERFACES_IMUCJOINWIDGET_H
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -30,40 +26,27 @@ namespace Plugins
 {
 namespace Azoth
 {
-	class SortFilterProxyModel;
-
-	class MainWidget : public QWidget
+namespace Plugins
+{
+	class IMUCJoinWidget
 	{
-		Q_OBJECT
-
-		Ui::MainWidget Ui_;
-
-		QToolBar *UpperBar_;
-		QMenu *MenuGeneral_;
-		SortFilterProxyModel *ProxyModel_;
-
-		QMenu *MenuChangeStatus_;
 	public:
-		MainWidget (QWidget* = 0);
-	private:
-		void CreateMenu ();
-	private slots:
-		void on_CLTree__activated (const QModelIndex&);
-		void on_CLTree__customContextMenuRequested (const QPoint&);
-		void handleChangeStatusRequested ();
+		virtual ~IMUCJoinWidget () {}
 
-		void showAccountsList ();
-		void handleAddContactRequested ();
+		virtual void AccountSelected (QObject *account) = 0;
+		virtual void Join (QObject *account) = 0;
+		virtual void Cancel () = 0;
 
-		void handleShowOffline (bool);
-
-		void handleRowsInserted (const QModelIndex&, int, int);
-		void rebuildTreeExpansions ();
-		void on_CLTree__expanded (const QModelIndex&);
-		void on_CLTree__collapsed (const QModelIndex&);
+		virtual QVariantMap GetIdentifyingData () const = 0;
+		virtual QVariantList GetBookmarkedMUCs () const = 0;
+		virtual void SetIdentifyingData (const QVariantMap& data) = 0;
 	};
 }
 }
 }
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IMUCJoinWidget,
+		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IMUCJoinWidget/1.0");
 
 #endif

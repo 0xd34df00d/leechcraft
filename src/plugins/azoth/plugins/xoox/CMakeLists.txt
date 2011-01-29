@@ -13,7 +13,7 @@ SET (XOOX_SRCS
 	clientconnection.cpp
 	glooxclentry.cpp
 	glooxmessage.cpp
-	joingroupchatdialog.cpp
+	joingroupchatwidget.cpp
 	roomhandler.cpp
 	roomclentry.cpp
 	roompublicmessage.cpp
@@ -32,7 +32,7 @@ SET (XOOX_HEADERS
 	clientconnection.h
 	glooxclentry.h
 	glooxmessage.h
-	joingroupchatdialog.h
+	joingroupchatwidget.h
 	roomhandler.h
 	roomclentry.h
 	roompublicmessage.h
@@ -45,7 +45,7 @@ SET (XOOX_HEADERS
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
-	glooxjoingroupchatdialog.ui
+	joingroupchatwidget.ui
 	vcarddialog.ui
 	)
 SET (XOOX_TRANSLATIONS

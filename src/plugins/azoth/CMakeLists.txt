@@ -41,6 +41,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	contactlistdelegate.cpp
 	addcontactdialog.cpp
+	joinconferencedialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -57,6 +58,7 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	contactlistdelegate.h
 	addcontactdialog.h
+	joinconferencedialog.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
@@ -68,6 +70,7 @@ SET (FORMS
 	accountslistdialog.ui
 	setstatusdialog.ui
 	addcontactdialog.ui
+	joinconferencedialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS

@@ -108,11 +108,6 @@ namespace Azoth
 				SLOT (handleChangeStatusRequested ()));
 	}
 
-	void MainWidget::AddMUCJoiners (const QList<QAction*>& actions)
-	{
-		MenuGeneral_->addActions (actions);
-	}
-
 	void MainWidget::CreateMenu ()
 	{
 		MenuGeneral_->addAction (tr ("Accounts..."),
@@ -122,6 +117,9 @@ namespace Azoth
 		MenuGeneral_->addAction (tr ("Add contact..."),
 				this,
 				SLOT (handleAddContactRequested ()));
+		MenuGeneral_->addAction (tr ("Join conference..."),
+				&Core::Instance (),
+				SLOT (handleMucJoinRequested ()));
 
 		UpperBar_->addAction (MenuGeneral_->menuAction ());
 

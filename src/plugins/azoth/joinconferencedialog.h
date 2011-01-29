@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2010  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,43 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATDIALOG_H
+#ifndef PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
+#define PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
 #include <QDialog>
-#include "ui_glooxjoingroupchatdialog.h"
+#include "interfaces/iaccount.h"
+#include "ui_joinconferencedialog.h"
 
 namespace LeechCraft
 {
-namespace Plugins
-{
-namespace Azoth
-{
-namespace Plugins
-{
-namespace Xoox
-{
-	class GlooxAccount;
-
-	class JoinGroupchatDialog : public QDialog
+	namespace Plugins
 	{
-		Q_OBJECT
+		namespace Azoth
+		{
+			class JoinConferenceDialog : public QDialog
+			{
+				Q_OBJECT
 
-		Ui::GlooxJoinGroupchatDialog Ui_;
-		QList<GlooxAccount*> Accounts_;
-	public:
-		JoinGroupchatDialog (const QList<GlooxAccount*>&, QWidget* = 0);
-
-		QString GetServer () const;
-		QString GetRoom () const;
-		QString GetNickname () const;
-		GlooxAccount* GetSelectedAccount () const;
-	private slots:
-		void on_Account__currentIndexChanged (int);
-	};
-}
-}
-}
-}
+				Ui::JoinConferenceDialog Ui_;
+				QHash<Plugins::IProtocol*, QWidget*> Proto2Joiner_;
+			public:
+				JoinConferenceDialog (const QList<Plugins::IAccount*>&, QWidget* = 0);
+				virtual ~JoinConferenceDialog ();
+			public slots:
+				virtual void accept ();
+				virtual void reject ();
+			private slots:
+				virtual void on_AccountBox__currentIndexChanged (int);
+			};
+		}
+	}
 }
 
 #endif

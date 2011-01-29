@@ -72,12 +72,6 @@ namespace LeechCraft
 						this,
 						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 
-				handleMUCJoinActionsAdded (Core::Instance ().GetMUCJoinActions ());
-				connect (&Core::Instance (),
-						SIGNAL (mucJoinActionsAdded (const QList<QAction*>&)),
-						this,
-						SLOT (handleMUCJoinActionsAdded (const QList<QAction*>&)));
-
 				connect (Core::Instance ().GetChatTabsManager (),
 						SIGNAL (addNewTab (const QString&, QWidget*)),
 						this,
@@ -161,11 +155,6 @@ namespace LeechCraft
 			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
-			}
-
-			void Plugin::handleMUCJoinActionsAdded (const QList<QAction*>& actions)
-			{
-				MW_->AddMUCJoiners (actions);
 			}
 
 			void Plugin::newTabRequested ()

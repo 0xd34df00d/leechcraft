@@ -102,10 +102,17 @@ namespace Plugins
 		 */
 		virtual void InitiateAccountRegistration () = 0;
 
-		/** @brief Notifies the plugin that a MUC join dialog should be
-		 * opened.
+		/** @brief Returns the widget used to set up the MUC join options.
+		 *
+		 * The returned widget should implement IMUCJoinWidget.
+		 *
+		 * The caller takes the ownership of the widget, so each time
+		 * a newly constructed widget should be returned, and the plugin
+		 * shouldn't delete the widget by itself.
+		 *
+		 * @sa IMUCJoinWidget
 		 */
-		virtual void InitiateMUCJoin () = 0;
+		virtual QWidget* GetMUCJoinWidget () = 0;
 
 		/** @brief Removes the given account.
 		 *

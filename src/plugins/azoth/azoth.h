@@ -64,8 +64,6 @@ namespace LeechCraft
 				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 			public slots:
 				void newTabRequested ();
-			private slots:
-				void handleMUCJoinActionsAdded (const QList<QAction*>&);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_MAINWIDGET_H
-#define PLUGINS_AZOTH_MAINWIDGET_H
-#include <QWidget>
-#include "ui_mainwidget.h"
-
-class QToolBar;
-class QMenu;
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
+#include <QDialog>
+#include <interfaces/imucjoinwidget.h>
+#include "ui_joingroupchatwidget.h"
 
 namespace LeechCraft
 {
@@ -30,38 +28,34 @@ namespace Plugins
 {
 namespace Azoth
 {
-	class SortFilterProxyModel;
-
-	class MainWidget : public QWidget
+namespace Plugins
+{
+namespace Xoox
+{
+	class JoinGroupchatWidget : public QWidget
+							  , public IMUCJoinWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMUCJoinWidget);
 
-		Ui::MainWidget Ui_;
-
-		QToolBar *UpperBar_;
-		QMenu *MenuGeneral_;
-		SortFilterProxyModel *ProxyModel_;
-
-		QMenu *MenuChangeStatus_;
+		Ui::JoinGroupchatWidget Ui_;
 	public:
-		MainWidget (QWidget* = 0);
-	private:
-		void CreateMenu ();
-	private slots:
-		void on_CLTree__activated (const QModelIndex&);
-		void on_CLTree__customContextMenuRequested (const QPoint&);
-		void handleChangeStatusRequested ();
+		JoinGroupchatWidget (QWidget* = 0);
 
-		void showAccountsList ();
-		void handleAddContactRequested ();
+		QString GetServer () const;
+		QString GetRoom () const;
+		QString GetNickname () const;
 
-		void handleShowOffline (bool);
+		void AccountSelected (QObject *account);
+		void Join (QObject *account);
+		void Cancel ();
 
-		void handleRowsInserted (const QModelIndex&, int, int);
-		void rebuildTreeExpansions ();
-		void on_CLTree__expanded (const QModelIndex&);
-		void on_CLTree__collapsed (const QModelIndex&);
+		QVariantMap GetIdentifyingData () const;
+		QVariantList GetBookmarkedMUCs () const;
+		void SetIdentifyingData (const QVariantMap& data);
 	};
+}
+}
 }
 }
 }

@@ -25,6 +25,7 @@
 #include <QMenu>
 #include <QMetaMethod>
 #include <QInputDialog>
+#include <QMainWindow>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -40,6 +41,7 @@
 #include "pluginmanager.h"
 #include "proxyobject.h"
 #include "xmlsettingsmanager.h"
+#include "joinconferencedialog.h"
 
 namespace LeechCraft
 {
@@ -154,11 +156,6 @@ namespace LeechCraft
 				return AccountCreatorActions_;
 			}
 
-			QList<QAction*> Core::GetMUCJoinActions () const
-			{
-				return MUCJoinActions_;
-			}
-
 			QAbstractItemModel* Core::GetCLModel () const
 			{
 				return CLModel_;
@@ -259,7 +256,6 @@ namespace LeechCraft
 
 					QIcon icon = qobject_cast<IInfo*> (plugin)->GetIcon ();
 					QList<QAction*> creators;
-					QList<QAction*> mucJoiners;
 					Q_FOREACH (QObject *protoObj, ipp->GetProtocols ())
 					{
 						Plugins::IProtocol *proto = qobject_cast<Plugins::IProtocol*> (protoObj);
@@ -272,21 +268,6 @@ namespace LeechCraft
 								SLOT (handleAccountCreatorTriggered ()));
 
 						creators << accountCreator;
-
-						if (proto->GetFeatures () & Plugins::IProtocol::PFMUCsJoinable)
-						{
-							QString text = tr ("Join chatroom (%1)")
-									.arg (proto->GetProtocolName ());
-							QAction *mucJoiner = new QAction (icon,
-									text, this);
-							mucJoiner->setData (QVariant::fromValue<QObject*> (proto->GetObject ()));
-							connect (mucJoiner,
-									 SIGNAL (triggered ()),
-									 this,
-									 SLOT (handleMucJoinRequested ()));
-
-							mucJoiners << mucJoiner;
-						}
 
 						Q_FOREACH (QObject *accObj,
 								proto->GetRegisteredAccounts ())
@@ -306,12 +287,6 @@ namespace LeechCraft
 					{
 						emit accountCreatorActionsAdded (creators);
 						AccountCreatorActions_ += creators;
-					}
-
-					if (mucJoiners.size ())
-					{
-						emit mucJoinActionsAdded (mucJoiners);
-						MUCJoinActions_ += mucJoiners;
 					}
 				}
 			}
@@ -959,37 +934,27 @@ namespace LeechCraft
 				proto->InitiateAccountRegistration ();
 			}
 
-			void Core::handleMucJoinRequested()
+			void Core::handleMucJoinRequested ()
 			{
-				QAction *sa = qobject_cast<QAction*> (sender ());
-				if (!sa)
+				QList<Plugins::IAccount*> accounts;
+				Q_FOREACH (QObject *protoPlugin, ProtocolPlugins_)
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "sender is not an action"
-							<< sender ();
-					return;
+					QObjectList protocols =
+							qobject_cast<Plugins::IProtocolPlugin*> (protoPlugin)->GetProtocols ();
+					Q_FOREACH (QObject *protoObj, protocols)
+					{
+						Plugins::IProtocol *proto = qobject_cast<Plugins::IProtocol*> (protoObj);
+						if (!(proto->GetFeatures () & Plugins::IProtocol::PFMUCsJoinable))
+							continue;
+
+						QObjectList accountObjs = proto->GetRegisteredAccounts ();
+						Q_FOREACH (QObject *accountObj, accountObjs)
+							accounts << qobject_cast<Plugins::IAccount*> (accountObj);
+					}
 				}
 
-				QObject *protoObject = sa->data ().value<QObject*> ();
-				if (!protoObject)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "sender data is not QObject*"
-							<< sa->data ();
-					return;
-				}
-
-				Plugins::IProtocol *proto =
-						qobject_cast<Plugins::IProtocol*> (protoObject);
-				if (!proto)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to case protoObject to proto"
-							<< protoObject;
-					return;
-				}
-
-				proto->InitiateMUCJoin ();
+				JoinConferenceDialog *dia = new JoinConferenceDialog (accounts, Proxy_->GetMainWindow ());
+				dia->show ();
 			}
 
 			void Core::addAccount (QObject *accObject)

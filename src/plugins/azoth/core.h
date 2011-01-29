@@ -63,7 +63,6 @@ namespace LeechCraft
 
 				QObjectList ProtocolPlugins_;
 				QList<QAction*> AccountCreatorActions_;
-				QList<QAction*> MUCJoinActions_;
 
 				QStandardItemModel *CLModel_;
 				ChatTabsManager *ChatTabsManager_;
@@ -147,7 +146,6 @@ namespace LeechCraft
 				const QObjectList& GetProtocolPlugins () const;
 
 				QList<QAction*> GetAccountCreatorActions () const;
-				QList<QAction*> GetMUCJoinActions () const;
 				QAbstractItemModel* GetCLModel () const;
 				ChatTabsManager* GetChatTabsManager () const;
 				QList<Plugins::IAccount*> GetAccounts () const;
@@ -294,7 +292,7 @@ namespace LeechCraft
 				 */
 				void ManipulateAuth (const QString& id, const QString& text,
 						boost::function<void (Plugins::IAuthable*, const QString&)> func);
-			private slots:
+			public slots:
 				/** Initiates account registration process.
 				 */
 				void handleAccountCreatorTriggered ();
@@ -304,7 +302,7 @@ namespace LeechCraft
 				 * function.
 				 */
 				void handleMucJoinRequested ();
-
+			private slots:
 				/** Handles a new account. This account may be both a
 				 * new one (added as a result of user's actions) and
 				 * already existing one (in case it was just read from
@@ -425,11 +423,6 @@ namespace LeechCraft
 				 * in the UI.
 				 */
 				void accountCreatorActionsAdded (const QList<QAction*>&);
-
-				/** Emitted after new actions for joining MultiUser
-				 * Chatrooms have been added.
-				 */
-				void mucJoinActionsAdded (const QList<QAction*>&);
 
 				/** Convenient signal for rethrowing the event of an
 				 * account being added.
