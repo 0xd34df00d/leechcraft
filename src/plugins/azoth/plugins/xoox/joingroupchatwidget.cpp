@@ -32,6 +32,7 @@ namespace Xoox
 {
 	JoinGroupchatWidget::JoinGroupchatWidget (QWidget *parent)
 	: QWidget (parent)
+	, SelectedAccount_ (0)
 	{
 		Ui_.setupUi (this);
 	}
@@ -63,6 +64,7 @@ namespace Xoox
 			return;
 		}
 
+		SelectedAccount_ = acc;
 		Ui_.Nickname_->setText (acc->GetOurNick ());
 	}
 
@@ -78,6 +80,7 @@ namespace Xoox
 			return;
 		}
 
+		SelectedAccount_ = acc;
 		acc->JoinRoom (GetServer (), GetRoom (), GetNickname ());
 	}
 
@@ -92,6 +95,7 @@ namespace Xoox
 				.arg (GetNickname ())
 				.arg (GetRoom ())
 				.arg (GetServer ());
+		result ["AccountID"] = SelectedAccount_->GetAccountID ();
 		result ["Nick"] = GetNickname ();
 		result ["Room"] = GetRoom ();
 		result ["Server"] = GetServer ();

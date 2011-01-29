@@ -202,6 +202,57 @@ namespace LeechCraft
 
 				qobject_cast<Plugins::IMUCJoinWidget*> (joiner)->AccountSelected (accObj);
 			}
+
+			/** @todo Implement the support for bookmarks. It'd be
+			 * easier to test this after we have a working plugin with
+			 * support for bookmarks.
+			 */
+			void JoinConferenceDialog::on_BookmarksBox__currentIndexChanged (int)
+			{
+			}
+
+			void JoinConferenceDialog::on_HistoryBox__currentIndexChanged (int idx)
+			{
+				const QVariantMap& map = Ui_.HistoryBox_->itemData (idx).toMap ();
+				const QByteArray& id = map ["AccountID"].toByteArray ();
+
+				bool accFound = false;
+				for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
+				{
+					QObject *accObj = Ui_.AccountBox_->itemData (i).value<QObject*> ();
+					Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
+					if (acc->GetAccountID () != id)
+						continue;
+
+					Ui_.AccountBox_->setCurrentIndex (i);
+
+					Plugins::IProtocol *proto =
+							qobject_cast<Plugins::IProtocol*> (acc->GetParentProtocol ());
+					if (!Proto2Joiner_.contains (proto))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "Proto2Joiner_ doesn't contain protocol for account"
+								<< accObj;
+						return;
+					}
+					qobject_cast<Plugins::IMUCJoinWidget*> (Proto2Joiner_ [proto])->
+							SetIdentifyingData (map);
+
+					accFound = true;
+					break;
+				}
+				if (!accFound)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not find account with ID"
+							<< id
+							<< "; full map follows:"
+							<< map;
+					return;
+				}
+
+
+			}
 		}
 	}
 }

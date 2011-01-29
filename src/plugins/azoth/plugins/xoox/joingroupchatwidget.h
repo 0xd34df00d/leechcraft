@@ -32,6 +32,8 @@ namespace Plugins
 {
 namespace Xoox
 {
+	class GlooxAccount;
+
 	class JoinGroupchatWidget : public QWidget
 							  , public IMUCJoinWidget
 	{
@@ -39,6 +41,7 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMUCJoinWidget);
 
 		Ui::JoinGroupchatWidget Ui_;
+		GlooxAccount *SelectedAccount_;
 	public:
 		JoinGroupchatWidget (QWidget* = 0);
 
