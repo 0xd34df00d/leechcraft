@@ -61,7 +61,7 @@ namespace Xoox
 	, MUCManager_ (new QXmppMucManager)
 	, DiscoveryManager_ (0)
 	{
-		LastState_.State_ == SOffline;
+		LastState_.State_ = SOffline;
 
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
