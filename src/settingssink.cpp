@@ -39,6 +39,9 @@ namespace LeechCraft
 		Ui_.Dialogs_->removeWidget (Ui_.Dialogs_->currentWidget ());
 
 		Add (name, windowIcon (), dialog);
+
+		PluginsItem_ = new QTreeWidgetItem (Ui_.Tree_, QStringList (tr ("Plugins")));
+		PluginsItem_->setIcon (0, QIcon (":/resources/images/defaultpluginicon.svg"));
 	}
 
 	SettingsSink::~SettingsSink ()
@@ -61,9 +64,14 @@ namespace LeechCraft
 		Ui_.Dialogs_->addWidget (widget);
 		adjustSize ();
 
-		QTreeWidgetItem *parent = new QTreeWidgetItem (Ui_.Tree_, QStringList (name));
+		QTreeWidgetItem *parent = name == "LeechCraft" ?
+				new QTreeWidgetItem (Ui_.Tree_, QStringList (name)) :
+				new QTreeWidgetItem (PluginsItem_, QStringList (name));
 		parent->setData (0, RDialog, QVariant::fromValue<XmlSettingsDialog*> (widget));
-		parent->setIcon (0, wicon);
+		parent->setIcon (0,
+				wicon.isNull () ?
+					QIcon (":/resources/images/defaultpluginicon.svg") :
+					wicon);
 		if (widget->GetPages ().size () > 1)
 			Q_FOREACH (QString page, widget->GetPages ())
 				new QTreeWidgetItem (parent, QStringList (page));
@@ -82,24 +90,27 @@ namespace LeechCraft
 				SLOT (reject ()));
 
 		Ui_.Tree_->expandAll ();
+		Ui_.Tree_->sortItems (0, Qt::AscendingOrder);
 	}
 
 	void SettingsSink::on_Tree__currentItemChanged (QTreeWidgetItem *current)
 	{
-		if (current == Ui_.Tree_->invisibleRootItem ())
+		if (current == Ui_.Tree_->invisibleRootItem () ||
+				current == PluginsItem_)
 			return;
 
 		int pindex = 0;
-		XmlSettingsDialog *dialog = 0;
+		XmlSettingsDialog *dialog = current->data (0, RDialog).value<XmlSettingsDialog*> ();
 
-		if (current->parent ())
+		if (!dialog)
 		{
 			QTreeWidgetItem *parent = current->parent ();
 			dialog = parent->data (0, RDialog).value<XmlSettingsDialog*> ();
 			pindex = parent->indexOfChild (current);
 		}
-		else
-			dialog = current->data (0, RDialog).value<XmlSettingsDialog*> ();
+
+		if (!dialog)
+			return;
 
 		Ui_.Dialogs_->setCurrentWidget (dialog);
 		dialog->SetPage (pindex);
