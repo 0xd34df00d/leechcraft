@@ -32,8 +32,9 @@
 #include <QPropertyAnimation>
 #include <QFinalState>
 #include <QWebHitTestResult>
+#include <plugininterface/resourceloader.h>
 #include "notificationaction.h"
-#include <boost/concept_check.hpp>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -112,6 +113,11 @@ namespace LeechCraft
 						SIGNAL (actionPressed ()),
 						this,
 						SLOT (closeNotificationWidget ()));
+			}
+
+			void KinotifyWidget::SetThemeLoader (boost::shared_ptr<Util::ResourceLoader> loader)
+			{
+				ThemeLoader_ = loader;
 			}
 
 			void KinotifyWidget::SetContent (const QString& title, const QString& body,
@@ -209,7 +215,11 @@ namespace LeechCraft
 
 			void KinotifyWidget::CreateWidget ()
 			{
-				LoadTheme (":/plugins/kinotify/resources/notification/commie");
+				QStringList variants;
+				variants << XmlSettingsManager::Instance ()->
+						property ("NotificatorStyle").toString ();
+				LoadTheme (ThemeLoader_->GetPath (variants));
+
 				setStyleSheet ("background: transparent");
 				page ()->mainFrame ()->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 				page ()->mainFrame ()->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
@@ -231,6 +241,7 @@ namespace LeechCraft
 
 			void KinotifyWidget::LoadTheme (const QString& themePath)
 			{
+				qDebug () << Q_FUNC_INFO << themePath;
 				Theme_.clear ();
 				QFile content (themePath + "/tmp.html");
 				if (!content.open (QIODevice::ReadOnly))

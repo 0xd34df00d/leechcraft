@@ -24,13 +24,15 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	kinotify.cpp
-	kinotifywidget.cpp 
+	kinotifywidget.cpp
 	notificationaction.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	kinotify.h
-	kinotifywidget.h 
+	kinotifywidget.h
 	notificationaction.h
+	xmlsettingsmanager.h
 	)
 SET (TRANSLATIONS
 	leechcraft_kinotify_ru_RU.ts
@@ -65,3 +67,5 @@ TARGET_LINK_LIBRARIES (leechcraft_kinotify
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_kinotify DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES kinotifysettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (DIRECTORY themes DESTINATION share/leechcraft/kinotify)

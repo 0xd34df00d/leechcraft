@@ -21,25 +21,35 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class ResourceLoader;
+	}
+
 	namespace Plugins
 	{
 		namespace Kinotify
 		{
-			
+
 			class KinotifyWidget;
-			
+
 			class Plugin : public QObject
 						 , public IInfo
 						 , public IEntityHandler
+						 , public IHaveSettings
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler)
+				Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
 
 				ICoreProxy_ptr Proxy_;
 				QList<KinotifyWidget*> ActiveNotifications_;
+				Util::XmlSettingsDialog_ptr SettingsDialog_;
+				boost::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -52,8 +62,11 @@ namespace LeechCraft
 				QStringList Needs () const;
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
-				bool CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
+
+				bool CouldHandle (const Entity&) const;
+				void Handle (Entity);
+
+				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 			public slots:
 				void pushNotification ();
 			};

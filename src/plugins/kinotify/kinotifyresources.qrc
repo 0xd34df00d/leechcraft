@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/plugins/kinotify/">
         <file>resources/images/kinotify.svg</file>
-		<file>resources/notification/commie/tmp.html</file>
-		<file>resources/notification/commie/img/back.png</file>
     </qresource>
 </RCC>

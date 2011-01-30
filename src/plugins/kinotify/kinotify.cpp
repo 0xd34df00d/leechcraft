@@ -21,8 +21,10 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
+#include <plugininterface/resourceloader.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "kinotifywidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -33,6 +35,17 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
+
+				ThemeLoader_.reset (new Util::ResourceLoader ("kinotify/themes/notification"));
+				ThemeLoader_->AddLocalPrefix ();
+				ThemeLoader_->AddGlobalPrefix ();
+
+				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+						"kinotifysettings.xml");
+
+				SettingsDialog_->SetDataSource ("NotificatorStyle",
+						ThemeLoader_->GetSubElemModel ());
 			}
 
 			void Plugin::SecondInit ()
@@ -102,6 +115,7 @@ namespace LeechCraft
 
  				KinotifyWidget *notificationWidget =
 						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
+				notificationWidget->SetThemeLoader (ThemeLoader_);
 
 				QStringList actionsNames = e.Additional_ ["NotificationActions"].toStringList ();
 				if (!actionsNames.isEmpty ())
@@ -152,6 +166,11 @@ namespace LeechCraft
 					notificationWidget->PrepareNotification ();
 
 				ActiveNotifications_ << notificationWidget;
+			}
+
+			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+			{
+				return SettingsDialog_;
 			}
 
 			void Plugin::pushNotification ()

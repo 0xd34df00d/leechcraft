@@ -19,13 +19,17 @@
 
 #ifndef PLUGINS_KINOTIFY_KINOTIFYWIDGET_H
 #define PLUGINS_KINOTIFY_KINOTIFYWIDGET_H
-
 #include "kinotify.h"
 #include <QWebView>
 #include <QStateMachine>
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class ResourceLoader;
+	}
+
 	namespace Plugins
 	{
 		namespace Kinotify
@@ -50,8 +54,11 @@ namespace LeechCraft
 				const QByteArray MakeImage (const QString& imgPath = QString ());
 				QStringList ActionsNames_;
 				NotificationAction *Action_;
+				boost::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 			public:
 				KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
+				void SetThemeLoader (boost::shared_ptr<Util::ResourceLoader>);
+
 				void SetContent (const QString&, const QString&, const QString&, const QSize& size = QSize (350, 70));
 				void PrepareNotification ();
 				void SetActions (const QStringList&, QObject*);

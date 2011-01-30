@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Appearance" />
+		<groupbox>
+			<label value="Style" />
+			<item type="combobox" property="NotificatorStyle" mayHaveDataSource="true">
+				<label value="Notificator style:" />
+				<option name="commie" default="true">
+					<label value="Commie" />
+				</option>
+			</item>
+		</groupbox>
+	</page>
+</settings>
