@@ -59,6 +59,21 @@ namespace LeechCraft
 			QString result = QDir::homePath () + "/.leechcraft/data/" + prefix;
 			LocalPrefixesChain_ << result;
 
+			QDir testDir = QDir::home ();
+			if (!testDir.exists (".leechcraft/data/" + prefix + RelativePath_))
+			{
+				qDebug () << Q_FUNC_INFO
+						<< ".leechcraft/data/" + prefix + RelativePath_
+						<< "doesn't exist, trying to create it...";
+
+				if (!testDir.mkpath (".leechcraft/data/" + prefix + RelativePath_))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "failed to create"
+							<< ".leechcraft/data/" + prefix + RelativePath_;
+				}
+			}
+
 			ScanPath (result + RelativePath_);
 
 			Watcher_->addPath (result + RelativePath_);
