@@ -37,7 +37,6 @@ namespace LeechCraft
 		{
 			RDialog = 100
 		};
-		QTreeWidgetItem *PluginsItem_;
 	public:
 		SettingsSink (const QString&,
 				Util::XmlSettingsDialog*,
