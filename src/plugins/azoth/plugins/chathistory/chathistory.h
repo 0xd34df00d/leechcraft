@@ -24,6 +24,7 @@
 #include <boost/shared_ptr.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/imessage.h>
 
 class QSqlDatabase;
 
@@ -51,6 +52,7 @@ namespace LeechCraft
 						QSqlQuery MessageDumper_;
 						QSet<QString> Users_;
 						void InitializeTables ();
+						void ProcessMessageDump (IMessage *msg);
 					public:
 						void Init (ICoreProxy_ptr);
 						void SecondInit ();

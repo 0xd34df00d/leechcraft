@@ -46,7 +46,8 @@ namespace LeechCraft
 						DB_.reset (new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE", "History connection")));
 						Util::CreateIfNotExists ("azoth");
 						// TODO get rid of the hardcoded path below somehow
-						DB_->setDatabaseName (QDir::homePath () + ".leechcraft/azoth/history.sqlite");
+						DB_->setDatabaseName (QDir::homePath () + "/.leechcraft/azoth/history.sqlite");
+						DB_->open();
 						if (!DB_->tables ().contains ("history"))
 							InitializeTables ();
 						UserSelecter_ = QSqlQuery (*DB_);
@@ -135,6 +136,28 @@ namespace LeechCraft
 									<< sender ();
 							return;
 						}
+						ProcessMessageDump (msg);
+					}
+					void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+							 QObject *message)
+					{
+						qDebug () << Q_FUNC_INFO;
+						IMessage *msg = qobject_cast<IMessage*> (message);
+						if (!msg)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< message
+									<< "doesn't implement IMessage"
+									<< sender ();
+							return;
+						}
+						ProcessMessageDump (msg);
+					}
+
+					void Plugin::ProcessMessageDump (IMessage *msg)
+					{
+						IMessage::Direction direction = msg->GetDirection ();
+						IMessage::MessageType messageType = msg->GetMessageType ();
 						QObject *otherPart = msg->OtherPart ();
 						ICLEntry *entry = qobject_cast<ICLEntry*> (otherPart);
 						if (!entry)
@@ -146,12 +169,10 @@ namespace LeechCraft
 							return;
 						}
 						QString entryName = entry->GetEntryName ();
-						IMessage::Direction direction = msg->GetDirection ();
-						IMessage::MessageType messageType = msg->GetMessageType ();
 						QString otherVariant = msg->GetOtherVariant ();
 						QString body = msg->GetBody ();
 						QDateTime timestamp = msg->GetDateTime ();
-						if (Users_.contains (entryName))
+						if (!Users_.contains (entryName))
 						{
 							UserInserter_.bindValue (":entry_id", entryName);
 							if (!UserInserter_.exec ())
@@ -171,47 +192,23 @@ namespace LeechCraft
 							}
 							else
 							{
-								UserSelecter_.first ();
-								int id = UserSelecter_.value (0).toInt ();
+								UserIdSelecter_.first ();
+								int id = UserIdSelecter_.value (0).toInt ();
 								MessageDumper_.bindValue (":id", id);
-								//MessageDumper_.bindValue (":date", entryName);
+								MessageDumper_.bindValue (":date", timestamp);
 								MessageDumper_.bindValue (":direction", direction);
 								MessageDumper_.bindValue (":message", body);
-								//MessageDumper_.bindValue (":variant", entryName);
+								MessageDumper_.bindValue (":variant", otherVariant);
 								MessageDumper_.bindValue (":type", messageType);
+								if (!MessageDumper_.exec ())
+								{
+									LeechCraft::Util::DBLock::DumpError (MessageDumper_);
+									return;
+								}
 							}
+							MessageDumper_.finish ();
 						}
 					}
-					void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
-							 QObject *message)
-					{
-						qDebug () << Q_FUNC_INFO;
-						IMessage *msg = qobject_cast<IMessage*> (message);
-						if (!msg)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< message
-									<< "doesn't implement IMessage"
-									<< sender ();
-							return;
-						}
-						IMessage::Direction direction = msg->GetDirection ();
-						switch (direction)
-						{
-							case IMessage::DIn  : qDebug () << "direction : IN"; break;
-							case IMessage::DOut : qDebug () << "direction : OUT"; break;
-						}
-						IMessage::MessageType messageType = msg->GetMessageType ();
-						QObject *otherPart = msg->OtherPart ();
-						ICLEntry *entry = qobject_cast<ICLEntry*> (otherPart);
-						QString participant = entry->GetEntryName ();
-						qDebug () << "name:" << participant;
-						QString otherVariant = msg->GetOtherVariant ();
-						QString body = msg->GetBody ();
-						qDebug () << "message body:" << body;
-						QDateTime timestamp = msg->GetDateTime ();
-					}
-
 					void Plugin::InitializeTables ()
 					{
 						//TODO Check queries for error
