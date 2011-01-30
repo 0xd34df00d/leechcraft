@@ -256,7 +256,8 @@ namespace LeechCraft
 
 				const QPalette& palette = QApplication::palette ();
 
-#define REPLACE1(a) Theme_.replace ("{Color"#a "}", palette.color (QPalette::a).name ());
+#define REPLACE1(a) { const QColor& c = palette.color (QPalette::a); \
+					  Theme_.replace ("{Color"#a "}", QString ("%1, %2, %3").arg (c.red ()).arg (c.green ()).arg (c.blue ())); }
 				REPLACE1 (Window);
 				REPLACE1 (WindowText);
 				REPLACE1 (Base);
