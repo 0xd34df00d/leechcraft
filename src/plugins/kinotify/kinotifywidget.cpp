@@ -267,7 +267,7 @@ namespace LeechCraft
 				REPLACE1 (Button);
 				REPLACE1 (ButtonText);
 				REPLACE1 (BrightText);
-#undef REPLACE1(a)
+#undef REPLACE1
 
 				QDir imgDir (themePath + "/img");
 				Q_FOREACH (QString elem, imgDir.entryList (QStringList ("*.png")))
