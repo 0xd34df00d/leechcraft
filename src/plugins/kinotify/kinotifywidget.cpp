@@ -241,7 +241,6 @@ namespace LeechCraft
 
 			void KinotifyWidget::LoadTheme (const QString& themePath)
 			{
-				qDebug () << Q_FUNC_INFO << themePath;
 				Theme_.clear ();
 				QFile content (themePath + "/tmp.html");
 				if (!content.open (QIODevice::ReadOnly))
