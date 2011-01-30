@@ -94,7 +94,12 @@ namespace LeechCraft
 				GlobalPrefixesChain_ << prefix;
 				ScanPath (prefix + RelativePath_);
 
-				Watcher_->addPath (prefix + RelativePath_);
+				if (!QFile::exists (prefix + RelativePath_))
+					qWarning () << Q_FUNC_INFO
+							<< prefix + RelativePath_
+							<< "doesn't exist, not adding it";
+				else
+					Watcher_->addPath (prefix + RelativePath_);
 			}
 		}
 
