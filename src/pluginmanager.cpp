@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -326,9 +326,22 @@ namespace LeechCraft
 		return qobject_cast<IInfo*> (Plugins_ [pos])->GetInfo ();
 	}
 
+	namespace
+	{
+		struct PlugComparator
+		{
+			bool operator() (QObject *p1, QObject *p2)
+			{
+				return qobject_cast<IInfo*> (p1)->GetName () < qobject_cast<IInfo*> (p2)->GetName ();
+			}
+		};
+	}
+
 	QObjectList PluginManager::GetAllPlugins () const
 	{
-		return PluginTreeBuilder_->GetResult ();
+		QObjectList result = PluginTreeBuilder_->GetResult ();
+		std::sort (result.begin (), result.end (), PlugComparator ());
+		return result;
 	}
 
 	QString PluginManager::GetPluginLibraryPath (const QObject *object) const
