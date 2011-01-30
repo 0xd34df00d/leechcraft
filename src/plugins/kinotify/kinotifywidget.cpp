@@ -253,11 +253,26 @@ namespace LeechCraft
 				}
 
 				Theme_ = content.readAll ();
-				QStringList elements;
-				elements << "back";
-				Q_FOREACH (QString elem, elements)
-					Theme_.replace (QString ("{%1}").arg (elem),
-							MakeImage (QString (themePath + "/img/%1.png").arg (elem)));
+
+				const QPalette& palette = QApplication::palette ();
+
+#define REPLACE1(a) Theme_.replace ("{Color"#a "}", palette.color (QPalette::a).name ());
+				REPLACE1 (Window);
+				REPLACE1 (WindowText);
+				REPLACE1 (Base);
+				REPLACE1 (AlternateBase);
+				REPLACE1 (ToolTipBase);
+				REPLACE1 (ToolTipText);
+				REPLACE1 (Text);
+				REPLACE1 (Button);
+				REPLACE1 (ButtonText);
+				REPLACE1 (BrightText);
+#undef REPLACE1(a)
+
+				QDir imgDir (themePath + "/img");
+				Q_FOREACH (QString elem, imgDir.entryList (QStringList ("*.png")))
+					Theme_.replace (QString ("{%1}").arg (elem.left (elem.size () - 4)),
+							MakeImage (themePath + "/img/" + elem));
 			}
 
 			QSize KinotifyWidget::SetData ()
