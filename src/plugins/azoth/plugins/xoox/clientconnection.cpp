@@ -311,8 +311,6 @@ namespace Xoox
 
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
-
-		Core::Instance ().saveRoster ();
 	}
 
 	QXmppClient* ClientConnection::GetClient () const
