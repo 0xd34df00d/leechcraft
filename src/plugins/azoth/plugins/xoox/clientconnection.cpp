@@ -303,12 +303,6 @@ namespace Xoox
 		Client_->rosterManager ().unsubscribe (jid, reason);
 	}
 
-	/** @todo Currently this function manually removes the corresponding
-	 * entry from internal data structures and forces the Core to save
-	 * the roster after that. Maybe after QXmpp would have a signal
-	 * notifying about items being removed from the roster, we won't
-	 * need it.
-	 */
 	void ClientConnection::Remove (GlooxCLEntry *entry)
 	{
 		const QString& jid = entry->GetJID ();
