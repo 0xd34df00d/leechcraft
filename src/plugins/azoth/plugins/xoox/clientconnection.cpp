@@ -439,7 +439,11 @@ namespace Xoox
 	{
 		QXmppRosterManager& rm = Client_->rosterManager ();
 		QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (bareJid);
-		GlooxCLEntry *entry = JID2CLEntry_ [bareJid];
+
+		GlooxCLEntry *entry = JID2CLEntry_.contains (bareJid) ?
+				JID2CLEntry_ [bareJid] :
+				CreateCLEntry (bareJid);
+
 		Q_FOREACH (const QString& resource, presences.keys ())
 		{
 			const QXmppPresence& pres = presences [resource];
