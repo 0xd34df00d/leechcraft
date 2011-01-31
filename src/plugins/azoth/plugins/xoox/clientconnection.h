@@ -103,8 +103,9 @@ namespace Xoox
 		void Update (const QXmppMucAdminIq::Item&);
 
 		void AckAuth (QObject*, bool);
-		void Subscribe (const QString&, const QString&,
-				const QString&, const QStringList&);
+		void Subscribe (const QString&,
+				const QString& = QString (), const QString& = QString (),
+				const QStringList& = QStringList ());
 		void RevokeSubscription (const QString&, const QString&);
 		void Unsubscribe (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
@@ -147,6 +148,8 @@ namespace Xoox
 		void rosterItemSubscribed (QObject*, const QString&);
 		void rosterItemUnsubscribed (QObject*, const QString&);
 		void rosterItemUnsubscribed (const QString&, const QString&);
+		void rosterItemCancelledSubscription (QObject*, const QString&);
+		void rosterItemGrantedSubscription (QObject*, const QString&);
 		void gotSubscriptionRequest (QObject*, const QString&);
 
 		void serverAuthFailed ();

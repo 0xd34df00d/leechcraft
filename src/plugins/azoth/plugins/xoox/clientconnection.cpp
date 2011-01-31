@@ -580,17 +580,18 @@ namespace Xoox
 					QString ());
 			break;
 		case QXmppPresence::Subscribed:
-			emit gotRosterItems (QObjectList () << CreateCLEntry (jid));
-			emit rosterItemSubscribed (JID2CLEntry_ [jid], QString ());
+			if (JID2CLEntry_.contains (jid))
+				emit rosterItemGrantedSubscription (JID2CLEntry_ [jid], QString ());
 			break;
 		case QXmppPresence::Unsubscribe:
-			qDebug () << Q_FUNC_INFO << pres.from () << "unsubscribe";
-			break;
-		case QXmppPresence::Unsubscribed:
 			if (JID2CLEntry_.contains (jid))
 				emit rosterItemUnsubscribed (JID2CLEntry_ [jid], QString ());
 			else
 				emit rosterItemUnsubscribed (jid, QString ());
+			break;
+		case QXmppPresence::Unsubscribed:
+			if (JID2CLEntry_.contains (jid))
+				emit rosterItemCancelledSubscription (JID2CLEntry_ [jid], QString ());
 			break;
 		}
 	}

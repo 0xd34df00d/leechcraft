@@ -100,6 +100,14 @@ namespace Xoox
 				SIGNAL (rosterItemUnsubscribed (const QString&, const QString&)),
 				this,
 				SIGNAL (itemUnsubscribed (const QString&, const QString&)));
+		connect (ClientConnection_.get (),
+				SIGNAL (rosterItemCancelledSubscription (QObject*, const QString&)),
+				this,
+				SIGNAL (itemCancelledSubscription (QObject*, const QString&)));
+		connect (ClientConnection_.get (),
+				SIGNAL (rosterItemGrantedSubscription (QObject*, const QString&)),
+				this,
+				SIGNAL (itemGrantedSubscription (QObject*, const QString&)));
 	}
 
 	QObject* GlooxAccount::GetObject ()
