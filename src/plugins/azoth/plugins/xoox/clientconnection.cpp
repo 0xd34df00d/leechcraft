@@ -270,10 +270,8 @@ namespace Xoox
 
 		qDebug () << "AckAuth" << entry->GetJID () << ack;
 
-		QXmppPresence pres;
-		pres.setType (ack ? QXmppPresence::Subscribed : QXmppPresence::Unsubscribed);
-		pres.setTo (entry->GetJID ());
-		Client_->sendPacket (pres);
+		ack ? Client_->rosterManager ().grantSubscription (entry->GetJID ()) :
+				Client_->rosterManager().cancelSubscription (entry->GetJID ());
 
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
@@ -285,10 +283,7 @@ namespace Xoox
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
 		qDebug () << "Subscribe" << id;
-		QXmppPresence pres;
-		pres.setType (QXmppPresence::Subscribe);
-		pres.setTo (id);
-		Client_->sendPacket (pres);
+		Client_->rosterManager ().subscribe (id, msg);
 	}
 
 	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
