@@ -294,19 +294,13 @@ namespace Xoox
 	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
 	{
 		qDebug () << "RevokeSubscription" << jid;
-		QXmppPresence pres;
-		pres.setType (QXmppPresence::Unsubscribe);
-		pres.setTo (jid);
-		Client_->sendPacket (pres);
+		Client_->rosterManager ().cancelSubscription (jid, reason);
 	}
 
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
 	{
 		qDebug () << "Unsubscribe" << jid;
-		QXmppPresence presence;
-		presence.setType (QXmppPresence::Unsubscribed);
-		presence.setTo (jid);
-		Client_->sendPacket (presence);
+		Client_->rosterManager ().unsubscribe (jid, reason);
 	}
 
 	/** @todo Currently this function manually removes the corresponding
