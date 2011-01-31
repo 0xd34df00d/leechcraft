@@ -102,6 +102,10 @@ namespace Xoox
 				SIGNAL (rosterChanged (const QString&)),
 				this,
 				SLOT (handleRosterChanged (const QString&)));
+		connect (&Client_->rosterManager (),
+				SIGNAL (itemRemoved (const QString&)),
+				this,
+				SLOT (handleRosterItemRemoved (const QString&)));
 
 		connect (&Client_->vCardManager (),
 				SIGNAL (vCardReceived (const QXmppVCardIq&)),
@@ -264,6 +268,8 @@ namespace Xoox
 			return;
 		}
 
+		qDebug () << "AckAuth" << entry->GetJID () << ack;
+
 		QXmppPresence pres;
 		pres.setType (ack ? QXmppPresence::Subscribed : QXmppPresence::Unsubscribed);
 		pres.setTo (entry->GetJID ());
@@ -273,9 +279,12 @@ namespace Xoox
 		entry->deleteLater ();
 	}
 
+	/** @todo Possibly add to the roster as well.
+	 */
 	void ClientConnection::Subscribe (const QString& id,
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
+		qDebug () << "Subscribe" << id;
 		QXmppPresence pres;
 		pres.setType (QXmppPresence::Subscribe);
 		pres.setTo (id);
@@ -284,6 +293,7 @@ namespace Xoox
 
 	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
 	{
+		qDebug () << "RevokeSubscription" << jid;
 		QXmppPresence pres;
 		pres.setType (QXmppPresence::Unsubscribe);
 		pres.setTo (jid);
@@ -309,11 +319,8 @@ namespace Xoox
 	{
 		const QString& jid = entry->GetJID ();
 
-		emit rosterItemRemoved (entry);
 		Client_->rosterManager ().removeRosterEntry (jid);
 
-		if (JID2CLEntry_.contains (jid))
-			delete JID2CLEntry_.take (jid);
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
 
@@ -443,7 +450,6 @@ namespace Xoox
 		GlooxCLEntry *entry = JID2CLEntry_.contains (bareJid) ?
 				JID2CLEntry_ [bareJid] :
 				CreateCLEntry (bareJid);
-
 		Q_FOREACH (const QString& resource, presences.keys ())
 		{
 			const QXmppPresence& pres = presences [resource];
@@ -451,6 +457,19 @@ namespace Xoox
 			entry->SetStatus (PresenceToStatus (pres), resource);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
+		Core::Instance ().saveRoster ();
+	}
+
+	void ClientConnection::handleRosterItemRemoved (const QString& bareJid)
+	{
+		qDebug () << "RosterItemRemoved" << bareJid;
+		if (!JID2CLEntry_.contains (bareJid))
+			return;
+
+		GlooxCLEntry *entry = JID2CLEntry_.take (bareJid);
+		emit rosterItemRemoved (entry);
+		entry->deleteLater ();
+
 		Core::Instance ().saveRoster ();
 	}
 
@@ -571,6 +590,7 @@ namespace Xoox
 	 */
 	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)
 	{
+		qDebug () << "OtherPresence" << pres.from () << pres.type ();
 		const QString& jid = pres.from ();
 		switch (pres.type ())
 		{
