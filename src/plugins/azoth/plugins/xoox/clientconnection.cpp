@@ -270,19 +270,21 @@ namespace Xoox
 
 		qDebug () << "AckAuth" << entry->GetJID () << ack;
 
-		ack ? Client_->rosterManager ().grantSubscription (entry->GetJID ()) :
-				Client_->rosterManager().cancelSubscription (entry->GetJID ());
+		if (ack)
+			Client_->rosterManager ().grantSubscription (entry->GetJID ());
+		else
+			Client_->rosterManager().cancelSubscription (entry->GetJID ());
 
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
 	}
 
-	/** @todo Possibly add to the roster as well.
-	 */
 	void ClientConnection::Subscribe (const QString& id,
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
 		qDebug () << "Subscribe" << id;
+		Client_->rosterManager ().addRosterEntry (id,
+				name, msg, QSet<QString>::fromList (groups));
 		Client_->rosterManager ().subscribe (id, msg);
 	}
 
