@@ -292,16 +292,32 @@ namespace Xoox
 
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
 	{
+		qDebug () << "Unsubscribe" << jid;
 		QXmppPresence presence;
 		presence.setType (QXmppPresence::Unsubscribed);
 		presence.setTo (jid);
 		Client_->sendPacket (presence);
 	}
 
+	/** @todo Currently this function manually removes the corresponding
+	 * entry from internal data structures and forces the Core to save
+	 * the roster after that. Maybe after QXmpp would have a signal
+	 * notifying about items being removed from the roster, we won't
+	 * need it.
+	 */
 	void ClientConnection::Remove (GlooxCLEntry *entry)
 	{
+		const QString& jid = entry->GetJID ();
+
 		emit rosterItemRemoved (entry);
-		Client_->rosterManager ().removeRosterEntry (entry->GetJID ());
+		Client_->rosterManager ().removeRosterEntry (jid);
+
+		if (JID2CLEntry_.contains (jid))
+			delete JID2CLEntry_.take (jid);
+		if (ODSEntries_.contains (jid))
+			delete ODSEntries_.take (jid);
+
+		Core::Instance ().saveRoster ();
 	}
 
 	QXmppClient* ClientConnection::GetClient () const
