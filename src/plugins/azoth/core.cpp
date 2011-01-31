@@ -1012,6 +1012,7 @@ namespace LeechCraft
 						SIGNAL (authorizationRequested (QObject*, const QString&)),
 						this,
 						SLOT (handleAuthorizationRequested (QObject*, const QString&)));
+
 				connect (accObject,
 						SIGNAL (itemSubscribed (QObject*, const QString&)),
 						this,
@@ -1024,6 +1025,15 @@ namespace LeechCraft
 						SIGNAL (itemUnsubscribed (const QString&, const QString&)),
 						this,
 						SLOT (handleItemUnsubscribed (const QString&, const QString&)));
+				connect (accObject,
+						SIGNAL (itemCancelledSubscription (QObject*, const QString&)),
+						this,
+						SLOT (handleItemCancelledSubscription (QObject*, const QString&)));
+				connect (accObject,
+						SIGNAL (itemGrantedSubscription (QObject*, const QString&)),
+						this,
+						SLOT (handleItemGrantedSubscription (QObject*, const QString&)));
+
 				connect (accObject,
 						SIGNAL (statusChanged (const Plugins::EntryStatus&)),
 						this,
@@ -1341,52 +1351,47 @@ namespace LeechCraft
 				emit gotEntity (e);
 			}
 
-			/** @todo Option for disabling notifications of subscription events.
-			 */
-			void Core::handleItemSubscribed (QObject *entryObj, const QString& msg)
+
+			void Core::NotifyWithReason (QObject *entryObj, const QString& msg,
+					const char *func,
+					const QString& patternLite, const QString& patternFull)
 			{
 				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
 				if (!entry)
 				{
-					qWarning () << Q_FUNC_INFO
+					qWarning () << func
 							<< entryObj
 							<< "doesn't implement ICLEntry";
 					return;
 				}
 
 				QString str = msg.isEmpty () ?
-						tr ("%1 (%2) subscribed to us.")
+						patternLite
 							.arg (entry->GetEntryName ())
 							.arg (entry->GetHumanReadableID ()) :
-						tr ("%1 (%2) subscribed to us: %3.")
+						patternFull
 							.arg (entry->GetEntryName ())
 							.arg (entry->GetHumanReadableID ())
 							.arg (msg);
 				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
 			}
 
+			/** @todo Option for disabling notifications of subscription events.
+			 */
+			void Core::handleItemSubscribed (QObject *entryObj, const QString& msg)
+			{
+				NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+						tr ("%1 (%2) subscribed to us."),
+						tr ("%1 (%2) subscribed to us: %3."));
+			}
+
 			/** @todo Option for disabling notifications of unsubscription events.
 			 */
 			void Core::handleItemUnsubscribed (QObject *entryObj, const QString& msg)
 			{
-				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
-				if (!entry)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< entryObj
-							<< "doesn't implement ICLEntry";
-					return;
-				}
-
-				QString str = msg.isEmpty () ?
-						tr ("%1 (%2) unsubscribed from us.")
-							.arg (entry->GetEntryName ())
-							.arg (entry->GetHumanReadableID ()) :
-						tr ("%1 (%2) unsubscribed from us: %3.")
-							.arg (entry->GetEntryName ())
-							.arg (entry->GetHumanReadableID ())
-							.arg (msg);
-				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
+				NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+						tr ("%1 (%2) unsubscribed from us."),
+						tr ("%1 (%2) unsubscribed from us: %3."));
 			}
 
 			/** @todo Option for disabling notifications of unsubscription events from
@@ -1401,6 +1406,20 @@ namespace LeechCraft
 							.arg (entryId)
 							.arg (msg);
 				emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
+			}
+
+			void Core::handleItemCancelledSubscription (QObject *entryObj, const QString& msg)
+			{
+				NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+						tr ("%1 (%2) cancelled our subscription."),
+						tr ("%1 (%2) cancelled our subscription: %3."));
+			}
+
+			void Core::handleItemGrantedSubscription (QObject *entryObj, const QString& msg)
+			{
+				NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+						tr ("%1 (%2) granted subscription."),
+						tr ("%1 (%2) granted subscription: %3."));
 			}
 
 			void Core::updateStatusIconset ()

@@ -275,7 +275,8 @@ namespace Plugins
 		 * @param[out] message Optional request message, if applicable.
 		 *
 		 * @sa Authorize(), DenyAuth(), RequestAuth(),
-		 * itemSubscribed(), itemUnsubscribed()
+		 * itemSubscribed(), itemUnsubscribed(),
+		 * itemCancelledSubscription(), itemGrantedSubscription()
 		 */
 		virtual void authorizationRequested (QObject *entry,
 				const QString& message) = 0;
@@ -293,7 +294,8 @@ namespace Plugins
 		 * @param[out] message An optional reason message.
 		 *
 		 * @sa Authorize(), DenyAuth(), RequestAuth(),
-		 * authorizationRequested(), itemUnsubscribed()
+		 * authorizationRequested(), itemUnsubscribed(),
+		 * itemCancelledSubscription(), itemGrantedSubscription()
 		 */
 		virtual void itemSubscribed (QObject *entry, const QString& message) = 0;
 
@@ -311,7 +313,8 @@ namespace Plugins
 		 * @param[out] message An optional reason message.
 		 *
 		 * @sa Authorize(), DenyAuth(), RequestAuth(),
-		 * authorizationRequested(), itemSubscribed()
+		 * authorizationRequested(), itemSubscribed(),
+		 * itemCancelledSubscription(), itemGrantedSubscription()
 		 */
 		virtual void itemUnsubscribed (QObject *entry, const QString& message) = 0;
 
@@ -324,9 +327,38 @@ namespace Plugins
 		 * @param[out] message An optional reason message.
 		 *
 		 * @sa Authorize(), DenyAuth(), RequestAuth(),
-		 * authorizationRequested(), itemSubscribed()
+		 * authorizationRequested(), itemSubscribed(),
+		 * itemCancelledSubscription(), itemGrantedSubscription()
 		 */
 		virtual void itemUnsubscribed (const QString& entryID, const QString& message) = 0;
+
+		/** @brief This signal should be emitted when a roster item
+		 * cancels (or denies) our subscription.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] entry The object representing the entry that
+		 * granted the subscription, must be an ICLEntry.
+		 * @param[out] message Optional reason message.
+		 *
+		 * @sa RequestAuth(), authorizationRequested(), itemSubscribed(),
+		 * itemGrantedSubscription()
+		 */
+		virtual void itemCancelledSubscription (QObject *entry, const QString& message) = 0;
+
+		/** @brief This signal should be emitted when a roster item
+		 * grants us subscription.
+		 *
+		 * @note This function is expected to be a signal.
+		 *
+		 * @param[out] entry The object representing the entry that
+		 * granted the subscription, must be an ICLEntry.
+		 * @param[out] message Optional reason message.
+		 *
+		 * @sa RequestAuth(), authorizationRequested(), itemSubscribed(),
+		 * itemCancelledSubscription()
+		 */
+		virtual void itemGrantedSubscription (QObject *entry, const QString& message) = 0;
 
 		/** @brief This signal should be emitted when state of this
 		 * account changes for whatever reason.

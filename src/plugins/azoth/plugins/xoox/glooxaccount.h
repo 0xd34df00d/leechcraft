@@ -121,6 +121,8 @@ namespace Xoox
 		void itemSubscribed (QObject*, const QString&);
 		void itemUnsubscribed (QObject*, const QString&);
 		void itemUnsubscribed (const QString&, const QString&);
+		void itemCancelledSubscription (QObject*, const QString&);
+		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const Plugins::EntryStatus&);
 
 		void accountSettingsChanged ();

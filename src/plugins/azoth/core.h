@@ -285,6 +285,9 @@ namespace LeechCraft
 				 */
 				QString GetReason (const QString& id, const QString& text);
 
+				void NotifyWithReason (QObject*, const QString&,
+						const char*, const QString&, const QString&);
+
 				/** Calls the given func on the sending entry, asking
 				 * for reason for the action, if it should. The text may
 				 * contains %1, in which case it'd be replaced with the
@@ -365,6 +368,8 @@ namespace LeechCraft
 				void handleItemSubscribed (QObject*, const QString&);
 				void handleItemUnsubscribed (QObject*, const QString&);
 				void handleItemUnsubscribed (const QString&, const QString&);
+				void handleItemCancelledSubscription (QObject*, const QString&);
+				void handleItemGrantedSubscription (QObject*, const QString&);
 
 				/** Is registered in the XmlSettingsManager as handler
 				 * for changes of the "StatusIcons" property.
