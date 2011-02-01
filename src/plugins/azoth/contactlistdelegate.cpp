@@ -177,7 +177,7 @@ namespace Azoth
 			unreadSpace = CPadding + QFontMetrics (unreadFont).width (unreadStr);
 		}
 
-		const int textShift = r.left () + 2 * CPadding + iconSize + unreadSpace;
+		const int textShift = 2 * CPadding + iconSize + unreadSpace;
 
 		const QList<QIcon>& clientIcons = isMUC ?
 				QList<QIcon> () :
@@ -190,7 +190,7 @@ namespace Azoth
 		 * paddings minus space for client icons and paddings between
 		 * them: there are N-1 paddings inbetween if there are N icons.
 		 */
-		const int textWidth = r.width () + r.left () - textShift -
+		const int textWidth = r.width () - textShift -
 				(isMUC ? 0 : (iconSize + 2 * CPadding)) -
 				clientsIconsWidth;
 
@@ -209,14 +209,14 @@ namespace Azoth
 		if (unreadNum)
 		{
 			p.setFont (unreadFont);
-			p.drawText (textShift - unreadSpace, r.top () + CPadding,
+			p.drawText (r.left () + textShift - unreadSpace, r.top () + CPadding,
 					textWidth, r.height () - 2 * CPadding,
 					Qt::AlignVCenter | Qt::AlignLeft,
 					unreadStr);
 		}
 
 		p.setFont (option.font);
-		p.drawText (textShift, r.top () + CPadding,
+		p.drawText (r.left () + textShift, r.top () + CPadding,
 				textWidth, r.height () - 2 * CPadding,
 				Qt::AlignVCenter | Qt::AlignLeft,
 				option.fontMetrics.elidedText (name, Qt::ElideRight, textWidth));
