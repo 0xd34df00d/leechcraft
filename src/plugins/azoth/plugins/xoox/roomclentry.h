@@ -101,6 +101,7 @@ namespace Xoox
 		void avatarChanged (const QImage&);
 		void rawinfoChanged (const QString&);
 		void nameChanged (const QString&);
+		void groupsChanged (const QStringList&);
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);

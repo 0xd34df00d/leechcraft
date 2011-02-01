@@ -331,6 +331,10 @@ namespace LeechCraft
 						this,
 						SLOT (handleEntryNameChanged (const QString&)));
 				connect (clEntry->GetObject (),
+						SIGNAL (groupsChanged (const QStringList&)),
+						this,
+						SLOT (handleEntryGroupsChanged (const QStringList&)));
+				connect (clEntry->GetObject (),
 						SIGNAL (avatarChanged (const QImage&)),
 						this,
 						SLOT (invalidateSmoothAvatarCache ()));
@@ -349,20 +353,7 @@ namespace LeechCraft
 				QList<QStandardItem*> catItems =
 						GetCategoriesItems (groups, accItem);
 				Q_FOREACH (QStandardItem *catItem, catItems)
-				{
-					QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
-					clItem->setEditable (false);
-					QObject *accObj = clEntry->GetParentAccount ();
-					clItem->setData (QVariant::fromValue<QObject*> (accObj),
-							CLRAccountObject);
-					clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
-							CLREntryObject);
-					clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
-							CLREntryType);
-					catItem->appendRow (clItem);
-
-					Entry2Items_ [clEntry] << clItem;
-				}
+					AddEntryTo (clEntry, catItem);
 
 				HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
 
@@ -385,6 +376,7 @@ namespace LeechCraft
 						catItem->setData (account->data (CLRAccountObject), CLRAccountObject);
 						catItem->setData (QVariant::fromValue<CLEntryType> (CLETCategory),
 								CLREntryType);
+						catItem->setData (cat, CLREntryCategory);
 						Account2Category2Item_ [account] [cat] = catItem;
 						account->appendRow (catItem);
 					}
@@ -934,6 +926,41 @@ namespace LeechCraft
 				func (authable, reason);
 			}
 
+			void Core::RemoveCLItem (QStandardItem *item)
+			{
+				QObject *entryObj = item->data (CLREntryObject).value<QObject*> ();
+				Entry2Items_.remove (qobject_cast<Plugins::ICLEntry*> (entryObj));
+
+				QStandardItem *category = item->parent ();
+				QString text = category->text ();
+				category->removeRow (item->row ());
+
+				if (!category->rowCount ())
+				{
+					QStandardItem *account = category->parent ();
+					account->removeRow (category->row ());
+					Account2Category2Item_ [account].remove (text);
+				}
+			}
+
+			void Core::AddEntryTo (Plugins::ICLEntry *clEntry, QStandardItem *catItem)
+			{
+				QStandardItem *clItem = new QStandardItem (clEntry->GetEntryName ());
+				clItem->setEditable (false);
+				QObject *accObj = clEntry->GetParentAccount ();
+				clItem->setData (QVariant::fromValue<QObject*> (accObj),
+						CLRAccountObject);
+				clItem->setData (QVariant::fromValue<QObject*> (clEntry->GetObject ()),
+						CLREntryObject);
+				clItem->setData (QVariant::fromValue<CLEntryType> (CLETContact),
+						CLREntryType);
+				clItem->setData (catItem->data (CLREntryCategory),
+						CLREntryCategory);
+				catItem->appendRow (clItem);
+
+				Entry2Items_ [clEntry] << clItem;
+			}
+
 			void Core::handleAccountCreatorTriggered ()
 			{
 				QAction *sa = qobject_cast<QAction*> (sender ());
@@ -1162,18 +1189,8 @@ namespace LeechCraft
 					ChatTabsManager_->SetChatEnabled (entry->GetEntryID (), false);
 
 					Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-					{
-						QStandardItem *category = item->parent ();
-						QString text = category->text ();
-						category->removeRow (item->row ());
+						RemoveCLItem (item);
 
-						if (!category->rowCount ())
-						{
-							QStandardItem *account = category->parent ();
-							account->removeRow (category->row ());
-							Account2Category2Item_ [account].remove (text);
-						}
-					}
 					Entry2Items_.remove (entry);
 
 					Entry2Actions_.remove (entry);
@@ -1229,6 +1246,40 @@ namespace LeechCraft
 
 				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 					item->setText (newName);
+			}
+
+			void Core::handleEntryGroupsChanged (QStringList newGroups)
+			{
+				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (sender ());
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "could not be casted to ICLEntry";
+					return;
+				}
+
+				Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+				{
+					const QString& oldCat = item->data (CLREntryCategory).toString ();
+					if (newGroups.removeAll (oldCat))
+						continue;
+
+					RemoveCLItem (item);
+				}
+
+				if (newGroups.isEmpty () && Entry2Items_ [entry].size ())
+					return;
+
+				QStandardItem *accItem =
+						GetAccountItem (entry->GetParentAccount ());
+
+				QList<QStandardItem*> catItems =
+						GetCategoriesItems (newGroups, accItem);
+				Q_FOREACH (QStandardItem *catItem, catItems)
+					AddEntryTo (entry, catItem);
+
+				HandleStatusChanged (entry->GetStatus (), entry, QString ());
 			}
 
 			void Core::handleEntryGotMessage (QObject *msgObj)

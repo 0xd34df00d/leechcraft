@@ -73,12 +73,13 @@ namespace Xoox
 		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
 
-	void GlooxCLEntry::UpdateRI (const QXmppRosterIq::Item&)
+	void GlooxCLEntry::UpdateRI (const QXmppRosterIq::Item& item)
 	{
 		ODS_.reset ();
 
 		emit availableVariantsChanged (Variants ());
 		emit nameChanged (GetEntryName ());
+		emit groupsChanged (item.groups ().toList ());
 	}
 
 	QXmppRosterIq::Item GlooxCLEntry::GetRI () const

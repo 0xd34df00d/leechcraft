@@ -99,6 +99,7 @@ namespace LeechCraft
 					CLRAccountObject = Qt::UserRole + 1,
 					CLREntryObject,
 					CLREntryType,
+					CLREntryCategory,
 					CLRUnreadMsgCount
 				};
 
@@ -299,6 +300,14 @@ namespace LeechCraft
 				 */
 				void ManipulateAuth (const QString& id, const QString& text,
 						boost::function<void (Plugins::IAuthable*, const QString&)> func);
+
+				/** Removes one item representing the given CL entry.
+				 */
+				void RemoveCLItem (QStandardItem*);
+
+				/** Adds the given entry to the given category item.
+				 */
+				void AddEntryTo (Plugins::ICLEntry*, QStandardItem*);
 			public slots:
 				/** Initiates account registration process.
 				 */
@@ -359,6 +368,10 @@ namespace LeechCraft
 				/** Handles the event of name changes in plugin.
 				 */
 				void handleEntryNameChanged (const QString& newName);
+
+				/** Handles the event of groups change in plugin.
+				 */
+				void handleEntryGroupsChanged (QStringList);
 
 				/** Handles the message receival from contact list
 				 * entries.

@@ -436,11 +436,30 @@ namespace Plugins
 		/** @brief This signal should be emitted whenever the entry
 		 * changes name.
 		 *
+		 * This signal should be emitted both if the name of the entry
+		 * changes as the result of our actions (particularly, the
+		 * SetEntryName() method) and as a result of some other event,
+		 * for example, a roster push in XMPP.
+		 *
 		 * @note This function is expected to be a signal in subclasses.
 		 *
 		 * @param[out] name The new name of this entry.
 		 */
 		virtual void nameChanged (const QString& name) = 0;
+
+		/** @brief This signal should be emitted whenever the entry's
+		 * groups are changed.
+		 *
+		 * This signal should be emitted both if the list of groups
+		 * changes as the result of our actions (particularly, the
+		 * SetGroups() method) and as a result of some other event, for
+		 * example, a roster push in XMPP.
+		 *
+		 * @note This function is expected to be a signal in subclasses.
+		 *
+		 * @param[out] groups The new list of groups of this entry.
+		 */
+		virtual void groupsChanged (const QStringList& groups) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);
