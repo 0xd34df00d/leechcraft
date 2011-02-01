@@ -35,6 +35,12 @@ namespace LeechCraft
 		 * because standard QCompleter doesn't work: tag sequence isn't
 		 * hierarchical, it is rather a set.
 		 *
+		 * Despite the TagsCompleter is designed for tags completion
+		 * and, consequently, uses the globally available tags model
+		 * from LeechCraft's tags manager, it's possible to use the
+		 * completer for other ';'-separated lists of values, by setting
+		 * the appropriate completion model via OverrideModel() method.
+		 *
 		 * @sa TagsCompletionModel
 		 * @sa TagsLineEdit
 		 */
@@ -55,6 +61,17 @@ namespace LeechCraft
 			 */
 			PLUGININTERFACE_API TagsCompleter (TagsLineEdit *line,
 					QObject *parent = 0);
+
+			/** @brief Replaces the model this completer works with.
+			 *
+			 * By default, the completer uses global tags model, which
+			 * is suitable for autocompletion of tags. If you want to
+			 * use a custom model with custom contents, use this method
+			 * to override the model used for completion.
+			 *
+			 * @param[in] model The model to use.
+			 */
+			PLUGININTERFACE_API void OverrideModel (QAbstractItemModel *model);
 
 			/** @brief Path splitter override.
 			 *

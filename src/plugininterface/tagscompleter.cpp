@@ -36,6 +36,11 @@ TagsCompleter::TagsCompleter (TagsLineEdit *toComplete, QObject *parent)
 	toComplete->SetCompleter (this);
 }
 
+void TagsCompleter::OverrideModel (QAbstractItemModel *model)
+{
+	setModel (model);
+}
+
 QStringList TagsCompleter::splitPath (const QString& string) const
 {
 	QStringList splitted = string.split (";", QString::SkipEmptyParts);
@@ -44,4 +49,3 @@ QStringList TagsCompleter::splitPath (const QString& string) const
 		result << s.trimmed ();
 	return result;
 }
-
