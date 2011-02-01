@@ -141,6 +141,8 @@ namespace Azoth
 		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
 		Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
 
+		const bool isMUC = entry->GetEntryType () == Plugins::ICLEntry::ETMUC;
+
 		QStyle *style = option.widget ?
 				option.widget->style () :
 				QApplication::style ();
@@ -153,8 +155,6 @@ namespace Azoth
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString& status = entry->GetStatus ().StatusString_;
 		const QImage& avatarImg = Core::Instance ().GetAvatar (entry, iconSize);
-		const QList<QIcon>& clientIcons = Core::Instance ()
-				.GetClientIconForEntry (entry).values ();
 		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
 				QString (" %1 :: ").arg (unreadNum) :
@@ -178,14 +178,20 @@ namespace Azoth
 		}
 
 		const int textShift = r.left () + 2 * CPadding + iconSize + unreadSpace;
-		const int clientsIconsWidth = clientIcons.size () * (iconSize + CPadding) - CPadding;
+
+		const QList<QIcon>& clientIcons = isMUC ?
+				QList<QIcon> () :
+				Core::Instance ().GetClientIconForEntry (entry).values ();
+		const int clientsIconsWidth = isMUC ?
+				0 :
+				clientIcons.size () * (iconSize + CPadding) - CPadding;
 		/* text for width is total width minus shift of the text from
 		 * the left (textShift) minus space for avatar (if present) with
 		 * paddings minus space for client icons and paddings between
 		 * them: there are N-1 paddings inbetween if there are N icons.
 		 */
-		const int textWidth = r.width () - textShift -
-				(iconSize + 2 * CPadding) -
+		const int textWidth = r.width () + r.left () - textShift -
+				(isMUC ? 0 : (iconSize + 2 * CPadding)) -
 				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
