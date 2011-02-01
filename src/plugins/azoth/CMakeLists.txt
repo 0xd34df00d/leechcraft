@@ -43,6 +43,7 @@ SET (SRCS
 	addcontactdialog.cpp
 	joinconferencedialog.cpp
 	notificationactionhandler.cpp
+	groupeditordialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -61,6 +62,7 @@ SET (HEADERS
 	addcontactdialog.h
 	joinconferencedialog.h
 	notificationactionhandler.h
+	groupeditordialog.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
@@ -73,6 +75,7 @@ SET (FORMS
 	setstatusdialog.ui
 	addcontactdialog.ui
 	joinconferencedialog.ui
+	groupeditordialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS

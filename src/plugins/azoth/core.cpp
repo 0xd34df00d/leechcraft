@@ -31,6 +31,7 @@
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
+#include <plugininterface/categoryselector.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -44,6 +45,7 @@
 #include "xmlsettingsmanager.h"
 #include "joinconferencedialog.h"
 #include "notificationactionhandler.h"
+#include "groupeditordialog.h"
 
 namespace LeechCraft
 {
@@ -207,6 +209,22 @@ namespace LeechCraft
 						result << qobject_cast<Plugins::IProtocol*> (obj);
 				}
 				result.removeAll (0);
+				return result;
+			}
+
+			QStringList Core::GetChatGroups () const
+			{
+				QStringList result;
+				Q_FOREACH (const Plugins::ICLEntry *entry, Entry2Items_.keys ())
+				{
+					if (entry->GetEntryType () != Plugins::ICLEntry::ETChat)
+						continue;
+
+					Q_FOREACH (const QString& group, entry->Groups ())
+						if (!result.contains (group))
+							result << group;
+				}
+				result.sort ();
 				return result;
 			}
 
@@ -525,6 +543,7 @@ namespace LeechCraft
 				QList<QAction*> result;
 				result << id2action.value ("openchat");
 				result << id2action.value ("rename");
+				result << id2action.value ("changegroups");
 				result << id2action.value ("remove");
 				result << id2action.value ("authorization");
 				result << id2action.value ("kick");
@@ -587,6 +606,18 @@ namespace LeechCraft
 					rename->setProperty ("ActionIcon", "azoth_rename");
 					Entry2Actions_ [entry] ["rename"] = rename;
 					Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
+				}
+
+				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSupportsGrouping)
+				{
+					QAction *changeGroups = new QAction (tr ("Change groups..."), entry->GetObject ());
+					connect (changeGroups,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActionChangeGroupsTriggered ()));
+					changeGroups->setProperty ("ActionIcon", "azoth_changegroups");
+					Entry2Actions_ [entry] ["changegroups"] = changeGroups;
+					Action2Areas_ [changeGroups] << CLEAAContactListCtxtMenu;
 				}
 
 				if (entry->GetEntryFeatures () & Plugins::ICLEntry::FSupportsAuth)
@@ -1560,6 +1591,30 @@ namespace LeechCraft
 					return;
 
 				entry->SetEntryName (newName);
+			}
+
+			void Core::handleActionChangeGroupsTriggered ()
+			{
+				QAction *action = qobject_cast<QAction*> (sender ());
+				if (!action)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< sender ()
+							<< "is not a QAction";
+					return;
+				}
+
+				Plugins::ICLEntry *entry = action->
+						property ("Azoth/Entry").value<Plugins::ICLEntry*> ();
+
+				const QStringList& groups = entry->Groups ();
+				const QStringList& allGroups = GetChatGroups ();
+
+				GroupEditorDialog *dia = new GroupEditorDialog (groups, allGroups);
+				if (dia->exec () != QDialog::Accepted)
+					return;
+
+				entry->SetGroups (dia->GetGroups ());
 			}
 
 			void Core::handleActionRemoveTriggered ()

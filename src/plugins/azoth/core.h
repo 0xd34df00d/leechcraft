@@ -151,6 +151,10 @@ namespace LeechCraft
 				QList<Plugins::IAccount*> GetAccounts () const;
 				QList<Plugins::IProtocol*> GetProtocols () const;
 
+				/** Returns the list of all groups of all chat entries.
+				 */
+				QStringList GetChatGroups () const;
+
 				void SendEntity (const Entity&);
 
 				/** Returns contact list entry with the given id. The id
@@ -406,6 +410,7 @@ namespace LeechCraft
 				void invalidateSmoothAvatarCache ();
 
 				void handleActionRenameTriggered ();
+				void handleActionChangeGroupsTriggered ();
 				void handleActionRemoveTriggered ();
 				void handleActionRevokeAuthTriggered ();
 				void handleActionUnsubscribeTriggered ();
