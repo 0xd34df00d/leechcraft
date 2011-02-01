@@ -278,7 +278,7 @@ namespace LeechCraft
 		}
 
 		Q_FOREACH (QObject *plugin, GetAllPlugins ())
-		Core::Instance ().PostSecondInit (plugin);
+			Core::Instance ().PostSecondInit (plugin);
 	}
 
 	void PluginManager::Release ()
