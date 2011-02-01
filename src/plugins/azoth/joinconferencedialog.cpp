@@ -38,11 +38,15 @@ namespace LeechCraft
 				{
 					Plugins::IProtocol *proto =
 							qobject_cast<Plugins::IProtocol*> (acc->GetParentProtocol ());
-					if (Proto2Joiner_.contains (proto))
-						continue;
 
-					QWidget *joiner = proto->GetMUCJoinWidget ();
-					Proto2Joiner_ [proto] = joiner;
+					QWidget *joiner = 0;
+					if (!Proto2Joiner_.contains (proto))
+					{
+						joiner = proto->GetMUCJoinWidget ();
+						Proto2Joiner_ [proto] = joiner;
+					}
+					else
+						joiner = Proto2Joiner_ [proto];
 
 					Plugins::IMUCJoinWidget *imjw = qobject_cast<Plugins::IMUCJoinWidget*> (joiner);
 
@@ -60,7 +64,7 @@ namespace LeechCraft
 								map);
 					}
 
-					Ui_.AccountBox_->addItem (tr ("%1 (nick %2, protocol %3)")
+					Ui_.AccountBox_->addItem (tr ("%1 (%2, %3)")
 								.arg (acc->GetAccountName ())
 								.arg (acc->GetOurNick ())
 								.arg (proto->GetProtocolName ()),
