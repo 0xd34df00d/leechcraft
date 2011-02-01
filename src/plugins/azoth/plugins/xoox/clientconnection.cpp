@@ -268,12 +268,17 @@ namespace Xoox
 			return;
 		}
 
-		qDebug () << "AckAuth" << entry->GetJID () << ack;
+		const QString& jid = entry->GetJID ();
+
+		qDebug () << "AckAuth" << jid << ack;
 
 		if (ack)
-			Client_->rosterManager ().grantSubscription (entry->GetJID ());
+		{
+			Client_->rosterManager ().grantSubscription (jid);
+			Subscribe (jid, QString (), entry->GetEntryName (), entry->Groups ());
+		}
 		else
-			Client_->rosterManager().cancelSubscription (entry->GetJID ());
+			Client_->rosterManager ().cancelSubscription (jid);
 
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
