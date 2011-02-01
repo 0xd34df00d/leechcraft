@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
 #include "entrybase.h"
+#include <QStringList>
 
 namespace LeechCraft
 {
@@ -41,6 +42,7 @@ namespace Xoox
 
 		QString JID_;
 		GlooxAccount *Account_;
+		QStringList Groups_;
 	public:
 		UnauthCLEntry (const QString&, const QString&, GlooxAccount*);
 
@@ -52,6 +54,7 @@ namespace Xoox
 		QByteArray GetEntryID () const;
 		QString GetHumanReadableID () const;
 		QStringList Groups () const;
+		void SetGroups (const QStringList&);
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);

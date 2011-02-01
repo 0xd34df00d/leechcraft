@@ -87,6 +87,10 @@ namespace Xoox
 				.arg (RoomHandler_->GetRoomJID ()));
 	}
 
+	void RoomParticipantEntry::SetGroups (const QStringList&)
+	{
+	}
+
 	QStringList RoomParticipantEntry::Variants () const
 	{
 		return QStringList ("");

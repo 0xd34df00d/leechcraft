@@ -89,6 +89,10 @@ namespace Xoox
 		return QStringList () << tr ("Multiuser chatrooms");
 	}
 
+	void RoomCLEntry::SetGroups (const QStringList&)
+	{
+	}
+
 	QStringList RoomCLEntry::Variants () const
 	{
 		QStringList result;

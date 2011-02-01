@@ -59,6 +59,7 @@ namespace Xoox
 		void SetEntryName (const QString&);
 		QByteArray GetEntryID () const;
 		QStringList Groups () const;
+		void SetGroups (const QStringList&);
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);

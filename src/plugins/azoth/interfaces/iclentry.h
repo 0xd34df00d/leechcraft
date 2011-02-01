@@ -123,7 +123,11 @@ namespace Plugins
 			 * to request, remove, give, etc auth. In this case the
 			 * entry should also implement IAuthable.
 			 */
-			FSupportsAuth = 0x0080
+			FSupportsAuth = 0x0080,
+
+			/** This entry supports moving between different groups.
+			 */
+			FSupportsGrouping = 0x0100
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature);
@@ -264,6 +268,15 @@ namespace Plugins
 		 * @return The list of groups of this item.
 		 */
 		virtual QStringList Groups () const = 0;
+
+		/** @brief Sets the list of groups this item belongs to.
+		 *
+		 * If updating the list of groups is not applicable, this
+		 * function should do nothing.
+		 *
+		 * @param[in] groups The new list of groups.
+		 */
+		virtual void SetGroups (const QStringList& groups) = 0;
 
 		/** @brief Returns the list of destination variants.
 		 *

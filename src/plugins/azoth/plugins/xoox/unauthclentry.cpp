@@ -45,7 +45,7 @@ namespace Xoox
 
 	ICLEntry::Features UnauthCLEntry::GetEntryFeatures () const
 	{
-		return FSessionEntry;
+		return FSessionEntry | FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType UnauthCLEntry::GetEntryType () const
@@ -74,7 +74,12 @@ namespace Xoox
 
 	QStringList UnauthCLEntry::Groups () const
 	{
-		return QStringList ();
+		return Groups_;
+	}
+
+	void UnauthCLEntry::SetGroups (const QStringList& groups)
+	{
+		Groups_ = groups;
 	}
 
 	QStringList UnauthCLEntry::Variants () const

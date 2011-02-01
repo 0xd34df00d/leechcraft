@@ -94,7 +94,10 @@ namespace Xoox
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
-		return FPermanentEntry | FSupportsRenames | FSupportsAuth;
+		return FPermanentEntry |
+				FSupportsRenames |
+				FSupportsAuth |
+				FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType GlooxCLEntry::GetEntryType () const
@@ -139,6 +142,16 @@ namespace Xoox
 			return ODS_->Groups_;
 
 		return GetRI ().groups ().toList ();
+	}
+
+	void GlooxCLEntry::SetGroups (const QStringList& groups)
+	{
+		if (ODS_)
+			return;
+
+		QXmppRosterIq::Item item = GetRI ();
+		item.setGroups (QSet<QString>::fromList (groups));
+		Account_->GetClientConnection ()->Update (item);
 	}
 
 	QStringList GlooxCLEntry::Variants () const
