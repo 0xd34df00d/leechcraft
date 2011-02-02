@@ -460,6 +460,17 @@ namespace Plugins
 		 * @param[out] groups The new list of groups of this entry.
 		 */
 		virtual void groupsChanged (const QStringList& groups) = 0;
+
+		/** @brief This signal should be emitted whenever the chat
+		 * participation state of this entry changes.
+		 *
+		 * @note This function is expected to be a signal in subclasses.
+		 * @param[out] state The new chat state.
+		 * @param[out] variant The variant that this change applies to,
+		 * may be a null string if not applicable.
+		 */
+		virtual void chatPartStateChanged (const Plugins::ChatPartState& state,
+				const QString& variant) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

@@ -102,6 +102,7 @@ namespace Xoox
 		void rawinfoChanged (const QString&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
+		void chatPartStateChanged (const Plugins::ChatPartState&, const QString&);
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);

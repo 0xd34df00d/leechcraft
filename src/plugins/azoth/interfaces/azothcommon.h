@@ -28,14 +28,6 @@ namespace Azoth
 {
 namespace Plugins
 {
-
-
-
-
-
-
-
-
 	enum State
 	{
 		SOffline,
@@ -80,11 +72,45 @@ namespace Plugins
 		 */
 		ASBoth
 	};
+
+	/** Represents possible chat states.
+	 *
+	 * Modelled after XMPP XEP-085.
+	 */
+	enum ChatPartState
+	{
+		/** Unknown chat state.
+		 */
+		CPSNone,
+
+		/** User is actively participating in the chat session.
+		 */
+		CPSActive,
+
+		/** User has not been actively participating in the chat
+		 * session.
+		 */
+		CPSInactive,
+
+		/** User has effectively ended their participation in the chat
+		 * session.
+		 */
+		CPSGone,
+
+		/** User is composing a message.
+		 */
+		CPSComposing,
+
+		/** User had been composing but now has stopped.
+		 */
+		CPSPaused
+	};
 }
 }
 }
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::State);
+Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::ChatPartState);
 
 #endif

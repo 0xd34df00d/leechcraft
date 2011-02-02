@@ -22,6 +22,7 @@
 #include <QImage>
 #include <QMap>
 #include <QVariant>
+#include <QXmppMessage.h>
 #include <interfaces/iclentry.h>
 
 class QXmppVCardIq;
@@ -79,6 +80,7 @@ namespace Xoox
 		virtual QString GetJID () const = 0;
 
 		void HandleMessage (GlooxMessage*);
+		void UpdateChatState (QXmppMessage::State, const QString&);
 		void SetStatus (const EntryStatus&, const QString&);
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
@@ -97,6 +99,7 @@ namespace Xoox
 		void availableVariantsChanged (const QStringList&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
+		void chatPartStateChanged (const Plugins::ChatPartState&, const QString&);
 	};
 }
 }

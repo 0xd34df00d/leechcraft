@@ -353,6 +353,37 @@ namespace Azoth
 		UpdateStateIcon ();
 	}
 
+	void ChatTab::handleChatPartStateChanged (const Plugins::ChatPartState& state, const QString&)
+	{
+		QString text = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
+
+		QString chatState;
+		switch (state)
+		{
+		case Plugins::CPSActive:
+			chatState = tr ("participating");
+			break;
+		case Plugins::CPSInactive:
+			chatState = tr ("inactive");
+			break;
+		case Plugins::CPSComposing:
+			chatState = tr ("composing");
+			break;
+		case Plugins::CPSPaused:
+			chatState = tr ("paused composing");
+			break;
+		case Plugins::CPSGone:
+			chatState = tr ("left the conversation");
+			break;
+		default:
+			break;
+		}
+		if (!chatState.isEmpty ())
+			text += " (" + chatState + ")";
+
+		Ui_.EntryInfo_->setText (text);
+	}
+
 	void ChatTab::handleViewLinkClicked (const QUrl& url)
 	{
 		if (url.scheme () != "azoth")
@@ -440,6 +471,11 @@ namespace Azoth
 			Ui_.SubjectButton_->hide ();
 			TabIcon_ = Core::Instance ()
 					.GetIconForState (e->GetStatus (Variant_).State_);
+
+			connect (GetEntry<QObject> (),
+					SIGNAL (chatPartStateChanged (const Plugins::ChatPartState&, const QString&)),
+					this,
+					SLOT (handleChatPartStateChanged (const Plugins::ChatPartState&, const QString&)));
 		}
 	}
 

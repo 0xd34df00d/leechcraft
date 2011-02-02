@@ -69,6 +69,9 @@ namespace Xoox
 
 		Client_->addExtension (MUCManager_);
 
+		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
+		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
+
 		Client_->versionManager ().setClientName ("LeechCraft Azoth");
 		Client_->versionManager ().setClientVersion (LEECHCRAFT_VERSION);
 		Client_->versionManager ().setClientOs (ProxyObject_->GetOSName ());
@@ -112,13 +115,6 @@ namespace Xoox
 				this,
 				SLOT (handleVCardReceived (const QXmppVCardIq&)));
 
-		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
-		if (!DiscoveryManager_)
-		{
-			DiscoveryManager_ = new QXmppDiscoveryManager ();
-			Client_->addExtension (DiscoveryManager_);
-		}
-		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
 				this,
@@ -535,18 +531,10 @@ namespace Xoox
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
 		else if (JID2CLEntry_.contains (jid))
 		{
-			if (msg.body ().isEmpty ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "got message with empty body:"
-						<< msg.from ()
-						<< msg.subject ()
-						<< msg.stamp ()
-						<< msg.thread ()
-						<< msg.type ()
-						<< msg.state ();
-			}
-			else
+			if (msg.state ())
+				JID2CLEntry_ [jid]->UpdateChatState (msg.state (), resource);
+
+			if (!msg.body ().isEmpty ())
 			{
 				GlooxMessage *gm = new GlooxMessage (msg, this);
 				JID2CLEntry_ [jid]->HandleMessage (gm);

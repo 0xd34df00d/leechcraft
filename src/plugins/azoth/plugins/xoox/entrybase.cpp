@@ -134,6 +134,11 @@ namespace Xoox
 		emit gotMessage (msg);
 	}
 
+	void EntryBase::UpdateChatState (QXmppMessage::State state, const QString& variant)
+	{
+		emit chatPartStateChanged (static_cast<ChatPartState> (state), variant);
+	}
+
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant)
 	{
 		if (CurrentStatus_.contains (variant) &&

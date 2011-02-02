@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/imultitabs.h>
+#include "interfaces/azothcommon.h"
 #include "ui_chattab.h"
 
 namespace LeechCraft
@@ -97,6 +98,7 @@ namespace Azoth
 		void on_SubjChange__released ();
 		void handleEntryMessage (QObject*);
 		void handleStatusChanged (const Plugins::EntryStatus&, const QString&);
+		void handleChatPartStateChanged (const Plugins::ChatPartState&, const QString&);
 		void handleViewLinkClicked (const QUrl&);
 		void scrollToEnd ();
 		void handleHistoryUp ();
