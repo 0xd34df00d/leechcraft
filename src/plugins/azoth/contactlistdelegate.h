@@ -22,8 +22,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
 	class ContactListDelegate : public QStyledItemDelegate
@@ -45,7 +43,5 @@ namespace Azoth
 	};
 }
 }
-}
 
 #endif
-

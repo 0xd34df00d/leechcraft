@@ -24,11 +24,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -38,7 +34,7 @@ namespace Xoox
 							  , public IMUCJoinWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMUCJoinWidget);
+		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget);
 
 		Ui::JoinGroupchatWidget Ui_;
 		GlooxAccount *SelectedAccount_;
@@ -57,8 +53,6 @@ namespace Xoox
 		QVariantList GetBookmarkedMUCs () const;
 		void SetIdentifyingData (const QVariantMap& data);
 	};
-}
-}
 }
 }
 }

@@ -23,25 +23,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class GroupEditorDialog : public QDialog
 	{
-		namespace Azoth
-		{
-			class GroupEditorDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::GroupEditorDialog Ui_;
-			public:
-				GroupEditorDialog (const QStringList& initial,
-						const QStringList& all, QWidget* = 0);
+		Ui::GroupEditorDialog Ui_;
+	public:
+		GroupEditorDialog (const QStringList& initial,
+				const QStringList& all, QWidget* = 0);
 
-				QStringList GetGroups () const;
-			private slots:
-				void on_GroupsSelector__selectionChanged (const QStringList&);
-			};
-		}
-	}
+		QStringList GetGroups () const;
+	private slots:
+		void on_GroupsSelector__selectionChanged (const QStringList&);
+	};
+}
 }
 
 #endif

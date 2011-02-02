@@ -20,29 +20,26 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	NotificationActionHandler::NotificationActionHandler (Entity& e, QObject *parent)
+	: QObject (parent)
+	, Entity_ (e)
 	{
-		namespace Azoth
-		{
-			NotificationActionHandler::NotificationActionHandler (Entity& e, QObject *parent)
-			: QObject (parent)
-			, Entity_ (e)
-			{
-				Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject*> (this);
-				Entity_.Additional_ ["HandlingObjectXferOwnership"] = true;
-			}
-
-			void NotificationActionHandler::AddFunction (const QString& name, NotificationActionHandler::Callback_t callback)
-			{
-				ActionName2Callback_ << qMakePair (name, callback);
-				const QStringList& sl = Entity_.Additional_ ["NotificationActions"].toStringList ();
-				Entity_.Additional_ ["NotificationActions"] = sl + QStringList (name);
-			}
-
-			void NotificationActionHandler::notificationActionTriggered (int idx)
-			{
-				ActionName2Callback_.at (idx).second ();
-			}
-		}
+		Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject*> (this);
+		Entity_.Additional_ ["HandlingObjectXferOwnership"] = true;
 	}
+
+	void NotificationActionHandler::AddFunction (const QString& name, NotificationActionHandler::Callback_t callback)
+	{
+		ActionName2Callback_ << qMakePair (name, callback);
+		const QStringList& sl = Entity_.Additional_ ["NotificationActions"].toStringList ();
+		Entity_.Additional_ ["NotificationActions"] = sl + QStringList (name);
+	}
+
+	void NotificationActionHandler::notificationActionTriggered (int idx)
+	{
+		ActionName2Callback_.at (idx).second ();
+	}
+}
 }

@@ -24,12 +24,12 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
+
+
 		namespace Azoth
 		{
-			namespace Plugins
-			{
+
+
 				namespace ChatHistory
 				{
 					class Plugin : public QObject
@@ -58,9 +58,9 @@ namespace LeechCraft
 								QObject *message);
 					};
 				}
-			}
+
 		}
-	}
+
 }
 
 #endif

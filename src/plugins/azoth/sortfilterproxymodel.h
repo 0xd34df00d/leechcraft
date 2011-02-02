@@ -22,25 +22,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class SortFilterProxyModel : public QSortFilterProxyModel
 	{
-		namespace Azoth
-		{
-			class SortFilterProxyModel : public QSortFilterProxyModel
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				bool ShowOffline_;
-			public:
-				SortFilterProxyModel (QObject* = 0);
-			public slots:
-				void showOfflineContacts (bool);
-			protected:
-				bool filterAcceptsRow (int, const QModelIndex&) const;
-				bool lessThan (const QModelIndex&, const QModelIndex&) const;
-			};
-		}
-	}
+		bool ShowOffline_;
+	public:
+		SortFilterProxyModel (QObject* = 0);
+	public slots:
+		void showOfflineContacts (bool);
+	protected:
+		bool filterAcceptsRow (int, const QModelIndex&) const;
+		bool lessThan (const QModelIndex&, const QModelIndex&) const;
+	};
+}
 }
 
 #endif

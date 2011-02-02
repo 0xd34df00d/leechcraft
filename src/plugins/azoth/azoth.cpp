@@ -32,137 +32,133 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		namespace Azoth
-		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
-			{
-				Translator_.reset (Util::InstallTranslator ("azoth"));
+		Translator_.reset (Util::InstallTranslator ("azoth"));
 
-				ChatTab::SetParentMultiTabs (this);
+		ChatTab::SetParentMultiTabs (this);
 
-				Core::Instance ().SetProxy (proxy);
+		Core::Instance ().SetProxy (proxy);
 
-				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
-				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-						"azothsettings.xml");
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"azothsettings.xml");
 
-				XmlSettingsDialog_->SetDataSource ("StatusIcons",
-						Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
-							GetSubElemModel ());
-				XmlSettingsDialog_->SetDataSource ("ClientIcons",
-						Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
-							GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("StatusIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
+					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("ClientIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
+					GetSubElemModel ());
 
-				QMainWindow *mainWin = proxy->GetMainWindow ();
-				QDockWidget *dw = new QDockWidget (mainWin);
-				MW_ = new MainWidget ();
-				dw->setWidget (MW_);
-				dw->setWindowTitle ("Azoth");
+		QMainWindow *mainWin = proxy->GetMainWindow ();
+		QDockWidget *dw = new QDockWidget (mainWin);
+		MW_ = new MainWidget ();
+		dw->setWidget (MW_);
+		dw->setWindowTitle ("Azoth");
 
-				mainWin->addDockWidget (Qt::RightDockWidgetArea, dw);
+		mainWin->addDockWidget (Qt::RightDockWidgetArea, dw);
 
-				connect (&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				connect (&Core::Instance (),
-						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-						this,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 
-				connect (Core::Instance ().GetChatTabsManager (),
-						SIGNAL (addNewTab (const QString&, QWidget*)),
-						this,
-						SIGNAL (addNewTab (const QString&, QWidget*)));
-				connect (Core::Instance ().GetChatTabsManager (),
-						SIGNAL (changeTabName (QWidget*, const QString&)),
-						this,
-						SIGNAL (changeTabName (QWidget*, const QString&)));
-				connect (Core::Instance ().GetChatTabsManager (),
-						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-						this,
-						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-				connect (Core::Instance ().GetChatTabsManager (),
-						SIGNAL (removeTab (QWidget*)),
-						this,
-						SIGNAL (removeTab (QWidget*)));
-				connect (Core::Instance ().GetChatTabsManager (),
-						SIGNAL (raiseTab (QWidget*)),
-						this,
-						SIGNAL (raiseTab (QWidget*)));
-			}
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (addNewTab (const QString&, QWidget*)),
+				this,
+				SIGNAL (addNewTab (const QString&, QWidget*)));
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (changeTabName (QWidget*, const QString&)),
+				this,
+				SIGNAL (changeTabName (QWidget*, const QString&)));
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+				this,
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (raiseTab (QWidget*)),
+				this,
+				SIGNAL (raiseTab (QWidget*)));
+	}
 
-			void Plugin::SecondInit ()
-			{
-			}
+	void Plugin::SecondInit ()
+	{
+	}
 
-			void Plugin::Release ()
-			{
-				Core::Instance ().Release ();
-			}
+	void Plugin::Release ()
+	{
+		Core::Instance ().Release ();
+	}
 
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.Azoth";
-			}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Azoth";
+	}
 
-			QString Plugin::GetName () const
-			{
-				return "Azoth";
-			}
+	QString Plugin::GetName () const
+	{
+		return "Azoth";
+	}
 
-			QString Plugin::GetInfo () const
-			{
-				return tr ("Extensible IM client for LeechCraft.");
-			}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Extensible IM client for LeechCraft.");
+	}
 
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon (":/plugins/azoth/resources/images/azoth.svg");
-			}
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon (":/plugins/azoth/resources/images/azoth.svg");
+	}
 
-			QStringList Plugin::Provides () const
-			{
-				return QStringList (GetUniqueID ());
-			}
+	QStringList Plugin::Provides () const
+	{
+		return QStringList (GetUniqueID ());
+	}
 
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
+	QStringList Plugin::Needs () const
+	{
+		return QStringList ();
+	}
 
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
+	QStringList Plugin::Uses () const
+	{
+		return QStringList ();
+	}
 
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
+	void Plugin::SetProvider (QObject*, const QString&)
+	{
+	}
 
-			QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
-			{
-				return Core::Instance ().GetExpectedPluginClasses ();
-			}
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		return Core::Instance ().GetExpectedPluginClasses ();
+	}
 
-			void Plugin::AddPlugin (QObject *object)
-			{
-				Core::Instance ().AddPlugin (object);
-			}
+	void Plugin::AddPlugin (QObject *object)
+	{
+		Core::Instance ().AddPlugin (object);
+	}
 
-			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-			{
-				return XmlSettingsDialog_;
-			}
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
+	}
 
-			void Plugin::newTabRequested ()
-			{
-			}
-		};
-	};
-};
+	void Plugin::newTabRequested ()
+	{
+	}
+}
+}
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth, LeechCraft::Plugins::Azoth::Plugin);
-
+Q_EXPORT_PLUGIN2 (leechcraft_azoth, LeechCraft::Azoth::Plugin);

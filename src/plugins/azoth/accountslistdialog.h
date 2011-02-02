@@ -27,38 +27,32 @@ class QStandardItem;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class IAccount;
+
+	class AccountsListDialog : public QDialog
 	{
-		namespace Azoth
+		Q_OBJECT
+
+		Ui::AccountsListDialog Ui_;
+		QStandardItemModel *AccModel_;
+		QHash<IAccount*, QStandardItem*> Account2Item_;
+
+		enum Roles
 		{
-			namespace Plugins
-			{
-				class IAccount;
-			}
+			RAccObj = Qt::UserRole + 1
+		};
+	public:
+		AccountsListDialog (QWidget* = 0);
+	private slots:
+		void addAccount (IAccount*);
+		void on_Modify__released ();
+		void on_Delete__released ();
 
-			class AccountsListDialog : public QDialog
-			{
-				Q_OBJECT
-
-				Ui::AccountsListDialog Ui_;
-				QStandardItemModel *AccModel_;
-				QHash<Plugins::IAccount*, QStandardItem*> Account2Item_;
-
-				enum Roles
-				{
-					RAccObj = Qt::UserRole + 1
-				};
-			public:
-				AccountsListDialog (QWidget* = 0);
-			private slots:
-				void addAccount (Plugins::IAccount*);
-				void on_Modify__released ();
-				void on_Delete__released ();
-
-				void handleAccountRemoved (Plugins::IAccount*);
-			};
-		}
-	}
+		void handleAccountRemoved (IAccount*);
+	};
+}
 }
 
 #endif

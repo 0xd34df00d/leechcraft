@@ -28,11 +28,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 class IProtocol;
 
@@ -53,7 +49,7 @@ namespace Xoox
 					   , public IAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAccount);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount);
 
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
@@ -124,7 +120,7 @@ namespace Xoox
 		void itemUnsubscribed (const QString&, const QString&);
 		void itemCancelledSubscription (QObject*, const QString&);
 		void itemGrantedSubscription (QObject*, const QString&);
-		void statusChanged (const Plugins::EntryStatus&);
+		void statusChanged (const EntryStatus&);
 
 		void accountSettingsChanged ();
 
@@ -132,8 +128,6 @@ namespace Xoox
 	};
 
 	typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
-}
-}
 }
 }
 }

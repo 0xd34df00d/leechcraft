@@ -30,11 +30,7 @@ class QXmppPresence;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -53,7 +49,7 @@ namespace Xoox
 					, public ICLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
 	protected:
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
@@ -93,16 +89,14 @@ namespace Xoox
 		QString FormatRawInfo (const QXmppVCardIq&);
 	signals:
 		void gotMessage (QObject*);
-		void statusChanged (const Plugins::EntryStatus&, const QString&);
+		void statusChanged (const EntryStatus&, const QString&);
 		void avatarChanged (const QImage&);
 		void rawinfoChanged (const QString&);
 		void availableVariantsChanged (const QStringList&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const Plugins::ChatPartState&, const QString&);
+		void chatPartStateChanged (const ChatPartState&, const QString&);
 	};
-}
-}
 }
 }
 }

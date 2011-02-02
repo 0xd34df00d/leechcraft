@@ -22,11 +22,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -153,8 +149,6 @@ namespace Util
 		static Node2ClientHR n2ch;
 		return n2ch.Node2ClientHR_.value (node);
 	}
-}
-}
 }
 }
 }

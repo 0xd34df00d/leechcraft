@@ -29,11 +29,7 @@ class QXmppMucManager;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -126,8 +122,6 @@ namespace Xoox
 
 		void RemoveThis ();
 	};
-}
-}
 }
 }
 }

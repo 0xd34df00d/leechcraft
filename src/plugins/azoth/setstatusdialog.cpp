@@ -20,25 +20,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	SetStatusDialog::SetStatusDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Azoth
-		{
-			SetStatusDialog::SetStatusDialog (QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
-			}
-
-			Plugins::State SetStatusDialog::GetState () const
-			{
-				return static_cast<Plugins::State> (Ui_.StatusBox_->currentIndex ());
-			}
-
-			QString SetStatusDialog::GetStatusText () const
-			{
-				return Ui_.StatusText_->toPlainText ();
-			}
-		}
+		Ui_.setupUi (this);
 	}
+
+	State SetStatusDialog::GetState () const
+	{
+		return static_cast<State> (Ui_.StatusBox_->currentIndex ());
+	}
+
+	QString SetStatusDialog::GetStatusText () const
+	{
+		return Ui_.StatusText_->toPlainText ();
+	}
+}
 }

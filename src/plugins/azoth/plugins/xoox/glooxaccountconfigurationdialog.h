@@ -23,11 +23,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -53,8 +49,6 @@ namespace Xoox
 		int GetPort () const;
 		void SetPort (int);
 	};
-}
-}
 }
 }
 }

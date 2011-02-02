@@ -24,23 +24,20 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class SetStatusDialog : public QDialog
 	{
-		namespace Azoth
-		{
-			class SetStatusDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::SetStatusDialog Ui_;
-			public:
-				SetStatusDialog (QWidget* = 0);
+		Ui::SetStatusDialog Ui_;
+	public:
+		SetStatusDialog (QWidget* = 0);
 
-				Plugins::State GetState () const;
-				QString GetStatusText () const;
-			};
-		}
-	}
+		State GetState () const;
+		QString GetStatusText () const;
+	};
+}
 }
 
 #endif

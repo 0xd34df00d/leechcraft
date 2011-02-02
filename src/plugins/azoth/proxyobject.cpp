@@ -31,22 +31,20 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
 	ProxyObject::ProxyObject (QObject* parent)
 	: QObject (parent)
 	{
-		SerializedStr2AuthStatus_ ["None"] = Plugins::ASNone;
-		SerializedStr2AuthStatus_ ["To"] = Plugins::ASTo;
-		SerializedStr2AuthStatus_ ["From"] = Plugins::ASFrom;
-		SerializedStr2AuthStatus_ ["Both"] = Plugins::ASBoth;
+		SerializedStr2AuthStatus_ ["None"] = ASNone;
+		SerializedStr2AuthStatus_ ["To"] = ASTo;
+		SerializedStr2AuthStatus_ ["From"] = ASFrom;
+		SerializedStr2AuthStatus_ ["Both"] = ASBoth;
 	}
 
 	QString ProxyObject::GetPassword (QObject *accObj)
 	{
-		Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
 		if (!acc)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -82,7 +80,7 @@ namespace Azoth
 
 	void ProxyObject::SetPassword (const QString& password, QObject *accObj)
 	{
-		Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
 		if (!acc)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -219,46 +217,45 @@ namespace Azoth
 		return tr ("Unknown OS");
 	}
 
-	QString ProxyObject::StateToString (Plugins::State st) const
+	QString ProxyObject::StateToString (State st) const
 	{
 		switch (st)
 		{
-		case Plugins::SOnline:
+		case SOnline:
 			return Core::tr ("Online");
-		case Plugins::SChat:
+		case SChat:
 			return Core::tr ("Free to chat");
-		case Plugins::SAway:
+		case SAway:
 			return Core::tr ("Away");
-		case Plugins::SDND:
+		case SDND:
 			return Core::tr ("Do not disturb");
-		case Plugins::SXA:
+		case SXA:
 			return Core::tr ("Extended away");
-		case Plugins::SOffline:
+		case SOffline:
 			return Core::tr ("Offline");
 		default:
 			return Core::tr ("Error");
 		}
 	}
 
-	QString ProxyObject::AuthStatusToString (Plugins::AuthStatus status) const
+	QString ProxyObject::AuthStatusToString (AuthStatus status) const
 	{
 		switch (status)
 		{
-		case Plugins::ASNone:
+		case ASNone:
 			return "None";
-		case Plugins::ASTo:
+		case ASTo:
 			return "To";
-		case Plugins::ASFrom:
+		case ASFrom:
 			return "From";
-		case Plugins::ASBoth:
+		case ASBoth:
 			return "Both";
 		}
 	}
 
-	Plugins::AuthStatus ProxyObject::AuthStatusFromString (const QString& str) const
+	AuthStatus ProxyObject::AuthStatusFromString (const QString& str) const
 	{
-		return SerializedStr2AuthStatus_.value (str, Plugins::ASNone);;
+		return SerializedStr2AuthStatus_.value (str, ASNone);;
 	}
-}
 }
 }

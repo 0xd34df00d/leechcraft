@@ -26,8 +26,6 @@ class QMenu;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
 	class SortFilterProxyModel;
@@ -62,7 +60,6 @@ namespace Azoth
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
 	};
-}
 }
 }
 

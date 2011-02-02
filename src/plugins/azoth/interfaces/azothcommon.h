@@ -22,11 +22,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	enum State
 	{
@@ -107,10 +103,8 @@ namespace Plugins
 	};
 }
 }
-}
-}
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::State);
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::ChatPartState);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::State);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatPartState);
 
 #endif

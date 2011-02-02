@@ -27,11 +27,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 class IAccount;
 
@@ -43,7 +39,7 @@ namespace Xoox
 					   , public IAuthable
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IAuthable);
+		Q_INTERFACES (LeechCraft::Azoth::IAuthable);
 
 		QString BareJID_;
 	public:
@@ -99,8 +95,6 @@ namespace Xoox
 
 		QString GetJID () const;
 	};
-}
-}
 }
 }
 }

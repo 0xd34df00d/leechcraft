@@ -24,11 +24,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	class ICLEntry;
 
@@ -340,12 +336,10 @@ namespace Plugins
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);
 }
 }
-}
-}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IMUCEntry,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IMUCEntry/1.0");
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::IMUCEntry::MUCRole);
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::IMUCEntry::MUCAffiliation);
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCEntry,
+		"org.Deviant.LeechCraft.Azoth.IMUCEntry/1.0");
+Q_DECLARE_METATYPE (LeechCraft::Azoth::IMUCEntry::MUCRole);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::IMUCEntry::MUCAffiliation);
 
 #endif

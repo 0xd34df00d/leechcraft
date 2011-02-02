@@ -22,11 +22,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -40,8 +36,6 @@ namespace Util
 	QString GetClientIDName (const QString&);
 	QString GetClientHRName (const QString&);
 	//QString GetClientVersion (const QString&, const QString&);
-}
-}
 }
 }
 }

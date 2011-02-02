@@ -28,46 +28,42 @@ class QObject;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class PluginManager : public Util::BaseHookInterconnector
 	{
-		namespace Azoth
-		{
-			class PluginManager : public Util::BaseHookInterconnector
-			{
-				Q_OBJECT
-			public:
-				PluginManager (QObject* = 0);
-			signals:
-				void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
-						QObject *message);
-				void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QDateTime dateTime,
-						QObject *message);
-				void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QString nick,
-						QObject *message);
-				void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QString body,
-						QObject *message);
-				void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QString body,
-						QObject *message);
-				void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						int type,
-						QString variant,
-						QString text);
-				void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
-						QObject *chatTab,
-						QObject *message);
-			};
-		};
+		Q_OBJECT
+	public:
+		PluginManager (QObject* = 0);
+	signals:
+		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QDateTime dateTime,
+				QObject *message);
+		void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString nick,
+				QObject *message);
+		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString body,
+				QObject *message);
+		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString body,
+				QObject *message);
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				int type,
+				QString variant,
+				QString text);
+		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *message);
 	};
-};
+}
+}
 
 #endif
-

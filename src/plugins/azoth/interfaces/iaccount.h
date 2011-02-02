@@ -26,11 +26,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	class IProtocol;
 	class ICLEntry;
@@ -384,13 +380,10 @@ namespace Plugins
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IAccount::AccountFeatures);
 }
 }
-}
-}
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::IAccount*);
-
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IAccount,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IAccount/1.0");
+Q_DECLARE_METATYPE (LeechCraft::Azoth::IAccount*);
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAccount,
+		"org.Deviant.LeechCraft.Azoth.IAccount/1.0");
 
 
 #endif

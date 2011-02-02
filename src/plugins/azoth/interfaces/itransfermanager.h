@@ -23,12 +23,49 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
-namespace Plugins
-{
+	enum TransferDirection
+	{
+		TDIn,
+		TDOut
+	};
+
+	enum TransferState
+	{
+		TSOffer,
+		TSStarting,
+		TSTransfer,
+		TSFinished
+	};
+
+	enum TransferError
+	{
+		TENoError,
+		TEAborted,
+		TEFileAccessError,
+		TEFileCorruptError,
+		TEProtocolError
+	};
+
+	class ITransferJob
+	{
+	public:
+		virtual ~ITransferJob () {}
+
+		virtual QString SourceID () const = 0;
+
+		virtual void Accept (const QString& out) const = 0;
+
+		virtual void Abort () const = 0;
+
+		virtual void transferProgress (qint64 done, qint64 total) = 0;
+
+		virtual void errorAppeared (TransferError error) = 0;
+
+		virtual void stateChanged (TransferState state) = 0;
+	};
+
 	class ITransferManager
 	{
 	public:
@@ -40,10 +77,10 @@ namespace Plugins
 	};
 }
 }
-}
-}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::ITransferManager,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.ITransferManager/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ITransferJob,
+		"org.Deviant.LeechCraft.Azoth.ITransferJob/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ITransferManager,
+		"org.Deviant.LeechCraft.Azoth.ITransferManager/1.0");
 
 #endif

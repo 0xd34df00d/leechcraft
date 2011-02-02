@@ -27,58 +27,55 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class MainWidget;
+
+	class Plugin : public QObject
+					, public IInfo
+					, public IPluginReady
+					, public IMultiTabs
+					, public IHaveSettings
 	{
-		namespace Azoth
-		{
-			class MainWidget;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPluginReady IMultiTabs IHaveSettings)
 
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginReady
-						 , public IMultiTabs
-						 , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginReady IMultiTabs IHaveSettings)
+		MainWidget *MW_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		std::auto_ptr<QTranslator> Translator_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-				MainWidget *MW_;
-				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-				std::auto_ptr<QTranslator> Translator_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	public slots:
+		void newTabRequested ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 
-				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-			public slots:
-				void newTabRequested ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
-			};
-		};
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
-};
+}
+}
 
 #endif
 

@@ -25,11 +25,7 @@ class QXmppVCardIq;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -43,8 +39,6 @@ namespace Xoox
 
 		void UpdateInfo (const QXmppVCardIq&);
 	};
-}
-}
 }
 }
 }

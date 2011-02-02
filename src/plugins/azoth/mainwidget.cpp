@@ -32,8 +32,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
 	MainWidget::MainWidget (QWidget *parent)
@@ -76,32 +74,32 @@ namespace Azoth
 				this,
 				SLOT (handleChangeStatusRequested ()))->
 					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<Plugins::State> (Plugins::SOnline));
+							QVariant::fromValue<State> (SOnline));
 		MenuChangeStatus_->addAction (tr ("Free to chat"),
 				this,
 				SLOT (handleChangeStatusRequested ()))->
 					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<Plugins::State> (Plugins::SChat));
+							QVariant::fromValue<State> (SChat));
 		MenuChangeStatus_->addAction (tr ("Away"),
 				this,
 				SLOT (handleChangeStatusRequested ()))->
 					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<Plugins::State> (Plugins::SAway));
+							QVariant::fromValue<State> (SAway));
 		MenuChangeStatus_->addAction (tr ("DND"),
 				this,
 				SLOT (handleChangeStatusRequested ()))->
 					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<Plugins::State> (Plugins::SDND));
+							QVariant::fromValue<State> (SDND));
 		MenuChangeStatus_->addAction (tr ("Extended away"),
 				this,
 				SLOT (handleChangeStatusRequested ()))->
 					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<Plugins::State> (Plugins::SXA));
+							QVariant::fromValue<State> (SXA));
 		MenuChangeStatus_->addAction (tr ("Offline"),
 				this,
 				SLOT (handleChangeStatusRequested ()))->
 					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<Plugins::State> (Plugins::SOffline));
+							QVariant::fromValue<State> (SOffline));
 		MenuChangeStatus_->addSeparator ();
 		MenuChangeStatus_->addAction (tr ("Custom..."),
 				this,
@@ -159,7 +157,7 @@ namespace Azoth
 		case Core::CLETContact:
 		{
 			QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
-			Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (obj);
+			ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
 			const QList<QAction*>& allActions = Core::Instance ().GetEntryActions (entry);
 			Q_FOREACH (QAction *action, allActions)
 				if (Core::Instance ().GetAreasForAction (action)
@@ -181,7 +179,7 @@ namespace Azoth
 				QVariant stateVar = act->property ("Azoth/TargetState");
 				if (!stateVar.isNull ())
 				{
-					Plugins::State state = stateVar.value<Plugins::State> ();
+					State state = stateVar.value<State> ();
 					act->setIcon (Core::Instance ().GetIconForState (state));
 				}
 			}
@@ -217,7 +215,7 @@ namespace Azoth
 			return;
 		}
 
-		Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (obj);
+		IAccount *acc = qobject_cast<IAccount*> (obj);
 		if (!acc)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -230,11 +228,11 @@ namespace Azoth
 		QVariant stateVar = action->property ("Azoth/TargetState");
 		if (!stateVar.isNull ())
 		{
-			Plugins::State state = stateVar.value<Plugins::State> ();
+			State state = stateVar.value<State> ();
 			const QString& propName = "DefaultStatus" + QString::number (state);
 			const QString& text = XmlSettingsManager::Instance ()
 					.property (propName.toLatin1 ()).toString ();
-			acc->ChangeState (Plugins::EntryStatus (state,
+			acc->ChangeState (EntryStatus (state,
 							text));
 		}
 		else
@@ -243,7 +241,7 @@ namespace Azoth
 			if (ssd->exec () != QDialog::Accepted)
 				return;
 
-			acc->ChangeState (Plugins::EntryStatus (ssd->GetState (),
+			acc->ChangeState (EntryStatus (ssd->GetState (),
 							ssd->GetStatusText ()));
 		}
 	}
@@ -331,6 +329,5 @@ namespace Azoth
 	{
 		SetExpanded (idx, true);
 	}
-}
 }
 }

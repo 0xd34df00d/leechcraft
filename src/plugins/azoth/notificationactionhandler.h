@@ -24,28 +24,25 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class NotificationActionHandler : public QObject
 	{
-		namespace Azoth
-		{
-			class NotificationActionHandler : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Entity& Entity_;
-			public:
-				typedef boost::function<void ()> Callback_t;
-			private:
-				QList<QPair<QString, Callback_t> > ActionName2Callback_;
-			public:
-				NotificationActionHandler (Entity&, QObject* = 0);
+		Entity& Entity_;
+	public:
+		typedef boost::function<void ()> Callback_t;
+	private:
+		QList<QPair<QString, Callback_t> > ActionName2Callback_;
+	public:
+		NotificationActionHandler (Entity&, QObject* = 0);
 
-				void AddFunction (const QString&, Callback_t);
-			public slots:
-				void notificationActionTriggered (int);
-			};
-		}
-	}
+		void AddFunction (const QString&, Callback_t);
+	public slots:
+		void notificationActionTriggered (int);
+	};
+}
 }
 
 #endif

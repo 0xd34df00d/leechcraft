@@ -23,14 +23,9 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
-namespace Plugins
-{
 	class IAccount;
-}
 
 	class AddContactDialog : public QDialog
 	{
@@ -40,7 +35,7 @@ namespace Plugins
 	public:
 		AddContactDialog (QWidget* = 0);
 
-		Plugins::IAccount* GetSelectedAccount () const;
+		IAccount* GetSelectedAccount () const;
 		QString GetContactID () const;
 		QString GetNick () const;
 		QString GetReason () const;
@@ -48,7 +43,6 @@ namespace Plugins
 	private slots:
 		void on_Protocol__currentIndexChanged (int);
 	};
-}
 }
 }
 

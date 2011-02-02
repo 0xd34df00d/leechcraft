@@ -25,11 +25,7 @@ namespace LeechCraft
 {
 struct Entity;
 
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -39,7 +35,7 @@ namespace Xoox
 						, public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProtocol);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;
@@ -70,8 +66,6 @@ namespace Xoox
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
 	};
-}
-}
 }
 }
 }

@@ -25,11 +25,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace p100q
 {
@@ -67,8 +63,6 @@ namespace p100q
 				QString body,
 				QObject *message);
 	};
-}
-}
 }
 }
 }

@@ -21,33 +21,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace Azoth
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				Util::BaseSettingsManager::Init ();
-			}
+		Util::BaseSettingsManager::Init ();
+	}
 
-			XmlSettingsManager& XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager xsm;
-				return xsm;
-			}
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Azoth");
-				return settings;
-			}
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		return settings;
+	}
 
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-
-		};
-	};
-};
-
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}

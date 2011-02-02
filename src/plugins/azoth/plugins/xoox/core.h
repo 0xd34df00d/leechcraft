@@ -24,11 +24,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -66,8 +62,6 @@ namespace Xoox
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
-}
-}
 }
 }
 }

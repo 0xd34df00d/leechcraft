@@ -25,11 +25,7 @@ class QObject;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	class IAccount;
 	class IProtocolPlugin;
@@ -131,11 +127,9 @@ namespace Plugins
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IProtocol::ProtocolFeatures);
 }
 }
-}
-}
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::IProtocol*);
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IProtocol,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProtocol/1.0");
+Q_DECLARE_METATYPE (LeechCraft::Azoth::IProtocol*);
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocol,
+		"org.Deviant.LeechCraft.Azoth.IProtocol/1.0");
 
 #endif

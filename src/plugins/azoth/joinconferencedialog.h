@@ -24,29 +24,26 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class JoinConferenceDialog : public QDialog
 	{
-		namespace Azoth
-		{
-			class JoinConferenceDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::JoinConferenceDialog Ui_;
-				QHash<Plugins::IProtocol*, QWidget*> Proto2Joiner_;
-			public:
-				JoinConferenceDialog (const QList<Plugins::IAccount*>&, QWidget* = 0);
-				virtual ~JoinConferenceDialog ();
-			public slots:
-				virtual void accept ();
-				virtual void reject ();
-			private slots:
-				virtual void on_AccountBox__currentIndexChanged (int);
-				virtual void on_BookmarksBox__currentIndexChanged (int);
-				virtual void on_HistoryBox__currentIndexChanged (int);
-			};
-		}
-	}
+		Ui::JoinConferenceDialog Ui_;
+		QHash<IProtocol*, QWidget*> Proto2Joiner_;
+	public:
+		JoinConferenceDialog (const QList<IAccount*>&, QWidget* = 0);
+		virtual ~JoinConferenceDialog ();
+	public slots:
+		virtual void accept ();
+		virtual void reject ();
+	private slots:
+		virtual void on_AccountBox__currentIndexChanged (int);
+		virtual void on_BookmarksBox__currentIndexChanged (int);
+		virtual void on_HistoryBox__currentIndexChanged (int);
+	};
+}
 }
 
 #endif

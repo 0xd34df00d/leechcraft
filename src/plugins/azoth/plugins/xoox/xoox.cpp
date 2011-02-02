@@ -22,11 +22,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -113,8 +109,6 @@ namespace Xoox
 }
 }
 }
-}
-}
 
 Q_EXPORT_PLUGIN2 (leechcraft_azoth_xoox,
-		LeechCraft::Plugins::Azoth::Plugins::Xoox::Plugin);
+		LeechCraft::Azoth::Xoox::Plugin);

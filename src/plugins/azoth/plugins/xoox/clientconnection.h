@@ -39,11 +39,7 @@ namespace LeechCraft
 {
 struct Entity;
 
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 class IProxyObject;
 
@@ -155,8 +151,6 @@ namespace Xoox
 		void serverAuthFailed ();
 		void needPassword ();
 	};
-}
-}
 }
 }
 }

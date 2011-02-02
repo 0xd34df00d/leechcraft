@@ -23,14 +23,11 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	PluginManager::PluginManager (QObject *parent)
+	: Util::BaseHookInterconnector (parent)
 	{
-		namespace Azoth
-		{
-			PluginManager::PluginManager (QObject *parent)
-			: Util::BaseHookInterconnector (parent)
-			{
-			}
-		};
-	};
-};
+	}
+}
+}

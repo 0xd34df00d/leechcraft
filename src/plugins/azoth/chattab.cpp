@@ -37,8 +37,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
 	QObject *ChatTab::S_ParentMultiTabs_ = 0;
@@ -107,14 +105,14 @@ namespace Azoth
 				this,
 				SLOT (handleEntryMessage (QObject*)));
 		connect (GetEntry<QObject> (),
-				SIGNAL (statusChanged (const Plugins::EntryStatus&, const QString&)),
+				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
 				this,
-				SLOT (handleStatusChanged (const Plugins::EntryStatus&, const QString&)));
+				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
 
-		Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
+		ICLEntry *e = GetEntry<ICLEntry> ();
 		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
 		{
-			Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
+			IMessage *msg = qobject_cast<IMessage*> (msgObj);
 			if (!msg)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -126,7 +124,7 @@ namespace Azoth
 		}
 
 		const QString& accName =
-				qobject_cast<Plugins::IAccount*> (e->GetParentAccount ())->
+				qobject_cast<IAccount*> (e->GetParentAccount ())->
 						GetAccountName ();
 		Ui_.AccountName_->setText (accName);
 
@@ -175,7 +173,7 @@ namespace Azoth
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
 	{
 		QList<QAction*> allActions = Core::Instance ()
-				.GetEntryActions (GetEntry<Plugins::ICLEntry> ());
+				.GetEntryActions (GetEntry<ICLEntry> ());
 		QList<QAction*> result;
 		Q_FOREACH (QAction *act, allActions)
 		{
@@ -233,15 +231,15 @@ namespace Azoth
 		CurrentHistoryPosition_ = -1;
 		MsgHistory_.prepend (text);
 
-		Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
+		ICLEntry *e = GetEntry<ICLEntry> ();
 		QStringList currentVariants = e->Variants ();
 		QString variant = currentVariants.contains (Variant_) ?
 				Variant_ :
 				currentVariants.first ();
-		Plugins::IMessage::MessageType type =
-				e->GetEntryType () == Plugins::ICLEntry::ETMUC ?
-						Plugins::IMessage::MTMUCMessage :
-						Plugins::IMessage::MTChatMessage;
+		IMessage::MessageType type =
+				e->GetEntryType () == ICLEntry::ETMUC ?
+						IMessage::MTMUCMessage :
+						IMessage::MTChatMessage;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		emit hookMessageWillCreated (proxy, this, type, variant, text);
@@ -250,7 +248,7 @@ namespace Azoth
 
 		int intType = type;
 		proxy->FillValue ("type", intType);
-		type = static_cast<Plugins::IMessage::MessageType> (intType);
+		type = static_cast<IMessage::MessageType> (intType);
 		proxy->FillValue ("variant", variant);
 		proxy->FillValue ("text", text);
 
@@ -259,7 +257,7 @@ namespace Azoth
 
 		QObject *msgObj = e->CreateMessage (type, variant, text);
 
-		Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -298,7 +296,7 @@ namespace Azoth
 		if (!show)
 			return;
 
-		Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
+		IMUCEntry *me = GetEntry<IMUCEntry> ();
 		if (!me)
 			return;
 
@@ -313,7 +311,7 @@ namespace Azoth
 	{
 		Ui_.SubjectButton_->setChecked (false);
 
-		Plugins::IMUCEntry *me = GetEntry<Plugins::IMUCEntry> ();
+		IMUCEntry *me = GetEntry<IMUCEntry> ();
 		if (!me)
 			return;
 
@@ -322,7 +320,7 @@ namespace Azoth
 
 	void ChatTab::handleEntryMessage (QObject *msgObj)
 	{
-		Plugins::IMessage *msg = qobject_cast<Plugins::IMessage*> (msgObj);
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -332,7 +330,7 @@ namespace Azoth
 			return;
 		}
 
-		if (Core::Instance ().ShouldCountUnread (GetEntry<Plugins::ICLEntry> (), msg))
+		if (Core::Instance ().ShouldCountUnread (GetEntry<ICLEntry> (), msg))
 		{
 			++NumUnreadMsgs_;
 			ReformatTitle ();
@@ -341,38 +339,38 @@ namespace Azoth
 		AppendMessage (msg);
 	}
 
-	void ChatTab::handleStatusChanged (const Plugins::EntryStatus& status,
+	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
 	{
 		if (variant != Variant_ &&
 				!variant.isEmpty () &&
-				GetEntry<Plugins::ICLEntry> ()->Variants ().value (0) == variant)
+				GetEntry<ICLEntry> ()->Variants ().value (0) == variant)
 			return;
 
 		TabIcon_ = Core::Instance ().GetIconForState (status.State_);
 		UpdateStateIcon ();
 	}
 
-	void ChatTab::handleChatPartStateChanged (const Plugins::ChatPartState& state, const QString&)
+	void ChatTab::handleChatPartStateChanged (const ChatPartState& state, const QString&)
 	{
-		QString text = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
+		QString text = GetEntry<ICLEntry> ()->GetEntryName ();
 
 		QString chatState;
 		switch (state)
 		{
-		case Plugins::CPSActive:
+		case CPSActive:
 			chatState = tr ("participating");
 			break;
-		case Plugins::CPSInactive:
+		case CPSInactive:
 			chatState = tr ("inactive");
 			break;
-		case Plugins::CPSComposing:
+		case CPSComposing:
 			chatState = tr ("composing");
 			break;
-		case Plugins::CPSPaused:
+		case CPSPaused:
 			chatState = tr ("paused composing");
 			break;
-		case Plugins::CPSGone:
+		case CPSGone:
 			chatState = tr ("left the conversation");
 			break;
 		default:
@@ -389,7 +387,7 @@ namespace Azoth
 		if (url.scheme () != "azoth")
 		{
 			Entity e = Util::MakeEntity (url,
-					QString (), FromUserInitiated | OnlyHandle);
+					QString (), static_cast<TaskParameter> (FromUserInitiated | OnlyHandle));
 			Core::Instance ().SendEntity (e);
 			return;
 		}
@@ -447,15 +445,15 @@ namespace Azoth
 
 	void ChatTab::CheckMUC ()
 	{
-		Plugins::ICLEntry *e = GetEntry<Plugins::ICLEntry> ();
+		ICLEntry *e = GetEntry<ICLEntry> ();
 
-		bool claimsMUC = e->GetEntryType () == Plugins::ICLEntry::ETMUC;
+		bool claimsMUC = e->GetEntryType () == ICLEntry::ETMUC;
 		IsMUC_ = true;
 		if (!(claimsMUC))
 			IsMUC_ = false;
 
 		if (claimsMUC &&
-				!GetEntry<Plugins::IMUCEntry> ())
+				!GetEntry<IMUCEntry> ())
 		{
 			qWarning () << Q_FUNC_INFO
 				<< e->GetEntryName ()
@@ -473,9 +471,9 @@ namespace Azoth
 					.GetIconForState (e->GetStatus (Variant_).State_);
 
 			connect (GetEntry<QObject> (),
-					SIGNAL (chatPartStateChanged (const Plugins::ChatPartState&, const QString&)),
+					SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
 					this,
-					SLOT (handleChatPartStateChanged (const Plugins::ChatPartState&, const QString&)));
+					SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
 		}
 	}
 
@@ -484,9 +482,9 @@ namespace Azoth
 		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
 	}
 
-	void ChatTab::AppendMessage (Plugins::IMessage *msg)
+	void ChatTab::AppendMessage (IMessage *msg)
 	{
-		Plugins::ICLEntry *other = qobject_cast<Plugins::ICLEntry*> (msg->OtherPart ());
+		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		if (!other && msg->OtherPart ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -496,11 +494,11 @@ namespace Azoth
 			return;
 		}
 
-		if (msg->GetDirection () == Plugins::IMessage::DOut &&
-				other->GetEntryType () == Plugins::ICLEntry::ETMUC)
+		if (msg->GetDirection () == IMessage::DOut &&
+				other->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
-		if (msg->GetMessageSubType () == Plugins::IMessage::MSTParticipantStatusChange &&
+		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 
@@ -516,12 +514,12 @@ namespace Azoth
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
-		case Plugins::IMessage::DIn:
+		case IMessage::DIn:
 		{
 			switch (msg->GetMessageType ())
 			{
-			case Plugins::IMessage::MTChatMessage:
-			case Plugins::IMessage::MTMUCMessage:
+			case IMessage::MTChatMessage:
+			case IMessage::MTMUCMessage:
 			{
 				QString entryName = Qt::escape (other->GetEntryName ());
 				entryName = FormatNickname (entryName, msg);
@@ -544,27 +542,27 @@ namespace Azoth
 				}
 				break;
 			}
-			case Plugins::IMessage::MTEventMessage:
+			case IMessage::MTEventMessage:
 				string.append ("! ");
 				divClass = "eventmsg";
 				break;
-			case Plugins::IMessage::MTStatusMessage:
+			case IMessage::MTStatusMessage:
 				string.append ("* ");
 				divClass = "statusmsg";
 				break;
 			}
 			break;
 		}
-		case Plugins::IMessage::DOut:
+		case IMessage::DOut:
 			if (body.startsWith ("/leechcraft "))
 			{
 				body = body.mid (12);
 				string.append ("* ");
 			}
 			else if (body.startsWith ("/me ") &&
-					msg->GetMessageType () != Plugins::IMessage::MTMUCMessage)
+					msg->GetMessageType () != IMessage::MTMUCMessage)
 			{
-				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (other->GetParentAccount ());
+				IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
 				body = body.mid (3);
 				string.append ("* ");
 				string.append (acc->GetOurNick ());
@@ -573,7 +571,7 @@ namespace Azoth
 			}
 			else
 			{
-				Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (other->GetParentAccount ());
+				IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
 				string.append (FormatNickname (acc->GetOurNick (), msg));
 				string.append (": ");
 			}
@@ -585,8 +583,8 @@ namespace Azoth
 
 		QWebElement elem = frame->findFirstElement ("body");
 
-		Plugins::ICLEntry *entry =
-				qobject_cast<Plugins::ICLEntry*> (Core::Instance ().GetEntry (EntryID_));
+		ICLEntry *entry =
+				qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (EntryID_));
 		if (!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) &&
 				!HasBeenAppended_)
 		{
@@ -609,7 +607,7 @@ namespace Azoth
 					SLOT (scrollToEnd ()));
 	}
 
-	QString ChatTab::FormatDate (QDateTime dt, Plugins::IMessage *msg)
+	QString ChatTab::FormatDate (QDateTime dt, IMessage *msg)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookFormatDateTime (proxy, this, dt, msg->GetObject ());
@@ -623,7 +621,7 @@ namespace Azoth
 				str + "]</span>");
 	}
 
-	QString ChatTab::FormatNickname (QString nick, Plugins::IMessage *msg)
+	QString ChatTab::FormatNickname (QString nick, IMessage *msg)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookFormatNickname (proxy, this, nick, msg->GetObject ());
@@ -635,7 +633,7 @@ namespace Azoth
 		QString string;
 
 		QString color = "green";
-		if (msg->GetMessageType () == Plugins::IMessage::MTMUCMessage)
+		if (msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
 			if (NickColors_.isEmpty ())
 				GenerateColors ();
@@ -670,10 +668,10 @@ namespace Azoth
 		{
 			switch (msg->GetDirection ())
 			{
-				case Plugins::IMessage::DIn:
+				case IMessage::DIn:
 					color = "blue";
 					break;
-				case Plugins::IMessage::DOut:
+				case IMessage::DOut:
 					color = "red";
 					break;
 			}
@@ -686,7 +684,7 @@ namespace Azoth
 		return string;
 	}
 
-	QString ChatTab::FormatBody (QString body, Plugins::IMessage *msg)
+	QString ChatTab::FormatBody (QString body, IMessage *msg)
 	{
 		QObject *msgObj = msg->GetObject ();
 
@@ -734,10 +732,10 @@ namespace Azoth
 				body;
 	}
 
-	bool ChatTab::ProcessOutgoingMsg (Plugins::ICLEntry *entry, QString& text)
+	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)
 	{
-		Plugins::IMUCEntry *mucEntry = qobject_cast<Plugins::IMUCEntry*> (entry->GetObject ());
-		if (entry->GetEntryType () == Plugins::ICLEntry::ETMUC &&
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetObject ());
+		if (entry->GetEntryType () == ICLEntry::ETMUC &&
 				mucEntry &&
 				text.startsWith ("/nick "))
 		{
@@ -787,7 +785,7 @@ namespace Azoth
 
 	void ChatTab::nickComplete ()
 	{
-		Plugins::ICLEntry *entry = GetEntry<Plugins::ICLEntry> ();
+		ICLEntry *entry = GetEntry<ICLEntry> ();
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -796,7 +794,7 @@ namespace Azoth
 
 			return;
 		}
-		if (entry->GetEntryType() != Plugins::ICLEntry::ETMUC)
+		if (entry->GetEntryType() != ICLEntry::ETMUC)
 			return;
 
 		QStringList currentMUCParticipants = GetMUCParticipants ();
@@ -888,7 +886,7 @@ namespace Azoth
 
 	QStringList ChatTab::GetMUCParticipants () const
 	{
-		Plugins::IMUCEntry *entry = GetEntry<Plugins::IMUCEntry> ();
+		IMUCEntry *entry = GetEntry<IMUCEntry> ();
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -902,7 +900,7 @@ namespace Azoth
 
 		Q_FOREACH (QObject *item, entry->GetParticipants ())
 		{
-			Plugins::ICLEntry *part = qobject_cast<Plugins::ICLEntry*> (item);
+			ICLEntry *part = qobject_cast<ICLEntry*> (item);
 			if (!part)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -919,32 +917,32 @@ namespace Azoth
 
 	void ChatTab::ReformatTitle ()
 	{
-		if (!GetEntry<Plugins::ICLEntry> ())
+		if (!GetEntry<ICLEntry> ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "GetEntry<Plugins::ICLEntry> returned NULL";
+					<< "GetEntry<ICLEntry> returned NULL";
 			return;
 		}
 
-		QString title = GetEntry<Plugins::ICLEntry> ()->GetEntryName ();
+		QString title = GetEntry<ICLEntry> ()->GetEntryName ();
 		if (NumUnreadMsgs_)
 			title.prepend (QString ("(%1) ")
 					.arg (NumUnreadMsgs_));
 		emit changeTabName (this, title);
 
 		QStringList path ("Azoth");
-		switch (GetEntry<Plugins::ICLEntry> ()->GetEntryType ())
+		switch (GetEntry<ICLEntry> ()->GetEntryType ())
 		{
-		case Plugins::ICLEntry::ETChat:
+		case ICLEntry::ETChat:
 			path << tr ("Chat");
 			break;
-		case Plugins::ICLEntry::ETMUC:
+		case ICLEntry::ETMUC:
 			path << tr ("Conference");
 			break;
-		case Plugins::ICLEntry::ETPrivateChat:
+		case ICLEntry::ETPrivateChat:
 			path << tr ("Private chat");
 			break;
-		case Plugins::ICLEntry::ETUnauthEntry:
+		case ICLEntry::ETUnauthEntry:
 			path << tr ("Unauthorized user");
 			break;
 		}
@@ -968,6 +966,5 @@ namespace Azoth
 	{
 		emit changeTabIcon (this, TabIcon_);
 	}
-}
 }
 }

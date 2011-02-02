@@ -24,116 +24,113 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	ChatTabsManager::ChatTabsManager(QObject *parent)
+	: QObject (parent)
 	{
-		namespace Azoth
-		{
-			ChatTabsManager::ChatTabsManager(QObject *parent)
-			: QObject (parent)
-			{
-			}
-
-			void ChatTabsManager::OpenChat (const QModelIndex& ti)
-			{
-				if (!ti.isValid ())
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "tried to open a chat with invalid index";
-					return;
-				}
-
-				QObject *entryObj = ti.data (Core::CLREntryObject).value<QObject*> ();
-				Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
-				if (!entry)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "object"
-							<< entryObj
-							<< "from the index"
-							<< ti
-							<< "doesn't implement Plugins::ICLEntry";
-					return;
-				}
-
-				OpenChat (entry);
-			}
-
-			void ChatTabsManager::OpenChat (const Plugins::ICLEntry *entry)
-			{
-				const QString& id = entry->GetEntryID ();
-				if (Entry2Tab_.contains (id))
-				{
-					emit raiseTab (Entry2Tab_ [id]);
-					return;
-				}
-
-				// TODO don't hardcode the first variant
-				QPointer<ChatTab> tab (new ChatTab (id, entry->Variants ().first ()));
-				Entry2Tab_ [id] = tab;
-
-				connect (tab,
-						SIGNAL (needToClose (ChatTab*)),
-						this,
-						SLOT (handleNeedToClose (ChatTab*)));
-				connect (tab,
-						SIGNAL (clearUnreadMsgCount (QObject*)),
-						this,
-						SIGNAL (clearUnreadMsgCount (QObject*)));
-				connect (tab,
-						SIGNAL (changeTabName (QWidget*, const QString&)),
-						this,
-						SIGNAL (changeTabName (QWidget*, const QString&)));
-				connect (tab,
-						SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-						this,
-						SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-
-				emit addNewTab (entry->GetEntryName (), tab);
-
-				tab->HasBeenAdded ();
-
-				if (XmlSettingsManager::Instance ()
-						.property ("JumpToNewTabOnOpen").toBool ())
-					emit raiseTab (tab);
-			}
-
-			bool ChatTabsManager::IsActiveChat (const Plugins::ICLEntry *entry) const
-			{
-				if (!Entry2Tab_.contains (entry->GetEntryID ()))
-					return false;
-
-				return Entry2Tab_ [entry->GetEntryID ()]->isVisible ();
-			}
-
-			void ChatTabsManager::UpdateEntryMapping (const QString& id, QObject *obj)
-			{
-				if (!Entry2Tab_.contains (id))
-					return;
-
-				connect (obj,
-						SIGNAL (gotMessage (QObject*)),
-						Entry2Tab_ [id],
-						SLOT (handleEntryMessage (QObject*)),
-						Qt::UniqueConnection);
-			}
-
-			void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)
-			{
-				if (!Entry2Tab_.contains (id))
-					return;
-
-				Entry2Tab_ [id]->setEnabled (enabled);
-			}
-
-			void ChatTabsManager::handleNeedToClose (ChatTab *tab)
-			{
-				emit removeTab (tab);
-
-				const QString& entry = Entry2Tab_.key (tab);
-				Entry2Tab_.remove (entry);
-
-				tab->deleteLater ();
-			}
-		}
 	}
+
+	void ChatTabsManager::OpenChat (const QModelIndex& ti)
+	{
+		if (!ti.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "tried to open a chat with invalid index";
+			return;
+		}
+
+		QObject *entryObj = ti.data (Core::CLREntryObject).value<QObject*> ();
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "object"
+					<< entryObj
+					<< "from the index"
+					<< ti
+					<< "doesn't implement ICLEntry";
+			return;
+		}
+
+		OpenChat (entry);
+	}
+
+	void ChatTabsManager::OpenChat (const ICLEntry *entry)
+	{
+		const QString& id = entry->GetEntryID ();
+		if (Entry2Tab_.contains (id))
+		{
+			emit raiseTab (Entry2Tab_ [id]);
+			return;
+		}
+
+		// TODO don't hardcode the first variant
+		QPointer<ChatTab> tab (new ChatTab (id, entry->Variants ().first ()));
+		Entry2Tab_ [id] = tab;
+
+		connect (tab,
+				SIGNAL (needToClose (ChatTab*)),
+				this,
+				SLOT (handleNeedToClose (ChatTab*)));
+		connect (tab,
+				SIGNAL (clearUnreadMsgCount (QObject*)),
+				this,
+				SIGNAL (clearUnreadMsgCount (QObject*)));
+		connect (tab,
+				SIGNAL (changeTabName (QWidget*, const QString&)),
+				this,
+				SIGNAL (changeTabName (QWidget*, const QString&)));
+		connect (tab,
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+				this,
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+
+		emit addNewTab (entry->GetEntryName (), tab);
+
+		tab->HasBeenAdded ();
+
+		if (XmlSettingsManager::Instance ()
+				.property ("JumpToNewTabOnOpen").toBool ())
+			emit raiseTab (tab);
+	}
+
+	bool ChatTabsManager::IsActiveChat (const ICLEntry *entry) const
+	{
+		if (!Entry2Tab_.contains (entry->GetEntryID ()))
+			return false;
+
+		return Entry2Tab_ [entry->GetEntryID ()]->isVisible ();
+	}
+
+	void ChatTabsManager::UpdateEntryMapping (const QString& id, QObject *obj)
+	{
+		if (!Entry2Tab_.contains (id))
+			return;
+
+		connect (obj,
+				SIGNAL (gotMessage (QObject*)),
+				Entry2Tab_ [id],
+				SLOT (handleEntryMessage (QObject*)),
+				Qt::UniqueConnection);
+	}
+
+	void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)
+	{
+		if (!Entry2Tab_.contains (id))
+			return;
+
+		Entry2Tab_ [id]->setEnabled (enabled);
+	}
+
+	void ChatTabsManager::handleNeedToClose (ChatTab *tab)
+	{
+		emit removeTab (tab);
+
+		const QString& entry = Entry2Tab_.key (tab);
+		Entry2Tab_.remove (entry);
+
+		tab->deleteLater ();
+	}
+}
 }

@@ -27,43 +27,37 @@ class QWidget;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class ICLEntry;
+
+	class ChatTab;
+
+	class ChatTabsManager : public QObject
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				class ICLEntry;
-			}
+		Q_OBJECT
 
-			class ChatTab;
+		QHash<QString, ChatTab_ptr> Entry2Tab_;
+	public:
+		ChatTabsManager(QObject* = 0);
 
-			class ChatTabsManager : public QObject
-			{
-				Q_OBJECT
+		void OpenChat (const QModelIndex&);
+		void OpenChat (const ICLEntry*);
+		bool IsActiveChat (const ICLEntry*) const;
+		void UpdateEntryMapping (const QString&, QObject*);
+		void SetChatEnabled (const QString&, bool);
+	private slots:
+		void handleNeedToClose (ChatTab*);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void removeTab (QWidget*);
+		void raiseTab (QWidget*);
 
-				QHash<QString, ChatTab_ptr> Entry2Tab_;
-			public:
-				ChatTabsManager(QObject* = 0);
-
-				void OpenChat (const QModelIndex&);
-				void OpenChat (const Plugins::ICLEntry*);
-				bool IsActiveChat (const Plugins::ICLEntry*) const;
-				void UpdateEntryMapping (const QString&, QObject*);
-				void SetChatEnabled (const QString&, bool);
-			private slots:
-				void handleNeedToClose (ChatTab*);
-			signals:
-				void addNewTab (const QString&, QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void removeTab (QWidget*);
-				void raiseTab (QWidget*);
-
-				void clearUnreadMsgCount (QObject*);
-			};
-		}
-	}
+		void clearUnreadMsgCount (QObject*);
+	};
+}
 }
 
 #endif

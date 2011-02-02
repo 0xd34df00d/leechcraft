@@ -20,11 +20,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -99,8 +95,6 @@ namespace Xoox
 		Ui_.CustomAddress_->setChecked (port > 0);
 		Ui_.ConnectionPort_->setValue (port);
 	}
-}
-}
 }
 }
 }

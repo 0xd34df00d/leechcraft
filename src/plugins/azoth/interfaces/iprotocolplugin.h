@@ -24,40 +24,38 @@ class QObject;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	/** This is the base interface for plugins providing messaging
+	 * protocols.
+	 */
+	class IProtocolPlugin
 	{
-		namespace Azoth
-		{
-			namespace Plugins
-			{
-				/** This is the base interface for plugins providing
-				 * protocols.
-				 */
-				class IProtocolPlugin
-				{
-				public:
-					virtual ~IProtocolPlugin () {}
+	public:
+		virtual ~IProtocolPlugin () {}
 
-					/** Returns the protocol plugin object as a QObject.
-					 *
-					 * @return The protocol plugin as a QObject.
-					 */
-					virtual QObject* GetObject () = 0;
+		/** @brief Returns the protocol plugin object as a QObject.
+		 *
+		 * @return The protocol plugin as a QObject.
+		 */
+		virtual QObject* GetObject () = 0;
 
-					/** Returns the list of protocols supported by this
-					 * plugin.
-					 *
-					 * @return The list of this plugin's protocols.
-					 */
-					virtual QList<QObject*> GetProtocols () const = 0;
-				};
-			}
-		}
-	}
+		/** @brief Returns the protocols list provided by this plugin.
+		 *
+		 * Each object in this list should implement the IProtocol
+		 * interface.
+		 *
+		 * @return The list of this plugin's protocols.
+		 *
+		 * @sa IProtocol
+		 */
+		virtual QList<QObject*> GetProtocols () const = 0;
+	};
+}
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocolPlugin,
+		"org.Deviant.LeechCraft.Azoth.IProtocolPlugin/1.0");
 
 #endif
 

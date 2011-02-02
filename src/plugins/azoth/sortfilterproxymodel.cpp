@@ -22,72 +22,69 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
+	: QSortFilterProxyModel (parent)
+	, ShowOffline_ (true)
 	{
-		namespace Azoth
+		setDynamicSortFilter (true);
+	}
+
+	namespace
+	{
+		Core::CLEntryType GetType (const QModelIndex& idx)
 		{
-			SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
-			: QSortFilterProxyModel (parent)
-			, ShowOffline_ (true)
-			{
-				setDynamicSortFilter (true);
-			}
+			return idx.data (Core::CLREntryType).value<Core::CLEntryType> ();
+		}
 
-			namespace
-			{
-				Core::CLEntryType GetType (const QModelIndex& idx)
-				{
-					return idx.data (Core::CLREntryType).value<Core::CLEntryType> ();
-				}
-
-				Plugins::ICLEntry* GetEntry (const QModelIndex& idx)
-				{
-					return qobject_cast<Plugins::ICLEntry*> (idx
-								.data (Core::CLREntryObject).value<QObject*> ());
-				}
-			}
-
-			void SortFilterProxyModel::showOfflineContacts (bool show)
-			{
-				ShowOffline_ = show;
-
-				invalidate ();
-			}
-
-			bool SortFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
-			{
-				if (!ShowOffline_)
-				{
-					const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
-					if (GetType (idx) == Core::CLETContact)
-					{
-						Plugins::ICLEntry *entry = GetEntry (idx);
-						const Plugins::State state = entry->GetStatus ().State_;
-						if (state == Plugins::SOffline &&
-								!idx.data (Core::CLRUnreadMsgCount).toInt ())
-							return false;
-					}
-				}
-				return QSortFilterProxyModel::filterAcceptsRow (row, parent);
-			}
-
-			bool SortFilterProxyModel::lessThan (const QModelIndex& right,
-					const QModelIndex& left) const			// sort in reverse order ok
-			{
-				if (GetType (left) != Core::CLETContact ||
-						GetType (right) != Core::CLETContact)
-					return QSortFilterProxyModel::lessThan (left, right);
-
-				Plugins::ICLEntry *lE = GetEntry (left);
-				Plugins::ICLEntry *rE = GetEntry (right);
-
-				Plugins::State lState = lE->GetStatus ().State_;
-				Plugins::State rState = rE->GetStatus ().State_;
-				if (lState == rState)
-					return lE->GetEntryName ().localeAwareCompare (rE->GetEntryName ()) < 0;
-				else
-					return IsLess (lState, rState);
-			}
+		ICLEntry* GetEntry (const QModelIndex& idx)
+		{
+			return qobject_cast<ICLEntry*> (idx
+						.data (Core::CLREntryObject).value<QObject*> ());
 		}
 	}
+
+	void SortFilterProxyModel::showOfflineContacts (bool show)
+	{
+		ShowOffline_ = show;
+
+		invalidate ();
+	}
+
+	bool SortFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
+	{
+		if (!ShowOffline_)
+		{
+			const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
+			if (GetType (idx) == Core::CLETContact)
+			{
+				ICLEntry *entry = GetEntry (idx);
+				const State state = entry->GetStatus ().State_;
+				if (state == SOffline &&
+						!idx.data (Core::CLRUnreadMsgCount).toInt ())
+					return false;
+			}
+		}
+		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
+	}
+
+	bool SortFilterProxyModel::lessThan (const QModelIndex& right,
+			const QModelIndex& left) const			// sort in reverse order ok
+	{
+		if (GetType (left) != Core::CLETContact ||
+				GetType (right) != Core::CLETContact)
+			return QSortFilterProxyModel::lessThan (left, right);
+
+		ICLEntry *lE = GetEntry (left);
+		ICLEntry *rE = GetEntry (right);
+
+		State lState = lE->GetStatus ().State_;
+		State rState = rE->GetStatus ().State_;
+		if (lState == rState)
+			return lE->GetEntryName ().localeAwareCompare (rE->GetEntryName ()) < 0;
+		else
+			return IsLess (lState, rState);
+	}
+}
 }

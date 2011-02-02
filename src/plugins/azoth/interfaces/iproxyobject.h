@@ -25,11 +25,7 @@ class QObject;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	class IProxyObject
 	{
@@ -89,7 +85,7 @@ namespace Plugins
 		 *
 		 * @return Human-readable string describing state.
 		 */
-		virtual QString StateToString (Plugins::State state) const = 0;
+		virtual QString StateToString (State state) const = 0;
 
 		/** @brief Returns serialized name of the authorization status.
 		 *
@@ -97,7 +93,7 @@ namespace Plugins
 		 *
 		 * @sa AuthStatusFromString()
 		 */
-		virtual QString AuthStatusToString (Plugins::AuthStatus status) const = 0;
+		virtual QString AuthStatusToString (AuthStatus status) const = 0;
 
 		/** @brief Converts string representation to AuthStatus element.
 		 *
@@ -111,14 +107,12 @@ namespace Plugins
 		 *
 		 * @sa AuthStatusToString()
 		 */
-		virtual Plugins::AuthStatus AuthStatusFromString (const QString& str) const = 0;
+		virtual AuthStatus AuthStatusFromString (const QString& str) const = 0;
 	};
 }
 }
-}
-}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IProxyObject,
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProxyObject,
 		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IProxyObject/1.0");
 
 #endif

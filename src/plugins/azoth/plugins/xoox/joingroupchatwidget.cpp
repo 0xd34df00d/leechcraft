@@ -22,11 +22,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -120,8 +116,6 @@ namespace Xoox
 		if (!server.isEmpty ())
 			Ui_.Server_->setText (server);
 	}
-}
-}
 }
 }
 }

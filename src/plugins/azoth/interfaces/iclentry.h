@@ -28,11 +28,7 @@ class QImage;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	class IAccount;
 	class IMessage;
@@ -469,19 +465,17 @@ namespace Plugins
 		 * @param[out] variant The variant that this change applies to,
 		 * may be a null string if not applicable.
 		 */
-		virtual void chatPartStateChanged (const Plugins::ChatPartState& state,
+		virtual void chatPartStateChanged (const ChatPartState& state,
 				const QString& variant) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);
 }
 }
-}
-}
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Azoth::Plugins::EntryStatus);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::EntryStatus);
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::ICLEntry,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.ICLEntry/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ICLEntry,
+		"org.Deviant.LeechCraft.Azoth.ICLEntry/1.0");
 
 #endif

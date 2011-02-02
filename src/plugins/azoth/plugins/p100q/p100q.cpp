@@ -23,11 +23,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace p100q
 {
@@ -131,7 +127,5 @@ namespace p100q
 }
 }
 }
-}
-}
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_p100q, LeechCraft::Plugins::Azoth::Plugins::p100q::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_azoth_p100q, LeechCraft::Azoth::p100q::Plugin);

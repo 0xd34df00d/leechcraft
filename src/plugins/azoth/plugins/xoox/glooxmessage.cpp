@@ -24,11 +24,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -136,8 +132,6 @@ namespace Xoox
 	{
 		Message_.setStamp (dateTime);
 	}
-}
-}
 }
 }
 }

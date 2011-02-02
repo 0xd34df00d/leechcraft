@@ -26,11 +26,7 @@ class QObject;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	class ICLEntry;
 
@@ -141,10 +137,8 @@ namespace Plugins
 	};
 }
 }
-}
-}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IMessage,
-	"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IMessage/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMessage,
+	"org.Deviant.LeechCraft.Azoth.IMessage/1.0");
 
 #endif

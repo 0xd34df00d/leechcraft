@@ -23,8 +23,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
 	AddContactDialog::AddContactDialog (QWidget *parent)
@@ -32,16 +30,16 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		Q_FOREACH (Plugins::IProtocol *proto, Core::Instance ().GetProtocols ())
+		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
 			Ui_.Protocol_->addItem (proto->GetProtocolName (),
-					QVariant::fromValue<Plugins::IProtocol*> (proto));
+					QVariant::fromValue<IProtocol*> (proto));
 	}
 
-	Plugins::IAccount* AddContactDialog::GetSelectedAccount () const
+	IAccount* AddContactDialog::GetSelectedAccount () const
 	{
 		int idx = Ui_.Account_->currentIndex ();
 		return idx >= 0 ?
-			Ui_.Account_->itemData (idx).value<Plugins::IAccount*> () :
+			Ui_.Account_->itemData (idx).value<IAccount*> () :
 			0;
 	}
 
@@ -74,11 +72,11 @@ namespace Azoth
 		if (idx < 0)
 			return;
 
-		Plugins::IProtocol *proto = Ui_.Protocol_->
-				itemData (idx).value<Plugins::IProtocol*> ();
+		IProtocol *proto = Ui_.Protocol_->
+				itemData (idx).value<IProtocol*> ();
 		Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
 		{
-			Plugins::IAccount *acc = qobject_cast<Plugins::IAccount*> (accObj);
+			IAccount *acc = qobject_cast<IAccount*> (accObj);
 			if (!acc)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -88,16 +86,15 @@ namespace Azoth
 				continue;
 			}
 
-			if (acc->GetState ().State_ == Plugins::SOffline &&
-					!(acc->GetAccountFeatures () & Plugins::IAccount::FCanAddContactsInOffline))
+			if (acc->GetState ().State_ == SOffline &&
+					!(acc->GetAccountFeatures () & IAccount::FCanAddContactsInOffline))
 				continue;
 
 			Ui_.Account_->addItem (QString ("%1 (%2)")
 						.arg (acc->GetAccountName ())
 						.arg (acc->GetOurNick ()),
-					QVariant::fromValue<Plugins::IAccount*> (acc));
+					QVariant::fromValue<IAccount*> (acc));
 		}
 	}
-}
 }
 }

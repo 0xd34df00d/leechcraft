@@ -22,11 +22,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	/** @brief This interface defines methods that should be implemented
 	 * in widgets which are used to join MUC rooms.
@@ -115,10 +111,8 @@ namespace Plugins
 	};
 }
 }
-}
-}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IMUCJoinWidget,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IMUCJoinWidget/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCJoinWidget,
+		"org.Deviant.LeechCraft.Azoth.IMUCJoinWidget/1.0");
 
 #endif

@@ -23,35 +23,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	TextEdit::TextEdit (QWidget *parent)
+	: QTextEdit (parent)
 	{
-		namespace Azoth
-		{
-			TextEdit::TextEdit (QWidget *parent)
-			: QTextEdit (parent)
-			{
-			}
+	}
 
-			void TextEdit::keyPressEvent (QKeyEvent *event)
-			{
-				bool sendMsgButton = event->key () == Qt::Key_Return ||
-						event->key () == Qt::Key_Enter;
-				if (sendMsgButton && event->modifiers () == Qt::NoModifier)
-					emit keyReturnPressed ();
-				else if (event->key () == Qt::Key_Tab)
-				{
-					if (event->modifiers () == Qt::NoModifier)
-						emit keyTabPressed ();
-					else
-						event->ignore ();
-				}
-				else
-				{
-					emit clearAvailableNicks ();
-					QTextEdit::keyPressEvent (event);
-				}
-			}
+	void TextEdit::keyPressEvent (QKeyEvent *event)
+	{
+		bool sendMsgButton = event->key () == Qt::Key_Return ||
+				event->key () == Qt::Key_Enter;
+		if (sendMsgButton && event->modifiers () == Qt::NoModifier)
+			emit keyReturnPressed ();
+		else if (event->key () == Qt::Key_Tab)
+		{
+			if (event->modifiers () == Qt::NoModifier)
+				emit keyTabPressed ();
+			else
+				event->ignore ();
+		}
+		else
+		{
+			emit clearAvailableNicks ();
+			QTextEdit::keyPressEvent (event);
 		}
 	}
+}
 }
 

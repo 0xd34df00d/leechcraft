@@ -29,17 +29,12 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
-	namespace Plugins
-	{
-		struct EntryStatus;
-		class ICLEntry;
-		class IMUCEntry;
-		class IMessage;
-	}
+	struct EntryStatus;
+	class ICLEntry;
+	class IMUCEntry;
+	class IMessage;
 
 	class ChatTab : public QWidget
 				  , public IMultiTabsWidget
@@ -97,8 +92,8 @@ namespace Azoth
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
 		void handleEntryMessage (QObject*);
-		void handleStatusChanged (const Plugins::EntryStatus&, const QString&);
-		void handleChatPartStateChanged (const Plugins::ChatPartState&, const QString&);
+		void handleStatusChanged (const EntryStatus&, const QString&);
+		void handleChatPartStateChanged (const ChatPartState&, const QString&);
 		void handleViewLinkClicked (const QUrl&);
 		void scrollToEnd ();
 		void handleHistoryUp ();
@@ -114,11 +109,11 @@ namespace Azoth
 
 		/** Appends the message to the message view area.
 		 */
-		void AppendMessage (Plugins::IMessage*);
+		void AppendMessage (IMessage*);
 
-		QString FormatDate (QDateTime, Plugins::IMessage*);
-		QString FormatNickname (QString, Plugins::IMessage*);
-		QString FormatBody (QString, Plugins::IMessage*);
+		QString FormatDate (QDateTime, IMessage*);
+		QString FormatNickname (QString, IMessage*);
+		QString FormatBody (QString, IMessage*);
 
 		/** Processes the outgoing messages, replacing /nick with calls
 		 * to the entity to change nick, for example, etc.
@@ -129,7 +124,7 @@ namespace Azoth
 		 * @return true if the processing should be aborted, false
 		 * otherwise.
 		 */
-		bool ProcessOutgoingMsg (Plugins::ICLEntry*, QString&);
+		bool ProcessOutgoingMsg (ICLEntry*, QString&);
 
 		void GenerateColors ();
 
@@ -173,7 +168,6 @@ namespace Azoth
 	};
 
 	typedef QPointer<ChatTab> ChatTab_ptr;
-}
 }
 }
 

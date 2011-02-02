@@ -27,11 +27,7 @@ class QXmppMessage;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -42,7 +38,7 @@ namespace Xoox
 							, public IMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IMessage);
+		Q_INTERFACES (LeechCraft::Azoth::IMessage);
 
 		QPointer<RoomCLEntry> ParentEntry_;
 		RoomParticipantEntry_ptr ParticipantEntry_;
@@ -79,8 +75,6 @@ namespace Xoox
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
 	};
-}
-}
 }
 }
 }

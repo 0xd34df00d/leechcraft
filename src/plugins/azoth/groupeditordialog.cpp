@@ -23,48 +23,45 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	GroupEditorDialog::GroupEditorDialog (const QStringList& initial,
+			const QStringList& allGroups,
+			QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Azoth
-		{
-			GroupEditorDialog::GroupEditorDialog (const QStringList& initial,
-					const QStringList& allGroups,
-					QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
+		Ui_.setupUi (this);
 
-				Ui_.GroupsSelector_->setWindowFlags (Qt::Widget);
-				Ui_.GroupsSelector_->SetPossibleSelections (allGroups);
-				Ui_.GroupsSelector_->SetSelections (initial);
+		Ui_.GroupsSelector_->setWindowFlags (Qt::Widget);
+		Ui_.GroupsSelector_->SetPossibleSelections (allGroups);
+		Ui_.GroupsSelector_->SetSelections (initial);
 
-				Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.CategoriesLineEdit_);
-				tc->OverrideModel (new QStringListModel (allGroups, this));
+		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.CategoriesLineEdit_);
+		tc->OverrideModel (new QStringListModel (allGroups, this));
 
-				const QString& text = Core::Instance ()
-						.GetProxy ()->GetTagsManager ()->Join (initial);
-				Ui_.CategoriesLineEdit_->setText (text);
-				Ui_.CategoriesLineEdit_->AddSelector ();
+		const QString& text = Core::Instance ()
+				.GetProxy ()->GetTagsManager ()->Join (initial);
+		Ui_.CategoriesLineEdit_->setText (text);
+		Ui_.CategoriesLineEdit_->AddSelector ();
 
-				connect (Ui_.CategoriesLineEdit_,
-						SIGNAL (textChanged (const QString&)),
-						Ui_.GroupsSelector_,
-						SLOT (lineTextChanged (const QString&)));
-			}
-
-			QStringList GroupEditorDialog::GetGroups () const
-			{
-				const QString& text = Ui_.CategoriesLineEdit_->text ();
-				return Core::Instance ().GetProxy ()->
-						GetTagsManager ()->Split (text);
-			}
-
-			void GroupEditorDialog::on_GroupsSelector__selectionChanged (const QStringList& groups)
-			{
-				const QString& text = Core::Instance ()
-						.GetProxy ()->GetTagsManager ()->Join (groups);
-				Ui_.CategoriesLineEdit_->setText (text);
-			}
-		}
+		connect (Ui_.CategoriesLineEdit_,
+				SIGNAL (textChanged (const QString&)),
+				Ui_.GroupsSelector_,
+				SLOT (lineTextChanged (const QString&)));
 	}
+
+	QStringList GroupEditorDialog::GetGroups () const
+	{
+		const QString& text = Ui_.CategoriesLineEdit_->text ();
+		return Core::Instance ().GetProxy ()->
+				GetTagsManager ()->Split (text);
+	}
+
+	void GroupEditorDialog::on_GroupsSelector__selectionChanged (const QStringList& groups)
+	{
+		const QString& text = Core::Instance ()
+				.GetProxy ()->GetTagsManager ()->Join (groups);
+		Ui_.CategoriesLineEdit_->setText (text);
+	}
+}
 }

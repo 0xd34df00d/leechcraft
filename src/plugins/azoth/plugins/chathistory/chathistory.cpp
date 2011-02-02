@@ -22,12 +22,12 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
+
+
 		namespace Azoth
 		{
-			namespace Plugins
-			{
+
+
 				namespace ChatHistory
 				{
 					void Plugin::Init (ICoreProxy_ptr proxy)
@@ -115,10 +115,10 @@ namespace LeechCraft
 						QDateTime timestamp = msg->GetDateTime ();
 					}
 				}
-			}
+
 		}
-	}
+
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_chathistory, LeechCraft::Plugins::Azoth::Plugins::ChatHistory::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_azoth_chathistory, LeechCraft::Azoth::ChatHistory::Plugin);
 

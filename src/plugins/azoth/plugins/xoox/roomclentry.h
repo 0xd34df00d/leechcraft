@@ -26,11 +26,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -43,8 +39,8 @@ namespace Xoox
 					  , public IMUCEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::ICLEntry
-						LeechCraft::Plugins::Azoth::Plugins::IMUCEntry);
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+						LeechCraft::Azoth::IMUCEntry);
 
 		GlooxAccount *Account_;
 		QList<QObject*> AllMessages_;
@@ -96,13 +92,13 @@ namespace Xoox
 		void HandleSubjectChanged (const QString&);
 	signals:
 		void gotMessage (QObject*);
-		void statusChanged (const Plugins::EntryStatus&, const QString&);
+		void statusChanged (const EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
 		void avatarChanged (const QImage&);
 		void rawinfoChanged (const QString&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const Plugins::ChatPartState&, const QString&);
+		void chatPartStateChanged (const ChatPartState&, const QString&);
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
@@ -110,8 +106,6 @@ namespace Xoox
 		void participantAffiliationChanged (QObject*, MUCAffiliation);
 		void participantRoleChanged (QObject*, MUCRole);
 	};
-}
-}
 }
 }
 }

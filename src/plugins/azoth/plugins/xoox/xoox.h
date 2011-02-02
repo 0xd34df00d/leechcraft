@@ -26,11 +26,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -40,7 +36,7 @@ namespace Xoox
 					, public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::Azoth::Plugins::IProtocolPlugin)
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -63,8 +59,6 @@ namespace Xoox
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
-}
-}
 }
 }
 }

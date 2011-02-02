@@ -26,11 +26,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -74,8 +70,6 @@ namespace Xoox
 	};
 
 	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;
-}
-}
 }
 }
 }

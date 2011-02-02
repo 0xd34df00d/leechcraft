@@ -21,11 +21,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 namespace Xoox
 {
@@ -64,8 +60,6 @@ namespace Xoox
 		else
 			Ui_.LabelPhoto_->setText (tr ("No photo"));
 	}
-}
-}
 }
 }
 }

@@ -23,11 +23,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
-{
-namespace Plugins
 {
 	/** @brief Represents an entry that supports authorizations.
 	 */
@@ -63,10 +59,8 @@ namespace Plugins
 	};
 }
 }
-}
-}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Azoth::Plugins::IAuthable,
-		"org.Deviant.LeechCraft.Plugins.Azoth.Plugins.IAuthable/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAuthable,
+		"org.Deviant.LeechCraft.Azoth.IAuthable/1.0");
 
 #endif

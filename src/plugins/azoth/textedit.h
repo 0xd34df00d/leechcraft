@@ -24,24 +24,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class TextEdit : public QTextEdit
 	{
-		namespace Azoth
-		{
-			class TextEdit : public QTextEdit
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-			public:
-				TextEdit (QWidget *parent = 0);
-			protected:
-				void keyPressEvent (QKeyEvent*);
-			signals:
-				void keyReturnPressed ();
-				void keyTabPressed ();
-				void clearAvailableNicks ();
-			};
-		}
-	}
+	public:
+		TextEdit (QWidget *parent = 0);
+	protected:
+		void keyPressEvent (QKeyEvent*);
+	signals:
+		void keyReturnPressed ();
+		void keyTabPressed ();
+		void clearAvailableNicks ();
+	};
+}
 }
 #endif // PLUGINS_AZOTH_TEXTEDIT_H

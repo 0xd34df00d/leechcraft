@@ -26,8 +26,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
 	const int CContactShift = 20;
@@ -139,9 +137,9 @@ namespace Azoth
 			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
 		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
-		Plugins::ICLEntry *entry = qobject_cast<Plugins::ICLEntry*> (entryObj);
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const bool isMUC = entry->GetEntryType () == Plugins::ICLEntry::ETMUC;
+		const bool isMUC = entry->GetEntryType () == ICLEntry::ETMUC;
 
 		QStyle *style = option.widget ?
 				option.widget->style () :
@@ -238,6 +236,5 @@ namespace Azoth
 
 		painter->drawPixmap (option.rect, pixmap);
 	}
-}
 }
 }

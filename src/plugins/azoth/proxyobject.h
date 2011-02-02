@@ -24,29 +24,26 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Azoth
 {
 	class ProxyObject : public QObject
-					  , public Plugins::IProxyObject
+					  , public IProxyObject
 	{
 		Q_OBJECT
 
-		Q_INTERFACES (LeechCraft::Plugins::Azoth::Plugins::IProxyObject)
+		Q_INTERFACES (LeechCraft::Azoth::IProxyObject)
 
-		QHash<QString, Plugins::AuthStatus> SerializedStr2AuthStatus_;
+		QHash<QString, AuthStatus> SerializedStr2AuthStatus_;
 	public:
 		ProxyObject (QObject* = 0);
 
 		QString GetPassword (QObject*);
 		void SetPassword (const QString&, QObject*);
 		QString GetOSName ();
-		QString StateToString (Plugins::State) const;
-		QString AuthStatusToString (Plugins::AuthStatus) const;
-		Plugins::AuthStatus AuthStatusFromString (const QString&) const;
+		QString StateToString (State) const;
+		QString AuthStatusToString (AuthStatus) const;
+		AuthStatus AuthStatusFromString (const QString&) const;
 	};
-}
 }
 }
 
