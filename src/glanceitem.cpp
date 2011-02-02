@@ -84,7 +84,7 @@ namespace LeechCraft
 		if (cur)
 		{
 			setZValue (1);
-			QueueScaleAnim (scale (), Scale_ * 1.1);
+			QueueScaleAnim (scale (), std::max (0.5, Scale_ * 1.3));
 		}
 		else
 		{
