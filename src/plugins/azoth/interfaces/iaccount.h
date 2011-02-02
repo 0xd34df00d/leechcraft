@@ -227,6 +227,17 @@ namespace Plugins
 		 */
 		virtual void RemoveEntry (QObject *entry) = 0;
 
+		/** @brief Returns the object responsible for file transfers in
+		 * this account.
+		 *
+		 * If file transfers aren't supported, NULL should be returned.
+		 * The returned object, is not NULL, is expected to implement
+		 * ITransferManager.
+		 *
+		 * @return The file transfer manager, or NULL if not supported.
+		 */
+		virtual QObject* GetTransferManager () const = 0;
+
 		/** @brief This signal should be emitted when new contact list
 		 * items appear in this account.
 		 *

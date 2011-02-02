@@ -267,6 +267,11 @@ namespace Xoox
 		ClientConnection_->Remove (entry);
 	}
 
+	QObject* GlooxAccount::GetTransferManager () const
+	{
+		return 0;
+	}
+
 	QString GlooxAccount::GetJID () const
 	{
 		return JID_;
