@@ -46,6 +46,8 @@ namespace LeechCraft
 		typedef QList<QObject*> Plugins_t;
 		mutable Plugins_t Plugins_;
 
+		QMap<QObject*, QPluginLoader_ptr> Obj2Loader_;
+
 		// All plugins ever seen
 		PluginsContainer_t AvailablePlugins_;
 		QMap<QString, PluginsContainer_t::const_iterator> FeatureProviders_;
@@ -92,10 +94,33 @@ namespace LeechCraft
 	private:
 		void FindPlugins ();
 		void ScanDir (const QString&);
+
 		/** Tries to load all the plugins and filters out those who fail
 		 * various sanity checks.
 		 */
 		void CheckPlugins ();
+
+		/** Fills the Plugins_ list with all instances, both from "real"
+		 * plugins and from adaptors.
+		 */
+		void FillInstances ();
+
+		/** Tries to perform IInfo::Init() on all plugins. Returns the
+		 * list of plugins that failed.
+		 */
+		QList<QObject*> FirstInitAll ();
+
+		/** Tries to perform IInfo::Init() on plugins and returns the
+		 * first plugin that has failed to initialize. This function
+		 * stops initializing plugins upon first failure. If all plugins
+		 * were initialized successfully, this function returns NULL.
+		 */
+		QObject* TryFirstInit (QObjectList);
+
+		/** Plainly tries to find a corresponding QPluginLoader and
+		 * unload the corresponding library.
+		 */
+		void TryUnload (QObjectList);
 
 		QList<Plugins_t::iterator> FindProviders (const QString&);
 		QList<Plugins_t::iterator> FindProviders (const QSet<QByteArray>&);

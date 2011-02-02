@@ -71,6 +71,11 @@ namespace LeechCraft
 		Instances_ << objs;
 	}
 
+	void PluginTreeBuilder::RemoveObject (QObject *obj)
+	{
+		Instances_.removeAll (obj);
+	}
+
 	template<typename Edge>
 	struct CycleDetector : public boost::default_dfs_visitor
 	{
@@ -148,6 +153,7 @@ namespace LeechCraft
 	void PluginTreeBuilder::Calculate ()
 	{
 		Graph_.clear ();
+		Object2Vertex_.clear ();
 		Result_.clear ();
 
 		CreateGraph ();

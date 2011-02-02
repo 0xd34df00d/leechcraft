@@ -73,6 +73,7 @@ namespace LeechCraft
 		PluginTreeBuilder ();
 
 		void AddObjects (const QObjectList&);
+		void RemoveObject (QObject*);
 		void Calculate ();
 		QObjectList GetResult () const;
 	private:

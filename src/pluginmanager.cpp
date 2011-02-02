@@ -213,22 +213,8 @@ namespace LeechCraft
 		return AvailablePlugins_.size ();
 	}
 
-	void PluginManager::Init ()
+	QObject* PluginManager::TryFirstInit (QObjectList ordered)
 	{
-		CheckPlugins ();
-		Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
-		{
-			QObject *inst = loader->instance ();
-			Plugins_ << inst;
-			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> (inst);
-			if (ipa)
-				Plugins_ << ipa->GetPlugins ();
-		}
-
-		PluginTreeBuilder_->AddObjects (Plugins_);
-		PluginTreeBuilder_->Calculate ();
-		QObjectList ordered = PluginTreeBuilder_->GetResult ();
-
 		Q_FOREACH (QObject *obj, ordered)
 		{
 			IInfo *ii = qobject_cast<IInfo*> (obj);
@@ -236,7 +222,6 @@ namespace LeechCraft
 			{
 				qDebug () << "Initializing" << ii->GetName ();
 				ii->Init (ICoreProxy_ptr (new CoreProxy ()));
-				Core::Instance ().Setup (obj);
 			}
 			catch (const std::exception& e)
 			{
@@ -245,9 +230,49 @@ namespace LeechCraft
 						<< obj
 						<< "got"
 						<< e.what ();
-				continue;
+				return obj;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "while initializing"
+						<< obj
+						<< "caught unknown exception";
+				return obj;
 			}
 		}
+
+		return 0;
+	}
+
+	void PluginManager::TryUnload (QObjectList plugins)
+	{
+		Q_FOREACH (QObject *object, plugins)
+		{
+			if (!Obj2Loader_.contains (object))
+				continue;
+
+			qDebug () << "trying to unload"
+					<< object;
+			Obj2Loader_ [object]->unload ();
+			Obj2Loader_.remove (object);
+		}
+	}
+
+	void PluginManager::Init ()
+	{
+		CheckPlugins ();
+		FillInstances ();
+
+		PluginTreeBuilder_->AddObjects (Plugins_);
+		PluginTreeBuilder_->Calculate ();
+
+		QObjectList failed = FirstInitAll ();
+
+		QObjectList ordered = PluginTreeBuilder_->GetResult ();
+
+		Q_FOREACH (QObject *obj, ordered)
+			Core::Instance ().Setup (obj);
 
 		QObjectList plugins2 = GetAllCastableRoots<IPlugin2*> ();
 		Q_FOREACH (IPluginReady *provider, GetAllCastableTo<IPluginReady*> ())
@@ -279,6 +304,8 @@ namespace LeechCraft
 
 		Q_FOREACH (QObject *plugin, GetAllPlugins ())
 			Core::Instance ().PostSecondInit (plugin);
+
+		TryUnload (failed);
 	}
 
 	void PluginManager::Release ()
@@ -611,6 +638,50 @@ namespace LeechCraft
 		}
 
 		settings.endGroup ();
+	}
+
+	void PluginManager::FillInstances ()
+	{
+		Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
+		{
+			QObject *inst = loader->instance ();
+			Plugins_ << inst;
+			Obj2Loader_ [inst] = loader;
+			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> (inst);
+			if (ipa)
+				Plugins_ << ipa->GetPlugins ();
+		}
+	}
+
+	QObjectList PluginManager::FirstInitAll ()
+	{
+		QObjectList ordered = PluginTreeBuilder_->GetResult ();
+		QObjectList initialized;
+		QObjectList failedList;
+
+		QObject *failed = 0;
+		while ((failed = TryFirstInit (ordered)))
+		{
+			failedList << failed;
+			Q_FOREACH (QObject *obj, ordered)
+			{
+				if (failed == obj)
+					break;
+				initialized << obj;
+			}
+
+			PluginTreeBuilder_->RemoveObject (failed);
+
+			qDebug () << failed
+					<< "failed to initialize, recalculating dep tree...";
+			PluginTreeBuilder_->Calculate ();
+
+			ordered = PluginTreeBuilder_->GetResult ();
+			Q_FOREACH (QObject *obj, initialized)
+				ordered.removeAll (obj);
+		}
+
+		return failedList;
 	}
 
 	QList<PluginManager::Plugins_t::iterator>
