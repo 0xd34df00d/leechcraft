@@ -76,9 +76,9 @@ namespace Xoox
 		emit nameChanged (Nick_);
 	}
 
-	QByteArray RoomParticipantEntry::GetEntryID () const
+	QString RoomParticipantEntry::GetEntryID () const
 	{
-		return (RoomHandler_->GetRoomJID () + "/" + Nick_).toUtf8 ();
+		return RoomHandler_->GetRoomJID () + "/" + Nick_;
 	}
 
 	QStringList RoomParticipantEntry::Groups () const

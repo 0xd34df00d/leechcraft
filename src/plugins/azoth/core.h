@@ -77,7 +77,7 @@ namespace LeechCraft
 				typedef QHash<const Plugins::ICLEntry*, QHash<QByteArray, QAction*> > Entry2Actions_t;
 				Entry2Actions_t Entry2Actions_;
 
-				typedef QHash<QByteArray, QObject*> ID2Entry_t;
+				typedef QHash<QString, QObject*> ID2Entry_t;
 				ID2Entry_t ID2Entry_;
 
 				typedef QHash<Plugins::ICLEntry*, QMap<QString, QIcon> > EntryClientIconCache_t;
@@ -162,7 +162,7 @@ namespace LeechCraft
 				 * is the same as returned by ICLEntry::GetEntryID(). If
 				 * no such entry could be found, NULL is returned.
 				 */
-				QObject* GetEntry (const QByteArray& id) const;
+				QObject* GetEntry (const QString& id) const;
 
 				/** Opens chat with the remote contact identified by
 				 * index (which is from GetCLModel() model). If the

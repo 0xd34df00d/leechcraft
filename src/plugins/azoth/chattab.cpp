@@ -48,7 +48,7 @@ namespace Azoth
 		S_ParentMultiTabs_ = obj;
 	}
 
-	ChatTab::ChatTab (const QByteArray& entryId,
+	ChatTab::ChatTab (const QString& entryId,
 			const QString& variant, QWidget *parent)
 	: QWidget (parent)
 	, EntryID_ (entryId)

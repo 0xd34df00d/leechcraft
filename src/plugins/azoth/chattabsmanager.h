@@ -42,15 +42,15 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				QHash<QByteArray, ChatTab_ptr> Entry2Tab_;
+				QHash<QString, ChatTab_ptr> Entry2Tab_;
 			public:
 				ChatTabsManager(QObject* = 0);
 
 				void OpenChat (const QModelIndex&);
 				void OpenChat (const Plugins::ICLEntry*);
 				bool IsActiveChat (const Plugins::ICLEntry*) const;
-				void UpdateEntryMapping (const QByteArray&, QObject*);
-				void SetChatEnabled (const QByteArray&, bool);
+				void UpdateEntryMapping (const QString&, QObject*);
+				void SetChatEnabled (const QString&, bool);
 			private slots:
 				void handleNeedToClose (ChatTab*);
 			signals:

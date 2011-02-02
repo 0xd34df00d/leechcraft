@@ -232,7 +232,7 @@ namespace Plugins
 		 *
 		 * @sa GetHumanReadableID()
 		 */
-		virtual QByteArray GetEntryID () const = 0;
+		virtual QString GetEntryID () const = 0;
 
 		/** @brief Returns the human-readable ID of this entry.
 		 *
@@ -259,7 +259,7 @@ namespace Plugins
 		 */
 		virtual QString GetHumanReadableID () const
 		{
-			return QString::fromUtf8 (GetEntryID ().constData ());
+			return GetEntryID ();
 		}
 
 		/** @brief Returns the list of human-readable names of the

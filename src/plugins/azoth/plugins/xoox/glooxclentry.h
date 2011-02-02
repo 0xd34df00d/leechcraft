@@ -49,7 +49,7 @@ namespace Xoox
 	public:
 		struct OfflineDataSource
 		{
-			QByteArray ID_;
+			QString ID_;
 			QString Name_;
 			QStringList Groups_;
 			AuthStatus AuthStatus_;
@@ -84,7 +84,7 @@ namespace Xoox
 		void SetEntryName (const QString&);
 		/** Entry ID for GlooxCLEntry is its jid.
 		 */
-		QByteArray GetEntryID () const;
+		QString GetEntryID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;

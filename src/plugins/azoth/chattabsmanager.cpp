@@ -60,7 +60,7 @@ namespace LeechCraft
 
 			void ChatTabsManager::OpenChat (const Plugins::ICLEntry *entry)
 			{
-				const QByteArray& id = entry->GetEntryID ();
+				const QString& id = entry->GetEntryID ();
 				if (Entry2Tab_.contains (id))
 				{
 					emit raiseTab (Entry2Tab_ [id]);
@@ -105,7 +105,7 @@ namespace LeechCraft
 				return Entry2Tab_ [entry->GetEntryID ()]->isVisible ();
 			}
 
-			void ChatTabsManager::UpdateEntryMapping (const QByteArray& id, QObject *obj)
+			void ChatTabsManager::UpdateEntryMapping (const QString& id, QObject *obj)
 			{
 				if (!Entry2Tab_.contains (id))
 					return;
@@ -117,7 +117,7 @@ namespace LeechCraft
 						Qt::UniqueConnection);
 			}
 
-			void ChatTabsManager::SetChatEnabled (const QByteArray& id, bool enabled)
+			void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)
 			{
 				if (!Entry2Tab_.contains (id))
 					return;
@@ -129,7 +129,7 @@ namespace LeechCraft
 			{
 				emit removeTab (tab);
 
-				QByteArray entry = Entry2Tab_.key (tab);
+				const QString& entry = Entry2Tab_.key (tab);
 				Entry2Tab_.remove (entry);
 
 				tab->deleteLater ();

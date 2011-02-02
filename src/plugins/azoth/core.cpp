@@ -233,7 +233,7 @@ namespace LeechCraft
 				emit gotEntity (e);
 			}
 
-			QObject* Core::GetEntry (const QByteArray& id) const
+			QObject* Core::GetEntry (const QString& id) const
 			{
 				return ID2Entry_.value (id);
 			}
@@ -343,7 +343,7 @@ namespace LeechCraft
 						this,
 						SLOT (updateItem ()));
 
-				const QByteArray& id = clEntry->GetEntryID ();
+				const QString& id = clEntry->GetEntryID ();
 				ID2Entry_ [id] = clEntry->GetObject ();
 
 				const QStringList& groups =

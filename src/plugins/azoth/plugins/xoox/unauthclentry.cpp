@@ -62,9 +62,9 @@ namespace Xoox
 	{
 	}
 
-	QByteArray UnauthCLEntry::GetEntryID () const
+	QString UnauthCLEntry::GetEntryID () const
 	{
-		return JID_.toUtf8 () + "_unauth";
+		return JID_ + "_unauth";
 	}
 
 	QString UnauthCLEntry::GetHumanReadableID () const

@@ -328,7 +328,7 @@ namespace Xoox
 	GlooxCLEntry* ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods)
 	{
 		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
-		ODSEntries_ [QString::fromUtf8 (ods->ID_.constData ())] = entry;
+		ODSEntries_ [ods->ID_] = entry;
 
 		emit gotRosterItems (QList<QObject*> () << entry);
 

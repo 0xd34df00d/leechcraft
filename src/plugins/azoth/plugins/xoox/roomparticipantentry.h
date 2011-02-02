@@ -57,7 +57,7 @@ namespace Xoox
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
 		void SetEntryName (const QString&);
-		QByteArray GetEntryID () const;
+		QString GetEntryID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;

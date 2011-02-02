@@ -47,7 +47,7 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
 	, ODS_ (ods)
-	, BareJID_ (QString::fromUtf8 (ods->ID_.constData ()))
+	, BareJID_ (ods->ID_)
 	{
 	}
 
@@ -129,12 +129,12 @@ namespace Xoox
 		emit nameChanged (name);
 	}
 
-	QByteArray GlooxCLEntry::GetEntryID () const
+	QString GlooxCLEntry::GetEntryID () const
 	{
 		if (ODS_)
 			return ODS_->ID_;
 
-		return BareJID_.toUtf8 ();
+		return BareJID_;
 	}
 
 	QStringList GlooxCLEntry::Groups () const

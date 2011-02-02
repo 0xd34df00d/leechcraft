@@ -51,7 +51,7 @@ namespace Azoth
 
 		Ui::ChatTab Ui_;
 
-		QByteArray EntryID_;
+		QString EntryID_;
 		QString Variant_;
 
 		QRegExp LinkRegexp_;
@@ -77,7 +77,7 @@ namespace Azoth
 	public:
 		static void SetParentMultiTabs (QObject*);
 
-		ChatTab (const QByteArray&, const QString&, QWidget* = 0);
+		ChatTab (const QString&, const QString&, QWidget* = 0);
 		/** Is called after the tab has been added to the tabwidget so
 		 * that it could set its icon and various other stuff.
 		 */

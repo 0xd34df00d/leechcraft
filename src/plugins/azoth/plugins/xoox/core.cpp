@@ -250,7 +250,7 @@ namespace Xoox
 						continue;
 
 					w.writeStartElement ("entry");
-						w.writeTextElement ("id", entry->GetEntryID ().toPercentEncoding ("@"));
+						w.writeTextElement ("id", entry->GetEntryID ().toUtf8 ().toPercentEncoding ("@"));
 						w.writeTextElement ("name", entry->GetEntryName ());
 						w.writeTextElement ("authstatus",
 								qobject_cast<IProxyObject*> (PluginProxy_)->
@@ -306,7 +306,7 @@ namespace Xoox
 			return;
 		}
 
-		const QByteArray& filename = entry->GetEntryID ().toBase64 ();
+		const QByteArray& filename = entry->GetEntryID ().toUtf8 ().toBase64 ();
 		const QString& path = Util::CreateIfNotExists ("azoth/xoox/avatars")
 				.absoluteFilePath (filename);
 		entry->GetAvatar ().save (path, "PNG");

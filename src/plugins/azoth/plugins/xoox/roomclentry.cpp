@@ -74,9 +74,9 @@ namespace Xoox
 	{
 	}
 
-	QByteArray RoomCLEntry::GetEntryID () const
+	QString RoomCLEntry::GetEntryID () const
 	{
-		return RH_->GetRoomJID ().toUtf8 ();
+		return RH_->GetRoomJID ();
 	}
 
 	QString RoomCLEntry::GetHumanReadableID () const
