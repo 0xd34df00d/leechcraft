@@ -284,8 +284,9 @@ namespace Xoox
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
 		qDebug () << "Subscribe" << id;
-		Client_->rosterManager ().addRosterEntry (id,
-				name, msg, QSet<QString>::fromList (groups));
+		if (!Client_->rosterManager ().getRosterBareJids ().contains (id))
+			Client_->rosterManager ().addRosterEntry (id,
+					name, msg, QSet<QString>::fromList (groups));
 		Client_->rosterManager ().subscribe (id, msg);
 	}
 
