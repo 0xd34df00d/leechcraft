@@ -48,7 +48,7 @@ namespace LeechCraft
 	void GlanceItem::QueueScaleAnim (qreal start, qreal end)
 	{
 		ScaleAnim_->stop ();
-		ScaleAnim_->setDuration (500);
+		ScaleAnim_->setDuration (300);
 		ScaleAnim_->setStartValue (start);
 		ScaleAnim_->setEndValue (end);
 
@@ -84,7 +84,7 @@ namespace LeechCraft
 		if (cur)
 		{
 			setZValue (1);
-			QueueScaleAnim (scale (), 1);
+			QueueScaleAnim (scale (), Scale_ * 1.1);
 		}
 		else
 		{

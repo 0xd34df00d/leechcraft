@@ -72,7 +72,7 @@ namespace LeechCraft
 			return;
 		}
 
-		QSequentialAnimationGroup *animGroup = new QSequentialAnimationGroup;
+		QAnimationGroup *animGroup = new QParallelAnimationGroup;
 
 		const int sqr = std::sqrt ((double)count);
 		int rows = sqr;
@@ -96,7 +96,7 @@ namespace LeechCraft
 		qreal scaleFactor = 0;
 		QSize sSize;
 
-		const int animLength = 500 / (sqr);
+		const int animLength = 400;
 
 		QProgressDialog pg;
 		pg.setMinimumDuration (1000);
@@ -147,7 +147,7 @@ namespace LeechCraft
 				item->setOpacity (0);
 				item->moveBy (column * singleW, row * singleH);
 
-				QParallelAnimationGroup *pair = new QParallelAnimationGroup;
+				QAnimationGroup *pair = new QParallelAnimationGroup;
 
 				QPropertyAnimation *posAnim = new QPropertyAnimation (item, "Pos");
 				posAnim->setDuration (animLength);
