@@ -43,7 +43,7 @@ namespace Xoox
 	{
 		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
 		QXmppLogger::getLogger ()->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
-		QXmppLogger::getLogger ()->setMessageTypes (QXmppLogger::AnyMessage);
+		QXmppLogger::getLogger ()->setMessageTypes (QXmppLogger::InformationMessage | QXmppLogger::WarningMessage);
 		GlooxProtocol_.reset (new GlooxProtocol (this));
 	}
 
