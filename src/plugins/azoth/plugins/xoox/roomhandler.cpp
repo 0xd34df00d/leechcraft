@@ -252,8 +252,7 @@ namespace Xoox
 		{
 			RoomPublicMessage *message = 0;
 			if (msg.type () == QXmppMessage::GroupChat &&
-				!msg.subject ().isEmpty () &&
-				msg.body ().isEmpty ())
+				!msg.subject ().isEmpty ())
 			{
 				Subject_ = msg.subject ();
 				CLEntry_->HandleSubjectChanged (Subject_);
