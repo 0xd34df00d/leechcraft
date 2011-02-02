@@ -111,7 +111,7 @@ namespace LeechCraft
 				return core;
 			}
 
-			bool Core::Init ()
+			void Core::Init ()
 			{
 				QDir dir = QDir::home ();
 				if (!dir.cd (".leechcraft/poshuku") &&
@@ -119,7 +119,7 @@ namespace LeechCraft
 				{
 					qCritical () << Q_FUNC_INFO
 						<< "could not create neccessary directories for Poshuku";
-					return false;
+					throw std::runtime_error ("could not create neccessary directories for Poshuku");
 				}
 
 				StorageBackend::Type type;
@@ -135,21 +135,25 @@ namespace LeechCraft
 					throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 								.arg (strType)));
 
+				boost::shared_ptr<StorageBackend> sb;
 				try
 				{
-					StorageBackend_ = StorageBackend::Create (type);
+					sb = StorageBackend::Create (type);
+					sb->Prepare ();
 				}
 				catch (const std::runtime_error& s)
 				{
 					emit error (QTextCodec::codecForName ("UTF-8")->
 							toUnicode (s.what ()));
-					return false;
+					throw;
 				}
 				catch (...)
 				{
 					emit error (tr ("Poshuku: general storage initialization error."));
-					return false;
+					throw;
 				}
+
+				StorageBackend_ = sb;
 				StorageBackend_->Prepare ();
 
 				HistoryModel_.reset (new HistoryModel (this));
@@ -183,7 +187,6 @@ namespace LeechCraft
 
 				QTimer::singleShot (200, this, SLOT (postConstruct ()));
 				Initialized_ = true;
-				return true;
 			}
 
 			void Core::Release ()

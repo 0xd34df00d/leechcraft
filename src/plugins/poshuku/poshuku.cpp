@@ -46,6 +46,11 @@ namespace LeechCraft
 		{
 			using LeechCraft::Util::TagsCompletionModel;
 
+			Poshuku::~Poshuku ()
+			{
+				Core::Instance ().setParent (0);
+			}
+
 			void Poshuku::Init (ICoreProxy_ptr coreProxy)
 			{
 				Translator_.reset (Util::InstallTranslator ("poshuku"));
@@ -104,7 +109,6 @@ namespace LeechCraft
 
 				InitConnections ();
 
-
 				ImportXbel_ = new QAction (tr ("Import XBEL..."),
 						this);
 				ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
@@ -121,8 +125,12 @@ namespace LeechCraft
 						this);
 				ReloadAll_->setProperty ("ActionIcon", "poshuku_reloadall");
 
-				bool failed = false;
-				if (!Core::Instance ().Init ())
+
+				try
+				{
+					Core::Instance ().Init ();
+				}
+				catch (const std::exception& e)
 				{
 					QMessageBox::critical (Core::Instance ().GetProxy ()->GetMainWindow (),
 							"LeechCraft",
@@ -130,11 +138,8 @@ namespace LeechCraft
 								"Check logs and talk with the developers. "
 								"Or, at least, check the storage backend "
 								"settings and restart LeechCraft."));
-					failed = true;
+					throw;
 				}
-
-				if (failed)
-					return;
 
 				RegisterSettings ();
 

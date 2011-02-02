@@ -63,6 +63,7 @@ namespace LeechCraft
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 			public:
+				virtual ~Poshuku ();
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
 				void Release ();

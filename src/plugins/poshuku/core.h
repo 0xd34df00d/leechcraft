@@ -105,7 +105,7 @@ namespace LeechCraft
 				};
 
 				static Core& Instance ();
-				bool Init ();
+				void Init ();
 				void Release ();
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
