@@ -55,6 +55,11 @@
         <translation>Aktion:</translation>
     </message>
     <message>
+        <location filename="shooterdialog.ui" line="31"/>
+        <source>upload to Savepic.ru</source>
+        <translation>lade zu Savepic.ru hoch</translation>
+    </message>
+    <message>
         <location filename="shooterdialog.ui" line="36"/>
         <source>upload to Imagebin.ca</source>
         <translation>lade zu Imagebin.ca hoch</translation>
