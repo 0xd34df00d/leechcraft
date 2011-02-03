@@ -44,6 +44,7 @@ namespace Xoox
 	};
 
 	class GlooxProtocol;
+	class TransferManager;
 
 	class GlooxAccount : public QObject
 					   , public IAccount
@@ -61,6 +62,7 @@ namespace Xoox
 		int Port_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;
+		boost::shared_ptr<TransferManager> TransferManager_;
 
 		GlooxAccountState AccState_;
 	public:

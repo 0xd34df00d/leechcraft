@@ -53,15 +53,19 @@ namespace Azoth
 	public:
 		virtual ~ITransferJob () {}
 
-		virtual QString SourceID () const = 0;
+		virtual QString GetSourceID () const = 0;
 
-		virtual void Accept (const QString& out) const = 0;
+		virtual QString GetName () const = 0;
 
-		virtual void Abort () const = 0;
+		virtual qint64 GetSize () const = 0;
+
+		virtual void Accept (const QString& out) = 0;
+
+		virtual void Abort () = 0;
 
 		virtual void transferProgress (qint64 done, qint64 total) = 0;
 
-		virtual void errorAppeared (TransferError error) = 0;
+		virtual void errorAppeared (TransferError error, const QString& msg) = 0;
 
 		virtual void stateChanged (TransferState state) = 0;
 	};
