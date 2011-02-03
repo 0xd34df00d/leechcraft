@@ -58,6 +58,9 @@
       </widget>
      </item>
      <item>
+      <widget class="QComboBox" name="VariantBox_"/>
+     </item>
+     <item>
       <widget class="QLabel" name="CharCounter_">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -201,7 +204,7 @@
    <header>QtWebKit/QWebView</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::Azoth::TextEdit</class>
+   <class>LeechCraft::Azoth::TextEdit</class>
    <extends>QTextEdit</extends>
    <header>textedit.h</header>
   </customwidget>

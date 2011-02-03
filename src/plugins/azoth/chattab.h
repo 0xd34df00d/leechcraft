@@ -96,6 +96,7 @@ namespace Azoth
 		void on_SubjChange__released ();
 		void on_SendFileButton__released ();
 		void handleEntryMessage (QObject*);
+		void handleVariantsChanged (const QStringList&);
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);
 		void handleViewLinkClicked (const QUrl&);

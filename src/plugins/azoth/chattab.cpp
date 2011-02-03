@@ -111,6 +111,10 @@ namespace Azoth
 				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
 				this,
 				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (availableVariantsChanged (const QStringList&)),
+				this,
+				SLOT (handleVariantsChanged (const QStringList&)));
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
@@ -125,6 +129,8 @@ namespace Azoth
 			}
 			AppendMessage (msg);
 		}
+
+		handleVariantsChanged (e->Variants ());
 
 		const QString& accName =
 				qobject_cast<IAccount*> (e->GetParentAccount ())->
@@ -234,11 +240,11 @@ namespace Azoth
 		CurrentHistoryPosition_ = -1;
 		MsgHistory_.prepend (text);
 
+		QString variant = Ui_.VariantBox_->count () > 1 ?
+				Ui_.VariantBox_->currentText () :
+				QString ();
+
 		ICLEntry *e = GetEntry<ICLEntry> ();
-		QStringList currentVariants = e->Variants ();
-		QString variant = currentVariants.contains (Variant_) ?
-				Variant_ :
-				currentVariants.first ();
 		IMessage::MessageType type =
 				e->GetEntryType () == ICLEntry::ETMUC ?
 						IMessage::MTMUCMessage :
@@ -357,6 +363,35 @@ namespace Azoth
 		}
 
 		AppendMessage (msg);
+	}
+
+	void ChatTab::handleVariantsChanged (const QStringList& variants)
+	{
+		if (variants.size () == Ui_.VariantBox_.count ())
+		{
+			bool samelist = true;
+			for (int i = 0, size = variants.size (); i < size; ++i)
+				if (variants.at (i) != Ui_.VariantBox_->itemText (i))
+				{
+					samelist = false;
+					break;
+				}
+
+			if (samelist)
+				return;
+		}
+
+		const QString& current = Ui_.VariantBox_->currentText ();
+		Ui_.VariantBox_->clear ();
+
+		bool manyVariants = variants.size () > 1;
+		if (manyVariants)
+		{
+			Ui_.VariantBox_->addItems (variants);
+			const int pos = std::max (0, Ui_.VariantBox_->findText (current));
+			Ui_.VariantBox_->setCurrentIndex (pos);
+		}
+		Ui_.VariantBox_->setVisible (manyVariants);
 	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
