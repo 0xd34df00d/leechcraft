@@ -139,6 +139,21 @@
     </message>
 </context>
 <context>
+    <name>DataViewWidget</name>
+    <message>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Видалити</translation>
+    </message>
+</context>
+<context>
     <name>FilePicker</name>
     <message>
         <source>Browse...</source>
@@ -637,7 +652,7 @@
     </message>
     <message>
         <source>Release of one or more plugins failed.</source>
-        <translation>Не вдалося вивантажити один або декілька плагінів.</translation>
+        <translation type="obsolete">Не вдалося вивантажити один або декілька плагінів.</translation>
     </message>
     <message>
         <source>Initializing %1...</source>

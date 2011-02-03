@@ -155,6 +155,24 @@
     </message>
 </context>
 <context>
+    <name>DataViewWidget</name>
+    <message>
+        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="25"/>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="32"/>
+        <source>Modify...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="39"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <location filename="handlerchoicedialog.ui" line="14"/>
@@ -469,66 +487,66 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="120"/>
+        <location filename="mainwindow.cpp" line="125"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="252"/>
+        <location filename="mainwindow.cpp" line="257"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="255"/>
+        <location filename="mainwindow.cpp" line="260"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="352"/>
+        <location filename="mainwindow.cpp" line="357"/>
         <source>/s	</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="355"/>
-        <location filename="mainwindow.cpp" line="359"/>
-        <location filename="mainwindow.cpp" line="674"/>
-        <location filename="mainwindow.cpp" line="675"/>
+        <location filename="mainwindow.cpp" line="360"/>
+        <location filename="mainwindow.cpp" line="364"/>
+        <location filename="mainwindow.cpp" line="684"/>
+        <location filename="mainwindow.cpp" line="685"/>
         <source>/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="498"/>
+        <location filename="mainwindow.cpp" line="503"/>
         <source>Do you really want to quit?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="503"/>
+        <location filename="mainwindow.cpp" line="508"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="582"/>
+        <location filename="mainwindow.cpp" line="587"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="681"/>
+        <location filename="mainwindow.cpp" line="691"/>
         <source>%1 down, %2 up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="747"/>
+        <location filename="mainwindow.cpp" line="757"/>
         <source>Context-dependent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="774"/>
+        <location filename="mainwindow.cpp" line="784"/>
         <source>LeechCraft menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="915"/>
+        <location filename="mainwindow.cpp" line="925"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
@@ -568,53 +586,48 @@
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="79"/>
+        <location filename="pluginmanager.cpp" line="49"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="80"/>
+        <location filename="pluginmanager.cpp" line="50"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="516"/>
+        <location filename="pluginmanager.cpp" line="536"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="529"/>
+        <location filename="pluginmanager.cpp" line="549"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="548"/>
+        <location filename="pluginmanager.cpp" line="568"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="560"/>
+        <location filename="pluginmanager.cpp" line="580"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="572"/>
+        <location filename="pluginmanager.cpp" line="592"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="595"/>
+        <location filename="pluginmanager.cpp" line="615"/>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="607"/>
+        <location filename="pluginmanager.cpp" line="627"/>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="pluginmanager.cpp" line="277"/>
-        <source>Release of one or more plugins failed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

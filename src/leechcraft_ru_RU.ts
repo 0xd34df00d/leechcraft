@@ -123,6 +123,21 @@
     </message>
 </context>
 <context>
+    <name>DataViewWidget</name>
+    <message>
+        <source>Add...</source>
+        <translation>Добавить...</translation>
+    </message>
+    <message>
+        <source>Modify...</source>
+        <translation>Изменить...</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+</context>
+<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
@@ -492,7 +507,7 @@
     </message>
     <message>
         <source>Release of one or more plugins failed.</source>
-        <translation>Завершение работы одного или нескольких плагинов не удалось.</translation>
+        <translation type="obsolete">Завершение работы одного или нескольких плагинов не удалось.</translation>
     </message>
     <message>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
