@@ -253,7 +253,7 @@
     <message>
         <location filename="feedsettings.ui" line="241"/>
         <source> day(s)</source>
-        <translation type="unfinished"></translation>
+        <translation> Tag(e)</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="251"/>
@@ -492,14 +492,12 @@
         <source>%n unread message(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="aggregator.cpp" line="761"/>
         <source>in %n channel(s).</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -725,7 +723,6 @@
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -739,7 +736,6 @@
         <comment>Channel update</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -747,7 +743,6 @@
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -773,7 +768,6 @@
         <location filename="export2fb2dialog.cpp" line="111"/>
         <source>%n unread item(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -895,7 +889,6 @@
         <source>%n comment(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -903,14 +896,12 @@
         <source>%n enclosure(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="itemslistmodel.cpp" line="251"/>
         <source>%n MediaRSS entry(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -987,14 +978,12 @@
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="itemswidget.cpp" line="590"/>
         <source>%n comment(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1066,7 +1055,7 @@
     <message>
         <location filename="itemswidget.cpp" line="757"/>
         <source>Sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Beispiel</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="759"/>
@@ -1107,7 +1096,6 @@
         <location filename="itemswidget.cpp" line="800"/>
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -1391,7 +1379,7 @@
     <message>
         <location filename="startupfirstpage.ui" line="102"/>
         <source> day(s)</source>
-        <translation type="unfinished"></translation>
+        <translation> Tag(e)</translation>
     </message>
 </context>
 <context>
