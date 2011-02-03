@@ -129,84 +129,84 @@
 <context>
     <name>LeechCraft::Plugins::Popishu::EditorPage</name>
     <message>
-        <location filename="editorpage.cpp" line="90"/>
+        <location filename="editorpage.cpp" line="92"/>
         <source>Document type</source>
         <translation>Document type</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="126"/>
+        <location filename="editorpage.cpp" line="129"/>
         <source>Whitespace visibility</source>
         <translation>Whitespace visibility</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="133"/>
+        <location filename="editorpage.cpp" line="136"/>
         <source>Wrapping mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="146"/>
+        <location filename="editorpage.cpp" line="149"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="149"/>
+        <location filename="editorpage.cpp" line="152"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="217"/>
-        <location filename="editorpage.cpp" line="289"/>
+        <location filename="editorpage.cpp" line="220"/>
+        <location filename="editorpage.cpp" line="292"/>
         <source>Untitled</source>
         <translation>Untitled</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="222"/>
+        <location filename="editorpage.cpp" line="225"/>
         <source>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</source>
         <translation>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="295"/>
+        <location filename="editorpage.cpp" line="298"/>
         <source>Select file to open</source>
         <translation>Select file to open</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="606"/>
+        <location filename="editorpage.cpp" line="609"/>
         <source>File not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="607"/>
+        <location filename="editorpage.cpp" line="610"/>
         <source>The requested file doesn&apos;t exist anymore.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="662"/>
+        <location filename="editorpage.cpp" line="665"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Could not open file %1 for reading.</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="450"/>
+        <location filename="editorpage.cpp" line="453"/>
         <source>Script wrapping failed.</source>
         <translation>Script wrapping failed.</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="114"/>
+        <location filename="editorpage.cpp" line="117"/>
         <source>Recent files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="471"/>
-        <location filename="editorpage.cpp" line="507"/>
+        <location filename="editorpage.cpp" line="474"/>
+        <location filename="editorpage.cpp" line="510"/>
         <source>Script injection failed: %1</source>
         <translation>Script injection failed: %1</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="625"/>
+        <location filename="editorpage.cpp" line="628"/>
         <source>Select file to save</source>
         <translation>Select file to save</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="638"/>
+        <location filename="editorpage.cpp" line="641"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Could not open file %1 for writing.</translation>
     </message>
