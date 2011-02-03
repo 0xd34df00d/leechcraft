@@ -13,7 +13,7 @@
 <context>
     <name>LeechCraft::Plugins::DeadLyrics::DeadLyRicS</name>
     <message>
-        <location filename="deadlyrics.cpp" line="59"/>
+        <location filename="deadlyrics.cpp" line="64"/>
         <source>Lyrics Searcher</source>
         <translation>Liedtext Sucher</translation>
     </message>
@@ -37,17 +37,17 @@
 <context>
     <name>deadlyricssettings</name>
     <message>
-        <location filename="dummyfile.cpp" line="2"/>
+        <location filename="dummy.cpp" line="2"/>
         <source>Appearance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="3"/>
+        <location filename="dummy.cpp" line="3"/>
         <source>Lyrics view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummyfile.cpp" line="4"/>
+        <location filename="dummy.cpp" line="4"/>
         <source>Use a web browser (if available)</source>
         <translation type="unfinished"></translation>
     </message>
