@@ -367,7 +367,7 @@ namespace Azoth
 
 	void ChatTab::handleVariantsChanged (const QStringList& variants)
 	{
-		if (variants.size () == Ui_.VariantBox_.count ())
+		if (variants.size () == Ui_.VariantBox_->count ())
 		{
 			bool samelist = true;
 			for (int i = 0, size = variants.size (); i < size; ++i)
