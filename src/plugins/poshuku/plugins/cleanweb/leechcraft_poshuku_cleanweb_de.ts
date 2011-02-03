@@ -55,7 +55,7 @@
     <message>
         <location filename="core.cpp" line="396"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
-        <translation type="unfinished">Blockiert von Poshuku CleanWeb: %1</translation>
+        <translation>Blockiert von Poshuku CleanWeb: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="442"/>
@@ -138,7 +138,7 @@
     <message>
         <location filename="subscriptionadddialog.cpp" line="90"/>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="subscriptionadddialog.cpp" line="91"/>
@@ -148,7 +148,7 @@
     <message>
         <location filename="subscriptionadddialog.cpp" line="92"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
 </context>
 <context>

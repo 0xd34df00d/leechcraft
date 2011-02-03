@@ -161,7 +161,7 @@
     <message>
         <location filename="addtorrent.ui" line="198"/>
         <source>Try to play this torrent live</source>
-        <translation type="unfinished"></translation>
+        <translation>Versuchen diesen torrent gleich abzuspielen</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="208"/>
@@ -424,7 +424,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="341"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lehne Datei %1 ab!Die Datei ist Größer als dein Auto Limit.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="528"/>
@@ -503,7 +503,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="916"/>
         <source>Do you want to leave this torrent&apos;s files?</source>
-        <translation type="unfinished"></translation>
+        <translation>Wollen Sie diese Torrent-Dateien an diesem Ort lassen?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="964"/>
@@ -518,12 +518,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="1304"/>
         <source>Could not parse document from file %1.&lt;br /&gt;%1 at %2:%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Datei %1: &lt;br /&gt;%1 von &quot;%2:%3&quot; nicht verarbeiten</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1314"/>
         <source>There should be only one storage section.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es sollte nur ein Abschnitt zur Speicherung angegeben werden.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1332"/>
@@ -588,7 +588,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="1928"/>
         <source>Bad bencoding in saved torrent data</source>
-        <translation type="unfinished"></translation>
+        <translation>Falsches BEncoding in der gespeicherten Torrent Datei</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1970"/>
@@ -613,7 +613,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="2801"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Storage-Benachrichtigungen sind deaktiviert. Live-Streaming wird definitiv nicht funktionieren. Falls ein Problem auftritt, reaktivieren der Storage-Benachrichtigungen im &quot;Benachrichtigungen&quot; Abschnitt der BitTorrent-Einstellungen. Wollen Sie diese nun Aktivieren?</translation>
     </message>
 </context>
 <context>
@@ -821,12 +821,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="peerstablinker.cpp" line="174"/>
         <source>No send buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Sende Buffer vorhanden</translation>
     </message>
     <message>
         <location filename="peerstablinker.cpp" line="182"/>
         <source>No receive buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Empfangs Buffer vorhanden</translation>
     </message>
 </context>
 <context>
@@ -941,7 +941,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.cpp" line="526"/>
         <source>Not tracking</source>
-        <translation type="unfinished"></translation>
+        <translation>Es wird nicht getrackt</translation>
     </message>
     <message>
         <location filename="tabwidget.cpp" line="536"/>
@@ -1002,7 +1002,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentmaker.cpp" line="104"/>
         <source>Hashing torrent...</source>
-        <translation type="unfinished"></translation>
+        <translation>Torrent Hash berechnen...</translation>
     </message>
     <message>
         <location filename="torrentmaker.cpp" line="120"/>
@@ -1051,122 +1051,117 @@ IPv6 input mask</extracomment>
         <translation>Erstelle Torrent…</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="969"/>
-        <source>N</source>
-        <translation>N</translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="976"/>
+        <location filename="torrentplugin.cpp" line="975"/>
         <source>Open multiple torrents...</source>
         <translation>Öffne mehrere Torrents…</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="984"/>
+        <location filename="torrentplugin.cpp" line="983"/>
         <source>IP filter...</source>
         <translation>IP Filter...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="992"/>
+        <location filename="torrentplugin.cpp" line="991"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="994"/>
+        <location filename="torrentplugin.cpp" line="993"/>
         <source>Del</source>
         <translation>Entf</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1001"/>
+        <location filename="torrentplugin.cpp" line="1000"/>
         <source>Resume</source>
         <translation>Fortsetzen</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1003"/>
+        <location filename="torrentplugin.cpp" line="1002"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1010"/>
+        <location filename="torrentplugin.cpp" line="1009"/>
         <source>Pause</source>
         <translation>Pause</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1012"/>
+        <location filename="torrentplugin.cpp" line="1011"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1019"/>
+        <location filename="torrentplugin.cpp" line="1018"/>
         <source>Move up</source>
         <translation>Eins nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1028"/>
+        <location filename="torrentplugin.cpp" line="1027"/>
         <source>Move down</source>
         <translation>Eins nach unten verschieben</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1037"/>
+        <location filename="torrentplugin.cpp" line="1036"/>
         <source>Move to top</source>
         <translation>Gabz nach oben verschieben</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1046"/>
+        <location filename="torrentplugin.cpp" line="1045"/>
         <source>Move to bottom</source>
         <translation>Ganz nach unten verschieben</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1055"/>
+        <location filename="torrentplugin.cpp" line="1054"/>
         <source>Reannounce</source>
         <translation>Manuelle Ankündigung</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1057"/>
+        <location filename="torrentplugin.cpp" line="1056"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1064"/>
+        <location filename="torrentplugin.cpp" line="1063"/>
         <source>Recheck</source>
         <translation>Erneut prüfen</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1072"/>
+        <location filename="torrentplugin.cpp" line="1071"/>
         <source>Move files...</source>
         <translation>Verschiebe Dateien…</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1074"/>
+        <location filename="torrentplugin.cpp" line="1073"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1081"/>
+        <location filename="torrentplugin.cpp" line="1080"/>
         <source>Change trackers...</source>
         <translation>Ändere Trackers…</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1083"/>
+        <location filename="torrentplugin.cpp" line="1082"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1090"/>
+        <location filename="torrentplugin.cpp" line="1089"/>
         <source>Make magnet link...</source>
         <translation>Erstelle Magnet Link…</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1098"/>
+        <location filename="torrentplugin.cpp" line="1097"/>
         <source>Import...</source>
         <translation>Importieren...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1106"/>
+        <location filename="torrentplugin.cpp" line="1105"/>
         <source>Export...</source>
         <translation>Exportieren...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1150"/>
+        <location filename="torrentplugin.cpp" line="1149"/>
         <source>Torrents actions</source>
         <translation>Torrent Aktionen</translation>
     </message>
@@ -1261,7 +1256,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentfirststep.ui" line="55"/>
         <source>Torrent&apos;s root path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Torrent Stamm-Verzeichnis:</translation>
     </message>
     <message>
         <location filename="newtorrentfirststep.ui" line="72"/>
@@ -1327,7 +1322,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentthirdstep.ui" line="13"/>
         <source>Fine-tune parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Extra Konfigurations Optionen</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="23"/>
@@ -1425,22 +1420,22 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="2355"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Speicherort für den Torrent: &lt;br /&gt;%1&lt;br /&gt;wurde erfolgreich geändert nach: &lt;br /&gt;%2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2368"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Speicherortänderung Nicht Erfolgreich:&lt;br /&gt;%2&lt;br /&gt;für den Torrent:&lt;br /&gt;%1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2385"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei Fehler aufgetreteb für den Torrent:&lt;br /&gt;%1&lt;br /&gt;Datei:&lt;br /&gt;%2&lt;br /&gt;Fehler:&lt;br /&gt;%3</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2399"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei Namensänderung fehlgeschlagen für Torrent:&lt;br /&gt;%1&lt;br /&gt;Datei: %2, Fehler:&lt;br /&gt;%3</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2413"/>
@@ -1463,7 +1458,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="singletrackerchanger.ui" line="33"/>
         <source>Tier:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rang:</translation>
     </message>
 </context>
 <context>
@@ -1486,7 +1481,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="startupfirstpage.ui" line="102"/>
         <source>Settings preset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktive Einstellungen:</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="110"/>
@@ -1501,7 +1496,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="startupfirstpage.ui" line="120"/>
         <source>High performance seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoch Geschwindigkeits Seed</translation>
     </message>
 </context>
 <context>
@@ -1557,7 +1552,7 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="150"/>
         <location filename="tabwidget.ui" line="891"/>
         <source>Desired rating:</source>
-        <translation type="unfinished"></translation>
+        <translation>Angestrebte Bewertung:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="157"/>
@@ -1601,7 +1596,7 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="291"/>
         <location filename="tabwidget.ui" line="1207"/>
         <source>Session rating:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sitzungs Bewertung:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="305"/>
@@ -1621,7 +1616,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="347"/>
         <source>TCP listen port:</source>
-        <translation type="unfinished"></translation>
+        <translation>TCP Port:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="361"/>
@@ -1636,12 +1631,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="387"/>
         <source>Overhead downloaded:</source>
-        <translation type="unfinished"></translation>
+        <translation>Overhead Heruntergeladen:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="401"/>
         <source>Overhead uploaded:</source>
-        <translation type="unfinished"></translation>
+        <translation>Overhead Hinaufgeladen:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="415"/>
@@ -1666,12 +1661,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="471"/>
         <source>Overhead download rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschlagene Downloadrate:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="478"/>
         <source>Overhead upload rate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschlagene Uploadrate:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="499"/>
@@ -1721,7 +1716,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="604"/>
         <source>Total blocks read:</source>
-        <translation type="unfinished"></translation>
+        <translation>Insgesamt gelesene Blöcke:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="618"/>
@@ -1786,7 +1781,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="932"/>
         <source>Sequential download</source>
-        <translation type="unfinished"></translation>
+        <translation>Sequenzieller Download</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="939"/>
@@ -1948,7 +1943,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1414"/>
         <source>Redundant:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrfach vorhanden:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1428"/>
@@ -2147,7 +2142,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="trackerschanger.ui" line="41"/>
         <source>Tier</source>
-        <translation type="unfinished"></translation>
+        <translation>Rang</translation>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="46"/>
@@ -2177,12 +2172,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="trackerschanger.ui" line="71"/>
         <source>Start sent</source>
-        <translation type="unfinished"></translation>
+        <translation>Senden Starten</translation>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="76"/>
         <source>Complete sent</source>
-        <translation type="unfinished"></translation>
+        <translation>Fertig Gesendet</translation>
     </message>
     <message>
         <location filename="trackerschanger.ui" line="81"/>

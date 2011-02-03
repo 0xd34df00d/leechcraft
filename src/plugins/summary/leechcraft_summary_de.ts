@@ -73,7 +73,7 @@
     <message>
         <location filename="requestnormalizer.cpp" line="109"/>
         <source>Open/close braces mismatch: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klammerfehler: %1</translation>
     </message>
 </context>
 <context>
@@ -81,7 +81,7 @@
     <message>
         <location filename="searchwidget.cpp" line="35"/>
         <source>Search categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Such-Kategorie</translation>
     </message>
 </context>
 <context>
@@ -89,23 +89,23 @@
     <message>
         <location filename="summary.cpp" line="92"/>
         <source>Summary of downloads and recent events</source>
-        <translation type="unfinished"></translation>
+        <translation>Zusammenfassung der Downloads und der jüngsten Ereignisse</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="49"/>
+        <location filename="summarywidget.cpp" line="50"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="476"/>
+        <location filename="summarywidget.cpp" line="510"/>
         <source>S: %1 [%2]</source>
         <translation>Z: %1 [%2]</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="480"/>
+        <location filename="summarywidget.cpp" line="514"/>
         <source>Summary [%1]</source>
         <translation>Zusammenfassung [%1]</translation>
     </message>
@@ -115,7 +115,7 @@
     <message>
         <location filename="searchwidget.ui" line="14"/>
         <source>Search parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Such-Parameter</translation>
     </message>
     <message>
         <location filename="searchwidget.ui" line="73"/>
@@ -140,12 +140,12 @@
     <message>
         <location filename="searchwidget.ui" line="39"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>UND</translation>
     </message>
     <message>
         <location filename="searchwidget.ui" line="49"/>
         <source>OR</source>
-        <translation type="unfinished"></translation>
+        <translation>ODER</translation>
     </message>
 </context>
 </TS>

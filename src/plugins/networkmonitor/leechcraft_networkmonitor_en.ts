@@ -22,7 +22,7 @@
         <translation>Network monitor...</translation>
     </message>
     <message>
-        <location filename="networkmonitor.cpp" line="105"/>
+        <location filename="networkmonitor.cpp" line="110"/>
         <source>Monitors HTTP network requests and responses.</source>
         <translation>Monitors HTTP network requests and responses.</translation>
     </message>

@@ -306,7 +306,7 @@
     <message>
         <location filename="browserwidget.cpp" line="188"/>
         <source>Ctrl+h</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+h</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="190"/>
@@ -316,7 +316,7 @@
     <message>
         <location filename="browserwidget.cpp" line="193"/>
         <source>Ctrl+b</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+b</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="238"/>
@@ -356,7 +356,7 @@
     <message>
         <location filename="browserwidget.cpp" line="657"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="660"/>
@@ -889,7 +889,7 @@
         <location filename="passwordremember.ui" line="23"/>
         <source>Remember forms data</source>
         <oldsource>Password remember</oldsource>
-        <translation type="unfinished">Passwort speichern</translation>
+        <translation>Passwort speichern</translation>
     </message>
     <message>
         <location filename="passwordremember.ui" line="30"/>

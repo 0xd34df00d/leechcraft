@@ -65,17 +65,17 @@
     <message>
         <location filename="findproxy.cpp" line="48"/>
         <source>Handle</source>
-        <translation type="unfinished"></translation>
+        <translation>Anfasser</translation>
     </message>
     <message>
         <location filename="findproxy.cpp" line="55"/>
         <source>Copy URL to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>URL in Zwischenablage kopieren</translation>
     </message>
     <message>
         <location filename="findproxy.cpp" line="63"/>
         <source>vGrabber menu</source>
-        <translation type="unfinished"></translation>
+        <translation>vGrabber Menü</translation>
     </message>
     <message>
         <location filename="findproxy.cpp" line="80"/>
@@ -159,7 +159,7 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Video</source>
-        <translation type="unfinished">Video</translation>
+        <translation>Video</translation>
     </message>
 </context>
 </TS>

@@ -31,7 +31,7 @@
     <message>
         <location filename="core.cpp" line="274"/>
         <source>%1 wasn&apos;t delegated</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 war nicht delegiert</translation>
     </message>
     <message>
         <location filename="core.cpp" line="410"/>
@@ -64,9 +64,9 @@
     <message numerus="yes">
         <location filename="searchhandler.cpp" line="74"/>
         <source>%n total result(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n Suchergebnis</numerusform>
+            <numerusform>%n Suchergebnisse</numerusform>
         </translation>
     </message>
     <message>
@@ -169,7 +169,7 @@
     <message>
         <location filename="searcherslist.ui" line="14"/>
         <source>Searchers list</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste der Suchanfragen</translation>
     </message>
     <message>
         <location filename="searcherslist.ui" line="24"/>
@@ -247,22 +247,22 @@
     <message>
         <location filename="startupfirstpage.ui" line="30"/>
         <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="35"/>
         <source>Russian (ru)</source>
-        <translation type="unfinished">Russisch (ru)</translation>
+        <translation>Russisch (ru)</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="59"/>
         <source>Engine</source>
-        <translation type="unfinished">Engine</translation>
+        <translation>Engine</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="64"/>
         <source>Tags</source>
-        <translation type="unfinished">Tags</translation>
+        <translation>Tags</translation>
     </message>
 </context>
 <context>

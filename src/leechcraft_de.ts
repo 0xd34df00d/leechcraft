@@ -87,7 +87,7 @@
     <message>
         <location filename="plugininterface/backendselector.ui" line="31"/>
         <source>MySQL</source>
-        <translation type="unfinished"></translation>
+        <translation>MySQL</translation>
     </message>
     <message>
         <location filename="plugininterface/backendselector.ui" line="54"/>
@@ -186,7 +186,7 @@
     <message>
         <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="39"/>
         <source>Remove</source>
-        <translation type="unfinished">Bewegen</translation>
+        <translation>Bewegen</translation>
     </message>
 </context>
 <context>
@@ -372,7 +372,7 @@
     <message>
         <location filename="leechcraft.ui" line="193"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="198"/>
@@ -657,17 +657,17 @@
         <location filename="mainwindow.cpp" line="125"/>
         <source>F11</source>
         <comment>FullScreen</comment>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="257"/>
         <source>View</source>
-        <translation type="unfinished">Anzeigen</translation>
+        <translation>Anzeigen</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="260"/>
         <source>Tools</source>
-        <translation type="unfinished">Tools</translation>
+        <translation>Tools</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="357"/>
@@ -1008,7 +1008,7 @@
     <message>
         <location filename="tabmanager.cpp" line="70"/>
         <source>Close all but this</source>
-        <translation type="unfinished">Andere Tabs schließen</translation>
+        <translation>Andere Tabs schließen</translation>
     </message>
 </context>
 <context>
