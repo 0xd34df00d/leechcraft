@@ -30,10 +30,12 @@
 #include "interfaces/imessage.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
+#include "interfaces/itransfermanager.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
+#include <QFileDialog>
 
 namespace LeechCraft
 {
@@ -62,6 +64,7 @@ namespace Azoth
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
 	, HasBeenAppended_ (false)
+	, XferManager_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -318,6 +321,23 @@ namespace Azoth
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
 	}
 
+	void ChatTab::on_SendFileButton__released ()
+	{
+		if (!XferManager_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null XferManager_";
+			return;
+		}
+
+		const QString& filename = QFileDialog::getOpenFileName (this,
+				tr ("Select file to send"));
+		if (filename.isEmpty ())
+			return;
+
+		XferManager_->SendFile (EntryID_, filename);
+	}
+
 	void ChatTab::handleEntryMessage (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -449,7 +469,7 @@ namespace Azoth
 
 		bool claimsMUC = e->GetEntryType () == ICLEntry::ETMUC;
 		IsMUC_ = true;
-		if (!(claimsMUC))
+		if (!claimsMUC)
 			IsMUC_ = false;
 
 		if (claimsMUC &&
@@ -475,6 +495,13 @@ namespace Azoth
 					this,
 					SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
 		}
+
+		IAccount *acc = qobject_cast<IAccount*> (GetEntry<ICLEntry> ()->GetParentAccount ());
+		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (!XferManager_ ||
+			(IsMUC_ &&
+			 !(acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)))
+			Ui_.SendFileButton_->hide ();
 	}
 
 	void ChatTab::HandleMUC ()

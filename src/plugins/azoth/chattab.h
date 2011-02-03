@@ -35,6 +35,7 @@ namespace Azoth
 	class ICLEntry;
 	class IMUCEntry;
 	class IMessage;
+	class ITransferManager;
 
 	class ChatTab : public QWidget
 				  , public IMultiTabsWidget
@@ -69,6 +70,8 @@ namespace Azoth
 		bool IsMUC_;
 
 		bool HasBeenAppended_;
+
+		ITransferManager *XferManager_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
@@ -91,6 +94,7 @@ namespace Azoth
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
+		void on_SendFileButton__released ();
 		void handleEntryMessage (QObject*);
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);

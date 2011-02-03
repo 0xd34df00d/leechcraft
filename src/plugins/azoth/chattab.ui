@@ -98,6 +98,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QToolButton" name="SendFileButton_">
+       <property name="text">
+        <string>Send file...</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -194,7 +201,7 @@
    <header>QtWebKit/QWebView</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Azoth::TextEdit</class>
+   <class>LeechCraft::Plugins::Azoth::TextEdit</class>
    <extends>QTextEdit</extends>
    <header>textedit.h</header>
   </customwidget>
