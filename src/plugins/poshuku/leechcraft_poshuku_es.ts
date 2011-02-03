@@ -445,33 +445,33 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Core</name>
     <message>
-        <location filename="core.cpp" line="150"/>
+        <location filename="core.cpp" line="152"/>
         <source>Poshuku: general storage initialization error.</source>
         <translation>Poshuku: error en la inicialización en almacenamiento general.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="823"/>
+        <location filename="core.cpp" line="826"/>
         <source>Select XBEL file</source>
         <translation>Seleccionar archivo XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="825"/>
-        <location filename="core.cpp" line="865"/>
+        <location filename="core.cpp" line="828"/>
+        <location filename="core.cpp" line="868"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Archivos de XBEL (*.xbel);;Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="839"/>
+        <location filename="core.cpp" line="842"/>
         <source>Could not open file %1 for reading.</source>
         <translation>No se pudo abrir el archivo %1 para lectura.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="863"/>
+        <location filename="core.cpp" line="866"/>
         <source>Save XBEL file</source>
         <translation>Guardar archivo XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="882"/>
+        <location filename="core.cpp" line="885"/>
         <source>Could not open file %1 for writing.</source>
         <translation>No se pudo abrir el archivo %1 para escritura.</translation>
     </message>
@@ -826,42 +826,42 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Poshuku</name>
     <message>
-        <location filename="poshuku.cpp" line="129"/>
+        <location filename="poshuku.cpp" line="137"/>
         <source>Poshuku failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation>Poshuku fallo en inicializar correctamente. verifique los registros y hable con los desarrolladores. or por lo menos verifique la configuración de almacenamiento y reinicie LeechCraft.</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="108"/>
+        <location filename="poshuku.cpp" line="112"/>
         <source>Import XBEL...</source>
         <translation>Importar XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="112"/>
+        <location filename="poshuku.cpp" line="116"/>
         <source>Export XBEL...</source>
         <translation>Exportar XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="116"/>
+        <location filename="poshuku.cpp" line="120"/>
         <source>Check favorites...</source>
         <translation>Revisar favoritos...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="120"/>
+        <location filename="poshuku.cpp" line="124"/>
         <source>Reload all pages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="197"/>
+        <location filename="poshuku.cpp" line="202"/>
         <source>Poshuku Browser</source>
         <translation>Explorador de Poshuku</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="202"/>
+        <location filename="poshuku.cpp" line="207"/>
         <source>Simple yet functional web browser</source>
         <translation>Un explorador web simple pero funcional</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="488"/>
+        <location filename="poshuku.cpp" line="493"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
         <translation>Por favor observe que desarrolladores extras podrian trabajar correctamente solo para paginas que son cargadas despues de habilitadas.</translation>
     </message>

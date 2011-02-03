@@ -453,33 +453,33 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Core</name>
     <message>
-        <location filename="core.cpp" line="150"/>
+        <location filename="core.cpp" line="152"/>
         <source>Poshuku: general storage initialization error.</source>
         <translation>Poshuku: общая ошибка инициализации подсистемы хранения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="823"/>
+        <location filename="core.cpp" line="826"/>
         <source>Select XBEL file</source>
         <translation>Выбор файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="825"/>
-        <location filename="core.cpp" line="865"/>
+        <location filename="core.cpp" line="828"/>
+        <location filename="core.cpp" line="868"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Файлы XBEL (*.xbel);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="839"/>
+        <location filename="core.cpp" line="842"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не могу открыть файл %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="863"/>
+        <location filename="core.cpp" line="866"/>
         <source>Save XBEL file</source>
         <translation>Сохранение файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="882"/>
+        <location filename="core.cpp" line="885"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не могу открыть файл %1 на запись.</translation>
     </message>
@@ -835,42 +835,42 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Poshuku</name>
     <message>
-        <location filename="poshuku.cpp" line="129"/>
+        <location filename="poshuku.cpp" line="137"/>
         <source>Poshuku failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation>Poshuku не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Ну или, по крайней мере, проверьте настройки хранения и перезапустите LeechCraft.</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="108"/>
+        <location filename="poshuku.cpp" line="112"/>
         <source>Import XBEL...</source>
         <translation>Импортировать XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="112"/>
+        <location filename="poshuku.cpp" line="116"/>
         <source>Export XBEL...</source>
         <translation>Экспортировать в XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="116"/>
+        <location filename="poshuku.cpp" line="120"/>
         <source>Check favorites...</source>
         <translation>Проверить закладки...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="120"/>
+        <location filename="poshuku.cpp" line="124"/>
         <source>Reload all pages</source>
         <translation>Обновить все страницы</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="197"/>
+        <location filename="poshuku.cpp" line="202"/>
         <source>Poshuku Browser</source>
         <translation>Poshuku Browser</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="202"/>
+        <location filename="poshuku.cpp" line="207"/>
         <source>Simple yet functional web browser</source>
         <translation>Простой, но в то же время функциональный веб-браузер</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="488"/>
+        <location filename="poshuku.cpp" line="493"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
         <translation>Пожалуйста, имейте в виду, что расширения для разработчика будут правильно работать только для страниц, загруженных после включения.</translation>
     </message>
