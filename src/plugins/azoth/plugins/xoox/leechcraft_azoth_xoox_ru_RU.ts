@@ -21,7 +21,7 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="24"/>
         <source>Basic</source>
-        <translation>Basic</translation>
+        <translation>Основные</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="64"/>
@@ -41,22 +41,22 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="99"/>
         <source>Connection</source>
-        <translation>Connection</translation>
+        <translation>Соединение</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="105"/>
         <source>Custom address</source>
-        <translation>Custom address</translation>
+        <translation>Особый адрес</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="132"/>
         <source>Host:</source>
-        <translation>Host:</translation>
+        <translation>Хост:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="142"/>
         <source>Port:</source>
-        <translation>Port:</translation>
+        <translation>Порт:</translation>
     </message>
 </context>
 <context>
@@ -92,7 +92,7 @@
     <message>
         <location filename="clientconnection.cpp" line="396"/>
         <source>Keep-alive error.</source>
-        <translation>Ошибка поддержки связи.</translation>
+        <translation>Ошибка поддержания связи.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="399"/>
