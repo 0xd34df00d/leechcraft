@@ -642,7 +642,7 @@ namespace Azoth
 			rerequest->setProperty ("ActionIcon", "azoth_auth_rerequest");
 			rerequest->setProperty ("Azoth/WithReason", false);
 
-			QAction *rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason.."),
+			QAction *rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason..."),
 					this, SLOT (handleActionRerequestTriggered ()));
 			rerequestReason->setProperty ("ActionIcon", "azoth_auth_rerequest");
 			rerequestReason->setProperty ("Azoth/WithReason", true);
