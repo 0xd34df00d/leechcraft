@@ -75,7 +75,8 @@ namespace Azoth
 	public:
 		virtual ~ITransferManager () {}
 
-		virtual QObject* SendFile (const QString& id, const QString& name) = 0;
+		virtual QObject* SendFile (const QString& id,
+				const QString& variant, const QString& name) = 0;
 
 		virtual void fileOffered (QObject*) = 0;
 	};

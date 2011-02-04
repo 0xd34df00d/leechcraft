@@ -341,7 +341,8 @@ namespace Azoth
 		if (filename.isEmpty ())
 			return;
 
-		XferManager_->SendFile (EntryID_, filename);
+		XferManager_->SendFile (EntryID_,
+				Ui_.VariantBox_->currentText (), filename);
 	}
 
 	void ChatTab::handleEntryMessage (QObject *msgObj)
@@ -384,14 +385,13 @@ namespace Azoth
 		const QString& current = Ui_.VariantBox_->currentText ();
 		Ui_.VariantBox_->clear ();
 
-		bool manyVariants = variants.size () > 1;
-		if (manyVariants)
+		Ui_.VariantBox_->addItems (variants);
+		if (!variants.isEmpty ())
 		{
-			Ui_.VariantBox_->addItems (variants);
 			const int pos = std::max (0, Ui_.VariantBox_->findText (current));
 			Ui_.VariantBox_->setCurrentIndex (pos);
 		}
-		Ui_.VariantBox_->setVisible (manyVariants);
+		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,

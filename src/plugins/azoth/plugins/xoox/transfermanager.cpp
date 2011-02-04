@@ -36,9 +36,10 @@ namespace Xoox
 				SLOT (handleFileReceived (QXmppTransferJob*)));
 	}
 
-	QObject* TransferManager::SendFile (const QString& id, const QString& name)
+	QObject* TransferManager::SendFile (const QString& id,
+			const QString& var, const QString& name)
 	{
-		return new TransferJob (Manager_->sendFile (id, name));
+		return new TransferJob (Manager_->sendFile (id + "/" + var, name));
 	}
 
 	void TransferManager::handleFileReceived (QXmppTransferJob *job)

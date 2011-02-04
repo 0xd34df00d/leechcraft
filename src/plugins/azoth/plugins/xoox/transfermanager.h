@@ -39,7 +39,7 @@ namespace Xoox
 	public:
 		TransferManager (QXmppTransferManager*);
 
-		QObject* SendFile (const QString&, const QString&);
+		QObject* SendFile (const QString&, const QString&, const QString&);
 	private slots:
 		void handleFileReceived (QXmppTransferJob*);
 	signals:
