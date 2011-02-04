@@ -56,6 +56,7 @@ SET (TRANSLATIONS
 	leechcraft_summary_be.ts
 	leechcraft_summary_de.ts
 	leechcraft_summary_en.ts
+	leechcraft_summary_fr.ts
 	)
 SET (RESOURCES summaryresources.qrc)
 SET (COMPILED_TRANSLATIONS
@@ -65,6 +66,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_be.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_en.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_fr.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})

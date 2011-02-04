@@ -50,12 +50,14 @@ SET (TRANSLATIONS
 	leechcraft_popishu_uk_UA.ts
 	leechcraft_popishu_en.ts
 	leechcraft_popishu_de.ts
+	leechcraft_popishu_fr.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_popishu_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_popishu_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_popishu_en.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_popishu_de.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_popishu_fr.qm
 	)
 SET (FORMS
 	editorpage.ui

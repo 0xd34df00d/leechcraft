@@ -47,6 +47,7 @@ SET (TRANSLATIONS
 	leechcraft_tabpp_de.ts
 	leechcraft_tabpp_en.ts
 	leechcraft_tabpp_oc.ts
+	leechcraft_tabpp_fr.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_uk_UA.qm
@@ -54,6 +55,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_de.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_en.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_oc.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_fr.qm
 	)
 SET (RESOURCES tabppresources.qrc)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="fr">
 <context>
     <name>Changer</name>
     <message>
         <location filename="changer.ui" line="14"/>
         <source>Fake user agent</source>
-        <translation type="unfinished"></translation>
+        <translation>Faux agent utilisateur</translation>
     </message>
     <message>
         <location filename="changer.ui" line="25"/>
         <source>Domain:</source>
-        <translation type="unfinished"></translation>
+        <translation>Domaine :</translation>
     </message>
     <message>
         <location filename="changer.ui" line="35"/>
         <source>Agent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Agent:</translation>
     </message>
     <message>
         <location filename="changer.ui" line="45"/>
         <source>ID string:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaîne d&apos;ID :</translation>
     </message>
     <message>
         <location filename="changer.ui" line="57"/>
@@ -30,7 +30,11 @@
 %Locale% is replaced with current locale name.
 %WebKitVersion% is expanded to WebKit version.
 %AppVersion% is expanded to the application&apos;s version.</source>
-        <translation type="unfinished"></translation>
+        <translation>%Platform% et %Subplatform% sont étendus au système de fenêtrage et au système d&apos;exploitation.
+%Security% est étendu à U si le SSL est activé, sinon à N.
+%Locale% est remplacé par le nom de l&apos;environnement actuel.
+%WebKitVersion% est étendu à la version de WebKit.
+%AppVersion% est étendu à la version de l&apos;application.</translation>
     </message>
 </context>
 <context>
@@ -38,22 +42,22 @@
     <message>
         <location filename="fua.cpp" line="70"/>
         <source>Domain</source>
-        <translation type="unfinished"></translation>
+        <translation>Domaine</translation>
     </message>
     <message>
         <location filename="fua.cpp" line="71"/>
         <source>Agent</source>
-        <translation type="unfinished"></translation>
+        <translation>Agent</translation>
     </message>
     <message>
         <location filename="fua.cpp" line="72"/>
         <source>Identification string</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaîne d&apos;identification</translation>
     </message>
     <message>
         <location filename="fua.cpp" line="116"/>
         <source>Allows to set fake user agents for different sites.</source>
-        <translation type="unfinished"></translation>
+        <translation>Autorise la création de faux agents utilisateurs pour différents sites.</translation>
     </message>
 </context>
 <context>
@@ -61,22 +65,22 @@
     <message>
         <location filename="settings.ui" line="27"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter...</translation>
     </message>
     <message>
         <location filename="settings.ui" line="34"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier...</translation>
     </message>
     <message>
         <location filename="settings.ui" line="41"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="settings.ui" line="65"/>
         <source>Changes would be applied immediately</source>
-        <translation type="unfinished"></translation>
+        <translation>Les changements vont être appliqués immédiatement</translation>
     </message>
 </context>
 <context>

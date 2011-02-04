@@ -39,6 +39,7 @@ SET (TRANSLATIONS
 	leechcraft_kinotify_uk_UA.ts
 	leechcraft_kinotify_ar.ts
 	leechcraft_kinotify_de.ts
+	leechcraft_kinotify_fr.ts
 	)
 SET (RESOURCES kinotifyresources.qrc)
 SET (COMPILED_TRANSLATIONS
@@ -46,6 +47,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_kinotify_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_kinotify_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_kinotify_de.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_kinotify_fr.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

@@ -6,22 +6,22 @@
     <message>
         <location filename="addtofavoritesdialog.ui" line="14"/>
         <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Apondre als favorits</translation>
     </message>
     <message>
         <location filename="addtofavoritesdialog.ui" line="29"/>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation>URL :</translation>
     </message>
     <message>
         <location filename="addtofavoritesdialog.ui" line="43"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Títol :</translation>
     </message>
     <message>
         <location filename="addtofavoritesdialog.ui" line="53"/>
         <source>Tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiquetas :</translation>
     </message>
 </context>
 <context>
@@ -29,27 +29,27 @@
     <message>
         <location filename="bookmarkswidget.ui" line="31"/>
         <source>Fixed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaîne modifiée</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="36"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>Joker</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="41"/>
         <source>Regexp</source>
-        <translation type="unfinished"></translation>
+        <translation>Expression régulière</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="46"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquettes</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="54"/>
         <source>Case sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Sensible à la casse</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="75"/>
@@ -59,27 +59,27 @@
     <message>
         <location filename="bookmarkswidget.ui" line="82"/>
         <source>Edit bookmark...</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer le marque-page...</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="85"/>
         <source>Edit title and tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer le titre et les étiquettes</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="90"/>
         <source>Change URL...</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;URL...</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="93"/>
         <source>Change URL of the bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;URL du marque-page</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.ui" line="98"/>
         <source>Delete bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le marque-page</translation>
     </message>
 </context>
 <context>
@@ -92,37 +92,37 @@
     <message>
         <location filename="cookieseditdialog.ui" line="37"/>
         <source>Domain:</source>
-        <translation type="unfinished"></translation>
+        <translation>Domeni :</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="51"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="65"/>
         <source>Expiration date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Data d&apos;expiracion :</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="79"/>
         <source>Path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Camin :</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="93"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor :</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="110"/>
         <source>Secure</source>
-        <translation type="unfinished"></translation>
+        <translation>Securizada</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="117"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer</translation>
     </message>
 </context>
 <context>
@@ -130,22 +130,22 @@
     <message>
         <location filename="editbookmarkdialog.ui" line="14"/>
         <source>Edit bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer le marque-page</translation>
     </message>
     <message>
         <location filename="editbookmarkdialog.ui" line="23"/>
         <source>URL:</source>
-        <translation type="unfinished">URL:</translation>
+        <translation>URL :</translation>
     </message>
     <message>
         <location filename="editbookmarkdialog.ui" line="37"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Títol :</translation>
     </message>
     <message>
         <location filename="editbookmarkdialog.ui" line="47"/>
         <source>Tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiquetas :</translation>
     </message>
 </context>
 <context>
@@ -154,7 +154,7 @@
         <location filename="finddialog.ui" line="14"/>
         <location filename="finddialog.ui" line="54"/>
         <source>Find</source>
-        <translation type="unfinished"></translation>
+        <translation>Trouver</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="27"/>
@@ -164,22 +164,22 @@
     <message>
         <location filename="finddialog.ui" line="34"/>
         <source>Case</source>
-        <translation type="unfinished"></translation>
+        <translation>Casse</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="41"/>
         <source>Cycle</source>
-        <translation type="unfinished"></translation>
+        <translation>Cycle</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="61"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <location filename="finddialog.ui" line="64"/>
         <source>Esc</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc</translation>
     </message>
 </context>
 <context>
@@ -187,22 +187,22 @@
     <message>
         <location filename="historywidget.ui" line="31"/>
         <source>Fixed string</source>
-        <translation type="unfinished"></translation>
+        <translation>Chaîne modifiée</translation>
     </message>
     <message>
         <location filename="historywidget.ui" line="36"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>Joker</translation>
     </message>
     <message>
         <location filename="historywidget.ui" line="41"/>
         <source>Regexp</source>
-        <translation type="unfinished"></translation>
+        <translation>Expression régulière</translation>
     </message>
     <message>
         <location filename="historywidget.ui" line="49"/>
         <source>Case sensitive</source>
-        <translation type="unfinished"></translation>
+        <translation>Sensible à la casse</translation>
     </message>
 </context>
 <context>
@@ -218,17 +218,17 @@
     <message>
         <location filename="bookmarkswidget.cpp" line="136"/>
         <source>Change URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;URL</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.cpp" line="137"/>
         <source>Enter new URL for&lt;br /&gt;%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrer nouvel URL pour&lt;br /&gt;%1</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.cpp" line="149"/>
         <source>URL of a bookmark can&apos;t be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;URL d&apos;un marque-page ne peut pas être vide.</translation>
     </message>
 </context>
 <context>
@@ -236,37 +236,37 @@
     <message>
         <location filename="browserwidget.cpp" line="85"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Marque-pages</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="86"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historique</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="132"/>
         <source>Reload periodically</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger périodiquement</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="136"/>
         <source>Notify when finished loading</source>
-        <translation type="unfinished"></translation>
+        <translation>Notifier lorsque le chargement est terminé</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="143"/>
         <source>Bookmark...</source>
-        <translation type="unfinished"></translation>
+        <translation>Marque-page...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="148"/>
         <source>Find...</source>
-        <translation type="unfinished"></translation>
+        <translation>Trouver...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="153"/>
         <source>Print...</source>
-        <translation>Aperçu...</translation>
+        <translation>Imprimer...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="158"/>
@@ -286,12 +286,12 @@
     <message>
         <location filename="browserwidget.cpp" line="173"/>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom avant</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="177"/>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom arrière</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="181"/>
@@ -306,7 +306,7 @@
     <message>
         <location filename="browserwidget.cpp" line="188"/>
         <source>Ctrl+h</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+h</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="190"/>
@@ -316,12 +316,12 @@
     <message>
         <location filename="browserwidget.cpp" line="193"/>
         <source>Ctrl+b</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+b</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="238"/>
         <source>Change encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Changer l&apos;encodage</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="248"/>
@@ -356,7 +356,7 @@
     <message>
         <location filename="browserwidget.cpp" line="657"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="660"/>
@@ -391,12 +391,12 @@
     <message>
         <location filename="browserwidget.cpp" line="757"/>
         <source>Reloading once in %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechargement simple dans %1</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="922"/>
         <source>Save screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer la copie d&apos;écran</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="937"/>
@@ -411,27 +411,27 @@
     <message>
         <location filename="browserwidget.cpp" line="1247"/>
         <source>Page load finished: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement de la page terminé : %1</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1251"/>
         <source>Page load failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec du chargement de la page : %1</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1258"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1281"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Par défaut</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1330"/>
         <source>No title</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de titre</translation>
     </message>
 </context>
 <context>
@@ -447,7 +447,7 @@
     <message>
         <location filename="core.cpp" line="152"/>
         <source>Poshuku: general storage initialization error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poshuku : erreur générale d&apos;initialisation du stockage.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="826"/>
@@ -482,78 +482,78 @@
         <location filename="customwebpage.cpp" line="138"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
         <comment>{host} would be substituded with site&apos;s host name.</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; si le site &lt;strong&gt;{host}&lt;/strong&gt; ne fonctionne pas pour vous seulement;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="141"/>
         <source>try again later</source>
-        <translation type="unfinished"></translation>
+        <translation>Réessayez ultérieurement</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="142"/>
         <source>contact remote server&apos;s administrator (typically at &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>contactez l&apos;administrateur du serveur distant (généralement à &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="144"/>
         <source>contact your system/network administrator, especially if you can&apos;t load any single page</source>
-        <translation type="unfinished"></translation>
+        <translation>contactez votre administrateur réseau/système, spécialement si vous ne pouvez pas charger la moindre page</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="146"/>
         <source>check your proxy settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifiez les paramètres de votre proxy</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="157"/>
         <location filename="customwebpage.cpp" line="192"/>
         <source>check if the URL is written correctly;</source>
-        <translation type="unfinished"></translation>
+        <translation>vérifiez que l&apos;URL est correctement écrit ;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="158"/>
         <source>try changing your DNS servers;</source>
-        <translation type="unfinished"></translation>
+        <translation>Essayez de changer vos serveurs DNS ;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="159"/>
         <source>make sure that LeechCraft is allowed to access the Internet and particularly web sites;</source>
-        <translation type="unfinished"></translation>
+        <translation>Assurez-vous que LeechCraft est autorisé à accéder à l&apos;Internet et plus spécialement aux sites web;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="164"/>
         <source>check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifiez si certains téléchargements consomment trop de bande passante; essayez de limiter leur vitesse ou leur nombre de connexions;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="169"/>
         <source>try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>essayez encore.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="171"/>
         <source>make sure that remote server is really what it claims to be;</source>
-        <translation type="unfinished"></translation>
+        <translation>Assuez-vous que le serveur distant est bien ce qu&apos;il déclare être ;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="193"/>
         <source>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and find the required page from there.</source>
-        <translation type="unfinished"></translation>
+        <translation>Allez sur la &lt;a href=&quot;{schema}://{host}/&quot;&gt;page principale&lt;/a&gt; du site web et trouvez la page requise à partir de là.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="195"/>
         <source>check the login and password you entered and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifiez votre identifiant et votre mot de passe puis essayez encore</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="199"/>
         <source>check if the URL is written correctly, particularly, the part before the &apos;://&apos;;</source>
-        <translation type="unfinished"></translation>
+        <translation>vérifiez que l&apos;URL soit écrit correctement, particulièrement la partie avant &apos;://&apos; ;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="200"/>
         <source>try installing plugins that are known to support this protocol;</source>
-        <translation type="unfinished"></translation>
+        <translation>essayez d&apos;installer des greffons connus pour prendre en charge ce protocole ;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="487"/>
@@ -573,12 +573,12 @@
     <message>
         <location filename="customwebpage.cpp" line="499"/>
         <source>The page you tried to access cannot be loaded now.</source>
-        <translation type="unfinished"></translation>
+        <translation>La page à laquelle vous tentez d&apos;accéder ne peut pour le moment pas être chargée.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="506"/>
         <source>Try doing the following:</source>
-        <translation type="unfinished"></translation>
+        <translation>Essayez ce qui suit :</translation>
     </message>
 </context>
 <context>
@@ -587,37 +587,37 @@
         <location filename="customwebview.cpp" line="174"/>
         <location filename="customwebview.cpp" line="183"/>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargement...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="277"/>
         <source>Subscribe</source>
-        <translation type="unfinished"></translation>
+        <translation>Souscrivez</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="285"/>
         <source>Open &amp;here</source>
-        <translation>Ouvrir &amp;ici</translation>
+        <translation>Ouvrir ici &amp;here</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="287"/>
         <source>Open in new &amp;tab</source>
-        <translation>Ouvrir dans un nouvel &amp;onglet</translation>
+        <translation>Ouvrir dans un nouvel onglet &amp;tab</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="290"/>
         <source>&amp;Save link...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lien de &amp;sauvegarde...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="296"/>
         <source>&amp;Bookmark link...</source>
-        <translation type="unfinished"></translation>
+        <translation>lien de &amp;Favoris...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="302"/>
         <source>&amp;Copy link</source>
-        <translation type="unfinished"></translation>
+        <translation>lien &amp;Copy</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="315"/>
@@ -647,63 +647,63 @@
     <message>
         <location filename="customwebview.cpp" line="346"/>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="440"/>
         <source>Installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Greffons installés</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="441"/>
         <source>No plugins installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun greffon installé</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="442"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom du fichier</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="443"/>
         <source>MIME type</source>
-        <translation type="unfinished"></translation>
+        <translation>type MIME</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="444"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="445"/>
         <source>Suffixes</source>
-        <translation type="unfinished"></translation>
+        <translation>Suffixes</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="446"/>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Activé</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="447"/>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>Non</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="448"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Oui</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="458"/>
         <location filename="customwebview.cpp" line="460"/>
         <source>Welcome to LeechCraft!</source>
-        <translation type="unfinished"></translation>
+        <translation>Bienvenue dans LeechCraft !</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="462"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bienvenue dans LeechCraft, le client internet intégré.&lt;br /&gt;D&apos;avantage d&apos;informations sont disponibles sur le &lt;a href=&apos;http://leechcraft.org&apos;&gt;site du projet&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -711,52 +711,52 @@
     <message>
         <location filename="favoriteschecker.cpp" line="37"/>
         <source>Checking Favorites...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérification des favoris...</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="38"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="52"/>
         <source>Already checking links, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérification des liens déjà en cours, veuillez patienter...</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="104"/>
         <source>%1 favorites are %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 favoris sont %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="110"/>
         <source>%1 favorites are %2.&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 favoris sont %2.&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="177"/>
         <source>HTTP %1</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="180"/>
         <source>&lt;br /&gt;Length: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;Longueur: %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="183"/>
         <source>&lt;br /&gt;Last-modified: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;Dernière modification: %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="189"/>
         <source>&lt;br /&gt;Redirects to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;Redirige vers %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="199"/>
         <source>%1 favorites total.&lt;br /&gt;%2 favorites are accessible.&lt;br /&gt;%3%4 are not correctly returned by the remote server.&lt;br /&gt;%5</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 favoris au total.&lt;br /&gt;%2 favoris sont accessibles.&lt;br /&gt;%3%4 ne sont pas correctement renvoyés par le serveur distant.&lt;br /&gt;%5</translation>
     </message>
 </context>
 <context>
@@ -764,17 +764,17 @@
     <message>
         <location filename="favoritesmodel.cpp" line="44"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="favoritesmodel.cpp" line="45"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="favoritesmodel.cpp" line="46"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquettes</translation>
     </message>
     <message>
         <location filename="favoritesmodel.cpp" line="189"/>
@@ -787,17 +787,17 @@
     <message>
         <location filename="historymodel.cpp" line="101"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="102"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Date</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="103"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
 </context>
 <context>
@@ -828,7 +828,7 @@
     <message>
         <location filename="poshuku.cpp" line="137"/>
         <source>Poshuku failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poshuku n&apos;a pas réussi à s&apos;initialiser correctement. vérifiez les journaux et contactez les développeurs. Vérifiez au minimum les paramètres de stockage et redémarrez LeechCraft.</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="112"/>
@@ -843,7 +843,7 @@
     <message>
         <location filename="poshuku.cpp" line="120"/>
         <source>Check favorites...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier les favoris...</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="124"/>
@@ -853,7 +853,7 @@
     <message>
         <location filename="poshuku.cpp" line="202"/>
         <source>Poshuku Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigateur Poshuku</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="207"/>
@@ -863,7 +863,7 @@
     <message>
         <location filename="poshuku.cpp" line="493"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez noter que les &apos;Extras Développeurs&apos; ne fonctionneront correctement que pour les pages chargées après qu&apos;ils aient été activés.</translation>
     </message>
 </context>
 <context>
@@ -879,7 +879,7 @@
     <message>
         <location filename="searchtext.cpp" line="34"/>
         <source>Search %1 with:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher %1 avec :</translation>
     </message>
 </context>
 <context>
@@ -889,17 +889,17 @@
         <location filename="passwordremember.ui" line="23"/>
         <source>Remember forms data</source>
         <oldsource>Password remember</oldsource>
-        <translation type="unfinished">Enregistrement des mots de passe</translation>
+        <translation>Enregistrement des mots de passe</translation>
     </message>
     <message>
         <location filename="passwordremember.ui" line="30"/>
         <source>Not now</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas maintenant</translation>
     </message>
     <message>
         <location filename="passwordremember.ui" line="37"/>
         <source>Never</source>
-        <translation type="unfinished"></translation>
+        <translation>jamais</translation>
     </message>
 </context>
 <context>
@@ -907,12 +907,12 @@
     <message>
         <location filename="historymodel.cpp" line="82"/>
         <source>Today</source>
-        <translation type="unfinished"></translation>
+        <translation>Aujourd&apos;hui</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="84"/>
         <source>Yesterday</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="86"/>
@@ -922,25 +922,25 @@
     <message>
         <location filename="historymodel.cpp" line="88"/>
         <source>Last week</source>
-        <translation type="unfinished"></translation>
+        <translation>La semaine dernière</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="90"/>
         <source>Last month</source>
-        <translation type="unfinished"></translation>
+        <translation>Le mois dernier</translation>
     </message>
     <message numerus="yes">
         <location filename="historymodel.cpp" line="92"/>
         <source>Last %n month(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Dernier(s) %n mois</numerusform>
+            <numerusform>Dernier(s) %n mois</numerusform>
         </translation>
     </message>
     <message>
         <location filename="xbelparser.cpp" line="38"/>
         <source>XML parse error&lt;blockquote&gt;%1&lt;/blockquote&gt;at %2:%3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de parsing XML&lt;blockquote&gt;%1&lt;/blockquote&gt;à %2:%3.</translation>
     </message>
     <message>
         <location filename="xbelparser.cpp" line="46"/>
@@ -958,17 +958,17 @@
     <message>
         <location filename="reloadintervalselector.ui" line="14"/>
         <source>Select reload interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez l&apos;intervalle de re-chargement</translation>
     </message>
     <message>
         <location filename="reloadintervalselector.ui" line="22"/>
         <source>Reload every:</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalle de re-chargement :</translation>
     </message>
     <message>
         <location filename="reloadintervalselector.ui" line="29"/>
         <source>hh:mm:ss</source>
-        <translation type="unfinished"></translation>
+        <translation>hh:mm:ss</translation>
     </message>
 </context>
 <context>
@@ -976,27 +976,27 @@
     <message>
         <location filename="restoresessiondialog.ui" line="13"/>
         <source>Restore session</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaurer la session</translation>
     </message>
     <message>
         <location filename="restoresessiondialog.ui" line="33"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre</translation>
     </message>
     <message>
         <location filename="restoresessiondialog.ui" line="38"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="restoresessiondialog.ui" line="61"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout</translation>
     </message>
     <message>
         <location filename="restoresessiondialog.ui" line="68"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun</translation>
     </message>
 </context>
 <context>
@@ -1009,17 +1009,17 @@
     <message>
         <location filename="screenshotsavedialog.ui" line="28"/>
         <source>Format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Format :</translation>
     </message>
     <message>
         <location filename="screenshotsavedialog.ui" line="38"/>
         <source>Quality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualité :</translation>
     </message>
     <message>
         <location filename="screenshotsavedialog.ui" line="80"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Aperçu</translation>
     </message>
 </context>
 <context>
@@ -1027,17 +1027,17 @@
     <message>
         <location filename="searchtext.ui" line="14"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher</translation>
     </message>
     <message>
         <location filename="searchtext.ui" line="47"/>
         <source>Mark all</source>
-        <translation type="unfinished"></translation>
+        <translation>Marquer tous</translation>
     </message>
     <message>
         <location filename="searchtext.ui" line="54"/>
         <source>Unmark all</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout désélectionner</translation>
     </message>
 </context>
 <context>
