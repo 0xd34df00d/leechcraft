@@ -6,57 +6,57 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="14"/>
         <source>Account configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфігурація акаунта</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="24"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Базове</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="36"/>
         <source>JID:</source>
-        <translation type="unfinished"></translation>
+        <translation>JID:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="50"/>
         <source>Nick:</source>
-        <translation type="unfinished"></translation>
+        <translation>Нік:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="64"/>
         <source>Resource:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ресурс:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="71"/>
         <source>Azoth</source>
-        <translation type="unfinished"></translation>
+        <translation>Azoth</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="78"/>
         <source>Priority:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пріоритет:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="99"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Підключення</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="105"/>
         <source>Custom address</source>
-        <translation type="unfinished"></translation>
+        <translation>Особлива адреса</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="132"/>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Хост:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="142"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Порт:</translation>
     </message>
 </context>
 <context>
@@ -64,17 +64,17 @@
     <message>
         <location filename="joingroupchatwidget.ui" line="20"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер:</translation>
     </message>
     <message>
         <location filename="joingroupchatwidget.ui" line="34"/>
         <source>Room:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кімната:</translation>
     </message>
     <message>
         <location filename="joingroupchatwidget.ui" line="48"/>
         <source>NIckname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Нік:</translation>
     </message>
 </context>
 <context>
@@ -82,132 +82,132 @@
     <message>
         <location filename="clientconnection.cpp" line="205"/>
         <source>This room is already joined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви вже увійшли в цю кімнату</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="393"/>
         <source>Socket error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка сокету.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="396"/>
         <source>Keep-alive error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка підтримки зв&apos;язку.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="399"/>
         <source>Error while connecting: </source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка при підключенні:</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="602"/>
         <source>Error from %1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка від %1:</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="607"/>
         <source>Error text: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст помилки: %1.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="621"/>
         <source>Bad request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Поганий запит.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="623"/>
         <source>Conflict (possibly, resource conflict).</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфлікт (напевне, конфлікт ресурсів).</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="625"/>
         <source>Feature not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Можливість не реалізована.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="627"/>
         <source>Forbidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Заборонено.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="630"/>
         <source>Internal server error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Внутрішня помилка сервера.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="632"/>
         <source>Item not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Запис не знайдено.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="634"/>
         <source>JID is malformed.</source>
-        <translation type="unfinished"></translation>
+        <translation>JID неправильний.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="636"/>
         <source>Data is not acceptable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимі дані.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="638"/>
         <source>Action is not allowed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Дія не дозволяється.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="641"/>
         <source>Not authorized.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не авторизований.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="643"/>
         <source>Payment required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Потрібна оплата.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="645"/>
         <source>Recipient unavailable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отримувач відсутній.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="647"/>
         <source>Got redirect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отримано перенаправлення.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="649"/>
         <source>Registration required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Потрібна регістрація.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="651"/>
         <source>Remote server not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер не знайдено.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="653"/>
         <source>Timeout contacting remote server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевищено час очікування серверу.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="655"/>
         <source>Error due to resource constraint.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка через перевищення обмежень ресурсів.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="657"/>
         <source>Service is unavailable at the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>На даний момент сервіс недоступний.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="659"/>
         <source>Subscription is required to perform this action.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для виконання цієї дії потрібна підписка.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="663"/>
         <source>Other error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Інша помилка.</translation>
     </message>
 </context>
 <context>
@@ -215,41 +215,45 @@
     <message>
         <location filename="entrybase.cpp" line="107"/>
         <source>Can&apos;t view info while offline</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можна переглядати інформацію з офлайну</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="216"/>
         <source>Name: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я: %1</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="221"/>
         <source>Nickname: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Нік: %1
+</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="224"/>
         <source>URL: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>URL: %1
+</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="227"/>
         <source>Birthday: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>День народження: %1
+</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="230"/>
         <source>Email: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Email: %1
+</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="235"/>
         <source>Photo:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фото:</translation>
     </message>
 </context>
 <context>
@@ -257,7 +261,7 @@
     <message>
         <location filename="glooxaccount.cpp" line="379"/>
         <source>Enter password for %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть пароль для %1:</translation>
     </message>
 </context>
 <context>
@@ -265,7 +269,7 @@
     <message>
         <location filename="glooxprotocol.cpp" line="99"/>
         <source>Enter new account name</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть нове ім&apos;я акаунту</translation>
     </message>
 </context>
 <context>
@@ -273,7 +277,7 @@
     <message>
         <location filename="xoox.cpp" line="61"/>
         <source>XMPP (Jabber) protocol support via Gloox library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Підтримка протоколу XMPP (Jabber) через бібліотеку Gloox</translation>
     </message>
 </context>
 <context>
@@ -281,7 +285,7 @@
     <message>
         <location filename="roomclentry.cpp" line="85"/>
         <source>Multiuser chatrooms</source>
-        <translation type="unfinished"></translation>
+        <translation>Багатокористувацькі чати</translation>
     </message>
 </context>
 <context>
@@ -289,22 +293,22 @@
     <message>
         <location filename="roomhandler.cpp" line="98"/>
         <source>%1 has left the room</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 покинув(-ла) кімнату</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="114"/>
         <source>%1 joined the room</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 зайшов(-ла) в кімнату</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="131"/>
         <source>%1 changed status to %2 (%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 змінив статус на %2 (%3)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="258"/>
         <source>%1 changed subject to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 змінив тему на %2</translation>
     </message>
 </context>
 <context>
@@ -312,7 +316,7 @@
     <message>
         <location filename="roomparticipantentry.cpp" line="82"/>
         <source>%1 participants</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 учасників</translation>
     </message>
 </context>
 <context>
@@ -320,7 +324,7 @@
     <message>
         <location filename="transferjob.cpp" line="75"/>
         <source>could not open incoming file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>не можна відкрити отриманий файл %1: %2</translation>
     </message>
 </context>
 <context>
@@ -328,12 +332,12 @@
     <message>
         <location filename="vcarddialog.cpp" line="37"/>
         <source>VCard for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>VCard для %1</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="61"/>
         <source>No photo</source>
-        <translation type="unfinished"></translation>
+        <translation>Фото відсутнє</translation>
     </message>
 </context>
 <context>
@@ -341,52 +345,52 @@
     <message>
         <location filename="vcarddialog.ui" line="24"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальне</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="35"/>
         <source>Real name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Справжнє ім&apos;я:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="45"/>
         <source>Nick:</source>
-        <translation type="unfinished"></translation>
+        <translation>Нік:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="55"/>
         <source>Birthday:</source>
-        <translation type="unfinished"></translation>
+        <translation>День народження:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="62"/>
         <source>Phone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Телефон:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="72"/>
         <source>E-mail:</source>
-        <translation type="unfinished"></translation>
+        <translation>E-mail:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="82"/>
         <source>dd MMMM yyyy</source>
-        <translation type="unfinished"></translation>
+        <translation>dd MMMM yyyy</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="92"/>
         <source>URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>URL:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="125"/>
         <source>No photo</source>
-        <translation type="unfinished"></translation>
+        <translation>Фото відсутнє</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="148"/>
         <source>Work</source>
-        <translation type="unfinished"></translation>
+        <translation>Робота</translation>
     </message>
 </context>
 </TS>

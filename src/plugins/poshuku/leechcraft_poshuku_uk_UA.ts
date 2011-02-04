@@ -299,22 +299,22 @@
     <message>
         <location filename="browserwidget.cpp" line="185"/>
         <source>Open history</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити історію</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="188"/>
         <source>Ctrl+h</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+h</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="190"/>
         <source>Open bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити закладки</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="193"/>
         <source>Ctrl+b</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+b</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="238"/>
@@ -354,7 +354,7 @@
     <message>
         <location filename="browserwidget.cpp" line="657"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1258"/>
@@ -813,22 +813,22 @@
     <message>
         <location filename="importentityhandler.cpp" line="43"/>
         <source>Importing history...</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортуємо історію...</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="44"/>
         <source>Abort history import</source>
-        <translation type="unfinished"></translation>
+        <translation>Відмінити імпорт історії</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="70"/>
         <source>Importing bookmarks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортуємо закладки...</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="71"/>
         <source>Abort bookmarks import</source>
-        <translation type="unfinished"></translation>
+        <translation>Відмінити імпорт закладок</translation>
     </message>
 </context>
 <context>
@@ -856,7 +856,7 @@
     <message>
         <location filename="poshuku.cpp" line="124"/>
         <source>Reload all pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезавантажити всі сторінки</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="202"/>
@@ -897,7 +897,7 @@
         <location filename="passwordremember.ui" line="23"/>
         <source>Remember forms data</source>
         <oldsource>Password remember</oldsource>
-        <translation type="unfinished">Збереження паролів</translation>
+        <translation>Запам&apos;ятати дані форм</translation>
     </message>
     <message>
         <location filename="passwordremember.ui" line="30"/>

@@ -208,7 +208,7 @@
     <message>
         <location filename="editorpage.cpp" line="641"/>
         <source>Could not open file %1 for writing.</source>
-        <translation>Неможливо відкрити файл %1 для запису</translation>
+        <translation>Неможливо відкрити файл %1 для запису.</translation>
     </message>
 </context>
 <context>

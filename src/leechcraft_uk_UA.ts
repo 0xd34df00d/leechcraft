@@ -142,11 +142,11 @@
     <name>DataViewWidget</name>
     <message>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати...</translation>
     </message>
     <message>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити...</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -692,7 +692,7 @@
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис</translation>
     </message>
 </context>
 <context>

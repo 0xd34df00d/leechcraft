@@ -25,22 +25,22 @@
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.ui" line="24"/>
         <source>Select profile to import</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть профіль для імпорту</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.ui" line="38"/>
         <source>Import history</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати історію</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.ui" line="45"/>
         <source>Import bookmarks </source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати закладки</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.ui" line="52"/>
         <source>Import rss</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортувати RSS</translation>
     </message>
 </context>
 <context>
@@ -117,23 +117,23 @@
     <message>
         <location filename="firefoximporter/firefoximportpage.cpp" line="39"/>
         <source>Firefox&apos;s data import</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпорт даних Firefox</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoximportpage.cpp" line="40"/>
         <location filename="firefoximporter/firefoximportpage.cpp" line="84"/>
         <source>Select Firefox&apos;s INI file</source>
-        <translation type="unfinished"></translation>
+        <translation>Оберіть INI-файл Firefox</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoximportpage.cpp" line="86"/>
         <source>INI files (*.ini);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли INI (*.ini);;Усі файли (*.*)</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoximportpage.cpp" line="93"/>
         <source>The file you&apos;ve selected is not a valid INI file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обраний файл не є коректним INI-файлом.</translation>
     </message>
 </context>
 <context>
@@ -141,27 +141,27 @@
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="85"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>За замовчуванням</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="112"/>
         <source>Please close Firefox before importing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, перед імпортом закрийте Firefox.</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="323"/>
         <source>OPML file for importing RSS cannot be created: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо створити OPML файл для іморту RSS: %1</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="344"/>
         <source>Firefox Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпорт Firefox</translation>
     </message>
     <message>
         <location filename="firefoximporter/firefoxprofileselectpage.cpp" line="345"/>
         <source>Could not open Firefox database: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо відкрити базу даних Firefox: %1.</translation>
     </message>
 </context>
 <context>

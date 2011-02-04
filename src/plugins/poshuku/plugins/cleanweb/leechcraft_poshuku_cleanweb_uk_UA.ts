@@ -55,7 +55,7 @@
     <message>
         <location filename="core.cpp" line="396"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
-        <translation type="unfinished">Заблоковано Poshuku CleanWeb: %1</translation>
+        <translation>Заблоковано Poshuku CleanWeb: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="442"/>

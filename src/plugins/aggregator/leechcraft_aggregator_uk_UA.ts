@@ -493,19 +493,19 @@
     <message numerus="yes">
         <location filename="aggregator.cpp" line="760"/>
         <source>%n unread message(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n прочитане повідомлення</numerusform>
+            <numerusform>%n прочитаних повідомлень</numerusform>
+            <numerusform>%n прочитаних повідомлень</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="aggregator.cpp" line="761"/>
         <source>in %n channel(s).</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>у %n каналі</numerusform>
+            <numerusform>у %n каналах</numerusform>
+            <numerusform>у %n каналах</numerusform>
         </translation>
     </message>
 </context>
@@ -798,7 +798,7 @@
     <message>
         <location filename="export2fb2dialog.cpp" line="265"/>
         <source>FB2 export complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт з FB2 завершено.</translation>
     </message>
     <message numerus="yes">
         <location filename="export2fb2dialog.cpp" line="111"/>
@@ -1054,12 +1054,12 @@
     <message>
         <location filename="itemswidget.cpp" line="471"/>
         <source>Mark item as read</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначити як прочитане</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="479"/>
         <source>Open in new tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити у новій вкладці</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="593"/>
@@ -1579,7 +1579,7 @@
     <message>
         <location filename="dummy.cpp" line="24"/>
         <source>Use colors from the palette for read/unread items</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати колькори з палітри для прочитаних/непрочитаних</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>

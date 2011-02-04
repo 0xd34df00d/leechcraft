@@ -63,37 +63,37 @@
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
         <source>Sync settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування синхронізації</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Логін:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>З&apos;єднання</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Хост:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Порт:</translation>
     </message>
 </context>
 </TS>
