@@ -25,6 +25,9 @@
 			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
 				<label value="Jump to new tab on open" />
 			</item>
+			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
+				<label value="Default file transfers save path:" />
+			</item>
 		</tab>
 		<tab>
 			<label value="Chat windows" />
