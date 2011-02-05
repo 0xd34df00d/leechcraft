@@ -130,6 +130,8 @@ namespace Azoth
 			AppendMessage (msg);
 		}
 
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
+
 		handleVariantsChanged (e->Variants ());
 
 		const QString& accName =
