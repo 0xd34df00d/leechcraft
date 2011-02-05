@@ -119,8 +119,7 @@ namespace
 
 		void operator() (const QString& line)
 		{
-			if (line.size () &&
-					line.at (0) == '!')
+			if (line.startsWith ('!'))
 				return;
 
 			QString actualLine;
@@ -128,12 +127,13 @@ namespace
 			bool cs = false;
 			if (line.indexOf ('$') != -1)
 			{
-				QStringList splitted = line.split ('$',
+				const QStringList& splitted = line.split ('$',
 						QString::SkipEmptyParts);
 
 				if (splitted.size () != 2)
 				{
 					qWarning () << Q_FUNC_INFO
+						<< "incorrect usage of $-pattern:"
 						<< splitted.size ()
 						<< line;
 					return;
@@ -143,21 +143,34 @@ namespace
 				QStringList options = splitted.at (1).split (',',
 						QString::SkipEmptyParts);
 
-				if (options.contains ("match-case"))
+				if (options.removeAll ("match-case"))
 				{
 					f.Case_ = Qt::CaseSensitive;
 					cs = true;
 				}
 
-				Q_FOREACH (QString option, options)
+				Q_FOREACH (const QString& option, options)
 					if (option.startsWith ("domain="))
 					{
-						QString domain = option.remove (0, 7);
+						QString domain = option;
+						domain.remove (0, 7);
 						if (domain.startsWith ('~'))
 							f.NotDomains_ << domain.remove (0, 1);
 						else
 							f.Domains_ << domain;
+						options.removeAll (option);
 					}
+
+				if (options.size ())
+				{
+					/*
+					qWarning () << Q_FUNC_INFO
+							<< "unsupported options for filter"
+							<< actualLine
+							<< options;
+							*/
+					return;
+				}
 			}
 			else
 				actualLine = line;
