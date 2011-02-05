@@ -100,7 +100,6 @@ namespace Azoth
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);
 		void handleViewLinkClicked (const QUrl&);
-		void scrollToEnd ();
 		void handleHistoryUp ();
 		void handleHistoryDown ();
 	private:

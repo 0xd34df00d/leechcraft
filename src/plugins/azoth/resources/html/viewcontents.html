@@ -9,7 +9,22 @@
 			.statusmsg { color: green; }
 			.highlightchatmsg { color: red; }
 		</style>
+		<script language="javascript">
+			function ScrollToBottom() {
+				if (window.ShouldScroll)
+					window.scroll(0, document.height - window.innerHeight);
+			}
+			function TestScroll() {
+				window.ShouldScroll = document.height <= (window.innerHeight + window.pageYOffset);
+			}
+			function InstallEventListeners() {
+				window.ShouldScroll = true;
+				document.body.addEventListener ("DOMSubtreeModified", ScrollToBottom);
+				window.onresize = function() { setTimeout(ScrollToBottom, 0); };
+				window.addEventListener ("scroll", TestScroll);
+			}
+		</script>
 	</head>
-	<body>
+	<body onLoad="InstallEventListeners()">
 	</body>
 </html>

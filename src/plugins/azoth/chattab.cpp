@@ -456,13 +456,6 @@ namespace Azoth
 		}
 	}
 
-	void ChatTab::scrollToEnd ()
-	{
-		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
-		int height = frame->contentsSize ().height ();
-		frame->scroll (0, height);
-	}
-
 	void ChatTab::handleHistoryUp ()
 	{
 		if (CurrentHistoryPosition_ == MsgHistory_.size () - 1)
@@ -566,8 +559,6 @@ namespace Azoth
 			return;
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
-		bool shouldScrollFurther = (frame->scrollBarMaximum (Qt::Vertical) ==
-						frame->scrollBarValue (Qt::Vertical));
 
 		QString body = FormatBody (msg->GetBody (), msg);
 
@@ -663,11 +654,6 @@ namespace Azoth
 		elem.appendInside (QString ("<div class='%1'>%2</div>")
 					.arg (divClass)
 					.arg (string));
-
-		if (shouldScrollFurther)
-			QTimer::singleShot (50,
-					this,
-					SLOT (scrollToEnd ()));
 	}
 
 	QString ChatTab::FormatDate (QDateTime dt, IMessage *msg)
