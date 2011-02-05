@@ -46,6 +46,7 @@
 #include "joinconferencedialog.h"
 #include "notificationactionhandler.h"
 #include "groupeditordialog.h"
+#include "transferjobmanager.h"
 
 namespace LeechCraft
 {
@@ -58,6 +59,7 @@ namespace Azoth
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
+	, XferJobManager_ (new TransferJobManager)
 	{
 		connect (ChatTabsManager_,
 				SIGNAL (clearUnreadMsgCount (QObject*)),
@@ -241,12 +243,17 @@ namespace Azoth
 		ChatTabsManager_->OpenChat (contactIndex);
 	}
 
+	void Core::HandleTransferJob (QObject *job)
+	{
+		XferJobManager_->HandleJob (job);
+	}
+
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
 			const IMessage *msg)
 	{
 		return !ChatTabsManager_->IsActiveChat (entry) &&
 				(msg->GetMessageType () == IMessage::MTChatMessage ||
-					msg->GetMessageType () == IMessage::MTMUCMessage);
+				 msg->GetMessageType () == IMessage::MTMUCMessage);
 	}
 
 	bool Core::IsHighlightMessage (const IMessage *msg)

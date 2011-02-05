@@ -341,8 +341,9 @@ namespace Azoth
 		if (filename.isEmpty ())
 			return;
 
-		XferManager_->SendFile (EntryID_,
+		QObject *job = XferManager_->SendFile (EntryID_,
 				Ui_.VariantBox_->currentText (), filename);
+		Core::Instance ().HandleTransferJob (job);
 	}
 
 	void ChatTab::handleEntryMessage (QObject *msgObj)

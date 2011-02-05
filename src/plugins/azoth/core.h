@@ -37,7 +37,6 @@ namespace Util
 {
 	class ResourceLoader;
 }
-
 namespace Azoth
 {
 	struct EntryStatus;
@@ -48,6 +47,7 @@ namespace Azoth
 	class ChatTabsManager;
 	class PluginManager;
 	class ProxyObject;
+	class TransferJobManager;
 
 	class Core : public QObject
 	{
@@ -86,6 +86,8 @@ namespace Azoth
 
 		boost::shared_ptr<PluginManager> PluginManager_;
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
+
+		boost::shared_ptr<TransferJobManager> XferJobManager_;
 
 		Core ();
 	public:
@@ -164,6 +166,16 @@ namespace Azoth
 		 * account or category, this function does nothing.
 		 */
 		void OpenChat (const QModelIndex& index);
+
+		/** Handles the given transfer job, taking ownership of it and
+		 * handling various events from it.
+		 *
+		 * @param[in] job The transfer job to handle, should implement
+		 * ITransferJob.
+		 *
+		 * @sa ITransferJob
+		 */
+		void HandleTransferJob (QObject *job);
 
 		/** Whether the given from the given entry should be counted as
 		 * unread message. For example, messages in currently visible
