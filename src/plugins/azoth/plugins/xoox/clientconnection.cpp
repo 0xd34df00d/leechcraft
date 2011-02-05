@@ -25,6 +25,7 @@
 #include <QXmppRosterManager.h>
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
+#include <QXmppTransferManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -55,6 +56,7 @@ namespace Xoox
 	, OurJID_ (jid)
 	, Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
+	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (0)
 	{
 		LastState_.State_ = SOffline;
@@ -64,6 +66,7 @@ namespace Xoox
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
 		Client_->addExtension (MUCManager_);
+		Client_->addExtension (XferManager_);
 
 		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
@@ -225,6 +228,11 @@ namespace Xoox
 	QXmppMucManager* ClientConnection::GetMUCManager () const
 	{
 		return MUCManager_;
+	}
+
+	QXmppTransferManager* ClientConnection::GetTransferManager () const
+	{
+		return XferManager_;
 	}
 
 	void ClientConnection::RequestInfo (const QString& jid) const

@@ -60,8 +60,8 @@ namespace Xoox
 		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
 						AccState_, this));
 
-		TransferManager_.reset (new TransferManager (&ClientConnection_->
-						GetClient ()->transferManager ()));
+		TransferManager_.reset (new TransferManager (ClientConnection_->
+						GetTransferManager ()));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
