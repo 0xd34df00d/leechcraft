@@ -20,10 +20,14 @@
 #include <boost/bind.hpp>
 #include <QUrl>
 #include <QStandardItemModel>
+#include <QDesktopServices>
+#include <QMessageBox>
+#include <QFileDialog>
 #include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
 #include "core.h"
 #include "notificationactionhandler.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -106,8 +110,57 @@ namespace Azoth
 				SLOT (handleXferProgress (qint64, qint64)));
 	}
 
-	void TransferJobManager::AcceptJob (QObject *jobObj)
+	QString TransferJobManager::CheckSavePath (QString path)
 	{
+		QFileInfo pathInfo (path);
+		if (!pathInfo.exists () ||
+			!pathInfo.isDir () ||
+			!pathInfo.isWritable ())
+		{
+			if (QMessageBox::warning (0,
+					"Azoth",
+					tr ("Default path for incoming files doesn't exist, is not a directory or is unwritable. "
+						"Would you like to adjust the path now? Refusing will abort the transfer."),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return QString ();
+
+			path = QFileDialog::getSaveFileName (0,
+					tr ("Select default path for incoming files"),
+					path);
+		}
+
+		return path;
+	}
+
+	void TransferJobManager::AcceptJob (QObject *jobObj, QString path)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "is not an ITransferJob";
+			return;
+		}
+
+		if (path.isEmpty ())
+		{
+			path = XmlSettingsManager::Instance ().property ("DefaultXferSavePath").toString ();
+			if (!QFileInfo (path).exists () &&
+					path.startsWith (QDir::homePath ()))
+				QDir dir = QDir::homePath ();
+
+			path = CheckSavePath (path);
+			if (path.isEmpty ())
+			{
+				DenyJob (jobObj);
+				return;
+			}
+		}
+
+		HandleJob (jobObj);
+
+		job->Accept (path);
 	}
 
 	void TransferJobManager::DenyJob (QObject *jobObj)
@@ -141,14 +194,15 @@ namespace Azoth
 		}
 
 		Entity e = Util::MakeNotification ("Azoth",
-				tr ("File %1 offered from %2.")
+				tr ("File %1 (%2) offered from %3.")
 					.arg (job->GetName ())
+					.arg (Util::MakePrettySize (job->GetSize ()))
 					.arg (GetContactName (job->GetSourceID ())),
 				PInfo_);
 		NotificationActionHandler *nh =
 				new NotificationActionHandler (e, this);
 		nh->AddFunction ("Accept",
-				boost::bind (&TransferJobManager::AcceptJob, this, jobObj));
+				boost::bind (&TransferJobManager::AcceptJob, this, jobObj, QString ()));
 		nh->AddFunction ("Deny",
 				boost::bind (&TransferJobManager::DenyJob, this, jobObj));
 		Core::Instance ().SendEntity (e);

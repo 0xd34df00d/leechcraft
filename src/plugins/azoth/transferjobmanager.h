@@ -50,9 +50,11 @@ namespace Azoth
 		void AddAccountManager (QObject*);
 
 		void HandleJob (QObject*);
-		void AcceptJob (QObject*);
+		void AcceptJob (QObject*, QString);
 		void DenyJob (QObject*);
 		QAbstractItemModel* GetSummaryModel () const;
+	private:
+		QString CheckSavePath (QString);
 	private slots:
 		void handleFileOffered (QObject*);
 		void handleXferError (TransferError, const QString&);
