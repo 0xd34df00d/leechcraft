@@ -31,8 +31,6 @@ namespace Xoox
 	: QObject (job)
 	, Job_ (job)
 	{
-		qDebug () << "TransferJob ctor"
-				<< Job_->state () << Job_->error ();
 		connect (Job_,
 				SIGNAL (progress (qint64, qint64)),
 				this,
@@ -75,16 +73,20 @@ namespace Xoox
 
 	void TransferJob::Accept (const QString& out)
 	{
-		QFile *file = new QFile (out);
+		const QString& filename = QFileInfo (out).isDir () ?
+				QDir (out).filePath (GetName ()) :
+				out;
+
+		QFile *file = new QFile (filename);
 		if (!file->open (QIODevice::WriteOnly))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "could not open file"
-					<< out
+					<< filename
 					<< file->errorString ();
 
 			const QString& msg = tr ("could not open incoming file %1: %2")
-					.arg (out)
+					.arg (filename)
 					.arg (file->errorString ());
 			emit errorAppeared (TEFileAccessError, msg);
 			return;
