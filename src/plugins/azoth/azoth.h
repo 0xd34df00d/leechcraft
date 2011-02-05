@@ -20,10 +20,12 @@
 #define PLUGINS_AZOTH_AZOTH_H
 #include <QObject>
 #include <QTranslator>
+#include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/imultitabs.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ijobholder.h>
 
 namespace LeechCraft
 {
@@ -32,13 +34,14 @@ namespace Azoth
 	class MainWidget;
 
 	class Plugin : public QObject
-					, public IInfo
-					, public IPluginReady
-					, public IMultiTabs
-					, public IHaveSettings
+				 , public IInfo
+				 , public IPluginReady
+				 , public IMultiTabs
+				 , public IHaveSettings
+				 , public IJobHolder
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IMultiTabs IHaveSettings)
+		Q_INTERFACES (IInfo IPluginReady IMultiTabs IHaveSettings IJobHolder)
 
 		MainWidget *MW_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -60,6 +63,8 @@ namespace Azoth
 		void AddPlugin (QObject*);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QAbstractItemModel* GetRepresentation () const;
 	public slots:
 		void newTabRequested ();
 	signals:

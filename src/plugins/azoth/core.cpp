@@ -248,6 +248,11 @@ namespace Azoth
 		XferJobManager_->HandleJob (job);
 	}
 
+	TransferJobManager* Core::GetTransferJobManager () const
+	{
+		return XferJobManager_.get ();
+	}
+
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
 			const IMessage *msg)
 	{

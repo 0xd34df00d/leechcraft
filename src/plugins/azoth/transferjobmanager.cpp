@@ -33,6 +33,17 @@ namespace Azoth
 	{
 	}
 
+	namespace
+	{
+		QString GetContactName (const QString& id)
+		{
+			QObject *entryObj = Core::Instance ().GetEntry (id);
+			return entryObj ?
+					qobject_cast<ICLEntry*> (entryObj)->GetHumanReadableID () :
+					id;
+		}
+	}
+
 	void TransferJobManager::HandleJob (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
@@ -44,6 +55,24 @@ namespace Azoth
 			return;
 		}
 
+		QList<QStandardItem*> items;
+
+		const QString& name = (job->GetDirection () == TDIn ?
+					tr ("Transferring %1 from %2") :
+					tr ("Transferring %1 to %2"))
+							.arg (job->GetName ())
+							.arg (GetContactName (job->GetSourceID ()));
+		items << new QStandardItem (name);
+		items << new QStandardItem (tr ("offered"));
+		items << new QStandardItem (tr ("%1 of %2 (%3%).")
+					.arg (Util::MakePrettySize (0))
+					.arg (Util::MakePrettySize (job->GetSize ()))
+					.arg (0));
+		Object2Status_ [jobObj] = items.at (1);
+		Object2Progress_ [jobObj] = items.at (2);
+
+		SummaryModel_->appendRow (items);
+
 		connect (jobObj,
 				SIGNAL (errorAppeared (TransferError, const QString&)),
 				this,
@@ -52,6 +81,10 @@ namespace Azoth
 				SIGNAL (stateChanged (TransferState)),
 				this,
 				SLOT (handleStateChanged (TransferState)));
+		connect (jobObj,
+				SIGNAL (transferProgress (qint64, qint64)),
+				this,
+				SLOT (handleXferProgress (qint64, qint64)));
 	}
 
 	QAbstractItemModel* TransferJobManager::GetSummaryModel () const
@@ -70,10 +103,7 @@ namespace Azoth
 			return;
 		}
 
-		QObject *entryObj = Core::Instance ().GetEntry (job->GetSourceID ());
-		const QString& other = entryObj ?
-				qobject_cast<ICLEntry*> (entryObj)->GetHumanReadableID () :
-				job->GetSourceID ();
+		const QString& other = GetContactName (job->GetSourceID ());
 
 		QString str;
 		if (job->GetDirection () == TDIn)
@@ -121,33 +151,43 @@ namespace Azoth
 			return;
 		}
 
-		QObject *entryObj = Core::Instance ().GetEntry (job->GetSourceID ());
-		const QString& name = entryObj ?
-				qobject_cast<ICLEntry*> (entryObj)->GetHumanReadableID () :
-				job->GetSourceID ();
+		const QString& name = GetContactName (job->GetSourceID ());
 		QString msg;
+		QString status;
 		switch (state)
 		{
 		case TSOffer:
 			msg = tr ("Transfer of file %1 with %2 has been offered.")
 					.arg (job->GetName ())
 					.arg (name);
+			status = tr ("offered");
 			break;
 		case TSStarting:
 			msg = tr ("Transfer of file %1 with %2 is being started...")
 					.arg (job->GetName ())
 					.arg (name);
+			status = tr ("starting");
 			break;
 		case TSTransfer:
 			msg = tr ("Transfer of file %1 with %2 is started.")
 					.arg (job->GetName ())
 					.arg (name);
+			status = tr ("transferring");
 			break;
 		case TSFinished:
 			msg = tr ("Transfer of file %1 with %2 is finished.")
 					.arg (job->GetName ())
 					.arg (name);
 			break;
+		}
+
+		if (state != TSFinished)
+			Object2Status_ [sender ()]->setText (status);
+		else
+		{
+			SummaryModel_->removeRow (Object2Status_ [sender ()]->row ());
+			Object2Status_.remove (sender ());
+			Object2Progress_.remove (sender ());
 		}
 
 		const Entity& e = Util::MakeNotification ("Azoth",
@@ -163,6 +203,17 @@ namespace Azoth
 					static_cast<TaskParameters> (IsDownloaded | FromUserInitiated | OnlyHandle));
 			Core::Instance ().SendEntity (e);
 		}
+	}
+
+	void TransferJobManager::handleXferProgress (qint64 done, qint64 total)
+	{
+		if (!Object2Progress_.contains (sender ()))
+			return;
+
+		Object2Progress_ [sender ()]->setText (tr ("%1 of %2 (%3%).")
+					.arg (Util::MakePrettySize (done))
+					.arg (Util::MakePrettySize (total))
+					.arg (done * 100 / total));
 	}
 }
 }

@@ -20,8 +20,10 @@
 #define PLUGINS_AZOTH_TRANSFERJOBMANAGER_H
 #include "interfaces/itransfermanager.h"
 #include <QObject>
+#include <QHash>
 
 class QStandardItemModel;
+class QStandardItem;
 class QAbstractItemModel;
 
 namespace LeechCraft
@@ -33,6 +35,15 @@ namespace Azoth
 		Q_OBJECT
 
 		QStandardItemModel *SummaryModel_;
+
+		enum ModelRoles
+		{
+			MRJobObject = Qt::UserRole + 1
+		};
+
+		typedef QHash<QObject*, QStandardItem*> ObjectDictionary_t;
+		ObjectDictionary_t Object2Status_;
+		ObjectDictionary_t Object2Progress_;
 	public:
 		TransferJobManager (QObject* = 0);
 
@@ -41,6 +52,7 @@ namespace Azoth
 	private slots:
 		void handleXferError (TransferError, const QString&);
 		void handleStateChanged (TransferState);
+		void handleXferProgress (qint64, qint64);
 	};
 }
 }

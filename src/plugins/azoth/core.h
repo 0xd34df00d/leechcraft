@@ -177,6 +177,8 @@ namespace Azoth
 		 */
 		void HandleTransferJob (QObject *job);
 
+		TransferJobManager* GetTransferJobManager () const;
+
 		/** Whether the given from the given entry should be counted as
 		 * unread message. For example, messages in currently visible
 		 * chat session or status messages shouldn't be counted as
