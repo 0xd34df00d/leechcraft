@@ -21,6 +21,8 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QApplication>
+#include <QDesktopServices>
+#include <QMap>
 #include "filepicker.h"
 
 using namespace LeechCraft;
@@ -49,8 +51,20 @@ FilePicker::FilePicker (FilePicker::Type type, QWidget *parent)
 			.width ("thisismaybeadefaultsettingstring,dont"));
 }
 
-void FilePicker::SetText (const QString& text)
+void FilePicker::SetText (QString text)
 {
+	QMap<QString, QDesktopServices::StandardLocation> str2loc;
+	str2loc ["DOCUMENTS"] = QDesktopServices::DocumentsLocation;
+	str2loc ["DESKTOP"] = QDesktopServices::DocumentsLocation;
+	str2loc ["MUSIC"] = QDesktopServices::DocumentsLocation;
+	str2loc ["MOVIES"] = QDesktopServices::DocumentsLocation;
+	Q_FOREACH (const QString& key, str2loc.keys ())
+		if (text.startsWith ("{" + key + "}"))
+		{
+			text.replace (0, key.length () + 2, QDesktopServices::storageLocation (str2loc [key]));
+			break;
+		}
+
 	LineEdit_->setText (text);
 }
 
