@@ -62,6 +62,17 @@ namespace Xoox
 		return Job_->fileInfo ().size ();
 	}
 
+	TransferDirection TransferJob::GetDirection () const
+	{
+		switch (Job_->direction ())
+		{
+		case QXmppTransferJob::OutgoingDirection:
+			return TDOut;
+		case QXmppTransferJob::IncomingDirection:
+			return TDIn;
+		}
+	}
+
 	void TransferJob::Accept (const QString& out)
 	{
 		QFile *file = new QFile (out);

@@ -42,6 +42,7 @@ namespace Xoox
 		QString GetSourceID () const;
 		QString GetName () const;
 		qint64 GetSize () const;
+		TransferDirection GetDirection () const;
 		void Accept (const QString& out);
 		void Abort ();
 	private slots:

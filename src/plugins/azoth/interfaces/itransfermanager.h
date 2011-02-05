@@ -59,6 +59,8 @@ namespace Azoth
 
 		virtual qint64 GetSize () const = 0;
 
+		virtual TransferDirection GetDirection () const = 0;
+
 		virtual void Accept (const QString& out) = 0;
 
 		virtual void Abort () = 0;
