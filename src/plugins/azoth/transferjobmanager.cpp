@@ -17,11 +17,13 @@
  **********************************************************************/
 
 #include "transferjobmanager.h"
+#include <boost/bind.hpp>
 #include <QUrl>
 #include <QStandardItemModel>
 #include <plugininterface/util.h>
-#include "core.h"
 #include "interfaces/iclentry.h"
+#include "core.h"
+#include "notificationactionhandler.h"
 
 namespace LeechCraft
 {
@@ -31,6 +33,23 @@ namespace Azoth
 	: QObject (parent)
 	, SummaryModel_ (new QStandardItemModel (this))
 	{
+	}
+
+	void TransferJobManager::AddAccountManager (QObject *mgrObj)
+	{
+		ITransferManager *mgr = qobject_cast<ITransferManager*> (mgrObj);
+		if (!mgr)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< mgrObj
+					<< "could not be casted to ITransferManager";
+			return;
+		}
+
+		connect (mgrObj,
+				SIGNAL (fileOffered (QObject*)),
+				this,
+				SLOT (handleFileOffered (QObject*)));
 	}
 
 	namespace
@@ -87,9 +106,52 @@ namespace Azoth
 				SLOT (handleXferProgress (qint64, qint64)));
 	}
 
+	void TransferJobManager::AcceptJob (QObject *jobObj)
+	{
+	}
+
+	void TransferJobManager::DenyJob (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "is not an ITransferJob";
+			return;
+		}
+
+		job->Abort ();
+	}
+
 	QAbstractItemModel* TransferJobManager::GetSummaryModel () const
 	{
 		return SummaryModel_;
+	}
+
+	void TransferJobManager::handleFileOffered (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "could not be casted to ITransferJob";
+			return;
+		}
+
+		Entity e = Util::MakeNotification ("Azoth",
+				tr ("File %1 offered from %2.")
+					.arg (job->GetName ())
+					.arg (GetContactName (job->GetSourceID ())),
+				PInfo_);
+		NotificationActionHandler *nh =
+				new NotificationActionHandler (e, this);
+		nh->AddFunction ("Accept",
+				boost::bind (&TransferJobManager::AcceptJob, this, jobObj));
+		nh->AddFunction ("Deny",
+				boost::bind (&TransferJobManager::DenyJob, this, jobObj));
+		Core::Instance ().SendEntity (e);
 	}
 
 	void TransferJobManager::handleXferError (TransferError error, const QString& message)

@@ -47,9 +47,14 @@ namespace Azoth
 	public:
 		TransferJobManager (QObject* = 0);
 
+		void AddAccountManager (QObject*);
+
 		void HandleJob (QObject*);
+		void AcceptJob (QObject*);
+		void DenyJob (QObject*);
 		QAbstractItemModel* GetSummaryModel () const;
 	private slots:
+		void handleFileOffered (QObject*);
 		void handleXferError (TransferError, const QString&);
 		void handleStateChanged (TransferState);
 		void handleXferProgress (qint64, qint64);

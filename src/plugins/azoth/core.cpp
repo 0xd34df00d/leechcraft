@@ -1106,6 +1106,9 @@ namespace Azoth
 				SIGNAL (statusChanged (const EntryStatus&)),
 				this,
 				SLOT (handleAccountStatusChanged (const EntryStatus&)));
+
+		if (account->GetTransferManager ())
+			XferJobManager_->AddAccountManager (account->GetTransferManager ());
 	}
 
 	void Core::handleAccountRemoved (QObject *account)
