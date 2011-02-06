@@ -117,10 +117,11 @@ namespace Xoox
 		void FetchVCard (const QString&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, const QXmppRosterIq::Item&);
+
+		static void Split (const QString& full,
+				QString *bare, QString *resource);
 	private:
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
-		void Split (const QString& full,
-				QString *bare, QString *resource) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);

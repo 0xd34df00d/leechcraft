@@ -380,7 +380,7 @@ namespace Xoox
 	}
 
 	void ClientConnection::Split (const QString& jid,
-			QString *bare, QString *resource) const
+			QString *bare, QString *resource)
 	{
 		const int pos = jid.indexOf ('/');
 		*bare = jid.left (pos);

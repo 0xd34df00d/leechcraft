@@ -20,6 +20,7 @@
 #include <QFile>
 #include <plugininterface/util.h>
 #include "core.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -47,7 +48,10 @@ namespace Xoox
 
 	QString TransferJob::GetSourceID () const
 	{
-		return Job_->jid ();
+		QString jid;
+		QString var;
+		ClientConnection::Split (Job_->jid (), &jid, &var);
+		return jid;
 	}
 
 	QString TransferJob::GetName () const
