@@ -44,10 +44,13 @@ namespace Azoth
 		typedef QHash<QObject*, QStandardItem*> ObjectDictionary_t;
 		ObjectDictionary_t Object2Status_;
 		ObjectDictionary_t Object2Progress_;
+		
+		QHash<QString, QObjectList> Entry2Incoming_;
 	public:
 		TransferJobManager (QObject* = 0);
 
 		void AddAccountManager (QObject*);
+		QObject* GetPendingIncomingJobsFor (const QString&);
 
 		void HandleJob (QObject*);
 		void AcceptJob (QObject*, QString);

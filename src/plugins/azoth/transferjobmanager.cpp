@@ -55,6 +55,10 @@ namespace Azoth
 				this,
 				SLOT (handleFileOffered (QObject*)));
 	}
+	
+	QObject* TransferJobManager::GetPendingIncomingJobsFor (const QString& id)
+	{
+	}
 
 	namespace
 	{
@@ -157,6 +161,8 @@ namespace Azoth
 				return;
 			}
 		}
+		
+		Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj);
 
 		HandleJob (jobObj);
 
@@ -173,8 +179,11 @@ namespace Azoth
 					<< "is not an ITransferJob";
 			return;
 		}
+		
+		Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj);
 
 		job->Abort ();
+		sender ()->deleteLater ();
 	}
 
 	QAbstractItemModel* TransferJobManager::GetSummaryModel () const
@@ -192,12 +201,16 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
+		
+		const QString& id = job->GetSourceID ();
+		
+		Entry2Incoming_ [id] << jobObj;
 
 		Entity e = Util::MakeNotification ("Azoth",
 				tr ("File %1 (%2) offered from %3.")
 					.arg (job->GetName ())
 					.arg (Util::MakePrettySize (job->GetSize ()))
-					.arg (GetContactName (job->GetSourceID ())),
+					.arg (GetContactName (id)),
 				PInfo_);
 		NotificationActionHandler *nh =
 				new NotificationActionHandler (e, this);
@@ -304,6 +317,7 @@ namespace Azoth
 			SummaryModel_->removeRow (Object2Status_ [sender ()]->row ());
 			Object2Status_.remove (sender ());
 			Object2Progress_.remove (sender ());
+			sender ()->deleteLater ();
 		}
 
 		const Entity& e = Util::MakeNotification ("Azoth",
