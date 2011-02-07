@@ -30,7 +30,21 @@ namespace Azoth
 
 	State SetStatusDialog::GetState () const
 	{
-		return static_cast<State> (Ui_.StatusBox_->currentIndex ());
+		switch (Ui_.StatusBox_->currentIndex ())
+		{
+		case 1:
+			return SChat;
+		case 2:
+			return SAway;
+		case 3:
+			return SDND;
+		case 4:
+			return SXA;
+		case 5:
+			return SOffline;
+		default:
+			return SOnline;
+		}
 	}
 
 	QString SetStatusDialog::GetStatusText () const
