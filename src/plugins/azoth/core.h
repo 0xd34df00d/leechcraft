@@ -274,6 +274,11 @@ namespace Azoth
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
 				ICLEntry *entry, const QString& variant);
+		
+		/** Checks whether icon representing incoming file should be
+		 * drawn for the entry with the given id.
+		 */
+		void CheckFileIcon (const QString& id);
 
 		/** This functions calculates new value of number of unread
 		 * items for the chain of parents of the given item.
@@ -402,6 +407,9 @@ namespace Azoth
 		 * ICLEntry, obviously.
 		 */
 		void handleClearUnreadMsgCount (QObject *object);
+		
+		void handleFileOffered (QObject*);
+		void handleJobDeoffered (QObject*);
 
 		/** Removes the entries in the client icon cache for the sender,
 		 * if obj is null, or for obj, if it is not null.

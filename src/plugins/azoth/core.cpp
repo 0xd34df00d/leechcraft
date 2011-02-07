@@ -65,6 +65,11 @@ namespace Azoth
 				SIGNAL (clearUnreadMsgCount (QObject*)),
 				this,
 				SLOT (handleClearUnreadMsgCount (QObject*)));
+		connect (XferJobManager_.get (),
+				SIGNAL (jobNoLongerOffered (QObject*)),
+				this,
+				SLOT (handleJobDeoffered (QObject*)));
+
 		PluginManager_->RegisterHookable (this);
 
 		StatusIconLoader_->AddLocalPrefix ();
@@ -453,6 +458,29 @@ namespace Azoth
 					status.State_ == SOffline)
 				item->setIcon (GetIconForState (status.State_));
 		}
+		
+		const QString& id = entry->GetEntryID ();
+		if (!XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
+			CheckFileIcon (id);
+	}
+	
+	void Core::CheckFileIcon (const QString& id)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (id));
+		if (XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
+		{
+			const QString& variant = entry->Variants ().value (0);
+			HandleStatusChanged (entry->GetStatus (variant), entry, variant);
+			return;
+		}
+		
+		const QString& filename = XmlSettingsManager::Instance ()
+				.property ("StatusIcons").toString () + "/file";
+		qDebug () << filename << StatusIconLoader_->GetIconPath (filename);
+		const QIcon& fileIcon = QIcon (StatusIconLoader_->GetIconPath (filename));
+
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			item->setIcon (fileIcon);
 	}
 
 	QIcon Core::GetIconForState (State state) const
@@ -1107,8 +1135,16 @@ namespace Azoth
 				this,
 				SLOT (handleAccountStatusChanged (const EntryStatus&)));
 
-		if (account->GetTransferManager ())
-			XferJobManager_->AddAccountManager (account->GetTransferManager ());
+		QObject *xferMgr = account->GetTransferManager ();
+		if (xferMgr)
+		{
+			XferJobManager_->AddAccountManager (xferMgr);
+			
+			connect (xferMgr,
+					SIGNAL (fileOffered (QObject*)),
+					this,
+					SLOT (handleFileOffered (QObject*)));
+		}
 	}
 
 	void Core::handleAccountRemoved (QObject *account)
@@ -1576,6 +1612,33 @@ namespace Azoth
 			item->setData (0, CLRUnreadMsgCount);
 			RecalculateUnreadForParents (item);
 		}
+	}
+	
+	void Core::handleFileOffered (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)	
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "could not be casted to ITransferJob";
+			return;
+		}
+
+		CheckFileIcon (job->GetSourceID ());
+	}
+	
+	void Core::handleJobDeoffered (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)	
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "could not be casted to ITransferJob";
+			return;
+		}
+		CheckFileIcon (job->GetSourceID ());
 	}
 
 	void Core::invalidateClientsIconCache (QObject *passedObj)
