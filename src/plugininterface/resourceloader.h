@@ -138,9 +138,24 @@ namespace LeechCraft
 			 * @param[in] pathVariants The list of variants to try.
 			 * @return The first found full path or null string.
 			 *
-			 * @sa Load()
+			 * @sa Load(), GetIconPath()
 			 */
 			QString GetPath (const QStringList& pathVariants) const;
+			
+			/** @brief Calls GetPath() with standard variants for the
+			 * icon extensions.
+			 * 
+			 * This functions just calls the GetPath() function with
+			 * standard icon extensions, that is, the path variants are
+			 * basename + (".svg", ".png", ".jpg")
+			 * 
+			 * @param[in] basename Base name of the icon — without
+			 * extension.
+			 * @return The first found full path or null string
+			 * 
+			 * @sa GetPath()
+			 */
+			QString GetIconPath (const QString& basename) const;
 
 			/** @brief Returns the QIODevice for the corresponding resource.
 			 *
