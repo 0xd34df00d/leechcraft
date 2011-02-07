@@ -47,6 +47,7 @@
 #include "notificationactionhandler.h"
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
+#include <boost/graph/graph_concepts.hpp>
 
 namespace LeechCraft
 {
@@ -1378,19 +1379,52 @@ namespace Azoth
 		if (msg->GetDirection () == IMessage::DIn &&
 				!ChatTabsManager_->IsActiveChat (parentCL))
 		{
+			bool showMsg = XmlSettingsManager::Instance ()
+					.property ("ShowMsgInNotifications").toBool ();
+
 			QString msgString;
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::MTChatMessage:
-				msgString = tr ("Incoming chat message from <em>%1</em>.")
-						.arg (other->GetEntryName ());
+				if (XmlSettingsManager::Instance ()
+						.property ("NotifyAboutIncomingMessages").toBool ())
+				{
+					if (!showMsg)
+						msgString = tr ("Incoming chat message from <em>%1</em>.")
+								.arg (other->GetEntryName ());
+					else
+					{
+						const QString& body = msg->GetBody ();
+						const QString& notifMsg = body.size () > 50 ?
+								body.left (50) + "..." :
+								body;
+						msgString = tr ("Incoming chat message from <em>%1</em>: <em>%2</em>.")
+								.arg (other->GetEntryName ())
+								.arg (notifMsg);
+					}
+				}
 				break;
 			case IMessage::MTMUCMessage:
 			{
-				if (IsHighlightMessage (msg))
-					msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
-							.arg (parentCL->GetEntryName ())
-							.arg (other->GetEntryName ());
+				if (IsHighlightMessage (msg) && XmlSettingsManager::Instance ()
+						.property ("NotifyAboutConferenceHighlights").toBool ())
+				{
+					if (!showMsg)
+						msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
+								.arg (parentCL->GetEntryName ())
+								.arg (other->GetEntryName ());
+					else
+					{
+						const QString& body = msg->GetBody ();
+						const QString& notifMsg = body.size () > 50 ?
+								body.left (50) + "..." :
+								body;
+						msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>: <em>%3</em>.")
+								.arg (parentCL->GetEntryName ())
+								.arg (other->GetEntryName ())
+								.arg (notifMsg);
+					}
+				}
 				break;
 			}
 			default:

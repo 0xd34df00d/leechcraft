@@ -30,6 +30,21 @@
 			</item>
 		</tab>
 		<tab>
+			<label value="Notifications" />
+			<groupbox>
+				<label value="Incoming messages" />
+				<item type="checkbox" property="NotifyAboutIncomingMessages" default="true">
+					<label value="Notify about incoming messages" />
+				</item>
+				<item type="checkbox" property="NotifyAboutConferenceHighlights" default="true">
+					<label value="Notify about highlights in conferences" />
+				</item>
+				<item type="checkbox" property="ShowMsgInNotifications" default="false">
+					<label value="Show triggering message in notifications" />
+				</item>
+			</groupbox>
+		</tab>
+		<tab>
 			<label value="Chat windows" />
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
