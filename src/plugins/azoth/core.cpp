@@ -1550,6 +1550,10 @@ namespace Azoth
 		*/
 	void Core::handleItemSubscribed (QObject *entryObj, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifySubscriptions").toBool ())
+			return;
+
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
 				tr ("%1 (%2) subscribed to us."),
 				tr ("%1 (%2) subscribed to us: %3."));
@@ -1559,6 +1563,10 @@ namespace Azoth
 		*/
 	void Core::handleItemUnsubscribed (QObject *entryObj, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifyUnsubscriptions").toBool ())
+			return;
+
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
 				tr ("%1 (%2) unsubscribed from us."),
 				tr ("%1 (%2) unsubscribed from us: %3."));
@@ -1569,6 +1577,10 @@ namespace Azoth
 		*/
 	void Core::handleItemUnsubscribed (const QString& entryId, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifyAboutNonrosterUnsub").toBool ())
+			return;
+
 		QString str = msg.isEmpty () ?
 				tr ("%1 unsubscribed from us.")
 					.arg (entryId) :
@@ -1580,6 +1592,10 @@ namespace Azoth
 
 	void Core::handleItemCancelledSubscription (QObject *entryObj, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifySubCancels").toBool ())
+			return;
+
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
 				tr ("%1 (%2) cancelled our subscription."),
 				tr ("%1 (%2) cancelled our subscription: %3."));
@@ -1587,6 +1603,10 @@ namespace Azoth
 
 	void Core::handleItemGrantedSubscription (QObject *entryObj, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifySubGrants").toBool ())
+			return;
+
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
 				tr ("%1 (%2) granted subscription."),
 				tr ("%1 (%2) granted subscription: %3."));

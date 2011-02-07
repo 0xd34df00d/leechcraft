@@ -43,6 +43,24 @@
 					<label value="Show triggering message in notifications" />
 				</item>
 			</groupbox>
+			<groupbox>
+				<label value="Contacts" />
+				<item type="checkbox" property="NotifyAboutNonrosterUnsub" default="true">
+					<label value="Notify when someone not present in contact-list unsubscribes" />
+				</item>
+				<item type="checkbox" property="NotifySubscriptions" default="true">
+					<label value="Notify when someone subscribes to us" />
+				</item>
+				<item type="checkbox" property="NotifyUnsubscriptions" default="true">
+					<label value="Notify when someone unsubscribes from us" />
+				</item>
+				<item type="checkbox" property="NotifySubCancels" default="true">
+					<label value="Notify when someone cancels our subscription" />
+				</item>
+				<item type="checkbox" property="NotifySubGrants" default="true">
+					<label value="Notify when someone grants us subscription" />
+				</item>
+			</groupbox>
 		</tab>
 		<tab>
 			<label value="Chat windows" />
