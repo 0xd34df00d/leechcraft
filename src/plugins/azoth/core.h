@@ -279,6 +279,11 @@ namespace Azoth
 		 * drawn for the entry with the given id.
 		 */
 		void CheckFileIcon (const QString& id);
+		
+		/** This function increases the number of unread messages by
+		 * the given amount, which may be negative.
+		 */
+		void IncreaseUnreadCount (ICLEntry *entry, int amount = 1);
 
 		/** This functions calculates new value of number of unread
 		 * items for the chain of parents of the given item.

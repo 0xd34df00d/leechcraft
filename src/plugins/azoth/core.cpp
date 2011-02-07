@@ -482,6 +482,16 @@ namespace Azoth
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 			item->setIcon (fileIcon);
 	}
+	
+	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
+	{
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			{
+				int prevValue = item->data (CLRUnreadMsgCount).toInt ();
+				item->setData (std::max (0, prevValue + amount), CLRUnreadMsgCount);
+				RecalculateUnreadForParents (item);
+			}
+	}
 
 	QIcon Core::GetIconForState (State state) const
 	{
@@ -1363,12 +1373,7 @@ namespace Azoth
 		ICLEntry *parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (ShouldCountUnread (parentCL, msg))
-			Q_FOREACH (QStandardItem *item, Entry2Items_ [parentCL])
-			{
-				int prevValue = item->data (CLRUnreadMsgCount).toInt ();
-				item->setData (prevValue + 1, CLRUnreadMsgCount);
-				RecalculateUnreadForParents (item);
-			}
+			IncreaseUnreadCount (parentCL);
 
 		if (msg->GetDirection () == IMessage::DIn &&
 				!ChatTabsManager_->IsActiveChat (parentCL))
@@ -1624,8 +1629,11 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
+		
+		const QString& id = job->GetSourceID ();
+		IncreaseUnreadCount (qobject_cast<ICLEntry*> (GetEntry (id)));
 
-		CheckFileIcon (job->GetSourceID ());
+		CheckFileIcon (id);
 	}
 	
 	void Core::handleJobDeoffered (QObject *jobObj)
@@ -1638,7 +1646,10 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
-		CheckFileIcon (job->GetSourceID ());
+
+		const QString& id = job->GetSourceID ();
+		IncreaseUnreadCount (qobject_cast<ICLEntry*> (GetEntry (id)), -1);
+		CheckFileIcon (id);
 	}
 
 	void Core::invalidateClientsIconCache (QObject *passedObj)
