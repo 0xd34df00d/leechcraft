@@ -130,12 +130,12 @@
     <message>
         <location filename="core.cpp" line="417"/>
         <source>%1 (ETA: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (ETA : %2)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="429"/>
         <source>%1% (%2 of %3 at %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1% (%2 de %3 à %4)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="433"/>
@@ -151,7 +151,8 @@
         <location filename="core.cpp" line="580"/>
         <source>Download finished: %1
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Téléchargement terminé : %1
+%2</translation>
     </message>
 </context>
 <context>
@@ -187,7 +188,7 @@
     <message>
         <location filename="task.cpp" line="476"/>
         <source>Error writing to file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de l&apos;écriture du fichier %1 : %2</translation>
     </message>
 </context>
 <context>

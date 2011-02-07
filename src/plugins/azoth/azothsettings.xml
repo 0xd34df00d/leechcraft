@@ -16,6 +16,12 @@
 					<label value="default" />
 				</option>
 			</item>
+			<item type="combobox" property="SmileIcons" mayHaveDataSource="true">
+				<label value="Smiles:" />
+				<option name="None" default="true">
+					<label value="None" />
+				</option>
+			</item>
 		</tab>
 	</page>
 	<page>
@@ -25,6 +31,42 @@
 			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
 				<label value="Jump to new tab on open" />
 			</item>
+			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
+				<label value="Default file transfers save path:" />
+			</item>
+		</tab>
+		<tab>
+			<label value="Notifications" />
+			<groupbox>
+				<label value="Incoming messages" />
+				<item type="checkbox" property="NotifyAboutIncomingMessages" default="true">
+					<label value="Notify about incoming messages" />
+				</item>
+				<item type="checkbox" property="NotifyAboutConferenceHighlights" default="true">
+					<label value="Notify about highlights in conferences" />
+				</item>
+				<item type="checkbox" property="ShowMsgInNotifications" default="false">
+					<label value="Show triggering message in notifications" />
+				</item>
+			</groupbox>
+			<groupbox>
+				<label value="Contacts" />
+				<item type="checkbox" property="NotifyAboutNonrosterUnsub" default="true">
+					<label value="Notify when someone not present in contact-list unsubscribes" />
+				</item>
+				<item type="checkbox" property="NotifySubscriptions" default="true">
+					<label value="Notify when someone subscribes to us" />
+				</item>
+				<item type="checkbox" property="NotifyUnsubscriptions" default="true">
+					<label value="Notify when someone unsubscribes from us" />
+				</item>
+				<item type="checkbox" property="NotifySubCancels" default="true">
+					<label value="Notify when someone cancels our subscription" />
+				</item>
+				<item type="checkbox" property="NotifySubGrants" default="true">
+					<label value="Notify when someone grants us subscription" />
+				</item>
+			</groupbox>
 		</tab>
 		<tab>
 			<label value="Chat windows" />

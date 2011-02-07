@@ -21,6 +21,7 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QApplication>
+#include <QMap>
 #include "filepicker.h"
 
 using namespace LeechCraft;
@@ -49,7 +50,7 @@ FilePicker::FilePicker (FilePicker::Type type, QWidget *parent)
 			.width ("thisismaybeadefaultsettingstring,dont"));
 }
 
-void FilePicker::SetText (const QString& text)
+void FilePicker::SetText (QString text)
 {
 	LineEdit_->setText (text);
 }

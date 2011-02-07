@@ -55,6 +55,11 @@
         <translation>Действие:</translation>
     </message>
     <message>
+        <location filename="shooterdialog.ui" line="31"/>
+        <source>upload to Savepic.ru</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="shooterdialog.ui" line="36"/>
         <source>upload to Imagebin.ca</source>
         <translation>загрузить на Imagebin.ca</translation>

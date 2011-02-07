@@ -30,6 +30,7 @@
 #include "glooxclentry.h"
 #include "roomclentry.h"
 #include "unauthclentry.h"
+#include "transfermanager.h"
 
 namespace LeechCraft
 {
@@ -58,6 +59,10 @@ namespace Xoox
 	{
 		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
 						AccState_, this));
+
+		TransferManager_.reset (new TransferManager (ClientConnection_->
+						GetTransferManager ()));
+
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
 				this,
@@ -265,7 +270,7 @@ namespace Xoox
 
 	QObject* GlooxAccount::GetTransferManager () const
 	{
-		return 0;
+		return TransferManager_.get ();
 	}
 
 	QString GlooxAccount::GetJID () const

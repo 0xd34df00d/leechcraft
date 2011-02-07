@@ -134,6 +134,21 @@
     </message>
 </context>
 <context>
+    <name>DataViewWidget</name>
+    <message>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">Rimuovi</translation>
+    </message>
+</context>
+<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
@@ -598,7 +613,7 @@
     </message>
     <message>
         <source>Release of one or more plugins failed.</source>
-        <translation>Rilascio di uno o più plugin fallito.</translation>
+        <translation type="obsolete">Rilascio di uno o più plugin fallito.</translation>
     </message>
     <message>
         <source>LeechCraft</source>

@@ -299,22 +299,22 @@
     <message>
         <location filename="browserwidget.cpp" line="185"/>
         <source>Open history</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити історію</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="188"/>
         <source>Ctrl+h</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+h</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="190"/>
         <source>Open bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити закладки</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="193"/>
         <source>Ctrl+b</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+b</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="238"/>
@@ -354,7 +354,7 @@
     <message>
         <location filename="browserwidget.cpp" line="657"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1258"/>
@@ -453,33 +453,33 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Core</name>
     <message>
-        <location filename="core.cpp" line="150"/>
+        <location filename="core.cpp" line="152"/>
         <source>Poshuku: general storage initialization error.</source>
         <translation>Poshuku: помилка ініціалізації системи збереження даних.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="823"/>
+        <location filename="core.cpp" line="826"/>
         <source>Select XBEL file</source>
         <translation>Оберіть XBEL файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="825"/>
-        <location filename="core.cpp" line="865"/>
+        <location filename="core.cpp" line="828"/>
+        <location filename="core.cpp" line="868"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>XBEL файли (*.xbel);;Всі файли (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="839"/>
+        <location filename="core.cpp" line="842"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не можу відкрити файл %1 для читання.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="863"/>
+        <location filename="core.cpp" line="866"/>
         <source>Save XBEL file</source>
         <translation>Зберегти XBEL файл</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="882"/>
+        <location filename="core.cpp" line="885"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не можу відкрити файл %1 для запису.</translation>
     </message>
@@ -813,63 +813,63 @@
     <message>
         <location filename="importentityhandler.cpp" line="43"/>
         <source>Importing history...</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортуємо історію...</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="44"/>
         <source>Abort history import</source>
-        <translation type="unfinished"></translation>
+        <translation>Відмінити імпорт історії</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="70"/>
         <source>Importing bookmarks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпортуємо закладки...</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="71"/>
         <source>Abort bookmarks import</source>
-        <translation type="unfinished"></translation>
+        <translation>Відмінити імпорт закладок</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::Poshuku::Poshuku</name>
     <message>
-        <location filename="poshuku.cpp" line="129"/>
+        <location filename="poshuku.cpp" line="137"/>
         <source>Poshuku failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation>Під час ініціалізації Poshuku сталася помилка. Перевірте журнал роботи та зверніться до розробників. Або, принаймні, перевірте параметри збереження даних і перезапустіть LeechCraft.</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="108"/>
+        <location filename="poshuku.cpp" line="112"/>
         <source>Import XBEL...</source>
         <translation>Імпортувати у XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="112"/>
+        <location filename="poshuku.cpp" line="116"/>
         <source>Export XBEL...</source>
         <translation>Експортувати з XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="116"/>
+        <location filename="poshuku.cpp" line="120"/>
         <source>Check favorites...</source>
         <translation>Перевірити закладки...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="120"/>
+        <location filename="poshuku.cpp" line="124"/>
         <source>Reload all pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезавантажити всі сторінки</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="197"/>
+        <location filename="poshuku.cpp" line="202"/>
         <source>Poshuku Browser</source>
         <translation>Браузер Poshuku</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="202"/>
+        <location filename="poshuku.cpp" line="207"/>
         <source>Simple yet functional web browser</source>
         <translation>Простий але функціональний веб браузер</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="488"/>
+        <location filename="poshuku.cpp" line="493"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
         <translation>Зауважте, що додатки для розробників будуть працювати лише на сторінках, що завантажені після того, як вони були увімкнені.</translation>
     </message>
@@ -897,7 +897,7 @@
         <location filename="passwordremember.ui" line="23"/>
         <source>Remember forms data</source>
         <oldsource>Password remember</oldsource>
-        <translation type="unfinished">Збереження паролів</translation>
+        <translation>Запам&apos;ятати дані форм</translation>
     </message>
     <message>
         <location filename="passwordremember.ui" line="30"/>

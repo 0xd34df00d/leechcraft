@@ -28,44 +28,6 @@ namespace Xoox
 {
 namespace Util
 {
-	/*
-	QString RoleToString (const gloox::MUCRoomRole& role)
-	{
-		switch (role)
-		{
-		case gloox::RoleInvalid:
-			return QObject::tr ("invalid role");
-		case gloox::RoleNone:
-			return QObject::tr ("guest");
-		case gloox::RoleVisitor:
-			return QObject::tr ("visitor");
-		case gloox::RoleParticipant:
-			return QObject::tr ("participant");
-		case gloox::RoleModerator:
-			return QObject::tr ("moderator");
-		}
-	}
-
-	QString AffiliationToString (const gloox::MUCRoomAffiliation& aff)
-	{
-		switch (aff)
-		{
-		case gloox::AffiliationInvalid:
-			return QObject::tr ("invalid affiliation");
-		case gloox::AffiliationNone:
-			return QObject::tr ("guest");
-		case gloox::AffiliationOutcast:
-			return QObject::tr ("banned");
-		case gloox::AffiliationMember:
-			return QObject::tr ("member");
-		case gloox::AffiliationAdmin:
-			return QObject::tr ("administrator");
-		case gloox::AffiliationOwner:
-			return QObject::tr ("owner");
-		}
-	}
-	*/
-
 	namespace
 	{
 		struct Node2ClientID
@@ -75,7 +37,9 @@ namespace Util
 			Node2ClientID ()
 			{
 				Node2ClientID_ ["http://2010.qip.ru/caps"] = "qipinfium";
+				Node2ClientID_ ["http://bombus-im.org/java"] = "bombus";
 				Node2ClientID_ ["http://bombusmod.net.ru/caps"] = "bombusmod";
+				Node2ClientID_ ["http://emess.eqx.su/caps"] = "emess";
 				Node2ClientID_ ["http://gajim.org"] = "gajim";
 				Node2ClientID_ ["http://isida-bot.com"] = "isida-bot";
 				Node2ClientID_ ["http://jabiru.mzet.net/caps"] = "jabiru";
@@ -84,13 +48,17 @@ namespace Util
 				Node2ClientID_ ["http://mail.google.com/xmpp/client/caps"] = "mail.google.com";
 				Node2ClientID_ ["http://mcabber.com/caps"] = "mcabber";
 				Node2ClientID_ ["http://miranda-im.org/caps"] = "miranda";
+				Node2ClientID_ ["http://palringo.com/caps"] = "palringo";
 				Node2ClientID_ ["http://pidgin.im/"] = "pidgin";
+				Node2ClientID_ ["http://pidgin.im/caps"] = "pidgin";
 				Node2ClientID_ ["http://psi-im.org/caps"] = "psi";
 				Node2ClientID_ ["http://psi-dev.googlecode.com/caps"] = "psiplus";
 				Node2ClientID_ ["http://pyicqt.googlecode.com//protocol/caps"] = "pyicq-t";
 				Node2ClientID_ ["http://qip.ru/caps"] = "qipinfium";
 				Node2ClientID_ ["http://qutim.org"] = "qutim";
 				Node2ClientID_ ["http://qutim.org/"] = "qutim";
+				Node2ClientID_ ["http://sip-communicator.org"] = "sip-communicator";
+				Node2ClientID_ ["http://talkgadget.google.com/client/caps"] = "talkgadget.google.com";
 				Node2ClientID_ ["http://telepathy.freedesktop.org/caps"] = "telepathy.freedesktop.org";
 				Node2ClientID_ ["http://tkabber.jabber.ru"] = "tkabber";
 				Node2ClientID_ ["http://tkabber.jabber.ru/"] = "tkabber";
@@ -98,6 +66,7 @@ namespace Util
 				Node2ClientID_ ["http://www.android.com/gtalk/client/caps"] = "android";
 				Node2ClientID_ ["http://www.google.com/xmpp/client/caps"] = "talk.google.com";
 				Node2ClientID_ ["http://www.igniterealtime.org/projects/smack/"] = "smack";
+				Node2ClientID_ ["http://www.lonelycatgames.com/slick/caps"] = "slick";
 			}
 		};
 	}
@@ -117,7 +86,9 @@ namespace Util
 			Node2ClientHR ()
 			{
 				Node2ClientHR_ ["http://2010.qip.ru/caps"] = "QIP Infium";
+				Node2ClientHR_ ["http://bombus-im.org/java"] = "Bombus";
 				Node2ClientHR_ ["http://bombusmod.net.ru/caps"] = "BombusMod";
+				Node2ClientHR_ ["http://emess.eqx.su/caps"] = "EMess";
 				Node2ClientHR_ ["http://gajim.org"] = "Gajim";
 				Node2ClientHR_ ["http://isida-bot.com"] = "iSida Bot";
 				Node2ClientHR_ ["http://jabiru.mzet.net/caps"] = "Jabiru";
@@ -126,13 +97,17 @@ namespace Util
 				Node2ClientHR_ ["http://mail.google.com/xmpp/client/caps"] = "GMail chat widget";
 				Node2ClientHR_ ["http://mcabber.com/caps"] = "MCabber";
 				Node2ClientHR_ ["http://miranda-im.org/caps"] = "Miranda IM";
+				Node2ClientHR_ ["http://palringo.com/caps"] = "Palringo";
 				Node2ClientHR_ ["http://pidgin.im/"] = "Pidgin IM";
+				Node2ClientHR_ ["http://pidgin.im/caps"] = "Pidgin IM";
 				Node2ClientHR_ ["http://psi-im.org/caps"] = "Psi";
 				Node2ClientHR_ ["http://psi-dev.googlecode.com/caps"] = "Psi+";
 				Node2ClientHR_ ["http://pyicqt.googlecode.com//protocol/caps"] = "PyICQ-t";
 				Node2ClientHR_ ["http://qip.ru/caps"] = "QIP Infium";
 				Node2ClientHR_ ["http://qutim.org"] = "QutIM";
 				Node2ClientHR_ ["http://qutim.org/"] = "QutIM";
+				Node2ClientHR_ ["http://sip-communicator.org"] = "SIP Communicator";
+				Node2ClientHR_ ["http://talkgadget.google.com/client/caps"] = "Google Talk gadget";
 				Node2ClientHR_ ["http://telepathy.freedesktop.org/caps"] = "Telepathy";
 				Node2ClientHR_ ["http://tkabber.jabber.ru"] = "Tkabber";
 				Node2ClientHR_ ["http://tkabber.jabber.ru/"] = "Tkabber";
@@ -140,6 +115,7 @@ namespace Util
 				Node2ClientHR_ ["http://www.android.com/gtalk/client/caps"] = "Android";
 				Node2ClientHR_ ["http://www.google.com/xmpp/client/caps"] = "Google Talk";
 				Node2ClientHR_ ["http://www.igniterealtime.org/projects/smack/"] = "Smack XMPP library";
+				Node2ClientHR_ ["http://www.lonelycatgames.com/slick/caps"] = "Slick";
 			}
 		};
 	}

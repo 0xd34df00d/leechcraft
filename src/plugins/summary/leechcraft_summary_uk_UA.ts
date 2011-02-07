@@ -95,17 +95,17 @@
 <context>
     <name>LeechCraft::Plugins::Summary::SummaryWidget</name>
     <message>
-        <location filename="summarywidget.cpp" line="49"/>
+        <location filename="summarywidget.cpp" line="50"/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="476"/>
+        <location filename="summarywidget.cpp" line="510"/>
         <source>S: %1 [%2]</source>
         <translation>С: %1 [%2]</translation>
     </message>
     <message>
-        <location filename="summarywidget.cpp" line="480"/>
+        <location filename="summarywidget.cpp" line="514"/>
         <source>Summary [%1]</source>
         <translation>Зведення [%1]</translation>
     </message>

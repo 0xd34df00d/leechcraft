@@ -57,7 +57,7 @@
     <message>
         <location filename="shooterdialog.ui" line="31"/>
         <source>upload to Savepic.ru</source>
-        <translation type="unfinished"></translation>
+        <translation>завантажити на Savepic.ru</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="36"/>

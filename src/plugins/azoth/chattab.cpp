@@ -24,16 +24,21 @@
 #include <QPalette>
 #include <QApplication>
 #include <QShortcut>
+#include <QMenu>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
+#include "interfaces/itransfermanager.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
+#include "transferjobmanager.h"
 
 namespace LeechCraft
 {
@@ -62,11 +67,15 @@ namespace Azoth
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
 	, HasBeenAppended_ (false)
+	, XferManager_ (0)
 	{
 		Ui_.setupUi (this);
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
+		
+		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
+		Ui_.EventsButton_->hide ();
 
 		Core::Instance ().RegisterHookable (this);
 
@@ -108,6 +117,10 @@ namespace Azoth
 				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
 				this,
 				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (availableVariantsChanged (const QStringList&)),
+				this,
+				SLOT (handleVariantsChanged (const QStringList&)));
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
@@ -122,6 +135,10 @@ namespace Azoth
 			}
 			AppendMessage (msg);
 		}
+
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
+
+		handleVariantsChanged (e->Variants ());
 
 		const QString& accName =
 				qobject_cast<IAccount*> (e->GetParentAccount ())->
@@ -231,11 +248,11 @@ namespace Azoth
 		CurrentHistoryPosition_ = -1;
 		MsgHistory_.prepend (text);
 
+		QString variant = Ui_.VariantBox_->count () > 1 ?
+				Ui_.VariantBox_->currentText () :
+				QString ();
+
 		ICLEntry *e = GetEntry<ICLEntry> ();
-		QStringList currentVariants = e->Variants ();
-		QString variant = currentVariants.contains (Variant_) ?
-				Variant_ :
-				currentVariants.first ();
 		IMessage::MessageType type =
 				e->GetEntryType () == ICLEntry::ETMUC ?
 						IMessage::MTMUCMessage :
@@ -318,6 +335,84 @@ namespace Azoth
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
 	}
 
+	void ChatTab::on_SendFileButton__released ()
+	{
+		if (!XferManager_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null XferManager_";
+			return;
+		}
+
+		const QString& filename = QFileDialog::getOpenFileName (this,
+				tr ("Select file to send"));
+		if (filename.isEmpty ())
+			return;
+
+		QObject *job = XferManager_->SendFile (EntryID_,
+				Ui_.VariantBox_->currentText (), filename);
+		Core::Instance ().HandleTransferJob (job);
+	}
+	
+	void ChatTab::handleFileOffered (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "could not be casted to ITransferJob";
+			return;
+		}
+
+		Ui_.EventsButton_->show ();
+
+		const QString& text = tr ("File offered: %1.")
+				.arg (job->GetName ());
+		QAction *act = Ui_.EventsButton_->menu ()->
+				addAction (text, this, SLOT (handleOfferActionTriggered ()));
+		act->setData (QVariant::fromValue<QObject*> (jobObj));
+	}
+	
+	void ChatTab::handleOfferActionTriggered ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		QObject *jobObj = action->data ().value<QObject*> ();
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		
+		if (QMessageBox::question (this,
+					tr ("File transfer request"),
+					tr ("Would you like to accept or deny file transfer "
+						"request for file %1?")
+						.arg (job->GetName ()),
+					QMessageBox::Save | QMessageBox::Abort) == QMessageBox::Abort)
+			Core::Instance ().GetTransferJobManager ()->DenyJob (jobObj);
+		else
+		{
+			const QString& path = QFileDialog::getExistingDirectory (this,
+					tr ("Select save path for incoming file"),
+					XmlSettingsManager::Instance ()
+							.property ("DefaultXferSavePath").toString ());
+			if (path.isEmpty ())
+				return;
+			
+			Core::Instance ().GetTransferJobManager ()->AcceptJob (jobObj, path);
+		}
+		
+		action->deleteLater ();
+
+		if (Ui_.EventsButton_->menu ()->actions ().size () == 1)
+			Ui_.EventsButton_->hide ();
+	}
+
 	void ChatTab::handleEntryMessage (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -337,6 +432,34 @@ namespace Azoth
 		}
 
 		AppendMessage (msg);
+	}
+
+	void ChatTab::handleVariantsChanged (const QStringList& variants)
+	{
+		if (variants.size () == Ui_.VariantBox_->count ())
+		{
+			bool samelist = true;
+			for (int i = 0, size = variants.size (); i < size; ++i)
+				if (variants.at (i) != Ui_.VariantBox_->itemText (i))
+				{
+					samelist = false;
+					break;
+				}
+
+			if (samelist)
+				return;
+		}
+
+		const QString& current = Ui_.VariantBox_->currentText ();
+		Ui_.VariantBox_->clear ();
+
+		Ui_.VariantBox_->addItems (variants);
+		if (!variants.isEmpty ())
+		{
+			const int pos = std::max (0, Ui_.VariantBox_->findText (current));
+			Ui_.VariantBox_->setCurrentIndex (pos);
+		}
+		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
@@ -400,13 +523,6 @@ namespace Azoth
 		}
 	}
 
-	void ChatTab::scrollToEnd ()
-	{
-		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
-		int height = frame->contentsSize ().height ();
-		frame->scroll (0, height);
-	}
-
 	void ChatTab::handleHistoryUp ()
 	{
 		if (CurrentHistoryPosition_ == MsgHistory_.size () - 1)
@@ -449,7 +565,7 @@ namespace Azoth
 
 		bool claimsMUC = e->GetEntryType () == ICLEntry::ETMUC;
 		IsMUC_ = true;
-		if (!(claimsMUC))
+		if (!claimsMUC)
 			IsMUC_ = false;
 
 		if (claimsMUC &&
@@ -474,6 +590,25 @@ namespace Azoth
 					SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
 					this,
 					SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
+		}
+
+		IAccount *acc = qobject_cast<IAccount*> (GetEntry<ICLEntry> ()->GetParentAccount ());
+		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (!XferManager_ ||
+			(IsMUC_ &&
+			 !(acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)))
+			Ui_.SendFileButton_->hide ();
+		else
+		{
+			connect (acc->GetTransferManager (),
+					SIGNAL (fileOffered (QObject*)),
+					this,
+					SLOT (handleFileOffered (QObject*)));
+			
+			Q_FOREACH (QObject *object,
+					Core::Instance ().GetTransferJobManager ()->
+							GetPendingIncomingJobsFor (EntryID_))
+				handleFileOffered (object);
 		}
 	}
 
@@ -503,8 +638,6 @@ namespace Azoth
 			return;
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
-		bool shouldScrollFurther = (frame->scrollBarMaximum (Qt::Vertical) ==
-						frame->scrollBarValue (Qt::Vertical));
 
 		QString body = FormatBody (msg->GetBody (), msg);
 
@@ -600,11 +733,6 @@ namespace Azoth
 		elem.appendInside (QString ("<div class='%1'>%2</div>")
 					.arg (divClass)
 					.arg (string));
-
-		if (shouldScrollFurther)
-			QTimer::singleShot (50,
-					this,
-					SLOT (scrollToEnd ()));
 	}
 
 	QString ChatTab::FormatDate (QDateTime dt, IMessage *msg)

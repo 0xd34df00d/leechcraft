@@ -56,7 +56,7 @@ namespace LeechCraft
 		Type Type_;
 	public:
 		FilePicker (Type = TExistingDirectory, QWidget* = 0);
-		void SetText (const QString&);
+		void SetText (QString);
 		QString GetText () const;
 		void SetClearOnCancel (bool);
 		void SetFilter (const QString&);

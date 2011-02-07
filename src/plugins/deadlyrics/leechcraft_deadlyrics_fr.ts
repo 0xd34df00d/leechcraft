@@ -13,7 +13,7 @@
 <context>
     <name>LeechCraft::Plugins::DeadLyrics::DeadLyRicS</name>
     <message>
-        <location filename="deadlyrics.cpp" line="56"/>
+        <location filename="deadlyrics.cpp" line="64"/>
         <source>Lyrics Searcher</source>
         <translation>Moteur de recherche de paroles</translation>
     </message>
@@ -32,6 +32,24 @@
         <location filename="searcher.cpp" line="60"/>
         <source>Unknown %1 %2</source>
         <translation>Inconnu %1 %2</translation>
+    </message>
+</context>
+<context>
+    <name>deadlyricssettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Lyrics view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Use a web browser (if available)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

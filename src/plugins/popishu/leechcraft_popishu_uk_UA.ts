@@ -129,86 +129,86 @@
 <context>
     <name>LeechCraft::Plugins::Popishu::EditorPage</name>
     <message>
-        <location filename="editorpage.cpp" line="90"/>
+        <location filename="editorpage.cpp" line="92"/>
         <source>Document type</source>
         <translation>Тип документу</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="126"/>
+        <location filename="editorpage.cpp" line="129"/>
         <source>Whitespace visibility</source>
         <translation>Видимість пробілу</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="133"/>
+        <location filename="editorpage.cpp" line="136"/>
         <source>Wrapping mode</source>
         <translation>Режим переносу</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="146"/>
+        <location filename="editorpage.cpp" line="149"/>
         <source>Edit</source>
         <translation>Редагування</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="149"/>
+        <location filename="editorpage.cpp" line="152"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="217"/>
-        <location filename="editorpage.cpp" line="289"/>
+        <location filename="editorpage.cpp" line="220"/>
+        <location filename="editorpage.cpp" line="292"/>
         <source>Untitled</source>
         <translation>Без назви</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="222"/>
+        <location filename="editorpage.cpp" line="225"/>
         <source>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</source>
         <translation>Документ &lt;em&gt;%1&lt;/em&gt; був модифікований. Ви хочете зберегти його зараз?</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="295"/>
+        <location filename="editorpage.cpp" line="298"/>
         <source>Select file to open</source>
         <translation>Виберіть файл для відкриття</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="606"/>
+        <location filename="editorpage.cpp" line="609"/>
         <source>File not found</source>
         <translation>Файл не знайдено</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="607"/>
+        <location filename="editorpage.cpp" line="610"/>
         <source>The requested file doesn&apos;t exist anymore.</source>
         <translation>Необхідний файл більше не існує.</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="662"/>
+        <location filename="editorpage.cpp" line="665"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Неможливо відкрити файл %1 для читання.</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="450"/>
+        <location filename="editorpage.cpp" line="453"/>
         <source>Script wrapping failed.</source>
         <translation>Не вдалося обгорнути сценарій.</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="114"/>
+        <location filename="editorpage.cpp" line="117"/>
         <source>Recent files</source>
         <translation>Недавні файли</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="471"/>
-        <location filename="editorpage.cpp" line="507"/>
+        <location filename="editorpage.cpp" line="474"/>
+        <location filename="editorpage.cpp" line="510"/>
         <source>Script injection failed: %1</source>
         <translation>Не вдалося обгорнути сценарій: %1</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="625"/>
+        <location filename="editorpage.cpp" line="628"/>
         <source>Select file to save</source>
         <translation>Виберіть файл для збереження</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="638"/>
+        <location filename="editorpage.cpp" line="641"/>
         <source>Could not open file %1 for writing.</source>
-        <translation>Неможливо відкрити файл %1 для запису</translation>
+        <translation>Неможливо відкрити файл %1 для запису.</translation>
     </message>
 </context>
 <context>

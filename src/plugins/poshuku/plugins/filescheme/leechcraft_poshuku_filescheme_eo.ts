@@ -27,22 +27,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="200"/>
+        <location filename="schemereply.cpp" line="199"/>
         <source>Contents of %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="202"/>
+        <location filename="schemereply.cpp" line="201"/>
         <source>File</source>
         <translation>Dosiero</translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="203"/>
+        <location filename="schemereply.cpp" line="202"/>
         <source>Size</source>
         <translation>Grandeco</translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="204"/>
+        <location filename="schemereply.cpp" line="203"/>
         <source>Modified</source>
         <translation>Ŝanĝita</translation>
     </message>

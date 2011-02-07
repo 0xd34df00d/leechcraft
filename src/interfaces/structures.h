@@ -188,7 +188,7 @@ namespace LeechCraft
 		TaskParameters Parameters_;
 
 		/** @brief Additional parameters.
-		 * 
+		 *
 		 * Some predefined or commonly used ones:
 		 * - "UserVisibleName"
 		 *   A QString with some text that would make sense when showed

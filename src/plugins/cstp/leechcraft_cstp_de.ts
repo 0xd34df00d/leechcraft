@@ -54,7 +54,7 @@
     <message>
         <location filename="addtask.cpp" line="116"/>
         <source>%1 isn&apos;t a directory at all, would you like to select another?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ist kein Verzeichnis, willst du ein anderes Auswählen?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="157"/>
@@ -188,7 +188,7 @@
     <message>
         <location filename="task.cpp" line="476"/>
         <source>Error writing to file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Schreiben in Datei %1: %2</translation>
     </message>
 </context>
 <context>

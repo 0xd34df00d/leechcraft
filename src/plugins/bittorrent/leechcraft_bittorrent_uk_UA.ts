@@ -1046,12 +1046,12 @@ IPv6 input mask</extracomment>
         <translation>Відкрити торрент...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1081"/>
+        <location filename="torrentplugin.cpp" line="1080"/>
         <source>Change trackers...</source>
         <translation>Змінити трекери...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1083"/>
+        <location filename="torrentplugin.cpp" line="1082"/>
         <source>C</source>
         <translation>С</translation>
     </message>
@@ -1066,112 +1066,107 @@ IPv6 input mask</extracomment>
         <translation>Магнітне посилання:</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="969"/>
-        <source>N</source>
-        <translation>N</translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="976"/>
+        <location filename="torrentplugin.cpp" line="975"/>
         <source>Open multiple torrents...</source>
         <translation>Відкрити кілька торрентів...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="984"/>
+        <location filename="torrentplugin.cpp" line="983"/>
         <source>IP filter...</source>
         <translation>IP фільтр...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="992"/>
+        <location filename="torrentplugin.cpp" line="991"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="994"/>
+        <location filename="torrentplugin.cpp" line="993"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1001"/>
+        <location filename="torrentplugin.cpp" line="1000"/>
         <source>Resume</source>
         <translation>Продовжити</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1003"/>
+        <location filename="torrentplugin.cpp" line="1002"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1010"/>
+        <location filename="torrentplugin.cpp" line="1009"/>
         <source>Pause</source>
         <translation>Пауза</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1012"/>
+        <location filename="torrentplugin.cpp" line="1011"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1019"/>
+        <location filename="torrentplugin.cpp" line="1018"/>
         <source>Move up</source>
         <translation>Вище</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1028"/>
+        <location filename="torrentplugin.cpp" line="1027"/>
         <source>Move down</source>
         <translation>Нижче</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1037"/>
+        <location filename="torrentplugin.cpp" line="1036"/>
         <source>Move to top</source>
         <translation>На початок</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1046"/>
+        <location filename="torrentplugin.cpp" line="1045"/>
         <source>Move to bottom</source>
         <translation>В кінець</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1055"/>
+        <location filename="torrentplugin.cpp" line="1054"/>
         <source>Reannounce</source>
         <translation>Оголосити ще раз</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1057"/>
+        <location filename="torrentplugin.cpp" line="1056"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1064"/>
+        <location filename="torrentplugin.cpp" line="1063"/>
         <source>Recheck</source>
         <translation>Перевірити</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1072"/>
+        <location filename="torrentplugin.cpp" line="1071"/>
         <source>Move files...</source>
         <translation>Пересунути файли...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1074"/>
+        <location filename="torrentplugin.cpp" line="1073"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1090"/>
+        <location filename="torrentplugin.cpp" line="1089"/>
         <source>Make magnet link...</source>
         <translation>Створити магнітне посилання...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1098"/>
+        <location filename="torrentplugin.cpp" line="1097"/>
         <source>Import...</source>
         <translation>Імпортувати...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1106"/>
+        <location filename="torrentplugin.cpp" line="1105"/>
         <source>Export...</source>
         <translation>Експортувати...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1150"/>
+        <location filename="torrentplugin.cpp" line="1149"/>
         <source>Torrents actions</source>
         <translation>Дії над торрентами</translation>
     </message>

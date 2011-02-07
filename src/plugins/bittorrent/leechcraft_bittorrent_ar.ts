@@ -1038,12 +1038,12 @@ IPv6 input mask</extracomment>
         <translation>فتح تورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1081"/>
+        <location filename="torrentplugin.cpp" line="1080"/>
         <source>Change trackers...</source>
         <translation>تغيير مسارات...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1083"/>
+        <location filename="torrentplugin.cpp" line="1082"/>
         <source>C</source>
         <translation>C</translation>
     </message>
@@ -1071,112 +1071,107 @@ IPv6 input mask</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="969"/>
-        <source>N</source>
-        <translation>N</translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="976"/>
+        <location filename="torrentplugin.cpp" line="975"/>
         <source>Open multiple torrents...</source>
         <translation>فتح مجموعة التورنت...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="984"/>
+        <location filename="torrentplugin.cpp" line="983"/>
         <source>IP filter...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="992"/>
+        <location filename="torrentplugin.cpp" line="991"/>
         <source>Remove</source>
         <translation>إزالة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="994"/>
+        <location filename="torrentplugin.cpp" line="993"/>
         <source>Del</source>
         <translation>مسح</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1001"/>
+        <location filename="torrentplugin.cpp" line="1000"/>
         <source>Resume</source>
         <translation>استمرار</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1003"/>
+        <location filename="torrentplugin.cpp" line="1002"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1010"/>
+        <location filename="torrentplugin.cpp" line="1009"/>
         <source>Pause</source>
         <translation>إيقاف مؤقّتاً</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1012"/>
+        <location filename="torrentplugin.cpp" line="1011"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1019"/>
+        <location filename="torrentplugin.cpp" line="1018"/>
         <source>Move up</source>
         <translation>نقل للأعلى</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1028"/>
+        <location filename="torrentplugin.cpp" line="1027"/>
         <source>Move down</source>
         <translation>نقل للأسفل</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1037"/>
+        <location filename="torrentplugin.cpp" line="1036"/>
         <source>Move to top</source>
         <translation>نقل لأعلى القائمة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1046"/>
+        <location filename="torrentplugin.cpp" line="1045"/>
         <source>Move to bottom</source>
         <translation>نقل إلى أسفل القائمة</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1055"/>
+        <location filename="torrentplugin.cpp" line="1054"/>
         <source>Reannounce</source>
         <translation>إعادة الإنطاق</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1057"/>
+        <location filename="torrentplugin.cpp" line="1056"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1064"/>
+        <location filename="torrentplugin.cpp" line="1063"/>
         <source>Recheck</source>
         <translation>إعادة الفحص</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1072"/>
+        <location filename="torrentplugin.cpp" line="1071"/>
         <source>Move files...</source>
         <translation>نقل ملفات...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1074"/>
+        <location filename="torrentplugin.cpp" line="1073"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1090"/>
+        <location filename="torrentplugin.cpp" line="1089"/>
         <source>Make magnet link...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1098"/>
+        <location filename="torrentplugin.cpp" line="1097"/>
         <source>Import...</source>
         <translation>إستيراد...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1106"/>
+        <location filename="torrentplugin.cpp" line="1105"/>
         <source>Export...</source>
         <translation>تصدير...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1150"/>
+        <location filename="torrentplugin.cpp" line="1149"/>
         <source>Torrents actions</source>
         <translation type="unfinished"></translation>
     </message>

@@ -49,7 +49,7 @@
     <message>
         <location filename="core.cpp" line="109"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="core.cpp" line="381"/>
@@ -126,12 +126,12 @@
     <message>
         <location filename="core.cpp" line="974"/>
         <source>Repository addition error</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка при доданні репозиторія</translation>
     </message>
     <message>
         <location filename="core.cpp" line="975"/>
         <source>Incorrect URL %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоректний URL %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1006"/>
@@ -355,12 +355,12 @@
     <message>
         <location filename="lackman.cpp" line="195"/>
         <source>Update all repos</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити всі репозиторії</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="201"/>
         <source>Upgrade all packages</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити всі пакети</translation>
     </message>
 </context>
 <context>
@@ -504,7 +504,7 @@
     <message>
         <location filename="xmlparsers.cpp" line="59"/>
         <source>Could not get maintainer name.</source>
-        <translation type="unfinished">Неможливо отримати ім&apos;я супроводжувача.</translation>
+        <translation>Неможливо отримати ім&apos;я супроводжувача.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="64"/>
@@ -523,7 +523,7 @@
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
         <source>Packages</source>
-        <translation type="unfinished">Пакети</translation>
+        <translation>Пакети</translation>
     </message>
 </context>
 </TS>

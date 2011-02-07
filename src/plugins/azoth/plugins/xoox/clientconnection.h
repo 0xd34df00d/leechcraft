@@ -33,6 +33,7 @@ class QXmppMessage;
 class QXmppMucManager;
 class QXmppClient;
 class QXmppDiscoveryManager;
+class QXmppTransferManager;
 class QXmppDiscoveryIq;
 
 namespace LeechCraft
@@ -56,6 +57,7 @@ namespace Xoox
 
 		QXmppClient *Client_;
 		QXmppMucManager *MUCManager_;
+		QXmppTransferManager *XferManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
 
 		QString OurJID_;
@@ -93,6 +95,8 @@ namespace Xoox
 		void Unregister (RoomHandler*);
 
 		QXmppMucManager* GetMUCManager () const;
+		QXmppTransferManager* GetTransferManager () const;
+
 		void RequestInfo (const QString&) const;
 
 		void Update (const QXmppRosterIq::Item&);
@@ -113,10 +117,11 @@ namespace Xoox
 		void FetchVCard (const QString&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, const QXmppRosterIq::Item&);
+
+		static void Split (const QString& full,
+				QString *bare, QString *resource);
 	private:
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
-		void Split (const QString& full,
-				QString *bare, QString *resource) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);

@@ -63,7 +63,12 @@ namespace Azoth
 			/** This account supports viewing contacts information while
 			 * offline.
 			 */
-			FCanViewContactsInfoInOffline = 0x10
+			FCanViewContactsInfoInOffline = 0x10,
+
+			/** This account supports sending and receiving files to or
+			 * from MUCs.
+			 */
+			FMUCsSupportFileTransfers = 0x20
 		};
 
 		Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);

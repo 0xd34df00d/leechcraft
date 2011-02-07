@@ -32,6 +32,7 @@
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/categoryselector.h>
+#include <plugininterface/mergemodel.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -39,6 +40,7 @@
 #include "interfaces/iclentry.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/iauthable.h"
+#include "interfaces/iresourceplugin.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -46,6 +48,7 @@
 #include "joinconferencedialog.h"
 #include "notificationactionhandler.h"
 #include "groupeditordialog.h"
+#include "transferjobmanager.h"
 
 namespace LeechCraft
 {
@@ -56,13 +59,20 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
+	, SmilesOptionsModel_ (new Util::MergeModel (QStringList (tr ("Smile pack"))))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
+	, XferJobManager_ (new TransferJobManager)
 	{
 		connect (ChatTabsManager_,
 				SIGNAL (clearUnreadMsgCount (QObject*)),
 				this,
 				SLOT (handleClearUnreadMsgCount (QObject*)));
+		connect (XferJobManager_.get (),
+				SIGNAL (jobNoLongerOffered (QObject*)),
+				this,
+				SLOT (handleJobDeoffered (QObject*)));
+
 		PluginManager_->RegisterHookable (this);
 
 		StatusIconLoader_->AddLocalPrefix ();
@@ -110,12 +120,18 @@ namespace Azoth
 			return ClientIconLoader_.get ();
 		}
 	}
+	
+	QAbstractItemModel* Core::GetSmilesOptionsModel () const
+	{
+		return SmilesOptionsModel_.get ();
+	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
 	{
 		QSet<QByteArray> classes;
 		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
 		return classes;
 	}
 
@@ -141,6 +157,9 @@ namespace Azoth
 		QSet<QByteArray> classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin"))
 			AddProtocolPlugin (plugin);
+		
+		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin"))
+			AddResourceSourcePlugin (plugin);
 	}
 
 	void Core::RegisterHookable (QObject *object)
@@ -241,12 +260,22 @@ namespace Azoth
 		ChatTabsManager_->OpenChat (contactIndex);
 	}
 
+	void Core::HandleTransferJob (QObject *job)
+	{
+		XferJobManager_->HandleJob (job);
+	}
+
+	TransferJobManager* Core::GetTransferJobManager () const
+	{
+		return XferJobManager_.get ();
+	}
+
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
 			const IMessage *msg)
 	{
 		return !ChatTabsManager_->IsActiveChat (entry) &&
 				(msg->GetMessageType () == IMessage::MTChatMessage ||
-					msg->GetMessageType () == IMessage::MTMUCMessage);
+				 msg->GetMessageType () == IMessage::MTMUCMessage);
 	}
 
 	bool Core::IsHighlightMessage (const IMessage *msg)
@@ -307,6 +336,30 @@ namespace Azoth
 				AccountCreatorActions_ += creators;
 			}
 		}
+	}
+	
+	void Core::AddResourceSourcePlugin (QObject *object)
+	{
+		IResourcePlugin *irp = qobject_cast<IResourcePlugin*> (object);
+		if (!irp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< object
+					<< "doesn't implement IResourcePlugin";
+			return;
+		}
+
+		Q_FOREACH (QObject *object, irp->GetResourceSources ())
+		{
+			ISmileResourceSource *smileSrc = qobject_cast<ISmileResourceSource*> (object);
+			if (smileSrc)
+				AddSmileResourceSource (smileSrc);
+		}
+	}
+	
+	void Core::AddSmileResourceSource (ISmileResourceSource *src)
+	{
+		SmilesOptionsModel_->AddModel (src->GetOptionsModel ());
 	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,
@@ -441,6 +494,39 @@ namespace Azoth
 					status.State_ == SOffline)
 				item->setIcon (GetIconForState (status.State_));
 		}
+		
+		const QString& id = entry->GetEntryID ();
+		if (!XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
+			CheckFileIcon (id);
+	}
+	
+	void Core::CheckFileIcon (const QString& id)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (id));
+		if (XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
+		{
+			const QString& variant = entry->Variants ().value (0);
+			HandleStatusChanged (entry->GetStatus (variant), entry, variant);
+			return;
+		}
+		
+		const QString& filename = XmlSettingsManager::Instance ()
+				.property ("StatusIcons").toString () + "/file";
+		qDebug () << filename << StatusIconLoader_->GetIconPath (filename);
+		const QIcon& fileIcon = QIcon (StatusIconLoader_->GetIconPath (filename));
+
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			item->setIcon (fileIcon);
+	}
+	
+	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
+	{
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			{
+				int prevValue = item->data (CLRUnreadMsgCount).toInt ();
+				item->setData (std::max (0, prevValue + amount), CLRUnreadMsgCount);
+				RecalculateUnreadForParents (item);
+			}
 	}
 
 	QIcon Core::GetIconForState (State state) const
@@ -642,7 +728,7 @@ namespace Azoth
 			rerequest->setProperty ("ActionIcon", "azoth_auth_rerequest");
 			rerequest->setProperty ("Azoth/WithReason", false);
 
-			QAction *rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason.."),
+			QAction *rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason..."),
 					this, SLOT (handleActionRerequestTriggered ()));
 			rerequestReason->setProperty ("ActionIcon", "azoth_auth_rerequest");
 			rerequestReason->setProperty ("Azoth/WithReason", true);
@@ -1094,6 +1180,17 @@ namespace Azoth
 				SIGNAL (statusChanged (const EntryStatus&)),
 				this,
 				SLOT (handleAccountStatusChanged (const EntryStatus&)));
+
+		QObject *xferMgr = account->GetTransferManager ();
+		if (xferMgr)
+		{
+			XferJobManager_->AddAccountManager (xferMgr);
+			
+			connect (xferMgr,
+					SIGNAL (fileOffered (QObject*)),
+					this,
+					SLOT (handleFileOffered (QObject*)));
+		}
 	}
 
 	void Core::handleAccountRemoved (QObject *account)
@@ -1312,29 +1409,57 @@ namespace Azoth
 		ICLEntry *parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (ShouldCountUnread (parentCL, msg))
-			Q_FOREACH (QStandardItem *item, Entry2Items_ [parentCL])
-			{
-				int prevValue = item->data (CLRUnreadMsgCount).toInt ();
-				item->setData (prevValue + 1, CLRUnreadMsgCount);
-				RecalculateUnreadForParents (item);
-			}
+			IncreaseUnreadCount (parentCL);
 
 		if (msg->GetDirection () == IMessage::DIn &&
 				!ChatTabsManager_->IsActiveChat (parentCL))
 		{
+			bool showMsg = XmlSettingsManager::Instance ()
+					.property ("ShowMsgInNotifications").toBool ();
+
 			QString msgString;
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::MTChatMessage:
-				msgString = tr ("Incoming chat message from <em>%1</em>.")
-						.arg (other->GetEntryName ());
+				if (XmlSettingsManager::Instance ()
+						.property ("NotifyAboutIncomingMessages").toBool ())
+				{
+					if (!showMsg)
+						msgString = tr ("Incoming chat message from <em>%1</em>.")
+								.arg (other->GetEntryName ());
+					else
+					{
+						const QString& body = msg->GetBody ();
+						const QString& notifMsg = body.size () > 50 ?
+								body.left (50) + "..." :
+								body;
+						msgString = tr ("Incoming chat message from <em>%1</em>: <em>%2</em>.")
+								.arg (other->GetEntryName ())
+								.arg (notifMsg);
+					}
+				}
 				break;
 			case IMessage::MTMUCMessage:
 			{
-				if (IsHighlightMessage (msg))
-					msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
-							.arg (parentCL->GetEntryName ())
-							.arg (other->GetEntryName ());
+				if (IsHighlightMessage (msg) && XmlSettingsManager::Instance ()
+						.property ("NotifyAboutConferenceHighlights").toBool ())
+				{
+					if (!showMsg)
+						msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
+								.arg (parentCL->GetEntryName ())
+								.arg (other->GetEntryName ());
+					else
+					{
+						const QString& body = msg->GetBody ();
+						const QString& notifMsg = body.size () > 50 ?
+								body.left (50) + "..." :
+								body;
+						msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>: <em>%3</em>.")
+								.arg (parentCL->GetEntryName ())
+								.arg (other->GetEntryName ())
+								.arg (notifMsg);
+					}
+				}
 				break;
 			}
 			default:
@@ -1460,6 +1585,10 @@ namespace Azoth
 		*/
 	void Core::handleItemSubscribed (QObject *entryObj, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifySubscriptions").toBool ())
+			return;
+
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
 				tr ("%1 (%2) subscribed to us."),
 				tr ("%1 (%2) subscribed to us: %3."));
@@ -1469,6 +1598,10 @@ namespace Azoth
 		*/
 	void Core::handleItemUnsubscribed (QObject *entryObj, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifyUnsubscriptions").toBool ())
+			return;
+
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
 				tr ("%1 (%2) unsubscribed from us."),
 				tr ("%1 (%2) unsubscribed from us: %3."));
@@ -1479,6 +1612,10 @@ namespace Azoth
 		*/
 	void Core::handleItemUnsubscribed (const QString& entryId, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifyAboutNonrosterUnsub").toBool ())
+			return;
+
 		QString str = msg.isEmpty () ?
 				tr ("%1 unsubscribed from us.")
 					.arg (entryId) :
@@ -1490,6 +1627,10 @@ namespace Azoth
 
 	void Core::handleItemCancelledSubscription (QObject *entryObj, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifySubCancels").toBool ())
+			return;
+
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
 				tr ("%1 (%2) cancelled our subscription."),
 				tr ("%1 (%2) cancelled our subscription: %3."));
@@ -1497,6 +1638,10 @@ namespace Azoth
 
 	void Core::handleItemGrantedSubscription (QObject *entryObj, const QString& msg)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("NotifySubGrants").toBool ())
+			return;
+
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
 				tr ("%1 (%2) granted subscription."),
 				tr ("%1 (%2) granted subscription: %3."));
@@ -1561,6 +1706,39 @@ namespace Azoth
 			item->setData (0, CLRUnreadMsgCount);
 			RecalculateUnreadForParents (item);
 		}
+	}
+	
+	void Core::handleFileOffered (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)	
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "could not be casted to ITransferJob";
+			return;
+		}
+		
+		const QString& id = job->GetSourceID ();
+		IncreaseUnreadCount (qobject_cast<ICLEntry*> (GetEntry (id)));
+
+		CheckFileIcon (id);
+	}
+	
+	void Core::handleJobDeoffered (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)	
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "could not be casted to ITransferJob";
+			return;
+		}
+
+		const QString& id = job->GetSourceID ();
+		IncreaseUnreadCount (qobject_cast<ICLEntry*> (GetEntry (id)), -1);
+		CheckFileIcon (id);
 	}
 
 	void Core::invalidateClientsIconCache (QObject *passedObj)

@@ -23,6 +23,8 @@ SET (XOOX_SRCS
 	core.cpp
 	unauthclentry.cpp
 	vcarddialog.cpp
+	transfermanager.cpp
+	transferjob.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -42,6 +44,8 @@ SET (XOOX_HEADERS
 	core.h
 	unauthclentry.h
 	vcarddialog.h
+	transfermanager.h
+	transferjob.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

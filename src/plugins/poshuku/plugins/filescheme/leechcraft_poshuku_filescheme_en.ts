@@ -27,22 +27,22 @@
         <translation>Unable to read %1</translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="200"/>
+        <location filename="schemereply.cpp" line="199"/>
         <source>Contents of %1</source>
         <translation>Contents of %1</translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="202"/>
+        <location filename="schemereply.cpp" line="201"/>
         <source>File</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="203"/>
+        <location filename="schemereply.cpp" line="202"/>
         <source>Size</source>
         <translation>Size</translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="204"/>
+        <location filename="schemereply.cpp" line="203"/>
         <source>Modified</source>
         <translation>Modified</translation>
     </message>

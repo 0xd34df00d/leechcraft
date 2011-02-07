@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QtDebug>
+#include <QDesktopServices>
 #include "../filepicker.h"
 
 namespace LeechCraft
@@ -83,7 +84,22 @@ namespace LeechCraft
 					item.attribute ("defaultHomePath") == "true")
 				value = QDir::homePath ();
 			else if (item.hasAttribute ("default"))
-				value = item.attribute ("default");
+			{
+				QString text = item.attribute ("default");
+				QMap<QString, QDesktopServices::StandardLocation> str2loc;
+				str2loc ["DOCUMENTS"] = QDesktopServices::DocumentsLocation;
+				str2loc ["DESKTOP"] = QDesktopServices::DocumentsLocation;
+				str2loc ["MUSIC"] = QDesktopServices::DocumentsLocation;
+				str2loc ["MOVIES"] = QDesktopServices::DocumentsLocation;
+				Q_FOREACH (const QString& key, str2loc.keys ())
+					if (text.startsWith ("{" + key + "}"))
+					{
+						text.replace (0, key.length () + 2, QDesktopServices::storageLocation (str2loc [key]));
+						break;
+					}
+
+				value = text;
+			}
 		}
 		return value;
 	}

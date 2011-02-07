@@ -87,7 +87,7 @@
     <message>
         <location filename="plugininterface/backendselector.ui" line="31"/>
         <source>MySQL</source>
-        <translation type="unfinished"></translation>
+        <translation>MySQL</translation>
     </message>
     <message>
         <location filename="plugininterface/backendselector.ui" line="54"/>
@@ -169,6 +169,24 @@
     <message>
         <source>Location:</source>
         <translation type="obsolete">Wohin:</translation>
+    </message>
+</context>
+<context>
+    <name>DataViewWidget</name>
+    <message>
+        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="25"/>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="32"/>
+        <source>Modify...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="39"/>
+        <source>Remove</source>
+        <translation>Bewegen</translation>
     </message>
 </context>
 <context>
@@ -354,7 +372,7 @@
     <message>
         <location filename="leechcraft.ui" line="193"/>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="198"/>
@@ -636,61 +654,61 @@
         <translation type="obsolete">Aktionen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="120"/>
+        <location filename="mainwindow.cpp" line="125"/>
         <source>F11</source>
         <comment>FullScreen</comment>
-        <translation type="unfinished">F11</translation>
+        <translation>F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="252"/>
+        <location filename="mainwindow.cpp" line="257"/>
         <source>View</source>
-        <translation type="unfinished">Anzeigen</translation>
+        <translation>Anzeigen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="255"/>
+        <location filename="mainwindow.cpp" line="260"/>
         <source>Tools</source>
-        <translation type="unfinished">Tools</translation>
+        <translation>Tools</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="352"/>
+        <location filename="mainwindow.cpp" line="357"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="355"/>
-        <location filename="mainwindow.cpp" line="359"/>
-        <location filename="mainwindow.cpp" line="674"/>
-        <location filename="mainwindow.cpp" line="675"/>
+        <location filename="mainwindow.cpp" line="360"/>
+        <location filename="mainwindow.cpp" line="364"/>
+        <location filename="mainwindow.cpp" line="684"/>
+        <location filename="mainwindow.cpp" line="685"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="498"/>
+        <location filename="mainwindow.cpp" line="503"/>
         <source>Do you really want to quit?</source>
         <translation>Wollen Sie wirklich ausgehen?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="503"/>
+        <location filename="mainwindow.cpp" line="508"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="582"/>
+        <location filename="mainwindow.cpp" line="587"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Diese Änderung erfordert den Neustart von LeechCraft. Wollen Sie jetzt neustarten?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="747"/>
+        <location filename="mainwindow.cpp" line="757"/>
         <source>Context-dependent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="774"/>
+        <location filename="mainwindow.cpp" line="784"/>
         <source>LeechCraft menu</source>
         <translation>LeechCraft Menü</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="915"/>
+        <location filename="mainwindow.cpp" line="925"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
@@ -703,7 +721,7 @@
         <translation type="obsolete">Management Plugins</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="681"/>
+        <location filename="mainwindow.cpp" line="691"/>
         <source>%1 down, %2 up</source>
         <translation>%1 hinauf, %2 hinunter</translation>
     </message>
@@ -766,7 +784,7 @@
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="79"/>
+        <location filename="pluginmanager.cpp" line="49"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
@@ -775,42 +793,42 @@
         <translation type="obsolete">Datei</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="80"/>
+        <location filename="pluginmanager.cpp" line="50"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="516"/>
+        <location filename="pluginmanager.cpp" line="536"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="529"/>
+        <location filename="pluginmanager.cpp" line="549"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="548"/>
+        <location filename="pluginmanager.cpp" line="568"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="560"/>
+        <location filename="pluginmanager.cpp" line="580"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="572"/>
+        <location filename="pluginmanager.cpp" line="592"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="595"/>
+        <location filename="pluginmanager.cpp" line="615"/>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="607"/>
+        <location filename="pluginmanager.cpp" line="627"/>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -819,9 +837,8 @@
         <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="277"/>
         <source>Release of one or more plugins failed.</source>
-        <translation>Angelegenheit einen oder einigen Plugins ist erfolglos.</translation>
+        <translation type="obsolete">Angelegenheit einen oder einigen Plugins ist erfolglos.</translation>
     </message>
     <message>
         <source>Initializing %1...</source>
@@ -991,7 +1008,7 @@
     <message>
         <location filename="tabmanager.cpp" line="70"/>
         <source>Close all but this</source>
-        <translation type="unfinished">Andere Tabs schließen</translation>
+        <translation>Andere Tabs schließen</translation>
     </message>
 </context>
 <context>

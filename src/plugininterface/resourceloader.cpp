@@ -113,6 +113,15 @@ namespace LeechCraft
 
 			return QString ();
 		}
+		
+		QString ResourceLoader::GetIconPath (const QString& basename) const
+		{
+			QStringList variants;
+			variants << basename + ".svg"
+					<< basename + ".png"
+					<< basename + ".jpg";
+			return GetPath (variants);
+		}
 
 		QIODevice_ptr ResourceLoader::Load (const QStringList& pathVariants) const
 		{

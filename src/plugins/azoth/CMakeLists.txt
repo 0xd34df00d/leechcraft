@@ -44,6 +44,7 @@ SET (SRCS
 	joinconferencedialog.cpp
 	notificationactionhandler.cpp
 	groupeditordialog.cpp
+	transferjobmanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -63,6 +64,7 @@ SET (HEADERS
 	joinconferencedialog.h
 	notificationactionhandler.h
 	groupeditordialog.h
+	transferjobmanager.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h

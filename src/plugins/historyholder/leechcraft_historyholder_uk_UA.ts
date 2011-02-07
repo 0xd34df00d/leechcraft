@@ -24,7 +24,7 @@
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="176"/>
+        <location filename="core.cpp" line="172"/>
         <source>Binary data</source>
         <translation>Двійкові дані</translation>
     </message>

@@ -29,6 +29,7 @@
 #include "chattabsmanager.h"
 #include "chattab.h"
 #include "xmlsettingsmanager.h"
+#include "transferjobmanager.h"
 
 namespace LeechCraft
 {
@@ -94,6 +95,8 @@ namespace Azoth
 
 	void Plugin::SecondInit ()
 	{
+		XmlSettingsDialog_->SetDataSource ("SmileIcons",
+				Core::Instance ().GetSmilesOptionsModel ());
 	}
 
 	void Plugin::Release ()
@@ -153,6 +156,11 @@ namespace Azoth
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
+	}
+
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
 	}
 
 	void Plugin::newTabRequested ()
