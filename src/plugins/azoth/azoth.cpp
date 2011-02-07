@@ -95,6 +95,8 @@ namespace Azoth
 
 	void Plugin::SecondInit ()
 	{
+		XmlSettingsDialog_->SetDataSource ("SmileIcons",
+				Core::Instance ().GetSmilesOptionsModel ());
 	}
 
 	void Plugin::Release ()

@@ -32,6 +32,7 @@
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/categoryselector.h>
+#include <plugininterface/mergemodel.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -39,6 +40,7 @@
 #include "interfaces/iclentry.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/iauthable.h"
+#include "interfaces/iresourceplugin.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -47,7 +49,6 @@
 #include "notificationactionhandler.h"
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
-#include <boost/graph/graph_concepts.hpp>
 
 namespace LeechCraft
 {
@@ -58,6 +59,7 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
+	, SmilesOptionsModel_ (new Util::MergeModel (QStringList (tr ("Smile pack"))))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
@@ -118,12 +120,18 @@ namespace Azoth
 			return ClientIconLoader_.get ();
 		}
 	}
+	
+	QAbstractItemModel* Core::GetSmilesOptionsModel () const
+	{
+		return SmilesOptionsModel_.get ();
+	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
 	{
 		QSet<QByteArray> classes;
 		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
 		return classes;
 	}
 
@@ -149,6 +157,9 @@ namespace Azoth
 		QSet<QByteArray> classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin"))
 			AddProtocolPlugin (plugin);
+		
+		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin"))
+			AddResourceSourcePlugin (plugin);
 	}
 
 	void Core::RegisterHookable (QObject *object)
@@ -325,6 +336,30 @@ namespace Azoth
 				AccountCreatorActions_ += creators;
 			}
 		}
+	}
+	
+	void Core::AddResourceSourcePlugin (QObject *object)
+	{
+		IResourcePlugin *irp = qobject_cast<IResourcePlugin*> (object);
+		if (!irp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< object
+					<< "doesn't implement IResourcePlugin";
+			return;
+		}
+
+		Q_FOREACH (QObject *object, irp->GetResourceSources ())
+		{
+			ISmileResourceSource *smileSrc = qobject_cast<ISmileResourceSource*> (object);
+			if (smileSrc)
+				AddSmileResourceSource (smileSrc);
+		}
+	}
+	
+	void Core::AddSmileResourceSource (ISmileResourceSource *src)
+	{
+		SmilesOptionsModel_->AddModel (src->GetOptionsModel ());
 	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,

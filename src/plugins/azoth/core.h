@@ -36,6 +36,7 @@ namespace LeechCraft
 namespace Util
 {
 	class ResourceLoader;
+	class MergeModel;
 }
 namespace Azoth
 {
@@ -43,6 +44,7 @@ namespace Azoth
 	class ICLEntry;
 	class IAccount;
 	class IMessage;
+	class ISmileResourceSource;
 
 	class ChatTabsManager;
 	class PluginManager;
@@ -83,6 +85,7 @@ namespace Azoth
 
 		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
+		boost::shared_ptr<Util::MergeModel> SmilesOptionsModel_;
 
 		boost::shared_ptr<PluginManager> PluginManager_;
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
@@ -136,6 +139,7 @@ namespace Azoth
 		ICoreProxy_ptr GetProxy () const;
 
 		Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
+		QAbstractItemModel* GetSmilesOptionsModel () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
@@ -245,6 +249,12 @@ namespace Azoth
 		 * account in this protocol or joining groupchats.
 		 */
 		void AddProtocolPlugin (QObject *object);
+		
+		/** Adds the resource source object. Currently only smile
+		 * resources are supported.
+		 */
+		void AddResourceSourcePlugin (QObject *object);
+		void AddSmileResourceSource (ISmileResourceSource*);
 
 		/** Adds the given contact list entry to the given account and
 		 * performs common initialization tasks.
