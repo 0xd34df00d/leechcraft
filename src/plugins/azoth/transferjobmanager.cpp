@@ -56,8 +56,9 @@ namespace Azoth
 				SLOT (handleFileOffered (QObject*)));
 	}
 	
-	QObject* TransferJobManager::GetPendingIncomingJobsFor (const QString& id)
+	QObjectList TransferJobManager::GetPendingIncomingJobsFor (const QString& id)
 	{
+		return Entry2Incoming_ [id];
 	}
 
 	namespace
@@ -161,8 +162,8 @@ namespace Azoth
 				return;
 			}
 		}
-		
-		Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj);
+
+		HandleDeoffer (jobObj);
 
 		HandleJob (jobObj);
 
@@ -179,8 +180,8 @@ namespace Azoth
 					<< "is not an ITransferJob";
 			return;
 		}
-		
-		Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj);
+
+		HandleDeoffer (jobObj);
 
 		job->Abort ();
 		sender ()->deleteLater ();
@@ -189,6 +190,20 @@ namespace Azoth
 	QAbstractItemModel* TransferJobManager::GetSummaryModel () const
 	{
 		return SummaryModel_;
+	}
+	
+	void TransferJobManager::HandleDeoffer (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "could not be casted to ITransferJob";
+			return;
+		}
+		if (Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj))
+			emit jobNoLongerOffered (jobObj);
 	}
 
 	void TransferJobManager::handleFileOffered (QObject *jobObj)
@@ -231,6 +246,8 @@ namespace Azoth
 					<< "is not an ITransferJob";
 			return;
 		}
+		
+		HandleDeoffer (sender ());
 
 		const QString& other = GetContactName (job->GetSourceID ());
 
@@ -309,6 +326,9 @@ namespace Azoth
 					.arg (name);
 			break;
 		}
+		
+		if (state != TSOffer)
+			HandleDeoffer (sender ());
 
 		if (state != TSFinished)
 			Object2Status_ [sender ()]->setText (status);

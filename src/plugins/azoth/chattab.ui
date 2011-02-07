@@ -108,6 +108,16 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QToolButton" name="EventsButton_">
+       <property name="text">
+        <string>Events...</string>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::InstantPopup</enum>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

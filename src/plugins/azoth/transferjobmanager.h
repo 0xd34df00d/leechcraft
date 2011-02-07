@@ -50,7 +50,7 @@ namespace Azoth
 		TransferJobManager (QObject* = 0);
 
 		void AddAccountManager (QObject*);
-		QObject* GetPendingIncomingJobsFor (const QString&);
+		QObjectList GetPendingIncomingJobsFor (const QString&);
 
 		void HandleJob (QObject*);
 		void AcceptJob (QObject*, QString);
@@ -58,11 +58,14 @@ namespace Azoth
 		QAbstractItemModel* GetSummaryModel () const;
 	private:
 		QString CheckSavePath (QString);
+		void HandleDeoffer (QObject*);
 	private slots:
 		void handleFileOffered (QObject*);
 		void handleXferError (TransferError, const QString&);
 		void handleStateChanged (TransferState);
 		void handleXferProgress (qint64, qint64);
+	signals:
+		void jobNoLongerOffered (QObject*);
 	};
 }
 }

@@ -24,6 +24,9 @@
 #include <QPalette>
 #include <QApplication>
 #include <QShortcut>
+#include <QMenu>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
@@ -35,7 +38,7 @@
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
-#include <QFileDialog>
+#include "transferjobmanager.h"
 
 namespace LeechCraft
 {
@@ -70,6 +73,9 @@ namespace Azoth
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
+		
+		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
+		Ui_.EventsButton_->hide ();
 
 		Core::Instance ().RegisterHookable (this);
 
@@ -347,6 +353,65 @@ namespace Azoth
 				Ui_.VariantBox_->currentText (), filename);
 		Core::Instance ().HandleTransferJob (job);
 	}
+	
+	void ChatTab::handleFileOffered (QObject *jobObj)
+	{
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< jobObj
+					<< "could not be casted to ITransferJob";
+			return;
+		}
+
+		Ui_.EventsButton_->show ();
+
+		const QString& text = tr ("File offered: %1.")
+				.arg (job->GetName ());
+		QAction *act = Ui_.EventsButton_->menu ()->
+				addAction (text, this, SLOT (handleOfferActionTriggered ()));
+		act->setData (QVariant::fromValue<QObject*> (jobObj));
+	}
+	
+	void ChatTab::handleOfferActionTriggered ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		QObject *jobObj = action->data ().value<QObject*> ();
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		
+		if (QMessageBox::question (this,
+					tr ("File transfer request"),
+					tr ("Would you like to accept or deny file transfer "
+						"request for file %1?")
+						.arg (job->GetName ()),
+					QMessageBox::Save | QMessageBox::Abort) == QMessageBox::Abort)
+			Core::Instance ().GetTransferJobManager ()->DenyJob (jobObj);
+		else
+		{
+			const QString& path = QFileDialog::getExistingDirectory (this,
+					tr ("Select save path for incoming file"),
+					XmlSettingsManager::Instance ()
+							.property ("DefaultXferSavePath").toString ());
+			if (path.isEmpty ())
+				return;
+			
+			Core::Instance ().GetTransferJobManager ()->AcceptJob (jobObj, path);
+		}
+		
+		action->deleteLater ();
+
+		if (Ui_.EventsButton_->menu ()->actions ().size () == 1)
+			Ui_.EventsButton_->hide ();
+	}
 
 	void ChatTab::handleEntryMessage (QObject *msgObj)
 	{
@@ -533,6 +598,18 @@ namespace Azoth
 			(IsMUC_ &&
 			 !(acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)))
 			Ui_.SendFileButton_->hide ();
+		else
+		{
+			connect (acc->GetTransferManager (),
+					SIGNAL (fileOffered (QObject*)),
+					this,
+					SLOT (handleFileOffered (QObject*)));
+			
+			Q_FOREACH (QObject *object,
+					Core::Instance ().GetTransferJobManager ()->
+							GetPendingIncomingJobsFor (EntryID_))
+				handleFileOffered (object);
+		}
 	}
 
 	void ChatTab::HandleMUC ()
