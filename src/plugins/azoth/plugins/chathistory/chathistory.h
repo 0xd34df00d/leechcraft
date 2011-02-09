@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,71 +18,55 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QSqlQuery>
-#include <QSet>
-#include <boost/shared_ptr.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/imessage.h>
-
-class QSqlDatabase;
+#include "core.h"
 
 namespace LeechCraft
 {
+namespace Azoth
+{
+namespace ChatHistory
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IPlugin2
+	{
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2)
 
+		boost::shared_ptr<STGuard<Core> > Guard_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-		namespace Azoth
-		{
-
-
-				namespace ChatHistory
-				{
-					class Plugin : public QObject
-								 , public IInfo
-								 , public IPlugin2
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2)
-
-						boost::shared_ptr<QSqlDatabase> DB_;
-						QSqlQuery UserSelecter_;
-						QSqlQuery UserIdSelecter_;
-						QSqlQuery UserInserter_;
-						QSqlQuery MessageDumper_;
-						QSet<QString> Users_;
-						void InitializeTables ();
-						void ProcessMessageDump (IMessage *msg);
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						QByteArray GetUniqueID () const;
-						void Release ();
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
-
-						QSet<QByteArray> GetPluginClasses () const;
-						QSqlQuery GetQuery (const QString& sql);
-					public slots:
-						void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
-								QObject *chatTab,
-								QObject *message);
-						void hookMessageArrived (LeechCraft::IHookProxy_ptr proxy,
-								QObject *chatTab,
-								QObject *message);
-						void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
-													 QObject *message);
-					};
-				}
-
-		}
-
+		QSet<QByteArray> GetPluginClasses () const;
+		QSqlQuery GetQuery (const QString& sql);
+	public slots:
+		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *message);
+		void hookMessageArrived (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *message);
+		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+	};
+}
+}
 }
 
 #endif
-

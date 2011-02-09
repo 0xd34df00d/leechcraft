@@ -3,9 +3,13 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (CHATHISTORY_SRCS
 	chathistory.cpp
+	core.cpp
+	storage.cpp
 	)
 SET (CHATHISTORY_HEADERS
 	chathistory.h
+	core.h
+	storage.h
 	)
 QT4_WRAP_CPP (CHATHISTORY_MOC_SRCS ${CHATHISTORY_HEADERS})
 
