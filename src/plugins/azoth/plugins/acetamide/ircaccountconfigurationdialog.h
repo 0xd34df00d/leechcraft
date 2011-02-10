@@ -45,24 +45,26 @@ namespace Acetamide
 		QAction *AddChannel_;
 		QAction *AddServer_;
 		QStandardItemModel *ServerAndChannels_;
-		QMap<QString, QVariant> Servers_;
-		QMap<QString, QVariant> Channels_;
+		QList<QVariant> ServersInfo_;
 	public:
 		IrcAccountConfigurationDialog (QWidget* = 0);
 		QMap<QString, QVariant> GetNicks ();
 		void SetNicks (const QMap<QString, QVariant>&);
-		QMap<QString, QVariant> GetServers () const;
-		void SetServers (const QMap<QString, QVariant>&);
-		QMap<QString, QVariant> GetChannels () const;
-		void GetServersAndChannels (QStandardItem*, bool);
+		void SetServers (const QList<QVariant>&);
+		QList<QVariant> GetServersInfo () const;
+		void SetServersInfo (const QList<QVariant>&);
 	private:
 		QStringList GetNetworks () const;
 		void SetNetworks (const QStringList&);
+		void DeleteElement (const QString&, const QModelIndex&, const QString&);
+		void DeleteChannel (const QModelIndex&, const QString&);
 	public slots:
 		void handleChangeServer (int);
 		void handleAddServer (bool);
 		void handleAddChannel (bool);
 		void handleChannelsEnable (QModelIndex);
+		void handleEditElement (bool);
+		void handleDeleteElement (bool);
 
 	};
 };

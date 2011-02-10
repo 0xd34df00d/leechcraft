@@ -18,6 +18,7 @@
 
 #include "ircaccountconfigurationdialog.h"
 #include <boost/shared_ptr.hpp>
+#include <QMessageBox>
 #include <QComboBox>
 #include <QtDebug>
 #include <QMap>
@@ -63,6 +64,16 @@ namespace Acetamide
 				this,
 				SLOT (handleAddChannel (bool)));
 		
+		connect(Ui_.Edit_,
+				SIGNAL (clicked (bool)),
+				this,
+				SLOT (handleEditElement (bool)));
+		
+		connect(Ui_.Delete_,
+				SIGNAL (clicked (bool)),
+				this,
+				SLOT (handleDeleteElement (bool)));
+		
 		connect (Ui_.ServerChannels_,
 				SIGNAL (clicked (QModelIndex)),
 				this,
@@ -82,56 +93,61 @@ namespace Acetamide
 		SetNetworks (Nicknames_.keys ());
 	}
 	
-	QMap<QString, QVariant> IrcAccountConfigurationDialog::GetServers () const
+	void IrcAccountConfigurationDialog::SetServers (const QList<QVariant>& serversInfo)
 	{
-		return Servers_;
+		ServerAndChannels_->clear ();
+		Q_FOREACH (const QVariant& serverInfo, serversInfo)
+		{
+			QList<QStandardItem*> networks = ServerAndChannels_->findItems (serverInfo.toMap () ["Network"].toString ());
+			QStandardItem *networkItem;
+			if (networks.isEmpty ())
+			{
+				networkItem = new QStandardItem (serverInfo.toMap () ["Network"].toString ());
+				networkItem->setData ("network", ServerAndChannelsRole);
+				networkItem->setEditable (false);
+				ServerAndChannels_->appendRow (networkItem);
+			}
+			else
+				networkItem = networks.at (0);
+
+			QList<QStandardItem*> channels;
+			Q_FOREACH (const QString& channelPair, serverInfo.toMap () ["Channels"].toStringList ())
+			{
+				QStandardItem *item = new QStandardItem (channelPair.split (' ').at (0));
+				item->setData ("channel", ServerAndChannelsRole);
+				item->setEditable (false);
+				channels << item;
+			}
+			
+			QStandardItem *serverItem = new QStandardItem (serverInfo.toMap () ["Server"].toString ());
+			serverItem->setData ("server", ServerAndChannelsRole);
+			serverItem->setEditable (false);
+			serverItem->appendRows (channels);
+			networkItem->appendRow (serverItem);
+		}
 	}
 	
-	void IrcAccountConfigurationDialog::SetServers(const QMap<QString, QVariant>& servers)
+	QList<QVariant> IrcAccountConfigurationDialog::GetServersInfo () const
 	{
-		Q_FOREACH (const QString& network, servers.keys ())
-		{
-			QStandardItem *networkItem = new QStandardItem (network);
-			networkItem->setData ("network", ServerAndChannelsRole);
-			networkItem->setEditable (false);
-			QList<QStandardItem*> serversList;
-			Q_FOREACH (const QString& server, servers [network].toStringList ())
-			{
-				QStandardItem *serverItem = new QStandardItem (server);
-				serverItem->setData ("server", ServerAndChannelsRole);
-				serverItem->setEditable (false);
-				serversList << serverItem;
-			}
-			networkItem->appendRows (serversList);
-			
-			ServerAndChannels_->appendRow (networkItem);
-		}
+		return ServersInfo_;
 	}
 
-	QMap<QString, QVariant> IrcAccountConfigurationDialog::GetChannels () const
+	void IrcAccountConfigurationDialog::SetServersInfo(const QList<QVariant>& serversInfo)
 	{
-		return Channels_;
+		ServersInfo_ = serversInfo;
+		SetServers (ServersInfo_);
+		
+		QStringList networks;
+		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
+		{
+			QString network = serverInfo.toMap () ["Network"].toString ();
+			if (network != Ui_.Networks_->itemText (0))
+				networks << network;
+		}
+		networks.removeDuplicates ();
+		SetNetworks (networks);
 	}
 
-	void IrcAccountConfigurationDialog::GetServersAndChannels (QStandardItem *item, bool first)
-	{
-		if (first)
-			GetServersAndChannels (ServerAndChannels_->item (0), false);
-		else
-		{
-			if (item->data (ServerAndChannelsRole).toString () == "server")
-				Servers_ [item->parent ()->text ()] = 
-						Servers_ [item->parent ()->text ()].toStringList () 
-								<< item->text ();
-			else if (item->data (ServerAndChannelsRole).toString () == "channel")
-				Channels_ [item->parent ()->text ()] = 
-						Channels_ [item->parent ()->text ()].toStringList () 
-								<< item->text ();
-								
-			for (int i = 0; i < item->rowCount (); ++i)
-				GetServersAndChannels (item->child (i), false);
-		}
-	}
 	
 	QStringList IrcAccountConfigurationDialog::GetNetworks () const
 	{
@@ -147,6 +163,52 @@ namespace Acetamide
 		Ui_.Networks_->addItems (networks);
 	}
 	
+	void IrcAccountConfigurationDialog::DeleteElement (const QString& key, const QModelIndex& index, const QString& message)
+	{
+		int ret = QMessageBox::warning (this, "LeechCraft",
+				message,
+				QMessageBox::Ok | QMessageBox::Cancel,
+				QMessageBox::Cancel);
+
+		if (ret != QMessageBox::Ok)
+			return;
+		
+		for (int i = ServersInfo_.count () - 1; i >= 0; --i)
+			if (ServersInfo_.at (i).toMap () [key] == index.data ())
+				ServersInfo_.removeAt (i);
+	}
+
+	void IrcAccountConfigurationDialog::DeleteChannel (const QModelIndex& index, const QString& message)
+	{
+		int ret = QMessageBox::warning (this, "LeechCraft",
+				message,
+				QMessageBox::Ok | QMessageBox::Cancel,
+				QMessageBox::Cancel);
+
+		if (ret != QMessageBox::Ok)
+			return;
+		
+		for (int i = ServersInfo_.count () - 1; i >= 0; --i)
+		{
+			if (ServersInfo_.at (i).toMap () ["Server"] == index.parent ().data () &&
+					ServersInfo_.at (i).toMap () ["Network"] == index.parent ().parent ().data ())
+			{
+				QStringList list = ServersInfo_.at (i).toMap () ["Channels"].toStringList ();
+				
+				for (int k = list.count () - 1; k >= 0; --k)
+				{
+					QString str = list.at (k);
+					if (str.split (' ').at (0) == index.data ().toString ())
+						list.removeAt (k);
+				}
+				
+				QMap<QString, QVariant> map = ServersInfo_.at (i).toMap ();
+				map ["Channels"] = list;
+				ServersInfo_ [i] = map;
+			}
+		}
+	}
+
 	void IrcAccountConfigurationDialog::handleChangeServer (int index)
 	{
 		Nicknames_ [Ui_.Servers_->itemText (LastIndex_)].toStringList () = 
@@ -162,6 +224,15 @@ namespace Acetamide
 		
 		if (dsa->exec () == QDialog::Rejected)
 			return;
+		
+		QMap<QString, QVariant> server;
+		server ["Network"] = Ui_.Networks_->currentText ();
+		server ["Server"] = dsa->GetServer ();
+		server ["Port"] = dsa->GetPort ();
+		server ["Password"] = dsa->GetPassword ();
+		server ["SSL"] = dsa->GetSSL ();
+		
+		ServersInfo_ << server;
 		
 		QString network = Ui_.Networks_->currentText ();
 		QList<QStandardItem*> networkList = ServerAndChannels_->findItems (network);
@@ -184,14 +255,24 @@ namespace Acetamide
 	{
 		std::auto_ptr<IrcAddDefaultChannelsDialog> dac (new IrcAddDefaultChannelsDialog (0));
 		
-		if (dac->exec () == QDialog::Rejected)
-			return;
-		
 		QModelIndex currentIndex = Ui_.ServerChannels_->currentIndex (); 
 		QModelIndex serverIndex = currentIndex;
 		if (currentIndex.data (ServerAndChannelsRole).toString () == "channel")
 			serverIndex = currentIndex.parent ();
 		
+		if (dac->exec () == QDialog::Rejected)
+			return;
+
+		for (int i = 0; i < ServersInfo_.count (); i++)
+		{
+			QMap<QString, QVariant> srv = ServersInfo_.at (i).toMap ();
+			if (srv ["Server"] == serverIndex.data () && 
+					srv ["Network"] == serverIndex.parent ().data ())
+				srv ["Channels"] = srv ["Channels"].toStringList () + dac->GetChannelsPair ();
+
+			ServersInfo_ [i] = srv;
+		}
+
 		QList<QStandardItem*> channelsList;
 		Q_FOREACH (const QString& channel, dac->GetChannels ())
 		{
@@ -209,9 +290,25 @@ namespace Acetamide
 		AddChannel_->setEnabled (!(index.data (ServerAndChannelsRole) != "server" && 
 				index.data (ServerAndChannelsRole) != "channel"));
 	}
+	
+	void IrcAccountConfigurationDialog::handleEditElement (bool checked)
+	{
+	}
 
-
-
+	void IrcAccountConfigurationDialog::handleDeleteElement (bool checked)
+	{
+		if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "network")
+			DeleteElement ("Network", Ui_.ServerChannels_->currentIndex (),
+					tr ("All servers and channels of this network will be delete too.\nAre you sure?"));
+		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "server")
+			DeleteElement ("Server", Ui_.ServerChannels_->currentIndex (),
+					tr ("All channels of this server will be delete too.\nAre you sure?"));
+		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "channel")
+			DeleteChannel (Ui_.ServerChannels_->currentIndex (),
+					tr ("Are you really want to delete this channel?"));
+			
+		SetServersInfo (ServersInfo_);
+	}
 };
 };
 };

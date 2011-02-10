@@ -18,6 +18,7 @@
 
 #include "ircaddserverdialog.h"
 #include <QPushButton>
+#include <QCheckBox>
 
 namespace LeechCraft
 {
@@ -73,6 +74,16 @@ namespace Acetamide
 		Ui_.Password_->setText (pass);
 	}
 	
+	void IrcAddServerDialog::SetSSL (bool ssl)
+	{
+		Ui_.SSL_->setChecked (ssl);
+	}
+
+	bool IrcAddServerDialog::GetSSL () const
+	{
+		return Ui_.SSL_->isChecked ();
+	}
+
 	void IrcAddServerDialog::handleServerChanged (const QString& text)
 	{
 		Ui_.ControlButtons_->button (QDialogButtonBox::Ok)->

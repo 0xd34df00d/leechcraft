@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>226</width>
-    <height>125</height>
+    <height>150</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,7 +55,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="ControlButtons_">
      <property name="enabled">
       <bool>true</bool>
@@ -65,6 +65,13 @@
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="SSL_">
+     <property name="text">
+      <string>Security connect (SSL)</string>
      </property>
     </widget>
    </item>

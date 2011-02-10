@@ -88,8 +88,8 @@ namespace Acetamide
 // 				const QXmppRosterIq::Item&);
 	private:
 // 		QString GetPassword (bool authFailure = false);
-		void SaveConnectionSettings (const QMap<QString, QVariant>&, const QString&);
-		QMap<QString, QVariant> ReadConnectionSettings (const QString&);
+		void SaveConnectionSettings (const QList<QVariant>&, const QString&);
+		QList<QVariant> ReadConnectionSettings (const QString&);
 // 	public slots:
 // 		void handleEntryRemoved (QObject*);
 // 		void handleGotRosterItems (const QList<QObject*>&);

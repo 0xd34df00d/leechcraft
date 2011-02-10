@@ -101,14 +101,16 @@ namespace Acetamide
 	void IrcAccount::OpenConfigurationDialog ()
 	{
 		std::auto_ptr<IrcAccountConfigurationDialog> dia (new IrcAccountConfigurationDialog (0));
-		QMap<QString, QVariant> servers = ReadConnectionSettings ("Servers");
-		if (!Nicknames_.isEmpty ())
-			dia->SetNicks (Nicknames_);
-		if (!servers.isEmpty ())
-			dia->SetServers (servers);
+		
+		QList<QVariant> serversInfo = ReadConnectionSettings ("Servers");
+// 		if (!Nicknames_.isEmpty ())
+// 			dia->SetNicks (Nicknames_);
+		if (!serversInfo.isEmpty ())
+			dia->SetServersInfo (serversInfo);
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
+		
 		State lastState = IrcAccountState_;
 		if (lastState != SOffline)
 		{
@@ -117,8 +119,9 @@ namespace Acetamide
 		}
 		
 		Nicknames_ = dia->GetNicks ();
-		dia->GetServersAndChannels (0, true);
-		SaveConnectionSettings (dia->GetServers (), QString ("Servers"));
+
+		SaveConnectionSettings (dia->GetServersInfo (), QString ("Servers"));
+		
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
 
@@ -199,7 +202,7 @@ namespace Acetamide
 		return result;
 	}
 
-	void IrcAccount::SaveConnectionSettings (const QMap<QString, QVariant>& value, const QString& name)
+	void IrcAccount::SaveConnectionSettings (const QList<QVariant>& value, const QString& name)
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
@@ -209,14 +212,14 @@ namespace Acetamide
 		settings.endGroup ();
 	}
 	
-	QMap<QString, QVariant> IrcAccount::ReadConnectionSettings(const QString& name)
+	QList<QVariant> IrcAccount::ReadConnectionSettings(const QString& name)
 	{
-		QMap<QString, QVariant> value;
+		QList<QVariant> value;
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
 		settings.beginGroup ("ConnectionSettings");
-		value = settings.value (name).toMap ();
+		value = settings.value (name).toList ();
 		settings.endGroup ();
 		
 		return value;

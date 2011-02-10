@@ -36,8 +36,9 @@ namespace Acetamide
 		
 	public:
 		IrcAddDefaultChannelsDialog (QWidget* = 0);
-		QStringList GetChannels () const;
+		QStringList GetChannels ();
 		void SetChannels (const QStringList&);
+		QStringList GetChannelsPair () const;
 	};
 };
 };

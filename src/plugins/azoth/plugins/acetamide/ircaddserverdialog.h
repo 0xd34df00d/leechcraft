@@ -43,6 +43,8 @@ namespace Acetamide
 		void SetPort (int);
 		QString GetPassword () const;
 		void SetPassword (const QString&);
+		void SetSSL (bool);
+		bool GetSSL () const;
 	public slots:
 		void handleServerChanged (const QString&);
 		void handlePortChanged (int);

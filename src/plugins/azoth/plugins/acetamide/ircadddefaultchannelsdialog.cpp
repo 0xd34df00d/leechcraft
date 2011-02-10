@@ -30,14 +30,22 @@ namespace Acetamide
 		Ui_.setupUi (this);
 	}
 
-	QStringList IrcAddDefaultChannelsDialog::GetChannels () const
+	QStringList IrcAddDefaultChannelsDialog::GetChannels ()
 	{
-		return Ui_.DefaultChannels_->toPlainText ().split ('\n');
+		QStringList channels; 
+		Q_FOREACH (const QString& line, Ui_.DefaultChannels_->toPlainText ().split ('\n'))
+			channels << line.split (' ').at (0);
+		return channels;
 	}
 
 	void IrcAddDefaultChannelsDialog::SetChannels (const QStringList& channels)
 	{
 		Ui_.DefaultChannels_->setPlainText (channels.join ("\n"));
+	}
+	
+	QStringList IrcAddDefaultChannelsDialog::GetChannelsPair () const
+	{
+		return Ui_.DefaultChannels_->toPlainText ().split ('\n');
 	}
 
 }
