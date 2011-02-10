@@ -68,10 +68,10 @@ namespace Xoox
 	, Message_ (msg.body ())
 	, Datetime_ (msg.stamp ().isValid () ? msg.stamp () : QDateTime::currentDateTime ())
 	, Direction_ (DIn)
-	, FromJID_ (msg.from ())
 	, Type_ (MTMUCMessage)
 	, SubType_ (MSTOther)
 	{
+		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
 	}
 
 	QObject* RoomPublicMessage::GetObject ()
@@ -128,7 +128,7 @@ namespace Xoox
 
 	QString RoomPublicMessage::GetOtherVariant() const
 	{
-		return "";
+		return FromVariant_;
 	}
 
 	QString RoomPublicMessage::GetBody () const
