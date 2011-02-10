@@ -203,6 +203,10 @@ namespace ChatHistory
 	{
 		if (msg->GetBody ().isEmpty ())
 			return;
+		
+		if (msg->GetDirection () == IMessage::DOut &&
+				msg->GetMessageType () == IMessage::MTMUCMessage)
+			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 		if (!entry)
