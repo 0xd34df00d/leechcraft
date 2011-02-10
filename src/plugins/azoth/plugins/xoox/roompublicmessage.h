@@ -46,6 +46,7 @@ namespace Xoox
 		QDateTime Datetime_;
 		Direction Direction_;
 		QString FromJID_;
+		QString FromVariant_;
 		MessageType Type_;
 		MessageSubType SubType_;
 	public:

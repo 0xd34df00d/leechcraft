@@ -21,6 +21,7 @@
 #include <QXmppClient.h>
 #include "glooxclentry.h"
 #include "clientconnection.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -42,6 +43,11 @@ namespace Xoox
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
 				jid + "/" + variant;
+		if (type == MTChatMessage && variant.isEmpty ())
+		{
+			QObject *object = Connection_->GetCLEntry (jid, variant);
+			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().first ();
+		}
 		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
 		Message_.setStamp (QDateTime::currentDateTime ());
 	}
@@ -53,9 +59,7 @@ namespace Xoox
 	, Message_ (message)
 	, Connection_ (conn)
 	{
-		const QStringList& split = message.from ().split ('/', QString::SkipEmptyParts);
-		BareJID_ = split.at (0);
-		Variant_ = split.value (1);
+		Connection_->Split (message.from (), &BareJID_, &Variant_);
 		if (!Message_.stamp ().isValid ())
 			Message_.setStamp (QDateTime::currentDateTime ());
 	}
