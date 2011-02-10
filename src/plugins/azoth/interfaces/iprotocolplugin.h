@@ -27,7 +27,11 @@ namespace LeechCraft
 namespace Azoth
 {
 	/** This is the base interface for plugins providing messaging
-	 * protocols.
+	 * protocols. Since these plugins are plugins for plugins, they
+	 * should also implement IPlugin2 and return the
+	 * "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin"
+	 * string, among others, from their IPlugin2::GetPluginClasses()
+	 * method.
 	 */
 	class IProtocolPlugin
 	{

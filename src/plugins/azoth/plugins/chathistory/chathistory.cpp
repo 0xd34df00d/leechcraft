@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,107 +17,113 @@
  **********************************************************************/
 
 #include "chathistory.h"
-#include <interfaces/imessage.h>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDir>
 #include <QIcon>
+#include <interfaces/imessage.h>
+#include <interfaces/iclentry.h>
+#include "core.h"
 
 namespace LeechCraft
 {
+namespace Azoth
+{
+namespace ChatHistory
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
+	{
+		Guard_.reset (new STGuard<Core> ());
+	}
 
+	void Plugin::SecondInit ()
+	{
+	}
 
-		namespace Azoth
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Azoth.ChatHistory";
+	}
+
+	void Plugin::Release ()
+	{
+		Guard_.reset ();
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Azoth ChatHistory";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Stores message history in Azoth.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
+
+	QStringList Plugin::Provides () const
+	{
+		return QStringList ();
+	}
+
+	QStringList Plugin::Needs () const
+	{
+		return QStringList ();
+	}
+
+	QStringList Plugin::Uses () const
+	{
+		return QStringList ();
+	}
+
+	void Plugin::SetProvider (QObject*, const QString&)
+	{
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
+		return result;
+	}
+
+	void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
+			QObject *chatTab, QObject *message)
+	{
+		IMessage *msg = qobject_cast<IMessage*> (message);
+		if (!msg)
 		{
-
-
-				namespace ChatHistory
-				{
-					void Plugin::Init (ICoreProxy_ptr proxy)
-					{
-					}
-
-					void Plugin::SecondInit ()
-					{
-					}
-
-					QByteArray Plugin::GetUniqueID () const
-					{
-						return "org.LeechCraft.Azoth.ChatHistory";
-					}
-
-					void Plugin::Release ()
-					{
-					}
-
-					QString Plugin::GetName () const
-					{
-						return "Azoth ChatHistory";
-					}
-
-					QString Plugin::GetInfo () const
-					{
-						return tr ("Stores message history in Azoth.");
-					}
-
-					QIcon Plugin::GetIcon () const
-					{
-						return QIcon ();
-					}
-
-					QStringList Plugin::Provides () const
-					{
-						return QStringList ();
-					}
-
-					QStringList Plugin::Needs () const
-					{
-						return QStringList ();
-					}
-
-					QStringList Plugin::Uses () const
-					{
-						return QStringList ();
-					}
-
-					void Plugin::SetProvider (QObject*, const QString&)
-					{
-					}
-
-					QSet<QByteArray> Plugin::GetPluginClasses () const
-					{
-						QSet<QByteArray> result;
-						result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
-						return result;
-					}
-
-					void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
-							QObject *chatTab, QObject *message)
-					{
-						qDebug () << Q_FUNC_INFO;
-						IMessage *msg = qobject_cast<IMessage*> (message);
-						if (!msg)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< message
-									<< "doesn't implement IMessage"
-									<< sender ();
-							return;
-						}
-						IMessage::Direction direction = msg->GetDirection ();
-						switch (direction)
-						{
-							DIn  : qDebug() << "direction : IN";
-							DOut : qDebug() << "direction : OUT";
-						}
-						IMessage::MessageType messageType = msg->GetMessageType ();
-						QObject *otherPart = msg->OtherPart ();
-						QString otherVariant = msg->GetOtherVariant ();
-						QString body = msg->GetBody ();
-						qDebug () << "message body:" << body;
-						QDateTime timestamp = msg->GetDateTime ();
-					}
-				}
-
+			qWarning () << Q_FUNC_INFO
+					<< message
+					<< "doesn't implement IMessage"
+					<< sender ();
+			return;
 		}
+		
+		Core::Instance ()->Process (msg);
+	}
 
+	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message)
+	{
+		IMessage *msg = qobject_cast<IMessage*> (message);
+		if (!msg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< message
+					<< "doesn't implement IMessage"
+					<< sender ();
+			return;
+		}
+		Core::Instance ()->Process (msg);
+	}
+}
+}
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_azoth_chathistory, LeechCraft::Azoth::ChatHistory::Plugin);
