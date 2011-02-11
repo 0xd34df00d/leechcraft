@@ -16,12 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
-#define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iresourceplugin.h>
+#include "standardstylesource.h"
+#include <QtDebug>
+#include <plugininterface/resourceloader.h>
 
 namespace LeechCraft
 {
@@ -29,28 +26,33 @@ namespace Azoth
 {
 namespace StandardStyles
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IResourcePlugin
+	StandardStyleSource::StandardStyleSource (QObject *parent)
+	: QObject (parent)
+	, StylesLoader_ (new Util::ResourceLoader ("azoth/styles/standard/", this))
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		StylesLoader_->AddGlobalPrefix ();
+		StylesLoader_->AddLocalPrefix ();
+	}
+	
+	QAbstractItemModel* StandardStyleSource::GetOptionsModel() const
+	{
+		return StylesLoader_->GetSubElemModel ();
+	}
+	
+	QString StandardStyleSource::GetHTMLTemplate (const QString& pack) const
+	{
+		Util::QIODevice_ptr dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.html"));
+		if (!dev->open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open source file for"
+					<< pack + "/viewcontents.html"
+					<< dev->errorString ();
+			return QString ();
+		}
 		
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QList<QObject*> GetResourceSources () const;
-	};
+		return dev->readAll ();
+	}
 }
 }
 }
-
-#endif

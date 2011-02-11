@@ -16,38 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
-#define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
+#ifndef PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLESOURCE_H
+#define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLESOURCE_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
 #include <interfaces/iresourceplugin.h>
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ResourceLoader;
+}
+
 namespace Azoth
 {
 namespace StandardStyles
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IResourcePlugin
+	class StandardStyleSource : public QObject
+							  , public IChatStyleResourceSource
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		
-		QSet<QByteArray> GetPluginClasses () const;
+		Q_INTERFACES (LeechCraft::Azoth::IChatStyleResourceSource)
 
-		QList<QObject*> GetResourceSources () const;
+		boost::shared_ptr<Util::ResourceLoader> StylesLoader_;
+	public:
+		StandardStyleSource (QObject* = 0);
+		
+		QAbstractItemModel* GetOptionsModel () const;
+		QString GetHTMLTemplate (const QString&) const;
 	};
 }
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta name="coloring" content="hash" />
+		<title>Chat</title>
+		<style type="text/css">
+			a { color: LINKCOLOR; }
+			a.nicklink { text-decoration: none; }
+			body { background-color: BACKGROUNDCOLOR; color: FOREGROUNDCOLOR; }
+			.statusmsg { color: green; }
+			.highlightchatmsg { color: red; }
+		</style>
+		<script language="javascript">
+			function ScrollToBottom() {
+				if (window.ShouldScroll)
+					window.scroll(0, document.height - window.innerHeight + 20);
+			}
+			function TestScroll() {
+				window.ShouldScroll = document.height <= (window.innerHeight + window.pageYOffset);
+			}
+			function InstallEventListeners() {
+				window.ShouldScroll = true;
+				document.body.addEventListener ("DOMNodeInserted", ScrollToBottom, false);
+				window.onresize = function() { setTimeout(ScrollToBottom, 0); };
+				window.addEventListener ("scroll", TestScroll);
+			}
+		</script>
+	</head>
+	<body>
+		<p>THIS IS A TEST :3</p>
+	</body>
+</html>

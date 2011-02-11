@@ -3,9 +3,11 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (STANDARDSTYLES_SRCS
 	standardstyles.cpp
+	standardstylesource.cpp
 	)
 SET (STANDARDSTYLES_HEADERS
 	standardstyles.h
+	standardstylesource.h
 	)
 QT4_WRAP_CPP (STANDARDSTYLES_MOC_SRCS ${STANDARDSTYLES_HEADERS})
 
@@ -18,3 +20,4 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_standardstyles
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_azoth_standardstyles DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (DIRECTORY share/azoth DESTINATION share/leechcraft)

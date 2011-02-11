@@ -18,7 +18,7 @@
 
 #include "standardstyles.h"
 #include <QIcon>
-#include <plugininterface/resourceloader.h>
+#include "standardstylesource.h"
 
 namespace LeechCraft
 {
@@ -28,7 +28,6 @@ namespace StandardStyles
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		StylesLoader_.reset (new Util::ResourceLoader ("azoth/styles/standard/", this));
 	}
 	
 	void Plugin::SecondInit ()
@@ -37,7 +36,6 @@ namespace StandardStyles
 	
 	void Plugin::Release ()
 	{
-		StylesLoader_.reset ();
 	}
 	
 	QByteArray Plugin::GetUniqueID () const
@@ -58,6 +56,19 @@ namespace StandardStyles
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+	
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
+		result << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
+		return result;
+	}
+	
+	QList<QObject*> Plugin::GetResourceSources () const
+	{
+		return QObjectList () << new StandardStyleSource ();
 	}
 }
 }

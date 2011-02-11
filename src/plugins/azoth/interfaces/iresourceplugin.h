@@ -23,7 +23,7 @@
 #include <QMap>
 #include <QImage>
 
-class QAbstactItemModel;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
@@ -130,6 +130,14 @@ namespace Azoth
 		 */
 		virtual QByteArray GetImage (const QString& pack, const QString& string) const = 0;
 	};
+	
+	class IChatStyleResourceSource : public IResourceSource
+	{
+	public:
+		virtual ~IChatStyleResourceSource () {}
+		
+		virtual QString GetHTMLTemplate (const QString& style) const = 0;
+	};
 
 	/** @brief Interface for plugins having resource sources, like smile
 	 * support or chat window styles.
@@ -164,6 +172,8 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISmileResourceSource,
 		"org.Deviant.LeechCraft.Azoth.ISmileResourceSource/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IChatStyleResourceSource,
+		"org.Deviant.LeechCraft.Azoth.IChatStyleResourceSource/1.0");
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IResourcePlugin,
 		"org.Deviant.LeechCraft.Azoth.IResourcePlugin/1.0");
 
