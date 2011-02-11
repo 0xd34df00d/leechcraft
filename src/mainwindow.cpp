@@ -739,6 +739,15 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	for (QObjectList::const_iterator i = shortcuts.begin (),
 			end = shortcuts.end (); i != end; ++i)
 		ShortcutManager_->AddObject (*i);
+	
+	QList<IActionsExporter*> exporters = Core::Instance ()
+			.GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
+	Q_FOREACH (IActionsExporter *exp, exporters)
+	{
+		QMap<QString, QList<QAction*> > map = exp->GetMenuActions ();
+		if (!map.isEmpty ())
+			AddMenus (map);
+	}
 
 	FillTray ();
 	FillToolMenu ();

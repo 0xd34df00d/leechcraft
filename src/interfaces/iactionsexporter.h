@@ -19,6 +19,7 @@
 #ifndef INTERFACES_IACTIONSEXPORTER_H
 #define INTERFACES_IACTIONSEXPORTER_H
 #include <QList>
+#include <QMap>
 #include <QtPlugin>
 
 class QAction;
@@ -50,6 +51,20 @@ public:
 	 * @return The list of actions.
 	 */
 	virtual QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const = 0;
+	
+	/** @brief Returns the actions to embed into the menu.
+	 * 
+	 * For each string key found in the returned map, the corresponding
+	 * list of QActions would be added to the submenu under that name in
+	 * the main menu. That allows several different plugins to insert
+	 * actions into one menu easily.
+	 * 
+	 * @return The map of menu name -> list of its actions.
+	 */
+	virtual QMap<QString, QList<QAction*> > GetMenuActions () const
+	{
+		return QMap<QString, QList<QAction*> > ();
+	}
 };
 
 Q_DECLARE_INTERFACE (IActionsExporter, "org.Deviant.LeechCraft.IActionsExporter/1.0");
