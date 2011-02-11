@@ -162,6 +162,18 @@ namespace Azoth
 	{
 		return Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
 	}
+	
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
+	{
+		return QList<QAction*> ();
+	}
+	
+	QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
+	{
+		QMap<QString, QList<QAction*> > result;
+		result ["Azoth"] << MW_->GetMenuActions ();
+		return result;
+	}
 
 	void Plugin::newTabRequested ()
 	{

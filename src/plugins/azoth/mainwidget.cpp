@@ -36,7 +36,6 @@ namespace Azoth
 {
 	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
-	, UpperBar_ (new QToolBar)
 	, MenuGeneral_ (new QMenu (tr ("General")))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
@@ -63,9 +62,6 @@ namespace Azoth
 		if (Core::Instance ().GetCLModel ()->rowCount ())
 			handleRowsInserted (QModelIndex (),
 					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
-
-		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (layout ());
-		lay->insertWidget (0, UpperBar_);
 
 		CreateMenu ();
 
@@ -105,6 +101,12 @@ namespace Azoth
 				this,
 				SLOT (handleChangeStatusRequested ()));
 	}
+	
+	QList<QAction*> MainWidget::GetMenuActions()
+	{
+		return QList<QAction*> () << MenuGeneral_->menuAction ()
+				<< MenuView_->menuAction ();
+	}
 
 	void MainWidget::CreateMenu ()
 	{
@@ -119,12 +121,9 @@ namespace Azoth
 				&Core::Instance (),
 				SLOT (handleMucJoinRequested ()));
 
-		UpperBar_->addAction (MenuGeneral_->menuAction ());
+		MenuView_ = new QMenu (tr ("View"));
 
-		QMenu *menuView = new QMenu (tr ("View"));
-		UpperBar_->addAction (menuView->menuAction ());
-
-		QAction *showOffline = menuView->addAction (tr ("Show offline contacts"));
+		QAction *showOffline = MenuView_->addAction (tr ("Show offline contacts"));
 		showOffline->setProperty ("ActionIcon", "azoth_showoffline");
 		showOffline->setCheckable (true);
 		bool show = XmlSettingsManager::Instance ()

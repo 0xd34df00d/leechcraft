@@ -26,6 +26,7 @@
 #include <interfaces/imultitabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
@@ -39,9 +40,10 @@ namespace Azoth
 				 , public IMultiTabs
 				 , public IHaveSettings
 				 , public IJobHolder
+				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IMultiTabs IHaveSettings IJobHolder)
+		Q_INTERFACES (IInfo IPluginReady IMultiTabs IHaveSettings IJobHolder IActionsExporter)
 
 		MainWidget *MW_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -65,6 +67,9 @@ namespace Azoth
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QAbstractItemModel* GetRepresentation () const;
+		
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QMap<QString, QList<QAction*> > GetMenuActions () const;
 	public slots:
 		void newTabRequested ();
 	signals:

@@ -36,13 +36,15 @@ namespace Azoth
 
 		Ui::MainWidget Ui_;
 
-		QToolBar *UpperBar_;
 		QMenu *MenuGeneral_;
+		QMenu *MenuView_;
 		SortFilterProxyModel *ProxyModel_;
 
 		QMenu *MenuChangeStatus_;
 	public:
 		MainWidget (QWidget* = 0);
+		
+		QList<QAction*> GetMenuActions ();
 	private:
 		void CreateMenu ();
 	private slots:
