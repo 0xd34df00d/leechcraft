@@ -93,23 +93,9 @@ namespace LeechCraft
 				return QIcon (":/resources/images/vgrabber.svg");
 			}
 
-			QStringList vGrabber::Provides () const
-			{
-				return QStringList ();
-			}
-
 			QStringList vGrabber::Needs () const
 			{
 				return QStringList ("http");
-			}
-
-			QStringList vGrabber::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void vGrabber::SetProvider (QObject*, const QString&)
-			{
 			}
 
 			QStringList vGrabber::GetCategories () const

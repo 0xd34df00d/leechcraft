@@ -57,9 +57,6 @@ namespace Azoth
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);

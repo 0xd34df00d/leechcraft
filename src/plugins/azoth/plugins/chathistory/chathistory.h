@@ -52,10 +52,6 @@ namespace ChatHistory
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 
 		QSet<QByteArray> GetPluginClasses () const;
 		

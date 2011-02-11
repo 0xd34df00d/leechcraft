@@ -129,20 +129,6 @@ namespace Azoth
 		return QStringList (GetUniqueID ());
 	}
 
-	QStringList Plugin::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Plugin::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
 	{
 		return Core::Instance ().GetExpectedPluginClasses ();

@@ -126,25 +126,6 @@ namespace LeechCraft
 				return QIcon (":/resources/images/lackman.svg");
 			}
 
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
-
 			QWidget* Plugin::GetTabContents ()
 			{
 				return this;

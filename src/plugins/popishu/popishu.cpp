@@ -107,25 +107,6 @@ namespace LeechCraft
 				return QIcon (":/resources/images/popishu.svg");
 			}
 
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
-
 			bool Plugin::CouldHandle (const Entity& entity) const
 			{
 				return entity.Mime_ == "x-leechcraft/plain-text-document" &&

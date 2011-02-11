@@ -72,25 +72,6 @@ namespace ChatHistory
 		return QIcon ();
 	}
 
-	QStringList Plugin::Provides () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Plugin::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
@@ -160,4 +141,3 @@ namespace ChatHistory
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_azoth_chathistory, LeechCraft::Azoth::ChatHistory::Plugin);
-
