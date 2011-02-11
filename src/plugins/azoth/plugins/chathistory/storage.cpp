@@ -273,7 +273,7 @@ namespace ChatHistory
 		}
 
 		MessageDumper_.bindValue (":id", Users_ [entryID]);
-		MessageDumper_.bindValue (":account_id", Accounts_ [entryID]);
+		MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
 		MessageDumper_.bindValue (":date", msg->GetDateTime ());
 		MessageDumper_.bindValue (":direction",
 				msg->GetDirection () == IMessage::DIn ? "IN" : "OUT");
