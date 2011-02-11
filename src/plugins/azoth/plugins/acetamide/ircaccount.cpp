@@ -212,7 +212,7 @@ namespace Acetamide
 		settings.endGroup ();
 	}
 	
-	QList<QVariant> IrcAccount::ReadConnectionSettings(const QString& name)
+	QList<QVariant> IrcAccount::ReadConnectionSettings (const QString& name)
 	{
 		QList<QVariant> value;
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
@@ -224,7 +224,6 @@ namespace Acetamide
 		
 		return value;
 	}
-
 };
 };
 };

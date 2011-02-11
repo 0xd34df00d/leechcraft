@@ -25,6 +25,7 @@
 #include <QMenu>
 #include "ircaddserverdialog.h"
 #include "ircadddefaultchannelsdialog.h"
+#include "irceditchanneldialog.h"
 
 namespace LeechCraft
 {
@@ -64,12 +65,12 @@ namespace Acetamide
 				this,
 				SLOT (handleAddChannel (bool)));
 		
-		connect(Ui_.Edit_,
+		connect (Ui_.Edit_,
 				SIGNAL (clicked (bool)),
 				this,
 				SLOT (handleEditElement (bool)));
 		
-		connect(Ui_.Delete_,
+		connect (Ui_.Delete_,
 				SIGNAL (clicked (bool)),
 				this,
 				SLOT (handleDeleteElement (bool)));
@@ -104,7 +105,6 @@ namespace Acetamide
 			{
 				networkItem = new QStandardItem (serverInfo.toMap () ["Network"].toString ());
 				networkItem->setData ("network", ServerAndChannelsRole);
-				networkItem->setEditable (false);
 				ServerAndChannels_->appendRow (networkItem);
 			}
 			else
@@ -132,18 +132,15 @@ namespace Acetamide
 		return ServersInfo_;
 	}
 
-	void IrcAccountConfigurationDialog::SetServersInfo(const QList<QVariant>& serversInfo)
+	void IrcAccountConfigurationDialog::SetServersInfo (const QList<QVariant>& serversInfo)
 	{
 		ServersInfo_ = serversInfo;
 		SetServers (ServersInfo_);
 		
 		QStringList networks;
 		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
-		{
-			QString network = serverInfo.toMap () ["Network"].toString ();
-			if (network != Ui_.Networks_->itemText (0))
-				networks << network;
-		}
+			networks << serverInfo.toMap () ["Network"].toString ();;
+
 		networks.removeDuplicates ();
 		SetNetworks (networks);
 	}
@@ -160,7 +157,6 @@ namespace Acetamide
 	void IrcAccountConfigurationDialog::SetNetworks (const QStringList& networks)
 	{
 		Ui_.Servers_->addItems (networks);
-		Ui_.Networks_->addItems (networks);
 	}
 	
 	void IrcAccountConfigurationDialog::DeleteElement (const QString& key, const QModelIndex& index, const QString& message)
@@ -209,6 +205,64 @@ namespace Acetamide
 		}
 	}
 
+	void IrcAccountConfigurationDialog::EditChannel ()
+	{
+		std::auto_ptr<IrcEditChannelDialog> dec (new IrcEditChannelDialog (0));
+		QVariant server = Ui_.ServerChannels_->currentIndex ().parent ().data ();
+		QVariant network = Ui_.ServerChannels_->currentIndex ().parent ().parent ().data ();
+		QVariant channel = Ui_.ServerChannels_->currentIndex ().data ();
+		
+		dec->SetChannel (channel.toString ());
+		dec->SetPassword (GetChannelPassword (server.toString (),
+				network.toString (),
+				channel.toString ()));
+		
+		if (dec->exec () == QDialog::Rejected)
+			return;
+		
+		for (int i = 0; i < ServersInfo_.count (); ++i)
+		{
+			if (ServersInfo_.at (i).toMap () ["Network"] ==  network &&
+					ServersInfo_.at (i).toMap () ["Server"] == server)
+			{
+				QStringList channels = ServersInfo_.at (i).toMap () ["Channels"].toStringList ();
+				for (int j = 0; j < channels.count (); ++j)
+					if (channels [j].split (' ').at (0) == channel.toString ())
+						channels [j] = dec->GetChannel () + QString (" ") + dec->GetPassword ();
+				
+				QMap<QString, QVariant> map = ServersInfo_.at (i).toMap ();
+				map ["Channels"] = channels;
+				ServersInfo_ [i] = map;
+			}
+		}
+		
+		SetServers (ServersInfo_);
+	}
+
+	void IrcAccountConfigurationDialog::EditServer ()
+	{
+
+	}
+
+	QString IrcAccountConfigurationDialog::GetChannelPassword (const QString& server, const QString& network, 
+			const QString& channel)
+	{
+		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
+		{
+			if (serverInfo.toMap () ["Network"].toString () == network &&
+					serverInfo.toMap () ["Server"].toString () == server)
+			{
+				QStringList channels = serverInfo.toMap () ["Channels"].toStringList ();
+				Q_FOREACH (const QString& chnnl, channels)
+					if (chnnl.split (' ').at (0) == channel)
+						if (chnnl.split (' ').count () > 1)
+							return chnnl.split (' ').at (1);
+			}
+		}
+		
+		return QString ();
+	}
+
 	void IrcAccountConfigurationDialog::handleChangeServer (int index)
 	{
 		Nicknames_ [Ui_.Servers_->itemText (LastIndex_)].toStringList () = 
@@ -226,7 +280,7 @@ namespace Acetamide
 			return;
 		
 		QMap<QString, QVariant> server;
-		server ["Network"] = Ui_.Networks_->currentText ();
+		server ["Network"] = Ui_.Networks_->text ();
 		server ["Server"] = dsa->GetServer ();
 		server ["Port"] = dsa->GetPort ();
 		server ["Password"] = dsa->GetPassword ();
@@ -234,14 +288,15 @@ namespace Acetamide
 		
 		ServersInfo_ << server;
 		
-		QString network = Ui_.Networks_->currentText ();
+		
+		QString network = Ui_.Networks_->text ();
+		
 		QList<QStandardItem*> networkList = ServerAndChannels_->findItems (network);
 		
 		if (networkList.isEmpty ())
 		{
 			QStandardItem *item = new QStandardItem (network);
 			item->setData ("network", ServerAndChannelsRole);
-			item->setEditable (false);
 			networkList.push_back (item);
 			ServerAndChannels_->appendRow (networkList.first ());
 		}
@@ -257,8 +312,6 @@ namespace Acetamide
 		
 		QModelIndex currentIndex = Ui_.ServerChannels_->currentIndex (); 
 		QModelIndex serverIndex = currentIndex;
-		if (currentIndex.data (ServerAndChannelsRole).toString () == "channel")
-			serverIndex = currentIndex.parent ();
 		
 		if (dac->exec () == QDialog::Rejected)
 			return;
@@ -293,6 +346,10 @@ namespace Acetamide
 	
 	void IrcAccountConfigurationDialog::handleEditElement (bool checked)
 	{
+		if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "channel")
+			EditChannel ();
+// 		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "channel")
+// 			handleAddChannel (false);
 	}
 
 	void IrcAccountConfigurationDialog::handleDeleteElement (bool checked)

@@ -12,6 +12,7 @@ SET (ACETAMIDE_SRCS
 	ircaccountconfigurationdialog.cpp
 	ircaddserverdialog.cpp
 	ircadddefaultchannelsdialog.cpp
+	irceditchanneldialog.cpp
 	)
 
 SET (ACETAMIDE_HEADERS
@@ -22,6 +23,7 @@ SET (ACETAMIDE_HEADERS
 	ircaccountconfigurationdialog.h
 	ircaddserverdialog.h
 	ircadddefaultchannelsdialog.h
+	irceditchanneldialog.h
 	)
 
 SET (ACETAMIDE_FORMS
@@ -29,6 +31,7 @@ SET (ACETAMIDE_FORMS
 	ircaccountconfigurationdialog.ui
 	ircadddefaultchannelsdialog.ui
 	ircaddserverdialog.ui
+	irceditchanneldialog.ui
 	)
 
 QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})

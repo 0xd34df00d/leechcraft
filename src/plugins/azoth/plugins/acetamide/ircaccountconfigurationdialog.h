@@ -58,6 +58,9 @@ namespace Acetamide
 		void SetNetworks (const QStringList&);
 		void DeleteElement (const QString&, const QModelIndex&, const QString&);
 		void DeleteChannel (const QModelIndex&, const QString&);
+		void EditServer ();
+		void EditChannel ();
+		QString GetChannelPassword (const QString&, const QString&, const QString&);
 	public slots:
 		void handleChangeServer (int);
 		void handleAddServer (bool);
