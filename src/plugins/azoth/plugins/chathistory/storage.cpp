@@ -96,8 +96,8 @@ namespace ChatHistory
 		
 		QHash<QString, qint32> result;
 		while (UserSelector_.next ())
-			result [UserSelector_.value (0).toString ()] =
-					UserSelector_.value (1).toInt ();
+			result [UserSelector_.value (1).toString ()] =
+					UserSelector_.value (0).toInt ();
 		
 		return result;
 	}
@@ -153,8 +153,8 @@ namespace ChatHistory
 		
 		QHash<QString, qint32> result;
 		while (AccountSelector_.next ())
-			result [AccountSelector_.value (0).toString ()] =
-					AccountSelector_.value (1).toInt ();
+			result [AccountSelector_.value (1).toString ()] =
+					AccountSelector_.value (0).toInt ();
 
 		return result;
 	}
