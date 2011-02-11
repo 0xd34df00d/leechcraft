@@ -66,9 +66,9 @@ namespace Acetamide
 		void handleAddServer (bool);
 		void handleAddChannel (bool);
 		void handleChannelsEnable (QModelIndex);
+		void handleNetworkTextChange (const QString&);
 		void handleEditElement (bool);
 		void handleDeleteElement (bool);
-
 	};
 };
 };

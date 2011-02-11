@@ -23,6 +23,7 @@
 #include <QtDebug>
 #include <QMap>
 #include <QMenu>
+#include <QLineEdit>
 #include "ircaddserverdialog.h"
 #include "ircadddefaultchannelsdialog.h"
 #include "irceditchanneldialog.h"
@@ -79,6 +80,11 @@ namespace Acetamide
 				SIGNAL (clicked (QModelIndex)),
 				this,
 				SLOT (handleChannelsEnable (QModelIndex)));
+		
+		connect (Ui_.Networks_,
+				SIGNAL (textChanged (const QString&)),
+				this,
+				SLOT (handleNetworkTextChange (const QString&)));
 	}
 	
 	QMap<QString, QVariant> IrcAccountConfigurationDialog::GetNicks ()
@@ -90,8 +96,8 @@ namespace Acetamide
 
 	void IrcAccountConfigurationDialog::SetNicks (const QMap<QString, QVariant>& nicks)
 	{
-		Nicknames_ = nicks;
-		SetNetworks (Nicknames_.keys ());
+// 		Nicknames_ = nicks;
+// 		SetNetworks (Nicknames_.keys ());
 	}
 	
 	void IrcAccountConfigurationDialog::SetServers (const QList<QVariant>& serversInfo)
@@ -156,6 +162,7 @@ namespace Acetamide
 
 	void IrcAccountConfigurationDialog::SetNetworks (const QStringList& networks)
 	{
+		Ui_.Servers_->clear ();
 		Ui_.Servers_->addItems (networks);
 	}
 	
@@ -241,7 +248,38 @@ namespace Acetamide
 
 	void IrcAccountConfigurationDialog::EditServer ()
 	{
-
+		std::auto_ptr<IrcAddServerDialog> dsa (new IrcAddServerDialog (0));
+		QStringList channels;
+		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
+		{
+			if (serverInfo.toMap () ["Server"] == Ui_.ServerChannels_->currentIndex ().data () &&
+					serverInfo.toMap () ["Network"] == Ui_.ServerChannels_->currentIndex ().parent ().data ())
+			{
+				dsa->SetServer (serverInfo.toMap () ["Server"].toString ());
+				dsa->SetPassword (serverInfo.toMap () ["Password"].toString ());
+				dsa->SetPort (serverInfo.toMap () ["Port"].toInt ());
+				dsa->SetSSL (serverInfo.toMap () ["SSL"].toBool ());
+				channels = serverInfo.toMap () ["Channels"].toStringList ();
+			}
+		}
+		
+		if (dsa->exec () == QDialog::Rejected)
+			return;
+		
+		QMap<QString, QVariant> server;
+		server ["Network"] = Ui_.Networks_->text ();
+		server ["Server"] = dsa->GetServer ();
+		server ["Port"] = dsa->GetPort ();
+		server ["Password"] = dsa->GetPassword ();
+		server ["SSL"] = dsa->GetSSL ();
+		server ["Channels"] = channels;
+		
+		for (int i = 0; i < ServersInfo_.count (); ++i)
+			if (ServersInfo_.at (i).toMap () ["Server"] == Ui_.ServerChannels_->currentIndex ().data () &&
+					ServersInfo_.at (i).toMap () ["Network"] == Ui_.ServerChannels_->currentIndex ().parent ().data ())
+				ServersInfo_ [i] = server;
+			
+		SetServers (ServersInfo_);
 	}
 
 	QString IrcAccountConfigurationDialog::GetChannelPassword (const QString& server, const QString& network, 
@@ -344,12 +382,17 @@ namespace Acetamide
 				index.data (ServerAndChannelsRole) != "channel"));
 	}
 	
+	void IrcAccountConfigurationDialog::handleNetworkTextChange (const QString& text)
+	{
+		AddServer_->setEnabled (!text.isEmpty ());
+	}
+	
 	void IrcAccountConfigurationDialog::handleEditElement (bool checked)
 	{
 		if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "channel")
 			EditChannel ();
-// 		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "channel")
-// 			handleAddChannel (false);
+		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "server")
+			EditServer ();
 	}
 
 	void IrcAccountConfigurationDialog::handleDeleteElement (bool checked)
@@ -365,7 +408,7 @@ namespace Acetamide
 					tr ("Are you really want to delete this channel?"));
 			
 		SetServersInfo (ServersInfo_);
-	}
+	}	
 };
 };
 };
