@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/categoryselector.h>
-#include <plugininterface/mergemodel.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -59,8 +58,8 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
-	, SmilesOptionsModel_ (new Util::MergeModel (QStringList (tr ("Smile pack"))))
-	, ChatStylesOptionsModel_ (new Util::MergeModel (QStringList (tr ("Chat style"))))
+	, SmilesOptionsModel_ (new SourceTrackingModel<ISmileResourceSource> (QStringList (tr ("Smile pack"))))
+	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
@@ -344,13 +343,13 @@ namespace Azoth
 		}
 	}
 	
-	void Core::AddResourceSourcePlugin (QObject *object)
+	void Core::AddResourceSourcePlugin (QObject *rp)
 	{
-		IResourcePlugin *irp = qobject_cast<IResourcePlugin*> (object);
+		IResourcePlugin *irp = qobject_cast<IResourcePlugin*> (rp);
 		if (!irp)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< object
+					<< rp
 					<< "doesn't implement IResourcePlugin";
 			return;
 		}
@@ -370,12 +369,28 @@ namespace Azoth
 	
 	void Core::AddSmileResourceSource (ISmileResourceSource *src)
 	{
-		SmilesOptionsModel_->AddModel (src->GetOptionsModel ());
+		SmilesOptionsModel_->AddSource (src);
 	}
 	
 	void Core::AddChatStyleResourceSource (IChatStyleResourceSource *src)
 	{
-		ChatStylesOptionsModel_->AddModel (src->GetOptionsModel ());
+		ChatStylesOptionsModel_->AddSource (src);
+	}
+	
+	QString Core::GetSelectedChatTemplate () const
+	{
+		const QString& opt = XmlSettingsManager::Instance ()
+				.property ("ChatWindowStyle").toString ();
+		IChatStyleResourceSource *src = ChatStylesOptionsModel_->GetSourceForOption (opt);
+		if (!src)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty result for"
+					<< opt;
+			return QString ();
+		}
+		
+		return src->GetHTMLTemplate (opt);
 	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,

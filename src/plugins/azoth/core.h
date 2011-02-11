@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "interfaces/imucentry.h"
 #include "interfaces/iprotocol.h"
 #include "interfaces/iauthable.h"
+#include "sourcetrackingmodel.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -36,7 +37,6 @@ namespace LeechCraft
 namespace Util
 {
 	class ResourceLoader;
-	class MergeModel;
 }
 namespace Azoth
 {
@@ -86,8 +86,8 @@ namespace Azoth
 
 		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
-		boost::shared_ptr<Util::MergeModel> SmilesOptionsModel_;
-		boost::shared_ptr<Util::MergeModel> ChatStylesOptionsModel_;
+		boost::shared_ptr<SourceTrackingModel<ISmileResourceSource> > SmilesOptionsModel_;
+		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
 
 		boost::shared_ptr<PluginManager> PluginManager_;
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
@@ -243,6 +243,8 @@ namespace Azoth
 		 * otherwise an empty list would be returned.
 		 */
 		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
+		
+		QString GetSelectedChatTemplate () const;
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.

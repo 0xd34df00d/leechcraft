@@ -97,7 +97,7 @@ namespace Azoth
 	{
 		XmlSettingsDialog_->SetDataSource ("SmileIcons",
 				Core::Instance ().GetSmilesOptionsModel ());
-		XmlSettingsDialog_->SetDataSource ("ChatStyleTheme",
+		XmlSettingsDialog_->SetDataSource ("ChatWindowStyle",
 				Core::Instance ().GetChatStylesOptionsModel ());
 	}
 

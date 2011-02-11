@@ -85,16 +85,20 @@ namespace Azoth
 
 		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 
-		QFile file (":/plugins/azoth/resources/html/viewcontents.html");
-		if (!file.open (QIODevice::ReadOnly))
+		QString data = Core::Instance ().GetSelectedChatTemplate ();
+		if (data.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "could not open resource file"
-					<< file.errorString ();
+			QFile file (":/plugins/azoth/resources/html/viewcontents.html");
+			if (!file.open (QIODevice::ReadOnly))
+				qWarning () << Q_FUNC_INFO
+						<< "could not open resource file"
+						<< file.errorString ();
+			else
+				data = file.readAll ();
 		}
-		else
+		
+		if (!data.isEmpty ())
 		{
-			QString data = file.readAll ();
 			data.replace ("BACKGROUNDCOLOR",
 					BgColor_.name ());
 			data.replace ("FOREGROUNDCOLOR",
@@ -135,8 +139,17 @@ namespace Azoth
 			}
 			AppendMessage (msg);
 		}
-
-		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
+		
+		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
+		if (!scrollerJS.open (QIODevice::ReadOnly))
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open script file"
+					<< scrollerJS.errorString ();
+		else
+		{
+			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
+			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
+		}
 
 		handleVariantsChanged (e->Variants ());
 
@@ -165,7 +178,7 @@ namespace Azoth
 				SIGNAL (keyReturnPressed ()),
 				this,
 				SLOT (messageSend ()));
-
+ 
 		connect (Ui_.MsgEdit_,
 				SIGNAL (keyTabPressed ()),
 				this,

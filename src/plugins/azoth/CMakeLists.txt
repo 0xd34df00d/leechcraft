@@ -67,6 +67,7 @@ SET (HEADERS
 	notificationactionhandler.h
 	groupeditordialog.h
 	transferjobmanager.h
+	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
 	interfaces/iprotocol.h
