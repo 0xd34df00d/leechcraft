@@ -50,6 +50,8 @@ namespace ChatHistory
 		QList<QAction*> GetTabBarContextMenuActions () const;
 	private slots:
 		void handleGotOurAccounts (const QStringList&);
+		void handleGotUsersForAccount (const QStringList&, const QString&);
+		void on_AccountBox__currentIndexChanged (int);
 	signals:
 		void removeSelf (QWidget*);
 	};

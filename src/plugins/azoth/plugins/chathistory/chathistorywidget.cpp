@@ -37,12 +37,16 @@ namespace ChatHistory
 	{
 		Ui_.setupUi (this);
 		
-		Core::Instance ()->GetOurAccounts ();
-		
+		connect (Core::Instance ().get (),
+				SIGNAL (gotUsersForAccount (const QStringList&, const QString&)),
+				this,
+				SLOT (handleGotUsersForAccount (const QStringList&, const QString&)));
+
 		connect (Core::Instance ().get (),
 				SIGNAL (gotOurAccounts (const QStringList&)),
 				this,
 				SLOT (handleGotOurAccounts (const QStringList&)));
+		Core::Instance ()->GetOurAccounts ();
 	}
 	
 	void ChatHistoryWidget::Remove ()
@@ -72,11 +76,24 @@ namespace ChatHistory
 	
 	void ChatHistoryWidget::handleGotOurAccounts (const QStringList& accounts)
 	{
-		Ui_.AccountBox_->addItems (accounts);
+		Q_FOREACH (const QString& accountID, accounts)
+			Ui_.AccountBox_->addItem (accountID, accountID);
+
 		disconnect (Core::Instance ().get (),
 				SIGNAL (gotOurAccounts (const QStringList&)),
 				this,
 				SLOT (handleGotOurAccounts (const QStringList&)));
+	}
+	
+	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users, const QString& id)
+	{
+		qDebug () << id << users;
+	}
+	
+	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
+	{
+		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
+		Core::Instance ()->GetUsersForAccount (id);
 	}
 }
 }

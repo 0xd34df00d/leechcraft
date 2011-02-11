@@ -324,9 +324,21 @@ namespace ChatHistory
 					<< Accounts_;
 			return;
 		}
-		int id = Accounts_ [accountId];
 		
-		UsersForAccountGetter_.bindValue (":account_id", id);
+		UsersForAccountGetter_.bindValue (":account_id", Accounts_ [accountId]);
+		if (!UsersForAccountGetter_.exec ())
+		{
+			Util::DBLock::DumpError (UsersForAccountGetter_);
+			return;
+		}
+		
+		QStringList result;
+		while (UsersForAccountGetter_.next ())
+			result << UsersForAccountGetter_.value (0).toString ();
+		
+		qDebug () << accountId << Accounts_ << result;
+		
+		emit gotUsersForAccount (result, accountId);
 	}
 	
 	void Storage::InitializeTables ()
