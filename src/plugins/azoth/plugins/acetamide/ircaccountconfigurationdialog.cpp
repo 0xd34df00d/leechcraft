@@ -326,9 +326,7 @@ namespace Acetamide
 		
 		ServersInfo_ << server;
 		
-		
 		QString network = Ui_.Networks_->text ();
-		
 		QList<QStandardItem*> networkList = ServerAndChannels_->findItems (network);
 		
 		if (networkList.isEmpty ())
@@ -350,17 +348,20 @@ namespace Acetamide
 		
 		QModelIndex currentIndex = Ui_.ServerChannels_->currentIndex (); 
 		QModelIndex serverIndex = currentIndex;
+		if (currentIndex.data (ServerAndChannelsRole).toString () == "channel")
+			serverIndex = currentIndex.parent ();
 		
 		if (dac->exec () == QDialog::Rejected)
 			return;
 
+		QStringList list = dac->GetChannels ();
+		
 		for (int i = 0; i < ServersInfo_.count (); i++)
 		{
 			QMap<QString, QVariant> srv = ServersInfo_.at (i).toMap ();
 			if (srv ["Server"] == serverIndex.data () && 
 					srv ["Network"] == serverIndex.parent ().data ())
 				srv ["Channels"] = srv ["Channels"].toStringList () + dac->GetChannelsPair ();
-
 			ServersInfo_ [i] = srv;
 		}
 

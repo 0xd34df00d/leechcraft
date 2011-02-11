@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDDEFAULTCHANNELSDIALOG_H
 
 #include <QDialog>
+#include <QStandardItemModel>
 #include "ui_ircadddefaultchannelsdialog.h"
 
 namespace LeechCraft
@@ -33,12 +34,15 @@ namespace Acetamide
 		Q_OBJECT
 		
 		Ui::IrcAddDefaultChannelsDialog Ui_;
-		
+		QStandardItemModel *ChannelsModel_;
 	public:
 		IrcAddDefaultChannelsDialog (QWidget* = 0);
 		QStringList GetChannels ();
-		void SetChannels (const QStringList&);
 		QStringList GetChannelsPair () const;
+	public slots:
+		void handleAddLine (bool);
+		void handleDeleteLine (bool);
+		void accept ();
 	};
 };
 };

@@ -17,6 +17,10 @@
  **********************************************************************/
 
 #include "ircadddefaultchannelsdialog.h"
+#include <QTableView>
+#include <QPushButton>
+#include <QMessageBox>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -26,28 +30,83 @@ namespace Acetamide
 {
 	IrcAddDefaultChannelsDialog::IrcAddDefaultChannelsDialog (QWidget *parent)
 	: QDialog (parent)
+	, ChannelsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.DefaultChannels_->setModel (ChannelsModel_);
+		QStringList headerLabels;
+		headerLabels << tr ("Channel's name") << tr ("Password");
+		ChannelsModel_->setHorizontalHeaderLabels (headerLabels);
+		
+		connect (Ui_.Add_,
+				SIGNAL (clicked (bool)),
+				this,
+				SLOT (handleAddLine (bool)));
+		
+		connect (Ui_.Delete_,
+				SIGNAL (clicked (bool)),
+				this,
+				SLOT (handleDeleteLine (bool)));
 	}
 
 	QStringList IrcAddDefaultChannelsDialog::GetChannels ()
 	{
 		QStringList channels; 
-		Q_FOREACH (const QString& line, Ui_.DefaultChannels_->toPlainText ().split ('\n'))
-			channels << line.split (' ').at (0);
+		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
+			channels << ChannelsModel_->item (i)->text ();
 		return channels;
 	}
 
-	void IrcAddDefaultChannelsDialog::SetChannels (const QStringList& channels)
-	{
-		Ui_.DefaultChannels_->setPlainText (channels.join ("\n"));
-	}
-	
 	QStringList IrcAddDefaultChannelsDialog::GetChannelsPair () const
 	{
-		return Ui_.DefaultChannels_->toPlainText ().split ('\n');
+		QStringList channelsPair;
+		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
+		{
+			channelsPair << ChannelsModel_->item (i, 0)->text () + 
+									QString (" ") +
+									ChannelsModel_->item (i, 1)->text ();
+		}
+		return channelsPair;
 	}
-
+	
+	void IrcAddDefaultChannelsDialog::handleAddLine (bool checked)
+	{
+		QList<QStandardItem*> list;
+		for (int i = 0; i < 2; ++i)
+		{
+			QStandardItem *item = new QStandardItem;
+			item->setEditable (true);
+			list << item;
+		}
+		ChannelsModel_->appendRow (list);
+	}
+	
+	void IrcAddDefaultChannelsDialog::handleDeleteLine (bool checked)
+	{
+		QModelIndex index = Ui_.DefaultChannels_->currentIndex ();
+		if (index.isValid ())
+			ChannelsModel_->removeRow (index.row (), QModelIndex ());
+	}
+	
+	void IrcAddDefaultChannelsDialog::accept ()
+	{
+		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
+		{
+			QString item = ChannelsModel_->item (i)->text ();
+			if (item.isEmpty () ||
+					item.contains (' ') ||
+					item.contains (',') ||
+					item.contains (QChar (7)))
+			{
+				QMessageBox::warning (this, 
+						"LeechCraft",
+						tr ("Invalid channel name"));
+				return;
+			}
+		}
+		
+		QDialog::accept ();
+	}
 }
 };
 };

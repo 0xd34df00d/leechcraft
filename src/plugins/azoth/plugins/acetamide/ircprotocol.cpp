@@ -34,7 +34,7 @@ namespace Acetamide
 	IrcProtocol::IrcProtocol (QObject *parent)
 	: QObject (parent)
 	, ParentProtocolPlugin_ (parent)
-	,ProxyObject_ (0)
+	, ProxyObject_ (0)
 	{
 	}
 
