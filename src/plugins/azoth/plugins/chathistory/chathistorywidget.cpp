@@ -36,6 +36,13 @@ namespace ChatHistory
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+		
+		Core::Instance ()->GetOurAccounts ();
+		
+		connect (Core::Instance ().get (),
+				SIGNAL (gotOurAccounts (const QStringList&)),
+				this,
+				SLOT (handleGotOurAccounts (const QStringList&)));
 	}
 	
 	void ChatHistoryWidget::Remove ()
@@ -61,6 +68,15 @@ namespace ChatHistory
 	QList<QAction*> ChatHistoryWidget::GetTabBarContextMenuActions () const
 	{
 		return QList<QAction*> ();
+	}
+	
+	void ChatHistoryWidget::handleGotOurAccounts (const QStringList& accounts)
+	{
+		Ui_.AccountBox_->addItems (accounts);
+		disconnect (Core::Instance ().get (),
+				SIGNAL (gotOurAccounts (const QStringList&)),
+				this,
+				SLOT (handleGotOurAccounts (const QStringList&)));
 	}
 }
 }

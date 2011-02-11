@@ -54,6 +54,21 @@ namespace ChatHistory
 				Qt::QueuedConnection,
 				Q_ARG (QObject*, msg));
 	}
+	
+	void Core::GetOurAccounts ()
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"getOurAccounts",
+				Qt::QueuedConnection);
+	}
+	
+	void Core::GetUsersForAccount (const QString& accountID)
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"getUsersForAccount",
+				Qt::QueuedConnection,
+				Q_ARG (QString, accountID));
+	}
 }
 }
 }

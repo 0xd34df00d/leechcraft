@@ -18,6 +18,7 @@
 
 #include "storagethread.h"
 #include "storage.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,18 @@ namespace ChatHistory
 	void StorageThread::run ()
 	{
 		Storage_.reset (new Storage);
+
+		connect (Storage_.get (),
+				SIGNAL (gotOurAccounts (const QStringList&)),
+				Core::Instance ().get (),
+				SIGNAL (gotOurAccounts (const QStringList&)),
+				Qt::QueuedConnection);
+		connect (Storage_.get (),
+				SIGNAL (gotUsersForAccount (const QStringList&, const QString&)),
+				Core::Instance ().get (),
+				SIGNAL (gotUsersForAccount (const QStringList&, const QString&)),
+				Qt::QueuedConnection);
+
 		QThread::run ();
 		Storage_.reset ();
 	}

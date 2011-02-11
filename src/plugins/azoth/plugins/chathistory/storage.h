@@ -44,12 +44,11 @@ namespace ChatHistory
 		QSqlQuery UserInserter_;
 		QSqlQuery AccountInserter_;
 		QSqlQuery MessageDumper_;
+		QSqlQuery UsersForAccountGetter_;
 		QHash<QString, qint32> Users_;
 		QHash<QString, qint32> Accounts_;
 	public:
 		Storage (QObject* = 0);
-	public slots:
-		void addMessage (QObject*);
 	private:
 		void InitializeTables ();
 
@@ -60,6 +59,13 @@ namespace ChatHistory
 		QHash<QString, qint32> GetAccounts ();
 		qint32 GetAccountID (const QString&);
 		void AddAccount (const QString& id);
+	public slots:
+		void addMessage (QObject*);
+		void getOurAccounts ();
+		void getUsersForAccount (const QString&);
+	signals:
+		void gotOurAccounts (const QStringList&);
+		void gotUsersForAccount (const QStringList&, const QString&);
 	};
 }
 }

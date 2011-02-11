@@ -55,6 +55,11 @@ namespace ChatHistory
 		static boost::shared_ptr<Core> Instance ();
 		
 		void Process (QObject*);
+		void GetOurAccounts ();
+		void GetUsersForAccount (const QString&);
+	signals:
+		void gotOurAccounts (const QStringList&);
+		void gotUsersForAccount (const QStringList&, const QString&);
 	};
 }
 }

@@ -48,6 +48,8 @@ namespace ChatHistory
 		void NewTabRequested ();
 		QObject* ParentMultiTabs () const;
 		QList<QAction*> GetTabBarContextMenuActions () const;
+	private slots:
+		void handleGotOurAccounts (const QStringList&);
 	signals:
 		void removeSelf (QWidget*);
 	};

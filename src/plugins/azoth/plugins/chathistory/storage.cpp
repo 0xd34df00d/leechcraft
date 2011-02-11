@@ -64,6 +64,9 @@ namespace ChatHistory
 		MessageDumper_ = QSqlQuery (*DB_);
 		MessageDumper_.prepare ("INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type) "
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
+		UsersForAccountGetter_ = QSqlQuery (*DB_);
+		UsersForAccountGetter_.prepare ("SELECT DISTINCT EntryID FROM azoth_users, azoth_history "
+				"WHERE azoth_history.Id = azoth_users.Id AND AccountID = :account_id;");
 		
 		try
 		{
@@ -303,6 +306,27 @@ namespace ChatHistory
 		}
 		
 		lock.Good ();
+	}
+	
+	void Storage::getOurAccounts ()
+	{
+		emit gotOurAccounts (Accounts_.keys ());
+	}
+	
+	void Storage::getUsersForAccount (const QString& accountId)
+	{
+		if (!Accounts_.contains (accountId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Accounts_ doesn't contain"
+					<< accountId
+					<< "; raw contents:"
+					<< Accounts_;
+			return;
+		}
+		int id = Accounts_ [accountId];
+		
+		UsersForAccountGetter_.bindValue (":account_id", id);
 	}
 	
 	void Storage::InitializeTables ()
