@@ -2,7 +2,7 @@
 <settings>
 	<page>
 		<label value="Appearance" />
-		<tab>
+		<groupbox>
 			<label value="Iconsets" />
 			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
 				<label value="Status icons:" />
@@ -22,7 +22,13 @@
 					<label value="None" />
 				</option>
 			</item>
-		</tab>
+			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true">
+				<label value="Chat window style:" />
+				<option name="Basic" default="true">
+					<label value="Basic" />
+				</option>
+			</item>
+		</groupbox>
 	</page>
 	<page>
 		<label value="Behavior" />

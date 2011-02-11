@@ -60,6 +60,7 @@ namespace Azoth
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
 	, SmilesOptionsModel_ (new Util::MergeModel (QStringList (tr ("Smile pack"))))
+	, ChatStylesOptionsModel_ (new Util::MergeModel (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
@@ -124,6 +125,11 @@ namespace Azoth
 	QAbstractItemModel* Core::GetSmilesOptionsModel () const
 	{
 		return SmilesOptionsModel_.get ();
+	}
+	
+	QAbstractItemModel* Core::GetChatStylesOptionsModel()
+	{
+		return ChatStylesOptionsModel_.get ();
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
@@ -354,12 +360,22 @@ namespace Azoth
 			ISmileResourceSource *smileSrc = qobject_cast<ISmileResourceSource*> (object);
 			if (smileSrc)
 				AddSmileResourceSource (smileSrc);
+			
+			IChatStyleResourceSource *chatStyleSrc =
+					qobject_cast<IChatStyleResourceSource*> (object);
+			if (chatStyleSrc)
+				AddChatStyleResourceSource (chatStyleSrc);
 		}
 	}
 	
 	void Core::AddSmileResourceSource (ISmileResourceSource *src)
 	{
 		SmilesOptionsModel_->AddModel (src->GetOptionsModel ());
+	}
+	
+	void Core::AddChatStyleResourceSource (IChatStyleResourceSource *src)
+	{
+		ChatStylesOptionsModel_->AddModel (src->GetOptionsModel ());
 	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,

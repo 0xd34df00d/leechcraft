@@ -45,6 +45,7 @@ namespace Azoth
 	class IAccount;
 	class IMessage;
 	class ISmileResourceSource;
+	class IChatStyleResourceSource;
 
 	class ChatTabsManager;
 	class PluginManager;
@@ -86,6 +87,7 @@ namespace Azoth
 		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
 		boost::shared_ptr<Util::MergeModel> SmilesOptionsModel_;
+		boost::shared_ptr<Util::MergeModel> ChatStylesOptionsModel_;
 
 		boost::shared_ptr<PluginManager> PluginManager_;
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
@@ -140,6 +142,7 @@ namespace Azoth
 
 		Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
 		QAbstractItemModel* GetSmilesOptionsModel () const;
+		QAbstractItemModel* GetChatStylesOptionsModel ();
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
@@ -255,6 +258,7 @@ namespace Azoth
 		 */
 		void AddResourceSourcePlugin (QObject *object);
 		void AddSmileResourceSource (ISmileResourceSource*);
+		void AddChatStyleResourceSource (IChatStyleResourceSource*);
 
 		/** Adds the given contact list entry to the given account and
 		 * performs common initialization tasks.
