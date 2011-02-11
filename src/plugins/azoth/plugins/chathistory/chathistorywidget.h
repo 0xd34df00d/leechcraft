@@ -22,6 +22,9 @@
 #include <interfaces/imultitabs.h>
 #include "ui_chathistorywidget.h"
 
+class QStandardItemModel;
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -37,6 +40,8 @@ namespace ChatHistory
 		Q_INTERFACES (IMultiTabsWidget);
 
 		Ui::ChatHistoryWidget Ui_;
+		QStandardItemModel *ContactsModel_;
+		QSortFilterProxyModel *SortFilter_;
 		static Plugin *S_ParentMultiTabs_;
 	public:
 		static void SetParentMultiTabs (Plugin*);

@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "chathistorywidget.h"
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include "chathistory.h"
 
 namespace LeechCraft
@@ -34,14 +36,24 @@ namespace ChatHistory
 
 	ChatHistoryWidget::ChatHistoryWidget (QWidget *parent)
 	: QWidget (parent)
+	, ContactsModel_ (new QStandardItemModel (this))
+	, SortFilter_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
+		SortFilter_->setDynamicSortFilter (true);
+		SortFilter_->setSourceModel (ContactsModel_);
+		SortFilter_->sort (0);
+		Ui_.Contacts_->setModel (SortFilter_);
+		
+		connect (Ui_.ContactsSearch_,
+				SIGNAL (textChanged (const QString&)),
+				SortFilter_,
+				SLOT (setFilterFixedString (const QString&)));
 		
 		connect (Core::Instance ().get (),
 				SIGNAL (gotUsersForAccount (const QStringList&, const QString&)),
 				this,
 				SLOT (handleGotUsersForAccount (const QStringList&, const QString&)));
-
 		connect (Core::Instance ().get (),
 				SIGNAL (gotOurAccounts (const QStringList&)),
 				this,
@@ -87,7 +99,12 @@ namespace ChatHistory
 	
 	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users, const QString& id)
 	{
-		qDebug () << id << users;
+		if (id != Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ())
+			return;
+
+		ContactsModel_->clear ();
+		Q_FOREACH (const QString& user, users)
+			ContactsModel_->appendRow (new QStandardItem (user));
 	}
 	
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
