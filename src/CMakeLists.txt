@@ -325,24 +325,6 @@ SET (HEADERS
 	plugintreebuilder.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
-	interfaces/iinfo.h
-	interfaces/iwindow.h
-	interfaces/idownload.h
-	interfaces/ihavesettings.h
-	interfaces/imultitabs.h
-	interfaces/iembedtab.h
-	interfaces/itaggablejobs.h
-	interfaces/ijobholder.h
-	interfaces/iimportexport.h
-	interfaces/ifinder.h
-	interfaces/iwebbrowser.h
-	interfaces/ientityhandler.h
-	interfaces/ipluginready.h
-	interfaces/iplugin2.h
-	interfaces/ihaveshortcuts.h
-	interfaces/istartupwizard.h
-	interfaces/ipluginadaptor.h
-	interfaces/isummaryrepresentation.h
 	interfaces/structures.h
 	)
 SET (FORMS
