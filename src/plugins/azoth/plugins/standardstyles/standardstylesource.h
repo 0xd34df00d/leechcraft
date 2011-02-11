@@ -36,6 +36,7 @@ namespace StandardStyles
 	class StandardStyleSource : public QObject
 							  , public IChatStyleResourceSource
 	{
+		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IChatStyleResourceSource)
 
 		boost::shared_ptr<Util::ResourceLoader> StylesLoader_;
