@@ -663,6 +663,8 @@ public:
 	 * The return value is used by LeechCraft to calculate the
 	 * dependencies between plugins and link them together by passing
 	 * object pointers to SetProvider().
+	 * 
+	 * The default implementation returns an empty list.
 	 *
 	 * @note This function should be able to work before Init() is
 	 * called.
@@ -673,7 +675,10 @@ public:
 	 * @sa Uses
 	 * @sa SetProvider
 	 */
-	virtual QStringList Provides () const = 0;
+	virtual QStringList Provides () const
+	{
+		return QStringList ();
+	}
 
 	/** @brief Returns the list of needed features.
 	 *
@@ -686,16 +691,8 @@ public:
 	 * features returned by Provides() in dependency calculations. So,
 	 * the returned list should mention those features that plugin can't
 	 * live without and would not work at all.
-	 *
-	 * There are also some special values:
-	 * - *
-	 *   Passes all plugins to the plugin.
-	 * - services::historyModel
-	 *   Pushes the pointer to merged but not filtered history model
-	 *   into the plugin via pushHistoryModel(MergeModel*) slot.
-	 * - services::downloadersModel
-	 *   Pushes the pointer to merged but not filtered downloaders model
-	 *   into the plugin via pushDownloadersModel(MergeModel*) slot.
+	 * 
+	 * The default implementation returns an empty list.
 	 *
 	 * @note This function should be able to work before Init() is
 	 * called.
@@ -706,7 +703,10 @@ public:
 	 * @sa Uses
 	 * @sa SetProvider
 	 */
-	virtual QStringList Needs () const = 0;
+	virtual QStringList Needs () const
+	{
+		return QStringList ();
+	}
 
 	/** @brief Returns the list of used features.
 	 *
@@ -730,7 +730,10 @@ public:
 	 * @sa Uses
 	 * @sa SetProvider
 	 */
-	virtual QStringList Uses () const = 0;
+	virtual QStringList Uses () const
+	{
+		return QStringList ();
+	}
 
 	/** @brief Sets the provider plugin for a given feature.
 	 *
@@ -749,7 +752,9 @@ public:
 	 * @sa Uses
 	 */
 	virtual void SetProvider (QObject* object,
-			const QString& feature) = 0;
+			const QString& feature)
+	{
+	}
 
 	/** @brief Destroys the plugin.
 	 *
