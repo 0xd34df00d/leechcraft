@@ -33,7 +33,8 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	Storage::Storage ()
+	Storage::Storage (QObject *parent)
+	: QObject (parent)
 	{
 		DB_.reset (new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE", "History connection")));
 		DB_->setDatabaseName (Util::CreateIfNotExists ("azoth").filePath ("history.db"));
@@ -199,8 +200,9 @@ namespace ChatHistory
 		}
 	}
 	
-	void Storage::AddMessage (IMessage *msg)
+	void Storage::addMessage (QObject *msgObj)
 	{
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (msg->GetBody ().isEmpty ())
 			return;
 		

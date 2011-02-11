@@ -123,7 +123,7 @@ namespace ChatHistory
 			return;
 		}
 		
-		Core::Instance ()->Process (msg);
+		Core::Instance ()->Process (message);
 	}
 
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
@@ -138,7 +138,7 @@ namespace ChatHistory
 					<< sender ();
 			return;
 		}
-		Core::Instance ()->Process (msg);
+		Core::Instance ()->Process (message);
 	}
 	
 	void Plugin::handleHistoryRequested ()

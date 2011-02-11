@@ -32,8 +32,10 @@ class IMessage;
 
 namespace ChatHistory
 {
-	class Storage
+	class Storage : public QObject
 	{
+		Q_OBJECT
+
 		boost::shared_ptr<QSqlDatabase> DB_;
 		QSqlQuery UserSelector_;
 		QSqlQuery AccountSelector_;
@@ -45,19 +47,19 @@ namespace ChatHistory
 		QHash<QString, qint32> Users_;
 		QHash<QString, qint32> Accounts_;
 	public:
-		Storage ();
-		
+		Storage (QObject* = 0);
+	public slots:
+		void addMessage (QObject*);
+	private:
+		void InitializeTables ();
+
 		QHash<QString, qint32> GetUsers ();
 		qint32 GetUserID (const QString&);
 		void AddUser (const QString& id);
-		
+
 		QHash<QString, qint32> GetAccounts ();
 		qint32 GetAccountID (const QString&);
 		void AddAccount (const QString& id);
-		
-		void AddMessage (IMessage*);
-	private:
-		void InitializeTables ();
 	};
 }
 }

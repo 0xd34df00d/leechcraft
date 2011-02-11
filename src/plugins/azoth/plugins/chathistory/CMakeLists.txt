@@ -6,12 +6,14 @@ SET (CHATHISTORY_SRCS
 	core.cpp
 	storage.cpp
 	chathistorywidget.cpp
+	storagethread.cpp
 	)
 SET (CHATHISTORY_HEADERS
 	chathistory.h
 	core.h
 	storage.h
 	chathistorywidget.h
+	storagethread.h
 	)
 SET (CHATHISTORY_FORMS
 	chathistorywidget.ui

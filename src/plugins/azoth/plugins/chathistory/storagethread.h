@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "core.h"
-#include <QMetaObject>
-#include <QtDebug>
-#include "storage.h"
-#include "storagethread.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
+#include <boost/shared_ptr.hpp>
+#include <QThread>
 
 namespace LeechCraft
 {
@@ -28,32 +27,22 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	boost::weak_ptr<Core> Core::InstPtr_;
+	class Storage;
 
-	Core::Core ()
-	: StorageThread_ (new StorageThread (this))
+	class StorageThread : public QThread
 	{
-		StorageThread_->start (QThread::LowestPriority);
-	}
-	
-	boost::shared_ptr<Core> Core::Instance ()
-	{
-		if (InstPtr_.expired ())
-		{
-			boost::shared_ptr<Core> ptr (new Core);
-			InstPtr_ = ptr;
-			return ptr;
-		}
-		return InstPtr_.lock ();
-	}
-	
-	void Core::Process (QObject *msg)
-	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"addMessage",
-				Qt::QueuedConnection,
-				Q_ARG (QObject*, msg));
-	}
+		Q_OBJECT
+		
+		boost::shared_ptr<Storage> Storage_;
+	public:
+		StorageThread (QObject* = 0);
+		
+		Storage* GetStorage ();
+	protected:
+		virtual void run ();
+	};
 }
 }
 }
+
+#endif
