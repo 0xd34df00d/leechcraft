@@ -48,7 +48,7 @@ INSTALL (TARGETS leechcraft_${plug_lower} DESTINATION $${LC_PLUGINS_DEST})
 
 header_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  $author
+ * Copyright (C) 2011  $author
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,32 +71,25 @@ header_str = """/***************************************************************
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace $plug
+{
+	class Plugin : public QObject
+					, public $interfaces_inherit
 	{
-		namespace $plug
-		{
-			class Plugin : public QObject
-						 , public $interfaces_inherit
-			{
-				Q_OBJECT
-				Q_INTERFACES ($interfaces)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				QByteArray GetUniqueID () const;
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+		Q_OBJECT
+		Q_INTERFACES ($interfaces)
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 $interfaces_decls
-			};
-		};
 	};
-};
+}
+}
 
 #endif
 
@@ -104,7 +97,7 @@ $interfaces_decls
 
 source_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  $author
+ * Copyright (C) 2011  $author
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,67 +118,45 @@ source_str = """/***************************************************************
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace $plug
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		namespace $plug
-		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
-			{
-			}
+	}
 
-			void Plugin::SecondInit ()
-			{
-			}
+	void Plugin::SecondInit ()
+	{
+	}
 
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.$plug";
-			}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.$plug";
+	}
 
-			void Plugin::Release ()
-			{
-			}
+	void Plugin::Release ()
+	{
+	}
 
-			QString Plugin::GetName () const
-			{
-				return "$plug";
-			}
+	QString Plugin::GetName () const
+	{
+		return "$plug";
+	}
 
-			QString Plugin::GetInfo () const
-			{
-				return tr ("");
-			}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("");
+	}
 
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon ();
-			}
-
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 
 $interfaces_defs
-		};
-	};
-};
+}
+}
 
-Q_EXPORT_PLUGIN2 (leechcraft_${plug_lower}, LeechCraft::Plugins::$plug::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_${plug_lower}, LeechCraft::$plug::Plugin);
 
 """
 
