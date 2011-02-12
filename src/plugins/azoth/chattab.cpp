@@ -85,29 +85,6 @@ namespace Azoth
 
 		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 
-		QString data = Core::Instance ().GetSelectedChatTemplate ();
-		if (data.isEmpty ())
-		{
-			QFile file (":/plugins/azoth/resources/html/viewcontents.html");
-			if (!file.open (QIODevice::ReadOnly))
-				qWarning () << Q_FUNC_INFO
-						<< "could not open resource file"
-						<< file.errorString ();
-			else
-				data = file.readAll ();
-		}
-		
-		if (!data.isEmpty ())
-		{
-			data.replace ("BACKGROUNDCOLOR",
-					BgColor_.name ());
-			data.replace ("FOREGROUNDCOLOR",
-					QApplication::palette ().color (QPalette::Text).name ());
-			data.replace ("LINKCOLOR",
-					QApplication::palette ().color (QPalette::Link).name ());
-			Ui_.View_->setHtml (data);
-		}
-
 		connect (Ui_.View_->page (),
 				SIGNAL (linkClicked (const QUrl&)),
 				this,
@@ -126,31 +103,9 @@ namespace Azoth
 				this,
 				SLOT (handleVariantsChanged (const QStringList&)));
 
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
-		{
-			IMessage *msg = qobject_cast<IMessage*> (msgObj);
-			if (!msg)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast message to IMessage"
-						<< msgObj;
-				continue;
-			}
-			AppendMessage (msg);
-		}
-		
-		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
-		if (!scrollerJS.open (QIODevice::ReadOnly))
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open script file"
-					<< scrollerJS.errorString ();
-		else
-		{
-			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
-			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
-		}
+		PrepareTheme ();
 
+		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());
 
 		const QString& accName =
@@ -193,6 +148,59 @@ namespace Azoth
 				this,
 				SLOT (clearAvailableNick ()));
 		on_MsgEdit__textChanged ();
+	}
+	
+	void ChatTab::PrepareTheme ()
+	{
+		QString data = Core::Instance ().GetSelectedChatTemplate ();
+		if (data.isEmpty ())
+		{
+			QFile file (":/plugins/azoth/resources/html/viewcontents.html");
+			if (!file.open (QIODevice::ReadOnly))
+				qWarning () << Q_FUNC_INFO
+						<< "could not open resource file"
+						<< file.errorString ();
+			else
+				data = file.readAll ();
+		}
+		
+		if (!data.isEmpty ())
+		{
+			data.replace ("BACKGROUNDCOLOR",
+					BgColor_.name ());
+			data.replace ("FOREGROUNDCOLOR",
+					QApplication::palette ().color (QPalette::Text).name ());
+			data.replace ("LINKCOLOR",
+					QApplication::palette ().color (QPalette::Link).name ());
+			Ui_.View_->setHtml (data);
+		}
+		
+		GenerateColors ();
+
+		ICLEntry *e = GetEntry<ICLEntry> ();
+		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
+		{
+			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast message to IMessage"
+						<< msgObj;
+				continue;
+			}
+			AppendMessage (msg);
+		}
+		
+		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
+		if (!scrollerJS.open (QIODevice::ReadOnly))
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open script file"
+					<< scrollerJS.errorString ();
+		else
+		{
+			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
+			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
+		}
 	}
 
 	void ChatTab::HasBeenAdded ()
@@ -901,27 +909,40 @@ namespace Azoth
 
 	void ChatTab::GenerateColors ()
 	{
-		const qreal lower = 25. / 360.;
-		const qreal delta = 25. / 360.;
-		const qreal higher = 180. / 360. - delta / 2;
+		NickColors_.clear ();
 
-		const qreal alpha = BgColor_.alphaF ();
-
-		qreal s = BgColor_.saturationF ();
-		s += 31 * (1 - s) / 32;
-		qreal v = BgColor_.valueF ();
-		v = 0.95 - 2 * v / 5;
-
-		qreal h = BgColor_.hueF ();
-
-		QColor color;
-		for (qreal d = lower; d <= higher; d += delta)
+		const QMultiMap<QString, QString>& metadata =
+				Ui_.View_->page ()->mainFrame ()->metaData ();
+		const QString& coloring = metadata.value ("coloring");
+		if (coloring == "hash" ||
+				coloring.isEmpty ())
 		{
-			color.setHsvF (Fix (h + d), s, v, alpha);
-			NickColors_ << color;
-			color.setHsvF (Fix (h - d), s, v, alpha);
-			NickColors_ << color;
+			const qreal lower = 25. / 360.;
+			const qreal delta = 25. / 360.;
+			const qreal higher = 180. / 360. - delta / 2;
+
+			const qreal alpha = BgColor_.alphaF ();
+
+			qreal s = BgColor_.saturationF ();
+			s += 31 * (1 - s) / 32;
+			qreal v = BgColor_.valueF ();
+			v = 0.95 - 2 * v / 5;
+
+			qreal h = BgColor_.hueF ();
+
+			QColor color;
+			for (qreal d = lower; d <= higher; d += delta)
+			{
+				color.setHsvF (Fix (h + d), s, v, alpha);
+				NickColors_ << color;
+				color.setHsvF (Fix (h - d), s, v, alpha);
+				NickColors_ << color;
+			}
 		}
+		else
+			Q_FOREACH (const QString& str,
+					coloring.split (' ', QString::SkipEmptyParts))
+				NickColors_ << QColor (str);
 	}
 
 	void ChatTab::nickComplete ()

@@ -29,6 +29,8 @@ namespace Azoth
 	ChatTabsManager::ChatTabsManager(QObject *parent)
 	: QObject (parent)
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("ChatWindowStyle",
+				this, "chatWindowStyleChanged");
 	}
 
 	void ChatTabsManager::OpenChat (const QModelIndex& ti)
@@ -131,6 +133,12 @@ namespace Azoth
 		Entry2Tab_.remove (entry);
 
 		tab->deleteLater ();
+	}
+	
+	void ChatTabsManager::chatWindowStyleChanged ()
+	{
+		Q_FOREACH (ChatTab_ptr tab, Entry2Tab_.values ())
+			tab->PrepareTheme ();
 	}
 }
 }
