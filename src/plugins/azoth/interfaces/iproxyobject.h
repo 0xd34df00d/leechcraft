@@ -108,6 +108,27 @@ namespace Azoth
 		 * @sa AuthStatusToString()
 		 */
 		virtual AuthStatus AuthStatusFromString (const QString& str) const = 0;
+		
+		/** @brief Returns the account object for the given account ID.
+		 * 
+		 * If there is no such account, NULL is returned.
+		 * 
+		 * @param[in] accID The unique account ID.
+		 * 
+		 * @return Account object implementing IAccount, or NULL if no
+		 * such account exists.
+		 */
+		virtual QObject* GetAccount (const QString& accID) const = 0;
+		
+		/** @brief Returns the entry object for the given entry ID.
+		 * 
+		 * @param[in] entryID The entry ID.
+		 * @param[in] accID The account ID to which this entry
+		 * belongs.
+		 * 
+		 * @return Entry object, or NULL if no such entry exists.
+		 */
+		virtual QObject* GetEntry (const QString& entryID, const QString& accID) const = 0;
 	};
 }
 }

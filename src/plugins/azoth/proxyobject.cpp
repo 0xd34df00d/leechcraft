@@ -257,5 +257,19 @@ namespace Azoth
 	{
 		return SerializedStr2AuthStatus_.value (str, ASNone);;
 	}
+	
+	QObject* ProxyObject::GetAccount (const QString& accID) const
+	{
+		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+			if (acc->GetAccountID () == accID)
+				return acc->GetObject ();
+
+		return 0;
+	}
+	
+	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
+	{
+		return Core::Instance ().GetEntry (entryID);
+	}
 }
 }

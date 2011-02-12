@@ -43,6 +43,8 @@ namespace Azoth
 		QString StateToString (State) const;
 		QString AuthStatusToString (AuthStatus) const;
 		AuthStatus AuthStatusFromString (const QString&) const;
+		QObject* GetAccount (const QString&) const;
+		QObject* GetEntry (const QString&, const QString&) const;
 	};
 }
 }
