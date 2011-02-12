@@ -53,6 +53,11 @@ namespace StandardStyles
 		
 		return dev->readAll ();
 	}
+	
+	bool StandardStyleSource::AppendMessage (QWebFrame*, QObject*, const QString&)
+	{
+		return false;
+	}
 }
 }
 }

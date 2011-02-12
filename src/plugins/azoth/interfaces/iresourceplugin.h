@@ -24,6 +24,7 @@
 #include <QImage>
 
 class QAbstractItemModel;
+class QWebFrame;
 
 namespace LeechCraft
 {
@@ -137,6 +138,8 @@ namespace Azoth
 		virtual ~IChatStyleResourceSource () {}
 		
 		virtual QString GetHTMLTemplate (const QString& style) const = 0;
+		
+		virtual bool AppendMessage (QWebFrame *frame, QObject *message, const QString& color) = 0;
 	};
 
 	/** @brief Interface for plugins having resource sources, like smile

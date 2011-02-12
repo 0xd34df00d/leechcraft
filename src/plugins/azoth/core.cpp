@@ -392,6 +392,22 @@ namespace Azoth
 		
 		return src->GetHTMLTemplate (opt);
 	}
+	
+	bool Core::AppendMessageByTemplate (QWebFrame *frame, QObject *message, const QString& color)
+	{
+		const QString& opt = XmlSettingsManager::Instance ()
+				.property ("ChatWindowStyle").toString ();
+		IChatStyleResourceSource *src = ChatStylesOptionsModel_->GetSourceForOption (opt);
+		if (!src)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty result for"
+					<< opt;
+			return false;
+		}
+		
+		return src->AppendMessage (frame, message, color);
+	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
