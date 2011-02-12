@@ -188,15 +188,15 @@ namespace LeechCraft
 			 */
 			QList<QAbstractItemModel*> GetAllModels () const;
 		public Q_SLOTS:
-			void handleColumnsAboutToBeInserted (const QModelIndex&, int, int);
-			void handleColumnsAboutToBeRemoved (const QModelIndex&, int, int);
-			void handleColumnsInserted (const QModelIndex&, int, int);
-			void handleColumnsRemoved (const QModelIndex&, int, int);
-			void handleDataChanged (const QModelIndex&, const QModelIndex&);
-			void handleRowsAboutToBeInserted (const QModelIndex&, int, int);
-			void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
-			void handleRowsInserted (const QModelIndex&, int, int);
-			void handleRowsRemoved (const QModelIndex&, int, int);
+			virtual void handleColumnsAboutToBeInserted (const QModelIndex&, int, int);
+			virtual void handleColumnsAboutToBeRemoved (const QModelIndex&, int, int);
+			virtual void handleColumnsInserted (const QModelIndex&, int, int);
+			virtual void handleColumnsRemoved (const QModelIndex&, int, int);
+			virtual void handleDataChanged (const QModelIndex&, const QModelIndex&);
+			virtual void handleRowsAboutToBeInserted (const QModelIndex&, int, int);
+			virtual void handleRowsAboutToBeRemoved (const QModelIndex&, int, int);
+			virtual void handleRowsInserted (const QModelIndex&, int, int);
+			virtual void handleRowsRemoved (const QModelIndex&, int, int);
 		protected:
 			/** This virtual function could be overridden to provide
 			 * custom filtering facilities. If the row in the model

@@ -33,7 +33,8 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	Storage::Storage ()
+	Storage::Storage (QObject *parent)
+	: QObject (parent)
 	{
 		DB_.reset (new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE", "History connection")));
 		DB_->setDatabaseName (Util::CreateIfNotExists ("azoth").filePath ("history.db"));
@@ -63,6 +64,9 @@ namespace ChatHistory
 		MessageDumper_ = QSqlQuery (*DB_);
 		MessageDumper_.prepare ("INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type) "
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
+		UsersForAccountGetter_ = QSqlQuery (*DB_);
+		UsersForAccountGetter_.prepare ("SELECT DISTINCT EntryID FROM azoth_users, azoth_history "
+				"WHERE azoth_history.Id = azoth_users.Id AND AccountID = :account_id;");
 		
 		try
 		{
@@ -95,8 +99,8 @@ namespace ChatHistory
 		
 		QHash<QString, qint32> result;
 		while (UserSelector_.next ())
-			result [UserSelector_.value (0).toString ()] =
-					UserSelector_.value (1).toInt ();
+			result [UserSelector_.value (1).toString ()] =
+					UserSelector_.value (0).toInt ();
 		
 		return result;
 	}
@@ -152,8 +156,8 @@ namespace ChatHistory
 		
 		QHash<QString, qint32> result;
 		while (AccountSelector_.next ())
-			result [AccountSelector_.value (0).toString ()] =
-					AccountSelector_.value (1).toInt ();
+			result [AccountSelector_.value (1).toString ()] =
+					AccountSelector_.value (0).toInt ();
 
 		return result;
 	}
@@ -199,8 +203,9 @@ namespace ChatHistory
 		}
 	}
 	
-	void Storage::AddMessage (IMessage *msg)
+	void Storage::addMessage (QObject *msgObj)
 	{
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (msg->GetBody ().isEmpty ())
 			return;
 		
@@ -268,7 +273,7 @@ namespace ChatHistory
 		}
 
 		MessageDumper_.bindValue (":id", Users_ [entryID]);
-		MessageDumper_.bindValue (":account_id", Accounts_ [entryID]);
+		MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
 		MessageDumper_.bindValue (":date", msg->GetDateTime ());
 		MessageDumper_.bindValue (":direction",
 				msg->GetDirection () == IMessage::DIn ? "IN" : "OUT");
@@ -301,6 +306,39 @@ namespace ChatHistory
 		}
 		
 		lock.Good ();
+	}
+	
+	void Storage::getOurAccounts ()
+	{
+		emit gotOurAccounts (Accounts_.keys ());
+	}
+	
+	void Storage::getUsersForAccount (const QString& accountId)
+	{
+		if (!Accounts_.contains (accountId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Accounts_ doesn't contain"
+					<< accountId
+					<< "; raw contents:"
+					<< Accounts_;
+			return;
+		}
+		
+		UsersForAccountGetter_.bindValue (":account_id", Accounts_ [accountId]);
+		if (!UsersForAccountGetter_.exec ())
+		{
+			Util::DBLock::DumpError (UsersForAccountGetter_);
+			return;
+		}
+		
+		QStringList result;
+		while (UsersForAccountGetter_.next ())
+			result << UsersForAccountGetter_.value (0).toString ();
+		
+		qDebug () << accountId << Accounts_ << result;
+		
+		emit gotUsersForAccount (result, accountId);
 	}
 	
 	void Storage::InitializeTables ()

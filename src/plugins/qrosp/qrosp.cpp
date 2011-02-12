@@ -70,20 +70,6 @@ namespace LeechCraft
 				return QStringList ("qrosp");
 			}
 
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
-
 			QList<QObject*> Plugin::GetPlugins ()
 			{
 				return PluginManager::Instance ().GetPlugins ();

@@ -46,9 +46,6 @@ namespace LeechCraft
 				QString GetInfo () const;
 				QIcon GetIcon () const;
 				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
 
 				QList<QObject*> GetPlugins ();
 

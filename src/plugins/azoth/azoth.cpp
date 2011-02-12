@@ -97,6 +97,8 @@ namespace Azoth
 	{
 		XmlSettingsDialog_->SetDataSource ("SmileIcons",
 				Core::Instance ().GetSmilesOptionsModel ());
+		XmlSettingsDialog_->SetDataSource ("ChatWindowStyle",
+				Core::Instance ().GetChatStylesOptionsModel ());
 	}
 
 	void Plugin::Release ()
@@ -129,20 +131,6 @@ namespace Azoth
 		return QStringList (GetUniqueID ());
 	}
 
-	QStringList Plugin::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Plugin::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
 	{
 		return Core::Instance ().GetExpectedPluginClasses ();
@@ -161,6 +149,18 @@ namespace Azoth
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
+	}
+	
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
+	{
+		return QList<QAction*> ();
+	}
+	
+	QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
+	{
+		QMap<QString, QList<QAction*> > result;
+		result ["Azoth"] << MW_->GetMenuActions ();
+		return result;
 	}
 
 	void Plugin::newTabRequested ()

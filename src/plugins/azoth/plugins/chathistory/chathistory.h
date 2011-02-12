@@ -20,9 +20,10 @@
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <QSqlQuery>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/iactionsexporter.h>
+#include <interfaces/imultitabs.h>
 #include <interfaces/imessage.h>
 #include "core.h"
 
@@ -33,13 +34,16 @@ namespace Azoth
 namespace ChatHistory
 {
 	class Plugin : public QObject
-					, public IInfo
-					, public IPlugin2
+				 , public IInfo
+				 , public IPlugin2
+				 , public IActionsExporter
+				 , public IMultiTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IActionsExporter IMultiTabs)
 
 		boost::shared_ptr<STGuard<Core> > Guard_;
+		QAction *ActionHistory_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -48,22 +52,27 @@ namespace ChatHistory
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 
 		QSet<QByteArray> GetPluginClasses () const;
-		QSqlQuery GetQuery (const QString& sql);
+		
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QMap<QString, QList<QAction*> > GetMenuActions () const;
 	public slots:
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
-		void hookMessageArrived (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+		void newTabRequested ();
+	private slots:
+		void handleHistoryRequested ();
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 }
 }

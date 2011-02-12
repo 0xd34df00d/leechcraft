@@ -79,20 +79,6 @@ namespace LeechCraft
 				return QStringList ("syncplugin");
 			}
 
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
-
 			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;

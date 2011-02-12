@@ -77,25 +77,6 @@ namespace LeechCraft
 				return QIcon (":/resources/images/tabpp.svg");
 			}
 
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
-
 			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 			{
 				QList<QAction*> result;

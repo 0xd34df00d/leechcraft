@@ -76,6 +76,11 @@ namespace Azoth
 		static void SetParentMultiTabs (QObject*);
 
 		ChatTab (const QString&, const QString&, QWidget* = 0);
+		
+		/** Prepare (or update after it has been changed) the theme.
+		 */
+		void PrepareTheme ();
+
 		/** Is called after the tab has been added to the tabwidget so
 		 * that it could set its icon and various other stuff.
 		 */

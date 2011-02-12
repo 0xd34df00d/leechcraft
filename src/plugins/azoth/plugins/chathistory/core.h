@@ -41,20 +41,25 @@ namespace ChatHistory
 		{}
 	};
 	
-	class Storage;
+	class StorageThread;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 		static boost::weak_ptr<Core> InstPtr_;
 		
-		boost::shared_ptr<Storage> Storage_;
+		StorageThread *StorageThread_;
 		
 		Core ();
 	public:
 		static boost::shared_ptr<Core> Instance ();
 		
-		void Process (IMessage*);
+		void Process (QObject*);
+		void GetOurAccounts ();
+		void GetUsersForAccount (const QString&);
+	signals:
+		void gotOurAccounts (const QStringList&);
+		void gotUsersForAccount (const QStringList&, const QString&);
 	};
 }
 }

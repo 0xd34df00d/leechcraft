@@ -76,25 +76,6 @@ namespace LeechCraft
 				return QIcon ();
 			}
 
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
-
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
-
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
-
 			bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return e.Mime_ == "x-leechcraft/notification" &&

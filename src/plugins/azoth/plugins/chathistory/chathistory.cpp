@@ -17,14 +17,13 @@
  **********************************************************************/
 
 #include "chathistory.h"
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QDir>
 #include <QIcon>
+#include <QAction>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
 #include "core.h"
+#include "chathistorywidget.h"
 
 namespace LeechCraft
 {
@@ -34,7 +33,14 @@ namespace ChatHistory
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ChatHistoryWidget::SetParentMultiTabs (this);
+
 		Guard_.reset (new STGuard<Core> ());
+		ActionHistory_ = new QAction (tr ("Chat history..."), this);
+		connect (ActionHistory_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleHistoryRequested ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -66,29 +72,22 @@ namespace ChatHistory
 		return QIcon ();
 	}
 
-	QStringList Plugin::Provides () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Plugin::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
+		return result;
+	}
+	
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
+	{
+		return QList<QAction*> ();
+	}
+	
+	QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
+	{
+		QMap<QString, QList<QAction*> > result;
+		result ["Azoth"] << ActionHistory_;
 		return result;
 	}
 
@@ -105,7 +104,7 @@ namespace ChatHistory
 			return;
 		}
 		
-		Core::Instance ()->Process (msg);
+		Core::Instance ()->Process (message);
 	}
 
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
@@ -120,11 +119,25 @@ namespace ChatHistory
 					<< sender ();
 			return;
 		}
-		Core::Instance ()->Process (msg);
+		Core::Instance ()->Process (message);
+	}
+	
+	void Plugin::handleHistoryRequested ()
+	{
+		ChatHistoryWidget *wh = new ChatHistoryWidget;
+		connect (wh,
+				SIGNAL (removeSelf (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		emit addNewTab (tr ("Chat history"), wh);
+	}
+	
+	void Plugin::newTabRequested ()
+	{
+		handleHistoryRequested ();
 	}
 }
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_azoth_chathistory, LeechCraft::Azoth::ChatHistory::Plugin);
-

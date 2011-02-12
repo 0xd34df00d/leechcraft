@@ -48,6 +48,7 @@ namespace Azoth
 		void SetChatEnabled (const QString&, bool);
 	private slots:
 		void handleNeedToClose (ChatTab*);
+		void chatWindowStyleChanged ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void changeTabName (QWidget*, const QString&);

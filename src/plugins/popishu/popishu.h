@@ -52,10 +52,6 @@ namespace LeechCraft
 				QString GetName () const;
 				QString GetInfo () const;
 				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
 
 				bool CouldHandle (const Entity&) const;
 				void Handle (Entity);

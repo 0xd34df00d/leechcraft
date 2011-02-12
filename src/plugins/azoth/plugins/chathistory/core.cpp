@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QMetaObject>
 #include <QtDebug>
 #include "storage.h"
+#include "storagethread.h"
 
 namespace LeechCraft
 {
@@ -29,8 +31,9 @@ namespace ChatHistory
 	boost::weak_ptr<Core> Core::InstPtr_;
 
 	Core::Core ()
-	: Storage_ (new Storage)
+	: StorageThread_ (new StorageThread (this))
 	{
+		StorageThread_->start (QThread::LowestPriority);
 	}
 	
 	boost::shared_ptr<Core> Core::Instance ()
@@ -44,9 +47,27 @@ namespace ChatHistory
 		return InstPtr_.lock ();
 	}
 	
-	void Core::Process (IMessage *msg)
+	void Core::Process (QObject *msg)
 	{
-		Storage_->AddMessage (msg);
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"addMessage",
+				Qt::QueuedConnection,
+				Q_ARG (QObject*, msg));
+	}
+	
+	void Core::GetOurAccounts ()
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"getOurAccounts",
+				Qt::QueuedConnection);
+	}
+	
+	void Core::GetUsersForAccount (const QString& accountID)
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"getUsersForAccount",
+				Qt::QueuedConnection,
+				Q_ARG (QString, accountID));
 	}
 }
 }

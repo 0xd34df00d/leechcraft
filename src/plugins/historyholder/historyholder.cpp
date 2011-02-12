@@ -66,20 +66,6 @@ QStringList Plugin::Provides () const
 	return QStringList ("history");
 }
 
-QStringList Plugin::Needs () const
-{
-	return QStringList ();
-}
-
-QStringList Plugin::Uses () const
-{
-	return QStringList ();
-}
-
-void Plugin::SetProvider (QObject*, const QString&)
-{
-}
-
 QStringList Plugin::GetCategories () const
 {
 	return QStringList ("history");
