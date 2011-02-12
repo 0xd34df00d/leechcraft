@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QMetaObject>
 #include <QtDebug>
+#include <interfaces/iproxyobject.h>
 #include "storage.h"
 #include "storagethread.h"
 
@@ -32,6 +33,7 @@ namespace ChatHistory
 
 	Core::Core ()
 	: StorageThread_ (new StorageThread (this))
+	, PluginProxy_ (0)
 	{
 		StorageThread_->start (QThread::LowestPriority);
 	}
@@ -45,6 +47,16 @@ namespace ChatHistory
 			return ptr;
 		}
 		return InstPtr_.lock ();
+	}
+	
+	void Core::SetPluginProxy (QObject *proxy)
+	{
+		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
+	}
+	
+	IProxyObject* Core::GetPluginProxy () const
+	{
+		return PluginProxy_;
 	}
 	
 	void Core::Process (QObject *msg)

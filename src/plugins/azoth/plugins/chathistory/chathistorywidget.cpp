@@ -19,6 +19,9 @@
 #include "chathistorywidget.h"
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <interfaces/iaccount.h>
+#include <interfaces/iclentry.h>
+#include <interfaces/iproxyobject.h>
 #include "chathistory.h"
 
 namespace LeechCraft
@@ -96,8 +99,19 @@ namespace ChatHistory
 	
 	void ChatHistoryWidget::handleGotOurAccounts (const QStringList& accounts)
 	{
+		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
 		Q_FOREACH (const QString& accountID, accounts)
-			Ui_.AccountBox_->addItem (accountID, accountID);
+		{
+			IAccount *account = qobject_cast<IAccount*> (proxy->GetAccount (accountID));
+			if (!account)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "got invalid IAccount for"
+						<< accountID;
+				continue;
+			}
+			Ui_.AccountBox_->addItem (account->GetAccountName (), accountID);
+		}
 
 		disconnect (Core::Instance ().get (),
 				SIGNAL (gotOurAccounts (const QStringList&)),
@@ -110,10 +124,16 @@ namespace ChatHistory
 		if (id != Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ())
 			return;
 
+		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
 		ContactsModel_->clear ();
 		Q_FOREACH (const QString& user, users)
 		{
-			QStandardItem *item = new QStandardItem (user);
+			ICLEntry *entry = qobject_cast<ICLEntry*> (proxy->GetEntry (user, id));
+			const QString& name = entry ?
+					entry->GetEntryName () :
+					user;
+
+			QStandardItem *item = new QStandardItem (name);
 			item->setData (user, MRIDRole);
 			ContactsModel_->appendRow (item);
 		}

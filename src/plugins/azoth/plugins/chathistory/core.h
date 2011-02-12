@@ -28,6 +28,7 @@ namespace LeechCraft
 namespace Azoth
 {
 class IMessage;
+class IProxyObject;
 
 namespace ChatHistory
 {
@@ -49,10 +50,14 @@ namespace ChatHistory
 		static boost::weak_ptr<Core> InstPtr_;
 		
 		StorageThread *StorageThread_;
+		IProxyObject *PluginProxy_;
 		
 		Core ();
 	public:
 		static boost::shared_ptr<Core> Instance ();
+		
+		void SetPluginProxy (QObject*);
+		IProxyObject* GetPluginProxy () const;
 		
 		void Process (QObject*);
 		void GetOurAccounts ();
