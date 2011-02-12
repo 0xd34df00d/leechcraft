@@ -32,6 +32,8 @@ namespace Acetamide
 	: PluginProxy_ (0)
 	{
 		IrcProtocol_.reset (new IrcProtocol (this));
+		qRegisterMetaTypeStreamOperators<NickNameData> ("NickNameData");
+		qRegisterMetaTypeStreamOperators<ServerInfoData> ("ServerInfoData");
 	}
 
 	Core& Core::Instance ()

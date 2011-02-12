@@ -98,41 +98,37 @@ namespace Acetamide
 				SLOT (handleDblClick (const QModelIndex&)));
 	}
 	
-	QList<QVariant> IrcAccountConfigurationDialog::GetNicks ()
+	QList<NickNameData> IrcAccountConfigurationDialog::GetNicks ()
 	{
 		bool found = false;
 		QString network = Ui_.Servers_->currentText ();
+		qDebug () << "TDE" << network << Nicknames_.count ();
 		for (int i = 0; i < Nicknames_.count (); ++i)
-			if (Nicknames_.at (i).toMap () ["Network"].toString () == network)
+			if (Nicknames_.at (i).Network_ == network)
 			{
 				Nicknames_ [i] = GetNicknameData (network);
 				found = true;
 				break;
 			}
 
-		if (!found)
+		if (!found && !Ui_.NickNames_->toPlainText ().isEmpty ())
 			Nicknames_ << GetNicknameData (network);
 
 		return Nicknames_;
 	}
 
-	void IrcAccountConfigurationDialog::SetNicks (const QList<QVariant> & nicks)
+	void IrcAccountConfigurationDialog::SetNicks (const QList<NickNameData> & nicks)
 	{
 		Nicknames_ = nicks;
-		QStringList networks;
-		Q_FOREACH (const QVariant& item, Nicknames_)
-			networks << item.toMap () ["Network"].toString ();
-
-		SetNetworks (networks);
 	}
 
-	void IrcAccountConfigurationDialog::SetServers (const QList<QVariant>& serversInfo)
+	void IrcAccountConfigurationDialog::SetServers (const QList<ServerInfoData>& serversInfo)
 	{
 		ServerAndChannels_->clear ();
 
-		Q_FOREACH (const QVariant& serverInfo, serversInfo)
+		Q_FOREACH (const ServerInfoData& serverInfo, serversInfo)
 		{
-			QString networkName = serverInfo.toMap () ["Network"].toString ();
+			QString networkName = serverInfo.Network_;
 			QList<QStandardItem*> networks = ServerAndChannels_->findItems (networkName);
 			QStandardItem *networkItem;
 
@@ -146,7 +142,7 @@ namespace Acetamide
 				networkItem = networks.at (0);
 
 			QList<QStandardItem*> channels;
-			Q_FOREACH (const QString& channelPair, serverInfo.toMap () ["Channels"].toStringList ())
+			Q_FOREACH (const QString& channelPair, serverInfo.Channels_)
 			{
 				QStandardItem *item = new QStandardItem (channelPair.split (' ').at (0));
 				item->setData ("channel", ServerAndChannelsRole);
@@ -154,7 +150,7 @@ namespace Acetamide
 				channels << item;
 			}
 
-			QStandardItem *serverItem = new QStandardItem (serverInfo.toMap () ["Server"].toString ());
+			QStandardItem *serverItem = new QStandardItem (serverInfo.Server_);
 			serverItem->setData ("server", ServerAndChannelsRole);
 			serverItem->setEditable (false);
 			serverItem->appendRows (channels);
@@ -162,19 +158,19 @@ namespace Acetamide
 		}
 	}
 
-	QList<QVariant> IrcAccountConfigurationDialog::GetServersInfo () const
+	QList<ServerInfoData> IrcAccountConfigurationDialog::GetServersInfo () const
 	{
 		return ServersInfo_;
 	}
 
-	void IrcAccountConfigurationDialog::SetServersInfo (const QList<QVariant>& serversInfo)
+	void IrcAccountConfigurationDialog::SetServersInfo (const QList<ServerInfoData>& serversInfo)
 	{
 		ServersInfo_ = serversInfo;
 		SetServers (ServersInfo_);
-
+		
 		QStringList networks;
-		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
-			networks << serverInfo.toMap () ["Network"].toString ();;
+		Q_FOREACH (const ServerInfoData& item, ServersInfo_)
+			networks << item.Network_;
 
 		networks.removeDuplicates ();
 		SetNetworks (networks);
@@ -194,8 +190,7 @@ namespace Acetamide
 		Ui_.Servers_->addItems (networks);
 	}
 	
-	void IrcAccountConfigurationDialog::DeleteElement (const QString& key, 
-			const QModelIndex& index, const QString& message)
+	void IrcAccountConfigurationDialog::DeleteNetwork (const QModelIndex& index, const QString& message)
 	{
 		int ret = QMessageBox::warning (this, "LeechCraft",
 				message,
@@ -206,7 +201,24 @@ namespace Acetamide
 			return;
 
 		for (int i = ServersInfo_.count () - 1; i >= 0; --i)
-			if (ServersInfo_.at (i).toMap () [key] == index.data ())
+			if (ServersInfo_.at (i).Network_ == index.data ())
+				ServersInfo_.removeAt (i);
+
+		SetServersInfo (ServersInfo_);
+	}
+
+	void IrcAccountConfigurationDialog::DeleteServer (const QModelIndex& index, const QString& message)
+	{
+		int ret = QMessageBox::warning (this, "LeechCraft",
+				message,
+				QMessageBox::Ok | QMessageBox::Cancel,
+				QMessageBox::Cancel);
+
+		if (ret != QMessageBox::Ok)
+			return;
+
+		for (int i = ServersInfo_.count () - 1; i >= 0; --i)
+			if (ServersInfo_.at (i).Server_ == index.data ())
 				ServersInfo_.removeAt (i);
 
 		SetServersInfo (ServersInfo_);
@@ -225,10 +237,10 @@ namespace Acetamide
 
 		for (int i = ServersInfo_.count () - 1; i >= 0; --i)
 		{
-			if (ServersInfo_.at (i).toMap () ["Server"] == index.parent ().data () &&
-					ServersInfo_.at (i).toMap () ["Network"] == index.parent ().parent ().data ())
+			if (ServersInfo_.at (i).Server_ == index.parent ().data ().toString () &&
+					ServersInfo_.at (i).Network_ == index.parent ().parent ().data ().toString ())
 			{
-				QStringList list = ServersInfo_.at (i).toMap () ["Channels"].toStringList ();
+				QStringList list = ServersInfo_.at (i).Channels_;
 
 				for (int k = list.count () - 1; k >= 0; --k)
 				{
@@ -239,10 +251,7 @@ namespace Acetamide
 						break;
 					}
 				}
-				
-				QMap<QString, QVariant> map = ServersInfo_.at (i).toMap ();
-				map ["Channels"] = list;
-				ServersInfo_ [i] = map;
+				ServersInfo_ [i].Channels_ = list;
 			}
 		}
 		
@@ -267,20 +276,19 @@ namespace Acetamide
 
 		for (int i = 0; i < ServersInfo_.count (); ++i)
 		{
-			QMap<QString, QVariant> serverInfo = ServersInfo_.at (i).toMap ();
-			if (serverInfo ["Network"] ==  network &&
-					serverInfo ["Server"] == server)
+			ServerInfoData serverInfo = ServersInfo_.at (i);
+			if (serverInfo.Network_ ==  network &&
+					serverInfo.Server_ == server)
 			{
-				QStringList channels = serverInfo ["Channels"].toStringList ();
+				QStringList channels = serverInfo.Channels_;
 				for (int j = 0; j < channels.count (); ++j)
 					if (channels [j].split (' ').at (0) == channel.toString ())
 					{
 						channels [j] = dec->GetChannel () + QString (" ") + dec->GetPassword ();
 						break;
 					}
-				QMap<QString, QVariant> map = serverInfo;
-				map ["Channels"] = channels;
-				ServersInfo_ [i] = map;
+				serverInfo.Channels_ = channels;
+				ServersInfo_ [i] = serverInfo;
 			}
 		}
 
@@ -293,31 +301,31 @@ namespace Acetamide
 
 		QStringList channels;
 		QModelIndex currentIndex = Ui_.ServerChannels_->currentIndex ();
-		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
-			if (serverInfo.toMap () ["Server"] == currentIndex.data () &&
-					serverInfo.toMap () ["Network"] == currentIndex.parent ().data ())
+		Q_FOREACH (const ServerInfoData& serverInfo, ServersInfo_)
+			if (serverInfo.Server_ == currentIndex.data () &&
+					serverInfo.Network_ == currentIndex.parent ().data ())
 			{
-				dsa->SetServer (serverInfo.toMap () ["Server"].toString ());
-				dsa->SetPassword (serverInfo.toMap () ["Password"].toString ());
-				dsa->SetPort (serverInfo.toMap () ["Port"].toInt ());
-				dsa->SetSSL (serverInfo.toMap () ["SSL"].toBool ());
-				channels = serverInfo.toMap () ["Channels"].toStringList ();
+				dsa->SetServer (serverInfo.Server_);
+				dsa->SetPassword (serverInfo.Password_);
+				dsa->SetPort (serverInfo.Port_);
+				dsa->SetSSL (serverInfo.SSL_);
+				channels = serverInfo.Channels_;
 			}
 
 		if (dsa->exec () == QDialog::Rejected)
 			return;
 
-		QMap<QString, QVariant> server;
-		server ["Network"] = Ui_.Networks_->text ();
-		server ["Server"] = dsa->GetServer ();
-		server ["Port"] = dsa->GetPort ();
-		server ["Password"] = dsa->GetPassword ();
-		server ["SSL"] = dsa->GetSSL ();
-		server ["Channels"] = channels;
+		ServerInfoData server;
+		server.Network_ = Ui_.Networks_->text ();
+		server.Server_ = dsa->GetServer ();
+		server.Port_ = dsa->GetPort ();
+		server.Password_ = dsa->GetPassword ();
+		server.SSL_ = dsa->GetSSL ();
+		server.Channels_ = channels;
 
 		for (int i = 0; i < ServersInfo_.count (); ++i)
-			if (ServersInfo_.at (i).toMap () ["Server"] == currentIndex.data () &&
-					ServersInfo_.at (i).toMap () ["Network"] == currentIndex.parent ().data ())
+			if (ServersInfo_.at (i).Server_ == currentIndex.data () &&
+					ServersInfo_.at (i).Network_ == currentIndex.parent ().data ())
 			{
 				ServersInfo_ [i] = server;
 				break;
@@ -329,11 +337,11 @@ namespace Acetamide
 	QString IrcAccountConfigurationDialog::GetChannelPassword (const QString& server, 
 			const QString& network, const QString& channel)
 	{
-		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
-			if (serverInfo.toMap () ["Network"].toString () == network &&
-					serverInfo.toMap () ["Server"].toString () == server)
+		Q_FOREACH (const ServerInfoData& serverInfo, ServersInfo_)
+			if (serverInfo.Network_ == network &&
+					serverInfo.Server_ == server)
 			{
-				QStringList channels = serverInfo.toMap () ["Channels"].toStringList ();
+				QStringList channels = serverInfo.Channels_;
 				Q_FOREACH (const QString& chnnl, channels)
 					if (chnnl.split (' ').at (0) == channel)
 						if (chnnl.split (' ').count () > 1)
@@ -343,24 +351,24 @@ namespace Acetamide
 		return QString ();
 	}
 
-	QMap<QString, QVariant> IrcAccountConfigurationDialog::GetNicknameData (const QString& network)
+	NickNameData IrcAccountConfigurationDialog::GetNicknameData (const QString& network)
 	{
-		QMap<QString, QVariant> map;
-		map ["Nicknames"] = Ui_.NickNames_->toPlainText ().split ('\n');
-		map ["AutoGenerate"] = Ui_.GenerateNicknames_->isChecked ();
-		map ["Network"] = network;
+		NickNameData map;
+		map.Nicks_ = Ui_.NickNames_->toPlainText ().split ('\n');
+		map.AutoGenerate_ = Ui_.GenerateNicknames_->isChecked ();
+		map.Network_ = network;
 
 		return map;
 	}
 
-	bool IrcAccountConfigurationDialog::IsServerExists (const QMap< QString, QVariant >& server)
+	bool IrcAccountConfigurationDialog::IsServerExists (const ServerInfoData& server)
 	{
-		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
+		Q_FOREACH (const ServerInfoData& serverInfo, ServersInfo_)
 		{
-			if (serverInfo.toMap () ["Network"] == server ["Network"] &&
-					serverInfo.toMap () ["Server"] == server ["Server"] &&
-					serverInfo.toMap () ["Port"] == server ["Port"] &&
-					serverInfo.toMap () ["SSL"] == server ["SSL"])
+			if (serverInfo.Network_ == server.Network_ &&
+					serverInfo.Server_ == server.Server_ &&
+					serverInfo.Port_ == server.Port_ &&
+					serverInfo.SSL_ == server.SSL_)
 				return true;
 		}
 		
@@ -372,12 +380,12 @@ namespace Acetamide
 	{
 		QStringList strList = channels;
 		
-		Q_FOREACH (const QVariant& serverInfo, ServersInfo_)
+		Q_FOREACH (const ServerInfoData& serverInfo, ServersInfo_)
 		{
-			if (serverInfo.toMap () ["Network"].toString () == network &&
-					serverInfo.toMap () ["Server"].toString () == server)
+			if (serverInfo.Network_ == network &&
+					serverInfo.Server_ == server)
 			{
-				Q_FOREACH (const QString& str, serverInfo.toMap () ["Channels"].toStringList ())
+				Q_FOREACH (const QString& str, serverInfo.Channels_)
 				{
 					for (int i = 0; i < strList.count (); ++i)
 					{
@@ -401,23 +409,24 @@ namespace Acetamide
 		QString lastNetwork = Ui_.Servers_->itemText (LastIndex_);
 
 		for (int i = 0; i < Nicknames_.count (); ++i)
-			if (Nicknames_.at (i).toMap () ["Network"].toString () == lastNetwork)
+			if (Nicknames_.at (i).Network_ == lastNetwork)
 			{
 				Nicknames_ [i] = GetNicknameData (lastNetwork);
 				found = true;
 				break;
 			}
 
-		if (!found)
+		if (!found && !Ui_.NickNames_->toPlainText ().isEmpty ())
 			Nicknames_ << GetNicknameData (lastNetwork);
 
 		Ui_.NickNames_->setPlainText (QString ());
-		Q_FOREACH (const QVariant& item, Nicknames_)
+
+		Q_FOREACH (const NickNameData& item, Nicknames_)
 		{
-			if (item.toMap () ["Network"].toString () == Ui_.Servers_->currentText ())
+			if (item.Network_ == Ui_.Servers_->currentText ())
 			{
-				Ui_.NickNames_->setPlainText (item.toMap () ["Nicknames"].toStringList ().join ("\n"));
-				Ui_.GenerateNicknames_->setChecked (item.toMap () ["AutoGenerate"].toBool ());
+				Ui_.NickNames_->setPlainText (item.Nicks_.join ("\n"));
+				Ui_.GenerateNicknames_->setChecked (item.AutoGenerate_);
 			}
 			LastIndex_ = Ui_.Servers_->currentIndex ();
 		}
@@ -430,12 +439,12 @@ namespace Acetamide
 		if (dsa->exec () == QDialog::Rejected)
 			return;
 		
-		QMap<QString, QVariant> server;
-		server ["Network"] = Ui_.Networks_->text ();
-		server ["Server"] = dsa->GetServer ();
-		server ["Port"] = dsa->GetPort ();
-		server ["Password"] = dsa->GetPassword ();
-		server ["SSL"] = dsa->GetSSL ();
+		ServerInfoData server;
+		server.Network_ = Ui_.Networks_->text ();
+		server.Server_ = dsa->GetServer ();
+		server.Port_ = dsa->GetPort ();
+		server.Password_ = dsa->GetPassword ();
+		server.SSL_ = dsa->GetSSL ();
 		
 		if (IsServerExists (server))
 			return;
@@ -468,8 +477,8 @@ namespace Acetamide
 		if (currentIndex.data (ServerAndChannelsRole).toString () == "channel")
 			serverIndex = currentIndex.parent ();
 		
-		QVariant server = serverIndex.data ();
-		QVariant network = serverIndex.parent ().data ();
+		QVariant server = serverIndex.data ().toString ();
+		QVariant network = serverIndex.parent ().data ().toString ();
 		
 		if (dac->exec () == QDialog::Rejected)
 			return;
@@ -482,12 +491,11 @@ namespace Acetamide
 		
 		for (int i = 0; i < ServersInfo_.count (); i++)
 		{
-			QMap<QString, QVariant> srv = ServersInfo_.at (i).toMap ();
-			if (srv ["Server"] == server && 
-					srv ["Network"] == network)
-				srv ["Channels"] = srv ["Channels"].toStringList () + 
-						RemoveDuplicatesChannels (network.toString (),
-								server.toString (), dac->GetChannelsPair ());
+			ServerInfoData srv = ServersInfo_.at (i);
+			if (srv.Server_ == server && 
+					srv.Network_ == network)
+				srv.Channels_ +=RemoveDuplicatesChannels (network.toString (),
+										server.toString (), dac->GetChannelsPair ());
 			ServersInfo_ [i] = srv;
 		}
 
@@ -525,10 +533,10 @@ namespace Acetamide
 	void IrcAccountConfigurationDialog::handleDeleteElement (bool checked)
 	{
 		if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "network")
-			DeleteElement ("Network", Ui_.ServerChannels_->currentIndex (),
+			DeleteNetwork (Ui_.ServerChannels_->currentIndex (),
 					tr ("All servers and channels of this network will be delete too.\nAre you sure?"));
 		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "server")
-			DeleteElement ("Server", Ui_.ServerChannels_->currentIndex (),
+			DeleteServer (Ui_.ServerChannels_->currentIndex (),
 					tr ("All channels of this server will be delete too.\nAre you sure?"));
 		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "channel")
 			DeleteChannel (Ui_.ServerChannels_->currentIndex (),
@@ -553,13 +561,13 @@ namespace Acetamide
 		{
 			bool found = false;
 			for (int i = 0; i < Nicknames_.count (); ++i)
-				if (Nicknames_.at (i).toMap () ["Network"].toString () == Ui_.Servers_->currentText ())
+				if (Nicknames_.at (i).Network_ == Ui_.Servers_->currentText ())
 				{
 					Nicknames_ [i] = GetNicknameData (Ui_.Servers_->currentText ());
 					found = true;
 				}
 				
-			if (!found)
+			if (!found && !Ui_.NickNames_->toPlainText ().isEmpty ())
 				Nicknames_ << GetNicknameData (Ui_.Servers_->currentText ());
 		}
 	}

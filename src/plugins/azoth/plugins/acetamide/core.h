@@ -30,6 +30,23 @@ namespace Acetamide
 {
 	class IrcProtocol;
 	
+	struct NickNameData
+	{
+		QStringList Nicks_;
+		QString Network_;
+		bool AutoGenerate_;
+	};
+	
+	struct ServerInfoData
+	{
+		QString Network_;
+		QString Server_;
+		int Port_;
+		QString Password_;
+		QStringList Channels_;
+		bool SSL_;
+	};
+	
 	class Core : public QObject
 	{
 		Q_OBJECT
