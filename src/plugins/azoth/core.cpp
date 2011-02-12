@@ -409,6 +409,74 @@ namespace Azoth
 		return src->AppendMessage (frame, message, color);
 	}
 
+	namespace
+	{
+		qreal Fix (qreal h)
+		{
+			while (h < 0)
+				h += 1;
+			while (h >= 1)
+				h -= 1;
+			return h;
+		}
+	}
+	
+	QList<QColor> Core::GenerateColors (const QString& coloring) const
+	{
+		QList<QColor> result;
+		if (coloring == "hash" ||
+				coloring.isEmpty ())
+		{
+			const QColor& bg = QApplication::palette ().color (QPalette::Base);
+
+			const qreal lower = 25. / 360.;
+			const qreal delta = 25. / 360.;
+			const qreal higher = 180. / 360. - delta / 2;
+
+			const qreal alpha = bg.alphaF ();
+
+			qreal s = bg.saturationF ();
+			s += 31 * (1 - s) / 32;
+			qreal v = bg.valueF ();
+			v = 0.95 - 2 * v / 5;
+
+			qreal h = bg.hueF ();
+
+			QColor color;
+			for (qreal d = lower; d <= higher; d += delta)
+			{
+				color.setHsvF (Fix (h + d), s, v, alpha);
+				result << color;
+				color.setHsvF (Fix (h - d), s, v, alpha);
+				result << color;
+			}
+		}
+		else
+			Q_FOREACH (const QString& str,
+					coloring.split (' ', QString::SkipEmptyParts))
+				result << QColor (str);
+				
+		return result;
+	}
+	
+	QString Core::GetNickColor (const QString& nick, const QList< QColor >& colors) const
+	{
+		if (colors.isEmpty ())
+			return "green";
+
+		int hash = 0;
+		for (int i = 0; i < nick.length (); ++i)
+		{
+			const QChar& c = nick.at (i);
+			hash += c.toLatin1 () ?
+					c.toLatin1 () :
+					c.unicode ();
+			hash += nick.length ();
+		}
+		QColor nc = colors.at (hash % colors.size ());
+		return nc.name ();
+	}
+
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
 	{

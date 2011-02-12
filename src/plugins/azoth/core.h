@@ -247,6 +247,10 @@ namespace Azoth
 		QString GetSelectedChatTemplate () const;
 		
 		bool AppendMessageByTemplate (QWebFrame*, QObject*, const QString&);
+		
+		QList<QColor> GenerateColors (const QString& coloringScheme) const;
+		
+		QString GetNickColor (const QString& nick, const QList<QColor>& colors) const;
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.

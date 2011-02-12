@@ -22,6 +22,7 @@
 #include "azothcommon.h"
 
 class QObject;
+class QWebFrame;
 
 namespace LeechCraft
 {
@@ -129,6 +130,12 @@ namespace Azoth
 		 * @return Entry object, or NULL if no such entry exists.
 		 */
 		virtual QObject* GetEntry (const QString& entryID, const QString& accID) const = 0;
+		
+		virtual QString GetSelectedChatTemplate () const = 0;
+		
+		virtual void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&) const = 0;
+		
+		virtual QList<QColor> GenerateColors (const QString& scheme) const = 0;
 	};
 }
 }

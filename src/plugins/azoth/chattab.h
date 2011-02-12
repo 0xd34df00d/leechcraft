@@ -124,7 +124,6 @@ namespace Azoth
 
 		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*);
-		QString GetNickColor (const QString&);
 		QString FormatBody (QString, IMessage*);
 
 		/** Processes the outgoing messages, replacing /nick with calls

@@ -664,7 +664,8 @@ namespace Azoth
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
 
-		if (Core::Instance ().AppendMessageByTemplate (frame, msg->GetObject (), GetNickColor (entryName)))
+		if (Core::Instance ().AppendMessageByTemplate (frame, msg->GetObject (),
+					Core::Instance ().GetNickColor (entryName, NickColors_)))
 			return;
 
 		QString body = FormatBody (msg->GetBody (), msg);
@@ -794,7 +795,7 @@ namespace Azoth
 				GenerateColors ();
 
 			if (!NickColors_.isEmpty ())
-				color = GetNickColor (nick);
+				color = Core::Instance ().GetNickColor (nick, NickColors_);
 
 			QUrl url (QString ("azoth://msgeditreplace/%1")
 					.arg (nick + ":"));
@@ -825,24 +826,6 @@ namespace Azoth
 		}
 
 		return string;
-	}
-	
-	QString ChatTab::GetNickColor (const QString& nick)
-	{
-		if (NickColors_.isEmpty ())
-			return "green";
-
-		int hash = 0;
-		for (int i = 0; i < nick.length (); ++i)
-		{
-			const QChar& c = nick.at (i);
-			hash += c.toLatin1 () ?
-					c.toLatin1 () :
-					c.unicode ();
-			hash += nick.length ();
-		}
-		QColor nc = NickColors_.at (hash % NickColors_.size ());
-		return nc.name ();
 	}
 
 	QString ChatTab::FormatBody (QString body, IMessage *msg)
@@ -907,54 +890,12 @@ namespace Azoth
 		return false;
 	}
 
-	namespace
-	{
-		qreal Fix (qreal h)
-		{
-			while (h < 0)
-				h += 1;
-			while (h >= 1)
-				h -= 1;
-			return h;
-		}
-	}
-
 	void ChatTab::GenerateColors ()
 	{
-		NickColors_.clear ();
-
 		const QMultiMap<QString, QString>& metadata =
 				Ui_.View_->page ()->mainFrame ()->metaData ();
 		const QString& coloring = metadata.value ("coloring");
-		if (coloring == "hash" ||
-				coloring.isEmpty ())
-		{
-			const qreal lower = 25. / 360.;
-			const qreal delta = 25. / 360.;
-			const qreal higher = 180. / 360. - delta / 2;
-
-			const qreal alpha = BgColor_.alphaF ();
-
-			qreal s = BgColor_.saturationF ();
-			s += 31 * (1 - s) / 32;
-			qreal v = BgColor_.valueF ();
-			v = 0.95 - 2 * v / 5;
-
-			qreal h = BgColor_.hueF ();
-
-			QColor color;
-			for (qreal d = lower; d <= higher; d += delta)
-			{
-				color.setHsvF (Fix (h + d), s, v, alpha);
-				NickColors_ << color;
-				color.setHsvF (Fix (h - d), s, v, alpha);
-				NickColors_ << color;
-			}
-		}
-		else
-			Q_FOREACH (const QString& str,
-					coloring.split (' ', QString::SkipEmptyParts))
-				NickColors_ << QColor (str);
+		NickColors_ = Core::Instance ().GenerateColors (metadata.value ("coloring"));
 	}
 
 	void ChatTab::nickComplete ()

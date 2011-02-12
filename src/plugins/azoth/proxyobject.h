@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PROXYOBJECT_H
 #include <QObject>
 #include <QHash>
+#include <QColor>
 #include "interfaces/iproxyobject.h"
 
 namespace LeechCraft
@@ -45,6 +46,9 @@ namespace Azoth
 		AuthStatus AuthStatusFromString (const QString&) const;
 		QObject* GetAccount (const QString&) const;
 		QObject* GetEntry (const QString&, const QString&) const;
+		QString GetSelectedChatTemplate () const;
+		void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&) const;
+		QList<QColor> GenerateColors (const QString& scheme) const;
 	};
 }
 }
