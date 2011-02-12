@@ -29,7 +29,6 @@ SET (ACETAMIDE_FORMS
 	ircaccountconfigurationdialog.ui
 	ircadddefaultchannelsdialog.ui
 	ircaddserverdialog.ui
-	irceditchanneldialog.ui
 	)
 
 QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})
