@@ -245,6 +245,8 @@ namespace Azoth
 		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
 		
 		QString GetSelectedChatTemplate () const;
+		
+		bool AppendMessageByTemplate (QWebFrame*, QObject*, const QString&);
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.

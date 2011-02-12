@@ -659,6 +659,13 @@ namespace Azoth
 			return;
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
+		
+		QString entryName = other ?
+				Qt::escape (other->GetEntryName ()) :
+				QString ();
+
+		if (Core::Instance ().AppendMessageByTemplate (frame, msg->GetObject (), GetNickColor (entryName)))
+			return;
 
 		QString body = FormatBody (msg->GetBody (), msg);
 
@@ -675,7 +682,6 @@ namespace Azoth
 			case IMessage::MTChatMessage:
 			case IMessage::MTMUCMessage:
 			{
-				QString entryName = Qt::escape (other->GetEntryName ());
 				entryName = FormatNickname (entryName, msg);
 
 				if (body.startsWith ("/me "))
@@ -766,7 +772,7 @@ namespace Azoth
 		proxy->FillValue ("dateTime", dt);
 
 		QString str = dt.time ().toString ();
-		return QString ("<span class='datetime' style='color:green'>[" +
+		return QString ("<span class='datetime'>[" +
 				str + "]</span>");
 	}
 
@@ -788,19 +794,7 @@ namespace Azoth
 				GenerateColors ();
 
 			if (!NickColors_.isEmpty ())
-			{
-				int hash = 0;
-				for (int i = 0; i < nick.length (); ++i)
-				{
-					const QChar& c = nick.at (i);
-					hash += c.toLatin1 () ?
-							c.toLatin1 () :
-							c.unicode ();
-					hash += nick.length ();
-				}
-				QColor nc = NickColors_.at (hash % NickColors_.size ());
-				color = nc.name ();
-			}
+				color = GetNickColor (nick);
 
 			QUrl url (QString ("azoth://msgeditreplace/%1")
 					.arg (nick + ":"));
@@ -831,6 +825,24 @@ namespace Azoth
 		}
 
 		return string;
+	}
+	
+	QString ChatTab::GetNickColor (const QString& nick)
+	{
+		if (NickColors_.isEmpty ())
+			return "green";
+
+		int hash = 0;
+		for (int i = 0; i < nick.length (); ++i)
+		{
+			const QChar& c = nick.at (i);
+			hash += c.toLatin1 () ?
+					c.toLatin1 () :
+					c.unicode ();
+			hash += nick.length ();
+		}
+		QColor nc = NickColors_.at (hash % NickColors_.size ());
+		return nc.name ();
 	}
 
 	QString ChatTab::FormatBody (QString body, IMessage *msg)

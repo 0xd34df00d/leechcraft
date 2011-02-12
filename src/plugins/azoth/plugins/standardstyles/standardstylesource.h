@@ -45,6 +45,7 @@ namespace StandardStyles
 		
 		QAbstractItemModel* GetOptionsModel () const;
 		QString GetHTMLTemplate (const QString&) const;
+		bool AppendMessage (QWebFrame*, QObject*, const QString&);
 	};
 }
 }
