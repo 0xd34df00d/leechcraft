@@ -36,7 +36,7 @@ namespace Azoth
 		QHash<QString, AuthStatus> SerializedStr2AuthStatus_;
 	public:
 		ProxyObject (QObject* = 0);
-
+	public slots:
 		QString GetPassword (QObject*);
 		void SetPassword (const QString&, QObject*);
 		QString GetOSName ();
