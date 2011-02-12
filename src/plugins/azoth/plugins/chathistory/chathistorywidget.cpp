@@ -49,6 +49,10 @@ namespace ChatHistory
 				SIGNAL (textChanged (const QString&)),
 				SortFilter_,
 				SLOT (setFilterFixedString (const QString&)));
+		connect (Ui_.Contacts_->selectionModel (),
+				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+				this,
+				SLOT (handleContactSelected (const QModelIndex&)));
 		
 		connect (Core::Instance ().get (),
 				SIGNAL (gotUsersForAccount (const QStringList&, const QString&)),
@@ -58,6 +62,10 @@ namespace ChatHistory
 				SIGNAL (gotOurAccounts (const QStringList&)),
 				this,
 				SLOT (handleGotOurAccounts (const QStringList&)));
+		connect (Core::Instance ().get (),
+				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
+				this,
+				SLOT (handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&)));
 		Core::Instance ()->GetOurAccounts ();
 	}
 	
@@ -104,13 +112,43 @@ namespace ChatHistory
 
 		ContactsModel_->clear ();
 		Q_FOREACH (const QString& user, users)
-			ContactsModel_->appendRow (new QStandardItem (user));
+		{
+			QStandardItem *item = new QStandardItem (user);
+			item->setData (user, MRIDRole);
+			ContactsModel_->appendRow (item);
+		}
 	}
 	
+	void ChatHistoryWidget::handleGotChatLogs (const QString& accountId,
+			const QString& entryId, int backpages, int amount, const QVariant& logsVar)
+	{
+		const QString& selectedEntry = Ui_.Contacts_->selectionModel ()->
+				currentIndex ().data (MRIDRole).toString ();
+		if (accountId != Ui_.AccountBox_->
+					itemData (Ui_.AccountBox_->currentIndex ()).toString () ||
+				entryId != selectedEntry)
+			return;
+		
+		Q_FOREACH (const QVariant& logVar, logsVar.toList ())
+		{
+			const QVariantMap& map = logVar.toMap ();
+			qDebug () << map;
+		}
+	}
+
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
 	{
 		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
 		Core::Instance ()->GetUsersForAccount (id);
+	}
+	
+	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
+	{
+		const QString& accountId = Ui_.AccountBox_->
+				itemData (Ui_.AccountBox_->currentIndex ()).toString ();
+		const QString& entryId = index.data (MRIDRole).toString ();
+		
+		Core::Instance ()->GetChatLogs (accountId, entryId, 0, 50);
 	}
 }
 }

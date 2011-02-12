@@ -50,6 +50,11 @@ namespace ChatHistory
 				Core::Instance ().get (),
 				SIGNAL (gotUsersForAccount (const QStringList&, const QString&)),
 				Qt::QueuedConnection);
+		connect (Storage_.get (),
+				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
+				Core::Instance ().get (),
+				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
+				Qt::QueuedConnection);
 
 		QThread::run ();
 		Storage_.reset ();

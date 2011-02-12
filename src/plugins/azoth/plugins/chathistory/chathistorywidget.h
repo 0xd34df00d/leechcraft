@@ -43,6 +43,10 @@ namespace ChatHistory
 		QStandardItemModel *ContactsModel_;
 		QSortFilterProxyModel *SortFilter_;
 		static Plugin *S_ParentMultiTabs_;
+		enum ModelRoles
+		{
+			MRIDRole = Qt::UserRole + 1
+		};
 	public:
 		static void SetParentMultiTabs (Plugin*);
 
@@ -56,7 +60,9 @@ namespace ChatHistory
 	private slots:
 		void handleGotOurAccounts (const QStringList&);
 		void handleGotUsersForAccount (const QStringList&, const QString&);
+		void handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 		void on_AccountBox__currentIndexChanged (int);
+		void handleContactSelected (const QModelIndex&);
 	signals:
 		void removeSelf (QWidget*);
 	};

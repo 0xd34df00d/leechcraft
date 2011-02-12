@@ -57,9 +57,14 @@ namespace ChatHistory
 		void Process (QObject*);
 		void GetOurAccounts ();
 		void GetUsersForAccount (const QString&);
+		void GetChatLogs (const QString& accountId, const QString& entryId,
+				int backpages, int amount);
 	signals:
 		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&);
+		/** The variant is a list of QVariantMaps.
+		 */
+		void gotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 	};
 }
 }

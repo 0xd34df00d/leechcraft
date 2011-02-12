@@ -69,6 +69,18 @@ namespace ChatHistory
 				Qt::QueuedConnection,
 				Q_ARG (QString, accountID));
 	}
+	
+	void Core::GetChatLogs (const QString& accountId,
+			const QString& entryId, int backpages, int amount)
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"getChatLogs",
+				Qt::QueuedConnection,
+				Q_ARG (QString, accountId),
+				Q_ARG (QString, entryId),
+				Q_ARG (int, backpages),
+				Q_ARG (int, amount));
+	}
 }
 }
 }

@@ -67,6 +67,12 @@ namespace ChatHistory
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
 		UsersForAccountGetter_.prepare ("SELECT DISTINCT EntryID FROM azoth_users, azoth_history "
 				"WHERE azoth_history.Id = azoth_users.Id AND AccountID = :account_id;");
+		HistoryGetter_ = QSqlQuery (*DB_);
+		HistoryGetter_.prepare ("SELECT Date, Direction, Message, Variant, Type "
+				"FROM azoth_history "
+				"WHERE Id = :entry_id "
+				"AND AccountID = :account_id "
+				"ORDER BY Date DESC LIMIT :limit OFFSET :offset;");
 		
 		try
 		{
@@ -87,6 +93,51 @@ namespace ChatHistory
 			qWarning () << Q_FUNC_INFO
 					<< "unable to get saved accounts, we would be a bit more inefficient";
 		}
+	}
+	
+	void Storage::InitializeTables ()
+	{
+		Util::DBLock lock (*DB_);
+		try
+		{
+			lock.Init ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error locking database for transaction:"
+					<< e.what ();
+			throw;
+		}
+
+		QSqlQuery query (*DB_);
+		QStringList queries;
+		queries << "CREATE TABLE azoth_users ("
+					"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					"EntryID TEXT "
+					");"
+				<< "CREATE TABLE azoth_accounts ("
+					"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+					"AccountID TEXT "
+					");"
+				<< "CREATE TABLE azoth_history ("
+					"Id INTEGER, "
+					"AccountId INTEGER, "
+					"Date DATETIME, "
+					"Direction INTEGER, "
+					"Message TEXT, "
+					"OtherPart TEXT, "
+					"Variant TEXT, "
+					"Type INTEGER "
+					");";
+		Q_FOREACH (const QString& queryStr, queries)
+			if (!query.exec (queryStr))
+			{
+				Util::DBLock::DumpError (query);
+				throw std::runtime_error ("Unable to create tables for Azoth history");
+			}
+		
+		lock.Good ();
 	}
 	
 	QHash<QString, qint32> Storage::GetUsers ()
@@ -341,49 +392,52 @@ namespace ChatHistory
 		emit gotUsersForAccount (result, accountId);
 	}
 	
-	void Storage::InitializeTables ()
+	void Storage::getChatLogs (const QString& accountId,
+			const QString& entryId, int backpages, int amount)
 	{
-		Util::DBLock lock (*DB_);
-		try
-		{
-			lock.Init ();
-		}
-		catch (const std::runtime_error& e)
+		if (!Accounts_.contains (accountId))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "error locking database for transaction:"
-					<< e.what ();
-			throw;
+					<< "Accounts_ doesn't contain"
+					<< accountId
+					<< "; raw contents"
+					<< Accounts_;
+			return;
+		}
+		if (!Users_.contains (entryId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Users_ doesn't contain"
+					<< entryId
+					<< "; raw contents"
+					<< Users_;
+			return;
 		}
 
-		QSqlQuery query (*DB_);
-		QStringList queries;
-		queries << "CREATE TABLE azoth_users ("
-					"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					"EntryID TEXT "
-					");"
-				<< "CREATE TABLE azoth_accounts ("
-					"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-					"AccountID TEXT "
-					");"
-				<< "CREATE TABLE azoth_history ("
-					"Id INTEGER, "
-					"AccountId INTEGER, "
-					"Date DATETIME, "
-					"Direction INTEGER, "
-					"Message TEXT, "
-					"OtherPart TEXT, "
-					"Variant TEXT, "
-					"Type INTEGER "
-					");";
-		Q_FOREACH (const QString& queryStr, queries)
-			if (!query.exec (queryStr))
-			{
-				Util::DBLock::DumpError (query);
-				throw std::runtime_error ("Unable to create tables for Azoth history");
-			}
+		HistoryGetter_.bindValue (":entry_id", Users_ [entryId]);
+		HistoryGetter_.bindValue (":account_id", Accounts_ [accountId]);
+		HistoryGetter_.bindValue (":limit", amount);
+		HistoryGetter_.bindValue (":offset", amount * backpages);
 		
-		lock.Good ();
+		if (!HistoryGetter_.exec ())
+		{
+			Util::DBLock::DumpError (HistoryGetter_);
+			return;
+		}
+		
+		QList<QVariant> result;
+		while (HistoryGetter_.next ())
+		{
+			QVariantMap map;
+			map ["Date"] = HistoryGetter_.value (0);
+			map ["Direction"] = HistoryGetter_.value (1);
+			map ["Message"] = HistoryGetter_.value (2);
+			map ["Variant"] = HistoryGetter_.value (3);
+			map ["Type"] = HistoryGetter_.value (4);
+			result.prepend (map);
+		}
+		
+		emit gotChatLogs (accountId, entryId, backpages, amount, result);
 	}
 }
 }
