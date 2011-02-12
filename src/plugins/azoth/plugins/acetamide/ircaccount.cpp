@@ -102,9 +102,10 @@ namespace Acetamide
 	{
 		std::auto_ptr<IrcAccountConfigurationDialog> dia (new IrcAccountConfigurationDialog (0));
 		
-		QList<QVariant> serversInfo = ReadConnectionSettings ("Servers");
-// 		if (!Nicknames_.isEmpty ())
-// 			dia->SetNicks (Nicknames_);
+		QList<QVariant> serversInfo = ReadConnectionSettings (Name_ + "_Servers");
+		Nicknames_ = ReadConnectionSettings (Name_ +"_Nicknames");
+		if (!Nicknames_.isEmpty ())
+			dia->SetNicks (Nicknames_);
 		if (!serversInfo.isEmpty ())
 			dia->SetServersInfo (serversInfo);
 
@@ -120,7 +121,8 @@ namespace Acetamide
 		
 		Nicknames_ = dia->GetNicks ();
 
-		SaveConnectionSettings (dia->GetServersInfo (), QString ("Servers"));
+		SaveConnectionSettings (dia->GetServersInfo (), QString (Name_ + "_Servers"));
+		SaveConnectionSettings (Nicknames_, QString (Name_ + "_Nicknames"));
 		
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
@@ -171,8 +173,7 @@ namespace Acetamide
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-				<< Name_
-				<< Nicknames_;
+				<< Name_;
 		}
 
 		return result;
@@ -196,7 +197,6 @@ namespace Acetamide
 		QString name;
 		in >> name;
 		IrcAccount *result = new IrcAccount (name, parent);
-		in >> result->Nicknames_;
 		result->Init ();
 
 		return result;

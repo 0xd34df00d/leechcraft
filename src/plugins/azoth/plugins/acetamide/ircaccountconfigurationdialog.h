@@ -39,7 +39,7 @@ namespace Acetamide
 		};
 		
 		Ui::IrcAccountConfigurationDialog Ui_;
-		QMap<QString, QVariant> Nicknames_;
+		QList<QVariant> Nicknames_;
 		int LastIndex_;
 		QMenu *AddMenu_;
 		QAction *AddChannel_;
@@ -48,8 +48,8 @@ namespace Acetamide
 		QList<QVariant> ServersInfo_;
 	public:
 		IrcAccountConfigurationDialog (QWidget* = 0);
-		QMap<QString, QVariant> GetNicks ();
-		void SetNicks (const QMap<QString, QVariant>&);
+		QList<QVariant>  GetNicks ();
+		void SetNicks (const QList<QVariant> &);
 		void SetServers (const QList<QVariant>&);
 		QList<QVariant> GetServersInfo () const;
 		void SetServersInfo (const QList<QVariant>&);
@@ -61,6 +61,9 @@ namespace Acetamide
 		void EditServer ();
 		void EditChannel ();
 		QString GetChannelPassword (const QString&, const QString&, const QString&);
+		QMap<QString, QVariant> GetNicknameData (const QString&);
+		bool IsServerExists (const QMap<QString, QVariant>&);
+		QStringList RemoveDuplicatesChannels (const QString&, const QString&, const QStringList&);
 	public slots:
 		void handleChangeServer (int);
 		void handleAddServer (bool);
@@ -69,6 +72,8 @@ namespace Acetamide
 		void handleNetworkTextChange (const QString&);
 		void handleEditElement (bool);
 		void handleDeleteElement (bool);
+		void handleTabChange (int);
+		void handleDblClick (const QModelIndex&);
 	};
 };
 };

@@ -46,7 +46,7 @@ namespace Acetamide
 		State IrcAccountState_;
 		
 		QString Nicks_;
-		QMap<QString, QVariant> Nicknames_;
+		QList<QVariant>  Nicknames_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
