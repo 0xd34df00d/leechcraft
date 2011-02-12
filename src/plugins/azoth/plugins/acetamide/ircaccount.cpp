@@ -19,14 +19,12 @@
 #include "ircaccount.h"
 #include <QInputDialog>
 #include <QtDebug>
+#include <QSettings>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "ircprotocol.h"
 #include "ircaccountconfigurationdialog.h"
 #include "core.h"
-#include <QSettings>
-
-
 
 namespace LeechCraft
 {
@@ -101,27 +99,29 @@ namespace Acetamide
 	void IrcAccount::OpenConfigurationDialog ()
 	{
 		std::auto_ptr<IrcAccountConfigurationDialog> dia (new IrcAccountConfigurationDialog (0));
+
+		QList<ServerInfoData> serversInfo = ReadConnectionSettings (Name_ + "_Servers");
+		Nicknames_ = ReadNicknameSettings (Name_ +"_Nicknames");
 		
-		QList<QVariant> serversInfo = ReadConnectionSettings ("Servers");
-// 		if (!Nicknames_.isEmpty ())
-// 			dia->SetNicks (Nicknames_);
 		if (!serversInfo.isEmpty ())
 			dia->SetServersInfo (serversInfo);
+		if (!Nicknames_.isEmpty ())
+			dia->SetNicks (Nicknames_);
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
-		
+
 		State lastState = IrcAccountState_;
 		if (lastState != SOffline)
 		{
 			ChangeState (EntryStatus (SOffline, QString ()));
 // 			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
 		}
-		
+
 		Nicknames_ = dia->GetNicks ();
 
-		SaveConnectionSettings (dia->GetServersInfo (), QString ("Servers"));
-		
+		SaveConnectionSettings (dia->GetServersInfo (), QString (Name_ + "_Servers"));
+		SaveNicknameSettings (Nicknames_, QString (Name_ + "_Nicknames"));
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
 
@@ -171,8 +171,7 @@ namespace Acetamide
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-				<< Name_
-				<< Nicknames_;
+				<< Name_;
 		}
 
 		return result;
@@ -196,33 +195,148 @@ namespace Acetamide
 		QString name;
 		in >> name;
 		IrcAccount *result = new IrcAccount (name, parent);
-		in >> result->Nicknames_;
 		result->Init ();
 
 		return result;
 	}
 
-	void IrcAccount::SaveConnectionSettings (const QList<QVariant>& value, const QString& name)
+	void IrcAccount::SaveConnectionSettings (const QList<ServerInfoData>& value, const QString& name)
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
 		settings.beginGroup ("ConnectionSettings");
-		settings.setValue (name, value);
+		QByteArray result;
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			Q_FOREACH (const ServerInfoData& serv, value)
+				ostr << serv;
+		}
+		
+		settings.setValue (name, result);
 		settings.endGroup ();
 	}
 	
-	QList<QVariant> IrcAccount::ReadConnectionSettings (const QString& name)
+	QList<ServerInfoData> IrcAccount::ReadConnectionSettings (const QString& name)
 	{
-		QList<QVariant> value;
+		QList<ServerInfoData> value;
+		ServerInfoData val;
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
 		settings.beginGroup ("ConnectionSettings");
-		value = settings.value (name).toList ();
+		
+		QByteArray ba = settings.value (name).toByteArray ();
+		QDataStream istr (ba);
+		
+		while (!istr.atEnd ())
+		{
+			istr >> val;
+			value << val;
+		}
+		
 		settings.endGroup ();
 		
 		return value;
+	}
+	
+	void IrcAccount::SaveNicknameSettings (const QList<NickNameData>& value, const QString& name)
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Acetamide");
+		settings.beginGroup ("NicknameSettings");
+		QByteArray result;
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			Q_FOREACH (const NickNameData& nick, value)
+				ostr << nick;
+		}
+		settings.setValue (name, result);
+		settings.endGroup ();
+	}
+	
+	QList<NickNameData> IrcAccount::ReadNicknameSettings (const QString& name)
+	{
+		QList<NickNameData> value;
+		NickNameData val;
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Acetamide");
+		settings.beginGroup ("NicknameSettings");
+		
+		QByteArray ba = settings.value (name).toByteArray ();
+		QDataStream istr (ba);
+		
+		while (!istr.atEnd ())
+		{
+			istr >> val;
+			value << val;
+		}
+		
+		settings.endGroup ();
+		
+		return value;
+	}
+	
+	QDataStream& operator<< (QDataStream& out, const NickNameData& nick)
+	{
+		out << static_cast<quint8> (1)
+				<<nick.Network_
+				<< nick.Nicks_
+				<< nick.AutoGenerate_;
+		
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, NickNameData& nick)
+	{
+		quint8 version = 0;
+		
+		in >> version;
+		if (version != 1)
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+		
+		in >> nick.Network_
+				>> nick.Nicks_
+				>> nick.AutoGenerate_;
+		
+		return in;
+	}
+
+	QDataStream& operator<< (QDataStream& out, const ServerInfoData& server)
+	{
+		out << static_cast<quint8> (1)
+				<< server.Network_
+				<< server.Server_
+				<< server.Port_
+				<< server.Password_
+				<< server.Channels_
+				<< server.SSL_;
+		
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, ServerInfoData& server)
+	{
+		quint8 version = 0;
+		in >> version;
+		
+		if (version != 1)
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+		
+		in >> server.Network_
+				>> server.Server_
+				>> server.Port_
+				>> server.Password_
+				>> server.Channels_
+				>> server.SSL_;
+		
+		return in;
 	}
 };
 };

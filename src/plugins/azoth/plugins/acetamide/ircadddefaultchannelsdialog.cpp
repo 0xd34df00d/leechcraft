@@ -20,7 +20,6 @@
 #include <QTableView>
 #include <QPushButton>
 #include <QMessageBox>
-#include <QtDebug>
 
 namespace LeechCraft
 {

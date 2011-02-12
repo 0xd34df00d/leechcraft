@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <QStandardItemModel>
 #include "ui_ircaccountconfigurationdialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -39,28 +40,32 @@ namespace Acetamide
 		};
 		
 		Ui::IrcAccountConfigurationDialog Ui_;
-		QMap<QString, QVariant> Nicknames_;
+		QList<NickNameData> Nicknames_;
 		int LastIndex_;
 		QMenu *AddMenu_;
 		QAction *AddChannel_;
 		QAction *AddServer_;
 		QStandardItemModel *ServerAndChannels_;
-		QList<QVariant> ServersInfo_;
+		QList<ServerInfoData> ServersInfo_;
 	public:
 		IrcAccountConfigurationDialog (QWidget* = 0);
-		QMap<QString, QVariant> GetNicks ();
-		void SetNicks (const QMap<QString, QVariant>&);
-		void SetServers (const QList<QVariant>&);
-		QList<QVariant> GetServersInfo () const;
-		void SetServersInfo (const QList<QVariant>&);
+		QList<NickNameData>  GetNicks ();
+		void SetNicks (const QList<NickNameData> &);
+		void SetServers (const QList<ServerInfoData>&);
+		QList<ServerInfoData> GetServersInfo () const;
+		void SetServersInfo (const QList<ServerInfoData>&);
 	private:
 		QStringList GetNetworks () const;
 		void SetNetworks (const QStringList&);
-		void DeleteElement (const QString&, const QModelIndex&, const QString&);
+		void DeleteNetwork (const QModelIndex&, const QString&);
+		void DeleteServer (const QModelIndex&, const QString&);
 		void DeleteChannel (const QModelIndex&, const QString&);
 		void EditServer ();
 		void EditChannel ();
 		QString GetChannelPassword (const QString&, const QString&, const QString&);
+		NickNameData GetNicknameData (const QString&);
+		bool IsServerExists (const ServerInfoData&);
+		QStringList RemoveDuplicatesChannels (const QString&, const QString&, const QStringList&);
 	public slots:
 		void handleChangeServer (int);
 		void handleAddServer (bool);
@@ -69,6 +74,8 @@ namespace Acetamide
 		void handleNetworkTextChange (const QString&);
 		void handleEditElement (bool);
 		void handleDeleteElement (bool);
+		void handleTabChange (int);
+		void handleDblClick (const QModelIndex&);
 	};
 };
 };

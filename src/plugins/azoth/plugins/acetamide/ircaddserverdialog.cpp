@@ -19,6 +19,7 @@
 #include "ircaddserverdialog.h"
 #include <QPushButton>
 #include <QCheckBox>
+#include "ircaccountconfigurationdialog.h"
 
 namespace LeechCraft
 {
@@ -87,13 +88,13 @@ namespace Acetamide
 	void IrcAddServerDialog::handleServerChanged (const QString& text)
 	{
 		Ui_.ControlButtons_->button (QDialogButtonBox::Ok)->
-									setEnabled (Ui_.Port_->value () && !text.isEmpty ());
+				setEnabled (Ui_.Port_->value () && !text.isEmpty ());
 	}
 
 	void IrcAddServerDialog::handlePortChanged (int value)
 	{
 		Ui_.ControlButtons_->button (QDialogButtonBox::Ok)->
-									setEnabled (value && !Ui_.Server_->text ().isEmpty ());
+				setEnabled (value && !Ui_.Server_->text ().isEmpty ());
 	}
 };
 };
