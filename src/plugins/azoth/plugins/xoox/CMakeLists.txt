@@ -54,10 +54,12 @@ SET (XOOX_FORMS
 	)
 SET (XOOX_TRANSLATIONS
 	leechcraft_azoth_xoox_ru_RU.ts
+	leechcraft_azoth_xoox_uk_UA.ts
 	leechcraft_azoth_xoox_en.ts
 	)
 SET (XOOX_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_xoox_ru_RU.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_xoox_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_xoox_en.qm
 	)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
