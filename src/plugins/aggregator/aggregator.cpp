@@ -665,17 +665,7 @@ namespace LeechCraft
 
 			void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 			{
-				bool isRepr = IsRepr ();
-				QModelIndex current = GetRelevantIndex ();
-
-				if (!current.isValid ())
-				{
-					qWarning () << Q_FUNC_INFO
-						<< current
-						<< isRepr;
-					return;
-				}
-				Core::Instance ().UpdateFeed (current, isRepr);
+				Perform (boost::bind (&Core::UpdateFeed, &Core::Instance (), _1, IsRepr ()));
 			}
 
 			void Aggregator::on_ActionRegexpMatcher__triggered ()
