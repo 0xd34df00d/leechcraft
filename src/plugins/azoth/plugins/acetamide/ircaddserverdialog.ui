@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>226</width>
-    <height>150</height>
+    <height>160</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,14 +17,14 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Server</string>
+      <string>Server:</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Port</string>
+      <string>Port:</string>
      </property>
     </widget>
    </item>
@@ -44,7 +44,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Password</string>
+      <string>Password:</string>
      </property>
     </widget>
    </item>
@@ -71,7 +71,7 @@
    <item row="4" column="0" colspan="2">
     <widget class="QCheckBox" name="SSL_">
      <property name="text">
-      <string>Security connect (SSL)</string>
+      <string>Secure connection (SSL)</string>
      </property>
     </widget>
    </item>

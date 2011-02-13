@@ -41,6 +41,15 @@ namespace Azoth
 			if (!Proto2Joiner_.contains (proto))
 			{
 				joiner = proto->GetMUCJoinWidget ();
+				if (!qobject_cast<IMUCJoinWidget*> (joiner))	
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "joiner widget for account"
+							<< acc->GetAccountID ()
+							<< "is not a IMUCJoinWidget"
+							<< joiner;
+					continue;
+				}
 				Proto2Joiner_ [proto] = joiner;
 			}
 			else

@@ -288,6 +288,11 @@ namespace Azoth
 		return Core::Instance ().GenerateColors (scheme);
 	}
 	
+	QString ProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const
+	{
+		return Core::Instance ().GetNickColor (nick, colors);
+	}
+	
 	QString ProxyObject::FormatDate (QDateTime dt, QObject *obj) const
 	{
 		return Core::Instance ().FormatDate (dt, qobject_cast<IMessage*> (obj));

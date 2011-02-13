@@ -6,27 +6,31 @@
     <message>
         <location filename="ircaddserverdialog.ui" line="14"/>
         <source>Add server</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить сервер</translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="20"/>
-        <source>Server</source>
-        <translation type="unfinished"></translation>
+        <source>Server:</source>
+        <oldsource>Server</oldsource>
+        <translation>Сервер:</translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="27"/>
-        <source>Port</source>
-        <translation type="unfinished"></translation>
+        <source>Port:</source>
+        <oldsource>Port</oldsource>
+        <translation>Порт:</translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="47"/>
-        <source>Password</source>
-        <translation type="unfinished"></translation>
+        <source>Password:</source>
+        <oldsource>Password</oldsource>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="74"/>
-        <source>Security connect (SSL)</source>
-        <translation type="unfinished"></translation>
+        <source>Secure connection (SSL)</source>
+        <oldsource>Security connect (SSL)</oldsource>
+        <translation>Безопасное соединение (SSL)</translation>
     </message>
 </context>
 <context>
@@ -34,12 +38,12 @@
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="14"/>
         <source>Create account</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать аккаунт</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="34"/>
         <source>User profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Профиль пользователя</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="40"/>
@@ -50,12 +54,12 @@
         <location filename="ircaccountconfigurationdialog.ui" line="48"/>
         <location filename="ircaccountconfigurationdialog.ui" line="166"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="63"/>
         <source>Generate nicknames</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерировать ники</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="71"/>
@@ -134,7 +138,7 @@
     <message>
         <location filename="ircaccountconfigurationdialog.cpp" line="43"/>
         <source>Add server</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Добавить сервер</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.cpp" line="537"/>
@@ -183,7 +187,7 @@ Are you sure?</source>
 <context>
     <name>LeechCraft::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="62"/>
+        <location filename="acetamide.cpp" line="65"/>
         <source>IRC protocol support.</source>
         <translation type="unfinished"></translation>
     </message>
