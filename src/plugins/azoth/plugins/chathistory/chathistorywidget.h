@@ -40,6 +40,7 @@ namespace ChatHistory
 		Q_INTERFACES (IMultiTabsWidget);
 
 		Ui::ChatHistoryWidget Ui_;
+		QStandardItemModel *HistoryViewModel_;
 		QStandardItemModel *ContactsModel_;
 		QSortFilterProxyModel *SortFilter_;
 		static Plugin *S_ParentMultiTabs_;

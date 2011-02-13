@@ -40,16 +40,17 @@ namespace ChatHistory
 
 	ChatHistoryWidget::ChatHistoryWidget (QWidget *parent)
 	: QWidget (parent)
+	, HistoryViewModel_ (new QStandardItemModel (this))
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.HistView_->setModel (HistoryViewModel_);
+
 		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSourceModel (ContactsModel_);
 		SortFilter_->sort (0);
 		Ui_.Contacts_->setModel (SortFilter_);
-		
-		Ui_.HistView_->setHtml (Core::Instance ()->GetPluginProxy ()->GetSelectedChatTemplate ());
 		
 		connect (Ui_.ContactsSearch_,
 				SIGNAL (textChanged (const QString&)),
@@ -152,17 +153,45 @@ namespace ChatHistory
 				entryId != selectedEntry)
 			return;
 		
-		Ui_.HistView_->setHtml (Core::Instance ()->GetPluginProxy ()->GetSelectedChatTemplate ());
-		const QMultiMap<QString, QString>& metadata =
-				Ui_.HistView_->page ()->mainFrame ()->metaData ();
-		const QString& coloring = metadata.value ("coloring");
-		QList<QColor> colors = Core::Instance ()->GetPluginProxy ()->GenerateColors (metadata.value ("coloring"));
+		HistoryViewModel_->clear ();
+		HistoryViewModel_->setHorizontalHeaderLabels (QStringList (tr ("Date"))
+					<< tr ("Name")
+					<< tr ("Message"));
+		
+		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
+					GetPluginProxy ()->GetEntry (entryId, accountId));
+		const QString& name = entry ?
+				entry->GetEntryName () :
+				entryId;
 		
 		Q_FOREACH (const QVariant& logVar, logsVar.toList ())
 		{
 			const QVariantMap& map = logVar.toMap ();
-			qDebug () << map;
+			
+			QList<QStandardItem*> items;
+			items << new QStandardItem (map ["Date"].toDateTime ().toString ());
+			const QString& var = map ["Variant"].toString ();
+			if (map ["Type"] == "CHAT")
+				items << new QStandardItem (var.isEmpty () ?
+							name :
+							name + '/' + var);
+			else
+				items << new QStandardItem (var);
+			items << new QStandardItem (map ["Message"].toString ());
+
+			const QBrush& brush = map ["Direction"] == "IN" ?
+					QBrush (Qt::blue) :
+					QBrush (Qt::red);
+			Q_FOREACH (QStandardItem *item, items)
+			{
+				item->setForeground (brush);
+				item->setEditable (false);
+			}
+				
+			HistoryViewModel_->appendRow (items);
 		}
+		
+		Ui_.HistView_->resizeColumnsToContents ();
 	}
 
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
