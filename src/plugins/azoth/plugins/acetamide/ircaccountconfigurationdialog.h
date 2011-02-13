@@ -49,6 +49,7 @@ namespace Acetamide
 		QList<ServerInfoData> ServersInfo_;
 	public:
 		IrcAccountConfigurationDialog (QWidget* = 0);
+		QString GetDefaultNickname () const;
 		QList<NickNameData>  GetNicks ();
 		void SetNicks (const QList<NickNameData> &);
 		void SetServers (const QList<ServerInfoData>&);

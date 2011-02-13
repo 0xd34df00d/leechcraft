@@ -98,6 +98,14 @@ namespace Acetamide
 				SLOT (handleDblClick (const QModelIndex&)));
 	}
 	
+	QString IrcAccountConfigurationDialog::GetDefaultNickname () const
+	{
+		Q_FOREACH (const NickNameData& nick, Nicknames_)
+			if (nick.Network_ == tr ("Default"))
+				return nick.Nicks_.at (0);
+		return QString ();
+	}
+
 	QList<NickNameData> IrcAccountConfigurationDialog::GetNicks ()
 	{
 		bool found = false;
@@ -523,10 +531,13 @@ namespace Acetamide
 	
 	void IrcAccountConfigurationDialog::handleEditElement (bool checked)
 	{
-		if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "channel")
+		QModelIndex index = Ui_.ServerChannels_->currentIndex ();
+		if (index.data (ServerAndChannelsRole).toString () == "channel")
 			EditChannel ();
-		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "server")
+		else if (index.data (ServerAndChannelsRole).toString () == "server")
 			EditServer ();
+		else if (index.data (ServerAndChannelsRole).toString () == "network")
+			Ui_.ServerChannels_->edit (index);
 	}
 
 	void IrcAccountConfigurationDialog::handleDeleteElement (bool checked)
