@@ -8,7 +8,6 @@ PROJECT (leechcraft)
 #	SET (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #	SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 #ENDIF (NOT DISABLE_RPATH_TRICKS)
-LIST (APPEND CMAKE_MODULE_PATH "cmake")
 IF (MSVC)
 	SET (CMAKE_CXX_FLAGS "/GX /W3")
 	SET (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD")
@@ -63,9 +62,6 @@ SET (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins")
 SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
 SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
-
-# Check modules first in local dir
-SET (CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem program_options system thread)
 FIND_PACKAGE (Qt4 REQUIRED)
