@@ -25,6 +25,7 @@
 #include <interfaces/iprotocolplugin.h>
 #include "ircaccount.h"
 #include "ircjoingroupchat.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -73,6 +74,8 @@ namespace Acetamide
 		QList<QObject*> result;
 		Q_FOREACH (IrcAccount *acc, Accounts_)
 			result << acc;
+		
+		result << Core::Instance ().GetDefaultIrcAccount ();
 		return result;
 	}
 
@@ -135,7 +138,9 @@ namespace Acetamide
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide_Accounts");
 		settings.beginWriteArray ("Accounts");
-		for (int i = 0, size = Accounts_.size ();
+		int i;
+		int size;
+		for (i = 0, size = Accounts_.size ();
 				i < size; ++i)
 		{
 			settings.setArrayIndex (i);
@@ -147,6 +152,7 @@ namespace Acetamide
 
 	void IrcProtocol::RestoreAccounts ()
 	{
+		bool defaultAccount = false;
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide_Accounts");
@@ -170,7 +176,13 @@ namespace Acetamide
 					this,
 					SLOT (saveAccounts ()));
 
-			Accounts_ << acc;
+			if (acc->GetAccountName () == tr ("DefaultIrcAccount"))
+			{
+				Core::Instance ().SetDefaultIrcAcoount (acc);
+				defaultAccount = true;
+			}
+			else
+				Accounts_ << acc;
 
 			emit accountAdded (acc);
 		}

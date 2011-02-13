@@ -46,8 +46,7 @@ namespace Acetamide
 		IrcProtocol *ParentProtocol_;
 		State IrcAccountState_;
 		
-		QString Nicks_;
-		QList<NickNameData >  Nicknames_;
+		QString Nick_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
@@ -87,7 +86,6 @@ namespace Acetamide
 // 		QObject* CreateMessage (IMessage::MessageType,
 // 				const QString&, const QString&,
 // 				const QXmppRosterIq::Item&);
-	private:
 // 		QString GetPassword (bool authFailure = false);
 		void SaveConnectionSettings (const QList<ServerInfoData>&, const QString&);
 		QList<ServerInfoData> ReadConnectionSettings (const QString&);

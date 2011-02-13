@@ -29,11 +29,13 @@ namespace Azoth
 namespace Acetamide
 {
 	class IrcProtocol;
+	class IrcAccount;
 	
 	struct NickNameData
 	{
 		QStringList Nicks_;
-		QString Network_;
+		QString Server_;
+		QString ServerName_;
 		bool AutoGenerate_;
 	};
 	
@@ -54,7 +56,8 @@ namespace Acetamide
 		ICoreProxy_ptr Proxy_;
 		boost::shared_ptr<IrcProtocol> IrcProtocol_;
 		QObject *PluginProxy_;
-
+		IrcAccount *DefaultAccount_;
+		
 		Core ();
 	public:
 		static Core& Instance ();
@@ -66,8 +69,11 @@ namespace Acetamide
 		void SetPluginProxy (QObject*);
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
+		void SetDefaultIrcAcoount (IrcAccount *account);
+		IrcAccount* GetDefaultIrcAccount ();
 		void SendEntity (const Entity&);
+	private:
+		void CreateDefaultAccount ();
 	private slots:
 		void handleItemsAdded (const QList<QObject*>&);
 	signals:

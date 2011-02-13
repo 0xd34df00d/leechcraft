@@ -36,6 +36,7 @@ namespace Acetamide
 	: QObject (parent)
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
+	, Nick_ (QString ())
 	{
 		IrcAccountState_ = SOffline;
 		
@@ -82,7 +83,7 @@ namespace Acetamide
 
 	QString IrcAccount::GetOurNick () const
 	{
-		return Nicks_;
+		return Nick_;
 	}
 
 	void IrcAccount::RenameAccount (const QString& name)
@@ -101,16 +102,18 @@ namespace Acetamide
 		std::auto_ptr<IrcAccountConfigurationDialog> dia (new IrcAccountConfigurationDialog (0));
 
 		QList<ServerInfoData> serversInfo = ReadConnectionSettings (Name_ + "_Servers");
-		Nicknames_ = ReadNicknameSettings (Name_ +"_Nicknames");
-		
+		QList<NickNameData>  nickNames = ReadNicknameSettings (Name_ +"_Nicknames");
+
+		if (!nickNames.isEmpty ())
+			dia->SetNicks (nickNames);
 		if (!serversInfo.isEmpty ())
 			dia->SetServersInfo (serversInfo);
-		if (!Nicknames_.isEmpty ())
-			dia->SetNicks (Nicknames_);
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
 
+		Nick_ = dia->GetDefaultNickname ();
+		
 		State lastState = IrcAccountState_;
 		if (lastState != SOffline)
 		{
@@ -118,10 +121,12 @@ namespace Acetamide
 // 			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
 		}
 
-		Nicknames_ = dia->GetNicks ();
-
-		SaveConnectionSettings (dia->GetServersInfo (), QString (Name_ + "_Servers"));
-		SaveNicknameSettings (Nicknames_, QString (Name_ + "_Nicknames"));
+		nickNames = dia->GetNicks ();
+		serversInfo = dia->GetServersInfo ();
+		
+		SaveConnectionSettings (serversInfo, QString (Name_ + "_Servers"));
+		SaveNicknameSettings (nickNames, QString (Name_ + "_Nicknames"));
+		
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
 
@@ -282,7 +287,8 @@ namespace Acetamide
 	QDataStream& operator<< (QDataStream& out, const NickNameData& nick)
 	{
 		out << static_cast<quint8> (1)
-				<<nick.Network_
+				<< nick.Server_
+				<< nick.ServerName_
 				<< nick.Nicks_
 				<< nick.AutoGenerate_;
 		
@@ -299,7 +305,8 @@ namespace Acetamide
 					<< "unknown version"
 					<< version;
 		
-		in >> nick.Network_
+		in >> nick.Server_
+				>> nick.ServerName_
 				>> nick.Nicks_
 				>> nick.AutoGenerate_;
 		
