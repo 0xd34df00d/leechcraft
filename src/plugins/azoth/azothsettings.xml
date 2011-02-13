@@ -29,6 +29,15 @@
 				</option>
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="Contact list" />
+			<item type="checkbox" property="ShowAvatars" default="true">
+				<label value="Show avatars" />
+			</item>
+			<item type="checkbox" property="ShowClientIcons" default="true">
+				<label value="Show client icons" />
+			</item>
+		</groupbox>
 	</page>
 	<page>
 		<label value="Behavior" />

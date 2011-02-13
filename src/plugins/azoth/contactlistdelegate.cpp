@@ -23,6 +23,7 @@
 #include <QAbstractProxyModel>
 #include "interfaces/iclentry.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,13 @@ namespace Azoth
 	ContactListDelegate::ContactListDelegate (QObject* parent)
 	: QStyledItemDelegate (parent)
 	{
+		handleShowAvatarsChanged ();
+		handleShowClientIconsChanged ();
+		
+		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars",
+				this, "handleShowAvatarsChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("ShowClientIcons",
+				this, "handleShowClientIconsChanged");
 	}
 
 	void ContactListDelegate::paint (QPainter *painter,
@@ -152,7 +160,9 @@ namespace Azoth
 		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString& status = entry->GetStatus ().StatusString_;
-		const QImage& avatarImg = Core::Instance ().GetAvatar (entry, iconSize);
+		const QImage& avatarImg = ShowAvatars_ ?
+				Core::Instance ().GetAvatar (entry, iconSize) :
+				QImage ();
 		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
 				QString (" %1 :: ").arg (unreadNum) :
@@ -177,10 +187,10 @@ namespace Azoth
 
 		const int textShift = 2 * CPadding + iconSize + unreadSpace;
 
-		const QList<QIcon>& clientIcons = isMUC ?
+		const QList<QIcon>& clientIcons = isMUC || !ShowClientIcons_ ?
 				QList<QIcon> () :
 				Core::Instance ().GetClientIconForEntry (entry).values ();
-		const int clientsIconsWidth = isMUC ?
+		const int clientsIconsWidth = isMUC|| !ShowClientIcons_ ?
 				0 :
 				clientIcons.size () * (iconSize + CPadding) - CPadding;
 		/* text for width is total width minus shift of the text from
@@ -189,7 +199,7 @@ namespace Azoth
 		 * them: there are N-1 paddings inbetween if there are N icons.
 		 */
 		const int textWidth = r.width () - textShift -
-				(isMUC ? 0 : (iconSize + 2 * CPadding)) -
+				(isMUC || !ShowAvatars_ ? 0 : (iconSize + 2 * CPadding)) -
 				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
@@ -235,6 +245,18 @@ namespace Azoth
 		}
 
 		painter->drawPixmap (option.rect, pixmap);
+	}
+	
+	void ContactListDelegate::handleShowAvatarsChanged ()
+	{
+		ShowAvatars_ = XmlSettingsManager::Instance ()
+				.property ("ShowAvatars").toBool ();
+	}
+	
+	void ContactListDelegate::handleShowClientIconsChanged ()
+	{
+		ShowClientIcons_ = XmlSettingsManager::Instance ()
+				.property ("ShowClientIcons").toBool ();
 	}
 }
 }
