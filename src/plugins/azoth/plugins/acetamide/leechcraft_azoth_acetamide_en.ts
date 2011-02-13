@@ -10,22 +10,26 @@
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="20"/>
-        <source>Server</source>
+        <source>Server:</source>
+        <oldsource>Server</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="27"/>
-        <source>Port</source>
+        <source>Port:</source>
+        <oldsource>Port</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="47"/>
-        <source>Password</source>
+        <source>Password:</source>
+        <oldsource>Password</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="74"/>
-        <source>Security connect (SSL)</source>
+        <source>Secure connection (SSL)</source>
+        <oldsource>Security connect (SSL)</oldsource>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -183,7 +187,7 @@ Are you sure?</source>
 <context>
     <name>LeechCraft::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="62"/>
+        <location filename="acetamide.cpp" line="65"/>
         <source>IRC protocol support.</source>
         <translation type="unfinished"></translation>
     </message>
