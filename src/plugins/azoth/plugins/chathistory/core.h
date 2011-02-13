@@ -28,6 +28,7 @@ namespace LeechCraft
 namespace Azoth
 {
 class IMessage;
+class IProxyObject;
 
 namespace ChatHistory
 {
@@ -49,17 +50,26 @@ namespace ChatHistory
 		static boost::weak_ptr<Core> InstPtr_;
 		
 		StorageThread *StorageThread_;
+		IProxyObject *PluginProxy_;
 		
 		Core ();
 	public:
 		static boost::shared_ptr<Core> Instance ();
 		
+		void SetPluginProxy (QObject*);
+		IProxyObject* GetPluginProxy () const;
+		
 		void Process (QObject*);
 		void GetOurAccounts ();
 		void GetUsersForAccount (const QString&);
+		void GetChatLogs (const QString& accountId, const QString& entryId,
+				int backpages, int amount);
 	signals:
 		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&);
+		/** The variant is a list of QVariantMaps.
+		 */
+		void gotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 	};
 }
 }

@@ -257,5 +257,55 @@ namespace Azoth
 	{
 		return SerializedStr2AuthStatus_.value (str, ASNone);;
 	}
+	
+	QObject* ProxyObject::GetAccount (const QString& accID) const
+	{
+		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+			if (acc->GetAccountID () == accID)
+				return acc->GetObject ();
+
+		return 0;
+	}
+	
+	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
+	{
+		return Core::Instance ().GetEntry (entryID);
+	}
+	
+	QString ProxyObject::GetSelectedChatTemplate () const
+	{
+		return Core::Instance ().GetSelectedChatTemplate ();
+	}
+	
+	void ProxyObject::AppendMessageByTemplate (QWebFrame *frame,
+			QObject *msg, const QString& color, bool isHighlight, bool isActive) const
+	{
+		Core::Instance ().AppendMessageByTemplate (frame, msg, color, isHighlight, isActive);
+	}
+	
+	QList<QColor> ProxyObject::GenerateColors (const QString& scheme) const
+	{
+		return Core::Instance ().GenerateColors (scheme);
+	}
+	
+	QString ProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const
+	{
+		return Core::Instance ().GetNickColor (nick, colors);
+	}
+	
+	QString ProxyObject::FormatDate (QDateTime dt, QObject *obj) const
+	{
+		return Core::Instance ().FormatDate (dt, qobject_cast<IMessage*> (obj));
+	}
+	
+	QString ProxyObject::FormatNickname (QString nick, QObject *obj, const QString& color) const
+	{
+		return Core::Instance ().FormatNickname (nick, qobject_cast<IMessage*> (obj), color);
+	}
+	
+	QString ProxyObject::FormatBody (QString body, QObject *obj) const
+	{
+		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj));
+	}
 }
 }

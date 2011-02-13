@@ -19,6 +19,10 @@
 #include "chathistorywidget.h"
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QWebFrame>
+#include <interfaces/iaccount.h>
+#include <interfaces/iclentry.h>
+#include <interfaces/iproxyobject.h>
 #include "chathistory.h"
 
 namespace LeechCraft
@@ -28,6 +32,8 @@ namespace Azoth
 namespace ChatHistory
 {
 	Plugin *ChatHistoryWidget::S_ParentMultiTabs_ = 0;
+	
+	const int Amount = 50;
 
 	void ChatHistoryWidget::SetParentMultiTabs (Plugin *ch)
 	{
@@ -36,10 +42,14 @@ namespace ChatHistory
 
 	ChatHistoryWidget::ChatHistoryWidget (QWidget *parent)
 	: QWidget (parent)
+	, HistoryViewModel_ (new QStandardItemModel (this))
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
+	, Backpages_ (0)
 	{
 		Ui_.setupUi (this);
+		Ui_.HistView_->setModel (HistoryViewModel_);
+
 		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSourceModel (ContactsModel_);
 		SortFilter_->sort (0);
@@ -49,6 +59,10 @@ namespace ChatHistory
 				SIGNAL (textChanged (const QString&)),
 				SortFilter_,
 				SLOT (setFilterFixedString (const QString&)));
+		connect (Ui_.Contacts_->selectionModel (),
+				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+				this,
+				SLOT (handleContactSelected (const QModelIndex&)));
 		
 		connect (Core::Instance ().get (),
 				SIGNAL (gotUsersForAccount (const QStringList&, const QString&)),
@@ -58,6 +72,10 @@ namespace ChatHistory
 				SIGNAL (gotOurAccounts (const QStringList&)),
 				this,
 				SLOT (handleGotOurAccounts (const QStringList&)));
+		connect (Core::Instance ().get (),
+				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
+				this,
+				SLOT (handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&)));
 		Core::Instance ()->GetOurAccounts ();
 	}
 	
@@ -88,8 +106,19 @@ namespace ChatHistory
 	
 	void ChatHistoryWidget::handleGotOurAccounts (const QStringList& accounts)
 	{
+		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
 		Q_FOREACH (const QString& accountID, accounts)
-			Ui_.AccountBox_->addItem (accountID, accountID);
+		{
+			IAccount *account = qobject_cast<IAccount*> (proxy->GetAccount (accountID));
+			if (!account)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "got invalid IAccount for"
+						<< accountID;
+				continue;
+			}
+			Ui_.AccountBox_->addItem (account->GetAccountName (), accountID);
+		}
 
 		disconnect (Core::Instance ().get (),
 				SIGNAL (gotOurAccounts (const QStringList&)),
@@ -102,15 +131,124 @@ namespace ChatHistory
 		if (id != Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ())
 			return;
 
+		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
 		ContactsModel_->clear ();
 		Q_FOREACH (const QString& user, users)
-			ContactsModel_->appendRow (new QStandardItem (user));
+		{
+			ICLEntry *entry = qobject_cast<ICLEntry*> (proxy->GetEntry (user, id));
+			const QString& name = entry ?
+					entry->GetEntryName () :
+					user;
+
+			QStandardItem *item = new QStandardItem (name);
+			item->setData (user, MRIDRole);
+			ContactsModel_->appendRow (item);
+		}
 	}
 	
+	void ChatHistoryWidget::handleGotChatLogs (const QString& accountId,
+			const QString& entryId, int backpages, int amount, const QVariant& logsVar)
+	{
+		const QString& selectedEntry = Ui_.Contacts_->selectionModel ()->
+				currentIndex ().data (MRIDRole).toString ();
+		if (accountId != Ui_.AccountBox_->
+					itemData (Ui_.AccountBox_->currentIndex ()).toString () ||
+				entryId != selectedEntry)
+			return;
+		
+		HistoryViewModel_->clear ();
+		HistoryViewModel_->setHorizontalHeaderLabels (QStringList (tr ("Date"))
+					<< tr ("Name")
+					<< tr ("Message"));
+		
+		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
+					GetPluginProxy ()->GetEntry (entryId, accountId));
+		const QString& name = entry ?
+				entry->GetEntryName () :
+				entryId;
+				
+		QList<QColor> colors = Core::Instance ()->
+				GetPluginProxy ()->GenerateColors ("hash");
+		
+		Q_FOREACH (const QVariant& logVar, logsVar.toList ())
+		{
+			const QVariantMap& map = logVar.toMap ();
+			
+			const bool isChat = map ["Type"] == "CHAT";
+			
+			QList<QStandardItem*> items;
+			items << new QStandardItem (map ["Date"].toDateTime ().toString ());
+			const QString& var = map ["Variant"].toString ();
+			if (isChat)
+				items << new QStandardItem (var.isEmpty () ?
+							name :
+							name + '/' + var);
+			else
+				items << new QStandardItem (var);
+			items << new QStandardItem (map ["Message"].toString ());
+
+			if (isChat)
+			{
+				const QBrush& brush = map ["Direction"] == "IN" ?
+						QBrush (Qt::blue) :
+						QBrush (Qt::red);
+				Q_FOREACH (QStandardItem *item, items)
+					item->setForeground (brush);
+			}
+			else
+			{
+				const QString& color = Core::Instance ()->
+						GetPluginProxy ()->GetNickColor (var, colors);
+				items [1]->setForeground (QColor (color));
+			}
+
+			Q_FOREACH (QStandardItem *item, items)
+				item->setEditable (false);
+				
+			HistoryViewModel_->appendRow (items);
+		}
+		
+		Ui_.HistView_->resizeColumnsToContents ();
+	}
+
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
 	{
 		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
 		Core::Instance ()->GetUsersForAccount (id);
+	}
+	
+	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
+	{
+		CurrentAccount_ = Ui_.AccountBox_->
+				itemData (Ui_.AccountBox_->currentIndex ()).toString ();
+		CurrentEntry_ = index.data (MRIDRole).toString ();
+		Backpages_ = 0;
+
+		RequestLogs ();
+	}
+	
+	void ChatHistoryWidget::on_PrevHistory__released()
+	{
+		if (HistoryViewModel_->rowCount () < Amount)
+			return;
+		
+		++Backpages_;
+		RequestLogs ();
+	}
+	
+	void ChatHistoryWidget::on_NextHistory__released()
+	{
+		if (Backpages_ <= 0)
+			return;
+		
+		--Backpages_;
+		RequestLogs ();
+	}
+	
+	void ChatHistoryWidget::RequestLogs()
+	{
+		Core::Instance ()->GetChatLogs (CurrentAccount_,
+				CurrentEntry_, Backpages_, Amount);
 	}
 }
 }

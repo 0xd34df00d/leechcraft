@@ -57,6 +57,13 @@
          </property>
         </widget>
        </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="GenerateNicknames_">
+         <property name="text">
+          <string>Generate nicknames</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="IrcConnections_">
@@ -75,7 +82,11 @@
         </widget>
        </item>
        <item row="2" column="0" colspan="4">
-        <widget class="QTreeView" name="ServerChannels_"/>
+        <widget class="QTreeView" name="ServerChannels_">
+         <property name="expandsOnDoubleClick">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item row="3" column="0" colspan="2">
         <widget class="QToolButton" name="Add_">

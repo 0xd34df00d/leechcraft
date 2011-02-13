@@ -18,6 +18,8 @@
 
 #include "xoox.h"
 #include <QIcon>
+#include <QTranslator>
+#include <plugininterface/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -28,6 +30,8 @@ namespace Xoox
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_xoox"));
+
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),

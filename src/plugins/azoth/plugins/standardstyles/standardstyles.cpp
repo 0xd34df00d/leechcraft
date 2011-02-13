@@ -18,6 +18,7 @@
 
 #include "standardstyles.h"
 #include <QIcon>
+#include <interfaces/iproxyobject.h>
 #include "standardstylesource.h"
 
 namespace LeechCraft
@@ -28,6 +29,7 @@ namespace StandardStyles
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Proxy_ = 0;
 	}
 	
 	void Plugin::SecondInit ()
@@ -68,7 +70,12 @@ namespace StandardStyles
 	
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		return QObjectList () << new StandardStyleSource ();
+		return QObjectList () << new StandardStyleSource (Proxy_);
+	}
+	
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		Proxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
 }
 }

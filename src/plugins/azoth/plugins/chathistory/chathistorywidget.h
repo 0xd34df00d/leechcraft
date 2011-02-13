@@ -40,9 +40,19 @@ namespace ChatHistory
 		Q_INTERFACES (IMultiTabsWidget);
 
 		Ui::ChatHistoryWidget Ui_;
+		QStandardItemModel *HistoryViewModel_;
 		QStandardItemModel *ContactsModel_;
 		QSortFilterProxyModel *SortFilter_;
+		int Backpages_;
+		QString CurrentAccount_;
+		QString CurrentEntry_;
+
 		static Plugin *S_ParentMultiTabs_;
+
+		enum ModelRoles
+		{
+			MRIDRole = Qt::UserRole + 1
+		};
 	public:
 		static void SetParentMultiTabs (Plugin*);
 
@@ -56,7 +66,13 @@ namespace ChatHistory
 	private slots:
 		void handleGotOurAccounts (const QStringList&);
 		void handleGotUsersForAccount (const QStringList&, const QString&);
+		void handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 		void on_AccountBox__currentIndexChanged (int);
+		void handleContactSelected (const QModelIndex&);
+		void on_PrevHistory__released ();
+		void on_NextHistory__released ();
+	private:
+		void RequestLogs ();
 	signals:
 		void removeSelf (QWidget*);
 	};

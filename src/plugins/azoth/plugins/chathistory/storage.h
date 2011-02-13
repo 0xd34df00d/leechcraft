@@ -45,6 +45,7 @@ namespace ChatHistory
 		QSqlQuery AccountInserter_;
 		QSqlQuery MessageDumper_;
 		QSqlQuery UsersForAccountGetter_;
+		QSqlQuery HistoryGetter_;
 		QHash<QString, qint32> Users_;
 		QHash<QString, qint32> Accounts_;
 	public:
@@ -63,9 +64,13 @@ namespace ChatHistory
 		void addMessage (QObject*);
 		void getOurAccounts ();
 		void getUsersForAccount (const QString&);
+		void getChatLogs (const QString& accountId,
+				const QString& entryId, int backpages, int amount);
 	signals:
 		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&);
+		void gotChatLogs (const QString&, const QString&,
+				int, int, const QVariant&);
 	};
 }
 }

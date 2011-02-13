@@ -18,7 +18,8 @@
 
 #include "acetamide.h"
 #include <QIcon>
-
+#include <QTranslator>
+#include <plugininterface/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -29,6 +30,8 @@ namespace Acetamide
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_acetamide"));
+
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
@@ -65,25 +68,6 @@ namespace Acetamide
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
-	}
-
-	QStringList Plugin::Provides () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Plugin::SetProvider (QObject*, const QString&)
-	{
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

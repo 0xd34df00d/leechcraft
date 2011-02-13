@@ -90,6 +90,11 @@ namespace ChatHistory
 		result ["Azoth"] << ActionHistory_;
 		return result;
 	}
+	
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		Core::Instance ()->SetPluginProxy (proxy);
+	}
 
 	void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
 			QObject *chatTab, QObject *message)

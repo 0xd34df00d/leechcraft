@@ -24,6 +24,8 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/iprotocolplugin.h>
 
+class QTranslator;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -37,6 +39,8 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+		
+		boost::shared_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

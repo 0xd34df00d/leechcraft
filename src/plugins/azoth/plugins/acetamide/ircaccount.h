@@ -25,6 +25,7 @@
 #include <QVariant>
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -46,7 +47,7 @@ namespace Acetamide
 		State IrcAccountState_;
 		
 		QString Nicks_;
-		QMap<QString, QVariant> Nicknames_;
+		QList<NickNameData >  Nicknames_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
@@ -88,8 +89,10 @@ namespace Acetamide
 // 				const QXmppRosterIq::Item&);
 	private:
 // 		QString GetPassword (bool authFailure = false);
-		void SaveConnectionSettings (const QList<QVariant>&, const QString&);
-		QList<QVariant> ReadConnectionSettings (const QString&);
+		void SaveConnectionSettings (const QList<ServerInfoData>&, const QString&);
+		QList<ServerInfoData> ReadConnectionSettings (const QString&);
+		void SaveNicknameSettings (const QList<NickNameData>&, const QString&);
+		QList<NickNameData> ReadNicknameSettings (const QString&);
 // 	public slots:
 // 		void handleEntryRemoved (QObject*);
 // 		void handleGotRosterItems (const QList<QObject*>&);
@@ -115,6 +118,10 @@ namespace Acetamide
 	};
 	
 	typedef boost::shared_ptr<IrcAccount> IrcAccount_ptr;
+	QDataStream& operator<< (QDataStream& out, const NickNameData&);
+	QDataStream& operator>> (QDataStream& in, NickNameData&);
+	QDataStream& operator<< (QDataStream& out, const ServerInfoData&);
+	QDataStream& operator>> (QDataStream& in, ServerInfoData&);
 };
 };
 };

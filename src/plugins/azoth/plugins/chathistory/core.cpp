@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QMetaObject>
 #include <QtDebug>
+#include <interfaces/iproxyobject.h>
 #include "storage.h"
 #include "storagethread.h"
 
@@ -32,6 +33,7 @@ namespace ChatHistory
 
 	Core::Core ()
 	: StorageThread_ (new StorageThread (this))
+	, PluginProxy_ (0)
 	{
 		StorageThread_->start (QThread::LowestPriority);
 	}
@@ -45,6 +47,16 @@ namespace ChatHistory
 			return ptr;
 		}
 		return InstPtr_.lock ();
+	}
+	
+	void Core::SetPluginProxy (QObject *proxy)
+	{
+		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
+	}
+	
+	IProxyObject* Core::GetPluginProxy () const
+	{
+		return PluginProxy_;
 	}
 	
 	void Core::Process (QObject *msg)
@@ -68,6 +80,18 @@ namespace ChatHistory
 				"getUsersForAccount",
 				Qt::QueuedConnection,
 				Q_ARG (QString, accountID));
+	}
+	
+	void Core::GetChatLogs (const QString& accountId,
+			const QString& entryId, int backpages, int amount)
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"getChatLogs",
+				Qt::QueuedConnection,
+				Q_ARG (QString, accountId),
+				Q_ARG (QString, entryId),
+				Q_ARG (int, backpages),
+				Q_ARG (int, amount));
 	}
 }
 }

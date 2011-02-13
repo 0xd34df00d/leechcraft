@@ -22,6 +22,7 @@
 #include "azothcommon.h"
 
 class QObject;
+class QWebFrame;
 
 namespace LeechCraft
 {
@@ -108,6 +109,38 @@ namespace Azoth
 		 * @sa AuthStatusToString()
 		 */
 		virtual AuthStatus AuthStatusFromString (const QString& str) const = 0;
+		
+		/** @brief Returns the account object for the given account ID.
+		 * 
+		 * If there is no such account, NULL is returned.
+		 * 
+		 * @param[in] accID The unique account ID.
+		 * 
+		 * @return Account object implementing IAccount, or NULL if no
+		 * such account exists.
+		 */
+		virtual QObject* GetAccount (const QString& accID) const = 0;
+		
+		/** @brief Returns the entry object for the given entry ID.
+		 * 
+		 * @param[in] entryID The entry ID.
+		 * @param[in] accID The account ID to which this entry
+		 * belongs.
+		 * 
+		 * @return Entry object, or NULL if no such entry exists.
+		 */
+		virtual QObject* GetEntry (const QString& entryID, const QString& accID) const = 0;
+		
+		virtual QString GetSelectedChatTemplate () const = 0;
+		
+		virtual void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&, bool, bool) const = 0;
+		
+		virtual QList<QColor> GenerateColors (const QString& scheme) const = 0;
+		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
+
+		virtual QString FormatDate (QDateTime, QObject*) const = 0;
+		virtual QString FormatNickname (QString, QObject*, const QString&) const = 0;
+		virtual QString FormatBody (QString, QObject*) const = 0;
 	};
 }
 }

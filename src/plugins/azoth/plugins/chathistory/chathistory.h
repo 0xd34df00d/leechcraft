@@ -58,6 +58,8 @@ namespace ChatHistory
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*> > GetMenuActions () const;
 	public slots:
+		void initPlugin (QObject*);
+
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);

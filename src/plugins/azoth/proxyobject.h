@@ -20,6 +20,8 @@
 #define PLUGINS_AZOTH_PROXYOBJECT_H
 #include <QObject>
 #include <QHash>
+#include <QColor>
+#include <QDateTime>
 #include "interfaces/iproxyobject.h"
 
 namespace LeechCraft
@@ -36,13 +38,22 @@ namespace Azoth
 		QHash<QString, AuthStatus> SerializedStr2AuthStatus_;
 	public:
 		ProxyObject (QObject* = 0);
-
+	public slots:
 		QString GetPassword (QObject*);
 		void SetPassword (const QString&, QObject*);
 		QString GetOSName ();
 		QString StateToString (State) const;
 		QString AuthStatusToString (AuthStatus) const;
 		AuthStatus AuthStatusFromString (const QString&) const;
+		QObject* GetAccount (const QString&) const;
+		QObject* GetEntry (const QString&, const QString&) const;
+		QString GetSelectedChatTemplate () const;
+		void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&, bool, bool) const;
+		QList<QColor> GenerateColors (const QString&) const;
+		QString GetNickColor (const QString&, const QList<QColor>&) const;
+		QString FormatDate (QDateTime, QObject*) const;
+		QString FormatNickname (QString, QObject*, const QString&) const;
+		QString FormatBody (QString, QObject*) const;
 	};
 }
 }
