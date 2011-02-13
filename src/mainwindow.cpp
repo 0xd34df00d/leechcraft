@@ -883,8 +883,11 @@ namespace
 #ifdef Q_WS_WIN
 		filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
 				.entryList (QStringList ("leechcraft_*.qm"));
-#elif defined(Q_WS_MAC)
+#elif defined (Q_WS_MAC)
 		filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
+				.entryList (QStringList ("leechcraft_*.qm"));
+#elif defined (INSTALL_PREFIX)
+		filenames << QDir (INSTALL_PREFIX "/share/leechcraft/translations")
 				.entryList (QStringList ("leechcraft_*.qm"));
 #else
 		filenames << QDir ("/usr/local/share/leechcraft/translations")

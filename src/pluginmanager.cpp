@@ -482,10 +482,15 @@ namespace LeechCraft
 		ScanDir (QApplication::applicationDirPath () + "/../plugins");
 #else
 		QString libdir (PLUGINS_LIBDIR);
+	#if defined (INSTALL_PREFIX)
+		ScanDir (QString (INSTALL_PREFIX "/%1/leechcraft/plugins")
+				.arg (libdir));
+	#else
 		ScanDir (QString ("/usr/local/%1/leechcraft/plugins")
 				.arg (libdir));
 		ScanDir (QString ("/usr/%1/leechcraft/plugins")
 				.arg (libdir));
+	#endif	
 #endif
 	}
 

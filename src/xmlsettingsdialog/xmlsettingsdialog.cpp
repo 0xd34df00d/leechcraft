@@ -74,6 +74,9 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 			"/../Resources/settings/" + basename))
 		filename = QApplication::applicationDirPath () +
 				"/../Resources/settings/" + basename;
+#elif defined (INSTALL_PREFIX)
+	else if (QFile::exists (QString (INSTALL_PREFIX "/share/leechcraft/settings/") + basename))
+		filename = QString (INSTALL_PREFIX "/share/leechcraft/settings/") + basename;
 #else
 	else if (QFile::exists (QString ("/usr/local/share/leechcraft/settings/") + basename))
 		filename = QString ("/usr/local/share/leechcraft/settings/") + basename;
