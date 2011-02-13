@@ -24,6 +24,7 @@
 #include <QtDebug>
 #include <interfaces/iprotocolplugin.h>
 #include "ircaccount.h"
+#include "ircjoingroupchat.h"
 
 namespace LeechCraft
 {
@@ -116,8 +117,7 @@ namespace Acetamide
 
 	QWidget* IrcProtocol::GetMUCJoinWidget ()
 	{
-		//TODO join MUC 
-		//return new JoinGroupchatWidget ();
+		return new IrcJoinGroupChat ();
 	}
 
 	void IrcProtocol::RemoveAccount (QObject *acc)

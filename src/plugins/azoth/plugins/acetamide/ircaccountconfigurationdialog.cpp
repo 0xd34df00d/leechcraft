@@ -102,7 +102,6 @@ namespace Acetamide
 	{
 		bool found = false;
 		QString network = Ui_.Servers_->currentText ();
-		qDebug () << "TDE" << network << Nicknames_.count ();
 		for (int i = 0; i < Nicknames_.count (); ++i)
 			if (Nicknames_.at (i).Network_ == network)
 			{

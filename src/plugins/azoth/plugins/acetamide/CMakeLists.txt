@@ -2,7 +2,7 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	)
 
-SET (ACETAMIDE_SRCS    
+SET (ACETAMIDE_SRCS
 	acetamide.cpp
 	core.cpp
 	ircprotocol.cpp
@@ -11,6 +11,7 @@ SET (ACETAMIDE_SRCS
 	ircaddserverdialog.cpp
 	ircadddefaultchannelsdialog.cpp
 	irceditchanneldialog.cpp
+	ircjoingroupchat.cpp
 	)
 
 SET (ACETAMIDE_HEADERS
@@ -22,6 +23,7 @@ SET (ACETAMIDE_HEADERS
 	ircaddserverdialog.h
 	ircadddefaultchannelsdialog.h
 	irceditchanneldialog.h
+	ircjoingroupchat.h
 	)
 
 SET (ACETAMIDE_FORMS
@@ -29,6 +31,7 @@ SET (ACETAMIDE_FORMS
 	ircadddefaultchannelsdialog.ui
 	ircaddserverdialog.ui
 	irceditchanneldialog.ui
+	ircjoingroupchat.ui
 	)
 
 SET (ACETAMIDE_TRANSLATIONS
