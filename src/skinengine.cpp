@@ -162,10 +162,15 @@ void SkinEngine::FindIconSets ()
 	QDir dir (QApplication::applicationDirPath () + "/../Resources/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 #elif defined (Q_WS_X11)
+	#if defined (INSTALL_PREFIX)
+	QDir dir = QDir (INSTALL_PREFIX "/share/leechcraft/icons");
+	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+	#else
 	QDir dir = QDir ("/usr/share/leechcraft/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
 	dir = QDir ("/usr/local/share/leechcraft/icons");
 	IconSets_ << dir.entryList (QStringList ("*.mapping"));
+	#endif
 #elif defined (Q_WS_WIN)
 	QDir dir = QDir::current ();
 	if (dir.cd (QCoreApplication::applicationDirPath () + "/icons"))
@@ -212,10 +217,15 @@ void SkinEngine::FindIcons ()
 		FillMapping (QApplication::applicationDirPath () + "/../Resources/icons", iconSet);
 		CollectDir (QApplication::applicationDirPath () + "/../Resources/icons", iconSet);
 #elif defined (Q_WS_X11)
+	#if defined (INSTALL_PREFIX)
+		FillMapping (INSTALL_PREFIX "/share/leechcraft/icons", iconSet);
+		CollectDir (INSTALL_PREFIX "/share/icons", iconSet);
+	#else
 		FillMapping ("/usr/share/leechcraft/icons", iconSet);
 		FillMapping ("/usr/local/share/leechcraft/icons", iconSet);
 		CollectDir ("/usr/share/icons", iconSet);
 		CollectDir ("/usr/local/share/icons", iconSet);
+	#endif
 #elif defined (Q_WS_WIN)
 		FillMapping (QApplication::applicationDirPath () + "/icons", iconSet);
 		CollectDir (QApplication::applicationDirPath () + "/icons", iconSet);

@@ -137,6 +137,10 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/../Resources/translations"))
+#elif defined (INSTALL_PREFIX)
+	if (transl->load (filename, ":/") ||
+			transl->load (filename,
+					QString (INSTALL_PREFIX "/share/%1/translations").arg (appName)))
 #else
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,

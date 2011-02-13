@@ -83,8 +83,10 @@ namespace LeechCraft
 		{
 #ifdef Q_WS_MAC
 			QStringList prefixes = QStringList (QApplication::applicationDirPath () + "/../Resources/");
-#elif defined Q_WS_WIN
+#elif defined (Q_WS_WIN)
 			QStringList prefixes = QStringList ("share/");
+#elif defined (INSTALL_PREFIX)
+			QStringList prefixes = QStringList (INSTALL_PREFIX "/share/leechcraft/");
 #else
 			QStringList prefixes = QStringList ("/usr/local/share/leechcraft/")
 					<< "/usr/share/leechcraft/";
