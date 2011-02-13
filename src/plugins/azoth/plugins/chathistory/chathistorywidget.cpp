@@ -32,6 +32,8 @@ namespace Azoth
 namespace ChatHistory
 {
 	Plugin *ChatHistoryWidget::S_ParentMultiTabs_ = 0;
+	
+	const int Amount = 50;
 
 	void ChatHistoryWidget::SetParentMultiTabs (Plugin *ch)
 	{
@@ -43,6 +45,7 @@ namespace ChatHistory
 	, HistoryViewModel_ (new QStandardItemModel (this))
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
+	, Backpages_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.HistView_->setModel (HistoryViewModel_);
@@ -216,11 +219,36 @@ namespace ChatHistory
 	
 	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
 	{
-		const QString& accountId = Ui_.AccountBox_->
+		CurrentAccount_ = Ui_.AccountBox_->
 				itemData (Ui_.AccountBox_->currentIndex ()).toString ();
-		const QString& entryId = index.data (MRIDRole).toString ();
+		CurrentEntry_ = index.data (MRIDRole).toString ();
+		Backpages_ = 0;
+
+		RequestLogs ();
+	}
+	
+	void ChatHistoryWidget::on_PrevHistory__released()
+	{
+		if (HistoryViewModel_->rowCount () < Amount)
+			return;
 		
-		Core::Instance ()->GetChatLogs (accountId, entryId, 0, 50);
+		++Backpages_;
+		RequestLogs ();
+	}
+	
+	void ChatHistoryWidget::on_NextHistory__released()
+	{
+		if (Backpages_ <= 0)
+			return;
+		
+		--Backpages_;
+		RequestLogs ();
+	}
+	
+	void ChatHistoryWidget::RequestLogs()
+	{
+		Core::Instance ()->GetChatLogs (CurrentAccount_,
+				CurrentEntry_, Backpages_, Amount);
 	}
 }
 }
