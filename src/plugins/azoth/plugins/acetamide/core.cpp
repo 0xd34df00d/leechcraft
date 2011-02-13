@@ -98,7 +98,7 @@ namespace Acetamide
 	{
 		qsrand (time (NULL));
 		
-		DefaultAccount_ = new IrcAccount (tr ("DefaultIrcAccount"), this);
+		DefaultAccount_ = new IrcAccount (tr ("DefaultIrcAccount"), IrcProtocol_.get ());
 		QList<NickNameData> defaultAcc = DefaultAccount_->ReadNicknameSettings ("DefaultIrcAccount_Nicknames");
 		
 		if (!defaultAcc.isEmpty ())
