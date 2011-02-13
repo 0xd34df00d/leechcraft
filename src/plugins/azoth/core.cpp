@@ -55,6 +55,10 @@ namespace Azoth
 {
 	Core::Core ()
 	: CLModel_ (new QStandardItemModel (this))
+	, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+			Qt::CaseInsensitive, QRegExp::RegExp2)
+	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
@@ -393,7 +397,8 @@ namespace Azoth
 		return src->GetHTMLTemplate (opt);
 	}
 	
-	bool Core::AppendMessageByTemplate (QWebFrame *frame, QObject *message, const QString& color)
+	bool Core::AppendMessageByTemplate (QWebFrame *frame, QObject *message,
+			const QString& color, bool isHighlightMsg, bool isActiveChat)
 	{
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property ("ChatWindowStyle").toString ();
@@ -406,7 +411,12 @@ namespace Azoth
 			return false;
 		}
 		
-		return src->AppendMessage (frame, message, color);
+		return src->AppendMessage (frame, message, color,
+				isHighlightMsg, isActiveChat);
+	}
+	
+	void Core::FrameFocused (QWebFrame *frame)
+	{
 	}
 
 	namespace
@@ -459,7 +469,7 @@ namespace Azoth
 		return result;
 	}
 	
-	QString Core::GetNickColor (const QString& nick, const QList< QColor >& colors) const
+	QString Core::GetNickColor (const QString& nick, const QList<QColor>& colors) const
 	{
 		if (colors.isEmpty ())
 			return "green";
@@ -475,6 +485,106 @@ namespace Azoth
 		}
 		QColor nc = colors.at (hash % colors.size ());
 		return nc.name ();
+	}
+	
+	QString Core::FormatDate (QDateTime dt, IMessage *msg)
+	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookFormatDateTime (proxy, this, dt, msg->GetObject ());
+		if (proxy->IsCancelled ())
+			return proxy->GetReturnValue ().toString ();
+
+		proxy->FillValue ("dateTime", dt);
+
+		QString str = dt.time ().toString ();
+		return QString ("<span class='datetime'>[" +
+				str + "]</span>");
+	}
+
+	QString Core::FormatNickname (QString nick, IMessage *msg, const QString& color)
+	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookFormatNickname (proxy, this, nick, msg->GetObject ());
+		if (proxy->IsCancelled ())
+			return proxy->GetReturnValue ().toString ();
+
+		proxy->FillValue ("nick", nick);
+
+		QString string;
+
+		if (msg->GetMessageType () == IMessage::MTMUCMessage)
+		{
+			QUrl url (QString ("azoth://msgeditreplace/%1")
+					.arg (nick + ":"));
+
+			string.append ("<span class='nickname'><a href='");
+			string.append (url.toString () + "%20");
+			string.append ("' class='nicklink' style='text-decoration:none; color:");
+			string.append (color);
+			string.append ("'>");
+			string.append (nick);
+			string.append ("</a></span>");
+		}
+		else
+		{
+			const QString& nickClass = msg->GetDirection () == IMessage::DIn ?
+					"nicknamein" :
+					"nicknameout";
+
+			string = QString ("<span class='%2'>%1</span>")
+					.arg (nick)
+					.arg (nickClass);
+		}
+
+		return string;
+	}
+
+	QString Core::FormatBody (QString body, IMessage *msg)
+	{
+		QObject *msgObj = msg->GetObject ();
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookFormatBodyBegin (proxy, this, body, msgObj);
+		if (!proxy->IsCancelled ())
+		{
+			proxy->FillValue ("body", body);
+			body = Qt::escape (body);
+			body.replace ('\n', "<br />");
+			body.replace ("  ", "&nbsp; ");
+
+			int pos = 0;
+			while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+			{
+				QString link = LinkRegexp_.cap (1);
+				QString str = QString ("<a href=\"%1\">%1</a>")
+						.arg (link);
+				body.replace (pos, link.length (), str);
+
+				pos += str.length ();
+			}
+			pos = 0;
+			while ((pos = ImageRegexp_.indexIn (body, pos)) != -1)
+			{
+				QString image = ImageRegexp_.cap (1);
+				// webkit not copy <img alt> to buffer with all text
+				//  fix it in new <div ...
+				QString str = QString ("<img src=\"%1\" alt=\"%1\" />\
+						<div style='width: 1px; overflow: hidden;\
+									height: 1px; float: left;\
+									font-size: 1px;'>%1</div>")
+						.arg (image);
+				body.replace (pos, image.length (), str);
+				pos += str.length ();
+			}
+
+			proxy.reset (new Util::DefaultHookProxy);
+			emit hookFormatBodyEnd (proxy, this, body, msgObj);
+			proxy->FillValue ("body", body);
+		}
+
+		return proxy->IsCancelled () ?
+				proxy->GetReturnValue ().toString () :
+				body;
 	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,

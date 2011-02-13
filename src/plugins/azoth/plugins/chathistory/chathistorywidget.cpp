@@ -19,6 +19,7 @@
 #include "chathistorywidget.h"
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QWebFrame>
 #include <interfaces/iaccount.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iproxyobject.h>
@@ -47,6 +48,8 @@ namespace ChatHistory
 		SortFilter_->setSourceModel (ContactsModel_);
 		SortFilter_->sort (0);
 		Ui_.Contacts_->setModel (SortFilter_);
+		
+		Ui_.HistView_->setHtml (Core::Instance ()->GetPluginProxy ()->GetSelectedChatTemplate ());
 		
 		connect (Ui_.ContactsSearch_,
 				SIGNAL (textChanged (const QString&)),
@@ -148,6 +151,12 @@ namespace ChatHistory
 					itemData (Ui_.AccountBox_->currentIndex ()).toString () ||
 				entryId != selectedEntry)
 			return;
+		
+		Ui_.HistView_->setHtml (Core::Instance ()->GetPluginProxy ()->GetSelectedChatTemplate ());
+		const QMultiMap<QString, QString>& metadata =
+				Ui_.HistView_->page ()->mainFrame ()->metaData ();
+		const QString& coloring = metadata.value ("coloring");
+		QList<QColor> colors = Core::Instance ()->GetPluginProxy ()->GenerateColors (metadata.value ("coloring"));
 		
 		Q_FOREACH (const QVariant& logVar, logsVar.toList ())
 		{

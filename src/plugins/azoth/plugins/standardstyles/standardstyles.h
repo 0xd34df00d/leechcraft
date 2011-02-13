@@ -27,6 +27,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
 namespace StandardStyles
 {
 	class Plugin : public QObject
@@ -36,6 +37,8 @@ namespace StandardStyles
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
+		
+		IProxyObject *Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -48,6 +51,8 @@ namespace StandardStyles
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QList<QObject*> GetResourceSources () const;
+	public slots:
+		void initPlugin (QObject*);
 	};
 }
 }

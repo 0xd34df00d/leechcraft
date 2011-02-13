@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QSet>
 #include <QIcon>
+#include <QDateTime>
 #include "interfaces/iinfo.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
@@ -58,6 +59,9 @@ namespace Azoth
 		Q_ENUMS (CLRoles CLEntryType CLEntryActionArea)
 
 		ICoreProxy_ptr Proxy_;
+
+		QRegExp LinkRegexp_;
+		QRegExp ImageRegexp_;
 
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
@@ -246,11 +250,19 @@ namespace Azoth
 		
 		QString GetSelectedChatTemplate () const;
 		
-		bool AppendMessageByTemplate (QWebFrame*, QObject*, const QString&);
+		bool AppendMessageByTemplate (QWebFrame*, QObject*, const QString&,
+				bool, bool);
 		
+		void FrameFocused (QWebFrame*);
+		
+		// Theming stuff
 		QList<QColor> GenerateColors (const QString& coloringScheme) const;
 		
 		QString GetNickColor (const QString& nick, const QList<QColor>& colors) const;
+		
+		QString FormatDate (QDateTime, IMessage*);
+		QString FormatNickname (QString, IMessage*, const QString& color);
+		QString FormatBody (QString body, IMessage *msg);
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
@@ -484,6 +496,22 @@ namespace Azoth
 		void accountRemoved (IAccount*);
 
 		// Plugin API
+		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QDateTime dateTime,
+				QObject *message);
+		void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString nick,
+				QObject *message);
+		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString body,
+				QObject *message);
+		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QString body,
+				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	};

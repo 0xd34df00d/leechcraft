@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLESOURCE_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <QDateTime>
 #include <interfaces/iresourceplugin.h>
 
 namespace LeechCraft
@@ -31,6 +32,9 @@ namespace Util
 
 namespace Azoth
 {
+class IMessage;
+class IProxyObject;
+
 namespace StandardStyles
 {
 	class StandardStyleSource : public QObject
@@ -40,12 +44,16 @@ namespace StandardStyles
 		Q_INTERFACES (LeechCraft::Azoth::IChatStyleResourceSource)
 
 		boost::shared_ptr<Util::ResourceLoader> StylesLoader_;
+
+		QMap<QWebFrame*, bool> HasBeenAppended_;
+		IProxyObject *Proxy_;
 	public:
-		StandardStyleSource (QObject* = 0);
+		StandardStyleSource (IProxyObject*, QObject* = 0);
 		
 		QAbstractItemModel* GetOptionsModel () const;
 		QString GetHTMLTemplate (const QString&) const;
-		bool AppendMessage (QWebFrame*, QObject*, const QString&);
+		bool AppendMessage (QWebFrame*, QObject*, const QString&, bool, bool);
+		void FrameFocused (QWebFrame*);
 	};
 }
 }

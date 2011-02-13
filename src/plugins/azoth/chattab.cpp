@@ -56,17 +56,12 @@ namespace Azoth
 	: QWidget (parent)
 	, EntryID_ (entryId)
 	, Variant_ (variant)
-	, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
-			Qt::CaseInsensitive, QRegExp::RegExp2)
-	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
-			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
-	, HasBeenAppended_ (false)
 	, XferManager_ (0)
 	{
 		Ui_.setupUi (this);
@@ -244,7 +239,7 @@ namespace Azoth
 
 	void ChatTab::TabMadeCurrent ()
 	{
-		HasBeenAppended_ = false;
+		Core::Instance ().FrameFocused (Ui_.View_->page ()->mainFrame ());
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookMadeCurrent (proxy, this);
@@ -664,216 +659,12 @@ namespace Azoth
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
 
-		if (Core::Instance ().AppendMessageByTemplate (frame, msg->GetObject (),
-					Core::Instance ().GetNickColor (entryName, NickColors_)))
-			return;
-
-		QString body = FormatBody (msg->GetBody (), msg);
-
-		QString divClass;
-		QString string = QString ("%1 ")
-				.arg (FormatDate (msg->GetDateTime (), msg));
-		string.append (' ');
-		switch (msg->GetDirection ())
-		{
-		case IMessage::DIn:
-		{
-			switch (msg->GetMessageType ())
-			{
-			case IMessage::MTChatMessage:
-			case IMessage::MTMUCMessage:
-			{
-				entryName = FormatNickname (entryName, msg);
-
-				if (body.startsWith ("/me "))
-				{
-					body = body.mid (3);
-					string.append ("* ");
-					string.append (entryName);
-					string.append (' ');
-					divClass = "slashmechatmsg";
-				}
-				else
-				{
-					string.append (entryName);
-					string.append (": ");
-					divClass = Core::Instance ().IsHighlightMessage (msg) ?
-							"highlightchatmsg" :
-							"chatmsg";
-				}
-				break;
-			}
-			case IMessage::MTEventMessage:
-				string.append ("! ");
-				divClass = "eventmsg";
-				break;
-			case IMessage::MTStatusMessage:
-				string.append ("* ");
-				divClass = "statusmsg";
-				break;
-			}
-			break;
-		}
-		case IMessage::DOut:
-			if (body.startsWith ("/leechcraft "))
-			{
-				body = body.mid (12);
-				string.append ("* ");
-			}
-			else if (body.startsWith ("/me ") &&
-					msg->GetMessageType () != IMessage::MTMUCMessage)
-			{
-				IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
-				body = body.mid (3);
-				string.append ("* ");
-				string.append (acc->GetOurNick ());
-				string.append (' ');
-				divClass = "slashmechatmsg";
-			}
-			else
-			{
-				IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
-				string.append (FormatNickname (acc->GetOurNick (), msg));
-				string.append (": ");
-			}
-			divClass = "chatmsg";
-			break;
-		}
-
-		string.append (body);
-
-		QWebElement elem = frame->findFirstElement ("body");
-
-		ICLEntry *entry =
-				qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (EntryID_));
-		if (!Core::Instance ().GetChatTabsManager ()->IsActiveChat (entry) &&
-				!HasBeenAppended_)
-		{
-			QWebElement elem = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
-			if (hr.isNull ())
-				elem.appendInside ("<hr class=\"lastSeparator\" />");
-			else
-				elem.appendInside (hr.takeFromDocument ());
-			HasBeenAppended_ = true;
-		}
-
-		elem.appendInside (QString ("<div class='%1'>%2</div>")
-					.arg (divClass)
-					.arg (string));
-	}
-
-	QString ChatTab::FormatDate (QDateTime dt, IMessage *msg)
-	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFormatDateTime (proxy, this, dt, msg->GetObject ());
-		if (proxy->IsCancelled ())
-			return proxy->GetReturnValue ().toString ();
-
-		proxy->FillValue ("dateTime", dt);
-
-		QString str = dt.time ().toString ();
-		return QString ("<span class='datetime'>[" +
-				str + "]</span>");
-	}
-
-	QString ChatTab::FormatNickname (QString nick, IMessage *msg)
-	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFormatNickname (proxy, this, nick, msg->GetObject ());
-		if (proxy->IsCancelled ())
-			return proxy->GetReturnValue ().toString ();
-
-		proxy->FillValue ("nick", nick);
-
-		QString string;
-
-		QString color = "green";
-		if (msg->GetMessageType () == IMessage::MTMUCMessage)
-		{
-			if (NickColors_.isEmpty ())
-				GenerateColors ();
-
-			if (!NickColors_.isEmpty ())
-				color = Core::Instance ().GetNickColor (nick, NickColors_);
-
-			QUrl url (QString ("azoth://msgeditreplace/%1")
-					.arg (nick + ":"));
-
-			string.append ("<span class='nickname'><a href='");
-			string.append (url.toString () + "%20");
-			string.append ("' class='nicklink' style='text-decoration:none; color:");
-			string.append (color);
-			string.append ("'>");
-			string.append (nick);
-			string.append ("</a></span>");
-		}
-		else
-		{
-			switch (msg->GetDirection ())
-			{
-				case IMessage::DIn:
-					color = "blue";
-					break;
-				case IMessage::DOut:
-					color = "red";
-					break;
-			}
-
-			string = QString ("<span class='nickname' style='color:%2'>%1</span>")
-					.arg (nick)
-					.arg (color);
-		}
-
-		return string;
-	}
-
-	QString ChatTab::FormatBody (QString body, IMessage *msg)
-	{
-		QObject *msgObj = msg->GetObject ();
-
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFormatBodyBegin (proxy, this, body, msgObj);
-		if (!proxy->IsCancelled ())
-		{
-			proxy->FillValue ("body", body);
-			body = Qt::escape (body);
-			body.replace ('\n', "<br />");
-			body.replace ("  ", "&nbsp; ");
-
-			int pos = 0;
-			while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
-			{
-				QString link = LinkRegexp_.cap (1);
-				QString str = QString ("<a href=\"%1\">%1</a>")
-						.arg (link);
-				body.replace (pos, link.length (), str);
-
-				pos += str.length ();
-			}
-			pos = 0;
-			while ((pos = ImageRegexp_.indexIn (body, pos)) != -1)
-			{
-				QString image = ImageRegexp_.cap (1);
-				// webkit not copy <img alt> to buffer with all text
-				//  fix it in new <div ...
-				QString str = QString ("<img src=\"%1\" alt=\"%1\" />\
-						<div style='width: 1px; overflow: hidden;\
-									height: 1px; float: left;\
-									font-size: 1px;'>%1</div>")
-						.arg (image);
-				body.replace (pos, image.length (), str);
-				pos += str.length ();
-			}
-
-			proxy.reset (new Util::DefaultHookProxy);
-			emit hookFormatBodyEnd (proxy, this, body, msgObj);
-			proxy->FillValue ("body", body);
-		}
-
-		return proxy->IsCancelled () ?
-				proxy->GetReturnValue ().toString () :
-				body;
+		if (!Core::Instance ().AppendMessageByTemplate (frame, msg->GetObject (),
+					Core::Instance ().GetNickColor (entryName, NickColors_),
+					Core::Instance ().IsHighlightMessage (msg),
+					Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ())))
+			qWarning () << Q_FUNC_INFO
+					<< "unhandled append message :(";
 	}
 
 	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)

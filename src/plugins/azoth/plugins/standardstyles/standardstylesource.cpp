@@ -17,8 +17,14 @@
  **********************************************************************/
 
 #include "standardstylesource.h"
+#include <QTextDocument>
+#include <QWebElement>
+#include <QWebFrame>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
+#include <interfaces/imessage.h>
+#include <interfaces/iaccount.h>
+#include <interfaces/iproxyobject.h>
 
 namespace LeechCraft
 {
@@ -26,8 +32,9 @@ namespace Azoth
 {
 namespace StandardStyles
 {
-	StandardStyleSource::StandardStyleSource (QObject *parent)
+	StandardStyleSource::StandardStyleSource (IProxyObject *proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	, StylesLoader_ (new Util::ResourceLoader ("azoth/styles/standard/", this))
 	{
 		StylesLoader_->AddGlobalPrefix ();
@@ -54,9 +61,112 @@ namespace StandardStyles
 		return dev->readAll ();
 	}
 	
-	bool StandardStyleSource::AppendMessage (QWebFrame*, QObject*, const QString&)
+	bool StandardStyleSource::AppendMessage (QWebFrame *frame, QObject *msgObj,
+			const QString& nickColor, bool isHighlightMsg, bool isActiveChat)
 	{
-		return false;
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+		QString entryName = other ?
+				Qt::escape (other->GetEntryName ()) :
+				QString ();
+		
+		QString body = Proxy_->FormatBody (msg->GetBody (), msg->GetObject ());
+
+		QString divClass;
+		QString string = QString ("%1 ")
+				.arg (Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ()));
+		string.append (' ');
+		switch (msg->GetDirection ())
+		{
+		case IMessage::DIn:
+		{
+			switch (msg->GetMessageType ())
+			{
+			case IMessage::MTChatMessage:
+			case IMessage::MTMUCMessage:
+			{
+				entryName = Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor);
+
+				if (body.startsWith ("/me "))
+				{
+					body = body.mid (3);
+					string.append ("* ");
+					string.append (entryName);
+					string.append (' ');
+					divClass = "slashmechatmsg";
+				}
+				else
+				{
+					string.append (entryName);
+					string.append (": ");
+					divClass = isHighlightMsg ?
+							"highlightchatmsg" :
+							"chatmsg";
+				}
+				break;
+			}
+			case IMessage::MTEventMessage:
+				string.append ("! ");
+				divClass = "eventmsg";
+				break;
+			case IMessage::MTStatusMessage:
+				string.append ("* ");
+				divClass = "statusmsg";
+				break;
+			}
+			break;
+		}
+		case IMessage::DOut:
+			if (body.startsWith ("/leechcraft "))
+			{
+				body = body.mid (12);
+				string.append ("* ");
+			}
+			else if (body.startsWith ("/me ") &&
+					msg->GetMessageType () != IMessage::MTMUCMessage)
+			{
+				IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
+				body = body.mid (3);
+				string.append ("* ");
+				string.append (acc->GetOurNick ());
+				string.append (' ');
+				divClass = "slashmechatmsg";
+			}
+			else
+			{
+				IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
+				string.append (Proxy_->FormatNickname (acc->GetOurNick (), msg->GetObject (), nickColor));
+				string.append (": ");
+			}
+			divClass = "chatmsg";
+			break;
+		}
+
+		string.append (body);
+
+		QWebElement elem = frame->findFirstElement ("body");
+
+		if (!isActiveChat &&
+				!HasBeenAppended_ [frame])
+		{
+			QWebElement elem = frame->findFirstElement ("body");
+			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
+			if (hr.isNull ())
+				elem.appendInside ("<hr class=\"lastSeparator\" />");
+			else
+				elem.appendInside (hr.takeFromDocument ());
+			HasBeenAppended_ [frame] = true;
+		}
+
+		elem.appendInside (QString ("<div class='%1'>%2</div>")
+					.arg (divClass)
+					.arg (string));
+		return true;
+	}
+	
+	void StandardStyleSource::FrameFocused (QWebFrame *frame)
+	{
+		HasBeenAppended_ [frame] = false;
 	}
 }
 }

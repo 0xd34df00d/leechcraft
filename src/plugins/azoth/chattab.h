@@ -50,9 +50,6 @@ namespace Azoth
 		QString EntryID_;
 		QString Variant_;
 
-		QRegExp LinkRegexp_;
-		QRegExp ImageRegexp_;
-
 		QColor BgColor_;
 		QList<QColor> NickColors_;
 
@@ -68,8 +65,6 @@ namespace Azoth
 		QIcon TabIcon_;
 
 		bool IsMUC_;
-
-		bool HasBeenAppended_;
 
 		ITransferManager *XferManager_;
 	public:
@@ -122,10 +117,6 @@ namespace Azoth
 		 */
 		void AppendMessage (IMessage*);
 
-		QString FormatDate (QDateTime, IMessage*);
-		QString FormatNickname (QString, IMessage*);
-		QString FormatBody (QString, IMessage*);
-
 		/** Processes the outgoing messages, replacing /nick with calls
 		 * to the entity to change nick, for example, etc.
 		 *
@@ -150,22 +141,6 @@ namespace Azoth
 		void clearUnreadMsgCount (QObject*);
 
 		// Hooks
-		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QDateTime dateTime,
-				QObject *message);
-		void hookFormatNickname (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QString nick,
-				QObject *message);
-		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QString body,
-				QObject *message);
-		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QString body,
-				QObject *message);
 		void hookMadeCurrent (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,

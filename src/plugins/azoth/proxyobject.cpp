@@ -277,14 +277,30 @@ namespace Azoth
 		return Core::Instance ().GetSelectedChatTemplate ();
 	}
 	
-	void ProxyObject::AppendMessageByTemplate (QWebFrame *frame, QObject *msg, const QString& color) const
+	void ProxyObject::AppendMessageByTemplate (QWebFrame *frame,
+			QObject *msg, const QString& color, bool isHighlight, bool isActive) const
 	{
-		Core::Instance ().AppendMessageByTemplate (frame, msg, color);
+		Core::Instance ().AppendMessageByTemplate (frame, msg, color, isHighlight, isActive);
 	}
 	
 	QList<QColor> ProxyObject::GenerateColors (const QString& scheme) const
 	{
 		return Core::Instance ().GenerateColors (scheme);
+	}
+	
+	QString ProxyObject::FormatDate (QDateTime dt, QObject *obj) const
+	{
+		return Core::Instance ().FormatDate (dt, qobject_cast<IMessage*> (obj));
+	}
+	
+	QString ProxyObject::FormatNickname (QString nick, QObject *obj, const QString& color) const
+	{
+		return Core::Instance ().FormatNickname (nick, qobject_cast<IMessage*> (obj), color);
+	}
+	
+	QString ProxyObject::FormatBody (QString body, QObject *obj) const
+	{
+		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj));
 	}
 }
 }
