@@ -95,6 +95,12 @@ namespace Azoth
 						map);
 			}
 		}
+		
+		if (Ui_.AccountBox_->count ())
+			QMetaObject::invokeMethod (this,
+					"on_AccountBox__currentIndexChanged",
+					Qt::QueuedConnection,
+					Q_ARG (int, Ui_.AccountBox_->currentIndex ()));
 	}
 
 	JoinConferenceDialog::~JoinConferenceDialog ()
@@ -183,7 +189,10 @@ namespace Azoth
 	void JoinConferenceDialog::on_AccountBox__currentIndexChanged (int idx)
 	{
 		while (Ui_.JoinWidgetFrameLayout_->count ())
-			Ui_.JoinWidgetFrameLayout_->removeItem (Ui_.JoinWidgetFrameLayout_->itemAt (0));
+		{
+			QLayoutItem *item = Ui_.JoinWidgetFrameLayout_->takeAt (0);
+			item->widget ()->hide ();
+		}
 
 		QObject *accObj = Ui_.AccountBox_->itemData (idx).value<QObject*> ();
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
@@ -210,6 +219,9 @@ namespace Azoth
 
 		QWidget *joiner = Proto2Joiner_ [proto];
 		Ui_.JoinWidgetFrameLayout_->addWidget (joiner);
+		joiner->show ();
+		
+		adjustSize ();
 
 		qobject_cast<IMUCJoinWidget*> (joiner)->AccountSelected (accObj);
 	}
