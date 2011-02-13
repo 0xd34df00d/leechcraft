@@ -303,7 +303,7 @@
     <message>
         <location filename="roomhandler.cpp" line="131"/>
         <source>%1 changed status to %2 (%3)</source>
-        <translation>%1 изменил тему на %2 (%3)</translation>
+        <translation>%1 теперь %2 (%3)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="258"/>
