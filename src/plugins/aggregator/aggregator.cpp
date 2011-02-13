@@ -494,8 +494,8 @@ namespace LeechCraft
 			{
 				if (IsRepr ())
 					return Core::Instance ()
-						.GetJobHolderRepresentation ()->
-							mapToSource (Impl_->SelectedRepr_);
+							.GetJobHolderRepresentation ()->
+									mapToSource (Impl_->SelectedRepr_);
 				else
 				{
 					QModelIndex index = Impl_->Ui_.Feeds_->
@@ -504,6 +504,28 @@ namespace LeechCraft
 						index = Impl_->FlatToFolders_->MapToSource (index);
 					return Core::Instance ().GetChannelsModel ()->mapToSource (index);
 				}
+			}
+			
+			QList<QModelIndex> Aggregator::GetRelevantIndexes () const
+			{
+				if (IsRepr ())
+				{
+					QList<QModelIndex> result;
+					result << Core::Instance ()
+							.GetJobHolderRepresentation ()->
+									mapToSource (Impl_->SelectedRepr_);
+					return result;
+				}
+
+				QList<QModelIndex> result;
+				Q_FOREACH (QModelIndex index,
+						Impl_->Ui_.Feeds_->selectionModel ()->selectedRows ())
+				{
+					if (Impl_->FlatToFolders_->GetSourceModel ())
+						index = Impl_->FlatToFolders_->MapToSource (index);
+					result << Core::Instance ().GetChannelsModel ()->mapToSource (index);
+				}
+				return result;
 			}
 
 			namespace
@@ -577,33 +599,36 @@ namespace LeechCraft
 					Core::Instance ().RemoveFeed (ds);
 			}
 
-			void Aggregator::MarkReadUnread (boost::function<void (const QModelIndex&)> func)
+			void Aggregator::Perform (boost::function<void (const QModelIndex&)> func)
 			{
-				QModelIndex index = GetRelevantIndex ();
-				if (index.isValid ())
-					func (index);
-				else if (Impl_->FlatToFolders_->GetSourceModel ())
+				QList<QModelIndex> indexes = GetRelevantIndexes ();
+				Q_FOREACH (QModelIndex index, indexes)
 				{
-					index = Impl_->Ui_.Feeds_->
-					selectionModel ()->currentIndex ();
-					for (int i = 0, size = Impl_->FlatToFolders_->rowCount (index);
-						 i < size; ++i)
-						 {
-							 QModelIndex source = Impl_->FlatToFolders_->index (i, 0, index);
-							 source = Impl_->FlatToFolders_->MapToSource (source);
-							 func (source);
-						 }
+					if (index.isValid ())
+						func (index);
+					else if (Impl_->FlatToFolders_->GetSourceModel ())
+					{
+						index = Impl_->Ui_.Feeds_->
+								selectionModel ()->currentIndex ();
+						for (int i = 0, size = Impl_->FlatToFolders_->rowCount (index);
+							i < size; ++i)
+							{
+								QModelIndex source = Impl_->FlatToFolders_->index (i, 0, index);
+								source = Impl_->FlatToFolders_->MapToSource (source);
+								func (source);
+							}
+					}
 				}
 			}
 
 			void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 			{
-				MarkReadUnread (boost::bind (&Core::MarkChannelAsRead, &Core::Instance (), _1));
+				Perform (boost::bind (&Core::MarkChannelAsRead, &Core::Instance (), _1));
 			}
 
 			void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 			{
-				MarkReadUnread (boost::bind (&Core::MarkChannelAsUnread, &Core::Instance (), _1));
+				Perform (boost::bind (&Core::MarkChannelAsUnread, &Core::Instance (), _1));
 			}
 
 			void Aggregator::on_ActionChannelSettings__triggered ()

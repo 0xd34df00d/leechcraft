@@ -95,8 +95,9 @@ namespace LeechCraft
 				void ScheduleShowError ();
 				bool IsRepr () const;
 				QModelIndex GetRelevantIndex () const;
+				QList<QModelIndex> GetRelevantIndexes () const;
 				void BuildID2ActionTupleMap ();
-				void MarkReadUnread (boost::function<void (const QModelIndex&)>);
+				void Perform (boost::function<void (const QModelIndex&)>);
 			public slots:
 				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 			private slots:
