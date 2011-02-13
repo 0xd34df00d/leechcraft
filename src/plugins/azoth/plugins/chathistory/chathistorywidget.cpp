@@ -163,15 +163,20 @@ namespace ChatHistory
 		const QString& name = entry ?
 				entry->GetEntryName () :
 				entryId;
+				
+		QList<QColor> colors = Core::Instance ()->
+				GetPluginProxy ()->GenerateColors ("hash");
 		
 		Q_FOREACH (const QVariant& logVar, logsVar.toList ())
 		{
 			const QVariantMap& map = logVar.toMap ();
 			
+			const bool isChat = map ["Type"] == "CHAT";
+			
 			QList<QStandardItem*> items;
 			items << new QStandardItem (map ["Date"].toDateTime ().toString ());
 			const QString& var = map ["Variant"].toString ();
-			if (map ["Type"] == "CHAT")
+			if (isChat)
 				items << new QStandardItem (var.isEmpty () ?
 							name :
 							name + '/' + var);
@@ -179,14 +184,23 @@ namespace ChatHistory
 				items << new QStandardItem (var);
 			items << new QStandardItem (map ["Message"].toString ());
 
-			const QBrush& brush = map ["Direction"] == "IN" ?
-					QBrush (Qt::blue) :
-					QBrush (Qt::red);
-			Q_FOREACH (QStandardItem *item, items)
+			if (isChat)
 			{
-				item->setForeground (brush);
-				item->setEditable (false);
+				const QBrush& brush = map ["Direction"] == "IN" ?
+						QBrush (Qt::blue) :
+						QBrush (Qt::red);
+				Q_FOREACH (QStandardItem *item, items)
+					item->setForeground (brush);
 			}
+			else
+			{
+				const QString& color = Core::Instance ()->
+						GetPluginProxy ()->GetNickColor (var, colors);
+				items [1]->setForeground (QColor (color));
+			}
+
+			Q_FOREACH (QStandardItem *item, items)
+				item->setEditable (false);
 				
 			HistoryViewModel_->appendRow (items);
 		}
