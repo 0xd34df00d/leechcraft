@@ -17,8 +17,8 @@
  **********************************************************************/
 
 #include "ircjoingroupchat.h"
-
-#include "ircaccount.h"
+#include <QComboBox>
+#include <QTextCodec>
 
 namespace LeechCraft
 {
@@ -31,6 +31,11 @@ namespace Acetamide
 	, SelectedAccount_ (0)
 	{
 		Ui_.setupUi (this);
+		
+		Q_FOREACH (const QByteArray& codec, QTextCodec::availableCodecs ())
+			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
+		Ui_.Encoding_->model ()->sort (0);
+		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText ("UTF-8"));
 	}
 	
 	void IrcJoinGroupChat::AccountSelected (QObject *obj)

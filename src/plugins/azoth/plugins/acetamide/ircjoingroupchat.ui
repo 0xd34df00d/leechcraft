@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>308</width>
-    <height>151</height>
+    <height>176</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,13 +55,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QCheckBox" name="SSL_">
-     <property name="text">
-      <string>Security connect (SSL)</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="3">
     <widget class="QSpinBox" name="Port_">
      <property name="maximum">
@@ -78,6 +71,23 @@
    </item>
    <item row="2" column="1" colspan="3">
     <widget class="QLineEdit" name="Nickname_"/>
+   </item>
+   <item row="4" column="1" colspan="3">
+    <widget class="QComboBox" name="Encoding_"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Encoding</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="3">
+    <widget class="QCheckBox" name="SSL_">
+     <property name="text">
+      <string>Secure connection (SSL)</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
