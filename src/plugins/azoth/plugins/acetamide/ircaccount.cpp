@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "ircaccount.h"
+#include <boost/bind.hpp>
 #include <QInputDialog>
 #include <QtDebug>
 #include <QSettings>
@@ -37,6 +38,7 @@ namespace Acetamide
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
 	, Nick_ (QString ())
+	, AccountID_ (QByteArray ())
 	{
 		IrcAccountState_ = SOffline;
 		
@@ -45,11 +47,14 @@ namespace Acetamide
 				this,
 				SLOT (handleDestroyClient ()),
 				Qt::QueuedConnection);
+		Init ();
 	}
 
 	void IrcAccount::Init ()
 	{
-		
+		ServersInfo_ = ReadConnectionSettings (Name_ + "_Servers");
+		NickNames_ = ReadNicknameSettings (Name_ +"_Nicknames");
+		SetAccountID ();
 	}
 
 	QObject* IrcAccount::GetObject ()
@@ -83,7 +88,23 @@ namespace Acetamide
 
 	QString IrcAccount::GetOurNick () const
 	{
-		return Nick_;
+		QList<NickNameData> temp = NickNames_;
+		if (temp.isEmpty())
+		{
+			IrcAccount *defAcc = Core::Instance ().GetDefaultIrcAccount ();
+			temp = ReadNicknameSettings (defAcc->GetAccountName () + "_Nicknames");
+		}
+		return temp.at (0).Nicks_.at (0);
+	}
+
+	QList<NickNameData> IrcAccount::GetNickNames () const
+	{
+		return NickNames_;
+	}
+
+	QList<ServerInfoData> IrcAccount::GetServersInfo () const
+	{
+		return ServersInfo_;
 	}
 
 	void IrcAccount::RenameAccount (const QString& name)
@@ -93,21 +114,17 @@ namespace Acetamide
 
 	QByteArray IrcAccount::GetAccountID () const
 	{
-		//TODO
-		return QByteArray ();
+		return AccountID_;
 	}
 
 	void IrcAccount::OpenConfigurationDialog ()
 	{
 		std::auto_ptr<IrcAccountConfigurationDialog> dia (new IrcAccountConfigurationDialog (0));
 
-		QList<ServerInfoData> serversInfo = ReadConnectionSettings (Name_ + "_Servers");
-		QList<NickNameData>  nickNames = ReadNicknameSettings (Name_ +"_Nicknames");
-
-		if (!nickNames.isEmpty ())
-			dia->SetNicks (nickNames);
-		if (!serversInfo.isEmpty ())
-			dia->SetServersInfo (serversInfo);
+		if (!NickNames_.isEmpty ())
+			dia->SetNicks (NickNames_);
+		if (!ServersInfo_.isEmpty ())
+			dia->SetServersInfo (ServersInfo_);
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
@@ -121,11 +138,11 @@ namespace Acetamide
 // 			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
 		}
 
-		nickNames = dia->GetNicks ();
-		serversInfo = dia->GetServersInfo ();
+		NickNames_ = dia->GetNicks ();
+		ServersInfo_ = dia->GetServersInfo ();
 		
-		SaveConnectionSettings (serversInfo, QString (Name_ + "_Servers"));
-		SaveNicknameSettings (nickNames, QString (Name_ + "_Nicknames"));
+		SaveConnectionSettings (ServersInfo_, QString (Name_ + "_Servers"));
+		SaveNicknameSettings (NickNames_, QString (Name_ + "_Nicknames"));
 		
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
@@ -167,6 +184,36 @@ namespace Acetamide
 		return 0;
 	}
 
+	void IrcAccount::JoinRoom(const QString& , int , const QString& , const QString& , const QString& , bool)
+	{
+
+	}
+
+	void IrcAccount::SetAccountID ()
+	{
+		QList<QByteArray> accIDs = ParentProtocol_->GetRegisteredAccountsIDs ();
+		bool found = true;
+		QByteArray accID;
+		
+		while (found)
+		{
+			QString idStr = ParentProtocol_->GetProtocolID () + 
+					"." + 
+					GetAccountName () + 
+					"." + 
+					QString::number (qrand ());
+			found = false;
+			accID = idStr.toUtf8 ();
+			Q_FOREACH (const QByteArray& b, accIDs)
+				if (b == accID)
+				{
+					found = true;
+					break;
+				}
+		}
+		AccountID_ = accID;
+	}
+
 
 	QByteArray IrcAccount::Serialize () const
 	{
@@ -200,7 +247,6 @@ namespace Acetamide
 		QString name;
 		in >> name;
 		IrcAccount *result = new IrcAccount (name, parent);
-		result->Init ();
 
 		return result;
 	}
@@ -222,7 +268,7 @@ namespace Acetamide
 		settings.endGroup ();
 	}
 	
-	QList<ServerInfoData> IrcAccount::ReadConnectionSettings (const QString& name)
+	QList<ServerInfoData> IrcAccount::ReadConnectionSettings (const QString& name) const
 	{
 		QList<ServerInfoData> value;
 		ServerInfoData val;
@@ -261,7 +307,7 @@ namespace Acetamide
 		settings.endGroup ();
 	}
 	
-	QList<NickNameData> IrcAccount::ReadNicknameSettings (const QString& name)
+	QList<NickNameData> IrcAccount::ReadNicknameSettings (const QString& name) const
 	{
 		QList<NickNameData> value;
 		NickNameData val;

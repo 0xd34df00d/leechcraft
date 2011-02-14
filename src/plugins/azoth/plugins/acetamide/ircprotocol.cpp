@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "ircprotocol.h"
+#include <boost/bind.hpp>
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QSettings>
@@ -79,6 +80,18 @@ namespace Acetamide
 		return result;
 	}
 
+	QList<QByteArray> IrcProtocol::GetRegisteredAccountsIDs ()
+	{
+		QList<QByteArray> accIDs;
+
+		std::transform (Accounts_.begin (), Accounts_.end (), 
+				std::back_inserter (accIDs), 
+				boost::bind (&IrcAccount::GetAccountID, _1));
+
+		return accIDs;
+	}
+
+	
 	QObject* IrcProtocol::GetParentProtocolPlugin () const
 	{
 		return ParentProtocolPlugin_;

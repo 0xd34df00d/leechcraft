@@ -51,6 +51,8 @@ namespace Acetamide
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();
+		QList<QByteArray> GetRegisteredAccountsIDs ();
+
 		QObject* GetParentProtocolPlugin () const;
 		QString GetProtocolName () const;
 		QByteArray GetProtocolID () const;

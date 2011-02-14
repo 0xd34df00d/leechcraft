@@ -17,7 +17,9 @@
  **********************************************************************/
 
 #include "ircjoingroupchat.h"
-
+#include <QComboBox>
+#include <QTextCodec>
+#include <QValidator>
 #include "ircaccount.h"
 
 namespace LeechCraft
@@ -31,12 +33,35 @@ namespace Acetamide
 	, SelectedAccount_ (0)
 	{
 		Ui_.setupUi (this);
+		
+		Ui_.Channel_->setMaxLength (200);
+		
+		Q_FOREACH (const QByteArray& codec, QTextCodec::availableCodecs ())
+			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
+		Ui_.Encoding_->model ()->sort (0);
+		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText ("UTF-8"));
+		
+		QRegExp rx ("^[\\#,\\&]?[^\\,,\\a,\\s]+");
+		QValidator *validator = new QRegExpValidator (rx, this);
+		Ui_.Channel_->setValidator (validator);
 	}
 	
-	void IrcJoinGroupChat::AccountSelected (QObject *obj)
+	void IrcJoinGroupChat::AccountSelected (QObject *accObj)
 	{
+		IrcAccount *acc = qobject_cast<IrcAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< accObj
+					<< "to IrcAccount";
+			return;
+		}
 
+		SelectedAccount_ = acc;
+		Ui_.Nickname_->setText (acc->GetOurNick ());
 	}
+	
 	void IrcJoinGroupChat::Join (QObject *obj)
 	{
 
@@ -61,7 +86,36 @@ namespace Acetamide
 	{
 		return QVariantMap ();
 	}
+	
+	QString IrcJoinGroupChat::GetServer () const
+	{
+		return Ui_.Server_->text ();
+	}
 
+	int IrcJoinGroupChat::GetPort () const
+	{
+		return Ui_.Port_->value ();
+	}
+
+	QString IrcJoinGroupChat::GetChannel () const
+	{
+		return Ui_.Channel_->text ();
+	}
+
+	QString IrcJoinGroupChat::GetNickname () const
+	{
+		return Ui_.Nickname_->text ();
+	}
+
+	QString IrcJoinGroupChat::GetEncoding () const
+	{
+		return Ui_.Encoding_->currentText ();
+	}
+
+	bool IrcJoinGroupChat::GetSSL () const
+	{
+		return Ui_.SSL_->isChecked ();
+	}
 };
 };
 };

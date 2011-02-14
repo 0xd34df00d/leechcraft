@@ -49,6 +49,13 @@ namespace Acetamide
 		QVariantList GetBookmarkedMUCs () const;
 		void SetIdentifyingData (const QVariantMap&);
 		QVariantMap GetIdentifyingData () const;
+		
+		QString GetServer () const;
+		int GetPort () const;
+		QString GetChannel () const;
+		QString GetNickname () const;
+		QString GetEncoding () const;
+		bool GetSSL () const;
 	};
 };
 };

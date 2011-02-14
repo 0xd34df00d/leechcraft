@@ -33,7 +33,9 @@ namespace Acetamide
 		Translator_.reset (Util::InstallTranslator ("azoth_acetamide"));
 
 		Core::Instance ().SetProxy (proxy);
-
+		
+		qsrand (time (NULL));
+		
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
