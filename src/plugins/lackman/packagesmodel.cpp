@@ -19,6 +19,7 @@
 #include "packagesmodel.h"
 #include <QIcon>
 #include "core.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -49,20 +50,31 @@ namespace LeechCraft
 					return lpi.Name_;
 				case Qt::DecorationRole:
 					return Core::Instance ().GetIconForLPI (lpi);
-				case PackagesModel::PMRPackageID:
+				case PMRPackageID:
 					return lpi.PackageID_;
-				case PackagesModel::PMRShortDescription:
+				case PMRShortDescription:
 					return lpi.ShortDescription_;
-				case PackagesModel::PMRLongDescription:
+				case PMRLongDescription:
 					return lpi.LongDescription_;
-				case PackagesModel::PMRTags:
+				case PMRTags:
 					return lpi.Tags_;
-				case PackagesModel::PMRInstalled:
+				case PMRInstalled:
 					return lpi.IsInstalled_;
-				case PackagesModel::PMRUpgradable:
+				case PMRUpgradable:
 					return lpi.HasNewVersion_;
-				case PackagesModel::PMRVersion:
+				case PMRVersion:
 					return lpi.Version_;
+				case PMRThumbnails:
+				case PMRScreenshots:
+				{
+					const QList<Image>& images = Core::Instance ()
+							.GetStorage ()->GetImages (lpi.Name_);
+					QStringList result;
+					Q_FOREACH (const Image& img, images)
+						if (img.Type_ == (role == PMRThumbnails ? Image::TThumbnail : Image::TScreenshot))
+							result << img.URL_;
+					return result;
+				}
 				default:
 					return QVariant ();
 				}

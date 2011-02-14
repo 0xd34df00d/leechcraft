@@ -26,6 +26,7 @@
 #include "typefilterproxymodel.h"
 #include "xmlsettingsmanager.h"
 #include "packagesmodel.h"
+#include "externalresourcemanager.h"
 
 namespace LeechCraft
 {
@@ -175,7 +176,21 @@ namespace LeechCraft
 			
 			void Plugin::handlePackageSelected (const QModelIndex& index)
 			{
-				Ui_.Browser_->SetHtml (index.data (PackagesModel::PMRLongDescription).toString ());
+				QString text;
+				Q_FOREACH (const QString& url, index.data (PackagesModel::PMRThumbnails).toStringList ())
+				{
+					boost::optional<QByteArray> opt =
+							Core::Instance ().GetExtResourceManager ()->
+									GetResourceData (QUrl::fromEncoded (url.toUtf8 ()));
+					if (!opt || opt->isEmpty ())
+						continue;
+
+					text += QString ("<img src='data:image/png;base64,%1' alt='' /><br />")
+							.arg (QString (opt->toBase64 ()));
+				}
+				text += index.data (PackagesModel::PMRLongDescription).toString ();
+				
+				Ui_.Browser_->SetHtml (text);
 
 				Ui_.NameLabel_->setText (index.data ().toString ());
 

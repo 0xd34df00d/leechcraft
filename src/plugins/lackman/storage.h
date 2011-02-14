@@ -69,6 +69,7 @@ namespace LeechCraft
 				QSqlQuery QueryGetSingleListPackageInfo_;
 				QSqlQuery QueryGetPackageTags_;
 				QSqlQuery QueryGetInstalledPackages_;
+				QSqlQuery QueryGetImages_;
 				QSqlQuery QueryGetDependencies_;
 				QSqlQuery QueryGetFulfillerCandidates_;
 				QSqlQuery QueryGetPackageLocations_;
@@ -100,6 +101,7 @@ namespace LeechCraft
 				QMap<int, QList<QString> > GetPackageLocations (int);
 				QList<int> GetPackagesInComponent (int);
 				QMap<QString, QList<ListPackageInfo> > GetListPackageInfos ();
+				QList<Image> GetImages (const QString&);
 				ListPackageInfo GetSingleListPackageInfo (int);
 				DependencyList GetDependencies (int);
 				QList<ListPackageInfo> GetFulfillers (const Dependency&);

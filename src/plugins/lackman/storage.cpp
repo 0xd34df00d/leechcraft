@@ -755,6 +755,29 @@ namespace LeechCraft
 
 				return result;
 			}
+			
+			QList<Image> Storage::GetImages (const QString& name)
+			{
+				QueryGetImages_.bindValue (":name", name);
+				if (!QueryGetImages_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetImages_);
+					return QList<Image> ();
+				}
+				
+				QList<Image> result;
+				while (QueryGetImages_.next ())
+				{
+					Image img =
+					{
+						static_cast<Image::Type> (QueryGetImages_.value (1).toInt ()),
+						QueryGetImages_.value (0).toString ()
+					};
+					result << img;
+				}
+				QueryGetImages_.finish ();
+				return result;
+			}
 
 			ListPackageInfo Storage::GetSingleListPackageInfo (int packageId)
 			{
@@ -1110,6 +1133,9 @@ namespace LeechCraft
 
 				QueryGetInstalledPackages_ = QSqlQuery (DB_);
 				QueryGetInstalledPackages_.prepare ("SELECT package_id FROM installed;");
+				
+				QueryGetImages_ = QSqlQuery (DB_);
+				QueryGetImages_.prepare ("SELECT url, type FROM images WHERE name = :name;");
 
 				QueryGetDependencies_ = QSqlQuery (DB_);
 				QueryGetDependencies_.prepare ("SELECT name, version, type FROM deps WHERE package_id = :package_id;");

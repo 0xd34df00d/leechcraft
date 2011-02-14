@@ -143,16 +143,20 @@ namespace LeechCraft
 						Qt::UniqueConnection);
 			}
 
-			void RepoInfoFetcher::FetchPackageInfo (const QUrl& packageUrl,
+			void RepoInfoFetcher::FetchPackageInfo (const QUrl& baseUrl,
 					const QString& packageName,
 					const QList<QString>& newVersions,
 					int componentId)
 			{
 				QString location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
+				QUrl packageUrl = baseUrl;
+				packageUrl.setPath (packageUrl.path () +
+						Core::Instance ().NormalizePackageName (packageName) + ".xml.gz");
 
 				PendingPackage pp =
 				{
 					packageUrl,
+					baseUrl,
 					location,
 					packageName,
 					newVersions,
@@ -437,7 +441,7 @@ namespace LeechCraft
 				PackageInfo packageInfo;
 				try
 				{
-					packageInfo = ParsePackage (data, pp.PackageName_, pp.NewVersions_);
+					packageInfo = ParsePackage (data, pp.BaseURL_, pp.PackageName_, pp.NewVersions_);
 				}
 				catch (const std::exception& e)
 				{
