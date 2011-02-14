@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>329</width>
+    <width>345</width>
     <height>331</height>
    </rect>
   </property>
@@ -37,18 +37,12 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>NickNames</string>
+          <string>Nicknames (first nick would be your default nick)</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QComboBox" name="Servers_">
-         <item>
-          <property name="text">
-           <string>Default</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QComboBox" name="Servers_"/>
        </item>
        <item row="2" column="0">
         <widget class="QPlainTextEdit" name="NickNames_">

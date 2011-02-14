@@ -71,7 +71,7 @@
    <item row="4" column="0" colspan="2">
     <widget class="QCheckBox" name="SSL_">
      <property name="text">
-      <string>Secure connection (SSL)</string>
+      <string>Security connection (SSL)</string>
      </property>
     </widget>
    </item>

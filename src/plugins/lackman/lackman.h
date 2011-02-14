@@ -56,6 +56,8 @@ namespace LeechCraft
 
 				QAction *UpdateAll_;
 				QAction *UpgradeAll_;
+				QAction *Apply_;
+				QAction *Cancel_;
 				QToolBar *Toolbar_;
 			public:
 				void Init (ICoreProxy_ptr);
@@ -74,9 +76,8 @@ namespace LeechCraft
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			private slots:
 				void handleTagsUpdated ();
-				void on_Apply__released ();
-				void on_Cancel__released ();
 				void on_PackageStatus__currentIndexChanged (int);
+				void handlePackageSelected (const QModelIndex&);
 			private:
 				void BuildActions ();
 			signals:

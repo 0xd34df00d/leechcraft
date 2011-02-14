@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <ctime>
 #include <interfaces/iaccount.h>
 #include <interfaces/iproxyobject.h>
 #include "ircaccount.h"
@@ -30,6 +31,7 @@ namespace Acetamide
 {
 	Core::Core ()
 	: PluginProxy_ (0)
+	, DefaultAccount_ (0)
 	{
 		IrcProtocol_.reset (new IrcProtocol (this));
 		qRegisterMetaTypeStreamOperators<NickNameData> ("NickNameData");
@@ -75,9 +77,45 @@ namespace Acetamide
 		return Proxy_;
 	}
 
+	void Core::SetDefaultIrcAcoount (IrcAccount *account)
+	{
+		DefaultAccount_ = account;
+	}
+
+	IrcAccount* Core::GetDefaultIrcAccount ()
+	{
+		if (!DefaultAccount_)
+			CreateDefaultAccount ();
+		return DefaultAccount_;
+	}
+
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);
+	}
+
+	void Core::CreateDefaultAccount ()
+	{
+		qsrand (time (NULL));
+		
+		DefaultAccount_ = new IrcAccount (tr ("DefaultIrcAccount"), IrcProtocol_.get ());
+		QList<NickNameData> defaultAcc = DefaultAccount_->ReadNicknameSettings ("DefaultIrcAccount_Nicknames");
+		
+		if (!defaultAcc.isEmpty ())
+		{
+			if (defaultAcc.first ().Nicks_.isEmpty ())
+				defaultAcc [0].Nicks_ << QString ("leechraft") + QString::number (10 + qrand () % 89);
+		}
+		else
+		{
+			NickNameData acc;
+			acc.Server_ = "default";
+			acc.ServerName_ = tr ("Default");
+			acc.Nicks_ << QString ("leechraft") + QString::number (10 + qrand () % 99);
+			acc.AutoGenerate_ = true;
+			defaultAcc << acc;
+		}
+		DefaultAccount_->SaveNicknameSettings (defaultAcc, "DefaultIrcAccount_Nicknames");
 	}
 
 	void Core::handleItemsAdded (const QList<QObject*>& items)

@@ -51,7 +51,7 @@ namespace Acetamide
 	QStringList IrcAddDefaultChannelsDialog::GetChannels ()
 	{
 		QStringList channels; 
-		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
+		for (int i = 0, row = ChannelsModel_->rowCount (); i < row; ++i)
 			channels << ChannelsModel_->item (i)->text ();
 		return channels;
 	}
@@ -59,7 +59,7 @@ namespace Acetamide
 	QStringList IrcAddDefaultChannelsDialog::GetChannelsPair () const
 	{
 		QStringList channelsPair;
-		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
+		for (int i = 0, row = ChannelsModel_->rowCount (); i < row; ++i)
 		{
 			channelsPair << ChannelsModel_->item (i, 0)->text () + 
 									QString (" ") +
@@ -89,7 +89,7 @@ namespace Acetamide
 	
 	void IrcAddDefaultChannelsDialog::accept ()
 	{
-		for (int i = 0; i < ChannelsModel_->rowCount (); ++i)
+		for (int i = 0, row = ChannelsModel_->rowCount (); i < row; ++i)
 		{
 			QString item = ChannelsModel_->item (i)->text ();
 			if (item.isEmpty () ||

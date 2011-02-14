@@ -39,6 +39,11 @@ namespace Acetamide
 			ServerAndChannelsRole = Qt::UserRole + 1
 		};
 		
+		enum ServerRole 
+		{ 
+			DefaultServerRole = Qt::UserRole + 1
+		};
+		
 		Ui::IrcAccountConfigurationDialog Ui_;
 		QList<NickNameData> Nicknames_;
 		int LastIndex_;
@@ -49,21 +54,22 @@ namespace Acetamide
 		QList<ServerInfoData> ServersInfo_;
 	public:
 		IrcAccountConfigurationDialog (QWidget* = 0);
+		QString GetDefaultNickname () const;
 		QList<NickNameData>  GetNicks ();
 		void SetNicks (const QList<NickNameData> &);
-		void SetServers (const QList<ServerInfoData>&);
+		void SetDefaultServers (const QList<ServerInfoData>&);
 		QList<ServerInfoData> GetServersInfo () const;
 		void SetServersInfo (const QList<ServerInfoData>&);
 	private:
-		QStringList GetNetworks () const;
-		void SetNetworks (const QStringList&);
+		QStringList GetServers () const;
+		void SetServers (const QStringList&);
 		void DeleteNetwork (const QModelIndex&, const QString&);
 		void DeleteServer (const QModelIndex&, const QString&);
 		void DeleteChannel (const QModelIndex&, const QString&);
 		void EditServer ();
 		void EditChannel ();
 		QString GetChannelPassword (const QString&, const QString&, const QString&);
-		NickNameData GetNicknameData (const QString&);
+		NickNameData GetNicknameData (const QString&, const QString&);
 		bool IsServerExists (const ServerInfoData&);
 		QStringList RemoveDuplicatesChannels (const QString&, const QString&, const QStringList&);
 	public slots:

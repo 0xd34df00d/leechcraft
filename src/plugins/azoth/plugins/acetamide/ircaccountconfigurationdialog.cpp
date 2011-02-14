@@ -52,6 +52,9 @@ namespace Acetamide
 
 		Ui_.ServerChannels_->setModel (ServerAndChannels_);
 		
+		if (Nicknames_.isEmpty ())
+			SetServers (QStringList ());
+
 		connect (Ui_.Servers_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
@@ -98,21 +101,28 @@ namespace Acetamide
 				SLOT (handleDblClick (const QModelIndex&)));
 	}
 	
+	QString IrcAccountConfigurationDialog::GetDefaultNickname () const
+	{
+		Q_FOREACH (const NickNameData& nick, Nicknames_)
+			if (nick.Server_ == Ui_.Servers_->itemData (0, DefaultServerRole))
+				return nick.Nicks_.at (0);
+		return QString ();
+	}
+
 	QList<NickNameData> IrcAccountConfigurationDialog::GetNicks ()
 	{
 		bool found = false;
-		QString network = Ui_.Servers_->currentText ();
-		qDebug () << "TDE" << network << Nicknames_.count ();
-		for (int i = 0; i < Nicknames_.count (); ++i)
-			if (Nicknames_.at (i).Network_ == network)
+		QVariant server = Ui_.Servers_->itemData (Ui_.Servers_->currentIndex(), DefaultServerRole);
+		for (int i = 0, size = Nicknames_.count (); i < size; ++i)
+			if (Nicknames_.at (i).Server_ == server.toString ())
 			{
-				Nicknames_ [i] = GetNicknameData (network);
+				Nicknames_ [i] = GetNicknameData (server.toString (), Ui_.Servers_->currentText ());
 				found = true;
 				break;
 			}
 
 		if (!found && !Ui_.NickNames_->toPlainText ().isEmpty ())
-			Nicknames_ << GetNicknameData (network);
+			Nicknames_ << GetNicknameData (server.toString (), Ui_.Servers_->currentText ());
 
 		return Nicknames_;
 	}
@@ -120,9 +130,17 @@ namespace Acetamide
 	void IrcAccountConfigurationDialog::SetNicks (const QList<NickNameData> & nicks)
 	{
 		Nicknames_ = nicks;
+		QStringList servers;
+		Q_FOREACH (const NickNameData& item, Nicknames_)
+			if (!item.ServerName_.isEmpty ())
+				servers << item.ServerName_;
+
+		servers.removeDuplicates ();
+
+		SetServers (servers);
 	}
 
-	void IrcAccountConfigurationDialog::SetServers (const QList<ServerInfoData>& serversInfo)
+	void IrcAccountConfigurationDialog::SetDefaultServers (const QList<ServerInfoData>& serversInfo)
 	{
 		ServerAndChannels_->clear ();
 
@@ -166,28 +184,39 @@ namespace Acetamide
 	void IrcAccountConfigurationDialog::SetServersInfo (const QList<ServerInfoData>& serversInfo)
 	{
 		ServersInfo_ = serversInfo;
-		SetServers (ServersInfo_);
-		
-		QStringList networks;
-		Q_FOREACH (const ServerInfoData& item, ServersInfo_)
-			networks << item.Network_;
-
-		networks.removeDuplicates ();
-		SetNetworks (networks);
+		SetDefaultServers (ServersInfo_);
 	}
 
-	QStringList IrcAccountConfigurationDialog::GetNetworks () const
+	QStringList IrcAccountConfigurationDialog::GetServers () const
 	{
 		QStringList result;
-		for (int i = 0; i < Ui_.Servers_->count (); i++)
+		for (int i = 1, size = Ui_.Servers_->count (); i < size; i++)
 			result << Ui_.Servers_->itemText (i);
 		return result;
 	}
 
-	void IrcAccountConfigurationDialog::SetNetworks (const QStringList& networks)
+	void IrcAccountConfigurationDialog::SetServers (const QStringList& servers)
 	{
 		Ui_.Servers_->clear ();
-		Ui_.Servers_->addItems (networks);
+		Ui_.Servers_->addItems (servers);
+		
+		if (servers.isEmpty ())
+		{
+			Ui_.Servers_->addItem (tr ("Default"));
+			Ui_.Servers_->setItemData (0, Ui_.Servers_->itemText (0).toLower (), DefaultServerRole);
+			return;
+		}
+		
+		for (int i = 0, size = Ui_.Servers_->count(); i < size; i++)
+		{
+			Ui_.Servers_->setItemData (i, Ui_.Servers_->itemText (i).toLower (), DefaultServerRole);
+			if (Ui_.Servers_->itemData (Ui_.Servers_->currentIndex (), DefaultServerRole).toString () ==
+					Nicknames_.at (i).Server_)
+			{
+				Ui_.NickNames_->setPlainText (Nicknames_.at (i).Nicks_.join ("\n"));
+				Ui_.GenerateNicknames_->setChecked (Nicknames_.at (i).AutoGenerate_);
+			}
+		}
 	}
 	
 	void IrcAccountConfigurationDialog::DeleteNetwork (const QModelIndex& index, const QString& message)
@@ -274,14 +303,14 @@ namespace Acetamide
 		if (dec->exec () == QDialog::Rejected)
 			return;
 
-		for (int i = 0; i < ServersInfo_.count (); ++i)
+		for (int i = 0, size = ServersInfo_.count (); i < size; ++i)
 		{
 			ServerInfoData serverInfo = ServersInfo_.at (i);
 			if (serverInfo.Network_ ==  network &&
 					serverInfo.Server_ == server)
 			{
 				QStringList channels = serverInfo.Channels_;
-				for (int j = 0; j < channels.count (); ++j)
+				for (int j = 0, chsize = channels.count (); j < chsize; ++j)
 					if (channels [j].split (' ').at (0) == channel.toString ())
 					{
 						channels [j] = dec->GetChannel () + QString (" ") + dec->GetPassword ();
@@ -292,7 +321,7 @@ namespace Acetamide
 			}
 		}
 
-		SetServers (ServersInfo_);
+		SetDefaultServers (ServersInfo_);
 	}
 
 	void IrcAccountConfigurationDialog::EditServer ()
@@ -323,7 +352,7 @@ namespace Acetamide
 		server.SSL_ = dsa->GetSSL ();
 		server.Channels_ = channels;
 
-		for (int i = 0; i < ServersInfo_.count (); ++i)
+		for (int i = 0, size = ServersInfo_.count (); i < size; ++i)
 			if (ServersInfo_.at (i).Server_ == currentIndex.data () &&
 					ServersInfo_.at (i).Network_ == currentIndex.parent ().data ())
 			{
@@ -331,7 +360,7 @@ namespace Acetamide
 				break;
 			}
 
-		SetServers (ServersInfo_);
+		SetDefaultServers (ServersInfo_);
 	}
 
 	QString IrcAccountConfigurationDialog::GetChannelPassword (const QString& server, 
@@ -351,12 +380,13 @@ namespace Acetamide
 		return QString ();
 	}
 
-	NickNameData IrcAccountConfigurationDialog::GetNicknameData (const QString& network)
+	NickNameData IrcAccountConfigurationDialog::GetNicknameData (const QString& server, const QString& name)
 	{
 		NickNameData map;
 		map.Nicks_ = Ui_.NickNames_->toPlainText ().split ('\n');
 		map.AutoGenerate_ = Ui_.GenerateNicknames_->isChecked ();
-		map.Network_ = network;
+		map.Server_ = server;
+		map.ServerName_ = name;
 
 		return map;
 	}
@@ -387,7 +417,7 @@ namespace Acetamide
 			{
 				Q_FOREACH (const QString& str, serverInfo.Channels_)
 				{
-					for (int i = 0; i < strList.count (); ++i)
+					for (int i = 0, size = strList.count (); i < size; ++i)
 					{
 						if (str.split (' ', QString::SkipEmptyParts).at (0) == 
 								strList.at (i).split (' ', QString::SkipEmptyParts).at (0))
@@ -406,24 +436,24 @@ namespace Acetamide
 	void IrcAccountConfigurationDialog::handleChangeServer (int index)
 	{
 		bool found = false;
-		QString lastNetwork = Ui_.Servers_->itemText (LastIndex_);
+		QVariant lastServer = Ui_.Servers_->itemData (LastIndex_, DefaultServerRole);
 
-		for (int i = 0; i < Nicknames_.count (); ++i)
-			if (Nicknames_.at (i).Network_ == lastNetwork)
+		for (int i = 0, size = Nicknames_.count (); i < size; ++i)
+			if (Nicknames_.at (i).Server_ == lastServer)
 			{
-				Nicknames_ [i] = GetNicknameData (lastNetwork);
+				Nicknames_ [i] = GetNicknameData (lastServer.toString (), Ui_.Servers_->itemText (LastIndex_));
 				found = true;
 				break;
 			}
 
 		if (!found && !Ui_.NickNames_->toPlainText ().isEmpty ())
-			Nicknames_ << GetNicknameData (lastNetwork);
+			Nicknames_ << GetNicknameData (lastServer.toString (), Ui_.Servers_->itemText (LastIndex_));
 
 		Ui_.NickNames_->setPlainText (QString ());
 
 		Q_FOREACH (const NickNameData& item, Nicknames_)
 		{
-			if (item.Network_ == Ui_.Servers_->currentText ())
+			if (item.Server_ == Ui_.Servers_->itemData (Ui_.Servers_->currentIndex (), DefaultServerRole))
 			{
 				Ui_.NickNames_->setPlainText (item.Nicks_.join ("\n"));
 				Ui_.GenerateNicknames_->setChecked (item.AutoGenerate_);
@@ -450,6 +480,13 @@ namespace Acetamide
 			return;
 		
 		ServersInfo_ << server;
+		
+		NickNameData nick;
+		nick.AutoGenerate_ = false;
+		nick.ServerName_ = dsa->GetServer ();
+		nick.Server_ = dsa->GetServer ().toLower ();
+		nick.Nicks_ = QStringList ();
+		Nicknames_ << nick;
 		
 		QString network = Ui_.Networks_->text ();
 		QList<QStandardItem*> networkList = ServerAndChannels_->findItems (network);
@@ -489,7 +526,7 @@ namespace Acetamide
 		if (list.isEmpty ())
 			return;
 		
-		for (int i = 0; i < ServersInfo_.count (); i++)
+		for (int i = 0, size = ServersInfo_.count (); i < size; i++)
 		{
 			ServerInfoData srv = ServersInfo_.at (i);
 			if (srv.Server_ == server && 
@@ -524,10 +561,13 @@ namespace Acetamide
 	
 	void IrcAccountConfigurationDialog::handleEditElement (bool checked)
 	{
-		if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "channel")
+		QModelIndex index = Ui_.ServerChannels_->currentIndex ();
+		if (index.data (ServerAndChannelsRole).toString () == "channel")
 			EditChannel ();
-		else if (Ui_.ServerChannels_->currentIndex ().data (ServerAndChannelsRole).toString () == "server")
+		else if (index.data (ServerAndChannelsRole).toString () == "server")
 			EditServer ();
+		else if (index.data (ServerAndChannelsRole).toString () == "network")
+			Ui_.ServerChannels_->edit (index);
 	}
 
 	void IrcAccountConfigurationDialog::handleDeleteElement (bool checked)
@@ -547,28 +587,27 @@ namespace Acetamide
 	{
 		if (!index)
 		{
-			QStringList list;
-			int rowCount = ServerAndChannels_->rowCount ();
-			if (!rowCount)
-				list << Ui_.Servers_->itemText (0);
-			else
-				for (int i = 0; i < rowCount; ++i)
-					list << ServerAndChannels_->item (i)->text ();
-
-			SetNetworks (list);
+			QStringList str;
+			Q_FOREACH (const NickNameData& nick, Nicknames_)
+				if (!nick.ServerName_.isEmpty ())
+					str << nick.ServerName_;
+			
+			str.removeDuplicates ();
+			SetServers (str);
 		}
 		else
 		{
 			bool found = false;
-			for (int i = 0; i < Nicknames_.count (); ++i)
-				if (Nicknames_.at (i).Network_ == Ui_.Servers_->currentText ())
+			QVariant server = Ui_.Servers_->itemData (Ui_.Servers_->currentIndex (), DefaultServerRole);
+			for (int i = 0, size = Nicknames_.count (); i < size; ++i)
+				if (Nicknames_.at (i).Server_ == server.toString ())
 				{
-					Nicknames_ [i] = GetNicknameData (Ui_.Servers_->currentText ());
+					Nicknames_ [i] = GetNicknameData (server.toString (), Ui_.Servers_->currentText ());
 					found = true;
 				}
 				
 			if (!found && !Ui_.NickNames_->toPlainText ().isEmpty ())
-				Nicknames_ << GetNicknameData (Ui_.Servers_->currentText ());
+				Nicknames_ << GetNicknameData (server.toString (), Ui_.Servers_->currentText ());
 		}
 	}
 	

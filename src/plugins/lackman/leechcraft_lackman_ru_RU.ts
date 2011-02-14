@@ -9,39 +9,44 @@
         <translation>Пакеты</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="44"/>
+        <location filename="lackman.ui" line="47"/>
         <source>All</source>
         <translation>Все</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="49"/>
+        <location filename="lackman.ui" line="52"/>
         <source>Installed</source>
         <translation>Установленные</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="54"/>
+        <location filename="lackman.ui" line="57"/>
         <source>Upgradable</source>
         <translation>Обновляемые</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="59"/>
+        <location filename="lackman.ui" line="62"/>
         <source>Not installed</source>
         <translation>Неустановленные</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="85"/>
+        <location filename="lackman.ui" line="97"/>
+        <source>Package information</source>
+        <translation>Информация о пакете</translation>
+    </message>
+    <message>
+        <location filename="lackman.ui" line="133"/>
+        <source>Size:</source>
+        <translation>Размер:</translation>
+    </message>
+    <message>
+        <location filename="lackman.ui" line="147"/>
+        <source>State:</source>
+        <translation>Состояние:</translation>
+    </message>
+    <message>
+        <location filename="lackman.ui" line="171"/>
         <source>Pending</source>
         <translation>Планируемые</translation>
-    </message>
-    <message>
-        <location filename="lackman.ui" line="103"/>
-        <source>Apply</source>
-        <translation>Применить</translation>
-    </message>
-    <message>
-        <location filename="lackman.ui" line="110"/>
-        <source>Cancel</source>
-        <translation>Отменить</translation>
     </message>
 </context>
 <context>
@@ -303,22 +308,22 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::PackagesDelegate</name>
     <message>
-        <location filename="packagesdelegate.cpp" line="278"/>
+        <location filename="packagesdelegate.cpp" line="234"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="283"/>
+        <location filename="packagesdelegate.cpp" line="239"/>
         <source>Install</source>
         <translation>Установить</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="305"/>
+        <location filename="packagesdelegate.cpp" line="261"/>
         <source>Update</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="434"/>
+        <location filename="packagesdelegate.cpp" line="385"/>
         <source>Unable to mark package, reverting.</source>
         <translation>Невозможно отметить пакет, возвращаемся.</translation>
     </message>
@@ -349,9 +354,24 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::Plugin</name>
     <message>
-        <location filename="lackman.cpp" line="121"/>
+        <location filename="lackman.cpp" line="133"/>
         <source>LeechCraft Package Manager.</source>
         <translation>Пакетный менеджер для LeechCraft.</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="185"/>
+        <source>not installed</source>
+        <translation>не установлен</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="187"/>
+        <source>installed; upgradable</source>
+        <translation>установлен; обновляем</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="189"/>
+        <source>installed</source>
+        <translation>установлен</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="195"/>
@@ -359,9 +379,19 @@
         <translation>Обновить все репозитории</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="201"/>
+        <location filename="lackman.cpp" line="202"/>
         <source>Upgrade all packages</source>
         <translation>Обновить все пакеты</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="209"/>
+        <source>Apply</source>
+        <translation>Применить</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="216"/>
+        <source>Cancel</source>
+        <translation>Отменить</translation>
     </message>
 </context>
 <context>
@@ -518,15 +548,6 @@
         <location filename="xmlparsers.cpp" line="76"/>
         <source>Could not get components.</source>
         <translation>Невозможно получить список компонентов.</translation>
-    </message>
-</context>
-<context>
-    <name>lackmansettings</name>
-    <message>
-        <location filename="dummy.cpp" line="2"/>
-        <location filename="dummy.cpp" line="3"/>
-        <source>Packages</source>
-        <translation>Пакеты</translation>
     </message>
 </context>
 </TS>

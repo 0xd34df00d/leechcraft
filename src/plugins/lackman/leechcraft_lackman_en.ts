@@ -9,39 +9,44 @@
         <translation>Packages</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="44"/>
+        <location filename="lackman.ui" line="47"/>
         <source>All</source>
         <translation>All</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="49"/>
+        <location filename="lackman.ui" line="52"/>
         <source>Installed</source>
         <translation>Installed</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="54"/>
+        <location filename="lackman.ui" line="57"/>
         <source>Upgradable</source>
         <translation>Upgradable</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="59"/>
+        <location filename="lackman.ui" line="62"/>
         <source>Not installed</source>
         <translation>Not installed</translation>
     </message>
     <message>
-        <location filename="lackman.ui" line="85"/>
+        <location filename="lackman.ui" line="97"/>
+        <source>Package information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lackman.ui" line="133"/>
+        <source>Size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lackman.ui" line="147"/>
+        <source>State:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lackman.ui" line="171"/>
         <source>Pending</source>
         <translation>Pending</translation>
-    </message>
-    <message>
-        <location filename="lackman.ui" line="103"/>
-        <source>Apply</source>
-        <translation>Apply</translation>
-    </message>
-    <message>
-        <location filename="lackman.ui" line="110"/>
-        <source>Cancel</source>
-        <translation>Cancel</translation>
     </message>
 </context>
 <context>
@@ -302,22 +307,22 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::PackagesDelegate</name>
     <message>
-        <location filename="packagesdelegate.cpp" line="278"/>
+        <location filename="packagesdelegate.cpp" line="234"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="283"/>
+        <location filename="packagesdelegate.cpp" line="239"/>
         <source>Install</source>
         <translation>Install</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="305"/>
+        <location filename="packagesdelegate.cpp" line="261"/>
         <source>Update</source>
         <translation>Update</translation>
     </message>
     <message>
-        <location filename="packagesdelegate.cpp" line="434"/>
+        <location filename="packagesdelegate.cpp" line="385"/>
         <source>Unable to mark package, reverting.</source>
         <translation>Unable to mark package, reverting.</translation>
     </message>
@@ -348,9 +353,24 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::Plugin</name>
     <message>
-        <location filename="lackman.cpp" line="121"/>
+        <location filename="lackman.cpp" line="133"/>
         <source>LeechCraft Package Manager.</source>
         <translation>LeechCraft Package Manager.</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="185"/>
+        <source>not installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="187"/>
+        <source>installed; upgradable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="189"/>
+        <source>installed</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="195"/>
@@ -358,9 +378,19 @@
         <translation>Update all repos</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="201"/>
+        <location filename="lackman.cpp" line="202"/>
         <source>Upgrade all packages</source>
         <translation>Upgrade all packages</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="209"/>
+        <source>Apply</source>
+        <translation type="unfinished">Apply</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="216"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancel</translation>
     </message>
 </context>
 <context>
@@ -515,15 +545,6 @@
         <location filename="xmlparsers.cpp" line="76"/>
         <source>Could not get components.</source>
         <translation>Could not get components.</translation>
-    </message>
-</context>
-<context>
-    <name>lackmansettings</name>
-    <message>
-        <location filename="dummy.cpp" line="2"/>
-        <location filename="dummy.cpp" line="3"/>
-        <source>Packages</source>
-        <translation>Packages</translation>
     </message>
 </context>
 </TS>

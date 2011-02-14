@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2010  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,38 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
-#define PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
-#include <QStyledItemDelegate>
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
+
+#include <QWidget>
+#include <interfaces/imucjoinwidget.h>
+#include "ui_ircjoingroupchat.h"
+
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class ContactListDelegate : public QStyledItemDelegate
+namespace Acetamide
+{
+	class IrcAccount;
+	
+	class IrcJoinGroupChat : public QWidget
+							, public IMUCJoinWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
 		
-		bool ShowAvatars_;
-		bool ShowClientIcons_;
+		Ui::IrcJoinGroupChat Ui_;
+		IrcAccount *SelectedAccount_;
 	public:
-		ContactListDelegate (QObject* = 0);
-		virtual void paint (QPainter*,
-				const QStyleOptionViewItem&, const QModelIndex&) const;
-		virtual QSize sizeHint (const QStyleOptionViewItem&,
-				const QModelIndex&) const;
-	private:
-		void DrawAccount (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
-		void DrawCategory (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
-		void DrawContact (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
-	private slots:
-		void handleShowAvatarsChanged ();
-		void handleShowClientIconsChanged ();
+		IrcJoinGroupChat (QWidget* = 0);
+		
+		void AccountSelected (QObject*);
+		void Join (QObject*);
+		void Cancel ();
+		QVariantList GetBookmarkedMUCs () const;
+		void SetIdentifyingData (const QVariantMap&);
+		QVariantMap GetIdentifyingData () const;
 	};
-}
-}
+};
+};
+};
 
-#endif
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H

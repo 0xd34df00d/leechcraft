@@ -283,8 +283,8 @@ namespace LeechCraft
 				ItemIDFromTitleURL_.prepare ("SELECT item_id "
 						"FROM items "
 						"WHERE channel_id = :channel_id "
-						"AND title = :title "
-						"AND url = :url");
+						"AND COALESCE (title,'') = COALESCE (:title,'') "
+						"AND COALESCE (url,'') = COALESCE (:url,'')");
 
 				InsertFeed_ = QSqlQuery (DB_);
 				InsertFeed_.prepare ("INSERT INTO feeds (feed_id, url, last_update) VALUES (:feed_id, :url, :last_update);");

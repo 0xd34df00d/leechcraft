@@ -153,6 +153,8 @@ namespace LeechCraft
 					packageInfo.Type_ = PackageInfo::TTranslation;
 				else if (type == "plugin")
 					packageInfo.Type_ = PackageInfo::TPlugin;
+				else if (type == "theme")
+					packageInfo.Type_ = PackageInfo::TTheme;
 				else
 					packageInfo.Type_ = PackageInfo::TData;
 

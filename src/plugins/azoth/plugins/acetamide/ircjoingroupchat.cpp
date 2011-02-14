@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2010  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,38 +16,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
-#define PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
-#include <QStyledItemDelegate>
+#include "ircjoingroupchat.h"
+
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class ContactListDelegate : public QStyledItemDelegate
+namespace Acetamide
+{
+	IrcJoinGroupChat::IrcJoinGroupChat (QWidget *parent)
+	: QWidget (parent)
+	, SelectedAccount_ (0)
 	{
-		Q_OBJECT
-		
-		bool ShowAvatars_;
-		bool ShowClientIcons_;
-	public:
-		ContactListDelegate (QObject* = 0);
-		virtual void paint (QPainter*,
-				const QStyleOptionViewItem&, const QModelIndex&) const;
-		virtual QSize sizeHint (const QStyleOptionViewItem&,
-				const QModelIndex&) const;
-	private:
-		void DrawAccount (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
-		void DrawCategory (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
-		void DrawContact (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
-	private slots:
-		void handleShowAvatarsChanged ();
-		void handleShowClientIconsChanged ();
-	};
-}
-}
+		Ui_.setupUi (this);
+	}
+	
+	void IrcJoinGroupChat::AccountSelected (QObject *obj)
+	{
 
-#endif
+	}
+	void IrcJoinGroupChat::Join (QObject *obj)
+	{
+
+	}
+
+	void IrcJoinGroupChat::Cancel ()
+	{
+
+	}
+
+	QVariantList IrcJoinGroupChat::GetBookmarkedMUCs () const
+	{
+		return QVariantList ();
+	}
+
+	void IrcJoinGroupChat::SetIdentifyingData (const QVariantMap& data)
+	{
+
+	}
+
+	QVariantMap IrcJoinGroupChat::GetIdentifyingData () const
+	{
+		return QVariantMap ();
+	}
+
+};
+};
+};

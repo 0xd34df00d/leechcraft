@@ -195,7 +195,7 @@ namespace Xoox
 				{
 					GlooxCLEntry::OfflineDataSource_ptr ods (new GlooxCLEntry::OfflineDataSource);
 					ods->Name_ = name;
-					ods->ID_ = entryID;
+					ods->ID_ = QString::fromUtf8 (entryID.constData ());
 					ods->Groups_ = groups;
 					ods->AuthStatus_ = qobject_cast<IProxyObject*> (PluginProxy_)->
 							AuthStatusFromString (entry.firstChildElement ("authstatus").text ());
