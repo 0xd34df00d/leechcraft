@@ -229,7 +229,7 @@ namespace LeechCraft
 
 			namespace
 			{
-				QRegExp urlInText("://|www\\.|\\w\\.\\w");
+				const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
 			}
 
 			void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
@@ -309,11 +309,11 @@ namespace LeechCraft
 					if (page ()->settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
 						menu->addAction (pageAction (QWebPage::InspectElement));
 				}
-				else if (page ()->selectedText ().contains (urlInText))
+				else if (page ()->selectedText ().contains (UrlInText))
 				{
 					menu->addAction (tr ("Open as link"),
-							this, SLOT (openLinkInNewTab ()) )->
-								setData(page ()->selectedText ());
+							this, SLOT (openLinkInNewTab ()))->
+									setData (page ()->selectedText ());
 				}
  
 				emit hookWebViewContextMenu (proxy, this, e, r,
