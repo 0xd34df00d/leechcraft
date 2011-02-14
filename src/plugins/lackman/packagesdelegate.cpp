@@ -173,25 +173,6 @@ namespace LeechCraft
 					layoutWidget->move (actionPos);
 				if (!layoutWidget->isVisible ())
 					layoutWidget->show ();
-
-				shiftFromTop += CActionsSize + CPadding;
-
-				if (selected)
-				{
-					PrepareSelectableBrowser ();
-					SelectableBrowser_->SetHtml (index.data (PackagesModel::PMRLongDescription).toString ());
-
-					QPoint browserPos (leftPos, shiftFromTop);
-					if (SelectableBrowser_->pos () != browserPos)
-						SelectableBrowser_->move (browserPos);
-
-					QSize browserSize (textWidth, CurrentInfoHeight (option));
-					if (SelectableBrowser_->size () != browserSize)
-						SelectableBrowser_->resize (browserSize);
-
-					if (!SelectableBrowser_->isVisible ())
-						SelectableBrowser_->show ();
-				}
 			}
 
 			QSize PackagesDelegate::sizeHint (const QStyleOptionViewItem& option,
@@ -205,11 +186,6 @@ namespace LeechCraft
 				result.rheight () = TitleHeight (option) +
 						TextHeight (option) +
 						CActionsSize + CPadding * 2;
-				if (index == CurrentSelection_)
-				{
-					result.rheight () += CurrentInfoHeight (option);
-					result.rheight () += CPadding;
-				}
 
 				return result;
 			}
@@ -227,26 +203,6 @@ namespace LeechCraft
 			int PackagesDelegate::TextHeight (const QStyleOptionViewItem& option) const
 			{
 				return QFontInfo (option.font).pixelSize () + CPadding;
-			}
-
-			int PackagesDelegate::CurrentInfoHeight (const QStyleOptionViewItem& option) const
-			{
-				return 140;
-			}
-
-			void PackagesDelegate::PrepareSelectableBrowser () const
-			{
-				if (SelectableBrowser_)
-					return;
-
-				SelectableBrowser_ = new Util::SelectableBrowser ();
-				QList<IWebBrowser*> browsers = Core::Instance ().GetProxy ()->
-						GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ();
-				if (browsers.size ())
-					SelectableBrowser_->Construct (browsers.at (0));
-				SelectableBrowser_->setParent (Viewport_);
-				SelectableBrowser_->SetNavBarVisible (false);
-				SelectableBrowser_->SetEverythingElseVisible (false);
 			}
 
 			QToolButton* PackagesDelegate::GetInstallRemove (const QModelIndex& index) const
@@ -369,17 +325,12 @@ namespace LeechCraft
 			{
 				CurrentSelection_ = current;
 
-				if (SelectableBrowser_)
-					SelectableBrowser_->hide ();
-
 				emit sizeHintChanged (previous);
 				emit sizeHintChanged (current);
 			}
 
 			void PackagesDelegate::invalidateWidgetPositions ()
 			{
-				if (SelectableBrowser_)
-					SelectableBrowser_->hide ();
 				QTreeView *view = qobject_cast<QTreeView*> (parent ());
 				QAbstractItemModel *model = view->model ();
 				for (int i = 0, rows = model->rowCount ();
