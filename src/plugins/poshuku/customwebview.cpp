@@ -38,9 +38,6 @@
 #include "searchtext.h"
 #include "xmlsettingsmanager.h"
 
-namespace {
-	QRegExp urlInText("://|www\\.|\\w\\.\\w");
-}
 namespace LeechCraft
 {
 	namespace Plugins
@@ -230,6 +227,11 @@ namespace LeechCraft
 					QWebView::wheelEvent (e);
 			}
 
+			namespace
+			{
+				QRegExp urlInText("://|www\\.|\\w\\.\\w");
+			}
+
 			void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 			{
 				std::auto_ptr<QMenu> menu (new QMenu (this));
@@ -310,8 +312,8 @@ namespace LeechCraft
 				else if (page ()->selectedText ().contains (urlInText))
 				{
 					menu->addAction (tr ("Open as link"),
-								this, SLOT (openLinkInNewTab ()) )->setData(
-										page ()->selectedText ());
+							this, SLOT (openLinkInNewTab ()) )->
+								setData(page ()->selectedText ());
 				}
  
 				emit hookWebViewContextMenu (proxy, this, e, r,
