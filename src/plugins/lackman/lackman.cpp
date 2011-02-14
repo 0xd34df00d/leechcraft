@@ -174,21 +174,30 @@ namespace LeechCraft
 				TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
 			}
 			
+			namespace
+			{
+				void AddText (QString& text, const QStringList& urls)
+				{
+					Q_FOREACH (const QString& url, urls)
+					{
+						boost::optional<QByteArray> opt =
+								Core::Instance ().GetExtResourceManager ()->
+										GetResourceData (QUrl::fromEncoded (url.toUtf8 ()));
+						if (!opt || opt->isEmpty ())
+							continue;
+
+						text += QString ("<img src='data:image/png;base64,%1' alt='' /><br />")
+								.arg (QString (opt->toBase64 ()));
+					}
+				}
+			}
+			
 			void Plugin::handlePackageSelected (const QModelIndex& index)
 			{
 				QString text;
-				Q_FOREACH (const QString& url, index.data (PackagesModel::PMRThumbnails).toStringList ())
-				{
-					boost::optional<QByteArray> opt =
-							Core::Instance ().GetExtResourceManager ()->
-									GetResourceData (QUrl::fromEncoded (url.toUtf8 ()));
-					if (!opt || opt->isEmpty ())
-						continue;
-
-					text += QString ("<img src='data:image/png;base64,%1' alt='' /><br />")
-							.arg (QString (opt->toBase64 ()));
-				}
+				AddText (text, index.data (PackagesModel::PMRThumbnails).toStringList ());
 				text += index.data (PackagesModel::PMRLongDescription).toString ();
+				AddText (text, index.data (PackagesModel::PMRScreenshots).toStringList ());
 				
 				Ui_.Browser_->SetHtml (text);
 
