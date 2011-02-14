@@ -156,16 +156,6 @@ namespace LeechCraft
 			{
 			}
 
-			void Plugin::on_Apply__released ()
-			{
-				Core::Instance ().AcceptPending ();
-			}
-
-			void Plugin::on_Cancel__released ()
-			{
-				Core::Instance ().CancelPending ();
-			}
-
 			void Plugin::on_PackageStatus__currentIndexChanged (int index)
 			{
 				TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
@@ -179,16 +169,34 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (updateAllRequested ()));
+
 				UpgradeAll_ = new QAction (tr ("Upgrade all packages"), this);
 				UpgradeAll_->setProperty ("ActionIcon", "fetchall");
 				connect (UpgradeAll_,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (upgradeAllRequested ()));
+				
+				Apply_ = new QAction (tr ("Apply"), this);
+				Apply_->setProperty ("ActionIcon", "apply");
+				connect (Apply_,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (acceptPending ()));
+				
+				Cancel_ = new QAction (tr ("Cancel"), this);
+				Cancel_->setProperty ("ActionIcon", "cancel");
+				connect (Cancel_,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (cancelPending ()));
 
 				Toolbar_ = new QToolBar (GetName ());
 				Toolbar_->addAction (UpdateAll_);
 				Toolbar_->addAction (UpgradeAll_);
+				Toolbar_->addSeparator ();
+				Toolbar_->addAction (Apply_);
+				Toolbar_->addAction (Cancel_);
 			}
 		};
 	};

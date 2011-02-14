@@ -441,12 +441,12 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::CancelPending ()
+			void Core::cancelPending ()
 			{
 				PendingManager_->Reset ();
 			}
 
-			void Core::AcceptPending ()
+			void Core::acceptPending ()
 			{
 				QSet<int> toInstall = PendingManager_->GetPendingInstall ();
 				QSet<int> toRemove = PendingManager_->GetPendingRemove ();
