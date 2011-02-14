@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "ircaccount.h"
+#include <boost/bind.hpp>
 #include <QInputDialog>
 #include <QtDebug>
 #include <QSettings>
@@ -37,6 +38,7 @@ namespace Acetamide
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
 	, Nick_ (QString ())
+	, AccountID_ (QByteArray ())
 	{
 		IrcAccountState_ = SOffline;
 		
@@ -48,6 +50,32 @@ namespace Acetamide
 		
 		ServersInfo_ = ReadConnectionSettings (Name_ + "_Servers");
 		NickNames_ = ReadNicknameSettings (Name_ +"_Nicknames");
+		SetAccountID ();
+	}
+
+	void IrcAccount::SetAccountID ()
+	{
+		QList<QByteArray> accIDs = ParentProtocol_->GetRegisteredAccountsIDs ();
+		bool found = true;
+		QByteArray accID;
+		
+		while (found)
+		{
+			QString idStr = ParentProtocol_->GetProtocolID () + 
+					"." + 
+					GetAccountName () + 
+					"." + 
+					QString::number (qrand ());
+			found = false;
+			accID = idStr.toUtf8 ();
+			Q_FOREACH (const QByteArray& b, accIDs)
+				if (b == accID)
+				{
+					found = true;
+					break;
+				}
+		}
+		AccountID_ = accID;
 	}
 
 	void IrcAccount::Init ()
@@ -87,7 +115,6 @@ namespace Acetamide
 	{
 		if (NickNames_.at (0).Nicks_.at (0).isEmpty ())
 			return Core::Instance ().GetDefaultIrcAccount ()->GetNickNames ().at (0).Nicks_.at (0);
-		
 		return NickNames_.at (0).Nicks_.at (0);
 	}
 
@@ -108,8 +135,7 @@ namespace Acetamide
 
 	QByteArray IrcAccount::GetAccountID () const
 	{
-		//TODO
-		return QByteArray ();
+		return AccountID_;
 	}
 
 	void IrcAccount::OpenConfigurationDialog ()
@@ -133,8 +159,11 @@ namespace Acetamide
 // 			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
 		}
 
-		SaveConnectionSettings (dia->GetServersInfo (), QString (Name_ + "_Servers"));
-		SaveNicknameSettings (dia->GetNicks (), QString (Name_ + "_Nicknames"));
+		NickNames_ = dia->GetNicks ();
+		ServersInfo_ = dia->GetServersInfo ();
+		
+		SaveConnectionSettings (ServersInfo_, QString (Name_ + "_Servers"));
+		SaveNicknameSettings (NickNames_, QString (Name_ + "_Nicknames"));
 		
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));

@@ -45,7 +45,7 @@ namespace Acetamide
 		QString Name_;
 		IrcProtocol *ParentProtocol_;
 		State IrcAccountState_;
-		
+		QByteArray AccountID_;
 		QString Nick_;
 		QList<NickNameData> NickNames_;
 		QList<ServerInfoData> ServersInfo_;
@@ -66,7 +66,10 @@ namespace Acetamide
 // 		QString GetHost () const;
 // 		int GetPort () const;
 		void RenameAccount (const QString&);
+		
 		QByteArray GetAccountID () const;
+		void SetAccountID ();
+		
 		void OpenConfigurationDialog ();
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
