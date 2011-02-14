@@ -45,11 +45,13 @@ namespace Acetamide
 				this,
 				SLOT (handleDestroyClient ()),
 				Qt::QueuedConnection);
+		
+		ServersInfo_ = ReadConnectionSettings (Name_ + "_Servers");
+		NickNames_ = ReadNicknameSettings (Name_ +"_Nicknames");
 	}
 
 	void IrcAccount::Init ()
 	{
-		
 	}
 
 	QObject* IrcAccount::GetObject ()
@@ -83,7 +85,20 @@ namespace Acetamide
 
 	QString IrcAccount::GetOurNick () const
 	{
-		return Nick_;
+		if (NickNames_.at (0).Nicks_.at (0).isEmpty ())
+			return Core::Instance ().GetDefaultIrcAccount ()->GetNickNames ().at (0).Nicks_.at (0);
+		
+		return NickNames_.at (0).Nicks_.at (0);
+	}
+
+	QList<NickNameData> IrcAccount::GetNickNames () const
+	{
+		return NickNames_;
+	}
+
+	QList<ServerInfoData> IrcAccount::GetServersInfo () const
+	{
+		return ServersInfo_;
 	}
 
 	void IrcAccount::RenameAccount (const QString& name)
@@ -101,13 +116,10 @@ namespace Acetamide
 	{
 		std::auto_ptr<IrcAccountConfigurationDialog> dia (new IrcAccountConfigurationDialog (0));
 
-		QList<ServerInfoData> serversInfo = ReadConnectionSettings (Name_ + "_Servers");
-		QList<NickNameData>  nickNames = ReadNicknameSettings (Name_ +"_Nicknames");
-
-		if (!nickNames.isEmpty ())
-			dia->SetNicks (nickNames);
-		if (!serversInfo.isEmpty ())
-			dia->SetServersInfo (serversInfo);
+		if (!NickNames_.isEmpty ())
+			dia->SetNicks (NickNames_);
+		if (!ServersInfo_.isEmpty ())
+			dia->SetServersInfo (ServersInfo_);
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
@@ -121,11 +133,8 @@ namespace Acetamide
 // 			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
 		}
 
-		nickNames = dia->GetNicks ();
-		serversInfo = dia->GetServersInfo ();
-		
-		SaveConnectionSettings (serversInfo, QString (Name_ + "_Servers"));
-		SaveNicknameSettings (nickNames, QString (Name_ + "_Nicknames"));
+		SaveConnectionSettings (dia->GetServersInfo (), QString (Name_ + "_Servers"));
+		SaveNicknameSettings (dia->GetNicks (), QString (Name_ + "_Nicknames"));
 		
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));

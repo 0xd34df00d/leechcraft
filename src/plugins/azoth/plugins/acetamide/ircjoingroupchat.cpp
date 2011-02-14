@@ -61,7 +61,6 @@ namespace Acetamide
 	{
 		return QVariantMap ();
 	}
-
 };
 };
 };

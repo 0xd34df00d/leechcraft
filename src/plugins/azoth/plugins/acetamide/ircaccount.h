@@ -47,6 +47,8 @@ namespace Acetamide
 		State IrcAccountState_;
 		
 		QString Nick_;
+		QList<NickNameData> NickNames_;
+		QList<ServerInfoData> ServersInfo_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
@@ -59,6 +61,8 @@ namespace Acetamide
 
 		QString GetAccountName () const;
 		QString GetOurNick () const;
+		QList<NickNameData> GetNickNames () const;
+		QList<ServerInfoData> GetServersInfo () const;
 // 		QString GetHost () const;
 // 		int GetPort () const;
 		void RenameAccount (const QString&);

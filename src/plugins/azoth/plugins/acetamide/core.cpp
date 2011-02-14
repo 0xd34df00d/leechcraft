@@ -96,11 +96,8 @@ namespace Acetamide
 
 	void Core::CreateDefaultAccount ()
 	{
-		qsrand (time (NULL));
-		
 		DefaultAccount_ = new IrcAccount (tr ("DefaultIrcAccount"), IrcProtocol_.get ());
 		QList<NickNameData> defaultAcc = DefaultAccount_->ReadNicknameSettings ("DefaultIrcAccount_Nicknames");
-		
 		if (!defaultAcc.isEmpty ())
 		{
 			if (defaultAcc.first ().Nicks_.isEmpty ())
