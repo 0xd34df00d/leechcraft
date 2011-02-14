@@ -19,3 +19,4 @@ src/data/leechcraft.1.gz
 *~
 dummyfile.cpp
 *.kdev4
+*.cxx
