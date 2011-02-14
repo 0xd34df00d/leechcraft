@@ -123,26 +123,36 @@ namespace LeechCraft
 					 * installed into ~/.leechcraft/plugins/scriptable/$language
 					 */
 					TPlugin,
+
 					/** @brief Translation (or a set of translations).
 					 * 
 					 * Contents of packages of this type would be
 					 * installed into ~/.leechcraft/translations
 					 */
 					TTranslation,
+
 					/** @brief Iconset package.
 					 * 
 					 * Contents of packages of this type would be
 					 * installed into ~/.leechcraft/icons
 					 */
 					TIconset,
+
 					/** @brief Plain data package.
 					 * 
-					 * Use this if none of the above applies.
+					 * Use this if nothing else is appropriate.
 					 * 
 					 * Contents of packages of this type would be
 					 * installed into ~/.leechcraft/data
 					 */
-					TData
+					TData,
+					
+					/** @brief Theme package.
+					 * 
+					 * Contents of packages of this type would be
+					 * installed into ~/.leechcraft/data
+					 */
+					TTheme
 				} Type_;
 				QString Language_;
 				QString Description_;
