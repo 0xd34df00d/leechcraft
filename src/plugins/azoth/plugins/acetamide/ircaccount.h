@@ -68,8 +68,6 @@ namespace Acetamide
 		void RenameAccount (const QString&);
 		
 		QByteArray GetAccountID () const;
-		void SetAccountID ();
-		
 		void OpenConfigurationDialog ();
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
@@ -80,13 +78,14 @@ namespace Acetamide
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
-
+		void JoinRoom (const QString&, int, const QString&, const QString&, const QString&, bool);
+	private:
+		void SetAccountID ();
 // 		QString GetJID () const;
 // 		QString GetNick () const;
-// 		void JoinRoom (const QString&, const QString&, const QString&);
 // 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 // 		GlooxCLEntry* CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
-
+	public:
 		QByteArray Serialize () const;
 		static IrcAccount* Deserialize (const QByteArray&, QObject*);
 
@@ -95,9 +94,9 @@ namespace Acetamide
 // 				const QXmppRosterIq::Item&);
 // 		QString GetPassword (bool authFailure = false);
 		void SaveConnectionSettings (const QList<ServerInfoData>&, const QString&);
-		QList<ServerInfoData> ReadConnectionSettings (const QString&);
+		QList<ServerInfoData> ReadConnectionSettings (const QString&) const;
 		void SaveNicknameSettings (const QList<NickNameData>&, const QString&);
-		QList<NickNameData> ReadNicknameSettings (const QString&);
+		QList<NickNameData> ReadNicknameSettings (const QString&) const;
 // 	public slots:
 // 		void handleEntryRemoved (QObject*);
 // 		void handleGotRosterItems (const QList<QObject*>&);
