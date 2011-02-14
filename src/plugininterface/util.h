@@ -71,6 +71,17 @@ namespace LeechCraft
 				return i.second == Object_;
 			}
 		};
+		
+		/** @brief Returns the given image in a Base64-encoded form.
+		 * 
+		 * The return result is suitable for inserting into <img>'s src
+		 * attribute as is.
+		 * 
+		 * @param[in] image The image to represent as Base64-encoded
+		 * form.
+		 * @return The source string.
+		 */
+		PLUGININTERFACE_API QString GetAsBase64Src (const QImage& image);
 
 		/** @brief Return the user-readable representation of the entity.
 		 *
