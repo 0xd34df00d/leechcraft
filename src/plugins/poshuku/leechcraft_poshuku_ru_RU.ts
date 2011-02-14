@@ -674,6 +674,11 @@
         <translation>&amp;Копировать ссылку</translation>
     </message>
     <message>
+        <location filename="customwebview.cpp" line="312"/>
+        <source>Open as link</source>
+        <translation>Открыть как ссылку</translation>
+    </message>
+    <message>
         <location filename="customwebview.cpp" line="315"/>
         <source>Open image here</source>
         <translation>Открыть изображение здесь</translation>
