@@ -21,7 +21,6 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include "interfaces/iclentry.h"
-#include "interfaces/iaccount.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "accountslistdialog.h"
@@ -65,41 +64,23 @@ namespace Azoth
 
 		CreateMenu ();
 
-		MenuChangeStatus_ = new QMenu (tr ("Change status"));
-		MenuChangeStatus_->addAction (tr ("Online"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SOnline));
-		MenuChangeStatus_->addAction (tr ("Free to chat"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SChat));
-		MenuChangeStatus_->addAction (tr ("Away"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SAway));
-		MenuChangeStatus_->addAction (tr ("DND"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SDND));
-		MenuChangeStatus_->addAction (tr ("Extended away"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SXA));
-		MenuChangeStatus_->addAction (tr ("Offline"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SOffline));
+		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()));
 		MenuChangeStatus_->addSeparator ();
 		MenuChangeStatus_->addAction (tr ("Custom..."),
 				this,
 				SLOT (handleChangeStatusRequested ()));
+		
+		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
+		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
+		UpdateFastStatusButton (SOnline);
+		connect (Ui_.FastStatusButton_->defaultAction (),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (applyFastStatus ()));
+		connect (Ui_.FastStatusText_,
+				SIGNAL (returnPressed ()),
+				this,
+				SLOT (applyFastStatus ()));
 	}
 	
 	QList<QAction*> MainWidget::GetMenuActions()
@@ -134,6 +115,49 @@ namespace Azoth
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleShowOffline (bool)));
+	}
+	
+	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot)
+	{
+		QMenu *result = new QMenu (tr ("Change status"));
+		result->addAction (tr ("Online"),
+				this,
+				slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SOnline));
+		result ->addAction (tr ("Free to chat"),
+				this,
+				slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SChat));
+		result ->addAction (tr ("Away"),
+				this,
+				slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SAway));
+		result ->addAction (tr ("DND"),
+				this,
+				slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SDND));
+		result ->addAction (tr ("Extended away"),
+				this,
+				slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SXA));
+		result ->addAction (tr ("Offline"),
+				this,
+				slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SOffline));
+		return result;
+	}
+	
+	void MainWidget::UpdateFastStatusButton (State state)
+	{
+		Ui_.FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
+		Ui_.FastStatusButton_->setProperty ("Azoth/TargetState",
+				QVariant::fromValue<State> (state));
 	}
 
 	void MainWidget::on_CLTree__activated (const QModelIndex& index)
@@ -243,6 +267,26 @@ namespace Azoth
 			acc->ChangeState (EntryStatus (ssd->GetState (),
 							ssd->GetStatusText ()));
 		}
+	}
+	
+	void MainWidget::fastStateChangeRequested ()
+	{
+		UpdateFastStatusButton (sender ()->
+					property ("Azoth/TargetState").value<State> ());
+		applyFastStatus ();
+	}
+	
+	void MainWidget::applyFastStatus ()
+	{
+		const QString& text = Ui_.FastStatusText_->text ();
+		State state = Ui_.FastStatusButton_->
+				property ("Azoth/TargetState").value<State> ();
+				
+		qDebug () << text << state << Core::Instance ().GetAccounts ().size ();
+				
+		EntryStatus status (state, text);
+		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+			acc->ChangeState (status);
 	}
 
 	void MainWidget::showAccountsList ()

@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_MAINWIDGET_H
 #define PLUGINS_AZOTH_MAINWIDGET_H
 #include <QWidget>
+#include "interfaces/iaccount.h"
 #include "ui_mainwidget.h"
 
 class QToolBar;
@@ -47,10 +48,14 @@ namespace Azoth
 		QList<QAction*> GetMenuActions ();
 	private:
 		void CreateMenu ();
+		QMenu* CreateStatusChangeMenu (const char*);
+		void UpdateFastStatusButton (State);
 	private slots:
 		void on_CLTree__activated (const QModelIndex&);
 		void on_CLTree__customContextMenuRequested (const QPoint&);
 		void handleChangeStatusRequested ();
+		void fastStateChangeRequested ();
+		void applyFastStatus ();
 
 		void showAccountsList ();
 		void handleAddContactRequested ();
