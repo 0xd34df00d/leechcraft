@@ -212,7 +212,7 @@ namespace LeechCraft
 					void UserFiltersModel::Remove (int index)
 					{
 						int pos = index;
-						bool isException;
+						bool isException = false;
 						SplitRow (&pos, &isException);
 						beginRemoveRows (QModelIndex (), index, index);
 						if (isException)
@@ -220,6 +220,7 @@ namespace LeechCraft
 						else
 							Filter_.FilterStrings_.removeAt (pos);
 						endRemoveRows ();
+						WriteSettings ();
 					}
 
 					void UserFiltersModel::SplitRow (int *row, bool *isException) const
