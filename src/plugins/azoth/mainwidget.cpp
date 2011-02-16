@@ -43,15 +43,15 @@ namespace Azoth
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 
-		connect (Core::Instance ().GetCLModel (),
+		connect (ProxyModel_,
 				SIGNAL (rowsInserted (const QModelIndex&, int, int)),
 				this,
 				SLOT (handleRowsInserted (const QModelIndex&, int, int)));
-		connect (Core::Instance ().GetCLModel (),
+		connect (ProxyModel_,
 				SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
 				this,
 				SLOT (rebuildTreeExpansions ()));
-		connect (Core::Instance ().GetCLModel (),
+		connect (ProxyModel_,
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (rebuildTreeExpansions ()));
@@ -335,7 +335,7 @@ namespace Azoth
 
 	void MainWidget::handleRowsInserted (const QModelIndex& parent, int begin, int end)
 	{
-		const QAbstractItemModel *clModel = Core::Instance ().GetCLModel ();
+		const QAbstractItemModel *clModel = ProxyModel_;
 		for (int i = begin; i <= end; ++i)
 		{
 			const QModelIndex& index = clModel->index (i, 0, parent);
@@ -345,10 +345,13 @@ namespace Azoth
 
 				const bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
 				if (expanded)
-					Ui_.CLTree_->expand (index);
+					QMetaObject::invokeMethod (Ui_.CLTree_,
+							"expand",
+							Qt::QueuedConnection,
+							Q_ARG (QModelIndex, index));
 
 				if (clModel->rowCount (index))
-					handleRowsInserted (index, 0, index.model ()->rowCount (index) - 1);
+					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 		}
 	}
