@@ -47,7 +47,7 @@ namespace Azoth
 		AuthStatus AuthStatusFromString (const QString&) const;
 		QObject* GetAccount (const QString&) const;
 		QObject* GetEntry (const QString&, const QString&) const;
-		QString GetSelectedChatTemplate () const;
+		QString GetSelectedChatTemplate (QObject*) const;
 		void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&, bool, bool) const;
 		QList<QColor> GenerateColors (const QString&) const;
 		QString GetNickColor (const QString&, const QList<QColor>&) const;

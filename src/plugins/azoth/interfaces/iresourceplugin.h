@@ -137,7 +137,7 @@ namespace Azoth
 	public:
 		virtual ~IChatStyleResourceSource () {}
 		
-		virtual QString GetHTMLTemplate (const QString& style) const = 0;
+		virtual QString GetHTMLTemplate (const QString& style, QObject *entry) const = 0;
 		
 		virtual bool AppendMessage (QWebFrame *frame, QObject *message,
 				const QString& color, bool isHightlightMsg, bool isActiveChat) = 0;

@@ -46,9 +46,24 @@ namespace StandardStyles
 		return StylesLoader_->GetSubElemModel ();
 	}
 	
-	QString StandardStyleSource::GetHTMLTemplate (const QString& pack) const
+	QString StandardStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj) const
 	{
-		Util::QIODevice_ptr dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.html"));
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		
+		Util::QIODevice_ptr dev;
+		if (entry && entry->GetEntryType () == ICLEntry::ETMUC)
+			dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.muc.html"));
+		if (!dev)
+			dev = StylesLoader_->Load (QStringList (pack + "/viewcontents.html"));
+		
+		if (!dev)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "could not load HTML template for pack"
+					<< pack;
+			return QString ();
+		}
+
 		if (!dev->open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO

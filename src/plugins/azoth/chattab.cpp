@@ -147,7 +147,7 @@ namespace Azoth
 	
 	void ChatTab::PrepareTheme ()
 	{
-		QString data = Core::Instance ().GetSelectedChatTemplate ();
+		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
 		if (data.isEmpty ())
 		{
 			QFile file (":/plugins/azoth/resources/html/viewcontents.html");

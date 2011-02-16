@@ -131,7 +131,7 @@ namespace Azoth
 		 */
 		virtual QObject* GetEntry (const QString& entryID, const QString& accID) const = 0;
 		
-		virtual QString GetSelectedChatTemplate () const = 0;
+		virtual QString GetSelectedChatTemplate (QObject*) const = 0;
 		
 		virtual void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&, bool, bool) const = 0;
 		

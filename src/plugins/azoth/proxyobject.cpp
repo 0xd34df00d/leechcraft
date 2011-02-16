@@ -272,9 +272,9 @@ namespace Azoth
 		return Core::Instance ().GetEntry (entryID);
 	}
 	
-	QString ProxyObject::GetSelectedChatTemplate () const
+	QString ProxyObject::GetSelectedChatTemplate (QObject *entry) const
 	{
-		return Core::Instance ().GetSelectedChatTemplate ();
+		return Core::Instance ().GetSelectedChatTemplate (entry);
 	}
 	
 	void ProxyObject::AppendMessageByTemplate (QWebFrame *frame,
