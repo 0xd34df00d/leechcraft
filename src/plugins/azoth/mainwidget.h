@@ -42,13 +42,15 @@ namespace Azoth
 		SortFilterProxyModel *ProxyModel_;
 
 		QMenu *MenuChangeStatus_;
+		QMenu *TrayChangeStatus_;
 	public:
 		MainWidget (QWidget* = 0);
 		
 		QList<QAction*> GetMenuActions ();
+		QMenu* GetChangeStatusMenu () const;
 	private:
 		void CreateMenu ();
-		QMenu* CreateStatusChangeMenu (const char*);
+		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
 		void UpdateFastStatusButton (State);
 	private slots:
 		void on_CLTree__activated (const QModelIndex&);
