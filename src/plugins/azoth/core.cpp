@@ -698,7 +698,9 @@ namespace Azoth
 				.arg (PluginProxyObject_->StateToString (entry->GetStatus ().State_))
 				.arg (entry->GetStatus ().StatusString_)
 				.arg (tr ("In groups: ") + entry->Groups ().join ("; "));
-		Q_FOREACH (const QString& variant, entry->Variants ())
+				
+		const QStringList& variants = entry->Variants ();
+		Q_FOREACH (const QString& variant, variants)
 		{
 			if (variant.isEmpty ())
 				continue;
@@ -709,15 +711,15 @@ namespace Azoth
 					.arg (entry->GetStatus (variant).StatusString_);
 		}
 
-		bool isPrimary = variant.isNull () ||
-				entry->Variants ().first () == variant;
+		State state = SOffline;
+		if (variants.size ())
+			state = entry->GetStatus (variants.first ()).State_;
+		const QIcon& icon = GetIconForState (state);
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
 			item->setToolTip (tip);
-			if (isPrimary ||
-					status.State_ == SOffline)
-				item->setIcon (GetIconForState (status.State_));
+			item->setIcon (icon);
 		}
 		
 		const QString& id = entry->GetEntryID ();
