@@ -324,32 +324,32 @@ namespace Azoth
 	{
 		QString BuildPath (const QModelIndex& index)
 		{
-			QString path = index.data ().toString ();
+			QString path = "CLTreeState/Expanded/" + index.data ().toString ();
 			QModelIndex parent = index;
 			while ((parent = parent.parent ()).isValid ())
 				path.prepend (parent.data ().toString () + "/");
-			path = path.toUtf8 ().toBase64 ();
-			path.prepend ("CLTreeState/Expanded/");
+			path = path.toUtf8 ().toBase64 ().replace ('/', '_');
 			return path;
 		}
 	}
 
 	void MainWidget::handleRowsInserted (const QModelIndex& parent, int begin, int end)
 	{
+		const QAbstractItemModel *clModel = Core::Instance ().GetCLModel ();
 		for (int i = begin; i <= end; ++i)
 		{
-			const QModelIndex& index = Core::Instance ().GetCLModel ()->index (i, 0, parent);
-			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETContact)
-				continue;
+			const QModelIndex& index = clModel->index (i, 0, parent);
+			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETCategory)
+			{
+				const QString& path = BuildPath (index);
 
-			QString path = BuildPath (index);
+				const bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
+				if (expanded)
+					Ui_.CLTree_->expand (index);
 
-			bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
-			if (expanded)
-				Ui_.CLTree_->setExpanded (index, true);
-
-			if (index.model ()->rowCount (index))
-				handleRowsInserted (index, 0, index.model ()->rowCount (index) - 1);
+				if (clModel->rowCount (index))
+					handleRowsInserted (index, 0, index.model ()->rowCount (index) - 1);
+			}
 		}
 	}
 
@@ -364,7 +364,7 @@ namespace Azoth
 	{
 		void SetExpanded (const QModelIndex& idx, bool expanded)
 		{
-			XmlSettingsManager::Instance ().setProperty (BuildPath (idx).toUtf8 ().constData (), true);
+			XmlSettingsManager::Instance ().setProperty (BuildPath (idx).toUtf8 (), expanded);
 		}
 	}
 
