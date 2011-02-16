@@ -56,6 +56,11 @@ namespace Azoth
 				this,
 				SLOT (rebuildTreeExpansions ()));
 
+		QMetaObject::invokeMethod (Ui_.CLTree_,
+				"expandToDepth",
+				Qt::QueuedConnection,
+				Q_ARG (int, 0));
+		
 		if (Core::Instance ().GetCLModel ()->rowCount ())
 			QMetaObject::invokeMethod (this,
 					"handleRowsInserted",
@@ -63,11 +68,6 @@ namespace Azoth
 					Q_ARG (QModelIndex, QModelIndex ()),
 					Q_ARG (int, 0),
 					Q_ARG (int, Core::Instance ().GetCLModel ()->rowCount () - 1));
-
-		QMetaObject::invokeMethod (Ui_.CLTree_,
-				"expandToDepth",
-				Qt::QueuedConnection,
-				Q_ARG (int, 1));
 
 		CreateMenu ();
 
@@ -288,8 +288,6 @@ namespace Azoth
 		const QString& text = Ui_.FastStatusText_->text ();
 		State state = Ui_.FastStatusButton_->
 				property ("Azoth/TargetState").value<State> ();
-				
-		qDebug () << text << state << Core::Instance ().GetAccounts ().size ();
 				
 		EntryStatus status (state, text);
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
