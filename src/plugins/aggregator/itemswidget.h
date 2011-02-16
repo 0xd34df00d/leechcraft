@@ -107,6 +107,7 @@ namespace LeechCraft
 				void on_ActionItemLinkOpen__triggered ();
 				void on_CategoriesSplitter__splitterMoved ();
 				void currentItemChanged ();
+				void checkSelected ();
 				void makeCurrentItemVisible ();
 				void updateItemsFilter ();
 				void selectorVisiblityChanged ();
