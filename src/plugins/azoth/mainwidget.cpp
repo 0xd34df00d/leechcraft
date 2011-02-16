@@ -56,11 +56,18 @@ namespace Azoth
 				this,
 				SLOT (rebuildTreeExpansions ()));
 
-		Ui_.CLTree_->expandAll ();
-
 		if (Core::Instance ().GetCLModel ()->rowCount ())
-			handleRowsInserted (QModelIndex (),
-					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
+			QMetaObject::invokeMethod (this,
+					"handleRowsInserted",
+					Qt::QueuedConnection,
+					Q_ARG (QModelIndex, QModelIndex ()),
+					Q_ARG (int, 0),
+					Q_ARG (int, Core::Instance ().GetCLModel ()->rowCount () - 1));
+
+		QMetaObject::invokeMethod (Ui_.CLTree_,
+				"expandToDepth",
+				Qt::QueuedConnection,
+				Q_ARG (int, 1));
 
 		CreateMenu ();
 
