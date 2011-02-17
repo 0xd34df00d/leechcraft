@@ -213,7 +213,6 @@ namespace Xoox
 
 		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
 		MUCManager_->joinRoom (jid, nick);
-		//rh->SetState (LastState_);
 
 		RoomHandlers_ [jid] = rh;
 
@@ -427,7 +426,14 @@ namespace Xoox
 		QObjectList items;
 		Q_FOREACH (const QString& bareJid,
 				rm.getRosterBareJids ())
-			items << CreateCLEntry (rm.getRosterEntry (bareJid));
+		{
+			QXmppRosterIq::Item re = rm.getRosterEntry (bareJid);
+			GlooxCLEntry *entry = CreateCLEntry (re);
+			items << entry;
+			QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (re.bareJid ());
+			Q_FOREACH (const QString& resource, presences.keys ())
+				entry->SetClientInfo (resource, presences [resource]);
+		}
 		emit gotRosterItems (items);
 	}
 
