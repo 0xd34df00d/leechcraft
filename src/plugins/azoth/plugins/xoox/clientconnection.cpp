@@ -160,7 +160,7 @@ namespace Xoox
 				conf.setHost (host);
 			if (port >= 0)
 				conf.setPort (port);
-			Client_->connectToServer (conf);
+			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;
 		}
