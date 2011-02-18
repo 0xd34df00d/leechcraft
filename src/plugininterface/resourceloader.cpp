@@ -134,6 +134,11 @@ namespace LeechCraft
 			boost::shared_ptr<QFile> result (new QFile (path));
 			return result;
 		}
+		
+		QIODevice_ptr ResourceLoader::Load (const QString& pathVariant) const
+		{
+			return Load (QStringList (pathVariant));
+		}
 
 		QAbstractItemModel* ResourceLoader::GetSubElemModel () const
 		{
