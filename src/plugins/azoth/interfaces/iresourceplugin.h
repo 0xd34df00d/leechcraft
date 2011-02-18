@@ -63,35 +63,35 @@ namespace Azoth
 	/** @brief Interface for smile resource loaders.
 	 * 
 	 * This interface should be used for resource sources that deal with
-	 * loading different smile packs. For example, plugins that enable
-	 * loading of Psi-style or QIP-style smile packs would return
-	 * objects implementing this interface from the corresponding
+	 * loading different emoticon packs. For example, plugins that
+	 * enable loading of Psi-style or QIP-style emoticon packs would
+	 * return objects implementing this interface from the corresponding
 	 * IResourcePlugin::GetResourceSources() method.
 	 */
-	class ISmileResourceSource : virtual public IResourceSource
+	class IEmoticonResourceSource : virtual public IResourceSource
 	{
 	public:
-		virtual ~ISmileResourceSource () {}
+		virtual ~IEmoticonResourceSource () {}
 
-		/** @brief Returns the strings that are replaceable with smiles
-		 * in the given smile pack.
+		/** @brief Returns the strings that are replaceable with
+		 * emoticons in the given pack.
 		 * 
 		 * This function is used to obtain the list of strings that
-		 * could be replaced by a smile icon in the given smile pack.
+		 * could be replaced by an emoticonin the given emoticon pack.
 		 * This function should return all possible variants for each
-		 * smile icon, for example, ":)", ":-)" and "(:" for the same
+		 * emoticon, for example, ":)", ":-)" and "(:" for the same
 		 * icon.
 		 * 
-		 * @param[in] pack The smile pack to query, which is one of
+		 * @param[in] pack The emoticon pack to query, which is one of
 		 * items returned from GetOptionsModel().
-		 * @return List of smile strings supported by this pack.
+		 * @return List of emoticon strings supported by this pack.
 		 * 
 		 * @sa IResourceSource::GetOptionsModel()
 		 */
-		virtual QStringList GetSmileStrings (const QString& pack) const = 0;
+		virtual QStringList GetEmoticonStrings (const QString& pack) const = 0;
 
-		/** @brief Returns smiles and their string representations from
-		 * the given smile pack.
+		/** @brief Returns emoticons and their string representations from
+		 * the given emoticon pack.
 		 * 
 		 * The returned map should contain all the smiles present in the
 		 * pack and their string representations — that is, the string
@@ -176,8 +176,8 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISmileResourceSource,
-		"org.Deviant.LeechCraft.Azoth.ISmileResourceSource/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IEmoticonResourceSource,
+		"org.Deviant.LeechCraft.Azoth.IEmoticonResourceSource/1.0");
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IChatStyleResourceSource,
 		"org.Deviant.LeechCraft.Azoth.IChatStyleResourceSource/1.0");
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IResourcePlugin,

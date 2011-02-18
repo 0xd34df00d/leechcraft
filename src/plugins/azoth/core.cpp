@@ -90,7 +90,7 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
-	, SmilesOptionsModel_ (new SourceTrackingModel<ISmileResourceSource> (QStringList (tr ("Smile pack"))))
+	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
@@ -388,7 +388,7 @@ namespace Azoth
 
 		Q_FOREACH (QObject *object, irp->GetResourceSources ())
 		{
-			ISmileResourceSource *smileSrc = qobject_cast<ISmileResourceSource*> (object);
+			IEmoticonResourceSource *smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
 			if (smileSrc)
 				AddSmileResourceSource (smileSrc);
 			
@@ -399,7 +399,7 @@ namespace Azoth
 		}
 	}
 	
-	void Core::AddSmileResourceSource (ISmileResourceSource *src)
+	void Core::AddSmileResourceSource (IEmoticonResourceSource *src)
 	{
 		SmilesOptionsModel_->AddSource (src);
 	}
