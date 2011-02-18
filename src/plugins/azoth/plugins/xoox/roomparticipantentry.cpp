@@ -36,6 +36,7 @@ namespace Xoox
 	: EntryBase (account)
 	, Nick_ (nick)
 	, RoomHandler_ (rh)
+	, ID_ (rh->GetRoomJID () + "/" + nick)
 	, Affiliation_ (QXmppMucAdminIq::Item::UnspecifiedAffiliation)
 	, Role_ (QXmppMucAdminIq::Item::UnspecifiedRole)
 	{
@@ -74,7 +75,7 @@ namespace Xoox
 
 	QString RoomParticipantEntry::GetEntryID () const
 	{
-		return RoomHandler_->GetRoomJID () + "/" + Nick_;
+		return ID_;
 	}
 
 	QStringList RoomParticipantEntry::Groups () const
