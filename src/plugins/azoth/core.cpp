@@ -53,6 +53,34 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	QDataStream& operator<< (QDataStream& out, const EntryStatus& status)
+	{
+		quint8 version = 1;
+		out << version
+			<< static_cast<quint8> (status.State_)
+			<< status.StatusString_;
+		return out;
+	}
+	
+	QDataStream& operator>> (QDataStream& in, EntryStatus& status)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+		
+		quint8 state;
+		in >> state
+			>> status.StatusString_;
+		status.State_ = static_cast<State> (state);
+		return in;
+	}
+
 	Core::Core ()
 	: CLModel_ (new QStandardItemModel (this))
 	, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
@@ -739,7 +767,6 @@ namespace Azoth
 		
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
-		qDebug () << filename << StatusIconLoader_->GetIconPath (filename);
 		const QIcon& fileIcon = QIcon (StatusIconLoader_->GetIconPath (filename));
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
@@ -1408,6 +1435,24 @@ namespace Azoth
 				this,
 				SLOT (handleAccountStatusChanged (const EntryStatus&)));
 
+		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		if (proto)
+		{
+			const QByteArray& id = proto->GetProtocolID () + account->GetAccountID ();
+			const QVariant& var = XmlSettingsManager::Instance ().property (id);
+			if (!var.isNull () && var.canConvert<QByteArray> ())
+			{
+				EntryStatus s;
+				QDataStream stream (var.toByteArray ());
+				stream >> s;
+				account->ChangeState (s);
+			}
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "account's parent proto isn't IProtocol"
+					<< account->GetParentProtocol ();
+		
 		QObject *xferMgr = account->GetTransferManager ();
 		if (xferMgr)
 		{
@@ -1525,6 +1570,33 @@ namespace Azoth
 
 	void Core::handleAccountStatusChanged (const EntryStatus& status)
 	{
+		IAccount *acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not an IAccount"
+					<< sender ();
+			return;
+		}
+		
+		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		if (!proto)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account's proto is not a IProtocol"
+					<< acc->GetParentProtocol ();
+			return;
+		}
+
+		const QByteArray& id = proto->GetProtocolID () + acc->GetAccountID ();
+		QByteArray serializedStatus;
+		{
+			QDataStream stream (&serializedStatus, QIODevice::WriteOnly);
+			stream << status;
+		}
+		XmlSettingsManager::Instance ().setProperty (id,
+				serializedStatus);
+		
 		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
 		{
 			QStandardItem *item = CLModel_->item (i);
