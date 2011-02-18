@@ -188,6 +188,7 @@ namespace Xoox
 				IMessage::MSTParticipantRoleAffiliationChange);
 		CLEntry_->HandleMessage (message);
 	}
+	*/
 
 	void RoomHandler::MakeNickChangeMessage (const QString& oldNick, const QString& newNick)
 	{
@@ -202,10 +203,12 @@ namespace Xoox
 				IMessage::MSTParticipantNickChange);
 		CLEntry_->HandleMessage (message);
 	}
-	*/
 
 	void RoomHandler::HandlePresence (const QXmppPresence& pres, const QString& nick)
 	{
+		if (pres.type () == QXmppPresence::Unavailable &&
+				PendingNickChanges_.remove (nick))
+			return;
 		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
@@ -225,14 +228,26 @@ namespace Xoox
 				xmppSt.statusText ());
 		entry->SetStatus (status, QString ());
 
-		if (!existed)
+		if (!PendingNickChanges_.remove (nick))
 		{
-			Account_->GetClientConnection ()->
-					FetchVCard (RoomJID_ + "/" + nick);
-			MakeJoinMessage (pres, nick);
+			if (!existed)
+			{	
+					Account_->GetClientConnection ()->
+						FetchVCard (RoomJID_ + "/" + nick);
+					MakeJoinMessage (pres, nick);
+			}
+			else
+				MakeStatusChangedMessage (pres, nick);
 		}
-		else
-			MakeStatusChangedMessage (pres, nick);
+	}
+	
+	void RoomHandler::HandleNickChange (const QString& oldNick, const QString& newNick)
+	{
+		MakeNickChangeMessage (oldNick, newNick);
+		Nick2Entry_ [newNick] = Nick2Entry_.take (oldNick);
+		Nick2Entry_ [newNick]->SetEntryName (newNick);
+		PendingNickChanges_ << oldNick;
+		PendingNickChanges_ << newNick;
 	}
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)

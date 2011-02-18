@@ -123,6 +123,10 @@ namespace Xoox
 				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
 				this,
 				SLOT (handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)));
+		connect (MUCManager_,
+				SIGNAL (roomParticipantNickChanged (const QString&, const QString&, const QString&)),
+				this,
+				SLOT (handleRoomPartNickChange (const QString&, const QString&, const QString&)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -571,6 +575,21 @@ namespace Xoox
 
 		RoomHandlers_ [roomJid]->SetState (LastState_);
 		RoomHandlers_ [roomJid]->UpdatePerms (perms);
+	}
+	
+	void ClientConnection::handleRoomPartNickChange (const QString& roomJid,
+			const QString& oldNick, const QString& newNick)
+	{
+		if (!RoomHandlers_.contains (roomJid))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no RoomHandler for"
+					<< roomJid
+					<< RoomHandlers_.keys ();
+			return;
+		}
+		
+		RoomHandlers_ [roomJid]->HandleNickChange (oldNick, newNick);
 	}
 
 	/** @todo Handle action reasons in QXmppPresence::Subscribe and

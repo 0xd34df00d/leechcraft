@@ -137,6 +137,7 @@ namespace Xoox
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
 		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
+		void handleRoomPartNickChange (const QString&, const QString&, const QString&);
 	private:
 		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
