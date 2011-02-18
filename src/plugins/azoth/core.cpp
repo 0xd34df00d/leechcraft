@@ -1668,6 +1668,9 @@ namespace Azoth
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 			item->setText (newName);
+			
+		if (entry->Variants ().size ())
+			HandleStatusChanged (entry->GetStatus (), entry, entry->Variants ().first ());
 	}
 
 	void Core::handleEntryGroupsChanged (QStringList newGroups)
