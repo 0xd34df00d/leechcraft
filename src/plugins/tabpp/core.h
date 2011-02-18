@@ -54,13 +54,13 @@ namespace LeechCraft
 				int Current_;
 
 				Core ();
-
+			public:
 				enum CustomRoles
 				{
 					CRRawPath = Qt::UserRole + 100,
 					CRWidget
 				};
-			public:
+
 				static Core& Instance ();
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
