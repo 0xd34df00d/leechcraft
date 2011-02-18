@@ -49,6 +49,11 @@
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
 
+uint qHash (const QImage& image)
+{
+	return image.cacheKey ();
+}
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -604,6 +609,8 @@ namespace Azoth
 				body.replace (pos, image.length (), str);
 				pos += str.length ();
 			}
+			
+			body = HandleSmiles (body);
 
 			proxy.reset (new Util::DefaultHookProxy);
 			emit hookFormatBodyEnd (proxy, this, body, msgObj);
@@ -613,6 +620,27 @@ namespace Azoth
 		return proxy->IsCancelled () ?
 				proxy->GetReturnValue ().toString () :
 				body;
+	}
+	
+	QString Core::HandleSmiles (QString body) const
+	{
+		const QString& pack = XmlSettingsManager::Instance ()
+				.property ("SmileIcons").toString ();
+
+		IEmoticonResourceSource *src = SmilesOptionsModel_->GetSourceForOption (pack);
+		if (!src)
+			return body;
+		
+		const QString& img = QString ("<img src=\"%1\" alt=\"\" />");
+		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
+		{
+			if (!body.contains (str))
+				continue;
+			const QByteArray& rawData = src->GetImage (pack, str);
+			body.replace (str, img.arg (QString (Util::GetAsBase64Src (QImage::fromData (rawData)))));
+		}
+		
+		return body;
 	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,
