@@ -41,7 +41,7 @@ namespace Xoox
 
 		QString Nick_;
 		RoomHandler *RoomHandler_;
-		QString ID_;
+		const QString ID_;
 
 		QXmppMucAdminIq::Item::Affiliation Affiliation_;
 		QXmppMucAdminIq::Item::Role Role_;
