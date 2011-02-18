@@ -18,6 +18,7 @@
 
 #include "nativeemoticons.h"
 #include <QIcon>
+#include "nativeemoticonssource.h"
 
 namespace LeechCraft
 {
@@ -67,7 +68,7 @@ namespace NativeEmoticons
 	
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		return QObjectList ();
+		return QObjectList () << new NativeEmoticonsSource ();
 	}
 }
 }

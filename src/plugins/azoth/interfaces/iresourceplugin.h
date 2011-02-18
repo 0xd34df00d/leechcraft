@@ -26,6 +26,8 @@
 class QAbstractItemModel;
 class QWebFrame;
 
+uint qHash (const QImage&);
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -88,7 +90,7 @@ namespace Azoth
 		 * 
 		 * @sa IResourceSource::GetOptionsModel()
 		 */
-		virtual QStringList GetEmoticonStrings (const QString& pack) const = 0;
+		virtual QSet<QString> GetEmoticonStrings (const QString& pack) const = 0;
 
 		/** @brief Returns emoticons and their string representations from
 		 * the given emoticon pack.
@@ -105,7 +107,7 @@ namespace Azoth
 		 * 
 		 * @sa IResourceSource::GetOptionsModel()
 		 */
-		virtual QMap<QImage, QString> GetReprImages (const QString& pack) const = 0;
+		virtual QHash<QImage, QString> GetReprImages (const QString& pack) const = 0;
 
 		/** @brief Returns the data corresponding to the given smile.
 		 * 
