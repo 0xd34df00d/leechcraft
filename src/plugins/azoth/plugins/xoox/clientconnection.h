@@ -100,7 +100,7 @@ namespace Xoox
 		void RequestInfo (const QString&) const;
 
 		void Update (const QXmppRosterIq::Item&);
-		void Update (const QXmppMucAdminIq::Item&);
+		void Update (const QXmppMucAdminIq::Item&, const QString& room);
 
 		void AckAuth (QObject*, bool);
 		void Subscribe (const QString&,

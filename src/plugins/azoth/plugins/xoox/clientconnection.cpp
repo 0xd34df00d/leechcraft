@@ -266,9 +266,10 @@ namespace Xoox
 		Client_->sendPacket (iq);
 	}
 
-	void ClientConnection::Update (const QXmppMucAdminIq::Item& item)
+	void ClientConnection::Update (const QXmppMucAdminIq::Item& item, const QString& room)
 	{
 		QXmppMucAdminIq iq;
+		iq.setTo (room);
 		iq.setType (QXmppIq::Set);
 		iq.setItems (QList<QXmppMucAdminIq::Item> () << item);
 		Client_->sendPacket (iq);

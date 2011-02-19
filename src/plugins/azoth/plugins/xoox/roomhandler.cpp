@@ -434,7 +434,7 @@ namespace Xoox
 
 		QXmppMucAdminIq::Item item;
 		item.setNick (nick);
-		Account_->GetClientConnection ()->Update (item);
+		Account_->GetClientConnection ()->Update (item, RoomJID_);
 	}
 
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
@@ -444,7 +444,7 @@ namespace Xoox
 		item.setNick (entry->GetNick ());
 		item.setReason (reason);
 		item.setAffiliation (static_cast<QXmppMucAdminIq::Item::Affiliation> (newAff));
-		Account_->GetClientConnection ()->Update (item);
+		Account_->GetClientConnection ()->Update (item, RoomJID_);
 	}
 
 	void RoomHandler::SetRole (RoomParticipantEntry *entry,
@@ -454,7 +454,7 @@ namespace Xoox
 		item.setNick (entry->GetNick ());
 		item.setReason (reason);
 		item.setRole (static_cast<QXmppMucAdminIq::Item::Role> (newRole));
-		Account_->GetClientConnection ()->Update (item);
+		Account_->GetClientConnection ()->Update (item, RoomJID_);
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
