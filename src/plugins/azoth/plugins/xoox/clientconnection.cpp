@@ -84,7 +84,7 @@ namespace Xoox
 				this,
 				SLOT (handleError (QXmppClient::Error)));
 		connect (Client_,
-				 SIGNAL (iqReceived (const QXmppIq&)),
+				SIGNAL (iqReceived (const QXmppIq&)),
 				this,
 				SLOT (handleIqReceived (const QXmppIq&)));
 		connect (Client_,
@@ -127,6 +127,10 @@ namespace Xoox
 				SIGNAL (roomParticipantNickChanged (const QString&, const QString&, const QString&)),
 				this,
 				SLOT (handleRoomPartNickChange (const QString&, const QString&, const QString&)));
+		connect (MUCManager_,
+				SIGNAL (roomPresenceChanged (const QString&, const QString&, const QXmppPresence&)),
+				this,
+				SLOT (handleRoomPresenceChanged (const QString&, const QString&, const QXmppPresence&)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -515,17 +519,27 @@ namespace Xoox
 		{
 			if (ODSEntries_.contains (jid))
 				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
-			else if (RoomHandlers_.contains (jid))
-			{
-				RoomHandlers_ [jid]->HandlePresence (pres, resource);
-				return;
-			}
 			else
 				return;
 		}
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
+	}
+	
+	void ClientConnection::handleRoomPresenceChanged (const QString& room,
+			const QString& nick, const QXmppPresence& pres)
+	{
+		if (!RoomHandlers_.contains (room))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no room handler for"
+					<< room
+					<< nick;
+			return;
+		}
+		
+		RoomHandlers_ [room]->HandlePresence (pres, nick);
 	}
 
 	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
