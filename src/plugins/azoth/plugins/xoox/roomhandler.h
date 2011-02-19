@@ -76,6 +76,10 @@ namespace Xoox
 				IMUCEntry::MUCRole, const QString&);
 
 		void HandlePresence (const QXmppPresence&, const QString&);
+		void HandlePermsChanged (const QString&,
+				QXmppMucAdminIq::Item::Affiliation,
+				QXmppMucAdminIq::Item::Role,
+				const QString&);
 		void HandleNickChange (const QString&, const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
 		void UpdatePerms (const QList<QXmppMucAdminIq::Item>&);
@@ -93,6 +97,12 @@ namespace Xoox
 		void MakeJoinMessage (const QXmppPresence&, const QString&);
 		void MakeStatusChangedMessage (const QXmppPresence&, const QString&);
 		void MakeNickChangeMessage (const QString&, const QString&);
+		void MakeKickMessage (const QString&, const QString&);
+		void MakeBanMessage (const QString&, const QString&);
+		void MakePermsChangedMessage (const QString&,
+				QXmppMucAdminIq::Item::Affiliation,
+				QXmppMucAdminIq::Item::Role,
+				const QString&);
 		/*
 		void MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant);
 		*/

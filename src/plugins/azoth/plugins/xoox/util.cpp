@@ -33,7 +33,7 @@ namespace Util
 		switch (role)
 		{
 		case QXmppMucAdminIq::Item::NoRole:
-			return QObject::tr ("none");
+			return QObject::tr ("guest");
 		case QXmppMucAdminIq::Item::VisitorRole:
 			return QObject::tr ("visitor");
 		case QXmppMucAdminIq::Item::ParticipantRole:
@@ -52,7 +52,7 @@ namespace Util
 		case QXmppMucAdminIq::Item::OutcastAffiliation:
 			return QObject::tr ("outcast");
 		case QXmppMucAdminIq::Item::NoAffiliation:
-			return QObject::tr ("none");
+			return QObject::tr ("newcomer");
 		case QXmppMucAdminIq::Item::MemberAffiliation:
 			return QObject::tr ("member");
 		case QXmppMucAdminIq::Item::AdminAffiliation:

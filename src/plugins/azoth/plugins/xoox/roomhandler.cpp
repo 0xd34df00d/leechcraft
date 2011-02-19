@@ -191,6 +191,71 @@ namespace Xoox
 				IMessage::MSTParticipantNickChange);
 		CLEntry_->HandleMessage (message);
 	}
+	
+	void RoomHandler::MakeKickMessage (const QString& nick, const QString& reason)
+	{
+		QString msg;
+		if (reason.isEmpty ())
+			msg = tr ("%1 has been kicked")
+					.arg (nick);
+		else
+			msg = tr ("%1 has been kicked: %2")
+					.arg (nick)
+					.arg (reason);
+		
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTKickNotification);
+		CLEntry_->HandleMessage (message);
+	}
+
+	void RoomHandler::MakeBanMessage (const QString& nick, const QString& reason)
+	{
+		QString msg;
+		if (reason.isEmpty ())
+			msg = tr ("%1 has been banned")
+					.arg (nick);
+		else
+			msg = tr ("%1 has been banned: %2")
+					.arg (nick)
+					.arg (reason);
+		
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTBanNotification);
+		CLEntry_->HandleMessage (message);
+	}
+	
+	void RoomHandler::MakePermsChangedMessage (const QString& nick,
+			QXmppMucAdminIq::Item::Affiliation aff,
+			QXmppMucAdminIq::Item::Role role, const QString& reason)
+	{
+		const QString& affStr = Util::AffiliationToString (aff);
+		const QString& roleStr = Util::RoleToString (role);
+		QString msg;
+		if (reason.isEmpty ())
+			msg = tr ("%1 is now %2 and %3")
+					.arg (nick)
+					.arg (roleStr)
+					.arg (affStr);
+		else
+			msg = tr ("%1 is now %2 and %3: %2")
+					.arg (nick)
+					.arg (roleStr)
+					.arg (affStr)
+					.arg (reason);
+		
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantRoleAffiliationChange);
+		CLEntry_->HandleMessage (message);
+	}
 
 	void RoomHandler::HandlePresence (const QXmppPresence& pres, const QString& nick)
 	{
@@ -229,6 +294,30 @@ namespace Xoox
 			else
 				MakeStatusChangedMessage (pres, nick);
 		}
+	}
+	
+	void RoomHandler::HandlePermsChanged (const QString& nick,
+			QXmppMucAdminIq::Item::Affiliation aff,
+			QXmppMucAdminIq::Item::Role role, const QString& reason)
+	{
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		if (aff == QXmppMucAdminIq::Item::OutcastAffiliation ||
+			role == QXmppMucAdminIq::Item::NoRole)
+		{
+			Account_->handleEntryRemoved (entry.get ());
+			Nick2Entry_.remove (nick);
+			
+			if (aff == QXmppMucAdminIq::Item::OutcastAffiliation)
+				MakeBanMessage (nick, reason);
+			else
+				MakeKickMessage (nick, reason);
+			
+			return;
+		}
+		
+		entry->SetAffiliation (aff);
+		entry->SetRole (role);
+		MakePermsChangedMessage (nick, aff, role, reason);
 	}
 	
 	void RoomHandler::HandleNickChange (const QString& oldNick, const QString& newNick)

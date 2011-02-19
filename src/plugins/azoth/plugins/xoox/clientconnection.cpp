@@ -131,6 +131,16 @@ namespace Xoox
 				SIGNAL (roomPresenceChanged (const QString&, const QString&, const QXmppPresence&)),
 				this,
 				SLOT (handleRoomPresenceChanged (const QString&, const QString&, const QXmppPresence&)));
+		connect (MUCManager_,
+				SIGNAL (roomParticipantPermsChanged (const QString&, const QString&,
+						QXmppMucAdminIq::Item::Affiliation,
+						QXmppMucAdminIq::Item::Role,
+						const QString&)),
+				this,
+				SLOT (handleRoomParticipantPermsChanged (const QString&, const QString&,
+						QXmppMucAdminIq::Item::Affiliation,
+						QXmppMucAdminIq::Item::Role,
+						const QString&)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -604,6 +614,22 @@ namespace Xoox
 		}
 		
 		RoomHandlers_ [roomJid]->HandleNickChange (oldNick, newNick);
+	}
+	
+	void ClientConnection::handleRoomParticipantPermsChanged (const QString& roomJid,
+			const QString& nick, QXmppMucAdminIq::Item::Affiliation aff,
+			QXmppMucAdminIq::Item::Role role, const QString& reason)
+	{
+		if (!RoomHandlers_.contains (roomJid))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no RoomHandler for"
+					<< roomJid
+					<< RoomHandlers_.keys ();
+			return;
+		}
+		
+		RoomHandlers_ [roomJid]->HandlePermsChanged (nick, aff, role, reason);
 	}
 
 	/** @todo Handle action reasons in QXmppPresence::Subscribe and
