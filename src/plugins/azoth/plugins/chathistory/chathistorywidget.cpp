@@ -218,8 +218,6 @@ namespace ChatHistory
 				
 			HistoryViewModel_->appendRow (items);
 		}
-		
-		Ui_.HistView_->resizeColumnsToContents ();
 	}
 
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
