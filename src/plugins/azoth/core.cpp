@@ -27,6 +27,7 @@
 #include <QMetaMethod>
 #include <QInputDialog>
 #include <QMainWindow>
+#include <QStringListModel>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -117,6 +118,8 @@ namespace Azoth
 
 		ClientIconLoader_->AddLocalPrefix ();
 		ClientIconLoader_->AddGlobalPrefix ();
+		
+		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
 		qRegisterMetaType<IMessage*> ("IMessage*");
@@ -625,7 +628,9 @@ namespace Azoth
 	QString Core::HandleSmiles (QString body) const
 	{
 		const QString& pack = XmlSettingsManager::Instance ()
-				.property ("SmileIcons").toString ();
+				.property ("SmileIcons").toString ();				
+		if (pack.isEmpty ())
+			return body;
 
 		IEmoticonResourceSource *src = SmilesOptionsModel_->GetSourceForOption (pack);
 		if (!src)
