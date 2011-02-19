@@ -642,7 +642,7 @@ namespace Azoth
 			if (!body.contains (str))
 				continue;
 			const QByteArray& rawData = src->GetImage (pack, str);
-			body.replace (str, img.arg (QString (Util::GetAsBase64Src (QImage::fromData (rawData)))));
+			body.replace (str, img.arg (QString ("data:image/png;base64," + rawData.toBase64 ())));
 		}
 		
 		return body;
