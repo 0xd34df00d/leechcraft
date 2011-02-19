@@ -280,7 +280,6 @@ namespace Xoox
 		EntryStatus status (static_cast<State> (xmppSt.type ()),
 				xmppSt.statusText ());
 		const bool statusChanged = (status != entry->GetStatus (QString ()));
-		qDebug () << status.State_ << entry->GetStatus (QString ()).State_ << statusChanged;
 		if (statusChanged)
 			entry->SetStatus (status, QString ());
 
