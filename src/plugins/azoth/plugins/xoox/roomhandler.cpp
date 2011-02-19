@@ -111,19 +111,21 @@ namespace Xoox
 	 */
 	void RoomHandler::MakeJoinMessage (const QXmppPresence& , const QString& nick)
 	{
-		/*
-		QString affiliation = MUCManager_->getAffiliation (RoomJID_, nick);
-		QString role = MUCManager_->getRole (RoomJID_, nick);
-		*/
+		QString affiliation = Util::AffiliationToString (MUCManager_->getAffiliation (RoomJID_, nick));
+		QString role = Util::RoleToString (MUCManager_->getRole (RoomJID_, nick));
 		QString realJid = MUCManager_->getRealJid (RoomJID_, nick);
 		QString msg;
 		if (realJid.isEmpty ())
-			msg = tr ("%1 joined the room")
-					.arg (nick);
-		else
-			msg = tr ("%1 [%2] joined the room")
+			msg = tr ("%1 joined the room as %2 and %3")
 					.arg (nick)
-					.arg (realJid);
+					.arg (role)
+					.arg (affiliation);
+		else
+			msg = tr ("%1 (%2) joined the room as %3 and %4")
+					.arg (nick)
+					.arg (realJid)
+					.arg (role)
+					.arg (affiliation);
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
@@ -153,31 +155,6 @@ namespace Xoox
 	}
 
 	/*
-	void RoomHandler::MakeStatusChangedMessage (const gloox::MUCRoomParticipant part,
-			const gloox::Presence& presence)
-	{
-		const QString& nick = NickFromJID (*part.nick);
-		State state = static_cast<State> (presence.presence ());
-
-		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
-
-		QString msg = tr ("%1 changed status to %2")
-			.arg (nick)
-			.arg (proxy->StateToString (state));
-
-		if (part.status.size ())
-			msg += QString (" (%1)")
-				.arg (QString::fromUtf8 (part.status.c_str ()));
-
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
-				CLEntry_,
-				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantStatusChange);
-		CLEntry_->HandleMessage (message);
-	}
-
 	void RoomHandler::MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant part)
 	{
 		const QString& nick = NickFromJID (*part.nick);
@@ -246,6 +223,8 @@ namespace Xoox
 				Account_->GetClientConnection ()->
 					FetchVCard (RoomJID_ + "/" + nick);
 				MakeJoinMessage (pres, nick);
+				entry->SetAffiliation (MUCManager_->getAffiliation (RoomJID_, nick));
+				entry->SetRole (MUCManager_->getRole (RoomJID_, nick));
 			}
 			else
 				MakeStatusChangedMessage (pres, nick);

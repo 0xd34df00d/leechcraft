@@ -28,6 +28,42 @@ namespace Xoox
 {
 namespace Util
 {
+	QString RoleToString (const QXmppMucAdminIq::Item::Role& role)
+	{
+		switch (role)
+		{
+		case QXmppMucAdminIq::Item::NoRole:
+			return QObject::tr ("none");
+		case QXmppMucAdminIq::Item::VisitorRole:
+			return QObject::tr ("visitor");
+		case QXmppMucAdminIq::Item::ParticipantRole:
+			return QObject::tr ("participant");
+		case QXmppMucAdminIq::Item::ModeratorRole:
+			return QObject::tr ("moderator");
+		default:
+			return QObject::tr ("unspecified");
+		}
+	}
+
+	QString AffiliationToString (const QXmppMucAdminIq::Item::Affiliation& affiliation)
+	{
+		switch (affiliation)
+		{
+		case QXmppMucAdminIq::Item::OutcastAffiliation:
+			return QObject::tr ("outcast");
+		case QXmppMucAdminIq::Item::NoAffiliation:
+			return QObject::tr ("none");
+		case QXmppMucAdminIq::Item::MemberAffiliation:
+			return QObject::tr ("member");
+		case QXmppMucAdminIq::Item::AdminAffiliation:
+			return QObject::tr ("admin");
+		case QXmppMucAdminIq::Item::OwnerAffiliation:
+			return QObject::tr ("owner");
+		default:
+			return QObject::tr ("unspecified");
+		}
+	}
+
 	namespace
 	{
 		struct Node2ClientID
