@@ -111,8 +111,19 @@ namespace Xoox
 	 */
 	void RoomHandler::MakeJoinMessage (const QXmppPresence& , const QString& nick)
 	{
-		QString msg = tr ("%1 joined the room")
-				.arg (nick);
+		/*
+		QString affiliation = MUCManager_->getAffiliation (RoomJID_, nick);
+		QString role = MUCManager_->getRole (RoomJID_, nick);
+		*/
+		QString realJid = MUCManager_->getRealJid (RoomJID_, nick);
+		QString msg;
+		if (realJid.isEmpty ())
+			msg = tr ("%1 joined the room")
+					.arg (nick);
+		else
+			msg = tr ("%1 [%2] joined the room")
+					.arg (nick)
+					.arg (realJid);
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
@@ -232,9 +243,9 @@ namespace Xoox
 		{
 			if (!existed)
 			{	
-					Account_->GetClientConnection ()->
-						FetchVCard (RoomJID_ + "/" + nick);
-					MakeJoinMessage (pres, nick);
+				Account_->GetClientConnection ()->
+					FetchVCard (RoomJID_ + "/" + nick);
+				MakeJoinMessage (pres, nick);
 			}
 			else
 				MakeStatusChangedMessage (pres, nick);
