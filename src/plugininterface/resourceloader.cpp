@@ -121,7 +121,8 @@ namespace LeechCraft
 			QStringList variants;
 			variants << basename + ".svg"
 					<< basename + ".png"
-					<< basename + ".jpg";
+					<< basename + ".jpg"
+					<< basename + ".gif";
 			return GetPath (variants);
 		}
 
