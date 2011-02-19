@@ -154,30 +154,6 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
-	/*
-	void RoomHandler::MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant part)
-	{
-		const QString& nick = NickFromJID (*part.nick);
-
-		const QString& byStr = part.actor ?
-				tr ("by %1").arg (NickFromJID (*part.actor)) :
-				QString ();
-
-		const QString& msg = tr ("%1 changed affiliation/role to %2/%3 %4")
-				.arg (nick)
-				.arg (Util::AffiliationToString (part.affiliation))
-				.arg (Util::RoleToString (part.role))
-				.arg (byStr);
-
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
-				CLEntry_,
-				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantRoleAffiliationChange);
-		CLEntry_->HandleMessage (message);
-	}
-	*/
-
 	void RoomHandler::MakeNickChangeMessage (const QString& oldNick, const QString& newNick)
 	{
 		QString msg = tr ("%1 changed nick to %2")
