@@ -131,7 +131,7 @@ namespace NativeEmoticons
 			}
 			
 			QByteArray name = arr.left (idx);
-			if (name.endsWith (".png"))
+			if (name.endsWith (".png") || name.endsWith (".gif"))
 				name.chop (4);
 			IconCache_ [arr.mid (idx + 1)] = name;
 		}
