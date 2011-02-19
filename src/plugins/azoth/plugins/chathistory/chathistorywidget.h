@@ -46,6 +46,7 @@ namespace ChatHistory
 		int Backpages_;
 		QString CurrentAccount_;
 		QString CurrentEntry_;
+		QToolBar *Toolbar_;
 
 		static Plugin *S_ParentMultiTabs_;
 
@@ -69,8 +70,8 @@ namespace ChatHistory
 		void handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 		void on_AccountBox__currentIndexChanged (int);
 		void handleContactSelected (const QModelIndex&);
-		void on_PrevHistory__released ();
-		void on_NextHistory__released ();
+		void previousHistory ();
+		void nextHistory ();
 	private:
 		void RequestLogs ();
 	signals:

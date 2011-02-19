@@ -46,6 +46,7 @@ namespace ChatHistory
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Backpages_ (0)
+	, Toolbar_ (new QToolBar (tr ("Chat history")))
 	{
 		Ui_.setupUi (this);
 		Ui_.HistView_->setModel (HistoryViewModel_);
@@ -76,6 +77,16 @@ namespace ChatHistory
 				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
 				this,
 				SLOT (handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&)));
+		
+		Toolbar_->addAction (tr ("Previous"),
+				this,
+				SLOT (previousHistory ()))->
+					setProperty ("ActionIcon", "back");
+		Toolbar_->addAction (tr ("Next"),
+				this,
+				SLOT (nextHistory ()))->
+					setProperty ("ActionIcon", "forward");
+
 		Core::Instance ()->GetOurAccounts ();
 	}
 	
@@ -86,7 +97,7 @@ namespace ChatHistory
 	
 	QToolBar* ChatHistoryWidget::GetToolBar () const
 	{
-		return 0;
+		return Toolbar_;
 	}
 	
 	void ChatHistoryWidget::NewTabRequested ()
@@ -227,7 +238,7 @@ namespace ChatHistory
 		RequestLogs ();
 	}
 	
-	void ChatHistoryWidget::on_PrevHistory__released()
+	void ChatHistoryWidget::previousHistory ()
 	{
 		if (HistoryViewModel_->rowCount () < Amount)
 			return;
@@ -236,7 +247,7 @@ namespace ChatHistory
 		RequestLogs ();
 	}
 	
-	void ChatHistoryWidget::on_NextHistory__released()
+	void ChatHistoryWidget::nextHistory ()
 	{
 		if (Backpages_ <= 0)
 			return;
