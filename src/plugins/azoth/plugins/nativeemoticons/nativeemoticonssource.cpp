@@ -130,7 +130,10 @@ namespace NativeEmoticons
 				continue;
 			}
 			
-			IconCache_ [arr.mid (idx + 1)] = arr.left (idx);
+			QByteArray name = arr.left (idx);
+			if (name.endsWith (".png"))
+				name.chop (4);
+			IconCache_ [arr.mid (idx + 1)] = name;
 		}
 		CachedPack_ = pack;
 		return IconCache_;
