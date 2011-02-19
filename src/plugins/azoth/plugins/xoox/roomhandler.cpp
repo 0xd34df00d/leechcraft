@@ -279,7 +279,9 @@ namespace Xoox
 		const QXmppPresence::Status& xmppSt = pres.status ();
 		EntryStatus status (static_cast<State> (xmppSt.type ()),
 				xmppSt.statusText ());
-		entry->SetStatus (status, QString ());
+		const bool statusChanged = status == entry->GetStatus (QString ());
+		if (statusChanged)
+			entry->SetStatus (status, QString ());
 
 		if (!PendingNickChanges_.remove (nick))
 		{
@@ -291,7 +293,7 @@ namespace Xoox
 				entry->SetAffiliation (MUCManager_->getAffiliation (RoomJID_, nick));
 				entry->SetRole (MUCManager_->getRole (RoomJID_, nick));
 			}
-			else
+			else if (statusChanged)
 				MakeStatusChangedMessage (pres, nick);
 		}
 	}
