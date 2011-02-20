@@ -26,6 +26,7 @@
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppTransferManager.h>
+#include <QXmppReconnectionManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -141,6 +142,15 @@ namespace Xoox
 						QXmppMucAdminIq::Item::Affiliation,
 						QXmppMucAdminIq::Item::Role,
 						const QString&)));
+		
+		connect (Client_->reconnectionManager (),
+				SIGNAL (reconnectingIn (int)),
+				this,
+				SLOT (handleReconnecting (int)));
+		connect (Client_->reconnectionManager (),
+				SIGNAL (reconnectingNow ()),
+				this,
+				SLOT (handleReconnecting ()));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -409,6 +419,12 @@ namespace Xoox
 	{
 		IsConnected_ = true;
 	}
+	
+	void ClientConnection::handleReconnecting (int timeout)
+	{
+		qDebug () << "Azoth: reconnecting in"
+				<< (timeout >= 0 ? QString::number (timeout).toLatin1 () : "now");
+	}
 
 	void ClientConnection::handleError (QXmppClient::Error error)
 	{
@@ -416,7 +432,8 @@ namespace Xoox
 		switch (error)
 		{
 		case QXmppClient::SocketError:
-			str = tr ("Socket error.");
+			str = tr ("Socket error %1.")
+					.arg (Client_->socketError ());
 			break;
 		case QXmppClient::KeepAliveError:
 			str = tr ("Keep-alive error.");

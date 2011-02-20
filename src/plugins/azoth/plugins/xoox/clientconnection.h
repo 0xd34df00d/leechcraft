@@ -127,6 +127,7 @@ namespace Xoox
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	private slots:
 		void handleConnected ();
+		void handleReconnecting (int = -1);
 		void handleError (QXmppClient::Error);
 		void handleIqReceived (const QXmppIq&);
 		void handleRosterReceived ();
