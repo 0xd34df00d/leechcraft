@@ -51,21 +51,30 @@ namespace Azoth
 	protected:
 		virtual void handleRowsInserted (const QModelIndex& idx, int from, int to)
 		{
-			HandleItems (idx.model (), from, to + 1, true);
+			HandleItems (idx.model (), from, to, true);
 			MergeModel::handleRowsInserted (idx, from, to);
 		}
 
 		virtual void handleRowsRemoved (const QModelIndex& idx, int from, int to)
 		{
-			HandleItems (idx.model (), from, to + 1, false);
+			HandleItems (idx.model (), from, to, false);
 			MergeModel::handleRowsRemoved (idx, from, to);
 		}
 	private:
 		void HandleItems (const QAbstractItemModel *model,
 				int from, int to, bool add)
 		{
+			if (!model)
+			{
+				model = qobject_cast<QAbstractItemModel*> (sender ());
+				
+				const QAbstractProxyModel *proxy = 0;
+				while ((proxy = qobject_cast<const QAbstractProxyModel*> (model)))
+					model = proxy->sourceModel ();
+			}
+
 			SrcType *src = Model2Source_ [model];
-			for (int i = from; i < to; ++i)
+			for (int i = from; i <= to; ++i)
 			{
 				const QString& option = model->index (i, 0).data ().toString ();
 				if (option.isEmpty ())
