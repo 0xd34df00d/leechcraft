@@ -74,6 +74,8 @@ namespace Xoox
 		QHash<QString, RoomHandler*> RoomHandlers_;
 		GlooxAccountState LastState_;
 		QString Password_;
+		
+		int SocketErrorAccumulator_;
 	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,
@@ -145,6 +147,8 @@ namespace Xoox
 				QXmppMucAdminIq::Item::Affiliation,
 				QXmppMucAdminIq::Item::Role,
 				const QString&);
+		
+		void decrementErrAccumulators ();
 	private:
 		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);

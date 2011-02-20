@@ -47,6 +47,7 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const int ErrorLimit = 5;
 	ClientConnection::ClientConnection (const QString& jid,
 			const GlooxAccountState& state,
 			GlooxAccount *account)
@@ -59,8 +60,16 @@ namespace Xoox
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (0)
+	, SocketErrorAccumulator_ (0)
 	{
 		LastState_.State_ = SOffline;
+		
+		QTimer *decrTimer = new QTimer (this);
+		connect (decrTimer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (decrementErrAccumulators ()));
+		decrTimer->start (15000);
 
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
@@ -432,8 +441,12 @@ namespace Xoox
 		switch (error)
 		{
 		case QXmppClient::SocketError:
-			str = tr ("Socket error %1.")
-					.arg (Client_->socketError ());
+			if (SocketErrorAccumulator_ < ErrorLimit)
+			{
+				++SocketErrorAccumulator_;
+				str = tr ("Socket error %1.")
+						.arg (Client_->socketError ());
+			}
 			break;
 		case QXmppClient::KeepAliveError:
 			str = tr ("Keep-alive error.");
@@ -442,6 +455,17 @@ namespace Xoox
 			str = tr ("Error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
 			break;
+		}
+		
+		if (str.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "suppressed"
+					<< str
+					<< error
+					<< Client_->socketError ()
+					<< Client_->xmppStreamError ();
+			return;
 		}
 
 		const Entity& e = Util::MakeNotification ("Azoth",
@@ -648,6 +672,12 @@ namespace Xoox
 		}
 		
 		RoomHandlers_ [roomJid]->HandlePermsChanged (nick, aff, role, reason);
+	}
+	
+	void ClientConnection::decrementErrAccumulators ()
+	{
+		if (SocketErrorAccumulator_ > 0)
+			--SocketErrorAccumulator_;
 	}
 
 	/** @todo Handle action reasons in QXmppPresence::Subscribe and
