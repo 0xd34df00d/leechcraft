@@ -219,7 +219,7 @@ namespace Xoox
 					.arg (roleStr)
 					.arg (affStr);
 		else
-			msg = tr ("%1 is now %2 and %3: %2")
+			msg = tr ("%1 is now %2 and %3: %4")
 					.arg (nick)
 					.arg (roleStr)
 					.arg (affStr)
