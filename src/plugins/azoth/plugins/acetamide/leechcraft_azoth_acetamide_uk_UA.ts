@@ -6,31 +6,31 @@
     <message>
         <location filename="ircaddserverdialog.ui" line="14"/>
         <source>Add server</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати сервер</translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="20"/>
         <source>Server:</source>
         <oldsource>Server</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Сервер:</translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="27"/>
         <source>Port:</source>
         <oldsource>Port</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Порт:</translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="47"/>
         <source>Password:</source>
         <oldsource>Password</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="74"/>
         <source>Secure connection (SSL)</source>
         <oldsource>Security connect (SSL)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Захищене з’єднання (SSL)</translation>
     </message>
 </context>
 <context>
@@ -38,53 +38,53 @@
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="14"/>
         <source>Create account</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити аккаунт</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="34"/>
         <source>User profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Профіль користувача</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="40"/>
         <source>NickNames</source>
-        <translation type="unfinished"></translation>
+        <translation>Нікнейми</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="48"/>
         <location filename="ircaccountconfigurationdialog.ui" line="166"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартний</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="63"/>
         <source>Generate nicknames</source>
-        <translation type="unfinished"></translation>
+        <translation>Згенерувати нікнейми</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="71"/>
         <source>Connect settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування з’єднання</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="80"/>
         <source>Network name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім’я мережі</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="106"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати...</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="140"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="159"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити</translation>
     </message>
 </context>
 <context>
@@ -92,22 +92,22 @@
     <message>
         <location filename="ircadddefaultchannelsdialog.ui" line="14"/>
         <source>Add channels for autoconnect</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати канали для автовходу</translation>
     </message>
     <message>
         <location filename="ircadddefaultchannelsdialog.ui" line="20"/>
         <source>Channels:</source>
-        <translation type="unfinished"></translation>
+        <translation>Канали:</translation>
     </message>
     <message>
         <location filename="ircadddefaultchannelsdialog.ui" line="50"/>
         <source>Add channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати канал</translation>
     </message>
     <message>
         <location filename="ircadddefaultchannelsdialog.ui" line="57"/>
         <source>Delete channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити канал</translation>
     </message>
 </context>
 <context>
@@ -115,17 +115,17 @@
     <message>
         <location filename="irceditchanneldialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Діалог</translation>
     </message>
     <message>
         <location filename="irceditchanneldialog.ui" line="20"/>
         <source>Channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал</translation>
     </message>
     <message>
         <location filename="irceditchanneldialog.ui" line="30"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль</translation>
     </message>
 </context>
 <context>
@@ -133,29 +133,29 @@
     <message>
         <location filename="ircaccountconfigurationdialog.cpp" line="42"/>
         <source>Add channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати канал</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.cpp" line="43"/>
         <source>Add server</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати сервер</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.cpp" line="537"/>
         <source>All servers and channels of this network will be delete too.
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Всі сервери та канали цієї мережі будуть також видалені. Ви впевнені?</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.cpp" line="540"/>
         <source>All channels of this server will be delete too.
 Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Всі канали цього серверу будуть також видалені. Ви впевнені?</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.cpp" line="543"/>
         <source>Are you really want to delete this channel?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви дійсно хочете видалити цей канал?</translation>
     </message>
 </context>
 <context>
@@ -163,17 +163,17 @@ Are you sure?</source>
     <message>
         <location filename="ircadddefaultchannelsdialog.cpp" line="37"/>
         <source>Channel&apos;s name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім’я каналу</translation>
     </message>
     <message>
         <location filename="ircadddefaultchannelsdialog.cpp" line="37"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <location filename="ircadddefaultchannelsdialog.cpp" line="102"/>
         <source>Invalid channel name</source>
-        <translation type="unfinished"></translation>
+        <translation>Неправильне ім’я каналу</translation>
     </message>
 </context>
 <context>
@@ -181,7 +181,7 @@ Are you sure?</source>
     <message>
         <location filename="ircprotocol.cpp" line="97"/>
         <source>Enter new account name</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть нове ім’я аккаунту</translation>
     </message>
 </context>
 <context>
@@ -189,7 +189,7 @@ Are you sure?</source>
     <message>
         <location filename="acetamide.cpp" line="65"/>
         <source>IRC protocol support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Підтримка протоколу IRC.</translation>
     </message>
 </context>
 </TS>

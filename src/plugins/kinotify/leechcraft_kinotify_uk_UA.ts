@@ -14,22 +14,22 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Вигляд</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Notificator style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль сповіщувача:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Adaptive</source>
-        <translation type="unfinished"></translation>
+        <translation>Адаптивний</translation>
     </message>
 </context>
 </TS>

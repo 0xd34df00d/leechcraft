@@ -6,7 +6,7 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="14"/>
         <source>Account configuration</source>
-        <translation>Конфігурація акаунта</translation>
+        <translation>Конфігурація аккаунту</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="24"/>
@@ -82,12 +82,12 @@
     <message>
         <location filename="clientconnection.cpp" line="245"/>
         <source>This room is already joined.</source>
-        <translation>Ви вже увійшли в цю кімнату</translation>
+        <translation>Ви вже увійшли в цю кімнату.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="447"/>
         <source>Socket error %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка сокету %1.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="452"/>
@@ -277,7 +277,7 @@
     <message>
         <location filename="xoox.cpp" line="65"/>
         <source>XMPP (Jabber) protocol support via Gloox library.</source>
-        <translation>Підтримка протоколу XMPP (Jabber) через бібліотеку Gloox</translation>
+        <translation>Підтримка протоколу XMPP (Jabber) через бібліотеку Gloox.</translation>
     </message>
 </context>
 <context>
@@ -298,12 +298,12 @@
     <message>
         <location filename="roomhandler.cpp" line="119"/>
         <source>%1 joined the room as %2 and %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 приєднався до кімнати як %2 і %3</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="124"/>
         <source>%1 (%2) joined the room as %3 and %4</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2) приєднався до кімнати як %3 і %4</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="144"/>
@@ -313,38 +313,38 @@
     <message>
         <location filename="roomhandler.cpp" line="159"/>
         <source>%1 changed nick to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 змінив нік на %2</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="175"/>
         <source>%1 has been kicked</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 був вигнаний</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="178"/>
         <source>%1 has been kicked: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 був вигнаний: %2</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="194"/>
         <source>%1 has been banned</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 був забанений</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="197"/>
         <source>%1 has been banned: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 був забанений: %2</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="217"/>
         <source>%1 is now %2 and %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 тепер %2 і %3</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="222"/>
         <source>%1 is now %2 and %3: %4</source>
         <oldsource>%1 is now %2 and %3: %2</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>%1 тепер %2 і %3: %4</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="330"/>
@@ -386,53 +386,53 @@
     <message>
         <location filename="util.cpp" line="36"/>
         <source>guest</source>
-        <translation type="unfinished"></translation>
+        <translation>гість</translation>
     </message>
     <message>
         <location filename="util.cpp" line="38"/>
         <source>visitor</source>
-        <translation type="unfinished"></translation>
+        <translation>відвідувач</translation>
     </message>
     <message>
         <location filename="util.cpp" line="40"/>
         <source>participant</source>
-        <translation type="unfinished"></translation>
+        <translation>учасник</translation>
     </message>
     <message>
         <location filename="util.cpp" line="42"/>
         <source>moderator</source>
-        <translation type="unfinished"></translation>
+        <translation>модератор</translation>
     </message>
     <message>
         <location filename="util.cpp" line="44"/>
         <location filename="util.cpp" line="63"/>
         <source>unspecified</source>
-        <translation type="unfinished"></translation>
+        <translation>не встановлений</translation>
     </message>
     <message>
         <location filename="util.cpp" line="53"/>
         <source>outcast</source>
-        <translation type="unfinished"></translation>
+        <translation>вигнанець</translation>
     </message>
     <message>
         <location filename="util.cpp" line="55"/>
         <source>newcomer</source>
-        <translation type="unfinished"></translation>
+        <translation>новачок</translation>
     </message>
     <message>
         <location filename="util.cpp" line="57"/>
         <source>member</source>
-        <translation type="unfinished"></translation>
+        <translation>член</translation>
     </message>
     <message>
         <location filename="util.cpp" line="59"/>
         <source>admin</source>
-        <translation type="unfinished"></translation>
+        <translation>адмін</translation>
     </message>
     <message>
         <location filename="util.cpp" line="61"/>
         <source>owner</source>
-        <translation type="unfinished"></translation>
+        <translation>володар</translation>
     </message>
 </context>
 <context>

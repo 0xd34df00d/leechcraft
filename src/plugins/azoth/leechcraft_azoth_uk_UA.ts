@@ -92,7 +92,7 @@
     <message>
         <location filename="chattab.ui" line="114"/>
         <source>Events...</source>
-        <translation type="unfinished"></translation>
+        <translation>Події...</translation>
     </message>
     <message>
         <location filename="chattab.ui" line="132"/>
@@ -149,7 +149,7 @@
     <message>
         <location filename="chattab.cpp" line="72"/>
         <source>Events</source>
-        <translation type="unfinished"></translation>
+        <translation>Події</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="364"/>
@@ -159,22 +159,22 @@
     <message>
         <location filename="chattab.cpp" line="386"/>
         <source>File offered: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Запропоновано файл: %1.</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="408"/>
         <source>File transfer request</source>
-        <translation type="unfinished"></translation>
+        <translation>Запит передачі файлу</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="409"/>
         <source>Would you like to accept or deny file transfer request for file %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Бажаєте прийняти чи відхилити запит передачі файлу %1?</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="417"/>
         <source>Select save path for incoming file</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть шлях збереження вхідного файлу</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="507"/>
@@ -227,12 +227,12 @@
     <message>
         <location filename="core.cpp" line="99"/>
         <source>Smile pack</source>
-        <translation type="unfinished"></translation>
+        <translation>Набір емоційок</translation>
     </message>
     <message>
         <location filename="core.cpp" line="100"/>
         <source>Chat style</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль чату</translation>
     </message>
     <message>
         <location filename="core.cpp" line="688"/>
@@ -394,7 +394,7 @@
     <message>
         <location filename="core.cpp" line="1771"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідне повідомлення від &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1783"/>
@@ -404,7 +404,7 @@
     <message>
         <location filename="core.cpp" line="1792"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;em&gt;%2&lt;/em&gt; потребує вашої уваги в конференції &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1877"/>
@@ -550,7 +550,7 @@
     <message>
         <location filename="mainwidget.cpp" line="78"/>
         <source>Set status</source>
-        <translation type="unfinished">Встановити статус</translation>
+        <translation>Встановити статус</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="131"/>
@@ -644,99 +644,99 @@
     <message>
         <location filename="transferjobmanager.cpp" line="89"/>
         <source>Transferring %1 from %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Передається %1 від %2</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="90"/>
         <source>Transferring %1 to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Передається %1 до %2</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="94"/>
         <location filename="transferjobmanager.cpp" line="309"/>
         <source>offered</source>
-        <translation type="unfinished"></translation>
+        <translation>запропоновано</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="95"/>
         <location filename="transferjobmanager.cpp" line="363"/>
         <source>%1 of %2 (%3%).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 з %2 (%3%).</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="127"/>
         <source>Default path for incoming files doesn&apos;t exist, is not a directory or is unwritable. Would you like to adjust the path now? Refusing will abort the transfer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Шлях за замовчуванням для вхідного файлу не існує, не є текою або запис неможливий. Бажаєте уточнити шлях зараз? Відхилення перерве передачу.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="133"/>
         <source>Select default path for incoming files</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть шлях за замовчуванням для вхідних файлів</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="225"/>
         <source>File %1 (%2) offered from %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл %1 (%2) запропоновано від %3.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="256"/>
         <source>Unable to transfer file from %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо передати файли від %1.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="259"/>
         <source>Unable to transfer file to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо передати файл до %1.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="267"/>
         <source>Transfer aborted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Передача перервана.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="270"/>
         <source>Error accessing file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка доступу до файлу.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="273"/>
         <source>File is corrupted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл пошкоджено.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="276"/>
         <source>Protocol error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка протоколу.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="306"/>
         <source>Transfer of file %1 with %2 has been offered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Передача файлу %1 від %2 було запропоновано.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="312"/>
         <source>Transfer of file %1 with %2 is being started...</source>
-        <translation type="unfinished"></translation>
+        <translation>Передача файлу %1 від %2 розпочинається...</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="315"/>
         <source>starting</source>
-        <translation type="unfinished"></translation>
+        <translation>починається</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="318"/>
         <source>Transfer of file %1 with %2 is started.</source>
-        <translation type="unfinished"></translation>
+        <translation>Передача файлу %1 від %2 було розпочато.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="321"/>
         <source>transferring</source>
-        <translation type="unfinished"></translation>
+        <translation>передається</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="324"/>
         <source>Transfer of file %1 with %2 is finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Передача файлу %1 від %2 завершено.</translation>
     </message>
 </context>
 <context>
@@ -825,37 +825,37 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Smiles:</source>
-        <translation type="unfinished"></translation>
+        <translation>Емоційки:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>None</source>
-        <translation type="unfinished">Ніхто</translation>
+        <translation>Жоден</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Chat window style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль вікна чату:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Основний</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Contact list</source>
-        <translation type="unfinished"></translation>
+        <translation>Ростер</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>Show avatars</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати аватарки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>Show client icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати іконки клієнтів</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
@@ -871,62 +871,62 @@
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Default file transfers save path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Шлях по замовчуванню для збереження прийнятих файлів:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщення</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
         <source>Incoming messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідне повідомлення</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Notify about incoming messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщувати про вхідні повідомлення</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Notify about highlights in conferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщувати про підсвічування в конференціях</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
         <source>Show triggering message in notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати відповідне повідомлення в сповіщенні</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
         <source>Contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Контакти</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
         <source>Notify when someone not present in contact-list unsubscribes</source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщувати, коли дехто не з ростеру відписується</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Notify when someone subscribes to us</source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщати, коли дехто підписується</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>Notify when someone unsubscribes from us</source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщувати, коли дехто відписується</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>Notify when someone cancels our subscription</source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщати, коли дехто відміняє підписку</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
         <source>Notify when someone grants us subscription</source>
-        <translation type="unfinished"></translation>
+        <translation>Сповіщати, коли дехто підтвержує підписку</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>

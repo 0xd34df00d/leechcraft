@@ -31,17 +31,17 @@
     <message>
         <location filename="lackman.ui" line="97"/>
         <source>Package information</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація про пакет</translation>
     </message>
     <message>
         <location filename="lackman.ui" line="133"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір:</translation>
     </message>
     <message>
         <location filename="lackman.ui" line="147"/>
         <source>State:</source>
-        <translation type="unfinished"></translation>
+        <translation>Статус:</translation>
     </message>
     <message>
         <location filename="lackman.ui" line="171"/>
@@ -360,17 +360,17 @@
     <message>
         <location filename="lackman.cpp" line="185"/>
         <source>not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>не встановлено</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="187"/>
         <source>installed; upgradable</source>
-        <translation type="unfinished"></translation>
+        <translation>встановлено; можливе оновлення</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="189"/>
         <source>installed</source>
-        <translation type="unfinished"></translation>
+        <translation>встановлено</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="195"/>
@@ -385,12 +385,12 @@
     <message>
         <location filename="lackman.cpp" line="209"/>
         <source>Apply</source>
-        <translation type="unfinished">Застосувати</translation>
+        <translation>Застосувати</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="216"/>
         <source>Cancel</source>
-        <translation type="unfinished">Відмінити</translation>
+        <translation>Відмінити</translation>
     </message>
 </context>
 <context>
