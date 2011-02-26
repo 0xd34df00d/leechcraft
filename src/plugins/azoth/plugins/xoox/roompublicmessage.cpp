@@ -66,7 +66,7 @@ namespace Xoox
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (partEntry)
 	, Message_ (msg.body ())
-	, Datetime_ (msg.stamp ().isValid () ? msg.stamp () : QDateTime::currentDateTime ())
+	, Datetime_ (msg.stamp ().isValid () ? msg.stamp ().toLocalTime () : QDateTime::currentDateTime ())
 	, Direction_ (DIn)
 	, Type_ (MTMUCMessage)
 	, SubType_ (MSTOther)
