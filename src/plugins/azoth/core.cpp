@@ -636,13 +636,16 @@ namespace Azoth
 		if (!src)
 			return body;
 		
-		const QString& img = QString ("<img src=\"%1\" alt=\"\" />");
+		const QString& img = QString ("<img src=\"%1\" title=\"%2\" />");
 		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
 		{
 			if (!body.contains (str))
 				continue;
 			const QByteArray& rawData = src->GetImage (pack, str);
-			body.replace (str, img.arg (QString ("data:image/png;base64," + rawData.toBase64 ())));
+			const QString& smileStr = img
+					.arg (QString ("data:image/png;base64," + rawData.toBase64 ()))
+					.arg (str);
+			body.replace (str, smileStr);
 		}
 		
 		return body;
