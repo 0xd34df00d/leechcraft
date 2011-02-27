@@ -176,6 +176,17 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& me
 			toInsert = MenuView_;
 		else if (menuName == "tools")
 			toInsert = MenuTools_;
+		else
+		{
+			const QList<QAction*>& actions = Ui_.ActionMenu_->menu ()->actions ();
+			Q_FOREACH (QAction *action, actions)
+				if (action->menu () &&
+					action->text () == menuName)	
+				{
+					toInsert = action->menu ();
+					break;
+				}
+		}
 
 		if (toInsert)
 			toInsert->insertActions (toInsert->actions ().value (0, 0),
