@@ -126,10 +126,9 @@ namespace ChatHistory
 					"Date DATETIME, "
 					"Direction INTEGER, "
 					"Message TEXT, "
-					"OtherPart TEXT, "
 					"Variant TEXT, "
-					"Type INTEGER "
-					");";
+					"Type INTEGER, "
+					"UNIQUE (Id, AccountId, Date, Direction, Message, Variant, Type) ON CONFLICT IGNORE);";
 		Q_FOREACH (const QString& queryStr, queries)
 			if (!query.exec (queryStr))
 			{

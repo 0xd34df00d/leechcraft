@@ -26,6 +26,7 @@
 #include <QXmppVCardManager.h>
 #include <QXmppDiscoveryManager.h>
 #include <QXmppTransferManager.h>
+#include <QXmppReconnectionManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -46,6 +47,7 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const int ErrorLimit = 5;
 	ClientConnection::ClientConnection (const QString& jid,
 			const GlooxAccountState& state,
 			GlooxAccount *account)
@@ -58,8 +60,16 @@ namespace Xoox
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (0)
+	, SocketErrorAccumulator_ (0)
 	{
 		LastState_.State_ = SOffline;
+		
+		QTimer *decrTimer = new QTimer (this);
+		connect (decrTimer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (decrementErrAccumulators ()));
+		decrTimer->start (15000);
 
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
@@ -84,7 +94,7 @@ namespace Xoox
 				this,
 				SLOT (handleError (QXmppClient::Error)));
 		connect (Client_,
-				 SIGNAL (iqReceived (const QXmppIq&)),
+				SIGNAL (iqReceived (const QXmppIq&)),
 				this,
 				SLOT (handleIqReceived (const QXmppIq&)));
 		connect (Client_,
@@ -123,6 +133,33 @@ namespace Xoox
 				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
 				this,
 				SLOT (handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)));
+		connect (MUCManager_,
+				SIGNAL (roomParticipantNickChanged (const QString&, const QString&, const QString&)),
+				this,
+				SLOT (handleRoomPartNickChange (const QString&, const QString&, const QString&)));
+		connect (MUCManager_,
+				SIGNAL (roomPresenceChanged (const QString&, const QString&, const QXmppPresence&)),
+				this,
+				SLOT (handleRoomPresenceChanged (const QString&, const QString&, const QXmppPresence&)));
+		connect (MUCManager_,
+				SIGNAL (roomParticipantPermsChanged (const QString&, const QString&,
+						QXmppMucAdminIq::Item::Affiliation,
+						QXmppMucAdminIq::Item::Role,
+						const QString&)),
+				this,
+				SLOT (handleRoomParticipantPermsChanged (const QString&, const QString&,
+						QXmppMucAdminIq::Item::Affiliation,
+						QXmppMucAdminIq::Item::Role,
+						const QString&)));
+		
+		connect (Client_->reconnectionManager (),
+				SIGNAL (reconnectingIn (int)),
+				this,
+				SLOT (handleReconnecting (int)));
+		connect (Client_->reconnectionManager (),
+				SIGNAL (reconnectingNow ()),
+				this,
+				SLOT (handleReconnecting ()));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -160,7 +197,7 @@ namespace Xoox
 				conf.setHost (host);
 			if (port >= 0)
 				conf.setPort (port);
-			Client_->connectToServer (conf);
+			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;
 		}
@@ -213,7 +250,6 @@ namespace Xoox
 
 		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
 		MUCManager_->joinRoom (jid, nick);
-		//rh->SetState (LastState_);
 
 		RoomHandlers_ [jid] = rh;
 
@@ -249,9 +285,10 @@ namespace Xoox
 		Client_->sendPacket (iq);
 	}
 
-	void ClientConnection::Update (const QXmppMucAdminIq::Item& item)
+	void ClientConnection::Update (const QXmppMucAdminIq::Item& item, const QString& room)
 	{
 		QXmppMucAdminIq iq;
+		iq.setTo (room);
 		iq.setType (QXmppIq::Set);
 		iq.setItems (QList<QXmppMucAdminIq::Item> () << item);
 		Client_->sendPacket (iq);
@@ -391,6 +428,12 @@ namespace Xoox
 	{
 		IsConnected_ = true;
 	}
+	
+	void ClientConnection::handleReconnecting (int timeout)
+	{
+		qDebug () << "Azoth: reconnecting in"
+				<< (timeout >= 0 ? QString::number (timeout).toLatin1 () : "now");
+	}
 
 	void ClientConnection::handleError (QXmppClient::Error error)
 	{
@@ -398,7 +441,12 @@ namespace Xoox
 		switch (error)
 		{
 		case QXmppClient::SocketError:
-			str = tr ("Socket error.");
+			if (SocketErrorAccumulator_ < ErrorLimit)
+			{
+				++SocketErrorAccumulator_;
+				str = tr ("Socket error %1.")
+						.arg (Client_->socketError ());
+			}
 			break;
 		case QXmppClient::KeepAliveError:
 			str = tr ("Keep-alive error.");
@@ -407,6 +455,17 @@ namespace Xoox
 			str = tr ("Error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
 			break;
+		}
+		
+		if (str.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "suppressed"
+					<< str
+					<< error
+					<< Client_->socketError ()
+					<< Client_->xmppStreamError ();
+			return;
 		}
 
 		const Entity& e = Util::MakeNotification ("Azoth",
@@ -427,7 +486,14 @@ namespace Xoox
 		QObjectList items;
 		Q_FOREACH (const QString& bareJid,
 				rm.getRosterBareJids ())
-			items << CreateCLEntry (rm.getRosterEntry (bareJid));
+		{
+			QXmppRosterIq::Item re = rm.getRosterEntry (bareJid);
+			GlooxCLEntry *entry = CreateCLEntry (re);
+			items << entry;
+			QMap<QString, QXmppPresence> presences = rm.getAllPresencesForBareJid (re.bareJid ());
+			Q_FOREACH (const QString& resource, presences.keys ())
+				entry->SetClientInfo (resource, presences [resource]);
+		}
 		emit gotRosterItems (items);
 	}
 
@@ -505,17 +571,27 @@ namespace Xoox
 		{
 			if (ODSEntries_.contains (jid))
 				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
-			else if (RoomHandlers_.contains (jid))
-			{
-				RoomHandlers_ [jid]->HandlePresence (pres, resource);
-				return;
-			}
 			else
 				return;
 		}
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
+	}
+	
+	void ClientConnection::handleRoomPresenceChanged (const QString& room,
+			const QString& nick, const QXmppPresence& pres)
+	{
+		if (!RoomHandlers_.contains (room))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no room handler for"
+					<< room
+					<< nick;
+			return;
+		}
+		
+		RoomHandlers_ [room]->HandlePresence (pres, nick);
 	}
 
 	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
@@ -565,6 +641,43 @@ namespace Xoox
 
 		RoomHandlers_ [roomJid]->SetState (LastState_);
 		RoomHandlers_ [roomJid]->UpdatePerms (perms);
+	}
+	
+	void ClientConnection::handleRoomPartNickChange (const QString& roomJid,
+			const QString& oldNick, const QString& newNick)
+	{
+		if (!RoomHandlers_.contains (roomJid))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no RoomHandler for"
+					<< roomJid
+					<< RoomHandlers_.keys ();
+			return;
+		}
+		
+		RoomHandlers_ [roomJid]->HandleNickChange (oldNick, newNick);
+	}
+	
+	void ClientConnection::handleRoomParticipantPermsChanged (const QString& roomJid,
+			const QString& nick, QXmppMucAdminIq::Item::Affiliation aff,
+			QXmppMucAdminIq::Item::Role role, const QString& reason)
+	{
+		if (!RoomHandlers_.contains (roomJid))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no RoomHandler for"
+					<< roomJid
+					<< RoomHandlers_.keys ();
+			return;
+		}
+		
+		RoomHandlers_ [roomJid]->HandlePermsChanged (nick, aff, role, reason);
+	}
+	
+	void ClientConnection::decrementErrAccumulators ()
+	{
+		if (SocketErrorAccumulator_ > 0)
+			--SocketErrorAccumulator_;
 	}
 
 	/** @todo Handle action reasons in QXmppPresence::Subscribe and

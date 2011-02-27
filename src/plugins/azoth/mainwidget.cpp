@@ -21,7 +21,6 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include "interfaces/iclentry.h"
-#include "interfaces/iaccount.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "accountslistdialog.h"
@@ -44,68 +43,59 @@ namespace Azoth
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 
-		connect (Core::Instance ().GetCLModel (),
+		connect (ProxyModel_,
 				SIGNAL (rowsInserted (const QModelIndex&, int, int)),
 				this,
 				SLOT (handleRowsInserted (const QModelIndex&, int, int)));
-		connect (Core::Instance ().GetCLModel (),
+		connect (ProxyModel_,
 				SIGNAL (rowsRemoved (const QModelIndex&, int, int)),
 				this,
 				SLOT (rebuildTreeExpansions ()));
-		connect (Core::Instance ().GetCLModel (),
+		connect (ProxyModel_,
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (rebuildTreeExpansions ()));
 
-		Ui_.CLTree_->expandAll ();
-
+		QMetaObject::invokeMethod (Ui_.CLTree_,
+				"expandToDepth",
+				Qt::QueuedConnection,
+				Q_ARG (int, 0));
+		
 		if (Core::Instance ().GetCLModel ()->rowCount ())
-			handleRowsInserted (QModelIndex (),
-					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
+			QMetaObject::invokeMethod (this,
+					"handleRowsInserted",
+					Qt::QueuedConnection,
+					Q_ARG (QModelIndex, QModelIndex ()),
+					Q_ARG (int, 0),
+					Q_ARG (int, Core::Instance ().GetCLModel ()->rowCount () - 1));
 
 		CreateMenu ();
 
-		MenuChangeStatus_ = new QMenu (tr ("Change status"));
-		MenuChangeStatus_->addAction (tr ("Online"),
+		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
+		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
+		
+		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
+		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
+		UpdateFastStatusButton (SOnline);
+		connect (Ui_.FastStatusButton_->defaultAction (),
+				SIGNAL (triggered ()),
 				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SOnline));
-		MenuChangeStatus_->addAction (tr ("Free to chat"),
+				SLOT (applyFastStatus ()));
+		connect (Ui_.FastStatusText_,
+				SIGNAL (returnPressed ()),
 				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SChat));
-		MenuChangeStatus_->addAction (tr ("Away"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SAway));
-		MenuChangeStatus_->addAction (tr ("DND"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SDND));
-		MenuChangeStatus_->addAction (tr ("Extended away"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SXA));
-		MenuChangeStatus_->addAction (tr ("Offline"),
-				this,
-				SLOT (handleChangeStatusRequested ()))->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SOffline));
-		MenuChangeStatus_->addSeparator ();
-		MenuChangeStatus_->addAction (tr ("Custom..."),
-				this,
-				SLOT (handleChangeStatusRequested ()));
+				SLOT (applyFastStatus ()));
 	}
 	
 	QList<QAction*> MainWidget::GetMenuActions()
 	{
 		return QList<QAction*> () << MenuGeneral_->menuAction ()
 				<< MenuView_->menuAction ();
+	}
+	
+	QMenu* MainWidget::GetChangeStatusMenu () const
+	{
+		return TrayChangeStatus_;
 	}
 
 	void MainWidget::CreateMenu ()
@@ -134,6 +124,51 @@ namespace Azoth
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleShowOffline (bool)));
+	}
+	
+	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
+	{
+		QMenu *result = new QMenu (tr ("Change status"));
+		result->addAction (Core::Instance ().GetIconForState (SOnline),
+				tr ("Online"), this, slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SOnline));
+		result ->addAction (Core::Instance ().GetIconForState (SChat),
+				tr ("Free to chat"), this, slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SChat));
+		result ->addAction (Core::Instance ().GetIconForState (SAway),
+				tr ("Away"), this, slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SAway));
+		result ->addAction (Core::Instance ().GetIconForState (SDND),
+				tr ("DND"), this, slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SDND));
+		result ->addAction (Core::Instance ().GetIconForState (SXA),
+				tr ("Extended away"), this, slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SXA));
+		result ->addAction (Core::Instance ().GetIconForState (SOffline),
+				tr ("Offline"), this, slot)->
+					setProperty ("Azoth/TargetState",
+							QVariant::fromValue<State> (SOffline));
+	
+		if (withCustom)
+		{
+			result->addSeparator ();
+			result->addAction (tr ("Custom..."),
+					this,
+					SLOT (handleChangeStatusRequested ()));
+		}
+		return result;
+	}
+	
+	void MainWidget::UpdateFastStatusButton (State state)
+	{
+		Ui_.FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
+		Ui_.FastStatusButton_->setProperty ("Azoth/TargetState",
+				QVariant::fromValue<State> (state));
 	}
 
 	void MainWidget::on_CLTree__activated (const QModelIndex& index)
@@ -206,16 +241,10 @@ namespace Azoth
 					<< "is not an action";
 			return;
 		}
-		QObject *obj = action->data ().value<QObject*> ();
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no object is set";
-			return;
-		}
 
+		QObject *obj = action->data ().value<QObject*> ();
 		IAccount *acc = qobject_cast<IAccount*> (obj);
-		if (!acc)
+		if (obj && !acc)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to cast"
@@ -225,14 +254,14 @@ namespace Azoth
 		}
 
 		QVariant stateVar = action->property ("Azoth/TargetState");
+		EntryStatus status;
 		if (!stateVar.isNull ())
 		{
 			State state = stateVar.value<State> ();
 			const QString& propName = "DefaultStatus" + QString::number (state);
 			const QString& text = XmlSettingsManager::Instance ()
 					.property (propName.toLatin1 ()).toString ();
-			acc->ChangeState (EntryStatus (state,
-							text));
+			status = EntryStatus (state, text);
 		}
 		else
 		{
@@ -240,9 +269,33 @@ namespace Azoth
 			if (ssd->exec () != QDialog::Accepted)
 				return;
 
-			acc->ChangeState (EntryStatus (ssd->GetState (),
-							ssd->GetStatusText ()));
+			status = EntryStatus (ssd->GetState (), ssd->GetStatusText ());
 		}
+		
+		if (acc)
+			acc->ChangeState (status);
+		else
+			Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+				acc->ChangeState (status);
+	}
+	
+	void MainWidget::fastStateChangeRequested ()
+	{
+		UpdateFastStatusButton (sender ()->
+					property ("Azoth/TargetState").value<State> ());
+		applyFastStatus ();
+	}
+	
+	void MainWidget::applyFastStatus ()
+	{
+		const QString& text = Ui_.FastStatusText_->text ();
+		Ui_.FastStatusText_->setText (QString ());
+		State state = Ui_.FastStatusButton_->
+				property ("Azoth/TargetState").value<State> ();
+				
+		EntryStatus status (state, text);
+		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+			acc->ChangeState (status);
 	}
 
 	void MainWidget::showAccountsList ()
@@ -275,32 +328,35 @@ namespace Azoth
 	{
 		QString BuildPath (const QModelIndex& index)
 		{
-			QString path = index.data ().toString ();
+			QString path = "CLTreeState/Expanded/" + index.data ().toString ();
 			QModelIndex parent = index;
 			while ((parent = parent.parent ()).isValid ())
 				path.prepend (parent.data ().toString () + "/");
-			path = path.toUtf8 ().toBase64 ();
-			path.prepend ("CLTreeState/Expanded/");
+			path = path.toUtf8 ().toBase64 ().replace ('/', '_');
 			return path;
 		}
 	}
 
 	void MainWidget::handleRowsInserted (const QModelIndex& parent, int begin, int end)
 	{
+		const QAbstractItemModel *clModel = ProxyModel_;
 		for (int i = begin; i <= end; ++i)
 		{
-			const QModelIndex& index = Core::Instance ().GetCLModel ()->index (i, 0, parent);
-			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETContact)
-				continue;
+			const QModelIndex& index = clModel->index (i, 0, parent);
+			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETCategory)
+			{
+				const QString& path = BuildPath (index);
 
-			QString path = BuildPath (index);
+				const bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
+				if (expanded)
+					QMetaObject::invokeMethod (Ui_.CLTree_,
+							"expand",
+							Qt::QueuedConnection,
+							Q_ARG (QModelIndex, index));
 
-			bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
-			if (expanded)
-				Ui_.CLTree_->setExpanded (index, true);
-
-			if (index.model ()->rowCount (index))
-				handleRowsInserted (index, 0, index.model ()->rowCount (index) - 1);
+				if (clModel->rowCount (index))
+					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
+			}
 		}
 	}
 
@@ -315,7 +371,7 @@ namespace Azoth
 	{
 		void SetExpanded (const QModelIndex& idx, bool expanded)
 		{
-			XmlSettingsManager::Instance ().setProperty (BuildPath (idx).toUtf8 ().constData (), true);
+			XmlSettingsManager::Instance ().setProperty (BuildPath (idx).toUtf8 (), expanded);
 		}
 	}
 

@@ -27,6 +27,7 @@
 #include <QMetaMethod>
 #include <QInputDialog>
 #include <QMainWindow>
+#include <QStringListModel>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -49,10 +50,43 @@
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
 
+uint qHash (const QImage& image)
+{
+	return image.cacheKey ();
+}
+
 namespace LeechCraft
 {
 namespace Azoth
 {
+	QDataStream& operator<< (QDataStream& out, const EntryStatus& status)
+	{
+		quint8 version = 1;
+		out << version
+			<< static_cast<quint8> (status.State_)
+			<< status.StatusString_;
+		return out;
+	}
+	
+	QDataStream& operator>> (QDataStream& in, EntryStatus& status)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+		
+		quint8 state;
+		in >> state
+			>> status.StatusString_;
+		status.State_ = static_cast<State> (state);
+		return in;
+	}
+
 	Core::Core ()
 	: CLModel_ (new QStandardItemModel (this))
 	, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
@@ -62,7 +96,7 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
-	, SmilesOptionsModel_ (new SourceTrackingModel<ISmileResourceSource> (QStringList (tr ("Smile pack"))))
+	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
@@ -84,6 +118,8 @@ namespace Azoth
 
 		ClientIconLoader_->AddLocalPrefix ();
 		ClientIconLoader_->AddGlobalPrefix ();
+		
+		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
 		qRegisterMetaType<IMessage*> ("IMessage*");
@@ -360,7 +396,7 @@ namespace Azoth
 
 		Q_FOREACH (QObject *object, irp->GetResourceSources ())
 		{
-			ISmileResourceSource *smileSrc = qobject_cast<ISmileResourceSource*> (object);
+			IEmoticonResourceSource *smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
 			if (smileSrc)
 				AddSmileResourceSource (smileSrc);
 			
@@ -371,7 +407,7 @@ namespace Azoth
 		}
 	}
 	
-	void Core::AddSmileResourceSource (ISmileResourceSource *src)
+	void Core::AddSmileResourceSource (IEmoticonResourceSource *src)
 	{
 		SmilesOptionsModel_->AddSource (src);
 	}
@@ -381,7 +417,7 @@ namespace Azoth
 		ChatStylesOptionsModel_->AddSource (src);
 	}
 	
-	QString Core::GetSelectedChatTemplate () const
+	QString Core::GetSelectedChatTemplate (QObject *entry) const
 	{
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property ("ChatWindowStyle").toString ();
@@ -394,7 +430,7 @@ namespace Azoth
 			return QString ();
 		}
 		
-		return src->GetHTMLTemplate (opt);
+		return src->GetHTMLTemplate (opt, entry);
 	}
 	
 	bool Core::AppendMessageByTemplate (QWebFrame *frame, QObject *message,
@@ -576,6 +612,8 @@ namespace Azoth
 				body.replace (pos, image.length (), str);
 				pos += str.length ();
 			}
+			
+			body = HandleSmiles (body);
 
 			proxy.reset (new Util::DefaultHookProxy);
 			emit hookFormatBodyEnd (proxy, this, body, msgObj);
@@ -585,6 +623,29 @@ namespace Azoth
 		return proxy->IsCancelled () ?
 				proxy->GetReturnValue ().toString () :
 				body;
+	}
+	
+	QString Core::HandleSmiles (QString body) const
+	{
+		const QString& pack = XmlSettingsManager::Instance ()
+				.property ("SmileIcons").toString ();				
+		if (pack.isEmpty ())
+			return body;
+
+		IEmoticonResourceSource *src = SmilesOptionsModel_->GetSourceForOption (pack);
+		if (!src)
+			return body;
+		
+		const QString& img = QString ("<img src=\"%1\" alt=\"\" />");
+		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
+		{
+			if (!body.contains (str))
+				continue;
+			const QByteArray& rawData = src->GetImage (pack, str);
+			body.replace (str, img.arg (QString ("data:image/png;base64," + rawData.toBase64 ())));
+		}
+		
+		return body;
 	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,
@@ -698,7 +759,9 @@ namespace Azoth
 				.arg (PluginProxyObject_->StateToString (entry->GetStatus ().State_))
 				.arg (entry->GetStatus ().StatusString_)
 				.arg (tr ("In groups: ") + entry->Groups ().join ("; "));
-		Q_FOREACH (const QString& variant, entry->Variants ())
+				
+		const QStringList& variants = entry->Variants ();
+		Q_FOREACH (const QString& variant, variants)
 		{
 			if (variant.isEmpty ())
 				continue;
@@ -709,15 +772,15 @@ namespace Azoth
 					.arg (entry->GetStatus (variant).StatusString_);
 		}
 
-		bool isPrimary = variant.isNull () ||
-				entry->Variants ().first () == variant;
+		State state = SOffline;
+		if (variants.size ())
+			state = entry->GetStatus (variants.first ()).State_;
+		const QIcon& icon = GetIconForState (state);
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
 			item->setToolTip (tip);
-			if (isPrimary ||
-					status.State_ == SOffline)
-				item->setIcon (GetIconForState (status.State_));
+			item->setIcon (icon);
 		}
 		
 		const QString& id = entry->GetEntryID ();
@@ -737,7 +800,6 @@ namespace Azoth
 		
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
-		qDebug () << filename << StatusIconLoader_->GetIconPath (filename);
 		const QIcon& fileIcon = QIcon (StatusIconLoader_->GetIconPath (filename));
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
@@ -1406,6 +1468,24 @@ namespace Azoth
 				this,
 				SLOT (handleAccountStatusChanged (const EntryStatus&)));
 
+		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		if (proto)
+		{
+			const QByteArray& id = proto->GetProtocolID () + account->GetAccountID ();
+			const QVariant& var = XmlSettingsManager::Instance ().property (id);
+			if (!var.isNull () && var.canConvert<QByteArray> ())
+			{
+				EntryStatus s;
+				QDataStream stream (var.toByteArray ());
+				stream >> s;
+				account->ChangeState (s);
+			}
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "account's parent proto isn't IProtocol"
+					<< account->GetParentProtocol ();
+		
 		QObject *xferMgr = account->GetTransferManager ();
 		if (xferMgr)
 		{
@@ -1523,6 +1603,33 @@ namespace Azoth
 
 	void Core::handleAccountStatusChanged (const EntryStatus& status)
 	{
+		IAccount *acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not an IAccount"
+					<< sender ();
+			return;
+		}
+		
+		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		if (!proto)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account's proto is not a IProtocol"
+					<< acc->GetParentProtocol ();
+			return;
+		}
+
+		const QByteArray& id = proto->GetProtocolID () + acc->GetAccountID ();
+		QByteArray serializedStatus;
+		{
+			QDataStream stream (&serializedStatus, QIODevice::WriteOnly);
+			stream << status;
+		}
+		XmlSettingsManager::Instance ().setProperty (id,
+				serializedStatus);
+		
 		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
 		{
 			QStandardItem *item = CLModel_->item (i);
@@ -1566,6 +1673,9 @@ namespace Azoth
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 			item->setText (newName);
+			
+		if (entry->Variants ().size ())
+			HandleStatusChanged (entry->GetStatus (), entry, entry->Variants ().first ());
 	}
 
 	void Core::handleEntryGroupsChanged (QStringList newGroups)

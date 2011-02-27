@@ -45,7 +45,7 @@ namespace Azoth
 	class ICLEntry;
 	class IAccount;
 	class IMessage;
-	class ISmileResourceSource;
+	class IEmoticonResourceSource;
 	class IChatStyleResourceSource;
 
 	class ChatTabsManager;
@@ -90,7 +90,7 @@ namespace Azoth
 
 		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
-		boost::shared_ptr<SourceTrackingModel<ISmileResourceSource> > SmilesOptionsModel_;
+		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource> > SmilesOptionsModel_;
 		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
 
 		boost::shared_ptr<PluginManager> PluginManager_;
@@ -248,7 +248,7 @@ namespace Azoth
 		 */
 		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
 		
-		QString GetSelectedChatTemplate () const;
+		QString GetSelectedChatTemplate (QObject *entry) const;
 		
 		bool AppendMessageByTemplate (QWebFrame*, QObject*, const QString&,
 				bool, bool);
@@ -263,6 +263,7 @@ namespace Azoth
 		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*, const QString& color);
 		QString FormatBody (QString body, IMessage *msg);
+		QString HandleSmiles (QString body) const;
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
@@ -277,7 +278,7 @@ namespace Azoth
 		 * resources are supported.
 		 */
 		void AddResourceSourcePlugin (QObject *object);
-		void AddSmileResourceSource (ISmileResourceSource*);
+		void AddSmileResourceSource (IEmoticonResourceSource*);
 		void AddChatStyleResourceSource (IChatStyleResourceSource*);
 
 		/** Adds the given contact list entry to the given account and

@@ -23,6 +23,8 @@
 #include <QMainWindow>
 #include <QTimer>
 #include <QKeyEvent>
+#include <QMenu>
+#include <interfaces/imultitabs.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabsfiltermodel.h"
@@ -40,6 +42,11 @@ namespace LeechCraft
 			{
 				Ui_.setupUi (this);
 				Ui_.View_->installEventFilter (this);
+				
+				connect (Ui_.View_,
+						SIGNAL (customContextMenuRequested (const QPoint&)),
+						this,
+						SLOT (handleCustomContextMenuRequested (const QPoint&)));
 
 				GetActivatorAction ()->setShortcut (tr ("F9"));
 				GetActivatorAction ()->setIcon (QIcon (":/resources/images/tabpp.svg"));
@@ -154,6 +161,23 @@ namespace LeechCraft
 								SLOT (hide ()));
 				}
 				return QDockWidget::eventFilter (object, event);
+			}
+			
+			void TabPPWidget::handleCustomContextMenuRequested (const QPoint& pos)
+			{
+				const QModelIndex& idx = Ui_.View_->indexAt (pos);
+				QWidget *wObj = idx.data (Core::CRWidget).value<QWidget*> ();
+				IMultiTabsWidget *imtw = qobject_cast<IMultiTabsWidget*> (wObj);
+				if (!imtw)
+					return;
+				
+				const QList<QAction*>& acts = imtw->GetTabBarContextMenuActions ();
+				if (!acts.size ())
+					return;
+				
+				QMenu *menu = new QMenu (this);
+				menu->addActions (acts);
+				menu->exec (Ui_.View_->mapToGlobal (pos));
 			}
 
 			void TabPPWidget::handleActivatorHovered ()

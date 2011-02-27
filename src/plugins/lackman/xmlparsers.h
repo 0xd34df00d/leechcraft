@@ -32,7 +32,9 @@ namespace LeechCraft
 			RepoInfo ParseRepoInfo (const QUrl& url, const QString& data);
 			PackageShortInfoList ParseComponent (const QByteArray& data);
 			PackageInfo ParsePackage (const QByteArray& data,
-					const QString& packageName, const QStringList& packageVersions);
+					const QUrl& baseUrl,
+					const QString& packageName,
+					const QStringList& packageVersions);
 		}
 	}
 }

@@ -54,6 +54,7 @@ namespace LeechCraft
 				struct PendingPackage
 				{
 					QUrl URL_;
+					QUrl BaseURL_;
 					QString Location_;
 					QString PackageName_;
 					QList<QString> NewVersions_;

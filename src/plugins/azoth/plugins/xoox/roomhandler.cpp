@@ -111,8 +111,21 @@ namespace Xoox
 	 */
 	void RoomHandler::MakeJoinMessage (const QXmppPresence& , const QString& nick)
 	{
-		QString msg = tr ("%1 joined the room")
-				.arg (nick);
+		QString affiliation = Util::AffiliationToString (MUCManager_->getAffiliation (RoomJID_, nick));
+		QString role = Util::RoleToString (MUCManager_->getRole (RoomJID_, nick));
+		QString realJid = MUCManager_->getRealJid (RoomJID_, nick);
+		QString msg;
+		if (realJid.isEmpty ())
+			msg = tr ("%1 joined the room as %2 and %3")
+					.arg (nick)
+					.arg (role)
+					.arg (affiliation);
+		else
+			msg = tr ("%1 (%2) joined the room as %3 and %4")
+					.arg (nick)
+					.arg (realJid)
+					.arg (role)
+					.arg (affiliation);
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
 				IMessage::DIn,
@@ -141,54 +154,6 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
-	/*
-	void RoomHandler::MakeStatusChangedMessage (const gloox::MUCRoomParticipant part,
-			const gloox::Presence& presence)
-	{
-		const QString& nick = NickFromJID (*part.nick);
-		State state = static_cast<State> (presence.presence ());
-
-		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
-
-		QString msg = tr ("%1 changed status to %2")
-			.arg (nick)
-			.arg (proxy->StateToString (state));
-
-		if (part.status.size ())
-			msg += QString (" (%1)")
-				.arg (QString::fromUtf8 (part.status.c_str ()));
-
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
-				CLEntry_,
-				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantStatusChange);
-		CLEntry_->HandleMessage (message);
-	}
-
-	void RoomHandler::MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant part)
-	{
-		const QString& nick = NickFromJID (*part.nick);
-
-		const QString& byStr = part.actor ?
-				tr ("by %1").arg (NickFromJID (*part.actor)) :
-				QString ();
-
-		const QString& msg = tr ("%1 changed affiliation/role to %2/%3 %4")
-				.arg (nick)
-				.arg (Util::AffiliationToString (part.affiliation))
-				.arg (Util::RoleToString (part.role))
-				.arg (byStr);
-
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
-				IMessage::DIn,
-				CLEntry_,
-				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantRoleAffiliationChange);
-		CLEntry_->HandleMessage (message);
-	}
-
 	void RoomHandler::MakeNickChangeMessage (const QString& oldNick, const QString& newNick)
 	{
 		QString msg = tr ("%1 changed nick to %2")
@@ -202,10 +167,77 @@ namespace Xoox
 				IMessage::MSTParticipantNickChange);
 		CLEntry_->HandleMessage (message);
 	}
-	*/
+	
+	void RoomHandler::MakeKickMessage (const QString& nick, const QString& reason)
+	{
+		QString msg;
+		if (reason.isEmpty ())
+			msg = tr ("%1 has been kicked")
+					.arg (nick);
+		else
+			msg = tr ("%1 has been kicked: %2")
+					.arg (nick)
+					.arg (reason);
+		
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTKickNotification);
+		CLEntry_->HandleMessage (message);
+	}
+
+	void RoomHandler::MakeBanMessage (const QString& nick, const QString& reason)
+	{
+		QString msg;
+		if (reason.isEmpty ())
+			msg = tr ("%1 has been banned")
+					.arg (nick);
+		else
+			msg = tr ("%1 has been banned: %2")
+					.arg (nick)
+					.arg (reason);
+		
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTBanNotification);
+		CLEntry_->HandleMessage (message);
+	}
+	
+	void RoomHandler::MakePermsChangedMessage (const QString& nick,
+			QXmppMucAdminIq::Item::Affiliation aff,
+			QXmppMucAdminIq::Item::Role role, const QString& reason)
+	{
+		const QString& affStr = Util::AffiliationToString (aff);
+		const QString& roleStr = Util::RoleToString (role);
+		QString msg;
+		if (reason.isEmpty ())
+			msg = tr ("%1 is now %2 and %3")
+					.arg (nick)
+					.arg (roleStr)
+					.arg (affStr);
+		else
+			msg = tr ("%1 is now %2 and %3: %4")
+					.arg (nick)
+					.arg (roleStr)
+					.arg (affStr)
+					.arg (reason);
+		
+		RoomPublicMessage *message = new RoomPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantRoleAffiliationChange);
+		CLEntry_->HandleMessage (message);
+	}
 
 	void RoomHandler::HandlePresence (const QXmppPresence& pres, const QString& nick)
 	{
+		if (pres.type () == QXmppPresence::Unavailable &&
+				PendingNickChanges_.remove (nick))
+			return;
 		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
@@ -223,16 +255,56 @@ namespace Xoox
 		const QXmppPresence::Status& xmppSt = pres.status ();
 		EntryStatus status (static_cast<State> (xmppSt.type ()),
 				xmppSt.statusText ());
-		entry->SetStatus (status, QString ());
+		const bool statusChanged = (status != entry->GetStatus (QString ()));
+		if (statusChanged)
+			entry->SetStatus (status, QString ());
 
-		if (!existed)
+		if (!PendingNickChanges_.remove (nick))
 		{
-			Account_->GetClientConnection ()->
+			if (!existed)
+			{	
+				Account_->GetClientConnection ()->
 					FetchVCard (RoomJID_ + "/" + nick);
-			MakeJoinMessage (pres, nick);
+				MakeJoinMessage (pres, nick);
+				entry->SetAffiliation (MUCManager_->getAffiliation (RoomJID_, nick));
+				entry->SetRole (MUCManager_->getRole (RoomJID_, nick));
+			}
+			else if (statusChanged)
+				MakeStatusChangedMessage (pres, nick);
 		}
-		else
-			MakeStatusChangedMessage (pres, nick);
+	}
+	
+	void RoomHandler::HandlePermsChanged (const QString& nick,
+			QXmppMucAdminIq::Item::Affiliation aff,
+			QXmppMucAdminIq::Item::Role role, const QString& reason)
+	{
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		if (aff == QXmppMucAdminIq::Item::OutcastAffiliation ||
+			role == QXmppMucAdminIq::Item::NoRole)
+		{
+			Account_->handleEntryRemoved (entry.get ());
+			Nick2Entry_.remove (nick);
+			
+			if (aff == QXmppMucAdminIq::Item::OutcastAffiliation)
+				MakeBanMessage (nick, reason);
+			else
+				MakeKickMessage (nick, reason);
+			
+			return;
+		}
+		
+		entry->SetAffiliation (aff);
+		entry->SetRole (role);
+		MakePermsChangedMessage (nick, aff, role, reason);
+	}
+	
+	void RoomHandler::HandleNickChange (const QString& oldNick, const QString& newNick)
+	{
+		MakeNickChangeMessage (oldNick, newNick);
+		Nick2Entry_ [newNick] = Nick2Entry_.take (oldNick);
+		Nick2Entry_ [newNick]->SetEntryName (newNick);
+		PendingNickChanges_ << oldNick;
+		PendingNickChanges_ << newNick;
 	}
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
@@ -362,7 +434,7 @@ namespace Xoox
 
 		QXmppMucAdminIq::Item item;
 		item.setNick (nick);
-		Account_->GetClientConnection ()->Update (item);
+		Account_->GetClientConnection ()->Update (item, RoomJID_);
 	}
 
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
@@ -372,7 +444,7 @@ namespace Xoox
 		item.setNick (entry->GetNick ());
 		item.setReason (reason);
 		item.setAffiliation (static_cast<QXmppMucAdminIq::Item::Affiliation> (newAff));
-		Account_->GetClientConnection ()->Update (item);
+		Account_->GetClientConnection ()->Update (item, RoomJID_);
 	}
 
 	void RoomHandler::SetRole (RoomParticipantEntry *entry,
@@ -382,7 +454,7 @@ namespace Xoox
 		item.setNick (entry->GetNick ());
 		item.setReason (reason);
 		item.setRole (static_cast<QXmppMucAdminIq::Item::Role> (newRole));
-		Account_->GetClientConnection ()->Update (item);
+		Account_->GetClientConnection ()->Update (item, RoomJID_);
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)

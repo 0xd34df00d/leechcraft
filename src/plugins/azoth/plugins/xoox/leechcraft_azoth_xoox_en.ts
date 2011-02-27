@@ -21,7 +21,7 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="24"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Basic</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="64"/>
@@ -41,22 +41,22 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="99"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Connection</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="105"/>
         <source>Custom address</source>
-        <translation type="unfinished"></translation>
+        <translation>Custom address</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="132"/>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Host:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="142"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port:</translation>
     </message>
 </context>
 <context>
@@ -64,150 +64,150 @@
     <message>
         <location filename="joingroupchatwidget.ui" line="20"/>
         <source>Server:</source>
-        <translation type="unfinished">Server:</translation>
+        <translation>Server:</translation>
     </message>
     <message>
         <location filename="joingroupchatwidget.ui" line="34"/>
         <source>Room:</source>
-        <translation type="unfinished">Room:</translation>
+        <translation>Room:</translation>
     </message>
     <message>
         <location filename="joingroupchatwidget.ui" line="48"/>
         <source>NIckname:</source>
-        <translation type="unfinished">NIckname:</translation>
+        <translation>NIckname:</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="205"/>
+        <location filename="clientconnection.cpp" line="245"/>
         <source>This room is already joined.</source>
-        <translation type="unfinished">This room is already joined.</translation>
+        <translation>This room is already joined.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="393"/>
-        <source>Socket error.</source>
-        <translation type="unfinished"></translation>
+        <location filename="clientconnection.cpp" line="447"/>
+        <source>Socket error %1.</source>
+        <translation>Socket error %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="396"/>
+        <location filename="clientconnection.cpp" line="452"/>
         <source>Keep-alive error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keep-alive error.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="399"/>
+        <location filename="clientconnection.cpp" line="455"/>
         <source>Error while connecting: </source>
-        <translation type="unfinished"></translation>
+        <translation>Error while connecting: </translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="602"/>
+        <location filename="clientconnection.cpp" line="723"/>
         <source>Error from %1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Error from %1: </translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="607"/>
+        <location filename="clientconnection.cpp" line="728"/>
         <source>Error text: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error text: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="621"/>
+        <location filename="clientconnection.cpp" line="742"/>
         <source>Bad request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bad request.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="623"/>
+        <location filename="clientconnection.cpp" line="744"/>
         <source>Conflict (possibly, resource conflict).</source>
-        <translation type="unfinished"></translation>
+        <translation>Conflict (possibly, resource conflict).</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="625"/>
+        <location filename="clientconnection.cpp" line="746"/>
         <source>Feature not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Feature not implemented.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="627"/>
+        <location filename="clientconnection.cpp" line="748"/>
         <source>Forbidden.</source>
-        <translation type="unfinished"></translation>
+        <translation>Forbidden.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="630"/>
+        <location filename="clientconnection.cpp" line="751"/>
         <source>Internal server error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Internal server error.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="632"/>
+        <location filename="clientconnection.cpp" line="753"/>
         <source>Item not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Item not found.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="634"/>
+        <location filename="clientconnection.cpp" line="755"/>
         <source>JID is malformed.</source>
-        <translation type="unfinished"></translation>
+        <translation>JID is malformed.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="636"/>
+        <location filename="clientconnection.cpp" line="757"/>
         <source>Data is not acceptable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Data is not acceptable.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="638"/>
+        <location filename="clientconnection.cpp" line="759"/>
         <source>Action is not allowed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Action is not allowed.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="641"/>
+        <location filename="clientconnection.cpp" line="762"/>
         <source>Not authorized.</source>
-        <translation type="unfinished"></translation>
+        <translation>Not authorized.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="643"/>
+        <location filename="clientconnection.cpp" line="764"/>
         <source>Payment required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Payment required.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="645"/>
+        <location filename="clientconnection.cpp" line="766"/>
         <source>Recipient unavailable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Recipient unavailable.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="647"/>
+        <location filename="clientconnection.cpp" line="768"/>
         <source>Got redirect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Got redirect.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="649"/>
+        <location filename="clientconnection.cpp" line="770"/>
         <source>Registration required.</source>
-        <translation type="unfinished"></translation>
+        <translation>Registration required.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="651"/>
+        <location filename="clientconnection.cpp" line="772"/>
         <source>Remote server not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Remote server not found.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="653"/>
+        <location filename="clientconnection.cpp" line="774"/>
         <source>Timeout contacting remote server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Timeout contacting remote server.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="655"/>
+        <location filename="clientconnection.cpp" line="776"/>
         <source>Error due to resource constraint.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error due to resource constraint.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="657"/>
+        <location filename="clientconnection.cpp" line="778"/>
         <source>Service is unavailable at the moment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Service is unavailable at the moment.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="659"/>
+        <location filename="clientconnection.cpp" line="780"/>
         <source>Subscription is required to perform this action.</source>
-        <translation type="unfinished"></translation>
+        <translation>Subscription is required to perform this action.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="663"/>
+        <location filename="clientconnection.cpp" line="784"/>
         <source>Other error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Other error.</translation>
     </message>
 </context>
 <context>
@@ -215,41 +215,45 @@
     <message>
         <location filename="entrybase.cpp" line="107"/>
         <source>Can&apos;t view info while offline</source>
-        <translation type="unfinished"></translation>
+        <translation>Can&apos;t view info while offline</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="216"/>
         <source>Name: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Name: %1</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="221"/>
         <source>Nickname: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nickname: %1
+</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="224"/>
         <source>URL: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>URL: %1
+</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="227"/>
         <source>Birthday: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Birthday: %1
+</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="230"/>
         <source>Email: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Email: %1
+</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="235"/>
         <source>Photo:</source>
-        <translation type="unfinished">Photo:</translation>
+        <translation>Photo:</translation>
     </message>
 </context>
 <context>
@@ -257,7 +261,7 @@
     <message>
         <location filename="glooxaccount.cpp" line="379"/>
         <source>Enter password for %1:</source>
-        <translation type="unfinished">Enter password for %1:</translation>
+        <translation>Enter password for %1:</translation>
     </message>
 </context>
 <context>
@@ -265,15 +269,15 @@
     <message>
         <location filename="glooxprotocol.cpp" line="99"/>
         <source>Enter new account name</source>
-        <translation type="unfinished">Enter new account name</translation>
+        <translation>Enter new account name</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::Plugin</name>
     <message>
-        <location filename="xoox.cpp" line="61"/>
+        <location filename="xoox.cpp" line="65"/>
         <source>XMPP (Jabber) protocol support via Gloox library.</source>
-        <translation type="unfinished">XMPP (Jabber) protocol support via Gloox library.</translation>
+        <translation>XMPP (Jabber) protocol support via Gloox library.</translation>
     </message>
 </context>
 <context>
@@ -281,7 +285,7 @@
     <message>
         <location filename="roomclentry.cpp" line="85"/>
         <source>Multiuser chatrooms</source>
-        <translation type="unfinished">Multiuser chatrooms</translation>
+        <translation>Multiuser chatrooms</translation>
     </message>
 </context>
 <context>
@@ -289,38 +293,79 @@
     <message>
         <location filename="roomhandler.cpp" line="98"/>
         <source>%1 has left the room</source>
-        <translation type="unfinished">%1 has left the room</translation>
+        <translation>%1 has left the room</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="114"/>
-        <source>%1 joined the room</source>
-        <translation type="unfinished"></translation>
+        <location filename="roomhandler.cpp" line="119"/>
+        <source>%1 joined the room as %2 and %3</source>
+        <translation>%1 joined the room as %2 and %3</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="131"/>
+        <location filename="roomhandler.cpp" line="124"/>
+        <source>%1 (%2) joined the room as %3 and %4</source>
+        <translation>%1 (%2) joined the room as %3 and %4</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="144"/>
         <source>%1 changed status to %2 (%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 changed status to %2 (%3)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="258"/>
+        <location filename="roomhandler.cpp" line="159"/>
+        <source>%1 changed nick to %2</source>
+        <translation>%1 changed nick to %2</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="175"/>
+        <source>%1 has been kicked</source>
+        <translation>%1 has been kicked</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="178"/>
+        <source>%1 has been kicked: %2</source>
+        <translation>%1 has been kicked: %2</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="194"/>
+        <source>%1 has been banned</source>
+        <translation>%1 has been banned</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="197"/>
+        <source>%1 has been banned: %2</source>
+        <translation>%1 has been banned: %2</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="217"/>
+        <source>%1 is now %2 and %3</source>
+        <translation>%1 is now %2 and %3</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="222"/>
+        <source>%1 is now %2 and %3: %4</source>
+        <oldsource>%1 is now %2 and %3: %2</oldsource>
+        <translation>%1 is now %2 and %3: %4</translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="330"/>
         <source>%1 changed subject to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 changed subject to %2</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomParticipantEntry</name>
     <message>
-        <location filename="roomparticipantentry.cpp" line="82"/>
+        <location filename="roomparticipantentry.cpp" line="83"/>
         <source>%1 participants</source>
-        <translation type="unfinished">%1 participants</translation>
+        <translation>%1 participants</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::TransferJob</name>
     <message>
-        <location filename="transferjob.cpp" line="75"/>
+        <location filename="transferjob.cpp" line="92"/>
         <source>could not open incoming file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>could not open incoming file %1: %2</translation>
     </message>
 </context>
 <context>
@@ -328,12 +373,66 @@
     <message>
         <location filename="vcarddialog.cpp" line="37"/>
         <source>VCard for %1</source>
-        <translation type="unfinished">VCard for %1</translation>
+        <translation>VCard for %1</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="61"/>
         <source>No photo</source>
-        <translation type="unfinished">No photo</translation>
+        <translation>No photo</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="util.cpp" line="36"/>
+        <source>guest</source>
+        <translation>guest</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="38"/>
+        <source>visitor</source>
+        <translation>visitor</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="40"/>
+        <source>participant</source>
+        <translation>participant</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="42"/>
+        <source>moderator</source>
+        <translation>moderator</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="44"/>
+        <location filename="util.cpp" line="63"/>
+        <source>unspecified</source>
+        <translation>unspecified</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="53"/>
+        <source>outcast</source>
+        <translation>outcast</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="55"/>
+        <source>newcomer</source>
+        <translation>newcomer</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="57"/>
+        <source>member</source>
+        <translation>member</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="59"/>
+        <source>admin</source>
+        <translation>admin</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="61"/>
+        <source>owner</source>
+        <translation>owner</translation>
     </message>
 </context>
 <context>

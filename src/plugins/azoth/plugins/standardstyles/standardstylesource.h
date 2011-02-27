@@ -51,7 +51,7 @@ namespace StandardStyles
 		StandardStyleSource (IProxyObject*, QObject* = 0);
 		
 		QAbstractItemModel* GetOptionsModel () const;
-		QString GetHTMLTemplate (const QString&) const;
+		QString GetHTMLTemplate (const QString&, QObject*) const;
 		bool AppendMessage (QWebFrame*, QObject*, const QString&, bool, bool);
 		void FrameFocused (QWebFrame*);
 	};

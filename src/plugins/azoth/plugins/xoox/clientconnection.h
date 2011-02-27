@@ -74,6 +74,8 @@ namespace Xoox
 		QHash<QString, RoomHandler*> RoomHandlers_;
 		GlooxAccountState LastState_;
 		QString Password_;
+		
+		int SocketErrorAccumulator_;
 	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,
@@ -100,7 +102,7 @@ namespace Xoox
 		void RequestInfo (const QString&) const;
 
 		void Update (const QXmppRosterIq::Item&);
-		void Update (const QXmppMucAdminIq::Item&);
+		void Update (const QXmppMucAdminIq::Item&, const QString& room);
 
 		void AckAuth (QObject*, bool);
 		void Subscribe (const QString&,
@@ -127,6 +129,7 @@ namespace Xoox
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	private slots:
 		void handleConnected ();
+		void handleReconnecting (int = -1);
 		void handleError (QXmppClient::Error);
 		void handleIqReceived (const QXmppIq&);
 		void handleRosterReceived ();
@@ -135,8 +138,17 @@ namespace Xoox
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handleInfoReceived (const QXmppDiscoveryIq&);
 		void handlePresenceChanged (const QXmppPresence&);
+		void handleRoomPresenceChanged (const QString&,
+				const QString&, const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
 		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
+		void handleRoomPartNickChange (const QString&, const QString&, const QString&);
+		void handleRoomParticipantPermsChanged (const QString&, const QString&,
+				QXmppMucAdminIq::Item::Affiliation,
+				QXmppMucAdminIq::Item::Role,
+				const QString&);
+		
+		void decrementErrAccumulators ();
 	private:
 		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);

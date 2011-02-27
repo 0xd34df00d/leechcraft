@@ -25,6 +25,8 @@
 #include "pendingmanager.h"
 #include "typefilterproxymodel.h"
 #include "xmlsettingsmanager.h"
+#include "packagesmodel.h"
+#include "externalresourcemanager.h"
 
 namespace LeechCraft
 {
@@ -74,18 +76,22 @@ namespace LeechCraft
 				FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 				FilterString_->setSourceModel (FilterByTags_);
 
-				Ui_.Plugins_->setModel (FilterString_);
-				PackagesDelegate *pd = new PackagesDelegate (Ui_.Plugins_);
-				Ui_.Plugins_->setItemDelegate (pd);
+				Ui_.PackagesTree_->setModel (FilterString_);
+				PackagesDelegate *pd = new PackagesDelegate (Ui_.PackagesTree_);
+				Ui_.PackagesTree_->setItemDelegate (pd);
 
 				Ui_.PendingTree_->setModel (Core::Instance ()
 						.GetPendingManager ()->GetPendingModel ());
 
-				connect (Ui_.Plugins_->selectionModel (),
+				connect (Ui_.PackagesTree_->selectionModel (),
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
 						pd,
 						SLOT (handleRowChanged (const QModelIndex&, const QModelIndex&)),
 						Qt::QueuedConnection);
+				connect (Ui_.PackagesTree_->selectionModel (),
+						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
+						this,
+						SLOT (handlePackageSelected (const QModelIndex&)));
 				connect (Ui_.SearchLine_,
 						SIGNAL (textEdited (const QString&)),
 						FilterString_,
@@ -98,6 +104,13 @@ namespace LeechCraft
 
 			void Plugin::SecondInit ()
 			{
+				QList<IWebBrowser*> browsers = Core::Instance ().GetProxy ()->
+						GetPluginsManager ()->GetAllCastableTo<IWebBrowser*> ();
+				if (browsers.size ())
+					Ui_.Browser_->Construct (browsers.at (0));
+				Ui_.Browser_->SetNavBarVisible (false);
+				Ui_.Browser_->SetEverythingElseVisible (false);
+
 				Core::Instance ().SecondInit ();
 			}
 
@@ -156,19 +169,49 @@ namespace LeechCraft
 			{
 			}
 
-			void Plugin::on_Apply__released ()
-			{
-				Core::Instance ().AcceptPending ();
-			}
-
-			void Plugin::on_Cancel__released ()
-			{
-				Core::Instance ().CancelPending ();
-			}
-
 			void Plugin::on_PackageStatus__currentIndexChanged (int index)
 			{
 				TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
+			}
+			
+			namespace
+			{
+				void AddText (QString& text, const QStringList& urls)
+				{
+					Q_FOREACH (const QString& url, urls)
+					{
+						boost::optional<QByteArray> opt =
+								Core::Instance ().GetExtResourceManager ()->
+										GetResourceData (QUrl::fromEncoded (url.toUtf8 ()));
+						if (!opt || opt->isEmpty ())
+							continue;
+
+						text += QString ("<img src='data:image/png;base64,%1' alt='' /><br />")
+								.arg (QString (opt->toBase64 ()));
+					}
+				}
+			}
+			
+			void Plugin::handlePackageSelected (const QModelIndex& index)
+			{
+				QString text;
+				AddText (text, index.data (PackagesModel::PMRThumbnails).toStringList ());
+				text += index.data (PackagesModel::PMRLongDescription).toString ();
+				AddText (text, index.data (PackagesModel::PMRScreenshots).toStringList ());
+				
+				Ui_.Browser_->SetHtml (text);
+
+				Ui_.NameLabel_->setText (index.data ().toString ());
+
+				QString state;
+				if (!index.isValid ()) ;
+				else if (!index.data (PackagesModel::PMRInstalled).toBool ())
+					state = tr ("not installed");
+				else if (index.data (PackagesModel::PMRUpgradable).toBool ())
+					state = tr ("installed; upgradable");
+				else
+					state = tr ("installed");
+				Ui_.StateLabel_->setText (state);
 			}
 
 			void Plugin::BuildActions ()
@@ -179,20 +222,37 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (updateAllRequested ()));
+
 				UpgradeAll_ = new QAction (tr ("Upgrade all packages"), this);
 				UpgradeAll_->setProperty ("ActionIcon", "fetchall");
 				connect (UpgradeAll_,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (upgradeAllRequested ()));
+				
+				Apply_ = new QAction (tr ("Apply"), this);
+				Apply_->setProperty ("ActionIcon", "apply");
+				connect (Apply_,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (acceptPending ()));
+				
+				Cancel_ = new QAction (tr ("Cancel"), this);
+				Cancel_->setProperty ("ActionIcon", "cancel");
+				connect (Cancel_,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (cancelPending ()));
 
 				Toolbar_ = new QToolBar (GetName ());
 				Toolbar_->addAction (UpdateAll_);
 				Toolbar_->addAction (UpgradeAll_);
+				Toolbar_->addSeparator ();
+				Toolbar_->addAction (Apply_);
+				Toolbar_->addAction (Cancel_);
 			}
 		};
 	};
 };
 
 Q_EXPORT_PLUGIN2 (leechcraft_lackman, LeechCraft::Plugins::LackMan::Plugin);
-

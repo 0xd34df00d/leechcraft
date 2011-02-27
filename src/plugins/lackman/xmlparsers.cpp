@@ -123,9 +123,25 @@ namespace LeechCraft
 
 				return infos;
 			}
+			
+			namespace
+			{
+				QString MakeProperURL (const QString& urlStr, const QUrl& baseUrl)
+				{
+					QUrl testUrl (urlStr);
+					if (testUrl.isValid () && !testUrl.isRelative ())
+						return urlStr;
+
+					QUrl r = baseUrl;
+					r.setPath (r.path () + urlStr);
+					return r.toEncoded ();
+				}
+			}
 
 			PackageInfo ParsePackage (const QByteArray& data,
-					const QString& packageName, const QStringList& packageVersions)
+					const QUrl& baseUrl,
+					const QString& packageName,
+					const QStringList& packageVersions)
 			{
 				QDomDocument doc;
 				QString msg;
@@ -153,6 +169,8 @@ namespace LeechCraft
 					packageInfo.Type_ = PackageInfo::TTranslation;
 				else if (type == "plugin")
 					packageInfo.Type_ = PackageInfo::TPlugin;
+				else if (type == "theme")
+					packageInfo.Type_ = PackageInfo::TTheme;
 				else
 					packageInfo.Type_ = PackageInfo::TData;
 
@@ -169,7 +187,7 @@ namespace LeechCraft
 					Image image =
 					{
 						Image::TThumbnail,
-						imageNode.attribute ("url")
+						MakeProperURL (imageNode.attribute ("url"), baseUrl)
 					};
 					packageInfo.Images_ << image;
 					imageNode = imageNode.nextSiblingElement ("thumbnail");
@@ -180,7 +198,7 @@ namespace LeechCraft
 					Image image =
 					{
 						Image::TScreenshot,
-						imageNode.attribute ("url")
+						MakeProperURL (imageNode.attribute ("url"), baseUrl)
 					};
 					packageInfo.Images_ << image;
 					imageNode = imageNode.nextSiblingElement ("screenshot");

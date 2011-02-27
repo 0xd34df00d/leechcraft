@@ -121,7 +121,8 @@ namespace LeechCraft
 			QStringList variants;
 			variants << basename + ".svg"
 					<< basename + ".png"
-					<< basename + ".jpg";
+					<< basename + ".jpg"
+					<< basename + ".gif";
 			return GetPath (variants);
 		}
 
@@ -133,6 +134,11 @@ namespace LeechCraft
 
 			boost::shared_ptr<QFile> result (new QFile (path));
 			return result;
+		}
+		
+		QIODevice_ptr ResourceLoader::Load (const QString& pathVariant) const
+		{
+			return Load (QStringList (pathVariant));
 		}
 
 		QAbstractItemModel* ResourceLoader::GetSubElemModel () const

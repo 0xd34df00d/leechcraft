@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_UTIL_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_UTIL_H
 #include <QString>
+#include <QXmppMucIq.h>
 
 namespace LeechCraft
 {
@@ -28,10 +29,8 @@ namespace Xoox
 {
 namespace Util
 {
-	/*
-	QString RoleToString (const gloox::MUCRoomRole&);
-	QString AffiliationToString (const gloox::MUCRoomAffiliation&);
-	*/
+	QString RoleToString (const QXmppMucAdminIq::Item::Role&);
+	QString AffiliationToString (const QXmppMucAdminIq::Item::Affiliation&);
 
 	QString GetClientIDName (const QString&);
 	QString GetClientHRName (const QString&);

@@ -76,29 +76,13 @@ namespace Xoox
 				IMUCEntry::MUCRole, const QString&);
 
 		void HandlePresence (const QXmppPresence&, const QString&);
+		void HandlePermsChanged (const QString&,
+				QXmppMucAdminIq::Item::Affiliation,
+				QXmppMucAdminIq::Item::Role,
+				const QString&);
+		void HandleNickChange (const QString&, const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
 		void UpdatePerms (const QList<QXmppMucAdminIq::Item>&);
-		/*
-		// MUCRoomHandler
-		virtual void handleMUCParticipantPresence (gloox::MUCRoom*,
-				const gloox::MUCRoomParticipant, const gloox::Presence&);
-		virtual void handleMUCMessage (gloox::MUCRoom*,
-				const gloox::Message&, bool);
-		virtual bool handleMUCRoomCreation (gloox::MUCRoom*);
-		virtual void handleMUCSubject (gloox::MUCRoom*,
-				const std::string&, const std::string&);
-		virtual void handleMUCInviteDecline (gloox::MUCRoom*,
-				const gloox::JID&, const std::string&);
-		virtual void handleMUCError (gloox::MUCRoom*, gloox::StanzaError);
-		virtual void handleMUCInfo (gloox::MUCRoom*, int,
-				const std::string&, const gloox::DataForm*);
-		virtual void handleMUCItems (gloox::MUCRoom*,
-				const gloox::Disco::ItemList&);
-
-		// MessageHandler
-		virtual void handleMessage (const gloox::Message&, gloox::MessageSession*);
-		*/
-
 		/** Creates a new entry for the given nick if it
 		 * doesn't exist already (and does so by calling
 		 * CreateParticipantEntry()) or just returns the
@@ -112,12 +96,15 @@ namespace Xoox
 		void MakeLeaveMessage (const QXmppPresence&, const QString&);
 		void MakeJoinMessage (const QXmppPresence&, const QString&);
 		void MakeStatusChangedMessage (const QXmppPresence&, const QString&);
+		void MakeNickChangeMessage (const QString&, const QString&);
+		void MakeKickMessage (const QString&, const QString&);
+		void MakeBanMessage (const QString&, const QString&);
+		void MakePermsChangedMessage (const QString&,
+				QXmppMucAdminIq::Item::Affiliation,
+				QXmppMucAdminIq::Item::Role,
+				const QString&);
 		/*
-		void MakeLeaveMessage (const gloox::MUCRoomParticipant);
-		void MakeStatusChangedMessage (const gloox::MUCRoomParticipant, const gloox::Presence&);
 		void MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant);
-		void MakeJoinMessage (const gloox::MUCRoomParticipant);
-		void MakeNickChangeMessage (const QString& oldNick, const QString& newNick);
 		*/
 
 		void RemoveThis ();

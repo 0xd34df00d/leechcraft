@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_MAINWIDGET_H
 #define PLUGINS_AZOTH_MAINWIDGET_H
 #include <QWidget>
+#include "interfaces/iaccount.h"
 #include "ui_mainwidget.h"
 
 class QToolBar;
@@ -41,16 +42,22 @@ namespace Azoth
 		SortFilterProxyModel *ProxyModel_;
 
 		QMenu *MenuChangeStatus_;
+		QMenu *TrayChangeStatus_;
 	public:
 		MainWidget (QWidget* = 0);
 		
 		QList<QAction*> GetMenuActions ();
+		QMenu* GetChangeStatusMenu () const;
 	private:
 		void CreateMenu ();
+		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
+		void UpdateFastStatusButton (State);
 	private slots:
 		void on_CLTree__activated (const QModelIndex&);
 		void on_CLTree__customContextMenuRequested (const QPoint&);
 		void handleChangeStatusRequested ();
+		void fastStateChangeRequested ();
+		void applyFastStatus ();
 
 		void showAccountsList ();
 		void handleAddContactRequested ();

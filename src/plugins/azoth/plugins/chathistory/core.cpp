@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QMetaObject>
 #include <QtDebug>
+#include <interfaces/imessage.h>
 #include <interfaces/iproxyobject.h>
 #include "storage.h"
 #include "storagethread.h"
@@ -61,6 +62,11 @@ namespace ChatHistory
 	
 	void Core::Process (QObject *msg)
 	{
+		IMessage *message = qobject_cast<IMessage*> (msg);
+		if (message->GetMessageType () != IMessage::MTChatMessage &&
+			message->GetMessageType () != IMessage::MTMUCMessage)
+			return;
+		
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
 				"addMessage",
 				Qt::QueuedConnection,

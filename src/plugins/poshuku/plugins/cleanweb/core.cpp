@@ -625,7 +625,7 @@ bool Core::Matches (const QString& exception, const Filter& filter,
 		return true;
 	else if (opt.MatchType_ == FilterOption::MTWildcard)
 	{
-		if (WildcardMatches (qPrintable (exception),
+		if (WildcardMatches (qPrintable ("*" + exception + "*"),
 					qPrintable (urlStr)))
 			return true;
 	}

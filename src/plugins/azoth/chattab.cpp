@@ -147,7 +147,7 @@ namespace Azoth
 	
 	void ChatTab::PrepareTheme ()
 	{
-		QString data = Core::Instance ().GetSelectedChatTemplate ();
+		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
 		if (data.isEmpty ())
 		{
 			QFile file (":/plugins/azoth/resources/html/viewcontents.html");
@@ -481,9 +481,15 @@ namespace Azoth
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
 	{
+		const QStringList& vars = GetEntry<ICLEntry> ()->Variants ();
+
+		if (status.State_ == SOffline)
+			handleVariantsChanged (vars);
+
 		if (variant != Variant_ &&
 				!variant.isEmpty () &&
-				GetEntry<ICLEntry> ()->Variants ().value (0) == variant)
+				vars.size () &&
+				vars.value (0) == variant)
 			return;
 
 		TabIcon_ = Core::Instance ().GetIconForState (status.State_);

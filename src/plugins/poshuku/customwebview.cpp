@@ -227,6 +227,11 @@ namespace LeechCraft
 					QWebView::wheelEvent (e);
 			}
 
+			namespace
+			{
+				const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
+			}
+
 			void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 			{
 				std::auto_ptr<QMenu> menu (new QMenu (this));
@@ -285,7 +290,7 @@ namespace LeechCraft
 					menu->addAction (tr ("Open &here"),
 							this, SLOT (openLinkHere ()))->setData (url);
 					menu->addAction (tr ("Open in new &tab"),
-							this, SLOT (openLinkInNewTab ()));
+							this, SLOT (openLinkInNewTab ()))->setData (url);
 					menu->addSeparator ();
 					menu->addAction (tr ("&Save link..."),
 							this, SLOT (saveLink ()));
@@ -304,7 +309,13 @@ namespace LeechCraft
 					if (page ()->settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
 						menu->addAction (pageAction (QWebPage::InspectElement));
 				}
-
+				else if (page ()->selectedText ().contains (UrlInText))
+				{
+					menu->addAction (tr ("Open as link"),
+							this, SLOT (openLinkInNewTab ()))->
+									setData (page ()->selectedText ());
+				}
+ 
 				emit hookWebViewContextMenu (proxy, this, e, r,
 						menu.get (), WVSAfterLink);
 
@@ -518,7 +529,8 @@ namespace LeechCraft
 
 			void CustomWebView::openLinkInNewTab ()
 			{
-				pageAction (QWebPage::OpenLinkInNewWindow)->trigger ();
+				CustomWebView *view = Core::Instance ().MakeWebView (false);
+				view->Load (qobject_cast<QAction*> (sender ())->data ().toString ());
 			}
 
 			void CustomWebView::saveLink ()

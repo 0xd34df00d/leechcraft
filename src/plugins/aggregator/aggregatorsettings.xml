@@ -16,6 +16,10 @@
 				<item type="checkbox" property="UnreadOnTop" state="off">
 					<label lang="en" value="Show unread items on top" />
 				</item>
+				<item type="spinbox" property="MarkAsReadTimeout" min="0" max="3600" default="0">
+					<label value="Mark as read after" />
+					<suffix value=" s" />
+				</item>
 				<item type="combobox" property="NotificationsFeedUpdateBehavior">
 					<label lang="en" value="Notifications on feed update:" />
 					<option name="ShowAll" default="true">

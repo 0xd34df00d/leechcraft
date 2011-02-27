@@ -276,6 +276,10 @@ namespace LeechCraft
 					break;
 				case PackageInfo::TData:
 					result = Proxy_->GetIcon ("lackman_data");
+					break;
+				case PackageInfo::TTheme:
+					result = Proxy_->GetIcon ("lackman_theme");
+					break;
 				}
 				return result;
 			}
@@ -349,6 +353,7 @@ namespace LeechCraft
 					SafeCD (dir, "translations");
 					break;
 				case PackageInfo::TData:
+				case PackageInfo::TTheme:
 					SafeCD (dir, "data");
 					break;
 				}
@@ -441,12 +446,12 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::CancelPending ()
+			void Core::cancelPending ()
 			{
 				PendingManager_->Reset ();
 			}
 
-			void Core::AcceptPending ()
+			void Core::acceptPending ()
 			{
 				QSet<int> toInstall = PendingManager_->GetPendingInstall ();
 				QSet<int> toRemove = PendingManager_->GetPendingRemove ();
@@ -720,8 +725,7 @@ namespace LeechCraft
 					packageUrl.setPath (packageUrl.path () +
 							"/dists/" + component + "/all" +
 							'/' + normalized +
-							'/' + normalized +
-							".xml.gz");
+							'/');
 					RepoInfoFetcher_->FetchPackageInfo (packageUrl,
 							packageName,
 							PackageName2NewVersions_ [packageName],

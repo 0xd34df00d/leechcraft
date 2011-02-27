@@ -91,9 +91,6 @@ namespace LeechCraft
 				void AddRepo (const QUrl&);
 				void UpdateRepo (const QUrl&, const QStringList&);
 
-				void CancelPending ();
-				void AcceptPending ();
-
 				QString NormalizePackageName (const QString&) const;
 
 				QStringList GetAllTags () const;
@@ -114,6 +111,8 @@ namespace LeechCraft
 			public slots:
 				void updateAllRequested ();
 				void upgradeAllRequested ();
+				void cancelPending ();
+				void acceptPending ();
 				void removeRequested (const QString&, const QModelIndexList&);
 				void addRequested (const QString&, const QVariantList&);
 			private slots:

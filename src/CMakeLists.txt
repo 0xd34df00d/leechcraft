@@ -347,34 +347,11 @@ SET (FORMS
 	wizardtypechoicepage.ui
 	)
 SET (RESOURCES mainresources.qrc)
-SET (TRANSLATIONS
-	leechcraft_ru_RU.ts
-	leechcraft_de.ts
-	leechcraft_uk_UA.ts
-	leechcraft_it.ts
-	leechcraft_ar.ts
-	leechcraft_eo.ts
-	leechcraft_es.ts
-	leechcraft_tr.ts
-	leechcraft_en.ts
-	leechcraft_be.ts
-	leechcraft_fr.ts
-	leechcraft_pl.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_it.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_eo.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_be.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_pl.qm
-	)
+
+FOREACH(_LANG ru_RU de uk_UA it ar eo es tr en be fr pl)
+        SET (TRANSLATIONS ${TRANSLATIONS} leechcraft_${_LANG}.ts)
+	SET (COMPILED_TRANSLATIONS ${COMPILED_TRANSLATIONS} ${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_${_LANG}.qm)
+ENDFOREACH(_LANG)
 
 ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 

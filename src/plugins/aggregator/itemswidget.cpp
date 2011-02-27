@@ -22,6 +22,7 @@
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
 #include <QUrl>
+#include <QTimer>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <plugininterface/categoryselector.h>
@@ -64,12 +65,22 @@ namespace LeechCraft
 				std::auto_ptr<Util::MergeModel> ItemLists_;
 				std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 				std::auto_ptr<CategorySelector> ItemCategorySelector_;
+				
+				QTimer *SelectedChecker_;
+				QModelIndex LastSelectedIndex_;
 			};
 
 			ItemsWidget::ItemsWidget (QWidget *parent)
 			: QWidget (parent)
 			, Impl_ (new ItemsWidget_Impl)
 			{
+				Impl_->SelectedChecker_ = new QTimer (this);
+				Impl_->SelectedChecker_->setSingleShot (true);
+				connect (Impl_->SelectedChecker_,
+						SIGNAL (timeout ()),
+						this,
+						SLOT (checkSelected ()));
+
 				SetupActions ();
 
 				Impl_->ChannelsFilter_ = 0;
@@ -344,9 +355,14 @@ namespace LeechCraft
 
 			void ItemsWidget::Selected (const QModelIndex& index)
 			{
-				QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
-				static_cast<ItemsListModel*> (Impl_->ItemLists_->
-						GetModelForRow (index.row ())->data ())->Selected (mapped);
+				Impl_->LastSelectedIndex_ = index;
+				Impl_->SelectedChecker_->stop ();
+				int timeout = XmlSettingsManager::Instance ()->
+						property ("MarkAsReadTimeout").toInt () * 1000;
+				if (timeout)
+					Impl_->SelectedChecker_->start (timeout);
+				else
+					checkSelected ();
 			}
 
 			void ItemsWidget::MarkItemReadStatus (const QModelIndex& i, bool read)
@@ -1115,6 +1131,20 @@ namespace LeechCraft
 						Impl_->ActionItemLinkOpen_->setEnabled (true);
 					}
 				}
+			}
+			
+			void ItemsWidget::checkSelected ()
+			{
+				const QModelIndex& sourceIndex =
+						Impl_->Ui_.Items_->currentIndex ();
+				const QModelIndex& cIndex =
+						Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
+				if (cIndex != Impl_->LastSelectedIndex_)
+					return;
+
+				QModelIndex mapped = Impl_->ItemLists_->mapToSource (cIndex);
+				static_cast<ItemsListModel*> (Impl_->ItemLists_->
+						GetModelForRow (cIndex.row ())->data ())->Selected (mapped);
 			}
 
 			void ItemsWidget::makeCurrentItemVisible ()

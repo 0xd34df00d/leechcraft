@@ -167,6 +167,19 @@ namespace LeechCraft
 			 * if nothing is found.
 			 */
 			QIODevice_ptr Load (const QStringList& pathVariants) const;
+			
+			/** @brief Returns the QIODevice for the corresponding resource.
+			 * 
+			 * This function is the overloaded variant of Load(),
+			 * provided for convenience. This function constructs a
+			 * stringlist of a single element, the passed pathVariant,
+			 * and calls the other Load() with it.
+			 * 
+			 * @param[in] pathVariant The path variant to try.
+			 * @return The QIODevice for the found path, or a null ptr
+			 * if nothing is found.
+			 */
+			QIODevice_ptr Load (const QString& pathVariant) const;
 
 			/** @brief Returns the subelement model with the contents of registered paths.
 			 *

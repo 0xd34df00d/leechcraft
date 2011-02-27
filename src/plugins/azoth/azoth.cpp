@@ -21,6 +21,7 @@
 #include <QDockWidget>
 #include <QMainWindow>
 #include <QVBoxLayout>
+#include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -151,9 +152,18 @@ namespace Azoth
 		return Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
 	}
 	
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
-		return QList<QAction*> ();
+		QList<QAction*> result;
+		switch (aep)
+		{
+		case AEPTrayMenu:
+			result << MW_->GetChangeStatusMenu ()->menuAction ();
+			break;
+		default:
+			break;
+		}
+		return result;
 	}
 	
 	QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const

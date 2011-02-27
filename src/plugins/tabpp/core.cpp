@@ -175,6 +175,8 @@ namespace LeechCraft
 						return index.column () ?
 							QVariant () :
 							item->Data (0, role);
+					case CRWidget:
+						return item->Data (0, CRWidget);
 					default:
 						return QVariant ();
 				}

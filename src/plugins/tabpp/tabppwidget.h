@@ -45,6 +45,7 @@ namespace LeechCraft
 			protected:
 				bool eventFilter (QObject*, QEvent*);
 			private slots:
+				void handleCustomContextMenuRequested (const QPoint&);
 				void handleActivatorHovered ();
 				void handleFirstTriggered ();
 				void selected (const QModelIndex&);

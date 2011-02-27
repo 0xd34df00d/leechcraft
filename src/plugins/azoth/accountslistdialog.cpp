@@ -61,18 +61,6 @@ namespace Azoth
 		item->setEditable (false);
 		AccModel_->appendRow (item);
 
-		QObject *protoObj = acc->GetParentProtocol ();
-		connect (protoObj,
-				SIGNAL (accountAdded (QObject*)),
-				this,
-				SLOT (handleAccountAdded (QObject*)),
-				Qt::UniqueConnection);
-		connect (protoObj,
-				SIGNAL (accountRemoved (QObject*)),
-				this,
-				SLOT (handleAccountRemoved (QObject*)),
-				Qt::UniqueConnection);
-
 		Account2Item_ [acc] = item;
 	}
 

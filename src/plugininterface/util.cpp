@@ -30,10 +30,20 @@
 #include <QTextCodec>
 #include <QUrl>
 #include <QAction>
+#include <QBuffer>
 #include <QtDebug>
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);
 Q_DECLARE_METATYPE (QVariantList*);
+
+QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
+{
+	QBuffer buf;
+	buf.open (QIODevice::ReadWrite);
+	pix.save (&buf, "PNG");
+	return QString ("data:image/png;base64,%1")
+			.arg (QString (buf.buffer ().toBase64 ()));
+}
 
 QString LeechCraft::Util::GetUserText (const Entity& p)
 {

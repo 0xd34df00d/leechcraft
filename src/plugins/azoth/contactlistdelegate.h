@@ -27,6 +27,9 @@ namespace Azoth
 	class ContactListDelegate : public QStyledItemDelegate
 	{
 		Q_OBJECT
+		
+		bool ShowAvatars_;
+		bool ShowClientIcons_;
 	public:
 		ContactListDelegate (QObject* = 0);
 		virtual void paint (QPainter*,
@@ -40,6 +43,9 @@ namespace Azoth
 				QStyleOptionViewItemV4, const QModelIndex&) const;
 		void DrawContact (QPainter*,
 				QStyleOptionViewItemV4, const QModelIndex&) const;
+	private slots:
+		void handleShowAvatarsChanged ();
+		void handleShowClientIconsChanged ();
 	};
 }
 }
