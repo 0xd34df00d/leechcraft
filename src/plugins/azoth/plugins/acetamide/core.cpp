@@ -22,6 +22,7 @@
 #include <interfaces/iproxyobject.h>
 #include "ircaccount.h"
 #include "ircprotocol.h"
+#include "ircclient.h"
 
 namespace LeechCraft
 {
@@ -33,9 +34,11 @@ namespace Acetamide
 	: PluginProxy_ (0)
 	, DefaultAccount_ (0)
 	{
+		qRegisterMetaTypeStreamOperators<ServerOptions> ("ServerOptions");
+		qRegisterMetaTypeStreamOperators<ChannelOptions> ("ChannelOptions");
+		
 		IrcProtocol_.reset (new IrcProtocol (this));
-		qRegisterMetaTypeStreamOperators<NickNameData> ("NickNameData");
-		qRegisterMetaTypeStreamOperators<ServerInfoData> ("ServerInfoData");
+		IrcClient_.reset (new IrcClient (0));
 	}
 
 	Core& Core::Instance ()
@@ -52,6 +55,7 @@ namespace Acetamide
 
 	void Core::Release ()
 	{
+		IrcClient_.reset ();
 		IrcProtocol_.reset ();
 	}
 
@@ -94,25 +98,43 @@ namespace Acetamide
 		emit gotEntity (e);
 	}
 
+	boost::shared_ptr<IrcClient> Core::GetIrcClient () const
+	{
+		return IrcClient_;
+	}
+
+
 	void Core::CreateDefaultAccount ()
 	{
-		DefaultAccount_ = new IrcAccount (tr ("DefaultIrcAccount"), IrcProtocol_.get ());
-		QList<NickNameData> defaultAcc = DefaultAccount_->ReadNicknameSettings ("DefaultIrcAccount_Nicknames");
-		if (!defaultAcc.isEmpty ())
+		QString defaultAccountName ("DefaultIrcAccount");
+		QString defaultNick = QString ("leechraft") + 
+				QString::number (10 + qrand () % 89);
+		
+		DefaultAccount_ = new IrcAccount (defaultAccountName, IrcProtocol_.get ());
+		
+		QList<ServerOptions> defaultAccServers = DefaultAccount_->
+				ReadServersSettings (defaultAccountName + "_Servers");
+		if (!defaultAccServers.isEmpty ())
 		{
-			if (defaultAcc.first ().Nicks_.isEmpty ())
-				defaultAcc [0].Nicks_ << QString ("leechraft") + QString::number (10 + qrand () % 89);
+			if (defaultAccServers.first ().ServerNicknames_.isEmpty ())
+				defaultAccServers [0].ServerNicknames_ << defaultNick;
 		}
 		else
 		{
-			NickNameData acc;
-			acc.Server_ = "default";
-			acc.ServerName_ = tr ("Default");
-			acc.Nicks_ << QString ("leechraft") + QString::number (10 + qrand () % 99);
-			acc.AutoGenerate_ = true;
-			defaultAcc << acc;
+			ServerOptions server;
+			server.NetworkName_ = tr ("Default");
+			server.ServerName_ = tr ("Default");
+			server.ServerNicknames_ << defaultNick;
+			server.ServerRealName_ = "Mr.Leechcraft";
+			server.ServerPassword_ = QString ();
+			server.ServerPort_ = 0;
+			server.SSL_ = false;
+			server.ServerEncoding_ = "UTF-8";
+			defaultAccServers.append (server);
 		}
-		DefaultAccount_->SaveNicknameSettings (defaultAcc, "DefaultIrcAccount_Nicknames");
+		
+		DefaultAccount_->SaveServersSettings (defaultAccServers, 
+				defaultAccountName + "_Servers");
 	}
 
 	void Core::handleItemsAdded (const QList<QObject*>& items)

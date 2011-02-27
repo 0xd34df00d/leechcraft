@@ -22,6 +22,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -30,23 +31,26 @@ namespace Acetamide
 {
 	class IrcProtocol;
 	class IrcAccount;
+	class IrcClient;
 	
-	struct NickNameData
+	struct ServerOptions
 	{
-		QStringList Nicks_;
-		QString Server_;
+		QString NetworkName_;
 		QString ServerName_;
-		bool AutoGenerate_;
+		QString ServerEncoding_;
+		QString ServerPassword_;
+		QStringList ServerNicknames_;
+		QString ServerRealName_;
+		int ServerPort_;
+		bool SSL_;
 	};
 	
-	struct ServerInfoData
+	struct ChannelOptions
 	{
-		QString Network_;
-		QString Server_;
-		int Port_;
-		QString Password_;
-		QStringList Channels_;
-		bool SSL_;
+		QString ServerName_;
+		QString ChannelName_;
+		QString ChannelPassword_;
+		QString ChannelNickname_;
 	};
 	
 	class Core : public QObject
@@ -57,7 +61,7 @@ namespace Acetamide
 		boost::shared_ptr<IrcProtocol> IrcProtocol_;
 		QObject *PluginProxy_;
 		IrcAccount *DefaultAccount_;
-		
+		boost::shared_ptr<IrcClient> IrcClient_;
 		Core ();
 	public:
 		static Core& Instance ();
@@ -72,6 +76,7 @@ namespace Acetamide
 		void SetDefaultIrcAcoount (IrcAccount *account);
 		IrcAccount* GetDefaultIrcAccount ();
 		void SendEntity (const Entity&);
+		boost::shared_ptr<IrcClient>  GetIrcClient () const;
 	private:
 		void CreateDefaultAccount ();
 	private slots:
