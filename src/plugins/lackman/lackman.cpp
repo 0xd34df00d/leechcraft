@@ -201,7 +201,10 @@ namespace LeechCraft
 				
 				Ui_.Browser_->SetHtml (text);
 
-				Ui_.NameLabel_->setText (index.data ().toString ());
+				if (index.isValid ())
+					Ui_.PackageInfoBox_->setTitle (tr ("Package information: %1").arg (index.data ().toString ()));
+				else
+					Ui_.PackageInfoBox_->setTitle (tr ("Package information"));
 
 				QString state;
 				if (!index.isValid ()) ;
