@@ -170,7 +170,13 @@ namespace Acetamide
 		opts.ServerEncoding_ = GetEncoding ();
 		opts.SSL_ = GetSSL ();
 		opts.ServerNicknames_ << GetNickname ();
-		opts.ServerRealName_ = Core::Instance ().GetDefaultIrcAccount ()->GetServers ().at (0).ServerRealName_;
+		QString username;
+		if (SelectedAccount_->GetServers ().isEmpty ())
+			username = Core::Instance ().GetDefaultUserName ();
+		else
+			username = SelectedAccount_->GetServers ().at (0).ServerRealName_;
+		
+		opts.ServerRealName_ = username;
 
 		return opts;
 	}
