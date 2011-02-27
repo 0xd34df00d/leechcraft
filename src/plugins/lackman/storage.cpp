@@ -477,6 +477,24 @@ namespace LeechCraft
 
 				return info;
 			}
+			
+			qint64 Storage::GetPackageSize (int packageId)
+			{
+				QueryGetPackageSize_.bindValue (":package_id", packageId);
+				if (!QueryGetPackageSize_.exec ())
+				{
+					Util::DBLock::DumpError (QueryGetPackageSize_);
+					throw std::runtime_error ("Query execution failed");
+				}
+				
+				if (!QueryGetPackageSize_.next ())
+					return -1;
+				
+				const qint64 result = QueryGetPackageSize_.value (0).toLongLong ();
+				QueryGetPackageSize_.finish ();
+				
+				return result;
+			}
 
 			void Storage::RemovePackage (int packageId)
 			{
@@ -529,6 +547,13 @@ namespace LeechCraft
 					Util::DBLock::DumpError (QueryRemovePackage_);
 					throw std::runtime_error ("Query execution failed");
 				}
+				
+				QueryRemovePackageSize_.bindValue (":package_id", packageId);
+				if (!QueryRemovePackageSize_.exec ())
+				{
+					Util::DBLock::DumpError (QueryRemovePackageSize_);
+					throw std::runtime_error ("Query execution failed");
+				}
 
 				lock.Good ();
 			}
@@ -557,8 +582,23 @@ namespace LeechCraft
 						Util::DBLock::DumpError (QueryAddPackage_);
 						throw std::runtime_error ("Query execution failed");
 					}
+					
+					const qint64 size = pInfo.PackageSizes_.value (version, -1);
+					if (size == -1)
+						continue;
+					
+					const int packageId = FindPackage (pInfo.Name_, version);
+					
+					QueryAddPackageSize_.bindValue (":package_id", packageId);
+					QueryAddPackageSize_.bindValue (":size", size);
+					if (!QueryAddPackageSize_.exec ())
+					{
+						Util::DBLock::DumpError (QueryAddPackageSize_);
+						throw std::runtime_error ("Query execution failed");
+					}
 				}
 				QueryAddPackage_.finish ();
+				QueryAddPackageSize_.finish ();
 
 				QueryClearPackageInfos_.bindValue (":name", pInfo.Name_);
 				if (!QueryClearPackageInfos_.exec ())
@@ -1007,6 +1047,7 @@ namespace LeechCraft
 				QSqlQuery query (DB_);
 				QStringList names;
 				names << "packages"
+						<< "packagesizes"
 						<< "deps"
 						<< "infos"
 						<< "locations"
@@ -1074,6 +1115,16 @@ namespace LeechCraft
 
 				QueryRemovePackage_ = QSqlQuery (DB_);
 				QueryRemovePackage_.prepare ("DELETE FROM packages WHERE package_id = :package_id;");
+				
+				QueryAddPackageSize_ = QSqlQuery (DB_);
+				QueryAddPackageSize_.prepare ("INSERT INTO packagesizes (package_id, size) "
+						"VALUES (:package_id, :size);");
+				
+				QueryGetPackageSize_ = QSqlQuery (DB_);
+				QueryGetPackageSize_.prepare ("SELECT size FROM packagesizes WHERE package_id = :package_id;");
+				
+				QueryRemovePackageSize_ = QSqlQuery (DB_);
+				QueryRemovePackageSize_.prepare ("DELETE from packagesizes WHERE package_id = :package_id;");
 
 				QueryHasLocation_ = QSqlQuery (DB_);
 				QueryHasLocation_.prepare ("SELECT COUNT (package_id) "

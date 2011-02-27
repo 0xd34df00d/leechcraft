@@ -53,6 +53,9 @@ namespace LeechCraft
 				QSqlQuery QueryAddPackage_;
 				QSqlQuery QueryGetPackage_;
 				QSqlQuery QueryRemovePackage_;
+				QSqlQuery QueryAddPackageSize_;
+				QSqlQuery QueryGetPackageSize_;
+				QSqlQuery QueryRemovePackageSize_;
 				QSqlQuery QueryHasLocation_;
 				QSqlQuery QueryAddLocation_;
 				QSqlQuery QueryRemovePackageFromLocations_;
@@ -95,6 +98,7 @@ namespace LeechCraft
 				int FindPackage (const QString& name, const QString& version);
 				int FindInstalledPackage (int packageId);
 				PackageShortInfo GetPackage (int packageId);
+				qint64 GetPackageSize (int packageId);
 				void RemovePackage (int packageId);
 				void AddPackages (const PackageInfo&);
 

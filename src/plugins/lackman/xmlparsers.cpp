@@ -212,6 +212,20 @@ namespace LeechCraft
 					packageInfo.Tags_ << tagNode.text ();
 					tagNode = tagNode.nextSiblingElement ("tag");
 				}
+				
+				QDomElement verNode = package.firstChildElement ("versions")
+						.firstChildElement ("version");
+				while (!verNode.isNull ())
+				{
+					if (verNode.hasAttribute ("size"))
+					{
+						bool ok = false;
+						qint64 size = verNode.attribute ("size").toLong (&ok);
+						if (ok)
+							packageInfo.PackageSizes_ [verNode.text ()] = size;
+					}
+					verNode = verNode.nextSiblingElement ("version");
+				}
 
 				QDomElement maintNode = package.firstChildElement ("maintainer");
 				packageInfo.MaintName_ = maintNode.firstChildElement ("name").text ();
