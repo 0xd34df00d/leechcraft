@@ -37,7 +37,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>Nicknames (first nick would be your default nick)</string>
+          <string>Nicknames (first nick would be the default one):</string>
          </property>
         </widget>
        </item>
@@ -53,6 +53,9 @@
        </item>
        <item row="3" column="0">
         <widget class="QCheckBox" name="GenerateNicknames_">
+         <property name="toolTip">
+          <string>Appends random number to the nickname to avoid collisions</string>
+         </property>
          <property name="text">
           <string>Generate nicknames</string>
          </property>
@@ -71,7 +74,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>Network name</string>
+          <string>Network name:</string>
          </property>
         </widget>
        </item>

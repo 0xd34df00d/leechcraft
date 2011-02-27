@@ -6,35 +6,39 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>251</width>
-    <height>98</height>
+    <width>277</width>
+    <height>95</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Edit channel</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Channel</string>
-     </property>
-    </widget>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Channel:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="Channel_"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Password:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="Password_"/>
+     </item>
+    </layout>
    </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="Channel_"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Password</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="Password_"/>
-   </item>
-   <item row="2" column="0" colspan="2">
+   <item>
     <widget class="QDialogButtonBox" name="ControlButtons_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
