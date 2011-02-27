@@ -98,6 +98,9 @@ namespace StandardStyles
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::MTChatMessage:
+				divClass = msg->GetDirection () == IMessage::DIn ?
+					"msgin" :
+					"msgout";
 			case IMessage::MTMUCMessage:
 			{
 				entryName = Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor);
@@ -114,9 +117,10 @@ namespace StandardStyles
 				{
 					string.append (entryName);
 					string.append (": ");
-					divClass = isHighlightMsg ?
-							"highlightchatmsg" :
-							"chatmsg";
+					if (divClass.isEmpty ())
+						divClass = isHighlightMsg ?
+								"highlightchatmsg" :
+								"chatmsg";
 				}
 				break;
 			}
@@ -153,7 +157,8 @@ namespace StandardStyles
 				string.append (Proxy_->FormatNickname (acc->GetOurNick (), msg->GetObject (), nickColor));
 				string.append (": ");
 			}
-			divClass = "chatmsg";
+			if (divClass.isEmpty ())
+				divClass = "msgout";
 			break;
 		}
 

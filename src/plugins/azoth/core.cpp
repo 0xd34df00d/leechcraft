@@ -562,15 +562,8 @@ namespace Azoth
 			string.append ("</a></span>");
 		}
 		else
-		{
-			const QString& nickClass = msg->GetDirection () == IMessage::DIn ?
-					"nicknamein" :
-					"nicknameout";
-
-			string = QString ("<span class='%2'>%1</span>")
-					.arg (nick)
-					.arg (nickClass);
-		}
+			string = QString ("<span class='nickname'>%1</span>")
+					.arg (nick);
 
 		return string;
 	}
