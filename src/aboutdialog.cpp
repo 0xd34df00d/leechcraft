@@ -92,6 +92,13 @@ namespace LeechCraft
 				"d34df00d@jabber.ru", "0xd34df00d@gmail.com",
 				QStringList (tr ("Lead developer and original author.")),
 				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011);
+		authors << ContributorInfo ("Oleg Linkin", "magog",
+				"magog@gentoo.ru", "MaledictusDeMagog@gmail.com",
+				QStringList (tr ("Firefox importer in New Life."))
+					<< tr ("Poshuku OnlineBookmarks.")
+					<< tr ("Azoth Acetamide: IRC support for Azoth.")
+					<< tr ("Various patches."),
+				QList<int> () << 2010 << 2011);
 
 		QList<ContributorInfo> contribs;
 		contribs << ContributorInfo (QString (), "Akon32",
@@ -118,12 +125,6 @@ namespace LeechCraft
 				QString (), "miha@52.ru",
 				QStringList ("OpenSUSE package maintainer."),
 				QList<int> () << 2009);
-		contribs << ContributorInfo ("Oleg Linkin", "magog",
-				"magog@gentoo.ru", "MaledictusDeMagog@gmail.com",
-				QStringList (tr ("Firefox importer in New Life."))
-					<< tr ("Poshuku OnlineBookmarks module.")
-					<< tr ("Various patches."),
-				QList<int> () << 2010 << 2011);
 		contribs << ContributorInfo (QString (), "PanteR",
 				"panter_dsd@jabber.ru", "panter.dsd@gmail.com",
 				QStringList (tr ("Various patches.")),
