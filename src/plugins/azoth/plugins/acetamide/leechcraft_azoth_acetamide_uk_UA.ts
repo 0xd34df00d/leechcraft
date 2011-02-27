@@ -9,28 +9,27 @@
         <translation>Додати сервер</translation>
     </message>
     <message>
-        <location filename="ircaddserverdialog.ui" line="20"/>
+        <location filename="ircaddserverdialog.ui" line="25"/>
         <source>Server:</source>
         <oldsource>Server</oldsource>
         <translation>Сервер:</translation>
     </message>
     <message>
-        <location filename="ircaddserverdialog.ui" line="27"/>
+        <location filename="ircaddserverdialog.ui" line="35"/>
         <source>Port:</source>
         <oldsource>Port</oldsource>
         <translation>Порт:</translation>
     </message>
     <message>
-        <location filename="ircaddserverdialog.ui" line="47"/>
+        <location filename="ircaddserverdialog.ui" line="52"/>
         <source>Password:</source>
         <oldsource>Password</oldsource>
         <translation>Пароль:</translation>
     </message>
     <message>
-        <location filename="ircaddserverdialog.ui" line="74"/>
-        <source>Security connection (SSL)</source>
-        <oldsource>Secure connection (SSL)</oldsource>
-        <translation type="unfinished">Захищене з’єднання (SSL)</translation>
+        <location filename="ircaddserverdialog.ui" line="68"/>
+        <source>Secure connection (SSL)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46,42 +45,49 @@
         <translation>Профіль користувача</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="160"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="57"/>
+        <source>Appends random number to the nickname to avoid collisions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircaccountconfigurationdialog.ui" line="77"/>
+        <source>Network name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircaccountconfigurationdialog.ui" line="163"/>
         <source>Default</source>
         <translation>Стандартний</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="57"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="60"/>
         <source>Generate nicknames</source>
         <translation>Згенерувати нікнейми</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="40"/>
-        <source>Nicknames (first nick would be your default nick)</source>
+        <source>Nicknames (first nick would be the default one):</source>
+        <oldsource>Nicknames (first nick would be your default nick)</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="65"/>
-        <source>Connect settings</source>
-        <translation>Налаштування з’єднання</translation>
+        <location filename="ircaccountconfigurationdialog.ui" line="68"/>
+        <source>Connection settings</source>
+        <oldsource>Connect settings</oldsource>
+        <translation type="unfinished">Налаштування з’єднання</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="74"/>
-        <source>Network name</source>
-        <translation>Ім’я мережі</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="100"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="103"/>
         <source>Add...</source>
         <translation>Додати...</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="134"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="137"/>
         <source>Edit</source>
         <translation>Редагувати</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="153"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="156"/>
         <source>Delete</source>
         <translation>Видалити</translation>
     </message>
@@ -113,69 +119,64 @@
     <name>IrcEditChannelDialog</name>
     <message>
         <location filename="irceditchanneldialog.ui" line="14"/>
-        <source>Dialog</source>
-        <translation>Діалог</translation>
+        <source>Edit channel</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="irceditchanneldialog.ui" line="20"/>
-        <source>Channel</source>
-        <translation>Канал</translation>
+        <location filename="irceditchanneldialog.ui" line="22"/>
+        <source>Channel:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="irceditchanneldialog.ui" line="30"/>
-        <source>Password</source>
-        <translation>Пароль</translation>
+        <location filename="irceditchanneldialog.ui" line="32"/>
+        <source>Password:</source>
+        <translation type="unfinished">Пароль:</translation>
     </message>
 </context>
 <context>
     <name>IrcJoinGroupChat</name>
     <message>
-        <location filename="ircjoingroupchat.ui" line="14"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+        <location filename="ircjoingroupchat.ui" line="25"/>
+        <source>Server:</source>
+        <translation type="unfinished">Сервер:</translation>
     </message>
     <message>
-        <location filename="ircjoingroupchat.ui" line="20"/>
-        <source>Server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ircjoingroupchat.ui" line="27"/>
+        <location filename="ircjoingroupchat.ui" line="32"/>
         <source>chat.freenode.net</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ircjoingroupchat.ui" line="34"/>
-        <source>Channel</source>
-        <translation type="unfinished">Канал</translation>
+        <location filename="ircjoingroupchat.ui" line="39"/>
+        <source>Port:</source>
+        <translation type="unfinished">Порт:</translation>
     </message>
     <message>
-        <location filename="ircjoingroupchat.ui" line="41"/>
+        <location filename="ircjoingroupchat.ui" line="56"/>
+        <source>Channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="70"/>
+        <source>Nickname:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="80"/>
+        <source>Password:</source>
+        <translation type="unfinished">Пароль:</translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="94"/>
+        <source>Encoding:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="63"/>
         <source>#leechcraft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ircjoingroupchat.ui" line="48"/>
-        <source>Nickname</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ircjoingroupchat.ui" line="55"/>
-        <source>Password</source>
-        <translation type="unfinished">Пароль</translation>
-    </message>
-    <message>
-        <location filename="ircjoingroupchat.ui" line="79"/>
-        <source>Port</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ircjoingroupchat.ui" line="92"/>
-        <source>Encoding</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="ircjoingroupchat.ui" line="99"/>
+        <location filename="ircjoingroupchat.ui" line="106"/>
         <source>Secure connection (SSL)</source>
         <translation type="unfinished"></translation>
     </message>

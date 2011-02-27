@@ -65,7 +65,7 @@
      </widget>
      <widget class="QWidget" name="IrcConnections_">
       <attribute name="title">
-       <string>Connect settings</string>
+       <string>Connection settings</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <property name="margin">
