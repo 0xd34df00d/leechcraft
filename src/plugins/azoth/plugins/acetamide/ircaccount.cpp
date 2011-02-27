@@ -1,31 +1,33 @@
 /**********************************************************************
- * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **********************************************************************/
+* LeechCraft - modular cross-platform feature rich internet client.
+* Copyright (C) 2010  Oleg Linkin
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**********************************************************************/
 
 #include "ircaccount.h"
 #include <boost/bind.hpp>
 #include <QInputDialog>
-#include <QtDebug>
 #include <QSettings>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
+#include "clientconnection.h"
 #include "ircprotocol.h"
 #include "ircaccountconfigurationdialog.h"
+#include "channelclentry.h"
 #include "core.h"
+#include "ircmessage.h"
 
 namespace LeechCraft
 {
@@ -35,13 +37,11 @@ namespace Acetamide
 {
 	IrcAccount::IrcAccount (const QString& name, QObject *parent)
 	: QObject (parent)
-	, Name_ (name)
+	, AccountName_ (name)
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
-	, Nick_ (QString ())
 	, AccountID_ (QByteArray ())
+	, IrcAccountState (SOffline)
 	{
-		IrcAccountState_ = SOffline;
-		
 		connect (this,
 				SIGNAL (scheduleClientDestruction ()),
 				this,
@@ -52,9 +52,23 @@ namespace Acetamide
 
 	void IrcAccount::Init ()
 	{
-		ServersInfo_ = ReadConnectionSettings (Name_ + "_Servers");
-		NickNames_ = ReadNicknameSettings (Name_ +"_Nicknames");
+		ClientConnection_.reset (new ClientConnection (this));
+		Servers_ = ReadServersSettings (AccountName_ + "_Servers");
+		Channels_ = ReadChannelsSettings (AccountName_ +"_Channels");
 		SetAccountID ();
+
+		connect (ClientConnection_.get (),
+				SIGNAL (gotRosterItems (const QList<QObject*>&)),
+				this,
+				SLOT (handleGotRosterItems (const QList<QObject*>&)));
+		connect (ClientConnection_.get (),
+				SIGNAL (rosterItemRemoved (QObject*)),
+				this,
+				SLOT (handleEntryRemoved (QObject*)));
+		connect (ClientConnection_.get (),
+				SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
+				this,
+				SIGNAL (removedCLItems (const QList<QObject*>&)));
 	}
 
 	QObject* IrcAccount::GetObject ()
@@ -83,33 +97,34 @@ namespace Acetamide
 	
 	QString IrcAccount::GetAccountName () const
 	{
-		return Name_;
+		return AccountName_;
 	}
 
 	QString IrcAccount::GetOurNick () const
 	{
-		QList<NickNameData> temp = NickNames_;
-		if (temp.isEmpty())
+		QList<ServerOptions> srvs = Servers_;
+		if (srvs.isEmpty ())
 		{
-			IrcAccount *defAcc = Core::Instance ().GetDefaultIrcAccount ();
-			temp = ReadNicknameSettings (defAcc->GetAccountName () + "_Nicknames");
+			IrcAccount *def = Core::Instance ().GetDefaultIrcAccount ();
+			srvs = ReadServersSettings (def->GetAccountName () + "_Servers");
 		}
-		return temp.at (0).Nicks_.at (0);
+		
+		return srvs.at (0).ServerNicknames_.at (0);
 	}
 
-	QList<NickNameData> IrcAccount::GetNickNames () const
+	QList<ServerOptions> IrcAccount::GetServers () const
 	{
-		return NickNames_;
+		return Servers_;
 	}
 
-	QList<ServerInfoData> IrcAccount::GetServersInfo () const
+	QList<ChannelOptions> IrcAccount::GetChannels () const
 	{
-		return ServersInfo_;
+		return Channels_;
 	}
 
 	void IrcAccount::RenameAccount (const QString& name)
 	{
-		Name_ = name;
+		AccountName_ = name;
 	}
 
 	QByteArray IrcAccount::GetAccountID () const
@@ -119,44 +134,50 @@ namespace Acetamide
 
 	void IrcAccount::OpenConfigurationDialog ()
 	{
-		std::auto_ptr<IrcAccountConfigurationDialog> dia (new IrcAccountConfigurationDialog (0));
-
-		if (!NickNames_.isEmpty ())
-			dia->SetNicks (NickNames_);
-		if (!ServersInfo_.isEmpty ())
-			dia->SetServersInfo (ServersInfo_);
-
-		if (dia->exec () == QDialog::Rejected)
-			return;
-
-		Nick_ = dia->GetDefaultNickname ();
-		
-		State lastState = IrcAccountState_;
-		if (lastState != SOffline)
-		{
-			ChangeState (EntryStatus (SOffline, QString ()));
-// 			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
-		}
-
-		NickNames_ = dia->GetNicks ();
-		ServersInfo_ = dia->GetServersInfo ();
-		
-		SaveConnectionSettings (ServersInfo_, QString (Name_ + "_Servers"));
-		SaveNicknameSettings (NickNames_, QString (Name_ + "_Nicknames"));
-		
-		if (lastState != SOffline)
-			ChangeState (EntryStatus (lastState, QString ()));
-
-		emit accountSettingsChanged ();
+// 		std::auto_ptr<IrcAccountConfigurationDialog> dia (new IrcAccountConfigurationDialog (0));
+// 
+// 		if (!NickNames_.isEmpty ())
+// 			dia->SetNicks (NickNames_);
+// 		if (!ServersInfo_.isEmpty ())
+// 			dia->SetServersInfo (ServersInfo_);
+// 
+// 		if (dia->exec () == QDialog::Rejected)
+// 			return;
+// 
+// 		Nick_ = dia->GetDefaultNickname ();
+// 		
+// 		State lastState = IrcAccountState_;
+// 		if (lastState != SOffline)
+// 		{
+// 			ChangeState (EntryStatus (SOffline, QString ()));
+// // 			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
+// 		}
+// 
+// 		NickNames_ = dia->GetNicks ();
+// 		ServersInfo_ = dia->GetServersInfo ();
+// 		
+// 		SaveConnectionSettings (ServersInfo_, QString (Name_ + "_Servers"));
+// 		SaveNicknameSettings (NickNames_, QString (Name_ + "_Nicknames"));
+// 		
+// 		if (lastState != SOffline)
+// 			ChangeState (EntryStatus (lastState, QString ()));
+// 
+// 		emit accountSettingsChanged ();
 	}
 
 	EntryStatus IrcAccount::GetState () const
 	{
-		return EntryStatus (IrcAccountState_, QString ());
+		return EntryStatus (IrcAccountState, QString ());
 	}
 
-	void IrcAccount::ChangeState (const EntryStatus&)
+	void IrcAccount::ChangeState (const EntryStatus& state)
 	{
+		if (state.State_ == SOffline &&
+				!ClientConnection_)
+			return;
+
+		IrcAccountState = state.State_;
+		emit statusChanged (state);
 	}
 	
 	void IrcAccount::Synchronize ()
@@ -184,9 +205,27 @@ namespace Acetamide
 		return 0;
 	}
 
-	void IrcAccount::JoinRoom(const QString& , int , const QString& , const QString& , const QString& , bool)
+	void IrcAccount::JoinRoom (const ServerOptions& opts, const ChannelOptions& info)
 	{
+		QString channelStr = QString ("%1@%2")
+				.arg (info.ChannelName_, info.ServerName_);
+		
+		ChannelCLEntry *entry = ClientConnection_->JoinRoom (opts, info);
+		if (!entry)
+			return;
+		emit gotCLItems (QList<QObject*> () << entry);
+	}
+	
+	boost::shared_ptr< ClientConnection > IrcAccount::GetClientConnection () const
+	{
+		return ClientConnection_;
+	}
 
+	QObject* IrcAccount::CreateMessage (IMessage::MessageType type
+			, const QString& resource
+			, const QString& body)
+	{
+		return ClientConnection_->CreateMessage (type, resource, body);
 	}
 
 	void IrcAccount::SetAccountID ()
@@ -223,7 +262,7 @@ namespace Acetamide
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-				<< Name_;
+				<< AccountName_;
 		}
 
 		return result;
@@ -251,31 +290,32 @@ namespace Acetamide
 		return result;
 	}
 
-	void IrcAccount::SaveConnectionSettings (const QList<ServerInfoData>& value, const QString& name)
+	void IrcAccount::SaveServersSettings (const QList<ServerOptions>& value, const QString& name)
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
-		settings.beginGroup ("ConnectionSettings");
+		settings.beginGroup ("Servers");
 		QByteArray result;
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
-			Q_FOREACH (const ServerInfoData& serv, value)
+			Q_FOREACH (const ServerOptions& serv, value)
 				ostr << serv;
 		}
 		
 		settings.setValue (name, result);
 		settings.endGroup ();
 	}
-	
-	QList<ServerInfoData> IrcAccount::ReadConnectionSettings (const QString& name) const
+
+	QList<ServerOptions> IrcAccount::ReadServersSettings (const QString& name) const
 	{
-		QList<ServerInfoData> value;
-		ServerInfoData val;
+		QList<ServerOptions> value;
+		ServerOptions val;
+
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
-		settings.beginGroup ("ConnectionSettings");
+		settings.beginGroup ("Servers");
 		
 		QByteArray ba = settings.value (name).toByteArray ();
 		QDataStream istr (ba);
@@ -290,31 +330,32 @@ namespace Acetamide
 		
 		return value;
 	}
-	
-	void IrcAccount::SaveNicknameSettings (const QList<NickNameData>& value, const QString& name)
+
+	void IrcAccount::SaveChannelsSettings (const QList<ChannelOptions>& value, const QString& name)
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
-		settings.beginGroup ("NicknameSettings");
+		settings.beginGroup ("Channels");
 		QByteArray result;
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
-			Q_FOREACH (const NickNameData& nick, value)
+			Q_FOREACH (const ChannelOptions& nick, value)
 				ostr << nick;
 		}
 		settings.setValue (name, result);
 		settings.endGroup ();
 	}
 	
-	QList<NickNameData> IrcAccount::ReadNicknameSettings (const QString& name) const
+	QList<ChannelOptions> IrcAccount::ReadChannelsSettings (const QString& name) const
 	{
-		QList<NickNameData> value;
-		NickNameData val;
+		QList<ChannelOptions> value;
+		ChannelOptions val;
+
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
-		settings.beginGroup ("NicknameSettings");
+		settings.beginGroup ("Channels");
 		
 		QByteArray ba = settings.value (name).toByteArray ();
 		QDataStream istr (ba);
@@ -329,19 +370,38 @@ namespace Acetamide
 		
 		return value;
 	}
-	
-	QDataStream& operator<< (QDataStream& out, const NickNameData& nick)
+
+	void IrcAccount::handleEntryRemoved (QObject *entry)
+	{
+		emit removedCLItems (QObjectList () << entry);
+	}
+
+	void IrcAccount::handleGotRosterItems (const QList<QObject*>& items)
+	{
+		emit gotCLItems (items);
+	}
+
+	void IrcAccount::handleDestroyClient ()
+	{
+		ClientConnection_.reset ();
+	}
+
+	QDataStream& operator<< (QDataStream& out, const ServerOptions& server)
 	{
 		out << static_cast<quint8> (1)
-				<< nick.Server_
-				<< nick.ServerName_
-				<< nick.Nicks_
-				<< nick.AutoGenerate_;
-		
+				<< server.NetworkName_
+				<< server.ServerName_
+				<< server.ServerPort_
+				<< server.ServerPassword_
+				<< server.ServerNicknames_
+				<< server.ServerRealName_
+				<< server.ServerEncoding_
+				<< server.SSL_;
+
 		return out;
 	}
 
-	QDataStream& operator>> (QDataStream& in, NickNameData& nick)
+	QDataStream& operator>> (QDataStream& in, ServerOptions& server)
 	{
 		quint8 version = 0;
 		
@@ -350,29 +410,31 @@ namespace Acetamide
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
 					<< version;
-		
-		in >> nick.Server_
-				>> nick.ServerName_
-				>> nick.Nicks_
-				>> nick.AutoGenerate_;
-		
+		else
+			in >> server.NetworkName_
+				>> server.ServerName_
+				>> server.ServerPort_
+				>> server.ServerPassword_
+				>> server.ServerNicknames_
+				>> server.ServerRealName_
+				>> server.ServerEncoding_
+				>> server.SSL_;
+
 		return in;
 	}
 
-	QDataStream& operator<< (QDataStream& out, const ServerInfoData& server)
+	QDataStream& operator<< (QDataStream& out, const ChannelOptions& channel)
 	{
 		out << static_cast<quint8> (1)
-				<< server.Network_
-				<< server.Server_
-				<< server.Port_
-				<< server.Password_
-				<< server.Channels_
-				<< server.SSL_;
-		
+				<< channel.ServerName_
+				<< channel.ChannelName_
+				<< channel.ChannelPassword_
+				<< channel.ChannelNickname_;
+
 		return out;
 	}
 
-	QDataStream& operator>> (QDataStream& in, ServerInfoData& server)
+	QDataStream& operator<< (QDataStream& in, ChannelOptions& channel)
 	{
 		quint8 version = 0;
 		in >> version;
@@ -381,14 +443,12 @@ namespace Acetamide
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
 					<< version;
-		
-		in >> server.Network_
-				>> server.Server_
-				>> server.Port_
-				>> server.Password_
-				>> server.Channels_
-				>> server.SSL_;
-		
+		else
+			in >> channel.ServerName_
+				>> channel.ChannelName_
+				>> channel.ChannelPassword_
+				>> channel.ChannelNickname_;
+
 		return in;
 	}
 };

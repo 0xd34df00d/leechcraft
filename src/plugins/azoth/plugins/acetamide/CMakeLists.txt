@@ -4,26 +4,42 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 
 SET (ACETAMIDE_SRCS
 	acetamide.cpp
+	channelhandler.cpp
+	channelclentry.cpp
+	channelparticipantentry.cpp
+	channelpublicmessage.cpp
+	clientconnection.cpp
 	core.cpp
-	ircprotocol.cpp
 	ircaccount.cpp
 	ircaccountconfigurationdialog.cpp
 	ircaddserverdialog.cpp
 	ircadddefaultchannelsdialog.cpp
+	ircclient.cpp
 	irceditchanneldialog.cpp
 	ircjoingroupchat.cpp
+	ircmessage.cpp
+	ircprotocol.cpp
+	socketmanager.cpp
 	)
 
 SET (ACETAMIDE_HEADERS
 	acetamide.h
+	channelhandler.h
+	channelclentry.h
+	channelparticipantentry.h
+	channelpublicmessage.h
+	clientconnection.h
 	core.h
-	ircprotocol.h
 	ircaccount.h
 	ircaccountconfigurationdialog.h
 	ircaddserverdialog.h
 	ircadddefaultchannelsdialog.h
+	ircclient.h
 	irceditchanneldialog.h
 	ircjoingroupchat.h
+	ircmessage.h
+	ircprotocol.h
+	socketmanager.h
 	)
 
 SET (ACETAMIDE_FORMS

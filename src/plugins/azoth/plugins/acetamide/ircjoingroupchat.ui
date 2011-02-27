@@ -22,7 +22,11 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="Server_"/>
+    <widget class="QLineEdit" name="Server_">
+     <property name="text">
+      <string>chat.freenode.net</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_2">
@@ -32,7 +36,11 @@
     </widget>
    </item>
    <item row="1" column="1" colspan="3">
-    <widget class="QLineEdit" name="Channel_"/>
+    <widget class="QLineEdit" name="Channel_">
+     <property name="text">
+      <string>#leechcraft</string>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_3">
@@ -59,6 +67,9 @@
     <widget class="QSpinBox" name="Port_">
      <property name="maximum">
       <number>65535</number>
+     </property>
+     <property name="value">
+      <number>8001</number>
      </property>
     </widget>
    </item>
@@ -91,6 +102,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>Server_</tabstop>
+  <tabstop>Port_</tabstop>
+  <tabstop>Channel_</tabstop>
+  <tabstop>Nickname_</tabstop>
+  <tabstop>Password_</tabstop>
+  <tabstop>Encoding_</tabstop>
+  <tabstop>SSL_</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -91,7 +91,6 @@ namespace Acetamide
 		return accIDs;
 	}
 
-	
 	QObject* IrcProtocol::GetParentProtocolPlugin () const
 	{
 		return ParentProtocolPlugin_;
@@ -128,7 +127,7 @@ namespace Acetamide
 
 		emit accountAdded (account);
 
-		account->ChangeState (EntryStatus (SOnline, QString ()));
+// 		account->ChangeState (EntryStatus (SOnline, QString ()));
 	}
 
 	QWidget* IrcProtocol::GetMUCJoinWidget ()
@@ -139,10 +138,12 @@ namespace Acetamide
 	void IrcProtocol::RemoveAccount (QObject *acc)
 	{
 		IrcAccount *accObj = qobject_cast<IrcAccount*> (acc);
-		Accounts_.removeAll (accObj);
-		emit accountRemoved (accObj);
-		accObj->deleteLater ();
-		saveAccounts ();
+		if (Accounts_.removeAll (accObj))
+		{
+			emit accountRemoved (accObj);
+			accObj->deleteLater ();
+			saveAccounts ();
+		}
 	}
 
 	void IrcProtocol::saveAccounts () const
@@ -165,7 +166,6 @@ namespace Acetamide
 
 	void IrcProtocol::RestoreAccounts ()
 	{
-		bool defaultAccount = false;
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide_Accounts");
@@ -188,19 +188,15 @@ namespace Acetamide
 					SIGNAL (accountSettingsChanged ()),
 					this,
 					SLOT (saveAccounts ()));
-
-			if (acc->GetAccountName () == tr ("DefaultIrcAccount"))
-			{
+			
+			if (acc->GetAccountName () == "DefaultIrcAccount")
 				Core::Instance ().SetDefaultIrcAcoount (acc);
-				defaultAccount = true;
-			}
 			else
 				Accounts_ << acc;
 
 			emit accountAdded (acc);
 		}
 	}
-
 };
 };
 };

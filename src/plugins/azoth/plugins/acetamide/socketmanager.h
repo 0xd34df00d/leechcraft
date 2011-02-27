@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
 
-#include <QWidget>
-#include <interfaces/imucjoinwidget.h>
-#include "ui_ircjoingroupchat.h"
+#include <QObject>
+#include <QHash>
 #include "core.h"
+
+class QTcpSocket;
 
 namespace LeechCraft
 {
@@ -30,38 +31,35 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcAccount;
 	
-	class IrcJoinGroupChat : public QWidget
-							, public IMUCJoinWidget
+	class IrcClient;
+	class SocketManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
-		
-		Ui::IrcJoinGroupChat Ui_;
-		IrcAccount *SelectedAccount_;
+
+		QTcpSocket *CurrentSocket_;
+		QHash<QString, QTcpSocket*> Socket2Server_;
+		QString Result_;
+		IrcClient *Client_;
 	public:
-		IrcJoinGroupChat (QWidget* = 0);
-		
-		void AccountSelected (QObject*);
-		void Join (QObject*);
-		void Cancel ();
-		QVariantList GetBookmarkedMUCs () const;
-		void SetIdentifyingData (const QVariantMap&);
-		QVariantMap GetIdentifyingData () const;
-		
-		QString GetServer () const;
-		int GetPort () const;
-		QString GetChannel () const;
-		QString GetNickname () const;
-		QString GetEncoding () const;
-		bool GetSSL () const;
+		SocketManager (IrcClient*);
+		virtual ~SocketManager ();
+		void SendCommand (const ServerOptions&, const ChannelOptions&, const QString&);
+		void SendCommand (const QString&, const QString&, int);
+		bool IsConnected (const QString&);
+		QString GetResult () const;
 	private:
-		ServerOptions GetConnectionOptions () const;
-		ChannelOptions GetChannelInfo () const;
+		QTcpSocket* CreateSocket (const QString&);
+		int Connect (QTcpSocket*, const QString&, const QString&);
+		void SendData (const QString&);
+		void Init (QTcpSocket*);
+	private slots:
+		void connectionEstablished ();
+		void readAnswer ();
+	signals:
+		void gotAnswer (const QString&, const QString&);
 	};
 };
 };
 };
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H

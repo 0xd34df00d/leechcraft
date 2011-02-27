@@ -1614,6 +1614,7 @@ namespace Azoth
 		}
 
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+		
 		if (!other && msg->OtherPart ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1632,7 +1633,7 @@ namespace Azoth
 			return;
 
 		ICLEntry *parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-
+		
 		if (ShouldCountUnread (parentCL, msg))
 			IncreaseUnreadCount (parentCL);
 
@@ -1646,6 +1647,7 @@ namespace Azoth
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::MTChatMessage:
+				qDebug () << "THIS NON";
 				if (XmlSettingsManager::Instance ()
 						.property ("NotifyAboutIncomingMessages").toBool ())
 				{
@@ -1666,6 +1668,7 @@ namespace Azoth
 				break;
 			case IMessage::MTMUCMessage:
 			{
+				qDebug () << "THIS";
 				if (IsHighlightMessage (msg) && XmlSettingsManager::Instance ()
 						.property ("NotifyAboutConferenceHighlights").toBool ())
 				{
