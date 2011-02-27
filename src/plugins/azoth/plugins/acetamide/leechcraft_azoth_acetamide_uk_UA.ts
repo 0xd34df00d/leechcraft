@@ -28,9 +28,9 @@
     </message>
     <message>
         <location filename="ircaddserverdialog.ui" line="74"/>
-        <source>Secure connection (SSL)</source>
-        <oldsource>Security connect (SSL)</oldsource>
-        <translation>Захищене з’єднання (SSL)</translation>
+        <source>Security connection (SSL)</source>
+        <oldsource>Secure connection (SSL)</oldsource>
+        <translation type="unfinished">Захищене з’єднання (SSL)</translation>
     </message>
 </context>
 <context>
@@ -46,43 +46,42 @@
         <translation>Профіль користувача</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="40"/>
-        <source>NickNames</source>
-        <translation>Нікнейми</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="48"/>
-        <location filename="ircaccountconfigurationdialog.ui" line="166"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="160"/>
         <source>Default</source>
         <translation>Стандартний</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="63"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="57"/>
         <source>Generate nicknames</source>
         <translation>Згенерувати нікнейми</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="71"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="40"/>
+        <source>Nicknames (first nick would be your default nick)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircaccountconfigurationdialog.ui" line="65"/>
         <source>Connect settings</source>
         <translation>Налаштування з’єднання</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="80"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="74"/>
         <source>Network name</source>
         <translation>Ім’я мережі</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="106"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="100"/>
         <source>Add...</source>
         <translation>Додати...</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="140"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="134"/>
         <source>Edit</source>
         <translation>Редагувати</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="159"/>
+        <location filename="ircaccountconfigurationdialog.ui" line="153"/>
         <source>Delete</source>
         <translation>Видалити</translation>
     </message>
@@ -129,6 +128,92 @@
     </message>
 </context>
 <context>
+    <name>IrcJoinGroupChat</name>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="20"/>
+        <source>Server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="27"/>
+        <source>chat.freenode.net</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="34"/>
+        <source>Channel</source>
+        <translation type="unfinished">Канал</translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="41"/>
+        <source>#leechcraft</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="48"/>
+        <source>Nickname</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="55"/>
+        <source>Password</source>
+        <translation type="unfinished">Пароль</translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="79"/>
+        <source>Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="92"/>
+        <source>Encoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ircjoingroupchat.ui" line="99"/>
+        <source>Secure connection (SSL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::ChannelCLEntry</name>
+    <message>
+        <location filename="channelclentry.cpp" line="85"/>
+        <source>Channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::ChannelParticipantEntry</name>
+    <message>
+        <location filename="channelparticipantentry.cpp" line="80"/>
+        <source>%1 participants</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::ClientConnection</name>
+    <message>
+        <location filename="clientconnection.cpp" line="85"/>
+        <source>This channel is already joined.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::Core</name>
+    <message>
+        <location filename="core.cpp" line="125"/>
+        <location filename="core.cpp" line="126"/>
+        <source>Default</source>
+        <translation type="unfinished">Стандартний</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Acetamide::IrcAccountConfigurationDialog</name>
     <message>
         <location filename="ircaccountconfigurationdialog.cpp" line="42"/>
@@ -139,23 +224,6 @@
         <location filename="ircaccountconfigurationdialog.cpp" line="43"/>
         <source>Add server</source>
         <translation>Додати сервер</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.cpp" line="537"/>
-        <source>All servers and channels of this network will be delete too.
-Are you sure?</source>
-        <translation>Всі сервери та канали цієї мережі будуть також видалені. Ви впевнені?</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.cpp" line="540"/>
-        <source>All channels of this server will be delete too.
-Are you sure?</source>
-        <translation>Всі канали цього серверу будуть також видалені. Ви впевнені?</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.cpp" line="543"/>
-        <source>Are you really want to delete this channel?</source>
-        <translation>Ви дійсно хочете видалити цей канал?</translation>
     </message>
 </context>
 <context>
@@ -179,7 +247,7 @@ Are you sure?</source>
 <context>
     <name>LeechCraft::Azoth::Acetamide::IrcProtocol</name>
     <message>
-        <location filename="ircprotocol.cpp" line="97"/>
+        <location filename="ircprotocol.cpp" line="113"/>
         <source>Enter new account name</source>
         <translation>Введіть нове ім’я аккаунту</translation>
     </message>
@@ -187,7 +255,7 @@ Are you sure?</source>
 <context>
     <name>LeechCraft::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="65"/>
+        <location filename="acetamide.cpp" line="67"/>
         <source>IRC protocol support.</source>
         <translation>Підтримка протоколу IRC.</translation>
     </message>
