@@ -85,8 +85,6 @@ namespace LeechCraft
 				QList<QUrl> GetPackageURLs (int) const;
 				ListPackageInfo GetListPackageInfo (int);
 				QDir GetPackageDir (int) const;
-				bool IsInstalled (int) const;
-				bool IsUpgradable (int) const;
 
 				void AddRepo (const QUrl&);
 				void UpdateRepo (const QUrl&, const QStringList&);
