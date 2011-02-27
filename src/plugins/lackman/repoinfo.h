@@ -70,7 +70,7 @@ namespace LeechCraft
 			struct PackageShortInfo
 			{
 				QString Name_;
-				QStringList Versions_;
+				QStringList Versions_;				
 			};
 
 			typedef QList<PackageShortInfo> PackageShortInfoList;
@@ -163,6 +163,7 @@ namespace LeechCraft
 				QString MaintEmail_;
 				QUrl IconURL_;
 				QList<Image> Images_;
+				QMap<QString, qint64> PackageSizes_;
 
 				void Dump () const;
 			};

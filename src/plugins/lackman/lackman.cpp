@@ -201,7 +201,10 @@ namespace LeechCraft
 				
 				Ui_.Browser_->SetHtml (text);
 
-				Ui_.NameLabel_->setText (index.data ().toString ());
+				if (index.isValid ())
+					Ui_.PackageInfoBox_->setTitle (tr ("Package information: %1").arg (index.data ().toString ()));
+				else
+					Ui_.PackageInfoBox_->setTitle (tr ("Package information"));
 
 				QString state;
 				if (!index.isValid ()) ;
@@ -212,6 +215,12 @@ namespace LeechCraft
 				else
 					state = tr ("installed");
 				Ui_.StateLabel_->setText (state);
+				
+				const qint64 size = index.data (PackagesModel::PMRSize).toLongLong ();
+				const QString& sizeText = size >= 0 ?
+						Util::MakePrettySize (size) :
+						tr ("unknown");
+				Ui_.SizeLabel_->setText (sizeText);
 			}
 
 			void Plugin::BuildActions ()

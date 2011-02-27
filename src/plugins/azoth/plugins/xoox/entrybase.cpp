@@ -23,8 +23,10 @@
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
 #include <plugininterface/util.h>
+#include <interfaces/iproxyobject.h>
 #include "glooxmessage.h"
 #include "glooxclentry.h"
+#include "glooxprotocol.h"
 #include "vcarddialog.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
@@ -143,6 +145,21 @@ namespace Xoox
 
 		CurrentStatus_ [variant] = status;
 		emit statusChanged (status, variant);
+		
+		GlooxMessage *message = new GlooxMessage (IMessage::MTStatusMessage,
+				IMessage::DIn,
+				GetJID (),
+				variant,
+				Account_->GetClientConnection ().get ());
+		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
+		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
+		QString msg = tr ("%1/%2 is now %3 (%4)")
+				.arg (GetJID ())
+				.arg (variant)
+				.arg (proxy->StateToString (status.State_))
+				.arg (status.StatusString_);
+		message->SetBody (msg);
+		HandleMessage (message);
 	}
 
 	void EntryBase::SetAvatar (const QByteArray& data)

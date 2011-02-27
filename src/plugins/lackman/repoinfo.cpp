@@ -123,6 +123,7 @@ namespace LeechCraft
 						<< "; tags:" << Tags_
 						<< "; maintainer:" << MaintName_ << MaintEmail_
 						<< "; icon:" << IconURL_
+						<< "; package sizes:" << PackageSizes_
 						<< "; dependencies:";
 				Q_FOREACH (QString version, Deps_.keys ())
 					Q_FOREACH (const Dependency& d, Deps_ [version])

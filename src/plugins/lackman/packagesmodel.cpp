@@ -75,6 +75,8 @@ namespace LeechCraft
 							result << img.URL_;
 					return result;
 				}
+				case PMRSize:
+					return Core::Instance ().GetStorage ()->GetPackageSize (lpi.PackageID_);
 				default:
 					return QVariant ();
 				}

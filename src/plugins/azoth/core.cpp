@@ -562,15 +562,8 @@ namespace Azoth
 			string.append ("</a></span>");
 		}
 		else
-		{
-			const QString& nickClass = msg->GetDirection () == IMessage::DIn ?
-					"nicknamein" :
-					"nicknameout";
-
-			string = QString ("<span class='%2'>%1</span>")
-					.arg (nick)
-					.arg (nickClass);
-		}
+			string = QString ("<span class='nickname'>%1</span>")
+					.arg (nick);
 
 		return string;
 	}
@@ -636,13 +629,16 @@ namespace Azoth
 		if (!src)
 			return body;
 		
-		const QString& img = QString ("<img src=\"%1\" alt=\"\" />");
+		const QString& img = QString ("<img src=\"%1\" title=\"%2\" />");
 		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
 		{
 			if (!body.contains (str))
 				continue;
 			const QByteArray& rawData = src->GetImage (pack, str);
-			body.replace (str, img.arg (QString ("data:image/png;base64," + rawData.toBase64 ())));
+			const QString& smileStr = img
+					.arg (QString ("data:image/png;base64," + rawData.toBase64 ()))
+					.arg (str);
+			body.replace (str, smileStr);
 		}
 		
 		return body;

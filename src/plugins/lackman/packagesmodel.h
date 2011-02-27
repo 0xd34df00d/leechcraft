@@ -44,7 +44,8 @@ namespace LeechCraft
 					PMRUpgradable,
 					PMRVersion,
 					PMRThumbnails,
-					PMRScreenshots
+					PMRScreenshots,
+					PMRSize
 				};
 				PackagesModel (QObject* = 0);
 

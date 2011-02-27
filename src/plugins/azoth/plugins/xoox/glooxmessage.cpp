@@ -62,6 +62,8 @@ namespace Xoox
 		Connection_->Split (message.from (), &BareJID_, &Variant_);
 		if (!Message_.stamp ().isValid ())
 			Message_.setStamp (QDateTime::currentDateTime ());
+		else
+			Message_.setStamp (Message_.stamp ().toLocalTime ());
 	}
 
 	QObject* GlooxMessage::GetObject ()
