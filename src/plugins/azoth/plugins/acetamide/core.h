@@ -62,6 +62,7 @@ namespace Acetamide
 		QObject *PluginProxy_;
 		IrcAccount *DefaultAccount_;
 		boost::shared_ptr<IrcClient> IrcClient_;
+		QString DefaultUserName_;
 		Core ();
 	public:
 		static Core& Instance ();
@@ -77,6 +78,7 @@ namespace Acetamide
 		IrcAccount* GetDefaultIrcAccount ();
 		void SendEntity (const Entity&);
 		boost::shared_ptr<IrcClient>  GetIrcClient () const;
+		QString GetDefaultUserName () const;
 	private:
 		void CreateDefaultAccount ();
 	private slots:

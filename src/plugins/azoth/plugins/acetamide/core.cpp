@@ -33,6 +33,7 @@ namespace Acetamide
 	Core::Core ()
 	: PluginProxy_ (0)
 	, DefaultAccount_ (0)
+	, DefaultUserName_ (QString ())
 	{
 		qRegisterMetaTypeStreamOperators<ServerOptions> ("ServerOptions");
 		qRegisterMetaTypeStreamOperators<ChannelOptions> ("ChannelOptions");
@@ -103,6 +104,10 @@ namespace Acetamide
 		return IrcClient_;
 	}
 
+	QString Core::GetDefaultUserName () const
+	{
+		return DefaultUserName_;
+	}
 
 	void Core::CreateDefaultAccount ()
 	{
@@ -125,7 +130,8 @@ namespace Acetamide
 			server.NetworkName_ = tr ("Default");
 			server.ServerName_ = tr ("Default");
 			server.ServerNicknames_ << defaultNick;
-			server.ServerRealName_ = "Mr.Leechcraft";
+			DefaultUserName_ = "Mr.Leechcraft";
+			server.ServerRealName_ = DefaultUserName_;
 			server.ServerPassword_ = QString ();
 			server.ServerPort_ = 0;
 			server.SSL_ = false;
