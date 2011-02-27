@@ -78,6 +78,7 @@ namespace LeechCraft
 				void handleTagsUpdated ();
 				void on_PackageStatus__currentIndexChanged (int);
 				void handlePackageSelected (const QModelIndex&);
+				void handleFetchListUpdated (const QList<int>&);
 			private:
 				void BuildActions ();
 			signals:

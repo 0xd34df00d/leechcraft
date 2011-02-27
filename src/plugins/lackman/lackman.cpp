@@ -27,6 +27,7 @@
 #include "xmlsettingsmanager.h"
 #include "packagesmodel.h"
 #include "externalresourcemanager.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -96,10 +97,16 @@ namespace LeechCraft
 						SIGNAL (textEdited (const QString&)),
 						FilterString_,
 						SLOT (setFilterFixedString (const QString&)));
+				
+				connect (Core::Instance ().GetPendingManager (),
+						SIGNAL (fetchListUpdated (const QList<int>&)),
+						this,
+						SLOT (handleFetchListUpdated (const QList<int>&)));
 
 				BuildActions ();
 
 				handleTagsUpdated ();
+				handleFetchListUpdated (QList<int> ());
 			}
 
 			void Plugin::SecondInit ()
@@ -221,6 +228,25 @@ namespace LeechCraft
 						Util::MakePrettySize (size) :
 						tr ("unknown");
 				Ui_.SizeLabel_->setText (sizeText);
+			}
+			
+			void Plugin::handleFetchListUpdated (const QList<int>& ids)
+			{
+				qint64 sumSize = 0;
+				Q_FOREACH (const int id, ids)
+				{
+					if (Core::Instance ().GetListPackageInfo (id).IsInstalled_)
+						continue;
+					
+					const qint64 size = Core::Instance ().GetStorage ()->GetPackageSize (id);
+					if (size > 0)
+						sumSize += size;
+				}
+				
+				if (sumSize > 0)
+					Ui_.TotalSizeLabel_->setText (tr ("Total size to be downloaded: %1")
+								.arg (Util::MakePrettySize (sumSize)));
+				Ui_.TotalSizeLabel_->setVisible (sumSize > 0);
 			}
 
 			void Plugin::BuildActions ()

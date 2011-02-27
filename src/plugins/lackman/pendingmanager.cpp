@@ -137,6 +137,9 @@ namespace LeechCraft
 
 				ID2ModelRow_ [id] = packageItem;
 				RootItemForAction_ [action]->appendRow (packageItem);
+				
+				if (action != ARemove)
+					NotifyFetchListUpdate ();
 			}
 
 			void PendingManager::DisablePackageFrom (int id, PendingManager::Action action)
@@ -156,6 +159,9 @@ namespace LeechCraft
 				QStandardItem *item = ID2ModelRow_.take (id);
 				item->parent ()->takeRow (item->row ());
 				delete item;
+				
+				if (action != ARemove)
+					NotifyFetchListUpdate ();
 			}
 
 			void PendingManager::ReinitRootItems ()
@@ -181,6 +187,14 @@ namespace LeechCraft
 					item->setEditable (false);
 					PendingModel_->appendRow (item);
 				}
+			}
+			
+			void PendingManager::NotifyFetchListUpdate ()
+			{
+				QList<int> ids = (ScheduledForAction_ [AInstall] + ScheduledForAction_ [AUpdate]).toList ();
+				Q_FOREACH (const int id, ids)
+					ids << Deps_ [id];
+				emit fetchListUpdated (ids);
 			}
 		}
 	}

@@ -69,8 +69,10 @@ namespace LeechCraft
 				void EnablePackageInto (int, Action);
 				void DisablePackageFrom (int, Action);
 				void ReinitRootItems ();
+				void NotifyFetchListUpdate ();
 			signals:
 				void packageUpdateToggled (int, bool);
+				void fetchListUpdated (const QList<int>&);
 			};
 		}
 	}
