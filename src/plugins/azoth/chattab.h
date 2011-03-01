@@ -96,6 +96,7 @@ namespace Azoth
 		void on_SubjChange__released ();
 		void on_SendFileButton__released ();
 		void handleFileOffered (QObject*);
+		void handleFileNoLongerOffered (QObject*);
 		void handleOfferActionTriggered ();
 		void handleEntryMessage (QObject*);
 		void handleVariantsChanged (const QStringList&);

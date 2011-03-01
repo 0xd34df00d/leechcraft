@@ -73,6 +73,11 @@ namespace Azoth
 		Ui_.EventsButton_->hide ();
 
 		Core::Instance ().RegisterHookable (this);
+		
+		connect (Core::Instance ().GetTransferJobManager (),
+				SIGNAL (jobNoLongerOffered (QObject*)),
+				this,
+				SLOT (handleFileNoLongerOffered (QObject*)));
 
 		QSize ccSize = Ui_.CharCounter_->size ();
 		ccSize.setWidth (QApplication::fontMetrics ().width (" 9999"));
@@ -388,6 +393,19 @@ namespace Azoth
 		QAction *act = Ui_.EventsButton_->menu ()->
 				addAction (text, this, SLOT (handleOfferActionTriggered ()));
 		act->setData (QVariant::fromValue<QObject*> (jobObj));
+	}
+	
+	void ChatTab::handleFileNoLongerOffered (QObject *jobObj)
+	{
+		Q_FOREACH (QAction *action, Ui_.EventsButton_->menu ()->actions ())
+			if (action->data ().value<QObject*> () == jobObj)
+			{
+				action->deleteLater ();
+				break;
+			}
+			
+		if (Ui_.EventsButton_->menu ()->actions ().count () == 1)
+			Ui_.EventsButton_->hide ();
 	}
 	
 	void ChatTab::handleOfferActionTriggered ()
