@@ -31,7 +31,8 @@ namespace LeechCraft
 		AEPToolsMenu,
 		AEPCommonContextMenu,
 		AEPQuickLaunch,
-		AEPTrayMenu
+		AEPTrayMenu,
+		AEPMax = 100
 	};
 }
 
