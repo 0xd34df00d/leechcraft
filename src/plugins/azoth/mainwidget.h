@@ -43,6 +43,8 @@ namespace Azoth
 
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
+		
+		QAction *AccountJoinConference_;
 	public:
 		MainWidget (QWidget* = 0);
 		
@@ -58,6 +60,7 @@ namespace Azoth
 		void handleChangeStatusRequested ();
 		void fastStateChangeRequested ();
 		void applyFastStatus ();
+		void joinAccountConference ();
 
 		void showAccountsList ();
 		void handleAddContactRequested ();

@@ -19,6 +19,7 @@
 #include "mainwidget.h"
 #include <QToolBar>
 #include <QMenu>
+#include <QMainWindow>
 #include <QVBoxLayout>
 #include "interfaces/iclentry.h"
 #include "core.h"
@@ -28,6 +29,7 @@
 #include "contactlistdelegate.h"
 #include "xmlsettingsmanager.h"
 #include "addcontactdialog.h"
+#include "joinconferencedialog.h"
 
 namespace LeechCraft
 {
@@ -85,6 +87,12 @@ namespace Azoth
 				SIGNAL (returnPressed ()),
 				this,
 				SLOT (applyFastStatus ()));
+		
+		AccountJoinConference_ = new QAction (tr ("Join conference..."), this);
+		connect (AccountJoinConference_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (joinAccountConference ()));
 	}
 	
 	QList<QAction*> MainWidget::GetMenuActions()
@@ -203,6 +211,10 @@ namespace Azoth
 		case Core::CLETAccount:
 		{
 			QVariant objVar = index.data (Core::CLRAccountObject);
+
+			AccountJoinConference_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountJoinConference_;
+
 			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
 			{
 				if (act->isSeparator ())
@@ -296,6 +308,43 @@ namespace Azoth
 		EntryStatus status (state, text);
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			acc->ChangeState (status);
+	}
+	
+	void MainWidget::joinAccountConference ()
+	{
+		if (!sender ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no sender";
+			return;
+		}
+
+		const QVariant& objVar = sender ()->property ("Azoth/AccountObject");
+		QObject *object = objVar.value<QObject*> ();
+		if (!object)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no object in Azoth/AccountObject property of the sender"
+					<< sender ()
+					<< objVar;
+			return;
+		}
+		
+		IAccount *account = qobject_cast<IAccount*> (object);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "object"
+					<< object
+					<< "could not be cast to IAccount";
+			return;
+		}
+		
+		QList<IAccount*> accounts;
+		accounts << account;
+		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts,
+				Core::Instance ().GetProxy ()->GetMainWindow ());
+		dia->show ();
 	}
 
 	void MainWidget::showAccountsList ()
