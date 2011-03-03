@@ -22,6 +22,7 @@
 #include <QAction>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
+#include <interfaces/azothcommon.h>
 #include "core.h"
 #include "chathistorywidget.h"
 
@@ -36,7 +37,7 @@ namespace ChatHistory
 		ChatHistoryWidget::SetParentMultiTabs (this);
 
 		Guard_.reset (new STGuard<Core> ());
-		ActionHistory_ = new QAction (tr ("Chat history..."), this);
+		ActionHistory_ = new QAction (tr ("IM history"), this);
 		connect (ActionHistory_,
 				SIGNAL (triggered ()),
 				this,
@@ -95,6 +96,33 @@ namespace ChatHistory
 	{
 		Core::Instance ()->SetPluginProxy (proxy);
 	}
+	
+	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
+			QObject *action, QObject *entry)
+	{
+		if (!action->property ("Azoth/ChatHistory/IsGood").toBool ())
+			return;
+		
+		QStringList ours;
+		ours << "contactListContextMenu"
+			<< "tabContextMenu";
+		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
+	}
+	
+	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
+	{
+		QAction *action = new QAction (tr ("History..."), entry);
+		action->setProperty ("Azoth/ChatHistory/IsGood", true);
+		action->setProperty ("Azoth/ChatHistory/Entry",
+				QVariant::fromValue<QObject*> (entry));
+		connect (action,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleEntryHistoryRequested ()));
+		QList<QVariant> list = proxy->GetReturnValue ().toList ();
+		list << QVariant::fromValue<QObject*> (action);
+		proxy->SetReturnValue (list);
+	}
 
 	void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
 			QObject *chatTab, QObject *message)
@@ -135,6 +163,45 @@ namespace ChatHistory
 				this,
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tr ("Chat history"), wh);
+	}
+	
+	void Plugin::handleEntryHistoryRequested ()
+	{
+		if (!sender ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null sender()";
+			return;
+		}
+
+		QObject *obj = sender ()->property ("Azoth/ChatHistory/Entry")
+				.value<QObject*> ();
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null object for sender"
+					<< sender ();
+			return;
+		}
+		
+		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null entry for sender"
+					<< sender ()
+					<< "and object"
+					<< obj;
+			return;
+		}
+
+		ChatHistoryWidget *wh = new ChatHistoryWidget (entry);
+		connect (wh,
+				SIGNAL (removeSelf (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		emit addNewTab (tr ("Chat history"), wh);
+		emit raiseTab (wh);
 	}
 	
 	void Plugin::newTabRequested ()
