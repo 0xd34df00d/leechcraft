@@ -36,6 +36,11 @@ namespace Azoth
 	public:
 		PluginManager (QObject* = 0);
 	signals:
+		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
