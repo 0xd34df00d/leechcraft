@@ -36,8 +36,10 @@ namespace LeechCraft
 				switch (Ui_.ActionBox_->currentIndex ())
 				{
 					case 0:
-						return AUpload;
 					case 1:
+					case 2:
+						return AUpload;
+					case 3:
 						return ASave;
 					default:
 						qWarning () << Q_FUNC_INFO
@@ -52,8 +54,10 @@ namespace LeechCraft
 				switch (Ui_.ActionBox_->currentIndex ())
 				{
 					case 0:
-						return Poster::SavepicRu;
+						return Poster::DumpBitcheeseNet;
 					case 1:
+						return Poster::SavepicRu;
+					case 2:
 						return Poster::ImagebinCa;
 					default:
 						qWarning () << Q_FUNC_INFO

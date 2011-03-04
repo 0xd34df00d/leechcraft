@@ -39,7 +39,7 @@ namespace LeechCraft
 
 				virtual QNetworkReply* Post (const QByteArray& imageData,
 						const QString& format, QNetworkAccessManager *am) const = 0;
-				virtual QString GetLink (const QString& contents) const = 0;
+				virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
 			};
 
 			typedef boost::shared_ptr<Worker> Worker_ptr;
@@ -52,6 +52,7 @@ namespace LeechCraft
 			public:
 				enum HostingService
 				{
+					DumpBitcheeseNet,
 					SavepicRu,
 					ImagebinCa
 				};

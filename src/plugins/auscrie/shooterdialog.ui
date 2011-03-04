@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>372</width>
-    <height>131</height>
+    <height>165</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,6 +26,11 @@
    </item>
    <item row="0" column="1">
     <widget class="QComboBox" name="ActionBox_">
+     <item>
+      <property name="text">
+       <string>upload to dump.bitcheese.net</string>
+      </property>
+     </item>
      <item>
       <property name="text">
        <string>upload to Savepic.ru</string>
