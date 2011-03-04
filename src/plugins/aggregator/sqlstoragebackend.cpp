@@ -111,15 +111,21 @@ namespace LeechCraft
 					if (!pragma.exec (QString ("PRAGMA journal_mode = %1;")
 								.arg (XmlSettingsManager::Instance ()->
 									property ("SQLiteJournalMode").toString ())))
-						LeechCraft::Util::DBLock::DumpError (pragma);
+						Util::DBLock::DumpError (pragma);
 					if (!pragma.exec (QString ("PRAGMA synchronous = %1;")
 								.arg (XmlSettingsManager::Instance ()->
 									property ("SQLiteSynchronous").toString ())))
-						LeechCraft::Util::DBLock::DumpError (pragma);
+						Util::DBLock::DumpError (pragma);
 					if (!pragma.exec (QString ("PRAGMA temp_store = %1;")
 								.arg (XmlSettingsManager::Instance ()->
 									property ("SQLiteTempStore").toString ())))
-						LeechCraft::Util::DBLock::DumpError (pragma);
+						Util::DBLock::DumpError (pragma);
+					if (!pragma.exec ("PRAGMA foreign_keys = ON;"))
+					{
+						Util::DBLock::DumpError (pragma);
+						qWarning () << Q_FUNC_INFO
+								<< "unable to enable foreign keys, DB work may be incorrect";
+					}
 				}
 
 				FeedFinderByURL_ = QSqlQuery (DB_);
