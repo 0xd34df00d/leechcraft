@@ -24,24 +24,23 @@ class QWizardPage;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class WizardGenerator
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class WizardGenerator
-					{
-					public:
-						QList<QWizardPage*> GetPages ();
-					};
-				};
-			};
-		};
+	public:
+		QList<QWizardPage*> GetPages ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
-

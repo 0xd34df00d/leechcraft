@@ -22,32 +22,31 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	QList<QWizardPage*> WizardGenerator::GetPages ()
 	{
-		namespace Poshuku
+		QList<QWizardPage*> result;
+		int version =
+				XmlSettingsManager::Instance ()->Property (
+						"StartupVersion", 0).toInt ();
+		if (version < 1)
 		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					QList<QWizardPage*> WizardGenerator::GetPages ()
-					{
-						QList<QWizardPage*> result;
-						int version =
-								XmlSettingsManager::Instance ()->Property (
-										"StartupVersion", 0).toInt ();
-						if (version < 1)
-						{
-							result << new StartupFirstPage ();
-							++version;
-						}
-						XmlSettingsManager::Instance ()->setProperty (
-								"StartupVersion", version);
-						return result;
-					}
-				};
-			};
-		};
-	};
-};
-
+			result << new StartupFirstPage ();
+			++version;
+		}
+		XmlSettingsManager::Instance ()->setProperty (
+				"StartupVersion", version);
+		return result;
+	}
+}
+}
+}
+}
+}

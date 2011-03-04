@@ -22,48 +22,48 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	UserFilters::UserFilters (QWidget *parent)
+	: QWidget (parent)
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					UserFilters::UserFilters (QWidget *parent)
-					: QWidget (parent)
-					{
-						Ui_.setupUi (this);
-						Ui_.View_->setModel (Core::Instance ()
-								.GetUserFiltersModel ());
-					}
+		Ui_.setupUi (this);
+		Ui_.View_->setModel (Core::Instance ()
+				.GetUserFiltersModel ());
+	}
 
-					void UserFilters::on_Add__released ()
-					{
-						Core::Instance ().GetUserFiltersModel ()->InitiateAdd ();
-					}
+	void UserFilters::on_Add__released ()
+	{
+		Core::Instance ().GetUserFiltersModel ()->InitiateAdd ();
+	}
 
-					void UserFilters::on_Modify__released ()
-					{
-						QModelIndex current = Ui_.View_->currentIndex ();
-						if (!current.isValid ())
-							return;
+	void UserFilters::on_Modify__released ()
+	{
+		QModelIndex current = Ui_.View_->currentIndex ();
+		if (!current.isValid ())
+			return;
 
-						Core::Instance ()
-							.GetUserFiltersModel ()->Modify (current.row ());
-					}
+		Core::Instance ()
+			.GetUserFiltersModel ()->Modify (current.row ());
+	}
 
-					void UserFilters::on_Remove__released ()
-					{
-						QModelIndex current = Ui_.View_->currentIndex ();
-						if (!current.isValid ())
-							return;
+	void UserFilters::on_Remove__released ()
+	{
+		QModelIndex current = Ui_.View_->currentIndex ();
+		if (!current.isValid ())
+			return;
 
-						Core::Instance ()
-							.GetUserFiltersModel ()->Remove (current.row ());
-					}
-				};
-			};
-		};
-	};
-};
+		Core::Instance ()
+			.GetUserFiltersModel ()->Remove (current.row ());
+	}
+}
+}
+}
+}
+}

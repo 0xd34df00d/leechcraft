@@ -19,26 +19,38 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
-
-XmlSettingsManager::XmlSettingsManager ()
+namespace LeechCraft
 {
-	LeechCraft::Util::BaseSettingsManager::Init ();
-}
-
-XmlSettingsManager* XmlSettingsManager::Instance ()
+namespace Plugins
 {
-	static XmlSettingsManager xsm;
-	return &xsm;
-}
-
-QSettings* XmlSettingsManager::BeginSettings () const
+namespace Poshuku
 {
-	return new QSettings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_CleanWeb");
-}
-
-void XmlSettingsManager::EndSettings (QSettings*) const
+namespace Plugins
 {
-}
+namespace CleanWeb
+{
+	XmlSettingsManager::XmlSettingsManager ()
+	{
+		Util::BaseSettingsManager::Init ();
+	}
 
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return &xsm;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		return new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_CleanWeb");
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}
+}
+}
+}

@@ -26,34 +26,34 @@ class QDomElement;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class SubscriptionAddDialog : public QDialog
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class SubscriptionAddDialog : public QDialog
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Ui::SubscriptionAddDialog Ui_;
-						QList<QStandardItem*> Items_;
-					public:
-						SubscriptionAddDialog (QWidget* = 0);
+		Ui::SubscriptionAddDialog Ui_;
+		QList<QStandardItem*> Items_;
+	public:
+		SubscriptionAddDialog (QWidget* = 0);
 
-						QString GetURL () const;
-						QString GetName () const;
+		QString GetURL () const;
+		QString GetName () const;
 
-						QList<QUrl> GetAdditionalSubscriptions () const;
-					private:
-						void Iterate (const QDomElement&, QStandardItem*);
-					};
-				}
-			}
-		}
-	}
+		QList<QUrl> GetAdditionalSubscriptions () const;
+	private:
+		void Iterate (const QDomElement&, QStandardItem*);
+	};
+}
+}
+}
+}
 }
 
 #endif

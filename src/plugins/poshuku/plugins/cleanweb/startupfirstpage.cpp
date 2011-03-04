@@ -29,63 +29,62 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	StartupFirstPage::StartupFirstPage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		namespace Poshuku
+		Ui_.setupUi (this);
+	}
+
+	void StartupFirstPage::initializePage ()
+	{
+		connect (wizard (),
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleAccepted ()));
+	}
+
+	namespace
+	{
+		QList<QUrl> GetChildUrls (QWidget *w)
 		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					StartupFirstPage::StartupFirstPage (QWidget *parent)
-					: QWizardPage (parent)
-					{
-						Ui_.setupUi (this);
-					}
+			QList<QUrl> result;
+			Q_FOREACH (QCheckBox *cb, w->findChildren<QCheckBox*> ())
+				if (cb->isChecked ())
+					result << cb->property ("ListURL").value<QUrl> ();
 
-					void StartupFirstPage::initializePage ()
-					{
-						connect (wizard (),
-								SIGNAL (accepted ()),
-								this,
-								SLOT (handleAccepted ()));
-					}
-
-					namespace
-					{
-						QList<QUrl> GetChildUrls (QWidget *w)
-						{
-							QList<QUrl> result;
-							Q_FOREACH (QCheckBox *cb, w->findChildren<QCheckBox*> ())
-								if (cb->isChecked ())
-									result << cb->property ("ListURL").value<QUrl> ();
-
-							Q_FOREACH (QRadioButton *but, w->findChildren<QRadioButton*> ())
-								if (but->isChecked ())
-									result << but->property ("ListURL").value<QUrl> ();
-							return result;
-						}
-					};
-
-					void StartupFirstPage::handleAccepted ()
-					{
-						QList<QUrl> urlsToAdd;
-
-						Q_FOREACH (QGroupBox *box, findChildren<QGroupBox*> ())
-							if (box->isChecked ())
-							{
-								urlsToAdd << box->property ("ListURL").value<QUrl> ();
-								urlsToAdd << GetChildUrls (box);
-							}
-
-						qDebug () << urlsToAdd;
-
-						Q_FOREACH (const QUrl& url, urlsToAdd)
-							Core::Instance ().Add (url);
-					}
-				};
-			};
-		};
+			Q_FOREACH (QRadioButton *but, w->findChildren<QRadioButton*> ())
+				if (but->isChecked ())
+					result << but->property ("ListURL").value<QUrl> ();
+			return result;
+		}
 	};
-};
 
+	void StartupFirstPage::handleAccepted ()
+	{
+		QList<QUrl> urlsToAdd;
+
+		Q_FOREACH (QGroupBox *box, findChildren<QGroupBox*> ())
+			if (box->isChecked ())
+			{
+				urlsToAdd << box->property ("ListURL").value<QUrl> ();
+				urlsToAdd << GetChildUrls (box);
+			}
+
+		qDebug () << urlsToAdd;
+
+		Q_FOREACH (const QUrl& url, urlsToAdd)
+			Core::Instance ().Add (url);
+	}
+}
+}
+}
+}
+}
