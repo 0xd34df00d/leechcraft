@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_AZOTHCOMMON_H
 #define PLUGINS_AZOTH_INTERFACES_AZOTHCOMMON_H
 #include <QMetaType>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
@@ -101,10 +102,20 @@ namespace Azoth
 		 */
 		CPSPaused
 	};
+	
+	/** Represents Azoth-specific action embed places.
+	 * 
+	 * To be used with IActionsExporter.
+	 */
+	enum AzothActionsEmbedPlace
+	{
+		AAEPContactListCtxtMenu = AEPMax + 1
+	};
 }
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::State);
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatPartState);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::AzothActionsEmbedPlace);
 
 #endif

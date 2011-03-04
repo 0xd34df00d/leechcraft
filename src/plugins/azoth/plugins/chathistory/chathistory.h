@@ -60,6 +60,11 @@ namespace ChatHistory
 	public slots:
 		void initPlugin (QObject*);
 
+		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
@@ -68,6 +73,7 @@ namespace ChatHistory
 		void newTabRequested ();
 	private slots:
 		void handleHistoryRequested ();
+		void handleEntryHistoryRequested ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

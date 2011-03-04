@@ -29,6 +29,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class ICLEntry;
 namespace ChatHistory
 {
 	class Plugin;
@@ -47,6 +48,8 @@ namespace ChatHistory
 		QString CurrentAccount_;
 		QString CurrentEntry_;
 		QToolBar *Toolbar_;
+		
+		ICLEntry *EntryToFocus_;
 
 		static Plugin *S_ParentMultiTabs_;
 
@@ -57,7 +60,7 @@ namespace ChatHistory
 	public:
 		static void SetParentMultiTabs (Plugin*);
 
-		ChatHistoryWidget (QWidget* = 0);
+		ChatHistoryWidget (ICLEntry* = 0, QWidget* = 0);
 		
 		void Remove ();
 		QToolBar* GetToolBar () const;

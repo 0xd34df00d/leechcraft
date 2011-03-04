@@ -916,6 +916,36 @@ namespace Azoth
 		result << id2action.value ("authorize");
 		result << id2action.value ("denyauth");
 		result << entry->GetActions ();
+		
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		proxy->SetReturnValue (QVariantList ());
+		emit hookEntryActionsRequested (proxy, entry->GetObject ());
+		Q_FOREACH (const QVariant& var, proxy->GetReturnValue ().toList ())
+		{
+			QObject *obj = var.value<QObject*> ();
+			QAction *act = qobject_cast<QAction*> (obj);
+			if (!act)
+				continue;
+			
+			result << act;
+
+			proxy.reset (new Util::DefaultHookProxy);
+			emit hookEntryActionAreasRequested (proxy, act, entry->GetObject ());
+			Q_FOREACH (const QString& place, proxy->GetReturnValue ().toStringList ())
+			{
+				if (place == "contactListContextMenu")
+					Action2Areas_ [act] << CLEAAContactListCtxtMenu;
+				else if (place == "tabContextMenu")
+					Action2Areas_ [act] << CLEAATabCtxtMenu;
+				else if (place == "applicationMenu")
+					Action2Areas_ [act] << CLEAAApplicationMenu;
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown embed place ID"
+							<< place;
+			}
+		}
+		
 		result.removeAll (0);
 		return result;
 	}

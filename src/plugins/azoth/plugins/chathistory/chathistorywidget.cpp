@@ -40,13 +40,14 @@ namespace ChatHistory
 		S_ParentMultiTabs_ = ch;
 	}
 
-	ChatHistoryWidget::ChatHistoryWidget (QWidget *parent)
+	ChatHistoryWidget::ChatHistoryWidget (ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
 	, HistoryViewModel_ (new QStandardItemModel (this))
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Backpages_ (0)
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
+	, EntryToFocus_ (entry)
 	{
 		Ui_.setupUi (this);
 		Ui_.HistView_->setModel (HistoryViewModel_);
@@ -135,6 +136,27 @@ namespace ChatHistory
 				SIGNAL (gotOurAccounts (const QStringList&)),
 				this,
 				SLOT (handleGotOurAccounts (const QStringList&)));
+
+		if (EntryToFocus_)
+		{
+			IAccount *entryAcc = qobject_cast<IAccount*> (EntryToFocus_->GetParentAccount ());
+			if (!entryAcc)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid entry account for entry"
+						<< EntryToFocus_->GetObject ();
+				return;
+			}
+			
+			const QString& id = entryAcc->GetAccountID ();
+			for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
+				if (id == Ui_.AccountBox_->itemData (i).toString ())
+				{
+					Ui_.AccountBox_->setCurrentIndex (i);
+					on_AccountBox__currentIndexChanged (i);
+					break;
+				}
+		}
 	}
 	
 	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users, const QString& id)
@@ -144,6 +166,11 @@ namespace ChatHistory
 
 		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
 		ContactsModel_->clear ();
+		
+		QStandardItem *ourFocus = 0;
+		const QString& focusId = EntryToFocus_ ?
+				EntryToFocus_->GetEntryID () :
+				0;
 		Q_FOREACH (const QString& user, users)
 		{
 			ICLEntry *entry = qobject_cast<ICLEntry*> (proxy->GetEntry (user, id));
@@ -154,6 +181,16 @@ namespace ChatHistory
 			QStandardItem *item = new QStandardItem (name);
 			item->setData (user, MRIDRole);
 			ContactsModel_->appendRow (item);
+			
+			if (!ourFocus && user == focusId)
+				ourFocus = item;
+		}
+		
+		if (ourFocus)
+		{
+			const QModelIndex& idx = ContactsModel_->indexFromItem (ourFocus);
+			Ui_.Contacts_->selectionModel ()->
+					setCurrentIndex (idx, QItemSelectionModel::SelectCurrent);
 		}
 	}
 	

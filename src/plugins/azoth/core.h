@@ -132,7 +132,8 @@ namespace Azoth
 		{
 			CLEAATabCtxtMenu,
 			CLEAAContactListCtxtMenu,
-			CLEAAApplicationMenu
+			CLEAAApplicationMenu,
+			CLEAAMAX
 		};
 	private:
 		typedef QHash<const QAction*, QList<CLEntryActionArea> > Action2Areas_t;
@@ -497,6 +498,11 @@ namespace Azoth
 		void accountRemoved (IAccount*);
 
 		// Plugin API
+		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QDateTime dateTime,
