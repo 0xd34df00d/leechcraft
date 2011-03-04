@@ -35,69 +35,68 @@ class QWebView;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class CleanWeb : public QObject
+					, public IInfo
+					, public IHaveSettings
+					, public IEntityHandler
+					, public IStartupWizard
+					, public IPlugin2
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class CleanWeb : public QObject
-								   , public IInfo
-								   , public IHaveSettings
-								   , public IEntityHandler
-								   , public IStartupWizard
-								   , public IPlugin2
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
 
-						boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-						std::auto_ptr<QTranslator> Translator_;
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						void Release ();
-						QByteArray GetUniqueID () const;
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
+		boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		std::auto_ptr<QTranslator> Translator_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-						bool CouldHandle (const Entity&) const;
-						void Handle (Entity);
+		bool CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
-						QList<QWizardPage*> GetWizardPages () const;
+		QList<QWizardPage*> GetWizardPages () const;
 
-						QSet<QByteArray> GetPluginClasses () const;
-					public slots:
-						void hookExtension (LeechCraft::IHookProxy_ptr,
-								QWebPage*,
-								QWebPage::Extension,
-								const QWebPage::ExtensionOption*,
-								QWebPage::ExtensionReturn*);
-						void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-								QList<IWebPlugin*>&);
-						void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-								QWebView*, QContextMenuEvent*,
-								const QWebHitTestResult&, QMenu*,
-								WebViewCtxMenuStage);
-					signals:
-						void delegateEntity (const LeechCraft::Entity&,
-								int*, QObject**);
-						void gotEntity (const LeechCraft::Entity&);
-					};
-				};
-			};
-		};
+		QSet<QByteArray> GetPluginClasses () const;
+	public slots:
+		void hookExtension (LeechCraft::IHookProxy_ptr,
+				QWebPage*,
+				QWebPage::Extension,
+				const QWebPage::ExtensionOption*,
+				QWebPage::ExtensionReturn*);
+		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+				QList<IWebPlugin*>&);
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
+				QWebView*, QContextMenuEvent*,
+				const QWebHitTestResult&, QMenu*,
+				WebViewCtxMenuStage);
+	signals:
+		void delegateEntity (const LeechCraft::Entity&,
+				int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
-

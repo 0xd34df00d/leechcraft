@@ -73,6 +73,8 @@ namespace ChatHistory
 				"WHERE Id = :entry_id "
 				"AND AccountID = :account_id "
 				"ORDER BY Date DESC LIMIT :limit OFFSET :offset;");
+		HistoryClearer_ = QSqlQuery (*DB_);
+		HistoryClearer_.prepare ("DELETE FROM azoth_history WHERE Id = :entry_id AND AccountID = :account_id;");
 		
 		try
 		{
@@ -437,6 +439,24 @@ namespace ChatHistory
 		}
 		
 		emit gotChatLogs (accountId, entryId, backpages, amount, result);
+	}
+	
+	void Storage::clearHistory (const QString& accountId, const QString& entryId)
+	{
+		if (!Accounts_.contains (accountId) ||
+				!Users_.contains (entryId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown entry/account combination"
+					<< accountId
+					<< entryId;
+			return;
+		}
+		HistoryClearer_.bindValue (":entry_id", Users_ [entryId]);
+		HistoryClearer_.bindValue (":account_id", Accounts_ [accountId]);
+		
+		if (!HistoryClearer_.exec ())
+			Util::DBLock::DumpError (HistoryClearer_);
 	}
 }
 }

@@ -32,144 +32,153 @@
 #include "userfilters.h"
 #include "wizardgenerator.h"
 
-using namespace LeechCraft;
-using namespace LeechCraft::Util;
-using namespace LeechCraft::Plugins::Poshuku;
-using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
-
-void CleanWeb::Init (ICoreProxy_ptr proxy)
+namespace LeechCraft
 {
-	Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_cleanweb"));
-	connect (&Core::Instance (),
-			SIGNAL (delegateEntity (const LeechCraft::Entity&,
-					int*, QObject**)),
-			this,
-			SIGNAL (delegateEntity (const LeechCraft::Entity&,
-					int*, QObject**)));
-	connect (&Core::Instance (),
-			SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			this,
-			SIGNAL (gotEntity (const LeechCraft::Entity&)));
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	void CleanWeb::Init (ICoreProxy_ptr proxy)
+	{
+		Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_cleanweb"));
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)));
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
-	Core::Instance ().SetProxy (proxy);
+		Core::Instance ().SetProxy (proxy);
 
-	proxy->RegisterHook (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t (
-				boost::bind (&Core::Hook,
-					&Core::Instance (),
-					_1,
-					_2,
-					_3,
-					_4,
-					_5)));
+		proxy->RegisterHook (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t (
+					boost::bind (&Core::Hook,
+						&Core::Instance (),
+						_1,
+						_2,
+						_3,
+						_4,
+						_5)));
 
-	SettingsDialog_.reset (new XmlSettingsDialog);
-	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			"poshukucleanwebsettings.xml");
-	SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
-			new SubscriptionsManager ());
-	SettingsDialog_->SetCustomWidget ("UserFilters",
-			new UserFilters ());
-	SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",
-			Core::Instance ().GetFlashOnClickWhitelist ());
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"poshukucleanwebsettings.xml");
+		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
+				new SubscriptionsManager ());
+		SettingsDialog_->SetCustomWidget ("UserFilters",
+				new UserFilters ());
+		SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",
+				Core::Instance ().GetFlashOnClickWhitelist ());
+	}
+
+	void CleanWeb::SecondInit ()
+	{
+	}
+
+	void CleanWeb::Release ()
+	{
+	}
+
+	QByteArray CleanWeb::GetUniqueID () const
+	{
+		return "org.LeechCraft.Poshuku.CLeanWeb";
+	}
+
+	QString CleanWeb::GetName () const
+	{
+		return "Poshuku CleanWeb";
+	}
+
+	QString CleanWeb::GetInfo () const
+	{
+		return tr ("Blocks unwanted ads.");
+	}
+
+	QIcon CleanWeb::GetIcon () const
+	{
+		return QIcon (":/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
+	}
+
+	QStringList CleanWeb::Provides () const
+	{
+		return QStringList ();
+	}
+
+	QStringList CleanWeb::Needs () const
+	{
+		return QStringList ("http");
+	}
+
+	QStringList CleanWeb::Uses () const
+	{
+		return QStringList ();
+	}
+
+	void CleanWeb::SetProvider (QObject*, const QString&)
+	{
+	}
+
+	Util::XmlSettingsDialog_ptr CleanWeb::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+
+	bool CleanWeb::CouldHandle (const Entity& e) const
+	{
+		return Core::Instance ().CouldHandle (e);
+	}
+
+	void CleanWeb::Handle (Entity e)
+	{
+		Core::Instance ().Handle (e);
+	}
+
+	QList<QWizardPage*> CleanWeb::GetWizardPages () const
+	{
+		std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
+		return wg->GetPages ();
+	}
+
+	QSet<QByteArray> CleanWeb::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		return result;
+	}
+
+	void CleanWeb::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+			QList<LeechCraft::Plugins::Poshuku::IWebPlugin*>& plugins)
+	{
+		plugins << Core::Instance ().GetFlashOnClick ();
+	}
+
+	void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
+			QWebPage *page,
+			QWebPage::Extension ext,
+			const QWebPage::ExtensionOption *opt,
+			QWebPage::ExtensionReturn *ret)
+	{
+		Core::Instance ().HandleExtension (proxy, page, ext, opt, ret);
+	}
+
+	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
+			QWebView*, QContextMenuEvent*,
+			const QWebHitTestResult& r, QMenu *menu,
+			WebViewCtxMenuStage stage)
+	{
+		Core::Instance ().HandleContextMenu (r, menu, stage);
+	}
+}
+}
+}
+}
 }
 
-void CleanWeb::SecondInit ()
-{
-}
-
-void CleanWeb::Release ()
-{
-}
-
-QByteArray CleanWeb::GetUniqueID () const
-{
-	return "org.LeechCraft.Poshuku.CLeanWeb";
-}
-
-QString CleanWeb::GetName () const
-{
-	return "Poshuku CleanWeb";
-}
-
-QString CleanWeb::GetInfo () const
-{
-	return tr ("Blocks unwanted ads.");
-}
-
-QIcon CleanWeb::GetIcon () const
-{
-	return QIcon (":/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
-}
-
-QStringList CleanWeb::Provides () const
-{
-	return QStringList ();
-}
-
-QStringList CleanWeb::Needs () const
-{
-	return QStringList ("http");
-}
-
-QStringList CleanWeb::Uses () const
-{
-	return QStringList ();
-}
-
-void CleanWeb::SetProvider (QObject*, const QString&)
-{
-}
-
-boost::shared_ptr<XmlSettingsDialog> CleanWeb::GetSettingsDialog () const
-{
-	return SettingsDialog_;
-}
-
-bool CleanWeb::CouldHandle (const Entity& e) const
-{
-	return Core::Instance ().CouldHandle (e);
-}
-
-void CleanWeb::Handle (Entity e)
-{
-	Core::Instance ().Handle (e);
-}
-
-QList<QWizardPage*> CleanWeb::GetWizardPages () const
-{
-	std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
-	return wg->GetPages ();
-}
-
-QSet<QByteArray> CleanWeb::GetPluginClasses () const
-{
-	QSet<QByteArray> result;
-	result << "org.LeechCraft.Poshuku.Plugins/1.0";
-	return result;
-}
-
-void CleanWeb::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-		QList<LeechCraft::Plugins::Poshuku::IWebPlugin*>& plugins)
-{
-	plugins << Core::Instance ().GetFlashOnClick ();
-}
-
-void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
-		QWebPage *page,
-		QWebPage::Extension ext,
-		const QWebPage::ExtensionOption *opt,
-		QWebPage::ExtensionReturn *ret)
-{
-	Core::Instance ().HandleExtension (proxy, page, ext, opt, ret);
-}
-
-void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
-		QWebView*, QContextMenuEvent*,
-		const QWebHitTestResult& r, QMenu *menu,
-		WebViewCtxMenuStage stage)
-{
-	Core::Instance ().HandleContextMenu (r, menu, stage);
-}
-
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, CleanWeb);
-
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb);

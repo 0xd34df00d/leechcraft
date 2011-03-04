@@ -99,6 +99,15 @@ namespace ChatHistory
 				Q_ARG (int, backpages),
 				Q_ARG (int, amount));
 	}
+	
+	void Core::ClearHistory (const QString& accountId, const QString& entryId)
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"clearHistory",
+				Qt::QueuedConnection,
+				Q_ARG (QString, accountId),
+				Q_ARG (QString, entryId));
+	}
 }
 }
 }

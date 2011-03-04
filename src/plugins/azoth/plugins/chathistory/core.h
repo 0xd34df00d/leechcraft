@@ -64,6 +64,7 @@ namespace ChatHistory
 		void GetUsersForAccount (const QString&);
 		void GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
+		void ClearHistory (const QString& accountId, const QString& entryId);
 	signals:
 		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&);

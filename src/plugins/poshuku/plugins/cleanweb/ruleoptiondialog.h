@@ -24,52 +24,51 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class RuleOptionDialog : public QDialog
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class RuleOptionDialog : public QDialog
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Ui::RuleOptionDialog Ui_;
-					public:
-						RuleOptionDialog (QWidget* = 0);
+		Ui::RuleOptionDialog Ui_;
+	public:
+		RuleOptionDialog (QWidget* = 0);
 
-						QString GetString () const;
-						void SetString (const QString&);
-						bool IsException () const;
-						void SetException (bool);
-						FilterOption::MatchType GetType () const;
-						void SetType (FilterOption::MatchType);
-						Qt::CaseSensitivity GetCase () const;
-						void SetCase (Qt::CaseSensitivity);
-						QStringList GetDomains () const;
-						void SetDomains (const QStringList&);
-						QStringList GetNotDomains () const;
-						void SetNotDomains (const QStringList&);
-					private:
-						void Add (QComboBox*);
-						void Modify (QComboBox*);
-						void Remove (QComboBox*);
-					private slots:
-						void on_AddEnabled__released ();
-						void on_ModifyEnabled__released ();
-						void on_RemoveEnabled__released ();
-						void on_AddDisabled__released ();
-						void on_ModifyDisabled__released ();
-						void on_RemoveDisabled__released ();
-						void invalidateButtons ();
-					};
-				};
-			};
-		};
+		QString GetString () const;
+		void SetString (const QString&);
+		bool IsException () const;
+		void SetException (bool);
+		FilterOption::MatchType GetType () const;
+		void SetType (FilterOption::MatchType);
+		Qt::CaseSensitivity GetCase () const;
+		void SetCase (Qt::CaseSensitivity);
+		QStringList GetDomains () const;
+		void SetDomains (const QStringList&);
+		QStringList GetNotDomains () const;
+		void SetNotDomains (const QStringList&);
+	private:
+		void Add (QComboBox*);
+		void Modify (QComboBox*);
+		void Remove (QComboBox*);
+	private slots:
+		void on_AddEnabled__released ();
+		void on_ModifyEnabled__released ();
+		void on_RemoveEnabled__released ();
+		void on_AddDisabled__released ();
+		void on_ModifyDisabled__released ();
+		void on_RemoveDisabled__released ();
+		void invalidateButtons ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
-

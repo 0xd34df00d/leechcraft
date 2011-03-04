@@ -66,7 +66,7 @@ namespace LeechCraft
 					return am->post (request, formed);
 				}
 
-				QString GetLink (const QString& contents) const
+				QString GetLink (const QString& contents, QNetworkReply*) const
 				{
 					if (!RegExp_.exactMatch (contents))
 						return QString ();
@@ -116,13 +116,41 @@ namespace LeechCraft
 					return am->post (request, formed);
 				}
 
-				QString GetLink (const QString& contents) const
+				QString GetLink (const QString& contents, QNetworkReply*) const
 				{
 					if (!RegExp_.exactMatch (contents))
 						return QString ();
 
 					QString imageId = RegExp_.cap (1);
 					return "http://savepic.ru/" + imageId + ".jpg";
+				}
+			};
+			
+			struct BitcheeseWorker : Worker
+			{
+				QNetworkReply* Post (const QByteArray& data, const QString& format,
+						QNetworkAccessManager *am) const
+				{
+					QUrl url ("http://dump.bitcheese.net/upload-image");
+					
+					RequestBuilder builder;
+					builder.AddFile (format, "file", data);
+					
+					const QByteArray& formed = builder.Build ();
+					
+					QNetworkRequest request (url);
+					request.setHeader (QNetworkRequest::ContentTypeHeader,
+							QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
+					request.setHeader (QNetworkRequest::ContentLengthHeader,
+							QString::number (formed.size ()));
+					return am->post (request, formed);
+				}
+				
+				QString GetLink (const QString&, QNetworkReply *reply) const
+				{
+					QString str = reply->rawHeader ("Location");
+					str.chop (8);
+					return str;
 				}
 			};
 
@@ -133,6 +161,7 @@ namespace LeechCraft
 			, Reply_ (0)
 			, Service_ (service)
 			{
+				Workers_ [DumpBitcheeseNet] = Worker_ptr (new BitcheeseWorker);
 				Workers_ [SavepicRu] = Worker_ptr (new SavepicWorker);
 				Workers_ [ImagebinCa] = Worker_ptr (new ImagebinWorker);
 
@@ -152,7 +181,7 @@ namespace LeechCraft
 			{
 				QString result = Reply_->readAll ();
 
-				QString pasteUrl = Workers_ [Service_]->GetLink (result);
+				QString pasteUrl = Workers_ [Service_]->GetLink (result, Reply_);
 
 				if (pasteUrl.isEmpty ())
 				{

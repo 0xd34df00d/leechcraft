@@ -22,90 +22,103 @@
 #include "core.h"
 #include "subscriptionadddialog.h"
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::CleanWeb;
-
-SubscriptionsManager::SubscriptionsManager (QWidget *parent)
-: QWidget (parent)
+namespace LeechCraft
 {
-	Ui_.setupUi (this);
-	Ui_.Subscriptions_->setModel (Core::Instance ().GetModel ());
-}
-
-void SubscriptionsManager::on_RemoveButton__released ()
+namespace Plugins
 {
-	QModelIndex current = Ui_.Subscriptions_->currentIndex ();
-	if (!current.isValid ())
-		return;
-
-	Core::Instance ().Remove (current);
-}
-
-void SubscriptionsManager::AddCustom (const QString& title, const QString& urlStr)
+namespace Poshuku
 {
-	QUrl url (urlStr);
-	QUrl locationUrl;
-	if (url.queryItemValue ("location").contains ("%"))
-		locationUrl.setUrl (QUrl::fromPercentEncoding (url.queryItemValue ("location").toAscii ()));
-	else
-		locationUrl.setUrl (url.queryItemValue ("location"));
-
-	if (url.scheme () == "abp" &&
-			url.host () == "subscribe" &&
-			locationUrl.isValid ())
+namespace Plugins
+{
+namespace CleanWeb
+{
+	SubscriptionsManager::SubscriptionsManager (QWidget *parent)
+	: QWidget (parent)
 	{
-		if (title.isEmpty ())
-		{
-			QMessageBox::warning (this,
-					tr ("Error adding subscription"),
-					tr ("Can't add subscription without a title."),
-					QMessageBox::Ok);
-			return;
-		}
-
-		if (Core::Instance ().Exists (title))
-		{
-			QMessageBox::warning (this,
-					tr ("Error adding subscription"),
-					tr ("Subscription with such title allready exists."),
-					QMessageBox::Ok);
-			return;
-		}
-
-		if (Core::Instance ().Exists (locationUrl))
-		{
-			QMessageBox::warning (this,
-					tr ("Error adding subscription"),
-					tr ("Subscription with such title allready exists."),
-					QMessageBox::Ok);
-			return;
-		}
-	}
-	else
-	{
-		QMessageBox::warning (this,
-				tr ("Error adding subscription"),
-				tr ("Invalid URL.<br />Valid URL format is: abp://subscribe/?location=URL"),
-				QMessageBox::Ok);
-		return;
+		Ui_.setupUi (this);
+		Ui_.Subscriptions_->setModel (Core::Instance ().GetModel ());
 	}
 
-	Core::Instance ().Load (locationUrl, title);
+	void SubscriptionsManager::on_RemoveButton__released ()
+	{
+		QModelIndex current = Ui_.Subscriptions_->currentIndex ();
+		if (!current.isValid ())
+			return;
+
+		Core::Instance ().Remove (current);
+	}
+
+	void SubscriptionsManager::AddCustom (const QString& title, const QString& urlStr)
+	{
+		QUrl url (urlStr);
+		QUrl locationUrl;
+		if (url.queryItemValue ("location").contains ("%"))
+			locationUrl.setUrl (QUrl::fromPercentEncoding (url.queryItemValue ("location").toAscii ()));
+		else
+			locationUrl.setUrl (url.queryItemValue ("location"));
+
+		if (url.scheme () == "abp" &&
+				url.host () == "subscribe" &&
+				locationUrl.isValid ())
+		{
+			if (title.isEmpty ())
+			{
+				QMessageBox::warning (this,
+						tr ("Error adding subscription"),
+						tr ("Can't add subscription without a title."),
+						QMessageBox::Ok);
+				return;
+			}
+
+			if (Core::Instance ().Exists (title))
+			{
+				QMessageBox::warning (this,
+						tr ("Error adding subscription"),
+						tr ("Subscription with such title allready exists."),
+						QMessageBox::Ok);
+				return;
+			}
+
+			if (Core::Instance ().Exists (locationUrl))
+			{
+				QMessageBox::warning (this,
+						tr ("Error adding subscription"),
+						tr ("Subscription with such title allready exists."),
+						QMessageBox::Ok);
+				return;
+			}
+		}
+		else
+		{
+			QMessageBox::warning (this,
+					tr ("Error adding subscription"),
+					tr ("Invalid URL.<br />Valid URL format is: abp://subscribe/?location=URL"),
+					QMessageBox::Ok);
+			return;
+		}
+
+		Core::Instance ().Load (locationUrl, title);
+	}
+
+	void SubscriptionsManager::on_AddButton__released ()
+	{
+		std::auto_ptr<SubscriptionAddDialog> subscriptionAdd (new SubscriptionAddDialog (this));
+
+		if (!subscriptionAdd->exec ())
+			return;
+
+		QString title = subscriptionAdd->GetName ();
+		QString urlStr = subscriptionAdd->GetURL ();
+		if (!title.isEmpty () ||
+				!urlStr.isEmpty ())
+			AddCustom (title, urlStr);
+
+		QList<QUrl> urls = subscriptionAdd->GetAdditionalSubscriptions ();
+		Q_FOREACH (const QUrl& url, urls)
+			Core::Instance ().Add (url);
+	}
 }
-
-void SubscriptionsManager::on_AddButton__released ()
-{
-	std::auto_ptr<SubscriptionAddDialog> subscriptionAdd (new SubscriptionAddDialog (this));
-
-	if (!subscriptionAdd->exec ())
-		return;
-
-	QString title = subscriptionAdd->GetName ();
-	QString urlStr = subscriptionAdd->GetURL ();
-	if (!title.isEmpty () ||
-			!urlStr.isEmpty ())
-		AddCustom (title, urlStr);
-
-	QList<QUrl> urls = subscriptionAdd->GetAdditionalSubscriptions ();
-	Q_FOREACH (const QUrl& url, urls)
-		Core::Instance ().Add (url);
+}
+}
+}
 }

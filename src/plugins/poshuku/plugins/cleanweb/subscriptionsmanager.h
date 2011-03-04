@@ -23,32 +23,31 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class SubscriptionsManager : public QWidget
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class SubscriptionsManager : public QWidget
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Ui::SubscriptionsManager Ui_;
-					public:
-						SubscriptionsManager (QWidget* = 0);
-					private:
-						void AddCustom (const QString&, const QString&);
-					private slots:
-						void on_AddButton__released ();
-						void on_RemoveButton__released ();
-					};
-				};
-			};
-		};
+		Ui::SubscriptionsManager Ui_;
+	public:
+		SubscriptionsManager (QWidget* = 0);
+	private:
+		void AddCustom (const QString&, const QString&);
+	private slots:
+		void on_AddButton__released ();
+		void on_RemoveButton__released ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
-

@@ -23,31 +23,30 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class UserFilters : public QWidget
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class UserFilters : public QWidget
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Ui::UserFilters Ui_;
-					public:
-						UserFilters (QWidget* = 0);
-					private slots:
-						void on_Add__released ();
-						void on_Modify__released ();
-						void on_Remove__released ();
-					};
-				};
-			};
-		};
+		Ui::UserFilters Ui_;
+	public:
+		UserFilters (QWidget* = 0);
+	private slots:
+		void on_Add__released ();
+		void on_Modify__released ();
+		void on_Remove__released ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
-

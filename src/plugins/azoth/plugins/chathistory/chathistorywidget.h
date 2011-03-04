@@ -75,6 +75,7 @@ namespace ChatHistory
 		void handleContactSelected (const QModelIndex&);
 		void previousHistory ();
 		void nextHistory ();
+		void clearHistory ();
 	private:
 		void RequestLogs ();
 	signals:

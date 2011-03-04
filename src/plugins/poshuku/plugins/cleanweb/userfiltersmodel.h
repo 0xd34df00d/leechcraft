@@ -23,49 +23,48 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class RuleOptionDialog;
+
+	class UserFiltersModel : public QAbstractItemModel
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class RuleOptionDialog;
+		Q_OBJECT
 
-					class UserFiltersModel : public QAbstractItemModel
-					{
-						Q_OBJECT
+		Filter Filter_;
+		QStringList Headers_;
+	public:
+		UserFiltersModel (QObject* = 0);
 
-						Filter Filter_;
-						QStringList Headers_;
-					public:
-						UserFiltersModel (QObject* = 0);
+		int columnCount (const QModelIndex& = QModelIndex ()) const;
+		QVariant data (const QModelIndex&, int) const;
+		QVariant headerData (int, Qt::Orientation, int) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-						int columnCount (const QModelIndex& = QModelIndex ()) const;
-						QVariant data (const QModelIndex&, int) const;
-						QVariant headerData (int, Qt::Orientation, int) const;
-						QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-						QModelIndex parent (const QModelIndex&) const;
-						int rowCount (const QModelIndex& = QModelIndex ()) const;
-
-						const Filter& GetFilter () const;
-						void InitiateAdd (const QString& = QString ());
-						void Modify (int);
-						void Remove (int);
-					private:
-						void Add (const RuleOptionDialog&);
-						void SplitRow (int*, bool*) const;
-						void ReadSettings ();
-						void WriteSettings () const;
-					private slots:
-						void blockImage ();
-					};
-				};
-			};
-		};
+		const Filter& GetFilter () const;
+		void InitiateAdd (const QString& = QString ());
+		void Modify (int);
+		void Remove (int);
+	private:
+		void Add (const RuleOptionDialog&);
+		void SplitRow (int*, bool*) const;
+		void ReadSettings ();
+		void WriteSettings () const;
+	private slots:
+		void blockImage ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
-

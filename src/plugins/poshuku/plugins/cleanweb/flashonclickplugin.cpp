@@ -26,55 +26,55 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	FlashOnClickPlugin::FlashOnClickPlugin (QObject *parent)
+	: QObject (parent)
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					FlashOnClickPlugin::FlashOnClickPlugin (QObject *parent)
-					: QObject (parent)
-					{
-					}
+	}
 
-					QWebPluginFactory::Plugin FlashOnClickPlugin::Plugin (bool isq) const
-					{
-						if (isq)
-							throw "I want to be anonymous";
+	QWebPluginFactory::Plugin FlashOnClickPlugin::Plugin (bool isq) const
+	{
+		if (isq)
+			throw "I want to be anonymous";
 
-						QWebPluginFactory::Plugin result;
-						result.name = "FlashOnClickPlugin";
-						QWebPluginFactory::MimeType mime;
-						mime.fileExtensions << "swf";
-						mime.name = "application/x-shockwave-flash";
-						result.mimeTypes << mime;
-						return result;
-					}
+		QWebPluginFactory::Plugin result;
+		result.name = "FlashOnClickPlugin";
+		QWebPluginFactory::MimeType mime;
+		mime.fileExtensions << "swf";
+		mime.name = "application/x-shockwave-flash";
+		result.mimeTypes << mime;
+		return result;
+	}
 
-					QWidget* FlashOnClickPlugin::Create (const QString&,
-							const QUrl& url,
-							const QStringList&,
-							const QStringList&)
-					{
-						if (!XmlSettingsManager::Instance ()->
-								property ("EnableFlashOnClick").toBool ())
-							return 0;
+	QWidget* FlashOnClickPlugin::Create (const QString&,
+			const QUrl& url,
+			const QStringList&,
+			const QStringList&)
+	{
+		if (!XmlSettingsManager::Instance ()->
+				property ("EnableFlashOnClick").toBool ())
+			return 0;
 
-						if (Core::Instance ().GetFlashOnClickWhitelist ()->
-								Matches (url.toString ()))
-							return 0;
+		if (Core::Instance ().GetFlashOnClickWhitelist ()->
+				Matches (url.toString ()))
+			return 0;
 
-						Q_FOREACH (IFlashOverrider* plugin, Core::Instance ().GetProxy ()->
-								GetPluginsManager ()->GetAllCastableTo<IFlashOverrider*> ())
-							if (plugin->WouldOverrideFlash (url))
-								return 0;
+		Q_FOREACH (IFlashOverrider* plugin, Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableTo<IFlashOverrider*> ())
+			if (plugin->WouldOverrideFlash (url))
+				return 0;
 
-						return new FlashPlaceHolder (url);
-					}
-				};
-			};
-		};
-	};
-};
+		return new FlashPlaceHolder (url);
+	}
+}
+}
+}
+}
+}

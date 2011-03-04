@@ -46,6 +46,7 @@ namespace ChatHistory
 		QSqlQuery MessageDumper_;
 		QSqlQuery UsersForAccountGetter_;
 		QSqlQuery HistoryGetter_;
+		QSqlQuery HistoryClearer_;
 		QHash<QString, qint32> Users_;
 		QHash<QString, qint32> Accounts_;
 	public:
@@ -66,6 +67,7 @@ namespace ChatHistory
 		void getUsersForAccount (const QString&);
 		void getChatLogs (const QString& accountId,
 				const QString& entryId, int backpages, int amount);
+		void clearHistory (const QString& accountId, const QString& entryId);
 	signals:
 		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&);
