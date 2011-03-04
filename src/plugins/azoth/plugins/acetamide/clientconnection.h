@@ -65,6 +65,7 @@ namespace Acetamide
 		void Unregister (ChannelHandler*);
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+		IrcServer_ptr GetServer (const QString&) const;
 	public slots:
 		void setChannelUseres (const QString&, const QString&);
 		void setSubject (const QString&, const QString&);

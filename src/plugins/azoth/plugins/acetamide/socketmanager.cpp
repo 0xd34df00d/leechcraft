@@ -23,6 +23,8 @@
 #include "ircparser.h"
 #include <QDateTime>
 #include "ircaccount.h"
+#include "ircserver.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -37,7 +39,9 @@ namespace Acetamide
 	
 	SocketManager::~SocketManager ()
 	{
-		qDeleteAll (Account2Server2Socket_);
+		QMap<QString, QTcpSocket*> server2socket;
+		Q_FOREACH (server2socket, Account2Server2Socket_.values ())
+			qDeleteAll (server2socket);
 	}
 
 	void SocketManager::SendCommand(const QString& cmd, const ServerOptions& server, IrcAccount *account)
@@ -45,10 +49,10 @@ namespace Acetamide
 		QString serverKey = server.ServerName_ + ":" + QString::number (server.ServerPort_);
 		QString accountKey = account->GetAccountID ();
 		
-		if (!Account2Server2Socket_.contains (accountKey))
-			CurrentSocket_ = CreateSocket (accountKey, serverKey);
+		if (!Account2Server2Socket_.contains (account))
+			CurrentSocket_ = CreateSocket (account, serverKey);
 		else 
-			CurrentSocket_ = Account2Server2Socket_ [accountKey] [serverKey];
+			CurrentSocket_ = Account2Server2Socket_ [account] [serverKey];
 		
 		if (!CurrentSocket_)
 			return;
@@ -57,20 +61,20 @@ namespace Acetamide
 	}
 
 	
-	bool SocketManager::IsConnected (const QString& key)
+	bool SocketManager::IsConnected (IrcAccount *account, const QString& key)
 	{
-		return Account2Server2Socket_.contains (key);
+		return Account2Server2Socket_ [account].contains (key);
 	}
 
-	QTcpSocket* SocketManager::CreateSocket (const QString& accountKey, const QString& serverKey)
+	QTcpSocket* SocketManager::CreateSocket (IrcAccount *account, const QString& serverKey)
 	{
 		QTcpSocket *socket = new QTcpSocket;
-		
-		if (Connect (socket, serverKey.split (":").at (0), serverKey.split (":").at (1)))
+		QStringList paramList = serverKey.split (':');
+		if (Connect (socket, paramList.at (0), paramList.at (1)))
 		{
 			QMap<QString, QTcpSocket*> map;
 			map [serverKey] = socket;
-			Account2Server2Socket_ [accountKey] = map;
+			Account2Server2Socket_ [account] = map;
 			return socket;
 		}
 		
@@ -90,7 +94,10 @@ namespace Acetamide
 					<< port;
 			return 0;
 		}
-		Init (socket);
+		
+		InitSocket (socket);
+		QMap<QString, QTcpSocket*> map;
+		map [QString ("%1:%2").arg (host, port)] = socket;
 		return 1;
 	}
 
@@ -111,10 +118,9 @@ namespace Acetamide
 					<< CurrentSocket_->errorString ();
 			return;
 		}
-		qDebug () << data.toAscii ();
 	}
 
-	void SocketManager::Init (QTcpSocket *socket)
+	void SocketManager::InitSocket (QTcpSocket *socket)
 	{
 		connect (socket,
 				SIGNAL (connected ()),
@@ -125,11 +131,6 @@ namespace Acetamide
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readAnswer ()));
-		
-// 		connect (this,
-// 				SIGNAL (gotAnswer (const QString&)),
-// 				Parser_,
-// 				SIGNAL (readyToReadAnswer (const QString&)));
 	}
 	
 	void SocketManager::connectionEstablished ()
@@ -154,8 +155,18 @@ namespace Acetamide
 		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
 		if (!socket)
 			return;
+		
+		QString serverKey = socket->peerName () +
+				":" +
+				QString::number (socket->peerPort ());
+		
+		QMap <QString, QTcpSocket*> map;
+		map [serverKey] = socket;
+		IrcAccount *acc = Account2Server2Socket_.key (map); 
+		
 		while (socket->canReadLine ())
-	 		emit gotAnswer (socket->readLine ());
+	 		acc->GetClientConnection ()->GetServer (serverKey)->
+					GetParser ()->handleServerReply (socket->readLine ());
 	}
 };
 };

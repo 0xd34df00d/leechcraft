@@ -78,10 +78,10 @@ namespace Acetamide
 
 	ChannelCLEntry* ClientConnection::JoinRoom (const ServerOptions& server, const ChannelOptions& channel)
 	{
-		QString id = QString ("%1@%2")
+		QString channelId = QString ("%1@%2")
 				.arg (channel.ChannelName_, channel.ServerName_);
 		
-		if (ChannelHandlers_.contains (id))
+		if (ChannelHandlers_.contains (channelId))
 		{
 			Entity e = Util::MakeNotification ("Azoth",
 					tr ("This channel is already joined."),
@@ -92,16 +92,18 @@ namespace Acetamide
 
 		ChannelHandler *ch = new ChannelHandler (server, channel, Account_);
 		
-		if (IrcServers_.contains (id))
-			IrcServers_ [id]->JoinChannel (channel);
+		QString serverId = QString ("%1:%2")
+				.arg (server.ServerName_, QString::number (server.ServerPort_));
+		if (IrcServers_.contains (serverId))
+			IrcServers_ [serverId]->JoinChannel (channel);
 		else
 		{
 			IrcServer_ptr ircServer (new IrcServer (server, Account_));
-			IrcServers_ [id] = ircServer;
-			IrcServers_ [id]->JoinChannel (channel);
+			IrcServers_ [serverId] = ircServer;
+			IrcServers_ [serverId]->JoinChannel (channel);
 		}
 		
-		ChannelHandlers_ [id] = ch;
+		ChannelHandlers_ [channelId] = ch;
 		if (Account_->GetState () == EntryStatus (SOffline, QString ()))
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
 
@@ -125,6 +127,11 @@ namespace Acetamide
 // 		msg->SetDateTime (QDateTime::currentDateTime ());
 
 		return 0;
+	}
+
+	IrcServer_ptr ClientConnection::GetServer (const QString& serverId) const
+	{
+		return IrcServers_ [serverId];
 	}
 
 	

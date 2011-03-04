@@ -45,7 +45,7 @@ namespace Acetamide
 	public:
 		IrcParser (IrcServer*);
 		void JoinChannel (const ServerOptions&, const ChannelOptions&);
-		void NickCommand (const ServerOptions&, const ChannelOptions&);
+		void NickCommand ();
 		void PrivMessageCommand (const QString&, const ServerOptions&, const ChannelOptions&);
 		void AuthCommand (const ServerOptions&);
 	private:
@@ -55,12 +55,11 @@ namespace Acetamide
 		void PongCommand (const QString&, const QString&);
 		void ParseMessage (const QString&);
 	public slots:
-		void handleServerReply (const QString&, const QString&);
+		void handleServerReply (const QString&);
 	private slots:
 		void SuccessfulAuth ();
 		void UserCommand (const ServerOptions&);
 	signals:
-		void readyToReadAnswer (const QString&, const QString&);
 		void gotAuthSuccess ();
 		void gotCLEntries (const QString&, const QString&);
 		void gotTopic (const QString&, const QString&);

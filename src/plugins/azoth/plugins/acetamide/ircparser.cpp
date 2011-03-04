@@ -39,12 +39,10 @@ namespace Acetamide
 	
 	void IrcParser::JoinChannel (const ServerOptions& server, const ChannelOptions& channel)
 	{
-		Channel_ = channel;
-		
 		QString key = server.ServerName_ + ":" + 
 				QString::number (server.ServerPort_);
 		
-		if (!Core::Instance ().GetSocketManager ()->IsConnected (key))
+		if (!Core::Instance ().GetSocketManager ()->IsConnected (IrcServer_->GetIrcAccount (), key))
 			AuthCommand (server);
 		else
 			SuccessfulAuth ();
@@ -69,7 +67,7 @@ namespace Acetamide
 		
 		QString nickCmd = QString ("NICK " + nick + "\r\n");
 		
-		Core::Instance ().GetSocketManager ()->SendCommand (nickCmd, Server_.ServerName_, Server_.ServerPort_*/);
+		Core::Instance ().GetSocketManager ()->SendCommand (nickCmd, Server_.ServerName_, Server_.ServerPort_);*/
 	} 
 
 	void IrcParser::PrivMessageCommand(const QString& text, const ServerOptions& server, const ChannelOptions& channel)
@@ -77,7 +75,7 @@ namespace Acetamide
 		QTextCodec *codec = QTextCodec::codecForName (server.ServerEncoding_.toUtf8 ());
 		QString mess =  codec->fromUnicode (text);
 		QString msg = QString ("PRIVMSG " + channel.ChannelName_ + " :" + mess + "\r\n");
-		Core::Instance ().GetSocketManager ()->SendCommand (msg, Server_.ServerName_, Server_.ServerPort_);
+		Core::Instance ().GetSocketManager ()->SendCommand (msg, server, IrcServer_->GetIrcAccount ());
 		QString  id = QString ("%1@%2")
 					.arg (channel.ChannelName_, channel.ServerName_);
 		emit messageReceived (mess, id, server.ServerNicknames_.at (0));
@@ -143,13 +141,13 @@ namespace Acetamide
 	
 	
 	
-	void IrcParser::handleServerReply (const QString& result, const QString& serverKey)
+	void IrcParser::handleServerReply (const QString& result)
 	{
-		ParseMessage (result);
+		ParseMessage (result);/*
 		if (Command_.toLower () == "ping")
-			PongCommand (Parameters_.at (0), serverKey);
+			PongCommand (Parameters_.at (0));
 		else if (Command_.toLower () == "001")
-			emit gotAuthSuccess ();
+			emit gotAuthSuccess ();*/
 			
 		
 		
@@ -201,7 +199,7 @@ namespace Acetamide
 	void IrcParser::PongCommand (const QString& server, const QString& serverKey)
 	{
 		QString pongCmd = QString ("PONG :" + server + "\r\n");
-		Core::Instance ().GetSocketManager ()->SendCommand (pongCmd, serverKey, 8001);
+// 		Core::Instance ().GetSocketManager ()->SendCommand (pongCmd, server, IrcServer_->GetIrcAccount ());
 	}
 	
 	void IrcParser::ParseMessage (const QString& msg)

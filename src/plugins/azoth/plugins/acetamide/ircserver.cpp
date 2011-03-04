@@ -34,6 +34,10 @@ namespace Acetamide
 	, Channels_ (QStringList ())
 	, IrcParser_ (new IrcParser (this))
 	{
+		connect (this,
+				SIGNAL (readyToReadAnswer (const QString&)),
+				IrcParser_.get () ,
+				SLOT (handleServerReply (const QString&)));
 	}
 
 	void IrcServer::JoinChannel (const ChannelOptions& channel)
@@ -42,9 +46,11 @@ namespace Acetamide
 		
 		if (!IsConnected)
 			ConnectToServer ();
+		
+		
 	}
 	
-	IrcServer::ConnectToServer ()
+	void IrcServer::ConnectToServer ()
 	{
 		IrcParser_->AuthCommand (Server_);
 	}
@@ -54,6 +60,10 @@ namespace Acetamide
 		return Account_;
 	}
 
+	boost::shared_ptr<IrcParser> IrcServer::GetParser () const
+	{
+		return IrcParser_;
+	}
 
 };
 };

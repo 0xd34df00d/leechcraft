@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QHash>
-#include "core.h"
+#include "localtypes.h"
 
 class QTcpSocket;
 
@@ -40,18 +40,18 @@ namespace Acetamide
 		Q_OBJECT
 
 		QTcpSocket *CurrentSocket_;
-		QMap<QString, QVariant> Account2Server2Socket_;
+		QMap<IrcAccount*, QMap<QString, QTcpSocket*> > Account2Server2Socket_;
 		IrcParser *Parser_;
 	public:
 		SocketManager (QObject*);
 		virtual ~SocketManager ();
-		void SendCommand (const QString&, QString, IrcAccount*);
-		bool IsConnected (const QString&);
+		void SendCommand (const QString&, const ServerOptions&, IrcAccount*);
+		bool IsConnected (IrcAccount*, const QString&);
 	private:
-		QTcpSocket* CreateSocket (const QString&, const QString&);
+		QTcpSocket* CreateSocket (IrcAccount*, const QString&);
 		int Connect (QTcpSocket*, const QString&, const QString&);
 		void SendData (const QString&);
-		void Init (QTcpSocket*);
+		void InitSocket (QTcpSocket*);
 	private slots:
 		void connectionEstablished ();
 		void readAnswer ();

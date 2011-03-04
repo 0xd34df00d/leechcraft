@@ -48,6 +48,9 @@ namespace Acetamide
 		void JoinChannel (const ChannelOptions&);
 		void ConnectToServer ();
 		IrcAccount* GetIrcAccount () const;
+		boost::shared_ptr<IrcParser> GetParser () const;
+	signals:
+		void readyToReadAnswer (const QString&);
 	};
 	
 	typedef boost::shared_ptr<IrcServer> IrcServer_ptr;

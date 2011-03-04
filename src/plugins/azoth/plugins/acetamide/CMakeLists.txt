@@ -41,6 +41,7 @@ SET (ACETAMIDE_HEADERS
 	ircmessage.h
 	ircprotocol.h
 	ircserver.h
+	localtypes.h
 	socketmanager.h
 	)
 

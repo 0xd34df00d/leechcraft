@@ -22,6 +22,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include "socketmanager.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -32,26 +33,6 @@ namespace Acetamide
 	class IrcProtocol;
 	class IrcAccount;
 	class IrcClient;
-	
-	struct ServerOptions
-	{
-		QString NetworkName_;
-		QString ServerName_;
-		QString ServerEncoding_;
-		QString ServerPassword_;
-		QStringList ServerNicknames_;
-		QString ServerRealName_;
-		int ServerPort_;
-		bool SSL_;
-	};
-	
-	struct ChannelOptions
-	{
-		QString ServerName_;
-		QString ChannelName_;
-		QString ChannelPassword_;
-		QString ChannelNickname_;
-	};
 	
 	class Core : public QObject
 	{
