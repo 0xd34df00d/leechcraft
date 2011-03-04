@@ -24,36 +24,36 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class FlashPlaceHolder : public QWidget
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class FlashPlaceHolder : public QWidget
-					{
-						Q_OBJECT
-						Q_PROPERTY(bool swapping READ IsSwapping)
+		Q_OBJECT
+		Q_PROPERTY(bool swapping READ IsSwapping)
 
-						Ui::FlashPlaceHolder Ui_;
-						QUrl URL_;
-						bool Swapping_;
-					public:
-						FlashPlaceHolder (const QUrl&, QWidget* = 0);
-						bool IsSwapping () const;
-					private slots:
-						void handleLoadFlash ();
-						void handleHideFlash ();
-						void handleContextMenu ();
-						void handleAddWhitelist ();
-					};
-				};
-			};
-		};
+		Ui::FlashPlaceHolder Ui_;
+		QUrl URL_;
+		bool Swapping_;
+	public:
+		FlashPlaceHolder (const QUrl&, QWidget* = 0);
+		bool IsSwapping () const;
+	private slots:
+		void handleLoadFlash ();
+		void handleHideFlash ();
+		void handleContextMenu ();
+		void handleAddWhitelist ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
 

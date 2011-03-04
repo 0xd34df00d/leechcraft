@@ -21,70 +21,69 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	QDataStream& operator<< (QDataStream& out, const FilterOption& opt)
 	{
-		namespace Poshuku
+		qint8 version = 1;
+		out << version
+			<< static_cast<qint8> (opt.Case_)
+			<< static_cast<qint8> (opt.MatchType_)
+			<< opt.Domains_
+			<< opt.NotDomains_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, FilterOption& opt)
+	{
+		qint8 version = 0;
+		in >> version;
+		if (version == 1)
 		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					QDataStream& operator<< (QDataStream& out, const FilterOption& opt)
-					{
-						qint8 version = 1;
-						out << version
-							<< static_cast<qint8> (opt.Case_)
-							<< static_cast<qint8> (opt.MatchType_)
-							<< opt.Domains_
-							<< opt.NotDomains_;
-						return out;
-					}
+			qint8 cs;
+			in >> cs;
+			opt.Case_ = cs ?
+				Qt::CaseInsensitive :
+				Qt::CaseSensitive;
+			qint8 mt;
+			in >> mt;
+			opt.MatchType_ = static_cast<FilterOption::MatchType> (mt);
+			in >> opt.Domains_
+				>> opt.NotDomains_;
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+				<< "unknown version"
+				<< version;
+		return in;
+	}
 
-					QDataStream& operator>> (QDataStream& in, FilterOption& opt)
-					{
-						qint8 version = 0;
-						in >> version;
-						if (version == 1)
-						{
-							qint8 cs;
-							in >> cs;
-							opt.Case_ = cs ?
-								Qt::CaseInsensitive :
-								Qt::CaseSensitive;
-							qint8 mt;
-							in >> mt;
-							opt.MatchType_ = static_cast<FilterOption::MatchType> (mt);
-							in >> opt.Domains_
-								>> opt.NotDomains_;
-						}
-						else
-							qWarning () << Q_FUNC_INFO
-								<< "unknown version"
-								<< version;
-						return in;
-					}
+	FilterOption::FilterOption ()
+	: Case_ (Qt::CaseInsensitive)
+	, MatchType_ (MTWildcard)
+	{
+	}
 
-					FilterOption::FilterOption ()
-					: Case_ (Qt::CaseInsensitive)
-					, MatchType_ (MTWildcard)
-					{
-					}
+	bool operator== (const FilterOption& f1, const FilterOption& f2)
+	{
+		return f1.Case_ == f2.Case_ &&
+			f1.MatchType_ == f2.MatchType_ &&
+			f1.Domains_ == f2.Domains_ &&
+			f1.NotDomains_ == f2.NotDomains_;
+	}
 
-					bool operator== (const FilterOption& f1, const FilterOption& f2)
-					{
-						return f1.Case_ == f2.Case_ &&
-							f1.MatchType_ == f2.MatchType_ &&
-							f1.Domains_ == f2.Domains_ &&
-							f1.NotDomains_ == f2.NotDomains_;
-					}
-
-					bool operator!= (const FilterOption& f1, const FilterOption& f2)
-					{
-						return !(f1 == f2);
-					}
-				};
-			};
-		};
-	};
-};
-
+	bool operator!= (const FilterOption& f1, const FilterOption& f2)
+	{
+		return !(f1 == f2);
+	}
+}
+}
+}
+}
+}

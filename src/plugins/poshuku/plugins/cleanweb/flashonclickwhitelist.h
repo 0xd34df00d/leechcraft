@@ -26,39 +26,38 @@ class QStandardItemModel;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	class FlashOnClickWhitelist : public QWidget
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					class FlashOnClickWhitelist : public QWidget
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Ui::FlashOnClickWhitelist Ui_;
-						QStandardItemModel *Model_;
-					public:
-						FlashOnClickWhitelist (QWidget* = 0);
+		Ui::FlashOnClickWhitelist Ui_;
+		QStandardItemModel *Model_;
+	public:
+		FlashOnClickWhitelist (QWidget* = 0);
 
-						QStringList GetWhitelist () const;
-						bool Matches (const QString&) const;
-						void Add (const QString&);
-					private slots:
-						void on_Add__released ();
-						void on_Modify__released ();
-						void on_Remove__released ();
-					private:
-						void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
-						void SaveSettings ();
-					};
-				};
-			};
-		};
+		QStringList GetWhitelist () const;
+		bool Matches (const QString&) const;
+		void Add (const QString&);
+	private slots:
+		void on_Add__released ();
+		void on_Modify__released ();
+		void on_Remove__released ();
+	private:
+		void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
+		void SaveSettings ();
 	};
-};
+}
+}
+}
+}
+}
 
 #endif
-

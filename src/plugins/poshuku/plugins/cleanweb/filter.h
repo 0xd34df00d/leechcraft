@@ -26,67 +26,67 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace Poshuku
+{
+namespace Plugins
+{
+namespace CleanWeb
+{
+	struct FilterOption
 	{
-		namespace Poshuku
+		Qt::CaseSensitivity Case_;
+		enum MatchType
 		{
-			namespace Plugins
-			{
-				namespace CleanWeb
-				{
-					struct FilterOption
-					{
-						Qt::CaseSensitivity Case_;
-						enum MatchType
-						{
-							MTWildcard,
-							MTRegexp
-						};
-						MatchType MatchType_;
-						QStringList Domains_;
-						QStringList NotDomains_;
-
-						FilterOption ();
-					};
-
-					QDataStream& operator<< (QDataStream&, const FilterOption&);
-					QDataStream& operator>> (QDataStream&, FilterOption&);
-
-					bool operator== (const FilterOption&, const FilterOption&);
-					bool operator!= (const FilterOption&, const FilterOption&);
-
-					struct SubscriptionData
-					{
-						/// The URL of the subscription.
-						QUrl URL_;
-						/** The name of the subscription as provided by the abp:
-						 * link.
-						 */
-						QString Name_;
-						/// This is the name of the file inside the
-						//~/.leechcraft/cleanweb/.
-						QString Filename_;
-						/// The date/time of last update.
-						QDateTime LastDateTime_;
-					};
-
-					typedef QHash<QString, FilterOption> OptionsDict_t;
-					typedef QHash<QString, QRegExp> RegExpsDict_t;
-
-					struct Filter
-					{
-						QStringList ExceptionStrings_;
-						QStringList FilterStrings_;
-						OptionsDict_t Options_;
-						RegExpsDict_t RegExps_;
-
-						SubscriptionData SD_;
-					};
-				};
-			};
+			MTWildcard,
+			MTRegexp
 		};
+		MatchType MatchType_;
+		QStringList Domains_;
+		QStringList NotDomains_;
+
+		FilterOption ();
 	};
-};
+
+	QDataStream& operator<< (QDataStream&, const FilterOption&);
+	QDataStream& operator>> (QDataStream&, FilterOption&);
+
+	bool operator== (const FilterOption&, const FilterOption&);
+	bool operator!= (const FilterOption&, const FilterOption&);
+
+	struct SubscriptionData
+	{
+		/// The URL of the subscription.
+		QUrl URL_;
+		/** The name of the subscription as provided by the abp:
+			* link.
+			*/
+		QString Name_;
+		/// This is the name of the file inside the
+		//~/.leechcraft/cleanweb/.
+		QString Filename_;
+		/// The date/time of last update.
+		QDateTime LastDateTime_;
+	};
+
+	typedef QHash<QString, FilterOption> OptionsDict_t;
+	typedef QHash<QString, QRegExp> RegExpsDict_t;
+
+	struct Filter
+	{
+		QStringList ExceptionStrings_;
+		QStringList FilterStrings_;
+		OptionsDict_t Options_;
+		RegExpsDict_t RegExps_;
+
+		SubscriptionData SD_;
+	};
+}
+}
+}
+}
+}
 
 Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RegExpsDict_t);
 Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::OptionsDict_t);
