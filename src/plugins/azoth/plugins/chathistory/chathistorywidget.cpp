@@ -19,7 +19,7 @@
 #include "chathistorywidget.h"
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-#include <QWebFrame>
+#include <QMessageBox>
 #include <interfaces/iaccount.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iproxyobject.h>
@@ -87,6 +87,11 @@ namespace ChatHistory
 				this,
 				SLOT (nextHistory ()))->
 					setProperty ("ActionIcon", "forward");
+		Toolbar_->addSeparator ();
+		Toolbar_->addAction (tr ("Clear"),
+				this,
+				SLOT (clearHistory ()))->
+					setProperty ("ActionIcon", "remove");
 
 		Core::Instance ()->GetOurAccounts ();
 	}
@@ -291,7 +296,24 @@ namespace ChatHistory
 		RequestLogs ();
 	}
 	
-	void ChatHistoryWidget::RequestLogs()
+	void ChatHistoryWidget::clearHistory ()
+	{
+		if (CurrentAccount_.isEmpty () ||
+				CurrentEntry_.isEmpty ())
+			return;
+		if (QMessageBox::question (0, "LeechCraft",
+					tr ("Are you sure you wish to delete chat history with %1?")
+						.arg (CurrentEntry_),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+		
+		Core::Instance ()->ClearHistory (CurrentAccount_, CurrentEntry_);
+		
+		Backpages_ = 0;
+		RequestLogs ();
+	}
+	
+	void ChatHistoryWidget::RequestLogs ()
 	{
 		Core::Instance ()->GetChatLogs (CurrentAccount_,
 				CurrentEntry_, Backpages_, Amount);
