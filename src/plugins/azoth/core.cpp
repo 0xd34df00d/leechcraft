@@ -1774,7 +1774,6 @@ namespace Azoth
 				break;
 			case IMessage::MTMUCMessage:
 			{
-				qDebug () << "THIS";
 				if (IsHighlightMessage (msg) && XmlSettingsManager::Instance ()
 						.property ("NotifyAboutConferenceHighlights").toBool ())
 				{

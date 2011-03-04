@@ -14,11 +14,12 @@ SET (ACETAMIDE_SRCS
 	ircaccountconfigurationdialog.cpp
 	ircaddserverdialog.cpp
 	ircadddefaultchannelsdialog.cpp
-	ircclient.cpp
+	ircparser.cpp
 	irceditchanneldialog.cpp
 	ircjoingroupchat.cpp
 	ircmessage.cpp
 	ircprotocol.cpp
+	ircserver.cpp
 	socketmanager.cpp
 	)
 
@@ -34,11 +35,12 @@ SET (ACETAMIDE_HEADERS
 	ircaccountconfigurationdialog.h
 	ircaddserverdialog.h
 	ircadddefaultchannelsdialog.h
-	ircclient.h
+	ircparser.h
 	irceditchanneldialog.h
 	ircjoingroupchat.h
 	ircmessage.h
 	ircprotocol.h
+	ircserver.h
 	socketmanager.h
 	)
 

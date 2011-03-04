@@ -213,6 +213,7 @@ namespace Acetamide
 		ChannelCLEntry *entry = ClientConnection_->JoinRoom (opts, info);
 		if (!entry)
 			return;
+		
 		emit gotCLItems (QList<QObject*> () << entry);
 	}
 	

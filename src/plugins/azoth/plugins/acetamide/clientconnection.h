@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QHash>
 #include "ircaccount.h"
+#include "ircserver.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -52,6 +53,7 @@ namespace Acetamide
 		bool FirstTimeConnect_;
 		
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
+		QHash<QString, IrcServer_ptr> IrcServers_;
 	public:
 		ClientConnection (IrcAccount*);
 		virtual ~ClientConnection ();

@@ -21,7 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
-
+#include "socketmanager.h"
 
 namespace LeechCraft
 {
@@ -59,9 +59,9 @@ namespace Acetamide
 
 		ICoreProxy_ptr Proxy_;
 		boost::shared_ptr<IrcProtocol> IrcProtocol_;
+		boost::shared_ptr<SocketManager> SocketManager_;
 		QObject *PluginProxy_;
 		IrcAccount *DefaultAccount_;
-		boost::shared_ptr<IrcClient> IrcClient_;
 		QString DefaultUserName_;
 		Core ();
 	public:
@@ -77,8 +77,8 @@ namespace Acetamide
 		void SetDefaultIrcAcoount (IrcAccount *account);
 		IrcAccount* GetDefaultIrcAccount ();
 		void SendEntity (const Entity&);
-		boost::shared_ptr<IrcClient>  GetIrcClient () const;
 		QString GetDefaultUserName () const;
+		boost::shared_ptr<SocketManager> GetSocketManager () const;
 	private:
 		void CreateDefaultAccount ();
 	private slots:

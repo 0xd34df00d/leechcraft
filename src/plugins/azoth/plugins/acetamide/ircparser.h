@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCCLIENT_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCCLIENT_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
@@ -32,29 +32,36 @@ namespace Acetamide
 {
 	class IrcAccount;
 	class ClientConnection;
-	class IrcClient : public QObject
+	class IrcServer;
+	
+	class IrcParser : public QObject
 	{
 		Q_OBJECT
-		int incr;
-		boost::shared_ptr<SocketManager> SocketManager_;
-		QHash<QString, QString> Nicknames_;
-		QHash<QString, QString> Topic_;
-		QMap <QString, QRegExp> Name2RegExp_;
+		IrcServer *IrcServer_;
+		ChannelOptions Channel_;
+		QString Prefix_;
+		QString Command_;
+		QStringList Parameters_;
 	public:
-		IrcClient (QObject*);
-		void JoinChannel (const ServerOptions&, const ChannelOptions&, ClientConnection*);
+		IrcParser (IrcServer*);
+		void JoinChannel (const ServerOptions&, const ChannelOptions&);
 		void NickCommand (const ServerOptions&, const ChannelOptions&);
 		void PrivMessageCommand (const QString&, const ServerOptions&, const ChannelOptions&);
+		void AuthCommand (const ServerOptions&);
 	private:
 		void Init ();
 		void InitClientConnection (ClientConnection*);
-		void AuthCommand (const ServerOptions&, const ChannelOptions&);
 		QString GetPingServer (const QString&) const;
 		void PongCommand (const QString&, const QString&);
+		void ParseMessage (const QString&);
 	public slots:
 		void handleServerReply (const QString&, const QString&);
+	private slots:
+		void SuccessfulAuth ();
+		void UserCommand (const ServerOptions&);
 	signals:
 		void readyToReadAnswer (const QString&, const QString&);
+		void gotAuthSuccess ();
 		void gotCLEntries (const QString&, const QString&);
 		void gotTopic (const QString&, const QString&);
 		void messageReceived (const QString&, const QString&, const QString&);
@@ -62,4 +69,4 @@ namespace Acetamide
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCCLIENT_H
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H

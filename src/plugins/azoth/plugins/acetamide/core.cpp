@@ -22,7 +22,6 @@
 #include <interfaces/iproxyobject.h>
 #include "ircaccount.h"
 #include "ircprotocol.h"
-#include "ircclient.h"
 
 namespace LeechCraft
 {
@@ -39,7 +38,7 @@ namespace Acetamide
 		qRegisterMetaTypeStreamOperators<ChannelOptions> ("ChannelOptions");
 		
 		IrcProtocol_.reset (new IrcProtocol (this));
-		IrcClient_.reset (new IrcClient (0));
+		SocketManager_.reset (new SocketManager (this));
 	}
 
 	Core& Core::Instance ()
@@ -56,7 +55,7 @@ namespace Acetamide
 
 	void Core::Release ()
 	{
-		IrcClient_.reset ();
+		SocketManager_.reset ();;
 		IrcProtocol_.reset ();
 	}
 
@@ -99,14 +98,14 @@ namespace Acetamide
 		emit gotEntity (e);
 	}
 
-	boost::shared_ptr<IrcClient> Core::GetIrcClient () const
-	{
-		return IrcClient_;
-	}
-
 	QString Core::GetDefaultUserName () const
 	{
 		return DefaultUserName_;
+	}
+
+	boost::shared_ptr<SocketManager> Core::GetSocketManager () const
+	{
+		return SocketManager_;
 	}
 
 	void Core::CreateDefaultAccount ()

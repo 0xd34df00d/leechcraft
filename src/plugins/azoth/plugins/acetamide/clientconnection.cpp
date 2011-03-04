@@ -25,10 +25,12 @@
 #include "ircprotocol.h"
 #include "ircaccount.h"
 #include "channelhandler.h"
-#include "ircclient.h"
+
+#include "ircserver.h"
 #include "channelclentry.h"
 #include "ircmessage.h"
 #include "core.h"
+
 
 namespace LeechCraft
 {
@@ -89,9 +91,19 @@ namespace Acetamide
 		}
 
 		ChannelHandler *ch = new ChannelHandler (server, channel, Account_);
-		Core::Instance ().GetIrcClient ()->JoinChannel (server, channel, this);
+		
+		if (IrcServers_.contains (id))
+			IrcServers_ [id]->JoinChannel (channel);
+		else
+		{
+			IrcServer_ptr ircServer (new IrcServer (server, Account_));
+			IrcServers_ [id] = ircServer;
+			IrcServers_ [id]->JoinChannel (channel);
+		}
+		
 		ChannelHandlers_ [id] = ch;
-		Account_->ChangeState (EntryStatus (SOnline, QString ()));
+		if (Account_->GetState () == EntryStatus (SOffline, QString ()))
+			Account_->ChangeState (EntryStatus (SOnline, QString ()));
 
 		return ch->GetCLEntry ();
 	}
@@ -124,7 +136,11 @@ namespace Acetamide
 	
 	void ClientConnection::setSubject (const QString& subject, const QString& key)
 	{
-		ChannelHandlers_ [key]->SetSubject (subject);
+		QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [key]->
+						GetServerOptions ().ServerEncoding_.toUtf8 ());
+		QString mess =  codec->toUnicode (subject.toAscii ());
+		
+		ChannelHandlers_ [key]->SetSubject (mess);
 	}
 
 	void ClientConnection::handleMessageReceived (const QString& msg, const QString& id, const QString& nick)

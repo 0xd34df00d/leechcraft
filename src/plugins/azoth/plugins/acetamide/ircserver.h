@@ -16,14 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVER_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVER_H
 
+#include "boost/shared_ptr.hpp"
 #include <QObject>
-#include <QHash>
 #include "core.h"
-
-class QTcpSocket;
 
 namespace LeechCraft
 {
@@ -35,30 +33,25 @@ namespace Acetamide
 	class IrcParser;
 	class IrcAccount;
 	
-	class SocketManager : public QObject
+	class IrcServer : public QObject
 	{
 		Q_OBJECT
-
-		QTcpSocket *CurrentSocket_;
-		QMap<QString, QVariant> Account2Server2Socket_;
-		IrcParser *Parser_;
+		
+		boost::shared_ptr<IrcParser> IrcParser_;
+		bool IsConnected;
+		QStringList Channels_;
+		QList<ChannelOptions> ChannelsQueue_;
+		ServerOptions Server_;
+		IrcAccount *Account_;
 	public:
-		SocketManager (QObject*);
-		virtual ~SocketManager ();
-		void SendCommand (const QString&, QString, IrcAccount*);
-		bool IsConnected (const QString&);
-	private:
-		QTcpSocket* CreateSocket (const QString&, const QString&);
-		int Connect (QTcpSocket*, const QString&, const QString&);
-		void SendData (const QString&);
-		void Init (QTcpSocket*);
-	private slots:
-		void connectionEstablished ();
-		void readAnswer ();
-	signals:
-		void gotAnswer (const QString&);
+		IrcServer (const ServerOptions&, IrcAccount*);
+		void JoinChannel (const ChannelOptions&);
+		void ConnectToServer ();
+		IrcAccount* GetIrcAccount () const;
 	};
+	
+	typedef boost::shared_ptr<IrcServer> IrcServer_ptr;
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVER_H

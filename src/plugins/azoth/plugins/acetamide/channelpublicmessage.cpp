@@ -23,7 +23,7 @@
 #include "ircaccount.h"
 #include "clientconnection.h"
 #include "channelhandler.h"
-#include "ircclient.h"
+#include "ircparser.h"
 
 namespace LeechCraft
 {
@@ -69,9 +69,9 @@ namespace Acetamide
 		if (!ParentEntry_)
 			return;
 
-		Core::Instance ().GetIrcClient ()->PrivMessageCommand (Message_ 
+		/*Core::Instance ().GetIrcClient ()->PrivMessageCommand (Message_ 
 				, ParentEntry_->GetChannelHandler ()->GetServerOptions ()
-				, ParentEntry_->GetChannelHandler ()->GetChannelOptions ());
+				, ParentEntry_->GetChannelHandler ()->GetChannelOptions ());*/
 	}
 
 	IMessage::Direction ChannelPublicMessage::GetDirection () const
