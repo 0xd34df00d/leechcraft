@@ -28,6 +28,7 @@
 #include "packagesmodel.h"
 #include "externalresourcemanager.h"
 #include "storage.h"
+#include "stringfiltermodel.h"
 
 namespace LeechCraft
 {
@@ -69,13 +70,10 @@ namespace LeechCraft
 				TypeFilter_ = new TypeFilterProxyModel (this);
 				TypeFilter_->setDynamicSortFilter (true);
 				TypeFilter_->setSourceModel (Core::Instance ().GetPluginsModel ());
-				FilterByTags_ = new QSortFilterProxyModel (this);
-				FilterByTags_->setDynamicSortFilter (true);
-				FilterByTags_->setSourceModel (TypeFilter_);
-				FilterString_ = new QSortFilterProxyModel (this);
+				FilterString_ = new StringFilterModel (this);
 				FilterString_->setDynamicSortFilter (true);
 				FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
-				FilterString_->setSourceModel (FilterByTags_);
+				FilterString_->setSourceModel (TypeFilter_);
 
 				Ui_.PackagesTree_->setModel (FilterString_);
 				PackagesDelegate *pd = new PackagesDelegate (Ui_.PackagesTree_);

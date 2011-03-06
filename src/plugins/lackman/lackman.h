@@ -37,6 +37,7 @@ namespace LeechCraft
 		namespace LackMan
 		{
 			class TypeFilterProxyModel;
+			class StringFilterModel;
 
 			class Plugin : public QWidget
 						 , public IInfo
@@ -49,8 +50,7 @@ namespace LeechCraft
 
 				Ui::LackMan Ui_;
 				std::auto_ptr<QTranslator> Translator_;
-				QSortFilterProxyModel *FilterString_;
-				QSortFilterProxyModel *FilterByTags_;
+				StringFilterModel *FilterString_;
 				TypeFilterProxyModel *TypeFilter_;
 				Util::XmlSettingsDialog_ptr SettingsDialog_;
 

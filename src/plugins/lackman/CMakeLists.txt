@@ -47,6 +47,7 @@ SET (SRCS
 	typefilterproxymodel.cpp
 	xmlsettingsmanager.cpp
 	delegatebuttongroup.cpp
+	stringfiltermodel.cpp
 	)
 SET (HEADERS
 	lackman.h
@@ -65,6 +66,7 @@ SET (HEADERS
 	typefilterproxymodel.h
 	xmlsettingsmanager.h
 	delegatebuttongroup.h
+	stringfiltermodel.h
 	)
 SET (TRANSLATIONS
 	leechcraft_lackman_ru_RU.ts
