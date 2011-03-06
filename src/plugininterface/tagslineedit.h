@@ -69,8 +69,8 @@ namespace LeechCraft
 			 * @param[in] string String with completion.
 			 */
 			PLUGININTERFACE_API void insertTag (const QString& string);
+			PLUGININTERFACE_API void handleTagsUpdated (const QStringList&);
 		private slots:
-			void handleTagsUpdated (const QStringList&);
 			void handleSelectionChanged (const QStringList&);
 		protected:
 			virtual void keyPressEvent (QKeyEvent*);
