@@ -18,8 +18,10 @@
 
 #include "lackman.h"
 #include <QSortFilterProxyModel>
+#include <QStringListModel>
 #include <QIcon>
 #include <plugininterface/util.h>
+#include <plugininterface/tagscompleter.h>
 #include "core.h"
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
@@ -41,6 +43,10 @@ namespace LeechCraft
 				Translator_.reset (Util::InstallTranslator ("lackman"));
 
 				Ui_.setupUi (this);
+				
+				TagsModel_ = new QStringListModel (this);
+				Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.SearchLine_);
+				tc->OverrideModel (TagsModel_);
 
 				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -92,7 +98,7 @@ namespace LeechCraft
 						this,
 						SLOT (handlePackageSelected (const QModelIndex&)));
 				connect (Ui_.SearchLine_,
-						SIGNAL (textEdited (const QString&)),
+						SIGNAL (textChanged (const QString&)),
 						FilterString_,
 						SLOT (setFilterFixedString (const QString&)));
 				
@@ -172,6 +178,7 @@ namespace LeechCraft
 
 			void Plugin::handleTagsUpdated ()
 			{
+				TagsModel_->setStringList (Core::Instance ().GetAllTags ());
 			}
 
 			void Plugin::on_PackageStatus__currentIndexChanged (int index)
@@ -284,8 +291,8 @@ namespace LeechCraft
 				Toolbar_->addAction (Apply_);
 				Toolbar_->addAction (Cancel_);
 			}
-		};
-	};
-};
+		}
+	}
+}
 
 Q_EXPORT_PLUGIN2 (leechcraft_lackman, LeechCraft::Plugins::LackMan::Plugin);

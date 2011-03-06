@@ -29,6 +29,7 @@
 #include "ui_lackman.h"
 
 class QSortFilterProxyModel;
+class QStringListModel;
 
 namespace LeechCraft
 {
@@ -53,6 +54,7 @@ namespace LeechCraft
 				StringFilterModel *FilterString_;
 				TypeFilterProxyModel *TypeFilter_;
 				Util::XmlSettingsDialog_ptr SettingsDialog_;
+				QStringListModel *TagsModel_;
 
 				QAction *UpdateAll_;
 				QAction *UpgradeAll_;
@@ -91,9 +93,8 @@ namespace LeechCraft
 				void raiseTab (QWidget*);
 				void bringToFront ();
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif
-

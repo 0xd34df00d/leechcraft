@@ -38,7 +38,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QLineEdit" name="SearchLine_"/>
+            <widget class="LeechCraft::Util::TagsLineEdit" name="SearchLine_"/>
            </item>
            <item>
             <widget class="QComboBox" name="PackageStatus_">
@@ -187,6 +187,11 @@
    <extends>QWidget</extends>
    <header location="global">plugininterface/selectablebrowser.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::Util::TagsLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">plugininterface/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
