@@ -126,7 +126,7 @@ namespace LeechCraft
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
-				void tagsUpdated ();
+				void tagsUpdated (const QStringList&);
 				void packageRowActionFinished (int row);
 			};
 		}

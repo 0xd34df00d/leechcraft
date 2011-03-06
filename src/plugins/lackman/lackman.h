@@ -77,7 +77,7 @@ namespace LeechCraft
 
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			private slots:
-				void handleTagsUpdated ();
+				void handleTagsUpdated (const QStringList&);
 				void on_PackageStatus__currentIndexChanged (int);
 				void handlePackageSelected (const QModelIndex&);
 				void handleFetchListUpdated (const QList<int>&);

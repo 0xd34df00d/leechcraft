@@ -22,6 +22,7 @@
 #include <QIcon>
 #include <plugininterface/util.h>
 #include <plugininterface/tagscompleter.h>
+#include <plugininterface/categoryselector.h>
 #include "core.h"
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
@@ -47,6 +48,7 @@ namespace LeechCraft
 				TagsModel_ = new QStringListModel (this);
 				Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.SearchLine_);
 				tc->OverrideModel (TagsModel_);
+				Ui_.SearchLine_->AddSelector ();
 
 				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -69,9 +71,13 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (&Core::Instance (),
-						SIGNAL (tagsUpdated ()),
+						SIGNAL (tagsUpdated (const QStringList&)),
 						this,
-						SLOT (handleTagsUpdated ()));
+						SLOT (handleTagsUpdated (const QStringList&)));
+				connect (&Core::Instance (),
+						SIGNAL (tagsUpdated (const QStringList&)),
+						Ui_.SearchLine_,
+						SLOT (handleTagsUpdated (const QStringList&)));
 
 				TypeFilter_ = new TypeFilterProxyModel (this);
 				TypeFilter_->setDynamicSortFilter (true);
@@ -109,7 +115,9 @@ namespace LeechCraft
 
 				BuildActions ();
 
-				handleTagsUpdated ();
+				const QStringList& tags = Core::Instance ().GetAllTags ();
+				handleTagsUpdated (tags);
+				Ui_.SearchLine_->handleTagsUpdated (tags);
 				handleFetchListUpdated (QList<int> ());
 			}
 
@@ -176,9 +184,9 @@ namespace LeechCraft
 				return result;
 			}
 
-			void Plugin::handleTagsUpdated ()
+			void Plugin::handleTagsUpdated (const QStringList& tags)
 			{
-				TagsModel_->setStringList (Core::Instance ().GetAllTags ());
+				TagsModel_->setStringList (tags);
 			}
 
 			void Plugin::on_PackageStatus__currentIndexChanged (int index)
