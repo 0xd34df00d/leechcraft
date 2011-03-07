@@ -1158,6 +1158,8 @@ namespace LeechCraft
 							}
 						}
 					}
+					
+					emit tagsUpdated (GetAllTags ());
 				}
 				catch (const std::runtime_error& e)
 				{

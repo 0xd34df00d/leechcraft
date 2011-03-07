@@ -29,6 +29,7 @@
 #include "ui_lackman.h"
 
 class QSortFilterProxyModel;
+class QStringListModel;
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace LeechCraft
 		namespace LackMan
 		{
 			class TypeFilterProxyModel;
+			class StringFilterModel;
 
 			class Plugin : public QWidget
 						 , public IInfo
@@ -49,10 +51,10 @@ namespace LeechCraft
 
 				Ui::LackMan Ui_;
 				std::auto_ptr<QTranslator> Translator_;
-				QSortFilterProxyModel *FilterString_;
-				QSortFilterProxyModel *FilterByTags_;
+				StringFilterModel *FilterString_;
 				TypeFilterProxyModel *TypeFilter_;
 				Util::XmlSettingsDialog_ptr SettingsDialog_;
+				QStringListModel *TagsModel_;
 
 				QAction *UpdateAll_;
 				QAction *UpgradeAll_;
@@ -75,7 +77,7 @@ namespace LeechCraft
 
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 			private slots:
-				void handleTagsUpdated ();
+				void handleTagsUpdated (const QStringList&);
 				void on_PackageStatus__currentIndexChanged (int);
 				void handlePackageSelected (const QModelIndex&);
 				void handleFetchListUpdated (const QList<int>&);
@@ -91,9 +93,8 @@ namespace LeechCraft
 				void raiseTab (QWidget*);
 				void bringToFront ();
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif
-

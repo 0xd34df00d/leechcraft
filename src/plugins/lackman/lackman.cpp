@@ -18,8 +18,11 @@
 
 #include "lackman.h"
 #include <QSortFilterProxyModel>
+#include <QStringListModel>
 #include <QIcon>
 #include <plugininterface/util.h>
+#include <plugininterface/tagscompleter.h>
+#include <plugininterface/categoryselector.h>
 #include "core.h"
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
@@ -28,6 +31,7 @@
 #include "packagesmodel.h"
 #include "externalresourcemanager.h"
 #include "storage.h"
+#include "stringfiltermodel.h"
 
 namespace LeechCraft
 {
@@ -40,6 +44,11 @@ namespace LeechCraft
 				Translator_.reset (Util::InstallTranslator ("lackman"));
 
 				Ui_.setupUi (this);
+				
+				TagsModel_ = new QStringListModel (this);
+				Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.SearchLine_);
+				tc->OverrideModel (TagsModel_);
+				Ui_.SearchLine_->AddSelector ();
 
 				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -62,20 +71,21 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				connect (&Core::Instance (),
-						SIGNAL (tagsUpdated ()),
+						SIGNAL (tagsUpdated (const QStringList&)),
 						this,
-						SLOT (handleTagsUpdated ()));
+						SLOT (handleTagsUpdated (const QStringList&)));
+				connect (&Core::Instance (),
+						SIGNAL (tagsUpdated (const QStringList&)),
+						Ui_.SearchLine_,
+						SLOT (handleTagsUpdated (const QStringList&)));
 
 				TypeFilter_ = new TypeFilterProxyModel (this);
 				TypeFilter_->setDynamicSortFilter (true);
 				TypeFilter_->setSourceModel (Core::Instance ().GetPluginsModel ());
-				FilterByTags_ = new QSortFilterProxyModel (this);
-				FilterByTags_->setDynamicSortFilter (true);
-				FilterByTags_->setSourceModel (TypeFilter_);
-				FilterString_ = new QSortFilterProxyModel (this);
+				FilterString_ = new StringFilterModel (this);
 				FilterString_->setDynamicSortFilter (true);
 				FilterString_->setFilterCaseSensitivity (Qt::CaseInsensitive);
-				FilterString_->setSourceModel (FilterByTags_);
+				FilterString_->setSourceModel (TypeFilter_);
 
 				Ui_.PackagesTree_->setModel (FilterString_);
 				PackagesDelegate *pd = new PackagesDelegate (Ui_.PackagesTree_);
@@ -94,7 +104,7 @@ namespace LeechCraft
 						this,
 						SLOT (handlePackageSelected (const QModelIndex&)));
 				connect (Ui_.SearchLine_,
-						SIGNAL (textEdited (const QString&)),
+						SIGNAL (textChanged (const QString&)),
 						FilterString_,
 						SLOT (setFilterFixedString (const QString&)));
 				
@@ -105,7 +115,9 @@ namespace LeechCraft
 
 				BuildActions ();
 
-				handleTagsUpdated ();
+				const QStringList& tags = Core::Instance ().GetAllTags ();
+				handleTagsUpdated (tags);
+				Ui_.SearchLine_->handleTagsUpdated (tags);
 				handleFetchListUpdated (QList<int> ());
 			}
 
@@ -172,8 +184,9 @@ namespace LeechCraft
 				return result;
 			}
 
-			void Plugin::handleTagsUpdated ()
+			void Plugin::handleTagsUpdated (const QStringList& tags)
 			{
+				TagsModel_->setStringList (tags);
 			}
 
 			void Plugin::on_PackageStatus__currentIndexChanged (int index)
@@ -286,8 +299,8 @@ namespace LeechCraft
 				Toolbar_->addAction (Apply_);
 				Toolbar_->addAction (Cancel_);
 			}
-		};
-	};
-};
+		}
+	}
+}
 
 Q_EXPORT_PLUGIN2 (leechcraft_lackman, LeechCraft::Plugins::LackMan::Plugin);
