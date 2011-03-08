@@ -106,7 +106,8 @@ namespace Azoth
 			CLREntryObject,
 			CLREntryType,
 			CLREntryCategory,
-			CLRUnreadMsgCount
+			CLRUnreadMsgCount,
+			CLRDummyRole
 		};
 
 		enum CLEntryType

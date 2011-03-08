@@ -777,6 +777,7 @@ namespace Azoth
 		{
 			item->setToolTip (tip);
 			item->setIcon (icon);
+			item->parent ()->setData (QVariant (), CLRDummyRole);
 		}
 		
 		const QString& id = entry->GetEntryID ();
