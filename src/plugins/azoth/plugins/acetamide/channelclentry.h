@@ -69,7 +69,7 @@ namespace Acetamide
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		
-		EntryStatus GetStatus (const QString& variant = QString()) const;
+		EntryStatus GetStatus (const QString& variant = QString ()) const;
 		QImage GetAvatar () const;
 		QString GetRawInfo () const;
 		void ShowInfo ();

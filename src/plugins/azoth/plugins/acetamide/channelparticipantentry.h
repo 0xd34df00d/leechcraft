@@ -67,7 +67,7 @@ namespace Acetamide
 		
 		QObject* GetObject ();
 		QList<QObject*> GetAllMessages () const;
-		EntryStatus GetStatus (const QString& variant = QString()) const;
+		EntryStatus GetStatus (const QString& variant = QString ()) const;
 		QImage GetAvatar () const;
 		QString GetRawInfo () const;
 		void ShowInfo ();

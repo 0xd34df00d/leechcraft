@@ -63,7 +63,7 @@ namespace Acetamide
 		return result;
 	}
 
-	IrcMessage* ChannelHandler::CreateMessage(IMessage::MessageType type,
+	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType type,
 			const QString& nick, const QString& body)
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,

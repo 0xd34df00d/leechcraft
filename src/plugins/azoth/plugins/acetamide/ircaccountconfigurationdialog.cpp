@@ -113,7 +113,7 @@ namespace Acetamide
 	{
 		return Servers_;
 // 		bool found = false;
-// 		QVariant server = Ui_.Servers_->itemData (Ui_.Servers_->currentIndex(), DefaultServerRole);
+// 		QVariant server = Ui_.Servers_->itemData (Ui_.Servers_->currentIndex (), DefaultServerRole);
 // 		for (int i = 0, size = Nicknames_.count (); i < size; ++i)
 // 			if (Nicknames_.at (i).Server_ == server.toString ())
 // 			{

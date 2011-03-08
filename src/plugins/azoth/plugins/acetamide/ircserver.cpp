@@ -17,9 +17,7 @@
  **********************************************************************/
 
 #include "ircserver.h"
-#include "ircaccount.h"
 #include "ircparser.h"
-
 
 namespace LeechCraft
 {
@@ -27,37 +25,25 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	IrcServer::IrcServer (const ServerOptions& server, IrcAccount *account)
-	: Account_ (account)
+	IrcServer::IrcServer (const ServerOptions& server, IrcServerManager *serveramanger)
+	: ServerManager_ (serveramanger)
 	, Server_ (server)
-	, IsConnected (false)
-	, Channels_ (QStringList ())
 	, IrcParser_ (new IrcParser (this))
+	, State_ (NotConnected)
 	{
-		connect (this,
-				SIGNAL (readyToReadAnswer (const QString&)),
-				IrcParser_.get () ,
-				SLOT (handleServerReply (const QString&)));
 	}
 
 	void IrcServer::JoinChannel (const ChannelOptions& channel)
 	{
-		ChannelsQueue_.append (channel);
-		
-		if (!IsConnected)
-			ConnectToServer ();
-		
-		
-	}
-	
-	void IrcServer::ConnectToServer ()
-	{
-		IrcParser_->AuthCommand (Server_);
+		IrcParser_->JoinChannel (channel);
+// 		if (ChannelsQueue_.contains (channel))
+// 			ChannelsQueue_.removeAll (channel);
 	}
 
-	IrcAccount* IrcServer::GetIrcAccount () const
+	void IrcServer::ConnectToServer ()
 	{
-		return Account_;
+		State_ = NotConnected;
+		IrcParser_->AuthCommand (Server_);
 	}
 
 	boost::shared_ptr<IrcParser> IrcServer::GetParser () const
@@ -65,6 +51,65 @@ namespace Acetamide
 		return IrcParser_;
 	}
 
+	QString IrcServer::GetHost () const
+	{
+		return Server_.ServerName_;
+	}
+
+	int IrcServer::GetPort () const
+	{
+		return Server_.ServerPort_;
+	}
+
+	QString IrcServer::GetServerKey () const
+	{
+		return Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+	}
+
+	ConnectionState IrcServer::GetState () const
+	{
+		return State_;
+	}
+
+	void IrcServer::AddChannel2Queue (const ChannelOptions& channel)
+	{
+		ChannelsQueue_.append (channel);
+	}
+
+	void IrcServer::ChangeState (ConnectionState state)
+	{
+		State_ = state;
+	}
+
+	void IrcServer::ReadAnswer (const QString& answer)
+	{
+		IrcParser_->HandleServerReply (answer);
+	}
+
+	void IrcServer::authFinished (const QStringList& params)
+	{
+		State_ = Connected;
+		Q_FOREACH (const ChannelOptions& channel, ChannelsQueue_)
+			IrcParser_->JoinChannel (channel);
+
+		ChannelsQueue_.clear ();
+	}
+
+	void IrcServer::setTopic (const QStringList& params)
+	{
+		QString channelKey = QString ("%1@%2")
+				.arg (* (params.end () - 2), Server_.ServerName_);
+		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		ServerManager_->SetTopic (serverKey, channelKey, params.last ());
+	}
+
+	void IrcServer::setCLEntries (const QStringList& params)
+	{
+		QString channelKey = QString ("%1@%2")
+				.arg (* (params.end () - 2) , Server_.ServerName_);
+		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		ServerManager_->SetCLEntries (serverKey, channelKey, params.last ());
+	}
 };
 };
 };

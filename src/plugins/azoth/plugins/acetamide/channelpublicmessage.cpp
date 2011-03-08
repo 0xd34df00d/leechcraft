@@ -105,7 +105,7 @@ namespace Acetamide
 		return ParentEntry_;
 	}
 
-	QString ChannelPublicMessage::GetOtherVariant() const
+	QString ChannelPublicMessage::GetOtherVariant () const
 	{
 		return FromVariant_;
 	}

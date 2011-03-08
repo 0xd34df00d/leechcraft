@@ -103,7 +103,7 @@ namespace Acetamide
 			Ui_.Channel_->setText (channel);
 		if (!server.isEmpty ())
 			Ui_.Server_->setText (server);
-		if (!encoding.isEmpty())
+		if (!encoding.isEmpty ())
 			Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (encoding));
 		if (port)
 			Ui_.Port_->setValue (port);

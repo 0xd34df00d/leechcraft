@@ -20,11 +20,7 @@
 #include <QString>
 #include <QTcpSocket>
 #include <QtDebug>
-#include "ircparser.h"
-#include <QDateTime>
-#include "ircaccount.h"
-#include "ircserver.h"
-#include "clientconnection.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -36,48 +32,45 @@ namespace Acetamide
 	: QObject (parent)
 	{
 	}
-	
+
 	SocketManager::~SocketManager ()
 	{
-		QMap<QString, QTcpSocket*> server2socket;
-		Q_FOREACH (server2socket, Account2Server2Socket_.values ())
-			qDeleteAll (server2socket);
+		qDeleteAll (Server2Socket_);
 	}
 
-	void SocketManager::SendCommand(const QString& cmd, const ServerOptions& server, IrcAccount *account)
+	void SocketManager::SendCommand (const QString& cmd, const QString& host, int port)
 	{
-		QString serverKey = server.ServerName_ + ":" + QString::number (server.ServerPort_);
-		QString accountKey = account->GetAccountID ();
+		QString serverKey = host + ":" + QString::number (port);
 		
-		if (!Account2Server2Socket_.contains (account))
-			CurrentSocket_ = CreateSocket (account, serverKey);
+		if (!Server2Socket_.contains (serverKey))
+			CurrentSocket_ = CreateSocket (serverKey);
 		else 
-			CurrentSocket_ = Account2Server2Socket_ [account] [serverKey];
-		
+			CurrentSocket_ = Server2Socket_ [serverKey];
+
 		if (!CurrentSocket_)
 			return;
+
 		qDebug () << CurrentSocket_ << cmd;
+
 		SendData (cmd);
 	}
 
-	
-	bool SocketManager::IsConnected (IrcAccount *account, const QString& key)
+	bool SocketManager::IsConnected (const QString& key)
 	{
-		return Account2Server2Socket_ [account].contains (key);
+		return Server2Socket_.contains (key);
 	}
 
-	QTcpSocket* SocketManager::CreateSocket (IrcAccount *account, const QString& serverKey)
+	QTcpSocket* SocketManager::CreateSocket (const QString& serverKey)
 	{
 		QTcpSocket *socket = new QTcpSocket;
 		QStringList paramList = serverKey.split (':');
 		if (Connect (socket, paramList.at (0), paramList.at (1)))
 		{
-			QMap<QString, QTcpSocket*> map;
-			map [serverKey] = socket;
-			Account2Server2Socket_ [account] = map;
+			Server2Socket_ [serverKey] = socket;
+			emit changeState (serverKey, InProcess);
 			return socket;
 		}
-		
+
 		return 0;
 	}
 
@@ -94,10 +87,8 @@ namespace Acetamide
 					<< port;
 			return 0;
 		}
-		
+
 		InitSocket (socket);
-		QMap<QString, QTcpSocket*> map;
-		map [QString ("%1:%2").arg (host, port)] = socket;
 		return 1;
 	}
 
@@ -131,8 +122,20 @@ namespace Acetamide
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readAnswer ()));
+		
+		connect (this,
+				SIGNAL (changeState (const QString&, ConnectionState)),
+				Core::Instance ().GetServerManager ().get (),
+				SLOT (changeState (const QString&, ConnectionState)),
+				Qt::UniqueConnection);
+		
+		connect (this,
+				SIGNAL (gotAnswer (const QString&, const QString&)),
+				Core::Instance ().GetServerManager ().get (),
+				SLOT (handleAnswer (const QString&, const QString&)),
+				Qt::UniqueConnection);
 	}
-	
+
 	void SocketManager::connectionEstablished ()
 	{
 		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
@@ -143,8 +146,8 @@ namespace Acetamide
 					<< sender ();
 			return;
 		}
-		
-		qDebug () << "connected to" 
+
+		qDebug () << "connection established with" 
 				<< socket->peerName ()
 				<< "on"
 				<< socket->peerPort ();
@@ -155,18 +158,13 @@ namespace Acetamide
 		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
 		if (!socket)
 			return;
-		
-		QString serverKey = socket->peerName () +
-				":" +
-				QString::number (socket->peerPort ());
-		
-		QMap <QString, QTcpSocket*> map;
-		map [serverKey] = socket;
-		IrcAccount *acc = Account2Server2Socket_.key (map); 
-		
+
 		while (socket->canReadLine ())
-	 		acc->GetClientConnection ()->GetServer (serverKey)->
-					GetParser ()->handleServerReply (socket->readLine ());
+		{
+			QString str = socket->readLine ();
+			emit gotAnswer (Server2Socket_.key (socket), 
+					str);
+		}
 	}
 };
 };

@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
 
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 #include <QObject>
 #include "core.h"
 #include "socketmanager.h"
@@ -38,31 +39,29 @@ namespace Acetamide
 	{
 		Q_OBJECT
 		IrcServer *IrcServer_;
-		ChannelOptions Channel_;
 		QString Prefix_;
 		QString Command_;
 		QStringList Parameters_;
+		QHash<QString, boost::function<void (const QStringList&)> > Command2Signal_;
 	public:
 		IrcParser (IrcServer*);
-		void JoinChannel (const ServerOptions&, const ChannelOptions&);
-		void NickCommand ();
-		void PrivMessageCommand (const QString&, const ServerOptions&, const ChannelOptions&);
 		void AuthCommand (const ServerOptions&);
+		void UserCommand (const ServerOptions&);
+		void NickCommand (const ServerOptions&);
+		void JoinChannel (const ChannelOptions&);
+		void PrivMessageCommand (const QString&, const ServerOptions&, const ChannelOptions&);
+		void HandleServerReply (const QString&);
 	private:
 		void Init ();
-		void InitClientConnection (ClientConnection*);
-		QString GetPingServer (const QString&) const;
-		void PongCommand (const QString&, const QString&);
 		void ParseMessage (const QString&);
-	public slots:
-		void handleServerReply (const QString&);
+		void ParsePrefix (const QString&);
 	private slots:
-		void SuccessfulAuth ();
-		void UserCommand (const ServerOptions&);
+		void pongCommand (const QStringList&);
 	signals:
-		void gotAuthSuccess ();
-		void gotCLEntries (const QString&, const QString&);
-		void gotTopic (const QString&, const QString&);
+		void gotAuthSuccess (const QStringList&);
+		void gotCLEntries (const QStringList&);
+		void gotTopic (const QStringList&);
+		void gotPing (const QStringList&);
 		void messageReceived (const QString&, const QString&, const QString&);
 	};
 };

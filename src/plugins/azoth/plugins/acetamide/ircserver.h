@@ -19,9 +19,9 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVER_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVER_H
 
-#include "boost/shared_ptr.hpp"
+#include <boost/shared_ptr.hpp>
 #include <QObject>
-#include "core.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -29,30 +29,38 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	
+
 	class IrcParser;
 	class IrcAccount;
-	
+	class IrcServerManager;
+
 	class IrcServer : public QObject
 	{
 		Q_OBJECT
-		
+
 		boost::shared_ptr<IrcParser> IrcParser_;
-		bool IsConnected;
-		QStringList Channels_;
 		QList<ChannelOptions> ChannelsQueue_;
 		ServerOptions Server_;
-		IrcAccount *Account_;
+		ConnectionState State_;
+		IrcServerManager *ServerManager_;
 	public:
-		IrcServer (const ServerOptions&, IrcAccount*);
+		IrcServer (const ServerOptions&, IrcServerManager*);
 		void JoinChannel (const ChannelOptions&);
 		void ConnectToServer ();
-		IrcAccount* GetIrcAccount () const;
 		boost::shared_ptr<IrcParser> GetParser () const;
-	signals:
-		void readyToReadAnswer (const QString&);
+		QString GetHost () const;
+		int GetPort () const;
+		QString GetServerKey () const;
+		ConnectionState GetState () const;
+		void AddChannel2Queue (const ChannelOptions&);
+		void ChangeState (ConnectionState);
+		void ReadAnswer (const QString&);
+	public slots:
+		void authFinished (const QStringList&);
+		void setTopic (const QStringList&);
+		void setCLEntries (const QStringList&);
 	};
-	
+
 	typedef boost::shared_ptr<IrcServer> IrcServer_ptr;
 };
 };

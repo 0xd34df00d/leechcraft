@@ -91,18 +91,10 @@ namespace Acetamide
 		}
 
 		ChannelHandler *ch = new ChannelHandler (server, channel, Account_);
-		
-		QString serverId = QString ("%1:%2")
-				.arg (server.ServerName_, QString::number (server.ServerPort_));
-		if (IrcServers_.contains (serverId))
-			IrcServers_ [serverId]->JoinChannel (channel);
-		else
-		{
-			IrcServer_ptr ircServer (new IrcServer (server, Account_));
-			IrcServers_ [serverId] = ircServer;
-			IrcServers_ [serverId]->JoinChannel (channel);
-		}
-		
+
+		Core::Instance ().GetServerManager ()->
+				JoinChannel (server, channel, Account_);
+
 		ChannelHandlers_ [channelId] = ch;
 		if (Account_->GetState () == EntryStatus (SOffline, QString ()))
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
@@ -114,7 +106,7 @@ namespace Acetamide
 	{
 		ChannelHandlers_.remove (ch->GetChannelID ());
 	}
-	
+
 	IrcMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
 			const QString& resource, const QString& body)
 	{
@@ -140,14 +132,14 @@ namespace Acetamide
 		Q_FOREACH (const QString& nick, users.split (' '))
 			ChannelHandlers_ [key]->SetChannelUser (nick);
 	}
-	
-	void ClientConnection::setSubject (const QString& subject, const QString& key)
-	{
-		QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [key]->
+
+	void ClientConnection::setSubject (const QString& subject, const QString& channelKey)
+	{ 
+		QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [channelKey]->
 						GetServerOptions ().ServerEncoding_.toUtf8 ());
 		QString mess =  codec->toUnicode (subject.toAscii ());
-		
-		ChannelHandlers_ [key]->SetSubject (mess);
+
+		ChannelHandlers_ [channelKey]->SetSubject (mess);
 	}
 
 	void ClientConnection::handleMessageReceived (const QString& msg, const QString& id, const QString& nick)

@@ -54,7 +54,7 @@ namespace Acetamide
 		return FSessionEntry;
 	}
 	
-	ICLEntry::EntryType ChannelParticipantEntry::GetEntryType() const
+	ICLEntry::EntryType ChannelParticipantEntry::GetEntryType () const
 	{
 		return ETPrivateChat;
 	}
@@ -85,7 +85,7 @@ namespace Acetamide
 	{
 	}
 
-	QStringList ChannelParticipantEntry::Variants() const
+	QStringList ChannelParticipantEntry::Variants () const
 	{
 		return QStringList ("");
 	}

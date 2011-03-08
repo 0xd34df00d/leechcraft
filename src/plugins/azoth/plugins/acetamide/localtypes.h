@@ -31,6 +31,13 @@ namespace Acetamide
 		QString ChannelPassword_;
 		QString ChannelNickname_;
 	};
+	
+	enum ConnectionState
+	{
+		Connected,
+		InProcess,
+		NotConnected
+	};
 };
 };
 };

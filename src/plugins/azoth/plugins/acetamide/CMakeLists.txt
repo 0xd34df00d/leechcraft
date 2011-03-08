@@ -20,6 +20,7 @@ SET (ACETAMIDE_SRCS
 	ircmessage.cpp
 	ircprotocol.cpp
 	ircserver.cpp
+	ircservermanager.cpp
 	socketmanager.cpp
 	)
 
@@ -41,6 +42,7 @@ SET (ACETAMIDE_HEADERS
 	ircmessage.h
 	ircprotocol.h
 	ircserver.h
+	ircservermanager.h
 	localtypes.h
 	socketmanager.h
 	)
