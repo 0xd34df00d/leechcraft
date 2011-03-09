@@ -57,33 +57,13 @@ namespace Azoth
 		if (!ShowOffline_)
 		{
 			const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
-			switch (GetType (idx))
-			{
-			case Core::CLETContact:
+			if (GetType (idx) == Core::CLETContact)
 			{
 				ICLEntry *entry = GetEntry (idx);
 				const State state = entry->GetStatus ().State_;
 				if (state == SOffline &&
 						!idx.data (Core::CLRUnreadMsgCount).toInt ())
 					return false;
-				break;
-			}
-			case Core::CLETCategory:
-				if (!idx.data (Core::CLRUnreadMsgCount).toInt ())
-				{
-					bool found = false;
-					for (int i = 0, rows = sourceModel ()->rowCount (idx);
-							i < rows; ++i)
-						if (GetEntry (sourceModel ()->index (i, 0, idx))->
-								GetStatus ().State_ != SOffline)
-						{
-							found = true;
-							break;
-						}
-					if (!found)
-						return false;
-				}
-				break;
 			}
 		}
 		return QSortFilterProxyModel::filterAcceptsRow (row, parent);
