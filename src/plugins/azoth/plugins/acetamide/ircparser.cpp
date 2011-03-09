@@ -19,9 +19,7 @@
 #include "ircparser.h"
 #include <boost/bind.hpp>
 #include <QTextCodec>
-#include "ircaccount.h"
 #include "socketmanager.h"
-#include "ircservermanager.h"
 #include "ircserver.h"
 
 namespace LeechCraft
@@ -35,6 +33,10 @@ namespace Acetamide
 	, Prefix_ (QString ())
 	, Command_ (QString ())
 	, Parameters_ (QStringList ())
+	, Nick_ (QString ())
+	, User_ (QString ())
+	, Host_ (QString ())
+	, ServerName (QString ())
 	{
 		Init ();
 	}
@@ -93,9 +95,19 @@ namespace Acetamide
 		ParseMessage (result);
 		if (Command2Signal_.contains (Command_.toLower ()))
 		{
+			Parameters_.append (Nick_);
 			Command2Signal_ [Command_.toLower ()] (Parameters_);
 		}
 		Parameters_.clear ();
+		Nick_.clear ();
+		User_.clear ();
+		Host_.clear ();
+		ServerName.clear ();
+	}
+
+	QString IrcParser::GetNickName () const
+	{
+		return Nick_;
 	}
 
 	void IrcParser::Init ()
@@ -124,8 +136,12 @@ namespace Acetamide
 				SIGNAL (gotCLEntries (const QStringList&)),
 				IrcServer_,
 				SLOT (setCLEntries (const QStringList&)));
-// 		:pillar!fd@xob.kapsi.fi PRIVMSG #qt :hey is there some API to open
-// 		Name2RegExp_ ["message"] = QRegExp ("^:(.+)\\!(.+)@(\\w[\\w,\\.]+\\w)\\sPRIVMSG\\s([#,\\+,&,\\!][^\\0\\n\\r\\a ,:]+)\\s:(.+)\r\n$");*/
+
+		Command2Signal_ ["privmsg"] = boost::bind (&IrcParser::gotMessage, this, _1);
+		connect (this,
+				SIGNAL (gotMessage (const QStringList&)),
+				IrcServer_,
+				SLOT (readMessage (const QStringList&)));
 	}
 
 	void IrcParser::ParseMessage (const QString& msg)
@@ -139,6 +155,7 @@ namespace Acetamide
 				delim = msg_len;
 			Prefix_ = msg.mid (1, delim - 1);
 			pos = delim + 1;
+			ParsePrefix (Prefix_);
 		}
 		else
 			Prefix_ = QString ("");
@@ -165,6 +182,20 @@ namespace Acetamide
 				pos = nextpos + 1;
 			}
 		}
+	}
+
+	void IrcParser::ParsePrefix (const QString& prefix)
+	{
+		QRegExp rexp ("([a-zA-Z\\[\\]`_\\^\\{\\|\\}][a-zA-Z0-9\\[\\]`_\\^\\{\\|\\}-]+)!(([^\\0\\r\\n\\s@])+)?@(.+)?");
+
+		if (rexp.indexIn (prefix) != -1)
+		{
+			Nick_ = rexp.cap (1);
+			User_ = rexp.cap (2);
+			Host_ = rexp.cap (4);
+		}
+		else
+			ServerName = prefix;
 	}
 
 	void IrcParser::pongCommand (const QStringList& params)

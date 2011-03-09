@@ -16,14 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
-
-#include <QObject>
-#include <QHash>
 #include "localtypes.h"
-
-class QTcpSocket;
 
 namespace LeechCraft
 {
@@ -31,35 +24,13 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	
-	class IrcParser;
-	class IrcServer;
-	
-	class SocketManager : public QObject
+	bool operator== (const ChannelOptions& channel1, const ChannelOptions& channel2)
 	{
-		Q_OBJECT
-
-		QTcpSocket *CurrentSocket_;
-		QHash<QString, QTcpSocket*> Server2Socket_;
-		IrcParser *Parser_;
-	public:
-		SocketManager (QObject*);
-		virtual ~SocketManager ();
-		void SendCommand (const QString&, const QString&, int);
-		bool IsConnected (const QString&);
-	private:
-		QTcpSocket* CreateSocket (const QString&);
-		int Connect (QTcpSocket*, const QString&, const QString&);
-		void SendData (const QString&);
-		void InitSocket (QTcpSocket*);
-	private slots:
-		void connectionEstablished ();
-		void readAnswer ();
-	signals:
-		void gotAnswer (const QString&, const QString&);
-		void changeState (const QString&, ConnectionState);
-	};
+		return (channel1.ChannelName_ == channel2.ChannelName_) &&
+				(channel1.ChannelNickname_ == channel2.ChannelNickname_) &&
+				(channel1.ChannelPassword_ == channel2.ChannelPassword_) &&
+				(channel1.ServerName_ == channel2.ServerName_);
+	}
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H

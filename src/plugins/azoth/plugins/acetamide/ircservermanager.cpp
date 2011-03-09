@@ -76,6 +76,16 @@ namespace Acetamide
 						setChannelUseres (clentries, channelKey);
 	}
 
+	void IrcServerManager::SetMessage (const QString& serverKey, 
+			const QString& channelKey, const QString& message, const QString& nick)
+	{
+		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())
+			if (serv->GetServerKey () == serverKey)
+				Q_FOREACH (IrcAccount *acc, Account2Server.keys (serv))
+					acc->GetClientConnection ()->
+							handleMessageReceived (message, channelKey, nick);
+	}
+
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)
 	{
 		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())

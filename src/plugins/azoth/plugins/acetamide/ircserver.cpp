@@ -30,14 +30,15 @@ namespace Acetamide
 	, Server_ (server)
 	, IrcParser_ (new IrcParser (this))
 	, State_ (NotConnected)
+	, Nickname_ (server.ServerNicknames_.at (0))
 	{
 	}
 
 	void IrcServer::JoinChannel (const ChannelOptions& channel)
 	{
 		IrcParser_->JoinChannel (channel);
-// 		if (ChannelsQueue_.contains (channel))
-// 			ChannelsQueue_.removeAll (channel);
+		if (ChannelsQueue_.contains (channel))
+			ChannelsQueue_.removeAll (channel);
 	}
 
 	void IrcServer::ConnectToServer ()
@@ -71,6 +72,11 @@ namespace Acetamide
 		return State_;
 	}
 
+	QString IrcServer::GetNickName () const
+	{
+		return IrcParser_->GetNickName ();
+	}
+
 	void IrcServer::AddChannel2Queue (const ChannelOptions& channel)
 	{
 		ChannelsQueue_.append (channel);
@@ -98,18 +104,28 @@ namespace Acetamide
 	void IrcServer::setTopic (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 2), Server_.ServerName_);
+				.arg (* (params.end () - 3), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetTopic (serverKey, channelKey, params.last ());
+		ServerManager_->SetTopic (serverKey, channelKey, * (params.end () - 2));
 	}
 
 	void IrcServer::setCLEntries (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 2) , Server_.ServerName_);
+				.arg (* (params.end () - 3) , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetCLEntries (serverKey, channelKey, params.last ());
+		ServerManager_->SetCLEntries (serverKey, channelKey, * (params.end () - 2));
 	}
+
+	void IrcServer::readMessage (const QStringList& params)
+	{
+		qDebug () << params;
+		QString channelKey = QString ("%1@%2")
+				.arg (* (params.end () - 3) , Server_.ServerName_);
+		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		ServerManager_->SetMessage (serverKey, channelKey, * (params.end () - 2), params.last ());
+	}
+
 };
 };
 };

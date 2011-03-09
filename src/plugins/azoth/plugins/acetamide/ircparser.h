@@ -20,10 +20,8 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
 
 #include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
 #include <QObject>
 #include "core.h"
-#include "socketmanager.h"
 
 namespace LeechCraft
 {
@@ -31,8 +29,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcAccount;
-	class ClientConnection;
 	class IrcServer;
 	
 	class IrcParser : public QObject
@@ -40,6 +36,10 @@ namespace Acetamide
 		Q_OBJECT
 		IrcServer *IrcServer_;
 		QString Prefix_;
+		QString Nick_;
+		QString User_;
+		QString Host_;
+		QString ServerName;
 		QString Command_;
 		QStringList Parameters_;
 		QHash<QString, boost::function<void (const QStringList&)> > Command2Signal_;
@@ -51,6 +51,7 @@ namespace Acetamide
 		void JoinChannel (const ChannelOptions&);
 		void PrivMessageCommand (const QString&, const ServerOptions&, const ChannelOptions&);
 		void HandleServerReply (const QString&);
+		QString GetNickName () const;
 	private:
 		void Init ();
 		void ParseMessage (const QString&);
@@ -62,7 +63,7 @@ namespace Acetamide
 		void gotCLEntries (const QStringList&);
 		void gotTopic (const QStringList&);
 		void gotPing (const QStringList&);
-		void messageReceived (const QString&, const QString&, const QString&);
+		void gotMessage (const QStringList&s);
 	};
 };
 };
