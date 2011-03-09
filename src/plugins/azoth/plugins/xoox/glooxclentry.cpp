@@ -64,8 +64,8 @@ namespace Xoox
 	void GlooxCLEntry::Convert2ODS ()
 	{
 		ODS_ = ToOfflineDataSource ();
-		emit availableVariantsChanged (QStringList () << QString ());
 		CurrentStatus_.clear ();
+		emit availableVariantsChanged (QStringList ());
 		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
 
@@ -159,10 +159,14 @@ namespace Xoox
 			result << Account_->GetClientConnection ()->
 					GetClient ()->rosterManager ().getResources (BareJID_);
 
-		if (result.isEmpty ())
-			result << QString ();
-
 		return result;
+	}
+	
+	EntryStatus GlooxCLEntry::GetStatus (const QString& variant) const
+	{
+		if (ODS_)
+			return EntryStatus ();
+		return EntryBase::GetStatus (variant);
 	}
 
 	QObject* GlooxCLEntry::CreateMessage (IMessage::MessageType type,
