@@ -52,10 +52,9 @@ namespace Azoth
 	}
 
 	ChatTab::ChatTab (const QString& entryId,
-			const QString& variant, QWidget *parent)
+			QWidget *parent)
 	: QWidget (parent)
 	, EntryID_ (entryId)
-	, Variant_ (variant)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
 	, CurrentNickIndex_ (0)
@@ -504,10 +503,9 @@ namespace Azoth
 		if (status.State_ == SOffline)
 			handleVariantsChanged (vars);
 
-		if (variant != Variant_ &&
-				!variant.isEmpty () &&
+		if (!variant.isEmpty () &&
 				vars.size () &&
-				vars.value (0) == variant)
+				vars.value (0) != variant)
 			return;
 
 		TabIcon_ = Core::Instance ().GetIconForState (status.State_);
@@ -624,7 +622,7 @@ namespace Azoth
 		{
 			Ui_.SubjectButton_->hide ();
 			TabIcon_ = Core::Instance ()
-					.GetIconForState (e->GetStatus (Variant_).State_);
+					.GetIconForState (e->GetStatus ().State_);
 
 			connect (GetEntry<QObject> (),
 					SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
