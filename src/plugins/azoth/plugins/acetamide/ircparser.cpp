@@ -19,9 +19,7 @@
 #include "ircparser.h"
 #include <boost/bind.hpp>
 #include <QTextCodec>
-#include "ircaccount.h"
 #include "socketmanager.h"
-#include "ircservermanager.h"
 #include "ircserver.h"
 
 namespace LeechCraft
@@ -91,10 +89,10 @@ namespace Acetamide
 	void IrcParser::HandleServerReply (const QString& result)
 	{
 		ParseMessage (result);
+		if (Command_.toLower () == "privmsg")
+			qDebug () << result;
 		if (Command2Signal_.contains (Command_.toLower ()))
-		{
 			Command2Signal_ [Command_.toLower ()] (Parameters_);
-		}
 		Parameters_.clear ();
 	}
 
@@ -124,8 +122,12 @@ namespace Acetamide
 				SIGNAL (gotCLEntries (const QStringList&)),
 				IrcServer_,
 				SLOT (setCLEntries (const QStringList&)));
-// 		:pillar!fd@xob.kapsi.fi PRIVMSG #qt :hey is there some API to open
-// 		Name2RegExp_ ["message"] = QRegExp ("^:(.+)\\!(.+)@(\\w[\\w,\\.]+\\w)\\sPRIVMSG\\s([#,\\+,&,\\!][^\\0\\n\\r\\a ,:]+)\\s:(.+)\r\n$");*/
+
+		Command2Signal_ ["privmsg"] = boost::bind (&IrcParser::gotMessage, this, _1);
+		connect (this,
+				SIGNAL (gotMessage (const QStringList&)),
+				IrcServer_,
+				SLOT (readMessage (const QStringList&)));
 	}
 
 	void IrcParser::ParseMessage (const QString& msg)
@@ -139,6 +141,7 @@ namespace Acetamide
 				delim = msg_len;
 			Prefix_ = msg.mid (1, delim - 1);
 			pos = delim + 1;
+			ParsePrefix (Prefix_);
 		}
 		else
 			Prefix_ = QString ("");
@@ -164,6 +167,58 @@ namespace Acetamide
 				Parameters_.append (msg.mid (pos,nextpos - pos));
 				pos = nextpos + 1;
 			}
+		}
+	}
+
+	void IrcParser::ParsePrefix (const QString& prefix)
+	{
+		// prefix     =  servername / ( nickname [ [ "!" user ] "@" host ] )
+		// servername =  hostname
+		// hostname   =  shortname *( "." shortname )
+		// shortname  =  ( letter / digit ) *( letter / digit / "-" )
+		//              *( letter / digit )
+
+		// host       =  hostname / hostaddr
+		// hostaddr   =  ip4addr / ip6addr
+		// ip4addr    =  1*3digit "." 1*3digit "." 1*3digit "." 1*3digit
+		// ip6addr    =  1*hexdigit 7( ":" 1*hexdigit )
+		// ip6addr    =/ "0:0:0:0:0:" ( "0" / "FFFF" ) ":" ip4addr
+		// nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
+		// user       =  1*( %x01-09 / %x0B-0C / %x0E-1F / %x21-3F / %x41-FF )
+		//                   ; any octet except NUL, CR, LF, " " and "@"
+		QString nickname = "([a-zA-Z\\[\\]`_\\^\\{\\|\\}]+[a-zA-Z\\[\\]`_\\^\\{\\|\\}-]{0,8})";
+		
+		int msgLen = prefix.length ();
+		int pos_user = prefix.indexOf ("!");
+		if (!pos_user)
+		{
+			int pos_host = prefix.indexOf ("@");
+			if (!pos_host)
+			{
+				int pos_server = prefix.indexOf (".");
+				if (!pos_server)
+					Nick_ = prefix;
+				else
+					ServerName = prefix;
+			}
+			else
+			{
+				Nick_ = prefix.mid (0, pos_host - 1);
+				Host_ = prefix.mid (pos_host + 1, msgLen - pos_host);
+			}
+		}
+		else
+		{
+			int pos_server = prefix.indexOf ("@");
+			if (!pos_server)
+			{
+				Nick_ = prefix.mid (0, pos_user - 1);
+				User_ = prefix.mid (pos_user + 1, msgLen - pos_user);
+			}
+			else
+				Nick_ = prefix.mid (0, pos_user - 1);
+				User_ = prefix.mid (pos_user + 1, pos_server - pos_user);
+				Host_ = prefix.mid (pos_server + 1, msgLen - pos_server);
 		}
 	}
 

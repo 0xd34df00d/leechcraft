@@ -30,14 +30,15 @@ namespace Acetamide
 	, Server_ (server)
 	, IrcParser_ (new IrcParser (this))
 	, State_ (NotConnected)
+	, Nickname_ (server.ServerNicknames_.at (0))
 	{
 	}
 
 	void IrcServer::JoinChannel (const ChannelOptions& channel)
 	{
 		IrcParser_->JoinChannel (channel);
-// 		if (ChannelsQueue_.contains (channel))
-// 			ChannelsQueue_.removeAll (channel);
+		if (ChannelsQueue_.contains (channel))
+			ChannelsQueue_.removeAll (channel);
 	}
 
 	void IrcServer::ConnectToServer ()
@@ -69,6 +70,11 @@ namespace Acetamide
 	ConnectionState IrcServer::GetState () const
 	{
 		return State_;
+	}
+
+	QString IrcServer::GetNickName () const
+	{
+		return Nickname_;
 	}
 
 	void IrcServer::AddChannel2Queue (const ChannelOptions& channel)
@@ -110,6 +116,16 @@ namespace Acetamide
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		ServerManager_->SetCLEntries (serverKey, channelKey, params.last ());
 	}
+
+	void IrcServer::readMessage (const QStringList& params)
+	{
+		qDebug () << params;
+		QString channelKey = QString ("%1@%2")
+				.arg (* (params.end () - 2) , Server_.ServerName_);
+		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		ServerManager_->SetMessage (serverKey, channelKey, params.last ());
+	}
+
 };
 };
 };

@@ -21,6 +21,7 @@ SET (ACETAMIDE_SRCS
 	ircprotocol.cpp
 	ircserver.cpp
 	ircservermanager.cpp
+	localtypes.cpp
 	socketmanager.cpp
 	)
 

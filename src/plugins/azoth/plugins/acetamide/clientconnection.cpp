@@ -142,14 +142,14 @@ namespace Acetamide
 		ChannelHandlers_ [channelKey]->SetSubject (mess);
 	}
 
-	void ClientConnection::handleMessageReceived (const QString& msg, const QString& id, const QString& nick)
+	void ClientConnection::handleMessageReceived (const QString& msg, const QString& channelKey, const QString& nick)
 	{
-		if (ChannelHandlers_.contains (id))
+		if (ChannelHandlers_.contains (channelKey))
 		{
-			QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [id]->
+			QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [channelKey]->
 						GetServerOptions ().ServerEncoding_.toUtf8 ());
 			QString mess =  codec->toUnicode (msg.toAscii ());
-			ChannelHandlers_ [id]->HandleMessage (mess, nick);
+			ChannelHandlers_ [channelKey]->HandleMessage (mess, nick);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
