@@ -67,7 +67,6 @@ namespace Azoth
 			return;
 		}
 
-		// TODO don't hardcode the first variant
 		QPointer<ChatTab> tab (new ChatTab (id));
 		Entry2Tab_ [id] = tab;
 
