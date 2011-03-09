@@ -74,7 +74,7 @@ namespace Acetamide
 
 	QString IrcServer::GetNickName () const
 	{
-		return Nickname_;
+		return IrcParser_->GetNickName ();
 	}
 
 	void IrcServer::AddChannel2Queue (const ChannelOptions& channel)
@@ -104,26 +104,26 @@ namespace Acetamide
 	void IrcServer::setTopic (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 2), Server_.ServerName_);
+				.arg (* (params.end () - 3), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetTopic (serverKey, channelKey, params.last ());
+		ServerManager_->SetTopic (serverKey, channelKey, * (params.end () - 2));
 	}
 
 	void IrcServer::setCLEntries (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 2) , Server_.ServerName_);
+				.arg (* (params.end () - 3) , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetCLEntries (serverKey, channelKey, params.last ());
+		ServerManager_->SetCLEntries (serverKey, channelKey, * (params.end () - 2));
 	}
 
 	void IrcServer::readMessage (const QStringList& params)
 	{
 		qDebug () << params;
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 2) , Server_.ServerName_);
+				.arg (* (params.end () - 3) , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetMessage (serverKey, channelKey, params.last ());
+		ServerManager_->SetMessage (serverKey, channelKey, * (params.end () - 2), params.last ());
 	}
 
 };

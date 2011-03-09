@@ -33,6 +33,10 @@ namespace Acetamide
 	, Prefix_ (QString ())
 	, Command_ (QString ())
 	, Parameters_ (QStringList ())
+	, Nick_ (QString ())
+	, User_ (QString ())
+	, Host_ (QString ())
+	, ServerName (QString ())
 	{
 		Init ();
 	}
@@ -89,11 +93,21 @@ namespace Acetamide
 	void IrcParser::HandleServerReply (const QString& result)
 	{
 		ParseMessage (result);
-		if (Command_.toLower () == "privmsg")
-			qDebug () << result;
 		if (Command2Signal_.contains (Command_.toLower ()))
+		{
+			Parameters_.append (Nick_);
 			Command2Signal_ [Command_.toLower ()] (Parameters_);
+		}
 		Parameters_.clear ();
+		Nick_.clear ();
+		User_.clear ();
+		Host_.clear ();
+		ServerName.clear ();
+	}
+
+	QString IrcParser::GetNickName () const
+	{
+		return Nick_;
 	}
 
 	void IrcParser::Init ()
@@ -172,54 +186,16 @@ namespace Acetamide
 
 	void IrcParser::ParsePrefix (const QString& prefix)
 	{
-		// prefix     =  servername / ( nickname [ [ "!" user ] "@" host ] )
-		// servername =  hostname
-		// hostname   =  shortname *( "." shortname )
-		// shortname  =  ( letter / digit ) *( letter / digit / "-" )
-		//              *( letter / digit )
+		QRegExp rexp ("([a-zA-Z\\[\\]`_\\^\\{\\|\\}][a-zA-Z0-9\\[\\]`_\\^\\{\\|\\}-]+)!(([^\\0\\r\\n\\s@])+)?@(.+)?");
 
-		// host       =  hostname / hostaddr
-		// hostaddr   =  ip4addr / ip6addr
-		// ip4addr    =  1*3digit "." 1*3digit "." 1*3digit "." 1*3digit
-		// ip6addr    =  1*hexdigit 7( ":" 1*hexdigit )
-		// ip6addr    =/ "0:0:0:0:0:" ( "0" / "FFFF" ) ":" ip4addr
-		// nickname   =  ( letter / special ) *8( letter / digit / special / "-" )
-		// user       =  1*( %x01-09 / %x0B-0C / %x0E-1F / %x21-3F / %x41-FF )
-		//                   ; any octet except NUL, CR, LF, " " and "@"
-		QString nickname = "([a-zA-Z\\[\\]`_\\^\\{\\|\\}]+[a-zA-Z\\[\\]`_\\^\\{\\|\\}-]{0,8})";
-		
-		int msgLen = prefix.length ();
-		int pos_user = prefix.indexOf ("!");
-		if (!pos_user)
+		if (rexp.indexIn (prefix) != -1)
 		{
-			int pos_host = prefix.indexOf ("@");
-			if (!pos_host)
-			{
-				int pos_server = prefix.indexOf (".");
-				if (!pos_server)
-					Nick_ = prefix;
-				else
-					ServerName = prefix;
-			}
-			else
-			{
-				Nick_ = prefix.mid (0, pos_host - 1);
-				Host_ = prefix.mid (pos_host + 1, msgLen - pos_host);
-			}
+			Nick_ = rexp.cap (1);
+			User_ = rexp.cap (2);
+			Host_ = rexp.cap (4);
 		}
 		else
-		{
-			int pos_server = prefix.indexOf ("@");
-			if (!pos_server)
-			{
-				Nick_ = prefix.mid (0, pos_user - 1);
-				User_ = prefix.mid (pos_user + 1, msgLen - pos_user);
-			}
-			else
-				Nick_ = prefix.mid (0, pos_user - 1);
-				User_ = prefix.mid (pos_user + 1, pos_server - pos_user);
-				Host_ = prefix.mid (pos_server + 1, msgLen - pos_server);
-		}
+			ServerName = prefix;
 	}
 
 	void IrcParser::pongCommand (const QStringList& params)

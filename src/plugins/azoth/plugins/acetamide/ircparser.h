@@ -51,6 +51,7 @@ namespace Acetamide
 		void JoinChannel (const ChannelOptions&);
 		void PrivMessageCommand (const QString&, const ServerOptions&, const ChannelOptions&);
 		void HandleServerReply (const QString&);
+		QString GetNickName () const;
 	private:
 		void Init ();
 		void ParseMessage (const QString&);
