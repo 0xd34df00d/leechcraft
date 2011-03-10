@@ -38,17 +38,10 @@ namespace Acetamide
 			if (serv->GetHost () == server.ServerName_ && 
 					serv->GetPort () == server.ServerPort_)
 			{
-				qDebug () << "FOUND";
 				if (serv->GetState () == Connected)
-				{
-					qDebug () << "CONNECTED";
 					serv->JoinChannel (channel);
-				}
 				else if (serv->GetState () == InProcess)
-				{
-					qDebug () << "INPROCESS";
 					serv->AddChannel2Queue (channel);
-				}
 				return;
 			}
 
@@ -76,7 +69,7 @@ namespace Acetamide
 						setChannelUseres (clentries, channelKey);
 	}
 
-	void IrcServerManager::SetMessage (const QString& serverKey, 
+	void IrcServerManager::SetMessageIn (const QString& serverKey, 
 			const QString& channelKey, const QString& message, const QString& nick)
 	{
 		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())
@@ -85,6 +78,14 @@ namespace Acetamide
 					acc->GetClientConnection ()->
 							handleMessageReceived (message, channelKey, nick);
 	}
+
+	void IrcServerManager::SetMessageOut (const QString& message,
+			const ChannelOptions& channel, IrcAccount *acc)
+	{
+		IrcServer_ptr serv = Account2Server [acc];
+		serv->SendPublicMessage (message, channel);
+	}
+
 
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)
 	{

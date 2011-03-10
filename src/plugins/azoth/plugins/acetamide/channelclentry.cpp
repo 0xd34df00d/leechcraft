@@ -40,7 +40,12 @@ namespace Acetamide
 	{
 		return CH_;
 	}
-	
+
+	IrcAccount* ChannelCLEntry::GetIrcAccount () const
+	{
+		return Account_;
+	}
+
 	QObject* ChannelCLEntry::GetObject ()
 	{
 		return this;

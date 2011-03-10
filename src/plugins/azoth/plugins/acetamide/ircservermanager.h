@@ -42,7 +42,8 @@ namespace Acetamide
 		void JoinChannel (const ServerOptions&, const ChannelOptions&, IrcAccount*);
 		void SetTopic (const QString&, const QString&, const QString&);
 		void SetCLEntries (const QString&, const QString&, const QString&);
-		void SetMessage (const QString&, const QString&, const QString&, const QString&);
+		void SetMessageIn (const QString&, const QString&, const QString&, const QString&);
+		void SetMessageOut (const QString&, const ChannelOptions&, IrcAccount*);
 	public slots:
 		void changeState (const QString&, ConnectionState);
 		void handleAnswer (const QString&, const QString&);

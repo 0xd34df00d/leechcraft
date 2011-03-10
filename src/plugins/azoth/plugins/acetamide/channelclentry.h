@@ -50,7 +50,7 @@ namespace Acetamide
 		ChannelCLEntry (ChannelHandler*, IrcAccount*);
 		
 		ChannelHandler* GetChannelHandler () const;
-		
+		IrcAccount* GetIrcAccount () const;
 		// ICLEntry
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;

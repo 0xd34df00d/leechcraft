@@ -74,7 +74,12 @@ namespace Acetamide
 
 	QString IrcServer::GetNickName () const
 	{
-		return IrcParser_->GetNickName ();
+		return Server_.ServerNicknames_.at (0);
+	}
+
+	QString IrcServer::GetEncoding () const
+	{
+		return Server_.ServerEncoding_;
 	}
 
 	void IrcServer::AddChannel2Queue (const ChannelOptions& channel)
@@ -90,6 +95,11 @@ namespace Acetamide
 	void IrcServer::ReadAnswer (const QString& answer)
 	{
 		IrcParser_->HandleServerReply (answer);
+	}
+
+	void IrcServer::SendPublicMessage (const QString& message, const ChannelOptions& channel)
+	{
+		IrcParser_->PrivMessageCommand (message, channel);
 	}
 
 	void IrcServer::authFinished (const QStringList& params)
@@ -119,11 +129,10 @@ namespace Acetamide
 
 	void IrcServer::readMessage (const QStringList& params)
 	{
-		qDebug () << params;
 		QString channelKey = QString ("%1@%2")
 				.arg (* (params.end () - 3) , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetMessage (serverKey, channelKey, * (params.end () - 2), params.last ());
+		ServerManager_->SetMessageIn (serverKey, channelKey, * (params.end () - 2), params.last ());
 	}
 
 };

@@ -49,7 +49,7 @@ namespace Acetamide
 		void UserCommand (const ServerOptions&);
 		void NickCommand (const ServerOptions&);
 		void JoinChannel (const ChannelOptions&);
-		void PrivMessageCommand (const QString&, const ServerOptions&, const ChannelOptions&);
+		void PrivMessageCommand (const QString&, const ChannelOptions&);
 		void HandleServerReply (const QString&);
 		QString GetNickName () const;
 	private:

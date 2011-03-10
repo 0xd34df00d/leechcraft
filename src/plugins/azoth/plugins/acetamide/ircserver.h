@@ -54,9 +54,11 @@ namespace Acetamide
 		QString GetServerKey () const;
 		ConnectionState GetState () const;
 		QString GetNickName () const;
+		QString GetEncoding () const;
 		void AddChannel2Queue (const ChannelOptions&);
 		void ChangeState (ConnectionState);
 		void ReadAnswer (const QString&);
+		void SendPublicMessage (const QString&, const ChannelOptions&);
 	public slots:
 		void authFinished (const QStringList&);
 		void setTopic (const QStringList&);

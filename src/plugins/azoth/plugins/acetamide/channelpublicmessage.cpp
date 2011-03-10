@@ -68,10 +68,10 @@ namespace Acetamide
 	{
 		if (!ParentEntry_)
 			return;
-
-		/*Core::Instance ().GetIrcClient ()->PrivMessageCommand (Message_ 
-				, ParentEntry_->GetChannelHandler ()->GetServerOptions ()
-				, ParentEntry_->GetChannelHandler ()->GetChannelOptions ());*/
+		Core::Instance ().GetServerManager ()->
+				SetMessageOut (Message_, 
+						ParentEntry_->GetChannelHandler ()->GetChannelOptions (),
+						ParentEntry_->GetIrcAccount ()); 
 	}
 
 	IMessage::Direction ChannelPublicMessage::GetDirection () const
