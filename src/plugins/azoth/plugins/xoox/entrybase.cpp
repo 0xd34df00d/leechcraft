@@ -78,7 +78,7 @@ namespace Xoox
 				return EntryStatus (static_cast<State> (max.status ().type ()),
 						max.status ().statusText ());
 			}
-		}
+		};
 
 		if (CurrentStatus_.size ())
 			return *CurrentStatus_.begin ();

@@ -48,7 +48,6 @@ namespace Azoth
 		Ui::ChatTab Ui_;
 
 		QString EntryID_;
-		QString Variant_;
 
 		QColor BgColor_;
 		QList<QColor> NickColors_;
@@ -70,7 +69,7 @@ namespace Azoth
 	public:
 		static void SetParentMultiTabs (QObject*);
 
-		ChatTab (const QString&, const QString&, QWidget* = 0);
+		ChatTab (const QString&, QWidget* = 0);
 		
 		/** Prepare (or update after it has been changed) the theme.
 		 */

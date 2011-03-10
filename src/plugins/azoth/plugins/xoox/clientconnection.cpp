@@ -207,7 +207,10 @@ namespace Xoox
 			IsConnected_ = false;
 			Q_FOREACH (const QString& jid, JID2CLEntry_.keys ())
 			{
-				GlooxCLEntry *entry = JID2CLEntry_.take (jid);
+				GlooxCLEntry *entry = JID2CLEntry_ [jid];
+				Q_FOREACH (const QString& var, entry->Variants ())
+					entry->SetStatus (EntryStatus (SOffline, QString ()), var);
+				JID2CLEntry_.remove (jid);
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
 			}
