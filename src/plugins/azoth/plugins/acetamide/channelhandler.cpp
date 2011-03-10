@@ -111,8 +111,13 @@ namespace Acetamide
 
 	void ChannelHandler::SetChannelUser (const QString& nick)
 	{
-		//const bool existed = Nick2Entry_.contains (nick);
+		const bool existed = Nick2Entry_.contains (nick);
 		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nick);
+
+		if (!existed)
+			MakeJoinMessage (nick);
+// 		else
+// 			MakeStatusChangedMessage (pres, nick);
 
 // 		if (pres.type () == QXmppPresence::Unavailable)
 // 		{
@@ -130,14 +135,18 @@ namespace Acetamide
 // 				xmppSt.statusText ());
 // 		entry->SetStatus (status, QString ());
 // 
-// 		if (!existed)
-// 		{
-// 			Account_->GetClientConnection ()->
-// 					FetchVCard (RoomJID_ + "/" + nick);
-// 			MakeJoinMessage (pres, nick);
-// 		}
-// 		else
-// 			MakeStatusChangedMessage (pres, nick);
+	}
+
+	void ChannelHandler::MakeJoinMessage (const QString& nick)
+	{
+		QString msg  = tr ("%1 joined the channel").arg (nick);
+
+		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantJoin);
+		CLEntry_->HandleMessage (message);
 	}
 
 	void ChannelHandler::HandleMessage (const QString& msg, const QString& nick)

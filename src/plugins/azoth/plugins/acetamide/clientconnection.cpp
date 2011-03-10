@@ -47,11 +47,6 @@ namespace Acetamide
 		QObject *proxyObj = qobject_cast<IrcProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
-
-		connect (this, 
-				SIGNAL (gotCLItems (QList<QObject*>)),
-				Account_,
-				SIGNAL (gotCLItems (QList<QObject*>)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -134,15 +129,7 @@ namespace Acetamide
 	void ClientConnection::SetNewParticipant (const QString& channelKey, const QString& nick)
 	{
 		if (ChannelHandlers_.contains (channelKey))
-		{
-			ChannelParticipantEntry *entry = ChannelHandlers_ [channelKey]->
-					GetParticipantEntry (nick).get ();
-
-			if (!entry)
-				return;
-
-			gotCLItems (QList<QObject*> () << entry);
-		}
+			ChannelHandlers_ [channelKey]->SetChannelUser (nick);
 	}
 
 	void ClientConnection::setChannelUseres (const QString& users, const QString& key)
