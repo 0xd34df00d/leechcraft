@@ -102,6 +102,11 @@ namespace Acetamide
 		IrcParser_->PrivMessageCommand (message, channel);
 	}
 
+	void IrcServer::LeaveChannel (const QString& channel)
+	{
+		IrcParser_->LeaveChannelCommand (channel);
+	}
+
 	void IrcServer::authFinished (const QStringList& params)
 	{
 		State_ = Connected;

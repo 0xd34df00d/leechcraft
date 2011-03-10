@@ -106,6 +106,14 @@ namespace Acetamide
 		ServerName.clear ();
 	}
 
+	void IrcParser::LeaveChannelCommand (const QString& channel)
+	{
+		// TODO leave message 
+		QString leaveCmd = QString ("PART " + channel + "\r\n");
+		Core::Instance ().GetSocketManager ()->
+				SendCommand (leaveCmd, IrcServer_->GetHost (), IrcServer_->GetPort ());
+	}
+
 	QString IrcParser::GetNickName () const
 	{
 		return Nick_;

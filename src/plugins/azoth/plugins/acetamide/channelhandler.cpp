@@ -102,8 +102,9 @@ namespace Acetamide
 		Q_FOREACH (ChannelParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
 
-		// TODO use msg
-		//IrcClient_->leaveRoom (GetRoomJID ());
+		QString serverId = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		Core::Instance ().GetServerManager ()->
+				LeaveChannel (serverId, Channel_.ChannelName_, Account_);
 
 		RemoveThis ();
 	}

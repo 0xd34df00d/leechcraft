@@ -86,6 +86,12 @@ namespace Acetamide
 		serv->SendPublicMessage (message, channel);
 	}
 
+	void IrcServerManager::LeaveChannel (const QString& serverKey, 
+			const QString& channel, IrcAccount *acc)
+	{
+		IrcServer_ptr serv = Account2Server [acc];
+		serv->LeaveChannel (channel);
+	}
 
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)
 	{

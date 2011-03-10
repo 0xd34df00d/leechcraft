@@ -59,6 +59,7 @@ namespace Acetamide
 		void ChangeState (ConnectionState);
 		void ReadAnswer (const QString&);
 		void SendPublicMessage (const QString&, const ChannelOptions&);
+		void LeaveChannel (const QString&);
 	public slots:
 		void authFinished (const QStringList&);
 		void setTopic (const QStringList&);
