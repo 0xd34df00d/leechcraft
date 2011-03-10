@@ -65,6 +65,7 @@ namespace Acetamide
 		void setTopic (const QStringList&);
 		void setCLEntries (const QStringList&);
 		void readMessage (const QStringList&);
+		void setNewParticipant (const QStringList&);
 	};
 
 	typedef boost::shared_ptr<IrcServer> IrcServer_ptr;

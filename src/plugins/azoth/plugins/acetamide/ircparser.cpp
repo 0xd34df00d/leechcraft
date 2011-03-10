@@ -151,6 +151,12 @@ namespace Acetamide
 				SIGNAL (gotMessage (const QStringList&)),
 				IrcServer_,
 				SLOT (readMessage (const QStringList&)));
+
+		Command2Signal_ ["join"] = boost::bind (&IrcParser::gotNewParticipant, this, _1);
+		connect (this,
+				SIGNAL (gotNewParticipant (const QStringList&)),
+				IrcServer_,
+				SLOT (setNewParticipant (const QStringList&)));
 	}
 
 	void IrcParser::ParseMessage (const QString& msg)

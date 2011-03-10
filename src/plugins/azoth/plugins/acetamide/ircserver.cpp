@@ -140,6 +140,14 @@ namespace Acetamide
 		ServerManager_->SetMessageIn (serverKey, channelKey, * (params.end () - 2), params.last ());
 	}
 
+	void IrcServer::setNewParticipant (const QStringList& params)
+	{
+		QString channelKey = QString ("%1@%2")
+				.arg ((* (params.end () - 2)).simplified () , Server_.ServerName_);
+		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		ServerManager_->SetNewParticipant (serverKey, channelKey, params.last ());
+	}
+
 };
 };
 };
