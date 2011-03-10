@@ -119,31 +119,32 @@ namespace Acetamide
 	void IrcServer::setTopic (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 3), Server_.ServerName_);
+				.arg (params.at (params.count () - 3), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetTopic (serverKey, channelKey, * (params.end () - 2));
+		ServerManager_->SetTopic (serverKey, channelKey, params.at (params.count () - 2));
 	}
 
 	void IrcServer::setCLEntries (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 3) , Server_.ServerName_);
+				.arg (params.at (params.count () - 3) , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetCLEntries (serverKey, channelKey, * (params.end () - 2));
+		ServerManager_->SetCLEntries (serverKey, channelKey, params.at (params.count () - 2));
 	}
 
 	void IrcServer::readMessage (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 3) , Server_.ServerName_);
+				.arg (params.at (params.count () - 3) , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetMessageIn (serverKey, channelKey, * (params.end () - 2), params.last ());
+		ServerManager_->SetMessageIn (serverKey, channelKey, 
+				params.at (params.count () - 2), params.last ());
 	}
 
 	void IrcServer::setNewParticipant (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg ((* (params.end () - 2)).simplified () , Server_.ServerName_);
+				.arg (params.at (params.count () - 2).simplified () , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		ServerManager_->SetNewParticipant (serverKey, channelKey, params.last ());
 	}
