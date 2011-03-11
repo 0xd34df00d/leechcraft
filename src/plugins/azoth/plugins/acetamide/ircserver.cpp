@@ -151,10 +151,24 @@ namespace Acetamide
 
 	void IrcServer::setUserLeave (const QStringList& params)
 	{
-		QString channelKey = QString ("%1@%2")
-				.arg (params.first ().simplified () , Server_.ServerName_);
+		QString channelKey;
+		QString leaveMsg;
+		if (params.count () > 2)
+		{
+			channelKey = QString ("%1@%2")
+					.arg (params.at (params.count () - 3) , Server_.ServerName_);
+			leaveMsg = params.at (params.count () - 2);
+		}
+		else
+		{
+			channelKey = QString ("%1@%2")
+					.arg (params.first ().simplified () , Server_.ServerName_);
+			leaveMsg = QString ();
+		}
+
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetUserLeave (serverKey, channelKey, params.last ());
+		ServerManager_->SetUserLeave (serverKey, channelKey, 
+				params.last (), leaveMsg);
 	}
 
 };

@@ -109,10 +109,10 @@ namespace Acetamide
 		RemoveThis ();
 	}
 
-	void ChannelHandler::UserLeave (const QString& nick)
+	void ChannelHandler::UserLeave (const QString& nick, const QString& msg)
 	{
 		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nick);
-		MakeLeaveMessage (nick);
+		MakeLeaveMessage (nick, msg);
 		Account_->handleEntryRemoved (entry.get ());
 		Nick2Entry_.remove (nick);
 	}
@@ -157,9 +157,15 @@ namespace Acetamide
 		CLEntry_->HandleMessage (message);
 	}
 
-	void ChannelHandler::MakeLeaveMessage (const QString& nick)
+	void ChannelHandler::MakeLeaveMessage (const QString& nick, const QString& leaveMsg)
 	{
-		QString msg = tr ("%1 has left the room").arg (nick);
+		QString msg;
+		if (!leaveMsg.isEmpty ())
+			msg = tr ("%1 has left the room (%2)")
+					.arg (nick, leaveMsg);
+		else
+			msg = tr ("%1 has left the room")
+					.arg (nick);
 		
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
