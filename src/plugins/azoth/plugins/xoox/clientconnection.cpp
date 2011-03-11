@@ -179,8 +179,6 @@ namespace Xoox
 						state.Status_,
 						state.Priority_));
 		Client_->setClientPresence (pres);
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-			rh->SetState (state);
 
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
@@ -430,6 +428,9 @@ namespace Xoox
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
+		
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+			MUCManager_->joinRoom (rh->GetRoomJID (), rh->GetOurNick ());
 	}
 	
 	void ClientConnection::handleReconnecting (int timeout)
