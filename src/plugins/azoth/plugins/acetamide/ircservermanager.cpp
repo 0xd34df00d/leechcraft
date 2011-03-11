@@ -102,6 +102,16 @@ namespace Acetamide
 							SetNewParticipant (channelKey, nick);
 	}
 
+	void IrcServerManager::SetUserLeave (const QString& serverKey,
+			const QString& channelKey, const QString& nick)
+	{
+		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())
+			if (serv->GetServerKey () == serverKey)
+				Q_FOREACH (IrcAccount *acc, Account2Server.keys (serv))
+					acc->GetClientConnection ()->
+							SetUserLeave (channelKey, nick);
+	}
+
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)
 	{
 		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())

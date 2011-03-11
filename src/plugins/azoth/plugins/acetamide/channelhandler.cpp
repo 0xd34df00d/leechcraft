@@ -103,10 +103,18 @@ namespace Acetamide
 			Account_->handleEntryRemoved (entry.get ());
 
 		QString serverId = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		
 		Core::Instance ().GetServerManager ()->
 				LeaveChannel (Channel_.ChannelName_, Account_);
-
 		RemoveThis ();
+	}
+
+	void ChannelHandler::UserLeave (const QString& nick)
+	{
+		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		MakeLeaveMessage (nick);
+		Account_->handleEntryRemoved (entry.get ());
+		Nick2Entry_.remove (nick);
 	}
 
 	void ChannelHandler::SetChannelUser (const QString& nick)
@@ -146,6 +154,18 @@ namespace Acetamide
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantJoin);
+		CLEntry_->HandleMessage (message);
+	}
+
+	void ChannelHandler::MakeLeaveMessage (const QString& nick)
+	{
+		QString msg = tr ("%1 has left the room").arg (nick);
+		
+		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantLeave);
 		CLEntry_->HandleMessage (message);
 	}
 

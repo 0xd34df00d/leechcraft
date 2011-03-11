@@ -67,6 +67,7 @@ namespace Acetamide
 				const QString&, const QString&);
 		IrcServer_ptr GetServer (const QString&) const;
 		void SetNewParticipant (const QString&, const QString&);
+		void SetUserLeave (const QString&, const QString&);
 	public slots:
 		void setChannelUseres (const QString&, const QString&);
 		void setSubject (const QString&, const QString&);
