@@ -40,6 +40,7 @@ namespace Acetamide
 
 		boost::shared_ptr<IrcParser> IrcParser_;
 		QList<ChannelOptions> ChannelsQueue_;
+		QList<ChannelOptions> ActiveChannels_;
 		ServerOptions Server_;
 		ConnectionState State_;
 		IrcServerManager *ServerManager_;
@@ -67,6 +68,7 @@ namespace Acetamide
 		void readMessage (const QStringList&);
 		void setNewParticipant (const QStringList&);
 		void setUserLeave (const QStringList&);
+		void setUserQuit  (const QStringList&);
 	};
 
 	typedef boost::shared_ptr<IrcServer> IrcServer_ptr;

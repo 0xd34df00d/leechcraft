@@ -67,6 +67,7 @@ namespace Acetamide
 		void gotMessage (const QStringList&);
 		void gotNewParticipant (const QStringList&);
 		void gotUserLeave (const QStringList&);
+		void gotUserQuit (const QStringList&);
 	};
 };
 };

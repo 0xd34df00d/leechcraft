@@ -37,6 +37,7 @@ namespace Acetamide
 	void IrcServer::JoinChannel (const ChannelOptions& channel)
 	{
 		IrcParser_->JoinChannel (channel);
+		ActiveChannels_.append (channel);
 		if (ChannelsQueue_.contains (channel))
 			ChannelsQueue_.removeAll (channel);
 	}
@@ -111,8 +112,10 @@ namespace Acetamide
 	{
 		State_ = Connected;
 		Q_FOREACH (const ChannelOptions& channel, ChannelsQueue_)
+		{
 			IrcParser_->JoinChannel (channel);
-
+			ActiveChannels_.append (channel);
+		}
 		ChannelsQueue_.clear ();
 	}
 
@@ -162,13 +165,27 @@ namespace Acetamide
 		else
 		{
 			channelKey = QString ("%1@%2")
-					.arg (params.first ().simplified () , Server_.ServerName_);
+					.arg (params.first ().simplified (), Server_.ServerName_);
 			leaveMsg = QString ();
 		}
 
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		ServerManager_->SetUserLeave (serverKey, channelKey, 
 				params.last (), leaveMsg);
+	}
+
+	void IrcServer::setUserQuit (const QStringList& params)
+	{
+		Q_FOREACH (const ChannelOptions& channel, ActiveChannels_)
+		{
+			QStringList paramsList;
+			paramsList << channel.ChannelName_;
+			if (params.count () > 1) 
+				paramsList << params.first ();
+			paramsList << params.last ();
+
+			setUserLeave (paramsList);
+		}
 	}
 
 };
