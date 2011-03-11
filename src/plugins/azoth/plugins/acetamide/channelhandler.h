@@ -63,10 +63,10 @@ namespace Acetamide
 		QString GetSubject () const;
 		void SetSubject (const QString&);
 		void Leave (const QString&);
-		void UserLeave (const QString&);
+		void UserLeave (const QString&, const QString&);
 		void SetChannelUser (const QString&);
 		void MakeJoinMessage (const QString&);
-		void MakeLeaveMessage (const QString&);
+		void MakeLeaveMessage (const QString&, const QString&);
 		void HandleMessage (const QString&, const QString&);
 		ChannelOptions GetChannelOptions () const;
 		ServerOptions GetServerOptions () const;

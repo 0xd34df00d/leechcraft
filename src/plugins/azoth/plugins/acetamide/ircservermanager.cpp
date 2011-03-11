@@ -103,13 +103,13 @@ namespace Acetamide
 	}
 
 	void IrcServerManager::SetUserLeave (const QString& serverKey,
-			const QString& channelKey, const QString& nick)
+			const QString& channelKey, const QString& nick, const QString& msg)
 	{
 		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())
 			if (serv->GetServerKey () == serverKey)
 				Q_FOREACH (IrcAccount *acc, Account2Server.keys (serv))
 					acc->GetClientConnection ()->
-							SetUserLeave (channelKey, nick);
+							SetUserLeave (channelKey, nick, msg);
 	}
 
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)

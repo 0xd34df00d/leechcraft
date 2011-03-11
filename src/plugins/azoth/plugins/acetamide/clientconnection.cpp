@@ -132,10 +132,20 @@ namespace Acetamide
 			ChannelHandlers_ [channelKey]->SetChannelUser (nick);
 	}
 
-	void ClientConnection::SetUserLeave (const QString& channelKey, const QString& nick)
+	void ClientConnection::SetUserLeave (const QString& channelKey,
+			const QString& nick, const QString& msg)
 	{
+		QString mess = QString ();
 		if (ChannelHandlers_.contains (channelKey))
-			ChannelHandlers_ [channelKey]->UserLeave (nick);
+		{
+			if (!msg.isEmpty ())
+			{
+				QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [channelKey]->
+						GetServerOptions ().ServerEncoding_.toUtf8 ());
+				mess =  codec->toUnicode (msg.toAscii ());
+			}
+			ChannelHandlers_ [channelKey]->UserLeave (nick, mess);
+		}
 	}
 
 	void ClientConnection::setChannelUseres (const QString& users, const QString& key)
