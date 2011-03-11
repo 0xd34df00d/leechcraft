@@ -59,7 +59,7 @@ namespace Acetamide
 				const QString&, const QString&);
 		
 		QString GetNickname () const;
-		QString SetNickname (const QString&);
+		void SetNickname (const QString&);
 		QString GetSubject () const;
 		void SetSubject (const QString&);
 		void Leave (const QString&);

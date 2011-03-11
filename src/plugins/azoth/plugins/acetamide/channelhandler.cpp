@@ -82,7 +82,7 @@ namespace Acetamide
 		return Nickname_;
 	}
 	
-	QString ChannelHandler::SetNickname (const QString& nick)
+	void ChannelHandler::SetNickname (const QString& nick)
 	{
 		Nickname_ = nick;
 	}

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "acetamide.h"
+#include <ctime>
 #include <QIcon>
 #include <QTranslator>
 #include <plugininterface/util.h>

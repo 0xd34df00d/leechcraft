@@ -106,7 +106,7 @@ namespace Acetamide
 // 		Q_FOREACH (const NickNameData& nick, Nicknames_)
 // 			if (nick.Server_ == Ui_.Servers_->itemData (0, DefaultServerRole))
 // 				return nick.Nicks_.at (0);
-// 		return QString ();
+		return QString ();
 	}
 
 	QList<ServerOptions> IrcAccountConfigurationDialog::GetServers () const
