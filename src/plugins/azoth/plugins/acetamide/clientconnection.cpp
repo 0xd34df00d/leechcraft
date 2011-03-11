@@ -126,7 +126,18 @@ namespace Acetamide
 		return IrcServers_ [serverId];
 	}
 
-	
+	void ClientConnection::SetNewParticipant (const QString& channelKey, const QString& nick)
+	{
+		if (ChannelHandlers_.contains (channelKey))
+			ChannelHandlers_ [channelKey]->SetChannelUser (nick);
+	}
+
+	void ClientConnection::SetUserLeave (const QString& channelKey, const QString& nick)
+	{
+		if (ChannelHandlers_.contains (channelKey))
+			ChannelHandlers_ [channelKey]->UserLeave (nick);
+	}
+
 	void ClientConnection::setChannelUseres (const QString& users, const QString& key)
 	{
 		Q_FOREACH (const QString& nick, users.split (' '))

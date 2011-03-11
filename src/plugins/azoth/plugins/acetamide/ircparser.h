@@ -49,8 +49,9 @@ namespace Acetamide
 		void UserCommand (const ServerOptions&);
 		void NickCommand (const ServerOptions&);
 		void JoinChannel (const ChannelOptions&);
-		void PrivMessageCommand (const QString&, const ServerOptions&, const ChannelOptions&);
+		void PrivMessageCommand (const QString&, const ChannelOptions&);
 		void HandleServerReply (const QString&);
+		void LeaveChannelCommand (const QString&);
 		QString GetNickName () const;
 	private:
 		void Init ();
@@ -63,7 +64,9 @@ namespace Acetamide
 		void gotCLEntries (const QStringList&);
 		void gotTopic (const QStringList&);
 		void gotPing (const QStringList&);
-		void gotMessage (const QStringList&s);
+		void gotMessage (const QStringList&);
+		void gotNewParticipant (const QStringList&);
+		void gotUserLeave (const QStringList&);
 	};
 };
 };

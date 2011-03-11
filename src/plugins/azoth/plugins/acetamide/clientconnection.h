@@ -66,6 +66,8 @@ namespace Acetamide
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 		IrcServer_ptr GetServer (const QString&) const;
+		void SetNewParticipant (const QString&, const QString&);
+		void SetUserLeave (const QString&, const QString&);
 	public slots:
 		void setChannelUseres (const QString&, const QString&);
 		void setSubject (const QString&, const QString&);
@@ -74,6 +76,7 @@ namespace Acetamide
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
 		void rosterItemsRemoved (const QList<QObject*>&);
+		void gotCLItems (const QList<QObject*>&);
 
 	};
 };

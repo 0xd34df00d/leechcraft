@@ -74,7 +74,12 @@ namespace Acetamide
 
 	QString IrcServer::GetNickName () const
 	{
-		return IrcParser_->GetNickName ();
+		return Server_.ServerNicknames_.at (0);
+	}
+
+	QString IrcServer::GetEncoding () const
+	{
+		return Server_.ServerEncoding_;
 	}
 
 	void IrcServer::AddChannel2Queue (const ChannelOptions& channel)
@@ -92,6 +97,16 @@ namespace Acetamide
 		IrcParser_->HandleServerReply (answer);
 	}
 
+	void IrcServer::SendPublicMessage (const QString& message, const ChannelOptions& channel)
+	{
+		IrcParser_->PrivMessageCommand (message, channel);
+	}
+
+	void IrcServer::LeaveChannel (const QString& channel)
+	{
+		IrcParser_->LeaveChannelCommand (channel);
+	}
+
 	void IrcServer::authFinished (const QStringList& params)
 	{
 		State_ = Connected;
@@ -104,26 +119,42 @@ namespace Acetamide
 	void IrcServer::setTopic (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 3), Server_.ServerName_);
+				.arg (params.at (params.count () - 3), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetTopic (serverKey, channelKey, * (params.end () - 2));
+		ServerManager_->SetTopic (serverKey, channelKey, params.at (params.count () - 2));
 	}
 
 	void IrcServer::setCLEntries (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 3) , Server_.ServerName_);
+				.arg (params.at (params.count () - 3) , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetCLEntries (serverKey, channelKey, * (params.end () - 2));
+		ServerManager_->SetCLEntries (serverKey, channelKey, params.at (params.count () - 2));
 	}
 
 	void IrcServer::readMessage (const QStringList& params)
 	{
-		qDebug () << params;
 		QString channelKey = QString ("%1@%2")
-				.arg (* (params.end () - 3) , Server_.ServerName_);
+				.arg (params.at (params.count () - 3) , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetMessage (serverKey, channelKey, * (params.end () - 2), params.last ());
+		ServerManager_->SetMessageIn (serverKey, channelKey, 
+				params.at (params.count () - 2), params.last ());
+	}
+
+	void IrcServer::setNewParticipant (const QStringList& params)
+	{
+		QString channelKey = QString ("%1@%2")
+				.arg (params.at (params.count () - 2).simplified () , Server_.ServerName_);
+		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		ServerManager_->SetNewParticipant (serverKey, channelKey, params.last ());
+	}
+
+	void IrcServer::setUserLeave (const QStringList& params)
+	{
+		QString channelKey = QString ("%1@%2")
+				.arg (params.first ().simplified () , Server_.ServerName_);
+		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		ServerManager_->SetUserLeave (serverKey, channelKey, params.last ());
 	}
 
 };

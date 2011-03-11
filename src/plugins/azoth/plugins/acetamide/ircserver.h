@@ -54,14 +54,19 @@ namespace Acetamide
 		QString GetServerKey () const;
 		ConnectionState GetState () const;
 		QString GetNickName () const;
+		QString GetEncoding () const;
 		void AddChannel2Queue (const ChannelOptions&);
 		void ChangeState (ConnectionState);
 		void ReadAnswer (const QString&);
+		void SendPublicMessage (const QString&, const ChannelOptions&);
+		void LeaveChannel (const QString&);
 	public slots:
 		void authFinished (const QStringList&);
 		void setTopic (const QStringList&);
 		void setCLEntries (const QStringList&);
 		void readMessage (const QStringList&);
+		void setNewParticipant (const QStringList&);
+		void setUserLeave (const QStringList&);
 	};
 
 	typedef boost::shared_ptr<IrcServer> IrcServer_ptr;

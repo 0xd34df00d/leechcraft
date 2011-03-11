@@ -79,15 +79,16 @@ namespace Acetamide
 				IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}
 
-	void IrcParser::PrivMessageCommand (const QString& text, const ServerOptions& server, const ChannelOptions& channel)
+	void IrcParser::PrivMessageCommand (const QString& text, const ChannelOptions& channel)
 	{
-// 		QTextCodec *codec = QTextCodec::codecForName (server.ServerEncoding_.toUtf8 ());
-// 		QString mess =  codec->fromUnicode (text);
-// 		QString msg = QString ("PRIVMSG " + channel.ChannelName_ + " :" + mess + "\r\n");
-// 		Core::Instance ().GetSocketManager ()->SendCommand (msg, server.ServerName_, server.ServerPort_);
-// 		QString  id = QString ("%1@%2")
-// 					.arg (channel.ChannelName_, channel.ServerName_);
-// 		emit messageReceived (mess, id, server.ServerNicknames_.at (0));
+		QTextCodec *codec = QTextCodec::codecForName (IrcServer_->GetEncoding ().toUtf8 ());
+		QString mess =  codec->fromUnicode (text);
+		QString msg = QString ("PRIVMSG " + channel.ChannelName_ + " :" + mess + "\r\n");
+		Core::Instance ().GetSocketManager ()->
+				SendCommand (msg, IrcServer_->GetHost (), IrcServer_->GetPort ());
+		QStringList params;
+		params << channel.ChannelName_ << mess << IrcServer_->GetNickName ();
+		IrcServer_->readMessage (params);
 	}
 
 	void IrcParser::HandleServerReply (const QString& result)
@@ -103,6 +104,14 @@ namespace Acetamide
 		User_.clear ();
 		Host_.clear ();
 		ServerName.clear ();
+	}
+
+	void IrcParser::LeaveChannelCommand (const QString& channel)
+	{
+		// TODO leave message 
+		QString leaveCmd = QString ("PART " + channel + "\r\n");
+		Core::Instance ().GetSocketManager ()->
+				SendCommand (leaveCmd, IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}
 
 	QString IrcParser::GetNickName () const
@@ -142,6 +151,18 @@ namespace Acetamide
 				SIGNAL (gotMessage (const QStringList&)),
 				IrcServer_,
 				SLOT (readMessage (const QStringList&)));
+
+		Command2Signal_ ["join"] = boost::bind (&IrcParser::gotNewParticipant, this, _1);
+		connect (this,
+				SIGNAL (gotNewParticipant (const QStringList&)),
+				IrcServer_,
+				SLOT (setNewParticipant (const QStringList&)));
+
+		Command2Signal_ ["part"] = boost::bind (&IrcParser::gotUserLeave, this, _1);
+		connect (this,
+				SIGNAL (gotUserLeave (const QStringList&)),
+				IrcServer_,
+				SLOT (setUserLeave (const QStringList&)));
 	}
 
 	void IrcParser::ParseMessage (const QString& msg)
