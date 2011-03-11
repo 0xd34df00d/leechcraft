@@ -128,6 +128,10 @@ namespace Xoox
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleInfoReceived (const QXmppDiscoveryIq&)));
+		connect (DiscoveryManager_,
+				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
 
 		connect (MUCManager_,
 				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
@@ -179,8 +183,6 @@ namespace Xoox
 						state.Status_,
 						state.Priority_));
 		Client_->setClientPresence (pres);
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-			rh->SetState (state);
 
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
@@ -277,7 +279,11 @@ namespace Xoox
 	void ClientConnection::RequestInfo (const QString& jid) const
 	{
 		qDebug () << "requesting info for" << jid;
-		DiscoveryManager_->requestInfo (jid);
+		if (JID2CLEntry_.contains (jid))
+			Q_FOREACH (const QString& variant, JID2CLEntry_ [jid]->Variants ())
+				DiscoveryManager_->requestInfo (jid + '/' + variant);
+		else
+			DiscoveryManager_->requestInfo (jid);
 	}
 
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
@@ -430,6 +436,9 @@ namespace Xoox
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
+		
+		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+			MUCManager_->joinRoom (rh->GetRoomJID (), rh->GetOurNick ());
 	}
 	
 	void ClientConnection::handleReconnecting (int timeout)
@@ -550,7 +559,17 @@ namespace Xoox
 	void ClientConnection::handleInfoReceived (const QXmppDiscoveryIq& iq)
 	{
 		qDebug () << Q_FUNC_INFO << iq.from ();
-		qDebug () << iq.features ();
+		qDebug () << iq.features () << iq.queryNode ();
+		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
+			qDebug () << item.jid () << item.name () << item.node ();
+		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
+			qDebug () << id.name () << id.type () << id.category () << id.language ();
+	}
+	
+	void ClientConnection::handleItemsReceived (const QXmppDiscoveryIq& iq)
+	{
+		qDebug () << Q_FUNC_INFO << iq.from ();
+		qDebug () << iq.features () << iq.queryNode ();
 		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
 			qDebug () << item.jid () << item.name () << item.node ();
 		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())

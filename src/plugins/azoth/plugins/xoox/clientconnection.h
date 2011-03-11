@@ -137,6 +137,7 @@ namespace Xoox
 		void handleRosterItemRemoved (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handleInfoReceived (const QXmppDiscoveryIq&);
+		void handleItemsReceived (const QXmppDiscoveryIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleRoomPresenceChanged (const QString&,
 				const QString&, const QXmppPresence&);

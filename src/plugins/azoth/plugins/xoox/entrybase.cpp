@@ -139,12 +139,17 @@ namespace Xoox
 
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant)
 	{
-		if (CurrentStatus_.contains (variant) &&
+		const bool existed = CurrentStatus_.contains (variant);
+		if (existed &&
 				status == CurrentStatus_ [variant])
 			return;
 
 		CurrentStatus_ [variant] = status;
 		emit statusChanged (status, variant);
+		
+		if (!existed ||
+				(existed && status.State_ == SOffline))
+			emit availableVariantsChanged (Variants ());
 		
 		GlooxMessage *message = new GlooxMessage (IMessage::MTStatusMessage,
 				IMessage::DIn,

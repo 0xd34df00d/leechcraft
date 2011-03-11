@@ -62,7 +62,7 @@ namespace LeechCraft
 				try
 				{
 					QWebSettings::setIconDatabasePath (
-							LeechCraft::Util::CreateIfNotExists ("poshuku/favicons")
+							Util::CreateIfNotExists ("poshuku/favicons")
 									.absolutePath ()
 							);
 				}
@@ -76,7 +76,7 @@ namespace LeechCraft
 				try
 				{
 					QWebSettings::setOfflineStoragePath (
-							LeechCraft::Util::CreateIfNotExists ("poshuku/offlinestorage")
+							Util::CreateIfNotExists ("poshuku/offlinestorage")
 									.absolutePath ()
 							);
 				}
@@ -90,7 +90,7 @@ namespace LeechCraft
 				try
 				{
 					QWebSettings::setOfflineWebApplicationCachePath (
-							LeechCraft::Util::CreateIfNotExists ("poshuku/offlinewebappcache")
+							Util::CreateIfNotExists ("poshuku/offlinewebappcache")
 								.absolutePath ()
 							);
 				}
@@ -105,7 +105,7 @@ namespace LeechCraft
 				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 						"poshukusettings.xml");
 				XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
-						new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
+						new Util::BackendSelector (XmlSettingsManager::Instance ()));
 
 				InitConnections ();
 
@@ -475,7 +475,7 @@ namespace LeechCraft
 						XmlSettingsManager::Instance ()->property ("OfflineStorageDB").toBool ());
 				QWebSettings::globalSettings ()->setAttribute (QWebSettings::OfflineWebApplicationCacheEnabled,
 						XmlSettingsManager::Instance ()->property ("OfflineWebApplicationCache").toBool ());
-				QWebSettings::globalSettings ()->setAttribute (QWebSettings::LocalStorageDatabaseEnabled,
+				QWebSettings::globalSettings ()->setAttribute (QWebSettings::LocalStorageEnabled,
 						XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
 				QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 							Instance ()->property ("UserStyleSheet").toString ()));
