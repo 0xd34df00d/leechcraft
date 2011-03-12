@@ -56,13 +56,10 @@ namespace Xoox
 		LoadRoster ();
 		Q_FOREACH (QObject *account,
 				GlooxProtocol_->GetRegisteredAccounts ())
-		{
-			//qobject_cast<IAccount*> (account)->ChangeState (SOnline);
 			connect (account,
 					SIGNAL (gotCLItems (const QList<QObject*>&)),
 					this,
 					SLOT (handleItemsAdded (const QList<QObject*>&)));
-		}
 	}
 
 	void Core::Release ()
