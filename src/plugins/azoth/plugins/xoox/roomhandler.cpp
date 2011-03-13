@@ -405,15 +405,18 @@ namespace Xoox
 		MUCManager_->setRoomSubject (GetRoomJID (), subj);
 	}
 
-	void RoomHandler::Leave (const QString& msg)
+	void RoomHandler::Leave (const QString& msg, bool remove)
 	{
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
+			
+		Nick2Entry_.clear ();
 
 		// TODO use msg
 		MUCManager_->leaveRoom (GetRoomJID ());
 
-		RemoveThis ();
+		if (remove)
+			RemoveThis ();
 	}
 
 	RoomParticipantEntry* RoomHandler::GetSelf () const
@@ -486,8 +489,6 @@ namespace Xoox
 
 	void RoomHandler::RemoveThis ()
 	{
-		Nick2Entry_.clear ();
-
 		Account_->handleEntryRemoved (CLEntry_);
 
 		Account_->GetClientConnection ()->Unregister (this);

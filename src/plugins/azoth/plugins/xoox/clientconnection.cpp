@@ -183,6 +183,12 @@ namespace Xoox
 						state.Status_,
 						state.Priority_));
 		Client_->setClientPresence (pres);
+		if (presType != QXmppPresence::Unavailable)
+			Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+				rh->SetState (state);
+		else
+			Q_FOREACH (RoomHandler *rh, RoomHandlers_)
+				rh->Leave (QString (), false);
 
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
