@@ -128,6 +128,10 @@ namespace Xoox
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
+		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
+		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
+		proxy->PreprocessMessage (msg);
+
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}
