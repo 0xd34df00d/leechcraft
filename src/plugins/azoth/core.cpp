@@ -419,17 +419,12 @@ namespace Azoth
 	
 	QString Core::GetSelectedChatTemplate (QObject *entry) const
 	{
+		IChatStyleResourceSource *src = GetCurrentChatStyle ();
+		if (!src)
+			return QString ();
+		
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property ("ChatWindowStyle").toString ();
-		IChatStyleResourceSource *src = ChatStylesOptionsModel_->GetSourceForOption (opt);
-		if (!src)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty result for"
-					<< opt;
-			return QString ();
-		}
-		
 		return src->GetHTMLTemplate (opt, entry);
 	}
 	
@@ -453,6 +448,11 @@ namespace Azoth
 	
 	void Core::FrameFocused (QWebFrame *frame)
 	{
+		IChatStyleResourceSource *src = GetCurrentChatStyle ();
+		if (!src)
+			return;
+		
+		src->FrameFocused (frame);
 	}
 
 	namespace
@@ -1356,6 +1356,18 @@ namespace Azoth
 		catItem->appendRow (clItem);
 
 		Entry2Items_ [clEntry] << clItem;
+	}
+	
+	IChatStyleResourceSource* Core::GetCurrentChatStyle () const
+	{
+		const QString& opt = XmlSettingsManager::Instance ()
+				.property ("ChatWindowStyle").toString ();
+		IChatStyleResourceSource *src = ChatStylesOptionsModel_->GetSourceForOption (opt);
+		if (!src)
+			qWarning () << Q_FUNC_INFO
+					<< "empty result for"
+					<< opt;
+		return src;
 	}
 
 	void Core::handleAccountCreatorTriggered ()
