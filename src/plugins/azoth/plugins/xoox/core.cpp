@@ -161,7 +161,10 @@ namespace Xoox
 			}
 
 			if (!id2account.contains (id))
+			{
+				account = account.nextSiblingElement ("account");
 				continue;
+			}
 
 			QDomElement entry = account
 					.firstChildElement ("entries")
@@ -288,6 +291,7 @@ namespace Xoox
 
 	void Core::saveAvatarFor (GlooxCLEntry *entry)
 	{
+		const bool lazy = entry;
 		if (!entry)
 			entry = qobject_cast<GlooxCLEntry*> (sender ());
 
@@ -300,8 +304,11 @@ namespace Xoox
 		}
 
 		const QByteArray& filename = entry->GetEntryID ().toUtf8 ().toBase64 ();
-		const QString& path = Util::CreateIfNotExists ("azoth/xoox/avatars")
-				.absoluteFilePath (filename);
+		const QDir& avatarDir = Util::CreateIfNotExists ("azoth/xoox/avatars");
+		if (lazy && avatarDir.exists (filename))
+			return;
+
+		const QString& path = avatarDir.absoluteFilePath (filename);
 		entry->GetAvatar ().save (path, "PNG");
 	}
 }

@@ -21,6 +21,7 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <QVBoxLayout>
+#include <QInputDialog>
 #include "interfaces/iclentry.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
@@ -208,6 +209,19 @@ namespace Azoth
 					actions << action;
 			break;
 		}
+		case Core::CLETCategory:
+		{
+			QAction *rename = new QAction (tr ("Rename group..."), this);
+			QVariant objVar = index.parent ().data (Core::CLRAccountObject);;
+			rename->setProperty ("Azoth/OldGroupName", index.data ());
+			rename->setProperty ("Azoth/AccountObject", objVar);
+			connect (rename,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleCatRenameTriggered ()));
+			actions << rename;
+			break;
+		}
 		case Core::CLETAccount:
 		{
 			QVariant objVar = index.data (Core::CLRAccountObject);
@@ -308,6 +322,59 @@ namespace Azoth
 		EntryStatus status (state, text);
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			acc->ChangeState (status);
+	}
+	
+	void MainWidget::handleCatRenameTriggered ()
+	{
+		if (!sender ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null sender()";
+			return;
+		}
+		sender ()->deleteLater ();
+
+		const QString& group = sender ()->property ("Azoth/OldGroupName").toString ();
+
+		const QString& newGroup = QInputDialog::getText (this,
+				tr ("Rename group"),
+				tr ("Enter new group name for %1:")
+					.arg (group),
+				QLineEdit::Normal,
+				group);
+		if (newGroup.isEmpty () || newGroup == group)
+			return;
+
+		QObject *accObj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< accObj
+					<< "to IAccount";
+			return;
+		}
+		
+		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+		{
+			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			if (!entry)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast"
+						<< entryObj
+						<< "to ICLEntry";
+				continue;
+			}
+			
+			QStringList groups = entry->Groups ();
+			if (groups.removeAll (group))
+			{
+				groups << newGroup;
+				entry->SetGroups (groups);
+			}
+		}
 	}
 	
 	void MainWidget::joinAccountConference ()

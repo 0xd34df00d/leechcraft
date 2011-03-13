@@ -35,6 +35,7 @@ namespace Xoox
 			const QString& variant,
 			ClientConnection *conn)
 	: Type_ (type)
+	, SubType_ (MSTOther)
 	, Direction_ (dir)
 	, Connection_ (conn)
 	, BareJID_ (jid)
@@ -106,7 +107,12 @@ namespace Xoox
 
 	IMessage::MessageSubType GlooxMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return SubType_;
+	}
+	
+	void GlooxMessage::SetMessageSubType (IMessage::MessageSubType subType)
+	{
+		SubType_ = subType;
 	}
 
 	QObject* GlooxMessage::OtherPart () const

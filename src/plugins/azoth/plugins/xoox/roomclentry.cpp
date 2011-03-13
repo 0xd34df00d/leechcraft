@@ -19,7 +19,9 @@
 #include "roomclentry.h"
 #include <QImage>
 #include <QtDebug>
+#include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
+#include "glooxprotocol.h"
 #include "roompublicmessage.h"
 #include "roomhandler.h"
 
@@ -283,6 +285,10 @@ namespace Xoox
 
 	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)
 	{
+		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
+		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
+		proxy->PreprocessMessage (msg);
+
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}

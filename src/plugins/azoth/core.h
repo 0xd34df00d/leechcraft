@@ -355,6 +355,8 @@ namespace Azoth
 		/** Adds the given entry to the given category item.
 		 */
 		void AddEntryTo (ICLEntry*, QStandardItem*);
+		
+		IChatStyleResourceSource* GetCurrentChatStyle () const;
 	public slots:
 		/** Initiates account registration process.
 		 */

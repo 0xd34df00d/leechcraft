@@ -141,9 +141,11 @@ namespace Xoox
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 
 		const QXmppPresence::Status& status = pres.status ();
+		const QString& state = proxy->
+				StateToString (static_cast<State> (status.type ()));
 		QString msg = tr ("%1 changed status to %2 (%3)")
 				.arg (nick)
-				.arg (proxy->StateToString (static_cast<State> (status.type ())))
+				.arg (state)
 				.arg (status.statusText ());
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
@@ -151,6 +153,9 @@ namespace Xoox
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantStatusChange);
+		message->setProperty ("Azoth/Nick", nick);
+		message->setProperty ("Azoth/TargetState", state);
+		message->setProperty ("Azoth/StatusText", status.statusText ());
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -400,15 +405,18 @@ namespace Xoox
 		MUCManager_->setRoomSubject (GetRoomJID (), subj);
 	}
 
-	void RoomHandler::Leave (const QString& msg)
+	void RoomHandler::Leave (const QString& msg, bool remove)
 	{
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
+			
+		Nick2Entry_.clear ();
 
 		// TODO use msg
 		MUCManager_->leaveRoom (GetRoomJID ());
 
-		RemoveThis ();
+		if (remove)
+			RemoveThis ();
 	}
 
 	RoomParticipantEntry* RoomHandler::GetSelf () const
@@ -481,8 +489,6 @@ namespace Xoox
 
 	void RoomHandler::RemoveThis ()
 	{
-		Nick2Entry_.clear ();
-
 		Account_->handleEntryRemoved (CLEntry_);
 
 		Account_->GetClientConnection ()->Unregister (this);

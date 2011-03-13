@@ -128,6 +128,10 @@ namespace Xoox
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
+		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
+		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
+		proxy->PreprocessMessage (msg);
+
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}
@@ -156,12 +160,20 @@ namespace Xoox
 				GetJID (),
 				variant,
 				Account_->GetClientConnection ().get ());
+		message->SetMessageSubType (IMessage::MSTParticipantStatusChange);
+
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
-		QString msg = tr ("%1/%2 is now %3 (%4)")
-				.arg (GetJID ())
-				.arg (variant)
-				.arg (proxy->StateToString (status.State_))
+		const QString& state = proxy->StateToString (status.State_);
+		
+		const QString& nick = GetEntryName () + '/' + variant;
+		message->setProperty ("Azoth/Nick", nick);
+		message->setProperty ("Azoth/TargetState", state);
+		message->setProperty ("Azoth/StatusText", status.StatusString_);
+
+		QString msg = tr ("%1 is now %2 (%3)")
+				.arg (nick)
+				.arg (state)
 				.arg (status.StatusString_);
 		message->SetBody (msg);
 		HandleMessage (message);
