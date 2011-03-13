@@ -184,9 +184,27 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ChannelCLEntry</name>
     <message>
-        <location filename="channelclentry.cpp" line="85"/>
+        <location filename="channelclentry.cpp" line="90"/>
         <source>Channels</source>
         <translation>Channels</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::ChannelHandler</name>
+    <message>
+        <location filename="channelhandler.cpp" line="150"/>
+        <source>%1 joined the channel</source>
+        <translation>%1 joined the channel</translation>
+    </message>
+    <message>
+        <location filename="channelhandler.cpp" line="164"/>
+        <source>%1 has left the room (%2)</source>
+        <translation>%1 has left the room (%2)</translation>
+    </message>
+    <message>
+        <location filename="channelhandler.cpp" line="167"/>
+        <source>%1 has left the room</source>
+        <translation>%1 has left the room</translation>
     </message>
 </context>
 <context>
@@ -200,7 +218,7 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="85"/>
+        <location filename="clientconnection.cpp" line="87"/>
         <source>This channel is already joined.</source>
         <translation>This channel is already joined.</translation>
     </message>
@@ -208,8 +226,8 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::Core</name>
     <message>
-        <location filename="core.cpp" line="125"/>
-        <location filename="core.cpp" line="126"/>
+        <location filename="core.cpp" line="136"/>
+        <location filename="core.cpp" line="137"/>
         <source>Default</source>
         <translation>Default</translation>
     </message>
@@ -256,7 +274,7 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="67"/>
+        <location filename="acetamide.cpp" line="68"/>
         <source>IRC protocol support.</source>
         <translation>IRC protocol support.</translation>
     </message>
