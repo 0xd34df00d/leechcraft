@@ -244,10 +244,6 @@ namespace Xoox
 		OurJID_ = jid;
 	}
 
-	/** @todo Set the correct state on join.
-	 *
-	 * Requires proper support for this from the QXmpp part.
-	 */
 	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
 	{
 		if (RoomHandlers_.contains (jid))
