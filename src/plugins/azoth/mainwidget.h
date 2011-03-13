@@ -60,6 +60,8 @@ namespace Azoth
 		void handleChangeStatusRequested ();
 		void fastStateChangeRequested ();
 		void applyFastStatus ();
+		
+		void handleCatRenameTriggered ();
 		void joinAccountConference ();
 
 		void showAccountsList ();
