@@ -161,7 +161,10 @@ namespace Xoox
 			}
 
 			if (!id2account.contains (id))
+			{
+				account = account.nextSiblingElement ("account");
 				continue;
+			}
 
 			QDomElement entry = account
 					.firstChildElement ("entries")
