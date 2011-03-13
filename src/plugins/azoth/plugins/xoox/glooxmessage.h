@@ -38,6 +38,7 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::IMessage)
 
 		MessageType Type_;
+		MessageSubType SubType_;
 		Direction Direction_;
 		QString BareJID_;
 		QString Variant_;
@@ -57,6 +58,7 @@ namespace Xoox
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
+		void SetMessageSubType (MessageSubType);
 		QObject* OtherPart () const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;
