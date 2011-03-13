@@ -1795,7 +1795,6 @@ namespace Azoth
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::MTChatMessage:
-				qDebug () << "THIS NON";
 				if (XmlSettingsManager::Instance ()
 						.property ("NotifyAboutIncomingMessages").toBool ())
 				{
