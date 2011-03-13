@@ -141,9 +141,11 @@ namespace Xoox
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 
 		const QXmppPresence::Status& status = pres.status ();
+		const QString& state = proxy->
+				StateToString (static_cast<State> (status.type ()));
 		QString msg = tr ("%1 changed status to %2 (%3)")
 				.arg (nick)
-				.arg (proxy->StateToString (static_cast<State> (status.type ())))
+				.arg (state)
 				.arg (status.statusText ());
 
 		RoomPublicMessage *message = new RoomPublicMessage (msg,
@@ -151,6 +153,9 @@ namespace Xoox
 				CLEntry_,
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantStatusChange);
+		message->setProperty ("Azoth/Nick", nick);
+		message->setProperty ("Azoth/TargetState", state);
+		message->setProperty ("Azoth/StatusText", status.statusText ());
 		CLEntry_->HandleMessage (message);
 	}
 

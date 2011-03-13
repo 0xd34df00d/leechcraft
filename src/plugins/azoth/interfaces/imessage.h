@@ -79,6 +79,10 @@ namespace Azoth
 
 		/** This enum is used for more precise classification
 		 * of chat types messages.
+		 * 
+		 * The messages of some particular types may have additional
+		 * required properties used by the Azoth Core and other plugins
+		 * to establish proper context for the events.
 		 */
 		enum MessageSubType
 		{
@@ -88,6 +92,23 @@ namespace Azoth
 			MSTOther,
 			MSTKickNotification,
 			MSTBanNotification,
+			
+			/** @brief Represents status change of participant in a chat
+			 * or MUC room.
+			 * 
+			 * The corresponding MessageType is MTStatusMessage.
+			 * 
+			 * Messages of this type should have the following dynamic
+			 * properties:
+			 * - Azoth/Nick, with a QString representing nick of the
+			 *   participant that has changed its status.
+			 * - Azoth/TargetState, with a QString representing the
+			 *   target state. The string is better obtained from the
+			 *   State enum by the means of IProxyObject::StateToString
+			 *   method.
+			 * - Azoth/StatusText, with a QString representing the new
+			 *   status text of the participant. May be empty.
+			 */
 			MSTParticipantStatusChange,
 			MSTParticipantRoleAffiliationChange,
 			MSTParticipantJoin,
