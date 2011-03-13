@@ -54,6 +54,7 @@ namespace Azoth
 		QString FormatDate (QDateTime, QObject*) const;
 		QString FormatNickname (QString, QObject*, const QString&) const;
 		QString FormatBody (QString, QObject*) const;
+		void PreprocessMessage (QObject*);
 	};
 }
 }

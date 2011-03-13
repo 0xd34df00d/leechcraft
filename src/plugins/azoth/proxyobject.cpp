@@ -307,5 +307,44 @@ namespace Azoth
 	{
 		return Core::Instance ().FormatBody (body, qobject_cast<IMessage*> (obj));
 	}
+	
+	void ProxyObject::PreprocessMessage (QObject *msgObj)
+	{
+		if (msgObj->property ("Azoth/DoNotPreprocess").toBool ())
+			return;
+
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		if (!msg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "message"
+					<< msgObj
+					<< "is not an IMessage";
+			return;
+		}
+		
+		switch (msg->GetMessageSubType ())
+		{
+		case IMessage::MSTParticipantStatusChange:
+		{
+			const QString& nick = msgObj->property ("Azoth/Nick").toString ();
+			const QString& state = msgObj->property ("Azoth/TargetState").toString ();
+			const QString& text = msgObj->property ("Azoth/StatusText").toString ();
+			if (!nick.isEmpty () && !state.isEmpty ())
+			{
+				const QString& newBody = text.isEmpty () ?
+						tr ("%1 changed status to %2")
+							.arg (nick)
+							.arg (state) :
+						tr ("%1 changed status to %2 (%3)")
+							.arg (nick)
+							.arg (state)
+							.arg (text);
+				msg->SetBody (newBody);
+			}
+			break;
+		}
+		}
+	}
 }
 }

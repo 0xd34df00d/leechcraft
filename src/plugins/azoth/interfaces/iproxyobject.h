@@ -141,6 +141,8 @@ namespace Azoth
 		virtual QString FormatDate (QDateTime, QObject*) const = 0;
 		virtual QString FormatNickname (QString, QObject*, const QString&) const = 0;
 		virtual QString FormatBody (QString, QObject*) const = 0;
+		
+		virtual void PreprocessMessage (QObject*) = 0;
 	};
 }
 }
