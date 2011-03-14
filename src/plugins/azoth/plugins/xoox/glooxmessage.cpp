@@ -47,7 +47,7 @@ namespace Xoox
 		if (type == MTChatMessage && variant.isEmpty ())
 		{
 			QObject *object = Connection_->GetCLEntry (jid, variant);
-			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().first ();
+			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().value (0);
 		}
 		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
 		Message_.setStamp (QDateTime::currentDateTime ());
