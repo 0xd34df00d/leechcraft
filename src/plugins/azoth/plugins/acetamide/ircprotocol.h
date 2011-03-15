@@ -57,6 +57,8 @@ namespace Acetamide
 		QString GetProtocolName () const;
 		QByteArray GetProtocolID () const;
 		void InitiateAccountRegistration ();
+		QList<QWidget*> GetAccountRegistrationWidgets ();
+		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
 	private:

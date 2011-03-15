@@ -97,6 +97,9 @@ namespace Azoth
 		 * the accountAdded(QObject*) signal.
 		 */
 		virtual void InitiateAccountRegistration () = 0;
+		
+		virtual QList<QWidget*> GetAccountRegistrationWidgets () = 0;
+		virtual void RegisterAccount (const QString& name, const QList<QWidget*>& widgets) = 0;
 
 		/** @brief Returns the widget used to set up the MUC join options.
 		 *

@@ -4,11 +4,13 @@ FIND_PACKAGE (QXmpp REQUIRED)
 
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${QXMPP_INCLUDE_DIR})
 SET (XOOX_SRCS
 	xoox.cpp
 	glooxprotocol.cpp
 	glooxaccountconfigurationdialog.cpp
+	glooxaccountconfigurationwidget.cpp
 	glooxaccount.cpp
 	clientconnection.cpp
 	glooxclentry.cpp
@@ -30,6 +32,7 @@ SET (XOOX_HEADERS
 	xoox.h
 	glooxprotocol.h
 	glooxaccountconfigurationdialog.h
+	glooxaccountconfigurationwidget.h
 	glooxaccount.h
 	clientconnection.h
 	glooxclentry.h
@@ -49,6 +52,7 @@ SET (XOOX_HEADERS
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
+	glooxaccountconfigurationwidget.ui
 	joingroupchatwidget.ui
 	vcarddialog.ui
 	)

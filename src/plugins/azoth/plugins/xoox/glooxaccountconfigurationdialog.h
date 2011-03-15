@@ -29,25 +29,11 @@ namespace Xoox
 {
 	class GlooxAccountConfigurationDialog : public QDialog
 	{
-		Q_OBJECT
-
 		Ui::GlooxAccountConfigurationDialog Ui_;
 	public:
 		GlooxAccountConfigurationDialog (QWidget* = 0);
 
-		QString GetJID () const;
-		void SetJID (const QString&);
-		QString GetNick () const;
-		void SetNick (const QString&);
-		QString GetResource () const;
-		void SetResource (const QString&);
-		short GetPriority () const;
-		void SetPriority (short);
-
-		QString GetHost () const;
-		void SetHost (const QString&);
-		int GetPort () const;
-		void SetPort (int);
+		GlooxAccountConfigurationWidget* W () const;
 	};
 }
 }

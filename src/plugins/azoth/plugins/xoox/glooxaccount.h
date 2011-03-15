@@ -45,6 +45,7 @@ namespace Xoox
 
 	class GlooxProtocol;
 	class TransferManager;
+	class GlooxAccountConfigurationWidget;
 
 	class GlooxAccount : public QObject
 					   , public IAccount
@@ -81,6 +82,7 @@ namespace Xoox
 		QByteArray GetAccountID () const;
 		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
+		void FillSettings (GlooxAccountConfigurationWidget*);
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
 		void Synchronize ();

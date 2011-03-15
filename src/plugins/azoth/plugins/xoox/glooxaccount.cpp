@@ -172,38 +172,43 @@ namespace Xoox
 	{
 		std::auto_ptr<GlooxAccountConfigurationDialog> dia (new GlooxAccountConfigurationDialog (0));
 		if (!JID_.isEmpty ())
-			dia->SetJID (JID_);
+			dia->W ()->SetJID (JID_);
 		if (!Nick_.isEmpty ())
-			dia->SetNick (Nick_);
+			dia->W ()->SetNick (Nick_);
 		if (!Resource_.isEmpty ())
-			dia->SetResource (Resource_);
+			dia->W ()->SetResource (Resource_);
 		if (!Host_.isEmpty ())
-			dia->SetHost (Host_);
+			dia->W ()->SetHost (Host_);
 		if (Port_ >= 0)
-			dia->SetPort (Port_);
-		dia->SetPriority (AccState_.Priority_);
+			dia->W ()->SetPort (Port_);
+		dia->W ()->SetPriority (AccState_.Priority_);
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
+		
+		FillSettings (dia->W ());
+	}
 
+	void GlooxAccount::FillSettings (GlooxAccountConfigurationWidget *w)
+	{
 		State lastState = AccState_.State_;
 		if (lastState != SOffline &&
-			(JID_ != dia->GetJID () ||
-			 Nick_ != dia->GetNick () ||
-			 Resource_ != dia->GetResource () ||
-			 Host_ != dia->GetHost () ||
-			 Port_ != dia->GetPort ()))
+			(JID_ != w->GetJID () ||
+			 Nick_ != w->GetNick () ||
+			 Resource_ != w->GetResource () ||
+			 Host_ != w->GetHost () ||
+			 Port_ != w->GetPort ()))
 		{
 			ChangeState (EntryStatus (SOffline, AccState_.Status_));
-			ClientConnection_->SetOurJID (dia->GetJID () + "/" + dia->GetResource ());
+			ClientConnection_->SetOurJID (w->GetJID () + "/" + w->GetResource ());
 		}
 
-		JID_ = dia->GetJID ();
-		Nick_ = dia->GetNick ();
-		Resource_ = dia->GetResource ();
-		AccState_.Priority_ = dia->GetPriority ();
-		Host_ = dia->GetHost ();
-		Port_ = dia->GetPort ();
+		JID_ = w->GetJID ();
+		Nick_ = w->GetNick ();
+		Resource_ = w->GetResource ();
+		AccState_.Priority_ = w->GetPriority ();
+		Host_ = w->GetHost ();
+		Port_ = w->GetPort ();
 
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
