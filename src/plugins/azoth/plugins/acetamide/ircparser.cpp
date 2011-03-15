@@ -180,9 +180,10 @@ namespace Acetamide
 				SLOT (setUserQuit (const QStringList&)));
 	}
 
-	void IrcParser::ParseMessage (const QString& msg)
+	void IrcParser::ParseMessage (const QString& message)
 	{
 		int pos = 0;
+		QString msg = message.trimmed ();
 		int msg_len = msg.length ();
 		if (msg.startsWith (':'))
 		{

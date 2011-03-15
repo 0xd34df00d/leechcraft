@@ -152,21 +152,19 @@ namespace Acetamide
 		{
 			QString channelKey = QString ("%1@%2")
 					.arg (target , Server_.ServerName_);
-			QString channelKey = QString ("%1@%2")
-					.arg (target , Server_.ServerName_);
 			QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 			ServerManager_->SetMessageIn (serverKey, channelKey, 
 					params.at (params.count () - 2), params.last ());
 		}
 		else
 		{
-			QList<IrcAccount*> list = ServerManager_->GetAccounts (this);
-			QString channelID = ActiveChannels_.at (0).ChannelName_ + 
-					"@" + ActiveChannels_.at (0).ServerName_;
-			Q_FOREACH (IrcAccount *acc, list)
-			{
-				acc->GetClientConnection ()->GetChannelCLEntries (channelID);
-			}
+// 			QList<IrcAccount*> list = ServerManager_->GetAccounts (this);
+// 			QString channelID = ActiveChannels_.at (0).ChannelName_ + 
+// 					"@" + ActiveChannels_.at (0).ServerName_;
+// 			Q_FOREACH (IrcAccount *acc, list)
+// 			{
+// 				acc->GetClientConnection ()->GetChannelCLEntries (channelID);
+// 			}
 			
 		}
 	}
