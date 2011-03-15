@@ -35,12 +35,11 @@ class IProxyObject;
 
 namespace Acetamide
 {
-	
-	class IrcAccount;
+
 	class ChannelCLEntry;
 	class ChannelHandler;
 	class IrcMessage;
-	
+
 	class ClientConnection : public QObject
 	{
 		Q_OBJECT
@@ -60,14 +59,16 @@ namespace Acetamide
 		QObject* GetCLEntry (const QString&, const QString&) const;
 		QList<QObject*> GetCLEntries () const;
 		void Sinchronize ();
-		
+
+		QList<QObject*> GetChannelCLEntries (const QString&) const;
+		IrcAccount* GetAccount () const;
 		ChannelCLEntry* JoinRoom (const ServerOptions&, const ChannelOptions&);
 		void Unregister (ChannelHandler*);
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
-		IrcServer_ptr GetServer (const QString&) const;
 		void SetNewParticipant (const QString&, const QString&);
 		void SetUserLeave (const QString&, const QString&, const QString&);
+		void SetPrivateMessage (IrcAccount*, IrcMessage*);
 	public slots:
 		void setChannelUseres (const QString&, const QString&);
 		void setSubject (const QString&, const QString&);

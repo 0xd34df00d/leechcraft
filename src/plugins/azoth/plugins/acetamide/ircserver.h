@@ -32,6 +32,7 @@ namespace Acetamide
 
 	class IrcParser;
 	class IrcAccount;
+	class IrcMessage;
 	class IrcServerManager;
 
 	class IrcServer : public QObject
@@ -60,6 +61,7 @@ namespace Acetamide
 		void ChangeState (ConnectionState);
 		void ReadAnswer (const QString&);
 		void SendPublicMessage (const QString&, const ChannelOptions&);
+		void SendPrivateMessage (IrcMessage *);
 		void LeaveChannel (const QString&);
 	public slots:
 		void authFinished (const QStringList&);

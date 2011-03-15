@@ -23,9 +23,7 @@
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "ircprotocol.h"
-#include "ircaccount.h"
 #include "channelhandler.h"
-
 #include "ircserver.h"
 #include "channelclentry.h"
 #include "ircmessage.h"
@@ -73,7 +71,16 @@ namespace Acetamide
 
 	void ClientConnection::Sinchronize ()
 	{
+	}
 
+	QList<QObject*> ClientConnection::GetChannelCLEntries (const QString& channelID) const
+	{
+		ChannelHandlers_.value (channelID)->GetParticipants ();
+	}
+
+	IrcAccount* ClientConnection::GetAccount () const
+	{
+		return Account_;
 	}
 
 	ChannelCLEntry* ClientConnection::JoinRoom (const ServerOptions& server, const ChannelOptions& channel)
@@ -94,7 +101,7 @@ namespace Acetamide
 
 		Core::Instance ().GetServerManager ()->
 				JoinChannel (server, channel, Account_);
-
+		
 		ChannelHandlers_ [channelId] = ch;
 		if (Account_->GetState () == EntryStatus (SOffline, QString ()))
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
@@ -121,11 +128,6 @@ namespace Acetamide
 		return 0;
 	}
 
-	IrcServer_ptr ClientConnection::GetServer (const QString& serverId) const
-	{
-		return IrcServers_ [serverId];
-	}
-
 	void ClientConnection::SetNewParticipant (const QString& channelKey, const QString& nick)
 	{
 		if (ChannelHandlers_.contains (channelKey))
@@ -146,6 +148,11 @@ namespace Acetamide
 			}
 			ChannelHandlers_ [channelKey]->UserLeave (nick, mess);
 		}
+	}
+
+	void ClientConnection::SetPrivateMessage (IrcAccount *acc, IrcMessage *msg)
+	{
+		Core::Instance ().GetServerManager ()->SetPrivateMessageOut (Account_, msg);
 	}
 
 	void ClientConnection::setChannelUseres (const QString& users, const QString& key)

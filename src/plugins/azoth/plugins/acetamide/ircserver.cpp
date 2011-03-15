@@ -18,6 +18,9 @@
 
 #include "ircserver.h"
 #include "ircparser.h"
+#include "ircmessage.h"
+#include "ircaccount.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -100,7 +103,12 @@ namespace Acetamide
 
 	void IrcServer::SendPublicMessage (const QString& message, const ChannelOptions& channel)
 	{
-		IrcParser_->PrivMessageCommand (message, channel);
+		IrcParser_->PublicMessageCommand (message, channel);
+	}
+
+	void IrcServer::SendPrivateMessage (IrcMessage *msg)
+	{
+		IrcParser_->PrivateMessageCommand (msg->GetBody (), msg->GetOtherVariant ());
 	}
 
 	void IrcServer::LeaveChannel (const QString& channel)
@@ -137,11 +145,30 @@ namespace Acetamide
 
 	void IrcServer::readMessage (const QStringList& params)
 	{
-		QString channelKey = QString ("%1@%2")
-				.arg (params.at (params.count () - 3) , Server_.ServerName_);
-		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetMessageIn (serverKey, channelKey, 
-				params.at (params.count () - 2), params.last ());
+		QString target = params.at (params.count () - 3);
+		if (target.startsWith ("#") || 
+				target.startsWith ("+") || target.startsWith ("!") || 
+				target.startsWith ("&") || target.startsWith ("$"))
+		{
+			QString channelKey = QString ("%1@%2")
+					.arg (target , Server_.ServerName_);
+			QString channelKey = QString ("%1@%2")
+					.arg (target , Server_.ServerName_);
+			QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+			ServerManager_->SetMessageIn (serverKey, channelKey, 
+					params.at (params.count () - 2), params.last ());
+		}
+		else
+		{
+			QList<IrcAccount*> list = ServerManager_->GetAccounts (this);
+			QString channelID = ActiveChannels_.at (0).ChannelName_ + 
+					"@" + ActiveChannels_.at (0).ServerName_;
+			Q_FOREACH (IrcAccount *acc, list)
+			{
+				acc->GetClientConnection ()->GetChannelCLEntries (channelID);
+			}
+			
+		}
 	}
 
 	void IrcServer::setNewParticipant (const QStringList& params)

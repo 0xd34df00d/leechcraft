@@ -70,25 +70,25 @@ namespace Acetamide
 
 	void IrcMessage::Send ()
 	{
-// 		if (Direction_ == DIn)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< "tried to send incoming message";
-// 			return;
-// 		}
-// 
-// 		switch (Type_)
-// 		{
-// 		case MTChatMessage:
-// 		case MTMUCMessage:
-// 			//Connection_->GetClient ()->sendPacket (Message_);
-// 			return;
-// 		case MTServiceMessage:
-// 			qWarning () << Q_FUNC_INFO
-// 					<< this
-// 					<< "cannot send a service message";
-// 			break;
-// 		}
+		if (Direction_ == DIn)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "tried to send incoming message";
+			return;
+		}
+
+		switch (Type_)
+		{
+		case MTChatMessage:
+		case MTMUCMessage:
+			Connection_->SetPrivateMessage (Connection_->GetAccount (), this);
+			return;
+		case MTServiceMessage:
+			qWarning () << Q_FUNC_INFO
+					<< this
+					<< "cannot send a service message";
+			break;
+		}
 	}
 
 	IMessage::Direction IrcMessage::GetDirection () const

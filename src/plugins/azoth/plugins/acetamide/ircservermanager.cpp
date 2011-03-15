@@ -18,6 +18,7 @@
 
 #include "ircservermanager.h"
 #include "ircaccount.h"
+#include "ircmessage.h"
 #include "clientconnection.h"
 
 namespace LeechCraft
@@ -86,6 +87,12 @@ namespace Acetamide
 		serv->SendPublicMessage (message, channel);
 	}
 
+	void IrcServerManager::SetPrivateMessageOut (IrcAccount *acc, IrcMessage *msg)
+	{
+		IrcServer_ptr serv = Account2Server [acc];
+		serv->SendPrivateMessage (msg);
+	}
+
 	void IrcServerManager::LeaveChannel (const QString& channel, IrcAccount *acc)
 	{
 		IrcServer_ptr serv = Account2Server [acc];
@@ -110,6 +117,15 @@ namespace Acetamide
 				Q_FOREACH (IrcAccount *acc, Account2Server.keys (serv))
 					acc->GetClientConnection ()->
 							SetUserLeave (channelKey, nick, msg);
+	}
+
+	QList<IrcAccount*> IrcServerManager::GetAccounts (IrcServer *server) const
+	{
+		QList<IrcAccount*> accList;
+		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())
+			if (serv->GetServerKey () == server->GetServerKey ())
+				accList << Account2Server.key (serv);
+		return accList;
 	}
 
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)

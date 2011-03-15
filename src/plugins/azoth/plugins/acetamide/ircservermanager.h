@@ -32,6 +32,8 @@ namespace Acetamide
 {
 
 	class IrcAccount;
+	class IrcMessage;
+	class ClientConnection;
 
 	class IrcServerManager : public QObject
 	{
@@ -44,9 +46,11 @@ namespace Acetamide
 		void SetCLEntries (const QString&, const QString&, const QString&);
 		void SetMessageIn (const QString&, const QString&, const QString&, const QString&);
 		void SetMessageOut (const QString&, const ChannelOptions&, IrcAccount*);
+		void SetPrivateMessageOut (IrcAccount*, IrcMessage*);
 		void LeaveChannel (const QString&, IrcAccount*);
 		void SetNewParticipant (const QString&, const QString&, const QString&);
 		void SetUserLeave (const QString&, const QString&, const QString&, const QString&);
+		QList<IrcAccount*> GetAccounts (IrcServer*) const;
 	public slots:
 		void changeState (const QString&, ConnectionState);
 		void handleAnswer (const QString&, const QString&);

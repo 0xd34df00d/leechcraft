@@ -104,10 +104,11 @@ namespace Acetamide
 		emit gotMessage (msg);
 	}
 
-
 	QString ChannelParticipantEntry::GetChannelID () const
 	{
-		return ChannelHandler_->GetChannelID () + "/" + NickName_;
+		return ChannelHandler_->GetServerOptions ().ServerName_ + ":" +
+				QString::number (ChannelHandler_->GetServerOptions ().ServerPort_) + "/" + 
+				NickName_;
 	}
 
 	QString ChannelParticipantEntry::GetNick () const
@@ -156,26 +157,3 @@ namespace Acetamide
 };
 };
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

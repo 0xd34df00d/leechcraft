@@ -79,7 +79,7 @@ namespace Acetamide
 				IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}
 
-	void IrcParser::PrivMessageCommand (const QString& text, const ChannelOptions& channel)
+	void IrcParser::PublicMessageCommand (const QString& text, const ChannelOptions& channel)
 	{
 		QTextCodec *codec = QTextCodec::codecForName (IrcServer_->GetEncoding ().toUtf8 ());
 		QString mess =  codec->fromUnicode (text);
@@ -89,6 +89,15 @@ namespace Acetamide
 		QStringList params;
 		params << channel.ChannelName_ << mess << IrcServer_->GetNickName ();
 		IrcServer_->readMessage (params);
+	}
+
+	void IrcParser::PrivateMessageCommand (const QString& message, const QString& target)
+	{
+		QTextCodec *codec = QTextCodec::codecForName (IrcServer_->GetEncoding ().toUtf8 ());
+		QString mess =  codec->fromUnicode (message);
+		QString msg = QString ("PRIVMSG " + target + " :" + mess + "\r\n");
+		Core::Instance ().GetSocketManager ()->
+				SendCommand (msg, IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}
 
 	void IrcParser::HandleServerReply (const QString& result)
