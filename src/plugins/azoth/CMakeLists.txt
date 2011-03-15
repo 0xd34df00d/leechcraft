@@ -47,6 +47,7 @@ SET (SRCS
 	notificationactionhandler.cpp
 	groupeditordialog.cpp
 	transferjobmanager.cpp
+	addaccountwizardfirstpage.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -67,6 +68,7 @@ SET (HEADERS
 	notificationactionhandler.h
 	groupeditordialog.h
 	transferjobmanager.h
+	addaccountwizardfirstpage.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -81,6 +83,7 @@ SET (FORMS
 	addcontactdialog.ui
 	joinconferencedialog.ui
 	groupeditordialog.ui
+	addaccountwizardfirstpage.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS

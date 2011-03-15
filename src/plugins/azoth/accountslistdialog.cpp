@@ -18,10 +18,12 @@
 
 #include "accountslistdialog.h"
 #include <QMenu>
+#include <QWizard>
 #include <QStandardItemModel>
 #include "interfaces/iaccount.h"
 #include "interfaces/iprotocol.h"
 #include "core.h"
+#include "addaccountwizardfirstpage.h"
 
 namespace LeechCraft
 {
@@ -36,7 +38,7 @@ namespace Azoth
 
 		addMenu->addActions (Core::Instance ().GetAccountCreatorActions ());
 
-		Ui_.Add_->setMenu (addMenu);
+		//Ui_.Add_->setMenu (addMenu);
 
 		connect (&Core::Instance (),
 				SIGNAL (accountAdded (IAccount*)),
@@ -62,6 +64,15 @@ namespace Azoth
 		AccModel_->appendRow (item);
 
 		Account2Item_ [acc] = item;
+	}
+	
+	void AccountsListDialog::on_Add__released ()
+	{
+		QWizard *wizard = new QWizard (this);
+		wizard->setWindowTitle (tr ("Add account"));
+		wizard->addPage (new AddAccountWizardFirstPage (wizard));
+		
+		wizard->show ();
 	}
 
 	void AccountsListDialog::on_Modify__released ()

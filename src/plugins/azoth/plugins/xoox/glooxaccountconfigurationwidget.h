@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "glooxaccountconfigurationdialog.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONWIDGET_H
+#include <QWidget>
+#include "ui_glooxaccountconfigurationwidget.h"
 
 namespace LeechCraft
 {
@@ -24,16 +27,30 @@ namespace Azoth
 {
 namespace Xoox
 {
-	GlooxAccountConfigurationDialog::GlooxAccountConfigurationDialog (QWidget *parent)
-	: QDialog (parent)
+	class GlooxAccountConfigurationWidget : public QWidget
 	{
-		Ui_.setupUi (this);
-	}
-	
-	GlooxAccountConfigurationWidget* GlooxAccountConfigurationDialog::W () const
-	{
-		return Ui_.ConfWidget_;
-	}
+		Q_OBJECT
+
+		Ui::GlooxAccountConfigurationWidget Ui_;
+	public:
+		GlooxAccountConfigurationWidget (QWidget* = 0);
+
+		QString GetJID () const;
+		void SetJID (const QString&);
+		QString GetNick () const;
+		void SetNick (const QString&);
+		QString GetResource () const;
+		void SetResource (const QString&);
+		short GetPriority () const;
+		void SetPriority (short);
+
+		QString GetHost () const;
+		void SetHost (const QString&);
+		int GetPort () const;
+		void SetPort (int);
+	};		
 }
 }
 }
+		
+#endif

@@ -26,6 +26,7 @@
 #include "glooxaccount.h"
 #include "core.h"
 #include "joingroupchatwidget.h"
+#include "glooxaccountconfigurationwidget.h"
 
 namespace LeechCraft
 {
@@ -114,6 +115,32 @@ namespace Xoox
 		emit accountAdded (account);
 
 		account->ChangeState (EntryStatus (SOnline, QString ()));
+	}
+	
+	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets ()
+	{
+		QList<QWidget*> result;
+		result << new GlooxAccountConfigurationWidget ();
+		return result;
+	}
+	
+	void GlooxProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
+	{
+		GlooxAccountConfigurationWidget *w =
+				qobject_cast<GlooxAccountConfigurationWidget*> (widgets.value (0));
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got invalid widgets"
+					<< widgets;
+			return;
+		}
+		
+		GlooxAccount *account = new GlooxAccount (name, this);
+		account->FillSettings (w);
+		Accounts_ << account;
+		saveAccounts ();
+		emit accountAdded (account);
 	}
 
 	QWidget* GlooxProtocol::GetMUCJoinWidget ()

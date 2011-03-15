@@ -129,6 +129,17 @@ namespace Acetamide
 
 // 		account->ChangeState (EntryStatus (SOnline, QString ()));
 	}
+	
+	QList<QWidget*> IrcProtocol::GetAccountRegistrationWidgets ()
+	{
+		QList<QWidget*> result;
+		//result << new IrcAccountConfigurationDialog (0);
+		return result;
+	}
+	
+	void IrcProtocol::RegisterAccount (const QString&, const QList<QWidget*>&)
+	{
+	}
 
 	QWidget* IrcProtocol::GetMUCJoinWidget ()
 	{
