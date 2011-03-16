@@ -81,6 +81,7 @@ namespace Xoox
 		/** Entry ID for GlooxCLEntry is its jid.
 		 */
 		QString GetEntryID () const;
+		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;

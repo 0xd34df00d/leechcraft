@@ -214,15 +214,17 @@ namespace Azoth
 
 		/** @brief Returns the ID of this entry.
 		 *
-		 * The ID must be unique among all entries of this protocol and
-		 * should not depend on the value returned by GetEntryName()
-		 * (the human-readable name).
+		 * The ID must be unique among all entries and should not depend
+		 * on the value returned by GetEntryName() (the human-readable
+		 * name).
 		 *
 		 * The main difference between this and GetHumanReadableID() is
 		 * that GetEntryID() is used for distinguishing different items
 		 * in the contact list (and there may be several items for one
 		 * remote), while GetHumanReadableID() is used to distinguish
-		 * different remotes between each other.
+		 * different remotes between each other. Also, GetEntryID()
+		 * should be unique globally (for example, it may contain ID of
+		 * the account in it).
 		 *
 		 * @return The unique and persistent ID of this entry.
 		 *

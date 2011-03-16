@@ -75,6 +75,11 @@ namespace Xoox
 
 	QString RoomParticipantEntry::GetEntryID () const
 	{
+		return Account_->GetAccountID () + '_' + ID_;
+	}
+	
+	QString RoomParticipantEntry::GetHumanReadableID () const
+	{
 		return ID_;
 	}
 
