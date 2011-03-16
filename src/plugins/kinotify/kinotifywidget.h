@@ -64,6 +64,7 @@ namespace LeechCraft
 				void SetActions (const QStringList&, QObject*);
 			protected:
 				virtual void mousePressEvent (QMouseEvent*);
+				virtual void showEvent (QShowEvent*);
 			public slots:
 				void stateMachinePause ();
 				void closeNotification ();
@@ -72,7 +73,7 @@ namespace LeechCraft
 			private:
 				void CreateWidget ();
 				void LoadTheme (const QString&);
-				QSize SetData ();
+				void SetData ();
 				void SetWidgetPlace ();
 				void ShowNotification ();
 			signals:

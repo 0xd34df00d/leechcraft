@@ -167,11 +167,17 @@ namespace LeechCraft
 					mouseReleaseEvent (event);
 			}
 
+			void KinotifyWidget::showEvent (QShowEvent *event)
+			{
+				DefaultSize_ = page ()->mainFrame ()->contentsSize ();
+				resize (DefaultSize_);
+				SetWidgetPlace ();
+			}
+
 			void KinotifyWidget::PrepareNotification ()
 			{
 				CreateWidget ();
-				DefaultSize_ = SetData ();
-				SetWidgetPlace ();
+				SetData ();
 				ShowNotification ();
 			}
 
@@ -276,7 +282,7 @@ namespace LeechCraft
 							MakeImage (themePath + "/img/" + elem));
 			}
 
-			QSize KinotifyWidget::SetData ()
+			void KinotifyWidget::SetData ()
 			{
 				QString data = Theme_;
 				data.replace ("{title}", Title_);
@@ -298,17 +304,6 @@ namespace LeechCraft
 											.arg (name));
 					}
 				}
-
-				int width = size ().width ();
-				int height = size ().height ();
-
-				QSize contents = page ()->mainFrame ()->contentsSize ();
-				int cheight = contents.height ();
-
-				if (cheight > height)
-					height = cheight;
-
-				return QSize (width, height);
 			}
 
 			void KinotifyWidget::SetWidgetPlace ()
