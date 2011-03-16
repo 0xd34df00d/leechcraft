@@ -118,7 +118,7 @@ namespace Acetamide
 	void Core::CreateDefaultAccount ()
 	{
 		QString defaultAccountName ("DefaultIrcAccount");
-		QString defaultNick = QString ("leechraft") + 
+		QString defaultNick = QString ("leechcraft") + 
 				QString::number (10 + qrand () % 89);
 		
 		DefaultAccount_ = new IrcAccount (defaultAccountName, IrcProtocol_.get ());
