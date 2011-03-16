@@ -40,13 +40,15 @@ namespace LeechCraft
 			IInfo *ii = qobject_cast<IInfo*> (obj);
 			try
 			{
-				QString name = ii->GetName ();
-				QString info = ii->GetInfo ();
-				QIcon icon = ii->GetIcon ();
-				NewTabMenu_->addAction (icon,
+				const QString& name = ii->GetName ();
+				const QString& info = ii->GetInfo ();
+				const QIcon& icon = ii->GetIcon ();
+				QAction *newAct = NewTabMenu_->addAction (icon,
 						AccelerateName (name),
 						obj,
-						SLOT (newTabRequested ()))->setToolTip (info);
+						SLOT (newTabRequested ()));
+				newAct->setStatusTip (info);
+				newAct->setToolTip (info);
 			}
 			catch (const std::exception& e)
 			{
@@ -70,6 +72,7 @@ namespace LeechCraft
 		{
 			const QString& name = ii->GetName ();
 			const QIcon& icon = ii->GetIcon ();
+			const QString& info = ii->GetInfo ();
 
 			QAction *action = 0;
 			Q_FOREACH (QAction *act, NewTabMenu_->actions ())
@@ -96,6 +99,8 @@ namespace LeechCraft
 						SLOT (restoreEmbedTab ()));
 				emit restoreTabActionAdded (action);
 			}
+			action->setToolTip (info);
+			action->setStatusTip (info);
 			action->setData (QVariant::fromValue<QObject*> (obj));
 		}
 		catch (const std::exception& e)
