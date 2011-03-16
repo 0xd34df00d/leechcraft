@@ -23,6 +23,8 @@
 #include "channelpublicmessage.h"
 #include "channelhandler.h"
 #include "channelclentry.h"
+#include "privatechatentry.h"
+#include "privatechatmanager.h"
 #include "ircmessage.h"
 
 namespace LeechCraft
@@ -93,9 +95,12 @@ namespace Acetamide
 	QObject* ChannelParticipantEntry::CreateMessage (IMessage::MessageType type,
 			const QString& , const QString& body)
 	{
-		IrcMessage *msg = ChannelHandler_->CreateMessage (type, NickName_, body);
-		AllMessages_ << msg;
-		return msg;
+/*	PrivateChatEntry_ptr entry =  Core::Instance ().
+				GetPrivateChatManager ()->GetChatEntry (NickName_, ChannelHandler_, Account_);
+		IrcMessage *msg = entry->CreateMessage (type, QString (), body);*/
+// 		IrcMessage *msg = ChannelHandler_->CreateMessage (type, NickName_, body);
+// 		AllMessages_ << msg;
+// 		return msg;
 	}
 
 	void ChannelParticipantEntry::HandleMessage (IrcMessage *msg)

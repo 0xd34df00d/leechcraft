@@ -40,6 +40,7 @@ namespace Acetamide
 		IrcProtocol_.reset (new IrcProtocol (this));
 		SocketManager_.reset (new SocketManager (this));
 		ServerManager_.reset (new IrcServerManager (this));
+		PrivateChatManager_.reset (new PrivateChatManager (this));
 	}
 
 	Core& Core::Instance ()
@@ -58,6 +59,7 @@ namespace Acetamide
 	{
 		SocketManager_.reset ();
 		ServerManager_.reset ();
+		PrivateChatManager_.reset ();
 		IrcProtocol_.reset ();
 	}
 
@@ -113,6 +115,11 @@ namespace Acetamide
 	boost::shared_ptr<IrcServerManager> Core::GetServerManager () const
 	{
 		return ServerManager_;
+	}
+
+	boost::shared_ptr<PrivateChatManager> Core::GetPrivateChatManager () const
+	{
+		return PrivateChatManager_;
 	}
 
 	void Core::CreateDefaultAccount ()

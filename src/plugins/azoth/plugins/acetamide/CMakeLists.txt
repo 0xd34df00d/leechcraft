@@ -22,6 +22,8 @@ SET (ACETAMIDE_SRCS
 	ircserver.cpp
 	ircservermanager.cpp
 	localtypes.cpp
+	privatechatentry.cpp
+	privatechatmanager.cpp
 	socketmanager.cpp
 	)
 
@@ -45,6 +47,8 @@ SET (ACETAMIDE_HEADERS
 	ircserver.h
 	ircservermanager.h
 	localtypes.h
+	privatechatentry.cpp
+	privatechatmanager.cpp
 	socketmanager.h
 	)
 
