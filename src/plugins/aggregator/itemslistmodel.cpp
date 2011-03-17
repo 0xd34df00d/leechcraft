@@ -220,7 +220,8 @@ namespace LeechCraft
 						CurrentItems_ [index.row ()].Unread_)
 					return XmlSettingsManager::Instance ()->
 						property ("UnreadItemsFont");
-				else if (role == Qt::ToolTipRole)
+				else if (role == Qt::ToolTipRole &&
+						XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
 				{
 					IDType_t id = CurrentItems_ [index.row ()].ItemID_;
 					Item_ptr item = Core::Instance ()

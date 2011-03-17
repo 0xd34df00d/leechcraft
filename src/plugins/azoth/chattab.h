@@ -98,7 +98,7 @@ namespace Azoth
 		void handleFileNoLongerOffered (QObject*);
 		void handleOfferActionTriggered ();
 		void handleEntryMessage (QObject*);
-		void handleVariantsChanged (const QStringList&);
+		void handleVariantsChanged (QStringList);
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);
 		void handleViewLinkClicked (const QUrl&);

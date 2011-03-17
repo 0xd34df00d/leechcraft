@@ -100,7 +100,7 @@ namespace Azoth
 		connect (GetEntry<QObject> (),
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
-				SLOT (handleVariantsChanged (const QStringList&)));
+				SLOT (handleVariantsChanged (QStringList)));
 
 		PrepareTheme ();
 
@@ -467,8 +467,12 @@ namespace Azoth
 		AppendMessage (msg);
 	}
 
-	void ChatTab::handleVariantsChanged (const QStringList& variants)
+	void ChatTab::handleVariantsChanged (QStringList variants)
 	{
+		if (!variants.isEmpty () &&
+				!variants.contains (QString ()))
+			variants.prepend (QString ());
+
 		if (variants.size () == Ui_.VariantBox_->count ())
 		{
 			bool samelist = true;
@@ -486,13 +490,18 @@ namespace Azoth
 		const QString& current = Ui_.VariantBox_->currentText ();
 		Ui_.VariantBox_->clear ();
 
-		Ui_.VariantBox_->addItems (variants);
+		Q_FOREACH (const QString& variant, variants)
+		{
+			const State& st = GetEntry<ICLEntry> ()->GetStatus (variant).State_;
+			const QIcon& icon = Core::Instance ().GetIconForState (st);
+			Ui_.VariantBox_->addItem (icon, variant);
+		}
+
 		if (!variants.isEmpty ())
 		{
 			const int pos = std::max (0, Ui_.VariantBox_->findText (current));
 			Ui_.VariantBox_->setCurrentIndex (pos);
 		}
-		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
@@ -500,15 +509,24 @@ namespace Azoth
 	{
 		const QStringList& vars = GetEntry<ICLEntry> ()->Variants ();
 
+		const QIcon& icon = Core::Instance ().GetIconForState (status.State_);
+
 		if (status.State_ == SOffline)
 			handleVariantsChanged (vars);
+		else
+			for (int i = 0; i < Ui_.VariantBox_->count (); ++i)
+				if (variant == Ui_.VariantBox_->itemText (i))
+				{
+					Ui_.VariantBox_->setItemIcon (i, icon);
+					break;
+				}
 
 		if (!variant.isEmpty () &&
 				vars.size () &&
 				vars.value (0) != variant)
 			return;
 
-		TabIcon_ = Core::Instance ().GetIconForState (status.State_);
+		TabIcon_ = icon;
 		UpdateStateIcon ();
 	}
 
