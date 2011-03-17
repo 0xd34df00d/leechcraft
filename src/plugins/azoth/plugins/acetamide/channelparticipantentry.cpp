@@ -94,27 +94,27 @@ namespace Acetamide
 	QObject* ChannelParticipantEntry::CreateMessage (IMessage::MessageType type,
 			const QString& , const QString& body)
 	{
-// 		QString key =  ChannelHandler_->GetServerOptions ().ServerName_ + ":" 
-// 				+ QString::number (ChannelHandler_->GetServerOptions ().ServerPort_);
-// 		IrcServer_ptr serv = Core::Instance ().GetServerManager ()->GetServer (key);
-// 		PrivateChatEntry_ptr entry = Core::Instance ()
-// 				.GetPrivateChatManager ()->GetChatEntry (NickName_, serv.get (), Account_);
-// 		IrcMessage *msg = CreateMessage (type, NickName_, body);
-// 		IrcMessage *mess = qobject_cast<IrcMessage*> (msg);
-// 		if (!mess)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< "is not an object of IrcMessage"
-// 					<< msg;
-// 			return 0;
-// 		}
-		IrcMessage *mess = ChannelHandler_->CreateMessage (type, NickName_, body);
+		QString key =  ChannelHandler_->GetServerOptions ().ServerName_ + ":" 
+				+ QString::number (ChannelHandler_->GetServerOptions ().ServerPort_);
+		IrcServer_ptr serv = Core::Instance ().GetServerManager ()->GetServer (key);
+		PrivateChatEntry_ptr entry = Core::Instance ()
+				.GetPrivateChatManager ()->GetChatEntry (NickName_, serv.get (), Account_);
+		QObject *msg = entry->CreateMessage (type, NickName_, body);
+		IrcMessage *mess = qobject_cast<IrcMessage*> (msg);
+		if (!mess)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "is not an object of IrcMessage"
+					<< msg;
+			return 0;
+		}
 		AllMessages_ << mess;
 		return mess;
 	}
 
 	void ChannelParticipantEntry::HandleMessage (IrcMessage *msg)
 	{
+		qDebug () << "ADSSADS";
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}

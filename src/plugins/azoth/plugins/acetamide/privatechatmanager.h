@@ -45,6 +45,8 @@ namespace Acetamide
 		IrcMessage* CreateMessage (IMessage::MessageType, const QString&, const QString&);
 	private:
 		PrivateChatEntry_ptr CreateNewChatEntry (const QString&, IrcServer*, IrcAccount*);
+	signals:
+		void gotCLItems (const QList<QObject*>&);
 	};
 };
 };

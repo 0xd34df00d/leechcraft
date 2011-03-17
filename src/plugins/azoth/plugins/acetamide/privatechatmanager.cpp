@@ -36,6 +36,7 @@ namespace Acetamide
 		{
 			PrivateChatEntry_ptr entry (CreateNewChatEntry (nick, srv, acc));
 			Nick2Entry [nick] = entry;
+			emit gotCLItems (QList<QObject*> () << entry.get ());
 			return entry;
 		}
 		else

@@ -56,6 +56,11 @@ namespace Acetamide
 	{
 		if (ChannelHandlers_.contains (key))
 			return ChannelHandlers_ [key]->GetParticipantEntry (nick).get ();
+		else
+		{
+			return Core::Instance ().GetPrivateChatManager ()->
+					GetChatEntry (nick, IrcServers_ [key].get (), Account_).get ();
+		}
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const

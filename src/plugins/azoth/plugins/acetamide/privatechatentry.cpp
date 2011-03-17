@@ -93,7 +93,7 @@ namespace Acetamide
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
 				IMessage::DOut,
-				Account_->GetAccountName () + "/" + Nick_,
+				Server_->GetHost () + ":" + QString::number (Server_->GetPort ()),
 				Nick_,
 				Account_->GetClientConnection ().get ());
 		message->SetBody (body);
@@ -105,6 +105,7 @@ namespace Acetamide
 
 	void PrivateChatEntry::HandleMessage (IrcMessage *msg)
 	{
+		qDebug () << "INBOX" << msg->GetDateTime () << msg->GetOtherVariant () << msg->GetBody ();
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}

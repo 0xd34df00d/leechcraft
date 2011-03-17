@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "ircserver.h"
+#include <QTextCodec>
 #include "ircparser.h"
 #include "ircmessage.h"
 #include "ircaccount.h"
@@ -159,19 +160,21 @@ namespace Acetamide
 		}
 		else
 		{
-// 			Q_FOREACH (IrcAccount *acc, ServerManager_->GetAccounts ())
-// 			{
-// 				PrivateChatEntry_ptr entry = Core::Instance ()
-// 					.GetPrivateChatManager ()->GetChatEntry (target, ,acc);
-// 				IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
-// 						IMessage::DOut,
-// 						entry->GetChannelID (),
-// 						params.last (),
-// 						acc->GetClientConnection ().get ());
-// 				message->SetBody (params.at (params.count () - 2));
-// 				message->SetDateTime (QDateTime::currentDateTime ());
-// 				entry->HandleMessage (message);
-// 			}
+			Q_FOREACH (IrcAccount *acc, ServerManager_->GetAccounts (this))
+			{
+				PrivateChatEntry_ptr entry = Core::Instance ()
+						.GetPrivateChatManager ()->GetChatEntry (target, this, acc);
+				IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
+						IMessage::DIn,
+						GetHost () + ":" + QString::number (GetPort ()),
+						params.last (),
+						acc->GetClientConnection ().get ());
+				QTextCodec *codec = QTextCodec::codecForName (GetEncoding ().toUtf8 ());
+				QString mess =  codec->toUnicode (params.at (params.count () - 2).toAscii ());
+				message->SetBody (mess);
+				message->SetDateTime (QDateTime::currentDateTime ());
+				entry->HandleMessage (message);
+			}
 		}
 	}
 
