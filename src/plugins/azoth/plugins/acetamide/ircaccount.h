@@ -24,6 +24,7 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
 #include "core.h"
+#include "privatechatmanager.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,7 @@ namespace Acetamide
 		QList<ChannelOptions> Channels_;
 		
 		boost::shared_ptr<ClientConnection> ClientConnection_;
+		boost::shared_ptr<PrivateChatManager> PrivateChatManager_;
 		State IrcAccountState;
 	public:
 		IrcAccount (const QString&, QObject*);
@@ -80,7 +82,7 @@ namespace Acetamide
 		QObject* GetTransferManager () const;
 		void JoinRoom (const ServerOptions&, const ChannelOptions&);
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
-		
+		boost::shared_ptr<PrivateChatManager> GetPrivateChatManager () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 	private:

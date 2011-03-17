@@ -38,13 +38,13 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
+		IrcAccount *Account_; 
 		QHash<QString, PrivateChatEntry_ptr> Nick2Entry;
 	public:
-		PrivateChatManager (QObject*);
-		PrivateChatEntry_ptr GetChatEntry (const QString&, IrcServer *, IrcAccount*);
-		IrcMessage* CreateMessage (IMessage::MessageType, const QString&, const QString&);
+		PrivateChatManager (IrcAccount*);
+		PrivateChatEntry_ptr GetChatEntry (const QString&, IrcServer *);
 	private:
-		PrivateChatEntry_ptr CreateNewChatEntry (const QString&, IrcServer*, IrcAccount*);
+		PrivateChatEntry_ptr CreateNewChatEntry (const QString&, IrcServer*);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 	};

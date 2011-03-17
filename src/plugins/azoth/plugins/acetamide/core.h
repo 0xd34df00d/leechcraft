@@ -45,7 +45,6 @@ namespace Acetamide
 		boost::shared_ptr<IrcProtocol> IrcProtocol_;
 		boost::shared_ptr<SocketManager> SocketManager_;
 		boost::shared_ptr<IrcServerManager> ServerManager_;
-		boost::shared_ptr<PrivateChatManager> PrivateChatManager_;
 		QObject *PluginProxy_;
 		IrcAccount *DefaultAccount_;
 		QString DefaultUserName_;
@@ -66,7 +65,6 @@ namespace Acetamide
 		QString GetDefaultUserName () const;
 		boost::shared_ptr<SocketManager> GetSocketManager () const;
 		boost::shared_ptr<IrcServerManager> GetServerManager () const;
-		boost::shared_ptr<PrivateChatManager> GetPrivateChatManager () const;
 	private:
 		void CreateDefaultAccount ();
 	private slots:

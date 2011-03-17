@@ -162,6 +162,7 @@ namespace Acetamide
 		while (socket->canReadLine ())
 		{
 			QString str = socket->readLine ();
+			qDebug () << str;
 			emit gotAnswer (Server2Socket_.key (socket), 
 					str);
 		}

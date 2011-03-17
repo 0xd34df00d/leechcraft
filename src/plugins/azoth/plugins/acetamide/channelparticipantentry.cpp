@@ -97,8 +97,8 @@ namespace Acetamide
 		QString key =  ChannelHandler_->GetServerOptions ().ServerName_ + ":" 
 				+ QString::number (ChannelHandler_->GetServerOptions ().ServerPort_);
 		IrcServer_ptr serv = Core::Instance ().GetServerManager ()->GetServer (key);
-		PrivateChatEntry_ptr entry = Core::Instance ()
-				.GetPrivateChatManager ()->GetChatEntry (NickName_, serv.get (), Account_);
+		PrivateChatEntry_ptr entry = Account_->
+				GetPrivateChatManager ()->GetChatEntry (NickName_, serv.get ());
 		QObject *msg = entry->CreateMessage (type, NickName_, body);
 		IrcMessage *mess = qobject_cast<IrcMessage*> (msg);
 		if (!mess)
@@ -110,11 +110,13 @@ namespace Acetamide
 		}
 		AllMessages_ << mess;
 		return mess;
+// 		IrcMessage *msg = ChannelHandler_->CreateMessage (type, NickName_, body);
+// 		AllMessages_ << msg;
+// 		return msg;
 	}
 
 	void ChannelParticipantEntry::HandleMessage (IrcMessage *msg)
 	{
-		qDebug () << "ADSSADS";
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}
