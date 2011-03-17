@@ -100,7 +100,7 @@ namespace Azoth
 		connect (GetEntry<QObject> (),
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
-				SLOT (handleVariantsChanged (const QStringList&)));
+				SLOT (handleVariantsChanged (QStringList)));
 
 		PrepareTheme ();
 
@@ -467,8 +467,12 @@ namespace Azoth
 		AppendMessage (msg);
 	}
 
-	void ChatTab::handleVariantsChanged (const QStringList& variants)
+	void ChatTab::handleVariantsChanged (QStringList variants)
 	{
+		if (!variants.isEmpty () &&
+				!variants.contains (QString ()))
+			variants.prepend (QString ());
+
 		if (variants.size () == Ui_.VariantBox_->count ())
 		{
 			bool samelist = true;
@@ -492,7 +496,6 @@ namespace Azoth
 			const int pos = std::max (0, Ui_.VariantBox_->findText (current));
 			Ui_.VariantBox_->setCurrentIndex (pos);
 		}
-		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
