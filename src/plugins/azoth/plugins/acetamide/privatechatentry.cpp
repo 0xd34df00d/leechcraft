@@ -28,10 +28,10 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	PrivateChatEntry::PrivateChatEntry (const QString& nick, ChannelHandler *ch, IrcAccount *account)
-	: Account_ (account)
+	PrivateChatEntry::PrivateChatEntry (const QString& nick, IrcServer *server, IrcAccount *acc)
+	: Account_ (acc)
+	, Server_ (server)
 	, Nick_ (nick)
-	, ChannelHandler_ (ch)
 	{
 	}
 
@@ -42,7 +42,7 @@ namespace Acetamide
 
 	QObject* PrivateChatEntry::GetParentCLEntry () const
 	{
-		return ChannelHandler_->GetCLEntry ();
+		return NULL;
 	}
 
 	ICLEntry::Features PrivateChatEntry::GetEntryFeatures () const
@@ -68,15 +68,15 @@ namespace Acetamide
 	
 	QString PrivateChatEntry::GetEntryID () const
 	{
-		return ChannelHandler_->GetServerOptions ().ServerName_ + 
-				":" + QString::number (ChannelHandler_->GetServerOptions ().ServerPort_) + 
+		return Server_->GetHost () + 
+				":" + QString::number (Server_->GetPort ()) + 
 				"/" + Nick_;
 	}
 
 	QStringList PrivateChatEntry::Groups () const
 	{
 		return QStringList (tr ("%1 participants")
-				.arg (ChannelHandler_->GetChannelID ()));
+				.arg (Server_->GetServerKey ()));
 	}
 
 	void PrivateChatEntry::SetGroups (const QStringList&)
@@ -91,23 +91,22 @@ namespace Acetamide
 	QObject* PrivateChatEntry::CreateMessage (IMessage::MessageType type,
 			const QString& , const QString& body)
 	{
-		qDebug () << "QWE";
-		IrcMessage *msg = ChannelHandler_->CreateMessage (type, Nick_, body);
-// 		AllMessages_ << msg;
-		return msg;
+		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
+				IMessage::DOut,
+				Account_->GetAccountName () + "/" + Nick_,
+				Nick_,
+				Account_->GetClientConnection ().get ());
+		message->SetBody (body);
+		message->SetDateTime (QDateTime::currentDateTime ());
+		AllMessages_ << message;
+
+		return message;
 	}
 
 	void PrivateChatEntry::HandleMessage (IrcMessage *msg)
 	{
-// 		AllMessages_ << msg;
-// 		emit gotMessage (msg);
-	}
-
-	QString PrivateChatEntry::GetChannelID () const
-	{
-		return ChannelHandler_->GetServerOptions ().ServerName_ + 
-				":" + QString::number (ChannelHandler_->GetServerOptions ().ServerPort_) + 
-				"/" + Nick_;
+		AllMessages_ << msg;
+		emit gotMessage (msg);
 	}
 
 	QString PrivateChatEntry::GetNick () const

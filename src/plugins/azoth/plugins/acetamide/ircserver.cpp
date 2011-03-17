@@ -21,6 +21,7 @@
 #include "ircmessage.h"
 #include "ircaccount.h"
 #include "clientconnection.h"
+#include "privatechatentry.h"
 
 namespace LeechCraft
 {
@@ -158,14 +159,19 @@ namespace Acetamide
 		}
 		else
 		{
-// 			QList<IrcAccount*> list = ServerManager_->GetAccounts (this);
-// 			QString channelID = ActiveChannels_.at (0).ChannelName_ + 
-// 					"@" + ActiveChannels_.at (0).ServerName_;
-// 			Q_FOREACH (IrcAccount *acc, list)
+// 			Q_FOREACH (IrcAccount *acc, ServerManager_->GetAccounts ())
 // 			{
-// 				acc->GetClientConnection ()->GetChannelCLEntries (channelID);
+// 				PrivateChatEntry_ptr entry = Core::Instance ()
+// 					.GetPrivateChatManager ()->GetChatEntry (target, ,acc);
+// 				IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
+// 						IMessage::DOut,
+// 						entry->GetChannelID (),
+// 						params.last (),
+// 						acc->GetClientConnection ().get ());
+// 				message->SetBody (params.at (params.count () - 2));
+// 				message->SetDateTime (QDateTime::currentDateTime ());
+// 				entry->HandleMessage (message);
 // 			}
-			
 		}
 	}
 

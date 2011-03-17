@@ -47,8 +47,8 @@ SET (ACETAMIDE_HEADERS
 	ircserver.h
 	ircservermanager.h
 	localtypes.h
-	privatechatentry.cpp
-	privatechatmanager.cpp
+	privatechatentry.h
+	privatechatmanager.h
 	socketmanager.h
 	)
 

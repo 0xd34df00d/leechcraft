@@ -32,7 +32,7 @@ namespace Acetamide
 
 	class IrcAccount;
 	class IrcMessage;
-	class ChannelHandler;
+	class IrcServer;
 
 	class PrivateChatEntry : public QObject
 							, public ICLEntry
@@ -41,10 +41,11 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry);
 
 		IrcAccount *Account_;
-		ChannelHandler *ChannelHandler_;
+		IrcServer *Server_;
 		QString Nick_;
+		QList<QObject*> AllMessages_;
 	public:
-		PrivateChatEntry (const QString&, ChannelHandler*, IrcAccount*);
+		PrivateChatEntry (const QString&, IrcServer*, IrcAccount*);
 		QObject* GetParentAccount () const ;
 		QObject* GetParentCLEntry () const;
 		Features GetEntryFeatures () const;
@@ -58,7 +59,6 @@ namespace Acetamide
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 		void HandleMessage (IrcMessage*);
-		QString GetChannelID () const;
 		QString GetNick () const;
 
 		QObject* GetObject ();

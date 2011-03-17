@@ -128,6 +128,13 @@ namespace Acetamide
 		return accList;
 	}
 
+	IrcServer_ptr IrcServerManager::GetServer (const QString& key) const
+	{
+		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())
+			if (serv->GetServerKey () == key)
+				return serv;
+	}
+
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)
 	{
 		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())

@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "privatechatmanager.h"
-#include "privatechatentry.h"
-#include "ircaccount.h"
 
 namespace LeechCraft
 {
@@ -31,11 +29,12 @@ namespace Acetamide
 	{
 	}
 
-	PrivateChatEntry_ptr PrivateChatManager::GetChatEntry (const QString& nick, ChannelHandler *ch, IrcAccount *acc)
+	PrivateChatEntry_ptr PrivateChatManager::GetChatEntry (const QString& nick,
+			IrcServer *srv, IrcAccount *acc)
 	{
 		if (!Nick2Entry.contains (nick))
 		{
-			PrivateChatEntry_ptr entry (CreateNewChatEntry (nick, ch, acc));
+			PrivateChatEntry_ptr entry (CreateNewChatEntry (nick, srv, acc));
 			Nick2Entry [nick] = entry;
 			return entry;
 		}
@@ -43,9 +42,9 @@ namespace Acetamide
 			return Nick2Entry.value (nick);
 	}
 
-	PrivateChatEntry_ptr PrivateChatManager::CreateNewChatEntry (const QString& nick, ChannelHandler *ch, IrcAccount *acc)
+	PrivateChatEntry_ptr PrivateChatManager::CreateNewChatEntry (const QString& nick, IrcServer *srv, IrcAccount *acc)
 	{
-		PrivateChatEntry_ptr entry (new PrivateChatEntry (nick, ch, acc));
+		PrivateChatEntry_ptr entry (new PrivateChatEntry (nick, srv, acc));
 		Nick2Entry [nick] = entry;
 		return entry;
 	}

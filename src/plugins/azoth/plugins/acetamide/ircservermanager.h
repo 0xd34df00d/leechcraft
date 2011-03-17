@@ -51,6 +51,7 @@ namespace Acetamide
 		void SetNewParticipant (const QString&, const QString&, const QString&);
 		void SetUserLeave (const QString&, const QString&, const QString&, const QString&);
 		QList<IrcAccount*> GetAccounts (IrcServer*) const;
+		IrcServer_ptr GetServer (const QString&) const;
 	public slots:
 		void changeState (const QString&, ConnectionState);
 		void handleAnswer (const QString&, const QString&);

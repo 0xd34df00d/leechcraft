@@ -31,7 +31,8 @@ namespace Acetamide
 {
 
 	class IrcAccount;
-	class ChannelHandler;
+	class IrcServer;
+	class IrcMessage;
 
 	class PrivateChatManager : public QObject
 	{
@@ -40,9 +41,10 @@ namespace Acetamide
 		QHash<QString, PrivateChatEntry_ptr> Nick2Entry;
 	public:
 		PrivateChatManager (QObject*);
-		PrivateChatEntry_ptr GetChatEntry (const QString&, ChannelHandler*, IrcAccount*);
+		PrivateChatEntry_ptr GetChatEntry (const QString&, IrcServer *, IrcAccount*);
+		IrcMessage* CreateMessage (IMessage::MessageType, const QString&, const QString&);
 	private:
-		PrivateChatEntry_ptr CreateNewChatEntry (const QString&, ChannelHandler*, IrcAccount*);
+		PrivateChatEntry_ptr CreateNewChatEntry (const QString&, IrcServer*, IrcAccount*);
 	};
 };
 };
