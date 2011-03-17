@@ -77,7 +77,7 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetEntryID () const
 	{
-		return CH_->GetChannelID ();
+		return Account_->GetAccountID () + '_' + CH_->GetChannelID ();
 	}
 
 	QString ChannelCLEntry::GetHumanReadableID () const

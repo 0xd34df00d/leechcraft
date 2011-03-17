@@ -60,7 +60,7 @@ namespace Xoox
 
 	QString UnauthCLEntry::GetEntryID () const
 	{
-		return JID_ + "_unauth";
+		return Account_->GetAccountID () + '_' + JID_ + "_unauth";
 	}
 
 	QString UnauthCLEntry::GetHumanReadableID () const

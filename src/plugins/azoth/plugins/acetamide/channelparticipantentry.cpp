@@ -73,7 +73,7 @@ namespace Acetamide
 	
 	QString ChannelParticipantEntry::GetEntryID () const
 	{
-		return ChannelHandler_->GetChannelID () + "/" + NickName_;
+		return Account_->GetAccountID () + '_' + ChannelHandler_->GetChannelID () + "/" + NickName_;
 	}
 
 	QStringList ChannelParticipantEntry::Groups () const

@@ -130,6 +130,11 @@ namespace Xoox
 		if (ODS_)
 			return ODS_->ID_;
 
+		return Account_->GetAccountID () + '_' + BareJID_;
+	}
+	
+	QString GlooxCLEntry::GetHumanReadableID() const
+	{
 		return BareJID_;
 	}
 
