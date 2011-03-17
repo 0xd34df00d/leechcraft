@@ -132,7 +132,7 @@ namespace Acetamide
 	void IrcServer::setTopic (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (params.at (params.count () - 3), Server_.ServerName_);
+				.arg (params.at (params.count () - 3).toLower (), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		ServerManager_->SetTopic (serverKey, channelKey, params.at (params.count () - 2));
 	}
@@ -140,14 +140,14 @@ namespace Acetamide
 	void IrcServer::setCLEntries (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (params.at (params.count () - 3) , Server_.ServerName_);
+				.arg (params.at (params.count () - 3).toLower () , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		ServerManager_->SetCLEntries (serverKey, channelKey, params.at (params.count () - 2));
 	}
 
 	void IrcServer::readMessage (const QStringList& params)
 	{
-		QString target = params.at (params.count () - 3);
+		QString target = params.at (params.count () - 3).toLower ();
 		if (target.startsWith ("#") || 
 				target.startsWith ("+") || target.startsWith ("!") || 
 				target.startsWith ("&") || target.startsWith ("$"))
@@ -155,6 +155,7 @@ namespace Acetamide
 			QString channelKey = QString ("%1@%2")
 					.arg (target , Server_.ServerName_);
 			QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+			qDebug () << "READ" << channelKey << serverKey;
 			ServerManager_->SetMessageIn (serverKey, channelKey, 
 					params.at (params.count () - 2), params.last ());
 		}
@@ -181,7 +182,7 @@ namespace Acetamide
 	void IrcServer::setNewParticipant (const QStringList& params)
 	{
 		QString channelKey = QString ("%1@%2")
-				.arg (params.at (params.count () - 2).simplified () , Server_.ServerName_);
+				.arg (params.at (params.count () - 2).simplified ().toLower () , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		ServerManager_->SetNewParticipant (serverKey, channelKey, params.last ());
 	}
@@ -193,13 +194,13 @@ namespace Acetamide
 		if (params.count () > 2)
 		{
 			channelKey = QString ("%1@%2")
-					.arg (params.at (params.count () - 3) , Server_.ServerName_);
+					.arg (params.at (params.count () - 3).toLower () , Server_.ServerName_);
 			leaveMsg = params.at (params.count () - 2);
 		}
 		else
 		{
 			channelKey = QString ("%1@%2")
-					.arg (params.first ().simplified (), Server_.ServerName_);
+					.arg (params.first ().simplified ().toLower (), Server_.ServerName_);
 			leaveMsg = QString ();
 		}
 
