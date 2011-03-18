@@ -126,15 +126,15 @@
     <name>DataViewWidget</name>
     <message>
         <source>Add...</source>
-        <translation>Добавить...</translation>
+        <translation type="obsolete">Добавить...</translation>
     </message>
     <message>
         <source>Modify...</source>
-        <translation>Изменить...</translation>
+        <translation type="obsolete">Изменить...</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation>Удалить</translation>
+        <translation type="obsolete">Удалить</translation>
     </message>
 </context>
 <context>
@@ -291,6 +291,57 @@
     <message>
         <source>Ctrl+G</source>
         <translation>Ctrl+G</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::AboutDialog</name>
+    <message>
+        <source>Years: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lead developer and original author.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Firefox importer in New Life.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Poshuku OnlineBookmarks.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Azoth Acetamide: IRC support for Azoth.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Various patches.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Initial PKGBUILDs for Arch Linux.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ukrainian translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Graphical artwork.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arabic translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Esperanto translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aggregator fixes and improvements.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
