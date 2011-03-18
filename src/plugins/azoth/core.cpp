@@ -787,6 +787,14 @@ namespace Azoth
 	void Core::CheckFileIcon (const QString& id)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (id));
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got null entry for"
+					<< id;
+			return;
+		}
+
 		if (XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
 		{
 			const QString& variant = entry->Variants ().value (0);
