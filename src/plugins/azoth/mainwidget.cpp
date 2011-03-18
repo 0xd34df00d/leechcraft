@@ -38,10 +38,15 @@ namespace Azoth
 {
 	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
-	, MenuGeneral_ (new QMenu (tr ("General")))
+	, MainMenu_ (new QMenu (tr ("Azoth menu")))
+	, MainToolbar_ (new QToolBar (tr ("Azoth toolbar"), this))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
+		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
+
 		Ui_.setupUi (this);
+		Ui_.BottomLayout_->insertWidget (0, MainToolbar_);
+
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (this));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
@@ -73,6 +78,7 @@ namespace Azoth
 					Q_ARG (int, Core::Instance ().GetCLModel ()->rowCount () - 1));
 
 		CreateMenu ();
+		MainToolbar_->addAction (MainMenu_->menuAction ());
 
 		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
 		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
@@ -94,12 +100,15 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (joinAccountConference ()));
+		
+		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
+				this, "menuBarVisibilityToggled");
+		menuBarVisibilityToggled ();
 	}
 	
 	QList<QAction*> MainWidget::GetMenuActions()
 	{
-		return QList<QAction*> () << MenuGeneral_->menuAction ()
-				<< MenuView_->menuAction ();
+		return QList<QAction*> () << MainMenu_->actions ();
 	}
 	
 	QMenu* MainWidget::GetChangeStatusMenu () const
@@ -109,20 +118,20 @@ namespace Azoth
 
 	void MainWidget::CreateMenu ()
 	{
-		MenuGeneral_->addAction (tr ("Accounts..."),
+		MainMenu_->addAction (tr ("Accounts..."),
 				this,
 				SLOT (showAccountsList ()));
-		MenuGeneral_->addSeparator ();
-		MenuGeneral_->addAction (tr ("Add contact..."),
+		MainMenu_->addSeparator ();
+		MainMenu_->addAction (tr ("Add contact..."),
 				this,
 				SLOT (handleAddContactRequested ()));
-		MenuGeneral_->addAction (tr ("Join conference..."),
+		MainMenu_->addAction (tr ("Join conference..."),
 				&Core::Instance (),
 				SLOT (handleMucJoinRequested ()));
 
-		MenuView_ = new QMenu (tr ("View"));
+		MainMenu_->addSeparator ();
 
-		QAction *showOffline = MenuView_->addAction (tr ("Show offline contacts"));
+		QAction *showOffline = MainMenu_->addAction (tr ("Show offline contacts"));
 		showOffline->setProperty ("ActionIcon", "azoth_showoffline");
 		showOffline->setCheckable (true);
 		bool show = XmlSettingsManager::Instance ()
@@ -438,6 +447,11 @@ namespace Azoth
 		XmlSettingsManager::Instance ().setProperty ("ShowOfflineContacts", show);
 
 		ProxyModel_->showOfflineContacts (show);
+	}
+
+	void MainWidget::menuBarVisibilityToggled ()
+	{
+		MainToolbar_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
 	}
 
 	namespace

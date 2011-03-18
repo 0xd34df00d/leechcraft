@@ -81,8 +81,7 @@ namespace LeechCraft
 			{
 				QList<QAction*> result;
 
-				if (place == AEPCommonContextMenu ||
-						place == AEPQuickLaunch)
+				if (place == AEPCommonContextMenu)
 					result << Dock_->GetActivatorAction ();
 				return result;
 			}
