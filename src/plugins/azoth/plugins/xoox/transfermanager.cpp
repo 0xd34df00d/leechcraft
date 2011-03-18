@@ -26,9 +26,10 @@ namespace Azoth
 {
 namespace Xoox
 {
-	TransferManager::TransferManager (QXmppTransferManager *manager)
+	TransferManager::TransferManager (QXmppTransferManager *manager, GlooxAccount *account)
 	: QObject (manager)
 	, Manager_ (manager)
+	, Account_ (account)
 	{
 		connect (Manager_,
 				SIGNAL (fileReceived (QXmppTransferJob*)),
@@ -39,12 +40,17 @@ namespace Xoox
 	QObject* TransferManager::SendFile (const QString& id,
 			const QString& var, const QString& name)
 	{
-		return new TransferJob (Manager_->sendFile (id + "/" + var, name));
+		return new TransferJob (Manager_->sendFile (id + "/" + var, name), this);
+	}
+	
+	GlooxAccount* TransferManager::GetAccount () const
+	{
+		return Account_;
 	}
 
 	void TransferManager::handleFileReceived (QXmppTransferJob *job)
 	{
-		emit fileOffered (new TransferJob (job));
+		emit fileOffered (new TransferJob (job, this));
 	}
 }
 }

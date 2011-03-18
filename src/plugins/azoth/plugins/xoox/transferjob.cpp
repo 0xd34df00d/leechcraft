@@ -21,6 +21,7 @@
 #include <plugininterface/util.h>
 #include "core.h"
 #include "clientconnection.h"
+#include "transfermanager.h"
 
 namespace LeechCraft
 {
@@ -28,9 +29,10 @@ namespace Azoth
 {
 namespace Xoox
 {
-	TransferJob::TransferJob (QXmppTransferJob *job)
+	TransferJob::TransferJob (QXmppTransferJob *job, TransferManager *mgr)
 	: QObject (job)
 	, Job_ (job)
+	, Manager_ (mgr)
 	{
 		connect (Job_,
 				SIGNAL (progress (qint64, qint64)),
@@ -51,6 +53,7 @@ namespace Xoox
 		QString jid;
 		QString var;
 		ClientConnection::Split (Job_->jid (), &jid, &var);
+		Manager_->GetAccount ()->GetAccountID () + '_' + jid;
 		return jid;
 	}
 

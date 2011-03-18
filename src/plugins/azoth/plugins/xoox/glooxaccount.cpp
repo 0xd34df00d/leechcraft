@@ -61,7 +61,8 @@ namespace Xoox
 						AccState_, this));
 
 		TransferManager_.reset (new TransferManager (ClientConnection_->
-						GetTransferManager ()));
+						GetTransferManager (),
+					this));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
