@@ -37,8 +37,8 @@ namespace Azoth
 
 		Ui::MainWidget Ui_;
 
-		QMenu *MenuGeneral_;
-		QMenu *MenuView_;
+		QMenu *MainMenu_;
+		QToolBar *MainToolbar_;
 		SortFilterProxyModel *ProxyModel_;
 
 		QMenu *MenuChangeStatus_;
@@ -68,6 +68,8 @@ namespace Azoth
 		void handleAddContactRequested ();
 
 		void handleShowOffline (bool);
+		
+		void menuBarVisibilityToggled ();
 
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void rebuildTreeExpansions ();

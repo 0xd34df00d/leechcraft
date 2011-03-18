@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="Layout_">
    <property name="spacing">
     <number>1</number>
    </property>
@@ -46,7 +46,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="BottomLayout_">
      <item>
       <widget class="QLineEdit" name="FastStatusText_"/>
      </item>
