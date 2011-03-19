@@ -47,6 +47,7 @@ namespace Acetamide
 		virtual ~SocketManager ();
 		void SendCommand (const QString&, const QString&, int);
 		bool IsConnected (const QString&);
+		void CloseSocket (const QString&);
 	private:
 		QTcpSocket* CreateSocket (const QString&);
 		int Connect (QTcpSocket*, const QString&, const QString&);
