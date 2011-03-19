@@ -39,6 +39,11 @@ namespace Acetamide
 	{
 	}
 
+	IrcServer::~IrcServer ()
+	{
+		qDebug () << "qwe";
+	}
+
 	void IrcServer::JoinChannel (const ChannelOptions& channel)
 	{
 		IrcParser_->JoinChannel (channel);
@@ -155,17 +160,19 @@ namespace Acetamide
 			QString channelKey = QString ("%1@%2")
 					.arg (target , Server_.ServerName_);
 			QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-			qDebug () << "READ" << channelKey << serverKey;
 			ServerManager_->SetMessageIn (serverKey, channelKey, 
 					params.at (params.count () - 2), params.last ());
 		}
 		else
 		{
-			Q_FOREACH (IrcAccount *acc, ServerManager_->GetAccounts (this))
+			if (params.last () == "frigg")
+				return;
+
+			Q_FOREACH (IrcAccount *acc, QSet<IrcAccount*>::fromList (ServerManager_->GetAccounts (this)))
 			{
-				PrivateChatEntry_ptr entry = Core::Instance ()
-						.GetPrivateChatManager ()->GetChatEntry (target, this, acc);
-				IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
+				PrivateChatEntry_ptr entry = acc->
+						GetPrivateChatManager ()->GetChatEntry (params.last (), this);
+				IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
 						IMessage::DIn,
 						GetHost () + ":" + QString::number (GetPort ()),
 						params.last (),

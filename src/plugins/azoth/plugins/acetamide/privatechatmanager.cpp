@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "privatechatmanager.h"
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
@@ -24,17 +25,20 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	PrivateChatManager::PrivateChatManager (QObject *parent)
-	: QObject (parent)
+	PrivateChatManager::PrivateChatManager (IrcAccount *acc)
+	: Account_ (acc)
 	{
+		connect (this,
+				SIGNAL (gotCLItems (const QList<QObject*>&)),
+				Account_,
+				SIGNAL (gotCLItems (const QList<QObject*>&)));
 	}
 
-	PrivateChatEntry_ptr PrivateChatManager::GetChatEntry (const QString& nick,
-			IrcServer *srv, IrcAccount *acc)
+	PrivateChatEntry_ptr PrivateChatManager::GetChatEntry (const QString& nick, IrcServer *srv)
 	{
 		if (!Nick2Entry.contains (nick))
 		{
-			PrivateChatEntry_ptr entry (CreateNewChatEntry (nick, srv, acc));
+			PrivateChatEntry_ptr entry (CreateNewChatEntry (nick, srv));
 			Nick2Entry [nick] = entry;
 			emit gotCLItems (QList<QObject*> () << entry.get ());
 			return entry;
@@ -43,12 +47,13 @@ namespace Acetamide
 			return Nick2Entry.value (nick);
 	}
 
-	PrivateChatEntry_ptr PrivateChatManager::CreateNewChatEntry (const QString& nick, IrcServer *srv, IrcAccount *acc)
+	PrivateChatEntry_ptr PrivateChatManager::CreateNewChatEntry (const QString& nick, IrcServer *srv)
 	{
-		PrivateChatEntry_ptr entry (new PrivateChatEntry (nick, srv, acc));
+		PrivateChatEntry_ptr entry (new PrivateChatEntry (nick, srv, Account_));
 		Nick2Entry [nick] = entry;
 		return entry;
 	}
+
 
 };
 };

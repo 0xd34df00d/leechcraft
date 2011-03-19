@@ -33,6 +33,9 @@ namespace Acetamide
 	, Server_ (server)
 	, Nick_ (nick)
 	{
+		qDebug () << acc->GetAccountName ();
+		qDebug () << Server_->GetHost () << Server_->GetPort ();
+		qDebug () << Nick_;
 	}
 
 	QObject* PrivateChatEntry::GetParentAccount () const
@@ -105,7 +108,6 @@ namespace Acetamide
 
 	void PrivateChatEntry::HandleMessage (IrcMessage *msg)
 	{
-		qDebug () << "INBOX" << msg->GetDateTime () << msg->GetOtherVariant () << msg->GetBody ();
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}

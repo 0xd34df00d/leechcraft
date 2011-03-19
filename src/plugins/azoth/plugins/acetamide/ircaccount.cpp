@@ -53,6 +53,7 @@ namespace Acetamide
 	void IrcAccount::Init ()
 	{
 		ClientConnection_.reset (new ClientConnection (this));
+		PrivateChatManager_.reset (new PrivateChatManager (this));
 		Servers_ = ReadServersSettings (AccountName_ + "_Servers");
 		Channels_ = ReadChannelsSettings (AccountName_ +"_Channels");
 		SetAccountID ();
@@ -220,6 +221,11 @@ namespace Acetamide
 	boost::shared_ptr< ClientConnection > IrcAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
+	}
+
+	boost::shared_ptr<PrivateChatManager> IrcAccount::GetPrivateChatManager () const
+	{
+		return PrivateChatManager_;
 	}
 
 	QObject* IrcAccount::CreateMessage (IMessage::MessageType type

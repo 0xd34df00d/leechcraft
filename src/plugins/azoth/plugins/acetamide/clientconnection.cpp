@@ -58,8 +58,8 @@ namespace Acetamide
 			return ChannelHandlers_ [key]->GetParticipantEntry (nick).get ();
 		else
 		{
-			return Core::Instance ().GetPrivateChatManager ()->
-					GetChatEntry (nick, IrcServers_ [key].get (), Account_).get ();
+			return Account_->GetPrivateChatManager ()->
+					GetChatEntry (nick, IrcServers_ [key].get ()).get ();
 		}
 	}
 
