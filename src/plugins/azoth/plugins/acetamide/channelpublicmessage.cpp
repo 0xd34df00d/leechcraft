@@ -68,9 +68,11 @@ namespace Acetamide
 	{
 		if (!ParentEntry_)
 			return;
+
 		Core::Instance ().GetServerManager ()->
 				SetMessageOut (Message_, 
 						ParentEntry_->GetChannelHandler ()->GetChannelOptions (),
+						ParentEntry_->GetChannelHandler ()->GetServerOptions (),
 						ParentEntry_->GetIrcAccount ()); 
 	}
 

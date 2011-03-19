@@ -39,11 +39,6 @@ namespace Acetamide
 	{
 	}
 
-	IrcServer::~IrcServer ()
-	{
-		qDebug () << "qwe";
-	}
-
 	void IrcServer::JoinChannel (const ChannelOptions& channel)
 	{
 		IrcParser_->JoinChannel (channel);
@@ -165,24 +160,24 @@ namespace Acetamide
 		}
 		else
 		{
-			if (params.last () == "frigg")
-				return;
-
-			Q_FOREACH (IrcAccount *acc, QSet<IrcAccount*>::fromList (ServerManager_->GetAccounts (this)))
-			{
-				PrivateChatEntry_ptr entry = acc->
-						GetPrivateChatManager ()->GetChatEntry (params.last (), this);
-				IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
-						IMessage::DIn,
-						GetHost () + ":" + QString::number (GetPort ()),
-						params.last (),
-						acc->GetClientConnection ().get ());
-				QTextCodec *codec = QTextCodec::codecForName (GetEncoding ().toUtf8 ());
-				QString mess =  codec->toUnicode (params.at (params.count () - 2).toAscii ());
-				message->SetBody (mess);
-				message->SetDateTime (QDateTime::currentDateTime ());
-				entry->HandleMessage (message);
-			}
+// 			if (params.last () == "frigg")
+// 				return;
+// 
+// 			Q_FOREACH (IrcAccount *acc, QSet<IrcAccount*>::fromList (ServerManager_->GetAccounts (this)))
+// 			{
+// 				PrivateChatEntry_ptr entry = acc->
+// 						GetPrivateChatManager ()->GetChatEntry (params.last (), this);
+// 				IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
+// 						IMessage::DIn,
+// 						GetHost () + ":" + QString::number (GetPort ()),
+// 						params.last (),
+// 						acc->GetClientConnection ().get ());
+// 				QTextCodec *codec = QTextCodec::codecForName (GetEncoding ().toUtf8 ());
+// 				QString mess =  codec->toUnicode (params.at (params.count () - 2).toAscii ());
+// 				message->SetBody (mess);
+// 				message->SetDateTime (QDateTime::currentDateTime ());
+// 				entry->HandleMessage (message);
+// 			}
 		}
 	}
 

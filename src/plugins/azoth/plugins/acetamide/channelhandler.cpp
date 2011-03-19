@@ -105,7 +105,7 @@ namespace Acetamide
 		QString serverId = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		
 		Core::Instance ().GetServerManager ()->
-				LeaveChannel (Channel_.ChannelName_, Account_);
+				LeaveChannel (Channel_.ChannelName_, serverId, Account_);
 		RemoveThis ();
 	}
 

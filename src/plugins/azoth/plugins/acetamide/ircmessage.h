@@ -46,7 +46,7 @@ namespace Acetamide
 		
 		MessageType Type_;
 		Direction Direction_;
-		QString ChannelID_;
+		QString ID_;
 		QString NickName_;
 		Message Message_;
 		ClientConnection *Connection_;
@@ -65,6 +65,7 @@ namespace Acetamide
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
 		QObject* OtherPart () const;
+		QString GetID () const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;
 		void SetBody (const QString&);

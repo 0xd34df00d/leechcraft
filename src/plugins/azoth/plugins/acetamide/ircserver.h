@@ -48,7 +48,6 @@ namespace Acetamide
 		QString Nickname_;
 	public:
 		IrcServer (const ServerOptions&, IrcServerManager*);
-		virtual ~IrcServer ();
 		void JoinChannel (const ChannelOptions&);
 		void ConnectToServer ();
 		boost::shared_ptr<IrcParser> GetParser () const;
