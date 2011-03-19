@@ -411,11 +411,6 @@
 <context>
     <name>ItemsWidget</name>
     <message>
-        <location filename="itemswidget.ui" line="14"/>
-        <source>Form</source>
-        <translation>Formularo</translation>
-    </message>
-    <message>
         <location filename="itemswidget.ui" line="29"/>
         <source>Fixed string</source>
         <translation>Fixa signovico</translation>
@@ -460,41 +455,41 @@
         <translation type="unfinished">Kolektilo</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="569"/>
+        <location filename="aggregator.cpp" line="591"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removing confirmation</comment>
         <translatorcomment>В английском тексте ошибка. Перепроверьте.</translatorcomment>
         <translation>Vi fortiros la fluon: &lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt; Ĉu vi vere volas fari tio?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="668"/>
+        <location filename="aggregator.cpp" line="683"/>
         <source>Export to OPML</source>
         <translation>Eksportu en OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="669"/>
-        <location filename="aggregator.cpp" line="699"/>
+        <location filename="aggregator.cpp" line="684"/>
+        <location filename="aggregator.cpp" line="714"/>
         <source>Select save file</source>
         <translatorcomment>если я правильно понял строку, save - это прилагательное...</translatorcomment>
         <translation>Selektu la sava dosiero</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="670"/>
+        <location filename="aggregator.cpp" line="685"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML-dosiero (*.opml);;XML-dosiero (*.xml);; Ĉiuj dosieroj (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="698"/>
+        <location filename="aggregator.cpp" line="713"/>
         <source>Export to binary file</source>
         <translation>Eksportu en binara dosiero</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="700"/>
+        <location filename="aggregator.cpp" line="715"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Kolektilo interŝanĝa dosiero (*.lcae);;Ĉiuj dosieroj (*.*)</translation>
     </message>
     <message numerus="yes">
-        <location filename="aggregator.cpp" line="760"/>
+        <location filename="aggregator.cpp" line="775"/>
         <source>%n unread message(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -503,7 +498,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="aggregator.cpp" line="761"/>
+        <location filename="aggregator.cpp" line="776"/>
         <source>in %n channel(s).</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -896,17 +891,17 @@
         <translation>Dato</translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="231"/>
+        <location filename="itemslistmodel.cpp" line="232"/>
         <source>&lt;b&gt;Author&lt;/b&gt;: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="236"/>
+        <location filename="itemslistmodel.cpp" line="237"/>
         <source>&lt;b&gt;Categories&lt;/b&gt;: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="241"/>
+        <location filename="itemslistmodel.cpp" line="242"/>
         <source>%n comment(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -915,7 +910,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="246"/>
+        <location filename="itemslistmodel.cpp" line="247"/>
         <source>%n enclosure(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -924,7 +919,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemslistmodel.cpp" line="251"/>
+        <location filename="itemslistmodel.cpp" line="252"/>
         <source>%n MediaRSS entry(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -933,7 +928,7 @@
         </translation>
     </message>
     <message>
-        <location filename="itemslistmodel.cpp" line="256"/>
+        <location filename="itemslistmodel.cpp" line="257"/>
         <source>RSS with comments is available</source>
         <translation type="unfinished"></translation>
     </message>
@@ -941,232 +936,232 @@
 <context>
     <name>LeechCraft::Plugins::Aggregator::ItemsWidget</name>
     <message>
-        <location filename="itemswidget.cpp" line="83"/>
+        <location filename="itemswidget.cpp" line="94"/>
         <source>Name</source>
         <translation type="unfinished">Nomo</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="84"/>
+        <location filename="itemswidget.cpp" line="95"/>
         <source>Date</source>
         <translation type="unfinished">Dato</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="139"/>
+        <location filename="itemswidget.cpp" line="150"/>
         <source>Items categories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="451"/>
+        <location filename="itemswidget.cpp" line="467"/>
         <source>Hide read items</source>
         <translation type="unfinished">Kaŝu legitan eron</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="459"/>
+        <location filename="itemswidget.cpp" line="475"/>
         <source>Show items as tape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="467"/>
+        <location filename="itemswidget.cpp" line="483"/>
         <source>Mark item as unread</source>
         <translation>Marku kanalon kiel nelegita</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="471"/>
+        <location filename="itemswidget.cpp" line="487"/>
         <source>Mark item as read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="475"/>
+        <location filename="itemswidget.cpp" line="491"/>
         <source>Subscribe to comments</source>
         <translation>Abonu el komentoj</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="479"/>
+        <location filename="itemswidget.cpp" line="495"/>
         <source>Open in new tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="565"/>
+        <location filename="itemswidget.cpp" line="581"/>
         <source>Published on %1 by %2</source>
         <translation>Publikigis je la%1 per %2</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="570"/>
+        <location filename="itemswidget.cpp" line="586"/>
         <source>Published on %1</source>
         <translation>Publikigis je la%1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="574"/>
+        <location filename="itemswidget.cpp" line="590"/>
         <source>Published by %1</source>
         <translation>Publikigis per %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="625"/>
+        <location filename="itemswidget.cpp" line="641"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation>Dosiero de tipo %1, grandeco %2:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="629"/>
+        <location filename="itemswidget.cpp" line="645"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation>Dosiero de tipo %1, kaj nekonata longeco:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="635"/>
+        <location filename="itemswidget.cpp" line="651"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation>&lt;br /&gt;Specifita lingvo: %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="649"/>
+        <location filename="itemswidget.cpp" line="665"/>
         <source>Image </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="651"/>
+        <location filename="itemswidget.cpp" line="667"/>
         <source>Audio </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="653"/>
+        <location filename="itemswidget.cpp" line="669"/>
         <source>Video </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="655"/>
+        <location filename="itemswidget.cpp" line="671"/>
         <source>Document </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="657"/>
+        <location filename="itemswidget.cpp" line="673"/>
         <source>Executable </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="725"/>
+        <location filename="itemswidget.cpp" line="741"/>
         <source>&lt;hr /&gt;Thumbnail at %1:&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="749"/>
+        <location filename="itemswidget.cpp" line="765"/>
         <source>&lt;strong&gt;Keywords:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="753"/>
+        <location filename="itemswidget.cpp" line="769"/>
         <source>&lt;strong&gt;Language:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="757"/>
+        <location filename="itemswidget.cpp" line="773"/>
         <source>Sample</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="759"/>
+        <location filename="itemswidget.cpp" line="775"/>
         <source>Continuous stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="761"/>
+        <location filename="itemswidget.cpp" line="777"/>
         <source>Full version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="769"/>
+        <location filename="itemswidget.cpp" line="785"/>
         <source>Title: %1&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="772"/>
+        <location filename="itemswidget.cpp" line="788"/>
         <source>Start time: %1&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="775"/>
+        <location filename="itemswidget.cpp" line="791"/>
         <source>End time: %1&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="788"/>
+        <location filename="itemswidget.cpp" line="804"/>
         <source>&lt;strong&gt;Scenes:&lt;/strong&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="797"/>
+        <location filename="itemswidget.cpp" line="813"/>
         <source>&lt;strong&gt;Views:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="803"/>
+        <location filename="itemswidget.cpp" line="819"/>
         <source>&lt;strong&gt;Average rating:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="806"/>
+        <location filename="itemswidget.cpp" line="822"/>
         <source>&lt;strong&gt;Number of marks:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="809"/>
+        <location filename="itemswidget.cpp" line="825"/>
         <source>&lt;strong&gt;Minimal rating:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="812"/>
+        <location filename="itemswidget.cpp" line="828"/>
         <source>&lt;strong&gt;Maximal rating:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="816"/>
+        <location filename="itemswidget.cpp" line="832"/>
         <source>&lt;strong&gt;User tags:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="821"/>
+        <location filename="itemswidget.cpp" line="837"/>
         <source>&lt;li&gt;&lt;strong&gt;Duration:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="824"/>
+        <location filename="itemswidget.cpp" line="840"/>
         <source>&lt;li&gt;&lt;strong&gt;Channels:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="828"/>
+        <location filename="itemswidget.cpp" line="844"/>
         <source>&lt;li&gt;&lt;strong&gt;Size:&lt;/strong&gt; %1x%2&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="832"/>
+        <location filename="itemswidget.cpp" line="848"/>
         <source>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="835"/>
+        <location filename="itemswidget.cpp" line="851"/>
         <source>&lt;li&gt;&lt;strong&gt;Framerate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="838"/>
+        <location filename="itemswidget.cpp" line="854"/>
         <source>&lt;li&gt;&lt;strong&gt;Sampling rate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="841"/>
+        <location filename="itemswidget.cpp" line="857"/>
         <source>&lt;li&gt;&lt;strong&gt;MIME type:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="846"/>
+        <location filename="itemswidget.cpp" line="862"/>
         <source>&lt;strong&gt;Technical information:&lt;/strong&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="856"/>
+        <location filename="itemswidget.cpp" line="872"/>
         <source>&lt;strong&gt;Rating:&lt;/strong&gt; %1 (according to %2 scheme)&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="585"/>
+        <location filename="itemswidget.cpp" line="601"/>
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1175,7 +1170,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="590"/>
+        <location filename="itemswidget.cpp" line="606"/>
         <source>%n comment(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1184,17 +1179,17 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="593"/>
+        <location filename="itemswidget.cpp" line="609"/>
         <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="604"/>
+        <location filename="itemswidget.cpp" line="620"/>
         <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="800"/>
+        <location filename="itemswidget.cpp" line="816"/>
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1203,22 +1198,22 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="880"/>
+        <location filename="itemswidget.cpp" line="896"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="884"/>
+        <location filename="itemswidget.cpp" line="900"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="888"/>
+        <location filename="itemswidget.cpp" line="904"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="903"/>
+        <location filename="itemswidget.cpp" line="919"/>
         <source>&lt;strong&gt;Credits:&lt;/strong&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1291,7 +1286,7 @@
         <translation>Markoj:</translation>
     </message>
     <message>
-        <location filename="mainwidget.ui" line="67"/>
+        <location filename="mainwidget.ui" line="70"/>
         <source>Merge items</source>
         <translation>Kunfandu eron</translation>
     </message>
@@ -1503,142 +1498,157 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
-        <source>Notifications on feed update:</source>
+        <source>Mark as read after</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
-        <source>all</source>
+        <source> s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
-        <source>only about new items</source>
+        <source>Notifications on feed update:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
-        <source>don&apos;t show</source>
+        <source>all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
-        <source>Additional tags for comment feeds:</source>
+        <source>only about new items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
+        <source>don&apos;t show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="14"/>
-        <source>Appearance</source>
+        <source>Additional tags for comment feeds:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
-        <source>Group channels by tags</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="dummy.cpp" line="16"/>
-        <source>Show unread channels in summary</source>
+        <source>Appearance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
-        <source>Show icon in tray when there are unread items</source>
+        <source>Group channels by tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="18"/>
-        <source>Show items category selector</source>
+        <source>Show unread channels in summary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
-        <source>Show navigation bar when showing the news item</source>
+        <source>Show icon in tray when there are unread items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
-        <source>Items list</source>
+        <source>Show items category selector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
-        <source>Font for unread:</source>
+        <source>Show tooltips for news items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
-        <source>Use color to mark unread</source>
+        <source>Show navigation bar when showing the news item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
-        <source>Color:</source>
+        <source>Items list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
-        <source>Use colors from the palette for read/unread items</source>
+        <source>Font for unread:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
-        <source>Feeds handling</source>
+        <source>Use color to mark unread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
-        <source>Updates</source>
+        <source>Color:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
-        <source>Update feeds on startup</source>
+        <source>Use colors from the palette for read/unread items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
-        <source>Update interval:</source>
-        <translation type="unfinished">Intervalo de ĝisdatigo:</translation>
+        <source>Feeds handling</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
-        <source> min</source>
+        <source>Updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>
-        <source>Automatic downloading</source>
+        <source>Update feeds on startup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
-        <source>Download directory for enclosures:</source>
-        <translation type="unfinished"></translation>
+        <source>Update interval:</source>
+        <translation type="unfinished">Intervalo de ĝisdatigo:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
-        <source>Store</source>
+        <source> min</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
-        <source>Items per channel:</source>
+        <source>Automatic downloading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="34"/>
-        <source>Store items for:</source>
+        <source>Download directory for enclosures:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
-        <source> days</source>
+        <source>Store</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="36"/>
+        <source>Items per channel:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="37"/>
+        <source>Store items for:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="38"/>
+        <source> days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="39"/>
         <source>Storage</source>
         <translation type="unfinished"></translation>
     </message>
