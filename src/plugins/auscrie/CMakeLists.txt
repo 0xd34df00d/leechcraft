@@ -45,6 +45,7 @@ SET (TRANSLATIONS
 	leechcraft_auscrie_oc.ts
 	leechcraft_auscrie_en.ts
 	leechcraft_auscrie_fr.ts
+	leechcraft_auscrie_it.ts
 	)
 SET (RESOURCES auscrieresources.qrc)
 SET (COMPILED_TRANSLATIONS
@@ -55,6 +56,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_auscrie_oc.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_auscrie_en.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_auscrie_fr.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_auscrie_it.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
