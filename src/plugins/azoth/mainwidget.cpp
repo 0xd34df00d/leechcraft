@@ -17,10 +17,10 @@
  **********************************************************************/
 
 #include "mainwidget.h"
-#include <QToolBar>
 #include <QMenu>
 #include <QMainWindow>
 #include <QVBoxLayout>
+#include <QToolButton>
 #include <QInputDialog>
 #include "interfaces/iclentry.h"
 #include "core.h"
@@ -39,13 +39,13 @@ namespace Azoth
 	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
 	, MainMenu_ (new QMenu (tr ("Azoth menu")))
-	, MainToolbar_ (new QToolBar (tr ("Azoth toolbar"), this))
+	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
 		Ui_.setupUi (this);
-		Ui_.BottomLayout_->insertWidget (0, MainToolbar_);
+		Ui_.BottomLayout_->insertWidget (0, MenuButton_);
 
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (this));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
@@ -78,7 +78,9 @@ namespace Azoth
 					Q_ARG (int, Core::Instance ().GetCLModel ()->rowCount () - 1));
 
 		CreateMenu ();
-		MainToolbar_->addAction (MainMenu_->menuAction ());
+		MenuButton_->setMenu (MainMenu_);
+		MenuButton_->setIcon (MainMenu_->icon ());
+		MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
 		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
 		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
@@ -451,7 +453,7 @@ namespace Azoth
 
 	void MainWidget::menuBarVisibilityToggled ()
 	{
-		MainToolbar_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
+		MenuButton_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
 	}
 
 	namespace

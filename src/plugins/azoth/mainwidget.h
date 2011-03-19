@@ -22,7 +22,7 @@
 #include "interfaces/iaccount.h"
 #include "ui_mainwidget.h"
 
-class QToolBar;
+class QToolButton;
 class QMenu;
 
 namespace LeechCraft
@@ -38,7 +38,7 @@ namespace Azoth
 		Ui::MainWidget Ui_;
 
 		QMenu *MainMenu_;
-		QToolBar *MainToolbar_;
+		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
 
 		QMenu *MenuChangeStatus_;
