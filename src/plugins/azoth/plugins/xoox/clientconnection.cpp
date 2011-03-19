@@ -731,6 +731,15 @@ namespace Xoox
 			if (JID2CLEntry_.contains (jid))
 				emit rosterItemCancelledSubscription (JID2CLEntry_ [jid], QString ());
 			break;
+		case QXmppPresence::Error:
+		{
+			QString bare;
+			QString resource;
+			ClientConnection::Split (jid, &bare, &resource);
+			if (RoomHandlers_.contains (bare))
+				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);;
+			break;
+		}
 		}
 	}
 

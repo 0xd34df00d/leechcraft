@@ -279,6 +279,38 @@ namespace Xoox
 		}
 	}
 	
+	void RoomHandler::HandleErrorPresence (const QXmppPresence& pres, const QString& nick)
+	{
+		const QString& errorText = pres.error ().text ();
+		QString hrText;
+		switch (pres.error ().condition ())
+		{
+		case QXmppStanza::Error::Conflict:
+			hrText = tr ("nickname already taken");
+			break;
+		case QXmppStanza::Error::Forbidden:
+		case QXmppStanza::Error::NotAllowed:
+			hrText = tr ("access forbidden");
+			break;
+		default:
+			hrText = tr ("unknown condition %1 (please report to developers)")
+				.arg (pres.error ().condition ());
+			break;
+		}
+		const QString& text = tr ("Error for %1: %2 (original message: %3)")
+				.arg (nick)
+				.arg (hrText)
+				.arg (errorText.isEmpty () ?
+						tr ("no message") :
+						errorText);
+		RoomPublicMessage *message = new RoomPublicMessage (text,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTEventMessage,
+				IMessage::MSTOther);
+		CLEntry_->HandleMessage (message);
+	}
+	
 	void RoomHandler::HandlePermsChanged (const QString& nick,
 			QXmppMucAdminIq::Item::Affiliation aff,
 			QXmppMucAdminIq::Item::Role role, const QString& reason)
