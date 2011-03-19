@@ -139,19 +139,15 @@ namespace Azoth
 				QVariantList list = XmlSettingsManager::Instance ()
 						.GetRawValue (key).toList ();
 
-				bool found = false;
 				Q_FOREACH (const QVariant& var, list)
 					if (var.toMap () ["HumanReadableName"] == data ["HumanReadableName"])
 					{
-						found = true;
+						list.removeAll (var);
 						break;
 					}
 
-				if (!found)
-				{
-					list << QVariant (data);
-					XmlSettingsManager::Instance ().SetRawValue (key, list);
-				}
+				list.prepend (QVariant (data));
+				XmlSettingsManager::Instance ().SetRawValue (key, list);
 			}
 			else
 				qWarning () << Q_FUNC_INFO
