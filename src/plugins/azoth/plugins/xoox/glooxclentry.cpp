@@ -43,8 +43,18 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
 	, ODS_ (ods)
-	, BareJID_ (ods->ID_)
 	{
+		const QString& pre = Account_->GetAccountID () + '_';
+		if (ods->ID_.startsWith (pre))
+			BareJID_ = ods->ID_.mid (pre.size ());
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "ODS's ID doesn't start with"
+					<< pre
+					<< ods->ID_;
+			BareJID_ = ods->ID_;
+		}
 	}
 
 	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
