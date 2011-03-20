@@ -21,9 +21,7 @@
 #include "ircaccount.h"
 #include "channelclentry.h"
 #include "channelpublicmessage.h"
-#include "channelparticipantentry.h"
 #include "clientconnection.h"
-#include "ircprotocol.h"
 #include "ircmessage.h"
 
 
@@ -37,11 +35,12 @@ namespace Acetamide
 			const ChannelOptions& channel, IrcAccount *account)
 	: Account_ (account)
 	, CLEntry_ (new ChannelCLEntry (this, Account_))
-	, ChannelID_ (QString ("%1@%2").arg (channel.ChannelName_, channel.ServerName_))
-	, Nickname_ (server.ServerNicknames_.at (0))
-	, Subject_ (QString ())
 	, Channel_ (channel)
 	, Server_ (server)
+	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
+	, ServerID_ (server.ServerName_ + ":" + QString::number (server.ServerPort_))
+	, Nickname_ (server.ServerNicknames_.at (0))
+	, Subject_ (QString ())
 	{
 	}
 	
@@ -58,8 +57,8 @@ namespace Acetamide
 	QList<QObject*> ChannelHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (ChannelParticipantEntry_ptr rpe, Nick2Entry_.values ())
-			result << rpe.get ();
+		Q_FOREACH (ServerParticipantEntry_ptr chpe, Nick2Entry_.values ())
+			result << chpe.get ();
 		return result;
 	}
 
@@ -75,7 +74,6 @@ namespace Acetamide
 		message->SetDateTime (QDateTime::currentDateTime ());
 		return message;
 	}
-
 
 	QString ChannelHandler::GetNickname () const
 	{
@@ -99,50 +97,59 @@ namespace Acetamide
 
 	void ChannelHandler::Leave (const QString& msg)
 	{
-		Q_FOREACH (ChannelParticipantEntry_ptr entry, Nick2Entry_.values ())
-			Account_->handleEntryRemoved (entry.get ());
-
-		QString serverId = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		
+		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())
+		{
+			QStringList list = entry->GetChannels ();
+			if (list.contains (Channel_.ChannelName_))
+			{
+				if (list.removeOne (Channel_.ChannelName_))
+				{
+					if (!entry->IsPrivateChat ())
+						Account_->handleEntryRemoved (entry.get ());
+					else 
+						if (list.count ())
+							entry->SetGroups (list);
+				}
+			}
+		}
 		Core::Instance ().GetServerManager ()->
-				LeaveChannel (Channel_.ChannelName_, Account_);
+				LeaveChannel (Channel_.ChannelName_, ServerID_, Account_);
 		RemoveThis ();
 	}
 
 	void ChannelHandler::UserLeave (const QString& nick, const QString& msg)
 	{
-		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nick);
-		MakeLeaveMessage (nick, msg);
-		Account_->handleEntryRemoved (entry.get ());
-		Nick2Entry_.remove (nick);
+		ServerParticipantEntry_ptr entry = Account_->GetClientConnection ()->
+				GetServerParticipantEntry (ServerID_, nick);
+		QStringList list = entry->GetChannels ();
+		if (list.contains (Channel_.ChannelName_))
+		{
+			if (list.removeOne (Channel_.ChannelName_));
+			{
+				Account_->handleEntryRemoved (entry.get ());
+				if (list.count () || entry->IsPrivateChat ())
+					entry->SetGroups (list);
+				MakeLeaveMessage (nick, msg);
+				Nick2Entry_.remove (nick);
+			}
+		}
 	}
 
 	void ChannelHandler::SetChannelUser (const QString& nick)
 	{
 		const bool existed = Nick2Entry_.contains (nick);
-		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nick);
-
+		ServerParticipantEntry_ptr entry = Account_->GetClientConnection ()->
+				GetServerParticipantEntry (ServerID_, nick);
 		if (!existed)
+		{
+			QStringList list = entry->GetChannels ();
+			if (!list.contains (Channel_.ChannelName_))
+				list << Channel_.ChannelName_;
+			entry->SetGroups (list);
+			Nick2Entry_ [nick] = entry;
 			MakeJoinMessage (nick);
-// 		else
-// 			MakeStatusChangedMessage (pres, nick);
-
-// 		if (pres.type () == QXmppPresence::Unavailable)
-// 		{
-// 			MakeLeaveMessage (pres, nick);
-// 
-// 			Account_->handleEntryRemoved (entry.get ());
-// 			Nick2Entry_.remove (nick);
-// 			return;
-// 		}
-// 
-// 		entry->SetClientInfo ("", pres);
-// 
-// 		const QXmppPresence::Status& xmppSt = pres.status ();
-// 		EntryStatus status (static_cast<State> (xmppSt.type ()),
-// 				xmppSt.statusText ());
-// 		entry->SetStatus (status, QString ());
-// 
+			entry->SetStatus (EntryStatus (SOnline, QString ()));
+		}
 	}
 
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
@@ -177,15 +184,8 @@ namespace Acetamide
 
 	void ChannelHandler::HandleMessage (const QString& msg, const QString& nick)
 	{
-		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
-// 		if (!nick.isEmpty ())
-// 		{
-// 			IrcMessage *message = new IrcMessage (msg,
-// 					ChannelID_, Account_->GetClientConnection ().get ());
-// 			entry->HandleMessage (message);
-// 		}
-// 		else
-// 		{
+		ServerParticipantEntry_ptr entry = Account_->GetClientConnection ()->
+				GetServerParticipantEntry (ServerID_, nick, false);
 		ChannelPublicMessage *message = 0;
 		if (!nick.isEmpty ())
 			message = new ChannelPublicMessage (msg, 
@@ -194,15 +194,9 @@ namespace Acetamide
 				IMessage::MTMUCMessage,
 				IMessage::MSTOther,
 				entry);
-// 		else
-// 			message = new ChannelPublicMessage (msg,
-// 				IMessage::DIn,
-// 				CLEntry_,
-// 				IMessage::MTEventMessage,
-// 				IMessage::MSTOther);
+
 		if (message)
 			CLEntry_->HandleMessage (message);
-// 	}
 	}
 
 	ChannelOptions ChannelHandler::GetChannelOptions () const
@@ -215,28 +209,12 @@ namespace Acetamide
 		return Server_;
 	}
 
-	ChannelParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick, bool announce)
+	ServerParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick) const
 	{
-		if (!Nick2Entry_.contains (nick))
-		{
-			ChannelParticipantEntry_ptr entry (CreateParticipantEntry (nick, announce));
-			Nick2Entry_ [nick] = entry;
-			return entry;
-		}
-		else
+		if (Nick2Entry_.contains (nick))
 			return Nick2Entry_ [nick];
 	}
 
-	ChannelParticipantEntry_ptr ChannelHandler::CreateParticipantEntry (const QString& nick, bool announce)
-	{
-		ChannelParticipantEntry_ptr entry (new ChannelParticipantEntry (nick,
-					this, Account_));
-		Nick2Entry_ [nick] = entry;
-		if (announce)
-			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
-		return entry;
-	}
-	
 	void ChannelHandler::RemoveThis ()
 	{
 		Nick2Entry_.clear ();

@@ -71,7 +71,7 @@ namespace Acetamide
 		return CH_->GetChannelID ();
 	}
 
-	void ChannelCLEntry::SetEntryName (const QString& name)
+	void ChannelCLEntry::SetEntryName (const QString&)
 	{
 	}
 
@@ -122,10 +122,10 @@ namespace Acetamide
 	
 	QMap<QString, QVariant> ChannelCLEntry::GetClientInfo (const QString&) const
 	{
-		return QMap <QString, QVariant> ();
+		return QMap<QString, QVariant> ();
 	}
 
-	EntryStatus ChannelCLEntry::GetStatus (const QString& variant) const
+	EntryStatus ChannelCLEntry::GetStatus (const QString&) const
 	{
 		return EntryStatus (SOnline, QString ());
 	}

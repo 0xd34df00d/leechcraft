@@ -22,6 +22,8 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
+#include <QImage>
+#include <QAction>
 #include <interfaces/iclentry.h>
 
 namespace LeechCraft
@@ -35,7 +37,7 @@ namespace Acetamide
 	class ChannelHandler;
 	class ChannePublicMessage;
 	class IrcMessage;
-	
+
 	class ChannelParticipantEntry : public QObject
 									, public ICLEntry
 	{
@@ -46,6 +48,10 @@ namespace Acetamide
 		QString NickName_;
 		ChannelHandler *ChannelHandler_;
 		QList<QObject*> AllMessages_;
+		
+		QList<QAction*> Action_;
+		QImage Avatar_;
+		QString RawInfo_;
 	public:
 		ChannelParticipantEntry (const QString&, ChannelHandler*, IrcAccount*);
 
@@ -63,7 +69,6 @@ namespace Acetamide
 				const QString&, const QString&);
 		void HandleMessage (IrcMessage*);
 		QString GetChannelID () const;
-		QString GetNick () const;
 		
 		QObject* GetObject ();
 		QList<QObject*> GetAllMessages () const;

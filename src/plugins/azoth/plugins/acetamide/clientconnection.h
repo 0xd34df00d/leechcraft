@@ -47,12 +47,10 @@ namespace Acetamide
 		QString ChID_;
 		IrcAccount *Account_;
 		IProxyObject *ProxyObject_;
-		
-		bool IsConnected_;
-		bool FirstTimeConnect_;
-		
+
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
 		QHash<QString, IrcServer_ptr> IrcServers_;
+		QHash<QString, QHash<QString, ServerParticipantEntry_ptr> > Server2Entry_;
 	public:
 		ClientConnection (IrcAccount*);
 		virtual ~ClientConnection ();
@@ -69,6 +67,11 @@ namespace Acetamide
 		void SetNewParticipant (const QString&, const QString&);
 		void SetUserLeave (const QString&, const QString&, const QString&);
 		void SetPrivateMessage (IrcAccount*, IrcMessage*);
+		ServerParticipantEntry_ptr GetServerParticipantEntry (const QString&, 
+				const QString&, bool announce = true);
+	private:
+		ServerParticipantEntry_ptr CreateServerParticipantEntry (const QString&, 
+				const QString&, bool);
 	public slots:
 		void setChannelUseres (const QString&, const QString&);
 		void setSubject (const QString&, const QString&);

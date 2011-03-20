@@ -23,8 +23,8 @@
 #include <QHash>
 #include <interfaces/imucentry.h>
 #include "clientconnection.h"
-#include "channelparticipantentry.h"
 #include "core.h"
+#include "serverparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -32,19 +32,20 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class ChannelCLEntry;
+
 	class IrcAccount;
 	class IrcMessage;
-	class ChannelParticipantEntry;
-	
+	class ChannelCLEntry;
+
 	class ChannelHandler : public QObject
 	{
 		Q_OBJECT
-		
+
 		IrcAccount *Account_;
 		ChannelCLEntry *CLEntry_;
-		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
+		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString ChannelID_;
+		QString ServerID_;
 		QString Nickname_;
 		QString Subject_;
 		ChannelOptions Channel_;
@@ -54,10 +55,10 @@ namespace Acetamide
 		QString GetChannelID () const;
 		ChannelCLEntry* GetCLEntry () const;
 		QList<QObject*> GetParticipants () const;
-		
+
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
-		
+
 		QString GetNickname () const;
 		void SetNickname (const QString&);
 		QString GetSubject () const;
@@ -70,9 +71,8 @@ namespace Acetamide
 		void HandleMessage (const QString&, const QString&);
 		ChannelOptions GetChannelOptions () const;
 		ServerOptions GetServerOptions () const;
-		ChannelParticipantEntry_ptr GetParticipantEntry (const QString&, bool announce = true);
+		ServerParticipantEntry_ptr GetParticipantEntry (const QString&) const;
 	private:
-		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&, bool announce);
 		void RemoveThis ();
 	};
 };
