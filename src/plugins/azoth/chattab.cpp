@@ -384,6 +384,9 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
+		
+		if (job->GetSourceID () != EntryID_)
+			return;
 
 		Ui_.EventsButton_->show ();
 
