@@ -76,6 +76,7 @@ namespace Xoox
 				IMUCEntry::MUCRole, const QString&);
 
 		void HandlePresence (const QXmppPresence&, const QString&);
+		void HandleErrorPresence (const QXmppPresence&, const QString&);
 		void HandlePermsChanged (const QString&,
 				QXmppMucAdminIq::Item::Affiliation,
 				QXmppMucAdminIq::Item::Role,
@@ -103,9 +104,7 @@ namespace Xoox
 				QXmppMucAdminIq::Item::Affiliation,
 				QXmppMucAdminIq::Item::Role,
 				const QString&);
-		/*
-		void MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant);
-		*/
+		void HandleNickConflict ();
 
 		void RemoveThis ();
 	};

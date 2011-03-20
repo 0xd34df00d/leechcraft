@@ -19,6 +19,9 @@
 #include "transfermanager.h"
 #include <QXmppTransferManager.h>
 #include "transferjob.h"
+#include "glooxaccount.h"
+#include "clientconnection.h"
+#include "glooxclentry.h"
 
 namespace LeechCraft
 {
@@ -26,9 +29,10 @@ namespace Azoth
 {
 namespace Xoox
 {
-	TransferManager::TransferManager (QXmppTransferManager *manager)
+	TransferManager::TransferManager (QXmppTransferManager *manager, GlooxAccount *account)
 	: QObject (manager)
 	, Manager_ (manager)
+	, Account_ (account)
 	{
 		connect (Manager_,
 				SIGNAL (fileReceived (QXmppTransferJob*)),
@@ -37,14 +41,29 @@ namespace Xoox
 	}
 
 	QObject* TransferManager::SendFile (const QString& id,
-			const QString& var, const QString& name)
+			const QString& sourceVar, const QString& name)
 	{
-		return new TransferJob (Manager_->sendFile (id + "/" + var, name));
+		QString target = GlooxCLEntry::JIDFromID (Account_, id);
+		QString var = sourceVar;
+		if (var.isEmpty ())
+		{
+			QObject *entryObj = Account_->GetClientConnection ()->
+					GetCLEntry (target, QString ());
+			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+			var = entry->Variants ().value (0);
+		}
+		target += '/' + var;
+		return new TransferJob (Manager_->sendFile (target, name), this);
+	}
+	
+	GlooxAccount* TransferManager::GetAccount () const
+	{
+		return Account_;
 	}
 
 	void TransferManager::handleFileReceived (QXmppTransferJob *job)
 	{
-		emit fileOffered (new TransferJob (job));
+		emit fileOffered (new TransferJob (job, this));
 	}
 }
 }

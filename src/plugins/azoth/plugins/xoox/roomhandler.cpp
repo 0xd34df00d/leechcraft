@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "roomhandler.h"
+#include <QMessageBox>
+#include <QInputDialog>
 #include <QtDebug>
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
@@ -276,6 +278,73 @@ namespace Xoox
 			}
 			else if (statusChanged)
 				MakeStatusChangedMessage (pres, nick);
+		}
+	}
+	
+	void RoomHandler::HandleNickConflict ()
+	{
+		if (QMessageBox::question (0,
+				tr ("Nickname conflict"),
+				tr ("You have specified a nickname for the conference "
+					"%1 that's already used. Would you like to try to "
+					"join with another nick?")
+					.arg (RoomJID_),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		{
+			Leave (QString ());
+			return;
+		}
+
+		const QString& newNick = QInputDialog::getText (0,
+				tr ("Enter new nick"),
+				tr ("Enter new nick for joining the conference %1 (%2 is already used):")
+					.arg (RoomJID_)
+					.arg (OurNick_),
+				QLineEdit::Normal,
+				OurNick_);
+		if (newNick.isEmpty ())
+			return;
+		
+		OurNick_ = newNick;
+		Account_->GetClientConnection ()->GetMUCManager ()->joinRoom (RoomJID_, OurNick_);
+	}
+	
+	void RoomHandler::HandleErrorPresence (const QXmppPresence& pres, const QString& nick)
+	{
+		const QString& errorText = pres.error ().text ();
+		QString hrText;
+		switch (pres.error ().condition ())
+		{
+		case QXmppStanza::Error::Conflict:
+			hrText = tr ("nickname already taken");
+			break;
+		case QXmppStanza::Error::Forbidden:
+		case QXmppStanza::Error::NotAllowed:
+			hrText = tr ("access forbidden");
+			break;
+		default:
+			hrText = tr ("unknown condition %1 (please report to developers)")
+				.arg (pres.error ().condition ());
+			break;
+		}
+		const QString& text = tr ("Error for %1: %2 (original message: %3)")
+				.arg (nick)
+				.arg (hrText)
+				.arg (errorText.isEmpty () ?
+						tr ("no message") :
+						errorText);
+		RoomPublicMessage *message = new RoomPublicMessage (text,
+				IMessage::DIn,
+				CLEntry_,
+				IMessage::MTEventMessage,
+				IMessage::MSTOther);
+		CLEntry_->HandleMessage (message);
+		
+		switch (pres.error ().condition ())
+		{
+		case QXmppStanza::Error::Conflict:
+			HandleNickConflict ();
+			break;
 		}
 	}
 	

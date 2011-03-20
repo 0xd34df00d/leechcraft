@@ -68,6 +68,8 @@ namespace Xoox
 
 		OfflineDataSource_ptr ToOfflineDataSource () const;
 		void Convert2ODS ();
+		
+		static QString JIDFromID (GlooxAccount*, const QString&);
 
 		void UpdateRI (const QXmppRosterIq::Item&);
 		QXmppRosterIq::Item GetRI () const;

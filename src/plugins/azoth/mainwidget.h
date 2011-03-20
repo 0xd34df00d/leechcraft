@@ -22,7 +22,7 @@
 #include "interfaces/iaccount.h"
 #include "ui_mainwidget.h"
 
-class QToolBar;
+class QToolButton;
 class QMenu;
 
 namespace LeechCraft
@@ -38,13 +38,14 @@ namespace Azoth
 		Ui::MainWidget Ui_;
 
 		QMenu *MainMenu_;
-		QToolBar *MainToolbar_;
+		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
 
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
 		
 		QAction *AccountJoinConference_;
+		QAction *AccountAddContact_;
 	public:
 		MainWidget (QWidget* = 0);
 		
@@ -54,6 +55,7 @@ namespace Azoth
 		void CreateMenu ();
 		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
 		void UpdateFastStatusButton (State);
+		IAccount* GetAccountFromSender (const char*);
 	private slots:
 		void on_CLTree__activated (const QModelIndex&);
 		void on_CLTree__customContextMenuRequested (const QPoint&);
@@ -63,6 +65,7 @@ namespace Azoth
 		
 		void handleCatRenameTriggered ();
 		void joinAccountConference ();
+		void addAccountContact ();
 
 		void showAccountsList ();
 		void handleAddContactRequested ();

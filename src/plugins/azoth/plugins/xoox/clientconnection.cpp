@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -380,7 +380,7 @@ namespace Xoox
 	GlooxCLEntry* ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods)
 	{
 		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
-		ODSEntries_ [ods->ID_] = entry;
+		ODSEntries_ [entry->GetJID ()] = entry;
 
 		emit gotRosterItems (QList<QObject*> () << entry);
 
@@ -731,6 +731,15 @@ namespace Xoox
 			if (JID2CLEntry_.contains (jid))
 				emit rosterItemCancelledSubscription (JID2CLEntry_ [jid], QString ());
 			break;
+		case QXmppPresence::Error:
+		{
+			QString bare;
+			QString resource;
+			ClientConnection::Split (jid, &bare, &resource);
+			if (RoomHandlers_.contains (bare))
+				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);;
+			break;
+		}
 		}
 	}
 
@@ -808,25 +817,6 @@ namespace Xoox
 			return tr ("Other error.");
 		}
 	}
-
-	/*
-	void ClientConnection::onConnect ()
-	{
-		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-		{
-			gloox::JID jid = rh->GetRoomJID ();
-			// cache room parameters
-			QString server = QString (jid.server().c_str ());
-			QString room = QString (jid.username ().c_str ());
-			QString nick = rh->GetCLEntry ()->GetNick ();
-			// leave conference
-			rh->GetCLEntry ()->Leave (QString ());
-			// join again
-			Account_->JoinRoom (server, room, nick);
-		}
-		IsConnected_ = true;
-	}
-	*/
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
 	{

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,19 +139,15 @@ namespace Azoth
 				QVariantList list = XmlSettingsManager::Instance ()
 						.GetRawValue (key).toList ();
 
-				bool found = false;
 				Q_FOREACH (const QVariant& var, list)
 					if (var.toMap () ["HumanReadableName"] == data ["HumanReadableName"])
 					{
-						found = true;
+						list.removeAll (var);
 						break;
 					}
 
-				if (!found)
-				{
-					list << QVariant (data);
-					XmlSettingsManager::Instance ().SetRawValue (key, list);
-				}
+				list.prepend (QVariant (data));
+				XmlSettingsManager::Instance ().SetRawValue (key, list);
 			}
 			else
 				qWarning () << Q_FUNC_INFO

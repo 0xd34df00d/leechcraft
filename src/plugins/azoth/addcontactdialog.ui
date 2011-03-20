@@ -119,6 +119,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>Protocol_</tabstop>
+  <tabstop>Account_</tabstop>
+  <tabstop>ContactID_</tabstop>
+  <tabstop>Nick_</tabstop>
+  <tabstop>ResolveButton_</tabstop>
+  <tabstop>Groups_</tabstop>
+  <tabstop>Reason_</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

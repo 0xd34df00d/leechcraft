@@ -29,6 +29,7 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class GlooxAccount;
 	class TransferManager : public QObject
 						  , public ITransferManager
 	{
@@ -36,10 +37,12 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::ITransferManager);
 
 		QXmppTransferManager *Manager_;
+		GlooxAccount *Account_;
 	public:
-		TransferManager (QXmppTransferManager*);
+		TransferManager (QXmppTransferManager*, GlooxAccount*);
 
 		QObject* SendFile (const QString&, const QString&, const QString&);
+		GlooxAccount* GetAccount () const;
 	private slots:
 		void handleFileReceived (QXmppTransferJob*);
 	signals:

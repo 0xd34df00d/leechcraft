@@ -14,12 +14,12 @@
         <translation>Простий скріншотер.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="140"/>
+        <location filename="auscrie.cpp" line="121"/>
         <source>Save as</source>
         <translation>Зберегти як</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="142"/>
+        <location filename="auscrie.cpp" line="123"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>Файли %1 (*.%1);;Всі файли (*.*)</translation>
     </message>
@@ -27,17 +27,17 @@
 <context>
     <name>LeechCraft::Plugins::Auscrie::Poster</name>
     <message>
-        <location filename="poster.cpp" line="160"/>
+        <location filename="poster.cpp" line="189"/>
         <source>Page parse failed</source>
         <translation>Обробка сторінки зазнала невдачі</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="167"/>
+        <location filename="poster.cpp" line="196"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
         <translation>Зображення завантажено: %1, адреса знаходиться в буфері обміну</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="179"/>
+        <location filename="poster.cpp" line="208"/>
         <source>Upload of screenshot failed: %1</source>
         <translation>Завантаження знімку не вдалось: %1</translation>
     </message>
@@ -55,47 +55,47 @@
         <translation>Дія:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="31"/>
+        <location filename="shooterdialog.ui" line="36"/>
         <source>upload to Savepic.ru</source>
         <translation>завантажити на Savepic.ru</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="36"/>
+        <location filename="shooterdialog.ui" line="41"/>
         <source>upload to Imagebin.ca</source>
         <translation>завантажити на Imagebin.ca</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="41"/>
+        <location filename="shooterdialog.ui" line="46"/>
         <source>save</source>
         <translation>зберегти</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="49"/>
+        <location filename="shooterdialog.ui" line="54"/>
         <source>Timeout:</source>
         <translation>Затримка:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="56"/>
+        <location filename="shooterdialog.ui" line="61"/>
         <source> s</source>
         <translation> с</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="63"/>
+        <location filename="shooterdialog.ui" line="68"/>
         <source>Format:</source>
         <translation>Формат:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="71"/>
+        <location filename="shooterdialog.ui" line="76"/>
         <source>JPG</source>
         <translation>JPG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="76"/>
+        <location filename="shooterdialog.ui" line="81"/>
         <source>PNG</source>
         <translation>PNG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="84"/>
+        <location filename="shooterdialog.ui" line="89"/>
         <source>Quality:</source>
         <translation>Якість:</translation>
     </message>

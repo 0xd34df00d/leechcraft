@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,6 +384,9 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
+		
+		if (job->GetSourceID () != EntryID_)
+			return;
 
 		Ui_.EventsButton_->show ();
 
@@ -502,6 +505,8 @@ namespace Azoth
 			const int pos = std::max (0, Ui_.VariantBox_->findText (current));
 			Ui_.VariantBox_->setCurrentIndex (pos);
 		}
+		
+		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
