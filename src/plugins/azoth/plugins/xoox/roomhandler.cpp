@@ -290,7 +290,10 @@ namespace Xoox
 					"join with another nick?")
 					.arg (RoomJID_),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		{
+			Leave (QString ());
 			return;
+		}
 
 		const QString& newNick = QInputDialog::getText (0,
 				tr ("Enter new nick"),
