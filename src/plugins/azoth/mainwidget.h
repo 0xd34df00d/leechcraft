@@ -45,6 +45,7 @@ namespace Azoth
 		QMenu *TrayChangeStatus_;
 		
 		QAction *AccountJoinConference_;
+		QAction *AccountAddContact_;
 	public:
 		MainWidget (QWidget* = 0);
 		
@@ -54,6 +55,7 @@ namespace Azoth
 		void CreateMenu ();
 		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
 		void UpdateFastStatusButton (State);
+		IAccount* GetAccountFromSender (const char*);
 	private slots:
 		void on_CLTree__activated (const QModelIndex&);
 		void on_CLTree__customContextMenuRequested (const QPoint&);
@@ -63,6 +65,7 @@ namespace Azoth
 		
 		void handleCatRenameTriggered ();
 		void joinAccountConference ();
+		void addAccountContact ();
 
 		void showAccountsList ();
 		void handleAddContactRequested ();

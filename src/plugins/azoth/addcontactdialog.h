@@ -33,7 +33,7 @@ namespace Azoth
 
 		Ui::AddContactDialog Ui_;
 	public:
-		AddContactDialog (QWidget* = 0);
+		AddContactDialog (IAccount *focusAcc = 0, QWidget* = 0);
 
 		IAccount* GetSelectedAccount () const;
 		QString GetContactID () const;
@@ -42,6 +42,8 @@ namespace Azoth
 		QStringList GetGroups () const;
 	private slots:
 		void on_Protocol__currentIndexChanged (int);
+	private:
+		void FocusAccount (IAccount*);
 	};
 }
 }

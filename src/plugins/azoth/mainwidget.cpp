@@ -103,6 +103,12 @@ namespace Azoth
 				this,
 				SLOT (joinAccountConference ()));
 		
+		AccountAddContact_ = new QAction (tr ("Add contact..."), this);
+		connect (AccountAddContact_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addAccountContact ()));
+		
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
 		menuBarVisibilityToggled ();
@@ -190,6 +196,36 @@ namespace Azoth
 		Ui_.FastStatusButton_->setProperty ("Azoth/TargetState",
 				QVariant::fromValue<State> (state));
 	}
+	
+	IAccount* MainWidget::GetAccountFromSender (const char *func)
+	{
+		if (!sender ())
+		{
+			qWarning () << func
+					<< "no sender";
+			return 0;
+		}
+		
+		const QVariant& objVar = sender ()->property ("Azoth/AccountObject");
+		QObject *object = objVar.value<QObject*> ();
+		if (!object)
+		{
+			qWarning () << func
+					<< "no object in Azoth/AccountObject property of the sender"
+					<< sender ()
+					<< objVar;
+			return 0;
+		}
+		
+		IAccount *account = qobject_cast<IAccount*> (object);
+		if (!account)
+			qWarning () << func
+					<< "object"
+					<< object
+					<< "could not be cast to IAccount";
+		
+		return account;
+	}
 
 	void MainWidget::on_CLTree__activated (const QModelIndex& index)
 	{
@@ -238,7 +274,9 @@ namespace Azoth
 			QVariant objVar = index.data (Core::CLRAccountObject);
 
 			AccountJoinConference_->setProperty ("Azoth/AccountObject", objVar);
+			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
 			actions << AccountJoinConference_;
+			actions << AccountAddContact_;
 
 			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
 			{
@@ -390,39 +428,31 @@ namespace Azoth
 	
 	void MainWidget::joinAccountConference ()
 	{
-		if (!sender ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no sender";
-			return;
-		}
-
-		const QVariant& objVar = sender ()->property ("Azoth/AccountObject");
-		QObject *object = objVar.value<QObject*> ();
-		if (!object)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no object in Azoth/AccountObject property of the sender"
-					<< sender ()
-					<< objVar;
-			return;
-		}
-		
-		IAccount *account = qobject_cast<IAccount*> (object);
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
 		if (!account)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "object"
-					<< object
-					<< "could not be cast to IAccount";
 			return;
-		}
 		
 		QList<IAccount*> accounts;
 		accounts << account;
 		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts,
 				Core::Instance ().GetProxy ()->GetMainWindow ());
 		dia->show ();
+	}
+	
+	void MainWidget::addAccountContact ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (account, this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
+					dia->GetReason (),
+					dia->GetNick (),
+					dia->GetGroups ());
 	}
 
 	void MainWidget::showAccountsList ()
@@ -434,7 +464,7 @@ namespace Azoth
 
 	void MainWidget::handleAddContactRequested ()
 	{
-		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (this));
+		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
 		if (dia->exec () != QDialog::Accepted)
 			return;
 
