@@ -85,6 +85,12 @@ namespace Azoth
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
+		
+		QStyle *style = o.widget ?
+				o.widget->style () :
+				QApplication::style ();
+		style->drawPrimitive (QStyle::PE_FrameButtonBevel,
+					&o, painter, o.widget);
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
