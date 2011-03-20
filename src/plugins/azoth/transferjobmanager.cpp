@@ -151,9 +151,16 @@ namespace Azoth
 		if (path.isEmpty ())
 		{
 			path = XmlSettingsManager::Instance ().property ("DefaultXferSavePath").toString ();
+			const QString& homePath = QDir::homePath ();
 			if (!QFileInfo (path).exists () &&
-					path.startsWith (QDir::homePath ()))
-				QDir dir = QDir::homePath ();
+					path.startsWith (homePath))
+			{
+				QDir dir = QDir::home ();
+				QString relPath = path.mid (homePath.size ());
+				if (relPath.at (0) == '/')
+					relPath = relPath.mid (1);
+				dir.mkpath (relPath);
+			}
 
 			path = CheckSavePath (path);
 			if (path.isEmpty ())
