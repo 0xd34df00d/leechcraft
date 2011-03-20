@@ -17,10 +17,10 @@
  **********************************************************************/
 
 #include "ircservermanager.h"
+#include <boost/bind.hpp>
 #include "ircaccount.h"
 #include "ircmessage.h"
 #include "clientconnection.h"
-#include <boost/bind.hpp>
 
 namespace LeechCraft
 {
@@ -118,15 +118,6 @@ namespace Acetamide
 		}
 
 		Account2Server_ [acc] [key]->LeaveChannel (channel);
-		Account2Server_ [acc].remove (key);
-		QList<QHash<QString, IrcServer_ptr> > list = Account2Server_.values ();
-		QList<QHash<QString, IrcServer_ptr> >::iterator iter = std::find_if (list.begin (), list.end (), 
-		boost::bind (&IrcServerManager::ServerExists, this, _1, key));
-		if (iter == list.end ())
-			Core::Instance ().GetSocketManager ()->CloseSocket (key);
-
-		if (!Account2Server_ [acc].count ())
-			acc->ChangeState (EntryStatus (SOffline, QString ()));
 	}
 
 	void IrcServerManager::SetNewParticipant (const QString& serverKey,
@@ -143,44 +134,16 @@ namespace Acetamide
 				serverKey);
 	}
 
-	QList<IrcAccount*> IrcServerManager::GetAccounts (IrcServer *server) const
-	{
-// 		QList<IrcAccount*> accList;
-// 		Q_FOREACH (IrcServer_ptr serv, Account2Server.values ())
-// 			if (serv->GetServerKey () == server->GetServerKey ())
-// 				accList << Account2Server.key (serv);
-// 		return accList;
-	}
-
-	void IrcServerManager::RemoveServer (const QString& key)
-	{
-		QList<QHash<QString, IrcServer_ptr> > list = Account2Server_.values ();
-		QList<QHash<QString, IrcServer_ptr> >::iterator iter = std::find_if (list.begin (), list.end (), 
-				boost::bind (&IrcServerManager::ServerExists, this, _1, key));
-		while (iter != list.end ())
-		{
-			(*iter).remove (key);
-			iter = std::find_if (++iter, list.end (), 
-				boost::bind (&IrcServerManager::ServerExists, this, _1, key));
-		}
-	}
-
-	bool IrcServerManager::ServerExists (QHash<QString, IrcServer_ptr> hash,
-			const QString& key)
-	{
-		return hash.contains (key);
-	}
-	
 	bool IrcServerManager::DoServerAction (boost::function<void (IrcServer_ptr)> action, const QString& key)
 	{
-		QList<QHash<QString, IrcServer_ptr> > list = Account2Server_.values ();
-		QList<QHash<QString, IrcServer_ptr> >::iterator iter = std::find_if (list.begin (), list.end (), 
-				boost::bind (&IrcServerManager::ServerExists, this, _1, key));
-		if (iter != list.end () )
-		{
-			action ((*iter).value (key));
-			return true;
-		}
+		QMap<IrcAccount*, QHash<QString, IrcServer_ptr> >::const_iterator iter;
+
+		for (iter = Account2Server_.constBegin (); iter != Account2Server_.constEnd (); ++iter)
+			if (ServerExists (iter.key (), key))
+			{
+				action (iter.value ().value (key));
+				return true;
+			}
 
 		qWarning () << Q_FUNC_INFO
 				<< "not found server with key"
@@ -192,19 +155,13 @@ namespace Acetamide
 	bool IrcServerManager::DoClientConnectionAction (boost::function<void (ClientConnection*)> action, 
 			const QString& key)
 	{
-		QList<QHash<QString, IrcServer_ptr> > list = Account2Server_.values ();
 		QList<IrcAccount*> accList;
-		QList<QHash<QString, IrcServer_ptr> >::iterator iter;
-		iter = std::find_if (list.begin (), list.end (), 
-				boost::bind (&IrcServerManager::ServerExists, this, _1, key));
+		QMap<IrcAccount*, QHash<QString, IrcServer_ptr> >::const_iterator iter;
 
-		while (iter != list.end ())
-		{
-			accList << Account2Server_.key (*iter);
-			iter = std::find_if (++iter, list.end (), 
-				boost::bind (&IrcServerManager::ServerExists, this, _1, key));
-		}
- 
+		for (iter = Account2Server_.constBegin (); iter != Account2Server_.constEnd (); ++iter)
+			if (ServerExists (iter.key (), key))
+				accList << iter.key ();
+
 		Q_FOREACH (IrcAccount *acc, accList)
 		{
 			action (acc->GetClientConnection ().get ());
@@ -218,6 +175,28 @@ namespace Acetamide
 		return false;
 	}
 
+	IrcAccount* IrcServerManager::GetAccount (IrcServer *server)
+	{
+		QMap<IrcAccount*, QHash<QString, IrcServer_ptr> >::const_iterator iter;
+
+		for (iter = Account2Server_.constBegin (); iter != Account2Server_.constEnd (); ++iter)
+			if (iter.value ().contains (server->GetServerKey ()) &&
+					iter.value ().value (server->GetServerKey ())->
+							GetNickName () == server->GetNickName ())
+				return iter.key ();
+		return 0;
+	}
+
+	IrcServer_ptr IrcServerManager::GetServer (const QString& key, IrcAccount *acc)
+	{
+		return Account2Server_ [acc] [key];
+	}
+
+	bool IrcServerManager::ServerExists (IrcAccount *acc, const QString& key)
+	{
+		return Account2Server_ [acc].contains (key);
+	}
+
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)
 	{
 		DoServerAction (boost::bind (&IrcServer::ChangeState, _1, state), serverKey);
@@ -226,6 +205,24 @@ namespace Acetamide
 	void IrcServerManager::handleAnswer (const QString& serverKey, const QString& answer)
 	{
 		DoServerAction (boost::bind (&IrcServer::ReadAnswer, _1, answer), serverKey);
+	}
+
+	void IrcServerManager::removeServer (const QString& key)
+	{
+		QMap<IrcAccount*, QHash<QString, IrcServer_ptr> >::iterator iter;
+
+		for (iter = Account2Server_.begin (); iter != Account2Server_.end (); ++iter)
+		{
+			if (ServerExists (iter.key (), key))
+			{
+				iter.value ().value (key)->ChangeState (NotConnected);
+				iter.value ().remove (key);
+				if (!iter.value ().count ())
+					iter.key ()->ChangeState (EntryStatus (SOffline, QString ()));
+			}
+			
+		}
+		Core::Instance ().GetSocketManager ()->CloseSocket (key);
 	}
 };
 };

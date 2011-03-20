@@ -39,12 +39,15 @@ namespace Acetamide
 	ClientConnection::ClientConnection (IrcAccount *account)
 	: Account_ (account)
 	, ProxyObject_ (0)
-	, IsConnected_ (false)
-	, FirstTimeConnect_ (true)
 	{
 		QObject *proxyObj = qobject_cast<IrcProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
+
+		connect (this,
+				SIGNAL (gotCLItems (const QList<QObject*>&)),
+				Account_,
+				SIGNAL (gotCLItems (const QList<QObject*>&)));
 	}
 
 	ClientConnection::~ClientConnection ()
@@ -57,10 +60,7 @@ namespace Acetamide
 		if (ChannelHandlers_.contains (key))
 			return ChannelHandlers_ [key]->GetParticipantEntry (nick).get ();
 		else
-		{
-// 			return Account_->GetPrivateChatManager ()->
-// 					GetChatEntry (nick, IrcServers_ [key].get ()).get ();
-		}
+			return Server2Entry_ [key] [nick].get ();
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const
@@ -78,9 +78,9 @@ namespace Acetamide
 	{
 	}
 
-	QList<QObject*> ClientConnection::GetChannelCLEntries (const QString& channelID) const
+	QList<QObject*> ClientConnection::GetChannelCLEntries (const QString& channelKey) const
 	{
-		ChannelHandlers_.value (channelID)->GetParticipants ();
+		ChannelHandlers_.value (channelKey)->GetParticipants ();
 	}
 
 	IrcAccount* ClientConnection::GetAccount () const
@@ -103,7 +103,6 @@ namespace Acetamide
 		}
 
 		ChannelHandler *ch = new ChannelHandler (server, channel, Account_);
-
 		Core::Instance ().GetServerManager ()->
 				JoinChannel (server, channel, Account_);
 		
@@ -122,14 +121,6 @@ namespace Acetamide
 	IrcMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
 			const QString& resource, const QString& body)
 	{
-// 		IrcMessage *msg = new IrcMessage (type,
-// 				IMessage::DOut,
-// 				chid,
-// 				resource,
-// 				this);
-// 		msg->SetBody (body);
-// 		msg->SetDateTime (QDateTime::currentDateTime ());
-
 		return 0;
 	}
 
@@ -158,6 +149,29 @@ namespace Acetamide
 	void ClientConnection::SetPrivateMessage (IrcAccount *acc, IrcMessage *msg)
 	{
 		Core::Instance ().GetServerManager ()->SetPrivateMessageOut (Account_, msg);
+	}
+
+	ServerParticipantEntry_ptr ClientConnection::GetServerParticipantEntry (const QString& serverKey, 
+			const QString& nick, bool announce)
+	{
+		if (Server2Entry_.contains (serverKey) && Server2Entry_ [serverKey].contains (nick))
+			return Server2Entry_ [serverKey] [nick];
+		else
+		{
+			ServerParticipantEntry_ptr entry (CreateServerParticipantEntry (serverKey, nick, announce));
+			Server2Entry_ [serverKey] [nick] = entry;
+			return entry;
+		}
+	}
+
+	ServerParticipantEntry_ptr ClientConnection::CreateServerParticipantEntry (const QString& serverKey,
+			const QString& nick, bool announce)
+	{
+		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, serverKey, Account_));
+		if (announce)
+			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
+		emit gotCLItems (QList<QObject*> () << entry.get ());
+		return entry;
 	}
 
 	void ClientConnection::setChannelUseres (const QString& users, const QString& key)

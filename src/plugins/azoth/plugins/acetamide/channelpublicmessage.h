@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QPoint>
 #include <interfaces/imessage.h>
-#include "channelparticipantentry.h"
+#include "serverparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -30,9 +30,9 @@ namespace Azoth
 {
 namespace Acetamide
 {
+
 	class ChannelCLEntry;
-	class ChannelParticipantEntry;
-	
+
 	class ChannelPublicMessage : public QObject
 								, public IMessage
 	{
@@ -40,7 +40,7 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::IMessage);
 		
 		QPointer<ChannelCLEntry> ParentEntry_;
-		ChannelParticipantEntry_ptr ParticipantEntry_;
+		ServerParticipantEntry_ptr ParticipantEntry_;
 		QString Message_;
 		QDateTime Datetime_;
 		Direction Direction_;
@@ -54,7 +54,7 @@ namespace Acetamide
 				ChannelCLEntry*,
 				MessageType,
 				MessageSubType,
-				ChannelParticipantEntry_ptr = ChannelParticipantEntry_ptr ());
+				ServerParticipantEntry_ptr = ServerParticipantEntry_ptr ());
 		
 		QObject* GetObject ();
 		void Send ();

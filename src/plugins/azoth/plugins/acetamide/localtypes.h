@@ -47,14 +47,33 @@ namespace Acetamide
 		QString ChannelPassword_;
 		QString ChannelNickname_;
 	};
-	
+
 	enum ConnectionState
 	{
 		Connected,
 		InProcess,
 		NotConnected
 	};
-	
+
+	/**
+	 * Используется для определения прав на канале. 
+	 */
+	enum Affilation
+	{
+		Owner,
+		Member
+	};
+
+	/**
+	 * Используется для определения голоса на канале.
+	 * по усолчанияю используется Participant, если на канале не указано другое 
+	 */
+	enum Role
+	{
+		Visitor,
+		Participant
+	};
+
 	bool operator== (const ChannelOptions&, const ChannelOptions&);
 };
 };

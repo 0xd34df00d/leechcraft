@@ -21,6 +21,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <QHash>
 #include "localtypes.h"
 
 namespace LeechCraft
@@ -58,10 +59,11 @@ namespace Acetamide
 		QString GetNickName () const;
 		QString GetEncoding () const;
 		void AddChannel2Queue (const ChannelOptions&);
+		QList<ChannelOptions> GetActiveChannels () const;
 		void ChangeState (ConnectionState);
 		void ReadAnswer (const QString&);
 		void SendPublicMessage (const QString&, const ChannelOptions&);
-		void SendPrivateMessage (IrcMessage *);
+		void SendPrivateMessage (IrcMessage*);
 		void LeaveChannel (const QString&);
 	public slots:
 		void authFinished (const QStringList&);
@@ -71,6 +73,9 @@ namespace Acetamide
 		void setNewParticipant (const QStringList&);
 		void setUserLeave (const QStringList&);
 		void setUserQuit  (const QStringList&);
+	signals:
+		void gotLeaveAllChannels (const QString&);
+		void gotCLItems (QList<QObject*>&);
 	};
 
 	typedef boost::shared_ptr<IrcServer> IrcServer_ptr;

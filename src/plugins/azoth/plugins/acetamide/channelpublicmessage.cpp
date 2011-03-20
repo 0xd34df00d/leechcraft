@@ -18,12 +18,10 @@
 
 #include "channelpublicmessage.h"
 #include <QtDebug>
-#include "channelclentry.h"
-#include "channelparticipantentry.h"
-#include "ircaccount.h"
-#include "clientconnection.h"
 #include "channelhandler.h"
-#include "ircparser.h"
+#include "channelclentry.h"
+#include "clientconnection.h"
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
@@ -47,7 +45,7 @@ namespace Acetamide
 			ChannelCLEntry *entry,
 			IMessage::MessageType type,
 			IMessage::MessageSubType subType,
-			ChannelParticipantEntry_ptr part)
+			ServerParticipantEntry_ptr part)
 	: QObject (entry)
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (part)

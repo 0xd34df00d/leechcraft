@@ -6,10 +6,10 @@ SET (ACETAMIDE_SRCS
 	acetamide.cpp
 	channelhandler.cpp
 	channelclentry.cpp
-	channelparticipantentry.cpp
 	channelpublicmessage.cpp
 	clientconnection.cpp
 	core.cpp
+	entrybase.cpp
 	ircaccount.cpp
 	ircaccountconfigurationdialog.cpp
 	ircaddserverdialog.cpp
@@ -22,8 +22,7 @@ SET (ACETAMIDE_SRCS
 	ircserver.cpp
 	ircservermanager.cpp
 	localtypes.cpp
-	privatechatentry.cpp
-	privatechatmanager.cpp
+	serverparticipantentry.cpp
 	socketmanager.cpp
 	)
 
@@ -31,10 +30,10 @@ SET (ACETAMIDE_HEADERS
 	acetamide.h
 	channelhandler.h
 	channelclentry.h
-	channelparticipantentry.h
 	channelpublicmessage.h
 	clientconnection.h
 	core.h
+	entrybase.h
 	ircaccount.h
 	ircaccountconfigurationdialog.h
 	ircaddserverdialog.h
@@ -47,8 +46,7 @@ SET (ACETAMIDE_HEADERS
 	ircserver.h
 	ircservermanager.h
 	localtypes.h
-	privatechatentry.h
-	privatechatmanager.h
+	serverparticipantentry.h
 	socketmanager.h
 	)
 

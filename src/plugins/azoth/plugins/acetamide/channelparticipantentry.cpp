@@ -24,7 +24,9 @@
 #include "channelclentry.h"
 #include "channelhandler.h"
 #include "channelpublicmessage.h"
-#include "privatechatmanager.h"
+#include "serverparticipantentry.h"
+#include "ircprotocol.h"
+#include <interfaces/iproxyobject.h>
 
 namespace LeechCraft
 {
@@ -94,45 +96,25 @@ namespace Acetamide
 	QObject* ChannelParticipantEntry::CreateMessage (IMessage::MessageType type,
 			const QString& , const QString& body)
 	{
-// 		QString key =  ChannelHandler_->GetServerOptions ().ServerName_ + ":" 
-// 				+ QString::number (ChannelHandler_->GetServerOptions ().ServerPort_);
-// 		IrcServer_ptr serv = Core::Instance ().GetServerManager ()->GetServer (key);
-// 		PrivateChatEntry_ptr entry = Account_->
-// 				GetPrivateChatManager ()->GetChatEntry (NickName_, serv.get ());
-// 		QObject *msg = entry->CreateMessage (type, NickName_, body);
-// 		IrcMessage *mess = qobject_cast<IrcMessage*> (msg);
-// 		if (!mess)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< "is not an object of IrcMessage"
-// 					<< msg;
-// 			return 0;
-// 		}
-// 		AllMessages_ << mess;
-// 		return mess;
-// 		IrcMessage *msg = ChannelHandler_->CreateMessage (type, NickName_, body);
-// 		AllMessages_ << msg;
-// 		return msg;
+	// 		QString key =  ChannelHandler_->GetServerOptions ().ServerName_ + ":" 
+	// 				+ QString::number (ChannelHandler_->GetServerOptions ().ServerPort_);
 	}
 
 	void ChannelParticipantEntry::HandleMessage (IrcMessage *msg)
 	{
+		IrcProtocol *proto = qobject_cast<IrcProtocol*> (Account_->GetParentProtocol ());
+		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
+		proxy->PreprocessMessage (msg);
+
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}
 
 	QString ChannelParticipantEntry::GetChannelID () const
 	{
-		return ChannelHandler_->GetServerOptions ().ServerName_ + ":" +
-				QString::number (ChannelHandler_->GetServerOptions ().ServerPort_) + "/" + 
-				NickName_;
+		return ChannelHandler_->GetChannelID ();
 	}
 
-	QString ChannelParticipantEntry::GetNick () const
-	{
-		return NickName_;
-	}
-	
 	QObject* ChannelParticipantEntry::GetObject ()
 	{
 		return this;
@@ -140,7 +122,7 @@ namespace Acetamide
 
 	QList<QObject*> ChannelParticipantEntry::GetAllMessages () const
 	{
-		return QList<QObject*> ();
+		return AllMessages_;
 	}
 
 	EntryStatus ChannelParticipantEntry::GetStatus (const QString& variant) const
@@ -150,12 +132,12 @@ namespace Acetamide
 
 	QImage ChannelParticipantEntry::GetAvatar () const
 	{
-		return QImage ();
+		return Avatar_;
 	}
 
 	QString ChannelParticipantEntry::GetRawInfo () const
 	{
-		return QString ();
+		return RawInfo_;
 	}
 
 	void ChannelParticipantEntry::ShowInfo ()
@@ -164,7 +146,7 @@ namespace Acetamide
 
 	QList<QAction*> ChannelParticipantEntry::GetActions () const
 	{
-		return QList<QAction*> ();
+		return Action_;
 	}
 
 	QMap<QString, QVariant> ChannelParticipantEntry::GetClientInfo (const QString&) const

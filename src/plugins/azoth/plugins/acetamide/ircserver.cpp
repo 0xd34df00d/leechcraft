@@ -22,7 +22,6 @@
 #include "ircmessage.h"
 #include "ircaccount.h"
 #include "clientconnection.h"
-#include "privatechatentry.h"
 
 namespace LeechCraft
 {
@@ -37,12 +36,19 @@ namespace Acetamide
 	, State_ (NotConnected)
 	, Nickname_ (server.ServerNicknames_.at (0))
 	{
+		connect (this,
+				SIGNAL (gotLeaveAllChannels (const QString&)),
+				ServerManager_,
+				SLOT (removeServer (const QString&)));
 	}
 
 	void IrcServer::JoinChannel (const ChannelOptions& channel)
 	{
 		IrcParser_->JoinChannel (channel);
-		ActiveChannels_.append (channel);
+
+		if (!ActiveChannels_.contains (channel))
+			ActiveChannels_.append (channel);
+
 		if (ChannelsQueue_.contains (channel))
 			ChannelsQueue_.removeAll (channel);
 	}
@@ -93,6 +99,11 @@ namespace Acetamide
 		ChannelsQueue_.append (channel);
 	}
 
+	QList<ChannelOptions> IrcServer::GetActiveChannels () const
+	{
+		return ActiveChannels_;
+	}
+
 	void IrcServer::ChangeState (ConnectionState state)
 	{
 		State_ = state;
@@ -116,6 +127,14 @@ namespace Acetamide
 	void IrcServer::LeaveChannel (const QString& channel)
 	{
 		IrcParser_->LeaveChannelCommand (channel);
+		Q_FOREACH (const ChannelOptions& chan, ActiveChannels_)
+			if (chan.ChannelName_ == channel)
+			{
+				ActiveChannels_.removeOne (chan);
+				break;
+			}
+		if (!ActiveChannels_.count ())
+			emit gotLeaveAllChannels (GetServerKey ());
 	}
 
 	void IrcServer::authFinished (const QStringList& params)
@@ -124,30 +143,34 @@ namespace Acetamide
 		Q_FOREACH (const ChannelOptions& channel, ChannelsQueue_)
 		{
 			IrcParser_->JoinChannel (channel);
-			ActiveChannels_.append (channel);
+			if (!ActiveChannels_.contains (channel))
+				ActiveChannels_.append (channel);
 		}
 		ChannelsQueue_.clear ();
 	}
 
 	void IrcServer::setTopic (const QStringList& params)
 	{
+		int count = params.count ();
 		QString channelKey = QString ("%1@%2")
-				.arg (params.at (params.count () - 3).toLower (), Server_.ServerName_);
+				.arg (params.at (count - 3).toLower (), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetTopic (serverKey, channelKey, params.at (params.count () - 2));
+		ServerManager_->SetTopic (serverKey, channelKey, params.at (count - 2));
 	}
 
 	void IrcServer::setCLEntries (const QStringList& params)
 	{
+		int count = params.count ();
 		QString channelKey = QString ("%1@%2")
-				.arg (params.at (params.count () - 3).toLower () , Server_.ServerName_);
+				.arg (params.at (count - 3).toLower () , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetCLEntries (serverKey, channelKey, params.at (params.count () - 2));
+		ServerManager_->SetCLEntries (serverKey, channelKey, params.at (count - 2));
 	}
 
 	void IrcServer::readMessage (const QStringList& params)
 	{
-		QString target = params.at (params.count () - 3).toLower ();
+		int count = params.count ();
+		QString target = params.at (count - 3).toLower ();
 		if (target.startsWith ("#") || 
 				target.startsWith ("+") || target.startsWith ("!") || 
 				target.startsWith ("&") || target.startsWith ("$"))
@@ -156,28 +179,31 @@ namespace Acetamide
 					.arg (target , Server_.ServerName_);
 			QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 			ServerManager_->SetMessageIn (serverKey, channelKey, 
-					params.at (params.count () - 2), params.last ());
+					params.at (count - 2), params.last ());
 		}
 		else
 		{
-// 			if (params.last () == "frigg")
-// 				return;
-// 
-// 			Q_FOREACH (IrcAccount *acc, QSet<IrcAccount*>::fromList (ServerManager_->GetAccounts (this)))
-// 			{
-// 				PrivateChatEntry_ptr entry = acc->
-// 						GetPrivateChatManager ()->GetChatEntry (params.last (), this);
-// 				IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
-// 						IMessage::DIn,
-// 						GetHost () + ":" + QString::number (GetPort ()),
-// 						params.last (),
-// 						acc->GetClientConnection ().get ());
-// 				QTextCodec *codec = QTextCodec::codecForName (GetEncoding ().toUtf8 ());
-// 				QString mess =  codec->toUnicode (params.at (params.count () - 2).toAscii ());
-// 				message->SetBody (mess);
-// 				message->SetDateTime (QDateTime::currentDateTime ());
-// 				entry->HandleMessage (message);
-// 			}
+			if (params.last () == "frigg")
+				return;
+
+				IrcAccount *acc = ServerManager_->GetAccount (this);
+				if (!acc)
+					return;
+				ServerParticipantEntry_ptr entry = acc->GetClientConnection ()->
+						GetServerParticipantEntry (GetServerKey (), params.last ());
+				IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
+						IMessage::DIn,
+						GetHost () + ":" + QString::number (GetPort ()),
+						params.last (),
+						acc->GetClientConnection ().get ());
+				QTextCodec *codec = QTextCodec::codecForName (GetEncoding ().toUtf8 ());
+				QString mess =  codec->toUnicode (params.at (params.count () - 2).toAscii ());
+				message->SetBody (mess);
+				message->SetDateTime (QDateTime::currentDateTime ());
+				
+				entry->SetPrivateChat (true);
+				
+				entry->HandleMessage (message);
 		}
 	}
 
@@ -192,19 +218,17 @@ namespace Acetamide
 	void IrcServer::setUserLeave (const QStringList& params)
 	{
 		QString channelKey;
-		QString leaveMsg;
-		if (params.count () > 2)
+		QString leaveMsg = QString ();
+		int count = params.count ();
+		if (count > 2)
 		{
 			channelKey = QString ("%1@%2")
-					.arg (params.at (params.count () - 3).toLower () , Server_.ServerName_);
-			leaveMsg = params.at (params.count () - 2);
+					.arg (params.at (count - 3).toLower () , Server_.ServerName_);
+			leaveMsg = params.at (count - 2);
 		}
 		else
-		{
 			channelKey = QString ("%1@%2")
 					.arg (params.first ().simplified ().toLower (), Server_.ServerName_);
-			leaveMsg = QString ();
-		}
 
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		ServerManager_->SetUserLeave (serverKey, channelKey, 
