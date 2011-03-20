@@ -78,6 +78,14 @@ namespace Xoox
 		emit availableVariantsChanged (QStringList ());
 		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
+	
+	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
+	{
+		const QString& pre = acc->GetAccountID () + '_';
+		return id.startsWith (pre) ?
+				id.mid (pre.size ()) :
+				id;
+	}
 
 	void GlooxCLEntry::UpdateRI (const QXmppRosterIq::Item& item)
 	{

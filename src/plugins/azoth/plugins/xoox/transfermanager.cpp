@@ -19,6 +19,9 @@
 #include "transfermanager.h"
 #include <QXmppTransferManager.h>
 #include "transferjob.h"
+#include "glooxaccount.h"
+#include "clientconnection.h"
+#include "glooxclentry.h"
 
 namespace LeechCraft
 {
@@ -38,9 +41,19 @@ namespace Xoox
 	}
 
 	QObject* TransferManager::SendFile (const QString& id,
-			const QString& var, const QString& name)
+			const QString& sourceVar, const QString& name)
 	{
-		return new TransferJob (Manager_->sendFile (id + "/" + var, name), this);
+		QString target = GlooxCLEntry::JIDFromID (Account_, id);
+		QString var = sourceVar;
+		if (var.isEmpty ())
+		{
+			QObject *entryObj = Account_->GetClientConnection ()->
+					GetCLEntry (target, QString ());
+			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+			var = entry->Variants ().value (0);
+		}
+		target += '/' + var;
+		return new TransferJob (Manager_->sendFile (target, name), this);
 	}
 	
 	GlooxAccount* TransferManager::GetAccount () const
