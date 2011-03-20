@@ -132,6 +132,9 @@ namespace Azoth
 			path = QFileDialog::getSaveFileName (0,
 					tr ("Select default path for incoming files"),
 					path);
+			
+			if (!path.isEmpty ())
+				XmlSettingsManager::Instance ().setProperty ("DefaultXferSavePath", path);
 		}
 
 		return path;
