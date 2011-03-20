@@ -53,8 +53,7 @@ namespace Xoox
 		QString jid;
 		QString var;
 		ClientConnection::Split (Job_->jid (), &jid, &var);
-		Manager_->GetAccount ()->GetAccountID () + '_' + jid;
-		return jid;
+		return Manager_->GetAccount ()->GetAccountID () + '_' + jid;
 	}
 
 	QString TransferJob::GetName () const
