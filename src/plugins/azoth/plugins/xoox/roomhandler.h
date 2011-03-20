@@ -104,9 +104,7 @@ namespace Xoox
 				QXmppMucAdminIq::Item::Affiliation,
 				QXmppMucAdminIq::Item::Role,
 				const QString&);
-		/*
-		void MakeRoleAffChangedMessage (const gloox::MUCRoomParticipant);
-		*/
+		void HandleNickConflict ();
 
 		void RemoveThis ();
 	};
