@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_PRIVATECHATENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_PRIVATECHATENTRY_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <interfaces/iclentry.h>
+#include <QStringList>
+#include "entrybase.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -31,21 +33,23 @@ namespace Acetamide
 {
 
 	class IrcAccount;
-	class IrcMessage;
-	class IrcServer;
 
-	class PrivateChatEntry : public QObject
-							, public ICLEntry
+	class ServerParticipantEntry : public EntryBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry);
+
+		QString NickName_;
+		QString ServerKey_;
+		QStringList Channels_;
+		bool PrivateChat_;
 
 		IrcAccount *Account_;
-		IrcServer *Server_;
-		QString Nick_;
-		QList<QObject*> AllMessages_;
+
+		Role Role_;
+		Affilation Affilation_;
 	public:
-		PrivateChatEntry (const QString&, IrcServer*, IrcAccount*);
+		ServerParticipantEntry (const QString&, const QString&, IrcAccount*);
+
 		QObject* GetParentAccount () const ;
 		QObject* GetParentCLEntry () const;
 		Features GetEntryFeatures () const;
@@ -53,35 +57,23 @@ namespace Acetamide
 		QString GetEntryName () const;
 		void SetEntryName (const QString&);
 		QString GetEntryID () const;
+		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
-		void HandleMessage (IrcMessage*);
-		QString GetNick () const;
 
-		QObject* GetObject ();
-		QList<QObject*> GetAllMessages () const;
-		EntryStatus GetStatus (const QString& variant = QString ()) const;
-		QImage GetAvatar () const;
-		QString GetRawInfo () const;
-		void ShowInfo ();
-		QList<QAction*> GetActions () const;
-		QMap<QString, QVariant> GetClientInfo (const QString&) const;
-	signals:
-		void availableVariantsChanged (const QStringList&);
-		void avatarChanged (const QImage&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void gotMessage (QObject*);
-		void groupsChanged (const QStringList&);
-		void nameChanged (const QString&);
-		void rawinfoChanged (const QString&);
-		void statusChanged (const EntryStatus&, const QString&);
+		QStringList GetChannels () const;
+		void SetPrivateChat (bool);
+		bool IsPrivateChat () const;
+		Role GetRole () const;
+		void SetRole (const Role&);
+		Affilation GetAffilation () const;
+		void SetAffialtion (const Affilation&);
 	};
-
-	typedef boost::shared_ptr<PrivateChatEntry> PrivateChatEntry_ptr;
+	typedef boost::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_PRIVATECHATENTRY_H
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H

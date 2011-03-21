@@ -60,6 +60,22 @@ namespace Acetamide
 		return Server2Socket_.contains (key);
 	}
 
+	void SocketManager::CloseSocket (const QString& key)
+	{
+		if (!Server2Socket_.contains (key))
+			return;
+		QTcpSocket *socket = Server2Socket_ [key];
+		socket->disconnectFromHost ();
+		if (!socket->waitForDisconnected (30000))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "can't disconnect from host"
+					<< socket->peerName () + QString::number (socket->peerPort ());
+			return;
+		}
+		delete Server2Socket_ [key];
+	}
+
 	QTcpSocket* SocketManager::CreateSocket (const QString& serverKey)
 	{
 		QTcpSocket *socket = new QTcpSocket;
@@ -81,10 +97,8 @@ namespace Acetamide
 		if (!socket->waitForConnected (30000))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "can't connect to"
-					<< host
-					<< "on"
-					<< port;
+					<< "can't connect to host"
+					<< socket->peerName () + QString::number (socket->peerPort ());
 			return 0;
 		}
 

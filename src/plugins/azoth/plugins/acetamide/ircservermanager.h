@@ -19,10 +19,13 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERMANAGER_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERMANAGER_H
 
+#include <boost/function.hpp>
 #include <QObject>
 #include <QMap>
+#include <QHash>
 #include "ircserver.h"
 #include "localtypes.h"
+#include "serverparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -34,27 +37,33 @@ namespace Acetamide
 	class IrcAccount;
 	class IrcMessage;
 	class ClientConnection;
-
+	
 	class IrcServerManager : public QObject
 	{
 		Q_OBJECT
-		QMap<IrcAccount*, IrcServer_ptr> Account2Server;
+
+		QMap<IrcAccount*, QHash<QString, IrcServer_ptr> > Account2Server_;
+		QHash<QString, IrcServer_ptr> Key2Server_;
 	public:
 		IrcServerManager (QObject*);
 		void JoinChannel (const ServerOptions&, const ChannelOptions&, IrcAccount*);
 		void SetTopic (const QString&, const QString&, const QString&);
 		void SetCLEntries (const QString&, const QString&, const QString&);
 		void SetMessageIn (const QString&, const QString&, const QString&, const QString&);
-		void SetMessageOut (const QString&, const ChannelOptions&, IrcAccount*);
+		void SetMessageOut (const QString&, const ChannelOptions&, const ServerOptions&, IrcAccount*);
 		void SetPrivateMessageOut (IrcAccount*, IrcMessage*);
-		void LeaveChannel (const QString&, IrcAccount*);
+		void LeaveChannel (const QString&, const QString&, IrcAccount*);
 		void SetNewParticipant (const QString&, const QString&, const QString&);
 		void SetUserLeave (const QString&, const QString&, const QString&, const QString&);
-		QList<IrcAccount*> GetAccounts (IrcServer*) const;
-		IrcServer_ptr GetServer (const QString&) const;
+		bool DoServerAction (boost::function<void (IrcServer_ptr)>, const QString&);
+		bool DoClientConnectionAction (boost::function<void (ClientConnection*)>, const QString&);
+		bool ServerExists (IrcAccount*, const QString&);
+		IrcAccount* GetAccount (IrcServer*);
+		IrcServer_ptr GetServer (const QString&, IrcAccount*);
 	public slots:
 		void changeState (const QString&, ConnectionState);
 		void handleAnswer (const QString&, const QString&);
+		void removeServer (const QString&);
 	};
 };
 };

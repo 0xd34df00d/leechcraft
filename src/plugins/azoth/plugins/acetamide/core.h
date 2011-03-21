@@ -23,7 +23,6 @@
 #include <interfaces/structures.h>
 #include "socketmanager.h"
 #include "ircservermanager.h"
-#include "privatechatmanager.h"
 #include "localtypes.h"
 
 

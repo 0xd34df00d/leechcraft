@@ -29,23 +29,15 @@ namespace Acetamide
 {
 	IrcMessage::IrcMessage (IMessage::MessageType type,
 			IMessage::Direction dir,
-			const QString& jid,
+			const QString& id,
 			const QString& nickname,
 			ClientConnection *conn)
 	: Type_ (type)
 	, Direction_ (dir)
 	, Connection_ (conn)
-	, ChannelID_ (jid)
+	, ID_ (id)
 	, NickName_ (nickname)
 	{
-// 		const QString& remoteJid = variant.isEmpty () ?
-// 				jid :
-// 				jid + "/" + variant;
-// 		if (type == MTChatMessage && variant.isEmpty ())
-// 		{
-// 			QObject *object = Connection_->GetCLEntry (jid, variant);
-// 			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().first ();
-// 		}
 		Message_.Stamp_ = QDateTime::currentDateTime ();
 	}
 
@@ -55,7 +47,7 @@ namespace Acetamide
 	, Direction_ (DIn)
 	, Message_ (msg)
 	, Connection_ (conn)
-	, ChannelID_ (chid)
+	, ID_ (chid)
 	, NickName_ (msg.Nickname_)
 	{
 		if (!Message_.Stamp_.isValid ())
@@ -107,7 +99,12 @@ namespace Acetamide
 
 	QObject* IrcMessage::OtherPart () const
 	{
-		return Connection_->GetCLEntry (ChannelID_, NickName_);
+		return Connection_->GetCLEntry (ID_, NickName_);
+	}
+
+	QString IrcMessage::GetID () const
+	{
+		return ID_;
 	}
 
 	QString IrcMessage::GetOtherVariant () const
