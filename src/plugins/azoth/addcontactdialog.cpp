@@ -25,7 +25,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	AddContactDialog::AddContactDialog (QWidget *parent)
+	AddContactDialog::AddContactDialog (IAccount *focusAcc, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
@@ -33,6 +33,9 @@ namespace Azoth
 		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
 			Ui_.Protocol_->addItem (proto->GetProtocolName (),
 					QVariant::fromValue<IProtocol*> (proto));
+			
+		if (focusAcc)
+			FocusAccount (focusAcc);
 	}
 
 	IAccount* AddContactDialog::GetSelectedAccount () const
@@ -95,6 +98,34 @@ namespace Azoth
 						.arg (acc->GetOurNick ()),
 					QVariant::fromValue<IAccount*> (acc));
 		}
+	}
+	
+	void AddContactDialog::FocusAccount (IAccount *focusAcc)
+	{
+		QObject *protoObj = focusAcc->GetParentProtocol ();
+		IProtocol *focusProto = qobject_cast<IProtocol*> (protoObj);
+		if (!focusProto)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< protoObj
+					<< "to IProtocol";
+			return;
+		}
+		
+		for (int i = 0; i < Ui_.Protocol_->count (); ++i)
+			if (Ui_.Protocol_->itemData (i).value<IProtocol*> () == focusProto)
+			{
+				Ui_.Protocol_->setCurrentIndex (i);
+				break;
+			}
+		
+		for (int i = 0; i < Ui_.Account_->count (); ++i)
+			if (Ui_.Account_->itemData (i).value<IAccount*> () == focusAcc)
+			{
+				Ui_.Account_->setCurrentIndex (i);
+				break;
+			}
 	}
 }
 }

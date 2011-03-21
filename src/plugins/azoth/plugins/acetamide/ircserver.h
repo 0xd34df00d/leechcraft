@@ -64,7 +64,7 @@ namespace Acetamide
 		void ReadAnswer (const QString&);
 		void SendPublicMessage (const QString&, const ChannelOptions&);
 		void SendPrivateMessage (IrcMessage*);
-		void LeaveChannel (const QString&);
+		void LeaveChannel (const QString&, IrcAccount*);
 	public slots:
 		void authFinished (const QStringList&);
 		void setTopic (const QStringList&);

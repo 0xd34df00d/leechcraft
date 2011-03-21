@@ -29,6 +29,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class TransferManager;
+
 	class TransferJob : public QObject
 					  , public ITransferJob
 	{
@@ -36,8 +38,9 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::ITransferJob);
 
 		QXmppTransferJob *Job_;
+		TransferManager *Manager_;
 	public:
-		TransferJob (QXmppTransferJob*);
+		TransferJob (QXmppTransferJob*, TransferManager*);
 
 		QString GetSourceID () const;
 		QString GetName () const;

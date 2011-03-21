@@ -102,14 +102,32 @@ namespace Acetamide
 			QStringList list = entry->GetChannels ();
 			if (list.contains (Channel_.ChannelName_))
 			{
-				if (list.removeOne (Channel_.ChannelName_))
+				list.removeOne (Channel_.ChannelName_);
+				if (!list.count ())
 				{
-					if (!entry->IsPrivateChat ())
-						Account_->handleEntryRemoved (entry.get ());
-					else 
-						if (list.count ())
-							entry->SetGroups (list);
+					Account_->handleEntryRemoved (entry.get ());
+					Account_->GetClientConnection ()->
+							RemoveEntry (ServerID_, entry->GetEntryName ());
 				}
+				else
+				{
+					entry->SetGroups (list);
+					qDebug () << entry->GetChannels ();
+				}
+// 				if (entry->IsPrivateChat ())
+// 				{
+// 					if (!list.count () && !list.contains (ServerID_))
+// 						list << ServerID_;
+// 					entry->SetGroups (list);
+// 				}
+// 				else if (list.count ())
+// 					entry->SetGroups (list);
+// 				else
+// 				{
+// 					Account_->handleEntryRemoved (entry.get ());
+// 					Account_->GetClientConnection ()->
+// 							RemoveEntry (ServerID_, entry->GetEntryName ());
+// 				}
 			}
 		}
 		Core::Instance ().GetServerManager ()->
@@ -143,8 +161,10 @@ namespace Acetamide
 		if (!existed)
 		{
 			QStringList list = entry->GetChannels ();
+			qDebug () << 3 << list;
 			if (!list.contains (Channel_.ChannelName_))
 				list << Channel_.ChannelName_;
+			qDebug () << 4 << list;
 			entry->SetGroups (list);
 			Nick2Entry_ [nick] = entry;
 			MakeJoinMessage (nick);

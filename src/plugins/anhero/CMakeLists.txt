@@ -45,6 +45,7 @@ SET (TRANSLATIONS
 	leechcraft_anhero_fr.ts
 	leechcraft_anhero_oc.ts
 	leechcraft_anhero_en.ts
+	leechcraft_anhero_it.ts
 	)
 SET (RESOURCES anheroresources.qrc)
 SET (COMPILED_TRANSLATIONS
@@ -55,6 +56,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_anhero_fr.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_anhero_oc.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_anhero_en.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_anhero_it.qm
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

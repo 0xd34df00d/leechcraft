@@ -60,6 +60,7 @@ namespace Acetamide
 		bool ServerExists (IrcAccount*, const QString&);
 		IrcAccount* GetAccount (IrcServer*);
 		IrcServer_ptr GetServer (const QString&, IrcAccount*);
+		bool IsPrivateChatExists (const QString&, IrcAccount*);
 	public slots:
 		void changeState (const QString&, ConnectionState);
 		void handleAnswer (const QString&, const QString&);

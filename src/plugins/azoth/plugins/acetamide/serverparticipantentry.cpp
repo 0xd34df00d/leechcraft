@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "serverparticipantentry.h"
+#include <QAction>
+#include "clientconnection.h"
 #include "ircaccount.h"
 #include "ircmessage.h"
 
@@ -34,6 +36,19 @@ namespace Acetamide
 	, NickName_ (nick)
 	, PrivateChat_ (false)
 	{
+		QAction *action = new QAction (tr ("Quit chat"), Account_);
+
+		connect (action,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (closePrivateChat (bool)));
+
+		connect (this,
+				SIGNAL (removeFromList (const QString&, const QString&)),
+				Account_->GetClientConnection ().get (),
+				SLOT (removeServerParticipantEntry (const QString&, const QString&)));
+
+		Actions_ << action;
 	}
 
 	QObject* ServerParticipantEntry::GetParentAccount () const
@@ -81,15 +96,9 @@ namespace Acetamide
 	QStringList ServerParticipantEntry::Groups () const
 	{
 		QStringList list;
-		QString server = ServerKey_.split ('@').at (0);
-		Q_FOREACH (const QString& channel, Channels_)
-		{
-			if (channel.isEmpty ())
-				continue;
-			QString param = channel + "@" + server;
-			list << QStringList (tr ("%1 participants")
-					.arg (param));
-		}
+		QString server = ServerKey_.split (':').at (0);
+		Q_FOREACH (QString channel, Channels_)
+			list << channel + "@" + server;
 		return list;
 	}
 
@@ -114,6 +123,7 @@ namespace Acetamide
 				Account_->GetClientConnection ().get ());
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
+		PrivateChat_ = true;
 		AllMessages_ << message;
 		return message;
 	}
@@ -151,6 +161,14 @@ namespace Acetamide
 	void ServerParticipantEntry::SetAffialtion (const Affilation& aff)
 	{
 		Affilation_ = aff;
+	}
+
+	void ServerParticipantEntry::closePrivateChat (bool)
+	{
+		if (PrivateChat_ && (Channels_.count () == 1) && Channels_.first () == ServerKey_)
+		{
+			emit removeFromList (ServerKey_, NickName_);
+		}
 	}
 
 };

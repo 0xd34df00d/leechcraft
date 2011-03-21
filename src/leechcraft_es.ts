@@ -373,22 +373,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="128"/>
+        <location filename="aboutdialog.ui" line="118"/>
         <source>Contributors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="208"/>
+        <location filename="aboutdialog.ui" line="132"/>
         <source>Appreciations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="230"/>
+        <location filename="aboutdialog.ui" line="154"/>
         <source>Licensing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="385"/>
+        <location filename="aboutdialog.ui" line="309"/>
         <source>Third parties</source>
         <translation type="unfinished"></translation>
     </message>
@@ -514,19 +514,8 @@
 <context>
     <name>DataViewWidget</name>
     <message>
-        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="25"/>
-        <source>Add...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="32"/>
-        <source>Modify...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="39"/>
         <source>Remove</source>
-        <translation type="unfinished">Quitar</translation>
+        <translation type="obsolete">Quitar</translation>
     </message>
 </context>
 <context>
@@ -700,6 +689,73 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::AboutDialog</name>
+    <message>
+        <location filename="aboutdialog.cpp" line="74"/>
+        <source>Years: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="93"/>
+        <source>Lead developer and original author.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="97"/>
+        <source>Firefox importer in New Life.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="98"/>
+        <source>Poshuku OnlineBookmarks.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="99"/>
+        <source>Azoth Acetamide: IRC support for Azoth.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="100"/>
+        <location filename="aboutdialog.cpp" line="106"/>
+        <location filename="aboutdialog.cpp" line="130"/>
+        <location filename="aboutdialog.cpp" line="147"/>
+        <source>Various patches.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="110"/>
+        <source>Initial PKGBUILDs for Arch Linux.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="114"/>
+        <location filename="aboutdialog.cpp" line="148"/>
+        <source>Ukrainian translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="134"/>
+        <source>Graphical artwork.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="138"/>
+        <source>Arabic translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="142"/>
+        <source>Esperanto translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="146"/>
+        <source>Aggregator fixes and improvements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Application</name>
     <message>
         <location filename="application.cpp" line="96"/>
@@ -783,18 +839,18 @@
 <context>
     <name>LeechCraft::FilePicker</name>
     <message>
-        <location filename="xmlsettingsdialog/filepicker.cpp" line="34"/>
+        <location filename="xmlsettingsdialog/filepicker.cpp" line="35"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="xmlsettingsdialog/filepicker.cpp" line="79"/>
+        <location filename="xmlsettingsdialog/filepicker.cpp" line="80"/>
         <source>Select directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="xmlsettingsdialog/filepicker.cpp" line="85"/>
-        <location filename="xmlsettingsdialog/filepicker.cpp" line="91"/>
+        <location filename="xmlsettingsdialog/filepicker.cpp" line="86"/>
+        <location filename="xmlsettingsdialog/filepicker.cpp" line="92"/>
         <source>Select file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -854,60 +910,60 @@
         <translation type="unfinished">F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="257"/>
+        <location filename="mainwindow.cpp" line="268"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="260"/>
+        <location filename="mainwindow.cpp" line="271"/>
         <source>Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="357"/>
+        <location filename="mainwindow.cpp" line="368"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="360"/>
-        <location filename="mainwindow.cpp" line="364"/>
-        <location filename="mainwindow.cpp" line="684"/>
-        <location filename="mainwindow.cpp" line="685"/>
+        <location filename="mainwindow.cpp" line="371"/>
+        <location filename="mainwindow.cpp" line="375"/>
+        <location filename="mainwindow.cpp" line="695"/>
+        <location filename="mainwindow.cpp" line="696"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="503"/>
+        <location filename="mainwindow.cpp" line="514"/>
         <source>Do you really want to quit?</source>
         <translation>¿Realmente quiere salir?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="508"/>
+        <location filename="mainwindow.cpp" line="519"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="587"/>
+        <location filename="mainwindow.cpp" line="598"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Este cambio requiere reiniciar LeechCraft. ¿Quiéres reiniciar ahora?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="691"/>
+        <location filename="mainwindow.cpp" line="702"/>
         <source>%1 down, %2 up</source>
         <translation>%1 descarga, %2 subida</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="757"/>
+        <location filename="mainwindow.cpp" line="784"/>
         <source>Context-dependent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="784"/>
+        <location filename="mainwindow.cpp" line="811"/>
         <source>LeechCraft menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="925"/>
+        <location filename="mainwindow.cpp" line="955"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
@@ -957,37 +1013,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="536"/>
+        <location filename="pluginmanager.cpp" line="541"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="549"/>
+        <location filename="pluginmanager.cpp" line="554"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="568"/>
+        <location filename="pluginmanager.cpp" line="573"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="580"/>
+        <location filename="pluginmanager.cpp" line="585"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="592"/>
+        <location filename="pluginmanager.cpp" line="597"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="615"/>
+        <location filename="pluginmanager.cpp" line="620"/>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="627"/>
+        <location filename="pluginmanager.cpp" line="632"/>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1201,47 +1257,47 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="plugininterface/util.cpp" line="40"/>
+        <location filename="plugininterface/util.cpp" line="50"/>
         <source>Too long to show</source>
         <translation>Demasiado largo para mostrarlo</translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="57"/>
+        <location filename="plugininterface/util.cpp" line="67"/>
         <source>Binary entity</source>
         <translation>Entidad binaria</translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="60"/>
+        <location filename="plugininterface/util.cpp" line="70"/>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="67"/>
+        <location filename="plugininterface/util.cpp" line="77"/>
         <source>&lt;br /&gt;from %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="97"/>
+        <location filename="plugininterface/util.cpp" line="107"/>
         <source> b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="99"/>
+        <location filename="plugininterface/util.cpp" line="109"/>
         <source> KiB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="101"/>
+        <location filename="plugininterface/util.cpp" line="111"/>
         <source> MiB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="103"/>
+        <location filename="plugininterface/util.cpp" line="113"/>
         <source> GiB</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="plugininterface/util.cpp" line="115"/>
+        <location filename="plugininterface/util.cpp" line="125"/>
         <source>%n day(s), </source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1249,13 +1305,13 @@
         </translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="207"/>
-        <location filename="plugininterface/util.cpp" line="224"/>
+        <location filename="plugininterface/util.cpp" line="221"/>
+        <location filename="plugininterface/util.cpp" line="238"/>
         <source>Could not cd into %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="201"/>
+        <location filename="plugininterface/util.cpp" line="215"/>
         <source>Could not create %1</source>
         <translation type="unfinished"></translation>
     </message>

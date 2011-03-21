@@ -124,7 +124,7 @@ namespace Acetamide
 		IrcParser_->PrivateMessageCommand (msg->GetBody (), msg->GetOtherVariant ());
 	}
 
-	void IrcServer::LeaveChannel (const QString& channel)
+	void IrcServer::LeaveChannel (const QString& channel, IrcAccount *acc)
 	{
 		IrcParser_->LeaveChannelCommand (channel);
 		Q_FOREACH (const ChannelOptions& chan, ActiveChannels_)
@@ -133,7 +133,7 @@ namespace Acetamide
 				ActiveChannels_.removeOne (chan);
 				break;
 			}
-		if (!ActiveChannels_.count ())
+		if (!ActiveChannels_.count () && !ServerManager_->IsPrivateChatExists (GetServerKey (), acc))
 			emit gotLeaveAllChannels (GetServerKey ());
 	}
 

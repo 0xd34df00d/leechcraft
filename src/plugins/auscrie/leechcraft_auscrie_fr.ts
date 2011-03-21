@@ -14,12 +14,12 @@
         <translation>Un simple logiciel de capture d&apos;écran automatique.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="140"/>
+        <location filename="auscrie.cpp" line="121"/>
         <source>Save as</source>
         <translation>Enregistrer sous</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="142"/>
+        <location filename="auscrie.cpp" line="123"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>%1 fichiers (*.%1);;Tout les fichiers (*.*)</translation>
     </message>
@@ -27,17 +27,17 @@
 <context>
     <name>LeechCraft::Plugins::Auscrie::Poster</name>
     <message>
-        <location filename="poster.cpp" line="160"/>
+        <location filename="poster.cpp" line="189"/>
         <source>Page parse failed</source>
         <translation>Faille du parsage de la page</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="167"/>
+        <location filename="poster.cpp" line="196"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
         <translation>Image sauvée : %1, l&apos;URL a été enregistrée dans le presse-papiers</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="179"/>
+        <location filename="poster.cpp" line="208"/>
         <source>Upload of screenshot failed: %1</source>
         <translation>Faille au téléchargement de la capture d&apos;écran : %1</translation>
     </message>
@@ -55,42 +55,47 @@
         <translation>Action :</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="36"/>
+        <location filename="shooterdialog.ui" line="31"/>
+        <source>upload to dump.bitcheese.net</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="41"/>
         <source>upload to Imagebin.ca</source>
         <translation>Télécharger vers Imagebin.ca</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="41"/>
+        <location filename="shooterdialog.ui" line="46"/>
         <source>save</source>
         <translation>enregistrer</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="49"/>
+        <location filename="shooterdialog.ui" line="54"/>
         <source>Timeout:</source>
         <translation>Délai d&apos;expiration :</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="56"/>
+        <location filename="shooterdialog.ui" line="61"/>
         <source> s</source>
         <translation> s</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="63"/>
+        <location filename="shooterdialog.ui" line="68"/>
         <source>Format:</source>
         <translation>Format :</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="71"/>
+        <location filename="shooterdialog.ui" line="76"/>
         <source>JPG</source>
         <translation>JPG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="76"/>
+        <location filename="shooterdialog.ui" line="81"/>
         <source>PNG</source>
         <translation>PNG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="84"/>
+        <location filename="shooterdialog.ui" line="89"/>
         <source>Quality:</source>
         <translation>Qualité :</translation>
     </message>

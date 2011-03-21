@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,8 +43,18 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
 	, ODS_ (ods)
-	, BareJID_ (ods->ID_)
 	{
+		const QString& pre = Account_->GetAccountID () + '_';
+		if (ods->ID_.startsWith (pre))
+			BareJID_ = ods->ID_.mid (pre.size ());
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "ODS's ID doesn't start with"
+					<< pre
+					<< ods->ID_;
+			BareJID_ = ods->ID_;
+		}
 	}
 
 	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
@@ -67,6 +77,14 @@ namespace Xoox
 		CurrentStatus_.clear ();
 		emit availableVariantsChanged (QStringList ());
 		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
+	}
+	
+	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
+	{
+		const QString& pre = acc->GetAccountID () + '_';
+		return id.startsWith (pre) ?
+				id.mid (pre.size ()) :
+				id;
 	}
 
 	void GlooxCLEntry::UpdateRI (const QXmppRosterIq::Item& item)

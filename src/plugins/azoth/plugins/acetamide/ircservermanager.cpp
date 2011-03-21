@@ -117,7 +117,7 @@ namespace Acetamide
 			return;
 		}
 
-		Account2Server_ [acc] [key]->LeaveChannel (channel);
+		Account2Server_ [acc] [key]->LeaveChannel (channel, acc);
 	}
 
 	void IrcServerManager::SetNewParticipant (const QString& serverKey,
@@ -175,6 +175,11 @@ namespace Acetamide
 		return false;
 	}
 
+	bool IrcServerManager::ServerExists (IrcAccount *acc, const QString& key)
+	{
+		return Account2Server_ [acc].contains (key);
+	}
+
 	IrcAccount* IrcServerManager::GetAccount (IrcServer *server)
 	{
 		QMap<IrcAccount*, QHash<QString, IrcServer_ptr> >::const_iterator iter;
@@ -192,9 +197,15 @@ namespace Acetamide
 		return Account2Server_ [acc] [key];
 	}
 
-	bool IrcServerManager::ServerExists (IrcAccount *acc, const QString& key)
+	bool IrcServerManager::IsPrivateChatExists (const QString& key, IrcAccount *acc)
 	{
-		return Account2Server_ [acc].contains (key);
+		QList<ServerParticipantEntry_ptr> list = acc->GetClientConnection ()->
+				GetServerParticipantEntries (key);
+
+		Q_FOREACH (ServerParticipantEntry_ptr entry, list)
+			if (entry->IsPrivateChat ())
+				return true;
+		return false;
 	}
 
 	void IrcServerManager::changeState (const QString& serverKey, ConnectionState state)
@@ -217,12 +228,11 @@ namespace Acetamide
 			{
 				iter.value ().value (key)->ChangeState (NotConnected);
 				iter.value ().remove (key);
+				Core::Instance ().GetSocketManager ()->CloseSocket (key);
 				if (!iter.value ().count ())
 					iter.key ()->ChangeState (EntryStatus (SOffline, QString ()));
 			}
-			
 		}
-		Core::Instance ().GetSocketManager ()->CloseSocket (key);
 	}
 };
 };

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,10 @@ namespace Xoox
 	, Account_ (account)
 	, RH_ (rh)
 	{
+		connect (Account_,
+				SIGNAL (statusChanged (const EntryStatus&)),
+				this,
+				SLOT (reemitStatusChange (const EntryStatus&)));
 	}
 
 	RoomHandler* RoomCLEntry::GetRoomHandler () const
@@ -114,7 +118,7 @@ namespace Xoox
 
 	EntryStatus RoomCLEntry::GetStatus (const QString&) const
 	{
-		return EntryStatus (SOnline, QString ());
+		return Account_->GetState ();
 	}
 
 	QList<QAction*> RoomCLEntry::GetActions () const
@@ -304,6 +308,11 @@ namespace Xoox
 	void RoomCLEntry::HandleSubjectChanged (const QString& subj)
 	{
 		emit mucSubjectChanged (subj);
+	}
+	
+	void RoomCLEntry::reemitStatusChange (const EntryStatus& status)
+	{
+		emit statusChanged (status, QString ());
 	}
 }
 }

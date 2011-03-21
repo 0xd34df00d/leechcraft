@@ -164,6 +164,17 @@ namespace Acetamide
 		}
 	}
 
+	QList<ServerParticipantEntry_ptr> ClientConnection::GetServerParticipantEntries(const QString& key) const
+	{
+		return Server2Entry_ [key].values ();
+	}
+
+	void ClientConnection::RemoveEntry (const QString& key, const QString& nick)
+	{
+		if (Server2Entry_.contains (key) && Server2Entry_ [key].contains (nick))
+			Server2Entry_ [key].remove (nick);
+	}
+
 	ServerParticipantEntry_ptr ClientConnection::CreateServerParticipantEntry (const QString& serverKey,
 			const QString& nick, bool announce)
 	{
@@ -201,6 +212,18 @@ namespace Acetamide
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for";
+	}
+
+	void ClientConnection::removeServerParticipantEntry (const QString& key, const QString& nick)
+	{
+		if (Server2Entry_.contains (key) && Server2Entry_ [key].contains (nick))
+		{
+			Account_->handleEntryRemoved (Server2Entry_ [key] [nick].get ());
+			Server2Entry_ [key].remove (nick);
+			if (!Server2Entry_ [key].values ().count ())
+				Core::Instance ().GetServerManager ()->
+						removeServer (key);
+		}
 	}
 
 };

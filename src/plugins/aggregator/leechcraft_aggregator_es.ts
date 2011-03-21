@@ -331,10 +331,6 @@
 <context>
     <name>ItemsWidget</name>
     <message>
-        <source>Form</source>
-        <translation>Formulario</translation>
-    </message>
-    <message>
         <source>Fixed string</source>
         <translation>Cadena fijada</translation>
     </message>
@@ -1300,6 +1296,18 @@
     <message>
         <source>Storage</source>
         <translation type="unfinished">Almacenamiento</translation>
+    </message>
+    <message>
+        <source>Mark as read after</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show tooltips for news items</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

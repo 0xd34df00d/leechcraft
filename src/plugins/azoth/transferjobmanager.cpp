@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,6 +132,9 @@ namespace Azoth
 			path = QFileDialog::getSaveFileName (0,
 					tr ("Select default path for incoming files"),
 					path);
+			
+			if (!path.isEmpty ())
+				XmlSettingsManager::Instance ().setProperty ("DefaultXferSavePath", path);
 		}
 
 		return path;
@@ -151,9 +154,16 @@ namespace Azoth
 		if (path.isEmpty ())
 		{
 			path = XmlSettingsManager::Instance ().property ("DefaultXferSavePath").toString ();
+			const QString& homePath = QDir::homePath ();
 			if (!QFileInfo (path).exists () &&
-					path.startsWith (QDir::homePath ()))
-				QDir dir = QDir::homePath ();
+					path.startsWith (homePath))
+			{
+				QDir dir = QDir::home ();
+				QString relPath = path.mid (homePath.size ());
+				if (relPath.at (0) == '/')
+					relPath = relPath.mid (1);
+				dir.mkpath (relPath);
+			}
 
 			path = CheckSavePath (path);
 			if (path.isEmpty ())

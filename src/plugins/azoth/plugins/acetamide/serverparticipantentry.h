@@ -42,7 +42,7 @@ namespace Acetamide
 		QString ServerKey_;
 		QStringList Channels_;
 		bool PrivateChat_;
-
+		
 		IrcAccount *Account_;
 
 		Role Role_;
@@ -71,6 +71,10 @@ namespace Acetamide
 		void SetRole (const Role&);
 		Affilation GetAffilation () const;
 		void SetAffialtion (const Affilation&);
+	public slots:
+		void closePrivateChat (bool);
+	signals:
+		void removeFromList (const QString&, const QString&);
 	};
 	typedef boost::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
 };
