@@ -60,25 +60,9 @@ namespace Xoox
 
 	EntryStatus EntryBase::GetStatus (const QString& variant) const
 	{
-		if (CurrentStatus_.contains (variant))
+		if (!variant.isEmpty () &&
+				CurrentStatus_.contains (variant))
 			return CurrentStatus_ [variant];
-
-		const GlooxCLEntry *entry = qobject_cast<const GlooxCLEntry*> (this);
-		QXmppRosterManager& rm = Account_->
-				GetClientConnection ()->GetClient ()->rosterManager ();
-		if (entry && rm.isRosterReceived ())
-		{
-			QList<QXmppPresence> press = rm.getAllPresencesForBareJid (GetJID ()).values ();
-			if (press.size ())
-			{
-				QXmppPresence max = press.first ();
-				Q_FOREACH (const QXmppPresence& pres, press)
-					if (pres.status ().priority () > max.status ().priority ())
-						max = pres;
-				return EntryStatus (static_cast<State> (max.status ().type ()),
-						max.status ().statusText ());
-			}
-		};
 
 		if (CurrentStatus_.size ())
 			return *CurrentStatus_.begin ();
