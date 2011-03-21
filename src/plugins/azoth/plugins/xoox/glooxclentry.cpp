@@ -179,8 +179,23 @@ namespace Xoox
 		QStringList result;
 
 		if (!ODS_)
-			result << Account_->GetClientConnection ()->
-					GetClient ()->rosterManager ().getResources (BareJID_);
+		{
+			const QMap<QString, QXmppPresence>& presences =
+					Account_->GetClientConnection ()->GetClient ()->
+							rosterManager ().getAllPresencesForBareJid (BareJID_);
+			if (presences.size () == 1)
+				result << presences.begin ().key ();
+			else
+			{
+				QMap<int, QList<QString> > prio2res;
+				for (QMap<QString, QXmppPresence>::const_iterator i = presences.begin ();
+						i != presences.end (); ++i)
+					prio2res [i->status ().priority ()] << i.key ();
+				Q_FOREACH (int prio, prio2res.keys ())
+					result << prio2res [prio];
+				std::reverse (result.begin (), result.end ());
+			}
+		}
 
 		return result;
 	}
