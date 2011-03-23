@@ -1128,7 +1128,7 @@ namespace LeechCraft
 				return true;
 			}
 
-			bool SQLStorageBackendMysql::UpdateItemsStorage (int oldV, int newV)
+			bool SQLStorageBackendMysql::UpdateItemsStorage (int, int)
 			{
 				bool success = true;
 				/* NOTE No versioning in MySQL yet, so just return true for now.

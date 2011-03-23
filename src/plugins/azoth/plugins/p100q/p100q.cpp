@@ -27,7 +27,7 @@ namespace Azoth
 {
 namespace p100q
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)", Qt::CaseInsensitive);
 		UserWithAvatarRX_ = QRegExp ("#([a-zA-Z0-9]+(?:/[0-9]+)?): @([\\w\\-]+)", Qt::CaseInsensitive);
@@ -111,7 +111,7 @@ namespace p100q
 	}
 
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
-			QObject *chatTab, QString body, QObject *msgObj)
+			QObject*, QString body, QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (msg->GetDirection () != IMessage::DIn ||

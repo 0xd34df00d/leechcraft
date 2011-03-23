@@ -183,7 +183,7 @@ namespace LeechCraft
 					HandleFile (URL2Id_.take (url), url, URL2Mode_.take (url));
 			}
 
-			void PackageProcessor::handlePackageUnarchFinished (int ret, QProcess::ExitStatus status)
+			void PackageProcessor::handlePackageUnarchFinished (int ret, QProcess::ExitStatus)
 			{
 				sender ()->deleteLater ();
 

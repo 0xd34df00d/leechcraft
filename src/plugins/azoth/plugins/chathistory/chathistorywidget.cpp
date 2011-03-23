@@ -200,7 +200,7 @@ namespace ChatHistory
 	}
 	
 	void ChatHistoryWidget::handleGotChatLogs (const QString& accountId,
-			const QString& entryId, int backpages, int amount, const QVariant& logsVar)
+			const QString& entryId, int, int, const QVariant& logsVar)
 	{
 		const QString& selectedEntry = Ui_.Contacts_->selectionModel ()->
 				currentIndex ().data (MRIDRole).toString ();

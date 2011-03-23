@@ -88,11 +88,11 @@ namespace Azoth
 	}
 
 	Core::Core ()
-	: CLModel_ (new QStandardItemModel (this))
-	, LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+	: LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
+	, CLModel_ (new QStandardItemModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
@@ -745,8 +745,8 @@ namespace Azoth
 		}
 	}
 
-	void Core::HandleStatusChanged (const EntryStatus& status,
-			ICLEntry *entry, const QString& variant)
+	void Core::HandleStatusChanged (const EntryStatus&,
+			ICLEntry *entry, const QString&)
 	{
 		invalidateClientsIconCache (entry);
 		QString tip = QString ("%1 (%2)<hr />%3 (%4)<hr />%5")
@@ -1293,7 +1293,7 @@ namespace Azoth
 		}
 	}
 
-	QString Core::GetReason (const QString& id, const QString& text)
+	QString Core::GetReason (const QString&, const QString& text)
 	{
 		return QInputDialog::getText (0,
 					tr ("Enter reason"),

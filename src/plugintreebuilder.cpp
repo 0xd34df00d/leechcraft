@@ -109,7 +109,7 @@ namespace LeechCraft
 		{
 		}
 
-		void finish_vertex (Vertex u, const Graph& g)
+		void finish_vertex (Vertex u, const Graph&)
 		{
 			if (BackVerts_.contains (u))
 			{

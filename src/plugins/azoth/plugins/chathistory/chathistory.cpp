@@ -32,7 +32,7 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		ChatHistoryWidget::SetParentMultiTabs (this);
 
@@ -98,7 +98,7 @@ namespace ChatHistory
 	}
 	
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
-			QObject *action, QObject *entry)
+			QObject *action, QObject*)
 	{
 		if (!action->property ("Azoth/ChatHistory/IsGood").toBool ())
 			return;
@@ -124,8 +124,8 @@ namespace ChatHistory
 		proxy->SetReturnValue (list);
 	}
 
-	void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
-			QObject *chatTab, QObject *message)
+	void Plugin::hookMessageCreated (IHookProxy_ptr,
+			QObject*, QObject *message)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (message);
 		if (!msg)
@@ -140,7 +140,7 @@ namespace ChatHistory
 		Core::Instance ()->Process (message);
 	}
 
-	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr,
 				QObject *message)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (message);

@@ -34,8 +34,8 @@ namespace StandardStyles
 {
 	StandardStyleSource::StandardStyleSource (IProxyObject *proxy, QObject *parent)
 	: QObject (parent)
-	, Proxy_ (proxy)
 	, StylesLoader_ (new Util::ResourceLoader ("azoth/styles/standard/", this))
+	, Proxy_ (proxy)
 	{
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
@@ -131,6 +131,10 @@ namespace StandardStyles
 			case IMessage::MTStatusMessage:
 				string.append ("* ");
 				divClass = "statusmsg";
+				break;
+			case IMessage::MTServiceMessage:
+				qWarning () << Q_FUNC_INFO
+						<< "service message";
 				break;
 			}
 			break;

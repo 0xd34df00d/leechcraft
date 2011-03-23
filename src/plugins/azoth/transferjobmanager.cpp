@@ -285,6 +285,9 @@ namespace Azoth
 		case TEProtocolError:
 			str += tr ("Protocol error.");
 			break;
+		case TENoError:
+			str += tr ("No error.");
+			break;
 		}
 
 		if (!message.isEmpty ())

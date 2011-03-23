@@ -26,7 +26,7 @@ namespace LeechCraft
 	{
 		namespace SecMan
 		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
+			void Plugin::Init (ICoreProxy_ptr)
 			{
 			}
 

@@ -125,7 +125,7 @@ namespace LeechCraft
 						Ui_.NumItems_->value (),
 						Ui_.ItemAge_->value (),
 						Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked);
-				Core::Instance ().SetFeedSettings (settings, Index_);
+				Core::Instance ().SetFeedSettings (settings);
 			
 				QDialog::accept ();
 			}

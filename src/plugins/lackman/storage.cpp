@@ -785,7 +785,9 @@ namespace LeechCraft
 						static_cast<PackageInfo::Type> (QueryGetListPackageInfos_.value (5).toInt ()),
 						QueryGetListPackageInfos_.value (6).toString (),
 						QUrl::fromEncoded (QueryGetListPackageInfos_.value (7).toString ().toUtf8 ()),
-						GetPackageTags (packageId)
+						GetPackageTags (packageId),
+						false,
+						false
 					};
 
 					result [name] << info;
@@ -852,7 +854,9 @@ namespace LeechCraft
 					static_cast<PackageInfo::Type> (QueryGetSingleListPackageInfo_.value (5).toInt ()),
 					QueryGetSingleListPackageInfo_.value (6).toString (),
 					QUrl::fromEncoded (QueryGetSingleListPackageInfo_.value (7).toString ().toUtf8 ()),
-					GetPackageTags (packageId)
+					GetPackageTags (packageId),
+					false,
+					false
 				};
 
 				QSqlQuery query (DB_);

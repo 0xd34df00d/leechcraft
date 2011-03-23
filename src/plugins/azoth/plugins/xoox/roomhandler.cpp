@@ -42,11 +42,11 @@ namespace Xoox
 	RoomHandler::RoomHandler (const QString& jid,
 			const QString& ourNick, GlooxAccount* account)
 	: Account_ (account)
+	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
 	, CLEntry_ (new RoomCLEntry (this, Account_))
 	, RoomHasBeenEntered_ (false)
 	, RoomJID_ (jid)
 	, OurNick_ (ourNick)
-	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
 	{
 	}
 
@@ -344,6 +344,8 @@ namespace Xoox
 		{
 		case QXmppStanza::Error::Conflict:
 			HandleNickConflict ();
+			break;
+		default:
 			break;
 		}
 	}

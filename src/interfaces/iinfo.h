@@ -754,6 +754,8 @@ public:
 	virtual void SetProvider (QObject* object,
 			const QString& feature)
 	{
+		Q_UNUSED (object);
+		Q_UNUSED (feature);
 	}
 
 	/** @brief Destroys the plugin.
@@ -808,7 +810,11 @@ public:
 	 *
 	 * @sa gotEntity(), delegateEntity()
 	 */
-	virtual void couldHandle (const LeechCraft::Entity& entity, bool *could) {}
+	virtual void couldHandle (const LeechCraft::Entity& entity, bool *could)
+	{
+		Q_UNUSED (entity);
+		Q_UNUSED (could);
+	}
 
 	/** @brief This signal is emitted by plugin to notify the Core and
 	 * other plugins about an entity.
@@ -829,7 +835,10 @@ public:
 	 *
 	 * @param[out] entity The entity.
 	 */
-	virtual void gotEntity (const LeechCraft::Entity& entity) {}
+	virtual void gotEntity (const LeechCraft::Entity& entity)
+	{
+		Q_UNUSED (entity);
+	}
 
 	/** @brief This signal is emitted by plugin to delegate the entity
 	 * to an another plugin.
@@ -858,7 +867,12 @@ public:
 	 * the plugin that handles this delegate request, or NULL.
 	 */
 	virtual void delegateEntity (const LeechCraft::Entity& entity,
-			int *id, QObject **provider) {}
+			int *id, QObject **provider)
+	{
+		Q_UNUSED (entity);
+		Q_UNUSED (id);
+		Q_UNUSED (provider);
+	}
 };
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");

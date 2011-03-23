@@ -676,8 +676,7 @@ namespace LeechCraft
 				}
 			}
 
-			void Core::SetFeedSettings (const Feed::FeedSettings& settings,
-					const QModelIndex& index)
+			void Core::SetFeedSettings (const Feed::FeedSettings& settings)
 			{
 				try
 				{
@@ -1167,7 +1166,8 @@ namespace LeechCraft
 					PendingJob::RFeedExternalData,
 					url,
 					where,
-					QStringList ()
+					QStringList (),
+					boost::shared_ptr<Feed::FeedSettings> ()
 				};
 
 				int id = -1;
@@ -1672,7 +1672,8 @@ namespace LeechCraft
 					PendingJob::RFeedUpdated,
 					url,
 					filename,
-					QStringList ()
+					QStringList (),
+					boost::shared_ptr<Feed::FeedSettings> ()
 				};
 
 				int jobId = -1;

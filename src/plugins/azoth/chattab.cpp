@@ -730,7 +730,6 @@ namespace Azoth
 	{
 		const QMultiMap<QString, QString>& metadata =
 				Ui_.View_->page ()->mainFrame ()->metaData ();
-		const QString& coloring = metadata.value ("coloring");
 		NickColors_ = Core::Instance ().GenerateColors (metadata.value ("coloring"));
 	}
 

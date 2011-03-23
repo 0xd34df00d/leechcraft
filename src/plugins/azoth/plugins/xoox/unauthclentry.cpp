@@ -84,7 +84,7 @@ namespace Xoox
 	}
 
 	QObject* UnauthCLEntry::CreateMessage (IMessage::MessageType,
-			const QString& variant, const QString& body)
+			const QString&, const QString&)
 	{
 		return 0;
 	}

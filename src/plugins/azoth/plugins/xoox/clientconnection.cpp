@@ -51,15 +51,15 @@ namespace Xoox
 	ClientConnection::ClientConnection (const QString& jid,
 			const GlooxAccountState& state,
 			GlooxAccount *account)
-	: Account_ (account)
-	, ProxyObject_ (0)
-	, IsConnected_ (false)
-	, FirstTimeConnect_ (true)
-	, OurJID_ (jid)
-	, Client_ (new QXmppClient (this))
+	: Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (0)
+	, OurJID_ (jid)
+	, Account_ (account)
+	, ProxyObject_ (0)
+	, IsConnected_ (false)
+	, FirstTimeConnect_ (true)
 	, SocketErrorAccumulator_ (0)
 	{
 		LastState_.State_ = SOffline;
@@ -742,6 +742,13 @@ namespace Xoox
 				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);;
 			break;
 		}
+		case QXmppPresence::Available:
+		case QXmppPresence::Unavailable:
+		case QXmppPresence::Probe:
+			qWarning () << Q_FUNC_INFO
+					<< "got wrong presence"
+					<< pres.type ();
+			break;
 		}
 	}
 

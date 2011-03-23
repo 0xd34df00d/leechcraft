@@ -231,7 +231,7 @@ namespace LeechCraft
 				PendingRIs_.remove (id);
 			}
 
-			void RepoInfoFetcher::handleRIError (int id, IDownload::Error error)
+			void RepoInfoFetcher::handleRIError (int id, IDownload::Error)
 			{
 				if (!PendingRIs_.contains (id))
 					return;
@@ -277,7 +277,7 @@ namespace LeechCraft
 				PendingComponents_.remove (id);
 			}
 
-			void RepoInfoFetcher::handleComponentError (int id, IDownload::Error error)
+			void RepoInfoFetcher::handleComponentError (int id, IDownload::Error)
 			{
 				if (!PendingComponents_.contains (id))
 					return;
@@ -322,7 +322,7 @@ namespace LeechCraft
 				PendingPackages_.remove (id);
 			}
 
-			void RepoInfoFetcher::handlePackageError (int id, IDownload::Error error)
+			void RepoInfoFetcher::handlePackageError (int id, IDownload::Error)
 			{
 				if (!PendingPackages_.contains (id))
 					return;
@@ -338,7 +338,7 @@ namespace LeechCraft
 			}
 
 			void RepoInfoFetcher::handleRepoUnarchFinished (int exitCode,
-					QProcess::ExitStatus exitStatus)
+					QProcess::ExitStatus)
 			{
 				sender ()->deleteLater ();
 
@@ -376,7 +376,7 @@ namespace LeechCraft
 			}
 
 			void RepoInfoFetcher::handleComponentUnarchFinished (int exitCode,
-					QProcess::ExitStatus exitStatus)
+					QProcess::ExitStatus)
 			{
 				sender ()->deleteLater ();
 
@@ -417,7 +417,7 @@ namespace LeechCraft
 			}
 
 			void RepoInfoFetcher::handlePackageUnarchFinished (int exitCode,
-					QProcess::ExitStatus status)
+					QProcess::ExitStatus)
 			{
 				sender ()->deleteLater ();
 

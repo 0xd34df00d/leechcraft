@@ -31,7 +31,7 @@ namespace LeechCraft
 			{
 				namespace SimpleStorage
 				{
-					void Plugin::Init (ICoreProxy_ptr proxy)
+					void Plugin::Init (ICoreProxy_ptr)
 					{
 						Storage_ .reset (new QSettings (QSettings::IniFormat,
 									QSettings::UserScope,

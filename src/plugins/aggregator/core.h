@@ -174,7 +174,7 @@ namespace LeechCraft
 				void UpdateFavicon (const QModelIndex&);
 				QStringList GetCategories (const QModelIndex&) const;
 				Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
-				void SetFeedSettings (const Feed::FeedSettings&, const QModelIndex&);
+				void SetFeedSettings (const Feed::FeedSettings&);
 				void UpdateFeed (const QModelIndex&, bool);
 				QModelIndex GetUnreadChannelIndex () const;
 				int GetUnreadChannelsNumber () const;

@@ -424,7 +424,7 @@ namespace CleanWeb
 			QWebPage *page,
 			QWebPage::Extension ext,
 			const QWebPage::ExtensionOption *opt,
-			QWebPage::ExtensionReturn *ret)
+			QWebPage::ExtensionReturn*)
 	{
 		if (ext != QWebPage::ErrorPageExtension)
 			return;

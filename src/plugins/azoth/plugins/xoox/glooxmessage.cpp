@@ -37,9 +37,9 @@ namespace Xoox
 	: Type_ (type)
 	, SubType_ (MSTOther)
 	, Direction_ (dir)
-	, Connection_ (conn)
 	, BareJID_ (jid)
 	, Variant_ (variant)
+	, Connection_ (conn)
 	{
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
@@ -87,10 +87,11 @@ namespace Xoox
 		case MTMUCMessage:
 			Connection_->GetClient ()->sendPacket (Message_);
 			return;
-		case MTServiceMessage:
+		default:
 			qWarning () << Q_FUNC_INFO
 					<< this
-					<< "cannot send a service message";
+					<< "cannot send a message of type"
+					<< Type_;
 			break;
 		}
 	}

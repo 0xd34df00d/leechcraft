@@ -344,6 +344,8 @@ namespace Azoth
 			}
 			break;
 		}
+		default:
+			break;
 		}
 	}
 }

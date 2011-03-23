@@ -167,7 +167,7 @@ namespace LeechCraft
 					mouseReleaseEvent (event);
 			}
 
-			void KinotifyWidget::showEvent (QShowEvent *event)
+			void KinotifyWidget::showEvent (QShowEvent*)
 			{
 				DefaultSize_ = page ()->mainFrame ()->contentsSize ();
 				resize (DefaultSize_);

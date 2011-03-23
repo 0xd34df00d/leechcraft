@@ -62,8 +62,6 @@ void FullscreenSpacerLabel::mouseMoveEvent (QMouseEvent *event)
 			return;
 		}
 
-		const bool asButton = XmlSettingsManager::Instance ()->property ("ShowMenuBarAsButton").toBool ();
-
 		if (event->y () < 5)
 		{
 			if (toolbar->isHidden ())
