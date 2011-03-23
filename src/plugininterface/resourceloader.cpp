@@ -32,8 +32,8 @@ namespace LeechCraft
 		: QObject (parent)
 		, RelativePath_ (relPath)
 		, SubElemModel_ (new QStandardItemModel (this))
-		, SortModel_ (new QSortFilterProxyModel (this))
 		, AttrFilters_ (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable)
+		, SortModel_ (new QSortFilterProxyModel (this))
 		, Watcher_ (new QFileSystemWatcher (this))
 		{
 			if (RelativePath_.startsWith ('/'))
