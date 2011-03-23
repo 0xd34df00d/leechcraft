@@ -72,6 +72,11 @@ namespace Xoox
 				SIGNAL (needPassword ()),
 				this,
 				SLOT (feedClientPassword ()));
+		
+		connect (ClientConnection_.get (),
+				SIGNAL (statusChanged (const EntryStatus&)),
+				this,
+				SIGNAL (statusChanged (const EntryStatus&)));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (gotRosterItems (const QList<QObject*>&)),
@@ -234,9 +239,9 @@ namespace Xoox
 		if (!ClientConnection_)
 			Init ();
 
-		ClientConnection_->SetState (AccState_);
-
 		emit statusChanged (status);
+
+		ClientConnection_->SetState (AccState_);
 	}
 
 	void GlooxAccount::Synchronize ()
