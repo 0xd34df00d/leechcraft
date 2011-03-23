@@ -126,7 +126,7 @@ void LMP::Handle (LeechCraft::Entity e)
 	Core::Instance ().Handle (e);
 }
 
-QList<QAction*> LMP::GetActions (ActionsEmbedPlace place) const
+QList<QAction*> LMP::GetActions (LeechCraft::ActionsEmbedPlace place) const
 {
 	QList<QAction*> result;
 
