@@ -193,6 +193,7 @@ namespace Xoox
 		if (!IsConnected_ &&
 				state.State_ != SOffline)
 		{
+			emit statusChanged (EntryStatus (SConnecting, QString ()));
 			if (FirstTimeConnect_)
 				emit needPassword ();
 
@@ -438,6 +439,7 @@ namespace Xoox
 	void ClientConnection::handleConnected ()
 	{
 		IsConnected_ = true;
+		emit statusChanged (EntryStatus (LastState_.State_, LastState_.Status_));
 		
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			MUCManager_->joinRoom (rh->GetRoomJID (), rh->GetOurNick ());

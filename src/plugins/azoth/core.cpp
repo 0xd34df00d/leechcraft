@@ -843,6 +843,9 @@ namespace Azoth
 		case SOffline:
 			iconName = "offline";
 			break;
+		case SConnecting:
+			iconName = "connect";
+			break;
 		default:
 			iconName = "perr";
 			break;
@@ -857,7 +860,7 @@ namespace Azoth
 				<< filename + ".png"
 				<< filename + ".jpg";
 
-		QString path = StatusIconLoader_->GetPath (variants);
+		const QString& path = StatusIconLoader_->GetPath (variants);
 		return QIcon (path);
 	}
 
