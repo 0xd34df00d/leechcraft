@@ -96,23 +96,23 @@ namespace Acetamide
 
 	void ChannelHandler::Leave (const QString& msg)
 	{
-// 		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())
-// 		{
-// 			QStringList list = entry->GetChannels ();
-// 			if (list.contains (Channel_.ChannelName_))
-// 			{
-// 				list.removeOne (Channel_.ChannelName_);
-// 				if (!list.count ())
-// 				{
-// 					Account_->handleEntryRemoved (entry.get ());
-// 					Account_->GetClientConnection ()->
-// 							RemoveEntry (ServerID_, entry->GetEntryName ());
-// 				}
-// 				else
-// 				{
-// 					entry->SetGroups (list);
-// 					qDebug () << entry->GetChannels ();
-// 				}
+		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())
+		{
+			QStringList list = entry->GetChannels ();
+			if (list.contains (Channel_.ChannelName_))
+			{
+				list.removeOne (Channel_.ChannelName_);
+				if (!list.count ())
+				{
+					Account_->handleEntryRemoved (entry.get ());
+					Account_->GetClientConnection ()->
+							RemoveEntry (ServerID_, entry->GetEntryName ());
+				}
+				else
+				{
+					entry->SetGroups (list);
+					qDebug () << entry->GetChannels ();
+				}
 // 				if (entry->IsPrivateChat ())
 // 				{
 // 					if (!list.count () && !list.contains (ServerID_))
@@ -127,11 +127,11 @@ namespace Acetamide
 // 					Account_->GetClientConnection ()->
 // 							RemoveEntry (ServerID_, entry->GetEntryName ());
 // 				}
-// 			}
-// 		}
-// 		Core::Instance ().GetServerManager ()->
-// 				LeaveChannel (Channel_.ChannelName_, ServerID_, Account_);
-// 		RemoveThis ();
+			}
+		}
+		Core::Instance ().GetServerManager ()->
+				LeaveChannel (Channel_.ChannelName_, ServerID_, Account_);
+		RemoveThis ();
 	}
 
 	void ChannelHandler::UserLeave (const QString& nick, const QString& msg)
