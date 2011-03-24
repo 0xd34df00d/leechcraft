@@ -24,6 +24,7 @@
 #include <QStringList>
 #include "entrybase.h"
 #include "localtypes.h"
+#include <interfaces/imucentry.h>
 
 namespace LeechCraft
 {
@@ -37,16 +38,16 @@ namespace Acetamide
 	class ServerParticipantEntry : public EntryBase
 	{
 		Q_OBJECT
-
+		
 		QString NickName_;
 		QString ServerKey_;
 		QStringList Channels_;
 		bool PrivateChat_;
-
+		
 		IrcAccount *Account_;
 
-		Role Role_;
-		Affilation Affilation_;
+		QHash<QString, IMUCEntry::MUCRole> Channels2Role_;
+		QHash<QString, IMUCEntry::MUCAffiliation> Channels2Affilation_;
 	public:
 		ServerParticipantEntry (const QString&, const QString&, IrcAccount*);
 
@@ -67,10 +68,14 @@ namespace Acetamide
 		QStringList GetChannels () const;
 		void SetPrivateChat (bool);
 		bool IsPrivateChat () const;
-		Role GetRole () const;
-		void SetRole (const Role&);
-		Affilation GetAffilation () const;
-		void SetAffialtion (const Affilation&);
+		IMUCEntry::MUCAffiliation GetAffiliation (const QString&) const;
+		void SetAffiliation (const QString&, const QChar&);
+		IMUCEntry::MUCRole GetRole (const QString&) const;
+		void SetRole (const QString&, const QChar&);
+	public slots:
+		void closePrivateChat (bool);
+	signals:
+		void removeFromList (const QString&, const QString&);
 	};
 	typedef boost::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
 };

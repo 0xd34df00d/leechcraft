@@ -136,6 +136,12 @@ namespace Acetamide
 				IrcServer_,
 				SLOT (authFinished (const QStringList&)));
 
+		Command2Signal_ ["005"] = boost::bind (&IrcParser::gotServerSupport, this, _1);
+		connect (this,
+				SIGNAL (gotServerSupport (const QStringList&)),
+				IrcServer_,
+				SLOT (setServerSupport (const QStringList&)));
+
 		Command2Signal_ ["332"] = boost::bind (&IrcParser::gotTopic, this, _1);
 		Command2Signal_ ["topic"] = boost::bind (&IrcParser::gotTopic, this, _1);
 		connect (this,

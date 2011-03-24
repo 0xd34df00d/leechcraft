@@ -18,6 +18,7 @@
 
 #include "entrybase.h"
 #include <QAction>
+#include "clientconnection.h"
 #include "ircprotocol.h"
 #include "ircaccount.h"
 #include "ircmessage.h"
@@ -33,6 +34,7 @@ namespace Acetamide
 	: QObject (account)
 	, Account_ (account)
 	{
+
 	}
 
 	QObject* EntryBase::GetObject ()

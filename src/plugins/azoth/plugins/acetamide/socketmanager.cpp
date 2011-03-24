@@ -73,12 +73,14 @@ namespace Acetamide
 					<< socket->peerName () + QString::number (socket->peerPort ());
 			return;
 		}
+		Server2Socket_ [key]->close ();
 		delete Server2Socket_ [key];
+		Server2Socket_.remove (key);
 	}
 
 	QTcpSocket* SocketManager::CreateSocket (const QString& serverKey)
 	{
-		QTcpSocket *socket = new QTcpSocket;
+		QTcpSocket *socket = new QTcpSocket (this);
 		QStringList paramList = serverKey.split (':');
 		if (Connect (socket, paramList.at (0), paramList.at (1)))
 		{

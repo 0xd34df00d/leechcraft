@@ -88,7 +88,7 @@ namespace Acetamide
 		void Leave (const QString&);
 		QString GetNick () const;
 		void SetNick (const QString&);
-
+		
 		void HandleMessage (ChannelPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);
 		void HandleSubjectChanged (const QString&);

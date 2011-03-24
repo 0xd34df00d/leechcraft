@@ -124,7 +124,7 @@ namespace Acetamide
 		IrcParser_->PrivateMessageCommand (msg->GetBody (), msg->GetOtherVariant ());
 	}
 
-	void IrcServer::LeaveChannel (const QString& channel)
+	void IrcServer::LeaveChannel (const QString& channel, IrcAccount *acc)
 	{
 		IrcParser_->LeaveChannelCommand (channel);
 		Q_FOREACH (const ChannelOptions& chan, ActiveChannels_)
@@ -133,8 +133,25 @@ namespace Acetamide
 				ActiveChannels_.removeOne (chan);
 				break;
 			}
-		if (!ActiveChannels_.count ())
+		if (!ActiveChannels_.count () && !ServerManager_->IsPrivateChatExists (GetServerKey (), acc))
 			emit gotLeaveAllChannels (GetServerKey ());
+	}
+
+	QHash<QChar, QChar> IrcServer::GetPrefix() const
+	{
+		return Prefix_;
+	}
+
+	void IrcServer::SetRole (const QString& prefix_string)
+	{
+		QRegExp rexp ("\\(([a-zA-Z]+)\\)(.+)");
+		if (rexp.indexIn (prefix_string) > -1)
+		{
+			QString keys = rexp.cap (1);
+			QString vals = rexp.cap (2);
+			for (int i = 0; i < keys.length (); ++i)
+				Prefix_ [keys [i]] = vals [i];
+		}
 	}
 
 	void IrcServer::authFinished (const QStringList& params)
@@ -247,6 +264,13 @@ namespace Acetamide
 
 			setUserLeave (paramsList);
 		}
+	}
+
+	void IrcServer::setServerSupport (const QStringList& params)
+	{
+		Q_FOREACH (const QString& param, params)
+			if (param.toLower ().startsWith ("prefix="))
+				SetRole (param.split('=').at (1));
 	}
 
 };

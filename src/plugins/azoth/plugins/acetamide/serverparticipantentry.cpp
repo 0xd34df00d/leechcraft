@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "serverparticipantentry.h"
+#include <QAction>
+#include "clientconnection.h"
 #include "ircaccount.h"
 #include "ircmessage.h"
 
@@ -34,6 +36,18 @@ namespace Acetamide
 	, NickName_ (nick)
 	, PrivateChat_ (false)
 	{
+		QAction *quitAction = new QAction (tr ("Quit chat"), Account_);
+		connect (quitAction,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (closePrivateChat (bool)));
+
+		connect (this,
+				SIGNAL (removeFromList (const QString&, const QString&)),
+				Account_->GetClientConnection ().get (),
+				SLOT (removeServerParticipantEntry (const QString&, const QString&)));
+
+		Actions_ << quitAction;
 	}
 
 	QObject* ServerParticipantEntry::GetParentAccount () const
@@ -81,15 +95,9 @@ namespace Acetamide
 	QStringList ServerParticipantEntry::Groups () const
 	{
 		QStringList list;
-		QString server = ServerKey_.split ('@').at (0);
-		Q_FOREACH (const QString& channel, Channels_)
-		{
-			if (channel.isEmpty ())
-				continue;
-			QString param = channel + "@" + server;
-			list << QStringList (tr ("%1 participants")
-					.arg (param));
-		}
+		QString server = ServerKey_.split (':').at (0);
+		Q_FOREACH (QString channel, Channels_)
+			list << channel + "@" + server;
 		return list;
 	}
 
@@ -104,7 +112,7 @@ namespace Acetamide
 		return QStringList (QString ());
 	}
 
-	QObject* ServerParticipantEntry::CreateMessage (IMessage::MessageType type, 
+	QObject* ServerParticipantEntry::CreateMessage (IMessage::MessageType, 
 			const QString& , const QString& body)
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
@@ -114,6 +122,7 @@ namespace Acetamide
 				Account_->GetClientConnection ().get ());
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
+		PrivateChat_ = true;
 		AllMessages_ << message;
 		return message;
 	}
@@ -133,24 +142,54 @@ namespace Acetamide
 		return PrivateChat_;
 	}
 
-	Role ServerParticipantEntry::GetRole () const
+	IMUCEntry::MUCAffiliation ServerParticipantEntry::GetAffiliation (const QString& channel) const
 	{
-		return Role_;
+		return Channels2Affilation_ [channel];
 	}
 
-	void ServerParticipantEntry::SetRole (const Role& role)
+	void ServerParticipantEntry::SetAffiliation(const QString& channel, const QChar& aff)
 	{
-		Role_ = role;
+		IMUCEntry::MUCAffiliation affiliation;
+		if (aff == '~')
+			affiliation = IMUCEntry::MUCAOwner;
+		else if (aff == '&')
+			affiliation = IMUCEntry::MUCAAdmin;
+		else if (aff == '@')
+			affiliation = IMUCEntry::MUCAMember;
+		else if (aff == '%')
+			affiliation = IMUCEntry::MUCANone;
+		else if (aff == '+')
+			affiliation = IMUCEntry::MUCANone;
+		Channels2Affilation_ [channel] = affiliation;
 	}
 
-	Affilation ServerParticipantEntry::GetAffilation () const
+	IMUCEntry::MUCRole ServerParticipantEntry::GetRole (const QString& channel) const
 	{
-		return Affilation_;
+		return Channels2Role_ [channel];
 	}
 
-	void ServerParticipantEntry::SetAffialtion (const Affilation& aff)
+	void ServerParticipantEntry::SetRole (const QString& channel, const QChar& role)
 	{
-		Affilation_ = aff;
+		IMUCEntry::MUCRole rl;
+		if (role == '~')
+			rl = IMUCEntry::MUCRModerator;
+		else if (role == '&')
+			rl = IMUCEntry::MUCRModerator;
+		else if (role == '@')
+			rl = IMUCEntry::MUCRModerator;
+		else if (role == '%')
+			rl = IMUCEntry::MUCRModerator;
+		else if (role == '+')
+			rl = IMUCEntry::MUCRParticipant;
+		Channels2Role_ [channel] = rl;
+	}
+
+	void ServerParticipantEntry::closePrivateChat (bool)
+	{
+		if (PrivateChat_ && (Channels_.count () == 1) && Channels_.first () == ServerKey_)
+		{
+			emit removeFromList (ServerKey_, NickName_);
+		}
 	}
 
 };

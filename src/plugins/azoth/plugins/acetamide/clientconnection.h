@@ -49,7 +49,6 @@ namespace Acetamide
 		IProxyObject *ProxyObject_;
 
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
-		QHash<QString, IrcServer_ptr> IrcServers_;
 		QHash<QString, QHash<QString, ServerParticipantEntry_ptr> > Server2Entry_;
 	public:
 		ClientConnection (IrcAccount*);
@@ -69,6 +68,8 @@ namespace Acetamide
 		void SetPrivateMessage (IrcAccount*, IrcMessage*);
 		ServerParticipantEntry_ptr GetServerParticipantEntry (const QString&, 
 				const QString&, bool announce = true);
+		QList<ServerParticipantEntry_ptr> GetServerParticipantEntries (const QString&) const;
+		void RemoveEntry (const QString&, const QString&);
 	private:
 		ServerParticipantEntry_ptr CreateServerParticipantEntry (const QString&, 
 				const QString&, bool);
@@ -76,6 +77,7 @@ namespace Acetamide
 		void setChannelUseres (const QString&, const QString&);
 		void setSubject (const QString&, const QString&);
 		void handleMessageReceived (const QString&, const QString&, const QString&);
+		void removeServerParticipantEntry (const QString&, const QString&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

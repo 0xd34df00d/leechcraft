@@ -101,7 +101,7 @@ namespace Acetamide
 		return result;
 	}
 	
-	QObject* ChannelCLEntry::CreateMessage (IMessage::MessageType type,
+	QObject* ChannelCLEntry::CreateMessage (IMessage::MessageType,
 			const QString& variant, const QString& text)
 	{
 		if (variant == "")
@@ -144,23 +144,81 @@ namespace Acetamide
 	{
 	}
 
-	bool ChannelCLEntry::MayChangeAffiliation (QObject*, IMUCEntry::MUCAffiliation) const
+	bool ChannelCLEntry::MayChangeAffiliation (QObject *entry, IMUCEntry::MUCAffiliation aff) const
 	{
+// 		MUCAffiliation ourAff = GetAffiliation (0);
+// 		if (aff < MUCAAdmin)
+// 			return false;
+// 
+// 		if (aff == MUCAOwner)
+// 			return true;
+// 
+// 		MUCAffiliation partAff = GetAffiliation (entry);
+// 		if (partAff >= aff)
+// 			return false;
+// 
+// 		if (aff >= MUCAAdmin)
+// 			return false;
+// 
+// 		return true;
 		return false;
 	}
 
-	bool ChannelCLEntry::MayChangeRole (QObject*, IMUCEntry::MUCRole) const
+	bool ChannelCLEntry::MayChangeRole (QObject *entry, IMUCEntry::MUCRole role) const
 	{
-		return false;
+// 		MUCAffiliation ourAff = GetAffiliation (0);
+// 		MUCRole ourRole = GetRole (0);
+// 
+// 		MUCAffiliation aff = GetAffiliation (entry);
+// 		MUCRole role = GetRole (entry);
+// 
+// 		if (role == MUCRInvalid ||
+// 				ourRole == MUCRInvalid ||
+// 				role == MUCRInvalid ||
+// 				aff == MUCAInvalid ||
+// 				ourAff == MUCAInvalid)
+// 			return false;
+// 
+// 		if (ourRole != MUCRModerator)
+// 			return false;
+// 
+// 		if (ourAff <= aff)
+// 			return false;
+
+// 		return true;
+	//	return false;
 	}
 
-	IMUCEntry::MUCAffiliation ChannelCLEntry::GetAffiliation (QObject*) const
+	IMUCEntry::MUCAffiliation ChannelCLEntry::GetAffiliation (QObject *entry) const
 	{
+// 		if (!entry)
+// 			entry = CH_->GetSelf ();
+// 
+// 		ServerParticipantEntry *participant = qobject_cast<ServerParticipantEntry*> (entry);
+// 		if (!participant)
+// 		{
+// 			qWarning () << Q_FUNC_INFO
+// 					<< participant
+// 					<< "is not a ServerParticipantEntry";
+// 			return MUCAInvalid;
+// 		}
+// 
+// 		return static_cast<MUCAffiliation> (participant->GetAffiliation (CH_->GetChannelOptions ().ChannelName_));
 		return MUCAMember;
 	}
 
-	void ChannelCLEntry::SetAffiliation (QObject*, IMUCEntry::MUCAffiliation , const QString&)
+	void ChannelCLEntry::SetAffiliation (QObject *participant, IMUCEntry::MUCAffiliation aff, const QString&)
 	{
+// 		ServerParticipantEntry *entry = qobject_cast<ServerParticipantEntry*> (participant);
+// 		if (!entry)
+// 		{
+// 			qWarning () << Q_FUNC_INFO
+// 					<< participant
+// 					<< "is not a ServerParticipantEntry";
+// 			return;
+// 		}
+// 
+// 		CH_->SetAffiliation (entry, newAff, reason);
 	}
 
 	IMUCEntry::MUCRole ChannelCLEntry::GetRole (QObject*) const

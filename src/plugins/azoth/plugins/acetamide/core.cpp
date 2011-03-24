@@ -149,7 +149,7 @@ namespace Acetamide
 				defaultAccountName + "_Servers");
 	}
 
-	void Core::handleItemsAdded (const QList<QObject*>& items)
+	void Core::handleItemsAdded (const QList<QObject*>&)
 	{
 	}
 }
