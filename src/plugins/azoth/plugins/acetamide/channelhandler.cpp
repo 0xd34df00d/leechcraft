@@ -24,7 +24,6 @@
 #include "clientconnection.h"
 #include "ircmessage.h"
 
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -34,7 +33,7 @@ namespace Acetamide
 	ChannelHandler::ChannelHandler (const ServerOptions& server, 
 			const ChannelOptions& channel, IrcAccount *account)
 	: Account_ (account)
-	, CLEntry_ (new ChannelCLEntry (this, Account_))
+	, CLEntry_ (new ChannelCLEntry (this, account))
 	, Channel_ (channel)
 	, Server_ (server)
 	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
@@ -62,7 +61,7 @@ namespace Acetamide
 		return result;
 	}
 
-	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType type,
+	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType,
 			const QString& nick, const QString& body)
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
@@ -155,21 +154,43 @@ namespace Acetamide
 
 	void ChannelHandler::SetChannelUser (const QString& nick)
 	{
-		const bool existed = Nick2Entry_.contains (nick);
+		QString nickname = nick;
+		IrcServer_ptr srv = Core::Instance ().GetServerManager ()->
+				GetServer (ServerID_, Account_);
+		QChar roleKey = QChar ();
+		Q_FOREACH (const QChar& key, srv->GetPrefix ().keys ())
+			if (nick.startsWith (key))
+			{
+				nickname = nick.mid (1, nick.length ());
+				roleKey = nick [0];
+				break;
+			}
+		const bool existed = Nick2Entry_.contains (nickname);
 		ServerParticipantEntry_ptr entry = Account_->GetClientConnection ()->
-				GetServerParticipantEntry (ServerID_, nick);
+				GetServerParticipantEntry (ServerID_, nickname);
+		if (roleKey.isNull ())
+		{
+			entry->SetRole (Channel_.ChannelName_, IMUCEntry::MUCRVisitor);
+			entry->SetAffiliation (Channel_.ChannelName_, IMUCEntry::MUCANone);
+		}
+		else
+		{	
+			entry->SetRole (Channel_.ChannelName_, srv->GetPrefix ().value (roleKey));
+			entry->SetAffiliation (Channel_.ChannelName_, srv->GetPrefix ().value (roleKey));
+		}
+		
 		if (!existed)
 		{
 			QStringList list = entry->GetChannels ();
-			qDebug () << 3 << list;
 			if (!list.contains (Channel_.ChannelName_))
 				list << Channel_.ChannelName_;
-			qDebug () << 4 << list;
 			entry->SetGroups (list);
-			Nick2Entry_ [nick] = entry;
-			MakeJoinMessage (nick);
+			Nick2Entry_ [nickname] = entry;
+			MakeJoinMessage (nickname);
 			entry->SetStatus (EntryStatus (SOnline, QString ()));
 		}
+		//else
+			;//TODO changeRole
 	}
 
 	void ChannelHandler::MakeJoinMessage (const QString& nick)

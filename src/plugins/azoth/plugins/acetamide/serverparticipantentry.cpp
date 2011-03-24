@@ -36,9 +36,8 @@ namespace Acetamide
 	, NickName_ (nick)
 	, PrivateChat_ (false)
 	{
-		QAction *action = new QAction (tr ("Quit chat"), Account_);
-
-		connect (action,
+		QAction *quitAction = new QAction (tr ("Quit chat"), Account_);
+		connect (quitAction,
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (closePrivateChat (bool)));
@@ -48,7 +47,7 @@ namespace Acetamide
 				Account_->GetClientConnection ().get (),
 				SLOT (removeServerParticipantEntry (const QString&, const QString&)));
 
-		Actions_ << action;
+		Actions_ << quitAction;
 	}
 
 	QObject* ServerParticipantEntry::GetParentAccount () const
@@ -113,7 +112,7 @@ namespace Acetamide
 		return QStringList (QString ());
 	}
 
-	QObject* ServerParticipantEntry::CreateMessage (IMessage::MessageType type, 
+	QObject* ServerParticipantEntry::CreateMessage (IMessage::MessageType, 
 			const QString& , const QString& body)
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
@@ -143,24 +142,46 @@ namespace Acetamide
 		return PrivateChat_;
 	}
 
-	Role ServerParticipantEntry::GetRole () const
+	IMUCEntry::MUCAffiliation ServerParticipantEntry::GetAffiliation (const QString& channel) const
 	{
-		return Role_;
+		return Channels2Affilation_ [channel];
 	}
 
-	void ServerParticipantEntry::SetRole (const Role& role)
+	void ServerParticipantEntry::SetAffiliation(const QString& channel, const QChar& aff)
 	{
-		Role_ = role;
+		IMUCEntry::MUCAffiliation affiliation;
+		if (aff == '~')
+			affiliation = IMUCEntry::MUCAOwner;
+		else if (aff == '&')
+			affiliation = IMUCEntry::MUCAAdmin;
+		else if (aff == '@')
+			affiliation = IMUCEntry::MUCAMember;
+		else if (aff == '%')
+			affiliation = IMUCEntry::MUCANone;
+		else if (aff == '+')
+			affiliation = IMUCEntry::MUCANone;
+		Channels2Affilation_ [channel] = affiliation;
 	}
 
-	Affilation ServerParticipantEntry::GetAffilation () const
+	IMUCEntry::MUCRole ServerParticipantEntry::GetRole (const QString& channel) const
 	{
-		return Affilation_;
+		return Channels2Role_ [channel];
 	}
 
-	void ServerParticipantEntry::SetAffialtion (const Affilation& aff)
+	void ServerParticipantEntry::SetRole (const QString& channel, const QChar& role)
 	{
-		Affilation_ = aff;
+		IMUCEntry::MUCRole rl;
+		if (role == '~')
+			rl = IMUCEntry::MUCRModerator;
+		else if (role == '&')
+			rl = IMUCEntry::MUCRModerator;
+		else if (role == '@')
+			rl = IMUCEntry::MUCRModerator;
+		else if (role == '%')
+			rl = IMUCEntry::MUCRModerator;
+		else if (role == '+')
+			rl = IMUCEntry::MUCRParticipant;
+		Channels2Role_ [channel] = rl;
 	}
 
 	void ServerParticipantEntry::closePrivateChat (bool)

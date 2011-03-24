@@ -47,6 +47,7 @@ namespace Acetamide
 		ConnectionState State_;
 		IrcServerManager *ServerManager_;
 		QString Nickname_;
+		QHash<QChar, QChar> Prefix_;
 	public:
 		IrcServer (const ServerOptions&, IrcServerManager*);
 		void JoinChannel (const ChannelOptions&);
@@ -65,6 +66,8 @@ namespace Acetamide
 		void SendPublicMessage (const QString&, const ChannelOptions&);
 		void SendPrivateMessage (IrcMessage*);
 		void LeaveChannel (const QString&, IrcAccount*);
+		QHash<QChar, QChar> GetPrefix () const;
+		void SetRole (const QString&);
 	public slots:
 		void authFinished (const QStringList&);
 		void setTopic (const QStringList&);
@@ -73,6 +76,7 @@ namespace Acetamide
 		void setNewParticipant (const QStringList&);
 		void setUserLeave (const QStringList&);
 		void setUserQuit  (const QStringList&);
+		void setServerSupport (const QStringList&);
 	signals:
 		void gotLeaveAllChannels (const QString&);
 		void gotCLItems (QList<QObject*>&);

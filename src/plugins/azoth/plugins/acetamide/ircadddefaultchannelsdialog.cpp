@@ -68,7 +68,7 @@ namespace Acetamide
 		return channelsPair;
 	}
 	
-	void IrcAddDefaultChannelsDialog::handleAddLine (bool checked)
+	void IrcAddDefaultChannelsDialog::handleAddLine (bool)
 	{
 		QList<QStandardItem*> list;
 		for (int i = 0; i < 2; ++i)

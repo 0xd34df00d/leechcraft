@@ -59,8 +59,7 @@ namespace Acetamide
 	{
 		if (ChannelHandlers_.contains (key))
 			return ChannelHandlers_ [key]->GetParticipantEntry (nick).get ();
-		else
-			return Server2Entry_ [key] [nick].get ();
+		return Server2Entry_ [key] [nick].get ();
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const
@@ -118,8 +117,8 @@ namespace Acetamide
 		ChannelHandlers_.remove (ch->GetChannelID ());
 	}
 
-	IrcMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
-			const QString& resource, const QString& body)
+	IrcMessage* ClientConnection::CreateMessage (IMessage::MessageType,
+			const QString&, const QString&)
 	{
 		return 0;
 	}
@@ -148,7 +147,7 @@ namespace Acetamide
 
 	void ClientConnection::SetPrivateMessage (IrcAccount *acc, IrcMessage *msg)
 	{
-		Core::Instance ().GetServerManager ()->SetPrivateMessageOut (Account_, msg);
+		Core::Instance ().GetServerManager ()->SetPrivateMessageOut (acc, msg);
 	}
 
 	ServerParticipantEntry_ptr ClientConnection::GetServerParticipantEntry (const QString& serverKey, 
