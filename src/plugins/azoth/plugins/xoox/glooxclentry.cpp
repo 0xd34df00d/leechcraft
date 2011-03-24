@@ -179,8 +179,23 @@ namespace Xoox
 		QStringList result;
 
 		if (!ODS_)
-			result << Account_->GetClientConnection ()->
-					GetClient ()->rosterManager ().getResources (BareJID_);
+		{
+			const QMap<QString, QXmppPresence>& presences =
+					Account_->GetClientConnection ()->GetClient ()->
+							rosterManager ().getAllPresencesForBareJid (BareJID_);
+			if (presences.size () == 1)
+				result << presences.begin ().key ();
+			else
+			{
+				QMap<int, QList<QString> > prio2res;
+				for (QMap<QString, QXmppPresence>::const_iterator i = presences.begin ();
+						i != presences.end (); ++i)
+					prio2res [i->status ().priority ()] << i.key ();
+				Q_FOREACH (int prio, prio2res.keys ())
+					result << prio2res [prio];
+				std::reverse (result.begin (), result.end ());
+			}
+		}
 
 		return result;
 	}
@@ -189,7 +204,30 @@ namespace Xoox
 	{
 		if (ODS_)
 			return EntryStatus ();
-		return EntryBase::GetStatus (variant);
+
+		QXmppRosterManager& rm = Account_->
+				GetClientConnection ()->GetClient ()->rosterManager ();
+		if (!rm.isRosterReceived ())
+			return EntryBase::GetStatus (variant);
+
+		const QMap<QString, QXmppPresence>& press = rm.getAllPresencesForBareJid (GetJID ());
+		if (!press.size ())
+			return EntryBase::GetStatus (variant);
+
+		QXmppPresence max = press.begin ().value ();
+		Q_FOREACH (const QString& resource, press.keys ())
+		{
+			if (!variant.isEmpty () && variant == resource)
+			{
+				max = press [resource];
+				break;
+			}
+			const QXmppPresence& pres = press [resource];
+			if (pres.status ().priority () > max.status ().priority ())
+				max = pres;
+		}
+		return EntryStatus (static_cast<State> (max.status ().type ()),
+				max.status ().statusText ());
 	}
 
 	QObject* GlooxCLEntry::CreateMessage (IMessage::MessageType type,

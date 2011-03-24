@@ -36,7 +36,12 @@ namespace Azoth
 		SInvisible,
 		SProbe,
 		SError,
-		SInvalid
+		SInvalid,
+		/** Makes sense only for account state. This state is used when
+		 * account is connecting and the moment and hasn't connected
+		 * successfully and neither has failed yet.
+		 */
+		SConnecting
 	};
 
 	inline bool IsLess (State s1, State s2)
