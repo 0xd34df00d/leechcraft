@@ -54,6 +54,11 @@ namespace JuffEd
 	{
 		return QIcon ();
 	}
+	
+	void Plugin::newTabRequested ()
+	{
+		// TODO handle new tab request
+	}
 }
 }
 

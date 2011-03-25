@@ -16,42 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_JUFFED_JUFFED_H
-#define PLUGINS_JUFFED_JUFFED_H
-#include <QObject>
-#include <interfaces/iinfo.h>
+#ifndef PLUGINS_JUFFED_JUFFEDWIDGET_H
+#define PLUGINS_JUFFED_JUFFEDWIDGET_H
+#include <QWidget>
 #include <interfaces/imultitabs.h>
 
 namespace LeechCraft
 {
 namespace JuffEd
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IMultiTabs
+	class JuffEdWidget : public QWidget
+					   , public IMultiTabsWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IMultiTabs)
+		
+		static QObject *S_ParentMultiTabs_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	public slots:
-		void newTabRequested ();
-	signals:
-		void addNewTab (const QString& name, QWidget *tabContents);
-		void removeTab (QWidget *tabContents);
-		void changeTabName (QWidget *tabContents, const QString& name);
-		void changeTabIcon (QWidget *tabContents, const QIcon& icon);
-		void statusBarChanged (QWidget *tabContents, const QString& text);
-		void raiseTab (QWidget *tabContents);
+		static void SetParentMultiTabs (QObject*);
+
+		JuffEdWidget (QWidget* = 0);
+		
+		void Remove ();
+		QToolBar* GetToolBar () const;
+		void NewTabRequested ();
+		QObject* ParentMultiTabs () const;
+		QList<QAction*> GetTabBarContextMenuActions () const;
 	};
 }
 }
 
 #endif
-

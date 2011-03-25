@@ -23,9 +23,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	juffed.cpp
+	juffedwidget.cpp
 	)
 SET (HEADERS
 	juffed.h
+	juffedwidget.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 
