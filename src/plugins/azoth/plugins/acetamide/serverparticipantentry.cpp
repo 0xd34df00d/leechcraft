@@ -104,7 +104,7 @@ namespace Acetamide
 	void ServerParticipantEntry::SetGroups (const QStringList& channel)
 	{
 		Channels_ = channel;
-		emit groupsChanged (Channels_);
+		emit groupsChanged (Groups ());
 	}
 
 	QStringList ServerParticipantEntry::Variants () const
