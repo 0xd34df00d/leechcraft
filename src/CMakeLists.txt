@@ -114,6 +114,20 @@ OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparen
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 ENABLE_TESTING ()
 
+FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
+	STRING (LENGTH "${PlugName}" _pnameLength)
+	SET (_basename "leechcraft")
+	IF (_pnameLength)
+		SET (_basename "${_basename}_${PlugName}")
+	ENDIF (_pnameLength)
+	FOREACH (_LANG ${Langs})
+		SET (_tran ${_tran} ${_basename}_${_LANG}.ts)
+		SET (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
+	ENDFOREACH (_LANG)
+	SET (${TranVar} ${_tran} PARENT_SCOPE)
+	SET (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+ENDFUNCTION (CreateTrVars)
+
 IF (ENABLE_SUMMARY)
 	ADD_SUBDIRECTORY (plugins/summary)
 ENDIF (ENABLE_SUMMARY)
@@ -353,10 +367,7 @@ SET (FORMS
 	)
 SET (RESOURCES mainresources.qrc)
 
-FOREACH(_LANG ru_RU de uk_UA it ar eo es tr en be fr pl)
-        SET (TRANSLATIONS ${TRANSLATIONS} leechcraft_${_LANG}.ts)
-	SET (COMPILED_TRANSLATIONS ${COMPILED_TRANSLATIONS} ${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_${_LANG}.qm)
-ENDFOREACH(_LANG)
+CreateTrVars ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;en;be;fr;pl" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 
