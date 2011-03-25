@@ -1337,7 +1337,7 @@ namespace Azoth
 	void Core::RemoveCLItem (QStandardItem *item)
 	{
 		QObject *entryObj = item->data (CLREntryObject).value<QObject*> ();
-		Entry2Items_.remove (qobject_cast<ICLEntry*> (entryObj));
+		Entry2Items_ [qobject_cast<ICLEntry*> (entryObj)].removeAll (item);
 
 		QStandardItem *category = item->parent ();
 		QString text = category->text ();
