@@ -48,32 +48,7 @@ SET (FORMS
 SET (RESOURCES
 	cstpresources.qrc
 	)
-SET (TRANSLATIONS
-	leechcraft_cstp_ru_RU.ts
-	leechcraft_cstp_uk_UA.ts
-	leechcraft_cstp_ar.ts
-	leechcraft_cstp_de.ts
-	leechcraft_cstp_eo.ts
-	leechcraft_cstp_es.ts
-	leechcraft_cstp_fr.ts
-	leechcraft_cstp_oc.ts
-	leechcraft_cstp_en.ts
-	leechcraft_cstp_pl.ts
-	leechcraft_cstp_it.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_eo.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_oc.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_pl.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_cstp_it.qm
-	)
+CreateTrVars ("cstp" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
