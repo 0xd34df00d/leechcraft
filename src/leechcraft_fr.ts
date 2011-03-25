@@ -146,7 +146,7 @@
     <message>
         <location filename="commonjobadder.ui" line="36"/>
         <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrez l&apos;URL ou nom de fichier ou de toute autre chose vous croyez LeechCraft peut gérer.</translation>
     </message>
     <message>
         <location filename="commonjobadder.ui" line="43"/>
@@ -336,27 +336,27 @@
     <message>
         <location filename="aboutdialog.cpp" line="74"/>
         <source>Years: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Annee: %1</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="93"/>
         <source>Lead developer and original author.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chef developer et autor original.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="97"/>
         <source>Firefox importer in New Life.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importateur Firefox dans New Life.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="98"/>
         <source>Poshuku OnlineBookmarks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poshuku OnlineBookmarks.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="99"/>
         <source>Azoth Acetamide: IRC support for Azoth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Azoth Acetamide: IRC pour Azoth.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="100"/>
@@ -364,38 +364,38 @@
         <location filename="aboutdialog.cpp" line="130"/>
         <location filename="aboutdialog.cpp" line="147"/>
         <source>Various patches.</source>
-        <translation type="unfinished"></translation>
+        <translation>Divers correctifs.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="110"/>
         <source>Initial PKGBUILDs for Arch Linux.</source>
-        <translation type="unfinished"></translation>
+        <translation>Publication PKGBUILD pour Arch Linux.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="114"/>
         <location filename="aboutdialog.cpp" line="148"/>
         <source>Ukrainian translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Traductions en ukrainien.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="134"/>
         <source>Graphical artwork.</source>
-        <translation type="unfinished"></translation>
+        <translation>Graphique illustration.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="138"/>
         <source>Arabic translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Traductions en arabe.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="142"/>
         <source>Esperanto translations</source>
-        <translation type="unfinished"></translation>
+        <translation>Traductions en espéranto</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="146"/>
         <source>Aggregator fixes and improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Correctifs et des améliorations pour Aggregator.</translation>
     </message>
 </context>
 <context>
@@ -468,7 +468,7 @@
     <message>
         <location filename="core.cpp" line="801"/>
         <source>Plugin load error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de chargement de plugin</translation>
     </message>
 </context>
 <context>
@@ -555,12 +555,12 @@
     <message>
         <location filename="mainwindow.cpp" line="268"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="271"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Outils</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="368"/>
@@ -583,7 +583,7 @@
     <message>
         <location filename="mainwindow.cpp" line="519"/>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>Toujours</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="598"/>
@@ -598,7 +598,7 @@
     <message>
         <location filename="mainwindow.cpp" line="784"/>
         <source>Context-dependent</source>
-        <translation type="unfinished"></translation>
+        <translation>Dépendant du contexte</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="811"/>
@@ -608,7 +608,7 @@
     <message>
         <location filename="mainwindow.cpp" line="955"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Système</translation>
     </message>
 </context>
 <context>
@@ -640,7 +640,7 @@
     <message>
         <location filename="newtabmenumanager.cpp" line="29"/>
         <source>New tab menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau menu de l&apos;onglet</translation>
     </message>
 </context>
 <context>
@@ -653,42 +653,42 @@
     <message>
         <location filename="pluginmanager.cpp" line="50"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Description</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="541"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Refusant de charger le plugin à partir de%1 car ce n&apos;est pas un fichier.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="554"/>
         <source>Could not load plugin from %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le plugin à partir de  %1: %2.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="573"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le plugin à partir de%1: pas de construire plugin par exemple avec %2 d&apos;exception.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="585"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le plugin à partir de%1: pas de construire instance du plugin.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="597"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le plugin à partir de%1: impossible de lancer le plugin exemple pour IINFO *.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="620"/>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le plugin à partir de%1: impossible d&apos;obtenir le nom / info / icône avec %2 d&apos;exception.</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="632"/>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le plugin à partir de %1: impossible d&apos;obtenir le nom / info / icône.</translation>
     </message>
 </context>
 <context>
@@ -813,7 +813,7 @@
     <message>
         <location filename="tabmanager.cpp" line="70"/>
         <source>Close all but this</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermez toutes, mais cette</translation>
     </message>
 </context>
 <context>
@@ -894,7 +894,7 @@
     <message>
         <location filename="plugininterface/util.cpp" line="50"/>
         <source>Too long to show</source>
-        <translation type="unfinished"></translation>
+        <translation>Trop long pour voir</translation>
     </message>
     <message>
         <location filename="plugininterface/util.cpp" line="67"/>
@@ -1067,22 +1067,22 @@
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparence</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Use tab scroll buttons</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilisez l&apos;onglet touches de défilement</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Icon size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille des icônes</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>Par défaut du système</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
@@ -1102,109 +1102,109 @@
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Tool button style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Outil bouton de style:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Only display the icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Icône seul</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Only display the text</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte seul</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>The text appears beside the icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Texte sous les icône</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>The text appears under the icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Teste contre les icônes</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>Tab bar location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Emplacement barre d&apos;onglets:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Haut</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Bas</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Gauche</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Droit</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
         <source>Icon set:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ensamble les icônes:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Oxygen</source>
-        <translation type="unfinished"></translation>
+        <translation>Oxygen</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Style:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
         <source>Plastique</source>
-        <translation type="unfinished"></translation>
+        <translation>Plastique</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>Langue:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Système</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Default new tab contents:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contenu par défaut nouvel onglet:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>Context-dependent</source>
-        <translation type="unfinished"></translation>
+        <translation>Dépendant du contexte</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>Maximum log lines:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lignes maximale du journal:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourcis</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>
         <location filename="dummy.cpp" line="31"/>
         <location filename="dummy.cpp" line="32"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Comportement</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
@@ -1214,42 +1214,42 @@
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source>Ask quit confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Demandez à quitter la confirmation</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
         <source>Exit on close</source>
-        <translation type="unfinished"></translation>
+        <translation>Demandez à quitter la confirmation</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="36"/>
         <source>Open new tab next to current</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvriez un nouvel onglet à côté de cours</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Automatically accept task when there is only one handler</source>
-        <translation type="unfinished"></translation>
+        <translation>Accepter automatiquement tâche quand il ya un seul gestionnaire</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source>Watch directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Réviser un dossier:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
         <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher actions plugin-dépendante dans le menu contextuel barre d&apos;onglets</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="40"/>
         <source>Show as a submenu</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher en tant que sous-menu</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="41"/>
         <source>Show messages in tray</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les messages dans le bac</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="42"/>
@@ -1259,52 +1259,52 @@
     <message>
         <location filename="dummy.cpp" line="43"/>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation> s</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="44"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>
         <source>Tags manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestionnaire de tags</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="46"/>
         <source>Network</source>
-        <translation type="unfinished"></translation>
+        <translation>Réseau</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
         <source>Cache size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille du cache:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="48"/>
         <source> MB</source>
-        <translation type="unfinished"></translation>
+        <translation> MB</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="49"/>
         <source>Filter tracking cookies</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrer les cookies de suivi</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="50"/>
         <source>Clear cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Vider le cache</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>
         <source>Clear cookies</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer les cookies</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="52"/>
         <source>Application-wide proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer les cookies</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="53"/>
@@ -1329,27 +1329,27 @@
     <message>
         <location filename="dummy.cpp" line="57"/>
         <source>Proxy type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de proxy:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="58"/>
         <source>SOCKS5</source>
-        <translation type="unfinished"></translation>
+        <translation>SOCKS5</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="59"/>
         <source>Transparent HTTP</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparent HTTP</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="60"/>
         <source>Caching HTTP</source>
-        <translation type="unfinished"></translation>
+        <translation>La mise en cache HTTP</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="61"/>
         <source>Caching FTP</source>
-        <translation type="unfinished"></translation>
+        <translation>La mise en cache FTP</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="62"/>

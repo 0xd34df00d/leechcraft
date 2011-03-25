@@ -5,7 +5,7 @@
     <name>AboutDialog</name>
     <message>
         <source>About LeechCraft</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazione su LeechCraft</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -13,27 +13,27 @@
     </message>
     <message utf8="true">
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft - uno multipiattaforma modulare internet-client, con i plugin per il browser web, feed lettore di notizie, BitTorrent, FTP e molti altri.</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation type="unfinished"></translation>
+        <translation>Autori</translation>
     </message>
     <message>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>Assistente</translation>
     </message>
     <message>
         <source>Appreciations</source>
-        <translation type="unfinished"></translation>
+        <translation>Grazzi a</translation>
     </message>
     <message>
         <source>Licensing</source>
-        <translation type="unfinished"></translation>
+        <translation>Licenza</translation>
     </message>
     <message>
         <source>Third parties</source>
-        <translation type="unfinished"></translation>
+        <translation>Partes terza</translation>
     </message>
 </context>
 <context>
@@ -71,39 +71,39 @@
     </message>
     <message>
         <source>Journal mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modalità di registrazione:</translation>
     </message>
     <message>
         <source>Temp store:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoccaggio temporaneo:</translation>
     </message>
     <message>
         <source>Synchronous:</source>
-        <translation type="unfinished"></translation>
+        <translation>Simultanea:</translation>
     </message>
     <message>
         <source>VACUUM on exit</source>
-        <translation type="unfinished"></translation>
+        <translation>VACUUM all&apos;uscita</translation>
     </message>
     <message>
         <source>Hostname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hostnome:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Porto:</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome di utente:</translation>
     </message>
     <message>
         <source>Database name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome schermo:</translation>
     </message>
     <message>
         <source>MySQL</source>
-        <translation type="unfinished"></translation>
+        <translation>MySQL</translation>
     </message>
 </context>
 <context>
@@ -130,7 +130,7 @@
     </message>
     <message>
         <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserisci l&apos;URL o il nome file o qualsiasi altra cosa credi LeechCraft grado di gestire.</translation>
     </message>
 </context>
 <context>
@@ -164,7 +164,7 @@
     </message>
     <message>
         <source>Save to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva per:</translation>
     </message>
     <message>
         <source>Browse...</source>
@@ -234,11 +234,11 @@
     </message>
     <message>
         <source>Main toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra degli strumenti principali</translation>
     </message>
     <message>
         <source>New tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuova sheda</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
@@ -254,27 +254,27 @@
     </message>
     <message>
         <source>About LeechCraft...</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazione su LeechCraft...</translation>
     </message>
     <message>
         <source>About Qt...</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazione su Qt...</translation>
     </message>
     <message>
         <source>Menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Menu</translation>
     </message>
     <message>
         <source>menu</source>
-        <translation type="unfinished"></translation>
+        <translation>menu</translation>
     </message>
     <message>
         <source>Show status bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrare barra di stato</translation>
     </message>
     <message>
         <source>Close tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudere shede</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
@@ -282,66 +282,66 @@
     </message>
     <message>
         <source>Glance...</source>
-        <translation type="unfinished"></translation>
+        <translation>Glance...</translation>
     </message>
     <message>
         <source>Show a quick overview of tabs</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrare una rapida panoramica delle shede</translation>
     </message>
     <message>
         <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+G</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
     <message>
         <source>Years: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Anni: %1</translation>
     </message>
     <message>
         <source>Lead developer and original author.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sviluppatore principale e autore originale.</translation>
     </message>
     <message>
         <source>Firefox importer in New Life.</source>
-        <translation type="unfinished"></translation>
+        <translation>Importatore Firefox in New Life.</translation>
     </message>
     <message>
         <source>Poshuku OnlineBookmarks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poshuku OnlineBookmarks.</translation>
     </message>
     <message>
         <source>Azoth Acetamide: IRC support for Azoth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Azoth Acetamide: supporto IRC per Azoth.</translation>
     </message>
     <message>
         <source>Various patches.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varie patch.</translation>
     </message>
     <message>
         <source>Initial PKGBUILDs for Arch Linux.</source>
-        <translation type="unfinished"></translation>
+        <translation>PKGBUILD iniziale per Arch Linux.</translation>
     </message>
     <message>
         <source>Ukrainian translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Traduzioni ucraine.</translation>
     </message>
     <message>
         <source>Graphical artwork.</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafica d&apos;arte.</translation>
     </message>
     <message>
         <source>Arabic translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Traduzioni arabo.</translation>
     </message>
     <message>
         <source>Esperanto translations</source>
-        <translation type="unfinished"></translation>
+        <translation>Esperanto traduzioni</translation>
     </message>
     <message>
         <source>Aggregator fixes and improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggregator correzioni e miglioramenti.</translation>
     </message>
 </context>
 <context>
@@ -390,11 +390,11 @@
     <name>LeechCraft::ColorPicker</name>
     <message>
         <source>Choose color</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il colore</translation>
     </message>
     <message>
         <source>Choose...</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli...</translation>
     </message>
 </context>
 <context>
@@ -448,11 +448,11 @@
     </message>
     <message>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aggiungere compito al downloader selezionato, volete provare un altro?</translation>
     </message>
     <message>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile compito di gestire con il gestore scelto, ti piacerebbe provare un altro?</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -460,15 +460,15 @@
     </message>
     <message>
         <source>Do you really want to clear the network cache?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vuoi davvero cancellare la cache di rete?</translation>
     </message>
     <message>
         <source>Do you really want to clear cookies?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vuoi davvero a cancellare i cookie?</translation>
     </message>
     <message>
         <source>Plugin load error</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin errore di caricamento</translation>
     </message>
 </context>
 <context>
@@ -490,38 +490,38 @@
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezioni la directory</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::FontPicker</name>
     <message>
         <source>Choose font</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il tipo di carattere</translation>
     </message>
     <message>
         <source>Choose...</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli...</translation>
     </message>
     <message>
         <source>, %1 pt</source>
-        <translation type="unfinished"></translation>
+        <translation>, %1 pt</translation>
     </message>
     <message>
         <source>, bold</source>
-        <translation type="unfinished"></translation>
+        <translation>grassetto</translation>
     </message>
     <message>
         <source>, italic</source>
-        <translation type="unfinished"></translation>
+        <translation>corsivo</translation>
     </message>
     <message>
         <source>, underlined</source>
-        <translation type="unfinished"></translation>
+        <translation>ha sottolineato</translation>
     </message>
     <message>
         <source>, striken out</source>
-        <translation type="unfinished"></translation>
+        <translation>striken fuori</translation>
     </message>
 </context>
 <context>
@@ -571,36 +571,36 @@
     </message>
     <message>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Questa modifica richiede il riavvio LeechCraft. Vuoi riavviare ora?</translation>
     </message>
     <message>
         <source>LeechCraft menu</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft menu</translation>
     </message>
     <message>
         <source>F11</source>
         <comment>FullScreen</comment>
-        <translation type="unfinished">F11</translation>
+        <translation>F11 </translation>
     </message>
     <message>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre</translation>
     </message>
     <message>
         <source>Context-dependent</source>
-        <translation type="unfinished"></translation>
+        <translation>Dipendente dal contesto</translation>
     </message>
     <message>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizza</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Strumenti</translation>
     </message>
 </context>
 <context>
@@ -619,14 +619,14 @@
     </message>
     <message>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;richiede l&apos;autenticazione.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::NewTabMenuManager</name>
     <message>
         <source>New tab menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Nuova scheda menu</translation>
     </message>
 </context>
 <context>
@@ -664,35 +664,35 @@
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Descrizione</translation>
     </message>
     <message>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il rifiuto di caricare il plugin da%1 perché non è un file.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare il plugin da%1: %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare il plugin da%1: non è riuscito a costruire plugin istanza con eccezione %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare il plugin da%1: non è riuscito a costruire plugin istanza.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare il plugin da%1: impossibile cast plugin istanza IInfo *.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare il plugin da%1: impossibile ottenere il nome / info / icona con eccezione%2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile caricare il plugin da%1: impossibile ottenere il nome / info / icona.</translation>
     </message>
 </context>
 <context>
@@ -809,7 +809,7 @@
     </message>
     <message>
         <source>Would you like to set advanced options?</source>
-        <translation type="unfinished"></translation>
+        <translation>Volete impostare le opzioni avanzate?</translation>
     </message>
 </context>
 <context>
@@ -823,7 +823,7 @@
     <name>LeechCraft::TabManager</name>
     <message>
         <source>Close all but this</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiudere tutti, ma questo</translation>
     </message>
 </context>
 <context>
@@ -848,15 +848,15 @@
     <name>LeechCraft::Util::CategorySelector</name>
     <message>
         <source>Tags selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags selettore</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona tutti</translation>
     </message>
     <message>
         <source>Select none</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona nessuno</translation>
     </message>
 </context>
 <context>
@@ -867,7 +867,7 @@
     </message>
     <message>
         <source>&lt;unknown tag&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;unknown tag&gt;</translation>
     </message>
 </context>
 <context>
@@ -896,46 +896,46 @@
     </message>
     <message>
         <source>Binary entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Entità binaria</translation>
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;&lt;br /&gt;di tipo &lt;code&gt;%1 &lt;/code&gt;</translation>
     </message>
     <message>
         <source>&lt;br /&gt;from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br /&gt;Da %1</translation>
     </message>
     <message>
         <source> b</source>
-        <translation type="unfinished"></translation>
+        <translation> b</translation>
     </message>
     <message>
         <source> KiB</source>
-        <translation type="unfinished"></translation>
+        <translation> KiB</translation>
     </message>
     <message>
         <source> MiB</source>
-        <translation type="unfinished"></translation>
+        <translation> MiB</translation>
     </message>
     <message>
         <source> GiB</source>
-        <translation type="unfinished"></translation>
+        <translation> GiB</translation>
     </message>
     <message numerus="yes">
         <source>%n day(s), </source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n giorn, </numerusform>
+            <numerusform>%n giorni, </numerusform>
         </translation>
     </message>
     <message>
         <source>Could not cd into %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile cd in%1</translation>
     </message>
     <message>
         <source>Could not create %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile creare%1</translation>
     </message>
 </context>
 <context>
@@ -988,7 +988,7 @@
     </message>
     <message>
         <source>Remember my choice for the resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricorda la mia scelta per la risorsa</translation>
     </message>
 </context>
 <context>
@@ -1036,250 +1036,250 @@
     </message>
     <message>
         <source>Basic setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Impostazione di base</translation>
     </message>
     <message>
         <source>Advanced setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurazione avanzata</translation>
     </message>
 </context>
 <context>
     <name>coresettings</name>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparenza</translation>
     </message>
     <message>
         <source>Use tab scroll buttons</source>
-        <translation type="unfinished"></translation>
+        <translation>Scheda usa pulsanti di scorrimento</translation>
     </message>
     <message>
         <source>Icon size</source>
-        <translation type="unfinished"></translation>
+        <translation>Icona dimensione</translation>
     </message>
     <message>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>Valori predefiniti</translation>
     </message>
     <message>
         <source>16x16</source>
-        <translation type="unfinished"></translation>
+        <translation>16x16</translation>
     </message>
     <message>
         <source>24x24</source>
-        <translation type="unfinished"></translation>
+        <translation>24x24</translation>
     </message>
     <message>
         <source>32x32</source>
-        <translation type="unfinished"></translation>
+        <translation>32x32</translation>
     </message>
     <message>
         <source>Tool button style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tool pulsante dello stille:</translation>
     </message>
     <message>
         <source>Only display the icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizza solo icona</translation>
     </message>
     <message>
         <source>Only display the text</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualizza solo il testo</translation>
     </message>
     <message>
         <source>The text appears beside the icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Testo accanto alle icone</translation>
     </message>
     <message>
         <source>The text appears under the icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Testo sotto le icone</translation>
     </message>
     <message>
         <source>Tab bar location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab barra degli indirizzi:</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>In alto</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Fondo </translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinistro</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Destro</translation>
     </message>
     <message>
         <source>Icon set:</source>
-        <translation type="unfinished"></translation>
+        <translation>Set di icone:</translation>
     </message>
     <message>
         <source>Oxygen</source>
-        <translation type="unfinished"></translation>
+        <translation>Oxygen</translation>
     </message>
     <message>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stile:</translation>
     </message>
     <message>
         <source>Plastique</source>
-        <translation type="unfinished"></translation>
+        <translation>Plastique</translation>
     </message>
     <message>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingue:</translation>
     </message>
     <message>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Systemico</translation>
     </message>
     <message>
         <source>Default new tab contents:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contenuti scheda nuova:</translation>
     </message>
     <message>
         <source>Context-dependent</source>
-        <translation type="unfinished"></translation>
+        <translation>Dipendente dal contesto</translation>
     </message>
     <message>
         <source>Maximum log lines:</source>
-        <translation type="unfinished"></translation>
+        <translation>Massima log linee:</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasti di scelta rapida</translation>
     </message>
     <message>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Comportamento</translation>
     </message>
     <message>
         <source>Watch clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Guarda appunti</translation>
     </message>
     <message>
         <source>Ask quit confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiedi conferma chiudere</translation>
     </message>
     <message>
         <source>Exit on close</source>
-        <translation type="unfinished"></translation>
+        <translation>Esci dal vicino</translation>
     </message>
     <message>
         <source>Open new tab next to current</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri scheda nuovo accanto a corrente</translation>
     </message>
     <message>
         <source>Automatically accept task when there is only one handler</source>
-        <translation type="unfinished"></translation>
+        <translation>Accetta automaticamente i task quando c&apos;è un solo gestore</translation>
     </message>
     <message>
         <source>Watch directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Guarda directory:</translation>
     </message>
     <message>
         <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra le azioni plugin-dipendente nel menu contestuale barra delle schede</translation>
     </message>
     <message>
         <source>Show as a submenu</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra come un sottomenu</translation>
     </message>
     <message>
         <source>Show messages in tray</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra i messaggi nel vassoio</translation>
     </message>
     <message>
         <source>Message timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation>Messaggio di timeout:</translation>
     </message>
     <message>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tagi</translation>
     </message>
     <message>
         <source>Tags manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags manager</translation>
     </message>
     <message>
         <source>Network</source>
-        <translation type="unfinished"></translation>
+        <translation>Rete</translation>
     </message>
     <message>
         <source>Cache size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dimensioni di cache:</translation>
     </message>
     <message>
         <source> MB</source>
-        <translation type="unfinished"></translation>
+        <translation> MB</translation>
     </message>
     <message>
         <source>Filter tracking cookies</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtro tracking cookie</translation>
     </message>
     <message>
         <source>Clear cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancellare la cache</translation>
     </message>
     <message>
         <source>Clear cookies</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancellare i cookie</translation>
     </message>
     <message>
         <source>Application-wide proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy a livello di applicazione</translation>
     </message>
     <message>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Host:</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Port:</translation>
     </message>
     <message>
         <source>Login:</source>
-        <translation type="unfinished">Accesso:</translation>
+        <translation>Accesso:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="unfinished">Parola chiave:</translation>
+        <translation>Parola chiave:</translation>
     </message>
     <message>
         <source>Proxy type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo di proxy:</translation>
     </message>
     <message>
         <source>SOCKS5</source>
-        <translation type="unfinished"></translation>
+        <translation>SOCKS5</translation>
     </message>
     <message>
         <source>Transparent HTTP</source>
-        <translation type="unfinished"></translation>
+        <translation>Trasparente HTTP</translation>
     </message>
     <message>
         <source>Caching HTTP</source>
-        <translation type="unfinished"></translation>
+        <translation>Cache HTTP</translation>
     </message>
     <message>
         <source>Caching FTP</source>
-        <translation type="unfinished"></translation>
+        <translation>Chache FTP</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished">Plugins</translation>
+        <translation>Plugins</translation>
     </message>
     <message>
         <source>Plugins manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin manager</translation>
     </message>
 </context>
 </TS>
