@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="oc">
+<TS version="2.0" language="it_IT">
 <context>
     <name>LeechCraft::Plugins::CSTP::AddTask</name>
     <message>
@@ -26,7 +26,7 @@
     <message>
         <location filename="addtask.cpp" line="157"/>
         <source>Select directory</source>
-        <translation>Seleccionatz un repertòri</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34,37 +34,37 @@
     <message>
         <location filename="cstp.cpp" line="206"/>
         <source>Remove</source>
-        <translation>Suprimir</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="213"/>
         <source>Remove all</source>
-        <translation>Suprimir tot</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="222"/>
         <source>Start</source>
-        <translation>Aviar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="229"/>
         <source>Stop</source>
-        <translation>Arrestar</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="236"/>
         <source>Start all</source>
-        <translation>Aviar tot</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="243"/>
         <source>Stop all</source>
-        <translation>Arrestar tot</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="255"/>
         <source>File exists</source>
-        <translation>Lo fichièr existís</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="cstp.cpp" line="256"/>
@@ -77,17 +77,17 @@
     <message>
         <location filename="core.cpp" line="61"/>
         <source>URL</source>
-        <translation>Adreça Internet</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="62"/>
         <source>State</source>
-        <translation>Estat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="63"/>
         <source>Progress</source>
-        <translation>Progression</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="277"/>
@@ -107,7 +107,7 @@
     <message>
         <location filename="core.cpp" line="433"/>
         <source>/s</source>
-        <translation>/seg</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="core.cpp" line="521"/>
@@ -126,7 +126,7 @@
     <message>
         <location filename="mainviewdelegate.cpp" line="71"/>
         <source>Idle</source>
-        <translation>Inactiu</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -134,17 +134,17 @@
     <message>
         <location filename="task.cpp" line="213"/>
         <source>Stopped</source>
-        <translation>Arrestat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="task.cpp" line="215"/>
         <source>Finished</source>
-        <translation>Acabat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="task.cpp" line="217"/>
         <source>Running</source>
-        <translation>En cors</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="task.cpp" line="238"/>

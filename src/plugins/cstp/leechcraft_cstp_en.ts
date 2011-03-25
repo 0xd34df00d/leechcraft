@@ -2,39 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>AddTask</name>
-    <message>
-        <location filename="addtask.ui" line="13"/>
-        <source>Add task</source>
-        <translation>Add task</translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="21"/>
-        <source>URL:</source>
-        <translation>URL:</translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="31"/>
-        <source>Local path:</source>
-        <translation>Local path:</translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="43"/>
-        <source>Browse...</source>
-        <translation>Browse...</translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="55"/>
-        <source>Filename:</source>
-        <translation>Filename:</translation>
-    </message>
-    <message>
-        <location filename="addtask.ui" line="65"/>
-        <source>Comment:</source>
-        <translation>Comment:</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Plugins::CSTP::AddTask</name>
     <message>
         <location filename="addtask.cpp" line="107"/>
