@@ -42,7 +42,8 @@ namespace Acetamide
 		QString ServerName;
 		QString Command_;
 		QStringList Parameters_;
-		QHash<QString, boost::function<void (const QStringList&)> > Command2Signal_;
+		QHash<QString, 
+				boost::function<void (const QString&, const QList<std::string>&, const QString&)> > Command2Signal_;
 	public:
 		IrcParser (IrcServer*);
 		void AuthCommand (const ServerOptions&);
@@ -60,17 +61,17 @@ namespace Acetamide
 		void ParseMessage (const QString&);
 		void ParsePrefix (const QString&);
 	private slots:
-		void pongCommand (const QStringList&);
+		void pongCommand (const QString&, const QList<std::string>&, const QString&);
 	signals:
-		void gotAuthSuccess (const QStringList&);
-		void gotCLEntries (const QStringList&);
-		void gotTopic (const QStringList&);
-		void gotPing (const QStringList&);
-		void gotMessage (const QStringList&);
-		void gotNewParticipant (const QStringList&);
-		void gotUserLeave (const QStringList&);
-		void gotUserQuit (const QStringList&);
-		void gotServerSupport (const QStringList&);
+		void gotAuthSuccess (const QString&, const QList<std::string>&, const QString&);
+		void gotCLEntries (const QString&, const QList<std::string>&, const QString&);
+		void gotTopic (const QString&, const QList<std::string>&, const QString&);
+		void gotPing (const QString&, const QList<std::string>&, const QString&);
+		void gotMessage (const QString&, const QList<std::string>&, const QString&);
+		void gotNewParticipant (const QString&, const QList<std::string>&, const QString&);
+		void gotUserLeave (const QString&, const QList<std::string>&, const QString&);
+		void gotUserQuit (const QString&, const QList<std::string>&, const QString&);
+		void gotServerSupport (const QString&, const QList<std::string>&, const QString&);
 	};
 };
 };

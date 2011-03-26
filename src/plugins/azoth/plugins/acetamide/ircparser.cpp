@@ -18,6 +18,9 @@
 
 #include "ircparser.h"
 #include <boost/bind.hpp>
+#include <boost/spirit/include/classic_core.hpp>
+#include <boost/spirit/include/classic_loops.hpp>
+#include <boost/spirit/include/classic_push_back_actor.hpp>
 #include <QTextCodec>
 #include "socketmanager.h"
 #include "ircserver.h"
@@ -28,6 +31,8 @@ namespace Azoth
 {
 namespace Acetamide
 {
+	using namespace boost::spirit::classic;
+
 	IrcParser::IrcParser (IrcServer *server)
 	: IrcServer_ (server)
 	, Prefix_ (QString ())
@@ -86,9 +91,9 @@ namespace Acetamide
 		QString msg = QString ("PRIVMSG " + channel.ChannelName_ + " :" + mess + "\r\n");
 		Core::Instance ().GetSocketManager ()->
 				SendCommand (msg, IrcServer_->GetHost (), IrcServer_->GetPort ());
-		QStringList params;
-		params << channel.ChannelName_ << mess << IrcServer_->GetNickName ();
-		IrcServer_->readMessage (params);
+
+		IrcServer_->readMessage (IrcServer_->GetNickName (), 
+				QList<std::string> () << channel.ChannelName_.toUtf8 ().constData (), mess);
 	}
 
 	void IrcParser::PrivateMessageCommand (const QString& message, const QString& target)
@@ -103,16 +108,6 @@ namespace Acetamide
 	void IrcParser::HandleServerReply (const QString& result)
 	{
 		ParseMessage (result);
-		if (Command2Signal_.contains (Command_.toLower ()))
-		{
-			Parameters_.append (Nick_);
-			Command2Signal_ [Command_.toLower ()] (Parameters_);
-		}
-		Parameters_.clear ();
-		Nick_.clear ();
-		User_.clear ();
-		Host_.clear ();
-		ServerName.clear ();
 	}
 
 	void IrcParser::LeaveChannelCommand (const QString& channel)
@@ -140,120 +135,107 @@ namespace Acetamide
 
 	void IrcParser::Init ()
 	{
-		Command2Signal_ ["001"] = boost::bind (&IrcParser::gotAuthSuccess, this, _1);
+		Command2Signal_ ["001"] = boost::bind (&IrcParser::gotAuthSuccess, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotAuthSuccess (const QStringList&)),
+				SIGNAL (gotAuthSuccess (const QString&, const QList<std::string>&, const QString&)),
 				IrcServer_,
-				SLOT (authFinished (const QStringList&)));
+				SLOT (authFinished (const QString&, const QList<std::string>&, const QString&)));
 
-		Command2Signal_ ["005"] = boost::bind (&IrcParser::gotServerSupport, this, _1);
+		Command2Signal_ ["005"] = boost::bind (&IrcParser::gotServerSupport, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotServerSupport (const QStringList&)),
+				SIGNAL (gotServerSupport (const QString&, const QList<std::string>&, const QString&)),
 				IrcServer_,
-				SLOT (setServerSupport (const QStringList&)));
+				SLOT (setServerSupport (const QString&, const QList<std::string>&, const QString&)));
 
-		Command2Signal_ ["332"] = boost::bind (&IrcParser::gotTopic, this, _1);
-		Command2Signal_ ["topic"] = boost::bind (&IrcParser::gotTopic, this, _1);
+		Command2Signal_ ["332"] = boost::bind (&IrcParser::gotTopic, this, _1, _2, _3);
+		Command2Signal_ ["topic"] = boost::bind (&IrcParser::gotTopic, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotTopic (const QStringList&)),
+				SIGNAL (gotTopic (const QString&, const QList<std::string>&, const QString&)),
 				IrcServer_,
-				SLOT (setTopic (const QStringList&)));
+				SLOT (setTopic (const QString&, const QList<std::string>&, const QString&)));
 
-		Command2Signal_ ["ping"] = boost::bind (&IrcParser::gotPing, this, _1);
+		Command2Signal_ ["ping"] = boost::bind (&IrcParser::gotPing, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotPing (const QStringList&)),
+				SIGNAL (gotPing (const QString&, const QList<std::string>&, const QString&)),
 				this,
-				SLOT (pongCommand (const QStringList&)));
+				SLOT (pongCommand (const QString&, const QList<std::string>&, const QString&)));
 
-		Command2Signal_ ["353"] = boost::bind (&IrcParser::gotCLEntries, this, _1);
+		Command2Signal_ ["353"] = boost::bind (&IrcParser::gotCLEntries, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotCLEntries (const QStringList&)),
+				SIGNAL (gotCLEntries (const QString&, const QList<std::string>&, const QString&)),
 				IrcServer_,
-				SLOT (setCLEntries (const QStringList&)));
+				SLOT (setCLEntries (const QString&, const QList<std::string>&, const QString&)));
 
-		Command2Signal_ ["privmsg"] = boost::bind (&IrcParser::gotMessage, this, _1);
+		Command2Signal_ ["privmsg"] = boost::bind (&IrcParser::gotMessage, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotMessage (const QStringList&)),
+				SIGNAL (gotMessage (const QString&, const QList<std::string>&, const QString&)),
 				IrcServer_,
-				SLOT (readMessage (const QStringList&)));
+				SLOT (readMessage (const QString&, const QList<std::string>&, const QString&)));
 
-		Command2Signal_ ["join"] = boost::bind (&IrcParser::gotNewParticipant, this, _1);
+		Command2Signal_ ["join"] = boost::bind (&IrcParser::gotNewParticipant, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotNewParticipant (const QStringList&)),
+				SIGNAL (gotNewParticipant (const QString&, const QList<std::string>&, const QString&)),
 				IrcServer_,
-				SLOT (setNewParticipant (const QStringList&)));
+				SLOT (setNewParticipant (const QString&, const QList<std::string>&, const QString&)));
 
-		Command2Signal_ ["part"] = boost::bind (&IrcParser::gotUserLeave, this, _1);
+		Command2Signal_ ["part"] = boost::bind (&IrcParser::gotUserLeave, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotUserLeave (const QStringList&)),
+				SIGNAL (gotUserLeave (const QString&, const QList<std::string>&, const QString&)),
 				IrcServer_,
-				SLOT (setUserLeave (const QStringList&)));
+				SLOT (setUserLeave (const QString&, const QList<std::string>&, const QString&)));
 
-		Command2Signal_ ["quit"] = boost::bind (&IrcParser::gotUserQuit, this, _1);
+		Command2Signal_ ["quit"] = boost::bind (&IrcParser::gotUserQuit, this, _1, _2, _3);
 		connect (this,
-				SIGNAL (gotUserQuit (const QStringList&)),
+				SIGNAL (gotUserQuit (const QString&, const QList<std::string>&, const QString&)),
 				IrcServer_,
-				SLOT (setUserQuit (const QStringList&)));
+				SLOT (setUserQuit (const QString&, const QList<std::string>&, const QString&)));
 	}
 
 	void IrcParser::ParseMessage (const QString& message)
 	{
-		int pos = 0;
-		QString msg = message.trimmed ();
-		int msg_len = msg.length ();
-		if (msg.startsWith (':'))
+		std::string nickStr = std::string ();
+		std::string commandStr = std::string ();
+		std::string msgStr = std::string ();
+		QList<std::string> opts;
+
+		range<> ascii (char (0x01), char (0x7F));
+		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' | '_' | '^' | '{' | '|' | '}'];
+		rule<> shortname = *(alnum_p >> *(alnum_p || ch_p ('-')) >> *alnum_p);
+		rule<> hostname = shortname >> *(ch_p ('.') >> shortname);
+		rule<> nickname = (alpha_p | special) >> * (alnum_p | special | ch_p ('-'));
+		rule<> user =  +(ascii - '\r' - '\n' - ' ' - '@' - '\0');
+		rule<> host = lexeme_d [+(anychar_p - ' ')] ; 
+		rule<> nick = lexeme_d [nickname [assign_a (nickStr)] >> !(!(ch_p ('!') 
+				>> user) >> ch_p ('@') >> host)];
+		rule<> nospcrlfcl = (anychar_p - '\0' - '\r' - '\n' - ' ' - ':');
+		rule<> lastParam = lexeme_d [ch_p (' ') >> !ch_p (':') >> (*(ch_p (':') | ch_p (' ') | nospcrlfcl)) [assign_a (msgStr)]];
+		rule<> firsParam = lexeme_d [ch_p (' ') >> (nospcrlfcl >> *(ch_p (':') | nospcrlfcl))[push_back_a (opts)]];
+		rule<> params =  *firsParam >> !lastParam;
+		rule<> command = longest_d [(+alpha_p) | (repeat_p (3) [digit_p])][assign_a (commandStr)];
+		rule<> prefix = longest_d [hostname | nick];
+		rule<> reply = (lexeme_d [!(ch_p (':') >> prefix >> ch_p (' '))] >> command >> !params >> eol_p);
+		
+		bool res = parse (message.toUtf8 ().constData (), 
+			reply).full; 
+		
+		if (!res)
 		{
-			int delim = msg.indexOf (' ');
-			if (delim == -1)
-				delim = msg_len;
-			Prefix_ = msg.mid (1, delim - 1);
-			pos = delim + 1;
-			ParsePrefix (Prefix_);
+			qWarning () << "input string is not a valide IRC command"
+					<< message;
+			return;
 		}
 		else
-			Prefix_ = QString ("");
-		
-		int par_start = msg.indexOf (' ', pos);
-		if (par_start == -1)
-			par_start = msg_len;
-		
-		Command_ = msg.mid (pos, par_start - pos);
-		pos = par_start + 1;
-		
-		while (pos < msg_len)
 		{
-			if (msg [pos] == ':') {
-				Parameters_.append (msg.mid (pos + 1));
-				break;
-			}
-			else 
-			{
-				int nextpos = msg.indexOf (' ',pos);
-				if (nextpos == -1)
-					nextpos = msg_len;
-				Parameters_.append (msg.mid (pos,nextpos - pos));
-				pos = nextpos + 1;
-			}
+			QString cmd = QString::fromUtf8 (commandStr.c_str ()).toLower ();
+			if (Command2Signal_.contains (cmd))
+				Command2Signal_ [cmd] (QString::fromUtf8 (nickStr.c_str ()),
+						opts, QString::fromUtf8 (msgStr.c_str ()));
 		}
 	}
 
-	void IrcParser::ParsePrefix (const QString& prefix)
+	void IrcParser::pongCommand (const QString&, const QList<std::string>&, const QString& msg)
 	{
-		QRegExp rexp ("([a-zA-Z\\[\\]`_\\^\\{\\|\\}][a-zA-Z0-9\\[\\]`_\\^\\{\\|\\}-]+)!(([^\\0\\r\\n\\s@])+)?@(.+)?");
-
-		if (rexp.indexIn (prefix) != -1)
-		{
-			Nick_ = rexp.cap (1);
-			User_ = rexp.cap (2);
-			Host_ = rexp.cap (4);
-		}
-		else
-			ServerName = prefix;
-	}
-
-	void IrcParser::pongCommand (const QStringList& params)
-	{
-		QString pongCmd = QString ("PONG :" + params.at (0) + "\r\n");
+		QString pongCmd = QString ("PONG :" + msg + "\r\n");
 		Core::Instance ().GetSocketManager ()
 				->SendCommand (pongCmd, IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}

@@ -159,7 +159,7 @@ namespace Acetamide
 		}
 	}
 
-	void IrcServer::authFinished (const QStringList& params)
+	void IrcServer::authFinished (const QString&, const QList<std::string>&, const QString&)
 	{
 		State_ = Connected;
 		Q_FOREACH (const ChannelOptions& channel, ChannelsQueue_)
@@ -171,28 +171,27 @@ namespace Acetamide
 		ChannelsQueue_.clear ();
 	}
 
-	void IrcServer::setTopic (const QStringList& params)
+	void IrcServer::setTopic (const QString&, const QList<std::string>& params, const QString& topic)
+	{
+		QString channelKey = QString ("%1@%2")
+				.arg (QString::fromUtf8 (params.last ().c_str ()).toLower (), Server_.ServerName_);
+		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
+		ServerManager_->SetTopic (serverKey, channelKey, topic);
+	}
+
+	void IrcServer::setCLEntries (const QString&, const QList<std::string>& params, const QString& cllist)
 	{
 		int count = params.count ();
 		QString channelKey = QString ("%1@%2")
-				.arg (params.at (count - 3).toLower (), Server_.ServerName_);
+				.arg (QString::fromUtf8 (params.last ().c_str ()).toLower () , Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetTopic (serverKey, channelKey, params.at (count - 2));
+		ServerManager_->SetCLEntries (serverKey, channelKey, cllist);
 	}
 
-	void IrcServer::setCLEntries (const QStringList& params)
+	void IrcServer::readMessage (const QString& nick, const QList<std::string>& params, const QString& msg)
 	{
 		int count = params.count ();
-		QString channelKey = QString ("%1@%2")
-				.arg (params.at (count - 3).toLower () , Server_.ServerName_);
-		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetCLEntries (serverKey, channelKey, params.at (count - 2));
-	}
-
-	void IrcServer::readMessage (const QStringList& params)
-	{
-		int count = params.count ();
-		QString target = params.at (count - 3).toLower ();
+		QString target = QString::fromUtf8 (params.last ().c_str ()).toLower ();
 		if (target.startsWith ("#") || 
 				target.startsWith ("+") || target.startsWith ("!") || 
 				target.startsWith ("&") || target.startsWith ("$"))
@@ -201,43 +200,44 @@ namespace Acetamide
 					.arg (target , Server_.ServerName_);
 			QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 			ServerManager_->SetMessageIn (serverKey, channelKey, 
-					params.at (count - 2), params.last ());
+					msg, nick);
 		}
 		else
 		{
-			if (params.last () == "frigg")
+			if (nick == "frigg")
 				return;
 
-				IrcAccount *acc = ServerManager_->GetAccount (this);
-				if (!acc)
-					return;
-				ServerParticipantEntry_ptr entry = acc->GetClientConnection ()->
-						GetServerParticipantEntry (GetServerKey (), params.last ());
-				IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
-						IMessage::DIn,
-						GetHost () + ":" + QString::number (GetPort ()),
-						params.last (),
-						acc->GetClientConnection ().get ());
-				QTextCodec *codec = QTextCodec::codecForName (GetEncoding ().toUtf8 ());
-				QString mess =  codec->toUnicode (params.at (params.count () - 2).toAscii ());
-				message->SetBody (mess);
-				message->SetDateTime (QDateTime::currentDateTime ());
-				
-				entry->SetPrivateChat (true);
-				
-				entry->HandleMessage (message);
+			IrcAccount *acc = ServerManager_->GetAccount (this);
+			if (!acc)
+				return;
+			ServerParticipantEntry_ptr entry = acc->GetClientConnection ()->
+					GetServerParticipantEntry (GetServerKey (), nick);
+			IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
+					IMessage::DIn,
+					GetHost () + ":" + QString::number (GetPort ()),
+					nick,
+					acc->GetClientConnection ().get ());
+			QTextCodec *codec = QTextCodec::codecForName (GetEncoding ().toUtf8 ());
+			QString mess =  codec->toUnicode (msg.toAscii ());
+			message->SetBody (mess);
+			message->SetDateTime (QDateTime::currentDateTime ());
+			
+			entry->SetPrivateChat (true);
+			
+			entry->HandleMessage (message);
 		}
 	}
 
-	void IrcServer::setNewParticipant (const QStringList& params)
+	void IrcServer::setNewParticipant (const QString& nick, const QList<std::string>&, const QString& msg)
 	{
+		qDebug () << nick;
 		QString channelKey = QString ("%1@%2")
-				.arg (params.at (params.count () - 2).simplified ().toLower () , Server_.ServerName_);
+				.arg (msg.simplified ().toLower (), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetNewParticipant (serverKey, channelKey, params.last ());
+		ServerManager_->SetNewParticipant (serverKey, channelKey, nick);
 	}
 
-	void IrcServer::setUserLeave (const QStringList& params)
+	void IrcServer::setUserLeave (const QString& nick, const QList<std::string>& params, const QString& msg)
 	{
 		QString channelKey;
 		QString leaveMsg = QString ();
@@ -245,37 +245,30 @@ namespace Acetamide
 		if (count > 2)
 		{
 			channelKey = QString ("%1@%2")
-					.arg (params.at (count - 3).toLower () , Server_.ServerName_);
-			leaveMsg = params.at (count - 2);
+					.arg (QString::fromUtf8 (params.last ().c_str ()).toLower () , Server_.ServerName_);
+			leaveMsg = msg;
 		}
 		else
 			channelKey = QString ("%1@%2")
-					.arg (params.first ().simplified ().toLower (), Server_.ServerName_);
+					.arg (QString::fromUtf8 (params.last ().c_str ()).toLower (), Server_.ServerName_);
 
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
 		ServerManager_->SetUserLeave (serverKey, channelKey, 
-				params.last (), leaveMsg);
+				nick, leaveMsg);
 	}
 
-	void IrcServer::setUserQuit (const QStringList& params)
+	void IrcServer::setUserQuit (const QString& nick, const QList<std::string>& params, const QString& msg)
 	{
 		Q_FOREACH (const ChannelOptions& channel, ActiveChannels_)
-		{
-			QStringList paramsList;
-			paramsList << channel.ChannelName_;
-			if (params.count () > 1) 
-				paramsList << params.first ();
-			paramsList << params.last ();
-
-			setUserLeave (paramsList);
-		}
+			setUserLeave (nick, 
+					QList<std::string> () << channel.ChannelName_.toUtf8 ().constData (), msg);
 	}
 
-	void IrcServer::setServerSupport (const QStringList& params)
+	void IrcServer::setServerSupport (const QString&, const QList<std::string>&, const QString&)
 	{
-		Q_FOREACH (const QString& param, params)
-			if (param.toLower ().startsWith ("prefix="))
-				SetRole (param.split ('=').at (1));
+// 		Q_FOREACH (const QString& param, params)
+// 			if (param.toLower ().startsWith ("prefix="))
+// 				SetRole (param.split ('=').at (1));
 	}
 
 };

@@ -70,14 +70,14 @@ namespace Acetamide
 		QHash<QChar, QChar> GetPrefix () const;
 		void SetRole (const QString&);
 	public slots:
-		void authFinished (const QStringList&);
-		void setTopic (const QStringList&);
-		void setCLEntries (const QStringList&);
-		void readMessage (const QStringList&);
-		void setNewParticipant (const QStringList&);
-		void setUserLeave (const QStringList&);
-		void setUserQuit  (const QStringList&);
-		void setServerSupport (const QStringList&);
+		void authFinished (const QString&, const QList<std::string>&, const QString&);
+		void setTopic (const QString&, const QList<std::string>&, const QString&);
+		void setCLEntries (const QString&, const QList<std::string>&, const QString&);
+		void readMessage (const QString&, const QList<std::string>&, const QString&);
+		void setNewParticipant (const QString&, const QList<std::string>&, const QString&);
+		void setUserLeave (const QString&, const QList<std::string>&, const QString&);
+		void setUserQuit  (const QString&, const QList<std::string>&, const QString&);
+		void setServerSupport (const QString&, const QList<std::string>&, const QString&);
 	signals:
 		void gotLeaveAllChannels (const QString&);
 		void gotCLItems (QList<QObject*>&);
