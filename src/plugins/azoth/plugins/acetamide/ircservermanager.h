@@ -53,6 +53,7 @@ namespace Acetamide
 		void SetMessageOut (const QString&, const ChannelOptions&, const ServerOptions&, IrcAccount*);
 		void SetPrivateMessageOut (IrcAccount*, IrcMessage*);
 		void LeaveChannel (const QString&, const QString&, IrcAccount*);
+		void QuiteConnection (const QString&, IrcAccount*);
 		void SetNewParticipant (const QString&, const QString&, const QString&);
 		void SetUserLeave (const QString&, const QString&, const QString&, const QString&);
 		bool DoServerAction (boost::function<void (IrcServer_ptr)>, const QString&);

@@ -123,6 +123,16 @@ namespace Acetamide
 				SendCommand (leaveCmd, IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}
 
+	void IrcParser::QuitConnectionCommand (const QString& msg)
+	{
+		QString msgCmd = msg;
+		if (!msg.isEmpty ())
+			msgCmd = ":" + msg;
+		QString quitCmd = QString ("QUIT " + msgCmd + "\r\n");
+		Core::Instance ().GetSocketManager ()->
+				SendCommand (quitCmd, IrcServer_->GetHost (), IrcServer_->GetPort ());
+	}
+
 	QString IrcParser::GetNickName () const
 	{
 		return Nick_;

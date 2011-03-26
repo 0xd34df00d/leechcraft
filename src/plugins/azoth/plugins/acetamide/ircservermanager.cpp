@@ -120,6 +120,12 @@ namespace Acetamide
 		Account2Server_ [acc] [key]->LeaveChannel (channel, acc);
 	}
 
+	void IrcServerManager::QuiteConnection (const QString& key, IrcAccount *acc)
+	{
+		//TODO Quit Message
+		Account2Server_ [acc] [key]->QuitConnection (QString ());
+	}
+
 	void IrcServerManager::SetNewParticipant (const QString& serverKey,
 			const QString& channelKey, const QString& nick)
 	{
@@ -226,6 +232,8 @@ namespace Acetamide
 		{
 			if (ServerExists (iter.key (), key))
 			{
+				//TODO Quit Message
+				iter.value ().value (key)->QuitConnection (QString ());
 				iter.value ().value (key)->ChangeState (NotConnected);
 				iter.value ().remove (key);
 				Core::Instance ().GetSocketManager ()->CloseSocket (key);

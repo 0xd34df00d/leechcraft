@@ -53,6 +53,7 @@ namespace Acetamide
 		void PrivateMessageCommand (const QString&, const QString&);
 		void HandleServerReply (const QString&);
 		void LeaveChannelCommand (const QString&);
+		void QuitConnectionCommand (const QString&);
 		QString GetNickName () const;
 	private:
 		void Init ();

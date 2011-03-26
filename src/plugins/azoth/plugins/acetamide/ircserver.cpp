@@ -137,7 +137,12 @@ namespace Acetamide
 			emit gotLeaveAllChannels (GetServerKey ());
 	}
 
-	QHash<QChar, QChar> IrcServer::GetPrefix() const
+	void IrcServer::QuitConnection (const QString& msg)
+	{
+		IrcParser_->QuitConnectionCommand (msg);
+	}
+
+	QHash<QChar, QChar> IrcServer::GetPrefix () const
 	{
 		return Prefix_;
 	}
@@ -270,7 +275,7 @@ namespace Acetamide
 	{
 		Q_FOREACH (const QString& param, params)
 			if (param.toLower ().startsWith ("prefix="))
-				SetRole (param.split('=').at (1));
+				SetRole (param.split ('=').at (1));
 	}
 
 };

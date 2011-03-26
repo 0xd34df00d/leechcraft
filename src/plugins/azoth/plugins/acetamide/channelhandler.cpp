@@ -99,34 +99,18 @@ namespace Acetamide
 		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())
 		{
 			QStringList list = entry->GetChannels ();
+			bool prChat = entry->IsPrivateChat ();
 			if (list.contains (Channel_.ChannelName_))
 			{
 				list.removeOne (Channel_.ChannelName_);
-				if (!list.count ())
+				if (!list.count () && !prChat)
 				{
 					Account_->handleEntryRemoved (entry.get ());
 					Account_->GetClientConnection ()->
 							RemoveEntry (ServerID_, entry->GetEntryName ());
 				}
 				else
-				{
 					entry->SetGroups (list);
-					qDebug () << entry->GetChannels ();
-				}
-// 				if (entry->IsPrivateChat ())
-// 				{
-// 					if (!list.count () && !list.contains (ServerID_))
-// 						list << ServerID_;
-// 					entry->SetGroups (list);
-// 				}
-// 				else if (list.count ())
-// 					entry->SetGroups (list);
-// 				else
-// 				{
-// 					Account_->handleEntryRemoved (entry.get ());
-// 					Account_->GetClientConnection ()->
-// 							RemoveEntry (ServerID_, entry->GetEntryName ());
-// 				}
 			}
 		}
 		Core::Instance ().GetServerManager ()->

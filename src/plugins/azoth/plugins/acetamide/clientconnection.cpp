@@ -163,7 +163,7 @@ namespace Acetamide
 		}
 	}
 
-	QList<ServerParticipantEntry_ptr> ClientConnection::GetServerParticipantEntries(const QString& key) const
+	QList<ServerParticipantEntry_ptr> ClientConnection::GetServerParticipantEntries (const QString& key) const
 	{
 		return Server2Entry_ [key].values ();
 	}
