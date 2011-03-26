@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>535</height>
+    <width>519</width>
+    <height>457</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -77,12 +77,6 @@
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <widget class="QTreeView" name="FilesView_">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>2</verstretch>
-             </sizepolicy>
-            </property>
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
             </property>
