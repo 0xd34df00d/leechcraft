@@ -147,7 +147,7 @@ namespace Acetamide
 		return Channels2Affilation_ [channel];
 	}
 
-	void ServerParticipantEntry::SetAffiliation(const QString& channel, const QChar& aff)
+	void ServerParticipantEntry::SetAffiliation (const QString& channel, const QChar& aff)
 	{
 		IMUCEntry::MUCAffiliation affiliation;
 		if (aff == '~')
@@ -186,9 +186,11 @@ namespace Acetamide
 
 	void ServerParticipantEntry::closePrivateChat (bool)
 	{
-		if (PrivateChat_ && (Channels_.count () == 1) && Channels_.first () == ServerKey_)
+		if (PrivateChat_)
 		{
-			emit removeFromList (ServerKey_, NickName_);
+			PrivateChat_ = false;
+			if (!Channels_.count ())
+				emit removeFromList (ServerKey_, NickName_);
 		}
 	}
 

@@ -176,8 +176,15 @@ namespace Acetamide
 				!ClientConnection_)
 			return;
 
+		if (!ClientConnection_)
+		{
+			//TODO  join to default channels for account
+		}
+
 		IrcAccountState = state.State_;
 		emit statusChanged (state);
+
+		ClientConnection_->SetState (IrcAccountState);
 	}
 	
 	void IrcAccount::Synchronize ()

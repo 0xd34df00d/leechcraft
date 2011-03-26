@@ -117,6 +117,29 @@ namespace Acetamide
 		ChannelHandlers_.remove (ch->GetChannelID ());
 	}
 
+	void ClientConnection::SetState (const State& state)
+	{
+		//TODO offline message
+		if (state == SOffline)
+		{
+			QString msg = QString ();
+			Q_FOREACH (ChannelHandler *hndl, ChannelHandlers_.values ())
+			{
+				QString key = hndl->GetServerOptions ().ServerName_ + ":" +
+						QString::number (hndl->GetServerOptions ().ServerPort_);
+				if (Core::Instance ().GetServerManager ()->IsPrivateChatExists (key, Account_))
+				{
+					Q_FOREACH (ServerParticipantEntry_ptr entry, Server2Entry_ [key].values ())
+					{
+						if (entry->IsPrivateChat ())
+							entry->closePrivateChat (true);
+					}
+				}
+				hndl->Leave (msg);
+			}
+		}
+	}
+
 	IrcMessage* ClientConnection::CreateMessage (IMessage::MessageType,
 			const QString&, const QString&)
 	{
@@ -163,7 +186,7 @@ namespace Acetamide
 		}
 	}
 
-	QList<ServerParticipantEntry_ptr> ClientConnection::GetServerParticipantEntries(const QString& key) const
+	QList<ServerParticipantEntry_ptr> ClientConnection::GetServerParticipantEntries (const QString& key) const
 	{
 		return Server2Entry_ [key].values ();
 	}
