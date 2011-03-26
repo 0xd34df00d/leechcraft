@@ -50,7 +50,7 @@
         <translation>Hôte</translation>
     </message>
     <message>
-        <location filename="requestmodel.cpp" line="88"/>
+        <location filename="requestmodel.cpp" line="93"/>
         <source>In progress</source>
         <translation>En cours</translation>
     </message>

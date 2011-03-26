@@ -33,14 +33,7 @@ SET (ONLINEBOOKMARKS_FORMS
 SET (ONLINEBOOKMARKS_RESOURCES poshukuonlinebookmarksresources.qrc
 	readitlater/onlinebookmarksreaditlater.qrc
 	)
-SET (ONLINEBOOKMARKS_TRANSLATIONS
-	leechcraft_poshuku_onlinebookmarks_ru_RU.ts
-	leechcraft_poshuku_onlinebookmarks_en.ts
-	)
-SET (ONLINEBOOKMARKS_COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_onlinebookmarks_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_onlinebookmarks_en.qm
-	)
+CreateTrVars ("poshuku_onlinebookmarks" "de;en;fr;it;ru_RU;uk_UA" ONLINEBOOKMARKS_TRANSLATIONS ONLINEBOOKMARKS_COMPILED_TRANSLATIONS)
 
 QT4_WRAP_CPP (ONLINEBOOKMARKS_MOC_SRCS ${ONLINEBOOKMARKS_HEADERS})
 QT4_WRAP_UI (ONLINEBOOKMARKS_UIS_H ${ONLINEBOOKMARKS_FORMS})

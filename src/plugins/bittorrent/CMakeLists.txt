@@ -128,34 +128,7 @@ SET (FORMS
 	singletrackerchanger.ui
 	)
 SET (RESOURCES bittorrentresources.qrc)
-SET (TRANSLATIONS
-	leechcraft_bittorrent_ru_RU.ts
-	leechcraft_bittorrent_uk_UA.ts
-	leechcraft_bittorrent_de.ts
-	leechcraft_bittorrent_ar.ts
-	leechcraft_bittorrent_pl.ts
-	leechcraft_bittorrent_es.ts
-	leechcraft_bittorrent_fr.ts
-	leechcraft_bittorrent_oc.ts
-	leechcraft_bittorrent_en.ts
-	leechcraft_bittorrent_be.ts
-	leechcraft_bittorrent_eo.ts
-	leechcraft_bittorrent_it.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_pl.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_oc.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_be.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_eo.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_bittorrent_it.qm
-	)
+CreateTrVars ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 ADD_DEFINITIONS (-DWIN32_LEAN_AND_MEAN -DBOOST_ALL_NO_LIB)
 

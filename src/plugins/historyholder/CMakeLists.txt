@@ -31,29 +31,9 @@ SET (HEADERS
 	findproxy.h
 	core.h
 	)
-SET (TRANSLATIONS
-	leechcraft_historyholder_ru_RU.ts
-	leechcraft_historyholder_uk_UA.ts
-	leechcraft_historyholder_ar.ts
-	leechcraft_historyholder_de.ts
-	leechcraft_historyholder_es.ts
-	leechcraft_historyholder_oc.ts
-	leechcraft_historyholder_en.ts
-	leechcraft_historyholder_fr.ts
-	leechcraft_historyholder_pl.ts
-	)
 SET (RESOURCES historyholderresources.qrc)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_oc.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_historyholder_pl.qm
-	)
+CreateTrVars ("historyholder" "ar;de;en;es;fr;it;oc;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

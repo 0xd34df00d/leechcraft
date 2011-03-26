@@ -30,7 +30,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="96"/>
+        <location filename="cleanweb.cpp" line="101"/>
         <source>Blocks unwanted ads.</source>
         <translation>Bloquea anuncios no deseados.</translation>
     </message>
@@ -38,37 +38,37 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="217"/>
+        <location filename="core.cpp" line="237"/>
         <source>Name</source>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="218"/>
+        <location filename="core.cpp" line="238"/>
         <source>Last updated</source>
         <translation>Última actualización</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="219"/>
+        <location filename="core.cpp" line="239"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="396"/>
+        <location filename="core.cpp" line="416"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="442"/>
+        <location filename="core.cpp" line="462"/>
         <source>Block image...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="700"/>
+        <location filename="core.cpp" line="720"/>
         <source>The subscription %1 was successfully added.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="735"/>
+        <location filename="core.cpp" line="755"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -154,26 +154,26 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionsManager</name>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="59"/>
-        <location filename="subscriptionsmanager.cpp" line="68"/>
-        <location filename="subscriptionsmanager.cpp" line="77"/>
-        <location filename="subscriptionsmanager.cpp" line="86"/>
+        <location filename="subscriptionsmanager.cpp" line="67"/>
+        <location filename="subscriptionsmanager.cpp" line="76"/>
+        <location filename="subscriptionsmanager.cpp" line="85"/>
+        <location filename="subscriptionsmanager.cpp" line="94"/>
         <source>Error adding subscription</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="60"/>
+        <location filename="subscriptionsmanager.cpp" line="68"/>
         <source>Can&apos;t add subscription without a title.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="69"/>
-        <location filename="subscriptionsmanager.cpp" line="78"/>
+        <location filename="subscriptionsmanager.cpp" line="77"/>
+        <location filename="subscriptionsmanager.cpp" line="86"/>
         <source>Subscription with such title allready exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="87"/>
+        <location filename="subscriptionsmanager.cpp" line="95"/>
         <source>Invalid URL.&lt;br /&gt;Valid URL format is: abp://subscribe/?location=URL</source>
         <translation type="unfinished"></translation>
     </message>

@@ -49,25 +49,9 @@ SET (FORMS
 	summarywidget.ui
 	searchwidget.ui
 	)
-SET (TRANSLATIONS
-	leechcraft_summary_ru_RU.ts
-	leechcraft_summary_uk_UA.ts
-	leechcraft_summary_ar.ts
-	leechcraft_summary_be.ts
-	leechcraft_summary_de.ts
-	leechcraft_summary_en.ts
-	leechcraft_summary_fr.ts
-	)
 SET (RESOURCES summaryresources.qrc)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_be.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_summary_fr.qm
-	)
+CreateTrVars ("summary" "ar;be;de;en;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

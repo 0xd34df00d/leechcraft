@@ -590,118 +590,123 @@
         <translation>Lade...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="277"/>
+        <location filename="customwebview.cpp" line="282"/>
         <source>Subscribe</source>
         <translation>Abonnieren</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="285"/>
+        <location filename="customwebview.cpp" line="290"/>
         <source>Open &amp;here</source>
         <translation>&amp;Hier öffnen</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="287"/>
+        <location filename="customwebview.cpp" line="292"/>
         <source>Open in new &amp;tab</source>
         <translation>In neuem &amp;Tab öffnen</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="290"/>
+        <location filename="customwebview.cpp" line="295"/>
         <source>&amp;Save link...</source>
         <translation>Link &amp;speichern...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="296"/>
+        <location filename="customwebview.cpp" line="301"/>
         <source>&amp;Bookmark link...</source>
         <translation>&amp;Lesezeichen Link...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="302"/>
+        <location filename="customwebview.cpp" line="307"/>
         <source>&amp;Copy link</source>
         <translation>&amp;Link kopieren</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="315"/>
+        <location filename="customwebview.cpp" line="314"/>
+        <source>Open as link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="326"/>
         <source>Open image here</source>
         <translation>Grafik hier anzeigen</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="317"/>
+        <location filename="customwebview.cpp" line="328"/>
         <source>Open image in new tab</source>
         <translation>Grafik in neuem Tab öffnen</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="320"/>
+        <location filename="customwebview.cpp" line="331"/>
         <source>Save image...</source>
         <translation>Grafik speichern...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="322"/>
+        <location filename="customwebview.cpp" line="333"/>
         <source>Copy image</source>
         <translation>Grafik kopieren</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="324"/>
+        <location filename="customwebview.cpp" line="335"/>
         <source>Copy image location</source>
         <translation>Grafik-Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="346"/>
+        <location filename="customwebview.cpp" line="357"/>
         <source>Search...</source>
         <translation>Suchen...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="440"/>
+        <location filename="customwebview.cpp" line="451"/>
         <source>Installed plugins</source>
         <translation>Installierte Erweiterungen</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="441"/>
+        <location filename="customwebview.cpp" line="452"/>
         <source>No plugins installed</source>
         <translation>Keine Erweiterungen installiert</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="442"/>
+        <location filename="customwebview.cpp" line="453"/>
         <source>File name</source>
         <translation>Dateiname</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="443"/>
+        <location filename="customwebview.cpp" line="454"/>
         <source>MIME type</source>
         <translation>MIME-Typ</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="444"/>
+        <location filename="customwebview.cpp" line="455"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="445"/>
+        <location filename="customwebview.cpp" line="456"/>
         <source>Suffixes</source>
         <translation>Endungen</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="446"/>
+        <location filename="customwebview.cpp" line="457"/>
         <source>Enabled</source>
         <translation>Aktiviert</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="447"/>
+        <location filename="customwebview.cpp" line="458"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="448"/>
+        <location filename="customwebview.cpp" line="459"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="458"/>
-        <location filename="customwebview.cpp" line="460"/>
+        <location filename="customwebview.cpp" line="469"/>
+        <location filename="customwebview.cpp" line="471"/>
         <source>Welcome to LeechCraft!</source>
         <translation>Willkommen bei LeechCraft!</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="462"/>
+        <location filename="customwebview.cpp" line="473"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
         <translation>Willkommen bei LeechCraft, dem integrierten Internet-Client.&lt;br /&gt;Weitere Informationen sind auf der &lt;a href=&apos;http://leechcraft.org&apos;&gt;Projektseite&lt;/a&gt; verfügbar.</translation>
     </message>

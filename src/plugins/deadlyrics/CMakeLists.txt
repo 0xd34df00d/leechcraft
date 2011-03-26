@@ -41,31 +41,8 @@ SET (HEADERS
 	lyricscache.h
 	xmlsettingsmanager.h
 	)
-SET (TRANSLATIONS
-	leechcraft_deadlyrics_ru_RU.ts
-	leechcraft_deadlyrics_uk_UA.ts
-	leechcraft_deadlyrics_ar.ts
-	leechcraft_deadlyrics_eo.ts
-	leechcraft_deadlyrics_de.ts
-	leechcraft_deadlyrics_es.ts
-	leechcraft_deadlyrics_fr.ts
-	leechcraft_deadlyrics_oc.ts
-	leechcraft_deadlyrics_pl.ts
-	leechcraft_deadlyrics_en.ts
-	)
+CreateTrVars ("deadlyrics" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 SET (RESOURCES deadlyricsresources.qrc)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_eo.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_oc.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_pl.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_deadlyrics_en.qm
-	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

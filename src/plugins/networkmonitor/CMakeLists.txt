@@ -36,28 +36,8 @@ SET (FORMS
 	networkmonitor.ui
 	)
 SET (RESOURCES networkmonitorresources.qrc)
-SET (TRANSLATIONS
-	leechcraft_networkmonitor_ru_RU.ts
-	leechcraft_networkmonitor_uk_UA.ts
-	leechcraft_networkmonitor_ar.ts
-	leechcraft_networkmonitor_de.ts
-	leechcraft_networkmonitor_eo.ts
-	leechcraft_networkmonitor_en.ts
-	leechcraft_networkmonitor_es.ts
-	leechcraft_networkmonitor_fr.ts
-	leechcraft_networkmonitor_pl.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_eo.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_networkmonitor_pl.qm
-	)
+CreateTrVars ("networkmonitor" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

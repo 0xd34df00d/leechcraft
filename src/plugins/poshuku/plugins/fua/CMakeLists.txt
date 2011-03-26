@@ -17,28 +17,8 @@ SET (FUA_FORMS
 	changer.ui
 	)
 SET (FUA_RESOURCES poshukufuaresources.qrc)
-SET (FUA_TRANSLATIONS
-	leechcraft_poshuku_fua_ru_RU.ts
-	leechcraft_poshuku_fua_uk_UA.ts
-	leechcraft_poshuku_fua_ar.ts
-	leechcraft_poshuku_fua_de.ts
-	leechcraft_poshuku_fua_en.ts
-	leechcraft_poshuku_fua_eo.ts
-	leechcraft_poshuku_fua_es.ts
-	leechcraft_poshuku_fua_fr.ts
-	leechcraft_poshuku_fua_pl.ts
-	)
-SET (FUA_COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_eo.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_poshuku_fua_pl.qm
-	)
+CreateTrVars ("poshuku_fua" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" FUA_TRANSLATIONS FUA_COMPILED_TRANSLATIONS)
+
 QT4_WRAP_CPP (FUA_MOC_SRCS ${FUA_HEADERS})
 QT4_WRAP_UI (FUA_UIS_H ${FUA_FORMS})
 QT4_ADD_RESOURCES (FUA_RCCS ${FUA_RESOURCES})

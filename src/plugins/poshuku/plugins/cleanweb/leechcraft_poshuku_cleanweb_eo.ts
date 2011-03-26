@@ -30,7 +30,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="+96"/>
+        <location filename="cleanweb.cpp" line="+101"/>
         <source>Blocks unwanted ads.</source>
         <translation>Bloku evitindan anoncon.</translation>
     </message>
@@ -38,7 +38,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="+217"/>
+        <location filename="core.cpp" line="+237"/>
         <source>Name</source>
         <translation>Nomo</translation>
     </message>
@@ -154,7 +154,7 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionsManager</name>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="+59"/>
+        <location filename="subscriptionsmanager.cpp" line="+67"/>
         <location line="+9"/>
         <location line="+9"/>
         <location line="+9"/>

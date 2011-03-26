@@ -53,30 +53,7 @@ SET (FORMS
 SET (RESOURCES
 	dbusmanagerresources.qrc
 	)
-SET (TRANSLATIONS
-	leechcraft_dbusmanager_ru_RU.ts
-	leechcraft_dbusmanager_uk_UA.ts
-	leechcraft_dbusmanager_eo.ts
-	leechcraft_dbusmanager_de.ts
-	leechcraft_dbusmanager_es.ts
-	leechcraft_dbusmanager_en.ts
-	leechcraft_dbusmanager_ar.ts
-	leechcraft_dbusmanager_fr.ts
-	leechcraft_dbusmanager_pl.ts
-	leechcraft_dbusmanager_it.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_eo.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_pl.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_it.qm
-	)
+CreateTrVars ("dbusmanager" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})

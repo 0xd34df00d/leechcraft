@@ -127,32 +127,7 @@ SET (FORMS
 	export2fb2dialog.ui
 	)
 SET (RESOURCES aggregatorresources.qrc)
-SET (TRANSLATIONS
-	leechcraft_aggregator_ru_RU.ts
-	leechcraft_aggregator_de.ts
-	leechcraft_aggregator_uk_UA.ts
-	leechcraft_aggregator_ar.ts
-	leechcraft_aggregator_eo.ts
-	leechcraft_aggregator_pl.ts
-	leechcraft_aggregator_es.ts
-	leechcraft_aggregator_oc.ts
-	leechcraft_aggregator_en.ts
-	leechcraft_aggregator_fr.ts
-	leechcraft_aggregator_it.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_ar.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_eo.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_pl.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_es.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_oc.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_fr.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_aggregator_it.qm
-	)
+CreateTrVars ("aggregator" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 ADD_DEFINITIONS(-DBOOST_DYN_LINK)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

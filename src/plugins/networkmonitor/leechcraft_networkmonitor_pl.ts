@@ -50,7 +50,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="requestmodel.cpp" line="88"/>
+        <location filename="requestmodel.cpp" line="93"/>
         <source>In progress</source>
         <translation type="unfinished"></translation>
     </message>

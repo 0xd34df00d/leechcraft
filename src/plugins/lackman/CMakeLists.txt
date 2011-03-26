@@ -76,6 +76,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lackman_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lackman_en.qm
 	)
+CreateTrVars ("lackman" "de;en;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 SET (RESOURCES
 	lackmanresources.qrc
 	)

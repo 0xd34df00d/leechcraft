@@ -592,47 +592,47 @@
 <context>
     <name>LeechCraft::Plugins::Poshuku::CustomWebView</name>
     <message>
-        <location filename="customwebview.cpp" line="440"/>
+        <location filename="customwebview.cpp" line="451"/>
         <source>Installed plugins</source>
         <translation>Встановлені плагіни</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="441"/>
+        <location filename="customwebview.cpp" line="452"/>
         <source>No plugins installed</source>
         <translation>Жоден плагін не встановлено</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="442"/>
+        <location filename="customwebview.cpp" line="453"/>
         <source>File name</source>
         <translation>Назва файлу</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="443"/>
+        <location filename="customwebview.cpp" line="454"/>
         <source>MIME type</source>
         <translation>MIME тип</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="444"/>
+        <location filename="customwebview.cpp" line="455"/>
         <source>Description</source>
         <translation>Опис</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="445"/>
+        <location filename="customwebview.cpp" line="456"/>
         <source>Suffixes</source>
         <translation>Суфікси</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="446"/>
+        <location filename="customwebview.cpp" line="457"/>
         <source>Enabled</source>
         <translation>Увімкнено</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="447"/>
+        <location filename="customwebview.cpp" line="458"/>
         <source>No</source>
         <translation>Ні</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="448"/>
+        <location filename="customwebview.cpp" line="459"/>
         <source>Yes</source>
         <translation>Так</translation>
     </message>
@@ -643,73 +643,78 @@
         <translation>Завантаження...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="277"/>
+        <location filename="customwebview.cpp" line="282"/>
         <source>Subscribe</source>
         <translation>Підписатись</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="285"/>
+        <location filename="customwebview.cpp" line="290"/>
         <source>Open &amp;here</source>
         <translation>Відкрити &amp;тут</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="287"/>
+        <location filename="customwebview.cpp" line="292"/>
         <source>Open in new &amp;tab</source>
         <translation>Відкрити у новій &amp;вкладці</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="290"/>
+        <location filename="customwebview.cpp" line="295"/>
         <source>&amp;Save link...</source>
         <translation>&amp;Зберегти за посиланням...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="296"/>
+        <location filename="customwebview.cpp" line="301"/>
         <source>&amp;Bookmark link...</source>
         <translation>&amp;Додати до закладок...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="302"/>
+        <location filename="customwebview.cpp" line="307"/>
         <source>&amp;Copy link</source>
         <translation>&amp;Копіювати посилання</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="315"/>
+        <location filename="customwebview.cpp" line="314"/>
+        <source>Open as link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="326"/>
         <source>Open image here</source>
         <translation>Відкрити зображення тут</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="317"/>
+        <location filename="customwebview.cpp" line="328"/>
         <source>Open image in new tab</source>
         <translation>Відкрити зображення у новій вкладці</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="320"/>
+        <location filename="customwebview.cpp" line="331"/>
         <source>Save image...</source>
         <translation>Зберегти зображення...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="322"/>
+        <location filename="customwebview.cpp" line="333"/>
         <source>Copy image</source>
         <translation>Копіювати зображення</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="324"/>
+        <location filename="customwebview.cpp" line="335"/>
         <source>Copy image location</source>
         <translation>Копіювати адресу зображення</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="346"/>
+        <location filename="customwebview.cpp" line="357"/>
         <source>Search...</source>
         <translation>Пошук...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="458"/>
-        <location filename="customwebview.cpp" line="460"/>
+        <location filename="customwebview.cpp" line="469"/>
+        <location filename="customwebview.cpp" line="471"/>
         <source>Welcome to LeechCraft!</source>
         <translation>Ласкаво просимо до LeechCraft!</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="462"/>
+        <location filename="customwebview.cpp" line="473"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
         <translation>Ласкаво просимо до LeechCraft - інтегрованого Інтернет-клієнту.&lt;br /&gt;Більше інформації можете дізнатись на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сторінці проекту&lt;/a&gt;.</translation>
     </message>
