@@ -61,6 +61,7 @@ namespace Acetamide
 		IrcAccount* GetAccount () const;
 		ChannelCLEntry* JoinRoom (const ServerOptions&, const ChannelOptions&);
 		void Unregister (ChannelHandler*);
+		void SetState (const State&);
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 		void SetNewParticipant (const QString&, const QString&);
