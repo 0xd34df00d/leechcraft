@@ -63,6 +63,7 @@ SET (TRANSLATIONS
 	leechcraft_dbusmanager_ar.ts
 	leechcraft_dbusmanager_fr.ts
 	leechcraft_dbusmanager_pl.ts
+	leechcraft_dbusmanager_it.ts
 	)
 SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_ru_RU.qm
@@ -74,6 +75,7 @@ SET (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_ar.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_fr.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_pl.qm
+	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_dbusmanager_it.qm
 	)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
