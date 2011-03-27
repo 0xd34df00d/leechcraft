@@ -36,7 +36,9 @@ namespace LeechCraft
 
 				if (!QApplication::arguments ().contains ("-noanhero"))
 				{
+#if KDE_VERSION_MINOR < 6
 					KCrash::setApplicationPath (qApp->applicationDirPath ());
+#endif
 					KCrash::setApplicationName ("LeechCraft");
 #if KDE_VERSION_MINOR < 5
 					KCrash::setCrashHandler (KCrash::defaultCrashHandler);
