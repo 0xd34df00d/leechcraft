@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "clientconnection.h"
+#include <boost/bind.hpp>
 #include <QTimer>
 #include <QtDebug>
 #include <QXmppClient.h>
@@ -76,6 +77,11 @@ namespace Xoox
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
+		
+		connect (BMManager_,
+				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
+				this,
+				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)));
 
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
@@ -257,6 +263,15 @@ namespace Xoox
 					PCritical_);
 			Core::Instance ().SendEntity (e);
 			return 0;
+		}
+		
+		if (!JoinQueue_.isEmpty ())
+		{
+			QList<JoinQueueItem>::iterator pos = std::find_if (JoinQueue_.begin (), JoinQueue_.end (),
+					boost::bind (std::equal_to<QString> (), jid,
+						boost::bind (&JoinQueueItem::RoomJID_, _1)));
+			if (pos != JoinQueue_.end ())
+				JoinQueue_.erase (pos);
 		}
 
 		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
@@ -706,6 +721,35 @@ namespace Xoox
 		}
 		
 		RoomHandlers_ [roomJid]->HandlePermsChanged (nick, aff, role, reason);
+	}
+	
+	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
+	{
+		Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
+		{
+			if (!conf.autoJoin ())
+				continue;
+			
+			JoinQueueItem item =
+			{
+				conf.jid (),
+				conf.nickName ()
+			};
+			JoinQueue_ << item;
+		}
+		
+		if (JoinQueue_.size ())
+			QTimer::singleShot (10000,
+					this,
+					SLOT (handleAutojoinQueue ()));
+	}
+	
+	void ClientConnection::handleAutojoinQueue()
+	{
+		QList<QObject*> entries;
+		Q_FOREACH (const JoinQueueItem& item, JoinQueue_)
+			entries << JoinRoom (item.RoomJID_, item.Nickname_);
+		emit gotRosterItems (entries);
 	}
 	
 	void ClientConnection::decrementErrAccumulators ()

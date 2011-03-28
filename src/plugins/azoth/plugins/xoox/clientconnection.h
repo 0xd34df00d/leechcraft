@@ -77,6 +77,13 @@ namespace Xoox
 		GlooxAccountState LastState_;
 		QString Password_;
 		
+		struct JoinQueueItem
+		{
+			QString RoomJID_;
+			QString Nickname_;
+		};
+		QList<JoinQueueItem> JoinQueue_;
+		
 		int SocketErrorAccumulator_;
 	public:
 		ClientConnection (const QString&,
@@ -151,6 +158,9 @@ namespace Xoox
 				QXmppMucAdminIq::Item::Affiliation,
 				QXmppMucAdminIq::Item::Role,
 				const QString&);
+		
+		void handleBookmarksReceived (const QXmppBookmarkSet&);
+		void handleAutojoinQueue ();
 		
 		void decrementErrAccumulators ();
 	private:
