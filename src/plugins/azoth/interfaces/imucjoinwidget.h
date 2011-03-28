@@ -66,9 +66,10 @@ namespace Azoth
 
 		/** @brief Returns the map with current join parameters.
 		 *
-		 * This map is used later to restore the join parameters, for
-		 * example, if they were saved to history, and the user decides
-		 * to pick a recent join from the history.
+		 * The returned map could be saved by Azoth core to be used
+		 * later to restore the join parameters, for example, if they
+		 * were saved to history, and the user decides to pick a recent
+		 * join from the history.
 		 *
 		 * The returned map should have two mandatory fields. First is
 		 * HumanReadableName, its value should be a human-readable
@@ -76,6 +77,9 @@ namespace Azoth
 		 * user. Second field is AccountID, the corresponding value
 		 * should be a QByteArray with the ID of the selected account
 		 * (IAccount::GetAccountID()).
+		 * 
+		 * Of course, all the data in the map should be serializable,
+		 * since it would be stored in QSettings.
 		 *
 		 * You are free to use any other fields.
 		 *
@@ -87,9 +91,11 @@ namespace Azoth
 
 		/** @brief Returns the list of bookmarked MUCs, if any.
 		 *
-		 * The returned list is a list of QVariantMap. Please see the
-		 * documentation for GetIdentifyingData() for more information about
-		 * maps' contents.
+		 * The returned list is a list of QVariantMaps which should have
+		 * the same format as the ones returned from the
+		 * GetIdentifyingData(). Please refer to documentation for
+		 * GetIdentifyingData() for more information about maps'
+		 * contents.
 		 *
 		 * @return List of bookmarks parameters.
 		 *
