@@ -42,6 +42,8 @@ namespace Azoth
 		virtual void on_AccountBox__currentIndexChanged (int);
 		virtual void on_BookmarksBox__currentIndexChanged (int);
 		virtual void on_HistoryBox__currentIndexChanged (int);
+	private:
+		void FillWidget (const QVariantMap&);
 	};
 }
 }
