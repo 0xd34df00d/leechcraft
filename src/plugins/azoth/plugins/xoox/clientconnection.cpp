@@ -27,6 +27,7 @@
 #include <QXmppDiscoveryManager.h>
 #include <QXmppTransferManager.h>
 #include <QXmppReconnectionManager.h>
+#include <QXmppBookmarkManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -55,6 +56,7 @@ namespace Xoox
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (0)
+	, BMManager_ (new QXmppBookmarkManager (Client_))
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
@@ -77,6 +79,7 @@ namespace Xoox
 
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
+		Client_->addExtension (BMManager_);
 
 		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
@@ -404,6 +407,11 @@ namespace Xoox
 	void ClientConnection::FetchVCard (const QString& jid)
 	{
 		Client_->vCardManager ().requestVCard (jid);
+	}
+	
+	QXmppBookmarkSet ClientConnection::GetBookmarks () const
+	{
+		return BMManager_->bookmarks ();
 	}
 
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,

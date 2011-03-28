@@ -35,6 +35,7 @@ class QXmppClient;
 class QXmppDiscoveryManager;
 class QXmppTransferManager;
 class QXmppDiscoveryIq;
+class QXmppBookmarkManager;
 
 namespace LeechCraft
 {
@@ -59,6 +60,7 @@ namespace Xoox
 		QXmppMucManager *MUCManager_;
 		QXmppTransferManager *XferManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
+		QXmppBookmarkManager *BMManager_;
 
 		QString OurJID_;
 
@@ -117,6 +119,7 @@ namespace Xoox
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
 		void FetchVCard (const QString&);
+		QXmppBookmarkSet GetBookmarks () const;
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, const QXmppRosterIq::Item&);
 

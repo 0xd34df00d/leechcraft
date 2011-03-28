@@ -19,6 +19,8 @@
 #include "joingroupchatwidget.h"
 #include <QtDebug>
 #include "glooxaccount.h"
+#include "glooxprotocol.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -87,7 +89,7 @@ namespace Xoox
 	QVariantMap JoinGroupchatWidget::GetIdentifyingData () const
 	{
 		QVariantMap result;
-		result ["HumanReadableName"] = QString ("%1 on %2@%3")
+		result ["HumanReadableName"] = QString ("%2@%3 (%1)")
 				.arg (GetNickname ())
 				.arg (GetRoom ())
 				.arg (GetServer ());
@@ -100,7 +102,36 @@ namespace Xoox
 
 	QVariantList JoinGroupchatWidget::GetBookmarkedMUCs () const
 	{
-		return QVariantList ();
+		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Core::Instance ().GetProtocols ().at (0));
+		QVariantList result;
+		Q_FOREACH (QObject *obj, proto->GetRegisteredAccounts ())
+		{
+			GlooxAccount *acc = qobject_cast<GlooxAccount*> (obj);
+			const QXmppBookmarkSet& set = acc->GetBookmarks ();
+			Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
+			{
+				const QStringList& split = conf.jid ().split ('@', QString::SkipEmptyParts);
+				if (split.size () != 2)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "incorrectly split jid for conf"
+							<< conf.jid ()
+							<< split;
+					continue;
+				}
+
+				QVariantMap cm;
+				cm ["HumanReadableName"] = QString ("%1 (%2)")
+						.arg (conf.jid ())
+						.arg (conf.nickName ());
+				cm ["AccountID"] = acc->GetAccountID ();
+				cm ["Nick"] = conf.nickName ();
+				cm ["Room"] = split.at (0);
+				cm ["Server"] = split.at (1);
+				result << cm;
+			}
+		}
+		return result;
 	}
 
 	void JoinGroupchatWidget::SetIdentifyingData (const QVariantMap& data)

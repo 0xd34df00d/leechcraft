@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QMap>
 #include <QXmppRosterIq.h>
+#include <QXmppBookmarkSet.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
@@ -96,8 +97,10 @@ namespace Xoox
 		QString GetJID () const;
 		QString GetNick () const;
 		void JoinRoom (const QString&, const QString&, const QString&);
+
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 		GlooxCLEntry* CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
+		QXmppBookmarkSet GetBookmarks () const;
 
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);

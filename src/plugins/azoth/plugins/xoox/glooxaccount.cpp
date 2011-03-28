@@ -315,6 +315,14 @@ namespace Xoox
 	{
 		return ClientConnection_->AddODSCLEntry (ods);
 	}
+	
+	QXmppBookmarkSet GlooxAccount::GetBookmarks () const
+	{
+		if (!ClientConnection_)
+			return QXmppBookmarkSet ();
+		
+		return ClientConnection_->GetBookmarks ();
+	}
 
 	QByteArray GlooxAccount::Serialize () const
 	{
