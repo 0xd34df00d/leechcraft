@@ -771,9 +771,17 @@ namespace Azoth
 			if (variant.isEmpty ())
 				continue;
 
-			tip += QString ("<hr /><strong>%1</strong>: %2")
-					.arg (variant)
-					.arg (Status2Str (entry->GetStatus (), PluginProxyObject_));
+			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+			tip += "<hr /><strong>" + variant + "</strong>";
+			if (info.contains ("priority"))
+				tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
+			tip += ": ";
+			tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
+
+			if (info.contains ("client_name"))
+				tip += "<br />" + info.value ("client_name").toString ();
+			if (info.contains ("client_version"))
+				tip += " " + info.value ("client_version").toString ();
 		}
 		return tip;
 	}
