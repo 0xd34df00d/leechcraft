@@ -305,6 +305,11 @@ namespace Azoth
 		 */
 		QStandardItem* GetAccountItem (const QObject *accountObj,
 				QMap<const QObject*, QStandardItem*>& accountItemCache);
+		
+		/** Creates the tooltip text for the roster entry to be shown in
+		 * the tree.
+		 */
+		QString MakeTooltipString (ICLEntry *entry) const;
 
 		/** Handles the event of status changes in a contact list entry.
 		 */

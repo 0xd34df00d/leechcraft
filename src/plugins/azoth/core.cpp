@@ -744,17 +744,26 @@ namespace Azoth
 			return accountItem;
 		}
 	}
-
-	void Core::HandleStatusChanged (const EntryStatus&,
-			ICLEntry *entry, const QString&)
+	
+	namespace
 	{
-		invalidateClientsIconCache (entry);
-		QString tip = QString ("%1 (%2)<hr />%3 (%4)<hr />%5")
-				.arg (entry->GetEntryName ())
-				.arg (entry->GetHumanReadableID ())
-				.arg (PluginProxyObject_->StateToString (entry->GetStatus ().State_))
-				.arg (entry->GetStatus ().StatusString_)
-				.arg (tr ("In groups: ") + entry->Groups ().join ("; "));
+		QString Status2Str (const EntryStatus& status, boost::shared_ptr<IProxyObject> obj)
+		{
+			QString result = obj->StateToString (status.State_);
+			const QString& statusString = status.StatusString_;
+			if (!statusString.isEmpty ())
+				result += " (" + statusString + ")";
+			return result;
+		}
+	}
+	
+	QString Core::MakeTooltipString (ICLEntry *entry) const
+	{
+		QString tip = "<strong>" + entry->GetEntryName () + "</strong>";
+		tip += "<br />" + entry->GetHumanReadableID () + "<br />";
+		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
+		tip += "<br />";
+		tip += tr ("In groups: ") + entry->Groups ().join ("; ");
 				
 		const QStringList& variants = entry->Variants ();
 		Q_FOREACH (const QString& variant, variants)
@@ -762,13 +771,21 @@ namespace Azoth
 			if (variant.isEmpty ())
 				continue;
 
-			tip += QString ("<hr /><strong>%1</strong>: %2 (%3)")
+			tip += QString ("<hr /><strong>%1</strong>: %2")
 					.arg (variant)
-					.arg (PluginProxyObject_->StateToString (entry->GetStatus (variant).State_))
-					.arg (entry->GetStatus (variant).StatusString_);
+					.arg (Status2Str (entry->GetStatus (), PluginProxyObject_));
 		}
+		return tip;
+	}
+
+	void Core::HandleStatusChanged (const EntryStatus&,
+			ICLEntry *entry, const QString&)
+	{
+		invalidateClientsIconCache (entry);
+		const QString& tip = MakeTooltipString (entry);
 
 		State state = SOffline;
+		const QStringList& variants = entry->Variants ();
 		if (variants.size ())
 			state = entry->GetStatus (variants.first ()).State_;
 		const QIcon& icon = GetIconForState (state);
