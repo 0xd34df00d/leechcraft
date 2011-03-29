@@ -84,6 +84,9 @@ namespace Xoox
 		};
 		QList<JoinQueueItem> JoinQueue_;
 		
+		QList<QString> VCardFetchQueue_;
+		QTimer *VCardFetchTimer_;
+		
 		int SocketErrorAccumulator_;
 	public:
 		ClientConnection (const QString&,
@@ -163,7 +166,10 @@ namespace Xoox
 		void handleAutojoinQueue ();
 		
 		void decrementErrAccumulators ();
+		
+		void handleVCardFetchingQueue ();
 	private:
+		void ScheduleFetchVCard (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
 		GlooxCLEntry* ConvertFromODS (const QString&, const QXmppRosterIq::Item&);

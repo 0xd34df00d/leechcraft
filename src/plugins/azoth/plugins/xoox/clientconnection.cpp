@@ -63,6 +63,7 @@ namespace Xoox
 	, ProxyObject_ (0)
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
+	, VCardFetchTimer_ (new QTimer (this))
 	, SocketErrorAccumulator_ (0)
 	{
 		LastState_.State_ = SOffline;
@@ -73,6 +74,11 @@ namespace Xoox
 				this,
 				SLOT (decrementErrAccumulators ()));
 		decrTimer->start (15000);
+		
+		connect (VCardFetchTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleVCardFetchingQueue ()));
 
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
@@ -746,6 +752,7 @@ namespace Xoox
 	
 	void ClientConnection::handleAutojoinQueue()
 	{
+		return;
 		QList<QObject*> entries;
 		Q_FOREACH (const JoinQueueItem& item, JoinQueue_)
 			entries << JoinRoom (item.RoomJID_, item.Nickname_);
@@ -878,6 +885,28 @@ namespace Xoox
 			return tr ("Other error.");
 		}
 	}
+	
+	void ClientConnection::handleVCardFetchingQueue ()
+	{
+		int num = std::min (3, VCardFetchQueue_.size ());
+		while (num--)
+			FetchVCard (VCardFetchQueue_.takeFirst ());
+		
+		if (VCardFetchQueue_.isEmpty ())
+			VCardFetchTimer_->stop ();
+	}
+	
+	void ClientConnection::ScheduleFetchVCard (const QString& jid)
+	{
+		if (!JID2CLEntry_.contains (jid) ||
+				JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline)
+			VCardFetchQueue_ << jid;
+		else
+			VCardFetchQueue_.prepend (jid);
+
+		if (!VCardFetchTimer_->isActive ())
+			VCardFetchTimer_->start (5000);
+	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
 	{
@@ -896,7 +925,7 @@ namespace Xoox
 			{
 				entry = new GlooxCLEntry (bareJID, Account_);
 				JID2CLEntry_ [bareJID] = entry;
-				FetchVCard (bareJID);
+				ScheduleFetchVCard (bareJID);
 			}
 		}
 		else
@@ -914,7 +943,7 @@ namespace Xoox
 		entry->UpdateRI (ri);
 		JID2CLEntry_ [bareJID] = entry;
 		if (entry->GetAvatar ().isNull ())
-			FetchVCard (bareJID);
+			ScheduleFetchVCard (bareJID);
 		return entry;
 	}
 }
