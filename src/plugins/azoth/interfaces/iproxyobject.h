@@ -81,6 +81,12 @@ namespace Azoth
 		 * @return The name of the operating system.
 		 */
 		virtual QString GetOSName () = 0;
+		
+		/** @brief Queries whether autojoin is allowed.
+		 * 
+		 * @return Whether autojoin is allowed.
+		 */
+		virtual bool IsAutojoinAllowed () = 0;
 
 		/** @brief Returns a human-readable string for the given state.
 		 *

@@ -28,6 +28,7 @@
 #include <plugininterface/util.h>
 #include "interfaces/iaccount.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -215,6 +216,12 @@ namespace Azoth
 #endif
 
 		return tr ("Unknown OS");
+	}
+	
+	bool ProxyObject::IsAutojoinAllowed ()
+	{
+		return XmlSettingsManager::Instance ()
+				.property ("IsAutojoinAllowed").toBool ();
 	}
 
 	QString ProxyObject::StateToString (State st) const

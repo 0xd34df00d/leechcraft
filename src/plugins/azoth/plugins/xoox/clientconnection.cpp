@@ -752,10 +752,19 @@ namespace Xoox
 	
 	void ClientConnection::handleAutojoinQueue()
 	{
+		if (JoinQueue_.isEmpty ())
+			return;
+
+		GlooxProtocol *proto =
+				qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
+		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
+			return;
+
 		QList<QObject*> entries;
 		Q_FOREACH (const JoinQueueItem& item, JoinQueue_)
 			entries << JoinRoom (item.RoomJID_, item.Nickname_);
 		emit gotRosterItems (entries);
+		JoinQueue_.clear ();
 	}
 	
 	void ClientConnection::decrementErrAccumulators ()
