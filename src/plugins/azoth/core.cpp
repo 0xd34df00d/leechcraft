@@ -905,6 +905,9 @@ namespace Azoth
 
 	QList<QAction*> Core::GetEntryActions (ICLEntry *entry)
 	{
+		if (!entry)
+			return QList<QAction*> ();
+
 		if (!Entry2Actions_.contains (entry))
 			CreateActionsForEntry (entry);
 		UpdateActionsForEntry (entry);
@@ -979,6 +982,9 @@ namespace Azoth
 
 	void Core::CreateActionsForEntry (ICLEntry *entry)
 	{
+		if (!entry)
+			return;
+
 		if (Entry2Actions_.contains (entry))
 			Q_FOREACH (const QAction *action,
 						Entry2Actions_.take (entry).values ())
@@ -1238,6 +1244,9 @@ namespace Azoth
 
 	void Core::UpdateActionsForEntry (ICLEntry *entry)
 	{
+		if (!entry)
+			return;
+
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		const bool isOnline = account->GetState ().State_ != SOffline;
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
