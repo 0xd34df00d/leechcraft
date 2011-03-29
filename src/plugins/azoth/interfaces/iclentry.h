@@ -372,13 +372,47 @@ namespace Azoth
 		 *
 		 * The returned map should have the following keys:
 		 * - client_type
-		 *   The corresponding key is a QString with a client ID.
+		 *   The corresponding value is a QString with a client ID.
 		 * - client_name
-		 *   The corresponding key is a QString with human-readable name
-		 *   of the client.
+		 *   The corresponding value is a QString with human-readable
+		 *   name of the client.
 		 * - client_version
-		 *   The corresponding key is a QString with human-readable
+		 *   The corresponding value is a QString with human-readable
 		 *   version of the client.
+		 * - priority
+		 *   The corresponding value is a int with the priority of the
+		 *   variant. The priority spans from -1024 to 1024, with
+		 *   negative values indicating that the message won't be
+		 *   delivered to this resource unless it was explicitly created
+		 *   to be targeted at this resource.
+		 * 
+		 * The following keys are optional:
+		 * - user_activity
+		 *   The corresponding value is a map itself, mapping QString to
+		 *   QString, with the contents documented later.
+		 * 
+		 * The map for the user_activity can have the following keys,
+		 * where first one is required, and others are optional.
+		 * - general
+		 *   The following strings are recognized by Azoth core, and
+		 *   thus may be returned as is without translating or other
+		 *   processing:
+		 *   - empty
+		 *   - doing_chores
+		 *   - drinking
+		 *   - eating
+		 *   - exercising
+		 *   - grooming
+		 *   - having_appointment
+		 *   - inactive
+		 *   - relaxing
+		 *   - talking
+		 *   - traveling
+		 *   - working
+		 * - specific
+		 * - additional_specific
+		 * - activity_detailed
+		 * - text
 		 *
 		 * @param[in] variant Variant for which to return the client
 		 * info.
