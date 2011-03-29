@@ -143,6 +143,19 @@ namespace Xoox
 				wasOffline)
 			emit availableVariantsChanged (Variants ());
 		
+		if (status.State_ != SOffline)
+		{
+			QXmppRosterManager& rm = Account_->
+					GetClientConnection ()->GetClient ()->rosterManager ();
+			const QMap<QString, QXmppPresence>& presences =
+					rm.getAllPresencesForBareJid (GetJID ());
+			if (presences.contains (variant))
+			{
+				const int p = presences.value (variant).status ().priority ();
+				Variant2ClientInfo_ [variant] ["priority"] = p;
+			}
+		}
+		
 		GlooxMessage *message = new GlooxMessage (IMessage::MTStatusMessage,
 				IMessage::DIn,
 				GetJID (),
