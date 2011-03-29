@@ -83,7 +83,7 @@ namespace Xoox
 		void SetVCard (const QXmppVCardIq&);
 		void SetRawInfo (const QString&);
 
-		void SetClientInfo (const QString&, const QString&, const QString&);
+		void SetClientInfo (const QString&, const QString&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);

@@ -215,8 +215,11 @@ namespace Xoox
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant,
-			const QString& node, const QString& ver)
+			const QString& node)
 	{
+		if (node.isEmpty ())
+			return;
+
 		QString type = Util::GetClientIDName (node);
 		if (type.isEmpty ())
 		{
@@ -240,9 +243,7 @@ namespace Xoox
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
-		const QString& client = pres.capabilityNode ();
-		const QString& ver = pres.capabilityVer ();
-		SetClientInfo (variant, client, ver);
+		SetClientInfo (variant, pres.capabilityNode ());
 	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)
