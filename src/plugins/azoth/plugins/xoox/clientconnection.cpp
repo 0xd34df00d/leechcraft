@@ -752,7 +752,6 @@ namespace Xoox
 	
 	void ClientConnection::handleAutojoinQueue()
 	{
-		return;
 		QList<QObject*> entries;
 		Q_FOREACH (const JoinQueueItem& item, JoinQueue_)
 			entries << JoinRoom (item.RoomJID_, item.Nickname_);
