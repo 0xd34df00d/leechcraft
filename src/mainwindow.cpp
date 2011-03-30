@@ -128,6 +128,12 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (activated ()),
 			this,
 			SLOT (handleShortcutFullscreenMode ()));
+	
+	CloseTabShortcut_ = new QShortcut (QString ("Ctrl+W"),
+			this,
+			SLOT (on_ActionCloseTab__triggered ()),
+			0,
+			Qt::ApplicationShortcut);
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
@@ -299,7 +305,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	QToolBar *bar = new QToolBar ();
 	bar->addWidget (NewTabButton_);
-	bar->addAction (Ui_.ActionCloseTab_);
 	Ui_.MainTabWidget_->setCornerWidget (bar, Qt::TopRightCorner);
 
 	XmlSettingsDialog_ = new XmlSettingsDialog ();

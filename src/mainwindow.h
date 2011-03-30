@@ -84,6 +84,7 @@ namespace LeechCraft
 		GlanceShower *Glance_;
 		QToolButton *NewTabButton_;
 		QShortcut *FullScreenShortcut_;
+		QShortcut *CloseTabShortcut_;
 		const QString DefaultSystemStyleName_;
 		bool IsQuitting_;
 
