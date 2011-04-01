@@ -129,7 +129,7 @@ namespace Xoox
 
 	IAccount::AccountFeatures GlooxAccount::GetAccountFeatures () const
 	{
-		return FRenamable | FSupportsXA;
+		return FRenamable | FSupportsXA | FMUCsSupportFileTransfers;
 	}
 
 	QList<QObject*> GlooxAccount::GetCLEntries ()
