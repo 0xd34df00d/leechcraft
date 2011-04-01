@@ -54,6 +54,8 @@ namespace Azoth
 	ChatTab::ChatTab (const QString& entryId,
 			QWidget *parent)
 	: QWidget (parent)
+	, TabToolbar_ (new QToolBar (tr ("Azoth chat window")))
+	, SendFile_ (0)
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
@@ -233,7 +235,7 @@ namespace Azoth
 
 	QToolBar* ChatTab::GetToolBar () const
 	{
-		return 0;
+		return TabToolbar_;
 	}
 
 	void ChatTab::Remove ()
@@ -355,7 +357,7 @@ namespace Azoth
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
 	}
 
-	void ChatTab::on_SendFileButton__released ()
+	void ChatTab::handleSendFile ()
 	{
 		if (!XferManager_)
 		{
@@ -655,12 +657,18 @@ namespace Azoth
 
 		IAccount *acc = qobject_cast<IAccount*> (GetEntry<ICLEntry> ()->GetParentAccount ());
 		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
-		if (!XferManager_ ||
-			(IsMUC_ &&
-			 !(acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)))
-			Ui_.SendFileButton_->hide ();
-		else
+		if (XferManager_ &&
+			!IsMUC_ &&
+			acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)
 		{
+			SendFile_ = new QAction (tr ("Send file..."), this);
+			SendFile_->setProperty ("ActionIcon", "sendfile");
+			connect (SendFile_,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleSendFile ()));
+			TabToolbar_->addAction (SendFile_);
+
 			connect (acc->GetTransferManager (),
 					SIGNAL (fileOffered (QObject*)),
 					this,

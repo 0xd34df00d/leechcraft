@@ -46,6 +46,8 @@ namespace Azoth
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::ChatTab Ui_;
+		QToolBar *TabToolbar_;
+		QAction *SendFile_;
 
 		QString EntryID_;
 
@@ -93,7 +95,7 @@ namespace Azoth
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
-		void on_SendFileButton__released ();
+		void handleSendFile ();
 		void handleFileOffered (QObject*);
 		void handleFileNoLongerOffered (QObject*);
 		void handleOfferActionTriggered ();
