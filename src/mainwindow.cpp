@@ -279,7 +279,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
 	NewTabButton_->setDefaultAction (Ui_.ActionNewTab_);
 	NewTabButton_->defaultAction ()->setProperty ("ActionIcon", "newtab");
-	Ui_.ActionMenu_->setProperty ("ActionIcon", "menu");
 	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "closetab");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
 	Ui_.ActionAboutLeechCraft_->setProperty ("ActionIcon", "about");
