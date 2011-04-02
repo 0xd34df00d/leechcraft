@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IPROTOCOL_H
-#define PLUGINS_AZOTH_INTERFACES_IPROTOCOL_H
+#ifndef PLUGINS_AZOTH_INTERFACES_IMUCBOOKMARKEDITORWIDGET_H
+#define PLUGINS_AZOTH_INTERFACES_IMUCBOOKMARKEDITORWIDGET_H
 #include <QMetaType>
 
 namespace LeechCraft
@@ -32,7 +32,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocol,
-		"org.Deviant.LeechCraft.Azoth.IProtocol/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCBookmarkEditorWidget,
+		"org.Deviant.LeechCraft.Azoth.IMUCBookmarkEditorWidget/1.0");
 
 #endif
