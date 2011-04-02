@@ -37,6 +37,7 @@ namespace Xoox
 		result ["Room"] = Ui_.Room_->text ();
 		result ["Server"] = Ui_.Server_->text ();
 		result ["Nick"] = Ui_.Nickname_->text ();
+		result ["Autojoin"] = Ui_.Autojoin_->checkState () == Qt::Checked;
 		return result;
 	}
 	
@@ -47,6 +48,7 @@ namespace Xoox
 		Ui_.Room_->setText (map.value ("Room").toString ());
 		Ui_.Server_->setText (map.value ("Server").toString ());
 		Ui_.Nickname_->setText (map.value ("Nick").toString ());
+		Ui_.Autojoin_->setCheckState (map.value ("Autojoin").toBool () ? Qt::Checked : Qt::Unchecked);
 	}
 }
 }
