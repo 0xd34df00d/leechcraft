@@ -29,6 +29,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	class IMUCJoinWidget;
+	class IMUCBookmarkEditorWidget;
 
 	class BookmarksManagerDialog : public QDialog
 	{
@@ -37,10 +38,12 @@ namespace Azoth
 		Ui::BookmarksManagerDialog Ui_;
 		QMap<QByteArray, IMUCJoinWidget*> Proto2Joiner_;
 		QStandardItemModel *BMModel_;
+		IMUCBookmarkEditorWidget *CurrentEditor_;
 	public:
 		BookmarksManagerDialog (QWidget* = 0);
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
+		void handleCurrentBMChanged (const QModelIndex&);
 	};
 }
 }

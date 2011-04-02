@@ -32,11 +32,21 @@ namespace Xoox
 	
 	QVariantMap BookmarkEditWidget::GetIdentifyingData() const
 	{
-		return QVariantMap ();
+		QVariantMap result;
+		result ["StoredName"] = Ui_.Name_->text ();
+		result ["Room"] = Ui_.Room_->text ();
+		result ["Server"] = Ui_.Server_->text ();
+		result ["Nick"] = Ui_.Nickname_->text ();
+		return result;
 	}
 	
 	void BookmarkEditWidget::SetIdentifyingData (const QVariantMap& map)
 	{
+		Ui_.HumanReadable_->setText (map.value ("HumanReadableName").toString ());
+		Ui_.Name_->setText (map.value ("StoredName").toString ());
+		Ui_.Room_->setText (map.value ("Room").toString ());
+		Ui_.Server_->setText (map.value ("Server").toString ());
+		Ui_.Nickname_->setText (map.value ("Nick").toString ());
 	}
 }
 }

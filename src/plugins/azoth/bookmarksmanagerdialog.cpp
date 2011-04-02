@@ -19,6 +19,7 @@
 #include "bookmarksmanagerdialog.h"
 #include <QStandardItemModel>
 #include "interfaces/imucjoinwidget.h"
+#include "interfaces/imucbookmarkeditorwidget.h"
 #include "interfaces/iaccount.h"
 #include "core.h"
 
@@ -32,6 +33,11 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		Ui_.BookmarksTree_->setModel (BMModel_);
+		
+		connect (Ui_.BookmarksTree_->selectionModel (),
+				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+				this,
+				SLOT (handleCurrentBMChanged (const QModelIndex&)));
 		
 		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
 		{
@@ -67,6 +73,7 @@ namespace Azoth
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
 	{
 		BMModel_->clear ();
+		CurrentEditor_ = 0;
 
 		IAccount *account = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
@@ -99,7 +106,21 @@ namespace Azoth
 		while (Ui_.BMFrameLayout_->count ())
 			delete Ui_.BMFrameLayout_->takeAt (0);
 		QWidget *w = proto->GetMUCBookmarkEditorWidget ();
-		Ui_.BMFrameLayout_->addWidget (w);
+		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
+		if (CurrentEditor_)
+			Ui_.BMFrameLayout_->addWidget (w);
+	}
+	
+	void BookmarksManagerDialog::handleCurrentBMChanged (const QModelIndex& current)
+	{
+		if (!current.isValid ())
+			return;
+		
+		QStandardItem *item = BMModel_->itemFromIndex (current);
+		if (!item || !CurrentEditor_)
+			return;
+
+		CurrentEditor_->SetIdentifyingData (item->data ().toMap ());
 	}
 }
 }

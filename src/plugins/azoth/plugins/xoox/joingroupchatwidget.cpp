@@ -128,6 +128,8 @@ namespace Xoox
 				cm ["Nick"] = conf.nickName ();
 				cm ["Room"] = split.at (0);
 				cm ["Server"] = split.at (1);
+				cm ["Autojoin"] = conf.autoJoin ();
+				cm ["StoredName"] = conf.name ();
 				result << cm;
 			}
 		}
