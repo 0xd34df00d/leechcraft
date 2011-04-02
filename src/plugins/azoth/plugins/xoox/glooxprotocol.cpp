@@ -27,6 +27,7 @@
 #include "core.h"
 #include "joingroupchatwidget.h"
 #include "glooxaccountconfigurationwidget.h"
+#include "bookmarkeditwidget.h"
 
 namespace LeechCraft
 {
@@ -150,7 +151,7 @@ namespace Xoox
 	
 	QWidget* GlooxProtocol::GetMUCBookmarkEditorWidget ()
 	{
-		return 0;
+		return new BookmarkEditWidget ();
 	}
 
 	void GlooxProtocol::RemoveAccount (QObject *acc)

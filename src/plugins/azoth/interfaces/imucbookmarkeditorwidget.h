@@ -28,6 +28,30 @@ namespace Azoth
 	{
 	public:
 		virtual ~IMUCBookmarkEditorWidget () {}
+		
+		/** @brief Returns the map with current join parameters.
+		 * 
+		 * This function is completely analogous to the
+		 * IMUCJoinWidget::GetIdentifyingData() function. Refer to its
+		 * documentation for more information.
+		 * 
+		 * @return Join parameters map.
+		 * 
+		 * @sa IMUCJoinWidget::GetIdentifyingData()
+		 */
+		virtual QVariantMap GetIdentifyingData () const = 0;
+		
+		/** @brief Sets the previously saved join parameters.
+		 * 
+		 * This function is completely analogous to the
+		 * IMUCJoinWidget::SetIdentifyingData() function. Refer to its
+		 * documentation for more information.
+		 * 
+		 * @param[in] data Join parameters map.
+		 * 
+		 * @sa IMUCJoinWidget::SetIdentifyingData()
+		 */
+		virtual void SetIdentifyingData (const QVariantMap& data) = 0;
 	};
 }
 }
