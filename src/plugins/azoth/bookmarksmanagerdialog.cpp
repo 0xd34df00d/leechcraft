@@ -18,6 +18,7 @@
 
 #include "bookmarksmanagerdialog.h"
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include "interfaces/imucjoinwidget.h"
 #include "interfaces/imucbookmarkeditorwidget.h"
 #include "interfaces/iaccount.h"
@@ -121,6 +122,82 @@ namespace Azoth
 			return;
 
 		CurrentEditor_->SetIdentifyingData (item->data ().toMap ());
+	}
+	
+	void BookmarksManagerDialog::Save ()
+	{
+		QVariantList datas;
+		for (int i = 0; i < BMModel_->rowCount (); ++i)
+			datas << BMModel_->item (i)->data ();
+
+		const int index = Ui_.AccountBox_->currentIndex ();
+		IAccount *account = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
+		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		Proto2Joiner_ [proto->GetProtocolID ()]->SetBookmarkedMUCs (account->GetObject (), datas);
+		
+		on_AccountBox__currentIndexChanged (index);
+	}
+	
+	QStandardItem* BookmarksManagerDialog::GetSelectedItem () const
+	{
+		const QModelIndex& currentIdx = Ui_.BookmarksTree_->currentIndex ();
+		if (!currentIdx.isValid ())
+			return 0;
+		
+		QStandardItem *item = BMModel_->itemFromIndex (currentIdx);
+		if (!item)
+			qWarning () << Q_FUNC_INFO
+					<< "null item for index"
+					<< currentIdx;
+		
+		return item;
+	}
+	
+	void BookmarksManagerDialog::on_RemoveButton__released ()
+	{
+		QStandardItem *item = GetSelectedItem ();
+		if (!item)
+			return;
+		
+		const QVariantMap& data = item->data ().toMap ();
+
+		if (QMessageBox::question (this,
+				"LeechCraft",
+				tr ("Are you sure you want to delete the bookmark %1?")
+					.arg (data.value ("HumanReadableName").toString ()),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+		
+		BMModel_->removeRow (item->row ());
+		
+		Save ();
+	}
+	
+	void BookmarksManagerDialog::on_AddButton__released ()
+	{
+		QStandardItem *selected = GetSelectedItem ();
+		const QVariantMap& data = selected ?
+				selected->data ().toMap () :
+				(CurrentEditor_ ?
+					CurrentEditor_->GetIdentifyingData () :
+					QVariantMap ());
+		
+		QStandardItem *item = new QStandardItem (data.value ("HumanReadableName").toString ());
+		item->setData (data);
+		BMModel_->appendRow (item);
+		Ui_.BookmarksTree_->setCurrentIndex (BMModel_->indexFromItem (item));
+	}
+	
+	void BookmarksManagerDialog::on_ApplyButton__released()
+	{
+		QStandardItem *selected = GetSelectedItem ();
+		if (!selected ||
+				!CurrentEditor_ ||
+				CurrentEditor_->GetIdentifyingData ().isEmpty ())
+			return;
+
+		selected->setData (CurrentEditor_->GetIdentifyingData ());
+		Save ();
 	}
 }
 }

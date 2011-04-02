@@ -51,6 +51,7 @@ namespace Xoox
 
 		QVariantMap GetIdentifyingData () const;
 		QVariantList GetBookmarkedMUCs () const;
+		void SetBookmarkedMUCs (QObject*, const QVariantList&);
 		void SetIdentifyingData (const QVariantMap& data);
 	};
 }

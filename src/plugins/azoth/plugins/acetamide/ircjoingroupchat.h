@@ -47,6 +47,7 @@ namespace Acetamide
 		void Join (QObject*);
 		void Cancel ();
 		QVariantList GetBookmarkedMUCs () const;
+		void SetBookmarkedMUCs (QObject*, const QVariantList&);
 		void SetIdentifyingData (const QVariantMap&);
 		QVariantMap GetIdentifyingData () const;
 		

@@ -23,6 +23,7 @@
 #include "ui_bookmarksmanagerdialog.h"
 
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -41,9 +42,15 @@ namespace Azoth
 		IMUCBookmarkEditorWidget *CurrentEditor_;
 	public:
 		BookmarksManagerDialog (QWidget* = 0);
+	private:
+		void Save ();
+		QStandardItem* GetSelectedItem () const;
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
 		void handleCurrentBMChanged (const QModelIndex&);
+		void on_RemoveButton__released ();
+		void on_AddButton__released ();
+		void on_ApplyButton__released ();
 	};
 }
 }

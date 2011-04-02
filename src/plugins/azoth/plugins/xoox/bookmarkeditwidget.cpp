@@ -33,6 +33,10 @@ namespace Xoox
 	QVariantMap BookmarkEditWidget::GetIdentifyingData() const
 	{
 		QVariantMap result;
+		result ["HumanReadableName"] = QString ("%1@%2 (%3)")
+			.arg (Ui_.Room_->text ())
+			.arg (Ui_.Server_->text ())
+			.arg (Ui_.Nickname_->text ());
 		result ["StoredName"] = Ui_.Name_->text ();
 		result ["Room"] = Ui_.Room_->text ();
 		result ["Server"] = Ui_.Server_->text ();

@@ -130,6 +130,7 @@ namespace Xoox
 		QList<QObject*> GetCLEntries () const;
 		void FetchVCard (const QString&);
 		QXmppBookmarkSet GetBookmarks () const;
+		void SetBookmarks (const QXmppBookmarkSet&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, const QXmppRosterIq::Item&);
 

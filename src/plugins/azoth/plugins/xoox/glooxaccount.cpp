@@ -323,6 +323,14 @@ namespace Xoox
 		
 		return ClientConnection_->GetBookmarks ();
 	}
+	
+	void GlooxAccount::SetBookmarks (const QXmppBookmarkSet& set)
+	{
+		if (!ClientConnection_)
+			return;
+		
+		ClientConnection_->SetBookmarks (set);
+	}
 
 	QByteArray GlooxAccount::Serialize () const
 	{

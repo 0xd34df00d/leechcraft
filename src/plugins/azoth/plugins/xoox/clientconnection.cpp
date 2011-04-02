@@ -434,6 +434,11 @@ namespace Xoox
 	{
 		return BMManager_->bookmarks ();
 	}
+	
+	void ClientConnection::SetBookmarks (const QXmppBookmarkSet& set)
+	{
+		BMManager_->setBookmarks (set);
+	}
 
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
 			const QString& resource, const QString& body, const QXmppRosterIq::Item& item)
