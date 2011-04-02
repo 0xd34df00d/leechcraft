@@ -23,7 +23,7 @@
    <item>
     <widget class="QLabel" name="HumanReadable_">
      <property name="text">
-      <string>TextLabel</string>
+      <string/>
      </property>
     </widget>
    </item>
