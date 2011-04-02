@@ -112,6 +112,16 @@ namespace Azoth
 		 * @sa IMUCJoinWidget
 		 */
 		virtual QWidget* GetMUCJoinWidget () = 0;
+		
+		/** @brief Returns the editor widget for the bookmarks of this
+		 * protocol.
+		 * 
+		 * The returned widget must implement the
+		 * IMUCBookmarkEditorWidget interface
+		 * 
+		 * @sa IMUCBookmarkEditorWidget
+		 */
+		virtual QWidget* GetMUCBookmarkEditorWidget () = 0;
 
 		/** @brief Removes the given account.
 		 *

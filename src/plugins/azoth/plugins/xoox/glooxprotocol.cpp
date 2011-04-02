@@ -147,6 +147,11 @@ namespace Xoox
 	{
 		return new JoinGroupchatWidget ();
 	}
+	
+	QWidget* GlooxProtocol::GetMUCBookmarkEditorWidget ()
+	{
+		return 0;
+	}
 
 	void GlooxProtocol::RemoveAccount (QObject *acc)
 	{

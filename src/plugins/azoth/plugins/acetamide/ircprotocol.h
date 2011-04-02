@@ -60,6 +60,7 @@ namespace Acetamide
 		QList<QWidget*> GetAccountRegistrationWidgets ();
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
+		QWidget* GetMUCBookmarkEditorWidget ();
 		void RemoveAccount (QObject*);
 	private:
 		void RestoreAccounts ();

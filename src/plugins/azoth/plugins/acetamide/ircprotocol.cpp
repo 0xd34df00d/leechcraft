@@ -145,6 +145,11 @@ namespace Acetamide
 	{
 		return new IrcJoinGroupChat ();
 	}
+	
+	QWidget* IrcProtocol::GetMUCBookmarkEditorWidget ()
+	{
+		return 0;
+	}
 
 	void IrcProtocol::RemoveAccount (QObject *acc)
 	{
