@@ -117,7 +117,11 @@ namespace Azoth
 		 * protocol.
 		 * 
 		 * The returned widget must implement the
-		 * IMUCBookmarkEditorWidget interface
+		 * IMUCBookmarkEditorWidget interface.
+		 * 
+		 * This function should create a new widget each time it is
+		 * called, since the ownership is transferred to the caller and
+		 * the widget will be deleted by the caller when appropriate.
 		 * 
 		 * @sa IMUCBookmarkEditorWidget
 		 */
