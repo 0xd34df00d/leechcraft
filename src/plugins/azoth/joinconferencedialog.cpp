@@ -60,6 +60,9 @@ namespace Azoth
 			Q_FOREACH (const QVariant& item, imjw->GetBookmarkedMUCs ())
 			{
 				const QVariantMap& map = item.toMap ();
+				if (map ["AccountID"].toByteArray () != acc->GetAccountID ())
+					continue;
+
 				const QString& name = map ["HumanReadableName"].toString ();
 				if (name.isEmpty ())
 					continue;
