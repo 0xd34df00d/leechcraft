@@ -48,6 +48,7 @@ SET (SRCS
 	groupeditordialog.cpp
 	transferjobmanager.cpp
 	addaccountwizardfirstpage.cpp
+	bookmarksmanagerdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -69,6 +70,7 @@ SET (HEADERS
 	groupeditordialog.h
 	transferjobmanager.h
 	addaccountwizardfirstpage.h
+	bookmarksmanagerdialog.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -84,6 +86,7 @@ SET (FORMS
 	joinconferencedialog.ui
 	groupeditordialog.ui
 	addaccountwizardfirstpage.ui
+	bookmarksmanagerdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS

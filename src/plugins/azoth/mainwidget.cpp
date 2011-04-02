@@ -31,6 +31,7 @@
 #include "xmlsettingsmanager.h"
 #include "addcontactdialog.h"
 #include "joinconferencedialog.h"
+#include "bookmarksmanagerdialog.h"
 
 namespace LeechCraft
 {
@@ -136,6 +137,10 @@ namespace Azoth
 		MainMenu_->addAction (tr ("Join conference..."),
 				&Core::Instance (),
 				SLOT (handleMucJoinRequested ()));
+		MainMenu_->addSeparator ();
+		MainMenu_->addAction (tr ("Manage bookmarks..."),
+				this,
+				SLOT (handleManageBookmarks ()));
 
 		MainMenu_->addSeparator ();
 
@@ -460,6 +465,12 @@ namespace Azoth
 		AccountsListDialog *dia = new AccountsListDialog (this);
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->exec ();
+	}
+	
+	void MainWidget::handleManageBookmarks ()
+	{
+		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
+		dia->show ();
 	}
 
 	void MainWidget::handleAddContactRequested ()

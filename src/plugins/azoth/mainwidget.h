@@ -68,6 +68,7 @@ namespace Azoth
 		void addAccountContact ();
 
 		void showAccountsList ();
+		void handleManageBookmarks ();
 		void handleAddContactRequested ();
 
 		void handleShowOffline (bool);
