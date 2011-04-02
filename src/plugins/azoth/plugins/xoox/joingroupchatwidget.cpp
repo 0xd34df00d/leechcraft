@@ -152,7 +152,6 @@ namespace Xoox
 		{
 			const QVariantMap& map = var.toMap ();
 			QXmppBookmarkConference conf;
-			qDebug () << map;
 			conf.setAutoJoin (map.value ("Autojoin").toBool ());
 			conf.setJid (map.value ("Room").toString () + '@' + map.value ("Server").toString ());
 			conf.setNickName (map.value ("Nick").toString ());
