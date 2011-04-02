@@ -95,6 +95,11 @@ namespace Azoth
 			item->setData (var);
 			BMModel_->appendRow (item);
 		}
+		
+		while (Ui_.BMFrameLayout_->count ())
+			delete Ui_.BMFrameLayout_->takeAt (0);
+		QWidget *w = proto->GetMUCBookmarkEditorWidget ();
+		Ui_.BMFrameLayout_->addWidget (w);
 	}
 }
 }

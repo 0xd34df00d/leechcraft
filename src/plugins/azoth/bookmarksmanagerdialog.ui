@@ -40,7 +40,11 @@
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="BookmarksTree_"/>
+        <widget class="QTreeView" name="BookmarksTree_">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+        </widget>
        </item>
       </layout>
      </item>
@@ -61,6 +65,11 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
+         <layout class="QVBoxLayout" name="BMFrameLayout_">
+          <property name="margin">
+           <number>0</number>
+          </property>
+         </layout>
         </widget>
        </item>
        <item>
