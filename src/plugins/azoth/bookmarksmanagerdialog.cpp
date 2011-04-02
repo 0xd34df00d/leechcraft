@@ -105,7 +105,11 @@ namespace Azoth
 		}
 		
 		while (Ui_.BMFrameLayout_->count ())
-			delete Ui_.BMFrameLayout_->takeAt (0);
+		{
+			QLayoutItem *item = Ui_.BMFrameLayout_->takeAt (0);
+			delete item->widget ();
+			delete item;
+		}
 		QWidget *w = proto->GetMUCBookmarkEditorWidget ();
 		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
 		if (CurrentEditor_)
