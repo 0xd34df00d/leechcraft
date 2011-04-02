@@ -96,6 +96,7 @@ namespace Azoth
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
 		void handleSendFile ();
+		void handleClearChat ();
 		void handleFileOffered (QObject*);
 		void handleFileNoLongerOffered (QObject*);
 		void handleOfferActionTriggered ();

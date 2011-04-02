@@ -66,6 +66,7 @@ namespace Acetamide
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 		QList<QObject*> GetAllMessages () const;
+		void PurgeMessages (const QDateTime&);
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		

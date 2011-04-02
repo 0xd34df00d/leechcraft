@@ -72,6 +72,14 @@ namespace Azoth
 		
 		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
 		Ui_.EventsButton_->hide ();
+		
+		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
+		clearAction->setProperty ("ActionIcon", "clear");
+		connect (clearAction,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleClearChat ()));
+		TabToolbar_->addAction (clearAction);
 
 		Core::Instance ().RegisterHookable (this);
 		
@@ -374,6 +382,16 @@ namespace Azoth
 		QObject *job = XferManager_->SendFile (EntryID_,
 				Ui_.VariantBox_->currentText (), filename);
 		Core::Instance ().HandleTransferJob (job);
+	}
+	
+	void ChatTab::handleClearChat ()
+	{
+		ICLEntry *entry = GetEntry<ICLEntry> ();
+		if (!entry)
+			return;
+		
+		entry->PurgeMessages (QDateTime ());
+		PrepareTheme ();
 	}
 	
 	void ChatTab::handleFileOffered (QObject *jobObj)

@@ -20,6 +20,7 @@
 #include <QImage>
 #include <QtDebug>
 #include <interfaces/iproxyobject.h>
+#include <interfaces/azothutil.h>
 #include "glooxaccount.h"
 #include "glooxprotocol.h"
 #include "roompublicmessage.h"
@@ -114,6 +115,11 @@ namespace Xoox
 	QList<QObject*> RoomCLEntry::GetAllMessages () const
 	{
 		return AllMessages_;
+	}
+	
+	void RoomCLEntry::PurgeMessages (const QDateTime& before)
+	{
+		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	EntryStatus RoomCLEntry::GetStatus (const QString&) const

@@ -24,6 +24,7 @@
 #include <QXmppPresence.h>
 #include <plugininterface/util.h>
 #include <interfaces/iproxyobject.h>
+#include <interfaces/azothutil.h>
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "glooxprotocol.h"
@@ -56,6 +57,11 @@ namespace Xoox
 	QList<QObject*> EntryBase::GetAllMessages () const
 	{
 		return AllMessages_;
+	}
+	
+	void EntryBase::PurgeMessages (const QDateTime& before)
+	{
+		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	EntryStatus EntryBase::GetStatus (const QString& variant) const

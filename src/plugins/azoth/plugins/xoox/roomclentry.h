@@ -65,6 +65,7 @@ namespace Xoox
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 		QList<QObject*> GetAllMessages () const;
+		void PurgeMessages (const QDateTime&);
 		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
