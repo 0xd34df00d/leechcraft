@@ -49,7 +49,7 @@ namespace Util
 				continue;
 			}
 			if (msg->GetDateTime () < before)
-				messages.removeAt (0);
+				delete messages.takeAt (0);
 			else
 				break;
 		}
