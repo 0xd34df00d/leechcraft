@@ -46,7 +46,6 @@ namespace Xoox
 		RoomCLEntry *CLEntry_;
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
 		QString Subject_;
-		bool RoomHasBeenEntered_;
 		QString RoomJID_;
 		QString OurNick_;
 		// contains new nicks

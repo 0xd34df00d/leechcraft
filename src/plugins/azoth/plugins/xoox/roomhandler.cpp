@@ -44,7 +44,6 @@ namespace Xoox
 	: Account_ (account)
 	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
 	, CLEntry_ (new RoomCLEntry (this, Account_))
-	, RoomHasBeenEntered_ (false)
 	, RoomJID_ (jid)
 	, OurNick_ (ourNick)
 	{
@@ -283,6 +282,10 @@ namespace Xoox
 	
 	void RoomHandler::HandleNickConflict ()
 	{
+		// The room is already joined, should do nothing special here.
+		if (!Nick2Entry_.isEmpty ())
+			return;
+
 		if (QMessageBox::question (0,
 				tr ("Nickname conflict"),
 				tr ("You have specified a nickname for the conference "
@@ -381,6 +384,9 @@ namespace Xoox
 		Nick2Entry_ [newNick]->SetEntryName (newNick);
 		PendingNickChanges_ << oldNick;
 		PendingNickChanges_ << newNick;
+		
+		if (oldNick == OurNick_)
+			OurNick_ = newNick;
 	}
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
@@ -512,8 +518,6 @@ namespace Xoox
 		QXmppPresence pres;
 		pres.setTo (RoomJID_ + '/' + nick);
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
-
-		OurNick_ = nick;
 	}
 
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
