@@ -223,15 +223,13 @@ namespace Xoox
 	void EntryBase::SetClientInfo (const QString& variant,
 			const QString& node)
 	{
-		if (node.isEmpty ())
-			return;
-
 		QString type = Util::GetClientIDName (node);
 		if (type.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown client type for"
-					<< node;
+			if (!node.isEmpty ())
+				qWarning () << Q_FUNC_INFO
+						<< "unknown client type for"
+						<< node;
 			type = "unknown";
 		}
 		Variant2ClientInfo_ [variant] ["client_type"] = type;
@@ -239,9 +237,10 @@ namespace Xoox
 		QString name = Util::GetClientHRName (node);
 		if (name.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown client name for"
-					<< node;
+			if (!node.isEmpty ())
+				qWarning () << Q_FUNC_INFO
+						<< "unknown client name for"
+						<< node;
 			name = "Unknown";
 		}
 		Variant2ClientInfo_ [variant] ["client_name"] = name;
