@@ -509,11 +509,11 @@ namespace Xoox
 
 	void RoomHandler::SetOurNick (const QString& nick)
 	{
-		OurNick_ = nick;
+		QXmppPresence pres;
+		pres.setTo (RoomJID_ + '/' + nick);
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
 
-		QXmppMucAdminIq::Item item;
-		item.setNick (nick);
-		Account_->GetClientConnection ()->Update (item, RoomJID_);
+		OurNick_ = nick;
 	}
 
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
