@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="GMail Notifier" />
+		<groupbox>
+			<label value="Login settings" />
+			<item type="lineedit" property="Login">
+				<label value="Login:" />
+			</item>
+			<item type="lineedit" property="Password">
+				<label value="Password:" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

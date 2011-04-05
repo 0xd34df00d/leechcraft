@@ -112,6 +112,7 @@ OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entiti
 OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" OFF)
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
+OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
 ENABLE_TESTING ()
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -207,7 +208,6 @@ ENDIF (ENABLE_TABPP)
 IF (ENABLE_EISKALTDCPP)
 	ADD_SUBDIRECTORY (plugins/eiskaltdcpp)
 ENDIF (ENABLE_EISKALTDCPP)
-
 IF (ENABLE_AZOTH)
 	ADD_SUBDIRECTORY (plugins/azoth)
 ENDIF (ENABLE_AZOTH)
@@ -247,6 +247,10 @@ ENDIF (ENABLE_TRANSPARENTARCH)
 IF (ENABLE_JUFFED)
 	ADD_SUBDIRECTORY (plugins/juffed)
 ENDIF (ENABLE_JUFFED)
+
+IF (ENABLE_GMAILNOTIFIER)
+	ADD_SUBDIRECTORY (plugins/gmailnotifier)
+ENDIF (ENABLE_GMAILNOTIFIER)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
