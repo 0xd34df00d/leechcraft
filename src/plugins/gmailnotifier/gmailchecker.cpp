@@ -24,6 +24,7 @@
 #include <QTimer>
 #include <QDomDocument>
 #include <QtDebug>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -72,6 +73,9 @@ namespace GmailNotifier
 
 	void GmailChecker::checkNow ()
 	{
+		if (!XmlSettingsManager::Instance ()->property ("CheckingEnabled").toBool ())
+			return;
+
 		QString error = tr ("Error");
 		error.prepend ("Gmail Notifier: ");
 

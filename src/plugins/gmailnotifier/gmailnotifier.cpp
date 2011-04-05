@@ -43,8 +43,12 @@ namespace GmailNotifier
 		setAuthorization ();
 
 		UpdateTimer_ = new QTimer (this);
-		UpdateTimer_->setInterval (30000);
+		applyInterval ();
 		UpdateTimer_->start ();
+		
+		XmlSettingsManager::Instance ()->RegisterObject ("UpdateInterval",
+				this,
+				"applyInterval");
 
 		connect (UpdateTimer_,
 				SIGNAL (timeout ()),
@@ -107,6 +111,14 @@ namespace GmailNotifier
 	{
 		GmailChecker_->SetAuthSettings (XmlSettingsManager::Instance ()->property ("Login").toString (),
 				XmlSettingsManager::Instance ()->property ("Password").toString ());
+	}
+	
+	void GmailNotifier::applyInterval ()
+	{
+		const int secs = XmlSettingsManager::Instance ()->property ("UpdateInterval").toInt ();
+		UpdateTimer_->stop ();
+		UpdateTimer_->setInterval (secs * 1000);
+		UpdateTimer_->start ();
 	}
 
 	void GmailNotifier::sendMeNotification (const QString& title, const QString& msg)

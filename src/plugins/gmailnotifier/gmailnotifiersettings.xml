@@ -11,5 +11,15 @@
 				<label value="Password:" />
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="Update settings" />
+			<item type="checkbox" property="CheckingEnabled" default="true">
+				<label value="Enable checking" />
+			</item>
+			<item type="spinbox" property="UpdateInterval" default="30" minimum="5" maximum="3600">
+				<label value="Update interval:" />
+				<suffix value=" s" />
+			</item>
+		</groupbox>
 	</page>
 </settings>

@@ -56,6 +56,7 @@ namespace GmailNotifier
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private slots:
 		void setAuthorization ();
+		void applyInterval ();
 		void sendMeNotification (const QString&, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
