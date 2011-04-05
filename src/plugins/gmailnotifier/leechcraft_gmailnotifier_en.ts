@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.0" language="en_US">
 <context>
     <name>LeechCraft::GmailNotifier::GmailChecker</name>
     <message>
@@ -8,52 +8,52 @@
         <location filename="gmailchecker.cpp" line="103"/>
         <location filename="gmailchecker.cpp" line="162"/>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="84"/>
         <source>Username or password not set</source>
-        <translation>Имя пользователя или пароль не установлены</translation>
+        <translation>Username or password not set</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="114"/>
         <source>Cannot parse XML data</source>
-        <translation>Не могу распарсить данные XML</translation>
+        <translation>Cannot parse XML data</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="126"/>
         <source>You have %1 unread conversations</source>
-        <translation>У вас %1 непрочитанных разговоров</translation>
+        <translation>You have %1 unread conversations</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="138"/>
         <source>No subject</source>
-        <translation>Без темы</translation>
+        <translation>No subject</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="141"/>
         <source>No content</source>
-        <translation>Без содержимого</translation>
+        <translation>No content</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="145"/>
         <source>from</source>
-        <translation>от</translation>
+        <translation>from</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="149"/>
         <source>at</source>
-        <translation>в</translation>
+        <translation>at</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="167"/>
         <source>The username or password is incorrect</source>
-        <translation>Имя пользователя или пароль не верны</translation>
+        <translation>The username or password is incorrect</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="169"/>
         <source>Connection timeout</source>
-        <translation>Время ожидания истекло</translation>
+        <translation>Connection timeout</translation>
     </message>
 </context>
 <context>
@@ -61,7 +61,7 @@
     <message>
         <location filename="gmailnotifier.cpp" line="97"/>
         <source>Google mail notification plugin</source>
-        <translation>Модуль уведомлений Google mail</translation>
+        <translation>Google mail notification plugin</translation>
     </message>
 </context>
 <context>
@@ -69,42 +69,42 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>GMail Notifier</source>
-        <translation></translation>
+        <translation>GMail Notifier</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Login settings</source>
-        <translation>Настройки входа</translation>
+        <translation>Login settings</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Login:</source>
-        <translation>Имя пользователя:</translation>
+        <translation>Login:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Password:</source>
-        <translation>Пароль:</translation>
+        <translation>Password:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Update settings</source>
-        <translation>Настройки обновления</translation>
+        <translation>Update settings</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Enable checking</source>
-        <translation>Включить проверку</translation>
+        <translation>Enable checking</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Update interval:</source>
-        <translation>Интервал обновлений:</translation>
+        <translation>Update interval:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source> s</source>
-        <translation> с</translation>
+        <translation> s</translation>
     </message>
 </context>
 </TS>
