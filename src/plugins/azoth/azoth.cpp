@@ -176,6 +176,13 @@ namespace Azoth
 	void Plugin::newTabRequested ()
 	{
 	}
+	
+	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
+	{
+		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
+		TransferJobManager *mgr = Core::Instance ().GetTransferJobManager ();
+		mgr->SelectionChanged (si.model () == mgr->GetSummaryModel () ? si : QModelIndex ());
+	}
 }
 }
 

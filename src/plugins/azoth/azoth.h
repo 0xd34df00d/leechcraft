@@ -69,6 +69,7 @@ namespace Azoth
 		QMap<QString, QList<QAction*> > GetMenuActions () const;
 	public slots:
 		void newTabRequested ();
+		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

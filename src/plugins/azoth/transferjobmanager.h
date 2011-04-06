@@ -21,10 +21,12 @@
 #include "interfaces/itransfermanager.h"
 #include <QObject>
 #include <QHash>
+#include <QModelIndex>
 
 class QStandardItemModel;
 class QStandardItem;
 class QAbstractItemModel;
+class QToolBar;
 
 namespace LeechCraft
 {
@@ -46,11 +48,16 @@ namespace Azoth
 		ObjectDictionary_t Object2Progress_;
 		
 		QHash<QString, QObjectList> Entry2Incoming_;
+		
+		QModelIndex Selected_;
+		QToolBar *ReprBar_;
 	public:
 		TransferJobManager (QObject* = 0);
 
 		void AddAccountManager (QObject*);
 		QObjectList GetPendingIncomingJobsFor (const QString&);
+		
+		void SelectionChanged (const QModelIndex&);
 
 		void HandleJob (QObject*);
 		void AcceptJob (QObject*, QString);
@@ -64,6 +71,7 @@ namespace Azoth
 		void handleXferError (TransferError, const QString&);
 		void handleStateChanged (TransferState);
 		void handleXferProgress (qint64, qint64);
+		void handleAbortAction ();
 	signals:
 		void jobNoLongerOffered (QObject*);
 	};
