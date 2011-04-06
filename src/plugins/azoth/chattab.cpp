@@ -163,26 +163,16 @@ namespace Azoth
 	{
 		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
 		if (data.isEmpty ())
-		{
-			QFile file (":/plugins/azoth/resources/html/viewcontents.html");
-			if (!file.open (QIODevice::ReadOnly))
-				qWarning () << Q_FUNC_INFO
-						<< "could not open resource file"
-						<< file.errorString ();
-			else
-				data = file.readAll ();
-		}
+			data = tr ("<h1 style='color:red;'>Unable to load style, "
+					"please check you've enabled at least one styles plugin.</h1>");
 		
-		if (!data.isEmpty ())
-		{
-			data.replace ("BACKGROUNDCOLOR",
-					BgColor_.name ());
-			data.replace ("FOREGROUNDCOLOR",
-					QApplication::palette ().color (QPalette::Text).name ());
-			data.replace ("LINKCOLOR",
-					QApplication::palette ().color (QPalette::Link).name ());
-			Ui_.View_->setHtml (data);
-		}
+		data.replace ("BACKGROUNDCOLOR",
+				BgColor_.name ());
+		data.replace ("FOREGROUNDCOLOR",
+				QApplication::palette ().color (QPalette::Text).name ());
+		data.replace ("LINKCOLOR",
+				QApplication::palette ().color (QPalette::Link).name ());
+		Ui_.View_->setHtml (data);
 		
 		GenerateColors ();
 
