@@ -88,8 +88,7 @@ namespace StandardStyles
 		QString body = Proxy_->FormatBody (msg->GetBody (), msg->GetObject ());
 
 		QString divClass;
-		QString string = QString ("%1 ")
-				.arg (Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ()));
+		QString string = Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ());
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
