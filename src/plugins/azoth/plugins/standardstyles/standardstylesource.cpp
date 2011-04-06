@@ -173,7 +173,6 @@ namespace StandardStyles
 		if (!isActiveChat &&
 				!HasBeenAppended_ [frame])
 		{
-			QWebElement elem = frame->findFirstElement ("body");
 			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
 			if (hr.isNull ())
 				elem.appendInside ("<hr class=\"lastSeparator\" />");
