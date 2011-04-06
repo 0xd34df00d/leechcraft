@@ -420,7 +420,10 @@ namespace Xoox
 					IMessage::MSTOther);
 			}
 			else if (!nick.isEmpty ())
-				message = new RoomPublicMessage (msg, CLEntry_, entry);
+			{
+				if (!msg.body ().isEmpty ())
+					message = new RoomPublicMessage (msg, CLEntry_, entry);
+			}
 			else
 				message = new RoomPublicMessage (msg.body (),
 					IMessage::DIn,
