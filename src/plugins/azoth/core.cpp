@@ -33,6 +33,7 @@
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/categoryselector.h>
+#include <plugininterface/notificationactionhandler.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -46,7 +47,6 @@
 #include "proxyobject.h"
 #include "xmlsettingsmanager.h"
 #include "joinconferencedialog.h"
-#include "notificationactionhandler.h"
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
 
@@ -1890,8 +1890,8 @@ namespace Azoth
 				Entity e = Util::MakeNotification ("Azoth",
 						msgString,
 						PInfo_);
-				NotificationActionHandler *nh =
-						new NotificationActionHandler (e, this);
+				Util::NotificationActionHandler *nh =
+						new Util::NotificationActionHandler (e, this);
 				nh->AddFunction (tr ("Open chat"),
 						boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
 								ChatTabsManager_,
@@ -1964,8 +1964,8 @@ namespace Azoth
 					.arg (entry->GetEntryName ())
 					.arg (msg);
 		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
-		NotificationActionHandler *nh =
-				new NotificationActionHandler (e, this);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Authorize"),
 				boost::bind (AuthorizeEntry,
 						entry));

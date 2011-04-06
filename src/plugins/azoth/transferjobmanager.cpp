@@ -27,9 +27,9 @@
 #include <QAction>
 #include <interfaces/structures.h>
 #include <plugininterface/util.h>
+#include <plugininterface/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
 #include "core.h"
-#include "notificationactionhandler.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -261,8 +261,8 @@ namespace Azoth
 					.arg (Util::MakePrettySize (job->GetSize ()))
 					.arg (GetContactName (id)),
 				PInfo_);
-		NotificationActionHandler *nh =
-				new NotificationActionHandler (e, this);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction ("Accept",
 				boost::bind (&TransferJobManager::AcceptJob, this, jobObj, QString ()));
 		nh->AddFunction ("Deny",

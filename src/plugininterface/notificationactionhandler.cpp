@@ -16,33 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_NOTIFICATIONACTIONHANDLER_H
-#define PLUGINS_AZOTH_NOTIFICATIONACTIONHANDLER_H
-#include <boost/function.hpp>
-#include <QObject>
-#include <interfaces/structures.h>
+#include "notificationactionhandler.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-	class NotificationActionHandler : public QObject
+	NotificationActionHandler::NotificationActionHandler (Entity& e, QObject *parent)
+	: QObject (parent)
+	, Entity_ (e)
 	{
-		Q_OBJECT
+		Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject*> (this);
+		Entity_.Additional_ ["HandlingObjectXferOwnership"] = true;
+	}
 
-		Entity& Entity_;
-	public:
-		typedef boost::function<void ()> Callback_t;
-	private:
-		QList<QPair<QString, Callback_t> > ActionName2Callback_;
-	public:
-		NotificationActionHandler (Entity&, QObject* = 0);
+	void NotificationActionHandler::AddFunction (const QString& name, NotificationActionHandler::Callback_t callback)
+	{
+		ActionName2Callback_ << qMakePair (name, callback);
+		const QStringList& sl = Entity_.Additional_ ["NotificationActions"].toStringList ();
+		Entity_.Additional_ ["NotificationActions"] = sl + QStringList (name);
+	}
 
-		void AddFunction (const QString&, Callback_t);
-	public slots:
-		void notificationActionTriggered (int);
-	};
+	void NotificationActionHandler::notificationActionTriggered (int idx)
+	{
+		ActionName2Callback_.at (idx).second ();
+	}
 }
 }
-
-#endif

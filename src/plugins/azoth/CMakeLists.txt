@@ -44,7 +44,6 @@ SET (SRCS
 	contactlistdelegate.cpp
 	addcontactdialog.cpp
 	joinconferencedialog.cpp
-	notificationactionhandler.cpp
 	groupeditordialog.cpp
 	transferjobmanager.cpp
 	addaccountwizardfirstpage.cpp
@@ -66,7 +65,6 @@ SET (HEADERS
 	contactlistdelegate.h
 	addcontactdialog.h
 	joinconferencedialog.h
-	notificationactionhandler.h
 	groupeditordialog.h
 	transferjobmanager.h
 	addaccountwizardfirstpage.h
