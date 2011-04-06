@@ -40,17 +40,17 @@ namespace NativeEmoticons
 	
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Azoth.StandardStyles";
+		return "org.LeechCraft.Azoth.NativeEmoticons";
 	}
 	
 	QString Plugin::GetName () const
 	{
-		return "Azoth StandardStyles";
+		return "Azoth NativeEmoticons";
 	}
 	
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for standard Azoth chat styles");
+		return tr ("Support for native Azoth emoticons packs");
 	}
 	
 	QIcon Plugin::GetIcon () const
