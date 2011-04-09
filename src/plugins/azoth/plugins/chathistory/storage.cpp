@@ -46,8 +46,7 @@ namespace ChatHistory
 			throw std::runtime_error ("unable to open Azoth history database");
 		}
 
-		if (!DB_->tables ().contains ("azoth_history"))
-			InitializeTables ();
+		InitializeTables ();
 
 		UserSelector_ = QSqlQuery (*DB_);
 		UserSelector_.prepare ("SELECT Id, EntryID FROM azoth_users");
@@ -65,7 +64,7 @@ namespace ChatHistory
 		MessageDumper_.prepare ("INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type) "
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
-		UsersForAccountGetter_.prepare ("SELECT DISTINCT EntryID FROM azoth_users, azoth_history "
+		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_history.Id, EntryID FROM azoth_users, azoth_history "
 				"WHERE azoth_history.Id = azoth_users.Id AND AccountID = :account_id;");
 		HistoryGetter_ = QSqlQuery (*DB_);
 		HistoryGetter_.prepare ("SELECT Date, Direction, Message, Variant, Type "
@@ -75,7 +74,12 @@ namespace ChatHistory
 				"ORDER BY Date DESC LIMIT :limit OFFSET :offset;");
 		HistoryClearer_ = QSqlQuery (*DB_);
 		HistoryClearer_.prepare ("DELETE FROM azoth_history WHERE Id = :entry_id AND AccountID = :account_id;");
-		
+		EntryCacheGetter_ = QSqlQuery (*DB_);
+		EntryCacheGetter_.prepare ("SELECT VisibleName FROM azoth_entrycache WHERE Id = :id;");
+		EntryCacheSetter_ = QSqlQuery (*DB_);
+		EntryCacheSetter_.prepare ("INSERT INTO azoth_entrycache (Id, VisibleName) "
+				"VALUES (:id, :visible_name);");
+
 		try
 		{
 			Users_ = GetUsers ();
@@ -85,7 +89,7 @@ namespace ChatHistory
 			qWarning () << Q_FUNC_INFO
 					<< "unable to get saved users, we would be a bit more inefficient";
 		}
-		
+
 		try
 		{
 			Accounts_ = GetAccounts ();
@@ -113,16 +117,16 @@ namespace ChatHistory
 		}
 
 		QSqlQuery query (*DB_);
-		QStringList queries;
-		queries << "CREATE TABLE azoth_users ("
+		QMap<QString, QString> table2query;
+		table2query ["azoth_users"] = "CREATE TABLE azoth_users ("
 					"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					"EntryID TEXT "
-					");"
-				<< "CREATE TABLE azoth_accounts ("
+					");";
+		table2query ["azoth_accounts"] = "CREATE TABLE azoth_accounts ("
 					"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 					"AccountID TEXT "
-					");"
-				<< "CREATE TABLE azoth_history ("
+					");";
+		table2query ["azoth_history"] = "CREATE TABLE azoth_history ("
 					"Id INTEGER, "
 					"AccountId INTEGER, "
 					"Date DATETIME, "
@@ -131,12 +135,23 @@ namespace ChatHistory
 					"Variant TEXT, "
 					"Type INTEGER, "
 					"UNIQUE (Id, AccountId, Date, Direction, Message, Variant, Type) ON CONFLICT IGNORE);";
-		Q_FOREACH (const QString& queryStr, queries)
+		table2query ["azoth_entrycache"] = "CREATE TABLE azoth_entrycache ("
+					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id), "
+					"VisibleName TEXT "
+					");";
+		const QStringList& tables = DB_->tables ();
+		Q_FOREACH (const QString& table, table2query.keys ())
+		{
+			if (tables.contains (table))
+				continue;
+			
+			const QString& queryStr = table2query [table];
 			if (!query.exec (queryStr))
 			{
 				Util::DBLock::DumpError (query);
 				throw std::runtime_error ("Unable to create tables for Azoth history");
 			}
+		}
 		
 		lock.Good ();
 	}
@@ -305,6 +320,11 @@ namespace ChatHistory
 				return;
 			}
 		}
+		
+		EntryCacheSetter_.bindValue (":id", Users_ [entryID]);
+		EntryCacheSetter_.bindValue (":visible_name", entry->GetHumanReadableID ());
+		if (!EntryCacheSetter_.exec ())
+			Util::DBLock::DumpError (EntryCacheSetter_);
 
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		const QString& accountID = account->GetAccountID ();
@@ -385,12 +405,22 @@ namespace ChatHistory
 		}
 		
 		QStringList result;
+		QStringList cachedNames;
 		while (UsersForAccountGetter_.next ())
-			result << UsersForAccountGetter_.value (0).toString ();
-		
-		qDebug () << accountId << Accounts_ << result;
-		
-		emit gotUsersForAccount (result, accountId);
+		{
+			const int id = UsersForAccountGetter_.value (0).toInt ();
+			result << UsersForAccountGetter_.value (1).toString ();
+			
+			EntryCacheGetter_.bindValue (":id", id);
+			if (!EntryCacheGetter_.exec ())
+				Util::DBLock::DumpError (EntryCacheGetter_);
+			
+			EntryCacheGetter_.next ();
+			cachedNames << EntryCacheGetter_.value (0).toString ();
+		}
+		EntryCacheGetter_.finish ();
+
+		emit gotUsersForAccount (result, accountId, cachedNames);
 	}
 	
 	void Storage::getChatLogs (const QString& accountId,
