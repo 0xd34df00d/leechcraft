@@ -2351,6 +2351,25 @@ namespace Azoth
 					<< sender ();
 			return;
 		}
+		
+		if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+		{
+			ChatTabsManager_->CloseChat (entry);
+			Q_FOREACH (QObject *partObj, mucEntry->GetParticipants ())
+			{
+				ICLEntry *partEntry = qobject_cast<ICLEntry*> (partObj);
+				if (!partEntry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cast"
+							<< partObj
+							<< "to ICLEntry";
+					continue;
+				}
+				
+				ChatTabsManager_->CloseChat (partEntry);
+			}
+		}
 
 		mucEntry->Leave ();
 	}
