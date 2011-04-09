@@ -106,7 +106,9 @@ namespace Azoth
 			CLREntryObject,
 			CLREntryType,
 			CLREntryCategory,
-			CLRUnreadMsgCount
+			CLRUnreadMsgCount,
+			CLRRole,
+			CLRAffiliation
 		};
 
 		enum CLEntryType
@@ -419,6 +421,13 @@ namespace Azoth
 		/** Handles the event of groups change in plugin.
 		 */
 		void handleEntryGroupsChanged (QStringList);
+		
+		/** Handles the event of permissions change in entry from plugin.
+		 * 
+		 * If the passed entry is not NULL, it will be used, otherwise
+		 * sender() will be used.
+		 */
+		void handleEntryPermsChanged (ICLEntry *entry = 0);
 
 		/** Handles the message receival from contact list entries.
 		 */

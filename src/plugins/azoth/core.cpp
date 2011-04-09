@@ -668,6 +668,10 @@ namespace Azoth
 				this,
 				SLOT (handleEntryGroupsChanged (const QStringList&)));
 		connect (clEntry->GetObject (),
+				SIGNAL (permsChanged ()),
+				this,
+				SLOT (handleEntryPermsChanged ()));
+		connect (clEntry->GetObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
@@ -689,6 +693,8 @@ namespace Azoth
 			AddEntryTo (clEntry, catItem);
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
+		
+		handleEntryPermsChanged (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
@@ -1793,6 +1799,37 @@ namespace Azoth
 			AddEntryTo (entry, catItem);
 
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
+	}
+	
+	void Core::handleEntryPermsChanged (ICLEntry *suggest)
+	{
+		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "could not be casted to ICLEntry";
+			return;
+		}
+		
+		QObject *entryObj = entry->GetObject ();
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+		if (!mucEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "entry's parent CL entry doesn't implement IMUCEntry"
+					<< entryObj
+					<< entry->GetParentCLEntry ();
+			return;
+		}
+		
+		const IMUCEntry::MUCRole role = mucEntry->GetRole (entryObj);
+		const IMUCEntry::MUCAffiliation aff = mucEntry->GetAffiliation (entryObj);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		{
+			item->setData (role, CLRRole);
+			item->setData (aff, CLRAffiliation);
+		}
 	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
