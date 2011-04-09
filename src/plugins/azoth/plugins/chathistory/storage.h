@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QSqlQuery>
 #include <QHash>
+#include <QVariant>
 
 class QSqlDatabase;
 
@@ -64,7 +65,7 @@ namespace ChatHistory
 		qint32 GetAccountID (const QString&);
 		void AddAccount (const QString& id);
 	public slots:
-		void addMessage (QObject*);
+		void addMessage (const QVariantMap&);
 		void getOurAccounts ();
 		void getUsersForAccount (const QString&);
 		void getChatLogs (const QString& accountId,

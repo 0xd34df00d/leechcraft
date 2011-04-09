@@ -270,26 +270,8 @@ namespace ChatHistory
 		}
 	}
 	
-	void Storage::addMessage (QObject *msgObj)
+	void Storage::addMessage (const QVariantMap& data)
 	{
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (msg->GetBody ().isEmpty ())
-			return;
-		
-		if (msg->GetDirection () == IMessage::DOut &&
-				msg->GetMessageType () == IMessage::MTMUCMessage)
-			return;
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "message's other part doesn't implement ICLEntry"
-					<< msg->GetObject ()
-					<< msg->OtherPart ();
-			return;
-		}
-		
 		Util::DBLock lock (*DB_);
 		try
 		{
@@ -303,7 +285,7 @@ namespace ChatHistory
 			return;
 		}
 		
-		const QString& entryID = entry->GetEntryID ();
+		const QString& entryID = data ["EntryID"].toString ();
 
 		if (!Users_.contains (entryID))
 		{
@@ -322,12 +304,11 @@ namespace ChatHistory
 		}
 		
 		EntryCacheSetter_.bindValue (":id", Users_ [entryID]);
-		EntryCacheSetter_.bindValue (":visible_name", entry->GetHumanReadableID ());
+		EntryCacheSetter_.bindValue (":visible_name", data ["VisibleName"]);
 		if (!EntryCacheSetter_.exec ())
 			Util::DBLock::DumpError (EntryCacheSetter_);
 
-		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		const QString& accountID = account->GetAccountID ();
+		const QString& accountID = data ["AccountID"].toString ();
 		if (!Accounts_.contains (accountID))
 		{
 			try
@@ -346,13 +327,12 @@ namespace ChatHistory
 
 		MessageDumper_.bindValue (":id", Users_ [entryID]);
 		MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
-		MessageDumper_.bindValue (":date", msg->GetDateTime ());
-		MessageDumper_.bindValue (":direction",
-				msg->GetDirection () == IMessage::DIn ? "IN" : "OUT");
-		MessageDumper_.bindValue (":message", msg->GetBody ());
-		MessageDumper_.bindValue (":variant", msg->GetOtherVariant ());
+		MessageDumper_.bindValue (":date", data ["DateTime"]);
+		MessageDumper_.bindValue (":direction", data ["Direction"]);
+		MessageDumper_.bindValue (":message", data ["Body"]);
+		MessageDumper_.bindValue (":variant", data ["OtherVariant"]);
 
-		switch (msg->GetMessageType ())
+		switch (data ["MessageType"].toInt ())
 		{
 		case IMessage::MTChatMessage:
 			MessageDumper_.bindValue (":type", "CHAT");
