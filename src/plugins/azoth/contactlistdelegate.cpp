@@ -249,6 +249,17 @@ namespace Azoth
 					icon.pixmap (iconSize, iconSize));
 			currentShift += iconSize + CPadding;
 		}
+		
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		{
+			const QModelIndex& next = index.model ()->index (index.row () + 1, 0, index.parent ());
+			if (next.isValid () &&
+					next.data (Core::CLRRole) != index.data (Core::CLRRole))
+			{
+				p.setBrush (QColor (option.palette.color (QPalette::Text)));
+				p.drawLine (r.bottomLeft (), r.bottomRight ());
+			}
+		}
 
 		painter->drawPixmap (option.rect, pixmap);
 	}
