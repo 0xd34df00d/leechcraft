@@ -519,6 +519,13 @@ namespace Azoth
 		 */
 		virtual void chatPartStateChanged (const ChatPartState& state,
 				const QString& variant) = 0;
+				
+		/** @brief This signal should be emitted if it's a MUC
+		 * participant and his role/affiliation changes.
+		 * 
+		 * @note This function is expected to be a signal in subclasses.
+		 */
+		virtual void permsChanged () = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);
