@@ -196,7 +196,7 @@ namespace Azoth
 		const QList<QIcon>& clientIcons = isMUC || !ShowClientIcons_ ?
 				QList<QIcon> () :
 				Core::Instance ().GetClientIconForEntry (entry).values ();
-		const int clientsIconsWidth = isMUC|| !ShowClientIcons_ ?
+		const int clientsIconsWidth = isMUC || !ShowClientIcons_ ?
 				0 :
 				clientIcons.size () * (iconSize + CPadding) - CPadding;
 		/* text for width is total width minus shift of the text from
