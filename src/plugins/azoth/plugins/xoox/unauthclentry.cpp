@@ -31,7 +31,7 @@ namespace Xoox
 	, JID_ (jid)
 	, Account_ (accountObj)
 	{
-		SetStatus (EntryStatus (SOffline, str), QString ());
+		SetStatus (EntryStatus (SOnline, str), QString ());
 	}
 
 	QObject* UnauthCLEntry::GetParentAccount () const
