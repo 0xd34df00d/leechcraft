@@ -193,10 +193,19 @@ namespace Azoth
 
 		const int textShift = 2 * CPadding + iconSize + unreadSpace;
 
-		const QList<QIcon>& clientIcons = isMUC || !ShowClientIcons_ ?
+		QList<QIcon> clientIcons = isMUC || !ShowClientIcons_ ?
 				QList<QIcon> () :
 				Core::Instance ().GetClientIconForEntry (entry).values ();
-		const int clientsIconsWidth = isMUC || !ShowClientIcons_ ?
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		{
+			const int num = index.data (Core::CLRAffiliation).toInt ();
+			const IMUCEntry::MUCAffiliation aff =
+					static_cast<IMUCEntry::MUCAffiliation> (num);
+			const QIcon& icon = Core::Instance ().GetAffIcon (aff);
+			if (!icon.isNull ())
+				clientIcons.prepend (icon);
+		}
+		const int clientsIconsWidth = clientIcons.isEmpty () ?
 				0 :
 				clientIcons.size () * (iconSize + CPadding) - CPadding;
 		/* text for width is total width minus shift of the text from

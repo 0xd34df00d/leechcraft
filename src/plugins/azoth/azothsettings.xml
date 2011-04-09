@@ -10,16 +10,22 @@
 					<label value="Oxygen" />
 				</option>
 			</item>
+			<item type="combobox" property="SmileIcons" mayHaveDataSource="true">
+				<label value="Smiles:" />
+				<option name="None" default="true">
+					<label value="None" />
+				</option>
+			</item>
 			<item type="combobox" property="ClientIcons" mayHaveDataSource="true">
 				<label value="Client icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="SmileIcons" mayHaveDataSource="true">
-				<label value="Smiles:" />
-				<option name="None" default="true">
-					<label value="None" />
+			<item type="combobox" property="AffIcons" mayHaveDataSource="true">
+				<label value="Affiliation icons:" />
+				<option name="default" default="true">
+					<label value="default" />
 				</option>
 			</item>
 			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true">

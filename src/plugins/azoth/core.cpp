@@ -96,6 +96,7 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
+	, AffIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
@@ -119,6 +120,9 @@ namespace Azoth
 		ClientIconLoader_->AddLocalPrefix ();
 		ClientIconLoader_->AddGlobalPrefix ();
 		
+		AffIconLoader_->AddLocalPrefix ();
+		AffIconLoader_->AddGlobalPrefix ();
+		
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
@@ -138,6 +142,7 @@ namespace Azoth
 	{
 		StatusIconLoader_.reset ();
 		ClientIconLoader_.reset ();
+		AffIconLoader_.reset ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -158,6 +163,8 @@ namespace Azoth
 			return StatusIconLoader_.get ();
 		case RLTClientIconLoader:
 			return ClientIconLoader_.get ();
+		case RLTAffIconLoader:
+			return AffIconLoader_.get ();
 		}
 	}
 	
@@ -892,6 +899,38 @@ namespace Azoth
 				<< filename + ".jpg";
 
 		const QString& path = StatusIconLoader_->GetPath (variants);
+		return QIcon (path);
+	}
+	
+	QIcon Core::GetAffIcon (IMUCEntry::MUCAffiliation aff) const
+	{
+		QString iconName;
+		switch (aff)
+		{
+		case IMUCEntry::MUCAInvalid:
+		case IMUCEntry::MUCANone:
+			iconName = "noaffiliation";
+			break;
+		case IMUCEntry::MUCAOutcast:
+			iconName = "outcast";
+			break;
+		case IMUCEntry::MUCAMember:
+			iconName = "member";
+			break;
+		case IMUCEntry::MUCAAdmin:
+			iconName = "admin";
+			break;
+		case IMUCEntry::MUCAOwner:
+			iconName = "owner";
+			break;
+		}
+		
+		QString filename = XmlSettingsManager::Instance ()
+				.property ("AffIcons").toString ();
+		filename += '/';
+		filename += iconName;
+		
+		const QString& path = AffIconLoader_->GetIconPath (filename);
 		return QIcon (path);
 	}
 

@@ -54,6 +54,9 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("ClientIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
 					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("AffIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTAffIconLoader)->
+					GetSubElemModel ());
 
 		QMainWindow *mainWin = proxy->GetMainWindow ();
 		QDockWidget *dw = new QDockWidget (mainWin);

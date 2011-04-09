@@ -90,6 +90,7 @@ namespace Azoth
 
 		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
+		boost::shared_ptr<Util::ResourceLoader> AffIconLoader_;
 		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource> > SmilesOptionsModel_;
 		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
 
@@ -127,7 +128,8 @@ namespace Azoth
 		enum ResourceLoaderType
 		{
 			RLTStatusIconLoader,
-			RLTClientIconLoader
+			RLTClientIconLoader,
+			RLTAffIconLoader
 		};
 
 		enum CLEntryActionArea
@@ -210,6 +212,11 @@ namespace Azoth
 		 * contact list entry state.
 		 */
 		QIcon GetIconForState (State state) const;
+		
+		/** Returns an icon from the current iconset for the given
+		 * affiliation.
+		 */
+		QIcon GetAffIcon (IMUCEntry::MUCAffiliation aff) const;
 
 		/** @brief Returns icons for the given CL entry.
 		 *
