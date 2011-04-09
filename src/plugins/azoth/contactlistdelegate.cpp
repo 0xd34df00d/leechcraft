@@ -21,6 +21,7 @@
 #include <QPixmap>
 #include <QApplication>
 #include <QAbstractProxyModel>
+#include <QTreeView>
 #include "interfaces/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -32,8 +33,9 @@ namespace Azoth
 	const int CContactShift = 20;
 	const int CPadding = 2;
 
-	ContactListDelegate::ContactListDelegate (QObject* parent)
+	ContactListDelegate::ContactListDelegate (QTreeView* parent)
 	: QStyledItemDelegate (parent)
+	, View_ (parent)
 	{
 		handleShowAvatarsChanged ();
 		handleShowClientIconsChanged ();
@@ -61,6 +63,7 @@ namespace Azoth
 			DrawCategory (painter, o, index);
 			break;
 		case Core::CLETContact:
+			o.rect.adjust (-1.2 * View_->indentation (), 0, 0, 0);
 			DrawContact (painter, o, index);
 			break;
 		}

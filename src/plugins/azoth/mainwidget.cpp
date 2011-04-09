@@ -48,7 +48,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.BottomLayout_->insertWidget (0, MenuButton_);
 
-		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (this));
+		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 

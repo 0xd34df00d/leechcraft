@@ -20,6 +20,8 @@
 #define PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
 #include <QStyledItemDelegate>
 
+class QTreeView;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -30,8 +32,9 @@ namespace Azoth
 		
 		bool ShowAvatars_;
 		bool ShowClientIcons_;
+		QTreeView *View_;
 	public:
-		ContactListDelegate (QObject* = 0);
+		ContactListDelegate (QTreeView* = 0);
 		virtual void paint (QPainter*,
 				const QStyleOptionViewItem&, const QModelIndex&) const;
 		virtual QSize sizeHint (const QStyleOptionViewItem&,
