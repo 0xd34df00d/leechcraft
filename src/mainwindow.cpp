@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@
 #include <QShortcut>
 #include <QClipboard>
 #include <QMenu>
+#include <QSplashScreen>
+#include <QBitmap>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/iactionsexporter.h>
@@ -68,9 +70,18 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , Glance_ (0)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
+, Splash_ (new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
+		Qt::WindowStaysOnTopHint | Qt::SplashScreen))
 {
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
+
+	Splash_->setMask (QPixmap (":/resources/images/splashscreen.png").mask ());
+	Splash_->show ();
+	Splash_->setUpdatesEnabled (true);
+	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);
+	QApplication::processEvents ();
+
 	InitializeInterface ();
 
 	connect (qApp,
@@ -78,6 +89,10 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			this,
 			SLOT (handleQuit ()));
 
+	connect (Core::Instance ().GetPluginManager (),
+			SIGNAL (loadProgress (const QString&)),
+			this,
+			SLOT (handleLoadProgress (const QString&)));
 	connect (&Core::Instance (),
 			SIGNAL (log (const QString&)),
 			LogToolBox_,
@@ -85,6 +100,8 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
+	
+	Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom);
 
 	connect (Core::Instance ().GetNewTabMenuManager (),
 			SIGNAL (restoreTabActionAdded (QAction*)),
@@ -115,6 +132,8 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 		IsShown_ = false;
 		hide ();
 	}
+	
+	Splash_->finish (this);
 
 	WasMaximized_ = isMaximized ();
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
@@ -780,6 +799,11 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	SetNewTabDataSource ();
 
 	new StartupWizard (this);
+}
+
+void LeechCraft::MainWindow::handleLoadProgress (const QString& str)
+{
+	Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom);
 }
 
 void LeechCraft::MainWindow::SetNewTabDataSource ()

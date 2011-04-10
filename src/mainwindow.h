@@ -34,6 +34,7 @@ class QToolBar;
 class IShortcutProxy;
 class QToolButton;
 class QShortcut;
+class QSplashScreen;
 
 namespace LeechCraft
 {
@@ -72,11 +73,11 @@ namespace LeechCraft
 		QLabel *UploadSpeed_;
 		QLabel *Clock_;
 		Util::GraphWidget *SpeedGraph_;
-		LeechCraft::Util::XmlSettingsDialog *XmlSettingsDialog_;
+		Util::XmlSettingsDialog *XmlSettingsDialog_;
 		SettingsSink *SettingsSink_;
 		ShortcutManager *ShortcutManager_;
 		FancyPopupManager *FancyPopupManager_;
-		LeechCraft::LogToolBox *LogToolBox_;
+		LogToolBox *LogToolBox_;
 		bool IsShown_;
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
@@ -87,6 +88,7 @@ namespace LeechCraft
 		QShortcut *CloseTabShortcut_;
 		const QString DefaultSystemStyleName_;
 		bool IsQuitting_;
+		QSplashScreen *Splash_;
 
 		QMenu *MenuView_;
 		QMenu *MenuTools_;
@@ -138,6 +140,7 @@ namespace LeechCraft
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
 		void updateIconSet ();
 		void doDelayedInit ();
+		void handleLoadProgress (const QString&);
 	private:
 		void SetNewTabDataSource ();
 		void FillTray ();
