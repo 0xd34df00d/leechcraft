@@ -92,6 +92,8 @@ namespace Xoox
 		QTimer *VCardFetchTimer_;
 		
 		int SocketErrorAccumulator_;
+		
+		QList<QXmppMessage> OfflineMsgQueue_;
 	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,

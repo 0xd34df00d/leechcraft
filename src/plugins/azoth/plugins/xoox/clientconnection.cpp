@@ -551,6 +551,11 @@ namespace Xoox
 				entry->SetClientInfo (resource, presences [resource]);
 		}
 		emit gotRosterItems (items);
+		
+		Q_FOREACH (const QXmppMessage& msg, OfflineMsgQueue_)
+			handleMessageReceived (msg);
+
+		OfflineMsgQueue_.clear ();
 	}
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
@@ -687,6 +692,8 @@ namespace Xoox
 				JID2CLEntry_ [jid]->HandleMessage (gm);
 			}
 		}
+		else if (!Client_->rosterManager ().isRosterReceived ())
+			OfflineMsgQueue_ << msg;
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
