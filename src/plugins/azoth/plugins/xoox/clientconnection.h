@@ -36,6 +36,8 @@ class QXmppDiscoveryManager;
 class QXmppTransferManager;
 class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
+class QXmppArchiveManager;
+class QXmppEntityTimeManager;
 
 namespace LeechCraft
 {
@@ -61,6 +63,8 @@ namespace Xoox
 		QXmppTransferManager *XferManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
 		QXmppBookmarkManager *BMManager_;
+		QXmppEntityTimeManager *EntityTimeManager_;
+		QXmppArchiveManager *ArchiveManager_;
 
 		QString OurJID_;
 

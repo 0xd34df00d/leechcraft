@@ -29,6 +29,8 @@
 #include <QXmppTransferManager.h>
 #include <QXmppReconnectionManager.h>
 #include <QXmppBookmarkManager.h>
+#include <QXmppEntityTimeManager.h>
+#include <QXmppArchiveManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -58,6 +60,8 @@ namespace Xoox
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (0)
 	, BMManager_ (new QXmppBookmarkManager (Client_))
+	, EntityTimeManager_ (new QXmppEntityTimeManager)
+	, ArchiveManager_ (new QXmppArchiveManager)
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
@@ -92,6 +96,8 @@ namespace Xoox
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
 		Client_->addExtension (BMManager_);
+		Client_->addExtension (EntityTimeManager_);
+		Client_->addExtension (ArchiveManager_);
 
 		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
