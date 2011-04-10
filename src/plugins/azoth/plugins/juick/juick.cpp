@@ -129,7 +129,7 @@ namespace Juick
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "unable to cast"
-				<< msg->OtherPart();
+				<< msg->OtherPart ()
 				<< "to ICLEntry";
 			return;
 		}
