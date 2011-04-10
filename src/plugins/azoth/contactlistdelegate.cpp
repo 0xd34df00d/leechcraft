@@ -88,12 +88,26 @@ namespace Azoth
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
+
+		const QColor& dark = o.palette.color (QPalette::Dark);
+		const QColor& light = o.palette.color (QPalette::Light);
+		QLinearGradient gr (0, 0, r.width (), 0);
+		gr.setSpread (QGradient::PadSpread);
+		gr.setColorAt (0.00, light);
+		gr.setColorAt (0.25, dark.lighter (120));
+		gr.setColorAt (0.50, dark);
+		gr.setColorAt (0.75, dark.lighter (120));
+		gr.setColorAt (1.00, light);
+		painter->fillRect (QRect (r.topLeft (), r.topRight ()), gr);
+		painter->fillRect (QRect (r.bottomLeft (), r.bottomRight ()), gr);
 		
-		QStyle *style = o.widget ?
-				o.widget->style () :
-				QApplication::style ();
-		style->drawPrimitive (QStyle::PE_FrameButtonBevel,
-					&o, painter, o.widget);
+		QLinearGradient vGr (0, 0, 0, r.height ());
+		vGr.setSpread (QGradient::PadSpread);
+		vGr.setColorAt (0.00, light);
+		vGr.setColorAt (0.50, dark);
+		vGr.setColorAt (1.00, light);
+		painter->fillRect (QRect (r.topLeft (), r.bottomLeft ()), vGr);
+		painter->fillRect (QRect (r.topRight (), r.bottomRight ()), vGr);
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
