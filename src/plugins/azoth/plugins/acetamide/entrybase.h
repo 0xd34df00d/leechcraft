@@ -74,6 +74,7 @@ namespace Acetamide
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
+		void permsChanged ();
 	};
 };
 };

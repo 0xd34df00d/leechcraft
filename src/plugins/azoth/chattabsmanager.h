@@ -43,6 +43,7 @@ namespace Azoth
 
 		void OpenChat (const QModelIndex&);
 		void OpenChat (const ICLEntry*);
+		void CloseChat (const ICLEntry*);
 		bool IsActiveChat (const ICLEntry*) const;
 		void UpdateEntryMapping (const QString&, QObject*);
 		void SetChatEnabled (const QString&, bool);

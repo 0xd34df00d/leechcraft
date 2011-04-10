@@ -79,7 +79,7 @@ namespace Acetamide
 
 	QList<QObject*> ClientConnection::GetChannelCLEntries (const QString& channelKey) const
 	{
-		ChannelHandlers_.value (channelKey)->GetParticipants ();
+		return ChannelHandlers_.value (channelKey)->GetParticipants ();
 	}
 
 	IrcAccount* ClientConnection::GetAccount () const

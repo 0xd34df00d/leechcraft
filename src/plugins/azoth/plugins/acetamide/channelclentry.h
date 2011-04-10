@@ -36,8 +36,8 @@ namespace Acetamide
 	class ChannelHandler;
 	
 	class ChannelCLEntry : public QObject
-							, public ICLEntry
-							, public IMUCEntry
+						 , public ICLEntry
+						 , public IMUCEntry
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
@@ -107,6 +107,7 @@ namespace Acetamide
 		void participantAffiliationChanged (QObject*, MUCAffiliation);
 		void participantRoleChanged (QObject*, MUCRole);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
+		void permsChanged ();
 	};
 };
 };

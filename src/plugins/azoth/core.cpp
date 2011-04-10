@@ -96,6 +96,7 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
+	, AffIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
@@ -119,6 +120,9 @@ namespace Azoth
 		ClientIconLoader_->AddLocalPrefix ();
 		ClientIconLoader_->AddGlobalPrefix ();
 		
+		AffIconLoader_->AddLocalPrefix ();
+		AffIconLoader_->AddGlobalPrefix ();
+		
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
@@ -138,6 +142,7 @@ namespace Azoth
 	{
 		StatusIconLoader_.reset ();
 		ClientIconLoader_.reset ();
+		AffIconLoader_.reset ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -158,6 +163,8 @@ namespace Azoth
 			return StatusIconLoader_.get ();
 		case RLTClientIconLoader:
 			return ClientIconLoader_.get ();
+		case RLTAffIconLoader:
+			return AffIconLoader_.get ();
 		}
 	}
 	
@@ -668,6 +675,10 @@ namespace Azoth
 				this,
 				SLOT (handleEntryGroupsChanged (const QStringList&)));
 		connect (clEntry->GetObject (),
+				SIGNAL (permsChanged ()),
+				this,
+				SLOT (handleEntryPermsChanged ()));
+		connect (clEntry->GetObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
@@ -689,6 +700,8 @@ namespace Azoth
 			AddEntryTo (clEntry, catItem);
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
+		
+		handleEntryPermsChanged (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
@@ -886,6 +899,38 @@ namespace Azoth
 				<< filename + ".jpg";
 
 		const QString& path = StatusIconLoader_->GetPath (variants);
+		return QIcon (path);
+	}
+	
+	QIcon Core::GetAffIcon (IMUCEntry::MUCAffiliation aff) const
+	{
+		QString iconName;
+		switch (aff)
+		{
+		case IMUCEntry::MUCAInvalid:
+		case IMUCEntry::MUCANone:
+			iconName = "noaffiliation";
+			break;
+		case IMUCEntry::MUCAOutcast:
+			iconName = "outcast";
+			break;
+		case IMUCEntry::MUCAMember:
+			iconName = "member";
+			break;
+		case IMUCEntry::MUCAAdmin:
+			iconName = "admin";
+			break;
+		case IMUCEntry::MUCAOwner:
+			iconName = "owner";
+			break;
+		}
+		
+		QString filename = XmlSettingsManager::Instance ()
+				.property ("AffIcons").toString ();
+		filename += '/';
+		filename += iconName;
+		
+		const QString& path = AffIconLoader_->GetIconPath (filename);
 		return QIcon (path);
 	}
 
@@ -1794,6 +1839,37 @@ namespace Azoth
 
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
 	}
+	
+	void Core::handleEntryPermsChanged (ICLEntry *suggest)
+	{
+		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "could not be casted to ICLEntry";
+			return;
+		}
+		
+		QObject *entryObj = entry->GetObject ();
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+		if (!mucEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "entry's parent CL entry doesn't implement IMUCEntry"
+					<< entryObj
+					<< entry->GetParentCLEntry ();
+			return;
+		}
+		
+		const IMUCEntry::MUCRole role = mucEntry->GetRole (entryObj);
+		const IMUCEntry::MUCAffiliation aff = mucEntry->GetAffiliation (entryObj);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		{
+			item->setData (role, CLRRole);
+			item->setData (aff, CLRAffiliation);
+		}
+	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
 	{
@@ -2350,6 +2426,25 @@ namespace Azoth
 					<< "that doesn't implement IMUCEntry"
 					<< sender ();
 			return;
+		}
+		
+		if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+		{
+			ChatTabsManager_->CloseChat (entry);
+			Q_FOREACH (QObject *partObj, mucEntry->GetParticipants ())
+			{
+				ICLEntry *partEntry = qobject_cast<ICLEntry*> (partObj);
+				if (!partEntry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cast"
+							<< partObj
+							<< "to ICLEntry";
+					continue;
+				}
+				
+				ChatTabsManager_->CloseChat (partEntry);
+			}
 		}
 
 		mucEntry->Leave ();

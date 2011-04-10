@@ -95,6 +95,15 @@ namespace Azoth
 				.property ("JumpToNewTabOnOpen").toBool ())
 			emit raiseTab (tab);
 	}
+	
+	void ChatTabsManager::CloseChat (const ICLEntry *entry)
+	{
+		const QString& id = entry->GetEntryID ();
+		if (!Entry2Tab_.contains (id))
+			return;
+		
+		handleNeedToClose (Entry2Tab_ [id]);
+	}
 
 	bool ChatTabsManager::IsActiveChat (const ICLEntry *entry) const
 	{
