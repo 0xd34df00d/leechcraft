@@ -78,7 +78,7 @@ namespace Acetamide
 		void setChannelUseres (const QString&, const QString&);
 		void setSubject (const QString&, const QString&);
 		void handleMessageReceived (const QString&, const QString&, const QString&);
-		void removeServerParticipantEntry (const QString&, const QString&);
+		void removeServerParticipantEntry (QString, const QString&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
