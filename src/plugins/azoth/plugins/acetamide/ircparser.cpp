@@ -243,15 +243,34 @@ namespace Acetamide
 	void IrcParser::CTCPAnswer (const QString& command, const QString& attributs, const QString& nick)
 	{
 		QString cmd;
+		QString version = QString ("%1 %2").arg ("LeechCraft Azoth", LEECHCRAFT_VERSION);
+		QDateTime currentDT = QDateTime::currentDateTime ();
 		if (command.toLower () == "version")
 		{
-			QString version = QString ("%1 %2").arg ("LeechCraft Azoth", LEECHCRAFT_VERSION);
 			cmd = QString ("%1 %2%3").arg ("\001VERSION", version, QChar ('\001'));
 		}
 		else if (command.toLower () == "ping")
-			cmd = QString ("%1 %2%3").arg ("\001PING", QDateTime::currentDateTime ().toTime_t (), QChar ('\001'));
+			cmd = QString ("%1 %2%3")
+					.arg ("\001PING",
+							currentDT.toTime_t (),
+							QChar ('\001'));
 		else if (command.toLower () == "time")
-			cmd = QString ("%1 %2%3").arg ("\001TIME", QDateTime::currentDateTime ().toString ("ddd MMM dd hh:mm:ss yyyy"), QChar ('\001'));
+			cmd = QString ("%1 %2%3")
+					.arg ("\001TIME",
+							currentDT
+								.toString ("ddd MMM dd hh:mm:ss yyyy"),
+							QChar ('\001'));
+		else if (command.toLower () == "time")
+			cmd = QString ("%1 %2%3")
+					.arg ("\001TIME",
+							currentDT
+								.toString ("ddd MMM dd hh:mm:ss yyyy"),
+							QChar ('\001'));
+		else if (command.toLower () == "source")
+			cmd = QString ("%1 %2 - %3%4")
+					.arg ("\001SOURCE",
+							version, "http://www.leechcraft.org",
+							QChar ('\001'));
 
 		QString ctcpCommand = QString ("NOTICE " + nick + " :" + cmd + "\r\n");
 		Core::Instance ().GetSocketManager ()
