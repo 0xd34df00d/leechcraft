@@ -55,9 +55,9 @@ namespace Acetamide
 
 	void IrcParser::UserCommand (const ServerOptions& server)
 	{
-		QString userCmd = QString ("USER " + 
-				server.ServerNicknames_.at (0) + 
-				" 0 * :" + 
+		QString userCmd = QString ("USER " +
+				server.ServerNicknames_.at (0) +
+				" 0 * :" +
 				server.ServerRealName_ + "\r\n");
 
 		Core::Instance ().GetSocketManager ()->
@@ -69,12 +69,12 @@ namespace Acetamide
 		QString nickCmd = QString ("NICK " + server.ServerNicknames_.at (0) + "\r\n");
 		Core::Instance ().GetSocketManager ()->
 				SendCommand (nickCmd, server.ServerName_, server.ServerPort_);
-	} 
+	}
 
 	void IrcParser::JoinChannel (const ChannelOptions& channel)
 	{
 		QString joinCmd = QString ("JOIN " + channel.ChannelName_ + "\r\n");
-		Core::Instance ().GetSocketManager ()->SendCommand (joinCmd, 
+		Core::Instance ().GetSocketManager ()->SendCommand (joinCmd,
 				IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}
 
@@ -86,7 +86,7 @@ namespace Acetamide
 		Core::Instance ().GetSocketManager ()->
 				SendCommand (msg, IrcServer_->GetHost (), IrcServer_->GetPort ());
 
-		IrcServer_->readMessage (IrcServer_->GetNickName (), 
+		IrcServer_->readMessage (IrcServer_->GetNickName (),
 				QList<std::string> () << channel.ChannelName_.toUtf8 ().constData (), mess);
 	}
 
@@ -106,7 +106,7 @@ namespace Acetamide
 
 	void IrcParser::LeaveChannelCommand (const QString& channel)
 	{
-		// TODO leave message 
+		// TODO leave message
 		QString leaveCmd = QString ("PART " + channel + "\r\n");
 		Core::Instance ().GetSocketManager ()->
 				SendCommand (leaveCmd, IrcServer_->GetHost (), IrcServer_->GetPort ());
@@ -193,8 +193,8 @@ namespace Acetamide
 		rule<> hostname = shortname >> *(ch_p ('.') >> shortname);
 		rule<> nickname = (alpha_p | special) >> * (alnum_p | special | ch_p ('-'));
 		rule<> user =  +(ascii - '\r' - '\n' - ' ' - '@' - '\0');
-		rule<> host = lexeme_d [+(anychar_p - ' ')] ; 
-		rule<> nick = lexeme_d [nickname [assign_a (nickStr)] >> !(!(ch_p ('!') 
+		rule<> host = lexeme_d [+(anychar_p - ' ')] ;
+		rule<> nick = lexeme_d [nickname [assign_a (nickStr)] >> !(!(ch_p ('!')
 				>> user) >> ch_p ('@') >> host)];
 		rule<> nospcrlfcl = (anychar_p - '\0' - '\r' - '\n' - ' ' - ':');
 		rule<> lastParam = lexeme_d [ch_p (' ') >> !ch_p (':') >> (*(ch_p (':') | ch_p (' ') | nospcrlfcl)) [assign_a (msgStr)]];
@@ -203,9 +203,9 @@ namespace Acetamide
 		rule<> command = longest_d [(+alpha_p) | (repeat_p (3) [digit_p])][assign_a (commandStr)];
 		rule<> prefix = longest_d [hostname | nick];
 		rule<> reply = (lexeme_d [!(ch_p (':') >> prefix >> ch_p (' '))] >> command >> !params >> eol_p);
-		
-		bool res = parse (message.toUtf8 ().constData (), reply).full; 
-		
+
+		bool res = parse (message.toUtf8 ().constData (), reply).full;
+
 		if (!res)
 		{
 			qWarning () << "input string is not a valide IRC command"
@@ -242,14 +242,18 @@ namespace Acetamide
 
 	void IrcParser::CTCPAnswer (const QString& command, const QString& attributs, const QString& nick)
 	{
+		QString cmd;
 		if (command.toLower () == "version")
 		{
 			QString version = QString ("%1 %2").arg ("LeechCraft Azoth", LEECHCRAFT_VERSION);
-			QString cmd = QString ("%1%2%3").arg ("\001VERSION ", version, QChar ('\001'));
-			QString ctcpCommand = QString ("NOTICE " + nick + " :" + cmd + "\r\n");
-			Core::Instance ().GetSocketManager ()
-					->SendCommand (ctcpCommand, IrcServer_->GetHost (), IrcServer_->GetPort ());
+			cmd = QString ("%1 %2%3").arg ("\001VERSION", version, QChar ('\001'));
 		}
+		else if (command.toLower () == "ping")
+			cmd = QString ("%1 %2%3").arg ("\001PING", QDateTime::currentDateTime ().toTime_t (), QChar ('\001'));
+
+		QString ctcpCommand = QString ("NOTICE " + nick + " :" + cmd + "\r\n");
+		Core::Instance ().GetSocketManager ()
+				->SendCommand (ctcpCommand, IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}
 
 	void IrcParser::pongCommand (const QString&, const QList<std::string>&, const QString& msg)
