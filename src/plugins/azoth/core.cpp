@@ -497,9 +497,9 @@ namespace Azoth
 				result << color;
 				color.setHsvF (Fix (h - d), 1, 0.6, alpha);
 				result << color;
-				color.setHsvF (Fix (h + d), 1, 1, alpha);
+				color.setHsvF (Fix (h + d), 1, 0.9, alpha);
 				result << color;
-				color.setHsvF (Fix (h - d), 1, 1, alpha);
+				color.setHsvF (Fix (h - d), 1, 0.9, alpha);
 				result << color;
 			}
 		}
