@@ -37,7 +37,7 @@ namespace Acetamide
 	class IrcAccount;
 	class IrcMessage;
 	class ClientConnection;
-	
+
 	class IrcServerManager : public QObject
 	{
 		Q_OBJECT
@@ -65,7 +65,7 @@ namespace Acetamide
 	public slots:
 		void changeState (const QString&, ConnectionState);
 		void handleAnswer (const QString&, const QString&);
-		void removeServer (const QString&);
+		void removeServer (QString);
 	};
 };
 };
