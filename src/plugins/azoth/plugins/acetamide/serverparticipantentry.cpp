@@ -28,7 +28,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ServerParticipantEntry::ServerParticipantEntry (const QString& nick,
+	ServerParticipantEntry::ServerParticipantEntry (const QString& nick, 
 			const QString& server, IrcAccount *acc)
 	: Account_ (acc)
 	, EntryBase (acc)
@@ -43,9 +43,9 @@ namespace Acetamide
 				SLOT (closePrivateChat (bool)));
 
 		connect (this,
-				SIGNAL (removeFromList (QString, QString)),
+				SIGNAL (removeFromList (const QString&, const QString&)),
 				Account_->GetClientConnection ().get (),
-				SLOT (removeServerParticipantEntry (QString, QString)));
+				SLOT (removeServerParticipantEntry (const QString&, const QString&)));
 
 		Actions_ << quitAction;
 	}
@@ -112,7 +112,7 @@ namespace Acetamide
 		return QStringList (QString ());
 	}
 
-	QObject* ServerParticipantEntry::CreateMessage (IMessage::MessageType,
+	QObject* ServerParticipantEntry::CreateMessage (IMessage::MessageType, 
 			const QString& , const QString& body)
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,

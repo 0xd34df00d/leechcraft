@@ -54,7 +54,7 @@ namespace Acetamide
 	{
 		qDeleteAll (ChannelHandlers_);
 	}
-
+	
 	QObject* ClientConnection::GetCLEntry (const QString& key, const QString& nick) const
 	{
 		if (ChannelHandlers_.contains (key))
@@ -91,7 +91,7 @@ namespace Acetamide
 	{
 		QString channelId = QString ("%1@%2")
 				.arg (channel.ChannelName_, channel.ServerName_);
-
+		
 		if (ChannelHandlers_.contains (channelId))
 		{
 			Entity e = Util::MakeNotification ("Azoth",
@@ -104,7 +104,7 @@ namespace Acetamide
 		ChannelHandler *ch = new ChannelHandler (server, channel, Account_);
 		Core::Instance ().GetServerManager ()->
 				JoinChannel (server, channel, Account_);
-
+		
 		ChannelHandlers_ [channelId] = ch;
 		if (Account_->GetState () == EntryStatus (SOffline, QString ()))
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
@@ -173,7 +173,7 @@ namespace Acetamide
 		Core::Instance ().GetServerManager ()->SetPrivateMessageOut (acc, msg);
 	}
 
-	ServerParticipantEntry_ptr ClientConnection::GetServerParticipantEntry (const QString& serverKey,
+	ServerParticipantEntry_ptr ClientConnection::GetServerParticipantEntry (const QString& serverKey, 
 			const QString& nick, bool announce)
 	{
 		if (Server2Entry_.contains (serverKey) && Server2Entry_ [serverKey].contains (nick))
@@ -214,7 +214,7 @@ namespace Acetamide
 	}
 
 	void ClientConnection::setSubject (const QString& subject, const QString& channelKey)
-	{
+	{ 
 		QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [channelKey]->
 						GetServerOptions ().ServerEncoding_.toUtf8 ());
 		QString mess =  codec->toUnicode (subject.toAscii ());
@@ -236,7 +236,7 @@ namespace Acetamide
 					<< "could not find source for";
 	}
 
-	void ClientConnection::removeServerParticipantEntry (QString key, QString nick)
+	void ClientConnection::removeServerParticipantEntry (const QString& key, const QString& nick)
 	{
 		if (Server2Entry_.contains (key) && Server2Entry_ [key].contains (nick))
 		{

@@ -1,4 +1,4 @@
-	/**********************************************************************
+/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010  Oleg Linkin
  *
@@ -33,7 +33,7 @@ namespace Acetamide
 	{
 	}
 
-	void IrcServerManager::JoinChannel (const ServerOptions& server,
+	void IrcServerManager::JoinChannel (const ServerOptions& server, 
 			const ChannelOptions& channel, IrcAccount *account)
 	{
 		QString serverKey = server.ServerName_ + ":" + QString::number (server.ServerPort_);
@@ -79,7 +79,7 @@ namespace Acetamide
 				serverKey);
 	}
 
-	void IrcServerManager::SetMessageIn (const QString& serverKey,
+	void IrcServerManager::SetMessageIn (const QString& serverKey, 
 			const QString& channelKey, const QString& message, const QString& nick)
 	{
 		DoClientConnectionAction (boost::bind (&ClientConnection::handleMessageReceived, _1, message, channelKey, nick),
@@ -158,7 +158,7 @@ namespace Acetamide
 		return false;
 	}
 
-	bool IrcServerManager::DoClientConnectionAction (boost::function<void (ClientConnection*)> action,
+	bool IrcServerManager::DoClientConnectionAction (boost::function<void (ClientConnection*)> action, 
 			const QString& key)
 	{
 		QList<IrcAccount*> accList;
@@ -224,17 +224,18 @@ namespace Acetamide
 		DoServerAction (boost::bind (&IrcServer::ReadAnswer, _1, answer), serverKey);
 	}
 
-	void IrcServerManager::removeServer (QString key)
+	void IrcServerManager::removeServer (const QString& key)
 	{
 		QMap<IrcAccount*, QHash<QString, IrcServer_ptr> >::iterator iter;
+
 		for (iter = Account2Server_.begin (); iter != Account2Server_.end (); ++iter)
 		{
 			if (ServerExists (iter.key (), key))
 			{
 				//TODO Quit Message
-				IrcServer_ptr srv = iter.value ().take (key);
-				srv->ChangeState (NotConnected);
-				srv->QuitConnection (QString ());
+				iter.value ().value (key)->QuitConnection (QString ());
+				iter.value ().value (key)->ChangeState (NotConnected);
+				iter.value ().remove (key);
 				Core::Instance ().GetSocketManager ()->CloseSocket (key);
 				if (!iter.value ().count ())
 					iter.key ()->ChangeState (EntryStatus (SOffline, QString ()));
@@ -245,3 +246,7 @@ namespace Acetamide
 };
 };
 
+uint qHash (const LeechCraft::Azoth::Acetamide::IrcServer_ptr& server)
+{
+	return qHash (server.get ());
+}

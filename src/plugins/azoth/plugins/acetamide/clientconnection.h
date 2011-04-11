@@ -28,7 +28,7 @@
 namespace LeechCraft
 {
 struct Entity;
-
+	
 namespace Azoth
 {
 class IProxyObject;
@@ -43,7 +43,7 @@ namespace Acetamide
 	class ClientConnection : public QObject
 	{
 		Q_OBJECT
-
+		
 		QString ChID_;
 		IrcAccount *Account_;
 		IProxyObject *ProxyObject_;
@@ -67,18 +67,18 @@ namespace Acetamide
 		void SetNewParticipant (const QString&, const QString&);
 		void SetUserLeave (const QString&, const QString&, const QString&);
 		void SetPrivateMessage (IrcAccount*, IrcMessage*);
-		ServerParticipantEntry_ptr GetServerParticipantEntry (const QString&,
+		ServerParticipantEntry_ptr GetServerParticipantEntry (const QString&, 
 				const QString&, bool announce = true);
 		QList<ServerParticipantEntry_ptr> GetServerParticipantEntries (const QString&) const;
 		void RemoveEntry (const QString&, const QString&);
 	private:
-		ServerParticipantEntry_ptr CreateServerParticipantEntry (const QString&,
+		ServerParticipantEntry_ptr CreateServerParticipantEntry (const QString&, 
 				const QString&, bool);
 	public slots:
 		void setChannelUseres (const QString&, const QString&);
 		void setSubject (const QString&, const QString&);
 		void handleMessageReceived (const QString&, const QString&, const QString&);
-		void removeServerParticipantEntry (QString, QString);
+		void removeServerParticipantEntry (const QString&, const QString&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

@@ -192,14 +192,14 @@ namespace Acetamide
 	{
 		int count = params.count ();
 		QString target = QString::fromUtf8 (params.last ().c_str ()).toLower ();
-		if (target.startsWith ("#") ||
-				target.startsWith ("+") || target.startsWith ("!") ||
+		if (target.startsWith ("#") || 
+				target.startsWith ("+") || target.startsWith ("!") || 
 				target.startsWith ("&") || target.startsWith ("$"))
 		{
 			QString channelKey = QString ("%1@%2")
 					.arg (target , Server_.ServerName_);
 			QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-			ServerManager_->SetMessageIn (serverKey, channelKey,
+			ServerManager_->SetMessageIn (serverKey, channelKey, 
 					msg, nick);
 		}
 		else
@@ -221,17 +221,16 @@ namespace Acetamide
 			QString mess =  codec->toUnicode (msg.toAscii ());
 			message->SetBody (mess);
 			message->SetDateTime (QDateTime::currentDateTime ());
-
+			
 			entry->SetPrivateChat (true);
-
+			
 			entry->HandleMessage (message);
 		}
 	}
 
 	void IrcServer::setNewParticipant (const QString& nick, const QList<std::string>&, const QString& msg)
 	{
-		if (nick == Nickname_)
-			return;
+		qDebug () << nick;
 		QString channelKey = QString ("%1@%2")
 				.arg (msg.simplified ().toLower (), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
@@ -254,14 +253,14 @@ namespace Acetamide
 					.arg (QString::fromUtf8 (params.last ().c_str ()).toLower (), Server_.ServerName_);
 
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);
-		ServerManager_->SetUserLeave (serverKey, channelKey,
+		ServerManager_->SetUserLeave (serverKey, channelKey, 
 				nick, leaveMsg);
 	}
 
 	void IrcServer::setUserQuit (const QString& nick, const QList<std::string>& params, const QString& msg)
 	{
 		Q_FOREACH (const ChannelOptions& channel, ActiveChannels_)
-			setUserLeave (nick,
+			setUserLeave (nick, 
 					QList<std::string> () << channel.ChannelName_.toUtf8 ().constData (), msg);
 	}
 

@@ -41,10 +41,10 @@ namespace Acetamide
 	void SocketManager::SendCommand (const QString& cmd, const QString& host, int port)
 	{
 		QString serverKey = host + ":" + QString::number (port);
-
+		
 		if (!Server2Socket_.contains (serverKey))
 			CurrentSocket_ = CreateSocket (serverKey);
-		else
+		else 
 			CurrentSocket_ = Server2Socket_ [serverKey];
 
 		if (!CurrentSocket_)
@@ -95,7 +95,7 @@ namespace Acetamide
 	int SocketManager::Connect (QTcpSocket *socket, const QString& host, const QString& port)
 	{
 		socket->connectToHost (host, port.toInt ());
-
+		
 		if (!socket->waitForConnected (30000))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -117,7 +117,7 @@ namespace Acetamide
 					<< CurrentSocket_->errorString ();
 			return;
 		}
-
+			
 		if (CurrentSocket_->write (data.toAscii ()) == -1)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -133,18 +133,18 @@ namespace Acetamide
 				SIGNAL (connected ()),
 				this,
 				SLOT (connectionEstablished ()));
-
+		
 		connect (socket,
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readAnswer ()));
-
+		
 		connect (this,
 				SIGNAL (changeState (const QString&, ConnectionState)),
 				Core::Instance ().GetServerManager ().get (),
 				SLOT (changeState (const QString&, ConnectionState)),
 				Qt::UniqueConnection);
-
+		
 		connect (this,
 				SIGNAL (gotAnswer (const QString&, const QString&)),
 				Core::Instance ().GetServerManager ().get (),
@@ -163,7 +163,7 @@ namespace Acetamide
 			return;
 		}
 
-		qDebug () << "connection established with"
+		qDebug () << "connection established with" 
 				<< socket->peerName ()
 				<< "on"
 				<< socket->peerPort ();
@@ -179,7 +179,7 @@ namespace Acetamide
 		{
 			QString str = socket->readLine ();
 // 			qDebug () << str;
-			emit gotAnswer (Server2Socket_.key (socket),
+			emit gotAnswer (Server2Socket_.key (socket), 
 					str);
 		}
 	}

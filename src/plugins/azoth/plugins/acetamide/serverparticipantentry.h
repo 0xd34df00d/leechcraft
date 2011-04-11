@@ -38,12 +38,12 @@ namespace Acetamide
 	class ServerParticipantEntry : public EntryBase
 	{
 		Q_OBJECT
-
+		
 		QString NickName_;
 		QString ServerKey_;
 		QStringList Channels_;
 		bool PrivateChat_;
-
+		
 		IrcAccount *Account_;
 
 		QHash<QString, IMUCEntry::MUCRole> Channels2Role_;
@@ -75,7 +75,7 @@ namespace Acetamide
 	public slots:
 		void closePrivateChat (bool);
 	signals:
-		void removeFromList (QString, QString);
+		void removeFromList (const QString&, const QString&);
 	};
 	typedef boost::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
 };

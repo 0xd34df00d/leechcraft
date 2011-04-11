@@ -22,7 +22,6 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include "core.h"
-#include "ircparsergrammar.h"
 
 namespace LeechCraft
 {
@@ -31,14 +30,19 @@ namespace Azoth
 namespace Acetamide
 {
 	class IrcServer;
-
+	
 	class IrcParser : public QObject
 	{
 		Q_OBJECT
-
 		IrcServer *IrcServer_;
-		IrcParserGrammar IrcParserGrammar_;
-		QHash<QString,
+		QString Prefix_;
+		QString Nick_;
+		QString User_;
+		QString Host_;
+		QString ServerName;
+		QString Command_;
+		QStringList Parameters_;
+		QHash<QString, 
 				boost::function<void (const QString&, const QList<std::string>&, const QString&)> > Command2Signal_;
 	public:
 		IrcParser (IrcServer*);

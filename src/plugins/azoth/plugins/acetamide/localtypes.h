@@ -55,15 +55,6 @@ namespace Acetamide
 		NotConnected
 	};
 
-	struct IrcMessageStruct
-	{
-		std::string Nickname_;
-		std::string Command_;
-// 		std::list<std::string> Parameters_;
-		QList<std::string> Parameters_;
-		std::string Message_;
-	};
-
 	bool operator== (const ChannelOptions&, const ChannelOptions&);
 };
 };

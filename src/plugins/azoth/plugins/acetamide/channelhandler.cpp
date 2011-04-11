@@ -30,7 +30,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ChannelHandler::ChannelHandler (const ServerOptions& server,
+	ChannelHandler::ChannelHandler (const ServerOptions& server, 
 			const ChannelOptions& channel, IrcAccount *account)
 	: Account_ (account)
 	, CLEntry_ (new ChannelCLEntry (this, account))
@@ -42,7 +42,7 @@ namespace Acetamide
 	, Subject_ (QString ())
 	{
 	}
-
+	
 	QString ChannelHandler::GetChannelID () const
 	{
 		return ChannelID_;
@@ -78,7 +78,7 @@ namespace Acetamide
 	{
 		return Nickname_;
 	}
-
+	
 	void ChannelHandler::SetNickname (const QString& nick)
 	{
 		Nickname_ = nick;
@@ -149,7 +149,6 @@ namespace Acetamide
 				roleKey = nick [0];
 				break;
 			}
-
 		const bool existed = Nick2Entry_.contains (nickname);
 		ServerParticipantEntry_ptr entry = Account_->GetClientConnection ()->
 				GetServerParticipantEntry (ServerID_, nickname);
@@ -159,11 +158,11 @@ namespace Acetamide
 			entry->SetAffiliation (Channel_.ChannelName_, IMUCEntry::MUCANone);
 		}
 		else
-		{
+		{	
 			entry->SetRole (Channel_.ChannelName_, srv->GetPrefix ().value (roleKey));
 			entry->SetAffiliation (Channel_.ChannelName_, srv->GetPrefix ().value (roleKey));
 		}
-
+		
 		if (!existed)
 		{
 			QStringList list = entry->GetChannels ();
@@ -199,7 +198,7 @@ namespace Acetamide
 		else
 			msg = tr ("%1 has left the room")
 					.arg (nick);
-
+		
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
 				CLEntry_,
@@ -214,7 +213,7 @@ namespace Acetamide
 				GetServerParticipantEntry (ServerID_, nick, false);
 		ChannelPublicMessage *message = 0;
 		if (!nick.isEmpty ())
-			message = new ChannelPublicMessage (msg,
+			message = new ChannelPublicMessage (msg, 
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTMUCMessage,
