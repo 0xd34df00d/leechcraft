@@ -250,6 +250,8 @@ namespace Acetamide
 		}
 		else if (command.toLower () == "ping")
 			cmd = QString ("%1 %2%3").arg ("\001PING", QDateTime::currentDateTime ().toTime_t (), QChar ('\001'));
+		else if (command.toLower () == "time")
+			cmd = QString ("%1 %2%3").arg ("\001TIME", QDateTime::currentDateTime ().toString ("ddd MMM dd hh:mm:ss yyyy"), QChar ('\001'));
 
 		QString ctcpCommand = QString ("NOTICE " + nick + " :" + cmd + "\r\n");
 		Core::Instance ().GetSocketManager ()
