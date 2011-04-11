@@ -271,6 +271,11 @@ namespace Acetamide
 					.arg ("\001SOURCE",
 							version, "http://www.leechcraft.org",
 							QChar ('\001'));
+		else if (command.toLower () == "clientinfo")
+			cmd = QString ("%1 %2%3")
+					.arg ("\001CLIENTINFO",
+							"VERSION PING TIME SOURCE CLIENTINFO",
+							QChar ('\001'));
 
 		QString ctcpCommand = QString ("NOTICE " + nick + " :" + cmd + "\r\n");
 		Core::Instance ().GetSocketManager ()
