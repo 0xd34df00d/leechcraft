@@ -22,6 +22,7 @@
 #include <boost/spirit/include/classic_loops.hpp>
 #include <boost/spirit/include/classic_push_back_actor.hpp>
 #include <QTextCodec>
+#include "config.h"
 #include "socketmanager.h"
 #include "ircserver.h"
 
@@ -35,13 +36,6 @@ namespace Acetamide
 
 	IrcParser::IrcParser (IrcServer *server)
 	: IrcServer_ (server)
-	, Prefix_ (QString ())
-	, Command_ (QString ())
-	, Parameters_ (QStringList ())
-	, Nick_ (QString ())
-	, User_ (QString ())
-	, Host_ (QString ())
-	, ServerName (QString ())
 	{
 		Init ();
 	}
@@ -128,11 +122,6 @@ namespace Acetamide
 				SendCommand (quitCmd, IrcServer_->GetHost (), IrcServer_->GetPort ());
 	}
 
-	QString IrcParser::GetNickName () const
-	{
-		return Nick_;
-	}
-
 	void IrcParser::Init ()
 	{
 		Command2Signal_ ["001"] = boost::bind (&IrcParser::gotAuthSuccess, this, _1, _2, _3);
@@ -215,8 +204,7 @@ namespace Acetamide
 		rule<> prefix = longest_d [hostname | nick];
 		rule<> reply = (lexeme_d [!(ch_p (':') >> prefix >> ch_p (' '))] >> command >> !params >> eol_p);
 		
-		bool res = parse (message.toUtf8 ().constData (), 
-			reply).full; 
+		bool res = parse (message.toUtf8 ().constData (), reply).full; 
 		
 		if (!res)
 		{
@@ -227,9 +215,40 @@ namespace Acetamide
 		else
 		{
 			QString cmd = QString::fromUtf8 (commandStr.c_str ()).toLower ();
-			if (Command2Signal_.contains (cmd))
-				Command2Signal_ [cmd] (QString::fromUtf8 (nickStr.c_str ()),
-						opts, QString::fromUtf8 (msgStr.c_str ()));
+			QString msg = QString::fromUtf8 (msgStr.c_str ());
+			QString nick = QString::fromUtf8 (nickStr.c_str ());
+			bool result = false;
+			if (cmd == "privmsg")
+				result = IsCTCPMessage (msg, nick);
+			if (!result)
+				if (Command2Signal_.contains (cmd))
+					Command2Signal_ [cmd] (nick, opts, msg);
+		}
+	}
+
+	bool IrcParser::IsCTCPMessage (const QString& msg, const QString& nick)
+	{
+		if (msg.startsWith ('\001') && msg.endsWith ('\001'))
+		{
+			QString msg_1 = msg.mid (1, msg.length () - 1);
+			QRegExp rxp("([a-zA-Z]+)(\\s.*)?");
+			if (rxp.indexIn (msg_1) > -1)
+				CTCPAnswer (rxp.cap (1), rxp.cap (2), nick);
+			return true;
+		}
+
+		return false;
+	}
+
+	void IrcParser::CTCPAnswer (const QString& command, const QString& attributs, const QString& nick)
+	{
+		if (command.toLower () == "version")
+		{
+			QString version = QString ("%1 %2").arg ("LeechCraft Azoth", LEECHCRAFT_VERSION);
+			QString cmd = QString ("%1%2%3").arg ("\001VERSION ", version, QChar ('\001'));
+			QString ctcpCommand = QString ("NOTICE " + nick + " :" + cmd + "\r\n");
+			Core::Instance ().GetSocketManager ()
+					->SendCommand (ctcpCommand, IrcServer_->GetHost (), IrcServer_->GetPort ());
 		}
 	}
 
