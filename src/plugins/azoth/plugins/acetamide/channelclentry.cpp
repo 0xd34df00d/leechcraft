@@ -270,6 +270,25 @@ namespace Acetamide
 	{
 		CH_->SetNickname (nick);
 	}
+	
+	QVariantMap ChannelCLEntry::GetIdentifyingData () const
+	{
+		QVariantMap result;
+		result ["HumanReadableName"] = QString ("%1 on %2@%3:%4")
+				.arg (CH_->GetNickname ())
+				.arg (CH_->GetChannelOptions ().ChannelName_)
+				.arg (CH_->GetServerOptions ().ServerName_)
+				.arg (CH_->GetServerOptions ().ServerPort_);
+		result ["AccountID"] = Account_->GetAccountID ();
+		result ["Nickname"] = CH_->GetNickname ();
+		result ["Channel"] = CH_->GetChannelOptions ().ChannelName_;
+		result ["Server"] = CH_->GetServerOptions ().ServerName_;
+		result ["Port"] = CH_->GetServerOptions ().ServerPort_;
+		result ["Encoding"] = CH_->GetServerOptions ().ServerEncoding_;
+		result ["SSL"] = CH_->GetServerOptions ().SSL_;
+
+		return result;
+	}
 
 	void ChannelCLEntry::HandleMessage (ChannelPublicMessage *msg)
 	{
