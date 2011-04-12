@@ -87,6 +87,7 @@ namespace Xoox
 		void SetAffiliation (QObject*, MUCAffiliation, const QString&);
 		MUCRole GetRole (QObject*) const;
 		void SetRole (QObject*, MUCRole, const QString&);
+		QVariantMap GetIdentifyingData () const;
 
 		void HandleMessage (RoomPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);

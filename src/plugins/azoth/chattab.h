@@ -107,6 +107,7 @@ namespace Azoth
 		void handleViewLinkClicked (const QUrl&);
 		void handleHistoryUp ();
 		void handleHistoryDown ();
+		void handleAddToBookmarks ();
 	private:
 		template<typename T>
 		T* GetEntry () const;

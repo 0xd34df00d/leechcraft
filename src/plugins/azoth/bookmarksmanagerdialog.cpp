@@ -71,6 +71,61 @@ namespace Azoth
 			on_AccountBox__currentIndexChanged (0);
 	}
 	
+	void BookmarksManagerDialog::SuggestSaving (QObject *entryObj)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "object doesn't implement ICLEntry"
+					<< entryObj;
+			return;
+		}
+
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entryObj);
+		if (!mucEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "object doesn't implement IMUCEntry"
+					<< entryObj;
+			return;
+		}
+
+		const QVariantMap& data = mucEntry->GetIdentifyingData ();
+		if (data.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty identifying data returned by"
+					<< entryObj;
+			return;
+		}
+		
+		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		bool found = false;
+		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
+			if (account == Ui_.AccountBox_->itemData (i).value<IAccount*> ())
+			{
+				Ui_.AccountBox_->setCurrentIndex (i);
+				on_AccountBox__currentIndexChanged (i);
+				found = true;
+				break;
+			}
+			
+		if (!found)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find parent protocol for entry"
+					<< entryObj
+					<< entry->GetEntryID ();
+			return;
+		}
+		
+		if (CurrentEditor_)
+			CurrentEditor_->SetIdentifyingData (data);
+		on_AddButton__released ();
+		CurrentEditor_->SetIdentifyingData (data);
+	}
+	
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
 	{
 		BMModel_->clear ();

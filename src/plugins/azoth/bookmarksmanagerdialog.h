@@ -42,6 +42,8 @@ namespace Azoth
 		IMUCBookmarkEditorWidget *CurrentEditor_;
 	public:
 		BookmarksManagerDialog (QWidget* = 0);
+		
+		void SuggestSaving (QObject*);
 	private:
 		void Save ();
 		QStandardItem* GetSelectedItem () const;
