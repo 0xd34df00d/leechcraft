@@ -32,7 +32,7 @@ QueuedUsers::QueuedUsers(){
     connect(treeView_USERS, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotContextMenu()));
 
     UploadManager::getInstance()->addListener(this);
-    MainWindow::getInstance()->addArenaWidget(this);
+    MainLayout::getInstance()->addArenaWidget(this);
 }
 
 QueuedUsers::~QueuedUsers(){
@@ -43,15 +43,15 @@ void QueuedUsers::closeEvent(QCloseEvent *e){
     if (isUnload()){
         WVSET("queued-users/headerstate", treeView_USERS->header()->saveState());
 
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidget(this);
 
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }

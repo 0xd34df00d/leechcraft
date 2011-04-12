@@ -65,7 +65,7 @@ ShareBrowser::Menu::Menu(){
     WulforUtil *WU = WulforUtil::getInstance();
 
     rest_menu = new QMenu(tr("Restrictions"));
-    QMenu *magnet_menu = new QMenu(tr("Magnet"), MainWindow::getInstance());
+    QMenu *magnet_menu = new QMenu(tr("Magnet"), MainLayout::getInstance());
 
     QAction *down    = new QAction(tr("Download"), menu);
     down->setIcon(WU->getPixmap(WulforUtil::eiDOWNLOAD));
@@ -185,7 +185,7 @@ ShareBrowser::Menu::Action ShareBrowser::Menu::exec(const dcpp::UserPtr &user){
 }
 
 ShareBrowser::ShareBrowser(UserPtr user, QString file, QString jump_to):
-        QWidget(MainWindow::getInstance()),
+        QWidget(MainLayout::getInstance()),
         user(user),
         file(file),
         jump_to(jump_to),
@@ -238,9 +238,9 @@ ShareBrowser::~ShareBrowser(){
 void ShareBrowser::closeEvent(QCloseEvent *e){
     save();
 
-    MainWindow::getInstance()->remWidgetFromArena(this);
-    MainWindow::getInstance()->remArenaWidget(this);
-    MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
+    MainLayout::getInstance()->remWidgetFromArena(this);
+    MainLayout::getInstance()->remArenaWidget(this);
+    MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
 
     QWidget::closeEvent(e);
 }
@@ -488,7 +488,7 @@ void ShareBrowser::download(dcpp::DirectoryListing::Directory *dir, const QStrin
             listing.download(dir, target.toStdString(), false);
         }
         catch (const Exception &e){
-            MainWindow::getInstance()->setStatusMessage(_q(e.getError()));
+            MainLayout::getInstance()->setStatusMessage(_q(e.getError()));
         }
     }
 }
@@ -501,7 +501,7 @@ void ShareBrowser::download(dcpp::DirectoryListing::File *file, const QString &t
             listing.download(file, (target+name).toStdString(), false, false);
         }
         catch (const Exception &e){
-            MainWindow::getInstance()->setStatusMessage(_q(e.getError()));
+            MainLayout::getInstance()->setStatusMessage(_q(e.getError()));
         }
     }
 }
@@ -954,9 +954,9 @@ void ShareBrowser::slotLoaderFinish(){
     /*treeView_LPANE->resizeColumnToContents(0);
     treeView_LPANE->resizeColumnToContents(1);*/
 
-    MainWindow::getInstance()->addArenaWidget(this);
-    MainWindow::getInstance()->addArenaWidgetOnToolbar(this);
-    MainWindow::getInstance()->mapWidgetOnArena(this);
+    MainLayout::getInstance()->addArenaWidget(this);
+    MainLayout::getInstance()->addArenaWidgetOnToolbar(this);
+    MainLayout::getInstance()->mapWidgetOnArena(this);
 
 }
 

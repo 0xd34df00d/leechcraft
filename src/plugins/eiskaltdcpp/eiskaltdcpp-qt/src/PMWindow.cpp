@@ -273,12 +273,12 @@ bool PMWindow::eventFilter(QObject *obj, QEvent *e){
 void PMWindow::closeEvent(QCloseEvent *c_e){
     emit privateMessageClosed(cid);
 
-    MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-    MainWindow::getInstance()->remArenaWidget(this);
+    MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+    MainLayout::getInstance()->remArenaWidget(this);
 
     hasMessages = false;
     hasHighlightMessages = false;
-    MainWindow::getInstance()->redrawToolPanel();
+    MainLayout::getInstance()->redrawToolPanel();
 
     c_e->accept();
 }
@@ -289,10 +289,10 @@ void PMWindow::showEvent(QShowEvent *e){
     if (isVisible()){
         hasMessages = false;
         hasHighlightMessages = false;
-        MainWindow::getInstance()->redrawToolPanel();
+        MainLayout::getInstance()->redrawToolPanel();
     }
 
-    MainWindow::getInstance()->mapWidgetOnArena(this);
+    MainLayout::getInstance()->mapWidgetOnArena(this);
 }
 
 void PMWindow::slotActivate(){
@@ -404,7 +404,7 @@ void PMWindow::addOutput(QString msg){
 
     if (!isVisible()){
         hasMessages = true;
-        MainWindow::getInstance()->redrawToolPanel();
+        MainLayout::getInstance()->redrawToolPanel();
     }
 }
 
@@ -490,7 +490,7 @@ void PMWindow::slotHub(){
     HubFrame *fr = HubManager::getInstance()->getHub(hubUrl);
 
     if (fr)
-        MainWindow::getInstance()->mapWidgetOnArena(fr);
+        MainLayout::getInstance()->mapWidgetOnArena(fr);
 }
 
 void PMWindow::slotShare(){
@@ -502,7 +502,7 @@ void PMWindow::slotShare(){
 
             if (user){
                 if (user == ClientManager::getInstance()->getMe())
-                    MainWindow::getInstance()->browseOwnFiles();
+                    MainLayout::getInstance()->browseOwnFiles();
                 else
                     QueueManager::getInstance()->addList(HintedUser(user, _tq(hubUrl)), QueueItem::FLAG_CLIENT_VIEW, "");
             }

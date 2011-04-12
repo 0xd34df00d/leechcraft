@@ -1002,7 +1002,7 @@ bool HubFrame::eventFilter(QObject *obj, QEvent *e){
 void HubFrame::closeEvent(QCloseEvent *e){
     QObject::disconnect(this, NULL, this, NULL);
 
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayout *MW = MainLayout::getInstance();
 
     MW->remArenaWidgetFromToolbar(this);
     MW->remWidgetFromArena(this);
@@ -1067,7 +1067,7 @@ void HubFrame::showEvent(QShowEvent *e){
 
     hasMessages = false;
     hasHighlightMessages = false;
-    MainWindow::getInstance()->redrawToolPanel();
+    MainLayout::getInstance()->redrawToolPanel();
 }
 
 void HubFrame::hideEvent(QHideEvent *e){
@@ -1142,7 +1142,7 @@ void HubFrame::init(){
     connect(this, SIGNAL(corePassword()), this, SLOT(getPassword()), Qt::QueuedConnection);
     connect(this, SIGNAL(coreMessage(VarMap)), this, SLOT(newMsg(VarMap)), Qt::QueuedConnection);
     connect(this, SIGNAL(corePrivateMsg(VarMap)), this, SLOT(newPm(VarMap)), Qt::QueuedConnection);
-    connect(this, SIGNAL(coreHubUpdated()), MainWindow::getInstance(), SLOT(redrawToolPanel()), Qt::QueuedConnection);
+    connect(this, SIGNAL(coreHubUpdated()), MainLayout::getInstance(), SLOT(redrawToolPanel()), Qt::QueuedConnection);
     connect(this, SIGNAL(coreFavoriteUserAdded(QString)), this, SLOT(changeFavStatus(QString)), Qt::QueuedConnection);
     connect(this, SIGNAL(coreFavoriteUserRemoved(QString)), this, SLOT(changeFavStatus(QString)), Qt::QueuedConnection);
 
@@ -1904,15 +1904,15 @@ void HubFrame::addPM(QString cid, QString output, bool keepfocus){
         connect(p, SIGNAL(inputTextMenu()), this, SLOT(slotInputContextMenu()));
         connect(p->textEdit_CHAT, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotChatMenu(QPoint)));
 
-        MainWindow::getInstance()->addArenaWidget(p);
-        MainWindow::getInstance()->addArenaWidgetOnToolbar(p, WBGET(WB_CHAT_KEEPFOCUS));
+        MainLayout::getInstance()->addArenaWidget(p);
+        MainLayout::getInstance()->addArenaWidgetOnToolbar(p, WBGET(WB_CHAT_KEEPFOCUS));
 
         p->setCompleter(completer, model);
         p->addOutput(output);
         p->setAttribute(Qt::WA_DeleteOnClose);
 
         if (!keepfocus || !WBGET(WB_CHAT_KEEPFOCUS)){
-            MainWindow::getInstance()->mapWidgetOnArena(p);
+            MainLayout::getInstance()->mapWidgetOnArena(p);
 
             p->requestFocus();
         }
@@ -1931,7 +1931,7 @@ void HubFrame::addPM(QString cid, QString output, bool keepfocus){
         it.value()->addOutput(output);
 
         if (!keepfocus || !WBGET(WB_CHAT_KEEPFOCUS)){
-            MainWindow::getInstance()->mapWidgetOnArena(it.value());
+            MainLayout::getInstance()->mapWidgetOnArena(it.value());
 
             it.value()->requestFocus();
         }
@@ -2075,7 +2075,7 @@ void HubFrame::browseUserFiles(const QString& id, bool match){
 
             if (user){
                 if (user == ClientManager::getInstance()->getMe())
-                    MainWindow::getInstance()->browseOwnFiles();
+                    MainLayout::getInstance()->browseOwnFiles();
                 else if (match)
                     QueueManager::getInstance()->addList(HintedUser(user, client->getHubUrl()), QueueItem::FLAG_MATCH_QUEUE, "");
                 else
@@ -2105,7 +2105,7 @@ void HubFrame::grantSlot(const QString& id){
         }
     }
 
-    MainWindow::getInstance()->setStatusMessage(message);
+    MainLayout::getInstance()->setStatusMessage(message);
 }
 
 void HubFrame::addUserToFav(const QString& id){
@@ -2160,7 +2160,7 @@ void HubFrame::changeFavStatus(const QString &id) {
         QString message = WulforUtil::getInstance()->getNicks(id) +
                 (bFav ? tr(" has been added to favorites.") : tr(" has been removed from favorites."));
 
-        MainWindow::getInstance()->setStatusMessage(message);
+        MainLayout::getInstance()->setStatusMessage(message);
     }
 }
 
@@ -2249,7 +2249,7 @@ void HubFrame::newMsg(const VarMap &map){
 
         hasMessages = true;
 
-        MainWindow::getInstance()->redrawToolPanel();
+        MainLayout::getInstance()->redrawToolPanel();
     }
 
     if (drawLine && WBGET("hubframe/unreaden-draw-line", false)){
@@ -2412,7 +2412,7 @@ void HubFrame::pmUserEvent(QString cid, QString e){
 }
 
 void HubFrame::getPassword(){
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayout *MW = MainLayout::getInstance();
 
     if (!MW->isVisible() && !(client->getPassword().size() > 0)){
         MW->show();
@@ -2530,14 +2530,14 @@ void HubFrame::slotReconnect(){
 }
 
 void HubFrame::slotMapOnArena(){
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayout *MW = MainLayout::getInstance();
 
     MW->mapWidgetOnArena(this);
 }
 
 void HubFrame::slotClose(){
-    MainWindow::getInstance()->remArenaWidget(this);
-    MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
+    MainLayout::getInstance()->remArenaWidget(this);
+    MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
 
     close();
 }
@@ -2609,7 +2609,7 @@ void HubFrame::slotUserListMenu(const QPoint&){
                     addPM(item->cid, "", false);
 
                 if (pm.contains(item->cid)){
-                    MainWindow::getInstance()->mapWidgetOnArena(pm[cid]);
+                    MainLayout::getInstance()->mapWidgetOnArena(pm[cid]);
                     pm[cid]->requestFocus();
                 }
             }
@@ -2937,7 +2937,7 @@ void HubFrame::slotChatMenu(const QPoint &){
             addPM(cid, "", false);
 
             if (pm.contains(cid))
-                MainWindow::getInstance()->mapWidgetOnArena(pm[cid]);
+                MainLayout::getInstance()->mapWidgetOnArena(pm[cid]);
 
             break;
         }
@@ -2973,7 +2973,7 @@ void HubFrame::slotChatMenu(const QPoint &){
         case Menu::ClearChat:
         {
             if (pmw)
-                MainWindow::getInstance()->slotChatClear(); // some hack
+                MainLayout::getInstance()->slotChatClear(); // some hack
             else
                 clearChat();
 
@@ -3042,7 +3042,7 @@ void HubFrame::slotShowWnd(){
     if (isVisible())
         return;
 
-   MainWindow *MW = MainWindow::getInstance();
+   MainLayout *MW = MainLayout::getInstance();
 
    MW->mapWidgetOnArena(this);
 }

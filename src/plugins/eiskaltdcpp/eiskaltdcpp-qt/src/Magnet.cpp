@@ -69,9 +69,9 @@ void Magnet::showUI(const QString &name, const qulonglong &size, const QString &
 
     setWindowTitle(lineEdit_FNAME->text());
 
-    if (!MainWindow::getInstance()->isVisible()){
-        MainWindow::getInstance()->show();
-        MainWindow::getInstance()->raise();
+    if (!MainLayout::getInstance()->isVisible()){
+        MainLayout::getInstance()->show();
+        MainLayout::getInstance()->raise();
     }
 }
 

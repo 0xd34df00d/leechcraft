@@ -37,14 +37,14 @@ bool MainWindowScript::addToolButton(const QString &name, const QString &title, 
     if (name.isEmpty())
         return false;
 
-    QAction *act = new QAction(icon, title, MainWindow::getInstance());
+    QAction *act = new QAction(icon, title, MainLayout::getInstance());
     act->setObjectName("scriptToolbarButton"+name);
     actions.insert(name, act);
 
     QScriptValue act_val = engine->newQObject(act);
     mwToolBar.setProperty(name, act_val);
 
-    MainWindow::getInstance()->addActionOnToolBar(act);
+    MainLayout::getInstance()->addActionOnToolBar(act);
 
     return true;
 }
@@ -68,7 +68,7 @@ bool MainWindowScript::remToolButton(const QString &name) {
     QScriptValue act_val = engine->undefinedValue();
     mwToolBar.setProperty(name, act_val);
 
-    MainWindow::getInstance()->remActionFromToolBar(act);
+    MainLayout::getInstance()->remActionFromToolBar(act);
     actions.remove(name);
 
     act->deleteLater();
@@ -80,10 +80,10 @@ bool MainWindowScript::addMenu(QMenu *menu) {
     if (!menu || menus.contains(menu) || menu->title().isEmpty())
         return false;
 
-    QMenuBar *menuBar = MainWindow::getInstance()->menuBar();
+    QMenuBar *menuBar = MainLayout::getInstance()->menuBar();
     QAction *act = menuBar->addMenu(menu);
 
-    MainWindow::getInstance()->toggleMainMenu(menuBar->isVisible());//update menus
+    MainLayout::getInstance()->toggleMainMenu(menuBar->isVisible());//update menus
 
     menus.insert(menu, act);
 
@@ -97,7 +97,7 @@ bool MainWindowScript::remMenu(QMenu *menu) {
     if (!(menu && menus.contains(menu)))
         return false;
 
-    QMenuBar *menuBar = MainWindow::getInstance()->menuBar();
+    QMenuBar *menuBar = MainLayout::getInstance()->menuBar();
     menuBar->removeAction(menus[menu]);
 
     menus.remove(menu);
@@ -106,7 +106,7 @@ bool MainWindowScript::remMenu(QMenu *menu) {
 
     engine->globalObject().property("MainWindow").property("MenuBar").setProperty(menu->title(), engine->undefinedValue());
 
-    MainWindow::getInstance()->toggleMainMenu(menuBar->isVisible());//update menus
+    MainLayout::getInstance()->toggleMainMenu(menuBar->isVisible());//update menus
 
     return true;
 }

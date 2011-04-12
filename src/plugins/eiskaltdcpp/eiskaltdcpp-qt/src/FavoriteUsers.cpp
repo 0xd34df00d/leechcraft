@@ -71,7 +71,7 @@ FavoriteUsers::FavoriteUsers(QWidget *parent) :
 
     FavoriteManager::getInstance()->addListener(this);
 
-    MainWindow::getInstance()->addArenaWidget(this);
+    MainLayout::getInstance()->addArenaWidget(this);
 }
 
 FavoriteUsers::~FavoriteUsers(){
@@ -81,9 +81,9 @@ FavoriteUsers::~FavoriteUsers(){
 
 void FavoriteUsers::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidget(this);
 
         WSSET(WS_FAVUSERS_STATE, treeView->header()->saveState().toBase64());
 
@@ -92,8 +92,8 @@ void FavoriteUsers::closeEvent(QCloseEvent *e){
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }
