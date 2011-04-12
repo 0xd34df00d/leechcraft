@@ -175,6 +175,16 @@ namespace Azoth
 		result ["Azoth"] << MW_->GetMenuActions ();
 		return result;
 	}
+	
+	bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
+	{
+		return Core::Instance ().CouldHandle (e);
+	}
+	
+	void Plugin::Handle (Entity e)
+	{
+		Core::Instance ().Handle (e);
+	}
 
 	void Plugin::newTabRequested ()
 	{

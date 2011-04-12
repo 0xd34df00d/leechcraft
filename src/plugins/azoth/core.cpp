@@ -42,6 +42,7 @@
 #include "interfaces/imucentry.h"
 #include "interfaces/iauthable.h"
 #include "interfaces/iresourceplugin.h"
+#include "interfaces/iurihandler.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -49,6 +50,7 @@
 #include "joinconferencedialog.h"
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
+#include "accounthandlerchooserdialog.h"
 
 uint qHash (const QImage& image)
 {
@@ -166,6 +168,8 @@ namespace Azoth
 		case RLTAffIconLoader:
 			return AffIconLoader_.get ();
 		}
+		
+		return 0;
 	}
 	
 	QAbstractItemModel* Core::GetSmilesOptionsModel () const
@@ -217,6 +221,104 @@ namespace Azoth
 	void Core::RegisterHookable (QObject *object)
 	{
 		PluginManager_->RegisterHookable (object);
+	}
+	
+	bool Core::CouldHandle (const Entity& e) const
+	{
+		if (!e.Entity_.canConvert<QUrl> ())
+			return false;
+		
+		const QUrl& url = e.Entity_.toUrl ();
+		if (!url.isValid ())
+			return false;
+		
+		Q_FOREACH (QObject *obj, ProtocolPlugins_)
+		{
+			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
+			if (!protoPlug)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast"
+						<< obj
+						<< "to IProtocolPlugin";
+				continue;
+			}
+			
+			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+			{
+				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
+				if (!handler)
+					continue;
+				if (handler->SupportsURI (url))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	void Core::Handle (Entity e)
+	{
+		const QUrl& url = e.Entity_.toUrl ();
+		if (!url.isValid ())
+			return;
+
+		QList<QObject*> accounts;
+		Q_FOREACH (QObject *obj, ProtocolPlugins_)
+		{
+			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
+			if (!protoPlug)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast"
+						<< obj
+						<< "to IProtocolPlugin";
+				continue;
+			}
+
+			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+			{
+				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
+				if (!handler)
+					continue;
+				if (!handler->SupportsURI (url))
+					continue;
+
+				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+				if (!proto)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< protoObj
+							<< "doesn't implement IProtocol";
+					continue;
+				}
+				accounts << proto->GetRegisteredAccounts ();
+			}
+		}
+
+		if (accounts.isEmpty ())
+			return;
+
+		QObject *selected = 0;
+
+		if (accounts.size () > 1)
+		{
+			std::auto_ptr<AccountHandlerChooserDialog> dia (new AccountHandlerChooserDialog (accounts,
+						tr ("Please select account to handle URI %1")
+							.arg (url.toString ())));
+			if (dia->exec () != QDialog::Accepted)
+				return;
+			
+			selected = dia->GetSelectedAccount ();
+		}
+		else
+			selected = accounts.at (0);
+
+		if (!selected)
+			return;
+
+		QObject *selProto = qobject_cast<IAccount*> (selected)->GetParentProtocol ();
+		qobject_cast<IURIHandler*> (selProto)->HandleURI (url, selected);
 	}
 
 	const QObjectList& Core::GetProtocolPlugins () const

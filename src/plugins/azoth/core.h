@@ -156,6 +156,9 @@ namespace Azoth
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 		void RegisterHookable (QObject*);
+		
+		bool CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
 		const QObjectList& GetProtocolPlugins () const;
 
