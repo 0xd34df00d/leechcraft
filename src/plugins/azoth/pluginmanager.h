@@ -25,6 +25,7 @@
 
 class QDateTime;
 class QObject;
+class QWebView;
 
 namespace LeechCraft
 {
@@ -36,6 +37,11 @@ namespace Azoth
 	public:
 		PluginManager (QObject* = 0);
 	signals:
+		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *entry,
+				QWebView *webView);
+
 		/** @brief Hook for adjusting where CL entry actions appear.
 		 * 
 		 * This hook is called to determine where the given action for

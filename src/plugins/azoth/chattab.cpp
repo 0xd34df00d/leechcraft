@@ -157,6 +157,11 @@ namespace Azoth
 				this,
 				SLOT (clearAvailableNick ()));
 		on_MsgEdit__textChanged ();
+		
+		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
+				this,
+				GetEntry<QObject> (),
+				Ui_.View_);
 	}
 	
 	void ChatTab::PrepareTheme ()
