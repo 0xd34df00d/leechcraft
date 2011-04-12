@@ -103,7 +103,7 @@ namespace Xoox
 		return result;
 	}
 
-	QObject* RoomCLEntry::CreateMessage (IMessage::MessageType type,
+	QObject* RoomCLEntry::CreateMessage (IMessage::MessageType,
 			const QString& variant, const QString& text)
 	{
 		if (variant == "")
@@ -146,7 +146,7 @@ namespace Xoox
 	{
 	}
 
-	QMap<QString, QVariant> RoomCLEntry::GetClientInfo (const QString& var) const
+	QMap<QString, QVariant> RoomCLEntry::GetClientInfo (const QString&) const
 	{
 		return QMap<QString, QVariant> ();
 	}

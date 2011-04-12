@@ -454,7 +454,7 @@ namespace Xoox
 		}
 	}
 
-	GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType type,
+	GlooxMessage* RoomHandler::CreateMessage (IMessage::MessageType,
 			const QString& nick, const QString& body)
 	{
 		GlooxMessage *message = new GlooxMessage (IMessage::MTChatMessage,
@@ -485,7 +485,7 @@ namespace Xoox
 		MUCManager_->setRoomSubject (GetRoomJID (), subj);
 	}
 
-	void RoomHandler::Leave (const QString& msg, bool remove)
+	void RoomHandler::Leave (const QString&, bool remove)
 	{
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
