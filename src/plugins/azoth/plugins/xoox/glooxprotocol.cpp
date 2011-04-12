@@ -211,11 +211,14 @@ namespace Xoox
 			}
 			acc->JoinRoom (split.at (1), split.at (0), acc->GetNick ());
 		}
-		else if (queryItems.contains ("roster"))
+		else if (queryItems.contains ("roster") ||
+				queryItems.contains ("subscribe"))
 		{
 			QString name = queryItems ["name"];
 			QStringList groups (queryItems ["group"]);
 			acc->AddEntry (path, name, groups);
+			if (queryItems.contains ("subscribe"))
+				acc->RequestAuth (path, QString (), name, groups);
 		}
 	}
 
