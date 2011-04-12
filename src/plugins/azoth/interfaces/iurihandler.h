@@ -52,7 +52,7 @@ namespace Azoth
 		 * @return Whether this URI could be handled by an account of
 		 * this protocol.
 		 */
-		virtual bool SupportsURI (const QUrl& uri) = 0;
+		virtual bool SupportsURI (const QUrl& uri) const = 0;
 		
 		/** @brief Asks to handle the given URI by the given account.
 		 * 
