@@ -162,6 +162,15 @@ namespace Xoox
 		accObj->deleteLater ();
 		saveAccounts ();
 	}
+	
+	bool GlooxProtocol::SupportsURI (const QUrl& url) const
+	{
+		return url.scheme () == "xmpp";
+	}
+	
+	void GlooxProtocol::HandleURI (const QUrl& url, IAccount *account)
+	{
+	}
 
 	void GlooxProtocol::saveAccounts () const
 	{

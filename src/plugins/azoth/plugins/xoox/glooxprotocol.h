@@ -19,7 +19,8 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXPROTOCOL_H
 #include <QObject>
-#include "interfaces/iprotocol.h"
+#include <interfaces/iprotocol.h>
+#include <interfaces/iurihandler.h>
 
 namespace LeechCraft
 {
@@ -33,9 +34,10 @@ namespace Xoox
 
 	class GlooxProtocol : public QObject
 						, public IProtocol
+						, public IURIHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler);
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;
@@ -61,6 +63,9 @@ namespace Xoox
 		QWidget* GetMUCJoinWidget ();
 		QWidget* GetMUCBookmarkEditorWidget ();
 		void RemoveAccount (QObject*);
+		
+		bool SupportsURI (const QUrl&) const;
+		void HandleURI (const QUrl&, IAccount*);
 	private:
 		void RestoreAccounts ();
 	private slots:
