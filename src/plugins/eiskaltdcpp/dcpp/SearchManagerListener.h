@@ -23,13 +23,15 @@
 
 namespace dcpp {
 
+class SearchQueueItem;
+
 class SearchManagerListener {
 public:
-	virtual ~SearchManagerListener() { }
-	template<int I>	struct X { enum { TYPE = I }; };
+    virtual ~SearchManagerListener() { }
+    template<int I> struct X { enum { TYPE = I }; };
 
-	typedef X<0> SR;
-	virtual void on(SR, const SearchResultPtr&) throw() = 0;
+    typedef X<0> SR;
+    virtual void on(SR, const SearchResultPtr&) throw() = 0;
 };
 
 } // namespace dcpp

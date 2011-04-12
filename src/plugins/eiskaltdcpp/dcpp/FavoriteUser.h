@@ -27,21 +27,21 @@ namespace dcpp {
 
 class FavoriteUser : public Flags {
 public:
-	FavoriteUser(const UserPtr& user_, const string& nick_, const string& hubUrl_) : user(user_), nick(nick_), url(hubUrl_), lastSeen(0) { }
+    FavoriteUser(const UserPtr& user_, const string& nick_, const string& hubUrl_) : user(user_), nick(nick_), url(hubUrl_), lastSeen(0) { }
 
-	enum Flags {
-		FLAG_GRANTSLOT = 1 << 0
-	};
+    enum Flags {
+        FLAG_GRANTSLOT = 1 << 0
+    };
 
-	UserPtr& getUser() { return user; }
+    UserPtr& getUser() { return user; }
 
-	void update(const OnlineUser& info);
+    void update(const OnlineUser& info);
 
-	GETSET(UserPtr, user, User);
-	GETSET(string, nick, Nick);
-	GETSET(string, url, Url);
-	GETSET(time_t, lastSeen, LastSeen);
-	GETSET(string, description, Description);
+    GETSET(UserPtr, user, User);
+    GETSET(string, nick, Nick);
+    GETSET(string, url, Url);
+    GETSET(time_t, lastSeen, LastSeen);
+    GETSET(string, description, Description);
 };
 
 } // namespace dcpp

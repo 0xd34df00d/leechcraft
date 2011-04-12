@@ -20,75 +20,80 @@
 #define DCPLUSPLUS_DCPP_FINISHED_ITEM_H
 
 #include "forward.h"
+
+#include "Pointer.h"
 #include "Util.h"
 
 namespace dcpp {
 
 class FinishedItemBase : boost::noncopyable {
 public:
-	explicit FinishedItemBase(
-		int64_t transferred_,
-		int64_t milliSeconds_,
-		time_t time_
-		);
+    explicit FinishedItemBase(
+        int64_t transferred_,
+        int64_t milliSeconds_,
+        time_t time_
+        );
 
-	void update(
-		int64_t transferred_,
-		int64_t milliSeconds_,
-		time_t time_
-		);
+    void update(
+        int64_t transferred_,
+        int64_t milliSeconds_,
+        time_t time_
+        );
 
-	int64_t getAverageSpeed() const;
+    int64_t getAverageSpeed() const;
 
-	GETSET(int64_t, transferred, Transferred);
-	GETSET(int64_t, milliSeconds, MilliSeconds);
-	GETSET(time_t, time, Time);
+    GETSET(int64_t, transferred, Transferred);
+    GETSET(int64_t, milliSeconds, MilliSeconds);
+    GETSET(time_t, time, Time);
 };
 
 class FinishedFileItem : public FinishedItemBase, public intrusive_ptr_base<FinishedFileItem> {
 public:
-	explicit FinishedFileItem(
-		int64_t transferred_,
-		int64_t milliSeconds_,
-		time_t time_,
-		int64_t fileSize_,
-		bool crc32Checked_,
-		const UserPtr& user
-		);
+    explicit FinishedFileItem(
+        int64_t transferred_,
+        int64_t milliSeconds_,
+        time_t time_,
+        int64_t fileSize_,
+        int64_t actual_,
+        bool crc32Checked_,
+                const HintedUser& user
+        );
 
-	void update(
-		int64_t transferred_,
-		int64_t milliSeconds_,
-		time_t time_,
-		bool crc32Checked_,
-		const UserPtr& user
-		);
+    void update(
+        int64_t transferred_,
+        int64_t milliSeconds_,
+        time_t time_,
+        int64_t actual_,
+        bool crc32Checked_,
+                const HintedUser& user
+        );
 
-	double getTransferredPercentage() const;
-	bool isFull() const;
+    double getTransferredPercentage() const;
+    bool isFull() const;
 
-	GETSET(UserList, users, Users);
-	GETSET(int64_t, fileSize, FileSize);
-	GETSET(bool, crc32Checked, Crc32Checked);
+    GETSET(HintedUserList, users, Users);
+    GETSET(int64_t, fileSize, FileSize);
+    GETSET(int64_t, actual, Actual);
+    GETSET(bool, crc32Checked, Crc32Checked);
 };
 
 class FinishedUserItem : public FinishedItemBase, public intrusive_ptr_base<FinishedUserItem> {
 public:
-	explicit FinishedUserItem(
-		int64_t transferred_,
-		int64_t milliSeconds_,
-		time_t time_,
-		const string& file
-		);
+    explicit FinishedUserItem(
+        int64_t transferred_,
+        int64_t milliSeconds_,
+        time_t time_,
+        const string& file
+        );
 
-	void update(
-		int64_t transferred_,
-		int64_t milliSeconds_,
-		time_t time_,
-		const string& file
-		);
+    void update(
+        int64_t transferred_,
+        int64_t milliSeconds_,
+        time_t time_,
+        const string& file
+        );
 
-	GETSET(StringList, files, Files);
+    GETSET(StringList, files, Files);
 };
 
 } // namespace dcpp

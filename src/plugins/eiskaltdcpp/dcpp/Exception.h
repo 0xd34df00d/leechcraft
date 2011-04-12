@@ -24,13 +24,13 @@ namespace dcpp {
 class Exception : public std::exception
 {
 public:
-	Exception() { }
+        Exception() { }
         Exception(const string& aError) throw() : error(aError) { dcdrun(if(error.size()>0)) dcdebug("Thrown: %s\n", error.c_str()); }
 
-	virtual const char* what() const throw() { return getError().c_str(); }
+        virtual const char* what() const throw() { return getError().c_str(); }
 
-	virtual ~Exception() throw() { }
-        virtual const std::string& getError() const throw() { return error; }
+        virtual ~Exception() throw() { }
+        virtual const string& getError() const throw() { return error; }
 protected:
         string error;
 };
@@ -39,18 +39,18 @@ protected:
 
 #define STANDARD_EXCEPTION(name) class name : public Exception { \
 public:\
-	name() throw() : Exception(#name) { } \
-	name(const string& aError) throw() : Exception(#name ": " + aError) { } \
-	virtual ~name() throw() { } \
+        name() throw() : Exception(#name) { } \
+        name(const string& aError) throw() : Exception(#name ": " + aError) { } \
+        virtual ~name() throw() { } \
 }
 
 #else // _DEBUG
 
 #define STANDARD_EXCEPTION(name) class name : public Exception { \
 public:\
-	name() throw() : Exception() { } \
-	name(const string& aError) throw() : Exception(aError) { } \
-	virtual ~name() throw() { } \
+        name() throw() : Exception() { } \
+        name(const string& aError) throw() : Exception(aError) { } \
+        virtual ~name() throw() { } \
 }
 #endif
 

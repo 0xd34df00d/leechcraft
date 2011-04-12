@@ -25,28 +25,30 @@ namespace dcpp {
 
 class FavoriteManagerListener {
 public:
-	virtual ~FavoriteManagerListener() { }
-	template<int I>	struct X { enum { TYPE = I }; };
+    virtual ~FavoriteManagerListener() { }
+    template<int I> struct X { enum { TYPE = I }; };
 
-	typedef X<0> DownloadStarting;
-	typedef X<1> DownloadFailed;
-	typedef X<2> DownloadFinished;
-	typedef X<3> FavoriteAdded;
-	typedef X<4> FavoriteRemoved;
-	typedef X<5> UserAdded;
-	typedef X<6> UserRemoved;
-	typedef X<7> StatusChanged;
-	typedef X<8> LoadedFromCache;
+    typedef X<0> DownloadStarting;
+    typedef X<1> DownloadFailed;
+    typedef X<2> DownloadFinished;
+    typedef X<3> FavoriteAdded;
+    typedef X<4> FavoriteRemoved;
+    typedef X<5> UserAdded;
+    typedef X<6> UserRemoved;
+    typedef X<7> StatusChanged;
+    typedef X<8> LoadedFromCache;
+    typedef X<9> Corrupted;
 
-	virtual void on(DownloadStarting, const string&) throw() { }
-	virtual void on(DownloadFailed, const string&) throw() { }
-	virtual void on(DownloadFinished, const string&) throw() { }
-	virtual void on(FavoriteAdded, const FavoriteHubEntryPtr) throw() { }
-	virtual void on(FavoriteRemoved, const FavoriteHubEntryPtr) throw() { }
-	virtual void on(UserAdded, const FavoriteUser&) throw() { }
-	virtual void on(UserRemoved, const FavoriteUser&) throw() { }
-	virtual void on(StatusChanged, const UserPtr&) throw() { }
-	virtual void on(LoadedFromCache, const string&) throw() { }
+    virtual void on(DownloadStarting, const string&) throw() { }
+    virtual void on(DownloadFailed, const string&) throw() { }
+    virtual void on(DownloadFinished, const string&, bool) throw() { }
+    virtual void on(FavoriteAdded, const FavoriteHubEntryPtr) throw() { }
+    virtual void on(FavoriteRemoved, const FavoriteHubEntryPtr) throw() { }
+    virtual void on(UserAdded, const FavoriteUser&) throw() { }
+    virtual void on(UserRemoved, const FavoriteUser&) throw() { }
+    virtual void on(StatusChanged, const FavoriteUser&) throw() { }//NOTE: freedcpp
+    virtual void on(LoadedFromCache, const string&, const string&) throw() { }
+    virtual void on(Corrupted, const string&) throw() { }
 };
 
 } // namespace dcpp

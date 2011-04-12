@@ -24,42 +24,42 @@
 namespace dcpp {
 
 struct Task {
-	virtual ~Task() { };
+    virtual ~Task() { };
 };
 struct StringTask : public Task {
-	StringTask(const string& str_) : str(str_) { }
-	string str;
+    StringTask(const string& str_) : str(str_) { }
+    string str;
 };
 
 class TaskQueue {
 public:
-	typedef pair<int, Task*> Pair;
-	typedef vector<Pair> List;
-	typedef List::iterator Iter;
+    typedef pair<uint8_t, Task*> Pair;
+    typedef vector<Pair> List;
+    typedef List::const_iterator Iter;
 
-	TaskQueue() {
-	}
+    TaskQueue() {
+    }
 
-	~TaskQueue() {
-		clear();
-	}
+    ~TaskQueue() {
+        clear();
+    }
 
-	void add(int type, Task* data) { Lock l(cs); tasks.push_back(make_pair(type, data)); }
-	void get(List& list) { Lock l(cs); swap(tasks, list); }
-	void clear() {
-		List tmp;
-		get(tmp);
-		for(Iter i = tmp.begin(); i != tmp.end(); ++i) {
-			delete i->second;
-		}
-	}
+    void add(uint8_t type, Task* data) { Lock l(cs); tasks.push_back(make_pair(type, data)); }
+    void get(List& list) { Lock l(cs); swap(tasks, list); }
+    void clear() {
+        List tmp;
+        get(tmp);
+        for(Iter i = tmp.begin(); i != tmp.end(); ++i) {
+            delete i->second;
+        }
+    }
 private:
 
-	TaskQueue(const TaskQueue&);
-	TaskQueue& operator=(const TaskQueue&);
+    TaskQueue(const TaskQueue&);
+    TaskQueue& operator=(const TaskQueue&);
 
-	CriticalSection cs;
-	List tasks;
+    CriticalSection cs;
+    List tasks;
 };
 
 } // namespace dcpp

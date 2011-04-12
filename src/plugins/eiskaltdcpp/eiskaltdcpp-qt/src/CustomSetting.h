@@ -1,0 +1,6 @@
+#ifndef CUSTOMSETTING_H
+#define CUSTOMSETTING_H
+
+/** DEPRECATED */
+
+#endif // CUSTOMSETTING_H

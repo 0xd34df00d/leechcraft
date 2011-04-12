@@ -40,13 +40,6 @@
 #define _ATL_SECURE_NO_DEPRECATE 1
 #define _CRT_NON_CONFORMING_SWPRINTFS 1
 
-# pragma warning(disable: 4711) // function 'xxx' selected for automatic inline expansion
-# pragma warning(disable: 4786) // identifier was truncated to '255' characters in the debug information
-# pragma warning(disable: 4290) // C++ Exception Specification ignored
-# pragma warning(disable: 4127) // constant expression
-# pragma warning(disable: 4710) // function not inlined
-# pragma warning(disable: 4503) // decorated name length exceeded, name was truncated
-# pragma warning(disable: 4428) // universal-character-name encountered in source
 
 typedef signed __int8 int8_t;
 typedef signed __int16 int16_t;
@@ -71,11 +64,21 @@ typedef unsigned __int64 uint64_t;
 #endif // _MSC_VER
 
 #ifdef _WIN32
-# define _WIN32_WINNT 0x0501
-# define _WIN32_IE	0x0501
-# define WINVER 0x501
 
+#ifndef _WIN32_WINNT
+# define _WIN32_WINNT 0x0501
+#endif
+
+# define _WIN32_IE      0x0501
+
+#ifndef WINVER
+# define WINVER 0x501
+#endif
+
+#ifndef STRICT
 #define STRICT
+#endif
+
 #define WIN32_LEAN_AND_MEAN
 
 #include <winsock2.h>
@@ -88,7 +91,6 @@ typedef unsigned __int64 uint64_t;
 
 #else
 #include <unistd.h>
-#include <stdint.h>
 #endif
 
 #ifdef _MSC_VER
@@ -104,6 +106,9 @@ typedef unsigned __int64 uint64_t;
 #include <sys/types.h>
 #include <time.h>
 #include <locale.h>
+#ifndef _MSC_VER
+#include <stdint.h>
+#endif
 
 #include <algorithm>
 #include <vector>

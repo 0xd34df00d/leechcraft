@@ -21,6 +21,7 @@
 
 #include "DownloadManagerListener.h"
 #include "UploadManagerListener.h"
+#include "QueueManagerListener.h"
 
 #include "Speaker.h"
 #include "CriticalSection.h"
@@ -29,44 +30,89 @@
 #include "Util.h"
 #include "User.h"
 
+#include "MerkleTree.h"
+#include "ClientManager.h"
+
 namespace dcpp {
 
-class FinishedManager : public Singleton<FinishedManager>,
-	public Speaker<FinishedManagerListener>, private DownloadManagerListener, private UploadManagerListener
+/*RTF*/
+class FinishedItem
 {
 public:
-	typedef unordered_map<string, FinishedFileItemPtr> MapByFile;
-	typedef unordered_map<UserPtr, FinishedUserItemPtr, User::Hash> MapByUser;
+        typedef vector<FinishedItem> FinishedItemList;
+//      typedef FinishedItemList::const_iterator;
 
-	void lockLists();
-	const MapByFile& getMapByFile(bool upload) const;
-	const MapByUser& getMapByUser(bool upload) const;
-	void unLockLists();
+        FinishedItem(string const& aTarget, const UserPtr& aUser, string const& aHub,
+                int64_t aSize, int64_t aSpeed, time_t aTime,
+                const string& aTTH = Util::emptyString) :
+                target(aTarget), user(aUser), hub(aHub), size(aSize), avgSpeed(aSpeed),
+                time(aTime), tth(aTTH)
+        {
+        }
 
-	void remove(bool upload, const string& file);
-	void remove(bool upload, const UserPtr& user);
-	void removeAll(bool upload);
+        int imageIndex() const;
+
+        GETSET(string, target, Target);
+        GETSET(string, hub, Hub);
+        GETSET(string, tth, TTH);
+
+        GETSET(int64_t, size, Size);
+        GETSET(int64_t, avgSpeed, AvgSpeed);
+        GETSET(time_t, time, Time);
+        GETSET(UserPtr, user, User);
 
 private:
-	friend class Singleton<FinishedManager>;
+        friend class FinishedManager;
 
-	CriticalSection cs;
-	MapByFile DLByFile, ULByFile;
-	MapByUser DLByUser, ULByUser;
+};
+/**/
+class FinishedManager : public Singleton<FinishedManager>,
+    public Speaker<FinishedManagerListener>, private DownloadManagerListener, private UploadManagerListener, private QueueManagerListener
+{
+public:
+    typedef unordered_map<string, FinishedFileItemPtr> MapByFile;
+    typedef unordered_map<HintedUser, FinishedUserItemPtr, User::Hash> MapByUser;
 
-	FinishedManager();
-	virtual ~FinishedManager() throw();
+    void lockLists();
+    const FinishedItem::FinishedItemList& lockList(bool upload = false) { cs.enter(); return upload ? uploads : downloads; }
+    const MapByFile& getMapByFile(bool upload) const;
+    const MapByUser& getMapByUser(bool upload) const;
+    void unLockLists();
+    void unlockList() { cs.leave(); }
 
-	void clearDLs();
-	void clearULs();
+    void remove(bool upload, const string& file);
+    void remove(bool upload, const HintedUser& user);
+    void removeAll(bool upload);
+    //Partial
+    /** Get file full path by tth to share */
+    string getTarget(const string& aTTH);
 
-	void onComplete(Transfer* t, bool upload, bool crc32Checked = false);
+    bool handlePartialRequest(const TTHValue& tth, vector<uint16_t>& outPartialInfo);
+    //end
+private:
+    friend class Singleton<FinishedManager>;
 
-	virtual void on(DownloadManagerListener::Complete, Download* d) throw();
-	virtual void on(DownloadManagerListener::Failed, Download* d, const string&) throw();
+    CriticalSection cs;
+    MapByFile DLByFile, ULByFile;
+    MapByUser DLByUser, ULByUser;
+    //Partial
+    FinishedItem::FinishedItemList downloads, uploads;
 
-	virtual void on(UploadManagerListener::Complete, Upload* u) throw();
-	virtual void on(UploadManagerListener::Failed, Upload* u, const string&) throw();
+    FinishedManager();
+    virtual ~FinishedManager() throw();
+
+    void clearDLs();
+    void clearULs();
+
+    void onComplete(Transfer* t, bool upload, bool crc32Checked = false);
+
+    virtual void on(DownloadManagerListener::Complete, Download* d) throw();
+    virtual void on(DownloadManagerListener::Failed, Download* d, const string&) throw();
+
+    virtual void on(UploadManagerListener::Complete, Upload* u) throw();
+    virtual void on(UploadManagerListener::Failed, Upload* u, const string&) throw();
+
+    virtual void on(QueueManagerListener::CRCChecked, Download* d) throw();
 };
 
 } // namespace dcpp

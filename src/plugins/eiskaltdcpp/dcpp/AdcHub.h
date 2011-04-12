@@ -19,104 +19,133 @@
 #ifndef DCPLUSPLUS_DCPP_ADC_HUB_H
 #define DCPLUSPLUS_DCPP_ADC_HUB_H
 
+#include "typedefs.h"
+
 #include "Client.h"
 #include "AdcCommand.h"
 #include "Socket.h"
-
+#ifdef LUA_SCRIPT
+#include "ScriptManager.h"
+#endif
 namespace dcpp {
 
 class ClientManager;
+class AdcHub;
 
-class AdcHub : public Client, public CommandHandler<AdcHub> {
+#ifdef LUA_SCRIPT
+struct AdcScriptInstance : public ScriptInstance {
+    bool onClientMessage(AdcHub* aClient, const string& aLine);
+};
+#endif
+class AdcHub : public Client, public CommandHandler<AdcHub>
+#ifdef LUA_SCRIPT
+, public AdcScriptInstance
+#endif
+{
 public:
-	using Client::send;
-	using Client::connect;
+    using Client::send;
+    using Client::connect;
 
-	virtual void connect(const OnlineUser& user, const string& token);
-	void connect(const OnlineUser& user, string const& token, bool secure);
+    void connect(const OnlineUser& user, const string& token);
+    void connect(const OnlineUser& user, string const& token, bool secure);
 
-	virtual void hubMessage(const string& aMessage, bool thirdPerson = false);
-	virtual void privateMessage(const OnlineUser& user, const string& aMessage, bool thirdPerson = false);
-	virtual void sendUserCmd(const string& aUserCmd) { send(aUserCmd); }
-	virtual void search(int aSizeMode, int64_t aSize, int aFileType, const string& aString, const string& aToken);
-	virtual void password(const string& pwd);
-	virtual void info(bool alwaysSend);
+    void hubMessage(const string& aMessage, bool thirdPerson = false);
+    void privateMessage(const OnlineUser& user, const string& aMessage, bool thirdPerson = false);
+    void sendUserCmd(const UserCommand& command, const StringMap& params);
+    void search(int aSizeMode, int64_t aSize, int aFileType, const string& aString, const string& aToken, const StringList& aExtList);
+    void password(const string& pwd);
+    void info(bool alwaysSend);
 
-	virtual size_t getUserCount() const { Lock l(cs); return users.size(); }
-	virtual int64_t getAvailable() const;
+    size_t getUserCount() const { Lock l(cs); return users.size(); }
+    int64_t getAvailable() const;
 
-	virtual string escape(string const& str) const { return AdcCommand::escape(str, false); }
-	virtual void send(const AdcCommand& cmd);
+    string escape(string const& str) const { return AdcCommand::escape(str, false); }
+    void send(const AdcCommand& cmd);
 
-	string getMySID() { return AdcCommand::fromSID(sid); }
+    string getMySID() { return AdcCommand::fromSID(sid); }
+
+    static const vector<StringList>& getSearchExts();
+    static StringList parseSearchExts(int flag);
+
+    static const string CLIENT_PROTOCOL;
+    static const string SECURE_CLIENT_PROTOCOL_TEST;
+    static const string ADCS_FEATURE;
+    static const string TCP4_FEATURE;
+    static const string UDP4_FEATURE;
+    static const string NAT0_FEATURE;
+    static const string SEGA_FEATURE;
+    static const string BASE_SUPPORT;
+    static const string BAS0_SUPPORT;
+    static const string TIGR_SUPPORT;
+    static const string UCM0_SUPPORT;
+    static const string BLO0_SUPPORT;
+
 private:
-	friend class ClientManager;
-	friend class CommandHandler<AdcHub>;
+    friend class ClientManager;
+    friend class CommandHandler<AdcHub>;
+    friend class Identity;
 
-	AdcHub(const string& aHubURL, bool secure);
+    AdcHub(const string& aHubURL, bool secure);
 
-	AdcHub(const AdcHub&);
-	AdcHub& operator=(const AdcHub&);
-	virtual ~AdcHub() throw();
+    AdcHub(const AdcHub&);
+    AdcHub& operator=(const AdcHub&);
+    virtual ~AdcHub() throw();
 
-	/** Map session id to OnlineUser */
-	typedef unordered_map<uint32_t, OnlineUser*> SIDMap;
-	typedef SIDMap::iterator SIDIter;
+    /** Map session id to OnlineUser */
+    typedef unordered_map<uint32_t, OnlineUser*> SIDMap;
+    typedef SIDMap::iterator SIDIter;
 
-	bool oldPassword;
-	Socket udp;
-	SIDMap users;
-	StringMap lastInfoMap;
-	mutable CriticalSection cs;
+    bool oldPassword;
+    Socket udp;
+    SIDMap users;
+    StringMap lastInfoMap;
+    mutable CriticalSection cs;
 
-	string salt;
-	uint32_t sid;
+    string salt;
+    uint32_t sid;
 
-	static const string CLIENT_PROTOCOL;
-	static const string CLIENT_PROTOCOL_TEST;
-	static const string SECURE_CLIENT_PROTOCOL_TEST;
-	static const string ADCS_FEATURE;
-	static const string TCP4_FEATURE;
-	static const string UDP4_FEATURE;
-	static const string BASE_SUPPORT;
-	static const string BAS0_SUPPORT;
-	static const string TIGR_SUPPORT;
-	static const string UCM0_SUPPORT;
-	static const string BLO0_SUPPORT;
+    std::tr1::unordered_set<uint32_t> forbiddenCommands;
 
-	virtual string checkNick(const string& nick);
+    static const vector<StringList> searchExts;
 
-	OnlineUser& getUser(const uint32_t aSID, const CID& aCID);
-	OnlineUser* findUser(const uint32_t sid) const;
-	OnlineUser* findUser(const CID& cid) const;
-	void putUser(const uint32_t sid, bool disconnect);
+    virtual string checkNick(const string& nick);
 
-	void clearUsers();
+    OnlineUser& getUser(const uint32_t aSID, const CID& aCID);
+    OnlineUser* findUser(const uint32_t sid) const;
+    OnlineUser* findUser(const CID& cid) const;
+    void putUser(const uint32_t sid, bool disconnect);
 
-	void handle(AdcCommand::SUP, AdcCommand& c) throw();
-	void handle(AdcCommand::SID, AdcCommand& c) throw();
-	void handle(AdcCommand::MSG, AdcCommand& c) throw();
-	void handle(AdcCommand::INF, AdcCommand& c) throw();
-	void handle(AdcCommand::GPA, AdcCommand& c) throw();
-	void handle(AdcCommand::QUI, AdcCommand& c) throw();
-	void handle(AdcCommand::CTM, AdcCommand& c) throw();
-	void handle(AdcCommand::RCM, AdcCommand& c) throw();
-	void handle(AdcCommand::STA, AdcCommand& c) throw();
-	void handle(AdcCommand::SCH, AdcCommand& c) throw();
-	void handle(AdcCommand::CMD, AdcCommand& c) throw();
-	void handle(AdcCommand::RES, AdcCommand& c) throw();
-	void handle(AdcCommand::GET, AdcCommand& c) throw();
+    void clearUsers();
 
-	template<typename T> void handle(T, AdcCommand&) { }
+    void handle(AdcCommand::SUP, AdcCommand& c) throw();
+    void handle(AdcCommand::SID, AdcCommand& c) throw();
+    void handle(AdcCommand::MSG, AdcCommand& c) throw();
+    void handle(AdcCommand::INF, AdcCommand& c) throw();
+    void handle(AdcCommand::GPA, AdcCommand& c) throw();
+    void handle(AdcCommand::QUI, AdcCommand& c) throw();
+    void handle(AdcCommand::CTM, AdcCommand& c) throw();
+    void handle(AdcCommand::RCM, AdcCommand& c) throw();
+    void handle(AdcCommand::STA, AdcCommand& c) throw();
+    void handle(AdcCommand::SCH, AdcCommand& c) throw();
+    void handle(AdcCommand::CMD, AdcCommand& c) throw();
+    void handle(AdcCommand::RES, AdcCommand& c) throw();
+    void handle(AdcCommand::GET, AdcCommand& c) throw();
+    void handle(AdcCommand::PSR, AdcCommand& c) throw();
+    void handle(AdcCommand::NAT, AdcCommand& c) throw();
+    void handle(AdcCommand::RNT, AdcCommand& c) throw();
 
-	void sendUDP(const AdcCommand& cmd) throw();
+    template<typename T> void handle(T, AdcCommand&) { }
 
-	virtual void on(Connecting) throw() { fire(ClientListener::Connecting(), this); }
-	virtual void on(Connected) throw();
-	virtual void on(Line, const string& aLine) throw();
-	virtual void on(Failed, const string& aLine) throw();
+    void sendSearch(AdcCommand& c);
+    void sendUDP(const AdcCommand& cmd) throw();
+    void unknownProtocol(uint32_t target, const string& protocol, const string& token);
+    bool secureAvail(uint32_t target, const string& protocol, const string& token);
+    virtual void on(Connecting) throw() { fire(ClientListener::Connecting(), this); }
+    virtual void on(Connected) throw();
+    virtual void on(Line, const string& aLine) throw();
+    virtual void on(Failed, const string& aLine) throw();
 
-	virtual void on(Second, uint32_t aTick) throw();
+    virtual void on(Second, uint64_t aTick) throw();
 
 };
 

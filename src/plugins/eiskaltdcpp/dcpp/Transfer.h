@@ -30,81 +30,88 @@ namespace dcpp {
 
 class Transfer : private boost::noncopyable {
 public:
-	enum Type {
-		TYPE_FILE,
-		TYPE_FULL_LIST,
-		TYPE_PARTIAL_LIST,
-		TYPE_TREE,
-		TYPE_LAST
-	};
+    enum Type {
+        TYPE_FILE,
+        TYPE_FULL_LIST,
+        TYPE_PARTIAL_LIST,
+        TYPE_TREE,
+        TYPE_LAST
+    };
 
-	static const string names[TYPE_LAST];
+    static const string names[TYPE_LAST];
 
-	static const string USER_LIST_NAME;
-	static const string USER_LIST_NAME_BZ;
+    static const string USER_LIST_NAME;
+    static const string USER_LIST_NAME_BZ;
 
-	Transfer(UserConnection& conn, const string& path, const TTHValue& tth);
-	virtual ~Transfer() { };
+    Transfer(UserConnection& conn, const string& path, const TTHValue& tth);
+    virtual ~Transfer() { };
 
-	int64_t getPos() const { return pos; }
+    int64_t getPos() const { return pos; }
 
-	int64_t getStartPos() const { return getSegment().getStart(); }
+    int64_t getStartPos() const { return getSegment().getStart(); }
 
-	void addPos(int64_t aBytes, int64_t aActual) { pos += aBytes; actual+= aActual; }
+    void resetPos() { pos = 0; }
 
-	enum { MIN_SAMPLES = 15, MIN_SECS = 15 };
+    void addPos(int64_t aBytes, int64_t aActual) { pos += aBytes; actual+= aActual; }
 
-	/** Record a sample for average calculation */
-	void tick();
+    enum { MIN_SAMPLES = 15, MIN_SECS = 15 };
 
-	int64_t getActual() const { return actual; }
+    /** Record a sample for average calculation */
+    void tick();
 
-	int64_t getSize() const { return getSegment().getSize(); }
-	void setSize(int64_t size) { segment.setSize(size); }
+    int64_t getActual() const { return actual; }
 
-	double getAverageSpeed() const;
+    int64_t getSize() const { return getSegment().getSize(); }
+    void setSize(int64_t size) { segment.setSize(size); }
 
-	int64_t getSecondsLeft() const {
-		double avg = getAverageSpeed();
-		return (avg > 0) ? (getBytesLeft() / avg) : 0;
-	}
+    double getAverageSpeed() const;
 
-	int64_t getBytesLeft() const {
-		return getSize() - getPos();
-	}
+    int64_t getSecondsLeft() const {
+        double avg = getAverageSpeed();
+        return (avg > 0) ? (getBytesLeft() / avg) : 0;
+    }
 
-	virtual void getParams(const UserConnection& aSource, StringMap& params);
+    int64_t getBytesLeft() const {
+        return getSize() - getPos();
+    }
 
-	UserPtr getUser();
-	const UserPtr getUser() const;
+    virtual void getParams(const UserConnection& aSource, StringMap& params);
 
-	const string& getPath() const { return path; }
-	const TTHValue& getTTH() const { return tth; }
+    UserPtr getUser();
+    const UserPtr getUser() const;
+    const HintedUser getHintedUser() const;
 
-	UserConnection& getUserConnection() { return userConnection; }
-	const UserConnection& getUserConnection() const { return userConnection; }
+    const string& getPath() const { return path; }
+    const TTHValue& getTTH() const { return tth; }
 
-	GETSET(Segment, segment, Segment);
-	GETSET(Type, type, Type);
-	GETSET(uint64_t, start, Start);
+    UserConnection& getUserConnection() { return userConnection; }
+    const UserConnection& getUserConnection() const { return userConnection; }
+//#ifdef DHT
+    //Partial
+    bool getOverlapped() const { return getSegment().getOverlapped(); }
+    void setOverlapped(bool overlap) { segment.setOverlapped(overlap); }
+//#endif
+    GETSET(Segment, segment, Segment);
+    GETSET(Type, type, Type);
+    GETSET(uint64_t, start, Start);
 private:
 
-	typedef std::pair<uint64_t, int64_t> Sample;
-	typedef deque<Sample> SampleList;
+    typedef std::pair<uint64_t, int64_t> Sample;
+    typedef deque<Sample> SampleList;
 
-	SampleList samples;
-	mutable CriticalSection cs;
+    SampleList samples;
+    mutable CriticalSection cs;
 
-	/** The file being transferred */
-	string path;
-	/** TTH of the file being transferred */
-	TTHValue tth;
-	/** Bytes transferred over socket */
-	int64_t actual;
-	/** Bytes transferred to/from file */
-	int64_t pos;
+    /** The file being transferred */
+    string path;
+    /** TTH of the file being transferred */
+    TTHValue tth;
+    /** Bytes transferred over socket */
+    int64_t actual;
+    /** Bytes transferred to/from file */
+    int64_t pos;
 
-	UserConnection& userConnection;
+    UserConnection& userConnection;
 };
 
 } // namespace dcpp

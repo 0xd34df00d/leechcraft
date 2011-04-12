@@ -26,11 +26,41 @@
 #include "BufferedSocketListener.h"
 #include "TimerManager.h"
 #include "ClientListener.h"
+#include "Atomic.h"
+
+#ifdef LUA_SCRIPT
+#include "ScriptManager.h"
+#endif
 
 namespace dcpp {
+#ifdef LUA_SCRIPT
+    struct ClientScriptInstance : public ScriptInstance {
+    bool onHubFrameEnter(Client* aClient, const string& aLine);
+    string formatChatMessage(const string& aLine);
+};
+#endif
+class ClientBase
+{
+public:
 
+    ClientBase() : type(DIRECT_CONNECT) { }
+
+    enum P2PType { DIRECT_CONNECT, DHT };
+    P2PType type;
+    P2PType getType() const { return type; }
+    virtual const string& getHubUrl() const = 0;
+    virtual string getHubName() const = 0;
+    virtual bool isOp() const = 0;
+    virtual void connect(const OnlineUser& user, const string& token) = 0;
+    virtual void privateMessage(const OnlineUser& user, const string& aMessage, bool thirdPerson = false) = 0;
+
+};
 /** Yes, this should probably be called a Hub */
-class Client : public Speaker<ClientListener>, public BufferedSocketListener, protected TimerManagerListener {
+class Client : public ClientBase, public Speaker<ClientListener>, public BufferedSocketListener, protected TimerManagerListener
+#ifdef LUA_SCRIPT
+, public ClientScriptInstance
+#endif
+{
 public:
     typedef Client* Ptr;
     typedef list<Ptr> List;
@@ -42,8 +72,8 @@ public:
     virtual void connect(const OnlineUser& user, const string& token) = 0;
     virtual void hubMessage(const string& aMessage, bool thirdPerson = false) = 0;
     virtual void privateMessage(const OnlineUser& user, const string& aMessage, bool thirdPerson = false) = 0;
-    virtual void sendUserCmd(const string& aUserCmd) = 0;
-    virtual void search(int aSizeMode, int64_t aSize, int aFileType, const string& aString, const string& aToken) = 0;
+    virtual void sendUserCmd(const UserCommand& command, const StringMap& params) = 0;
+    virtual void search(int aSizeMode, int64_t aSize, int aFileType, const string& aString, const string& aToken, const StringList& aExtList) = 0;
     virtual void password(const string& pwd) = 0;
     virtual void info(bool force) = 0;
 
@@ -55,9 +85,11 @@ public:
     virtual string escape(string const& str) const { return str; }
 
     bool isConnected() const { return state != STATE_DISCONNECTED; }
+    bool isReady() const { return state != STATE_CONNECTING && state != STATE_DISCONNECTED; }
     bool isSecure() const;
     bool isTrusted() const;
     std::string getCipherName() const;
+    vector<uint8_t> getKeyprint() const;
 
     bool isOp() const { return getMyIdentity().isOp(); }
 
@@ -72,7 +104,10 @@ public:
 
     static string getCounts() {
         char buf[128];
-        return string(buf, snprintf(buf, sizeof(buf), "%ld/%ld/%ld", counts.normal, counts.registered, counts.op));
+        return string(buf, snprintf(buf, sizeof(buf), "%ld/%ld/%ld",
+            static_cast<long>(counts.normal),
+            static_cast<long>(counts.registered),
+            static_cast<long>(counts.op)));
     }
 
     StringMap& escapeParams(StringMap& sm) {
@@ -84,7 +119,7 @@ public:
 
     void reconnect();
     void shutdown();
-
+    bool isActive() const;
     void send(const string& aMessage) { send(aMessage.c_str(), aMessage.length()); }
     void send(const char* aMessage, size_t aLen);
 
@@ -109,6 +144,8 @@ public:
     GETSET(string, currentNick, CurrentNick);
     GETSET(string, currentDescription, CurrentDescription);
 
+    string getFavIp() const { return externalIP; }
+
     /** Reload details from favmanager or settings */
     void reloadSettings(bool updateNick);
 protected:
@@ -116,11 +153,14 @@ protected:
     Client(const string& hubURL, char separator, bool secure_);
     virtual ~Client() throw();
     struct Counts {
-        Counts(long n = 0, long r = 0, long o = 0) : normal(n), registered(r), op(o) { }
-        volatile long normal;
-        volatile long registered;
-        volatile long op;
-        bool operator !=(const Counts& rhs) { return normal != rhs.normal || registered != rhs.registered || op != rhs.op; }
+        private:
+            typedef Atomic<boost::int32_t> atomic_counter_t;
+        public:
+            typedef boost::int32_t value_type;
+            Counts(value_type n = 0, value_type r = 0, value_type o = 0) : normal(n), registered(r), op(o) { }
+            atomic_counter_t normal;
+            atomic_counter_t registered;
+            atomic_counter_t op;
     };
 
     enum States {
@@ -143,7 +183,7 @@ protected:
     virtual string checkNick(const string& nick) = 0;
 
     // TimerManagerListener
-    virtual void on(Second, uint32_t aTick) throw();
+    virtual void on(Second, uint64_t aTick) throw();
     // BufferedSocketListener
     virtual void on(Connecting) throw() { fire(ClientListener::Connecting(), this); }
     virtual void on(Connected) throw();
@@ -166,6 +206,7 @@ private:
     string address;
     string ip;
     string localIp;
+    string keyprint;
     uint16_t port;
     string externalIP;
     char separator;

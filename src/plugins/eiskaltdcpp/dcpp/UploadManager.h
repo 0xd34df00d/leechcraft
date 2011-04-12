@@ -31,6 +31,7 @@
 #include "TimerManager.h"
 #include "Speaker.h"
 #include "PerFolderLimit.h"
+#include "SettingsManager.h"
 
 namespace dcpp {
 
@@ -55,30 +56,41 @@ public:
     int getFreeExtraSlots() { return max(3 - getExtra(), 0); }
 
     /** @param aUser Reserve an upload slot for this user and connect. */
-    void reserveSlot(const UserPtr& aUser, const string& hubHint);
+    void reserveSlot(const HintedUser& aUser);
+
+    /** */
+    void reloadRestrictions();
 
     typedef set<string> FileSet;
     typedef unordered_map<UserPtr, FileSet, User::Hash> FilesMap;
     void clearUserFiles(const UserPtr&);
-    UserList getWaitingUsers();
+    HintedUserList getWaitingUsers() const;
     const FileSet& getWaitingUserFiles(const UserPtr&);
 
     /** @internal */
     void addConnection(UserConnectionPtr conn);
 
-    GETSET(int, running, Running);
-    GETSET(int, extra, Extra);
+    void notifyQueuedUsers();
+    void setRunning(int _running) { running = _running; notifyQueuedUsers(); }
+
+    //GETSET(int, running, Running);
+    GETSET(uint8_t, extraPartial, ExtraPartial);
+    GETSET(uint8_t, extra, Extra);
     GETSET(uint64_t, lastGrant, LastGrant);
+
+    void updateLimits() {limits.RenewList(NULL);}
 private:
+    int running;
     UploadList uploads;
-    CriticalSection cs;
+    mutable CriticalSection cs;
 
     typedef unordered_set<UserPtr, User::Hash> SlotSet;
     typedef SlotSet::iterator SlotIter;
     SlotSet reservedSlots;
     CPerfolderLimit limits;
+    int lastFreeSlots; /// amount of free slots at the previous minute
 
-    typedef pair<UserPtr, uint64_t> WaitingUser;
+    typedef pair<HintedUser, uint64_t> WaitingUser;
     typedef list<WaitingUser> WaitingUserList;
 
     struct WaitingUserFresh {
@@ -102,8 +114,8 @@ private:
     virtual void on(ClientManagerListener::UserDisconnected, const UserPtr& aUser) throw();
 
     // TimerManagerListener
-    virtual void on(Second, uint32_t aTick) throw();
-    virtual void on(Minute, uint32_t aTick) throw();
+    virtual void on(Second, uint64_t aTick) throw();
+    virtual void on(Minute, uint64_t aTick) throw();
 
     // UserConnectionListener
     virtual void on(BytesSent, UserConnection*, size_t, size_t) throw();

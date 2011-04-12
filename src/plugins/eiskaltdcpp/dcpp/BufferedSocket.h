@@ -19,13 +19,15 @@
 #ifndef DCPLUSPLUS_DCPP_BUFFERED_SOCKET_H
 #define DCPLUSPLUS_DCPP_BUFFERED_SOCKET_H
 
-#include "forward.h"
+#include "typedefs.h"
+
 #include "BufferedSocketListener.h"
 #include "Semaphore.h"
 #include "Thread.h"
 #include "Speaker.h"
 #include "Util.h"
 #include "Socket.h"
+#include "Atomic.h"
 
 namespace dcpp {
 
@@ -35,6 +37,12 @@ public:
 		MODE_LINE,
 		MODE_ZPIPE,
 		MODE_DATA
+	};
+
+	enum NatRoles {
+		NAT_NONE,
+		NAT_CLIENT,
+		NAT_SERVER
 	};
 
 	/**
@@ -60,6 +68,7 @@ public:
 
 	void accept(const Socket& srv, bool secure, bool allowUntrusted) throw(SocketException);
 	void connect(const string& aAddress, uint16_t aPort, bool secure, bool allowUntrusted, bool proxy) throw(SocketException);
+	void connect(const string& aAddress, uint16_t aPort, uint16_t localPort, NatRoles natRole, bool secure, bool allowUntrusted, bool proxy) throw(SocketException);
 
 	/** Sets data mode for aBytes bytes. Must be called within onLine. */
 	void setDataMode(int64_t aBytes = -1) { mode = MODE_DATA; dataBytes = aBytes; }
@@ -77,6 +86,7 @@ public:
 	bool isSecure() const { return sock->isSecure(); }
 	bool isTrusted() const { return sock->isTrusted(); }
 	std::string getCipherName() const { return sock->getCipherName(); }
+	vector<uint8_t> getKeyprint() const { return sock->getKeyprint(); }
 
 	void write(const string& aData) { write(aData.data(), aData.length()); }
 	void write(const char* aBuf, size_t aLen) throw();
@@ -89,6 +99,7 @@ public:
 	void disconnect(bool graceless = false) throw() { Lock l(cs); if(graceless) disconnecting = true; addTask(DISCONNECT, 0); }
 
 	string getLocalIp() const { return sock->getLocalIp(); }
+	uint16_t getLocalPort() const { return sock->getLocalPort(); }
 
 	GETSET(char, separator, Separator)
 private:
@@ -112,9 +123,11 @@ private:
 		virtual ~TaskData() { }
 	};
 	struct ConnectInfo : public TaskData {
-		ConnectInfo(string addr_, uint16_t port_, bool proxy_) : addr(addr_), port(port_), proxy(proxy_) { }
+		ConnectInfo(string addr_, uint16_t port_, uint16_t localPort_, NatRoles natRole_, bool proxy_) : addr(addr_), port(port_), localPort(localPort_), natRole(natRole_), proxy(proxy_) { }
 		string addr;
 		uint16_t port;
+		uint16_t localPort;
+		NatRoles natRole;
 		bool proxy;
 	};
 	struct SendFileInfo : public TaskData {
@@ -146,14 +159,14 @@ private:
 
 	virtual int run();
 
-	void threadConnect(const string& aAddr, uint16_t aPort, bool proxy) throw(SocketException);
+	void threadConnect(const string& aAddr, uint16_t aPort, uint16_t localPort, NatRoles natRole, bool proxy) throw(SocketException);
 	void threadAccept() throw(SocketException);
 	void threadRead() throw(Exception);
 	void threadSendFile(InputStream* is) throw(Exception);
 	void threadSendData() throw(Exception);
 
 	void fail(const string& aError);
-	static volatile long sockets;
+	static Atomic<long,memory_ordering_strong> sockets;
 
 	bool checkEvents() throw(Exception);
 	void checkSocket() throw(Exception);
