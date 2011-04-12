@@ -71,11 +71,12 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
 , Splash_ (new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
-		Qt::WindowStaysOnTopHint | Qt::SplashScreen))
+		Qt::SplashScreen))
 {
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
 
+	hide ();
 	Splash_->setMask (QPixmap (":/resources/images/splashscreen.png").mask ());
 	Splash_->show ();
 	Splash_->setUpdatesEnabled (true);
@@ -83,6 +84,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	QApplication::processEvents ();
 
 	InitializeInterface ();
+	hide ();
 
 	connect (qApp,
 			SIGNAL (aboutToQuit ()),
