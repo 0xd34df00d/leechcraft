@@ -362,6 +362,13 @@ namespace Xoox
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
 	}
+	
+	void ClientConnection::AddEntry (const QString& id,
+			const QString& name, const QStringList& groups)
+	{
+		Client_->rosterManager ().addRosterEntry (id,
+				name, QString (), QSet<QString>::fromList (groups));
+	}
 
 	void ClientConnection::Subscribe (const QString& id,
 			const QString& msg, const QString& name, const QStringList& groups)

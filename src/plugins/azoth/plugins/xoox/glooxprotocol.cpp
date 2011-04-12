@@ -180,9 +180,22 @@ namespace Xoox
 		}
 
 		QMap<QString, QString> queryItems;
-		QPair<QString, QString> pair;
-		Q_FOREACH (pair, url.queryItems ())
-			queryItems [pair.first] = pair.second;
+		QList<QByteArray> queryParts = url.encodedQuery ().split (';');
+		Q_FOREACH (const QByteArray& part, queryParts)
+		{
+			const QList<QByteArray>& splitted = part.split ('=');
+			if (splitted.size () > 2)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "incorrect query part"
+						<< part
+						<< splitted;
+				continue;
+			}
+			queryItems [splitted.at (0)] = QUrl::fromPercentEncoding (splitted.value (1));
+		}
+			
+		qDebug () << "HANDLE" << queryItems;
 
 		const QString& path = url.path ();
 		if (queryItems.contains ("join"))
@@ -197,6 +210,12 @@ namespace Xoox
 				return;
 			}
 			acc->JoinRoom (split.at (1), split.at (0), acc->GetNick ());
+		}
+		else if (queryItems.contains ("roster"))
+		{
+			QString name = queryItems ["name"];
+			QStringList groups (queryItems ["group"]);
+			acc->AddEntry (path, name, groups);
 		}
 	}
 
