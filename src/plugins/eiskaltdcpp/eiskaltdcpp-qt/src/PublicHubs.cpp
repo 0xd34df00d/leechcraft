@@ -35,7 +35,7 @@ PublicHubs::PublicHubs(QWidget *parent) :
 
     FavoriteManager::getInstance()->addListener(this);
 
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayout *MW = MainLayout::getInstance();
     MW->addArenaWidget(this);
 
     QString hubs = _q(SettingsManager::getInstance()->get(SettingsManager::HUBLIST_SERVERS));
@@ -103,17 +103,17 @@ bool PublicHubs::eventFilter(QObject *obj, QEvent *e){
 
 void PublicHubs::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidget(this);
 
         WSSET(WS_PUBLICHUBS_STATE, treeView->header()->saveState().toBase64());
 
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }
@@ -180,7 +180,7 @@ void PublicHubs::slotContextMenu(){
 
     if (ret == connect){
         PublicHubItem * item = NULL;
-        MainWindow *MW = MainWindow::getInstance();
+        MainLayout *MW = MainLayout::getInstance();
 
         foreach (QModelIndex i, indexes){
             item = reinterpret_cast<PublicHubItem*>(i.internalPointer());
@@ -236,7 +236,7 @@ void PublicHubs::slotDoubleClicked(const QModelIndex &index){
     QModelIndex i = proxy? proxy->mapToSource(index) : index;
 
     PublicHubItem * item = reinterpret_cast<PublicHubItem*>(i.internalPointer());
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayout *MW = MainLayout::getInstance();
 
     if (item)
         MW->newHubFrame(item->data(COLUMN_PHUB_ADDRESS).toString(), "");

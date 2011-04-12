@@ -600,7 +600,7 @@ void SettingsGUI::slotBrowseLng(){
         WulforSettings::getInstance()->blockSignals(false);
 
         WulforSettings::getInstance()->loadTranslation();//set language for application
-        MainWindow::getInstance()->retranslateUi();
+        MainLayout::getInstance()->retranslateUi();
 
         WSSET(WS_TRANSLATION_FILE, file);//emit signals for other widgets
 
@@ -618,7 +618,7 @@ void SettingsGUI::slotLngIndexChanged(int index){
     WulforSettings::getInstance()->blockSignals(false);
 
     WulforSettings::getInstance()->loadTranslation();
-    MainWindow::getInstance()->retranslateUi();
+    MainLayout::getInstance()->retranslateUi();
 
     WSSET(WS_TRANSLATION_FILE, file);
 

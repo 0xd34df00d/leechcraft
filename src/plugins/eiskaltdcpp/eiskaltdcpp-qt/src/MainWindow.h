@@ -49,6 +49,8 @@
 #include "dcpp/Util.h"
 #include "dcpp/version.h"
 
+#include <interfaces/iinfo.h>
+
 #include "qtsingleapp/qtlockedfile.h"
 #include "qtsingleapp/qtsingleapplication.h"
 
@@ -64,7 +66,7 @@
 class FavoriteHubs;
 class DownloadQueue;
 class ToolBar;
-class MainWindow;
+class MainLayout;
 class MultiLineToolBar;
 
 extern const char * const EISKALTDCPP_VERSION;
@@ -103,16 +105,18 @@ public:
 
 class HashProgress;
 
-class MainWindow:
+class MainLayout:
         public QMainWindow,
-        public  dcpp::Singleton<MainWindow>,
+        public dcpp::Singleton<MainLayout>,
+        public IInfo,
         private dcpp::LogManagerListener,
         private dcpp::TimerManagerListener,
         private dcpp::QueueManagerListener
 {
     Q_OBJECT
+    Q_INTERFACES (IInfo)
 
-friend class dcpp::Singleton<MainWindow>;
+friend class dcpp::Singleton<MainLayout>;
 
     public:
 
@@ -122,6 +126,9 @@ friend class dcpp::Singleton<MainWindow>;
 
         Q_PROPERTY (QObject* ToolBar READ getToolBar);
         Q_PROPERTY (QMenuBar* MenuBar READ menuBar);
+
+        MainLayout (QWidget *parent=NULL);
+        virtual ~MainLayout();
 
         void beginExit();
 
@@ -147,6 +154,16 @@ friend class dcpp::Singleton<MainWindow>;
         void setUnload(bool b){ isUnload = b; }
 
         ArenaWidget *widgetForRole(ArenaWidget::Role) const;
+
+        /** IInfo interface */
+        virtual void Init (ICoreProxy_ptr proxy);
+        virtual void SecondInit ();
+        virtual QByteArray GetUniqueID () const;
+        virtual QString GetName () const;
+        virtual QString GetInfo () const;
+        virtual void Release ();
+        virtual QIcon GetIcon () const;
+        QStringList Provides () const { return QStringList ("directconnect"); }
 
     public Q_SLOTS:
         /** Allow widget to be mapped on arena*/
@@ -268,10 +285,7 @@ friend class dcpp::Singleton<MainWindow>;
         void notifyMessage(int, const QString&, const QString&);
 
     private:
-        MainWindow (QWidget *parent=NULL);
-        virtual ~MainWindow();
-
-        /** LogManagerListener */
+         /** LogManagerListener */
         virtual void on(dcpp::LogManagerListener::Message, time_t t, const std::string&) throw();
         /** TimerManagerListener */
         virtual void on(dcpp::TimerManagerListener::Second, uint64_t) throw();
@@ -424,7 +438,7 @@ friend class dcpp::Singleton<MainWindow>;
         ArenaWidgetMap arenaMap;
 };
 
-Q_DECLARE_METATYPE(MainWindow*)
+Q_DECLARE_METATYPE(MainLayout*)
 
 class EiskaltEventFilter: public QObject{
 Q_OBJECT
@@ -496,9 +510,9 @@ public:
     }
 
     void commitData(QSessionManager& manager){
-        if (MainWindow::getInstance()){
-            MainWindow::getInstance()->beginExit();
-            MainWindow::getInstance()->close();
+        if (MainLayout::getInstance()){
+            MainLayout::getInstance()->beginExit();
+            MainLayout::getInstance()->close();
         }
 
         manager.release();

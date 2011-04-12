@@ -31,7 +31,7 @@ SpyFrame::SpyFrame(QWidget *parent) :
     treeView->setModel(model);
     treeView->setContextMenuPolicy(Qt::CustomContextMenu);
 
-    MainWindow::getInstance()->addArenaWidget(this);
+    MainLayout::getInstance()->addArenaWidget(this);
 
     connect(this, SIGNAL(coreIncomingSearch(QString,bool)), model, SLOT(addResult(QString,bool)), Qt::QueuedConnection);
 
@@ -47,9 +47,9 @@ SpyFrame::~SpyFrame(){
 
 void SpyFrame::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidget(this);
 
         //setAttribute(Qt::WA_DeleteOnClose);
 
@@ -68,8 +68,8 @@ void SpyFrame::closeEvent(QCloseEvent *e){
                 slotStartStop();
         }
 
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }

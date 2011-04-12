@@ -21,7 +21,7 @@
 #include "ArenaWidgetContainer.h"
 
 class ArenaWidget;
-class MainWindow;
+class MainLayout;
 
 class ToolBar :
     public QToolBar,

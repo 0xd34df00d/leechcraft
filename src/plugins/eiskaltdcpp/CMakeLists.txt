@@ -218,7 +218,7 @@ elseif (NOT DCPP_REVISION)
     set (eiskaltdcpp_WC_REVISION "${VERSION_SUFFIX}")
 endif ()
 
-include_directories (${CMAKE_CURRENT_BINARY_DIR})
+include_directories (${CMAKE_CURRENT_BINARY_DIR} ${LEECHCRAFT_INCLUDE_DIR})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Version.h.in ${CMAKE_CURRENT_BINARY_DIR}/VersionGlobal.h)
 
 if (UNIX)

@@ -39,7 +39,7 @@ Notification::Notification(QObject *parent) :
 
     enableTray(WBGET(WB_TRAY_ENABLED));
 
-    connect(MainWindow::getInstance(), SIGNAL(notifyMessage(int,QString,QString)), this, SLOT(showMessage(int,QString,QString)), Qt::QueuedConnection);
+    connect(MainLayout::getInstance(), SIGNAL(notifyMessage(int,QString,QString)), this, SLOT(showMessage(int,QString,QString)), Qt::QueuedConnection);
 }
 
 Notification::~Notification(){
@@ -56,7 +56,7 @@ void Notification::enableTray(bool enable){
 
         tray = NULL;
 
-        MainWindow::getInstance()->setUnload(true);
+        MainLayout::getInstance()->setUnload(true);
 
         //WBSET(WB_TRAY_ENABLED, false);
     }
@@ -79,7 +79,7 @@ void Notification::enableTray(bool enable){
             return;
         }
         else if (!QSystemTrayIcon::isSystemTrayAvailable()){
-            MainWindow::getInstance()->show();
+            MainLayout::getInstance()->show();
 
             return;
         }
@@ -90,10 +90,10 @@ void Notification::enableTray(bool enable){
         tray->setIcon(WICON(WulforUtil::eiICON_APPL)
                     .scaled(22, 22, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
-        QMenu *menu = new QMenu(MainWindow::getInstance());
+        QMenu *menu = new QMenu(MainLayout::getInstance());
         menu->setTitle("EiskaltDC++");
 
-        QMenu *menuAdditional = new QMenu(tr("Additional"), MainWindow::getInstance());
+        QMenu *menuAdditional = new QMenu(tr("Additional"), MainLayout::getInstance());
         QAction *actSupressSnd = new QAction(tr("Supress sound notifications"), menuAdditional);
         QAction *actSupressTxt = new QAction(tr("Supress text notifications"), menuAdditional);
 
@@ -130,7 +130,7 @@ void Notification::enableTray(bool enable){
 
         tray->show();
 
-        MainWindow::getInstance()->setUnload(false);
+        MainLayout::getInstance()->setUnload(false);
 
         //WBSET(WB_TRAY_ENABLED, true);
     }
@@ -158,18 +158,18 @@ void Notification::showMessage(int t, const QString &title, const QString &msg){
             if (title.isEmpty() || msg.isEmpty())
                 break;
 
-            if (MainWindow::getInstance()->isActiveWindow() && !WBGET(WB_NOTIFY_SHOW_ON_ACTIVE) ||
-        !MainWindow::getInstance()->isActiveWindow() && MainWindow::getInstance()->isVisible() && !WBGET(WB_NOTIFY_SHOW_ON_VISIBLE))
+            if (MainLayout::getInstance()->isActiveWindow() && !WBGET(WB_NOTIFY_SHOW_ON_ACTIVE) ||
+        !MainLayout::getInstance()->isActiveWindow() && MainLayout::getInstance()->isVisible() && !WBGET(WB_NOTIFY_SHOW_ON_VISIBLE))
                 break;
 
             if (!(static_cast<unsigned>(WIGET(WI_NOTIFY_EVENTMAP)) & static_cast<unsigned>(t)))
                 break;
 
-            if (tray && t == PM && (!MainWindow::getInstance()->isVisible() || WBGET(WB_NOTIFY_CH_ICON_ALWAYS))){
+            if (tray && t == PM && (!MainLayout::getInstance()->isVisible() || WBGET(WB_NOTIFY_CH_ICON_ALWAYS))){
                 tray->setIcon(WICON(WulforUtil::eiMESSAGE_TRAY_ICON));
 
-                if (MainWindow::getInstance()->isVisible())
-                    QApplication::alert(MainWindow::getInstance(), 0);
+                if (MainLayout::getInstance()->isVisible())
+                    QApplication::alert(MainLayout::getInstance(), 0);
             }
 
             if (notify)
@@ -245,14 +245,14 @@ void Notification::reloadSounds(){
 
 void Notification::slotExit(){
     if (WBGET(WB_EXIT_CONFIRM))
-        MainWindow::getInstance()->show();
+        MainLayout::getInstance()->show();
 
-    MainWindow::getInstance()->setUnload(true);
-    MainWindow::getInstance()->close();
+    MainLayout::getInstance()->setUnload(true);
+    MainLayout::getInstance()->close();
 }
 
 void Notification::slotShowHide(){
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayout *MW = MainLayout::getInstance();
 
     if (MW->isVisible()){
 #ifdef WIN32

@@ -32,7 +32,7 @@
 #include "dcpp/DirectoryListing.h"
 #include "dcpp/Singleton.h"
 
-class MainWindow;
+class MainLayout;
 
 class FileBrowserModel;
 class FileBrowserItem;
