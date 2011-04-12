@@ -34,6 +34,11 @@ namespace Azoth
 	 *
 	 * IProtocol class represents a single protocol with its own set of
 	 * accounts.
+	 * 
+	 * A protocol may also implement IURIHandler if it supports handling
+	 * of various URIs, like xmpp: for XMPP protocol.
+	 * 
+	 * @sa IURIHandler
 	 */
 	class IProtocol
 	{
