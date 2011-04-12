@@ -21,46 +21,49 @@
 
 namespace dcpp {
 
-template<typename T>
-class Singleton {
+class ISingleton{
 public:
-	Singleton() { }
-	virtual ~Singleton() { }
+    ISingleton(){}
 
-        inline static T* getInstance() __attribute__((always_inline));
-        inline static void newInstance() __attribute__((always_inline));
-        inline static void deleteInstance() __attribute__((always_inline));
+    virtual void release() = 0;
+};
+
+template<typename T>
+class Singleton: public ISingleton {
+public:
+    Singleton() { }
+    virtual ~Singleton() { }
+
+    static T* getInstance() {
+        dcassert(instance);
+        return instance;
+    }
+
+    static void newInstance() {
+        if(instance)
+            delete instance;
+
+        instance = new T();
+    }
+
+    static void deleteInstance() {
+        if(instance)
+            delete instance;
+        instance = NULL;
+    }
+    virtual void release(){
+        deleteInstance();
+    }
 
 protected:
-	static T* instance;
+        static T* instance;
 private:
-	Singleton(const Singleton&);
-	Singleton& operator=(const Singleton&);
+        Singleton(const Singleton&);
+        Singleton& operator=(const Singleton&);
 
 };
 
 template<class T> T* Singleton<T>::instance = NULL;
-
-template<class T>
-inline T* Singleton<T>::getInstance(){
-        dcassert(instance);
-        return instance;
-}
-
-template<class T>
-inline void Singleton<T>::newInstance(){
-        if(instance)
-                delete instance;
-
-        instance = new T();
-}
-
-template<class T>
-inline void Singleton<T>::deleteInstance() {
-        if(instance)
-                delete instance;
-        instance = NULL;
-}
 
 } // namespace dcpp
 

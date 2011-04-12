@@ -28,6 +28,8 @@
 
 #include "Text.h"
 
+extern "C" int  _nl_msg_cat_cntr;
+
 namespace dcpp {
 
 template<typename T, bool flag> struct ReferenceSelector {
@@ -118,7 +120,8 @@ public:
         PATH_LAST
     };
 
-    static void initialize();
+    typedef std::map<Util::Paths, std::string> PathsMap;
+    static void initialize(PathsMap pathOverrides = PathsMap());
 
     /** Path of temporary storage */
     static string getTempPath() {
@@ -146,23 +149,23 @@ public:
 
     static string translateError(int aError);
 
-    static string getFilePath(const string& path) {
-        string::size_type i = path.rfind(PATH_SEPARATOR);
+        static string getFilePath(const string& path, char separator = PATH_SEPARATOR) {
+                string::size_type i = path.rfind(separator);
         return (i != string::npos) ? path.substr(0, i + 1) : path;
     }
-    static string getFileName(const string& path) {
-        string::size_type i = path.rfind(PATH_SEPARATOR);
+        static string getFileName(const string& path, char separator = PATH_SEPARATOR) {
+                string::size_type i = path.rfind(separator);
         return (i != string::npos) ? path.substr(i + 1) : path;
     }
     static string getFileExt(const string& path) {
         string::size_type i = path.rfind('.');
         return (i != string::npos) ? path.substr(i) : Util::emptyString;
     }
-    static string getLastDir(const string& path) {
-        string::size_type i = path.rfind(PATH_SEPARATOR);
+    static string getLastDir(const string& path, char separator = PATH_SEPARATOR) {
+        string::size_type i = path.rfind(separator);
         if(i == string::npos)
             return Util::emptyString;
-        string::size_type j = path.rfind(PATH_SEPARATOR, i-1);
+        string::size_type j = path.rfind(separator, i-1);
         return (j != string::npos) ? path.substr(j+1, i-j-1) : path;
     }
 
@@ -186,13 +189,27 @@ public:
         return (j != wstring::npos) ? path.substr(j+1, i-j-1) : path;
     }
 
-    static void decodeUrl(const string& aUrl, string& aServer, uint16_t& aPort, string& aFile);
+    template<typename string_t>
+    static void replace(const string_t& search, const string_t& replacement, string_t& str) {
+        typename string_t::size_type i = 0;
+        while((i = str.find(search, i)) != string_t::npos) {
+                str.replace(i, search.size(), replacement);
+                i += replacement.size();
+        }
+    }
+    template<typename string_t>
+    static inline void replace(const typename string_t::value_type* search, const typename string_t::value_type* replacement, string_t& str) {
+            replace(string_t(search), string_t(replacement), str);
+    }
+
+    static void decodeUrl(const string& aUrl, string& protocol, string& host, uint16_t& port, string& path, string& query, string& fragment);
+    static map<string, string> decodeQuery(const string& query);
     static string validateFileName(string aFile);
+    static bool checkExtension(const string& tmp);
     static string cleanPathChars(string aNick);
     static string addBrackets(const string& s);
 
     static string formatBytes(const string& aString) { return formatBytes(toInt64(aString)); }
-    static string formatMessage(const string& nick, const string& message, bool thirdPerson);
 
     static string getShortTimeString(time_t t = time(NULL) );
 
@@ -203,15 +220,33 @@ public:
     static string formatBytes(int64_t aBytes);
 
     static string formatExactSize(int64_t aBytes);
-
+    static time_t getStartTime() { return startTime; }
+    static time_t getUpTime() { return time(NULL) - Util::getStartTime(); }
     static string formatSeconds(int64_t aSec) {
         char buf[64];
         snprintf(buf, sizeof(buf), "%01lu:%02d:%02d", (unsigned long)(aSec / (60*60)), (int)((aSec / 60) % 60), (int)(aSec % 60));
         return buf;
     }
 
-    static string formatParams(const string& msg, StringMap& params, bool filter);
+    static string formatParams(const string& msg, const StringMap& params, bool filter);
     static string formatTime(const string &msg, const time_t t);
+
+    static inline int64_t roundDown(int64_t size, int64_t blockSize) {
+        return ((size + blockSize / 2) / blockSize) * blockSize;
+    }
+
+    static inline int64_t roundUp(int64_t size, int64_t blockSize) {
+        return ((size + blockSize - 1) / blockSize) * blockSize;
+    }
+
+    static inline int roundDown(int size, int blockSize) {
+        return ((size + blockSize / 2) / blockSize) * blockSize;
+    }
+
+    static inline int roundUp(int size, int blockSize) {
+        return ((size + blockSize - 1) / blockSize) * blockSize;
+    }
+
 
     static int64_t toInt64(const string& aString) {
 #ifdef _WIN32
@@ -240,6 +275,15 @@ public:
 #else
         return (uint32_t)atoi(c);
 #endif
+    }
+
+    static unsigned toUInt(const string& s) {
+        if(s.empty())
+                return 0;
+        int ret = toInt(s);
+        if(ret < 0)
+                return 0;
+        return ret;
     }
 
     static double toDouble(const string& aString) {
@@ -304,19 +348,22 @@ public:
         return buf;
     }
 
-    static string toString(const StringList& lst) {
-        if(lst.size() == 1)
-            return lst[0];
-        string tmp("[");
-        for(StringList::const_iterator i = lst.begin(); i != lst.end(); ++i) {
-            tmp += *i + ',';
-        }
-        if(tmp.length() == 1)
-            tmp.push_back(']');
-        else
-            tmp[tmp.length()-1] = ']';
-        return tmp;
+    template<typename string_t>
+    static string_t toString(const string_t& sep, const vector<string_t>& lst) {
+        string_t ret;
+        for(typename vector<string_t>::const_iterator i = lst.begin(), iend = lst.end(); i != iend; ++i) {
+            ret += *i;
+            if(i + 1 != iend)
+                ret += sep;
     }
+            return ret;
+    }
+    template<typename string_t>
+    static inline string_t toString(const typename string_t::value_type* sep, const vector<string_t>& lst) {
+        return toString(string_t(sep), lst);
+    }
+    static string toString(const string& sep, const StringList& lst);
+    static string toString(const StringList& lst);
 
     static string toHexEscape(char val) {
         char buf[sizeof(int)*2+1+1];
@@ -343,7 +390,7 @@ public:
     static string encodeURI(const string& /*aString*/, bool reverse = false);
     static string getLocalIp();
     static bool isPrivateIp(string const& ip);
-    static bool resolveNmdc(string& ip);
+    static string formatAdditionalInfo(const std::string& aIp, bool sIp, bool sCC);
     /**
      * Case insensitive substring search.
      * @return First position found or string::npos
@@ -372,34 +419,35 @@ public:
     static int stricmp(const wstring& a, const wstring& b) { return stricmp(a.c_str(), b.c_str()); }
     static int strnicmp(const wstring& a, const wstring& b, size_t n) { return strnicmp(a.c_str(), b.c_str(), n); }
 
-    static string getOsVersion();
-
     static string getIpCountry (string IP);
 
-    static bool getAway() { return away; }
-    static void setAway(bool aAway) {
-        away = aAway;
-        if (away)
-            awayTime = time(NULL);
+    static void setLang(const string lang) {
+        if(!lang.empty())
+#ifdef _WIN32
+            putenv((char *)string("LANGUAGE=" + lang).c_str());
+#else
+            setenv ("LANGUAGE", lang.c_str(), 1);
+#endif
+        /* Make change known.  */
+        {
+        ++_nl_msg_cat_cntr;
+        }
     }
-    static void switchAway() {
-        setAway(!away);
-    }
+
+    static bool getAway();
+    static void setAway(bool aAway);
+    static void switchAway();
 
     static bool getManualAway() { return manualAway; }
     static void setManualAway(bool aManualAway) { manualAway = aManualAway; }
 
     static string getAwayMessage();
     static void setAwayMessage(const string& aMsg) { awayMsg = aMsg; }
-
+    static bool fileExists(const string &aFile);
     static uint32_t rand();
     static uint32_t rand(uint32_t high) { return rand() % high; }
     static uint32_t rand(uint32_t low, uint32_t high) { return rand(high-low) + low; }
     static double randd() { return ((double)rand()) / ((double)0xffffffff); }
-    //[+]IRainman SpeedLimiter
-        static void checkLimiterSpeed();
-        static bool checkLimiterTime();
-    //[~]IRainman SpeedLimiter
 
 private:
     /** In local mode, all config and temp files are kept in the same dir as the executable */
@@ -411,7 +459,7 @@ private:
     static bool manualAway;
     static string awayMsg;
     static time_t awayTime;
-
+    static time_t startTime;
     typedef map<uint32_t, uint16_t> CountryList;
     typedef CountryList::iterator CountryIter;
 

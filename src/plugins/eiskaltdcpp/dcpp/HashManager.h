@@ -67,13 +67,16 @@ public:
 	/** @return TTH root */
 	TTHValue getTTH(const string& aFileName, int64_t aSize) throw(HashException);
 
+	/** eiskaltdc++ **/
+	const TTHValue* getFileTTHif(const string& aFileName);
+
 	bool getTree(const TTHValue& root, TigerTree& tt);
 
 	/** Return block size of the tree associated with root, or 0 if no such tree is in the store */
 	size_t getBlockSize(const TTHValue& root);
 
 	void addTree(const string& aFileName, uint32_t aTimeStamp, const TigerTree& tt) {
-		hashDone(aFileName, aTimeStamp, tt, -1);
+		hashDone(aFileName, aTimeStamp, tt, -1, -1);
 	}
 	void addTree(const TigerTree& tree) { Lock l(cs); store.addTree(tree); }
 
@@ -95,19 +98,37 @@ public:
 		store.save();
 	}
 
+	struct HashPauser {
+		HashPauser();
+		~HashPauser();
+
+	private:
+		bool resume;
+	};
+
+	/// @return whether hashing was already paused
+	bool pauseHashing();
+	void resumeHashing();
+	bool isHashingPaused() const;
+
 private:
 	class Hasher : public Thread {
 	public:
-		Hasher() : stop(false), running(false), rebuild(false), currentSize(0) { }
+		Hasher() : stop(false), running(false), paused(0), rebuild(false), currentSize(0) { }
 
 		void hashFile(const string& fileName, int64_t size);
+
+		/// @return whether hashing was already paused
+		bool pause();
+		void resume();
+		bool isPaused() const;
 
 		void stopHashing(const string& baseDir);
 		virtual int run();
 		bool fastHash(const string& fname, uint8_t* buf, TigerTree& tth, int64_t size, CRC32Filter* xcrc32);
 		void getStats(string& curFile, int64_t& bytesLeft, size_t& filesLeft);
-		void shutdown() { stop = true; s.signal(); }
-		void scheduleRebuild() { rebuild = true; s.signal(); }
+		void shutdown() { stop = true; if(paused){ s.signal(); resume();} s.signal(); }
+		void scheduleRebuild() { rebuild = true; if(paused) s.signal(); s.signal(); }
 
 	private:
 		// Case-sensitive (faster), it is rather unlikely that case changes, and if it does it's harmless.
@@ -116,14 +137,17 @@ private:
 		typedef WorkMap::iterator WorkIter;
 
 		WorkMap w;
-		CriticalSection cs;
+		mutable CriticalSection cs;
 		Semaphore s;
 
 		bool stop;
 		bool running;
+		unsigned paused;
 		bool rebuild;
 		string currentFile;
 		int64_t currentSize;
+
+		void instantPause();
 	};
 
 	friend class Hasher;
@@ -202,22 +226,23 @@ private:
 	Hasher hasher;
 	HashStore store;
 
-	CriticalSection cs;
+	mutable CriticalSection cs;
 
 	/** Single node tree where node = root, no storage in HashData.dat */
 	static const int64_t SMALL_TREE = -1;
 
-	void hashDone(const string& aFileName, uint32_t aTimeStamp, const TigerTree& tth, int64_t speed);
+	void hashDone(const string& aFileName, uint32_t aTimeStamp, const TigerTree& tth, int64_t speed, int64_t size);
 
 	void doRebuild() {
 		Lock l(cs);
 		store.rebuild();
 	}
 
-	virtual void on(TimerManagerListener::Minute, uint32_t) throw() {
+	virtual void on(TimerManagerListener::Minute, uint64_t) throw() {
 		Lock l(cs);
 		store.save();
 	}
+	void on(TimerManagerListener::Second, uint64_t) throw();
 };
 
 } // namespace dcpp

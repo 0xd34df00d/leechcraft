@@ -34,6 +34,17 @@ using namespace yaSSL;
 
 namespace dcpp {
 
+class SSLSocketException : public SocketException {
+public:
+#ifdef _DEBUG
+	SSLSocketException(const string& aError) throw() : SocketException("SSLSocketException: " + aError) { }
+#else //_DEBUG
+	SSLSocketException(const string& aError) throw() : SocketException(aError) { }
+#endif // _DEBUG
+
+	virtual ~SSLSocketException() throw() { }
+};
+
 class CryptoManager;
 
 class SSLSocket : public Socket {
@@ -51,7 +62,7 @@ public:
 	virtual bool isSecure() const throw() { return true; }
 	virtual bool isTrusted() const throw();
 	virtual std::string getCipherName() const throw();
-	virtual std::string getDigest() const throw();
+	virtual vector<uint8_t> getKeyprint() const throw();
 
 	virtual bool waitConnected(uint32_t millis);
 	virtual bool waitAccepted(uint32_t millis);

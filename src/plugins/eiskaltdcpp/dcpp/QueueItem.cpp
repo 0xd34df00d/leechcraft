@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2009 Jacek Sieka, arnetheduck on gmail point com
+ * Copyright (C) 2001-2011 Jacek Sieka, arnetheduck on gmail point com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include "HashManager.h"
 #include "Download.h"
 #include "File.h"
+#include "Util.h"
 
 namespace dcpp {
 
@@ -39,16 +40,21 @@ namespace {
 
 int QueueItem::countOnlineUsers() const {
     int n = 0;
-    SourceConstIter i = sources.begin();
-    for(; i != sources.end(); ++i) {
-        if(i->getUser()->isOnline())
+        for(SourceConstIter i = sources.begin(), iend = sources.end(); i != iend; ++i) {
+                if(i->getUser().user->isOnline())
             n++;
     }
     return n;
 }
 
-void QueueItem::addSource(const UserPtr& aUser) {
-    dcassert(!isSource(aUser));
+void QueueItem::getOnlineUsers(HintedUserList& l) const {
+        for(SourceConstIter i = sources.begin(), iend = sources.end(); i != iend; ++i)
+                if(i->getUser().user->isOnline())
+                        l.push_back(i->getUser());
+}
+
+void QueueItem::addSource(const HintedUser& aUser) {
+        dcassert(!isSource(aUser.user));
     SourceIter i = getBadSource(aUser);
     if(i != badSources.end()) {
         sources.push_back(*i);
@@ -69,38 +75,42 @@ void QueueItem::removeSource(const UserPtr& aUser, int reason) {
 const string& QueueItem::getTempTarget() {
     if(!isSet(QueueItem::FLAG_USER_LIST) && tempTarget.empty()) {
         if(!SETTING(TEMP_DOWNLOAD_DIRECTORY).empty() && (File::getSize(getTarget()) == -1)) {
+            string tmp;
 #ifdef _WIN32
-            //TODO <сделать загрузку без temp диры>
             dcpp::StringMap sm;
             if(target.length() >= 3 && target[1] == ':' && target[2] == '\\')
                 sm["targetdrive"] = target.substr(0, 3);
             else
                 sm["targetdrive"] = Util::getPath(Util::PATH_USER_LOCAL).substr(0, 3);
-            setTempTarget(Util::formatParams(SETTING(TEMP_DOWNLOAD_DIRECTORY), sm, false) + getTempName(getTargetFileName(), getTTH()));
-            // </сделать загрузку без temp диры>
+            if (SETTING(NO_USE_TEMP_DIR))
+                tmp = Util::formatParams(target, sm, false) + getTempName("", getTTH());
+            else
+                tmp = Util::formatParams(SETTING(TEMP_DOWNLOAD_DIRECTORY), sm, false) + getTempName(getTargetFileName(), getTTH());
 #else //_WIN32
             if (SETTING(NO_USE_TEMP_DIR))
-                setTempTarget(target + getTempName("", getTTH()));
+                tmp = target + getTempName("", getTTH());
             else
-                setTempTarget(SETTING(TEMP_DOWNLOAD_DIRECTORY) + getTempName(getTargetFileName(), getTTH()));
+                tmp = SETTING(TEMP_DOWNLOAD_DIRECTORY) + getTempName(getTargetFileName(), getTTH());
 #endif //_WIN32
+            int len = Util::getFileName(tmp).size()+1;
+            if (len >= 255){
+                string tmp1 = tmp.erase(tmp.find(".dctmp")-33,tmp.find(".dctmp")+5) + ".dctmp";
+                tmp = tmp1;
+            }
+            len = Util::getFileName(tmp).size()+1;
+            if (len >= 255) {
+                char tmp3[206];
+                string tmp2 = tmp.erase(tmp.find(".dctmp")-7,tmp.find(".dctmp")+5);
+                memcpy (tmp3, Util::getFileName(tmp2).c_str(), 206);
+                tmp = Util::getFilePath(tmp) + string(tmp3) + "~." + getTTH().toBase32() + ".dctmp";
+            }
+            setTempTarget(tmp);
         }
     }
     return tempTarget;
 }
 
-namespace {
-
-inline int64_t roundDown(int64_t size, int64_t blockSize) {
-    return ((size + blockSize / 2) / blockSize) * blockSize;
-}
-inline int64_t roundUp(int64_t size, int64_t blockSize) {
-    return ((size + blockSize - 1) / blockSize) * blockSize;
-}
-
-}
-
-Segment QueueItem::getNextSegment(int64_t blockSize, int64_t wantedSize) const {
+Segment QueueItem::getNextSegment(int64_t blockSize, int64_t wantedSize, int64_t lastSpeed, const PartialSource::Ptr partialSource) const {
     if(getSize() == -1 || blockSize == 0) {
         return Segment(0, -1);
     }
@@ -117,13 +127,13 @@ Segment QueueItem::getNextSegment(int64_t blockSize, int64_t wantedSize) const {
             const Segment& first = *done.begin();
 
             if(first.getStart() > 0) {
-                end = roundUp(first.getStart(), blockSize);
+                                end = Util::roundUp(first.getStart(), blockSize);
             } else {
-                start = roundDown(first.getEnd(), blockSize);
+                                start = Util::roundDown(first.getEnd(), blockSize);
 
                 if(done.size() > 1) {
                     const Segment& second = *(++done.begin());
-                    end = roundUp(second.getStart(), blockSize);
+                                        end = Util::roundUp(second.getStart(), blockSize);
                 }
             }
         }
@@ -131,14 +141,30 @@ Segment QueueItem::getNextSegment(int64_t blockSize, int64_t wantedSize) const {
         return Segment(start, std::min(getSize(), end) - start);
     }
 
+
+        /* added for PFS */
+        vector<int64_t> posArray;
+        vector<Segment> neededParts;
+
+        if(partialSource) {
+                posArray.reserve(partialSource->getPartialInfo().size());
+
+                // Convert block index to file position
+                for(PartsInfo::const_iterator i = partialSource->getPartialInfo().begin(); i != partialSource->getPartialInfo().end(); i++)
+                        posArray.push_back(min(getSize(), (int64_t)(*i) * blockSize));
+        }
+
+        /***************************/
+
+
     double donePart = static_cast<double>(getDownloadedBytes()) / getSize();
 
     // We want smaller blocks at the end of the transfer, squaring gives a nice curve...
-    int64_t targetSize = wantedSize * std::max(0.25, (1. - (donePart * donePart)));
+    int64_t targetSize = SETTING(SEGMENT_SIZE) > 0 ? (int64_t)(SETTING(SEGMENT_SIZE)*1024*1024) : wantedSize * std::max(0.25, (1. - (donePart * donePart)));
 
     if(targetSize > blockSize) {
         // Round off to nearest block size
-        targetSize = roundDown(targetSize, blockSize);
+                targetSize = Util::roundDown(targetSize, blockSize);
     } else {
         targetSize = blockSize;
     }
@@ -168,16 +194,86 @@ Segment QueueItem::getNextSegment(int64_t blockSize, int64_t wantedSize) const {
         }
 
         if(!overlaps) {
-            return block;
+            if(partialSource) {
+                // store all chunks we could need
+                for(vector<int64_t>::const_iterator j = posArray.begin(); j < posArray.end(); j += 2){
+                        if( (*j <= start && start < *(j+1)) || (start <= *j && *j < end) ) {
+                            int64_t b = max(start, *j);
+                            int64_t e = min(end, *(j+1));
+
+                        // segment must be blockSize aligned
+                        dcassert(b % blockSize == 0);
+                        dcassert(e % blockSize == 0 || e == getSize());
+
+                        bool merged = false;
+                        if(!neededParts.empty())
+                        {
+                            Segment& prev = neededParts.back();
+                            if(b == prev.getEnd() && e > prev.getEnd())
+                            {
+                                 prev.setSize(prev.getSize() + (e - b));
+                                 merged = true;
+                            }
+                        }
+
+                            if(!merged)
+                                neededParts.push_back(Segment(b, e - b));
+                        }
+                }
+            } else {
+                return block;
+            }
         }
 
-        if(curSize > blockSize) {
+        if(!partialSource && curSize > blockSize) {
             curSize -= blockSize;
         } else {
             start = end;
             curSize = targetSize;
         }
     }
+
+        if(!neededParts.empty()) {
+                // select random chunk for PFS
+                dcdebug("Found partial chunks: %d\n", neededParts.size());
+
+                Segment& selected = neededParts[Util::rand(0, neededParts.size())];
+                selected.setSize(std::min(selected.getSize(), targetSize));     // request only wanted size
+
+                return selected;
+        }
+
+        if(partialSource == NULL && BOOLSETTING(OVERLAP_CHUNKS) && lastSpeed > 0) {
+                // overlap slow running chunk
+
+                for(DownloadList::const_iterator i = downloads.begin(); i != downloads.end(); ++i) {
+                        Download* d = *i;
+
+                        // current chunk mustn't be already overlapped
+                        if(d->getOverlapped())
+                                continue;
+
+                        // current chunk must be running at least for 2 seconds
+                        if(d->getStart() == 0 || GET_TIME() - d->getStart() < 2000)
+                                continue;
+
+                        // current chunk mustn't be finished in next 10 seconds
+                        if(d->getSecondsLeft() < 10)
+                                continue;
+
+                        // overlap current chunk at last block boundary
+                        int64_t pos = d->getPos() - (d->getPos() % blockSize);
+                        int64_t size = d->getSize() - pos;
+
+                        // new user should finish this chunk more than 2x faster
+                        int64_t newChunkLeft = size / lastSpeed;
+                        if(2 * newChunkLeft < d->getSecondsLeft()) {
+                                dcdebug("Overlapping... old user: %I64d s, new user: %I64d s\n", d->getSecondsLeft(), newChunkLeft);
+                                return Segment(d->getStartPos() + pos, size/*, true*/);//TODO bool
+                        }
+                }
+        }
+
 
     return Segment(0, 0);
 }
@@ -209,6 +305,38 @@ void QueueItem::addSegment(const Segment& segment) {
             ++i;
         }
     }
+}
+//Partial
+bool QueueItem::isNeededPart(const PartsInfo& partsInfo, int64_t blockSize)
+{
+        dcassert(partsInfo.size() % 2 == 0);
+
+        SegmentConstIter i  = done.begin();
+        for(PartsInfo::const_iterator j = partsInfo.begin(); j != partsInfo.end(); j+=2){
+                while(i != done.end() && (*i).getEnd() <= (*j) * blockSize)
+                        i++;
+
+                if(i == done.end() || !((*i).getStart() <= (*j) * blockSize && (*i).getEnd() >= (*(j+1)) * blockSize))
+                        return true;
+        }
+
+        return false;
+
+}
+
+void QueueItem::getPartialInfo(PartsInfo& partialInfo, int64_t blockSize) const {
+        size_t maxSize = min(done.size() * 2, (size_t)510);
+        partialInfo.reserve(maxSize);
+
+        SegmentConstIter i = done.begin();
+        for(; i != done.end() && partialInfo.size() < maxSize; i++) {
+
+                uint16_t s = (uint16_t)((*i).getStart() / blockSize);
+                uint16_t e = (uint16_t)(((*i).getEnd() - 1) / blockSize + 1);
+
+                partialInfo.push_back(s);
+                partialInfo.push_back(e);
+        }
 }
 
 }

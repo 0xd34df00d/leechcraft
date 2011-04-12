@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2008 Jacek Sieka, arnetheduck on gmail point com
+ * Copyright (C) 2001-2011 Jacek Sieka, arnetheduck on gmail point com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,6 +87,8 @@ LogManager::LogManager() {
 	options[UPLOAD][FORMAT]		= SettingsManager::LOG_FORMAT_POST_UPLOAD;
 	options[DOWNLOAD][FILE]		= SettingsManager::LOG_FILE_DOWNLOAD;
 	options[DOWNLOAD][FORMAT]	= SettingsManager::LOG_FORMAT_POST_DOWNLOAD;
+	options[FINISHED_DOWNLOAD][FILE] = SettingsManager::LOG_FILE_FINISHED_DOWNLOAD;
+	options[FINISHED_DOWNLOAD][FORMAT] = SettingsManager::LOG_FORMAT_POST_FINISHED_DOWNLOAD;
 	options[CHAT][FILE]		= SettingsManager::LOG_FILE_MAIN_CHAT;
 	options[CHAT][FORMAT]		= SettingsManager::LOG_FORMAT_MAIN_CHAT;
 	options[PM][FILE]		= SettingsManager::LOG_FILE_PRIVATE_CHAT;

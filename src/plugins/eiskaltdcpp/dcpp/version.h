@@ -15,14 +15,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-
-#define APPNAME "EiskaltDC++"
-#define VERSIONSTRING "2.0"
-#define VERSIONFLOAT 2.0
-#define DCVERSIONSTRING "0.75"
+#include "VersionGlobal.h"
 
 namespace dcpp {
-extern const string fullVersionString;
+extern const char * const fullVersionString;
+extern const char * const fullADCVersionString;
 }
 
 /* Update the .rc file as well... */

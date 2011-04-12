@@ -19,6 +19,8 @@
 #ifndef DCPLUSPLUS_DCPP_TEXT_H
 #define DCPLUSPLUS_DCPP_TEXT_H
 
+#include "typedefs.h"
+
 namespace dcpp {
 
 /**
@@ -36,6 +38,7 @@ namespace dcpp {
 namespace Text {
 	extern const string utf8;
 	extern string systemCharset;
+	extern string hubDefaultCharset;
 
 	void initialize();
 
@@ -91,6 +94,18 @@ namespace Text {
 	inline const string& fromT(const tstring& str, string& tmp) throw() { return acpToUtf8(str, tmp); }
 	inline string fromT(const tstring& str) throw() { return acpToUtf8(str); }
 #endif
+
+	inline const TStringList& toT(const StringList& lst, TStringList& tmp) throw() {
+		for(StringIterC i = lst.begin(), iend = lst.end(); i != iend; ++i)
+			tmp.push_back(toT(*i));
+		return tmp;
+	}
+
+	inline const StringList& fromT(const TStringList& lst, StringList& tmp) throw() {
+		for(TStringIterC i = lst.begin(), iend = lst.end(); i != iend; ++i)
+			tmp.push_back(fromT(*i));
+		return tmp;
+	}
 
 	inline bool isAscii(const string& str) throw() { return isAscii(str.c_str()); }
 	bool isAscii(const char* str) throw();

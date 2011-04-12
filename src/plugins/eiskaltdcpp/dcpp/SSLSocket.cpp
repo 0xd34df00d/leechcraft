@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2008 Jacek Sieka, arnetheduck on gmail point com
+ * Copyright (C) 2001-2011 Jacek Sieka, arnetheduck on gmail point com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include "SSLSocket.h"
 #include "LogManager.h"
 #include "SettingsManager.h"
+#include "format.h"
 
 #include <openssl/err.h>
 
@@ -54,9 +55,9 @@ bool SSLSocket::waitConnected(uint32_t millis) {
 	}
 
 	while(true) {
-		int ret = SSL_connect(ssl);
+		int ret = ssl->server?SSL_accept(ssl):SSL_connect(ssl);
 		if(ret == 1) {
-			dcdebug("Connected to SSL server using %s\n", SSL_get_cipher(ssl));
+			dcdebug("Connected to SSL server using %s as %s\n", SSL_get_cipher(ssl), ssl->server?"server":"client");
 			return true;
 		}
 		if(!waitWant(ret, millis)) {
@@ -157,7 +158,7 @@ int SSLSocket::checkSSL(int ret) throw(SocketException) {
 					ssl.reset();
 					// @todo replace 80 with MAX_ERROR_SZ or whatever's appropriate for yaSSL in some nice way...
 					char errbuf[80];
-					throw SocketException(str(F_("SSL Error: %1% (%2%, %3%)") % ERR_error_string(err, errbuf) % ret % err));
+					throw SSLSocketException(str(F_("SSL Error: %1% (%2%, %3%)") % ERR_error_string(err, errbuf) % ret % err));
 				}
 		}
 	}
@@ -179,14 +180,15 @@ bool SSLSocket::isTrusted() const throw() {
 		return false;
 	}
 
-	if(SSL_get_verify_result(ssl) != SSL_ERROR_NONE) {
+	if(SSL_get_verify_result(ssl) != X509_V_OK) {
 		return false;
 	}
 
-	if(!SSL_get_peer_certificate(ssl)) {
+	X509* cert = SSL_get_peer_certificate(ssl);
+	if(!cert) {
 		return false;
 	}
-
+	X509_free(cert);
 	return true;
 }
 
@@ -197,14 +199,14 @@ std::string SSLSocket::getCipherName() const throw() {
 	return SSL_get_cipher_name(ssl);
 }
 
-std::string SSLSocket::getDigest() const throw() {
+vector<uint8_t> SSLSocket::getKeyprint() const throw() {
 	if(!ssl)
-		return Util::emptyString;
+		return vector<uint8_t>();
 	X509* x509 = SSL_get_peer_certificate(ssl);
 	if(!x509)
-		return Util::emptyString;
+		return vector<uint8_t>();
 
-	return ssl::X509_digest(x509, EVP_sha1());
+	return ssl::X509_digest(x509, EVP_sha256());
 }
 
 void SSLSocket::shutdown() throw() {

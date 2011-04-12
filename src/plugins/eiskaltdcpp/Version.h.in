@@ -1,0 +1,21 @@
+/***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 3 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
+
+#ifndef VERSION_H
+#define VERSION_H
+
+#define APPNAME "@PROJECT_NAME@"
+#define VERSIONSTRING "@VERSION@"
+#define DCVERSIONSTRING "0.785"
+
+const char * const EISKALTDCPP_VERSION         = "@VERSION@";
+const char * const EISKALTDCPP_WND_TITLE       = "@PROJECT_NAME@";
+const char * const EISKALTDCPP_VERSION_SFX     = "@eiskaltdcpp_WC_REVISION@";
+
+#endif // VERSION_H

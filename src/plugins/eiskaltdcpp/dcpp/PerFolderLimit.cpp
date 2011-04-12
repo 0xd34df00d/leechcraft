@@ -1,3 +1,22 @@
+/*
+* Copyright (C) 2010 ggrundik (http://code.google.com/u/ggrundik/)
+* for EiskaltDC++ Project (http://code.google.com/p/eiskaltdc/)
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
 #include "stdinc.h"
 #include "DCPlusPlus.h"
 #include "User.h"
@@ -5,6 +24,7 @@
 #include "PerFolderLimit.h"
 #include "ClientManager.h"
 #include "LogManager.h"
+#include "FavoriteManager.h"
 
 namespace dcpp {
 
@@ -25,6 +45,7 @@ CPerfolderLimit::~CPerfolderLimit()
 bool CPerfolderLimit::IsUserAllowed(string const& request, const UserPtr user, string *message)
 {
   bool found=false;
+  FavoriteManager *FM = FavoriteManager::getInstance();
   Identity id=ClientManager::getInstance()->getOnlineUserIdentity(user);
   int64_t user_share=id.getBytesShared();
 
@@ -34,19 +55,23 @@ bool CPerfolderLimit::IsUserAllowed(string const& request, const UserPtr user, s
     //*message=string("Limits check: user '")+id.getNick()+"' "+id.getIp()+" req: "+request+" : ";
   }
 
-  if ( m_limits.empty() || id.isOp() )
+  if ( m_limits.empty() || id.isOp() || FM->isFavoriteUser(user) || FM->hasSlot(user))
   {
     return true;
   }
 
   TFolderSetting *pos = *m_limits.begin();
+  int max_path_len = 0;
   for (TFolderSetting::Iter i=m_limits.begin(); i!=m_limits.end(); ++i)
   {
     TFolderSetting *s = *i;
     if ( pos->m_minshare<=s->m_minshare && 0==request.find(s->m_folder) )
     {
-      pos=s;
-      found=true;
+        if (s->m_folder.length() > max_path_len){
+            max_path_len = s->m_folder.length();
+            pos=s;
+            found=true;
+        }
     }
   }
   if (found)

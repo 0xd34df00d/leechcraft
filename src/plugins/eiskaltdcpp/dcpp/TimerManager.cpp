@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2008 Jacek Sieka, arnetheduck on gmail point com
+ * Copyright (C) 2001-2011 Jacek Sieka, arnetheduck on gmail point com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,55 +21,87 @@
 
 #include "TimerManager.h"
 
+#ifndef TIMER_OLD_BOOST
+#include <boost/date_time/posix_time/ptime.hpp>
+#endif
 namespace dcpp {
 
-#ifdef _WIN32
-DWORD TimerManager::lastTick = 0;
-uint32_t TimerManager::cycles = 0;
-FastCriticalSection TimerManager::cs;
-#else
+#ifdef TIMER_OLD_BOOST
 timeval TimerManager::tv;
+#else
+using namespace boost::posix_time;
 #endif
 
+TimerManager::TimerManager() {
+#ifdef TIMER_OLD_BOOST
+    gettimeofday(&tv, NULL);
+#else
+        // This mutex will be unlocked only upon shutdown
+        boostmtx.lock();
+#endif
+}
+
+TimerManager::~TimerManager() throw() {
+        dcassert(listeners.size() == 0);
+}
+
+void TimerManager::shutdown() {
+#ifdef TIMER_OLD_BOOST
+    s.signal();
+#else
+    boostmtx.unlock();
+#endif
+        join();
+}
+
 int TimerManager::run() {
-	int nextMin = 0;
+    int nextMin = 0;
+#ifdef TIMER_OLD_BOOST
+    uint64_t x = getTick();
+    uint64_t nextTick = x + 1000;
 
-	uint64_t x = getTick();
-	uint64_t nextTick = x + 1000;
+    while(!s.wait(nextTick > x ? nextTick - x : 0)) {
+        uint64_t z = getTick();
+        nextTick = z + 1000;
+        fire(TimerManagerListener::Second(), z);
+        if(nextMin++ >= 60) {
+            fire(TimerManagerListener::Minute(), z);
+             nextMin = 0;
+         }
+        x = getTick();
+    }
+#else
+    ptime now = microsec_clock::universal_time();
+    ptime nextSecond = now + seconds(1);
 
-	while(!s.wait(nextTick > x ? nextTick - x : 0)) {
-		uint32_t z = getTick();
-		nextTick = z + 1000;
-		fire(TimerManagerListener::Second(), z);
-		if(nextMin++ >= 60) {
-			fire(TimerManagerListener::Minute(), z);
-			nextMin = 0;
-		}
-		x = getTick();
-	}
+    while(!boostmtx.timed_lock(nextSecond)) {
+        uint64_t t = getTick();
+        now = microsec_clock::universal_time();
+        nextSecond += seconds(1);
+        if(nextSecond < now) {
+                nextSecond = now;
+        }
 
-	return 0;
+        fire(TimerManagerListener::Second(), t);
+        if(nextMin++ >= 60) {
+            fire(TimerManagerListener::Minute(), t);
+            nextMin = 0;
+        }
+    }
+#endif
+
+    dcdebug("TimerManager done\n");
+    return 0;
 }
 
 uint64_t TimerManager::getTick() {
-#ifdef _WIN32
-	FastLock l(cs);
-
-	DWORD tick = ::GetTickCount();
-	if(tick < lastTick) {
-		cycles++;
-	}
-	lastTick = tick;
-	return static_cast<uint64_t>(cycles) * (static_cast<uint64_t>(std::numeric_limits<DWORD>::max()) + 1) + tick;
+#ifdef TIMER_OLD_BOOST
+        timeval tv2;
+        gettimeofday(&tv2, NULL);
+        return static_cast<uint64_t>(((tv2.tv_sec - tv.tv_sec) * 1000 ) + ( (tv2.tv_usec - tv.tv_usec) / 1000));
 #else
-	timeval tv2;
-	gettimeofday(&tv2, NULL);
-
-#if ULONG_MAX >= 18446744073709551615UL
-        return ((tv2.tv_sec - tv.tv_sec) * 1000 ) + ( (tv2.tv_usec - tv.tv_usec) / 1000);
-#else
-	return static_cast<uint64_t>(((tv2.tv_sec - tv.tv_sec) * 1000 ) + ( (tv2.tv_usec - tv.tv_usec) / 1000));
-#endif
+        static ptime start = microsec_clock::universal_time();
+        return (microsec_clock::universal_time() - start).total_milliseconds();
 #endif
 }
 

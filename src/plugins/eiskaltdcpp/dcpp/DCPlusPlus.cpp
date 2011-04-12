@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2009 Jacek Sieka, arnetheduck on gmail point com
+ * Copyright (C) 2001-2011 Jacek Sieka, arnetheduck on gmail point com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include "stdinc.h"
 #include "DCPlusPlus.h"
+#include "format.h"
 
 #include "ConnectionManager.h"
 #include "DownloadManager.h"
@@ -35,8 +36,18 @@
 #include "ResourceManager.h"
 #include "ThrottleManager.h"
 #include "ADLSearch.h"
-
+#include "WindowManager.h"
 #include "StringTokenizer.h"
+#ifdef LUA_SCRIPT
+#include "ScriptManager.h"
+#endif
+#include "UPnPManager.h"
+#include "ConnectivityManager.h"
+#include "extra/ipfilter.h"
+#ifdef DHT
+#include "dht/DHT.h"
+#endif
+#include "DebugManager.h"
 
 #ifdef _STLP_DEBUG
 void __stl_debug_terminate() {
@@ -44,8 +55,6 @@ void __stl_debug_terminate() {
     *x = 0;
 }
 #endif
-
-extern "C" int _nl_msg_cat_cntr;
 
 namespace dcpp {
 
@@ -63,6 +72,7 @@ void startup(void (*f)(void*, const string&), void* p) {
     Util::initialize();
 
     bindtextdomain(PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
     ResourceManager::newInstance();
     SettingsManager::newInstance();
@@ -77,48 +87,88 @@ void startup(void (*f)(void*, const string&), void* p) {
     DownloadManager::newInstance();
     UploadManager::newInstance();
     ThrottleManager::newInstance();
+    QueueManager::newInstance();
     ShareManager::newInstance();
     FavoriteManager::newInstance();
-    QueueManager::newInstance();
     FinishedManager::newInstance();
     ADLSearchManager::newInstance();
+    ConnectivityManager::newInstance();
+    UPnPManager::newInstance();
+    WindowManager::newInstance();
+#ifdef LUA_SCRIPT
+    ScriptManager::newInstance();
+#endif
+    DebugManager::newInstance();
 
     SettingsManager::getInstance()->load();
-
-    if(!SETTING(LANGUAGE).empty()) {
-#ifdef _WIN32
-        string language = "LANGUAGE=" + SETTING(LANGUAGE);
-        putenv(language.c_str());
-#else
-        setenv("LANGUAGE", SETTING(LANGUAGE).c_str(), true);
+#ifdef USE_MINIUPNP
+    UPnPManager::getInstance()->runMiniUPnP();
 #endif
-        // Apparently this is supposted to make gettext reload the message catalog...
-        _nl_msg_cat_cntr++;
+    if (BOOLSETTING(IPFILTER)){
+        ipfilter::newInstance();
+        ipfilter::getInstance()->load();
     }
+
+    Util::setLang(SETTING(LANGUAGE));
 
     FavoriteManager::getInstance()->load();
     CryptoManager::getInstance()->loadCertificates();
-
+#ifdef USE_DHT
+    DHT::newInstance();
+#endif
     if(f != NULL)
         (*f)(p, _("Hash database"));
     HashManager::getInstance()->startup();
     if(f != NULL)
         (*f)(p, _("Shared Files"));
+    const string XmlListFileName = Util::getPath(Util::PATH_USER_CONFIG) + "files.xml.bz2";
+    if(!Util::fileExists(XmlListFileName)) {
+        try {
+            File::copyFile(XmlListFileName + ".bak", XmlListFileName);
+        } catch(const FileException&) { }
+    }
     ShareManager::getInstance()->refresh(true, false, true);
     if(f != NULL)
         (*f)(p, _("Download Queue"));
     QueueManager::getInstance()->loadQueue();
+    if(f != NULL)
+        (*f)(p, _("Users"));
+    ClientManager::getInstance()->loadUsers();
 }
 
 void shutdown() {
+
+#ifndef _WIN32 //*nix system
+    ThrottleManager::getInstance()->shutdown();
+#endif
+    DebugManager::deleteInstance();
+#ifdef LUA_SCRIPT
+    ScriptManager::deleteInstance();
+#endif
     TimerManager::getInstance()->shutdown();
     HashManager::getInstance()->shutdown();
+
+#ifdef _WIN32
+    ThrottleManager::getInstance()->shutdown();
+#endif
+
     ConnectionManager::getInstance()->shutdown();
+    UPnPManager::getInstance()->close();
 
     BufferedSocket::waitShutdown();
-
+    WindowManager::getInstance()->prepareSave();
+    QueueManager::getInstance()->saveQueue(true);
+    ClientManager::getInstance()->saveUsers();
+    if (ipfilter::getInstance())
+        ipfilter::getInstance()->shutdown();
     SettingsManager::getInstance()->save();
 
+#ifdef USE_DHT
+    DHT::deleteInstance();
+#endif
+    WindowManager::deleteInstance();
+    UPnPManager::deleteInstance();
+    ConnectivityManager::deleteInstance();
     ADLSearchManager::deleteInstance();
     FinishedManager::deleteInstance();
     ShareManager::deleteInstance();

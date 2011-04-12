@@ -16,69 +16,59 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#if !defined(TIMER_MANAGER_H)
-#define TIMER_MANAGER_H
+#ifndef DCPLUSPLUS_DCPP_TIMER_MANAGER_H
+#define DCPLUSPLUS_DCPP_TIMER_MANAGER_H
 
 #include "Thread.h"
-#include "Semaphore.h"
 #include "Speaker.h"
 #include "Singleton.h"
 
+#ifdef TIMER_OLD_BOOST
+    #include "Semaphore.h"
+#else
+    #include <boost/thread/mutex.hpp>
+#endif
+
 #ifndef _WIN32
-#include <sys/time.h>
-#include <limits.h>
+    #include <sys/time.h>
+    #ifdef TIMER_OLD_BOOST
+        #include <limits.h>
+    #endif
 #endif
 
 namespace dcpp {
 
 class TimerManagerListener {
 public:
-	virtual ~TimerManagerListener() { }
-	template<int I>	struct X { enum { TYPE = I }; };
+    virtual ~TimerManagerListener() { }
+    template<int I> struct X { enum { TYPE = I }; };
 
-	typedef X<0> Second;
-	typedef X<1> Minute;
+    typedef X<0> Second;
+    typedef X<1> Minute;
 
-	// We expect everyone to implement this...
-	virtual void on(Second, uint32_t) throw() { }
-	virtual void on(Minute, uint32_t) throw() { }
+    virtual void on(Second, uint64_t) throw() { }
+    virtual void on(Minute, uint64_t) throw() { }
 };
 
 class TimerManager : public Speaker<TimerManagerListener>, public Singleton<TimerManager>, public Thread
 {
 public:
-	void shutdown() {
-		s.signal();
-		join();
-	}
+    void shutdown();
 
-	static time_t getTime() { return (time_t)time(NULL); }
-	static uint64_t getTick();
+    static time_t getTime() { return (time_t)time(NULL); }
+    static uint64_t getTick();
 private:
-
-	Semaphore s;
-
-	friend class Singleton<TimerManager>;
-	TimerManager() {
-#ifndef _WIN32
-		gettimeofday(&tv, NULL);
-#endif
-	}
-
-	virtual ~TimerManager() throw() {
-		dcassert(listeners.empty());
-		shutdown();
-	}
-
-	virtual int run();
-
-#ifdef _WIN32
-	static DWORD lastTick;
-	static uint32_t cycles;
-	static FastCriticalSection cs;
+    friend class Singleton<TimerManager>;
+#ifdef TIMER_OLD_BOOST
+    Semaphore s;
+    static timeval tv;
 #else
-	static timeval tv;
+    boost::timed_mutex boostmtx;
 #endif
+    TimerManager();
+    virtual ~TimerManager() throw();
+
+    virtual int run();
 };
 
 #define GET_TICK() TimerManager::getTick()
@@ -86,4 +76,4 @@ private:
 
 } // namespace dcpp
 
-#endif // !defined(TIMER_MANAGER_H)
+#endif // DCPLUSPLUS_DCPP_TIMER_MANAGER_H

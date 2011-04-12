@@ -20,7 +20,9 @@
 #define DCPLUSPLUS_DCPP_POINTER_H
 
 #include <boost/intrusive_ptr.hpp>
-#include "Thread.h"
+//#include "Thread.h"
+//#include <boost/smart_ptr/detail/atomic_count.hpp>
+#include <boost/detail/atomic_count.hpp>
 
 namespace dcpp {
 
@@ -28,24 +30,33 @@ template<typename T>
 class intrusive_ptr_base
 {
 public:
-	bool unique() throw() {
-		return (ref == 1);
-	}
+    void inc() throw() {
+        intrusive_ptr_add_ref(this);
+    }
+
+    void dec() throw() {
+        intrusive_ptr_release(this);
+    }
+
+    bool unique(int val = 1) const throw() {
+        return (ref <= val);
+    }
 
 protected:
-	intrusive_ptr_base() throw() : ref(0) { }
-
+    intrusive_ptr_base() throw() : ref(0) { }
+    virtual ~intrusive_ptr_base() { }
 private:
-	friend void intrusive_ptr_add_ref(intrusive_ptr_base* p) { Thread::safeInc(p->ref); }
-	friend void intrusive_ptr_release(intrusive_ptr_base* p) { if(Thread::safeDec(p->ref) == 0) { delete static_cast<T*>(p); } }
+    friend void intrusive_ptr_add_ref(intrusive_ptr_base* p) {++p->ref;}
+    friend void intrusive_ptr_release(intrusive_ptr_base* p) { if(--p->ref == 0) { delete static_cast<T*>(p); } }
 
-	volatile long ref;
+    //volatile long ref;
+    boost::detail::atomic_count ref;
 };
 
 
 struct DeleteFunction {
-	template<typename T>
-	void operator()(const T& p) const { delete p; }
+    template<typename T>
+    void operator()(const T& p) const { delete p; }
 };
 
 } // namespace dcpp

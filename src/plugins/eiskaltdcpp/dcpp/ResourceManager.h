@@ -26,17 +26,17 @@ namespace dcpp {
 class ResourceManager : public Singleton<ResourceManager> {
 public:
 
-	bool isRTL() { return rtl; }
+    bool isRTL() { return rtl; }
 
 private:
-	friend class Singleton<ResourceManager>;
+    friend class Singleton<ResourceManager>;
 
-	ResourceManager() : rtl(false) {
-	}
+    ResourceManager() : rtl(false) {
+    }
 
-	virtual ~ResourceManager() { }
+    virtual ~ResourceManager() { }
 
-	bool rtl;
+    bool rtl;
 };
 
 } // namespace dcpp

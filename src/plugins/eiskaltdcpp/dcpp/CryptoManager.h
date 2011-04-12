@@ -36,44 +36,47 @@ class FileException;
 class CryptoManager : public Singleton<CryptoManager>
 {
 public:
-	string makeKey(const string& aLock);
-	const string& getLock() { return lock; }
-	const string& getPk() { return pk; }
-	bool isExtended(const string& aLock) { return strncmp(aLock.c_str(), "EXTENDEDPROTOCOL", 16) == 0; }
+    string makeKey(const string& aLock);
+    const string& getLock() { return lock; }
+    const string& getPk() { return pk; }
+    bool isExtended(const string& aLock) { return strncmp(aLock.c_str(), "EXTENDEDPROTOCOL", 16) == 0; }
 
-	void decodeBZ2(const uint8_t* is, size_t sz, string& os) throw(CryptoException);
+    void decodeBZ2(const uint8_t* is, size_t sz, string& os) throw(CryptoException);
 
-	SSLSocket* getClientSocket(bool allowUntrusted) throw(SocketException);
-	SSLSocket* getServerSocket(bool allowUntrusted) throw(SocketException);
+    SSLSocket* getClientSocket(bool allowUntrusted) throw(SocketException);
+    SSLSocket* getServerSocket(bool allowUntrusted) throw(SocketException);
 
-	void loadCertificates() throw();
-	void generateCertificate() throw(CryptoException);
-	bool checkCertificate() throw();
+    void loadCertificates() throw();
+    void generateCertificate() throw(CryptoException);
+    bool checkCertificate() throw();
+    const vector<uint8_t>& getKeyprint() const throw();
 
-	bool TLSOk() const throw();
+    bool TLSOk() const throw();
 private:
 
-	friend class Singleton<CryptoManager>;
+    friend class Singleton<CryptoManager>;
 
-	CryptoManager();
-	virtual ~CryptoManager();
+    CryptoManager();
+    virtual ~CryptoManager();
 
-	ssl::SSL_CTX clientContext;
-	ssl::SSL_CTX clientVerContext;
-	ssl::SSL_CTX serverContext;
-	ssl::SSL_CTX serverVerContext;
+    ssl::SSL_CTX clientContext;
+    ssl::SSL_CTX clientVerContext;
+    ssl::SSL_CTX serverContext;
+    ssl::SSL_CTX serverVerContext;
 
-	ssl::DH dh;
+    ssl::DH dh;
 
-	bool certsLoaded;
+    bool certsLoaded;
 
-	const string lock;
-	const string pk;
+    vector<uint8_t> keyprint;
+    const string lock;
+    const string pk;
 
-	string keySubst(const uint8_t* aKey, size_t len, size_t n);
-	bool isExtra(uint8_t b) {
-		return (b == 0 || b==5 || b==124 || b==96 || b==126 || b==36);
-	}
+    string keySubst(const uint8_t* aKey, size_t len, size_t n);
+    bool isExtra(uint8_t b) {
+        return (b == 0 || b==5 || b==124 || b==96 || b==126 || b==36);
+    }
+    void loadKeyprint(const string& file) throw();
 };
 
 } // namespace dcpp

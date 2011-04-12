@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2009 Jacek Sieka, arnetheduck on gmail point com
+ * Copyright (C) 2001-2011 Jacek Sieka, arnetheduck on gmail point com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,13 +23,12 @@
 #include "File.h"
 
 #include "StringTokenizer.h"
+#include "ClientManager.h"
 #include "SettingsManager.h"
 #include "LogManager.h"
-#include "UploadManager.h" // [+]IRainman
 #include "version.h"
 #include "File.h"
 #include "SimpleXML.h"
-#include "Socket.h"
 
 #ifndef _WIN32
 #include <sys/socket.h>
@@ -39,18 +38,26 @@
 #include <sys/utsname.h>
 #include <ctype.h>
 #endif
+#ifdef HAVE_IFADDRS_H
+#include <ifaddrs.h>
+#include <net/if.h>
+#endif
 #include <locale.h>
 
 #include "CID.h"
 
 #include "FastAlloc.h"
 
+#ifdef USE_IDNA
+#include <idna.h>
+#endif
+
 namespace dcpp {
 
 #ifndef _DEBUG
 FastCriticalSection FastAllocBase::cs;
 #endif
-
+time_t Util::startTime = time(NULL);
 string Util::emptyString;
 wstring Util::emptyStringW;
 tstring Util::emptyStringT;
@@ -92,7 +99,7 @@ static string getDownloadsPath(const string& def) {
                  // Defined in KnownFolders.h.
                  static GUID downloads = {0x374de290, 0x123f, 0x4565, {0x91, 0x64, 0x39, 0xc4, 0x92, 0x5e, 0x46, 0x7b}};
                  if(getKnownFolderPath(downloads, 0, NULL, &path) == S_OK) {
-                     string ret = Text::fromT(path) + "\\";
+                     string ret = Text::fromT((const tstring&)path) + "\\";
                      ::CoTaskMemFree(path);
                      return ret;
                  }
@@ -105,7 +112,11 @@ static string getDownloadsPath(const string& def) {
 
 #endif
 
-void Util::initialize() {
+void Util::initialize(PathsMap pathOverrides) {
+    static bool initDone = false;
+    if (initDone)
+        return;
+
     Text::initialize();
 
     sgenrand((unsigned long)time(NULL));
@@ -155,7 +166,15 @@ void Util::initialize() {
     const char* home_ = getenv("HOME");
     string home = home_ ? Text::toUtf8(home_) : "/tmp/";
 
+#ifdef FORCE_XDG
+    const char *xdg_config_home_ = getenv("XDG_CONFIG_HOME");
+    string xdg_config_home = xdg_config_home_? Text::toUtf8(xdg_config_home_) : (home+"/.config");
+    paths[PATH_USER_CONFIG] = xdg_config_home + "/eiskaltdc++/";
+#elif defined __HAIKU__
+    paths[PATH_USER_CONFIG] = home + "/config/settings/eiskaltdc++/";
+#else
     paths[PATH_USER_CONFIG] = home + "/.eiskaltdc++/";
+#endif
 
     loadBootConfig();
 
@@ -171,15 +190,29 @@ void Util::initialize() {
 
     paths[PATH_USER_LOCAL] = paths[PATH_USER_CONFIG];
 
-    // @todo paths[PATH_RESOURCES] = <replace from sconscript?>;
-    // @todo paths[PATH_LOCALE] = <replace from sconscript?>;
+    paths[PATH_RESOURCES] = paths[PATH_USER_CONFIG];
+    paths[PATH_LOCALE] = LOCALEDIR;
 
+#ifdef FORCE_XDG
+    const char *xdg_config_down_ = getenv("XDG_DOWNLOAD_DIR");
+    string xdg_config_down = xdg_config_down_? (Text::toUtf8(xdg_config_down_)+"/") : (home+"/Downloads/");
+    paths[PATH_DOWNLOADS] = xdg_config_down;
+#else
     paths[PATH_DOWNLOADS] = home + "/Downloads/";
+#endif
+
 #endif
 
     paths[PATH_FILE_LISTS] = paths[PATH_USER_LOCAL] + "FileLists" PATH_SEPARATOR_STR;
     paths[PATH_HUB_LISTS] = paths[PATH_USER_LOCAL] + "HubLists" PATH_SEPARATOR_STR;
     paths[PATH_NOTEPAD] = paths[PATH_USER_CONFIG] + "Notepad.txt";
+
+    // Override core generated paths
+    for (PathsMap::const_iterator it = pathOverrides.begin(); it != pathOverrides.end(); ++it)
+    {
+        if (!it->second.empty())
+            paths[it->first] = it->second;
+    }
 
     File::ensureDirectory(paths[PATH_USER_CONFIG]);
     File::ensureDirectory(paths[PATH_USER_LOCAL]);
@@ -187,7 +220,19 @@ void Util::initialize() {
     try {
         // This product includes GeoIP data created by MaxMind, available from http://maxmind.com/
         // Updates at http://www.maxmind.com/app/geoip_country
-        string file = getPath(PATH_RESOURCES) + "GeoIpCountryWhois.csv";
+#ifdef WIN32
+        string file = getPath(PATH_RESOURCES) + "GeoIPCountryWhois.csv";
+#else //WIN32
+        string file_usr = getPath(PATH_RESOURCES) + "GeoIPCountryWhois.csv";
+        string file_sys = string(_DATADIR) + PATH_SEPARATOR + "GeoIPCountryWhois.csv";
+        string file = "";
+
+        struct stat stFileInfo;
+        if (stat(file_usr.c_str(),&stFileInfo) == 0)
+            file = file_usr;
+        else
+            file = file_sys;
+#endif //WIN32
         string data = File(file, File::READ, File::OPEN).read();
 
         const char* start = data.c_str();
@@ -225,6 +270,7 @@ void Util::initialize() {
         }
     } catch(const FileException&) {
     }
+    initDone = true;
 }
 
 void Util::migrate(const string& file) {
@@ -363,6 +409,18 @@ string Util::validateFileName(string tmp) {
     return tmp;
 }
 
+bool Util::checkExtension(const string& tmp) {
+        for(int i = 0; i < tmp.length(); i++) {
+                if (tmp[i] < 0 || tmp[i] == 32 || tmp[i] == ':') {
+                        return false;
+                }
+        }
+        if(tmp.find_first_of(badChars, 0) != string::npos) {
+                return false;
+        }
+        return true;
+}
+
 string Util::cleanPathChars(string aNick) {
     string::size_type i = 0;
 
@@ -393,51 +451,141 @@ string Util::getShortTimeString(time_t t) {
  * http:// -> port 80
  * dchub:// -> port 411
  */
-void Util::decodeUrl(const string& url, string& aServer, uint16_t& aPort, string& aFile) {
-    // First, check for a protocol: xxxx://
-    string::size_type i = 0, j, k;
+void Util::decodeUrl(const string& url, string& protocol, string& host, uint16_t& port, string& path, string& query, string& fragment) {
+        size_t fragmentEnd = url.size();
+        size_t fragmentStart = url.rfind('#');
 
-    aServer = emptyString;
-    aFile = emptyString;
-
-    if( (j=url.find("://", i)) != string::npos) {
-        // Protocol found
-        string protocol = url.substr(0, j);
-        i = j + 3;
-
-        if(protocol == "http") {
-            aPort = 80;
-        } else if(protocol == "dchub") {
-            aPort = 411;
+        size_t queryEnd;
+        if(fragmentStart == string::npos) {
+                queryEnd = fragmentStart = fragmentEnd;
+        } else {
+                dcdebug("f");
+                queryEnd = fragmentStart;
+                fragmentStart++;
         }
-    }
 
-    if( (j=url.find('/', i)) != string::npos) {
-        // We have a filename...
-        aFile = url.substr(j);
-    }
+        size_t queryStart = url.rfind('?', queryEnd);
+        size_t fileEnd;
 
-    if( (k=url.find(':', i)) != string::npos) {
-        // Port
-        if(j == string::npos) {
-            aPort = static_cast<uint16_t>(Util::toInt(url.substr(k+1)));
-        } else if(k < j) {
-            aPort = static_cast<uint16_t>(Util::toInt(url.substr(k+1, j-k-1)));
+        if(queryStart == string::npos) {
+                fileEnd = queryStart = queryEnd;
+        } else {
+                dcdebug("q");
+                fileEnd = queryStart;
+                queryStart++;
         }
-    } else {
-        k = j;
-    }
 
-    if(k == string::npos) {
-        aServer = url.substr(i);
-        if(i==0) aPort = 411;
-    } else
-        aServer = url.substr(i, k-i);
+        size_t protoStart = 0;
+        size_t protoEnd = url.find("://", protoStart);
+
+        size_t authorityStart = protoEnd == string::npos ? protoStart : protoEnd + 3;
+        size_t authorityEnd = url.find_first_of("/#?", authorityStart);
+
+        size_t fileStart;
+        if(authorityEnd == string::npos) {
+                authorityEnd = fileStart = fileEnd;
+        } else {
+                dcdebug("a");
+                fileStart = authorityEnd;
+        }
+
+        protocol = url.substr(protoStart, protoEnd - protoStart);
+
+        if(authorityEnd > authorityStart) {
+                dcdebug("x");
+                size_t portStart = string::npos;
+                if(url[authorityStart] == '[') {
+                        // IPv6?
+                        size_t hostEnd = url.find(']');
+                        if(hostEnd == string::npos) {
+                                return;
+                        }
+
+                        host = url.substr(authorityStart, hostEnd - authorityStart);
+                        if(hostEnd + 1 < url.size() && url[hostEnd + 1] == ':') {
+                                portStart = hostEnd + 1;
+                        }
+                } else {
+                        size_t hostEnd;
+                        portStart = url.find(':', authorityStart);
+                        if(portStart != string::npos && portStart > authorityEnd) {
+                                portStart = string::npos;
+                        }
+
+                        if(portStart == string::npos) {
+                                hostEnd = authorityEnd;
+                        } else {
+                                hostEnd = portStart;
+                                portStart++;
+                        }
+
+                        dcdebug("h");
+                        host = url.substr(authorityStart, hostEnd - authorityStart);
+                }
+
+                if(portStart == string::npos) {
+                        if(protocol == "http") {
+                                port = 80;
+                        } else if(protocol == "https") {
+                                port = 443;
+                        } else if(protocol == "dchub") {
+                                port = 411;
+                        } else {  // вообще говоря это нехорошо, но иначе пользователи будут недовольны
+                            port = 411;
+                        }
+                } else {
+                        dcdebug("p");
+                        port = static_cast<uint16_t>(Util::toInt(url.substr(portStart, authorityEnd - portStart)));
+                }
+        }
+
+        dcdebug("\n");
+        path = url.substr(fileStart, fileEnd - fileStart);
+        query = url.substr(queryStart, queryEnd - queryStart);
+        fragment = url.substr(fragmentStart, fragmentStart);
+
+#ifdef USE_IDNA
+        //printf("%s\n",host.c_str());
+        char *p;
+        if (idna_to_ascii_8z(host.c_str(), &p, 0) == IDNA_SUCCESS) {
+            host = string(p);
+        }
+        free(p);
+        //printf ("ACE label (length %d): '%s'\n", strlen (p), p);
+        //printf ("%s\n", host.c_str());
+#endif
+}
+
+map<string, string> Util::decodeQuery(const string& query) {
+        map<string, string> ret;
+        size_t start = 0;
+        while(start < query.size()) {
+                size_t eq = query.find('=', start);
+                if(eq == string::npos) {
+                        break;
+                }
+
+                size_t param = eq + 1;
+                size_t end = query.find('&', param);
+
+                if(end == string::npos) {
+                        end = query.size();
+                }
+
+                if(eq > start && end > param) {
+                        ret[query.substr(start, eq-start)] = query.substr(param, end - param);
+                }
+
+                start = end + 1;
+        }
+
+        return ret;
 }
 
 string Util::getAwayMessage() {
     return (formatTime(awayMsg.empty() ? SETTING(DEFAULT_AWAY_MESSAGE) : awayMsg, awayTime)) + " <" APPNAME " v" VERSIONSTRING ">";
 }
+
 string Util::formatBytes(int64_t aBytes) {
     char buf[128];
     if(aBytes < 1024) {
@@ -491,6 +639,50 @@ string Util::formatExactSize(int64_t aBytes) {
 }
 
 string Util::getLocalIp() {
+#ifdef HAVE_IFADDRS_H
+    vector<string> addresses;
+    struct ifaddrs *ifap;
+
+    if (getifaddrs(&ifap) == 0)
+    {
+        for (struct ifaddrs *i = ifap; i != NULL; i = i->ifa_next)
+        {
+            struct sockaddr *sa = i->ifa_addr;
+
+            // If the interface is up, is not a loopback and it has an address
+            if ((i->ifa_flags & IFF_UP) && !(i->ifa_flags & IFF_LOOPBACK) && sa != NULL)
+            {
+                void* src = NULL;
+                socklen_t len;
+
+                // IPv4 address
+                if (sa->sa_family == AF_INET)
+                {
+                    struct sockaddr_in* sai = (struct sockaddr_in*)sa;
+                    src = (void*) &(sai->sin_addr);
+                    len = INET_ADDRSTRLEN;
+                }
+                // IPv6 address
+                else if (sa->sa_family == AF_INET6)
+                {
+                    struct sockaddr_in6* sai6 = (struct sockaddr_in6*)sa;
+                    src = (void*) &(sai6->sin6_addr);
+                    len = INET6_ADDRSTRLEN;
+                }
+
+                // Convert the binary address to a string and add it to the output list
+                if (src != NULL)
+                {
+                    char address[len];
+                    inet_ntop(sa->sa_family, src, address, len);
+                    addresses.push_back(address);
+                }
+            }
+        }
+        freeifaddrs(ifap);
+    }
+    return addresses[0];
+#else
     string tmp;
 
     char buf[256];
@@ -515,6 +707,7 @@ string Util::getLocalIp() {
         }
     }
     return tmp;
+#endif
 }
 
 bool Util::isPrivateIp(string const& ip) {
@@ -530,25 +723,6 @@ bool Util::isPrivateIp(string const& ip) {
                 (haddr & 0xffff0000) == 0xc0a80000);  // 192.168.0.0/16
     }
     return false;
-}
-
-bool Util::resolveNmdc(string& ip) {
-    ip = Socket::resolve(ip);
-
-    // Temporary fix to avoid spamming some servers
-    if(
-        ip == "70.85.55.252" || // hublist.org
-        ip == "207.44.220.108" || // dcpp.net
-        ip == "216.34.181.97" || // hubtracker.com -- this is old hosting
-        ip == "81.181.249.83" || //openhublist.org
-        ip == "64.19.158.42" || // dchublist.com
-        ip == "174.133.138.93" // adchublist.com
-        ) {
-        LogManager::getInstance()->message("Someone is trying to use your client to spam " + ip + ", please urge hub owner to fix this");
-        return false;
-    }
-
-    return true;
 }
 
 typedef const uint8_t* ccp;
@@ -590,6 +764,24 @@ static wchar_t utf8ToLC(ccp& str) {
     }
 
     return Text::toLower(c);
+}
+
+string Util::toString(const string& sep, const StringList& lst) {
+        string ret;
+        for(StringList::const_iterator i = lst.begin(), iend = lst.end(); i != iend; ++i) {
+                ret += *i;
+                if(i + 1 != iend)
+                        ret += sep;
+        }
+        return ret;
+}
+
+string Util::toString(const StringList& lst) {
+        if(lst.empty())
+                return emptyString;
+        if(lst.size() == 1)
+                return lst[0];
+        return '[' + toString(",", lst) + ']';
 }
 
 string::size_type Util::findSubString(const string& aString, const string& aSubString, string::size_type start) throw() {
@@ -741,7 +933,7 @@ string Util::encodeURI(const string& aString, bool reverse) {
  * date/time and then finally written to the log file. If the parameter is not present at all,
  * it is removed from the string completely...
  */
-string Util::formatParams(const string& msg, StringMap& params, bool filter) {
+string Util::formatParams(const string& msg, const StringMap& params, bool filter) {
     string result = msg;
 
     string::size_type i, j, k;
@@ -751,7 +943,7 @@ string Util::formatParams(const string& msg, StringMap& params, bool filter) {
             break;
         }
         string name = result.substr(j + 2, k - j - 2);
-        StringMapIter smi = params.find(name);
+                StringMap::const_iterator smi = params.find(name);
         if(smi == params.end()) {
             result.erase(j, k-j + 1);
             i = j;
@@ -785,73 +977,35 @@ string Util::formatParams(const string& msg, StringMap& params, bool filter) {
     return result;
 }
 
-/** Fix for wide formatting bug in wcsftime in the ms c lib for multibyte encodings of unicode in singlebyte locales */
-string fixedftime(const string& format, struct tm* t) {
-    string ret = format;
-    const char codes[] = "aAbBcdHIjmMpSUwWxXyYzZ%";
-
-    char tmp[4];
-    tmp[0] = '%';
-    tmp[1] = tmp[2] = tmp[3] = 0;
-
-    StringMap sm;
-    static const size_t BUF_SIZE = 1024;
-    boost::scoped_array<char> buf(new char[BUF_SIZE]);
-    for(size_t i = 0; i < strlen(codes); ++i) {
-        tmp[1] = codes[i];
-        tmp[2] = 0;
-        strftime(&buf[0], BUF_SIZE-1, tmp, t);
-        sm[tmp] = &buf[0];
-
-        tmp[1] = '#';
-        tmp[2] = codes[i];
-        strftime(&buf[0], BUF_SIZE-1, tmp, t);
-        sm[tmp] = &buf[0];
-    }
-
-    for(StringMapIter i = sm.begin(); i != sm.end(); ++i) {
-        for(string::size_type j = ret.find(i->first); j != string::npos; j = ret.find(i->first, j)) {
-            ret.replace(j, i->first.length(), i->second);
-            j += i->second.length() - i->first.length();
-        }
-    }
-
-    return ret;
-}
-
 string Util::formatTime(const string &msg, const time_t t) {
     if (!msg.empty()) {
-        size_t bufsize = msg.size() + 256;
-        struct tm* loc = localtime(&t);
+    tm* loc = localtime(&t);
 
         if(!loc) {
             return Util::emptyString;
         }
-#if _WIN32
-        tstring buf(bufsize, 0);
-
-        buf.resize(_tcsftime(&buf[0], buf.size()-1, Text::toT(msg).c_str(), loc));
-
-        if(buf.empty()) {
-            return fixedftime(msg, loc);
-        }
-
-        return Text::fromT(buf);
-#else
-        // will this give wide representations for %a and %A?
-        // surely win32 can't have a leg up on linux/unixen in this area. - Todd
+        size_t bufsize = msg.size() + 256;
         string buf(bufsize, 0);
+
+        errno = 0;
 
         buf.resize(strftime(&buf[0], bufsize-1, msg.c_str(), loc));
 
         while(buf.empty()) {
+            if(errno == EINVAL)
+                return Util::emptyString;
             bufsize+=64;
             buf.resize(bufsize);
             buf.resize(strftime(&buf[0], bufsize-1, msg.c_str(), loc));
         }
 
-        return Text::toUtf8(buf);
+#ifdef _WIN32
+                if(!Text::validateUtf8(buf))
 #endif
+                {
+                        buf = Text::toUtf8(buf);
+                }
+                return buf;
     }
     return Util::emptyString;
 }
@@ -926,73 +1080,6 @@ uint32_t Util::rand() {
     return y;
 }
 
-string Util::getOsVersion() {
-    string os;
-
-#ifdef _WIN32
-
-    OSVERSIONINFOEX ver;
-    memset(&ver, 0, sizeof(OSVERSIONINFOEX));
-    ver.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-
-    if(!GetVersionEx((OSVERSIONINFO*)&ver)) {
-        ver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-        if(!GetVersionEx((OSVERSIONINFO*)&ver)) {
-            os = "Windows (version unknown)";
-        }
-    }
-
-    if(os.empty()) {
-        if(ver.dwPlatformId != VER_PLATFORM_WIN32_NT) {
-            os = "Win9x/ME/Junk";
-        } else if(ver.dwMajorVersion == 4) {
-            os = "WinNT4";
-        } else if(ver.dwMajorVersion == 5) {
-            if(ver.dwMinorVersion == 0) {
-                os = "Win2000";
-            } else if(ver.dwMinorVersion == 1) {
-                os = "WinXP";
-            } else if(ver.dwMinorVersion == 2) {
-                os = "Win2003";
-            } else {
-                os = "Unknown WinNT5";
-            }
-
-            if(ver.wProductType & VER_NT_WORKSTATION)
-                os += " Pro";
-            else if(ver.wProductType & VER_NT_SERVER)
-                os += " Server";
-            else if(ver.wProductType & VER_NT_DOMAIN_CONTROLLER)
-                os += " DC";
-        } else if(ver.dwMajorVersion == 6) {
-            os = "WinVista";
-        }
-
-        if(ver.wServicePackMajor != 0) {
-            os += "SP";
-            os += Util::toString(ver.wServicePackMajor);
-            if(ver.wServicePackMinor != 0) {
-                os += '.';
-                os += Util::toString(ver.wServicePackMinor);
-            }
-        }
-    }
-
-
-#else // _WIN32
-    struct utsname n;
-
-    if(uname(&n) != 0) {
-        os = "unix (unknown version)";
-    } else {
-        os = Text::toUtf8(string(n.sysname) + " " + n.release + " (" + n.machine + ")");
-    }
-
-#endif // _WIN32
-
-    return os;
-}
-
 /*  getIpCountry
     This function returns the country(Abbreviation) of an ip
     for exemple: it returns "PT", whitch standards for "Portugal"
@@ -1020,25 +1107,6 @@ string Util::getIpCountry (string IP) {
     }
 
     return Util::emptyString; //if doesn't returned anything already, something is wrong...
-}
-
-string Util::formatMessage(const string& nick, const string& message, bool thirdPerson) {
-    // let's *not* obey the spec here and add a space after the star. :P
-    string tmp = (thirdPerson ? "* " + nick + ' ' : '<' + nick + "> ") + message;
-
-    // Check all '<' and '[' after newlines as they're probably pasts...
-    size_t i = 0;
-    while( (i = tmp.find('\n', i)) != string::npos) {
-        if(i + 1 < tmp.length()) {
-            if(tmp[i+1] == '[' || tmp[i+1] == '<') {
-                tmp.insert(i+1, "- ");
-                i += 2;
-            }
-        }
-        i++;
-    }
-
-    return Text::toDOS(tmp);
 }
 
 string Util::getTimeString() {
@@ -1112,54 +1180,60 @@ string Util::translateError(int aError) {
     return Text::toUtf8(strerror(aError));
 #endif // _WIN32
 }
-//[+]IRainman SpeedLimiter
-void Util::checkLimiterSpeed()
-{
-    if (SETTING(MAX_UPLOAD_SPEED_LIMIT_NORMAL) < 5 * UploadManager::getInstance()->getSlots() + 4)
-    {
-        SettingsManager::getInstance()->set(SettingsManager::MAX_UPLOAD_SPEED_LIMIT_NORMAL, 5 * UploadManager::getInstance()->getSlots() + 4);
-    }
 
-    if ((SETTING(MAX_DOWNLOAD_SPEED_LIMIT_NORMAL) > 7 * SETTING(MAX_UPLOAD_SPEED_LIMIT_NORMAL)) || (SETTING(MAX_DOWNLOAD_SPEED_LIMIT_NORMAL) == 0))
-    {
-        SettingsManager::getInstance()->set(SettingsManager::MAX_DOWNLOAD_SPEED_LIMIT_NORMAL, 7 * SETTING(MAX_UPLOAD_SPEED_LIMIT_NORMAL));
-    }
-
-    if (SETTING(MAX_UPLOAD_SPEED_LIMIT_TIME) < 5 * UploadManager::getInstance()->getSlots() + 4)
-    {
-        SettingsManager::getInstance()->set(SettingsManager::MAX_UPLOAD_SPEED_LIMIT_TIME, 5 * UploadManager::getInstance()->getSlots() + 4);
-    }
-
-    if ((SETTING(MAX_DOWNLOAD_SPEED_LIMIT_TIME) > 7 * SETTING(MAX_UPLOAD_SPEED_LIMIT_TIME)) || (SETTING(MAX_DOWNLOAD_SPEED_LIMIT_TIME) == 0))
-    {
-        SettingsManager::getInstance()->set(SettingsManager::MAX_DOWNLOAD_SPEED_LIMIT_TIME, 7 * SETTING(MAX_UPLOAD_SPEED_LIMIT_TIME));
-    }
-
-    if (Util::checkLimiterTime())
-    {
-        SettingsManager::getInstance()->set(SettingsManager::MAX_UPLOAD_SPEED_LIMIT, SETTING(MAX_UPLOAD_SPEED_LIMIT_TIME));
-        SettingsManager::getInstance()->set(SettingsManager::MAX_DOWNLOAD_SPEED_LIMIT, SETTING(MAX_DOWNLOAD_SPEED_LIMIT_TIME));
-    }
-    else
-    {
-        SettingsManager::getInstance()->set(SettingsManager::MAX_UPLOAD_SPEED_LIMIT, SETTING(MAX_UPLOAD_SPEED_LIMIT_NORMAL));
-        SettingsManager::getInstance()->set(SettingsManager::MAX_DOWNLOAD_SPEED_LIMIT, SETTING(MAX_DOWNLOAD_SPEED_LIMIT_NORMAL));
-    }
+bool Util::getAway() {
+    return away;
 }
 
-bool Util::checkLimiterTime()
-{
-    if (!SETTING(TIME_DEPENDENT_THROTTLE))
-        return false;
+void Util::setAway(bool aAway) {
+    bool changed = aAway != away;
+    away = aAway;
+    if(away)
+        awayTime = time(NULL);
 
-    time_t currentTime;
-    time(&currentTime);
-    int currentHour = localtime(&currentTime)->tm_hour;
-    return ((SETTING(BANDWIDTH_LIMIT_START) < SETTING(BANDWIDTH_LIMIT_END) &&
-             currentHour >= SETTING(BANDWIDTH_LIMIT_START) && currentHour < SETTING(BANDWIDTH_LIMIT_END)) ||
-            (SETTING(BANDWIDTH_LIMIT_START) > SETTING(BANDWIDTH_LIMIT_END) &&
-             (currentHour >= SETTING(BANDWIDTH_LIMIT_START) || currentHour < SETTING(BANDWIDTH_LIMIT_END))));
+    if(changed)
+        ClientManager::getInstance()->infoUpdated();
+ }
+
+ void Util::switchAway() {
+    setAway(!away);
+ }
+
+string Util::formatAdditionalInfo(const string& aIp, bool sIp, bool sCC) {
+	string ret = Util::emptyString;
+
+	if(!aIp.empty()) {
+		string cc = Util::getIpCountry(aIp);
+		bool showIp = BOOLSETTING(USE_IP) || sIp;
+		bool showCc = (BOOLSETTING(GET_USER_COUNTRY) || sCC) && !cc.empty();
+
+        if(showIp) {
+            int ll = 15 - aIp.size();
+            if (ll >0) {
+                string tmp = " "; size_t sz=tmp.size();
+                tmp.resize(sz+ll-1,' ');
+                ret = "[" + tmp + aIp + "] ";
+            } else
+                ret = "[" + aIp + "] ";
+		}
+        //printf("%s\n",ret.c_str());
+		if(showCc) {
+			ret += "[" + cc + "] ";
+        //printf("%s\n",ret.c_str());
+		}
+        //printf("%s\n",ret.c_str());
+	}
+	return Text::toT(ret);
 }
-//[~]IRainman SpeedLimiter
+
+bool Util::fileExists(const string &aFile) {
+#ifdef _WIN32
+    DWORD attr = GetFileAttributes(Text::toT(aFile).c_str());
+    return (attr != 0xFFFFFFFF);
+#else
+    struct stat stFileInfo;
+    return (stat(aFile.c_str(),&stFileInfo) == 0);
+#endif
+}
 
 } // namespace dcpp

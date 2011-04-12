@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2009 Jacek Sieka, arnetheduck on gmail point com
+ * Copyright (C) 2001-2011 Jacek Sieka, arnetheduck on gmail point com
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,18 +21,7 @@
 
 #include "version.h"
 
-//#ifndef DCPP_REVISION
-//#define DCPP_REVISION 0
-//#endif
-
-//#define xstrver(s) strver(s)
-//#define strver(s) #s
-
 namespace dcpp {
-#ifdef DCPP_REVISION
-const string fullVersionString(APPNAME " V:" DCPP_REVISION );
-#else
-const string fullVersionString(APPNAME " V:" VERSIONSTRING );
-#endif
+const char * const  fullVersionString = APPNAME " V:" VERSIONSTRING;
+const char * const  fullADCVersionString = APPNAME " " VERSIONSTRING;
 }
-
