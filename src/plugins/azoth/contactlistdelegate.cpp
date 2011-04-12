@@ -21,6 +21,7 @@
 #include <QPixmap>
 #include <QApplication>
 #include <QAbstractProxyModel>
+#include <QTreeView>
 #include "interfaces/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -32,8 +33,9 @@ namespace Azoth
 	const int CContactShift = 20;
 	const int CPadding = 2;
 
-	ContactListDelegate::ContactListDelegate (QObject* parent)
+	ContactListDelegate::ContactListDelegate (QTreeView* parent)
 	: QStyledItemDelegate (parent)
+	, View_ (parent)
 	{
 		handleShowAvatarsChanged ();
 		handleShowClientIconsChanged ();
@@ -61,6 +63,7 @@ namespace Azoth
 			DrawCategory (painter, o, index);
 			break;
 		case Core::CLETContact:
+			o.rect.adjust (-1.2 * View_->indentation (), 0, 0, 0);
 			DrawContact (painter, o, index);
 			break;
 		}
@@ -85,12 +88,26 @@ namespace Azoth
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
+
+		const QColor& dark = o.palette.color (QPalette::Dark);
+		const QColor& light = o.palette.color (QPalette::Light);
+		QLinearGradient gr (0, 0, r.width (), 0);
+		gr.setSpread (QGradient::PadSpread);
+		gr.setColorAt (0.00, light);
+		gr.setColorAt (0.25, dark.lighter (120));
+		gr.setColorAt (0.50, dark);
+		gr.setColorAt (0.75, dark.lighter (120));
+		gr.setColorAt (1.00, light);
+		painter->fillRect (QRect (r.topLeft (), r.topRight ()), gr);
+		painter->fillRect (QRect (r.bottomLeft (), r.bottomRight ()), gr);
 		
-		QStyle *style = o.widget ?
-				o.widget->style () :
-				QApplication::style ();
-		style->drawPrimitive (QStyle::PE_FrameButtonBevel,
-					&o, painter, o.widget);
+		QLinearGradient vGr (0, 0, 0, r.height ());
+		vGr.setSpread (QGradient::PadSpread);
+		vGr.setColorAt (0.00, light);
+		vGr.setColorAt (0.50, dark);
+		vGr.setColorAt (1.00, light);
+		painter->fillRect (QRect (r.topLeft (), r.bottomLeft ()), vGr);
+		painter->fillRect (QRect (r.topRight (), r.bottomRight ()), vGr);
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
@@ -193,10 +210,19 @@ namespace Azoth
 
 		const int textShift = 2 * CPadding + iconSize + unreadSpace;
 
-		const QList<QIcon>& clientIcons = isMUC || !ShowClientIcons_ ?
+		QList<QIcon> clientIcons = isMUC || !ShowClientIcons_ ?
 				QList<QIcon> () :
 				Core::Instance ().GetClientIconForEntry (entry).values ();
-		const int clientsIconsWidth = isMUC|| !ShowClientIcons_ ?
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		{
+			const int num = index.data (Core::CLRAffiliation).toInt ();
+			const IMUCEntry::MUCAffiliation aff =
+					static_cast<IMUCEntry::MUCAffiliation> (num);
+			const QIcon& icon = Core::Instance ().GetAffIcon (aff);
+			if (!icon.isNull ())
+				clientIcons.prepend (icon);
+		}
+		const int clientsIconsWidth = clientIcons.isEmpty () ?
 				0 :
 				clientIcons.size () * (iconSize + CPadding) - CPadding;
 		/* text for width is total width minus shift of the text from
@@ -248,6 +274,17 @@ namespace Azoth
 			p.drawPixmap (r.topLeft () + QPoint (currentShift, CPadding),
 					icon.pixmap (iconSize, iconSize));
 			currentShift += iconSize + CPadding;
+		}
+		
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		{
+			const QModelIndex& next = index.model ()->index (index.row () + 1, 0, index.parent ());
+			if (next.isValid () &&
+					next.data (Core::CLRRole) != index.data (Core::CLRRole))
+			{
+				p.setBrush (QColor (option.palette.color (QPalette::Text)));
+				p.drawLine (r.bottomLeft (), r.bottomRight ());
+			}
 		}
 
 		painter->drawPixmap (option.rect, pixmap);

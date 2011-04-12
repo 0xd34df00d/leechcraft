@@ -90,6 +90,7 @@ namespace Azoth
 
 		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
+		boost::shared_ptr<Util::ResourceLoader> AffIconLoader_;
 		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource> > SmilesOptionsModel_;
 		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
 
@@ -106,7 +107,9 @@ namespace Azoth
 			CLREntryObject,
 			CLREntryType,
 			CLREntryCategory,
-			CLRUnreadMsgCount
+			CLRUnreadMsgCount,
+			CLRRole,
+			CLRAffiliation
 		};
 
 		enum CLEntryType
@@ -125,7 +128,8 @@ namespace Azoth
 		enum ResourceLoaderType
 		{
 			RLTStatusIconLoader,
-			RLTClientIconLoader
+			RLTClientIconLoader,
+			RLTAffIconLoader
 		};
 
 		enum CLEntryActionArea
@@ -152,6 +156,9 @@ namespace Azoth
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 		void RegisterHookable (QObject*);
+		
+		bool CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
 		const QObjectList& GetProtocolPlugins () const;
 
@@ -208,6 +215,11 @@ namespace Azoth
 		 * contact list entry state.
 		 */
 		QIcon GetIconForState (State state) const;
+		
+		/** Returns an icon from the current iconset for the given
+		 * affiliation.
+		 */
+		QIcon GetAffIcon (IMUCEntry::MUCAffiliation aff) const;
 
 		/** @brief Returns icons for the given CL entry.
 		 *
@@ -419,6 +431,13 @@ namespace Azoth
 		/** Handles the event of groups change in plugin.
 		 */
 		void handleEntryGroupsChanged (QStringList);
+		
+		/** Handles the event of permissions change in entry from plugin.
+		 * 
+		 * If the passed entry is not NULL, it will be used, otherwise
+		 * sender() will be used.
+		 */
+		void handleEntryPermsChanged (ICLEntry *entry = 0);
 
 		/** Handles the message receival from contact list entries.
 		 */

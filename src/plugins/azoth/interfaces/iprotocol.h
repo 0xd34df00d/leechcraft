@@ -34,6 +34,11 @@ namespace Azoth
 	 *
 	 * IProtocol class represents a single protocol with its own set of
 	 * accounts.
+	 * 
+	 * A protocol may also implement IURIHandler if it supports handling
+	 * of various URIs, like xmpp: for XMPP protocol.
+	 * 
+	 * @sa IURIHandler
 	 */
 	class IProtocol
 	{
@@ -112,6 +117,20 @@ namespace Azoth
 		 * @sa IMUCJoinWidget
 		 */
 		virtual QWidget* GetMUCJoinWidget () = 0;
+		
+		/** @brief Returns the editor widget for the bookmarks of this
+		 * protocol.
+		 * 
+		 * The returned widget must implement the
+		 * IMUCBookmarkEditorWidget interface.
+		 * 
+		 * This function should create a new widget each time it is
+		 * called, since the ownership is transferred to the caller and
+		 * the widget will be deleted by the caller when appropriate.
+		 * 
+		 * @sa IMUCBookmarkEditorWidget
+		 */
+		virtual QWidget* GetMUCBookmarkEditorWidget () = 0;
 
 		/** @brief Removes the given account.
 		 *

@@ -75,7 +75,7 @@ namespace Acetamide
 	public slots:
 		void closePrivateChat (bool);
 	signals:
-		void removeFromList (const QString&, const QString&);
+		void removeFromList (QString, const QString&);
 	};
 	typedef boost::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
 };

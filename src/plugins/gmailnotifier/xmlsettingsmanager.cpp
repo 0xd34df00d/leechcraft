@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011  Yury Erik Potapov
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "notificationactionhandler.h"
+#include <QApplication>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace GmailNotifier
 {
-	NotificationActionHandler::NotificationActionHandler (Entity& e, QObject *parent)
-	: QObject (parent)
-	, Entity_ (e)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject*> (this);
-		Entity_.Additional_ ["HandlingObjectXferOwnership"] = true;
+		Util::BaseSettingsManager::Init ();
 	}
 
-	void NotificationActionHandler::AddFunction (const QString& name, NotificationActionHandler::Callback_t callback)
+	XmlSettingsManager* XmlSettingsManager::Instance ()
 	{
-		ActionName2Callback_ << qMakePair (name, callback);
-		const QStringList& sl = Entity_.Additional_ ["NotificationActions"].toStringList ();
-		Entity_.Additional_ ["NotificationActions"] = sl + QStringList (name);
+		static XmlSettingsManager manager;
+		return &manager;
 	}
 
-	void NotificationActionHandler::notificationActionTriggered (int idx)
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		ActionName2Callback_.at (idx).second ();
+		QSettings *settings = new QSettings (qApp->organizationName (),
+				qAppName () + "_GmailNotifier");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
 	}
 }
 }

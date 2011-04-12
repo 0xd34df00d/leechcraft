@@ -44,10 +44,11 @@ SET (SRCS
 	contactlistdelegate.cpp
 	addcontactdialog.cpp
 	joinconferencedialog.cpp
-	notificationactionhandler.cpp
 	groupeditordialog.cpp
 	transferjobmanager.cpp
 	addaccountwizardfirstpage.cpp
+	bookmarksmanagerdialog.cpp
+	accounthandlerchooserdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -65,10 +66,11 @@ SET (HEADERS
 	contactlistdelegate.h
 	addcontactdialog.h
 	joinconferencedialog.h
-	notificationactionhandler.h
 	groupeditordialog.h
 	transferjobmanager.h
 	addaccountwizardfirstpage.h
+	bookmarksmanagerdialog.h
+	accounthandlerchooserdialog.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -84,6 +86,8 @@ SET (FORMS
 	joinconferencedialog.ui
 	groupeditordialog.ui
 	addaccountwizardfirstpage.ui
+	bookmarksmanagerdialog.ui
+	accounthandlerchooserdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 SET (TRANSLATIONS
@@ -128,7 +132,8 @@ OPTION (ENABLE_AZOTH_ACETAMIDE "Build Acetamide, IRC support for Azoth" ON)
 OPTION (ENABLE_AZOTH_CHATHISTORY "Build ChatHistory which keeps, well, chat history" ON)
 OPTION (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
 OPTION (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
-OPTION (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microbligging service" ON)
+OPTION (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
+OPTION (ENABLE_AZOTH_JUICK "Build plugin for the juick.com microblogging service" ON)
 OPTION (ENABLE_AZOTH_XOOX "Build Xoox, the QXmpp-aided XMPP support for Azoth" ON)
 
 IF (ENABLE_AZOTH_ACETAMIDE)
@@ -146,6 +151,9 @@ ENDIF (ENABLE_AZOTH_STANDARDSTYLES)
 IF (ENABLE_AZOTH_P100Q)
 	ADD_SUBDIRECTORY (plugins/p100q)
 ENDIF (ENABLE_AZOTH_P100Q)
+IF (ENABLE_AZOTH_JUICK)
+	ADD_SUBDIRECTORY (plugins/juick)
+ENDIF (ENABLE_AZOTH_JUICK)
 IF (ENABLE_AZOTH_XOOX)
 	ADD_SUBDIRECTORY (plugins/xoox)
 ENDIF (ENABLE_AZOTH_XOOX)

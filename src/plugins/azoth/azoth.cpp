@@ -54,6 +54,9 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("ClientIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader)->
 					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("AffIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTAffIconLoader)->
+					GetSubElemModel ());
 
 		QMainWindow *mainWin = proxy->GetMainWindow ();
 		QDockWidget *dw = new QDockWidget (mainWin);
@@ -172,9 +175,26 @@ namespace Azoth
 		result ["Azoth"] << MW_->GetMenuActions ();
 		return result;
 	}
+	
+	bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
+	{
+		return Core::Instance ().CouldHandle (e);
+	}
+	
+	void Plugin::Handle (Entity e)
+	{
+		Core::Instance ().Handle (e);
+	}
 
 	void Plugin::newTabRequested ()
 	{
+	}
+	
+	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
+	{
+		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
+		TransferJobManager *mgr = Core::Instance ().GetTransferJobManager ();
+		mgr->SelectionChanged (si.model () == mgr->GetSummaryModel () ? si : QModelIndex ());
 	}
 }
 }

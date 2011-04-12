@@ -221,6 +221,7 @@ namespace LeechCraft
 			try
 			{
 				qDebug () << "Initializing" << ii->GetName ();
+				emit loadProgress (tr ("Initializing %1: stage one...").arg (ii->GetName ()));
 				ii->Init (ICoreProxy_ptr (new CoreProxy ()));
 			}
 			catch (const std::exception& e)
@@ -289,6 +290,7 @@ namespace LeechCraft
 			IInfo *ii = qobject_cast<IInfo*> (obj);
 			try
 			{
+				emit loadProgress (tr ("Initializing %1: stage two...").arg (ii->GetName ()));
 				ii->SecondInit ();
 			}
 			catch (const std::exception& e)

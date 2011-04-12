@@ -23,10 +23,13 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QToolBar>
+#include <QAction>
+#include <interfaces/structures.h>
 #include <plugininterface/util.h>
+#include <plugininterface/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
 #include "core.h"
-#include "notificationactionhandler.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -36,7 +39,15 @@ namespace Azoth
 	TransferJobManager::TransferJobManager (QObject *parent)
 	: QObject (parent)
 	, SummaryModel_ (new QStandardItemModel (this))
+	, ReprBar_ (new QToolBar)
 	{
+		QAction *abort = new QAction (tr ("Abort"), this);
+		abort->setProperty ("ActionIcon", "cancel");
+		connect (abort,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAbortAction ()));
+		ReprBar_->addAction (abort);
 	}
 
 	void TransferJobManager::AddAccountManager (QObject *mgrObj)
@@ -59,6 +70,11 @@ namespace Azoth
 	QObjectList TransferJobManager::GetPendingIncomingJobsFor (const QString& id)
 	{
 		return Entry2Incoming_ [id];
+	}
+	
+	void TransferJobManager::SelectionChanged (const QModelIndex& idx)
+	{
+		Selected_ = idx;
 	}
 
 	namespace
@@ -96,6 +112,14 @@ namespace Azoth
 					.arg (Util::MakePrettySize (0))
 					.arg (Util::MakePrettySize (job->GetSize ()))
 					.arg (0));
+		const QVariant& barVar = QVariant::fromValue<QToolBar*> (ReprBar_);
+		const QVariant& jobObjVar = QVariant::fromValue<QObject*> (jobObj);
+		Q_FOREACH (QStandardItem *item, items)
+		{
+			item->setData (barVar, RoleControls);
+			item->setData (jobObjVar, MRJobObject);
+			item->setEditable (false);
+		}
 		Object2Status_ [jobObj] = items.at (1);
 		Object2Progress_ [jobObj] = items.at (2);
 
@@ -237,8 +261,8 @@ namespace Azoth
 					.arg (Util::MakePrettySize (job->GetSize ()))
 					.arg (GetContactName (id)),
 				PInfo_);
-		NotificationActionHandler *nh =
-				new NotificationActionHandler (e, this);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction ("Accept",
 				boost::bind (&TransferJobManager::AcceptJob, this, jobObj, QString ()));
 		nh->AddFunction ("Deny",
@@ -377,6 +401,34 @@ namespace Azoth
 					.arg (Util::MakePrettySize (done))
 					.arg (Util::MakePrettySize (total))
 					.arg (done * 100 / total));
+	}
+	
+	void TransferJobManager::handleAbortAction ()
+	{
+		if (!Selected_.isValid ())
+			return;
+		
+		QStandardItem *item = SummaryModel_->itemFromIndex (Selected_);
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null item for index"
+					<< Selected_;
+			return;
+		}
+		
+		QObject *jobObj = item->data (MRJobObject).value<QObject*> ();
+		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
+		if (!job)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null transfer job for"
+					<< jobObj
+					<< Selected_;
+			return;
+		}
+		
+		job->Abort ();
 	}
 }
 }

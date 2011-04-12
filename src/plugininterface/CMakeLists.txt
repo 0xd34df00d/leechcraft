@@ -31,6 +31,7 @@ SET (SRCS
 	syncops.cpp
 	customnetworkreply.cpp
 	resourceloader.cpp
+	notificationactionhandler.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -56,6 +57,7 @@ SET (HEADERS
 	syncops.h
 	customnetworkreply.h
 	resourceloader.h
+	notificationactionhandler.h
 	idpool.h
 	)
 SET (FORMS

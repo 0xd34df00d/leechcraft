@@ -19,6 +19,7 @@
 #include "channelclentry.h"
 #include <QImage>
 #include <QtDebug>
+#include <interfaces/azothutil.h>
 #include "ircaccount.h"
 #include "channelpublicmessage.h"
 #include "channelhandler.h"
@@ -113,6 +114,11 @@ namespace Acetamide
 	QList<QObject*> ChannelCLEntry::GetAllMessages () const
 	{
 		return AllMessages_;
+	}
+	
+	void ChannelCLEntry::PurgeMessages (const QDateTime& before)
+	{
+		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	QList<QAction*> ChannelCLEntry::GetActions () const

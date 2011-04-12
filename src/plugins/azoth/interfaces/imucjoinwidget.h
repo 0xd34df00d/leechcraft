@@ -102,6 +102,18 @@ namespace Azoth
 		 * @sa GetIdentifyingData()
 		 */
 		virtual QVariantList GetBookmarkedMUCs () const = 0;
+		
+		/** @brief Sets the bookmarked MUCs for the given account.
+		 * 
+		 * The passed list is typically based on the result of the
+		 * corresponding IMUCBookmarkEditWidget::GetIdentifyingData()
+		 * return values.
+		 * 
+		 * @param[in] account Account for which the bookmarks should be
+		 * set.
+		 * @param[in] bookmarks The list of variant maps with bookmarks.
+		 */
+		virtual void SetBookmarkedMUCs (QObject *account, const QVariantList& bookmarks) = 0;
 
 		/** @brief Sets the previously saved join parameters.
 		 *

@@ -156,11 +156,12 @@
    </property>
   </action>
   <action name="ActionMenu_">
+   <property name="icon">
+    <iconset resource="mainresources.qrc">
+     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
+   </property>
    <property name="text">
     <string>Menu</string>
-   </property>
-   <property name="ActionIcon" stdset="0">
-    <string>menu</string>
    </property>
   </action>
   <action name="ActionShowStatusBar_">

@@ -27,6 +27,7 @@ SET (XOOX_SRCS
 	vcarddialog.cpp
 	transfermanager.cpp
 	transferjob.cpp
+	bookmarkeditwidget.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -49,12 +50,14 @@ SET (XOOX_HEADERS
 	vcarddialog.h
 	transfermanager.h
 	transferjob.h
+	bookmarkeditwidget.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
 	glooxaccountconfigurationwidget.ui
 	joingroupchatwidget.ui
 	vcarddialog.ui
+	bookmarkeditwidget.ui
 	)
 SET (XOOX_TRANSLATIONS
 	leechcraft_azoth_xoox_ru_RU.ts

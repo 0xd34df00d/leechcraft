@@ -18,11 +18,12 @@
 
 #include "entrybase.h"
 #include <QAction>
+#include <interfaces/iproxyobject.h>
+#include <interfaces/azothutil.h>
 #include "clientconnection.h"
 #include "ircprotocol.h"
 #include "ircaccount.h"
 #include "ircmessage.h"
-#include <interfaces/iproxyobject.h>
 
 namespace LeechCraft
 {
@@ -45,6 +46,11 @@ namespace Acetamide
 	QList<QObject*> EntryBase::GetAllMessages () const
 	{
 		return AllMessages_;
+	}
+	
+	void EntryBase::PurgeMessages (const QDateTime& before)
+	{
+		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	EntryStatus EntryBase::GetStatus (const QString&) const

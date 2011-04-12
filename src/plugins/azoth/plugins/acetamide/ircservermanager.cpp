@@ -224,7 +224,7 @@ namespace Acetamide
 		DoServerAction (boost::bind (&IrcServer::ReadAnswer, _1, answer), serverKey);
 	}
 
-	void IrcServerManager::removeServer (const QString& key)
+	void IrcServerManager::removeServer (QString key)
 	{
 		QMap<IrcAccount*, QHash<QString, IrcServer_ptr> >::iterator iter;
 
@@ -245,8 +245,3 @@ namespace Acetamide
 };
 };
 };
-
-uint qHash (const LeechCraft::Azoth::Acetamide::IrcServer_ptr& server)
-{
-	return qHash (server.get ());
-}

@@ -87,6 +87,10 @@ namespace Acetamide
 	{
 		return QVariantList ();
 	}
+	
+	void IrcJoinGroupChat::SetBookmarkedMUCs (QObject*, const QVariantList&)
+	{
+	}
 
 	void IrcJoinGroupChat::SetIdentifyingData (const QVariantMap& data)
 	{

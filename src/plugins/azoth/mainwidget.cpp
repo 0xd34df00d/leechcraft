@@ -31,6 +31,7 @@
 #include "xmlsettingsmanager.h"
 #include "addcontactdialog.h"
 #include "joinconferencedialog.h"
+#include "bookmarksmanagerdialog.h"
 
 namespace LeechCraft
 {
@@ -47,7 +48,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.BottomLayout_->insertWidget (0, MenuButton_);
 
-		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (this));
+		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 
@@ -136,6 +137,10 @@ namespace Azoth
 		MainMenu_->addAction (tr ("Join conference..."),
 				&Core::Instance (),
 				SLOT (handleMucJoinRequested ()));
+		MainMenu_->addSeparator ();
+		MainMenu_->addAction (tr ("Manage bookmarks..."),
+				this,
+				SLOT (handleManageBookmarks ()));
 
 		MainMenu_->addSeparator ();
 
@@ -461,6 +466,12 @@ namespace Azoth
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->exec ();
 	}
+	
+	void MainWidget::handleManageBookmarks ()
+	{
+		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
+		dia->show ();
+	}
 
 	void MainWidget::handleAddContactRequested ()
 	{
@@ -505,7 +516,9 @@ namespace Azoth
 		for (int i = begin; i <= end; ++i)
 		{
 			const QModelIndex& index = clModel->index (i, 0, parent);
-			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETCategory)
+			const Core::CLEntryType type =
+					index.data (Core::CLREntryType).value<Core::CLEntryType> ();
+			if (type == Core::CLETCategory)
 			{
 				const QString& path = BuildPath (index);
 
@@ -519,6 +532,11 @@ namespace Azoth
 				if (clModel->rowCount (index))
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
+			else if (type == Core::CLETAccount)
+				QMetaObject::invokeMethod (Ui_.CLTree_,
+						"expand",
+						Qt::QueuedConnection,
+						Q_ARG (QModelIndex, index));
 		}
 	}
 

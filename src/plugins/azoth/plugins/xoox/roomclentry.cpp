@@ -20,6 +20,7 @@
 #include <QImage>
 #include <QtDebug>
 #include <interfaces/iproxyobject.h>
+#include <interfaces/azothutil.h>
 #include "glooxaccount.h"
 #include "glooxprotocol.h"
 #include "roompublicmessage.h"
@@ -102,7 +103,7 @@ namespace Xoox
 		return result;
 	}
 
-	QObject* RoomCLEntry::CreateMessage (IMessage::MessageType type,
+	QObject* RoomCLEntry::CreateMessage (IMessage::MessageType,
 			const QString& variant, const QString& text)
 	{
 		if (variant == "")
@@ -114,6 +115,11 @@ namespace Xoox
 	QList<QObject*> RoomCLEntry::GetAllMessages () const
 	{
 		return AllMessages_;
+	}
+	
+	void RoomCLEntry::PurgeMessages (const QDateTime& before)
+	{
+		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	EntryStatus RoomCLEntry::GetStatus (const QString&) const
@@ -140,7 +146,7 @@ namespace Xoox
 	{
 	}
 
-	QMap<QString, QVariant> RoomCLEntry::GetClientInfo (const QString& var) const
+	QMap<QString, QVariant> RoomCLEntry::GetClientInfo (const QString&) const
 	{
 		return QMap<QString, QVariant> ();
 	}

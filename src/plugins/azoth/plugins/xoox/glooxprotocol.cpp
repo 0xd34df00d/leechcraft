@@ -27,6 +27,7 @@
 #include "core.h"
 #include "joingroupchatwidget.h"
 #include "glooxaccountconfigurationwidget.h"
+#include "bookmarkeditwidget.h"
 
 namespace LeechCraft
 {
@@ -147,6 +148,11 @@ namespace Xoox
 	{
 		return new JoinGroupchatWidget ();
 	}
+	
+	QWidget* GlooxProtocol::GetMUCBookmarkEditorWidget ()
+	{
+		return new BookmarkEditWidget ();
+	}
 
 	void GlooxProtocol::RemoveAccount (QObject *acc)
 	{
@@ -155,6 +161,43 @@ namespace Xoox
 		emit accountRemoved (accObj);
 		accObj->deleteLater ();
 		saveAccounts ();
+	}
+	
+	bool GlooxProtocol::SupportsURI (const QUrl& url) const
+	{
+		return url.scheme () == "xmpp";
+	}
+	
+	void GlooxProtocol::HandleURI (const QUrl& url, QObject *accountObj)
+	{
+		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accountObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< accountObj
+					<< "isn't GlooxAccount";
+			return;
+		}
+
+		QMap<QString, QString> queryItems;
+		QPair<QString, QString> pair;
+		Q_FOREACH (pair, url.queryItems ())
+			queryItems [pair.first] = pair.second;
+
+		const QString& path = url.path ();
+		if (queryItems.contains ("join"))
+		{
+			const QStringList& split = path.split ('@', QString::SkipEmptyParts);
+			if (split.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "incorrect room format"
+						<< path
+						<< split;
+				return;
+			}
+			acc->JoinRoom (split.at (1), split.at (0), acc->GetNick ());
+		}
 	}
 
 	void GlooxProtocol::saveAccounts () const

@@ -35,7 +35,7 @@ namespace Acetamide
 	class IrcMessage;
 
 	class EntryBase : public QObject
-						, public ICLEntry
+					, public ICLEntry
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
@@ -50,6 +50,7 @@ namespace Acetamide
 
 		virtual QObject* GetObject ();
 		virtual QList<QObject*> GetAllMessages () const;
+		void PurgeMessages (const QDateTime&);
 		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
@@ -73,6 +74,7 @@ namespace Acetamide
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
+		void permsChanged ();
 	};
 };
 };

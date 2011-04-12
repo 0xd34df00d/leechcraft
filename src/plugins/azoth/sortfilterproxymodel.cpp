@@ -78,6 +78,15 @@ namespace Azoth
 
 		ICLEntry *lE = GetEntry (left);
 		ICLEntry *rE = GetEntry (right);
+		
+		if (lE->GetEntryType () == ICLEntry::ETPrivateChat &&
+				rE->GetEntryType () == ICLEntry::ETPrivateChat)
+		{
+			const int lr = left.data (Core::CLRRole).toInt ();
+			const int rr = right.data (Core::CLRRole).toInt ();
+			if (lr != rr)
+				return lr > rr;
+		}
 
 		State lState = lE->GetStatus ().State_;
 		State rState = rE->GetStatus ().State_;

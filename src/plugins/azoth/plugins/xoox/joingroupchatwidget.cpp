@@ -128,10 +128,41 @@ namespace Xoox
 				cm ["Nick"] = conf.nickName ();
 				cm ["Room"] = split.at (0);
 				cm ["Server"] = split.at (1);
+				cm ["Autojoin"] = conf.autoJoin ();
+				cm ["StoredName"] = conf.name ();
 				result << cm;
 			}
 		}
 		return result;
+	}
+	
+	void JoinGroupchatWidget::SetBookmarkedMUCs (QObject *accObj, const QVariantList& datas)
+	{
+		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< accObj
+					<< "is not a GlooxAccount";
+			return;
+		}
+
+		QList<QXmppBookmarkConference> mucs;
+		Q_FOREACH (const QVariant& var, datas)
+		{
+			const QVariantMap& map = var.toMap ();
+			QXmppBookmarkConference conf;
+			conf.setAutoJoin (map.value ("Autojoin").toBool ());
+			conf.setJid (map.value ("Room").toString () + '@' + map.value ("Server").toString ());
+			conf.setNickName (map.value ("Nick").toString ());
+			conf.setName (map.value ("StoredName").toString ());
+			mucs << conf;
+		}
+
+		QXmppBookmarkSet set;
+		set.setConferences (mucs);
+		set.setUrls (acc->GetBookmarks ().urls ());
+		acc->SetBookmarks (set);
 	}
 
 	void JoinGroupchatWidget::SetIdentifyingData (const QVariantMap& data)

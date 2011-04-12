@@ -88,8 +88,7 @@ namespace StandardStyles
 		QString body = Proxy_->FormatBody (msg->GetBody (), msg->GetObject ());
 
 		QString divClass;
-		QString string = QString ("%1 ")
-				.arg (Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ()));
+		QString string = Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ());
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
@@ -173,7 +172,6 @@ namespace StandardStyles
 		if (!isActiveChat &&
 				!HasBeenAppended_ [frame])
 		{
-			QWebElement elem = frame->findFirstElement ("body");
 			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
 			if (hr.isNull ())
 				elem.appendInside ("<hr class=\"lastSeparator\" />");

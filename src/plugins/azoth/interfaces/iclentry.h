@@ -328,6 +328,22 @@ namespace Azoth
 		 * @return The list of messages.
 		 */
 		virtual QList<QObject*> GetAllMessages () const = 0;
+		
+		/** @brief Purges messages before the given date.
+		 * 
+		 * This function should purge all the messages before the given
+		 * date. After the call, the corresponding messages should not
+		 * appear in the result of GetAllMessages() function. It's also
+		 * suggested to remove them from any internal memory storage to
+		 * conserve memory.
+		 * 
+		 * If before is an invalid date, this function should purge all
+		 * messages.
+		 * 
+		 * @param[in] before The date before which messages should be
+		 * purged.
+		 */
+		virtual void PurgeMessages (const QDateTime& before) = 0;
 
 		/** @brief Returns the current status of a variant of the item.
 		 *
@@ -503,6 +519,13 @@ namespace Azoth
 		 */
 		virtual void chatPartStateChanged (const ChatPartState& state,
 				const QString& variant) = 0;
+				
+		/** @brief This signal should be emitted if it's a MUC
+		 * participant and his role/affiliation changes.
+		 * 
+		 * @note This function is expected to be a signal in subclasses.
+		 */
+		virtual void permsChanged () = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

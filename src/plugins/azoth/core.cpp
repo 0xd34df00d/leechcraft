@@ -33,6 +33,7 @@
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
 #include <plugininterface/categoryselector.h>
+#include <plugininterface/notificationactionhandler.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -41,14 +42,15 @@
 #include "interfaces/imucentry.h"
 #include "interfaces/iauthable.h"
 #include "interfaces/iresourceplugin.h"
+#include "interfaces/iurihandler.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
 #include "xmlsettingsmanager.h"
 #include "joinconferencedialog.h"
-#include "notificationactionhandler.h"
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
+#include "accounthandlerchooserdialog.h"
 
 uint qHash (const QImage& image)
 {
@@ -96,6 +98,7 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
+	, AffIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
@@ -119,6 +122,9 @@ namespace Azoth
 		ClientIconLoader_->AddLocalPrefix ();
 		ClientIconLoader_->AddGlobalPrefix ();
 		
+		AffIconLoader_->AddLocalPrefix ();
+		AffIconLoader_->AddGlobalPrefix ();
+		
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
@@ -138,6 +144,7 @@ namespace Azoth
 	{
 		StatusIconLoader_.reset ();
 		ClientIconLoader_.reset ();
+		AffIconLoader_.reset ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -158,7 +165,11 @@ namespace Azoth
 			return StatusIconLoader_.get ();
 		case RLTClientIconLoader:
 			return ClientIconLoader_.get ();
+		case RLTAffIconLoader:
+			return AffIconLoader_.get ();
 		}
+		
+		return 0;
 	}
 	
 	QAbstractItemModel* Core::GetSmilesOptionsModel () const
@@ -210,6 +221,104 @@ namespace Azoth
 	void Core::RegisterHookable (QObject *object)
 	{
 		PluginManager_->RegisterHookable (object);
+	}
+	
+	bool Core::CouldHandle (const Entity& e) const
+	{
+		if (!e.Entity_.canConvert<QUrl> ())
+			return false;
+		
+		const QUrl& url = e.Entity_.toUrl ();
+		if (!url.isValid ())
+			return false;
+		
+		Q_FOREACH (QObject *obj, ProtocolPlugins_)
+		{
+			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
+			if (!protoPlug)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast"
+						<< obj
+						<< "to IProtocolPlugin";
+				continue;
+			}
+			
+			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+			{
+				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
+				if (!handler)
+					continue;
+				if (handler->SupportsURI (url))
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	void Core::Handle (Entity e)
+	{
+		const QUrl& url = e.Entity_.toUrl ();
+		if (!url.isValid ())
+			return;
+
+		QList<QObject*> accounts;
+		Q_FOREACH (QObject *obj, ProtocolPlugins_)
+		{
+			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
+			if (!protoPlug)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast"
+						<< obj
+						<< "to IProtocolPlugin";
+				continue;
+			}
+
+			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+			{
+				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
+				if (!handler)
+					continue;
+				if (!handler->SupportsURI (url))
+					continue;
+
+				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+				if (!proto)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< protoObj
+							<< "doesn't implement IProtocol";
+					continue;
+				}
+				accounts << proto->GetRegisteredAccounts ();
+			}
+		}
+
+		if (accounts.isEmpty ())
+			return;
+
+		QObject *selected = 0;
+
+		if (accounts.size () > 1)
+		{
+			std::auto_ptr<AccountHandlerChooserDialog> dia (new AccountHandlerChooserDialog (accounts,
+						tr ("Please select account to handle URI %1")
+							.arg (url.toString ())));
+			if (dia->exec () != QDialog::Accepted)
+				return;
+			
+			selected = dia->GetSelectedAccount ();
+		}
+		else
+			selected = accounts.at (0);
+
+		if (!selected)
+			return;
+
+		QObject *selProto = qobject_cast<IAccount*> (selected)->GetParentProtocol ();
+		qobject_cast<IURIHandler*> (selProto)->HandleURI (url, selected);
 	}
 
 	const QObjectList& Core::GetProtocolPlugins () const
@@ -476,24 +585,23 @@ namespace Azoth
 			const QColor& bg = QApplication::palette ().color (QPalette::Base);
 
 			const qreal lower = 25. / 360.;
-			const qreal delta = 25. / 360.;
+			const qreal delta = 50. / 360.;
 			const qreal higher = 180. / 360. - delta / 2;
 
 			const qreal alpha = bg.alphaF ();
-
-			qreal s = bg.saturationF ();
-			s += 31 * (1 - s) / 32;
-			qreal v = bg.valueF ();
-			v = 0.95 - 2 * v / 5;
 
 			qreal h = bg.hueF ();
 
 			QColor color;
 			for (qreal d = lower; d <= higher; d += delta)
 			{
-				color.setHsvF (Fix (h + d), s, v, alpha);
+				color.setHsvF (Fix (h + d), 1, 0.6, alpha);
 				result << color;
-				color.setHsvF (Fix (h - d), s, v, alpha);
+				color.setHsvF (Fix (h - d), 1, 0.6, alpha);
+				result << color;
+				color.setHsvF (Fix (h + d), 1, 0.9, alpha);
+				result << color;
+				color.setHsvF (Fix (h - d), 1, 0.9, alpha);
 				result << color;
 			}
 		}
@@ -668,6 +776,10 @@ namespace Azoth
 				this,
 				SLOT (handleEntryGroupsChanged (const QStringList&)));
 		connect (clEntry->GetObject (),
+				SIGNAL (permsChanged ()),
+				this,
+				SLOT (handleEntryPermsChanged ()));
+		connect (clEntry->GetObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
@@ -689,6 +801,8 @@ namespace Azoth
 			AddEntryTo (clEntry, catItem);
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
+		
+		handleEntryPermsChanged (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
@@ -886,6 +1000,38 @@ namespace Azoth
 				<< filename + ".jpg";
 
 		const QString& path = StatusIconLoader_->GetPath (variants);
+		return QIcon (path);
+	}
+	
+	QIcon Core::GetAffIcon (IMUCEntry::MUCAffiliation aff) const
+	{
+		QString iconName;
+		switch (aff)
+		{
+		case IMUCEntry::MUCAInvalid:
+		case IMUCEntry::MUCANone:
+			iconName = "noaffiliation";
+			break;
+		case IMUCEntry::MUCAOutcast:
+			iconName = "outcast";
+			break;
+		case IMUCEntry::MUCAMember:
+			iconName = "member";
+			break;
+		case IMUCEntry::MUCAAdmin:
+			iconName = "admin";
+			break;
+		case IMUCEntry::MUCAOwner:
+			iconName = "owner";
+			break;
+		}
+		
+		QString filename = XmlSettingsManager::Instance ()
+				.property ("AffIcons").toString ();
+		filename += '/';
+		filename += iconName;
+		
+		const QString& path = AffIconLoader_->GetIconPath (filename);
 		return QIcon (path);
 	}
 
@@ -1794,6 +1940,37 @@ namespace Azoth
 
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
 	}
+	
+	void Core::handleEntryPermsChanged (ICLEntry *suggest)
+	{
+		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "could not be casted to ICLEntry";
+			return;
+		}
+		
+		QObject *entryObj = entry->GetObject ();
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+		if (!mucEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "entry's parent CL entry doesn't implement IMUCEntry"
+					<< entryObj
+					<< entry->GetParentCLEntry ();
+			return;
+		}
+		
+		const IMUCEntry::MUCRole role = mucEntry->GetRole (entryObj);
+		const IMUCEntry::MUCAffiliation aff = mucEntry->GetAffiliation (entryObj);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		{
+			item->setData (role, CLRRole);
+			item->setData (aff, CLRAffiliation);
+		}
+	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
 	{
@@ -1890,8 +2067,8 @@ namespace Azoth
 				Entity e = Util::MakeNotification ("Azoth",
 						msgString,
 						PInfo_);
-				NotificationActionHandler *nh =
-						new NotificationActionHandler (e, this);
+				Util::NotificationActionHandler *nh =
+						new Util::NotificationActionHandler (e, this);
 				nh->AddFunction (tr ("Open chat"),
 						boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
 								ChatTabsManager_,
@@ -1964,8 +2141,8 @@ namespace Azoth
 					.arg (entry->GetEntryName ())
 					.arg (msg);
 		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
-		NotificationActionHandler *nh =
-				new NotificationActionHandler (e, this);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Authorize"),
 				boost::bind (AuthorizeEntry,
 						entry));
@@ -2350,6 +2527,25 @@ namespace Azoth
 					<< "that doesn't implement IMUCEntry"
 					<< sender ();
 			return;
+		}
+		
+		if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+		{
+			ChatTabsManager_->CloseChat (entry);
+			Q_FOREACH (QObject *partObj, mucEntry->GetParticipants ())
+			{
+				ICLEntry *partEntry = qobject_cast<ICLEntry*> (partObj);
+				if (!partEntry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cast"
+							<< partObj
+							<< "to ICLEntry";
+					continue;
+				}
+				
+				ChatTabsManager_->CloseChat (partEntry);
+			}
 		}
 
 		mucEntry->Leave ();

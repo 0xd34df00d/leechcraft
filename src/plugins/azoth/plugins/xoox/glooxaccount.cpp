@@ -129,7 +129,7 @@ namespace Xoox
 
 	IAccount::AccountFeatures GlooxAccount::GetAccountFeatures () const
 	{
-		return FRenamable | FSupportsXA;
+		return FRenamable | FSupportsXA | FMUCsSupportFileTransfers;
 	}
 
 	QList<QObject*> GlooxAccount::GetCLEntries ()
@@ -322,6 +322,14 @@ namespace Xoox
 			return QXmppBookmarkSet ();
 		
 		return ClientConnection_->GetBookmarks ();
+	}
+	
+	void GlooxAccount::SetBookmarks (const QXmppBookmarkSet& set)
+	{
+		if (!ClientConnection_)
+			return;
+		
+		ClientConnection_->SetBookmarks (set);
 	}
 
 	QByteArray GlooxAccount::Serialize () const

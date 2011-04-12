@@ -16,31 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_NOTIFICATIONACTIONHANDLER_H
-#define PLUGINS_AZOTH_NOTIFICATIONACTIONHANDLER_H
-#include <boost/function.hpp>
-#include <QObject>
-#include <interfaces/structures.h>
+#ifndef PLUGINS_AZOTH_BOOKMARKSMANAGERDIALOG_H
+#define PLUGINS_AZOTH_BOOKMARKSMANAGERDIALOG_H
+#include <QDialog>
+#include <QMap>
+#include "ui_bookmarksmanagerdialog.h"
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class NotificationActionHandler : public QObject
+	class IMUCJoinWidget;
+	class IMUCBookmarkEditorWidget;
+
+	class BookmarksManagerDialog : public QDialog
 	{
 		Q_OBJECT
-
-		Entity& Entity_;
+		
+		Ui::BookmarksManagerDialog Ui_;
+		QMap<QByteArray, IMUCJoinWidget*> Proto2Joiner_;
+		QStandardItemModel *BMModel_;
+		IMUCBookmarkEditorWidget *CurrentEditor_;
 	public:
-		typedef boost::function<void ()> Callback_t;
+		BookmarksManagerDialog (QWidget* = 0);
 	private:
-		QList<QPair<QString, Callback_t> > ActionName2Callback_;
-	public:
-		NotificationActionHandler (Entity&, QObject* = 0);
-
-		void AddFunction (const QString&, Callback_t);
-	public slots:
-		void notificationActionTriggered (int);
+		void Save ();
+		QStandardItem* GetSelectedItem () const;
+	private slots:
+		void on_AccountBox__currentIndexChanged (int);
+		void handleCurrentBMChanged (const QModelIndex&);
+		void on_RemoveButton__released ();
+		void on_AddButton__released ();
+		void on_ApplyButton__released ();
 	};
 }
 }

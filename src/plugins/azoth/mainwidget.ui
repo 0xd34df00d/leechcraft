@@ -25,6 +25,11 @@
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QTreeView::branch:!has-children {
+	background: transparent;
+}</string>
+     </property>
      <property name="iconSize">
       <size>
        <width>32</width>

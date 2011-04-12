@@ -126,6 +126,7 @@ namespace LeechCraft
 		QList<Plugins_t::iterator> FindProviders (const QSet<QByteArray>&);
 	signals:
 		void pluginInjected (QObject*);
+		void loadProgress (const QString&);
 	};
 };
 

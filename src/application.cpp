@@ -66,6 +66,11 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	if (VarMap_.count ("version"))
 	{
 		std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (http://leechcraft.org)" << std::endl;
+#ifdef Q_WS_WIN
+		std::cout << " <this version does not have UNLIMITED CAT POWA :(>" << std::endl;
+#else
+		std::cout << " this version can haz teh UNLIMITED CAT POWA :3 ε:" << std::endl;
+#endif
 		std::exit (EVersionRequested);
 	}
 

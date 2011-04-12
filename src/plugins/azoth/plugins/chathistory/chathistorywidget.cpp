@@ -67,9 +67,9 @@ namespace ChatHistory
 				SLOT (handleContactSelected (const QModelIndex&)));
 		
 		connect (Core::Instance ().get (),
-				SIGNAL (gotUsersForAccount (const QStringList&, const QString&)),
+				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
 				this,
-				SLOT (handleGotUsersForAccount (const QStringList&, const QString&)));
+				SLOT (handleGotUsersForAccount (const QStringList&, const QString&, const QStringList&)));
 		connect (Core::Instance ().get (),
 				SIGNAL (gotOurAccounts (const QStringList&)),
 				this,
@@ -164,7 +164,8 @@ namespace ChatHistory
 		}
 	}
 	
-	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users, const QString& id)
+	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users,
+			const QString& id, const QStringList& nameCache)
 	{
 		if (id != Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ())
 			return;
@@ -176,12 +177,15 @@ namespace ChatHistory
 		const QString& focusId = EntryToFocus_ ?
 				EntryToFocus_->GetEntryID () :
 				0;
-		Q_FOREACH (const QString& user, users)
+		for (int i = 0; i < users.size (); ++i)
 		{
+			const QString& user = users.at (i);
 			ICLEntry *entry = qobject_cast<ICLEntry*> (proxy->GetEntry (user, id));
 			const QString& name = entry ?
 					entry->GetEntryName () :
-					user;
+					(nameCache.value (i).isEmpty () ? 
+						user :
+						nameCache.value (i));
 
 			QStandardItem *item = new QStandardItem (name);
 			item->setData (user, MRIDRole);

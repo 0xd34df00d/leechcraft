@@ -79,7 +79,7 @@ namespace Acetamide
 
 	QList<QObject*> ClientConnection::GetChannelCLEntries (const QString& channelKey) const
 	{
-		ChannelHandlers_.value (channelKey)->GetParticipants ();
+		return ChannelHandlers_.value (channelKey)->GetParticipants ();
 	}
 
 	IrcAccount* ClientConnection::GetAccount () const
@@ -236,7 +236,7 @@ namespace Acetamide
 					<< "could not find source for";
 	}
 
-	void ClientConnection::removeServerParticipantEntry (const QString& key, const QString& nick)
+	void ClientConnection::removeServerParticipantEntry (QString key, const QString& nick)
 	{
 		if (Server2Entry_.contains (key) && Server2Entry_ [key].contains (nick))
 		{

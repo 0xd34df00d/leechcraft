@@ -23,6 +23,9 @@
 #include <interfaces/iproxyobject.h>
 #include "storage.h"
 #include "storagethread.h"
+#include <QVariant>
+#include <interfaces/iclentry.h>
+#include <interfaces/iaccount.h>
 
 namespace LeechCraft
 {
@@ -60,17 +63,50 @@ namespace ChatHistory
 		return PluginProxy_;
 	}
 	
-	void Core::Process (QObject *msg)
+	void Core::Process (QObject *msgObj)
 	{
-		IMessage *message = qobject_cast<IMessage*> (msg);
-		if (message->GetMessageType () != IMessage::MTChatMessage &&
-			message->GetMessageType () != IMessage::MTMUCMessage)
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		if (msg->GetMessageType () != IMessage::MTChatMessage &&
+			msg->GetMessageType () != IMessage::MTMUCMessage)
 			return;
+		if (msg->GetBody ().isEmpty ())
+			return;
+		if (msg->GetDirection () == IMessage::DOut &&
+				msg->GetMessageType () == IMessage::MTMUCMessage)
+			return;
+		
+		ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "message's other part doesn't implement ICLEntry"
+					<< msg->GetObject ()
+					<< msg->OtherPart ();
+			return;
+		}
+		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "message's account doesn't implement IAccount"
+					<< entry->GetParentAccount ();
+			return;
+		}
+		
+		QVariantMap data;
+		data ["EntryID"] = entry->GetEntryID ();
+		data ["VisibleName"] = entry->GetEntryName ();
+		data ["AccountID"] = acc->GetAccountID ();
+		data ["DateTime"] = msg->GetDateTime ();
+		data ["Direction"] = msg->GetDirection () == IMessage::DIn ? "IN" : "OUT";
+		data ["Body"] = msg->GetBody ();
+		data ["OtherVariant"] = msg->GetOtherVariant ();
+		data ["MessageType"] = static_cast<int> (msg->GetMessageType ());
 		
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
 				"addMessage",
 				Qt::QueuedConnection,
-				Q_ARG (QObject*, msg));
+				Q_ARG (QVariantMap, data));
 	}
 	
 	void Core::GetOurAccounts ()

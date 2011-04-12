@@ -54,6 +54,8 @@ namespace Azoth
 	ChatTab::ChatTab (const QString& entryId,
 			QWidget *parent)
 	: QWidget (parent)
+	, TabToolbar_ (new QToolBar (tr ("Azoth chat window")))
+	, SendFile_ (0)
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
@@ -70,6 +72,14 @@ namespace Azoth
 		
 		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
 		Ui_.EventsButton_->hide ();
+		
+		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
+		clearAction->setProperty ("ActionIcon", "clear");
+		connect (clearAction,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleClearChat ()));
+		TabToolbar_->addAction (clearAction);
 
 		Core::Instance ().RegisterHookable (this);
 		
@@ -153,26 +163,16 @@ namespace Azoth
 	{
 		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
 		if (data.isEmpty ())
-		{
-			QFile file (":/plugins/azoth/resources/html/viewcontents.html");
-			if (!file.open (QIODevice::ReadOnly))
-				qWarning () << Q_FUNC_INFO
-						<< "could not open resource file"
-						<< file.errorString ();
-			else
-				data = file.readAll ();
-		}
+			data = tr ("<h1 style='color:red;'>Unable to load style, "
+					"please check you've enabled at least one styles plugin.</h1>");
 		
-		if (!data.isEmpty ())
-		{
-			data.replace ("BACKGROUNDCOLOR",
-					BgColor_.name ());
-			data.replace ("FOREGROUNDCOLOR",
-					QApplication::palette ().color (QPalette::Text).name ());
-			data.replace ("LINKCOLOR",
-					QApplication::palette ().color (QPalette::Link).name ());
-			Ui_.View_->setHtml (data);
-		}
+		data.replace ("BACKGROUNDCOLOR",
+				BgColor_.name ());
+		data.replace ("FOREGROUNDCOLOR",
+				QApplication::palette ().color (QPalette::Text).name ());
+		data.replace ("LINKCOLOR",
+				QApplication::palette ().color (QPalette::Link).name ());
+		Ui_.View_->setHtml (data);
 		
 		GenerateColors ();
 
@@ -233,7 +233,7 @@ namespace Azoth
 
 	QToolBar* ChatTab::GetToolBar () const
 	{
-		return 0;
+		return TabToolbar_;
 	}
 
 	void ChatTab::Remove ()
@@ -279,7 +279,7 @@ namespace Azoth
 						IMessage::MTChatMessage;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-		emit hookMessageWillCreated (proxy, this, type, variant, text);
+		emit hookMessageWillCreated (proxy, this, e->GetObject (), type, variant, text);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -355,7 +355,7 @@ namespace Azoth
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
 	}
 
-	void ChatTab::on_SendFileButton__released ()
+	void ChatTab::handleSendFile ()
 	{
 		if (!XferManager_)
 		{
@@ -372,6 +372,16 @@ namespace Azoth
 		QObject *job = XferManager_->SendFile (EntryID_,
 				Ui_.VariantBox_->currentText (), filename);
 		Core::Instance ().HandleTransferJob (job);
+	}
+	
+	void ChatTab::handleClearChat ()
+	{
+		ICLEntry *entry = GetEntry<ICLEntry> ();
+		if (!entry)
+			return;
+		
+		entry->PurgeMessages (QDateTime ());
+		PrepareTheme ();
 	}
 	
 	void ChatTab::handleFileOffered (QObject *jobObj)
@@ -655,12 +665,18 @@ namespace Azoth
 
 		IAccount *acc = qobject_cast<IAccount*> (GetEntry<ICLEntry> ()->GetParentAccount ());
 		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
-		if (!XferManager_ ||
-			(IsMUC_ &&
-			 !(acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)))
-			Ui_.SendFileButton_->hide ();
-		else
+		if (XferManager_ &&
+			!IsMUC_ &&
+			acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)
 		{
+			SendFile_ = new QAction (tr ("Send file..."), this);
+			SendFile_->setProperty ("ActionIcon", "sendfile");
+			connect (SendFile_,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleSendFile ()));
+			TabToolbar_->addAction (SendFile_);
+
 			connect (acc->GetTransferManager (),
 					SIGNAL (fileOffered (QObject*)),
 					this,

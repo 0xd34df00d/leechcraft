@@ -101,6 +101,7 @@ namespace Xoox
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 		GlooxCLEntry* CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
 		QXmppBookmarkSet GetBookmarks () const;
+		void SetBookmarks (const QXmppBookmarkSet&);
 
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);

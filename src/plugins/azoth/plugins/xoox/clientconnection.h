@@ -36,6 +36,8 @@ class QXmppDiscoveryManager;
 class QXmppTransferManager;
 class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
+class QXmppArchiveManager;
+class QXmppEntityTimeManager;
 
 namespace LeechCraft
 {
@@ -61,6 +63,8 @@ namespace Xoox
 		QXmppTransferManager *XferManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
 		QXmppBookmarkManager *BMManager_;
+		QXmppEntityTimeManager *EntityTimeManager_;
+		QXmppArchiveManager *ArchiveManager_;
 
 		QString OurJID_;
 
@@ -88,6 +92,8 @@ namespace Xoox
 		QTimer *VCardFetchTimer_;
 		
 		int SocketErrorAccumulator_;
+		
+		QList<QXmppMessage> OfflineMsgQueue_;
 	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,
@@ -130,6 +136,7 @@ namespace Xoox
 		QList<QObject*> GetCLEntries () const;
 		void FetchVCard (const QString&);
 		QXmppBookmarkSet GetBookmarks () const;
+		void SetBookmarks (const QXmppBookmarkSet&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, const QXmppRosterIq::Item&);
 
