@@ -19,13 +19,12 @@
 #ifndef PLUGINS_AZOTH_INTERFACES_IURIHANDLER_H
 #define PLUGINS_AZOTH_INTERFACES_IURIHANDLER_H
 #include <QUrl>
+#include <QObject>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IAccount;
-
 	/** @brief This interface is for protocols that may handle URIs and
 	 * corresponding actions are dependent on an exact account.
 	 * 
@@ -63,7 +62,7 @@ namespace Azoth
 		 * @param[in] uri The URI to handle.
 		 * @param[in] asAccount The account to use to handle this URI.
 		 */
-		virtual void HandleURI (const QUrl& uri, IAccount *asAccount) = 0;
+		virtual void HandleURI (const QUrl& uri, QObject *asAccount) = 0;
 	};
 }
 }

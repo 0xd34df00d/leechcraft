@@ -65,7 +65,7 @@ namespace Xoox
 		void RemoveAccount (QObject*);
 		
 		bool SupportsURI (const QUrl&) const;
-		void HandleURI (const QUrl&, IAccount*);
+		void HandleURI (const QUrl&, QObject*);
 	private:
 		void RestoreAccounts ();
 	private slots:

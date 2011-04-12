@@ -168,7 +168,7 @@ namespace Xoox
 		return url.scheme () == "xmpp";
 	}
 	
-	void GlooxProtocol::HandleURI (const QUrl& url, IAccount *account)
+	void GlooxProtocol::HandleURI (const QUrl& url, QObject *accountObj)
 	{
 	}
 
