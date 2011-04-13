@@ -100,7 +100,7 @@ namespace Juick
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
 				"<a href=\"azoth://msgeditreplace/!%20%23\\1\">!</a> "
 				") ");
-		body.replace (UnsubRX_, "#\\1/\\2 <a href=\"azoth://msgeditreplace/U %23\\1\">U</a> \\3");
+		body.replace (UnsubRX_, "#\\1/\\2 <a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> \\3");
 		body.replace (IdRX_, "<a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a>\\2");
 		body.replace (ReplyRX_, "<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ");	
 	
