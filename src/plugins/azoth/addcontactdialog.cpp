@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "addcontactdialog.h"
+#include <QStringListModel>
+#include <plugininterface/tagscompleter.h>
 #include "interfaces/iprotocol.h"
 #include "interfaces/iaccount.h"
 #include "core.h"
@@ -29,6 +31,10 @@ namespace Azoth
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+		
+		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.Groups_);
+		tc->OverrideModel (new QStringListModel (Core::Instance ().GetChatGroups (), this));
+		Ui_.Groups_->AddSelector ();
 
 		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
 			Ui_.Protocol_->addItem (proto->GetProtocolName (),
