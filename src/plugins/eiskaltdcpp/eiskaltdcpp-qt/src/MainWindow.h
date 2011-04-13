@@ -61,12 +61,12 @@
 #include "LineEdit.h"
 #include "WulforSettings.h"
 #include "ShortcutManager.h"
+#include "ToolBar.h"
 
 #include "ui_UIAbout.h"
 
 class FavoriteHubs;
 class DownloadQueue;
-class ToolBar;
 class MainLayout;
 class MultiLineToolBar;
 
@@ -126,11 +126,10 @@ friend class dcpp::Singleton<MainLayout>;
         typedef QList<ArenaWidget*> ArenaWidgetList;
         typedef QMap<ArenaWidget*, QWidget*> ArenaWidgetMap;
 
-        Q_PROPERTY (QObject* ToolBar READ getToolBar);
-        Q_PROPERTY (QMenuBar* MenuBar READ menuBar);
-
         MainLayout (QWidget *parent=NULL);
         virtual ~MainLayout();
+
+        QToolBar *getActionBar() { return qobject_cast<QToolBar*>(fBar); }
 
         void beginExit();
 
@@ -456,88 +455,5 @@ Q_SIGNALS:
 
 Q_DECLARE_METATYPE(MainLayout*)
 
-class EiskaltEventFilter: public QObject{
-Q_OBJECT
-public:
-    EiskaltEventFilter(): has_activity(true), counter(0) {
-        timer.setInterval(60000);
-
-        connect(&timer, SIGNAL(timeout()), this, SLOT(tick()));
-
-        timer.start();
-    }
-
-    virtual ~EiskaltEventFilter() {}
-
-protected:
-    virtual bool eventFilter(QObject *obj, QEvent *event){
-        if ((event->type() == QEvent::MouseButtonPress) ||
-            (event->type() == QEvent::MouseButtonRelease) ||
-            (event->type() == QEvent::MouseButtonDblClick) ||
-            (event->type() == QEvent::MouseMove) ||
-            (event->type() == QEvent::KeyPress) ||
-            (event->type() == QEvent::KeyRelease) ||
-            (event->type() == QEvent::Wheel))
-        {
-            has_activity = true;
-            counter = 0;
-
-            if (WBGET(WB_APP_AUTOAWAY_BY_TIMER) && !dcpp::Util::getManualAway()){
-                dcpp::Util::setAway(false);
-            }
-        }
-        else {
-            has_activity = false;
-        }
-
-        return QObject::eventFilter(obj, event);
-    }
-
-private Q_SLOTS:
-    void tick(){
-        if (!has_activity)
-            ++counter;
-
-        if (WBGET(WB_APP_AUTOAWAY_BY_TIMER)){
-            int mins = WIGET(WI_APP_AUTOAWAY_INTERVAL);
-
-            if (!mins)
-                return;
-
-            int mins_done = (counter*timer.interval()/1000)/60;
-
-            if (mins <= mins_done){
-                dcpp::Util::setAway(true);
-            }
-        }
-    }
-
-private:
-    QTimer timer;
-    int counter;
-    bool has_activity;
-};
-
-class EiskaltApp: public QtSingleApplication{
-Q_OBJECT
-public:
-    EiskaltApp(int argc, char *argv[]): QtSingleApplication("EiskaltDCPP", argc, argv){
-        installEventFilter(&ef);
-    }
-
-    void commitData(QSessionManager& manager){
-        if (MainLayout::getInstance()){
-            MainLayout::getInstance()->beginExit();
-            MainLayout::getInstance()->close();
-        }
-
-        manager.release();
-    }
-
-    void saveState(QSessionManager &){ /** Do nothing */ }
-
-private:
-    EiskaltEventFilter ef;
-};
 
 #endif //MAINWINDOW_H_

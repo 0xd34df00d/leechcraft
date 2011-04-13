@@ -25,6 +25,8 @@
 
 #include <stdio.h>
 
+class QToolBar;
+
 class ArenaWidget: public IMultiTabsWidget
 {
 public:
@@ -70,7 +72,7 @@ public:
             getWidget()->close();
     }
 
-    virtual QToolBar* GetToolBar () const {return NULL;}
+    virtual QToolBar* GetToolBar() const;
     virtual void NewTabRequested () {}
     virtual QObject* ParentMultiTabs() const;
     virtual QList<QAction*> GetTabBarContextMenuActions () const {
