@@ -75,7 +75,7 @@ class FinishedTransfers :
         public ArenaWidget,
         public FinishedTransferProxy
 {
-Q_INTERFACES(ArenaWidget)
+Q_INTERFACES(ArenaWidget IMultiTabsWidget)
 
 typedef QMap<QString, QVariant> VarMap;
 friend class dcpp::Singleton< FinishedTransfers<isUpload> >;

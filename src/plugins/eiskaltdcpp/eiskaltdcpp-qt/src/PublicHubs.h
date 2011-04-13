@@ -35,7 +35,7 @@ class PublicHubs :
         private Ui::UIPublicHubs
 {
 Q_OBJECT
-Q_INTERFACES(ArenaWidget)
+Q_INTERFACES(ArenaWidget IMultiTabsWidget)
 friend class dcpp::Singleton<PublicHubs>;
 
 public:

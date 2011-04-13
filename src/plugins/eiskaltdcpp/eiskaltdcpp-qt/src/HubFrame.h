@@ -54,7 +54,7 @@ class HubFrame :
         public  ArenaWidget
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget)
+    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
 
     class Menu{
 

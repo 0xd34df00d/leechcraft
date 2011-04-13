@@ -16,12 +16,16 @@
 #include <QPixmap>
 #include <QMetaType>
 
+#include <interfaces/imultitabs.h>
+
 #ifdef USE_QML
 #include <QCloseEvent>
 #include <QtDeclarative>
 #endif
 
-class ArenaWidget
+#include <stdio.h>
+
+class ArenaWidget: public IMultiTabsWidget
 {
 public:
     enum Role{
@@ -60,6 +64,18 @@ public:
     virtual bool isUnload() const { return _arenaUnload; }
 
     virtual Role role() const = 0;
+
+    virtual void Remove() {
+        if (getWidget())
+            getWidget()->close();
+    }
+
+    virtual QToolBar* GetToolBar () const {return NULL;}
+    virtual void NewTabRequested () {}
+    virtual QObject* ParentMultiTabs() const;
+    virtual QList<QAction*> GetTabBarContextMenuActions () const {
+        return QList<QAction*>();
+    }
 
 protected:
     ~ArenaWidget();

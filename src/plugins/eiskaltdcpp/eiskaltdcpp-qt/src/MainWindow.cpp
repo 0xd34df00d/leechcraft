@@ -187,6 +187,8 @@ void MainLayout::Init(ICoreProxy_ptr proxy){
     FinishedUploads::newInstance();
     FinishedDownloads::newInstance();
     QueuedUsers::newInstance();
+
+    _lc_MW = proxy->GetMainWindow();
 }
 
 void MainLayout::SecondInit(){
@@ -502,9 +504,9 @@ void MainLayout::init(){
     transfer_dock->setTitleBarWidget(new QWidget(transfer_dock));
     transfer_dock->setMinimumSize(QSize(8, 8));
 
-    setCentralWidget(arena);
+    //setCentralWidget(arena);
     //addDockWidget(Qt::RightDockWidgetArea, arena);
-    addDockWidget(Qt::BottomDockWidgetArea, transfer_dock);
+    _lc_MW->addDockWidget(Qt::BottomDockWidgetArea, transfer_dock);
 
     transfer_dock->hide();
 
@@ -1383,7 +1385,7 @@ void MainLayout::initToolbar(){
 
     connect(fBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotToolbarCustomization()));
 
-    addToolBar(fBar);
+    _lc_MW->addToolBar(fBar);
 
     if (!WBGET(WB_MAINWINDOW_USE_SIDEBAR) && WBGET(WB_MAINWINDOW_USE_M_TABBAR)){
 
@@ -1453,7 +1455,7 @@ void MainLayout::initSideBar(){
 
     wcontainer = static_cast<ArenaWidgetContainer*>(model);
 
-    addDockWidget(Qt::LeftDockWidgetArea, sideDock);
+    _lc_MW->addDockWidget(Qt::LeftDockWidgetArea, sideDock);
 
     connect(sideDock, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotSideBarDockMenu()));
     connect(sideTree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotSideBarDblClicked(QModelIndex)));
@@ -1824,6 +1826,9 @@ void MainLayout::redrawToolPanel(){
         it.key()->setText(it.value()->getArenaShortTitle());
         it.key()->setIcon(it.value()->getPixmap());
 
+        emit changeTabName(it.value()->getWidget(), it.value()->getArenaShortTitle());
+        emit changeTabIcon(it.value()->getWidget(), it.value()->getPixmap());
+
         pm = qobject_cast<PMWindow *>(arenaMap[it.value()]);
 
         if (pm && pm->hasNewMessages())
@@ -1847,8 +1852,6 @@ void MainLayout::remArenaWidget(ArenaWidget *awgt){
         arenaMap.erase(arenaMap.find(awgt));
 
         if (arena->widget() == awgt->getWidget()){
-            arena->setWidget(NULL);
-
             chatClear->setEnabled(false);
             findInWidget->setEnabled(false);
             chatDisable->setEnabled(false);
@@ -1868,7 +1871,7 @@ void MainLayout::mapWidgetOnArena(ArenaWidget *awgt){
         return;
     }
 
-    arena->setWidget(arenaMap[awgt]);
+    emit raiseTab(awgt->getWidget());
 
     setWindowTitle(awgt->getArenaTitle() + " :: " + QString("%1").arg(EISKALTDCPP_WND_TITLE));
 
@@ -1899,12 +1902,8 @@ void MainLayout::remWidgetFromArena(ArenaWidget *awgt){
     if (awgt->toolButton())
         awgt->toolButton()->setChecked(false);
 
-    if (arena->widget() == awgt->getWidget()){
-        awgt->getWidget()->hide();
-        arena->setWidget(NULL);
-
+    if (arena->widget() == awgt->getWidget())
         setWindowTitle(QString("%1").arg(EISKALTDCPP_WND_TITLE));
-    }
 }
 
 void MainLayout::addArenaWidgetOnToolbar(ArenaWidget *awgt, bool keepFocus){
@@ -1925,6 +1924,7 @@ void MainLayout::addArenaWidgetOnToolbar(ArenaWidget *awgt, bool keepFocus){
     if (awgt->toolButton())
         awgt->toolButton()->setChecked(true);
 
+    emit addNewTab(awgt->getArenaShortTitle(), awgt->getWidget());
     wcontainer->insertWidget(awgt);
 }
 
@@ -1947,6 +1947,7 @@ void MainLayout::remArenaWidgetFromToolbar(ArenaWidget *awgt){
         awgt->toolButton()->setChecked(false);
 
     wcontainer->removeWidget(awgt);
+    emit removeTab(awgt->getWidget());
 }
 
 void MainLayout::addActionOnToolBar(QAction *new_act){
@@ -1992,7 +1993,7 @@ void MainLayout::toggleSingletonWidget(ArenaWidget *a){
             }
         }
 
-        remWidgetFromArena(a);
+        emit removeTab(a->getWidget());
 
         wcontainer->removeWidget(a);
     }
@@ -2008,7 +2009,7 @@ void MainLayout::toggleSingletonWidget(ArenaWidget *a){
         menuWidgets->clear();
         menuWidgets->addActions(menuWidgetsActions);
 
-        mapWidgetOnArena(a);
+        emit addNewTab(a->getArenaShortTitle(), a->getWidget());
 
         wcontainer->insertWidget(a);
         wcontainer->mapped(a);

@@ -50,6 +50,7 @@
 #include "dcpp/version.h"
 
 #include <interfaces/iinfo.h>
+#include <interfaces/imultitabs.h>
 
 #include "qtsingleapp/qtlockedfile.h"
 #include "qtsingleapp/qtsingleapplication.h"
@@ -109,12 +110,13 @@ class MainLayout:
         public QMainWindow,
         public dcpp::Singleton<MainLayout>,
         public IInfo,
+        public IMultiTabs,
         private dcpp::LogManagerListener,
         private dcpp::TimerManagerListener,
         private dcpp::QueueManagerListener
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo)
+    Q_INTERFACES (IInfo IMultiTabs)
 
 friend class dcpp::Singleton<MainLayout>;
 
@@ -205,6 +207,18 @@ friend class dcpp::Singleton<MainLayout>;
         void parseCmdLine();
         /** */
         void parseInstanceLine(QString);
+
+        /** IMultiTabs interface*/
+        virtual void newTabRequested(){}
+
+Q_SIGNALS:
+        /** IMultiTabs interface*/
+        void addNewTab(const QString &name, QWidget *tabContents);
+        void removeTab (QWidget *tabContents);
+        void changeTabName (QWidget *tabContents, const QString& name);
+        void changeTabIcon (QWidget *tabContents, const QIcon& icon);
+        void statusBarChanged (QWidget *tabContents, const QString& text);
+        void raiseTab (QWidget *tabContents);
 
     protected:
         virtual void closeEvent(QCloseEvent*);
@@ -436,6 +450,8 @@ friend class dcpp::Singleton<MainLayout>;
         ActionList toolsMenuActions;
         ArenaWidgetList arenaWidgets;
         ArenaWidgetMap arenaMap;
+
+        QMainWindow *_lc_MW;
 };
 
 Q_DECLARE_METATYPE(MainLayout*)
