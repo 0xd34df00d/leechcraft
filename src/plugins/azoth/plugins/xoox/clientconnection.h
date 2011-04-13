@@ -123,6 +123,7 @@ namespace Xoox
 		void Update (const QXmppMucAdminIq::Item&, const QString& room);
 
 		void AckAuth (QObject*, bool);
+		void AddEntry (const QString&, const QString&, const QStringList&);
 		void Subscribe (const QString&,
 				const QString& = QString (), const QString& = QString (),
 				const QStringList& = QStringList ());

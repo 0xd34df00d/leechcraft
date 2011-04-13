@@ -258,6 +258,12 @@ namespace Xoox
 	{
 		ClientConnection_->AckAuth (entryObj, false);
 	}
+	
+	void GlooxAccount::AddEntry (const QString& entryId,
+			const QString& name, const QStringList& groups)
+	{
+		ClientConnection_->AddEntry (entryId, name, groups);
+	}
 
 	void GlooxAccount::RequestAuth (const QString& entryId,
 			const QString& msg, const QString& name, const QStringList& groups)

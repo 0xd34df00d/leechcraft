@@ -230,7 +230,6 @@ namespace Acetamide
 
 	void IrcServer::setNewParticipant (const QString& nick, const QList<std::string>&, const QString& msg)
 	{
-		qDebug () << nick;
 		QString channelKey = QString ("%1@%2")
 				.arg (msg.simplified ().toLower (), Server_.ServerName_);
 		QString serverKey = Server_.ServerName_ + ":" + QString::number (Server_.ServerPort_);

@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IMUCENTRY_H
 #include <QFlags>
 #include <QMetaType>
+#include <QVariant>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -295,6 +296,17 @@ namespace Azoth
 		virtual void SetRole (QObject *participant,
 				MUCRole role,
 				const QString& reason = QString ()) = 0;
+				
+		/** @brief Returns the data identifying this room.
+		 * 
+		 * The returned variant map should have the same format as the
+		 * one from IMUCJoinWidget::GetIdentifyingData().
+		 * 
+		 * @return The identifying data.
+		 * 
+		 * @sa IMUCJoinWidget::GetIdentifyingData()
+		 */
+		virtual QVariantMap GetIdentifyingData () const = 0;
 
 		/** @brief Notifies about new participants in the room.
 		 *

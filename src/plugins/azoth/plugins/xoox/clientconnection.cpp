@@ -87,11 +87,6 @@ namespace Xoox
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
-		
-		connect (BMManager_,
-				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
-				this,
-				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)));
 
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
@@ -362,6 +357,13 @@ namespace Xoox
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
 	}
+	
+	void ClientConnection::AddEntry (const QString& id,
+			const QString& name, const QStringList& groups)
+	{
+		Client_->rosterManager ().addRosterEntry (id,
+				name, QString (), QSet<QString>::fromList (groups));
+	}
 
 	void ClientConnection::Subscribe (const QString& id,
 			const QString& msg, const QString& name, const QStringList& groups)
@@ -480,6 +482,12 @@ namespace Xoox
 	{
 		IsConnected_ = true;
 		emit statusChanged (EntryStatus (LastState_.State_, LastState_.Status_));
+		
+		connect (BMManager_,
+				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
+				this,
+				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)),
+				Qt::UniqueConnection);
 		
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			MUCManager_->joinRoom (rh->GetRoomJID (), rh->GetOurNick ());
@@ -749,6 +757,11 @@ namespace Xoox
 	
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
 	{
+		disconnect (BMManager_,
+				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
+				this,
+				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)));
+
 		Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
 		{
 			if (!conf.autoJoin ())

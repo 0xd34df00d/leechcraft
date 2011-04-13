@@ -35,13 +35,6 @@ namespace Acetamide
 	{
 		Q_OBJECT
 		IrcServer *IrcServer_;
-		QString Prefix_;
-		QString Nick_;
-		QString User_;
-		QString Host_;
-		QString ServerName;
-		QString Command_;
-		QStringList Parameters_;
 		QHash<QString, 
 				boost::function<void (const QString&, const QList<std::string>&, const QString&)> > Command2Signal_;
 	public:
@@ -55,11 +48,11 @@ namespace Acetamide
 		void HandleServerReply (const QString&);
 		void LeaveChannelCommand (const QString&);
 		void QuitConnectionCommand (const QString&);
-		QString GetNickName () const;
 	private:
 		void Init ();
 		void ParseMessage (const QString&);
-		void ParsePrefix (const QString&);
+		bool IsCTCPMessage (const QString&, const QString&);
+		void CTCPAnswer (const QString&, const QString&, const QString&);
 	private slots:
 		void pongCommand (const QString&, const QList<std::string>&, const QString&);
 	signals:

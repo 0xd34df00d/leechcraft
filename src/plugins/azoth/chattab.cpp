@@ -39,6 +39,7 @@
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
+#include "bookmarksmanagerdialog.h"
 
 namespace LeechCraft
 {
@@ -157,6 +158,11 @@ namespace Azoth
 				this,
 				SLOT (clearAvailableNick ()));
 		on_MsgEdit__textChanged ();
+		
+		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
+				this,
+				GetEntry<QObject> (),
+				Ui_.View_);
 	}
 	
 	void ChatTab::PrepareTheme ()
@@ -616,6 +622,14 @@ namespace Azoth
 
 		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
+	
+	void ChatTab::handleAddToBookmarks ()
+	{
+		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
+		dia->SuggestSaving (GetEntry<QObject> ());
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+		dia->show ();
+	}
 
 	template<typename T>
 	T* ChatTab::GetEntry () const
@@ -692,6 +706,14 @@ namespace Azoth
 	void ChatTab::HandleMUC ()
 	{
 		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
+		
+		QAction *bookmarks = new QAction (tr ("Add to bookmarks..."), this);
+		bookmarks->setProperty ("ActionIcon", "favorites");
+		connect (bookmarks,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddToBookmarks ()));
+		TabToolbar_->addAction (bookmarks);
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)

@@ -107,6 +107,7 @@ namespace Azoth
 		void handleViewLinkClicked (const QUrl&);
 		void handleHistoryUp ();
 		void handleHistoryDown ();
+		void handleAddToBookmarks ();
 	private:
 		template<typename T>
 		T* GetEntry () const;
@@ -144,6 +145,10 @@ namespace Azoth
 		void clearUnreadMsgCount (QObject*);
 
 		// Hooks
+		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *entry,
+				QWebView *webView);
 		void hookMadeCurrent (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
