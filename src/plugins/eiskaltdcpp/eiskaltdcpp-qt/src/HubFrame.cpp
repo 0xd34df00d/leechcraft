@@ -2412,14 +2412,6 @@ void HubFrame::pmUserEvent(QString cid, QString e){
 }
 
 void HubFrame::getPassword(){
-    MainLayout *MW = MainLayout::getInstance();
-
-    if (!MW->isVisible() && !(client->getPassword().size() > 0)){
-        MW->show();
-        MW->raise();
-
-    }
-
     if(client && client->getPassword().size() > 0) {
         client->password(client->getPassword());
         addStatus(tr("Stored password sent..."));
