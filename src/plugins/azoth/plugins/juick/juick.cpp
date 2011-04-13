@@ -18,6 +18,7 @@
 
 #include "juick.h"
 #include <QIcon>
+#include <QMessageBox>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
 
@@ -31,8 +32,9 @@ namespace Juick
 	{
 		UserRX_ = QRegExp ("(@[\\w\\-\\.@\\|]*)\\b", Qt::CaseInsensitive);
 		PostRX_ = QRegExp ("<br />#(\\d+)\\s", Qt::CaseInsensitive);
-		IdRX_ = QRegExp ("#(\\d+)\\s", Qt::CaseInsensitive);
+		IdRX_ = QRegExp ("#(\\d+)(\\s|$|<br />)", Qt::CaseInsensitive);
 		ReplyRX_ = QRegExp ("#(\\d+/\\d+)\\s?", Qt::CaseInsensitive);
+		UnsubRX_ = QRegExp ("#(\\d+)/(\\d+)\\s(<a href)", Qt::CaseInsensitive);
 	}
 
 	void Plugin::SecondInit ()
@@ -91,22 +93,22 @@ namespace Juick
 
 	QString Plugin::FormatBody (QString body)
 	{
-		body.replace (UserRX_, "<a href=\"azoth://msgeditreplace/\\1+\">\\1</a>");
 		body.replace (PostRX_, 
 				"<br /> <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
 				"<a href=\"azoth://msgeditreplace/S%20%23\\1\">S</a> "
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
 				"<a href=\"azoth://msgeditreplace/!%20%23\\1\">!</a> "
-				")");
-		body.replace (IdRX_, "<a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a> ");
+				") ");
+		body.replace (UnsubRX_, "#\\1/\\2 <a href=\"azoth://msgeditreplace/U %23\\1\">U</a> \\3");
+		body.replace (IdRX_, "<a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a>\\2");
 		body.replace (ReplyRX_, "<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ");	
 	
 		return body;
 	}
 
-	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
-			QObject*, QString body, QObject *msgObj)
+
+	bool Plugin::ShouldHandle (QObject* msgObj, int direction, int type)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 
@@ -116,12 +118,14 @@ namespace Juick
 				<< "unable to cast"
 				<< msgObj
 				<< "to IMessage";
-			return;
+			return false;
 		}
 
-		if (msg->GetDirection () != IMessage::DIn ||
-				msg->GetMessageType () != IMessage::MTChatMessage)
-			return;
+		if (msg->GetDirection() != direction ||
+			msg->GetMessageType() != type)
+		{
+			return false;
+		}
 
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 
@@ -131,14 +135,23 @@ namespace Juick
 				<< "unable to cast"
 				<< msg->OtherPart ()
 				<< "to ICLEntry";
-			return;
+			return false;
 		}
 
 		if (!other->GetEntryID ().contains ("juick@juick.com"))
-			return;
+			return false;
 
-		proxy->SetValue ("body", FormatBody (body));
+		return true;
+
 	}
+
+	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
+			QObject*, QString body, QObject *msgObj)
+	{
+		if(ShouldHandle(msgObj, IMessage::DIn, IMessage::MTChatMessage))
+			proxy->SetValue ("body", FormatBody (body));
+	}
+
 }
 }
 }
