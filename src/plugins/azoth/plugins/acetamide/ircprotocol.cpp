@@ -108,9 +108,7 @@ namespace Acetamide
 				SIGNAL (accountSettingsChanged ()),
 				this,
 				SLOT (saveAccounts ()));
-		account->SetAccountID (GetProtocolID () + "_" +
-				QString::number (QDateTime::currentDateTime ()
-					.toTime_t ()));
+
 		IrcAccounts_ << account;
 		saveAccounts ();
 
@@ -142,6 +140,9 @@ namespace Acetamide
 
 		IrcAccount *account = new IrcAccount (name, this);
 		account->FillSettings (w);
+		account->SetAccountID (GetProtocolID () + "_" +
+				QString::number (QDateTime::currentDateTime ()
+					.toTime_t ()));
 		IrcAccounts_ << account;
 		saveAccounts ();
 		emit accountAdded (account);

@@ -1,3 +1,5 @@
+SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -11,6 +13,7 @@ SET (ACETAMIDE_SRCS
 	ircaccountconfigurationwidget.cpp
 	ircjoingroupchat.cpp
 	ircprotocol.cpp
+	xmlsettingsmanager.cpp
 	)
 
 SET (ACETAMIDE_HEADERS
@@ -21,6 +24,7 @@ SET (ACETAMIDE_HEADERS
 	ircaccountconfigurationwidget.h
 	ircjoingroupchat.h
 	ircprotocol.h
+	xmlsettingsmanager.h
 	)
 
 SET (ACETAMIDE_FORMS
@@ -34,6 +38,7 @@ SET (ACETAMIDE_TRANSLATIONS
 	leechcraft_azoth_acetamide_uk_UA.ts
 	leechcraft_azoth_acetamide_en.ts
 	)
+
 SET (ACETAMIDE_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_acetamide_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_acetamide_uk_UA.qm
@@ -57,10 +62,12 @@ ADD_LIBRARY (leechcraft_azoth_acetamide SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_acetamide
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
+
 INSTALL (TARGETS leechcraft_azoth_acetamide
 		DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS}
 		DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES azothacetamidesettings.xml
+		DESTINATION ${LC_SETTINGS_DEST})

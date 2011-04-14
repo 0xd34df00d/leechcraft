@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Acetamide" />
+			<item type="checkbox" property="TabWithServer" state="on">
+				<label value="Open a separate tab for each server" />
+			</item>
+	</page>
+</settings>
