@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "acetamide.h"
+#include <ctime>
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
@@ -32,6 +33,8 @@ namespace Acetamide
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_acetamide"));
+
+		qsrand (time (NULL));
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->

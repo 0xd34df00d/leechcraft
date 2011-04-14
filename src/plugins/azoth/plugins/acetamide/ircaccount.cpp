@@ -82,7 +82,9 @@ namespace Acetamide
 
 	QString IrcAccount::GetOurNick () const
 	{
-		return QString ();
+		return NickNames_.isEmpty () ?
+				"Leechcraft" + QString::number (10 + qrand () % 89) :
+				NickNames_.at (0);
 	}
 
 	void IrcAccount::RenameAccount (const QString& name)
