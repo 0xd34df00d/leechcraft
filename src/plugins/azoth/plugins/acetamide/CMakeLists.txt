@@ -1,11 +1,14 @@
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
 SET (ACETAMIDE_SRCS
 	acetamide.cpp
 	core.cpp
 	ircaccount.cpp
+	ircaccountconfigurationdialog.cpp
+	ircaccountconfigurationwidget.cpp
 	ircjoingroupchat.cpp
 	ircprotocol.cpp
 	)
@@ -14,11 +17,15 @@ SET (ACETAMIDE_HEADERS
 	acetamide.h
 	core.h
 	ircaccount.h
+	ircaccountconfigurationdialog.h
+	ircaccountconfigurationwidget.h
 	ircjoingroupchat.h
 	ircprotocol.h
 	)
 
 SET (ACETAMIDE_FORMS
+	ircaccountconfigurationdialog.ui
+	ircaccountconfigurationwidget.ui
 	ircjoingroupchat.ui
 	)
 
@@ -53,7 +60,7 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_acetamide
 	plugininterface
 	xmlsettingsdialog
 	)
-INSTALL (TARGETS leechcraft_azoth_acetamide 
+INSTALL (TARGETS leechcraft_azoth_acetamide
 		DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS} 
+INSTALL (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS}
 		DESTINATION ${LC_TRANSLATIONS_DEST})

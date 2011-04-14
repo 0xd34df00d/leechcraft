@@ -34,6 +34,7 @@ namespace Acetamide
 {
 
 	class IrcProtocol;
+	class IrcAccountConfigurationWidget;
 
 	class IrcAccount : public QObject
 						, public IAccount
@@ -45,11 +46,15 @@ namespace Acetamide
 		IrcProtocol *ParentProtocol_;
 		QByteArray AccountID_;
 
-		State IrcAccountState;
+		QString RealName_;
+		QString UserName_;
+		QStringList NickNames_;
+
+		State IrcAccountState_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
-		
+
 		QObject* GetObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
@@ -60,9 +65,13 @@ namespace Acetamide
 		QString GetOurNick () const;
 
 		void RenameAccount (const QString&);
-		
+
 		QByteArray GetAccountID () const;
+		void SetAccountID (const QString&);
+
 		void OpenConfigurationDialog ();
+		void FillSettings (IrcAccountConfigurationWidget*);
+
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
 		void Synchronize ();

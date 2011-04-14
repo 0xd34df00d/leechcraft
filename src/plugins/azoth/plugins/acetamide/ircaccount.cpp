@@ -22,6 +22,8 @@
 #include <QSettings>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
+#include "ircaccountconfigurationdialog.h"
+#include "ircaccountconfigurationwidget.h"
 #include "ircprotocol.h"
 #include "core.h"
 
@@ -35,7 +37,7 @@ namespace Acetamide
 	: QObject (parent)
 	, AccountName_ (name)
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
-	, IrcAccountState (SOffline)
+	, IrcAccountState_ (SOffline)
 	{
 		connect (this,
 				SIGNAL (scheduleClientDestruction ()),
@@ -53,7 +55,7 @@ namespace Acetamide
 	{
 		return this;
 	}
-	
+
 	QObject* IrcAccount::GetParentProtocol () const
 	{
 		return ParentProtocol_;
@@ -63,7 +65,7 @@ namespace Acetamide
 	{
 		return FRenamable | FMUCsSupportFileTransfers;
 	}
-	
+
 	QList<QObject*> IrcAccount::GetCLEntries ()
 	{
 		return QList<QObject*> ();
@@ -72,7 +74,7 @@ namespace Acetamide
 	void IrcAccount::QueryInfo (const QString&)
 	{
 	}
-	
+
 	QString IrcAccount::GetAccountName () const
 	{
 		return AccountName_;
@@ -93,21 +95,61 @@ namespace Acetamide
 		return AccountID_;
 	}
 
+	void IrcAccount::SetAccountID (const QString& id)
+	{
+		AccountID_ = id.toUtf8 ();
+	}
+
 	void IrcAccount::OpenConfigurationDialog ()
 	{
+		std::auto_ptr<IrcAccountConfigurationDialog> dia (new
+				IrcAccountConfigurationDialog (0));
+
+		if (!RealName_.isEmpty ())
+			dia->ConfWidget ()->SetRealName (RealName_);
+		if (!UserName_.isEmpty ())
+			dia->ConfWidget ()->SetUserName (UserName_);
+		if (!NickNames_.isEmpty ())
+			dia->ConfWidget ()->SetNickNames (NickNames_);
+
+		if (dia->exec () == QDialog::Rejected)
+			return;
+
+		FillSettings (dia->ConfWidget ());
+	}
+
+	void IrcAccount::FillSettings (IrcAccountConfigurationWidget *widget)
+	{
+		State lastState = IrcAccountState_;
+		if (lastState != SOffline &&
+			(RealName_ != widget->GetRealName () ||
+			UserName_ != widget->GetUserName () ||
+			NickNames_ != widget->GetNickNames ()))
+		{
+			ChangeState (EntryStatus (SOffline, QString  ()));
+		}
+
+		RealName_ = widget->GetRealName ();
+		UserName_ = widget->GetUserName ();
+		NickNames_ = widget->GetNickNames ();
+
+		if (lastState != SOffline)
+			ChangeState (EntryStatus (lastState, QString ()));
+
+		emit accountSettingsChanged ();
 	}
 
 	EntryStatus IrcAccount::GetState () const
 	{
-		return EntryStatus (IrcAccountState, QString ());
+		return EntryStatus (IrcAccountState_, QString ());
 	}
 
 	void IrcAccount::ChangeState (const EntryStatus& state)
 	{
-		IrcAccountState = state.State_;
+		IrcAccountState_ = state.State_;
 		emit statusChanged (state);
 	}
-	
+
 	void IrcAccount::Synchronize ()
 	{
 	}
@@ -148,7 +190,11 @@ namespace Acetamide
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-				<< AccountName_;
+				<< AccountName_
+				<< AccountID_
+				<< RealName_
+				<< UserName_
+				<< NickNames_;
 		}
 
 		return result;
@@ -173,6 +219,12 @@ namespace Acetamide
 		QString name;
 		in >> name;
 		IrcAccount *result = new IrcAccount (name, parent);
+		in >> result->AccountID_
+			>> result->RealName_
+			>> result->UserName_
+			>> result->NickNames_;
+
+		result->Init ();
 
 		return result;
 	}

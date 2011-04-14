@@ -25,6 +25,7 @@
 #include <interfaces/iprotocolplugin.h>
 #include "core.h"
 #include "ircaccount.h"
+#include "ircaccountconfigurationwidget.h"
 #include "ircjoingroupchat.h"
 
 namespace LeechCraft
@@ -43,12 +44,12 @@ namespace Acetamide
 	IrcProtocol::~IrcProtocol ()
 	{
 	}
-	
+
 	void IrcProtocol::Prepare ()
 	{
 		RestoreAccounts ();
 	}
-	
+
 	QObject* IrcProtocol::GetProxyObject () const
 	{
 		return ProxyObject_;
@@ -68,7 +69,7 @@ namespace Acetamide
 	{
 		return PFMUCsJoinable | PFSupportsMUCs;
 	}
-	
+
 	QList<QObject*> IrcProtocol::GetRegisteredAccounts ()
 	{
 		QList<QObject*> result;
@@ -99,24 +100,58 @@ namespace Acetamide
 				tr ("Enter new account name"));
 		if (name.isEmpty ())
 			return;
+
+		IrcAccount *account = new IrcAccount (name, this);
+		account->OpenConfigurationDialog ();
+
+		connect (account,
+				SIGNAL (accountSettingsChanged ()),
+				this,
+				SLOT (saveAccounts ()));
+		account->SetAccountID (GetProtocolID () + "_" +
+				QString::number (QDateTime::currentDateTime ()
+					.toTime_t ()));
+		IrcAccounts_ << account;
+		saveAccounts ();
+
+		emit accountAdded (account);
+
+		account->ChangeState (EntryStatus (SOnline, QString ()));
 	}
 
 	QList<QWidget*> IrcProtocol::GetAccountRegistrationWidgets ()
 	{
 		QList<QWidget*> result;
+		result << new IrcAccountConfigurationWidget ();
 		return result;
 	}
-	
-	void IrcProtocol::RegisterAccount (const QString&,
-			const QList<QWidget*>&)
+
+	void IrcProtocol::RegisterAccount (const QString& name,
+			const QList<QWidget*>& widgets)
 	{
+		IrcAccountConfigurationWidget *w =
+				qobject_cast<IrcAccountConfigurationWidget*>
+					(widgets.value (0));
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got invalid widgets"
+					<< widgets;
+			return;
+		}
+
+		IrcAccount *account = new IrcAccount (name, this);
+		account->FillSettings (w);
+		IrcAccounts_ << account;
+		saveAccounts ();
+		emit accountAdded (account);
 	}
 
 	QWidget* IrcProtocol::GetMUCJoinWidget ()
 	{
 		return new IrcJoinGroupChat ();
 	}
-	
+
 	QWidget* IrcProtocol::GetMUCBookmarkEditorWidget ()
 	{
 		return 0;
@@ -145,7 +180,7 @@ namespace Acetamide
 		for (int i = 0, size = IrcAccounts_.size (); i < size; ++i)
 		{
 			settings.setArrayIndex (i);
-			settings.setValue ("SerializedData", 
+			settings.setValue ("SerializedData",
 					IrcAccounts_.at (i)->Serialize ());
 		}
 
