@@ -25,6 +25,7 @@
 #include <interfaces/iprotocolplugin.h>
 #include "core.h"
 #include "ircaccount.h"
+#include "ircjoingroupchat.h"
 
 namespace LeechCraft
 {
@@ -113,7 +114,7 @@ namespace Acetamide
 
 	QWidget* IrcProtocol::GetMUCJoinWidget ()
 	{
-		return 0;
+		return new IrcJoinGroupChat ();
 	}
 	
 	QWidget* IrcProtocol::GetMUCBookmarkEditorWidget ()

@@ -6,6 +6,7 @@ SET (ACETAMIDE_SRCS
 	acetamide.cpp
 	core.cpp
 	ircaccount.cpp
+	ircjoingroupchat.cpp
 	ircprotocol.cpp
 	)
 
@@ -13,10 +14,12 @@ SET (ACETAMIDE_HEADERS
 	acetamide.h
 	core.h
 	ircaccount.h
+	ircjoingroupchat.h
 	ircprotocol.h
 	)
 
 SET (ACETAMIDE_FORMS
+	ircjoingroupchat.ui
 	)
 
 SET (ACETAMIDE_TRANSLATIONS
