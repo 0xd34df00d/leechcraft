@@ -2151,6 +2151,9 @@ namespace Azoth
 		nh->AddFunction (tr ("Deny"),
 				boost::bind (DenyAuthForEntry,
 						entry));
+		nh->AddFunction (tr ("View info"),
+				boost::bind (&ICLEntry::ShowInfo,
+						entry));
 		emit gotEntity (e);
 	}
 
