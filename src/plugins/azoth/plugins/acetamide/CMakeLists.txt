@@ -9,11 +9,15 @@ SET (ACETAMIDE_SRCS
 	acetamide.cpp
 	clientconnection.cpp
 	core.cpp
+	entrybase.cpp
 	ircaccount.cpp
 	ircaccountconfigurationdialog.cpp
 	ircaccountconfigurationwidget.cpp
 	ircjoingroupchat.cpp
 	ircprotocol.cpp
+	ircserverclentry.cpp
+	ircserverhandler.cpp
+	localtypes.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -21,11 +25,15 @@ SET (ACETAMIDE_HEADERS
 	acetamide.h
 	clientconnection.h
 	core.h
+	entrybase.h
 	ircaccount.h
 	ircaccountconfigurationdialog.h
 	ircaccountconfigurationwidget.h
 	ircjoingroupchat.h
 	ircprotocol.h
+	ircserverclentry.h
+	ircserverhandler.h
+	localtypes.h
 	xmlsettingsmanager.h
 	)
 

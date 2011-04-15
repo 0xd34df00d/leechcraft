@@ -27,6 +27,8 @@
 #include "ircaccountconfigurationdialog.h"
 #include "ircaccountconfigurationwidget.h"
 #include "ircprotocol.h"
+#include "ircserverclentry.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -51,6 +53,21 @@ namespace Acetamide
 	void IrcAccount::Init ()
 	{
 		ClientConnection_.reset (new ClientConnection (this));
+
+		connect (ClientConnection_.get (),
+				SIGNAL (gotRosterItems (const QList<QObject*>&)),
+				this,
+				SLOT (handleGotRosterItems (const QList<QObject*>&)));
+
+		connect (ClientConnection_.get (),
+				SIGNAL (rosterItemRemoved (QObject*)),
+				this,
+				SLOT (handleEntryRemoved (QObject*)));
+
+		connect (ClientConnection_.get (),
+				SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
+				this,
+				SIGNAL (removedCLItems (const QList<QObject*>&)));
 	}
 
 	QObject* IrcAccount::GetObject ()
@@ -147,6 +164,40 @@ namespace Acetamide
 			ChangeState (EntryStatus (lastState, QString ()));
 
 		emit accountSettingsChanged ();
+	}
+
+	void IrcAccount::JoinServer (const ServerOptions& server,
+			const ChannelOptions& channel)
+	{
+		if (!XmlSettingsManager::Instance ()
+			.property ("TabWithServer").toBool () && 
+				channel.ChannelName_.isEmpty ())
+		{
+			// TODO unable to join to server if Separate tab for server
+			// option is disabled
+			return;
+		}
+
+		QString channelId, serverId;
+		serverId = server.ServerName_ + ":" + 
+				QString::number (server.ServerPort_);
+
+		IrcServerCLEntry *isEntry;
+		if (!ClientConnection_->IsServerExists (serverId))
+		{
+			isEntry = ClientConnection_->JoinServer (server);
+
+			if (!isEntry)
+				return;
+
+			emit gotCLItems (QList<QObject*> () << isEntry);
+		}
+
+		if (!channel.ChannelName_.isEmpty ())
+		{
+			channelId = channel.ChannelName_ + "@" + channel.ServerName_;
+			//TODO JoinChannel
+		}
 	}
 
 	EntryStatus IrcAccount::GetState () const

@@ -23,6 +23,7 @@
 #include <interfaces/iproxyobject.h>
 #include "core.h"
 #include "ircprotocol.h"
+#include "ircserverhandler.h"
 
 namespace LeechCraft
 {
@@ -44,7 +45,8 @@ namespace Acetamide
 				SIGNAL (gotCLItems (const QList<QObject*>&)));
 	}
 
-	QObject* ClientConnection::GetCLEntry (const QString& key, const QString& nick) const
+	QObject* ClientConnection::GetCLEntry (const QString& key,
+			const QString& nick) const
 	{
 		return 0;
 	}
@@ -63,6 +65,35 @@ namespace Acetamide
 	{
 		return Account_;
 	}
+
+	bool ClientConnection::IsServerExists (const QString& key)
+	{
+		return ServerHandlers_.contains (key);
+	}
+
+	IrcServerCLEntry* 
+			ClientConnection::JoinServer (const ServerOptions& server)
+	{
+		QString serverId = server.ServerName_ + ":" + 
+				QString::number (server.ServerPort_);
+		
+		if (ServerHandlers_.contains (serverId))
+		{
+			Entity e = Util::MakeNotification ("Azoth",
+					tr ("This server is already joined."),
+					PCritical_);
+			Core::Instance ().SendEntity (e);
+			return 0;
+		}
+
+		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		ServerHandlers_ [serverId] = ish;
+		if (Account_->GetState () == EntryStatus (SOffline, QString ()))
+			Account_->ChangeState (EntryStatus (SOnline, QString ()));
+
+		return ish->GetCLEntry ();
+	}
+
 };
 };
 };

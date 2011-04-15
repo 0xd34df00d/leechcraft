@@ -16,55 +16,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H
 
 #include <QObject>
-#include <QHash>
-#include "core.h"
-#include "ircaccount.h"
+#include <interfaces/iclentry.h>
+#include <interfaces/imucentry.h>
+#include "entrybase.h"
 
 namespace LeechCraft
 {
-
-struct Entity;
-
 namespace Azoth
 {
-
-class IProxyObject;
-
 namespace Acetamide
 {
 
 	class IrcServerHandler;
-	class IrcServerCLEntry;
+	class IrcAccount;
 
-	class ClientConnection : public QObject
+	class IrcServerCLEntry : public EntryBase
 	{
 		Q_OBJECT
 
-		QString ChID_;
+		IrcServerHandler *ISH_;
 		IrcAccount *Account_;
-		IProxyObject *ProxyObject_;
-		QHash<QString, IrcServerHandler*> ServerHandlers_;
 	public:
-		ClientConnection (IrcAccount*);
-		QObject* GetCLEntry (const QString&, const QString&) const;
-		QList<QObject*> GetCLEntries () const;
-		void Sinchronize ();
+		IrcServerCLEntry (IrcServerHandler*, IrcAccount*);
 
-		IrcAccount* GetAccount () const;
+		IrcServerHandler* GetIrcServerHandler () const;
+		IrcAccount* GetIrcAccount () const;
+		QObject* GetParentCLEntry () const;
 
-		bool IsServerExists (const QString&);
-		IrcServerCLEntry* JoinServer (const ServerOptions&);
-	signals:
-		void gotRosterItems (const QList<QObject*>&);
-		void rosterItemRemoved (QObject*);
-		void rosterItemsRemoved (const QList<QObject*>&);
-		void gotCLItems (const QList<QObject*>&);
+		QObject* GetParentAccount () const;
+		Features GetEntryFeatures () const;
+		EntryType GetEntryType () const;
+		QString GetEntryName () const;
+		void SetEntryName (const QString&);
+		QString GetEntryID () const;
+		QStringList Groups () const;
+		void SetGroups (const QStringList&);
+		QStringList Variants() const;
+		QObject* CreateMessage(IMessage::MessageType type, 
+				const QString& variant, const QString& body);
 	};
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
+
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H

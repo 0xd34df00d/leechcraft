@@ -24,6 +24,7 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
 #include "core.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -78,6 +79,8 @@ namespace Acetamide
 
 		void OpenConfigurationDialog ();
 		void FillSettings (IrcAccountConfigurationWidget*);
+
+		void JoinServer (const ServerOptions&, const ChannelOptions&);
 
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);

@@ -16,55 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
 
 #include <QObject>
-#include <QHash>
-#include "core.h"
-#include "ircaccount.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
-
-struct Entity;
-
 namespace Azoth
 {
-
-class IProxyObject;
-
 namespace Acetamide
 {
 
-	class IrcServerHandler;
 	class IrcServerCLEntry;
+	class IrcAccount;
 
-	class ClientConnection : public QObject
+	class IrcServerHandler : public QObject
 	{
 		Q_OBJECT
 
-		QString ChID_;
 		IrcAccount *Account_;
-		IProxyObject *ProxyObject_;
-		QHash<QString, IrcServerHandler*> ServerHandlers_;
+		IrcServerCLEntry *ServerCLEntry_;
+		ServerOptions ServerOptions_;
+		QString ServerID_;
 	public:
-		ClientConnection (IrcAccount*);
-		QObject* GetCLEntry (const QString&, const QString&) const;
-		QList<QObject*> GetCLEntries () const;
-		void Sinchronize ();
+		IrcServerHandler (const ServerOptions&, IrcAccount*);
+		IrcServerCLEntry* GetCLEntry () const;
 
-		IrcAccount* GetAccount () const;
-
-		bool IsServerExists (const QString&);
-		IrcServerCLEntry* JoinServer (const ServerOptions&);
-	signals:
-		void gotRosterItems (const QList<QObject*>&);
-		void rosterItemRemoved (QObject*);
-		void rosterItemsRemoved (const QList<QObject*>&);
-		void gotCLItems (const QList<QObject*>&);
+		QString GetServerID_ () const;
 	};
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CLIENTCONNECTION_H
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H

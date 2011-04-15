@@ -77,6 +77,7 @@ namespace Acetamide
 		}
 
 		SelectedAccount_ = acc;
+		acc->JoinServer (GetServerOptions (), GetChannelOptions ());
 	}
 
 	void IrcJoinGroupChat::Cancel ()
@@ -164,6 +165,29 @@ namespace Acetamide
 	{
 		return Ui_.SSL_->isChecked ();
 	}
+
+	ServerOptions IrcJoinGroupChat::GetServerOptions () const
+	{
+		ServerOptions so;
+		so.ServerName_ = GetServer ();
+		so.ServerPort_ = GetPort ();
+		so.ServerEncoding_ = GetEncoding ();
+		so.ServerPassword_ = QString ();
+		so.SSL_ = GetSSL ();
+
+		return so;
+	}
+
+	ChannelOptions IrcJoinGroupChat::GetChannelOptions () const
+	{
+		ChannelOptions cho;
+		cho.ChannelName_ = GetChannel ();
+		cho.ServerName_ = GetServer ();
+		cho.ChannelPassword_ = QString ();
+
+		return cho; 
+	}
+
 };
 };
 };
