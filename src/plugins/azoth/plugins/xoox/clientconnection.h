@@ -94,6 +94,8 @@ namespace Xoox
 		int SocketErrorAccumulator_;
 		
 		QList<QXmppMessage> OfflineMsgQueue_;
+		
+		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
 	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,
@@ -136,6 +138,7 @@ namespace Xoox
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
 		void FetchVCard (const QString&);
+		void FetchVCard (const QString&, VCardDialog*);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
