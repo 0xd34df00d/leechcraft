@@ -779,9 +779,10 @@ namespace Azoth
 						names << name;
 				}
 				names.sort ();
-				const QString& text = tr ("MUC's participants: ") + names.join ("; ");
 				QWebElement body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-				body.appendInside ("<div class='systemmsg'>" + text + "</div>");
+				body.appendInside ("<div class='systemmsg'>" +
+						tr ("MUC's participants: ") + "<ul><li>" +
+						names.join ("</li><li>") + "</li></ul></div>");
 				return true;
 			}
 		}
