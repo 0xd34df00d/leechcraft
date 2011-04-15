@@ -22,10 +22,11 @@
 #include <QSettings>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
+#include "clientconnection.h"
+#include "core.h"
 #include "ircaccountconfigurationdialog.h"
 #include "ircaccountconfigurationwidget.h"
 #include "ircprotocol.h"
-#include "core.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,7 @@ namespace Acetamide
 
 	void IrcAccount::Init ()
 	{
+		ClientConnection_.reset (new ClientConnection (this));
 	}
 
 	QObject* IrcAccount::GetObject ()
@@ -85,6 +87,12 @@ namespace Acetamide
 		return NickNames_.isEmpty () ?
 				"Leechcraft" + QString::number (10 + qrand () % 89) :
 				NickNames_.at (0);
+	}
+
+	boost::shared_ptr<ClientConnection>
+			IrcAccount::GetClientConnection () const
+	{
+		return ClientConnection_;
 	}
 
 	void IrcAccount::RenameAccount (const QString& name)
