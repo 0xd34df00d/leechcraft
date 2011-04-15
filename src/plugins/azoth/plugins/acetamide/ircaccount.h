@@ -29,10 +29,13 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+
 class IProtocol;
+
 namespace Acetamide
 {
 
+	class ClientConnection;
 	class IrcProtocol;
 	class IrcAccountConfigurationWidget;
 
@@ -51,6 +54,8 @@ namespace Acetamide
 		QStringList NickNames_;
 
 		State IrcAccountState_;
+
+		boost::shared_ptr<ClientConnection> ClientConnection_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
@@ -63,6 +68,8 @@ namespace Acetamide
 
 		QString GetAccountName () const;
 		QString GetOurNick () const;
+
+		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 
 		void RenameAccount (const QString&);
 
