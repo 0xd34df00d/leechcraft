@@ -17,7 +17,8 @@
  **********************************************************************/
 
 #include "ircserverhandler.h"
-
+#include "ircaccount.h"
+#include "ircparser.h"
 #include "ircserverclentry.h"
 
 namespace LeechCraft
@@ -33,7 +34,19 @@ namespace Acetamide
 	, ServerCLEntry_ (new IrcServerCLEntry (this, account))
 	, ServerID_ (server.ServerName_ + ":" + 
 			QString::number (server.ServerPort_))
+	, ServerConnectionState_ (NotConnected)
 	{
+		IrcParser_ = new IrcParser (this);
+	}
+
+	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
+	{
+		return ServerCLEntry_;
+	}
+
+	IrcAccount* IrcServerHandler::GetAccount () const
+	{
+		return Account_;
 	}
 
 	QString IrcServerHandler::GetServerID_ () const
@@ -41,9 +54,78 @@ namespace Acetamide
 		return ServerID_;
 	}
 
-	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
+	ServerOptions IrcServerHandler::GetServerOptions () const
 	{
-		return ServerCLEntry_;
+		return ServerOptions_;
+	}
+
+	ConnectionState IrcServerHandler::GetConnectionState () const
+	{
+		return ServerConnectionState_;
+	}
+
+	bool IrcServerHandler::ConnectToServer ()
+	{
+		if (ServerConnectionState_ == NotConnected)
+		{
+			TcpSocket_ptr.reset (new QTcpSocket (this));
+			ServerConnectionState_ = InProcess;
+
+			TcpSocket_ptr->connectToHost (ServerOptions_.ServerName_,
+					ServerOptions_.ServerPort_);
+
+			if (!TcpSocket_ptr->waitForConnected(30000))
+			{
+				ServerConnectionState_ = NotConnected;
+				qDebug () << Q_FUNC_INFO
+						<< "cannot to connect to host"
+						<< ServerID_;
+				return false; 
+			}
+			
+			ServerConnectionState_ = Connected;
+			ServerCLEntry_->
+					SetStatus (EntryStatus (SOnline, QString ()));
+			InitSocket ();
+			IrcParser_->AuthCommand ();
+		}
+	}
+
+	void IrcServerHandler::SendCommand (const QString& cmd)
+	{
+		qDebug () << TcpSocket_ptr.get () << cmd;
+		if (!TcpSocket_ptr->isWritable ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< TcpSocket_ptr->error ()
+					<< TcpSocket_ptr->errorString ();
+			return;
+		}
+			
+		if (TcpSocket_ptr->write (cmd.toAscii ()) == -1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< TcpSocket_ptr->error ()
+					<< TcpSocket_ptr->errorString ();
+			return;
+		}
+	}
+
+	void IrcServerHandler::InitSocket ()
+	{
+		connect (TcpSocket_ptr.get (),
+				SIGNAL (readyRead ()),
+				this,
+				SLOT (readReply ()));
+	}
+
+	void IrcServerHandler::readReply ()
+	{
+		while (TcpSocket_ptr->canReadLine ())
+		{
+			QString str = TcpSocket_ptr->readLine ();
+			qDebug () << str;
+		}
 	}
 
 };

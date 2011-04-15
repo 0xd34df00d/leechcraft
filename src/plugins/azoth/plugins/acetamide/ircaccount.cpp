@@ -106,6 +106,21 @@ namespace Acetamide
 				NickNames_.at (0);
 	}
 
+	QString IrcAccount::GetUserName () const
+	{
+		return UserName_;
+	}
+
+	QString IrcAccount::GetRealName () const
+	{
+		return RealName_;
+	}
+
+	QStringList IrcAccount::GetNickNames () const
+	{
+		return NickNames_;
+	}
+
 	boost::shared_ptr<ClientConnection>
 			IrcAccount::GetClientConnection () const
 	{
@@ -207,6 +222,9 @@ namespace Acetamide
 
 	void IrcAccount::ChangeState (const EntryStatus& state)
 	{
+		if (IrcAccountState_ == SOffline && 
+				!ClientConnection_)
+			return;
 		IrcAccountState_ = state.State_;
 		emit statusChanged (state);
 	}

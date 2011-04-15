@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <QTcpSocket>
+#include "core.h"
 #include "localtypes.h"
 
 namespace LeechCraft
@@ -31,38 +31,21 @@ namespace Azoth
 namespace Acetamide
 {
 
-	class IrcAccount;
-	class IrcParser;
-	class IrcServerCLEntry;
+	class IrcServerHandler;
 
-	class IrcServerHandler : public QObject
+	class IrcParser : public QObject
 	{
 		Q_OBJECT
-
-		IrcAccount *Account_;
-		IrcParser *IrcParser_;
-		IrcServerCLEntry *ServerCLEntry_;
+		
+		IrcServerHandler *ISH_;
 		ServerOptions ServerOptions_;
-		QString ServerID_;
-		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
-		ConnectionState ServerConnectionState_;
 	public:
-		IrcServerHandler (const ServerOptions&, IrcAccount*);
-		IrcServerCLEntry* GetCLEntry () const;
-		IrcAccount* GetAccount () const;
-
-		QString GetServerID_ () const;
-		ServerOptions GetServerOptions () const;
-		ConnectionState GetConnectionState () const;
-
-		bool ConnectToServer ();
-		void SendCommand (const QString&);
-	private:
-		void InitSocket ();
-	private slots:
-		void readReply ();
+		IrcParser (IrcServerHandler*);
+		void AuthCommand ();
+		void UserCommand ();
+		void NickCommand ();
 	};
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H

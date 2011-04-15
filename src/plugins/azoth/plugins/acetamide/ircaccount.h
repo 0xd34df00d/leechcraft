@@ -69,6 +69,9 @@ namespace Acetamide
 
 		QString GetAccountName () const;
 		QString GetOurNick () const;
+		QString GetUserName () const;
+		QString GetRealName () const;
+		QStringList GetNickNames () const;
 
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 

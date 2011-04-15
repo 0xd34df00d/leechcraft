@@ -88,9 +88,10 @@ namespace Acetamide
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
 		ServerHandlers_ [serverId] = ish;
-		if (Account_->GetState () == EntryStatus (SOffline, QString ()))
-			Account_->ChangeState (EntryStatus (SOnline, QString ()));
-
+		if (ish->ConnectToServer ())
+			if (Account_->GetState ().State_ == SOffline)
+				Account_->
+						ChangeState (EntryStatus (SOnline, QString ()));
 		return ish->GetCLEntry ();
 	}
 
