@@ -125,6 +125,10 @@ namespace LeechCraft
 				QString (), "miha@52.ru",
 				QStringList ("OpenSUSE package maintainer."),
 				QList<int> () << 2009);
+		contribs << ContributorInfo (QString (), "nobodyzzz",
+				QString (), "nobodyzzz666@gmail.com",
+				QStringList ("Juick plugin."),
+				QList<int> () << 2011);
 		contribs << ContributorInfo (QString (), "PanteR",
 				"panter_dsd@jabber.ru", "panter.dsd@gmail.com",
 				QStringList (tr ("Various patches.")),
