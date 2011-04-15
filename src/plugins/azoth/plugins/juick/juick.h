@@ -40,6 +40,7 @@ namespace Juick
 		QRegExp UserRX_;
 		QRegExp PostRX_;
 		QRegExp IdRX_;
+		QRegExp UnsubRX_;
 		QRegExp ReplyRX_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -57,11 +58,13 @@ namespace Juick
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
 		QString FormatBody (QString);
+		bool ShouldHandle (QObject* msgObj, int direction, int type);
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+
 	};
 }
 }

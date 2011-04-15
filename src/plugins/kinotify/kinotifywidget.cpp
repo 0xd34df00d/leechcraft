@@ -131,14 +131,19 @@ namespace LeechCraft
 
 			const QByteArray KinotifyWidget::MakeImage (const QString& imgPath)
 			{
-				QBuffer iconBuffer;
 				QPixmap pixmap;
-				iconBuffer.open (QIODevice::ReadWrite);
-
 				if (imgPath.isNull ())
 					pixmap.load (ImagePath_);
 				else
 					pixmap.load (imgPath);
+				
+				return MakeImage (pixmap);
+			}
+			
+			const QByteArray KinotifyWidget::MakeImage (const QPixmap& pixmap)
+			{
+				QBuffer iconBuffer;
+				iconBuffer.open (QIODevice::ReadWrite);
 				pixmap.save (&iconBuffer, "PNG");
 
 				return QByteArray ("data:image/png;base64,") +
@@ -172,6 +177,11 @@ namespace LeechCraft
 				DefaultSize_ = page ()->mainFrame ()->contentsSize ();
 				resize (DefaultSize_);
 				SetWidgetPlace ();
+			}
+			
+			void KinotifyWidget::OverrideImage (const QPixmap& px)
+			{
+				OverridePixmap_ = px;
 			}
 
 			void KinotifyWidget::PrepareNotification ()
@@ -287,7 +297,10 @@ namespace LeechCraft
 				QString data = Theme_;
 				data.replace ("{title}", Title_);
 				data.replace ("{body}", Body_);
-				data.replace ("{imagepath}", MakeImage (ImagePath_));
+				if (OverridePixmap_.isNull ())
+					data.replace ("{imagepath}", MakeImage (ImagePath_));
+				else
+					data.replace ("{imagepath}", MakeImage (OverridePixmap_));
 				setHtml (data);
 
 				if (!ActionsNames_.isEmpty ())

@@ -2067,6 +2067,8 @@ namespace Azoth
 				Entity e = Util::MakeNotification ("Azoth",
 						msgString,
 						PInfo_);
+				e.Additional_ ["NotificationPixmap"] =
+						QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
 				Util::NotificationActionHandler *nh =
 						new Util::NotificationActionHandler (e, this);
 				nh->AddFunction (tr ("Open chat"),

@@ -51,15 +51,17 @@ namespace LeechCraft
 				QTimer *CloseTimer_;
 				QTimer *CheckTimer_;
 				QStateMachine Machine_;
-				const QByteArray MakeImage (const QString& imgPath = QString ());
 				QStringList ActionsNames_;
 				NotificationAction *Action_;
 				boost::shared_ptr<Util::ResourceLoader> ThemeLoader_;
+				QPixmap OverridePixmap_;
 			public:
 				KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
 				void SetThemeLoader (boost::shared_ptr<Util::ResourceLoader>);
 
-				void SetContent (const QString&, const QString&, const QString&, const QSize& size = QSize (350, 70));
+				void SetContent (const QString&, const QString&,
+						const QString&, const QSize& size = QSize (350, 70));
+				void OverrideImage (const QPixmap&);
 				void PrepareNotification ();
 				void SetActions (const QStringList&, QObject*);
 			protected:
@@ -71,6 +73,8 @@ namespace LeechCraft
 				void closeNotificationWidget ();
 				void initJavaScript ();
 			private:
+				const QByteArray MakeImage (const QString& imgPath = QString ());
+				const QByteArray MakeImage (const QPixmap&);
 				void CreateWidget ();
 				void LoadTheme (const QString&);
 				void SetData ();
