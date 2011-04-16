@@ -23,6 +23,7 @@
 #include "clientconnection.h"
 #include "ircprotocol.h"
 #include "ircaccount.h"
+#include "ircmessage.h"
 
 namespace LeechCraft
 {
@@ -45,7 +46,7 @@ namespace Acetamide
 	{
 		return AllMessages_;
 	}
-	
+
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
@@ -80,16 +81,16 @@ namespace Acetamide
 		return QMap<QString, QVariant> ();
 	}
 
-	void EntryBase::HandleMessage (IMessage* msg)
+	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
-/*		IrcProtocol *proto = qobject_cast<IrcProtocol*>
+		IrcProtocol *proto = qobject_cast<IrcProtocol*>
 				(Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*>
 			(proto->GetProxyObject ());
 		proxy->PreprocessMessage (msg);
 
 		AllMessages_ << msg;
-		emit gotMessage (msg);*/
+		emit gotMessage (msg);
 	}
 
 	void EntryBase::SetStatus (const EntryStatus& status)
@@ -113,4 +114,3 @@ namespace Acetamide
 };
 };
 };
-	

@@ -14,6 +14,7 @@ SET (ACETAMIDE_SRCS
 	ircaccountconfigurationdialog.cpp
 	ircaccountconfigurationwidget.cpp
 	ircjoingroupchat.cpp
+	ircmessage.cpp
 	ircparser.cpp
 	ircprotocol.cpp
 	ircserverclentry.cpp
@@ -31,6 +32,7 @@ SET (ACETAMIDE_HEADERS
 	ircaccountconfigurationdialog.h
 	ircaccountconfigurationwidget.h
 	ircjoingroupchat.h
+	ircmessage.h
 	ircparser.h
 	ircprotocol.h
 	ircserverclentry.h

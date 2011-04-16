@@ -46,6 +46,7 @@ namespace Acetamide
 		QString ServerID_;
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		ConnectionState ServerConnectionState_;
+		QList<ChannelOptions> ActiveChannels_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;

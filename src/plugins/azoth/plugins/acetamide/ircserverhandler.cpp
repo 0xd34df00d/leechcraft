@@ -18,6 +18,7 @@
 
 #include "ircserverhandler.h"
 #include "ircaccount.h"
+#include "ircmessage.h"
 #include "ircparser.h"
 #include "ircserverclentry.h"
 
@@ -32,7 +33,7 @@ namespace Acetamide
 	: Account_ (account)
 	, ServerOptions_ (server)
 	, ServerCLEntry_ (new IrcServerCLEntry (this, account))
-	, ServerID_ (server.ServerName_ + ":" + 
+	, ServerID_ (server.ServerName_ + ":" +
 			QString::number (server.ServerPort_))
 	, ServerConnectionState_ (NotConnected)
 	{
@@ -80,9 +81,9 @@ namespace Acetamide
 				qDebug () << Q_FUNC_INFO
 						<< "cannot to connect to host"
 						<< ServerID_;
-				return false; 
+				return false;
 			}
-			
+
 			ServerConnectionState_ = Connected;
 			ServerCLEntry_->
 					SetStatus (EntryStatus (SOnline, QString ()));
@@ -101,7 +102,7 @@ namespace Acetamide
 					<< TcpSocket_ptr->errorString ();
 			return;
 		}
-			
+
 		if (TcpSocket_ptr->write (cmd.toAscii ()) == -1)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -124,7 +125,28 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-			qDebug () << str;
+
+			if (!IrcParser_->ParseMessage (str))
+				return;
+
+			if (!ActiveChannels_.count ())
+			{
+				Message mess;
+				mess.Body_ = IrcParser_->
+						GetIrcMessageOptions ().Message_;
+				mess.Stamp_ = QDateTime::currentDateTime ();
+				mess.Nickname_ = QString ();
+				IrcMessage *msg = new IrcMessage (
+						IMessage::MTServiceMessage,
+						IMessage::DIn,
+						ServerID_,
+						QString (),
+						Account_->GetClientConnection ().get ()
+				);
+				msg->SetBody (mess.Body_);
+				msg->SetDateTime (mess.Stamp_);
+				ServerCLEntry_->HandleMessage (msg);
+			}
 		}
 	}
 

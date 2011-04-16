@@ -32,6 +32,7 @@ namespace Acetamide
 {
 
 	class IrcAccount;
+	class IrcMessage;
 
 	class EntryBase : public QObject
 					, public ICLEntry
@@ -59,7 +60,7 @@ namespace Acetamide
 
 		virtual QString GetEntryID () const = 0;
 
-		void HandleMessage (IMessage *msg);
+		void HandleMessage (IrcMessage*);
 		void SetStatus (const EntryStatus&);
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);

@@ -62,10 +62,89 @@ namespace Acetamide
 
 	void IrcParser::NickCommand ()
 	{
-		QString nickCmd = QString ("NICK " + 
+		QString nickCmd = QString ("NICK " +
 				ISH_->GetAccount ()->GetOurNick () + "\r\n");
 		ISH_->SendCommand (nickCmd);
 	}
+
+	bool IrcParser::ParseMessage (const QString& message)
+	{
+		IrcMessageOptions_.Command_.clear ();
+		IrcMessageOptions_.Nick_.clear ();
+		IrcMessageOptions_.Message_.clear ();
+		IrcMessageOptions_.Parameters_.clear ();
+
+		std::string nickStr;
+		std::string commandStr;
+		std::string msgStr;
+		QList<std::string> opts;
+
+		range<> ascii (char (0x01), char (0x7F));
+		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' |
+				'_' | '^' | '{' | '|' | '}'];
+		rule<> shortname = *(alnum_p
+				>> *(alnum_p || ch_p ('-'))
+				>> *alnum_p);
+		rule<> hostname = shortname
+				>> *(ch_p ('.')
+				>> shortname);
+		rule<> nickname = (alpha_p | special)
+				>> * (alnum_p | special | ch_p ('-'));
+		rule<> user =  +(ascii - '\r' - '\n' - ' ' - '@' - '\0');
+		rule<> host = lexeme_d [+(anychar_p - ' ')] ;
+		rule<> nick = lexeme_d [nickname [assign_a (nickStr)]
+				>> !(!(ch_p ('!')
+				>> user)
+				>> ch_p ('@')
+				>> host)];
+		rule<> nospcrlfcl = (anychar_p - '\0' - '\r' - '\n' -
+				' ' - ':');
+		rule<> lastParam = lexeme_d [ch_p (' ')
+				>> !ch_p (':')
+				>> (*(ch_p (':') | ch_p (' ') | nospcrlfcl))
+					[assign_a (msgStr)]];
+		rule<> firsParam = lexeme_d [ch_p (' ')
+				>> (nospcrlfcl
+				>> *(ch_p (':') | nospcrlfcl))
+					[push_back_a (opts)]];
+		rule<> params =  *firsParam
+				>> !lastParam;
+		rule<> command = longest_d [(+alpha_p) |
+				(repeat_p (3) [digit_p])][assign_a (commandStr)];
+		rule<> prefix = longest_d [hostname | nick];
+		rule<> reply = (lexeme_d [!(ch_p (':')
+				>> prefix >> ch_p (' '))]
+				>> command
+				>> !params
+				>> eol_p);
+
+		bool res = parse (message.toUtf8 ().constData (), reply).full;
+
+		if (!res)
+		{
+			qWarning () << "input string is not a valide IRC command"
+					<< message;
+			return false;
+		}
+		else
+		{
+			IrcMessageOptions_.Nick_ =
+					QString::fromUtf8 (nickStr.c_str ());
+			IrcMessageOptions_.Command_ =
+					QString::fromUtf8 (commandStr.c_str ()).toLower ();
+			IrcMessageOptions_.Message_ =
+					QString::fromUtf8 (msgStr.c_str ());
+			IrcMessageOptions_.Parameters_ = opts;
+		}
+
+		return true;
+	}
+
+	IrcMessageOptions IrcParser::GetIrcMessageOptions () const
+	{
+		return IrcMessageOptions_;
+	}
+
 };
 };
 };

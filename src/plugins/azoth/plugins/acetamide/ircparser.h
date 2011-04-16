@@ -36,14 +36,17 @@ namespace Acetamide
 	class IrcParser : public QObject
 	{
 		Q_OBJECT
-		
+
 		IrcServerHandler *ISH_;
 		ServerOptions ServerOptions_;
+		IrcMessageOptions IrcMessageOptions_;
 	public:
 		IrcParser (IrcServerHandler*);
 		void AuthCommand ();
 		void UserCommand ();
 		void NickCommand ();
+		bool ParseMessage (const QString&);
+		IrcMessageOptions GetIrcMessageOptions () const;
 	};
 };
 };

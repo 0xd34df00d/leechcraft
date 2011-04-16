@@ -23,6 +23,7 @@
 #include <interfaces/iproxyobject.h>
 #include "core.h"
 #include "ircprotocol.h"
+#include "ircserverclentry.h"
 #include "ircserverhandler.h"
 
 namespace LeechCraft
@@ -48,12 +49,18 @@ namespace Acetamide
 	QObject* ClientConnection::GetCLEntry (const QString& key,
 			const QString& nick) const
 	{
-		return 0;
+		if (ServerHandlers_.contains (key))
+		{
+			return ServerHandlers_ [key]->GetCLEntry ();
+		}
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const
 	{
 		QList<QObject*> result;
+		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_)
+			result << ish->GetCLEntry ();
+
 		return result;
 	}
 
@@ -71,12 +78,12 @@ namespace Acetamide
 		return ServerHandlers_.contains (key);
 	}
 
-	IrcServerCLEntry* 
+	IrcServerCLEntry*
 			ClientConnection::JoinServer (const ServerOptions& server)
 	{
-		QString serverId = server.ServerName_ + ":" + 
+		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
-		
+
 		if (ServerHandlers_.contains (serverId))
 		{
 			Entity e = Util::MakeNotification ("Azoth",

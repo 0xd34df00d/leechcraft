@@ -185,7 +185,7 @@ namespace Acetamide
 			const ChannelOptions& channel)
 	{
 		if (!XmlSettingsManager::Instance ()
-			.property ("TabWithServer").toBool () && 
+			.property ("TabWithServer").toBool () &&
 				channel.ChannelName_.isEmpty ())
 		{
 			// TODO unable to join to server if Separate tab for server
@@ -193,8 +193,8 @@ namespace Acetamide
 			return;
 		}
 
-		QString channelId, serverId;
-		serverId = server.ServerName_ + ":" + 
+		QString serverId;
+		serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
 		IrcServerCLEntry *isEntry;
@@ -208,10 +208,16 @@ namespace Acetamide
 			emit gotCLItems (QList<QObject*> () << isEntry);
 		}
 
+		ChannelCLEntry ichEntry;
 		if (!channel.ChannelName_.isEmpty ())
 		{
-			channelId = channel.ChannelName_ + "@" + channel.ServerName_;
-			//TODO JoinChannel
+			ichEntry = ClientConnection_->JoinChannel (serverId,
+					channel);
+
+			if (!ichEntry)
+				return;
+
+			emit gotCLItems (QList<QObject*> () << ichEntry);
 		}
 	}
 
@@ -222,7 +228,7 @@ namespace Acetamide
 
 	void IrcAccount::ChangeState (const EntryStatus& state)
 	{
-		if (IrcAccountState_ == SOffline && 
+		if (IrcAccountState_ == SOffline &&
 				!ClientConnection_)
 			return;
 		IrcAccountState_ = state.State_;
