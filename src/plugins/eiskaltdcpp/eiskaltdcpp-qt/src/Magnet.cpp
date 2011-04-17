@@ -68,11 +68,6 @@ void Magnet::showUI(const QString &name, const qulonglong &size, const QString &
     lineEdit_FPATH->setText(_q(SETTING(DOWNLOAD_DIRECTORY)));
 
     setWindowTitle(lineEdit_FNAME->text());
-
-    if (!MainWindow::getInstance()->isVisible()){
-        MainWindow::getInstance()->show();
-        MainWindow::getInstance()->raise();
-    }
 }
 
 void Magnet::setLink(const QString &link){

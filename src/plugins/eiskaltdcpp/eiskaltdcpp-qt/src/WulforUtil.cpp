@@ -725,14 +725,14 @@ bool WulforUtil::openUrl(const QString &url){
         QDesktopServices::openUrl(QUrl::fromEncoded(url.toAscii()));
     }
     else if (url.startsWith("adc://") || url.startsWith("adcs://")){
-        MainWindow::getInstance()->newHubFrame(url, "UTF-8");
+        MainLayout::getInstance()->newHubFrame(url, "UTF-8");
     }
     else if (url.startsWith("dchub://")){
-        MainWindow::getInstance()->newHubFrame(url, WSGET(WS_DEFAULT_LOCALE));
+        MainLayout::getInstance()->newHubFrame(url, WSGET(WS_DEFAULT_LOCALE));
     }
     else if (url.startsWith("magnet:") && url.contains("urn:tree:tiger")){
         QString magnet = url;
-        Magnet *m = new Magnet(MainWindow::getInstance());
+        Magnet *m = new Magnet(MainLayout::getInstance());
 
         m->setLink(magnet);
         if (WIGET(WI_DEF_MAGNET_ACTION) == 0) {
@@ -798,7 +798,7 @@ bool WulforUtil::getUserCommandParams(QString command, dcpp::StringMap &ucParams
     else
         command.remove(0, i+7);//also remove "%[line:" string
 
-    QDialog dlg(MainWindow::getInstance());
+    QDialog dlg(MainLayout::getInstance());
     dlg.setWindowTitle(tr("Command parameters"));
 
     QGridLayout *layout = new QGridLayout();

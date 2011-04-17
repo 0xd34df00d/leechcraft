@@ -41,7 +41,7 @@ class DownloadQueue :
         public dcpp::Singleton<DownloadQueue>
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget)
+    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
 
 typedef QMap<QString, QVariant> VarMap;
 typedef QMap<QString, QMap<QString, QString> > SourceMap;

@@ -142,6 +142,8 @@ namespace LeechCraft
 				}
 
 				notificationWidget->SetContent (header, text, path);
+				if (e.Additional_ ["NotificationPixmap"].isValid ())
+					notificationWidget->OverrideImage (e.Additional_ ["NotificationPixmap"].value<QPixmap> ());
 
 				if (!ActiveNotifications_.size ())
 					notificationWidget->PrepareNotification ();

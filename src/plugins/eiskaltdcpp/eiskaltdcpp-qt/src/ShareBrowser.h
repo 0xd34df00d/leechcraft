@@ -32,7 +32,7 @@
 #include "dcpp/DirectoryListing.h"
 #include "dcpp/Singleton.h"
 
-class MainWindow;
+class MainLayout;
 
 class FileBrowserModel;
 class FileBrowserItem;
@@ -59,7 +59,7 @@ class ShareBrowser : public  QWidget,
                      private Ui::UIShareBrowser
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget)
+    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
 
     class Menu : public dcpp::Singleton<Menu>{
 

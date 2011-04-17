@@ -178,7 +178,7 @@ void ScriptEngine::prepareThis(QScriptEngine &engine){
     QScriptValue evalStr = engine.newFunction(eval);
     engine.globalObject().setProperty("Eval", evalStr, QScriptValue::ReadOnly);
 
-    QScriptValue MW = engine.newQObject(MainWindow::getInstance());//MainWindow already initialized
+    QScriptValue MW = engine.newQObject(MainLayout::getInstance());//MainWindow already initialized
     engine.globalObject().setProperty("MainWindow", MW, QScriptValue::ReadOnly);
 
     QScriptValue WU = engine.newQObject(WulforUtil::getInstance());//WulforUtil already initialized
@@ -356,7 +356,7 @@ static QScriptValue staticMemberConstructor(QScriptContext *context, QScriptEngi
         if (!ClientManagerScript::getInstance()){
             ClientManagerScript::newInstance();
 
-            ClientManagerScript::getInstance()->moveToThread(MainWindow::getInstance()->thread());
+            ClientManagerScript::getInstance()->moveToThread(MainLayout::getInstance()->thread());
         }
 
         obj = qobject_cast<QObject*>(ClientManagerScript::getInstance());
@@ -365,7 +365,7 @@ static QScriptValue staticMemberConstructor(QScriptContext *context, QScriptEngi
         if (!HashManagerScript::getInstance()){
             HashManagerScript::newInstance();
 
-            HashManagerScript::getInstance()->moveToThread(MainWindow::getInstance()->thread());
+            HashManagerScript::getInstance()->moveToThread(MainLayout::getInstance()->thread());
         }
 
         obj = qobject_cast<QObject*>(HashManagerScript::getInstance());
@@ -374,7 +374,7 @@ static QScriptValue staticMemberConstructor(QScriptContext *context, QScriptEngi
         if (!LogManagerScript::getInstance()){
             LogManagerScript::newInstance();
 
-            LogManagerScript::getInstance()->moveToThread(MainWindow::getInstance()->thread());
+            LogManagerScript::getInstance()->moveToThread(MainLayout::getInstance()->thread());
         }
 
         obj = qobject_cast<QObject*>(LogManagerScript::getInstance());
@@ -402,13 +402,13 @@ static QScriptValue dynamicMemberConstructor(QScriptContext *context, QScriptEng
             QString hub = context->argument(0).toString();
             QString enc = context->argument(1).toString();
 
-            HubFrame *fr = new HubFrame(MainWindow::getInstance(), hub, enc);
+            HubFrame *fr = new HubFrame(MainLayout::getInstance(), hub, enc);
             fr->setAttribute(Qt::WA_DeleteOnClose);
 
-            MainWindow::getInstance()->addArenaWidget(fr);
-            MainWindow::getInstance()->mapWidgetOnArena(fr);
+            MainLayout::getInstance()->addArenaWidget(fr);
+            MainLayout::getInstance()->mapWidgetOnArena(fr);
 
-            MainWindow::getInstance()->addArenaWidgetOnToolbar(fr);
+            MainLayout::getInstance()->addArenaWidgetOnToolbar(fr);
 
             obj = qobject_cast<QObject*>(fr);
         }
@@ -427,14 +427,14 @@ static QScriptValue dynamicMemberConstructor(QScriptContext *context, QScriptEng
             for (int i = 1; i < context->argumentCount(); i++)
                 args.push_back(context->argument(i).toString());
 
-            ShellCommandRunner *runner = new ShellCommandRunner(cmd, args, MainWindow::getInstance());
+            ShellCommandRunner *runner = new ShellCommandRunner(cmd, args, MainLayout::getInstance());
             runner->connect(runner, SIGNAL(finished(bool,QString)), runner, SLOT(deleteLater()));
 
             obj = qobject_cast<QObject*>(runner);
         }
     }
     else if (className == "MainWindowScript"){
-        obj = qobject_cast<QObject*>(new MainWindowScript(engine, MainWindow::getInstance()));
+        obj = qobject_cast<QObject*>(new MainWindowScript(engine, MainLayout::getInstance()));
     }
     else if (className == "ScriptWidget"){
         ScriptWidget *wgt = new ScriptWidget();

@@ -162,7 +162,7 @@ void UCModel::addUC(const dcpp::UserCommand &uc){
 }
 
 void UCModel::newUC(){
-    UCDialog ucd(MainWindow::getInstance());
+    UCDialog ucd(MainLayout::getInstance());
 
     if (ucd.exec() == QDialog::Accepted){
         addUC(FavoriteManager::getInstance()->addUserCommand(ucd.getType(),
@@ -185,7 +185,7 @@ void UCModel::changeUC(const QModelIndex &i){
     if (!rootItem->childItems.contains(item))
         return;
 
-    UCDialog ucd(MainWindow::getInstance());
+    UCDialog ucd(MainLayout::getInstance());
 
     initDlgFromItem(ucd, *item);
 

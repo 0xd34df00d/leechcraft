@@ -49,6 +49,9 @@
 #include "dcpp/Util.h"
 #include "dcpp/version.h"
 
+#include <interfaces/iinfo.h>
+#include <interfaces/imultitabs.h>
+
 #include "qtsingleapp/qtlockedfile.h"
 #include "qtsingleapp/qtsingleapplication.h"
 
@@ -58,13 +61,13 @@
 #include "LineEdit.h"
 #include "WulforSettings.h"
 #include "ShortcutManager.h"
+#include "ToolBar.h"
 
 #include "ui_UIAbout.h"
 
 class FavoriteHubs;
 class DownloadQueue;
-class ToolBar;
-class MainWindow;
+class MainLayout;
 class MultiLineToolBar;
 
 extern const char * const EISKALTDCPP_VERSION;
@@ -103,16 +106,19 @@ public:
 
 class HashProgress;
 
-class MainWindow:
+class MainLayout:
         public QMainWindow,
-        public  dcpp::Singleton<MainWindow>,
+        public dcpp::Singleton<MainLayout>,
+        public IInfo,
+        public IMultiTabs,
         private dcpp::LogManagerListener,
         private dcpp::TimerManagerListener,
         private dcpp::QueueManagerListener
 {
     Q_OBJECT
+    Q_INTERFACES (IInfo IMultiTabs)
 
-friend class dcpp::Singleton<MainWindow>;
+friend class dcpp::Singleton<MainLayout>;
 
     public:
 
@@ -120,8 +126,10 @@ friend class dcpp::Singleton<MainWindow>;
         typedef QList<ArenaWidget*> ArenaWidgetList;
         typedef QMap<ArenaWidget*, QWidget*> ArenaWidgetMap;
 
-        Q_PROPERTY (QObject* ToolBar READ getToolBar);
-        Q_PROPERTY (QMenuBar* MenuBar READ menuBar);
+        MainLayout (QWidget *parent=NULL);
+        virtual ~MainLayout();
+
+        QToolBar *getActionBar() { return qobject_cast<QToolBar*>(fBar); }
 
         void beginExit();
 
@@ -147,6 +155,16 @@ friend class dcpp::Singleton<MainWindow>;
         void setUnload(bool b){ isUnload = b; }
 
         ArenaWidget *widgetForRole(ArenaWidget::Role) const;
+
+        /** IInfo interface */
+        virtual void Init (ICoreProxy_ptr proxy);
+        virtual void SecondInit ();
+        virtual QByteArray GetUniqueID () const;
+        virtual QString GetName () const;
+        virtual QString GetInfo () const;
+        virtual void Release ();
+        virtual QIcon GetIcon () const;
+        QStringList Provides () const { return QStringList ("directconnect"); }
 
     public Q_SLOTS:
         /** Allow widget to be mapped on arena*/
@@ -188,6 +206,18 @@ friend class dcpp::Singleton<MainWindow>;
         void parseCmdLine();
         /** */
         void parseInstanceLine(QString);
+
+        /** IMultiTabs interface*/
+        virtual void newTabRequested(){}
+
+Q_SIGNALS:
+        /** IMultiTabs interface*/
+        void addNewTab(const QString &name, QWidget *tabContents);
+        void removeTab (QWidget *tabContents);
+        void changeTabName (QWidget *tabContents, const QString& name);
+        void changeTabIcon (QWidget *tabContents, const QIcon& icon);
+        void statusBarChanged (QWidget *tabContents, const QString& text);
+        void raiseTab (QWidget *tabContents);
 
     protected:
         virtual void closeEvent(QCloseEvent*);
@@ -268,10 +298,7 @@ friend class dcpp::Singleton<MainWindow>;
         void notifyMessage(int, const QString&, const QString&);
 
     private:
-        MainWindow (QWidget *parent=NULL);
-        virtual ~MainWindow();
-
-        /** LogManagerListener */
+         /** LogManagerListener */
         virtual void on(dcpp::LogManagerListener::Message, time_t t, const std::string&) throw();
         /** TimerManagerListener */
         virtual void on(dcpp::TimerManagerListener::Second, uint64_t) throw();
@@ -422,92 +449,11 @@ friend class dcpp::Singleton<MainWindow>;
         ActionList toolsMenuActions;
         ArenaWidgetList arenaWidgets;
         ArenaWidgetMap arenaMap;
+
+        QMainWindow *_lc_MW;
 };
 
-Q_DECLARE_METATYPE(MainWindow*)
+Q_DECLARE_METATYPE(MainLayout*)
 
-class EiskaltEventFilter: public QObject{
-Q_OBJECT
-public:
-    EiskaltEventFilter(): has_activity(true), counter(0) {
-        timer.setInterval(60000);
-
-        connect(&timer, SIGNAL(timeout()), this, SLOT(tick()));
-
-        timer.start();
-    }
-
-    virtual ~EiskaltEventFilter() {}
-
-protected:
-    virtual bool eventFilter(QObject *obj, QEvent *event){
-        if ((event->type() == QEvent::MouseButtonPress) ||
-            (event->type() == QEvent::MouseButtonRelease) ||
-            (event->type() == QEvent::MouseButtonDblClick) ||
-            (event->type() == QEvent::MouseMove) ||
-            (event->type() == QEvent::KeyPress) ||
-            (event->type() == QEvent::KeyRelease) ||
-            (event->type() == QEvent::Wheel))
-        {
-            has_activity = true;
-            counter = 0;
-
-            if (WBGET(WB_APP_AUTOAWAY_BY_TIMER) && !dcpp::Util::getManualAway()){
-                dcpp::Util::setAway(false);
-            }
-        }
-        else {
-            has_activity = false;
-        }
-
-        return QObject::eventFilter(obj, event);
-    }
-
-private Q_SLOTS:
-    void tick(){
-        if (!has_activity)
-            ++counter;
-
-        if (WBGET(WB_APP_AUTOAWAY_BY_TIMER)){
-            int mins = WIGET(WI_APP_AUTOAWAY_INTERVAL);
-
-            if (!mins)
-                return;
-
-            int mins_done = (counter*timer.interval()/1000)/60;
-
-            if (mins <= mins_done){
-                dcpp::Util::setAway(true);
-            }
-        }
-    }
-
-private:
-    QTimer timer;
-    int counter;
-    bool has_activity;
-};
-
-class EiskaltApp: public QtSingleApplication{
-Q_OBJECT
-public:
-    EiskaltApp(int argc, char *argv[]): QtSingleApplication("EiskaltDCPP", argc, argv){
-        installEventFilter(&ef);
-    }
-
-    void commitData(QSessionManager& manager){
-        if (MainWindow::getInstance()){
-            MainWindow::getInstance()->beginExit();
-            MainWindow::getInstance()->close();
-        }
-
-        manager.release();
-    }
-
-    void saveState(QSessionManager &){ /** Do nothing */ }
-
-private:
-    EiskaltEventFilter ef;
-};
 
 #endif //MAINWINDOW_H_

@@ -163,7 +163,7 @@ void ToolBar::slotIndexChanged(int index){
     if (!awgt || !awgt->getWidget())
         return;
 
-    MainWindow::getInstance()->mapWidgetOnArena(awgt);
+    MainLayout::getInstance()->mapWidgetOnArena(awgt);
 }
 
 void ToolBar::slotTabMoved(int from, int to){
@@ -271,7 +271,7 @@ void ToolBar::redraw(){
     ArenaWidget *awgt = findWidgetForIndex(tabbar->currentIndex());
 
     if (awgt)
-        MainWindow::getInstance()->setWindowTitle(awgt->getArenaTitle());
+        MainLayout::getInstance()->setWindowTitle(awgt->getArenaTitle());
 }
 
 void ToolBar::nextTab(){

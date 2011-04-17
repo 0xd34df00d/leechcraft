@@ -32,7 +32,7 @@ class SpyFrame :
         private Ui::UISpy
 {
 Q_OBJECT
-Q_INTERFACES(ArenaWidget)
+Q_INTERFACES(ArenaWidget IMultiTabsWidget)
 
 friend class dcpp::Singleton<SpyFrame>;
 

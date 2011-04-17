@@ -51,6 +51,7 @@
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
 #include "accounthandlerchooserdialog.h"
+#include "util.h"
 
 uint qHash (const QImage& image)
 {
@@ -864,7 +865,7 @@ namespace Azoth
 		QString Status2Str (const EntryStatus& status, boost::shared_ptr<IProxyObject> obj)
 		{
 			QString result = obj->StateToString (status.State_);
-			const QString& statusString = status.StatusString_;
+			const QString& statusString = Qt::escape (status.StatusString_);
 			if (!statusString.isEmpty ())
 				result += " (" + statusString + ")";
 			return result;
@@ -876,8 +877,23 @@ namespace Azoth
 		QString tip = "<strong>" + entry->GetEntryName () + "</strong>";
 		tip += "<br />" + entry->GetHumanReadableID () + "<br />";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
-		tip += "<br />";
-		tip += tr ("In groups: ") + entry->Groups ().join ("; ");
+		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+		{
+			tip += "<br />";
+			tip += tr ("In groups: ") + entry->Groups ().join ("; ");
+		}
+
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+		if (mucEntry)
+		{
+			QObject *entryObj = entry->GetObject ();
+			tip += "<hr />";
+			tip += tr ("Affiliation:") + ' ' +
+					AffToString (mucEntry->GetAffiliation (entryObj));
+			tip += "<br />";
+			tip += tr ("Role:") + ' ' +
+					RoleToString (mucEntry->GetRole (entryObj));
+		}
 				
 		const QStringList& variants = entry->Variants ();
 		Q_FOREACH (const QString& variant, variants)
@@ -1963,12 +1979,15 @@ namespace Azoth
 			return;
 		}
 		
+		const QString& tip = MakeTooltipString (entry);
+		
 		const IMUCEntry::MUCRole role = mucEntry->GetRole (entryObj);
 		const IMUCEntry::MUCAffiliation aff = mucEntry->GetAffiliation (entryObj);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
 			item->setData (role, CLRRole);
 			item->setData (aff, CLRAffiliation);
+			item->setToolTip (tip);
 		}
 	}
 
@@ -2067,6 +2086,8 @@ namespace Azoth
 				Entity e = Util::MakeNotification ("Azoth",
 						msgString,
 						PInfo_);
+				e.Additional_ ["NotificationPixmap"] =
+						QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
 				Util::NotificationActionHandler *nh =
 						new Util::NotificationActionHandler (e, this);
 				nh->AddFunction (tr ("Open chat"),
@@ -2148,6 +2169,9 @@ namespace Azoth
 						entry));
 		nh->AddFunction (tr ("Deny"),
 				boost::bind (DenyAuthForEntry,
+						entry));
+		nh->AddFunction (tr ("View info"),
+				boost::bind (&ICLEntry::ShowInfo,
 						entry));
 		emit gotEntity (e);
 	}

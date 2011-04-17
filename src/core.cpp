@@ -931,19 +931,6 @@ void LeechCraft::Core::InitJobHolder (QObject *plugin)
 	{
 		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
 		QAbstractItemModel *model = ijh->GetRepresentation ();
-
-		if (model)
-		{
-			QToolBar *controlsWidget = model->
-				index (0, 0).data (RoleControls).value<QToolBar*> ();
-			if (controlsWidget)
-				controlsWidget->setParent (ReallyMainWindow_);
-
-			QWidget *additional = model->
-				index (0, 0).data (RoleAdditionalInfo).value<QWidget*> ();
-			if (additional)
-				additional->setParent (ReallyMainWindow_);
-		}
 	}
 	catch (const std::exception& e)
 	{

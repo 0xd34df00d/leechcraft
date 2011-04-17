@@ -391,6 +391,7 @@ namespace Xoox
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
 	{
+		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
 		{
@@ -433,6 +434,9 @@ namespace Xoox
 
 			if (message)
 				CLEntry_->HandleMessage (message);
+			
+			if (!existed)
+				Nick2Entry_.remove (nick);
 		}
 	}
 

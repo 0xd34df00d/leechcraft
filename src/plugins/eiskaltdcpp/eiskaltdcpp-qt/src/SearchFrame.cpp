@@ -369,8 +369,8 @@ SearchFrame::~SearchFrame(){
     SearchManager::getInstance()->removeListener(this);
     ClientManager::getInstance()->removeListener(this);
 
-    MainWindow::getInstance()->remArenaWidget(this);
-    MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
+    MainLayout::getInstance()->remArenaWidget(this);
+    MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
 
     if (completer)
         completer->deleteLater();
@@ -480,7 +480,7 @@ void SearchFrame::init(){
 
     connect(WulforSettings::getInstance(), SIGNAL(strValueChanged(QString,QString)), this, SLOT(slotSettingsChanged(QString,QString)));
 
-    MainWindow *mwnd = MainWindow::getInstance();
+    MainLayout *mwnd = MainLayout::getInstance();
 
     load();
 
@@ -859,7 +859,7 @@ void SearchFrame::slotStartSearch(){
     if (lineEdit_SEARCHSTR->text().trimmed().isEmpty())
         return;
 
-    MainWindow *MW = MainWindow::getInstance();
+    MainLayout *MW = MainLayout::getInstance();
     QString s = lineEdit_SEARCHSTR->text().trimmed();
     StringList clients;
 

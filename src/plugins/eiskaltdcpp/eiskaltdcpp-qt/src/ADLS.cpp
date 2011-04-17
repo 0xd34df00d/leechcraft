@@ -43,9 +43,9 @@ ADLS::~ADLS(){
 
 void ADLS::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidget(this);
 
         save();
 
@@ -54,8 +54,8 @@ void ADLS::closeEvent(QCloseEvent *e){
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }
@@ -106,7 +106,7 @@ void ADLS::init(){
     treeView->setAcceptDrops(false); // temporary
     //treeView->setDragDropMode(QAbstractItemView::InternalMove);
 
-    MainWindow::getInstance()->addArenaWidget(this);
+    MainLayout::getInstance()->addArenaWidget(this);
 
     WulforUtil *WU = WulforUtil::getInstance();
 

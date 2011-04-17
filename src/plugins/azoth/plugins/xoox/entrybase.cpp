@@ -107,7 +107,7 @@ namespace Xoox
 			VCardDialog_ = new VCardDialog ();
 
 		Account_->GetClientConnection ()->RequestInfo (GetJID ());
-		Account_->GetClientConnection ()->FetchVCard (GetJID ());
+		Account_->GetClientConnection ()->FetchVCard (GetJID (), VCardDialog_);
 		VCardDialog_->show ();
 	}
 

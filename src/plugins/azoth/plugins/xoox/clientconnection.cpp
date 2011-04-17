@@ -44,6 +44,7 @@
 #include "core.h"
 #include "roomclentry.h"
 #include "unauthclentry.h"
+#include "vcarddialog.h"
 
 namespace LeechCraft
 {
@@ -438,6 +439,12 @@ namespace Xoox
 		Client_->vCardManager ().requestVCard (jid);
 	}
 	
+	void ClientConnection::FetchVCard (const QString& jid, VCardDialog *dia)
+	{
+		AwaitingVCardDialogs_ [jid] = QPointer<VCardDialog> (dia);
+		FetchVCard (jid);
+	}
+	
 	QXmppBookmarkSet ClientConnection::GetBookmarks () const
 	{
 		return BMManager_->bookmarks ();
@@ -603,14 +610,19 @@ namespace Xoox
 		QString jid;
 		QString nick;
 		Split (vcard.from (), &jid, &nick);
+		
+		if (AwaitingVCardDialogs_.contains (jid))
+		{
+			QPointer<VCardDialog> dia = AwaitingVCardDialogs_ [jid];
+			if (dia)
+				dia->UpdateInfo (vcard);
+			AwaitingVCardDialogs_.remove (jid);
+		}
+
 		if (JID2CLEntry_.contains (jid))
 			JID2CLEntry_ [jid]->SetVCard (vcard);
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetVCard (vcard);
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "could not find entry for"
-					<< vcard.from ();
 	}
 
 	void ClientConnection::handleInfoReceived (const QXmppDiscoveryIq& iq)

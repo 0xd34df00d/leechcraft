@@ -754,11 +754,37 @@ namespace Azoth
 	{
 		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetObject ());
 		if (entry->GetEntryType () == ICLEntry::ETMUC &&
-				mucEntry &&
-				text.startsWith ("/nick "))
+				mucEntry)
 		{
-			mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
-			return true;
+			if (text.startsWith ("/nick "))
+			{
+				mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
+				return true;
+			}
+			else if (text == "/names")
+			{
+				QStringList names;
+				Q_FOREACH (QObject *obj, mucEntry->GetParticipants ())
+				{
+					ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+					if (!entry)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< obj
+								<< "doesn't implement ICLEntry";
+						continue;
+					}
+					const QString& name = entry->GetEntryName ();
+					if (!name.isEmpty ())
+						names << name;
+				}
+				names.sort ();
+				QWebElement body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
+				body.appendInside ("<div class='systemmsg'>" +
+						tr ("MUC's participants: ") + "<ul><li>" +
+						names.join ("</li><li>") + "</li></ul></div>");
+				return true;
+			}
 		}
 
 		return false;

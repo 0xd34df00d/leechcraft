@@ -354,7 +354,7 @@ void SideBarModel::slotIndexClicked(const QModelIndex &i){
        emit mapWidget(awgt);
    else {
        ArenaWidget::Role role = roots.key(item);
-       ArenaWidget *awgt = MainWindow::getInstance()->widgetForRole(role);
+       ArenaWidget *awgt = MainLayout::getInstance()->widgetForRole(role);
 
        emit mapWidget(awgt);
    }

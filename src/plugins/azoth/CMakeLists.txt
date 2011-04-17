@@ -49,6 +49,7 @@ SET (SRCS
 	addaccountwizardfirstpage.cpp
 	bookmarksmanagerdialog.cpp
 	accounthandlerchooserdialog.cpp
+	util.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -71,6 +72,7 @@ SET (HEADERS
 	addaccountwizardfirstpage.h
 	bookmarksmanagerdialog.h
 	accounthandlerchooserdialog.h
+	util.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h

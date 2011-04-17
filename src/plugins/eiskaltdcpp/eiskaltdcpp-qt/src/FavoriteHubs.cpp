@@ -40,16 +40,16 @@ FavoriteHubs::FavoriteHubs(QWidget *parent):
 FavoriteHubs::~FavoriteHubs(){
     FavoriteManager::getInstance()->removeListener(this);
 
-    MainWindow::getInstance()->remArenaWidget(this);
+    MainLayout::getInstance()->remArenaWidget(this);
 
     delete model;
 }
 
 void FavoriteHubs::closeEvent(QCloseEvent *e){
     if (isUnload()){
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
-        MainWindow::getInstance()->remArenaWidget(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidget(this);
 
         save();
 
@@ -58,8 +58,8 @@ void FavoriteHubs::closeEvent(QCloseEvent *e){
         e->accept();
     }
     else {
-        MainWindow::getInstance()->remArenaWidgetFromToolbar(this);
-        MainWindow::getInstance()->remWidgetFromArena(this);
+        MainLayout::getInstance()->remArenaWidgetFromToolbar(this);
+        MainLayout::getInstance()->remWidgetFromArena(this);
 
         e->ignore();
     }
@@ -145,7 +145,7 @@ void FavoriteHubs::init(){
     treeView->setAcceptDrops(false); // temporary
     //treeView->setDragDropMode(QAbstractItemView::InternalMove);
 
-    MainWindow::getInstance()->addArenaWidget(this);
+    MainLayout::getInstance()->addArenaWidget(this);
 
     WulforUtil *WU = WulforUtil::getInstance();
 
@@ -446,7 +446,7 @@ void FavoriteHubs::slotDblClicked(){
     FavoriteHubEntry *entry = FavoriteManager::getInstance()->getFavoriteHubEntry(address.toStdString());
     QString encoding = WulforUtil::getInstance()->dcEnc2QtEnc(_q(entry->getEncoding()));
 
-    MainWindow::getInstance()->newHubFrame(address, encoding);
+    MainLayout::getInstance()->newHubFrame(address, encoding);
 }
 
 void FavoriteHubs::slotHeaderMenu(){

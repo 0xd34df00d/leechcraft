@@ -23,6 +23,14 @@ ArenaWidget::ArenaWidget(): _arenaUnload(true), toolBtn(NULL)
 ArenaWidget::~ArenaWidget(){
 }
 
+QObject* ArenaWidget::ParentMultiTabs() const{
+    return MainLayout::getInstance();
+}
+
+QToolBar *ArenaWidget::GetToolBar() const{
+    return MainLayout::getInstance()->getActionBar();
+}
+
 ScriptWidget::ScriptWidget(){
     _wgt = NULL;
     _menu = NULL;

@@ -51,7 +51,7 @@ void QuickConnect::slotAccept() {
                 encoding = WulforUtil::getInstance()->dcEnc2QtEnc(_q(entry->getEncoding()));
         }
 
-        MainWindow::getInstance()->newHubFrame(hub, (encoding.isEmpty())? (WSGET(WS_DEFAULT_LOCALE)) : (encoding));
+        MainLayout::getInstance()->newHubFrame(hub, (encoding.isEmpty())? (WSGET(WS_DEFAULT_LOCALE)) : (encoding));
 
         QStringList list = WulforSettings::getInstance()->getStr(WS_QCONNECT_HISTORY).split(" ", QString::SkipEmptyParts);
 

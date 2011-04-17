@@ -53,7 +53,7 @@ class FavoriteHubs :
         public dcpp::Singleton<FavoriteHubs>
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget)
+    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
 
     friend class dcpp::Singleton<FavoriteHubs>;
 
