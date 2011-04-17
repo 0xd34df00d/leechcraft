@@ -865,7 +865,7 @@ namespace Azoth
 		QString Status2Str (const EntryStatus& status, boost::shared_ptr<IProxyObject> obj)
 		{
 			QString result = obj->StateToString (status.State_);
-			const QString& statusString = status.StatusString_;
+			const QString& statusString = Qt::escape (status.StatusString_);
 			if (!statusString.isEmpty ())
 				result += " (" + statusString + ")";
 			return result;
