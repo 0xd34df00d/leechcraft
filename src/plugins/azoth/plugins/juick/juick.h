@@ -64,6 +64,12 @@ namespace Juick
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,  
+				QObject *chatTab,
+				QObject *entry,
+				int type, 
+				QString variant, 
+				QString text);
 
 	};
 }
