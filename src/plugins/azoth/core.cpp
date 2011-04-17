@@ -51,6 +51,7 @@
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
 #include "accounthandlerchooserdialog.h"
+#include "util.h"
 
 uint qHash (const QImage& image)
 {
@@ -876,8 +877,23 @@ namespace Azoth
 		QString tip = "<strong>" + entry->GetEntryName () + "</strong>";
 		tip += "<br />" + entry->GetHumanReadableID () + "<br />";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
-		tip += "<br />";
-		tip += tr ("In groups: ") + entry->Groups ().join ("; ");
+		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+		{
+			tip += "<br />";
+			tip += tr ("In groups: ") + entry->Groups ().join ("; ");
+		}
+
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+		if (mucEntry)
+		{
+			QObject *entryObj = entry->GetObject ();
+			tip += "<hr />";
+			tip += tr ("Affiliation:") + ' ' +
+					AffToString (mucEntry->GetAffiliation (entryObj));
+			tip += "<br />";
+			tip += tr ("Role:") + ' ' +
+					RoleToString (mucEntry->GetRole (entryObj));
+		}
 				
 		const QStringList& variants = entry->Variants ();
 		Q_FOREACH (const QString& variant, variants)
@@ -1963,12 +1979,15 @@ namespace Azoth
 			return;
 		}
 		
+		const QString& tip = MakeTooltipString (entry);
+		
 		const IMUCEntry::MUCRole role = mucEntry->GetRole (entryObj);
 		const IMUCEntry::MUCAffiliation aff = mucEntry->GetAffiliation (entryObj);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
 			item->setData (role, CLRRole);
 			item->setData (aff, CLRAffiliation);
+			item->setToolTip (tip);
 		}
 	}
 
