@@ -56,12 +56,12 @@ namespace Juick
 		, Correction_ (correction) 
 		{}
 
-		bool done ()
+		bool Done ()
 		{
 			return CheckRX_.indexIn (Text_) != -1;
 		}
 
-		QString& correction ()
+		QString& Correction ()
 		{
 			if (Correction_)
 			{
@@ -265,12 +265,12 @@ namespace Juick
 			{
 				Typo typo = typos [i];
 
-				if (typo.done ())
+				if (typo.Done ())
 				{
 					QSettings settings (QCoreApplication::organizationName (),
 						QCoreApplication::applicationName () + "_AzothJuick");
 					QWidget* parent = qobject_cast<QWidget*> (chatTab);
-					QString correction = typo.correction ();
+					QString correction = typo.Correction ();
 					bool askForCorrection = settings.value ("AskForCorrection", true).toBool ();
 					
 					if (!parent)
