@@ -43,19 +43,24 @@ namespace Juick
 		QRegExp CheckRX_;
 		boost::function<QString& (QString&)> Correction_;
 	public:
-		Typo (const QString& text, const QString& checkPattern, const QString& fixPatter)
-			: Text_ (text)
-			, CheckRX_ (checkPattern)
-			, FixPattern_ (fixPatter) {}
+		Typo (const QString& text, const QString& checkPattern, const QString& fixPattern)
+		: Text_ (text)
+		, CheckRX_ (checkPattern)
+		, FixPattern_ (fixPattern)
+		{}
+
 		Typo (const QString& text, const QString& checkPattern, 
 			boost::function<QString& (QString&)> correction)
-				: Text_ (text)
-				, CheckRX_ (checkPattern)
-				, Correction_ (correction) {}
+		: Text_ (text)
+		, CheckRX_ (checkPattern)
+		, Correction_ (correction) 
+		{}
+
 		bool done ()
 		{
 			return CheckRX_.indexIn (Text_) != -1;
 		}
+
 		QString& correction ()
 		{
 			if (Correction_)
@@ -211,7 +216,7 @@ namespace Juick
 			return;
 		}
 
-		if(other->GetEntryID ().contains ("juick@juick.com"))
+		if (other->GetEntryID ().contains ("juick@juick.com"))
 		{
 			Typo typos[] = {
 				Typo (text, QString::fromUtf8 ("!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
@@ -258,7 +263,7 @@ namespace Juick
 			
 			for (int i = 0; i < sizeof (typos) / sizeof (Typo); i++)
 			{
-				Typo typo = typos[i];
+				Typo typo = typos [i];
 
 				if (typo.done ())
 				{
