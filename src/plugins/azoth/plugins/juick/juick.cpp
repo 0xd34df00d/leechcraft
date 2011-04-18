@@ -194,7 +194,7 @@ namespace Juick
 			proxy->SetValue ("body", FormatBody (body));
 	}
 
-	void Plugin::hookMessageWillCreated( LeechCraft::IHookProxy_ptr proxy, 
+	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy, 
 			QObject *chatTab, QObject *entry, int, QString, QString text)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
@@ -208,97 +208,94 @@ namespace Juick
 			return;
 		}
 
-		if (other->GetEntryID ().contains ("juick@juick.com"))
+		if (!other->GetEntryID ().contains ("juick@juick.com"))
+			return;
+
+		Typo typos[] = {
+			Typo (text, QString::fromUtf8 ("!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
+			Typo (text, "!\\s+(\\d+)", QString ("! #\\1")),
+			Typo (text, QString::fromUtf8 ("![#№](\\d+)"), QString ("! #\\1")),
+			Typo (text, "!(\\d+)", QString ("! #\\1")),
+			Typo (text, QString::fromUtf8 ("[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),  
+			Typo (text, QString::fromUtf8 ("[SЫ]\\s+(\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("[SЫ][#№](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("[SЫ](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("Ы [#№](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("ЗЬ\\s+@(.*)"), QString ("PM @\\1")),
+			Typo (text, "^(\\d+)\\s+(.*)", QString ("#\\1 \\2")),
+			Typo (text, "^(\\d+/\\d+)\\s+(.*)", QString ("#\\1 \\2")),
+			Typo (text, QString::fromUtf8 ("^№\\+$"), QString ("#+")),
+			Typo (text, QString::fromUtf8 ("^\"$"), QString ("@")),
+			Typo (text, QString::fromUtf8 ("^В\\s?Д$"), QString ("D L")),
+			Typo (text, QString::fromUtf8 ("$Ы^"), QString ("S")),
+			Typo (text, QString::fromUtf8 ("[UГ]\\s+[#№]{2,}(\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("[UГ]\\s+(\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("[UГ][#№](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("[UГ](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("Г [#№](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("В [#№](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("[DВ][#№](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("[DВ](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("^РУДЗ$"), QString ("HELP")),
+			Typo (text, QString::fromUtf8 ("^ДЩПШТ$"), QString ("LOGIN")),
+			Typo (text, QString::fromUtf8 ("^ЩТ(\\+?)$"), QString ("ON\\1")),
+			Typo (text, QString::fromUtf8 ("^ЩАА$"), QString ("OFF")),
+			Typo (text, QString::fromUtf8 ("^ИД(\\s?)"), QString ("BL\\1")),
+			Typo (text, QString::fromUtf8 ("^ЦД(\\s?)"), QString ("WL\\1")),
+			Typo (text, QString::fromUtf8 ("^ШТМШЕУ "), QString ("INVITE ")),
+			Typo (text, QString::fromUtf8 ("^МСФКВ$"), QString ("VCARD")),
+			Typo (text, QString::fromUtf8 ("^ЗШТП$"), QString ("PING")),
+			Typo (text, QString::fromUtf8 ("^№+$"), 
+					boost::bind (
+						static_cast<replace_t> (&QString::replace), 
+						_1, 
+						QString::fromUtf8 ("№"), 
+						"#",  
+						Qt::CaseInsensitive))
+		};
+		
+		for (int i = 0; i < static_cast<int> (sizeof (typos) / sizeof (Typo)); ++i)
 		{
-			Typo typos[] = {
-				Typo (text, QString::fromUtf8 ("!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
-				Typo (text, "!\\s+(\\d+)", QString ("! #\\1")),
-				Typo (text, QString::fromUtf8 ("![#№](\\d+)"), QString ("! #\\1")),
-				Typo (text, "!(\\d+)", QString ("! #\\1")),
-				Typo (text, QString::fromUtf8 ("[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),  
-				Typo (text, QString::fromUtf8 ("[SЫ]\\s+(\\d+)"), QString ("S #\\1")),
-				Typo (text, QString::fromUtf8 ("[SЫ][#№](\\d+)"), QString ("S #\\1")),
-				Typo (text, QString::fromUtf8 ("[SЫ](\\d+)"), QString ("S #\\1")),
-				Typo (text, QString::fromUtf8 ("Ы [#№](\\d+)"), QString ("S #\\1")),
-				Typo (text, QString::fromUtf8 ("ЗЬ\\s+@(.*)"), QString ("PM @\\1")),
-				Typo (text, "^(\\d+)\\s+(.*)", QString ("#\\1 \\2")),
-				Typo (text, "^(\\d+/\\d+)\\s+(.*)", QString ("#\\1 \\2")),
-				Typo (text, QString::fromUtf8 ("^№\\+$"), QString ("#+")),
-				Typo (text, QString::fromUtf8 ("^\"$"), QString ("@")),
-				Typo (text, QString::fromUtf8 ("^В\\s?Д$"), QString ("D L")),
-				Typo (text, QString::fromUtf8 ("$Ы^"), QString ("S")),
-				Typo (text, QString::fromUtf8 ("[UГ]\\s+[#№]{2,}(\\d+)"), QString ("U #\\1")),
-				Typo (text, QString::fromUtf8 ("[UГ]\\s+(\\d+)"), QString ("U #\\1")),
-				Typo (text, QString::fromUtf8 ("[UГ][#№](\\d+)"), QString ("U #\\1")),
-				Typo (text, QString::fromUtf8 ("[UГ](\\d+)"), QString ("U #\\1")),
-				Typo (text, QString::fromUtf8 ("Г [#№](\\d+)"), QString ("U #\\1")),
-				Typo (text, QString::fromUtf8 ("В [#№](\\d+)"), QString ("D #\\1")),
-				Typo (text, QString::fromUtf8 ("[DВ][#№](\\d+)"), QString ("D #\\1")),
-				Typo (text, QString::fromUtf8 ("[DВ](\\d+)"), QString ("D #\\1")),
-				Typo (text, QString::fromUtf8 ("^РУДЗ$"), QString ("HELP")),
-				Typo (text, QString::fromUtf8 ("^ДЩПШТ$"), QString ("LOGIN")),
-				Typo (text, QString::fromUtf8 ("^ЩТ(\\+?)$"), QString ("ON\\1")),
-				Typo (text, QString::fromUtf8 ("^ЩАА$"), QString ("OFF")),
-				Typo (text, QString::fromUtf8 ("^ИД(\\s?)"), QString ("BL\\1")),
-				Typo (text, QString::fromUtf8 ("^ЦД(\\s?)"), QString ("WL\\1")),
-				Typo (text, QString::fromUtf8 ("^ШТМШЕУ "), QString ("INVITE ")),
-				Typo (text, QString::fromUtf8 ("^МСФКВ$"), QString ("VCARD")),
-				Typo (text, QString::fromUtf8 ("^ЗШТП$"), QString ("PING")),
-				Typo (text, QString::fromUtf8 ("^№+$"), 
-						boost::bind (
-							static_cast<replace_t> (&QString::replace), 
-							_1, 
-							QString::fromUtf8 ("№"), 
-							"#",  
-							Qt::CaseInsensitive))
-			};
-			
-			for (int i = 0; i < static_cast<int> (sizeof (typos) / sizeof (Typo)); ++i)
+			Typo typo = typos [i];
+
+			if (!typo.Done ())
+				continue;
+
+			QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_AzothJuick");
+			QWidget* parent = qobject_cast<QWidget*> (chatTab);
+			QString correction = typo.Correction ();
+			bool askForCorrection = settings.value ("AskForCorrection", true).toBool ();
+
+			if (!parent)
 			{
-				Typo typo = typos [i];
-
-				if (typo.Done ())
-				{
-					QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_AzothJuick");
-					QWidget* parent = qobject_cast<QWidget*> (chatTab);
-					QString correction = typo.Correction ();
-					bool askForCorrection = settings.value ("AskForCorrection", true).toBool ();
-
-					if (!parent)
-					{
-						qWarning () << Q_FUNC_INFO
-							<< "unable to cast"
-							<< chatTab
-							<< "to QWidget";
-						return;
-					}
-
-					QMessageBox msgbox (QMessageBox::Question, 
-							tr ("Fix typo?"), 
-							tr ("Did you mean <em>%1</em> instead of <em>%2</em>?")
-								.arg (correction)
-								.arg (text),
-							QMessageBox::NoButton,
-							parent);					
-					msgbox.addButton (QMessageBox::Yes);
-					QPushButton *always = msgbox.addButton (tr ("Always"), QMessageBox::YesRole);
-					msgbox.addButton (QMessageBox::No);
-
-					if (!askForCorrection || msgbox.exec () != QMessageBox::No)
-					{
-						proxy->SetValue ("text", correction);
-						if (msgbox.clickedButton () == always)
-							settings.setValue ("AskForCorrection", false);
-					}					
-					break;
-				}
+				qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< chatTab
+					<< "to QWidget";
+				return;
 			}
-			
+
+			QMessageBox msgbox (QMessageBox::Question, 
+					tr ("Fix typo?"), 
+					tr ("Did you mean <em>%1</em> instead of <em>%2</em>?")
+						.arg (correction)
+						.arg (text),
+					QMessageBox::NoButton,
+					parent);					
+			msgbox.addButton (QMessageBox::Yes);
+			QPushButton *always = msgbox.addButton (tr ("Always"), QMessageBox::YesRole);
+			msgbox.addButton (QMessageBox::No);
+
+			if (!askForCorrection || msgbox.exec () != QMessageBox::No)
+			{
+				proxy->SetValue ("text", correction);
+				if (msgbox.clickedButton () == always)
+					settings.setValue ("AskForCorrection", false);
+			}					
+			break;
 		}
-
 	}
-
 }
 }
 }
