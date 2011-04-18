@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "juick.h"
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 #include <QCoreApplication>
 #include <QIcon>
 #include <QMessageBox>
@@ -31,12 +33,7 @@ namespace Azoth
 {
 namespace Juick
 {
-	typedef void (*Correction) (QString& text);
-
-	void ReplaceAllByHash (QString& text)
-	{
-		text.replace (QString::fromUtf8 ("№"), "#");
-	}
+	typedef QString& (QString::*replace_t) (const QString&, const QString&, Qt::CaseSensitivity);
 
 	class Typo
 	{
@@ -44,12 +41,17 @@ namespace Juick
 		QString Text_;
 		QString FixPattern_;
 		QRegExp CheckRX_;
-		Correction Correction_;
+		boost::function<QString& (QString&)> Correction_;
 	public:
-		Typo (QString text, QString checkPattern, QString fixPatter): Text_ (text), 
-			CheckRX_ (checkPattern), FixPattern_ (fixPatter), Correction_(NULL) {}
-		Typo (QString text, QString checkPattern, Correction correction = NULL): Text_ (text), 
-			CheckRX_ (checkPattern), Correction_ (correction) {}
+		Typo (const QString& text, const QString& checkPattern, const QString& fixPatter)
+			: Text_ (text)
+			, CheckRX_ (checkPattern)
+			, FixPattern_ (fixPatter) {}
+		Typo (const QString& text, const QString& checkPattern, 
+			boost::function<QString& (QString&)> correction)
+				: Text_ (text)
+				, CheckRX_ (checkPattern)
+				, Correction_ (correction) {}
 		bool done ()
 		{
 			return CheckRX_.indexIn (Text_) != -1;
@@ -202,9 +204,9 @@ namespace Juick
 
 		if (!other)
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to cast"
-				<< entry
+			qWarning () << Q_FUNC_INFO 
+				<< "unable to cast" 
+				<< entry 
 				<< "to ICLEntry";
 			return;
 		}
@@ -212,47 +214,53 @@ namespace Juick
 		if(other->GetEntryID ().contains ("juick@juick.com"))
 		{
 			Typo typos[] = {
-				Typo (text, QString::fromUtf8 ("!\\s+[#№]{2,}(\\d+)"), "! #\\1"),  
-				Typo (text, "!\\s+(\\d+)", "! #\\1"),
-				Typo (text, QString::fromUtf8 ("![#№](\\d+)"), "! #\\1"),
-				Typo (text, "!(\\d+)", "! #\\1"),
-				Typo (text, QString::fromUtf8 ("[SЫ]\\s+[#№]{2,}(\\d+)"), "S #\\1"),  
-				Typo (text, QString::fromUtf8 ("[SЫ]\\s+(\\d+)"), "S #\\1"),
-				Typo (text, QString::fromUtf8 ("[SЫ][#№](\\d+)"), "S #\\1"),
-				Typo (text, QString::fromUtf8 ("[SЫ](\\d+)"), "S #\\1"),
-				Typo (text, QString::fromUtf8 ("Ы [#№](\\d+)"), "S #\\1"),
-				Typo (text, QString::fromUtf8 ("ЗЬ\\s+@(.*)"), "PM @\\1"),
-				Typo (text, "^(\\d+)\\s+(.*)", "#\\1 \\2"),
-				Typo (text, "^(\\d+/\\d+)\\s+(.*)", "#\\1 \\2"),
-				Typo (text, QString::fromUtf8 ("^№+$"), ReplaceAllByHash),
-				Typo (text, QString::fromUtf8 ("^№+$"), "#+"),
-				Typo (text, QString::fromUtf8 ("^\"$"), "@"),
-				Typo (text, QString::fromUtf8 ("^В\\s?Д$"), "D L"),
-				Typo (text, QString::fromUtf8 ("$Ы^"), "S"),
-				Typo (text, QString::fromUtf8 ("[UГ]\\s+[#№]{2,}(\\d+)"), "U #\\1"),  
-				Typo (text, QString::fromUtf8 ("[UГ]\\s+(\\d+)"), "U #\\1"),
-				Typo (text, QString::fromUtf8 ("[UГ][#№](\\d+)"), "U #\\1"),
-				Typo (text, QString::fromUtf8 ("[UГ](\\d+)"), "U #\\1"),
-				Typo (text, QString::fromUtf8 ("Г [#№](\\d+)"), "U #\\1"),
-				Typo (text, QString::fromUtf8 ("В [#№](\\d+)"), "D #\\1"),
-				Typo (text, QString::fromUtf8 ("[DВ][#№](\\d+)"), "D #\\1"),
-				Typo (text, QString::fromUtf8 ("[DВ](\\d+)"), "D #\\1"),
-				Typo (text, QString::fromUtf8 ("^РУДЗ$"), "HELP"),
-				Typo (text, QString::fromUtf8 ("^ДЩПШТ$"), "LOGIN"),
-				Typo (text, QString::fromUtf8 ("^ЩТ(\\+?)$"), "ON\\1"),
-				Typo (text, QString::fromUtf8 ("^ЩАА$"), "OFF"),
-				Typo (text, QString::fromUtf8 ("^ИД(\\s?)"), "BL\\1"),
-				Typo (text, QString::fromUtf8 ("^ЦД(\\s?)"), "WL\\1"),
-				Typo (text, QString::fromUtf8 ("^ШТМШЕУ "), "INVITE "),
-				Typo (text, QString::fromUtf8 ("^МСФКВ$"), "VCARD"),
-				Typo (text, QString::fromUtf8 ("^ЗШТП$"), "PING"),
+				Typo (text, QString::fromUtf8 ("!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
+				Typo (text, "!\\s+(\\d+)", QString ("! #\\1")),
+				Typo (text, QString::fromUtf8 ("![#№](\\d+)"), QString ("! #\\1")),
+				Typo (text, "!(\\d+)", QString ("! #\\1")),
+				Typo (text, QString::fromUtf8 ("[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),  
+				Typo (text, QString::fromUtf8 ("[SЫ]\\s+(\\d+)"), QString ("S #\\1")),
+				Typo (text, QString::fromUtf8 ("[SЫ][#№](\\d+)"), QString ("S #\\1")),
+				Typo (text, QString::fromUtf8 ("[SЫ](\\d+)"), QString ("S #\\1")),
+				Typo (text, QString::fromUtf8 ("Ы [#№](\\d+)"), QString ("S #\\1")),
+				Typo (text, QString::fromUtf8 ("ЗЬ\\s+@(.*)"), QString ("PM @\\1")),
+				Typo (text, "^(\\d+)\\s+(.*)", QString ("#\\1 \\2")),
+				Typo (text, "^(\\d+/\\d+)\\s+(.*)", QString ("#\\1 \\2")),
+				Typo (text, QString::fromUtf8 ("^№\\+$"), QString ("#+")),
+				Typo (text, QString::fromUtf8 ("^\"$"), QString ("@")),
+				Typo (text, QString::fromUtf8 ("^В\\s?Д$"), QString ("D L")),
+				Typo (text, QString::fromUtf8 ("$Ы^"), QString ("S")),
+				Typo (text, QString::fromUtf8 ("[UГ]\\s+[#№]{2,}(\\d+)"), QString ("U #\\1")),
+				Typo (text, QString::fromUtf8 ("[UГ]\\s+(\\d+)"), QString ("U #\\1")),
+				Typo (text, QString::fromUtf8 ("[UГ][#№](\\d+)"), QString ("U #\\1")),
+				Typo (text, QString::fromUtf8 ("[UГ](\\d+)"), QString ("U #\\1")),
+				Typo (text, QString::fromUtf8 ("Г [#№](\\d+)"), QString ("U #\\1")),
+				Typo (text, QString::fromUtf8 ("В [#№](\\d+)"), QString ("D #\\1")),
+				Typo (text, QString::fromUtf8 ("[DВ][#№](\\d+)"), QString ("D #\\1")),
+				Typo (text, QString::fromUtf8 ("[DВ](\\d+)"), QString ("D #\\1")),
+				Typo (text, QString::fromUtf8 ("^РУДЗ$"), QString ("HELP")),
+				Typo (text, QString::fromUtf8 ("^ДЩПШТ$"), QString ("LOGIN")),
+				Typo (text, QString::fromUtf8 ("^ЩТ(\\+?)$"), QString ("ON\\1")),
+				Typo (text, QString::fromUtf8 ("^ЩАА$"), QString ("OFF")),
+				Typo (text, QString::fromUtf8 ("^ИД(\\s?)"), QString ("BL\\1")),
+				Typo (text, QString::fromUtf8 ("^ЦД(\\s?)"), QString ("WL\\1")),
+				Typo (text, QString::fromUtf8 ("^ШТМШЕУ "), QString ("INVITE ")),
+				Typo (text, QString::fromUtf8 ("^МСФКВ$"), QString ("VCARD")),
+				Typo (text, QString::fromUtf8 ("^ЗШТП$"), QString ("PING")),
+				Typo (text, QString::fromUtf8 ("^№+$"), 
+						boost::bind (
+							static_cast<replace_t> (&QString::replace), 
+							_1, 
+							QString::fromUtf8 ("№"), 
+							"#",  
+							Qt::CaseInsensitive))
 			};
 			
-			for(int i = 0; i < sizeof (typos) / sizeof (Typo); i++)
+			for (int i = 0; i < sizeof (typos) / sizeof (Typo); i++)
 			{
 				Typo typo = typos[i];
 
-				if(typo.done ())
+				if (typo.done ())
 				{
 					QSettings settings (QCoreApplication::organizationName (),
 						QCoreApplication::applicationName () + "_AzothJuick");
@@ -260,7 +268,7 @@ namespace Juick
 					QString correction = typo.correction ();
 					bool askForCorrection = settings.value ("AskForCorrection", true).toBool ();
 					
-					if(!parent)
+					if (!parent)
 					{
 						qWarning () << Q_FUNC_INFO
 							<< "unable to cast"
