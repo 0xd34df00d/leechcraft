@@ -37,10 +37,9 @@ namespace Juick
 
 	class Typo
 	{
-	private:
 		QString Text_;
-		QString FixPattern_;
 		QRegExp CheckRX_;
+		QString FixPattern_;
 		boost::function<QString& (QString&)> Correction_;
 	public:
 		Typo (const QString& text, const QString& checkPattern, const QString& fixPattern)
@@ -64,19 +63,12 @@ namespace Juick
 		QString& Correction ()
 		{
 			if (Correction_)
-			{
-				Correction_(Text_);
-			} 
+				Correction_ (Text_);
 			else if (CheckRX_.indexIn (Text_) != -1)
-			{
 				Text_.replace (CheckRX_, FixPattern_);
-			}
 			return Text_;
 		}
 	};
-
-	
-
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
@@ -203,7 +195,7 @@ namespace Juick
 	}
 
 	void Plugin::hookMessageWillCreated( LeechCraft::IHookProxy_ptr proxy, 
-			QObject *chatTab, QObject *entry, int type, QString variant, QString text )
+			QObject *chatTab, QObject *entry, int, QString, QString text)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
 
@@ -261,7 +253,7 @@ namespace Juick
 							Qt::CaseInsensitive))
 			};
 			
-			for (int i = 0; i < sizeof (typos) / sizeof (Typo); i++)
+			for (int i = 0; i < static_cast<int> (sizeof (typos) / sizeof (Typo)); ++i)
 			{
 				Typo typo = typos [i];
 
@@ -272,7 +264,7 @@ namespace Juick
 					QWidget* parent = qobject_cast<QWidget*> (chatTab);
 					QString correction = typo.Correction ();
 					bool askForCorrection = settings.value ("AskForCorrection", true).toBool ();
-					
+
 					if (!parent)
 					{
 						qWarning () << Q_FUNC_INFO
@@ -289,18 +281,15 @@ namespace Juick
 								.arg (text),
 							QMessageBox::NoButton,
 							parent);					
-					QPushButton *yes = msgbox.addButton (QMessageBox::Yes);
+					msgbox.addButton (QMessageBox::Yes);
 					QPushButton *always = msgbox.addButton (tr ("Always"), QMessageBox::YesRole);
-					QPushButton *no = msgbox.addButton (QMessageBox::No);
-									
-															
+					msgbox.addButton (QMessageBox::No);
+
 					if (!askForCorrection || msgbox.exec () != QMessageBox::No)
 					{
 						proxy->SetValue ("text", correction);
 						if (msgbox.clickedButton () == always)
-						{
 							settings.setValue ("AskForCorrection", false);
-						}
 					}					
 					break;
 				}
