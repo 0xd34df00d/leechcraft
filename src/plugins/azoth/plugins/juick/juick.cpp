@@ -72,11 +72,12 @@ namespace Juick
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		UserRX_ = QRegExp ("(@[\\w\\-\\.@\\|]*)\\b", Qt::CaseInsensitive);
+		UserRX_ = QRegExp ("(@[\\w\\-\\.@\\|]*)\\b([:\\s,.?!])", Qt::CaseInsensitive);
 		PostRX_ = QRegExp ("<br />#(\\d+)\\s", Qt::CaseInsensitive);
 		IdRX_ = QRegExp ("#(\\d+)(\\s|$|<br />)", Qt::CaseInsensitive);
 		ReplyRX_ = QRegExp ("#(\\d+/\\d+)\\s?", Qt::CaseInsensitive);
 		UnsubRX_ = QRegExp ("#(\\d+)/(\\d+)\\s(<a href)", Qt::CaseInsensitive);
+		AvatarRX_ = QRegExp ("@([\\w\\-\\.@\\|]*):", Qt::CaseInsensitive);
 	}
 
 	void Plugin::SecondInit ()
@@ -135,6 +136,12 @@ namespace Juick
 
 	QString Plugin::FormatBody (QString body)
 	{
+		body.replace (AvatarRX_, 
+				"<img style='float:left;margin-right:4px' "
+				"width='32px' "
+				"height='32px' "
+				"src='http://api.juick.com/avatar?uname=\\1&size=32'>@\\1:");
+		body.replace (UserRX_,  "<a href=\"azoth://msgeditreplace/\\1+\">\\1</a>\\2");
 		body.replace (PostRX_, 
 				"<br /> <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
@@ -142,7 +149,8 @@ namespace Juick
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
 				"<a href=\"azoth://msgeditreplace/!%20%23\\1\">!</a> "
 				") ");
-		body.replace (UnsubRX_, "#\\1/\\2 <a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> \\3");
+		body.replace (UnsubRX_, 
+				"#\\1/\\2 (<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a>) \\3");
 		body.replace (IdRX_, "<a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a>\\2");
 		body.replace (ReplyRX_, "<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> ");	
 	
@@ -163,8 +171,8 @@ namespace Juick
 			return false;
 		}
 
-		if (msg->GetDirection() != direction ||
-			msg->GetMessageType() != type)
+		if (msg->GetDirection () != direction ||
+			msg->GetMessageType () != type)
 		{
 			return false;
 		}
@@ -190,7 +198,7 @@ namespace Juick
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
 			QObject*, QString body, QObject *msgObj)
 	{
-		if(ShouldHandle(msgObj, IMessage::DIn, IMessage::MTChatMessage))
+		if(ShouldHandle (msgObj, IMessage::DIn, IMessage::MTChatMessage))
 			proxy->SetValue ("body", FormatBody (body));
 	}
 
