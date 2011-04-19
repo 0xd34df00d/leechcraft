@@ -18,6 +18,7 @@
 
 #include "ircserverhandler.h"
 #include <boost/bind.hpp>
+#include <QTextCodec>
 #include <plugininterface/util.h>
 #include <plugininterface/notificationactionhandler.h>
 #include "ircaccount.h"
@@ -25,6 +26,8 @@
 #include "ircparser.h"
 #include "ircserverclentry.h"
 #include "channelhandler.h"
+#include "channelclentry.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -40,10 +43,11 @@ namespace Acetamide
 	, ServerID_ (server.ServerName_ + ":" +
 			QString::number (server.ServerPort_))
 	, ServerConnectionState_ (NotConnected)
-	, NickName_ (account->GetOurNick ())
+	, NickName_ (server.ServerNickName_)
 	{
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
+		InitCommandResponses ();
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -79,6 +83,12 @@ namespace Acetamide
 	bool IrcServerHandler::IsChannelExists (const QString& channelID)
 	{
 		return ChannelHandlers_.contains (channelID);
+	}
+
+	void IrcServerHandler::Add2ChannelsQueue (const ChannelOptions& ch)
+	{
+		if (!ChannelsQueue_.contains (ch))
+			ChannelsQueue_ << ch;
 	}
 
 	ChannelHandler*
@@ -124,7 +134,8 @@ namespace Acetamide
 
 	bool IrcServerHandler::JoinChannel (const ChannelOptions& channel)
 	{
-		QString id = channel.ChannelName_ + "@" + channel.ServerName_;
+		QString id = QString (channel.ChannelName_ + "@" +
+				channel.ServerName_).toLower ();
 		if (!ChannelHandlers_.contains (id))
 		{
 			ChannelHandler *ch = new ChannelHandler (this, channel);
@@ -167,6 +178,15 @@ namespace Acetamide
 		msg->SetDateTime (QDateTime::currentDateTime ());
 
 		ServerCLEntry_->HandleMessage (msg);
+	}
+
+	void IrcServerHandler::InboxMessage2Channel ()
+	{
+		IrcMessageOptions imo = IrcParser_->GetIrcMessageOptions ();
+		QString cmd = imo.Command_;
+		if (Command2Action_.contains (cmd))
+			Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
+					imo.Message_);
 	}
 
 	void IrcServerHandler::InitErrorsReplys ()
@@ -277,9 +297,21 @@ namespace Acetamide
 				boost::bind (&IrcServerHandler::NoSuchNickError, this);
 	}
 
+	void IrcServerHandler::InitCommandResponses ()
+	{
+		Command2Action_ ["376"] =
+				boost::bind (&IrcServerHandler::JoinFromQueue,
+					this, _1, _2, _3);
+		Command2Action_ ["332"] =
+				boost::bind (&IrcServerHandler::SetTopic,
+					this, _1, _2, _3);
+		Command2Action_ ["topic"] =
+				boost::bind (&IrcServerHandler::SetTopic,
+					this, _1, _2, _3);
+	}
+
 	void IrcServerHandler::NoSuchNickError ()
 	{
-
 	}
 
 	void IrcServerHandler::NickCmdError ()
@@ -289,6 +321,39 @@ namespace Acetamide
 		{
 			NickName_ = Account_->GetNickNames ().at (++index);
 			IrcParser_->NickCommand ();
+		}
+	}
+
+	QString IrcServerHandler::EncodedMessage (const QString& msg)
+	{
+		QTextCodec *codec = QTextCodec::codecForName(ServerOptions_
+				.ServerEncoding_.toUtf8 ());
+		return codec->toUnicode (msg.toAscii ());
+	}
+
+	void IrcServerHandler::JoinFromQueue (const QString&,
+			QList<std::string>, const QString&)
+	{
+		Q_FOREACH (const ChannelOptions& co, ChannelsQueue_)
+		{
+			Account_->GetClientConnection ()->
+					JoinChannel (ServerOptions_, co);
+			ChannelsQueue_.removeAll (co);
+		}
+	}
+
+	void IrcServerHandler::SetTopic (const QString&,
+			QList<std::string> params, const QString& message)
+	{
+		QString channelId =
+				QString::fromUtf8 (params.last ().c_str ()).toLower () +
+				"@" + ServerOptions_.ServerName_;
+
+		if (ChannelHandlers_.contains (channelId))
+		{
+			ChannelHandlers_ [channelId]->GetCLEntry ()->
+					SetMUCSubject (EncodedMessage (message));
+			//TODO message with topic to chat
 		}
 	}
 
@@ -310,7 +375,7 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-
+			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
@@ -327,11 +392,12 @@ namespace Acetamide
 				Core::Instance ().SendEntity (e);
 				Error2Action_ [cmd] ();
 			}
-			if (!ActiveChannels_.count ())
+			else if (!ChannelHandlers_.values ().count ())
 				InboxMessage2Server ();
+
+			InboxMessage2Channel ();
 		}
 	}
-
 
 };
 };

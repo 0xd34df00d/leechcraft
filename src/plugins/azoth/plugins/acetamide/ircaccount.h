@@ -53,7 +53,6 @@ namespace Acetamide
 		QString RealName_;
 		QString UserName_;
 		QStringList NickNames_;
-
 		State IrcAccountState_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;

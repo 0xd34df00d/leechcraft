@@ -36,7 +36,7 @@ namespace Acetamide
 
 		Ui_.Channel_->setMaxLength (50);
 
-		Q_FOREACH (const QByteArray& codec, 
+		Q_FOREACH (const QByteArray& codec,
 				QTextCodec::availableCodecs ())
 			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.Encoding_->model ()->sort (0);
@@ -88,7 +88,7 @@ namespace Acetamide
 	{
 		return QVariantList ();
 	}
-	
+
 	void IrcJoinGroupChat::SetBookmarkedMUCs (QObject*,
 			const QVariantList&)
 	{
@@ -174,6 +174,7 @@ namespace Acetamide
 		so.ServerEncoding_ = GetEncoding ();
 		so.ServerPassword_ = QString ();
 		so.SSL_ = GetSSL ();
+		so.ServerNickName_ = GetNickname ();
 
 		return so;
 	}
@@ -185,7 +186,7 @@ namespace Acetamide
 		cho.ServerName_ = GetServer ();
 		cho.ChannelPassword_ = QString ();
 
-		return cho; 
+		return cho;
 	}
 
 };

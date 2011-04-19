@@ -30,6 +30,7 @@
 #include "ircprotocol.h"
 #include "ircserverclentry.h"
 #include "xmlsettingsmanager.h"
+#include "ircserverhandler.h"
 
 namespace LeechCraft
 {
@@ -206,17 +207,18 @@ namespace Acetamide
 				return;
 
 			emit gotCLItems (QList<QObject*> () << isEntry);
+
+			ClientConnection_->GetIrcServerHandler (serverId)->
+					Add2ChannelsQueue (channel);
 		}
-
-		if (!channel.ChannelName_.isEmpty ())
+		else if (!channel.ChannelName_.isEmpty ())
 		{
-			ChannelCLEntry *ichEntry = ClientConnection_->
-					JoinChannel (server, channel);
-
+			ClientConnection_->JoinChannel (server, channel);
+/*
 			if (!ichEntry)
 				return;
 
-			emit gotCLItems (QList<QObject*> () << ichEntry);
+			emit gotCLItems (QList<QObject*> () << ichEntry);*/
 		}
 	}
 

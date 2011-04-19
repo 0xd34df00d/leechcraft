@@ -40,6 +40,7 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry);
 
 		ChannelHandler *ICH_;
+		QString Subject_;
 	public:
 		ChannelCLEntry (ChannelHandler*);
 		QObject* GetParentAccount () const;

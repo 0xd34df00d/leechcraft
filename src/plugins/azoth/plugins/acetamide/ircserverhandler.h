@@ -32,6 +32,7 @@ namespace Azoth
 namespace Acetamide
 {
 
+	class ChannelCLEntry;
 	class ChannelHandler;
 	class IrcAccount;
 	class IrcParser;
@@ -48,11 +49,15 @@ namespace Acetamide
 		QString ServerID_;
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		ConnectionState ServerConnectionState_;
-		QList<ChannelOptions> ActiveChannels_;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
 		QHash<QString,
 				boost::function<void (void)> > Error2Action_;
+		QHash<QString,
+				boost::function<void (const QString&,
+					QList<std::string>,
+					const QString&)> > Command2Action_;
 		QString NickName_;
+		QList<ChannelOptions> ChannelsQueue_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;
@@ -64,6 +69,8 @@ namespace Acetamide
 		ConnectionState GetConnectionState () const;
 		bool IsChannelExists (const QString&);
 
+		void Add2ChannelsQueue (const ChannelOptions&);
+
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;
 
@@ -71,13 +78,22 @@ namespace Acetamide
 		bool JoinChannel (const ChannelOptions&);
 		void SendCommand (const QString&);
 		void InboxMessage2Server ();
+		void InboxMessage2Channel ();
 	private:
 		void InitErrorsReplys ();
+		void InitCommandResponses ();
 		void InitSocket ();
 		bool IsErrorReply (const QString&);
 
 		void NoSuchNickError ();
 		void NickCmdError ();
+
+		QString EncodedMessage (const QString&);
+
+		void JoinFromQueue (const QString&,
+				QList<std::string>, const QString&);
+		void SetTopic (const QString&,
+				QList<std::string>, const QString&);
 	private slots:
 		void readReply ();
 	};

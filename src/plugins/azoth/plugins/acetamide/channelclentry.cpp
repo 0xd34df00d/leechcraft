@@ -135,11 +135,12 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetMUCSubject () const
 	{
-		return QString ();
+		return Subject_;
 	}
 
-	void ChannelCLEntry::SetMUCSubject (const QString& )
+	void ChannelCLEntry::SetMUCSubject (const QString& subject)
 	{
+		Subject_ = subject;
 	}
 
 	QList<QObject*> ChannelCLEntry::GetParticipants ()

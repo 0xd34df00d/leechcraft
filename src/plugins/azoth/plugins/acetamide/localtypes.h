@@ -32,6 +32,7 @@ namespace Acetamide
 		QString ServerName_;
 		QString ServerEncoding_;
 		QString ServerPassword_;
+		QString ServerNickName_;
 		int ServerPort_;
 		bool SSL_;
 	};
@@ -57,6 +58,8 @@ namespace Acetamide
 		QString Message_;
 		QList<std::string> Parameters_;
 	};
+
+	bool operator== (const ChannelOptions&, const ChannelOptions&);
 };
 };
 };

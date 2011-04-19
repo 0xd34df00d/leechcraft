@@ -21,6 +21,7 @@
 #include <plugininterface/util.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
+#include "channelclentry.h"
 #include "channelhandler.h"
 #include "core.h"
 #include "ircprotocol.h"
@@ -125,10 +126,23 @@ namespace Acetamide
 			Core::Instance ().SendEntity (e);
 			return 0;
 		}
-
-		return ServerHandlers_ [serverId]->
+		ChannelCLEntry *cle = ServerHandlers_ [serverId]->
 				GetChannelHandler (channelId)->GetCLEntry ();
+
+		if (!cle)
+			return 0;
+
+		emit gotCLItems (QList<QObject*> () << cle);
+
 	}
+
+	IrcServerHandler*
+			ClientConnection::GetIrcServerHandler (const QString& id)
+	{
+		return ServerHandlers_ [id];
+	}
+
+
 };
 };
 };
