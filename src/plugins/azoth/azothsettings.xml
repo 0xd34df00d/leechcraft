@@ -46,6 +46,9 @@
 			<item type="checkbox" property="ShowClientIcons" default="true">
 				<label value="Show client icons" />
 			</item>
+			<item type="checkbox" property="GroupContacts" default="true">
+				<label value="Group contacts" />
+			</item>
 		</groupbox>
 	</page>
 	<page>

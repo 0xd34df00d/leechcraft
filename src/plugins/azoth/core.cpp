@@ -133,6 +133,8 @@ namespace Azoth
 
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
 				this, "updateStatusIconset");
+		XmlSettingsManager::Instance ().RegisterObject ("GroupContacts",
+				this, "handleGroupContactsChanged");
 	}
 
 	Core& Core::Instance ()
@@ -752,6 +754,23 @@ namespace Azoth
 		
 		return body;
 	}
+	
+	namespace
+	{
+		QStringList GetDisplayGroups (const ICLEntry *clEntry)
+		{
+			QStringList groups;
+			if (clEntry->GetEntryType () == ICLEntry::ETUnauthEntry)
+				groups << Core::tr ("Unauthorized users");
+			else if (clEntry->GetEntryType () != ICLEntry::ETChat ||
+					XmlSettingsManager::Instance ()
+						.property ("GroupContacts").toBool ())
+				groups = clEntry->Groups ();
+			else
+				groups << Core::tr ("Contacts");
+			return groups;
+		}
+	};
 
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
@@ -792,10 +811,7 @@ namespace Azoth
 		const QString& id = clEntry->GetEntryID ();
 		ID2Entry_ [id] = clEntry->GetObject ();
 
-		const QStringList& groups =
-			clEntry->GetEntryType () == ICLEntry::ETUnauthEntry ?
-					QStringList (tr ("Unauthorized users")) :
-					clEntry->Groups ();
+		const QStringList& groups = GetDisplayGroups (clEntry);
 		QList<QStandardItem*> catItems =
 				GetCategoriesItems (groups, accItem);
 		Q_FOREACH (QStandardItem *catItem, catItems)
@@ -1923,9 +1939,9 @@ namespace Azoth
 			HandleStatusChanged (entry->GetStatus (), entry, entry->Variants ().first ());
 	}
 
-	void Core::handleEntryGroupsChanged (QStringList newGroups)
+	void Core::handleEntryGroupsChanged (QStringList newGroups, QObject *perform)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		ICLEntry *entry = qobject_cast<ICLEntry*> (perform ? perform : sender ());
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1933,6 +1949,9 @@ namespace Azoth
 					<< "could not be casted to ICLEntry";
 			return;
 		}
+		
+		if (entry->GetEntryType () == ICLEntry::ETChat)
+			newGroups = GetDisplayGroups (entry);
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
@@ -2279,6 +2298,13 @@ namespace Azoth
 			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 				item->setIcon (State2IconCache_ [state]);
 		}
+	}
+	
+	void Core::handleGroupContactsChanged ()
+	{
+		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+			if (entry->GetEntryType () == ICLEntry::ETChat)
+				handleEntryGroupsChanged (GetDisplayGroups (entry), entry->GetObject ());
 	}
 
 	void Core::showVCard ()
