@@ -129,9 +129,30 @@ namespace ChatHistory
 					SLOT (handleEntryHistoryRequested ()));
 			Entry2ActionHistory_ [entry] = action;
 		}
+		if (!Entry2ActionEnableHistory_.contains (entry))
+		{
+			connect (entry,
+					SIGNAL (destroyed ()),
+					this,
+					SLOT (handleEntryDestroyed ()),
+					Qt::UniqueConnection);
+
+			QAction *action = new QAction (tr ("Logging enabled"), entry);
+			action->setCheckable (true);
+			action->setChecked (Core::Instance ()->IsLoggingEnabled (entry));
+			action->setProperty ("Azoth/ChatHistory/IsGood", true);
+			action->setProperty ("Azoth/ChatHistory/Entry",
+					QVariant::fromValue<QObject*> (entry));
+			connect (action,
+					SIGNAL (toggled (bool)),
+					this,
+					SLOT (handleEntryEnableHistoryRequested (bool)));
+			Entry2ActionEnableHistory_ [entry] = action;
+		}
 
 		QList<QVariant> list = proxy->GetReturnValue ().toList ();
 		list << QVariant::fromValue<QObject*> (Entry2ActionHistory_ [entry]);
+		list << QVariant::fromValue<QObject*> (Entry2ActionEnableHistory_ [entry]);
 		proxy->SetReturnValue (list);
 	}
 
@@ -213,6 +234,28 @@ namespace ChatHistory
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tr ("Chat history"), wh);
 		emit raiseTab (wh);
+	}
+	
+	void Plugin::handleEntryEnableHistoryRequested (bool enable)
+	{
+		if (!sender ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null sender()";
+			return;
+		}
+
+		QObject *obj = sender ()->property ("Azoth/ChatHistory/Entry")
+				.value<QObject*> ();
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null object for sender"
+					<< sender ();
+			return;
+		}
+		
+		Core::Instance ()->SetLoggingEnabled (obj, enable);
 	}
 	
 	void Plugin::handleEntryDestroyed ()
