@@ -263,6 +263,11 @@ namespace Azoth
 		ReformatTitle ();
 		Ui_.MsgEdit_->setFocus ();
 	}
+	
+	QObject* ChatTab::GetCLEntry () const
+	{
+		return GetEntry<QObject> ();
+	}
 
 	void ChatTab::messageSend ()
 	{

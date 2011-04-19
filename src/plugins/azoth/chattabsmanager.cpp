@@ -68,6 +68,7 @@ namespace Azoth
 		}
 
 		QPointer<ChatTab> tab (new ChatTab (id));
+		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 
 		connect (tab,
@@ -110,7 +111,8 @@ namespace Azoth
 		if (!Entry2Tab_.contains (entry->GetEntryID ()))
 			return false;
 
-		return Entry2Tab_ [entry->GetEntryID ()]->isVisible ();
+		return Entry2Tab_ [entry->GetEntryID ()]->isVisible () &&
+			Entry2Tab_ [entry->GetEntryID ()]->isActiveWindow ();
 	}
 
 	void ChatTabsManager::UpdateEntryMapping (const QString& id, QObject *obj)
@@ -131,6 +133,21 @@ namespace Azoth
 			return;
 
 		Entry2Tab_ [id]->setEnabled (enabled);
+	}
+	
+	bool ChatTabsManager::eventFilter (QObject* obj, QEvent *event)
+	{
+		if (event->type () != QEvent::FocusIn &&
+				event->type () != QEvent::WindowActivate)
+			return false;
+
+		ChatTab *tab = qobject_cast<ChatTab*> (obj);
+		if (!tab)
+			return false;
+
+		tab->TabMadeCurrent ();
+			
+		return false;
 	}
 
 	void ChatTabsManager::handleNeedToClose (ChatTab *tab)

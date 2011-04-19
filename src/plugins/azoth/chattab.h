@@ -88,6 +88,8 @@ namespace Azoth
 		QToolBar* GetToolBar () const;
 		void Remove ();
 		void TabMadeCurrent ();
+		
+		QObject* GetCLEntry () const;
 	private slots:
 		void clearAvailableNick ();
 		void messageSend ();
