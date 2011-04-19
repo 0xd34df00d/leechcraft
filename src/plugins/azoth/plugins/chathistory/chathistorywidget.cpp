@@ -99,6 +99,7 @@ namespace ChatHistory
 	void ChatHistoryWidget::Remove ()
 	{
 		emit removeSelf (this);
+		deleteLater ();
 	}
 	
 	QToolBar* ChatHistoryWidget::GetToolBar () const
