@@ -819,7 +819,8 @@ namespace Azoth
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
 		
-		handleEntryPermsChanged (clEntry);
+		if (clEntry->GetEntryType () == ICLEntry::ETPrivateChat)
+			handleEntryPermsChanged (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
