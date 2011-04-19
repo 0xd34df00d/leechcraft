@@ -163,6 +163,10 @@ namespace Azoth
 				this,
 				GetEntry<QObject> (),
 				Ui_.View_);
+		
+		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
+				this, "handleFontSizeChanged");
+		handleFontSizeChanged ();
 	}
 	
 	void ChatTab::PrepareTheme ()
@@ -634,6 +638,13 @@ namespace Azoth
 		dia->SuggestSaving (GetEntry<QObject> ());
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->show ();
+	}
+	
+	void ChatTab::handleFontSizeChanged ()
+	{
+		const int size = XmlSettingsManager::Instance ()
+				.property ("FontSize").toInt ();
+		Ui_.View_->settings ()->setFontSize (QWebSettings::DefaultFontSize, size);
 	}
 
 	template<typename T>

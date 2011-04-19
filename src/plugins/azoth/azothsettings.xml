@@ -2,8 +2,8 @@
 <settings>
 	<page>
 		<label value="Appearance" />
-		<groupbox>
-			<label value="Iconsets" />
+		<tab>
+			<label value="Themes" />
 			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
 				<label value="Status icons:" />
 				<option name="oxygen" default="true">
@@ -34,8 +34,11 @@
 					<label value="Basic" />
 				</option>
 			</item>
-		</groupbox>
-		<groupbox>
+			<item type="spinbox" property="FontSize" default="12">
+				<label value="Font size" />
+			</item>
+		</tab>
+		<tab>
 			<label value="Contact list" />
 			<item type="checkbox" property="ShowMenuBar" default="true">
 				<label value="Show Azoth menu under the contact list" />
@@ -49,7 +52,7 @@
 			<item type="checkbox" property="GroupContacts" default="true">
 				<label value="Group contacts" />
 			</item>
-		</groupbox>
+		</tab>
 	</page>
 	<page>
 		<label value="Behavior" />

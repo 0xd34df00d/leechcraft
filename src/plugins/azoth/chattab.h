@@ -110,6 +110,8 @@ namespace Azoth
 		void handleHistoryUp ();
 		void handleHistoryDown ();
 		void handleAddToBookmarks ();
+		
+		void handleFontSizeChanged ();
 	private:
 		template<typename T>
 		T* GetEntry () const;
