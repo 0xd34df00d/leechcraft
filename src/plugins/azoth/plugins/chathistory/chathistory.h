@@ -44,6 +44,7 @@ namespace ChatHistory
 
 		boost::shared_ptr<STGuard<Core> > Guard_;
 		QAction *ActionHistory_;
+		QHash<QObject*, QAction*> Entry2ActionHistory_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -74,6 +75,7 @@ namespace ChatHistory
 	private slots:
 		void handleHistoryRequested ();
 		void handleEntryHistoryRequested ();
+		void handleEntryDestroyed ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

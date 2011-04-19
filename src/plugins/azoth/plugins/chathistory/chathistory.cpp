@@ -111,16 +111,27 @@ namespace ChatHistory
 	
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
 	{
-		QAction *action = new QAction (tr ("History..."), entry);
-		action->setProperty ("Azoth/ChatHistory/IsGood", true);
-		action->setProperty ("Azoth/ChatHistory/Entry",
-				QVariant::fromValue<QObject*> (entry));
-		connect (action,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleEntryHistoryRequested ()));
+		if (!Entry2ActionHistory_.contains (entry))
+		{
+			connect (entry,
+					SIGNAL (destroyed ()),
+					this,
+					SLOT (handleEntryDestroyed ()),
+					Qt::UniqueConnection);
+
+			QAction *action = new QAction (tr ("History..."), entry);
+			action->setProperty ("Azoth/ChatHistory/IsGood", true);
+			action->setProperty ("Azoth/ChatHistory/Entry",
+					QVariant::fromValue<QObject*> (entry));
+			connect (action,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleEntryHistoryRequested ()));
+			Entry2ActionHistory_ [entry] = action;
+		}
+
 		QList<QVariant> list = proxy->GetReturnValue ().toList ();
-		list << QVariant::fromValue<QObject*> (action);
+		list << QVariant::fromValue<QObject*> (Entry2ActionHistory_ [entry]);
 		proxy->SetReturnValue (list);
 	}
 
@@ -202,6 +213,11 @@ namespace ChatHistory
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tr ("Chat history"), wh);
 		emit raiseTab (wh);
+	}
+	
+	void Plugin::handleEntryDestroyed ()
+	{
+		Entry2ActionHistory_.remove (sender ());
 	}
 	
 	void Plugin::newTabRequested ()
