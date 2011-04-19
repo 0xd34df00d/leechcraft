@@ -42,6 +42,7 @@ namespace Juick
 		QRegExp IdRX_;
 		QRegExp UnsubRX_;
 		QRegExp ReplyRX_;
+		QRegExp AvatarRX_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
