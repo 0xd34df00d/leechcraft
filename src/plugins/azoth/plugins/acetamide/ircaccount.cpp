@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
+#include "channelclentry.h"
 #include "clientconnection.h"
 #include "core.h"
 #include "ircaccountconfigurationdialog.h"
@@ -193,14 +194,13 @@ namespace Acetamide
 			return;
 		}
 
-		QString serverId;
-		serverId = server.ServerName_ + ":" +
+		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
-		IrcServerCLEntry *isEntry;
 		if (!ClientConnection_->IsServerExists (serverId))
 		{
-			isEntry = ClientConnection_->JoinServer (server);
+			IrcServerCLEntry *isEntry = ClientConnection_->
+					JoinServer (server);
 
 			if (!isEntry)
 				return;
@@ -208,11 +208,10 @@ namespace Acetamide
 			emit gotCLItems (QList<QObject*> () << isEntry);
 		}
 
-		ChannelCLEntry ichEntry;
 		if (!channel.ChannelName_.isEmpty ())
 		{
-			ichEntry = ClientConnection_->JoinChannel (serverId,
-					channel);
+			ChannelCLEntry *ichEntry = ClientConnection_->
+					JoinChannel (server, channel);
 
 			if (!ichEntry)
 				return;

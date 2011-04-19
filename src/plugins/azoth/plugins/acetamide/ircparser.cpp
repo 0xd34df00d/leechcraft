@@ -63,8 +63,14 @@ namespace Acetamide
 	void IrcParser::NickCommand ()
 	{
 		QString nickCmd = QString ("NICK " +
-				ISH_->GetAccount ()->GetOurNick () + "\r\n");
+				ISH_->GetNickName () + "\r\n");
 		ISH_->SendCommand (nickCmd);
+	}
+
+	void IrcParser::JoinCommand (const QString& channel)
+	{
+		QString joinCmd = QString ("JOIN " + channel + "\r\n");
+		ISH_->SendCommand (joinCmd);
 	}
 
 	bool IrcParser::ParseMessage (const QString& message)

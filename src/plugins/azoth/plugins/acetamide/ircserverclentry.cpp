@@ -44,11 +44,6 @@ namespace Acetamide
 		return Account_;
 	}
 
-	QObject* IrcServerCLEntry::GetParentCLEntry () const
-	{
-		return NULL;
-	}
-
 	QObject* IrcServerCLEntry::GetParentAccount () const
 	{
 		return Account_;

@@ -37,6 +37,7 @@ class IProxyObject;
 namespace Acetamide
 {
 
+	class ChannelCLEntry;
 	class IrcServerHandler;
 	class IrcServerCLEntry;
 
@@ -58,6 +59,8 @@ namespace Acetamide
 
 		bool IsServerExists (const QString&);
 		IrcServerCLEntry* JoinServer (const ServerOptions&);
+		ChannelCLEntry* JoinChannel (const ServerOptions&,
+				const ChannelOptions&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

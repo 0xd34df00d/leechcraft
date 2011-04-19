@@ -21,6 +21,7 @@
 #include <plugininterface/util.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
+#include "channelhandler.h"
 #include "core.h"
 #include "ircprotocol.h"
 #include "ircserverclentry.h"
@@ -59,8 +60,13 @@ namespace Acetamide
 	{
 		QList<QObject*> result;
 		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_)
+		{
 			result << ish->GetCLEntry ();
+			Q_FOREACH (ChannelHandler *ch, ish->GetChannelHandlers ())
+			{
 
+			}
+		}
 		return result;
 	}
 
@@ -84,15 +90,6 @@ namespace Acetamide
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
-		if (ServerHandlers_.contains (serverId))
-		{
-			Entity e = Util::MakeNotification ("Azoth",
-					tr ("This server is already joined."),
-					PCritical_);
-			Core::Instance ().SendEntity (e);
-			return 0;
-		}
-
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
 		ServerHandlers_ [serverId] = ish;
 		if (ish->ConnectToServer ())
@@ -102,6 +99,36 @@ namespace Acetamide
 		return ish->GetCLEntry ();
 	}
 
+	ChannelCLEntry*
+			ClientConnection::JoinChannel (const ServerOptions& server,
+					const ChannelOptions& channel)
+	{
+		QString serverId = server.ServerName_ + ":" +
+				QString::number (server.ServerPort_);
+		QString channelId = channel.ChannelName_ + "@" +
+				channel.ServerName_;
+
+		if (ServerHandlers_ [serverId]->IsChannelExists (channelId))
+		{
+			Entity e = Util::MakeNotification ("Azoth",
+				tr ("This server is already joined."),
+				PCritical_);
+			Core::Instance ().SendEntity (e);
+			return 0;
+		}
+
+		if (!ServerHandlers_ [serverId]->JoinChannel (channel))
+		{
+			Entity e = Util::MakeNotification ("Azoth",
+					tr ("Unable to join the channel."),
+					PCritical_);
+			Core::Instance ().SendEntity (e);
+			return 0;
+		}
+
+		return ServerHandlers_ [serverId]->
+				GetChannelHandler (channelId)->GetCLEntry ();
+	}
 };
 };
 };

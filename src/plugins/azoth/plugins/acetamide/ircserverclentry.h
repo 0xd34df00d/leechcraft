@@ -45,7 +45,6 @@ namespace Acetamide
 
 		IrcServerHandler* GetIrcServerHandler () const;
 		IrcAccount* GetIrcAccount () const;
-		QObject* GetParentCLEntry () const;
 
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
@@ -56,7 +55,7 @@ namespace Acetamide
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants() const;
-		QObject* CreateMessage(IMessage::MessageType type, 
+		QObject* CreateMessage(IMessage::MessageType type,
 				const QString& variant, const QString& body);
 	};
 };

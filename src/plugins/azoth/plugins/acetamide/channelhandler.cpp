@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
-
-#include <boost/shared_ptr.hpp>
-#include <QObject>
-#include "core.h"
-#include "localtypes.h"
+#include "channelhandler.h"
+#include "channelclentry.h"
+#include "ircserverhandler.h"
 
 namespace LeechCraft
 {
@@ -30,26 +26,30 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
-	class IrcServerHandler;
-
-	class IrcParser : public QObject
+	ChannelHandler::ChannelHandler (IrcServerHandler *ish, const
+			ChannelOptions& channel)
+	: ISH_ (ish)
+	, ChannelOptions_ (channel)
+	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
 	{
-		Q_OBJECT
+		ChannelCLEntry_ = new ChannelCLEntry (this);
+	}
 
-		IrcServerHandler *ISH_;
-		ServerOptions ServerOptions_;
-		IrcMessageOptions IrcMessageOptions_;
-	public:
-		IrcParser (IrcServerHandler*);
-		void AuthCommand ();
-		void UserCommand ();
-		void NickCommand ();
-		void JoinCommand (const QString&);
-		bool ParseMessage (const QString&);
-		IrcMessageOptions GetIrcMessageOptions () const;
-	};
+	QString ChannelHandler::GetChannelID () const
+	{
+		return ChannelID_;
+	}
+
+	ChannelCLEntry* ChannelHandler::GetCLEntry () const
+	{
+		return ChannelCLEntry_;
+	}
+
+	IrcServerHandler* ChannelHandler::GetIrcServerHandler () const
+	{
+		return ISH_;
+	}
+
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H

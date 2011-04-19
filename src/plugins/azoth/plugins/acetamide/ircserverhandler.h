@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
 
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 #include <QObject>
 #include <QTcpSocket>
 #include "localtypes.h"
@@ -31,6 +32,7 @@ namespace Azoth
 namespace Acetamide
 {
 
+	class ChannelHandler;
 	class IrcAccount;
 	class IrcParser;
 	class IrcServerCLEntry;
@@ -47,19 +49,35 @@ namespace Acetamide
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		ConnectionState ServerConnectionState_;
 		QList<ChannelOptions> ActiveChannels_;
+		QHash<QString, ChannelHandler*> ChannelHandlers_;
+		QHash<QString,
+				boost::function<void (void)> > Error2Action_;
+		QString NickName_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
+		QString GetNickName () const;
 
 		QString GetServerID_ () const;
 		ServerOptions GetServerOptions () const;
 		ConnectionState GetConnectionState () const;
+		bool IsChannelExists (const QString&);
+
+		ChannelHandler* GetChannelHandler (const QString&);
+		QList<ChannelHandler*> GetChannelHandlers () const;
 
 		bool ConnectToServer ();
+		bool JoinChannel (const ChannelOptions&);
 		void SendCommand (const QString&);
+		void InboxMessage2Server ();
 	private:
+		void InitErrorsReplys ();
 		void InitSocket ();
+		bool IsErrorReply (const QString&);
+
+		void NoSuchNickError ();
+		void NickCmdError ();
 	private slots:
 		void readReply ();
 	};

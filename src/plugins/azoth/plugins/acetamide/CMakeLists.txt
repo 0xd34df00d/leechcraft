@@ -7,6 +7,8 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 
 SET (ACETAMIDE_SRCS
 	acetamide.cpp
+	channelclentry.cpp
+	channelhandler.cpp
 	clientconnection.cpp
 	core.cpp
 	entrybase.cpp
@@ -25,6 +27,8 @@ SET (ACETAMIDE_SRCS
 
 SET (ACETAMIDE_HEADERS
 	acetamide.h
+	channelclentry.h
+	channelhandler.h
 	clientconnection.h
 	core.h
 	entrybase.h
