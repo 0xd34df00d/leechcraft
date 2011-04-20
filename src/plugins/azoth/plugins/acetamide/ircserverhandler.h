@@ -88,6 +88,7 @@ class IrcMessage;
 		void InboxMessage2Server ();
 		void InboxMessage2Channel ();
 		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
+		void RemoveParticipantEntry (const QString&);
 	private:
 		void InitErrorsReplys ();
 		void InitCommandResponses ();
@@ -108,7 +109,9 @@ class IrcMessage;
 				QList<std::string>, const QString&);
 		void AddParticipants (const QString&,
 				QList<std::string>, const QString&);
-		void AddParticipant (const QString&,
+		void JoinParticipant (const QString&,
+				QList<std::string>, const QString&);
+		void LeaveParticipant (const QString&,
 				QList<std::string>, const QString&);
 	private slots:
 		void readReply ();

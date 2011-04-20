@@ -54,8 +54,10 @@ namespace Acetamide
 				const QString&, const QString&);
 
 		void SetChannelUser (const QString&);
+		void RemoveChannelUser (const QString&, const QString&);
 
 		void MakeJoinMessage (const QString&);
+		void MakeLeaveMessage (const QString&, const QString&);
 	};
 };
 };

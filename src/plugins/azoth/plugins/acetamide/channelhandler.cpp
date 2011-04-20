@@ -84,12 +84,49 @@ namespace Acetamide
 		}
 	}
 
+	void ChannelHandler::RemoveChannelUser (const QString& nick,
+			const QString& msg)
+	{
+		ServerParticipantEntry_ptr entry = Nick2Entry_ [nick];
+		QStringList groups = entry->GetChannels ();
+		if (groups.contains (ChannelOptions_.ChannelName_))
+		{
+			if (groups.removeOne (ChannelOptions_.ChannelName_));
+			{
+				ISH_->GetAccount ()->handleEntryRemoved (entry.get ());
+				MakeLeaveMessage (nick, msg);
+				Nick2Entry_.remove (nick);
+				if (!groups.count () && !entry->IsPrivateChat ())
+					ISH_->RemoveParticipantEntry (nick);
+				else
+					ISH_->GetParticipantEntry (nick)->SetGroups (groups);
+			}
+		}
+	}
+
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
 	{
 		QString msg  = tr ("%1 joined the channel").arg (nick);
 		IrcMessage *message = CreateMessage (IMessage::MTStatusMessage,
 				ChannelID_, msg);
 		message->SetMessageSubType (IMessage::MSTParticipantJoin);
+
+		ChannelCLEntry_->HandleMessage (message);
+	}
+
+	void ChannelHandler::MakeLeaveMessage (const QString& nick,
+			const QString& msg)
+	{
+		QString mess;
+		if (!msg.isEmpty ())
+			mess = tr ("%1 has left the room (%2)").arg (nick, msg);
+		else
+			mess = tr ("%1 has left the room").arg (nick);
+
+		IrcMessage *message = CreateMessage (IMessage::MTStatusMessage,
+				ChannelID_, mess);
+
+		message->SetMessageSubType (IMessage::MSTParticipantLeave);
 
 		ChannelCLEntry_->HandleMessage (message);
 	}

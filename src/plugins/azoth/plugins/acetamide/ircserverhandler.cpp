@@ -326,7 +326,10 @@ namespace Acetamide
 				boost::bind (&IrcServerHandler::AddParticipants,
 					this, _1, _2, _3);
 		Command2Action_ ["join"] =
-				boost::bind (&IrcServerHandler::AddParticipant,
+				boost::bind (&IrcServerHandler::JoinParticipant,
+					this, _1, _2, _3);
+		Command2Action_ ["part"] =
+				boost::bind (&IrcServerHandler::LeaveParticipant,
 					this, _1, _2, _3);
 	}
 
@@ -360,6 +363,11 @@ namespace Acetamide
 		ServerParticipantEntry_ptr entry (CreateParticipantEntry (nick));
 		Nick2Entry_ [nick] = entry;
 		return entry;
+	}
+
+	void IrcServerHandler::RemoveParticipantEntry (const QString& nick)
+	{
+		Nick2Entry_.remove (nick);
 	}
 
 	ServerParticipantEntry_ptr
@@ -417,7 +425,7 @@ namespace Acetamide
 			ChannelHandlers_ [channelID]->SetChannelUser (nick);
 	}
 
-	void IrcServerHandler::AddParticipant (const QString& nick,
+	void IrcServerHandler::JoinParticipant (const QString& nick,
 			QList<std::string>, const QString& msg)
 	{
 		if (nick == NickName_)
@@ -427,6 +435,15 @@ namespace Acetamide
 				.toLower ();
 
 		ChannelHandlers_ [channelID]->SetChannelUser (nick);
+	}
+
+	void IrcServerHandler::LeaveParticipant (const QString& nick,
+			QList<std::string> params, const QString& msg)
+	{
+		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
+				+ "@" + ServerOptions_.ServerName_).toLower ();;
+
+		ChannelHandlers_ [channelID]->RemoveChannelUser (nick, msg);
 	}
 
 	void IrcServerHandler::InitSocket ()
@@ -447,13 +464,13 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-// 			qDebug () << str;
+			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
 			QString cmd = IrcParser_->GetIrcMessageOptions ()
 					.Command_.toLower ();
-			if (IsErrorReply (cmd))
+					if (IsErrorReply (cmd))
 			{
 				QString msg = IrcParser_->GetIrcMessageOptions ()
 						.Message_ + QString::fromUtf8 (IrcParser_->
