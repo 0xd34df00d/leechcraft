@@ -92,16 +92,7 @@ SET (FORMS
 	accounthandlerchooserdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
-SET (TRANSLATIONS
-	leechcraft_azoth_ru_RU.ts
-	leechcraft_azoth_uk_UA.ts
-	leechcraft_azoth_en.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_en.qm
-	)
+CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
