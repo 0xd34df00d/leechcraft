@@ -22,6 +22,7 @@ SET (ACETAMIDE_SRCS
 	ircserverclentry.cpp
 	ircserverhandler.cpp
 	localtypes.cpp
+	serverparticipantentry.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -42,6 +43,7 @@ SET (ACETAMIDE_HEADERS
 	ircserverclentry.h
 	ircserverhandler.h
 	localtypes.h
+	serverparticipantentry.h
 	xmlsettingsmanager.h
 	)
 

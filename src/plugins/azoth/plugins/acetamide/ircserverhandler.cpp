@@ -48,6 +48,11 @@ namespace Acetamide
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
 		InitCommandResponses ();
+
+		connect (this,
+				SIGNAL (gotCLItems (const QList<QObject*>&)),
+				Account_,
+				SIGNAL (gotCLItems (const QList<QObject*>&)));
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -317,6 +322,10 @@ namespace Acetamide
 		Command2Action_ ["376"] =
 				boost::bind (&IrcServerHandler::JoinFromQueue,
 					this, _1, _2, _3);
+		Command2Action_ ["353"] =
+				boost::bind (&IrcServerHandler::AddParticipants,
+					this, _1, _2, _3);
+		
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -340,6 +349,29 @@ namespace Acetamide
 		return codec->toUnicode (msg.toAscii ());
 	}
 
+	ServerParticipantEntry_ptr IrcServerHandler::GetParticipantEntry
+			(const QString& nick)
+	{
+		if (Nick2Entry_.contains (nick))
+			return Nick2Entry_ [nick];
+
+		ServerParticipantEntry_ptr entry (CreateParticipantEntry (nick));
+		Nick2Entry_ [nick] = entry;
+		return entry;
+	}
+
+	ServerParticipantEntry_ptr
+		IrcServerHandler::CreateParticipantEntry (const QString& nick)
+	{
+		ServerParticipantEntry_ptr entry 
+				(new ServerParticipantEntry (nick, ServerID_, Account_));
+		Account_->handleGotRosterItems (QList<QObject*> () 
+				<< entry.get ());
+		emit gotCLItems (QList<QObject*> () << entry.get ());
+		return entry;
+	}
+
+
 	void IrcServerHandler::JoinFromQueue (const QString&,
 			QList<std::string>, const QString&)
 	{
@@ -355,8 +387,8 @@ namespace Acetamide
 			QList<std::string> params, const QString& message)
 	{
 		QString channelId =
-				QString::fromUtf8 (params.last ().c_str ()).toLower () +
-				"@" + ServerOptions_.ServerName_;
+				(QString::fromUtf8 (params.last ().c_str ()) +
+				"@" + ServerOptions_.ServerName_).toLower ();
 
 		if (ChannelHandlers_.contains (channelId))
 		{
@@ -370,6 +402,16 @@ namespace Acetamide
 			ChannelHandlers_ [channelId]->GetCLEntry ()->
 					HandleMessage (msg);
 		}
+	}
+
+	void IrcServerHandler::AddParticipants (const QString&, 
+			QList<std::string> params, const QString& message)
+	{
+		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
+				+ "@" + ServerOptions_.ServerName_).toLower ();
+		QStringList participants = message.split (' ');
+
+		
 	}
 
 	void IrcServerHandler::InitSocket ()

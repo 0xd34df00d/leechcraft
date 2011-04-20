@@ -23,8 +23,9 @@
 #include <boost/function.hpp>
 #include <QObject>
 #include <QTcpSocket>
-#include "localtypes.h"
 #include <interfaces/imessage.h>
+#include "localtypes.h"
+#include "serverparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -59,6 +60,7 @@ class IrcMessage;
 				boost::function<void (const QString&,
 					QList<std::string>,
 					const QString&)> > Command2Action_;
+		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
 		QList<ChannelOptions> ChannelsQueue_;
 	public:
@@ -96,12 +98,20 @@ class IrcMessage;
 
 		QString EncodedMessage (const QString&);
 
+		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
+		ServerParticipantEntry_ptr 
+				CreateParticipantEntry (const QString&);
+
 		void JoinFromQueue (const QString&,
 				QList<std::string>, const QString&);
 		void SetTopic (const QString&,
 				QList<std::string>, const QString&);
+		void AddParticipants (const QString&,
+				QList<std::string>, const QString&);
 	private slots:
 		void readReply ();
+	signals:
+		void gotCLItems (const QList<QObject*>&);
 	};
 };
 };
