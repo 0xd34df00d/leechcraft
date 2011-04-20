@@ -20,6 +20,8 @@
 #include <QDir>
 #include <QIcon>
 #include <QAction>
+#include <QTranslator>
+#include <plugininterface/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/azothcommon.h>
@@ -34,6 +36,8 @@ namespace ChatHistory
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_chathistory"));
+
 		ChatHistoryWidget::SetParentMultiTabs (this);
 
 		Guard_.reset (new STGuard<Core> ());
