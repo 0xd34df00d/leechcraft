@@ -14,6 +14,8 @@
 #include <QSound>
 #include <QFile>
 
+#include <leechcraft/plugininterface/util.h>
+
 #include "WulforUtil.h"
 #include "WulforSettings.h"
 #include "MainWindow.h"
@@ -168,12 +170,10 @@ void Notification::showMessage(int t, const QString &title, const QString &msg){
             if (tray && t == PM && (!MainLayout::getInstance()->isVisible() || WBGET(WB_NOTIFY_CH_ICON_ALWAYS))){
                 tray->setIcon(WICON(WulforUtil::eiMESSAGE_TRAY_ICON));
 
-                if (MainLayout::getInstance()->isVisible())
-                    QApplication::alert(MainLayout::getInstance(), 0);
+                QApplication::alert(MainLayout::getInstance(), 0);
             }
 
-            if (notify)
-                notify->showMessage(title, msg, tray);
+            LeechCraft::Util::MakeNotification(title, msg, LeechCraft::PInfo_);
         } while (0);
     }
 

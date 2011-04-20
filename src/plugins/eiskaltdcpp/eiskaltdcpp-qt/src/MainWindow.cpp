@@ -907,7 +907,7 @@ void MainLayout::initActions(){
         separator6->setObjectName("separator6");
         separator6->setSeparator(true);
 
-        fileMenuActions << fileOpenMagnet
+        /*fileMenuActions << fileOpenMagnet
                 << separator3
                 << fileFileListBrowser
                 << fileFileListBrowserLocal
@@ -956,7 +956,7 @@ void MainLayout::initActions(){
                 << separator4
                 << toolsCopyWindowTitle
                 << separator5
-                << toolsOptions;
+                << toolsOptions;*/
 
         toolBarActions << toolsOptions
                 << separator0
@@ -984,9 +984,9 @@ void MainLayout::initActions(){
                 << toolsADLS
                 << toolsSpy
                 << toolsAntiSpam
-                << toolsIPFilter
-                << separator6
-                << fileQuit;
+                << toolsIPFilter;
+                //<< separator6
+                //<< fileQuit;
     }
     {
         menuWidgets = new QMenu("", this);
