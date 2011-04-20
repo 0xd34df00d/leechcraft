@@ -35,7 +35,7 @@
 				</option>
 			</item>
 			<item type="spinbox" property="FontSize" default="12">
-				<label value="Font size" />
+				<label value="Font size:" />
 			</item>
 		</tab>
 		<tab>
