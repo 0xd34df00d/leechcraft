@@ -14,7 +14,7 @@
 #include <QSound>
 #include <QFile>
 
-#include <leechcraft/plugininterface/util.h>
+#include <plugininterface/util.h>
 
 #include "WulforUtil.h"
 #include "WulforSettings.h"
