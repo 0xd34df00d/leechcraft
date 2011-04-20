@@ -77,7 +77,7 @@ namespace Juick
 		IdRX_ = QRegExp ("#(\\d+)(\\s|$|<br />)", Qt::CaseInsensitive);
 		ReplyRX_ = QRegExp ("#(\\d+/\\d+)\\s?", Qt::CaseInsensitive);
 		UnsubRX_ = QRegExp ("#(\\d+)/(\\d+)\\s(<a href)", Qt::CaseInsensitive);
-		AvatarRX_ = QRegExp ("@([\\w\\-\\.@\\|]*):", Qt::CaseInsensitive);
+		AvatarRX_ = QRegExp ("[^\\s][>]?@([\\w\\-\\.@\\|]*):", Qt::CaseInsensitive);
 	}
 
 	void Plugin::SecondInit ()
@@ -137,7 +137,7 @@ namespace Juick
 	QString Plugin::FormatBody (QString body)
 	{
 		body.replace (AvatarRX_, 
-				"<img style='float:left;margin-right:4px' "
+				"><img style='float:left;margin-right:4px' "
 				"width='32px' "
 				"height='32px' "
 				"src='http://api.juick.com/avatar?uname=\\1&size=32'>@\\1:");
