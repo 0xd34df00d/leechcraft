@@ -108,6 +108,8 @@ class IrcMessage;
 				QList<std::string>, const QString&);
 		void AddParticipants (const QString&,
 				QList<std::string>, const QString&);
+		void AddParticipant (const QString&,
+				QList<std::string>, const QString&);
 	private slots:
 		void readReply ();
 	signals:

@@ -197,7 +197,7 @@ namespace Acetamide
 	void IrcServerHandler::InboxMessage2Channel ()
 	{
 		IrcMessageOptions imo = IrcParser_->GetIrcMessageOptions ();
-		QString cmd = imo.Command_;
+		QString cmd = imo.Command_.toLower ();
 		if (Command2Action_.contains (cmd))
 			Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
 					imo.Message_);
@@ -325,7 +325,9 @@ namespace Acetamide
 		Command2Action_ ["353"] =
 				boost::bind (&IrcServerHandler::AddParticipants,
 					this, _1, _2, _3);
-
+		Command2Action_ ["join"] =
+				boost::bind (&IrcServerHandler::AddParticipant,
+					this, _1, _2, _3);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -415,6 +417,18 @@ namespace Acetamide
 			ChannelHandlers_ [channelID]->SetChannelUser (nick);
 	}
 
+	void IrcServerHandler::AddParticipant (const QString& nick,
+			QList<std::string>, const QString& msg)
+	{
+		if (nick == NickName_)
+			return;
+
+		QString channelID = (msg + "@" + ServerOptions_.ServerName_)
+				.toLower ();
+
+		ChannelHandlers_ [channelID]->SetChannelUser (nick);
+	}
+
 	void IrcServerHandler::InitSocket ()
 	{
 		connect (TcpSocket_ptr.get (),
@@ -433,11 +447,12 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-			qDebug () << str;
+// 			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
-			QString cmd = IrcParser_->GetIrcMessageOptions ().Command_;
+			QString cmd = IrcParser_->GetIrcMessageOptions ()
+					.Command_.toLower ();
 			if (IsErrorReply (cmd))
 			{
 				QString msg = IrcParser_->GetIrcMessageOptions ()
