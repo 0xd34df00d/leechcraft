@@ -1,16 +1,19 @@
 set (PROJECT_NAME_GLOBAL leechcraft_eiskaltdcpp)
 IF (NOT QT_USE_FILE)
-  cmake_minimum_required (VERSION 2.6)
+	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+	IF (COMMAND cmake_policy)
+		cmake_policy (SET CMP0003 NEW)
+	ENDIF (COMMAND cmake_policy)
 
-  set (PROJECT_NAME_GLOBAL leechcraft_eiskaltdcpp)
+	PROJECT (leechcraft_eiskaltdcpp)
 
-  if (not CMAKE_MODULE_PATH)
-    set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-  endif (not CMAKE_MODULE_PATH)
+	IF (NOT CMAKE_MODULE_PATH)
+		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	ENDIF (NOT CMAKE_MODULE_PATH)
 
-  find_package (Boost REQUIRED)
-  find_package (Qt4 4.7.0 COMPONENTS QtCore QtGui QtXml QtNetwork QtDeclarative REQUIRED)
-  find_package (LeechCraft REQUIRED)
+	FIND_PACKAGE (Boost REQUIRED)
+	FIND_PACKAGE (Qt4 REQUIRED)
+	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
 include (CheckIncludeFile)
