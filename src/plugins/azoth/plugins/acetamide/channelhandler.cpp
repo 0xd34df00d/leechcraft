@@ -57,13 +57,41 @@ namespace Acetamide
 	{
 		IrcMessage *msg = new IrcMessage (t,
 				IMessage::DIn,
-				variant, 
+				variant,
 				QString (),
 				ISH_->GetAccount ()->GetClientConnection ().get ());
 		msg->SetBody (body);
 		msg->SetDateTime (QDateTime::currentDateTime ());
 
 		return msg;
+	}
+
+	void ChannelHandler::SetChannelUser (const QString& nick)
+	{
+		if (Nick2Entry_.contains (nick))
+			return;
+
+		ServerParticipantEntry_ptr entry = ISH_->
+				GetParticipantEntry (nick);
+		Nick2Entry_ [nick] = entry;
+		QStringList groups = entry->GetChannels ();
+		if (!groups.contains (ChannelOptions_.ChannelName_))
+		{
+			groups << ChannelOptions_.ChannelName_;
+			entry->SetGroups (groups);
+			MakeJoinMessage (nick);
+			entry->SetStatus (EntryStatus (SOnline, QString ()));
+		}
+	}
+
+	void ChannelHandler::MakeJoinMessage (const QString& nick)
+	{
+		QString msg  = tr ("%1 joined the channel").arg (nick);
+		IrcMessage *message = CreateMessage (IMessage::MTStatusMessage,
+				ChannelID_, msg);
+		message->SetMessageSubType (IMessage::MSTParticipantJoin);
+
+		ChannelCLEntry_->HandleMessage (message);
 	}
 
 };

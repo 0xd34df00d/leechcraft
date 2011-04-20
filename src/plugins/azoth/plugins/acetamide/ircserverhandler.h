@@ -87,6 +87,7 @@ class IrcMessage;
 		void SendCommand (const QString&);
 		void InboxMessage2Server ();
 		void InboxMessage2Channel ();
+		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
 	private:
 		void InitErrorsReplys ();
 		void InitCommandResponses ();
@@ -98,8 +99,7 @@ class IrcMessage;
 
 		QString EncodedMessage (const QString&);
 
-		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
-		ServerParticipantEntry_ptr 
+		ServerParticipantEntry_ptr
 				CreateParticipantEntry (const QString&);
 
 		void JoinFromQueue (const QString&,

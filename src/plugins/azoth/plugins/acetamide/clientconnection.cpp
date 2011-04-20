@@ -51,12 +51,16 @@ namespace Acetamide
 	QObject* ClientConnection::GetCLEntry (const QString& id,
 			const QString& nickname) const
 	{
-		if (ServerHandlers_.contains (id))
+		if (ServerHandlers_.contains (id) && nickname.isEmpty ())
 			return ServerHandlers_ [id]->GetCLEntry ();
+		else if (!nickname.isEmpty ())
+			return ServerHandlers_ [id]->GetParticipantEntry (nickname)
+					.get ();
 		else
 			Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
 				if (ish->IsChannelExists (id))
 					return ish->GetChannelHandler (id)->GetCLEntry ();
+
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const

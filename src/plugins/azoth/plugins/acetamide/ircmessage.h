@@ -45,6 +45,7 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::IMessage);
 
 		MessageType Type_;
+		MessageSubType SubType_;
 		Direction Direction_;
 		QString ID_;
 		QString NickName_;
@@ -64,6 +65,7 @@ namespace Acetamide
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
+		void SetMessageSubType (IMessage::MessageSubType);
 		QObject* OtherPart () const;
 		QString GetID () const;
 		QString GetOtherVariant () const;

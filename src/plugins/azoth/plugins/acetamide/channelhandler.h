@@ -23,6 +23,7 @@
 #include <QHash>
 #include <interfaces/imessage.h>
 #include "localtypes.h"
+#include "serverparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -42,14 +43,19 @@ namespace Acetamide
 		ChannelCLEntry *ChannelCLEntry_;
 		IrcServerHandler *ISH_;
 		ChannelOptions ChannelOptions_;
+		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 	public:
 		ChannelHandler (IrcServerHandler*, const ChannelOptions&);
 		QString GetChannelID () const;
 		ChannelCLEntry* GetCLEntry () const;
 		IrcServerHandler* GetIrcServerHandler () const;
 
-		IrcMessage* CreateMessage (IMessage::MessageType, 
+		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+
+		void SetChannelUser (const QString&);
+
+		void MakeJoinMessage (const QString&);
 	};
 };
 };

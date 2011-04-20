@@ -37,6 +37,7 @@ namespace Acetamide
 	, Connection_ (conn)
 	, ID_ (id)
 	, NickName_ (nickname)
+	, SubType_ (MSTOther)
 	{
 		Message_.Stamp_ = QDateTime::currentDateTime ();
 		Message_.Nickname_ = NickName_;
@@ -49,6 +50,7 @@ namespace Acetamide
 	, Message_ (msg)
 	, Connection_ (conn)
 	, ID_ (id)
+	, SubType_ (MSTOther)
 	{
 		if (!Message_.Stamp_.isValid ())
 			Message_.Stamp_ = QDateTime::currentDateTime ();
@@ -94,7 +96,12 @@ namespace Acetamide
 
 	IMessage::MessageSubType IrcMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return SubType_;
+	}
+
+	void IrcMessage::SetMessageSubType (IMessage::MessageSubType subtype)
+	{
+		SubType_ = subtype;
 	}
 
 	QObject* IrcMessage::OtherPart () const

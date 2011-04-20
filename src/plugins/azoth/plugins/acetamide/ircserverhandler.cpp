@@ -109,13 +109,13 @@ namespace Acetamide
 		return ChannelHandlers_.values ();
 	}
 
-	IrcMessage* 
+	IrcMessage*
 			IrcServerHandler::CreateMessage (IMessage::MessageType type,
 					const QString& variant, const QString& body)
 	{
 		IrcMessage *msg = new IrcMessage (type,
 				IMessage::DIn,
-				variant, 
+				variant,
 				QString (),
 				Account_->GetClientConnection ().get ());
 
@@ -325,7 +325,7 @@ namespace Acetamide
 		Command2Action_ ["353"] =
 				boost::bind (&IrcServerHandler::AddParticipants,
 					this, _1, _2, _3);
-		
+
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -363,9 +363,9 @@ namespace Acetamide
 	ServerParticipantEntry_ptr
 		IrcServerHandler::CreateParticipantEntry (const QString& nick)
 	{
-		ServerParticipantEntry_ptr entry 
+		ServerParticipantEntry_ptr entry
 				(new ServerParticipantEntry (nick, ServerID_, Account_));
-		Account_->handleGotRosterItems (QList<QObject*> () 
+		Account_->handleGotRosterItems (QList<QObject*> ()
 				<< entry.get ());
 		emit gotCLItems (QList<QObject*> () << entry.get ());
 		return entry;
@@ -404,14 +404,15 @@ namespace Acetamide
 		}
 	}
 
-	void IrcServerHandler::AddParticipants (const QString&, 
+	void IrcServerHandler::AddParticipants (const QString&,
 			QList<std::string> params, const QString& message)
 	{
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		QStringList participants = message.split (' ');
 
-		
+		Q_FOREACH (const QString& nick, participants)
+			ChannelHandlers_ [channelID]->SetChannelUser (nick);
 	}
 
 	void IrcServerHandler::InitSocket ()
