@@ -2,7 +2,7 @@
 Since you are reading this, you've already got the sources, but just in case, our git repo is at git://github.com/0xd34df00d/leechcraft.git
 
 We will use so-called out-of-source builds. They allow to have different builds with different configuration simultaneously as well as easily remove the build directory if something goes wrong.
-So, create a directory in near the `src` dir, say, `build`, and cd into it. Type
+So, create a directory in near the 'src' dir, for example, 'build', and cd into it. Type
 
 	cmake -DCMAKE_BUILD_TYPE=BuildType ../src 
 
@@ -16,13 +16,13 @@ Here BuildType specifies what type of the build you want:
 * MinSizeRel
   Release version with optimizations for producing executables of minimal size.
 
-Then, after cmake successfully prepares the build system, type `ccmake .` and check the list of plugins to be built. You can enable or disable them there through a nice UI. Then, after you've selected what you want to build, run `make` and have a cup of coffee while LeechCraft compiles. If it fails, join the Jabber conference leechcraft@conference.jabber.ru and feel free to ask.
+Then, after cmake successfully prepares the build system, type 'ccmake .' and check the list of plugins to be built. You can enable or disable them there through a nice UI. Then, after you've selected what you want to build, run `make` and have a cup of coffee while LeechCraft compiles. If it fails, join the Jabber conference leechcraft@conference.jabber.ru and feel free to ask.
 
 Become root and issue make install to install LeechCraft into /usr/local. That's it!
 
-Please note that LeechCraft *won't work without installing*.
+Please note that LeechCraft won't work without installing.
 
-You may choose to install LeechCraft into different location by adding the -DCMAKE_INSTALL_PREFIX=/install/path to the cmake command line.
+You may choose to install LeechCraft into different location by adding the -DCMAKE_INSTALL_PREFIX=/install/path to the cmake command line, though such configurations are rather experimental.
 
 = Dependencies =
 Consider Depends:, Recommends:, Suggests: and Provides: to be virtual packages. Plugins don't depend on other plugins, they depend on functionality provided by other plugins.
