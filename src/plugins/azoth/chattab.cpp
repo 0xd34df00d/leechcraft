@@ -173,8 +173,10 @@ namespace Azoth
 	{
 		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
 		if (data.isEmpty ())
-			data = tr ("<h1 style='color:red;'>Unable to load style, "
-					"please check you've enabled at least one styles plugin.</h1>");
+			data = "<h1 style='color:red;'>" +
+					tr ("Unable to load style, "
+						"please check you've enabled at least one styles plugin.") +
+					"</h1>";
 		
 		data.replace ("BACKGROUNDCOLOR",
 				BgColor_.name ());
