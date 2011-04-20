@@ -104,6 +104,22 @@ namespace Acetamide
 		return ChannelHandlers_.values ();
 	}
 
+	IrcMessage* 
+			IrcServerHandler::CreateMessage (IMessage::MessageType type,
+					const QString& variant, const QString& body)
+	{
+		IrcMessage *msg = new IrcMessage (type,
+				IMessage::DIn,
+				variant, 
+				QString (),
+				Account_->GetClientConnection ().get ());
+
+		msg->SetBody (body);
+		msg->SetDateTime (QDateTime::currentDateTime ());
+
+		return msg;
+	}
+
 	bool IrcServerHandler::ConnectToServer ()
 	{
 		if (ServerConnectionState_ == NotConnected)
@@ -167,15 +183,8 @@ namespace Acetamide
 
 	void IrcServerHandler::InboxMessage2Server ()
 	{
-		IrcMessage *msg = new IrcMessage (
-				IMessage::MTServiceMessage,
-				IMessage::DIn,
-				ServerID_,
-				QString (),
-				Account_->GetClientConnection ().get ());
-
-		msg->SetBody (IrcParser_-> GetIrcMessageOptions ().Message_);
-		msg->SetDateTime (QDateTime::currentDateTime ());
+		IrcMessage *msg = CreateMessage (IMessage::MTEventMessage,
+				ServerID_, IrcParser_->GetIrcMessageOptions ().Message_);
 
 		ServerCLEntry_->HandleMessage (msg);
 	}
@@ -299,14 +308,14 @@ namespace Acetamide
 
 	void IrcServerHandler::InitCommandResponses ()
 	{
-		Command2Action_ ["376"] =
-				boost::bind (&IrcServerHandler::JoinFromQueue,
-					this, _1, _2, _3);
 		Command2Action_ ["332"] =
 				boost::bind (&IrcServerHandler::SetTopic,
 					this, _1, _2, _3);
 		Command2Action_ ["topic"] =
 				boost::bind (&IrcServerHandler::SetTopic,
+					this, _1, _2, _3);
+		Command2Action_ ["376"] =
+				boost::bind (&IrcServerHandler::JoinFromQueue,
 					this, _1, _2, _3);
 	}
 
@@ -353,7 +362,13 @@ namespace Acetamide
 		{
 			ChannelHandlers_ [channelId]->GetCLEntry ()->
 					SetMUCSubject (EncodedMessage (message));
-			//TODO message with topic to chat
+
+			IrcMessage *msg = ChannelHandlers_ [channelId]->
+					CreateMessage (IMessage::MTEventMessage,
+						channelId, EncodedMessage (message));
+
+			ChannelHandlers_ [channelId]->GetCLEntry ()->
+					HandleMessage (msg);
 		}
 	}
 

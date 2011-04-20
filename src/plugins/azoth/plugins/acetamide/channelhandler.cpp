@@ -18,6 +18,8 @@
 
 #include "channelhandler.h"
 #include "channelclentry.h"
+#include "ircaccount.h"
+#include "ircmessage.h"
 #include "ircserverhandler.h"
 
 namespace LeechCraft
@@ -48,6 +50,20 @@ namespace Acetamide
 	IrcServerHandler* ChannelHandler::GetIrcServerHandler () const
 	{
 		return ISH_;
+	}
+
+	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType t,
+			const QString& variant, const QString& body)
+	{
+		IrcMessage *msg = new IrcMessage (t,
+				IMessage::DIn,
+				variant, 
+				QString (),
+				ISH_->GetAccount ()->GetClientConnection ().get ());
+		msg->SetBody (body);
+		msg->SetDateTime (QDateTime::currentDateTime ());
+
+		return msg;
 	}
 
 };

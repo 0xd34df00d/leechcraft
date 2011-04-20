@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <interfaces/imessage.h>
 #include "localtypes.h"
 
 namespace LeechCraft
@@ -31,6 +32,7 @@ namespace Acetamide
 {
 
 	class ChannelCLEntry;
+	class IrcMessage;
 	class IrcServerHandler;
 
 	class ChannelHandler : public QObject
@@ -45,6 +47,9 @@ namespace Acetamide
 		QString GetChannelID () const;
 		ChannelCLEntry* GetCLEntry () const;
 		IrcServerHandler* GetIrcServerHandler () const;
+
+		IrcMessage* CreateMessage (IMessage::MessageType, 
+				const QString&, const QString&);
 	};
 };
 };

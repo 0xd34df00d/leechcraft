@@ -18,6 +18,7 @@
 
 #include "channelclentry.h"
 #include "channelhandler.h"
+#include "ircmessage.h"
 #include "ircserverhandler.h"
 #include "ircaccount.h"
 
@@ -86,9 +87,10 @@ namespace Acetamide
 		return result;
 	}
 
-	QObject* ChannelCLEntry::CreateMessage(IMessage::MessageType ,
-			const QString& , const QString& )
+	QObject* ChannelCLEntry::CreateMessage (IMessage::MessageType,
+			const QString&, const QString&)
 	{
+		return 0;
 	}
 
 	EntryStatus ChannelCLEntry::GetStatus (const QString&) const

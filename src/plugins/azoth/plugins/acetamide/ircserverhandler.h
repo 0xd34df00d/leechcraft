@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include "localtypes.h"
+#include <interfaces/imessage.h>
 
 namespace LeechCraft
 {
@@ -31,6 +32,8 @@ namespace Azoth
 {
 namespace Acetamide
 {
+
+class IrcMessage;
 
 	class ChannelCLEntry;
 	class ChannelHandler;
@@ -73,6 +76,9 @@ namespace Acetamide
 
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;
+
+		IrcMessage* CreateMessage (IMessage::MessageType,
+				const QString&, const QString&);
 
 		bool ConnectToServer ();
 		bool JoinChannel (const ChannelOptions&);

@@ -18,6 +18,7 @@
 
 #include "ircserverclentry.h"
 #include "ircaccount.h"
+#include "ircmessage.h"
 #include "ircserverhandler.h"
 
 namespace LeechCraft
@@ -89,9 +90,10 @@ namespace Acetamide
 		return result;
 	}
 
-	QObject* IrcServerCLEntry::CreateMessage (IMessage::MessageType type,
-			const QString& variant, const QString& body)
+	QObject* IrcServerCLEntry::CreateMessage (IMessage::MessageType,
+			const QString&, const QString&)
 	{
+		return 0;
 	}
 
 };

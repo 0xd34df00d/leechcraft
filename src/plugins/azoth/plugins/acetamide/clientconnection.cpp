@@ -48,13 +48,15 @@ namespace Acetamide
 				SIGNAL (gotCLItems (const QList<QObject*>&)));
 	}
 
-	QObject* ClientConnection::GetCLEntry (const QString& key,
-			const QString& nick) const
+	QObject* ClientConnection::GetCLEntry (const QString& id,
+			const QString& nickname) const
 	{
-		if (ServerHandlers_.contains (key))
-		{
-			return ServerHandlers_ [key]->GetCLEntry ();
-		}
+		if (ServerHandlers_.contains (id))
+			return ServerHandlers_ [id]->GetCLEntry ();
+		else
+			Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
+				if (ish->IsChannelExists (id))
+					return ish->GetChannelHandler (id)->GetCLEntry ();
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const
