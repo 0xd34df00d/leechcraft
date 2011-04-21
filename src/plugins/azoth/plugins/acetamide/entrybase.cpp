@@ -52,6 +52,10 @@ namespace Acetamide
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
+	
+	void EntryBase::SetChatPartState (ChatPartState, const QString&)
+	{
+	}
 
 	EntryStatus EntryBase::GetStatus (const QString&) const
 	{

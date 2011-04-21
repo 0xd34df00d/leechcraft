@@ -67,6 +67,7 @@ namespace Acetamide
 				const QString&, const QString&);
 		QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
+		void SetChatPartState (ChatPartState, const QString&);
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		
