@@ -47,6 +47,7 @@ namespace Azoth
 		bool IsActiveChat (const ICLEntry*) const;
 		void UpdateEntryMapping (const QString&, QObject*);
 		void SetChatEnabled (const QString&, bool);
+		void ChatMadeCurrent (ChatTab*);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private slots:

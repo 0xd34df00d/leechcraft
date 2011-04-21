@@ -121,6 +121,10 @@ namespace Xoox
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
+	
+	void RoomCLEntry::SetChatPartState (ChatPartState, const QString&)
+	{
+	}
 
 	EntryStatus RoomCLEntry::GetStatus (const QString&) const
 	{

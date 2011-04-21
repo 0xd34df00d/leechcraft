@@ -135,6 +135,13 @@ namespace Azoth
 		Entry2Tab_ [id]->setEnabled (enabled);
 	}
 	
+	void ChatTabsManager::ChatMadeCurrent (ChatTab *curTab)
+	{
+		Q_FOREACH (ChatTab_ptr tab, Entry2Tab_.values ())
+			if (tab != curTab)
+				tab->TabLostCurrent ();
+	}
+	
 	bool ChatTabsManager::eventFilter (QObject* obj, QEvent *event)
 	{
 		if (event->type () != QEvent::FocusIn &&

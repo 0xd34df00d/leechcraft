@@ -64,14 +64,16 @@ namespace Azoth
 		int NumUnreadMsgs_;
 
 		QIcon TabIcon_;
-
 		bool IsMUC_;
 
 		ITransferManager *XferManager_;
+		
+		QTimer *TypeTimer_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
 		ChatTab (const QString&, QWidget* = 0);
+		~ChatTab ();
 		
 		/** Prepare (or update after it has been changed) the theme.
 		 */
@@ -88,6 +90,7 @@ namespace Azoth
 		QToolBar* GetToolBar () const;
 		void Remove ();
 		void TabMadeCurrent ();
+		void TabLostCurrent ();
 		
 		QObject* GetCLEntry () const;
 	private slots:
@@ -110,6 +113,7 @@ namespace Azoth
 		void handleHistoryUp ();
 		void handleHistoryDown ();
 		void handleAddToBookmarks ();
+		void typeTimeout ();
 		
 		void handleFontSizeChanged ();
 	private:
@@ -120,6 +124,8 @@ namespace Azoth
 		QStringList GetMUCParticipants () const;
 
 		void ReformatTitle ();
+		void UpdateTextHeight ();
+		void SetChatPartState (ChatPartState);
 
 		/** Appends the message to the message view area.
 		 */

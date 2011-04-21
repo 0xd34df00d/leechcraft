@@ -344,6 +344,17 @@ namespace Azoth
 		 * purged.
 		 */
 		virtual void PurgeMessages (const QDateTime& before) = 0;
+		
+		/** @brief Notifies about our chat participation state change.
+		 * 
+		 * If variant is a null string, a variant with the highest
+		 * priority should be used.
+		 *
+		 * @param[in] state Our new chat participation state.
+		 * @param[in] variant Target variant.
+		 */
+		virtual void SetChatPartState (ChatPartState state,
+				const QString& variant) = 0;
 
 		/** @brief Returns the current status of a variant of the item.
 		 *

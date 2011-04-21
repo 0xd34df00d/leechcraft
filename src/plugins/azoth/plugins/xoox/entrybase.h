@@ -67,6 +67,7 @@ namespace Xoox
 		virtual QObject* GetObject ();
 		virtual QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
+		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;
 		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;

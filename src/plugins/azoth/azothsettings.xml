@@ -67,6 +67,9 @@
 			<item type="checkbox" property="IsAutojoinAllowed" default="true">
 				<label value="Autojoin allowed" />
 			</item>
+			<item type="checkbox" property="SendChatStates" default="true">
+				<label value="Send chat state events" />
+			</item>
 			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
 				<label value="Default file transfers save path:" />
 			</item>
