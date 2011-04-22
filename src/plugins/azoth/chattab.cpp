@@ -232,6 +232,20 @@ namespace Azoth
 	{
 		UpdateStateIcon ();
 	}
+	
+	TabClassInfo ChatTab::GetTabClassInfo () const
+	{
+		TabClassInfo chatTab =
+		{
+			"ChatTab",
+			tr ("Chat"),
+			tr ("A tab with a chat session"),
+			QIcon (),
+			0,
+			TFEmpty
+		};
+		return chatTab;
+	}
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
 	{
@@ -248,7 +262,7 @@ namespace Azoth
 		return result;
 	}
 
-	QObject* ChatTab::ParentMultiTabs () const
+	QObject* ChatTab::ParentMultiTabs ()
 	{
 		return S_ParentMultiTabs_;
 	}

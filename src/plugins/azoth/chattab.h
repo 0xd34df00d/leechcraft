@@ -23,7 +23,7 @@
 #include <QPersistentModelIndex>
 #include <QDateTime>
 #include <interfaces/iinfo.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include "interfaces/azothcommon.h"
 #include "ui_chattab.h"
 
@@ -38,10 +38,10 @@ namespace Azoth
 	class ITransferManager;
 
 	class ChatTab : public QWidget
-				  , public IMultiTabsWidget
+				  , public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IMultiTabsWidget)
+		Q_INTERFACES (ITabWidget)
 
 		static QObject *S_ParentMultiTabs_;
 
@@ -84,8 +84,9 @@ namespace Azoth
 		 */
 		void HasBeenAdded ();
 
+		TabClassInfo GetTabClassInfo () const;
 		QList<QAction*> GetTabBarContextMenuActions () const;
-		QObject* ParentMultiTabs () const;
+		QObject* ParentMultiTabs ();
 		void NewTabRequested ();
 		QToolBar* GetToolBar () const;
 		void Remove ();

@@ -23,7 +23,7 @@
 #include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginready.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iactionsexporter.h>
@@ -38,18 +38,19 @@ namespace Azoth
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPluginReady
-				 , public IMultiTabs
+				 , public IHaveTabs
 				 , public IHaveSettings
 				 , public IJobHolder
 				 , public IActionsExporter
 				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IMultiTabs IHaveSettings IJobHolder IActionsExporter IEntityHandler)
+		Q_INTERFACES (IInfo IPluginReady IHaveTabs IHaveSettings IJobHolder IActionsExporter IEntityHandler)
 
 		MainWidget *MW_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		std::auto_ptr<QTranslator> Translator_;
+		TabClasses_t TabClasses_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -72,8 +73,10 @@ namespace Azoth
 		
 		bool CouldHandle (const Entity&) const;
 		void Handle (Entity);
+	
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 	public slots:
-		void newTabRequested ();
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

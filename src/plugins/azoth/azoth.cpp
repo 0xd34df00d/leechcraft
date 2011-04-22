@@ -95,6 +95,39 @@ namespace Azoth
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
+		
+		TabClassInfo chatTab =
+		{
+			"ChatTab",
+			tr ("Chat"),
+			tr ("A tab with a chat session"),
+			QIcon (),
+			0,
+			TFEmpty
+		};
+		TabClassInfo mucTab =
+		{
+			"MUCTab",
+			tr ("MUC"),
+			tr ("A multiuser conference"),
+			QIcon (),
+			50,
+			TFOpenableByRequest
+		};
+		TabClassInfo sdTab =
+		{
+			"SD",
+			tr ("Service discovery"),
+			tr ("A service discovery tab that allows to discover "
+				"capabilities of remote entries"),
+			QIcon (),
+			55,
+			TFOpenableByRequest
+		};
+		
+		TabClasses_ << chatTab;
+		TabClasses_ << mucTab;
+		TabClasses_ << sdTab;
 	}
 
 	void Plugin::SecondInit ()
@@ -185,9 +218,18 @@ namespace Azoth
 	{
 		Core::Instance ().Handle (e);
 	}
-
-	void Plugin::newTabRequested ()
+	
+	TabClasses_t Plugin::GetTabClasses () const
 	{
+		return TabClasses_;
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
+	{
+		if (tabClass == "MUCTab")
+			Core::Instance ().handleMucJoinRequested ();
+		else if (tabClass == "SD")
+			emit gotEntity (Util::MakeNotification ("Azoth", "Not Implemented", PWarning_));
 	}
 	
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
