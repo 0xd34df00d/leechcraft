@@ -16,16 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef INTERFACES_IHAVESHORTCUTS_H
-#define INTERFACES_IHAVESHORTCUTS_H
+#ifndef INTERFACES_IHAVETABS_H
+#define INTERFACES_IHAVETABS_H
 #include <QMetaType>
 #include <QList>
 #include <QByteArray>
+#include <QIcon>
 
 namespace LeechCraft
 {
 	enum TabFeature
 	{
+		TFEmpty = 0x0,
 		TFSingle = 0x01,
 		TFOpenableByRequest = 0x02
 	};
@@ -35,6 +37,9 @@ namespace LeechCraft
 	struct TabClassInfo
 	{
 		QByteArray TabClass_;
+		QString VisibleName_;
+		QString Description_;
+		QIcon Icon_;
 		quint16 Priority_;
 
 		TabFeatures Features_;
@@ -51,6 +56,22 @@ public:
 	virtual LeechCraft::TabClassInfo GetTabClassInfo () const;
 	
 	virtual void CloseRequested () const = 0;
+
+	virtual QToolBar* GetToolBar () const = 0;
+	
+	virtual QList<QAction*> GetTabBarContextMenuActions () const
+	{
+		return QList<QAction*> ();
+	}
+	
+	virtual QMap<QString, QList<QAction*> > GetWindowMenus () const
+	{
+		return QMap<QString, QList<QAction*> > ();
+	}
+	
+	virtual void TabMadeCurrent ()
+	{
+	}
 };
 
 class IHaveTabs
@@ -61,6 +82,13 @@ public:
 	virtual LeechCraft::TabClasses_t GetTabClasses () const = 0;
 	
 	virtual void TabOpenRequested (const QByteArray& tabClass) = 0;
+	
+	virtual void addNewTab (const QString& name, QWidget *tabContents) = 0;
+	virtual void removeTab (QWidget *tabContents) = 0;
+	virtual void changeTabName (QWidget *tabContents, const QString& name) = 0;
+	virtual void changeTabIcon (QWidget *tabContents, const QIcon& icon) = 0;
+	virtual void statusBarChanged (QWidget *tabContents, const QString& text) = 0;
+	virtual void raiseTab (QWidget *tabContents) = 0;
 };
 
 Q_DECLARE_INTERFACE (ITabWidget, "org.Deviant.LeechCraft.ITabWidget/1.0");
