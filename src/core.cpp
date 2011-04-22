@@ -44,8 +44,7 @@
 #include <interfaces/idownload.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ijobholder.h>
-#include <interfaces/iembedtab.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/iwindow.h>
@@ -216,29 +215,20 @@ QToolBar* LeechCraft::Core::GetToolBar (int index) const
 void LeechCraft::Core::Setup (QObject *plugin)
 {
 	const IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-	const IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
-	const IMultiTabs *imt = qobject_cast<IMultiTabs*> (plugin);
 
 	InitDynamicSignals (plugin);
 
 	if (ijh)
 		InitJobHolder (plugin);
 
-	if (iet)
-		connect (plugin,
-				SIGNAL (bringToFront ()),
-				this,
-				SLOT (embeddedTabWantsToFront ()));
-
-	if (imt)
+	if (qobject_cast<IHaveTabs*> (plugin))
 		InitMultiTab (plugin);
 }
 
 void LeechCraft::Core::PostSecondInit (QObject *plugin)
 {
-	if (qobject_cast<IMultiTabs*> (plugin) ||
-			qobject_cast<IEmbedTab*> (plugin))
-		TabManager_->AddObject (plugin);
+	if (qobject_cast<IHaveTabs*> (plugin))
+		GetNewTabMenuManager ()->AddObject (plugin);
 }
 
 void LeechCraft::Core::DelayedInit ()
@@ -252,13 +242,6 @@ void LeechCraft::Core::DelayedInit ()
 				ReallyMainWindow_->GetTabWidget ()));
 
 	PluginManager_->Init ();
-
-	Q_FOREACH (QObject *plugin, PluginManager_->GetAllPlugins ())
-	{
-		IEmbedTab *iet = qobject_cast<IEmbedTab*> (plugin);
-		if (iet)
-			InitEmbedTab (plugin);
-	}
 
 	NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 
@@ -800,30 +783,6 @@ void LeechCraft::Core::handlePluginLoadErrors ()
 	Q_FOREACH (const QString& error, PluginManager_->GetPluginLoadErrors ())
 		handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
 				error, PCritical_));
-}
-
-void LeechCraft::Core::embeddedTabWantsToFront ()
-{
-	IEmbedTab *iet = qobject_cast<IEmbedTab*> (sender ());
-	if (!iet)
-		return;
-
-	try
-	{
-		TabManager_->bringToFront (iet->GetTabContents ());
-		ReallyMainWindow_->show ();
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< e.what ()
-			<< sender ();
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< sender ();
-	}
 }
 
 void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString& origMessage)

@@ -36,7 +36,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/iactionsexporter.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include "mainwindow.h"
 #include "view.h"
 #include "core.h"
@@ -459,6 +459,7 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 
 void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 {
+	/* TODO
 	QByteArray newTabId = XmlSettingsManager::Instance ()->
 			property ("DefaultNewTab").toString ().toLatin1 ();
 	if (newTabId != "contextdependent")
@@ -477,17 +478,43 @@ void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 			return;
 		}
 	}
+	*/
+	
+	IHaveTabs *highestIHT = 0;
+	QByteArray highestTabClass;
+	int highestPriority = 0;
+	Q_FOREACH (IHaveTabs *iht, Core::Instance ()
+			.GetPluginManager ()->GetAllCastableTo<IHaveTabs*> ())
+		Q_FOREACH (const TabClassInfo& info, iht->GetTabClasses ())
+		{
+			if (!(info.Features_ & TFOpenableByRequest))
+				continue;
 
-	IMultiTabsWidget *imtw =
-		qobject_cast<IMultiTabsWidget*> (GetTabWidget ()->currentWidget ());
-	if (imtw)
-		imtw->NewTabRequested ();
-	else
+			if (info.Priority_ <= highestPriority)
+				continue;
+
+			highestIHT = iht;
+			highestTabClass = info.TabClass_;
+			highestPriority = info.Priority_;
+		}
+
+	ITabWidget *imtw =
+		qobject_cast<ITabWidget*> (GetTabWidget ()->currentWidget ());
+	const int delta = 15;
+	if (imtw && imtw->GetTabClassInfo ().Priority_ + delta > highestPriority)
 	{
-		QMenu *menu = Core::Instance ()
-			.GetNewTabMenuManager ()->GetNewTabMenu ();
-		menu->popup (QCursor::pos ());
+		highestIHT = qobject_cast<IHaveTabs*> (imtw->ParentMultiTabs ());
+		highestTabClass = imtw->GetTabClassInfo ().TabClass_;
 	}
+	
+	if (!highestIHT)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "no IHT detected";
+		return;
+	}
+	
+	highestIHT->TabOpenRequested (highestTabClass);
 }
 
 void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
@@ -816,14 +843,20 @@ void LeechCraft::MainWindow::SetNewTabDataSource ()
 	newTabsModel->appendRow (defaultItem);
 
 	QObjectList multitabs = Core::Instance ()
-			.GetPluginManager ()->GetAllCastableRoots<IMultiTabs*> ();
+			.GetPluginManager ()->GetAllCastableRoots<IHaveTabs*> ();
 	Q_FOREACH (QObject *object, multitabs)
 	{
-		IInfo *info = qobject_cast<IInfo*> (object);
-
-		QStandardItem *item = new QStandardItem (info->GetName ());
-		item->setData (info->GetUniqueID (), Qt::UserRole);
-		newTabsModel->appendRow (item);
+		IInfo *ii = qobject_cast<IInfo*> (object);
+		IHaveTabs *iht = qobject_cast<IHaveTabs*> (object);
+		Q_FOREACH (const TabClassInfo& info, iht->GetTabClasses ())
+		{
+			QStandardItem *item =
+					new QStandardItem (ii->GetName () + ": " + info.VisibleName_);
+			item->setToolTip (info.Description_);
+			item->setIcon (info.Icon_);
+			item->setData (ii->GetUniqueID () + '|' + info.TabClass_, Qt::UserRole);
+			newTabsModel->appendRow (item);
+		}
 	}
 
 	qDebug () << Q_FUNC_INFO

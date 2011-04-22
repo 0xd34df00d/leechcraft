@@ -247,10 +247,6 @@ namespace LeechCraft
 
 		void handlePluginLoadErrors ();
 
-		/** Handles requests to show a tab above others.
-		 */
-		void embeddedTabWantsToFront ();
-
 		/** Handles requests to change statusbar's status text.
 		 *
 		 * @param[in] sender The sender of the event.

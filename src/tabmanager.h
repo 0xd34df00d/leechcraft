@@ -39,7 +39,6 @@ namespace LeechCraft
 		TabWidget *TabWidget_;
 		QStringList OriginalTabNames_;
 		QList<QKeyEvent*> Events_;
-		QMap<QWidget*, QToolBar*> StaticBars_;
 		QMap<QWidget*, QObject*> EmbedTabs_;
 		QMenu *NewTabMenu_;
 		QMap<QString, QList<QAction*> > Menus_;
@@ -48,10 +47,7 @@ namespace LeechCraft
 
 		QWidget* GetWidget (int) const;
 		QToolBar* GetToolBar (int) const;
-		void SetToolBar (QToolBar*, QWidget*);
 		void ForwardKeyboard (QKeyEvent*);
-
-		void AddObject (QObject*);
 	public slots:
 		void rotateLeft ();
 		void rotateRight ();
@@ -79,8 +75,6 @@ namespace LeechCraft
 		void handleCurrentChanged (int);
 		void handleMoveHappened (int, int);
 		void handleCloseAllButCurrent ();
-	private slots:
-		void restoreEmbedTab (QObject*);
 	private:
 		int FindTabForWidget (QWidget*) const;
 		QString MakeTabName (const QString&) const;

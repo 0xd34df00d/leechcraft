@@ -26,7 +26,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabbar.h"
-#include "interfaces/imultitabs.h"
+#include "interfaces/ihavetabs.h"
 #include "3dparty/qxttooltip.h"
 #include "mainwindow.h"
 /**
@@ -189,8 +189,8 @@ void TabWidget::handleTabBarContextMenu (const QPoint& pos)
 	{
 		bool asSub = XmlSettingsManager::Instance ()->
 			property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
-		IMultiTabsWidget *imtw =
-			qobject_cast<IMultiTabsWidget*> (widget (tabIndex));
+		ITabWidget *imtw =
+			qobject_cast<ITabWidget*> (widget (tabIndex));
 		if (imtw)
 		{
 			QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();

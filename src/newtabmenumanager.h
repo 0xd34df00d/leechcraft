@@ -26,6 +26,8 @@
 class QMenu;
 class QAction;
 
+class ITabWidget;
+
 namespace LeechCraft
 {
 	class NewTabMenuManager : public QObject
@@ -34,23 +36,25 @@ namespace LeechCraft
 
 		QMenu *NewTabMenu_;
 		QList<QObject*> RegisteredMultiTabs_;
-		QMap<QString, QAction*> ReaddOnRestore_;
 		QSet<QChar> UsedAccelerators_;
+		QMap<QObject*, QMap<QString, QAction*> > HiddenActions_;
 	public:
 		NewTabMenuManager (QObject* = 0);
 
 		void AddObject (QObject*);
 		void HandleEmbedTabRemoved (QObject*);
 		void SetToolbarActions (QList<QList<QAction*> >);
+		void SingleRemoved (ITabWidget*);
 
 		QMenu* GetNewTabMenu () const;
 	private:
 		QString AccelerateName (QString);
+		void ToggleHide (QObject*, const QByteArray&, bool);
+		void OpenTab (QAction*);
 	private slots:
-		void restoreEmbedTab ();
+		void handleNewTabRequested ();
 	signals:
 		void restoreTabActionAdded (QAction*);
-		void restoreEmbedTabRequested (QObject*);
 	};
 }
 

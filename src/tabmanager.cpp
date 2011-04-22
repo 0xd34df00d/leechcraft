@@ -22,8 +22,7 @@
 #include <QCursor>
 #include <QMenu>
 #include <QtDebug>
-#include <interfaces/imultitabs.h>
-#include <interfaces/iembedtab.h>
+#include <interfaces/ihavetabs.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabwidget.h"
@@ -37,11 +36,6 @@ TabManager::TabManager (TabWidget *tabWidget,
 : QObject (parent)
 , TabWidget_ (tabWidget)
 {
-	connect (Core::Instance ().GetNewTabMenuManager (),
-			SIGNAL (restoreEmbedTabRequested (QObject*)),
-			this,
-			SLOT (restoreEmbedTab (QObject*)));
-
 	for (int i = 0; i < TabWidget_->count (); ++i)
 		OriginalTabNames_ << TabWidget_->tabText (i);
 
@@ -85,7 +79,7 @@ QWidget* TabManager::GetWidget (int position) const
 QToolBar* TabManager::GetToolBar (int position) const
 {
 	QWidget *widget = TabWidget_->widget (position);
-	IMultiTabsWidget *itw = qobject_cast<IMultiTabsWidget*> (widget);
+	ITabWidget *itw = qobject_cast<ITabWidget*> (widget);
 	if (itw)
 	{
 		try
@@ -109,12 +103,7 @@ QToolBar* TabManager::GetToolBar (int position) const
 		}
 	}
 	else
-		return StaticBars_ [widget];
-}
-
-void TabManager::SetToolBar (QToolBar *bar, QWidget *tw)
-{
-	StaticBars_ [tw] = bar;
+		return 0;
 }
 
 void TabManager::rotateLeft ()
@@ -152,54 +141,6 @@ void TabManager::ForwardKeyboard (QKeyEvent *key)
 			QCoreApplication::sendEvent (TabWidget_->currentWidget (), key);
 	}
 	Events_.removeAll (key);
-}
-
-void TabManager::AddObject (QObject *obj)
-{
-	IInfo *ii = qobject_cast<IInfo*> (obj);
-
-	IEmbedTab *iet = qobject_cast<IEmbedTab*> (obj);
-	if (iet)
-	{
-		try
-		{
-			const QString& name = ii->GetName ();
-			const QIcon& icon = ii->GetIcon ();
-			QToolBar *tb = iet->GetToolBar ();
-			QWidget *contents = iet->GetTabContents ();
-
-			if (!EmbedTabs_.contains (contents))
-			{
-				EmbedTabs_ [contents] = obj;
-
-				add (name,
-						contents,
-						icon);
-				SetToolBar (tb,
-						contents);
-
-				if (XmlSettingsManager::Instance ()->
-						Property (QString ("Hide%1").arg (name), false).toBool ())
-					QMetaObject::invokeMethod (this,
-							"removeByContents",
-							Qt::QueuedConnection,
-							Q_ARG (QWidget*, contents));
-			}
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< obj;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< obj;
-		}
-	}
-
-	Core::Instance ().GetNewTabMenuManager ()->AddObject (obj);
 }
 
 void TabManager::add (const QString& name, QWidget *contents)
@@ -243,6 +184,17 @@ void TabManager::remove (QWidget *contents)
 	InvalidateName ();
 
 	TabWidget_->setTabsClosable (TabWidget_->count () != 1);
+	
+	ITabWidget *itw = qobject_cast<ITabWidget*> (contents);
+	if (!itw)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< contents
+				<< "doesn't implement ITabWidget";
+		return;
+	}
+	if (itw->GetTabClassInfo ().Features_ & TFSingle)
+		Core::Instance ().GetNewTabMenuManager ()->SingleRemoved (itw);
 }
 
 void TabManager::remove (int index)
@@ -251,57 +203,32 @@ void TabManager::remove (int index)
 		return;
 
 	QWidget *widget = TabWidget_->widget (index);
-	IMultiTabsWidget *itw =
-		qobject_cast<IMultiTabsWidget*> (widget);
-	if (EmbedTabs_.contains (widget))
+	ITabWidget *itw =
+		qobject_cast<ITabWidget*> (widget);
+	if (!itw)
 	{
-		QObject *obj = EmbedTabs_ [widget];
-
-		IInfo *ii = qobject_cast<IInfo*> (obj);
-		try
-		{
-			QString name = ii->GetName ();
-
-			XmlSettingsManager::Instance ()->
-					setProperty (qPrintable (QString ("Hide%1").arg (name)),
-							true);
-			EmbedTabs_.remove (widget);
-			remove (widget);
-
-			Core::Instance ().GetNewTabMenuManager ()->
-					HandleEmbedTabRemoved (obj);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< obj;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< obj;
-		}
+		qWarning () << Q_FUNC_INFO
+				<< widget
+				<< "doesn't implement ITabWidget";
+		return;
 	}
-	else if (itw)
+
+	try
 	{
-		try
-		{
-			itw->Remove ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to ITabWidget::Remove"
-				<< e.what ()
-				<< TabWidget_->widget (index);
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to ITabWidget::Remove"
-				<< TabWidget_->widget (index);
-		}
+		itw->Remove ();
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "failed to ITabWidget::Remove"
+			<< e.what ()
+			<< TabWidget_->widget (index);
+	}
+	catch (...)
+	{
+		qWarning () << Q_FUNC_INFO
+			<< "failed to ITabWidget::Remove"
+			<< TabWidget_->widget (index);
 	}
 }
 
@@ -353,17 +280,20 @@ void TabManager::handleCurrentChanged (int index)
 
 	Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
 
-	IMultiTabsWidget *imtw = qobject_cast<IMultiTabsWidget*> (TabWidget_->widget (index));
-	if (imtw)
+	ITabWidget *imtw = qobject_cast<ITabWidget*> (TabWidget_->widget (index));
+	if (!imtw)
 	{
-		QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
-		Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
-		Menus_ = menus;
-
-		imtw->TabMadeCurrent ();
+		qWarning () << Q_FUNC_INFO
+				<< TabWidget_->widget (index)
+				<< "doesn't implement ITabWidget";
+		return;
 	}
-	else
-		Menus_.clear ();
+
+	QMap<QString, QList<QAction*> > menus = imtw->GetWindowMenus ();
+	Core::Instance ().GetReallyMainWindow ()->AddMenus (menus);
+	Menus_ = menus;
+
+	imtw->TabMadeCurrent ();
 }
 
 void TabManager::handleMoveHappened (int from, int to)
@@ -388,31 +318,6 @@ void TabManager::handleCloseAllButCurrent ()
 	for (int i = TabWidget_->count () - 1; i >= 0; --i)
 		if (i != cur)
 			remove (i);
-}
-
-void TabManager::restoreEmbedTab (QObject *obj)
-{
-	IInfo *ii = qobject_cast<IInfo*> (obj);
-	try
-	{
-		QString name = ii->GetName ();
-
-		XmlSettingsManager::Instance ()->
-				setProperty (qPrintable (QString ("Hide%1").arg (name)),
-						false);
-		AddObject (obj);
-	}
-	catch (const std::exception& e)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< e.what ()
-			<< obj;
-	}
-	catch (...)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< obj;
-	}
 }
 
 int TabManager::FindTabForWidget (QWidget *widget) const

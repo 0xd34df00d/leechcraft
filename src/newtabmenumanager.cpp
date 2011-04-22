@@ -20,7 +20,8 @@
 #include <QMenu>
 #include <QtDebug>
 #include "interfaces/iinfo.h"
-#include "interfaces/imultitabs.h"
+#include "interfaces/ihavetabs.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -32,90 +33,41 @@ namespace LeechCraft
 
 	void NewTabMenuManager::AddObject (QObject *obj)
 	{
-		IMultiTabs *imt = qobject_cast<IMultiTabs*> (obj);
-		if (imt && !RegisteredMultiTabs_.contains (obj))
-		{
-			RegisteredMultiTabs_ << obj;
+		IHaveTabs *imt = qobject_cast<IHaveTabs*> (obj);
+		if (!imt || RegisteredMultiTabs_.contains (obj))
+			return;
+		
+		IInfo *ii = qobject_cast<IInfo*> (obj);
 
-			IInfo *ii = qobject_cast<IInfo*> (obj);
-			try
+		Q_FOREACH (const TabClassInfo& info, imt->GetTabClasses ())
+		{
+			if (!(info.Features_ & TFOpenableByRequest))
+				continue;
+
+			QAction *newAct = NewTabMenu_->addAction (info.Icon_,
+					AccelerateName (info.VisibleName_),
+					this,
+					SLOT (handleNewTabRequested ()));
+			newAct->setProperty ("PluginObj", QVariant::fromValue<QObject*> (obj));
+			newAct->setProperty ("TabClass", info.TabClass_);
+			newAct->setProperty ("Single",
+					static_cast<bool> (info.Features_ & TFSingle));
+			newAct->setStatusTip (info.Description_);
+			newAct->setToolTip (info.Description_);
+			
+			if (info.Features_ & TFSingle)
 			{
-				const QString& name = ii->GetName ();
-				const QString& info = ii->GetInfo ();
-				const QIcon& icon = ii->GetIcon ();
-				QAction *newAct = NewTabMenu_->addAction (icon,
-						AccelerateName (name),
-						obj,
-						SLOT (newTabRequested ()));
-				newAct->setStatusTip (info);
-				newAct->setToolTip (info);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< e.what ()
-					<< obj;
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< obj;
+				const QByteArray& id = ii->GetUniqueID () + '|' + info.TabClass_;
+				const bool hide = XmlSettingsManager::Instance ()->
+						Property ("Hide" + id, false).toBool ();
+				if (!hide)
+					OpenTab (newAct);
 			}
 		}
 	}
 
 	void NewTabMenuManager::HandleEmbedTabRemoved (QObject *obj)
 	{
-		IInfo *ii = qobject_cast<IInfo*> (obj);
-
-		try
-		{
-			const QString& name = ii->GetName ();
-			const QIcon& icon = ii->GetIcon ();
-			const QString& info = ii->GetInfo ();
-
-			QAction *action = 0;
-			Q_FOREACH (QAction *act, NewTabMenu_->actions ())
-			{
-				QString actText = act->text ();
-				if (actText.remove ('&') == name)
-				{
-					action = new QAction (icon, name, this);
-					connect (action,
-							SIGNAL (triggered ()),
-							this,
-							SLOT (restoreEmbedTab ()));
-					NewTabMenu_->insertAction (act, action);
-					NewTabMenu_->removeAction (act);
-					ReaddOnRestore_ [name] = act;
-					break;
-				}
-			}
-
-			if (!action)
-			{
-				action = NewTabMenu_->addAction (icon, name,
-						this,
-						SLOT (restoreEmbedTab ()));
-				emit restoreTabActionAdded (action);
-			}
-			action->setToolTip (info);
-			action->setStatusTip (info);
-			action->setData (QVariant::fromValue<QObject*> (obj));
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< obj;
-			throw;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< obj;
-			throw;
-		}
 	}
 
 	void NewTabMenuManager::SetToolbarActions (QList<QList<QAction*> > lists)
@@ -136,14 +88,38 @@ namespace LeechCraft
 			if (!list.size ())
 				continue;
 
-			/*
-			Q_FOREACH (QAction *act, list)
-				act->setParent (this);
-				*/
-
 			NewTabMenu_->addSeparator ();
 			NewTabMenu_->addActions (list);
 		}
+	}
+	
+	void NewTabMenuManager::SingleRemoved (ITabWidget *itw)
+	{
+		const QByteArray& tabClass = itw->GetTabClassInfo ().TabClass_;
+		QAction *act = HiddenActions_ [itw->ParentMultiTabs ()] [tabClass];
+		if (!act)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no hidden action for"
+					<< itw->GetTabClassInfo ().TabClass_
+					<< "in"
+					<< itw->ParentMultiTabs ();
+			return;
+		}
+		
+		ToggleHide (itw->ParentMultiTabs (), tabClass, true);
+		
+		bool inserted = false;
+		Q_FOREACH (QAction *menuAct, NewTabMenu_->actions ())
+			if (menuAct->isSeparator () || menuAct->text () > act->text ())
+			{
+				NewTabMenu_->insertAction (menuAct, act);
+				inserted = true;
+				break;
+			}
+
+		if (!inserted)
+			NewTabMenu_->addAction (act);
 	}
 
 	QMenu* NewTabMenuManager::GetNewTabMenu () const
@@ -166,49 +142,56 @@ namespace LeechCraft
 		}
 		return name;
 	}
+	
+	void NewTabMenuManager::ToggleHide (QObject *obj,
+			const QByteArray& tabClass, bool hide)
+	{
+		IInfo *ii = qobject_cast<IInfo*> (obj);
+		if (!ii)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't implement IInfo";
+			return;
+		}
 
-	void NewTabMenuManager::restoreEmbedTab ()
+		const QByteArray& id = ii->GetUniqueID () + '|' + tabClass;
+		XmlSettingsManager::Instance ()->setProperty ("Hide" + id, hide);
+	}
+	
+	void NewTabMenuManager::OpenTab (QAction *action)
+	{
+		QObject *pObj = action->property ("PluginObj").value<QObject*> ();
+		IHaveTabs *tabs = qobject_cast<IHaveTabs*> (pObj);
+		if (!tabs)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< pObj
+					<< "doesn't implement IHaveTabs";
+			return;
+		}
+
+		const QByteArray& tabClass = action->property ("TabClass").toByteArray ();
+		tabs->TabOpenRequested (tabClass);
+		if (action->property ("Single").toBool ())
+		{
+			NewTabMenu_->removeAction (action);
+			HiddenActions_ [pObj] [tabClass] = action;
+			ToggleHide (pObj, tabClass, false);
+		}
+	}
+
+	void NewTabMenuManager::handleNewTabRequested ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
 		if (!action)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "null action, damn"
-				<< sender ();
+					<< sender ()
+					<< "is not an action";
 			return;
 		}
 
-		QObject *obj = action->data ().value<QObject*> ();
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "action's data is not a QObject*"
-				<< action
-				<< action->data ();
-			return;
-		}
-
-		try
-		{
-			if (ReaddOnRestore_.contains (action->text ()))
-			{
-				QAction *readd = ReaddOnRestore_ [action->text ()];
-				NewTabMenu_->insertAction (action, readd);
-			}
-
-			action->deleteLater ();
-			emit restoreEmbedTabRequested (obj);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< obj;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< obj;
-		}
+		OpenTab (action);
 	}
 }
