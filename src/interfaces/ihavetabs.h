@@ -31,8 +31,8 @@ namespace LeechCraft
 		TFSingle = 0x01,
 		TFOpenableByRequest = 0x02
 	};
-	
-	Q_DECLARE_FLAGS (TabFeatures, TabFeature);
+
+	Q_DECLARE_FLAGS (TabFeatures, LeechCraft::TabFeature);
 
 	struct TabClassInfo
 	{
@@ -53,9 +53,11 @@ class ITabWidget
 public:
 	virtual ~ITabWidget () {}
 	
-	virtual LeechCraft::TabClassInfo GetTabClassInfo () const;
+	virtual LeechCraft::TabClassInfo GetTabClassInfo () const = 0;
 	
-	virtual void CloseRequested () const = 0;
+	virtual QObject* ParentMultiTabs () = 0;
+	
+	virtual void Remove () = 0;
 
 	virtual QToolBar* GetToolBar () const = 0;
 	
