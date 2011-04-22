@@ -22,7 +22,7 @@
 #include <QWidget>
 #include <QItemSelection>
 #include <interfaces/iinfo.h>
-#include <interfaces/iembedtab.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -48,7 +48,8 @@ namespace LeechCraft
 
 			class Aggregator : public QWidget
 							 , public IInfo
-							 , public IEmbedTab
+							 , public IHaveTabs
+							 , public ITabWidget
 							 , public IHaveSettings
 							 , public IJobHolder
 							 , public IEntityHandler
@@ -57,7 +58,7 @@ namespace LeechCraft
 							 , public IStartupWizard
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IStartupWizard IActionsExporter)
+				Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IStartupWizard IActionsExporter)
 
 				Aggregator_Impl *Impl_;
 			public:
@@ -74,8 +75,13 @@ namespace LeechCraft
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
 
-				QWidget* GetTabContents ();
+				TabClasses_t GetTabClasses () const;
 				QToolBar* GetToolBar () const;
+				void TabOpenRequested (const QByteArray&);
+				TabClassInfo GetTabClassInfo () const;
+				QObject* ParentMultiTabs ();
+				void Remove ();
+
 				QAbstractItemModel* GetRepresentation () const;
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
@@ -123,7 +129,8 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::Entity&);
 				void delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**);
-				void bringToFront ();
+				void addNewTab (const QString&, QWidget*);
+				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);
 				void changeTabIcon (QWidget*, const QIcon&);
 				void changeTooltip (QWidget*, QWidget*);

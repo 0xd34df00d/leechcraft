@@ -90,6 +90,8 @@ namespace LeechCraft
 				std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 
 				QModelIndex SelectedRepr_;
+				
+				TabClassInfo TabInfo_;
 			};
 
 			Aggregator::~Aggregator ()
@@ -102,6 +104,13 @@ namespace LeechCraft
 
 				Impl_ = new Aggregator_Impl;
 				Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
+				
+				Impl_->TabInfo_.TabClass_ = "Aggregator";
+				Impl_->TabInfo_.VisibleName_ = GetName ();
+				Impl_->TabInfo_.Description_ = GetInfo ();
+				Impl_->TabInfo_.Icon_ = GetIcon ();
+				Impl_->TabInfo_.Priority_ = 0;
+				Impl_->TabInfo_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
 
 				Impl_->ChannelActions_.SetupActionsStruct (this);
 				Impl_->AppWideActions_.SetupActionsStruct (this);
@@ -328,14 +337,41 @@ namespace LeechCraft
 				return QIcon (":/resources/images/aggregator.svg");
 			}
 
-			QWidget* Aggregator::GetTabContents ()
+			TabClasses_t Aggregator::GetTabClasses () const
 			{
-				return this;
+				TabClasses_t result;
+				result << Impl_->TabInfo_;
+				return result;
 			}
 
 			QToolBar* Aggregator::GetToolBar () const
 			{
 				return Impl_->Ui_.ItemsWidget_->GetToolBar ();
+			}
+			
+			void Aggregator::TabOpenRequested (const QByteArray& tabClass)
+			{
+				if (tabClass == "Aggregator")
+					emit addNewTab (GetTabClassInfo ().VisibleName_, this);
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tabClass;
+			}
+			
+			TabClassInfo Aggregator::GetTabClassInfo () const
+			{
+				return Impl_->TabInfo_;
+			}
+			
+			QObject* Aggregator::ParentMultiTabs ()
+			{
+				return this;
+			}
+			
+			void Aggregator::Remove ()
+			{
+				emit removeTab (this);
 			}
 
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Aggregator::GetSettingsDialog () const
@@ -780,7 +816,7 @@ namespace LeechCraft
 
 			void Aggregator::trayIconActivated ()
 			{
-				emit bringToFront ();
+				emit raiseTab (this);
 				QModelIndex unread = Core::Instance ().GetUnreadChannelIndex ();
 				if (unread.isValid ())
 				{
