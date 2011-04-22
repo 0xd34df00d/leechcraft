@@ -18,14 +18,16 @@
 
 #include "core.h"
 #include <QMetaObject>
+#include <QVariant>
+#include <QSettings>
+#include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/imessage.h>
 #include <interfaces/iproxyobject.h>
-#include "storage.h"
-#include "storagethread.h"
-#include <QVariant>
 #include <interfaces/iclentry.h>
 #include <interfaces/iaccount.h>
+#include "storage.h"
+#include "storagethread.h"
 
 namespace LeechCraft
 {
@@ -40,6 +42,7 @@ namespace ChatHistory
 	, PluginProxy_ (0)
 	{
 		StorageThread_->start (QThread::LowestPriority);
+		LoadDisabled ();
 	}
 	
 	boost::shared_ptr<Core> Core::Instance ()
@@ -63,6 +66,40 @@ namespace ChatHistory
 		return PluginProxy_;
 	}
 	
+	bool Core::IsLoggingEnabled (QObject *entryObj) const
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "could not be casted to ICLEntry";
+			return true;
+		}
+		
+		return !DisabledIDs_.contains (entry->GetEntryID ());
+	}
+	
+	void Core::SetLoggingEnabled (QObject *entryObj, bool enable)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "could not be casted to ICLEntry";
+			return;
+		}
+		
+		const QString& id = entry->GetEntryID ();
+		if (enable)
+			DisabledIDs_.remove (id);
+		else
+			DisabledIDs_ << id;
+		
+		SaveDisabled ();
+	}
+	
 	void Core::Process (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -84,6 +121,9 @@ namespace ChatHistory
 					<< msg->OtherPart ();
 			return;
 		}
+		if (DisabledIDs_.contains (entry->GetEntryID ()))
+			return;
+
 		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		if (!acc)
 		{
@@ -143,6 +183,20 @@ namespace ChatHistory
 				Qt::QueuedConnection,
 				Q_ARG (QString, accountId),
 				Q_ARG (QString, entryId));
+	}
+	
+	void Core::LoadDisabled ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
+		DisabledIDs_ = settings.value ("DisabledIDs").toStringList ().toSet ();
+	}
+	
+	void Core::SaveDisabled ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
+		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.toList ()));
 	}
 }
 }

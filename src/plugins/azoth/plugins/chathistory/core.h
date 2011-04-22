@@ -51,6 +51,7 @@ namespace ChatHistory
 		
 		StorageThread *StorageThread_;
 		IProxyObject *PluginProxy_;
+		QSet<QString> DisabledIDs_;
 		
 		Core ();
 	public:
@@ -59,12 +60,18 @@ namespace ChatHistory
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;
 		
+		bool IsLoggingEnabled (QObject*) const;
+		void SetLoggingEnabled (QObject*, bool);
+		
 		void Process (QObject*);
 		void GetOurAccounts ();
 		void GetUsersForAccount (const QString&);
 		void GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
 		void ClearHistory (const QString& accountId, const QString& entryId);
+	private:
+		void LoadDisabled ();
+		void SaveDisabled ();
 	signals:
 		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&, const QStringList&);

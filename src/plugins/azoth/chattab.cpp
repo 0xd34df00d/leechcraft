@@ -65,6 +65,7 @@ namespace Azoth
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
 	, XferManager_ (0)
+	, TypeTimer_ (new QTimer (this))
 	{
 		Ui_.setupUi (this);
 
@@ -99,6 +100,12 @@ namespace Azoth
 				SIGNAL (linkClicked (const QUrl&)),
 				this,
 				SLOT (handleViewLinkClicked (const QUrl&)));
+		
+		TypeTimer_->setInterval (2000);
+		connect (TypeTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (typeTimeout ()));
 
 		connect (GetEntry<QObject> (),
 				SIGNAL (gotMessage (QObject*)),
@@ -151,26 +158,39 @@ namespace Azoth
 
 		Ui_.EntryInfo_->setText (e->GetEntryName ());
 
-		QTimer::singleShot (0, Ui_.MsgEdit_, SLOT (setFocus ()));
+		QTimer::singleShot (0,
+				Ui_.MsgEdit_,
+				SLOT (setFocus ()));
 
 		connect (Ui_.MsgEdit_,
 				SIGNAL (clearAvailableNicks ()),
 				this,
 				SLOT (clearAvailableNick ()));
-		on_MsgEdit__textChanged ();
+		UpdateTextHeight ();
 		
 		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this,
 				GetEntry<QObject> (),
 				Ui_.View_);
+		
+		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
+				this, "handleFontSizeChanged");
+		handleFontSizeChanged ();
+	}
+	
+	ChatTab::~ChatTab ()
+	{
+		SetChatPartState (CPSGone);
 	}
 	
 	void ChatTab::PrepareTheme ()
 	{
 		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
 		if (data.isEmpty ())
-			data = tr ("<h1 style='color:red;'>Unable to load style, "
-					"please check you've enabled at least one styles plugin.</h1>");
+			data = "<h1 style='color:red;'>" +
+					tr ("Unable to load style, "
+						"please check you've enabled at least one styles plugin.") +
+					"</h1>";
 		
 		data.replace ("BACKGROUNDCOLOR",
 				BgColor_.name ());
@@ -249,6 +269,7 @@ namespace Azoth
 
 	void ChatTab::TabMadeCurrent ()
 	{
+		Core::Instance ().GetChatTabsManager ()->ChatMadeCurrent (this);
 		Core::Instance ().FrameFocused (Ui_.View_->page ()->mainFrame ());
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -263,12 +284,24 @@ namespace Azoth
 		ReformatTitle ();
 		Ui_.MsgEdit_->setFocus ();
 	}
+	
+	void ChatTab::TabLostCurrent ()
+	{
+		SetChatPartState (CPSInactive);
+	}
+	
+	QObject* ChatTab::GetCLEntry () const
+	{
+		return GetEntry<QObject> ();
+	}
 
 	void ChatTab::messageSend ()
 	{
 		QString text = Ui_.MsgEdit_->toPlainText ();
 		if (text.isEmpty ())
 			return;
+		
+		SetChatPartState (CPSActive);
 
 		Ui_.MsgEdit_->clear ();
 		CurrentHistoryPosition_ = -1;
@@ -322,13 +355,11 @@ namespace Azoth
 
 	void ChatTab::on_MsgEdit__textChanged ()
 	{
-		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
+		UpdateTextHeight ();
 
-		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
-		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
-		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
-		Ui_.MsgEdit_->setMinimumHeight (resHeight);
-		Ui_.MsgEdit_->setMaximumHeight (resHeight);
+		SetChatPartState (CPSComposing);
+		TypeTimer_->stop ();
+		TypeTimer_->start ();
 	}
 
 	void ChatTab::on_SubjectButton__toggled (bool show)
@@ -629,6 +660,18 @@ namespace Azoth
 		dia->SuggestSaving (GetEntry<QObject> ());
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->show ();
+	}
+	
+	void ChatTab::typeTimeout()
+	{
+		SetChatPartState (CPSPaused);
+	}
+	
+	void ChatTab::handleFontSizeChanged ()
+	{
+		const int size = XmlSettingsManager::Instance ()
+				.property ("FontSize").toInt ();
+		Ui_.View_->settings ()->setFontSize (QWebSettings::DefaultFontSize, size);
 	}
 
 	template<typename T>
@@ -964,6 +1007,33 @@ namespace Azoth
 		path << title;
 
 		setProperty ("WidgetLogicalPath", path);
+	}
+	
+	void ChatTab::UpdateTextHeight ()
+	{
+		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
+
+		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
+		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
+		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
+		Ui_.MsgEdit_->setMinimumHeight (resHeight);
+		Ui_.MsgEdit_->setMaximumHeight (resHeight);
+	}
+	
+	void ChatTab::SetChatPartState (ChatPartState state)
+	{
+		if (IsMUC_)
+			return;
+		
+		if (!XmlSettingsManager::Instance ()
+				.property ("SendChatStates").toBool ())
+			return;
+		
+		ICLEntry *entry = GetEntry<ICLEntry> ();
+		if (!entry)
+			return;
+		
+		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 
 	void ChatTab::clearAvailableNick ()

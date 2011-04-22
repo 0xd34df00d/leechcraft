@@ -429,8 +429,10 @@ namespace Azoth
 		void handleEntryNameChanged (const QString& newName);
 
 		/** Handles the event of groups change in plugin.
+		 * 
+		 * If obj is null, the sender() is used, otherwise obj is used.
 		 */
-		void handleEntryGroupsChanged (QStringList);
+		void handleEntryGroupsChanged (QStringList, QObject *obj = 0);
 		
 		/** Handles the event of permissions change in entry from plugin.
 		 * 
@@ -457,6 +459,11 @@ namespace Azoth
 		 * changes of the "StatusIcons" property.
 		 */
 		void updateStatusIconset ();
+		
+		/** Is registered in the XmlSettingsManager as handler for
+		 * changes of the "GroupContacts" property.
+		 */
+		void handleGroupContactsChanged ();
 
 		/** This slot is used to update the model item which is
 		 * corresponding to the sender() which is expected to be a

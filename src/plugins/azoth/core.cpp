@@ -51,6 +51,7 @@
 #include "groupeditordialog.h"
 #include "transferjobmanager.h"
 #include "accounthandlerchooserdialog.h"
+#include "util.h"
 
 uint qHash (const QImage& image)
 {
@@ -132,6 +133,8 @@ namespace Azoth
 
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
 				this, "updateStatusIconset");
+		XmlSettingsManager::Instance ().RegisterObject ("GroupContacts",
+				this, "handleGroupContactsChanged");
 	}
 
 	Core& Core::Instance ()
@@ -751,6 +754,23 @@ namespace Azoth
 		
 		return body;
 	}
+	
+	namespace
+	{
+		QStringList GetDisplayGroups (const ICLEntry *clEntry)
+		{
+			QStringList groups;
+			if (clEntry->GetEntryType () == ICLEntry::ETUnauthEntry)
+				groups << Core::tr ("Unauthorized users");
+			else if (clEntry->GetEntryType () != ICLEntry::ETChat ||
+					XmlSettingsManager::Instance ()
+						.property ("GroupContacts").toBool ())
+				groups = clEntry->Groups ();
+			else
+				groups << Core::tr ("Contacts");
+			return groups;
+		}
+	};
 
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
@@ -791,10 +811,7 @@ namespace Azoth
 		const QString& id = clEntry->GetEntryID ();
 		ID2Entry_ [id] = clEntry->GetObject ();
 
-		const QStringList& groups =
-			clEntry->GetEntryType () == ICLEntry::ETUnauthEntry ?
-					QStringList (tr ("Unauthorized users")) :
-					clEntry->Groups ();
+		const QStringList& groups = GetDisplayGroups (clEntry);
 		QList<QStandardItem*> catItems =
 				GetCategoriesItems (groups, accItem);
 		Q_FOREACH (QStandardItem *catItem, catItems)
@@ -802,7 +819,8 @@ namespace Azoth
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
 		
-		handleEntryPermsChanged (clEntry);
+		if (clEntry->GetEntryType () == ICLEntry::ETPrivateChat)
+			handleEntryPermsChanged (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
@@ -864,7 +882,7 @@ namespace Azoth
 		QString Status2Str (const EntryStatus& status, boost::shared_ptr<IProxyObject> obj)
 		{
 			QString result = obj->StateToString (status.State_);
-			const QString& statusString = status.StatusString_;
+			const QString& statusString = Qt::escape (status.StatusString_);
 			if (!statusString.isEmpty ())
 				result += " (" + statusString + ")";
 			return result;
@@ -876,8 +894,23 @@ namespace Azoth
 		QString tip = "<strong>" + entry->GetEntryName () + "</strong>";
 		tip += "<br />" + entry->GetHumanReadableID () + "<br />";
 		tip += Status2Str (entry->GetStatus (), PluginProxyObject_);
-		tip += "<br />";
-		tip += tr ("In groups: ") + entry->Groups ().join ("; ");
+		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+		{
+			tip += "<br />";
+			tip += tr ("In groups: ") + entry->Groups ().join ("; ");
+		}
+
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+		if (mucEntry)
+		{
+			QObject *entryObj = entry->GetObject ();
+			tip += "<hr />";
+			tip += tr ("Affiliation:") + ' ' +
+					AffToString (mucEntry->GetAffiliation (entryObj));
+			tip += "<br />";
+			tip += tr ("Role:") + ' ' +
+					RoleToString (mucEntry->GetRole (entryObj));
+		}
 				
 		const QStringList& variants = entry->Variants ();
 		Q_FOREACH (const QString& variant, variants)
@@ -1907,9 +1940,9 @@ namespace Azoth
 			HandleStatusChanged (entry->GetStatus (), entry, entry->Variants ().first ());
 	}
 
-	void Core::handleEntryGroupsChanged (QStringList newGroups)
+	void Core::handleEntryGroupsChanged (QStringList newGroups, QObject *perform)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		ICLEntry *entry = qobject_cast<ICLEntry*> (perform ? perform : sender ());
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1917,6 +1950,9 @@ namespace Azoth
 					<< "could not be casted to ICLEntry";
 			return;
 		}
+		
+		if (entry->GetEntryType () == ICLEntry::ETChat)
+			newGroups = GetDisplayGroups (entry);
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
@@ -1963,12 +1999,15 @@ namespace Azoth
 			return;
 		}
 		
+		const QString& tip = MakeTooltipString (entry);
+		
 		const IMUCEntry::MUCRole role = mucEntry->GetRole (entryObj);
 		const IMUCEntry::MUCAffiliation aff = mucEntry->GetAffiliation (entryObj);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
 			item->setData (role, CLRRole);
 			item->setData (aff, CLRAffiliation);
+			item->setToolTip (tip);
 		}
 	}
 
@@ -2260,6 +2299,13 @@ namespace Azoth
 			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 				item->setIcon (State2IconCache_ [state]);
 		}
+	}
+	
+	void Core::handleGroupContactsChanged ()
+	{
+		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+			if (entry->GetEntryType () == ICLEntry::ETChat)
+				handleEntryGroupsChanged (GetDisplayGroups (entry), entry->GetObject ());
 	}
 
 	void Core::showVCard ()

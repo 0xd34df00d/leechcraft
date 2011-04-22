@@ -42,6 +42,7 @@ namespace Juick
 		QRegExp IdRX_;
 		QRegExp UnsubRX_;
 		QRegExp ReplyRX_;
+		QRegExp AvatarRX_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -64,6 +65,12 @@ namespace Juick
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,  
+				QObject *chatTab,
+				QObject *entry,
+				int type, 
+				QString variant, 
+				QString text);
 
 	};
 }

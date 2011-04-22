@@ -27,6 +27,8 @@
 #include <interfaces/imessage.h>
 #include "core.h"
 
+class QTranslator;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -43,7 +45,10 @@ namespace ChatHistory
 		Q_INTERFACES (IInfo IPlugin2 IActionsExporter IMultiTabs)
 
 		boost::shared_ptr<STGuard<Core> > Guard_;
+		boost::shared_ptr<QTranslator> Translator_;
 		QAction *ActionHistory_;
+		QHash<QObject*, QAction*> Entry2ActionHistory_;
+		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -74,6 +79,8 @@ namespace ChatHistory
 	private slots:
 		void handleHistoryRequested ();
 		void handleEntryHistoryRequested ();
+		void handleEntryEnableHistoryRequested (bool);
+		void handleEntryDestroyed ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

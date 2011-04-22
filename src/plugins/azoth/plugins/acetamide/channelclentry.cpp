@@ -120,6 +120,11 @@ namespace Acetamide
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
+	
+	void ChannelCLEntry::SetChatPartState (ChatPartState, const QString&)
+	{
+
+	}
 
 	QList<QAction*> ChannelCLEntry::GetActions () const
 	{

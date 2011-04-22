@@ -63,6 +63,17 @@ namespace Xoox
 	{
 		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
 	}
+	
+	void EntryBase::SetChatPartState (ChatPartState state, const QString& variant)
+	{
+		// TODO check if participant supports this XEP.
+		// Need to wait until disco info storage is implemented.
+		QXmppMessage msg;
+		msg.setTo (GetJID ());
+		msg.setState (static_cast<QXmppMessage::State> (state));
+		Account_->GetClientConnection ()->
+				GetClient ()->sendPacket (msg);
+	}
 
 	EntryStatus EntryBase::GetStatus (const QString& variant) const
 	{
