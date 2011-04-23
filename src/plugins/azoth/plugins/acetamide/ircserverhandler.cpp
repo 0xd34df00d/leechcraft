@@ -21,14 +21,15 @@
 #include <QTextCodec>
 #include <plugininterface/util.h>
 #include <plugininterface/notificationactionhandler.h>
-#include "ircaccount.h"
-#include "ircmessage.h"
-#include "ircparser.h"
-#include "ircserverclentry.h"
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "channelpublicmessage.h"
 #include "clientconnection.h"
+#include "ircaccount.h"
+#include "ircmessage.h"
+#include "ircparser.h"
+#include "ircserverclentry.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -91,6 +92,11 @@ namespace Acetamide
 		return ChannelHandlers_.contains (channelID);
 	}
 
+	bool IrcServerHandler::IsParticipantExists (const QString& nick)
+	{
+		return Nick2Entry_.contains (nick);
+	}
+
 	void IrcServerHandler::Add2ChannelsQueue (const ChannelOptions& ch)
 	{
 		if (!ChannelsQueue_.contains (ch))
@@ -116,6 +122,18 @@ namespace Acetamide
 			const QString& msg)
 	{
 		IrcParser_->PartCommand (channels, msg);
+	}
+
+	void IrcServerHandler::ClosePrivateChat (const QString& nick)
+	{
+		if (Nick2Entry_.contains (nick))
+		{
+			Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+			RemoveParticipantEntry (nick);
+			if (!Nick2Entry_.count () && !ChannelHandlers_.count ())
+				Account_->GetClientConnection ()->
+						CloseServer (ServerID_);
+		}
 	}
 
 	ChannelHandler*
@@ -175,6 +193,33 @@ namespace Acetamide
 		return true;
 	}
 
+	bool IrcServerHandler::DisconnectFromServer ()
+	{
+		if (ServerConnectionState_ != NotConnected)
+		{
+			TcpSocket_ptr->disconnectFromHost ();
+			if (TcpSocket_ptr->state()
+					!= QAbstractSocket::UnconnectedState &&
+					!TcpSocket_ptr->waitForDisconnected(1000))
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "cannot to disconnect from host"
+						<< ServerID_;
+				return false;
+			}
+
+			ServerConnectionState_ = NotConnected;
+			ServerCLEntry_->
+					SetStatus (EntryStatus (SOffline, QString ()));
+			TcpSocket_ptr->close ();
+			return true;
+		}
+		else
+			return true;
+
+		return false;
+	}
+
 	bool IrcServerHandler::JoinChannel (const ChannelOptions& channel)
 	{
 		QString id = QString (channel.ChannelName_ + "@" +
@@ -220,8 +265,16 @@ namespace Acetamide
 
 	void IrcServerHandler::IncomingMessage2Server ()
 	{
+		QString message;
+		Q_FOREACH (std::string str, IrcParser_->GetIrcMessageOptions ()
+				.Parameters_)
+		{
+			message.append (QString::fromUtf8 (str.c_str ()))
+				.append(' ');
+		}
+		message.append (IrcParser_->GetIrcMessageOptions ().Message_);
 		IrcMessage *msg = CreateMessage (IMessage::MTEventMessage,
-				ServerID_, IrcParser_->GetIrcMessageOptions ().Message_);
+				ServerID_, message);
 
 		ServerCLEntry_->HandleMessage (msg);
 	}
@@ -567,7 +620,14 @@ namespace Acetamide
 	void IrcServerHandler::UnregisterChannel (ChannelHandler* ich)
 	{
 		ChannelHandlers_.remove (ich->GetChannelID ());
+		if (!ChannelHandlers_.count () && !Nick2Entry_.count () &&
+				XmlSettingsManager::Instance ()
+						.property ("AutoDisconnectFromServer").toBool ())
+		{
+			Account_->GetClientConnection ()->CloseServer (ServerID_);
+		}
 	}
+
 
 };
 };
