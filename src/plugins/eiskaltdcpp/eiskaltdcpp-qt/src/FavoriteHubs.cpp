@@ -69,11 +69,11 @@ QWidget *FavoriteHubs::getWidget(){
     return this;
 }
 
-QString FavoriteHubs::getArenaTitle(){
+QString FavoriteHubs::getArenaTitle() const{
     return tr("Favorite hubs");
 }
 
-QString FavoriteHubs::getArenaShortTitle(){
+QString FavoriteHubs::getArenaShortTitle() const{
     return getArenaTitle();
 }
 

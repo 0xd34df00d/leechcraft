@@ -37,7 +37,7 @@ class FavoriteUsers :
         private Ui::UIFavoriteUsers
 {
 Q_OBJECT
-Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+Q_INTERFACES(ArenaWidget ITabWidget)
 
 friend class dcpp::Singleton<FavoriteUsers>;
 typedef QMap<QString, QVariant> VarMap;
@@ -45,10 +45,10 @@ typedef QMap<QString, QVariant> VarMap;
 public:
 
     virtual QWidget *getWidget() { return this; }
-    virtual QString getArenaTitle() { return tr("Favourite users"); }
-    virtual QString getArenaShortTitle() { return getArenaTitle(); }
+    virtual QString getArenaTitle() const { return tr("Favourite users"); }
+    virtual QString getArenaShortTitle() const { return getArenaTitle(); }
     virtual QMenu *getMenu() { return NULL; }
-    const QPixmap &getPixmap(){ return WICON(WulforUtil::eiFAVUSERS); }
+    const QPixmap &getPixmap() const{ return WICON(WulforUtil::eiFAVUSERS); }
     ArenaWidget::Role role() const { return ArenaWidget::FavoriteUsers; }
 
 Q_SIGNALS:

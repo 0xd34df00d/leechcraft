@@ -35,15 +35,15 @@ class PublicHubs :
         private Ui::UIPublicHubs
 {
 Q_OBJECT
-Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+Q_INTERFACES(ArenaWidget ITabWidget)
 friend class dcpp::Singleton<PublicHubs>;
 
 public:
-    QString  getArenaTitle(){ return tr("Public Hubs"); }
-    QString  getArenaShortTitle(){ return getArenaTitle(); }
+    QString  getArenaTitle() const{ return tr("Public Hubs"); }
+    QString  getArenaShortTitle() const{ return getArenaTitle(); }
     QWidget *getWidget(){ return this; }
     QMenu   *getMenu(){ return NULL; }
-    const QPixmap &getPixmap(){ return WICON(WulforUtil::eiSERVER); }
+    const QPixmap &getPixmap() const{ return WICON(WulforUtil::eiSERVER); }
     void requestFilter() { slotFilter(); }
     ArenaWidget::Role role() const { return ArenaWidget::PublicHubs; }
 

@@ -65,11 +65,11 @@ QWidget *ADLS::getWidget(){
     return this;
 }
 
-QString ADLS::getArenaTitle(){
+QString ADLS::getArenaTitle() const{
     return tr("ADLSearch");
 }
 
-QString ADLS::getArenaShortTitle(){
+QString ADLS::getArenaShortTitle() const{
     return getArenaTitle();
 }
 

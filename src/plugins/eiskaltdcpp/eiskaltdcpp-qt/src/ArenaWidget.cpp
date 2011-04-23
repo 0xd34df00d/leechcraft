@@ -23,12 +23,17 @@ ArenaWidget::ArenaWidget(): _arenaUnload(true), toolBtn(NULL)
 ArenaWidget::~ArenaWidget(){
 }
 
-QObject* ArenaWidget::ParentMultiTabs() const{
+QObject* ArenaWidget::ParentMultiTabs() {
     return MainLayout::getInstance();
 }
 
 QToolBar *ArenaWidget::GetToolBar() const{
     return MainLayout::getInstance()->getActionBar();
+}
+
+LeechCraft::TabClassInfo ArenaWidget::GetTabClassInfo() const {
+    LeechCraft::TabClassInfo tinfo = {"EiskaltDCPP", getArenaShortTitle(), getArenaTitle(), getPixmap(), 60, LeechCraft::TFSingle};
+    return tinfo;
 }
 
 ScriptWidget::ScriptWidget(){
@@ -40,10 +45,10 @@ ScriptWidget::~ScriptWidget(){
 }
 
 QWidget *ScriptWidget::getWidget(){ return _wgt; }
-QString ScriptWidget::getArenaTitle() { return _arenaTitle; }
-QString ScriptWidget::getArenaShortTitle() { return _arenaShortTitle; }
+QString ScriptWidget::getArenaTitle() const { return _arenaTitle; }
+QString ScriptWidget::getArenaShortTitle() const { return _arenaShortTitle; }
 QMenu *ScriptWidget::getMenu() { return _menu; }
-const QPixmap &ScriptWidget::getPixmap() { return pxm; }
+const QPixmap &ScriptWidget::getPixmap() const { return pxm; }
 
 void  ScriptWidget::setWidget(QWidget *wgt) { _wgt = wgt; }
 void  ScriptWidget::setArenaTitle(QString t) { _arenaTitle = t; }
@@ -77,13 +82,13 @@ QWidget *DeclarativeWidget::getWidget(){
     return this;
 }
 
-QString DeclarativeWidget::getArenaTitle(){
+QString DeclarativeWidget::getArenaTitle() const{
     QString fname = view->source().toLocalFile();
 
     return (fname.right(fname.length()-fname.lastIndexOf(QDir::separator())-1));
 }
 
-QString DeclarativeWidget::getArenaShortTitle(){
+QString DeclarativeWidget::getArenaShortTitle() const{
     return getArenaTitle();
 }
 
@@ -91,7 +96,7 @@ QMenu *DeclarativeWidget::getMenu(){
     return NULL;
 }
 
-const QPixmap &DeclarativeWidget::getPixmap(){
+const QPixmap &DeclarativeWidget::getPixmap() const{
     return WICON(WulforUtil::eiFILETYPE_APPLICATION);
 }
 #endif

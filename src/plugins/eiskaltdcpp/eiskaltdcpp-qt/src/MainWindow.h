@@ -50,7 +50,7 @@
 #include "dcpp/version.h"
 
 #include <interfaces/iinfo.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 
 #include "qtsingleapp/qtlockedfile.h"
 #include "qtsingleapp/qtsingleapplication.h"
@@ -110,13 +110,13 @@ class MainLayout:
         public QMainWindow,
         public dcpp::Singleton<MainLayout>,
         public IInfo,
-        public IMultiTabs,
+        public IHaveTabs,
         private dcpp::LogManagerListener,
         private dcpp::TimerManagerListener,
         private dcpp::QueueManagerListener
 {
     Q_OBJECT
-    Q_INTERFACES (IInfo IMultiTabs)
+    Q_INTERFACES (IInfo IHaveTabs)
 
 friend class dcpp::Singleton<MainLayout>;
 
@@ -166,6 +166,13 @@ friend class dcpp::Singleton<MainLayout>;
         virtual QIcon GetIcon () const;
         QStringList Provides () const { return QStringList ("directconnect"); }
 
+        /** IHaveTabs interface */
+        virtual void TabOpenRequested (const QByteArray&){}
+        virtual LeechCraft::TabClasses_t GetTabClasses () const {
+            LeechCraft::TabClassInfo tinfo = {"EiskaltDCPP", "EiskaltDC++", "EiskaltDC++ Tab", QIcon(), 60, LeechCraft::TFSingle};
+            return (QList<LeechCraft::TabClassInfo>() << tinfo);
+        }
+
     public Q_SLOTS:
         /** Allow widget to be mapped on arena*/
         void addArenaWidget(ArenaWidget*);
@@ -211,7 +218,7 @@ friend class dcpp::Singleton<MainLayout>;
         virtual void newTabRequested(){}
 
 Q_SIGNALS:
-        /** IMultiTabs interface*/
+        /** IHaveTabs interface*/
         void addNewTab(const QString &name, QWidget *tabContents);
         void removeTab (QWidget *tabContents);
         void changeTabName (QWidget *tabContents, const QString& name);

@@ -1297,7 +1297,7 @@ QWidget *HubFrame::getWidget(){
     return this;
 }
 
-QString HubFrame::getArenaTitle(){
+QString HubFrame::getArenaTitle() const{
     QString ret = tr("Not connected");
 
     if (client && client->isConnected()){
@@ -1315,7 +1315,7 @@ QString HubFrame::getArenaTitle(){
     return ret;
 }
 
-QString HubFrame::getArenaShortTitle(){
+QString HubFrame::getArenaShortTitle() const{
     QString ret = tr("Not connected");
 
     if (client && client->isConnected()){
@@ -1334,7 +1334,7 @@ QMenu *HubFrame::getMenu(){
     return arenaMenu;
 }
 
-const QPixmap &HubFrame::getPixmap(){
+const QPixmap &HubFrame::getPixmap() const{
     if (hasHighlightMessages)
         return WICON(WulforUtil::eiMESSAGE);
     else if (hasMessages)
