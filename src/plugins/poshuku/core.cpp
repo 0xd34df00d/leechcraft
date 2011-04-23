@@ -81,6 +81,13 @@ namespace LeechCraft
 				qRegisterMetaTypeStreamOperators<ElementData> ("LeechCraft::Plugins::Poshuku::ElementData");
 				qRegisterMetaType<ElementsData_t> ("LeechCraft::Plugins::Poshuku::ElementsData_t");
 				qRegisterMetaTypeStreamOperators<ElementsData_t> ("LeechCraft::Plugins::Poshuku::ElementsData_t");
+				
+				TabClass_.TabClass_ = "Poshuku";
+				TabClass_.VisibleName_ = tr ("Poshuku");
+				TabClass_.Description_ = tr ("The Poshuku web browser");
+				TabClass_.Icon_ = QIcon (":/resources/images/poshuku.svg");
+				TabClass_.Priority_ = 80;
+				TabClass_.Features_ = TFOpenableByRequest;
 
 				QSettings settings (QCoreApplication::organizationName (),
 						QCoreApplication::applicationName () + "_Poshuku");
@@ -216,6 +223,11 @@ namespace LeechCraft
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
+			}
+			
+			TabClassInfo Core::GetTabClass () const
+			{
+				return TabClass_;
 			}
 
 			bool Core::CouldHandle (const Entity& e) const

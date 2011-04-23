@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
 #include <QWidget>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include "ui_chathistorywidget.h"
 
 class QStandardItemModel;
@@ -35,10 +35,10 @@ namespace ChatHistory
 	class Plugin;
 
 	class ChatHistoryWidget : public QWidget
-							, public IMultiTabsWidget
+							, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IMultiTabsWidget);
+		Q_INTERFACES (ITabWidget);
 
 		Ui::ChatHistoryWidget Ui_;
 		QStandardItemModel *HistoryViewModel_;
@@ -64,8 +64,8 @@ namespace ChatHistory
 		
 		void Remove ();
 		QToolBar* GetToolBar () const;
-		void NewTabRequested ();
-		QObject* ParentMultiTabs () const;
+		QObject* ParentMultiTabs ();
+		TabClassInfo GetTabClassInfo () const;
 		QList<QAction*> GetTabBarContextMenuActions () const;
 	private slots:
 		void handleGotOurAccounts (const QStringList&);

@@ -23,7 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iactionsexporter.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/imessage.h>
 #include "core.h"
 
@@ -39,10 +39,10 @@ namespace ChatHistory
 				 , public IInfo
 				 , public IPlugin2
 				 , public IActionsExporter
-				 , public IMultiTabs
+				 , public IHaveTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IActionsExporter IMultiTabs)
+		Q_INTERFACES (IInfo IPlugin2 IActionsExporter IHaveTabs)
 
 		boost::shared_ptr<STGuard<Core> > Guard_;
 		boost::shared_ptr<QTranslator> Translator_;
@@ -62,6 +62,9 @@ namespace ChatHistory
 		
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*> > GetMenuActions () const;
+		
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 	public slots:
 		void initPlugin (QObject*);
 
@@ -75,7 +78,6 @@ namespace ChatHistory
 				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
-		void newTabRequested ();
 	private slots:
 		void handleHistoryRequested ();
 		void handleEntryHistoryRequested ();

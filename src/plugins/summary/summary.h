@@ -23,8 +23,7 @@
 #include <QStringList>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
-#include <interfaces/iembedtab.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/isummaryrepresentation.h>
 
@@ -36,15 +35,15 @@ namespace LeechCraft
 		{
 			class Summary : public QObject
 						  , public IInfo
-						  , public IEmbedTab
-						  , public IMultiTabs
+						  , public IHaveTabs
 						  , public IEntityHandler
 						  , public ISummaryRepresentation
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IMultiTabs IEntityHandler ISummaryRepresentation)
+				Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISummaryRepresentation)
 
 				std::auto_ptr<QTranslator> Translator_;
+				TabClasses_t TabClasses_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -58,18 +57,15 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 
-				QWidget* GetTabContents ();
-				QToolBar* GetToolBar () const;
+				TabClasses_t GetTabClasses () const;
+				void TabOpenRequested (const QByteArray&);
 
 				bool CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
 				QModelIndex MapToSource (const QModelIndex&) const;
 				QTreeView* GetCurrentView () const;
-			public slots:
-				void newTabRequested ();
 			signals:
-				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);
 				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);

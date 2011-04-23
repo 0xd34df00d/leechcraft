@@ -21,7 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <QTime>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
@@ -45,10 +45,10 @@ namespace LeechCraft
 			class BrowserWidget : public QWidget
 								, public IBrowserWidget
 								, public IWebWidget
-								, public IMultiTabsWidget
+								, public ITabWidget
 			{
 				Q_OBJECT
-				Q_INTERFACES (LeechCraft::Plugins::Poshuku::IBrowserWidget IWebWidget IMultiTabsWidget)
+				Q_INTERFACES (LeechCraft::Plugins::Poshuku::IBrowserWidget IWebWidget ITabWidget)
 
 				Ui::BrowserWidget Ui_;
 
@@ -120,10 +120,10 @@ namespace LeechCraft
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
-				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
 				QMap<QString, QList<QAction*> > GetWindowMenus () const;
-				QObject* ParentMultiTabs () const;
+				QObject* ParentMultiTabs ();
+				TabClassInfo GetTabClassInfo () const;
 
 				void SetOnLoadScrollPoint (const QPoint&);
 			private:

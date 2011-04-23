@@ -267,10 +267,6 @@ namespace Azoth
 		return S_ParentMultiTabs_;
 	}
 
-	void ChatTab::NewTabRequested ()
-	{
-	}
-
 	QToolBar* ChatTab::GetToolBar () const
 	{
 		return TabToolbar_;

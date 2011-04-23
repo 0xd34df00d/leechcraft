@@ -217,9 +217,6 @@ namespace LeechCraft
 				if (!strcmp (interfaceName, "IActionsExporter") ||
 						!strcmp (interfaceName, "org.Deviant.LeechCraft.IActionsExporter/1.0"))
 					return static_cast<IActionsExporter*> (this);
-				if (!strcmp (interfaceName, "IEmbedTab") ||
-						!strcmp (interfaceName, "org.Deviant.LeechCraft.IEmbedTab/1.0"))
-					return static_cast<IEmbedTab*> (this);
 
 				return QObject::qt_metacast (interfaceName);
 			}
@@ -341,16 +338,6 @@ namespace LeechCraft
 				args << QVariant::fromValue<QObject*> (provider);
 				args << feature;
 				SCALL (void) ("SetProvider", args);
-			}
-
-			QWidget* WrapperObject::GetTabContents ()
-			{
-				return SCALL (QWidget*) ("GetTabContents");
-			}
-
-			QToolBar* WrapperObject::GetToolBar () const
-			{
-				return SCALL (QToolBar*) ("GetToolBar");
 			}
 
 			bool WrapperObject::CouldHandle (const Entity& e) const

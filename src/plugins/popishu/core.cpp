@@ -27,12 +27,23 @@ namespace LeechCraft
 		{
 			Core::Core ()
 			{
+				TabClass_.TabClass_ = "Popishu";
+				TabClass_.VisibleName_ = tr ("Text editor");
+				TabClass_.Description_ = tr ("The Popishu text editor");
+				TabClass_.Icon_ = QIcon (":/resources/images/popishu.svg");
+				TabClass_.Priority_ = 70;
+				TabClass_.Features_ = TFOpenableByRequest;
 			}
 
 			Core& Core::Instance ()
 			{
 				static Core c;
 				return c;
+			}
+			
+			TabClassInfo Core::GetTabClass () const
+			{
+				return TabClass_;
 			}
 
 			void Core::SetProxy (ICoreProxy_ptr proxy)

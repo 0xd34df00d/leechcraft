@@ -96,6 +96,23 @@ namespace ChatHistory
 		return result;
 	}
 	
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		TabClasses_t result;
+		result << Core::Instance ()->GetTabClass ();
+		return result;
+	}
+	
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
+	{
+		if (tabClass == "Chathistory")
+			handleHistoryRequested ();
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tabClass;
+	}
+	
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Core::Instance ()->SetPluginProxy (proxy);
@@ -265,11 +282,6 @@ namespace ChatHistory
 	void Plugin::handleEntryDestroyed ()
 	{
 		Entry2ActionHistory_.remove (sender ());
-	}
-	
-	void Plugin::newTabRequested ()
-	{
-		handleHistoryRequested ();
 	}
 }
 }

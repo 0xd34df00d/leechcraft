@@ -23,7 +23,7 @@
 #include <QTranslator>
 #include <QWidget>
 #include <interfaces/iinfo.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/iactionsexporter.h>
@@ -43,7 +43,7 @@ namespace LeechCraft
 		{
 			class Poshuku : public QObject
 						  , public IInfo
-						  , public IMultiTabs
+						  , public IHaveTabs
 						  , public IPluginReady
 						  , public IHaveSettings
 						  , public IEntityHandler
@@ -52,7 +52,7 @@ namespace LeechCraft
 						  , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IActionsExporter)
+				Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IActionsExporter)
 
 				QMenu *ToolMenu_;
 				QAction *ImportXbel_;
@@ -75,6 +75,9 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
+				
+				TabClasses_t GetTabClasses () const;
+				void TabOpenRequested (const QByteArray&);
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;
 				void AddPlugin (QObject*);
@@ -92,8 +95,6 @@ namespace LeechCraft
 				QMap<QString, ActionInfo> GetActionInfo () const;
 
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-			public slots:
-				void newTabRequested ();
 			private:
 				void InitConnections ();
 				void RegisterSettings ();

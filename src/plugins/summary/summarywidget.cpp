@@ -29,7 +29,7 @@
 #include <interfaces/ijobholder.h>
 #include "core.h"
 #include "searchwidget.h"
-#include <boost/concept_check.hpp>
+#include "summary.h"
 
 namespace LeechCraft
 {
@@ -171,19 +171,19 @@ namespace LeechCraft
 				return Toolbar_;
 			}
 
-			void SummaryWidget::NewTabRequested ()
-			{
-				emit newTabRequested ();
-			}
-
 			QList<QAction*> SummaryWidget::GetTabBarContextMenuActions () const
 			{
 				return QList<QAction*> ();
 			}
 
-			QObject* SummaryWidget::ParentMultiTabs () const
+			QObject* SummaryWidget::ParentMultiTabs ()
 			{
 				return S_ParentMultiTabs_;
+			}
+			
+			TabClassInfo SummaryWidget::GetTabClassInfo () const
+			{
+				return qobject_cast<Summary*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
 			}
 
 			void SummaryWidget::SetQuery (QStringList query)

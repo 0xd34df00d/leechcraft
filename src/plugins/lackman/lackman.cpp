@@ -42,6 +42,13 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (Util::InstallTranslator ("lackman"));
+				
+				TabClass_.TabClass_ = "Lackman";
+				TabClass_.VisibleName_ = tr ("LackMan");
+				TabClass_.Description_ = GetInfo ();
+				TabClass_.Icon_ = GetIcon ();
+				TabClass_.Priority_ = 0;
+				TabClass_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
 
 				Ui_.setupUi (this);
 				
@@ -157,12 +164,39 @@ namespace LeechCraft
 			{
 				return QIcon (":/resources/images/lackman.svg");
 			}
-
-			QWidget* Plugin::GetTabContents ()
+			
+			TabClasses_t Plugin::GetTabClasses () const
+			{
+				TabClasses_t result;
+				result << TabClass_;
+				return result;
+			}
+			
+			void Plugin::TabOpenRequested (const QByteArray& tabClass)
+			{
+				if (tabClass == "Lackman")
+					emit addNewTab (GetName (), this);
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tabClass;
+			}
+			
+			TabClassInfo Plugin::GetTabClassInfo () const
+			{
+				return TabClass_;
+			}
+			
+			QObject* Plugin::ParentMultiTabs ()
 			{
 				return this;
 			}
-
+			
+			void Plugin::Remove ()
+			{
+				emit removeTab (this);
+			}
+			
 			QToolBar* Plugin::GetToolBar () const
 			{
 				return Toolbar_;

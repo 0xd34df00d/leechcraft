@@ -231,6 +231,23 @@ namespace LeechCraft
 			{
 				return QIcon (":/resources/images/poshuku.svg");
 			}
+			
+			TabClasses_t Poshuku::GetTabClasses () const
+			{
+				TabClasses_t result;
+				result << Core::Instance ().GetTabClass ();
+				return result;
+			}
+			
+			void Poshuku::TabOpenRequested (const QByteArray& tabClass)
+			{
+				if (tabClass == "Poshuku")
+					Core::Instance ().NewURL ("", true);
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tabClass;
+			}
 
 			QSet<QByteArray> Poshuku::GetExpectedPluginClasses () const
 			{
@@ -321,11 +338,6 @@ namespace LeechCraft
 				}
 
 				return result;
-			}
-
-			void Poshuku::newTabRequested ()
-			{
-				Core::Instance ().NewURL ("", true);
 			}
 
 			void Poshuku::InitConnections ()

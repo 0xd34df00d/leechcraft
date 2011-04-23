@@ -27,7 +27,6 @@ SET (SRCS
 	tabppwidget.cpp
 	xmlsettingsmanager.cpp
 	tabsfiltermodel.cpp
-	tabwidget.cpp
 	)
 SET (HEADERS
 	tabpp.h
@@ -35,11 +34,9 @@ SET (HEADERS
 	tabppwidget.h
 	xmlsettingsmanager.h
 	tabsfiltermodel.h
-	tabwidget.h
 	)
 SET (FORMS
 	tabppwidget.ui
-	tabwidget.ui
 	)
 SET (TRANSLATIONS
 	leechcraft_tabpp_uk_UA.ts

@@ -25,7 +25,6 @@
 #include "core.h"
 #include "tabppwidget.h"
 #include "xmlsettingsmanager.h"
-#include "tabwidget.h"
 
 namespace LeechCraft
 {
@@ -44,8 +43,6 @@ namespace LeechCraft
 				Core::Instance ().SetProxy (proxy);
 
 				Dock_ = new TabPPWidget ("Tab++", proxy->GetMainWindow ());
-
-				TabWidget::SetMultiTabsParent (this);
 			}
 
 			void Plugin::SecondInit ()
@@ -104,16 +101,6 @@ namespace LeechCraft
 						Dock_->GetActivatorAction ()->shortcut (),
 						Dock_->GetActivatorAction ()->icon ());
 				return result;
-			}
-
-			void Plugin::newTabRequested ()
-			{
-				TabWidget *w = new TabWidget ();
-				connect (w,
-						SIGNAL (removeTab (QWidget*)),
-						this,
-						SIGNAL (removeTab (QWidget*)));
-				emit addNewTab (QString ("Tab++"), w);
 			}
 		};
 	};

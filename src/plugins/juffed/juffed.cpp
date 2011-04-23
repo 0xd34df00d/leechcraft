@@ -25,6 +25,16 @@ namespace JuffEd
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		TabClassInfo tc =
+		{
+			"Juffed",
+			tr ("Advanced text editor"),
+			tr ("JuffEd, the advanced text editor ported to LeechCraft"),
+			GetIcon (),
+			67,
+			TFOpenableByRequest
+		};
+		TabClasses_ << tc;
 	}
 
 	void Plugin::SecondInit ()
@@ -55,9 +65,21 @@ namespace JuffEd
 		return QIcon ();
 	}
 	
-	void Plugin::newTabRequested ()
+	TabClasses_t Plugin::GetTabClasses () const
 	{
-		// TODO handle new tab request
+		return TabClasses_;
+	}
+	
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
+	{
+		if (tabClass == "Juffed")
+		{
+			// open new tab with juffed
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tabClass;
 	}
 }
 }

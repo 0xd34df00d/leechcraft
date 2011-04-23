@@ -19,8 +19,10 @@
 #ifndef PLUGINS_SUMMARY_SUMMARYWIDGET_H
 #define PLUGINS_SUMMARY_SUMMARYWIDGET_H
 #include <QWidget>
+#include <QToolBar>
+#include <QMap>
 #include <QStringList>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include "ui_summarywidget.h"
 #include "core.h"
 
@@ -36,10 +38,10 @@ namespace LeechCraft
 			class SearchWidget;
 
 			class SummaryWidget : public QWidget
-								, public IMultiTabsWidget
+								, public ITabWidget
 			{
 				Q_OBJECT
-				Q_INTERFACES (IMultiTabsWidget)
+				Q_INTERFACES (ITabWidget)
 
 				Ui::SummaryWidget Ui_;
 				QTimer *FilterTimer_;
@@ -55,9 +57,9 @@ namespace LeechCraft
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
-				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
-				QObject* ParentMultiTabs () const;
+				QObject* ParentMultiTabs ();
+				TabClassInfo GetTabClassInfo () const;
 
 				void SmartDeselect (SummaryWidget*);
 				Ui::SummaryWidget GetUi () const;
@@ -90,7 +92,6 @@ namespace LeechCraft
 				void queryUpdated (const LeechCraft::Plugins::Summary::Query2&);
 				void raiseTab (QWidget*);
 				void needToClose ();
-				void newTabRequested ();
 			};
 		};
 	};

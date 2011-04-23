@@ -87,7 +87,6 @@ namespace Azoth
 		TabClassInfo GetTabClassInfo () const;
 		QList<QAction*> GetTabBarContextMenuActions () const;
 		QObject* ParentMultiTabs ();
-		void NewTabRequested ();
 		QToolBar* GetToolBar () const;
 		void Remove ();
 		void TabMadeCurrent ();

@@ -43,17 +43,12 @@ namespace JuffEd
 		return 0;
 	}
 
-	
-	void JuffEdWidget::NewTabRequested()
-	{
-	}
-	
-	QObject* JuffEdWidget::ParentMultiTabs() const
+	QObject* JuffEdWidget::ParentMultiTabs ()
 	{
 		return S_ParentMultiTabs_;
 	}
 	
-	QList<QAction*> JuffEdWidget::GetTabBarContextMenuActions() const
+	QList<QAction*> JuffEdWidget::GetTabBarContextMenuActions () const
 	{
 		return QList<QAction*> ();
 	}

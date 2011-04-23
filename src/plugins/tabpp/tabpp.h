@@ -24,7 +24,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/iactionsexporter.h>
-#include <interfaces/imultitabs.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 class QTranslator;
@@ -42,10 +41,9 @@ namespace LeechCraft
 						 , public IActionsExporter
 						 , public IHaveSettings
 						 , public IHaveShortcuts
-						 , public IMultiTabs
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IActionsExporter IHaveSettings IHaveShortcuts IMultiTabs)
+				Q_INTERFACES (IInfo IActionsExporter IHaveSettings IHaveShortcuts)
 
 				TabPPWidget *Dock_;
 				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
@@ -70,17 +68,6 @@ namespace LeechCraft
 
 				void SetShortcut (const QString&, const QKeySequences_t&);
 				QMap<QString, ActionInfo> GetActionInfo () const;
-			public slots:
-				void newTabRequested ();
-			signals:
-				void bringToFront ();
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
 			};
 		};
 	};

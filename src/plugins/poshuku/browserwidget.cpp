@@ -679,11 +679,6 @@ namespace LeechCraft
 				return Own_ ? ToolBar_ : 0;
 			}
 
-			void BrowserWidget::NewTabRequested ()
-			{
-				Core::Instance ().NewURL ("", true);
-			}
-
 			QList<QAction*> BrowserWidget::GetTabBarContextMenuActions () const
 			{
 				QList<QAction*> result;
@@ -707,9 +702,14 @@ namespace LeechCraft
 				return WindowMenus_;
 			}
 
-			QObject* BrowserWidget::ParentMultiTabs () const
+			QObject* BrowserWidget::ParentMultiTabs ()
 			{
 				return S_MultiTabsParent_;
+			}
+			
+			TabClassInfo BrowserWidget::GetTabClassInfo () const
+			{
+				return Core::Instance ().GetTabClass ();
 			}
 
 			void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)

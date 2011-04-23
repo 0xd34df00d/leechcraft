@@ -26,6 +26,7 @@
 #include <plugininterface/tagscompletionmodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ihaveshortcuts.h>
 #include "favoritesmodel.h"
 #include "historymodel.h"
@@ -87,6 +88,8 @@ namespace LeechCraft
 				FavoritesChecker *FavoritesChecker_;
 
 				bool Initialized_;
+				
+				TabClassInfo TabClass_;
 
 				Core ();
 			public:
@@ -109,6 +112,7 @@ namespace LeechCraft
 				void Release ();
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
+				TabClassInfo GetTabClass () const;
 
 				bool CouldHandle (const Entity&) const;
 				void Handle (Entity);

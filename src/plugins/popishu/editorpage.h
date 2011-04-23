@@ -20,7 +20,7 @@
 #define PLUGINS_POPISHU_EDITORPAGE_H
 #include <QWidget>
 #include <QHash>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
 #include "ui_editorpage.h"
 
@@ -33,10 +33,10 @@ namespace LeechCraft
 		namespace Popishu
 		{
 			class EditorPage : public QWidget
-							 , public IMultiTabsWidget
+							 , public ITabWidget
 			{
 				Q_OBJECT
-				Q_INTERFACES (IMultiTabsWidget)
+				Q_INTERFACES (ITabWidget)
 
 				Ui::EditorPage Ui_;
 
@@ -61,10 +61,10 @@ namespace LeechCraft
 
 				void Remove ();
 				QToolBar* GetToolBar () const;
-				void NewTabRequested ();
-				QObject* ParentMultiTabs () const;
+				QObject* ParentMultiTabs ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
 				QMap<QString, QList<QAction*> > GetWindowMenus () const;
+				TabClassInfo GetTabClassInfo () const;
 
 				void SetText (const QString&);
 				void SetLanguage (const QString&);

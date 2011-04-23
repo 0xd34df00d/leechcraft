@@ -44,8 +44,11 @@ namespace LeechCraft
 			if (!(info.Features_ & TFOpenableByRequest))
 				continue;
 
-			QAction *newAct = NewTabMenu_->addAction (info.Icon_,
+			QAction *newAct = new QAction (info.Icon_,
 					AccelerateName (info.VisibleName_),
+					this);
+			connect (newAct,
+					SIGNAL (triggered ()),
 					this,
 					SLOT (handleNewTabRequested ()));
 			newAct->setProperty ("PluginObj", QVariant::fromValue<QObject*> (obj));
@@ -55,7 +58,10 @@ namespace LeechCraft
 			newAct->setStatusTip (info.Description_);
 			newAct->setToolTip (info.Description_);
 			
-			if (info.Features_ & TFSingle)
+			InsertAction (newAct);
+			
+			if (info.Features_ & TFSingle ||
+					info.Features_ & TFByDefault)
 			{
 				const QByteArray& id = ii->GetUniqueID () + '|' + info.TabClass_;
 				const bool hide = XmlSettingsManager::Instance ()->
@@ -109,17 +115,7 @@ namespace LeechCraft
 		
 		ToggleHide (itw->ParentMultiTabs (), tabClass, true);
 		
-		bool inserted = false;
-		Q_FOREACH (QAction *menuAct, NewTabMenu_->actions ())
-			if (menuAct->isSeparator () || menuAct->text () > act->text ())
-			{
-				NewTabMenu_->insertAction (menuAct, act);
-				inserted = true;
-				break;
-			}
-
-		if (!inserted)
-			NewTabMenu_->addAction (act);
+		InsertAction (act);
 	}
 
 	QMenu* NewTabMenuManager::GetNewTabMenu () const
@@ -179,6 +175,22 @@ namespace LeechCraft
 			HiddenActions_ [pObj] [tabClass] = action;
 			ToggleHide (pObj, tabClass, false);
 		}
+	}
+	
+	void NewTabMenuManager::InsertAction (QAction *act)
+	{
+		bool inserted = false;
+		Q_FOREACH (QAction *menuAct, NewTabMenu_->actions ())
+			if (menuAct->isSeparator () ||
+					QString::localeAwareCompare (menuAct->text (), act->text ()) > 0)
+			{
+				NewTabMenu_->insertAction (menuAct, act);
+				inserted = true;
+				break;
+			}
+
+		if (!inserted)
+			NewTabMenu_->addAction (act);
 	}
 
 	void NewTabMenuManager::handleNewTabRequested ()

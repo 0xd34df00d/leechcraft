@@ -19,16 +19,17 @@
 #ifndef PLUGINS_JUFFED_JUFFEDWIDGET_H
 #define PLUGINS_JUFFED_JUFFEDWIDGET_H
 #include <QWidget>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
 namespace JuffEd
 {
 	class JuffEdWidget : public QWidget
-					   , public IMultiTabsWidget
+					   , public ITabWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (ITabWidget)
 		
 		static QObject *S_ParentMultiTabs_;
 	public:
@@ -38,8 +39,7 @@ namespace JuffEd
 		
 		void Remove ();
 		QToolBar* GetToolBar () const;
-		void NewTabRequested ();
-		QObject* ParentMultiTabs () const;
+		QObject* ParentMultiTabs ();
 		QList<QAction*> GetTabBarContextMenuActions () const;
 	};
 }

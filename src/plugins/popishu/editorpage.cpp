@@ -241,12 +241,7 @@ namespace LeechCraft
 				return Toolbar_;
 			}
 
-			void EditorPage::NewTabRequested ()
-			{
-				Core::Instance ().NewTabRequested ();
-			}
-
-			QObject* EditorPage::ParentMultiTabs () const
+			QObject* EditorPage::ParentMultiTabs ()
 			{
 				return S_MultiTabsParent_;
 			}
@@ -259,6 +254,11 @@ namespace LeechCraft
 			QMap<QString, QList<QAction*> > EditorPage::GetWindowMenus () const
 			{
 				return WindowMenus_;
+			}
+			
+			TabClassInfo EditorPage::GetTabClassInfo () const
+			{
+				return Core::Instance ().GetTabClass ();
 			}
 
 			void EditorPage::SetText (const QString& text)

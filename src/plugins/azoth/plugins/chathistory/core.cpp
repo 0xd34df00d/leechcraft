@@ -42,6 +42,13 @@ namespace ChatHistory
 	, PluginProxy_ (0)
 	{
 		StorageThread_->start (QThread::LowestPriority);
+
+		TabClass_.TabClass_ = "Chathistory";
+		TabClass_.VisibleName_ = tr ("Chat history");
+		TabClass_.Description_ = tr ("Chat history viewer for the Azoth IM");
+		TabClass_.Priority_ = 40;
+		TabClass_.Features_ = TFOpenableByRequest;
+
 		LoadDisabled ();
 	}
 	
@@ -54,6 +61,11 @@ namespace ChatHistory
 			return ptr;
 		}
 		return InstPtr_.lock ();
+	}
+	
+	TabClassInfo Core::GetTabClass () const
+	{
+		return TabClass_;
 	}
 	
 	void Core::SetPluginProxy (QObject *proxy)

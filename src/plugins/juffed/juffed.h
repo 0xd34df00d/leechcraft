@@ -20,7 +20,7 @@
 #define PLUGINS_JUFFED_JUFFED_H
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -28,10 +28,12 @@ namespace JuffEd
 {
 	class Plugin : public QObject
 				 , public IInfo
-				 , public IMultiTabs
+				 , public IHaveTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IMultiTabs)
+		Q_INTERFACES (IInfo IHaveTabs)
+		
+		TabClasses_t TabClasses_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -40,8 +42,9 @@ namespace JuffEd
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-	public slots:
-		void newTabRequested ();
+		
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 	signals:
 		void addNewTab (const QString& name, QWidget *tabContents);
 		void removeTab (QWidget *tabContents);

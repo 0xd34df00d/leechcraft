@@ -23,7 +23,7 @@
 #include <QSortFilterProxyModel>
 #include <QDynamicPropertyChangeEvent>
 #include <plugininterface/treeitem.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 
 bool operator< (const QStringList& left, const QStringList& right)
 {
@@ -394,19 +394,19 @@ namespace LeechCraft
 
 				if (initConnections)
 				{
-					QObject *obj = 0;
-					IMultiTabsWidget *imtw = qobject_cast<IMultiTabsWidget*> (widget);
-					if (imtw)
-						obj = imtw->ParentMultiTabs ();
-					else
-						obj = widget;
-					if (obj->metaObject ()->indexOfSignal (QMetaObject::normalizedSignature (
-									"changeTabIcon (QWidget*, const QIcon&)"
-									).constData ()) != -1)
-						connect (obj,
-								SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-								this,
-								SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
+					ITabWidget *imtw = qobject_cast<ITabWidget*> (widget);
+					if (!imtw)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< widget
+								<< "doesn't implement ITabWidget";
+						return;
+					}
+
+					connect (imtw->ParentMultiTabs (),
+							SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+							this,
+							SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
 					handleChangeTabIcon (widget, TabWidget_->tabIcon (idx));
 				}
 			}

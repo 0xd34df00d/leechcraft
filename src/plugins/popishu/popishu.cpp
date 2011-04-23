@@ -106,6 +106,23 @@ namespace LeechCraft
 			{
 				return QIcon (":/resources/images/popishu.svg");
 			}
+			
+			TabClasses_t Plugin::GetTabClasses () const
+			{
+				TabClasses_t result;
+				result << Core::Instance ().GetTabClass ();
+				return result;
+			}
+			
+			void Plugin::TabOpenRequested (const QByteArray& tabClass)
+			{
+				if (tabClass == "Popishu")
+					Core::Instance ().NewTabRequested ();
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tabClass;
+			}
 
 			bool Plugin::CouldHandle (const Entity& entity) const
 			{
@@ -122,14 +139,9 @@ namespace LeechCraft
 			{
 				return XmlSettingsDialog_;
 			}
-
-			void Plugin::newTabRequested ()
-			{
-				Core::Instance ().NewTabRequested ();
-			}
-		};
-	};
-};
+		}
+	}
+}
 
 Q_EXPORT_PLUGIN2 (leechcraft_popishu, LeechCraft::Plugins::Popishu::Plugin);
 

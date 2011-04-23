@@ -20,7 +20,7 @@
 #define PLUGINS_POPISHU_POPISHU_H
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/structures.h>
@@ -35,12 +35,12 @@ namespace LeechCraft
 		{
 			class Plugin : public QObject
 						 , public IInfo
-						 , public IMultiTabs
+						 , public IHaveTabs
 						 , public IEntityHandler
 						 , public IHaveSettings
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs IEntityHandler IHaveSettings)
+				Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
 
 				boost::shared_ptr<QTranslator> Translator_;
 				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
@@ -52,13 +52,14 @@ namespace LeechCraft
 				QString GetName () const;
 				QString GetInfo () const;
 				QIcon GetIcon () const;
+				
+				TabClasses_t GetTabClasses () const;
+				void TabOpenRequested (const QByteArray&);
 
 				bool CouldHandle (const Entity&) const;
 				void Handle (Entity);
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-			public slots:
-				void newTabRequested ();
 			signals:
 				void addNewTab (const QString&, QWidget*);
 				void removeTab (QWidget*);

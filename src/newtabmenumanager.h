@@ -51,6 +51,7 @@ namespace LeechCraft
 		QString AccelerateName (QString);
 		void ToggleHide (QObject*, const QByteArray&, bool);
 		void OpenTab (QAction*);
+		void InsertAction (QAction*);
 	private slots:
 		void handleNewTabRequested ();
 	signals:

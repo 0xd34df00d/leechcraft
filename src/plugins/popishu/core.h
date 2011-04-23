@@ -22,6 +22,7 @@
 #include <QIcon>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -36,10 +37,12 @@ namespace LeechCraft
 				Q_OBJECT
 
 				ICoreProxy_ptr Proxy_;
+				TabClassInfo TabClass_;
 
 				Core ();
 			public:
 				static Core& Instance ();
+				TabClassInfo GetTabClass () const;
 
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;

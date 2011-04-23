@@ -64,6 +64,17 @@ namespace LeechCraft
 						SIGNAL (raiseTab (QWidget*)),
 						this,
 						SIGNAL (raiseTab (QWidget*)));
+				
+				TabClassInfo tabClass =
+				{
+					"Summary",
+					tr ("Summary"),
+					GetInfo (),
+					GetIcon (),
+					50,
+					TabFeatures (TFOpenableByRequest | TFByDefault)
+				};
+				TabClasses_ << tabClass;
 			}
 
 			void Summary::SecondInit ()
@@ -115,15 +126,20 @@ namespace LeechCraft
 			void Summary::SetProvider (QObject*, const QString&)
 			{
 			}
-
-			QWidget* Summary::GetTabContents ()
+			
+			TabClasses_t Summary::GetTabClasses () const
 			{
-				return Core::Instance ().GetDefaultTab ();
+				return TabClasses_;
 			}
-
-			QToolBar* Summary::GetToolBar () const
+			
+			void Summary::TabOpenRequested (const QByteArray& tabClass)
 			{
-				return Core::Instance ().GetDefaultTab ()->GetToolBar ();
+				if (tabClass == "Summary")
+					Core::Instance ().handleNewTabRequested ();
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tabClass;
 			}
 
 			bool Summary::CouldHandle (const LeechCraft::Entity& e) const
@@ -144,11 +160,6 @@ namespace LeechCraft
 			QTreeView* Summary::GetCurrentView () const
 			{
 				return Core::Instance ().GetCurrentView ();
-			}
-
-			void Summary::newTabRequested ()
-			{
-				return Core::Instance ().handleNewTabRequested ();
 			}
 		};
 	};

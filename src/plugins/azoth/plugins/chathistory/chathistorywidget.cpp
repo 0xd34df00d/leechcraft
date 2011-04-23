@@ -106,13 +106,13 @@ namespace ChatHistory
 	{
 		return Toolbar_;
 	}
-	
-	void ChatHistoryWidget::NewTabRequested ()
+
+	TabClassInfo ChatHistoryWidget::GetTabClassInfo () const
 	{
-		S_ParentMultiTabs_->newTabRequested ();
+		return Core::Instance ()->GetTabClass ();
 	}
 	
-	QObject* ChatHistoryWidget::ParentMultiTabs () const
+	QObject* ChatHistoryWidget::ParentMultiTabs ()
 	{
 		return S_ParentMultiTabs_;
 	}

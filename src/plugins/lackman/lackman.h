@@ -23,7 +23,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/iembedtab.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iactionsexporter.h>
 #include "ui_lackman.h"
@@ -42,12 +42,13 @@ namespace LeechCraft
 
 			class Plugin : public QWidget
 						 , public IInfo
-						 , public IEmbedTab
+						 , public IHaveTabs
+						 , public ITabWidget
 						 , public IHaveSettings
 						 , public IActionsExporter
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IEmbedTab IHaveSettings IActionsExporter)
+				Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter)
 
 				Ui::LackMan Ui_;
 				std::auto_ptr<QTranslator> Translator_;
@@ -61,6 +62,8 @@ namespace LeechCraft
 				QAction *Apply_;
 				QAction *Cancel_;
 				QToolBar *Toolbar_;
+				
+				TabClassInfo TabClass_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -69,8 +72,13 @@ namespace LeechCraft
 				QString GetName () const;
 				QString GetInfo () const;
 				QIcon GetIcon () const;
-
-				QWidget* GetTabContents ();
+				
+				TabClasses_t GetTabClasses () const;
+				void TabOpenRequested (const QByteArray&);
+				
+				TabClassInfo GetTabClassInfo () const;
+				QObject* ParentMultiTabs ();
+				void Remove ();
 				QToolBar* GetToolBar () const;
 
 				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
@@ -86,12 +94,13 @@ namespace LeechCraft
 			signals:
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
+				void addNewTab (const QString&, QWidget*);
+				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);
 				void changeTabIcon (QWidget*, const QIcon&);
 				void changeTooltip (QWidget*, QWidget*);
 				void statusBarChanged (QWidget*, const QString&);
 				void raiseTab (QWidget*);
-				void bringToFront ();
 			};
 		}
 	}

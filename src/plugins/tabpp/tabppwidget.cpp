@@ -24,7 +24,7 @@
 #include <QTimer>
 #include <QKeyEvent>
 #include <QMenu>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "tabsfiltermodel.h"
@@ -167,7 +167,7 @@ namespace LeechCraft
 			{
 				const QModelIndex& idx = Ui_.View_->indexAt (pos);
 				QWidget *wObj = idx.data (Core::CRWidget).value<QWidget*> ();
-				IMultiTabsWidget *imtw = qobject_cast<IMultiTabsWidget*> (wObj);
+				ITabWidget *imtw = qobject_cast<ITabWidget*> (wObj);
 				if (!imtw)
 					return;
 				

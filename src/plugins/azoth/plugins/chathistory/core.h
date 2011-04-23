@@ -22,6 +22,7 @@
 #include <boost/weak_ptr.hpp>
 #include <QObject>
 #include <QSet>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -53,9 +54,12 @@ namespace ChatHistory
 		IProxyObject *PluginProxy_;
 		QSet<QString> DisabledIDs_;
 		
+		TabClassInfo TabClass_;
+		
 		Core ();
 	public:
 		static boost::shared_ptr<Core> Instance ();
+		TabClassInfo GetTabClass () const;
 		
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;
