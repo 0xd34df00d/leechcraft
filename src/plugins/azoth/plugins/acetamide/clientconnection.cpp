@@ -140,6 +140,12 @@ namespace Acetamide
 		return ServerHandlers_ [id];
 	}
 
+	void ClientConnection::ClosePrivateChat (QString serverId,
+			const QString& nick)
+	{
+		ServerHandlers_ [serverId]->ClosePrivateChat (nick);
+	}
+
 	void ClientConnection::CloseServer (const QString& serverId)
 	{
 		if (ServerHandlers_.contains (serverId))

@@ -92,6 +92,11 @@ namespace Acetamide
 		return ChannelHandlers_.contains (channelID);
 	}
 
+	bool IrcServerHandler::IsParticipantExists (const QString& nick)
+	{
+		return Nick2Entry_.contains (nick);
+	}
+
 	void IrcServerHandler::Add2ChannelsQueue (const ChannelOptions& ch)
 	{
 		if (!ChannelsQueue_.contains (ch))
@@ -117,6 +122,18 @@ namespace Acetamide
 			const QString& msg)
 	{
 		IrcParser_->PartCommand (channels, msg);
+	}
+
+	void IrcServerHandler::ClosePrivateChat (const QString& nick)
+	{
+		if (Nick2Entry_.contains (nick))
+		{
+			Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+			RemoveParticipantEntry (nick);
+			if (!Nick2Entry_.count () && !ChannelHandlers_.count ())
+				Account_->GetClientConnection ()->
+						CloseServer (ServerID_);
+		}
 	}
 
 	ChannelHandler*

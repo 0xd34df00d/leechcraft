@@ -73,6 +73,7 @@ class IrcMessage;
 		ServerOptions GetServerOptions () const;
 		ConnectionState GetConnectionState () const;
 		bool IsChannelExists (const QString&);
+		bool IsParticipantExists (const QString&);
 
 		void Add2ChannelsQueue (const ChannelOptions&);
 
@@ -80,6 +81,8 @@ class IrcMessage;
 		void SendPrivateMessage (IrcMessage*);
 
 		void LeaveChannel (const QString&, const QString&);
+
+		void ClosePrivateChat (const QString&);
 
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;

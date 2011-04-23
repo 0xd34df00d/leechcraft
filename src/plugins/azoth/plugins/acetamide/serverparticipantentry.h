@@ -37,15 +37,15 @@ namespace Acetamide
 	class ServerParticipantEntry : public EntryBase
 	{
 		Q_OBJECT
-		
+
 		QString NickName_;
 		QString ServerKey_;
 		QStringList Channels_;
 		bool PrivateChat_;
-		
+
 		IrcAccount *Account_;
 	public:
-		ServerParticipantEntry (const QString&, 
+		ServerParticipantEntry (const QString&,
 				const QString&, IrcAccount*);
 
 		QObject* GetParentAccount () const ;
@@ -65,9 +65,11 @@ namespace Acetamide
 		QStringList GetChannels () const;
 		void SetPrivateChat (bool);
 		bool IsPrivateChat () const;
+	public slots:
+		void closePrivateChat (bool);
 	};
 
-	typedef boost::shared_ptr<ServerParticipantEntry> 
+	typedef boost::shared_ptr<ServerParticipantEntry>
 			ServerParticipantEntry_ptr;
 };
 };

@@ -28,7 +28,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ServerParticipantEntry::ServerParticipantEntry (const QString& nick, 
+	ServerParticipantEntry::ServerParticipantEntry (const QString& nick,
 			const QString& server, IrcAccount *acc)
 	: EntryBase (acc)
 	, Account_ (acc)
@@ -36,6 +36,12 @@ namespace Acetamide
 	, NickName_ (nick)
 	, PrivateChat_ (false)
 	{
+		QAction *closeChat = new QAction (tr ("Quit chat"), this);
+		connect (closeChat,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (closePrivateChat (bool)));
+		Actions_ << closeChat;
 	}
 
 	QObject* ServerParticipantEntry::GetParentAccount () const
@@ -100,7 +106,7 @@ namespace Acetamide
 		return QStringList (QString ());
 	}
 
-	QObject* 
+	QObject*
 			ServerParticipantEntry::CreateMessage (IMessage::MessageType,
 					const QString&, const QString& body)
 	{
@@ -109,7 +115,7 @@ namespace Acetamide
 				ServerKey_,
 				NickName_,
 				Account_->GetClientConnection ().get ());
-				
+
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
 
@@ -133,6 +139,17 @@ namespace Acetamide
 	bool ServerParticipantEntry::IsPrivateChat () const
 	{
 		return PrivateChat_;
+	}
+
+	void ServerParticipantEntry::closePrivateChat (bool)
+	{
+		if (PrivateChat_)
+		{
+			PrivateChat_ = false;
+			if (!Channels_.count ())
+				Account_->GetClientConnection ()->
+						ClosePrivateChat (ServerKey_, NickName_);
+		}
 	}
 
 };
