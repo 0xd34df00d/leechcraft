@@ -77,7 +77,7 @@ namespace Juick
 		IdRX_ = QRegExp ("#(\\d+)(\\s|$|<br />)", Qt::CaseInsensitive);
 		ReplyRX_ = QRegExp ("#(\\d+/\\d+)\\s?", Qt::CaseInsensitive);
 		UnsubRX_ = QRegExp ("#(\\d+)/(\\d+)\\s(<a href)", Qt::CaseInsensitive);
-		AvatarRX_ = QRegExp ("[^\\s][>]?@([\\w\\-\\.@\\|]*):", Qt::CaseInsensitive);
+		AvatarRX_ = QRegExp ("@([\\w\\-\\.@\\|]*):", Qt::CaseInsensitive);
 	}
 
 	void Plugin::SecondInit ()
@@ -136,11 +136,31 @@ namespace Juick
 
 	QString Plugin::FormatBody (QString body)
 	{
-		body.replace (AvatarRX_, 
-				"><img style='float:left;margin-right:4px' "
+		int index = AvatarRX_.indexIn (body);
+		QRegExp notBehind ("Recommended by ");
+
+		// Workaround for negative lookbehind
+		while (index >= 0)
+		{
+			notBehind.indexIn (body);
+			int behindIndex = index - notBehind.matchedLength ();
+			
+			if (behindIndex >= 0 && 
+				notBehind.indexIn (body.mid (behindIndex, notBehind.matchedLength ())) != -1)
+			{
+				index = AvatarRX_.indexIn (body, index + 1);
+				continue;
+			}
+
+			QString avatar = QString (
+				"<img style='float:left;margin-right:4px' "
 				"width='32px' "
 				"height='32px' "
-				"src='http://api.juick.com/avatar?uname=\\1&size=32'>@\\1:");
+				"src='http://api.juick.com/avatar?uname=%1&size=32'>").arg (AvatarRX_.cap (1));
+
+			body.insert (index, avatar);
+			index = AvatarRX_.indexIn (body, index + avatar.length () + AvatarRX_.matchedLength ());
+		}
 		body.replace (UserRX_,  "<a href=\"azoth://msgeditreplace/\\1+\">\\1</a>\\2");
 		body.replace (PostRX_, 
 				"<br /> <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
