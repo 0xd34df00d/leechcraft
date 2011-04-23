@@ -110,7 +110,12 @@ namespace Acetamide
 		IrcParser_->PrivMsgCommand
 				(EncodedMessage (msg->GetBody (), IMessage::DOut),
 				msg->GetOtherVariant ());
+	}
 
+	void IrcServerHandler::LeaveChannel (const QString& channels,
+			const QString& msg)
+	{
+		IrcParser_->PartCommand (channels, msg);
 	}
 
 	ChannelHandler*
@@ -401,6 +406,7 @@ namespace Acetamide
 
 	void IrcServerHandler::RemoveParticipantEntry (const QString& nick)
 	{
+		//TODO leave from server
 		Nick2Entry_.remove (nick);
 	}
 
@@ -466,6 +472,8 @@ namespace Acetamide
 	void IrcServerHandler::LeaveParticipant (const QString& nick,
 			QList<std::string> params, const QString& msg)
 	{
+		if (nick == NickName_)
+			return;
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		ChannelHandlers_ [channelID]->RemoveChannelUser (nick, msg);
@@ -545,6 +553,11 @@ namespace Acetamide
 
 			IncomingMessage2Channel ();
 		}
+	}
+
+	void IrcServerHandler::UnregisterChannel (ChannelHandler* ich)
+	{
+		ChannelHandlers_.remove (ich->GetChannelID ());
 	}
 
 };

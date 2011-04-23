@@ -207,6 +207,44 @@ namespace Acetamide
 		return Subject_;
 	}
 
+	void ChannelHandler::LeaveChannel (const QString& msg)
+	{
+		Q_FOREACH (ServerParticipantEntry_ptr entry,
+				Nick2Entry_.values ())
+		{
+			QStringList list = entry->GetChannels ();
+			bool prChat = entry->IsPrivateChat ();
+
+			if (list.contains (ChannelOptions_.ChannelName_))
+			{
+				list.removeAll (ChannelOptions_.ChannelName_);
+				if (!list.count () && !prChat)
+				{
+					ISH_->GetAccount ()->
+							handleEntryRemoved (entry.get ());
+					ISH_->RemoveParticipantEntry (entry->
+							GetEntryName ());
+				}
+				else
+					entry->SetGroups (list);
+			}
+		}
+
+		ISH_->LeaveChannel (ChannelOptions_.ChannelName_, msg);
+		RemoveThis ();
+	}
+
+	void ChannelHandler::RemoveThis ()
+	{
+		Nick2Entry_.clear ();
+
+		ISH_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_);
+
+		ISH_->UnregisterChannel (this);
+
+		deleteLater ();
+	}
+
 };
 };
 };

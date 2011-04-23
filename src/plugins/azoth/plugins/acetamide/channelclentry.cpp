@@ -200,8 +200,9 @@ namespace Acetamide
 		return ICH_->GetParticipants ();
 	}
 
-	void ChannelCLEntry::Leave (const QString& )
+	void ChannelCLEntry::Leave (const QString& msg)
 	{
+		ICH_->LeaveChannel (msg);
 	}
 
 	QString ChannelCLEntry::GetNick () const

@@ -81,6 +81,17 @@ namespace Acetamide
 		ISH_->SendCommand (privmsgCmd);
 	}
 
+	void IrcParser::PartCommand (const QString& target,
+			const QString& msg)
+	{
+		QString partCmd;
+		if (!msg.isEmpty ())
+			partCmd = QString ("PART " + target + " :" + msg + "\r\n");
+		else
+			partCmd = QString ("PART " + target + "\r\n");
+		ISH_->SendCommand (partCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();

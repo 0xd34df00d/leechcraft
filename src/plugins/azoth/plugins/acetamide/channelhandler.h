@@ -67,6 +67,10 @@ namespace Acetamide
 
 		void SetMUCSubject (const QString&);
 		QString GetMUCSubject () const;
+
+		void LeaveChannel (const QString&);
+
+		void RemoveThis ();
 	};
 };
 };

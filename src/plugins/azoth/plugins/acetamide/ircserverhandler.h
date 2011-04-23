@@ -79,6 +79,8 @@ class IrcMessage;
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
 
+		void LeaveChannel (const QString&, const QString&);
+
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;
 
@@ -92,6 +94,8 @@ class IrcMessage;
 		void IncomingMessage2Channel ();
 		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
 		void RemoveParticipantEntry (const QString&);
+
+		void UnregisterChannel (ChannelHandler*);
 	private:
 		void InitErrorsReplys ();
 		void InitCommandResponses ();
