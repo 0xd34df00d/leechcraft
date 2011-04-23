@@ -77,6 +77,7 @@ class IrcMessage;
 		void Add2ChannelsQueue (const ChannelOptions&);
 
 		void SendPublicMessage (const QString&, const QString&);
+		void SendPrivateMessage (IrcMessage*);
 
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;

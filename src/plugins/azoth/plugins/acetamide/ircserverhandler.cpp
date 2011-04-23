@@ -105,6 +105,14 @@ namespace Acetamide
 					.ChannelName_);
 	}
 
+	void IrcServerHandler::SendPrivateMessage (IrcMessage* msg)
+	{
+		IrcParser_->PrivMsgCommand
+				(EncodedMessage (msg->GetBody (), IMessage::DOut),
+				msg->GetOtherVariant ());
+
+	}
+
 	ChannelHandler*
 			IrcServerHandler::GetChannelHandler (const QString& id)
 	{
@@ -514,7 +522,7 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-			qDebug () << str;
+// 			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
 

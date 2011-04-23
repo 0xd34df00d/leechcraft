@@ -139,7 +139,6 @@ namespace Acetamide
 		return ServerHandlers_ [id];
 	}
 
-
 };
 };
 };

@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include "clientconnection.h"
 #include "core.h"
+#include "ircserverhandler.h"
 
 namespace LeechCraft
 {
@@ -74,7 +75,8 @@ namespace Acetamide
 		{
 		case MTChatMessage:
 		case MTMUCMessage:
-// 	Connection_->SetPrivateMessage (Connection_->GetAccount (), this);
+				Connection_->GetIrcServerHandler (ID_)->
+						SendPrivateMessage (this);
 			return;
 		case MTServiceMessage:
 			qWarning () << Q_FUNC_INFO
