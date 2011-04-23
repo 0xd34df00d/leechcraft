@@ -20,6 +20,7 @@
 #define INTERFACES_IHAVETABS_H
 #include <QMetaType>
 #include <QList>
+#include <QMap>
 #include <QByteArray>
 #include <QIcon>
 
@@ -28,8 +29,9 @@ namespace LeechCraft
 	enum TabFeature
 	{
 		TFEmpty = 0x0,
-		TFSingle = 0x01,
-		TFOpenableByRequest = 0x02
+		TFOpenableByRequest = 0x01,
+		TFSingle = 0x02,
+		TFByDefault = 0x04
 	};
 
 	Q_DECLARE_FLAGS (TabFeatures, LeechCraft::TabFeature);
@@ -47,6 +49,9 @@ namespace LeechCraft
 	
 	typedef QList<TabClassInfo> TabClasses_t;
 };
+
+class QToolBar;
+class QAction;
 
 class ITabWidget
 {
