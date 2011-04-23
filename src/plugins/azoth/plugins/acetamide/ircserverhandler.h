@@ -88,6 +88,7 @@ class IrcMessage;
 				const QString&, const QString&);
 
 		bool ConnectToServer ();
+		bool DisconnectFromServer ();
 		bool JoinChannel (const ChannelOptions&);
 		void SendCommand (const QString&);
 		void IncomingMessage2Server ();

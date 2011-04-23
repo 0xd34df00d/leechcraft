@@ -62,6 +62,7 @@ namespace Acetamide
 		void JoinChannel (const ServerOptions&,
 				const ChannelOptions&);
 		IrcServerHandler* GetIrcServerHandler (const QString&);
+		void CloseServer (const QString&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

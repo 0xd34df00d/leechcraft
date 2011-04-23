@@ -140,6 +140,21 @@ namespace Acetamide
 		return ServerHandlers_ [id];
 	}
 
+	void ClientConnection::CloseServer (const QString& serverId)
+	{
+		if (ServerHandlers_.contains (serverId))
+			if (ServerHandlers_ [serverId]->DisconnectFromServer ())
+			{
+				Account_->
+						handleEntryRemoved (ServerHandlers_ [serverId]->
+							GetCLEntry ());
+				ServerHandlers_.remove (serverId);
+				if (!ServerHandlers_.count ())
+					Account_->ChangeState (EntryStatus (SOffline,
+							QString ()));
+			}
+	}
+
 };
 };
 };
