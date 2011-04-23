@@ -366,6 +366,9 @@ namespace Acetamide
 		Command2Action_ ["privmsg"] =
 				boost::bind (&IrcServerHandler::HandleIncomingMessage,
 					this, _1, _2, _3);
+		Command2Action_ ["ping"] =
+				boost::bind (&IrcServerHandler::PongMessage,
+					this, _1, _2, _3);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -422,7 +425,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::JoinFromQueue (const QString&,
-			QList<std::string>, const QString&)
+			const QList<std::string>&, const QString&)
 	{
 		Q_FOREACH (const ChannelOptions& co, ChannelsQueue_)
 		{
@@ -432,7 +435,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::SetTopic (const QString&,
-			QList<std::string> params, const QString& message)
+			const QList<std::string>& params, const QString& message)
 	{
 		QString channelId =
 				(QString::fromUtf8 (params.last ().c_str ()) +
@@ -447,7 +450,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::AddParticipants (const QString&,
-			QList<std::string> params, const QString& message)
+			const QList<std::string>& params, const QString& message)
 	{
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
@@ -458,7 +461,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
-			QList<std::string>, const QString& msg)
+			const QList<std::string>&, const QString& msg)
 	{
 		if (nick == NickName_)
 			return;
@@ -470,7 +473,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::LeaveParticipant (const QString& nick,
-			QList<std::string> params, const QString& msg)
+			const QList<std::string>& params, const QString& msg)
 	{
 		if (nick == NickName_)
 			return;
@@ -480,7 +483,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::HandleIncomingMessage (const QString& nick,
-			QList<std::string> params, const QString& msg)
+			const QList<std::string>& params, const QString& msg)
 	{
 		QString target = QString::fromUtf8 (params.last ().c_str ());
 
@@ -510,6 +513,12 @@ namespace Acetamide
 			entry->SetPrivateChat (true);
 			entry->HandleMessage (message);
 		}
+	}
+
+	void IrcServerHandler::PongMessage (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		IrcParser_->PongCommand (msg);
 	}
 
 	void IrcServerHandler::InitSocket ()

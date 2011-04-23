@@ -92,6 +92,12 @@ namespace Acetamide
 		ISH_->SendCommand (partCmd);
 	}
 
+	void IrcParser::PongCommand (const QString& msg)
+	{
+		QString pongCmd = QString ("PONG :" + msg + "\r\n");
+		ISH_->SendCommand (pongCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();

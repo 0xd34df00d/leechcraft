@@ -111,17 +111,19 @@ class IrcMessage;
 				CreateParticipantEntry (const QString&);
 
 		void JoinFromQueue (const QString&,
-				QList<std::string>, const QString&);
+				const QList<std::string>&, const QString&);
 		void SetTopic (const QString&,
-				QList<std::string>, const QString&);
+				const QList<std::string>&, const QString&);
 		void AddParticipants (const QString&,
-				QList<std::string>, const QString&);
+				const QList<std::string>&, const QString&);
 		void JoinParticipant (const QString&,
-				QList<std::string>, const QString&);
+				const QList<std::string>&, const QString&);
 		void LeaveParticipant (const QString&,
-				QList<std::string>, const QString&);
+				const QList<std::string>&, const QString&);
 		void HandleIncomingMessage (const QString&,
-				QList<std::string>, const QString&);
+				const QList<std::string>&, const QString&);
+		void PongMessage (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 	signals:
