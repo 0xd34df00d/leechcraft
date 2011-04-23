@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>345</width>
-    <height>331</height>
+    <width>352</width>
+    <height>234</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,151 +25,18 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QTabWidget" name="ConfigurationWidget_">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="IrcUserProfle_">
-      <attribute name="title">
-       <string>User profile</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>Nicknames (first nick would be the default one):</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QComboBox" name="Servers_"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QPlainTextEdit" name="NickNames_">
-         <property name="plainText">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QCheckBox" name="GenerateNicknames_">
-         <property name="toolTip">
-          <string>Appends random number to the nickname to avoid collisions</string>
-         </property>
-         <property name="text">
-          <string>Generate nicknames</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="IrcConnections_">
-      <attribute name="title">
-       <string>Connection settings</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Network name:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="4">
-        <widget class="QTreeView" name="ServerChannels_">
-         <property name="expandsOnDoubleClick">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QToolButton" name="Add_">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Add...</string>
-         </property>
-         <property name="autoRepeat">
-          <bool>false</bool>
-         </property>
-         <property name="popupMode">
-          <enum>QToolButton::InstantPopup</enum>
-         </property>
-         <property name="toolButtonStyle">
-          <enum>Qt::ToolButtonFollowStyle</enum>
-         </property>
-         <property name="autoRaise">
-          <bool>false</bool>
-         </property>
-         <property name="arrowType">
-          <enum>Qt::NoArrow</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
-        <widget class="QPushButton" name="Edit_">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Edit</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3">
-        <widget class="QPushButton" name="Delete_">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Delete</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2" colspan="2">
-        <widget class="QLineEdit" name="Networks_">
-         <property name="text">
-          <string>Default</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+    <widget class="LeechCraft::Azoth::Acetamide::IrcAccountConfigurationWidget" name="ConfWidget_" native="true"/>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Azoth::Acetamide::IrcAccountConfigurationWidget</class>
+   <extends>QWidget</extends>
+   <header>ircaccountconfigurationwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -24,36 +24,42 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
 #include "core.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+
 class IProtocol;
+
 namespace Acetamide
 {
-	class IrcProtocol;
+
 	class ClientConnection;
-	
+	class IrcProtocol;
+	class IrcAccountConfigurationWidget;
+
 	class IrcAccount : public QObject
 						, public IAccount
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount);
-		
+
 		QString AccountName_;
 		IrcProtocol *ParentProtocol_;
 		QByteArray AccountID_;
 
-		QList<ServerOptions> Servers_;
-		QList<ChannelOptions> Channels_;
-		
+		QString RealName_;
+		QString UserName_;
+		QStringList NickNames_;
+		State IrcAccountState_;
+
 		boost::shared_ptr<ClientConnection> ClientConnection_;
-		State IrcAccountState;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
-		
+
 		QObject* GetObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
@@ -62,13 +68,22 @@ namespace Acetamide
 
 		QString GetAccountName () const;
 		QString GetOurNick () const;
-		QList<ServerOptions> GetServers () const;
-		QList<ChannelOptions> GetChannels () const;
+		QString GetUserName () const;
+		QString GetRealName () const;
+		QStringList GetNickNames () const;
+
+		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 
 		void RenameAccount (const QString&);
-		
+
 		QByteArray GetAccountID () const;
+		void SetAccountID (const QString&);
+
 		void OpenConfigurationDialog ();
+		void FillSettings (IrcAccountConfigurationWidget*);
+
+		void JoinServer (const ServerOptions&, const ChannelOptions&);
+
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
 		void Synchronize ();
@@ -78,19 +93,11 @@ namespace Acetamide
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
-		void JoinRoom (const ServerOptions&, const ChannelOptions&);
-		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
-	private:
-		void SetAccountID ();
 	public:
 		QByteArray Serialize () const;
 		static IrcAccount* Deserialize (const QByteArray&, QObject*);
-		void SaveServersSettings (const QList<ServerOptions>&, const QString&);
-		QList<ServerOptions> ReadServersSettings (const QString&) const;
-		void SaveChannelsSettings (const QList<ChannelOptions>&, const QString&);
-		QList<ChannelOptions> ReadChannelsSettings (const QString&) const;
 	public slots:
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);
@@ -112,13 +119,8 @@ namespace Acetamide
 
 		void scheduleClientDestruction ();
 	};
-	
+
 	typedef boost::shared_ptr<IrcAccount> IrcAccount_ptr;
-	QDataStream& operator<< (QDataStream& out, const ServerOptions&);
-	QDataStream& operator>> (QDataStream& in, ServerOptions&);
-	
-	QDataStream& operator<< (QDataStream& out, const ChannelOptions&);
-	QDataStream& operator>> (QDataStream& in, ChannelOptions&);
 };
 };
 };

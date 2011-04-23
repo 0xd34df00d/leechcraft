@@ -19,9 +19,10 @@
 #include "acetamide.h"
 #include <ctime>
 #include <QIcon>
-#include <QTranslator>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -33,10 +34,15 @@ namespace Acetamide
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_acetamide"));
 
-		Core::Instance ().SetProxy (proxy);
-		
 		qsrand (time (NULL));
-		
+
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->
+				RegisterObject (&XmlSettingsManager::Instance (),
+					"azothacetamidesettings.xml");
+
+		Core::Instance ().SetProxy (proxy);
+
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -76,7 +82,8 @@ namespace Acetamide
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		classes <<
+				"org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
 		return classes;
 	}
 
@@ -90,6 +97,11 @@ namespace Acetamide
 		return Core::Instance ().GetProtocols ();
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Core::Instance ().SetPluginProxy (proxy);
@@ -98,4 +110,5 @@ namespace Acetamide
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_acetamide, LeechCraft::Azoth::Acetamide::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_azoth_acetamide,
+		LeechCraft::Azoth::Acetamide::Plugin);

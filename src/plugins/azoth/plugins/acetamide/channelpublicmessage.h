@@ -38,7 +38,7 @@ namespace Acetamide
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMessage);
-		
+
 		QPointer<ChannelCLEntry> ParentEntry_;
 		ServerParticipantEntry_ptr ParticipantEntry_;
 		QString Message_;
@@ -55,13 +55,14 @@ namespace Acetamide
 				MessageType,
 				MessageSubType,
 				ServerParticipantEntry_ptr = ServerParticipantEntry_ptr ());
-		
+
 		QObject* GetObject ();
 		void Send ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
+		void SetMessageType (IMessage::MessageType);
 		MessageSubType GetMessageSubType () const;
-
+		void SetMessageSubType (IMessage::MessageSubType);
 		/** Since it's outgoing message, the other part
 		 * always equals to the room entry.
 		 */

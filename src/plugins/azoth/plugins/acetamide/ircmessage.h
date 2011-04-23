@@ -28,23 +28,24 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	
+
 	struct Message
 	{
 		QString Body_;
 		QDateTime Stamp_;
 		QString Nickname_;
 	};
-	
+
 	class ClientConnection;
-	
+
 	class IrcMessage : public QObject
 						, public IMessage
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMessage);
-		
+
 		MessageType Type_;
+		MessageSubType SubType_;
 		Direction Direction_;
 		QString ID_;
 		QString NickName_;
@@ -57,13 +58,14 @@ namespace Acetamide
 				const QString& nickname,
 				ClientConnection *conn);
 		IrcMessage (const Message& msg,
-				const QString& chid,
+				const QString& id,
 				ClientConnection *conn);
 		QObject* GetObject ();
 		void Send ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
+		void SetMessageSubType (IMessage::MessageSubType);
 		QObject* OtherPart () const;
 		QString GetID () const;
 		QString GetOtherVariant () const;

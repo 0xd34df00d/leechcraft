@@ -29,8 +29,9 @@ namespace Azoth
 {
 namespace Acetamide
 {
+
 	class IrcAccount;
-	
+
 	class IrcProtocol : public QObject
 						, public IProtocol
 	{
@@ -38,7 +39,7 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
 		
 		QObject *ParentProtocolPlugin_;
-		QList<IrcAccount*> Accounts_;
+		QList<IrcAccount*> IrcAccounts_;
 		QObject *ProxyObject_;
 	public:
 		IrcProtocol (QObject*);
@@ -51,7 +52,6 @@ namespace Acetamide
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();
-		QList<QByteArray> GetRegisteredAccountsIDs ();
 
 		QObject* GetParentProtocolPlugin () const;
 		QString GetProtocolName () const;

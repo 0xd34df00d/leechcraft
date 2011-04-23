@@ -21,9 +21,8 @@
 
 #include <QObject>
 #include <QHash>
-#include <interfaces/imucentry.h>
-#include "clientconnection.h"
-#include "core.h"
+#include <interfaces/imessage.h>
+#include "localtypes.h"
 #include "serverparticipantentry.h"
 
 namespace LeechCraft
@@ -33,46 +32,44 @@ namespace Azoth
 namespace Acetamide
 {
 
-	class IrcAccount;
-	class IrcMessage;
 	class ChannelCLEntry;
+	class IrcMessage;
+	class IrcServerHandler;
 
 	class ChannelHandler : public QObject
 	{
 		Q_OBJECT
-
-		IrcAccount *Account_;
-		ChannelCLEntry *CLEntry_;
-		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString ChannelID_;
-		QString ServerID_;
-		QString Nickname_;
 		QString Subject_;
-		ChannelOptions Channel_;
-		ServerOptions Server_;
+		ChannelCLEntry *ChannelCLEntry_;
+		IrcServerHandler *ISH_;
+		ChannelOptions ChannelOptions_;
+		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 	public:
-		ChannelHandler (const ServerOptions&, const ChannelOptions&, IrcAccount*);
+		ChannelHandler (IrcServerHandler*, const ChannelOptions&);
 		QString GetChannelID () const;
 		ChannelCLEntry* GetCLEntry () const;
+		IrcServerHandler* GetIrcServerHandler () const;
+		ChannelOptions GetChannelOptions () const;
 		QList<QObject*> GetParticipants () const;
 
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
-		QString GetNickname () const;
-		void SetNickname (const QString&);
-		QString GetSubject () const;
-		void SetSubject (const QString&);
-		void Leave (const QString&);
-		void UserLeave (const QString&, const QString&);
+		void SendPublicMessage (const QString&);
+		void HandleIncomingMessage (const QString&, const QString&);
+
 		void SetChannelUser (const QString&);
+		void RemoveChannelUser (const QString&, const QString&);
+
 		void MakeJoinMessage (const QString&);
 		void MakeLeaveMessage (const QString&, const QString&);
-		void HandleMessage (const QString&, const QString&);
-		ChannelOptions GetChannelOptions () const;
-		ServerOptions GetServerOptions () const;
-		ServerParticipantEntry_ptr GetParticipantEntry (const QString&) const;
-	private:
+
+		void SetMUCSubject (const QString&);
+		QString GetMUCSubject () const;
+
+		void LeaveChannel (const QString&);
+
 		void RemoveThis ();
 	};
 };

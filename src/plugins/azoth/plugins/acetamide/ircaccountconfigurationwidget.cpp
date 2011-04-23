@@ -16,11 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCEDITCHANNELDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCEDITCHANNELDIALOG_H
-
-#include <QDialog>
-#include "ui_irceditchanneldialog.h"
+#include "ircaccountconfigurationwidget.h"
 
 namespace LeechCraft
 {
@@ -28,19 +24,44 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcEditChannelDialog : public QDialog
+	IrcAccountConfigurationWidget::
+			IrcAccountConfigurationWidget (QWidget* parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
-		
-		Ui::IrcEditChannelDialog Ui_;
-	public:
-		IrcEditChannelDialog (QWidget* = 0);
-		QString GetChannel () const;
-		void SetChannel (const QString&);
-		QString GetPassword () const;
-		void SetPassword (const QString&);
-	};
+		Ui_.setupUi (this);
+	}
+
+	void IrcAccountConfigurationWidget::SetRealName (const QString& real)
+	{
+		Ui_.RealName_->setText (real);
+	}
+
+	QString IrcAccountConfigurationWidget::GetRealName () const
+	{
+		return Ui_.RealName_->text ();
+	}
+
+	void IrcAccountConfigurationWidget::SetUserName (const QString& user)
+	{
+		Ui_.UserName_->setText (user);
+	}
+
+	QString IrcAccountConfigurationWidget::GetUserName () const
+	{
+		return Ui_.UserName_->text ();
+	}
+
+	void IrcAccountConfigurationWidget::
+			SetNickNames (const QStringList& nicks)
+	{
+		Ui_.NickNames_->setPlainText (nicks.join ("\n"));
+	}
+
+	QStringList IrcAccountConfigurationWidget::GetNickNames () const
+	{
+		return Ui_.NickNames_->toPlainText ().split ('\n');
+	}
+
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCEDITCHANNELDIALOG_H

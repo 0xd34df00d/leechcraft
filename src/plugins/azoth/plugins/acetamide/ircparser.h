@@ -22,6 +22,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include "core.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -29,42 +30,28 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcServer;
-	
+
+	class IrcServerHandler;
+
 	class IrcParser : public QObject
 	{
 		Q_OBJECT
-		IrcServer *IrcServer_;
-		QHash<QString, 
-				boost::function<void (const QString&, const QList<std::string>&, const QString&)> > Command2Signal_;
+
+		IrcServerHandler *ISH_;
+		ServerOptions ServerOptions_;
+		IrcMessageOptions IrcMessageOptions_;
 	public:
-		IrcParser (IrcServer*);
-		void AuthCommand (const ServerOptions&);
-		void UserCommand (const ServerOptions&);
-		void NickCommand (const ServerOptions&);
-		void JoinChannel (const ChannelOptions&);
-		void PublicMessageCommand (const QString&, const ChannelOptions&);
-		void PrivateMessageCommand (const QString&, const QString&);
-		void HandleServerReply (const QString&);
-		void LeaveChannelCommand (const QString&);
-		void QuitConnectionCommand (const QString&);
-	private:
-		void Init ();
-		void ParseMessage (const QString&);
-		bool IsCTCPMessage (const QString&, const QString&);
-		void CTCPAnswer (const QString&, const QString&, const QString&);
-	private slots:
-		void pongCommand (const QString&, const QList<std::string>&, const QString&);
-	signals:
-		void gotAuthSuccess (const QString&, const QList<std::string>&, const QString&);
-		void gotCLEntries (const QString&, const QList<std::string>&, const QString&);
-		void gotTopic (const QString&, const QList<std::string>&, const QString&);
-		void gotPing (const QString&, const QList<std::string>&, const QString&);
-		void gotMessage (const QString&, const QList<std::string>&, const QString&);
-		void gotNewParticipant (const QString&, const QList<std::string>&, const QString&);
-		void gotUserLeave (const QString&, const QList<std::string>&, const QString&);
-		void gotUserQuit (const QString&, const QList<std::string>&, const QString&);
-		void gotServerSupport (const QString&, const QList<std::string>&, const QString&);
+		IrcParser (IrcServerHandler*);
+		void AuthCommand ();
+		void UserCommand ();
+		void NickCommand ();
+		void JoinCommand (const QString&);
+		void PrivMsgCommand (const QString&, const QString&);
+		void PartCommand (const QString&, const QString&);
+		void PongCommand (const QString&);
+
+		bool ParseMessage (const QString&);
+		IrcMessageOptions GetIrcMessageOptions () const;
 	};
 };
 };

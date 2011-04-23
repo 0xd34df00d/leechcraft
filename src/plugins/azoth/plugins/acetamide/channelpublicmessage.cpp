@@ -17,11 +17,8 @@
  **********************************************************************/
 
 #include "channelpublicmessage.h"
-#include <QtDebug>
-#include "channelhandler.h"
 #include "channelclentry.h"
-#include "clientconnection.h"
-#include "ircaccount.h"
+#include "channelhandler.h"
 
 namespace LeechCraft
 {
@@ -29,7 +26,8 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ChannelPublicMessage::ChannelPublicMessage (const QString& msg, ChannelCLEntry *entry)
+	ChannelPublicMessage::ChannelPublicMessage (const QString& msg,
+			ChannelCLEntry *entry)
 	: QObject (entry)
 	, ParentEntry_ (entry)
 	, Message_ (msg)
@@ -40,7 +38,7 @@ namespace Acetamide
 	{
 	}
 
-	ChannelPublicMessage::ChannelPublicMessage (const QString& msg, 
+	ChannelPublicMessage::ChannelPublicMessage (const QString& msg,
 			IMessage::Direction direction,
 			ChannelCLEntry *entry,
 			IMessage::MessageType type,
@@ -67,11 +65,7 @@ namespace Acetamide
 		if (!ParentEntry_)
 			return;
 
-		Core::Instance ().GetServerManager ()->
-				SetMessageOut (Message_, 
-						ParentEntry_->GetChannelHandler ()->GetChannelOptions (),
-						ParentEntry_->GetChannelHandler ()->GetServerOptions (),
-						ParentEntry_->GetIrcAccount ()); 
+		ParentEntry_->GetChannelHandler ()->SendPublicMessage (Message_);
 	}
 
 	IMessage::Direction ChannelPublicMessage::GetDirection () const
@@ -84,9 +78,20 @@ namespace Acetamide
 		return Type_;
 	}
 
+	void ChannelPublicMessage::SetMessageType (IMessage::MessageType t)
+	{
+		Type_ = t;
+	}
+
 	IMessage::MessageSubType ChannelPublicMessage::GetMessageSubType () const
 	{
 		return SubType_;
+	}
+
+	void ChannelPublicMessage::SetMessageSubType
+			(IMessage::MessageSubType type)
+	{
+		SubType_ = type;
 	}
 
 	QObject* ChannelPublicMessage::OtherPart () const
@@ -129,6 +134,8 @@ namespace Acetamide
 	{
 		Datetime_ = dt;
 	}
+
+
 };
 };
 };

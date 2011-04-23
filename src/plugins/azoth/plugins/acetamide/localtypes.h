@@ -21,7 +21,6 @@
 
 #include <QStringList>
 
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -30,12 +29,10 @@ namespace Acetamide
 {
 	struct ServerOptions
 	{
-		QString NetworkName_;
 		QString ServerName_;
 		QString ServerEncoding_;
 		QString ServerPassword_;
-		QStringList ServerNicknames_;
-		QString ServerRealName_;
+		QString ServerNickName_;
 		int ServerPort_;
 		bool SSL_;
 	};
@@ -45,14 +42,21 @@ namespace Acetamide
 		QString ServerName_;
 		QString ChannelName_;
 		QString ChannelPassword_;
-		QString ChannelNickname_;
 	};
 
 	enum ConnectionState
 	{
 		Connected,
-		InProcess,
+		InProgress,
 		NotConnected
+	};
+
+	struct IrcMessageOptions
+	{
+		QString Nick_;
+		QString Command_;
+		QString Message_;
+		QList<std::string> Parameters_;
 	};
 
 	bool operator== (const ChannelOptions&, const ChannelOptions&);
