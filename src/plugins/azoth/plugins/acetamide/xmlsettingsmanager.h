@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDDEFAULTCHANNELSDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDDEFAULTCHANNELSDIALOG_H
+#ifndef PLUGINS_AZOTH_ACETAMIDE_XMLSETTINGSMANAGER_H
+#define PLUGINS_AZOTH_ACETAMIDE_XMLSETTINGSMANAGER_H
 
-#include <QDialog>
-#include <QStandardItemModel>
-#include "ui_ircadddefaultchannelsdialog.h"
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -29,22 +27,20 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcAddDefaultChannelsDialog : public QDialog
+	class XmlSettingsManager : public
+			LeechCraft::Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		
-		Ui::IrcAddDefaultChannelsDialog Ui_;
-		QStandardItemModel *ChannelsModel_;
+
+		XmlSettingsManager ();
 	public:
-		IrcAddDefaultChannelsDialog (QWidget* = 0);
-		QStringList GetChannels ();
-		QStringList GetChannelsPair () const;
-	public slots:
-		void handleAddLine (bool);
-		void handleDeleteLine (bool);
-		void accept ();
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDDEFAULTCHANNELSDIALOG_H
+
+#endif // PLUGINS_AZOTH_ACETAMIDE_XMLSETTINGSMANAGER_H

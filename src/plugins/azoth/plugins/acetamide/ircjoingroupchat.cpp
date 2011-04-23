@@ -33,19 +33,21 @@ namespace Acetamide
 	, SelectedAccount_ (0)
 	{
 		Ui_.setupUi (this);
-		
+
 		Ui_.Channel_->setMaxLength (50);
-		
-		Q_FOREACH (const QByteArray& codec, QTextCodec::availableCodecs ())
+
+		Q_FOREACH (const QByteArray& codec,
+				QTextCodec::availableCodecs ())
 			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.Encoding_->model ()->sort (0);
-		Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText ("UTF-8"));
-		
+		Ui_.Encoding_->
+				setCurrentIndex (Ui_.Encoding_->findText ("UTF-8"));
+
 		QRegExp rx ("^([\\#,\\&,\\!,\\+]?)([^\\,,\\a,\\s]+)");
 		QValidator *validator = new QRegExpValidator (rx, this);
 		Ui_.Channel_->setValidator (validator);
 	}
-	
+
 	void IrcJoinGroupChat::AccountSelected (QObject *accObj)
 	{
 		IrcAccount *acc = qobject_cast<IrcAccount*> (accObj);
@@ -61,7 +63,7 @@ namespace Acetamide
 		SelectedAccount_ = acc;
 		Ui_.Nickname_->setText (acc->GetOurNick ());
 	}
-	
+
 	void IrcJoinGroupChat::Join (QObject *accObj)
 	{
 		IrcAccount *acc = qobject_cast<IrcAccount*> (accObj);
@@ -75,20 +77,20 @@ namespace Acetamide
 		}
 
 		SelectedAccount_ = acc;
-		acc->JoinRoom (GetConnectionOptions (), GetChannelInfo ());
+		acc->JoinServer (GetServerOptions (), GetChannelOptions ());
 	}
 
 	void IrcJoinGroupChat::Cancel ()
 	{
-
 	}
 
 	QVariantList IrcJoinGroupChat::GetBookmarkedMUCs () const
 	{
 		return QVariantList ();
 	}
-	
-	void IrcJoinGroupChat::SetBookmarkedMUCs (QObject*, const QVariantList&)
+
+	void IrcJoinGroupChat::SetBookmarkedMUCs (QObject*,
+			const QVariantList&)
 	{
 	}
 
@@ -108,7 +110,8 @@ namespace Acetamide
 		if (!server.isEmpty ())
 			Ui_.Server_->setText (server);
 		if (!encoding.isEmpty ())
-			Ui_.Encoding_->setCurrentIndex (Ui_.Encoding_->findText (encoding));
+			Ui_.Encoding_->
+					setCurrentIndex (Ui_.Encoding_->findText (encoding));
 		if (port)
 			Ui_.Port_->setValue (port);
 		Ui_.SSL_->setChecked (ssl);
@@ -132,7 +135,7 @@ namespace Acetamide
 
 		return result;
 	}
-	
+
 	QString IrcJoinGroupChat::GetServer () const
 	{
 		return Ui_.Server_->text ().toLower ();
@@ -150,7 +153,6 @@ namespace Acetamide
 
 	QString IrcJoinGroupChat::GetNickname () const
 	{
-		//TODO SelectedAccount_->GetNicknames () - return list of nicks for account;
 		return Ui_.Nickname_->text ();
 	}
 
@@ -164,37 +166,29 @@ namespace Acetamide
 		return Ui_.SSL_->isChecked ();
 	}
 
-	ServerOptions IrcJoinGroupChat::GetConnectionOptions () const
+	ServerOptions IrcJoinGroupChat::GetServerOptions () const
 	{
-		ServerOptions opts;
-		opts.NetworkName_ = QString ();
-		opts.ServerName_ = GetServer ();
-		opts.ServerPort_ = GetPort ();
-		opts.ServerPassword_ = QString ();
-		opts.ServerEncoding_ = GetEncoding ();
-		opts.SSL_ = GetSSL ();
-		opts.ServerNicknames_ << GetNickname ();
-		QString username;
-		if (SelectedAccount_->GetServers ().isEmpty ())
-			username = Core::Instance ().GetDefaultUserName ();
-		else
-			username = SelectedAccount_->GetServers ().at (0).ServerRealName_;
-		
-		opts.ServerRealName_ = username;
+		ServerOptions so;
+		so.ServerName_ = GetServer ();
+		so.ServerPort_ = GetPort ();
+		so.ServerEncoding_ = GetEncoding ();
+		so.ServerPassword_ = QString ();
+		so.SSL_ = GetSSL ();
+		so.ServerNickName_ = GetNickname ();
 
-		return opts;
+		return so;
 	}
 
-	ChannelOptions IrcJoinGroupChat::GetChannelInfo () const
+	ChannelOptions IrcJoinGroupChat::GetChannelOptions () const
 	{
-		ChannelOptions info;
-		info.ServerName_ = GetServer ();
-		info.ChannelName_ = GetChannel ();
-		info.ChannelPassword_ = QString ();
-		info.ChannelNickname_ = GetNickname ();
+		ChannelOptions cho;
+		cho.ChannelName_ = GetChannel ();
+		cho.ServerName_ = GetServer ();
+		cho.ChannelPassword_ = QString ();
 
-		return info;
+		return cho;
 	}
+
 };
 };
 };

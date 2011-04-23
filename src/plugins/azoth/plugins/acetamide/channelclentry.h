@@ -21,9 +21,8 @@
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <QStringList>
-#include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
+#include "entrybase.h"
 
 namespace LeechCraft
 {
@@ -31,27 +30,24 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcAccount;
-	class ChannelPublicMessage;
+
 	class ChannelHandler;
-	
+	class ChannelPublicMessage;
+
 	class ChannelCLEntry : public QObject
-						 , public ICLEntry
-						 , public IMUCEntry
+						, public ICLEntry
+						, public IMUCEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-						LeechCraft::Azoth::IMUCEntry);
-		
-		IrcAccount *Account_;
+		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
+				LeechCraft::Azoth::ICLEntry);
+
+		ChannelHandler *ICH_;
 		QList<QObject*> AllMessages_;
-		ChannelHandler *CH_;
 	public:
-		ChannelCLEntry (ChannelHandler*, IrcAccount*);
-		
+		ChannelCLEntry (ChannelHandler*);
 		ChannelHandler* GetChannelHandler () const;
-		IrcAccount* GetIrcAccount () const;
-		// ICLEntry
+
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
@@ -70,8 +66,9 @@ namespace Acetamide
 		void SetChatPartState (ChatPartState, const QString&);
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
-		
-		EntryStatus GetStatus (const QString& variant = QString ()) const;
+
+		EntryStatus
+				GetStatus (const QString& variant = QString ()) const;
 		QImage GetAvatar () const;
 		QString GetRawInfo () const;
 		void ShowInfo ();
@@ -91,23 +88,23 @@ namespace Acetamide
 		QString GetNick () const;
 		void SetNick (const QString&);
 		QVariantMap GetIdentifyingData () const;
-		
+
 		void HandleMessage (ChannelPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);
 		void HandleSubjectChanged (const QString&);
 	signals:
-		void gotMessage (QObject*);
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
-		
+		void participantAffiliationChanged (QObject*, MUCAffiliation);
+		void participantRoleChanged (QObject*, MUCRole);
+
+		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
 		void avatarChanged (const QImage&);
 		void rawinfoChanged (const QString&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
-		void participantAffiliationChanged (QObject*, MUCAffiliation);
-		void participantRoleChanged (QObject*, MUCRole);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 	};

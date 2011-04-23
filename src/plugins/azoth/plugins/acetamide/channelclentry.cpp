@@ -17,12 +17,12 @@
  **********************************************************************/
 
 #include "channelclentry.h"
-#include <QImage>
-#include <QtDebug>
 #include <interfaces/azothutil.h>
-#include "ircaccount.h"
-#include "channelpublicmessage.h"
 #include "channelhandler.h"
+#include "channelpublicmessage.h"
+#include "ircmessage.h"
+#include "ircserverhandler.h"
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
@@ -30,21 +30,15 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ChannelCLEntry::ChannelCLEntry (ChannelHandler *ch, IrcAccount *account)
-	: QObject (ch)
-	, Account_ (account)
-	, CH_ (ch)
+	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
+	: QObject (handler->GetIrcServerHandler ()->GetAccount ())
+	, ICH_ (handler)
 	{
 	}
 
 	ChannelHandler* ChannelCLEntry::GetChannelHandler () const
 	{
-		return CH_;
-	}
-
-	IrcAccount* ChannelCLEntry::GetIrcAccount () const
-	{
-		return Account_;
+		return ICH_;
 	}
 
 	QObject* ChannelCLEntry::GetObject ()
@@ -54,14 +48,14 @@ namespace Acetamide
 
 	QObject* ChannelCLEntry::GetParentAccount () const
 	{
-		return Account_;
+		return ICH_->GetIrcServerHandler ()->GetAccount ();
 	}
 
 	ICLEntry::Features ChannelCLEntry::GetEntryFeatures () const
 	{
 		return FSessionEntry;
 	}
-	
+
 	ICLEntry::EntryType ChannelCLEntry::GetEntryType () const
 	{
 		return ETMUC;
@@ -69,7 +63,7 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetEntryName () const
 	{
-		return CH_->GetChannelID ();
+		return ICH_->GetChannelID ();
 	}
 
 	void ChannelCLEntry::SetEntryName (const QString&)
@@ -78,19 +72,22 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetEntryID () const
 	{
-		return Account_->GetAccountID () + '_' + CH_->GetChannelID ();
+		return ICH_->GetIrcServerHandler ()->GetAccount ()->
+				GetAccountID () + "_" + ICH_->
+				GetIrcServerHandler ()->GetServerID_ () + "_" +
+				ICH_->GetChannelID ();
 	}
 
 	QString ChannelCLEntry::GetHumanReadableID () const
 	{
-		return CH_->GetChannelID ();
+		return ICH_->GetChannelID ();
 	}
-	
+
 	QStringList ChannelCLEntry::Groups () const
 	{
 		return QStringList () << tr ("Channels");
 	}
-	
+
 	void ChannelCLEntry::SetGroups (const QStringList&)
 	{
 	}
@@ -101,12 +98,12 @@ namespace Acetamide
 		result << "";
 		return result;
 	}
-	
+
 	QObject* ChannelCLEntry::CreateMessage (IMessage::MessageType,
-			const QString& variant, const QString& text)
+			const QString& variant, const QString& body)
 	{
 		if (variant == "")
-			return new ChannelPublicMessage (text, this);
+			return new ChannelPublicMessage (body, this);
 		else
 			return 0;
 	}
@@ -115,7 +112,7 @@ namespace Acetamide
 	{
 		return AllMessages_;
 	}
-	
+
 	void ChannelCLEntry::PurgeMessages (const QDateTime& before)
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
@@ -130,8 +127,9 @@ namespace Acetamide
 	{
 		return QList<QAction*> ();
 	}
-	
-	QMap<QString, QVariant> ChannelCLEntry::GetClientInfo (const QString&) const
+
+	QMap<QString, QVariant>
+			ChannelCLEntry::GetClientInfo (const QString&) const
 	{
 		return QMap<QString, QVariant> ();
 	}
@@ -155,142 +153,93 @@ namespace Acetamide
 	{
 	}
 
-	bool ChannelCLEntry::MayChangeAffiliation (QObject *entry, IMUCEntry::MUCAffiliation aff) const
+	bool ChannelCLEntry::MayChangeAffiliation (QObject*,
+			IMUCEntry::MUCAffiliation ) const
 	{
-// 		MUCAffiliation ourAff = GetAffiliation (0);
-// 		if (aff < MUCAAdmin)
-// 			return false;
-// 
-// 		if (aff == MUCAOwner)
-// 			return true;
-// 
-// 		MUCAffiliation partAff = GetAffiliation (entry);
-// 		if (partAff >= aff)
-// 			return false;
-// 
-// 		if (aff >= MUCAAdmin)
-// 			return false;
-// 
-// 		return true;
 		return false;
 	}
 
-	bool ChannelCLEntry::MayChangeRole (QObject *entry, IMUCEntry::MUCRole role) const
+	bool ChannelCLEntry::MayChangeRole (QObject*,
+			IMUCEntry::MUCRole ) const
 	{
-// 		MUCAffiliation ourAff = GetAffiliation (0);
-// 		MUCRole ourRole = GetRole (0);
-// 
-// 		MUCAffiliation aff = GetAffiliation (entry);
-// 		MUCRole role = GetRole (entry);
-// 
-// 		if (role == MUCRInvalid ||
-// 				ourRole == MUCRInvalid ||
-// 				role == MUCRInvalid ||
-// 				aff == MUCAInvalid ||
-// 				ourAff == MUCAInvalid)
-// 			return false;
-// 
-// 		if (ourRole != MUCRModerator)
-// 			return false;
-// 
-// 		if (ourAff <= aff)
-// 			return false;
-
-// 		return true;
-	//	return false;
+		return false;
 	}
 
-	IMUCEntry::MUCAffiliation ChannelCLEntry::GetAffiliation (QObject *entry) const
+	IMUCEntry::MUCAffiliation
+			ChannelCLEntry::GetAffiliation (QObject* ) const
 	{
-// 		if (!entry)
-// 			entry = CH_->GetSelf ();
-// 
-// 		ServerParticipantEntry *participant = qobject_cast<ServerParticipantEntry*> (entry);
-// 		if (!participant)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< participant
-// 					<< "is not a ServerParticipantEntry";
-// 			return MUCAInvalid;
-// 		}
-// 
-// 		return static_cast<MUCAffiliation> (participant->GetAffiliation (CH_->GetChannelOptions ().ChannelName_));
-		return MUCAMember;
+
 	}
 
-	void ChannelCLEntry::SetAffiliation (QObject *participant, IMUCEntry::MUCAffiliation aff, const QString&)
+	void ChannelCLEntry::SetAffiliation (QObject*,
+			IMUCEntry::MUCAffiliation , const QString& )
 	{
-// 		ServerParticipantEntry *entry = qobject_cast<ServerParticipantEntry*> (participant);
-// 		if (!entry)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< participant
-// 					<< "is not a ServerParticipantEntry";
-// 			return;
-// 		}
-// 
-// 		CH_->SetAffiliation (entry, newAff, reason);
 	}
 
-	IMUCEntry::MUCRole ChannelCLEntry::GetRole (QObject*) const
+	IMUCEntry::MUCRole ChannelCLEntry::GetRole (QObject* ) const
 	{
-		return MUCRParticipant;
 	}
 
-	void ChannelCLEntry::SetRole (QObject*, IMUCEntry::MUCRole , const QString&)
+	void ChannelCLEntry::SetRole (QObject* ,
+			IMUCEntry::MUCRole , const QString& )
 	{
 	}
 
 	IMUCEntry::MUCFeatures ChannelCLEntry::GetMUCFeatures () const
 	{
-		return MUCFCanBeConfigured | MUCFCanHaveSubject;
+		return MUCFCanHaveSubject;
 	}
 
 	QString ChannelCLEntry::GetMUCSubject () const
 	{
-		return CH_->GetSubject ();
+		return ICH_->GetMUCSubject ();
 	}
 
-	void ChannelCLEntry::SetMUCSubject (const QString& subj)
+	void ChannelCLEntry::SetMUCSubject (const QString& subject)
 	{
-		CH_->SetSubject (subj);
+		ICH_->SetMUCSubject (subject);
 	}
 
 	QList<QObject*> ChannelCLEntry::GetParticipants ()
 	{
-		return CH_->GetParticipants ();
+		return ICH_->GetParticipants ();
 	}
 
 	void ChannelCLEntry::Leave (const QString& msg)
 	{
-		CH_->Leave (msg);
+		ICH_->LeaveChannel (msg);
 	}
 
 	QString ChannelCLEntry::GetNick () const
 	{
-		return CH_->GetNickname ();
+		return ICH_->GetIrcServerHandler ()->GetNickName ();
 	}
 
-	void ChannelCLEntry::SetNick (const QString& nick)
+	void ChannelCLEntry::SetNick (const QString&)
 	{
-		CH_->SetNickname (nick);
 	}
-	
+
 	QVariantMap ChannelCLEntry::GetIdentifyingData () const
 	{
 		QVariantMap result;
 		result ["HumanReadableName"] = QString ("%1 on %2@%3:%4")
-				.arg (CH_->GetNickname ())
-				.arg (CH_->GetChannelOptions ().ChannelName_)
-				.arg (CH_->GetServerOptions ().ServerName_)
-				.arg (CH_->GetServerOptions ().ServerPort_);
-		result ["AccountID"] = Account_->GetAccountID ();
-		result ["Nickname"] = CH_->GetNickname ();
-		result ["Channel"] = CH_->GetChannelOptions ().ChannelName_;
-		result ["Server"] = CH_->GetServerOptions ().ServerName_;
-		result ["Port"] = CH_->GetServerOptions ().ServerPort_;
-		result ["Encoding"] = CH_->GetServerOptions ().ServerEncoding_;
-		result ["SSL"] = CH_->GetServerOptions ().SSL_;
+				.arg (ICH_->GetIrcServerHandler ()->GetNickName ())
+				.arg (ICH_->GetChannelOptions ().ChannelName_)
+				.arg (ICH_->GetChannelOptions ().ServerName_)
+				.arg (ICH_->GetIrcServerHandler ()->
+					GetServerOptions ().ServerPort_);
+		result ["AccountID"] = ICH_->GetIrcServerHandler ()->
+				GetAccount ()->GetAccountID ();
+		result ["Nickname"] = ICH_->GetIrcServerHandler ()->
+				GetNickName ();
+		result ["Channel"] = ICH_->GetChannelOptions ().ChannelName_;
+		result ["Server"] = ICH_->GetChannelOptions ().ServerName_;
+		result ["Port"] = ICH_->GetIrcServerHandler ()->
+				GetServerOptions ().ServerPort_;
+		result ["Encoding"] = ICH_->GetIrcServerHandler ()->
+				GetServerOptions ().ServerEncoding_;
+		result ["SSL"] = ICH_->GetIrcServerHandler ()->
+				GetServerOptions ().SSL_;
 
 		return result;
 	}
@@ -301,7 +250,8 @@ namespace Acetamide
 		emit gotMessage (msg);
 	}
 
-	void ChannelCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
+	void ChannelCLEntry::HandleNewParticipants
+			(const QList<ICLEntry*>& parts)
 	{
 		QObjectList objs;
 		Q_FOREACH (ICLEntry *e, parts)

@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDSERVERDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDSERVERDIALOG_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H
 
-#include <QDialog>
-#include "ui_ircaddserverdialog.h"
+#include <QWidget>
+#include "ui_ircaccountconfigurationwidget.h"
 
 namespace LeechCraft
 {
@@ -28,28 +28,23 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcAddServerDialog : public QDialog
+	class IrcAccountConfigurationWidget : public QWidget
 	{
 		Q_OBJECT
-		
-		Ui::AddServerDialog Ui_;
-		
+
+		Ui::IrcAccountConfigurationWidget Ui_;
 	public:
-		IrcAddServerDialog (QWidget* = 0);
-		
-		QString GetServer () const;
-		void SetServer (const QString&);
-		int GetPort () const;
-		void SetPort (int);
-		QString GetPassword () const;
-		void SetPassword (const QString&);
-		void SetSSL (bool);
-		bool GetSSL () const;
-	public slots:
-		void handleServerChanged (const QString&);
-		void handlePortChanged (int);
+		IrcAccountConfigurationWidget (QWidget* = 0);
+
+		void SetRealName (const QString&);
+		QString GetRealName () const;
+		void SetUserName (const QString&);
+		QString GetUserName () const;
+		void SetNickNames (const QStringList&);
+		QStringList GetNickNames () const;
 	};
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDSERVERDIALOG_H
+
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H

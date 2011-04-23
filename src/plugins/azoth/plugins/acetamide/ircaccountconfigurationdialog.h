@@ -20,9 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONDIALOG_H
 
 #include <QDialog>
-#include <QStandardItemModel>
 #include "ui_ircaccountconfigurationdialog.h"
-#include "core.h"
 
 namespace LeechCraft
 {
@@ -30,62 +28,14 @@ namespace Azoth
 {
 namespace Acetamide
 {
+
 	class IrcAccountConfigurationDialog : public QDialog
 	{
-		Q_OBJECT
-		
-		enum ModelRole 
-		{ 
-			ServerAndChannelsRole = Qt::UserRole + 1
-		};
-		
-		enum ServerRole 
-		{ 
-			DefaultServerRole = Qt::UserRole + 1
-		};
-		
 		Ui::IrcAccountConfigurationDialog Ui_;
-		QMenu *AddMenu_;
-		QAction *AddChannel_;
-		QAction *AddServer_;
-		QList<ServerOptions> Servers_;
-		QList<ChannelOptions> Channels_;
-		int LastIndex_;
-		QStandardItemModel *ServerAndChannels_;
 	public:
 		IrcAccountConfigurationDialog (QWidget* = 0);
-		QString GetDefaultNickname () const;
-		
-		QList<ServerOptions>  GetServers () const;
-		void SetServers (const QList<ServerOptions> &);
-		QList<ChannelOptions>  GetChannels () const;
-		void SetChannels (const QList<ChannelOptions> &);
-		
-// 		void SetDefaultServers (const QList<ServerInfoData>&);
-// 		QList<ServerInfoData> GetServersInfo () const;
-// 		void SetServersInfo (const QList<ServerInfoData>&);
-	private:
-// 		QStringList GetServers () const;
-// 		void SetServers (const QStringList&);
-// 		void DeleteNetwork (const QModelIndex&, const QString&);
-// 		void DeleteServer (const QModelIndex&, const QString&);
-// 		void DeleteChannel (const QModelIndex&, const QString&);
-// 		void EditServer ();
-// 		void EditChannel ();
-// 		QString GetChannelPassword (const QString&, const QString&, const QString&);
-// 		NickNameData GetNicknameData (const QString&, const QString&);
-// 		bool IsServerExists (const ServerInfoData&);
-// 		QStringList RemoveDuplicatesChannels (const QString&, const QString&, const QStringList&);
-// 	public slots:
-// 		void handleChangeServer (int);
-// 		void handleAddServer (bool);
-// 		void handleAddChannel (bool);
-// 		void handleChannelsEnable (QModelIndex);
-// 		void handleNetworkTextChange (const QString&);
-// 		void handleEditElement (bool);
-// 		void handleDeleteElement (bool);
-// 		void handleTabChange (int);
-// 		void handleDblClick (const QModelIndex&);
+
+		IrcAccountConfigurationWidget* ConfWidget () const;
 	};
 };
 };

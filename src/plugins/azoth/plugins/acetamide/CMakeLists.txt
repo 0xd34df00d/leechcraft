@@ -1,60 +1,57 @@
+SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
 SET (ACETAMIDE_SRCS
 	acetamide.cpp
-	channelhandler.cpp
 	channelclentry.cpp
+	channelhandler.cpp
 	channelpublicmessage.cpp
 	clientconnection.cpp
 	core.cpp
 	entrybase.cpp
 	ircaccount.cpp
 	ircaccountconfigurationdialog.cpp
-	ircaddserverdialog.cpp
-	ircadddefaultchannelsdialog.cpp
-	ircparser.cpp
-	irceditchanneldialog.cpp
+	ircaccountconfigurationwidget.cpp
 	ircjoingroupchat.cpp
 	ircmessage.cpp
+	ircparser.cpp
 	ircprotocol.cpp
-	ircserver.cpp
-	ircservermanager.cpp
+	ircserverclentry.cpp
+	ircserverhandler.cpp
 	localtypes.cpp
 	serverparticipantentry.cpp
-	socketmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 
 SET (ACETAMIDE_HEADERS
 	acetamide.h
-	channelhandler.h
 	channelclentry.h
+	channelhandler.h
 	channelpublicmessage.h
 	clientconnection.h
 	core.h
 	entrybase.h
 	ircaccount.h
 	ircaccountconfigurationdialog.h
-	ircaddserverdialog.h
-	ircadddefaultchannelsdialog.h
-	ircparser.h
-	irceditchanneldialog.h
+	ircaccountconfigurationwidget.h
 	ircjoingroupchat.h
 	ircmessage.h
+	ircparser.h
 	ircprotocol.h
-	ircserver.h
-	ircservermanager.h
+	ircserverclentry.h
+	ircserverhandler.h
 	localtypes.h
 	serverparticipantentry.h
-	socketmanager.h
+	xmlsettingsmanager.h
 	)
 
 SET (ACETAMIDE_FORMS
 	ircaccountconfigurationdialog.ui
-	ircadddefaultchannelsdialog.ui
-	ircaddserverdialog.ui
-	irceditchanneldialog.ui
+	ircaccountconfigurationwidget.ui
 	ircjoingroupchat.ui
 	)
 
@@ -63,6 +60,7 @@ SET (ACETAMIDE_TRANSLATIONS
 	leechcraft_azoth_acetamide_uk_UA.ts
 	leechcraft_azoth_acetamide_en.ts
 	)
+
 SET (ACETAMIDE_COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_acetamide_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_acetamide_uk_UA.qm
@@ -86,8 +84,12 @@ ADD_LIBRARY (leechcraft_azoth_acetamide SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_acetamide
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_acetamide DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+
+INSTALL (TARGETS leechcraft_azoth_acetamide
+		DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS}
+		DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES azothacetamidesettings.xml
+		DESTINATION ${LC_SETTINGS_DEST})

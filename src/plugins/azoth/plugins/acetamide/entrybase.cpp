@@ -35,7 +35,6 @@ namespace Acetamide
 	: QObject (account)
 	, Account_ (account)
 	{
-
 	}
 
 	QObject* EntryBase::GetObject ()
@@ -47,7 +46,7 @@ namespace Acetamide
 	{
 		return AllMessages_;
 	}
-	
+
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
@@ -86,10 +85,12 @@ namespace Acetamide
 		return QMap<QString, QVariant> ();
 	}
 
-	void EntryBase::HandleMessage (IrcMessage* msg)
+	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
-		IrcProtocol *proto = qobject_cast<IrcProtocol*> (Account_->GetParentProtocol ());
-		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
+		IrcProtocol *proto = qobject_cast<IrcProtocol*> (Account_->
+				GetParentProtocol ());
+		IProxyObject *proxy =
+				qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 		proxy->PreprocessMessage (msg);
 
 		AllMessages_ << msg;
@@ -117,4 +118,3 @@ namespace Acetamide
 };
 };
 };
-	
