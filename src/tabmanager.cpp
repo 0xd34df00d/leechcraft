@@ -149,8 +149,22 @@ void TabManager::add (const QString& name, QWidget *contents)
 }
 
 void TabManager::add (const QString& name, QWidget *contents,
-		const QIcon& icon)
+		const QIcon& srcIcon)
 {
+	QIcon icon = srcIcon;
+	if (icon.isNull ())
+	{
+		ITabWidget *itw = qobject_cast<ITabWidget*> (contents);
+		if (!itw)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< contents
+					<< "doesn't implement ITabWidget";
+			return;
+		}
+		icon = itw->GetTabClassInfo ().Icon_;
+	}
+
 	if (XmlSettingsManager::Instance ()->
 			property ("OpenTabNext").toBool ())
 	{
