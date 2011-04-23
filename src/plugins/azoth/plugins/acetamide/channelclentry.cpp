@@ -117,7 +117,7 @@ namespace Acetamide
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
-	
+
 	void ChannelCLEntry::SetChatPartState (ChatPartState, const QString&)
 	{
 
@@ -168,7 +168,7 @@ namespace Acetamide
 	IMUCEntry::MUCAffiliation
 			ChannelCLEntry::GetAffiliation (QObject* ) const
 	{
-
+		return IMUCEntry::MUCAInvalid;
 	}
 
 	void ChannelCLEntry::SetAffiliation (QObject*,
@@ -178,6 +178,7 @@ namespace Acetamide
 
 	IMUCEntry::MUCRole ChannelCLEntry::GetRole (QObject* ) const
 	{
+		return IMUCEntry::MUCRInvalid;
 	}
 
 	void ChannelCLEntry::SetRole (QObject* ,

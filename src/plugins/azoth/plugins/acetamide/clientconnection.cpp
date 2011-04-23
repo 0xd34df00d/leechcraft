@@ -61,6 +61,7 @@ namespace Acetamide
 				if (ish->IsChannelExists (id))
 					return ish->GetChannelHandler (id)->GetCLEntry ();
 
+		return NULL;
 	}
 
 	QList<QObject*> ClientConnection::GetCLEntries () const

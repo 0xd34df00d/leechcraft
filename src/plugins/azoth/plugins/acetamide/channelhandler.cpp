@@ -144,7 +144,7 @@ namespace Acetamide
 		QStringList groups = entry->GetChannels ();
 		if (groups.contains (ChannelOptions_.ChannelName_))
 		{
-			if (groups.removeOne (ChannelOptions_.ChannelName_));
+			if (groups.removeOne (ChannelOptions_.ChannelName_))
 			{
 				MakeLeaveMessage (nick, msg);
 				ISH_->GetAccount ()->handleEntryRemoved (entry.get ());
