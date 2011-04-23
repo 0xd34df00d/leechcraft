@@ -471,14 +471,29 @@ namespace Acetamide
 		if (target.startsWith ("#") || target.startsWith ("+") ||
 				target.startsWith ("!") || target.startsWith ("&") ||
 				target.startsWith ("$"))
-			{
+		{
 				QString channelKey = (target + "@" +
 						ServerOptions_.ServerName_).toLower ();
 				if (ChannelHandlers_.contains (channelKey))
 					ChannelHandlers_ [channelKey]->
 							HandleIncomingMessage (nick,
 								EncodedMessage (msg, IMessage::DIn));
-			}
+		}
+		else
+		{
+			ServerParticipantEntry_ptr entry =
+					GetParticipantEntry (nick);
+			IrcMessage *message =
+					new IrcMessage (IMessage::MTChatMessage,
+							IMessage::DIn,
+							ServerID_,
+							nick,
+							Account_->GetClientConnection ().get ());
+			message->SetBody (EncodedMessage (msg, IMessage::DIn));
+			message->SetDateTime (QDateTime::currentDateTime ());
+			entry->SetPrivateChat (true);
+			entry->HandleMessage (message);
+		}
 	}
 
 	void IrcServerHandler::InitSocket ()
