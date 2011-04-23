@@ -459,26 +459,37 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 
 void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 {
-	/* TODO
-	QByteArray newTabId = XmlSettingsManager::Instance ()->
+	QByteArray combined = XmlSettingsManager::Instance ()->
 			property ("DefaultNewTab").toString ().toLatin1 ();
-	if (newTabId != "contextdependent")
+	if (combined != "contextdependent")
 	{
-		QObject *plugin = Core::Instance ()
-				.GetPluginManager ()->GetPluginByID (newTabId);
-		IMultiTabs *imtw = qobject_cast<IMultiTabs*> (plugin);
-		if (!imtw)
+		QList<QByteArray> parts = combined.split ('|');
+		if (!parts.size () != 2)
+		{
 			qWarning () << Q_FUNC_INFO
-					<< "plugin with id"
-					<< newTabId
-					<< "is not a IMultiTabs";
+					<< "incorrect split"
+					<< parts
+					<< combined;
+		}
 		else
 		{
-			QMetaObject::invokeMethod (plugin, "newTabRequested");
-			return;
+			const QByteArray& newTabId = parts.at (0);
+			const QByteArray& tabClass = parts.at (1);
+			QObject *plugin = Core::Instance ()
+					.GetPluginManager ()->GetPluginByID (newTabId);
+			IHaveTabs *iht = qobject_cast<IHaveTabs*> (plugin);
+			if (!iht)
+				qWarning () << Q_FUNC_INFO
+						<< "plugin with id"
+						<< newTabId
+						<< "is not a IMultiTabs";
+			else
+			{
+				iht->TabOpenRequested (tabClass);
+				return;
+			}
 		}
 	}
-	*/
 	
 	IHaveTabs *highestIHT = 0;
 	QByteArray highestTabClass;
