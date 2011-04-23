@@ -205,7 +205,7 @@ namespace Acetamide
 		}
 	}
 
-	void IrcServerHandler::InboxMessage2Server ()
+	void IrcServerHandler::IncomingMessage2Server ()
 	{
 		IrcMessage *msg = CreateMessage (IMessage::MTEventMessage,
 				ServerID_, IrcParser_->GetIrcMessageOptions ().Message_);
@@ -213,7 +213,7 @@ namespace Acetamide
 		ServerCLEntry_->HandleMessage (msg);
 	}
 
-	void IrcServerHandler::InboxMessage2Channel ()
+	void IrcServerHandler::IncomingMessage2Channel ()
 	{
 		IrcMessageOptions imo = IrcParser_->GetIrcMessageOptions ();
 		QString cmd = imo.Command_.toLower ();
@@ -350,6 +350,9 @@ namespace Acetamide
 		Command2Action_ ["part"] =
 				boost::bind (&IrcServerHandler::LeaveParticipant,
 					this, _1, _2, _3);
+		Command2Action_ ["privmsg"] =
+				boost::bind (&IrcServerHandler::HandleIncomingMessage,
+					this, _1, _2, _3);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -460,6 +463,24 @@ namespace Acetamide
 		ChannelHandlers_ [channelID]->RemoveChannelUser (nick, msg);
 	}
 
+	void IrcServerHandler::HandleIncomingMessage (const QString& nick,
+			QList<std::string> params, const QString& msg)
+	{
+		QString target = QString::fromUtf8 (params.last ().c_str ());
+
+		if (target.startsWith ("#") || target.startsWith ("+") ||
+				target.startsWith ("!") || target.startsWith ("&") ||
+				target.startsWith ("$"))
+			{
+				QString channelKey = (target + "@" +
+						ServerOptions_.ServerName_).toLower ();
+				if (ChannelHandlers_.contains (channelKey))
+					ChannelHandlers_ [channelKey]->
+							HandleIncomingMessage (nick,
+								EncodedMessage (msg, IMessage::DIn));
+			}
+	}
+
 	void IrcServerHandler::InitSocket ()
 	{
 		connect (TcpSocket_ptr.get (),
@@ -497,9 +518,9 @@ namespace Acetamide
 				Error2Action_ [cmd] ();
 			}
 			else if (!ChannelHandlers_.values ().count ())
-				InboxMessage2Server ();
+				IncomingMessage2Server ();
 
-			InboxMessage2Channel ();
+			IncomingMessage2Channel ();
 		}
 	}
 

@@ -87,8 +87,8 @@ class IrcMessage;
 		bool ConnectToServer ();
 		bool JoinChannel (const ChannelOptions&);
 		void SendCommand (const QString&);
-		void InboxMessage2Server ();
-		void InboxMessage2Channel ();
+		void IncomingMessage2Server ();
+		void IncomingMessage2Channel ();
 		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
 		void RemoveParticipantEntry (const QString&);
 	private:
@@ -114,6 +114,8 @@ class IrcMessage;
 		void JoinParticipant (const QString&,
 				QList<std::string>, const QString&);
 		void LeaveParticipant (const QString&,
+				QList<std::string>, const QString&);
+		void HandleIncomingMessage (const QString&,
 				QList<std::string>, const QString&);
 	private slots:
 		void readReply ();

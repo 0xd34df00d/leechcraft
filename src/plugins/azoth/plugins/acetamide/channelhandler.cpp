@@ -99,7 +99,24 @@ namespace Acetamide
 						IMessage::MSTOther,
 						entry);
 		ChannelCLEntry_->HandleMessage (message);
+	}
 
+	void ChannelHandler::HandleIncomingMessage (const QString& nick,
+			const QString& msg)
+	{
+		ServerParticipantEntry_ptr entry = Nick2Entry_ [nick];
+
+		if (!entry)
+			return;
+
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (msg,
+						IMessage::DIn,
+						ChannelCLEntry_,
+						IMessage::MTMUCMessage,
+						IMessage::MSTOther,
+						entry);
+		ChannelCLEntry_->HandleMessage (message);
 	}
 
 	void ChannelHandler::SetChannelUser (const QString& nick)
