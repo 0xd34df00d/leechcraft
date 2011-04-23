@@ -19,7 +19,7 @@
 #ifndef PLUGINS_LCFTP_TABWIDGET_H
 #define PLUGINS_LCFTP_TABWIDGET_H
 #include <QWidget>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include "ui_tabwidget.h"
 
 namespace LeechCraft
@@ -29,10 +29,10 @@ namespace LeechCraft
 		namespace LCFTP
 		{
 			class TabWidget : public QWidget
-							, public IMultiTabsWidget
+							, public ITabWidget
 			{
 				Q_OBJECT
-				Q_INTERFACES (IMultiTabsWidget)
+				Q_INTERFACES (ITabWidget)
 
 				Ui::TabWidget Ui_;
 				static QObject *S_ParentMultiTabs_;
@@ -45,7 +45,8 @@ namespace LeechCraft
 				QToolBar* GetToolBar () const;
 				void NewTabRequested ();
 				QList<QAction*> GetTabBarContextMenuActions () const;
-				QObject *ParentMultiTabs () const;
+				QObject *ParentMultiTabs ();
+				TabClassInfo GetTabClassInfo () const;
 			private:
 				void Setup (Pane*);
 				Pane* Other (Pane*);

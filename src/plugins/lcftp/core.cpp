@@ -60,6 +60,13 @@ namespace LeechCraft
 				qRegisterMetaType<TaskData> ("LeechCraft::Plugins::LCFTP::TaskData");
 				qRegisterMetaTypeStreamOperators<TaskData> ("LeechCraft::Plugins::LCFTP::TaskData");
 				qRegisterMetaType<FetchedEntry> ("LeechCraft::Plugins::LCFTP::FetchedEntry");
+				
+				TabClass_.TabClass_ = "LCFTP";
+				TabClass_.VisibleName_ = "LCFTP";
+				TabClass_.Description_ = tr ("The FTP client in LeechCraft");
+				TabClass_.Icon_ = QIcon (":/resources/images/lcftp.svg");
+				TabClass_.Priority_ = 40;
+				TabClass_.Features_ = TFOpenableByRequest;
 
 				WorkersFilter_.reset (new InactiveWorkersFilter (this));
 
@@ -141,6 +148,11 @@ namespace LeechCraft
 			ICoreProxy_ptr Core::GetCoreProxy () const
 			{
 				return Proxy_;
+			}
+			
+			TabClassInfo Core::GetTabClass () const
+			{
+				return TabClass_;
 			}
 
 			QAbstractItemModel* Core::GetModel () const

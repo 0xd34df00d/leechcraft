@@ -25,7 +25,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ijobholder.h>
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -40,14 +40,14 @@ namespace LeechCraft
 
 			class LCFTP : public QObject
 						, public IInfo
-						, public IMultiTabs
+						, public IHaveTabs
 						, public IJobHolder
 						, public IDownload
 						, public IHaveSettings
 						, public IEntityHandler
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IMultiTabs IJobHolder IDownload IEntityHandler IHaveSettings)
+				Q_INTERFACES (IInfo IHaveTabs IJobHolder IDownload IEntityHandler IHaveSettings)
 
 				std::auto_ptr<QTranslator> Translator_;
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
@@ -64,6 +64,9 @@ namespace LeechCraft
 				QStringList Uses () const;
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
+				
+				TabClasses_t GetTabClasses () const;
+				void TabOpenRequested (const QByteArray&);
 
 				QAbstractItemModel* GetRepresentation () const;
 
@@ -79,15 +82,12 @@ namespace LeechCraft
 				void Handle (Entity);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
-			public slots:
-				void newTabRequested ();
 			signals:
 				void jobFinished (int);
 				void jobRemoved (int);
 				void jobError (int, IDownload::Error);
 				void gotEntity (const LeechCraft::Entity&);
 
-				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);
 				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);

@@ -26,6 +26,7 @@
 #include <QList>
 #include <curl/curl.h>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/idownload.h>
 #include <interfaces/structures.h>
 #include <plugininterface/guarded.h>
@@ -96,6 +97,8 @@ namespace LeechCraft
 				QAction *ActionPause_,
 						*ActionResume_,
 						*ActionDelete_;
+						
+				TabClassInfo TabClass_;
 
 				SummaryTab *SummaryTab_;
 
@@ -117,6 +120,7 @@ namespace LeechCraft
 				void Release ();
 				void SetCoreProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetCoreProxy () const;
+				TabClassInfo GetTabClass () const;
 
 				QAbstractItemModel* GetModel () const;
 				qint64 GetDownloadSpeed () const;
