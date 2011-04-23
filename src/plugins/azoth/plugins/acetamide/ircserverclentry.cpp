@@ -35,12 +35,12 @@ namespace Acetamide
 	{
 	}
 
-	IrcServerHandler* IrcServerCLEntry::GetIrcServerHandler() const
+	IrcServerHandler* IrcServerCLEntry::GetIrcServerHandler () const
 	{
 		return ISH_;
 	}
 
-	IrcAccount* IrcServerCLEntry::GetIrcAccount() const
+	IrcAccount* IrcServerCLEntry::GetIrcAccount () const
 	{
 		return Account_;
 	}

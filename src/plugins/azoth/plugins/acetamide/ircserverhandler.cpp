@@ -27,6 +27,7 @@
 #include "ircserverclentry.h"
 #include "channelhandler.h"
 #include "channelclentry.h"
+#include "channelpublicmessage.h"
 #include "clientconnection.h"
 
 namespace LeechCraft
@@ -96,6 +97,14 @@ namespace Acetamide
 			ChannelsQueue_ << ch;
 	}
 
+	void IrcServerHandler::SendPublicMessage (const QString& msg,
+			const QString& channelId)
+	{
+		IrcParser_->PrivMsgCommand (EncodedMessage (msg, IMessage::DOut),
+				ChannelHandlers_ [channelId]->GetChannelOptions ()
+					.ChannelName_);
+	}
+
 	ChannelHandler*
 			IrcServerHandler::GetChannelHandler (const QString& id)
 	{
@@ -130,12 +139,12 @@ namespace Acetamide
 		if (ServerConnectionState_ == NotConnected)
 		{
 			TcpSocket_ptr.reset (new QTcpSocket (this));
-			ServerConnectionState_ = InProcess;
+			ServerConnectionState_ = InProgress;
 
 			TcpSocket_ptr->connectToHost (ServerOptions_.ServerName_,
 					ServerOptions_.ServerPort_);
 
-			if (!TcpSocket_ptr->waitForConnected(30000))
+			if (!TcpSocket_ptr->waitForConnected (30000))
 			{
 				ServerConnectionState_ = NotConnected;
 				qDebug () << Q_FUNC_INFO
@@ -157,12 +166,22 @@ namespace Acetamide
 	{
 		QString id = QString (channel.ChannelName_ + "@" +
 				channel.ServerName_).toLower ();
-		if (!ChannelHandlers_.contains (id))
+		if (ServerConnectionState_ == Connected)
 		{
 			ChannelHandler *ch = new ChannelHandler (this, channel);
 			ChannelHandlers_ [id] = ch;
 			IrcParser_->JoinCommand (channel.ChannelName_);
+
+			ChannelCLEntry *ichEntry = ch->GetCLEntry ();
+
+			if (!ichEntry)
+				return false;
+
+			emit gotCLItems (QList<QObject*> () << ichEntry);
 		}
+		else
+			Add2ChannelsQueue (channel);
+
 		return true;
 	}
 
@@ -347,11 +366,15 @@ namespace Acetamide
 		}
 	}
 
-	QString IrcServerHandler::EncodedMessage (const QString& msg)
+	QString IrcServerHandler::EncodedMessage (const QString& msg,
+			IMessage::Direction dir)
 	{
-		QTextCodec *codec = QTextCodec::codecForName(ServerOptions_
+		QTextCodec *codec = QTextCodec::codecForName (ServerOptions_
 				.ServerEncoding_.toUtf8 ());
-		return codec->toUnicode (msg.toAscii ());
+		if (dir == IMessage::DIn)
+			return codec->toUnicode (msg.toAscii ());
+
+		return codec->fromUnicode (msg);
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::GetParticipantEntry
@@ -370,8 +393,8 @@ namespace Acetamide
 		Nick2Entry_.remove (nick);
 	}
 
-	ServerParticipantEntry_ptr
-		IrcServerHandler::CreateParticipantEntry (const QString& nick)
+	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry
+			(const QString& nick)
 	{
 		ServerParticipantEntry_ptr entry
 				(new ServerParticipantEntry (nick, ServerID_, Account_));
@@ -381,14 +404,12 @@ namespace Acetamide
 		return entry;
 	}
 
-
 	void IrcServerHandler::JoinFromQueue (const QString&,
 			QList<std::string>, const QString&)
 	{
 		Q_FOREACH (const ChannelOptions& co, ChannelsQueue_)
 		{
-			Account_->GetClientConnection ()->
-					JoinChannel (ServerOptions_, co);
+			JoinChannel (co);
 			ChannelsQueue_.removeAll (co);
 		}
 	}
@@ -402,15 +423,9 @@ namespace Acetamide
 
 		if (ChannelHandlers_.contains (channelId))
 		{
-			ChannelHandlers_ [channelId]->GetCLEntry ()->
-					SetMUCSubject (EncodedMessage (message));
-
-			IrcMessage *msg = ChannelHandlers_ [channelId]->
-					CreateMessage (IMessage::MTEventMessage,
-						channelId, EncodedMessage (message));
-
-			ChannelHandlers_ [channelId]->GetCLEntry ()->
-					HandleMessage (msg);
+			ChannelHandlers_ [channelId]->
+					SetMUCSubject (EncodedMessage (message,
+						IMessage::DIn));
 		}
 	}
 
@@ -441,8 +456,7 @@ namespace Acetamide
 			QList<std::string> params, const QString& msg)
 	{
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
-				+ "@" + ServerOptions_.ServerName_).toLower ();;
-
+				+ "@" + ServerOptions_.ServerName_).toLower ();
 		ChannelHandlers_ [channelID]->RemoveChannelUser (nick, msg);
 	}
 
@@ -474,8 +488,8 @@ namespace Acetamide
 			{
 				QString msg = IrcParser_->GetIrcMessageOptions ()
 						.Message_ + QString::fromUtf8 (IrcParser_->
-						GetIrcMessageOptions ().Parameters_.last ()
-							.c_str ());
+							GetIrcMessageOptions ().Parameters_.last ()
+								.c_str ());
 				Entity e = Util::MakeNotification ("Azoth",
 						msg,
 						PInfo_);

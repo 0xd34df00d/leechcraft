@@ -106,9 +106,8 @@ namespace Acetamide
 		return ish->GetCLEntry ();
 	}
 
-	ChannelCLEntry*
-			ClientConnection::JoinChannel (const ServerOptions& server,
-					const ChannelOptions& channel)
+	void  ClientConnection::JoinChannel (const ServerOptions& server,
+			const ChannelOptions& channel)
 	{
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
@@ -121,7 +120,7 @@ namespace Acetamide
 				tr ("This server is already joined."),
 				PCritical_);
 			Core::Instance ().SendEntity (e);
-			return 0;
+			return;
 		}
 
 		if (!ServerHandlers_ [serverId]->JoinChannel (channel))
@@ -130,16 +129,8 @@ namespace Acetamide
 					tr ("Unable to join the channel."),
 					PCritical_);
 			Core::Instance ().SendEntity (e);
-			return 0;
+			return;
 		}
-		ChannelCLEntry *cle = ServerHandlers_ [serverId]->
-				GetChannelHandler (channelId)->GetCLEntry ();
-
-		if (!cle)
-			return 0;
-
-		emit gotCLItems (QList<QObject*> () << cle);
-
 	}
 
 	IrcServerHandler*

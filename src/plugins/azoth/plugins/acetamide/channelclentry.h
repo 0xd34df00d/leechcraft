@@ -32,19 +32,24 @@ namespace Acetamide
 {
 
 	class ChannelHandler;
+	class ChannelPublicMessage;
 
-	class ChannelCLEntry : public EntryBase
-						 , public IMUCEntry
+	class ChannelCLEntry : public QObject
+						, public ICLEntry
+						, public IMUCEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry);
+		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
+				LeechCraft::Azoth::ICLEntry);
 
 		ChannelHandler *ICH_;
-		QString Subject_;
+		QList<QObject*> AllMessages_;
 	public:
 		ChannelCLEntry (ChannelHandler*);
-		QObject* GetParentAccount () const;
+		ChannelHandler* GetChannelHandler () const;
 
+		QObject* GetObject ();
+		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -54,12 +59,18 @@ namespace Acetamide
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
-
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+		QList<QObject*> GetAllMessages () const;
+		void PurgeMessages (const QDateTime&);
+		QList<QAction*> GetActions () const;
+		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+
 		EntryStatus
 				GetStatus (const QString& variant = QString ()) const;
-
+		QImage GetAvatar () const;
+		QString GetRawInfo () const;
+		void ShowInfo ();
 		bool MayChangeAffiliation (QObject*, MUCAffiliation) const;
 		bool MayChangeRole (QObject*, MUCRole) const;
 		MUCAffiliation GetAffiliation (QObject*) const;
@@ -76,11 +87,25 @@ namespace Acetamide
 		QString GetNick () const;
 		void SetNick (const QString&);
 		QVariantMap GetIdentifyingData () const;
+
+		void HandleMessage (ChannelPublicMessage*);
+		void HandleNewParticipants (const QList<ICLEntry*>&);
+		void HandleSubjectChanged (const QString&);
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
 		void participantAffiliationChanged (QObject*, MUCAffiliation);
 		void participantRoleChanged (QObject*, MUCRole);
+
+		void gotMessage (QObject*);
+		void statusChanged (const EntryStatus&, const QString&);
+		void availableVariantsChanged (const QStringList&);
+		void avatarChanged (const QImage&);
+		void rawinfoChanged (const QString&);
+		void nameChanged (const QString&);
+		void groupsChanged (const QStringList&);
+		void chatPartStateChanged (const ChatPartState&, const QString&);
+		void permsChanged ();
 	};
 };
 };

@@ -46,6 +46,7 @@ namespace Acetamide
 		void UserCommand ();
 		void NickCommand ();
 		void JoinCommand (const QString&);
+		void PrivMsgCommand (const QString&, const QString&);
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;
 	};

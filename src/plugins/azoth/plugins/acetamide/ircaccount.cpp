@@ -212,14 +212,7 @@ namespace Acetamide
 					Add2ChannelsQueue (channel);
 		}
 		else if (!channel.ChannelName_.isEmpty ())
-		{
 			ClientConnection_->JoinChannel (server, channel);
-/*
-			if (!ichEntry)
-				return;
-
-			emit gotCLItems (QList<QObject*> () << ichEntry);*/
-		}
 	}
 
 	EntryStatus IrcAccount::GetState () const

@@ -9,6 +9,7 @@ SET (ACETAMIDE_SRCS
 	acetamide.cpp
 	channelclentry.cpp
 	channelhandler.cpp
+	channelpublicmessage.cpp
 	clientconnection.cpp
 	core.cpp
 	entrybase.cpp
@@ -30,6 +31,7 @@ SET (ACETAMIDE_HEADERS
 	acetamide.h
 	channelclentry.h
 	channelhandler.h
+	channelpublicmessage.h
 	clientconnection.h
 	core.h
 	entrybase.h

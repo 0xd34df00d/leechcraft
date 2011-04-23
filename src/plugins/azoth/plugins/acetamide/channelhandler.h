@@ -40,6 +40,7 @@ namespace Acetamide
 	{
 		Q_OBJECT
 		QString ChannelID_;
+		QString Subject_;
 		ChannelCLEntry *ChannelCLEntry_;
 		IrcServerHandler *ISH_;
 		ChannelOptions ChannelOptions_;
@@ -49,15 +50,22 @@ namespace Acetamide
 		QString GetChannelID () const;
 		ChannelCLEntry* GetCLEntry () const;
 		IrcServerHandler* GetIrcServerHandler () const;
+		ChannelOptions GetChannelOptions () const;
+		QList<QObject*> GetParticipants () const;
 
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+
+		void SendPublicMessage (const QString&);
 
 		void SetChannelUser (const QString&);
 		void RemoveChannelUser (const QString&, const QString&);
 
 		void MakeJoinMessage (const QString&);
 		void MakeLeaveMessage (const QString&, const QString&);
+
+		void SetMUCSubject (const QString&);
+		QString GetMUCSubject () const;
 	};
 };
 };

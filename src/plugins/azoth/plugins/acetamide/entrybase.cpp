@@ -83,10 +83,10 @@ namespace Acetamide
 
 	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
-		IrcProtocol *proto = qobject_cast<IrcProtocol*>
-				(Account_->GetParentProtocol ());
-		IProxyObject *proxy = qobject_cast<IProxyObject*>
-			(proto->GetProxyObject ());
+		IrcProtocol *proto = qobject_cast<IrcProtocol*> (Account_->
+				GetParentProtocol ());
+		IProxyObject *proxy =
+				qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 		proxy->PreprocessMessage (msg);
 
 		AllMessages_ << msg;

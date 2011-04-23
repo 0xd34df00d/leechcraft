@@ -18,6 +18,7 @@
 
 #include "channelhandler.h"
 #include "channelclentry.h"
+#include "channelpublicmessage.h"
 #include "ircaccount.h"
 #include "ircmessage.h"
 #include "ircserverhandler.h"
@@ -52,18 +53,53 @@ namespace Acetamide
 		return ISH_;
 	}
 
+	ChannelOptions ChannelHandler::GetChannelOptions () const
+	{
+		return ChannelOptions_;
+	}
+
+	QList<QObject*> ChannelHandler::GetParticipants () const
+	{
+		QList<QObject*> result;
+		Q_FOREACH (ServerParticipantEntry_ptr chpe,
+				Nick2Entry_.values ())
+			result << chpe.get ();
+		return result;
+	}
+
 	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType t,
 			const QString& variant, const QString& body)
 	{
 		IrcMessage *msg = new IrcMessage (t,
 				IMessage::DIn,
 				variant,
-				QString (),
+				ISH_->GetNickName (),
 				ISH_->GetAccount ()->GetClientConnection ().get ());
 		msg->SetBody (body);
 		msg->SetDateTime (QDateTime::currentDateTime ());
 
 		return msg;
+	}
+
+	void ChannelHandler::SendPublicMessage (const QString& msg)
+	{
+		ISH_->SendPublicMessage (msg, ChannelID_);
+
+		ServerParticipantEntry_ptr entry =
+				Nick2Entry_ [ISH_->GetNickName ()];
+
+		if (!entry)
+			return;
+
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (msg,
+						IMessage::DIn,
+						ChannelCLEntry_,
+						IMessage::MTMUCMessage,
+						IMessage::MSTOther,
+						entry);
+		ChannelCLEntry_->HandleMessage (message);
+
 	}
 
 	void ChannelHandler::SetChannelUser (const QString& nick)
@@ -93,8 +129,8 @@ namespace Acetamide
 		{
 			if (groups.removeOne (ChannelOptions_.ChannelName_));
 			{
-				ISH_->GetAccount ()->handleEntryRemoved (entry.get ());
 				MakeLeaveMessage (nick, msg);
+				ISH_->GetAccount ()->handleEntryRemoved (entry.get ());
 				Nick2Entry_.remove (nick);
 				if (!groups.count () && !entry->IsPrivateChat ())
 					ISH_->RemoveParticipantEntry (nick);
@@ -107,10 +143,13 @@ namespace Acetamide
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
 	{
 		QString msg  = tr ("%1 joined the channel").arg (nick);
-		IrcMessage *message = CreateMessage (IMessage::MTStatusMessage,
-				ChannelID_, msg);
-		message->SetMessageSubType (IMessage::MSTParticipantJoin);
 
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (msg,
+					IMessage::DIn,
+					ChannelCLEntry_,
+					IMessage::MTStatusMessage,
+					IMessage::MSTParticipantJoin);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
@@ -119,16 +158,36 @@ namespace Acetamide
 	{
 		QString mess;
 		if (!msg.isEmpty ())
-			mess = tr ("%1 has left the room (%2)").arg (nick, msg);
+			mess = tr ("%1 has left the channel (%2)").arg (nick, msg);
 		else
-			mess = tr ("%1 has left the room").arg (nick);
+			mess = tr ("%1 has left the channel").arg (nick);
 
-		IrcMessage *message = CreateMessage (IMessage::MTStatusMessage,
-				ChannelID_, mess);
-
-		message->SetMessageSubType (IMessage::MSTParticipantLeave);
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (mess,
+					IMessage::DIn,
+					ChannelCLEntry_,
+					IMessage::MTStatusMessage,
+					IMessage::MSTParticipantLeave);
 
 		ChannelCLEntry_->HandleMessage (message);
+	}
+
+	void ChannelHandler::SetMUCSubject (const QString& subject)
+	{
+		Subject_ = subject;
+
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (subject,
+							IMessage::DIn,
+							ChannelCLEntry_,
+							IMessage::MTEventMessage,
+							IMessage::MSTRoomSubjectChange);
+		ChannelCLEntry_->HandleMessage (message);
+	}
+
+	QString ChannelHandler::GetMUCSubject () const
+	{
+		return Subject_;
 	}
 
 };

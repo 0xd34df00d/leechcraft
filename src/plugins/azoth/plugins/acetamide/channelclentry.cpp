@@ -17,7 +17,9 @@
  **********************************************************************/
 
 #include "channelclentry.h"
+#include <interfaces/azothutil.h>
 #include "channelhandler.h"
+#include "channelpublicmessage.h"
 #include "ircmessage.h"
 #include "ircserverhandler.h"
 #include "ircaccount.h"
@@ -29,9 +31,19 @@ namespace Azoth
 namespace Acetamide
 {
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
-	: EntryBase (handler->GetIrcServerHandler ()->GetAccount ())
-	,ICH_ (handler)
+	: QObject (handler->GetIrcServerHandler ()->GetAccount ())
+	, ICH_ (handler)
 	{
+	}
+
+	ChannelHandler* ChannelCLEntry::GetChannelHandler () const
+	{
+		return ICH_;
+	}
+
+	QObject* ChannelCLEntry::GetObject ()
+	{
+		return this;
 	}
 
 	QObject* ChannelCLEntry::GetParentAccount () const
@@ -88,9 +100,33 @@ namespace Acetamide
 	}
 
 	QObject* ChannelCLEntry::CreateMessage (IMessage::MessageType,
-			const QString&, const QString&)
+			const QString& variant, const QString& body)
 	{
-		return 0;
+		if (variant == "")
+			return new ChannelPublicMessage (body, this);
+		else
+			return 0;
+	}
+
+	QList<QObject*> ChannelCLEntry::GetAllMessages () const
+	{
+		return AllMessages_;
+	}
+
+	void ChannelCLEntry::PurgeMessages (const QDateTime& before)
+	{
+		Util::StandardPurgeMessages (AllMessages_, before);
+	}
+
+	QList<QAction*> ChannelCLEntry::GetActions () const
+	{
+		return QList<QAction*> ();
+	}
+
+	QMap<QString, QVariant>
+			ChannelCLEntry::GetClientInfo (const QString&) const
+	{
+		return QMap<QString, QVariant> ();
 	}
 
 	EntryStatus ChannelCLEntry::GetStatus (const QString&) const
@@ -98,13 +134,27 @@ namespace Acetamide
 		return EntryStatus (SOnline, QString ());
 	}
 
-	bool ChannelCLEntry::MayChangeAffiliation (QObject* ,
+	QImage ChannelCLEntry::GetAvatar () const
+	{
+		return QImage ();
+	}
+
+	QString ChannelCLEntry::GetRawInfo () const
+	{
+		return QString ();
+	}
+
+	void ChannelCLEntry::ShowInfo ()
+	{
+	}
+
+	bool ChannelCLEntry::MayChangeAffiliation (QObject*,
 			IMUCEntry::MUCAffiliation ) const
 	{
 		return false;
 	}
 
-	bool ChannelCLEntry::MayChangeRole(QObject* ,
+	bool ChannelCLEntry::MayChangeRole (QObject*,
 			IMUCEntry::MUCRole ) const
 	{
 		return false;
@@ -137,20 +187,20 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetMUCSubject () const
 	{
-		return Subject_;
+		return ICH_->GetMUCSubject ();
 	}
 
 	void ChannelCLEntry::SetMUCSubject (const QString& subject)
 	{
-		Subject_ = subject;
+		ICH_->SetMUCSubject (subject);
 	}
 
 	QList<QObject*> ChannelCLEntry::GetParticipants ()
 	{
-		return QList<QObject*> () << 0;
+		return ICH_->GetParticipants ();
 	}
 
-	void ChannelCLEntry::Leave(const QString& )
+	void ChannelCLEntry::Leave (const QString& )
 	{
 	}
 
@@ -159,15 +209,54 @@ namespace Acetamide
 		return ICH_->GetIrcServerHandler ()->GetNickName ();
 	}
 
-	void ChannelCLEntry::SetNick (const QString& )
+	void ChannelCLEntry::SetNick (const QString&)
 	{
 	}
 
 	QVariantMap ChannelCLEntry::GetIdentifyingData () const
 	{
-		return QVariantMap ();
+		QVariantMap result;
+		result ["HumanReadableName"] = QString ("%1 on %2@%3:%4")
+				.arg (ICH_->GetIrcServerHandler ()->GetNickName ())
+				.arg (ICH_->GetChannelOptions ().ChannelName_)
+				.arg (ICH_->GetChannelOptions ().ServerName_)
+				.arg (ICH_->GetIrcServerHandler ()->
+					GetServerOptions ().ServerPort_);
+		result ["AccountID"] = ICH_->GetIrcServerHandler ()->
+				GetAccount ()->GetAccountID ();
+		result ["Nickname"] = ICH_->GetIrcServerHandler ()->
+				GetNickName ();
+		result ["Channel"] = ICH_->GetChannelOptions ().ChannelName_;
+		result ["Server"] = ICH_->GetChannelOptions ().ServerName_;
+		result ["Port"] = ICH_->GetIrcServerHandler ()->
+				GetServerOptions ().ServerPort_;
+		result ["Encoding"] = ICH_->GetIrcServerHandler ()->
+				GetServerOptions ().ServerEncoding_;
+		result ["SSL"] = ICH_->GetIrcServerHandler ()->
+				GetServerOptions ().SSL_;
+
+		return result;
 	}
 
+	void ChannelCLEntry::HandleMessage (ChannelPublicMessage *msg)
+	{
+		AllMessages_ << msg;
+		emit gotMessage (msg);
+	}
+
+	void ChannelCLEntry::HandleNewParticipants
+			(const QList<ICLEntry*>& parts)
+	{
+		QObjectList objs;
+		Q_FOREACH (ICLEntry *e, parts)
+			objs << e->GetObject ();
+		emit gotNewParticipants (objs);
+	}
+
+	void ChannelCLEntry::HandleSubjectChanged (const QString& subj)
+	{
+		emit mucSubjectChanged (subj);
+	}
 };
 };
 };

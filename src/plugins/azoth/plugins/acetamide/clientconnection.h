@@ -59,7 +59,7 @@ namespace Acetamide
 
 		bool IsServerExists (const QString&);
 		IrcServerCLEntry* JoinServer (const ServerOptions&);
-		ChannelCLEntry* JoinChannel (const ServerOptions&,
+		void JoinChannel (const ServerOptions&,
 				const ChannelOptions&);
 		IrcServerHandler* GetIrcServerHandler (const QString&);
 	signals:

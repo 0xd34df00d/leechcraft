@@ -47,7 +47,7 @@ namespace Acetamide
 	enum ConnectionState
 	{
 		Connected,
-		InProcess,
+		InProgress,
 		NotConnected
 	};
 

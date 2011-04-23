@@ -76,6 +76,8 @@ class IrcMessage;
 
 		void Add2ChannelsQueue (const ChannelOptions&);
 
+		void SendPublicMessage (const QString&, const QString&);
+
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;
 
@@ -98,7 +100,7 @@ class IrcMessage;
 		void NoSuchNickError ();
 		void NickCmdError ();
 
-		QString EncodedMessage (const QString&);
+		QString EncodedMessage (const QString&, IMessage::Direction);
 
 		ServerParticipantEntry_ptr
 				CreateParticipantEntry (const QString&);
