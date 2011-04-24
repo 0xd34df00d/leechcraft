@@ -34,13 +34,14 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/itransfermanager.h"
+#include "interfaces/iconfigurablemuc.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
 #include "bookmarksmanagerdialog.h"
-#include "interfaces/iconfigurablemuc.h"
+#include "simpledialog.h"
 
 namespace LeechCraft
 {
@@ -688,13 +689,8 @@ namespace Azoth
 			return;
 		}
 
-		QDialog *dia = new QDialog;
-		dia->setLayout (new QVBoxLayout);
-		dia->layout ()->addWidget (w);
-		connect (dia,
-				SIGNAL (accepted ()),
-				w,
-				SLOT (accept ()));
+		SimpleDialog *dia = new SimpleDialog ();
+		dia->SetWidget (w);
 		connect (dia,
 				SIGNAL (accepted ()),
 				dia,
