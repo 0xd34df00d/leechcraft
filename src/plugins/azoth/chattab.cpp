@@ -690,6 +690,7 @@ namespace Azoth
 		}
 
 		SimpleDialog *dia = new SimpleDialog ();
+		dia->setWindowTitle (tr ("Room configuration"));
 		dia->SetWidget (w);
 		connect (dia,
 				SIGNAL (accepted ()),
