@@ -21,7 +21,6 @@
 #include <QFlags>
 #include <QMetaType>
 #include <QVariant>
-#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -34,6 +33,10 @@ namespace Azoth
 	 * This class extends ICLEntry by providing methods and data
 	 * specific to MUCs. A well-written plugin should implement this
 	 * interface along with ICLEntry for MUC entries.
+	 * 
+	 * See IConfigurableMUC if the MUC supports being configured and
+	 * IMUCPerms if the MUC supports adjusting permissions for its
+	 * participants.
 	 */
 	class IMUCEntry
 	{
@@ -55,11 +58,12 @@ namespace Azoth
 
 		Q_DECLARE_FLAGS (MUCFeatures, MUCFeature);
 
+#if 0
 		/** This enum represents possible affiliations of a participant
 		 * in a room.
 		 *
-		 * Modelled after XMPP MUC room affiliations, ordered to reflect
-		 * Gloox's order and thus to allow direct static_casts.
+		 * Modeled after XMPP MUC room affiliations, ordered to reflect
+		 * QXmpp's order and thus to allow direct casts.
 		 */
 		enum MUCAffiliation
 		{
@@ -121,6 +125,7 @@ namespace Azoth
 		};
 
 		Q_ENUMS (MUCRole);
+#endif
 
 		/** @brief The list of features of this MUC.
 		 *
@@ -189,6 +194,7 @@ namespace Azoth
 		 */
 		virtual void SetNick (const QString& nick) = 0;
 
+#if 0
 		/** @brief Whether affiliation of the given participant may be
 		 * changed to the given value.
 		 *
@@ -296,6 +302,7 @@ namespace Azoth
 		virtual void SetRole (QObject *participant,
 				MUCRole role,
 				const QString& reason = QString ()) = 0;
+#endif
 				
 		/** @brief Returns the data identifying this room.
 		 * 
@@ -325,7 +332,7 @@ namespace Azoth
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void mucSubjectChanged (const QString& newSubj) = 0;
-
+#if 0
 		/** @brief Notifies about affiliation change of a participant.
 		 *
 		 * This signal should be emitted whenever the participant's
@@ -343,6 +350,7 @@ namespace Azoth
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void participantRoleChanged (QObject *participant, MUCRole newRole) = 0;
+#endif
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);
@@ -351,7 +359,5 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCEntry,
 		"org.Deviant.LeechCraft.Azoth.IMUCEntry/1.0");
-Q_DECLARE_METATYPE (LeechCraft::Azoth::IMUCEntry::MUCRole);
-Q_DECLARE_METATYPE (LeechCraft::Azoth::IMUCEntry::MUCAffiliation);
 
 #endif

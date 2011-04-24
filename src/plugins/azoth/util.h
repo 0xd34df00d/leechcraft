@@ -24,8 +24,6 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	QString AffToString (IMUCEntry::MUCAffiliation);
-	QString RoleToString (IMUCEntry::MUCRole);
 }
 }
 

@@ -215,9 +215,7 @@ namespace Azoth
 				Core::Instance ().GetClientIconForEntry (entry).values ();
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
-			const int num = index.data (Core::CLRAffiliation).toInt ();
-			const IMUCEntry::MUCAffiliation aff =
-					static_cast<IMUCEntry::MUCAffiliation> (num);
+			const QByteArray& aff = index.data (Core::CLRAffiliation).toByteArray ();
 			const QIcon& icon = Core::Instance ().GetAffIcon (aff);
 			if (!icon.isNull ())
 				clientIcons.prepend (icon);
