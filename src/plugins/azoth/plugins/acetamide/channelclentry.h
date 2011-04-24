@@ -22,7 +22,9 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/imucentry.h>
+#include <interfaces/imucperms.h>
 #include "entrybase.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -33,17 +35,23 @@ namespace Acetamide
 
 	class ChannelHandler;
 	class ChannelPublicMessage;
+	class ServerParticipantEntry;
 
 	class ChannelCLEntry : public QObject
 						, public ICLEntry
 						, public IMUCEntry
+						, public IMUCPerms
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
-				LeechCraft::Azoth::ICLEntry);
+				LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IMUCPerms)
 
 		ChannelHandler *ICH_;
 		QList<QObject*> AllMessages_;
+		QMap<QByteArray, QList<QByteArray> > Perms_;
+		QMap<ChannelRole, QByteArray> Role2Str_;
+		QMap<QByteArray, QString> Translations_;
 	public:
 		ChannelCLEntry (ChannelHandler*);
 		ChannelHandler* GetChannelHandler () const;
@@ -72,12 +80,6 @@ namespace Acetamide
 		QImage GetAvatar () const;
 		QString GetRawInfo () const;
 		void ShowInfo ();
-		bool MayChangeAffiliation (QObject*, MUCAffiliation) const;
-		bool MayChangeRole (QObject*, MUCRole) const;
-		MUCAffiliation GetAffiliation (QObject*) const;
-		void SetAffiliation (QObject*, MUCAffiliation, const QString&);
-		MUCRole GetRole (QObject*) const;
-		void SetRole (QObject*, MUCRole, const QString&);
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;
@@ -92,11 +94,22 @@ namespace Acetamide
 		void HandleMessage (ChannelPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);
 		void HandleSubjectChanged (const QString&);
+
+		bool MayChange (ChannelRole,
+				ServerParticipantEntry*, ChannelRole) const;
+		// IMUCPerms
+		QByteArray GetAffName (QObject*) const;
+		QMap<QByteArray, QByteArray> GetPerms (QObject*) const;
+		void SetPerm (QObject*, const QByteArray&, const QByteArray&,
+					  const QString&);
+		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;
+		QString GetUserString (const QByteArray&) const;
+		bool IsLessByPerm (QObject*, QObject*) const;
+		bool MayChangePerm (QObject*, const QByteArray&,
+							const QByteArray&) const;
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
-		void participantAffiliationChanged (QObject*, MUCAffiliation);
-		void participantRoleChanged (QObject*, MUCRole);
 
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);

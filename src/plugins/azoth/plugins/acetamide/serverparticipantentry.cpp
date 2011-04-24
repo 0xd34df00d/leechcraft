@@ -20,7 +20,10 @@
 #include <QAction>
 #include "clientconnection.h"
 #include "ircaccount.h"
+#include "ircserverclentry.h"
 #include "ircmessage.h"
+#include "ircserverhandler.h"
+
 
 namespace LeechCraft
 {
@@ -51,7 +54,8 @@ namespace Acetamide
 
 	QObject* ServerParticipantEntry::GetParentCLEntry () const
 	{
-		return NULL;
+		return Account_->GetClientConnection ()->
+				GetIrcServerHandler (ServerKey_)->GetCLEntry ();
 	}
 
 	ICLEntry::Features ServerParticipantEntry::GetEntryFeatures () const
@@ -61,7 +65,7 @@ namespace Acetamide
 
 	ICLEntry::EntryType ServerParticipantEntry::GetEntryType () const
 	{
-		return ETChat;
+		return ETPrivateChat;
 	}
 
 	QString ServerParticipantEntry::GetEntryName () const
@@ -151,6 +155,18 @@ namespace Acetamide
 						ClosePrivateChat (ServerKey_, NickName_);
 		}
 	}
+
+	ChannelRole ServerParticipantEntry::GetRole (const QString& ch) const
+	{
+		return Channel2Role_ [ch];
+	}
+
+	void ServerParticipantEntry::SetRole (const QString& ch,
+			ChannelRole r)
+	{
+		Channel2Role_ [ch] = r;
+	}
+
 };
 };
 };

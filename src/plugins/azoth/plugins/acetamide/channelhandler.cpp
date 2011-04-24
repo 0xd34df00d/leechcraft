@@ -61,10 +61,20 @@ namespace Acetamide
 	QList<QObject*> ChannelHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (ServerParticipantEntry_ptr chpe,
-				Nick2Entry_.values ())
-			result << chpe.get ();
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+			result << spe.get ();
 		return result;
+	}
+
+	ServerParticipantEntry_ptr ChannelHandler::GetSelf ()
+	{
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+		{
+			if (spe->GetEntryName () == ISH_->GetNickName ())
+				return spe;
+		}
+
+		return ServerParticipantEntry_ptr ();
 	}
 
 	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType t,
@@ -121,18 +131,45 @@ namespace Acetamide
 
 	void ChannelHandler::SetChannelUser (const QString& nick)
 	{
-		if (Nick2Entry_.contains (nick))
+		QString nickname = nick;
+		ChannelRole role;
+		switch (nick [0].toAscii ())
+		{
+			case '~':
+				role = Owner;
+				break;
+			case '&':
+				role = Admin;
+				break;
+			case '@':
+				role = Operator;
+				break;
+			case '%':
+				role = HalfOperator;
+				break;
+			case '+':
+				role = Voiced;
+				break;
+			default:
+				role = Participant;
+		}
+
+		if (role != Participant)
+			nickname = nickname.mid (1);
+
+		if (Nick2Entry_.contains (nickname))
 			return;
 
 		ServerParticipantEntry_ptr entry = ISH_->
-				GetParticipantEntry (nick);
-		Nick2Entry_ [nick] = entry;
+				GetParticipantEntry (nickname);
+		Nick2Entry_ [nickname] = entry;
 		QStringList groups = entry->GetChannels ();
 		if (!groups.contains (ChannelOptions_.ChannelName_))
 		{
 			groups << ChannelOptions_.ChannelName_;
 			entry->SetGroups (groups);
-			MakeJoinMessage (nick);
+			entry->SetRole (ChannelOptions_.ChannelName_, role);
+			MakeJoinMessage (nickname);
 			entry->SetStatus (EntryStatus (SOnline, QString ()));
 		}
 	}

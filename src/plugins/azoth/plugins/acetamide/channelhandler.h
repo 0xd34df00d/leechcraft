@@ -53,6 +53,8 @@ namespace Acetamide
 		ChannelOptions GetChannelOptions () const;
 		QList<QObject*> GetParticipants () const;
 
+		ServerParticipantEntry_ptr GetSelf ();
+
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 

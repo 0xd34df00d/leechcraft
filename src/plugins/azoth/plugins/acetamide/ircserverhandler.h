@@ -88,6 +88,8 @@ class IrcMessage;
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;
 
+		bool IsRoleAvailable (ChannelRole);
+
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 

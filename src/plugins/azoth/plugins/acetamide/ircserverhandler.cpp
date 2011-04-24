@@ -158,6 +158,11 @@ namespace Acetamide
 		return ChannelHandlers_.values ();
 	}
 
+	bool IrcServerHandler::IsRoleAvailable (ChannelRole role)
+	{
+		return true;
+	}
+
 	IrcMessage*
 			IrcServerHandler::CreateMessage (IMessage::MessageType type,
 					const QString& variant, const QString& body)
@@ -522,13 +527,7 @@ namespace Acetamide
 		QStringList participants = message.split (' ');
 		//TODO roles/affialtions detection
 		Q_FOREACH (QString nick, participants)
-		{
-			if (nick.startsWith ('@') || nick.startsWith ('+') ||
-					nick.startsWith ('%') || nick.startsWith ('~') ||
-					nick.startsWith ('$'))
-				nick = nick.mid (1);
 			ChannelHandlers_ [channelID]->SetChannelUser (nick);
-		}
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
