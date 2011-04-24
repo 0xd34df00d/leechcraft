@@ -69,7 +69,6 @@ namespace Xoox
 		aff2cat [QXmppMucAdminIq::Item::OwnerAffiliation] = new QStandardItem (tr ("Owners"));
 		Q_FOREACH (QStandardItem *item, aff2cat.values ())
 		{
-			qDebug () << "created" << item << item->text ();
 			QList<QStandardItem*> rootItems;
 			rootItems << item;
 			rootItems << new QStandardItem (tr ("Reason"));
@@ -92,7 +91,7 @@ namespace Xoox
 			return;
 
 		FormWidget_ = FB_->CreateForm (form);
-		Ui_.ConfLayout_->addWidget (FormWidget_);
+		Ui_.ScrollArea_->setWidget (FormWidget_);
 		emit dataReady ();
 	}
 	

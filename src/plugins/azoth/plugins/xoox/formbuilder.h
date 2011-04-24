@@ -32,14 +32,17 @@ namespace Azoth
 namespace Xoox
 {
 	class FieldHandler;
+	typedef boost::shared_ptr<FieldHandler> FieldHandler_ptr;
 
 	class FormBuilder
 	{		
-		QHash<QXmppDataForm::Field::Type, boost::shared_ptr<FieldHandler> > Type2Handler_;
+		QXmppDataForm Form_;
+		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
 	public:
 		FormBuilder ();
 
-		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0) const;
+		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
+		QXmppDataForm GetForm ();
 	};
 }
 }
