@@ -29,6 +29,10 @@ namespace Azoth
 {
 	/** @brief This interface describes permissions in the given room.
 	 * 
+	 * If a room supports getting/changing permissions for participants,
+	 * this interface should be implemented by the room's CL entry
+	 * object.
+	 * 
 	 * There may be different permission classes in a room, and each
 	 * permission class has several permission variants, which are
 	 * exclusive, while permissions from different classes are not
@@ -64,8 +68,13 @@ namespace Azoth
 		 * GetPossiblePerms(), and the values must be contained in the
 		 * corresponding lists in GetPossiblePerms()'s return value.
 		 * 
+		 * @note This function is also used for getting our user's
+		 * permissions. For this, null pointer is passed instead of
+		 * participant, and permissions of our user are expected to be
+		 * returned.
+		 * 
 		 * @param[in] participant The participant for which to query the
-		 * permissions.
+		 * permissions, or NULL to query self.
 		 * @return The current permissions for the given participant.
 		 */
 		virtual QMap<QByteArray, QByteArray> GetPerms (QObject *participant) const = 0;
@@ -88,9 +97,38 @@ namespace Azoth
 		 */
 		virtual QByteArray GetAffName (QObject *participant) const = 0;
 		
+		/** @brief Whether given participant's permission may be changed
+		 * to the given value.
+		 * 
+		 * This function is used to query whether at this moment the
+		 * permission from the given permClass could be set to the
+		 * targetPerm value by our user.
+		 * 
+		 * targetPerm is one of the corresponding values from the map
+		 * returned from GetPossiblePerms() map.
+		 * 
+		 * In case of failure (for example, participant doesn't belong
+		 * to this room), this function should return false.
+		 * 
+		 * @param[in] participant The participant to query.
+		 * @param[in] permClass Permission class to operate in.
+		 * @param[in] targetPerm Target permission in that class.
+		 * @return Whether permission could be set successfully.
+		 */
 		virtual bool MayChangePerm (QObject *participant,
 				const QByteArray& permClass, const QByteArray& targetPerm) const = 0;
-				
+
+		/** @brief Sets the permission for the given participant.
+		 * 
+		 * This function is used to set the participant's permission
+		 * from the given permClass to the given targetPerm value (which
+		 * is one of returned from GetPossiblePerms() for that class).
+		 * If applicable, reason is used to describe the reason for
+		 * changing the permission, which may be extremely useful, for
+		 * example, when kicking or banning.
+		 * 
+		 * @param[in] participant The participant to change the affiliation.
+		 */
 		virtual void SetPerm (QObject *participant,
 				const QByteArray& permClass, const QByteArray& targetPerm, const QString& reason) = 0;
 
