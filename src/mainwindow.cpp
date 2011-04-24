@@ -880,8 +880,6 @@ void LeechCraft::MainWindow::SetNewTabDataSource ()
 void LeechCraft::MainWindow::FillTray ()
 {
 	QMenu *iconMenu = new QMenu (this);
-	iconMenu->addAction (Ui_.ActionAddTask_);
-	iconMenu->addSeparator ();
 	QMenu *menu = iconMenu->addMenu (tr ("LeechCraft menu"));
 	menu->addAction (Ui_.ActionAddTask_);
 	menu->addMenu (MenuView_);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,22 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "localtypes.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
+#include <boost/shared_ptr.hpp>
+#include <QXmppDataForm.h>
+
+class QXmppDataForm;
+class QWidget;
+class QFormLayout;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Acetamide
+namespace Xoox
 {
-	bool operator== (const ChannelOptions& channel1,
-			const ChannelOptions& channel2)
-	{
-		return (channel1.ChannelName_ == channel2.ChannelName_) &&
-				(channel1.ChannelPassword_ == channel2.ChannelPassword_)
-				&& (channel1.ServerName_ == channel2.ServerName_);
-	}
+	class FieldHandler;
+	typedef boost::shared_ptr<FieldHandler> FieldHandler_ptr;
 
-};
-};
-};
+	class FormBuilder
+	{		
+		QXmppDataForm Form_;
+		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
+	public:
+		FormBuilder ();
+
+		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
+		QXmppDataForm GetForm ();
+	};
+}
+}
+}
+
+#endif

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCEDITCHANNELDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCEDITCHANNELDIALOG_H
+#ifndef PLUGINS_AZOTH_INTERFACES_ICONFIGURABLEMUC_H
+#define PLUGINS_AZOTH_INTERFACES_ICONFIGURABLEMUC_H
+#include <QMetaType>
 
-#include <QDialog>
-#include "ui_irceditchanneldialog.h"
+class QWidget;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Acetamide
-{
-	class IrcEditChannelDialog : public QDialog
+	class IMUCConfigWidget
 	{
-		Q_OBJECT
-		
-		Ui::IrcEditChannelDialog Ui_;
 	public:
-		IrcEditChannelDialog (QWidget* = 0);
-		QString GetChannel () const;
-		void SetChannel (const QString&);
-		QString GetPassword () const;
-		void SetPassword (const QString&);
+		virtual ~IMUCConfigWidget () {}
+		
+		virtual void accept () = 0;
+		
+		virtual void dataReady () = 0;
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCEDITCHANNELDIALOG_H
+
+	class IConfigurableMUC
+	{
+	public:
+		virtual ~IConfigurableMUC () {}
+		
+		virtual QWidget* GetConfigurationWidget () = 0;
+		
+		virtual void AcceptConfiguration (QWidget*) = 0;
+	};
+}
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCConfigWidget,
+		"org.Deviant.LeechCraft.Azoth.IMUCConfigWidget/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IConfigurableMUC,
+		"org.Deviant.LeechCraft.Azoth.IConfigurableMUC/1.0");
+
+#endif

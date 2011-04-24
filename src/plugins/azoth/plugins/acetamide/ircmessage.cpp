@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include "clientconnection.h"
 #include "core.h"
+#include "ircserverhandler.h"
 
 namespace LeechCraft
 {
@@ -37,18 +38,20 @@ namespace Acetamide
 	, Connection_ (conn)
 	, ID_ (id)
 	, NickName_ (nickname)
+	, SubType_ (MSTOther)
 	{
 		Message_.Stamp_ = QDateTime::currentDateTime ();
+		Message_.Nickname_ = NickName_;
 	}
 
-	IrcMessage::IrcMessage (const Message& msg, 
-			const QString& chid, ClientConnection* conn)
+	IrcMessage::IrcMessage (const Message& msg,
+			const QString& id, ClientConnection* conn)
 	: Type_ (MTMUCMessage)
 	, Direction_ (DIn)
 	, Message_ (msg)
 	, Connection_ (conn)
-	, ID_ (chid)
-	, NickName_ (msg.Nickname_)
+	, ID_ (id)
+	, SubType_ (MSTOther)
 	{
 		if (!Message_.Stamp_.isValid ())
 			Message_.Stamp_ = QDateTime::currentDateTime ();
@@ -72,7 +75,8 @@ namespace Acetamide
 		{
 		case MTChatMessage:
 		case MTMUCMessage:
-			Connection_->SetPrivateMessage (Connection_->GetAccount (), this);
+				Connection_->GetIrcServerHandler (ID_)->
+						SendPrivateMessage (this);
 			return;
 		case MTServiceMessage:
 			qWarning () << Q_FUNC_INFO
@@ -94,7 +98,12 @@ namespace Acetamide
 
 	IMessage::MessageSubType IrcMessage::GetMessageSubType () const
 	{
-		return MSTOther;
+		return SubType_;
+	}
+
+	void IrcMessage::SetMessageSubType (IMessage::MessageSubType subtype)
+	{
+		SubType_ = subtype;
 	}
 
 	QObject* IrcMessage::OtherPart () const
@@ -109,7 +118,7 @@ namespace Acetamide
 
 	QString IrcMessage::GetOtherVariant () const
 	{
-		return NickName_;
+		return Message_.Nickname_;
 	}
 
 	QString IrcMessage::GetBody () const

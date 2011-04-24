@@ -23,6 +23,7 @@
 #include <interfaces/imucjoinwidget.h>
 #include "ui_ircjoingroupchat.h"
 #include "core.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -57,9 +58,9 @@ namespace Acetamide
 		QString GetNickname () const;
 		QString GetEncoding () const;
 		bool GetSSL () const;
-	private:
-		ServerOptions GetConnectionOptions () const;
-		ChannelOptions GetChannelInfo () const;
+
+		ServerOptions GetServerOptions () const;
+		ChannelOptions GetChannelOptions () const;
 	};
 };
 };

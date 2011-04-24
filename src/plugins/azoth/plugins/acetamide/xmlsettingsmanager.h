@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "localtypes.h"
+#ifndef PLUGINS_AZOTH_ACETAMIDE_XMLSETTINGSMANAGER_H
+#define PLUGINS_AZOTH_ACETAMIDE_XMLSETTINGSMANAGER_H
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -24,14 +27,20 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	bool operator== (const ChannelOptions& channel1,
-			const ChannelOptions& channel2)
+	class XmlSettingsManager : public
+			LeechCraft::Util::BaseSettingsManager
 	{
-		return (channel1.ChannelName_ == channel2.ChannelName_) &&
-				(channel1.ChannelPassword_ == channel2.ChannelPassword_)
-				&& (channel1.ServerName_ == channel2.ServerName_);
-	}
+		Q_OBJECT
 
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 };
 };
 };
+
+#endif // PLUGINS_AZOTH_ACETAMIDE_XMLSETTINGSMANAGER_H

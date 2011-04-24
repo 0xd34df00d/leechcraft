@@ -19,12 +19,11 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ACETAMIDE_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ACETAMIDE_H
 #include <boost/shared_ptr.hpp>
-#include <QObject>
+#include <QTranslator>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iprotocolplugin.h>
-
-class QTranslator;
 
 namespace LeechCraft
 {
@@ -34,12 +33,15 @@ namespace Acetamide
 {
 	class Plugin : public QObject
 					, public IInfo
+					, public IHaveSettings
 					, public IPlugin2
 					, public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
-		
+		Q_INTERFACES (IInfo IHaveSettings IPlugin2
+				LeechCraft::Azoth::IProtocolPlugin);
+
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -54,6 +56,7 @@ namespace Acetamide
 
 		QObject* GetObject ();
 		QList<QObject*> GetProtocols () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void initPlugin (QObject*);
 	signals:

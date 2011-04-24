@@ -21,70 +21,54 @@
 
 #include <QObject>
 #include <QHash>
-#include "ircaccount.h"
-#include "ircserver.h"
 #include "core.h"
+#include "ircaccount.h"
 
 namespace LeechCraft
 {
+
 struct Entity;
-	
+
 namespace Azoth
 {
+
 class IProxyObject;
 
 namespace Acetamide
 {
 
 	class ChannelCLEntry;
-	class ChannelHandler;
-	class IrcMessage;
+	class IrcServerHandler;
+	class IrcServerCLEntry;
 
 	class ClientConnection : public QObject
 	{
 		Q_OBJECT
-		
+
 		QString ChID_;
 		IrcAccount *Account_;
 		IProxyObject *ProxyObject_;
-
-		QHash<QString, ChannelHandler*> ChannelHandlers_;
-		QHash<QString, QHash<QString, ServerParticipantEntry_ptr> > Server2Entry_;
+		QHash<QString, IrcServerHandler*> ServerHandlers_;
 	public:
 		ClientConnection (IrcAccount*);
-		virtual ~ClientConnection ();
 		QObject* GetCLEntry (const QString&, const QString&) const;
-		QList<QObject*> GetCLEntries () const;
 		void Sinchronize ();
 
-		QList<QObject*> GetChannelCLEntries (const QString&) const;
 		IrcAccount* GetAccount () const;
-		ChannelCLEntry* JoinRoom (const ServerOptions&, const ChannelOptions&);
-		void Unregister (ChannelHandler*);
-		void SetState (const State&);
-		IrcMessage* CreateMessage (IMessage::MessageType,
-				const QString&, const QString&);
-		void SetNewParticipant (const QString&, const QString&);
-		void SetUserLeave (const QString&, const QString&, const QString&);
-		void SetPrivateMessage (IrcAccount*, IrcMessage*);
-		ServerParticipantEntry_ptr GetServerParticipantEntry (const QString&, 
-				const QString&, bool announce = true);
-		QList<ServerParticipantEntry_ptr> GetServerParticipantEntries (const QString&) const;
-		void RemoveEntry (const QString&, const QString&);
-	private:
-		ServerParticipantEntry_ptr CreateServerParticipantEntry (const QString&, 
-				const QString&, bool);
-	public slots:
-		void setChannelUseres (const QString&, const QString&);
-		void setSubject (const QString&, const QString&);
-		void handleMessageReceived (const QString&, const QString&, const QString&);
-		void removeServerParticipantEntry (QString, const QString&);
+
+		bool IsServerExists (const QString&);
+		IrcServerCLEntry* JoinServer (const ServerOptions&);
+		void JoinChannel (const ServerOptions&,
+				const ChannelOptions&);
+		IrcServerHandler* GetIrcServerHandler (const QString&);
+		void ClosePrivateChat (QString, const QString&);
+		void CloseServer (const QString&);
+		void DisconnectFromAll ();
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
 		void rosterItemsRemoved (const QList<QObject*>&);
 		void gotCLItems (const QList<QObject*>&);
-
 	};
 };
 };

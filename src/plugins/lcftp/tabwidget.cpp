@@ -61,10 +61,6 @@ namespace LeechCraft
 				return 0;
 			}
 
-			void TabWidget::NewTabRequested ()
-			{
-			}
-
 			QList<QAction*> TabWidget::GetTabBarContextMenuActions () const
 			{
 				return QList<QAction*> ();

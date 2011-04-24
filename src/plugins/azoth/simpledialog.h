@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDSERVERDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDSERVERDIALOG_H
-
+#ifndef PLUGINS_AZOTH_SIMPLEDIALOG_H
+#define PLUGINS_AZOTH_SIMPLEDIALOG_H
 #include <QDialog>
-#include "ui_ircaddserverdialog.h"
+#include "ui_simpledialog.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Acetamide
-{
-	class IrcAddServerDialog : public QDialog
+	class SimpleDialog : public QDialog
 	{
 		Q_OBJECT
 		
-		Ui::AddServerDialog Ui_;
-		
+		Ui::SimpleDialog Ui_;
 	public:
-		IrcAddServerDialog (QWidget* = 0);
+		SimpleDialog (QWidget* = 0);
 		
-		QString GetServer () const;
-		void SetServer (const QString&);
-		int GetPort () const;
-		void SetPort (int);
-		QString GetPassword () const;
-		void SetPassword (const QString&);
-		void SetSSL (bool);
-		bool GetSSL () const;
-	public slots:
-		void handleServerChanged (const QString&);
-		void handlePortChanged (int);
+		void SetWidget (QWidget*);
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDSERVERDIALOG_H
+}
+}
+
+#endif

@@ -109,7 +109,6 @@ namespace LeechCraft
 				void handleCheckFavorites ();
 				void handleReloadAll ();
 			signals:
-				void bringToFront ();
 				void addNewTab (const QString&, QWidget*);
 				void removeTab (QWidget*);
 				void changeTabName (QWidget*, const QString&);

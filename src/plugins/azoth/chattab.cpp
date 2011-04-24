@@ -34,12 +34,14 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/itransfermanager.h"
+#include "interfaces/iconfigurablemuc.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
 #include "bookmarksmanagerdialog.h"
+#include "simpledialog.h"
 
 namespace LeechCraft
 {
@@ -64,6 +66,8 @@ namespace Azoth
 	, LastSpacePosition_(-1)
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
+	, ShouldSetTypingState_ (true)
+	, PreviousTextHeight_ (0)
 	, XferManager_ (0)
 	, TypeTimer_ (new QTimer (this))
 	{
@@ -367,7 +371,8 @@ namespace Azoth
 	{
 		UpdateTextHeight ();
 
-		SetChatPartState (CPSComposing);
+		if (ShouldSetTypingState_)
+			SetChatPartState (CPSComposing);
 		TypeTimer_->stop ();
 		TypeTimer_->start ();
 	}
@@ -672,7 +677,33 @@ namespace Azoth
 		dia->show ();
 	}
 	
-	void ChatTab::typeTimeout()
+	void ChatTab::handleConfigureMUC ()
+	{
+		IConfigurableMUC *confMUC = GetEntry<IConfigurableMUC> ();
+		if (!confMUC)
+			return;
+
+		QWidget *w = confMUC->GetConfigurationWidget ();
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty conf widget"
+					<< GetEntry<QObject> ();
+			return;
+		}
+
+		SimpleDialog *dia = new SimpleDialog ();
+		dia->setWindowTitle (tr ("Room configuration"));
+		dia->SetWidget (w);
+		connect (dia,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (deleteLater ()),
+				Qt::QueuedConnection);
+		dia->show ();
+	}
+	
+	void ChatTab::typeTimeout ()
 	{
 		SetChatPartState (CPSPaused);
 	}
@@ -767,6 +798,18 @@ namespace Azoth
 				this,
 				SLOT (handleAddToBookmarks ()));
 		TabToolbar_->addAction (bookmarks);
+		
+		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
+		if (confmuc)
+		{
+			QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
+			configureMUC->setProperty ("ActionIcon", "preferences");
+			connect (configureMUC,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleConfigureMUC ()));
+			TabToolbar_->addAction (configureMUC);
+		}
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)
@@ -1024,6 +1067,10 @@ namespace Azoth
 		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
 
 		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
+		if (docHeight == PreviousTextHeight_)
+			return;
+		
+		PreviousTextHeight_ = docHeight;
 		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
@@ -1043,6 +1090,7 @@ namespace Azoth
 		if (!entry)
 			return;
 		
+		ShouldSetTypingState_ = state != CPSComposing;
 		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 

@@ -21,7 +21,6 @@
 #include <QFlags>
 #include <QMetaType>
 #include <QVariant>
-#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -34,6 +33,10 @@ namespace Azoth
 	 * This class extends ICLEntry by providing methods and data
 	 * specific to MUCs. A well-written plugin should implement this
 	 * interface along with ICLEntry for MUC entries.
+	 * 
+	 * See IConfigurableMUC if the MUC supports being configured and
+	 * IMUCPerms if the MUC supports adjusting permissions for its
+	 * participants.
 	 */
 	class IMUCEntry
 	{
@@ -54,73 +57,6 @@ namespace Azoth
 		};
 
 		Q_DECLARE_FLAGS (MUCFeatures, MUCFeature);
-
-		/** This enum represents possible affiliations of a participant
-		 * in a room.
-		 *
-		 * Modelled after XMPP MUC room affiliations, ordered to reflect
-		 * Gloox's order and thus to allow direct static_casts.
-		 */
-		enum MUCAffiliation
-		{
-			/** Invalid affiliation.
-			 */
-			MUCAInvalid,
-			/** The user has been banned from the room.
-			 *
-			 * Setting this affiliation on a user should effectively ban
-			 * it from entering the room if applicable to the protocol
-			 * and room type.
-			 */
-			MUCAOutcast,
-			/** No affiliation with the room.
-			 */
-			MUCANone,
-			/** The user is a member of the room.
-			 */
-			MUCAMember,
-			/** The user is a room admin.
-			 */
-			MUCAAdmin,
-			/** The user is a room owner.
-			 */
-			MUCAOwner
-		};
-
-		Q_ENUMS (MUCAffiliation);
-
-		/** This enum represents possible roles of a participant in a
-		 * MUC room.
-		 *
-		 * Modelled after XMPP MUC room roles.
-		 */
-		enum MUCRole
-		{
-			/** Invalid role.
-			 */
-			MUCRInvalid,
-			/** Not present in room.
-			 *
-			 * Setting this role on a user should effectively kick it
-			 * from the room if applicable to the protocol and room
-			 * type.
-			 */
-			MUCRNone,
-			/** The user visits a room.
-			 *
-			 * Setting this role on a user should effectively devoice
-			 * the user if applicable to the protocol and room type.
-			 */
-			MUCRVisitor,
-			/** The user has voice in a moderated room.
-			 */
-			MUCRParticipant,
-			/** The user is a room moderator.
-			 */
-			MUCRModerator
-		};
-
-		Q_ENUMS (MUCRole);
 
 		/** @brief The list of features of this MUC.
 		 *
@@ -189,62 +125,7 @@ namespace Azoth
 		 */
 		virtual void SetNick (const QString& nick) = 0;
 
-		/** @brief Whether affiliation of the given participant may be
-		 * changed to the given value.
-		 *
-		 * This functions queries whether at this moment the affiliation
-		 * of the given participant may be changed to the given value
-		 * aff.
-		 *
-		 * The participant object is expected to implement ICLEntry and
-		 * be the one returned by this room, if any. If the participant
-		 * object doesn't match any of these criteria, this function
-		 * should return false.
-		 *
-		 * @param[in] participant The participant to query, implementing
-		 * ICLEntry and belonging to this room.
-		 * @param[in] aff The target affiliation to be checked.
-		 *
-		 * @return Whether the affiliation may be changed.
-		 *
-		 * @sa MayChangeRole(), GetAffiliation(), SetAffiliation()
-		 */
-		virtual bool MayChangeAffiliation (QObject *participant, MUCAffiliation aff) const = 0;
-
-		/** @brief Whether role of the given participant may be changed
-		 * to the given value.
-		 *
-		 * This function behaves exactly like MayChangeAffiliation(),
-		 * but for roles.
-		 *
-		 * @param[in] participant The participant to query, implementing
-		 * ICLEntry and belonging to this room.
-		 * @param[in] aff The target affiliation to be checked.
-		 *
-		 * @return Whether the affiliation may be changed.
-		 *
-		 * @sa MayChangeAffiliation(), GetRole(), SetRole()
-		 */
-		virtual bool MayChangeRole (QObject *participant, MUCRole role) const = 0;
-
-		/** @brief Returns current affiliation of the given participant.
-		 *
-		 * The participant object is expected to implement ICLEntry and
-		 * be the one returned by this room. If the passed pointer is
-		 * NULL, or the object doesn't match any of these criteria, this
-		 * function should return our user's affiliation to this room.
-		 *
-		 * @note This function is also used to get our user's
-		 * affiliation, in which case null pointer is passed.
-		 *
-		 * @param[in] participant The participant to query, or NULL to
-		 * get our affiliation.
-		 * @return The affiliation of given participant in this room.
-		 *
-		 * @sa MayChangeAffiliation(), SetAffiliation(), GetRole()
-		 */
-		virtual MUCAffiliation GetAffiliation (QObject *participant) const = 0;
-
+#if 0
 		/** @brief Sets the affiliation of the given participant.
 		 *
 		 * The participant object is expected to implement ICLEntry and
@@ -261,41 +142,7 @@ namespace Azoth
 		virtual void SetAffiliation (QObject *participant,
 				MUCAffiliation aff,
 				const QString& reason = QString ()) = 0;
-
-		/** @brief Returns current role of the given participant.
-		 *
-		 * The participant object is expected to implement ICLEntry and
-		 * be the one returned by this room. If the passed pointer is
-		 * NULL, or the object doesn't match any of these criteria, this
-		 * function should return our user's affiliation to this room.
-		 *
-		 * @note This function is also used to get our user's role, in
-		 * which case null pointer is passed.
-		 *
-		 * @param[in] participant The participant to query, or NULL to
-		 * get our role.
-		 * @return The role of given participant in this room.
-		 *
-		 * @sa MayChangeRole(), SetRole(), GetAffiliation()
-		 */
-		virtual MUCRole GetRole (QObject *participant) const = 0;
-
-		/** @brief Sets the role of the given participant.
-		 *
-		 * The participant object is expected to implement ICLEntry and
-		 * be the one returned by the room. If the obejct doesn't match
-		 * any of these criteria, this function should do nothing.
-		 *
-		 * If the role can't be updated (for example, due to
-		 * insufficient privilegies), this function should do nothing.
-		 *
-		 * @param[in] participant The participant to update.
-		 * @param[in] role New role of the participant to be set.
-		 * @param[in] reason Optional reason for the role change.
-		 */
-		virtual void SetRole (QObject *participant,
-				MUCRole role,
-				const QString& reason = QString ()) = 0;
+#endif
 				
 		/** @brief Returns the data identifying this room.
 		 * 
@@ -325,24 +172,6 @@ namespace Azoth
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void mucSubjectChanged (const QString& newSubj) = 0;
-
-		/** @brief Notifies about affiliation change of a participant.
-		 *
-		 * This signal should be emitted whenever the participant's
-		 * affiliation changes to newAff.
-		 *
-		 * @note This function is expected to be a slot.
-		 */
-		virtual void participantAffiliationChanged (QObject *participant, MUCAffiliation newAff) = 0;
-
-		/** @brief Notifies about role change of a participant.
-		 *
-		 * This signal should be emitted whenever the participant's role
-		 * changes to newRole.
-		 *
-		 * @note This function is expected to be a signal.
-		 */
-		virtual void participantRoleChanged (QObject *participant, MUCRole newRole) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);
@@ -351,7 +180,5 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCEntry,
 		"org.Deviant.LeechCraft.Azoth.IMUCEntry/1.0");
-Q_DECLARE_METATYPE (LeechCraft::Azoth::IMUCEntry::MUCRole);
-Q_DECLARE_METATYPE (LeechCraft::Azoth::IMUCEntry::MUCAffiliation);
 
 #endif

@@ -16,12 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDDEFAULTCHANNELSDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDDEFAULTCHANNELSDIALOG_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H
 
-#include <QDialog>
-#include <QStandardItemModel>
-#include "ui_ircadddefaultchannelsdialog.h"
+#include <QWidget>
+#include "ui_ircaccountconfigurationwidget.h"
 
 namespace LeechCraft
 {
@@ -29,22 +28,23 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcAddDefaultChannelsDialog : public QDialog
+	class IrcAccountConfigurationWidget : public QWidget
 	{
 		Q_OBJECT
-		
-		Ui::IrcAddDefaultChannelsDialog Ui_;
-		QStandardItemModel *ChannelsModel_;
+
+		Ui::IrcAccountConfigurationWidget Ui_;
 	public:
-		IrcAddDefaultChannelsDialog (QWidget* = 0);
-		QStringList GetChannels ();
-		QStringList GetChannelsPair () const;
-	public slots:
-		void handleAddLine (bool);
-		void handleDeleteLine (bool);
-		void accept ();
+		IrcAccountConfigurationWidget (QWidget* = 0);
+
+		void SetRealName (const QString&);
+		QString GetRealName () const;
+		void SetUserName (const QString&);
+		QString GetUserName () const;
+		void SetNickNames (const QStringList&);
+		QStringList GetNickNames () const;
 	};
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCADDDEFAULTCHANNELSDIALOG_H
+
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNTCONFIGURATIONWIDGET_H

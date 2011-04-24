@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "localtypes.h"
+#include "ircaccountconfigurationwidget.h"
 
 namespace LeechCraft
 {
@@ -24,12 +24,42 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	bool operator== (const ChannelOptions& channel1,
-			const ChannelOptions& channel2)
+	IrcAccountConfigurationWidget::
+			IrcAccountConfigurationWidget (QWidget* parent)
+	: QWidget (parent)
 	{
-		return (channel1.ChannelName_ == channel2.ChannelName_) &&
-				(channel1.ChannelPassword_ == channel2.ChannelPassword_)
-				&& (channel1.ServerName_ == channel2.ServerName_);
+		Ui_.setupUi (this);
+	}
+
+	void IrcAccountConfigurationWidget::SetRealName (const QString& real)
+	{
+		Ui_.RealName_->setText (real);
+	}
+
+	QString IrcAccountConfigurationWidget::GetRealName () const
+	{
+		return Ui_.RealName_->text ();
+	}
+
+	void IrcAccountConfigurationWidget::SetUserName (const QString& user)
+	{
+		Ui_.UserName_->setText (user);
+	}
+
+	QString IrcAccountConfigurationWidget::GetUserName () const
+	{
+		return Ui_.UserName_->text ();
+	}
+
+	void IrcAccountConfigurationWidget::
+			SetNickNames (const QStringList& nicks)
+	{
+		Ui_.NickNames_->setPlainText (nicks.join ("\n"));
+	}
+
+	QStringList IrcAccountConfigurationWidget::GetNickNames () const
+	{
+		return Ui_.NickNames_->toPlainText ().split ('\n');
 	}
 
 };

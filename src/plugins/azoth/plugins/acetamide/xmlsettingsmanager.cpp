@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "irceditchanneldialog.h"
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -24,30 +25,27 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	IrcEditChannelDialog::IrcEditChannelDialog (QWidget *parent)
-	: QDialog (parent)
+	XmlSettingsManager::XmlSettingsManager ()
+	: Util::BaseSettingsManager (true)
 	{
-		Ui_.setupUi (this);
+		Util::BaseSettingsManager::Init ();
 	}
-	
-	QString IrcEditChannelDialog::GetChannel () const
+
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
-		return Ui_.Channel_->text ();
+		static XmlSettingsManager xsm;
+		return xsm;
 	}
-	
-	void IrcEditChannelDialog::SetChannel (const QString& channel)
+
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		Ui_.Channel_->setText (channel);
+		return new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () +
+					"_Azoth_Acetamide");
 	}
-	
-	QString IrcEditChannelDialog::GetPassword () const
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
-		return Ui_.Password_->text ();
-	}
-	
-	void IrcEditChannelDialog::SetPassword (const QString& pass)
-	{
-		Ui_.Password_->setText (pass);
 	}
 };
 };

@@ -20,7 +20,10 @@
 #include <QAction>
 #include "clientconnection.h"
 #include "ircaccount.h"
+#include "ircserverclentry.h"
 #include "ircmessage.h"
+#include "ircserverhandler.h"
+
 
 namespace LeechCraft
 {
@@ -28,26 +31,20 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ServerParticipantEntry::ServerParticipantEntry (const QString& nick, 
+	ServerParticipantEntry::ServerParticipantEntry (const QString& nick,
 			const QString& server, IrcAccount *acc)
-	: Account_ (acc)
-	, EntryBase (acc)
+	: EntryBase (acc)
+	, Account_ (acc)
 	, ServerKey_ (server)
 	, NickName_ (nick)
 	, PrivateChat_ (false)
 	{
-		QAction *quitAction = new QAction (tr ("Quit chat"), Account_);
-		connect (quitAction,
+		QAction *closeChat = new QAction (tr ("Quit chat"), this);
+		connect (closeChat,
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (closePrivateChat (bool)));
-
-		connect (this,
-				SIGNAL (removeFromList (const QString&, const QString&)),
-				Account_->GetClientConnection ().get (),
-				SLOT (removeServerParticipantEntry (const QString&, const QString&)));
-
-		Actions_ << quitAction;
+		Actions_ << closeChat;
 	}
 
 	QObject* ServerParticipantEntry::GetParentAccount () const
@@ -57,7 +54,8 @@ namespace Acetamide
 
 	QObject* ServerParticipantEntry::GetParentCLEntry () const
 	{
-		return NULL;
+		return Account_->GetClientConnection ()->
+				GetIrcServerHandler (ServerKey_)->GetCLEntry ();
 	}
 
 	ICLEntry::Features ServerParticipantEntry::GetEntryFeatures () const
@@ -67,7 +65,7 @@ namespace Acetamide
 
 	ICLEntry::EntryType ServerParticipantEntry::GetEntryType () const
 	{
-		return ETChat;
+		return ETPrivateChat;
 	}
 
 	QString ServerParticipantEntry::GetEntryName () const
@@ -89,7 +87,7 @@ namespace Acetamide
 
 	QString ServerParticipantEntry::GetHumanReadableID () const
 	{
-		return ServerKey_ + "_" + NickName_;
+		return NickName_ + "_" + ServerKey_;
 	}
 
 	QStringList ServerParticipantEntry::Groups () const
@@ -112,18 +110,23 @@ namespace Acetamide
 		return QStringList (QString ());
 	}
 
-	QObject* ServerParticipantEntry::CreateMessage (IMessage::MessageType, 
-			const QString& , const QString& body)
+	QObject*
+			ServerParticipantEntry::CreateMessage (IMessage::MessageType,
+					const QString&, const QString& body)
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
 				IMessage::DOut,
 				ServerKey_,
 				NickName_,
 				Account_->GetClientConnection ().get ());
+
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
+
 		PrivateChat_ = true;
+
 		AllMessages_ << message;
+
 		return message;
 	}
 
@@ -142,56 +145,26 @@ namespace Acetamide
 		return PrivateChat_;
 	}
 
-	IMUCEntry::MUCAffiliation ServerParticipantEntry::GetAffiliation (const QString& channel) const
-	{
-		return Channels2Affilation_ [channel];
-	}
-
-	void ServerParticipantEntry::SetAffiliation (const QString& channel, const QChar& aff)
-	{
-		IMUCEntry::MUCAffiliation affiliation;
-		if (aff == '~')
-			affiliation = IMUCEntry::MUCAOwner;
-		else if (aff == '&')
-			affiliation = IMUCEntry::MUCAAdmin;
-		else if (aff == '@')
-			affiliation = IMUCEntry::MUCAMember;
-		else if (aff == '%')
-			affiliation = IMUCEntry::MUCANone;
-		else if (aff == '+')
-			affiliation = IMUCEntry::MUCANone;
-		Channels2Affilation_ [channel] = affiliation;
-	}
-
-	IMUCEntry::MUCRole ServerParticipantEntry::GetRole (const QString& channel) const
-	{
-		return Channels2Role_ [channel];
-	}
-
-	void ServerParticipantEntry::SetRole (const QString& channel, const QChar& role)
-	{
-		IMUCEntry::MUCRole rl;
-		if (role == '~')
-			rl = IMUCEntry::MUCRModerator;
-		else if (role == '&')
-			rl = IMUCEntry::MUCRModerator;
-		else if (role == '@')
-			rl = IMUCEntry::MUCRModerator;
-		else if (role == '%')
-			rl = IMUCEntry::MUCRModerator;
-		else if (role == '+')
-			rl = IMUCEntry::MUCRParticipant;
-		Channels2Role_ [channel] = rl;
-	}
-
 	void ServerParticipantEntry::closePrivateChat (bool)
 	{
 		if (PrivateChat_)
 		{
 			PrivateChat_ = false;
 			if (!Channels_.count ())
-				emit removeFromList (ServerKey_, NickName_);
+				Account_->GetClientConnection ()->
+						ClosePrivateChat (ServerKey_, NickName_);
 		}
+	}
+
+	ChannelRole ServerParticipantEntry::GetRole (const QString& ch) const
+	{
+		return Channel2Role_ [ch];
+	}
+
+	void ServerParticipantEntry::SetRole (const QString& ch,
+			ChannelRole r)
+	{
+		Channel2Role_ [ch] = r;
 	}
 
 };

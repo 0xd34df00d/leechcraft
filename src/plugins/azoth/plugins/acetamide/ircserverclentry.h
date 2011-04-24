@@ -16,14 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H
 
 #include <QObject>
-#include <QHash>
-#include "localtypes.h"
-
-class QTcpSocket;
+#include <interfaces/iclentry.h>
+#include <interfaces/imucentry.h>
+#include "entrybase.h"
 
 namespace LeechCraft
 {
@@ -31,36 +30,36 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	
-	class IrcParser;
-	class IrcServer;
-	
-	class SocketManager : public QObject
+
+	class IrcServerHandler;
+	class IrcAccount;
+
+	class IrcServerCLEntry : public EntryBase
 	{
 		Q_OBJECT
 
-		QTcpSocket *CurrentSocket_;
-		QHash<QString, QTcpSocket*> Server2Socket_;
-		IrcParser *Parser_;
+		IrcServerHandler *ISH_;
+		IrcAccount *Account_;
 	public:
-		SocketManager (QObject*);
-		virtual ~SocketManager ();
-		void SendCommand (const QString&, const QString&, int);
-		bool IsConnected (const QString&);
-		void CloseSocket (const QString&);
-	private:
-		QTcpSocket* CreateSocket (const QString&);
-		int Connect (QTcpSocket*, const QString&, const QString&);
-		void SendData (const QString&);
-		void InitSocket (QTcpSocket*);
-	private slots:
-		void connectionEstablished ();
-		void readAnswer ();
-	signals:
-		void gotAnswer (const QString&, const QString&);
-		void changeState (const QString&, ConnectionState);
+		IrcServerCLEntry (IrcServerHandler*, IrcAccount*);
+
+		IrcServerHandler* GetIrcServerHandler () const;
+		IrcAccount* GetIrcAccount () const;
+
+		QObject* GetParentAccount () const;
+		Features GetEntryFeatures () const;
+		EntryType GetEntryType () const;
+		QString GetEntryName () const;
+		void SetEntryName (const QString&);
+		QString GetEntryID () const;
+		QStringList Groups () const;
+		void SetGroups (const QStringList&);
+		QStringList Variants () const;
+		QObject* CreateMessage (IMessage::MessageType, const QString&,
+				const QString&);
 	};
 };
 };
 };
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SOCKETMANAGER_H
+
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERCLENTRY_H

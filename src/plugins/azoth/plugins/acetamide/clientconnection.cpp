@@ -17,18 +17,16 @@
  **********************************************************************/
 
 #include "clientconnection.h"
-
 #include <QTextCodec>
 #include <plugininterface/util.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
-#include "ircprotocol.h"
-#include "channelhandler.h"
-#include "ircserver.h"
 #include "channelclentry.h"
-#include "ircmessage.h"
+#include "channelhandler.h"
 #include "core.h"
-
+#include "ircprotocol.h"
+#include "ircserverclentry.h"
+#include "ircserverhandler.h"
 
 namespace LeechCraft
 {
@@ -41,7 +39,7 @@ namespace Acetamide
 	, ProxyObject_ (0)
 	{
 		QObject *proxyObj = qobject_cast<IrcProtocol*> (account->
-					GetParentProtocol ())->GetProxyObject ();
+				GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
 		connect (this,
@@ -50,36 +48,24 @@ namespace Acetamide
 				SIGNAL (gotCLItems (const QList<QObject*>&)));
 	}
 
-	ClientConnection::~ClientConnection ()
+	QObject* ClientConnection::GetCLEntry (const QString& id,
+			const QString& nickname) const
 	{
-		qDeleteAll (ChannelHandlers_);
-	}
-	
-	QObject* ClientConnection::GetCLEntry (const QString& key, const QString& nick) const
-	{
-		if (ChannelHandlers_.contains (key))
-			return ChannelHandlers_ [key]->GetParticipantEntry (nick).get ();
-		return Server2Entry_ [key] [nick].get ();
-	}
+		if (ServerHandlers_.contains (id) && nickname.isEmpty ())
+			return ServerHandlers_ [id]->GetCLEntry ();
+		else if (!nickname.isEmpty ())
+			return ServerHandlers_ [id]->GetParticipantEntry (nickname)
+					.get ();
+		else
+			Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
+				if (ish->IsChannelExists (id))
+					return ish->GetChannelHandler (id)->GetCLEntry ();
 
-	QList<QObject*> ClientConnection::GetCLEntries () const
-	{
-		QList<QObject*> result;
-		Q_FOREACH (ChannelHandler *ch, ChannelHandlers_)
-		{
-			result << ch->GetCLEntry ();
-			result << ch->GetParticipants ();
-		}
-		return result;
+		return NULL;
 	}
 
 	void ClientConnection::Sinchronize ()
 	{
-	}
-
-	QList<QObject*> ClientConnection::GetChannelCLEntries (const QString& channelKey) const
-	{
-		return ChannelHandlers_.value (channelKey)->GetParticipants ();
 	}
 
 	IrcAccount* ClientConnection::GetAccount () const
@@ -87,164 +73,89 @@ namespace Acetamide
 		return Account_;
 	}
 
-	ChannelCLEntry* ClientConnection::JoinRoom (const ServerOptions& server, const ChannelOptions& channel)
+	bool ClientConnection::IsServerExists (const QString& key)
 	{
-		QString channelId = QString ("%1@%2")
-				.arg (channel.ChannelName_, channel.ServerName_);
-		
-		if (ChannelHandlers_.contains (channelId))
+		return ServerHandlers_.contains (key);
+	}
+
+	IrcServerCLEntry*
+			ClientConnection::JoinServer (const ServerOptions& server)
+	{
+		QString serverId = server.ServerName_ + ":" +
+				QString::number (server.ServerPort_);
+
+		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		ServerHandlers_ [serverId] = ish;
+		if (ish->ConnectToServer ())
+			if (Account_->GetState ().State_ == SOffline)
+				Account_->
+						ChangeState (EntryStatus (SOnline, QString ()));
+		return ish->GetCLEntry ();
+	}
+
+	void  ClientConnection::JoinChannel (const ServerOptions& server,
+			const ChannelOptions& channel)
+	{
+		QString serverId = server.ServerName_ + ":" +
+				QString::number (server.ServerPort_);
+		QString channelId = channel.ChannelName_ + "@" +
+				channel.ServerName_;
+
+		if (ServerHandlers_ [serverId]->IsChannelExists (channelId))
 		{
 			Entity e = Util::MakeNotification ("Azoth",
-					tr ("This channel is already joined."),
+				tr ("This server is already joined."),
+				PCritical_);
+			Core::Instance ().SendEntity (e);
+			return;
+		}
+
+		if (!ServerHandlers_ [serverId]->JoinChannel (channel))
+		{
+			Entity e = Util::MakeNotification ("Azoth",
+					tr ("Unable to join the channel."),
 					PCritical_);
 			Core::Instance ().SendEntity (e);
-			return 0;
+			return;
 		}
-
-		ChannelHandler *ch = new ChannelHandler (server, channel, Account_);
-		Core::Instance ().GetServerManager ()->
-				JoinChannel (server, channel, Account_);
-		
-		ChannelHandlers_ [channelId] = ch;
-		if (Account_->GetState () == EntryStatus (SOffline, QString ()))
-			Account_->ChangeState (EntryStatus (SOnline, QString ()));
-
-		return ch->GetCLEntry ();
 	}
 
-	void ClientConnection::Unregister (ChannelHandler *ch)
+	IrcServerHandler*
+			ClientConnection::GetIrcServerHandler (const QString& id)
 	{
-		ChannelHandlers_.remove (ch->GetChannelID ());
+		return ServerHandlers_ [id];
 	}
 
-	void ClientConnection::SetState (const State& state)
+	void ClientConnection::ClosePrivateChat (QString serverId,
+			const QString& nick)
 	{
-		//TODO offline message
-		if (state == SOffline)
-		{
-			QString msg = QString ();
-			Q_FOREACH (ChannelHandler *hndl, ChannelHandlers_.values ())
+		ServerHandlers_ [serverId]->ClosePrivateChat (nick);
+	}
+
+	void ClientConnection::CloseServer (const QString& serverId)
+	{
+		if (ServerHandlers_.contains (serverId))
+			if (ServerHandlers_ [serverId]->DisconnectFromServer ())
 			{
-				QString key = hndl->GetServerOptions ().ServerName_ + ":" +
-						QString::number (hndl->GetServerOptions ().ServerPort_);
-				if (Core::Instance ().GetServerManager ()->IsPrivateChatExists (key, Account_))
-				{
-					Q_FOREACH (ServerParticipantEntry_ptr entry, Server2Entry_ [key].values ())
-					{
-						if (entry->IsPrivateChat ())
-							entry->closePrivateChat (true);
-					}
-				}
-				hndl->Leave (msg);
+				Account_->
+						handleEntryRemoved (ServerHandlers_ [serverId]->
+							GetCLEntry ());
+				ServerHandlers_.remove (serverId);
+				if (!ServerHandlers_.count ())
+					Account_->ChangeState (EntryStatus (SOffline,
+							QString ()));
 			}
-		}
 	}
 
-	IrcMessage* ClientConnection::CreateMessage (IMessage::MessageType,
-			const QString&, const QString&)
+	void ClientConnection::DisconnectFromAll ()
 	{
-		return 0;
-	}
-
-	void ClientConnection::SetNewParticipant (const QString& channelKey, const QString& nick)
-	{
-		if (ChannelHandlers_.contains (channelKey))
-			ChannelHandlers_ [channelKey]->SetChannelUser (nick);
-	}
-
-	void ClientConnection::SetUserLeave (const QString& channelKey,
-			const QString& nick, const QString& msg)
-	{
-		QString mess = QString ();
-		if (ChannelHandlers_.contains (channelKey))
+		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
 		{
-			if (!msg.isEmpty ())
-			{
-				QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [channelKey]->
-						GetServerOptions ().ServerEncoding_.toUtf8 ());
-				mess =  codec->toUnicode (msg.toAscii ());
-			}
-			ChannelHandlers_ [channelKey]->UserLeave (nick, mess);
-		}
-	}
-
-	void ClientConnection::SetPrivateMessage (IrcAccount *acc, IrcMessage *msg)
-	{
-		Core::Instance ().GetServerManager ()->SetPrivateMessageOut (acc, msg);
-	}
-
-	ServerParticipantEntry_ptr ClientConnection::GetServerParticipantEntry (const QString& serverKey, 
-			const QString& nick, bool announce)
-	{
-		if (Server2Entry_.contains (serverKey) && Server2Entry_ [serverKey].contains (nick))
-			return Server2Entry_ [serverKey] [nick];
-		else
-		{
-			ServerParticipantEntry_ptr entry (CreateServerParticipantEntry (serverKey, nick, announce));
-			Server2Entry_ [serverKey] [nick] = entry;
-			return entry;
-		}
-	}
-
-	QList<ServerParticipantEntry_ptr> ClientConnection::GetServerParticipantEntries (const QString& key) const
-	{
-		return Server2Entry_ [key].values ();
-	}
-
-	void ClientConnection::RemoveEntry (const QString& key, const QString& nick)
-	{
-		if (Server2Entry_.contains (key) && Server2Entry_ [key].contains (nick))
-			Server2Entry_ [key].remove (nick);
-	}
-
-	ServerParticipantEntry_ptr ClientConnection::CreateServerParticipantEntry (const QString& serverKey,
-			const QString& nick, bool announce)
-	{
-		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, serverKey, Account_));
-		if (announce)
-			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
-		emit gotCLItems (QList<QObject*> () << entry.get ());
-		return entry;
-	}
-
-	void ClientConnection::setChannelUseres (const QString& users, const QString& key)
-	{
-		Q_FOREACH (const QString& nick, users.split (' '))
-			ChannelHandlers_ [key]->SetChannelUser (nick);
-	}
-
-	void ClientConnection::setSubject (const QString& subject, const QString& channelKey)
-	{ 
-		QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [channelKey]->
-						GetServerOptions ().ServerEncoding_.toUtf8 ());
-		QString mess =  codec->toUnicode (subject.toAscii ());
-
-		ChannelHandlers_ [channelKey]->SetSubject (mess);
-	}
-
-	void ClientConnection::handleMessageReceived (const QString& msg, const QString& channelKey, const QString& nick)
-	{
-		if (ChannelHandlers_.contains (channelKey))
-		{
-			QTextCodec *codec = QTextCodec::codecForName (ChannelHandlers_ [channelKey]->
-						GetServerOptions ().ServerEncoding_.toUtf8 ());
-			QString mess =  codec->toUnicode (msg.toAscii ());
-			ChannelHandlers_ [channelKey]->HandleMessage (mess, nick);
-		}
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "could not find source for";
-	}
-
-	void ClientConnection::removeServerParticipantEntry (QString key, const QString& nick)
-	{
-		if (Server2Entry_.contains (key) && Server2Entry_ [key].contains (nick))
-		{
-			Account_->handleEntryRemoved (Server2Entry_ [key] [nick].get ());
-			Server2Entry_ [key].remove (nick);
-			if (!Server2Entry_ [key].values ().count ())
-				Core::Instance ().GetServerManager ()->
-						removeServer (key);
+			Q_FOREACH (ChannelHandler* ich, ish->GetChannelHandlers ())
+				ich->LeaveChannel (QString ());
+			Q_FOREACH (const QString& nick, ish->GetPrivateChats ())
+				ish->ClosePrivateChat (nick);
+			ish->DisconnectFromServer ();
 		}
 	}
 

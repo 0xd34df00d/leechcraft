@@ -19,6 +19,7 @@
 #include "sortfilterproxymodel.h"
 #include "core.h"
 #include "interfaces/iclentry.h"
+#include "interfaces/imucperms.h"
 
 namespace LeechCraft
 {
@@ -80,12 +81,17 @@ namespace Azoth
 		ICLEntry *rE = GetEntry (right);
 		
 		if (lE->GetEntryType () == ICLEntry::ETPrivateChat &&
-				rE->GetEntryType () == ICLEntry::ETPrivateChat)
+				rE->GetEntryType () == ICLEntry::ETPrivateChat &&
+				lE->GetParentCLEntry () == rE->GetParentCLEntry ())
 		{
-			const int lr = left.data (Core::CLRRole).toInt ();
-			const int rr = right.data (Core::CLRRole).toInt ();
-			if (lr != rr)
-				return lr > rr;
+			IMUCPerms *lp = qobject_cast<IMUCPerms*> (lE->GetParentCLEntry ());
+			if (lp)
+			{
+				bool less = lp->IsLessByPerm (lE->GetObject (), rE->GetObject ());
+				bool more = lp->IsLessByPerm (rE->GetObject (), lE->GetObject ());
+				if (less || more)
+					return more;
+			}
 		}
 
 		State lState = lE->GetStatus ().State_;

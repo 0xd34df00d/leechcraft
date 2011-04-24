@@ -18,15 +18,15 @@
 
 #include "ircprotocol.h"
 #include <boost/bind.hpp>
+#include <QCoreApplication>
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QSettings>
-#include <QCoreApplication>
-#include <QtDebug>
 #include <interfaces/iprotocolplugin.h>
-#include "ircaccount.h"
-#include "ircjoingroupchat.h"
 #include "core.h"
+#include "ircaccount.h"
+#include "ircaccountconfigurationwidget.h"
+#include "ircjoingroupchat.h"
 
 namespace LeechCraft
 {
@@ -44,12 +44,12 @@ namespace Acetamide
 	IrcProtocol::~IrcProtocol ()
 	{
 	}
-	
+
 	void IrcProtocol::Prepare ()
 	{
 		RestoreAccounts ();
 	}
-	
+
 	QObject* IrcProtocol::GetProxyObject () const
 	{
 		return ProxyObject_;
@@ -69,26 +69,13 @@ namespace Acetamide
 	{
 		return PFMUCsJoinable | PFSupportsMUCs;
 	}
-	
+
 	QList<QObject*> IrcProtocol::GetRegisteredAccounts ()
 	{
 		QList<QObject*> result;
-		Q_FOREACH (IrcAccount *acc, Accounts_)
+		Q_FOREACH (IrcAccount *acc, IrcAccounts_)
 			result << acc;
-		
-		result << Core::Instance ().GetDefaultIrcAccount ();
 		return result;
-	}
-
-	QList<QByteArray> IrcProtocol::GetRegisteredAccountsIDs ()
-	{
-		QList<QByteArray> accIDs;
-
-		std::transform (Accounts_.begin (), Accounts_.end (), 
-				std::back_inserter (accIDs), 
-				boost::bind (&IrcAccount::GetAccountID, _1));
-
-		return accIDs;
 	}
 
 	QObject* IrcProtocol::GetParentProtocolPlugin () const
@@ -113,7 +100,7 @@ namespace Acetamide
 				tr ("Enter new account name"));
 		if (name.isEmpty ())
 			return;
-		
+
 		IrcAccount *account = new IrcAccount (name, this);
 		account->OpenConfigurationDialog ();
 
@@ -122,30 +109,50 @@ namespace Acetamide
 				this,
 				SLOT (saveAccounts ()));
 
-		Accounts_ << account;
+		IrcAccounts_ << account;
 		saveAccounts ();
 
 		emit accountAdded (account);
 
-// 		account->ChangeState (EntryStatus (SOnline, QString ()));
+		account->ChangeState (EntryStatus (SOnline, QString ()));
 	}
-	
+
 	QList<QWidget*> IrcProtocol::GetAccountRegistrationWidgets ()
 	{
 		QList<QWidget*> result;
-		//result << new IrcAccountConfigurationDialog (0);
+		result << new IrcAccountConfigurationWidget ();
 		return result;
 	}
-	
-	void IrcProtocol::RegisterAccount (const QString&, const QList<QWidget*>&)
+
+	void IrcProtocol::RegisterAccount (const QString& name,
+			const QList<QWidget*>& widgets)
 	{
+		IrcAccountConfigurationWidget *w =
+				qobject_cast<IrcAccountConfigurationWidget*>
+					(widgets.value (0));
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got invalid widgets"
+					<< widgets;
+			return;
+		}
+
+		IrcAccount *account = new IrcAccount (name, this);
+		account->FillSettings (w);
+		account->SetAccountID (GetProtocolID () + "_" +
+				QString::number (QDateTime::currentDateTime ()
+					.toTime_t ()));
+		IrcAccounts_ << account;
+		saveAccounts ();
+		emit accountAdded (account);
 	}
 
 	QWidget* IrcProtocol::GetMUCJoinWidget ()
 	{
 		return new IrcJoinGroupChat ();
 	}
-	
+
 	QWidget* IrcProtocol::GetMUCBookmarkEditorWidget ()
 	{
 		return 0;
@@ -154,7 +161,7 @@ namespace Acetamide
 	void IrcProtocol::RemoveAccount (QObject *acc)
 	{
 		IrcAccount *accObj = qobject_cast<IrcAccount*> (acc);
-		if (Accounts_.removeAll (accObj))
+		if (IrcAccounts_.removeAll (accObj))
 		{
 			emit accountRemoved (accObj);
 			accObj->deleteLater ();
@@ -166,16 +173,18 @@ namespace Acetamide
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Acetamide_Accounts");
+				QCoreApplication::applicationName () +
+					"_Azoth_Acetamide_Accounts");
+
 		settings.beginWriteArray ("Accounts");
-		int i;
-		int size;
-		for (i = 0, size = Accounts_.size ();
-				i < size; ++i)
+
+		for (int i = 0, size = IrcAccounts_.size (); i < size; ++i)
 		{
 			settings.setArrayIndex (i);
-			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+			settings.setValue ("SerializedData",
+					IrcAccounts_.at (i)->Serialize ());
 		}
+
 		settings.endArray ();
 		settings.sync ();
 	}
@@ -184,13 +193,16 @@ namespace Acetamide
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Acetamide_Accounts");
+				QCoreApplication::applicationName () +
+					"_Azoth_Acetamide_Accounts");
+
 		int size = settings.beginReadArray ("Accounts");
 		for (int i = 0; i < size; ++i)
 		{
 			settings.setArrayIndex (i);
-			QByteArray data = settings.value ("SerializedData").toByteArray ();
-			
+			QByteArray data = settings
+					.value ("SerializedData").toByteArray ();
+
 			IrcAccount *acc = IrcAccount::Deserialize (data, this);
 			if (!acc)
 			{
@@ -204,12 +216,8 @@ namespace Acetamide
 					SIGNAL (accountSettingsChanged ()),
 					this,
 					SLOT (saveAccounts ()));
-			
-			if (acc->GetAccountName () == "DefaultIrcAccount")
-				Core::Instance ().SetDefaultIrcAcoount (acc);
-			else
-				Accounts_ << acc;
 
+			IrcAccounts_ << acc;
 			emit accountAdded (acc);
 		}
 	}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,22 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "localtypes.h"
+#include "simpledialog.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Acetamide
-{
-	bool operator== (const ChannelOptions& channel1,
-			const ChannelOptions& channel2)
+	SimpleDialog::SimpleDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		return (channel1.ChannelName_ == channel2.ChannelName_) &&
-				(channel1.ChannelPassword_ == channel2.ChannelPassword_)
-				&& (channel1.ServerName_ == channel2.ServerName_);
+		Ui_.setupUi (this);
 	}
-
-};
-};
-};
+	
+	void SimpleDialog::SetWidget (QWidget *w)
+	{
+		Ui_.Layout_->insertWidget (0, w);
+		connect (this,
+				SIGNAL (accepted ()),
+				w,
+				SLOT (accept ()));
+	}
+}
+}

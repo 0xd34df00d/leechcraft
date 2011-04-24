@@ -166,7 +166,6 @@ namespace Xoox
 		void handleRoomPresenceChanged (const QString&,
 				const QString&, const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
-		void handleRoomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
 		void handleRoomPartNickChange (const QString&, const QString&, const QString&);
 		void handleRoomParticipantPermsChanged (const QString&, const QString&,
 				QXmppMucAdminIq::Item::Affiliation,

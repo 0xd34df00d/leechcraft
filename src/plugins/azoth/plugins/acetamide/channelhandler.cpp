@@ -17,12 +17,11 @@
  **********************************************************************/
 
 #include "channelhandler.h"
-#include <interfaces/iproxyobject.h>
-#include "ircaccount.h"
 #include "channelclentry.h"
 #include "channelpublicmessage.h"
-#include "clientconnection.h"
+#include "ircaccount.h"
 #include "ircmessage.h"
+#include "ircserverhandler.h"
 
 namespace LeechCraft
 {
@@ -30,19 +29,15 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ChannelHandler::ChannelHandler (const ServerOptions& server, 
-			const ChannelOptions& channel, IrcAccount *account)
-	: Account_ (account)
-	, CLEntry_ (new ChannelCLEntry (this, account))
-	, Channel_ (channel)
-	, Server_ (server)
+	ChannelHandler::ChannelHandler (IrcServerHandler *ish, const
+			ChannelOptions& channel)
+	: ISH_ (ish)
+	, ChannelOptions_ (channel)
 	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
-	, ServerID_ (server.ServerName_ + ":" + QString::number (server.ServerPort_))
-	, Nickname_ (server.ServerNicknames_.at (0))
-	, Subject_ (QString ())
 	{
+		ChannelCLEntry_ = new ChannelCLEntry (this);
 	}
-	
+
 	QString ChannelHandler::GetChannelID () const
 	{
 		return ChannelID_;
@@ -50,206 +45,243 @@ namespace Acetamide
 
 	ChannelCLEntry* ChannelHandler::GetCLEntry () const
 	{
-		return CLEntry_;
+		return ChannelCLEntry_;
+	}
+
+	IrcServerHandler* ChannelHandler::GetIrcServerHandler () const
+	{
+		return ISH_;
+	}
+
+	ChannelOptions ChannelHandler::GetChannelOptions () const
+	{
+		return ChannelOptions_;
 	}
 
 	QList<QObject*> ChannelHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (ServerParticipantEntry_ptr chpe, Nick2Entry_.values ())
-			result << chpe.get ();
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+			result << spe.get ();
 		return result;
 	}
 
-	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType,
-			const QString& nick, const QString& body)
+	ServerParticipantEntry_ptr ChannelHandler::GetSelf ()
 	{
-		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
-				IMessage::DOut,
-				GetChannelID (),
-				nick,
-				Account_->GetClientConnection ().get ());
-		message->SetBody (body);
-		message->SetDateTime (QDateTime::currentDateTime ());
-		return message;
-	}
-
-	QString ChannelHandler::GetNickname () const
-	{
-		return Nickname_;
-	}
-	
-	void ChannelHandler::SetNickname (const QString& nick)
-	{
-		Nickname_ = nick;
-	}
-
-	QString ChannelHandler::GetSubject () const
-	{
-		return Subject_;
-	}
-
-	void ChannelHandler::SetSubject (const QString& subject)
-	{
-		Subject_ = subject;
-	}
-
-	void ChannelHandler::Leave (const QString& msg)
-	{
-		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
 		{
-			QStringList list = entry->GetChannels ();
-			bool prChat = entry->IsPrivateChat ();
-			if (list.contains (Channel_.ChannelName_))
-			{
-				list.removeOne (Channel_.ChannelName_);
-				if (!list.count () && !prChat)
-				{
-					Account_->handleEntryRemoved (entry.get ());
-					Account_->GetClientConnection ()->
-							RemoveEntry (ServerID_, entry->GetEntryName ());
-				}
-				else
-					entry->SetGroups (list);
-			}
+			if (spe->GetEntryName () == ISH_->GetNickName ())
+				return spe;
 		}
-		Core::Instance ().GetServerManager ()->
-				LeaveChannel (Channel_.ChannelName_, ServerID_, Account_);
-		RemoveThis ();
+
+		return ServerParticipantEntry_ptr ();
 	}
 
-	void ChannelHandler::UserLeave (const QString& nick, const QString& msg)
+	IrcMessage* ChannelHandler::CreateMessage (IMessage::MessageType t,
+			const QString& variant, const QString& body)
 	{
-		ServerParticipantEntry_ptr entry = Account_->GetClientConnection ()->
-				GetServerParticipantEntry (ServerID_, nick);
-		QStringList list = entry->GetChannels ();
-		if (list.contains (Channel_.ChannelName_))
-		{
-			if (list.removeOne (Channel_.ChannelName_));
-			{
-				Account_->handleEntryRemoved (entry.get ());
-				if (list.count () || entry->IsPrivateChat ())
-					entry->SetGroups (list);
-				MakeLeaveMessage (nick, msg);
-				Nick2Entry_.remove (nick);
-			}
-		}
+		IrcMessage *msg = new IrcMessage (t,
+				IMessage::DIn,
+				variant,
+				ISH_->GetNickName (),
+				ISH_->GetAccount ()->GetClientConnection ().get ());
+		msg->SetBody (body);
+		msg->SetDateTime (QDateTime::currentDateTime ());
+
+		return msg;
+	}
+
+	void ChannelHandler::SendPublicMessage (const QString& msg)
+	{
+		ISH_->SendPublicMessage (msg, ChannelID_);
+
+		ServerParticipantEntry_ptr entry =
+				Nick2Entry_ [ISH_->GetNickName ()];
+
+		if (!entry)
+			return;
+
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (msg,
+						IMessage::DIn,
+						ChannelCLEntry_,
+						IMessage::MTMUCMessage,
+						IMessage::MSTOther,
+						entry);
+		ChannelCLEntry_->HandleMessage (message);
+	}
+
+	void ChannelHandler::HandleIncomingMessage (const QString& nick,
+			const QString& msg)
+	{
+		ServerParticipantEntry_ptr entry = Nick2Entry_ [nick];
+
+		if (!entry)
+			return;
+
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (msg,
+						IMessage::DIn,
+						ChannelCLEntry_,
+						IMessage::MTMUCMessage,
+						IMessage::MSTOther,
+						entry);
+		ChannelCLEntry_->HandleMessage (message);
 	}
 
 	void ChannelHandler::SetChannelUser (const QString& nick)
 	{
 		QString nickname = nick;
-		IrcServer_ptr srv = Core::Instance ().GetServerManager ()->
-				GetServer (ServerID_, Account_);
-		QChar roleKey = QChar ();
-		Q_FOREACH (const QChar& key, srv->GetPrefix ().keys ())
-			if (nick.startsWith (key))
-			{
-				nickname = nick.mid (1, nick.length ());
-				roleKey = nick [0];
+		ChannelRole role;
+		switch (nick [0].toAscii ())
+		{
+			case '~':
+				role = Owner;
 				break;
-			}
-		const bool existed = Nick2Entry_.contains (nickname);
-		ServerParticipantEntry_ptr entry = Account_->GetClientConnection ()->
-				GetServerParticipantEntry (ServerID_, nickname);
-		if (roleKey.isNull ())
-		{
-			entry->SetRole (Channel_.ChannelName_, IMUCEntry::MUCRVisitor);
-			entry->SetAffiliation (Channel_.ChannelName_, IMUCEntry::MUCANone);
+			case '&':
+				role = Admin;
+				break;
+			case '@':
+				role = Operator;
+				break;
+			case '%':
+				role = HalfOperator;
+				break;
+			case '+':
+				role = Voiced;
+				break;
+			default:
+				role = Participant;
 		}
-		else
-		{	
-			entry->SetRole (Channel_.ChannelName_, srv->GetPrefix ().value (roleKey));
-			entry->SetAffiliation (Channel_.ChannelName_, srv->GetPrefix ().value (roleKey));
-		}
-		
-		if (!existed)
+
+		if (role != Participant)
+			nickname = nickname.mid (1);
+
+		if (Nick2Entry_.contains (nickname))
+			return;
+
+		ServerParticipantEntry_ptr entry = ISH_->
+				GetParticipantEntry (nickname);
+		Nick2Entry_ [nickname] = entry;
+		QStringList groups = entry->GetChannels ();
+		if (!groups.contains (ChannelOptions_.ChannelName_))
 		{
-			QStringList list = entry->GetChannels ();
-			if (!list.contains (Channel_.ChannelName_))
-				list << Channel_.ChannelName_;
-			entry->SetGroups (list);
-			Nick2Entry_ [nickname] = entry;
+			groups << ChannelOptions_.ChannelName_;
+			entry->SetGroups (groups);
+			entry->SetRole (ChannelOptions_.ChannelName_, role);
 			MakeJoinMessage (nickname);
 			entry->SetStatus (EntryStatus (SOnline, QString ()));
 		}
-		//else
-			;//TODO changeRole
+	}
+
+	void ChannelHandler::RemoveChannelUser (const QString& nick,
+			const QString& msg)
+	{
+		ServerParticipantEntry_ptr entry = Nick2Entry_ [nick];
+		QStringList groups = entry->GetChannels ();
+		if (groups.contains (ChannelOptions_.ChannelName_))
+		{
+			if (groups.removeOne (ChannelOptions_.ChannelName_))
+			{
+				MakeLeaveMessage (nick, msg);
+				ISH_->GetAccount ()->handleEntryRemoved (entry.get ());
+				Nick2Entry_.remove (nick);
+				if (!groups.count () && !entry->IsPrivateChat ())
+					ISH_->RemoveParticipantEntry (nick);
+				else
+					ISH_->GetParticipantEntry (nick)->SetGroups (groups);
+			}
+		}
 	}
 
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
 	{
 		QString msg  = tr ("%1 joined the channel").arg (nick);
 
-		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
-				IMessage::DIn,
-				CLEntry_,
-				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantJoin);
-		CLEntry_->HandleMessage (message);
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (msg,
+					IMessage::DIn,
+					ChannelCLEntry_,
+					IMessage::MTStatusMessage,
+					IMessage::MSTParticipantJoin);
+		ChannelCLEntry_->HandleMessage (message);
 	}
 
-	void ChannelHandler::MakeLeaveMessage (const QString& nick, const QString& leaveMsg)
+	void ChannelHandler::MakeLeaveMessage (const QString& nick,
+			const QString& msg)
 	{
-		QString msg;
-		if (!leaveMsg.isEmpty ())
-			msg = tr ("%1 has left the room (%2)")
-					.arg (nick, leaveMsg);
+		QString mess;
+		if (!msg.isEmpty ())
+			mess = tr ("%1 has left the channel (%2)").arg (nick, msg);
 		else
-			msg = tr ("%1 has left the room")
-					.arg (nick);
-		
-		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
-				IMessage::DIn,
-				CLEntry_,
-				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantLeave);
-		CLEntry_->HandleMessage (message);
+			mess = tr ("%1 has left the channel").arg (nick);
+
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (mess,
+					IMessage::DIn,
+					ChannelCLEntry_,
+					IMessage::MTStatusMessage,
+					IMessage::MSTParticipantLeave);
+
+		ChannelCLEntry_->HandleMessage (message);
 	}
 
-	void ChannelHandler::HandleMessage (const QString& msg, const QString& nick)
+	void ChannelHandler::SetMUCSubject (const QString& subject)
 	{
-		ServerParticipantEntry_ptr entry = Account_->GetClientConnection ()->
-				GetServerParticipantEntry (ServerID_, nick, false);
-		ChannelPublicMessage *message = 0;
-		if (!nick.isEmpty ())
-			message = new ChannelPublicMessage (msg, 
-				IMessage::DIn,
-				CLEntry_,
-				IMessage::MTMUCMessage,
-				IMessage::MSTOther,
-				entry);
+		Subject_ = subject;
 
-		if (message)
-			CLEntry_->HandleMessage (message);
+		ChannelPublicMessage *message =
+				new ChannelPublicMessage (subject,
+							IMessage::DIn,
+							ChannelCLEntry_,
+							IMessage::MTEventMessage,
+							IMessage::MSTRoomSubjectChange);
+		ChannelCLEntry_->HandleMessage (message);
 	}
 
-	ChannelOptions ChannelHandler::GetChannelOptions () const
+	QString ChannelHandler::GetMUCSubject () const
 	{
-		return Channel_;
+		return Subject_;
 	}
 
-	ServerOptions ChannelHandler::GetServerOptions () const
+	void ChannelHandler::LeaveChannel (const QString& msg)
 	{
-		return Server_;
-	}
+		Q_FOREACH (ServerParticipantEntry_ptr entry,
+				Nick2Entry_.values ())
+		{
+			QStringList list = entry->GetChannels ();
+			bool prChat = entry->IsPrivateChat ();
 
-	ServerParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick) const
-	{
-		if (Nick2Entry_.contains (nick))
-			return Nick2Entry_ [nick];
+			if (list.contains (ChannelOptions_.ChannelName_))
+			{
+				list.removeAll (ChannelOptions_.ChannelName_);
+				if (!list.count () && !prChat)
+				{
+					ISH_->GetAccount ()->
+							handleEntryRemoved (entry.get ());
+					ISH_->RemoveParticipantEntry (entry->
+							GetEntryName ());
+				}
+				else
+					entry->SetGroups (list);
+			}
+		}
+
+		ISH_->LeaveChannel (ChannelOptions_.ChannelName_, msg);
+		RemoveThis ();
 	}
 
 	void ChannelHandler::RemoveThis ()
 	{
 		Nick2Entry_.clear ();
 
-		Account_->handleEntryRemoved (CLEntry_);
+		ISH_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_);
 
-		Account_->GetClientConnection ()->Unregister (this);
+		ISH_->UnregisterChannel (this);
 
 		deleteLater ();
 	}
+
 };
 };
 };
