@@ -407,6 +407,9 @@ namespace Acetamide
 
 	void IrcServerHandler::InitCommandResponses ()
 	{
+		Command2Action_ ["005"] =
+				boost::bind (&IrcServerHandler::SetISupport,
+					 this, _1, _2, _3);
 		Command2Action_ ["332"] =
 				boost::bind (&IrcServerHandler::SetTopic,
 					this, _1, _2, _3);
@@ -587,6 +590,27 @@ namespace Acetamide
 			const QList<std::string>&, const QString& msg)
 	{
 		IrcParser_->PongCommand (msg);
+	}
+
+	void IrcServerHandler::SetISupport (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+
+		Q_FOREACH (std::string str, params)
+		{
+			QString string = QString::fromUtf8 (str.c_str ());
+			if (string.startsWith ('-') &&
+					ISupport_.contains (string.mid (1)))
+				ISupport_.remove (string.mid (1));
+			else if (!string.contains ('='))
+				ISupport_ [string] = true;
+			else
+			{
+				QString key = string.left (string.indexOf ('='));
+				QString value = string.mid (string.indexOf ('=') + 1);
+				ISupport_ [key] = value;
+			}
+		}
 	}
 
 	void IrcServerHandler::InitSocket ()

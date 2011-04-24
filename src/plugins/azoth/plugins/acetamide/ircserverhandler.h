@@ -63,6 +63,7 @@ class IrcMessage;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
 		QList<ChannelOptions> ChannelsQueue_;
+		QVariantMap ISupport_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;
@@ -127,6 +128,8 @@ class IrcMessage;
 		void HandleIncomingMessage (const QString&,
 				const QList<std::string>&, const QString&);
 		void PongMessage (const QString&,
+				const QList<std::string>&, const QString&);
+		void SetISupport (const QString&,
 				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
