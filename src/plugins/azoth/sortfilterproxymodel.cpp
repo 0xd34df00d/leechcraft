@@ -85,11 +85,13 @@ namespace Azoth
 				lE->GetParentCLEntry () == rE->GetParentCLEntry ())
 		{
 			IMUCPerms *lp = qobject_cast<IMUCPerms*> (lE->GetParentCLEntry ());
-			
-			bool less = lp->IsLessByPerm (lE->GetObject (), rE->GetObject ());
-			bool more = lp->IsLessByPerm (rE->GetObject (), lE->GetObject ());
-			if (less || more)
-				return more;
+			if (lp)
+			{
+				bool less = lp->IsLessByPerm (lE->GetObject (), rE->GetObject ());
+				bool more = lp->IsLessByPerm (rE->GetObject (), lE->GetObject ());
+				if (less || more)
+					return more;
+			}
 		}
 
 		State lState = lE->GetStatus ().State_;
