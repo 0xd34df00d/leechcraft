@@ -66,6 +66,8 @@ namespace Azoth
 	, LastSpacePosition_(-1)
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
+	, ShouldSetTypingState_ (true)
+	, PreviousTextHeight_ (0)
 	, XferManager_ (0)
 	, TypeTimer_ (new QTimer (this))
 	{
@@ -369,7 +371,8 @@ namespace Azoth
 	{
 		UpdateTextHeight ();
 
-		SetChatPartState (CPSComposing);
+		if (ShouldSetTypingState_)
+			SetChatPartState (CPSComposing);
 		TypeTimer_->stop ();
 		TypeTimer_->start ();
 	}
@@ -1064,6 +1067,10 @@ namespace Azoth
 		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
 
 		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
+		if (docHeight == PreviousTextHeight_)
+			return;
+		
+		PreviousTextHeight_ = docHeight;
 		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
@@ -1083,6 +1090,7 @@ namespace Azoth
 		if (!entry)
 			return;
 		
+		ShouldSetTypingState_ = state != CPSComposing;
 		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 

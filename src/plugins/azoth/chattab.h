@@ -65,6 +65,8 @@ namespace Azoth
 
 		QIcon TabIcon_;
 		bool IsMUC_;
+		bool ShouldSetTypingState_;
+		int PreviousTextHeight_;
 
 		ITransferManager *XferManager_;
 		
