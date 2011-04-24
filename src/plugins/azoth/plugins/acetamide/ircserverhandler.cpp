@@ -160,7 +160,7 @@ namespace Acetamide
 
 	bool IrcServerHandler::IsRoleAvailable (ChannelRole role)
 	{
-		return true;
+		return AvailableRoles_.contains (role);
 	}
 
 	IrcMessage*
@@ -525,7 +525,6 @@ namespace Acetamide
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		QStringList participants = message.split (' ');
-		//TODO roles/affialtions detection
 		Q_FOREACH (QString nick, participants)
 			ChannelHandlers_ [channelID]->SetChannelUser (nick);
 	}
@@ -594,7 +593,6 @@ namespace Acetamide
 	void IrcServerHandler::SetISupport (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
-
 		Q_FOREACH (std::string str, params)
 		{
 			QString string = QString::fromUtf8 (str.c_str ());
@@ -607,7 +605,29 @@ namespace Acetamide
 			{
 				QString key = string.left (string.indexOf ('='));
 				QString value = string.mid (string.indexOf ('=') + 1);
-				ISupport_ [key] = value;
+				ISupport_ [key.toLower ()] = value;
+				if (key.toLower () == "prefix")
+				{
+					QRegExp rxp ("\\(([a-z]+)\\)([@~%+&]+)");
+					if (rxp.indexIn (value) > -1)
+					{
+						for (int i = 0; i < rxp.cap (2).length (); ++i)
+						{
+							QChar symbol = rxp.cap (2) [i];
+							if (rxp.cap (1) [i] == 'o')
+								AvailableRoles_ [symbol] = Operator;
+							else if (rxp.cap (1) [i] == 'h')
+								AvailableRoles_ [symbol] = HalfOperator;
+							else if (rxp.cap (1) [i] == 'v')
+								AvailableRoles_ [symbol] = Voiced;
+							else if (rxp.cap (1) [i] == 'q')
+								AvailableRoles_ [symbol] = Owner;
+							else if (rxp.cap (1) [i] == 'a')
+								AvailableRoles_ [symbol] = Admin;
+						}
+					}
+					AvailableRoles_ ['p'] = Participant;
+				}
 			}
 		}
 	}

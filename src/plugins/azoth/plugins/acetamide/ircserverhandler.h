@@ -64,6 +64,7 @@ class IrcMessage;
 		QString NickName_;
 		QList<ChannelOptions> ChannelsQueue_;
 		QVariantMap ISupport_;
+		QHash<QChar, ChannelRole> AvailableRoles_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;
