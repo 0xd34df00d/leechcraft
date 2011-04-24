@@ -96,43 +96,6 @@ namespace Acetamide
 		return 0;
 	}
 
-	QVariantMap IrcServerCLEntry::GetIdentifyingData () const
-	{
-		return QVariantMap ();
-	}
-
-	IMUCEntry::MUCFeatures IrcServerCLEntry::GetMUCFeatures () const
-	{
-		return MUCFCanHaveSubject;
-	}
-
-	QString IrcServerCLEntry::GetMUCSubject () const
-	{
-		return QString ();
-	}
-
-	QString IrcServerCLEntry::GetNick () const
-	{
-		ISH_->GetNickName ();
-	}
-
-	void IrcServerCLEntry::SetNick (const QString&)
-	{
-	}
-
-	QList<QObject*> IrcServerCLEntry::GetParticipants ()
-	{
-		return QList<QObject*> ();
-	}
-
-	void IrcServerCLEntry::Leave (const QString&)
-	{
-	}
-
-	void IrcServerCLEntry::SetMUCSubject (const QString&)
-	{
-	}
-
 };
 };
 };
