@@ -34,12 +34,14 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/itransfermanager.h"
+#include "interfaces/iconfigurablemuc.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
 #include "bookmarksmanagerdialog.h"
+#include "simpledialog.h"
 
 namespace LeechCraft
 {
@@ -672,7 +674,33 @@ namespace Azoth
 		dia->show ();
 	}
 	
-	void ChatTab::typeTimeout()
+	void ChatTab::handleConfigureMUC ()
+	{
+		IConfigurableMUC *confMUC = GetEntry<IConfigurableMUC> ();
+		if (!confMUC)
+			return;
+
+		QWidget *w = confMUC->GetConfigurationWidget ();
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty conf widget"
+					<< GetEntry<QObject> ();
+			return;
+		}
+
+		SimpleDialog *dia = new SimpleDialog ();
+		dia->setWindowTitle (tr ("Room configuration"));
+		dia->SetWidget (w);
+		connect (dia,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (deleteLater ()),
+				Qt::QueuedConnection);
+		dia->show ();
+	}
+	
+	void ChatTab::typeTimeout ()
 	{
 		SetChatPartState (CPSPaused);
 	}
@@ -767,6 +795,18 @@ namespace Azoth
 				this,
 				SLOT (handleAddToBookmarks ()));
 		TabToolbar_->addAction (bookmarks);
+		
+		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
+		if (confmuc)
+		{
+			QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
+			configureMUC->setProperty ("ActionIcon", "preferences");
+			connect (configureMUC,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleConfigureMUC ()));
+			TabToolbar_->addAction (configureMUC);
+		}
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)

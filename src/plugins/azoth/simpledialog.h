@@ -16,48 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LCFTP_TABWIDGET_H
-#define PLUGINS_LCFTP_TABWIDGET_H
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "ui_tabwidget.h"
+#ifndef PLUGINS_AZOTH_SIMPLEDIALOG_H
+#define PLUGINS_AZOTH_SIMPLEDIALOG_H
+#include <QDialog>
+#include "ui_simpledialog.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class SimpleDialog : public QDialog
 	{
-		namespace LCFTP
-		{
-			class TabWidget : public QWidget
-							, public ITabWidget
-			{
-				Q_OBJECT
-				Q_INTERFACES (ITabWidget)
-
-				Ui::TabWidget Ui_;
-				static QObject *S_ParentMultiTabs_;
-			public:
-				TabWidget (const QUrl& url, const QString& str, QWidget* = 0);
-				virtual ~TabWidget ();
-				static void SetParentMultiTabs (QObject*);
-
-				void Remove ();
-				QToolBar* GetToolBar () const;
-				QList<QAction*> GetTabBarContextMenuActions () const;
-				QObject *ParentMultiTabs ();
-				TabClassInfo GetTabClassInfo () const;
-			private:
-				void Setup (Pane*);
-				Pane* Other (Pane*);
-			private slots:
-				void handleDownloadRequested (const QUrl&);
-				void handleUploadRequested (const QString&);
-			};
-
-			typedef TabWidget *TabWidget_ptr;
-		};
+		Q_OBJECT
+		
+		Ui::SimpleDialog Ui_;
+	public:
+		SimpleDialog (QWidget* = 0);
+		
+		void SetWidget (QWidget*);
 	};
-};
+}
+}
 
 #endif
-

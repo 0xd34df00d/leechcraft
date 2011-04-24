@@ -16,48 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LCFTP_TABWIDGET_H
-#define PLUGINS_LCFTP_TABWIDGET_H
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include "ui_tabwidget.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
+#include <boost/shared_ptr.hpp>
+#include <QXmppDataForm.h>
+
+class QXmppDataForm;
+class QWidget;
+class QFormLayout;
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace LCFTP
-		{
-			class TabWidget : public QWidget
-							, public ITabWidget
-			{
-				Q_OBJECT
-				Q_INTERFACES (ITabWidget)
+namespace Azoth
+{
+namespace Xoox
+{
+	class FieldHandler;
+	typedef boost::shared_ptr<FieldHandler> FieldHandler_ptr;
 
-				Ui::TabWidget Ui_;
-				static QObject *S_ParentMultiTabs_;
-			public:
-				TabWidget (const QUrl& url, const QString& str, QWidget* = 0);
-				virtual ~TabWidget ();
-				static void SetParentMultiTabs (QObject*);
+	class FormBuilder
+	{		
+		QXmppDataForm Form_;
+		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
+	public:
+		FormBuilder ();
 
-				void Remove ();
-				QToolBar* GetToolBar () const;
-				QList<QAction*> GetTabBarContextMenuActions () const;
-				QObject *ParentMultiTabs ();
-				TabClassInfo GetTabClassInfo () const;
-			private:
-				void Setup (Pane*);
-				Pane* Other (Pane*);
-			private slots:
-				void handleDownloadRequested (const QUrl&);
-				void handleUploadRequested (const QString&);
-			};
-
-			typedef TabWidget *TabWidget_ptr;
-		};
+		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
+		QXmppDataForm GetForm ();
 	};
-};
+}
+}
+}
 
 #endif
-

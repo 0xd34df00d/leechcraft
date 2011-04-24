@@ -61,18 +61,19 @@ namespace LeechCraft
 				return 0;
 			}
 
-			void TabWidget::NewTabRequested ()
-			{
-			}
-
 			QList<QAction*> TabWidget::GetTabBarContextMenuActions () const
 			{
 				return QList<QAction*> ();
 			}
 
-			QObject* TabWidget::ParentMultiTabs () const
+			QObject* TabWidget::ParentMultiTabs ()
 			{
 				return S_ParentMultiTabs_;
+			}
+			
+			TabClassInfo TabWidget::GetTabClassInfo () const
+			{
+				return Core::Instance ().GetTabClass ();
 			}
 
 			void TabWidget::Setup (Pane *p)

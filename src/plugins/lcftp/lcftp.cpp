@@ -134,6 +134,23 @@ namespace LeechCraft
 			{
 				return QIcon (":/resources/images/lcftp.svg");
 			}
+			
+			TabClasses_t LCFTP::GetTabClasses () const
+			{
+				TabClasses_t result;
+				result << Core::Instance ().GetTabClass ();
+				return result;
+			}
+			
+			void LCFTP::TabOpenRequested (const QByteArray& tabClass)
+			{
+				if (tabClass == "LCFTP")
+					TabManager_->AddTab (QUrl (), QString ());
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tabClass;
+			}
 
 			QAbstractItemModel* LCFTP::GetRepresentation () const
 			{
@@ -189,11 +206,6 @@ namespace LeechCraft
 			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> LCFTP::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
-			}
-
-			void LCFTP::newTabRequested ()
-			{
-				TabManager_->AddTab (QUrl (), QString ());
 			}
 		};
 	};

@@ -50,6 +50,7 @@ SET (SRCS
 	bookmarksmanagerdialog.cpp
 	accounthandlerchooserdialog.cpp
 	util.cpp
+	simpledialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -73,6 +74,7 @@ SET (HEADERS
 	bookmarksmanagerdialog.h
 	accounthandlerchooserdialog.h
 	util.h
+	simpledialog.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -90,6 +92,7 @@ SET (FORMS
 	addaccountwizardfirstpage.ui
 	bookmarksmanagerdialog.ui
 	accounthandlerchooserdialog.ui
+	simpledialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
