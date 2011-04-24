@@ -225,7 +225,11 @@ namespace Acetamide
 		if (IrcAccountState_ == SOffline &&
 				!ClientConnection_)
 			return;
+
 		IrcAccountState_ = state.State_;
+		if (state.State_ == SOffline)
+			ClientConnection_->DisconnectFromAll ();
+
 		emit statusChanged (state);
 	}
 

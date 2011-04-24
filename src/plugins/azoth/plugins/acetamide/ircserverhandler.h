@@ -81,7 +81,7 @@ class IrcMessage;
 		void SendPrivateMessage (IrcMessage*);
 
 		void LeaveChannel (const QString&, const QString&);
-
+		QStringList GetPrivateChats () const;
 		void ClosePrivateChat (const QString&);
 
 		ChannelHandler* GetChannelHandler (const QString&);

@@ -52,7 +52,6 @@ namespace Acetamide
 	public:
 		ClientConnection (IrcAccount*);
 		QObject* GetCLEntry (const QString&, const QString&) const;
-		QList<QObject*> GetCLEntries () const;
 		void Sinchronize ();
 
 		IrcAccount* GetAccount () const;
@@ -64,6 +63,7 @@ namespace Acetamide
 		IrcServerHandler* GetIrcServerHandler (const QString&);
 		void ClosePrivateChat (QString, const QString&);
 		void CloseServer (const QString&);
+		void DisconnectFromAll ();
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

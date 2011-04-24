@@ -124,6 +124,15 @@ namespace Acetamide
 		IrcParser_->PartCommand (channels, msg);
 	}
 
+	QStringList IrcServerHandler::GetPrivateChats () const
+	{
+		QStringList result;
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+			if (spe->IsPrivateChat ())
+				result << spe->GetEntryName ();
+		return result;
+	}
+
 	void IrcServerHandler::ClosePrivateChat (const QString& nick)
 	{
 		if (Nick2Entry_.contains (nick))
@@ -198,9 +207,9 @@ namespace Acetamide
 		if (ServerConnectionState_ != NotConnected)
 		{
 			TcpSocket_ptr->disconnectFromHost ();
-			if (TcpSocket_ptr->state()
+			if (TcpSocket_ptr->state ()
 					!= QAbstractSocket::UnconnectedState &&
-					!TcpSocket_ptr->waitForDisconnected(1000))
+					!TcpSocket_ptr->waitForDisconnected (1000))
 			{
 				qDebug () << Q_FUNC_INFO
 						<< "cannot to disconnect from host"
@@ -270,7 +279,7 @@ namespace Acetamide
 				.Parameters_)
 		{
 			message.append (QString::fromUtf8 (str.c_str ()))
-				.append(' ');
+				.append (' ');
 		}
 		message.append (IrcParser_->GetIrcMessageOptions ().Message_);
 		IrcMessage *msg = CreateMessage (IMessage::MTEventMessage,
@@ -508,9 +517,15 @@ namespace Acetamide
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		QStringList participants = message.split (' ');
-
-		Q_FOREACH (const QString& nick, participants)
+		//TODO roles/affialtions detection
+		Q_FOREACH (QString nick, participants)
+		{
+			if (nick.startsWith ('@') || nick.startsWith ('+') ||
+					nick.startsWith ('%') || nick.startsWith ('~') ||
+					nick.startsWith ('$'))
+				nick = nick.mid (1);
 			ChannelHandlers_ [channelID]->SetChannelUser (nick);
+		}
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
@@ -627,7 +642,6 @@ namespace Acetamide
 			Account_->GetClientConnection ()->CloseServer (ServerID_);
 		}
 	}
-
 
 };
 };

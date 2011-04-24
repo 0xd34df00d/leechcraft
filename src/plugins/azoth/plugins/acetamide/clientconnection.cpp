@@ -64,20 +64,6 @@ namespace Acetamide
 		return NULL;
 	}
 
-	QList<QObject*> ClientConnection::GetCLEntries () const
-	{
-		QList<QObject*> result;
-		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_)
-		{
-			result << ish->GetCLEntry ();
-			Q_FOREACH (ChannelHandler *ch, ish->GetChannelHandlers ())
-			{
-
-			}
-		}
-		return result;
-	}
-
 	void ClientConnection::Sinchronize ()
 	{
 	}
@@ -159,6 +145,18 @@ namespace Acetamide
 					Account_->ChangeState (EntryStatus (SOffline,
 							QString ()));
 			}
+	}
+
+	void ClientConnection::DisconnectFromAll ()
+	{
+		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
+		{
+			Q_FOREACH (ChannelHandler* ich, ish->GetChannelHandlers ())
+				ich->LeaveChannel (QString ());
+			Q_FOREACH (const QString& nick, ish->GetPrivateChats ())
+				ish->ClosePrivateChat (nick);
+			ish->DisconnectFromServer ();
+		}
 	}
 
 };

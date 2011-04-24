@@ -151,7 +151,6 @@ namespace Acetamide
 						ClosePrivateChat (ServerKey_, NickName_);
 		}
 	}
-
 };
 };
 };
