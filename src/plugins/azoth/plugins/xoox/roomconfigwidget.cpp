@@ -18,6 +18,7 @@
 
 #include "roomconfigwidget.h"
 #include <QVBoxLayout>
+#include <QStandardItemModel>
 #include <QXmppMucManager.h>
 #include "roomclentry.h"
 #include "glooxaccount.h"
@@ -36,25 +37,90 @@ namespace Xoox
 	, FormWidget_ (0)
 	, FB_ (new FormBuilder)
 	, Room_ (room)
+	, JID_ (room->GetRoomHandler ()->GetRoomJID ())
+	, PermsModel_ (new QStandardItemModel)
+	, Aff2Cat_ (InitModel ())
 	{
-		setLayout (new QVBoxLayout);
+		Ui_.setupUi (this);
+		Ui_.PermsTree_->setModel (PermsModel_);
+
 		GlooxAccount *acc = qobject_cast<GlooxAccount*> (room->GetParentAccount ());
 		QXmppMucManager *mgr = acc->GetClientConnection ()->GetMUCManager ();
 		connect (mgr,
 				SIGNAL (roomConfigurationReceived (const QString&, const QXmppDataForm&)),
 				this,
-				SLOT (handleRoomConfigurationReceived (const QString&, const QXmppDataForm&)));
-		mgr->requestRoomConfiguration (room->GetRoomHandler ()->GetRoomJID ());
+				SLOT (handleConfigurationReceived (const QString&, const QXmppDataForm&)));
+		connect (mgr,
+				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
+				this,
+				SLOT (handlePermsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)));
+		mgr->requestRoomConfiguration (JID_);
+		mgr->requestRoomPermissions (JID_);
 	}
 	
-	void RoomConfigWidget::handleRoomConfigurationReceived (const QString& jid, const QXmppDataForm& form)
+	QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> RoomConfigWidget::InitModel () const
 	{
-		if (jid != Room_->GetRoomHandler ()->GetRoomJID ())
+		PermsModel_->clear ();
+		PermsModel_->setHorizontalHeaderLabels (QStringList ("JID") << tr ("Reason"));
+		QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> aff2cat;
+		aff2cat [QXmppMucAdminIq::Item::OutcastAffiliation] = new QStandardItem (tr ("Banned"));
+		aff2cat [QXmppMucAdminIq::Item::MemberAffiliation] = new QStandardItem (tr ("Members"));
+		aff2cat [QXmppMucAdminIq::Item::AdminAffiliation] = new QStandardItem (tr ("Admins"));
+		aff2cat [QXmppMucAdminIq::Item::OwnerAffiliation] = new QStandardItem (tr ("Owners"));
+		Q_FOREACH (QStandardItem *item, aff2cat.values ())
+		{
+			qDebug () << "created" << item << item->text ();
+			QList<QStandardItem*> rootItems;
+			rootItems << item;
+			rootItems << new QStandardItem (tr ("Reason"));
+			Q_FOREACH (QStandardItem *t, rootItems)
+				t->setEditable (false);
+			PermsModel_->appendRow (rootItems);
+		}
+		return aff2cat;
+	}
+	
+	void RoomConfigWidget::accept ()
+	{
+		Room_->AcceptConfiguration (this);
+	}
+	
+	void RoomConfigWidget::handleConfigurationReceived (const QString& jid,
+			const QXmppDataForm& form)
+	{
+		if (jid != JID_)
 			return;
 
 		FormWidget_ = FB_->CreateForm (form);
-		layout ()->addWidget (FormWidget_);
+		Ui_.ConfLayout_->addWidget (FormWidget_);
 		emit dataReady ();
+	}
+	
+	void RoomConfigWidget::handlePermsReceived (const QString& jid,
+			const QList<QXmppMucAdminIq::Item>& perms)
+	{
+		if (jid != JID_)
+			return;
+
+		Q_FOREACH (const QXmppMucAdminIq::Item& perm, perms)
+		{
+			QStandardItem *parentItem = Aff2Cat_ [perm.affiliation ()];
+			if (!parentItem)
+				continue;
+			
+			QList<QStandardItem*> items;
+			items << new QStandardItem (perm.jid ());
+			items << new QStandardItem (perm.reason ());
+			Q_FOREACH (QStandardItem *item, items)
+				item->setEditable (false);
+			parentItem->appendRow (items);
+		}
+		
+		Q_FOREACH (QStandardItem *item, Aff2Cat_.values ())
+		{
+			item->sortChildren (0);
+			Ui_.PermsTree_->expand (item->index ());
+		}
 	}
 }
 }

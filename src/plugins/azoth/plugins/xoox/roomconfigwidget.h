@@ -20,7 +20,13 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCONFIGWIDGET_H
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
+#include <QXmppDataForm.h>
+#include <QXmppMucIq.h>
 #include <interfaces/iconfigurablemuc.h>
+#include "ui_roomconfigwidget.h"
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -35,15 +41,26 @@ namespace Xoox
 						   , public IMUCConfigWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IMUCConfigWidget)
+		Q_INTERFACES (LeechCraft::Azoth::IMUCConfigWidget)
+		
+		Ui::RoomConfigWidget Ui_;
 		
 		QWidget *FormWidget_;
 		boost::shared_ptr<FormBuilder> FB_;
 		RoomCLEntry *Room_;
+		QString JID_;
+		
+		QStandardItemModel *PermsModel_;
+		QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> Aff2Cat_;
 	public:
 		RoomConfigWidget (RoomCLEntry*, QWidget* = 0);
+	private:
+		QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> InitModel () const;
+	public slots:
+		void accept ();
 	private slots:
-		void handleRoomConfigurationReceived (const QString&, const QXmppDataForm&);
+		void handleConfigurationReceived (const QString&, const QXmppDataForm&);
+		void handlePermsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
 	signals:
 		void dataReady ();
 	};

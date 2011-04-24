@@ -29,6 +29,7 @@ SET (XOOX_SRCS
 	transferjob.cpp
 	bookmarkeditwidget.cpp
 	formbuilder.cpp
+	roomconfigwidget.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -53,6 +54,7 @@ SET (XOOX_HEADERS
 	transferjob.h
 	bookmarkeditwidget.h
 	formbuilder.h
+	roomconfigwidget.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -60,6 +62,7 @@ SET (XOOX_FORMS
 	joingroupchatwidget.ui
 	vcarddialog.ui
 	bookmarkeditwidget.ui
+	roomconfigwidget.ui
 	)
 SET (XOOX_TRANSLATIONS
 	leechcraft_azoth_xoox_ru_RU.ts
