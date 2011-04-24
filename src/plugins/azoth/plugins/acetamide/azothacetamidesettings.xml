@@ -4,9 +4,6 @@
 		<label value="Acetamide" />
 			<groupbox>
 				<label lang="en" value=""/>
-				<item type="checkbox" property="TabWithServer" state="on">
-					<label value="Open a separate tab for each server" />
-				</item>
 				<item type="checkbox" property="AutoDisconnectFromServer" state="off">
 						<label value="Autodisconnect from server when no channels are active" />
 				</item>

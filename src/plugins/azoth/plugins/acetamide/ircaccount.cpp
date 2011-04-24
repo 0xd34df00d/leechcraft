@@ -186,15 +186,6 @@ namespace Acetamide
 	void IrcAccount::JoinServer (const ServerOptions& server,
 			const ChannelOptions& channel)
 	{
-		if (!XmlSettingsManager::Instance ()
-			.property ("TabWithServer").toBool () &&
-				channel.ChannelName_.isEmpty ())
-		{
-			// TODO unable to join to server if Separate tab for server
-			// option is disabled
-			return;
-		}
-
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
