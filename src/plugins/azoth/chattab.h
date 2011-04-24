@@ -113,6 +113,7 @@ namespace Azoth
 		void handleHistoryUp ();
 		void handleHistoryDown ();
 		void handleAddToBookmarks ();
+		void handleConfigureMUC ();
 		void typeTimeout ();
 		
 		void handleFontSizeChanged ();
