@@ -21,8 +21,10 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
+#include <QXmppMucIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
+#include <interfaces/imucperms.h>
 #include <interfaces/iconfigurablemuc.h>
 
 namespace LeechCraft
@@ -38,16 +40,22 @@ namespace Xoox
 	class RoomCLEntry : public QObject
 					  , public ICLEntry
 					  , public IMUCEntry
+					  , public IMUCPerms
 					  , public IConfigurableMUC
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
 						LeechCraft::Azoth::IMUCEntry
+						LeechCraft::Azoth::IMUCPerms
 						LeechCraft::Azoth::IConfigurableMUC);
 
 		GlooxAccount *Account_;
 		QList<QObject*> AllMessages_;
 		RoomHandler *RH_;
+		QMap<QByteArray, QList<QByteArray> > Perms_;
+		QMap<QXmppMucAdminIq::Item::Role, QByteArray> Role2Str_;
+		QMap<QXmppMucAdminIq::Item::Affiliation, QByteArray> Aff2Str_;
+		QMap<QByteArray, QString> Translations_;
 	public:
 		RoomCLEntry (RoomHandler*, GlooxAccount*);
 
@@ -85,13 +93,16 @@ namespace Xoox
 		void Leave (const QString&);
 		QString GetNick () const;
 		void SetNick (const QString&);
-		bool MayChangeAffiliation (QObject*, MUCAffiliation) const;
-		bool MayChangeRole (QObject*, MUCRole) const;
-		MUCAffiliation GetAffiliation (QObject*) const;
-		void SetAffiliation (QObject*, MUCAffiliation, const QString&);
-		MUCRole GetRole (QObject*) const;
-		void SetRole (QObject*, MUCRole, const QString&);
 		QVariantMap GetIdentifyingData () const;
+		
+		// IMUCPerms
+		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;
+		QMap<QByteArray, QByteArray> GetPerms (QObject *object) const;
+		QByteArray GetAffName (QObject*) const;
+		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const;
+		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&);
+		bool IsLessByPerm (QObject*, QObject*) const;
+		QString GetUserString (const QByteArray&) const;
 		
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
@@ -115,9 +126,6 @@ namespace Xoox
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
-
-		void participantAffiliationChanged (QObject*, MUCAffiliation);
-		void participantRoleChanged (QObject*, MUCRole);
 	};
 }
 }

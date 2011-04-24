@@ -534,22 +534,22 @@ namespace Xoox
 	}
 
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
-			IMUCEntry::MUCAffiliation newAff, const QString& reason)
+			QXmppMucAdminIq::Item::Affiliation newAff, const QString& reason)
 	{
 		QXmppMucAdminIq::Item item;
 		item.setNick (entry->GetNick ());
 		item.setReason (reason);
-		item.setAffiliation (static_cast<QXmppMucAdminIq::Item::Affiliation> (newAff));
+		item.setAffiliation (newAff);
 		Account_->GetClientConnection ()->Update (item, RoomJID_);
 	}
 
 	void RoomHandler::SetRole (RoomParticipantEntry *entry,
-			IMUCEntry::MUCRole newRole, const QString& reason)
+			QXmppMucAdminIq::Item::Role newRole, const QString& reason)
 	{
 		QXmppMucAdminIq::Item item;
 		item.setNick (entry->GetNick ());
 		item.setReason (reason);
-		item.setRole (static_cast<QXmppMucAdminIq::Item::Role> (newRole));
+		item.setRole (newRole);
 		Account_->GetClientConnection ()->Update (item, RoomJID_);
 	}
 

@@ -70,9 +70,9 @@ namespace Xoox
 		void SetOurNick (const QString&);
 
 		void SetAffiliation (RoomParticipantEntry*,
-				IMUCEntry::MUCAffiliation, const QString&);
+				QXmppMucAdminIq::Item::Affiliation, const QString&);
 		void SetRole (RoomParticipantEntry*,
-				IMUCEntry::MUCRole, const QString&);
+				QXmppMucAdminIq::Item::Role, const QString&);
 
 		void HandlePresence (const QXmppPresence&, const QString&);
 		void HandleErrorPresence (const QXmppPresence&, const QString&);
