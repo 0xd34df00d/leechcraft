@@ -32,6 +32,7 @@ namespace Azoth
 {
 	const int CContactShift = 20;
 	const int CPadding = 2;
+	const int AvatarPaddingBottom = 2;
 
 	ContactListDelegate::ContactListDelegate (QTreeView* parent)
 	: QStyledItemDelegate (parent)
@@ -39,7 +40,7 @@ namespace Azoth
 	{
 		handleShowAvatarsChanged ();
 		handleShowClientIconsChanged ();
-		
+
 		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars",
 				this, "handleShowAvatarsChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("ShowClientIcons",
@@ -64,6 +65,8 @@ namespace Azoth
 			break;
 		case Core::CLETContact:
 			o.rect.adjust (-1.2 * View_->indentation (), 0, 0, 0);
+			if (o.rect.height () < 24)
+				o.rect.setHeight (24);
 			DrawContact (painter, o, index);
 			break;
 		}
@@ -100,7 +103,7 @@ namespace Azoth
 		gr.setColorAt (1.00, light);
 		painter->fillRect (QRect (r.topLeft (), r.topRight ()), gr);
 		painter->fillRect (QRect (r.bottomLeft (), r.bottomRight ()), gr);
-		
+
 		QLinearGradient vGr (0, 0, 0, r.height ());
 		vGr.setSpread (QGradient::PadSpread);
 		vGr.setColorAt (0.00, light);
@@ -184,7 +187,7 @@ namespace Azoth
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString& status = entry->GetStatus ().StatusString_;
 		const QImage& avatarImg = ShowAvatars_ ?
-				Core::Instance ().GetAvatar (entry, iconSize) :
+				Core::Instance ().GetAvatar (entry, iconSize - AvatarPaddingBottom) :
 				QImage ();
 		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
@@ -219,9 +222,11 @@ namespace Azoth
 			const IMUCEntry::MUCAffiliation aff =
 					static_cast<IMUCEntry::MUCAffiliation> (num);
 			const QIcon& icon = Core::Instance ().GetAffIcon (aff);
+
 			if (!icon.isNull ())
 				clientIcons.prepend (icon);
 		}
+
 		const int clientsIconsWidth = clientIcons.isEmpty () ?
 				0 :
 				clientIcons.size () * (iconSize + CPadding) - CPadding;
@@ -269,13 +274,15 @@ namespace Azoth
 					QPixmap::fromImage (avatarImg));
 
 		int currentShift = textShift + textWidth + CPadding;
+		const int clientIconSize = (iconSize > 16) ? 16 : iconSize;
+
 		Q_FOREACH (const QIcon& icon, clientIcons)
 		{
 			p.drawPixmap (r.topLeft () + QPoint (currentShift, CPadding),
-					icon.pixmap (iconSize, iconSize));
-			currentShift += iconSize + CPadding;
+					icon.pixmap (clientIconSize, clientIconSize));
+			currentShift += clientIconSize + CPadding;
 		}
-		
+
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
 			const QModelIndex& next = index.model ()->index (index.row () + 1, 0, index.parent ());
@@ -289,13 +296,13 @@ namespace Azoth
 
 		painter->drawPixmap (option.rect, pixmap);
 	}
-	
+
 	void ContactListDelegate::handleShowAvatarsChanged ()
 	{
 		ShowAvatars_ = XmlSettingsManager::Instance ()
 				.property ("ShowAvatars").toBool ();
 	}
-	
+
 	void ContactListDelegate::handleShowClientIconsChanged ()
 	{
 		ShowClientIcons_ = XmlSettingsManager::Instance ()
