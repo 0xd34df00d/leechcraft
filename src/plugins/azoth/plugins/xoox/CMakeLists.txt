@@ -28,6 +28,7 @@ SET (XOOX_SRCS
 	transfermanager.cpp
 	transferjob.cpp
 	bookmarkeditwidget.cpp
+	formbuilder.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -51,6 +52,7 @@ SET (XOOX_HEADERS
 	transfermanager.h
 	transferjob.h
 	bookmarkeditwidget.h
+	formbuilder.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

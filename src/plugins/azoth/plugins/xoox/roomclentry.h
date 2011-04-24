@@ -23,6 +23,7 @@
 #include <QStringList>
 #include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
+#include <interfaces/iconfigurablemuc.h>
 
 namespace LeechCraft
 {
@@ -37,10 +38,12 @@ namespace Xoox
 	class RoomCLEntry : public QObject
 					  , public ICLEntry
 					  , public IMUCEntry
+					  , public IConfigurableMUC
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-						LeechCraft::Azoth::IMUCEntry);
+						LeechCraft::Azoth::IMUCEntry
+						LeechCraft::Azoth::IConfigurableMUC);
 
 		GlooxAccount *Account_;
 		QList<QObject*> AllMessages_;
@@ -89,6 +92,10 @@ namespace Xoox
 		MUCRole GetRole (QObject*) const;
 		void SetRole (QObject*, MUCRole, const QString&);
 		QVariantMap GetIdentifyingData () const;
+		
+		// IConfigurableMUC
+		QWidget* GetConfigurationWidget ();
+		void AcceptConfiguration (QWidget*);
 
 		void HandleMessage (RoomPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);

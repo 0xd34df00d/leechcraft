@@ -25,6 +25,7 @@
 #include "glooxprotocol.h"
 #include "roompublicmessage.h"
 #include "roomhandler.h"
+#include "roomconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -313,6 +314,15 @@ namespace Xoox
 		result ["Room"] = room;
 		result ["Server"] = server;
 		return result;
+	}
+	
+	QWidget* RoomCLEntry::GetConfigurationWidget ()
+	{
+		return new RoomConfigWidget (this);
+	}
+	
+	void RoomCLEntry::AcceptConfiguration (QWidget *w)
+	{
 	}
 
 	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)
