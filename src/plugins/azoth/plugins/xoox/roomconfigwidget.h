@@ -27,6 +27,7 @@
 
 class QStandardItemModel;
 class QStandardItem;
+class QXmppMucManager;
 
 namespace LeechCraft
 {
@@ -52,6 +53,8 @@ namespace Xoox
 		
 		QStandardItemModel *PermsModel_;
 		QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> Aff2Cat_;
+		
+		QXmppMucManager *MUCManager_;
 	public:
 		RoomConfigWidget (RoomCLEntry*, QWidget* = 0);
 	private:

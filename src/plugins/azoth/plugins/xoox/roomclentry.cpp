@@ -323,6 +323,17 @@ namespace Xoox
 	
 	void RoomCLEntry::AcceptConfiguration (QWidget *w)
 	{
+		RoomConfigWidget *cfg = qobject_cast<RoomConfigWidget*> (w);
+		if (!cfg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< w
+					<< "to RoomConfigWidget";
+			return;
+		}
+		
+		cfg->accept ();
 	}
 
 	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)

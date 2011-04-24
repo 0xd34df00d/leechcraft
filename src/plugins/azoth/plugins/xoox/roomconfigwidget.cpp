@@ -40,22 +40,23 @@ namespace Xoox
 	, JID_ (room->GetRoomHandler ()->GetRoomJID ())
 	, PermsModel_ (new QStandardItemModel)
 	, Aff2Cat_ (InitModel ())
+	, MUCManager_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.PermsTree_->setModel (PermsModel_);
 
 		GlooxAccount *acc = qobject_cast<GlooxAccount*> (room->GetParentAccount ());
-		QXmppMucManager *mgr = acc->GetClientConnection ()->GetMUCManager ();
-		connect (mgr,
+		MUCManager_ = acc->GetClientConnection ()->GetMUCManager ();
+		connect (MUCManager_,
 				SIGNAL (roomConfigurationReceived (const QString&, const QXmppDataForm&)),
 				this,
 				SLOT (handleConfigurationReceived (const QString&, const QXmppDataForm&)));
-		connect (mgr,
+		connect (MUCManager_,
 				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
 				this,
 				SLOT (handlePermsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)));
-		mgr->requestRoomConfiguration (JID_);
-		mgr->requestRoomPermissions (JID_);
+		MUCManager_->requestRoomConfiguration (JID_);
+		MUCManager_->requestRoomPermissions (JID_);
 	}
 	
 	QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> RoomConfigWidget::InitModel () const
@@ -81,7 +82,9 @@ namespace Xoox
 	
 	void RoomConfigWidget::accept ()
 	{
-		Room_->AcceptConfiguration (this);
+		QXmppDataForm form = FB_->GetForm ();
+		form.setType (QXmppDataForm::Submit);
+		MUCManager_->setRoomConfiguration (JID_, form);
 	}
 	
 	void RoomConfigWidget::handleConfigurationReceived (const QString& jid,
