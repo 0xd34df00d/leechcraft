@@ -59,6 +59,8 @@ namespace Juick
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
 		QString FormatBody (QString);
+		void InsertAvatars (QString &body);
+		void InsertNickLinks (QString &body);
 		bool ShouldHandle (QObject* msgObj, int direction, int type);
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
