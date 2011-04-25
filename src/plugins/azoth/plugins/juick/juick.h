@@ -62,6 +62,7 @@ namespace Juick
 		void InsertAvatars (QString &body);
 		void InsertNickLinks (QString &body);
 		bool ShouldHandle (QObject* msgObj, int direction, int type);
+		bool IsBehind (const QString& text, int index, const QString& pattern);
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
