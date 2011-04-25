@@ -54,7 +54,7 @@ class HubFrame :
         public  ArenaWidget
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+    Q_INTERFACES(ArenaWidget ITabWidget)
 
     class Menu{
 
@@ -150,10 +150,10 @@ public:
 
     // Arena Widget interface
     QWidget *getWidget();
-    QString getArenaTitle();
-    QString getArenaShortTitle();
+    QString getArenaTitle() const;
+    QString getArenaShortTitle() const;
     QMenu *getMenu();
-    const QPixmap &getPixmap();
+    const QPixmap &getPixmap() const;
     void requestFilter() { slotHideFindFrame(); }
     void requestFocus() { plainTextEdit_INPUT->setFocus(); }
     ArenaWidget::Role role() const { return ArenaWidget::Hub; }

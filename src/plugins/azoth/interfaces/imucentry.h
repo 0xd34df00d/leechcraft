@@ -124,25 +124,6 @@ namespace Azoth
 		 * this room.
 		 */
 		virtual void SetNick (const QString& nick) = 0;
-
-#if 0
-		/** @brief Sets the affiliation of the given participant.
-		 *
-		 * The participant object is expected to implement ICLEntry and
-		 * be the one returned by this room. If the object doesn't match
-		 * any of these criteria, this function should do nothing.
-		 *
-		 * If the affiliation can't be updated (for example, due to
-		 * insufficient privilegies), this function should do nothing.
-		 *
-		 * @param[in] participant The participant to update.
-		 * @param[in] aff New affiliation of the participant to be set.
-		 * @param[in] reason Optional reason for the affiliation change.
-		 */
-		virtual void SetAffiliation (QObject *participant,
-				MUCAffiliation aff,
-				const QString& reason = QString ()) = 0;
-#endif
 				
 		/** @brief Returns the data identifying this room.
 		 * 

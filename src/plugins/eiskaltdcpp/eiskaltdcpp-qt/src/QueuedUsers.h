@@ -95,16 +95,16 @@ class QueuedUsers:
         private dcpp::UploadManagerListener
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+    Q_INTERFACES(ArenaWidget ITabWidget)
 
     friend class dcpp::Singleton<QueuedUsers>;
 
 public:
     QWidget *getWidget() { return this; }
-    QString getArenaTitle() { return tr("Queued Users"); }
-    QString getArenaShortTitle() { return getArenaTitle(); }
+    QString getArenaTitle() const { return tr("Queued Users"); }
+    QString getArenaShortTitle() const { return getArenaTitle(); }
     QMenu *getMenu() { return NULL; }
-    const QPixmap &getPixmap(){ return WulforUtil::getInstance()->getPixmap(WulforUtil::eiUSERS); }
+    const QPixmap &getPixmap() const{ return WulforUtil::getInstance()->getPixmap(WulforUtil::eiUSERS); }
     ArenaWidget::Role role() const { return ArenaWidget::QueuedUsers; }
 
 Q_SIGNALS:

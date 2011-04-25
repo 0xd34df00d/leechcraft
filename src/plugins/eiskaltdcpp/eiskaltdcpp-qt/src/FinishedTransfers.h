@@ -47,8 +47,8 @@ public:
     FinishedTransferProxy(QWidget *parent):QWidget(parent){}
     ~FinishedTransferProxy(){}
 
-    QString uploadTitle();
-    QString downloadTitle();
+    QString uploadTitle() const;
+    QString downloadTitle() const;
 
 Q_SIGNALS:
     void coreAddedFile(const VarMap&);
@@ -75,19 +75,19 @@ class FinishedTransfers :
         public ArenaWidget,
         public FinishedTransferProxy
 {
-Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+Q_INTERFACES(ArenaWidget ITabWidget)
 
 typedef QMap<QString, QVariant> VarMap;
 friend class dcpp::Singleton< FinishedTransfers<isUpload> >;
 
 public:
     QWidget *getWidget() { return this;}
-    QString getArenaTitle(){ return (isUpload? uploadTitle() : downloadTitle()); }
-    QString getArenaShortTitle(){ return getArenaTitle(); }
+    QString getArenaTitle() const{ return (isUpload? uploadTitle() : downloadTitle()); }
+    QString getArenaShortTitle() const{ return getArenaTitle(); }
     QMenu *getMenu() { return NULL; }
     ArenaWidget::Role role() const;
 
-    const QPixmap &getPixmap(){
+    const QPixmap &getPixmap() const{
         if (isUpload)
             return WICON(WulforUtil::eiUPLIST);
         else

@@ -63,7 +63,7 @@ class SearchFrame : public QWidget,
                     private ClientManagerListener
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+    Q_INTERFACES(ArenaWidget ITabWidget)
 
     typedef QMap<QString, QVariant> VarMap;
 
@@ -126,10 +126,10 @@ public:
     virtual ~SearchFrame();
 
     QWidget *getWidget();
-    QString  getArenaTitle();
-    QString  getArenaShortTitle();
+    QString  getArenaTitle() const;
+    QString  getArenaShortTitle() const;
     QMenu   *getMenu();
-    const QPixmap &getPixmap();
+    const QPixmap &getPixmap() const;
     ArenaWidget::Role role() const { return ArenaWidget::Search; }
 
     void requestFilter() { slotFilter(); }
