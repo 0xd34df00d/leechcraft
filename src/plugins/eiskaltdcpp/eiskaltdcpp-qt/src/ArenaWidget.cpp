@@ -16,6 +16,38 @@
 #include "WulforUtil.h"
 #include "MainWindow.h"
 
+static const char * const roleClassTable[ArenaWidget::NoRole]   = { "DCPPHubFrame",
+                                                                    "DCPPHubManger",
+                                                                    "DCPPPrivateMessage",
+                                                                    "DCPPShareBrowser",
+                                                                    "DCPPFavoriteHubs",
+                                                                    "DCPPFavoriteUsers",
+                                                                    "DCPPSearchFrame",
+                                                                    "DCPPAdls",
+                                                                    "DCPPPublicHubs",
+                                                                    "DCPPDownloads",
+                                                                    "DCPPFinishedUploads",
+                                                                    "DCPPFinishedDownloads",
+                                                                    "DCPPSpy",
+                                                                    "DCPPCustomWidget",
+                                                                    "DCPPQueuedusers"};
+
+static const int roleTypeTable[ArenaWidget::NoRole]   = { LeechCraft::TFSingle,
+                                                          LeechCraft::TFSingle,
+                                                          LeechCraft::TFSingle,
+                                                          LeechCraft::TFSingle,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest,
+                                                          LeechCraft::TFSingle,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest,
+                                                          LeechCraft::TFSingle,
+                                                          LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest};
+
 ArenaWidget::ArenaWidget(): _arenaUnload(true), toolBtn(NULL)
 {
 }
@@ -32,7 +64,7 @@ QToolBar *ArenaWidget::GetToolBar() const{
 }
 
 LeechCraft::TabClassInfo ArenaWidget::GetTabClassInfo() const {
-    LeechCraft::TabClassInfo tinfo = {"EiskaltDCPP", getArenaShortTitle(), getArenaTitle(), getPixmap(), 60, LeechCraft::TFSingle};
+    LeechCraft::TabClassInfo tinfo = {roleClassTable[ role() ], getArenaShortTitle(), getArenaTitle(), getPixmap(), 60, (LeechCraft::TabFeatures)roleTypeTable[ role() ]};
     return tinfo;
 }
 

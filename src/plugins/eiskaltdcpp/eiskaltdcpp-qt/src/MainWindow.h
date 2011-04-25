@@ -168,10 +168,7 @@ friend class dcpp::Singleton<MainLayout>;
 
         /** IHaveTabs interface */
         virtual void TabOpenRequested (const QByteArray&){}
-        virtual LeechCraft::TabClasses_t GetTabClasses () const {
-            LeechCraft::TabClassInfo tinfo = {"EiskaltDCPP", "EiskaltDC++", "EiskaltDC++ Tab", QIcon(), 60, LeechCraft::TFSingle};
-            return (QList<LeechCraft::TabClassInfo>() << tinfo);
-        }
+        virtual LeechCraft::TabClasses_t GetTabClasses () const;
 
     public Q_SLOTS:
         /** Allow widget to be mapped on arena*/
