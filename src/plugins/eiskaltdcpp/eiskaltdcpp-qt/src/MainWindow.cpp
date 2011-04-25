@@ -1413,8 +1413,6 @@ void MainLayout::initToolbar(){
 
     connect(fBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotToolbarCustomization()));
 
-    _lc_MW->addToolBar(fBar);
-
     if (!WBGET(WB_MAINWINDOW_USE_SIDEBAR) && WBGET(WB_MAINWINDOW_USE_M_TABBAR)){
 
         mBar = new MultiLineToolBar(this);
