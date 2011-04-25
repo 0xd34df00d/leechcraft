@@ -16,7 +16,7 @@
 #include <QPixmap>
 #include <QMetaType>
 
-#include <interfaces/imultitabs.h>
+#include <interfaces/ihavetabs.h>
 
 #ifdef USE_QML
 #include <QCloseEvent>
@@ -27,7 +27,7 @@
 
 class QToolBar;
 
-class ArenaWidget: public IMultiTabsWidget
+class ArenaWidget: public ITabWidget
 {
 public:
     enum Role{
@@ -52,12 +52,12 @@ public:
     ArenaWidget();
 
     virtual QWidget *getWidget() = 0;
-    virtual QString getArenaTitle() = 0;
-    virtual QString getArenaShortTitle() = 0;
+    virtual QString getArenaTitle() const = 0;
+    virtual QString getArenaShortTitle() const = 0;
     virtual QMenu *getMenu() = 0;
     virtual QAction *toolButton() { return toolBtn; }
     virtual void  setToolButton(QAction *btn) { if (btn) toolBtn = btn; }
-    virtual const QPixmap &getPixmap(){ return _pxmap; }
+    virtual const QPixmap &getPixmap() const { return _pxmap; }
 
     virtual void requestFilter() {}
     virtual void requestFocus() {}
@@ -74,10 +74,11 @@ public:
 
     virtual QToolBar* GetToolBar() const;
     virtual void NewTabRequested () {}
-    virtual QObject* ParentMultiTabs() const;
+    virtual QObject* ParentMultiTabs();
     virtual QList<QAction*> GetTabBarContextMenuActions () const {
         return QList<QAction*>();
     }
+    virtual LeechCraft::TabClassInfo GetTabClassInfo () const;
 
 protected:
     ~ArenaWidget();
@@ -109,10 +110,10 @@ public:
 
 public Q_SLOTS:
     virtual QWidget *getWidget();
-    virtual QString getArenaTitle();
-    virtual QString getArenaShortTitle();
+    virtual QString getArenaTitle() const;
+    virtual QString getArenaShortTitle() const;
     virtual QMenu *getMenu();
-    virtual const QPixmap &getPixmap();
+    virtual const QPixmap &getPixmap() const;
 
     virtual void  setWidget(QWidget*);
     virtual void  setArenaTitle(QString);
@@ -144,10 +145,10 @@ public:
     virtual ~DeclarativeWidget();
 
     virtual QWidget *getWidget();
-    virtual QString getArenaTitle();
-    virtual QString getArenaShortTitle();
+    virtual QString getArenaTitle() const;
+    virtual QString getArenaShortTitle() const;
     virtual QMenu *getMenu();
-    virtual const QPixmap &getPixmap();
+    virtual const QPixmap &getPixmap() const;
 
     virtual Role role() const { return ArenaWidget::CustomWidget; }
 protected:

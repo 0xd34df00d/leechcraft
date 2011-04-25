@@ -26,7 +26,7 @@ class PMWindow: public  QWidget,
                 public  ArenaWidget
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+    Q_INTERFACES(ArenaWidget ITabWidget)
 
 public:
     friend class HubFrame;
@@ -34,11 +34,11 @@ public:
     PMWindow(QString cid, QString hubUrl);
     virtual ~PMWindow();
 
-    QString  getArenaTitle();
-    QString  getArenaShortTitle();
+    QString  getArenaTitle() const;
+    QString  getArenaShortTitle() const;
     QWidget *getWidget();
     QMenu   *getMenu();
-    const QPixmap &getPixmap();
+    const QPixmap &getPixmap() const;
     ArenaWidget::Role role() const { return ArenaWidget::PrivateMessage; }
     void requestFilter() { slotHideFindFrame(); }
     void requestFocus() { plainTextEdit_INPUT->setFocus(); }

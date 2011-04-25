@@ -552,11 +552,11 @@ QWidget *SearchFrame::getWidget(){
     return this;
 }
 
-QString SearchFrame::getArenaTitle(){
+QString SearchFrame::getArenaTitle() const{
     return arena_title;
 }
 
-QString SearchFrame::getArenaShortTitle(){
+QString SearchFrame::getArenaShortTitle() const{
     return getArenaTitle();
 }
 
@@ -564,7 +564,7 @@ QMenu *SearchFrame::getMenu(){
     return arena_menu;
 }
 
-const QPixmap &SearchFrame::getPixmap(){
+const QPixmap &SearchFrame::getPixmap() const{
     return WICON(WulforUtil::eiFILEFIND);
 }
 

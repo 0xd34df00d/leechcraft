@@ -348,11 +348,11 @@ void ShareBrowser::save(){
     WISET(WI_SHARE_WIDTH, treeView_RPANE->width() + treeView_LPANE->width());
 }
 
-QString ShareBrowser::getArenaTitle(){
+QString ShareBrowser::getArenaTitle() const{
     return title;
 }
 
-QString ShareBrowser::getArenaShortTitle(){
+QString ShareBrowser::getArenaShortTitle() const{
     return getArenaTitle();
 }
 
