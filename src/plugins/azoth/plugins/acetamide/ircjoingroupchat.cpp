@@ -61,7 +61,7 @@ namespace Acetamide
 		}
 
 		SelectedAccount_ = acc;
-		Ui_.Nickname_->setText (acc->GetOurNick ());
+		Ui_.Nickname_->setText (acc->GetNickNames ().at (0));
 	}
 
 	void IrcJoinGroupChat::Join (QObject *accObj)

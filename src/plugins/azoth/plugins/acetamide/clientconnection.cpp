@@ -78,19 +78,14 @@ namespace Acetamide
 		return ServerHandlers_.contains (key);
 	}
 
-	IrcServerCLEntry*
-			ClientConnection::JoinServer (const ServerOptions& server)
+	void ClientConnection::JoinServer (const ServerOptions& server)
 	{
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
 		ServerHandlers_ [serverId] = ish;
-		if (ish->ConnectToServer ())
-			if (Account_->GetState ().State_ == SOffline)
-				Account_->
-						ChangeState (EntryStatus (SOnline, QString ()));
-		return ish->GetCLEntry ();
+		ish->ConnectToServer ();
 	}
 
 	void  ClientConnection::JoinChannel (const ServerOptions& server,
@@ -156,9 +151,35 @@ namespace Acetamide
 			Q_FOREACH (const QString& nick, ish->GetPrivateChats ())
 				ish->ClosePrivateChat (nick);
 			ish->DisconnectFromServer ();
+			Account_->handleEntryRemoved (ish->GetCLEntry ());
 		}
 	}
 
+	void ClientConnection::serverConnected (const QString& serverId)
+	{
+		if (Account_->GetState ().State_ == SOffline)
+			Account_->ChangeState (EntryStatus (SOnline, QString ()));
+		emit gotCLItems (QList<QObject*> () <<
+				ServerHandlers_ [serverId]->GetCLEntry ());
+	}
+
+	void ClientConnection::handleError (QAbstractSocket::SocketError er)
+	{
+		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
+		if (!socket)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "is not an object of TcpSocket"
+			<< sender ();
+			return;
+		}
+
+		Entity e = Util::MakeNotification ("Azoth",
+				socket->errorString (),
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+		Account_->ChangeState (EntryStatus (SOffline, QString ()));
+	}
 };
 };
 };

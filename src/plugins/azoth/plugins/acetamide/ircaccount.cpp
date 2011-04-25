@@ -103,9 +103,7 @@ namespace Acetamide
 
 	QString IrcAccount::GetOurNick () const
 	{
-		return NickNames_.isEmpty () ?
-				"Leechcraft" + QString::number (10 + qrand () % 89) :
-				NickNames_.at (0);
+		return "R!";
 	}
 
 	QString IrcAccount::GetUserName () const
@@ -191,14 +189,7 @@ namespace Acetamide
 
 		if (!ClientConnection_->IsServerExists (serverId))
 		{
-			IrcServerCLEntry *isEntry = ClientConnection_->
-					JoinServer (server);
-
-			if (!isEntry)
-				return;
-
-			emit gotCLItems (QList<QObject*> () << isEntry);
-
+			ClientConnection_->JoinServer (server);
 			ClientConnection_->GetIrcServerHandler (serverId)->
 					Add2ChannelsQueue (channel);
 		}

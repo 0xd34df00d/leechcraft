@@ -55,6 +55,11 @@ namespace Acetamide
 				SIGNAL (gotCLItems (const QList<QObject*>&)),
 				Account_,
 				SIGNAL (gotCLItems (const QList<QObject*>&)));
+
+		connect (this,
+				 SIGNAL (connected (const QString&)),
+				 Account_->GetClientConnection ().get (),
+				 SLOT (serverConnected (const QString&)));
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -118,6 +123,15 @@ namespace Acetamide
 				msg->GetOtherVariant ());
 	}
 
+	void IrcServerHandler::ParseMessageForCommand (const QString& msg,
+			const QString& channelID)
+	{
+		QString commandMessage = msg.mid (1);
+		QStringList commandWithParams = commandMessage.split (' ');
+		if (commandWithParams.at (0).toLower () == "nick")
+			IrcParser_->NickCommand (commandWithParams.at (1));
+	}
+
 	void IrcServerHandler::LeaveChannel (const QString& channels,
 			const QString& msg)
 	{
@@ -158,6 +172,16 @@ namespace Acetamide
 		return ChannelHandlers_.values ();
 	}
 
+	QList<ServerParticipantEntry_ptr>
+			IrcServerHandler::GetParticipants (const QString& channel)
+	{
+		QList<ServerParticipantEntry_ptr> result;
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+			if (spe->GetChannels ().contains (channel))
+				result << spe;
+		return result;
+	}
+
 	bool IrcServerHandler::IsRoleAvailable (ChannelRole role)
 	{
 		return true;
@@ -179,32 +203,17 @@ namespace Acetamide
 		return msg;
 	}
 
-	bool IrcServerHandler::ConnectToServer ()
+	void IrcServerHandler::ConnectToServer ()
 	{
 		if (ServerConnectionState_ == NotConnected)
 		{
 			TcpSocket_ptr.reset (new QTcpSocket (this));
-			ServerConnectionState_ = InProgress;
+			InitSocket ();
 
+			ServerConnectionState_ = InProgress;
 			TcpSocket_ptr->connectToHost (ServerOptions_.ServerName_,
 					ServerOptions_.ServerPort_);
-
-			if (!TcpSocket_ptr->waitForConnected (30000))
-			{
-				ServerConnectionState_ = NotConnected;
-				qDebug () << Q_FUNC_INFO
-						<< "cannot to connect to host"
-						<< ServerID_;
-				return false;
-			}
-
-			ServerConnectionState_ = Connected;
-			ServerCLEntry_->
-					SetStatus (EntryStatus (SOnline, QString ()));
-			InitSocket ();
-			IrcParser_->AuthCommand ();
 		}
-		return true;
 	}
 
 	bool IrcServerHandler::DisconnectFromServer ()
@@ -213,20 +222,15 @@ namespace Acetamide
 		{
 			TcpSocket_ptr->disconnectFromHost ();
 			if (TcpSocket_ptr->state ()
-					!= QAbstractSocket::UnconnectedState &&
-					!TcpSocket_ptr->waitForDisconnected (1000))
+				== QAbstractSocket::UnconnectedState &&
+				TcpSocket_ptr->waitForDisconnected (1000))
 			{
-				qDebug () << Q_FUNC_INFO
-						<< "cannot to disconnect from host"
-						<< ServerID_;
-				return false;
+				ServerConnectionState_ = NotConnected;
+				ServerCLEntry_->
+				SetStatus (EntryStatus (SOffline, QString ()));
+				TcpSocket_ptr->close ();
+				return true;
 			}
-
-			ServerConnectionState_ = NotConnected;
-			ServerCLEntry_->
-					SetStatus (EntryStatus (SOffline, QString ()));
-			TcpSocket_ptr->close ();
-			return true;
 		}
 		else
 			return true;
@@ -288,7 +292,7 @@ namespace Acetamide
 		}
 		message.append (IrcParser_->GetIrcMessageOptions ().Message_);
 		IrcMessage *msg = CreateMessage (IMessage::MTEventMessage,
-				ServerID_, message);
+				ServerID_, EncodedMessage (message, IMessage::DIn));
 
 		ServerCLEntry_->HandleMessage (msg);
 	}
@@ -439,6 +443,9 @@ namespace Acetamide
 		Command2Action_ ["ping"] =
 				boost::bind (&IrcServerHandler::PongMessage,
 					this, _1, _2, _3);
+		Command2Action_ ["nick"] =
+				boost::bind (&IrcServerHandler::ChangeNickname,
+					this, _1, _2, _3);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -451,7 +458,7 @@ namespace Acetamide
 		if (index < Account_->GetNickNames ().count ())
 		{
 			NickName_ = Account_->GetNickNames ().at (++index);
-			IrcParser_->NickCommand ();
+			IrcParser_->NickCommand (NickName_);
 		}
 	}
 
@@ -483,6 +490,16 @@ namespace Acetamide
 		Nick2Entry_.remove (nick);
 	}
 
+	void IrcServerHandler::UnregisterChannel (ChannelHandler* ich)
+	{
+		ChannelHandlers_.remove (ich->GetChannelID ());
+		if (!ChannelHandlers_.count () && !Nick2Entry_.count () &&
+			XmlSettingsManager::Instance ()
+					.property ("AutoDisconnectFromServer").toBool ())
+				Account_->GetClientConnection ()->
+						CloseServer (ServerID_);
+	}
+
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry
 			(const QString& nick)
 	{
@@ -492,6 +509,30 @@ namespace Acetamide
 				<< entry.get ());
 		emit gotCLItems (QList<QObject*> () << entry.get ());
 		return entry;
+	}
+
+	void IrcServerHandler::ChangeNickname (const QString& nick,
+			const QList<std::string>&, const QString& msg)
+	{
+// 		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
+// 		entry->SetEntryName (msg);
+// 		Account_->handleEntryRemoved (entry.get ());
+// 		Account_->handleGotRosterItems (QList<QObject*> ()
+// 				<< entry.get ());
+// 		Nick2Entry_ [msg] = entry;
+// 		if (nick == NickName_)
+// 			NickName_ = msg;
+		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+
+		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
+		Account_->handleGotRosterItems (QList<QObject*> ()
+				<< entry.get ());
+
+		entry->SetEntryName (msg);
+
+		Nick2Entry_ [msg] = entry;
+		if (nick == NickName_)
+			NickName_ = msg;
 	}
 
 	void IrcServerHandler::JoinFromQueue (const QString&,
@@ -525,7 +566,6 @@ namespace Acetamide
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		QStringList participants = message.split (' ');
-		//TODO roles/affialtions detection
 		Q_FOREACH (QString nick, participants)
 			ChannelHandlers_ [channelID]->SetChannelUser (nick);
 	}
@@ -618,6 +658,16 @@ namespace Acetamide
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readReply ()));
+
+		connect (TcpSocket_ptr.get (),
+				SIGNAL (connected ()),
+				this,
+				SLOT (connectionEstablished ()));
+
+		connect (TcpSocket_ptr.get (),
+				SIGNAL (error (QAbstractSocket::SocketError)),
+				Account_->GetClientConnection ().get (),
+				SLOT (handleError (QAbstractSocket::SocketError)));
 	}
 
 	bool IrcServerHandler::IsErrorReply (const QString& cmd)
@@ -655,17 +705,14 @@ namespace Acetamide
 		}
 	}
 
-	void IrcServerHandler::UnregisterChannel (ChannelHandler* ich)
+	void IrcServerHandler::connectionEstablished ()
 	{
-		ChannelHandlers_.remove (ich->GetChannelID ());
-		if (!ChannelHandlers_.count () && !Nick2Entry_.count () &&
-				XmlSettingsManager::Instance ()
-						.property ("AutoDisconnectFromServer").toBool ())
-		{
-			Account_->GetClientConnection ()->CloseServer (ServerID_);
-		}
+		ServerConnectionState_ = Connected;
+		emit connected (ServerID_);
+		ServerCLEntry_->
+		SetStatus (EntryStatus (SOnline, QString ()));
+		IrcParser_->AuthCommand ();
 	}
-
 };
 };
 };
