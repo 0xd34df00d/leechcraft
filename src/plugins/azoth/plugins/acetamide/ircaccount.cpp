@@ -189,14 +189,7 @@ namespace Acetamide
 
 		if (!ClientConnection_->IsServerExists (serverId))
 		{
-			IrcServerCLEntry *isEntry = ClientConnection_->
-					JoinServer (server);
-
-			if (!isEntry)
-				return;
-
-			emit gotCLItems (QList<QObject*> () << isEntry);
-
+			ClientConnection_->JoinServer (server);
 			ClientConnection_->GetIrcServerHandler (serverId)->
 					Add2ChannelsQueue (channel);
 		}

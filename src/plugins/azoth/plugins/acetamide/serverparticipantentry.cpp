@@ -145,6 +145,17 @@ namespace Acetamide
 		return PrivateChat_;
 	}
 
+	ChannelRole ServerParticipantEntry::GetRole (const QString& ch) const
+	{
+		return Channel2Role_ [ch];
+	}
+
+	void ServerParticipantEntry::SetRole (const QString& ch,
+										  ChannelRole r)
+	{
+		Channel2Role_ [ch] = r;
+	}
+
 	void ServerParticipantEntry::closePrivateChat (bool)
 	{
 		if (PrivateChat_)
@@ -154,17 +165,6 @@ namespace Acetamide
 				Account_->GetClientConnection ()->
 						ClosePrivateChat (ServerKey_, NickName_);
 		}
-	}
-
-	ChannelRole ServerParticipantEntry::GetRole (const QString& ch) const
-	{
-		return Channel2Role_ [ch];
-	}
-
-	void ServerParticipantEntry::SetRole (const QString& ch,
-			ChannelRole r)
-	{
-		Channel2Role_ [ch] = r;
 	}
 
 };

@@ -55,6 +55,11 @@ namespace Acetamide
 				SIGNAL (gotCLItems (const QList<QObject*>&)),
 				Account_,
 				SIGNAL (gotCLItems (const QList<QObject*>&)));
+
+		connect (this,
+				 SIGNAL (connected (const QString&)),
+				 Account_->GetClientConnection ().get (),
+				 SLOT (serverConnected (const QString&)));
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -198,32 +203,17 @@ namespace Acetamide
 		return msg;
 	}
 
-	bool IrcServerHandler::ConnectToServer ()
+	void IrcServerHandler::ConnectToServer ()
 	{
 		if (ServerConnectionState_ == NotConnected)
 		{
 			TcpSocket_ptr.reset (new QTcpSocket (this));
-			ServerConnectionState_ = InProgress;
+			InitSocket ();
 
+			ServerConnectionState_ = InProgress;
 			TcpSocket_ptr->connectToHost (ServerOptions_.ServerName_,
 					ServerOptions_.ServerPort_);
-
-			if (!TcpSocket_ptr->waitForConnected (30000))
-			{
-				ServerConnectionState_ = NotConnected;
-				qDebug () << Q_FUNC_INFO
-						<< "cannot to connect to host"
-						<< ServerID_;
-				return false;
-			}
-
-			ServerConnectionState_ = Connected;
-			ServerCLEntry_->
-					SetStatus (EntryStatus (SOnline, QString ()));
-			InitSocket ();
-			IrcParser_->AuthCommand ();
 		}
-		return true;
 	}
 
 	bool IrcServerHandler::DisconnectFromServer ()
@@ -232,20 +222,15 @@ namespace Acetamide
 		{
 			TcpSocket_ptr->disconnectFromHost ();
 			if (TcpSocket_ptr->state ()
-					!= QAbstractSocket::UnconnectedState &&
-					!TcpSocket_ptr->waitForDisconnected (1000))
+				== QAbstractSocket::UnconnectedState &&
+				TcpSocket_ptr->waitForDisconnected (1000))
 			{
-				qDebug () << Q_FUNC_INFO
-						<< "cannot to disconnect from host"
-						<< ServerID_;
-				return false;
+				ServerConnectionState_ = NotConnected;
+				ServerCLEntry_->
+				SetStatus (EntryStatus (SOffline, QString ()));
+				TcpSocket_ptr->close ();
+				return true;
 			}
-
-			ServerConnectionState_ = NotConnected;
-			ServerCLEntry_->
-					SetStatus (EntryStatus (SOffline, QString ()));
-			TcpSocket_ptr->close ();
-			return true;
 		}
 		else
 			return true;
@@ -307,7 +292,7 @@ namespace Acetamide
 		}
 		message.append (IrcParser_->GetIrcMessageOptions ().Message_);
 		IrcMessage *msg = CreateMessage (IMessage::MTEventMessage,
-				ServerID_, message);
+				ServerID_, EncodedMessage (message, IMessage::DIn));
 
 		ServerCLEntry_->HandleMessage (msg);
 	}
@@ -505,6 +490,16 @@ namespace Acetamide
 		Nick2Entry_.remove (nick);
 	}
 
+	void IrcServerHandler::UnregisterChannel (ChannelHandler* ich)
+	{
+		ChannelHandlers_.remove (ich->GetChannelID ());
+		if (!ChannelHandlers_.count () && !Nick2Entry_.count () &&
+			XmlSettingsManager::Instance ()
+					.property ("AutoDisconnectFromServer").toBool ())
+				Account_->GetClientConnection ()->
+						CloseServer (ServerID_);
+	}
+
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry
 			(const QString& nick)
 	{
@@ -519,11 +514,22 @@ namespace Acetamide
 	void IrcServerHandler::ChangeNickname (const QString& nick,
 			const QList<std::string>&, const QString& msg)
 	{
+// 		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
+// 		entry->SetEntryName (msg);
+// 		Account_->handleEntryRemoved (entry.get ());
+// 		Account_->handleGotRosterItems (QList<QObject*> ()
+// 				<< entry.get ());
+// 		Nick2Entry_ [msg] = entry;
+// 		if (nick == NickName_)
+// 			NickName_ = msg;
+		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+
 		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
-		entry->SetEntryName (msg);
-		Account_->handleEntryRemoved (entry.get ());
 		Account_->handleGotRosterItems (QList<QObject*> ()
 				<< entry.get ());
+
+		entry->SetEntryName (msg);
+
 		Nick2Entry_ [msg] = entry;
 		if (nick == NickName_)
 			NickName_ = msg;
@@ -652,6 +658,16 @@ namespace Acetamide
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readReply ()));
+
+		connect (TcpSocket_ptr.get (),
+				SIGNAL (connected ()),
+				this,
+				SLOT (connectionEstablished ()));
+
+		connect (TcpSocket_ptr.get (),
+				SIGNAL (error (QAbstractSocket::SocketError)),
+				Account_->GetClientConnection ().get (),
+				SLOT (handleError (QAbstractSocket::SocketError)));
 	}
 
 	bool IrcServerHandler::IsErrorReply (const QString& cmd)
@@ -664,7 +680,7 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-			qDebug () << str;
+// 			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
@@ -689,17 +705,14 @@ namespace Acetamide
 		}
 	}
 
-	void IrcServerHandler::UnregisterChannel (ChannelHandler* ich)
+	void IrcServerHandler::connectionEstablished ()
 	{
-		ChannelHandlers_.remove (ich->GetChannelID ());
-		if (!ChannelHandlers_.count () && !Nick2Entry_.count () &&
-				XmlSettingsManager::Instance ()
-						.property ("AutoDisconnectFromServer").toBool ())
-		{
-			Account_->GetClientConnection ()->CloseServer (ServerID_);
-		}
+		ServerConnectionState_ = Connected;
+		emit connected (ServerID_);
+		ServerCLEntry_->
+		SetStatus (EntryStatus (SOnline, QString ()));
+		IrcParser_->AuthCommand ();
 	}
-
 };
 };
 };

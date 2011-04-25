@@ -98,7 +98,7 @@ class IrcMessage;
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
-		bool ConnectToServer ();
+		void ConnectToServer ();
 		bool DisconnectFromServer ();
 		bool JoinChannel (const ChannelOptions&);
 		void SendCommand (const QString&);
@@ -143,8 +143,10 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
+		void connectionEstablished ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
+		void connected (const QString&);
 	};
 };
 };
