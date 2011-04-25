@@ -114,7 +114,7 @@ namespace Acetamide
 			ServerParticipantEntry::CreateMessage (IMessage::MessageType,
 					const QString&, const QString& body)
 	{
-		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
+ 		IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
 				IMessage::DOut,
 				ServerKey_,
 				NickName_,

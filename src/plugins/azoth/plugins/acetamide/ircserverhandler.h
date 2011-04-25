@@ -62,10 +62,12 @@ class IrcMessage;
 					const QString&)> > Command2Action_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
+		QString OldNickName_;
 		QList<ChannelOptions> ChannelsQueue_;
 		QVariantMap ISupport_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
+		void Init ();
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		QString GetNickName () const;
@@ -80,6 +82,7 @@ class IrcMessage;
 
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
+		void ParseMessageForCommand (const QString&, const QString&);
 
 		void LeaveChannel (const QString&, const QString&);
 		QStringList GetPrivateChats () const;
@@ -87,6 +90,8 @@ class IrcMessage;
 
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;
+		QList<ServerParticipantEntry_ptr>
+				GetParticipants (const QString&);
 
 		bool IsRoleAvailable (ChannelRole);
 
@@ -117,6 +122,7 @@ class IrcMessage;
 		ServerParticipantEntry_ptr
 				CreateParticipantEntry (const QString&);
 
+		// RPL
 		void JoinFromQueue (const QString&,
 				const QList<std::string>&, const QString&);
 		void SetTopic (const QString&,
@@ -132,6 +138,8 @@ class IrcMessage;
 		void PongMessage (const QString&,
 				const QList<std::string>&, const QString&);
 		void SetISupport (const QString&,
+				const QList<std::string>&, const QString&);
+		void ChangeNickname (const QString&,
 				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();

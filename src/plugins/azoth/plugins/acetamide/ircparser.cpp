@@ -49,7 +49,7 @@ namespace Acetamide
 		}
 
 		UserCommand ();
-		NickCommand ();
+		NickCommand (ISH_->GetNickName ());
 	}
 
 	void IrcParser::UserCommand ()
@@ -60,10 +60,9 @@ namespace Acetamide
 		ISH_->SendCommand (userCmd);
 	}
 
-	void IrcParser::NickCommand ()
+	void IrcParser::NickCommand (const QString& nick)
 	{
-		QString nickCmd = QString ("NICK " +
-				ISH_->GetNickName () + "\r\n");
+		QString nickCmd = QString ("NICK " + nick + "\r\n");
 		ISH_->SendCommand (nickCmd);
 	}
 

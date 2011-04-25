@@ -118,6 +118,15 @@ namespace Acetamide
 				msg->GetOtherVariant ());
 	}
 
+	void IrcServerHandler::ParseMessageForCommand (const QString& msg,
+			const QString& channelID)
+	{
+		QString commandMessage = msg.mid (1);
+		QStringList commandWithParams = commandMessage.split (' ');
+		if (commandWithParams.at (0).toLower () == "nick")
+			IrcParser_->NickCommand (commandWithParams.at (1));
+	}
+
 	void IrcServerHandler::LeaveChannel (const QString& channels,
 			const QString& msg)
 	{
@@ -156,6 +165,16 @@ namespace Acetamide
 	QList<ChannelHandler*> IrcServerHandler::GetChannelHandlers () const
 	{
 		return ChannelHandlers_.values ();
+	}
+
+	QList<ServerParticipantEntry_ptr>
+			IrcServerHandler::GetParticipants (const QString& channel)
+	{
+		QList<ServerParticipantEntry_ptr> result;
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+			if (spe->GetChannels ().contains (channel))
+				result << spe;
+		return result;
 	}
 
 	bool IrcServerHandler::IsRoleAvailable (ChannelRole role)
@@ -439,6 +458,9 @@ namespace Acetamide
 		Command2Action_ ["ping"] =
 				boost::bind (&IrcServerHandler::PongMessage,
 					this, _1, _2, _3);
+		Command2Action_ ["nick"] =
+				boost::bind (&IrcServerHandler::ChangeNickname,
+					this, _1, _2, _3);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -451,7 +473,7 @@ namespace Acetamide
 		if (index < Account_->GetNickNames ().count ())
 		{
 			NickName_ = Account_->GetNickNames ().at (++index);
-			IrcParser_->NickCommand ();
+			IrcParser_->NickCommand (NickName_);
 		}
 	}
 
@@ -494,6 +516,19 @@ namespace Acetamide
 		return entry;
 	}
 
+	void IrcServerHandler::ChangeNickname (const QString& nick,
+			const QList<std::string>&, const QString& msg)
+	{
+		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
+		entry->SetEntryName (msg);
+		Account_->handleEntryRemoved (entry.get ());
+		Account_->handleGotRosterItems (QList<QObject*> ()
+				<< entry.get ());
+		Nick2Entry_ [msg] = entry;
+		if (nick == NickName_)
+			NickName_ = msg;
+	}
+
 	void IrcServerHandler::JoinFromQueue (const QString&,
 			const QList<std::string>&, const QString&)
 	{
@@ -525,7 +560,6 @@ namespace Acetamide
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		QStringList participants = message.split (' ');
-		//TODO roles/affialtions detection
 		Q_FOREACH (QString nick, participants)
 			ChannelHandlers_ [channelID]->SetChannelUser (nick);
 	}
@@ -630,7 +664,7 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-// 			qDebug () << str;
+			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
