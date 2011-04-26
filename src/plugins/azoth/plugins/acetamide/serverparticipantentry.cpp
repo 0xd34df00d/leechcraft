@@ -76,6 +76,19 @@ namespace Acetamide
 	void ServerParticipantEntry::SetEntryName (const QString& nick)
 	{
 		NickName_ = nick;
+
+		Q_FOREACH (QObject *message, AllMessages_)
+		{
+			IrcMessage *msg = qobject_cast<IrcMessage*> (message);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "is not an object of IrcMessage"
+						<< message;
+				continue;
+			}
+			msg->SetOtherVariant (nick);
+		}
 	}
 
 	QString ServerParticipantEntry::GetEntryID () const
