@@ -93,6 +93,16 @@ namespace Acetamide
 		return msg;
 	}
 
+	void ChannelHandler::ShowServiceMessage (const QString& msg)
+	{
+		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
+				IMessage::DIn,
+				ChannelCLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantNickChange);
+		ChannelCLEntry_->HandleMessage (message);
+	}
+
 	void ChannelHandler::SendPublicMessage (const QString& msg)
 	{
 		if (msg.startsWith ('/'))
@@ -109,13 +119,12 @@ namespace Acetamide
 		if (!entry)
 			return;
 
-		ChannelPublicMessage *message =
-				new ChannelPublicMessage (msg,
-						IMessage::DIn,
-						ChannelCLEntry_,
-						IMessage::MTMUCMessage,
-						IMessage::MSTOther,
-						entry);
+		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
+				IMessage::DIn,
+				ChannelCLEntry_,
+				IMessage::MTMUCMessage,
+				IMessage::MSTOther,
+				entry);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 

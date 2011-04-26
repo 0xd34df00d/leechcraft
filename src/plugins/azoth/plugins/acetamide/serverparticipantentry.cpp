@@ -76,7 +76,6 @@ namespace Acetamide
 	void ServerParticipantEntry::SetEntryName (const QString& nick)
 	{
 		NickName_ = nick;
-		emit nameChanged (NickName_);
 	}
 
 	QString ServerParticipantEntry::GetEntryID () const

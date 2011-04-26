@@ -514,21 +514,24 @@ namespace Acetamide
 	void IrcServerHandler::ChangeNickname (const QString& nick,
 			const QList<std::string>&, const QString& msg)
 	{
-// 		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
-// 		entry->SetEntryName (msg);
-// 		Account_->handleEntryRemoved (entry.get ());
-// 		Account_->handleGotRosterItems (QList<QObject*> ()
-// 				<< entry.get ());
-// 		Nick2Entry_ [msg] = entry;
-// 		if (nick == NickName_)
-// 			NickName_ = msg;
+
+		Q_FOREACH (const QString& channel,
+				Nick2Entry_ [nick]->GetChannels ())
+		{
+			QString id = (channel + "@" + ServerOptions_.ServerName_)
+					.toLower ();
+			QString mess = nick + tr (" changed nickname to ") + msg;
+			if (ChannelHandlers_.contains (id))
+				ChannelHandlers_ [id]->ShowServiceMessage (mess);
+		}
+
 		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
 
 		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
-		Account_->handleGotRosterItems (QList<QObject*> ()
-				<< entry.get ());
 
 		entry->SetEntryName (msg);
+		Account_->handleGotRosterItems (QList<QObject*> ()
+				<< entry.get ());
 
 		Nick2Entry_ [msg] = entry;
 		if (nick == NickName_)
