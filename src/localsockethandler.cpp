@@ -136,6 +136,8 @@ namespace LeechCraft
 				ve = QUrl (QString::fromUtf8 (entity.c_str ()));
 			else if (type == "url_encoded")
 				ve = QUrl::fromEncoded (entity.c_str ());
+			else if (type == "file")
+				ve = QUrl::fromLocalFile (QString::fromUtf8 (entity.c_str ()));
 			else
 				ve = QString::fromUtf8 (entity.c_str ());
 
