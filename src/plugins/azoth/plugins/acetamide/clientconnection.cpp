@@ -99,7 +99,7 @@ namespace Acetamide
 		if (ServerHandlers_ [serverId]->IsChannelExists (channelId))
 		{
 			Entity e = Util::MakeNotification ("Azoth",
-				tr ("This server is already joined."),
+				tr ("This channel is already joined."),
 				PCritical_);
 			Core::Instance ().SendEntity (e);
 			return;
