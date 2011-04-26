@@ -1748,18 +1748,23 @@ namespace Azoth
 						<< "is not a valid ICLEntry";
 				continue;
 			}
+			
+			disconnect (clitem,
+					0,
+					this,
+					0);
 
-			ChatTabsManager_->SetChatEnabled (entry->GetEntryID (), false);
+			ChatTabsManager_->HandleEntryRemoved (entry);
 
 			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 				RemoveCLItem (item);
 
 			Entry2Items_.remove (entry);
-
 			Entry2Actions_.remove (entry);
 
 			ID2Entry_.remove (entry->GetEntryID ());
 
+			Entry2SmoothAvatarCache_.remove (entry);
 			invalidateClientsIconCache (clitem);
 		}
 	}

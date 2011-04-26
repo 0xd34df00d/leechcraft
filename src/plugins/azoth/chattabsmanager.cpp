@@ -126,6 +126,22 @@ namespace Azoth
 				SLOT (handleEntryMessage (QObject*)),
 				Qt::UniqueConnection);
 	}
+	
+	void ChatTabsManager::HandleEntryRemoved (ICLEntry *entry)
+	{
+		if (!Entry2Tab_.contains (entry->GetEntryID ()))
+			return;
+		
+		SetChatEnabled (entry->GetEntryID (), false);
+		disconnect (entry->GetObject (),
+				0,
+				this,
+				0);
+		disconnect (entry->GetObject (),
+				0,
+				Entry2Tab_ [entry->GetEntryID ()],
+				0);
+	}
 
 	void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)
 	{
