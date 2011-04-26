@@ -136,32 +136,8 @@ namespace Juick
 
 	QString Plugin::FormatBody (QString body)
 	{
-		int index = AvatarRX_.indexIn (body);
-		QRegExp notBehind ("Recommended by ");
-
-		// Workaround for negative lookbehind
-		while (index >= 0)
-		{
-			notBehind.indexIn (body);
-			int behindIndex = index - notBehind.matchedLength ();
-			
-			if (behindIndex >= 0 && 
-				notBehind.indexIn (body.mid (behindIndex, notBehind.matchedLength ())) != -1)
-			{
-				index = AvatarRX_.indexIn (body, index + 1);
-				continue;
-			}
-
-			QString avatar = QString (
-				"<img style='float:left;margin-right:4px' "
-				"width='32px' "
-				"height='32px' "
-				"src='http://api.juick.com/avatar?uname=%1&size=32'>").arg (AvatarRX_.cap (1));
-
-			body.insert (index, avatar);
-			index = AvatarRX_.indexIn (body, index + avatar.length () + AvatarRX_.matchedLength ());
-		}
-		body.replace (UserRX_,  "<a href=\"azoth://msgeditreplace/\\1+\">\\1</a>\\2");
+		InsertAvatars (body);
+		InsertNickLinks (body);
 		body.replace (PostRX_, 
 				"<br /> <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
@@ -324,6 +300,67 @@ namespace Juick
 			break;
 		}
 	}
+
+	
+	bool Plugin::IsBehind (const QString& text, int index, const QString& pattern)
+	{
+		QRegExp behind (pattern);
+
+		behind.indexIn (text);
+		int behindIndex = index - behind.matchedLength ();
+		
+		return (behindIndex >= 0 && 
+				behind.indexIn (text.mid (behindIndex, behind.matchedLength ())) != -1);	
+	}
+
+	void Plugin::InsertAvatars (QString &body)
+	{
+		int index = AvatarRX_.indexIn (body);
+		QRegExp notBehind ("Recommended by ");
+		QRegExp behind("Reply by ");
+
+		while (index >= 0)
+		{			
+			if (IsBehind (body, index, "Recommended by "))
+			{
+				index = AvatarRX_.indexIn (body, index + 1);
+				continue;
+			}
+
+			bool needNewLine = IsBehind (body, index, "Reply by ") || 
+					IsBehind(body, index, "Private message from ");			
+
+			const QString& avatar = 
+				QString ("%1<img style='float:left;margin-right:4px' "
+						"width='32px' "
+						"height='32px' "
+						"src='http://api.juick.com/avatar?uname=%2&size=32'>")
+					.arg (needNewLine ? "<br />" : "")
+					.arg (AvatarRX_.cap (1));
+			body.insert (index, avatar);
+			index = AvatarRX_.indexIn (body, index + avatar.length () + AvatarRX_.matchedLength ());
+		}
+	}
+
+	void Plugin::InsertNickLinks (QString &body)
+	{
+		int index = UserRX_.indexIn (body);
+
+		while (index >= 0)
+		{
+			const QString& userLink = 
+				QString (IsBehind (body, index, "Private message from .*size=32'>") ? 
+					"<a href=\"azoth://msgeditreplace/PM%20%1\">" :
+					"<a href=\"azoth://msgeditreplace/%1+\">").arg (UserRX_.cap (1));
+
+			body.insert (index, userLink);
+			index += userLink.length () + UserRX_.cap (1).length ();
+			body.insert (index, "</a>");
+			index = UserRX_.indexIn (body, index + sizeof ("</a>"));
+		}
+
+	}
+
 }
 }
 }
