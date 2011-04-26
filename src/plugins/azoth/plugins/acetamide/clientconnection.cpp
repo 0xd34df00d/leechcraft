@@ -41,11 +41,6 @@ namespace Acetamide
 		QObject *proxyObj = qobject_cast<IrcProtocol*> (account->
 				GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
-
-		connect (this,
-				SIGNAL (gotCLItems (const QList<QObject*>&)),
-				Account_,
-				SIGNAL (gotCLItems (const QList<QObject*>&)));
 	}
 
 	QObject* ClientConnection::GetCLEntry (const QString& id,
@@ -159,7 +154,7 @@ namespace Acetamide
 	{
 		if (Account_->GetState ().State_ == SOffline)
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
-		emit gotCLItems (QList<QObject*> () <<
+		emit gotRosterItems (QList<QObject*> () <<
 				ServerHandlers_ [serverId]->GetCLEntry ());
 	}
 

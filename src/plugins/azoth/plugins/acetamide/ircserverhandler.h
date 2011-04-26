@@ -145,7 +145,6 @@ class IrcMessage;
 		void readReply ();
 		void connectionEstablished ();
 	signals:
-		void gotCLItems (const QList<QObject*>&);
 		void connected (const QString&);
 	};
 };

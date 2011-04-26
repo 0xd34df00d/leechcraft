@@ -52,11 +52,6 @@ namespace Acetamide
 		InitCommandResponses ();
 
 		connect (this,
-				SIGNAL (gotCLItems (const QList<QObject*>&)),
-				Account_,
-				SIGNAL (gotCLItems (const QList<QObject*>&)));
-
-		connect (this,
 				 SIGNAL (connected (const QString&)),
 				 Account_->GetClientConnection ().get (),
 				 SLOT (serverConnected (const QString&)));
@@ -253,7 +248,8 @@ namespace Acetamide
 			if (!ichEntry)
 				return false;
 
-			emit gotCLItems (QList<QObject*> () << ichEntry);
+			Account_->handleGotRosterItems (QList<QObject*> () <<
+					ichEntry);
 		}
 		else
 			Add2ChannelsQueue (channel);
@@ -478,7 +474,6 @@ namespace Acetamide
 	{
 		if (Nick2Entry_.contains (nick))
 			return Nick2Entry_ [nick];
-
 		ServerParticipantEntry_ptr entry (CreateParticipantEntry (nick));
 		Nick2Entry_ [nick] = entry;
 		return entry;
@@ -507,7 +502,6 @@ namespace Acetamide
 				(new ServerParticipantEntry (nick, ServerID_, Account_));
 		Account_->handleGotRosterItems (QList<QObject*> ()
 				<< entry.get ());
-		emit gotCLItems (QList<QObject*> () << entry.get ());
 		return entry;
 	}
 
