@@ -59,10 +59,10 @@ namespace Juick
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
 		QString FormatBody (QString);
-		void InsertAvatars (QString &body);
-		void InsertNickLinks (QString &body);
+		void InsertAvatars (QString& body);
+		void InsertNickLinks (QString& body);
 		bool ShouldHandle (QObject* msgObj, int direction, int type);
-		bool IsBehind (const QString& text, int index, const QString& pattern);
+		bool IsBehind (const QString& text, const int index, const QString& pattern) const;
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
