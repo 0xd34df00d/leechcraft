@@ -520,7 +520,7 @@ namespace Acetamide
 		{
 			QString id = (channel + "@" + ServerOptions_.ServerName_)
 					.toLower ();
-			QString mess = nick + tr (" changed nickname to ") + msg;
+			QString mess = tr ("%1 changed nickname to %2").arg(nick).arg(msg);
 			if (ChannelHandlers_.contains (id))
 				ChannelHandlers_ [id]->ShowServiceMessage (mess);
 		}

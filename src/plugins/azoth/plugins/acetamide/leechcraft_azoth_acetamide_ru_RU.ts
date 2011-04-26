@@ -19,7 +19,7 @@
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="35"/>
         <source>Real Name</source>
-        <translation>Реальное имя</translation>
+        <translation>Настоящее имя</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="49"/>
@@ -90,42 +90,42 @@
     <message>
         <location filename="channelclentry.cpp" line="56"/>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Владелец</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="57"/>
         <source>Admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Администратор</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="58"/>
         <source>Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="59"/>
         <source>Half Operator</source>
-        <translation type="unfinished"></translation>
+        <translation>Полуоператор</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="60"/>
         <source>Voiced</source>
-        <translation type="unfinished"></translation>
+        <translation>С правом голоса</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="61"/>
         <source>Participant</source>
-        <translation type="unfinished"></translation>
+        <translation>Обычный пользователь</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="62"/>
         <source>Kicked</source>
-        <translation type="unfinished"></translation>
+        <translation>Выкинут</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="63"/>
         <source>Banned</source>
-        <translation type="unfinished"></translation>
+        <translation>Вход запрещён</translation>
     </message>
     <message>
         <location filename="channelclentry.cpp" line="115"/>
@@ -138,7 +138,7 @@
     <message>
         <location filename="channelhandler.cpp" line="216"/>
         <source>%1 joined the channel</source>
-        <translation>%1 зашел на канал</translation>
+        <translation>%1 зашёл на канал</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="232"/>
@@ -170,7 +170,7 @@
     <message>
         <location filename="ircprotocol.cpp" line="100"/>
         <source>Enter new account name</source>
-        <translation>Введите имя нового аккаунта</translation>
+        <translation>Введите имя новой учётной записи</translation>
     </message>
 </context>
 <context>
