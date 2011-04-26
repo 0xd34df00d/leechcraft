@@ -302,18 +302,18 @@ namespace Juick
 	}
 
 	
-	bool Plugin::IsBehind (const QString& text, int index, const QString& pattern)
+	bool Plugin::IsBehind (const QString& text, const int index, const QString& pattern) const
 	{
-		QRegExp behind (pattern);
+		const QRegExp behind (pattern);
 
 		behind.indexIn (text);
-		int behindIndex = index - behind.matchedLength ();
+		const int behindIndex = index - behind.matchedLength ();
 		
-		return (behindIndex >= 0 && 
-				behind.indexIn (text.mid (behindIndex, behind.matchedLength ())) != -1);	
+		return behindIndex >= 0 && 
+				behind.indexIn (text.mid (behindIndex, behind.matchedLength ())) != -1;	
 	}
 
-	void Plugin::InsertAvatars (QString &body)
+	void Plugin::InsertAvatars (QString& body)
 	{
 		int index = AvatarRX_.indexIn (body);
 		QRegExp notBehind ("Recommended by ");
@@ -328,7 +328,7 @@ namespace Juick
 			}
 
 			bool needNewLine = IsBehind (body, index, "Reply by ") || 
-					IsBehind(body, index, "Private message from ");			
+					IsBehind (body, index, "Private message from ");			
 
 			const QString& avatar = 
 				QString ("%1<img style='float:left;margin-right:4px' "
@@ -342,7 +342,7 @@ namespace Juick
 		}
 	}
 
-	void Plugin::InsertNickLinks (QString &body)
+	void Plugin::InsertNickLinks (QString& body)
 	{
 		int index = UserRX_.indexIn (body);
 
@@ -351,12 +351,13 @@ namespace Juick
 			const QString& userLink = 
 				QString (IsBehind (body, index, "Private message from .*size=32'>") ? 
 					"<a href=\"azoth://msgeditreplace/PM%20%1\">" :
-					"<a href=\"azoth://msgeditreplace/%1+\">").arg (UserRX_.cap (1));
+					"<a href=\"azoth://msgeditreplace/%1+\">")
+						.arg (UserRX_.cap (1));
 
 			body.insert (index, userLink);
 			index += userLink.length () + UserRX_.cap (1).length ();
 			body.insert (index, "</a>");
-			index = UserRX_.indexIn (body, index + sizeof ("</a>"));
+			index = UserRX_.indexIn (body, index + sizeof ("</a>") - 1);
 		}
 
 	}
