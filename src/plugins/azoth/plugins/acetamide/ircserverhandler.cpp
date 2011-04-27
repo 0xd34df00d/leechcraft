@@ -127,10 +127,11 @@ namespace Acetamide
 	void IrcServerHandler::ParseMessageForCommand (const QString& msg,
 			const QString& channelID)
 	{
-		QString commandMessage = msg.mid (1);
+		QString commandMessage = EncodedMessage (msg.mid (1),
+				IMessage::DOut);
 		QStringList commandWithParams = commandMessage.split (' ');
-		if (commandWithParams.at (0).toLower () == "nick")
-			IrcParser_->NickCommand (commandWithParams.at (1));
+		Name2Command_ [commandWithParams.at (0).toLower ()]
+	 		(commandWithParams.mid (1));
 	}
 
 	void IrcServerHandler::LeaveChannel (const QString& channels,
@@ -462,6 +463,12 @@ namespace Acetamide
 		Command2Action_ ["nick"] =
 				boost::bind (&IrcServerHandler::ChangeNickname,
 					this, _1, _2, _3);
+
+
+		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
+				IrcParser_, _1);
+		Name2Command_ ["quote"] = boost::bind (&IrcParser::RawCommand,
+				IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -474,7 +481,7 @@ namespace Acetamide
 		if (index < Account_->GetNickNames ().count ())
 		{
 			NickName_ = Account_->GetNickNames ().at (++index);
-			IrcParser_->NickCommand (NickName_);
+			IrcParser_->NickCommand (QStringList () << NickName_);
 		}
 	}
 

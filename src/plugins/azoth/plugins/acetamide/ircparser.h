@@ -44,11 +44,12 @@ namespace Acetamide
 		IrcParser (IrcServerHandler*);
 		void AuthCommand ();
 		void UserCommand ();
-		void NickCommand (const QString&);
+		void NickCommand (const QStringList&);
 		void JoinCommand (const QString&);
 		void PrivMsgCommand (const QString&, const QString&);
 		void PartCommand (const QString&, const QString&);
 		void PongCommand (const QString&);
+		void RawCommand (const QStringList&);
 
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;
