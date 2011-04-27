@@ -154,6 +154,7 @@ namespace Acetamide
 				Account_->handleEntryRemoved (ish->GetIrcServerConsole ()
 						.get ());
 			ish->DisconnectFromServer ();
+			ServerHandlers_.remove (ish->GetServerID_ ());
 			Account_->handleEntryRemoved (ish->GetCLEntry ());
 		}
 	}

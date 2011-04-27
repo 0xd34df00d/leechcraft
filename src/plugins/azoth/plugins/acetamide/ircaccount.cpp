@@ -186,7 +186,6 @@ namespace Acetamide
 	{
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
-
 		if (!ClientConnection_->IsServerExists (serverId))
 		{
 			ClientConnection_->JoinServer (server);

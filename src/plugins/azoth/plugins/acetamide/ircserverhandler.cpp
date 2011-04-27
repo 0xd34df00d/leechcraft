@@ -228,7 +228,7 @@ namespace Acetamide
 			{
 				ServerConnectionState_ = NotConnected;
 				ServerCLEntry_->
-				SetStatus (EntryStatus (SOffline, QString ()));
+						SetStatus (EntryStatus (SOffline, QString ()));
 				TcpSocket_ptr->close ();
 				return true;
 			}
