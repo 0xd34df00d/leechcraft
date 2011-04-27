@@ -273,6 +273,11 @@ namespace Xoox
 	{
 		SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
 	}
+	
+	QByteArray EntryBase::GetVariantVerString (const QString& var) const
+	{
+		return Variant2VerString_ [var];
+	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)
 	{

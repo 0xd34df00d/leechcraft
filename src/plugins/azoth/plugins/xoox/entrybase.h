@@ -88,6 +88,8 @@ namespace Xoox
 
 		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
+		
+		QByteArray GetVariantVerString (const QString&) const;
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);
 	signals:

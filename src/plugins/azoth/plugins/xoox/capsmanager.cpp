@@ -43,6 +43,14 @@ namespace Xoox
 	{
 		return DB_->Get (verNode);
 	}
+	
+	QStringList CapsManager::GetCaps (const QByteArray& verNode) const
+	{
+		QStringList result;
+		Q_FOREACH (const QString& raw, GetRawCaps (verNode))
+			result << Caps2String_.value (raw, raw);
+		return result;
+	}
 
 	void CapsManager::handleInfoReceived (const QXmppDiscoveryIq& iq)
 	{

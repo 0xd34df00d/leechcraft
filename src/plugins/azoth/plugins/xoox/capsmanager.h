@@ -36,11 +36,13 @@ namespace Xoox
 		
 		ClientConnection *Connection_;
 		CapsDatabase *DB_;
+		QHash<QString, QString> Caps2String_;
 	public:
 		CapsManager (ClientConnection*);
 		
 		void FetchCaps (const QString&, const QByteArray&);
 		QStringList GetRawCaps (const QByteArray&) const;
+		QStringList GetCaps (const QByteArray&) const;
 	public slots:
 		void handleInfoReceived (const QXmppDiscoveryIq&);
 		void handleItemsReceived (const QXmppDiscoveryIq&);
