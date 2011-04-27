@@ -51,6 +51,7 @@ SET (SRCS
 	accounthandlerchooserdialog.cpp
 	util.cpp
 	simpledialog.cpp
+	servicediscoverywidget.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -75,6 +76,7 @@ SET (HEADERS
 	accounthandlerchooserdialog.h
 	util.h
 	simpledialog.h
+	servicediscoverywidget.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -93,6 +95,7 @@ SET (FORMS
 	bookmarksmanagerdialog.ui
 	accounthandlerchooserdialog.ui
 	simpledialog.ui
+	servicediscoverywidget.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
