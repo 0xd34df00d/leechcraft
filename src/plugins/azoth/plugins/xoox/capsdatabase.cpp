@@ -18,6 +18,7 @@
 
 #include "capsdatabase.h"
 #include <QFile>
+#include <QTimer>
 #include <plugininterface/util.h>
 
 namespace LeechCraft
@@ -28,6 +29,7 @@ namespace Xoox
 {
 	CapsDatabase::CapsDatabase (QObject *parent)
 	: QObject (parent)
+	, SaveScheduled_ (false)
 	{
 	}
 	
@@ -44,10 +46,10 @@ namespace Xoox
 	void CapsDatabase::Set (const QByteArray& hash, const QStringList& features)
 	{
 		Ver2Features_ [hash] = features;
-		Save ();
+		ScheduleSave ();
 	}
 	
-	void CapsDatabase::Save () const
+	void CapsDatabase::save () const
 	{
 		QDir dir = Util::CreateIfNotExists ("azoth/xoox");
 		QFile file (dir.filePath ("caps_s.db"));
@@ -64,6 +66,19 @@ namespace Xoox
 		QDataStream stream (&file);
 		stream << static_cast<quint8> (1)
 				<< Ver2Features_;
+				
+		SaveScheduled_ = false;
+	}
+	
+	void CapsDatabase::ScheduleSave ()
+	{
+		if (SaveScheduled_)
+			return;
+		
+		SaveScheduled_ = true;
+		QTimer::singleShot (1000,
+				this,
+				SLOT (save ()));
 	}
 	
 	void CapsDatabase::Load ()

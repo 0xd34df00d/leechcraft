@@ -30,15 +30,20 @@ namespace Xoox
 {
 	class CapsDatabase : public QObject
 	{
+		Q_OBJECT
+
 		QHash<QByteArray, QStringList> Ver2Features_;
+		mutable bool SaveScheduled_;
 	public:
 		CapsDatabase (QObject* = 0);
 		
 		bool Contains (const QByteArray&) const;
 		QStringList Get (const QByteArray&) const;
 		void Set (const QByteArray&, const QStringList&);
+	private slots:
+		void save () const;
 	private:
-		void Save () const;
+		void ScheduleSave ();
 		void Load ();
 	};
 }
