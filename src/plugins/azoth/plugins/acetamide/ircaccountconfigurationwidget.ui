@@ -32,7 +32,7 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Real Name</string>
+            <string>Real Name:</string>
            </property>
           </widget>
          </item>
@@ -46,7 +46,7 @@
          <item>
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>User name</string>
+            <string>User name:</string>
            </property>
           </widget>
          </item>
