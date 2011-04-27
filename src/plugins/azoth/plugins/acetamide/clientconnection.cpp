@@ -27,6 +27,7 @@
 #include "ircprotocol.h"
 #include "ircserverclentry.h"
 #include "ircserverhandler.h"
+#include "ircserverconsole.h"
 
 namespace LeechCraft
 {
@@ -46,6 +47,10 @@ namespace Acetamide
 	QObject* ClientConnection::GetCLEntry (const QString& id,
 			const QString& nickname) const
 	{
+		QString idc = id.mid (id.indexOf ('_') + 1,
+				id.indexOf ('/') - id.indexOf ('_') - 1);
+		if (id.contains ("/Console") && ServerHandlers_.contains (idc))
+			return ServerHandlers_ [idc]->GetIrcServerConsole ().get ();
 		if (ServerHandlers_.contains (id) && nickname.isEmpty ())
 			return ServerHandlers_ [id]->GetCLEntry ();
 		else if (!nickname.isEmpty ())
@@ -145,6 +150,9 @@ namespace Acetamide
 				ich->LeaveChannel (QString ());
 			Q_FOREACH (const QString& nick, ish->GetPrivateChats ())
 				ish->ClosePrivateChat (nick);
+			if (ish->GetIrcServerConsole ())
+				Account_->handleEntryRemoved (ish->GetIrcServerConsole ()
+						.get ());
 			ish->DisconnectFromServer ();
 			Account_->handleEntryRemoved (ish->GetCLEntry ());
 		}

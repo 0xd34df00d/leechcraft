@@ -24,6 +24,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <interfaces/imessage.h>
+#include "ircserverconsole.h"
 #include "localtypes.h"
 #include "serverparticipantentry.h"
 
@@ -49,6 +50,8 @@ class IrcMessage;
 		IrcAccount *Account_;
 		IrcParser *IrcParser_;
 		IrcServerCLEntry *ServerCLEntry_;
+		IrcServerConsole_ptr Console_;
+		bool IsConsoleEnabled_;
 		ServerOptions ServerOptions_;
 		QString ServerID_;
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
@@ -67,10 +70,11 @@ class IrcMessage;
 		QVariantMap ISupport_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
-		void Init ();
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		QString GetNickName () const;
+
+		IrcServerConsole_ptr GetIrcServerConsole () const;
 
 		QString GetServerID_ () const;
 		ServerOptions GetServerOptions () const;
@@ -109,6 +113,7 @@ class IrcMessage;
 
 		void UnregisterChannel (ChannelHandler*);
 	private:
+		void SendToConsole (const QString&);
 		void InitErrorsReplys ();
 		void InitCommandResponses ();
 		void InitSocket ();

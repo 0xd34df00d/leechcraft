@@ -7,6 +7,10 @@
 				<item type="checkbox" property="AutoDisconnectFromServer" state="off">
 						<label value="Autodisconnect from server when no channels are active" />
 				</item>
+				<item type="checkbox" property="ServerConsole" state="off">
+						<label value="Enable server console" />
+				</item>
+
 			</groupbox>
 	</page>
 </settings>

@@ -46,6 +46,7 @@ namespace Acetamide
 			QString::number (server.ServerPort_))
 	, ServerConnectionState_ (NotConnected)
 	, NickName_ (server.ServerNickName_)
+	, IsConsoleEnabled_ (false)
 	{
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
@@ -70,6 +71,11 @@ namespace Acetamide
 	QString IrcServerHandler::GetNickName () const
 	{
 		return NickName_;
+	}
+
+	IrcServerConsole_ptr IrcServerHandler::GetIrcServerConsole () const
+	{
+		return Console_;
 	}
 
 	QString IrcServerHandler::GetServerID_ () const
@@ -260,6 +266,8 @@ namespace Acetamide
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
 		qDebug () << TcpSocket_ptr.get () << cmd;
+		SendToConsole (cmd.trimmed ());
+
 		if (!TcpSocket_ptr->isWritable ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -300,6 +308,18 @@ namespace Acetamide
 		if (Command2Action_.contains (cmd))
 			Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
 					imo.Message_);
+	}
+
+	void IrcServerHandler::SendToConsole (const QString& message)
+	{
+		if (!IsConsoleEnabled_)
+			return;
+
+		IrcMessage *msg = CreateMessage (IMessage::MTChatMessage,
+				Console_->GetEntryID (),
+				EncodedMessage (message, IMessage::DIn));
+
+		Console_->HandleMessage (msg);
 	}
 
 	void IrcServerHandler::InitErrorsReplys ()
@@ -677,6 +697,7 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
+			SendToConsole (str.trimmed ());
 // 			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
@@ -706,8 +727,18 @@ namespace Acetamide
 	{
 		ServerConnectionState_ = Connected;
 		emit connected (ServerID_);
-		ServerCLEntry_->
-		SetStatus (EntryStatus (SOnline, QString ()));
+		if (XmlSettingsManager::Instance ().property
+			("ServerConsole")
+			.toBool ())
+		{
+				Console_.reset (new IrcServerConsole (this, Account_));
+				Account_->handleGotRosterItems (QList<QObject*> () <<
+						Console_.get ());
+				IsConsoleEnabled_ = true;
+				Console_->SetStatus (EntryStatus (SOnline, QString ()));
+		}
+
+		ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 		IrcParser_->AuthCommand ();
 	}
 };

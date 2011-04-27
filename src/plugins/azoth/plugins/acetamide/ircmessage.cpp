@@ -108,6 +108,7 @@ namespace Acetamide
 
 	QObject* IrcMessage::OtherPart () const
 	{
+		qDebug () << ID_ << Message_.Nickname_;
 		return Connection_->GetCLEntry (ID_, Message_.Nickname_);
 	}
 
