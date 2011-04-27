@@ -61,6 +61,7 @@ namespace Xoox
 		QPointer<VCardDialog> VCardDialog_;
 
 		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
+		QMap<QString, QByteArray> Variant2VerString_;
 	public:
 		EntryBase (GlooxAccount* = 0);
 
@@ -85,7 +86,7 @@ namespace Xoox
 		void SetVCard (const QXmppVCardIq&);
 		void SetRawInfo (const QString&);
 
-		void SetClientInfo (const QString&, const QString&);
+		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);

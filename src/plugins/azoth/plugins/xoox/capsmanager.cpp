@@ -16,12 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef VCARDDIALOG_H
-#define VCARDDIALOG_H
-#include <QDialog>
-#include "ui_vcarddialog.h"
-
-class QXmppVCardIq;
+#include "capsmanager.h"
+#include "clientconnection.h"
+#include "capsdatabase.h"
 
 namespace LeechCraft
 {
@@ -29,21 +26,35 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class EntryBase;
-
-	class VCardDialog : public QDialog
+	CapsManager::CapsManager (ClientConnection *connection)
+	: QObject (connection)
+	, Connection_ (connection)
+	, DB_ (new CapsDatabase (this))
 	{
-		Q_OBJECT
+	}
+	
+	void CapsManager::FetchCaps (const QString& jid, const QByteArray& verNode)
+	{
+		if (!DB_->Contains (verNode))
+			Connection_->RequestInfo (jid);
+	}
+	
+	QStringList CapsManager::GetRawCaps (const QByteArray& verNode) const
+	{
+		return DB_->Get (verNode);
+	}
 
-		Ui::VCardDialog Ui_;
-	public:
-		VCardDialog (QWidget* = 0);
-		VCardDialog (EntryBase*, QWidget* = 0);
-
-		void UpdateInfo (const QXmppVCardIq&);
-	};
+	void CapsManager::handleInfoReceived (const QXmppDiscoveryIq& iq)
+	{
+		if (!iq.features ().isEmpty ())
+			DB_->Set (iq.verificationString (), iq.features ());
+	}
+	
+	void CapsManager::handleItemsReceived (const QXmppDiscoveryIq& iq)
+	{
+		if (!iq.features ().isEmpty ())
+			DB_->Set (iq.verificationString (), iq.features ());
+	}
 }
 }
 }
-
-#endif

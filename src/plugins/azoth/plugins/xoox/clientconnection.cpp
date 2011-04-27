@@ -45,6 +45,7 @@
 #include "roomclentry.h"
 #include "unauthclentry.h"
 #include "vcarddialog.h"
+#include "capsmanager.h"
 
 namespace LeechCraft
 {
@@ -66,6 +67,7 @@ namespace Xoox
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
+	, CapsManager_ (new CapsManager (this))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
 	, VCardFetchTimer_ (new QTimer (this))
@@ -143,11 +145,11 @@ namespace Xoox
 
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
-				this,
+				CapsManager_,
 				SLOT (handleInfoReceived (const QXmppDiscoveryIq&)));
 		connect (DiscoveryManager_,
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
-				this,
+				CapsManager_,
 				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
 
 		connect (MUCManager_,
@@ -300,10 +302,14 @@ namespace Xoox
 	{
 		return XferManager_;
 	}
+	
+	CapsManager* ClientConnection::GetCapsManager () const
+	{
+		return CapsManager_;
+	}
 
 	void ClientConnection::RequestInfo (const QString& jid) const
 	{
-		qDebug () << "requesting info for" << jid;
 		if (JID2CLEntry_.contains (jid))
 			Q_FOREACH (const QString& variant, JID2CLEntry_ [jid]->Variants ())
 				DiscoveryManager_->requestInfo (jid + '/' + variant);
@@ -619,26 +625,6 @@ namespace Xoox
 			JID2CLEntry_ [jid]->SetVCard (vcard);
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetVCard (vcard);
-	}
-
-	void ClientConnection::handleInfoReceived (const QXmppDiscoveryIq& iq)
-	{
-		qDebug () << Q_FUNC_INFO << iq.from ();
-		qDebug () << iq.features () << iq.queryNode ();
-		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
-			qDebug () << item.jid () << item.name () << item.node ();
-		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
-			qDebug () << id.name () << id.type () << id.category () << id.language ();
-	}
-	
-	void ClientConnection::handleItemsReceived (const QXmppDiscoveryIq& iq)
-	{
-		qDebug () << Q_FUNC_INFO << iq.from ();
-		qDebug () << iq.features () << iq.queryNode ();
-		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
-			qDebug () << item.jid () << item.name () << item.node ();
-		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
-			qDebug () << id.name () << id.type () << id.category () << id.language ();
 	}
 
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)

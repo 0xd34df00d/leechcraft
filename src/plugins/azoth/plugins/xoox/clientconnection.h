@@ -53,6 +53,7 @@ namespace Xoox
 	class GlooxMessage;
 	class RoomCLEntry;
 	class RoomHandler;
+	class CapsManager;
 
 	class ClientConnection : public QObject
 	{
@@ -70,6 +71,7 @@ namespace Xoox
 
 		GlooxAccount *Account_;
 		IProxyObject *ProxyObject_;
+		CapsManager *CapsManager_;
 
 		QHash<QString, GlooxCLEntry*> JID2CLEntry_;
 		QHash<QString, GlooxCLEntry*> ODSEntries_;
@@ -118,6 +120,7 @@ namespace Xoox
 
 		QXmppMucManager* GetMUCManager () const;
 		QXmppTransferManager* GetTransferManager () const;
+		CapsManager* GetCapsManager () const;
 
 		void RequestInfo (const QString&) const;
 
@@ -160,8 +163,6 @@ namespace Xoox
 		void handleRosterChanged (const QString&);
 		void handleRosterItemRemoved (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
-		void handleInfoReceived (const QXmppDiscoveryIq&);
-		void handleItemsReceived (const QXmppDiscoveryIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleRoomPresenceChanged (const QString&,
 				const QString&, const QXmppPresence&);

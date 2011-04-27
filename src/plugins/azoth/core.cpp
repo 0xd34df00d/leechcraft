@@ -933,6 +933,13 @@ namespace Azoth
 				tip += "<br />" + info.value ("client_name").toString ();
 			if (info.contains ("client_version"))
 				tip += " " + info.value ("client_version").toString ();
+
+			if (info.contains ("custom_user_visible_map"))
+			{
+				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
+				Q_FOREACH (const QString& key, map.keys ())
+					tip += key + ": " + map [key].toString () + "<br />";
+			}
 		}
 		return tip;
 	}

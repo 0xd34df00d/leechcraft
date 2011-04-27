@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef VCARDDIALOG_H
-#define VCARDDIALOG_H
-#include <QDialog>
-#include "ui_vcarddialog.h"
-
-class QXmppVCardIq;
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
+#include <QObject>
+#include <QXmppDiscoveryIq.h>
 
 namespace LeechCraft
 {
@@ -29,18 +27,23 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class EntryBase;
+	class ClientConnection;
+	class CapsDatabase;
 
-	class VCardDialog : public QDialog
+	class CapsManager : public QObject
 	{
 		Q_OBJECT
-
-		Ui::VCardDialog Ui_;
+		
+		ClientConnection *Connection_;
+		CapsDatabase *DB_;
 	public:
-		VCardDialog (QWidget* = 0);
-		VCardDialog (EntryBase*, QWidget* = 0);
-
-		void UpdateInfo (const QXmppVCardIq&);
+		CapsManager (ClientConnection*);
+		
+		void FetchCaps (const QString&, const QByteArray&);
+		QStringList GetRawCaps (const QByteArray&) const;
+	public slots:
+		void handleInfoReceived (const QXmppDiscoveryIq&);
+		void handleItemsReceived (const QXmppDiscoveryIq&);
 	};
 }
 }

@@ -35,6 +35,7 @@
 #include "core.h"
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
+#include "capsmanager.h"
 
 namespace LeechCraft
 {
@@ -115,9 +116,8 @@ namespace Xoox
 		}
 
 		if (!VCardDialog_)
-			VCardDialog_ = new VCardDialog ();
+			VCardDialog_ = new VCardDialog (this);
 
-		Account_->GetClientConnection ()->RequestInfo (GetJID ());
 		Account_->GetClientConnection ()->FetchVCard (GetJID (), VCardDialog_);
 		VCardDialog_->show ();
 	}
@@ -232,7 +232,7 @@ namespace Xoox
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant,
-			const QString& node)
+			const QString& node, const QByteArray& ver)
 	{
 		QString type = Util::GetClientIDName (node);
 		if (type.isEmpty ())
@@ -255,11 +255,23 @@ namespace Xoox
 			name = "Unknown";
 		}
 		Variant2ClientInfo_ [variant] ["client_name"] = name;
+		
+		Variant2VerString_ [variant] = ver;
+		
+		QString reqJid = GetJID ();
+		if (GetEntryType () == ETChat)
+			reqJid = variant.isEmpty () ?
+					QString () :
+					reqJid + '/' + variant;
+		
+		if (!reqJid.isEmpty ())
+			Account_->GetClientConnection ()->
+					GetCapsManager ()->FetchCaps (reqJid, ver);
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
-		SetClientInfo (variant, pres.capabilityNode ());
+		SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
 	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)

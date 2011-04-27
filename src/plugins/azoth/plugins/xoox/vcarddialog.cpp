@@ -18,6 +18,7 @@
 
 #include "vcarddialog.h"
 #include <QXmppVCardIq.h>
+#include "entrybase.h"
 
 namespace LeechCraft
 {
@@ -26,6 +27,13 @@ namespace Azoth
 namespace Xoox
 {
 	VCardDialog::VCardDialog (QWidget *parent)
+	: QDialog (parent)
+	{
+		Ui_.setupUi (this);
+		Ui_.EditBirthday_->setVisible (false);
+	}
+	
+	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
