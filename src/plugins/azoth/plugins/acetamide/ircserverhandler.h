@@ -117,6 +117,7 @@ class IrcMessage;
 		void InitCommandResponses ();
 		void InitSocket ();
 		bool IsErrorReply (const QString&);
+		bool IsCTCPMessage (const QString&);
 
 		void NoSuchNickError ();
 		void NickCmdError ();
@@ -144,6 +145,10 @@ class IrcMessage;
 		void SetISupport (const QString&,
 				const QList<std::string>&, const QString&);
 		void ChangeNickname (const QString&,
+				const QList<std::string>&, const QString&);
+		void CTCPReply (const QString&,
+				const QList<std::string>&, const QString&);
+		void CTCPRequestResult (const QString&,
 				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();

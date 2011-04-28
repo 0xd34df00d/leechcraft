@@ -93,13 +93,14 @@ namespace Acetamide
 		return msg;
 	}
 
-	void ChannelHandler::ShowServiceMessage (const QString& msg)
+	void ChannelHandler::ShowServiceMessage (const QString& msg,
+			IMessage::MessageType mt, IMessage::MessageSubType mst)
 	{
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
 				ChannelCLEntry_,
-				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantNickChange);
+				mt,
+				mst);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 

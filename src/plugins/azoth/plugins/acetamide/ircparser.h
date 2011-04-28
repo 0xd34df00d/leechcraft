@@ -50,7 +50,8 @@ namespace Acetamide
 		void PartCommand (const QString&, const QString&);
 		void PongCommand (const QString&);
 		void RawCommand (const QStringList&);
-
+		void CTCPRequest (const QStringList&);
+		void CTCPReply (const QStringList&);
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;
 	};

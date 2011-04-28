@@ -131,7 +131,7 @@ namespace Acetamide
 				IMessage::DOut);
 		QStringList commandWithParams = commandMessage.split (' ');
 		Name2Command_ [commandWithParams.at (0).toLower ()]
-	 		(commandWithParams.mid (1));
+				(commandWithParams.mid (1));
 	}
 
 	void IrcServerHandler::LeaveChannel (const QString& channels,
@@ -306,9 +306,16 @@ namespace Acetamide
 	{
 		IrcMessageOptions imo = IrcParser_->GetIrcMessageOptions ();
 		QString cmd = imo.Command_.toLower ();
-		if (Command2Action_.contains (cmd))
-			Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
+		if (cmd == "privmsg" && IsCTCPMessage (imo.Message_))
+			Command2Action_ ["ctcp_rpl"] (imo.Nick_, imo.Parameters_,
 					imo.Message_);
+		else if (cmd == "notice" && IsCTCPMessage (imo.Message_))
+			Command2Action_ ["ctcp_rqst"] (imo.Nick_, imo.Parameters_,
+										imo.Message_);
+		else if (Command2Action_.contains (cmd))
+				Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
+						imo.Message_);
+
 	}
 
 	void IrcServerHandler::SendToConsole (const QString& message)
@@ -463,11 +470,18 @@ namespace Acetamide
 		Command2Action_ ["nick"] =
 				boost::bind (&IrcServerHandler::ChangeNickname,
 					this, _1, _2, _3);
-
+		Command2Action_ ["ctcp_rpl"] =
+				boost::bind (&IrcServerHandler::CTCPReply,
+					this, _1, _2, _3);
+		Command2Action_ ["ctcp_rqst"] =
+				boost::bind (&IrcServerHandler::CTCPRequestResult,
+					 this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
 		Name2Command_ ["quote"] = boost::bind (&IrcParser::RawCommand,
+				IrcParser_, _1);
+		Name2Command_ ["ctcp"] = boost::bind (&IrcParser::CTCPRequest,
 				IrcParser_, _1);
 	}
 
@@ -530,33 +544,6 @@ namespace Acetamide
 		Account_->handleGotRosterItems (QList<QObject*> ()
 				<< entry.get ());
 		return entry;
-	}
-
-	void IrcServerHandler::ChangeNickname (const QString& nick,
-			const QList<std::string>&, const QString& msg)
-	{
-
-		Q_FOREACH (const QString& channel,
-				Nick2Entry_ [nick]->GetChannels ())
-		{
-			QString id = (channel + "@" + ServerOptions_.ServerName_)
-					.toLower ();
-			QString mess = tr ("%1 changed nickname to %2").arg(nick).arg(msg);
-			if (ChannelHandlers_.contains (id))
-				ChannelHandlers_ [id]->ShowServiceMessage (mess);
-		}
-
-		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
-
-		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
-
-		entry->SetEntryName (msg);
-		Account_->handleGotRosterItems (QList<QObject*> ()
-				<< entry.get ());
-
-		Nick2Entry_ [msg] = entry;
-		if (nick == NickName_)
-			NickName_ = msg;
 	}
 
 	void IrcServerHandler::JoinFromQueue (const QString&,
@@ -676,6 +663,125 @@ namespace Acetamide
 		}
 	}
 
+	void IrcServerHandler::ChangeNickname (const QString& nick,
+			const QList<std::string>&, const QString& msg)
+	{
+		Q_FOREACH (const QString& channel,
+				Nick2Entry_ [nick]->GetChannels ())
+		{
+			QString id = (channel + "@" + ServerOptions_.ServerName_)
+					.toLower ();
+			QString mess =
+					tr ("%1 changed nickname to %2").arg (nick, msg);
+			if (ChannelHandlers_.contains (id))
+				ChannelHandlers_ [id]->ShowServiceMessage (mess,
+						IMessage::MTStatusMessage,
+						IMessage::MSTParticipantNickChange);
+		}
+
+		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+
+		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
+
+		entry->SetEntryName (msg);
+		Account_->handleGotRosterItems (QList<QObject*> ()
+				<< entry.get ());
+
+		Nick2Entry_ [msg] = entry;
+		if (nick == NickName_)
+			NickName_ = msg;
+	}
+
+	void IrcServerHandler::CTCPReply (const QString& nick,
+			const QList<std::string>&, const QString& msg)
+	{
+		QString cmd;
+		QString outputMessage;
+		QString version = QString ("%1 %2 %3").arg ("Acetamide",
+				"2.0",
+				"(C) 2011 by the LeechCraft team");
+		QDateTime currentDT = QDateTime::currentDateTime ();
+		QString mess = msg.mid (1, msg.length () - 2);
+		QStringList ctcpList = mess.split (' ');
+		QString firstPartOutput = QString ("%1 %2 - %3").arg ("Acetamide"
+				, "2.0"
+				, "http://www.leechcraft.org");
+
+		if (ctcpList.at (0).toLower () == "version")
+		{
+			cmd = QString ("%1 %2%3").arg ("\001VERSION"
+					, version
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("VERSION", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "ping")
+		{
+			cmd = QString ("%1 %2%3").arg ("\001PING "
+					, QString::number (currentDT.toTime_t ())
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("PING", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "time")
+		{
+			cmd = QString ("%1 %2%3").arg ("\001TIME"
+					, currentDT.toString ("ddd MMM dd hh:mm:ss yyyy")
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("TIME", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "source")
+		{
+			cmd = QString ("%1 %2 %3").arg ("\001SOURCE"
+					, firstPartOutput
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("SOURCE", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "clientinfo")
+		{
+			cmd = QString ("%1 %2 - %3 %4 %5").arg ("\001CLIENTINFO"
+					, firstPartOutput
+					, "Supported tags:"
+					, "VERSION PING TIME SOURCE CLIENTINFO"
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("CLIENTINFO", nick);
+		}
+		else
+			outputMessage.clear ();
+
+		if (outputMessage.isEmpty ())
+			return;
+
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			ich->ShowServiceMessage (outputMessage,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
+
+		IrcParser_->CTCPReply (QStringList () << nick << cmd);
+	}
+
+	void IrcServerHandler::CTCPRequestResult (const QString& nick, const
+			QList<std::string>& params, const QString& msg)
+	{
+		if (QString::fromUtf8 (params.first ().c_str ()) != NickName_)
+			return;
+		QString mess = msg.mid (1, msg.length () - 2);
+		QStringList ctcpList = mess.split (' ');
+
+		QString output = tr ("Received answer CTCP-%1 from %2: %3")
+				.arg (ctcpList.at (0), nick,
+					(static_cast<QStringList> (ctcpList.mid (1)))
+						.join (" "));
+
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			ich->ShowServiceMessage (output,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
+	}
+
 	void IrcServerHandler::InitSocket ()
 	{
 		connect (TcpSocket_ptr.get (),
@@ -699,6 +805,11 @@ namespace Acetamide
 		return Error2Action_.contains (cmd);
 	}
 
+	bool IrcServerHandler::IsCTCPMessage (const QString& msg)
+	{
+		return msg.startsWith ('\001') && msg.endsWith ('\001');
+	}
+
 	void IrcServerHandler::readReply ()
 	{
 		while (TcpSocket_ptr->canReadLine ())
@@ -711,7 +822,7 @@ namespace Acetamide
 
 			QString cmd = IrcParser_->GetIrcMessageOptions ()
 					.Command_.toLower ();
-					if (IsErrorReply (cmd))
+			if (IsErrorReply (cmd))
 			{
 				QString msg = IrcParser_->GetIrcMessageOptions ()
 						.Message_ + QString::fromUtf8 (IrcParser_->

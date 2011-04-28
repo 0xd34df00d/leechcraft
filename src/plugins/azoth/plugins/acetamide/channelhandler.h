@@ -58,7 +58,8 @@ namespace Acetamide
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
-		void ShowServiceMessage (const QString&);
+		void ShowServiceMessage (const QString&, IMessage::MessageType,
+				IMessage::MessageSubType);
 
 		void SendPublicMessage (const QString&);
 		void HandleIncomingMessage (const QString&, const QString&);
