@@ -52,6 +52,7 @@ SET (SRCS
 	util.cpp
 	simpledialog.cpp
 	servicediscoverywidget.cpp
+	eventsnotifier.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -77,6 +78,7 @@ SET (HEADERS
 	util.h
 	simpledialog.h
 	servicediscoverywidget.h
+	eventsnotifier.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h

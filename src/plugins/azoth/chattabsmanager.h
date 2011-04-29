@@ -38,6 +38,7 @@ namespace Azoth
 		Q_OBJECT
 
 		QHash<QString, ChatTab_ptr> Entry2Tab_;
+		QSet<QString> EverOpened_;
 	public:
 		ChatTabsManager(QObject* = 0);
 
@@ -45,6 +46,7 @@ namespace Azoth
 		void OpenChat (const ICLEntry*);
 		void CloseChat (const ICLEntry*);
 		bool IsActiveChat (const ICLEntry*) const;
+		bool IsOpenedChat (const QString&) const;
 		void UpdateEntryMapping (const QString&, QObject*);
 		void HandleEntryRemoved (ICLEntry*);
 		void SetChatEnabled (const QString&, bool);
@@ -62,6 +64,7 @@ namespace Azoth
 		void raiseTab (QWidget*);
 
 		void clearUnreadMsgCount (QObject*);
+		void entryMadeCurrent (QObject*);
 	};
 }
 }

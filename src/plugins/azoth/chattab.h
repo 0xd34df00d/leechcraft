@@ -155,7 +155,7 @@ namespace Azoth
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
 		void needToClose (ChatTab*);
-		void clearUnreadMsgCount (QObject*);
+		void entryMadeCurrent (QObject*);
 
 		// Hooks
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
