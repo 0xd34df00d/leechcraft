@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
-#define PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
+#define PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
