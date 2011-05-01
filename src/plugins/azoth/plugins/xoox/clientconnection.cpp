@@ -759,7 +759,7 @@ namespace Xoox
 					SLOT (handleAutojoinQueue ()));
 	}
 	
-	void ClientConnection::handleAutojoinQueue()
+	void ClientConnection::handleAutojoinQueue ()
 	{
 		if (JoinQueue_.isEmpty ())
 			return;
