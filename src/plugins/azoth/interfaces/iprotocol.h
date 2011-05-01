@@ -38,6 +38,13 @@ namespace Azoth
 	 * A protocol may also implement IURIHandler if it supports handling
 	 * of various URIs, like xmpp: for XMPP protocol.
 	 * 
+	 * When user decides to add a new account within this protocol, the
+	 * GetAccountRegistrationWidgets() function is called to get the
+	 * list of widgets that should be filled out by the user by the
+	 * exact values of his account, and if the user accepts the
+	 * registration, RegisterAccount() would be called with those
+	 * widgets.
+	 * 
 	 * @sa IURIHandler
 	 */
 	class IProtocol
@@ -57,7 +64,7 @@ namespace Azoth
 
 		Q_DECLARE_FLAGS (ProtocolFeatures, ProtocolFeature);
 
-		/** Returns the protocol object as a QObject.
+		/** @brief Returns the protocol object as a QObject.
 		 *
 		 * @return Protocol object as QObject.
 		 */
@@ -67,28 +74,31 @@ namespace Azoth
 		 */
 		virtual ProtocolFeatures GetFeatures () const = 0;
 
-		/** Returns the accounts registered within this protocol.
+		/** @brief Returns the accounts within this protocol.
+		 * 
+		 * Each object in the returned list must implement IAccount.
 		 *
-		 * @return The list of accoutns of this protocol.
+		 * @return The list of accounts of this protocol.
 		 */
 		virtual QList<QObject*> GetRegisteredAccounts () = 0;
 
-		/** Returns the pointer to the parent protocol plugin that this
-		 * protocol belongs to.
+		/** @brief Returns the pointer to the parent protocol plugin
+		 * that this protocol belongs to.
 		 *
-		 * @return The parent protocol plugin of this protocol.
+		 * @return The parent protocol plugin of this protocol, which
+		 * must implement IProtocolPlugin.
 		 */
 		virtual QObject* GetParentProtocolPlugin () const = 0;
 
-		/** Returns the human-readable name of this protocol, like
-		 * "Jabber" or "ICQ".
+		/** @brief Returns the human-readable name of this protocol,
+		 * like "Jabber" or "ICQ".
 		 *
 		 * @return Human-readable name of the protocol.
 		 */
 		virtual QString GetProtocolName () const = 0;
 
-		/** Returns the protocol ID, which must be unique among all the
-		 * protocols.
+		/** @brief Returns the protocol ID, which must be unique among
+		 * all the protocols.
 		 *
 		 * @return The unique ID of this protocol.
 		 */
@@ -100,19 +110,66 @@ namespace Azoth
 		 * Protocol plugin is expected to ask the user for
 		 * account details, register the account and emit
 		 * the accountAdded(QObject*) signal.
+		 * 
+		 * @deprecated This method of registering accounts is superseded
+		 * by GetAccountRegistrationWidgets()/RegisterAccount() pair.
 		 */
 		virtual void InitiateAccountRegistration () = 0;
 		
+		/** @brief Returns the widgets used for account registration.
+		 * 
+		 * The widgets from the returned list are shown in the account
+		 * registration wizard in the same order they appear in the
+		 * returned list.
+		 * 
+		 * If the user accepts registering the account, the
+		 * RegisterAccount() method would be called with the same set of
+		 * widgets in the same order as returned from this function.
+		 * 
+		 * The ownership is transferred to the caller.
+		 * 
+		 * @return The widgets to be shown and filled by the user.
+		 * 
+		 * @sa RegisterAccount()
+		 */
 		virtual QList<QWidget*> GetAccountRegistrationWidgets () = 0;
+		
+		/** @brief Adds an account with the given name and widgets.
+		 * 
+		 * The list of widgets is the same (and in the same order) as
+		 * returned from the GetAccountRegistrationWidgets() function.
+		 * If this method is called, the widgets were shown to the user,
+		 * and the user has accepted the account registration, so the
+		 * widgets would be filled by the user to contain the required
+		 * values. One could use qobject_cast to cast each widget in the
+		 * list to the exact widget type and then use the values filled
+		 * by the user.
+		 * 
+		 * If the account is added successfully, the accountAdded()
+		 * signal should be emitted, otherwise nothing should be done.
+		 * 
+		 * @note Since ownership of the widgets is transferred to the
+		 * caller, one shouldn't delete widgets in this method, and one
+		 * shouldn't store them to use after this function has returned.
+		 * 
+		 * @param[in] name The name of the account to be registered.
+		 * @param[in] widgets The list of widgets returned from the
+		 * GetAccountRegistrationWidgets() and filled by the user.
+		 * 
+		 * @sa GetAccountRegistrationWidgets()
+		 */
 		virtual void RegisterAccount (const QString& name, const QList<QWidget*>& widgets) = 0;
 
 		/** @brief Returns the widget used to set up the MUC join options.
 		 *
-		 * The returned widget should implement IMUCJoinWidget.
+		 * The returned widget must implement IMUCJoinWidget.
 		 *
 		 * The caller takes the ownership of the widget, so each time
 		 * a newly constructed widget should be returned, and the plugin
 		 * shouldn't delete the widget by itself.
+		 * 
+		 * @return The widget used for joining MUCs, which must
+		 * implement IMUCJoinWidget.
 		 *
 		 * @sa IMUCJoinWidget
 		 */
@@ -139,10 +196,37 @@ namespace Azoth
 		 *
 		 * If the account is not registered, this function should do
 		 * nothing.
+		 * 
+		 * After the removal, the accountRemoved() signal is expected to
+		 * be emitted.
+		 * 
+		 * @param[in] account The account to remove.
 		 */
 		virtual void RemoveAccount (QObject *account) = 0;
 
+		/** @brief Notifies about new account.
+		 * 
+		 * This signal should be emitted whenever a new account appears
+		 * in this protocol.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] account The newly added account, which must
+		 * implement IAccount.
+		 */
 		virtual void accountAdded (QObject *account) = 0;
+		
+		/** @brief Notifies about an account having been removed.
+		 * 
+		 * This signal should be emitted whenever an already registered
+		 * account is removed, for example, as the result of the call to
+		 * RemoveAccount().
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] account The just removed account, which must
+		 * implement IAccount.
+		 */
 		virtual void accountRemoved (QObject *account) = 0;
 	};
 

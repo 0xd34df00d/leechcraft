@@ -46,7 +46,7 @@ namespace Azoth
 
 		/** @brief Returns the protocols list provided by this plugin.
 		 *
-		 * Each object in this list should implement the IProtocol
+		 * Each object in this list must implement the IProtocol
 		 * interface.
 		 *
 		 * @return The list of this plugin's protocols.
