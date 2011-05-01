@@ -26,25 +26,21 @@ class QTabBar;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class HideableTabWidget : public QWidget
 	{
-		namespace Poshuku
-		{
-			class HideableTabWidget : public QWidget
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::HideableTabWidget Ui_;
+		Ui::HideableTabWidget Ui_;
 
-				QTabBar *TabBar_;
-			public:
-				HideableTabWidget (QWidget* = 0);
-				void AddPage (const QString&, QWidget*);
-				QTabBar* GetMainTabBar () const;
-			};
-		};
+		QTabBar *TabBar_;
+	public:
+		HideableTabWidget (QWidget* = 0);
+		void AddPage (const QString&, QWidget*);
+		QTabBar* GetMainTabBar () const;
 	};
-};
+}
+}
 
 #endif
-

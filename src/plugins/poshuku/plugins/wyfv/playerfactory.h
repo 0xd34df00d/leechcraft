@@ -24,38 +24,31 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class PlayerFactory
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class PlayerFactory
-					{
-						typedef boost::function<Player*
-							(const QUrl&, const QStringList&, const QStringList&)> PlayerCreator_f;
-						static QList<PlayerCreator_f> Creators_;
+		typedef boost::function<Player*
+			(const QUrl&, const QStringList&, const QStringList&)> PlayerCreator_f;
+		static QList<PlayerCreator_f> Creators_;
 
-						typedef boost::function<bool (const QUrl&)> SuitablePlayerChecker_f;
-						static QList<SuitablePlayerChecker_f> Checkers_;
+		typedef boost::function<bool (const QUrl&)> SuitablePlayerChecker_f;
+		static QList<SuitablePlayerChecker_f> Checkers_;
 
-						static QList<AbstractPlayerCreator*> AllocatedCreators_;
+		static QList<AbstractPlayerCreator*> AllocatedCreators_;
 
-						PlayerFactory ();
-					public:
-						static void Init ();
-						static Player* Create (const QUrl&,
-								const QStringList&,
-								const QStringList&);
-						static bool HasPlayerFor (const QUrl&);
-					};
-				};
-			};
-		};
+		PlayerFactory ();
+	public:
+		static void Init ();
+		static Player* Create (const QUrl&,
+				const QStringList&,
+				const QStringList&);
+		static bool HasPlayerFor (const QUrl&);
 	};
-};
+}
+}
+}
 
 #endif
-

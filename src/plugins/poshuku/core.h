@@ -47,162 +47,158 @@ class IShortcutProxy;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class CustomWebView;
+	class BrowserWidget;
+	class FavoritesChecker;
+	class WebPluginFactory;
+
+	class Core : public QObject
 	{
-		namespace Poshuku
+		Q_OBJECT
+
+		typedef std::vector<BrowserWidget*> widgets_t;
+		widgets_t Widgets_;
+		// title/url pairs;
+		QList<QPair<QString, QString> > SavedSessionState_;
+		QList<BrowserWidgetSettings> SavedSessionSettings_;
+
+		std::auto_ptr<FavoritesModel> FavoritesModel_;
+		std::auto_ptr<HistoryModel> HistoryModel_;
+		std::auto_ptr<URLCompletionModel> URLCompletionModel_;
+		std::auto_ptr<PluginManager> PluginManager_;
+		boost::shared_ptr<StorageBackend> StorageBackend_;
+		QNetworkAccessManager *NetworkAccessManager_;
+		WebPluginFactory *WebPluginFactory_;
+
+		QMap<QString, QObject*> Providers_;
+
+		bool IsShuttingDown_;
+		QList<int> RestoredURLs_;
+
+		QMap<QString, QString> SavedSession_;
+		QList<QAction*> Unclosers_;
+		const IShortcutProxy *ShortcutProxy_;
+
+		ICoreProxy_ptr Proxy_;
+
+		FavoritesChecker *FavoritesChecker_;
+
+		bool Initialized_;
+		
+		TabClassInfo TabClass_;
+
+		Core ();
+	public:
+		enum FormRememberType
 		{
-			class CustomWebView;
-			class BrowserWidget;
-			class FavoritesChecker;
-			class WebPluginFactory;
-
-			class Core : public QObject
-			{
-				Q_OBJECT
-
-				typedef std::vector<BrowserWidget*> widgets_t;
-				widgets_t Widgets_;
-				// title/url pairs;
-				QList<QPair<QString, QString> > SavedSessionState_;
-				QList<BrowserWidgetSettings> SavedSessionSettings_;
-
-				std::auto_ptr<FavoritesModel> FavoritesModel_;
-				std::auto_ptr<HistoryModel> HistoryModel_;
-				std::auto_ptr<URLCompletionModel> URLCompletionModel_;
-				std::auto_ptr<PluginManager> PluginManager_;
-				boost::shared_ptr<StorageBackend> StorageBackend_;
-				QNetworkAccessManager *NetworkAccessManager_;
-				WebPluginFactory *WebPluginFactory_;
-
-				QMap<QString, QObject*> Providers_;
-
-				bool IsShuttingDown_;
-				QList<int> RestoredURLs_;
-
-				QMap<QString, QString> SavedSession_;
-				QList<QAction*> Unclosers_;
-				const IShortcutProxy *ShortcutProxy_;
-
-				ICoreProxy_ptr Proxy_;
-
-				FavoritesChecker *FavoritesChecker_;
-
-				bool Initialized_;
-				
-				TabClassInfo TabClass_;
-
-				Core ();
-			public:
-				enum FormRememberType
-				{
-					FRTRemember_,
-					FRTNotNow_,
-					FRTNever_
-				};
-
-				struct UncloseData
-				{
-					QUrl URL_;
-					QPoint SPoint_;
-					QByteArray History_;
-				};
-
-				static Core& Instance ();
-				void Init ();
-				void Release ();
-				void SetProxy (ICoreProxy_ptr);
-				ICoreProxy_ptr GetProxy () const;
-				TabClassInfo GetTabClass () const;
-
-				bool CouldHandle (const Entity&) const;
-				void Handle (Entity);
-
-				WebPluginFactory* GetWebPluginFactory ();
-
-				void SetProvider (QObject*, const QString&);
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
-
-				QUrl MakeURL (QString);
-				BrowserWidget* NewURL (const QUrl&, bool = false);
-				BrowserWidget* NewURL (const QString&, bool = false);
-				IWebWidget* GetWidget ();
-				CustomWebView* MakeWebView (bool = false);
-				void Unregister (BrowserWidget*);
-				/** Sets up the connections between widget's signals
-				 * and our signals/slots only useful in own mode.
-				 *
-				 * Calls to SetupConnections internally as well.
-				 */
-				void ConnectSignals (BrowserWidget *widget);
-
-				void CheckFavorites ();
-				void ReloadAll ();
-
-				FavoritesModel* GetFavoritesModel () const;
-				HistoryModel* GetHistoryModel () const;
-				URLCompletionModel* GetURLCompletionModel () const;
-				QNetworkAccessManager* GetNetworkAccessManager () const;
-				StorageBackend* GetStorageBackend () const;
-				PluginManager* GetPluginManager () const;
-				void SetShortcut (const QString& name, const QKeySequences_t& shortcut);
-				const IShortcutProxy* GetShortcutProxy () const;
-
-				QIcon GetIcon (const QUrl&) const;
-				QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;
-			private:
-				void RestoreSession (bool);
-				void HandleHistory (CustomWebView*);
-				/** Sets up the connections between widget's signals
-				 * and our signals/slots that are always useful, both in own
-				 * and deown mode.
-				 */
-				void SetupConnections (BrowserWidget *widget);
-				void HandleSearchRequest (const QString&);
-			public slots:
-				void importXbel ();
-				void exportXbel ();
-			private slots:
-				void handleUnclose ();
-				void handleTitleChanged (const QString&);
-				void handleURLChanged (const QString&);
-				void handleIconChanged (const QIcon&);
-				void handleNeedToClose ();
-				void handleAddToFavorites (QString, QString);
-				void handleStatusBarChanged (const QString&);
-				void handleTooltipChanged (QWidget*);
-				void favoriteTagsUpdated (const QStringList&);
-				void saveSession ();
-				void saveSingleSession ();
-				void restorePages ();
-				void postConstruct ();
-			signals:
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void raiseTab (QWidget*);
-				void error (const QString&) const;
-				void statusBarChanged (QWidget*, const QString&);
-				void gotEntity (const LeechCraft::Entity&);
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-				void couldHandle (const LeechCraft::Entity&, bool*);
-				void newUnclose (QAction*);
-
-				// Hook support signals
-				void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
-						QString *title, QString *url);
-				void hookIconRequested (LeechCraft::IHookProxy_ptr,
-						const QUrl& url) const;
-				void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
-						const QUrl&, const QWebPage*) const;
-			};
+			FRTRemember_,
+			FRTNotNow_,
+			FRTNever_
 		};
-	};
-};
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::Core::UncloseData);
+		struct UncloseData
+		{
+			QUrl URL_;
+			QPoint SPoint_;
+			QByteArray History_;
+		};
+
+		static Core& Instance ();
+		void Init ();
+		void Release ();
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
+		TabClassInfo GetTabClass () const;
+
+		bool CouldHandle (const Entity&) const;
+		void Handle (Entity);
+
+		WebPluginFactory* GetWebPluginFactory ();
+
+		void SetProvider (QObject*, const QString&);
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
+
+		QUrl MakeURL (QString);
+		BrowserWidget* NewURL (const QUrl&, bool = false);
+		BrowserWidget* NewURL (const QString&, bool = false);
+		IWebWidget* GetWidget ();
+		CustomWebView* MakeWebView (bool = false);
+		void Unregister (BrowserWidget*);
+		/** Sets up the connections between widget's signals
+			* and our signals/slots only useful in own mode.
+			*
+			* Calls to SetupConnections internally as well.
+			*/
+		void ConnectSignals (BrowserWidget *widget);
+
+		void CheckFavorites ();
+		void ReloadAll ();
+
+		FavoritesModel* GetFavoritesModel () const;
+		HistoryModel* GetHistoryModel () const;
+		URLCompletionModel* GetURLCompletionModel () const;
+		QNetworkAccessManager* GetNetworkAccessManager () const;
+		StorageBackend* GetStorageBackend () const;
+		PluginManager* GetPluginManager () const;
+		void SetShortcut (const QString& name, const QKeySequences_t& shortcut);
+		const IShortcutProxy* GetShortcutProxy () const;
+
+		QIcon GetIcon (const QUrl&) const;
+		QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;
+	private:
+		void RestoreSession (bool);
+		void HandleHistory (CustomWebView*);
+		/** Sets up the connections between widget's signals
+			* and our signals/slots that are always useful, both in own
+			* and deown mode.
+			*/
+		void SetupConnections (BrowserWidget *widget);
+		void HandleSearchRequest (const QString&);
+	public slots:
+		void importXbel ();
+		void exportXbel ();
+	private slots:
+		void handleUnclose ();
+		void handleTitleChanged (const QString&);
+		void handleURLChanged (const QString&);
+		void handleIconChanged (const QIcon&);
+		void handleNeedToClose ();
+		void handleAddToFavorites (QString, QString);
+		void handleStatusBarChanged (const QString&);
+		void handleTooltipChanged (QWidget*);
+		void favoriteTagsUpdated (const QStringList&);
+		void saveSession ();
+		void saveSingleSession ();
+		void restorePages ();
+		void postConstruct ();
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void raiseTab (QWidget*);
+		void error (const QString&) const;
+		void statusBarChanged (QWidget*, const QString&);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void couldHandle (const LeechCraft::Entity&, bool*);
+		void newUnclose (QAction*);
+
+		// Hook support signals
+		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
+				QString *title, QString *url);
+		void hookIconRequested (LeechCraft::IHookProxy_ptr,
+				const QUrl& url) const;
+		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
+				const QUrl&, const QWebPage*) const;
+	};
+}
+}
+
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::Core::UncloseData);
 
 #endif
-

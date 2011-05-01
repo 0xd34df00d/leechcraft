@@ -19,36 +19,28 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_WYFV_RELATED_H
 #define PLUGINS_POSHUKU_PLUGINS_WYFV_RELATED_H
-
 #include <QString>
 #include <QUrl>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	struct Related
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					struct Related
-					{
-						QString ID_;
-						QUrl URL_;
-						QString Title_;
-						QUrl Thumbnail_;
-						int Length_;
-						double Rating_;
-						qint32 ViewCount_;
-						QString Author_;
-					};
-				};
-			};
-		};
+		QString ID_;
+		QUrl URL_;
+		QString Title_;
+		QUrl Thumbnail_;
+		int Length_;
+		double Rating_;
+		qint32 ViewCount_;
+		QString Author_;
 	};
-};
+}
+}
+}
 
 #endif
-

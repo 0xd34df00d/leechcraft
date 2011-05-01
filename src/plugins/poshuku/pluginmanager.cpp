@@ -25,26 +25,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	PluginManager::PluginManager (QObject *parent)
+	: Util::BaseHookInterconnector (parent)
+	, ProxyObject_ (new ProxyObject)
 	{
-		namespace Poshuku
-		{
-			PluginManager::PluginManager (QObject *parent)
-			: Util::BaseHookInterconnector (parent)
-			, ProxyObject_ (new ProxyObject)
-			{
-			}
+	}
 
-			void PluginManager::AddPlugin (QObject *plugin)
-			{
-				if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
-					QMetaObject::invokeMethod (plugin,
-							"initPlugin",
-							Q_ARG (QObject*, ProxyObject_.get ()));
+	void PluginManager::AddPlugin (QObject *plugin)
+	{
+		if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
+			QMetaObject::invokeMethod (plugin,
+					"initPlugin",
+					Q_ARG (QObject*, ProxyObject_.get ()));
 
-				Util::BaseHookInterconnector::AddPlugin (plugin);
-			}
-		};
-	};
-};
-
+		Util::BaseHookInterconnector::AddPlugin (plugin);
+	}
+}
+}

@@ -27,39 +27,35 @@
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class FlatToFoldersProxyModel;
-	};
+namespace Util
+{
+	class FlatToFoldersProxyModel;
+}
 
-	namespace Plugins
+namespace Poshuku
+{
+	class BookmarksWidget : public QWidget
 	{
-		namespace Poshuku
-		{
-			class BookmarksWidget : public QWidget
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::BookmarksWidget Ui_;
-				boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
-				std::auto_ptr<FilterModel> FavoritesFilterModel_;
-				std::auto_ptr<Util::TagsCompleter> FavoritesFilterLineCompleter_;
-			public:
-				BookmarksWidget (QWidget* = 0);
-			private slots:
-				void on_ActionEditBookmark__triggered ();
-				void on_ActionChangeURL__triggered ();
-				void on_ActionDeleteBookmark__triggered ();
-				void translateRemoveFavoritesItem (const QModelIndex&);
-				void updateFavoritesFilter ();
-				void on_FavoritesView__activated (const QModelIndex&);
-				void on_OpenInTabs__released ();
-				void selectTagsMode ();
-				void handleGroupBookmarks ();
-			};
-		};
+		Ui::BookmarksWidget Ui_;
+		boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
+		std::auto_ptr<FilterModel> FavoritesFilterModel_;
+		std::auto_ptr<Util::TagsCompleter> FavoritesFilterLineCompleter_;
+	public:
+		BookmarksWidget (QWidget* = 0);
+	private slots:
+		void on_ActionEditBookmark__triggered ();
+		void on_ActionChangeURL__triggered ();
+		void on_ActionDeleteBookmark__triggered ();
+		void translateRemoveFavoritesItem (const QModelIndex&);
+		void updateFavoritesFilter ();
+		void on_FavoritesView__activated (const QModelIndex&);
+		void on_OpenInTabs__released ();
+		void selectTagsMode ();
+		void handleGroupBookmarks ();
 	};
-};
+}
+}
 
 #endif
-

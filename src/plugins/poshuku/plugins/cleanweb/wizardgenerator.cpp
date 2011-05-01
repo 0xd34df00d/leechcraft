@@ -22,11 +22,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -45,8 +41,6 @@ namespace CleanWeb
 				"StartupVersion", version);
 		return result;
 	}
-}
-}
 }
 }
 }

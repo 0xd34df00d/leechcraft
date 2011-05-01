@@ -42,11 +42,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -229,7 +225,7 @@ namespace CleanWeb
 		};
 	};
 
-	LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core::Core ()
+	LeechCraft::Poshuku::CleanWeb::Core::Core ()
 	: FlashOnClickPlugin_ (0)
 	, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
 	, UserFilters_ (new UserFiltersModel (this))
@@ -454,7 +450,7 @@ namespace CleanWeb
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
-		QMenu *menu, LeechCraft::Plugins::Poshuku::WebViewCtxMenuStage stage)
+		QMenu *menu, LeechCraft::Poshuku::WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();
 		if (stage == WVSAfterImage &&
@@ -909,8 +905,6 @@ namespace CleanWeb
 		else
 			qWarning () << Q_FUNC_INFO << "not found" << url;
 	}
-}
-}
 }
 }
 }

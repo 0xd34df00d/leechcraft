@@ -21,26 +21,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	ExternalProxy::ExternalProxy (QObject *parent)
+	: QObject (parent)
 	{
-		namespace Poshuku
-		{
-			ExternalProxy::ExternalProxy (QObject *parent)
-			: QObject (parent)
-			{
-			}
+	}
 
-			void ExternalProxy::AddSearchProvider (const QString& url)
-			{
-				LeechCraft::Entity e;
-				e.Entity_ = url.toUtf8 ();
-				e.Mime_ = "application/opensearchdescription+xml";
-				e.Location_ = url;
-				e.Parameters_ = LeechCraft::FromUserInitiated;
-				emit gotEntity (e);
-			}
-			
-		};
-	};
-};
-
+	void ExternalProxy::AddSearchProvider (const QString& url)
+	{
+		LeechCraft::Entity e;
+		e.Entity_ = url.toUtf8 ();
+		e.Mime_ = "application/opensearchdescription+xml";
+		e.Location_ = url;
+		e.Parameters_ = LeechCraft::FromUserInitiated;
+		emit gotEntity (e);
+	}	
+}
+}

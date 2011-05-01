@@ -24,32 +24,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class FindDialog : public Notification
 	{
-		namespace Poshuku
-		{
-			class FindDialog : public Notification
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::FindDialog Ui_;
-			public:
-				FindDialog (QWidget* = 0);
-				virtual ~FindDialog ();
+		Ui::FindDialog Ui_;
+	public:
+		FindDialog (QWidget* = 0);
+		virtual ~FindDialog ();
 
-				void SetText (const QString&);
-				void SetSuccessful (bool);
-				void Focus ();
-			private slots:
-				void on_Pattern__textChanged (const QString&);
-				void on_FindButton__released ();
-				void reject ();
-			signals:
-				void next (const QString&, QWebPage::FindFlags);
-			};
-		};
+		void SetText (const QString&);
+		void SetSuccessful (bool);
+		void Focus ();
+	private slots:
+		void on_Pattern__textChanged (const QString&);
+		void on_FindButton__released ();
+		void reject ();
+	signals:
+		void next (const QString&, QWebPage::FindFlags);
 	};
-};
+}
+}
 
 #endif
-

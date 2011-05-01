@@ -27,11 +27,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -409,8 +405,6 @@ namespace OnlineBookmarks
 				QTimer::singleShot (diff * 1000, this, SLOT (checkUploadPeriod ()));
 		}
 	}
-}
-}
 }
 }
 }

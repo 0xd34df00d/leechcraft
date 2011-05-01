@@ -21,48 +21,42 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	Core::Core ()
+	: Plugin_ (0)
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					Core::Core ()
-					: Plugin_ (0)
-					{
-					}
+	}
 
-					Core& Core::Instance ()
-					{
-						static Core core;
-						return core;
-					}
+	Core& Core::Instance ()
+	{
+		static Core core;
+		return core;
+	}
 
-					void Core::Release ()
-					{
-						delete Plugin_;
-					}
+	void Core::Release ()
+	{
+		delete Plugin_;
+	}
 
-					void Core::SetProxy (ICoreProxy_ptr proxy)
-					{
-						Proxy_ = proxy;
-					}
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
 
-					ICoreProxy_ptr Core::GetProxy () const
-					{
-						return Proxy_;
-					}
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
 
-					WYFVPlugin* Core::GetWYFVPlugin ()
-					{
-						if (!Plugin_)
-							Plugin_ = new WYFVPlugin (this);
-						return Plugin_;
-					}
-				};
-			};
-		};
-	};
-};
+	WYFVPlugin* Core::GetWYFVPlugin ()
+	{
+		if (!Plugin_)
+			Plugin_ = new WYFVPlugin (this);
+		return Plugin_;
+	}
+}
+}
+}

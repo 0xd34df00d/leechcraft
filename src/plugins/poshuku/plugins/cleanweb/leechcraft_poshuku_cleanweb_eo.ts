@@ -28,29 +28,29 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
+    <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="+101"/>
+        <location filename="cleanweb.cpp" line="+97"/>
         <source>Blocks unwanted ads.</source>
-        <translation>Bloku evitindan anoncon.</translation>
+        <translation type="unfinished">Bloku evitindan anoncon.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
+    <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="+237"/>
+        <location filename="core.cpp" line="+233"/>
         <source>Name</source>
-        <translation>Nomo</translation>
+        <translation type="unfinished">Nomo</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Last updated</source>
-        <translation>Laste ĝisdatigita</translation>
+        <translation type="unfinished">Laste ĝisdatigita</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation type="unfinished">URL</translation>
     </message>
     <message>
         <location line="+177"/>
@@ -70,13 +70,13 @@
     <message>
         <location line="+35"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
-        <translation>La abono %1 ne estis delegita.</translation>
+        <translation type="unfinished">La abono %1 ne estis delegita.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashOnClickWhitelist</name>
+    <name>LeechCraft::Poshuku::CleanWeb::FlashOnClickWhitelist</name>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="+41"/>
+        <location filename="flashonclickwhitelist.cpp" line="+37"/>
         <source>Whitelist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -97,11 +97,11 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashPlaceHolder</name>
+    <name>LeechCraft::Poshuku::CleanWeb::FlashPlaceHolder</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="+166"/>
+        <location filename="flashplaceholder.cpp" line="+162"/>
         <source>Load</source>
-        <translation>Ŝargi</translation>
+        <translation type="unfinished">Ŝargi</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -120,9 +120,9 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RuleOptionDialog</name>
+    <name>LeechCraft::Poshuku::CleanWeb::RuleOptionDialog</name>
     <message>
-        <location filename="ruleoptiondialog.cpp" line="+144"/>
+        <location filename="ruleoptiondialog.cpp" line="+140"/>
         <location line="+26"/>
         <source>Enter domain</source>
         <translation type="unfinished"></translation>
@@ -134,9 +134,9 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionAddDialog</name>
+    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionAddDialog</name>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="+90"/>
+        <location filename="subscriptionadddialog.cpp" line="+86"/>
         <source>Name</source>
         <translation type="unfinished">Nomo</translation>
     </message>
@@ -152,9 +152,9 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionsManager</name>
+    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsManager</name>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="+67"/>
+        <location filename="subscriptionsmanager.cpp" line="+63"/>
         <location line="+9"/>
         <location line="+9"/>
         <location line="+9"/>
@@ -179,11 +179,11 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::UserFiltersModel</name>
+    <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="+42"/>
+        <location filename="userfiltersmodel.cpp" line="+38"/>
         <source>Filter</source>
-        <translation>Filtrilo</translation>
+        <translation type="unfinished">Filtrilo</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -193,7 +193,7 @@
     <message>
         <location line="+1"/>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="unfinished">Tipo</translation>
     </message>
     <message>
         <location line="+1"/>

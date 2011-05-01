@@ -19,11 +19,11 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::WYFV;
+using namespace LeechCraft::Poshuku::WYFV;
 
 XmlSettingsManager::XmlSettingsManager ()
 {
-	LeechCraft::Util::BaseSettingsManager::Init ();
+	Util::BaseSettingsManager::Init ();
 }
 
 XmlSettingsManager* XmlSettingsManager::Instance ()

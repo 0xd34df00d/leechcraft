@@ -18,20 +18,15 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
-	class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 		
@@ -45,8 +40,5 @@ namespace OnlineBookmarks
 }
 }
 }
-}
-}
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-

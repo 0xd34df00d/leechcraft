@@ -21,11 +21,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace Fua
 {
@@ -50,8 +46,6 @@ namespace Fua
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-}
-}
 }
 }
 }

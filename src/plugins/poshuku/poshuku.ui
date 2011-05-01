@@ -22,13 +22,13 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="LeechCraft::Plugins::Poshuku::BrowserWidget" name="MainView_" native="true"/>
+    <widget class="LeechCraft::Poshuku::BrowserWidget" name="MainView_" native="true"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Plugins::Poshuku::BrowserWidget</class>
+   <class>LeechCraft::Poshuku::BrowserWidget</class>
    <extends>QWidget</extends>
    <header>browserwidget.h</header>
    <container>1</container>

@@ -24,11 +24,7 @@ class QWizardPage;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -37,8 +33,6 @@ namespace CleanWeb
 	public:
 		QList<QWizardPage*> GetPages ();
 	};
-}
-}
 }
 }
 }

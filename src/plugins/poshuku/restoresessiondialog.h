@@ -23,28 +23,24 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class RestoreSessionDialog : public QDialog
 	{
-		namespace Poshuku
-		{
-			class RestoreSessionDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::RestoreSessionDialog Ui_;
-			public:
-				RestoreSessionDialog (QWidget* = 0);
-				virtual ~RestoreSessionDialog ();
+		Ui::RestoreSessionDialog Ui_;
+	public:
+		RestoreSessionDialog (QWidget* = 0);
+		virtual ~RestoreSessionDialog ();
 
-				void AddPair (const QString&, const QString&);
-				QList<int> GetSelectedURLs () const;
-			private slots:
-				void on_SelectAll__released ();
-				void on_SelectNone__released ();
-			};
-		};
+		void AddPair (const QString&, const QString&);
+		QList<int> GetSelectedURLs () const;
+	private slots:
+		void on_SelectAll__released ();
+		void on_SelectNone__released ();
 	};
-};
+}
+}
 
 #endif
-

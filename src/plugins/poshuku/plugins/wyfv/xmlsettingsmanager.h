@@ -22,30 +22,23 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						XmlSettingsManager ();
-					public:
-						static XmlSettingsManager* Instance ();
-					protected:
-						virtual QSettings* BeginSettings () const;
-						virtual void EndSettings (QSettings*) const;
-					};
-				};
-			}
-		};
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager* Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
-};
+}
+}
+}
 
 #endif
-

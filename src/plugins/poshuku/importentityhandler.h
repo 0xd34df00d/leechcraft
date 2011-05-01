@@ -22,21 +22,18 @@
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace Poshuku
+{
+	class ImportEntityHandler : public QObject
 	{
-		namespace Poshuku
-		{
-			class ImportEntityHandler : public QObject
-			{
-			public:
-				ImportEntityHandler (QObject* = 0);
+	public:
+		ImportEntityHandler (QObject* = 0);
 
-				void Import (const Entity&);
-			};
-		}
-	}
+		void Import (const Entity&);
+	};
+}
 }
 
 #endif

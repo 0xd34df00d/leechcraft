@@ -24,11 +24,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -249,8 +245,6 @@ namespace CleanWeb
 			ok->setEnabled (Ui_.String_->text ().size ());
 		}
 	}
-}
-}
 }
 }
 }

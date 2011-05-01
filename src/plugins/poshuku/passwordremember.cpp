@@ -23,79 +23,75 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	PasswordRemember::PasswordRemember (QWidget *parent)
+	: Notification (parent)
 	{
-		namespace Poshuku
+		Ui_.setupUi (this);
+
+		connect (this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				&Core::Instance (),
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+	}
+
+	void PasswordRemember::add (const PageFormsData_t& data)
+	{
+		TempData_ = data;
+
+		show ();
+	}
+
+	void PasswordRemember::on_Remember__released ()
+	{
+		QList<QVariant> keys;
+		QList<QVariant> values;
+		Q_FOREACH (const QString& key, TempData_.keys ())
 		{
-			PasswordRemember::PasswordRemember (QWidget *parent)
-			: Notification (parent)
-			{
-				Ui_.setupUi (this);
+			keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + key.toUtf8 ();
+			QVariantList value;
+			Q_FOREACH (const ElementData& ed, TempData_ [key])
+				value << QVariant::fromValue<ElementData> (ed);
+			values << QVariant (value);
+		}
+		if (keys.size ())
+		{
+			Entity e = Util::MakeEntity (keys,
+					QString (),
+					Internal,
+					"x-leechcraft/data-persistent-save");
+			e.Additional_ ["Values"] = values;
+			emit delegateEntity (e, 0, 0);
+		}
 
-				connect (this,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-						&Core::Instance (),
-						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-			}
+		TempData_.clear ();
 
-			void PasswordRemember::add (const PageFormsData_t& data)
-			{
-				TempData_ = data;
+		hide ();
+	}
 
-				show ();
-			}
+	void PasswordRemember::on_NotNow__released ()
+	{
+		TempData_.clear ();
+		hide ();
+	}
 
-			void PasswordRemember::on_Remember__released ()
-			{
-				QList<QVariant> keys;
-				QList<QVariant> values;
-				Q_FOREACH (const QString& key, TempData_.keys ())
-				{
-					keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + key.toUtf8 ();
-					QVariantList value;
-					Q_FOREACH (const ElementData& ed, TempData_ [key])
-						value << QVariant::fromValue<ElementData> (ed);
-					values << QVariant (value);
-				}
-				if (keys.size ())
-				{
-					Entity e = Util::MakeEntity (keys,
-							QString (),
-							Internal,
-							"x-leechcraft/data-persistent-save");
-					e.Additional_ ["Values"] = values;
-					emit delegateEntity (e, 0, 0);
-				}
+	void PasswordRemember::on_Never__released ()
+	{
+		if (TempData_.size ())
+		{
+			QSet<QString> urls;
+			Q_FOREACH (const QString& key, TempData_.keys ())
+				Q_FOREACH (const ElementData& ed, TempData_ [key])
+					urls << ed.PageURL_.toString ();
 
-				TempData_.clear ();
+			Q_FOREACH (const QString& url, urls)
+				Core::Instance ().GetStorageBackend ()->
+					SetFormsIgnored (url, true);
+		}
 
-				hide ();
-			}
-
-			void PasswordRemember::on_NotNow__released ()
-			{
-				TempData_.clear ();
-				hide ();
-			}
-
-			void PasswordRemember::on_Never__released ()
-			{
-				if (TempData_.size ())
-				{
-					QSet<QString> urls;
-					Q_FOREACH (const QString& key, TempData_.keys ())
-						Q_FOREACH (const ElementData& ed, TempData_ [key])
-							urls << ed.PageURL_.toString ();
-
-					Q_FOREACH (const QString& url, urls)
-						Core::Instance ().GetStorageBackend ()->
-							SetFormsIgnored (url, true);
-				}
-
-				TempData_.clear ();
-				hide ();
-			}
-		};
-	};
-};
-
+		TempData_.clear ();
+		hide ();
+	}
+}
+}

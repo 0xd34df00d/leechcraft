@@ -24,49 +24,45 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	HideableTabWidget::HideableTabWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		namespace Poshuku
-		{
-			HideableTabWidget::HideableTabWidget (QWidget *parent)
-			: QWidget (parent)
-			{
-				Ui_.setupUi (this);
+		Ui_.setupUi (this);
 
-				TabBar_ = new QTabBar;
-				TabBar_->setShape (QTabBar::RoundedWest);
-				TabBar_->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Expanding);
-				connect (TabBar_,
-						SIGNAL (currentChanged (int)),
-						Ui_.Stack_,
-						SLOT (setCurrentIndex (int)));
-				connect (Ui_.Stack_,
-						SIGNAL (currentChanged (int)),
-						TabBar_,
-						SLOT (setCurrentIndex (int)));
+		TabBar_ = new QTabBar;
+		TabBar_->setShape (QTabBar::RoundedWest);
+		TabBar_->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Expanding);
+		connect (TabBar_,
+				SIGNAL (currentChanged (int)),
+				Ui_.Stack_,
+				SLOT (setCurrentIndex (int)));
+		connect (Ui_.Stack_,
+				SIGNAL (currentChanged (int)),
+				TabBar_,
+				SLOT (setCurrentIndex (int)));
 
-				QVBoxLayout *tabLay = new QVBoxLayout;
-				QToolBar *hc = new QToolBar;
-				hc->setFixedWidth (QApplication::fontMetrics ().width ("<"));
-				tabLay->addWidget (hc);
-				tabLay->addWidget (TabBar_);
-				tabLay->setStretch (1, 10);
-				tabLay->setContentsMargins (0, 0, 0, 0);
-				tabLay->setSizeConstraint (QLayout::SetMinimumSize);
-				qobject_cast<QHBoxLayout*> (layout ())->insertLayout (0, tabLay);
-			}
+		QVBoxLayout *tabLay = new QVBoxLayout;
+		QToolBar *hc = new QToolBar;
+		hc->setFixedWidth (QApplication::fontMetrics ().width ("<"));
+		tabLay->addWidget (hc);
+		tabLay->addWidget (TabBar_);
+		tabLay->setStretch (1, 10);
+		tabLay->setContentsMargins (0, 0, 0, 0);
+		tabLay->setSizeConstraint (QLayout::SetMinimumSize);
+		qobject_cast<QHBoxLayout*> (layout ())->insertLayout (0, tabLay);
+	}
 
-			void HideableTabWidget::AddPage (const QString& name, QWidget *widget)
-			{
-				TabBar_->addTab (name);
-				Ui_.Stack_->addWidget (widget);
-			}
-			
-			QTabBar* HideableTabWidget::GetMainTabBar () const
-			{
-				return TabBar_;
-			}
-		};
-	};
-};
-
+	void HideableTabWidget::AddPage (const QString& name, QWidget *widget)
+	{
+		TabBar_->addTab (name);
+		Ui_.Stack_->addWidget (widget);
+	}
+	
+	QTabBar* HideableTabWidget::GetMainTabBar () const
+	{
+		return TabBar_;
+	}
+}
+}

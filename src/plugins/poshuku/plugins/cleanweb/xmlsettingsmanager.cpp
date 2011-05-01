@@ -21,11 +21,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -49,8 +45,6 @@ namespace CleanWeb
 	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
-}
-}
 }
 }
 }

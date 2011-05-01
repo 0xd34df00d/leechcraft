@@ -27,45 +27,41 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	ProgressLineEdit::ProgressLineEdit (QWidget *parent)
+	: QLineEdit (parent)
+	, IsCompleting_ (false)
 	{
-		namespace Poshuku
-		{
-			ProgressLineEdit::ProgressLineEdit (QWidget *parent)
-			: QLineEdit (parent)
-			, IsCompleting_ (false)
-			{
-				QCompleter *completer = new QCompleter (this);
-				completer->setModel (Core::Instance ().GetURLCompletionModel ());
-				completer->setCompletionRole (URLCompletionModel::RoleURL);
-				completer->setCompletionMode (QCompleter::UnfilteredPopupCompletion);
-				setCompleter (completer);
+		QCompleter *completer = new QCompleter (this);
+		completer->setModel (Core::Instance ().GetURLCompletionModel ());
+		completer->setCompletionRole (URLCompletionModel::RoleURL);
+		completer->setCompletionMode (QCompleter::UnfilteredPopupCompletion);
+		setCompleter (completer);
 
-				connect (completer,
-						SIGNAL (activated (const QModelIndex&)),
-						this,
-						SLOT (handleCompleterActivated ()));
+		connect (completer,
+				SIGNAL (activated (const QModelIndex&)),
+				this,
+				SLOT (handleCompleterActivated ()));
 
-				connect (this,
-						SIGNAL (textEdited (const QString&)),
-						Core::Instance ().GetURLCompletionModel (),
-						SLOT (setBase (const QString&)));
-			}
+		connect (this,
+				SIGNAL (textEdited (const QString&)),
+				Core::Instance ().GetURLCompletionModel (),
+				SLOT (setBase (const QString&)));
+	}
 
-			ProgressLineEdit::~ProgressLineEdit ()
-			{
-			}
+	ProgressLineEdit::~ProgressLineEdit ()
+	{
+	}
 
-			bool ProgressLineEdit::IsCompleting () const
-			{
-				return IsCompleting_;
-			}
+	bool ProgressLineEdit::IsCompleting () const
+	{
+		return IsCompleting_;
+	}
 
-			void ProgressLineEdit::handleCompleterActivated ()
-			{
-				emit returnPressed ();
-			}
-		};
-	};
-};
-
+	void ProgressLineEdit::handleCompleterActivated ()
+	{
+		emit returnPressed ();
+	}
+}
+}

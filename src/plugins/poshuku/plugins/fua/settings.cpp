@@ -23,11 +23,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace Fua
 {
@@ -86,8 +82,6 @@ namespace Fua
 		qDeleteAll (Model_->takeRow (cur.row ()));
 		Fua_->Save ();
 	}
-}
-}
 }
 }
 }

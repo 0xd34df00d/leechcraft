@@ -25,25 +25,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	JSProxy::JSProxy (QObject *parent)
+	: QObject (parent)
 	{
-		namespace Poshuku
-		{
-			JSProxy::JSProxy (QObject *parent)
-			: QObject (parent)
-			{
-			}
+	}
 
-			void JSProxy::debug (const QString& string)
-			{
-				qDebug () << Q_FUNC_INFO << string;
-			}
+	void JSProxy::debug (const QString& string)
+	{
+		qDebug () << Q_FUNC_INFO << string;
+	}
 
-			void JSProxy::warning (const QString& string)
-			{
-				qWarning () << Q_FUNC_INFO << string;
-			}
-		};
-	};
-};
-
+	void JSProxy::warning (const QString& string)
+	{
+		qWarning () << Q_FUNC_INFO << string;
+	}
+}
+}

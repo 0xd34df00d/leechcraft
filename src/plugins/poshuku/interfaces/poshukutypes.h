@@ -21,31 +21,27 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	/** Enumeration describing the part of menu that's being constructed
+	 * inside QWebView's subclass' contextMenuEvent.
+	 */
+	enum WebViewCtxMenuStage
 	{
-		namespace Poshuku
-		{
-			/** Enumeration describing the part of menu that's being
-			 * constructed inside QWebView's subclass'
-			 * contextMenuEvent.
-			 */
-			enum WebViewCtxMenuStage
-			{
-				/// Just the beginning of menu construction.
-				WVSStart,
-				/// Stage related to clicking on a hyperlink finished.
-				WVSAfterLink,
-				/// Stage related to clicking on an image finished.
-				WVSAfterImage,
-				/// Stage related to clicking with having some
-				/// selected text finished.
-				WVSAfterSelectedText,
-				/// The standard set of actions was embedded, This
-				/// stage is just before executing the menu.
-				WVSAfterFinish
-			};
-		};
+		/// Just the beginning of menu construction.
+		WVSStart,
+		/// Stage related to clicking on a hyperlink finished.
+		WVSAfterLink,
+		/// Stage related to clicking on an image finished.
+		WVSAfterImage,
+		/// Stage related to clicking with having some selected text
+		/// finished.
+		WVSAfterSelectedText,
+		/// The standard set of actions was embedded. This stage is just
+		/// before executing the menu.
+		WVSAfterFinish
 	};
-};
+}
+}
 
 #endif

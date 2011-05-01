@@ -23,44 +23,37 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	WYFVPlugin::WYFVPlugin (QObject *parent)
+	: QObject (parent)
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					WYFVPlugin::WYFVPlugin (QObject *parent)
-					: QObject (parent)
-					{
-						PlayerFactory::Init ();
-					}
+		PlayerFactory::Init ();
+	}
 
-					QWebPluginFactory::Plugin WYFVPlugin::Plugin (bool isq) const
-					{
-						if (isq)
-							throw "I want to be anonymous too";
-						QWebPluginFactory::Plugin result;
-						result.name = "WYFVPlugin";
-						QWebPluginFactory::MimeType mime;
-						mime.fileExtensions << "swf";
-						mime.name = "application/x-shockwave-flash";
-						result.mimeTypes << mime;
-						return result;
-					}
+	QWebPluginFactory::Plugin WYFVPlugin::Plugin (bool isq) const
+	{
+		if (isq)
+			throw "I want to be anonymous too";
+		QWebPluginFactory::Plugin result;
+		result.name = "WYFVPlugin";
+		QWebPluginFactory::MimeType mime;
+		mime.fileExtensions << "swf";
+		mime.name = "application/x-shockwave-flash";
+		result.mimeTypes << mime;
+		return result;
+	}
 
-					QWidget* WYFVPlugin::Create (const QString&,
-							const QUrl& url,
-							const QStringList& args,
-							const QStringList& values)
-					{
-						Player *p = PlayerFactory::Create (url, args, values);
-						return p;
-					}
-				};
-			};
-		};
-	};
-};
-
+	QWidget* WYFVPlugin::Create (const QString&,
+			const QUrl& url,
+			const QStringList& args,
+			const QStringList& values)
+	{
+		Player *p = PlayerFactory::Create (url, args, values);
+		return p;
+	}
+}
+}
+}

@@ -23,24 +23,20 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class EditBookmarkDialog : public QDialog
 	{
-		namespace Poshuku
-		{
-			class EditBookmarkDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::EditBookmarkDialog Ui_;
-			public:
-				EditBookmarkDialog (const QModelIndex&, QWidget* = 0);
+		Ui::EditBookmarkDialog Ui_;
+	public:
+		EditBookmarkDialog (const QModelIndex&, QWidget* = 0);
 
-				QString GetTitle () const;
-				QStringList GetTags () const;
-			};
-		};
+		QString GetTitle () const;
+		QStringList GetTags () const;
 	};
-};
+}
+}
 
 #endif
-

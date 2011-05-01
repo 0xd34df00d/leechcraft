@@ -25,25 +25,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class HistoryWidget : public QWidget
 	{
-		namespace Poshuku
-		{
-			class HistoryWidget : public QWidget
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::HistoryWidget Ui_;
-				std::auto_ptr<HistoryFilterModel> HistoryFilterModel_;
-			public:
-				HistoryWidget (QWidget* = 0);
-			private slots:
-				void on_HistoryView__activated (const QModelIndex&);
-				void updateHistoryFilter ();
-			};
-		};
+		Ui::HistoryWidget Ui_;
+		std::auto_ptr<HistoryFilterModel> HistoryFilterModel_;
+	public:
+		HistoryWidget (QWidget* = 0);
+	private slots:
+		void on_HistoryView__activated (const QModelIndex&);
+		void updateHistoryFilter ();
 	};
-};
+}
+}
 
 #endif
-

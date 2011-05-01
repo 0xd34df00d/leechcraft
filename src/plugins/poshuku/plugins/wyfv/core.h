@@ -23,38 +23,31 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class WYFVPlugin;
+
+	class Core : public QObject
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class WYFVPlugin;
+		Q_OBJECT
 
-					class Core : public QObject
-					{
-						Q_OBJECT
+		WYFVPlugin *Plugin_;
+		ICoreProxy_ptr Proxy_;
 
-						WYFVPlugin *Plugin_;
-						ICoreProxy_ptr Proxy_;
+		Core ();
+	public:
+		static Core& Instance ();
+		void Release ();
 
-						Core ();
-					public:
-						static Core& Instance ();
-						void Release ();
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
 
-						void SetProxy (ICoreProxy_ptr);
-						ICoreProxy_ptr GetProxy () const;
-
-						WYFVPlugin* GetWYFVPlugin ();
-					};
-				};
-			};
-		};
+		WYFVPlugin* GetWYFVPlugin ();
 	};
-};
+}
+}
+}
 
 #endif
-

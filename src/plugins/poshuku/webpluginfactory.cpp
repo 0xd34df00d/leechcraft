@@ -22,74 +22,70 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	WebPluginFactory::WebPluginFactory (QObject *parent)
+	: QWebPluginFactory (parent)
 	{
-		namespace Poshuku
+		Core::Instance ().GetPluginManager ()->
+				RegisterHookable (this);
+		Reload ();
+	}
+
+	WebPluginFactory::~WebPluginFactory ()
+	{
+	}
+
+	QObject* WebPluginFactory::create (const QString& mime,
+			const QUrl& url,
+			const QStringList& args, const QStringList& params) const
+	{
+		QList<IWebPlugin*> plugins = MIME2Plugin_.values (mime);
+		Q_FOREACH (IWebPlugin *plugin, plugins)
 		{
-			WebPluginFactory::WebPluginFactory (QObject *parent)
-			: QWebPluginFactory (parent)
-			{
-				Core::Instance ().GetPluginManager ()->
-						RegisterHookable (this);
-				Reload ();
-			}
-
-			WebPluginFactory::~WebPluginFactory ()
-			{
-			}
-
-			QObject* WebPluginFactory::create (const QString& mime,
-					const QUrl& url,
-					const QStringList& args, const QStringList& params) const
-			{
-				QList<IWebPlugin*> plugins = MIME2Plugin_.values (mime);
-				Q_FOREACH (IWebPlugin *plugin, plugins)
-				{
-					QObject *result = plugin->Create (mime, url, args, params);
-					if (result)
-						return result;
-				}
-				return 0;
-			}
-
-			QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins () const
-			{
-				QList<Plugin> result;
-				Q_FOREACH (IWebPlugin *plugin, Plugins_)
-				{
-					try
-					{
-						result << plugin->Plugin (true);
-					}
-					catch (...)
-					{
-						// It's ok to do a plain catch(...) {},
-						// plugins refuse to add themselves to the list with this.
-					}
-				}
+			QObject *result = plugin->Create (mime, url, args, params);
+			if (result)
 				return result;
-			}
+		}
+		return 0;
+	}
 
-			void WebPluginFactory::refreshPlugins ()
+	QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins () const
+	{
+		QList<Plugin> result;
+		Q_FOREACH (IWebPlugin *plugin, Plugins_)
+		{
+			try
 			{
-				Reload ();
-				QWebPluginFactory::refreshPlugins ();
+				result << plugin->Plugin (true);
 			}
-
-			void WebPluginFactory::Reload ()
+			catch (...)
 			{
-				Plugins_.clear ();
-				MIME2Plugin_.clear ();
-
-				emit hookWebPluginFactoryReload (IHookProxy_ptr (new Util::DefaultHookProxy),
-						Plugins_);
-
-				Q_FOREACH (IWebPlugin *plugin, Plugins_)
-					Q_FOREACH (const QWebPluginFactory::MimeType mime,
-							plugin->Plugin (false).mimeTypes)
-						MIME2Plugin_.insertMulti (mime.name, plugin);
+				// It's ok to do a plain catch(...) {},
+				// plugins refuse to add themselves to the list with this.
 			}
-		};
-	};
-};
+		}
+		return result;
+	}
 
+	void WebPluginFactory::refreshPlugins ()
+	{
+		Reload ();
+		QWebPluginFactory::refreshPlugins ();
+	}
+
+	void WebPluginFactory::Reload ()
+	{
+		Plugins_.clear ();
+		MIME2Plugin_.clear ();
+
+		emit hookWebPluginFactoryReload (IHookProxy_ptr (new Util::DefaultHookProxy),
+				Plugins_);
+
+		Q_FOREACH (IWebPlugin *plugin, Plugins_)
+			Q_FOREACH (const QWebPluginFactory::MimeType mime,
+					plugin->Plugin (false).mimeTypes)
+				MIME2Plugin_.insertMulti (mime.name, plugin);
+	}
+}
+}

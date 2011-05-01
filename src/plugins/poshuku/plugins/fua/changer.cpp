@@ -21,11 +21,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace Fua
 {
@@ -77,8 +73,6 @@ namespace Fua
 			setEnabled (Ui_.Domain_->text ().size () &&
 					Ui_.IDString_->text ().size ());
 	}
-}
-}
 }
 }
 }

@@ -26,11 +26,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -85,11 +81,8 @@ namespace CleanWeb
 }
 }
 }
-}
-}
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RegExpsDict_t);
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::OptionsDict_t);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::RegExpsDict_t);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::OptionsDict_t);
 
 #endif
-

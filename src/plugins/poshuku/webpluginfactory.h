@@ -25,34 +25,30 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class WebPluginFactory : public QWebPluginFactory
 	{
-		namespace Poshuku
-		{
-			class WebPluginFactory : public QWebPluginFactory
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QList<IWebPlugin*> Plugins_;
-				typedef QHash<QString, IWebPlugin*> MIME2Plugin_t;
-				MIME2Plugin_t MIME2Plugin_;
-			public:
-				WebPluginFactory (QObject* = 0);
-				virtual ~WebPluginFactory ();
+		QList<IWebPlugin*> Plugins_;
+		typedef QHash<QString, IWebPlugin*> MIME2Plugin_t;
+		MIME2Plugin_t MIME2Plugin_;
+	public:
+		WebPluginFactory (QObject* = 0);
+		virtual ~WebPluginFactory ();
 
-				QObject* create (const QString&, const QUrl&,
-						const QStringList&, const QStringList&) const;
-				QList<Plugin> plugins () const;
-				void refreshPlugins ();
-			private:
-				void Reload ();
-			signals:
-				void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-						QList<IWebPlugin*>&);
-			};
-		};
+		QObject* create (const QString&, const QUrl&,
+				const QStringList&, const QStringList&) const;
+		QList<Plugin> plugins () const;
+		void refreshPlugins ();
+	private:
+		void Reload ();
+	signals:
+		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+				QList<IWebPlugin*>&);
 	};
-};
+}
+}
 
 #endif
-

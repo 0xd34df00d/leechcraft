@@ -25,11 +25,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace FileScheme
 {
@@ -121,9 +117,7 @@ namespace FileScheme
 }
 }
 }
-}
-}
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_filescheme,
-		LeechCraft::Plugins::Poshuku::Plugins::FileScheme::FileScheme);
+		LeechCraft::Poshuku::FileScheme::FileScheme);
 

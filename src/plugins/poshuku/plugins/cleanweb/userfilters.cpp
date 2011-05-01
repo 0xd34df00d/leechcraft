@@ -22,11 +22,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -62,8 +58,6 @@ namespace CleanWeb
 		Core::Instance ()
 			.GetUserFiltersModel ()->Remove (current.row ());
 	}
-}
-}
 }
 }
 }

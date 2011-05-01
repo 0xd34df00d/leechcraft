@@ -18,19 +18,13 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H
-
 #include <QObject>
 #include <QDateTime>
 #include "interfaces/structures.h"
 
-
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -64,6 +58,5 @@ namespace OnlineBookmarks
 }
 }
 }
-}
-}
+
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SYNCBOOKMARKS_H

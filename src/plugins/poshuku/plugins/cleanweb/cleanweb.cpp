@@ -34,11 +34,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -154,7 +150,7 @@ namespace CleanWeb
 	}
 
 	void CleanWeb::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-			QList<LeechCraft::Plugins::Poshuku::IWebPlugin*>& plugins)
+			QList<LeechCraft::Poshuku::IWebPlugin*>& plugins)
 	{
 		plugins << Core::Instance ().GetFlashOnClick ();
 	}
@@ -178,7 +174,5 @@ namespace CleanWeb
 }
 }
 }
-}
-}
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb);
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, LeechCraft::Poshuku::CleanWeb::CleanWeb);

@@ -29,11 +29,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -83,8 +79,6 @@ namespace CleanWeb
 		Q_FOREACH (const QUrl& url, urlsToAdd)
 			Core::Instance ().Add (url);
 	}
-}
-}
 }
 }
 }

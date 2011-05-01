@@ -21,32 +21,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace Poshuku
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				LeechCraft::Util::BaseSettingsManager::Init ();
-			}
-			
-			XmlSettingsManager* XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager manager;
-				return &manager;
-			}
-			
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Poshuku");
-				return settings;
-			}
-			
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-		};
-	};
-};
-
+		Util::BaseSettingsManager::Init ();
+	}
+	
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
+	
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku");
+		return settings;
+	}
+	
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}

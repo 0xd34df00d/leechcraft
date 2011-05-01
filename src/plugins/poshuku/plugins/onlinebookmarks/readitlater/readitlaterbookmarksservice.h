@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATERBOOKMARKSSERVICE_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATERBOOKMARKSSERVICE_H
-
 #include <QIcon>
 #include <QUrl>
 #include "abstractbookmarksservice.h"
@@ -27,11 +26,7 @@ class QNetworkReply;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -52,7 +47,7 @@ namespace OnlineBookmarks
 		QUrl ApiUrl_;
 		QByteArray RequestString_;
 	public:
-		ReadItLaterBookmarksService (QWidget* = 0);
+		ReadItLaterBookmarksService (QObject* = 0);
 		QString GetName () const;
 		QIcon GetIcon () const;
 		void CheckValidAccountData (const QString&, const QString&);
@@ -74,8 +69,5 @@ namespace OnlineBookmarks
 }
 }
 }
-}
-}
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATERBOOKMARKSSERVICE_H
-

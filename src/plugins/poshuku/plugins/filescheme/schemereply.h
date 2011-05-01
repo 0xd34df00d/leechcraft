@@ -23,11 +23,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace FileScheme
 {
@@ -51,8 +47,5 @@ namespace FileScheme
 }
 }
 }
-}
-}
 
 #endif
-

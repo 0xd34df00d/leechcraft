@@ -29,11 +29,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -213,6 +209,3 @@ namespace OnlineBookmarks
 }
 }
 }
-}
-}
-

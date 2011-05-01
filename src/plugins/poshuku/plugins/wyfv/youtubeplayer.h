@@ -28,49 +28,42 @@ class QNetworkReply;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class RelatedWidget;
+
+	class YoutubePlayer : public Player
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class RelatedWidget;
+		Q_OBJECT
 
-					class YoutubePlayer : public Player
-					{
-						Q_OBJECT
-
-						QUrl OriginalURL_;
-						RelatedWidget *RelatedWidget_;
-					public:
-						YoutubePlayer (const QUrl&, const QStringList&, const QStringList&);
-						virtual ~YoutubePlayer ();
-					private:
-						void Setup ();
-						void FillRelated (const QStringList&);
-						QNetworkRequest MakeReq (const QUrl&) const;
-						QNetworkReply* ReqAndContinueFormatCheck (const QUrl&);
-					private slots:
-						void newQualityRequested (int);
-						void handleFormatCheckFinished ();
-						void handleRelatedToggled (bool);
-					};
-
-					class YoutubePlayerCreator : public AbstractPlayerCreator
-					{
-					public:
-						virtual bool WouldRatherPlay (const QUrl&) const;
-						virtual Player* Create (const QUrl&,
-								const QStringList&,
-								const QStringList&) const;
-					};
-				};
-			};
-		};
+		QUrl OriginalURL_;
+		RelatedWidget *RelatedWidget_;
+	public:
+		YoutubePlayer (const QUrl&, const QStringList&, const QStringList&);
+		virtual ~YoutubePlayer ();
+	private:
+		void Setup ();
+		void FillRelated (const QStringList&);
+		QNetworkRequest MakeReq (const QUrl&) const;
+		QNetworkReply* ReqAndContinueFormatCheck (const QUrl&);
+	private slots:
+		void newQualityRequested (int);
+		void handleFormatCheckFinished ();
+		void handleRelatedToggled (bool);
 	};
-};
+
+	class YoutubePlayerCreator : public AbstractPlayerCreator
+	{
+	public:
+		virtual bool WouldRatherPlay (const QUrl&) const;
+		virtual Player* Create (const QUrl&,
+				const QStringList&,
+				const QStringList&) const;
+	};
+}
+}
+}
 
 #endif
-

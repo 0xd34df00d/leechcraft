@@ -21,11 +21,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace FatApe
 {
@@ -70,7 +66,5 @@ namespace FatApe
 }
 }
 }
-}
-}
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fatape, LeechCraft::Plugins::Poshuku::Plugins::FatApe::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fatape, LeechCraft::Poshuku::FatApe::Plugin);

@@ -24,11 +24,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace FatApe
 {
@@ -48,8 +44,6 @@ namespace FatApe
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
 	};
-}
-}
 }
 }
 }

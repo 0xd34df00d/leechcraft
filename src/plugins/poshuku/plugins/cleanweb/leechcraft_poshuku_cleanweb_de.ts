@@ -28,222 +28,222 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
+    <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="101"/>
+        <location filename="cleanweb.cpp" line="97"/>
         <source>Blocks unwanted ads.</source>
-        <translation>Blockiert ungewollte Werbung.</translation>
+        <translation type="unfinished">Blockiert ungewollte Werbung.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
+    <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="237"/>
+        <location filename="core.cpp" line="233"/>
         <source>Name</source>
-        <translation>Name</translation>
+        <translation type="unfinished">Name</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="238"/>
+        <location filename="core.cpp" line="234"/>
         <source>Last updated</source>
-        <translation>Zuletzt aktualisiert</translation>
+        <translation type="unfinished">Zuletzt aktualisiert</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="239"/>
+        <location filename="core.cpp" line="235"/>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation type="unfinished">URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="416"/>
+        <location filename="core.cpp" line="412"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
-        <translation>Blockiert von Poshuku CleanWeb: %1</translation>
+        <translation type="unfinished">Blockiert von Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="462"/>
+        <location filename="core.cpp" line="458"/>
         <source>Block image...</source>
-        <translation>Blockiere Bild…</translation>
+        <translation type="unfinished">Blockiere Bild…</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="720"/>
+        <location filename="core.cpp" line="716"/>
         <source>The subscription %1 was successfully added.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="755"/>
+        <location filename="core.cpp" line="751"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
-        <translation>Das Abonnement %1 wurde nicht delegiert.</translation>
+        <translation type="unfinished">Das Abonnement %1 wurde nicht delegiert.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashOnClickWhitelist</name>
+    <name>LeechCraft::Poshuku::CleanWeb::FlashOnClickWhitelist</name>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="41"/>
+        <location filename="flashonclickwhitelist.cpp" line="37"/>
         <source>Whitelist</source>
-        <translation>Liste der zugelassenen Webseiten</translation>
+        <translation type="unfinished">Liste der zugelassenen Webseiten</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="113"/>
+        <location filename="flashonclickwhitelist.cpp" line="109"/>
         <source>Add URL to whitelist</source>
-        <translation>Füge URL zur Liste der zugelassenen Webseiten hinzu</translation>
+        <translation type="unfinished">Füge URL zur Liste der zugelassenen Webseiten hinzu</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="114"/>
+        <location filename="flashonclickwhitelist.cpp" line="110"/>
         <source>Please enter the URL to add to the FlashOnClick&apos;s whitelist</source>
-        <translation>Bitte geben Sie eine URL ein um die FlashOnClick&apos;s zur Liste der zugelassenen Webseiten hinzuzufügen</translation>
+        <translation type="unfinished">Bitte geben Sie eine URL ein um die FlashOnClick&apos;s zur Liste der zugelassenen Webseiten hinzuzufügen</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="129"/>
+        <location filename="flashonclickwhitelist.cpp" line="125"/>
         <source>This URL is already matched by another whitelist entry.</source>
-        <translation>Diese URL stimmt bereits mit einem anderen Eintrag der Whitelist überein.</translation>
+        <translation type="unfinished">Diese URL stimmt bereits mit einem anderen Eintrag der Whitelist überein.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashPlaceHolder</name>
+    <name>LeechCraft::Poshuku::CleanWeb::FlashPlaceHolder</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="166"/>
+        <location filename="flashplaceholder.cpp" line="162"/>
         <source>Load</source>
-        <translation>Laden</translation>
+        <translation type="unfinished">Laden</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="172"/>
+        <location filename="flashplaceholder.cpp" line="168"/>
         <source>Add URL to whitelist...</source>
-        <translation>Füge URL zur Liste der zugelassenen Webseiten hinzu…</translation>
+        <translation type="unfinished">Füge URL zur Liste der zugelassenen Webseiten hinzu…</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="177"/>
+        <location filename="flashplaceholder.cpp" line="173"/>
         <source>Add host to whitelist...</source>
-        <translation>Füge Host zur Liste der zugelassenen Webseiten hinzu…</translation>
+        <translation type="unfinished">Füge Host zur Liste der zugelassenen Webseiten hinzu…</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="189"/>
+        <location filename="flashplaceholder.cpp" line="185"/>
         <source>Hide</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RuleOptionDialog</name>
+    <name>LeechCraft::Poshuku::CleanWeb::RuleOptionDialog</name>
     <message>
-        <location filename="ruleoptiondialog.cpp" line="144"/>
-        <location filename="ruleoptiondialog.cpp" line="170"/>
+        <location filename="ruleoptiondialog.cpp" line="140"/>
+        <location filename="ruleoptiondialog.cpp" line="166"/>
         <source>Enter domain</source>
-        <translation>Geben Sie eine Domain ein</translation>
+        <translation type="unfinished">Geben Sie eine Domain ein</translation>
     </message>
     <message>
-        <location filename="ruleoptiondialog.cpp" line="195"/>
+        <location filename="ruleoptiondialog.cpp" line="191"/>
         <source>Are you sure you want to remove %1?</source>
-        <translation>Sind Sie sicher, dass Sie %1 löschen möchten?</translation>
+        <translation type="unfinished">Sind Sie sicher, dass Sie %1 löschen möchten?</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionAddDialog</name>
+    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionAddDialog</name>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="90"/>
+        <location filename="subscriptionadddialog.cpp" line="86"/>
         <source>Name</source>
-        <translation>Name</translation>
+        <translation type="unfinished">Name</translation>
     </message>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="91"/>
+        <location filename="subscriptionadddialog.cpp" line="87"/>
         <source>Purpose</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="92"/>
+        <location filename="subscriptionadddialog.cpp" line="88"/>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation type="unfinished">URL</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionsManager</name>
+    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsManager</name>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="67"/>
-        <location filename="subscriptionsmanager.cpp" line="76"/>
-        <location filename="subscriptionsmanager.cpp" line="85"/>
-        <location filename="subscriptionsmanager.cpp" line="94"/>
+        <location filename="subscriptionsmanager.cpp" line="63"/>
+        <location filename="subscriptionsmanager.cpp" line="72"/>
+        <location filename="subscriptionsmanager.cpp" line="81"/>
+        <location filename="subscriptionsmanager.cpp" line="90"/>
         <source>Error adding subscription</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="68"/>
+        <location filename="subscriptionsmanager.cpp" line="64"/>
         <source>Can&apos;t add subscription without a title.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="77"/>
-        <location filename="subscriptionsmanager.cpp" line="86"/>
+        <location filename="subscriptionsmanager.cpp" line="73"/>
+        <location filename="subscriptionsmanager.cpp" line="82"/>
         <source>Subscription with such title allready exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="95"/>
+        <location filename="subscriptionsmanager.cpp" line="91"/>
         <source>Invalid URL.&lt;br /&gt;Valid URL format is: abp://subscribe/?location=URL</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::UserFiltersModel</name>
+    <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="38"/>
+        <source>Filter</source>
+        <translation type="unfinished">Filter</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="39"/>
+        <source>Policy</source>
+        <translation type="unfinished">Regelungen</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="40"/>
+        <source>Type</source>
+        <translation type="unfinished">Typ</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="41"/>
+        <source>Case sensitive</source>
+        <translation type="unfinished">Fallgenauigkeit</translation>
+    </message>
     <message>
         <location filename="userfiltersmodel.cpp" line="42"/>
-        <source>Filter</source>
-        <translation>Filter</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="43"/>
-        <source>Policy</source>
-        <translation>Regelungen</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="44"/>
-        <source>Type</source>
-        <translation>Typ</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="45"/>
-        <source>Case sensitive</source>
-        <translation>Fallgenauigkeit</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="46"/>
         <source>Domains</source>
-        <translation>Domains</translation>
+        <translation type="unfinished">Domains</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="81"/>
+        <location filename="userfiltersmodel.cpp" line="77"/>
         <source>Allowed</source>
-        <translation>Erlaubt</translation>
+        <translation type="unfinished">Erlaubt</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="82"/>
+        <location filename="userfiltersmodel.cpp" line="78"/>
         <source>Blocked</source>
-        <translation>Blockiert</translation>
+        <translation type="unfinished">Blockiert</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="87"/>
+        <location filename="userfiltersmodel.cpp" line="83"/>
         <source>Wildcard</source>
-        <translation>Platzhalter</translation>
+        <translation type="unfinished">Platzhalter</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="85"/>
+        <source>Regexp</source>
+        <translation type="unfinished">reg. Ausdruck</translation>
     </message>
     <message>
         <location filename="userfiltersmodel.cpp" line="89"/>
-        <source>Regexp</source>
-        <translation>reg. Ausdruck</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="93"/>
         <source>True</source>
-        <translation>Wahr</translation>
+        <translation type="unfinished">Wahr</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="94"/>
+        <location filename="userfiltersmodel.cpp" line="90"/>
         <source>False</source>
-        <translation>Falsch</translation>
+        <translation type="unfinished">Falsch</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="148"/>
+        <location filename="userfiltersmodel.cpp" line="144"/>
         <source>Add a filter</source>
-        <translation>Einen Filter hinzufügen</translation>
+        <translation type="unfinished">Einen Filter hinzufügen</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="204"/>
+        <location filename="userfiltersmodel.cpp" line="200"/>
         <source>Modify filter</source>
-        <translation>Filter bearbeiten</translation>
+        <translation type="unfinished">Filter bearbeiten</translation>
     </message>
 </context>
 <context>
