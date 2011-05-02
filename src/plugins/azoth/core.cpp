@@ -953,7 +953,7 @@ namespace Azoth
 			{
 				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
 				Q_FOREACH (const QString& key, map.keys ())
-					tip += key + ": " + map [key].toString () + "<br />";
+					tip += "<br />" + key + ": " + map [key].toString () + "<br />";
 			}
 		}
 		return tip;
