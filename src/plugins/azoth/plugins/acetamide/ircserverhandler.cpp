@@ -166,7 +166,8 @@ namespace Acetamide
 	void IrcServerHandler::LeaveChannel (const QString& channels,
 			const QString& msg)
 	{
-		IrcParser_->PartCommand (channels, msg);
+		IrcParser_->PartCommand (QStringList () << channels
+				<< QString (":" + msg));
 	}
 
 	QStringList IrcServerHandler::GetPrivateChats () const
@@ -521,6 +522,10 @@ namespace Acetamide
 		Command2Action_ ["invite"] =
 				boost::bind (&IrcServerHandler::InviteToChannel,
 					 this, _1, _2, _3);
+		Command2Action_ ["kick"] =
+				boost::bind (&IrcServerHandler::KickFromChannel,
+					 this, _1, _2, _3);
+
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -541,6 +546,10 @@ namespace Acetamide
 		Name2Command_ ["join"] =
 				boost::bind (&IrcServerHandler::JoinChannelByCmd, this,
 						_1);
+		Name2Command_ ["part"] =
+				boost::bind (&IrcParser::PartCommand, IrcParser_, _1);
+		Name2Command_ ["kick"] = boost::bind (&IrcParser::KickCommand,
+				IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -670,11 +679,14 @@ namespace Acetamide
 	void IrcServerHandler::LeaveParticipant (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
-		if (nick == NickName_)
-			return;
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
-		ChannelHandlers_ [channelID]->RemoveChannelUser (nick, msg);
+		if (nick == NickName_)
+			ChannelHandlers_ [channelID]->LeaveChannel (msg, false);
+		else
+			ChannelHandlers_ [channelID]->RemoveChannelUser (nick
+					, msg
+					, 0);
 	}
 
 	void IrcServerHandler::HandleIncomingMessage (const QString& nick,
@@ -900,6 +912,19 @@ namespace Acetamide
 			ich->ShowServiceMessage (outputMessage,
 					IMessage::MTEventMessage,
 					IMessage::MSTOther);
+	}
+
+	void IrcServerHandler::KickFromChannel (const QString& nick,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString channelID = (QString::fromUtf8 (params.first ().c_str ())
+				+ "@" + ServerOptions_.ServerName_).toLower ();
+
+		ChannelHandlers_ [channelID]->RemoveChannelUser (
+				QString::fromUtf8 (params.last ().c_str ())
+				, EncodedMessage (msg, IMessage::DIn)
+				, 1
+				, nick);
 	}
 
 	void IrcServerHandler::InitSocket ()

@@ -160,6 +160,8 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void InviteToChannel (const QString&,
 				const QList<std::string>&, const QString&);
+		void KickFromChannel (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

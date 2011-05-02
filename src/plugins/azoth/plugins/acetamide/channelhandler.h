@@ -68,15 +68,19 @@ namespace Acetamide
 		void SendPublicMessage (const QString&);
 		void HandleIncomingMessage (const QString&, const QString&);
 		void SetChannelUser (const QString&);
-		void RemoveChannelUser (const QString&, const QString&);
+		// 0 - leave , 1 - kick, 2 - ban
+		void RemoveChannelUser (const QString&, const QString&, int,
+				const QString& who = QString ());
 
 		void MakeJoinMessage (const QString&);
 		void MakeLeaveMessage (const QString&, const QString&);
+		void MakeKickMessage (const QString&, const QString&,
+				const QString&);
 
 		void SetMUCSubject (const QString&);
 		QString GetMUCSubject () const;
 
-		void LeaveChannel (const QString&);
+		void LeaveChannel (const QString&, bool cmd = false);
 
 		void RemoveThis ();
 	};

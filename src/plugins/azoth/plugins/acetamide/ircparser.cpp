@@ -80,14 +80,10 @@ namespace Acetamide
 		ISH_->SendCommand (privmsgCmd);
 	}
 
-	void IrcParser::PartCommand (const QString& target,
-			const QString& msg)
+	void IrcParser::PartCommand (const QStringList& cmd)
 	{
-		QString partCmd;
-		if (!msg.isEmpty ())
-			partCmd = QString ("PART " + target + " :" + msg + "\r\n");
-		else
-			partCmd = QString ("PART " + target + "\r\n");
+		QString partCmd = QString ("PART " + cmd.first () + " " +
+				QStringList (cmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (partCmd);
 	}
 
@@ -160,6 +156,14 @@ namespace Acetamide
 		QString inviteCmd = QString ("INVITE " + cmd.first () + " " +
 				cmd.at (1) + "\r\n");
 		ISH_->SendCommand (inviteCmd);
+	}
+
+	void IrcParser::KickCommand (const QStringList& cmd)
+	{
+		QString kickCmd = QString ("KICK " + cmd.first () + " " +
+				cmd.at (1) + " " + QStringList (cmd.mid (2)).join (" ") +
+				"\r\n");
+		ISH_->SendCommand (kickCmd);
 	}
 
 	bool IrcParser::ParseMessage (const QString& message)
