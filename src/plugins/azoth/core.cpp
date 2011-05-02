@@ -931,11 +931,14 @@ namespace Azoth
 		const QStringList& variants = entry->Variants ();
 		Q_FOREACH (const QString& variant, variants)
 		{
-			if (variant.isEmpty ())
+			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+			if (info.isEmpty ())
 				continue;
 
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-			tip += "<hr /><strong>" + variant + "</strong>";
+			tip += "<hr />";
+			if (!variant.isEmpty ())
+				tip += "<strong>" + variant + "</strong>";
+
 			if (info.contains ("priority"))
 				tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
 			tip += ": ";
