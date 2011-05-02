@@ -223,7 +223,7 @@
     <message>
         <location filename="userfiltersmodel.cpp" line="85"/>
         <source>Regexp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exprat</translation>
     </message>
     <message>
         <location filename="userfiltersmodel.cpp" line="89"/>

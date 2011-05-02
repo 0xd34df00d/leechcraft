@@ -298,7 +298,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="exportdialog.ui" line="44"/>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="exportdialog.ui" line="54"/>
@@ -349,12 +349,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="addmultipletorrents.cpp" line="81"/>
         <source>Select directory with torrents</source>
-        <translation>Выберите директорию с торрентами</translation>
+        <translation>Выберите каталог с торрентами</translation>
     </message>
     <message>
         <location filename="addmultipletorrents.cpp" line="93"/>
         <source>Select save directory</source>
-        <translation>Выберите директорию для сохранения</translation>
+        <translation>Выберите каталог для сохранения</translation>
     </message>
 </context>
 <context>
@@ -381,7 +381,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="addtorrent.cpp" line="177"/>
         <source>Select save directory</source>
-        <translation>Выберите директорию для сохранения</translation>
+        <translation>Выберите каталог для сохранения</translation>
     </message>
     <message>
         <location filename="addtorrent.cpp" line="216"/>
@@ -424,7 +424,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="341"/>
         <source>Rejecting file %1 because it&apos;s bigger than current auto limit.</source>
-        <translation>Файл %1 отклонен из-за слишком большого размера.</translation>
+        <translation>Файл %1 отклонён из-за слишком большого размера.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="528"/>
@@ -453,7 +453,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="555"/>
         <source>Destination:</source>
-        <translation>Директория сохранения:</translation>
+        <translation>Каталог сохранения:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="557"/>
@@ -508,17 +508,17 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="964"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
-        <translation>Торрент %1 не может быть переобъявлен сейчас, попробуйте позже.</translation>
+        <translation>Торрент %1 не может быть еще раз объявлен прямо сейчас, попробуйте позже.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1970"/>
         <source>Torrent finished: %1</source>
-        <translation>Торрент завершен: %1</translation>
+        <translation>Торрент завершён: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2801"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
-        <translation>Уведомления хранилища отключены. Проигрывание на лету точно не будет работать без них, поэтому если Вы испытываете проблемы, включите уведомления хранилища в секции &quot;Уведомления&quot; настроек BitTorrent. Вы хотите включить их сейчас?</translation>
+        <translation>Уведомления хранилища отключены. Проигрывание на лету точно не будет работать без них, поэтому если Вы испытываете проблемы, включите уведомления хранилища в секции &quot;Уведомления&quot; параметров BitTorrent. Вы хотите включить их сейчас?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1295"/>
@@ -543,12 +543,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="1340"/>
         <source>Could not open file %1 for writing</source>
-        <translation>Не могу открыть файл %1 на запись</translation>
+        <translation>Не удалось открыть файл %1 на запись</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1573"/>
         <source>File finished: %1</source>
-        <translation>Файл завершен: %1</translation>
+        <translation>Файл завершён: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1808"/>
@@ -583,7 +583,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="1820"/>
         <source>Allocating</source>
-        <translation>Аллоцирование</translation>
+        <translation>Выделение места</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1822"/>
@@ -593,12 +593,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="1841"/>
         <source>Could not open saved torrent %1 for read.</source>
-        <translation>Невозможно открыть сохраненный торрент %1 на чтение.</translation>
+        <translation>Невозможно открыть сохранённый торрент %1 для чтения.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1928"/>
         <source>Bad bencoding in saved torrent data</source>
-        <translation>Плохой код в сохраненном торренте</translation>
+        <translation>Плохой код в сохранённом торренте</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2153"/>
@@ -608,7 +608,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="2169"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
-        <translation>Не могу создать путь %1/.leechcraft/bittorrent</translation>
+        <translation>Не удалось создать путь %1/.leechcraft/bittorrent</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2660"/>
@@ -686,7 +686,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="intropage.cpp" line="33"/>
         <source>This wizard will generate a torrent file. You simply need so specify the torrent name, files to include and optionally few other options to produce your torrent file.</source>
-        <translation>Этот мастер создаёт торрент-файл. Просто укажите имя торрента, адрес объявления и файлы для включения и, если требуется, другие опции.</translation>
+        <translation>Этот мастер создаёт торрент-файл. Просто укажите имя торрента, адрес объявления и файлы для включения и, если требуется, другие параметры.</translation>
     </message>
 </context>
 <context>
@@ -809,9 +809,9 @@ IPv6 input mask</extracomment>
         <source>%1 (%n second(s) remaining)</source>
         <oldsource>%1 (%2 seconds remaining)</oldsource>
         <translation>
-            <numerusform>%1 (%n секунда остается)</numerusform>
-            <numerusform>%1 (%n секунды остается)</numerusform>
-            <numerusform>%1 (%n секунд остается)</numerusform>
+            <numerusform>%1 (%n секунда остаётся)</numerusform>
+            <numerusform>%1 (%n секунды остаётся)</numerusform>
+            <numerusform>%1 (%n секунд остаётся)</numerusform>
         </translation>
     </message>
     <message>
@@ -828,7 +828,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="peerstablinker.cpp" line="182"/>
         <source>No receive buffer</source>
-        <translation>Нет буфера приема</translation>
+        <translation>Нет буфера приёма</translation>
     </message>
 </context>
 <context>
@@ -890,7 +890,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="startupfirstpage.cpp" line="35"/>
         <source>Set basic options</source>
-        <translation>Установка основных настроек</translation>
+        <translation>Установка основных параметров</translation>
     </message>
 </context>
 <context>
@@ -928,7 +928,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.cpp" line="470"/>
         <source>Wasn&apos;t yet</source>
-        <translation>Еще не было</translation>
+        <translation>Ещё не было</translation>
     </message>
     <message>
         <location filename="tabwidget.cpp" line="502"/>
@@ -991,7 +991,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentfilesmodel.cpp" line="464"/>
         <source>The file %1 hasn&apos;t finished downloading yet.</source>
-        <translation>Файл %1 еще не закончен.</translation>
+        <translation>Файл %1 ещё не закончен.</translation>
     </message>
 </context>
 <context>
@@ -1127,7 +1127,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="torrentplugin.cpp" line="1054"/>
         <source>Reannounce</source>
-        <translation>Переобъявить</translation>
+        <translation>Повторно объявить</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="1056"/>
@@ -1271,7 +1271,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentfirststep.ui" line="79"/>
         <source>Directory...</source>
-        <translation>Директория...</translation>
+        <translation>Каталог...</translation>
     </message>
     <message>
         <location filename="newtorrentfirststep.ui" line="90"/>
@@ -1337,47 +1337,47 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentthirdstep.ui" line="36"/>
         <source>32 kb</source>
-        <translation>32 кб</translation>
+        <translation>32 КиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="41"/>
         <source>64 kb</source>
-        <translation>64 кб</translation>
+        <translation>64 КиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="46"/>
         <source>128 kb</source>
-        <translation>128 кб</translation>
+        <translation>128 КиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="51"/>
         <source>256 kb</source>
-        <translation>256 кб</translation>
+        <translation>256 КиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="56"/>
         <source>512 kb</source>
-        <translation>512 кб</translation>
+        <translation>512 КиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="61"/>
         <source>1 mb</source>
-        <translation>1 мб</translation>
+        <translation>1 МиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="66"/>
         <source>2 mb</source>
-        <translation>2 мб</translation>
+        <translation>2 МиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="71"/>
         <source>4 mb</source>
-        <translation>4 мб</translation>
+        <translation>4 МиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="112"/>
         <source>&lt;&gt; pieces</source>
-        <translation>&lt;&gt; кусочков</translation>
+        <translation>&lt;&gt; частей</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="134"/>
@@ -1387,7 +1387,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentthirdstep.ui" line="163"/>
         <source>Public torrent (DHT enabled)</source>
-        <translation>Публичный торрент (DHT включен)</translation>
+        <translation>Публичный торрент (DHT включён)</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="177"/>
@@ -1397,22 +1397,22 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentthirdstep.ui" line="76"/>
         <source>8 mb</source>
-        <translation>8 мб</translation>
+        <translation>8 МиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="81"/>
         <source>16 mb</source>
-        <translation>16 мб</translation>
+        <translation>16 МиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="86"/>
         <source>32 mb</source>
-        <translation>32 мб</translation>
+        <translation>32 МиБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="91"/>
         <source>64 mb</source>
-        <translation>64 мб</translation>
+        <translation>64 МиБ</translation>
     </message>
 </context>
 <context>
@@ -1626,12 +1626,12 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="67"/>
         <location filename="tabwidget.ui" line="815"/>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="908"/>
         <source>Tags:</source>
-        <translation>Тэги:</translation>
+        <translation>Теги:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="765"/>
@@ -1752,7 +1752,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1442"/>
         <source>Distributed copies:</source>
-        <translation>Распределенных копий:</translation>
+        <translation>Распределённых копий:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1615"/>
@@ -1837,12 +1837,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1921"/>
         <source>Receive buffer:</source>
-        <translation>Буфер приема:</translation>
+        <translation>Буфер приёма:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1935"/>
         <source>Corrupt pieces:</source>
-        <translation>Испорченных кусков:</translation>
+        <translation>Испорченных частей:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1949"/>
@@ -1872,7 +1872,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="2032"/>
         <source>Pieces</source>
-        <translation>Куски</translation>
+        <translation>Части</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="21"/>
@@ -1887,7 +1887,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="922"/>
         <source>Auto managed</source>
-        <translation>Автоуправляемый</translation>
+        <translation>Автоматически управляемый</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="932"/>
@@ -2350,7 +2350,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source>DHT-related options</source>
-        <translation>Относящиеся к DHT опции</translation>
+        <translation>Параметры DHT</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
@@ -2472,7 +2472,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="54"/>
         <source>Advanced settings</source>
-        <translation>Расширенные настройки</translation>
+        <translation>Расширенные параметры</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="55"/>
@@ -2527,7 +2527,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="65"/>
         <source>Prioritize partial pieces</source>
-        <translation>Повышать приоритет неполных кусков</translation>
+        <translation>Повышать приоритет неполных частей</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="66"/>
@@ -2547,7 +2547,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="71"/>
         <source>Stop tracker timeout:</source>
-        <translation>Таймаут отсоединения от трекера:</translation>
+        <translation>Тайм-аут отсоединения от трекера:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="73"/>
@@ -2565,12 +2565,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="75"/>
         <source>Piece response timeout:</source>
-        <translation>Таймаут получения ответа о части:</translation>
+        <translation>Тайм-аут получения ответа о части:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="77"/>
         <source>Peer connection timeout:</source>
-        <translation>Таймаут соединения с пиром:</translation>
+        <translation>Тайм-аут соединения с пиром:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="79"/>
@@ -2595,12 +2595,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="85"/>
         <source>Peer timeout:</source>
-        <translation>Таймаут связи с пиром:</translation>
+        <translation>Тайм-аут связи с пиром:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="87"/>
         <source>Web seed timeout:</source>
-        <translation>Таймаут связи с web-сидом:</translation>
+        <translation>Тайм-аут связи с web-сидом:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="89"/>
@@ -2645,7 +2645,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="102"/>
         <source>Force download of a piece if it could not be fetched in:</source>
-        <translation>Форсировать закачку куска, если он не скачан в течение:</translation>
+        <translation>Форсировать закачку части, если он не скачан в течение:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="104"/>
@@ -2665,7 +2665,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="108"/>
         <source>Peer inactivity timeout:</source>
-        <translation>Таймаут отсоединения пира из-за неактивности:</translation>
+        <translation>Тайм-аут отсоединения пира из-за неактивности:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="110"/>
@@ -2721,23 +2721,23 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="121"/>
         <source>N of pieces to send via fast extensions:</source>
-        <translation>Посылать столько кусков через быстрые расширения:</translation>
+        <translation>Посылать столько частей через быстрые расширения:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="122"/>
         <source>Handshake timeout:</source>
-        <translation>Таймаут рукопожатия:</translation>
+        <translation>Тайм-аут рукопожатия:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="124"/>
         <source>Web seed pipeline size:</source>
-        <translation>Размер конвеера web-сида:</translation>
+        <translation>Размер конвейера web-сида:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="125"/>
         <location filename="dummy.cpp" line="127"/>
         <source>Local settings</source>
-        <translation>Локальные настройки</translation>
+        <translation>Локальные параметры</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="128"/>
@@ -2807,7 +2807,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="144"/>
         <source>Give slots to seeding torrents in automanaged mode</source>
-        <translation>Давать слоты раздающимся торрентам в авторежиме</translation>
+        <translation>Давать слоты раздающимся торрентам в автоматическом режиме</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="145"/>
@@ -2817,7 +2817,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="147"/>
         <source>Automanage startup wait:</source>
-        <translation>Ожидание начала торрента для авторежима:</translation>
+        <translation>Ожидание начала торрента для автоматического режима:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="149"/>

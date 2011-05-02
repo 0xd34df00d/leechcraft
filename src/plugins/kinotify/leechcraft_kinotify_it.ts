@@ -6,7 +6,7 @@
     <message>
         <location filename="kinotify.cpp" line="71"/>
         <source>Fancy Kinetic notifications.</source>
-        <translation type="unfinished"></translation>
+        <translation>Elegante Kinetic notifiche.</translation>
     </message>
 </context>
 <context>
@@ -14,22 +14,22 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apparenza</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stile</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Notificator style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Notifica stile:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Adaptive</source>
-        <translation type="unfinished"></translation>
+        <translation>Adattabile</translation>
     </message>
 </context>
 </TS>

@@ -11,7 +11,7 @@
     <message>
         <location filename="auscrie.cpp" line="73"/>
         <source>Simple auto screenshoter.</source>
-        <translation>Простой скриншотер.</translation>
+        <translation>Простой модуль для создания снимков экрана.</translation>
     </message>
     <message>
         <location filename="auscrie.cpp" line="121"/>
@@ -29,7 +29,7 @@
     <message>
         <location filename="poster.cpp" line="189"/>
         <source>Page parse failed</source>
-        <translation>Парсинг страницы не удался</translation>
+        <translation>Разбор страницы не удался</translation>
     </message>
     <message>
         <location filename="poster.cpp" line="196"/>
@@ -39,7 +39,7 @@
     <message>
         <location filename="poster.cpp" line="208"/>
         <source>Upload of screenshot failed: %1</source>
-        <translation>Загрузка скриншота не удалась: %1</translation>
+        <translation>Загрузка снимка экрана не удалась: %1</translation>
     </message>
 </context>
 <context>
@@ -57,7 +57,7 @@
     <message>
         <location filename="shooterdialog.ui" line="36"/>
         <source>upload to Savepic.ru</source>
-        <translation type="unfinished"></translation>
+        <translation>загрузить на Savepic.ru</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="41"/>

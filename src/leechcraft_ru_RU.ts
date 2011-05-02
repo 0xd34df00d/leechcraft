@@ -26,7 +26,7 @@
     </message>
     <message>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation>LeechCraft — кроссплатформенный модульный интернет-клиент, включающий веб-браузер, клиент для чтения лент новостей, BitTorrent-клиент и множество других плагинов.</translation>
+        <translation>LeechCraft — кроссплатформенный модульный интернет-клиент, включающий веб-браузер, клиент для чтения лент новостей, BitTorrent-клиент и множество других модулей.</translation>
     </message>
     <message>
         <source>Third parties</source>
@@ -190,7 +190,7 @@
     </message>
     <message>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <source>Add task</source>
@@ -297,51 +297,51 @@
     <name>LeechCraft::AboutDialog</name>
     <message>
         <source>Years: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Годы: %1</translation>
     </message>
     <message>
         <source>Lead developer and original author.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ведущий разработчик и изначальный автор.</translation>
     </message>
     <message>
         <source>Firefox importer in New Life.</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортёр из Firefox в New Life.</translation>
     </message>
     <message>
         <source>Poshuku OnlineBookmarks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poshuku OnlineBookmarks.</translation>
     </message>
     <message>
         <source>Azoth Acetamide: IRC support for Azoth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Azoth Acetamide: поддержка IRC в Azoth.</translation>
     </message>
     <message>
         <source>Various patches.</source>
-        <translation type="unfinished"></translation>
+        <translation>Различные исправления.</translation>
     </message>
     <message>
         <source>Initial PKGBUILDs for Arch Linux.</source>
-        <translation type="unfinished"></translation>
+        <translation>Начальные PKGBUILD&apos;ы для Arch Linux.</translation>
     </message>
     <message>
         <source>Ukrainian translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Украинский перевод.</translation>
     </message>
     <message>
         <source>Graphical artwork.</source>
-        <translation type="unfinished"></translation>
+        <translation>Графика.</translation>
     </message>
     <message>
         <source>Arabic translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Арабский перевод.</translation>
     </message>
     <message>
         <source>Esperanto translations</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевод на эсперанто</translation>
     </message>
     <message>
         <source>Aggregator fixes and improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Исправления и улучшения в Aggregator.</translation>
     </message>
 </context>
 <context>
@@ -373,7 +373,7 @@
     <name>LeechCraft::Core</name>
     <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation>Нет плагинов, способных загрузить «%1»</translation>
+        <translation>Нет модулей, способных загрузить «%1»</translation>
     </message>
     <message>
         <source>Error</source>
@@ -381,7 +381,7 @@
     </message>
     <message>
         <source>Could not handle download entity %1.</source>
-        <translation>Не могу обработать объект %1.</translation>
+        <translation>Не удалось обработать объект %1.</translation>
     </message>
     <message>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
@@ -397,11 +397,11 @@
     </message>
     <message>
         <source>Do you really want to clear cookies?</source>
-        <translation>Вы действительно хотите удалить куки?</translation>
+        <translation>Вы действительно хотите удалить cookies?</translation>
     </message>
     <message>
         <source>Plugin load error</source>
-        <translation>Ошибка загрузки плагина</translation>
+        <translation>Ошибка загрузки модуля</translation>
     </message>
 </context>
 <context>
@@ -450,11 +450,11 @@
     </message>
     <message>
         <source>, underlined</source>
-        <translation>, подчеркнутый</translation>
+        <translation>, подчёркнутый</translation>
     </message>
     <message>
         <source>, striken out</source>
-        <translation>, зачеркнутый</translation>
+        <translation>, зачёркнутый</translation>
     </message>
 </context>
 <context>
@@ -532,7 +532,7 @@
     </message>
     <message>
         <source>Could not save cookies, error opening cookie file.</source>
-        <translation>Невозможно сохранить куки, ошибка открытия cookie-файла.</translation>
+        <translation>Невозможно сохранить cookies, ошибка открытия cookie-файла.</translation>
     </message>
     <message>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
@@ -562,31 +562,31 @@
     </message>
     <message>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
-        <translation>Отказываюсь загружать плагин из %1, так как он не является файлом.</translation>
+        <translation>Отказ загрузки модуля из %1, так как он не является файлом.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: %2.</source>
-        <translation>Невозможно загрузить плагин из %1: %2.</translation>
+        <translation>Невозможно загрузить модуль из %1: %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
-        <translation>Невозможно загрузить плагин из %1: невозможно создать экземпляр плагина с исключением %2.</translation>
+        <translation>Невозможно загрузить модуль из %1: невозможно создать экземпляр модуль с исключением %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
-        <translation>Невозможно загрузить плагин из %1: невозможно создать экземпляр плагина.</translation>
+        <translation>Невозможно загрузить модуль из %1: невозможно создать экземпляр модуля.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
-        <translation>Невозможно загрузить плагин из %1: невозможно преобразовать экземпляр плагина к IInfo*.</translation>
+        <translation>Невозможно загрузить модуль из %1: невозможно преобразовать экземпляр модуля к IInfo*.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
-        <translation>Невозможно загрузить плагин из %1: не удалось получить имя/информацию/иконку с исключением %2.</translation>
+        <translation>Невозможно загрузить модуль из %1: не удалось получить имя, информацию или значок с исключением %2.</translation>
     </message>
     <message>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
-        <translation>Невозможно загрузить плагин из %1: не удалось получить имя/информацию/иконку.</translation>
+        <translation>Невозможно загрузить модуль из %1: не удалось получить имя, информацию или значок.</translation>
     </message>
     <message>
         <source>Description</source>
@@ -680,7 +680,7 @@
     </message>
     <message>
         <source>Would you like to set advanced options?</source>
-        <translation>Вы хотите установить продвинутые опции?</translation>
+        <translation>Вы хотите установить продвинутые параметры?</translation>
     </message>
 </context>
 <context>
@@ -768,7 +768,7 @@
     <name>PluginManagerDialog</name>
     <message>
         <source>Plugin Manager</source>
-        <translation>Менеджер плагинов</translation>
+        <translation>Менеджер модулей</translation>
     </message>
 </context>
 <context>
@@ -826,7 +826,7 @@
     <name>SettingsSink</name>
     <message>
         <source>Preferences</source>
-        <translation>Настройки</translation>
+        <translation>Параметры</translation>
     </message>
 </context>
 <context>
@@ -902,7 +902,7 @@
     </message>
     <message>
         <source>Select the complexity level of options you would like to set during this startup wizard.</source>
-        <translation>Выберите уровень сложности настроек, которые вы хотите установить в этом мастере.</translation>
+        <translation>Выберите уровень сложности параметров, которые вы хотите установить в этом мастере.</translation>
     </message>
     <message>
         <source>Basic setup</source>
@@ -921,7 +921,7 @@
     </message>
     <message>
         <source>Use tab scroll buttons</source>
-        <translation>Использовать кнопки прокрутки табов</translation>
+        <translation>Использовать кнопки прокрутки вкладок</translation>
     </message>
     <message>
         <source>Show menu bar as button</source>
@@ -933,7 +933,7 @@
     </message>
     <message>
         <source>Icon size</source>
-        <translation>Размер иконок</translation>
+        <translation>Размер значков</translation>
     </message>
     <message>
         <source>System default</source>
@@ -957,7 +957,7 @@
     </message>
     <message>
         <source>Only display the icon</source>
-        <translation>Показывать только иконку</translation>
+        <translation>Показывать только значок</translation>
     </message>
     <message>
         <source>Only display the text</source>
@@ -965,11 +965,11 @@
     </message>
     <message>
         <source>The text appears beside the icon</source>
-        <translation>Текст рядом с иконкой</translation>
+        <translation>Текст рядом со значком</translation>
     </message>
     <message>
         <source>The text appears under the icon</source>
-        <translation>Текст под иконкой</translation>
+        <translation>Текст под значком</translation>
     </message>
     <message>
         <source>Tab bar location:</source>
@@ -993,7 +993,7 @@
     </message>
     <message>
         <source>Icon set:</source>
-        <translation>Набор иконок:</translation>
+        <translation>Набор значков:</translation>
     </message>
     <message>
         <source>Style:</source>
@@ -1053,7 +1053,7 @@
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>Горячие клавиши</translation>
+        <translation>Комбинации клавиш</translation>
     </message>
     <message>
         <source>Behavior</source>
@@ -1085,7 +1085,7 @@
     </message>
     <message>
         <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation>Показывать действия плагина в меню панели вкладок</translation>
+        <translation>Показывать действия модуля в меню панели вкладок</translation>
     </message>
     <message>
         <source>Show as a submenu</source>
@@ -1093,7 +1093,7 @@
     </message>
     <message>
         <source>Show messages in tray</source>
-        <translation>Показывать сообщения в трее</translation>
+        <translation>Показывать сообщения в системном лотке</translation>
     </message>
     <message>
         <source>Message timeout:</source>
@@ -1117,7 +1117,7 @@
     </message>
     <message>
         <source>Cache size:</source>
-        <translation>Размер кеша:</translation>
+        <translation>Размер кэша:</translation>
     </message>
     <message>
         <source> MB</source>
@@ -1125,15 +1125,15 @@
     </message>
     <message>
         <source>Filter tracking cookies</source>
-        <translation>Фильтровать отслеживающие куки</translation>
+        <translation>Фильтровать отслеживающие cookies</translation>
     </message>
     <message>
         <source>Clear cache</source>
-        <translation>Очистить кеш</translation>
+        <translation>Очистить кэш</translation>
     </message>
     <message>
         <source>Clear cookies</source>
-        <translation>Очистить куки</translation>
+        <translation>Очистить cookies</translation>
     </message>
     <message>
         <source>Application-wide proxy</source>
@@ -1169,19 +1169,19 @@
     </message>
     <message>
         <source>Caching HTTP</source>
-        <translation>Кеширующий HTTP</translation>
+        <translation>Кэширующий HTTP</translation>
     </message>
     <message>
         <source>Caching FTP</source>
-        <translation>Кеширующий FTP</translation>
+        <translation>Кэширующий FTP</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Плагины</translation>
+        <translation>Модули</translation>
     </message>
     <message>
         <source>Plugins manager</source>
-        <translation>Менеджер плагинов</translation>
+        <translation>Менеджер модулей</translation>
     </message>
     <message>
         <source>Arabic (العربية)</source>

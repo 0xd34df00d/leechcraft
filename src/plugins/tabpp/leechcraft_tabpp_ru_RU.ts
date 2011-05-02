@@ -19,7 +19,7 @@
     <message>
         <location filename="tabpp.cpp" line="123"/>
         <source>Show tab switcher</source>
-        <translation>Показать переключатель табов</translation>
+        <translation>Показать переключатель вкладок</translation>
     </message>
 </context>
 <context>
@@ -35,7 +35,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
@@ -50,7 +50,7 @@
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Focus on the tab list after show</source>
-        <translation>Фокус на списке табов при показе</translation>
+        <translation>Фокус на списке вкладок при показе</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>

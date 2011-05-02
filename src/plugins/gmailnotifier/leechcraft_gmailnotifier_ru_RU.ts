@@ -18,7 +18,7 @@
     <message>
         <location filename="gmailchecker.cpp" line="114"/>
         <source>Cannot parse XML data</source>
-        <translation>Не могу распарсить данные XML</translation>
+        <translation>Не удалось разобрать данные XML</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="126"/>
@@ -74,7 +74,7 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Login settings</source>
-        <translation>Настройки входа</translation>
+        <translation>Параметры аутентификации</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Update settings</source>
-        <translation>Настройки обновления</translation>
+        <translation>Параметры обновления</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>

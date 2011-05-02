@@ -19,11 +19,11 @@
     <name>LeechCraft::Plugins::DBusManager::General</name>
     <message>
         <source>Not found plugin %1.</source>
-        <translation>Плагин %1 не найден.</translation>
+        <translation>Модуль %1 не найден.</translation>
     </message>
     <message>
         <source>Could not save icon for plugin %1 to PNG %2x%2</source>
-        <translation>Невозможно сохранить иконку плагина %1 в PNG %2x%2</translation>
+        <translation>Невозможно сохранить значок модуля %1 в PNG %2×%2</translation>
     </message>
 </context>
 <context>
