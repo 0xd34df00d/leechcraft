@@ -66,10 +66,10 @@ namespace Azoth
 	, LastSpacePosition_(-1)
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
-	, ShouldSetTypingState_ (true)
 	, PreviousTextHeight_ (0)
 	, XferManager_ (0)
 	, TypeTimer_ (new QTimer (this))
+	, PreviousState_ (CPSNone)
 	{
 		Ui_.setupUi (this);
 
@@ -371,8 +371,7 @@ namespace Azoth
 	{
 		UpdateTextHeight ();
 
-		if (ShouldSetTypingState_)
-			SetChatPartState (CPSComposing);
+		SetChatPartState (CPSComposing);
 		TypeTimer_->stop ();
 		TypeTimer_->start ();
 	}
@@ -1079,6 +1078,9 @@ namespace Azoth
 	
 	void ChatTab::SetChatPartState (ChatPartState state)
 	{
+		if (state == PreviousState_)
+			return;
+
 		if (IsMUC_)
 			return;
 		
@@ -1090,7 +1092,7 @@ namespace Azoth
 		if (!entry)
 			return;
 		
-		ShouldSetTypingState_ = state != CPSComposing;
+		PreviousState_ = state;
 		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 

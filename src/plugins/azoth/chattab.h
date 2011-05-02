@@ -65,12 +65,13 @@ namespace Azoth
 
 		QIcon TabIcon_;
 		bool IsMUC_;
-		bool ShouldSetTypingState_;
 		int PreviousTextHeight_;
 
 		ITransferManager *XferManager_;
 		
 		QTimer *TypeTimer_;
+		
+		ChatPartState PreviousState_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
