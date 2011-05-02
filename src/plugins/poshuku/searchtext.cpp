@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,63 +22,59 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	SearchText::SearchText (const QString& text, QWidget *parent)
+	: QDialog (parent)
+	, Text_ (text)
 	{
-		namespace Poshuku
-		{
-			SearchText::SearchText (const QString& text, QWidget *parent)
-			: QDialog (parent)
-			, Text_ (text)
-			{
-				Ui_.setupUi (this);
-				Ui_.Label_->setText (tr ("Search %1 with:").arg (text));
+		Ui_.setupUi (this);
+		Ui_.Label_->setText (tr ("Search %1 with:").arg (text));
 
-				const QStringList& categories = Core::Instance ()
-						.GetProxy ()->GetSearchCategories ();
-				Q_FOREACH (const QString& cat, categories)
-					new QTreeWidgetItem (Ui_.Tree_, QStringList (cat));
+		const QStringList& categories = Core::Instance ()
+				.GetProxy ()->GetSearchCategories ();
+		Q_FOREACH (const QString& cat, categories)
+			new QTreeWidgetItem (Ui_.Tree_, QStringList (cat));
 
-				on_MarkAll__released ();
+		on_MarkAll__released ();
 
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (doSearch ()));
-			}
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (doSearch ()));
+	}
 
-			void SearchText::doSearch ()
-			{
-				QStringList selected;
+	void SearchText::doSearch ()
+	{
+		QStringList selected;
 
-				for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
-					if (Ui_.Tree_->topLevelItem (i)->checkState (0) == Qt::Checked)
-						selected << Ui_.Tree_->topLevelItem (i)->text (0);
+		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
+			if (Ui_.Tree_->topLevelItem (i)->checkState (0) == Qt::Checked)
+				selected << Ui_.Tree_->topLevelItem (i)->text (0);
 
-				if (!selected.size ())
-					return;
+		if (!selected.size ())
+			return;
 
-				Entity e = Util::MakeEntity (Text_,
-						QString (),
-						FromUserInitiated,
-						"x-leechcraft/category-search-request");
+		Entity e = Util::MakeEntity (Text_,
+				QString (),
+				FromUserInitiated,
+				"x-leechcraft/category-search-request");
 
-				e.Additional_ ["Categories"] = selected;
+		e.Additional_ ["Categories"] = selected;
 
-				emit gotEntity (e);
-			}
+		emit gotEntity (e);
+	}
 
-			void SearchText::on_MarkAll__released ()
-			{
-				for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
-					Ui_.Tree_->topLevelItem (i)->setCheckState (0, Qt::Checked);
-			}
+	void SearchText::on_MarkAll__released ()
+	{
+		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
+			Ui_.Tree_->topLevelItem (i)->setCheckState (0, Qt::Checked);
+	}
 
-			void SearchText::on_UnmarkAll__released ()
-			{
-				for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
-					Ui_.Tree_->topLevelItem (i)->setCheckState (0, Qt::Unchecked);
-			}
-		};
-	};
-};
-
+	void SearchText::on_UnmarkAll__released ()
+	{
+		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
+			Ui_.Tree_->topLevelItem (i)->setCheckState (0, Qt::Unchecked);
+	}
+}
+}

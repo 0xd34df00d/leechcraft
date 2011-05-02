@@ -29,36 +29,29 @@ class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class Player : public QWidget
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class Player : public QWidget
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						IVideoWidget *Player_;
-					protected:
-						QNetworkAccessManager *ClearNAM_;
-						Ui::Player Ui_;
+		IVideoWidget *Player_;
+	protected:
+		QNetworkAccessManager *ClearNAM_;
+		Ui::Player Ui_;
 
-						Player (const QUrl&, const QStringList&, const QStringList&);
-						void SetVideoUrl (const QUrl&);
-						void SetRequest (const QNetworkRequest&);
-					public:
-						virtual ~Player ();
-					protected slots:
-						void handleNavigate (const QUrl&);
-					};
-				};
-			};
-		};
+		Player (const QUrl&, const QStringList&, const QStringList&);
+		void SetVideoUrl (const QUrl&);
+		void SetRequest (const QNetworkRequest&);
+	public:
+		virtual ~Player ();
+	protected slots:
+		void handleNavigate (const QUrl&);
 	};
-};
+}
+}
+}
 
 #endif
-

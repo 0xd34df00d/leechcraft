@@ -23,22 +23,18 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class ProxyObject : public QObject
+					  , public IProxyObject
 	{
-		namespace Poshuku
-		{
-			class ProxyObject : public QObject
-							  , public IProxyObject
-			{
-				Q_OBJECT
-				Q_INTERFACES (LeechCraft::Plugins::Poshuku::IProxyObject);
-			public slots:
-				QObject* GetHistoryModel () const;
-				QObject* GetFavoritesModel () const;
-			};
-		};
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Poshuku::IProxyObject);
+	public slots:
+		QObject* GetHistoryModel () const;
+		QObject* GetFavoritesModel () const;
 	};
-};
+}
+}
 
 #endif
-

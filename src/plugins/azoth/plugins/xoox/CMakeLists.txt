@@ -30,6 +30,8 @@ SET (XOOX_SRCS
 	bookmarkeditwidget.cpp
 	formbuilder.cpp
 	roomconfigwidget.cpp
+	capsmanager.cpp
+	capsdatabase.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -55,6 +57,8 @@ SET (XOOX_HEADERS
 	bookmarkeditwidget.h
 	formbuilder.h
 	roomconfigwidget.h
+	capsmanager.h
+	capsdatabase.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

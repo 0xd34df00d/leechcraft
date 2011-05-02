@@ -22,18 +22,14 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class XbelGenerator
 	{
-		namespace Poshuku
-		{
-			class XbelGenerator
-			{
-			public:
-				XbelGenerator (QByteArray&);
-			};
-		};
+	public:
+		XbelGenerator (QByteArray&);
 	};
-};
+}
+}
 
 #endif
-

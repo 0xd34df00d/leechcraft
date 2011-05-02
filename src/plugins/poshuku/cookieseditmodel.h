@@ -24,32 +24,28 @@
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class CustomCookieJar;
-	};
+namespace Util
+{
+	class CustomCookieJar;
+}
 
-	namespace Plugins
+namespace Poshuku
+{
+	class CookiesEditModel : public QStandardItemModel
 	{
-		namespace Poshuku
-		{
-			class CookiesEditModel : public QStandardItemModel
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Util::CustomCookieJar *Jar_;
-				QMap<int, QNetworkCookie> Cookies_;
-			public:
-				CookiesEditModel (QObject* = 0);
-				QNetworkCookie GetCookie (const QModelIndex&) const;
-				void SetCookie (const QModelIndex&, const QNetworkCookie&);
-				void RemoveCookie (const QModelIndex&);
-			private:
-				void AddCookie (const QNetworkCookie&);
-			};
-		};
+		Util::CustomCookieJar *Jar_;
+		QMap<int, QNetworkCookie> Cookies_;
+	public:
+		CookiesEditModel (QObject* = 0);
+		QNetworkCookie GetCookie (const QModelIndex&) const;
+		void SetCookie (const QModelIndex&, const QNetworkCookie&);
+		void RemoveCookie (const QModelIndex&);
+	private:
+		void AddCookie (const QNetworkCookie&);
 	};
-};
+}
+}
 
 #endif
-

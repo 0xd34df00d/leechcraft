@@ -24,29 +24,23 @@ class QUrl;
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class Player;
+namespace Poshuku
+{
+namespace WYFV
+{
+	class Player;
 
-					class AbstractPlayerCreator
-					{
-					public:
-						virtual bool WouldRatherPlay (const QUrl&) const = 0;
-						virtual Player* Create (const QUrl&,
-								const QStringList&,
-								const QStringList&) const = 0;
-					};
-				};
-			};
-		};
+	class AbstractPlayerCreator
+	{
+	public:
+		virtual bool WouldRatherPlay (const QUrl&) const = 0;
+		virtual Player* Create (const QUrl&,
+				const QStringList&,
+				const QStringList&) const = 0;
 	};
-};
+}
+}
+}
 
 #endif
 

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,21 +20,17 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	ReloadIntervalSelector::ReloadIntervalSelector (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Poshuku
-		{
-			ReloadIntervalSelector::ReloadIntervalSelector (QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
-			}
+		Ui_.setupUi (this);
+	}
 
-			QTime ReloadIntervalSelector::GetInterval () const
-			{
-				return Ui_.Interval_->time ();
-			}
-		};
-	};
-};
-
+	QTime ReloadIntervalSelector::GetInterval () const
+	{
+		return Ui_.Interval_->time ();
+	}
+}
+}

@@ -22,19 +22,15 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class Notification : public QWidget
 	{
-		namespace Poshuku
-		{
-			class Notification : public QWidget
-			{
-				Q_OBJECT
-			public:
-				Notification (QWidget* = 0);
-			};
-		};
+		Q_OBJECT
+	public:
+		Notification (QWidget* = 0);
 	};
-};
+}
+}
 
 #endif
-

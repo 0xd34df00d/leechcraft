@@ -26,11 +26,7 @@ class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -54,8 +50,6 @@ namespace CleanWeb
 		void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
 		void SaveSettings ();
 	};
-}
-}
 }
 }
 }

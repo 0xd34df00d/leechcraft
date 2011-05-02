@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,26 +25,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	PluginManager::PluginManager (QObject *parent)
+	: Util::BaseHookInterconnector (parent)
+	, ProxyObject_ (new ProxyObject)
 	{
-		namespace Poshuku
-		{
-			PluginManager::PluginManager (QObject *parent)
-			: Util::BaseHookInterconnector (parent)
-			, ProxyObject_ (new ProxyObject)
-			{
-			}
+	}
 
-			void PluginManager::AddPlugin (QObject *plugin)
-			{
-				if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
-					QMetaObject::invokeMethod (plugin,
-							"initPlugin",
-							Q_ARG (QObject*, ProxyObject_.get ()));
+	void PluginManager::AddPlugin (QObject *plugin)
+	{
+		if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
+			QMetaObject::invokeMethod (plugin,
+					"initPlugin",
+					Q_ARG (QObject*, ProxyObject_.get ()));
 
-				Util::BaseHookInterconnector::AddPlugin (plugin);
-			}
-		};
-	};
-};
-
+		Util::BaseHookInterconnector::AddPlugin (plugin);
+	}
+}
+}

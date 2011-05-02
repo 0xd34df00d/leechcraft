@@ -291,7 +291,7 @@ namespace Azoth
 		if (proxy->IsCancelled ())
 			return;
 
-		emit clearUnreadMsgCount (GetEntry<QObject> ());
+		emit entryMadeCurrent (GetEntry<QObject> ());
 
 		NumUnreadMsgs_ = 0;
 

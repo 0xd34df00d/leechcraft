@@ -25,20 +25,16 @@ class QDomElement;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class XbelParser
 	{
-		namespace Poshuku
-		{
-			class XbelParser
-			{
-			public:
-				XbelParser (const QByteArray&);
-			private:
-				void ParseFolder (const QDomElement&, QStringList = QStringList ());
-			};
-		};
+	public:
+		XbelParser (const QByteArray&);
+	private:
+		void ParseFolder (const QDomElement&, QStringList = QStringList ());
 	};
-};
+}
+}
 
 #endif
-

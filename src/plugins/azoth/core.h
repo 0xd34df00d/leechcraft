@@ -52,6 +52,7 @@ namespace Azoth
 	class PluginManager;
 	class ProxyObject;
 	class TransferJobManager;
+	class EventsNotifier;
 
 	class Core : public QObject
 	{
@@ -98,6 +99,7 @@ namespace Azoth
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
 
 		boost::shared_ptr<TransferJobManager> XferJobManager_;
+		boost::shared_ptr<EventsNotifier> EventsNotifier_;
 
 		Core ();
 	public:

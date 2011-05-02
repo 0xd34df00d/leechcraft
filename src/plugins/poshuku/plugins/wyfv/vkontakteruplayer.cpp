@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,95 +23,88 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	static QString GetStringFromRX (const QString& pattern, const QString& contents)
 	{
-		namespace Poshuku
+		QString result;
+		QRegExp rx (pattern);
+		if (rx.indexIn (contents) != -1)
+			result = rx.capturedTexts ().at (1);
+		else
+			qWarning () << Q_FUNC_INFO
+				<< "nothing captured for pattern"
+				<< rx.pattern ();
+		return result;
+	}
+
+	VkontakteruPlayer::VkontakteruPlayer (const QUrl& url,
+		const QStringList& args, const QStringList& values)
+	: Player (url, args, values)
+	{
+		Ui_.Quality_->hide ();
+		Ui_.Related_->hide ();
+
+		// http://'host'/assets/videos/'vtag+vkid'.vk.flv
+		QString host = GetStringFromRX ("host=([0-9a-z\\.]+)", values[2]);
+		QString vtag = GetStringFromRX ("vtag=([0-9a-f\\-]+)", values[2]);
+		QString vkid = GetStringFromRX ("vkid=([0-9a-f]+)", values[2]);
+
+		if (host.isEmpty () ||
+					vtag.isEmpty () ||
+					vkid.isEmpty ())
+		{      
+				qWarning () << Q_FUNC_INFO
+					<< "one of required attrs is empty"
+					<< host
+					<< vtag
+					<< vkid;
+		} 
+		else
 		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					static QString GetStringFromRX (const QString& pattern, const QString& contents)
-					{
-						QString result;
-						QRegExp rx (pattern);
-						if (rx.indexIn (contents) != -1)
-							result = rx.capturedTexts ().at (1);
-						else
-							qWarning () << Q_FUNC_INFO
-								<< "nothing captured for pattern"
-								<< rx.pattern ();
-						return result;
-					}
-
-					VkontakteruPlayer::VkontakteruPlayer (const QUrl& url,
-						const QStringList& args, const QStringList& values)
-					: Player (url, args, values)
-					{
-						Ui_.Quality_->hide ();
-						Ui_.Related_->hide ();
-
-						// http://'host'/assets/videos/'vtag+vkid'.vk.flv
-						QString host = GetStringFromRX ("host=([0-9a-z\\.]+)", values[2]);
-						QString vtag = GetStringFromRX ("vtag=([0-9a-f\\-]+)", values[2]);
-						QString vkid = GetStringFromRX ("vkid=([0-9a-f]+)", values[2]);
-		
-						if (host.isEmpty () ||
-									vtag.isEmpty () ||
-									vkid.isEmpty ())
-						{      
-								qWarning () << Q_FUNC_INFO
-									<< "one of required attrs is empty"
-									<< host
-									<< vtag
-									<< vkid;
-						} 
-						else
-						{
-							QString source = "http://HOST/assets/videos/VTAGVKID.vk.flv";
-							source.replace ("HOST", host);
-							source.replace ("VTAG", vtag);
-							source.replace ("VKID", vkid);
+			QString source = "http://HOST/assets/videos/VTAGVKID.vk.flv";
+			source.replace ("HOST", host);
+			source.replace ("VTAG", vtag);
+			source.replace ("VKID", vkid);
 #ifdef QT_DEBUG
-							qDebug () << "source" << source;
+			qDebug () << "source" << source;
 #endif
- 							SetVideoUrl (source);
-						}
-					}
+			SetVideoUrl (source);
+		}
+	}
 
-					VkontakteruPlayer::~VkontakteruPlayer ()
-					{
-					}
+	VkontakteruPlayer::~VkontakteruPlayer ()
+	{
+	}
 
-					bool VkontakteruPlayerCreator::WouldRatherPlay (const QUrl& url) const
-					{
-						if (!XmlSettingsManager::Instance ()->
-								property ("Vkontakte.ru").toBool ())
-							return false;
+	bool VkontakteruPlayerCreator::WouldRatherPlay (const QUrl& url) const
+	{
+		if (!XmlSettingsManager::Instance ()->
+				property ("Vkontakte.ru").toBool ())
+			return false;
 
-						return url.host ().endsWith ("vkadre.ru");
-					}
+		return url.host ().endsWith ("vkadre.ru");
+	}
 
-					Player* VkontakteruPlayerCreator::Create (const QUrl& url,
-							const QStringList& args, const QStringList& values) const
-					{
-						if (values.size () < 3)
-							return 0;
+	Player* VkontakteruPlayerCreator::Create (const QUrl& url,
+			const QStringList& args, const QStringList& values) const
+	{
+		if (values.size () < 3)
+			return 0;
 
-						if (!XmlSettingsManager::Instance ()->
-								property ("Vkontakte.ru").toBool ())
-							return 0;
+		if (!XmlSettingsManager::Instance ()->
+				property ("Vkontakte.ru").toBool ())
+			return 0;
 
-						if (values [2].contains ("link=http://vkontakte.ru/video.php") &&
-								 (values [2].contains ("vtag=")) &&
-								 (values [2].contains ("vkid=")))
-							return new VkontakteruPlayer (url, args, values);
+		if (values [2].contains ("link=http://vkontakte.ru/video.php") &&
+					(values [2].contains ("vtag=")) &&
+					(values [2].contains ("vkid=")))
+			return new VkontakteruPlayer (url, args, values);
 
-						return 0;
-					}
-				};
-			};
-		};
-	};
-};
-
+		return 0;
+	}
+}
+}
+}

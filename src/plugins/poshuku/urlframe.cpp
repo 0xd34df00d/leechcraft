@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,45 +20,42 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	URLFrame::URLFrame (QWidget *parent)
+	: QFrame (parent)
 	{
-		namespace Poshuku
-		{
-			URLFrame::URLFrame (QWidget *parent)
-			: QFrame (parent)
-			{
-				Ui_.setupUi (this);
-			}
+		Ui_.setupUi (this);
+	}
 
-			QLineEdit* URLFrame::GetEdit () const
-			{
-				return Ui_.URLEdit_;
-			}
+	QLineEdit* URLFrame::GetEdit () const
+	{
+		return Ui_.URLEdit_;
+	}
 
-			void URLFrame::SetFavicon (const QIcon& icon)
-			{
-				QPixmap pixmap = icon.pixmap (Ui_.FaviconLabel_->size ());
-				Ui_.FaviconLabel_->setPixmap (pixmap);
-			}
+	void URLFrame::SetFavicon (const QIcon& icon)
+	{
+		QPixmap pixmap = icon.pixmap (Ui_.FaviconLabel_->size ());
+		Ui_.FaviconLabel_->setPixmap (pixmap);
+	}
 
-			void URLFrame::AddWidget (QWidget *widget)
-			{
-				layout ()->addWidget (widget);
-			}
+	void URLFrame::AddWidget (QWidget *widget)
+	{
+		layout ()->addWidget (widget);
+	}
 
-			void URLFrame::RemoveWidget (QWidget *widget)
-			{
-				layout ()->removeWidget (widget);
-			}
+	void URLFrame::RemoveWidget (QWidget *widget)
+	{
+		layout ()->removeWidget (widget);
+	}
 
-			void URLFrame::on_URLEdit__returnPressed ()
-			{
-				if (Ui_.URLEdit_->IsCompleting () ||
-						Ui_.URLEdit_->text ().isEmpty ())
-					return;
+	void URLFrame::on_URLEdit__returnPressed ()
+	{
+		if (Ui_.URLEdit_->IsCompleting () ||
+				Ui_.URLEdit_->text ().isEmpty ())
+			return;
 
-				emit load (Ui_.URLEdit_->text ());
-			}
-		};
-	};
-};
+		emit load (Ui_.URLEdit_->text ());
+	}
+}
+}

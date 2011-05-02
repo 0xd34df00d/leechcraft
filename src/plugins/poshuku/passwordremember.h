@@ -24,34 +24,30 @@
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace Poshuku
+{
+	class PasswordRemember : public Notification
 	{
-		namespace Poshuku
-		{
-			class PasswordRemember : public Notification
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::PasswordRemember Ui_;
-				PageFormsData_t TempData_;
-			public:
-				PasswordRemember (QWidget* = 0);
-			public slots:
-				void add (const PageFormsData_t&);
-			private:
-				bool Changed (const ElementsData_t&, const QString&);
-			private slots:
-				void on_Remember__released ();
-				void on_NotNow__released ();
-				void on_Never__released ();
-			signals:
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-			};
-		};
+		Ui::PasswordRemember Ui_;
+		PageFormsData_t TempData_;
+	public:
+		PasswordRemember (QWidget* = 0);
+	public slots:
+		void add (const PageFormsData_t&);
+	private:
+		bool Changed (const ElementsData_t&, const QString&);
+	private slots:
+		void on_Remember__released ();
+		void on_NotNow__released ();
+		void on_Never__released ();
+	signals:
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
-};
+}
+}
 
 #endif
-

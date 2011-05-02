@@ -26,11 +26,7 @@ class QDomElement;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -50,8 +46,6 @@ namespace CleanWeb
 	private:
 		void Iterate (const QDomElement&, QStandardItem*);
 	};
-}
-}
 }
 }
 }

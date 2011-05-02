@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,32 +21,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace Poshuku
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				LeechCraft::Util::BaseSettingsManager::Init ();
-			}
-			
-			XmlSettingsManager* XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager manager;
-				return &manager;
-			}
-			
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Poshuku");
-				return settings;
-			}
-			
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-		};
-	};
-};
-
+		Util::BaseSettingsManager::Init ();
+	}
+	
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
+	
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku");
+		return settings;
+	}
+	
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}

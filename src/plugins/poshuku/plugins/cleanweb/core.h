@@ -35,11 +35,7 @@ class QWebHitTestResult;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -165,8 +161,6 @@ namespace CleanWeb
 				int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 	};
-}
-}
 }
 }
 }

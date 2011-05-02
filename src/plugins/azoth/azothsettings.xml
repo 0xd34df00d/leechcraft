@@ -81,6 +81,18 @@
 				<item type="checkbox" property="NotifyAboutIncomingMessages" default="true">
 					<label value="Notify about incoming messages" />
 				</item>
+				<item type="combobox" property="NotifyIncomingComposing" default="opened">
+					<label value="Notify when remote contact starts composing a message:" />
+					<option name="all">
+						<label value="always" />
+					</option>
+					<option name="opened" default="true">
+						<label value="in opened chats" />
+					</option>
+					<option name="none">
+						<label value="never" />
+					</option>
+				</item>
 				<item type="checkbox" property="NotifyAboutConferenceHighlights" default="true">
 					<label value="Notify about highlights in conferences" />
 				</item>

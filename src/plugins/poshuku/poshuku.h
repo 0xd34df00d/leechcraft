@@ -37,92 +37,88 @@ class QWebView;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class Poshuku : public QObject
+					, public IInfo
+					, public IHaveTabs
+					, public IPluginReady
+					, public IHaveSettings
+					, public IEntityHandler
+					, public IHaveShortcuts
+					, public IWebBrowser
+					, public IActionsExporter
 	{
-		namespace Poshuku
-		{
-			class Poshuku : public QObject
-						  , public IInfo
-						  , public IHaveTabs
-						  , public IPluginReady
-						  , public IHaveSettings
-						  , public IEntityHandler
-						  , public IHaveShortcuts
-						  , public IWebBrowser
-						  , public IActionsExporter
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IActionsExporter)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IActionsExporter)
 
-				QMenu *ToolMenu_;
-				QAction *ImportXbel_;
-				QAction *ExportXbel_;
-				QAction *CheckFavorites_;
-				QAction *ReloadAll_;
+		QMenu *ToolMenu_;
+		QAction *ImportXbel_;
+		QAction *ExportXbel_;
+		QAction *CheckFavorites_;
+		QAction *ReloadAll_;
 
-				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-			public:
-				virtual ~Poshuku ();
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-				QIcon GetIcon () const;
-				
-				TabClasses_t GetTabClasses () const;
-				void TabOpenRequested (const QByteArray&);
+		std::auto_ptr<QTranslator> Translator_;
+		boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+	public:
+		virtual ~Poshuku ();
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
+		QIcon GetIcon () const;
+		
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+		boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				bool CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
+		bool CouldHandle (const LeechCraft::Entity&) const;
+		void Handle (LeechCraft::Entity);
 
-				void Open (const QString&);
-				IWebWidget* GetWidget () const;
-				QWebView* CreateWindow ();
+		void Open (const QString&);
+		IWebWidget* GetWidget () const;
+		QWebView* CreateWindow ();
 
-				void SetShortcut (const QString&, const QKeySequences_t&);
-				QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo () const;
 
-				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-			private:
-				void InitConnections ();
-				void RegisterSettings ();
-			private slots:
-				void createTabFirstTime ();
-				void viewerSettingsChanged ();
-				void developerExtrasChanged ();
-				void cacheSettingsChanged ();
-				void handleError (const QString&);
-				void handleNewTab ();
-				void handleSettingsClicked (const QString&);
-				void handleCheckFavorites ();
-				void handleReloadAll ();
-			signals:
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
-				void gotEntity (const LeechCraft::Entity&);
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-				void couldHandle (const LeechCraft::Entity&, bool*);
-			};
-		};
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	private:
+		void InitConnections ();
+		void RegisterSettings ();
+	private slots:
+		void createTabFirstTime ();
+		void viewerSettingsChanged ();
+		void developerExtrasChanged ();
+		void cacheSettingsChanged ();
+		void handleError (const QString&);
+		void handleNewTab ();
+		void handleSettingsClicked (const QString&);
+		void handleCheckFavorites ();
+		void handleReloadAll ();
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void couldHandle (const LeechCraft::Entity&, bool*);
 	};
-};
+}
+}
 
 #endif
-

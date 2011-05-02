@@ -25,22 +25,18 @@ class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class IProxyObject
 	{
-		namespace Poshuku
-		{
-			class IProxyObject
-			{
-			public:
-				virtual QObject* GetHistoryModel () const = 0;
-				virtual QObject* GetFavoritesModel () const = 0;
-			};
-		};
+	public:
+		virtual QObject* GetHistoryModel () const = 0;
+		virtual QObject* GetFavoritesModel () const = 0;
 	};
-};
+}
+}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Poshuku::IProxyObject,
-		"org.Deviant.LeechCraft.Plugins.Poshuku.IProxyObject/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IProxyObject,
+		"org.Deviant.LeechCraft.Poshuku.IProxyObject/1.0");
 
 #endif
-

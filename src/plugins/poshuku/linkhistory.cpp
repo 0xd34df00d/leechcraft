@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,36 +21,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	LinkHistory::LinkHistory (QObject *parent)
+	: QWebHistoryInterface (parent)
 	{
-		namespace Poshuku
-		{
-			LinkHistory::LinkHistory (QObject *parent)
-			: QWebHistoryInterface (parent)
-			{
-			}
-			
-			void LinkHistory::addHistoryEntry (const QString& url)
-			{
-				if (!XmlSettingsManager::Instance ()->
-						property ("StoreLocalLinkHistory").toBool ())
-					return;
+	}
+	
+	void LinkHistory::addHistoryEntry (const QString& url)
+	{
+		if (!XmlSettingsManager::Instance ()->
+				property ("StoreLocalLinkHistory").toBool ())
+			return;
 
-				if (!History_.contains (url))
-					History_ << url;
-			}
-			
-			bool LinkHistory::historyContains (const QString& url) const
-			{
-				if (!XmlSettingsManager::Instance ()->
-						property ("StoreLocalLinkHistory").toBool ())
-					return false;
+		if (!History_.contains (url))
+			History_ << url;
+	}
+	
+	bool LinkHistory::historyContains (const QString& url) const
+	{
+		if (!XmlSettingsManager::Instance ()->
+				property ("StoreLocalLinkHistory").toBool ())
+			return false;
 
-				if (History_.contains (url))
-					return true;
-				return false;
-			}
-		};
-	};
-};
-
+		if (History_.contains (url))
+			return true;
+		return false;
+	}
+}
+}

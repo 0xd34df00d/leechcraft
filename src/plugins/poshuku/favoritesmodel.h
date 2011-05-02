@@ -25,76 +25,72 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class FavoritesModel : public QAbstractItemModel
 	{
-		namespace Poshuku
+		Q_OBJECT
+
+		QStringList ItemHeaders_;
+	public:
+		struct FavoritesItem
 		{
-			class FavoritesModel : public QAbstractItemModel
-			{
-				Q_OBJECT
+			QString Title_;
+			QString URL_;
+			/// Contains ids of the real tags.
+			QStringList Tags_;
 
-				QStringList ItemHeaders_;
-			public:
-				struct FavoritesItem
-				{
-					QString Title_;
-					QString URL_;
-					/// Contains ids of the real tags.
-					QStringList Tags_;
-
-					bool operator== (const FavoritesItem&) const;
-				};
-				typedef QList<FavoritesItem> items_t;
-			private:
-				items_t Items_;
-				QMap<QString, QString> CheckResults_;
-			public:
-				enum Columns
-				{
-					ColumnTitle
-					, ColumnURL
-					, ColumnTags
-				};
-
-				FavoritesModel (QObject* = 0);
-				virtual ~FavoritesModel ();
-
-				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				virtual Qt::ItemFlags flags (const QModelIndex&) const;
-				virtual QVariant headerData (int, Qt::Orientation,
-						int = Qt::DisplayRole) const;
-				virtual QModelIndex index (int, int,
-						const QModelIndex& = QModelIndex()) const;
-				virtual QModelIndex parent (const QModelIndex&) const;
-				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-				virtual bool setData (const QModelIndex&, const QVariant&,
-						int = Qt::EditRole);
-
-				void ChangeURL (const QModelIndex&, const QString&);
-				const items_t& GetItems () const;
-				void SetCheckResults (const QMap<QString, QString>&);
-			private:
-				QStringList GetVisibleTags (int) const;
-			public slots:
-				bool addItem (const QString&, const QString&, const QStringList&);
-				QList<QVariant> getItemsMap () const;
-				void removeItem (const QModelIndex&);
-				void handleItemAdded (const FavoritesModel::FavoritesItem&);
-				void handleItemUpdated (const FavoritesModel::FavoritesItem&);
-				void handleItemRemoved (const FavoritesModel::FavoritesItem&);
-			private slots:
-				void loadData ();
-			signals:
-				void error (const QString&);
-
-				// Hook support
-				void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
-						QString title, QString url, QStringList tags);
-			};
+			bool operator== (const FavoritesItem&) const;
 		};
+		typedef QList<FavoritesItem> items_t;
+	private:
+		items_t Items_;
+		QMap<QString, QString> CheckResults_;
+	public:
+		enum Columns
+		{
+			ColumnTitle
+			, ColumnURL
+			, ColumnTags
+		};
+
+		FavoritesModel (QObject* = 0);
+		virtual ~FavoritesModel ();
+
+		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual Qt::ItemFlags flags (const QModelIndex&) const;
+		virtual QVariant headerData (int, Qt::Orientation,
+				int = Qt::DisplayRole) const;
+		virtual QModelIndex index (int, int,
+				const QModelIndex& = QModelIndex()) const;
+		virtual QModelIndex parent (const QModelIndex&) const;
+		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+		virtual bool setData (const QModelIndex&, const QVariant&,
+				int = Qt::EditRole);
+
+		void ChangeURL (const QModelIndex&, const QString&);
+		const items_t& GetItems () const;
+		void SetCheckResults (const QMap<QString, QString>&);
+	private:
+		QStringList GetVisibleTags (int) const;
+	public slots:
+		bool addItem (const QString&, const QString&, const QStringList&);
+		QList<QVariant> getItemsMap () const;
+		void removeItem (const QModelIndex&);
+		void handleItemAdded (const FavoritesModel::FavoritesItem&);
+		void handleItemUpdated (const FavoritesModel::FavoritesItem&);
+		void handleItemRemoved (const FavoritesModel::FavoritesItem&);
+	private slots:
+		void loadData ();
+	signals:
+		void error (const QString&);
+
+		// Hook support
+		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
+				QString title, QString url, QStringList tags);
 	};
-};
+}
+}
 
 #endif
-

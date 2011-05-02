@@ -30,17 +30,34 @@ namespace Azoth
 {
 	class ICLEntry;
 
+	/** @brief This interface is used to represent a message.
+	 * 
+	 * Refer to the MessageType enum for the list of possible message
+	 * types that are covered by this interface.
+	 * 
+	 * The message should not be sent upon creation, only call to Send()
+	 * should trigger the sending.
+	 */
 	class IMessage
 	{
 	public:
 		virtual ~IMessage () {};
 
+		/** @brief Represents the direction of the message.
+		 */
 		enum Direction
 		{
+			/** @brief The message is from the remote party to us.
+			 */
 			DIn,
+			
+			/** @brief The message is from us to the remote party.
+			 */
 			DOut
 		};
 
+		/** @brief Represents possible message types.
+		 */
 		enum MessageType
 		{
 			/** @brief Standard one-to-one message.
@@ -77,8 +94,8 @@ namespace Azoth
 			MTServiceMessage
 		};
 
-		/** This enum is used for more precise classification
-		 * of chat types messages.
+		/** @brief This enum is used for more precise classification of
+		 * chat types messages.
 		 * 
 		 * The messages of some particular types may have additional
 		 * required properties used by the Azoth Core and other plugins
@@ -90,11 +107,17 @@ namespace Azoth
 			 * any other subtype of message.
 			 */
 			MSTOther,
+			
+			/** This message notifies about someone being just kicked.
+			 */
 			MSTKickNotification,
+			
+			/** This message notifies about someone being just banned.
+			 */
 			MSTBanNotification,
 			
-			/** @brief Represents status change of participant in a chat
-			 * or MUC room.
+			/** @brief Represents status change of a participant in a
+			 * chat or MUC room.
 			 * 
 			 * The corresponding MessageType is MTStatusMessage.
 			 * 
@@ -110,51 +133,131 @@ namespace Azoth
 			 *   status text of the participant. May be empty.
 			 */
 			MSTParticipantStatusChange,
+			
+			/** @brief Represents permission changes of a participant in
+			 * a chat or MUC room.
+			 */
 			MSTParticipantRoleAffiliationChange,
+			
+			/** @brief Notifies about participant joining to a MUC room.
+			 */
 			MSTParticipantJoin,
+			
+			/** @brief Notifies about participant leaving a MUC room.
+			 */
 			MSTParticipantLeave,
+			
+			/** @brief Notifies about participant in a MUC changing the
+			 * nick.
+			 */
 			MSTParticipantNickChange,
+			
+			/** @brief Notifies about changing subject in a MUC room.
+			 */
 			MSTRoomSubjectChange
 		};
 
+		/** @brief Returns this message as a QObject.
+		 */
 		virtual QObject* GetObject () = 0;
 
-		/** Please note that if the other part is a MUC, it should send
+		/** @brief Sends the message.
+		 * 
+		 * A message should never be sent except as the result of this
+		 * method.
+		 * 
+		 * Please note that if the other part is a MUC, it should send
 		 * back this message with the "IN" direction set.
 		 */
 		virtual void Send () = 0;
+		
+		/** @brief Returns the direction of this message.
+		 * 
+		 * @return The direction of this message.
+		 */
 		virtual Direction GetDirection () const = 0;
+		
+		/** @brief Returns the type of this message.
+		 * 
+		 * @return The type of this message.
+		 */
 		virtual MessageType GetMessageType () const = 0;
+		
+		/** @brief Returns the subtype of this message.
+		 * 
+		 * The subtype is used for more precise classification of
+		 * messages.
+		 * 
+		 * @return The subtype of this message
+		 */
 		virtual MessageSubType GetMessageSubType () const = 0;
 
-		/** The contact list entry from which this message originates.
+		/** @brief Returns the CL entry from which this message is.
 		 *
-		 * For normal, single user chats, this should always equal to
+		 * For normal, single user chats, this should always be equal to
 		 * the ICLEntry that was (and will be) used to send the message
 		 * back.
 		 *
 		 * For multiuser chats this should be equal to the contact list
 		 * representation of the participant that sent the message.
+		 * 
+		 * The returned object must implement ICLEntry.
+		 * 
+		 * @return The CL entry from which this message originates,
+		 * implementing ICLEntry.
 		 */
 		virtual QObject* OtherPart () const = 0;
 
-		/** This is the same that OtherPart() for single user chats. For
+		/** @brief Returns the parent CL entry of this message.
+		 * 
+		 * This is the same that OtherPart() for single user chats. For
 		 * multiuser chats it should be the contact list entry
 		 * representing the MUC room.
 		 *
 		 * By default this function calls OtherPart() and returns its
 		 * result.
+		 * 
+		 * The returned object must implement ICLEntry.
+		 * 
+		 * @return The parent CL entry of this message, implementing
+		 * ICLEntry.
 		 */
 		virtual QObject* ParentCLEntry () const
 		{
 			return OtherPart ();
 		}
 
+		/** @brief The variant of the other part.
+		 * 
+		 * If not applicable, a null string should be returned.
+		 * 
+		 * @return The variant of the other part.
+		 */
 		virtual QString GetOtherVariant () const = 0;
+		
+		/** @brief Returns the body of the message.
+		 * 
+		 * @return The body of the message.
+		 */
 		virtual QString GetBody () const = 0;
-		virtual void SetBody (const QString&) = 0;
+		
+		/** @brief Updates the body of the message.
+		 * 
+		 * @param[in] body The new body of the message.
+		 */
+		virtual void SetBody (const QString& body) = 0;
+		
+		/** @brief Returns the timestamp of the message.
+		 * 
+		 * @return The timestamp of the message.
+		 */
 		virtual QDateTime GetDateTime () const = 0;
-		virtual void SetDateTime (const QDateTime&) = 0;
+		
+		/** @brief Updates the timestamp of the message.
+		 * 
+		 * @param[in] timestamp The new timestamp of the message.
+		 */
+		virtual void SetDateTime (const QDateTime& timestamp) = 0;
 	};
 }
 }

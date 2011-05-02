@@ -24,23 +24,20 @@ class QLineEdit;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class IBrowserWidget
 	{
-		namespace Poshuku
-		{
-			class IBrowserWidget
-			{
-			public:
-				virtual ~IBrowserWidget () {}
+	public:
+		virtual ~IBrowserWidget () {}
 
-				virtual QWebView* GetWebView () const = 0;
-				virtual QLineEdit* GetURLEdit () const = 0;
-			};
-		};
+		virtual QWebView* GetWebView () const = 0;
+		virtual QLineEdit* GetURLEdit () const = 0;
 	};
-};
+}
+}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Poshuku::IBrowserWidget,
-		"org.Deviant.LeechCraft.Plugins.Poshuku.IBrowserWidget/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IBrowserWidget,
+		"org.Deviant.LeechCraft.Poshuku.IBrowserWidget/1.0");
 
 #endif

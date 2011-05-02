@@ -26,26 +26,22 @@ class QDataStream;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	struct BrowserWidgetSettings
 	{
-		namespace Poshuku
-		{
-			struct BrowserWidgetSettings
-			{
-				qreal ZoomFactor_;
-				bool NotifyWhenFinished_;
-				QTime ReloadInterval_;
-				QByteArray WebHistorySerialized_;
-				QPoint ScrollPosition_;
-			};
-
-			QDataStream& operator<< (QDataStream&, const BrowserWidgetSettings&);
-			QDataStream& operator>> (QDataStream&, BrowserWidgetSettings&);
-		};
+		qreal ZoomFactor_;
+		bool NotifyWhenFinished_;
+		QTime ReloadInterval_;
+		QByteArray WebHistorySerialized_;
+		QPoint ScrollPosition_;
 	};
-};
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::BrowserWidgetSettings);
+	QDataStream& operator<< (QDataStream&, const BrowserWidgetSettings&);
+	QDataStream& operator>> (QDataStream&, BrowserWidgetSettings&);
+}
+}
+
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::BrowserWidgetSettings);
 
 #endif
-

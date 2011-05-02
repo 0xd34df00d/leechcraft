@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,42 +23,38 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	EditBookmarkDialog::EditBookmarkDialog (const QModelIndex& index,
+			QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Poshuku
-		{
-			EditBookmarkDialog::EditBookmarkDialog (const QModelIndex& index,
-					QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
-				new Util::TagsCompleter (Ui_.Tags_);
-				Ui_.Tags_->AddSelector ();
+		Ui_.setupUi (this);
+		new Util::TagsCompleter (Ui_.Tags_);
+		Ui_.Tags_->AddSelector ();
 
-				QString url = index.sibling (index.row (), FavoritesModel::ColumnURL)
-					.data ().toString ();
-				if (url.size () > 100)
-					url = QString ("%1...").arg (url.left (97));
-				Ui_.Label_->setText (url);
+		QString url = index.sibling (index.row (), FavoritesModel::ColumnURL)
+			.data ().toString ();
+		if (url.size () > 100)
+			url = QString ("%1...").arg (url.left (97));
+		Ui_.Label_->setText (url);
 
-				Ui_.Title_->setText (index.sibling (index.row (), FavoritesModel::ColumnTitle)
-						.data ().toString ());
+		Ui_.Title_->setText (index.sibling (index.row (), FavoritesModel::ColumnTitle)
+				.data ().toString ());
 
-				Ui_.Tags_->setText (index.sibling (index.row (), FavoritesModel::ColumnTags)
-						.data ().toString ());
-			}
+		Ui_.Tags_->setText (index.sibling (index.row (), FavoritesModel::ColumnTags)
+				.data ().toString ());
+	}
 
-			QString EditBookmarkDialog::GetTitle () const
-			{
-				return Ui_.Title_->text ();
-			}
+	QString EditBookmarkDialog::GetTitle () const
+	{
+		return Ui_.Title_->text ();
+	}
 
-			QStringList EditBookmarkDialog::GetTags () const
-			{
-				return Core::Instance ().GetProxy ()->GetTagsManager ()->
-					Split (Ui_.Tags_->text ());
-			}
-		};
-	};
-};
-
+	QStringList EditBookmarkDialog::GetTags () const
+	{
+		return Core::Instance ().GetProxy ()->GetTagsManager ()->
+			Split (Ui_.Tags_->text ());
+	}
+}
+}

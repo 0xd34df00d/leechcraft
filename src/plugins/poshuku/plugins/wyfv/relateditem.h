@@ -25,39 +25,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	struct Related;
+
+	class RelatedItem : public QWidget
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					struct Related;
+		Q_OBJECT
 
-					class RelatedItem : public QWidget
-					{
-						Q_OBJECT
-
-						Ui::RelatedItem Ui_;
-						QBuffer PixmapData_;
-						QUrl URL_;
-					public:
-						RelatedItem (QWidget* = 0);
-						void SetRelated (const Related&);
-					protected:
-						bool eventFilter (QObject*, QEvent*);
-					private slots:
-						void addToPixmap ();
-						void handlePixmapFinished ();
-					signals:
-						void navigate (const QUrl&);
-					};
-				};
-			};
-		};
+		Ui::RelatedItem Ui_;
+		QBuffer PixmapData_;
+		QUrl URL_;
+	public:
+		RelatedItem (QWidget* = 0);
+		void SetRelated (const Related&);
+	protected:
+		bool eventFilter (QObject*, QEvent*);
+	private slots:
+		void addToPixmap ();
+		void handlePixmapFinished ();
+	signals:
+		void navigate (const QUrl&);
 	};
-};
+}
+}
+}
 
 #endif
-

@@ -53,6 +53,7 @@
 #include "transferjobmanager.h"
 #include "accounthandlerchooserdialog.h"
 #include "util.h"
+#include "eventsnotifier.h"
 
 uint qHash (const QImage& image)
 {
@@ -106,6 +107,7 @@ namespace Azoth
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
+	, EventsNotifier_ (new EventsNotifier)
 	{
 		connect (ChatTabsManager_,
 				SIGNAL (clearUnreadMsgCount (QObject*)),
@@ -115,6 +117,14 @@ namespace Azoth
 				SIGNAL (jobNoLongerOffered (QObject*)),
 				this,
 				SLOT (handleJobDeoffered (QObject*)));
+		connect (EventsNotifier_.get (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (ChatTabsManager_,
+				SIGNAL (entryMadeCurrent (QObject*)),
+				EventsNotifier_.get (),
+				SLOT (handleEntryMadeCurrent (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
 
@@ -808,6 +818,8 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (updateItem ()));
+		
+		EventsNotifier_->RegisterEntry (clEntry);
 
 		const QString& id = clEntry->GetEntryID ();
 		ID2Entry_ [id] = clEntry->GetObject ();
@@ -933,6 +945,13 @@ namespace Azoth
 				tip += "<br />" + info.value ("client_name").toString ();
 			if (info.contains ("client_version"))
 				tip += " " + info.value ("client_version").toString ();
+
+			if (info.contains ("custom_user_visible_map"))
+			{
+				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
+				Q_FOREACH (const QString& key, map.keys ())
+					tip += key + ": " + map [key].toString () + "<br />";
+			}
 		}
 		return tip;
 	}

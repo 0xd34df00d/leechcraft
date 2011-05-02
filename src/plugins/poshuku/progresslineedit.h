@@ -26,25 +26,21 @@ class QToolBar;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class ProgressLineEdit : public QLineEdit
 	{
-		namespace Poshuku
-		{
-			class ProgressLineEdit : public QLineEdit
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				bool IsCompleting_;
-			public:
-				ProgressLineEdit (QWidget* = 0);
-				virtual ~ProgressLineEdit ();
-				bool IsCompleting () const;
-			private slots:
-				void handleCompleterActivated ();
-			};
-		};
+		bool IsCompleting_;
+	public:
+		ProgressLineEdit (QWidget* = 0);
+		virtual ~ProgressLineEdit ();
+		bool IsCompleting () const;
+	private slots:
+		void handleCompleterActivated ();
 	};
-};
+}
+}
 
 #endif
-

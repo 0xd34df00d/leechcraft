@@ -23,23 +23,19 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class LinkHistory : public QWebHistoryInterface
 	{
-		namespace Poshuku
-		{
-			class LinkHistory : public QWebHistoryInterface
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QSet<QString> History_;
-			public:
-				LinkHistory (QObject* = 0);
-				void addHistoryEntry (const QString& url);
-				bool historyContains (const QString& url) const;
-			};
-		};
+		QSet<QString> History_;
+	public:
+		LinkHistory (QObject* = 0);
+		void addHistoryEntry (const QString& url);
+		bool historyContains (const QString& url) const;
 	};
-};
+}
+}
 
 #endif
-

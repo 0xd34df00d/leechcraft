@@ -28,40 +28,33 @@ class QPropertyAnimation;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class RelatedWidget : public QGraphicsView
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class RelatedWidget : public QGraphicsView
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						QGraphicsScene *Scene_;
-						QGraphicsLinearLayout *Layout_;
-						bool Shown_;
-						QPropertyAnimation *OpacityAnimation_;
-						QList<QWidget*> RelatedItems_;
-						QGraphicsWidget *Form_;
-					public:
-						RelatedWidget (QWidget* = 0);
-						virtual ~RelatedWidget ();
+		QGraphicsScene *Scene_;
+		QGraphicsLinearLayout *Layout_;
+		bool Shown_;
+		QPropertyAnimation *OpacityAnimation_;
+		QList<QWidget*> RelatedItems_;
+		QGraphicsWidget *Form_;
+	public:
+		RelatedWidget (QWidget* = 0);
+		virtual ~RelatedWidget ();
 
-						void SetRelated (QList<Related>);
-						void ToggleVisibility ();
-					private slots:
-						void handleAnimationFinished ();
-					signals:
-						void navigate (const QUrl&);
-					};
-				};
-			};
-		};
+		void SetRelated (QList<Related>);
+		void ToggleVisibility ();
+	private slots:
+		void handleAnimationFinished ();
+	signals:
+		void navigate (const QUrl&);
 	};
-};
+}
+}
+}
 
 #endif
-

@@ -24,23 +24,19 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class JSProxy : public QObject
 	{
-		namespace Poshuku
-		{
-			class JSProxy : public QObject
-			{
-				Q_OBJECT
-			public:
-				JSProxy (QObject* = 0);
+		Q_OBJECT
+	public:
+		JSProxy (QObject* = 0);
 
-			public slots:
-				void debug (const QString& str);
-				void warning (const QString& str);
-			};
-		};
+	public slots:
+		void debug (const QString& str);
+		void warning (const QString& str);
 	};
-};
+}
+}
 
 #endif
-

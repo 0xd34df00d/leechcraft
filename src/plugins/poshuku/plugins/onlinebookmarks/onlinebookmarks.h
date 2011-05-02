@@ -28,11 +28,7 @@ class QMenu;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -71,8 +67,5 @@ namespace OnlineBookmarks
 }
 }
 }
-}
-}
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
-

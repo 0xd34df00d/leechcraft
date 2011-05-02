@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,65 +20,61 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	FindDialog::FindDialog (QWidget *parent)
+	: Notification (parent)
 	{
-		namespace Poshuku
-		{
-			FindDialog::FindDialog (QWidget *parent)
-			: Notification (parent)
-			{
-				Ui_.setupUi (this);
-			}
-			
-			FindDialog::~FindDialog ()
-			{
-			}
-			
-			void FindDialog::SetText (const QString& text)
-			{
-				Ui_.Pattern_->setText (text);
-			}
+		Ui_.setupUi (this);
+	}
+	
+	FindDialog::~FindDialog ()
+	{
+	}
+	
+	void FindDialog::SetText (const QString& text)
+	{
+		Ui_.Pattern_->setText (text);
+	}
 
-			void FindDialog::SetSuccessful (bool success)
-			{
-				QString ss = QString ("QLineEdit {"
-						"background-color:rgb(");
-				if (success)
-					ss.append ("0,255");
-				else
-					ss.append ("255,0");
-				ss.append (",0) }");
-				Ui_.Pattern_->setStyleSheet (ss);
-			}
+	void FindDialog::SetSuccessful (bool success)
+	{
+		QString ss = QString ("QLineEdit {"
+				"background-color:rgb(");
+		if (success)
+			ss.append ("0,255");
+		else
+			ss.append ("255,0");
+		ss.append (",0) }");
+		Ui_.Pattern_->setStyleSheet (ss);
+	}
 
-			void FindDialog::Focus ()
-			{
-				Ui_.Pattern_->setFocus ();
-			}
-			
-			void FindDialog::on_Pattern__textChanged (const QString& newText)
-			{
-				Ui_.FindButton_->setEnabled (!newText.isEmpty ());
-			}
-			
-			void FindDialog::on_FindButton__released ()
-			{
-				QWebPage::FindFlags flags;
-				if (Ui_.SearchBackwards_->checkState () == Qt::Checked)
-					flags |= QWebPage::FindBackward;
-				if (Ui_.MatchCase_->checkState () == Qt::Checked)
-					flags |= QWebPage::FindCaseSensitively;
-				if (Ui_.WrapAround_->checkState () == Qt::Checked)
-					flags |= QWebPage::FindWrapsAroundDocument;
-			
-				emit next (Ui_.Pattern_->text (), flags);
-			}
-			
-			void FindDialog::reject ()
-			{
-				hide ();
-			}
-		};
-	};
-};
-
+	void FindDialog::Focus ()
+	{
+		Ui_.Pattern_->setFocus ();
+	}
+	
+	void FindDialog::on_Pattern__textChanged (const QString& newText)
+	{
+		Ui_.FindButton_->setEnabled (!newText.isEmpty ());
+	}
+	
+	void FindDialog::on_FindButton__released ()
+	{
+		QWebPage::FindFlags flags;
+		if (Ui_.SearchBackwards_->checkState () == Qt::Checked)
+			flags |= QWebPage::FindBackward;
+		if (Ui_.MatchCase_->checkState () == Qt::Checked)
+			flags |= QWebPage::FindCaseSensitively;
+		if (Ui_.WrapAround_->checkState () == Qt::Checked)
+			flags |= QWebPage::FindWrapsAroundDocument;
+	
+		emit next (Ui_.Pattern_->text (), flags);
+	}
+	
+	void FindDialog::reject ()
+	{
+		hide ();
+	}
+}
+}
