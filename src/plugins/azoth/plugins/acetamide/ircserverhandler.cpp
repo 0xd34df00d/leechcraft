@@ -137,6 +137,9 @@ namespace Acetamide
 			if (commandWithParams.at (0).toLower () == "invite")
 				outputMessage = "You invite " + commandWithParams.at (1)
 						+ " to a channel " + commandWithParams.at (2);
+			else if (commandWithParams.at (0).toLower () == "quit")
+				commandWithParams.push_back (ServerID_);
+
 			Name2Command_ [commandWithParams.at (0).toLower ()]
 					(commandWithParams.mid (1));
 		}
@@ -146,6 +149,18 @@ namespace Acetamide
 				ich->ShowServiceMessage (outputMessage,
 						IMessage::MTEventMessage,
 						IMessage::MSTOther);
+	}
+
+	QList<QObject*> IrcServerHandler::GetCLEntries () const
+	{
+		QList<QObject*> result;
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			result << ich->GetCLEntry ();
+
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+			result << spe.get ();
+
+		return result;
 	}
 
 	void IrcServerHandler::LeaveChannel (const QString& channels,
@@ -238,7 +253,7 @@ namespace Acetamide
 		{
 			TcpSocket_ptr->disconnectFromHost ();
 			if (TcpSocket_ptr->state ()
-				== QAbstractSocket::UnconnectedState &&
+					== QAbstractSocket::UnconnectedState &&
 				TcpSocket_ptr->waitForDisconnected (1000))
 			{
 				ServerConnectionState_ = NotConnected;
@@ -276,6 +291,19 @@ namespace Acetamide
 			Add2ChannelsQueue (channel);
 
 		return true;
+	}
+
+	void IrcServerHandler::JoinChannelByCmd (const QStringList& cmd)
+	{
+		Q_FOREACH (const QString& channel, cmd.at (0).split (','))
+		{
+			ChannelOptions co;
+			co.ChannelName_ = channel;
+			co.ChannelPassword_ = QString ();
+			co.ServerName_ = ServerOptions_.ServerName_;
+
+			JoinChannel (co);
+		}
 	}
 
 	void IrcServerHandler::SendCommand (const QString& cmd)
@@ -506,6 +534,13 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["invite"] =
 				boost::bind (&IrcParser::InviteCommand, IrcParser_, _1);
+		Name2Command_ ["quit"] =
+				boost::bind (&ClientConnection::QuitServer,
+						Account_->GetClientConnection ().get (),
+						_1);
+		Name2Command_ ["join"] =
+				boost::bind (&IrcServerHandler::JoinChannelByCmd, this,
+						_1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()

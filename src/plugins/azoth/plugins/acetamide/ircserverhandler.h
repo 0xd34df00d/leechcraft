@@ -92,6 +92,8 @@ class IrcMessage;
 		void SendPrivateMessage (IrcMessage*);
 		void ParseMessageForCommand (const QString&, const QString&);
 
+		QList<QObject*> GetCLEntries () const;
+
 		void LeaveChannel (const QString&, const QString&);
 		QStringList GetPrivateChats () const;
 		void ClosePrivateChat (const QString&);
@@ -109,6 +111,7 @@ class IrcMessage;
 		void ConnectToServer ();
 		bool DisconnectFromServer ();
 		bool JoinChannel (const ChannelOptions&);
+		void JoinChannelByCmd (const QStringList&);
 		void SendCommand (const QString&);
 		void IncomingMessage2Server ();
 		void IncomingMessage2Channel ();

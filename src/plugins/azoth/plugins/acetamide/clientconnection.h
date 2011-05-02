@@ -65,6 +65,7 @@ namespace Acetamide
 		void ClosePrivateChat (QString, const QString&);
 		void CloseServer (const QString&);
 		void DisconnectFromAll ();
+		void QuitServer (const QStringList&);
 	public slots:
 		void serverConnected (const QString&);
 		void handleError (QAbstractSocket::SocketError);
