@@ -332,7 +332,7 @@
     <message>
         <location filename="startupfirstpage.ui" line="20"/>
         <source>Select ad blocking lists that you would like to add to the Poshuku CleanWeb plugin.</source>
-        <translation>Выберите списки блокировки рекламы, которые бы вы хотели добавить в плагин Poshuku CleanWeb.</translation>
+        <translation>Выберите списки блокировки рекламы, которые бы вы хотели добавить в модуль Poshuku CleanWeb.</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="26"/>
@@ -349,7 +349,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Вы можете добавить подписку на EasyList, если хотите.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Вы также можете добавить необходимые подписки позже, либо напрямую введя их адреса в настройках CleanWeb, либо перейдя, например, на страницу &lt;a href=&quot;http://adblockplus.org/en/subscriptions&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#1a619f;&quot;&gt;http://adblockplus.org/en/subscriptions&lt;/span&gt;&lt;/a&gt; и выбрав необходимые подписки там..&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Если вы включили плагин &lt;span style=&quot; font-weight:600;&quot;&gt;LackMan&lt;/span&gt; для LeechCraft и установили при помощи него пакет &lt;span style=&quot; font-style:italic;&quot;&gt;Poshuku CleanWeb Subscriptions&lt;/span&gt;, вы также можете выбрать из нескольких предустановленных подписок в настройках CleanWeb.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Если вы включили модуль &lt;span style=&quot; font-weight:600;&quot;&gt;LackMan&lt;/span&gt; для LeechCraft и установили при помощи него пакет &lt;span style=&quot; font-style:italic;&quot;&gt;Poshuku CleanWeb Subscriptions&lt;/span&gt;, вы также можете выбрать из нескольких предустановленных подписок в параметрах CleanWeb.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="42"/>
@@ -405,7 +405,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Если вы включили плагин &lt;span style=&quot; font-weight:600;&quot;&gt;LackMan&lt;/span&gt; для LeechCraft и установили при помощи него пакет &lt;span style=&quot; font-style:italic;&quot;&gt;Poshuku CleanWeb Subscriptions&lt;/span&gt;, вы также можете выбрать из нескольких предустановленных подписок в настройках CleanWeb.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Если вы включили модуль &lt;span style=&quot; font-weight:600;&quot;&gt;LackMan&lt;/span&gt; для LeechCraft и установили при помощи него пакет &lt;span style=&quot; font-style:italic;&quot;&gt;Poshuku CleanWeb Subscriptions&lt;/span&gt;, вы также можете выбрать из нескольких предустановленных подписок в параметрах CleanWeb.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>

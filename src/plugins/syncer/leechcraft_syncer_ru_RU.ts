@@ -12,12 +12,12 @@
     <message>
         <location filename="core.cpp" line="207"/>
         <source>Login error when synchronizing plugin %1.</source>
-        <translation>Ошибка входа при синхронизации плагина %1.</translation>
+        <translation>Ошибка входа при синхронизации модуля %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="223"/>
         <source>Connection error when synchronizing plugin %1.</source>
-        <translation>Ошибка соединения при синхронизации плагина %1.</translation>
+        <translation>Ошибка соединения при синхронизации модуля %1.</translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="242"/>
@@ -46,7 +46,7 @@
         <location filename="core.cpp" line="240"/>
         <source>Successfully synchronized plugin %1</source>
         <oldsource>Successfully synchronized plugin %1: %2 items received, %3 items sent.</oldsource>
-        <translation>Плагин %1 успешно синхронизирован</translation>
+        <translation>Модуль %1 успешно синхронизирован</translation>
     </message>
 </context>
 <context>
@@ -54,7 +54,7 @@
     <message>
         <location filename="syncer.cpp" line="69"/>
         <source>Synchronization plugin for LeechCraft</source>
-        <translation>Плагин синхронизации для LeechCraft</translation>
+        <translation>Модуль синхронизации для LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -63,7 +63,7 @@
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
         <source>Sync settings</source>
-        <translation>Настройки синхронизации</translation>
+        <translation>Параметры синхронизации</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>

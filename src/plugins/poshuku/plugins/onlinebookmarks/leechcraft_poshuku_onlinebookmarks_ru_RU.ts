@@ -80,7 +80,7 @@
     <message>
         <location filename="onlinebookmarks.cpp" line="94"/>
         <source>Sync local bookmarks with your account in online bookmark services like Read It Later</source>
-        <translation>Синхронизация локальных закладок с вашим аккаунтом в сервисах онлайн-закладок типа Read It Later</translation>
+        <translation>Синхронизация локальных закладок с вашей учетной записью в сервисах онлайн-закладок типа Read It Later</translation>
     </message>
     <message>
         <location filename="onlinebookmarks.cpp" line="136"/>
@@ -127,7 +127,7 @@
     <message>
         <location filename="settings.cpp" line="265"/>
         <source>Invalid account data</source>
-        <translation>Неправильные данные аккаунта</translation>
+        <translation>Неправильные данные учетной записи</translation>
     </message>
 </context>
 <context>
@@ -160,13 +160,13 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Accounts</source>
-        <translation>Аккаунты</translation>
+        <translation>Учетные записи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Sync options</source>
         <oldsource>Sync Options</oldsource>
-        <translation>Опции синхронизации</translation>
+        <translation>Параметры синхронизации</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
@@ -188,14 +188,14 @@
         <location filename="dummy.cpp" line="8"/>
         <source>Download options</source>
         <oldsource>Download option</oldsource>
-        <translation>Опции скачивания</translation>
+        <translation>Параметры скачивания</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <location filename="dummy.cpp" line="21"/>
         <source>Send bookmarks to selected services every</source>
         <oldsource>Send bookmarks to active services every</oldsource>
-        <translation>Отсылать закладки на активные сервисые каждые</translation>
+        <translation>Отсылать закладки на активные сервисы каждые</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
@@ -266,7 +266,7 @@
         <location filename="dummy.cpp" line="20"/>
         <source>Upload options</source>
         <oldsource>Upload option</oldsource>
-        <translation>Опции отправки</translation>
+        <translation>Параметры отправки</translation>
     </message>
 </context>
 </TS>

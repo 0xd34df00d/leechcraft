@@ -34,7 +34,7 @@
     <message>
         <location filename="historyholder.cpp" line="56"/>
         <source>Holds history from various plugins</source>
-        <translation>Хранит историю из других плагинов</translation>
+        <translation>Хранит историю из других модулей</translation>
     </message>
 </context>
 </TS>

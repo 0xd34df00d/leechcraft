@@ -6,27 +6,27 @@
     <message>
         <location filename="addtask.cpp" line="107"/>
         <source>Directory %1 doesn&apos;t exist, would you like to select another?</source>
-        <translation>Директория %1 не существует, хотите выбрать другую?</translation>
+        <translation>Каталог %1 не существует, хотите выбрать другой?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="110"/>
         <source>Directory %1 isn&apos;t readable, would you like to select another?</source>
-        <translation>Директория %1 недоступна для чтения, хотите выбрать другую?</translation>
+        <translation>Каталог %1 недоступен для чтения, хотите выбрать другой?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="113"/>
         <source>Directory %1 isn&apos;t writable, would you like to select another?</source>
-        <translation>Директория %1 недоступна для записи, хотите выбрать другую?</translation>
+        <translation>Каталог %1 недоступен для записи, хотите выбрать другой?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="116"/>
         <source>%1 isn&apos;t a directory at all, would you like to select another?</source>
-        <translation>%1 не является директорией, хотите выбрать другую?</translation>
+        <translation>%1 не является каталогом, хотите выбрать другой?</translation>
     </message>
     <message>
         <location filename="addtask.cpp" line="157"/>
         <source>Select directory</source>
-        <translation>Выбор директории</translation>
+        <translation>Выбор каталога</translation>
     </message>
 </context>
 <context>
@@ -165,7 +165,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Local settings</source>
-        <translation>Локальные настройки</translation>
+        <translation>Локальные параметры</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
@@ -176,12 +176,12 @@
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Alert about errors</source>
-        <translation>Оповещать об ошибках</translation>
+        <translation>Уведомлять об ошибках</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Network settings</source>
-        <translation>Сетевые настройки</translation>
+        <translation>Сетевые параметры</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>

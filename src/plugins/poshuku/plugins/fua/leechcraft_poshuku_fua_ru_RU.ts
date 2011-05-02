@@ -31,7 +31,7 @@
 %WebKitVersion% is expanded to WebKit version.
 %AppVersion% is expanded to the application&apos;s version.</source>
         <translation>%Platform% и %Subplatform% заменяются оконной подсистемой и операционной системой.
-%Security% заменяется на U, если SSL включен, в противном случае на N.
+%Security% заменяется на U при доступности SSL, а в противном случае на N.
 %Locale% заменяется именем текущей локали.
 %WebKitVersion% заменяется версией движка WebKit.
 %AppVersion% заменяется версией приложения.</translation>
@@ -88,7 +88,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>FUA settings</source>
-        <translation>Настройки FUA</translation>
+        <translation>Параметры FUA</translation>
     </message>
 </context>
 </TS>

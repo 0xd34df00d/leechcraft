@@ -173,7 +173,7 @@
     <message>
         <location filename="core.cpp" line="1118"/>
         <source>Unable to remove package which has been removed upstream from %1.</source>
-        <translation>Невозможно удалить пакет, который был удален в репозитории из %1.</translation>
+        <translation>Невозможно удалить пакет, который был удалён в репозитории из %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1169"/>
@@ -188,12 +188,12 @@
     <message>
         <location filename="core.cpp" line="1187"/>
         <source>Error retrieving package icon</source>
-        <translation>Ошибка получения иконки пакета</translation>
+        <translation>Ошибка получения значка пакета</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1188"/>
         <source>Unable to retrieve icon for package %1.</source>
-        <translation>Невозможно получить иконку для пакета %1.</translation>
+        <translation>Невозможно получить значок для пакета %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1206"/>
@@ -223,12 +223,12 @@
     <message>
         <location filename="core.cpp" line="1293"/>
         <source>Package updated</source>
-        <translation>Пакет обновлен</translation>
+        <translation>Пакет обновлён</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1294"/>
         <source>Package %1 updated successfully.</source>
-        <translation>Пакет %1 успешно обновлен.</translation>
+        <translation>Пакет %1 успешно обновлён.</translation>
     </message>
 </context>
 <context>
@@ -251,7 +251,7 @@
     <message>
         <location filename="packageprocessor.cpp" line="127"/>
         <source>Could not remove directory %1.</source>
-        <translation>Невозможно удалить директорию: %1.</translation>
+        <translation>Невозможно удалить каталог: %1.</translation>
     </message>
     <message>
         <location filename="packageprocessor.cpp" line="141"/>
@@ -266,12 +266,12 @@
     <message>
         <location filename="packageprocessor.cpp" line="240"/>
         <source>Unable to get directory for the package: %1.</source>
-        <translation>Невозможно получить директорию для пакета: %1.</translation>
+        <translation>Невозможно получить каталог для пакета: %1.</translation>
     </message>
     <message>
         <location filename="packageprocessor.cpp" line="276"/>
         <source>Unable to copy files from staging area to destination directory.</source>
-        <translation>Невозможно скопировать файлы из временной директории в директорию назначения.</translation>
+        <translation>Невозможно скопировать файлы из временного каталога в каталог назначения.</translation>
     </message>
     <message>
         <location filename="packageprocessor.cpp" line="309"/>
@@ -281,12 +281,12 @@
     <message>
         <location filename="packageprocessor.cpp" line="364"/>
         <source>Unable to create staging directory %1.</source>
-        <translation>Невозможно создать временную директорию %1.</translation>
+        <translation>Невозможно создать временный каталог %1.</translation>
     </message>
     <message>
         <location filename="packageprocessor.cpp" line="383"/>
         <source>No URLs for package %1.</source>
-        <translation>Нет URL&apos;ов для пакета %1.</translation>
+        <translation>Нет URL для пакета %1.</translation>
     </message>
     <message>
         <location filename="packageprocessor.cpp" line="447"/>
@@ -296,7 +296,7 @@
     <message>
         <location filename="packageprocessor.cpp" line="472"/>
         <source>Unable to create directory %1.</source>
-        <translation>Невозможно создать директорию %1.</translation>
+        <translation>Невозможно создать каталог %1.</translation>
     </message>
     <message>
         <location filename="packageprocessor.cpp" line="500"/>
@@ -557,12 +557,12 @@
     <message>
         <location filename="xmlparsers.cpp" line="59"/>
         <source>Could not get maintainer name.</source>
-        <translation>Невозможно получить имя мейнтейнера.</translation>
+        <translation>Невозможно получить имя сопровождающего.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="64"/>
         <source>Could not get maintainer email.</source>
-        <translation>Невозможно получить почту мейнтейнера.</translation>
+        <translation>Невозможно получить почту сопровождающего.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="76"/>

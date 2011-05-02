@@ -19,7 +19,7 @@
     <message>
         <location filename="schemereply.cpp" line="104"/>
         <source>%1: no such file or directory</source>
-        <translation>%1: нет такой директории</translation>
+        <translation>%1: нет такого каталога</translation>
     </message>
     <message>
         <location filename="schemereply.cpp" line="114"/>

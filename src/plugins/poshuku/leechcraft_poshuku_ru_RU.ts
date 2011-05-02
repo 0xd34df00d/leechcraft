@@ -87,7 +87,7 @@
     <message>
         <location filename="cookieseditdialog.ui" line="14"/>
         <source>Cookies Editor</source>
-        <translation>Редактор кукисов</translation>
+        <translation>Редактор cookies</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="37"/>
@@ -117,7 +117,7 @@
     <message>
         <location filename="cookieseditdialog.ui" line="110"/>
         <source>Secure</source>
-        <translation>Защищенный</translation>
+        <translation>Защищённый</translation>
     </message>
     <message>
         <location filename="cookieseditdialog.ui" line="117"/>
@@ -284,7 +284,7 @@
     <message>
         <location filename="browserwidget.cpp" line="161"/>
         <source>Take page&apos;s screenshot...</source>
-        <translation>Сделать скриншот страницы...</translation>
+        <translation>Сделать снимок страницы...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="166"/>
@@ -404,7 +404,7 @@
     <message>
         <location filename="browserwidget.cpp" line="920"/>
         <source>Save screenshot</source>
-        <translation>Сохранить скриншот</translation>
+        <translation>Сохранить снимок страницы</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="935"/>
@@ -414,7 +414,7 @@
     <message>
         <location filename="browserwidget.cpp" line="944"/>
         <source>Could not write screenshot to %1</source>
-        <translation>Невозможно записать скриншот в %1</translation>
+        <translation>Невозможно записать снимок в %1</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1245"/>
@@ -447,7 +447,7 @@
     <message>
         <location filename="cookieseditmodel.cpp" line="39"/>
         <source>Domain (cookie name)</source>
-        <translation>Домен (имя кукиса)</translation>
+        <translation>Домен (имя cookie)</translation>
     </message>
 </context>
 <context>
@@ -481,7 +481,7 @@
     <message>
         <location filename="core.cpp" line="852"/>
         <source>Could not open file %1 for reading.</source>
-        <translation>Не могу открыть файл %1 для чтения.</translation>
+        <translation>Не удалось открыть файл %1 для чтения.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="876"/>
@@ -491,7 +491,7 @@
     <message>
         <location filename="core.cpp" line="895"/>
         <source>Could not open file %1 for writing.</source>
-        <translation>Не могу открыть файл %1 на запись.</translation>
+        <translation>Не удалось открыть файл %1 на запись.</translation>
     </message>
 </context>
 <context>
@@ -505,12 +505,12 @@
     <message>
         <location filename="customwebpage.cpp" line="139"/>
         <source>try again later</source>
-        <translation>попробуйте еще раз позже</translation>
+        <translation>попробуйте ещё раз позже</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="140"/>
         <source>contact remote server&apos;s administrator (typically at &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</source>
-        <translation>свяжитесь с администратором удаленного сервера (обычно &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</translation>
+        <translation>свяжитесь с администратором удалённого сервера (обычно &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="142"/>
@@ -520,7 +520,7 @@
     <message>
         <location filename="customwebpage.cpp" line="144"/>
         <source>check your proxy settings</source>
-        <translation>проверьте ваши настройки proxy</translation>
+        <translation>проверьте параметры proxy</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="155"/>
@@ -536,7 +536,7 @@
     <message>
         <location filename="customwebpage.cpp" line="157"/>
         <source>make sure that LeechCraft is allowed to access the Internet and particularly web sites;</source>
-        <translation>убедитесь, что LeechCraft&apos;у разрешен доступ в Интернет и, в особенности, к веб-сайтам;</translation>
+        <translation>убедитесь, что LeechCraft&apos;у разрешён доступ в Интернет и, в особенности, к веб-сайтам;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="162"/>
@@ -546,12 +546,12 @@
     <message>
         <location filename="customwebpage.cpp" line="167"/>
         <source>try again.</source>
-        <translation>попробуйте еще раз.</translation>
+        <translation>попробуйте ещё раз.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="169"/>
         <source>make sure that remote server is really what it claims to be;</source>
-        <translation>убедитесь, что удаленный сервер действительно тот, за кого он себя выдает;</translation>
+        <translation>убедитесь, что удалённый сервер действительно тот, за кого себя выдаёт;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="191"/>
@@ -561,7 +561,7 @@
     <message>
         <location filename="customwebpage.cpp" line="193"/>
         <source>check the login and password you entered and try again</source>
-        <translation>проверьте логин и пароль, введенные вами, и попробуйте еще раз</translation>
+        <translation>проверьте логин и пароль, введённые вами, и попробуйте ещё раз</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="197"/>
@@ -571,7 +571,7 @@
     <message>
         <location filename="customwebpage.cpp" line="198"/>
         <source>try installing plugins that are known to support this protocol;</source>
-        <translation>попробуйте установить плагины, которые поддерживают этот протокол;</translation>
+        <translation>попробуйте установить модули, которые поддерживают этот протокол;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="485"/>
@@ -625,7 +625,7 @@
     <message>
         <location filename="customwebview.cpp" line="293"/>
         <source>&amp;Save link...</source>
-        <translation>&amp;Cохранить ссылку...</translation>
+        <translation>&amp;Сохранить ссылку...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="299"/>
@@ -675,12 +675,12 @@
     <message>
         <location filename="customwebview.cpp" line="449"/>
         <source>Installed plugins</source>
-        <translation>Установленные плагины</translation>
+        <translation>Установленные модули</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="450"/>
         <source>No plugins installed</source>
-        <translation>Нет установленных плагинов</translation>
+        <translation>Нет установленных модулей</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="451"/>
@@ -779,7 +779,7 @@
     <message>
         <location filename="favoriteschecker.cpp" line="197"/>
         <source>%1 favorites total.&lt;br /&gt;%2 favorites are accessible.&lt;br /&gt;%3%4 are not correctly returned by the remote server.&lt;br /&gt;%5</source>
-        <translation>%1 закладок всего.&lt;br /&gt;%2 закладок доступно.&lt;br /&gt;%3%4 не отдаются правильно удаленным сервером.&lt;br /&gt;%5</translation>
+        <translation>%1 закладок всего.&lt;br /&gt;%2 закладок доступно.&lt;br /&gt;%3%4 не отдаются правильно удалённым сервером.&lt;br /&gt;%5</translation>
     </message>
 </context>
 <context>
@@ -871,7 +871,7 @@
     <message>
         <location filename="poshuku.cpp" line="135"/>
         <source>Poshuku failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
-        <translation>Poshuku не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Ну или, по крайней мере, проверьте настройки хранения и перезапустите LeechCraft.</translation>
+        <translation>Poshuku не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Ну или, по крайней мере, проверьте параметры хранения и перезапустите LeechCraft.</translation>
     </message>
     <message>
         <location filename="poshuku.cpp" line="200"/>
@@ -965,7 +965,7 @@
     <message>
         <location filename="xbelparser.cpp" line="36"/>
         <source>XML parse error&lt;blockquote&gt;%1&lt;/blockquote&gt;at %2:%3.</source>
-        <translation>Ошибка парсинга XML&lt;blockquote&gt;%1&lt;/blockquote&gt; в %2:%3.</translation>
+        <translation>Ошибка разбора XML&lt;blockquote&gt;%1&lt;/blockquote&gt; в %2:%3.</translation>
     </message>
     <message>
         <location filename="xbelparser.cpp" line="44"/>
@@ -1133,7 +1133,7 @@
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>Automatically close empty pages with delegated content</source>
-        <translation>Закрывать пустые страницы с делегированным контентом</translation>
+        <translation>Закрывать пустые страницы с делегированным содержимым</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
@@ -1159,7 +1159,7 @@
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Offline web application cache</source>
-        <translation>Оффлайн-кеш веб-приложений</translation>
+        <translation>Оффлайн-кэш веб-приложений</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
@@ -1199,12 +1199,12 @@
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>Clear favicon database</source>
-        <translation>Очистить базу иконок сайтов</translation>
+        <translation>Очистить базу значков сайтов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>Cache</source>
-        <translation>Кеш</translation>
+        <translation>Кэш</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
@@ -1239,7 +1239,7 @@
     <message>
         <location filename="dummy.cpp" line="35"/>
         <source>Minimum dead capacity:</source>
-        <translation>Минимальная мертвая емкость:</translation>
+        <translation>Минимальная мёртвая ёмкость:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="36"/>
@@ -1251,17 +1251,17 @@
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Maximum dead capacity:</source>
-        <translation>Максимальная мертвая емкость:</translation>
+        <translation>Максимальная мёртвая ёмкость:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
         <source>Total capacity:</source>
-        <translation>Общая емкость:</translation>
+        <translation>Общая ёмкость:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="41"/>
         <source>Clear in-memory caches</source>
-        <translation>Очистить кеши в памяти</translation>
+        <translation>Очистить кэши в памяти</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="42"/>
@@ -1374,7 +1374,7 @@
         <location filename="dummy.cpp" line="65"/>
         <location filename="dummy.cpp" line="66"/>
         <source>Rendering</source>
-        <translation>Рендеринг</translation>
+        <translation>Отображение</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="67"/>
