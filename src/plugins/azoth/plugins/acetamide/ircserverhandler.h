@@ -62,6 +62,7 @@ class IrcMessage;
 				QList<std::string>, const QString&)> > Command2Action_;
 		QHash<QString, boost::function<void (const QStringList&)> >
 				Name2Command_;
+		QMultiHash<QString, QString> Channel2Command_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
 		QString OldNickName_;

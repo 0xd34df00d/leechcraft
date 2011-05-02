@@ -52,6 +52,9 @@ namespace Acetamide
 		void RawCommand (const QStringList&);
 		void CTCPRequest (const QStringList&);
 		void CTCPReply (const QStringList&);
+		void TopicCommand (const QStringList&);
+		void NamesCommand (const QStringList&);
+
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;
 	};

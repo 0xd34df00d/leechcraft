@@ -34,6 +34,7 @@ namespace Acetamide
 	: ISH_ (ish)
 	, ChannelOptions_ (channel)
 	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
+	, IsRosterReceived_ (false)
 	{
 		ChannelCLEntry_ = new ChannelCLEntry (this);
 	}
@@ -91,6 +92,16 @@ namespace Acetamide
 		msg->SetDateTime (QDateTime::currentDateTime ());
 
 		return msg;
+	}
+
+	bool ChannelHandler::IsRosterReceived () const
+	{
+		return IsRosterReceived_;
+	}
+
+	void ChannelHandler::SetRosterReceived (bool status)
+	{
+		IsRosterReceived_ = status;
 	}
 
 	void ChannelHandler::ShowServiceMessage (const QString& msg,

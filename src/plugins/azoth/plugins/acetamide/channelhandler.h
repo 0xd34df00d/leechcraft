@@ -44,6 +44,7 @@ namespace Acetamide
 		ChannelCLEntry *ChannelCLEntry_;
 		IrcServerHandler *ISH_;
 		ChannelOptions ChannelOptions_;
+		bool IsRosterReceived_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 	public:
 		ChannelHandler (IrcServerHandler*, const ChannelOptions&);
@@ -57,6 +58,9 @@ namespace Acetamide
 
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+
+		bool IsRosterReceived () const;
+		void SetRosterReceived (bool);
 
 		void ShowServiceMessage (const QString&, IMessage::MessageType,
 				IMessage::MessageSubType);

@@ -105,6 +105,9 @@ namespace Acetamide
 
 	void IrcParser::CTCPRequest (const QStringList& cmd)
 	{
+		if (!cmd.count ())
+			return;
+
 		QString ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
 				cmd.at (1) + "\001\r\n";
 		ISH_->SendCommand (ctcpCmd);
@@ -112,9 +115,44 @@ namespace Acetamide
 
 	void IrcParser::CTCPReply (const QStringList& cmd)
 	{
+		if (!cmd.count ())
+			return;
+
 		QString ctcpCmd = QString ("NOTICE " + cmd.first () + " :" +
 				cmd.last () + "\r\n");
 		ISH_->SendCommand (ctcpCmd);
+	}
+
+	void IrcParser::TopicCommand (const QStringList& cmd)
+	{
+		if (!cmd.count ())
+			return;
+
+		QString topicCmd;
+		switch (cmd.count ())
+		{
+		case 1:
+			topicCmd = QString ("TOPIC " + cmd.first () + "\r\n");
+			break;
+		case 2:
+			topicCmd = QString ("TOPIC " + cmd.first () + " " +
+					cmd.last () + "\r\n");
+			break;
+		default:
+			topicCmd = QString ("TOPIC " + cmd.first () + " " +
+					QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		}
+		ISH_->SendCommand (topicCmd);
+	}
+
+	void IrcParser::NamesCommand (const QStringList& cmd)
+	{
+		QString target = QString ();
+		if (cmd.count ())
+			target =  cmd.first ();
+
+		QString namesCmd = QString ("NAMES " + target + "\r\n");
+		ISH_->SendCommand (namesCmd);
 	}
 
 	bool IrcParser::ParseMessage (const QString& message)

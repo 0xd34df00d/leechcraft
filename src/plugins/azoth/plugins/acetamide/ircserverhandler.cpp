@@ -21,6 +21,8 @@
 #include <QTextCodec>
 #include <plugininterface/util.h>
 #include <plugininterface/notificationactionhandler.h>
+#include "../core.h"
+#include "chattabsmanager.h"
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "channelpublicmessage.h"
@@ -129,9 +131,14 @@ namespace Acetamide
 	{
 		QString commandMessage = EncodedMessage (msg.mid (1),
 				IMessage::DOut);
+
 		QStringList commandWithParams = commandMessage.split (' ');
-		Name2Command_ [commandWithParams.at (0).toLower ()]
-				(commandWithParams.mid (1));
+		if (Name2Command_.contains (commandWithParams.at (0).toLower ()))
+		{
+			Channel2Command_.insert (channelID, msg.mid (1));
+			Name2Command_ [commandWithParams.at (0).toLower ()]
+					(commandWithParams.mid (1));
+		}
 	}
 
 	void IrcServerHandler::LeaveChannel (const QString& channels,
@@ -311,10 +318,10 @@ namespace Acetamide
 					imo.Message_);
 		else if (cmd == "notice" && IsCTCPMessage (imo.Message_))
 			Command2Action_ ["ctcp_rqst"] (imo.Nick_, imo.Parameters_,
-										imo.Message_);
+					imo.Message_);
 		else if (Command2Action_.contains (cmd))
-				Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
-						imo.Message_);
+			Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
+					imo.Message_);
 
 	}
 
@@ -483,6 +490,10 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["ctcp"] = boost::bind (&IrcParser::CTCPRequest,
 				IrcParser_, _1);
+		Name2Command_ ["topic"] = boost::bind (&IrcParser::TopicCommand,
+				IrcParser_, _1);
+		Name2Command_ ["names"] = boost::bind (&IrcParser::NamesCommand,
+				IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -577,8 +588,30 @@ namespace Acetamide
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		QStringList participants = message.split (' ');
-		Q_FOREACH (QString nick, participants)
-			ChannelHandlers_ [channelID]->SetChannelUser (nick);
+
+		if (!ChannelHandlers_ [channelID]->IsRosterReceived ())
+		{
+			Q_FOREACH (QString nick, participants)
+				ChannelHandlers_ [channelID]->SetChannelUser (nick);
+
+			ChannelHandlers_ [channelID]->SetRosterReceived (true);
+		}
+		else
+		{
+			QString cmd = "names " +
+					QString::fromUtf8 (params.last ().c_str ());
+
+			Q_FOREACH (const QString& id,
+					Channel2Command_.keys (cmd))
+				if (ChannelHandlers_.contains (id))
+				{
+					ChannelHandlers_ [id]->ShowServiceMessage (message,
+							IMessage::MTEventMessage,
+							IMessage::MSTOther);
+
+					Channel2Command_.remove (id, cmd);
+				}
+		}
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
@@ -645,7 +678,6 @@ namespace Acetamide
 	void IrcServerHandler::SetISupport (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
-
 		Q_FOREACH (std::string str, params)
 		{
 			QString string = QString::fromUtf8 (str.c_str ());
@@ -773,13 +805,18 @@ namespace Acetamide
 
 		QString output = tr ("Received answer CTCP-%1 from %2: %3")
 				.arg (ctcpList.at (0), nick,
-					(static_cast<QStringList> (ctcpList.mid (1)))
+					(QStringList (ctcpList.mid (1)))
 						.join (" "));
 
-		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
-			ich->ShowServiceMessage (output,
-					IMessage::MTEventMessage,
-					IMessage::MSTOther);
+		QString cmd = "ctcp " + nick + " " + ctcpList.at (0).toLower ();
+		Q_FOREACH (const QString& id, Channel2Command_.keys (cmd))
+			if (ChannelHandlers_.contains (id))
+			{
+				ChannelHandlers_ [id]->ShowServiceMessage (output,
+						IMessage::MTEventMessage,
+						IMessage::MSTOther);
+				Channel2Command_.remove (id, cmd);
+			}
 	}
 
 	void IrcServerHandler::InitSocket ()
@@ -816,7 +853,7 @@ namespace Acetamide
 		{
 			QString str = TcpSocket_ptr->readLine ();
 			SendToConsole (str.trimmed ());
-// 			qDebug () << str;
+			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
