@@ -21,8 +21,6 @@
 #include <QTextCodec>
 #include <plugininterface/util.h>
 #include <plugininterface/notificationactionhandler.h>
-#include "../core.h"
-#include "chattabsmanager.h"
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "channelpublicmessage.h"
@@ -49,6 +47,7 @@ namespace Acetamide
 	, ServerConnectionState_ (NotConnected)
 	, NickName_ (server.ServerNickName_)
 	, IsConsoleEnabled_ (false)
+	, IsInviteDialogActive_ (false)
 	{
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
@@ -131,14 +130,22 @@ namespace Acetamide
 	{
 		QString commandMessage = EncodedMessage (msg.mid (1),
 				IMessage::DOut);
-
+		QString outputMessage = QString ();
 		QStringList commandWithParams = commandMessage.split (' ');
 		if (Name2Command_.contains (commandWithParams.at (0).toLower ()))
 		{
-			Channel2Command_.insert (channelID, msg.mid (1));
+			if (commandWithParams.at (0).toLower () == "invite")
+				outputMessage = "You invite " + commandWithParams.at (1)
+						+ " to a channel " + commandWithParams.at (2);
 			Name2Command_ [commandWithParams.at (0).toLower ()]
 					(commandWithParams.mid (1));
 		}
+
+		if (!outputMessage.isEmpty ())
+			Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+				ich->ShowServiceMessage (outputMessage,
+						IMessage::MTEventMessage,
+						IMessage::MSTOther);
 	}
 
 	void IrcServerHandler::LeaveChannel (const QString& channels,
@@ -483,6 +490,9 @@ namespace Acetamide
 		Command2Action_ ["ctcp_rqst"] =
 				boost::bind (&IrcServerHandler::CTCPRequestResult,
 					 this, _1, _2, _3);
+		Command2Action_ ["invite"] =
+				boost::bind (&IrcServerHandler::InviteToChannel,
+					 this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -494,6 +504,8 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["names"] = boost::bind (&IrcParser::NamesCommand,
 				IrcParser_, _1);
+		Name2Command_ ["invite"] =
+				boost::bind (&IrcParser::InviteCommand, IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -601,16 +613,10 @@ namespace Acetamide
 			QString cmd = "names " +
 					QString::fromUtf8 (params.last ().c_str ());
 
-			Q_FOREACH (const QString& id,
-					Channel2Command_.keys (cmd))
-				if (ChannelHandlers_.contains (id))
-				{
-					ChannelHandlers_ [id]->ShowServiceMessage (message,
-							IMessage::MTEventMessage,
-							IMessage::MSTOther);
-
-					Channel2Command_.remove (id, cmd);
-				}
+			Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+				ich->ShowServiceMessage (message,
+						IMessage::MTEventMessage,
+						IMessage::MSTOther);
 		}
 	}
 
@@ -809,14 +815,56 @@ namespace Acetamide
 						.join (" "));
 
 		QString cmd = "ctcp " + nick + " " + ctcpList.at (0).toLower ();
-		Q_FOREACH (const QString& id, Channel2Command_.keys (cmd))
-			if (ChannelHandlers_.contains (id))
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			ich->ShowServiceMessage (output,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
+	}
+
+	void IrcServerHandler::InviteToChannel (const QString& nick,
+			const QList<std::string>& , const QString& msg)
+	{
+		if (XmlSettingsManager::Instance ()
+				.property ("ShowInviteDialog").toBool ())
+			XmlSettingsManager::Instance ()
+					.setProperty ("InviteActionByDefault", 0);
+
+		if (!XmlSettingsManager::Instance ()
+				.property ("InviteActionByDefault").toInt ())
+		{
+			if (IsInviteDialogActive_)
+				InviteChannelsDialog_->AddInvitation (msg, nick);
+			else
 			{
-				ChannelHandlers_ [id]->ShowServiceMessage (output,
-						IMessage::MTEventMessage,
-						IMessage::MSTOther);
-				Channel2Command_.remove (id, cmd);
+				std::auto_ptr<InviteChannelsDialog> dic
+						(new InviteChannelsDialog (msg, nick, 0));
+				IsInviteDialogActive_ = true;
+				InviteChannelsDialog_ = dic;
+				InviteChannelsDialog_->setModal (true);
+
+				connect (InviteChannelsDialog_.get (),
+						SIGNAL (accepted ()),
+						this,
+						SLOT (joinAfterInvite ()));
 			}
+			InviteChannelsDialog_->show ();
+		}
+		else if (XmlSettingsManager::Instance ()
+				.property ("InviteActionByDefault").toInt () == 1)
+		{
+			ChannelOptions co;
+			co.ChannelName_ = msg;
+			co.ChannelPassword_ = QString ();
+			co.ServerName_ = ServerOptions_.ServerName_;
+			JoinChannel (co);
+		}
+
+		QString outputMessage = nick + tr (" invites you to a channel ")
+				+ msg;
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			ich->ShowServiceMessage (outputMessage,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
 	}
 
 	void IrcServerHandler::InitSocket ()
@@ -862,7 +910,7 @@ namespace Acetamide
 			if (IsErrorReply (cmd))
 			{
 				QString msg = IrcParser_->GetIrcMessageOptions ()
-						.Message_ + QString::fromUtf8 (IrcParser_->
+						.Message_ + " " + QString::fromUtf8 (IrcParser_->
 							GetIrcMessageOptions ().Parameters_.last ()
 								.c_str ());
 				Entity e = Util::MakeNotification ("Azoth",
@@ -896,6 +944,20 @@ namespace Acetamide
 		ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 		IrcParser_->AuthCommand ();
 	}
+
+	void IrcServerHandler::joinAfterInvite ()
+	{
+		Q_FOREACH (const QString& channel,
+				InviteChannelsDialog_->GetChannels ())
+		{
+			ChannelOptions co;
+			co.ChannelName_ = channel;
+			co.ChannelPassword_ = QString ();
+			co.ServerName_ = ServerOptions_.ServerName_;
+			JoinChannel (co);
+		}
+	}
+
 };
 };
 };

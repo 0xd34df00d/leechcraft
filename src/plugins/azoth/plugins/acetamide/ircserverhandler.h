@@ -27,6 +27,7 @@
 #include "ircserverconsole.h"
 #include "localtypes.h"
 #include "serverparticipantentry.h"
+#include "invitechannelsdialog.h"
 
 namespace LeechCraft
 {
@@ -52,6 +53,10 @@ class IrcMessage;
 		IrcServerCLEntry *ServerCLEntry_;
 		IrcServerConsole_ptr Console_;
 		bool IsConsoleEnabled_;
+
+		bool IsInviteDialogActive_;
+		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
+
 		ServerOptions ServerOptions_;
 		QString ServerID_;
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
@@ -62,7 +67,6 @@ class IrcMessage;
 				QList<std::string>, const QString&)> > Command2Action_;
 		QHash<QString, boost::function<void (const QStringList&)> >
 				Name2Command_;
-		QMultiHash<QString, QString> Channel2Command_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
 		QString OldNickName_;
@@ -151,9 +155,12 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void CTCPRequestResult (const QString&,
 				const QList<std::string>&, const QString&);
+		void InviteToChannel (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();
+		void joinAfterInvite ();
 	signals:
 		void connected (const QString&);
 	};
