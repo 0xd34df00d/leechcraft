@@ -136,6 +136,10 @@ namespace Juick
 
 	QString Plugin::FormatBody (QString body)
 	{
+		//fix this http://i.imgur.com/t579t.png
+		if (body.startsWith ("@"))
+			body.insert (0, "<br />");
+
 		InsertAvatars (body);
 		InsertNickLinks (body);
 		body.replace (PostRX_, 
@@ -216,30 +220,30 @@ namespace Juick
 			return;
 
 		Typo typos[] = {
-			Typo (text, QString::fromUtf8 ("!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
-			Typo (text, "!\\s+(\\d+)", QString ("! #\\1")),
-			Typo (text, QString::fromUtf8 ("![#№](\\d+)"), QString ("! #\\1")),
-			Typo (text, "!(\\d+)", QString ("! #\\1")),
-			Typo (text, QString::fromUtf8 ("[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),  
-			Typo (text, QString::fromUtf8 ("[SЫ]\\s+(\\d+)"), QString ("S #\\1")),
-			Typo (text, QString::fromUtf8 ("[SЫ][#№](\\d+)"), QString ("S #\\1")),
-			Typo (text, QString::fromUtf8 ("[SЫ](\\d+)"), QString ("S #\\1")),
-			Typo (text, QString::fromUtf8 ("Ы [#№](\\d+)"), QString ("S #\\1")),
-			Typo (text, QString::fromUtf8 ("ЗЬ\\s+@(.*)"), QString ("PM @\\1")),
+			Typo (text, QString::fromUtf8 ("^!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
+			Typo (text, "^!\\s+(\\d+)", QString ("! #\\1")),
+			Typo (text, QString::fromUtf8 ("^![#№](\\d+)"), QString ("! #\\1")),
+			Typo (text, "^!(\\d+)", QString ("! #\\1")),
+			Typo (text, QString::fromUtf8 ("^[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),  
+			Typo (text, QString::fromUtf8 ("^[SЫ]\\s+(\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("^[SЫ][#№](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("^[SЫ](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("^Ы [#№](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("^ЗЬ\\s+@(.*)"), QString ("PM @\\1")),
 			Typo (text, "^(\\d+)\\s+(.*)", QString ("#\\1 \\2")),
 			Typo (text, "^(\\d+/\\d+)\\s+(.*)", QString ("#\\1 \\2")),
 			Typo (text, QString::fromUtf8 ("^№\\+$"), QString ("#+")),
 			Typo (text, QString::fromUtf8 ("^\"$"), QString ("@")),
 			Typo (text, QString::fromUtf8 ("^В\\s?Д$"), QString ("D L")),
 			Typo (text, QString::fromUtf8 ("$Ы^"), QString ("S")),
-			Typo (text, QString::fromUtf8 ("[UГ]\\s+[#№]{2,}(\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("[UГ]\\s+(\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("[UГ][#№](\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("[UГ](\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("Г [#№](\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("В [#№](\\d+)"), QString ("D #\\1")),
-			Typo (text, QString::fromUtf8 ("[DВ][#№](\\d+)"), QString ("D #\\1")),
-			Typo (text, QString::fromUtf8 ("[DВ](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("^[UГ]\\s+[#№]{2,}(\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^[UГ]\\s+(\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^[UГ][#№](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^[UГ](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^Г [#№](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^В [#№](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("^[DВ][#№](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("^[DВ](\\d+)"), QString ("D #\\1")),
 			Typo (text, QString::fromUtf8 ("^РУДЗ$"), QString ("HELP")),
 			Typo (text, QString::fromUtf8 ("^ДЩПШТ$"), QString ("LOGIN")),
 			Typo (text, QString::fromUtf8 ("^ЩТ(\\+?)$"), QString ("ON\\1")),
@@ -302,7 +306,7 @@ namespace Juick
 	}
 
 	
-	bool Plugin::IsBehind (const QString& text, const int index, const QString& pattern) const
+	bool Plugin::IsBehind (const QString& text, int index, const QString& pattern) const
 	{
 		const QRegExp behind (pattern);
 
