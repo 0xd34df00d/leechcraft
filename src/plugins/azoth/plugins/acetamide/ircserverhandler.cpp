@@ -138,7 +138,14 @@ namespace Acetamide
 				outputMessage = "You invite " + commandWithParams.at (1)
 						+ " to a channel " + commandWithParams.at (2);
 			else if (commandWithParams.at (0).toLower () == "quit")
-				commandWithParams.push_back (ServerID_);
+				commandWithParams.append (ServerID_);
+			else if (commandWithParams.at (0).toLower () == "me")
+			{
+
+				commandWithParams.insert (1, channelID
+						.left (channelID.indexOf ('@')));
+				commandWithParams.insert (2, "ACTION");
+			}
 
 			Name2Command_ [commandWithParams.at (0).toLower ()]
 					(commandWithParams.mid (1));
@@ -550,6 +557,8 @@ namespace Acetamide
 				boost::bind (&IrcParser::PartCommand, IrcParser_, _1);
 		Name2Command_ ["kick"] = boost::bind (&IrcParser::KickCommand,
 				IrcParser_, _1);
+		Name2Command_ ["me"] = boost::bind (&IrcParser::CTCPRequest,
+				IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -778,7 +787,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::CTCPReply (const QString& nick,
-			const QList<std::string>&, const QString& msg)
+			const QList<std::string>& params, const QString& msg)
 	{
 		QString cmd;
 		QString outputMessage;
@@ -833,6 +842,13 @@ namespace Acetamide
 					, QChar ('\001'));
 			outputMessage = tr ("Received request %1 from %2,"
 					" sending response").arg ("CLIENTINFO", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "action")
+		{
+			QString mess = "/me " + QStringList (ctcpList.mid (1))
+					.join (" ");
+			HandleIncomingMessage (nick, params, mess);
+			return;
 		}
 		else
 			outputMessage.clear ();

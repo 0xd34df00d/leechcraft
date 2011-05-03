@@ -103,9 +103,14 @@ namespace Acetamide
 	{
 		if (!cmd.count ())
 			return;
-
-		QString ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
-				cmd.at (1) + "\001\r\n";
+		QString ctcpCmd;
+		if (cmd.count () > 2)
+			ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
+					cmd.at (1) + " " + QStringList (cmd.mid (2))
+							.join (" ") + "\001\r\n";
+		else
+			ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
+					cmd.at (1) + "\001\r\n";
 		ISH_->SendCommand (ctcpCmd);
 	}
 

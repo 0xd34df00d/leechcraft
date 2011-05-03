@@ -120,12 +120,9 @@ namespace Acetamide
 		if (GetSelf () == ServerParticipantEntry_ptr ())
 			return;
 		if (msg.startsWith ('/'))
-		{
 			ISH_->ParseMessageForCommand (msg, ChannelID_);
-			return;
-		}
-
-		ISH_->SendPublicMessage (msg, ChannelID_);
+		else
+			ISH_->SendPublicMessage (msg, ChannelID_);
 
 		ServerParticipantEntry_ptr entry =
 				ISH_->GetParticipantEntry (ISH_->GetNickName ());
