@@ -18,18 +18,12 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
-
 #include <QDialog>
-
 #include "ui_bookmarksdialog.h"
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -48,6 +42,5 @@ namespace OnlineBookmarks
 }
 }
 }
-}
-}
+
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H

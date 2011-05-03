@@ -31,6 +31,7 @@
 #include "chattab.h"
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
+#include "servicediscoverywidget.h"
 
 namespace LeechCraft
 {
@@ -229,7 +230,14 @@ namespace Azoth
 		if (tabClass == "MUCTab")
 			Core::Instance ().handleMucJoinRequested ();
 		else if (tabClass == "SD")
-			emit gotEntity (Util::MakeNotification ("Azoth", "Not Implemented", PWarning_));
+		{
+			ServiceDiscoveryWidget *sd = new ServiceDiscoveryWidget;
+			connect (sd,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+			emit addNewTab (tr ("Service discovery"), sd);
+		}
 	}
 	
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)

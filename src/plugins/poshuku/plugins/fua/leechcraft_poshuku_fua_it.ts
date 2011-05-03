@@ -11,17 +11,17 @@
     <message>
         <location filename="changer.ui" line="25"/>
         <source>Domain:</source>
-        <translation type="unfinished"></translation>
+        <translation>Domain:</translation>
     </message>
     <message>
         <location filename="changer.ui" line="35"/>
         <source>Agent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Agent:</translation>
     </message>
     <message>
         <location filename="changer.ui" line="45"/>
         <source>ID string:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID string:</translation>
     </message>
     <message>
         <location filename="changer.ui" line="57"/>
@@ -34,26 +34,26 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA</name>
+    <name>LeechCraft::Poshuku::Fua::FUA</name>
     <message>
-        <location filename="fua.cpp" line="70"/>
+        <location filename="fua.cpp" line="66"/>
         <source>Domain</source>
-        <translation type="unfinished"></translation>
+        <translation>Domain</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="71"/>
+        <location filename="fua.cpp" line="67"/>
         <source>Agent</source>
-        <translation type="unfinished"></translation>
+        <translation>Agent</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="72"/>
+        <location filename="fua.cpp" line="68"/>
         <source>Identification string</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa di identificazione </translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="116"/>
+        <location filename="fua.cpp" line="112"/>
         <source>Allows to set fake user agents for different sites.</source>
-        <translation type="unfinished"></translation>
+        <translation>Consente di impostare user agent falso per diversi siti.</translation>
     </message>
 </context>
 <context>
@@ -61,22 +61,22 @@
     <message>
         <location filename="settings.ui" line="27"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi...</translation>
     </message>
     <message>
         <location filename="settings.ui" line="34"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifica...</translation>
     </message>
     <message>
         <location filename="settings.ui" line="41"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Rimuovere</translation>
     </message>
     <message>
         <location filename="settings.ui" line="65"/>
         <source>Changes would be applied immediately</source>
-        <translation type="unfinished"></translation>
+        <translation>Le modifiche si sarebbero applicate immediatamente</translation>
     </message>
 </context>
 <context>
@@ -84,7 +84,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>FUA settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configura FUA</translation>
     </message>
 </context>
 </TS>

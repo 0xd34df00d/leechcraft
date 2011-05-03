@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,20 +20,16 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	CookiesFilter::CookiesFilter (QObject *parent)
+	: QSortFilterProxyModel (parent)
 	{
-		namespace Poshuku
-		{
-			CookiesFilter::CookiesFilter (QObject *parent)
-			: QSortFilterProxyModel (parent)
-			{
-			}
-			
-			bool CookiesFilter::filterAcceptsRow (int row, const QModelIndex& parent) const
-			{
-				return parent.isValid () ? true : QSortFilterProxyModel::filterAcceptsRow (row, parent);
-			}
-		};
-	};
-};
-
+	}
+	
+	bool CookiesFilter::filterAcceptsRow (int row, const QModelIndex& parent) const
+	{
+		return parent.isValid () ? true : QSortFilterProxyModel::filterAcceptsRow (row, parent);
+	}
+}
+}

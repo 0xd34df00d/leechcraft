@@ -22,11 +22,11 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="LeechCraft::Plugins::Poshuku::HideableTabWidget" name="Sidebar_" native="true"/>
+     <widget class="LeechCraft::Poshuku::HideableTabWidget" name="Sidebar_" native="true"/>
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="LeechCraft::Plugins::Poshuku::URLFrame" name="URLFrame_">
+        <widget class="LeechCraft::Poshuku::URLFrame" name="URLFrame_">
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -50,7 +50,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="LeechCraft::Plugins::Poshuku::CustomWebView" name="WebView_" native="true">
+             <widget class="LeechCraft::Poshuku::CustomWebView" name="WebView_" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -88,19 +88,19 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Plugins::Poshuku::CustomWebView</class>
+   <class>LeechCraft::Poshuku::CustomWebView</class>
    <extends>QWidget</extends>
    <header>customwebview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::Poshuku::HideableTabWidget</class>
+   <class>LeechCraft::Poshuku::HideableTabWidget</class>
    <extends>QWidget</extends>
    <header>hideabletabwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::Poshuku::URLFrame</class>
+   <class>LeechCraft::Poshuku::URLFrame</class>
    <extends>QFrame</extends>
    <header>urlframe.h</header>
    <container>1</container>

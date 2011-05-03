@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,78 +23,71 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	Player::Player (const QUrl&,
+			const QStringList&,
+			const QStringList&)
+	: Player_ (0)
+	, ClearNAM_ (new QNetworkAccessManager)
 	{
-		namespace Poshuku
+		Ui_.setupUi (this);
+		QList<IMediaPlayer*> players = Core::Instance ().GetProxy ()->
+			GetPluginsManager ()->GetAllCastableTo<IMediaPlayer*> ();
+		Q_FOREACH (IMediaPlayer *player, players)
+			if ((Player_ = player->CreateWidget ()))
+				break;
+		if (Player_)
+			qobject_cast<QBoxLayout*> (layout ())->
+				insertWidget (0, Player_->Widget ());
+	}
+
+	Player::~Player ()
+	{
+		delete Player_;
+		delete ClearNAM_;
+	}
+
+	void Player::SetVideoUrl (const QUrl& url)
+	{
+		if (Player_)
 		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					Player::Player (const QUrl&,
-							const QStringList&,
-							const QStringList&)
-					: Player_ (0)
-					, ClearNAM_ (new QNetworkAccessManager)
-					{
-						Ui_.setupUi (this);
-						QList<IMediaPlayer*> players = Core::Instance ().GetProxy ()->
-							GetPluginsManager ()->GetAllCastableTo<IMediaPlayer*> ();
-						Q_FOREACH (IMediaPlayer *player, players)
-							if ((Player_ = player->CreateWidget ()))
-								break;
-						if (Player_)
-							qobject_cast<QBoxLayout*> (layout ())->
-								insertWidget (0, Player_->Widget ());
-					}
+			Player_->Stop ();
+			Player_->Clear ();
+			Player_->Enqueue (url);
+			Player_->Play ();
+		}
+	}
 
-					Player::~Player ()
-					{
-						delete Player_;
-						delete ClearNAM_;
-					}
+	void Player::SetRequest (const QNetworkRequest& req)
+	{
+		if (Player_)
+		{
+			QNetworkReply *rep = ClearNAM_->get (req);
+			Player_->Stop ();
+			Player_->Clear ();
+			Player_->Enqueue (rep);
+			Player_->Play ();
+		}
+	}
 
-					void Player::SetVideoUrl (const QUrl& url)
-					{
-						if (Player_)
-						{
-							Player_->Stop ();
-							Player_->Clear ();
-							Player_->Enqueue (url);
-							Player_->Play ();
-						}
-					}
+	void Player::handleNavigate (const QUrl& url)
+	{
+		QWidget *parent = parentWidget ();
+		QWebView *view = 0;
+		while (parent)
+		{
+			if ((view = qobject_cast<QWebView*> (parent)))
+				break;
+			parent = parent->parentWidget ();
+		}
+		if (!view)
+			return;
 
-					void Player::SetRequest (const QNetworkRequest& req)
-					{
-						if (Player_)
-						{
-							QNetworkReply *rep = ClearNAM_->get (req);
-							Player_->Stop ();
-							Player_->Clear ();
-							Player_->Enqueue (rep);
-							Player_->Play ();
-						}
-					}
-
-					void Player::handleNavigate (const QUrl& url)
-					{
-						QWidget *parent = parentWidget ();
-						QWebView *view = 0;
-						while (parent)
-						{
-							if ((view = qobject_cast<QWebView*> (parent)))
-								break;
-							parent = parent->parentWidget ();
-						}
-						if (!view)
-							return;
-
-						view->load (url);
-					}
-				};
-			};
-		};
-	};
-};
-
+		view->load (url);
+	}
+}
+}
+}

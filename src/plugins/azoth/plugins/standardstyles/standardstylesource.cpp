@@ -24,6 +24,7 @@
 #include <plugininterface/resourceloader.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iaccount.h>
+#include <interfaces/imucentry.h>
 #include <interfaces/iproxyobject.h>
 
 namespace LeechCraft
@@ -139,6 +140,12 @@ namespace StandardStyles
 			break;
 		}
 		case IMessage::DOut:
+		{
+			IMUCEntry *entry = qobject_cast<IMUCEntry*> (other->GetParentCLEntry ());
+			IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
+			const QString& nick = entry ?
+					entry->GetNick () :
+					acc->GetOurNick ();
 			if (body.startsWith ("/leechcraft "))
 			{
 				body = body.mid (12);
@@ -147,22 +154,21 @@ namespace StandardStyles
 			else if (body.startsWith ("/me ") &&
 					msg->GetMessageType () != IMessage::MTMUCMessage)
 			{
-				IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
 				body = body.mid (3);
 				string.append ("* ");
-				string.append (acc->GetOurNick ());
+				string.append (nick);
 				string.append (' ');
 				divClass = "slashmechatmsg";
 			}
 			else
 			{
-				IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
-				string.append (Proxy_->FormatNickname (acc->GetOurNick (), msg->GetObject (), nickColor));
+				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
 				string.append (": ");
 			}
 			if (divClass.isEmpty ())
 				divClass = "msgout";
 			break;
+		}
 		}
 
 		string.append (body);

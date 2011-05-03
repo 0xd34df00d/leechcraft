@@ -29,6 +29,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class EntryBase;
+
 	class VCardDialog : public QDialog
 	{
 		Q_OBJECT
@@ -36,6 +38,7 @@ namespace Xoox
 		Ui::VCardDialog Ui_;
 	public:
 		VCardDialog (QWidget* = 0);
+		VCardDialog (EntryBase*, QWidget* = 0);
 
 		void UpdateInfo (const QXmppVCardIq&);
 	};

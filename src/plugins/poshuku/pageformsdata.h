@@ -27,61 +27,57 @@ class QDebug;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	struct ElementData
 	{
-		namespace Poshuku
-		{
-			struct ElementData
-			{
-				QUrl PageURL_;
-				QString FormID_;
-				QString Name_;
-				QString Type_;
-				QString Value_;
-			};
-
-			bool operator== (const ElementData&, const ElementData&);
-			bool operator< (const ElementData&, const ElementData&);
-
-			QDataStream& operator<< (QDataStream&, const ElementData&);
-			QDataStream& operator>> (QDataStream&, ElementData&);
-
-			QDebug& operator<< (QDebug&, const ElementData&);
-
-			typedef QList<ElementData> ElementsData_t;
-
-			/** Holds information about all the forms on a page.
-			 *
-			 * The key of the map is the name of the `input' element,
-			 * whereas value is the ElementData structure with the
-			 * information about that element.
-			 */
-			typedef QMap<QString, ElementsData_t> PageFormsData_t;
-
-			struct ElemFinder
-			{
-				const QString& ElemName_;
-				const QString& ElemType_;
-
-				ElemFinder (const QString& en, const QString& et)
-				: ElemName_ (en)
-				, ElemType_ (et)
-				{
-				}
-
-				inline bool operator() (const ElementData& ed) const
-				{
-					return ed.Name_ == ElemName_ &&
-							ed.Type_ == ElemType_;
-				}
-			};
-		};
+		QUrl PageURL_;
+		QString FormID_;
+		QString Name_;
+		QString Type_;
+		QString Value_;
 	};
-};
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::ElementData);
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::ElementsData_t);
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::PageFormsData_t);
+	bool operator== (const ElementData&, const ElementData&);
+	bool operator< (const ElementData&, const ElementData&);
+
+	QDataStream& operator<< (QDataStream&, const ElementData&);
+	QDataStream& operator>> (QDataStream&, ElementData&);
+
+	QDebug& operator<< (QDebug&, const ElementData&);
+
+	typedef QList<ElementData> ElementsData_t;
+
+	/** Holds information about all the forms on a page.
+	 *
+	 * The key of the map is the name of the `input' element, whereas
+	 * value is the ElementData structure with the information about
+	 * that element.
+	 */
+	typedef QMap<QString, ElementsData_t> PageFormsData_t;
+
+	struct ElemFinder
+	{
+		const QString& ElemName_;
+		const QString& ElemType_;
+
+		ElemFinder (const QString& en, const QString& et)
+		: ElemName_ (en)
+		, ElemType_ (et)
+		{
+		}
+
+		inline bool operator() (const ElementData& ed) const
+		{
+			return ed.Name_ == ElemName_ &&
+					ed.Type_ == ElemType_;
+		}
+	};
+}
+}
+
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementData);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementsData_t);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::PageFormsData_t);
 
 #endif
-

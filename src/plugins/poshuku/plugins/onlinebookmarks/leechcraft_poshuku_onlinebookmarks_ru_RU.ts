@@ -68,84 +68,84 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::BookmarksDialog</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::BookmarksDialog</name>
     <message>
-        <location filename="bookmarksdialog.cpp" line="57"/>
+        <location filename="bookmarksdialog.cpp" line="52"/>
         <source>Please check the services you would like to add the bookmark %1 to, if any.</source>
         <translation>Проверьте, в какие сервисы вы хотите добавить закладку «%1».</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::OnlineBookmarks</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::OnlineBookmarks</name>
     <message>
-        <location filename="onlinebookmarks.cpp" line="98"/>
+        <location filename="onlinebookmarks.cpp" line="94"/>
         <source>Sync local bookmarks with your account in online bookmark services like Read It Later</source>
-        <translation>Синхронизация локальных закладок с вашим аккаунтом в сервисах онлайн-закладок типа Read It Later</translation>
+        <translation>Синхронизация локальных закладок с вашей учетной записью в сервисах онлайн-закладок типа Read It Later</translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="140"/>
+        <location filename="onlinebookmarks.cpp" line="136"/>
         <source>Bookmarks Sync</source>
         <translation>Синхронизация закладок</translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="141"/>
+        <location filename="onlinebookmarks.cpp" line="137"/>
         <source>Sync</source>
         <translation>Синхронизировать</translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="143"/>
+        <location filename="onlinebookmarks.cpp" line="139"/>
         <source>Upload only</source>
         <translation>Закачать на сервер</translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="145"/>
+        <location filename="onlinebookmarks.cpp" line="141"/>
         <source>Download only</source>
         <translation>Скачать с сервера</translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="147"/>
+        <location filename="onlinebookmarks.cpp" line="143"/>
         <source>Download all</source>
         <translation>Скачать все</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::ReadItLaterBookmarksService</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::ReadItLaterBookmarksService</name>
     <message>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="98"/>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="114"/>
+        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="95"/>
+        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="111"/>
         <source>Invalid password</source>
         <translation>Неправильный пароль</translation>
     </message>
     <message>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="228"/>
+        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="225"/>
         <source>An error occurred during parsing</source>
         <translation>Возникла ошибка при разборе</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::Settings</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::Settings</name>
     <message>
-        <location filename="settings.cpp" line="269"/>
+        <location filename="settings.cpp" line="265"/>
         <source>Invalid account data</source>
-        <translation>Неправильные данные аккаунта</translation>
+        <translation>Неправильные данные учетной записи</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::SyncBookmarks</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::SyncBookmarks</name>
     <message>
-        <location filename="syncbookmarks.cpp" line="143"/>
-        <location filename="syncbookmarks.cpp" line="287"/>
-        <location filename="syncbookmarks.cpp" line="365"/>
+        <location filename="syncbookmarks.cpp" line="139"/>
+        <location filename="syncbookmarks.cpp" line="283"/>
+        <location filename="syncbookmarks.cpp" line="361"/>
         <source>Unable to open upload configuration file.</source>
         <translation>Невозможно открыть конфигурационный файл.</translation>
     </message>
     <message>
-        <location filename="syncbookmarks.cpp" line="215"/>
+        <location filename="syncbookmarks.cpp" line="211"/>
         <source>Error while sending bookmarks</source>
         <translation>Ошибка при отправке закладок</translation>
     </message>
     <message>
-        <location filename="syncbookmarks.cpp" line="235"/>
+        <location filename="syncbookmarks.cpp" line="231"/>
         <source>Bookmarks have been sent successfully</source>
         <translation>Закладки успешно отправлены</translation>
     </message>
@@ -160,13 +160,13 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Accounts</source>
-        <translation>Аккаунты</translation>
+        <translation>Учетные записи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Sync options</source>
         <oldsource>Sync Options</oldsource>
-        <translation>Опции синхронизации</translation>
+        <translation>Параметры синхронизации</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
@@ -188,14 +188,14 @@
         <location filename="dummy.cpp" line="8"/>
         <source>Download options</source>
         <oldsource>Download option</oldsource>
-        <translation>Опции скачивания</translation>
+        <translation>Параметры скачивания</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <location filename="dummy.cpp" line="21"/>
         <source>Send bookmarks to selected services every</source>
         <oldsource>Send bookmarks to active services every</oldsource>
-        <translation>Отсылать закладки на активные сервисые каждые</translation>
+        <translation>Отсылать закладки на активные сервисы каждые</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
@@ -266,7 +266,7 @@
         <location filename="dummy.cpp" line="20"/>
         <source>Upload options</source>
         <oldsource>Upload option</oldsource>
-        <translation>Опции отправки</translation>
+        <translation>Параметры отправки</translation>
     </message>
 </context>
 </TS>

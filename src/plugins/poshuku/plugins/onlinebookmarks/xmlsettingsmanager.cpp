@@ -19,27 +19,33 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks;
-
-XmlSettingsManager::XmlSettingsManager ()
-: Util::BaseSettingsManager (true)
+namespace LeechCraft
 {
-	Util::BaseSettingsManager::Init ();
-}
-
-XmlSettingsManager *XmlSettingsManager::Instance ()
+namespace Poshuku
 {
-	static XmlSettingsManager xsm;
-	return &xsm;
-}
-
-void XmlSettingsManager::EndSettings (QSettings *settings) const
+namespace OnlineBookmarks
 {
-}
+	XmlSettingsManager::XmlSettingsManager ()
+	: Util::BaseSettingsManager (true)
+	{
+		Util::BaseSettingsManager::Init ();
+	}
 
-QSettings *XmlSettingsManager::BeginSettings () const
-{
-	return new QSettings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
-}
+	XmlSettingsManager *XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return &xsm;
+	}
 
+	void XmlSettingsManager::EndSettings (QSettings *settings) const
+	{
+	}
+
+	QSettings *XmlSettingsManager::BeginSettings () const
+	{
+		return new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_OnlineBookmarks");
+	}
+}
+}
+}

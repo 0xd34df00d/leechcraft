@@ -23,22 +23,18 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class SourceViewer : public QMainWindow
 	{
-		namespace Poshuku
-		{
-			class SourceViewer : public QMainWindow
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::SourceViewer Ui_;
-			public:
-				SourceViewer (QWidget* = 0);
-				void SetHtml (const QString&);
-			};
-		};
+		Ui::SourceViewer Ui_;
+	public:
+		SourceViewer (QWidget* = 0);
+		void SetHtml (const QString&);
 	};
-};
+}
+}
 
 #endif
-

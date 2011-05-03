@@ -23,29 +23,26 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class URLFrame : public QFrame
 	{
-		namespace Poshuku
-		{
-			class URLFrame : public QFrame
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::URLFrame Ui_;
-			public:
-				URLFrame (QWidget* = 0);
+		Ui::URLFrame Ui_;
+	public:
+		URLFrame (QWidget* = 0);
 
-				QLineEdit* GetEdit () const;
-				void SetFavicon (const QIcon&);
-				void AddWidget (QWidget*);
-				void RemoveWidget (QWidget*);
-			private slots:
-				void on_URLEdit__returnPressed ();
-			signals:
-				void load (const QString&);
-			};
-		};
+		QLineEdit* GetEdit () const;
+		void SetFavicon (const QIcon&);
+		void AddWidget (QWidget*);
+		void RemoveWidget (QWidget*);
+	private slots:
+		void on_URLEdit__returnPressed ();
+	signals:
+		void load (const QString&);
 	};
-};
+}
+}
 
 #endif

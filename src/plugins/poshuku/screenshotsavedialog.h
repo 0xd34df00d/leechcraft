@@ -24,33 +24,29 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class ScreenShotSaveDialog : public QDialog
 	{
-		namespace Poshuku
-		{
-			class ScreenShotSaveDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::ScreenShotSaveDialog Ui_;
-				QPixmap Source_;
-				mutable QPixmap Rendered_;
-				mutable QLabel *PixmapHolder_;
+		Ui::ScreenShotSaveDialog Ui_;
+		QPixmap Source_;
+		mutable QPixmap Rendered_;
+		mutable QLabel *PixmapHolder_;
 
-				bool RenderScheduled_;
-			public:
-				ScreenShotSaveDialog (const QPixmap&, QWidget* = 0);
-				QByteArray Save ();
-			private:
-				void ScheduleRender ();
-			private slots:
-				void render ();
-				void on_QualitySlider__valueChanged ();
-				void on_FormatCombobox__currentIndexChanged ();
-			};
-		};
+		bool RenderScheduled_;
+	public:
+		ScreenShotSaveDialog (const QPixmap&, QWidget* = 0);
+		QByteArray Save ();
+	private:
+		void ScheduleRender ();
+	private slots:
+		void render ();
+		void on_QualitySlider__valueChanged ();
+		void on_FormatCombobox__currentIndexChanged ();
 	};
-};
+}
+}
 
 #endif
-

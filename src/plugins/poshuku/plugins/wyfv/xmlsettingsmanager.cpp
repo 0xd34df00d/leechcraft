@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 
-using namespace LeechCraft::Plugins::Poshuku::Plugins::WYFV;
+using namespace LeechCraft::Poshuku::WYFV;
 
 XmlSettingsManager::XmlSettingsManager ()
 {
-	LeechCraft::Util::BaseSettingsManager::Init ();
+	Util::BaseSettingsManager::Init ();
 }
 
 XmlSettingsManager* XmlSettingsManager::Instance ()

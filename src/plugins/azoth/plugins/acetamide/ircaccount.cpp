@@ -103,9 +103,7 @@ namespace Acetamide
 
 	QString IrcAccount::GetOurNick () const
 	{
-		return NickNames_.isEmpty () ?
-				"Leechcraft" + QString::number (10 + qrand () % 89) :
-				NickNames_.at (0);
+		return "R!";
 	}
 
 	QString IrcAccount::GetUserName () const
@@ -186,28 +184,11 @@ namespace Acetamide
 	void IrcAccount::JoinServer (const ServerOptions& server,
 			const ChannelOptions& channel)
 	{
-		if (!XmlSettingsManager::Instance ()
-			.property ("TabWithServer").toBool () &&
-				channel.ChannelName_.isEmpty ())
-		{
-			// TODO unable to join to server if Separate tab for server
-			// option is disabled
-			return;
-		}
-
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
-
 		if (!ClientConnection_->IsServerExists (serverId))
 		{
-			IrcServerCLEntry *isEntry = ClientConnection_->
-					JoinServer (server);
-
-			if (!isEntry)
-				return;
-
-			emit gotCLItems (QList<QObject*> () << isEntry);
-
+			ClientConnection_->JoinServer (server);
 			ClientConnection_->GetIrcServerHandler (serverId)->
 					Add2ChannelsQueue (channel);
 		}
@@ -225,7 +206,11 @@ namespace Acetamide
 		if (IrcAccountState_ == SOffline &&
 				!ClientConnection_)
 			return;
+
 		IrcAccountState_ = state.State_;
+		if (state.State_ == SOffline)
+			ClientConnection_->DisconnectFromAll ();
+
 		emit statusChanged (state);
 	}
 

@@ -23,23 +23,19 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class ReloadIntervalSelector : public QDialog
 	{
-		namespace Poshuku
-		{
-			class ReloadIntervalSelector : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::ReloadIntervalSelector Ui_;
-			public:
-				ReloadIntervalSelector (QWidget* = 0);
+		Ui::ReloadIntervalSelector Ui_;
+	public:
+		ReloadIntervalSelector (QWidget* = 0);
 
-				QTime GetInterval () const;
-			};
-		};
+		QTime GetInterval () const;
 	};
-};
+}
+}
 
 #endif
-

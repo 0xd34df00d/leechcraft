@@ -2,135 +2,34 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>AddServerDialog</name>
-    <message>
-        <location filename="ircaddserverdialog.ui" line="14"/>
-        <source>Add server</source>
-        <translation>Добавить сервер</translation>
-    </message>
-    <message>
-        <location filename="ircaddserverdialog.ui" line="25"/>
-        <source>Server:</source>
-        <oldsource>Server</oldsource>
-        <translation>Сервер:</translation>
-    </message>
-    <message>
-        <location filename="ircaddserverdialog.ui" line="35"/>
-        <source>Port:</source>
-        <oldsource>Port</oldsource>
-        <translation>Порт:</translation>
-    </message>
-    <message>
-        <location filename="ircaddserverdialog.ui" line="52"/>
-        <source>Password:</source>
-        <oldsource>Password</oldsource>
-        <translation>Пароль:</translation>
-    </message>
-    <message>
-        <location filename="ircaddserverdialog.ui" line="68"/>
-        <source>Secure connection (SSL)</source>
-        <translation>Безопасное соединение (SSL)</translation>
-    </message>
-</context>
-<context>
     <name>IrcAccountConfigurationDialog</name>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="14"/>
         <source>Create account</source>
         <translation>Создать аккаунт</translation>
     </message>
+</context>
+<context>
+    <name>IrcAccountConfigurationWidget</name>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="34"/>
+        <location filename="ircaccountconfigurationwidget.ui" line="27"/>
         <source>User profile</source>
         <translation>Профиль пользователя</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="57"/>
-        <source>Appends random number to the nickname to avoid collisions</source>
-        <translation>Добавляет случайное число к нику во избежание коллизий</translation>
+        <location filename="ircaccountconfigurationwidget.ui" line="35"/>
+        <source>Real Name</source>
+        <translation>Настоящее имя</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="77"/>
-        <source>Network name:</source>
-        <translation>Имя сети:</translation>
+        <location filename="ircaccountconfigurationwidget.ui" line="49"/>
+        <source>User name</source>
+        <translation>Имя пользователя</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="163"/>
-        <source>Default</source>
-        <translation>По умолчанию</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="60"/>
-        <source>Generate nicknames</source>
-        <translation>Генерировать ники</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="40"/>
-        <source>Nicknames (first nick would be the default one):</source>
-        <oldsource>Nicknames (first nick would be your default nick)</oldsource>
-        <translation>Ники (первый ник будет умолчательным):</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="68"/>
-        <source>Connection settings</source>
-        <oldsource>Connect settings</oldsource>
-        <translation>Настройки соединения</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="103"/>
-        <source>Add...</source>
-        <translation>Добавить...</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="137"/>
-        <source>Edit</source>
-        <translation>Редактировать</translation>
-    </message>
-    <message>
-        <location filename="ircaccountconfigurationdialog.ui" line="156"/>
-        <source>Delete</source>
-        <translation>Удалить</translation>
-    </message>
-</context>
-<context>
-    <name>IrcAddDefaultChannelsDialog</name>
-    <message>
-        <location filename="ircadddefaultchannelsdialog.ui" line="14"/>
-        <source>Add channels for autoconnect</source>
-        <translation>Добавить каналы для автоконнекта</translation>
-    </message>
-    <message>
-        <location filename="ircadddefaultchannelsdialog.ui" line="20"/>
-        <source>Channels:</source>
-        <translation>Каналы:</translation>
-    </message>
-    <message>
-        <location filename="ircadddefaultchannelsdialog.ui" line="50"/>
-        <source>Add channel</source>
-        <translation>Добавить канал</translation>
-    </message>
-    <message>
-        <location filename="ircadddefaultchannelsdialog.ui" line="57"/>
-        <source>Delete channel</source>
-        <translation>Удалить канал</translation>
-    </message>
-</context>
-<context>
-    <name>IrcEditChannelDialog</name>
-    <message>
-        <location filename="irceditchanneldialog.ui" line="14"/>
-        <source>Edit channel</source>
-        <translation>Редактировать канал</translation>
-    </message>
-    <message>
-        <location filename="irceditchanneldialog.ui" line="22"/>
-        <source>Channel:</source>
-        <translation>Канал:</translation>
-    </message>
-    <message>
-        <location filename="irceditchanneldialog.ui" line="32"/>
-        <source>Password:</source>
-        <translation>Пароль:</translation>
+        <location filename="ircaccountconfigurationwidget.ui" line="63"/>
+        <source>Nicknames (one per line)</source>
+        <translation>Ники (один на строку)</translation>
     </message>
 </context>
 <context>
@@ -184,7 +83,52 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ChannelCLEntry</name>
     <message>
-        <location filename="channelclentry.cpp" line="90"/>
+        <location filename="channelclentry.cpp" line="55"/>
+        <source>Role</source>
+        <translation>Роль</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="56"/>
+        <source>Owner</source>
+        <translation>Владелец</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="57"/>
+        <source>Admin</source>
+        <translation>Администратор</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="58"/>
+        <source>Operator</source>
+        <translation>Оператор</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="59"/>
+        <source>Half Operator</source>
+        <translation>Полуоператор</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="60"/>
+        <source>Voiced</source>
+        <translation>С правом голоса</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="61"/>
+        <source>Participant</source>
+        <translation>Обычный пользователь</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="62"/>
+        <source>Kicked</source>
+        <translation>Выкинут</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="63"/>
+        <source>Banned</source>
+        <translation>Вход запрещён</translation>
+    </message>
+    <message>
+        <location filename="channelclentry.cpp" line="115"/>
         <source>Channels</source>
         <translation>Каналы</translation>
     </message>
@@ -192,91 +136,87 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ChannelHandler</name>
     <message>
-        <location filename="channelhandler.cpp" line="150"/>
+        <location filename="channelhandler.cpp" line="216"/>
         <source>%1 joined the channel</source>
-        <translation>%1 зашел на канал</translation>
+        <translation>%1 зашёл на канал</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="164"/>
-        <source>%1 has left the room (%2)</source>
+        <location filename="channelhandler.cpp" line="232"/>
+        <source>%1 has left the channel (%2)</source>
         <translation>%1 покинул канал (%2)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="167"/>
-        <source>%1 has left the room</source>
+        <location filename="channelhandler.cpp" line="234"/>
+        <source>%1 has left the channel</source>
         <translation>%1 покинул канал</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Azoth::Acetamide::ChannelParticipantEntry</name>
-    <message>
-        <location filename="channelparticipantentry.cpp" line="80"/>
-        <source>%1 participants</source>
-        <translation>Участники %1</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Acetamide::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="87"/>
+        <location filename="clientconnection.cpp" line="102"/>
         <source>This channel is already joined.</source>
-        <translation>К этому каналу уже присоединились.</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Azoth::Acetamide::Core</name>
-    <message>
-        <location filename="core.cpp" line="136"/>
-        <location filename="core.cpp" line="137"/>
-        <source>Default</source>
-        <translation>По умолчанию</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Azoth::Acetamide::IrcAccountConfigurationDialog</name>
-    <message>
-        <location filename="ircaccountconfigurationdialog.cpp" line="42"/>
-        <source>Add channel</source>
-        <translation>Добавить канал</translation>
+        <oldsource>This server is already joined.</oldsource>
+        <translation>Вы уже зашли на этот канал.</translation>
     </message>
     <message>
-        <location filename="ircaccountconfigurationdialog.cpp" line="43"/>
-        <source>Add server</source>
-        <translation>Добавить сервер</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Azoth::Acetamide::IrcAddDefaultChannelsDialog</name>
-    <message>
-        <location filename="ircadddefaultchannelsdialog.cpp" line="37"/>
-        <source>Channel&apos;s name</source>
-        <translation>Имя канала</translation>
-    </message>
-    <message>
-        <location filename="ircadddefaultchannelsdialog.cpp" line="37"/>
-        <source>Password</source>
-        <translation>Пароль</translation>
-    </message>
-    <message>
-        <location filename="ircadddefaultchannelsdialog.cpp" line="102"/>
-        <source>Invalid channel name</source>
-        <translation>Неправильное имя канала</translation>
+        <location filename="clientconnection.cpp" line="111"/>
+        <source>Unable to join the channel.</source>
+        <translation>Невозможно зайти на канал.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Acetamide::IrcProtocol</name>
     <message>
-        <location filename="ircprotocol.cpp" line="113"/>
+        <location filename="ircprotocol.cpp" line="100"/>
         <source>Enter new account name</source>
-        <translation>Введите имя нового аккаунта</translation>
+        <translation>Введите имя новой учётной записи</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::IrcServerCLEntry</name>
+    <message>
+        <location filename="ircserverclentry.cpp" line="79"/>
+        <source>Servers</source>
+        <translation>Серверы</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::IrcServerHandler</name>
+    <message>
+        <location filename="ircserverhandler.cpp" line="523"/>
+        <source> changed nickname to </source>
+        <translation> сменил ник на </translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Acetamide::Plugin</name>
     <message>
-        <location filename="acetamide.cpp" line="68"/>
+        <location filename="acetamide.cpp" line="74"/>
         <source>IRC protocol support.</source>
         <translation>Поддержка протокола IRC.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::ServerParticipantEntry</name>
+    <message>
+        <location filename="serverparticipantentry.cpp" line="42"/>
+        <source>Quit chat</source>
+        <translation>Покинуть чат</translation>
+    </message>
+</context>
+<context>
+    <name>azothacetamidesettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Acetamide</source>
+        <translation>Acetamide</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Autodisconnect from server when no channels are active</source>
+        <translation>Автоматически отключаться от сервера при отсутствии активных каналов</translation>
     </message>
 </context>
 </TS>

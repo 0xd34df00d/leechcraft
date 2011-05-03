@@ -42,10 +42,10 @@ typedef QHash<QString, HubFrame*> HubHash;
 
 public:
     QWidget *getWidget() { return this; }
-    QString getArenaTitle() { return tr("Hub Manager"); }
-    QString getArenaShortTitle() { return getArenaTitle(); }
+    QString getArenaTitle() const { return tr("Hub Manager"); }
+    QString getArenaShortTitle() const { return getArenaTitle(); }
     QMenu *getMenu() { return NULL; }
-    const QPixmap &getPixmap(){ return WICON(WulforUtil::eiSERVER); }
+    const QPixmap &getPixmap() const{ return WICON(WulforUtil::eiSERVER); }
 
     ArenaWidget::Role role() const { return ArenaWidget::HubManager; }
 

@@ -21,6 +21,7 @@ SET (ACETAMIDE_SRCS
 	ircparser.cpp
 	ircprotocol.cpp
 	ircserverclentry.cpp
+	ircserverconsole.cpp
 	ircserverhandler.cpp
 	localtypes.cpp
 	serverparticipantentry.cpp
@@ -43,6 +44,7 @@ SET (ACETAMIDE_HEADERS
 	ircparser.h
 	ircprotocol.h
 	ircserverclentry.h
+	ircserverconsole.h
 	ircserverhandler.h
 	localtypes.h
 	serverparticipantentry.h

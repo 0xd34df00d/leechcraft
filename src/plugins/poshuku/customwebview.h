@@ -28,95 +28,90 @@ class QTimer;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class BrowserWidget;
+
+	class CustomWebView : public QWebView
 	{
-		namespace Poshuku
-		{
-			class BrowserWidget;
+		Q_OBJECT
 
-			class CustomWebView : public QWebView
-			{
-				Q_OBJECT
+		QList<qreal> Zooms_;
+		BrowserWidget *Browser_;
+		QString PreviousEncoding_;
+		QTimer *ScrollTimer_;
+		double ScrollDelta_;
+		double AccumulatedScrollShift_;
+	public:
+		CustomWebView (QWidget* = 0);
+		virtual ~CustomWebView ();
 
-				QList<qreal> Zooms_;
-				BrowserWidget *Browser_;
-				QString PreviousEncoding_;
-				QTimer *ScrollTimer_;
-				double ScrollDelta_;
-				double AccumulatedScrollShift_;
-			public:
-				CustomWebView (QWidget* = 0);
-				virtual ~CustomWebView ();
+		void SetBrowserWidget (BrowserWidget*);
+		BrowserWidget* GetBrowserWidget () const;
+		void Load (const QString&, QString = QString ());
+		void Load (const QUrl&, QString = QString ());
+		void Load (const QNetworkRequest&,
+				QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
+				const QByteArray& = QByteArray ());
 
-				void SetBrowserWidget (BrowserWidget*);
-				BrowserWidget* GetBrowserWidget () const;
-				void Load (const QString&, QString = QString ());
-				void Load (const QUrl&, QString = QString ());
-				void Load (const QNetworkRequest&,
-						QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
-						const QByteArray& = QByteArray ());
+		/** This function is equivalent to url.toString() if the url is
+		 * all in UTF-8. But if the site is in another encoding,
+		 * QUrl::toString() returns a bad, unreadable and, moreover,
+		 * unusable string. In this case, this function converts the url
+		 * to its percent-encoding representation.
+		 *
+		 * @param[in] url The possibly non-UTF-8 URL.
+		 * @return
+		 */
+		QString URLToProperString (const QUrl& url);
+	protected:
+		virtual void mousePressEvent (QMouseEvent*);
+		virtual void wheelEvent (QWheelEvent*);
+		virtual void contextMenuEvent (QContextMenuEvent*);
+		virtual void keyReleaseEvent (QKeyEvent*);
+	private:
+		int LevelForZoom (qreal);
+		void NavigatePlugins ();
+		void NavigateHome ();
+	public slots:
+		void zoomIn ();
+		void zoomOut ();
+		void zoomReset ();
+	private slots:
+		void remakeURL (const QUrl&);
+		void handleLoadFinished ();
+		void openLinkHere ();
+		void openLinkInNewTab ();
+		void saveLink ();
+		void subscribeToLink ();
+		void bookmarkLink ();
+		void copyLink ();
+		void openImageHere ();
+		void openImageInNewTab ();
+		void saveImage ();
+		void copyImage ();
+		void copyImageLocation ();
+		void searchSelectedText ();
+		void renderSettingsChanged ();
+		void handleAutoscroll ();
+	signals:
+		void urlChanged (const QString&);
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void couldHandle (const LeechCraft::Entity&, bool*);
+		void addToFavorites (const QString&, const QString&);
+		void printRequested (QWebFrame*);
+		void closeRequested ();
+		void storeFormData (const PageFormsData_t&);
+		void invalidateSettings ();
 
-				/** This function is equivalent to url.toString() if the
-				 * url is all in UTF-8. But if the site is in another
-				 * category, QUrl::toString() returns a bad, unreadable
-				 * and, moreover, unusable string. In this case, this
-				 * function converts the url to its percent-encoding
-				 * representation.
-				 *
-				 * @param[in] url The possibly non-UTF-8 URL.
-				 * @return
-				 */
-				QString URLToProperString (const QUrl& url);
-			protected:
-				virtual void mousePressEvent (QMouseEvent*);
-				virtual void wheelEvent (QWheelEvent*);
-				virtual void contextMenuEvent (QContextMenuEvent*);
-				virtual void keyReleaseEvent (QKeyEvent*);
-			private:
-				int LevelForZoom (qreal);
-				void NavigatePlugins ();
-				void NavigateHome ();
-			public slots:
-				void zoomIn ();
-				void zoomOut ();
-				void zoomReset ();
-			private slots:
-				void remakeURL (const QUrl&);
-				void handleLoadFinished ();
-				void openLinkHere ();
-				void openLinkInNewTab ();
-				void saveLink ();
-				void subscribeToLink ();
-				void bookmarkLink ();
-				void copyLink ();
-				void openImageHere ();
-				void openImageInNewTab ();
-				void saveImage ();
-				void copyImage ();
-				void copyImageLocation ();
-				void searchSelectedText ();
-				void renderSettingsChanged ();
-				void handleAutoscroll ();
-			signals:
-				void urlChanged (const QString&);
-				void gotEntity (const LeechCraft::Entity&);
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-				void couldHandle (const LeechCraft::Entity&, bool*);
-				void addToFavorites (const QString&, const QString&);
-				void printRequested (QWebFrame*);
-				void closeRequested ();
-				void storeFormData (const PageFormsData_t&);
-				void invalidateSettings ();
-
-				// Hook support signals
-				void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-						QWebView*, QContextMenuEvent*,
-						const QWebHitTestResult&, QMenu*,
-						WebViewCtxMenuStage);
-			};
-		};
+		// Hook support signals
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
+				QWebView*, QContextMenuEvent*,
+				const QWebHitTestResult&, QMenu*,
+				WebViewCtxMenuStage);
 	};
-};
+}
+}
 
 #endif
-

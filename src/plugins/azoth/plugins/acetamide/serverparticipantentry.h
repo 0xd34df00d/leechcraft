@@ -44,6 +44,7 @@ namespace Acetamide
 		bool PrivateChat_;
 
 		IrcAccount *Account_;
+		QHash<QString, ChannelRole> Channel2Role_;
 	public:
 		ServerParticipantEntry (const QString&,
 				const QString&, IrcAccount*);
@@ -65,6 +66,9 @@ namespace Acetamide
 		QStringList GetChannels () const;
 		void SetPrivateChat (bool);
 		bool IsPrivateChat () const;
+
+		ChannelRole GetRole (const QString&) const;
+		void SetRole (const QString&, ChannelRole);
 	public slots:
 		void closePrivateChat (bool);
 	};

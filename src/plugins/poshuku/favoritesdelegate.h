@@ -24,29 +24,25 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class FavoritesDelegate : public QItemDelegate
 	{
-		namespace Poshuku
-		{
-			class FavoritesDelegate : public QItemDelegate
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				mutable std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsCompleter_;
-			public:
-				FavoritesDelegate (QObject* = 0);
+		mutable std::auto_ptr<Util::TagsCompleter> TagsCompleter_;
+	public:
+		FavoritesDelegate (QObject* = 0);
 
-				QWidget* createEditor (QWidget*, const QStyleOptionViewItem&,
-						const QModelIndex&) const;
-				void setEditorData (QWidget*, const QModelIndex&) const;
-				void setModelData (QWidget*, QAbstractItemModel*,
-						const QModelIndex&) const;
-				void updateEditorGeometry (QWidget*, const QStyleOptionViewItem&,
-						const QModelIndex&) const;
-			};
-		};
+		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&,
+				const QModelIndex&) const;
+		void setEditorData (QWidget*, const QModelIndex&) const;
+		void setModelData (QWidget*, QAbstractItemModel*,
+				const QModelIndex&) const;
+		void updateEditorGeometry (QWidget*, const QStyleOptionViewItem&,
+				const QModelIndex&) const;
 	};
-};
+}
+}
 
 #endif
-

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ namespace Azoth
 
 		/** @brief Returns the protocols list provided by this plugin.
 		 *
-		 * Each object in this list should implement the IProtocol
+		 * Each object in this list must implement the IProtocol
 		 * interface.
 		 *
 		 * @return The list of this plugin's protocols.

@@ -33,6 +33,12 @@ namespace Azoth
 
 	/** Represents an account — an entity within IProtocol owning some
 	 * ICLEntry objects.
+	 * 
+	 * The account may also implement IHaveServiceDiscovery if it
+	 * supports some XMPP's service discovery-like functionality. Look
+	 * at that documentation for more information.
+	 * 
+	 * @sa IHaveServiceDiscovery
 	 */
 	class IAccount
 	{

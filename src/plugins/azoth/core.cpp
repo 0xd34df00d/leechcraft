@@ -53,6 +53,7 @@
 #include "transferjobmanager.h"
 #include "accounthandlerchooserdialog.h"
 #include "util.h"
+#include "eventsnotifier.h"
 
 uint qHash (const QImage& image)
 {
@@ -106,6 +107,7 @@ namespace Azoth
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
+	, EventsNotifier_ (new EventsNotifier)
 	{
 		connect (ChatTabsManager_,
 				SIGNAL (clearUnreadMsgCount (QObject*)),
@@ -115,6 +117,14 @@ namespace Azoth
 				SIGNAL (jobNoLongerOffered (QObject*)),
 				this,
 				SLOT (handleJobDeoffered (QObject*)));
+		connect (EventsNotifier_.get (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (ChatTabsManager_,
+				SIGNAL (entryMadeCurrent (QObject*)),
+				EventsNotifier_.get (),
+				SLOT (handleEntryMadeCurrent (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
 
@@ -808,6 +818,8 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (updateItem ()));
+		
+		EventsNotifier_->RegisterEntry (clEntry);
 
 		const QString& id = clEntry->GetEntryID ();
 		ID2Entry_ [id] = clEntry->GetObject ();
@@ -919,11 +931,14 @@ namespace Azoth
 		const QStringList& variants = entry->Variants ();
 		Q_FOREACH (const QString& variant, variants)
 		{
-			if (variant.isEmpty ())
+			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+			if (info.isEmpty ())
 				continue;
 
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-			tip += "<hr /><strong>" + variant + "</strong>";
+			tip += "<hr />";
+			if (!variant.isEmpty ())
+				tip += "<strong>" + variant + "</strong>";
+
 			if (info.contains ("priority"))
 				tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
 			tip += ": ";
@@ -933,6 +948,13 @@ namespace Azoth
 				tip += "<br />" + info.value ("client_name").toString ();
 			if (info.contains ("client_version"))
 				tip += " " + info.value ("client_version").toString ();
+
+			if (info.contains ("custom_user_visible_map"))
+			{
+				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
+				Q_FOREACH (const QString& key, map.keys ())
+					tip += "<br />" + key + ": " + map [key].toString () + "<br />";
+			}
 		}
 		return tip;
 	}
@@ -1748,18 +1770,23 @@ namespace Azoth
 						<< "is not a valid ICLEntry";
 				continue;
 			}
+			
+			disconnect (clitem,
+					0,
+					this,
+					0);
 
-			ChatTabsManager_->SetChatEnabled (entry->GetEntryID (), false);
+			ChatTabsManager_->HandleEntryRemoved (entry);
 
 			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 				RemoveCLItem (item);
 
 			Entry2Items_.remove (entry);
-
 			Entry2Actions_.remove (entry);
 
 			ID2Entry_.remove (entry->GetEntryID ());
 
+			Entry2SmoothAvatarCache_.remove (entry);
 			invalidateClientsIconCache (clitem);
 		}
 	}

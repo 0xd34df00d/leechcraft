@@ -65,10 +65,13 @@ namespace Azoth
 
 		QIcon TabIcon_;
 		bool IsMUC_;
+		int PreviousTextHeight_;
 
 		ITransferManager *XferManager_;
 		
 		QTimer *TypeTimer_;
+		
+		ChatPartState PreviousState_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
@@ -153,7 +156,7 @@ namespace Azoth
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
 		void needToClose (ChatTab*);
-		void clearUnreadMsgCount (QObject*);
+		void entryMadeCurrent (QObject*);
 
 		// Hooks
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,

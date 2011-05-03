@@ -3,13 +3,14 @@
 	<page>
 		<label value="Acetamide" />
 			<groupbox>
-				<label lang="en" value=""/>
-				<item type="checkbox" property="TabWithServer" state="on">
-					<label value="Open a separate tab for each server" />
-				</item>
+				<label value="Acetamide" />
 				<item type="checkbox" property="AutoDisconnectFromServer" state="off">
 						<label value="Autodisconnect from server when no channels are active" />
 				</item>
+				<item type="checkbox" property="ServerConsole" state="off">
+						<label value="Enable server console" />
+				</item>
+
 			</groupbox>
 	</page>
 </settings>

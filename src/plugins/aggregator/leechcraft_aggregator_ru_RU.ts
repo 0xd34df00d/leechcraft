@@ -92,7 +92,7 @@
     <message>
         <location filename="actionsstructs.cpp" line="91"/>
         <source>Settings...</source>
-        <translation>Настройки...</translation>
+        <translation>Параметры...</translation>
     </message>
 </context>
 <context>
@@ -166,7 +166,7 @@
     <message>
         <location filename="feedsettings.ui" line="14"/>
         <source>Feed settings</source>
-        <translation>Настройки ленты</translation>
+        <translation>Параметры ленты</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="28"/>
@@ -201,7 +201,7 @@
     <message>
         <location filename="feedsettings.ui" line="128"/>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="feedsettings.ui" line="134"/>
@@ -258,7 +258,7 @@
     <message>
         <location filename="feedsettings.ui" line="251"/>
         <source>Update favicon</source>
-        <translation>Обновить иконку</translation>
+        <translation>Обновить значок</translation>
     </message>
 </context>
 <context>
@@ -339,7 +339,7 @@
     <message>
         <location filename="importopml.ui" line="76"/>
         <source>Modified:</source>
-        <translation>Обновлен:</translation>
+        <translation>Обновлён:</translation>
     </message>
     <message>
         <location filename="importopml.ui" line="90"/>
@@ -433,7 +433,7 @@
     <message>
         <location filename="aggregator.cpp" line="168"/>
         <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
-        <translation>Aggregator не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Или проверьте настройки хранилища данных и перезапустите LeechCraft.</translation>
+        <translation>Aggregator не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Или проверьте параметры хранилища данных и перезапустите LeechCraft.</translation>
     </message>
     <message>
         <location filename="aggregator.cpp" line="223"/>
@@ -555,17 +555,17 @@
     <message>
         <location filename="core.cpp" line="417"/>
         <source>Feed addition error</source>
-        <translation>Ошибка добавления фида</translation>
+        <translation>Ошибка добавления ленты</translation>
     </message>
     <message>
         <location filename="core.cpp" line="418"/>
         <source>The feed %1 is already added</source>
-        <translation>Фид %1 уже добавлен</translation>
+        <translation>Лента %1 уже добавлена</translation>
     </message>
     <message>
         <location filename="core.cpp" line="450"/>
         <source>Plugin error</source>
-        <translation>Ошибка плагина</translation>
+        <translation>Ошибка модуля</translation>
     </message>
     <message>
         <location filename="core.cpp" line="451"/>
@@ -575,12 +575,12 @@
     <message>
         <location filename="core.cpp" line="473"/>
         <source>Feed removal error</source>
-        <translation>Ошибка удаления фида</translation>
+        <translation>Ошибка удаления ленты</translation>
     </message>
     <message>
         <location filename="core.cpp" line="474"/>
         <source>Could not remove the feed: %1</source>
-        <translation>Невозможно удалить фид: %1</translation>
+        <translation>Невозможно удалить ленту: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="671"/>
@@ -592,12 +592,12 @@
     <message>
         <location filename="core.cpp" line="689"/>
         <source>Could not update feed settings: %1</source>
-        <translation>Невозможно обновить настройки фида: %1</translation>
+        <translation>Невозможно обновить параметры ленты: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="710"/>
         <source>Feed update error</source>
-        <translation>Ошибка обновления фида</translation>
+        <translation>Ошибка обновления ленты</translation>
     </message>
     <message>
         <location filename="core.cpp" line="736"/>
@@ -620,7 +620,7 @@
     <message>
         <location filename="core.cpp" line="767"/>
         <source>OPML from file %1 is not valid.</source>
-        <translation>OPML-файл %1 невалиден.</translation>
+        <translation>OPML-файл %1 некорректен.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="822"/>
@@ -645,7 +645,7 @@
         <location filename="core.cpp" line="1052"/>
         <location filename="core.cpp" line="1178"/>
         <source>Feed error</source>
-        <translation>Ошибка фида</translation>
+        <translation>Ошибка ленты</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1006"/>
@@ -677,9 +677,9 @@
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
         <translation>
-            <numerusform>%n обновленная статья</numerusform>
-            <numerusform>%n обновленные статьи</numerusform>
-            <numerusform>%n обновленных статей</numerusform>
+            <numerusform>%n обновлённая статья</numerusform>
+            <numerusform>%n обновлённые статьи</numerusform>
+            <numerusform>%n обновлённых статей</numerusform>
         </translation>
     </message>
     <message>
@@ -691,7 +691,7 @@
         <location filename="core.cpp" line="1603"/>
         <source>Updated channel &quot;%1&quot; (%2, %3)</source>
         <oldsource>Updated channel &quot;%1&quot;</oldsource>
-        <translation>Обновлен канал &quot;%1&quot; (%2, %3)</translation>
+        <translation>Обновлён канал &quot;%1&quot; (%2, %3)</translation>
     </message>
     <message>
         <location filename="core.cpp" line="271"/>
@@ -701,7 +701,7 @@
     <message>
         <location filename="core.cpp" line="672"/>
         <source>Could not get feed settings: %1</source>
-        <translation>Невозможно получить настройки ленты: %1</translation>
+        <translation>Невозможно получить параметры ленты: %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1053"/>
@@ -711,7 +711,7 @@
     <message>
         <location filename="core.cpp" line="1021"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
-        <translation>Ошибка парсинга XML: %1, строка %2, столбец %3, имя файла %4, от %5</translation>
+        <translation>Ошибка разбора XML: %1, строка %2, столбец %3, имя файла %4, от %5</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1035"/>
@@ -731,7 +731,7 @@
     <message>
         <location filename="core.cpp" line="1105"/>
         <source>Access denied:&lt;br /&gt;%1</source>
-        <translation>Доступ запрещен:&lt;br /&gt;%1</translation>
+        <translation>Доступ запрещён:&lt;br /&gt;%1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1108"/>
@@ -791,7 +791,7 @@
     <message>
         <location filename="export2fb2dialog.cpp" line="265"/>
         <source>FB2 export complete.</source>
-        <translation>Экспорт в FB2 завершен</translation>
+        <translation>Экспорт в FB2 завершён.</translation>
     </message>
     <message numerus="yes">
         <location filename="export2fb2dialog.cpp" line="111"/>
@@ -871,7 +871,7 @@
     <message>
         <location filename="importopml.cpp" line="152"/>
         <source>OPML from file %1 is not valid.</source>
-        <translation>OPML-файл %1 невалиден.</translation>
+        <translation>OPML-файл %1 некорректен.</translation>
     </message>
 </context>
 <context>
@@ -1165,7 +1165,7 @@
     <message>
         <location filename="itemswidget.cpp" line="844"/>
         <source>&lt;li&gt;&lt;strong&gt;Size:&lt;/strong&gt; %1x%2&lt;/li&gt;</source>
-        <translation>&lt;li&gt;&lt;strong&gt;Размер:&lt;/strong&gt; %1x%2&lt;/li&gt;</translation>
+        <translation>&lt;li&gt;&lt;strong&gt;Размер:&lt;/strong&gt; %1×%2&lt;/li&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="848"/>
@@ -1200,17 +1200,17 @@
     <message>
         <location filename="itemswidget.cpp" line="896"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
-        <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</translation>
+        <translation>&lt;strong&gt;©&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="900"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</source>
-        <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</translation>
+        <translation>&lt;strong&gt;©&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="904"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</source>
-        <translation>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</translation>
+        <translation>&lt;strong&gt;©&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="itemswidget.cpp" line="919"/>
@@ -1260,7 +1260,7 @@
     <message>
         <location filename="startupfirstpage.cpp" line="33"/>
         <source>Set default options</source>
-        <translation>Установка основных опций</translation>
+        <translation>Установка основных параметров</translation>
     </message>
 </context>
 <context>
@@ -1378,7 +1378,7 @@
     <message>
         <location filename="startupfirstpage.ui" line="20"/>
         <source>Show icon in tray when there are unread items</source>
-        <translation>Показывать иконку в трее при наличии непрочитанных сообщений</translation>
+        <translation>Показывать значок в системном лотке при наличии непрочитанных сообщений</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="35"/>
@@ -1472,7 +1472,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>General settings</source>
-        <translation>Общие настройки</translation>
+        <translation>Общие параметры</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
@@ -1493,7 +1493,7 @@
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Show unread items on top</source>
-        <translation>Показывать непрочтенные статьи наверху</translation>
+        <translation>Показывать непрочитанные статьи наверху</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
@@ -1544,12 +1544,12 @@
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Show unread channels in summary</source>
-        <translation>Показывать непрочтенные каналы в сводке</translation>
+        <translation>Показывать непрочитанные каналы в сводке</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Show icon in tray when there are unread items</source>
-        <translation>Показывать иконку в трее при наличии непрочитанных сообщений</translation>
+        <translation>Показывать значок в системном лотке при наличии непрочитанных сообщений</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
@@ -1624,7 +1624,7 @@
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source>Download directory for enclosures:</source>
-        <translation>Директория для вложений:</translation>
+        <translation>Каталог для вложений:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>

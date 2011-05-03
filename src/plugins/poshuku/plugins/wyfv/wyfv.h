@@ -29,52 +29,45 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class WYFV : public QObject
+				, public IInfo
+				, public IHaveSettings
+				, public IPlugin2
+				, public IFlashOverrider
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class WYFV : public QObject
-							   , public IInfo
-							   , public IHaveSettings
-							   , public IPlugin2
-							   , public IFlashOverrider
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IHaveSettings IPlugin2
-								LeechCraft::Plugins::Poshuku::IFlashOverrider)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings IPlugin2
+				LeechCraft::Poshuku::IFlashOverrider)
 
-						boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-						std::auto_ptr<QTranslator> Translator_;
-					public:
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						void Release ();
-						QByteArray GetUniqueID () const;
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
+		boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		std::auto_ptr<QTranslator> Translator_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-						boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+		boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-						QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const;
 
-						bool WouldOverrideFlash (const QUrl&) const;
-					public slots:
-						void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr, QList<IWebPlugin*>&);
-					};
-				};
-			};
-		};
+		bool WouldOverrideFlash (const QUrl&) const;
+	public slots:
+		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr, QList<IWebPlugin*>&);
 	};
-};
+}
+}
+}
 
 #endif
-

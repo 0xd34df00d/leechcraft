@@ -28,220 +28,220 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::CleanWeb</name>
+    <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="101"/>
+        <location filename="cleanweb.cpp" line="97"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокує небажану рекламу.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::Core</name>
+    <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="237"/>
+        <location filename="core.cpp" line="233"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="238"/>
+        <location filename="core.cpp" line="234"/>
         <source>Last updated</source>
         <translation>Останне оновлення</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="239"/>
+        <location filename="core.cpp" line="235"/>
         <source>URL</source>
         <translation>Адреса</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="416"/>
+        <location filename="core.cpp" line="412"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation>Заблоковано Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="462"/>
+        <location filename="core.cpp" line="458"/>
         <source>Block image...</source>
         <translation>Заблокувати зображення...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="720"/>
+        <location filename="core.cpp" line="716"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Підписка %1 була успішно додана.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="755"/>
+        <location filename="core.cpp" line="751"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Підписка %1 не була делегована.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashOnClickWhitelist</name>
+    <name>LeechCraft::Poshuku::CleanWeb::FlashOnClickWhitelist</name>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="41"/>
+        <location filename="flashonclickwhitelist.cpp" line="37"/>
         <source>Whitelist</source>
         <translation>Білий список</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="113"/>
+        <location filename="flashonclickwhitelist.cpp" line="109"/>
         <source>Add URL to whitelist</source>
         <translation>Додати адресу до білого списку</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="114"/>
+        <location filename="flashonclickwhitelist.cpp" line="110"/>
         <source>Please enter the URL to add to the FlashOnClick&apos;s whitelist</source>
         <translation>Введіть адресу для додавання до білого списку FlashOnClick</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="129"/>
+        <location filename="flashonclickwhitelist.cpp" line="125"/>
         <source>This URL is already matched by another whitelist entry.</source>
         <translation>Ця адреса вже відповідає іншому запису у білому списку.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::FlashPlaceHolder</name>
+    <name>LeechCraft::Poshuku::CleanWeb::FlashPlaceHolder</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="166"/>
+        <location filename="flashplaceholder.cpp" line="162"/>
         <source>Load</source>
         <translation>Завантажити</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="172"/>
+        <location filename="flashplaceholder.cpp" line="168"/>
         <source>Add URL to whitelist...</source>
         <translation>Додати адресу до білого списку...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="177"/>
+        <location filename="flashplaceholder.cpp" line="173"/>
         <source>Add host to whitelist...</source>
         <translation>Додати комп&apos;ютер до білого списку...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="189"/>
+        <location filename="flashplaceholder.cpp" line="185"/>
         <source>Hide</source>
         <translation>Сховати</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RuleOptionDialog</name>
+    <name>LeechCraft::Poshuku::CleanWeb::RuleOptionDialog</name>
     <message>
-        <location filename="ruleoptiondialog.cpp" line="144"/>
-        <location filename="ruleoptiondialog.cpp" line="170"/>
+        <location filename="ruleoptiondialog.cpp" line="140"/>
+        <location filename="ruleoptiondialog.cpp" line="166"/>
         <source>Enter domain</source>
         <translation>Введіть домен</translation>
     </message>
     <message>
-        <location filename="ruleoptiondialog.cpp" line="195"/>
+        <location filename="ruleoptiondialog.cpp" line="191"/>
         <source>Are you sure you want to remove %1?</source>
         <translation>Ви впевнені, що хочете видалити %1?</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionAddDialog</name>
+    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionAddDialog</name>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="90"/>
+        <location filename="subscriptionadddialog.cpp" line="86"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="91"/>
+        <location filename="subscriptionadddialog.cpp" line="87"/>
         <source>Purpose</source>
         <translation>Ціль</translation>
     </message>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="92"/>
+        <location filename="subscriptionadddialog.cpp" line="88"/>
         <source>URL</source>
         <translation>Адреса</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::SubscriptionsManager</name>
+    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsManager</name>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="67"/>
-        <location filename="subscriptionsmanager.cpp" line="76"/>
-        <location filename="subscriptionsmanager.cpp" line="85"/>
-        <location filename="subscriptionsmanager.cpp" line="94"/>
+        <location filename="subscriptionsmanager.cpp" line="63"/>
+        <location filename="subscriptionsmanager.cpp" line="72"/>
+        <location filename="subscriptionsmanager.cpp" line="81"/>
+        <location filename="subscriptionsmanager.cpp" line="90"/>
         <source>Error adding subscription</source>
         <translation>Помилка додавання підписки</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="68"/>
+        <location filename="subscriptionsmanager.cpp" line="64"/>
         <source>Can&apos;t add subscription without a title.</source>
         <translation>Не можу додати підписку без назви.</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="77"/>
-        <location filename="subscriptionsmanager.cpp" line="86"/>
+        <location filename="subscriptionsmanager.cpp" line="73"/>
+        <location filename="subscriptionsmanager.cpp" line="82"/>
         <source>Subscription with such title allready exists.</source>
         <translation>Підписка з такою назовю вже існує.</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="95"/>
+        <location filename="subscriptionsmanager.cpp" line="91"/>
         <source>Invalid URL.&lt;br /&gt;Valid URL format is: abp://subscribe/?location=URL</source>
         <translation>Направильна адреса.&lt;br /&gt;Правильна адреса має наступний формат: abp://subscribe/?location=URL</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::UserFiltersModel</name>
+    <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="42"/>
+        <location filename="userfiltersmodel.cpp" line="38"/>
         <source>Filter</source>
         <translation>Фільтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="43"/>
+        <location filename="userfiltersmodel.cpp" line="39"/>
         <source>Policy</source>
         <translation>Політика</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="44"/>
+        <location filename="userfiltersmodel.cpp" line="40"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="45"/>
+        <location filename="userfiltersmodel.cpp" line="41"/>
         <source>Case sensitive</source>
         <translation>Чутливий до регістру</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="46"/>
+        <location filename="userfiltersmodel.cpp" line="42"/>
         <source>Domains</source>
         <translation>Домени</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="81"/>
+        <location filename="userfiltersmodel.cpp" line="77"/>
         <source>Allowed</source>
         <translation>Дозволено</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="82"/>
+        <location filename="userfiltersmodel.cpp" line="78"/>
         <source>Blocked</source>
         <translation>Заблоковано</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="87"/>
+        <location filename="userfiltersmodel.cpp" line="83"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="89"/>
+        <location filename="userfiltersmodel.cpp" line="85"/>
         <source>Regexp</source>
         <translation>Регулярний вираз</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="93"/>
+        <location filename="userfiltersmodel.cpp" line="89"/>
         <source>True</source>
         <translation>Так</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="94"/>
+        <location filename="userfiltersmodel.cpp" line="90"/>
         <source>False</source>
         <translation>Ні</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="148"/>
+        <location filename="userfiltersmodel.cpp" line="144"/>
         <source>Add a filter</source>
         <translation>Додати фільтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="204"/>
+        <location filename="userfiltersmodel.cpp" line="200"/>
         <source>Modify filter</source>
         <translation>Змінити фільтр</translation>
     </message>

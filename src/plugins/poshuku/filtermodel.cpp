@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,30 +24,26 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	FilterModel::FilterModel (QObject *parent)
+	: LeechCraft::Util::TagsFilterModel (parent)
 	{
-		namespace Poshuku
-		{
-			FilterModel::FilterModel (QObject *parent)
-			: LeechCraft::Util::TagsFilterModel (parent)
-			{
-			}
-			
-			FilterModel::~FilterModel ()
-			{
-			}
-			
-			QStringList FilterModel::GetTagsForIndex (int row) const
-			{
-				QStringList ids = sourceModel ()->data (sourceModel ()->index (row, 0),
-						LeechCraft::RoleTags).toStringList ();
-				QStringList tags;
-				Q_FOREACH (QString id, ids)
-					tags.append (Core::Instance ().GetProxy ()->
-							GetTagsManager ()->GetTag (id));
-				return tags;
-			}
-		};
-	};
-};
-
+	}
+	
+	FilterModel::~FilterModel ()
+	{
+	}
+	
+	QStringList FilterModel::GetTagsForIndex (int row) const
+	{
+		QStringList ids = sourceModel ()->data (sourceModel ()->index (row, 0),
+				LeechCraft::RoleTags).toStringList ();
+		QStringList tags;
+		Q_FOREACH (QString id, ids)
+			tags.append (Core::Instance ().GetProxy ()->
+					GetTagsManager ()->GetTag (id));
+		return tags;
+	}
+}
+}

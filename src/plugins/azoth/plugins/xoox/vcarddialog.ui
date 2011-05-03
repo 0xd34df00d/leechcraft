@@ -148,6 +148,19 @@
        <string>Work</string>
       </attribute>
      </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Client info</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="margin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="QTextEdit" name="ClientInfo_"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>

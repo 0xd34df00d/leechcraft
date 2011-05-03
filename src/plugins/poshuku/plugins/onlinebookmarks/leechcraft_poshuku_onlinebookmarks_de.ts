@@ -68,84 +68,84 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::BookmarksDialog</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::BookmarksDialog</name>
     <message>
-        <location filename="bookmarksdialog.cpp" line="57"/>
+        <location filename="bookmarksdialog.cpp" line="52"/>
         <source>Please check the services you would like to add the bookmark %1 to, if any.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::OnlineBookmarks</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::OnlineBookmarks</name>
     <message>
-        <location filename="onlinebookmarks.cpp" line="98"/>
+        <location filename="onlinebookmarks.cpp" line="94"/>
         <source>Sync local bookmarks with your account in online bookmark services like Read It Later</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="140"/>
+        <location filename="onlinebookmarks.cpp" line="136"/>
         <source>Bookmarks Sync</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="141"/>
+        <location filename="onlinebookmarks.cpp" line="137"/>
         <source>Sync</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="143"/>
+        <location filename="onlinebookmarks.cpp" line="139"/>
         <source>Upload only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="145"/>
+        <location filename="onlinebookmarks.cpp" line="141"/>
         <source>Download only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="147"/>
+        <location filename="onlinebookmarks.cpp" line="143"/>
         <source>Download all</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::ReadItLaterBookmarksService</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::ReadItLaterBookmarksService</name>
     <message>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="98"/>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="114"/>
+        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="95"/>
+        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="111"/>
         <source>Invalid password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="228"/>
+        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="225"/>
         <source>An error occurred during parsing</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::Settings</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::Settings</name>
     <message>
-        <location filename="settings.cpp" line="269"/>
+        <location filename="settings.cpp" line="265"/>
         <source>Invalid account data</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::OnlineBookmarks::SyncBookmarks</name>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::SyncBookmarks</name>
     <message>
-        <location filename="syncbookmarks.cpp" line="143"/>
-        <location filename="syncbookmarks.cpp" line="287"/>
-        <location filename="syncbookmarks.cpp" line="365"/>
+        <location filename="syncbookmarks.cpp" line="139"/>
+        <location filename="syncbookmarks.cpp" line="283"/>
+        <location filename="syncbookmarks.cpp" line="361"/>
         <source>Unable to open upload configuration file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="syncbookmarks.cpp" line="215"/>
+        <location filename="syncbookmarks.cpp" line="211"/>
         <source>Error while sending bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="syncbookmarks.cpp" line="235"/>
+        <location filename="syncbookmarks.cpp" line="231"/>
         <source>Bookmarks have been sent successfully</source>
         <translation type="unfinished"></translation>
     </message>

@@ -32,17 +32,17 @@ class SpyFrame :
         private Ui::UISpy
 {
 Q_OBJECT
-Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+Q_INTERFACES(ArenaWidget ITabWidget)
 
 friend class dcpp::Singleton<SpyFrame>;
 
 public:
 
-    QString getArenaShortTitle() { return tr("Search Spy"); }
-    QString getArenaTitle() {return getArenaShortTitle(); }
+    QString getArenaShortTitle() const { return tr("Search Spy"); }
+    QString getArenaTitle() const {return getArenaShortTitle(); }
     QMenu *getMenu() {return NULL; }
     QWidget *getWidget() { return this; }
-    const QPixmap &getPixmap(){ return WICON(WulforUtil::eiSPY); }
+    const QPixmap &getPixmap() const{ return WICON(WulforUtil::eiSPY); }
     ArenaWidget::Role role() const { return ArenaWidget::Spy; }
 
 protected:

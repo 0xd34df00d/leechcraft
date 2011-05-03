@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QAbstractSocket>
 #include "core.h"
 #include "ircaccount.h"
 
@@ -52,18 +53,21 @@ namespace Acetamide
 	public:
 		ClientConnection (IrcAccount*);
 		QObject* GetCLEntry (const QString&, const QString&) const;
-		QList<QObject*> GetCLEntries () const;
 		void Sinchronize ();
 
 		IrcAccount* GetAccount () const;
 
 		bool IsServerExists (const QString&);
-		IrcServerCLEntry* JoinServer (const ServerOptions&);
+		void  JoinServer (const ServerOptions&);
 		void JoinChannel (const ServerOptions&,
 				const ChannelOptions&);
 		IrcServerHandler* GetIrcServerHandler (const QString&);
 		void ClosePrivateChat (QString, const QString&);
 		void CloseServer (const QString&);
+		void DisconnectFromAll ();
+	public slots:
+		void serverConnected (const QString&);
+		void handleError (QAbstractSocket::SocketError);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);

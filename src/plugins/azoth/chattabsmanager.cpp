@@ -66,6 +66,8 @@ namespace Azoth
 			emit raiseTab (Entry2Tab_ [id]);
 			return;
 		}
+		
+		EverOpened_ << id;
 
 		QPointer<ChatTab> tab (new ChatTab (id));
 		tab->installEventFilter (this);
@@ -76,9 +78,13 @@ namespace Azoth
 				this,
 				SLOT (handleNeedToClose (ChatTab*)));
 		connect (tab,
-				SIGNAL (clearUnreadMsgCount (QObject*)),
+				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
 				SIGNAL (clearUnreadMsgCount (QObject*)));
+		connect (tab,
+				SIGNAL (entryMadeCurrent (QObject*)),
+				this,
+				SIGNAL (entryMadeCurrent (QObject*)));
 		connect (tab,
 				SIGNAL (changeTabName (QWidget*, const QString&)),
 				this,
@@ -115,6 +121,11 @@ namespace Azoth
 			Entry2Tab_ [entry->GetEntryID ()]->isActiveWindow ();
 	}
 
+	bool ChatTabsManager::IsOpenedChat (const QString& id) const
+	{
+		return EverOpened_.contains (id);
+	}
+
 	void ChatTabsManager::UpdateEntryMapping (const QString& id, QObject *obj)
 	{
 		if (!Entry2Tab_.contains (id))
@@ -125,6 +136,22 @@ namespace Azoth
 				Entry2Tab_ [id],
 				SLOT (handleEntryMessage (QObject*)),
 				Qt::UniqueConnection);
+	}
+	
+	void ChatTabsManager::HandleEntryRemoved (ICLEntry *entry)
+	{
+		if (!Entry2Tab_.contains (entry->GetEntryID ()))
+			return;
+		
+		SetChatEnabled (entry->GetEntryID (), false);
+		disconnect (entry->GetObject (),
+				0,
+				this,
+				0);
+		disconnect (entry->GetObject (),
+				0,
+				Entry2Tab_ [entry->GetEntryID ()],
+				0);
 	}
 
 	void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)

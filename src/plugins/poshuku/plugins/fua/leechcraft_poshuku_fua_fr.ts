@@ -38,26 +38,26 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA</name>
+    <name>LeechCraft::Poshuku::Fua::FUA</name>
     <message>
-        <location filename="fua.cpp" line="70"/>
+        <location filename="fua.cpp" line="66"/>
         <source>Domain</source>
-        <translation>Domaine</translation>
+        <translation type="unfinished">Domaine</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="71"/>
+        <location filename="fua.cpp" line="67"/>
         <source>Agent</source>
-        <translation>Agent</translation>
+        <translation type="unfinished">Agent</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="72"/>
+        <location filename="fua.cpp" line="68"/>
         <source>Identification string</source>
-        <translation>Chaîne d&apos;identification</translation>
+        <translation type="unfinished">Chaîne d&apos;identification</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="116"/>
+        <location filename="fua.cpp" line="112"/>
         <source>Allows to set fake user agents for different sites.</source>
-        <translation>Autorise la création de faux agents utilisateurs pour différents sites.</translation>
+        <translation type="unfinished">Autorise la création de faux agents utilisateurs pour différents sites.</translation>
     </message>
 </context>
 <context>

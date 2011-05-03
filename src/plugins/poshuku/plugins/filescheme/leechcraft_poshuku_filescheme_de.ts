@@ -2,49 +2,49 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de">
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::FileScheme::FileScheme</name>
+    <name>LeechCraft::Poshuku::FileScheme::FileScheme</name>
     <message>
-        <location filename="filescheme.cpp" line="70"/>
+        <location filename="filescheme.cpp" line="66"/>
         <source>Provides support for file:// scheme.</source>
-        <translation>Bietet Unterstützung für file:// Schema.</translation>
+        <translation type="unfinished">Bietet Unterstützung für file:// Schema.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::FileScheme::SchemeReply</name>
+    <name>LeechCraft::Poshuku::FileScheme::SchemeReply</name>
     <message>
-        <location filename="schemereply.cpp" line="50"/>
+        <location filename="schemereply.cpp" line="46"/>
         <source>No error</source>
-        <translation>Kein Fehler</translation>
+        <translation type="unfinished">Kein Fehler</translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="108"/>
+        <location filename="schemereply.cpp" line="104"/>
         <source>%1: no such file or directory</source>
-        <translation>%1: keine solche Datei oder Verzeichnis</translation>
+        <translation type="unfinished">%1: keine solche Datei oder Verzeichnis</translation>
     </message>
     <message>
-        <location filename="schemereply.cpp" line="118"/>
+        <location filename="schemereply.cpp" line="114"/>
         <source>Unable to read %1</source>
-        <translation>Konnte %1 nicht lesen</translation>
+        <translation type="unfinished">Konnte %1 nicht lesen</translation>
+    </message>
+    <message>
+        <location filename="schemereply.cpp" line="195"/>
+        <source>Contents of %1</source>
+        <translation type="unfinished">Inhalt von %1</translation>
+    </message>
+    <message>
+        <location filename="schemereply.cpp" line="197"/>
+        <source>File</source>
+        <translation type="unfinished">Datei</translation>
+    </message>
+    <message>
+        <location filename="schemereply.cpp" line="198"/>
+        <source>Size</source>
+        <translation type="unfinished">Größe</translation>
     </message>
     <message>
         <location filename="schemereply.cpp" line="199"/>
-        <source>Contents of %1</source>
-        <translation>Inhalt von %1</translation>
-    </message>
-    <message>
-        <location filename="schemereply.cpp" line="201"/>
-        <source>File</source>
-        <translation>Datei</translation>
-    </message>
-    <message>
-        <location filename="schemereply.cpp" line="202"/>
-        <source>Size</source>
-        <translation>Größe</translation>
-    </message>
-    <message>
-        <location filename="schemereply.cpp" line="203"/>
         <source>Modified</source>
-        <translation>Geändert</translation>
+        <translation type="unfinished">Geändert</translation>
     </message>
 </context>
 </TS>

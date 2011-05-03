@@ -24,14 +24,9 @@
 #include "settings.h"
 #include "xmlsettingsmanager.h"
 
-
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -74,8 +69,6 @@ namespace OnlineBookmarks
 	{
 		XmlSettingsManager::Instance ()->setProperty ("ConfirmSend", true);
 	}
-}
-}
 }
 }
 }

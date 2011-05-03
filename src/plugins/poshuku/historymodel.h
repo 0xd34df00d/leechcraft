@@ -30,82 +30,77 @@ class QAction;
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	class TreeItem;
+}
+
+namespace Poshuku
+{
+	struct HistoryItem
 	{
-		class TreeItem;
+		QString Title_;
+		QDateTime DateTime_;
+		QString URL_;
 	};
 
-	namespace Plugins
+	typedef std::vector<HistoryItem> history_items_t;
+
+	class HistoryModel : public QAbstractItemModel
 	{
-		namespace Poshuku
+		Q_OBJECT
+
+		QTimer *GarbageTimer_;
+		Util::TreeItem *RootItem_;
+		QAction *FolderIconProxy_;
+		history_items_t Items_;
+	public:
+		enum Columns
 		{
-			struct HistoryItem
-			{
-				QString Title_;
-				QDateTime DateTime_;
-				QString URL_;
-			};
-
-			typedef std::vector<HistoryItem> history_items_t;
-
-			class HistoryModel : public QAbstractItemModel
-			{
-				Q_OBJECT
-
-				QTimer *GarbageTimer_;
-				Util::TreeItem *RootItem_;
-				QAction *FolderIconProxy_;
-				history_items_t Items_;
-			public:
-				enum Columns
-				{
-					ColumnTitle
-					, ColumnURL
-					, ColumnDate
-				};
-
-				HistoryModel (QObject* = 0);
-				virtual ~HistoryModel ();
-
-				int columnCount (const QModelIndex& = QModelIndex ()) const;
-				QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				Qt::ItemFlags flags (const QModelIndex&) const;
-				QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-				QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-				QModelIndex parent (const QModelIndex&) const;
-				int rowCount (const QModelIndex& = QModelIndex ()) const;
-			public slots:
-				void addItem (QString title, QString url,
-						QDateTime datetime, QObject *browserwidget = 0);
-				QList<QMap<QString, QVariant> > getItemsMap () const;
-			private:
-				void Add (const HistoryItem&);
-			private slots:
-				void loadData ();
-				void handleItemAdded (const HistoryItem&);
-			signals:
-				// Hook support signals
-				/** @brief Called when an entry is going to be added to
-				 * history.
-				 *
-				 * If the proxy is cancelled, no addition takes place
-				 * at all. If it is not, the return value from the proxy
-				 * is considered as a list of QVariants. First element
-				 * (if any) would be converted to string and replace
-				 * title, second element (if any) would be converted to
-				 * string and replace url, third element (if any) would
-				 * be converted to QDateTime and replace the date.
-				 */
-				void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
-						QString title, QString url, QDateTime date,
-						QObject *browserWidget);
-			};
+			ColumnTitle
+			, ColumnURL
+			, ColumnDate
 		};
+
+		HistoryModel (QObject* = 0);
+		virtual ~HistoryModel ();
+
+		int columnCount (const QModelIndex& = QModelIndex ()) const;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		Qt::ItemFlags flags (const QModelIndex&) const;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex& = QModelIndex ()) const;
+	public slots:
+		void addItem (QString title, QString url,
+				QDateTime datetime, QObject *browserwidget = 0);
+		QList<QMap<QString, QVariant> > getItemsMap () const;
+	private:
+		void Add (const HistoryItem&);
+	private slots:
+		void loadData ();
+		void handleItemAdded (const HistoryItem&);
+	signals:
+		// Hook support signals
+		/** @brief Called when an entry is going to be added to
+			* history.
+			*
+			* If the proxy is cancelled, no addition takes place
+			* at all. If it is not, the return value from the proxy
+			* is considered as a list of QVariants. First element
+			* (if any) would be converted to string and replace
+			* title, second element (if any) would be converted to
+			* string and replace url, third element (if any) would
+			* be converted to QDateTime and replace the date.
+			*/
+		void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
+				QString title, QString url, QDateTime date,
+				QObject *browserWidget);
 	};
-};
+}
+}
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::Poshuku::HistoryItem);
-
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::HistoryItem);
 
 #endif
-

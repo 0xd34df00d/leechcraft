@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,99 +29,92 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	void WYFV::Init (ICoreProxy_ptr proxy)
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					void WYFV::Init (ICoreProxy_ptr proxy)
-					{
-						Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_wyfv"));
+		Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_wyfv"));
 
-						Core::Instance ().SetProxy (proxy);
+		Core::Instance ().SetProxy (proxy);
 
-						SettingsDialog_.reset (new Util::XmlSettingsDialog);
-						SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-								"poshukuwyfvsettings.xml");
-					}
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"poshukuwyfvsettings.xml");
+	}
 
-					void WYFV::SecondInit ()
-					{
-					}
+	void WYFV::SecondInit ()
+	{
+	}
 
-					void WYFV::Release ()
-					{
-					}
+	void WYFV::Release ()
+	{
+	}
 
-					QByteArray WYFV::GetUniqueID () const
-					{
-						return "org.LeechCraft.Poshuku.WYFV";
-					}
+	QByteArray WYFV::GetUniqueID () const
+	{
+		return "org.LeechCraft.Poshuku.WYFV";
+	}
 
-					QString WYFV::GetName () const
-					{
-						return "Poshuku WYFV";
-					}
+	QString WYFV::GetName () const
+	{
+		return "Poshuku WYFV";
+	}
 
-					QString WYFV::GetInfo () const
-					{
-						return tr ("Replaces Flash-based video player to play video without Flash installed.");
-					}
+	QString WYFV::GetInfo () const
+	{
+		return tr ("Replaces Flash-based video player to play video without Flash installed.");
+	}
 
-					QIcon WYFV::GetIcon () const
-					{
-						return QIcon (":/plugins/poshuku/plugins/wyfv/resources/images/poshuku_wyfv.svg");
-					}
+	QIcon WYFV::GetIcon () const
+	{
+		return QIcon (":/plugins/poshuku/plugins/wyfv/resources/images/poshuku_wyfv.svg");
+	}
 
-					QStringList WYFV::Provides () const
-					{
-						return QStringList ();
-					}
+	QStringList WYFV::Provides () const
+	{
+		return QStringList ();
+	}
 
-					QStringList WYFV::Needs () const
-					{
-						return QStringList ();
-					}
+	QStringList WYFV::Needs () const
+	{
+		return QStringList ();
+	}
 
-					QStringList WYFV::Uses () const
-					{
-						return QStringList ();
-					}
+	QStringList WYFV::Uses () const
+	{
+		return QStringList ();
+	}
 
-					void WYFV::SetProvider (QObject*, const QString&)
-					{
-					}
+	void WYFV::SetProvider (QObject*, const QString&)
+	{
+	}
 
-					boost::shared_ptr<Util::XmlSettingsDialog> WYFV::GetSettingsDialog () const
-					{
-						return SettingsDialog_;
-					}
+	boost::shared_ptr<Util::XmlSettingsDialog> WYFV::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
 
-					QSet<QByteArray> WYFV::GetPluginClasses () const
-					{
-						QSet<QByteArray> result;
-						result << "org.LeechCraft.Poshuku.Plugins/1.0";
-						return result;
-					}
+	QSet<QByteArray> WYFV::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		return result;
+	}
 
-					void WYFV::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-							QList<IWebPlugin*>& plugins)
-					{
-						plugins << Core::Instance ().GetWYFVPlugin ();
-					}
+	void WYFV::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+			QList<IWebPlugin*>& plugins)
+	{
+		plugins << Core::Instance ().GetWYFVPlugin ();
+	}
 
-					bool WYFV::WouldOverrideFlash (const QUrl& url) const
-					{
-						return PlayerFactory::HasPlayerFor (url);
-					}
-				};
-			};
-		};
-	};
-};
+	bool WYFV::WouldOverrideFlash (const QUrl& url) const
+	{
+		return PlayerFactory::HasPlayerFor (url);
+	}
+}
+}
+}
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_wyfv, LeechCraft::Plugins::Poshuku::Plugins::WYFV::WYFV);
-
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku_wyfv, LeechCraft::Poshuku::WYFV::WYFV);

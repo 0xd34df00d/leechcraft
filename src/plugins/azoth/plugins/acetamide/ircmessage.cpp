@@ -108,7 +108,7 @@ namespace Acetamide
 
 	QObject* IrcMessage::OtherPart () const
 	{
-		return Connection_->GetCLEntry (ID_, NickName_);
+		return Connection_->GetCLEntry (ID_, Message_.Nickname_);
 	}
 
 	QString IrcMessage::GetID () const
@@ -119,6 +119,11 @@ namespace Acetamide
 	QString IrcMessage::GetOtherVariant () const
 	{
 		return Message_.Nickname_;
+	}
+
+	void IrcMessage::SetOtherVariant (const QString& nick)
+	{
+		Message_.Nickname_ = nick;
 	}
 
 	QString IrcMessage::GetBody () const

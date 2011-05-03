@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,97 +25,90 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	RelatedItem::RelatedItem (QWidget *parent)
+	: QWidget (parent)
 	{
-		namespace Poshuku
+		Ui_.setupUi (this);
+
+		Ui_.Title_->installEventFilter (this);
+		Ui_.Thumbnail_->installEventFilter (this);
+	}
+
+	void RelatedItem::SetRelated (const Related& related)
+	{
+		Ui_.Title_->setText (related.Title_);
+		Ui_.Rating_->setValue (related.Rating_ * 100);
+		URL_ = related.URL_;
+
+		QNetworkReply *reply = Core::Instance ().GetProxy ()->
+			GetNetworkAccessManager ()->get (QNetworkRequest (related.Thumbnail_));
+		connect (reply,
+				SIGNAL (readyRead ()),
+				this,
+				SLOT (addToPixmap ()));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePixmapFinished ()));
+	}
+
+	bool RelatedItem::eventFilter (QObject *obj, QEvent *e)
+	{
+		if (e->type () == QEvent::MouseButtonPress)
 		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					RelatedItem::RelatedItem (QWidget *parent)
-					: QWidget (parent)
-					{
-						Ui_.setupUi (this);
+			emit navigate (URL_);
+			return true;
+		}
+		else
+			return QObject::eventFilter (obj, e);
+	}
 
-						Ui_.Title_->installEventFilter (this);
-						Ui_.Thumbnail_->installEventFilter (this);
-					}
+	void RelatedItem::addToPixmap ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "sender is not a QNetworkReply*"
+				<< sender ();
+			return;
+		}
 
-					void RelatedItem::SetRelated (const Related& related)
-					{
-						Ui_.Title_->setText (related.Title_);
-						Ui_.Rating_->setValue (related.Rating_ * 100);
-						URL_ = related.URL_;
+		PixmapData_.buffer ().append (reply->readAll ());
+	}
 
-						QNetworkReply *reply = Core::Instance ().GetProxy ()->
-							GetNetworkAccessManager ()->get (QNetworkRequest (related.Thumbnail_));
-						connect (reply,
-								SIGNAL (readyRead ()),
-								this,
-								SLOT (addToPixmap ()));
-						connect (reply,
-								SIGNAL (finished ()),
-								this,
-								SLOT (handlePixmapFinished ()));
-					}
+	void RelatedItem::handlePixmapFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "sender is not a QNetworkReply*"
+				<< sender ();
+			return;
+		}
 
-					bool RelatedItem::eventFilter (QObject *obj, QEvent *e)
-					{
-						if (e->type () == QEvent::MouseButtonPress)
-						{
-							emit navigate (URL_);
-							return true;
-						}
-						else
-							return QObject::eventFilter (obj, e);
-					}
+		addToPixmap ();
 
-					void RelatedItem::addToPixmap ()
-					{
-						QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-						if (!reply)
-						{
-							qWarning () << Q_FUNC_INFO
-								<< "sender is not a QNetworkReply*"
-								<< sender ();
-							return;
-						}
+		reply->deleteLater ();
 
-						PixmapData_.buffer ().append (reply->readAll ());
-					}
-
-					void RelatedItem::handlePixmapFinished ()
-					{
-						QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-						if (!reply)
-						{
-							qWarning () << Q_FUNC_INFO
-								<< "sender is not a QNetworkReply*"
-								<< sender ();
-							return;
-						}
-
-						addToPixmap ();
-
-						reply->deleteLater ();
-
-						QPixmap px;
-						if (!px.loadFromData (PixmapData_.buffer ()))
-						{
-							qWarning () << Q_FUNC_INFO
-								<< "failed to create pixmap from loaded data";
-							Ui_.Thumbnail_->setText (tr ("Failed to load"));
-						}
-						else
-						{
-							Ui_.Thumbnail_->setPixmap (px);
-							PixmapData_.setData (QByteArray ());
-						}
-					}
-				};
-			};
-		};
-	};
-};
-
+		QPixmap px;
+		if (!px.loadFromData (PixmapData_.buffer ()))
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "failed to create pixmap from loaded data";
+			Ui_.Thumbnail_->setText (tr ("Failed to load"));
+		}
+		else
+		{
+			Ui_.Thumbnail_->setPixmap (px);
+			PixmapData_.setData (QByteArray ());
+		}
+	}
+}
+}
+}

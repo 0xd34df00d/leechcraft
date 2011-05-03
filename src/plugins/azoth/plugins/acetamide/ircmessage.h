@@ -69,6 +69,7 @@ namespace Acetamide
 		QObject* OtherPart () const;
 		QString GetID () const;
 		QString GetOtherVariant () const;
+		void SetOtherVariant (const QString&);
 		QString GetBody () const;
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
