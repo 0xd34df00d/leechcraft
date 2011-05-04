@@ -17,7 +17,11 @@
  **********************************************************************/
 
 #include "fatape.h"
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <QDir>
 #include <QIcon>
+#include <QStringList>
 
 namespace LeechCraft
 {
@@ -25,12 +29,34 @@ namespace Poshuku
 {
 namespace FatApe
 {
+	template<typename Iter, typename Pred, typename Func>
+	void apply_if(Iter first, Iter last, Pred pred, Func func)
+	{
+		for (; first != last; ++first)
+		{
+			if (pred (*first))
+				func(*first);
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 	}
 	
 	void Plugin::SecondInit ()
 	{
+		QDir scriptsDir(QDir::homePath () + "/.leechcraft/data/poshuku/fatape/scripts/");
+
+		if (scriptsDir.exists ())
+		{
+			QStringList filter;
+
+			filter << "*.user.js";
+			Q_FOREACH(QString script, scriptsDir.entryList (filter, QDir::Files))
+			{
+				UserScripts_.append (UserScript (scriptsDir.absoluteFilePath (script)));
+			}
+		}
 	}
 	
 	void Plugin::Release ()
@@ -62,6 +88,22 @@ namespace FatApe
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
+	}
+
+	void Plugin::hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy, 
+			QWebPage *sourcePage, QWebFrame *frameCleared )
+	{
+		boost::function<bool (const UserScript&)> match = boost::bind (
+				&UserScript::MatchToPage,
+				_1,
+				frameCleared->url ().toString ());
+		boost::function<void (const UserScript&)> inject = boost::bind(
+				&UserScript::Inject,
+				_1,
+				frameCleared);
+
+		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
+
 	}
 }
 }

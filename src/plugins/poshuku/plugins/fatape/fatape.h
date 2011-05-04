@@ -18,9 +18,12 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
 #define PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
+#include "userscript.h"
 #include <QObject>
+#include <QList>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+
 
 namespace LeechCraft
 {
@@ -34,6 +37,8 @@ namespace FatApe
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+	private:
+		QList<UserScript> UserScripts_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -43,6 +48,10 @@ namespace FatApe
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
+		public slots:
+		void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,                                                                                                                                               
+				QWebPage *sourcePage,                                                                                                                                                                                           
+				QWebFrame *frameCleared);
 	};
 }
 }
