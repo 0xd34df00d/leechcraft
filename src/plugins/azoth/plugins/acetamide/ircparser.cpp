@@ -82,7 +82,7 @@ namespace Acetamide
 
 	void IrcParser::PartCommand (const QStringList& cmd)
 	{
-		QString partCmd = QString ("PART " + cmd.first () + " " +
+		QString partCmd = QString ("PART " + cmd.first () + " :" +
 				QStringList (cmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (partCmd);
 	}
@@ -140,7 +140,7 @@ namespace Acetamide
 					cmd.last () + "\r\n");
 			break;
 		default:
-			topicCmd = QString ("TOPIC " + cmd.first () + " " +
+			topicCmd = QString ("TOPIC " + cmd.first () + " :" +
 					QStringList (cmd.mid (1)).join (" ") + "\r\n");
 		}
 		ISH_->SendCommand (topicCmd);
@@ -158,17 +158,24 @@ namespace Acetamide
 
 	void IrcParser::InviteCommand (const QStringList& cmd)
 	{
-		QString inviteCmd = QString ("INVITE " + cmd.first () + " " +
-				cmd.at (1) + "\r\n");
+		QString inviteCmd = QString ("INVITE " + cmd.join (" ") +
+				"\r\n");
 		ISH_->SendCommand (inviteCmd);
 	}
 
 	void IrcParser::KickCommand (const QStringList& cmd)
 	{
 		QString kickCmd = QString ("KICK " + cmd.first () + " " +
-				cmd.at (1) + " " + QStringList (cmd.mid (2)).join (" ") +
-				"\r\n");
+				cmd.at (1) + " :" + QStringList (cmd.mid (2)).join (" ")
+				+ "\r\n");
 		ISH_->SendCommand (kickCmd);
+	}
+
+	void IrcParser::OperCommand (const QStringList& cmd)
+	{
+		QString operCmd = QString ("OPER " + cmd.at (0) + " :" +
+				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		ISH_->SendCommand (operCmd);
 	}
 
 	bool IrcParser::ParseMessage (const QString& message)

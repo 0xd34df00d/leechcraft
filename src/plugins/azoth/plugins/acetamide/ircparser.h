@@ -56,6 +56,7 @@ namespace Acetamide
 		void NamesCommand (const QStringList&);
 		void InviteCommand (const QStringList&);
 		void KickCommand (const QStringList&);
+		void OperCommand (const QStringList&);
 
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;
