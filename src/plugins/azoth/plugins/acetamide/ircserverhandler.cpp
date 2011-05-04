@@ -562,6 +562,8 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["oper"] = boost::bind (&IrcParser::OperCommand,
 				IrcParser_, _1);
+		Name2Command_ ["squit"] = boost::bind (&IrcParser::SQuitCommand,
+				IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()

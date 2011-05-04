@@ -178,6 +178,13 @@ namespace Acetamide
 		ISH_->SendCommand (operCmd);
 	}
 
+	void IrcParser::SQuitCommand (const QStringList& cmd)
+	{
+		QString squitCmd = QString ("SQUIT " + cmd.first () + " :" +
+				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		ISH_->SendCommand (squitCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
