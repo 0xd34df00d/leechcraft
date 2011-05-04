@@ -55,7 +55,7 @@ namespace Acetamide
 	void IrcParser::UserCommand ()
 	{
 		QString userCmd = QString ("USER " +
-				ISH_->GetAccount ()->GetUserName () + " 0 * :" +
+				ISH_->GetAccount ()->GetUserName () + " 8 * :" +
 				ISH_->GetAccount ()->GetRealName () + "\r\n");
 		ISH_->SendCommand (userCmd);
 	}

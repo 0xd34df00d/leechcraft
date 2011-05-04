@@ -48,6 +48,7 @@ namespace Acetamide
 	, NickName_ (server.ServerNickName_)
 	, IsConsoleEnabled_ (false)
 	, IsInviteDialogActive_ (false)
+	, ChannelJoined_ (false)
 	{
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
@@ -677,8 +678,10 @@ namespace Acetamide
 			const QList<std::string>&, const QString& msg)
 	{
 		if (nick == NickName_)
+		{
+			ChannelJoined_ = true;
 			return;
-
+		}
 		QString channelID = (msg + "@" + ServerOptions_.ServerName_)
 				.toLower ();
 
@@ -995,7 +998,7 @@ namespace Acetamide
 				Core::Instance ().SendEntity (e);
 				Error2Action_ [cmd] ();
 			}
-			else if (!ChannelHandlers_.values ().count ())
+			else if ((cmd != "join") && (!ChannelJoined_))
 				IncomingMessage2Server ();
 
 			IncomingMessage2Channel ();
