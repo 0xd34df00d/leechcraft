@@ -68,6 +68,7 @@ namespace Acetamide
 
 	void IrcParser::JoinCommand (const QString& channel)
 	{
+		//TODO Password
 		QString joinCmd = QString ("JOIN " + channel + "\r\n");
 		ISH_->SendCommand (joinCmd);
 	}
@@ -183,6 +184,17 @@ namespace Acetamide
 		QString squitCmd = QString ("SQUIT " + cmd.first () + " :" +
 				QStringList (cmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (squitCmd);
+	}
+
+	void IrcParser::MOTDCommand (const QStringList& cmd)
+	{
+		QString motdCmd;
+		if (!cmd.count ())
+			motdCmd = QString ("MOTD\r\n");
+		else
+			motdCmd = QString ("MOTD " + cmd.first () + "\r\n");
+
+		ISH_->SendCommand (motdCmd);
 	}
 
 	bool IrcParser::ParseMessage (const QString& message)
