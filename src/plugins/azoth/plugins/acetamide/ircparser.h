@@ -62,6 +62,7 @@ namespace Acetamide
 		void LusersCommand (const QStringList&);
 		void VersionCommand (const QStringList&);
 		void StatsCommand (const QStringList&);
+		void LinksCommand (const QStringList&);
 
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;

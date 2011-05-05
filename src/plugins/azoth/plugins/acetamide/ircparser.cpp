@@ -213,9 +213,14 @@ namespace Acetamide
 
 	void IrcParser::StatsCommand (const QStringList& cmd)
 	{
-		QString statsCmd = QString ("STATS " + cmd.join (" ") +
-				"\r\n");
+		QString statsCmd = QString ("STATS " + cmd.join (" ") + "\r\n");
 		ISH_->SendCommand (statsCmd);
+	}
+
+	void IrcParser::LinksCommand (const QStringList& cmd)
+	{
+		QString linksCmd = QString ("LINKS " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (linksCmd);
 	}
 
 	bool IrcParser::ParseMessage (const QString& message)
