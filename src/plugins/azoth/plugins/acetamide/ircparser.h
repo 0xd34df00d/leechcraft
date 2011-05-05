@@ -68,6 +68,9 @@ namespace Acetamide
 		void TraceCommand (const QStringList&);
 		void AdminCommand (const QStringList&);
 		void InfoCommand (const QStringList&);
+		void WhoCommand (const QStringList&);
+		void WhoisCommand (const QStringList&);
+		void WhowasCommand (const QStringList&);
 
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;

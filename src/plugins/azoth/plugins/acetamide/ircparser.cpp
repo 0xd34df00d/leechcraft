@@ -254,6 +254,25 @@ namespace Acetamide
 		ISH_->SendCommand (infoCmd);
 	}
 
+	void IrcParser::WhoCommand (const QStringList& cmd)
+	{
+		QString whoCmd = QString ("WHO " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (whoCmd);
+	}
+
+	void IrcParser::WhoisCommand (const QStringList& cmd)
+	{
+		QString whoisCmd = QString ("WHOIS" + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (whoisCmd);
+	}
+
+	void IrcParser::WhowasCommand (const QStringList& cmd)
+	{
+		QString whowasCmd = QString ("WHOWAS " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (whowasCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
