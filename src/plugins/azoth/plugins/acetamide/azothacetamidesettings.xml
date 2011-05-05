@@ -10,7 +10,9 @@
 				<item type="checkbox" property="ServerConsole" state="off">
 						<label value="Enable server console" />
 				</item>
-
+				<item type="checkbox" property="ShowInviteDialog" state="off">
+						<label value="Show invite dialog" />
+				</item>
 			</groupbox>
 	</page>
 </settings>
