@@ -48,7 +48,7 @@ namespace Acetamide
 		void JoinCommand (const QString&);
 		void PrivMsgCommand (const QString&, const QString&);
 		void PartCommand (const QStringList&);
-		void PongCommand (const QString&);
+		void PongCommand (const QStringList&);
 		void RawCommand (const QStringList&);
 		void CTCPRequest (const QStringList&);
 		void CTCPReply (const QStringList&);
@@ -72,6 +72,7 @@ namespace Acetamide
 		void WhoisCommand (const QStringList&);
 		void WhowasCommand (const QStringList&);
 		void KillCommand (const QStringList&);
+		void PingCommand (const QStringList&);
 
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;

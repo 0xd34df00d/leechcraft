@@ -592,6 +592,10 @@ namespace Acetamide
 				boost::bind (&IrcParser::WhowasCommand, IrcParser_, _1);
 		Name2Command_ ["kill"] = boost::bind (&IrcParser::KillCommand,
 				IrcParser_, _1);
+		Name2Command_ ["ping"] = boost::bind (&IrcParser::PingCommand,
+				IrcParser_, _1);
+		Name2Command_ ["pong"] = boost::bind(&IrcParser::PongCommand,
+				IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -769,7 +773,7 @@ namespace Acetamide
 	void IrcServerHandler::PongMessage (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		IrcParser_->PongCommand (msg);
+		IrcParser_->PongCommand (QStringList () << msg);
 	}
 
 	void IrcServerHandler::SetISupport (const QString&,

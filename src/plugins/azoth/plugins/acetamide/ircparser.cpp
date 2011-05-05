@@ -88,9 +88,9 @@ namespace Acetamide
 		ISH_->SendCommand (partCmd);
 	}
 
-	void IrcParser::PongCommand (const QString& msg)
+	void IrcParser::PongCommand (const QStringList& msg)
 	{
-		QString pongCmd = QString ("PONG :" + msg + "\r\n");
+		QString pongCmd = QString ("PONG :" + msg.join (" ") + "\r\n");
 		ISH_->SendCommand (pongCmd);
 	}
 
@@ -278,6 +278,12 @@ namespace Acetamide
 		QString killCmd = QString ("KILL " + cmd.first () + " :" +
 				QStringList (cmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (killCmd);
+	}
+
+	void IrcParser::PingCommand (const QStringList& cmd)
+	{
+		QString pingCmd = QString ("PING " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (pingCmd);
 	}
 
 	bool IrcParser::ParseMessage (const QString& message)
