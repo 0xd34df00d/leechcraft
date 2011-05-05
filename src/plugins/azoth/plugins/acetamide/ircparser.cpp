@@ -242,6 +242,18 @@ namespace Acetamide
 		ISH_->SendCommand (traceCmd);
 	}
 
+	void IrcParser::AdminCommand (const QStringList& cmd)
+	{
+		QString adminCmd = QString ("ADMIN " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (adminCmd);
+	}
+
+	void IrcParser::InfoCommand (const QStringList& cmd)
+	{
+		QString infoCmd = QString ("INFO " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (infoCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
