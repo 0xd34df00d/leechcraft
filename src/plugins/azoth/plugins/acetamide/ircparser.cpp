@@ -321,6 +321,12 @@ namespace Acetamide
 		ISH_->SendCommand (summonCmd);
 	}
 
+	void IrcParser::UsersCommand (const QStringList& cmd)
+	{
+		QString usersCmd = QString ("USERS " + cmd.first () + "\r\n");
+		ISH_->SendCommand (usersCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
