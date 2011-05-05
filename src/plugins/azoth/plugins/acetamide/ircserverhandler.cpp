@@ -598,6 +598,8 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["away"] = boost::bind(&IrcParser::AwayCommand,
 				IrcParser_, _1);
+		Name2Command_ ["rehash"] = boost::bind(&IrcParser::RehashCommand,
+				IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()

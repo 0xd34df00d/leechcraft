@@ -74,6 +74,7 @@ namespace Acetamide
 		void KillCommand (const QStringList&);
 		void PingCommand (const QStringList&);
 		void AwayCommand (const QStringList&);
+		void RehashCommand (const QStringList&);
 
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;

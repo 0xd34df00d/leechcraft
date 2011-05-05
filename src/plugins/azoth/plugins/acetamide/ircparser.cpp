@@ -296,6 +296,12 @@ namespace Acetamide
 		ISH_->SendCommand (awayCmd);
 	}
 
+	void IrcParser::RehashCommand (const QStringList&)
+	{
+		QString rehashCmd = QString ("REHASH\r\n");
+		ISH_->SendCommand (rehashCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
