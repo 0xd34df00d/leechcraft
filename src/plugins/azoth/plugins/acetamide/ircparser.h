@@ -71,6 +71,7 @@ namespace Acetamide
 		void WhoCommand (const QStringList&);
 		void WhoisCommand (const QStringList&);
 		void WhowasCommand (const QStringList&);
+		void KillCommand (const QStringList&);
 
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;
