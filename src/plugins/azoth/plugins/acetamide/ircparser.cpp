@@ -341,6 +341,13 @@ namespace Acetamide
 		ISH_->SendCommand (wallopsCmd);
 	}
 
+	void IrcParser::IsonCommand (const QStringList& cmd)
+	{
+		QString isonCmd = QString ("ISON " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (isonCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
