@@ -223,6 +223,12 @@ namespace Acetamide
 		ISH_->SendCommand (linksCmd);
 	}
 
+	void IrcParser::TimeCommand (const QStringList& cmd)
+	{
+		QString timeCmd = QString ("TIME " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (timeCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
