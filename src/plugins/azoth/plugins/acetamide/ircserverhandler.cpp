@@ -151,6 +151,8 @@ namespace Acetamide
 			Name2Command_ [commandWithParams.at (0).toLower ()]
 					(commandWithParams.mid (1));
 		}
+		else
+			IrcParser_->RawCommand (commandWithParams);
 
 		if (!outputMessage.isEmpty ())
 			Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
