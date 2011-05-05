@@ -286,6 +286,16 @@ namespace Acetamide
 		ISH_->SendCommand (pingCmd);
 	}
 
+	void IrcParser::AwayCommand (const QStringList& cmd)
+	{
+		QString awayCmd;
+		if (cmd.count ())
+			awayCmd = QString ("AWAY :" + cmd.join (" ") + "\r\n");
+		else
+			awayCmd = QString ("AWAY\r\n");
+		ISH_->SendCommand (awayCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
