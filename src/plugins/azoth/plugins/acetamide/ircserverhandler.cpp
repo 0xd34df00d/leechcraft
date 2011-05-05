@@ -566,6 +566,10 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["motd"] = boost::bind (&IrcParser::MOTDCommand,
 				IrcParser_, _1);
+		Name2Command_ ["lusers"] =
+				boost::bind (&IrcParser::LusersCommand, IrcParser_, _1);
+		Name2Command_ ["version"] =
+				boost::bind (&IrcParser::VersionCommand, IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()

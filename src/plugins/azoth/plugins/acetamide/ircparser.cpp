@@ -197,6 +197,20 @@ namespace Acetamide
 		ISH_->SendCommand (motdCmd);
 	}
 
+	void IrcParser::LusersCommand (const QStringList& cmd)
+	{
+		QString lusersCmd = QString ("LUSERS " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (lusersCmd);
+	}
+
+	void IrcParser::VersionCommand (const QStringList& cmd)
+	{
+		QString versionCmd = QString ("VERSION " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (versionCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
