@@ -578,6 +578,8 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["connect"] =
 				boost::bind (&IrcParser::ConnectCommand, IrcParser_, _1);
+		Name2Command_ ["trace"] = boost::bind (&IrcParser::TraceCommand,
+				IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
