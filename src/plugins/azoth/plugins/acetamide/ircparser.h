@@ -79,6 +79,8 @@ namespace Acetamide
 		void RestartCommand (const QStringList&);
 		void SummonCommand (const QStringList&);
 		void UsersCommand (const QStringList&);
+		void UserhostCommand (const QStringList&);
+		void WallopsCommand (const QStringList&);
 
 		bool ParseMessage (const QString&);
 		IrcMessageOptions GetIrcMessageOptions () const;

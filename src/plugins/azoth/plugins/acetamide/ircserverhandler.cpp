@@ -594,20 +594,25 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["ping"] = boost::bind (&IrcParser::PingCommand,
 				IrcParser_, _1);
-		Name2Command_ ["pong"] = boost::bind(&IrcParser::PongCommand,
+		Name2Command_ ["pong"] = boost::bind (&IrcParser::PongCommand,
 				IrcParser_, _1);
-		Name2Command_ ["away"] = boost::bind(&IrcParser::AwayCommand,
+		Name2Command_ ["away"] = boost::bind (&IrcParser::AwayCommand,
 				IrcParser_, _1);
-		Name2Command_ ["rehash"] = boost::bind(&IrcParser::RehashCommand,
-				IrcParser_, _1);
-		Name2Command_ ["die"] = boost::bind(&IrcParser::DieCommand,
+		Name2Command_ ["rehash"] =
+				boost::bind (&IrcParser::RehashCommand, IrcParser_, _1);
+		Name2Command_ ["die"] = boost::bind (&IrcParser::DieCommand,
 				IrcParser_, _1);
 		Name2Command_ ["restart"] =
-				boost::bind(&IrcParser::RestartCommand, IrcParser_, _1);
+				boost::bind (&IrcParser::RestartCommand, IrcParser_, _1);
 		Name2Command_ ["summon"] =
-				boost::bind(&IrcParser::SummonCommand, IrcParser_, _1);
+				boost::bind (&IrcParser::SummonCommand, IrcParser_, _1);
 		Name2Command_ ["users"] =
-				boost::bind(&IrcParser::UsersCommand, IrcParser_, _1);
+				boost::bind (&IrcParser::UsersCommand, IrcParser_, _1);
+		Name2Command_ ["userhost"] =
+				boost::bind (&IrcParser::UserhostCommand,
+						IrcParser_, _1);
+		Name2Command_ ["wallops"] =
+				boost::bind (&IrcParser::WallposCommand, IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()

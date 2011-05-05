@@ -327,6 +327,20 @@ namespace Acetamide
 		ISH_->SendCommand (usersCmd);
 	}
 
+	void IrcParser::UserhostCommand (const QStringList& cmd)
+	{
+		QString userhostCmd = QString ("USERHOST " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (userhostCmd);
+	}
+
+	void IrcParser::WallopsCommand (const QStringList& cmd)
+	{
+		QString wallopsCmd = QString ("WALLOPS :" + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (wallopsCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QString& message)
 	{
 		IrcMessageOptions_.Command_.clear ();
