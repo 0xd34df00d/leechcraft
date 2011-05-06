@@ -123,7 +123,7 @@ namespace LeechCraft
 		 *
 		 * @return The selected (or entered) filename.
 		 */
-		QString GetFilename () const;
+		QString GetFilename ();
 
 		/** Returns the total number of choices added.
 		 *
@@ -146,8 +146,9 @@ namespace LeechCraft
 		 * - Third, save locations for all other plugins.
 		 */
 		void populateLocationsBox ();
+		
+		void on_BrowseButton__released ();
 	};
-};
+}
 
 #endif
-

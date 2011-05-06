@@ -53,7 +53,7 @@ class IrcMessage;
 		IrcServerCLEntry *ServerCLEntry_;
 		IrcServerConsole_ptr Console_;
 		bool IsConsoleEnabled_;
-
+		bool ChannelJoined_;
 		bool IsInviteDialogActive_;
 		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 

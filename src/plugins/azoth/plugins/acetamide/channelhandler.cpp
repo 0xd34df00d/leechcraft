@@ -104,6 +104,11 @@ namespace Acetamide
 		IsRosterReceived_ = status;
 	}
 
+	bool ChannelHandler::IsSendCommand (const QString& cmd)
+	{
+		return SendCommand_.contains (cmd);
+	}
+
 	void ChannelHandler::ShowServiceMessage (const QString& msg,
 			IMessage::MessageType mt, IMessage::MessageSubType mst)
 	{
@@ -120,7 +125,10 @@ namespace Acetamide
 		if (GetSelf () == ServerParticipantEntry_ptr ())
 			return;
 		if (msg.startsWith ('/'))
+		{
+			SendCommand_ << msg.split (" ").first ().toLower ();
 			ISH_->ParseMessageForCommand (msg, ChannelID_);
+		}
 		else
 			ISH_->SendPublicMessage (msg, ChannelID_);
 

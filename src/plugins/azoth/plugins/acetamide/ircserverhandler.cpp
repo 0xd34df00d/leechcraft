@@ -48,6 +48,7 @@ namespace Acetamide
 	, NickName_ (server.ServerNickName_)
 	, IsConsoleEnabled_ (false)
 	, IsInviteDialogActive_ (false)
+	, ChannelJoined_ (false)
 	{
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
@@ -150,6 +151,8 @@ namespace Acetamide
 			Name2Command_ [commandWithParams.at (0).toLower ()]
 					(commandWithParams.mid (1));
 		}
+		else
+			IrcParser_->RawCommand (commandWithParams);
 
 		if (!outputMessage.isEmpty ())
 			Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
@@ -559,6 +562,61 @@ namespace Acetamide
 				IrcParser_, _1);
 		Name2Command_ ["me"] = boost::bind (&IrcParser::CTCPRequest,
 				IrcParser_, _1);
+		Name2Command_ ["oper"] = boost::bind (&IrcParser::OperCommand,
+				IrcParser_, _1);
+		Name2Command_ ["squit"] = boost::bind (&IrcParser::SQuitCommand,
+				IrcParser_, _1);
+		Name2Command_ ["motd"] = boost::bind (&IrcParser::MOTDCommand,
+				IrcParser_, _1);
+		Name2Command_ ["lusers"] =
+				boost::bind (&IrcParser::LusersCommand, IrcParser_, _1);
+		Name2Command_ ["version"] =
+				boost::bind (&IrcParser::VersionCommand, IrcParser_, _1);
+		Name2Command_ ["stats"] = boost::bind (&IrcParser::StatsCommand,
+				IrcParser_, _1);
+		Name2Command_ ["links"] = boost::bind (&IrcParser::LinksCommand,
+				IrcParser_, _1);
+		Name2Command_ ["time"] = boost::bind (&IrcParser::TimeCommand,
+				IrcParser_, _1);
+		Name2Command_ ["connect"] =
+				boost::bind (&IrcParser::ConnectCommand, IrcParser_, _1);
+		Name2Command_ ["trace"] = boost::bind (&IrcParser::TraceCommand,
+				IrcParser_, _1);
+		Name2Command_ ["admin"] = boost::bind (&IrcParser::AdminCommand,
+				IrcParser_, _1);
+		Name2Command_ ["info"] = boost::bind (&IrcParser::InfoCommand,
+				IrcParser_, _1);
+		Name2Command_ ["who"] = boost::bind (&IrcParser::WhoCommand,
+				IrcParser_, _1);
+		Name2Command_ ["whois"] = boost::bind (&IrcParser::WhoisCommand,
+				IrcParser_, _1);
+		Name2Command_ ["whowas"] =
+				boost::bind (&IrcParser::WhowasCommand, IrcParser_, _1);
+		Name2Command_ ["kill"] = boost::bind (&IrcParser::KillCommand,
+				IrcParser_, _1);
+		Name2Command_ ["ping"] = boost::bind (&IrcParser::PingCommand,
+				IrcParser_, _1);
+		Name2Command_ ["pong"] = boost::bind (&IrcParser::PongCommand,
+				IrcParser_, _1);
+		Name2Command_ ["away"] = boost::bind (&IrcParser::AwayCommand,
+				IrcParser_, _1);
+		Name2Command_ ["rehash"] =
+				boost::bind (&IrcParser::RehashCommand, IrcParser_, _1);
+		Name2Command_ ["die"] = boost::bind (&IrcParser::DieCommand,
+				IrcParser_, _1);
+		Name2Command_ ["restart"] =
+				boost::bind (&IrcParser::RestartCommand, IrcParser_, _1);
+		Name2Command_ ["summon"] =
+				boost::bind (&IrcParser::SummonCommand, IrcParser_, _1);
+		Name2Command_ ["users"] =
+				boost::bind (&IrcParser::UsersCommand, IrcParser_, _1);
+		Name2Command_ ["userhost"] =
+				boost::bind (&IrcParser::UserhostCommand,
+						IrcParser_, _1);
+		Name2Command_ ["wallops"] =
+				boost::bind (&IrcParser::WallopsCommand, IrcParser_, _1);
+		Name2Command_ ["ison"] =
+				boost::bind (&IrcParser::IsonCommand, IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -677,8 +735,10 @@ namespace Acetamide
 			const QList<std::string>&, const QString& msg)
 	{
 		if (nick == NickName_)
+		{
+			ChannelJoined_ = true;
 			return;
-
+		}
 		QString channelID = (msg + "@" + ServerOptions_.ServerName_)
 				.toLower ();
 
@@ -734,7 +794,7 @@ namespace Acetamide
 	void IrcServerHandler::PongMessage (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		IrcParser_->PongCommand (msg);
+		IrcParser_->PongCommand (QStringList () << msg);
 	}
 
 	void IrcServerHandler::SetISupport (const QString&,
@@ -995,7 +1055,7 @@ namespace Acetamide
 				Core::Instance ().SendEntity (e);
 				Error2Action_ [cmd] ();
 			}
-			else if (!ChannelHandlers_.values ().count ())
+			else if ((cmd != "join") && (!ChannelJoined_))
 				IncomingMessage2Server ();
 
 			IncomingMessage2Channel ();
