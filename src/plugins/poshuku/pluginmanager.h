@@ -119,6 +119,9 @@ namespace Poshuku
 				QObject *browserWidget);
 		void hookIconRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl& url);
+		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
+				QWebPage *page,
+				QWebFrame *frame);
 		void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,

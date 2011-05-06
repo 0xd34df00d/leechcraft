@@ -60,6 +60,7 @@ namespace Poshuku
 		void handleDatabaseQuotaExceeded (QWebFrame*, QString);
 		void handleDownloadRequested (const QNetworkRequest&);
 		void handleFrameCreated (QWebFrame*);
+		void handleInitialLayoutCompleted ();
 		void handleJavaScriptWindowObjectCleared ();
 		void handleGeometryChangeRequested (const QRect&);
 		void handleLinkClicked (const QUrl&);
@@ -134,6 +135,9 @@ namespace Poshuku
 		void hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QRect *rect);
+		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
+				QWebPage *page,
+				QWebFrame *frame);
 		void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
